@@ -16,7 +16,7 @@ export function PortalSummaryForm (props: {
     <>
       {summaryData.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.SelfSignIn&&
       <Form.Item
-        label={$t({ defaultMessage: 'Sign-in Option' })}
+        label={$t({ defaultMessage: 'Sign-in Option:' })}
         children={<>
           {summaryData.guestPortal?.enableSmsLogin&&
             <div><UI.SMSToken/>{$t({ defaultMessage: 'SMS Token' })}</div>}
@@ -33,12 +33,12 @@ export function PortalSummaryForm (props: {
       }
       {summaryData.guestPortal?.guestNetworkType===GuestNetworkTypeEnum.HostApproval&&<>
         <Form.Item
-          label={$t({ defaultMessage: 'Host Domains' })}
+          label={$t({ defaultMessage: 'Host Domains:' })}
           children={summaryData.guestPortal?.hostGuestConfig?.hostDomains.map(domain=>
             <div key={domain}>{domain}</div>)}
         />
         <Form.Item
-          label={$t({ defaultMessage: 'Password Expiration Options' })}
+          label={$t({ defaultMessage: 'Password Expiration Options:' })}
           children={summaryData.guestPortal?.hostGuestConfig?.hostDurationChoices.map(choice=>{
             if(choice+'' === '1') return <div key={choice+'hour'}>
               {$t({ defaultMessage: '1 Hour' })}</div>
@@ -55,17 +55,17 @@ export function PortalSummaryForm (props: {
       }
       {summaryData.guestPortal?.guestNetworkType===GuestNetworkTypeEnum.WISPr&&<>
         <Form.Item
-          label={$t({ defaultMessage: 'Portal Provider' })}
+          label={$t({ defaultMessage: 'Portal Provider:' })}
           children={summaryData.guestPortal?.wisprPage?.externalProviderName}
         />
         <Form.Item
-          label={$t({ defaultMessage: 'Captive Portal URL' })}
+          label={$t({ defaultMessage: 'Captive Portal URL:' })}
           children={summaryData.guestPortal?.wisprPage?.captivePortalUrl}
         />
       </>
       }
       <Form.Item
-        label={$t({ defaultMessage: 'Redirect URL' })}
+        label={$t({ defaultMessage: 'Redirect URL:' })}
         children={summaryData.guestPortal?.redirectUrl ||
           $t({ defaultMessage: 'Original URL request' })}
       />
@@ -116,13 +116,13 @@ export function PortalSummaryForm (props: {
       {summaryData.guestPortal?.guestNetworkType===GuestNetworkTypeEnum.WISPr&&
        summaryData.wlan?.wlanSecurity === WlanSecurityEnum.None &&
         <Form.Item
-          label={$t({ defaultMessage: 'Pre-Shared Key(PSK)' })}
+          label={$t({ defaultMessage: 'Pre-Shared Key(PSK):' })}
           children={$t({ defaultMessage: 'No' })}
         />
       }
       {summaryData.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.SelfSignIn&&
         <Form.Item
-          label={$t({ defaultMessage: 'Collect User Email Address' })}
+          label={$t({ defaultMessage: 'Collect User Email Address:' })}
           children={summaryData.guestPortal?.socialEmails?
             $t({ defaultMessage: 'Yes' }):$t({ defaultMessage: 'No' })}
         />
@@ -130,7 +130,7 @@ export function PortalSummaryForm (props: {
       {summaryData.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.SelfSignIn&&
       summaryData.guestPortal?.enableSmsLogin&&
         <Form.Item
-          label={$t({ defaultMessage: 'Password Expires After' })}
+          label={$t({ defaultMessage: 'Password Expires After:' })}
           children={summaryData.guestPortal?.smsPasswordDuration?.duration + ' '+
             (summaryData.guestPortal.smsPasswordDuration?.unit==='HOUR'?
               $t({ defaultMessage: 'Hours' }):$t({ defaultMessage: 'Days' }))}
@@ -138,31 +138,31 @@ export function PortalSummaryForm (props: {
       }
       {summaryData.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr&&
         <Form.Item
-          label={$t({ defaultMessage: 'Mac auth bypass' })}
+          label={$t({ defaultMessage: 'Mac auth bypass:' })}
           children={summaryData.wlan?.bypassCPUsingMacAddressAuthentication?
             $t({ defaultMessage: 'Yes' }):$t({ defaultMessage: 'No' })}
         />
       }
       <Form.Item
-        label={$t({ defaultMessage: 'Ruckus DHCP Service' })}
+        label={$t({ defaultMessage: 'Ruckus DHCP Service:' })}
         children={summaryData.enableDhcp?$t({ defaultMessage: 'Yes' }):$t({ defaultMessage: 'No' })}
       />
       {summaryData.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr&&
         summaryData.guestPortal?.walledGardens&&
         summaryData.guestPortal?.walledGardens?.length>0&&
         <Form.Item
-          label={$t({ defaultMessage: 'Walled Garden' })}
+          label={$t({ defaultMessage: 'Walled Garden:' })}
           children={summaryData.guestPortal?.walledGardens?.map(garden=>
             <div key={garden}>{garden}</div>)}
         />
       }
       {portalData?.displayLang&&<Form.Item
-        label={$t({ defaultMessage: 'Portal Display Language' })}
+        label={$t({ defaultMessage: 'Portal Display Language:' })}
         children={$t({ defaultMessage: '{lang}' }, { lang:
           getLanguage(portalData?.displayLang as keyof typeof PortalLanguageEnum) })}
       />}
       {portalData?.componentDisplay?.WiFi4EU&&<Form.Item
-        label={$t({ defaultMessage: 'WiFi4EU Snippet' })}
+        label={$t({ defaultMessage: 'WiFi4EU Snippet:' })}
         children={portalData?.componentDisplay?.WiFi4EU?
           $t({ defaultMessage: 'ON' }):$t({ defaultMessage: 'OFF' })}
       />}

@@ -60,11 +60,10 @@ export default function LinkedInSetting () {
       setVisible(false)
     }}
   >
-    <Form.Item label={<>
-      {$t({ defaultMessage: 'Select LinkedIn app to be used for sign in' })}&nbsp;&nbsp;
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      <PreviewApp appDescription={description} appPhoto={appPhoto}/>
-    </>}/>
+    <Form.Item label={$t({ defaultMessage: 'Select LinkedIn app to be used for sign in' })}
+      extra={<div style={{ textAlign: 'right', marginTop: -63 }}>
+        <PreviewApp appDescription={description} appPhoto={appPhoto}/></div>}
+    />
     <Form.Item
       name={['guestPortal','socialIdentities','linkedin','config','appId']}
       rules={[

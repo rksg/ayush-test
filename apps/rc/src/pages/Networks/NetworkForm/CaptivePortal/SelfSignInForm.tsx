@@ -4,9 +4,7 @@ import { useState, useContext, useEffect } from 'react'
 import {
   Checkbox,
   InputNumber,
-  Col,
   Form,
-  Row,
   Select,
   Space,
   Tooltip,
@@ -14,7 +12,7 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { StepsForm }           from '@acx-ui/components'
+import { GridCol, GridRow, StepsForm } from '@acx-ui/components'
 import {
   QuestionMarkCircleOutlined
 } from '@acx-ui/icons'
@@ -152,8 +150,8 @@ export function SelfSignInForm () {
     }
   }, [data])
   return (
-    <Row gutter={20}>
-      <Col span={12}>
+    <GridRow>
+      <GridCol col={{ span: 12 }}>
         <StepsForm.Title>{$t({ defaultMessage: 'Onboarding' })}</StepsForm.Title>
         <Form.Item
           name='allowSign'
@@ -226,10 +224,7 @@ export function SelfSignInForm () {
               <UI.LinkedIn />
               {$t({ defaultMessage: 'LinkedIn' })}
             </UI.Checkbox>
-            <Tooltip title={$t({ defaultMessage: 'Edit LinkedIn app' })}
-              placement='bottom'>
-              {linkedin && <LinkedInSetting />}
-            </Tooltip>
+            {linkedin && <LinkedInSetting />}
           </>
           }
         />
@@ -333,11 +328,11 @@ export function SelfSignInForm () {
           </Space>
         </Form.Item>}
         <DhcpCheckbox />
-      </Col>
-      <Col span={12}>
+      </GridCol>
+      <GridCol col={{ span: 12 }}>
         <NetworkDiagram type={NetworkTypeEnum.CAPTIVEPORTAL}
           networkPortalType={GuestNetworkTypeEnum.SelfSignIn}/>
-      </Col>
-    </Row>
+      </GridCol>
+    </GridRow>
   )
 }

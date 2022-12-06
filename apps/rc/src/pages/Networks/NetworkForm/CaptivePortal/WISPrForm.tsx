@@ -1,9 +1,7 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 
 import {
-  Col,
   Form,
-  Row,
   Select,
   Tooltip,
   Checkbox,
@@ -15,7 +13,7 @@ import _             from 'lodash'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Button, StepsForm }   from '@acx-ui/components'
+import { Button, GridCol, GridRow, StepsForm } from '@acx-ui/components'
 import {
   InformationSolid,
   QuestionMarkCircleOutlined
@@ -128,8 +126,8 @@ export function WISPrForm () {
   const region = regionOption?.length === 1? regionOption?.[0]:
     _.find(regionOption,{ name: externalProviderRegion })
   return (
-    <Row gutter={20}>
-      <Col span={10}>
+    <GridRow>
+      <GridCol col={{ span: 10 }}>
         <StepsForm.Title>{$t({ defaultMessage: 'Settings' })}</StepsForm.Title>
         <Form.Item
           name={['guestPortal','wisprPage','externalProviderName']}
@@ -218,7 +216,7 @@ export function WISPrForm () {
             {$t({ defaultMessage: 'Captive Portal URL' })}
             <Tooltip title={$t({ defaultMessage: 'Copy this from your vendor\'s configuration' })}
               placement='bottom'>
-              <QuestionMarkCircleOutlined style={{ marginBottom: -3 }} />
+              <QuestionMarkCircleOutlined/>
             </Tooltip>
           </>}
           children={<Input placeholder={$t({ defaultMessage:
@@ -236,7 +234,7 @@ export function WISPrForm () {
             <Tooltip title={$t({ defaultMessage: 'Copy this password to your vendor\'s'
             +' configuration, to allow it to connect to Ruckus Cloud' })}
             placement='bottom'>
-              <QuestionMarkCircleOutlined style={{ marginBottom: -1 }} />
+              <QuestionMarkCircleOutlined/>
             </Tooltip>
           </>}
           extra={
@@ -362,7 +360,7 @@ export function WISPrForm () {
              $t({ defaultMessage: '-Website FQDN(e.g. www.ruckus.com)' })+'\n\n'+
              $t({ defaultMessage: '-Website FQDN with a wildcard(e.g. *.amazon.com; *.com)' })+'\n'}
             placement='bottom'>
-              <QuestionMarkCircleOutlined style={{ marginBottom: -1 }} />
+              <QuestionMarkCircleOutlined/>
             </Tooltip>
           </>}
           children={
@@ -388,11 +386,11 @@ export function WISPrForm () {
         {!regionOption && isOtherProvider &&<AuthAccServerSetting/>}
         {regionOption && region && <AuthAccServerSummary summaryData={region as Regions}/>}
 
-      </Col>
-      <Col span={14}>
+      </GridCol>
+      <GridCol col={{ span: 14 }}>
         <NetworkDiagram type={NetworkTypeEnum.CAPTIVEPORTAL}
           networkPortalType={GuestNetworkTypeEnum.WISPr}/>
-      </Col>
-    </Row>
+      </GridCol>
+    </GridRow>
   )
 }

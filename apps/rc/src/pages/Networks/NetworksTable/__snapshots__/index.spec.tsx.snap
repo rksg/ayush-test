@@ -970,34 +970,31 @@ exports[`Networks Table should click disabled row 1`] = `
                               <td
                                 class="ant-table-cell ant-table-selection-column"
                               >
-                                <span
-                                  class="ant-tooltip-disabled-compatible-wrapper"
-                                  style="display: inline-block; cursor: not-allowed;"
+                                <label
+                                  class="ant-radio-wrapper"
                                 >
-                                  <label
-                                    class="ant-radio-wrapper ant-radio-wrapper-disabled"
-                                    style="pointer-events: none;"
+                                  <span
+                                    class="ant-radio"
                                   >
+                                    <input
+                                      class="ant-radio-input"
+                                      type="radio"
+                                      value=""
+                                    />
                                     <span
-                                      class="ant-radio ant-radio-disabled"
-                                    >
-                                      <input
-                                        class="ant-radio-input"
-                                        disabled=""
-                                        type="radio"
-                                        value=""
-                                      />
-                                      <span
-                                        class="ant-radio-inner"
-                                      />
-                                    </span>
-                                  </label>
-                                </span>
+                                      class="ant-radio-inner"
+                                    />
+                                  </span>
+                                </label>
                               </td>
                               <td
                                 class="ant-table-cell ant-table-column-sort"
                               >
-                                network-02
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd8798/network-details/aps"
+                                >
+                                  network-02
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -1011,13 +1008,21 @@ exports[`Networks Table should click disabled row 1`] = `
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                0
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd8798/network-details/venues"
+                                >
+                                  0
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                0
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd8798/network-details/aps"
+                                >
+                                  0
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -1139,34 +1144,31 @@ exports[`Networks Table should click disabled row 1`] = `
                               <td
                                 class="ant-table-cell ant-table-selection-column"
                               >
-                                <span
-                                  class="ant-tooltip-disabled-compatible-wrapper"
-                                  style="display: inline-block; cursor: not-allowed;"
+                                <label
+                                  class="ant-radio-wrapper"
                                 >
-                                  <label
-                                    class="ant-radio-wrapper ant-radio-wrapper-disabled"
-                                    style="pointer-events: none;"
+                                  <span
+                                    class="ant-radio"
                                   >
+                                    <input
+                                      class="ant-radio-input"
+                                      type="radio"
+                                      value=""
+                                    />
                                     <span
-                                      class="ant-radio ant-radio-disabled"
-                                    >
-                                      <input
-                                        class="ant-radio-input"
-                                        disabled=""
-                                        type="radio"
-                                        value=""
-                                      />
-                                      <span
-                                        class="ant-radio-inner"
-                                      />
-                                    </span>
-                                  </label>
-                                </span>
+                                      class="ant-radio-inner"
+                                    />
+                                  </span>
+                                </label>
                               </td>
                               <td
                                 class="ant-table-cell ant-table-column-sort"
                               >
-                                network-04
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd8898/network-details/aps"
+                                >
+                                  network-04
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -1180,13 +1182,21 @@ exports[`Networks Table should click disabled row 1`] = `
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                0
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd8898/network-details/venues"
+                                >
+                                  0
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                0
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd8898/network-details/aps"
+                                >
+                                  0
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -1303,34 +1313,31 @@ exports[`Networks Table should click disabled row 1`] = `
                               <td
                                 class="ant-table-cell ant-table-selection-column"
                               >
-                                <span
-                                  class="ant-tooltip-disabled-compatible-wrapper"
-                                  style="display: inline-block; cursor: not-allowed;"
+                                <label
+                                  class="ant-radio-wrapper"
                                 >
-                                  <label
-                                    class="ant-radio-wrapper ant-radio-wrapper-disabled"
-                                    style="pointer-events: none;"
+                                  <span
+                                    class="ant-radio"
                                   >
+                                    <input
+                                      class="ant-radio-input"
+                                      type="radio"
+                                      value=""
+                                    />
                                     <span
-                                      class="ant-radio ant-radio-disabled"
-                                    >
-                                      <input
-                                        class="ant-radio-input"
-                                        disabled=""
-                                        type="radio"
-                                        value=""
-                                      />
-                                      <span
-                                        class="ant-radio-inner"
-                                      />
-                                    </span>
-                                  </label>
-                                </span>
+                                      class="ant-radio-inner"
+                                    />
+                                  </span>
+                                </label>
                               </td>
                               <td
                                 class="ant-table-cell ant-table-column-sort"
                               >
-                                network-06
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd8998/network-details/aps"
+                                >
+                                  network-06
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -1344,13 +1351,21 @@ exports[`Networks Table should click disabled row 1`] = `
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                0
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd8998/network-details/venues"
+                                >
+                                  0
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                0
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd8998/network-details/aps"
+                                >
+                                  0
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -1385,34 +1400,31 @@ exports[`Networks Table should click disabled row 1`] = `
                               <td
                                 class="ant-table-cell ant-table-selection-column"
                               >
-                                <span
-                                  class="ant-tooltip-disabled-compatible-wrapper"
-                                  style="display: inline-block; cursor: not-allowed;"
+                                <label
+                                  class="ant-radio-wrapper"
                                 >
-                                  <label
-                                    class="ant-radio-wrapper ant-radio-wrapper-disabled"
-                                    style="pointer-events: none;"
+                                  <span
+                                    class="ant-radio"
                                   >
+                                    <input
+                                      class="ant-radio-input"
+                                      type="radio"
+                                      value=""
+                                    />
                                     <span
-                                      class="ant-radio ant-radio-disabled"
-                                    >
-                                      <input
-                                        class="ant-radio-input"
-                                        disabled=""
-                                        type="radio"
-                                        value=""
-                                      />
-                                      <span
-                                        class="ant-radio-inner"
-                                      />
-                                    </span>
-                                  </label>
-                                </span>
+                                      class="ant-radio-inner"
+                                    />
+                                  </span>
+                                </label>
                               </td>
                               <td
                                 class="ant-table-cell ant-table-column-sort"
                               >
-                                network-07
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd9098/network-details/aps"
+                                >
+                                  network-07
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -1426,13 +1438,21 @@ exports[`Networks Table should click disabled row 1`] = `
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                0
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd9098/network-details/venues"
+                                >
+                                  0
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                0
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd9098/network-details/aps"
+                                >
+                                  0
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -1467,34 +1487,31 @@ exports[`Networks Table should click disabled row 1`] = `
                               <td
                                 class="ant-table-cell ant-table-selection-column"
                               >
-                                <span
-                                  class="ant-tooltip-disabled-compatible-wrapper"
-                                  style="display: inline-block; cursor: not-allowed;"
+                                <label
+                                  class="ant-radio-wrapper"
                                 >
-                                  <label
-                                    class="ant-radio-wrapper ant-radio-wrapper-disabled"
-                                    style="pointer-events: none;"
+                                  <span
+                                    class="ant-radio"
                                   >
+                                    <input
+                                      class="ant-radio-input"
+                                      type="radio"
+                                      value=""
+                                    />
                                     <span
-                                      class="ant-radio ant-radio-disabled"
-                                    >
-                                      <input
-                                        class="ant-radio-input"
-                                        disabled=""
-                                        type="radio"
-                                        value=""
-                                      />
-                                      <span
-                                        class="ant-radio-inner"
-                                      />
-                                    </span>
-                                  </label>
-                                </span>
+                                      class="ant-radio-inner"
+                                    />
+                                  </span>
+                                </label>
                               </td>
                               <td
                                 class="ant-table-cell ant-table-column-sort"
                               >
-                                network-08
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd9198/network-details/aps"
+                                >
+                                  network-08
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -1508,13 +1525,21 @@ exports[`Networks Table should click disabled row 1`] = `
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                0
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd9198/network-details/venues"
+                                >
+                                  0
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                0
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd9198/network-details/aps"
+                                >
+                                  0
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -1636,34 +1661,31 @@ exports[`Networks Table should click disabled row 1`] = `
                               <td
                                 class="ant-table-cell ant-table-selection-column"
                               >
-                                <span
-                                  class="ant-tooltip-disabled-compatible-wrapper"
-                                  style="display: inline-block; cursor: not-allowed;"
+                                <label
+                                  class="ant-radio-wrapper"
                                 >
-                                  <label
-                                    class="ant-radio-wrapper ant-radio-wrapper-disabled"
-                                    style="pointer-events: none;"
+                                  <span
+                                    class="ant-radio"
                                   >
+                                    <input
+                                      class="ant-radio-input"
+                                      type="radio"
+                                      value=""
+                                    />
                                     <span
-                                      class="ant-radio ant-radio-disabled"
-                                    >
-                                      <input
-                                        class="ant-radio-input"
-                                        disabled=""
-                                        type="radio"
-                                        value=""
-                                      />
-                                      <span
-                                        class="ant-radio-inner"
-                                      />
-                                    </span>
-                                  </label>
-                                </span>
+                                      class="ant-radio-inner"
+                                    />
+                                  </span>
+                                </label>
                               </td>
                               <td
                                 class="ant-table-cell ant-table-column-sort"
                               >
-                                network-10
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd9398/network-details/aps"
+                                >
+                                  network-10
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -1677,13 +1699,21 @@ exports[`Networks Table should click disabled row 1`] = `
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                0
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd9398/network-details/venues"
+                                >
+                                  0
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                0
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd9398/network-details/aps"
+                                >
+                                  0
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -2777,34 +2807,31 @@ exports[`Networks Table should delete selected row 1`] = `
                               <td
                                 class="ant-table-cell ant-table-selection-column"
                               >
-                                <span
-                                  class="ant-tooltip-disabled-compatible-wrapper"
-                                  style="display: inline-block; cursor: not-allowed;"
+                                <label
+                                  class="ant-radio-wrapper"
                                 >
-                                  <label
-                                    class="ant-radio-wrapper ant-radio-wrapper-disabled"
-                                    style="pointer-events: none;"
+                                  <span
+                                    class="ant-radio"
                                   >
+                                    <input
+                                      class="ant-radio-input"
+                                      type="radio"
+                                      value=""
+                                    />
                                     <span
-                                      class="ant-radio ant-radio-disabled"
-                                    >
-                                      <input
-                                        class="ant-radio-input"
-                                        disabled=""
-                                        type="radio"
-                                        value=""
-                                      />
-                                      <span
-                                        class="ant-radio-inner"
-                                      />
-                                    </span>
-                                  </label>
-                                </span>
+                                      class="ant-radio-inner"
+                                    />
+                                  </span>
+                                </label>
                               </td>
                               <td
                                 class="ant-table-cell ant-table-column-sort"
                               >
-                                network-02
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd8798/network-details/aps"
+                                >
+                                  network-02
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -2818,13 +2845,21 @@ exports[`Networks Table should delete selected row 1`] = `
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                0
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd8798/network-details/venues"
+                                >
+                                  0
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                0
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd8798/network-details/aps"
+                                >
+                                  0
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -2946,34 +2981,31 @@ exports[`Networks Table should delete selected row 1`] = `
                               <td
                                 class="ant-table-cell ant-table-selection-column"
                               >
-                                <span
-                                  class="ant-tooltip-disabled-compatible-wrapper"
-                                  style="display: inline-block; cursor: not-allowed;"
+                                <label
+                                  class="ant-radio-wrapper"
                                 >
-                                  <label
-                                    class="ant-radio-wrapper ant-radio-wrapper-disabled"
-                                    style="pointer-events: none;"
+                                  <span
+                                    class="ant-radio"
                                   >
+                                    <input
+                                      class="ant-radio-input"
+                                      type="radio"
+                                      value=""
+                                    />
                                     <span
-                                      class="ant-radio ant-radio-disabled"
-                                    >
-                                      <input
-                                        class="ant-radio-input"
-                                        disabled=""
-                                        type="radio"
-                                        value=""
-                                      />
-                                      <span
-                                        class="ant-radio-inner"
-                                      />
-                                    </span>
-                                  </label>
-                                </span>
+                                      class="ant-radio-inner"
+                                    />
+                                  </span>
+                                </label>
                               </td>
                               <td
                                 class="ant-table-cell ant-table-column-sort"
                               >
-                                network-04
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd8898/network-details/aps"
+                                >
+                                  network-04
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -2987,13 +3019,21 @@ exports[`Networks Table should delete selected row 1`] = `
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                0
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd8898/network-details/venues"
+                                >
+                                  0
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                0
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd8898/network-details/aps"
+                                >
+                                  0
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -3110,34 +3150,31 @@ exports[`Networks Table should delete selected row 1`] = `
                               <td
                                 class="ant-table-cell ant-table-selection-column"
                               >
-                                <span
-                                  class="ant-tooltip-disabled-compatible-wrapper"
-                                  style="display: inline-block; cursor: not-allowed;"
+                                <label
+                                  class="ant-radio-wrapper"
                                 >
-                                  <label
-                                    class="ant-radio-wrapper ant-radio-wrapper-disabled"
-                                    style="pointer-events: none;"
+                                  <span
+                                    class="ant-radio"
                                   >
+                                    <input
+                                      class="ant-radio-input"
+                                      type="radio"
+                                      value=""
+                                    />
                                     <span
-                                      class="ant-radio ant-radio-disabled"
-                                    >
-                                      <input
-                                        class="ant-radio-input"
-                                        disabled=""
-                                        type="radio"
-                                        value=""
-                                      />
-                                      <span
-                                        class="ant-radio-inner"
-                                      />
-                                    </span>
-                                  </label>
-                                </span>
+                                      class="ant-radio-inner"
+                                    />
+                                  </span>
+                                </label>
                               </td>
                               <td
                                 class="ant-table-cell ant-table-column-sort"
                               >
-                                network-06
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd8998/network-details/aps"
+                                >
+                                  network-06
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -3151,13 +3188,21 @@ exports[`Networks Table should delete selected row 1`] = `
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                0
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd8998/network-details/venues"
+                                >
+                                  0
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                0
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd8998/network-details/aps"
+                                >
+                                  0
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -3192,34 +3237,31 @@ exports[`Networks Table should delete selected row 1`] = `
                               <td
                                 class="ant-table-cell ant-table-selection-column"
                               >
-                                <span
-                                  class="ant-tooltip-disabled-compatible-wrapper"
-                                  style="display: inline-block; cursor: not-allowed;"
+                                <label
+                                  class="ant-radio-wrapper"
                                 >
-                                  <label
-                                    class="ant-radio-wrapper ant-radio-wrapper-disabled"
-                                    style="pointer-events: none;"
+                                  <span
+                                    class="ant-radio"
                                   >
+                                    <input
+                                      class="ant-radio-input"
+                                      type="radio"
+                                      value=""
+                                    />
                                     <span
-                                      class="ant-radio ant-radio-disabled"
-                                    >
-                                      <input
-                                        class="ant-radio-input"
-                                        disabled=""
-                                        type="radio"
-                                        value=""
-                                      />
-                                      <span
-                                        class="ant-radio-inner"
-                                      />
-                                    </span>
-                                  </label>
-                                </span>
+                                      class="ant-radio-inner"
+                                    />
+                                  </span>
+                                </label>
                               </td>
                               <td
                                 class="ant-table-cell ant-table-column-sort"
                               >
-                                network-07
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd9098/network-details/aps"
+                                >
+                                  network-07
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -3233,13 +3275,21 @@ exports[`Networks Table should delete selected row 1`] = `
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                0
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd9098/network-details/venues"
+                                >
+                                  0
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                0
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd9098/network-details/aps"
+                                >
+                                  0
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -3274,34 +3324,31 @@ exports[`Networks Table should delete selected row 1`] = `
                               <td
                                 class="ant-table-cell ant-table-selection-column"
                               >
-                                <span
-                                  class="ant-tooltip-disabled-compatible-wrapper"
-                                  style="display: inline-block; cursor: not-allowed;"
+                                <label
+                                  class="ant-radio-wrapper"
                                 >
-                                  <label
-                                    class="ant-radio-wrapper ant-radio-wrapper-disabled"
-                                    style="pointer-events: none;"
+                                  <span
+                                    class="ant-radio"
                                   >
+                                    <input
+                                      class="ant-radio-input"
+                                      type="radio"
+                                      value=""
+                                    />
                                     <span
-                                      class="ant-radio ant-radio-disabled"
-                                    >
-                                      <input
-                                        class="ant-radio-input"
-                                        disabled=""
-                                        type="radio"
-                                        value=""
-                                      />
-                                      <span
-                                        class="ant-radio-inner"
-                                      />
-                                    </span>
-                                  </label>
-                                </span>
+                                      class="ant-radio-inner"
+                                    />
+                                  </span>
+                                </label>
                               </td>
                               <td
                                 class="ant-table-cell ant-table-column-sort"
                               >
-                                network-08
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd9198/network-details/aps"
+                                >
+                                  network-08
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -3315,13 +3362,21 @@ exports[`Networks Table should delete selected row 1`] = `
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                0
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd9198/network-details/venues"
+                                >
+                                  0
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                0
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd9198/network-details/aps"
+                                >
+                                  0
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -3443,34 +3498,31 @@ exports[`Networks Table should delete selected row 1`] = `
                               <td
                                 class="ant-table-cell ant-table-selection-column"
                               >
-                                <span
-                                  class="ant-tooltip-disabled-compatible-wrapper"
-                                  style="display: inline-block; cursor: not-allowed;"
+                                <label
+                                  class="ant-radio-wrapper"
                                 >
-                                  <label
-                                    class="ant-radio-wrapper ant-radio-wrapper-disabled"
-                                    style="pointer-events: none;"
+                                  <span
+                                    class="ant-radio"
                                   >
+                                    <input
+                                      class="ant-radio-input"
+                                      type="radio"
+                                      value=""
+                                    />
                                     <span
-                                      class="ant-radio ant-radio-disabled"
-                                    >
-                                      <input
-                                        class="ant-radio-input"
-                                        disabled=""
-                                        type="radio"
-                                        value=""
-                                      />
-                                      <span
-                                        class="ant-radio-inner"
-                                      />
-                                    </span>
-                                  </label>
-                                </span>
+                                      class="ant-radio-inner"
+                                    />
+                                  </span>
+                                </label>
                               </td>
                               <td
                                 class="ant-table-cell ant-table-column-sort"
                               >
-                                network-10
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd9398/network-details/aps"
+                                >
+                                  network-10
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -3484,13 +3536,21 @@ exports[`Networks Table should delete selected row 1`] = `
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                0
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd9398/network-details/venues"
+                                >
+                                  0
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                0
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd9398/network-details/aps"
+                                >
+                                  0
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -4584,34 +4644,31 @@ exports[`Networks Table should render table 1`] = `
                               <td
                                 class="ant-table-cell ant-table-selection-column"
                               >
-                                <span
-                                  class="ant-tooltip-disabled-compatible-wrapper"
-                                  style="display: inline-block; cursor: not-allowed;"
+                                <label
+                                  class="ant-radio-wrapper"
                                 >
-                                  <label
-                                    class="ant-radio-wrapper ant-radio-wrapper-disabled"
-                                    style="pointer-events: none;"
+                                  <span
+                                    class="ant-radio"
                                   >
+                                    <input
+                                      class="ant-radio-input"
+                                      type="radio"
+                                      value=""
+                                    />
                                     <span
-                                      class="ant-radio ant-radio-disabled"
-                                    >
-                                      <input
-                                        class="ant-radio-input"
-                                        disabled=""
-                                        type="radio"
-                                        value=""
-                                      />
-                                      <span
-                                        class="ant-radio-inner"
-                                      />
-                                    </span>
-                                  </label>
-                                </span>
+                                      class="ant-radio-inner"
+                                    />
+                                  </span>
+                                </label>
                               </td>
                               <td
                                 class="ant-table-cell ant-table-column-sort"
                               >
-                                network-02
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd8798/network-details/aps"
+                                >
+                                  network-02
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -4625,13 +4682,21 @@ exports[`Networks Table should render table 1`] = `
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                0
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd8798/network-details/venues"
+                                >
+                                  0
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                0
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd8798/network-details/aps"
+                                >
+                                  0
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -4753,34 +4818,31 @@ exports[`Networks Table should render table 1`] = `
                               <td
                                 class="ant-table-cell ant-table-selection-column"
                               >
-                                <span
-                                  class="ant-tooltip-disabled-compatible-wrapper"
-                                  style="display: inline-block; cursor: not-allowed;"
+                                <label
+                                  class="ant-radio-wrapper"
                                 >
-                                  <label
-                                    class="ant-radio-wrapper ant-radio-wrapper-disabled"
-                                    style="pointer-events: none;"
+                                  <span
+                                    class="ant-radio"
                                   >
+                                    <input
+                                      class="ant-radio-input"
+                                      type="radio"
+                                      value=""
+                                    />
                                     <span
-                                      class="ant-radio ant-radio-disabled"
-                                    >
-                                      <input
-                                        class="ant-radio-input"
-                                        disabled=""
-                                        type="radio"
-                                        value=""
-                                      />
-                                      <span
-                                        class="ant-radio-inner"
-                                      />
-                                    </span>
-                                  </label>
-                                </span>
+                                      class="ant-radio-inner"
+                                    />
+                                  </span>
+                                </label>
                               </td>
                               <td
                                 class="ant-table-cell ant-table-column-sort"
                               >
-                                network-04
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd8898/network-details/aps"
+                                >
+                                  network-04
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -4794,13 +4856,21 @@ exports[`Networks Table should render table 1`] = `
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                0
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd8898/network-details/venues"
+                                >
+                                  0
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                0
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd8898/network-details/aps"
+                                >
+                                  0
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -4917,34 +4987,31 @@ exports[`Networks Table should render table 1`] = `
                               <td
                                 class="ant-table-cell ant-table-selection-column"
                               >
-                                <span
-                                  class="ant-tooltip-disabled-compatible-wrapper"
-                                  style="display: inline-block; cursor: not-allowed;"
+                                <label
+                                  class="ant-radio-wrapper"
                                 >
-                                  <label
-                                    class="ant-radio-wrapper ant-radio-wrapper-disabled"
-                                    style="pointer-events: none;"
+                                  <span
+                                    class="ant-radio"
                                   >
+                                    <input
+                                      class="ant-radio-input"
+                                      type="radio"
+                                      value=""
+                                    />
                                     <span
-                                      class="ant-radio ant-radio-disabled"
-                                    >
-                                      <input
-                                        class="ant-radio-input"
-                                        disabled=""
-                                        type="radio"
-                                        value=""
-                                      />
-                                      <span
-                                        class="ant-radio-inner"
-                                      />
-                                    </span>
-                                  </label>
-                                </span>
+                                      class="ant-radio-inner"
+                                    />
+                                  </span>
+                                </label>
                               </td>
                               <td
                                 class="ant-table-cell ant-table-column-sort"
                               >
-                                network-06
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd8998/network-details/aps"
+                                >
+                                  network-06
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -4958,13 +5025,21 @@ exports[`Networks Table should render table 1`] = `
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                0
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd8998/network-details/venues"
+                                >
+                                  0
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                0
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd8998/network-details/aps"
+                                >
+                                  0
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -4999,34 +5074,31 @@ exports[`Networks Table should render table 1`] = `
                               <td
                                 class="ant-table-cell ant-table-selection-column"
                               >
-                                <span
-                                  class="ant-tooltip-disabled-compatible-wrapper"
-                                  style="display: inline-block; cursor: not-allowed;"
+                                <label
+                                  class="ant-radio-wrapper"
                                 >
-                                  <label
-                                    class="ant-radio-wrapper ant-radio-wrapper-disabled"
-                                    style="pointer-events: none;"
+                                  <span
+                                    class="ant-radio"
                                   >
+                                    <input
+                                      class="ant-radio-input"
+                                      type="radio"
+                                      value=""
+                                    />
                                     <span
-                                      class="ant-radio ant-radio-disabled"
-                                    >
-                                      <input
-                                        class="ant-radio-input"
-                                        disabled=""
-                                        type="radio"
-                                        value=""
-                                      />
-                                      <span
-                                        class="ant-radio-inner"
-                                      />
-                                    </span>
-                                  </label>
-                                </span>
+                                      class="ant-radio-inner"
+                                    />
+                                  </span>
+                                </label>
                               </td>
                               <td
                                 class="ant-table-cell ant-table-column-sort"
                               >
-                                network-07
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd9098/network-details/aps"
+                                >
+                                  network-07
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -5040,13 +5112,21 @@ exports[`Networks Table should render table 1`] = `
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                0
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd9098/network-details/venues"
+                                >
+                                  0
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                0
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd9098/network-details/aps"
+                                >
+                                  0
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -5081,34 +5161,31 @@ exports[`Networks Table should render table 1`] = `
                               <td
                                 class="ant-table-cell ant-table-selection-column"
                               >
-                                <span
-                                  class="ant-tooltip-disabled-compatible-wrapper"
-                                  style="display: inline-block; cursor: not-allowed;"
+                                <label
+                                  class="ant-radio-wrapper"
                                 >
-                                  <label
-                                    class="ant-radio-wrapper ant-radio-wrapper-disabled"
-                                    style="pointer-events: none;"
+                                  <span
+                                    class="ant-radio"
                                   >
+                                    <input
+                                      class="ant-radio-input"
+                                      type="radio"
+                                      value=""
+                                    />
                                     <span
-                                      class="ant-radio ant-radio-disabled"
-                                    >
-                                      <input
-                                        class="ant-radio-input"
-                                        disabled=""
-                                        type="radio"
-                                        value=""
-                                      />
-                                      <span
-                                        class="ant-radio-inner"
-                                      />
-                                    </span>
-                                  </label>
-                                </span>
+                                      class="ant-radio-inner"
+                                    />
+                                  </span>
+                                </label>
                               </td>
                               <td
                                 class="ant-table-cell ant-table-column-sort"
                               >
-                                network-08
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd9198/network-details/aps"
+                                >
+                                  network-08
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -5122,13 +5199,21 @@ exports[`Networks Table should render table 1`] = `
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                0
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd9198/network-details/venues"
+                                >
+                                  0
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                0
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd9198/network-details/aps"
+                                >
+                                  0
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -5250,34 +5335,31 @@ exports[`Networks Table should render table 1`] = `
                               <td
                                 class="ant-table-cell ant-table-selection-column"
                               >
-                                <span
-                                  class="ant-tooltip-disabled-compatible-wrapper"
-                                  style="display: inline-block; cursor: not-allowed;"
+                                <label
+                                  class="ant-radio-wrapper"
                                 >
-                                  <label
-                                    class="ant-radio-wrapper ant-radio-wrapper-disabled"
-                                    style="pointer-events: none;"
+                                  <span
+                                    class="ant-radio"
                                   >
+                                    <input
+                                      class="ant-radio-input"
+                                      type="radio"
+                                      value=""
+                                    />
                                     <span
-                                      class="ant-radio ant-radio-disabled"
-                                    >
-                                      <input
-                                        class="ant-radio-input"
-                                        disabled=""
-                                        type="radio"
-                                        value=""
-                                      />
-                                      <span
-                                        class="ant-radio-inner"
-                                      />
-                                    </span>
-                                  </label>
-                                </span>
+                                      class="ant-radio-inner"
+                                    />
+                                  </span>
+                                </label>
                               </td>
                               <td
                                 class="ant-table-cell ant-table-column-sort"
                               >
-                                network-10
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd9398/network-details/aps"
+                                >
+                                  network-10
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -5291,13 +5373,21 @@ exports[`Networks Table should render table 1`] = `
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                0
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd9398/network-details/venues"
+                                >
+                                  0
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"
                                 style="text-align: center;"
                               >
-                                0
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/ad850ca8595d4f2f9e7f208664cd9398/network-details/aps"
+                                >
+                                  0
+                                </a>
                               </td>
                               <td
                                 class="ant-table-cell"

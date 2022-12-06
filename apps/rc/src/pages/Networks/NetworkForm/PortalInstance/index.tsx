@@ -1,11 +1,11 @@
 import { useContext, useEffect, useState } from 'react'
 
-import { Col, Form, Row, Select } from 'antd'
-import _                          from 'lodash'
-import { useIntl }                from 'react-intl'
-import { useParams }              from 'react-router-dom'
+import { Form, Select } from 'antd'
+import _                from 'lodash'
+import { useIntl }      from 'react-intl'
+import { useParams }    from 'react-router-dom'
 
-import { StepsForm }                    from '@acx-ui/components'
+import { GridCol, GridRow, StepsForm }  from '@acx-ui/components'
 import { useGetPortalProfileListQuery } from '@acx-ui/rc/services'
 import { Demo, Portal }                 from '@acx-ui/rc/utils'
 
@@ -64,8 +64,8 @@ const PortalInstance = (props:{
   },[data])
   return (
     <>
-      <Row gutter={20}>
-        <Col span={10}>
+      <GridRow>
+        <GridCol col={{ span: 10 }}>
           <StepsForm.Title>{$t({ defaultMessage: 'Portal Web Page' })}</StepsForm.Title>
           <Form.Item
             label={$t({ defaultMessage: 'Define the captive portal web page.' })}
@@ -85,26 +85,28 @@ const PortalInstance = (props:{
               }}
             />}
           />
-          <PortalServiceModal updateInstance={(data)=>{
-            const idNow = Date.now()
-            portalData.push({ ...data, id: data.id || idNow+'' })
-            portalList.push({
-              label: data.serviceName, value: data.id || idNow+'' })
-            setPortalList([...portalList])
-            setPortalData([...portalData])
-            form.setFieldValue(['guestPortal','serviceId'], data.id || idNow+'')
-            setDemoValue(data.demo)
-          }}/>
-        </Col>
-      </Row>
-      {portalServiceID&&<Row>
+          <Form.Item>
+            <PortalServiceModal updateInstance={(data)=>{
+              const idNow = Date.now()
+              portalData.push({ ...data, id: data.id || idNow+'' })
+              portalList.push({
+                label: data.serviceName, value: data.id || idNow+'' })
+              setPortalList([...portalList])
+              setPortalData([...portalData])
+              form.setFieldValue(['guestPortal','serviceId'], data.id || idNow+'')
+              setDemoValue(data.demo)
+            }}/>
+          </Form.Item>
+        </GridCol>
+      </GridRow>
+      {portalServiceID&&<GridRow>
         <PortalDemo value={demoValue}
           isPreview={true}
           fromNetwork={true}
           networkViewType={networkData?.guestPortal?.guestNetworkType}
           networkSocial={socials}
         />
-      </Row>}
+      </GridRow>}
     </>
   )
 }

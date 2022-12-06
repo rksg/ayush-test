@@ -1,17 +1,15 @@
 import { useContext, useEffect } from 'react'
 
 import {
-  Col,
   Form,
   Radio,
   RadioChangeEvent,
-  Row,
   Space,
   Tooltip
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { StepsForm }                             from '@acx-ui/components'
+import { GridCol, GridRow, StepsForm }           from '@acx-ui/components'
 import { GuestNetworkTypeEnum, NetworkTypeEnum } from '@acx-ui/rc/utils'
 import { notAvailableMsg }                       from '@acx-ui/utils'
 
@@ -25,15 +23,15 @@ import { RadioDescription }                                   from '../styledCom
 export function PortalTypeForm () {
   const portalType = Form.useWatch(['guestPortal', 'guestNetworkType'])
   return (
-    <Row gutter={20}>
-      <Col span={10}>
+    <GridRow>
+      <GridCol col={{ span: 10 }}>
         <TypesForm />
-      </Col>
-      <Col span={14}>
+      </GridCol>
+      <GridCol col={{ span: 14 }}>
         <NetworkDiagram type={NetworkTypeEnum.CAPTIVEPORTAL}
           networkPortalType={portalType}/>
-      </Col>
-    </Row>
+      </GridCol>
+    </GridRow>
   )
 }
 

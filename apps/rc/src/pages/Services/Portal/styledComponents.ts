@@ -24,6 +24,7 @@ import { EyeSlashSolid as UIEyeSlashSolid,
 }   from '@acx-ui/icons'
 
 export const popoverClassName = 'portal-demo-popover'
+export const modalClassName = 'portal-modal-preview'
 
 export const PopoverStyle = createGlobalStyle`
   .${popoverClassName} {
@@ -35,6 +36,35 @@ export const PopoverStyle = createGlobalStyle`
         padding: 10px 10px;
       }
     }
+  }
+`
+export const ModalStyle = createGlobalStyle`
+  .ant-modal.ant-modal-confirm.${modalClassName} {
+    top: 0px;
+    height:100%;
+    .ant-modal-confirm-btns{
+      margin-top: 0px;
+    }
+    .ant-modal-content{
+      height:100%;
+      .ant-modal-body{
+        height:100%;
+        .ant-modal-confirm-body-wrapper{
+          height: 100%;
+          .ant-modal-confirm-body{
+            height:100%;
+            .ant-modal-confirm-content{
+              height:100%;
+              margin-top: 0px;
+              .ant-layout{
+                margin-bottom: 0px;
+              }
+            }
+          }
+        }
+      }
+    }
+
   }
 `
 
@@ -85,7 +115,7 @@ export const PopoverButton = styled(UIButton)`
   padding-left:0px;
   background-color: var(--acx-primary-white);
 `
-export const LayoutContent = styled(AntLayout)`
+export const LayoutContent = styled(AntLayout)<{ $isPreview: boolean | undefined }>`
   border: 1px solid var(--acx-neutrals-50);
   background-color: var(--acx-primary-black) !important;
   .ant-layout{
@@ -94,7 +124,8 @@ export const LayoutContent = styled(AntLayout)`
   background-position: center;
   background-repeat: no-repeat;
   align-items: center;
-  height:auto;
+  ${props => props.$isPreview ? css`
+  height:100%; `: css`height: auto;`}
   margin-bottom:10px;
 `
 export const LayoutView = styled(AntLayout)<{ $type: string | null }>`

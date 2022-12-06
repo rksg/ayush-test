@@ -1,9 +1,6 @@
 import { useState } from 'react'
 
 import {
-  QuestionCircleOutlined
-} from '@ant-design/icons'
-import {
   Checkbox,
   Form,
   Input,
@@ -13,6 +10,9 @@ import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 import { useWatch }            from 'antd/lib/form/Form'
 import { useIntl }             from 'react-intl'
 
+import {
+  QuestionMarkCircleOutlined
+} from '@acx-ui/icons'
 import { URLRegExp } from '@acx-ui/rc/utils'
 
 export function RedirectUrlInput () {
@@ -54,7 +54,7 @@ export function RedirectUrlInput () {
         }
       />
       <Tooltip title={REDIRECT_TOOLTIP} placement='bottom'>
-        <QuestionCircleOutlined />
+        <QuestionMarkCircleOutlined style={{ marginLeft: -5, marginBottom: -3 }} />
       </Tooltip>
       <Form.Item
         name={['guestPortal','redirectUrl']}

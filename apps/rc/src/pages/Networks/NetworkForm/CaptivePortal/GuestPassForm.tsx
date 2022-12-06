@@ -1,13 +1,11 @@
 import { useContext, useEffect } from 'react'
 
 import {
-  Col,
-  Form,
-  Row
+  Form
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { StepsForm }                             from '@acx-ui/components'
+import { GridCol, GridRow, StepsForm }           from '@acx-ui/components'
 import { GuestNetworkTypeEnum, NetworkTypeEnum } from '@acx-ui/rc/utils'
 
 import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
@@ -35,16 +33,16 @@ export function GuestPassForm () {
     }
   }, [data])
   return (
-    <Row gutter={20}>
-      <Col span={10}>
+    <GridRow>
+      <GridCol col={{ span: 10 }}>
         <StepsForm.Title>{intl.$t({ defaultMessage: 'Host Settings' })}</StepsForm.Title>
         <RedirectUrlInput></RedirectUrlInput>
         <DhcpCheckbox />
-      </Col>
-      <Col span={14}>
+      </GridCol>
+      <GridCol col={{ span: 14 }}>
         <NetworkDiagram type={NetworkTypeEnum.CAPTIVEPORTAL}
           networkPortalType={GuestNetworkTypeEnum.GuestPass}/>
-      </Col>
-    </Row>
+      </GridCol>
+    </GridRow>
   )
 }

@@ -1,9 +1,6 @@
 import { useEffect, useState } from 'react'
 
 import {
-  QuestionCircleOutlined
-} from '@ant-design/icons'
-import {
   Checkbox,
   Descriptions,
   Form,
@@ -13,7 +10,10 @@ import {
 import { useWatch } from 'antd/lib/form/Form'
 import { useIntl }  from 'react-intl'
 
-import { Button }                                                        from '@acx-ui/components'
+import { Button }              from '@acx-ui/components'
+import {
+  QuestionMarkCircleOutlined
+} from '@acx-ui/icons'
 import { useGetDefaultGuestDhcpServiceProfileQuery, useVenuesListQuery } from '@acx-ui/rc/services'
 import { IpUtilsService, Venue }                                         from '@acx-ui/rc/utils'
 import { useParams }                                                     from '@acx-ui/react-router-dom'
@@ -102,7 +102,7 @@ export function DhcpCheckbox () {
       }
       placement='bottom'
       >
-        <QuestionCircleOutlined />
+        <QuestionMarkCircleOutlined style={{ marginLeft: -5, marginBottom: -3 }} />
       </Tooltip>
       <Popover
         placement='bottom'

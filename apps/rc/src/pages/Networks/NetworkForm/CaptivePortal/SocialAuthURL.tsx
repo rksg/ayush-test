@@ -12,7 +12,7 @@ export default function SocialAuthURL () {
   return (
     <>
       <Input value='https://devalto.ruckuswireless.com/g/ui/social'
-        style={{ height: 32, width: 380, marginRight: 10 }}
+        style={{ height: 32, width: 380, marginRight: 10, background: 'var(--acx-neutrals-15)' }}
         ref={inputKey}
         readOnly/>
       <Button onClick={()=>{
@@ -20,7 +20,7 @@ export default function SocialAuthURL () {
         inputKey?.current?.select()
         navigator?.clipboard?.writeText('https://devalto.ruckuswireless.com/g/ui/social')
       }}
-      type='secondary'
+      type='link'
       >{$t({ defaultMessage: 'Copy to clipboard' })}</Button>
     </>
   )

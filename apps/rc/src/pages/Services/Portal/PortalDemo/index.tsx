@@ -85,7 +85,8 @@ export default function PortalDemo ({
   }
   )
   return (
-    <div style={{ width: isPreview? '100%':'95%', minWidth: 1100 }}>
+    <div style={isPreview? { width: '100%', minWidth: 1100, height: '100%' } : {
+      width: '95%', minWidth: 1100 }}>
       <UI.PopoverStyle />
       {demoValue.componentDisplay.WiFi4EU && !demoValue.wifi4EU
         && <Alert style={{ width: 400, position: 'absolute', height: 30, left: 37, top: -33 }}
@@ -121,7 +122,7 @@ export default function PortalDemo ({
               />
             </UI.FieldExtraTooltip>}
           </div>
-          <div style={{ flex: '0 0 190px' }}>
+          <div style={{ flex: 'auto', textAlign: 'center' }}>
             <UI.DesktopOutlined $marked={marked.desk}
               title='deskicon'
               onClick={()=>{
@@ -141,30 +142,32 @@ export default function PortalDemo ({
                 setMarked({ desk: false, tablet: false, mobile: true })
               }}/>
           </div>
-          {!isPreview&&<div
-            style={{ flex: 'auto', textAlign: 'right', paddingRight: 5 }}>
-            {langContent}
-            <UI.Popover
-              overlayClassName={UI.popoverClassName}
-              overlayInnerStyle={{ minWidth: 260 }}
-              getPopupContainer={()=>document.getElementById('democontent') as HTMLElement}
-              content={compContent}
-              trigger='click'
-              placement='bottomLeft'
-              visible={showComponent}
-              onVisibleChange={(data)=>setShowComponent(data)}
-            ><UI.Button type='default' size='small'>{$t({ defaultMessage: 'Components' })}
-              </UI.Button></UI.Popover>
-            <PortalPreviewModal demoValue={demoValue}/>
-            <UI.Button type='default'
-              size='small'
-              onClick={()=>{
-                resetDemo?.()
-              }}>{$t({ defaultMessage: 'Reset' })}</UI.Button>
-          </div>}
+          <div
+            style={{ flex: '0 0 513px', textAlign: 'right', paddingRight: 5 }}>
+            {!isPreview&&<div>
+              {langContent}
+              <UI.Popover
+                overlayClassName={UI.popoverClassName}
+                overlayInnerStyle={{ minWidth: 260 }}
+                getPopupContainer={()=>document.getElementById('democontent') as HTMLElement}
+                content={compContent}
+                trigger='click'
+                placement='bottomLeft'
+                visible={showComponent}
+                onVisibleChange={(data)=>setShowComponent(data)}
+              ><UI.Button type='default' size='small'>{$t({ defaultMessage: 'Components' })}
+                </UI.Button></UI.Popover>
+              <PortalPreviewModal demoValue={demoValue}/>
+              <UI.Button type='default'
+                size='small'
+                onClick={()=>{
+                  resetDemo?.()
+                }}>{$t({ defaultMessage: 'Reset' })}</UI.Button>
+            </div>}
+          </div>
         </div>
       </UI.LayoutHeader>
-      <UI.LayoutContent id={networkPreview?'noid':'democontent'}>
+      <UI.LayoutContent id={networkPreview?'noid':'democontent'} $isPreview={isPreview}>
         {!isPreview&&<PortalBackground $isDesk={marked.desk}
           backgroundColor={demoValue.backgroundColor}
           updateBackgroundImg={(data: string) =>

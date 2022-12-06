@@ -3,13 +3,11 @@ import { useState, useContext, useEffect } from 'react'
 
 import {
   Checkbox,
-  Col,
-  Form,
-  Row
+  Form
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { StepsForm }                      from '@acx-ui/components'
+import { GridCol, GridRow, StepsForm }    from '@acx-ui/components'
 import { CaptivePassphraseExpirationEnum,
   GuestNetworkTypeEnum, NetworkTypeEnum } from '@acx-ui/rc/utils'
 
@@ -46,8 +44,8 @@ export function HostApprovalForm () {
     }
   }, [data])
   return (
-    <Row gutter={20}>
-      <Col span={10}>
+    <GridRow>
+      <GridCol col={{ span: 10 }}>
         <StepsForm.Title>{$t({ defaultMessage: 'Host Settings' })}</StepsForm.Title>
         <DomainsInput required={true}/>
         <Form.Item
@@ -90,11 +88,11 @@ export function HostApprovalForm () {
         />
         <RedirectUrlInput/>
         <DhcpCheckbox />
-      </Col>
-      <Col span={14}>
+      </GridCol>
+      <GridCol col={{ span: 14 }}>
         <NetworkDiagram type={NetworkTypeEnum.CAPTIVEPORTAL}
           networkPortalType={GuestNetworkTypeEnum.HostApproval}/>
-      </Col>
-    </Row>
+      </GridCol>
+    </GridRow>
   )
 }

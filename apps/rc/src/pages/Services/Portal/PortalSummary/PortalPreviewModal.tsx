@@ -19,13 +19,16 @@ export default function PortalPreviewModal (props:{
       type: 'confirm',
       content: getContent,
       okCancel: false,
-      title: $t({ defaultMessage: 'Preview' }),
+      closable: true,
       width: '100%',
-      bodyStyle: { marginLeft: 25, paddingRight: 50 }
+      okButtonProps: { style: { display: 'none' } },
+      bodyStyle: { padding: 0 },
+      className: UI.modalClassName
     })
   }
   return (
     <UI.Button onClick={()=>openModal()} type='default' size='small'>
+      <UI.ModalStyle />
       {$t({ defaultMessage: 'Preview' })}
     </UI.Button>
   )
