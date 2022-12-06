@@ -150,6 +150,28 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }]
     }),
+    getDHCPProfileList: build.query<DHCPSaveData[] | null, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getDHCPProfiles, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    getDHCPProfile: build.query<DHCPSaveData | null, RequestPayload>({
+      async queryFn ({ params }, _queryApi, _extraOptions, fetch) {
+        if (!params?.serviceId) return Promise.resolve({ data: null } as QueryReturnValue<
+          null,
+          FetchBaseQueryError,
+          FetchBaseQueryMeta
+        >)
+        const result = await fetch(createHttpRequest(CommonUrlsInfo.getDHCPService, params))
+        return result as QueryReturnValue<DHCPSaveData,
+        FetchBaseQueryError,
+        FetchBaseQueryMeta>
+      },
+      providesTags: [{ type: 'Service', id: 'DETAIL' }]
+    }),
     getMdnsProxy: build.query<MdnsProxyFormData, RequestPayload>({
       query: ({ params, payload }) => {
         const mdnsProxyReq = createHttpRequest(MdnsProxyUrls.getMdnsProxy, params)
@@ -223,7 +245,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           FetchBaseQueryError,
           FetchBaseQueryMeta
         >)
-        const result = await fetch(createHttpRequest(CommonUrlsInfo.getService, params))
+        const result = await fetch(createHttpRequest(CommonUrlsInfo.getDHCPService, params))
         return result as QueryReturnValue<DHCPSaveData,
         FetchBaseQueryError,
         FetchBaseQueryMeta>
@@ -353,6 +375,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       providesTags: [{ type: 'Service', id: 'LIST' }]
     })
+
   })
 })
 
@@ -364,12 +387,13 @@ export const {
   useApplicationPolicyListQuery,
   useDevicePolicyListQuery,
   useServiceListQuery,
-  useGetDHCPQuery,
+  useGetDHCPProfileQuery,
   useSaveDHCPMutation,
   useDhcpVenueInstancesQuery,
   useGetDHCPProfileDetailQuery,
   useVlanPoolListQuery,
   useAccessControlProfileListQuery,
+  useGetDHCPProfileListQuery,
   useGetMdnsProxyQuery,
   useAddMdnsProxyMutation,
   useUpdateMdnsProxyMutation,
