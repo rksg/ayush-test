@@ -6,7 +6,6 @@ import { useNetworkListQuery }                    from '@acx-ui/rc/services'
 import { useTableQuery, Network, RequestPayload } from '@acx-ui/rc/utils'
 import { TenantLink }                             from '@acx-ui/react-router-dom'
 
-
 export default function NetworksTable () {
   const { $t } = useIntl()
   const tableQuery = useTableQuery<Network, RequestPayload<unknown>, unknown>({
@@ -24,7 +23,7 @@ export default function NetworksTable () {
           </TenantLink>
         ]}
       />
-      <NetworkTable tableQuery={tableQuery}/>
+      <NetworkTable tableQuery={tableQuery} selectable={true} />
     </>
   )
 }
