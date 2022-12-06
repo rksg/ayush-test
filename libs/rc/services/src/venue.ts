@@ -14,7 +14,7 @@ import {
   VenueExtended,
   VenueDetailHeader,
   APMesh,
-  VenueCapabilities,
+  Capabilities,
   VenueLed,
   VenueApModels,
   ExternalAntenna,
@@ -264,7 +264,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       }
     }),
-    getVenueCapabilities: build.query<VenueCapabilities, RequestPayload>({
+    getVenueCapabilities: build.query<Capabilities, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(CommonUrlsInfo.getVenueCapabilities, params)
         return{
