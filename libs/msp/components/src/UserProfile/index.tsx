@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react'
 
-import { Row, Col, Form, Select, Switch, Tabs, Typography } from 'antd'
-import { useIntl }                                          from 'react-intl'
-import styled                                               from 'styled-components/macro'
+import { Row, Col, Form, Select, Switch, Typography } from 'antd'
+import { useIntl }                                    from 'react-intl'
+import styled                                         from 'styled-components/macro'
 
 import {
   PageHeader,
   StepsForm,
-  Subtitle
+  Subtitle,
+  Tabs
 } from '@acx-ui/components'
 import { EnvelopClosedSolid }    from '@acx-ui/icons'
 import {
@@ -150,8 +151,7 @@ export function UserProfile () {
           layout='horizontal'
           labelAlign='left'
           labelCol={{ span: 12 }}
-          wrapperCol={{ span: 24 }}
-          style={{ marginTop: '15px' }}>
+          wrapperCol={{ span: 24 }}>
           <label>{$t({ defaultMessage: 'Receive notifications through:' })}</label>
           <Row>
             <Col span={8}>
@@ -217,7 +217,7 @@ export function UserProfile () {
         onFinish={async () => handleUpdate()}
         onCancel={async () => handleCancel()}
       >
-        <StepsForm.StepForm style={{ marginTop: '15px' }}>
+        <StepsForm.StepForm>
           <Row gutter={20}>
             <Col span={8}>
               <Form.Item
@@ -292,7 +292,7 @@ export function UserProfile () {
         onFinish={async () => handleCancel()}
         onCancel={async () => handleCancel()}
       >
-        <StepsForm.StepForm style={{ marginTop: '15px' }}>
+        <StepsForm.StepForm>
           <Row gutter={20}>
             <Col span={8}>
               <h4 ><b>{$t({ defaultMessage: 'Multi-Factor Authentication' })}</b></h4>
@@ -325,7 +325,7 @@ export function UserProfile () {
       />
       <UserData/>
 
-      <Tabs style={{ marginTop: '25px' }}>
+      <Tabs>
         <Tabs.TabPane tab={$t({ defaultMessage: 'Notifications' })} key='Notfications'>
           <NotificationTab />
         </Tabs.TabPane>

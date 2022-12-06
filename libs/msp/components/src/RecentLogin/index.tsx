@@ -90,9 +90,6 @@ export function RecentLogin () {
   }
 
   return (
-    <div style={{ marginTop: '15px' }}>
-      <EventListTable />
-    </div>
-
+    <EventListTable />
   )
 }
