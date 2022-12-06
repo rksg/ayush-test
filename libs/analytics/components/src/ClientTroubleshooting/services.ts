@@ -105,7 +105,6 @@ export const api = dataApi.injectEndpoints({
         { type: 'Monitoring', id: 'CLIENT_INFO' }
       ],
       transformResponse: (response: Response<ClientInfoData>) => {
-        console.log({response})
         return response.client
       }
     })

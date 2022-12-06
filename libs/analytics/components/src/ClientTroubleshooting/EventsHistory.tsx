@@ -1,14 +1,15 @@
 
-import { List }    from 'antd'
-import { useIntl } from 'react-intl'
+import { List }               from 'antd'
+import { IntlShape, useIntl } from 'react-intl'
+import AutoSizer              from 'react-virtualized-auto-sizer'
 
-import { failureCodeTextMap } from '@acx-ui/analytics/utils'
-import { CollapseInactive }   from '@acx-ui/icons'
+import { ArrowCollapse } from '@acx-ui/icons'
+import { formatter }     from '@acx-ui/utils'
 
-import { transformEvents }                 from './config'
-import { ConnectionEvents }                from './ConnectionEvents'
-import { ClientInfoData, ConnectionEvent } from './services'
-import * as UI                             from './styledComponents'
+import { transformEvents, DisplayEvent, formatEventDesc, eventColorByCategory } from './config'
+import { ConnectionEvents }                                                     from './ConnectionEvents'
+import { ClientInfoData }                                                       from './services'
+import * as UI                                                                  from './styledComponents'
 
 import { Filters } from '.'
 
@@ -19,24 +20,22 @@ type HistoryContentProps = {
     data?: ClientInfoData,
     filters: Filters
   }
-type DisplayEvent = {
-  start: number,
-  end: number,
-  code: string,
-  apName: string,
-  mac: string,
-  radio: string
-}
-const transformData = (clientInfo: ClientInfoData, filters: Filters) => {
-  const [ types = [] ] = filters?.type ?? [[]]
-  const [ radios = [] ] = filters?.radio ?? [[]]
+
+const transformData = (clientInfo: ClientInfoData, filters: Filters, intl: IntlShape) => {
+  const types = filters ? filters.type ?? [] : []
+  const radios = filters ? filters.radio ?? [] : []
   const events = transformEvents(
     clientInfo.connectionEvents,
-    types.concat(radios)
+    types,
+    radios
   ) as DisplayEvent[]
   return events.map((event: DisplayEvent) => {
-    const { code, apName, mac, radio, ...data } = event
-
+    const color = eventColorByCategory[event.category as keyof typeof eventColorByCategory]
+    return {
+      date: formatter('dateTimeFormatWithSeconds')(event.start),
+      description: formatEventDesc(event, intl),
+      icon: <UI.EventTypeIcon color={color} />
+    }
   })
 }
 const sampleData = [
@@ -57,10 +56,10 @@ const sampleData = [
   }
 ]
 export function History (props : HistoryContentProps) {
-  const { $t } = useIntl()
+  const intl = useIntl()
+  const { $t } = intl
   const { setHistoryContentToggle, historyContentToggle, data, filters } = props
-  const histData = transformData(data!, filters)
-  console.log(histData)
+  const histData = transformData(data!, filters, intl)
   return (
     <UI.History>
       <UI.HistoryHeader>
@@ -68,27 +67,31 @@ export function History (props : HistoryContentProps) {
           {$t({ defaultMessage: 'History' })}
         </UI.HistoryContentTitle>
         <UI.HistoryIcon>
-          <CollapseInactive
+          <ArrowCollapse
             onClick={() => {
               setHistoryContentToggle(!historyContentToggle)
             }}
           />
         </UI.HistoryIcon>
       </UI.HistoryHeader>
-      <UI.HistoryContent>
-        <List
-          itemLayout='horizontal'
-          dataSource={sampleData}
-          renderItem={(item) => (
-            <List.Item>
-              <List.Item.Meta
-                avatar={item.icon}
-                title={item.date}
-                description={item.description} />
-            </List.Item>
-          )}
-        />
-      </UI.HistoryContent>
+      <AutoSizer>
+        {({ height, width }) => (
+          <UI.HistoryContent style={{ height: height - 44, width }}>
+            <List
+              itemLayout='horizontal'
+              dataSource={histData}
+              renderItem={(item) => (
+                <List.Item title={item.description}>
+                  <List.Item.Meta
+                    avatar={item.icon}
+                    title={item.date}
+                    description={item.description} />
+                </List.Item>
+              )}
+            />
+          </UI.HistoryContent>
+        )}
+      </AutoSizer>
     </UI.History>
   )
 }
