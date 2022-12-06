@@ -2,13 +2,16 @@
 import { List }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { CollapseInactive } from '@acx-ui/icons'
-
-import * as UI from './styledComponents'
-import { ClientInfoData, ConnectionEvent } from './services'
-import { Filters } from '.'
-import { transformEvents } from './config'
 import { failureCodeTextMap } from '@acx-ui/analytics/utils'
+import { CollapseInactive }   from '@acx-ui/icons'
+
+import { transformEvents }                 from './config'
+import { ConnectionEvents }                from './ConnectionEvents'
+import { ClientInfoData, ConnectionEvent } from './services'
+import * as UI                             from './styledComponents'
+
+import { Filters } from '.'
+
 
 type HistoryContentProps = {
     historyContentToggle : boolean,
@@ -33,14 +36,14 @@ const transformData = (clientInfo: ClientInfoData, filters: Filters) => {
   ) as DisplayEvent[]
   return events.map((event: DisplayEvent) => {
     const { code, apName, mac, radio, ...data } = event
-    
+
   })
 }
 const sampleData = [
   {
     date: '06/07/2022 11:21:48',
     description: 'Infrastructure (Service availabilty)',
-    icon: <UI.EventTypeIcon color='--acx-semantics-green-50'/>
+    icon: <ConnectionEvents><UI.EventTypeIcon color='--acx-semantics-green-50'/></ConnectionEvents>
   },
   {
     date: '06/07/2022 11:21:48',

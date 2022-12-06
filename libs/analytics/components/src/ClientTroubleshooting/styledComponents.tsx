@@ -1,4 +1,5 @@
-import styled, { css } from 'styled-components/macro'
+import { Popover as AntPopover } from 'antd'
+import styled, { css }           from 'styled-components/macro'
 
 import {  PlusSquareOutlined, MinusSquareOutlined } from '@acx-ui/icons'
 
@@ -86,3 +87,7 @@ export const TimelineTitle = styled.span`
    line-height: 24px;
    font-weight: var(--acx-body-font-weight-bold);
    font-size: 12px;`
+
+export const Popover = styled(AntPopover)`
+    
+`
