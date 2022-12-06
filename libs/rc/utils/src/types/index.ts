@@ -37,6 +37,9 @@ export * from './mfa'
 export * from './administration'
 export * from './timeline'
 export * from './persona'
+export * from './policy'
+export * from './portalService'
+export * from './radiusClientConfig'
 
 export interface CommonResult {
   requestId: string

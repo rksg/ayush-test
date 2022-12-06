@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MacAddressDrawer should cancel the drawer successfully 1`] = `<DocumentFragment />`;
+
+exports[`MacAddressDrawer should render table with the giving data 1`] = `<DocumentFragment />`;
+
+exports[`MacAddressDrawer should submit the drawer successfully 1`] = `<DocumentFragment />`;
