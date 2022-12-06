@@ -5,9 +5,10 @@ import { useIntl } from 'react-intl'
 import { CollapseInactive } from '@acx-ui/icons'
 
 import * as UI from './styledComponents'
-import { ClientInfoData } from './services'
+import { ClientInfoData, ConnectionEvent } from './services'
 import { Filters } from '.'
 import { transformEvents } from './config'
+import { failureCodeTextMap } from '@acx-ui/analytics/utils'
 
 type HistoryContentProps = {
     historyContentToggle : boolean,
@@ -15,16 +16,25 @@ type HistoryContentProps = {
     data?: ClientInfoData,
     filters: Filters
   }
-
+type DisplayEvent = {
+  start: number,
+  end: number,
+  code: string,
+  apName: string,
+  mac: string,
+  radio: string
+}
 const transformData = (clientInfo: ClientInfoData, filters: Filters) => {
+  const [ types = [] ] = filters?.type ?? [[]]
+  const [ radios = [] ] = filters?.radio ?? [[]]
   const events = transformEvents(
     clientInfo.connectionEvents,
-    [
-      ...(filters.type ?? []),
-      ...(filters.radio ?? [])
-    ]
-  ) ?? []
-  
+    types.concat(radios)
+  ) as DisplayEvent[]
+  return events.map((event: DisplayEvent) => {
+    const { code, apName, mac, radio, ...data } = event
+    
+  })
 }
 const sampleData = [
   {
@@ -46,8 +56,8 @@ const sampleData = [
 export function History (props : HistoryContentProps) {
   const { $t } = useIntl()
   const { setHistoryContentToggle, historyContentToggle, data, filters } = props
-  console.log(data, filters)
-  const histData = transformData(data, filters)
+  const histData = transformData(data!, filters)
+  console.log(histData)
   return (
     <UI.History>
       <UI.HistoryHeader>
