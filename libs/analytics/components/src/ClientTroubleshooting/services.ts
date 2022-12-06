@@ -6,10 +6,10 @@ import { DateFilter }     from '@acx-ui/utils'
 
 export type ConnectionEvent = {
   event: string,
-  state: string, 
-  timestamp: string, 
-  mac: string, 
-  ttc: number, 
+  state: string,
+  timestamp: string,
+  mac: string,
+  ttc: number,
   radio: string,
   failedMsgId: string,
   code: string
@@ -105,7 +105,6 @@ export const api = dataApi.injectEndpoints({
         { type: 'Monitoring', id: 'CLIENT_INFO' }
       ],
       transformResponse: (response: Response<ClientInfoData>) => {
-        console.log({response})
         return response.client
       }
     })

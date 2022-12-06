@@ -61,21 +61,23 @@ export const categorizeEvent = (name: string, ttc: number) => {
 // common utility for history and connection events chart
 export const transformEvents = (events: ConnectionEvent[], selectedEvents: string[]) => {
   return events.reduce((acc, data, index) => {
-    const { event, state, timestamp, mac, ttc, radio, code, failedMsgId  } = data
+    const { event, state, timestamp, mac, ttc, radio, code, failedMsgId } = data
     if (code === 'eap' && EAPOLMessageIds.includes(failedMsgId)) {
-      data.code = 'eapol'
+      data = { ...data,code: 'eapol' }
     }
 
     const category = categorizeEvent(event, ttc)
     const eventType = category === 'failure' ? filterEventMap[FAILURE] : event
 
-    const selEventsFilterMap = selectedEvents.map(e => filterEventMap[e as keyof typeof filterEventMap])
+    const selEventsFilterMap = selectedEvents.map(
+      (e) => filterEventMap[e as keyof typeof filterEventMap]
+    )
     const time = +new Date(timestamp)
 
     const skip = eventsToHide.includes(state) || selectedEvents.length
       ? !selEventsFilterMap.includes(eventType) || !selEventsFilterMap.includes(radio)
       : false
-    
+
     if (skip) return acc
 
     acc.push({

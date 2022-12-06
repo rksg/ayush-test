@@ -1,3 +1,4 @@
+import { Collapse }    from 'antd'
 import styled, { css } from 'styled-components/macro'
 
 import {  PlusSquareOutlined, MinusSquareOutlined } from '@acx-ui/icons'
@@ -86,3 +87,11 @@ export const TimelineTitle = styled.span`
    line-height: 24px;
    font-weight: var(--acx-body-font-weight-bold);
    font-size: 12px;`
+export const TimelineSubContent = styled.span`
+   line-height: 16px;
+   font-weight: var(--acx-body-font-weight);
+   font-size: 12px;`
+export const CollapseBox = styled(Collapse)`
+  .ant-collapse-content {
+    margin-left : 30px;
+    }`
