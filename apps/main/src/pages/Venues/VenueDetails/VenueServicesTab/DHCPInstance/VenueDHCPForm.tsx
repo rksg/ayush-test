@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-import { DeleteTwoTone } from '@ant-design/icons'
+
 import {
   Switch,
   FormInstance,
@@ -11,6 +11,7 @@ import { useIntl }         from 'react-intl'
 import { useParams, Link } from 'react-router-dom'
 
 import { GridRow, Button }                                                      from '@acx-ui/components'
+import { DeleteOutlinedIcon }                                                   from '@acx-ui/icons'
 import { useGetDHCPProfileListQuery, useVenueDHCPProfileQuery, useApListQuery } from '@acx-ui/rc/services'
 import {  DHCPProfileAps }                                                      from '@acx-ui/rc/utils'
 import {
@@ -24,10 +25,12 @@ import { AntSelect, IconContainer, AddBtnContainer, StyledForm } from './styledC
 
 const { Option } = AntSelect
 
-const VenueDHCPForm = React.forwardRef((props, formRef) => {
+const VenueDHCPForm = (props: {
+  form: FormInstance,
+}) => {
   const { $t } = useIntl()
   const params = useParams()
-  const [form] = StyledForm.useForm()
+  const form = props.form
   const dhcpInfo = useDHCPInfo()
 
   const { data: venueDHCPProfile } = useVenueDHCPProfileQuery({
@@ -43,6 +46,7 @@ const VenueDHCPForm = React.forwardRef((props, formRef) => {
     setGateways(natGatewayList)
 
     form.setFieldsValue({
+      enabled: venueDHCPProfile?.enabled,
       serviceId: dhcpInfo?.id,
       primaryServerSN: dhcpInfo?.primaryDHCP.serialNumber,
       backupServerSN: dhcpInfo?.secondaryDHCP.serialNumber,
@@ -77,7 +81,7 @@ const VenueDHCPForm = React.forwardRef((props, formRef) => {
             form.setFieldsValue({ gateways: gatewayRawData })
             setGateways([...gatewayRawData])
           }}
-          icon={<DeleteTwoTone />} />
+          icon={<DeleteOutlinedIcon />} />
       </IconContainer>}
     </GridRow>
     {(gateways?.length===index+1) && <AddBtnContainer>
@@ -119,7 +123,6 @@ const VenueDHCPForm = React.forwardRef((props, formRef) => {
     layout='vertical'
     validateTrigger='onBlur'
     form={form}
-    ref={formRef as React.Ref<FormInstance<unknown>>}
   >
     <StyledForm.Item name='enabled'
       label={$t({ defaultMessage: 'Service State' })}
@@ -182,6 +185,6 @@ const VenueDHCPForm = React.forwardRef((props, formRef) => {
       {gatewaysList}
     </StyledForm.Item>
   </StyledForm>
-})
+}
 
 export default VenueDHCPForm

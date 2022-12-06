@@ -589,7 +589,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       }
     }),
-    venueDHCPProfile: build.query<VenueDHCPProfile | null, RequestPayload>({
+    venueDHCPProfile: build.query<VenueDHCPProfile, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(CommonUrlsInfo.getVenueDHCPServiceProfile, params)
         return{

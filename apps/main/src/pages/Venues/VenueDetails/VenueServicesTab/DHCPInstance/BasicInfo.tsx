@@ -1,9 +1,9 @@
-import React, { useState, useRef } from 'react'
+import React, { useState } from 'react'
 
-import { Button, FormInstance } from 'antd'
-import _                        from 'lodash'
-import { useIntl }              from 'react-intl'
-import { useLocation }          from 'react-router-dom'
+import { Button, Form } from 'antd'
+import _                from 'lodash'
+import { useIntl }      from 'react-intl'
+import { useLocation }  from 'react-router-dom'
 
 import { Modal, GridRow, GridCol, Card } from '@acx-ui/components'
 import { TenantLink }                    from '@acx-ui/react-router-dom'
@@ -21,9 +21,10 @@ export default function BasicInfo () {
   const { $t } = useIntl()
   const DISPLAY_GATEWAY_MAX_NUM = 2
   const SPAN_NUM = 3
-  let formRef = useRef<FormInstance>()
   const dhcpInfo = useDHCPInfo()
   const natGateway = _.take(dhcpInfo.gateway, DISPLAY_GATEWAY_MAX_NUM)
+
+  const [form] = Form.useForm()
 
   return <>
     <Card type='solid-bg'>
@@ -99,12 +100,13 @@ export default function BasicInfo () {
         // form.current.resetFields()
       }}
       onOk={() => {
-        formRef?.current?.getFieldsValue()
+        // formRef?.current?.getFieldsValue()
         // form.current.submit()
+        form.getFieldsValue()
         setVisible(false)
       }}
     >
-      <VenueDHCPForm ref={formRef} />
+      <VenueDHCPForm form={form} />
     </Modal>
   </>
 }

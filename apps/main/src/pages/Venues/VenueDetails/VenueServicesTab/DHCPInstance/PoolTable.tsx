@@ -14,7 +14,9 @@ import {
   useActivateDHCPPoolMutation } from '@acx-ui/rc/services'
 import { DHCPPool }    from '@acx-ui/rc/utils'
 import { TenantLink }  from '@acx-ui/react-router-dom'
-import { intlFormats } from '@acx-ui/utils'
+import { intlFormats, formatter } from '@acx-ui/utils'
+
+import moment      from 'moment-timezone'
 
 export default function VenuePoolTable (){
   const params = useParams()
@@ -95,9 +97,11 @@ export default function VenuePoolTable (){
       title: $t({ defaultMessage: 'Lease Time' }),
       dataIndex: 'leaseTimeHours',
       render: (data, rowData)=>{
-        return $t(intlFormats.timeFormatShort, {
-          leaseTimeHours: rowData.leaseTimeHours,
-          leaseTimeMinutes: rowData.leaseTimeMinutes })
+        const MINUTE = 1000 * 60
+        const HOUR = MINUTE * 60
+
+        return formatter('longDurationFormat')
+        (_.parseInt(rowData.leaseTimeHours)* HOUR + _.parseInt(rowData.leaseTimeMinutes) * MINUTE)
       }
     },
     {

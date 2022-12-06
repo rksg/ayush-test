@@ -178,15 +178,11 @@ const percentFormatRound: MessageDescriptor = defineMessage({
 const scaleFormatRound: MessageDescriptor = defineMessage({
   defaultMessage: '{value, number, ::scale/100 . }'
 })
-const timeFormatShort: MessageDescriptor = defineMessage({
-  defaultMessage: '{leaseTimeHours} hrs, {leaseTimeMinutes} mins'
-})
 
 export const intlFormats = {
   countFormat,
   percentFormat,
   percentFormatRound,
-  timeFormatShort,
   scaleFormatRound
 } as const
 
