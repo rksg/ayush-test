@@ -11,6 +11,7 @@ import { mockServer, render, screen }                                        fro
 
 import RogueAPDetectionContext from '../RogueAPDetectionContext'
 
+import RogueAPDetectionForm        from './RogueAPDetectionForm'
 import RogueAPDetectionSettingForm from './RogueAPDetectionSettingForm'
 
 
@@ -144,12 +145,13 @@ describe('RogueAPDetectionSettingForm', () => {
         dispatch: setRogueAPConfigure
       }}>
         <Form>
-          <RogueAPDetectionSettingForm edit={true}/>
+          <RogueAPDetectionForm edit={true}/>
         </Form>
       </RogueAPDetectionContext.Provider>
       , {
         wrapper: wrapper,
         route: {
+          path: '/policies/rogueAp/:policyId/edit',
           params: { policyId: 'policyId1', tenantId: 'tenantId1' }
         }
       }
@@ -167,5 +169,7 @@ describe('RogueAPDetectionSettingForm', () => {
     expect(screen.getByRole('columnheader', {
       name: /category/i
     })).toBeTruthy()
+
+    await screen.findByRole('heading', { name: 'Settings', level: 3 })
   })
 })

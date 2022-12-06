@@ -37,11 +37,7 @@ const defaultPayload = {
   ],
   sortField: 'lastUpdTime',
   sortOrder: 'DESC',
-  page: 1,
-  pageSize: 10,
-  pagination: {
-    pageSize: 10
-  }
+  page: 1
 }
 
 const renderSignal = (snr: number) => {
@@ -66,6 +62,7 @@ const handleCategoryColor = (status: RogueDeviceCategory) => {
 }
 
 export function VenueRogueAps () {
+  const leftFillZero = (num: number) => num.toString().padStart(2, '0')
   const formatDate = (date: Date) => {
     return (
       [
@@ -75,9 +72,9 @@ export function VenueRogueAps () {
       ].join('/') +
       ' ' +
       [
-        date.getHours(),
-        date.getMinutes(),
-        date.getSeconds()
+        leftFillZero(date.getHours()),
+        leftFillZero(date.getMinutes()),
+        leftFillZero(date.getSeconds())
       ].join(':')
     )
   }
@@ -116,8 +113,7 @@ export function VenueRogueAps () {
         key: 'ssid',
         title: intl.$t({ defaultMessage: 'SSID' }),
         dataIndex: 'ssid',
-        sorter: true,
-        defaultSortOrder: 'ascend'
+        sorter: true
       },
       {
         key: 'channel',
@@ -169,8 +165,9 @@ export function VenueRogueAps () {
         dataIndex: 'lastUpdTime',
         sorter: true,
         align: 'left',
+        defaultSortOrder: 'descend',
         render: (data, row) => {
-          return formatDate(new Date(Number(row.lastUpdTime)))
+          return formatDate(new Date(Number(row.lastUpdTime) * 1000))
         }
       },
       {
@@ -202,7 +199,11 @@ export function VenueRogueAps () {
   const VenueRogueApsTable = () => {
     const tableQuery = useTableQuery({
       useQuery: useGetOldVenueRogueApQuery,
-      defaultPayload
+      defaultPayload,
+      sorter: {
+        sortField: 'lastUpdTime',
+        sortOrder: 'DESC'
+      }
     })
 
     return (

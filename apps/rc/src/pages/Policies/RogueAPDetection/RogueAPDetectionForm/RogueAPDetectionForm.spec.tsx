@@ -45,19 +45,13 @@ const detailContent = {
       name: 'test-venue'
     }
   ],
-  name: 'policyName1',
+  name: 'test',
   rules: [
     {
       name: 'SameNetworkRuleName1',
       type: 'SameNetworkRule',
       classification: 'Malicious',
       priority: 1
-    },
-    {
-      name: 'SameNetworkRuleName2',
-      type: 'SameNetworkRule',
-      classification: 'Malicious',
-      priority: 2
     }
   ],
   id: 'policyId1'
@@ -278,7 +272,7 @@ describe('RogueAPDetectionForm', () => {
     await screen.findByRole('heading', { name: 'Settings', level: 3 })
 
     fireEvent.change(screen.getByRole('textbox', { name: /policy name/i }),
-      { target: { value: 'policyName111' } })
+      { target: { value: 'test6' } })
 
     fireEvent.click(screen.getByRole('button', {
       name: /add rule/i
@@ -288,6 +282,13 @@ describe('RogueAPDetectionForm', () => {
       { target: { value: 'rule1' } })
 
     await userEvent.click(screen.getByText('Add'))
+
+    fireEvent.change(screen.getByRole('textbox', { name: /policy name/i }),
+      { target: { value: 'test' } })
+
+    fireEvent.change(screen.getByRole('textbox', { name: /policy name/i }),
+      { target: { value: 'anotherPolicyName' } })
+
 
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 

@@ -81,22 +81,20 @@ const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormProps) =>
             { min: 2 },
             { max: 32 },
             { validator: async (rule, value) => {
-              return new Promise<void>((resolve, reject) => {
-                if (!edit && value
+              if (!edit && value
                   && data && data?.findIndex((policy) => policy.name === value) !== -1) {
-                  return reject(
-                    $t({ defaultMessage: 'The rogue policy with that name already exists' })
-                  )
-                }
-                if (edit && value && value !== originalName
+                return Promise.reject(
+                  $t({ defaultMessage: 'The rogue policy with that name already exists' })
+                )
+              }
+              if (edit && value && value !== originalName
                   && data?.filter((policy) => policy.name !== originalName)
                     .findIndex((policy) => policy.name === value) !== -1) {
-                  return reject(
-                    $t({ defaultMessage: 'The rogue policy with that name already exists' })
-                  )
-                }
-                return resolve()
-              })
+                return Promise.reject(
+                  $t({ defaultMessage: 'The rogue policy with that name already exists' })
+                )
+              }
+              return Promise.resolve()
             } }
           ]}
           validateFirst
