@@ -123,6 +123,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/service/:serviceId'
   },
+  getDHCPService: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/dhcpconfigserviceprofiles/:serviceId'
+  },
   saveDHCPService: {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/network/deep?quickAck=true'
@@ -242,6 +246,31 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getUserProfile: {
     method: 'get',
     url: '/api/tenant/:tenantId/user-profile'
+  },
+  getVenueDHCPServiceProfile: {
+    //Retrieve Venue DHCP Service Profile Settings
+    method: 'get',
+    url: '/api/venues/:venueId/dhcpconfigserviceprofilesettings'
+  },
+  getVenueActivePools: {
+    //Get Venue Active DHCP Pool
+    method: 'get',
+    url: '/api/venues/:venueId/activedhcppools'
+  },
+  getVenueLeases: {
+    //Get Venue Active DHCP Pool
+    method: 'get',
+    url: '/api/venues/:venueId/dhcpConfigServiceProfileLeases'
+  },
+  getDHCPProfiles: {
+    //Get Venue Active DHCP Pool
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/dhcpconfigserviceprofiles'
+  },
+  activeVenueDHCPPool: {
+    //Get Venue Active DHCP Pool
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/venues/:venueId/dhcppools/:dhcppoolId'
   },
   getApDetailHeader: {
     method: 'get',

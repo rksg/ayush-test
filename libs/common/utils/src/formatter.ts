@@ -181,6 +181,7 @@ const percentFormatRound: MessageDescriptor = defineMessage({
 const scaleFormatRound: MessageDescriptor = defineMessage({
   defaultMessage: '{value, number, ::scale/100 . }'
 })
+
 export const intlFormats = {
   countFormat,
   percentFormat,

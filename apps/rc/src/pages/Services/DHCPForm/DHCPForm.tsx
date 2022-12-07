@@ -7,9 +7,9 @@ import {
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
-import { useGetDHCPQuery }                                     from '@acx-ui/rc/services'
-import { DHCPSaveData, DHCPConfigTypeEnum, ServiceTechnology } from '@acx-ui/rc/utils'
-import { useParams, useTenantLink, useNavigate }               from '@acx-ui/react-router-dom'
+import { useGetDHCPProfileQuery }                             from '@acx-ui/rc/services'
+import { DHCPSaveData, DHCPConfigTypeEnum }                   from '@acx-ui/rc/utils'
+import { useParams, useTenantLink, useNavigate, useLocation } from '@acx-ui/react-router-dom'
 
 import DHCPFormContext from './DHCPFormContext'
 import { SettingForm } from './DHCPSettingForm'
@@ -21,6 +21,11 @@ export default function DHCPForm () {
   const { $t } = useIntl()
 
   const params = useParams()
+  type LocationState = {
+    origin: { pathname: string },
+    param: object
+  }
+  const locationState:LocationState = useLocation().state as LocationState
 
   const editMode = params.action === 'edit'
 
@@ -31,17 +36,15 @@ export default function DHCPForm () {
 
 
   //API Call
-  const { data } = useGetDHCPQuery({ params })
+  const { data } = useGetDHCPProfileQuery({ params })
   // const [
   //   saveDHCP
   // ] = useSaveDHCPMutation()
 
   const [saveState, updateSaveState] = useState<DHCPSaveData>({
-    name: '',
-    tags: [],
-    createType: ServiceTechnology.WIFI,
-    dhcpConfig: DHCPConfigTypeEnum.SIMPLE,
-    venues: [],
+    serviceName: '',
+    dhcpMode: DHCPConfigTypeEnum.SIMPLE,
+    venueIds: [],
     dhcpPools: []
   })
 
@@ -62,9 +65,7 @@ export default function DHCPForm () {
     <>
       <PageHeader
         title={editMode ? $t({ defaultMessage: 'Edit DHCP Service' }) :
-          saveState.createType === ServiceTechnology.WIFI ?
-            $t({ defaultMessage: 'Add DHCP for Wi-Fi Service' }) :
-            $t({ defaultMessage: 'Add DHCP for Switch Service' })}
+          $t({ defaultMessage: 'Add DHCP for Wi-Fi Service' })}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Services' }), link: '/services' }
         ]}
@@ -75,7 +76,14 @@ export default function DHCPForm () {
           formRef={formRef}
           editMode={editMode}
           onCancel={() => navigate(linkToServices)}
-          // onFinish={editMode ? handleEditDHCP : handleAddDHCP}
+          onFinish={
+            // editMode ? handleEditDHCP : handleAddDHCP
+            async ()=>{
+              if(locationState.origin){
+                navigate(locationState.origin.pathname, { state: locationState.param })
+              }
+            }
+          }
         >
           <StepsForm.StepForm
             name='settings'
