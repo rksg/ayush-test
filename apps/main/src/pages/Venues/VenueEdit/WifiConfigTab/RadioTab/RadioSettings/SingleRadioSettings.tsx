@@ -64,6 +64,7 @@ export function SingleRadioSettings (props:{
   const allowedChannelsFieldName = [...radioDataKey, 'allowedChannels']
   const allowedIndoorChannelsFieldName = [...radioDataKey, 'allowedIndoorChannels']
   const allowedOutdoorChannelsFieldName = [...radioDataKey, 'allowedOutdoorChannels']
+  const combinChannelsFieldName = [...radioDataKey, 'combineChannels']
 
   const [channelList, setChannelList] = useState<RadioChannel[]>([])
   const [indoorChannelList, setIndoorChannelList] = useState<RadioChannel[]>([])
@@ -127,13 +128,15 @@ export function SingleRadioSettings (props:{
     channelBandwidth,
     allowedChannels,
     allowedIndoorChannels,
-    allowedOutdoorChannels
+    allowedOutdoorChannels,
+    combinChannels
   ] = [
     //useWatch<string>(methodFieldName),
     useWatch<string>(channelBandwidthFieldName),
     useWatch<string[]>(allowedChannelsFieldName),
     useWatch<string[]>(allowedIndoorChannelsFieldName),
-    useWatch<string[]>(allowedOutdoorChannelsFieldName)
+    useWatch<string[]>(allowedOutdoorChannelsFieldName),
+    useWatch<boolean>(combinChannelsFieldName)
   ]
 
   useEffect(() => {
@@ -291,12 +294,11 @@ export function SingleRadioSettings (props:{
               {$t({ defaultMessage: 'Use same channels for indoor and outdoor APs:' })}
             </Col>
             <Col span={4}>
-              <Form.Item>
-                <Switch
-                  onClick={(checked, event) => {
-                    event.stopPropagation()
-                  }}
-                />
+              <Form.Item
+                name={combinChannelsFieldName}
+                valuePropName='checked'
+              >
+                <Switch />
               </Form.Item>
             </Col>
           </Row>
@@ -316,7 +318,7 @@ export function SingleRadioSettings (props:{
             </Col>
           </Row>
         }
-        {hasIndoorBandwidth &&
+        {hasIndoorBandwidth && !combinChannels &&
         <>
           <Row gutter={20} style={{ paddingTop: '10px' }}>
             <Col span={4}>
@@ -345,7 +347,7 @@ export function SingleRadioSettings (props:{
           </Row>
         </>
         }
-        {hasOutdoorBandwidth &&
+        {hasOutdoorBandwidth && !combinChannels &&
         <>
           <Row gutter={20}>
             <Col span={4}>
@@ -369,6 +371,35 @@ export function SingleRadioSettings (props:{
                 channelBars={outdoorChannelBars}
                 disabled={inherit5G || disable}
                 editContext={editContext}
+              />
+            </Col>
+          </Row>
+        </>
+        }
+        {combinChannels &&
+        <>
+          <Row gutter={20} style={{ paddingTop: '10px' }}>
+            <Col span={4}>
+              <div>{$t({ defaultMessage: 'Indoor & Outdoor APs' })}</div>
+            </Col>
+            {indoorChannelErrMsg &&
+            <Col span={6}>
+              <div style={{ color: cssStr('--acx-semantics-red-50') }}>
+                {indoorChannelErrMsg}
+              </div>
+            </Col>
+            }
+          </Row>
+          <Row gutter={20}>
+            <Col span={20}>
+              <RadioSettingsChannels
+                formName={allowedIndoorChannelsFieldName}
+                groupSize={groupSize}
+                channelList={indoorChannelList}
+                displayBarSettings={displayRadioBarSettings}
+                channelBars={indoorChannelBars}
+                disabled={inherit5G || disable}
+                editContext={VenueEditContext}
               />
             </Col>
           </Row>

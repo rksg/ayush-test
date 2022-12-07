@@ -263,10 +263,12 @@ export function RadioSettings () {
     const curForm = formRef.current
 
     if (radioParams50G) {
-      radioParams50G.allowedIndoorChannels =
-        curForm?.getFieldValue(['radioParams50G', 'allowedIndoorChannels'])
-      radioParams50G.allowedOutdoorChannels =
-        curForm?.getFieldValue(['radioParams50G', 'allowedOutdoorChannels'])
+      const combineChannels = radioParams50G.combineChannels
+      const indoorChannels = curForm?.getFieldValue(['radioParams50G', 'allowedIndoorChannels'])
+      const outdoorChannels = curForm?.getFieldValue(['radioParams50G', 'allowedOutdoorChannels'])
+
+      radioParams50G.allowedIndoorChannels = indoorChannels
+      radioParams50G.allowedOutdoorChannels = (combineChannels)? indoorChannels : outdoorChannels
     }
   }
 
