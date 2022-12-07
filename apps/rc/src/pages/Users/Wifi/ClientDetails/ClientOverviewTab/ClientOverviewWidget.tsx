@@ -2,14 +2,8 @@ import { CallbackDataParams } from 'echarts/types/dist/shared'
 import { useIntl }            from 'react-intl'
 
 import { BarChart, cssStr, cssNumber, Loader, Card, GridRow, Subtitle } from '@acx-ui/components'
-import {
-  Client,
-  ClientStatistic
-} from '@acx-ui/rc/utils'
-import {
-  convertEpochToRelativeTime,
-  formatter
-} from '@acx-ui/utils'
+import { Client, ClientStatistic }                                      from '@acx-ui/rc/utils'
+import { convertEpochToRelativeTime, formatter }                        from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 

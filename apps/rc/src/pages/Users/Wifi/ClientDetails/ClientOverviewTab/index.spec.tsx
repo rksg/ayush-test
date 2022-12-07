@@ -41,6 +41,8 @@ describe('ClientOverviewTab', () => {
     store.dispatch(clientApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
     store.dispatch(networkApi.util.resetApiState())
+    jest.useFakeTimers()
+    jest.setSystemTime(new Date(Date.parse('2022-12-14T01:20:00+10:00')))
 
     mockServer.use(
       rest.get(ClientUrlsInfo.getClientDetails.url,
@@ -63,6 +65,7 @@ describe('ClientOverviewTab', () => {
   })
   afterEach(() => {
     jest.clearAllMocks()
+    jest.useRealTimers()
   })
 
   describe('OverviewWidget', () => {
@@ -80,6 +83,9 @@ describe('ClientOverviewTab', () => {
     it('should handle error occurred', async () => {
       mockServer.use(
         rest.post(CommonUrlsInfo.getHistoricalStatisticsReportsV2.url,
+          (_, res, ctx) => res(ctx.status(404), ctx.json({}))
+        ),
+        rest.get(WifiUrlsInfo.getNetwork.url,
           (_, res, ctx) => res(ctx.status(404), ctx.json({}))
         )
       )
