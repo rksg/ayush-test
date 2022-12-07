@@ -4,8 +4,11 @@ import {
   CommonUrlsInfo,
   createHttpRequest,
   RequestPayload,
-  UserSettings
+  UserSettings,
+  UserProfile,
+  CloudVersion
 } from '@acx-ui/rc/utils'
+
 
 export const baseUserApi = createApi({
   baseQuery: fetchBaseQuery(),
@@ -33,7 +36,33 @@ export const userApi = baseUserApi.injectEndpoints({
         })
         return result
       }
+    }),
+    getCloudVersion: build.query<CloudVersion, RequestPayload>({
+      query: ({ params }) => {
+        const cloudVersionReq = createHttpRequest(
+          CommonUrlsInfo.getCloudVersion,
+          params
+        )
+        return {
+          ...cloudVersionReq
+        }
+      }
+    }),
+    getUserProfile: build.query<UserProfile, RequestPayload>({
+      query: ({ params }) => {
+        const cloudVersionReq = createHttpRequest(
+          CommonUrlsInfo.getUserProfile,
+          params
+        )
+        return {
+          ...cloudVersionReq
+        }
+      }
     })
   })
 })
-export const { useGetAllUserSettingsQuery } = userApi
+
+
+export const { useGetAllUserSettingsQuery,
+  useGetCloudVersionQuery,
+  useGetUserProfileQuery } = userApi
