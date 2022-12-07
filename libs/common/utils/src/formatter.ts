@@ -161,7 +161,9 @@ export const formats = {
   enabledFormat: (value: boolean) => (value ? 'Enabled' : 'Disabled'),
   ratioFormat: ([x, y]:[number, number]) => `${x} / ${y}`,
   txFormat: (value: keyof typeof txpowerMapping) =>
-    (txpowerMapping[value] ? txpowerMapping[value] : value)
+    (txpowerMapping[value] ? txpowerMapping[value] : value),
+  numberWithCommas: (number: number) =>
+    number?.toLocaleString('en-US', { maximumFractionDigits: 0 })
 } as const
 
 export const dateTimeFormats = {
@@ -175,7 +177,8 @@ export const dateTimeFormats = {
   dateTimeFormatWithSeconds: 'MMM DD YYYY HH:mm:ss',
   hourFormat: 'HH',
   timeFormat: 'HH:mm',
-  secondFormat: 'HH:mm:ss'
+  secondFormat: 'HH:mm:ss',
+  dateTime12hourFormat: 'DD/MM/YYYY hh:mm A'
 } as const
 
 const countFormat: MessageDescriptor = defineMessage({
@@ -190,6 +193,7 @@ const percentFormatRound: MessageDescriptor = defineMessage({
 const scaleFormatRound: MessageDescriptor = defineMessage({
   defaultMessage: '{value, number, ::scale/100 . }'
 })
+
 export const intlFormats = {
   countFormat,
   percentFormat,
@@ -219,6 +223,10 @@ export function formatter (
   }
 }
 
+export function convertEpochToRelativeTime (timestamp: number) {
+  return moment(new Date().getTime()).diff(moment.unix(timestamp))
+}
+
 function isIntlFormat (name: string): name is keyof typeof intlFormats {
   return name in intlFormats
 }
@@ -230,3 +238,4 @@ function isDateTimeFormat (name: string): name is keyof typeof dateTimeFormats {
 function isFormat (name: string): name is keyof typeof formats {
   return name in formats
 }
+

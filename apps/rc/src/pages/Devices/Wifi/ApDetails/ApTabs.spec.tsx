@@ -36,4 +36,17 @@ describe('ApTabs', () => {
       search: ''
     })
   })
+  it('should handle troubleshooting tab changes', async () => {
+    render(<Provider>
+      <ApTabs apDetail={apDetailData} />
+    </Provider>, { route: { params } })
+    await waitFor(() => screen.findByText(/Troubleshooting/))
+    fireEvent.click(await screen.findByText(/Troubleshooting/))
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      pathname:
+        `/t/${params.tenantId}/devices/aps/${params.serialNumber}/details/troubleshooting/ping`,
+      hash: '',
+      search: ''
+    })
+  })
 })
