@@ -3,7 +3,8 @@ import { useState, useEffect, useContext } from 'react'
 import { Form, Input, Tooltip } from 'antd'
 import { useIntl }              from 'react-intl'
 
-import { Modal } from '@acx-ui/components'
+import { Button, Modal } from '@acx-ui/components'
+import { GuestPortal }   from '@acx-ui/rc/utils'
 
 import appPhoto           from '../../../../assets/images/network-wizard-diagrams/facebook-sample-customised.png'
 import NetworkFormContext from '../NetworkFormContext'
@@ -12,8 +13,7 @@ import * as UI            from '../styledComponents'
 import PreviewApp    from './PreviewApp'
 import SocialAuthURL from './SocialAuthURL'
 type DataType = {
-  facebookID: string,
-  facebookSecret: string
+  guestPortal: GuestPortal
 }
 export default function FacebookSetting () {
   const {
@@ -47,7 +47,7 @@ export default function FacebookSetting () {
       data.guestPortal?.socialIdentities?.facebook?.config?.appSecret)
     }
   }, [data])
-  const getContent = <Form layout='vertical'
+  const getContent = <Form<DataType> layout='vertical'
     form={form}
     onFinish={()=>{
       setAppIDValue(form.getFieldValue(['guestPortal','socialIdentities',
@@ -69,6 +69,7 @@ export default function FacebookSetting () {
       rules={[
         { required: true }
       ]}
+      initialValue=''
       label={$t({ defaultMessage: 'App ID' })}
       children={
         <Input/>
@@ -79,12 +80,13 @@ export default function FacebookSetting () {
       rules={[
         { required: true }
       ]}
+      initialValue=''
       label={$t({ defaultMessage: 'App Secret' })}
       children={
         <Input.Password/>
       }
     />
-    <Form.Item>
+    <Form.Item><>
       <label>{$t({ defaultMessage: 'You also need to go to your' })}&nbsp;&nbsp;
         <a href='https://developers.facebook.com/'
           target='_blank'
@@ -94,14 +96,15 @@ export default function FacebookSetting () {
       </label><br/>
       <label>{$t({ defaultMessage: 'Facebook Login > Settings > Client '+
       'OAuth Settings > Valid OAuth redirect URIs' })}</label>
-      <SocialAuthURL/>
+      <SocialAuthURL/></>
     </Form.Item>
   </Form>
   return (
     <>
       <Tooltip title={$t({ defaultMessage: 'Edit Facebook app' })}
-        placement='bottom'><UI.ConfigurationSolid title='settingicon'
-          onClick={() => {setVisible(true)}}/></Tooltip>
+        placement='bottom'><Button onClick={() => {setVisible(true)}}
+          title='settingicon'
+          type='link'><UI.ConfigurationSolid/></Button></Tooltip>
       <Modal
         title={$t({ defaultMessage: 'Edit Facebook App' })}
         visible={visible}

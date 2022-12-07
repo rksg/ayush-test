@@ -3,7 +3,8 @@ import { useState, useEffect, useContext } from 'react'
 import { Form, Input, Tooltip } from 'antd'
 import { useIntl }              from 'react-intl'
 
-import { Modal } from '@acx-ui/components'
+import { Button, Modal } from '@acx-ui/components'
+import { GuestPortal }   from '@acx-ui/rc/utils'
 
 import appPhoto           from '../../../../assets/images/network-wizard-diagrams/twitter-sample-customised.png'
 import NetworkFormContext from '../NetworkFormContext'
@@ -12,8 +13,7 @@ import * as UI            from '../styledComponents'
 import PreviewApp    from './PreviewApp'
 import SocialAuthURL from './SocialAuthURL'
 type DataType = {
-  twitterID: string,
-  twitterSecret: string
+  guestPortal: GuestPortal
 }
 export default function TwitterSetting () {
   const {
@@ -47,7 +47,7 @@ export default function TwitterSetting () {
       data.guestPortal?.socialIdentities?.twitter?.config?.appSecret)
     }
   }, [data])
-  const getContent = <Form layout='vertical'
+  const getContent = <Form<DataType> layout='vertical'
     form={form}
     onFinish={()=>{
       setAppIDValue(form.getFieldValue(['guestPortal','socialIdentities',
@@ -68,6 +68,7 @@ export default function TwitterSetting () {
       rules={[
         { required: true }
       ]}
+      initialValue=''
       label={$t({ defaultMessage: 'Consumer Key' })}
       children={
         <Input/>
@@ -78,12 +79,13 @@ export default function TwitterSetting () {
       rules={[
         { required: true }
       ]}
+      initialValue=''
       label={$t({ defaultMessage: 'Consumer Secret' })}
       children={
         <Input.Password/>
       }
     />
-    <Form.Item>
+    <Form.Item><>
       <label>{$t({ defaultMessage: 'You also need to go to your' })}&nbsp;&nbsp;
         <a href='https://developer.twitter.com/apps'
           target='_blank'
@@ -92,15 +94,15 @@ export default function TwitterSetting () {
         {$t({ defaultMessage: 'and paste the following URI in the app settings under:' })}
       </label><br/>
       <label>{$t({ defaultMessage: 'Settings > Callback URL' })}</label><br/>
-      <SocialAuthURL/>
+      <SocialAuthURL/></>
     </Form.Item>
   </Form>
   return (
     <>
       <Tooltip title={$t({ defaultMessage: 'Edit Twitter app' })}
-        placement='bottom'>
-        <UI.ConfigurationSolid title='settingicon'
-          onClick={() => {setVisible(true)}}/></Tooltip>
+        placement='bottom'><Button onClick={() => {setVisible(true)}}
+          title='settingicon'
+          type='link'><UI.ConfigurationSolid/></Button></Tooltip>
       <Modal
         title={$t({ defaultMessage: 'Edit Twitter App' })}
         visible={visible}

@@ -3,7 +3,8 @@ import { useState, useEffect, useContext } from 'react'
 import { Form, Input, Tooltip } from 'antd'
 import { useIntl }              from 'react-intl'
 
-import { Modal } from '@acx-ui/components'
+import { Button, Modal } from '@acx-ui/components'
+import { GuestPortal }   from '@acx-ui/rc/utils'
 
 import appPhoto           from '../../../../assets/images/network-wizard-diagrams/google-sample-customised.png'
 import NetworkFormContext from '../NetworkFormContext'
@@ -13,8 +14,7 @@ import PreviewApp    from './PreviewApp'
 import SocialAuthURL from './SocialAuthURL'
 
 type DataType = {
-  googleID: string,
-  googleSecret: string
+  guestPortal: GuestPortal
 }
 export default function GoogleSetting () {
   const {
@@ -48,7 +48,7 @@ export default function GoogleSetting () {
       data.guestPortal?.socialIdentities?.google?.config?.appSecret)
     }
   }, [data])
-  const getContent = <Form layout='vertical'
+  const getContent = <Form<DataType> layout='vertical'
     form={form}
     onFinish={()=>{
       setAppIDValue(form.getFieldValue(['guestPortal','socialIdentities',
@@ -69,6 +69,7 @@ export default function GoogleSetting () {
       rules={[
         { required: true }
       ]}
+      initialValue=''
       label={$t({ defaultMessage: 'Client ID' })}
       children={
         <Input/>
@@ -79,12 +80,13 @@ export default function GoogleSetting () {
       rules={[
         { required: true }
       ]}
+      initialValue=''
       label={$t({ defaultMessage: 'Client Secret' })}
       children={
         <Input.Password/>
       }
     />
-    <Form.Item>
+    <Form.Item><>
       <label>{$t({ defaultMessage: 'You also need to go to your' })}&nbsp;&nbsp;
         <a href='https://console.cloud.google.com/apis/dashboard'
           target='_blank'
@@ -94,15 +96,15 @@ export default function GoogleSetting () {
       </label><br/>
       <label>{$t({ defaultMessage: 'Credentials > OAuth 2.0 client IDs > '+
       'Click on client name > Authorized redirect URIs' })}</label>
-      <SocialAuthURL/>
+      <SocialAuthURL/></>
     </Form.Item>
   </Form>
   return (
     <>
       <Tooltip title={$t({ defaultMessage: 'Edit Google app' })}
-        placement='bottom'>
-        <UI.ConfigurationSolid title='settingicon'
-          onClick={() => {setVisible(true)}}/></Tooltip>
+        placement='bottom'><Button onClick={() => {setVisible(true)}}
+          title='settingicon'
+          type='link'><UI.ConfigurationSolid/></Button></Tooltip>
       <Modal
         title={$t({ defaultMessage: 'Edit Google App' })}
         visible={visible}

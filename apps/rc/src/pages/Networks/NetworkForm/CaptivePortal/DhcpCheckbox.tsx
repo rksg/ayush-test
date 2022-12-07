@@ -88,7 +88,7 @@ export function DhcpCheckbox () {
   }, [dhcpApi.data])
 
   return (
-    <Form.Item>
+    <Form.Item><>
       <Form.Item
         noStyle
         name='enableDhcp'
@@ -125,7 +125,7 @@ export function DhcpCheckbox () {
         <Button type='link' style={{ height: 'auto', marginLeft: '14px' }}>
           {intl.$t({ defaultMessage: 'More details' })}
         </Button>
-      </Popover>
+      </Popover></>
     </Form.Item>
   )
 }

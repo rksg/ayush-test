@@ -41,7 +41,7 @@ export function RedirectUrlInput () {
   }
 
   return (
-    <Form.Item>
+    <Form.Item><>
       <Form.Item
         noStyle
         name='redirectCheckbox'
@@ -70,7 +70,7 @@ export function RedirectUrlInput () {
             disabled={!redirectCheckbox}
           />
         }
-      />
+      /></>
     </Form.Item>
   )
 }

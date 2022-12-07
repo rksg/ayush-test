@@ -48,8 +48,9 @@ export const ConfigurationSolid = styled(UIConfigurationSolid)`
     width: 18px !important;
     height: 18px !important;
   }
-  margin-bottom: -3px;
-  margin-left:-5px !important;
+  margin-bottom: -10px;
+  margin-left:-6px !important;
+  color: var(--acx-primary-black);
 `
 const socialIconStyle=css`
   width:16px;

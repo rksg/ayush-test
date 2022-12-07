@@ -2,9 +2,10 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo, WifiUrlsInfo }                                              from '@acx-ui/rc/utils'
-import { Provider }                                                                  from '@acx-ui/store'
-import { mockServer, render, screen, fireEvent, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { StepsForm }                             from '@acx-ui/components'
+import { CommonUrlsInfo, WifiUrlsInfo }          from '@acx-ui/rc/utils'
+import { Provider }                              from '@acx-ui/store'
+import { mockServer, render, screen, fireEvent } from '@acx-ui/test-utils'
 
 import {
   venuesResponse,
@@ -15,20 +16,11 @@ import {
   dhcpResponse,
   selfsignData
 } from '../__tests__/fixtures'
-import NetworkForm from '../NetworkForm'
+import NetworkFormContext from '../NetworkFormContext'
 
-async function fillInBeforeSettings (networkName: string) {
-  const insertInput = await screen.findByLabelText(/Network Name/)
-  fireEvent.change(insertInput, { target: { value: networkName } })
-  fireEvent.blur(insertInput)
-  const validating = await screen.findByRole('img', { name: 'loading' })
-  await waitForElementToBeRemoved(validating)
-  await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
-  await waitFor(async () => {
-    expect(await screen.findByRole('heading', { level: 3, name: 'Portal Type' })).toBeVisible()
-  })
-  await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
-}
+import { SelfSignInForm } from './SelfSignInForm'
+
+
 
 describe('CaptiveNetworkForm-SelfSignIn', () => {
   beforeEach(() => {
@@ -62,20 +54,19 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
   const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', action: 'edit' }
 
   it('should test Self sign in network successfully', async () => {
-    const { asFragment } = render(<Provider><NetworkForm /></Provider>, { route: { params } })
+    const { asFragment } = render(<Provider><NetworkFormContext.Provider
+      value={{
+        editMode: true, cloneMode: true, data: selfsignData
+      }}
+    ><StepsForm><StepsForm.StepForm><SelfSignInForm /></StepsForm.StepForm>
+      </StepsForm></NetworkFormContext.Provider></Provider>, { route: { params } })
     expect(asFragment()).toMatchSnapshot()
 
-    await fillInBeforeSettings('Self sign in network test')
 
-    await userEvent.click(await screen.findByRole('checkbox', { name: /Redirect users to/ }))
-    const redirectUrlInput = await screen.findByPlaceholderText('e.g. http://www.example.com')
-    fireEvent.change(redirectUrlInput, { target: { value: 'https://www.commscope.com/ruckus/' } })
     await userEvent.click(await screen.findByRole('checkbox',
       { name: /SMS Token/ }))
-    await userEvent.click(await screen.findByText('Next'))
-    await userEvent.click(await screen.findByRole('checkbox',
-      { name: /Enable Ruckus DHCP service/ }))
-    await userEvent.click(await screen.findByText('More details'))
+    await userEvent.click(await screen.findByText('Finish'))
+
     await userEvent.click(await screen.findByRole('checkbox',
       { name: /SMS Token/ }))
     await userEvent.click(await screen.findByRole('checkbox', { name: /Allowed Domains/ }))
@@ -85,7 +76,7 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
     await userEvent.click(await screen.findByRole('checkbox', { name: /email addresses of users/ }))
     const rows = await screen.findAllByTitle('settingicon')
 
-    await userEvent.click(await screen.findByText('Next'))
+    await userEvent.click(await screen.findByText('Finish'))
     fireEvent.click(rows[0])
     await userEvent.click((await screen.findAllByRole('button', { name: 'Cancel' }))[1])
     fireEvent.click(rows[0])
@@ -100,7 +91,7 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
     await userEvent.click(await screen.findByText('Copy to clipboard'))
     await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
 
-    await userEvent.click(await screen.findByText('Next'))
+    await userEvent.click(await screen.findByText('Finish'))
     fireEvent.click(rows[1])
     await userEvent.click((await screen.findAllByRole('button', { name: 'Cancel' }))[1])
     fireEvent.click(rows[1])
@@ -112,7 +103,7 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
     fireEvent.blur(googleSecret)
     await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
 
-    await userEvent.click(await screen.findByText('Next'))
+    await userEvent.click(await screen.findByText('Finish'))
     fireEvent.click(rows[2])
     await userEvent.click((await screen.findAllByRole('button', { name: 'Cancel' }))[1])
     fireEvent.click(rows[2])
@@ -124,7 +115,7 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
     fireEvent.blur(twitterSecret)
     await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
 
-    await userEvent.click(await screen.findByText('Next'))
+    await userEvent.click(await screen.findByText('Finish'))
     fireEvent.click(rows[3])
     await userEvent.click((await screen.findAllByRole('button', { name: 'Cancel' }))[1])
     fireEvent.click(rows[3])
@@ -144,7 +135,5 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
       { name: /Twitter/ }))
     await userEvent.click(await screen.findByRole('checkbox',
       { name: /LinkedIn/ }))
-
-    await userEvent.click(await screen.findByText('Next'))
   })
 })

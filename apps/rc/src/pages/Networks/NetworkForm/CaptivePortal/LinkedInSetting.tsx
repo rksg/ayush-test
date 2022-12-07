@@ -3,7 +3,8 @@ import { useState, useEffect, useContext } from 'react'
 import { Form, Input, Tooltip } from 'antd'
 import { useIntl }              from 'react-intl'
 
-import { Modal } from '@acx-ui/components'
+import { Button, Modal } from '@acx-ui/components'
+import { GuestPortal }   from '@acx-ui/rc/utils'
 
 import appPhoto           from '../../../../assets/images/network-wizard-diagrams/linkedin-sample-customised.png'
 import NetworkFormContext from '../NetworkFormContext'
@@ -12,8 +13,7 @@ import * as UI            from '../styledComponents'
 import PreviewApp    from './PreviewApp'
 import SocialAuthURL from './SocialAuthURL'
 type DataType = {
-  linkedinID: string,
-  linkedinSecret: string
+  guestPortal: GuestPortal
 }
 export default function LinkedInSetting () {
   const {
@@ -48,7 +48,7 @@ export default function LinkedInSetting () {
       data.guestPortal?.socialIdentities?.linkedin?.config?.appSecret)
     }
   }, [data])
-  const getContent = <Form layout='vertical'
+  const getContent = <Form<DataType> layout='vertical'
     form={form}
     onFinish={()=>{
       setAppIDValue(form.getFieldValue(['guestPortal','socialIdentities',
@@ -69,6 +69,7 @@ export default function LinkedInSetting () {
       rules={[
         { required: true }
       ]}
+      initialValue=''
       label={$t({ defaultMessage: 'Client ID' })}
       children={
         <Input/>
@@ -79,12 +80,13 @@ export default function LinkedInSetting () {
       rules={[
         { required: true }
       ]}
+      initialValue=''
       label={$t({ defaultMessage: 'Client Secret' })}
       children={
         <Input.Password/>
       }
     />
-    <Form.Item>
+    <Form.Item><>
       <label>{$t({ defaultMessage: 'You also need to go to your' })}&nbsp;&nbsp;
         <a href='https://developer.linkedin.com/'
           target='_blank'
@@ -94,15 +96,15 @@ export default function LinkedInSetting () {
       </label><br/>
       <label>{$t({ defaultMessage: 'Authentication > OAuth 2.0 > '+
       'Authorized Redirect URLs' })}</label>
-      <SocialAuthURL/>
+      <SocialAuthURL/></>
     </Form.Item>
   </Form>
   return (
     <>
       <Tooltip title={$t({ defaultMessage: 'Edit LinkedIn app' })}
-        placement='bottom'>
-        <UI.ConfigurationSolid title='settingicon'
-          onClick={() => {setVisible(true)}}/></Tooltip>
+        placement='bottom'><Button onClick={() => {setVisible(true)}}
+          title='settingicon'
+          type='link'><UI.ConfigurationSolid/></Button></Tooltip>
       <Modal
         title={$t({ defaultMessage: 'Edit LinkedIn App' })}
         visible={visible}

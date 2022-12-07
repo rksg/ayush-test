@@ -56,9 +56,10 @@ function TypesForm () {
   }, [data])
   return (
     <>
-      <StepsForm.Title>Portal Type</StepsForm.Title>
+      <StepsForm.Title>{intl.$t({ defaultMessage: 'Portal Type' })}</StepsForm.Title>
       <Form.Item
         name={['guestPortal', 'guestNetworkType']}
+        initialValue={GuestNetworkTypeEnum.ClickThrough}
         label={intl.$t({ defaultMessage:
           'Select the way users gain access to the network through the captive portal' })}
         rules={[{ required: true }]}
