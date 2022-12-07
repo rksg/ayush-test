@@ -18,8 +18,11 @@ export const UserNameButton = styled(LayoutUI.ButtonSolid)`
     height: 32px;
     display: flex;
     justify-content: center;
-    font-family: 'Roboto';
-    font-size: 14px;
+    align-items: center;
+    font-family: Montserrat;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 12px;
 `
 
 export const RowWrapper = styled.div`
@@ -112,13 +115,13 @@ export const AcknowledgeCircle = styled(CheckMarkCircleSolid)`
   }
 `
 
-export const VersionContainer = styled.div`
-  font-weight: 400;
-  font-family: Source Sans Pro;
-  font-style: normal;
-  font-size: 10px;
-  color: var(--acx-neutrals-40)
-`
+// export const VersionContainer = styled.div`
+//   font-weight: 400;
+//   font-family: Source Sans Pro;
+//   font-style: normal;
+//   font-size: 10px;
+//   color: var(--acx-neutrals-40)
+// `
 
 export const ClearButton = styled(Button)`
   border: none;
@@ -161,4 +164,11 @@ export const VersionNameContainer = styled.div`
 export const ActiveButton = styled(LayoutUI.ButtonSolid)`
   background: var(--acx-neutrals-80) !important;
   color: var(--acx-neutrals-60) !important;
+`
+export const HelpButton = styled(LayoutUI.ButtonSolid)`
+  background: var(--acx-neutrals-80) !important;
+  color: var(--acx-neutrals-60) !important;
+  :hover > svg {
+    stroke: var(--acx-neutrals-70);
+  }
 `

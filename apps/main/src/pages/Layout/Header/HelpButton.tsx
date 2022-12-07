@@ -1,32 +1,35 @@
-import { useState } from 'react'
+// import { useState } from 'react'
 
 import { Menu, Dropdown } from 'antd'
 import { useIntl }        from 'react-intl'
 
-import { LayoutUI }                from '@acx-ui/components'
+// import { LayoutUI }                from '@acx-ui/components'
 import { QuestionMarkCircleSolid } from '@acx-ui/icons'
 
-import About    from './About'
-import Firewall from './Firewall'
+// import About    from './About'
+// import Firewall from './Firewall'
+
+import { HelpButton } from './styledComponents'
 
 const UserButton = () => {
   const { $t } = useIntl()
-  const [aboutModalState, setAboutModalOpen] = useState(false)
-  const [firewallModalState, setFirewallModalOpen] = useState(false)
+  // const [aboutModalState, setAboutModalOpen] = useState(false)
+  // const [firewallModalState, setFirewallModalOpen] = useState(false)
 
   const menuHeaderDropdown = (
     <Menu selectedKeys={[]}
-      onClick={(menuInfo)=>{
-        switch(menuInfo.key)
-        {
-          case 'about':
-            setAboutModalOpen(true)
-            break
-          case 'firewallACL':
-            setFirewallModalOpen(true)
-            break
-        }
-      }}>
+      // onClick={(menuInfo)=>{
+      //   switch(menuInfo.key)
+      //   {
+      //     case 'about':
+      //       setAboutModalOpen(true)
+      //       break
+      //     case 'firewallACL':
+      //       setFirewallModalOpen(true)
+      //       break
+      //   }
+      // }}
+    >
       <Menu.Item disabled key='documentation'>
         {$t({ defaultMessage: 'Documentation Center' })}
       </Menu.Item>
@@ -43,9 +46,9 @@ const UserButton = () => {
         {$t({ defaultMessage: 'Supported Device Models' })}
       </Menu.Item>
 
-      <Menu.Item key='firewallACL'>
+      {/* <Menu.Item key='firewallACL'>
         {$t({ defaultMessage: 'Firewall ACL Inputs' })}
-      </Menu.Item>
+      </Menu.Item> */}
 
       <Menu.Divider />
 
@@ -59,18 +62,18 @@ const UserButton = () => {
         {$t({ defaultMessage: 'Privacy' })}
       </Menu.Item>
 
-      <Menu.Item key='about'>
+      {/* <Menu.Item key='about'>
         {$t({ defaultMessage: 'About RUCKUS One' })}
-      </Menu.Item>
+      </Menu.Item> */}
     </Menu>
   )
 
   return (<>
-    <Dropdown overlay={menuHeaderDropdown} trigger={['click']} placement='bottomLeft'>
-      <LayoutUI.ButtonSolid icon={<QuestionMarkCircleSolid />} />
+    <Dropdown disabled overlay={menuHeaderDropdown} trigger={['click']} placement='bottomLeft'>
+      <HelpButton icon={<QuestionMarkCircleSolid />} />
     </Dropdown>
-    <About modalState={aboutModalState} setIsModalOpen={setAboutModalOpen}/>
-    <Firewall modalState={firewallModalState} setIsModalOpen={setFirewallModalOpen}/>
+    {/* <About modalState={aboutModalState} setIsModalOpen={setAboutModalOpen}/> */}
+    {/* <Firewall modalState={firewallModalState} setIsModalOpen={setFirewallModalOpen}/> */}
   </>
   )
 }
