@@ -11,9 +11,9 @@ import {
 } from '@acx-ui/test-utils'
 
 
-import About       from './About'
+// import About       from './About'
 import AlarmButton from './AlarmButton'
-import Firewall    from './Firewall'
+// import Firewall    from './Firewall'
 
 
 const aboutJSON = {
