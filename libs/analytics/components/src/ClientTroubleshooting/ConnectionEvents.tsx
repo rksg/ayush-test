@@ -6,14 +6,16 @@ import { useIntl } from 'react-intl'
 import { mapCodeToFailureText, mapCodeToReason } from '@acx-ui/analytics/utils'
 import { formatter }                             from '@acx-ui/utils'
 
-import { FAILURE, DisplayEvent } from './config'
+import { FAILURE, DisplayEvent, SLOW, DISCONNECT } from './config'
 import * as UI                   from './styledComponents'
 
 const useConnectionDetail = (event: DisplayEvent) => {
   const intl = useIntl()
   const { $t } = intl
   const isFailure = event.category === FAILURE
-  const { mac, apName, ssid, radio, code } = event
+  const isSlow = event.category === SLOW
+  const isDisconnect = event.category === DISCONNECT
+  const { mac, apName, ssid, radio, code, ttc } = event
   const data = [
     $t({ defaultMessage: 'AP MAC: {mac}' }, { mac }),
     $t({ defaultMessage: 'AP Name: {apName}' }, { apName }),
@@ -21,10 +23,9 @@ const useConnectionDetail = (event: DisplayEvent) => {
     $t({ defaultMessage: 'Radio: {radio} GHz' }, { radio })
   ]
 
-  const test = [
+  const eventDetails = [
     { label: $t({ defaultMessage: 'AP MAC:' }), content: $t({ defaultMessage: '{mac}' }, { mac }) },
-    { label: $t({ defaultMessage: 'AP Name:' })
-      , content: $t({ defaultMessage: '{apName}' }, { apName }) },
+    { label: $t({ defaultMessage: 'AP Name:' }), content: $t({ defaultMessage: '{apName}' }, { apName }) },
     { label: $t({ defaultMessage: 'SSID:' }), content: $t({ defaultMessage: '{ssid}' }, { ssid }) },
     { label: $t({ defaultMessage: 'Radio:' }), content: $t({ defaultMessage: '{radio}' },
       { radio: radio ? formatter('radioFormat')(radio) : $t({ defaultMessage: 'Unknown' }) }) }
@@ -32,16 +33,31 @@ const useConnectionDetail = (event: DisplayEvent) => {
 
   if (isFailure) {
     const failureType = mapCodeToFailureText(code, intl)
-    const reason = mapCodeToReason(code, intl)
-    data.push($t({ defaultMessage: 'Failure Type: {failureType}' }, { failureType }))
-    data.push($t({ defaultMessage: 'Reason: {reason}' },{ reason }))
-
-    test.push({
+    eventDetails.push({
       label: $t({ defaultMessage: 'Failure Type:' }),
       content: $t({ defaultMessage: '{failureType}' }, { failureType })
     })
 
-    test.push({
+    const reason = mapCodeToReason(code, intl)
+    eventDetails.push({
+      label: $t({ defaultMessage: 'Reason:' }),
+      content: $t({ defaultMessage: '{reason}' }, { reason })
+    })
+
+    data.push($t({ defaultMessage: 'Failure Type: {failureType}' }, { failureType }))
+    data.push($t({ defaultMessage: 'Reason: {reason}' },{ reason }))
+  }
+
+  if (isSlow) {
+    eventDetails.push({
+      label: $t({ defaultMessage: 'Time to Connect:' }),
+      content: $t({ defaultMessage: '{ttc}'}, { ttc: formatter('durationFormat')(ttc)})
+    })
+  }
+
+  if (isDisconnect) {
+    const reason = mapCodeToReason(code, intl)
+    eventDetails.push({
       label: $t({ defaultMessage: 'Reason:' }),
       content: $t({ defaultMessage: '{reason}' }, { reason })
     })
