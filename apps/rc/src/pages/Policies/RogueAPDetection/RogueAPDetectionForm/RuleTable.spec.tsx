@@ -169,8 +169,6 @@ describe('RuleTable', () => {
 
     expect(dialog).not.toBeVisible()
 
-    await userEvent.click(screen.getByText(/sameNetworkRuleName1/i))
-
     await userEvent.click(screen.getByText(/sameNetworkRuleName2/i))
 
     await screen.findByText(/1 selected/i)

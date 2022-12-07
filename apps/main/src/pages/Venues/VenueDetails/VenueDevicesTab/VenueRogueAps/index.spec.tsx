@@ -335,7 +335,7 @@ describe('RogueVenueTable', () => {
       name: /locate rogue/i
     })).toBeTruthy()
 
-    await screen.findAllByText(/1970\/1\/20/i)
+    await screen.findAllByText(/2022\/11\/29/i)
 
     // for SNR
     screen.getByText(/^50/i)
@@ -344,7 +344,6 @@ describe('RogueVenueTable', () => {
     screen.getByText(/^35/i)
     screen.getByText(/^30/i)
     screen.getByText(/^25/i)
-    screen.getByText(/^20/i)
     screen.getByText(/^15/i)
   })
 })
