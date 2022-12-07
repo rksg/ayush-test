@@ -5,7 +5,7 @@ import { debounce, remove }                      from 'lodash'
 import { useIntl }                               from 'react-intl'
 
 import { Button }                                                   from '@acx-ui/components'
-import { SearchOutlined }                                           from '@acx-ui/icons'
+import { ArrowExpand, SearchOutlined }                              from '@acx-ui/icons'
 import { NetworkDevice, NetworkDeviceType, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
 
 import * as UI        from './styledComponents'
@@ -15,7 +15,22 @@ export interface SelectInfo {
     selectedKeys: string[];
 }
 
-export default function UnplacedDevices (props: { unplacedDevicesState: TypeWiseNetworkDevices }) {
+export function getDeviceFilterLabel (networkDeviceType: NetworkDeviceType) {
+  switch (networkDeviceType) {
+    case NetworkDeviceType.ap:
+      return 'Wi-Fi APs'
+    case NetworkDeviceType.lte_ap:
+      return 'LTE APs'
+    case NetworkDeviceType.switch:
+      return 'Switches'
+    case NetworkDeviceType.cloudpath:
+      return 'Cloudpath Servers'
+    default:
+      return undefined  // should not reach this statement
+  }
+}
+
+export function UnplacedDevices (props: { unplacedDevicesState: TypeWiseNetworkDevices }) {
   const { unplacedDevicesState } = props
   const unplacedDevices: NetworkDevice[] = []
 
@@ -49,23 +64,8 @@ export default function UnplacedDevices (props: { unplacedDevicesState: TypeWise
   // option from dropdown as per current implematation in rc-ui.
   remove(networkDeviceTypeArray, type => type === NetworkDeviceType.lte_ap)
 
-  function getDeviceFilterLabel (networkDeviceType: NetworkDeviceType) {
-    switch (networkDeviceType) {
-      case NetworkDeviceType.ap:
-        return 'Wi-Fi APs'
-      case NetworkDeviceType.lte_ap:
-        return 'LTE APs'
-      case NetworkDeviceType.switch:
-        return 'Switches'
-      case NetworkDeviceType.cloudpath:
-        return 'Cloudpath Servers'
-      default:
-        return undefined  // should not reach this statement
-    }
-  }
-
   const items = [{
-    key: $t({ defaultMessage: 'All' }),
+    key: 'All',
     label: $t({ defaultMessage: 'All' })
   }]
 
@@ -96,6 +96,7 @@ export default function UnplacedDevices (props: { unplacedDevicesState: TypeWise
     size='large'
     header={
       <div><Input
+        data-testid='text-search'
         size='middle'
         style={{ width: '144px', maxHeight: '180px' }}
         placeholder='Search...'
@@ -104,11 +105,12 @@ export default function UnplacedDevices (props: { unplacedDevicesState: TypeWise
       />
       <Divider type='vertical' style={{ margin: '0 4px' }}/>
       <Dropdown overlay={menuItems}>
-        <Button size='middle' style={{ width: '108px' }}>
+        <Button data-testid='trigger' size='middle' style={{ width: '108px' }}>
           <Space>
             { selectedDeviceType !== 'All'
               ? getDeviceFilterLabel(selectedDeviceType as NetworkDeviceType)
               : 'All' }
+            <ArrowExpand />
           </Space>
         </Button>
       </Dropdown>

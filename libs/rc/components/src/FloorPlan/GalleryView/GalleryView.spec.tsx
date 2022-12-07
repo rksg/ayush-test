@@ -36,6 +36,45 @@ const list: FloorPlanDto[] = [
     imageName: 'download.png',
     imageUrl:
     '/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/7231da344778480d88f37f0cca1c534f-001.png'
+  },
+  {
+    id: '01abc6a927e6445dba33c52fce9b4c3e',
+    image: {
+      id: '7231da344778480d88f37f0cca1c534f-001.png',
+      name: 'download.png'
+    },
+    name: 'dscx',
+    floorNumber: 2,
+    imageId: '7231da344778480d88f37f0cca1c534f-001.png',
+    imageName: 'download.png',
+    imageUrl:
+    '/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/7231da344778480d88f37f0cca1c534f-001.png'
+  },
+  {
+    id: '01abc6a927e6445dba33c52fce9b4c3f',
+    image: {
+      id: '7231da344778480d88f37f0cca1c534f-001.png',
+      name: 'download.png'
+    },
+    name: 'dscx',
+    floorNumber: 2,
+    imageId: '7231da344778480d88f37f0cca1c534f-001.png',
+    imageName: 'download.png',
+    imageUrl:
+    '/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/7231da344778480d88f37f0cca1c534f-001.png'
+  },
+  {
+    id: '01abc6a927e6445dba33c52fce9b4c3g',
+    image: {
+      id: '7231da344778480d88f37f0cca1c534f-001.png',
+      name: 'download.png'
+    },
+    name: 'dscx',
+    floorNumber: 2,
+    imageId: '7231da344778480d88f37f0cca1c534f-001.png',
+    imageName: 'download.png',
+    imageUrl:
+    '/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/7231da344778480d88f37f0cca1c534f-001.png'
   }]
 
 const networkDevices: {

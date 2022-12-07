@@ -7,7 +7,7 @@ exports[`Floor Plan Gallery View should render correctly Gallery View 1`] = `
     style="margin: -10px -8px -10px -8px;"
   >
     <div
-      class="ant-col ant-col-12"
+      class="ant-col ant-col-8"
       style="padding: 10px 8px 10px 8px;"
     >
       <div
@@ -73,7 +73,205 @@ exports[`Floor Plan Gallery View should render correctly Gallery View 1`] = `
       </div>
     </div>
     <div
-      class="ant-col ant-col-12"
+      class="ant-col ant-col-8"
+      style="padding: 10px 8px 10px 8px;"
+    >
+      <div
+        class="styledComponents__Wrapper-sc-13w5wfx-4 lfySov"
+        type="default"
+      >
+        <div
+          class="ant-card"
+        >
+          <div
+            class="ant-card-head"
+          >
+            <div
+              class="ant-card-head-wrapper"
+            >
+              <div
+                class="ant-card-head-title"
+              >
+                <div
+                  class="ant-space ant-space-horizontal ant-space-align-center"
+                >
+                  <div
+                    class="ant-space-item"
+                  >
+                    <div
+                      class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                    >
+                      dscx
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="ant-card-extra"
+              >
+                <div
+                  class="ant-space ant-space-horizontal ant-space-align-center"
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            class="ant-card-body"
+          >
+            <div
+              class="sc-hHLeRK dnVdwo"
+            >
+              <div
+                style="position: absolute; width: 100%; height: 100%;"
+              />
+              <div>
+                 
+              </div>
+              <img
+                alt="img"
+                data-testid="fpImage"
+                src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/7231da344778480d88f37f0cca1c534f-001.png"
+                style="width: auto; height: 100%;"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-8"
+      style="padding: 10px 8px 10px 8px;"
+    >
+      <div
+        class="styledComponents__Wrapper-sc-13w5wfx-4 lfySov"
+        type="default"
+      >
+        <div
+          class="ant-card"
+        >
+          <div
+            class="ant-card-head"
+          >
+            <div
+              class="ant-card-head-wrapper"
+            >
+              <div
+                class="ant-card-head-title"
+              >
+                <div
+                  class="ant-space ant-space-horizontal ant-space-align-center"
+                >
+                  <div
+                    class="ant-space-item"
+                  >
+                    <div
+                      class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                    >
+                      dscx
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="ant-card-extra"
+              >
+                <div
+                  class="ant-space ant-space-horizontal ant-space-align-center"
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            class="ant-card-body"
+          >
+            <div
+              class="sc-hHLeRK dnVdwo"
+            >
+              <div
+                style="position: absolute; width: 100%; height: 100%;"
+              />
+              <div>
+                 
+              </div>
+              <img
+                alt="img"
+                data-testid="fpImage"
+                src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/7231da344778480d88f37f0cca1c534f-001.png"
+                style="width: auto; height: 100%;"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-8"
+      style="padding: 10px 8px 10px 8px;"
+    >
+      <div
+        class="styledComponents__Wrapper-sc-13w5wfx-4 lfySov"
+        type="default"
+      >
+        <div
+          class="ant-card"
+        >
+          <div
+            class="ant-card-head"
+          >
+            <div
+              class="ant-card-head-wrapper"
+            >
+              <div
+                class="ant-card-head-title"
+              >
+                <div
+                  class="ant-space ant-space-horizontal ant-space-align-center"
+                >
+                  <div
+                    class="ant-space-item"
+                  >
+                    <div
+                      class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                    >
+                      dscx
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="ant-card-extra"
+              >
+                <div
+                  class="ant-space ant-space-horizontal ant-space-align-center"
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            class="ant-card-body"
+          >
+            <div
+              class="sc-hHLeRK dnVdwo"
+            >
+              <div
+                style="position: absolute; width: 100%; height: 100%;"
+              />
+              <div>
+                 
+              </div>
+              <img
+                alt="img"
+                data-testid="fpImage"
+                src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/7231da344778480d88f37f0cca1c534f-001.png"
+                style="width: auto; height: 100%;"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-8"
       style="padding: 10px 8px 10px 8px;"
     >
       <div

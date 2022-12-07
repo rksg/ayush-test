@@ -16,7 +16,7 @@ import AddEditFloorplanModal from './FloorPlanModal'
 import GalleryView           from './GalleryView/GalleryView'
 import PlainView             from './PlainView/PlainView'
 import * as UI               from './styledComponents'
-import UnplacedDevices       from './UnplacedDevices'
+import { UnplacedDevices }   from './UnplacedDevices'
 
 
 export function sortByFloorNumber (floor1: FloorPlanDto, floor2: FloorPlanDto) {
