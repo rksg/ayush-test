@@ -169,7 +169,36 @@ describe('RuleTable', () => {
 
     expect(dialog).not.toBeVisible()
 
-    await userEvent.click(screen.getByText(/sameNetworkRuleName2/i))
+  })
+
+  it('should render RuleTable with editMode delete successfully', async () => {
+    mockServer.use(rest.get(
+      RogueApUrls.getRoguePolicy.url,
+      (_, res, ctx) => res(
+        ctx.json(detailContent)
+      )
+    ))
+
+    render(
+      <RogueAPDetectionContext.Provider value={{
+        state: initStateEditMode,
+        dispatch: setRogueAPConfigure
+      }}>
+        <RuleTable edit={true}/>
+      </RogueAPDetectionContext.Provider>
+      , {
+        wrapper: wrapper,
+        route: {
+          params: { policyId: 'policyId1', tenantId: 'tenantId1' }
+        }
+      }
+    )
+
+    await screen.findByText(/sameNetworkRuleName2/i)
+
+    screen.getByText('SameNetworkRuleName1')
+
+    await userEvent.click(screen.getByText(/sameNetworkRuleName1/i))
 
     await screen.findByText(/1 selected/i)
 
