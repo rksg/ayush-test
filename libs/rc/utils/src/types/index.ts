@@ -29,6 +29,8 @@ export * from './edge'
 export * from './policies'
 export * from './portalService'
 export * from './client'
+export * from './switch'
+
 export interface CommonResult {
   requestId: string
   response?:{}

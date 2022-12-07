@@ -31,7 +31,7 @@ describe('ApSettingsTab', () => {
     fireEvent.click(await screen.findByText('Traceroute'))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       // eslint-disable-next-line max-len
-      pathname: `/t/${params.tenantId}/devices/aps/${params.serialNumber}/details/troubleshooting/traceroute`,
+      pathname: `/t/${params.tenantId}/devices/wifi/${params.serialNumber}/details/troubleshooting/traceroute`,
       hash: '',
       search: ''
     })
