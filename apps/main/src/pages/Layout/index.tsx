@@ -21,30 +21,28 @@ import SearchBar         from './SearchBar'
 function Layout () {
 
   return (
-    <SplitProvider>
-      <LayoutComponent
-        menuConfig={useMenuConfig()}
-        content={<Outlet />}
-        leftHeaderContent={
-          <div style={{ width: '40%', display: 'flex', alignItems: 'center' }}>
-            {/* <RegionButton/>
-            <LicenseBar/> */}
-          </div>
-        }
-        rightHeaderContent={<>
-			  <SearchBar />
-          <LayoutUI.Divider />
-          <AlarmButton/>
-          <ActivityButton/>
-          <Tooltip placement='bottomRight' title={useIntl().$t(notAvailableMsg)}>
-            <HelpButton/>
-          </Tooltip>
-          <Tooltip placement='bottomRight' title={useIntl().$t(notAvailableMsg)}>
-            <UserButton/>
-          </Tooltip>
-        </>}
-      />
-    </SplitProvider>
+    <LayoutComponent
+      menuConfig={useMenuConfig()}
+      content={<Outlet />}
+      // leftHeaderContent={
+      //   <div style={{ width: '40%', display: 'flex', alignItems: 'center' }}>
+      //     {/* <RegionButton/>
+      //     <LicenseBar/> */}
+      //   </div>
+      // }
+      rightHeaderContent={<>
+        <SearchBar />
+        <LayoutUI.Divider />
+        <AlarmButton/>
+        <ActivityButton/>
+        <Tooltip placement='bottomRight' title={useIntl().$t(notAvailableMsg)}>
+          <HelpButton/>
+        </Tooltip>
+        <Tooltip placement='bottomRight' title={useIntl().$t(notAvailableMsg)}>
+          <UserButton/>
+        </Tooltip>
+      </>}
+    />
   )
 }
 
