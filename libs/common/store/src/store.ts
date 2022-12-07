@@ -13,6 +13,7 @@ import {
   baseMspApi as mspApi,
   baseEdgeApi as edgeApi,
   basePolicyApi as policyApi,
+  baseClientApi as clientApi,
   baseMacRegPoolApi as macRegPoolApi
 } from '@acx-ui/rc/services'
 
@@ -30,6 +31,7 @@ export const store = configureStore({
     [mspApi.reducerPath]: mspApi.reducer,
     [edgeApi.reducerPath]: edgeApi.reducer,
     [policyApi.reducerPath]: policyApi.reducer,
+    [clientApi.reducerPath]: clientApi.reducer,
     [macRegPoolApi.reducerPath]: macRegPoolApi.reducer
   },
 
@@ -51,6 +53,7 @@ export const store = configureStore({
       mspApi.middleware,
       edgeApi.middleware,
       policyApi.middleware,
+      clientApi.middleware,
       macRegPoolApi.middleware
     ])
   },

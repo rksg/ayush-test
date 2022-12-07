@@ -269,82 +269,6 @@ exports[`DHCPForm should edit open DHCP successfully 1`] = `
                     </div>
                     <div
                       class="ant-form-item"
-                      style="display: none;"
-                    >
-                      <div
-                        class="ant-row ant-form-item-row"
-                      >
-                        <div
-                          class="ant-col ant-form-item-label"
-                        >
-                          <label
-                            class=""
-                            for="settings_createType"
-                            title="Type"
-                          >
-                            Type
-                          </label>
-                        </div>
-                        <div
-                          class="ant-col ant-form-item-control"
-                        >
-                          <div
-                            class="ant-form-item-control-input"
-                          >
-                            <div
-                              class="ant-form-item-control-input-content"
-                            >
-                              <div
-                                class="ant-radio-group ant-radio-group-outline"
-                                id="settings_createType"
-                              >
-                                <label
-                                  class="ant-radio-wrapper ant-radio-wrapper-checked ant-radio-wrapper-in-form-item"
-                                >
-                                  <span
-                                    class="ant-radio ant-radio-checked"
-                                  >
-                                    <input
-                                      checked=""
-                                      class="ant-radio-input"
-                                      type="radio"
-                                      value="WI-FI"
-                                    />
-                                    <span
-                                      class="ant-radio-inner"
-                                    />
-                                  </span>
-                                  <span>
-                                    Wi-Fi
-                                  </span>
-                                </label>
-                                <label
-                                  class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
-                                >
-                                  <span
-                                    class="ant-radio"
-                                  >
-                                    <input
-                                      class="ant-radio-input"
-                                      type="radio"
-                                      value="SWITCH"
-                                    />
-                                    <span
-                                      class="ant-radio-inner"
-                                    />
-                                  </span>
-                                  <span>
-                                    Switch
-                                  </span>
-                                </label>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div
-                      class="ant-form-item"
                     >
                       <div
                         class="ant-row ant-form-item-row"
@@ -390,7 +314,7 @@ exports[`DHCPForm should edit open DHCP successfully 1`] = `
                                           checked=""
                                           class="ant-radio-input"
                                           type="radio"
-                                          value="SIMPLE"
+                                          value="EnableOnEachAPs"
                                         />
                                         <span
                                           class="ant-radio-inner"
@@ -419,7 +343,7 @@ exports[`DHCPForm should edit open DHCP successfully 1`] = `
                                         <input
                                           class="ant-radio-input"
                                           type="radio"
-                                          value="MULTIPLE"
+                                          value="EnableOnMultipleAPs"
                                         />
                                         <span
                                           class="ant-radio-inner"
@@ -447,7 +371,7 @@ exports[`DHCPForm should edit open DHCP successfully 1`] = `
                                         <input
                                           class="ant-radio-input"
                                           type="radio"
-                                          value="HIERARCHICAL"
+                                          value="EnableOnHierarchicalAPs"
                                         />
                                         <span
                                           class="ant-radio-inner"
