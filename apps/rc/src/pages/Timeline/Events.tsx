@@ -171,14 +171,6 @@ const Events = () => {
       value: getSource(data)
     },
     {
-      title: defineMessage({ defaultMessage: 'Admin IP' }),
-      value: '' // TODO: need to check if this is still need
-    },
-    {
-      title: defineMessage({ defaultMessage: 'Admin Interface' }),
-      value: '' // TODO: need to check if this is still need
-    },
-    {
       title: defineMessage({ defaultMessage: 'Description' }),
       value: getDescription(data)
     }
