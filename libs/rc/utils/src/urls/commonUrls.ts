@@ -288,10 +288,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/upgrade/tenant/:tenantId/upgrade-version'
   },
-  getHistoricalClientList: {
-    method: 'post',
-    url: '/api/eventalarmapi/:tenantId/event/hist_client_list'
-  },
   getClientSessionHistory: {
     method: 'post',
     url: '/api/reporting/tenant/:tenantId/report/clientSessionHistory'
@@ -299,6 +295,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getClientList: {
     method: 'post',
     url: '/api/viewmodel/:tenantId/client/clientlist'
+  },
+  getHistoricalClientList: {
+    method: 'post',
+    url: '/api/eventalarmapi/:tenantId/event/hist_client_list'
   },
   getClientMeta: {
     method: 'post',
