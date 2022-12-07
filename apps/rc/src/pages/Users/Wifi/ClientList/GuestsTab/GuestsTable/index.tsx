@@ -217,7 +217,8 @@ export default function GuestsTable () {
             disabled: allowedNetworkList.length === 0 ? true : false
           },{
             label: $t({ defaultMessage: 'Add Guest Pass Network' }),
-            onClick: () => {}
+            onClick: () => {},
+            disabled: true //TODO: Need guest service support
           },
           {
             label: $t({ defaultMessage: 'Import from file' }),
