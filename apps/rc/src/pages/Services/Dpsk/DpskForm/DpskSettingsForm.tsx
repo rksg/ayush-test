@@ -1,5 +1,3 @@
-import { useEffect } from 'react'
-
 import {
   Form,
   Input,
@@ -20,8 +18,6 @@ import {
   PassphraseFormatEnum,
   transformDpskNetwork,
   DpskNetworkType,
-  DpskSaveData,
-  CreateDpskFormFields,
   checkObjectNotExists
 } from '@acx-ui/rc/utils'
 
@@ -29,34 +25,18 @@ import {
   passphraseFormatDescription
 } from '../contentsMap'
 
-import { transferSaveDataToFormFields } from './parser'
 
-interface DpskSettingsFormProps {
-  data?: DpskSaveData
-}
-
-export default function DpskSettingsForm (props: DpskSettingsFormProps) {
+export default function DpskSettingsForm () {
   const intl = useIntl()
   const form = Form.useFormInstance()
-  const passphraseFormat = Form.useWatch<PassphraseFormatEnum>('passphraseFormat')
-  const { data } = props
+  const passphraseFormat = Form.useWatch<PassphraseFormatEnum>('passphraseFormat', form)
+  const id = Form.useWatch<string>('id', form)
   const { Option } = Select
   const [ dpskList ] = useLazyDpskListQuery()
 
-  useEffect(() => {
-    form.resetFields()
-
-    if (!data) {
-      return
-    }
-    const formData: CreateDpskFormFields = transferSaveDataToFormFields(data)
-
-    form.setFieldsValue(formData)
-  }, [data, form])
-
   const nameValidator = async (value: string) => {
     const list = (await dpskList({}).unwrap()).content
-      .filter(n => n.id !== data?.id)
+      .filter(n => n.id !== id)
       .map(n => ({ name: n.name }))
     return checkObjectNotExists(list, { name: value } , intl.$t({ defaultMessage: 'DPSK service' }))
   }
@@ -69,6 +49,9 @@ export default function DpskSettingsForm (props: DpskSettingsFormProps) {
     <Row>
       <Col span={6}>
         <StepsForm.Title>{intl.$t({ defaultMessage: 'Settings' })}</StepsForm.Title>
+        <Form.Item name='id' noStyle>
+          <Input type='hidden' />
+        </Form.Item>
         <Form.Item
           name='name'
           label={intl.$t({ defaultMessage: 'Service Name' })}

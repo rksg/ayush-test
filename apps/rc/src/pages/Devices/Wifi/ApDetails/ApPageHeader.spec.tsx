@@ -36,7 +36,7 @@ describe('ApPageHeader', () => {
 
     fireEvent.click(await screen.findByRole('button', { name: 'Configure' }))
     expect(mockNavigate).toBeCalledWith(expect.objectContaining({
-      pathname: '/t/t1/devices/aps/v1/edit/details'
+      pathname: '/t/t1/devices/wifi/v1/edit/details'
     }))
   })
 

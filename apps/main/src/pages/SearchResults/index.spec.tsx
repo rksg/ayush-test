@@ -5,6 +5,7 @@ import { Provider }                                                    from '@ac
 import { mockRestApiQuery, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import {
+  apListData,
   networkListData,
   venueListData
 } from './__fixtures__/searchMocks'
@@ -15,15 +16,9 @@ const params = { searchVal: 'test%3F', tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fc
 
 describe('Search Results', () => {
   beforeEach(() => {
-    mockRestApiQuery(CommonUrlsInfo.getVenuesList.url, 'post', {
-      status: 200,
-      data: venueListData,
-      totalCount: 1
-    })
-    mockRestApiQuery(CommonUrlsInfo.getVMNetworksList.url, 'post', {
-      data: networkListData,
-      totalCount: 3
-    })
+    mockRestApiQuery(CommonUrlsInfo.getVenuesList.url, 'post', venueListData)
+    mockRestApiQuery(CommonUrlsInfo.getVMNetworksList.url, 'post', networkListData)
+    mockRestApiQuery(CommonUrlsInfo.getApsList.url, 'post', apListData)
   })
 
   it('should decode search string correctly', async () => {
@@ -33,11 +28,11 @@ describe('Search Results', () => {
       </Provider>,
       { route: { params } }
     )
-    expect(await screen.findByText('Search Results for "test?" (4)')).toBeVisible()
+    expect(await screen.findByText('Search Results for "test?" (5)')).toBeVisible()
   })
 
-  it('should render venue table correctly', async () => {
-    render(
+  it('should render tables correctly', async () => {
+    const { asFragment } = render(
       <Provider>
         <SearchResults />
       </Provider>,{
@@ -47,8 +42,35 @@ describe('Search Results', () => {
       }
     )
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-    expect(await screen.findByText('500')).toBeInTheDocument()
-    const vlan1s = await screen.findAllByText(/VLAN-1/i)
-    expect(vlan1s).toHaveLength(2)
+    const fragment = asFragment()
+    // eslint-disable-next-line testing-library/no-node-access
+    fragment.querySelectorAll('div[_echarts_instance_^="ec_"]')
+      .forEach(element => element.removeAttribute('_echarts_instance_'))
+    expect(fragment).toMatchSnapshot()
+  })
+
+  it('should render empty result correctly', async () => {
+    mockRestApiQuery(CommonUrlsInfo.getVenuesList.url, 'post', {
+      status: 200,
+      data: [],
+      totalCount: 0
+    })
+    mockRestApiQuery(CommonUrlsInfo.getVMNetworksList.url, 'post', {
+      data: [],
+      totalCount: 0
+    })
+    mockRestApiQuery(CommonUrlsInfo.getApsList.url, 'post', { data: [], totalCount: 0 })
+    render(
+      <Provider>
+        <SearchResults />
+      </Provider>,{
+        route: {
+          params: { ...params, searchVal: encodeURIComponent('bdcPerformanceVenue2') }
+        }
+      }
+    )
+    const header =
+      await screen.findByText(/Hmmmm... we couldn't find any match for "bdcPerformanceVenue2"/i)
+    expect(header).toBeInTheDocument()
   })
 })

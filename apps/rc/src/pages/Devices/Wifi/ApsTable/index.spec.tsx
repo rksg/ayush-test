@@ -13,7 +13,7 @@ describe('AP List Table', () => {
       <Provider>
         <ApsTable />
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/aps' }
+        route: { params, path: '/:tenantId/devices/wifi' }
       })
 
     expect(asFragment()).toMatchSnapshot()

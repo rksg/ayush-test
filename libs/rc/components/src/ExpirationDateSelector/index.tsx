@@ -2,23 +2,24 @@ import {
   Select,
   InputNumber,
   Radio,
-  DatePicker,
   Form,
-  DatePickerProps
+  DatePickerProps,
+  RadioChangeEvent
 } from 'antd'
 import { RangePickerProps } from 'antd/lib/date-picker'
 import moment               from 'moment-timezone'
 import { StoreValue }       from 'rc-field-form/lib/interface'
 import { useIntl }          from 'react-intl'
 
+import { DatePicker }                     from '@acx-ui/components'
 import { ExpirationMode, ExpirationType } from '@acx-ui/rc/utils'
 
 import {
   ExpirationModeLabel
-} from './models'
+} from './contentsMap'
 import * as UI from './styledComponents'
 
-export * from './models'
+export * from './contentsMap'
 
 export interface ExpirationDateSelectorProps {
   inputName?: string,
@@ -39,9 +40,7 @@ export interface ExpirationDateSelectorProps {
 
 const DATE_FORMAT = 'YYYY-MM-DD'
 
-type ExpirationDatePickerWrapperProps = Omit<DatePickerProps, 'value'> & { value?: string }
-
-function ExpirationDatePickerWrapper (props: ExpirationDatePickerWrapperProps) {
+function ExpirationDatePickerWrapper (props: DatePickerProps) {
   const disabledDate: RangePickerProps['disabledDate'] = (current) => {
     // Can not select days before today
     return current && current < moment().endOf('day')
@@ -58,6 +57,7 @@ function ExpirationDatePickerWrapper (props: ExpirationDatePickerWrapperProps) {
 
 export function ExpirationDateSelector (props: ExpirationDateSelectorProps) {
   const { $t } = useIntl()
+  const form = Form.useFormInstance()
   const { Option } = Select
   const {
     label,
@@ -88,6 +88,14 @@ export function ExpirationDateSelector (props: ExpirationDateSelectorProps) {
     return value && value.format(DATE_FORMAT)
   }
 
+  const onModeChange = (e: RadioChangeEvent) => {
+    const expirationType = form.getFieldValue([inputName, 'type'])
+    // eslint-disable-next-line max-len
+    if (e.target.value === ExpirationMode.AFTER_TIME && expirationType === ExpirationType.SPECIFIED_DATE) {
+      form.setFieldValue([inputName, 'type'], '')
+    }
+  }
+
   return (
     <Form.Item
       name={[inputName, 'mode']}
@@ -95,7 +103,7 @@ export function ExpirationDateSelector (props: ExpirationDateSelectorProps) {
       rules={[{ required: isRequired }]}
       initialValue={initialValue}
     >
-      <Radio.Group>
+      <Radio.Group onChange={onModeChange}>
         { modeAvailability[ExpirationMode.NEVER] &&
           <UI.FieldSpace columns={'auto'}>
             <Radio key={ExpirationMode.NEVER} value={ExpirationMode.NEVER}>
@@ -136,7 +144,7 @@ export function ExpirationDateSelector (props: ExpirationDateSelectorProps) {
                   rules={[
                     {
                       required: expirationMode === ExpirationMode.AFTER_TIME,
-                      message: $t({ defaultMessage: 'Please enter Time Offset' })
+                      message: $t({ defaultMessage: 'Please enter Offset' })
                     }
                   ]}
                 >
@@ -147,7 +155,7 @@ export function ExpirationDateSelector (props: ExpirationDateSelectorProps) {
                   rules={[
                     {
                       required: expirationMode === ExpirationMode.AFTER_TIME,
-                      message: $t({ defaultMessage: 'Please enter Time Type' })
+                      message: $t({ defaultMessage: 'Please enter Type' })
                     }
                   ]}
                 >
