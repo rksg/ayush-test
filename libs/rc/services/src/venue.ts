@@ -266,9 +266,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           showActivityMessage(msg, [
             'UpdateSwitchPosition',
-            'UpdateApPosition',
-            'PositionUpdateUnfloor',
-            'SwitchPositionUpdateUnfloor'], () => {
+            'UpdateApPosition'], () => {
             api.dispatch(venueApi.util.invalidateTags([{ type: 'VenueFloorPlan', id: 'DEVICE' }]))
           })
         })

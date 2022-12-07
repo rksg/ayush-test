@@ -1,14 +1,15 @@
 import '@testing-library/jest-dom'
 
-import { screen } from '@testing-library/react'
+import { screen }       from '@testing-library/react'
+import { DndProvider }  from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
 
 import { ApDeviceStatusEnum, FloorPlanDto, NetworkDeviceType, SwitchStatusEnum } from '@acx-ui/rc/utils'
 import { render }                                                                from '@acx-ui/test-utils'
 
 
 import NetworkDevices from '.'
-import { DndProvider } from 'react-dnd'
-import { HTML5Backend } from 'react-dnd-html5-backend'
+
 
 
 const networkDeviceType = Object.values(NetworkDeviceType)

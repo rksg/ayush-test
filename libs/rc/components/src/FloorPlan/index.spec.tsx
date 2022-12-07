@@ -1,14 +1,15 @@
 import '@testing-library/jest-dom'
-import { rest } from 'msw'
-import { act }  from 'react-dom/test-utils'
+import { rest }         from 'msw'
+import { DndProvider }  from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
+import { act }          from 'react-dom/test-utils'
 
 import { ApDeviceStatusEnum, CommonUrlsInfo, FloorPlanDto, NetworkDeviceType, SwitchStatusEnum } from '@acx-ui/rc/utils'
 import { Provider }                                                                              from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved }                      from '@acx-ui/test-utils'
 
 import { FloorPlan, sortByFloorNumber } from '.'
-import { HTML5Backend } from 'react-dnd-html5-backend'
-import { DndProvider } from 'react-dnd'
+
 
 const list: FloorPlanDto[] = [
   {

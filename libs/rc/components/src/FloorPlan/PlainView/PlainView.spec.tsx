@@ -1,6 +1,8 @@
 import '@testing-library/jest-dom'
 
-import { act } from 'react-dom/test-utils'
+import { DndProvider }  from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
+import { act }          from 'react-dom/test-utils'
 
 import { ApDeviceStatusEnum, FloorPlanDto, NetworkDeviceType, SwitchStatusEnum, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
 import { Provider }                                                                                      from '@acx-ui/store'
@@ -8,8 +10,7 @@ import { render, screen, fireEvent, waitFor }                                   
 
 import PlainView, { getImageFitPercentage } from './PlainView'
 import Thumbnail                            from './Thumbnail'
-import { DndProvider } from 'react-dnd'
-import { HTML5Backend } from 'react-dnd-html5-backend'
+
 
 const list: FloorPlanDto[] = [
   {
