@@ -113,7 +113,7 @@ export function UserProfile () {
           </label>
           <Row style={{ marginTop: '10px' }}>
             <Col><EnvelopClosedSolidIcon /></Col>
-            <Col><h4>{ userEmail }</h4></Col>
+            <Col>{ userEmail }</Col>
             {/* <Col style={{ marginLeft: '25px' }}><h4>+1 408-234-9811</h4></Col> */}
             <Col style={{ marginLeft: '25px' }}><b>Tenant ID</b></Col>
             <Col style={{ marginLeft: '5px' }}><Paragraph copyable>{tenantId}</Paragraph></Col>
