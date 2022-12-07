@@ -47,9 +47,19 @@ export const Button = styled(AntButton)<{ $customType: string | null }>`
     }
   }
 
-  &.ant-btn-link {
+  &.ant-btn-link:not(.ant-btn-icon-only) {
     padding: 0;
+    height: var(--acx-body-3-line-height);
+
+    &.ant-btn-sm {
+      height: var(--acx-body-4-line-height);
+    }
+
+    &.ant-btn-lg {
+      height: var(--acx-body-2-line-height);
+    }
   }
+
   &.ant-btn-background-ghost {
     border: 0;
   }

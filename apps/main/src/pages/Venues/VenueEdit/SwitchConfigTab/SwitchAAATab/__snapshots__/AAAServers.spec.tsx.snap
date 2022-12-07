@@ -54,7 +54,7 @@ exports[`AAAServers should render RADIUS list correctly and edit row data 1`] = 
                       class="ant-space-item"
                     >
                       <button
-                        class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                        class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kcVFGF"
                         type="button"
                       >
                         <span>
@@ -647,7 +647,7 @@ exports[`AAAServers should render RADIUS list correctly and edit row data 1`] = 
                       class="ant-space-item"
                     >
                       <button
-                        class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                        class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kcVFGF"
                         type="button"
                       >
                         <span>
@@ -982,7 +982,7 @@ exports[`AAAServers should render RADIUS list correctly and edit row data 1`] = 
                       class="ant-space-item"
                     >
                       <button
-                        class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                        class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kcVFGF"
                         type="button"
                       >
                         <span>
@@ -1311,7 +1311,7 @@ exports[`AAAServers should render empty lists and alert message correctly 1`] = 
                       class="ant-space-item"
                     >
                       <button
-                        class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                        class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kcVFGF"
                         type="button"
                       >
                         <span>
@@ -1646,7 +1646,7 @@ exports[`AAAServers should render empty lists and alert message correctly 1`] = 
                       class="ant-space-item"
                     >
                       <button
-                        class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                        class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kcVFGF"
                         type="button"
                       >
                         <span>
@@ -1981,7 +1981,7 @@ exports[`AAAServers should render empty lists and alert message correctly 1`] = 
                       class="ant-space-item"
                     >
                       <button
-                        class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                        class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kcVFGF"
                         type="button"
                       >
                         <span>

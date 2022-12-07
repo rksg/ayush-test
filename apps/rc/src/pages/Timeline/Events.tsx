@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import { defineMessage, useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps }            from '@acx-ui/components'
+import { Loader, Table, TableProps, Button }    from '@acx-ui/components'
 import { useEventsQuery }                       from '@acx-ui/rc/services'
 import { Event, CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
 import { formatter }                            from '@acx-ui/utils'
@@ -87,13 +87,15 @@ const Events = () => {
       dataIndex: 'event_datetime',
       defaultSortOrder: 'descend',
       sorter: true,
-      render: function (data, row) {
-        return <span onClick={()=>{
-          setVisible(true)
-          setCurrent(row)
-        }}>{
-            formatter('dateTimeFormatWithSeconds')(row.event_datetime)
-          }</span>
+      render: function (_, row) {
+        return <Button
+          type='link'
+          size='small'
+          onClick={()=>{
+            setVisible(true)
+            setCurrent(row)
+          }}
+        >{formatter('dateTimeFormatWithSeconds')(row.event_datetime)}</Button>
       }
     },
     {
@@ -101,7 +103,7 @@ const Events = () => {
       title: $t({ defaultMessage: 'Severity' }),
       dataIndex: 'severity',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         const msg = severityMapping[row.severity as keyof typeof severityMapping]
         return msg ? $t(msg) : row.severity
       }
@@ -111,7 +113,7 @@ const Events = () => {
       title: $t({ defaultMessage: 'Event Type' }),
       dataIndex: 'entity_type',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         const msg = eventEventTypeMapping[
           row.entity_type as keyof typeof eventEventTypeMapping]
         return msg ? $t(msg) : row.entity_type
@@ -122,7 +124,7 @@ const Events = () => {
       title: $t({ defaultMessage: 'Product' }),
       dataIndex: 'product',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         const msg = productMapping[row.product as keyof typeof productMapping]
         return msg ? $t(msg) : row.product
       }
@@ -132,7 +134,7 @@ const Events = () => {
       title: $t({ defaultMessage: 'Source' }),
       dataIndex: 'source',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return getSource(row)
       }
     },
@@ -141,7 +143,7 @@ const Events = () => {
       title: $t({ defaultMessage: 'Description' }),
       dataIndex: 'message',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return getDescription(row)
       }
     }

@@ -13,7 +13,7 @@ exports[`EpdgTable should render drawer successfully after clicking the Add butt
         class="ant-space-item"
       >
         <button
-          class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+          class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kcVFGF"
           type="button"
         >
           <span>
@@ -339,7 +339,7 @@ exports[`EpdgTable should render drawer successfully after clicking the Delete b
         class="ant-space-item"
       >
         <button
-          class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+          class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kcVFGF"
           type="button"
         >
           <span>
@@ -559,7 +559,7 @@ exports[`EpdgTable should render drawer successfully after clicking the Edit but
         class="ant-space-item"
       >
         <button
-          class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+          class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kcVFGF"
           type="button"
         >
           <span>

@@ -518,7 +518,7 @@ exports[`DpskSettingsForm should render DPSK form successfully 1`] = `
         </div>
         <div>
           <button
-            class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+            class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 kcVFGF"
             type="button"
           >
             <span>

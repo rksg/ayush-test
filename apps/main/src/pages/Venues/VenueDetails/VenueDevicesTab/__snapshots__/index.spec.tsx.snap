@@ -70,7 +70,7 @@ exports[`VenueMeshAps should render correctly 1`] = `
                 style="cursor: not-allowed;"
               >
                 <button
-                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 kcVFGF"
                   disabled=""
                   style="pointer-events: none;"
                   type="button"
@@ -88,7 +88,7 @@ exports[`VenueMeshAps should render correctly 1`] = `
               class="ant-space-item"
             >
               <button
-                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 kcVFGF"
                 type="button"
               >
                 <span>
@@ -443,7 +443,7 @@ exports[`VenueMeshAps should render correctly 1`] = `
             class="ant-input-group ant-input-group-compact"
           >
             <button
-              class="ant-btn ant-btn-default ant-btn-sm ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+              class="ant-btn ant-btn-default ant-btn-sm ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kcVFGF"
               type="button"
             >
               <svg
@@ -452,7 +452,7 @@ exports[`VenueMeshAps should render correctly 1`] = `
               />
             </button>
             <button
-              class="ant-btn ant-btn-default ant-btn-sm ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+              class="ant-btn ant-btn-default ant-btn-sm ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kcVFGF"
               type="button"
             >
               <svg

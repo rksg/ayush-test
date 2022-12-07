@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import { defineMessage, useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps }               from '@acx-ui/components'
+import { Loader, Table, TableProps, Button }       from '@acx-ui/components'
 import { useActivitiesQuery }                      from '@acx-ui/rc/services'
 import { Activity, CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
 import { formatter }                               from '@acx-ui/utils'
@@ -57,13 +57,15 @@ const Activities = () => {
       dataIndex: 'startDatetime',
       defaultSortOrder: 'descend',
       sorter: true,
-      render: function (data, row) {
-        return <span onClick={()=>{
-          setVisible(true)
-          setCurrent(row as Activity)
-        }}>{
-            formatter('dateTimeFormatWithSeconds')(row.startDatetime)
-          }</span>
+      render: function (_, row) {
+        return <Button
+          type='link'
+          size='small'
+          onClick={()=>{
+            setVisible(true)
+            setCurrent(row as Activity)
+          }}
+        >{formatter('dateTimeFormatWithSeconds')(row.startDatetime)}</Button>
       }
     },
     {
@@ -71,7 +73,7 @@ const Activities = () => {
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'status',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         const msg = statusMapping[row.status as keyof typeof statusMapping]
         return msg ? $t(msg) : row.status
       }
@@ -81,7 +83,7 @@ const Activities = () => {
       title: $t({ defaultMessage: 'Product' }),
       dataIndex: 'product',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         const msg = productMapping[row.product as keyof typeof productMapping]
         return msg ? $t(msg) : row.product
       }
@@ -91,7 +93,7 @@ const Activities = () => {
       title: $t({ defaultMessage: 'Source' }),
       dataIndex: 'source',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return row.admin.name
       }
     },
@@ -100,7 +102,7 @@ const Activities = () => {
       title: $t({ defaultMessage: 'Description' }),
       dataIndex: 'description',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return getDescription(row.descriptionTemplate, row.descriptionData)
       }
     }

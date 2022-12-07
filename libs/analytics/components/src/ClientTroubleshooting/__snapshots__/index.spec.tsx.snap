@@ -1125,7 +1125,7 @@ exports[`ClientTroubleshootingTab should set search param on option selection 1`
                           class="styledComponents__ButtonDiv-sc-jlwno5-1 bPKlWZ"
                         >
                           <button
-                            class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                            class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kcVFGF"
                             type="button"
                           >
                             <span>
@@ -1134,7 +1134,7 @@ exports[`ClientTroubleshootingTab should set search param on option selection 1`
                           </button>
                           <button
                             ant-click-animating-without-extra-node="false"
-                            class="ant-btn ant-btn-primary ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kkpPZG"
+                            class="ant-btn ant-btn-primary ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ieglzy"
                             type="button"
                           >
                             <span>

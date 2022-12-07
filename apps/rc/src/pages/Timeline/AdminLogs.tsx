@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import { defineMessage, useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps }               from '@acx-ui/components'
+import { Loader, Table, TableProps, Button  }      from '@acx-ui/components'
 import { useAdminLogsQuery }                       from '@acx-ui/rc/services'
 import { AdminLog, CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
 import { formatter }                               from '@acx-ui/utils'
@@ -68,13 +68,15 @@ const AdminLogs = () => {
       dataIndex: 'event_datetime',
       defaultSortOrder: 'descend',
       sorter: true,
-      render: function (data, row) {
-        return <span onClick={()=>{
-          setVisible(true)
-          setCurrent(row)
-        }}>{
-            formatter('dateTimeFormatWithSeconds')(row.event_datetime)
-          }</span>
+      render: function (_, row) {
+        return <Button
+          type='link'
+          size='small'
+          onClick={()=>{
+            setVisible(true)
+            setCurrent(row)
+          }}
+        >{formatter('dateTimeFormatWithSeconds')(row.event_datetime)}</Button>
       }
     },
     {
@@ -82,7 +84,7 @@ const AdminLogs = () => {
       title: $t({ defaultMessage: 'Severity' }),
       dataIndex: 'severity',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         const msg = severityMapping[row.severity as keyof typeof severityMapping]
         return msg ? $t(msg) : row.severity
       }
@@ -92,7 +94,7 @@ const AdminLogs = () => {
       title: $t({ defaultMessage: 'Event Type' }),
       dataIndex: 'entity_type',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         const msg = adminLogEventTypeMapping[
           row.entity_type as keyof typeof adminLogEventTypeMapping]
         return msg ? $t(msg) : row.entity_type
@@ -109,7 +111,7 @@ const AdminLogs = () => {
       title: $t({ defaultMessage: 'Description' }),
       dataIndex: 'message',
       sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         return JSON.parse(row.message).message_template
       }
     }

@@ -90,7 +90,7 @@ exports[`ApDetails should navigate to analytic tab correctly 1`] = `
               style="margin-right: 8px;"
             >
               <button
-                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV ant-dropdown-trigger"
+                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 kcVFGF ant-dropdown-trigger"
                 type="button"
               >
                 <div
@@ -116,7 +116,7 @@ exports[`ApDetails should navigate to analytic tab correctly 1`] = `
               class="ant-space-item"
             >
               <button
-                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 kcVFGF"
                 type="button"
               >
                 <span>
@@ -488,7 +488,7 @@ exports[`ApDetails should navigate to clients tab correctly 1`] = `
               style="margin-right: 8px;"
             >
               <button
-                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV ant-dropdown-trigger"
+                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 kcVFGF ant-dropdown-trigger"
                 type="button"
               >
                 <div
@@ -514,7 +514,7 @@ exports[`ApDetails should navigate to clients tab correctly 1`] = `
               class="ant-space-item"
             >
               <button
-                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 kcVFGF"
                 type="button"
               >
                 <span>
@@ -852,7 +852,7 @@ exports[`ApDetails should navigate to networks tab correctly 1`] = `
               style="margin-right: 8px;"
             >
               <button
-                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV ant-dropdown-trigger"
+                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 kcVFGF ant-dropdown-trigger"
                 type="button"
               >
                 <div
@@ -878,7 +878,7 @@ exports[`ApDetails should navigate to networks tab correctly 1`] = `
               class="ant-space-item"
             >
               <button
-                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 kcVFGF"
                 type="button"
               >
                 <span>
@@ -1250,7 +1250,7 @@ exports[`ApDetails should navigate to reports tab correctly 1`] = `
               style="margin-right: 8px;"
             >
               <button
-                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV ant-dropdown-trigger"
+                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 kcVFGF ant-dropdown-trigger"
                 type="button"
               >
                 <div
@@ -1276,7 +1276,7 @@ exports[`ApDetails should navigate to reports tab correctly 1`] = `
               class="ant-space-item"
             >
               <button
-                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 kcVFGF"
                 type="button"
               >
                 <span>
@@ -1614,7 +1614,7 @@ exports[`ApDetails should navigate to services tab correctly 1`] = `
               style="margin-right: 8px;"
             >
               <button
-                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV ant-dropdown-trigger"
+                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 kcVFGF ant-dropdown-trigger"
                 type="button"
               >
                 <div
@@ -1640,7 +1640,7 @@ exports[`ApDetails should navigate to services tab correctly 1`] = `
               class="ant-space-item"
             >
               <button
-                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 kcVFGF"
                 type="button"
               >
                 <span>
@@ -1978,7 +1978,7 @@ exports[`ApDetails should navigate to timeline tab correctly 1`] = `
               style="margin-right: 8px;"
             >
               <button
-                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV ant-dropdown-trigger"
+                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 kcVFGF ant-dropdown-trigger"
                 type="button"
               >
                 <div
@@ -2004,7 +2004,7 @@ exports[`ApDetails should navigate to timeline tab correctly 1`] = `
               class="ant-space-item"
             >
               <button
-                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 kcVFGF"
                 type="button"
               >
                 <span>
@@ -2342,7 +2342,7 @@ exports[`ApDetails should navigate to troubleshooting tab correctly 1`] = `
               style="margin-right: 8px;"
             >
               <button
-                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV ant-dropdown-trigger"
+                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 kcVFGF ant-dropdown-trigger"
                 type="button"
               >
                 <div
@@ -2368,7 +2368,7 @@ exports[`ApDetails should navigate to troubleshooting tab correctly 1`] = `
               class="ant-space-item"
             >
               <button
-                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 kcVFGF"
                 type="button"
               >
                 <span>
@@ -2791,7 +2791,7 @@ exports[`ApDetails should navigate to troubleshooting tab correctly 1`] = `
                           class="ant-form-item-control-input-content"
                         >
                           <button
-                            class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 kkpPZG"
+                            class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 ieglzy"
                             disabled=""
                             type="submit"
                           >

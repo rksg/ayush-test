@@ -232,7 +232,7 @@ export function AdvancedSettingForm () {
                     || !modelOptions.length
                     || !!tableData?.find((item) => !item.model)
                   }
-                  style={{ fontSize: '12px' }}>
+                  size='small'>
                   {$t({ defaultMessage: 'Add Model' })}
                 </Button>
               </Space>

@@ -342,7 +342,7 @@ exports[`PortalForm should edit open Portal successfully 1`] = `
                                     style="flex-basis: auto; text-align: right; padding-right: 5px;"
                                   >
                                     <button
-                                      class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__Button-sc-cby53p-6 bVCjfP styledComponents__Popover-sc-cby53p-41"
+                                      class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kcVFGF styledComponents__Button-sc-cby53p-6 bVCjfP styledComponents__Popover-sc-cby53p-41"
                                       type="button"
                                     >
                                       <span>
@@ -350,7 +350,7 @@ exports[`PortalForm should edit open Portal successfully 1`] = `
                                       </span>
                                     </button>
                                     <button
-                                      class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__Button-sc-cby53p-6 bVCjfP styledComponents__Popover-sc-cby53p-41"
+                                      class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kcVFGF styledComponents__Button-sc-cby53p-6 bVCjfP styledComponents__Popover-sc-cby53p-41"
                                       type="button"
                                     >
                                       <span>
@@ -358,7 +358,7 @@ exports[`PortalForm should edit open Portal successfully 1`] = `
                                       </span>
                                     </button>
                                     <button
-                                      class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__Button-sc-cby53p-6 bVCjfP"
+                                      class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kcVFGF styledComponents__Button-sc-cby53p-6 bVCjfP"
                                       type="button"
                                     >
                                       <span>
@@ -473,7 +473,7 @@ exports[`PortalForm should edit open Portal successfully 1`] = `
             style="margin-right: 12px;"
           >
             <button
-              class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 kkpPZG"
+              class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 ieglzy"
               type="button"
             >
               <span>
@@ -485,7 +485,7 @@ exports[`PortalForm should edit open Portal successfully 1`] = `
             class="ant-space-item"
           >
             <button
-              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 kcVFGF"
               type="button"
             >
               <span>
