@@ -5,9 +5,11 @@ import {
   createHttpRequest,
   ProfileDataToUpdate,
   RequestPayload,
+  UserSettings,
   UserProfile,
-  UserSettings
+  CloudVersion
 } from '@acx-ui/rc/utils'
+
 
 export const baseUserApi = createApi({
   baseQuery: fetchBaseQuery(),
@@ -34,6 +36,17 @@ export const userApi = baseUserApi.injectEndpoints({
           result[key] = JSON.parse(userSettings[key])
         })
         return result
+      }
+    }),
+    getCloudVersion: build.query<CloudVersion, RequestPayload>({
+      query: ({ params }) => {
+        const cloudVersionReq = createHttpRequest(
+          CommonUrlsInfo.getCloudVersion,
+          params
+        )
+        return {
+          ...cloudVersionReq
+        }
       }
     }),
     getUserProfile: build.query<UserProfile, RequestPayload>({
