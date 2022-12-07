@@ -1,4 +1,5 @@
-import styled from 'styled-components/macro'
+import { Space } from 'antd'
+import styled    from 'styled-components/macro'
 
 import { EnvelopClosedSolid } from '@acx-ui/icons'
 
@@ -15,13 +16,14 @@ export const UserCircle = styled.div`
   font-size: var(--acx-headline-0-font-size);
   font-family: var(--acx-accent-brand-font);
   font-weight: var(--acx-headline-0-font-weight);
-  color: #fff;
+  color: var(-acx-primary-white);
   background: var(--acx-neutrals-40);
   border-radius: 50px;
 `
-export const UserEmailLabel = styled.div`
-  display: flex;
-  marginTop: -24px;
-  color: var(--acx-neutrals-60);
-  fontSize: var(--acx-body-5-font-size);
+export const UserEmailLabel = styled(Space).attrs({ direction: 'vertical', size: 0 })`
+  margin-bottom: 16px;
+  .ant-space-item:last-of-type {
+    color: var(--acx-neutrals-60);
+    font-size: var(--acx-body-5-font-size);
+  }
 `

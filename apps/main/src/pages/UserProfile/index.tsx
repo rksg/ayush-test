@@ -136,27 +136,31 @@ export function UserProfile () {
           labelCol={{ span: 12 }}
           wrapperCol={{ span: 24 }}>
           <label>{$t({ defaultMessage: 'Receive notifications through:' })}</label>
-          <Row>
+          <Row gutter={20}>
             <Col span={8}>
-              <Form.Item
-                name='email_format'
-                label={$t({ defaultMessage: 'Email' })}
-                style={{ marginTop: '10px' }}
-                rules={[{
-                  required: false
-                }]}
-                children={<Switch></Switch>}
-              />
-              <label><UserEmailLabel>{userEmail}</UserEmailLabel></label>
-              <Form.Item
-                name='phone_format'
-                label={$t({ defaultMessage: 'SMS' })}
-                style={{ marginTop: '10px' }}
-                rules={[{
-                  required: false
-                }]}
-                children={<Switch></Switch>}
-              />
+              <StepsForm.FieldLabel width='190px'>
+                <UserEmailLabel>
+                  {$t({ defaultMessage: 'Email' })}
+                  {userEmail}
+                </UserEmailLabel>
+                <Form.Item
+                  name='email_format'
+                  rules={[{
+                    required: false
+                  }]}
+                  children={<Switch></Switch>}
+                />
+              </StepsForm.FieldLabel>
+              <StepsForm.FieldLabel width='190px'>
+                {$t({ defaultMessage: 'SMS' })}
+                <Form.Item
+                  name='phone_format'
+                  rules={[{
+                    required: false
+                  }]}
+                  children={<Switch></Switch>}
+                />
+              </StepsForm.FieldLabel>
             </Col>
           </Row>
 
