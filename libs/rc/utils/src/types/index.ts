@@ -371,6 +371,31 @@ export interface WifiCallingSettingContextType {
   setWifiCallingSettingList: (wifiCallingSettingList: WifiCallingSetting[]) => void
 }
 
+export interface CloudVersion {
+  versionUpgradeDate: string,
+  currentVersion: VersionInfo,
+  futureVersion: VersionInfo,
+  scheduleVersionList: string[]
+}
+
+enum UpgradeType {
+  STANDDARD,
+  HOTFIX
+}
+interface VersionInfo {
+  affectsNetwork: boolean
+  createdDate: string
+  description: string
+  name: string
+  id: string
+  releaseNotesUrl: string
+  scheduleNow: boolean
+  upgradeTime: string
+  type: UpgradeType | undefined
+  features: string[]
+
+}
+
 export interface catchErrorDetails {
   code: string,
   message: string
