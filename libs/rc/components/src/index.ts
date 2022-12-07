@@ -24,3 +24,4 @@ export { ConnectedClientsTable } from './ConnectedClientsTable'
 export { StatusLight } from './StatusLight'
 
 export * from './pipes/apGroupPipes'
+export * from './ExpirationDateSelector'

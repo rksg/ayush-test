@@ -29,6 +29,7 @@ export * from './edge'
 export * from './policies'
 export * from './portalService'
 export * from './client'
+export * from './components'
 export * from './switch'
 
 export interface CommonResult {
@@ -58,7 +59,7 @@ export interface NetworkDetail {
   tenantId: string
   name: string
   venues: NetworkVenue[]
-  id: string,
+  id: string
   wlan: {
     wlanSecurity: WlanSecurityEnum,
     ssid?: string;
@@ -69,7 +70,7 @@ export interface NetworkDetail {
       AAAWlanAdvancedCustomization |
       DpskWlanAdvancedCustomization |
       PskWlanAdvancedCustomization;
-  },
+  }
 }
 
 export interface Venue {
