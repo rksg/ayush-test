@@ -96,6 +96,10 @@ describe('formatter', () => {
       expect(formatter('txFormat')('_MIN')).toBe('Min')
     })
   })
+  it('numberWithCommas', () => testFormat('numberWithCommas', {
+    123: '123',
+    91890620: '91,890,620'
+  }))
   describe('calendarFormat', () => {
     beforeEach(() => {
       jest
@@ -255,6 +259,10 @@ describe('formatter', () => {
     it('Should format a timestamp to HH', () => {
       expect(formatter('hourFormat')(1456885800000))
         .toBe(moment(1456885800000).format('HH'))
+    })
+    it('Should format a timestamp to DD/MM/YYYY hh:mm A', () => {
+      expect(formatter('dateTime12hourFormat')(1456885800000))
+        .toBe(moment(1456885800000).format('DD/MM/YYYY hh:mm A'))
     })
     it('With tz', () => {
       expect(formatter('dateTimeFormatWithSeconds')(1456885800000, 'America/Los_Angeles'))

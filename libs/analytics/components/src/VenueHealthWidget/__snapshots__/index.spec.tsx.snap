@@ -28,7 +28,7 @@ exports[`Health Widget should render KPI widgets 1`] = `
                   class="ant-space-item"
                 >
                   <div
-                    class="styledComponents__Title-sc-13w5wfx-5 eyxVFQ"
+                    class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
                   />
                 </div>
               </div>
@@ -57,17 +57,17 @@ exports[`Health Widget should render KPI widgets 1`] = `
                 class="Grid__Container-sc-5irhjd-1 zzbxI"
               >
                 <div
-                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1chsnnf-1 beaitu"
+                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1chsnnf-0 dLhrn"
                 >
                   <div
                     class="ant-space-item"
                   >
                     <div
-                      class="styledComponents__Title-sc-13w5wfx-5 styledComponents__Title-sc-1chsnnf-0 eyxVFQ gSXMOS"
+                      class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
                     >
                       Client Experience
                       <svg
-                        class="styledComponents__HistoricalOutlinedIcon-sc-13w5wfx-2 styledComponents__HistoricalIcon-sc-1chsnnf-2 dGmXEJ jKsaam"
+                        class="styledComponents__HistoricalOutlinedIcon-sc-13w5wfx-2 styledComponents__HistoricalIcon-sc-1chsnnf-1 dGmXEJ dtUtKV"
                         data-testid="HistoricalOutlined"
                       />
                     </div>
@@ -83,7 +83,7 @@ exports[`Health Widget should render KPI widgets 1`] = `
                 class="Grid__Container-sc-5irhjd-1 zzbxI"
               >
                 <div
-                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1chsnnf-1 beaitu"
+                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1chsnnf-0 dLhrn"
                 >
                   <div
                     class="ant-space-item"
@@ -106,7 +106,7 @@ exports[`Health Widget should render KPI widgets 1`] = `
                 class="Grid__Container-sc-5irhjd-1 zzbxI"
               >
                 <div
-                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1chsnnf-1 beaitu"
+                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1chsnnf-0 dLhrn"
                 >
                   <div
                     class="ant-space-item"
@@ -130,7 +130,7 @@ exports[`Health Widget should render KPI widgets 1`] = `
                 class="Grid__Container-sc-5irhjd-1 zzbxI"
               >
                 <div
-                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1chsnnf-1 beaitu"
+                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1chsnnf-0 dLhrn"
                 >
                   <div
                     class="ant-space-item"
@@ -182,7 +182,7 @@ exports[`Health Widget should render KPI widgets for empty threshold value 1`] =
                   class="ant-space-item"
                 >
                   <div
-                    class="styledComponents__Title-sc-13w5wfx-5 eyxVFQ"
+                    class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
                   />
                 </div>
               </div>
@@ -211,17 +211,17 @@ exports[`Health Widget should render KPI widgets for empty threshold value 1`] =
                 class="Grid__Container-sc-5irhjd-1 zzbxI"
               >
                 <div
-                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1chsnnf-1 beaitu"
+                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1chsnnf-0 dLhrn"
                 >
                   <div
                     class="ant-space-item"
                   >
                     <div
-                      class="styledComponents__Title-sc-13w5wfx-5 styledComponents__Title-sc-1chsnnf-0 eyxVFQ gSXMOS"
+                      class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
                     >
                       Client Experience
                       <svg
-                        class="styledComponents__HistoricalOutlinedIcon-sc-13w5wfx-2 styledComponents__HistoricalIcon-sc-1chsnnf-2 dGmXEJ jKsaam"
+                        class="styledComponents__HistoricalOutlinedIcon-sc-13w5wfx-2 styledComponents__HistoricalIcon-sc-1chsnnf-1 dGmXEJ dtUtKV"
                         data-testid="HistoricalOutlined"
                       />
                     </div>
@@ -237,7 +237,7 @@ exports[`Health Widget should render KPI widgets for empty threshold value 1`] =
                 class="Grid__Container-sc-5irhjd-1 zzbxI"
               >
                 <div
-                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1chsnnf-1 beaitu"
+                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1chsnnf-0 dLhrn"
                 >
                   <div
                     class="ant-space-item"
@@ -260,7 +260,7 @@ exports[`Health Widget should render KPI widgets for empty threshold value 1`] =
                 class="Grid__Container-sc-5irhjd-1 zzbxI"
               >
                 <div
-                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1chsnnf-1 beaitu"
+                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1chsnnf-0 dLhrn"
                 >
                   <div
                     class="ant-space-item"
@@ -284,7 +284,7 @@ exports[`Health Widget should render KPI widgets for empty threshold value 1`] =
                 class="Grid__Container-sc-5irhjd-1 zzbxI"
               >
                 <div
-                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1chsnnf-1 beaitu"
+                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1chsnnf-0 dLhrn"
                 >
                   <div
                     class="ant-space-item"

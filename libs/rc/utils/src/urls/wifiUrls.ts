@@ -213,6 +213,14 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/capabilities'
   },
+  getDpskPassphraseByQuery: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/dpsk-passphrase/query'
+  },
+  getApCustomization: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/customization'
+  },
   updateApCustomization: {
     method: 'put',
     url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/customization'
