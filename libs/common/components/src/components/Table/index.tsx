@@ -47,7 +47,8 @@ export interface TableProps <RecordType>
     rowKey?: Exclude<ProAntTableProps<RecordType, ParamsType>['rowKey'], Function>
     columns: TableColumn<RecordType, 'text'>[]
     actions?: Array<{
-      label: string
+      label: string,
+      disabled?: boolean,
       onClick: () => void
     }>
     rowActions?: Array<{
@@ -263,6 +264,7 @@ function Table <RecordType extends Record<string, any>> (
         key={index}
         type='link'
         size='small'
+        disabled={action.disabled}
         onClick={action.onClick}
         children={action.label}
       />)}
