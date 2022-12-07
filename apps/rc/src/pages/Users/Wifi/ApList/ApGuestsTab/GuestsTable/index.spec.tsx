@@ -11,7 +11,7 @@ import {
 } from '@acx-ui/test-utils'
 
 
-import { GuestClient } from '../../../__tests__/fixtures'
+import { GuestClient, AllowedNetworkList } from '../../../__tests__/fixtures'
 
 
 import GuestsTable from '.'
@@ -26,6 +26,10 @@ describe('Guest Table', () => {
       rest.post(
         CommonUrlsInfo.getGuestsList.url,
         (req, res, ctx) => res(ctx.json(GuestClient))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVMNetworksList.url,
+        (req, res, ctx) => res(ctx.json(AllowedNetworkList))
       )
     )
     params = {

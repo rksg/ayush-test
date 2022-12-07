@@ -10,7 +10,7 @@ import moment                                                                   
 import { useIntl }                                                              from 'react-intl'
 import { useParams }                                                            from 'react-router-dom'
 
-import { Loader, Button, Drawer, cssStr, showActionModal } from '@acx-ui/components'
+import { Button, Drawer, cssStr, showActionModal } from '@acx-ui/components'
 import {
   useLazyGetGuestNetworkListQuery,
   useAddGuestPassMutation,
@@ -54,6 +54,107 @@ const payload = {
     captiveType: [GuestNetworkTypeEnum.GuestPass]
   },
   url: '/api/viewmodel/tenant/{tenantId}/network'
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const genUpdatedTemplate = (guestDetails: any, langDictionary: any) => {
+  const userName = guestDetails.name
+  const ssid = guestDetails.wifiNetwork
+
+  return `
+  <div style="max-width: 600px;margin:0 auto;">
+    <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%;">
+      <tbody>
+        <tr>
+          <td style="border-top:6.94px solid #EC7100;direction:ltr;font-size:0px;padding:20px 0;text-align:center;">
+            <div style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
+              <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
+                <tbody>
+                  <tr>
+                    <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+                      <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;border-spacing:0px;">
+                        <tbody>
+                          <tr>
+                            <td style="width:149px;">
+                              <img alt="Header ruckus logo" height="auto" src="${base64Images.ruckusCommScopeLogo}"
+                              style="border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:12px;" width="149" />
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+                      <div style="font-family:Open Sans, Helvetica, Arial, sans-serif;font-size:12px;line-height:1;text-align:left;color:#565758;">
+                        <div style="line-height:16px;">${langDictionary['hello']} ${userName}, </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+                      <div style="font-family:Open Sans, Helvetica, Arial, sans-serif;font-size:12px;line-height:1;text-align:left;color:#565758;">
+                        <div style="line-height:16px;">${langDictionary['youCanAccess']}: </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+                      <div style="font-family:Open Sans, Helvetica, Arial, sans-serif;font-size:12px;line-height:1;text-align:left;color:#565758;">
+                        <div id="credentials${guestDetails.guestNumber}" style="font-weight:600;color:#333333;font-size:10px;line-height:10px;height:19px">
+                          ${langDictionary['wifiNetwork']}
+                        </div>
+                        <div class="light-gray" style="padding:10px;font-size:20px;color:#333333;line-height:24px;border-radius:4px;font-weight:600;">
+                          ${ssid}
+                        </div>
+                        <br><br>
+                        <div style="font-weight:bold;color:#333333;font-size:10px;line-height:10px;height:19px">
+                          ${langDictionary['password']}
+                        </div>
+                        <div class="light-gray" style="padding:10px;font-size:20px;color:#333333;line-height:24px;border-radius:4px;font-weight:600;">
+                          ${guestDetails.password}
+                        </div>
+                        <br><br>
+                        <div style="line-height:16px;">
+                          ${langDictionary['accessIsValid']}${guestDetails.validFor}
+                        <div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td align="right" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+                      <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;border-spacing:0px;">
+                        <tbody>
+                          <tr>
+                            <td style="width:126px;">
+                              <img alt="Footer power logo" height="auto" src="${base64Images.poweredBy}"
+                              style="border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:12px;" width="126" />
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td align="left" style="font-size:0px;word-break:break-word;">
+            <div style="font-family:Open Sans, Helvetica, Arial, sans-serif;font-size:12px;line-height:1;text-align:left;color:#565758;">
+              <div class="footer-bg" style="height:40px;">
+                <div style="font-size: 8px;text-align:center;line-height:10px;padding-top:16px;color:#808284;">
+                  © 2022 Ruckus Wireless, Inc., a CommScope Company, 350 West Java Dr. Sunnyvale, CA 94089 USA
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  `
 }
 
 export function AddGuestDrawer (props: AddGuestProps) {
@@ -140,107 +241,6 @@ export function AddGuestDrawer (props: AddGuestProps) {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const genUpdatedTemplate = (guestDetails: any, langDictionary: any) => {
-    const userName = guestDetails.name
-    const ssid = guestDetails.wifiNetwork
-
-    return `
-    <div style="max-width: 600px;margin:0 auto;">
-      <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%;">
-        <tbody>
-          <tr>
-            <td style="border-top:6.94px solid #EC7100;direction:ltr;font-size:0px;padding:20px 0;text-align:center;">
-              <div style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
-                <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
-                  <tbody>
-                    <tr>
-                      <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
-                        <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;border-spacing:0px;">
-                          <tbody>
-                            <tr>
-                              <td style="width:149px;">
-                                <img alt="Header ruckus logo" height="auto" src="${base64Images.ruckusCommScopeLogo}"
-                                style="border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:12px;" width="149" />
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
-                        <div style="font-family:Open Sans, Helvetica, Arial, sans-serif;font-size:12px;line-height:1;text-align:left;color:#565758;">
-                          <div style="line-height:16px;">${langDictionary['hello']} ${userName}, </div>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
-                        <div style="font-family:Open Sans, Helvetica, Arial, sans-serif;font-size:12px;line-height:1;text-align:left;color:#565758;">
-                          <div style="line-height:16px;">${langDictionary['youCanAccess']}: </div>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
-                        <div style="font-family:Open Sans, Helvetica, Arial, sans-serif;font-size:12px;line-height:1;text-align:left;color:#565758;">
-                          <div id="credentials${guestDetails.guestNumber}" style="font-weight:600;color:#333333;font-size:10px;line-height:10px;height:19px">
-                            ${langDictionary['wifiNetwork']}
-                          </div>
-                          <div class="light-gray" style="padding:10px;font-size:20px;color:#333333;line-height:24px;border-radius:4px;font-weight:600;">
-                            ${ssid}
-                          </div>
-                          <br><br>
-                          <div style="font-weight:bold;color:#333333;font-size:10px;line-height:10px;height:19px">
-                            ${langDictionary['password']}
-                          </div>
-                          <div class="light-gray" style="padding:10px;font-size:20px;color:#333333;line-height:24px;border-radius:4px;font-weight:600;">
-                            ${guestDetails.password}
-                          </div>
-                          <br><br>
-                          <div style="line-height:16px;">
-                            ${langDictionary['accessIsValid']}${guestDetails.validFor}
-                          <div>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td align="right" style="font-size:0px;padding:10px 25px;word-break:break-word;">
-                        <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;border-spacing:0px;">
-                          <tbody>
-                            <tr>
-                              <td style="width:126px;">
-                                <img alt="Footer power logo" height="auto" src="${base64Images.poweredBy}"
-                                style="border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:12px;" width="126" />
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td align="left" style="font-size:0px;word-break:break-word;">
-              <div style="font-family:Open Sans, Helvetica, Arial, sans-serif;font-size:12px;line-height:1;text-align:left;color:#565758;">
-                <div class="footer-bg" style="height:40px;">
-                  <div style="font-size: 8px;text-align:center;line-height:10px;padding-top:16px;color:#808284;">
-                    © 2022 Ruckus Wireless, Inc., a CommScope Company, 350 West Java Dr. Sunnyvale, CA 94089 USA
-                  </div>
-                </div>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    `
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const genTemplate = (guestDetails: any, langDictionary: any) => {
     return `
       <div class="color-2" style="text-align: left; margin-bottom: 2cm; font-size: 11pt;font-weight: normal">` + guestDetails.currentDate + `</div>
@@ -322,7 +322,7 @@ export function AddGuestDrawer (props: AddGuestProps) {
     }
   }
 
-  const generateGuestPrint = async (guests: Guest[], useUpdatedTemplate = false, expiresDate?: string) =>{
+  const generateGuestPrint = async (guests: Guest[], useUpdatedTemplate: boolean, expiresDate?: string) =>{
     let printTemplate = ''
     for (let i = 0; i < guests.length; i++) {
       /** Insert page break if multi-page */
@@ -361,7 +361,7 @@ export function AddGuestDrawer (props: AddGuestProps) {
     setVisible(false)
   }
 
-  const onSave = () => {
+  const onSave = async () => {
     const payload = [form.getFieldsValue()]
     if(form.getFieldValue('deliveryMethods').length === 0){
       showActionModal({
@@ -374,11 +374,13 @@ export function AddGuestDrawer (props: AddGuestProps) {
           buttons: [{
             text: 'cancel',
             type: 'link', // TODO: will change after DS update
-            key: 'cancel'
+            key: 'cancel',
+            closeAfterAction: true
           }, {
             text: $t({ defaultMessage: 'Yes, create guest pass' }),
             type: 'primary',
             key: 'override',
+            closeAfterAction: true,
             handler () {
               addGuestPass({ params: { tenantId: params.tenantId }, payload: payload })
               setVisible(false)
@@ -442,7 +444,7 @@ export function AddGuestDrawer (props: AddGuestProps) {
   }
 
   const onPhoneNumberChange = () => {
-    const deliveryMethods = form.getFieldValue('deliveryMethods') || []
+    const deliveryMethods = form.getFieldValue('deliveryMethods')
     form.validateFields(['mobilePhoneNumber']).then(() => {
       if(form.getFieldValue('mobilePhoneNumber') !== ''){
         setPhoneNumberError(false)
@@ -459,7 +461,7 @@ export function AddGuestDrawer (props: AddGuestProps) {
   }
 
   const onEmailChange = () => {
-    const deliveryMethods = form.getFieldValue('deliveryMethods') || []
+    const deliveryMethods = form.getFieldValue('deliveryMethods')
     form.validateFields(['email']).then(() => {
       if(form.getFieldValue('email') !== ''){
         setEmailError(false)
@@ -476,7 +478,7 @@ export function AddGuestDrawer (props: AddGuestProps) {
   }
 
   const content =
-  <Form layout='vertical' form={form} onFinish={onSave}>
+  <Form layout='vertical' form={form} onFinish={onSave} data-testid='guest-form'>
     <Form.Item
       name='name'
       label={$t({ defaultMessage: 'Guest Name' })}
@@ -628,6 +630,7 @@ export function AddGuestDrawer (props: AddGuestProps) {
 
   const footer = [
     <Button
+      data-testid='saveBtn'
       key='saveBtn'
       onClick={() => form.submit()}
       type={'secondary'}>
@@ -641,15 +644,13 @@ export function AddGuestDrawer (props: AddGuestProps) {
   ]
 
   return (
-    <Loader>
-      <Drawer
-        title={'Add Guest Pass'}
-        visible={visible}
-        onClose={onClose}
-        children={content}
-        footer={<FooterDiv>{footer}</FooterDiv>}
-        maskClosable={true}
-      />
-    </Loader>
+    <Drawer
+      title={'Add Guest Pass'}
+      visible={visible}
+      onClose={onClose}
+      children={content}
+      footer={<FooterDiv>{footer}</FooterDiv>}
+      maskClosable={true}
+    />
   )
 }

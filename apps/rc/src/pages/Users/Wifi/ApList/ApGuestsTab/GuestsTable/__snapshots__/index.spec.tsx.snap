@@ -9,6 +9,67 @@ exports[`Guest Table should render table 1`] = `
       class="styledComponents__Wrapper-sc-1abm7iv-13 crtNbp"
     >
       <div
+        class="ant-space ant-space-horizontal ant-space-align-center"
+        style="display: flex; justify-content: flex-end;"
+      >
+        <div
+          class="ant-space-item"
+          style="margin-right: 0px;"
+        >
+          <button
+            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+            type="button"
+          >
+            <span>
+              Add Guest
+            </span>
+          </button>
+        </div>
+        <span
+          class="ant-space-item-split"
+          style="margin-right: 0px;"
+        >
+          <div
+            class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1abm7iv-14 jcXayc"
+            role="separator"
+          />
+        </span>
+        <div
+          class="ant-space-item"
+          style="margin-right: 0px;"
+        >
+          <button
+            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+            type="button"
+          >
+            <span>
+              Add Guest Pass Network
+            </span>
+          </button>
+        </div>
+        <span
+          class="ant-space-item-split"
+          style="margin-right: 0px;"
+        >
+          <div
+            class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1abm7iv-14 jcXayc"
+            role="separator"
+          />
+        </span>
+        <div
+          class="ant-space-item"
+        >
+          <button
+            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+            type="button"
+          >
+            <span>
+              Import from file
+            </span>
+          </button>
+        </div>
+      </div>
+      <div
         class="ant-pro-table"
       >
         <div
