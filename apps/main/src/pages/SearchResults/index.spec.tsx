@@ -16,15 +16,8 @@ const params = { searchVal: 'test%3F', tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fc
 
 describe('Search Results', () => {
   beforeEach(() => {
-    mockRestApiQuery(CommonUrlsInfo.getVenuesList.url, 'post', {
-      status: 200,
-      data: venueListData,
-      totalCount: 1
-    })
-    mockRestApiQuery(CommonUrlsInfo.getVMNetworksList.url, 'post', {
-      data: networkListData,
-      totalCount: 3
-    })
+    mockRestApiQuery(CommonUrlsInfo.getVenuesList.url, 'post', venueListData)
+    mockRestApiQuery(CommonUrlsInfo.getVMNetworksList.url, 'post', networkListData)
     mockRestApiQuery(CommonUrlsInfo.getApsList.url, 'post', apListData)
   })
 
@@ -54,5 +47,30 @@ describe('Search Results', () => {
     fragment.querySelectorAll('div[_echarts_instance_^="ec_"]')
       .forEach(element => element.removeAttribute('_echarts_instance_'))
     expect(fragment).toMatchSnapshot()
+  })
+
+  it('should render empty result correctly', async () => {
+    mockRestApiQuery(CommonUrlsInfo.getVenuesList.url, 'post', {
+      status: 200,
+      data: [],
+      totalCount: 0
+    })
+    mockRestApiQuery(CommonUrlsInfo.getVMNetworksList.url, 'post', {
+      data: [],
+      totalCount: 0
+    })
+    mockRestApiQuery(CommonUrlsInfo.getApsList.url, 'post', { data: [], totalCount: 0 })
+    render(
+      <Provider>
+        <SearchResults />
+      </Provider>,{
+        route: {
+          params: { ...params, searchVal: encodeURIComponent('bdcPerformanceVenue2') }
+        }
+      }
+    )
+    const header =
+      await screen.findByText(/Hmmmm... we couldn't find any match for "bdcPerformanceVenue2"/i)
+    expect(header).toBeInTheDocument()
   })
 })
