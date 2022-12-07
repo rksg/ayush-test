@@ -324,26 +324,24 @@ export function emailRegExp (value: string) {
 
 export function phoneRegExp (value: string) {
   const { $t } = getIntl()
-  // eslint-disable-next-line max-len
-  const re = new RegExp (/^[+][1-9]{1}\s?([0-9s-]|[- ]){10,16}$/)
+  const re = new RegExp (/^[+][1-9]{1,3}\s?([0-9s-]|[- ]){10,16}$/)
 
   if (value && !re.test(value)) {
     return Promise.reject($t(validationMessages.phoneNumber))
   }
-  ValidatePhoneNumber('2015550123', 'US')
-  if (value && !ValidatePhoneNumber('2015550123', 'US')){
+
+  if (value && !ValidatePhoneNumber(value)){
     return Promise.reject($t(validationMessages.phoneNumber))
   }
   return Promise.resolve()
 }
 
-
-export function ValidatePhoneNumber (phoneNumber: string, countryCode: string) {
+export function ValidatePhoneNumber (phoneNumber: string) {
   const phoneNumberUtil = PhoneNumberUtil.getInstance()
   let number
   let phoneNumberType
   try {
-    number = phoneNumberUtil.parse(phoneNumber, countryCode)
+    number = phoneNumberUtil.parse(phoneNumber, '')
     phoneNumberType = phoneNumberUtil.getNumberType(number)
   } catch (e) {
     return false
@@ -351,7 +349,7 @@ export function ValidatePhoneNumber (phoneNumber: string, countryCode: string) {
   if (!number) {
     return false
   } else {
-    if (!phoneNumberUtil.isValidNumberForRegion(number, countryCode) ||
+    if (!phoneNumberUtil.isValidNumber(number) ||
       (phoneNumberType !== PhoneNumberType.MOBILE && phoneNumberType !== PhoneNumberType.FIXED_LINE_OR_MOBILE)) {
       return false
     }
