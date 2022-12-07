@@ -26,7 +26,7 @@ export function ApAnalyticsTab () {
     <AnalyticsTabs
       incidentFilter={filter}
       healthFilter={filter}
-      healthPath={`devices/aps/${serialNumber}/details/analytics/health`}
+      healthPath={`devices/wifi/${serialNumber}/details/analytics/health`}
     />
   </Loader>
 }

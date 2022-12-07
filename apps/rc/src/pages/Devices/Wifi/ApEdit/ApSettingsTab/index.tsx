@@ -16,7 +16,7 @@ export function ApSettingsTab () {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
-  const basePath = useTenantLink(`/devices/aps/${params.serialNumber}/edit/settings/`)
+  const basePath = useTenantLink(`/devices/wifi/${params.serialNumber}/edit/settings/`)
   const { editContextData, setEditContextData } = useContext(ApEditContext)
 
   const onTabChange = (tab: string) => {
