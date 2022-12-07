@@ -31,6 +31,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/eventalarmapi/:tenantId/alarm/meta'
   },
+  getEventListMeta: {
+    method: 'post',
+    url: '/api/eventalarmapi/:tenantId/event/meta'
+  },
   getApsList: {
     method: 'post',
     url: '/api/viewmodel/:tenantId/aps'
@@ -118,6 +122,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getService: {
     method: 'get',
     url: '/api/tenant/:tenantId/service/:serviceId'
+  },
+  getDHCPService: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/dhcpconfigserviceprofiles/:serviceId'
   },
   saveDHCPService: {
     method: 'post',
@@ -251,9 +259,54 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/user-profile'
   },
+  getVenueDHCPServiceProfile: {
+    //Retrieve Venue DHCP Service Profile Settings
+    method: 'get',
+    url: '/api/venues/:venueId/dhcpconfigserviceprofilesettings'
+  },
+  getVenueActivePools: {
+    //Get Venue Active DHCP Pool
+    method: 'get',
+    url: '/api/venues/:venueId/activedhcppools'
+  },
+  getVenueLeases: {
+    //Get Venue Active DHCP Pool
+    method: 'get',
+    url: '/api/venues/:venueId/dhcpConfigServiceProfileLeases'
+  },
+  getDHCPProfiles: {
+    //Get Venue Active DHCP Pool
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/dhcpconfigserviceprofiles'
+  },
+  activeVenueDHCPPool: {
+    //Get Venue Active DHCP Pool
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/venues/:venueId/dhcppools/:dhcppoolId'
+  },
   getApDetailHeader: {
     method: 'get',
     url: '/api/viewmodel/tenant/:tenantId/ap/:serialNumber/detailheader'
+  },
+  getHistoricalClientList: {
+    method: 'post',
+    url: '/api/eventalarmapi/:tenantId/event/hist_client_list'
+  },
+  getClientSessionHistory: {
+    method: 'post',
+    url: '/api/reporting/tenant/:tenantId/report/clientSessionHistory'
+  },
+  getClientList: {
+    method: 'post',
+    url: '/api/viewmodel/:tenantId/client/clientlist'
+  },
+  getClientMeta: {
+    method: 'post',
+    url: '/api/viewmodel/:tenantId/client/meta'
+  },
+  getGuestsList: {
+    method: 'post',
+    url: '/api/viewmodel/tenant/:tenantId/guests'
   },
   getApNetworkList: {
     method: 'post',

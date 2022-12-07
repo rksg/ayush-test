@@ -33,7 +33,7 @@ exports[`Floor Plan Gallery View should render correctly Gallery View 1`] = `
                     class="ant-space-item"
                   >
                     <div
-                      class="styledComponents__Title-sc-13w5wfx-5 eyxVFQ"
+                      class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
                     >
                       TEST_2
                     </div>
@@ -99,7 +99,7 @@ exports[`Floor Plan Gallery View should render correctly Gallery View 1`] = `
                     class="ant-space-item"
                   >
                     <div
-                      class="styledComponents__Title-sc-13w5wfx-5 eyxVFQ"
+                      class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
                     >
                       dscx
                     </div>

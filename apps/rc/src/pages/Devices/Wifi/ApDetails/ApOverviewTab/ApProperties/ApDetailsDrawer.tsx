@@ -237,7 +237,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
     }
   ]
   const content = currentAP?.deviceStatusSeverity === ApVenueStatusEnum.OPERATIONAL ?
-    <ContentSwitcher tabDetails={tabDetails} size='large' space={5} /> :
+    <ContentSwitcher tabDetails={tabDetails} size='large' /> :
     <PropertiesTab />
 
   return (

@@ -32,7 +32,8 @@ COPY libs ./libs
 COPY tools/tests ./tools/tests
 
 # dump git information
-RUN echo NX_GIT_SHA=$DRONE_COMMIT_SHA >> .env \
+RUN export $(cat ${ENV_FILE}) \
+  && echo NX_GIT_SHA=$DRONE_COMMIT_SHA >> .env \
   && echo NX_GIT_DATE=\'$(date -R "@$((DRONE_BUILD_CREATED))")\' >> .env
 
 ###############################################################
@@ -42,7 +43,7 @@ RUN node ./node_modules/.bin/nx run-many --target=lint --all --verbose
 COPY tools/docker/tscValidator.sh ./tools/docker/tscValidator.sh
 RUN chmod +x tools/docker/tscValidator.sh
 RUN tools/docker/tscValidator.sh
-RUN node ./node_modules/.bin/nx run rc:test --coverage --maxWorkers=25%
+RUN node ./node_modules/.bin/nx run rc:test --coverage --maxWorkers=50%
 RUN node ./node_modules/.bin/nx run analytics:test --coverage --maxWorkers=50%
 RUN node ./node_modules/.bin/nx run-many --target=test --all --exclude=rc,analytics --coverage --runInBand --verbose
 
