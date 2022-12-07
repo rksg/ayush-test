@@ -16,15 +16,8 @@ const params = { searchVal: 'test%3F', tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fc
 
 describe('Search Results', () => {
   beforeEach(() => {
-    mockRestApiQuery(CommonUrlsInfo.getVenuesList.url, 'post', {
-      status: 200,
-      data: venueListData,
-      totalCount: 1
-    })
-    mockRestApiQuery(CommonUrlsInfo.getVMNetworksList.url, 'post', {
-      data: networkListData,
-      totalCount: 3
-    })
+    mockRestApiQuery(CommonUrlsInfo.getVenuesList.url, 'post', venueListData)
+    mockRestApiQuery(CommonUrlsInfo.getVMNetworksList.url, 'post', networkListData)
     mockRestApiQuery(CommonUrlsInfo.getApsList.url, 'post', apListData)
   })
 
