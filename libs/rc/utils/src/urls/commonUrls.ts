@@ -31,6 +31,14 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/eventalarmapi/:tenantId/alarm/meta'
   },
+  clearAlarm: {
+    method: 'delete',
+    url: '/api/eventalarmapi/:tenantId/alarm/clear/:alarmId'
+  },
+  clearAllAlarm: {
+    method: 'delete',
+    url: '/api/eventalarmapi/:tenantId/alarm'
+  },
   getEventListMeta: {
     method: 'post',
     url: '/api/eventalarmapi/:tenantId/event/meta'
@@ -275,6 +283,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getApDetailHeader: {
     method: 'get',
     url: '/api/viewmodel/tenant/:tenantId/ap/:serialNumber/detailheader'
+  },
+  getCloudVersion: {
+    method: 'get',
+    url: '/api/upgrade/tenant/:tenantId/upgrade-version'
   },
   getHistoricalClientList: {
     method: 'post',
