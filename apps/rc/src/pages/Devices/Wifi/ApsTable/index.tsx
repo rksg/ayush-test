@@ -1,4 +1,4 @@
-import { Menu, Tooltip }    from 'antd'
+import { Menu }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import {
@@ -6,9 +6,10 @@ import {
   Dropdown,
   PageHeader
 } from '@acx-ui/components'
-import { ApTable }    from '@acx-ui/rc/components'
-import { TenantLink } from '@acx-ui/react-router-dom'
-import { notAvailableMsg } from '@acx-ui/utils'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { ApTable }                from '@acx-ui/rc/components'
+import { TenantLink }             from '@acx-ui/react-router-dom'
+import { notAvailableMsg }        from '@acx-ui/utils'
 
 export default function ApsTable () {
   const { $t } = useIntl()
@@ -20,7 +21,7 @@ export default function ApsTable () {
       key: 'import-from-file',
       label: <TenantLink to='TODO'>{$t({ defaultMessage: 'Import from file' })}</TenantLink>,
       title: $t(notAvailableMsg),
-      disabled: true,
+      disabled: !useIsSplitOn(Features.DEVICES)
     }, {
       key: 'ap-group',
       label: <TenantLink to='devices/apgroups/add'>

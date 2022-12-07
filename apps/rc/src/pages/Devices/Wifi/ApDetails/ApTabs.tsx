@@ -1,16 +1,18 @@
 /* eslint-disable max-len */
 import { useIntl } from 'react-intl'
 
-import { Tabs, Tooltip }                                  from '@acx-ui/components'
+import { Tabs, Tooltip }                         from '@acx-ui/components'
+import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 import { ApDetailHeader, ApDeviceStatusEnum }    from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { notAvailableMsg } from '@acx-ui/utils'
+import { notAvailableMsg }                       from '@acx-ui/utils'
 
 function ApTabs (props:{ apDetail: ApDetailHeader }) {
   const { $t } = useIntl()
   const params = useParams()
   const basePath = useTenantLink(`/devices/aps/${params.serialNumber}/details/`)
   const navigate = useNavigate()
+  const releaseTag = useIsSplitOn(Features.DEVICES)
   const onTabChange = (tab: string) => {
     if (tab === 'troubleshooting') tab = `${tab}/ping`
     navigate({
@@ -28,34 +30,34 @@ function ApTabs (props:{ apDetail: ApDetailHeader }) {
       {currentApOperational &&
         <Tabs.TabPane tab={$t({ defaultMessage: 'Troubleshooting' })}
           key='troubleshooting' />}
-      <Tabs.TabPane 
-       disabled
-       tab={<Tooltip title={$t(notAvailableMsg)}>{$t({ defaultMessage: 'Reports' })}</Tooltip>}
-       key='reports' 
+      <Tabs.TabPane
+        disabled={!releaseTag}
+        tab={<Tooltip title={$t(notAvailableMsg)}>{$t({ defaultMessage: 'Reports' })}</Tooltip>}
+        key='reports'
       />
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'Networks ({networksCount})' }, { networksCount: apDetail?.headers?.networks })}
         key='networks'
       />
       <Tabs.TabPane
-        disabled
+        disabled={!releaseTag}
         tab={<Tooltip title={$t(notAvailableMsg)}>
           {$t({ defaultMessage: 'Clients ({clientsCount})' }, { clientsCount: apDetail?.headers?.clients })}
         </Tooltip>}
         key='clients'
       />
       <Tabs.TabPane
-        disabled
+        disabled={!releaseTag}
         tab={<Tooltip title={$t(notAvailableMsg)}>
-        {$t({ defaultMessage: 'Services ({servicesCount})' }, { servicesCount: apDetail?.headers?.services || 0 })} 
-        {/* TODO: API support */}
-      </Tooltip>}
+          {$t({ defaultMessage: 'Services ({servicesCount})' }, { servicesCount: apDetail?.headers?.services || 0 })}
+          {/* TODO: API support */}
+        </Tooltip>}
         key='services'
       />
-      <Tabs.TabPane 
-        disabled
+      <Tabs.TabPane
+        disabled={!releaseTag}
         tab={<Tooltip title={$t(notAvailableMsg)}>{$t({ defaultMessage: 'Timeline' })} </Tooltip>}
-        key='timeline' 
+        key='timeline'
       />
     </Tabs>
   )

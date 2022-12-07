@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 
+import { useIntl } from 'react-intl'
+
 import {
   ConnectedClientsOverTime,
   NetworkHistory,
@@ -9,16 +11,15 @@ import {
   TrafficByVolume
 } from '@acx-ui/analytics/components'
 import { AnalyticsFilter, useAnalyticsFilter }    from '@acx-ui/analytics/utils'
-import { GridCol, GridRow, Tooltip }                       from '@acx-ui/components'
+import { GridCol, GridRow, Tooltip }              from '@acx-ui/components'
 import { ApInfoWidget }                           from '@acx-ui/rc/components'
 import { useApDetailsQuery, useApViewModelQuery } from '@acx-ui/rc/services'
 import { ApDetails, ApViewModel }                 from '@acx-ui/rc/utils'
 import { useParams }                              from '@acx-ui/react-router-dom'
+import { notAvailableMsg }                        from '@acx-ui/utils'
 
 import { ApPhoto }      from './ApPhoto'
 import { ApProperties } from './ApProperties'
-import { useIntl } from 'react-intl'
-import { notAvailableMsg } from '@acx-ui/utils'
 
 export function ApOverviewTab () {
   const { $t } = useIntl()
