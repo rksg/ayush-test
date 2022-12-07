@@ -198,7 +198,6 @@ describe('ApEdit', () => {
       expect(screen.getByLabelText(/Venue/)).toBeDisabled()
       await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
       await screen.findByText('Error occurred while updating AP')
-      await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     })
 
     it('should open unsaved changes modal', async () => {
