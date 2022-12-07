@@ -223,6 +223,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/rogue/ap'
   },
+  getOldVenueRogueAp: {
+    method: 'post',
+    url: '/api/viewmodel/tenant/:tenantId/venue/:venueId/rogue/ap'
+  },
   updateVenueRogueAp: {
     method: 'put',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/rogue/ap'
