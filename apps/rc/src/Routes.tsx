@@ -30,6 +30,7 @@ import PoliciesTable            from './pages/Policies/PoliciesTable'
 import SelectPolicyForm         from './pages/Policies/SelectPolicyForm'
 import DHCPDetail               from './pages/Services/DHCPDetail'
 import DHCPForm                 from './pages/Services/DHCPForm/DHCPForm'
+import DpskForm                 from './pages/Services/Dpsk/DpskForm/DpskForm'
 import MdnsProxyDetail          from './pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail'
 import MdnsProxyForm            from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
 import NetworkSegmentationForm  from './pages/Services/NetworkSegmentationForm/NetworkSegmentationForm'
@@ -160,6 +161,14 @@ function ServiceRoutes () {
       <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.DETAIL })}
         element={<DHCPDetail/>}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.CREATE })}
+        element={<DpskForm />}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.EDIT })}
+        element={<DpskForm editMode={true} />}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
