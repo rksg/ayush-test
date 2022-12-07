@@ -2226,7 +2226,7 @@ exports[`Test Details should render SwitchMemoryHigh correctly 1`] = `
                       class="ant-space-item"
                     >
                       <div
-                        class="styledComponents__Title-sc-13w5wfx-5 eyxVFQ"
+                        class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
                       >
                         Details
                       </div>
@@ -2294,7 +2294,7 @@ exports[`Test Details should render SwitchMemoryHigh correctly 1`] = `
                       class="ant-space-item"
                     >
                       <div
-                        class="styledComponents__Title-sc-13w5wfx-5 eyxVFQ"
+                        class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
                       >
                         Memory Utilization
                       </div>
@@ -2493,7 +2493,7 @@ exports[`Test Details should render SwitchPoePd correctly 1`] = `
                       class="ant-space-item"
                     >
                       <div
-                        class="styledComponents__Title-sc-13w5wfx-5 eyxVFQ"
+                        class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
                       >
                         Details
                       </div>
@@ -2705,7 +2705,7 @@ exports[`Test Details should render SwitchVlanMismatch correctly 1`] = `
                       class="ant-space-item"
                     >
                       <div
-                        class="styledComponents__Title-sc-13w5wfx-5 eyxVFQ"
+                        class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
                       >
                         Details
                       </div>
@@ -2773,7 +2773,7 @@ exports[`Test Details should render SwitchVlanMismatch correctly 1`] = `
                       class="ant-space-item"
                     >
                       <div
-                        class="styledComponents__Title-sc-13w5wfx-5 eyxVFQ"
+                        class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
                       >
                         Impacted Switches
                       </div>

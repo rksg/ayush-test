@@ -24,7 +24,9 @@ import {
 
 import { defaultVenuePayload, VenueTable } from '../Venues/VenuesTable'
 
+import NoData              from './NoData'
 import { Collapse, Panel } from './styledComponents'
+
 
 const pagination = { pageSize: 5 }
 
@@ -84,21 +86,32 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
   const results = searches.map(search => search(searchVal as string, $t))
   const count = results.reduce((count, { result }) => count + (result.data?.totalCount || 0), 0)
   return <Loader states={results.map(({ result }) => ({ ...result, isFetching: false }))}>
-    <PageHeader title={$t(
-      { defaultMessage: 'Search Results for "{searchVal}" ({count})' },
-      { searchVal, count }
-    )} />
-    <Collapse
-      defaultActiveKey={Object.keys(results)}
-    >
-      {count
-        ? results.map(({ component, title, result: { data } }, index) => data?.totalCount
-          ? <Panel key={index} header={`${title} (${data?.totalCount})`}>{component}</Panel>
-          : null
-        )
-        : <div>todo: empty search result</div>
-      }
-    </Collapse>
+    {count
+      ? <>
+        <PageHeader title={$t(
+          { defaultMessage: 'Search Results for "{searchVal}" ({count})' },
+          { searchVal, count }
+        )} />
+        <Collapse
+          defaultActiveKey={Object.keys(results)}
+        >
+          {
+            results.map(({ component, title, result: { data } }, index) => data?.totalCount
+              ? <Panel key={index} header={`${title} (${data?.totalCount})`}>{component}</Panel>
+              : null
+            )
+          }
+        </Collapse>
+      </>
+      : <>
+        <PageHeader title={$t(
+          { defaultMessage: 'Hmmmm... we couldn\'t find any match for "{searchVal}"' },
+          { searchVal }
+        )} />
+        <NoData />
+      </>
+    }
+
   </Loader>
 }
 

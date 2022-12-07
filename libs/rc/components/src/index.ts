@@ -18,8 +18,8 @@ export { useApActions } from './useApActions'
 export { VenueDevicesWidget } from './VenueDevicesWidget'
 export { VenueAlarmWidget } from './VenueAlarmWidget'
 export { VenuesDashboardWidget } from './VenuesDashboardWidget'
+export { WifiSignal } from './WifiSignal'
 export { ConnectedClientsTable } from './ConnectedClientsTable'
 export { StatusLight } from './StatusLight'
-
 
 export * from './pipes/apGroupPipes'

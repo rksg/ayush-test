@@ -34,6 +34,8 @@ describe('Guest Table', () => {
   })
 
   it('should render table', async () => {
+    jest.useFakeTimers()
+    jest.setSystemTime(new Date(Date.parse('2022-08-04T01:20:00+10:00')))
     const { asFragment } = render(
       <Provider>
         <GuestsTable />
@@ -42,8 +44,7 @@ describe('Guest Table', () => {
       })
 
 
-    jest.useFakeTimers()
-    jest.setSystemTime(new Date(Date.parse('2022-08-04T01:20:00+10:00')))
+
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect(asFragment()).toMatchSnapshot()
 
@@ -77,7 +78,7 @@ describe('Guest Table', () => {
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    fireEvent.click(await screen.findByText('01/01/2000 00:00'))
+    fireEvent.click(await screen.findByText('20/11/2022 08:57'))
     await screen.findByText('Guest Details')
   })
 

@@ -360,6 +360,7 @@ export const {
   useNetworkListQuery,
   useLazyNetworkListQuery,
   useGetNetworkQuery,
+  useLazyGetNetworkQuery,
   useNetworkDetailHeaderQuery,
   useNetworkVenueListQuery,
   useAddNetworkMutation,
