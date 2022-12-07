@@ -76,19 +76,6 @@ export function CustomTable () {
         onClick: () => showToast({ type: 'info', content: 'Add Item Clicked' })
       }, {
         label: 'Add Other Item',
-        onClick: () => showToast({ type: 'info', content: 'Add Other Item Clicked' })
-      }]}
-    />
-    Customizations (disabled action button)
-    <Table
-      columns={customColumns}
-      dataSource={customData}
-      actions={[{
-        label: 'Add Item',
-        disabled: true,
-        onClick: () => showToast({ type: 'info', content: 'Add Item Clicked' })
-      }, {
-        label: 'Add Other Item',
         disabled: true,
         onClick: () => showToast({ type: 'info', content: 'Add Other Item Clicked' })
       }]}
