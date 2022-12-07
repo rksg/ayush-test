@@ -17,10 +17,11 @@ import {
   AddGuestPassResponse,
   wifiNetworkDetail,
   AddGuestPassErrorResponse,
-  AllowedNetworkSingleList
+  AllowedNetworkSingleList,
+  AddGuestPassWihtoutExpirationResponse
 } from '../../../__tests__/fixtures'
 
-import { AddGuestDrawer, genUpdatedTemplate } from './addGuestDrawer'
+import { AddGuestDrawer, genUpdatedTemplate, getHumanizedLocale, getMomentLocale } from './addGuestDrawer'
 
 jest.mock('socket.io-client')
 
@@ -71,6 +72,76 @@ describe('Add Guest Drawer', () => {
     await userEvent.type(
       screen.getByRole('textbox', { name: 'Note' }),
       'test wifi'
+    )
+
+    const allowedNetworkCombo = await screen.findAllByRole('combobox')
+    fireEvent.mouseDown(allowedNetworkCombo[0])
+    const option = screen.getAllByText('guest pass wlan1')
+    await userEvent.click(option[0])
+
+    fireEvent.click(screen.getByTestId('saveBtn'))
+    expect(asFragment()).toMatchSnapshot()
+  })
+  it('should created guest without delivery methods correctly', async () => {
+    const { asFragment } = render(
+      <Provider>
+        <AddGuestDrawer visible={true} setVisible={jest.fn()} />
+      </Provider>, { route: { params } }
+    )
+    await userEvent.type(
+      screen.getByRole('textbox', { name: 'Guest Name' }),
+      'wifitest'
+    )
+
+    const allowedNetworkCombo = await screen.findAllByRole('combobox')
+    fireEvent.mouseDown(allowedNetworkCombo[0])
+    const option = screen.getAllByText('guest pass wlan1')
+    await userEvent.click(option[0])
+
+    await userEvent.click(screen.getByRole('checkbox', { name: /Print Guest pass/ }))
+
+    fireEvent.click(screen.getByTestId('saveBtn'))
+    expect(asFragment()).toMatchSnapshot()
+  })
+  it('should created guest without expiration period correctly', async () => {
+    mockServer.use(
+      rest.post(CommonUrlsInfo.addGuestPass.url, (req, res, ctx) =>{
+        return res(ctx.json(AddGuestPassWihtoutExpirationResponse))
+      })
+    )
+    const { asFragment } = render(
+      <Provider>
+        <AddGuestDrawer visible={true} setVisible={jest.fn()} />
+      </Provider>, { route: { params } }
+    )
+    await userEvent.type(
+      screen.getByRole('textbox', { name: 'Guest Name' }),
+      'wifitest'
+    )
+
+    const allowedNetworkCombo = await screen.findAllByRole('combobox')
+    fireEvent.mouseDown(allowedNetworkCombo[0])
+    const option = screen.getAllByText('guest pass wlan1')
+    await userEvent.click(option[0])
+
+    fireEvent.click(screen.getByTestId('saveBtn'))
+    expect(asFragment()).toMatchSnapshot()
+  })
+  it('should created guest without expiration and unit day period correctly', async () => {
+    AddGuestPassWihtoutExpirationResponse.response[0].expiration.unit = 'Day'
+    mockServer.use(
+      rest.post(CommonUrlsInfo.addGuestPass.url, (req, res, ctx) =>{
+        return res(ctx.json(AddGuestPassWihtoutExpirationResponse))
+      })
+    )
+    const { asFragment } = render(
+      <Provider>
+        <AddGuestDrawer visible={true} setVisible={jest.fn()} />
+      </Provider>, { route: { params } }
+    )
+    await userEvent.type(
+      screen.getByRole('textbox', { name: 'Guest Name' }),
+      'wifitest'
     )
 
     const allowedNetworkCombo = await screen.findAllByRole('combobox')
@@ -210,6 +281,7 @@ describe('Add Guest Drawer', () => {
     expect(asFragment()).toMatchSnapshot()
   })
   it('should handle error 422 correctly', async () => {
+    AddGuestPassErrorResponse.error.rootCauseErrors[0].code = 'GUEST-422006'
     mockServer.use(
       rest.post(CommonUrlsInfo.addGuestPass.url, (req, res, ctx) =>{
         return res(
@@ -295,6 +367,24 @@ describe('Add Guest Drawer', () => {
     )
 
     fireEvent.click(screen.getByTestId('saveBtn'))
+    expect(asFragment()).toMatchSnapshot()
+  })
+  it('test getMomentLocale', async () => {
+    getMomentLocale()
+    getMomentLocale('eng')
+  })
+  it('test getHumanizedLocale', async () => {
+    getHumanizedLocale()
+    getHumanizedLocale('pt_BR')
+  })
+  it('should close guest drawer correctly', async () => {
+    const { asFragment } = render(
+      <Provider>
+        <AddGuestDrawer visible={true} setVisible={jest.fn()} />
+      </Provider>, { route: { params } }
+    )
+
+    fireEvent.click(screen.getByTestId('cancelBtn'))
     expect(asFragment()).toMatchSnapshot()
   })
 })

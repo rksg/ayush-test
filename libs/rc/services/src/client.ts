@@ -190,5 +190,5 @@ export const {
   useLazyGetDpskPassphraseByQueryQuery,
   useGetHistoricalClientListQuery,
   useLazyGetHistoricalClientListQuery,
-  useGetClientListQuery,
+  useGetClientListQuery
 } = clientApi

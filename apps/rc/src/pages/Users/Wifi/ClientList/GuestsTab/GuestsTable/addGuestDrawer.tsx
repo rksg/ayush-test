@@ -157,6 +157,36 @@ export const genUpdatedTemplate = (guestDetails: any, langDictionary: any) => {
   `
 }
 
+export const getMomentLocale = (langCode?: string) => {
+  const LOCALE_MAP = new Map<string, string>([
+    ['pt_BR', 'pt-br'],   // Brazilian Portuguese
+    ['pt_PT', 'pt'],      // Portuguese
+    ['no', 'nb'],         // Norwegian
+    ['eng', 'en'],
+    ['zh_TW', 'zh-tw']
+  ])
+
+  if (!langCode) {
+    return 'en'
+  }
+
+  return LOCALE_MAP.has(langCode) ? LOCALE_MAP.get(langCode) : langCode
+}
+
+export const getHumanizedLocale = (langCode?: string) => {
+  const LOCALE_MAP = new Map<string, string>([
+    ['pt_BR', 'pt'],    // Brazilian Portuguese
+    ['pt_PT', 'pt'],    // Portuguese
+    ['cz', 'cs']        // Czech
+  ])
+
+  if (!langCode) {
+    return 'en'
+  }
+
+  return LOCALE_MAP.has(langCode) ? LOCALE_MAP.get(langCode) : langCode
+}
+
 export function AddGuestDrawer (props: AddGuestProps) {
   const { $t } = useIntl()
   const [form] = Form.useForm()
@@ -200,36 +230,6 @@ export function AddGuestDrawer (props: AddGuestProps) {
 
   const numberOfDevicesOptions = createNumberOfDevicesList()
 
-  const getMomentLocale = (langCode: string) => {
-    const LOCALE_MAP = new Map<string, string>([
-      ['pt_BR', 'pt-br'],   // Brazilian Portuguese
-      ['pt_PT', 'pt'],      // Portuguese
-      ['no', 'nb'],         // Norwegian
-      ['eng', 'en'],
-      ['zh_TW', 'zh-tw']
-    ])
-
-    if (!langCode) {
-      return 'en'
-    }
-
-    return LOCALE_MAP.has(langCode) ? LOCALE_MAP.get(langCode) : langCode
-  }
-
-  const getHumanizedLocale = (langCode: string) => {
-    const LOCALE_MAP = new Map<string, string>([
-      ['pt_BR', 'pt'],    // Brazilian Portuguese
-      ['pt_PT', 'pt'],    // Portuguese
-      ['cz', 'cs']        // Czech
-    ])
-
-    if (!langCode) {
-      return 'en'
-    }
-
-    return LOCALE_MAP.has(langCode) ? LOCALE_MAP.get(langCode) : langCode
-  }
-
   const humanizedDate = (validDuration: number, langCode: string) => {
     const langService = new HumanizeDurationLanguage()
     const humanizer = new HumanizeDuration(langService)
@@ -272,7 +272,7 @@ export function AddGuestDrawer (props: AddGuestProps) {
   }
 
   const getGuestPrintTemplate =
-  (guestDetails: { langCode: LangCode }, useUpdatedTemplate = false) => {
+  (guestDetails: { langCode: LangCode }, useUpdatedTemplate: boolean) => {
     const langDictionary = getGuestDictionaryByLangCode(guestDetails.langCode)
     return (useUpdatedTemplate) ?
       genUpdatedTemplate(guestDetails, langDictionary) :
@@ -411,32 +411,6 @@ export function AddGuestDrawer (props: AddGuestProps) {
             }
           } else {
             handleGuestPassResponse(res.data)
-          }
-        }).catch(err => {
-          if (err.errorCode === 1002) {
-            showActionModal({
-              type: 'error',
-              title: $t({ defaultMessage: 'Invalid Phone Number' }),
-              // eslint-disable-next-line max-len
-              content: $t({ defaultMessage: 'The entered mobile phone number is not valid. Please change to a valid number.' })
-            })
-          } else if (err.errorCode === 1025 ||
-            (err.error && err.error.rootCauseErrors[0].code === 'GUEST-409001')) {
-            showActionModal({
-              type: 'error',
-              title: $t({ defaultMessage: 'Mobile Phone Already Registered' }),
-              // eslint-disable-next-line max-len
-              content: $t({ defaultMessage: 'A guest with the same mobile phone number already exists on the selected guest network.  Please select a different network or change the guest\'s mobile phone number. Mobile Phone Already Registered' })
-            })
-          } else {
-            const errorMsg = err.errorMessage ?
-              err.errorMessage : err.error && err.error.rootCauseErrors['0'].message
-            showActionModal({
-              type: 'error',
-              title: $t({ defaultMessage: 'Error' }),
-              // eslint-disable-next-line max-len
-              content: errorMsg
-            })
           }
         })
       setVisible(false)
@@ -637,6 +611,7 @@ export function AddGuestDrawer (props: AddGuestProps) {
       {$t({ defaultMessage: 'Add' })}
     </Button>,
     <Button
+      data-testid='cancelBtn'
       key='cancelBtn'
       onClick={onClose}>
       {$t({ defaultMessage: 'Cancel' })}

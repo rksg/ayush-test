@@ -1,8 +1,16 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Add Guest Drawer should close guest drawer correctly 1`] = `<DocumentFragment />`;
+
 exports[`Add Guest Drawer should create guest correctly 1`] = `<DocumentFragment />`;
 
 exports[`Add Guest Drawer should create guest with single network options correctly 1`] = `<DocumentFragment />`;
+
+exports[`Add Guest Drawer should created guest without delivery methods correctly 1`] = `<DocumentFragment />`;
+
+exports[`Add Guest Drawer should created guest without expiration and unit day period correctly 1`] = `<DocumentFragment />`;
+
+exports[`Add Guest Drawer should created guest without expiration period correctly 1`] = `<DocumentFragment />`;
 
 exports[`Add Guest Drawer should handle error 400 correctly 1`] = `<DocumentFragment />`;
 

@@ -103,7 +103,7 @@ export const AllowedNetworkList = {
 
 export const AllowedNetworkSingleList = {
   fields: ['name', 'id', 'defaultGuestCountry'],
-  totalCount: 2,
+  totalCount: 1,
   page: 1,
   data: [
     {
@@ -172,12 +172,41 @@ export const AddGuestPassResponse = {
   ]
 }
 
+export const AddGuestPassWihtoutExpirationResponse = {
+  requestId: '3ba9cec3-38a9-4485-af84-4ff76473e10e',
+  response: [
+    {
+      id: '41272f2e-05e8-45ae-bfea-c6a1111c604a',
+      createdDate: 1670312604329,
+      lastModified: 1670312604329,
+      name: 'wifitest',
+      disabled: false,
+      networkId: '3f04e252a9d04180855813131d007aca',
+      notes: '',
+      email: '',
+      mobilePhoneNumber: '+12052220123',
+      maxDevices: 3,
+      ssid: 'guest pass wlan',
+      deliveryMethods: ['PRINT'],
+      guestUserType: 'GuestPass',
+      expiration: {
+        activationType: 'Creation',
+        duration: 24,
+        unit: 'Hour'
+      },
+      locale: 'en',
+      password: '796022'
+    }
+  ]
+}
+
+
 export const AddGuestPassErrorResponse = {
   requestId: '30c7aaf4-b884-4b20-996d-49cb046389a0',
   error: {
     rootCauseErrors: [
       {
-        code: 'GUEST-422006',
+        code: 'GUEST-409001',
         message: 'Invalid guest name'
       }
     ],
