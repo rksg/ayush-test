@@ -19,10 +19,10 @@ export const UserNameButton = styled(LayoutUI.ButtonSolid)`
     display: flex;
     justify-content: center;
     align-items: center;
-    font-family: Montserrat;
     font-style: normal;
     font-weight: 700;
-    font-size: 12px;
+    font-family: var(--acx-accent-brand-font);
+    font-size: var(--acx-headline-5-font-weight-bold);
 `
 
 export const RowWrapper = styled.div`

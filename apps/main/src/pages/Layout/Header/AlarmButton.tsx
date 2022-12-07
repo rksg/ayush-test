@@ -11,12 +11,15 @@ import {
   useAlarmsListQuery,
   useClearAlarmMutation,
   useClearAllAlarmMutation,
-  useGetAlarmCountQuery }  from '@acx-ui/rc/services'
+  useGetAlarmCountQuery,
+  eventAlarmApi }  from '@acx-ui/rc/services'
 import { Alarm, CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
 import { useParams }                            from '@acx-ui/react-router-dom'
+import { store }                                from '@acx-ui/store'
 import { formatter }                            from '@acx-ui/utils'
 
 import { ListItem, AcknowledgeCircle, WarningCircle, ClearButton, Meta, DeviceLink, ListTable, Drawer } from './styledComponents'
+
 
 const defaultArray: Alarm[] = []
 
@@ -121,6 +124,14 @@ export default function AlarmsHeaderButton () {
           style={{ height: 20, fontWeight: 700 }}
           onClick={async ()=>{
             await clearAllAlarm({ params: { ...params } })
+            //FIXME: temporary workaround to waiting for backend add websocket to refresh the RTK cache automatically
+            setTimeout(() => {
+              store.dispatch(
+                eventAlarmApi.util.invalidateTags([
+                  { type: 'Alarms', id: 'LIST' },
+                  { type: 'Alarms', id: 'OVERVIEW' }
+                ]))
+            }, 1000)
           }}>
           {$t({ defaultMessage: 'Clear all alarms' })}
         </Button>
@@ -145,6 +156,14 @@ export default function AlarmsHeaderButton () {
                   icon={<AcknowledgeCircle/>}
                   onClick={async ()=>{
                     await clearAlarm({ params: { ...params, alarmId: alarm.id } })
+                    //FIXME: temporary workaround to waiting for backend add websocket to refresh the RTK cache automatically
+                    setTimeout(() => {
+                      store.dispatch(
+                        eventAlarmApi.util.invalidateTags([
+                          { type: 'Alarms', id: 'LIST' },
+                          { type: 'Alarms', id: 'OVERVIEW' }
+                        ]))
+                    }, 1000)
                   }}
                 />
               </Tooltip>
@@ -158,7 +177,7 @@ export default function AlarmsHeaderButton () {
                       <DeviceLink>{alarm.apName}</DeviceLink>
                     </GridCol>
                     <GridCol col={{ span: 9, offset: 10 }}>
-                      {formatter('alarmFormat')(alarm.startTime)}
+                      {formatter('calendarFormat')(alarm.startTime)}
                     </GridCol>
                   </GridRow>
                 }
