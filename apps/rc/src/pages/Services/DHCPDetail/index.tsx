@@ -33,7 +33,7 @@ export default function DHCPServiceDetail () {
   return (
     <>
       <PageHeader
-        title={data?.name}
+        title={data?.serviceName}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Services' }), link: '/services' }
         ]}

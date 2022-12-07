@@ -626,7 +626,7 @@ exports[`Guest Table should render table 1`] = `
                                   type="button"
                                 >
                                   <span>
-                                    01/01/2000 00:00
+                                    14/11/2022 08:51
                                   </span>
                                 </button>
                               </td>
@@ -691,7 +691,7 @@ exports[`Guest Table should render table 1`] = `
                                   type="button"
                                 >
                                   <span>
-                                    Invalid date
+                                    15/11/2022 08:57
                                   </span>
                                 </button>
                               </td>
@@ -758,7 +758,7 @@ exports[`Guest Table should render table 1`] = `
                                   type="button"
                                 >
                                   <span>
-                                    28/12/2022 08:15
+                                    28/11/2022 08:15
                                   </span>
                                 </button>
                               </td>
@@ -823,7 +823,7 @@ exports[`Guest Table should render table 1`] = `
                                   type="button"
                                 >
                                   <span>
-                                    03/08/2022 15:20
+                                    20/11/2022 08:57
                                   </span>
                                 </button>
                               </td>

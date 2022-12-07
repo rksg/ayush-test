@@ -25,7 +25,7 @@ exports[`ClientProperties Historical Client should render correctly when search 
                 class="ant-space-item"
               >
                 <div
-                  class="styledComponents__Title-sc-13w5wfx-5 eyxVFQ"
+                  class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
                 />
               </div>
             </div>
@@ -700,7 +700,7 @@ exports[`ClientProperties Historical Client should render historical client (dps
                 class="ant-space-item"
               >
                 <div
-                  class="styledComponents__Title-sc-13w5wfx-5 eyxVFQ"
+                  class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
                 />
               </div>
             </div>
@@ -1585,7 +1585,7 @@ exports[`ClientProperties Historical Client should render historical client (gue
                 class="ant-space-item"
               >
                 <div
-                  class="styledComponents__Title-sc-13w5wfx-5 eyxVFQ"
+                  class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
                 />
               </div>
             </div>
@@ -2532,7 +2532,7 @@ exports[`ClientProperties Historical Client should render historical client corr
                 class="ant-space-item"
               >
                 <div
-                  class="styledComponents__Title-sc-13w5wfx-5 eyxVFQ"
+                  class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
                 />
               </div>
             </div>
@@ -3207,7 +3207,7 @@ exports[`ClientProperties Historical Client should render historical client with
                 class="ant-space-item"
               >
                 <div
-                  class="styledComponents__Title-sc-13w5wfx-5 eyxVFQ"
+                  class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
                 />
               </div>
             </div>
@@ -3870,7 +3870,7 @@ exports[`ClientProperties Normal Client should render client correctly 1`] = `
                 class="ant-space-item"
               >
                 <div
-                  class="styledComponents__Title-sc-13w5wfx-5 eyxVFQ"
+                  class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
                 />
               </div>
             </div>
@@ -4896,7 +4896,7 @@ exports[`ClientProperties Normal Client should render client without some data c
                 class="ant-space-item"
               >
                 <div
-                  class="styledComponents__Title-sc-13w5wfx-5 eyxVFQ"
+                  class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
                 />
               </div>
             </div>
@@ -5904,7 +5904,7 @@ exports[`ClientProperties Normal Client should render dpsk client correctly 1`] 
                 class="ant-space-item"
               >
                 <div
-                  class="styledComponents__Title-sc-13w5wfx-5 eyxVFQ"
+                  class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
                 />
               </div>
             </div>
@@ -7139,7 +7139,7 @@ exports[`ClientProperties Normal Client should render guest client correctly 1`]
                 class="ant-space-item"
               >
                 <div
-                  class="styledComponents__Title-sc-13w5wfx-5 eyxVFQ"
+                  class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
                 />
               </div>
             </div>
