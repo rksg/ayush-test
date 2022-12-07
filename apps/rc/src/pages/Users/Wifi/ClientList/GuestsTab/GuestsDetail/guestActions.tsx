@@ -1,108 +1,91 @@
-import {
-  Loading3QuartersOutlined
-} from '@ant-design/icons'
-import { Form, Input, Modal, Radio } from 'antd'
-import saveAs                        from 'file-saver'
-import moment                        from 'moment'
-import { IntlShape, RawIntlProvider, useIntl }  from 'react-intl'
+import { Form, Input, Modal, Radio }           from 'antd'
+import { IntlShape, RawIntlProvider, useIntl } from 'react-intl'
 
 import { cssStr, showActionModal, showToast } from '@acx-ui/components'
-import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import {
-  useBlinkLedApMutation,
-  useDeleteApMutation,
-  useDeleteSoloApMutation,
   useDownloadApLogMutation,
-  useLazyApListQuery,
-  useLazyGetDhcpApQuery,
-  useRebootApMutation
+  useEnableGuestsMutation,
+  useDisableGuestsMutation,
+  useRebootApMutation,
+
+  useDeleteGuestsMutation
 } from '@acx-ui/rc/services'
 import {
-  AP,
-  ApDeviceStatusEnum,
-  ApDhcpRoleEnum,
-  CommonResult,
-  CountdownNode,
-  Guest,
-  DhcpApInfo
+  Guest
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
 
-const blinkLedCount = 30
 
 export function useGuestActions () {
   const { $t } = useIntl()
   const [ downloadApLog ] = useDownloadApLogMutation()
-  const [ getDhcpAp ] = useLazyGetDhcpApQuery()
-  const [ getApList ] = useLazyApListQuery()
   const [ rebootAp ] = useRebootApMutation()
-  const [ deleteAp ] = useDeleteApMutation()
-  const [ deleteSoloAp ] = useDeleteSoloApMutation()
-  const [ blinkLedAp ] = useBlinkLedApMutation()
-
-  const deleteSoloFlag = useIsSplitOn(Features.DELETE_SOLO)
-
-  const showRebootAp = (
-    serialNumber: string, tenantId?: string, callBack?: ()=>void ) => {
-    showActionModal({
-      type: 'confirm',
-      customContent: {
-        action: 'CUSTOM_BUTTONS',
-        buttons: [{
-          text: $t({ defaultMessage: 'Cancel' }),
-          type: 'default',
-          key: 'cancel'
-        }, {
-          text: $t({ defaultMessage: 'Reboot' }),
-          type: 'primary',
-          key: 'ok',
-          closeAfterAction: true,
-          handler: () => {
-            rebootAp({ params: { tenantId: tenantId, serialNumber } })
-            callBack && callBack()
-          }
-        }]
-      },
-      title: $t({ defaultMessage: 'Reboot Access Point?' }),
-      content: $t({ defaultMessage: `Rebooting the AP will disconnect all connected clients.
-        Are you sure you want to reboot?` })
-    })
-  }
+  const [deleteGuests] = useDeleteGuestsMutation()
+  const [enableGuests] = useEnableGuestsMutation()
+  const [disableGuests] = useDisableGuestsMutation()
 
 
-  const showDownloadApLog = ( serialNumber: string, tenantId?: string, callBack?: ()=>void ) => {
-    const toastKey = showToast({
-      type: 'info',
-      closable: false,
-      extraContent: <div style={{ width: '60px' }}>
-        <Loading3QuartersOutlined spin
-          style={{ margin: 0, fontSize: '18px', color: cssStr('--acx-primary-white') }}/>
-      </div>,
-      content: $t({ defaultMessage: 'Preparing log ...' })
-    })
+  // const showRebootAp = (
+  //   serialNumber: string, tenantId?: string, callBack?: ()=>void ) => {
+  //   showActionModal({
+  //     type: 'confirm',
+  //     customContent: {
+  //       action: 'CUSTOM_BUTTONS',
+  //       buttons: [{
+  //         text: $t({ defaultMessage: 'Cancel' }),
+  //         type: 'default',
+  //         key: 'cancel'
+  //       }, {
+  //         text: $t({ defaultMessage: 'Reboot' }),
+  //         type: 'primary',
+  //         key: 'ok',
+  //         closeAfterAction: true,
+  //         handler: () => {
+  //           rebootAp({ params: { tenantId: tenantId, serialNumber } })
+  //           callBack && callBack()
+  //         }
+  //       }]
+  //     },
+  //     title: $t({ defaultMessage: 'Reboot Access Point?' }),
+  //     content: $t({ defaultMessage: `Rebooting the AP will disconnect all connected clients.
+  //       Are you sure you want to reboot?` })
+  //   })
+  // }
 
-    downloadApLog({ params: { tenantId, serialNumber } })
-      .unwrap().then((result) => {
-        showToast({
-          key: toastKey,
-          type: 'success',
-          content: $t({ defaultMessage: 'Log is ready.' })
-        })
 
-        const timeString = moment().format('DDMMYYYY-HHmm')
-        saveAs(result.fileURL, `SupportLog_${serialNumber}_${timeString}.log.gz`) //TODO: CORS policy
+  // const showDownloadApLog = ( serialNumber: string, tenantId?: string, callBack?: ()=>void ) => {
+  //   const toastKey = showToast({
+  //     type: 'info',
+  //     closable: false,
+  //     extraContent: <div style={{ width: '60px' }}>
+  //       <Loading3QuartersOutlined spin
+  //         style={{ margin: 0, fontSize: '18px', color: cssStr('--acx-primary-white') }}/>
+  //     </div>,
+  //     content: $t({ defaultMessage: 'Preparing log ...' })
+  //   })
 
-        callBack && callBack()
-      })
-      .catch(() => {
-        showToast({
-          key: toastKey,
-          type: 'error',
-          content: $t({ defaultMessage: 'Failed to download AP support log.' })
-        })
-      })
-  }
+  //   downloadApLog({ params: { tenantId, serialNumber } })
+  //     .unwrap().then((result) => {
+  //       showToast({
+  //         key: toastKey,
+  //         type: 'success',
+  //         content: $t({ defaultMessage: 'Log is ready.' })
+  //       })
+
+  //       const timeString = moment().format('DDMMYYYY-HHmm')
+  //       saveAs(result.fileURL, `SupportLog_${serialNumber}_${timeString}.log.gz`) //TODO: CORS policy
+
+  //       callBack && callBack()
+  //     })
+  //     .catch(() => {
+  //       showToast({
+  //         key: toastKey,
+  //         type: 'error',
+  //         content: $t({ defaultMessage: 'Failed to download AP support log.' })
+  //       })
+  //     })
+  // }
 
   const showDeleteGuest = async (guest: Guest, tenantId?: string, callBack?: ()=>void) => {
     showActionModal({
@@ -114,12 +97,19 @@ export function useGuestActions () {
         numOfEntities: 1
       },
       onOk: () => {
-        // deleteAAAServer({ params: { tenantId, aaaServerId: rows[0].id } })
-        //   .then(clearSelection) :
-        // bulkDeleteAAAServer({ params: { tenantId }, payload: rows.map(item => item.id) })
-        //   .then(clearSelection)
+        deleteGuests({ params: { tenantId }, payload: [guest.id] }).then(
+          callBack
+        )
       }
     })
+  }
+
+  const disableGuest = async (guest: Guest, tenantId?: string) => {
+    enableGuests({ params: { tenantId, guestId: guest.id } })
+  }
+
+  const enableGuest = async (guest: Guest, tenantId?: string) => {
+    enableGuests({ params: { tenantId, guestId: guest.id } })
   }
 
   // const showDeleteGuest = async ( serialNumber: string, tenantId?: string, callBack?: ()=>void ) => {
@@ -163,19 +153,19 @@ export function useGuestActions () {
   //   })
   // }
 
-  const showBlinkLedAp = ( serialNumber: string, tenantId?: string, callBack?: ()=>void ) => {
-    blinkLedAp({ params: { tenantId, serialNumber } }).unwrap().then(() => {
-      let count = blinkLedCount
-      const interval = setInterval(() => {
-        if (count <= 0) {
-          clearInterval(interval)
-          callBack && callBack()
-        } else {
-          genBlinkLedToast(count--, interval)
-        }
-      }, 1000)
-    })
-  }
+  // const showBlinkLedAp = ( serialNumber: string, tenantId?: string, callBack?: ()=>void ) => {
+  //   blinkLedAp({ params: { tenantId, serialNumber } }).unwrap().then(() => {
+  //     let count = blinkLedCount
+  //     const interval = setInterval(() => {
+  //       if (count <= 0) {
+  //         clearInterval(interval)
+  //         callBack && callBack()
+  //       } else {
+  //         genBlinkLedToast(count--, interval)
+  //       }
+  //     }, 1000)
+  //   })
+  // }
 
   return {
     // showDeleteAp,
@@ -183,157 +173,159 @@ export function useGuestActions () {
     // showDownloadApLog,
     // showRebootAp,
     // showBlinkLedAp,
+    disableGuest,
+    enableGuest,
     showDeleteGuest
   }
 }
 
-const hasContactedAp = (selectedRows: AP[]) => {
-  return !selectedRows.every(selectedAp =>
-    selectedAp.deviceStatus === ApDeviceStatusEnum.NEVER_CONTACTED_CLOUD ||
-    selectedAp.deviceStatus === ApDeviceStatusEnum.DISCONNECTED_FROM_CLOUD)
-}
-const allOperationalAp = (selectedRows: AP[]) => {
-  return selectedRows.every(ap =>
-    ap.deviceStatus === ApDeviceStatusEnum.OPERATIONAL
-  )
-}
-const hasInvaildAp = (selectedRows: AP[]) => {
-  return !selectedRows.every(ap => {
-    if (ap.fwVersion === undefined) {
-      return true
-    }
-    else {
-      return ap.fwVersion.localeCompare('6.2.0.103.486',
-        undefined, { numeric: true, sensitivity: 'base' }) >= 0
-    }
-  })
-}
+// const hasContactedAp = (selectedRows: AP[]) => {
+//   return !selectedRows.every(selectedAp =>
+//     selectedAp.deviceStatus === ApDeviceStatusEnum.NEVER_CONTACTED_CLOUD ||
+//     selectedAp.deviceStatus === ApDeviceStatusEnum.DISCONNECTED_FROM_CLOUD)
+// }
+// const allOperationalAp = (selectedRows: AP[]) => {
+//   return selectedRows.every(ap =>
+//     ap.deviceStatus === ApDeviceStatusEnum.OPERATIONAL
+//   )
+// }
+// const hasInvaildAp = (selectedRows: AP[]) => {
+//   return !selectedRows.every(ap => {
+//     if (ap.fwVersion === undefined) {
+//       return true
+//     }
+//     else {
+//       return ap.fwVersion.localeCompare('6.2.0.103.486',
+//         undefined, { numeric: true, sensitivity: 'base' }) >= 0
+//     }
+//   })
+// }
 
-const hasDhcpAps = (dhcpAps: CommonResult) => {
-  if (dhcpAps && dhcpAps.response) {
-    const res: DhcpApInfo[] = Array.isArray(dhcpAps.response)? dhcpAps.response : []
-    const dhcpApMap = res.filter(dhcpAp =>
-      dhcpAp.venueDhcpEnabled === true &&
-      (dhcpAp.dhcpApRole === ApDhcpRoleEnum.PrimaryServer ||
-        dhcpAp.dhcpApRole === ApDhcpRoleEnum.BackupServer))
+// const hasDhcpAps = (dhcpAps: CommonResult) => {
+//   if (dhcpAps && dhcpAps.response) {
+//     const res: DhcpApInfo[] = Array.isArray(dhcpAps.response)? dhcpAps.response : []
+//     const dhcpApMap = res.filter(dhcpAp =>
+//       dhcpAp.venueDhcpEnabled === true &&
+//       (dhcpAp.dhcpApRole === ApDhcpRoleEnum.PrimaryServer ||
+//         dhcpAp.dhcpApRole === ApDhcpRoleEnum.BackupServer))
 
-    return dhcpApMap.length > 0
-  }
-  return false
-}
+//     return dhcpApMap.length > 0
+//   }
+//   return false
+// }
 
-const genDeleteModal = (
-  rows: AP[],
-  deleteSoloFlag: boolean,
-  okHandler: (resetType: string) => void
-) => {
-  const { $t } = getIntl()
+// const genDeleteModal = (
+//   rows: AP[],
+//   deleteSoloFlag: boolean,
+//   okHandler: (resetType: string) => void
+// ) => {
+//   const { $t } = getIntl()
 
-  const showResetFirmwareOption = allOperationalAp(rows) && !hasInvaildAp(rows)
-  const invalidAp = allOperationalAp(rows) && hasInvaildAp(rows)
-  const hideConfirmation = !hasContactedAp(rows)
+//   const showResetFirmwareOption = allOperationalAp(rows) && !hasInvaildAp(rows)
+//   const invalidAp = allOperationalAp(rows) && hasInvaildAp(rows)
+//   const hideConfirmation = !hasContactedAp(rows)
 
-  const entityValue = rows.length === 1 ? rows[0].name : undefined
-  const modal = Modal.confirm({})
+//   const entityValue = rows.length === 1 ? rows[0].name : undefined
+//   const modal = Modal.confirm({})
 
-  const title = $t({
-    defaultMessage: `Delete {count, plural,
-      one {"{entityValue}"}
-      other {{count} APs}
-    }?`
-  }, { count: rows.length, entityValue })
+//   const title = $t({
+//     defaultMessage: `Delete {count, plural,
+//       one {"{entityValue}"}
+//       other {{count} APs}
+//     }?`
+//   }, { count: rows.length, entityValue })
 
-  const confirmText = 'Delete'
-  let resetType = 'cloud'
+//   const confirmText = 'Delete'
+//   let resetType = 'cloud'
 
-  const content = (<Form layout='vertical'>
-    <Form.Item>{$t({
-      defaultMessage: `Are you sure you want to delete {count, plural,
-        one {this AP}
-        other {these APs}
-      } ?`
-    }, { count: rows.length })}</Form.Item >
+//   const content = (<Form layout='vertical'>
+//     <Form.Item>{$t({
+//       defaultMessage: `Are you sure you want to delete {count, plural,
+//         one {this AP}
+//         other {these APs}
+//       } ?`
+//     }, { count: rows.length })}</Form.Item >
 
-    {hideConfirmation && <Form.Item>{$t({ defaultMessage: `
-      You are deleting one or more offline APs.
-      When these offline devices come back online
-      their configuration will be factory reset and they will be removed from Ruckus Cloud.`
-    })}</Form.Item >}
+//     {hideConfirmation && <Form.Item>{$t({ defaultMessage: `
+//       You are deleting one or more offline APs.
+//       When these offline devices come back online
+//       their configuration will be factory reset and they will be removed from Ruckus Cloud.`
+//     })}</Form.Item >}
 
-    {!showResetFirmwareOption && !hideConfirmation && <Form.Item>{$t({
-      defaultMessage: `Once deleted, the AP will factory reset to Cloud ready.
-      The existing configuration will be wiped, AP firmware will remain Cloud-only firmware.
-      AP will be ready to re-connect to the Cloud.`
-    })}</Form.Item >}
+//     {!showResetFirmwareOption && !hideConfirmation && <Form.Item>{$t({
+//       defaultMessage: `Once deleted, the AP will factory reset to Cloud ready.
+//       The existing configuration will be wiped, AP firmware will remain Cloud-only firmware.
+//       AP will be ready to re-connect to the Cloud.`
+//     })}</Form.Item >}
 
-    {invalidAp && <Form.Item>{$t({
-      defaultMessage: `
-      The AP's firmware does not support resetting them to standalone AP.`
-    })}</Form.Item >}
+//     {invalidAp && <Form.Item>{$t({
+//       defaultMessage: `
+//       The AP's firmware does not support resetting them to standalone AP.`
+//     })}</Form.Item >}
 
-    {showResetFirmwareOption && <Form.Item
-      label={$t({ defaultMessage: 'Type the word "{text}" to confirm:' }, { text: confirmText })}>
-      <Input onChange={(e) => {
-        const disabled = e.target.value.toLowerCase() !== confirmText.toLowerCase()
-        modal.update({
-          okButtonProps: { disabled }
-        })
-      }} />
-    </Form.Item>}
+//     {showResetFirmwareOption && <Form.Item
+//       label={$t({ defaultMessage: 'Type the word "{text}" to confirm:' }, { text: confirmText })}>
+//       <Input onChange={(e) => {
+//         const disabled = e.target.value.toLowerCase() !== confirmText.toLowerCase()
+//         modal.update({
+//           okButtonProps: { disabled }
+//         })
+//       }} />
+//     </Form.Item>}
 
-    {deleteSoloFlag && showResetFirmwareOption && <Form.Item
-      label={$t({ defaultMessage: 'Select what should happen to the APs’ configuration:' })}>
-      <Radio.Group defaultValue={'cloud'} onChange={(e) => {resetType = e.target.value}}>
-        <Radio value='cloud'>
-          {$t({ defaultMessage: 'Factory reset to Cloud ready' })}
-          <div>{$t({ defaultMessage: `
-          Existing configuration will be wiped,
-          AP firmware will remain Cloud-only firmware.
-          AP will be ready to re-connect to the Cloud.` })}
-          </div>
-        </Radio>
-        <Radio value='solo'>
-          {$t({ defaultMessage: 'Factory reset to standalone firmware' })}
-          <div>{$t({ defaultMessage: `
-          Existing configuration will be wiped,
-          AP firmware will be modified to standalone image.
-          AP will be ready to connect to any controller or operate standalone.
-          Please note that this option will download and update your AP firmware,
-          which will take longer.` })}
-          </div>
-        </Radio>
-      </Radio.Group>
-    </Form.Item>}
-  </Form>)
+//     {deleteSoloFlag && showResetFirmwareOption && <Form.Item
+//       label={$t({ defaultMessage: 'Select what should happen to the APs’ configuration:' })}>
+//       <Radio.Group defaultValue={'cloud'} onChange={(e) => {resetType = e.target.value}}>
+//         <Radio value='cloud'>
+//           {$t({ defaultMessage: 'Factory reset to Cloud ready' })}
+//           <div>{$t({ defaultMessage: `
+//           Existing configuration will be wiped,
+//           AP firmware will remain Cloud-only firmware.
+//           AP will be ready to re-connect to the Cloud.` })}
+//           </div>
+//         </Radio>
+//         <Radio value='solo'>
+//           {$t({ defaultMessage: 'Factory reset to standalone firmware' })}
+//           <div>{$t({ defaultMessage: `
+//           Existing configuration will be wiped,
+//           AP firmware will be modified to standalone image.
+//           AP will be ready to connect to any controller or operate standalone.
+//           Please note that this option will download and update your AP firmware,
+//           which will take longer.` })}
+//           </div>
+//         </Radio>
+//       </Radio.Group>
+//     </Form.Item>}
+//   </Form>)
 
-  const config = {
-    icon: <> </>,
-    title: title,
-    content: content,
-    cancelText: $t({ defaultMessage: 'Cancel' }),
-    okText: $t({ defaultMessage: 'Delete' }),
-    okButtonProps: { disabled: showResetFirmwareOption },
-    onOk: () => {okHandler(resetType)}
-  }
-  modal.update({
-    ...config,
-    content: <RawIntlProvider value={getIntl()} children={config.content} />
-  })
+//   const config = {
+//     icon: <> </>,
+//     title: title,
+//     content: content,
+//     cancelText: $t({ defaultMessage: 'Cancel' }),
+//     okText: $t({ defaultMessage: 'Delete' }),
+//     okButtonProps: { disabled: showResetFirmwareOption },
+//     onOk: () => {okHandler(resetType)}
+//   }
+//   modal.update({
+//     ...config,
+//     content: <RawIntlProvider value={getIntl()} children={config.content} />
+//   })
 
-  return modal
-}
+//   return modal
+// }
 
-const genBlinkLedToast = (countdown: number, interval: ReturnType<typeof setInterval>) => {
-  const { $t } = getIntl()
+// const genBlinkLedToast = (countdown: number, interval: ReturnType<typeof setInterval>) => {
+//   const { $t } = getIntl()
 
-  showToast({
-    key: 'BlinkLedApKey',
-    type: 'info',
-    duration: blinkLedCount,
-    extraContent: <CountdownNode n={countdown} />,
-    content: $t({ defaultMessage: 'AP LEDs Blink ...' }),
-    onClose: () => {
-      clearInterval(interval)
-    }
-  })
-}
+//   showToast({
+//     key: 'BlinkLedApKey',
+//     type: 'info',
+//     duration: blinkLedCount,
+//     extraContent: <CountdownNode n={countdown} />,
+//     content: $t({ defaultMessage: 'AP LEDs Blink ...' }),
+//     onClose: () => {
+//       clearInterval(interval)
+//     }
+//   })
+// }

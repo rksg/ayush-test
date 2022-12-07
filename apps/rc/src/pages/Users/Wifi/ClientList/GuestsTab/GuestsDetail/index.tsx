@@ -1,14 +1,18 @@
+import { useEffect, useState } from 'react'
+
 import { Divider, Dropdown, Form, Menu, MenuProps, Space } from 'antd'
 import moment                                              from 'moment-timezone'
 import { useIntl }                                         from 'react-intl'
 
 import { Button, cssStr, Table, TableProps } from '@acx-ui/components'
 import { ArrowExpand }                       from '@acx-ui/icons'
+import { useGetGuestsListQuery }             from '@acx-ui/rc/services'
 import {
   Guest,
   GuestClient,
   GuestStatusEnum,
-  transformDisplayText
+  transformDisplayText,
+  useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
@@ -24,20 +28,69 @@ import { useGuestActions } from './guestActions'
 
 interface GuestDetailsDrawerProps {
   currentGuest: Guest,
+  triggerClose: () => void
 }
+
+const defaultPayload = {
+  searchString: '',
+  searchTargetFields: [
+    'name',
+    'mobilePhoneNumber',
+    'emailAddress'],
+  fields: [
+    'creationDate',
+    'name',
+    'passDurationHours',
+    'id',
+    'networkId',
+    'maxNumberOfClients',
+    'notes',
+    'clients',
+    'guestStatus',
+    'emailAddress',
+    'mobilePhoneNumber',
+    'guestType',
+    'ssid',
+    'socialLogin',
+    'expiryDate',
+    'cog'
+  ]
+}
+
 
 export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
   const { $t } = useIntl()
   const { currentGuest } = props
   const { tenantId } = useParams()
-  const hasOnlineClient = currentGuest.guestStatus.indexOf(GuestStatusEnum.ONLINE)!== -1
+  const [guestDetail, setGuestDetail] = useState({} as Guest)
+  const tableQuery = useTableQuery({
+    useQuery: useGetGuestsListQuery,
+    defaultPayload
+  })
+
+  const hasOnlineClient = function (row: Guest) {
+    return row.guestStatus.indexOf(GuestStatusEnum.ONLINE) !== -1
+  }
+
+  useEffect(() => {
+    const guest = tableQuery.data?.data.filter((item: Guest) => item.id === currentGuest.id)[0]
+    if (guest) {
+      setGuestDetail(guest)
+    }
+
+  }, [tableQuery])
+
 
   const renderStatus = function (row: Guest) {
+    if(Object.keys(row).length === 0) {
+      return
+    }
+
     if (row.maxNumberOfClients !== -1 ||
       row.guestStatus.indexOf(GuestStatusEnum.NOT_APPLICABLE) === -1) {
       if (row.guestStatus === GuestStatusEnum.EXPIRED) {
         return <span style={{ color: cssStr('--acx-semantics-red-50') }}>{row.guestStatus}</span>
-      } else if (hasOnlineClient) {
+      } else if (hasOnlineClient(row)) {
         return <span style={{ color: cssStr('--acx-semantics-green-50') }}>{row.guestStatus}</span>
       }
     }
@@ -110,14 +163,27 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
 
   const guestAction = useGuestActions()
   const handleMenuClick: MenuProps['onClick'] = (e) => {
-    const actionMap = {
-      // generatePassword: guestAction.showRebootAp,
-      // downloadInformation: guestAction.showDownloadApLog,
-      // disableGuest: guestAction.showBlinkLedAp,
-      // enableGuest: guestAction.showBlinkLedAp,
-      deleteGuest: guestAction.showDeleteGuest
+    // const actionMap = {
+    //   // generatePassword: guestAction.showRebootAp,
+    //   // downloadInformation: guestAction.showDownloadApLog,
+    //   // disableGuest: guestAction.showBlinkLedAp,
+    //   // enableGuest: guestAction.showBlinkLedAp,
+    //   deleteGuest: guestAction.showDeleteGuest
+    // }
+
+    switch (e.key) {
+      case 'deleteGuest':
+        guestAction.showDeleteGuest(guestDetail, tenantId, props.triggerClose)
+        break
+      case 'enableGuest':
+        guestAction.enableGuest(guestDetail, tenantId)
+        break
+      case 'disableGuest':
+        guestAction.disableGuest(guestDetail, tenantId)
+        break
+      default:
+        break
     }
-    actionMap[e.key as keyof typeof actionMap](currentGuest, tenantId)
   }
 
 
@@ -141,12 +207,12 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
         key: 'deleteGuest'
       }].filter((item) => {
         if (item.key === 'enableGuest' &&
-          currentGuest.guestStatus !== GuestStatusEnum.DISABLED) {
+        guestDetail.guestStatus !== GuestStatusEnum.DISABLED) {
           return false
         } else if (item.key === 'disableGuest' &&
-          currentGuest.guestStatus === GuestStatusEnum.DISABLED) {
+        guestDetail.guestStatus === GuestStatusEnum.DISABLED) {
           return false
-        } else if (currentGuest.guestStatus === GuestStatusEnum.EXPIRED
+        } else if (guestDetail.guestStatus === GuestStatusEnum.EXPIRED
           && (item.key === 'disableGuest' || item.key === 'enableGuest'
             || item.key === 'generatePassword')) {
           return false
@@ -175,52 +241,52 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
 
     <DrawerFormItem
       label={$t({ defaultMessage: 'Guest Type:' })}
-      children={renderGuestType(currentGuest.guestType)} />
+      children={renderGuestType(guestDetail.guestType)} />
 
     <DrawerFormItem
       label={$t({ defaultMessage: 'Guest Name:' })}
-      children={currentGuest.name} />
+      children={guestDetail.name} />
 
     <DrawerFormItem
       label={$t({ defaultMessage: 'Mobile Phone:' })}
-      children={transformDisplayText(currentGuest.mobilePhoneNumber)} />
+      children={transformDisplayText(guestDetail.mobilePhoneNumber)} />
 
     <DrawerFormItem
       label={$t({ defaultMessage: 'Email:' })}
-      children={transformDisplayText(currentGuest.emailAddress)} />
+      children={transformDisplayText(guestDetail.emailAddress)} />
 
     <DrawerFormItem
       label={$t({ defaultMessage: 'Notes:' })}
-      children={transformDisplayText(currentGuest.notes)} />
+      children={transformDisplayText(guestDetail.notes)} />
 
     <Divider />
 
     <DrawerFormItem
       label={$t({ defaultMessage: 'Allowed Network:' })}
-      children={renderAllowedNetwork(currentGuest)} />
+      children={renderAllowedNetwork(guestDetail)} />
 
     <DrawerFormItem
       label={$t({ defaultMessage: 'Guest Created:' })}
-      children={moment(currentGuest.expiryDate).format('DD/MM/YYYY HH:mm')} />
+      children={moment(guestDetail.expiryDate).format('DD/MM/YYYY HH:mm')} />
 
     <DrawerFormItem
       label={$t({ defaultMessage: 'Access Expires:' })}
-      children={renderExpires(currentGuest)} />
+      children={renderExpires(guestDetail)} />
 
     <DrawerFormItem
       label={$t({ defaultMessage: 'Max. Number of Clients:' })}
-      children={currentGuest.maxNumberOfClients || '0'} />
+      children={guestDetail.maxNumberOfClients || '0'} />
 
     <Divider />
 
     <DrawerFormItem
       label={$t({ defaultMessage: 'Status:' })}
-      children={renderStatus(currentGuest)} />
+      children={renderStatus(guestDetail)} />
 
-    {currentGuest.clients &&
+    {guestDetail.clients &&
       <Table
         columns={columns}
-        dataSource={currentGuest.clients}
+        dataSource={guestDetail.clients}
         pagination={false}
         rowKey='clientMac'
       />}

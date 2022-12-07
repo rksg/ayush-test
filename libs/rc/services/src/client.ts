@@ -5,13 +5,16 @@ import {
   ClientList,
   ClientListMeta,
   ClientUrlsInfo,
+  CommonResult,
   CommonUrlsInfo,
   createHttpRequest,
   DpskPassphrase,
   EventMeta,
   getClientHealthClass,
   Guest,
+  onSocketActivityChanged,
   RequestPayload,
+  showActivityMessage,
   TableResult,
   transformByte,
   WifiUrlsInfo
@@ -67,7 +70,46 @@ export const clientApi = baseClientApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Guest', id: 'LIST' }]
+      providesTags: [{ type: 'Guest', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          showActivityMessage(msg,
+            [
+              'DisableGuest',
+              'EnableGuest'
+            ], () => {
+              api.dispatch(clientApi.util.invalidateTags([{ type: 'Guest', id: 'LIST' }]))
+            })
+        })
+      }
+    }),
+    deleteGuests: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(ClientUrlsInfo.deleteGuests, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Guest', id: 'LIST' }]
+    }),
+    disableGuests: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(ClientUrlsInfo.disableGuests, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Guest', id: 'LIST' }]
+    }),
+    enableGuests: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(ClientUrlsInfo.enableGuests, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Guest', id: 'LIST' }]
     }),
     getClientDetails: build.query<Client, RequestPayload>({
       query: ({ params }) => {
@@ -157,5 +199,8 @@ export const {
   useGetHistoricalClientListQuery,
   useLazyGetHistoricalClientListQuery,
   useGetClientListQuery,
-  useGetGuestsListQuery
+  useGetGuestsListQuery,
+  useDeleteGuestsMutation,
+  useEnableGuestsMutation,
+  useDisableGuestsMutation
 } = clientApi

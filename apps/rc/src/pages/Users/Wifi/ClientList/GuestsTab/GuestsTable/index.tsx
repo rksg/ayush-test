@@ -189,6 +189,7 @@ export default function GuestsTable () {
           mask={false}
           children={
             <GuestsDetail
+              triggerClose={onClose}
               currentGuest={currentGuest}
             />
           }
