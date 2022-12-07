@@ -30,6 +30,8 @@ export * from './policy'
 export * from './portalService'
 export * from './client'
 export * from './components'
+export * from './switch'
+
 export interface CommonResult {
   requestId: string
   response?:{}
