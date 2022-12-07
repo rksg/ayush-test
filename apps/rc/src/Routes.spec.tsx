@@ -85,7 +85,7 @@ jest.mock('./pages/Devices/Edge/EdgeDetails/EditEdge', () => () => {
 })
 
 describe('RcRoutes: Devices', () => {
-  test('should redirect devices to devices/aps', async () => {
+  test('should redirect devices to devices/wifi', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
         path: '/t/tenantId/devices',
@@ -95,10 +95,10 @@ describe('RcRoutes: Devices', () => {
     expect(screen.getByTestId('ApsTable')).toBeVisible()
   })
 
-  test('should navigate to devices/aps', async () => {
+  test('should navigate to devices/wifi', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/devices/aps',
+        path: '/t/tenantId/devices/wifi',
         wrapRoutes: false
       }
     })
@@ -108,17 +108,17 @@ describe('RcRoutes: Devices', () => {
   test('should navigate to devices ap-details', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/devices/aps/serialNumber/details/some-tab',
+        path: '/t/tenantId/devices/wifi/serialNumber/details/some-tab',
         wrapRoutes: false
       }
     })
     expect(screen.getByTestId('ApDetails')).toBeVisible()
   })
 
-  test('should navigate to devices/switches', async () => {
+  test('should navigate to devices/switch', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/devices/switches',
+        path: '/t/tenantId/devices/switch',
         wrapRoutes: false
       }
     })

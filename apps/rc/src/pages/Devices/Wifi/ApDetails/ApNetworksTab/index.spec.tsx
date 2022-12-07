@@ -59,7 +59,7 @@ describe('Networks Table', () => {
       <Provider>
         <ApNetworksTab />
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/aps/:serialNumber/details/networks' }
+        route: { params, path: '/:tenantId/devices/wifi/:serialNumber/details/networks' }
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
