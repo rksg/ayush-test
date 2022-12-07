@@ -14,7 +14,7 @@ import { PoolTable }  from './PoolTable'
 
 
 const initPoolData: Partial<DHCPPool> = {
-  id: 0,
+  id: '0',
   allowWired: false,
   dhcpOptions: [],
   leaseTime: 24,
@@ -71,7 +71,7 @@ export default function DHCPPoolTable ({
 
   const onSubmit = (data: DHCPPool) => {
     let id = data.id
-    if (id === initPoolData.id) { id = data.id = Date.now() }
+    if (id === initPoolData.id) { id = data.id = String(Date.now()) }
     valueMap.current[id] = data
     handleChanged()
     form.resetFields()
@@ -81,7 +81,7 @@ export default function DHCPPoolTable ({
     setVisible(false)
   }
 
-  const isEdit = () => Number(form.getFieldValue('id')) > initPoolData.id!
+  const isEdit = () => form.getFieldValue('id')!=='0' && !_.isUndefined(form.getFieldValue('id'))
 
   const getContent = <Form
     form={form}
