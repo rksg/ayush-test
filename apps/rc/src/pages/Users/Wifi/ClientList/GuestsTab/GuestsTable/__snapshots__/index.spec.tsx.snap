@@ -18,7 +18,6 @@ exports[`Guest Table should render table 1`] = `
         >
           <button
             class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-            disabled=""
             type="button"
           >
             <span>
@@ -62,7 +61,6 @@ exports[`Guest Table should render table 1`] = `
         >
           <button
             class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-            disabled=""
             type="button"
           >
             <span>

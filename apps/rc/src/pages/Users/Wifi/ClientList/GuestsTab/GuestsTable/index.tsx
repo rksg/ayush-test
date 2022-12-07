@@ -214,7 +214,7 @@ export default function GuestsTable () {
           actions={[{
             label: $t({ defaultMessage: 'Add Guest' }),
             onClick: () => setDrawerVisible(true),
-            disabled: allowedNetworkList.length > 0 ? true : false
+            disabled: allowedNetworkList.length === 0 ? true : false
           },{
             label: $t({ defaultMessage: 'Add Guest Pass Network' }),
             onClick: () => {}
@@ -222,7 +222,7 @@ export default function GuestsTable () {
           {
             label: $t({ defaultMessage: 'Import from file' }),
             onClick: () => {},
-            disabled: allowedNetworkList.length > 0 ? true : false
+            disabled: allowedNetworkList.length === 0? true : false
           }
           ]}
         />
