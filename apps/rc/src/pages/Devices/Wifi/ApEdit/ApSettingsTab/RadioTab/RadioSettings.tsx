@@ -15,7 +15,7 @@ import {
 import {
   ApRadioChannelsForm
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { ApEditContext } from '../..'
 
@@ -24,6 +24,8 @@ import { Radio5GHz }  from './Radio5GHz'
 
 export function RadioSettings () {
   const { $t } = useIntl()
+  const navigate = useNavigate()
+  const basePath = useTenantLink('/devices/')
 
   const {
     editContextData,
@@ -122,6 +124,10 @@ export function RadioSettings () {
         formRef={formRef}
         onFormChange={handleChange}
         onFinish={handleUpdateRadioSettings}
+        onCancel={() => navigate({
+          ...basePath,
+          pathname: `${basePath.pathname}/aps`
+        })}
         buttonLabel={{
           submit: $t({ defaultMessage: 'Apply Radio' })
         }}
