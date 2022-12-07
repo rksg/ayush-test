@@ -1,6 +1,5 @@
 import { rest } from 'msw'
 
-import { useIsSplitOn }                                 from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo, ClientUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                     from '@acx-ui/store'
 import {
@@ -51,8 +50,6 @@ describe('ClientDetails', () => {
   )
 
   it('should render correctly', async () => {
-    jest.useFakeTimers()
-    jest.setSystemTime(new Date(Date.parse('2022-12-14T01:20:00+10:00')))
     jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('hostname')
     const params = {
       tenantId: 'tenant-id',
@@ -69,17 +66,16 @@ describe('ClientDetails', () => {
     // eslint-disable-next-line testing-library/no-node-access
     fragment.querySelector('div[_echarts_instance_^="ec_"]')?.removeAttribute('_echarts_instance_')
     expect(fragment).toMatchSnapshot()
+
     fireEvent.click(await screen.findByRole('tab', { name: 'Reports' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: `/t/${params.tenantId}/users/wifi/clients/${params.clientId}/details/reports`,
       hash: '',
       search: ''
     })
-    jest.useRealTimers()
   })
 
   it('should navigate to troubleshooting tab correctly', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
     const params = {
       tenantId: 'tenant-id',
       clientId: 'user-id',
