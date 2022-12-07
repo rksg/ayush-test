@@ -47,7 +47,7 @@ export function ApOverviewTab () {
         path: [{ type: 'AP', name: currentAP.apMac as string }]
       })
     }
-  }, [currentAP])
+  }, [currentAP, filters])
 
 
   return (  // TODO: Remove background: '#F7F7F7' and Add other widgets

@@ -98,11 +98,11 @@ export function useMenuConfig () {
       routes:
         [
           {
-            path: '/devices/aps',
+            path: '/devices/wifi',
             name: $t({ defaultMessage: 'WiFi' })
           },
           {
-            path: '/devices/switches',
+            path: '/devices/switch',
             name: $t({ defaultMessage: 'Switch' }),
             disabled: !useIsSplitOn(Features.DEVICES)
           }

@@ -33,7 +33,7 @@ function ApPageHeader () {
   const apAction = useApActions()
 
   const navigate = useNavigate()
-  const basePath = useTenantLink(`/devices/aps/${serialNumber}`)
+  const basePath = useTenantLink(`/devices/wifi/${serialNumber}`)
 
   const status = data?.headers.overview as ApDeviceStatusEnum
   const currentApOperational = status === ApDeviceStatusEnum.OPERATIONAL
@@ -78,7 +78,7 @@ function ApPageHeader () {
       title={data?.title || ''}
       titleExtra={<APStatus status={status} showText={!currentApOperational} />}
       breadcrumb={[
-        { text: $t({ defaultMessage: 'Access Points' }), link: '/devices/aps' }
+        { text: $t({ defaultMessage: 'Access Points' }), link: '/devices/wifi' }
       ]}
       extra={[
         <RangePicker

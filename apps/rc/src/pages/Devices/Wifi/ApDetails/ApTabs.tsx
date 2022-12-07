@@ -10,7 +10,7 @@ import { notAvailableMsg }                       from '@acx-ui/utils'
 function ApTabs (props:{ apDetail: ApDetailHeader }) {
   const { $t } = useIntl()
   const params = useParams()
-  const basePath = useTenantLink(`/devices/aps/${params.serialNumber}/details/`)
+  const basePath = useTenantLink(`/devices/wifi/${params.serialNumber}/details/`)
   const navigate = useNavigate()
   const releaseTag = useIsSplitOn(Features.DEVICES)
   const onTabChange = (tab: string) => {

@@ -16,7 +16,7 @@ export default function ApsTable () {
   const addMenu = <Menu
     items={[{
       key: 'ap',
-      label: <TenantLink to='devices/aps/add'>{$t({ defaultMessage: 'AP' })}</TenantLink>
+      label: <TenantLink to='devices/wifi/add'>{$t({ defaultMessage: 'AP' })}</TenantLink>
     }, {
       key: 'import-from-file',
       label: <TenantLink to='TODO'>{$t({ defaultMessage: 'Import from file' })}</TenantLink>,

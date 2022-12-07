@@ -16,13 +16,13 @@ function ApEditPageHeader () {
   const { data } = useGetApQuery({ params: { tenantId, serialNumber } })
 
   const navigate = useNavigate()
-  const basePath = useTenantLink(`/devices/aps/${serialNumber}`)
+  const basePath = useTenantLink(`/devices/wifi/${serialNumber}`)
 
   return (
     <PageHeader
       title={data?.name || ''}
       breadcrumb={[
-        { text: $t({ defaultMessage: 'Access Points' }), link: '/devices/aps' }
+        { text: $t({ defaultMessage: 'Access Points' }), link: '/devices/wifi' }
       ]}
       extra={[
         <Button
