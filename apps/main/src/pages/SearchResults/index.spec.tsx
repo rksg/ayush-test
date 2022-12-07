@@ -55,4 +55,29 @@ describe('Search Results', () => {
       .forEach(element => element.removeAttribute('_echarts_instance_'))
     expect(fragment).toMatchSnapshot()
   })
+
+  it('should render empty result correctly', async () => {
+    mockRestApiQuery(CommonUrlsInfo.getVenuesList.url, 'post', {
+      status: 200,
+      data: [],
+      totalCount: 0
+    })
+    mockRestApiQuery(CommonUrlsInfo.getVMNetworksList.url, 'post', {
+      data: [],
+      totalCount: 0
+    })
+    mockRestApiQuery(CommonUrlsInfo.getApsList.url, 'post', { data: [], totalCount: 0 })
+    render(
+      <Provider>
+        <SearchResults />
+      </Provider>,{
+        route: {
+          params: { ...params, searchVal: encodeURIComponent('bdcPerformanceVenue2') }
+        }
+      }
+    )
+    const header =
+      await screen.findByText(/Hmmmm... we couldn't find any match for "bdcPerformanceVenue2"/i)
+    expect(header).toBeInTheDocument()
+  })
 })
