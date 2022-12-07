@@ -3,19 +3,19 @@ import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { AnalyticsFilter, kpiConfig } from '@acx-ui/analytics/utils'
-import { Tooltip }                    from '@acx-ui/components'
 import {
-  Card,
+  HistoricalCard,
   Loader,
   Table,
   TableProps,
   ProgressBar,
   ContentSwitcher,
   ContentSwitcherProps,
-  NoData
+  NoData,
+  Tooltip
 } from '@acx-ui/components'
-import { TenantLink }                 from '@acx-ui/react-router-dom'
-import { formatter, notAvailableMsg } from '@acx-ui/utils'
+import { TenantLink, useNavigateToPath }           from '@acx-ui/react-router-dom'
+import { intlFormats, formatter, notAvailableMsg } from '@acx-ui/utils'
 
 import { useHealthQuery, HealthData } from './services'
 import * as UI                        from './styledComponents'
@@ -48,7 +48,6 @@ export function VenuesHealthDashboard ({
       title: $t({ defaultMessage: 'Score' }),
       dataIndex: 'clientExperience',
       key: 'clientExperience',
-      width: 40,
       align: 'center' as const,
       render: (value: unknown)=>{
         return <ProgressBar percent={(value as number) * 100}/>
@@ -58,47 +57,65 @@ export function VenuesHealthDashboard ({
       title: $t({ defaultMessage: 'Connection Success' }),
       dataIndex: 'connectionSuccessPercent',
       key: 'connectionSuccessPercent',
-      width: 40,
-      align: 'center' as const
+      align: 'center' as const,
+      render: (value: unknown, row)=>{
+        const [n,d] = row.connectionSuccessSLA
+        const tooltipText=$t({ defaultMessage: '{n} of {d} attempts' }, {
+          n: $t(intlFormats.countFormat, { value: n }),
+          d: $t(intlFormats.countFormat, { value: d }) })
+        return (<Tooltip title={tooltipText}>
+          <span data-tooltip={tooltipText}>{value as string}</span>
+        </Tooltip>)
+      }
     },
     {
       title: $t({ defaultMessage: 'Time To Connect' }),
       dataIndex: 'timeToConnectPercent',
       key: 'timeToConnectPercent',
-      width: 80,
       align: 'center' as const,
       render: (value: unknown, row)=>{
+        const [n,d] = row.timeToConnectSLA
         const threshold = row.timeToConnectThreshold ??
           kpiConfig.timeToConnect.histogram.initialThreshold
         const thresholdText = $t({ defaultMessage: 'Under {threshold}' },
           { threshold: formatter('durationFormat')(threshold) })
-        if(value === '-') return <span>{value}</span>
-        return (<>
-          <span>{value as string}</span>
+        if(row.timeToConnectThreshold === null) return <span>-</span>
+        const tooltipText=$t({
+          defaultMessage: '{n} of {d} connections under {threshold}' },
+        { n: $t(intlFormats.countFormat, { value: n }),
+          d: $t(intlFormats.countFormat, { value: d }),
+          threshold: formatter('longDurationFormat')(threshold) })
+        return (<Tooltip title={tooltipText}>
+          <span data-tooltip={tooltipText}>{value as string}</span>
           <UI.ThresholdText>
             {thresholdText}
           </UI.ThresholdText>
-        </>)
+        </Tooltip>)
       }
     },
     {
       title: $t({ defaultMessage: 'Client Throughput' }),
       dataIndex: 'clientThroughputPercent',
       key: 'clientThroughputPercent',
-      width: 90,
       align: 'center' as const,
       render: (value: unknown, row)=>{
+        const [n,d] = row.clientThroughputSLA
         const threshold = row.clientThroughputThreshold ??
           kpiConfig.clientThroughput.histogram.initialThreshold
         const thresholdText = $t({ defaultMessage: 'Above {threshold}' },
           { threshold: formatter('networkSpeedFormat')(threshold) })
-        if(value === '-') return <span>{value}</span>
-        return (<>
-          <span>{value as string}</span>
+        if(row.clientThroughputThreshold === null) return <span>-</span>
+        const tooltipText = $t({
+          defaultMessage: '{n} of {d} sessions above {threshold}' },
+        { n: $t(intlFormats.countFormat, { value: n }),
+          d: $t(intlFormats.countFormat, { value: d }),
+          threshold: formatter('networkSpeedFormat')(threshold) })
+        return (<Tooltip title={tooltipText}>
+          <span data-tooltip={tooltipText}>{value as string}</span>
           <UI.ThresholdText>
             {thresholdText}
           </UI.ThresholdText>
-        </>)
+        </Tooltip>)
       }
     },
     {
@@ -106,11 +123,19 @@ export function VenuesHealthDashboard ({
       dataIndex: 'onlineApsPercent',
       key: 'onlineApsPercent',
       align: 'center' as const,
-      width: 40
+      render: (value: unknown, row)=>{
+        const [n,d] = row.onlineApsSLA
+        const tooltipText=$t({ defaultMessage: '{n} of {d} APs online' }, {
+          n: $t(intlFormats.countFormat, { value: n }),
+          d: $t(intlFormats.countFormat, { value: d }) })
+        return (<Tooltip title={tooltipText}>
+          <span data-tooltip={tooltipText}>{value as string}</span>
+        </Tooltip>)
+      }
     }
   ]
   const calcPercent = ([val, sum]:(number | null)[]) => {
-    const percent = val && sum ? val / sum : null
+    const percent = val !== null && sum ? val / sum : null
     return { percent, formatted: formatter('percentFormatRound')(percent) }
   }
 
@@ -179,19 +204,22 @@ export function VenuesHealthDashboard ({
       disabled: true
     }
   ]
+
+  const onArrowClick = useNavigateToPath('/analytics/health/')
   return (
     <Loader states={[queryResults]}>
-      <Card
+      <HistoricalCard
         title={$t({ defaultMessage: 'Client Experience' })}
         subTitle={$t({ defaultMessage: 'Top 5 Venues/Services with poor experience' })}
+        onArrowClick={onArrowClick}
       >
         <AutoSizer>
           {({ height, width }) => (
             <div style={{ display: 'block', height, width }}>
-              <ContentSwitcher tabDetails={tabDetails} size='small' space={8} />
+              <ContentSwitcher tabDetails={tabDetails} size='small' />
             </div>)}
         </AutoSizer>
-      </Card>
+      </HistoricalCard>
     </Loader>
   )
 }

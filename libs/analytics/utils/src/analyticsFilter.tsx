@@ -1,29 +1,30 @@
 import { useMemo } from 'react'
 
-import { Buffer } from 'buffer'
-
-import { useSearchParams } from 'react-router-dom'
-
-import { useLocation }                                                                                           from '@acx-ui/react-router-dom'
-import { generateVenueFilter, getDateRangeFilter, DateFilter, pathFilter, NetworkPath, NodeType, useDateFilter } from '@acx-ui/utils'
+import { useLocation }  from '@acx-ui/react-router-dom'
+import {
+  generateVenueFilter,
+  DateFilter,
+  pathFilter,
+  NetworkPath,
+  NodeType,
+  useDateFilter,
+  useEncodedParameter
+} from '@acx-ui/utils'
 
 export const defaultNetworkPath: NetworkPath = [{ type: 'network', name: 'Network' }]
 
 export type AnalyticsFilter = DateFilter & { path: NetworkPath } & { filter? : pathFilter }
+type NetworkFilter = { path: NetworkPath, raw: object }
 
 export function useAnalyticsFilter () {
-  const [search, setSearch] = useSearchParams()
+  const { read, write } = useEncodedParameter<NetworkFilter>('analyticsNetworkFilter')
   const { pathname } = useLocation()
   const { dateFilter } = useDateFilter()
 
   return useMemo(() => {
     const isHealthPage = pathname.includes('/analytics/health')
     const getNetworkFilter = () => {
-      let networkFilter = search.has('analyticsNetworkFilter')
-        ? JSON.parse(
-          Buffer.from(search.get('analyticsNetworkFilter') as string, 'base64').toString('ascii')
-        )
-        : { path: defaultNetworkPath, raw: [] }
+      let networkFilter = read() || { path: defaultNetworkPath, raw: [] }
       const { path: currentPath, raw: rawVal } = networkFilter
       let path, filter, raw
       if (isHealthPage) {
@@ -47,24 +48,18 @@ export function useAnalyticsFilter () {
     }
 
     const setNetworkPath = (path: NetworkPath, raw: object) => {
-      search.set(
-        'analyticsNetworkFilter',
-        Buffer.from(JSON.stringify({ path, raw })).toString('base64')
-      )
-      setSearch(search, { replace: true })
+      write({ path, raw })
     }
 
     const { networkFilter, raw } = getNetworkFilter()
-    const { range, startDate, endDate } = dateFilter
-
     return {
       filters: {
-        ...getDateRangeFilter(range, startDate, endDate),
+        ...dateFilter,
         ...networkFilter
       } as AnalyticsFilter,
       setNetworkPath,
       getNetworkFilter,
       raw
     }
-  }, [dateFilter, pathname, search, setSearch])
+  }, [dateFilter, pathname, read, write])
 }

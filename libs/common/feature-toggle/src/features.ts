@@ -4,9 +4,15 @@ export enum Features {
   TRI_RADIO = 'tri-band-radio-toggle',
   G_MAP = 'acx-ui-maps-api-toggle',
   SERVICES = 'acx-ui-services',
+  PLM_FF = 'ACX-PLM-FF',
   POLICIES = 'acx-ui-policies',
   VENUE_ANALYTICS = 'acx-ui-venue-analytics-toggle',
   GLOBAL_SEARCH = 'acx-ui-global-search-toggle',
   NETWORK_OVERVIEW = 'acx-ui-network-overview-toggle',
-  NETWORK_INCIDENTS = 'acx-ui-network-incidents-toggle'
+  NETWORK_INCIDENTS = 'acx-ui-network-incidents-toggle',
+  DEVICES = 'acx-ui-devices',
+  USERS = 'acx-ui-users',
+  DELETE_SOLO = 'ap-delete-with-solo-image-toggle',
+  EDGES = 'acx-ui-edges-toggle',
+  CLIENT_TROUBLESHOOTING = 'acx-ui-client-troubleshooting-toggle'
 }

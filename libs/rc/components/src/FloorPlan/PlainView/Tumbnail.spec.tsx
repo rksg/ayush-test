@@ -1,5 +1,5 @@
-import { FloorPlanDto }              from '@acx-ui/rc/utils'
-import { fireEvent, render, screen } from '@acx-ui/test-utils'
+import { ApDeviceStatusEnum, FloorPlanDto, NetworkDeviceType, SwitchStatusEnum, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
+import { fireEvent, render, screen }                                                                     from '@acx-ui/test-utils'
 
 import '@testing-library/jest-dom'
 import Thumbnail from './Thumbnail'
@@ -18,6 +18,39 @@ const floorPlan: FloorPlanDto = {
   '/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg'
 }
 
+const networkDevices: {
+    [key: string]: TypeWiseNetworkDevices
+} = {
+  '94bed28abef24175ab58a3800d01e24a': {
+    ap: [{
+      deviceStatus: ApDeviceStatusEnum.NEVER_CONTACTED_CLOUD,
+      floorplanId: '94bed28abef24175ab58a3800d01e24a',
+      id: '302002015732',
+      name: '3 02002015736',
+      serialNumber: '302002015732',
+      xPercent: 65.20548,
+      yPercent: 9.839357,
+      networkDeviceType: NetworkDeviceType.ap
+    }],
+    switches: [{
+      deviceStatus: SwitchStatusEnum.NEVER_CONTACTED_CLOUD,
+      floorplanId: '94bed28abef24175ab58a3800d01e24a',
+      id: 'FEK3224R72N',
+      name: 'FEK3224R232N',
+      serialNumber: 'FEK3224R72N',
+      xPercent: 52.739727,
+      yPercent: 7.056452,
+      networkDeviceType: NetworkDeviceType.switch
+    }],
+    LTEAP: [],
+    RogueAP: [],
+    cloudpath: [],
+    DP: []
+  }
+}
+
+const networkDeviceType: NetworkDeviceType[] = []
+
 describe('Floor Plan Thumbnail Image', () => {
 
   it('should render correctly', async () => {
@@ -25,7 +58,9 @@ describe('Floor Plan Thumbnail Image', () => {
     const { asFragment } = await render(<Thumbnail
       floorPlan={floorPlan}
       active={0}
-      onFloorPlanSelection={onClick}/>)
+      onFloorPlanSelection={onClick}
+      networkDevices={networkDevices}
+      networkDevicesVisibility={networkDeviceType}/>)
     await screen.findByText(floorPlan?.name)
     expect(screen.getByText(floorPlan?.name).textContent).toBe(floorPlan?.name)
     expect(screen.getByRole('img')).toHaveAttribute('src', floorPlan?.imageUrl)

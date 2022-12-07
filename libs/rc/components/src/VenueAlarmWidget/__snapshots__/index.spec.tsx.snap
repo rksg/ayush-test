@@ -6,7 +6,7 @@ exports[`Venue Overview Alarm Widget should render "No active alarms" when no al
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-13w5wfx-3 aYefg"
+      class="styledComponents__Wrapper-sc-13w5wfx-4 lfySov"
       type="default"
     >
       <div
@@ -22,9 +22,17 @@ exports[`Venue Overview Alarm Widget should render "No active alarms" when no al
               class="ant-card-head-title"
             >
               <div
-                class="styledComponents__Title-sc-13w5wfx-4 lgTSMV"
+                class="ant-space ant-space-horizontal ant-space-align-center"
               >
-                Alarms
+                <div
+                  class="ant-space-item"
+                >
+                  <div
+                    class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                  >
+                    Alarms
+                  </div>
+                </div>
               </div>
             </div>
             <div
@@ -51,13 +59,14 @@ exports[`Venue Overview Alarm Widget should render "No active alarms" when no al
                 <div
                   class="ant-space-item"
                 >
-                  <span
+                  <svg
+                    class="styledComponents__GreenTickIcon-sc-m7jeli-3 bRCYfh"
                     data-testid="CheckMarkCircleSolid"
                   />
                 </div>
               </div>
               <div
-                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoActiveTextWrapper-sc-m7jeli-3 iRdLpd kuAEvr"
+                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
               >
                 <div
                   class="ant-space-item"

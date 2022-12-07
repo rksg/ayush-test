@@ -1,7 +1,7 @@
 import { Button as AntButton } from 'antd'
 import styled                  from 'styled-components/macro'
 
-import { ArrowsOut, MoreVertical } from '@acx-ui/icons'
+import { ArrowChevronRight, MoreVertical, HistoricalOutlined } from '@acx-ui/icons'
 
 import type { CardTypes } from '.'
 
@@ -10,8 +10,24 @@ type WrapperProps = {
   hasTitle: boolean
 }
 
-export const ArrowOutIcon = styled(ArrowsOut)``
+export const ArrowChevronRightIcon = styled(ArrowChevronRight)`
+  width: 20px;
+  height: 20px;
+  margin-right: -8px;
+`
 export const MoreVerticalIcon = styled(MoreVertical)``
+
+export const HistoricalOutlinedIcon = styled(HistoricalOutlined)`
+  margin-bottom: -2px;
+  width: 16px;
+  height: 16px;
+  path {
+    stroke: var(--acx-neutrals-50);
+  }
+  circle {
+    fill: var(--acx-neutrals-50);
+  }
+`
 
 export const Button = styled(AntButton)`
   border: none;
@@ -74,14 +90,16 @@ export const Title = styled.div`
   line-height: var(--acx-headline-4-line-height);
   color: var(--acx-primary-black);
   font-weight: var(--acx-headline-4-font-weight-bold);
-  height: var(--acx-headline-4-line-height);
 `
 
 export const SubTitle = styled.div`
-  margin-top: 5px;
-  font-size: var(--acx-body-5-font-size);
-  line-height: var(--acx-body-5-line-height);
+  margin-top: 4px;
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
   color: var(--acx-primary-black);
   font-weight: var(--acx-body-font-weight);
-  height: var(--acx-body-5-line-height);
+`
+
+export const LinkButton = styled(Button).attrs({ size: 'small' })`
+  height: unset;
 `

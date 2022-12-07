@@ -39,9 +39,9 @@ exports[`MdnsProxyForwardingRulesTable should render the readonly table 1`] = `
                       <div
                         class="ant-pro-table-list-toolbar-setting-item"
                       >
-                        <svg>
-                          SettingsOutlined.svg
-                        </svg>
+                        <svg
+                          data-testid="SettingsOutlined"
+                        />
                       </div>
                     </div>
                   </div>
@@ -538,9 +538,9 @@ exports[`MdnsProxyForwardingRulesTable should render the table with the given da
                       <div
                         class="ant-pro-table-list-toolbar-setting-item"
                       >
-                        <svg>
-                          SettingsOutlined.svg
-                        </svg>
+                        <svg
+                          data-testid="SettingsOutlined"
+                        />
                       </div>
                     </div>
                   </div>

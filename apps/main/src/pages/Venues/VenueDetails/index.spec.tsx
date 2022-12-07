@@ -11,7 +11,8 @@ import {
   venueDetailHeaderData,
   venueNetworkList,
   networkDeepList,
-  venueNetworkApGroup
+  venueNetworkApGroup,
+  serviceProfile
 } from '../__tests__/fixtures'
 
 import { VenueDetails } from '.'
@@ -30,6 +31,7 @@ const data: Dashboard = {
 
 /* eslint-disable max-len */
 jest.mock('@acx-ui/analytics/components', () => ({
+  AnalyticsTabs: () => <div data-testid={'analytics-AnalyticsTabs'} title='AnalyticsTabs' />,
   ConnectedClientsOverTime: () => <div data-testid={'analytics-ConnectedClientsOverTime'} title='ConnectedClientsOverTime' />,
   IncidentBySeverity: () => <div data-testid={'analytics-IncidentBySeverity'} title='IncidentBySeverity' />,
   NetworkHistory: () => <div data-testid={'analytics-NetworkHistory'} title='NetworkHistory' />,
@@ -77,6 +79,10 @@ describe('VenueDetails', () => {
       rest.post(
         CommonUrlsInfo.venueNetworkApGroup.url,
         (req, res, ctx) => res(ctx.json(venueNetworkApGroup))
+      ),
+      rest.get(
+        CommonUrlsInfo.getVenueDHCPServiceProfile.url,
+        (_,res,ctx) => res(ctx.json(serviceProfile))
       )
     )
   })

@@ -5,12 +5,15 @@ import { MemoryRouter }       from 'react-router-dom'
 
 import { BrowserRouter } from '@acx-ui/react-router-dom'
 
-import { useDashboardFilter } from './dashboardFilter'
+import { useDashboardFilter }      from './dashboardFilter'
+import { resetRanges }             from './dateUtil'
+import { fixedEncodeURIComponent } from './encodedParameter'
 
 const original = Date.now
 describe('useDashboardFilter', () => {
   beforeEach(() => {
     Date.now = jest.fn(() => new Date('2022-01-01T00:00:00.000Z').getTime())
+    resetRanges()
   })
 
   afterAll(() => Date.now = original)
@@ -61,7 +64,7 @@ describe('useDashboardFilter', () => {
       return <div>{JSON.stringify(filters)}</div>
     }
     const nodes = [['venue1'], ['venue2']]
-    const path = Buffer.from(JSON.stringify({ nodes })).toString('base64')
+    const path = fixedEncodeURIComponent(JSON.stringify({ nodes }))
     const { asFragment } = render(
       <MemoryRouter initialEntries={[{
         pathname: '/incidents',

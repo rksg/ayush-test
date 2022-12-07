@@ -2,7 +2,7 @@
 
 exports[`KpiWidget should render component having healthy icon: percentDiv 1`] = `
 <div
-  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-s2cdzz-6 kIftfA"
+  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-s2cdzz-8 eMamIy"
 >
   <div
     class="ant-space-item"
@@ -92,7 +92,7 @@ exports[`KpiWidget should render component having healthy icon: svg 1`] = `
 
 exports[`KpiWidget should render component having major icon: percentDiv 1`] = `
 <div
-  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-s2cdzz-6 kIftfA"
+  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-s2cdzz-8 eMamIy"
 >
   <div
     class="ant-space-item"
@@ -182,7 +182,7 @@ exports[`KpiWidget should render component having major icon: svg 1`] = `
 
 exports[`KpiWidget should render component properly with sparkline: percentDiv 1`] = `
 <div
-  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-s2cdzz-6 kIftfA"
+  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-s2cdzz-8 eMamIy"
 >
   <div
     class="ant-space-item"
@@ -272,7 +272,7 @@ exports[`KpiWidget should render component properly with sparkline: svg 1`] = `
 
 exports[`KpiWidget should render for empty data: percentDiv 1`] = `
 <div
-  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-s2cdzz-6 kIftfA"
+  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-s2cdzz-8 eMamIy"
 >
   <div
     class="ant-space-item"

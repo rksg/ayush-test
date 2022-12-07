@@ -1,0 +1,68 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test getDeviceTypeIcon function should return device type icon 1`] = `
+<DocumentFragment>
+  <div
+    data-testid="LaptopOutlined"
+  />
+  <div
+    data-testid="MobilePhoneOutlined"
+  />
+  <div
+    data-testid="TabletOutlined"
+  />
+  <div
+    data-testid="VoIpOutlined"
+  />
+  <div
+    data-testid="GamingOutlined"
+  />
+  <div
+    data-testid="PrinterOutlined"
+  />
+  <div
+    data-testid="IotOutlined"
+  />
+  <div
+    data-testid="WdsOutlined"
+  />
+  <div
+    data-testid="IotOutlined"
+  />
+  <div
+    data-testid="HomeAvOutlined"
+  />
+  <div
+    data-testid="WdsOutlined"
+  />
+</DocumentFragment>
+`;
+
+exports[`Test getOsTypeIcon function should return os type icon 1`] = `
+<DocumentFragment>
+  <div
+    data-testid="Apple"
+  />
+  <div
+    data-testid="Android"
+  />
+  <div
+    data-testid="Blackberry"
+  />
+  <div
+    data-testid="Chrome"
+  />
+  <div
+    data-testid="Linux"
+  />
+  <div
+    data-testid="Amazon"
+  />
+  <div
+    data-testid="Ubuntu"
+  />
+  <div
+    data-testid="Microsoft"
+  />
+</DocumentFragment>
+`;

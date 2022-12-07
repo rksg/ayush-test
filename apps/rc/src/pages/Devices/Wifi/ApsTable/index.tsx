@@ -20,7 +20,8 @@ export default function ApsTable () {
       label: <TenantLink to='TODO'>{$t({ defaultMessage: 'Import from file' })}</TenantLink>
     }, {
       key: 'ap-group',
-      label: <TenantLink to='TODO'>{$t({ defaultMessage: 'AP Group' })}</TenantLink> }
+      label: <TenantLink to='devices/apgroups/add'>
+        {$t({ defaultMessage: 'AP Group' })}</TenantLink> }
     ]}
   />
 
