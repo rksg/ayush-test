@@ -45,6 +45,12 @@ export const userApi = baseUserApi.injectEndpoints({
         return {
           ...req
         }
+      },
+      transformResponse (userProfile: UserProfile) {
+        userProfile.initials =
+          userProfile.firstName[0].toUpperCase() + userProfile.lastName[0].toUpperCase()
+        userProfile.fullName = `${userProfile.firstName} ${userProfile.lastName}`
+        return userProfile
       }
     }),
     updateUserProfile: build.mutation<ProfileDataToUpdate, RequestPayload>({

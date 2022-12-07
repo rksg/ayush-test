@@ -2,15 +2,14 @@ import { useEffect, useState } from 'react'
 
 import { Row, Col, Form, Select, Switch, Typography } from 'antd'
 import { useIntl }                                    from 'react-intl'
-import styled                                         from 'styled-components/macro'
 
 import {
   PageHeader,
   StepsForm,
   Subtitle,
-  Tabs
+  Tabs,
+  Tooltip
 } from '@acx-ui/components'
-import { EnvelopClosedSolid }    from '@acx-ui/icons'
 import {
   useGetUserProfileQuery,
   useUpdateUserProfileMutation
@@ -25,10 +24,12 @@ import {
   useNavigate,
   useParams
 } from '@acx-ui/react-router-dom'
+import { notAvailableMsg } from '@acx-ui/utils'
 
 import {
   RecentLogin
 } from './RecentLogin'
+import { EnvelopClosedSolidIcon, UserCircle, UserEmailLabel } from './styledComponents'
 
 interface fromLoc {
   from: string
@@ -68,8 +69,8 @@ export function UserProfile () {
 
   useEffect(() => {
     if (data) {
-      setInitial(data.firstName[0].toUpperCase() + data.lastName[0].toLocaleUpperCase())
-      setUserName( `${data.firstName} ${data.lastName}`)
+      setInitial(data.initials)
+      setUserName(data.fullName)
       setRole(data.role)
       setEmail(data.email)
       setDateFormat(data.dateFormat)
@@ -77,23 +78,6 @@ export function UserProfile () {
     }
   }, [data])
 
-  const EnvelopClosedSolidIcon = styled(EnvelopClosedSolid)`
-  width: 16px;
-  height: 16px;
-  margin-right: 4px;
-`
-  const UserCircle = styled.div`
-  text-align: center;
-  width: 100px;
-  height: 100px;
-  line-height: 100px;
-  font-size: 32px;//var(--acx-headline-0-font-size);
-  font-family: var(--acx-accent-brand-font);
-  font-weight: 700;//var(--acx-headline-0-font-weight);
-  color: #fff;
-  background: var(--acx-neutrals-40);
-  border-radius: 50px;
-`
   const [ updateUserProfile ] = useUpdateUserProfileMutation()
 
   const handleUpdate = () => {
@@ -163,10 +147,7 @@ export function UserProfile () {
                 }]}
                 children={<Switch></Switch>}
               />
-              <label
-                style={{ display: 'flex', marginTop: '-24px',
-                  color: 'var(--acx-neutrals-60)', fontSize: '10px' }}
-              >{userEmail}</label>
+              <label><UserEmailLabel>{userEmail}</UserEmailLabel></label>
               <Form.Item
                 name='phone_format'
                 label={$t({ defaultMessage: 'SMS' })}
@@ -326,7 +307,9 @@ export function UserProfile () {
 
       <Tabs activeKey={'Settings'}>
         <Tabs.TabPane
-          tab={$t({ defaultMessage: 'Notifications' })}
+          tab={<Tooltip title={$t(notAvailableMsg)}>
+            {$t({ defaultMessage: 'Notifications' })}
+          </Tooltip>}
           disabled={true}
           key='Notfications'>
           <NotificationTab />
@@ -339,14 +322,18 @@ export function UserProfile () {
         </Tabs.TabPane>
 
         <Tabs.TabPane
-          tab={$t({ defaultMessage: 'Security' })}
+          tab={<Tooltip title={$t(notAvailableMsg)}>
+            {$t({ defaultMessage: 'Security' })}
+          </Tooltip>}
           disabled={true}
           key='Security'>
           <SecurityTab />
         </Tabs.TabPane>
 
         <Tabs.TabPane
-          tab={$t({ defaultMessage: 'Recent Logins' })}
+          tab={<Tooltip title={$t(notAvailableMsg)}>
+            {$t({ defaultMessage: 'Recent Logins' })}
+          </Tooltip>}
           disabled={true}
           key='RecentLogins'>
           <RecentLogin />

@@ -35,6 +35,8 @@ export interface UserProfile {
   externalId: string;
   cloudCertStatus: string;
   email: string;
+  initials: string;
+  fullName: string;
 }
 
 export interface ProfileDataToUpdate {
