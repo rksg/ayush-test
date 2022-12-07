@@ -4,7 +4,6 @@ import {
   fetchBaseQuery,
   FetchBaseQueryError,
   FetchBaseQueryMeta } from '@reduxjs/toolkit/query/react'
-import _                from 'lodash'
 import { v4 as uuidv4 } from 'uuid'
 
 import {
@@ -211,11 +210,6 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     addMdnsProxy: build.mutation<MdnsProxyFormData, RequestPayload<MdnsProxyFormData>>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(MdnsProxyUrls.addMdnsProxy, params)
-
-        if (payload?.forwardingRules) {
-          payload.forwardingRules = payload.forwardingRules.map(r => _.omit(r, 'id'))
-        }
-
         const convertedPayload = convertMdnsProxyFormDataToApiPayload(payload as MdnsProxyFormData)
 
         return {

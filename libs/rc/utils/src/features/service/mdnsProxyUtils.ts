@@ -1,15 +1,21 @@
+import _ from 'lodash'
+
+import { BonjourGatewayRule } from '../../models/BonjourGatewayRule'
 import {
   MdnsProxyCreateApiPayload,
   MdnsProxyFormData,
+  MdnsProxyForwardingRule,
   MdnsProxyGetApiResponse,
   MdnsProxyScopeData
 } from '../../types/services'
 
 // eslint-disable-next-line max-len
 export function convertMdnsProxyFormDataToApiPayload (data: MdnsProxyFormData): MdnsProxyCreateApiPayload {
+  const convertedRules = convertMdnsProxyRule(data.forwardingRules)
+
   return {
     serviceName: data.name,
-    rules: data.forwardingRules,
+    rules: convertedRules,
     aps: extractApSerialNumberFromScope(data.scope)
   }
 }
@@ -41,4 +47,12 @@ function extractScopeFromApiPayload (aps: { serialNumber: string, venueId: strin
   })
 
   return Object.keys(venueMap).map(venueId => ({ venueId, aps: venueMap[venueId] }))
+}
+
+function convertMdnsProxyRule (rules: MdnsProxyForwardingRule[] = []): BonjourGatewayRule[] {
+  return rules.map((rule: MdnsProxyForwardingRule) => {
+    const newRule = _.omit(rule, 'id')
+    newRule.enabled = true
+    return newRule
+  })
 }
