@@ -27,14 +27,14 @@ export function MacRegistrationListOverviewTab () {
         ]}>
           <Form layout={'vertical'}>
             <Row>
-              <Col span={8}>
+              <Col span={6}>
                 <Form.Item
-                  label={$t({ defaultMessage: 'Policy Name' })}
+                  label={$t({ defaultMessage: 'Name' })}
                 >
                   <Paragraph>{data?.name}</Paragraph>
                 </Form.Item>
               </Col>
-              <Col span={8}>
+              <Col span={6}>
                 <Form.Item
                   label={$t({ defaultMessage: 'List Expiration' })}
                 >
@@ -44,32 +44,32 @@ export function MacRegistrationListOverviewTab () {
                       toTimeString(data?.expirationDate) : `After ${data.expirationOffset} ${expirationTimeUnits[data.expirationType ?? '']}`}</Paragraph>
                 </Form.Item>
               </Col>
-              <Col span={8}>
+              <Col span={6}>
                 <Form.Item
                   label={$t({ defaultMessage: 'Automatically clean expired entries' })}
                 >
                   <Paragraph>{data?.autoCleanup ? 'Yes' : 'No'}</Paragraph>
                 </Form.Item>
               </Col>
-              <Col span={8}>
+              <Col span={6}>
                 <Form.Item
                   label={$t({ defaultMessage: 'Behavior' })}
                 >
                   <Paragraph>Always redirect to authenticate user</Paragraph>
                 </Form.Item>
               </Col>
-              <Col span={8}>
+              <Col span={6}>
                 <Form.Item
                   label={$t({ defaultMessage: 'Default Access' })}
                 >
                   <Paragraph>Access</Paragraph>
                 </Form.Item>
               </Col>
-              <Col span={8}>
+              <Col span={6}>
                 <Form.Item
                   label={$t({ defaultMessage: 'Access Policy Set' })}
                 >
-                  <Paragraph>{''}</Paragraph>
+                  <Paragraph>{data?.policyId ?? ''}</Paragraph>
                 </Form.Item>
               </Col>
             </Row>

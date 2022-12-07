@@ -19,7 +19,7 @@ const macRegList = {
   priority: 1,
   ssidRegex: 'mac-auth',
   expirationType: 'SPECIFIED_DATE',
-  expirationDate: '2022-11-30T07:13:25Z'
+  expirationDate: '2065-12-12T07:13:25Z'
 }
 
 describe('MacRegistrationListForm', () => {
@@ -45,7 +45,7 @@ describe('MacRegistrationListForm', () => {
     screen.getByRole('heading', { level: 1, name: 'Configure ' + macRegList.name })
 
     await waitFor(async () => {
-      expect(screen.getByLabelText(/policy name/i)).toHaveValue(macRegList.name)
+      expect(screen.getByLabelText(/name/i)).toHaveValue(macRegList.name)
     })
 
     await userEvent.click(screen.getByRole('radio', { name: /by date/i }))
@@ -65,7 +65,7 @@ describe('MacRegistrationListForm', () => {
         }
       })
 
-    fireEvent.change(screen.getByRole('textbox', { name: /policy name/i }),
+    fireEvent.change(screen.getByRole('textbox', { name: /name/i }),
       { target: { value: 'test-policy' } })
 
     await userEvent.click(screen.getByRole('radio', { name: /after/i }))

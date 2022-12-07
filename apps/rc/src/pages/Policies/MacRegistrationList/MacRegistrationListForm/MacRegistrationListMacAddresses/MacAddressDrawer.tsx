@@ -52,34 +52,40 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
 
   const onSubmit = async (data: MacRegistration) => {
     try {
-      if (!isEdit) {
+      if (isEdit) {
         const payload = {
-          macAddress: data.macAddress,
-          username: data.username,
-          deviceName: data.deviceName,
-          expirationDate: data.listExpiration === 1 ? null : data.expirationDate
-        }
-        await addMacRegistration({
-          params: { macRegistrationListId },
-          payload
-        }).unwrap()
-      } else {
-        const payload = {
-          username: data.username,
-          deviceName: data.deviceName,
-          expirationDate: data.listExpiration === 1 ? null : data.expirationDate
+          username: data.username?.length === 0 ? null : data.username,
+          // deviceName: data.deviceName,
+          email: data.email?.length === 0 ? null : data.email,
+          expirationDate: data.listExpiration === 1 ? null :
+            moment(data.expirationDate).format('YYYY-MM-DDT23:59:59[Z]')
         }
         await editMacRegistration(
           {
             params: { macRegistrationListId, registrationId: editData?.id },
             payload
           }).unwrap()
+      } else {
+        const payload = {
+          macAddress: data.macAddress,
+          username: data.username?.length === 0 ? null : data.username,
+          // deviceName: data.deviceName,
+          email: data.email?.length === 0 ? null : data.email,
+          expirationDate: data.listExpiration === 1 ? null :
+            moment(data.expirationDate).format('YYYY-MM-DDT23:59:59[Z]')
+        }
+        await addMacRegistration({
+          params: { macRegistrationListId },
+          payload
+        }).unwrap()
       }
       onClose()
-    } catch {
+    } catch (error) {
       showToast({
         type: 'error',
-        content: intl.$t({ defaultMessage: 'An error occurred' })
+        content: intl.$t({ defaultMessage: 'An error occurred' }),
+        // FIXME: Correct the error message
+        link: { onClick: () => alert(JSON.stringify(error)) }
       })
     }
   }
@@ -98,6 +104,13 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
         <Input/>
       </Form.Item>
       <Form.Item name='deviceName' label={intl.$t({ defaultMessage: 'DeviceName' })}>
+        <Input/>
+      </Form.Item>
+      <Form.Item name='email'
+        rules={[
+          { type: 'email', message: intl.$t({ defaultMessage: 'E-mail is not a valid email' }) }
+        ]}
+        label={intl.$t({ defaultMessage: 'E-mail' })}>
         <Input/>
       </Form.Item>
       <Form.Item name='listExpiration'

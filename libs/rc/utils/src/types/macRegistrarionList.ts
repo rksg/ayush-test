@@ -39,4 +39,5 @@ export interface MacRegistration {
   username?: string
   deviceName?: string
   listExpiration?: number
+  createDate?: string
 }

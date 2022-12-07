@@ -130,10 +130,10 @@ export function MacRegistrationsTab () {
     },
     {
       title: $t({ defaultMessage: 'Registration Date' }),
-      key: 'registration_date',
-      dataIndex: 'registration_date',
+      key: 'registrationDate',
+      dataIndex: 'registrationDate',
       render: function (data, row) {
-        return toTimeString(row.expirationDate)
+        return toTimeString(row.createDate)
       }
     },
     {

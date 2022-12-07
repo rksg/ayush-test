@@ -22,7 +22,7 @@ export function MacRegistrationListSettingForm () {
     <Row>
       <Col span={14}>
         <Form.Item name='name'
-          label={$t({ defaultMessage: 'Policy Name' })}
+          label={$t({ defaultMessage: 'Name' })}
           rules={[
             { required: true }
           ]}

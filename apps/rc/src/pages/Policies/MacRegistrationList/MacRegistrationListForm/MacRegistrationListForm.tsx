@@ -76,7 +76,7 @@ export default function MacRegistrationListForm () {
     } else if (data.listExpiration === 2) {
       return {
         expirationType: 'SPECIFIED_DATE',
-        expirationDate: moment(data.expireDate).toISOString(),
+        expirationDate: moment(data.expireDate).format('YYYY-MM-DDT23:59:59[Z]'),
         expirationEnabled: true
       }
     } else {
@@ -97,7 +97,7 @@ export default function MacRegistrationListForm () {
       if (data.expirationType === 'SPECIFIED_DATE') {
         return {
           listExpiration: 2,
-          expireDate: moment(data.expirationDate)
+          expireDate: moment(data.expirationDate).utc()
         }
       } else {
         return {
@@ -113,10 +113,12 @@ export default function MacRegistrationListForm () {
     try {
       await addMacRegList({ payload: poolSaveState }).unwrap()
       navigate(linkToList, { replace: true })
-    } catch {
+    } catch (error) {
       showToast({
         type: 'error',
-        content: intl.$t({ defaultMessage: 'An error occurred' })
+        content: intl.$t({ defaultMessage: 'An error occurred' }),
+        // FIXME: Correct the error message
+        link: { onClick: () => alert(JSON.stringify(error)) }
       })
     }
   }
@@ -135,10 +137,12 @@ export default function MacRegistrationListForm () {
         payload: saveData
       }).unwrap()
       navigate(linkToList, { replace: true })
-    } catch {
+    } catch (error) {
       showToast({
         type: 'error',
-        content: intl.$t({ defaultMessage: 'An error occurred' })
+        content: intl.$t({ defaultMessage: 'An error occurred' }),
+        // FIXME: Correct the error message
+        link: { onClick: () => alert(JSON.stringify(error)) }
       })
     }
   }
@@ -185,7 +189,7 @@ export default function MacRegistrationListForm () {
                 </Col>
                 <Col span={8}>
                   <Form.Item
-                    label={intl.$t({ defaultMessage: 'Policy Name' })}
+                    label={intl.$t({ defaultMessage: 'Name' })}
                   >
                     <Paragraph>{poolSaveState.name}</Paragraph>
                   </Form.Item>

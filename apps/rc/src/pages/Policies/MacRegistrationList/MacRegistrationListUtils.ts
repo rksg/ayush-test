@@ -37,6 +37,6 @@ export const expirationTimeUnits: Record<string, string> = {
 }
 
 export const toTimeString = (value?: string) => {
-  return value ? moment(value).format('MM/DD/YYYY HH:mm A') : ''
+  return value ? moment(value).utc().format('MM/DD/YYYY') : ''
 }
 

@@ -12,7 +12,7 @@ const macAddress = {
   revoked: false,
   macAddress: '3A-B8-A9-29-35-D5',
   username: 'ex proident',
-  email: 'dolore pariatur adipisicing esse Excepteur',
+  email: 'test@commscope.com',
   location: 'ipsum eiusmod sunt veniam',
   deviceName: 'test'
 }
@@ -47,6 +47,9 @@ describe('MacAddressDrawer', () => {
 
     const deviceNameInput = await screen.findByRole('textbox', { name: 'DeviceName' })
     expect(deviceNameInput).toHaveValue(macAddress.deviceName)
+
+    const emailInput = await screen.findByRole('textbox', { name: 'E-mail' })
+    expect(emailInput).toHaveValue(macAddress.email)
   })
 
   it('should cancel the drawer successfully', async () => {

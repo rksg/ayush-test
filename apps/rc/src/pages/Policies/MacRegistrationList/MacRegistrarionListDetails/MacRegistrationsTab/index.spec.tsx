@@ -68,7 +68,7 @@ describe('MacRegistrationsTab', () => {
     expect(row1).toHaveTextContent('Active')
     expect(row1).toHaveTextContent('testUser')
     expect(row1).toHaveTextContent('testUser@commscope.com')
-    expect(row1).toHaveTextContent('12/08/2065 18:40 PM')
+    expect(row1).toHaveTextContent('12/08/2065')
 
     const row2 = await screen.findByRole('row', { name: /3A-B8-A9-29-35-D5/ })
     expect(row2).toHaveTextContent('Revoked')

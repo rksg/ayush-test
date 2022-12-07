@@ -30,23 +30,23 @@ function useColumns () {
       }
     },
     {
-      title: $t({ defaultMessage: 'Mac Addresses' }),
+      title: $t({ defaultMessage: 'Mac Address Count' }),
       key: 'registrationCount',
       dataIndex: 'registrationCount',
       align: 'center',
       render: function (data, row) {
-        return row.registrationCount
+        return row.registrationCount ?? 0
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Policy Count' }),
+      key: 'policyCount',
+      dataIndex: 'policyCount',
+      align: 'center',
+      render: function (data, row) {
+        return row.policyId ?? 0
       }
     }
-    // {
-    //   key: 'scope',
-    //   dataIndex: 'scope',
-    //   title: $t({ defaultMessage: 'Scope' }),
-    //   align: 'center',
-    //   render: function (data, row) {
-    //     return ''
-    //   }
-    // }
   ]
   return columns
 }
@@ -122,7 +122,7 @@ export default function MacRegistrationListsTable () {
         title={$t({ defaultMessage: 'MAC Registration Lists' })}
         extra={[
           <TenantLink to='/policies/mac-registration-lists/add' key='add'>
-            <Button type='primary'>{ $t({ defaultMessage: 'Add Policy' }) }</Button>
+            <Button type='primary'>{ $t({ defaultMessage: 'Add MAC Registration List' }) }</Button>
           </TenantLink>
         ]}
       />

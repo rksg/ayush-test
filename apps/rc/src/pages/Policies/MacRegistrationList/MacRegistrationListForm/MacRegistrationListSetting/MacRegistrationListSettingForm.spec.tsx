@@ -22,7 +22,7 @@ describe('MacRegistrationListSettingForm', () => {
       </MacRegistrationListFormContext.Provider>
     )
 
-    fireEvent.change(screen.getByRole('textbox', { name: /policy name/i }),
+    fireEvent.change(screen.getByRole('textbox', { name: /name/i }),
       { target: { value: 'test-policy' } })
 
     await userEvent.click(screen.getByRole('radio', { name: /by date/i }))
