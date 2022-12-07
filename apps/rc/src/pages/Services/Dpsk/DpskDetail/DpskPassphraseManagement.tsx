@@ -1,13 +1,25 @@
+import { useState } from 'react'
+
+import { Input }   from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Loader, showActionModal, Table, TableProps } from '@acx-ui/components'
-import { useDpskPassphraseListQuery }                 from '@acx-ui/rc/services'
-import { DpskPassphrase, useTableQuery }              from '@acx-ui/rc/utils'
-import { formatter }                                  from '@acx-ui/utils'
+import {
+  useDeleteDpskPassphraseListMutation,
+  useDpskPassphraseListQuery
+} from '@acx-ui/rc/services'
+import { DpskPassphrase, useTableQuery } from '@acx-ui/rc/utils'
+import { useParams }                     from '@acx-ui/react-router-dom'
+import { formatter }                     from '@acx-ui/utils'
+
+import DpskPassphraseDrawer from './DpskPassphraseDrawer'
 
 
 export default function DpskPassphraseManagement () {
   const { $t } = useIntl()
+  const [ addPassphrasesDrawerVisible, setAddPassphrasesDrawerVisible ] = useState(false)
+  const [ deletePassphrases ] = useDeleteDpskPassphraseListMutation()
+  const params = useParams()
   const tableQuery = useTableQuery({
     useQuery: useDpskPassphraseListQuery,
     defaultPayload: {
@@ -15,9 +27,6 @@ export default function DpskPassphraseManagement () {
         'vlanId', 'mac', 'numberOfDevices', 'createdDate', 'expirationDate']
     }
   })
-
-  const handleAddPassphrasesAction = () => {
-  }
 
   const columns: TableProps<DpskPassphrase>['columns'] = [
     {
@@ -52,7 +61,16 @@ export default function DpskPassphraseManagement () {
       key: 'passphrase',
       title: $t({ defaultMessage: 'Passphrase' }),
       dataIndex: 'passphrase',
-      sorter: false
+      sorter: false,
+      render: function (data) {
+        return <div onClick={(e)=> {e.stopPropagation()}}>
+          <Input.Password
+            readOnly
+            bordered={false}
+            value={data as string}
+          />
+        </div>
+      }
     },
     {
       key: 'vlanId',
@@ -83,7 +101,8 @@ export default function DpskPassphraseManagement () {
             numOfEntities: selectedRows.length
           },
           onOk: () => {
-            // TODO: API is not ready
+            const passphraseIds = selectedRows.map(p => p.id)
+            deletePassphrases({ params, payload: passphraseIds })
             clearSelection()
           }
         })
@@ -94,11 +113,15 @@ export default function DpskPassphraseManagement () {
   const actions = [
     {
       label: $t({ defaultMessage: 'Add Passphrases' }),
-      onClick: handleAddPassphrasesAction
+      onClick: () => setAddPassphrasesDrawerVisible(true)
     }
   ]
 
-  return (
+  return (<>
+    <DpskPassphraseDrawer
+      visible={addPassphrasesDrawerVisible}
+      setVisible={setAddPassphrasesDrawerVisible}
+    />
     <Loader states={[tableQuery]}>
       <Table<DpskPassphrase>
         columns={columns}
@@ -110,5 +133,5 @@ export default function DpskPassphraseManagement () {
         rowKey='id'
       />
     </Loader>
-  )
+  </>)
 }

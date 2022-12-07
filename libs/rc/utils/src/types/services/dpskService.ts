@@ -3,15 +3,6 @@ import {
   PassphraseFormatEnum
 } from '../../constants'
 
-export interface NewTableResult<T> {
-  totalElements: number;
-  totalPages: number;
-  page: number;
-  size: number;
-  sort: string[];
-  content: T[]
-}
-
 export interface CreateDpskFormFields {
   name: string;
   passphraseLength: number;
@@ -37,5 +28,25 @@ export interface DpskPassphrase {
   mac?: string;
   numberOfDevices?: number;
   createdDate: string;
-  expirationDate?: string;
+  expirationDate: string;
+}
+
+export interface CreateDpskPassphrasesFormFields {
+  numberOfPassphrases: number;
+  passphrase?: string;
+  username?: string;
+  vlanId?: string;
+  mac?: string;
+  numberOfDevices?: number;
+  expiration: Omit<ExpirationDateEntity, 'offset'>
+}
+
+export interface DpskPassphrasesSaveData {
+  numberOfPassphrases: number;
+  passphrase?: string;
+  username?: string;
+  vlanId?: string;
+  mac?: string;
+  numberOfDevices?: number;
+  expiration?: string;
 }

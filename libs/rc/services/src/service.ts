@@ -29,7 +29,9 @@ import {
   Portal,
   PortalUrlsInfo,
   NewTableResult,
-  DpskPassphrase
+  DpskPassphrase,
+  transferTableResult,
+  DpskPassphrasesSaveData
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
@@ -379,6 +381,16 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       providesTags: [{ type: 'Service', id: 'DETAIL' }]
     }),
+    createDpskPassphrases: build.mutation<CommonResult, RequestPayload<DpskPassphrasesSaveData>>({
+      query: ({ params, payload }) => {
+        const createDpskPassphrasesReq = createHttpRequest(DpskUrls.addPassphrase, params)
+        return {
+          ...createDpskPassphrasesReq,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'DpskPassphrase', id: 'LIST' }]
+    }),
     dpskPassphraseList: build.query<TableResult<DpskPassphrase>, RequestPayload>({
       query: ({ params }) => {
         const getDpskPassphraseListReq = createHttpRequest(DpskUrls.getPassphraseList, params)
@@ -387,13 +399,19 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       },
       transformResponse (result: NewTableResult<DpskPassphrase>) {
-        return {
-          data: result.content,
-          page: result.page,
-          totalCount: result.totalElements
-        }
+        return transferTableResult<DpskPassphrase>(result)
       },
       providesTags: [{ type: 'DpskPassphrase', id: 'LIST' }]
+    }),
+    deleteDpskPassphraseList: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(DpskUrls.deletePassphrase, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'DpskPassphrase', id: 'LIST' }]
     }),
     portalNetworkInstances: build.query<TableResult<PortalDetailInstances>, RequestPayload>({
       query: ({ params }) => {
@@ -445,6 +463,8 @@ export const {
   useGetDpskQuery,
   useLazyDpskListQuery,
   useDpskPassphraseListQuery,
+  useCreateDpskPassphrasesMutation,
+  useDeleteDpskPassphraseListMutation,
   useGetPortalQuery,
   useSavePortalMutation,
   usePortalNetworkInstancesQuery,

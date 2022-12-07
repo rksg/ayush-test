@@ -24,6 +24,7 @@ export interface ExpirationDateSelectorProps {
   inputName?: string,
   label: string,
   isRequired?: boolean,
+  initialValue?: ExpirationMode,
   modeLabel?: {
     [ExpirationMode.NEVER]?: string
     [ExpirationMode.BY_DATE]?: string
@@ -61,7 +62,8 @@ export function ExpirationDateSelector (props: ExpirationDateSelectorProps) {
   const {
     label,
     isRequired = true,
-    inputName = 'expirationDate'
+    inputName = 'expirationDate',
+    initialValue = ExpirationMode.NEVER
   } = props
   const modeLabel = {
     ...{
@@ -91,7 +93,7 @@ export function ExpirationDateSelector (props: ExpirationDateSelectorProps) {
       name={[inputName, 'mode']}
       label={label}
       rules={[{ required: isRequired }]}
-      initialValue={expirationMode}
+      initialValue={initialValue}
     >
       <Radio.Group>
         { modeAvailability[ExpirationMode.NEVER] &&
