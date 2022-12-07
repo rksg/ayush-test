@@ -61,7 +61,7 @@ export const NetworkHistory = forwardRef<
       ...rest
     })
   })
-  const title = hideTitle ? '' : $t({ defaultMessage: 'Network History' })
+  const title = hideTitle ? undefined : $t({ defaultMessage: 'Network History' })
   return (
     <Loader states={[queryResults]}>
       <HistoricalCard title={title} type={type}>

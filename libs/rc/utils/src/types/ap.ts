@@ -42,7 +42,7 @@ export interface AP {
   isMeshEnable?: boolean
   rootAP?: {
     name: string
-    serialNumber: string
+    serialNumber?: string
   }
   hops?: number
   apDownRssi?: number
@@ -76,7 +76,7 @@ export interface CelluarInfo {
   cellularSwitchCountSIM1: string
   cellularNWLostCountSIM1: string
   cellularCardRemovalCountSIM1: string
-  cellularDHCPTimeoutCountSIM: string
+  cellularDHCPTimeoutCountSIM?: string
   cellularActiveSim: string
   cellularConnectionStatus: string
   cellularSignalStrength: string
@@ -124,10 +124,10 @@ export interface ApDetails {
   serialNumber: string
   apGroupId: string
   venueId: string
-  lanPorts: ApLanPort
+  lanPorts?: ApLanPort
   name: string
   description: string
-  softDeleted: string
+  softDeleted: boolean
   model: string
   updatedDate: string
   deviceGps?: DeviceGps
@@ -267,7 +267,7 @@ export interface PingAp {
 
 export interface RadioProperties {
   Rssi: string;
-  txPower: string;
+  txPower?: string;
   channel: string;
   band?: string;
   radioId?: number
@@ -289,6 +289,16 @@ export interface ApRadio {
   enable24G: boolean
   enable50G: boolean
   useVenueSettings: boolean
+}
+
+
+export interface APPhoto {
+  createdDate: string,
+  id: string,
+  imageId: string,
+  imageName: string,
+  imageUrl: string,
+  updatedDate: string
 }
 export interface DhcpAp {
   requestId: string,

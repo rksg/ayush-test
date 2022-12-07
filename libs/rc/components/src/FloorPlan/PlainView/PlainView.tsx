@@ -3,16 +3,18 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { Col, Divider, Row, Space, Typography } from 'antd'
 import { useIntl }                              from 'react-intl'
 
-import { Button, Loader }                 from '@acx-ui/components'
+import { Button, Loader } from '@acx-ui/components'
 import {
   ApplicationsSolid,
   MagnifyingGlassMinusOutlined,
   MagnifyingGlassPlusOutlined,
-  SearchFitOutlined, SearchFullOutlined
+  SearchFitOutlined,
+  SearchFullOutlined
 } from '@acx-ui/icons'
-import { FloorPlanDto, FloorPlanFormDto } from '@acx-ui/rc/utils'
+import { FloorplanContext, FloorPlanDto, FloorPlanFormDto, NetworkDeviceType, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
 
 import AddEditFloorplanModal from '../FloorPlanModal'
+import NetworkDevices        from '../NetworkDevices'
 
 import * as UI   from './styledComponents'
 import Thumbnail from './Thumbnail'
@@ -56,9 +58,18 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
   toggleGalleryView: Function,
   defaultFloorPlan: FloorPlanDto,
   deleteFloorPlan: Function,
-  onAddEditFloorPlan: Function }) {
+  onAddEditFloorPlan: Function,
+  networkDevices: {
+    [key: string]: TypeWiseNetworkDevices
+  },
+  networkDevicesVisibility: NetworkDeviceType[] }) {
   const { floorPlans,
-    toggleGalleryView, defaultFloorPlan, deleteFloorPlan, onAddEditFloorPlan } = props
+    toggleGalleryView,
+    defaultFloorPlan,
+    deleteFloorPlan,
+    onAddEditFloorPlan,
+    networkDevices,
+    networkDevicesVisibility } = props
   const { $t } = useIntl()
   const imageRef = useRef<HTMLImageElement>(null)
   const imageContainerRef = useRef<HTMLDivElement>(null)
@@ -189,6 +200,14 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
           ref={imageContainerRef}
           currentZoom={currentZoom}
           data-testid='image-container'>
+          <NetworkDevices
+            imageLoaded={imageLoaded}
+            networkDevicesVisibility={networkDevicesVisibility}
+            selectedFloorPlan={selectedFloorPlan}
+            networkDevices={networkDevices}
+            contextAlbum={false}
+            context={FloorplanContext['ap']}
+            galleryMode={false}/>
           <img
             data-testid='floorPlanImage'
             onLoad={() => onImageLoad()}
@@ -243,7 +262,9 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
                 key={index}
                 floorPlan={floorPlan}
                 active={selectedFloorPlan?.id === floorPlan?.id ? 1 : 0}
-                onFloorPlanSelection={onFloorPlanSelectionHandler} />
+                onFloorPlanSelection={onFloorPlanSelectionHandler}
+                networkDevicesVisibility={networkDevicesVisibility}
+                networkDevices={networkDevices}/>
             })}
           </UI.StyledSpace>
         </Col>
