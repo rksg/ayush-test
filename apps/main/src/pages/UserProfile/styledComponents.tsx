@@ -16,7 +16,7 @@ export const UserCircle = styled.div`
   font-size: var(--acx-headline-0-font-size);
   font-family: var(--acx-accent-brand-font);
   font-weight: var(--acx-headline-0-font-weight);
-  color: var(-acx-primary-white);
+  color: var(--acx-primary-white);
   background: var(--acx-neutrals-40);
   border-radius: 50px;
 `
