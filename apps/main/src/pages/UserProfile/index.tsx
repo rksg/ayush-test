@@ -324,20 +324,31 @@ export function UserProfile () {
       />
       <UserData/>
 
-      <Tabs>
-        <Tabs.TabPane tab={$t({ defaultMessage: 'Notifications' })} key='Notfications'>
+      <Tabs activeKey={'Settings'}>
+        <Tabs.TabPane
+          tab={$t({ defaultMessage: 'Notifications' })}
+          disabled={true}
+          key='Notfications'>
           <NotificationTab />
         </Tabs.TabPane>
 
-        <Tabs.TabPane tab={$t({ defaultMessage: 'Settings' })} key='Settings'>
+        <Tabs.TabPane
+          tab={$t({ defaultMessage: 'Settings' })}
+          key='Settings'>
           <SettingsTab />
         </Tabs.TabPane>
 
-        <Tabs.TabPane tab={$t({ defaultMessage: 'Security' })} key='Security'>
+        <Tabs.TabPane
+          tab={$t({ defaultMessage: 'Security' })}
+          disabled={true}
+          key='Security'>
           <SecurityTab />
         </Tabs.TabPane>
 
-        <Tabs.TabPane tab={$t({ defaultMessage: 'Recent Logins' })} key='RecentLogins'>
+        <Tabs.TabPane
+          tab={$t({ defaultMessage: 'Recent Logins' })}
+          disabled={true}
+          key='RecentLogins'>
           <RecentLogin />
         </Tabs.TabPane>
       </Tabs>

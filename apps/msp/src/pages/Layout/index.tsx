@@ -30,7 +30,6 @@ function Layout () {
       { key: 'Asia', label: <TenantLink to='TODO'>{$t({ defaultMessage: 'ASIA' })}</TenantLink> }
     ]}
   />
-
   return (
     <LayoutComponent
       menuConfig={useMenuConfig()}
