@@ -1,6 +1,6 @@
 export { AlarmWidget } from './AlarmWidget'
 export { ApInfoWidget } from './ApInfoWidget'
-export { ApTable, APStatus } from './ApTable'
+export { ApTable, APStatus, defaultApPayload } from './ApTable'
 export { ClientsWidget } from './ClientsWidget'
 export { DevicesDashboardWidget } from './DevicesDashboardWidget'
 export { DevicesWidget } from './DevicesWidget'
@@ -19,8 +19,8 @@ export { useApActions } from './useApActions'
 export { VenueDevicesWidget } from './VenueDevicesWidget'
 export { VenueAlarmWidget } from './VenueAlarmWidget'
 export { VenuesDashboardWidget } from './VenuesDashboardWidget'
+export { WifiSignal } from './WifiSignal'
 export { ConnectedClientsTable } from './ConnectedClientsTable'
 export { StatusLight } from './StatusLight'
-
 
 export * from './pipes/apGroupPipes'
