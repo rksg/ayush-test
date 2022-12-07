@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React from 'react'
 
 import { Badge, Space } from 'antd'
@@ -177,11 +178,9 @@ export function ApTable (props: ApTableProps) {
             showTotal={false}
             barColors={[cssStr(deviceStatusColors.empty)]}
           />
-          {releaseTag ?
-            <TenantLink to={`/devices/wifi/${row.serialNumber}/details/incidents`}>
-              {data ? data: 0}
-            </TenantLink>
-            : <>{data ? data: 0}</>}
+          <TenantLink to={`/devices/wifi/${row.serialNumber}/details/analytics/incidents/overview`}>
+            {data ? data: 0}
+          </TenantLink>
         </Space>)
       }
     }, {
