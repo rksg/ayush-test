@@ -68,7 +68,7 @@ describe('AP Group Form - Add', () => {
     expect(await screen.findByText('Group Member')).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/devices/aps`,
+      pathname: `/t/${params.tenantId}/devices/wifi`,
       hash: '',
       search: ''
     })
@@ -94,7 +94,7 @@ describe('AP Group Form - Add', () => {
     }))
     await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/devices/aps`,
+      pathname: `/t/${params.tenantId}/devices/wifi`,
       hash: '',
       search: ''
     })

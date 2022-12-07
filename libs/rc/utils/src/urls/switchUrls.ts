@@ -28,5 +28,9 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   bulkDeleteAaaServer: {
     method: 'delete',
     url: '/api/switch/tenant/:tenantId/aaaServer'
+  },
+  getSwitchDetailHeader: {
+    method: 'get',
+    url: '/api/viewmodel/:tenantId/switch/:switchId'
   }
 }

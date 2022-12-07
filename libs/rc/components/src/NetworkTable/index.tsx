@@ -167,10 +167,10 @@ const rowSelection = (intl: ReturnType<typeof useIntl>) => {
 
 interface NetworkTableProps {
   tableQuery: TableQuery<Network, RequestPayload<unknown>, unknown>,
-  globalSearch?: string
+  selectable?: boolean
 }
 
-export function NetworkTable ({ tableQuery, globalSearch }: NetworkTableProps) {
+export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
   const intl = useIntl()
   const { $t } = intl
   const navigate = useNavigate()
@@ -222,14 +222,9 @@ export function NetworkTable ({ tableQuery, globalSearch }: NetworkTableProps) {
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         rowKey='id'
-        rowActions={(globalSearch) ? undefined : rowActions}
-        rowSelection={(globalSearch)
-          ? undefined
-          : {
-            type: 'radio',
-            ...rowSelection(intl)
-          }
-        } />
+        rowActions={rowActions}
+        rowSelection={selectable ? { type: 'radio', ...rowSelection(intl) } : undefined}
+      />
     </Loader>
   )
 }

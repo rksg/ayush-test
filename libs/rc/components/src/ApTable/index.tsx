@@ -126,7 +126,7 @@ export function ApTable (props: ApTableProps) {
       dataIndex: 'name',
       sorter: true,
       render: (data, row) => (
-        <TenantLink to={`/devices/aps/${row.serialNumber}/details/overview`}>{data}</TenantLink>
+        <TenantLink to={`/devices/wifi/${row.serialNumber}/details/overview`}>{data}</TenantLink>
       )
     }, {
       key: 'deviceStatus',
@@ -175,7 +175,7 @@ export function ApTable (props: ApTableProps) {
             showTotal={false}
             barColors={[cssStr(deviceStatusColors.empty)]}
           />
-          <TenantLink to={`/devices/aps/${row.serialNumber}/details/incidents`}>
+          <TenantLink to={`/devices/wifi/${row.serialNumber}/details/incidents`}>
             {data ? data: 0}
           </TenantLink>
         </Space>)
