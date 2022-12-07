@@ -128,9 +128,9 @@ export enum ServiceAdminState {
 }
 
 export enum DHCPConfigTypeEnum {
-  SIMPLE = 'SIMPLE',
-  MULTIPLE = 'MULTIPLE',
-  HIERARCHICAL = 'HIERARCHICAL'
+  SIMPLE = 'EnableOnEachAPs',
+  MULTIPLE = 'EnableOnMultipleAPs',
+  HIERARCHICAL = 'EnableOnHierarchicalAPs'
 }
 
 export enum RadiusErrorsType {
