@@ -3,6 +3,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import {
   CommonUrlsInfo,
   createHttpRequest,
+  ProfileDataToUpdate,
   RequestPayload,
   UserSettings,
   UserProfile,
@@ -50,19 +51,35 @@ export const userApi = baseUserApi.injectEndpoints({
     }),
     getUserProfile: build.query<UserProfile, RequestPayload>({
       query: ({ params }) => {
-        const cloudVersionReq = createHttpRequest(
+        const req = createHttpRequest(
           CommonUrlsInfo.getUserProfile,
           params
         )
         return {
-          ...cloudVersionReq
+          ...req
+        }
+      },
+      transformResponse (userProfile: UserProfile) {
+        userProfile.initials =
+          userProfile.firstName[0].toUpperCase() + userProfile.lastName[0].toUpperCase()
+        userProfile.fullName = `${userProfile.firstName} ${userProfile.lastName}`
+        return userProfile
+      }
+    }),
+    updateUserProfile: build.mutation<ProfileDataToUpdate, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.updateUserProfile, params)
+        return {
+          ...req,
+          body: payload
         }
       }
     })
   })
 })
-
-
-export const { useGetAllUserSettingsQuery,
+export const {
+  useGetAllUserSettingsQuery,
   useGetCloudVersionQuery,
-  useGetUserProfileQuery } = userApi
+  useGetUserProfileQuery,
+  useUpdateUserProfileMutation
+} = userApi

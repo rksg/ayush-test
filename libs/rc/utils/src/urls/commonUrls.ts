@@ -259,6 +259,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/user-profile'
   },
+  updateUserProfile: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/user-profile'
+  },
   getVenueDHCPServiceProfile: {
     //Retrieve Venue DHCP Service Profile Settings
     method: 'get',

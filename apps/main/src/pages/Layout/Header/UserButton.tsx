@@ -3,8 +3,8 @@ import React from 'react'
 import { Menu, Dropdown } from 'antd'
 import { useIntl }        from 'react-intl'
 
-import { useGetUserProfileQuery } from '@acx-ui/rc/services'
-import { useParams }              from '@acx-ui/react-router-dom'
+import { useGetUserProfileQuery }              from '@acx-ui/rc/services'
+import { useParams, TenantLink, useLocation  } from '@acx-ui/react-router-dom'
 
 import { UserNameButton, LogOut } from './styledComponents'
 
@@ -13,6 +13,7 @@ const UserButton = () => {
 
   const params = useParams()
   const { data } = useGetUserProfileQuery({ params })
+  const location = useLocation()
 
   const menuHeaderDropdown = (
     <Menu selectedKeys={[]}
@@ -21,8 +22,12 @@ const UserButton = () => {
           window.location.href = '/logout'
         }
       }}>
-      <Menu.Item disabled key='center'>
-        {$t({ defaultMessage: 'User Profile' })}
+      <Menu.Item
+        key='center'>
+        <TenantLink
+          state={{ from: location.pathname }}
+          to='/userprofile/'>{useIntl().$t({ defaultMessage: 'User Profile' })}
+        </TenantLink>
       </Menu.Item>
 
       <Menu.Item disabled key='settings'>
@@ -43,8 +48,7 @@ const UserButton = () => {
   return (
     <Dropdown overlay={menuHeaderDropdown} trigger={['click']} placement='bottomLeft'>
       <UserNameButton>
-        {data?.firstName.substring(0,1)}
-        {data?.lastName.substring(0,1)}</UserNameButton>
+        {data?.initials}</UserNameButton>
     </Dropdown>
   )
 }
