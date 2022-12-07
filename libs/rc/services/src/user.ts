@@ -79,6 +79,7 @@ export const userApi = baseUserApi.injectEndpoints({
 })
 export const {
   useGetAllUserSettingsQuery,
+  useGetCloudVersionQuery,
   useGetUserProfileQuery,
   useUpdateUserProfileMutation
 } = userApi
