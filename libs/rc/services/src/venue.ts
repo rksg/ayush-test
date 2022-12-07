@@ -260,7 +260,39 @@ export const venueApi = baseVenueApi.injectEndpoints({
           ...req,
           body: payload as NetworkDevicePayload
         }
+      },
+      providesTags: [{ type: 'VenueFloorPlan', id: 'DEVICE' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          showActivityMessage(msg, [
+            'UpdateSwitchPosition',
+            'UpdateApPosition',
+            'PositionUpdateUnfloor',
+            'SwitchPositionUpdateUnfloor'], () => {
+            api.dispatch(venueApi.util.invalidateTags([{ type: 'VenueFloorPlan', id: 'DEVICE' }]))
+          })
+        })
       }
+    }),
+    updateSwitchPosition: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.UpdateSwitchPosition, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'VenueFloorPlan', id: 'DEVICE' }]
+    }),
+    updateApPosition: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.UpdateApPosition, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'VenueFloorPlan', id: 'DEVICE' }]
     }),
     getVenueCapabilities: build.query<VenueCapabilities, RequestPayload>({
       query: ({ params }) => {
@@ -611,6 +643,8 @@ export const {
   useGetUploadURLMutation,
   useUpdateFloorPlanMutation,
   useGetAllDevicesQuery,
+  useUpdateSwitchPositionMutation,
+  useUpdateApPositionMutation,
   useGetVenueCapabilitiesQuery,
   useGetVenueApModelsQuery,
   useGetVenueLedOnQuery,

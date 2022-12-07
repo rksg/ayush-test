@@ -7,6 +7,8 @@ import { render }                                                               
 
 
 import NetworkDevices from '.'
+import { DndProvider } from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
 
 
 const networkDeviceType = Object.values(NetworkDeviceType)
@@ -57,14 +59,13 @@ describe('Floor Plans Nework Devices', () => {
 
   it('should render correctly', async () => {
 
-    await render(<NetworkDevices
-      imageLoaded={true}
+    await render(<DndProvider backend={HTML5Backend}><NetworkDevices
       networkDevicesVisibility={networkDeviceType}
       selectedFloorPlan={floorplan}
       networkDevices={{ '94bed28abef24175ab58a3800d01e24a': deviceData[0] }}
       galleryMode={false}
       contextAlbum={false}
-      context='Ap'/>)
+      context='Ap'/></DndProvider>)
 
     expect(await screen.findByTestId('SignalUp')).toBeVisible()
   })

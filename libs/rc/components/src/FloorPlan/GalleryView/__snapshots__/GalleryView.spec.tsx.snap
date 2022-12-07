@@ -53,9 +53,14 @@ exports[`Floor Plan Gallery View should render correctly Gallery View 1`] = `
             class="ant-card-body"
           >
             <div
-              class="sc-gKXOVf LHzlb"
+              class="sc-hHLeRK dnVdwo"
             >
-              <div />
+              <div
+                style="position: absolute; width: 100%; height: 100%;"
+              />
+              <div>
+                 
+              </div>
               <img
                 alt="img"
                 data-testid="fpImage"
@@ -114,9 +119,14 @@ exports[`Floor Plan Gallery View should render correctly Gallery View 1`] = `
             class="ant-card-body"
           >
             <div
-              class="sc-gKXOVf LHzlb"
+              class="sc-hHLeRK dnVdwo"
             >
-              <div />
+              <div
+                style="position: absolute; width: 100%; height: 100%;"
+              />
+              <div>
+                 
+              </div>
               <img
                 alt="img"
                 data-testid="fpImage"

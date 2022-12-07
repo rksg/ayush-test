@@ -104,27 +104,45 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
           markerRef: RefObject<HTMLDivElement>;
       }, unknown>) => {
 
-        const marker = item.markerRef.current?.children[0] as HTMLDivElement
+        if (item.markerRef) {
+          const marker = item.markerRef.current?.children[0] as HTMLDivElement
 
-        const newCoords = monitor.getDifferenceFromInitialOffset() as XYCoord
+          const newCoords = monitor.getDifferenceFromInitialOffset() as XYCoord
 
-        const markerCoords: {
-          x: number,
-          y: number
-        } = {
-          x: marker && marker?.offsetLeft || 0,
-          y: marker && marker?.offsetTop || 0
+          const markerCoords: {
+            x: number,
+            y: number
+          } = {
+            x: marker && marker?.offsetLeft || 0,
+            y: marker && marker?.offsetTop || 0
+          }
+
+          const placementCoords: {
+            x: number,
+            y: number
+          } = {
+            x: newCoords.x + markerCoords.x + 36,
+            y: newCoords.y + markerCoords.y + 36
+          }
+          setUpdatedLocation(item.device, placementCoords)
+        } else {
+          const newCoords = monitor.getClientOffset() as XYCoord
+
+          const imageCoords = {
+            x: imageContainerRef?.current?.offsetWidth || 0,
+            y: imageContainerRef?.current?.offsetHeight || 0
+          }
+
+          const placementCoords: {
+            x: number,
+            y: number
+          } = {
+            x: newCoords.x - imageCoords.x,
+            y: newCoords.y - imageCoords.y
+          }
+
+          setUpdatedLocation(item.device, placementCoords)
         }
-
-        const placementCoords: {
-          x: number,
-          y: number
-        } = {
-          x: newCoords.x + markerCoords.x + 36,
-          y: newCoords.y + markerCoords.y + 36
-        }
-
-        setUpdatedLocation(item.device, placementCoords)
       },
       collect: (monitor) => ({
         isActive: monitor.canDrop() && monitor.isOver()
@@ -139,6 +157,9 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
       x: imageRef?.current?.offsetWidth || 0,
       y: imageRef?.current?.offsetHeight || 0
     }
+    if (!device.position)
+      device.position = { floorplanId: '', x: 0, y: 0, xPercent: 0, yPercent: 0 }
+
     if (placementCoords.x <= imageCoords.x && placementCoords.y <= imageCoords.y) {
       Object.assign(device.position, {
         floorplanId: selectedFloorPlan?.id,

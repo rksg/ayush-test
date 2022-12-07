@@ -1,21 +1,22 @@
-import { useEffect, useState } from 'react'
+import { createContext, useEffect, useState } from 'react'
 
-import { Empty, Space }        from 'antd'
-import { clone, get, isEmpty } from 'lodash'
-import { DndProvider }         from 'react-dnd'
-import { HTML5Backend }        from 'react-dnd-html5-backend'
-import { useIntl }             from 'react-intl'
-import { useParams }           from 'react-router-dom'
+import { Dropdown, Empty, Space } from 'antd'
+import { clone, get, isEmpty }    from 'lodash'
+import { DndProvider }            from 'react-dnd'
+import { HTML5Backend }           from 'react-dnd-html5-backend'
+import { useIntl }                from 'react-intl'
+import { useParams }              from 'react-router-dom'
 
-import { Button, Loader, showActionModal }                                                                                                       from '@acx-ui/components'
-import { BulbOutlined }                                                                                                                          from '@acx-ui/icons'
-import { useAddFloorPlanMutation, useDeleteFloorPlanMutation, useFloorPlanListQuery, useGetAllDevicesQuery, useUpdateFloorPlanMutation }         from '@acx-ui/rc/services'
-import { FloorPlanDto, FloorPlanFormDto, NetworkDevice, NetworkDevicePayload, NetworkDevicePosition, NetworkDeviceType, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
+import { Button, Loader, showActionModal }                                                                                                                                                             from '@acx-ui/components'
+import { BulbOutlined }                                                                                                                                                                                from '@acx-ui/icons'
+import { useAddFloorPlanMutation, useDeleteFloorPlanMutation, useFloorPlanListQuery, useGetAllDevicesQuery, useUpdateApPositionMutation, useUpdateFloorPlanMutation, useUpdateSwitchPositionMutation } from '@acx-ui/rc/services'
+import { FloorPlanDto, FloorPlanFormDto, NetworkDevice, NetworkDevicePayload, NetworkDevicePosition, NetworkDeviceType, TypeWiseNetworkDevices }                                                       from '@acx-ui/rc/utils'
 
 import AddEditFloorplanModal from './FloorPlanModal'
 import GalleryView           from './GalleryView/GalleryView'
 import PlainView             from './PlainView/PlainView'
 import * as UI               from './styledComponents'
+import UnplacedDevices       from './UnplacedDevices'
 
 
 export function sortByFloorNumber (floor1: FloorPlanDto, floor2: FloorPlanDto) {
@@ -27,6 +28,8 @@ export function sortByFloorNumber (floor1: FloorPlanDto, floor2: FloorPlanDto) {
   }
   return 0
 }
+
+export const NetworkDeviceContext = createContext<Function | null>(null)
 
 export function FloorPlan () {
   const params = useParams()
@@ -42,8 +45,9 @@ export function FloorPlan () {
 }>({} as {
   [key: string]: TypeWiseNetworkDevices
 })
-  const [allNetworkdDevices, setAllNeworkDevices] = useState<any>()
   const [unplacedDevicesCount, setUnplacedDevicesCount] = useState<number>(0)
+  const [unplacedDevicesState, setUnplacedDevicesState]
+  = useState<TypeWiseNetworkDevices>({} as TypeWiseNetworkDevices)
 
   const defaultDevices = {
     ap: [],
@@ -53,6 +57,12 @@ export function FloorPlan () {
     cloudpath: [],
     DP: []
   } as TypeWiseNetworkDevices
+
+  const clearDevicePositionValues: NetworkDevicePosition = {
+    floorplanId: '',
+    xPercent: 0,
+    yPercent: 0
+  }
 
   const networkDevicePayload: NetworkDevicePayload = {
     // eslint-disable-next-line max-len
@@ -97,10 +107,6 @@ export function FloorPlan () {
       loadNetworkDevices()
     }
 
-    if (getNetworkDevices?.data?.data){
-      const allDevices = getNetworkDevices?.data?.data
-      setAllNeworkDevices(allDevices)
-    }
   }, [selectedFloorPlan, getNetworkDevices?.data])
 
 
@@ -118,6 +124,16 @@ export function FloorPlan () {
     updateFloorPlan,
     { isLoading: isUpdateFloorPlanUpdating }
   ] = useUpdateFloorPlanMutation()
+
+  const [
+    updateSwitchPosition,
+    { isLoading: isUpdateSwitchPosition }
+  ] = useUpdateSwitchPositionMutation()
+
+  const [
+    updateApPosition,
+    { isLoading: isUpdateApPosition }
+  ] = useUpdateApPositionMutation()
 
   const galleryViewHandler = () => {
     setShowGalleryView(true)
@@ -160,6 +176,7 @@ export function FloorPlan () {
             floorplansDevices)
       }
 
+      setUnplacedDevicesState(typeWiseUnplacedNetworkDevices)
       setUnplacedDevicesCount(getUnplacedDevicesCount(typeWiseUnplacedNetworkDevices))
 
       setDevicesByFlooplanId(floorplansDevices)
@@ -251,46 +268,86 @@ export function FloorPlan () {
   }
 
   const setCoordinates = function (device: NetworkDevice) {
-    console.log(device)
+    // console.log(device)
+    publishDevicePositionUpdate(device, false)
+  }
+
+
+  function publishDevicePositionUpdate (device: NetworkDevice, clear: boolean) {
+    switch (device.networkDeviceType) {
+      case NetworkDeviceType.ap:
+        // TODO: UpdateApPosition
+        updateApPosition({ params: { ...params, serialNumber: device.serialNumber },
+          payload: (clear ? clearDevicePositionValues : device.position) })
+        break
+      case NetworkDeviceType.lte_ap:
+        // TODO: Need to add
+        break
+      case NetworkDeviceType.switch:
+        // TODO: UpdateSwitchPosition
+        updateSwitchPosition({ params: { ...params, serialNumber: device.serialNumber },
+          payload: clear ? clearDevicePositionValues : device.position })
+        break
+      case NetworkDeviceType.cloudpath:
+        // TODO: UpdateCloudpathServerPosition
+        break
+    }
+  }
+
+  function clearDevice (device: NetworkDevice) {
+    // console.log(device)
+    publishDevicePositionUpdate(device, true)
+  }
+
+  const _props = {
+    unplacedDevicesState: unplacedDevicesState
   }
 
   return (
     <Loader states={[floorPlanQuery,
       { isLoading: false, isFetching: isDeleteFloorPlanUpdating },
       { isLoading: false, isFetching: isAddFloorPlanUpdating },
-      { isLoading: false, isFetching: isUpdateFloorPlanUpdating }
+      { isLoading: false, isFetching: isUpdateFloorPlanUpdating },
+      { isLoading: false, isFetching: isUpdateSwitchPosition },
+      { isLoading: false, isFetching: isUpdateApPosition }
     ]}>
       {floorPlans?.length ?
-        <UI.FloorPlanContainer>
-          { showGalleryView ?
-            <DndProvider backend={HTML5Backend}> <GalleryView
-              floorPlans={floorPlans ?? []}
-              onFloorPlanClick={onFloorPlanClick}
-              networkDevices={devicesByFlooplanId}
-              networkDevicesVisibility={networkDevicesVisibility}/>
-            </DndProvider>
-            : <DndProvider backend={HTML5Backend}><PlainView
-              setCoordinates={setCoordinates}
-              floorPlans={floorPlans ?? []}
-              toggleGalleryView={galleryViewHandler}
-              defaultFloorPlan={!isEmpty(selectedFloorPlan) ? selectedFloorPlan : floorPlans[0]}
-              deleteFloorPlan={onDeleteFloorPlan}
-              onAddEditFloorPlan={onAddEditFloorPlan}
-              networkDevices={devicesByFlooplanId}
-              networkDevicesVisibility={networkDevicesVisibility}/>
-            </DndProvider>
-          }
-          <UI.StyledSpace size={24}>
-            <AddEditFloorplanModal
-              buttonTitle={$t({ defaultMessage: '+ Add Floor Plan' })}
-              onAddEditFloorPlan={onAddEditFloorPlan}
-              isEditMode={false}/>
-            <Button size='small' type='link' disabled={unplacedDevicesCount ? false : true}>
-              {$t({ defaultMessage: 'Unplaced Devices ({unplacedDevicesCount})' },
-                { unplacedDevicesCount })}
-            </Button>
-          </UI.StyledSpace>
-        </UI.FloorPlanContainer>
+        <NetworkDeviceContext.Provider value={clearDevice}>
+          <DndProvider backend={HTML5Backend}>
+            <UI.FloorPlanContainer>
+              { showGalleryView ?
+                <GalleryView
+                  floorPlans={floorPlans ?? []}
+                  onFloorPlanClick={onFloorPlanClick}
+                  networkDevices={devicesByFlooplanId}
+                  networkDevicesVisibility={networkDevicesVisibility}/>
+                : <PlainView
+                  setCoordinates={setCoordinates}
+                  floorPlans={floorPlans ?? []}
+                  toggleGalleryView={galleryViewHandler}
+                  defaultFloorPlan={!isEmpty(selectedFloorPlan) ? selectedFloorPlan : floorPlans[0]}
+                  deleteFloorPlan={onDeleteFloorPlan}
+                  onAddEditFloorPlan={onAddEditFloorPlan}
+                  networkDevices={devicesByFlooplanId}
+                  networkDevicesVisibility={networkDevicesVisibility}/>
+              }
+              <UI.StyledSpace size={24}>
+                <AddEditFloorplanModal
+                  buttonTitle={$t({ defaultMessage: '+ Add Floor Plan' })}
+                  onAddEditFloorPlan={onAddEditFloorPlan}
+                  isEditMode={false}/>
+                <Dropdown trigger={['click']}
+                  overlay={
+                    <UnplacedDevices {..._props} />}>
+                  <Button size='small' type='link' disabled={unplacedDevicesCount ? false : true}>
+                    {$t({ defaultMessage: 'Unplaced Devices ({unplacedDevicesCount})' },
+                      { unplacedDevicesCount })}
+                  </Button>
+                </Dropdown>
+              </UI.StyledSpace>
+            </UI.FloorPlanContainer>
+          </DndProvider>
+        </NetworkDeviceContext.Provider>
         :
         <UI.EpmtyFloorplanContainer>
           <Empty description={

@@ -92,33 +92,43 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
                 <div
                   class="sc-gKXOVf LHzlb"
                 >
+                  <div
+                    style="position: absolute; width: 100%; height: 100%;"
+                  />
                   <div>
-                    <div
-                      class="sc-jSMfEi bMgpfk device-container gallery"
-                      style="top: 9.839357%; left: 65.20548%;"
-                    >
+                     
+                    <div>
                       <div
-                        class="marker ap-status-severity-attention"
-                        style="align-items: center; display: flex; justify-content: center; cursor: pointer;"
+                        class="sc-jSMfEi gTKhVy device-container gallery"
+                        draggable="true"
+                        style="top: calc(9.839357%); left: calc(65.20548%); opacity: 1;"
                       >
-                        <svg
-                          data-testid="SignalUp"
-                        />
-                         
+                        <div
+                          class="marker ap-status-severity-attention"
+                          style="align-items: center; display: flex; justify-content: center; cursor: pointer;"
+                        >
+                          <svg
+                            data-testid="SignalUp"
+                          />
+                           
+                        </div>
                       </div>
                     </div>
-                    <div
-                      class="sc-jSMfEi bMgpfk device-container gallery"
-                      style="top: 7.056452%; left: 52.739727%;"
-                    >
+                    <div>
                       <div
-                        class="marker switch-status-never-contacted-cloud"
-                        style="align-items: center; display: flex; justify-content: center; cursor: pointer;"
+                        class="sc-jSMfEi gTKhVy device-container gallery"
+                        draggable="true"
+                        style="top: calc(7.056452%); left: calc(52.739727%); opacity: 1;"
                       >
-                        <svg
-                          data-testid="DeviceOutlined"
-                        />
-                         
+                        <div
+                          class="marker switch-status-never-contacted-cloud"
+                          style="align-items: center; display: flex; justify-content: center; cursor: pointer;"
+                        >
+                          <svg
+                            data-testid="DeviceOutlined"
+                          />
+                           
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -182,7 +192,12 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
                 <div
                   class="sc-gKXOVf LHzlb"
                 >
-                  <div />
+                  <div
+                    style="position: absolute; width: 100%; height: 100%;"
+                  />
+                  <div>
+                     
+                  </div>
                   <img
                     alt="img"
                     data-testid="fpImage"
@@ -224,20 +239,14 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
         <div
           class="ant-space-item"
         >
-          <span
-            style="cursor: not-allowed;"
+          <button
+            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV ant-dropdown-trigger"
+            type="button"
           >
-            <button
-              class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-              disabled=""
-              style="pointer-events: none;"
-              type="button"
-            >
-              <span>
-                Unplaced Devices (0)
-              </span>
-            </button>
-          </span>
+            <span>
+              Unplaced Devices (0)
+            </span>
+          </button>
         </div>
       </div>
     </div>
@@ -331,7 +340,9 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
           class="sc-evZas khzpeU"
           data-testid="image-container"
         >
-          <div />
+          <div
+            style="position: absolute; width: 100%; height: 100%;"
+          />
           <img
             alt="TEST_2"
             data-testid="floorPlanImage"
@@ -503,41 +514,47 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
               >
                 <div
                   active="1"
-                  class="ant-card-grid sc-ftvSup jMZzgQ"
+                  class="ant-card-grid sc-ftvSup bdLeFD"
                   data-testid="thumbnailBg"
                 >
-                  <div>
-                    <div
-                      class="sc-jSMfEi bMgpfk device-container context-Album"
-                      style="top: 9.839357%; left: 65.20548%;"
-                    >
-                      <div
-                        class="marker ap-status-severity-attention"
-                        style="align-items: center; display: flex; justify-content: center; cursor: pointer;"
-                      >
-                         
-                      </div>
-                    </div>
-                    <div
-                      class="sc-jSMfEi bMgpfk device-container context-Album"
-                      style="top: 7.056452%; left: 52.739727%;"
-                    >
-                      <div
-                        class="marker switch-status-never-contacted-cloud"
-                        style="align-items: center; display: flex; justify-content: center; cursor: pointer;"
-                      >
-                         
-                      </div>
-                    </div>
-                  </div>
                   <div
-                    class="ant-image"
+                    style="width: 100%; height: 53px; position: relative;"
                   >
+                    <div>
+                       
+                      <div>
+                        <div
+                          class="sc-jSMfEi gTKhVy device-container context-Album"
+                          draggable="true"
+                          style="top: calc(9.839357%); left: calc(65.20548%); opacity: 1;"
+                        >
+                          <div
+                            class="marker ap-status-severity-attention"
+                            style="align-items: center; display: flex; justify-content: center; cursor: pointer;"
+                          >
+                             
+                          </div>
+                        </div>
+                      </div>
+                      <div>
+                        <div
+                          class="sc-jSMfEi gTKhVy device-container context-Album"
+                          draggable="true"
+                          style="top: calc(7.056452%); left: calc(52.739727%); opacity: 1;"
+                        >
+                          <div
+                            class="marker switch-status-never-contacted-cloud"
+                            style="align-items: center; display: flex; justify-content: center; cursor: pointer;"
+                          >
+                             
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                     <img
                       alt="Thumbnail for TEST_2"
-                      class="ant-image-img"
                       src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg"
-                      style="height: 53px; width: 78px;"
+                      style="width: 100%; height: 100%;"
                     />
                   </div>
                 </div>
@@ -556,18 +573,19 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
               >
                 <div
                   active="0"
-                  class="ant-card-grid sc-ftvSup kBjKN"
+                  class="ant-card-grid sc-ftvSup gdnfOS"
                   data-testid="thumbnailBg"
                 >
-                  <div />
                   <div
-                    class="ant-image"
+                    style="width: 100%; height: 53px; position: relative;"
                   >
+                    <div>
+                       
+                    </div>
                     <img
                       alt="Thumbnail for dscx"
-                      class="ant-image-img"
                       src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/7231da344778480d88f37f0cca1c534f-001.png"
-                      style="height: 53px; width: 78px;"
+                      style="width: 100%; height: 100%;"
                     />
                   </div>
                 </div>
@@ -610,20 +628,14 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
         <div
           class="ant-space-item"
         >
-          <span
-            style="cursor: not-allowed;"
+          <button
+            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV ant-dropdown-trigger"
+            type="button"
           >
-            <button
-              class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-              disabled=""
-              style="pointer-events: none;"
-              type="button"
-            >
-              <span>
-                Unplaced Devices (0)
-              </span>
-            </button>
-          </span>
+            <span>
+              Unplaced Devices (0)
+            </span>
+          </button>
         </div>
       </div>
     </div>

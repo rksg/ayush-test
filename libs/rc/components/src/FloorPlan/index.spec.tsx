@@ -7,6 +7,8 @@ import { Provider }                                                             
 import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved }                      from '@acx-ui/test-utils'
 
 import { FloorPlan, sortByFloorNumber } from '.'
+import { HTML5Backend } from 'react-dnd-html5-backend'
+import { DndProvider } from 'react-dnd'
 
 const list: FloorPlanDto[] = [
   {
@@ -99,7 +101,8 @@ describe('Floor Plans', () => {
   })
   it('Floor Plans should render correctly', async () => {
 
-    const { asFragment } = await render(<Provider><FloorPlan /></Provider>, {
+    const { asFragment } = await render(<Provider><DndProvider backend={HTML5Backend}><FloorPlan />
+    </DndProvider></Provider>, {
       route: { params, path: '/:tenantId/venue/:venueId/floor-plan' }
     })
 
@@ -135,7 +138,8 @@ describe('Floor Plans', () => {
 
   it('Floor Plans should render gallery correctly', async () => {
 
-    const { asFragment } = await render(<Provider><FloorPlan /></Provider>, {
+    const { asFragment } = await render(<Provider><DndProvider backend={HTML5Backend}><FloorPlan />
+    </DndProvider></Provider>, {
       route: { params, path: '/:tenantId/venue/:venueId/floor-plan' }
     })
 

@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useContext, useRef } from 'react'
 
 import { Tooltip } from 'antd'
 import { isEmpty } from 'lodash'
@@ -6,6 +6,8 @@ import { useDrag } from 'react-dnd'
 
 import { DeviceOutlined, SignalUp }         from '@acx-ui/icons'
 import { NetworkDevice, NetworkDeviceType } from '@acx-ui/rc/utils'
+
+import { NetworkDeviceContext } from '..'
 
 import * as UI                  from './styledComponent'
 import { calculateDeviceColor } from './utils'
@@ -24,6 +26,7 @@ export default function NetworkDeviceMarker ({
 }) {
 
   const markerContainerRef = useRef<HTMLDivElement>(null)
+  const deviceContext = useContext(NetworkDeviceContext) as Function
 
   const [{ isDragging }, drag] = useDrag(() => ({
     type: 'device',
@@ -35,7 +38,7 @@ export default function NetworkDeviceMarker ({
       const didDrop = monitor.didDrop()
       if (!didDrop) {
         // device unplaced
-        // console.log(item)
+        deviceContext(item.device)
       }
     }
   }))

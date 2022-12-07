@@ -8,6 +8,8 @@ import { render, screen, fireEvent, waitFor }                                   
 
 import PlainView, { getImageFitPercentage } from './PlainView'
 import Thumbnail                            from './Thumbnail'
+import { DndProvider } from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
 
 const list: FloorPlanDto[] = [
   {
@@ -82,26 +84,30 @@ describe('Floor Plan Plain View', () => {
 
   it('should render correctly Plain View', async () => {
 
-    const { asFragment } = render(<Provider><PlainView floorPlans={list}
-      toggleGalleryView={() => {}}
-      defaultFloorPlan={list[0]}
-      deleteFloorPlan={jest.fn()}
-      onAddEditFloorPlan={jest.fn()}
-      networkDevices={networkDevices}
-      networkDevicesVisibility={networkDeviceType}/></Provider>)
+    const { asFragment } = render(<Provider><DndProvider backend={HTML5Backend}>
+      <PlainView floorPlans={list}
+        toggleGalleryView={() => {}}
+        defaultFloorPlan={list[0]}
+        deleteFloorPlan={jest.fn()}
+        onAddEditFloorPlan={jest.fn()}
+        networkDevices={networkDevices}
+        networkDevicesVisibility={networkDeviceType}
+        setCoordinates={jest.fn()}/></DndProvider></Provider>)
     expect(screen.queryByTestId('floorPlanImage')).toHaveAttribute('alt', list[0]?.name)
     expect(asFragment()).toMatchSnapshot()
   })
 
   it('should trigger onFloorPlanSelectionHandler', async () => {
     const onFloorPlanSelectionHandler = jest.fn()
-    const { asFragment } = render(<Provider><PlainView floorPlans={list}
-      toggleGalleryView={() => {}}
-      defaultFloorPlan={list[0]}
-      deleteFloorPlan={jest.fn()}
-      onAddEditFloorPlan={jest.fn()}
-      networkDevices={networkDevices}
-      networkDevicesVisibility={networkDeviceType}/></Provider>)
+    const { asFragment } = render(<Provider><DndProvider backend={HTML5Backend}>
+      <PlainView floorPlans={list}
+        toggleGalleryView={() => {}}
+        defaultFloorPlan={list[0]}
+        deleteFloorPlan={jest.fn()}
+        onAddEditFloorPlan={jest.fn()}
+        networkDevices={networkDevices}
+        networkDevicesVisibility={networkDeviceType}
+        setCoordinates={jest.fn()}/></DndProvider></Provider>)
     render(<Thumbnail
       key={0}
       floorPlan={list[0]}
@@ -117,13 +123,15 @@ describe('Floor Plan Plain View', () => {
     expect(asFragment()).toMatchSnapshot()
   })
   it('test zoom-in button', async () => {
-    const { asFragment } = await render(<Provider><PlainView floorPlans={list}
-      toggleGalleryView={() => {}}
-      defaultFloorPlan={list[0]}
-      deleteFloorPlan={jest.fn()}
-      onAddEditFloorPlan={jest.fn()}
-      networkDevices={networkDevices}
-      networkDevicesVisibility={networkDeviceType}/></Provider>)
+    const { asFragment } = await render(<Provider><DndProvider backend={HTML5Backend}>
+      <PlainView floorPlans={list}
+        toggleGalleryView={() => {}}
+        defaultFloorPlan={list[0]}
+        deleteFloorPlan={jest.fn()}
+        onAddEditFloorPlan={jest.fn()}
+        networkDevices={networkDevices}
+        networkDevicesVisibility={networkDeviceType}
+        setCoordinates={jest.fn()}/></DndProvider></Provider>)
     const component = await screen.findByTestId('image-zoom-in')
     const floorPlanContainer = await screen.findByTestId('image-container')
     const actualWidth = window.getComputedStyle(floorPlanContainer).width
@@ -135,13 +143,15 @@ describe('Floor Plan Plain View', () => {
   })
 
   it('test zoom-out button', async () => {
-    const { asFragment } = await render(<Provider><PlainView floorPlans={list}
-      toggleGalleryView={() => {}}
-      defaultFloorPlan={list[0]}
-      deleteFloorPlan={jest.fn()}
-      onAddEditFloorPlan={jest.fn()}
-      networkDevices={networkDevices}
-      networkDevicesVisibility={networkDeviceType}/></Provider>)
+    const { asFragment } = await render(<Provider><DndProvider backend={HTML5Backend}>
+      <PlainView floorPlans={list}
+        toggleGalleryView={() => {}}
+        defaultFloorPlan={list[0]}
+        deleteFloorPlan={jest.fn()}
+        onAddEditFloorPlan={jest.fn()}
+        networkDevices={networkDevices}
+        networkDevicesVisibility={networkDeviceType}
+        setCoordinates={jest.fn()}/></DndProvider></Provider>)
     const component = await screen.findByTestId('image-zoom-out')
     const floorPlanContainer = await screen.findByTestId('image-container')
     const actualWidth = window.getComputedStyle(floorPlanContainer).width
@@ -170,13 +180,15 @@ describe('Floor Plan Plain View', () => {
   })
 
   it('test zoom original button', async () => {
-    const { asFragment } = await render(<Provider><PlainView floorPlans={list}
-      toggleGalleryView={() => {}}
-      defaultFloorPlan={list[0]}
-      deleteFloorPlan={jest.fn()}
-      onAddEditFloorPlan={jest.fn()}
-      networkDevices={networkDevices}
-      networkDevicesVisibility={networkDeviceType}/></Provider>)
+    const { asFragment } = await render(<Provider><DndProvider backend={HTML5Backend}>
+      <PlainView floorPlans={list}
+        toggleGalleryView={() => {}}
+        defaultFloorPlan={list[0]}
+        deleteFloorPlan={jest.fn()}
+        onAddEditFloorPlan={jest.fn()}
+        networkDevices={networkDevices}
+        networkDevicesVisibility={networkDeviceType}
+        setCoordinates={jest.fn()}/></DndProvider></Provider>)
     const component = await screen.findByTestId('image-zoom-original')
     const floorPlanContainer = await screen.findByTestId('image-container')
     window.getComputedStyle(floorPlanContainer).width = 'calc(75%)'
@@ -187,13 +199,15 @@ describe('Floor Plan Plain View', () => {
   })
 
   it('test zoom fit button', async () => {
-    const { asFragment } = await render(<Provider><PlainView floorPlans={list}
-      toggleGalleryView={() => {}}
-      defaultFloorPlan={list[0]}
-      deleteFloorPlan={jest.fn()}
-      onAddEditFloorPlan={jest.fn()}
-      networkDevices={networkDevices}
-      networkDevicesVisibility={networkDeviceType}/></Provider>)
+    const { asFragment } = await render(<Provider><DndProvider backend={HTML5Backend}>
+      <PlainView floorPlans={list}
+        toggleGalleryView={() => {}}
+        defaultFloorPlan={list[0]}
+        deleteFloorPlan={jest.fn()}
+        onAddEditFloorPlan={jest.fn()}
+        networkDevices={networkDevices}
+        networkDevicesVisibility={networkDeviceType}
+        setCoordinates={jest.fn()}/></DndProvider></Provider>)
     const component = await screen.findByTestId('image-zoom-fit')
     const floorPlanContainer = await screen.findByTestId('image-container')
     window.getComputedStyle(floorPlanContainer).width = 'calc(120%)'
@@ -222,13 +236,15 @@ describe('Floor Plan Plain View', () => {
   it('Should click delete button', async () => {
     const deleteHandler = jest.fn(() => jest.fn())
 
-    const { asFragment } = await render(<Provider><PlainView floorPlans={list}
-      toggleGalleryView={() => {}}
-      defaultFloorPlan={list[0]}
-      deleteFloorPlan={deleteHandler}
-      onAddEditFloorPlan={jest.fn()}
-      networkDevices={networkDevices}
-      networkDevicesVisibility={networkDeviceType}/></Provider>)
+    const { asFragment } = await render(<Provider><DndProvider backend={HTML5Backend}>
+      <PlainView floorPlans={list}
+        toggleGalleryView={() => {}}
+        defaultFloorPlan={list[0]}
+        deleteFloorPlan={deleteHandler}
+        onAddEditFloorPlan={jest.fn()}
+        networkDevices={networkDevices}
+        networkDevicesVisibility={networkDeviceType}
+        setCoordinates={jest.fn()}/></DndProvider></Provider>)
     const component = await screen.findByRole('button', { name: /Delete/i })
     fireEvent.click(component)
     expect(deleteHandler).toBeCalledTimes(1)
@@ -238,13 +254,15 @@ describe('Floor Plan Plain View', () => {
   it('Should click edit button', async () => {
     const editHandler = jest.fn()
 
-    const { asFragment } = await render(<Provider><PlainView floorPlans={list}
-      toggleGalleryView={() => {}}
-      defaultFloorPlan={list[0]}
-      deleteFloorPlan={jest.fn()}
-      onAddEditFloorPlan={editHandler}
-      networkDevices={networkDevices}
-      networkDevicesVisibility={networkDeviceType}/></Provider>)
+    const { asFragment } = await render(<Provider><DndProvider backend={HTML5Backend}>
+      <PlainView floorPlans={list}
+        toggleGalleryView={() => {}}
+        defaultFloorPlan={list[0]}
+        deleteFloorPlan={jest.fn()}
+        onAddEditFloorPlan={editHandler}
+        networkDevices={networkDevices}
+        networkDevicesVisibility={networkDeviceType}
+        setCoordinates={jest.fn()}/></DndProvider></Provider>)
     const component = await screen.findByRole('button', { name: /Edit/i })
     await fireEvent.click(component)
     const editForm: HTMLFormElement = await screen.findByTestId('floor-plan-form')
@@ -257,13 +275,15 @@ describe('Floor Plan Plain View', () => {
 
   it('Should load image', async () => {
     const onImageLoad = jest.fn()
-    const { asFragment } = await render(<Provider><PlainView floorPlans={list}
-      toggleGalleryView={() => {}}
-      defaultFloorPlan={list[0]}
-      deleteFloorPlan={jest.fn()}
-      onAddEditFloorPlan={jest.fn()}
-      networkDevices={networkDevices}
-      networkDevicesVisibility={networkDeviceType}/></Provider>)
+    const { asFragment } = await render(<Provider><DndProvider backend={HTML5Backend}>
+      <PlainView floorPlans={list}
+        toggleGalleryView={() => {}}
+        defaultFloorPlan={list[0]}
+        deleteFloorPlan={jest.fn()}
+        onAddEditFloorPlan={jest.fn()}
+        networkDevices={networkDevices}
+        networkDevicesVisibility={networkDeviceType}
+        setCoordinates={jest.fn()}/></DndProvider></Provider>)
     const component = screen.getByRole('img', { name: 'TEST_2' })
     component.onload = onImageLoad
     await fireEvent.load(component)
@@ -292,13 +312,15 @@ describe('Floor Plan Plain View', () => {
 
   it('should open gallery view', async () => {
 
-    const { asFragment } = render(<Provider><PlainView floorPlans={list}
-      toggleGalleryView={jest.fn()}
-      defaultFloorPlan={list[0]}
-      deleteFloorPlan={jest.fn()}
-      onAddEditFloorPlan={jest.fn()}
-      networkDevices={networkDevices}
-      networkDevicesVisibility={networkDeviceType}/></Provider>)
+    const { asFragment } = render(<Provider><DndProvider backend={HTML5Backend}>
+      <PlainView floorPlans={list}
+        toggleGalleryView={jest.fn()}
+        defaultFloorPlan={list[0]}
+        deleteFloorPlan={jest.fn()}
+        onAddEditFloorPlan={jest.fn()}
+        networkDevices={networkDevices}
+        networkDevicesVisibility={networkDeviceType}
+        setCoordinates={jest.fn()}/></DndProvider></Provider>)
     const button = await screen.findByTestId('ApplicationsSolid')
     fireEvent.click(button)
     expect(asFragment()).toMatchSnapshot()

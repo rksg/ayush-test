@@ -4,6 +4,8 @@ import { ApDeviceStatusEnum, FloorPlanDto, NetworkDeviceType, SwitchStatusEnum, 
 import { fireEvent, render, screen }                                                                     from '@acx-ui/test-utils'
 
 import GalleryView from './GalleryView'
+import { HTML5Backend } from 'react-dnd-html5-backend'
+import { DndProvider } from 'react-dnd'
 
 
 const list: FloorPlanDto[] = [
@@ -72,11 +74,11 @@ describe('Floor Plan Gallery View', () => {
 
   it('should render correctly Gallery View', async () => {
 
-    const { asFragment } = render(<GalleryView
+    const { asFragment } = render(<DndProvider backend={HTML5Backend}><GalleryView
       floorPlans={list}
       onFloorPlanClick={jest.fn()}
       networkDevices={networkDevices}
-      networkDevicesVisibility={networkDeviceType}/>)
+      networkDevicesVisibility={networkDeviceType}/></DndProvider>)
     const component = await screen.findAllByTestId('fpImage')
     expect(component.length).toEqual(list.length)
     expect(asFragment()).toMatchSnapshot()
@@ -85,12 +87,12 @@ describe('Floor Plan Gallery View', () => {
   it('handles click on gallery item', async () => {
     const onFloorPlanClick = jest.fn()
 
-    render(<GalleryView
+    render(<DndProvider backend={HTML5Backend}><GalleryView
       floorPlans={list}
       onFloorPlanClick={onFloorPlanClick}
       networkDevices={networkDevices}
       networkDevicesVisibility={networkDeviceType}
-    />)
+    /></DndProvider>)
 
     const images = screen.getAllByTestId('fpImage')
     fireEvent.click(images[1])
