@@ -20,6 +20,13 @@ export interface EdgeViewModel {
   tags: string[]
 }
 
+export interface EdgeStaticRoutes {
+  id: string
+  networkAddress: string
+  subnetMask: string
+  gateway: string
+}
+
 export enum EdgeStatusEnum {
   NEVER_CONTACTED_CLOUD = '1_01_NeverContactedCloud',
   INITIALIZING = '1_07_Initializing',
