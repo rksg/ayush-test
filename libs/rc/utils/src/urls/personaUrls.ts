@@ -1,66 +1,68 @@
 import { ApiInfo } from '../apiService'
 
+const basePersonaUrl = '/api/personaGroups'
+
 export const PersonaUrls: { [key: string]: ApiInfo } = {
   /** Persona Group API endpoints */
   addPersonaGroup: {
     method: 'post',
-    url: '/personaGroups'
+    url: basePersonaUrl
   },
   getPersonaGroupList: {
     method: 'get',
-    url: '/personaGroups'
+    url: basePersonaUrl
   },
   searchPersonaGroupList: {
     method: 'post',
-    url: '/personaGroups/search'
+    url: `${basePersonaUrl}/search`
   },
   getPersonaGroupById: {
     method: 'get',
-    url: '/personaGroups/:groupId'
+    url: `${basePersonaUrl}/:groupId`
   },
   updatePersonaGroup: {
     method: 'PATCH',
-    url: '/personaGroups/:groupId'
+    url: `${basePersonaUrl}/:groupId`
   },
   deletePersonaGroup: {
     method: 'delete',
-    url: '/personaGroups/:groupId'
+    url: `${basePersonaUrl}/:groupId`
   },
   /** Persona API endpoints */
   addPersona: {
     method: 'post',
-    url: '/personaGroups/:groupId/personas'
+    url: `${basePersonaUrl}/:groupId/personas`
   },
   getPersonaList: {
     method: 'get',
-    url: '/personaGroups/all/personas'
+    url: `${basePersonaUrl}/all/personas`
   },
   getPersonaById: {
     method: 'get',
-    url: '/personaGroups/:groupId/personas/:id'
+    url: `${basePersonaUrl}/:groupId/personas/:id`
   },
   listPersonaByGroupId: {
     method: 'get',
-    url: '/personaGroups/:groupId/personas'
+    url: `${basePersonaUrl}/:groupId/personas`
   },
   searchPersonaList: {
     method: 'post',
-    url: '/personas/search'
+    url: `${basePersonaUrl}/all/personas/search`
   },
   updatePersona: {
     method: 'PATCH',
-    url: '/personaGroups/:groupId/personas/:id'
+    url: `${basePersonaUrl}/:groupId/personas/:id`
   },
   deletePersona: {
     method: 'delete',
-    url: '/personaGroups/:groupId/personas/:id'
+    url: `${basePersonaUrl}/:groupId/personas/:id`
   },
   addPersonaDevices: {
     method: 'post',
-    url: '/personaGroups/:groupId/personas/:id/devices'
+    url: `${basePersonaUrl}/:groupId/personas/:id/devices`
   },
   deletePersonaDevices: {
     method: 'delete',
-    url: '/personaGroups/:groupId/personas/:id/devices/:macAddress'
+    url: `${basePersonaUrl}/:groupId/personas/:id/devices/:macAddress`
   }
 }
