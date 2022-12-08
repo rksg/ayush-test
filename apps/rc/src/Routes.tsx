@@ -15,6 +15,7 @@ import { Provider }                          from '@acx-ui/store'
 
 import Edges                    from './pages/Devices/Edge'
 import AddEdge                  from './pages/Devices/Edge/AddEdge'
+import EdgeDetails              from './pages/Devices/Edge/EdgeDetails'
 import EditEdge                 from './pages/Devices/Edge/EdgeDetails/EditEdge'
 import SwitchesTable            from './pages/Devices/Switch/SwitchesTable'
 import ApDetails                from './pages/Devices/Wifi/ApDetails'
@@ -85,6 +86,8 @@ function DeviceRoutes () {
       <Route
         path='devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         element={<EditEdge />} />
+      <Route path='devices/edge/:serialNumber/edge-details/:activeTab'
+        element={<EdgeDetails />} />
       <Route path='devices/switches' element={<SwitchesTable />} />
       <Route path='devices/edge/list' element={<Edges />} />
     </Route>

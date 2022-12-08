@@ -5,7 +5,7 @@ import {
   TableResult,
   EdgeViewModel,
   createHttpRequest,
-  EdgeSaveData,
+  EdgeGeneralSetting,
   RequestPayload
 } from '@acx-ui/rc/utils'
 
@@ -19,7 +19,7 @@ export const baseEdgeApi = createApi({
 
 export const edgeApi = baseEdgeApi.injectEndpoints({
   endpoints: (build) => ({
-    addEdge: build.mutation<EdgeSaveData, RequestPayload>({
+    addEdge: build.mutation<EdgeGeneralSetting, RequestPayload>({
       query: ({ payload }) => {
         const req = createHttpRequest(EdgeUrlsInfo.addEdge)
         return {
@@ -29,7 +29,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Edge', id: 'LIST' }]
     }),
-    getEdge: build.query<EdgeSaveData, RequestPayload>({
+    getEdge: build.query<EdgeGeneralSetting, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(EdgeUrlsInfo.getEdge, params)
         return {
@@ -38,7 +38,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
       },
       providesTags: [{ type: 'Edge', id: 'DETAIL' }]
     }),
-    updateEdge: build.mutation<EdgeSaveData, RequestPayload>({
+    updateEdge: build.mutation<EdgeGeneralSetting, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(EdgeUrlsInfo.updateEdge, params)
         return {
@@ -84,6 +84,18 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Edge', id: 'LIST' }]
+    }),
+    edgeBySerialNumber: build.query<EdgeViewModel, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getEdgeList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      transformResponse (result: TableResult<EdgeViewModel>) {
+        return transformEdgeViewModel(result?.data[0])
+      }
     })
   })
 })
@@ -95,5 +107,12 @@ export const {
   useGetEdgeListQuery,
   useLazyGetEdgeListQuery,
   useDeleteEdgeMutation,
-  useSendOtpMutation
+  useSendOtpMutation,
+  useEdgeBySerialNumberQuery
 } = edgeApi
+
+const transformEdgeViewModel = (result: EdgeViewModel) => {
+  const edge = JSON.parse(JSON.stringify(result))
+
+  return edge
+}

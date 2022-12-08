@@ -61,6 +61,10 @@ export enum ApDeviceStatusEnum {
   HEARTBEAT_LOST = '4_04_HeartbeatLost'
 }
 
+export enum EdgeDeviceStatusEnum {
+  OPERATIONAL = 'Operational',
+}
+
 export enum APMeshRole {
   RAP = 'RAP',
   MAP = 'MAP',
