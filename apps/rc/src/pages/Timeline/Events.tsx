@@ -7,8 +7,8 @@ import { useEventsQuery }                       from '@acx-ui/rc/services'
 import { Event, CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
 import { formatter }                            from '@acx-ui/utils'
 
-import { severityMapping, eventEventTypeMapping, productMapping } from './mapping'
-import { TimelineDrawer }                                         from './TimelineDrawer'
+import { severityMapping, eventTypeMapping, productMapping } from './mapping'
+import { TimelineDrawer }                                    from './TimelineDrawer'
 
 const Events = () => {
   const { $t } = useIntl()
@@ -105,7 +105,7 @@ const Events = () => {
       sorter: true,
       render: function (_, row) {
         const msg = severityMapping[row.severity as keyof typeof severityMapping]
-        return msg ? $t(msg) : row.severity
+        return $t(msg)
       }
     },
     {
@@ -114,9 +114,9 @@ const Events = () => {
       dataIndex: 'entity_type',
       sorter: true,
       render: function (_, row) {
-        const msg = eventEventTypeMapping[
-          row.entity_type as keyof typeof eventEventTypeMapping]
-        return msg ? $t(msg) : row.entity_type
+        const msg = eventTypeMapping[
+          row.entity_type as keyof typeof eventTypeMapping]
+        return $t(msg)
       }
     },
     {
@@ -126,7 +126,7 @@ const Events = () => {
       sorter: true,
       render: function (_, row) {
         const msg = productMapping[row.product as keyof typeof productMapping]
-        return msg ? $t(msg) : row.product
+        return $t(msg)
       }
     },
     {
@@ -156,16 +156,16 @@ const Events = () => {
     {
       title: defineMessage({ defaultMessage: 'Severity' }),
       value: (() => {
-        const severityMsg = severityMapping[data.severity as keyof typeof severityMapping]
-        return severityMsg? $t(severityMsg) : data.severity
+        const msg = severityMapping[data.severity as keyof typeof severityMapping]
+        return $t(msg)
       })()
     },
     {
       title: defineMessage({ defaultMessage: 'Event Type' }),
       value: (() => {
-        const eventTypeMsg = eventEventTypeMapping[
-          data.entity_type as keyof typeof eventEventTypeMapping]
-        return eventTypeMsg? $t(eventTypeMsg) : data.entity_type
+        const msg = eventTypeMapping[
+          data.entity_type as keyof typeof eventTypeMapping]
+        return $t(msg)
       })()
     },
     {
@@ -190,7 +190,7 @@ const Events = () => {
       title={defineMessage({ defaultMessage: 'Event Details' })}
       visible={visible}
       onClose={()=>setVisible(false)}
-      data={current ? getDrawerData(current) : []}
+      data={getDrawerData(current!)}
     />}
   </Loader>
 }

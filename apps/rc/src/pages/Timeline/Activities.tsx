@@ -75,7 +75,7 @@ const Activities = () => {
       sorter: true,
       render: function (_, row) {
         const msg = statusMapping[row.status as keyof typeof statusMapping]
-        return msg ? $t(msg) : row.status
+        return $t(msg)
       }
     },
     {
@@ -85,7 +85,7 @@ const Activities = () => {
       sorter: true,
       render: function (_, row) {
         const msg = productMapping[row.product as keyof typeof productMapping]
-        return msg ? $t(msg) : row.product
+        return $t(msg)
       }
     },
     {
@@ -120,8 +120,8 @@ const Activities = () => {
     {
       title: defineMessage({ defaultMessage: 'Severity' }),
       value: (() => {
-        const severityMsg = severityMapping[data.severity as keyof typeof severityMapping]
-        return severityMsg? $t(severityMsg) : data.severity
+        const msg = severityMapping[data.severity as keyof typeof severityMapping]
+        return $t(msg)
       })()
     },
     {
@@ -158,7 +158,7 @@ const Activities = () => {
       title={defineMessage({ defaultMessage: 'Activity Details' })}
       visible={visible}
       onClose={()=>setVisible(false)}
-      data={current ? getDrawerData(current) : []}
+      data={getDrawerData(current!)}
     /> }
   </Loader>
 }

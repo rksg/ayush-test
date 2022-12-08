@@ -7,8 +7,8 @@ import { useAdminLogsQuery }                       from '@acx-ui/rc/services'
 import { AdminLog, CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
 import { formatter }                               from '@acx-ui/utils'
 
-import { adminLogEventTypeMapping, severityMapping } from './mapping'
-import { TimelineDrawer }                            from './TimelineDrawer'
+import { adminLogTypeMapping, severityMapping } from './mapping'
+import { TimelineDrawer }                       from './TimelineDrawer'
 
 const AdminLogs = () => {
   const { $t } = useIntl()
@@ -86,7 +86,7 @@ const AdminLogs = () => {
       sorter: true,
       render: function (_, row) {
         const msg = severityMapping[row.severity as keyof typeof severityMapping]
-        return msg ? $t(msg) : row.severity
+        return $t(msg)
       }
     },
     {
@@ -95,9 +95,8 @@ const AdminLogs = () => {
       dataIndex: 'entity_type',
       sorter: true,
       render: function (_, row) {
-        const msg = adminLogEventTypeMapping[
-          row.entity_type as keyof typeof adminLogEventTypeMapping]
-        return msg ? $t(msg) : row.entity_type
+        const msg = adminLogTypeMapping[row.entity_type as keyof typeof adminLogTypeMapping]
+        return $t(msg)
       }
     },
     {
@@ -124,16 +123,15 @@ const AdminLogs = () => {
     {
       title: defineMessage({ defaultMessage: 'Severity' }),
       value: (() => {
-        const severityMsg = severityMapping[data.severity as keyof typeof severityMapping]
-        return severityMsg? $t(severityMsg) : data.severity
+        const msg = severityMapping[data.severity as keyof typeof severityMapping]
+        return $t(msg)
       })()
     },
     {
       title: defineMessage({ defaultMessage: 'Event Type' }),
       value: (() => {
-        const eventTypeMsg = adminLogEventTypeMapping[
-          data.entity_type as keyof typeof adminLogEventTypeMapping]
-        return eventTypeMsg? $t(eventTypeMsg) : data.entity_type
+        const msg = adminLogTypeMapping[data.entity_type as keyof typeof adminLogTypeMapping]
+        return $t(msg)
       })()
     },
     {
@@ -158,7 +156,7 @@ const AdminLogs = () => {
       title={defineMessage({ defaultMessage: 'Log Details' })}
       visible={visible}
       onClose={()=>setVisible(false)}
-      data={current ? getDrawerData(current) : []}
+      data={getDrawerData(current!)}
     />}
   </Loader>
 }

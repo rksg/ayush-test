@@ -13,16 +13,22 @@ export const statusMapping = {
   FAIL: defineMessage({ defaultMessage: 'Failed' })
 }
 
-export const adminLogEventTypeMapping = {
+export const adminLogTypeMapping = {
   ADMIN: defineMessage({ defaultMessage: 'Admin' }),
   NOTIFICATION: defineMessage({ defaultMessage: 'Notification' })
 }
 
-export const eventEventTypeMapping = {
+export const eventTypeMapping = {
   AP: defineMessage({ defaultMessage: 'AP' }),
-  CLIENT: defineMessage({ defaultMessage: 'Client' })
+  CLIENT: defineMessage({ defaultMessage: 'Client' }),
+  SWITCH: defineMessage({ defaultMessage: 'Switch' }),
+  NETWORK: defineMessage({ defaultMessage: 'Network' })
 }
 
 export const severityMapping = {
+  Critical: defineMessage({ defaultMessage: 'Critical' }),
+  Major: defineMessage({ defaultMessage: 'Major' }),
+  Minor: defineMessage({ defaultMessage: 'Minor' }),
+  Warning: defineMessage({ defaultMessage: 'Warning' }),
   Info: defineMessage({ defaultMessage: 'Informational' })
 }

@@ -18,7 +18,8 @@ export const TimelineDrawer = (props: DrawerProps) => {
     visible={props.visible}
     onClose={props.onClose}
     children={<Form labelCol={{ span: 10 }} labelAlign='left'>{
-      props.data.map(({ title, value }) => <Form.Item
+      props.data.map(({ title, value }, i) => <Form.Item
+        key={i}
         label={$t(title)}
         children={value || noDataSymbol}
       />)
