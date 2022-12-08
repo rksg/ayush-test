@@ -4,6 +4,7 @@ import {
   Client,
   ClientList,
   ClientListMeta,
+  ClientStatistic,
   ClientUrlsInfo,
   CommonResult,
   CommonUrlsInfo,
@@ -35,14 +36,14 @@ export const clientApi = baseClientApi.injectEndpoints({
     getClientList: build.query<TableResult<ClientList>, RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
         const clientListInfo = {
-          ...createHttpRequest(CommonUrlsInfo.getClientList, arg.params),
+          ...createHttpRequest(ClientUrlsInfo.getClientList, arg.params),
           body: arg.payload
         }
         const clientListQuery = await fetchWithBQ(clientListInfo)
         const clientList = clientListQuery.data as TableResult<ClientList>
 
         const clientListMetaInfo = {
-          ...createHttpRequest(CommonUrlsInfo.getClientMeta, arg.params),
+          ...createHttpRequest(ClientUrlsInfo.getClientMeta, arg.params),
           body: {
             fields: ['switchSerialNumber', 'venueName', 'apName', 'switchName'],
             filters: {
@@ -190,6 +191,15 @@ export const clientApi = baseClientApi.injectEndpoints({
           }
         }
       }
+    }),
+    getHistoricalStatisticsReports: build.query<ClientStatistic, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getHistoricalStatisticsReportsV2, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
     })
   })
 })
@@ -230,10 +240,12 @@ export const {
   useGetHistoricalClientListQuery,
   useLazyGetHistoricalClientListQuery,
   useGetClientListQuery,
-  useGetGuestsListQuery,
   useGetGuestsMutation,
   useDeleteGuestsMutation,
   useEnableGuestsMutation,
   useDisableGuestsMutation,
-  useGenerateGuestPasswordMutation
+  useGenerateGuestPasswordMutation,
+  useGetHistoricalStatisticsReportsQuery,
+  useLazyGetHistoricalStatisticsReportsQuery,
+  useGetGuestsListQuery
 } = clientApi

@@ -74,7 +74,7 @@ export default function GuestsTable () {
               setVisible(true)
             }}
           >
-            {moment(row.expiryDate).format('DD/MM/YYYY HH:mm')}
+            {moment(row.creationDate).format('DD/MM/YYYY HH:mm')}
           </Button>
       },
       {

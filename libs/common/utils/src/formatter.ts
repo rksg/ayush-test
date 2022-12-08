@@ -159,6 +159,7 @@ export const dateTimeFormats = {
   yearFormat: 'YYYY',
   monthFormat: 'MMM',
   dateFormat: 'MMM DD YYYY',
+  yearMonthFormat: 'MMMM YYYY',
   monthDateFormat: 'MMM DD',
   shortDateTimeFormat: 'MMM DD HH:mm',
   dateTimeFormat: 'MMM DD YYYY HH:mm',
@@ -181,6 +182,7 @@ const percentFormatRound: MessageDescriptor = defineMessage({
 const scaleFormatRound: MessageDescriptor = defineMessage({
   defaultMessage: '{value, number, ::scale/100 . }'
 })
+
 export const intlFormats = {
   countFormat,
   percentFormat,

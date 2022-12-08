@@ -17,7 +17,7 @@ exports[`ApDetails should navigate to analytic tab correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/tenant-id/devices/aps"
+                href="/t/tenant-id/devices/wifi"
               >
                 Access Points
               </a>
@@ -173,17 +173,19 @@ exports[`ApDetails should navigate to analytic tab correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-reports"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-reports"
                     role="tab"
-                    tabindex="0"
                   >
-                    Reports
+                    <span>
+                      Reports
+                    </span>
                   </div>
                 </div>
                 <div
@@ -201,45 +203,51 @@ exports[`ApDetails should navigate to analytic tab correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-clients"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-clients"
                     role="tab"
-                    tabindex="0"
                   >
-                    Clients ()
+                    <span>
+                      Clients ()
+                    </span>
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-services"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-services"
                     role="tab"
-                    tabindex="0"
                   >
-                    Services (0)
+                    <span>
+                      Services (0)
+                    </span>
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-timeline"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-timeline"
                     role="tab"
-                    tabindex="0"
                   >
-                    Timeline
+                    <span>
+                      Timeline 
+                    </span>
                   </div>
                 </div>
                 <div
@@ -415,7 +423,7 @@ exports[`ApDetails should navigate to clients tab correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/tenant-id/devices/aps"
+                href="/t/tenant-id/devices/wifi"
               >
                 Access Points
               </a>
@@ -571,17 +579,19 @@ exports[`ApDetails should navigate to clients tab correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-reports"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-reports"
                     role="tab"
-                    tabindex="0"
                   >
-                    Reports
+                    <span>
+                      Reports
+                    </span>
                   </div>
                 </div>
                 <div
@@ -599,45 +609,51 @@ exports[`ApDetails should navigate to clients tab correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab ant-tabs-tab-active"
+                  class="ant-tabs-tab ant-tabs-tab-active ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-clients"
+                    aria-disabled="true"
                     aria-selected="true"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-clients"
                     role="tab"
-                    tabindex="0"
                   >
-                    Clients ()
+                    <span>
+                      Clients ()
+                    </span>
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-services"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-services"
                     role="tab"
-                    tabindex="0"
                   >
-                    Services (0)
+                    <span>
+                      Services (0)
+                    </span>
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-timeline"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-timeline"
                     role="tab"
-                    tabindex="0"
                   >
-                    Timeline
+                    <span>
+                      Timeline 
+                    </span>
                   </div>
                 </div>
                 <div
@@ -779,7 +795,7 @@ exports[`ApDetails should navigate to networks tab correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/tenant-id/devices/aps"
+                href="/t/tenant-id/devices/wifi"
               >
                 Access Points
               </a>
@@ -935,17 +951,19 @@ exports[`ApDetails should navigate to networks tab correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-reports"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-reports"
                     role="tab"
-                    tabindex="0"
                   >
-                    Reports
+                    <span>
+                      Reports
+                    </span>
                   </div>
                 </div>
                 <div
@@ -963,45 +981,51 @@ exports[`ApDetails should navigate to networks tab correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-clients"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-clients"
                     role="tab"
-                    tabindex="0"
                   >
-                    Clients ()
+                    <span>
+                      Clients ()
+                    </span>
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-services"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-services"
                     role="tab"
-                    tabindex="0"
                   >
-                    Services (0)
+                    <span>
+                      Services (0)
+                    </span>
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-timeline"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-timeline"
                     role="tab"
-                    tabindex="0"
                   >
-                    Timeline
+                    <span>
+                      Timeline 
+                    </span>
                   </div>
                 </div>
                 <div
@@ -1177,7 +1201,7 @@ exports[`ApDetails should navigate to reports tab correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/tenant-id/devices/aps"
+                href="/t/tenant-id/devices/wifi"
               >
                 Access Points
               </a>
@@ -1333,17 +1357,19 @@ exports[`ApDetails should navigate to reports tab correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab ant-tabs-tab-active"
+                  class="ant-tabs-tab ant-tabs-tab-active ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-reports"
+                    aria-disabled="true"
                     aria-selected="true"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-reports"
                     role="tab"
-                    tabindex="0"
                   >
-                    Reports
+                    <span>
+                      Reports
+                    </span>
                   </div>
                 </div>
                 <div
@@ -1361,45 +1387,51 @@ exports[`ApDetails should navigate to reports tab correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-clients"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-clients"
                     role="tab"
-                    tabindex="0"
                   >
-                    Clients ()
+                    <span>
+                      Clients ()
+                    </span>
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-services"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-services"
                     role="tab"
-                    tabindex="0"
                   >
-                    Services (0)
+                    <span>
+                      Services (0)
+                    </span>
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-timeline"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-timeline"
                     role="tab"
-                    tabindex="0"
                   >
-                    Timeline
+                    <span>
+                      Timeline 
+                    </span>
                   </div>
                 </div>
                 <div
@@ -1541,7 +1573,7 @@ exports[`ApDetails should navigate to services tab correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/tenant-id/devices/aps"
+                href="/t/tenant-id/devices/wifi"
               >
                 Access Points
               </a>
@@ -1697,17 +1729,19 @@ exports[`ApDetails should navigate to services tab correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-reports"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-reports"
                     role="tab"
-                    tabindex="0"
                   >
-                    Reports
+                    <span>
+                      Reports
+                    </span>
                   </div>
                 </div>
                 <div
@@ -1725,45 +1759,51 @@ exports[`ApDetails should navigate to services tab correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-clients"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-clients"
                     role="tab"
-                    tabindex="0"
                   >
-                    Clients ()
+                    <span>
+                      Clients ()
+                    </span>
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab ant-tabs-tab-active"
+                  class="ant-tabs-tab ant-tabs-tab-active ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-services"
+                    aria-disabled="true"
                     aria-selected="true"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-services"
                     role="tab"
-                    tabindex="0"
                   >
-                    Services (0)
+                    <span>
+                      Services (0)
+                    </span>
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-timeline"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-timeline"
                     role="tab"
-                    tabindex="0"
                   >
-                    Timeline
+                    <span>
+                      Timeline 
+                    </span>
                   </div>
                 </div>
                 <div
@@ -1905,7 +1945,7 @@ exports[`ApDetails should navigate to timeline tab correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/tenant-id/devices/aps"
+                href="/t/tenant-id/devices/wifi"
               >
                 Access Points
               </a>
@@ -2061,17 +2101,19 @@ exports[`ApDetails should navigate to timeline tab correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-reports"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-reports"
                     role="tab"
-                    tabindex="0"
                   >
-                    Reports
+                    <span>
+                      Reports
+                    </span>
                   </div>
                 </div>
                 <div
@@ -2089,45 +2131,51 @@ exports[`ApDetails should navigate to timeline tab correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-clients"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-clients"
                     role="tab"
-                    tabindex="0"
                   >
-                    Clients ()
+                    <span>
+                      Clients ()
+                    </span>
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-services"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-services"
                     role="tab"
-                    tabindex="0"
                   >
-                    Services (0)
+                    <span>
+                      Services (0)
+                    </span>
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab ant-tabs-tab-active"
+                  class="ant-tabs-tab ant-tabs-tab-active ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-timeline"
+                    aria-disabled="true"
                     aria-selected="true"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-timeline"
                     role="tab"
-                    tabindex="0"
                   >
-                    Timeline
+                    <span>
+                      Timeline 
+                    </span>
                   </div>
                 </div>
                 <div
@@ -2269,7 +2317,7 @@ exports[`ApDetails should navigate to troubleshooting tab correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/tenant-id/devices/aps"
+                href="/t/tenant-id/devices/wifi"
               >
                 Access Points
               </a>
@@ -2425,17 +2473,19 @@ exports[`ApDetails should navigate to troubleshooting tab correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-reports"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-reports"
                     role="tab"
-                    tabindex="0"
                   >
-                    Reports
+                    <span>
+                      Reports
+                    </span>
                   </div>
                 </div>
                 <div
@@ -2453,45 +2503,51 @@ exports[`ApDetails should navigate to troubleshooting tab correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-clients"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-clients"
                     role="tab"
-                    tabindex="0"
                   >
-                    Clients ()
+                    <span>
+                      Clients ()
+                    </span>
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-services"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-services"
                     role="tab"
-                    tabindex="0"
                   >
-                    Services (0)
+                    <span>
+                      Services (0)
+                    </span>
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-timeline"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-timeline"
                     role="tab"
-                    tabindex="0"
                   >
-                    Timeline
+                    <span>
+                      Timeline 
+                    </span>
                   </div>
                 </div>
                 <div

@@ -108,6 +108,26 @@ export const clientList = [{
   wifiCallingClient: false
 }]
 
+export const clientMeta = {
+  data: [
+    {
+      venueName: 'My-Venue',
+      clientMac: '3c:22:fb:97:c7:ef',
+      apName: 'UI team AP'
+    },
+    {
+      venueName: 'My-Venue',
+      clientMac: '3c:22:fb:c9:ab:2d',
+      apName: 'UI team AP'
+    },
+    {
+      venueName: 'My-Venue',
+      clientMac: 'aa:5c:7a:99:38:a2',
+      apName: 'UI team AP'
+    }
+  ]
+}
+
 export const histClientList = {
   totalCount: 2,
   page: 1,
@@ -138,7 +158,7 @@ export const clientApList = [{
   lastUpdated: '2022-11-08T14:34:18.835Z',
   mac: '28:B3:71:28:78:50',
   meshRole: 'DISABLED',
-  model: 'R650',
+  model: 'H320',
   name: 'UI team ONLY',
   position: { xPercent: 0, yPercent: 0 },
   serialNumber: '422039000230',
@@ -203,4 +223,136 @@ export const eventMetaList = {
     networkId: '0189575828434f94a7c0b0e611379d26',
     venueName: 'UI-TEST-VENUE'
   }]
+}
+
+export const clientReportList = [{
+  applications: 73.29609288004667,
+  apsConnected: 1,
+  avgRateBPS: 144042.1869025805,
+  avgSessionLengthSeconds: null,
+  sessions: 1.0002442201269182,
+  userTraffic5GBytes: 1542709827,
+  userTraffic6GBytes: 0,
+  userTraffic24GBytes: 0,
+  userTrafficBytes: 1542709827
+}]
+
+export const apCaps = {
+  apModels: [{
+    ledOn: true,
+    model: 'H320',
+    canSupportPoeMode: false,
+    canSupportPoeOut: false,
+    lanPortPictureDownloadUrl: 'xxxxxxx/h320.jpg',
+    lanPorts: [{
+      defaultType: 'ACCESS',
+      id: '1',
+      isPoeOutPort: false,
+      isPoePort: false,
+      supportDisable: true,
+      trunkPortOnly: false,
+      untagId: 1,
+      vlanMembers: '1'
+    }, {
+      defaultType: 'ACCESS',
+      id: '2',
+      isPoeOutPort: false,
+      isPoePort: false,
+      supportDisable: true,
+      trunkPortOnly: false,
+      untagId: 1,
+      vlanMembers: '1'
+    }, {
+      defaultType: 'TRUNK',
+      id: '3',
+      isPoeOutPort: false,
+      isPoePort: true,
+      supportDisable: false,
+      trunkPortOnly: true,
+      untagId: 1,
+      vlanMembers: '1-4094'
+    }]
+  }, {
+    ledOn: true,
+    model: 'T750',
+    canSupportPoeMode: true,
+    canSupportPoeOut: true,
+    lanPortPictureDownloadUrl: 'xxxxxxx/t750.jpg',
+    lanPorts: [{
+      defaultType: 'TRUNK',
+      id: '1',
+      isPoeOutPort: true,
+      isPoePort: false,
+      supportDisable: true,
+      trunkPortOnly: false,
+      untagId: 1,
+      vlanMembers: '1-4094'
+    }, {
+      defaultType: 'TRUNK',
+      id: '2',
+      isPoeOutPort: false,
+      isPoePort: false,
+      supportDisable: true,
+      trunkPortOnly: false,
+      untagId: 1,
+      vlanMembers: '1-4094'
+    }, {
+      defaultType: 'TRUNK',
+      id: '3',
+      isPoeOutPort: false,
+      isPoePort: true,
+      supportDisable: false,
+      trunkPortOnly: false,
+      untagId: 1,
+      vlanMembers: '1-4094'
+    }],
+    poeModeCapabilities: [
+      'Auto',
+      '802.3at',
+      '802.3bt-Class_5',
+      '802.3bt-Class_6',
+      '802.3bt-Class_7'
+    ]
+  }, {
+    allowDfsCountry: ['US', 'SG'],
+    canSupportCellular: true,
+    canSupportLacp: false,
+    canSupportPoeMode: true,
+    canSupportPoeOut: false,
+    capabilityScore: 79,
+    has160MHzChannelBandwidth: false,
+    isOutdoor: false,
+    lanPortPictureDownloadUrl: 'xxxxxxx/m510.jpg',
+    lanPorts: [{
+      id: '1',
+      displayLabel: 'WAN',
+      defaultType: 'TRUNK',
+      untagId: 1,
+      vlanMembers: '1-4094'
+    }],
+    ledOn: true,
+    lldpAdInterval: 30,
+    lldpEnable: true,
+    lldpHoldTime: 120,
+    lldpMgmtEnable: true,
+    model: 'M510',
+    pictureDownloadUrl: 'xxxxxx',
+    poeModeCapabilities: ['Auto', '802.3af', '802.3at'],
+    primaryWanRecoveryTimer: 60,
+    requireOneEnabledTrunkPort: true,
+    simCardPrimaryApn: 'defaultapn',
+    simCardPrimaryCellularNetworkSelection: 'AUTO',
+    simCardPrimaryEnabled: true,
+    simCardPrimaryRoaming: true,
+    simCardSecondaryApn: 'defaultapn',
+    simCardSecondaryCellularNetworkSelection: 'AUTO',
+    simCardSecondaryEnabled: true,
+    simCardSecondaryRoaming: true,
+    support11AX: false,
+    supportChannel144: true,
+    supportDual5gMode: false,
+    supportTriRadio: false,
+    wanConnection: 'ETH_WITH_CELLULAR_FAILOVER'
+  }],
+  version: '6.0.0.x.xxx'
 }

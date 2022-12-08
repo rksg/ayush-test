@@ -25,7 +25,7 @@ exports[`MdnsProxyOverview should render table 1`] = `
                 class="ant-space-item"
               >
                 <div
-                  class="styledComponents__Title-sc-13w5wfx-5 eyxVFQ"
+                  class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
                 />
               </div>
             </div>
@@ -43,7 +43,7 @@ exports[`MdnsProxyOverview should render table 1`] = `
         class="ant-card-body"
       >
         <div
-          class="styledComponents__Title-sc-13w5wfx-5 eyxVFQ"
+          class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
         >
           Forwarding Rules
         </div>
