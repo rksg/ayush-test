@@ -3,10 +3,10 @@ import React from 'react'
 import { useParams } from 'react-router-dom'
 import styled        from 'styled-components/macro'
 
-import { GridCol, GridRow }                                                      from '@acx-ui/components'
-import  { EdgeInfoWidgets, EdgeTrafficByVolumeWidget, EdgePortsByTrafficWidget } from '@acx-ui/rc/components'
-import { useEdgeBySerialNumberQuery }                                            from '@acx-ui/rc/services'
-import { EdgePort, EdgeViewModel, EdgePortTypeEnum }                             from '@acx-ui/rc/utils'
+import { GridCol, GridRow }                                                    from '@acx-ui/components'
+import { EdgeInfoWidget, EdgeTrafficByVolumeWidget, EdgePortsByTrafficWidget } from '@acx-ui/rc/components'
+import { useEdgeBySerialNumberQuery }                                          from '@acx-ui/rc/services'
+import { EdgePort, EdgeViewModel, EdgePortTypeEnum }                           from '@acx-ui/rc/utils'
 
 import { EdgeUpTimeWidget } from './EdgeUpTimeWidget'
 
@@ -56,10 +56,9 @@ export const EdgeOverview = styled(({ className }:{ className?: string }) => {
   return (
     <GridRow className={className}>
       <GridCol col={{ span: 24 }}>
-        <EdgeInfoWidgets
+        <EdgeInfoWidget
           currentEdge={currentEdge as EdgeViewModel}
           edgePortsSetting={edgePortsSetting as EdgePort[]}
-          filters={edgeFilter}
           isLoading={isLoadingEdgeViewModel || isPortListLoading}
         />
       </GridCol>

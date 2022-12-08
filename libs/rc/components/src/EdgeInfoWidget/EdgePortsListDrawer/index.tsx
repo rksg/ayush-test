@@ -107,7 +107,7 @@ const EdgePortsListDrawer = ({ visible, setVisible, edgePortsSetting }:
         <EdgePortsTable data={edgePortsSetting as EdgePort[]}/>
       </>}
     width={'auto'}
-    style={{ alignItems: 'right' }}
+    bodyStyle={{ alignItems: 'flex-end' }}
   />
   )
 }

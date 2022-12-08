@@ -20,7 +20,7 @@ import { EdgeSysResourceBox } from './EdgeSysResourceBox'
 
 function EdgeOverviewDonutWidget ({ title, data, isLoading, chartDataTransformer, onClick }:
    { title:string, data: Array<DonutChartData>,
-    isLoading: boolean,chartDataTransformer?:Function, onClick?: DonutChartProps['onClick'] }) {
+    isLoading: boolean, chartDataTransformer?:Function, onClick?: DonutChartProps['onClick'] }) {
   const { $t } = useIntl()
   if (chartDataTransformer)
     data = chartDataTransformer(data)
@@ -87,8 +87,8 @@ export const getPortsAdminStatusChartData = (ports: EdgePort[]): DonutChartData[
   return chartData
 }
 
-const EdgePortsWidget = ({ isLoading, edgePortsSetting, currentEdge }:
-  { isLoading: boolean, edgePortsSetting: EdgePort[], currentEdge: EdgeViewModel }) => {
+const EdgePortsWidget = ({ isLoading, edgePortsSetting }:
+  { isLoading: boolean, edgePortsSetting: EdgePort[] }) => {
   const { $t } = useIntl()
   const [visible, setVisible] = React.useState(false)
   const handleDonutClick = () => {
@@ -103,7 +103,6 @@ const EdgePortsWidget = ({ isLoading, edgePortsSetting, currentEdge }:
       visible={visible}
       setVisible={setVisible}
       edgePortsSetting={edgePortsSetting as EdgePort[]}
-      currentEdge={currentEdge as EdgeViewModel}
     />
   </>)
 }
@@ -122,7 +121,7 @@ export const EdgeInfoWidget = styled(({ className, currentEdge, edgePortsSetting
         <EdgeAlarmWidget />
       </GridCol>
       <GridCol col={{ span: 4 }}>
-        <EdgePortsWidget isLoading={isLoading} edgePortsSetting={edgePortsSetting} currentEdge={currentEdge}/>
+        <EdgePortsWidget isLoading={isLoading} edgePortsSetting={edgePortsSetting} />
       </GridCol>
       <GridCol col={{ span: 4 }}>
         <EdgeSysResourceBox
