@@ -70,7 +70,7 @@ exports[`VenueDetails should navigate to analytic tab correctly 1`] = `
                 style="cursor: not-allowed;"
               >
                 <button
-                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
                   disabled=""
                   style="pointer-events: none;"
                   type="button"
@@ -88,7 +88,7 @@ exports[`VenueDetails should navigate to analytic tab correctly 1`] = `
               class="ant-space-item"
             >
               <button
-                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 eAazoW"
                 type="button"
               >
                 <span>
@@ -417,7 +417,7 @@ exports[`VenueDetails should navigate to client tab correctly 1`] = `
                 style="cursor: not-allowed;"
               >
                 <button
-                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
                   disabled=""
                   style="pointer-events: none;"
                   type="button"
@@ -435,7 +435,7 @@ exports[`VenueDetails should navigate to client tab correctly 1`] = `
               class="ant-space-item"
             >
               <button
-                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 eAazoW"
                 type="button"
               >
                 <span>
@@ -761,7 +761,7 @@ exports[`VenueDetails should navigate to device tab correctly 1`] = `
                 style="cursor: not-allowed;"
               >
                 <button
-                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
                   disabled=""
                   style="pointer-events: none;"
                   type="button"
@@ -779,7 +779,7 @@ exports[`VenueDetails should navigate to device tab correctly 1`] = `
               class="ant-space-item"
             >
               <button
-                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 eAazoW"
                 type="button"
               >
                 <span>
@@ -1211,7 +1211,7 @@ exports[`VenueDetails should navigate to device tab correctly 1`] = `
                   class="ant-input-group ant-input-group-compact"
                 >
                   <button
-                    class="ant-btn ant-btn-default ant-btn-sm ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                    class="ant-btn ant-btn-default ant-btn-sm ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 eAazoW"
                     type="button"
                   >
                     <svg
@@ -1220,7 +1220,7 @@ exports[`VenueDetails should navigate to device tab correctly 1`] = `
                     />
                   </button>
                   <button
-                    class="ant-btn ant-btn-default ant-btn-sm ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                    class="ant-btn ant-btn-default ant-btn-sm ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 eAazoW"
                     type="button"
                   >
                     <svg
@@ -1377,7 +1377,7 @@ exports[`VenueDetails should navigate to network tab correctly 1`] = `
                 style="cursor: not-allowed;"
               >
                 <button
-                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
                   disabled=""
                   style="pointer-events: none;"
                   type="button"
@@ -1395,7 +1395,7 @@ exports[`VenueDetails should navigate to network tab correctly 1`] = `
               class="ant-space-item"
             >
               <button
-                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 eAazoW"
                 type="button"
               >
                 <span>
@@ -1755,7 +1755,7 @@ exports[`VenueDetails should navigate to service tab correctly 1`] = `
                 style="cursor: not-allowed;"
               >
                 <button
-                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
                   disabled=""
                   style="pointer-events: none;"
                   type="button"
@@ -1773,7 +1773,7 @@ exports[`VenueDetails should navigate to service tab correctly 1`] = `
               class="ant-space-item"
             >
               <button
-                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 eAazoW"
                 type="button"
               >
                 <span>
@@ -2853,7 +2853,7 @@ exports[`VenueDetails should navigate to timeline tab correctly 1`] = `
                 style="cursor: not-allowed;"
               >
                 <button
-                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
                   disabled=""
                   style="pointer-events: none;"
                   type="button"
@@ -2871,7 +2871,7 @@ exports[`VenueDetails should navigate to timeline tab correctly 1`] = `
               class="ant-space-item"
             >
               <button
-                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 eAazoW"
                 type="button"
               >
                 <span>
@@ -3199,7 +3199,7 @@ exports[`VenueDetails should render correctly 1`] = `
                 style="cursor: not-allowed;"
               >
                 <button
-                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
                   disabled=""
                   style="pointer-events: none;"
                   type="button"
@@ -3217,7 +3217,7 @@ exports[`VenueDetails should render correctly 1`] = `
               class="ant-space-item"
             >
               <button
-                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 eAazoW"
                 type="button"
               >
                 <span>
