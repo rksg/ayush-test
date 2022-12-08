@@ -126,7 +126,7 @@ export function RadioSettings () {
         onFinish={handleUpdateRadioSettings}
         onCancel={() => navigate({
           ...basePath,
-          pathname: `${basePath.pathname}/aps`
+          pathname: `${basePath.pathname}/wifi`
         })}
         buttonLabel={{
           submit: $t({ defaultMessage: 'Apply Radio' })
