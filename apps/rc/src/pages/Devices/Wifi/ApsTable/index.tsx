@@ -43,7 +43,7 @@ export default function ApsTable () {
     onClick={handleMenuClick}
     items={[{
       key: 'ap',
-      label: <TenantLink to='devices/aps/add'>{$t({ defaultMessage: 'AP' })}</TenantLink>
+      label: <TenantLink to='devices/wifi/add'>{$t({ defaultMessage: 'AP' })}</TenantLink>
     }, {
       key: 'import-from-file',
       label: $t({ defaultMessage: 'Import from file' })

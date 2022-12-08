@@ -3,7 +3,7 @@ import { ApiInfo } from '../apiService'
 export const MspUrlsInfo: { [key: string]: ApiInfo } = {
   getMspCustomersList: {
     method: 'post',
-    url: '/api/viewmodel/tenant/:tenantId/msp-ec'
+    url: '/api/viewmodel/tenant/:tenantId/mspeclist'
   },
   getMspDeviceInventory: {
     method: 'post',

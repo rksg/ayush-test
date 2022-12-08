@@ -35,7 +35,7 @@ export default function SwitchesTable () {
     onClick={handleMenuClick}
     items={[{
       key: 'add-switch',
-      label: <TenantLink to='devices/switches/add'>{$t({ defaultMessage: 'Switch' })}</TenantLink>
+      label: <TenantLink to='devices/switch/add'>{$t({ defaultMessage: 'Switch' })}</TenantLink>
     }, {
       key: 'import-from-file',
       label: $t({ defaultMessage: 'Import from file' })

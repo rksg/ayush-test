@@ -24,7 +24,7 @@ function getCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       sorter: true,
       defaultSortOrder: 'ascend',
       render: (data, row) =>
-        <TenantLink to={`users/aps/${row.clientMac}/details/overview`}>{data || '--'}</TenantLink>
+        <TenantLink to={`users/wifi/clients/${row.clientMac}/details/overview`}>{data || '--'}</TenantLink>
     },
     {
       key: 'osType',
@@ -118,7 +118,7 @@ function getCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
           return row.apName
         }else{
           return (
-            <TenantLink to={`/devices/aps/${data}/details/overview`}>{row.apName}</TenantLink>
+            <TenantLink to={`/devices/wifi/${data}/details/overview`}>{row.apName}</TenantLink>
           )
         }
       }
@@ -132,7 +132,7 @@ function getCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
           return '--'
         }else{
           return (
-            <TenantLink to={`/devices/switches/${data}/details/overview`}>{row.switchName}</TenantLink>
+            <TenantLink to={`/devices/switch/${data}/details/overview`}>{row.switchName}</TenantLink>
           )
         }
       }

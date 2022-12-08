@@ -153,7 +153,7 @@ export function ApForm () {
         ...(deviceGps && !sameAsVenue && { deviceGps: deviceGps })
       }]
       await addAp({ params: { tenantId: tenantId }, payload }).unwrap()
-      navigate(`${basePath.pathname}/aps`, { replace: true })
+      navigate(`${basePath.pathname}/wifi`, { replace: true })
     } catch (err) {
       handleError(err as catchErrorResponse)
     }
@@ -267,7 +267,7 @@ export function ApForm () {
     {!isEditMode && <PageHeader
       title={$t({ defaultMessage: 'Add AP' })}
       breadcrumb={[
-        { text: $t({ defaultMessage: 'Access Points' }), link: '/devices/aps' }
+        { text: $t({ defaultMessage: 'Access Points' }), link: '/devices/wifi' }
       ]}
     />}
     <StepsForm
@@ -276,7 +276,7 @@ export function ApForm () {
       onFormChange={handleUpdateContext}
       onCancel={() => navigate({
         ...basePath,
-        pathname: `${basePath.pathname}/aps`
+        pathname: `${basePath.pathname}/wifi`
       })}
       buttonLabel={{
         submit: !isEditMode

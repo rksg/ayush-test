@@ -35,7 +35,7 @@ describe('AP List Table', () => {
       <Provider>
         <ApsTable />
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/aps' }
+        route: { params, path: '/:tenantId/devices/wifi' }
       })
 
     expect(asFragment()).toMatchSnapshot()
@@ -54,7 +54,7 @@ describe('AP List Table', () => {
       <Provider>
         <ApsTable />
       </Provider>, {
-        route: { params, path: '/:tenantId/devices/aps' }
+        route: { params, path: '/:tenantId/devices/wifi' }
       })
 
     const csvFile = new File([''], 'aps_import_template.csv', { type: 'text/csv' })

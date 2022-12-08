@@ -157,7 +157,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
                 <Form.Item
                   label={$t({ defaultMessage: 'Root AP' })}
                   children={
-                    <TenantLink to={`/devices/aps/${currentAP.rootAP.serialNumber}/details/overview`}>
+                    <TenantLink to={`/devices/wifi/${currentAP.rootAP.serialNumber}/details/overview`}>
                       {currentAP.rootAP.name}
                     </TenantLink>
                   }
@@ -237,7 +237,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
     }
   ]
   const content = currentAP?.deviceStatusSeverity === ApVenueStatusEnum.OPERATIONAL ?
-    <ContentSwitcher tabDetails={tabDetails} size='large' space={5} /> :
+    <ContentSwitcher tabDetails={tabDetails} size='large' /> :
     <PropertiesTab />
 
   return (
