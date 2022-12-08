@@ -11,13 +11,15 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
-import { useGetGuestsListQuery } from '@acx-ui/rc/services'
+import { useGetGuestsListQuery, useNetworkListQuery } from '@acx-ui/rc/services'
 import {
   useTableQuery,
   Guest,
   GuestTypesEnum,
   transformDisplayText,
-  GuestStatusEnum
+  GuestStatusEnum,
+  RequestPayload,
+  Network
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 import { getIntl }    from '@acx-ui/utils'
@@ -50,12 +52,40 @@ const defaultPayload = {
   ]
 }
 
+const defaultGuestNetworkPayload = {
+  searchString: '',
+  fields: [
+    'check-all',
+    'name',
+    'description',
+    'nwSubType',
+    'venues',
+    'aps',
+    'clients',
+    'vlan',
+    'cog',
+    'ssid',
+    'vlanPool',
+    'captiveType',
+    'id'
+  ],
+  filters: {
+    nwSubType: ['guest'],
+    captiveType: ['GuestPass']
+  }
+}
+
 export default function GuestsTable () {
   const { $t } = useIntl()
   const GuestsTable = () => {
     const tableQuery = useTableQuery({
       useQuery: useGetGuestsListQuery,
       defaultPayload
+    })
+
+    const networkListQuery = useTableQuery<Network, RequestPayload<unknown>, unknown>({
+      useQuery: useNetworkListQuery,
+      defaultPayload: defaultGuestNetworkPayload
     })
 
     const notificationMessage =
@@ -96,6 +126,7 @@ export default function GuestsTable () {
               setVisible(true)
             }}
           >
+            {/* TODO: Wait for framework support userprofile-format dateTimeFormats */}
             {moment(row.creationDate).format('DD/MM/YYYY HH:mm')}
           </Button>
       },
@@ -171,7 +202,7 @@ export default function GuestsTable () {
         tableQuery
       ]}>
         {
-          !tableQuery.data?.data?.length &&
+          !networkListQuery.data?.data?.length &&
           <Alert message={notificationMessage} type='info' showIcon ></Alert>
         }
         <Table
@@ -227,6 +258,7 @@ export const renderExpires = function (row: Guest) {
   const { $t } = getIntl()
   let expiresTime = ''
   if (row.expiryDate && row.expiryDate !== '0') {
+    // TODO: Wait for framework support userprofile-format dateTimeFormats
     expiresTime = moment(row.expiryDate).format('DD/MM/YYYY HH:mm')
   } else if (!row.expiryDate || row.expiryDate === '0') {
     let result = ''

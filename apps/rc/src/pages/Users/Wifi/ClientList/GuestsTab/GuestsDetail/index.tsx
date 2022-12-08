@@ -100,6 +100,7 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
       sorter: false,
       defaultSortOrder: 'ascend',
       render: function (data, row) {
+        // TODO: Wait for framework support userprofile-format dateTimeFormats
         return moment(row.connectSince).format('DD/MM/YYYY HH:mm')
       }
     }
@@ -135,9 +136,10 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
       label={$t({ defaultMessage: 'Allowed Network:' })}
       children={renderAllowedNetwork(currentGuest)} />
 
+    {/* TODO: Wait for framework support userprofile-format dateTimeFormats */}
     <DrawerFormItem
       label={$t({ defaultMessage: 'Guest Created:' })}
-      children={moment(currentGuest.expiryDate).format('DD/MM/YYYY HH:mm')} />
+      children={moment(currentGuest.creationDate).format('DD/MM/YYYY HH:mm')} />
 
     <DrawerFormItem
       label={$t({ defaultMessage: 'Access Expires:' })}
