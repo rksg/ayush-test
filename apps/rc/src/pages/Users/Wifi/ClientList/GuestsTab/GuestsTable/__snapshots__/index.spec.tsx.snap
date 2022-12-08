@@ -27,9 +27,8 @@ exports[`Guest Table should render table 1`] = `
               Guests cannot be added since there are no guest networks
             </span>
             <button
-              class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+              class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
               disabled=""
-              style="font-size: 12px; height: 16px;"
               type="button"
             >
               <span>
@@ -656,8 +655,7 @@ exports[`Guest Table should render table 1`] = `
                                 class="ant-table-cell"
                               >
                                 <button
-                                  class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                                  style="font-size: 12px;"
+                                  class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
                                   type="button"
                                 >
                                   <span>
@@ -669,8 +667,7 @@ exports[`Guest Table should render table 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <button
-                                  class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                                  style="font-size: 12px;"
+                                  class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
                                   type="button"
                                 >
                                   <span>
@@ -721,8 +718,7 @@ exports[`Guest Table should render table 1`] = `
                                 class="ant-table-cell"
                               >
                                 <button
-                                  class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                                  style="font-size: 12px;"
+                                  class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
                                   type="button"
                                 >
                                   <span>
@@ -734,8 +730,7 @@ exports[`Guest Table should render table 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <button
-                                  class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                                  style="font-size: 12px;"
+                                  class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
                                   type="button"
                                 >
                                   <span>
@@ -788,8 +783,7 @@ exports[`Guest Table should render table 1`] = `
                                 class="ant-table-cell"
                               >
                                 <button
-                                  class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                                  style="font-size: 12px;"
+                                  class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
                                   type="button"
                                 >
                                   <span>
@@ -801,8 +795,7 @@ exports[`Guest Table should render table 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <button
-                                  class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                                  style="font-size: 12px;"
+                                  class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
                                   type="button"
                                 >
                                   <span>
@@ -853,8 +846,7 @@ exports[`Guest Table should render table 1`] = `
                                 class="ant-table-cell"
                               >
                                 <button
-                                  class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                                  style="font-size: 12px;"
+                                  class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
                                   type="button"
                                 >
                                   <span>
@@ -866,8 +858,7 @@ exports[`Guest Table should render table 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <button
-                                  class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                                  style="font-size: 12px;"
+                                  class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
                                   type="button"
                                 >
                                   <span>
