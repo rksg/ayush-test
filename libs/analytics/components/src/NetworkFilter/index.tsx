@@ -231,6 +231,13 @@ function ConnectedNetworkFilter (
           displayRender={displayRender}
           showSearch={{ filter: search }}
           allowClear
+          dropdownAlign={{
+            useCssTransform: true,
+            overflow: {
+              adjustX: true,
+              adjustY: true
+            }
+          }}
         />
       </Loader>
     </UI.Container>
