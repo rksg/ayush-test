@@ -11,7 +11,7 @@ import {
   TrafficByVolume
 } from '@acx-ui/analytics/components'
 import { AnalyticsFilter, useAnalyticsFilter }    from '@acx-ui/analytics/utils'
-import { GridCol, GridRow, Tooltip }              from '@acx-ui/components'
+import { GridCol, GridRow }                       from '@acx-ui/components'
 import { ApInfoWidget }                           from '@acx-ui/rc/components'
 import { useApDetailsQuery, useApViewModelQuery } from '@acx-ui/rc/services'
 import { ApDetails, ApViewModel }                 from '@acx-ui/rc/utils'
@@ -50,7 +50,7 @@ export function ApOverviewTab () {
   }, [currentAP, filters])
 
 
-  return (  // TODO: Remove background: '#F7F7F7' and Add other widgets
+  return (  // TODO: Remove background: '#F7F7F7' and Add Floor plan
     <GridRow>
       <GridCol col={{ span: 18 }} style={{ height: '152px' }}>
         { apFilter && <ApInfoWidget currentAP={currentAP as ApViewModel} filters={apFilter} /> }
@@ -59,7 +59,7 @@ export function ApOverviewTab () {
         <ApPhoto />
       </GridCol>
       <GridCol col={{ span: 18 }} style={{ background: '#F7F7F7' }}>
-        <Tooltip title={$t(notAvailableMsg)}>Floor Plan</Tooltip>
+        {$t(notAvailableMsg)}
       </GridCol>
       <GridCol col={{ span: 6 }}>
         <ApProperties
