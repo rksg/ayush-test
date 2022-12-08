@@ -1,11 +1,10 @@
 import '@testing-library/jest-dom'
-
 import { Upload } from 'antd'
 import { rest }   from 'msw'
 
 import { apApi }                                                            from '@acx-ui/rc/services'
 import { CommonUrlsInfo, WifiUrlsInfo }                                     from '@acx-ui/rc/utils'
-import { Provider, store }                                                  from '@acx-ui/store'
+import { Provider, store  }                                                 from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { apDetails, apRadio, apViewModel, apPhoto, apNoPhoto, apSampleImage, wifiCapabilities } from '../../__tests__/fixtures'
@@ -13,15 +12,11 @@ import { apDetails, apRadio, apViewModel, apPhoto, apNoPhoto, apSampleImage, wif
 import * as CropImage from './cropImage'
 
 import { ApPhoto } from '.'
-
-jest.mock('socket.io-client')
-
 const params = {
   venueId: 'venue-id',
   tenantId: 'tenant-id',
   serialNumber: 'serial-number'
 }
-
 module.exports = {
   src: '/app/sample.png',
   height: 293,
@@ -72,7 +67,6 @@ describe('ApPhoto', () => {
       )
     )
   })
-
   it('should render correctly', async () => {
     apViewModel.data[0].model = ''
     render(<Provider><ApPhoto /></Provider>, { route: { params } })
@@ -87,7 +81,6 @@ describe('ApPhoto', () => {
     expect(applyButton).toBeVisible()
     fireEvent.click(applyButton)
   })
-
   it('should delete image correctly', async () => {
     apViewModel.data[0].model = ''
     render(<Provider><ApPhoto /></Provider>, { route: { params } })
@@ -98,7 +91,6 @@ describe('ApPhoto', () => {
     fireEvent.doubleClick(image1)
     const deleteBtn = screen.getByTestId('delete')
     fireEvent.click(deleteBtn)
-
   })
   it('should render default image correctly', async () => {
     apViewModel.data[0].model = 'R650'
@@ -113,11 +105,10 @@ describe('ApPhoto', () => {
     const gallery = screen.getByTestId('gallery')
     fireEvent.click(gallery)
   })
-
-  xit('should upload photo correctly', async () => {
-    apViewModel.data[0].model = 'R650'
+  it('should upload photo correctly', async () => {
     const { asFragment } = render(<Provider><ApPhoto /></Provider>, { route: { params } })
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    const file = new File(['(⌐□_□)'], 'chucknorris.png', { type: 'image/png' })
     jest.spyOn(CropImage, 'createImage')
       .mockImplementationOnce(async () => apSampleImage)
     render(<Upload
@@ -131,43 +122,15 @@ describe('ApPhoto', () => {
         height: '180px'
       }}
     />)
-
     // eslint-disable-next-line testing-library/no-node-access
     fireEvent.change(document.querySelector('input')!, {
       target: { files: [{ file: apSampleImage }] }
     })
-
-
-    expect(asFragment()).toMatchSnapshot()
-  })
-
-  describe('incorrectly case', () => {
-    it('should upload photo incorrectly', async () => {
-      apViewModel.data[0].model = 'R650'
-      render(<Provider><ApPhoto /></Provider>, { route: { params } })
-      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-      const file = new File(['(⌐□_□)'], 'chucknorris.png', { type: 'image/png' })
-      jest.spyOn(CropImage, 'createImage')
-        .mockImplementationOnce(async () => apSampleImage)
-      render(<Upload
-        name='apPhoto'
-        listType='picture'
-        showUploadList={false}
-        action={''}
-        beforeUpload={jest.fn()}
-        accept='image/*'
-        style={{
-          height: '180px'
-        }}
-      />)
-
-
-      Object.setPrototypeOf(file.size, { value: 100000000000000 })
-      // eslint-disable-next-line testing-library/no-node-access
-      fireEvent.change(document.querySelector('input')!, {
-        target: { files: [{ file: apSampleImage, type: 'image/jpg' }] }
-      })
-      expect(await screen.findByText('Image must smaller than 10MB!')).toBeVisible()
+    Object.setPrototypeOf(file.size, { value: 100000000 })
+    // eslint-disable-next-line testing-library/no-node-access
+    fireEvent.change(document.querySelector('input')!, {
+      target: { files: [{ file: apSampleImage, type: 'image/jpg' }] }
     })
+    expect(asFragment()).toMatchSnapshot()
   })
 })
