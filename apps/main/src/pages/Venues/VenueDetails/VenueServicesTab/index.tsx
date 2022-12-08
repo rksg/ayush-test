@@ -3,12 +3,24 @@ import { useIntl } from 'react-intl'
 import { Tabs }        from '@acx-ui/components'
 import { ServiceType } from '@acx-ui/rc/utils'
 
+import DHCPInstance       from './DHCPInstance'
 import MdnsProxyInstances from './MdnsProxyInstances'
 
 export function VenueServicesTab () {
   const { $t } = useIntl()
+
   return (
-    <Tabs type='card' activeKey={ServiceType.MDNS_PROXY}>
+    <Tabs type='card' defaultActiveKey={ServiceType.DHCP}>
+      <Tabs.TabPane key={ServiceType.DHCP}
+        tab={$t({ defaultMessage: 'DHCP' })}>
+        <Tabs>
+          <Tabs.TabPane tab={$t({ defaultMessage: 'Wi-Fi' })}
+            key={'wifi'}>
+            <DHCPInstance/>
+          </Tabs.TabPane>
+
+        </Tabs>
+      </Tabs.TabPane>
       <Tabs.TabPane tab={$t({ defaultMessage: 'mDNS Proxy' })} key={ServiceType.MDNS_PROXY}>
         <MdnsProxyInstances />
       </Tabs.TabPane>

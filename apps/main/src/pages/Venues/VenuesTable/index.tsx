@@ -172,11 +172,11 @@ export const defaultVenuePayload = {
 }
 
 type VenueTableProps = {
-  tableQuery: TableQuery<Venue, RequestPayload<unknown>, unknown>
-  globalSearch?: string
+  tableQuery: TableQuery<Venue, RequestPayload<unknown>, unknown>,
+  rowSelection?: TableProps<Venue>['rowSelection']
 }
 
-export const VenueTable = ({ tableQuery, globalSearch }: VenueTableProps) => {
+export const VenueTable = ({ tableQuery, rowSelection }: VenueTableProps) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const columns = useColumns()
@@ -227,8 +227,8 @@ export const VenueTable = ({ tableQuery, globalSearch }: VenueTableProps) => {
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         rowKey='id'
-        rowActions={(globalSearch) ? undefined : rowActions}
-        rowSelection={(globalSearch) ? undefined : { type: 'checkbox' }}
+        rowActions={rowActions}
+        rowSelection={rowSelection}
       />
     </Loader>
   )
@@ -252,7 +252,7 @@ export function VenuesTable () {
           </TenantLink>
         ]}
       />
-      <VenueTable tableQuery={tableQuery}/>
+      <VenueTable tableQuery={tableQuery} rowSelection={{ type: 'checkbox' }} />
     </>
   )
 }

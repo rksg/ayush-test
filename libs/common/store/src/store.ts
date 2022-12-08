@@ -1,5 +1,6 @@
-import { configureStore }                                 from '@reduxjs/toolkit'
+import { configureStore, isRejectedWithValue }            from '@reduxjs/toolkit'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
+import { generatePath }                                   from 'react-router-dom'
 
 import { dataApi }             from '@acx-ui/analytics/services'
 import {
@@ -14,8 +15,44 @@ import {
   baseMspApi as mspApi,
   baseEdgeApi as edgeApi,
   basePolicyApi as policyApi,
-  baseClientApi as clientApi
+  baseClientApi as clientApi,
+  baseSwitchApi as switchApi
 } from '@acx-ui/rc/services'
+
+import type { Middleware } from '@reduxjs/toolkit'
+
+type ErrorAction = {
+  type: string,
+  meta: {
+    baseQueryMeta: {
+      response: {
+        status: number
+      }
+    }
+  },
+  payload: {
+    data?: {
+      error: string
+    }
+  }
+}
+
+const errorMiddleware: Middleware = () => (next) => (action: ErrorAction) => {
+  if (isRejectedWithValue(action)) {
+    const status = action.meta.baseQueryMeta.response.status
+    const error = action.payload.data?.error
+    if (
+      (status === 400 && error === 'API-KEY not present') ||
+      status === 401 || status === 403
+    ) {
+      window.location.href = generatePath('/logout')
+    }
+  }
+  return next(action)
+}
+
+const isDev = process.env['NODE_ENV'] === 'development'
+const isProd = process.env['NODE_ENV'] === 'production'
 
 export const store = configureStore({
   reducer: {
@@ -32,15 +69,16 @@ export const store = configureStore({
     [mspApi.reducerPath]: mspApi.reducer,
     [edgeApi.reducerPath]: edgeApi.reducer,
     [policyApi.reducerPath]: policyApi.reducer,
-    [clientApi.reducerPath]: clientApi.reducer
+    [clientApi.reducerPath]: clientApi.reducer,
+    [switchApi.reducerPath]: switchApi.reducer
   },
 
   middleware: (getDefaultMiddleware) => {
-    const isDev = process.env['NODE_ENV'] === 'development'
     return getDefaultMiddleware({
       serializableCheck: isDev ? undefined : false,
       immutableCheck: isDev ? undefined : false
     }).concat([
+      ...(isProd ? [errorMiddleware] : []),
       networkApi.middleware,
       venueApi.middleware,
       eventAlarmApi.middleware,
@@ -54,11 +92,12 @@ export const store = configureStore({
       mspApi.middleware,
       edgeApi.middleware,
       policyApi.middleware,
-      clientApi.middleware
+      clientApi.middleware,
+      switchApi.middleware
     ])
   },
 
-  devTools: process.env['NODE_ENV'] !== 'production'
+  devTools: !isDev
 })
 
 export type AppState = ReturnType<typeof store.getState>

@@ -362,7 +362,7 @@ exports[`MdnsProxyInstances should render table with the giving data 1`] = `
                                 class="ant-table-cell"
                               >
                                 <a
-                                  href="/t/6de6a5239a1441cfb9c7fde93aa613fe/devices/aps/121749001049/details/overview"
+                                  href="/t/6de6a5239a1441cfb9c7fde93aa613fe/devices/wifi/121749001049/details/overview"
                                 >
                                   AP-R610
                                 </a>
@@ -409,7 +409,7 @@ exports[`MdnsProxyInstances should render table with the giving data 1`] = `
                                 class="ant-table-cell"
                               >
                                 <a
-                                  href="/t/6de6a5239a1441cfb9c7fde93aa613fe/devices/aps/121749001050/details/overview"
+                                  href="/t/6de6a5239a1441cfb9c7fde93aa613fe/devices/wifi/121749001050/details/overview"
                                 >
                                   AP-R510
                                 </a>
