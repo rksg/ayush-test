@@ -95,7 +95,6 @@ export function useMenuConfig () {
       name: $t({ defaultMessage: 'Devices' }),
       inactiveIcon: DevicesOutlined,
       activeIcon: DevicesSolid,
-      disabled: !useIsSplitOn(Features.DEVICES),
       routes:
         [
           {
@@ -104,7 +103,8 @@ export function useMenuConfig () {
           },
           {
             path: '/devices/switch',
-            name: $t({ defaultMessage: 'Switch' })
+            name: $t({ defaultMessage: 'Switch' }),
+            disabled: !useIsSplitOn(Features.DEVICES)
           }
         ]
     },
@@ -133,7 +133,6 @@ export function useMenuConfig () {
       name: $t({ defaultMessage: 'Users' }),
       inactiveIcon: AccountCircleOutlined,
       activeIcon: AccountCircleSolid,
-      disabled: !useIsSplitOn(Features.USERS),
       routes: [
         {
           path: '/users/wifi',
@@ -141,7 +140,8 @@ export function useMenuConfig () {
         },
         {
           path: '/users/switch',
-          name: $t({ defaultMessage: 'Switch' })
+          name: $t({ defaultMessage: 'Switch' }),
+          disabled: !useIsSplitOn(Features.USERS)
         }
       ]
     },

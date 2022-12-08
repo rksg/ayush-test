@@ -3,6 +3,8 @@ import { useContext, useEffect, useRef } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Tabs }                                   from '@acx-ui/components'
+import { useApViewModelQuery }                    from '@acx-ui/rc/services'
+import { ApVenueStatusEnum }                      from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useParams,
@@ -24,6 +26,16 @@ function ApEditTabs () {
     setEditContextData,
     editRadioContextData
   } = useContext(ApEditContext)
+
+  const apViewModelPayload = {
+    fields: ['name', 'venueName', 'deviceGroupName', 'description', 'lastSeenTime',
+      'serialNumber', 'apMac', 'IP', 'extIp', 'model', 'fwVersion',
+      'meshRole', 'hops', 'apUpRssi', 'deviceStatus', 'deviceStatusSeverity',
+      'isMeshEnable', 'lastUpdTime', 'deviceModelType', 'apStatusData.APSystem.uptime',
+      'venueId', 'uplink', 'apStatusData', 'apStatusData.cellularInfo', 'tags'],
+    filters: { serialNumber: [params.serialNumber] }
+  }
+  const { data: currentAP } = useApViewModelQuery({ params, payload: apViewModelPayload })
 
   const onTabChange = (tab: string) => {
     navigate({
@@ -60,7 +72,8 @@ function ApEditTabs () {
   return (
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>
       <Tabs.TabPane tab={intl.$t({ defaultMessage: 'AP Details' })} key='details' />
-      <Tabs.TabPane tab={intl.$t({ defaultMessage: 'Settings' })} key='settings' />
+      { currentAP?.deviceStatusSeverity === ApVenueStatusEnum.OPERATIONAL
+        && <Tabs.TabPane tab={intl.$t({ defaultMessage: 'Settings' })} key='settings' /> }
     </Tabs>
   )
 }

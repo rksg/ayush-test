@@ -22,6 +22,7 @@ import { EPDG }    from './services'
 export * from './ap'
 export * from './venue'
 export * from './network'
+export * from './any-network'
 export * from './user'
 export * from './services'
 export * from './msp'
@@ -506,4 +507,16 @@ export interface EventMeta {
   isVenueExists: boolean,
   networkId: string,
   venueName: string,
+}
+
+export interface ClientStatistic {
+  applications: number;
+  apsConnected: number;
+  avgRateBPS: string;
+  avgSessionLengthSeconds: unknown | number;
+  sessions: number;
+  userTrafficBytes: number;
+  userTraffic5GBytes: number;
+  userTraffic6GBytes: number;
+  userTraffic24GBytes: number;
 }

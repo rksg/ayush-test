@@ -245,13 +245,16 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
           >
             <div
               aria-controls="rc-tabs-test-panel-proxy"
+              aria-disabled="false"
               aria-selected="false"
               class="ant-tabs-tab-btn"
               id="rc-tabs-test-tab-proxy"
               role="tab"
               tabindex="0"
             >
-              mDNS Proxy
+              <span>
+                mDNS Proxy
+              </span>
             </div>
           </div>
           <div
@@ -259,13 +262,16 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
           >
             <div
               aria-controls="rc-tabs-test-panel-multicast"
+              aria-disabled="false"
               aria-selected="false"
               class="ant-tabs-tab-btn"
               id="rc-tabs-test-tab-multicast"
               role="tab"
               tabindex="0"
             >
-              Directed Multicast
+              <span>
+                Directed Multicast
+              </span>
             </div>
           </div>
           <div

@@ -3,16 +3,14 @@ import React, { useEffect, useState } from 'react'
 import { Divider, Form, Space } from 'antd'
 import { useIntl }              from 'react-intl'
 
-import { Card, Loader, Subtitle, Tooltip } from '@acx-ui/components'
-import { WifiSignal }                      from '@acx-ui/rc/components'
+import { Card, Loader, Subtitle, Tooltip }                                     from '@acx-ui/components'
+import { WifiSignal }                                                          from '@acx-ui/rc/components'
 import {
-  useLazyGetClientDetailsQuery,
   useLazyGetApQuery,
   useLazyGetNetworkQuery,
-  useLazyGetVenueQuery,
+  useLazyGetVenueQuery
   // TODO:
   // useLazyGetDpskPassphraseByQueryQuery,
-  useLazyGetHistoricalClientListQuery
 } from '@acx-ui/rc/services'
 import {
   ApDeep,
@@ -26,19 +24,11 @@ import {
   QosPriorityEnum,
   VenueExtended
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams, useSearchParams } from '@acx-ui/react-router-dom'
-import { formatter }                              from '@acx-ui/utils'
-import { getIntl }                                from '@acx-ui/utils'
+import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { formatter }             from '@acx-ui/utils'
+import { getIntl }               from '@acx-ui/utils'
 
-import * as UI from '../styledComponents'
-
-const historicalPayload = {
-  fields: ['clientMac', 'clientIP', 'userId', 'hostname', 'venueId',
-    'serialNumber', 'networkId', 'disconnectTime', 'ssid', 'osType',
-    'sessionDuration', 'venueName', 'apName', 'bssid'],
-  sortField: 'event_datetime',
-  searchTargetFields: ['clientMac']
-}
+import * as UI from './styledComponents'
 
 interface ClientExtended extends Client {
   hasSwitch: boolean,
@@ -47,56 +37,20 @@ interface ClientExtended extends Client {
   enableLinkToNetwork: boolean
 }
 
-export function ClientProperties () {
-  const { tenantId, clientId } = useParams()
-  const [searchParams] = useSearchParams()
-
-  const [clientStatus, setClientStatus]
-    = useState(searchParams.get('clientStatus') || ClientStatusEnum.CONNECTED)
-  const [clientDetails, setClientDetails] = useState({} as ClientExtended)
+export function ClientProperties ({ clientStatus, clientDetails }: {
+  clientStatus: string,
+  clientDetails: Client
+}) {
+  const { tenantId } = useParams()
   const [client, setClient] = useState({} as ClientExtended)
   const [networkType, setNetworkType] = useState('')
 
-  const [getClientDetails] = useLazyGetClientDetailsQuery()
   const [getAp] = useLazyGetApQuery()
   const [getVenue] = useLazyGetVenueQuery()
   const [getNetwork] = useLazyGetNetworkQuery()
-  const [getHistoricalClientList] = useLazyGetHistoricalClientListQuery()
 
   // TODO: dpsk
   // const [getDpskPassphraseByQuery] = useLazyGetDpskPassphraseByQueryQuery()
-
-  useEffect(() => {
-    const getClientData = async () => {
-      try {
-        const clientData = await getClientDetails({
-          params: { tenantId, clientId }
-        }, true)?.unwrap()
-        setClientDetails(clientData as ClientExtended)
-      } catch {
-        setClientStatus(ClientStatusEnum.HISTORICAL)
-        getHistoricalClientData()
-      }
-    }
-
-    const getHistoricalClientData = async () => {
-      const historicalisData = await getHistoricalClientList({
-        params: { tenantId },
-        payload: {
-          ...historicalPayload,
-          searchString: clientId
-        }
-      }, true)?.unwrap()
-
-      setClientDetails((historicalisData?.data?.[0] ?? {}) as ClientExtended)
-    }
-
-    clientStatus === ClientStatusEnum.CONNECTED
-      ? getClientData()
-      : getHistoricalClientData()
-
-  }, [])
-
 
   useEffect(() => {
     if (Object.keys(clientDetails)?.length) {
