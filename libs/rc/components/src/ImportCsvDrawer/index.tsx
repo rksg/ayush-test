@@ -6,15 +6,16 @@ import {
 } from '@ant-design/icons'
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 import {
-  ModalProps as AntdModalProps,
   Space,
   Typography,
   Upload
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button, Modal } from '@acx-ui/components'
-import { formatter }     from '@acx-ui/utils'
+import { Button, DrawerProps } from '@acx-ui/components'
+import { formatter }           from '@acx-ui/utils'
+
+import * as UI from './styledComponents'
 
 type importErrorRes = {
   errors: {
@@ -26,8 +27,7 @@ type importErrorRes = {
   fileErrorsCount: number
 }
 
-interface ImportCsvDialogProps extends AntdModalProps {
-  title: string
+interface ImportCsvDrawerProps extends DrawerProps {
   temlateLink: string
   maxSize: number
   maxEntries: number
@@ -36,7 +36,12 @@ interface ImportCsvDialogProps extends AntdModalProps {
   type: 'AP' | 'Switch' | 'GuestPass' | 'DPSK'
 }
 
-export function ImportCsvDialog (props: ImportCsvDialogProps) {
+export const CsvSize = {
+  '1MB': 1024*1*1024,
+  '5MB': 1024*5*1024
+}
+
+export function ImportCsvDrawer (props: ImportCsvDrawerProps) {
   const { $t } = useIntl()
 
   const { maxSize, maxEntries, temlateLink, importError, importRequest } = props
@@ -94,7 +99,7 @@ export function ImportCsvDialog (props: ImportCsvDialogProps) {
           <WarningOutlined /> {errorMsg}
         </Typography.Text>
       )
-      return false
+      return Upload.LIST_IGNORE
     }
 
     const newFormData = new FormData()
@@ -106,35 +111,44 @@ export function ImportCsvDialog (props: ImportCsvDialogProps) {
     return false
   }
 
-  const okHandler = (e: React.MouseEvent<HTMLElement>) => {
+  const okHandler = () => {
     setConfirmLoading(true)
     formData && importRequest(formData)
-    props.onOk && props.onOk(e)
   }
 
-  return (<Modal {...props}
+  return (<UI.ImportFileDrawer {...props}
     keyboard={false}
     closable={true}
-    okText={$t({ defaultMessage: 'Import' })}
-    okButtonProps={{ disabled: !formData, loading: confirmLoading }}
-    onOk={okHandler}
-  >
+    width={440}
+    footer={<div>
+      <Button
+        disabled={!formData}
+        loading={confirmLoading}
+        onClick={() => okHandler()}
+        type={'secondary'}
+      >
+        {$t({ defaultMessage: 'Import' })}
+      </Button>
+      <Button onClick={props?.onClose}>
+        {$t({ defaultMessage: 'Cancel' })}
+      </Button>
+    </div>} >
     <Upload.Dragger
       accept='.csv'
       maxCount={1}
       showUploadList={false}
-      beforeUpload={beforeUpload}
-    >
+      beforeUpload={beforeUpload} >
       <Space style={{ height: '90px' }}>
         { fileDescription ? fileDescription :
-          <p>{$t({ defaultMessage: 'Drag & drop file here or' })}</p> }
+          <Typography.Text>
+            {$t({ defaultMessage: 'Drag & drop file here or' })}
+          </Typography.Text> }
         <Button type='primary'>{ fileDescription ?
           $t({ defaultMessage: 'Change File' }) :
           $t({ defaultMessage: 'Browser' }) }
         </Button>
       </Space>
     </Upload.Dragger>
-    <p />
     <ul>
       <li><a href={temlateLink}>{$t({ defaultMessage: 'Download template' })}</a></li>
       <li>{$t({ defaultMessage: 'File format must be csv' })}</li>
@@ -145,5 +159,5 @@ export function ImportCsvDialog (props: ImportCsvDialogProps) {
         { defaultMessage: 'File size cannot exceed {maxSize}' },
         { maxSize: bytesFormatter(maxSize) })}</li>
     </ul>
-  </Modal>)
+  </UI.ImportFileDrawer>)
 }

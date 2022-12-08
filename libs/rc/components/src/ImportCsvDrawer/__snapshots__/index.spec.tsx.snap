@@ -2,45 +2,41 @@
 
 exports[`Import CSV Dialog should render correctly 1`] = `
 <div
-  aria-labelledby="test-id"
   aria-modal="true"
-  class="ant-modal styledComponents__Modal-sc-k3durc-0 fZVPqM"
+  class="ant-drawer-content"
   role="dialog"
-  style="width: 520px;"
 >
   <div
-    aria-hidden="true"
-    style="width: 0px; height: 0px; overflow: hidden; outline: none;"
-    tabindex="0"
-  />
-  <div
-    class="ant-modal-content"
+    class="ant-drawer-wrapper-body"
   >
-    <button
-      aria-label="Close"
-      class="ant-modal-close"
-      type="button"
-    >
-      <span
-        class="ant-modal-close-x"
-      >
-        <svg
-          data-testid="CloseSymbol"
-        />
-      </span>
-    </button>
     <div
-      class="ant-modal-header"
+      class="ant-drawer-header"
     >
       <div
-        class="ant-modal-title"
-        id="test-id"
+        class="ant-drawer-header-title"
       >
-        Import from file
+        <button
+          aria-label="Close"
+          class="ant-drawer-close"
+          type="button"
+        >
+          <svg
+            data-testid="CloseSymbol"
+          />
+        </button>
+        <div
+          class="ant-drawer-title"
+        >
+          <div
+            class="sc-hKMtZM lctlMc"
+          >
+            Import from file
+          </div>
+        </div>
       </div>
     </div>
     <div
-      class="ant-modal-body"
+      class="ant-drawer-body"
     >
       <span>
         <div
@@ -67,9 +63,11 @@ exports[`Import CSV Dialog should render correctly 1`] = `
                   class="ant-space-item"
                   style="margin-right: 8px;"
                 >
-                  <p>
+                  <span
+                    class="ant-typography"
+                  >
                     Drag & drop file here or
-                  </p>
+                  </span>
                 </div>
                 <div
                   class="ant-space-item"
@@ -88,7 +86,6 @@ exports[`Import CSV Dialog should render correctly 1`] = `
           </span>
         </div>
       </span>
-      <p />
       <ul>
         <li>
           <a
@@ -109,76 +106,69 @@ exports[`Import CSV Dialog should render correctly 1`] = `
       </ul>
     </div>
     <div
-      class="ant-modal-footer"
+      class="ant-drawer-footer"
     >
-      <button
-        class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-        type="button"
-      >
-        <span>
-          Cancel
-        </span>
-      </button>
-      <button
-        class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 kkpPZG"
-        disabled=""
-        type="button"
-      >
-        <span>
-          Import
-        </span>
-      </button>
+      <div>
+        <button
+          class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 kkpPZG"
+          disabled=""
+          type="button"
+        >
+          <span>
+            Import
+          </span>
+        </button>
+        <button
+          class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+          type="button"
+        >
+          <span>
+            Cancel
+          </span>
+        </button>
+      </div>
     </div>
   </div>
-  <div
-    aria-hidden="true"
-    style="width: 0px; height: 0px; overflow: hidden; outline: none;"
-    tabindex="0"
-  />
 </div>
 `;
 
 exports[`Import CSV Dialog show errors 1`] = `
 <div
-  aria-labelledby="test-id"
   aria-modal="true"
-  class="ant-modal styledComponents__Modal-sc-k3durc-0 fZVPqM"
+  class="ant-drawer-content"
   role="dialog"
-  style="width: 520px;"
 >
   <div
-    aria-hidden="true"
-    style="width: 0px; height: 0px; overflow: hidden; outline: none;"
-    tabindex="0"
-  />
-  <div
-    class="ant-modal-content"
+    class="ant-drawer-wrapper-body"
   >
-    <button
-      aria-label="Close"
-      class="ant-modal-close"
-      type="button"
-    >
-      <span
-        class="ant-modal-close-x"
-      >
-        <svg
-          data-testid="CloseSymbol"
-        />
-      </span>
-    </button>
     <div
-      class="ant-modal-header"
+      class="ant-drawer-header"
     >
       <div
-        class="ant-modal-title"
-        id="test-id"
+        class="ant-drawer-header-title"
       >
-        Import from file
+        <button
+          aria-label="Close"
+          class="ant-drawer-close"
+          type="button"
+        >
+          <svg
+            data-testid="CloseSymbol"
+          />
+        </button>
+        <div
+          class="ant-drawer-title"
+        >
+          <div
+            class="sc-hKMtZM lctlMc"
+          >
+            Import from file
+          </div>
+        </div>
       </div>
     </div>
     <div
-      class="ant-modal-body"
+      class="ant-drawer-body"
     >
       <span>
         <div
@@ -259,7 +249,6 @@ exports[`Import CSV Dialog show errors 1`] = `
           </span>
         </div>
       </span>
-      <p />
       <ul>
         <li>
           <a
@@ -280,31 +269,28 @@ exports[`Import CSV Dialog show errors 1`] = `
       </ul>
     </div>
     <div
-      class="ant-modal-footer"
+      class="ant-drawer-footer"
     >
-      <button
-        class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-        type="button"
-      >
-        <span>
-          Cancel
-        </span>
-      </button>
-      <button
-        class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 kkpPZG"
-        disabled=""
-        type="button"
-      >
-        <span>
-          Import
-        </span>
-      </button>
+      <div>
+        <button
+          class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 kkpPZG"
+          disabled=""
+          type="button"
+        >
+          <span>
+            Import
+          </span>
+        </button>
+        <button
+          class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+          type="button"
+        >
+          <span>
+            Cancel
+          </span>
+        </button>
+      </div>
     </div>
   </div>
-  <div
-    aria-hidden="true"
-    style="width: 0px; height: 0px; overflow: hidden; outline: none;"
-    tabindex="0"
-  />
 </div>
 `;

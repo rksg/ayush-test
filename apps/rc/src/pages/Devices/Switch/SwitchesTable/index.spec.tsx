@@ -6,8 +6,7 @@ import { Provider }     from '@acx-ui/store'
 import {
   mockServer,
   render,
-  screen,
-  waitFor
+  screen
 } from '@acx-ui/test-utils'
 
 import SwitchesTable from '.'
@@ -55,7 +54,5 @@ describe('Switch List Table', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: 'Import' }))
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
-
-    await waitFor(() => expect(dialog).not.toBeVisible())
   })
 })

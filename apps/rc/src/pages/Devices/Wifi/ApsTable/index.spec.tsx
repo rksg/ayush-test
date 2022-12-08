@@ -6,8 +6,7 @@ import { Provider }                     from '@acx-ui/store'
 import {
   mockServer,
   render,
-  screen,
-  waitFor
+  screen
 } from '@acx-ui/test-utils'
 
 import ApsTable from '.'
@@ -69,11 +68,7 @@ describe('AP List Table', () => {
     await userEvent.upload(document.querySelector('input[type=file]')!, csvFile)
     expect(dialog).toHaveTextContent('aps_import_template.csv')
 
-    expect(dialog).toMatchSnapshot()
-
     await userEvent.click(await screen.findByRole('button', { name: 'Import' }))
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
-
-    await waitFor(() => expect(dialog).not.toBeVisible())
   })
 })

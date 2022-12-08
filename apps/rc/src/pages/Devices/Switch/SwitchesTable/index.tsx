@@ -5,7 +5,7 @@ import { Menu, MenuProps }     from 'antd'
 import { useIntl }             from 'react-intl'
 
 import { Button, Dropdown, PageHeader } from '@acx-ui/components'
-import { ImportCsvDialog }              from '@acx-ui/rc/components'
+import { ImportCsvDrawer, CsvSize }     from '@acx-ui/rc/components'
 import { useImportApMutation }          from '@acx-ui/rc/services'
 import { TenantLink, useParams }        from '@acx-ui/react-router-dom'
 
@@ -56,9 +56,9 @@ export default function SwitchesTable () {
         ]}
       />
       {/* TODO: Switch list */}
-      <ImportCsvDialog type='Switch'
-        title={$t({ defaultMessage: 'Import Switches from file' })}
-        maxSize={1024*5*1024} // 5 MB
+      <ImportCsvDrawer type='Switch'
+        title={$t({ defaultMessage: 'Import from file' })}
+        maxSize={CsvSize['5MB']}
         maxEntries={50}
         temlateLink={importTemplateLink}
         visible={importVisible}
@@ -66,7 +66,7 @@ export default function SwitchesTable () {
         importRequest={(formData)=>{
           importCsv({ params: { tenantId }, payload: formData })
         }}
-        onCancel={()=>setImportVisible(false)}/>
+        onClose={()=>setImportVisible(false)}/>
     </>
   )
 }
