@@ -23,6 +23,7 @@ export const NonSelectableItem = styled.div.attrs(
 export const Container = styled.div`
   min-width: 150px;
   max-width: 180px;
+  position: relative;
 `
 export const SeverityContainer = styled.div`
   display: flex;
