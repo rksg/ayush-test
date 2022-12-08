@@ -1,10 +1,13 @@
+export * from './macRegistrarionList'
+
 export enum PolicyType {
   ACCESS_CONTROL = 'Access Control',
   VLAN_POOL = 'VLAN Pool',
   ROGUE_AP_DETECTION = 'Rogue AP Detection',
   SYSLOG = 'Syslog',
   AAA = 'AAA',
-  CLIENT_ISOLATION = 'Client Isolation'
+  CLIENT_ISOLATION = 'Client Isolation',
+  MAC_REGISTRATION = 'MAC Registration'
 }
 
 export enum PolicyTechnology {

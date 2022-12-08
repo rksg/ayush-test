@@ -1,4 +1,4 @@
-import { ApiInfo } from '../apiService'
+import { ApiInfo } from '../../apiService'
 
 const macRegApiBaseUrl = '/api/macRegistrationPools'
 
@@ -13,38 +13,38 @@ export const MacRegListUrlsInfo: { [key: string]: ApiInfo } = {
   },
   deleteMacRegistrationPool: {
     method: 'delete',
-    url: macRegApiBaseUrl + '/:macRegistrationListId'
+    url: macRegApiBaseUrl + '/:policyId'
   },
   getMacRegistrationPool: {
     method: 'get',
-    url: macRegApiBaseUrl + '/:macRegistrationListId'
+    url: macRegApiBaseUrl + '/:policyId'
   },
   updateMacRegistrationPool: {
     method: 'PATCH',
-    url: macRegApiBaseUrl + '/:macRegistrationListId'
+    url: macRegApiBaseUrl + '/:policyId'
   },
   getMacRegistrations: {
     method: 'get',
-    url: macRegApiBaseUrl + '/:macRegistrationListId/registrations'
+    url: macRegApiBaseUrl + '/:policyId/registrations'
   },
   createMacRegistration: {
     method: 'post',
-    url: macRegApiBaseUrl + '/:macRegistrationListId/registrations'
+    url: macRegApiBaseUrl + '/:policyId/registrations'
   },
   deleteMacRegistration: {
     method: 'delete',
-    url: macRegApiBaseUrl + '/:macRegistrationListId/registrations/:registrationId'
+    url: macRegApiBaseUrl + '/:policyId/registrations/:registrationId'
   },
   getMacRegistration: {
     method: 'get',
-    url: macRegApiBaseUrl + '/:macRegistrationListId/registrations/:registrationId'
+    url: macRegApiBaseUrl + '/:policyId/registrations/:registrationId'
   },
   updateMacRegistration: {
     method: 'PATCH',
-    url: macRegApiBaseUrl + '/:macRegistrationListId/registrations/:registrationId'
+    url: macRegApiBaseUrl + '/:policyId/registrations/:registrationId'
   },
   addMacRegistration: {
     method: 'post',
-    url: macRegApiBaseUrl + '/:macRegistrationListId/registrations'
+    url: macRegApiBaseUrl + '/:policyId/registrations'
   }
 }

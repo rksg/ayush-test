@@ -30,7 +30,7 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
     Form.useWatch('importAction', form)]
   const [addMacRegistration] = useAddMacRegistrationMutation()
   const [editMacRegistration] = useUpdateMacRegistrationMutation()
-  const { macRegistrationListId } = useParams()
+  const { policyId } = useParams()
 
   useEffect(()=>{
     if (editData && visible) {
@@ -62,7 +62,7 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
         }
         await editMacRegistration(
           {
-            params: { macRegistrationListId, registrationId: editData?.id },
+            params: { policyId, registrationId: editData?.id },
             payload
           }).unwrap()
       } else {
@@ -75,7 +75,7 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
             moment(data.expirationDate).format('YYYY-MM-DDT23:59:59[Z]')
         }
         await addMacRegistration({
-          params: { macRegistrationListId },
+          params: { policyId },
           payload
         }).unwrap()
       }

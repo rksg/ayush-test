@@ -23,12 +23,11 @@ export * from './venue'
 export * from './network'
 export * from './user'
 export * from './services'
+export * from './policies'
 export * from './msp'
 export * from './edge'
-export * from './policy'
 export * from './portalService'
 export * from './client'
-export * from './macRegistrarionList'
 
 export interface CommonResult {
   requestId: string

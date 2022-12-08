@@ -9,8 +9,17 @@ import {
   showActionModal
 } from '@acx-ui/components'
 import { useDeleteMacRegListMutation, useMacRegListsQuery } from '@acx-ui/rc/services'
-import { MacRegistrationPool, useMacRegListTableQuery }     from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate }                          from '@acx-ui/react-router-dom'
+import {
+  getPolicyDetailsLink,
+  getPolicyListRoutePath,
+  getPolicyRoutePath,
+  MacRegistrationDetailsTabKey,
+  MacRegistrationPool,
+  PolicyOperation,
+  PolicyType,
+  useMacRegListTableQuery
+} from '@acx-ui/rc/utils'
+import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
 
 function useColumns () {
@@ -25,7 +34,14 @@ function useColumns () {
       render: function (data, row) {
         return (
           // eslint-disable-next-line max-len
-          <TenantLink to={`policies/mac-registration-lists/${row.id}/mac-registration-lists-details/overview`}>{data}</TenantLink>
+          <TenantLink
+            to={getPolicyDetailsLink({
+              type: PolicyType.MAC_REGISTRATION,
+              oper: PolicyOperation.DETAIL,
+              policyId: row.id!,
+              activeTab: MacRegistrationDetailsTabKey.OVERVIEW
+            })}
+          >{data}</TenantLink>
         )
       }
     },
@@ -54,6 +70,7 @@ function useColumns () {
 export default function MacRegistrationListsTable () {
   const { $t } = useIntl()
   const navigate = useNavigate()
+  const tenantBasePath: Path = useTenantLink('')
 
   const MacRegistrationListsTable = () => {
     const tableQuery = useMacRegListTableQuery({
@@ -70,7 +87,14 @@ export default function MacRegistrationListsTable () {
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
-        navigate(`${selectedRows[0].id}/edit`, { replace: false })
+        navigate({
+          ...tenantBasePath,
+          pathname: `${tenantBasePath.pathname}/` + getPolicyDetailsLink({
+            type: PolicyType.MAC_REGISTRATION,
+            oper: PolicyOperation.EDIT,
+            policyId: selectedRows[0].id!
+          })
+        })
       }
     },
     {
@@ -86,7 +110,7 @@ export default function MacRegistrationListsTable () {
             confirmationText: 'Delete'
           },
           onOk: () => {
-            deleteMacRegList({ params: { macRegistrationListId: rows[0].id } })
+            deleteMacRegList({ params: { policyId: rows[0].id } })
               .then(clearSelection)
           }
         })
@@ -117,11 +141,15 @@ export default function MacRegistrationListsTable () {
         breadcrumb={
           [
             { text: $t({ defaultMessage: 'Policies & Profiles' }),
-              link: '/policies' }
+              link: getPolicyListRoutePath(true) }
           ]}
         title={$t({ defaultMessage: 'MAC Registration Lists' })}
         extra={[
-          <TenantLink to='/policies/mac-registration-lists/add' key='add'>
+          <TenantLink
+            key='add'
+            // eslint-disable-next-line max-len
+            to={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION, oper: PolicyOperation.CREATE })}
+          >
             <Button type='primary'>{ $t({ defaultMessage: 'Add MAC Registration List' }) }</Button>
           </TenantLink>
         ]}

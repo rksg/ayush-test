@@ -2,6 +2,12 @@ import { useIntl } from 'react-intl'
 
 import { Button, PageHeader }    from '@acx-ui/components'
 import { useGetMacRegListQuery } from '@acx-ui/rc/services'
+import {
+  getPolicyDetailsLink,
+  getPolicyRoutePath,
+  PolicyOperation,
+  PolicyType
+} from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
 import MacRegistrationListTabs from './MacRegistrationListTabs'
@@ -9,20 +15,28 @@ import MacRegistrationListTabs from './MacRegistrationListTabs'
 
 function MacRegistrationListPageHeader () {
   const { $t } = useIntl()
-  const { macRegistrationListId } = useParams()
+  const { policyId } = useParams()
 
-  const macRegistrationListQuery = useGetMacRegListQuery({ params: { macRegistrationListId } })
+  const macRegistrationListQuery = useGetMacRegListQuery({ params: { policyId } })
 
   return (
     <PageHeader
       title={macRegistrationListQuery.data?.name || ''}
       breadcrumb={[
         { text: $t({ defaultMessage: 'Policies & Profiles > MAC Registration Lists' }),
-          link: 'policies/mac-registration-lists' }
+          // eslint-disable-next-line max-len
+          link: getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION, oper: PolicyOperation.LIST }) }
       ]}
       extra={[
         // eslint-disable-next-line max-len
-        <TenantLink to={`/policies/mac-registration-lists/${macRegistrationListId}/edit`} key='edit'>
+        <TenantLink
+          key='edit'
+          to={getPolicyDetailsLink({
+            type: PolicyType.MAC_REGISTRATION,
+            oper: PolicyOperation.EDIT,
+            policyId: policyId!
+          })}
+        >
           <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
         </TenantLink>
       ]}

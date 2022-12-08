@@ -6,7 +6,7 @@ import { TableProps }        from '@acx-ui/components'
 import { useParams, Params } from '@acx-ui/react-router-dom'
 import { UseQuery }          from '@acx-ui/types'
 
-import { PAGINATION, SORTER } from './useTableQuery'
+import { PAGINATION, SORTER } from '../../useTableQuery'
 
 
 interface RequestPayload <Payload = unknown> {

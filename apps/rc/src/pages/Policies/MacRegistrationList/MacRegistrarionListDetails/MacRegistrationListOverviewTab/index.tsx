@@ -13,8 +13,8 @@ import { NetworkTable } from './NetworkTable'
 
 export function MacRegistrationListOverviewTab () {
   const { $t } = useIntl()
-  const { macRegistrationListId } = useParams()
-  const macRegistrationListQuery = useGetMacRegListQuery({ params: { macRegistrationListId } })
+  const { policyId } = useParams()
+  const macRegistrationListQuery = useGetMacRegListQuery({ params: { policyId } })
   const data = macRegistrationListQuery.data
   const { Paragraph } = Typography
 

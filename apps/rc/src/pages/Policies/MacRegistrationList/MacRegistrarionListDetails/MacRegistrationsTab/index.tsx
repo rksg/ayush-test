@@ -15,7 +15,7 @@ import { toTimeString }     from '../../MacRegistrationListUtils'
 
 export function MacRegistrationsTab () {
   const { $t } = useIntl()
-  const { macRegistrationListId } = useParams()
+  const { policyId } = useParams()
   const [visible, setVisible] = useState(false)
   const [isEditMode, setIsEditMode] = useState(false)
   const [editData, setEditData] = useState({ } as MacRegistration)
@@ -57,7 +57,7 @@ export function MacRegistrationsTab () {
         },
         onOk: () => {
           // eslint-disable-next-line max-len
-          deleteMacRegistration({ params: { macRegistrationListId, registrationId: rows[0].id } })
+          deleteMacRegistration({ params: { policyId, registrationId: rows[0].id } })
             .then(clearSelection)
         }
       })
@@ -69,7 +69,7 @@ export function MacRegistrationsTab () {
     onClick: (rows, clearSelection) => {
       editMacRegistration(
         {
-          params: { macRegistrationListId, registrationId: rows[0].id },
+          params: { policyId, registrationId: rows[0].id },
           payload: { revoked: true }
         }).then(clearSelection)
     }
@@ -80,7 +80,7 @@ export function MacRegistrationsTab () {
     onClick: (rows, clearSelection) => {
       editMacRegistration(
         {
-          params: { macRegistrationListId, registrationId: rows[0].id },
+          params: { policyId, registrationId: rows[0].id },
           payload: { revoked: false }
         }).then(clearSelection)
     }

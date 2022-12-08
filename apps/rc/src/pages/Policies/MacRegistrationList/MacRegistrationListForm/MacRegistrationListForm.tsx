@@ -12,7 +12,12 @@ import {
   useUpdateMacRegListMutation
 } from '@acx-ui/rc/services'
 import {
-  MacRegistrationPoolFormFields, MacRegistrationPool, useMacRegListTableQuery
+  MacRegistrationPoolFormFields,
+  MacRegistrationPool,
+  useMacRegListTableQuery,
+  getPolicyRoutePath,
+  PolicyType,
+  PolicyOperation
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -22,16 +27,21 @@ import MacRegistrationListFormContext     from './MacRegistrationListFormContext
 import { MacRegistrationListSettingForm } from './MacRegistrationListSetting/MacRegistrationListSettingForm'
 
 
-export default function MacRegistrationListForm () {
+interface MacRegistrationListFormProps {
+  editMode?: boolean
+}
+
+export default function MacRegistrationListForm (props: MacRegistrationListFormProps) {
   const intl = useIntl()
-  const { action, macRegistrationListId } = useParams()
-  const editMode = action === 'edit'
-  const linkToList = useTenantLink('/policies/mac-registration-lists')
+  const { editMode = false } = props
+  const { policyId } = useParams()
+  // eslint-disable-next-line max-len
+  const linkToList = useTenantLink('/' + getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION, oper: PolicyOperation.LIST }))
   const navigate = useNavigate()
   const formRef = useRef<StepsFormInstance<MacRegistrationPoolFormFields>>()
   const [poolSaveState, setPoolSaveState] = useState<MacRegistrationPool>({})
 
-  const { data, isLoading } = useGetMacRegListQuery({ params: { macRegistrationListId } })
+  const { data, isLoading } = useGetMacRegListQuery({ params: { policyId } })
   const [addMacRegList] = useAddMacRegListMutation()
   const [updateMacRegList, { isLoading: isUpdating }] = useUpdateMacRegListMutation()
   const { Paragraph } = Typography
@@ -133,7 +143,7 @@ export default function MacRegistrationListForm () {
         // policyId
       }
       await updateMacRegList({
-        params: { macRegistrationListId },
+        params: { policyId },
         payload: saveData
       }).unwrap()
       navigate(linkToList, { replace: true })
@@ -257,7 +267,8 @@ export default function MacRegistrationListForm () {
         breadcrumb={[
           {
             text: intl.$t({ defaultMessage: 'Policies & Profiles > MAC Registration Lists' }),
-            link: '/policies/mac-registration-lists'
+            // eslint-disable-next-line max-len
+            link: getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION, oper: PolicyOperation.LIST })
           }
         ]}
       />
