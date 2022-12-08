@@ -51,7 +51,7 @@ export function VenueOverviewTab () {
   ]
   return (<>
     <CommonDashboardWidgets filters={venueFilter}/>
-    <ContentSwitcher tabDetails={tabDetails} size='large' space={15} />
+    <ContentSwitcher tabDetails={tabDetails} size='large' />
   </>)
 }
 

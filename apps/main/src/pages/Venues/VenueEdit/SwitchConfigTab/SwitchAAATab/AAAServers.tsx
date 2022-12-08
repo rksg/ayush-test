@@ -1,12 +1,10 @@
 /* eslint-disable max-len */
 import {  useEffect, useState } from 'react'
 
-import { Collapse }               from 'antd'
 import { defineMessage, useIntl } from 'react-intl'
 
 
-import { Alert, Loader }                                           from '@acx-ui/components'
-import { CollapseActive, CollapseInactive }                        from '@acx-ui/icons'
+import { Alert, Loader, Collapse }                                 from '@acx-ui/components'
 import { useGetAaaSettingQuery, useVenueSwitchAAAServerListQuery } from '@acx-ui/rc/services'
 import { useTableQuery, AAAServerTypeEnum }                        from '@acx-ui/rc/utils'
 import { useParams }                                               from '@acx-ui/react-router-dom'
@@ -103,13 +101,7 @@ export function AAAServers () {
         }
         <Collapse
           defaultActiveKey={['1', '2', '3']}
-          expandIconPosition='end'
           ghost={true}
-          bordered={false}
-          expandIcon={({ isActive }) => (isActive)
-            ? <CollapseActive />
-            : <CollapseInactive />
-          }
         >
           <Panel header={getPanelHeader(AAAServerTypeEnum.RADIUS, aaaServerCount.radiusTotalCount)} key='1' >
             <AAAServerTable type={AAAServerTypeEnum.RADIUS} tableQuery={radiusTableQuery} aaaSetting={aaaSetting} />

@@ -24,7 +24,9 @@ import {
   transformApStatus,
   transformDisplayNumber,
   transformDisplayText,
-  useTableQuery
+  useTableQuery,
+  TableQuery,
+  RequestPayload
 } from '@acx-ui/rc/utils'
 import { getFilters }                         from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
@@ -33,7 +35,7 @@ import { useApActions } from '../useApActions'
 
 
 
-const defaultPayload = {
+export const defaultApPayload = {
   searchString: '',
   fields: [
     'name', 'deviceStatus', 'model', 'IP', 'apMac', 'venueName',
@@ -88,17 +90,19 @@ export const APStatus = (
 
 interface ApTableProps
   extends Omit<TableProps<AP>, 'columns'> {
+  tableQuery?: TableQuery<AP, RequestPayload<unknown>, ApExtraParams>
 }
 
-export function ApTable (props?: ApTableProps) {
+export function ApTable (props: ApTableProps) {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const params = useParams()
   const filters = getFilters(params)
-  const tableQuery = useTableQuery({
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const tableQuery = props.tableQuery ?? useTableQuery({
     useQuery: useApListQuery,
     defaultPayload: {
-      ...defaultPayload,
+      ...defaultApPayload,
       filters
     }
   })
@@ -122,7 +126,7 @@ export function ApTable (props?: ApTableProps) {
       dataIndex: 'name',
       sorter: true,
       render: (data, row) => (
-        <TenantLink to={`/devices/aps/${row.serialNumber}/details/overview`}>{data}</TenantLink>
+        <TenantLink to={`/devices/wifi/${row.serialNumber}/details/overview`}>{data}</TenantLink>
       )
     }, {
       key: 'deviceStatus',
@@ -171,7 +175,7 @@ export function ApTable (props?: ApTableProps) {
             showTotal={false}
             barColors={[cssStr(deviceStatusColors.empty)]}
           />
-          <TenantLink to={`/devices/aps/${row.serialNumber}/details/incidents`}>
+          <TenantLink to={`/devices/wifi/${row.serialNumber}/details/incidents`}>
             {data ? data: 0}
           </TenantLink>
         </Space>)
@@ -204,7 +208,7 @@ export function ApTable (props?: ApTableProps) {
       title: $t({ defaultMessage: 'Clients' }),
       dataIndex: 'clients',
       align: 'center',
-      render: (data, row) => (
+      render: (_, row) => (
         <TenantLink to={`/aps/${row.serialNumber}/details/clients`}>
           {transformDisplayNumber(row.clients)}
         </TenantLink>

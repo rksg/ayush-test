@@ -64,20 +64,32 @@ jest.mock('./pages/Services/DHCPDetail', () => () => {
   return <div data-testid='DHCPDetail' />
 })
 
+jest.mock('./pages/Services/Dpsk/DpskForm/DpskForm', () => () => {
+  return <div data-testid='DpskForm' />
+})
+
 jest.mock('./pages/Services/Portal/PortalDetail', () => () => {
   return <div data-testid='PortalServiceDetail' />
 })
 
-jest.mock('./pages/Users/Wifi/ApList', () => () => {
-  return <div data-testid='UserApList' />
+jest.mock('./pages/Users/Wifi/ClientList', () => () => {
+  return <div data-testid='UserClientList' />
 })
 
-jest.mock('./pages/Users/Wifi/ApDetails', () => () => {
-  return <div data-testid='UserApDetails' />
+jest.mock('./pages/Users/Wifi/ClientDetails', () => () => {
+  return <div data-testid='UserClientDetails' />
+})
+
+jest.mock('./pages/Devices/Edge/AddEdge', () => () => {
+  return <div data-testid='AddEdge' />
+})
+
+jest.mock('./pages/Devices/Edge/EdgeDetails/EditEdge', () => () => {
+  return <div data-testid='EditEdge' />
 })
 
 describe('RcRoutes: Devices', () => {
-  test('should redirect devices to devices/aps', async () => {
+  test('should redirect devices to devices/wifi', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
         path: '/t/tenantId/devices',
@@ -87,10 +99,10 @@ describe('RcRoutes: Devices', () => {
     expect(screen.getByTestId('ApsTable')).toBeVisible()
   })
 
-  test('should navigate to devices/aps', async () => {
+  test('should navigate to devices/wifi', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/devices/aps',
+        path: '/t/tenantId/devices/wifi',
         wrapRoutes: false
       }
     })
@@ -100,21 +112,51 @@ describe('RcRoutes: Devices', () => {
   test('should navigate to devices ap-details', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/devices/aps/serialNumber/details/some-tab',
+        path: '/t/tenantId/devices/wifi/serialNumber/details/some-tab',
         wrapRoutes: false
       }
     })
     expect(screen.getByTestId('ApDetails')).toBeVisible()
   })
 
-  test('should navigate to devices/switches', async () => {
+  test('should navigate to devices/switch', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/devices/switches',
+        path: '/t/tenantId/devices/switch',
         wrapRoutes: false
       }
     })
     expect(screen.getByTestId('SwitchesTable')).toBeVisible()
+  })
+
+  test('should navigate to devices AddEdge', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/devices/edge/add',
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('AddEdge')).toBeVisible()
+  })
+
+  test('should navigate to devices EditEdge', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/devices/edge/serialNumber/edit/activeTab',
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('EditEdge')).toBeVisible()
+  })
+
+  test('should navigate to devices EditEdge with subTab', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/devices/edge/serialNumber/edit/activeTab/activeSubTab',
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('EditEdge')).toBeVisible()
   })
 
 })
@@ -213,6 +255,27 @@ describe('RcRoutes: Services', () => {
       }
     })
     expect(screen.getByTestId('MdnsProxyDetail')).toBeVisible()
+  })
+
+  test('should navigate to create DPSK page', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.CREATE }),
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('DpskForm')).toBeVisible()
+  })
+
+  test('should navigate to edit DPSK page', async () => {
+    const path = getServiceDetailsLink({ type: ServiceType.DPSK, oper: ServiceOperation.EDIT, serviceId: 'SERVICE_ID' })
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + path,
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('DpskForm')).toBeVisible()
   })
 
   test('should navigate to create WIFI_CALLING page', async () => {
@@ -320,49 +383,49 @@ describe('RcRoutes: Services', () => {
 })
 
 describe('RcRoutes: User', () => {
-  test('should redirect user to user/aps/clients', async () => {
+  test('should redirect user to user/wifi/clients', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
         path: '/t/tenantId/users/',
         wrapRoutes: false
       }
     })
-    expect(screen.getByTestId('UserApList')).toBeVisible()
+    expect(screen.getByTestId('UserClientList')).toBeVisible()
   })
-  test('should redirect user/aps to user/aps/clients', async () => {
+  test('should redirect user/wifi to user/wifi/clients', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/users/aps',
+        path: '/t/tenantId/users/wifi',
         wrapRoutes: false
       }
     })
-    expect(screen.getByTestId('UserApList')).toBeVisible()
+    expect(screen.getByTestId('UserClientList')).toBeVisible()
   })
-  test('should redirect to user/aps/clients correctly', async () => {
+  test('should redirect to user/wifi/clients correctly', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/users/aps/clients',
+        path: '/t/tenantId/users/wifi/clients',
         wrapRoutes: false
       }
     })
-    expect(screen.getByTestId('UserApList')).toBeVisible()
+    expect(screen.getByTestId('UserClientList')).toBeVisible()
   })
   test('should redirect details to details/overview', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/users/aps/userId/details/',
+        path: '/t/tenantId/users/wifi/clients/clientId/details/',
         wrapRoutes: false
       }
     })
-    expect(screen.getByTestId('UserApDetails')).toBeVisible()
+    expect(screen.getByTestId('UserClientDetails')).toBeVisible()
   })
   test('should redirect to details/overview correctly', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/users/aps/userId/details/overview',
+        path: '/t/tenantId/users/wifi/clients/clientId/details/overview',
         wrapRoutes: false
       }
     })
-    expect(screen.getByTestId('UserApDetails')).toBeVisible()
+    expect(screen.getByTestId('UserClientDetails')).toBeVisible()
   })
 })

@@ -10,7 +10,7 @@ import { VenueRogueAp }                                                         
 import { VenueSyslog }                                                                            from '../models/VenueSyslog'
 
 
-import { ApStatusDetails, ApModel, LanPort } from './ap'
+import { ApStatusDetails, LanPort } from './ap'
 
 import { ApVenueStatusEnum, SwitchStatusEnum } from './index'
 
@@ -178,10 +178,6 @@ export interface FileValidation {
 	isValidFileSize: boolean
 }
 
-export interface VenueCapabilities {
-	apModels: ApModel[]
-	version: string
-}
 export interface VenueLed {
 	ledEnabled: boolean
 	model: string,

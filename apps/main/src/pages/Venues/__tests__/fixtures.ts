@@ -509,6 +509,18 @@ export const venueSetting = {
   id: 'f892848466d047798430de7ac234e940'
 }
 
+export const serviceProfile = {
+  serviceProfileId: 'serviceProfileId1',
+  enabled: true,
+  dhcpServiceAps: [
+    { serialNumber: '150000000400', role: 'PrimaryServer' },
+    { serialNumber: '150000000401', role: 'BackupServer' },
+    { serialNumber: '150000000402', role: 'NatGateway' },
+    { serialNumber: '150000000403', role: 'NatGateway' },
+    { serialNumber: '150000000404', role: 'NatGateway' }
+  ]
+}
+
 export const venueNetworkList = {
   totalCount: 2,
   page: 1,
