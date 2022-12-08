@@ -7,6 +7,8 @@ export const ImportFileDrawer = styled(Drawer)`
     margin: 15px 0 20px;
     .ant-typography {
       font-size: 11px;
+      display: inline-block;
+      min-width: 60px;
     }
   }
 

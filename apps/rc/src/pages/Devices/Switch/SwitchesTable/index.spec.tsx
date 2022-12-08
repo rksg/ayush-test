@@ -28,7 +28,7 @@ describe('Switch List Table', () => {
   it('should show import CSV dialog', async () => {
     mockServer.use(
       rest.post(
-        WifiUrlsInfo.addAp.url, // TODO: addSwitch url
+        WifiUrlsInfo.importSwitches.url,
         (req, res, ctx) => res(ctx.json({
           txId: 'f83cdf6e-df01-466d-88ba-58e2f2c211c6'
         }))

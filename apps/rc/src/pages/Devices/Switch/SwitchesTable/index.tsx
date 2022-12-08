@@ -6,7 +6,7 @@ import { useIntl }             from 'react-intl'
 
 import { Button, Dropdown, PageHeader } from '@acx-ui/components'
 import { ImportCsvDrawer, CsvSize }     from '@acx-ui/rc/components'
-import { useImportApMutation }          from '@acx-ui/rc/services'
+import { useImportSwitchesMutation }    from '@acx-ui/rc/services'
 import { TenantLink, useParams }        from '@acx-ui/react-router-dom'
 
 
@@ -15,7 +15,7 @@ export default function SwitchesTable () {
   const { tenantId } = useParams()
   const [ importVisible, setImportVisible] = useState(false)
 
-  const [ importCsv, importResult ] = useImportApMutation() // TODO: useImportSwitchMutation
+  const [ importCsv, importResult ] = useImportSwitchesMutation()
 
   const importTemplateLink = 'assets/templates/switches_import_template.csv'
 
