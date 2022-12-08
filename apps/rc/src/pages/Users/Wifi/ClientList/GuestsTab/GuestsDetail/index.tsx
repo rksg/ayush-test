@@ -240,48 +240,48 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
       }
     </div>
 
-    <DrawerFormItem
+    <Form.Item
       label={$t({ defaultMessage: 'Guest Type:' })}
       children={renderGuestType(guestDetail.guestType)} />
 
-    <DrawerFormItem
+    <Form.Item
       label={$t({ defaultMessage: 'Guest Name:' })}
       children={guestDetail.name} />
 
-    <DrawerFormItem
+    <Form.Item
       label={$t({ defaultMessage: 'Mobile Phone:' })}
       children={transformDisplayText(guestDetail.mobilePhoneNumber)} />
 
-    <DrawerFormItem
+    <Form.Item
       label={$t({ defaultMessage: 'Email:' })}
       children={transformDisplayText(guestDetail.emailAddress)} />
 
-    <DrawerFormItem
+    <Form.Item
       label={$t({ defaultMessage: 'Notes:' })}
       children={transformDisplayText(guestDetail.notes)} />
 
     <Divider />
 
-    <DrawerFormItem
+    <Form.Item
       label={$t({ defaultMessage: 'Allowed Network:' })}
       children={renderAllowedNetwork(guestDetail)} />
 
     {/* TODO: Wait for framework support userprofile-format dateTimeFormats */}
-    <DrawerFormItem
+    <Form.Item
       label={$t({ defaultMessage: 'Guest Created:' })}
       children={moment(guestDetail.creationDate).format('DD/MM/YYYY HH:mm')} />
 
-    <DrawerFormItem
+    <Form.Item
       label={$t({ defaultMessage: 'Access Expires:' })}
       children={renderExpires(guestDetail)} />
 
-    <DrawerFormItem
+    <Form.Item
       label={$t({ defaultMessage: 'Max. Number of Clients:' })}
       children={guestDetail.maxNumberOfClients || '0'} />
 
     <Divider />
 
-    <DrawerFormItem
+    <Form.Item
       label={$t({ defaultMessage: 'Status:' })}
       children={renderStatus(guestDetail)} />
 

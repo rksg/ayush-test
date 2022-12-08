@@ -80,10 +80,7 @@ export default function GuestsTable () {
         </span>
         <Button type='link'
           disabled={true} //TODO: Need guest service support
-          style={{
-            fontSize: cssStr('--acx-body-4-font-size'),
-            height: '16px'
-          }}>
+          size='small'>
           {$t({ defaultMessage: 'Add Guest Pass Network' })}
         </Button>
       </span>
@@ -98,7 +95,7 @@ export default function GuestsTable () {
         render: (data, row) =>
           <Button
             type='link'
-            style={{ fontSize: cssStr('--acx-body-4-font-size') }}
+            size='small'
             onClick={() => {
               setCurrentGuest(row)
               setVisible(true)
@@ -117,7 +114,7 @@ export default function GuestsTable () {
         render: (data, row) =>
           <Button
             type='link'
-            style={{ fontSize: cssStr('--acx-body-4-font-size') }}
+            size='small'
             onClick={() => {
               setCurrentGuest(row)
               setVisible(true)

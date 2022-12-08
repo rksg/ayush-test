@@ -31,6 +31,18 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/eventalarmapi/:tenantId/alarm/meta'
   },
+  getActivityList: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/activity/query'
+  },
+  getEventList: {
+    method: 'post',
+    url: '/api/eventalarmapi/:tenantId/event/eventlist'
+  },
+  getEventListMeta: {
+    method: 'post',
+    url: '/api/eventalarmapi/:tenantId/event/meta'
+  },
   clearAlarm: {
     method: 'delete',
     url: '/api/eventalarmapi/:tenantId/alarm/clear/:alarmId'
@@ -38,10 +50,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   clearAllAlarm: {
     method: 'delete',
     url: '/api/eventalarmapi/:tenantId/alarm'
-  },
-  getEventListMeta: {
-    method: 'post',
-    url: '/api/eventalarmapi/:tenantId/event/meta'
   },
   getApsList: {
     method: 'post',
