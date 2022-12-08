@@ -622,7 +622,6 @@ exports[`Guest Table should render table 1`] = `
                               >
                                 <button
                                   class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                                  style="font-size: 12px;"
                                   type="button"
                                 >
                                   <span>
@@ -635,7 +634,6 @@ exports[`Guest Table should render table 1`] = `
                               >
                                 <button
                                   class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                                  style="font-size: 12px;"
                                   type="button"
                                 >
                                   <span>
@@ -667,9 +665,7 @@ exports[`Guest Table should render table 1`] = `
                               <td
                                 class="ant-table-cell"
                               >
-                                <span
-                                  style="color: rgb(237, 28, 36);"
-                                >
+                                <span>
                                   Expired
                                 </span>
                               </td>
@@ -687,7 +683,6 @@ exports[`Guest Table should render table 1`] = `
                               >
                                 <button
                                   class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                                  style="font-size: 12px;"
                                   type="button"
                                 >
                                   <span>
@@ -700,7 +695,6 @@ exports[`Guest Table should render table 1`] = `
                               >
                                 <button
                                   class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                                  style="font-size: 12px;"
                                   type="button"
                                 >
                                   <span>
@@ -754,7 +748,6 @@ exports[`Guest Table should render table 1`] = `
                               >
                                 <button
                                   class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                                  style="font-size: 12px;"
                                   type="button"
                                 >
                                   <span>
@@ -767,7 +760,6 @@ exports[`Guest Table should render table 1`] = `
                               >
                                 <button
                                   class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                                  style="font-size: 12px;"
                                   type="button"
                                 >
                                   <span>
@@ -819,7 +811,6 @@ exports[`Guest Table should render table 1`] = `
                               >
                                 <button
                                   class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                                  style="font-size: 12px;"
                                   type="button"
                                 >
                                   <span>
@@ -832,7 +823,6 @@ exports[`Guest Table should render table 1`] = `
                               >
                                 <button
                                   class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                                  style="font-size: 12px;"
                                   type="button"
                                 >
                                   <span>

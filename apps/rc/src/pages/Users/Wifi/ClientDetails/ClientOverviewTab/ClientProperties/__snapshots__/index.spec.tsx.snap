@@ -4626,7 +4626,6 @@ exports[`ClientProperties Normal Client should render client correctly 1`] = `
                         >
                           <div
                             class="ant-space ant-space-horizontal ant-space-align-center"
-                            style="color: rgb(35, 171, 54);"
                           >
                             <div
                               class="ant-space-item"
@@ -4668,7 +4667,6 @@ exports[`ClientProperties Normal Client should render client correctly 1`] = `
                         >
                           <div
                             class="ant-space ant-space-horizontal ant-space-align-center"
-                            style="color: rgb(35, 171, 54);"
                           >
                             <div
                               class="ant-space-item"
@@ -5634,7 +5632,6 @@ exports[`ClientProperties Normal Client should render client without some data c
                         >
                           <div
                             class="ant-space ant-space-horizontal ant-space-align-center"
-                            style="color: rgb(249, 195, 75);"
                           >
                             <div
                               class="ant-space-item"
@@ -5676,7 +5673,6 @@ exports[`ClientProperties Normal Client should render client without some data c
                         >
                           <div
                             class="ant-space ant-space-horizontal ant-space-align-center"
-                            style="color: rgb(237, 28, 36);"
                           >
                             <div
                               class="ant-space-item"
@@ -6701,7 +6697,6 @@ exports[`ClientProperties Normal Client should render dpsk client correctly 1`] 
                         >
                           <div
                             class="ant-space ant-space-horizontal ant-space-align-center"
-                            style="color: rgb(35, 171, 54);"
                           >
                             <div
                               class="ant-space-item"
@@ -7895,7 +7890,6 @@ exports[`ClientProperties Normal Client should render guest client correctly 1`]
                         >
                           <div
                             class="ant-space ant-space-horizontal ant-space-align-center"
-                            style="color: rgb(237, 28, 36);"
                           >
                             <div
                               class="ant-space-item"
@@ -7937,7 +7931,6 @@ exports[`ClientProperties Normal Client should render guest client correctly 1`]
                         >
                           <div
                             class="ant-space ant-space-horizontal ant-space-align-center"
-                            style="color: rgb(237, 28, 36);"
                           >
                             <div
                               class="ant-space-item"
