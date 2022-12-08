@@ -8,9 +8,9 @@ export const productMapping = {
 
 export const statusMapping = {
   PENDING: defineMessage({ defaultMessage: 'Pending' }),
-  INPROGRESS: defineMessage({ defaultMessage: 'Inprogress' }),
+  INPROGRESS: defineMessage({ defaultMessage: 'In progress' }),
   SUCCESS: defineMessage({ defaultMessage: 'Success' }),
-  FAIL: defineMessage({ defaultMessage: 'Fail' })
+  FAIL: defineMessage({ defaultMessage: 'Failed' })
 }
 
 export const adminLogEventTypeMapping = {
@@ -24,5 +24,5 @@ export const eventEventTypeMapping = {
 }
 
 export const severityMapping = {
-  Info: defineMessage({ defaultMessage: 'Information' })
+  Info: defineMessage({ defaultMessage: 'Informational' })
 }

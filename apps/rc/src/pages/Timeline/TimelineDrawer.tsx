@@ -1,4 +1,4 @@
-import { Descriptions }               from 'antd'
+import { Form }                       from 'antd'
 import { MessageDescriptor, useIntl } from 'react-intl'
 
 import { noDataSymbol } from '@acx-ui/analytics/utils'
@@ -17,11 +17,11 @@ export const TimelineDrawer = (props: DrawerProps) => {
     title={$t(props.title)}
     visible={props.visible}
     onClose={props.onClose}
-    children={<Descriptions column={1}>{
-      props.data
-        .map(({ title, value })=>
-          <Descriptions.Item label={$t(title)}>{value||noDataSymbol}</Descriptions.Item>
-        )
-    }</Descriptions>}
+    children={<Form labelCol={{ span: 9 }} labelAlign='left'>{
+      props.data.map(({ title, value }) => <Form.Item
+        label={$t(title)}
+        children={value || noDataSymbol}
+      />)
+    }</Form>}
   />
 }

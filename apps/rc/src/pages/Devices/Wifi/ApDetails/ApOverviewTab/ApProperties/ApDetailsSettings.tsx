@@ -23,7 +23,7 @@ export const ApDetailsSettings = (props: ApDetailsSettingsProps) => {
 
   return (
     <Form
-      labelCol={{ span: 10 }}
+      labelCol={{ span: 9 }}
       labelAlign='left'
       style={{ marginTop: '25px' }}
     >

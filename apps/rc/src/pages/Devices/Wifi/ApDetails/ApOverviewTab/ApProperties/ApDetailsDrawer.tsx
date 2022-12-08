@@ -51,9 +51,9 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   const PropertiesTab = () => {
     return (
       <Form
-        labelCol={{ span: 12 }}
+        labelCol={{ span: 9 }}
         labelAlign='left'
-        style={{ marginTop: currentAP?.deviceStatusSeverity === ApVenueStatusEnum.OPERATIONAL ? '25px' : 0 }}
+        style={{ marginTop: currentAP?.deviceStatusSeverity === ApVenueStatusEnum.OPERATIONAL ? '15px' : 0 }}
       >
         <Form.Item
           label={$t({ defaultMessage: 'Venue' })}
@@ -237,7 +237,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
     }
   ]
   const content = currentAP?.deviceStatusSeverity === ApVenueStatusEnum.OPERATIONAL ?
-    <ContentSwitcher tabDetails={tabDetails} size='large' /> :
+    <ContentSwitcher tabDetails={tabDetails} size='small' /> :
     <PropertiesTab />
 
   return (
