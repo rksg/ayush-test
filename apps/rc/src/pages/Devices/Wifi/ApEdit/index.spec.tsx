@@ -29,7 +29,8 @@ import {
   successResponse,
   venueData,
   venueLanPorts,
-  venueSetting
+  venueSetting,
+  deviceAps
 } from '../../__tests__/fixtures'
 
 import { ApEdit } from './'
@@ -74,6 +75,8 @@ describe('ApEdit', () => {
         (_, res, ctx) => res(ctx.json(apDetailsList[0]))),
       rest.post(WifiUrlsInfo.getDhcpAp.url,
         (_, res, ctx) => res(ctx.json(dhcpAp[0]))),
+      rest.post(CommonUrlsInfo.getApsList.url,
+        (_, res, ctx) => res(ctx.json(deviceAps))),
       rest.put(WifiUrlsInfo.updateAp.url,
         (_, res, ctx) => res(ctx.json(successResponse)))
     )
@@ -237,7 +240,7 @@ describe('ApEdit', () => {
 
       await userEvent.click(await screen.findByText('Back to device details'))
       await showInvalidChangesModal('AP Details', false)
-      await userEvent.click(await screen.findByRole('tab', { name: 'Settings' }))
+      await userEvent.click(await screen.findByText('Back to device details'))
       await showInvalidChangesModal('AP Details', true)
     })
   })
@@ -264,7 +267,9 @@ describe('ApEdit', () => {
         rest.get(CommonUrlsInfo.getVenueSettings.url,
           (_, res, ctx) => res(ctx.json(venueSetting))),
         rest.get(CommonUrlsInfo.getVenueLanPorts.url,
-          (_, res, ctx) => res(ctx.json(venueLanPorts)))
+          (_, res, ctx) => res(ctx.json(venueLanPorts))),
+        rest.post(CommonUrlsInfo.getApsList.url,
+          (_, res, ctx) => res(ctx.json(deviceAps)))
       )
     })
     afterEach(() => Modal.destroyAll())
