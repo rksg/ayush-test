@@ -4,7 +4,7 @@ exports[`RadioSettingsChannelse should render group size of 4 correctly 1`] = `
 <DocumentFragment>
   <div>
     <button
-      class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 kcVFGF styledComponents__BarButton-sc-a5e24y-4 styledComponents__Button5G-sc-a5e24y-5 iICpmb eOGJcb"
+      class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW styledComponents__BarButton-sc-a5e24y-4 styledComponents__Button5G-sc-a5e24y-5 iICpmb eOGJcb"
       data-testid="lower5GButton"
       style="width: 234px;"
       type="button"
@@ -14,7 +14,7 @@ exports[`RadioSettingsChannelse should render group size of 4 correctly 1`] = `
       </span>
     </button>
     <button
-      class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 kcVFGF styledComponents__BarButton-sc-a5e24y-4 styledComponents__Button5G-sc-a5e24y-5 iICpmb eOGJcb"
+      class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW styledComponents__BarButton-sc-a5e24y-4 styledComponents__Button5G-sc-a5e24y-5 iICpmb eOGJcb"
       data-testid="upper5GButton"
       style="width: 474px;"
       type="button"
@@ -25,7 +25,7 @@ exports[`RadioSettingsChannelse should render group size of 4 correctly 1`] = `
     </button>
   </div>
   <button
-    class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 kcVFGF styledComponents__BarButton-sc-a5e24y-4 styledComponents__ButtonDFS-sc-a5e24y-6 iICpmb lkAuIw"
+    class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW styledComponents__BarButton-sc-a5e24y-4 styledComponents__ButtonDFS-sc-a5e24y-6 iICpmb lkAuIw"
     data-testid="dfsButton"
     style="width: 474px; left: 120px;"
     type="button"

@@ -1457,7 +1457,7 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                               Access Control
                             </h4>
                             <button
-                              class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 kcVFGF"
+                              class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 eAazoW"
                               disabled=""
                               type="button"
                             >
@@ -1466,7 +1466,7 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                               </span>
                             </button>
                             <button
-                              class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 kcVFGF"
+                              class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 eAazoW"
                               type="button"
                             >
                               <span>
@@ -2463,7 +2463,7 @@ exports[`NetworkForm should edit open network successfully 1`] = `
             style="margin-right: 12px;"
           >
             <button
-              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 kcVFGF"
+              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
               type="button"
             >
               <span>
@@ -2482,7 +2482,7 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                 style="margin-right: 12px;"
               >
                 <button
-                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 kcVFGF"
+                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
                   disabled=""
                   type="button"
                 >
@@ -2495,7 +2495,7 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                 class="ant-space-item"
               >
                 <button
-                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 ieglzy"
+                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 bxQmA-d"
                   type="button"
                 >
                   <span>

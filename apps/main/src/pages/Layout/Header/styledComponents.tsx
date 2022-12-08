@@ -1,4 +1,6 @@
-import { Modal,
+import {
+  Space,
+  Modal,
   List,
   Button,
   Typography
@@ -81,21 +83,50 @@ export const CopyableText = styled(Typography.Paragraph)
   color: ${(props) => (props.color ? props.color : 'var(--acx-accents-blue-50)')};
 `
 
+export const SpaceBetween = styled(Space)`
+  justify-content: space-between;
+  width: 100%;
+`
+
+export const FilterRow = styled(SpaceBetween)`
+  margin-bottom: 5px;
+`
+
+export const Meta = styled(List.Item.Meta)`
+  .ant-list-item-meta-avatar {
+    margin-right: 10px;
+  }
+  .ant-list-item-meta-title,
+  .ant-list-item-meta-description {
+    font-size: var(--acx-body-4-font-size);
+    line-height: var(--acx-body-4-line-height);
+  }
+`
 export const WarningCircle = styled(WarningCircleSolid)`
   path:nth-child(2) {
     fill: var(--acx-semantics-red-50);
     stroke: var(--acx-semantics-red-50);
   }
 `
+export const DeviceLink = styled.span`
+  color: var(--acx-accents-blue-50);
+`
+export const ListTime = styled(SpaceBetween)`
+  font-size: var(--acx-body-5-font-size);
+  line-height: var(--acx-body-5-line-height);
+  color: var(--acx-neutrals-60);
+`
 export const ListTable = styled(List)`
   .ant-list-pagination {
+    margin: 16px 0;
     text-align: center;
   }
 `
 export const ListItem = styled(List.Item)`
-    .ant-list-item-action {
-      margin-left: 10px;
-    }
+  border-bottom: 0 !important;
+  .ant-list-item-action {
+    margin-left: 10px;
+  }
 `
 export const AcknowledgeCircle = styled(CheckMarkCircleSolid)`
   path:nth-child(1) {
@@ -129,21 +160,13 @@ export const ClearButton = styled(Button)`
   }
 `
 
-export const Meta = styled(List.Item.Meta)`
-  .ant-list-item-meta-avatar{
-    margin-right: 10px;
-  }
-`
-export const DeviceLink = styled.span`
-  color: var(--acx-accents-blue-50)
-`
 export const LogOut = styled(AntdLogOut)`
   width: 16px;
   height: 16px;
   margin-right: 5px;
 `
 export const Drawer = styled(AntdDrawer)`
-  .ant-drawer-body{
+  .ant-drawer-body {
     overflow-x: hidden;
   }
 `

@@ -51,6 +51,10 @@ export const Button = styled(AntButton)<{ $customType: string | null }>`
     padding: 0;
     height: var(--acx-body-3-line-height);
 
+    &:hover, &:focus {
+      color: var(--acx-accents-orange-50);
+    }
+
     &.ant-btn-sm {
       height: var(--acx-body-4-line-height);
     }

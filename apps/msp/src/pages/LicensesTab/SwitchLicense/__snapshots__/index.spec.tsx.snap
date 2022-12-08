@@ -17,7 +17,7 @@ exports[`SwitchLicense should render correctly 1`] = `
           style="margin-right: 0px;"
         >
           <button
-            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kcVFGF"
+            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
             type="button"
           >
             <span>
@@ -38,7 +38,7 @@ exports[`SwitchLicense should render correctly 1`] = `
           class="ant-space-item"
         >
           <button
-            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kcVFGF"
+            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
             type="button"
           >
             <span>

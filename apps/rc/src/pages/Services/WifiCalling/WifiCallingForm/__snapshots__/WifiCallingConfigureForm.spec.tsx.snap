@@ -419,7 +419,7 @@ exports[`WifiCallingConfigureForm should render wifiCallingConfigureForm success
                                     class="ant-space-item"
                                   >
                                     <button
-                                      class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kcVFGF"
+                                      class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
                                       type="button"
                                     >
                                       <span>
@@ -1081,7 +1081,7 @@ exports[`WifiCallingConfigureForm should render wifiCallingConfigureForm success
             style="margin-right: 12px;"
           >
             <button
-              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 kcVFGF"
+              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
               type="button"
             >
               <span>
@@ -1100,7 +1100,7 @@ exports[`WifiCallingConfigureForm should render wifiCallingConfigureForm success
                 style="margin-right: 12px;"
               >
                 <button
-                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 kcVFGF"
+                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
                   type="button"
                 >
                   <span>
@@ -1113,7 +1113,7 @@ exports[`WifiCallingConfigureForm should render wifiCallingConfigureForm success
               >
                 <button
                   ant-click-animating-without-extra-node="true"
-                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 ieglzy"
+                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 bxQmA-d"
                   type="button"
                 >
                   <span>
