@@ -20,7 +20,7 @@ function ApEditTabs () {
   const intl = useIntl()
   const params = useParams()
   const navigate = useNavigate()
-  const basePath = useTenantLink(`/devices/aps/${params.serialNumber}/edit/`)
+  const basePath = useTenantLink(`/devices/wifi/${params.serialNumber}/edit/`)
   const {
     editContextData,
     setEditContextData,

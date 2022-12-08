@@ -44,7 +44,7 @@ const searches = [
     return {
       result,
       title: $t({ defaultMessage: 'Venues' }),
-      component: <VenueTable tableQuery={result} globalSearch={searchString} />
+      component: <VenueTable tableQuery={result} />
     }
   },
   (searchString: string, $t: IntlShape['$t']) => {
@@ -60,7 +60,7 @@ const searches = [
     return {
       result,
       title: $t({ defaultMessage: 'Networks' }),
-      component: <NetworkTable tableQuery={result} globalSearch={searchString} />
+      component: <NetworkTable tableQuery={result} />
     }
   },
   (searchString: string, $t: IntlShape['$t']) => {

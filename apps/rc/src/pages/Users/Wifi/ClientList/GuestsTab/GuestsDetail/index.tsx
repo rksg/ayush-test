@@ -80,7 +80,7 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
       sorter: false,
       defaultSortOrder: 'ascend',
       render: function (data, row) {
-        return <TenantLink to={`/devices/aps/${row.serialNumber}/details/overview`}>
+        return <TenantLink to={`/devices/wifi/${row.serialNumber}/details/overview`}>
           {row.apName}
         </TenantLink>
       }
