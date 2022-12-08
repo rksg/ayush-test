@@ -23,7 +23,7 @@ export const ClientUrlsInfo: { [key: string]: ApiInfo } = {
   },
   disableGuests: {
     method: 'post',
-    url: '/api/tenant/:tenantId/wifi/guest-user/:guestId:/disable'
+    url: '/api/tenant/:tenantId/wifi/guest-user/:guestId/disable'
   },
   getGuests: {
     method: 'post',

@@ -30,28 +30,28 @@ export default function GuestsTable () {
   const [visible, setVisible] = useState(false)
   const [currentGuest, setCurrentGuest] = useState({} as Guest)
 
-const defaultGuestNetworkPayload = {
-  searchString: '',
-  fields: [
-    'check-all',
-    'name',
-    'description',
-    'nwSubType',
-    'venues',
-    'aps',
-    'clients',
-    'vlan',
-    'cog',
-    'ssid',
-    'vlanPool',
-    'captiveType',
-    'id'
-  ],
-  filters: {
-    nwSubType: ['guest'],
-    captiveType: ['GuestPass']
+  const defaultGuestNetworkPayload = {
+    searchString: '',
+    fields: [
+      'check-all',
+      'name',
+      'description',
+      'nwSubType',
+      'venues',
+      'aps',
+      'clients',
+      'vlan',
+      'cog',
+      'ssid',
+      'vlanPool',
+      'captiveType',
+      'id'
+    ],
+    filters: {
+      nwSubType: ['guest'],
+      captiveType: ['GuestPass']
+    }
   }
-}
 
   const { $t } = useIntl()
   const GuestsTable = () => {
@@ -93,7 +93,7 @@ const defaultGuestNetworkPayload = {
         key: 'creationDate',
         title: $t({ defaultMessage: 'Created' }),
         dataIndex: 'creationDate',
-        sorter: false,
+        sorter: true,
         defaultSortOrder: 'ascend',
         render: (data, row) =>
           <Button

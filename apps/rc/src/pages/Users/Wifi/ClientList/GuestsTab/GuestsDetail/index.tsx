@@ -25,6 +25,7 @@ import { DrawerFormItem } from '../styledComponents'
 
 import { GenerateNewPasswordModal } from './generateNewPasswordModal'
 import { useGuestActions }          from './guestActions'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 
 interface GuestDetailsDrawerProps {
@@ -227,14 +228,16 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
     <div style={{
       textAlign: 'right'
     }}>
-      <Dropdown overlay={menu} key='actions'>
-        <Button type='secondary'>
-          <Space>
-            {$t({ defaultMessage: 'Actions' })}
-            <ArrowExpand />
-          </Space>
-        </Button>
-      </Dropdown>
+      {useIsSplitOn(Features.DEVICES) &&
+        <Dropdown overlay={menu} key='actions'>
+          <Button type='secondary'>
+            <Space>
+              {$t({ defaultMessage: 'Actions' })}
+              <ArrowExpand />
+            </Space>
+          </Button>
+        </Dropdown>
+      }
     </div>
 
     <DrawerFormItem
@@ -264,7 +267,7 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
       children={renderAllowedNetwork(guestDetail)} />
 
     {/* TODO: Wait for framework support userprofile-format dateTimeFormats */}
-      <DrawerFormItem
+    <DrawerFormItem
       label={$t({ defaultMessage: 'Guest Created:' })}
       children={moment(guestDetail.creationDate).format('DD/MM/YYYY HH:mm')} />
 
