@@ -7,6 +7,7 @@ import { useIntl }                                from 'react-intl'
 import { RadioSettingsChannels }           from '@acx-ui/rc/components'
 import {
   useGetApRadioQuery,
+  useGetApValidChannelQuery,
   useGetVenueRadioCustomizationQuery,
   useVenueDefaultRegulatoryChannelsQuery
 } from '@acx-ui/rc/services'
@@ -76,36 +77,20 @@ export function Radio5GHz (props: { venueId: string, serialNumber: string }) {
       }
     })
 
+  const { allowedAPChannels } =
+    useGetApValidChannelQuery({ params: { tenantId, serialNumber } }, {
+      selectFromResult ({ data }) {
+        return {
+          allowedAPChannels: data?.['5GChannels']['indoor'][channelType] || []
+        }
+      }
+    })
+
   useEffect(() => {
     if(defaultChannelsData){
       setDefaultIndoorChannels(
         defaultChannelsData['5GChannels']['indoor'][channelType]
       )
-    }
-
-    if (defaultChannelsData && venueData?.channelBandwidth){
-      setChannelType(venueData?.channelBandwidth === 'AUTO' ?
-        venueData?.channelBandwidth.toLowerCase() : venueData?.channelBandwidth)
-
-      setDefaultIndoorChannels(
-        // eslint-disable-next-line max-len
-        defaultChannelsData['5GChannels']['indoor'][channelType]
-      )
-
-      switch(venueData?.channelBandwidth){
-        case '40MHz':
-          setGroupSize(2)
-          break
-        case '80MHz':
-          setGroupSize(4)
-          break
-        case '160MHz':
-          setGroupSize(8)
-          break
-        default:
-          setGroupSize(1)
-          break
-      }
 
       const {
         lower5GChannels: indoorLower5GChannels,
@@ -120,10 +105,32 @@ export function Radio5GHz (props: { venueId: string, serialNumber: string }) {
       })
     }
 
-    if(allowedChannels.length > 0){
-      form.setFieldValue(['radioParams50G', 'allowedChannels'], allowedChannels)
-    }else if(allowedVenueChannels){
-      form.setFieldValue(['radioParams50G', 'allowedIndoorChannels'], allowedVenueChannels)
+    if (defaultChannelsData && channelBandwidth){
+      setChannelType(channelBandwidth === 'AUTO' ?
+        channelBandwidth.toLowerCase() : channelBandwidth)
+
+      switch(channelBandwidth){
+        case '40MHz':
+          setGroupSize(2)
+          break
+        case '80MHz':
+          setGroupSize(4)
+          break
+        case '160MHz':
+          setGroupSize(8)
+          break
+        default:
+          setGroupSize(1)
+          break
+      }
+    }
+
+    if(allowedChannels || allowedAPChannels){
+      let selectedChannels = setSelectedChannels(allowedAPChannels, allowedChannels)
+      selectedChannels = selectedChannels.filter(item => item)
+      form.setFieldValue(['apRadioParams50G', 'allowedChannels'], selectedChannels)
+    }if(allowedVenueChannels){
+      form.setFieldValue(['apRadioParams50G', 'allowedChannels'], allowedVenueChannels)
     }
 
     if(venueData){
@@ -147,8 +154,25 @@ export function Radio5GHz (props: { venueId: string, serialNumber: string }) {
         setTxPowerLabel(Object.values(channelTxPowerObject[0].label.defaultMessage[0])[1])
       }
     }
-  }, [defaultChannelsData, channelBandwidth,
-    allowedChannels, allowedVenueChannels, venueData])
+  }, [defaultChannelsData, channelBandwidth, allowedChannels, allowedAPChannels,
+    allowedVenueChannels, venueData])
+
+  const setSelectedChannels = (channels: string[], selected: string[]) => {
+    if (_.isEmpty(channels)) {
+      return []
+    }
+
+    selected = (!selected) ? channels : selected
+
+    return channels.map((channel) => {
+      const val = {
+        selected: selected.indexOf(channel) > -1 ? true : false,
+        value: channel
+      }
+
+      return val
+    })
+  }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function formatter (value: any) {
@@ -175,20 +199,21 @@ export function Radio5GHz (props: { venueId: string, serialNumber: string }) {
           {(enable50G || useVenueSettings) && <>
             <Form.Item
               label={$t({ defaultMessage: 'Channel selection method:' })}
-              name={['radioParams50G', 'method']}>
+              name={['apRadioParams50G', 'method']}
+              initialValue={channelSelectionMethodsOptions[1].value}>
               { useVenueSettings ?
                 <span>{channelMethodLabel}</span>
                 :
                 <Select
                   options={channelSelectionMethodsOptions?.map(p =>
                     ({ label: $t(p.label), value: p.value }))}
-                  defaultValue={channelSelectionMethodsOptions[1].value}
                 />
               }
             </Form.Item>
             <Form.Item
               label={$t({ defaultMessage: 'Channel Change Frequency:' })}
-              name={['radioParams50G', 'changeInterval']}
+              name={['apRadioParams50G', 'changeInterval']}
+              initialValue={33}
               style={{ display: (!useVenueSettings &&
                 channelMethod === channelSelectionMethodsOptions[0].value)
                 || (useVenueSettings &&
@@ -198,7 +223,6 @@ export function Radio5GHz (props: { venueId: string, serialNumber: string }) {
               <Slider
                 tipFormatter={formatter}
                 style={{ width: '240px' }}
-                defaultValue={33}
                 min={1}
                 max={100}
                 disabled={useVenueSettings}
@@ -207,7 +231,8 @@ export function Radio5GHz (props: { venueId: string, serialNumber: string }) {
             </Form.Item>
             <Form.Item
               label={$t({ defaultMessage: 'Bandwidth:' })}
-              name={['radioParams50G', 'channelBandwidth']}>
+              name={['apRadioParams50G', 'channelBandwidth']}
+              initialValue={'AUTO'}>
               {useVenueSettings ?
                 <span>{channelBandwidthLabel}</span>
                 :
@@ -217,20 +242,19 @@ export function Radio5GHz (props: { venueId: string, serialNumber: string }) {
                 Object.keys(defaultChannelsData['5GChannels']['dfs'])
                   .map(item => ({ label: item === 'auto' ? _.upperFirst(item) : item,
                     value: item === 'auto' ? item.toUpperCase() : item }))}
-                  defaultValue={'AUTO'}
                 />
               }
             </Form.Item>
             <Form.Item
               label={$t({ defaultMessage: 'Transmit Power adjustment:' })}
-              name={['radioParams50G', 'txPower']}>
+              name={['apRadioParams50G', 'txPower']}
+              initialValue={txPowerAdjustmentOptions[1].value}>
               {useVenueSettings ?
                 <span>{txPowerLabel}</span>
                 :
                 <Select
                   options={txPowerAdjustmentOptions?.map(p =>
                     ({ label: $t(p.label), value: p.value }))}
-                  defaultValue={txPowerAdjustmentOptions[1].value}
                 />
               }
             </Form.Item>
@@ -253,7 +277,7 @@ export function Radio5GHz (props: { venueId: string, serialNumber: string }) {
           <div>
             { defaultIndoorChannels &&
           <RadioSettingsChannels
-            formName={['radioParams50G', 'allowedChannels']}
+            formName={['apRadioParams50G', 'allowedChannels']}
             groupSize={groupSize}
             channelList={defaultIndoorChannels.map(item => ({
               value: item,

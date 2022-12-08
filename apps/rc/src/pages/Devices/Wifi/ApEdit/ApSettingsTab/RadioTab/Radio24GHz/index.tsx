@@ -7,6 +7,7 @@ import { useIntl }                                from 'react-intl'
 import { RadioSettingsChannels }           from '@acx-ui/rc/components'
 import {
   useGetApRadioQuery,
+  useGetApValidChannelQuery,
   useGetVenueRadioCustomizationQuery,
   useVenueDefaultRegulatoryChannelsQuery
 } from '@acx-ui/rc/services'
@@ -66,6 +67,16 @@ export function Radio24GHz (props: { venueId: string, serialNumber: string }) {
       }
     })
 
+  const { allowedAPChannels } =
+    useGetApValidChannelQuery({ params: { tenantId, serialNumber } }, {
+      selectFromResult ({ data }) {
+        const channelType = channelBandwidth === 'AUTO' ?
+          channelBandwidth.toLowerCase() : channelBandwidth
+        return {
+          allowedAPChannels: data?.['2.4GChannels'][channelType] || []
+        }
+      }
+    })
 
   useEffect(() => {
     if(defaultChannelsData){
@@ -80,8 +91,10 @@ export function Radio24GHz (props: { venueId: string, serialNumber: string }) {
       )
     }
 
-    if(allowedChannels){
-      form.setFieldValue(['apRadioParams24G', 'allowedChannels'], allowedChannels)
+    if(allowedChannels || allowedAPChannels){
+      let selectedChannels = setSelectedChannels(allowedAPChannels, allowedChannels)
+      selectedChannels = selectedChannels.filter(item => item)
+      form.setFieldValue(['apRadioParams24G', 'allowedChannels'], selectedChannels)
     }else if(allowedVenueChannels){
       form.setFieldValue(['apRadioParams24G', 'allowedChannels'], allowedVenueChannels)
     }
@@ -107,7 +120,23 @@ export function Radio24GHz (props: { venueId: string, serialNumber: string }) {
         setTxPowerLabel(Object.values(channelTxPowerObject[0].label.defaultMessage[0])[1])
       }
     }
-  }, [defaultChannelsData, channelBandwidth, allowedChannels, allowedVenueChannels, venueData])
+  }, [defaultChannelsData, channelBandwidth, allowedChannels, allowedAPChannels,
+    allowedVenueChannels, venueData])
+
+  const setSelectedChannels = (channels: string[], selected: string[]) => {
+    if (_.isEmpty(channels)) {
+      return []
+    }
+
+    selected = (!selected) ? channels : selected
+
+    return channels.map((channel) => {
+      if(selected.indexOf(channel) > -1){
+        return channel
+      }
+      return null
+    })
+  }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function formatter (value: any) {
