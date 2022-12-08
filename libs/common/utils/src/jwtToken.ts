@@ -1,5 +1,3 @@
-import { useParams } from '@acx-ui/react-router-dom'
-
 export enum AccountTier {
   GOLD = 'Gold',
   PLATINUM = 'Platinum'
@@ -31,7 +29,7 @@ interface JwtToken {
   acx_account_activation_date: string
   acx_account_activation_flag: boolean
   acx_account_regions: AccountRegion[]
-  acx_account_tier: string
+  acx_account_tier: AccountTier
   acx_account_type: AccountType
   acx_account_vertical: AccountVertical
   acx_trial_in_progress: boolean
@@ -70,19 +68,19 @@ const cache = new Map()
 // Fetch JWT token payload data
 export function getJwtTokenPayload () {
   const jwt = getCookie('JWT')
-  // eslint-disable-next-line no-console
-  console.log(`JWT: ${jwt}`)
+
   if (jwt === null) {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const { tenantId } = useParams()
+    const tenantId = getTenantId()
     // eslint-disable-next-line no-console
     console.error('No JWT token found! So setting default JWT values')
-    const jwtToken: { tenantType: AccountType;
+    const jwtToken: {
+      acx_account_tier: AccountTier;
       acx_account_vertical: AccountVertical;
-      tenantId: string | undefined; acx_account_tier: AccountTier } = {
+      acx_account_type: AccountType;
+      tenantId: string | undefined } = {
         acx_account_tier: AccountTier.GOLD,
         acx_account_vertical: AccountVertical.DEFAULT,
-        tenantType: AccountType.REC,
+        acx_account_type: AccountType.REC,
         tenantId: tenantId
       }
     return jwtToken
@@ -107,4 +105,12 @@ function getCookie (key: string) {
 
   const valueStart = start + key.length + 1
   return document.cookie.slice(valueStart, end)
+}
+
+function getTenantId () {
+  const chunks = window.location.pathname.split('/')
+  for (const c in chunks) {
+    if (['v', 't'].includes(chunks[c])) { return chunks[Number(c) + 1] }
+  }
+  return
 }

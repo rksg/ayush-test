@@ -8,15 +8,16 @@ describe('jwtToken', () => {
   })
 
   it('return token from default values, when JWT not available', () => {
+    document.cookie = ''
     const token = {
-      acx_account_regions: ['EU', 'AS', 'NA'],
       acx_account_tier: 'Gold',
-      acx_account_type: 'REC',
       acx_account_vertical: 'Default',
-      tenantId: 'e3d0c24e808d42b1832d47db4c2a7914'
+      acx_account_type: 'REC',
+      tenantId: undefined
     }
-    document.cookie = `JWT=xxx.${window.btoa(JSON.stringify(token))}.xxx;`
+    const spy = jest.spyOn(console, 'error').mockImplementation(() => {})
     expect(getJwtTokenPayload()).toEqual(token)
+    expect(spy).toBeCalledWith('No JWT token found! So setting default JWT values')
   })
 
   it('return token when available', () => {
