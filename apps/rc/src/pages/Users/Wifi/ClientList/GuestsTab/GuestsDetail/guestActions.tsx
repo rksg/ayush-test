@@ -28,32 +28,6 @@ export function useGuestActions () {
   const [disableGuests] = useDisableGuestsMutation()
 
 
-  // const showRebootAp = (
-  //   serialNumber: string, tenantId?: string, callBack?: ()=>void ) => {
-  //   showActionModal({
-  //     type: 'confirm',
-  //     customContent: {
-  //       action: 'CUSTOM_BUTTONS',
-  //       buttons: [{
-  //         text: $t({ defaultMessage: 'Cancel' }),
-  //         type: 'default',
-  //         key: 'cancel'
-  //       }, {
-  //         text: $t({ defaultMessage: 'Reboot' }),
-  //         type: 'primary',
-  //         key: 'ok',
-  //         closeAfterAction: true,
-  //         handler: () => {
-  //           rebootAp({ params: { tenantId: tenantId, serialNumber } })
-  //           callBack && callBack()
-  //         }
-  //       }]
-  //     },
-  //     title: $t({ defaultMessage: 'Reboot Access Point?' }),
-  //     content: $t({ defaultMessage: `Rebooting the AP will disconnect all connected clients.
-  //       Are you sure you want to reboot?` })
-  //   })
-  // }
 
 
   const showDownloadInformation = (guest: Guest, tenantId?: string) => {
@@ -63,21 +37,6 @@ export function useGuestActions () {
 
 
     getGuests({ params: { tenantId }, payload: { dateFormat, timezone, guestIds } })
-      .unwrap().then((result) => {
-        let fileName = result
-        // .headers.get('content-disposition');
-        // fileName = fileName.split('filename=')[1];
-        // fileName = fileName.substring(1, fileName.length - 1);
-        // const timeString = moment().format('DDMMYYYY-HHmm')
-        // saveAs(result.fileURL, `Guests Information ${'test'}.log.gz`) //TODO: CORS policy
-
-        // const url = window.URL.createObjectURL(new Blob([fileName.data]))
-        // const link = document.createElement('a')
-        // link.href = url
-        // link.setAttribute('download', 'test.csv')
-        // document.body.appendChild(link)
-        // link.click()
-      })
       .catch(() => {
         showToast({
           type: 'error',

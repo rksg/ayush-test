@@ -16,6 +16,7 @@ import {
   RequestPayload,
   showActivityMessage,
   TableResult,
+  downloadFile,
   transformByte,
   WifiUrlsInfo
 } from '@acx-ui/rc/utils'
@@ -115,18 +116,14 @@ export const clientApi = baseClientApi.injectEndpoints({
     getGuests: build.mutation<{ data: BlobPart }, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(ClientUrlsInfo.getGuests, params)
+
         return {
           ...req,
           responseHandler: async (response) => {
-            response.blob().then(myBlob => {
-              const file = new File([myBlob], 'test.csv')
-
-              const link = document.createElement('a')
-              link.href = URL.createObjectURL(file)
-              link.setAttribute('download', 'test')
-              document.body.appendChild(link)
-              link.click()
-            })
+            const headerContent = response.headers.get('content-disposition')
+            const fileName = headerContent ? JSON.parse(
+              headerContent.split('filename=')[1]) : 'Guests Information.csv'
+            downloadFile(response, fileName)
           },
           body: payload,
           headers: {
