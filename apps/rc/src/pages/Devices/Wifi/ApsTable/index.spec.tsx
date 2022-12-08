@@ -10,6 +10,7 @@ import {
 } from '@acx-ui/test-utils'
 
 import ApsTable from '.'
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
 
 
 describe('AP List Table', () => {
@@ -42,6 +43,8 @@ describe('AP List Table', () => {
   })
 
   it('should show import CSV dialog', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true) // mock Features.DEVICES
+
     mockServer.use(
       rest.post(
         WifiUrlsInfo.addAp.url,
