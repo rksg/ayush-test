@@ -179,7 +179,7 @@ export default function GuestsTable () {
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
-          rowKey='ssid'
+          rowKey='id'
         />
 
         <Drawer

@@ -24,6 +24,7 @@ import {
 import { DrawerFormItem } from '../styledComponents'
 
 import { useGuestActions } from './guestActions'
+import { GenerateNewPasswordModal } from './generateNewPasswordModal'
 
 
 interface GuestDetailsDrawerProps {
@@ -163,14 +164,6 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
 
   const guestAction = useGuestActions()
   const handleMenuClick: MenuProps['onClick'] = (e) => {
-    // const actionMap = {
-    //   // generatePassword: guestAction.showRebootAp,
-    //   // downloadInformation: guestAction.showDownloadApLog,
-    //   // disableGuest: guestAction.showBlinkLedAp,
-    //   // enableGuest: guestAction.showBlinkLedAp,
-    //   deleteGuest: guestAction.showDeleteGuest
-    // }
-
     switch (e.key) {
       case 'deleteGuest':
         guestAction.showDeleteGuest(guestDetail, tenantId, props.triggerClose)
@@ -184,10 +177,15 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
       case 'downloadInformation':
         guestAction.showDownloadInformation(guestDetail, tenantId)
         break
+      case 'generatePassword':
+        setGenerateModalVisible(true)
+        break
       default:
         break
     }
   }
+
+  const [generateModalVisible, setGenerateModalVisible] = useState(false)
 
 
   const menu = (
@@ -291,8 +289,10 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
         columns={columns}
         dataSource={guestDetail.clients}
         pagination={false}
-        rowKey='clientMac'
       />}
+
+    <GenerateNewPasswordModal {...{ generateModalVisible, setGenerateModalVisible, guestDetail }}
+    />
   </Form>
   )
 }
