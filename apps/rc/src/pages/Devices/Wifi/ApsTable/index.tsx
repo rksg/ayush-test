@@ -13,7 +13,7 @@ import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
 import { ApTable, CsvSize, ImportCsvDrawer } from '@acx-ui/rc/components'
 import { useImportApMutation }               from '@acx-ui/rc/services'
 import { TenantLink, useParams }             from '@acx-ui/react-router-dom'
-
+import { notAvailableMsg }                   from '@acx-ui/utils'
 
 export default function ApsTable () {
   const { $t } = useIntl()
@@ -46,7 +46,9 @@ export default function ApsTable () {
       label: <TenantLink to='devices/wifi/add'>{$t({ defaultMessage: 'AP' })}</TenantLink>
     }, {
       key: 'import-from-file',
-      label: $t({ defaultMessage: 'Import from file' })
+      label: $t({ defaultMessage: 'Import from file' }),
+      title: $t(notAvailableMsg),
+      disabled: !useIsSplitOn(Features.DEVICES)
     }, {
       key: 'ap-group',
       label: <TenantLink to='devices/apgroups/add'>
