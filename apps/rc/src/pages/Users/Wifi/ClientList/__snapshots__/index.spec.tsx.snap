@@ -72,7 +72,7 @@ exports[`ClientList should render list correctly 1`] = `
                 </div>
                 <div
                   class="ant-tabs-ink-bar ant-tabs-ink-bar-animated"
-                  style="left: 0px; width: 1280px;"
+                  style="left: 0px; width: 0px;"
                 />
               </div>
             </div>
@@ -882,11 +882,7 @@ exports[`ClientList should render list correctly 1`] = `
                               <td
                                 class="ant-table-cell ant-table-column-sort"
                               >
-                                <a
-                                  href="/t/tenant-id/users/wifi/clients/24:41:8c:c3:16:df/details/overview?hostname=LP-XXXXX"
-                                >
-                                  LP-XXXXX
-                                </a>
+                                 LP-XXXXX 
                               </td>
                               <td
                                 class="ant-table-cell"
