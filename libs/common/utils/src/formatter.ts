@@ -159,6 +159,7 @@ export const dateTimeFormats = {
   yearFormat: 'YYYY',
   monthFormat: 'MMM',
   dateFormat: 'MMM DD YYYY',
+  yearMonthFormat: 'MMMM YYYY',
   monthDateFormat: 'MMM DD',
   shortDateTimeFormat: 'MMM DD HH:mm',
   dateTimeFormat: 'MMM DD YYYY HH:mm',
