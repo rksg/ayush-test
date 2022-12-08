@@ -348,39 +348,39 @@ export const portalList =[{
   demo: {
     welcomeText: 'Welcome to the Guest Access login page',
     welcomeColor: '#333333',
-    backgroundImage: '',
-    backgroundColor: '#FFFFFF',
+    bgImage: '',
+    bgColor: '#FFFFFF',
     welcomeSize: 14,
 
-    photoSize: 170,
+    photoRatio: 170,
 
-    logoSize: 105,
+    logoRatio: 105,
     secondaryText: 'Lorem ipsum dolor sit amet, consectetur adipiscing'+
     ' elit. Aenean euismod bibendum laoreet.',
     secondaryColor: '#333333',
     secondarySize: 14,
     buttonColor: '#EC7100',
-    poweredBackgroundColor: '#FFFFFF',
+    poweredBgColor: '#FFFFFF',
     poweredColor: '#333333',
     poweredSize: 14,
-    poweredImgSize: 50,
+    poweredImgRatio: 50,
     poweredImg: '',
-    wifi4EU: '',
+    wifi4EUNetworkId: '',
     termsCondition: '',
     componentDisplay: {
-      Logo: true,
-      WelcomeText: true,
-      Photo: true,
-      SecondaryText: true,
-      TermsConditions: false,
-      PoweredBy: true,
-      WiFi4EU: false
+      logo: true,
+      welcome: true,
+      photo: true,
+      secondaryText: true,
+      termsConditions: false,
+      poweredBy: true,
+      wifi4eu: false
     },
-    displayLang: 'English',
+    displayLangCode: 'en',
 
     alternativeLang:
 
-    { Czech: false, ChineseTraditional: false, French: false }
+    { cs: false, zh_TW: false, fr: false }
   }
 }
 ]

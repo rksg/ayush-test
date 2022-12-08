@@ -23,13 +23,14 @@ export default function PortalOverview (props: { demoValue: Demo }) {
             {$t({ defaultMessage: 'Language' })}
           </Card.Title>
           <Typography.Text>{
-            getLanguage(newDemo.displayLang as keyof typeof PortalLanguageEnum)}</Typography.Text>
+            getLanguage(newDemo.displayLangCode as keyof typeof PortalLanguageEnum)}
+          </Typography.Text>
         </GridCol>
         <GridCol col={{ span: 12 }}>
           <Card.Title>
             {$t({ defaultMessage: 'WiFi4EU Snippet' })}
           </Card.Title>
-          <Typography.Text>{newDemo?.componentDisplay?.WiFi4EU?
+          <Typography.Text>{newDemo?.componentDisplay?.wifi4eu?
             $t({ defaultMessage: 'ON' }):$t({ defaultMessage: 'OFF' })}</Typography.Text>
         </GridCol>
         <GridCol col={{ span: 4 }}>

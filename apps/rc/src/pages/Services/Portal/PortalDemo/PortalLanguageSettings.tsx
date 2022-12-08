@@ -17,11 +17,11 @@ export default function PortalLanguageSettings (props:{
     <UI.Label>
       {$t({ defaultMessage: 'Language:' })}
     </UI.Label>
-    <UI.Select value={demoValue.displayLang}
+    <UI.Select value={demoValue.displayLangCode}
       style={{ textAlign: 'left', width: 230 }}
       onChange={(value) => {
         updateViewContent({
-          ...demoValue, displayLang: value as string, alternativeLang:
+          ...demoValue, displayLangCode: value as string, alternativeLang:
             { ...demoValue.alternativeLang, [value as keyof typeof PortalLanguageEnum]: false }
         })
       }}>

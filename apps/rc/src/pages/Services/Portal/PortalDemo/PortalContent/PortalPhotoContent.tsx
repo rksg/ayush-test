@@ -21,8 +21,8 @@ export default function PortalPhotoContent (props: {
 
   const photoTools = <PortalImageTools
     url={demoValue.photo}
-    size={demoValue.photoSize}
-    defaultSize={PortalDemoDefaultSize.photoSize}
+    size={demoValue.photoRatio}
+    defaultSize={PortalDemoDefaultSize.photoRatio}
     showText={false}
     showColorPic={false}
     updateDemoImg={(data) => {
@@ -36,8 +36,8 @@ export default function PortalPhotoContent (props: {
       onVisibleChange={(value) => setClicked(value)}
     ><UI.Img src={demoValue.photo}
         alt='Photo png'
-        style={{ cursor: cursor, outline: outline, height: (demoValue.photoSize||
-          PortalDemoDefaultSize.photoSize) ,
+        style={{ cursor: cursor, outline: outline, height: (demoValue.photoRatio||
+          PortalDemoDefaultSize.photoRatio) ,
         maxWidth: 425 }}
         onMouseOver={()=>{setCursor('pointer')
           setOutline(dashedOutline)}}

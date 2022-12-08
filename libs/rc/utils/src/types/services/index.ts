@@ -5,6 +5,7 @@ import {
 export * from './dhcpService'
 export * from './wifiCallingService'
 export * from './networkSegmentationService'
+export * from './portalService'
 
 
 export enum AccessEnum {

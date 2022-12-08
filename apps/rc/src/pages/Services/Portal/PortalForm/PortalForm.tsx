@@ -23,30 +23,31 @@ const initialPortalData : Portal ={
   serviceName: '',
   network: [],
   demo: {
-    backgroundColor: 'var(--acx-primary-white)',
-    backgroundImage: '',
+    bgColor: 'var(--acx-primary-white)',
+    bgImage: '',
     welcomeText: 'Welcome to the Guest Access login page',
     welcomeColor: 'var(--acx-primary-black)',
     welcomeSize: PortalDemoDefaultSize.welcomeSize,
     photo: Photo,
-    photoSize: PortalDemoDefaultSize.photoSize,
+    photoRatio: PortalDemoDefaultSize.photoRatio,
     logo: Logo,
-    logoSize: PortalDemoDefaultSize.logoSize,
+    logoRatio: PortalDemoDefaultSize.logoRatio,
     secondaryText: 'Lorem ipsum dolor sit amet, '+
     'consectetur adipiscing elit. Aenean euismod bibendum laoreet.',
     secondaryColor: 'var(--acx-primary-black)',
     secondarySize: PortalDemoDefaultSize.secondarySize,
     buttonColor: 'var(--acx-accents-orange-50)',
-    poweredBackgroundColor: 'var(--acx-primary-white)',
+    poweredBgColor: 'var(--acx-primary-white)',
     poweredColor: 'var(--acx-primary-black)',
     poweredSize: PortalDemoDefaultSize.poweredSize,
     poweredImg: Powered,
-    poweredImgSize: PortalDemoDefaultSize.poweredImgSize,
-    wifi4EU: '',
+    poweredImgRatio: PortalDemoDefaultSize.poweredImgRatio,
+    wifi4EUNetworkId: '',
     termsCondition: '',
     componentDisplay: defaultComDisplay ,
-    displayLang: 'English',
-    alternativeLang: defaultAlternativeLang
+    displayLangCode: 'en',
+    alternativeLang: defaultAlternativeLang,
+    alternativeLangCode: []
   }
 
 }
@@ -110,7 +111,7 @@ export const PortalForm = (props:{
             title={$t({ defaultMessage: 'Settings' })}
             initialValues={initialPortalData}
             onFinish={async (data) => {
-              if(data.demo.componentDisplay.WiFi4EU && !data.demo.wifi4EU){
+              if(data.demo.componentDisplay.wifi4eu && !data.demo.wifi4EUNetworkId){
                 return false
               }
               updateSaveData(data)

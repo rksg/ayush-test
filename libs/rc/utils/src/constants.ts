@@ -466,33 +466,33 @@ export enum PortalViewEnum{
   TermCondition = 'TermCondition'
 }
 export enum PortalLanguageEnum{
-  ChineseTraditional = 'zh-hant',
-  Czech = 'ces',
-  English = 'en',
-  Finnish = 'fin',
-  French = 'fr',
-  German = 'de',
-  Greek = 'gre',
-  Hungarian = 'hun',
-  Italian = 'it',
-  Japanese = 'ja',
-  Norwegian = 'nor',
-  Polish = 'pol',
-  PortuguesePortugal = 'pt',
-  PortugueseBrazil = 'pt-BR',
-  Romanian = 'ro',
-  Slovak = 'sk',
-  Spanish = 'es',
-  Swedish = 'swe',
-  Turkish = 'tr'
+  zh_TW = 'zh-hant',
+  cs = 'ces',
+  en = 'en',
+  fi = 'fin',
+  fr = 'fr',
+  de = 'de',
+  el = 'gre',
+  hu = 'hun',
+  it = 'it',
+  ja = 'ja',
+  no = 'nor',
+  pl = 'pol',
+  pt_PT = 'pt',
+  pt_BR = 'pt-BR',
+  ro = 'ro',
+  sk = 'sk',
+  es = 'es',
+  sv = 'swe',
+  tr = 'tr'
 }
 
 export enum PortalComponentsEnum{
-  Logo = 'Logo',
-  WelcomeText = 'WelcomeText',
-  Photo = 'Photo',
-  SecondaryText = 'SecondaryText',
-  TermsConditions = 'TermsConditions',
-  PoweredBy = 'PoweredBy',
-  WiFi4EU = 'WiFi4EU'
+  logo = 'logo',
+  welcome = 'welcome',
+  photo = 'photo',
+  secondaryText = 'secondaryText',
+  termsConditions = 'termsConditions',
+  poweredBy = 'poweredBy',
+  wifi4eu = 'wifi4eu'
 }

@@ -61,8 +61,8 @@ export default function PortalDemo ({
     updateViewContent={(data)=>onChange?.({ ...demoValue, ...data })}
   />
   const networkPreview = (isPreview && fromNetwork)
-  const displayLang = getLanguage(demoValue.displayLang as keyof typeof PortalLanguageEnum)
-  const [networkDisplayLang, setNetworkDisplayLang] = useState(displayLang)
+  const displayLangCode = getLanguage(demoValue.displayLangCode as keyof typeof PortalLanguageEnum)
+  const [networkDisplayLang, setNetworkDisplayLang] = useState(displayLangCode)
   const type= view === PortalViewEnum.ClickThrough? GuestNetworkTypeEnum.ClickThrough :
     (view === PortalViewEnum.GuestPassConnect || view ===PortalViewEnum.GuestPassForgot)?
       GuestNetworkTypeEnum.GuestPass:
@@ -72,7 +72,8 @@ export default function PortalDemo ({
           GuestNetworkTypeEnum.HostApproval:GuestNetworkTypeEnum.ClickThrough
   useEffect(()=>{
     if(networkPreview){
-      setNetworkDisplayLang(getLanguage(demoValue.displayLang as keyof typeof PortalLanguageEnum))
+      setNetworkDisplayLang(getLanguage(
+        demoValue.displayLangCode as keyof typeof PortalLanguageEnum))
     }
   },[demoValue])
   const viewKeys = Object.keys(PortalViewEnum) as Array<keyof typeof PortalViewEnum>
@@ -88,7 +89,7 @@ export default function PortalDemo ({
     <div style={isPreview? { width: '100%', minWidth: 1100, height: '100%' } : {
       width: '95%', minWidth: 1100 }}>
       <UI.PopoverStyle />
-      {demoValue.componentDisplay.WiFi4EU && !demoValue.wifi4EU
+      {demoValue.componentDisplay.wifi4eu && !demoValue.wifi4EUNetworkId
         && <Alert style={{ width: 400, position: 'absolute', height: 30, left: 37, top: -33 }}
           message={$t(defineMessage({
             defaultMessage: 'WiFi4EU is enabled but not configured!' }))}
@@ -169,14 +170,14 @@ export default function PortalDemo ({
       </UI.LayoutHeader>
       <UI.LayoutContent id={networkPreview?'noid':'democontent'} $isPreview={isPreview}>
         {!isPreview&&<PortalBackground $isDesk={marked.desk}
-          backgroundColor={demoValue.backgroundColor}
+          backgroundColor={demoValue.bgColor}
           updateBackgroundImg={(data: string) =>
-            onChange?.({ ...demoValue, backgroundImage: data })}
+            onChange?.({ ...demoValue, bgImage: data })}
           updateBackgroundColor={(data: string) =>
-            onChange?.({ ...demoValue, backgroundColor: data })}/>}
+            onChange?.({ ...demoValue, bgColor: data })}/>}
         <UI.LayoutView $type={screen}
-          style={{ backgroundImage: 'url("'+(isPreview?value:demoValue)?.backgroundImage+'")',
-            backgroundColor: (isPreview?value:demoValue)?.backgroundColor }}>
+          style={{ backgroundImage: 'url("'+(isPreview?value:demoValue)?.bgImage+'")',
+            backgroundColor: (isPreview?value:demoValue)?.bgColor }}>
           {isPreview?<PortalViewContentPreview view={view}
             networkSocial={networkSocial}
             networkViewType={networkViewType}

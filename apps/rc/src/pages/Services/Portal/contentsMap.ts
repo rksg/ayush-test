@@ -20,11 +20,11 @@ export const portalViewTypes: Record<PortalViewEnum, MessageDescriptor> = {
 }
 
 export const portalComponentsValue: Record<PortalComponentsEnum, MessageDescriptor> = {
-  [PortalComponentsEnum.Logo]: defineMessage({ defaultMessage: 'Logo' }),
-  [PortalComponentsEnum.WelcomeText]: defineMessage({ defaultMessage: 'Welcome text' }),
-  [PortalComponentsEnum.Photo]: defineMessage({ defaultMessage: 'Photo' }),
-  [PortalComponentsEnum.SecondaryText]: defineMessage({ defaultMessage: 'Secondary text' }),
-  [PortalComponentsEnum.TermsConditions]: defineMessage({ defaultMessage: 'Terms & conditions' }),
-  [PortalComponentsEnum.PoweredBy]: defineMessage({ defaultMessage: 'Powered By' }),
-  [PortalComponentsEnum.WiFi4EU]: defineMessage({ defaultMessage: 'WiFi4EU Snippet' })
+  [PortalComponentsEnum.logo]: defineMessage({ defaultMessage: 'Logo' }),
+  [PortalComponentsEnum.welcome]: defineMessage({ defaultMessage: 'Welcome text' }),
+  [PortalComponentsEnum.photo]: defineMessage({ defaultMessage: 'Photo' }),
+  [PortalComponentsEnum.secondaryText]: defineMessage({ defaultMessage: 'Secondary text' }),
+  [PortalComponentsEnum.termsConditions]: defineMessage({ defaultMessage: 'Terms & conditions' }),
+  [PortalComponentsEnum.poweredBy]: defineMessage({ defaultMessage: 'Powered By' }),
+  [PortalComponentsEnum.wifi4eu]: defineMessage({ defaultMessage: 'WiFi4EU Snippet' })
 }

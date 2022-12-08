@@ -52,7 +52,7 @@ const PortalInstance = (props:{
       poweredImg: currentPortal?.demo.poweredImg || Powered,
       logo: currentPortal?.demo.logo || Logo,
       photo: currentPortal?.demo.photo || Photo,
-      wifi4EU: currentPortal?.demo.wifi4EU || WiFi4eu }
+      wifi4EUNetworkId: currentPortal?.demo.wifi4EUNetworkId || WiFi4eu }
     setDemoValue(tempValue)
     props.updatePortalData?.(tempValue)
   }
@@ -94,6 +94,7 @@ const PortalInstance = (props:{
               setPortalList([...portalList])
               setPortalData([...portalData])
               form.setFieldValue(['guestPortal','serviceId'], data.id || idNow+'')
+              props.updatePortalData?.(data.demo)
               setDemoValue(data.demo)
             }}/>
           </Form.Item>

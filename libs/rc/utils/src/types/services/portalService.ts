@@ -1,4 +1,4 @@
-import { Network } from './index'
+import { Network } from '../network'
 
 export interface Portal{
   id?: string
@@ -10,59 +10,60 @@ export interface Portal{
 export interface PortalNetwork extends Network{
 }
 export interface Demo{
-  backgroundColor: string
-  backgroundImage: string
+  bgColor: string
+  bgImage: string
   logo?: string
-  logoSize?: number
+  logoRatio?: number
   welcomeText: string
   welcomeSize: number
   welcomeColor: string
   photo?: string
-  photoSize?: number
+  photoRatio?: number
   secondaryText: string
   secondarySize?: number
   secondaryColor?: string
   buttonColor?:string
   termsCondition: string
-  poweredBackgroundColor:string
+  poweredBgColor:string
   poweredColor:string
   poweredSize:number
   poweredImg:string
-  poweredImgSize:number
-  wifi4EU: string
+  poweredImgRatio:number
+  wifi4EUNetworkId: string
   componentDisplay: { [key:string]:boolean }
-  displayLang: string
+  displayLangCode: string
+  alternativeLangCode?: string[]
   alternativeLang: { [key:string]:boolean }
 }
 export const defaultComDisplay = {
-  Logo: true,
-  WelcomeText: true,
-  Photo: true,
-  SecondaryText: true,
-  TermsConditions: false,
-  PoweredBy: true,
-  WiFi4EU: false
+  logo: true,
+  welcome: true,
+  photo: true,
+  secondaryText: true,
+  termsConditions: false,
+  poweredBy: true,
+  wifi4eu: false
 }
 export const defaultAlternativeLang = {
-  ChineseTraditional: false,
-  Czech: false,
-  English: false,
-  Finnish: false,
-  French: false,
-  German: false,
-  Greek: false,
-  Hungarian: false,
-  Italian: false,
-  Japanese: false,
-  Norwegian: false,
-  Polish: false,
-  PortuguesePortugal: false,
-  PortugueseBrazil: false,
-  Romanian: false,
-  Slovak: false,
-  Spanish: false,
-  Swedish: false,
-  Turkish: false
+  zh_TW: false,
+  cs: false,
+  en: false,
+  fi: false,
+  fr: false,
+  de: false,
+  el: false,
+  hu: false,
+  it: false,
+  ja: false,
+  no: false,
+  pl: false,
+  pt_PT: false,
+  pt_BR: false,
+  ro: false,
+  sk: false,
+  es: false,
+  sv: false,
+  tr: false
 }
 
 export interface PortalDetailInstances{

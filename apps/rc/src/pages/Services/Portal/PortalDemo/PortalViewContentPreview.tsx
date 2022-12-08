@@ -21,17 +21,17 @@ export default function PortalViewContentPreview (props:{
 }) {
   const { view, demoValue, networkViewType,networkSocial } = props
   const componentDisplay = demoValue?.componentDisplay
-  const isbg = demoValue?.backgroundImage ? 'true' : 'false'
+  const isbg = demoValue?.bgImage ? 'true' : 'false'
   return (
     <UI.LayoutViewContent isbg={isbg}>
-      {componentDisplay.WiFi4EU && <UI.Img src={Wifi4eu}
+      {componentDisplay.wifi4eu && <UI.Img src={Wifi4eu}
         alt={'Wifi4eu'}
         height={120} />}
-      {componentDisplay.Logo &&<UI.Img src={demoValue.logo}
+      {componentDisplay.logo &&<UI.Img src={demoValue.logo}
         alt={'Logo'}
-        style={{ height: (demoValue.logoSize||PortalDemoDefaultSize.logoSize) ,maxWidth: 425 }}
+        style={{ height: (demoValue.logoRatio||PortalDemoDefaultSize.logoRatio) ,maxWidth: 425 }}
       />}
-      {componentDisplay.WelcomeText && <div
+      {componentDisplay.welcome && <div
         style={{ minHeight: 25 * ((demoValue.welcomeSize)
           /PortalDemoDefaultSize.welcomeSize) , outline: 0,
         lineHeight: 20*((demoValue.welcomeSize)
@@ -40,12 +40,12 @@ export default function PortalViewContentPreview (props:{
           /PortalDemoDefaultSize.welcomeSize), maxWidth: 425, color: demoValue.welcomeColor,
         fontSize: (demoValue.welcomeSize) }}
       >{demoValue.welcomeText}</div>}
-      {componentDisplay.Photo &&<UI.Img src={demoValue.photo}
+      {componentDisplay.photo &&<UI.Img src={demoValue.photo}
         alt={'Photo png'}
-        style={{ height: (demoValue.photoSize||PortalDemoDefaultSize.photoSize) ,
+        style={{ height: (demoValue.photoRatio||PortalDemoDefaultSize.photoRatio) ,
           maxWidth: 425 }}
       />}
-      {componentDisplay.SecondaryText &&<UI.FieldText
+      {componentDisplay.secondaryText &&<UI.FieldText
         style={{ lineHeight: 16 * ((demoValue.secondarySize||
           PortalDemoDefaultSize.secondarySize)/PortalDemoDefaultSize.secondarySize)+'px' ,
         maxWidth: 425, color: demoValue.secondaryColor,
@@ -86,16 +86,16 @@ export default function PortalViewContentPreview (props:{
       <PortalViewTerms
         demoValue={demoValue}
         isPreview={true}/>}
-      {componentDisplay.TermsConditions &&<UI.FieldText>{
+      {componentDisplay.termsConditions &&<UI.FieldText>{
         'By clicking the connect button, you are accepting the'
       }&nbsp;&nbsp;
       <UI.FieldTextLink>
         {'terms & conditions'}
       </UI.FieldTextLink></UI.FieldText>}
-      {componentDisplay.PoweredBy && <UI.SelectedDiv style={{ paddingLeft: 200/((
-        demoValue.poweredImgSize)/PortalDemoDefaultSize.poweredImgSize) }}>
-        <div style={{ backgroundColor: demoValue.poweredBackgroundColor }}>
-          {componentDisplay.PoweredBy &&<UI.FieldText style={{
+      {componentDisplay.poweredBy && <UI.SelectedDiv style={{ paddingLeft: 200/((
+        demoValue.poweredImgRatio)/PortalDemoDefaultSize.poweredImgRatio) }}>
+        <div style={{ backgroundColor: demoValue.poweredBgColor }}>
+          {componentDisplay.poweredBy &&<UI.FieldText style={{
             fontSize: (demoValue.poweredSize),
             lineHeight: 24 * ((demoValue.poweredSize)
             /PortalDemoDefaultSize.poweredSize)+'px' ,
@@ -103,11 +103,11 @@ export default function PortalViewContentPreview (props:{
           }}
           >
             {'Powered By'}</UI.FieldText>}
-          {componentDisplay.PoweredBy && <UI.Img src={demoValue.poweredImg}
+          {componentDisplay.poweredBy && <UI.Img src={demoValue.poweredImg}
             alt={'Powered by'}
-            style={{ marginLeft: 40/(demoValue.poweredImgSize/PortalDemoDefaultSize.poweredImgSize),
-              height: demoValue.poweredImgSize,
-              maxWidth: 425
+            style={{ marginLeft:
+              40/(demoValue.poweredImgRatio/PortalDemoDefaultSize.poweredImgRatio),
+            height: demoValue.poweredImgRatio,maxWidth: 425
             }}
           ></UI.Img>}</div></UI.SelectedDiv>}
     </UI.LayoutViewContent>

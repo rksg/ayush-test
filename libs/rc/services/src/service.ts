@@ -272,7 +272,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           FetchBaseQueryError,
           FetchBaseQueryMeta
         >)
-        const result = await fetch(createHttpRequest(CommonUrlsInfo.getService, params))
+        const result = await fetch(createHttpRequest(PortalUrlsInfo.getPortal, params))
         return result as QueryReturnValue<Portal,
         FetchBaseQueryError,
         FetchBaseQueryMeta>

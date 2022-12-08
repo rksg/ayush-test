@@ -16,37 +16,37 @@ import PortalFormContext         from '../PortalForm/PortalFormContext'
 import PortalDemo from './index'
 
 const mockDemo = {
-  backgroundColor: 'var(--acx-primary-white)',
-  backgroundImage: '',
+  bgColor: 'var(--acx-primary-white)',
+  bgImage: '',
   welcomeText: 'Welcome to the Guest Access login page',
   welcomeColor: 'var(--acx-primary-black)',
   welcomeSize: PortalDemoDefaultSize.welcomeSize,
   photo: Photo,
-  photoSize: PortalDemoDefaultSize.photoSize,
+  photoRatio: PortalDemoDefaultSize.photoRatio,
   logo: Logo,
-  logoSize: PortalDemoDefaultSize.logoSize,
+  logoRatio: PortalDemoDefaultSize.logoRatio,
   secondaryText: 'Lorem ipsum dolor sit amet, '+
   'consectetur adipiscing elit. Aenean euismod bibendum laoreet.',
   secondaryColor: 'var(--acx-primary-black)',
   secondarySize: PortalDemoDefaultSize.secondarySize,
   buttonColor: 'var(--acx-accents-orange-50)',
-  poweredBackgroundColor: 'var(--acx-primary-white)',
+  poweredBgColor: 'var(--acx-primary-white)',
   poweredColor: 'var(--acx-primary-black)',
   poweredSize: PortalDemoDefaultSize.poweredSize,
   poweredImg: Powered,
-  poweredImgSize: PortalDemoDefaultSize.poweredImgSize,
-  wifi4EU: '',
+  poweredImgRatio: PortalDemoDefaultSize.poweredImgRatio,
+  wifi4EUNetworkId: '',
   termsCondition: '',
-  componentDisplay: { ...defaultComDisplay, WiFi4EU: true, TermsConditions: true },
-  displayLang: 'English',
+  componentDisplay: { ...defaultComDisplay, wifi4eu: true, termsConditions: true },
+  displayLangCode: 'en',
   alternativeLang: {
-    Czech: true,
-    ChineseTraditional: false,
-    Finnish: true,
-    French: true,
-    German: true,
-    Hungarian: true,
-    Italian: false
+    cs: true,
+    zh_TW: false,
+    fi: true,
+    fr: true,
+    de: true,
+    hu: true,
+    it: false
   }
 }
 

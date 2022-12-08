@@ -31,32 +31,32 @@ export default function PortalViewContent (props:{
   const [cursor, setCursor]=useState('none')
   const [outline, setOutline]=useState('none')
   const componentDisplay = demoValue.componentDisplay
-  const isbg = demoValue?.backgroundImage ? 'true' : 'false'
+  const isbg = demoValue?.bgImage ? 'true' : 'false'
   const [clicked, setClicked]=useState(false)
   const logoTools = <PortalImageTools
     url={demoValue.logo as string}
-    size={demoValue.logoSize as number}
-    defaultSize={PortalDemoDefaultSize.logoSize}
+    size={demoValue.logoRatio as number}
+    defaultSize={PortalDemoDefaultSize.logoRatio}
     showText={false}
     showColorPic={false}
     updateDemoImg={(data)=>{
-      updateViewContent({ ...demoValue, logo: data.url, logoSize: data.size,
-        componentDisplay: { ...demoValue.componentDisplay, Logo: data.show as boolean } })
+      updateViewContent({ ...demoValue, logo: data.url, logoRatio: data.size,
+        componentDisplay: { ...demoValue.componentDisplay, logo: data.show as boolean } })
     }}
   />
   return (
     <UI.LayoutViewContent isbg={isbg}>
-      {componentDisplay.WiFi4EU && <UI.Img src={Wifi4eu}
+      {componentDisplay.wifi4eu && <UI.Img src={Wifi4eu}
         alt={'Wifi4eu'}
         height={120} />}
-      {componentDisplay.Logo &&<PortalPopover
+      {componentDisplay.logo &&<PortalPopover
         content={logoTools}
         visible={clicked}
         onVisibleChange={(value)=>setClicked(value)}
       >
         <UI.Img src={demoValue.logo}
           alt={'Logo'}
-          style={{ height: (demoValue.logoSize||PortalDemoDefaultSize.logoSize),
+          style={{ height: (demoValue.logoRatio||PortalDemoDefaultSize.logoRatio),
             cursor: cursor, outline: outline,maxWidth: 425 }}
           onMouseOver={()=>{setCursor('pointer')
             setOutline(dashedOutline)}}
@@ -67,27 +67,27 @@ export default function PortalViewContent (props:{
             setClicked(true)
             setOutline(dashedOutline)}}
         /></PortalPopover>}
-      {componentDisplay.WelcomeText && <PortalWelcomeContent
+      {componentDisplay.welcome && <PortalWelcomeContent
         demoValue={demoValue}
         updateWelcome={(data)=>{
           updateViewContent({ ...demoValue, welcomeSize: data.size||demoValue.welcomeSize,
-            componentDisplay: { ...demoValue.componentDisplay, WelcomeText: data.show as boolean },
+            componentDisplay: { ...demoValue.componentDisplay, welcome: data.show as boolean },
             welcomeText: data.text||'',
             welcomeColor: data.color||demoValue.welcomeColor })}}
       />}
-      {componentDisplay.Photo &&
+      {componentDisplay.photo &&
         <PortalPhotoContent
           demoValue={demoValue}
           updatePhoto={(data)=>{
-            updateViewContent({ ...demoValue, photo: data.url, photoSize: data.size,
-              componentDisplay: { ...demoValue.componentDisplay, Photo: data.show as boolean } })}}
+            updateViewContent({ ...demoValue, photo: data.url, photoRatio: data.size,
+              componentDisplay: { ...demoValue.componentDisplay, photo: data.show as boolean } })}}
         />}
-      {componentDisplay.SecondaryText &&
+      {componentDisplay.secondaryText &&
         <PortalSecondaryTextContent
           demoValue={demoValue}
           updateSecText={(data)=>{
             updateViewContent({ ...demoValue, secondarySize: data.size, componentDisplay:
-              { ...demoValue.componentDisplay, SecondaryText: data.show as boolean },
+              { ...demoValue.componentDisplay, secondaryText: data.show as boolean },
             secondaryColor: data.color })}}
         />}
       {view === PortalViewEnum.ClickThrough && <PortalViewGoThrough
@@ -125,19 +125,19 @@ export default function PortalViewContent (props:{
       <PortalViewTerms demoValue={demoValue}
         updateBtn={(data)=>{
           updateViewContent({ ...demoValue, buttonColor: data.color })}}/>}
-      {componentDisplay.TermsConditions &&<UI.FieldText>{
+      {componentDisplay.termsConditions &&<UI.FieldText>{
         'By clicking the connect button, you are accepting the'
       }&nbsp;&nbsp;
       <UI.FieldTextLink>
         {'terms & conditions'}
       </UI.FieldTextLink></UI.FieldText>}
-      {componentDisplay.PoweredBy &&<PortalPoweredByContent
+      {componentDisplay.poweredBy &&<PortalPoweredByContent
         demoValue={demoValue}
         updatePoweredBy={(data)=>{
           updateViewContent({ ...demoValue, poweredImg: data.url||demoValue.poweredImg,
-            componentDisplay: { ...demoValue.componentDisplay, PoweredBy: data.show as boolean },
-            poweredImgSize: data.size||demoValue.poweredImgSize,
-            poweredBackgroundColor: data.bgcolor||demoValue.poweredBackgroundColor,
+            componentDisplay: { ...demoValue.componentDisplay, poweredBy: data.show as boolean },
+            poweredImgRatio: data.size||demoValue.poweredImgRatio,
+            poweredBgColor: data.bgcolor||demoValue.poweredBgColor,
             poweredColor: data.color||demoValue.poweredColor,
             poweredSize: data.textsize||demoValue.poweredSize })}}
       />}

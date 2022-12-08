@@ -156,14 +156,14 @@ export function PortalSummaryForm (props: {
             <div key={garden}>{garden}</div>)}
         />
       }
-      {portalData?.displayLang&&<Form.Item
+      {portalData?.displayLangCode&&<Form.Item
         label={$t({ defaultMessage: 'Portal Display Language:' })}
         children={$t({ defaultMessage: '{lang}' }, { lang:
-          getLanguage(portalData?.displayLang as keyof typeof PortalLanguageEnum) })}
+          getLanguage(portalData?.displayLangCode as keyof typeof PortalLanguageEnum) })}
       />}
-      {portalData?.componentDisplay?.WiFi4EU&&<Form.Item
+      {portalData?.componentDisplay?.wifi4eu&&<Form.Item
         label={$t({ defaultMessage: 'WiFi4EU Snippet:' })}
-        children={portalData?.componentDisplay?.WiFi4EU?
+        children={portalData?.componentDisplay?.wifi4eu?
           $t({ defaultMessage: 'ON' }):$t({ defaultMessage: 'OFF' })}
       />}
     </>
