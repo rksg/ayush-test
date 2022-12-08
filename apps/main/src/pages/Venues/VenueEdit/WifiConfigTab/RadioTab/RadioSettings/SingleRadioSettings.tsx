@@ -75,6 +75,7 @@ export function SingleRadioSettings (props:{
 
   const [groupSize, setGroupSize] = useState(1)
   const [oldBandwidth, setOldBandwidth] = useState<string>()
+  const [oldCombinChannels, setOldCombinChannels] = useState<boolean>()
   const [channelErrMsg, setChannelErrMsg] = useState<string>()
   const [indoorChannelErrMsg, setIndoorChannelErrMsg] = useState<string>()
   const [outdoorChannelErrMsg, setOutdoorChannelErrMsg] = useState<string>()
@@ -204,6 +205,7 @@ export function SingleRadioSettings (props:{
         outdoorChBars.dfsChannels = availableDfsChannels
         setOutdoorChannelBars(outdoorChBars)
 
+        // the bandwidth value is changed
         if (oldBandwidth !== bandwidth) {
           if (oldBandwidth) {
             form.setFieldValue(allowedIndoorChannelsFieldName, availableIndoorChannels)
@@ -211,10 +213,18 @@ export function SingleRadioSettings (props:{
           }
           setOldBandwidth(bandwidth)
         }
+
+        // the combinChannels value is changed
+        if (allowIndoorForOutdoor && oldCombinChannels !== combinChannels) {
+          if (combinChannels === false) {
+            form.setFieldValue(allowedOutdoorChannelsFieldName, availableOutdoorChannels)
+          }
+          setOldCombinChannels(combinChannels)
+        }
       }
     }
 
-  }, [supportChannels, channelBandwidth, radioType])
+  }, [supportChannels, channelBandwidth, radioType, allowIndoorForOutdoor, combinChannels])
 
   useEffect(() => {
     const validateChannels = (channelList: string[]) => {

@@ -3553,6 +3553,7 @@ exports[`RadioSettingsTab should render correctly with Auto bandwidth 1`] = `
                           </div>
                           <div
                             class="ant-tabs-ink-bar ant-tabs-ink-bar-animated"
+                            style="left: 0px; width: 1280px;"
                           />
                         </div>
                       </div>
@@ -3899,7 +3900,7 @@ exports[`RadioSettingsTab should render correctly with Auto bandwidth 1`] = `
                                       class="ant-form-item-control-input-content"
                                     >
                                       <div
-                                        class="ant-checkbox-group styledComponents__CheckboxGroup-sc-a5e24y-3 gRZSfg group-1"
+                                        class="ant-checkbox-group styledComponents__CheckboxGroup-sc-a5e24y-3 crslfK group-1"
                                         id="0_apRadioParams24G_allowedChannels"
                                       >
                                         <label
@@ -4404,7 +4405,9 @@ exports[`RadioSettingsTab should render correctly with Auto bandwidth 1`] = `
                                 >
                                   <span
                                     id="0_radioParams50G_channelBandwidth"
-                                  />
+                                  >
+                                    Auto
+                                  </span>
                                 </div>
                               </div>
                             </div>
@@ -4466,10 +4469,9 @@ exports[`RadioSettingsTab should render correctly with Auto bandwidth 1`] = `
                           <div>
                             <button
                               ant-click-animating-without-extra-node="false"
-                              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__BarButton-sc-a5e24y-4 styledComponents__Button5G-sc-a5e24y-5 iICpmb eOGJcb"
-                              data-testid="lower5GButton"
+                              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__BarButton-sc-a5e24y-4 styledComponents__BarButton5G-sc-a5e24y-5 iICpmb YcLbK"
                               disabled=""
-                              style="width: 234px;"
+                              style="width: 250px;"
                               type="button"
                             >
                               <span>
@@ -4478,10 +4480,9 @@ exports[`RadioSettingsTab should render correctly with Auto bandwidth 1`] = `
                             </button>
                             <button
                               ant-click-animating-without-extra-node="false"
-                              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__BarButton-sc-a5e24y-4 styledComponents__Button5G-sc-a5e24y-5 iICpmb eOGJcb"
-                              data-testid="upper5GButton"
+                              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__BarButton-sc-a5e24y-4 styledComponents__BarButton5G-sc-a5e24y-5 iICpmb YcLbK"
                               disabled=""
-                              style="width: 474px;"
+                              style="width: 506px;"
                               type="button"
                             >
                               <span>
@@ -4491,10 +4492,9 @@ exports[`RadioSettingsTab should render correctly with Auto bandwidth 1`] = `
                           </div>
                           <button
                             ant-click-animating-without-extra-node="false"
-                            class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__BarButton-sc-a5e24y-4 styledComponents__ButtonDFS-sc-a5e24y-6 iICpmb lkAuIw"
-                            data-testid="dfsButton"
+                            class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__BarButton-sc-a5e24y-4 styledComponents__BarButtonDFS-sc-a5e24y-6 iICpmb iZSRbR"
                             disabled=""
-                            style="width: 474px; left: 120px;"
+                            style="width: 506px; left: 128px;"
                             type="button"
                           >
                             <span>
@@ -4524,7 +4524,7 @@ exports[`RadioSettingsTab should render correctly with Auto bandwidth 1`] = `
                                         class="ant-form-item-control-input-content"
                                       >
                                         <div
-                                          class="ant-checkbox-group styledComponents__CheckboxGroup-sc-a5e24y-3 gRZSfg group-4"
+                                          class="ant-checkbox-group styledComponents__CheckboxGroup-sc-a5e24y-3 crslfK group-1"
                                           id="0_radioParams50G_allowedChannels"
                                         >
                                           <label
@@ -4551,12 +4551,84 @@ exports[`RadioSettingsTab should render correctly with Auto bandwidth 1`] = `
                                                 <span>
                                                   36
                                                 </span>
+                                              </span>
+                                            </span>
+                                          </label>
+                                          <label
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                          >
+                                            <span
+                                              class="ant-checkbox ant-checkbox-disabled"
+                                            >
+                                              <input
+                                                checked=""
+                                                class="ant-checkbox-input"
+                                                disabled=""
+                                                type="checkbox"
+                                                value="40"
+                                              />
+                                              <span
+                                                class="ant-checkbox-inner"
+                                              />
+                                            </span>
+                                            <span>
+                                              <span
+                                                class="channels"
+                                              >
                                                 <span>
                                                   40
                                                 </span>
+                                              </span>
+                                            </span>
+                                          </label>
+                                          <label
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                          >
+                                            <span
+                                              class="ant-checkbox ant-checkbox-disabled"
+                                            >
+                                              <input
+                                                checked=""
+                                                class="ant-checkbox-input"
+                                                disabled=""
+                                                type="checkbox"
+                                                value="44"
+                                              />
+                                              <span
+                                                class="ant-checkbox-inner"
+                                              />
+                                            </span>
+                                            <span>
+                                              <span
+                                                class="channels"
+                                              >
                                                 <span>
                                                   44
                                                 </span>
+                                              </span>
+                                            </span>
+                                          </label>
+                                          <label
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                          >
+                                            <span
+                                              class="ant-checkbox ant-checkbox-disabled"
+                                            >
+                                              <input
+                                                checked=""
+                                                class="ant-checkbox-input"
+                                                disabled=""
+                                                type="checkbox"
+                                                value="48"
+                                              />
+                                              <span
+                                                class="ant-checkbox-inner"
+                                              />
+                                            </span>
+                                            <span>
+                                              <span
+                                                class="channels"
+                                              >
                                                 <span>
                                                   48
                                                 </span>
@@ -4587,12 +4659,84 @@ exports[`RadioSettingsTab should render correctly with Auto bandwidth 1`] = `
                                                 <span>
                                                   52
                                                 </span>
+                                              </span>
+                                            </span>
+                                          </label>
+                                          <label
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                          >
+                                            <span
+                                              class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
+                                            >
+                                              <input
+                                                checked=""
+                                                class="ant-checkbox-input"
+                                                disabled=""
+                                                type="checkbox"
+                                                value="56"
+                                              />
+                                              <span
+                                                class="ant-checkbox-inner"
+                                              />
+                                            </span>
+                                            <span>
+                                              <span
+                                                class="channels"
+                                              >
                                                 <span>
                                                   56
                                                 </span>
+                                              </span>
+                                            </span>
+                                          </label>
+                                          <label
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                          >
+                                            <span
+                                              class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
+                                            >
+                                              <input
+                                                checked=""
+                                                class="ant-checkbox-input"
+                                                disabled=""
+                                                type="checkbox"
+                                                value="60"
+                                              />
+                                              <span
+                                                class="ant-checkbox-inner"
+                                              />
+                                            </span>
+                                            <span>
+                                              <span
+                                                class="channels"
+                                              >
                                                 <span>
                                                   60
                                                 </span>
+                                              </span>
+                                            </span>
+                                          </label>
+                                          <label
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                          >
+                                            <span
+                                              class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
+                                            >
+                                              <input
+                                                checked=""
+                                                class="ant-checkbox-input"
+                                                disabled=""
+                                                type="checkbox"
+                                                value="64"
+                                              />
+                                              <span
+                                                class="ant-checkbox-inner"
+                                              />
+                                            </span>
+                                            <span>
+                                              <span
+                                                class="channels"
+                                              >
                                                 <span>
                                                   64
                                                 </span>
@@ -4623,12 +4767,84 @@ exports[`RadioSettingsTab should render correctly with Auto bandwidth 1`] = `
                                                 <span>
                                                   100
                                                 </span>
+                                              </span>
+                                            </span>
+                                          </label>
+                                          <label
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                          >
+                                            <span
+                                              class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
+                                            >
+                                              <input
+                                                checked=""
+                                                class="ant-checkbox-input"
+                                                disabled=""
+                                                type="checkbox"
+                                                value="104"
+                                              />
+                                              <span
+                                                class="ant-checkbox-inner"
+                                              />
+                                            </span>
+                                            <span>
+                                              <span
+                                                class="channels"
+                                              >
                                                 <span>
                                                   104
                                                 </span>
+                                              </span>
+                                            </span>
+                                          </label>
+                                          <label
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                          >
+                                            <span
+                                              class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
+                                            >
+                                              <input
+                                                checked=""
+                                                class="ant-checkbox-input"
+                                                disabled=""
+                                                type="checkbox"
+                                                value="108"
+                                              />
+                                              <span
+                                                class="ant-checkbox-inner"
+                                              />
+                                            </span>
+                                            <span>
+                                              <span
+                                                class="channels"
+                                              >
                                                 <span>
                                                   108
                                                 </span>
+                                              </span>
+                                            </span>
+                                          </label>
+                                          <label
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                          >
+                                            <span
+                                              class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
+                                            >
+                                              <input
+                                                checked=""
+                                                class="ant-checkbox-input"
+                                                disabled=""
+                                                type="checkbox"
+                                                value="112"
+                                              />
+                                              <span
+                                                class="ant-checkbox-inner"
+                                              />
+                                            </span>
+                                            <span>
+                                              <span
+                                                class="channels"
+                                              >
                                                 <span>
                                                   112
                                                 </span>
@@ -4659,12 +4875,84 @@ exports[`RadioSettingsTab should render correctly with Auto bandwidth 1`] = `
                                                 <span>
                                                   116
                                                 </span>
+                                              </span>
+                                            </span>
+                                          </label>
+                                          <label
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                          >
+                                            <span
+                                              class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
+                                            >
+                                              <input
+                                                checked=""
+                                                class="ant-checkbox-input"
+                                                disabled=""
+                                                type="checkbox"
+                                                value="120"
+                                              />
+                                              <span
+                                                class="ant-checkbox-inner"
+                                              />
+                                            </span>
+                                            <span>
+                                              <span
+                                                class="channels"
+                                              >
                                                 <span>
                                                   120
                                                 </span>
+                                              </span>
+                                            </span>
+                                          </label>
+                                          <label
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                          >
+                                            <span
+                                              class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
+                                            >
+                                              <input
+                                                checked=""
+                                                class="ant-checkbox-input"
+                                                disabled=""
+                                                type="checkbox"
+                                                value="124"
+                                              />
+                                              <span
+                                                class="ant-checkbox-inner"
+                                              />
+                                            </span>
+                                            <span>
+                                              <span
+                                                class="channels"
+                                              >
                                                 <span>
                                                   124
                                                 </span>
+                                              </span>
+                                            </span>
+                                          </label>
+                                          <label
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                          >
+                                            <span
+                                              class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
+                                            >
+                                              <input
+                                                checked=""
+                                                class="ant-checkbox-input"
+                                                disabled=""
+                                                type="checkbox"
+                                                value="128"
+                                              />
+                                              <span
+                                                class="ant-checkbox-inner"
+                                              />
+                                            </span>
+                                            <span>
+                                              <span
+                                                class="channels"
+                                              >
                                                 <span>
                                                   128
                                                 </span>
@@ -4695,12 +4983,84 @@ exports[`RadioSettingsTab should render correctly with Auto bandwidth 1`] = `
                                                 <span>
                                                   132
                                                 </span>
+                                              </span>
+                                            </span>
+                                          </label>
+                                          <label
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                          >
+                                            <span
+                                              class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
+                                            >
+                                              <input
+                                                checked=""
+                                                class="ant-checkbox-input"
+                                                disabled=""
+                                                type="checkbox"
+                                                value="136"
+                                              />
+                                              <span
+                                                class="ant-checkbox-inner"
+                                              />
+                                            </span>
+                                            <span>
+                                              <span
+                                                class="channels"
+                                              >
                                                 <span>
                                                   136
                                                 </span>
+                                              </span>
+                                            </span>
+                                          </label>
+                                          <label
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                          >
+                                            <span
+                                              class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
+                                            >
+                                              <input
+                                                checked=""
+                                                class="ant-checkbox-input"
+                                                disabled=""
+                                                type="checkbox"
+                                                value="140"
+                                              />
+                                              <span
+                                                class="ant-checkbox-inner"
+                                              />
+                                            </span>
+                                            <span>
+                                              <span
+                                                class="channels"
+                                              >
                                                 <span>
                                                   140
                                                 </span>
+                                              </span>
+                                            </span>
+                                          </label>
+                                          <label
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                          >
+                                            <span
+                                              class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
+                                            >
+                                              <input
+                                                checked=""
+                                                class="ant-checkbox-input"
+                                                disabled=""
+                                                type="checkbox"
+                                                value="144"
+                                              />
+                                              <span
+                                                class="ant-checkbox-inner"
+                                              />
+                                            </span>
+                                            <span>
+                                              <span
+                                                class="channels"
+                                              >
                                                 <span>
                                                   144
                                                 </span>
@@ -4731,12 +5091,84 @@ exports[`RadioSettingsTab should render correctly with Auto bandwidth 1`] = `
                                                 <span>
                                                   149
                                                 </span>
+                                              </span>
+                                            </span>
+                                          </label>
+                                          <label
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                          >
+                                            <span
+                                              class="ant-checkbox ant-checkbox-disabled"
+                                            >
+                                              <input
+                                                checked=""
+                                                class="ant-checkbox-input"
+                                                disabled=""
+                                                type="checkbox"
+                                                value="153"
+                                              />
+                                              <span
+                                                class="ant-checkbox-inner"
+                                              />
+                                            </span>
+                                            <span>
+                                              <span
+                                                class="channels"
+                                              >
                                                 <span>
                                                   153
                                                 </span>
+                                              </span>
+                                            </span>
+                                          </label>
+                                          <label
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                          >
+                                            <span
+                                              class="ant-checkbox ant-checkbox-disabled"
+                                            >
+                                              <input
+                                                checked=""
+                                                class="ant-checkbox-input"
+                                                disabled=""
+                                                type="checkbox"
+                                                value="157"
+                                              />
+                                              <span
+                                                class="ant-checkbox-inner"
+                                              />
+                                            </span>
+                                            <span>
+                                              <span
+                                                class="channels"
+                                              >
                                                 <span>
                                                   157
                                                 </span>
+                                              </span>
+                                            </span>
+                                          </label>
+                                          <label
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                          >
+                                            <span
+                                              class="ant-checkbox ant-checkbox-disabled"
+                                            >
+                                              <input
+                                                checked=""
+                                                class="ant-checkbox-input"
+                                                disabled=""
+                                                type="checkbox"
+                                                value="161"
+                                              />
+                                              <span
+                                                class="ant-checkbox-inner"
+                                              />
+                                            </span>
+                                            <span>
+                                              <span
+                                                class="channels"
+                                              >
                                                 <span>
                                                   161
                                                 </span>
