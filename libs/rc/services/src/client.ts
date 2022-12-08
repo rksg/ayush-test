@@ -56,36 +56,6 @@ export const clientApi = baseClientApi.injectEndpoints({
           : { error: clientListQuery.error as FetchBaseQueryError }
       }
     }),
-    getGuestsList: build.query<TableResult<Guest>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(
-          CommonUrlsInfo.getGuestsList,
-          params
-        )
-        return {
-          ...req,
-          body: payload
-        }
-      },
-      providesTags: [{ type: 'Guest', id: 'LIST' }]
-    }),
-    getClientDetails: build.query<Client, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(ClientUrlsInfo.getClientDetails, params)
-        return {
-          ...req
-        }
-      }
-    }),
-    getDpskPassphraseByQuery: build.query<DpskPassphrase, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getDpskPassphraseByQuery, params)
-        return{
-          ...req,
-          body: payload
-        }
-      }
-    }),
     getHistoricalClientList: build.query<TableResult<Client>, RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
         const clientDetails = {
@@ -115,6 +85,36 @@ export const clientApi = baseClientApi.injectEndpoints({
               }
             })
           }
+        }
+      }
+    }),
+    getGuestsList: build.query<TableResult<Guest>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          CommonUrlsInfo.getGuestsList,
+          params
+        )
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Guest', id: 'LIST' }]
+    }),
+    getClientDetails: build.query<Client, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(ClientUrlsInfo.getClientDetails, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    getDpskPassphraseByQuery: build.query<DpskPassphrase, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getDpskPassphraseByQuery, params)
+        return{
+          ...req,
+          body: payload
         }
       }
     })
