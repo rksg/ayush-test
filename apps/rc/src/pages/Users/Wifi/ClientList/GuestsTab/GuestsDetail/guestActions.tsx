@@ -3,10 +3,9 @@ import { IntlShape, RawIntlProvider, useIntl } from 'react-intl'
 
 import { cssStr, showActionModal, showToast } from '@acx-ui/components'
 import {
-  useDownloadApLogMutation,
+  useGetGuestsMutation,
   useEnableGuestsMutation,
   useDisableGuestsMutation,
-  useRebootApMutation,
 
   useDeleteGuestsMutation
 } from '@acx-ui/rc/services'
@@ -14,13 +13,16 @@ import {
   Guest
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
+import moment from 'moment'
+import saveAs from 'file-saver'
 
 
 
 export function useGuestActions () {
   const { $t } = useIntl()
-  const [ downloadApLog ] = useDownloadApLogMutation()
-  const [ rebootAp ] = useRebootApMutation()
+  // const [ downloadApLog ] = useDownloadApLogMutation()
+  const[ getGuests ] = useGetGuestsMutation()
+  // const [ rebootAp ] = useRebootApMutation()
   const [deleteGuests] = useDeleteGuestsMutation()
   const [enableGuests] = useEnableGuestsMutation()
   const [disableGuests] = useDisableGuestsMutation()
@@ -54,38 +56,35 @@ export function useGuestActions () {
   // }
 
 
-  // const showDownloadApLog = ( serialNumber: string, tenantId?: string, callBack?: ()=>void ) => {
-  //   const toastKey = showToast({
-  //     type: 'info',
-  //     closable: false,
-  //     extraContent: <div style={{ width: '60px' }}>
-  //       <Loading3QuartersOutlined spin
-  //         style={{ margin: 0, fontSize: '18px', color: cssStr('--acx-primary-white') }}/>
-  //     </div>,
-  //     content: $t({ defaultMessage: 'Preparing log ...' })
-  //   })
+  const showDownloadInformation = (guest: Guest, tenantId?: string) => {
+    const dateFormat = 'yyyy/MM/dd HH:mm' //TODO: Wait for User profile
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+    const guestIds = [guest.id]
 
-  //   downloadApLog({ params: { tenantId, serialNumber } })
-  //     .unwrap().then((result) => {
-  //       showToast({
-  //         key: toastKey,
-  //         type: 'success',
-  //         content: $t({ defaultMessage: 'Log is ready.' })
-  //       })
 
-  //       const timeString = moment().format('DDMMYYYY-HHmm')
-  //       saveAs(result.fileURL, `SupportLog_${serialNumber}_${timeString}.log.gz`) //TODO: CORS policy
+    getGuests({ params: { tenantId }, payload: { dateFormat, timezone, guestIds } })
+      .unwrap().then((result) => {
+        let fileName = result
+        // .headers.get('content-disposition');
+        // fileName = fileName.split('filename=')[1];
+        // fileName = fileName.substring(1, fileName.length - 1);
+        // const timeString = moment().format('DDMMYYYY-HHmm')
+        // saveAs(result.fileURL, `Guests Information ${'test'}.log.gz`) //TODO: CORS policy
 
-  //       callBack && callBack()
-  //     })
-  //     .catch(() => {
-  //       showToast({
-  //         key: toastKey,
-  //         type: 'error',
-  //         content: $t({ defaultMessage: 'Failed to download AP support log.' })
-  //       })
-  //     })
-  // }
+        // const url = window.URL.createObjectURL(new Blob([fileName.data]))
+        // const link = document.createElement('a')
+        // link.href = url
+        // link.setAttribute('download', 'test.csv')
+        // document.body.appendChild(link)
+        // link.click()
+      })
+      .catch(() => {
+        showToast({
+          type: 'error',
+          content: $t({ defaultMessage: 'Failed to download Information.' })
+        })
+      })
+  }
 
   const showDeleteGuest = async (guest: Guest, tenantId?: string, callBack?: ()=>void) => {
     showActionModal({
@@ -105,7 +104,7 @@ export function useGuestActions () {
   }
 
   const disableGuest = async (guest: Guest, tenantId?: string) => {
-    enableGuests({ params: { tenantId, guestId: guest.id } })
+    disableGuests({ params: { tenantId, guestId: guest.id } })
   }
 
   const enableGuest = async (guest: Guest, tenantId?: string) => {
@@ -173,6 +172,7 @@ export function useGuestActions () {
     // showDownloadApLog,
     // showRebootAp,
     // showBlinkLedAp,
+    showDownloadInformation,
     disableGuest,
     enableGuest,
     showDeleteGuest

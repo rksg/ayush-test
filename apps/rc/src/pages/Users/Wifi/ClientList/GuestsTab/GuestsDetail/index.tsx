@@ -181,6 +181,9 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
       case 'disableGuest':
         guestAction.disableGuest(guestDetail, tenantId)
         break
+      case 'downloadInformation':
+        guestAction.showDownloadInformation(guestDetail, tenantId)
+        break
       default:
         break
     }

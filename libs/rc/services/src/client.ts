@@ -71,6 +71,7 @@ export const clientApi = baseClientApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Guest', id: 'LIST' }],
+      keepUnusedDataFor: 0,
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           showActivityMessage(msg,
@@ -110,6 +111,30 @@ export const clientApi = baseClientApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Guest', id: 'LIST' }]
+    }),
+    getGuests: build.mutation<{ data: BlobPart }, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(ClientUrlsInfo.getGuests, params)
+        return {
+          ...req,
+          responseHandler: async (response) => {
+            response.blob().then(myBlob => {
+              const file = new File([myBlob], 'test.csv')
+
+              const link = document.createElement('a')
+              link.href = URL.createObjectURL(file)
+              link.setAttribute('download', 'test')
+              document.body.appendChild(link)
+              link.click()
+            })
+          },
+          body: payload,
+          headers: {
+            'Content-Type': 'application/json',
+            'accept': 'application/json,text/plain,*/*'
+          }
+        }
+      }
     }),
     getClientDetails: build.query<Client, RequestPayload>({
       query: ({ params }) => {
@@ -200,6 +225,7 @@ export const {
   useLazyGetHistoricalClientListQuery,
   useGetClientListQuery,
   useGetGuestsListQuery,
+  useGetGuestsMutation,
   useDeleteGuestsMutation,
   useEnableGuestsMutation,
   useDisableGuestsMutation
