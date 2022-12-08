@@ -6,38 +6,23 @@ import { useIntl }                                        from 'react-intl'
 
 import { Drawer, showToast }                   from '@acx-ui/components'
 import { useUpdateRadiusClientConfigMutation } from '@acx-ui/rc/services'
+import { ClientConfig }                        from '@acx-ui/rc/utils'
 
 interface IpAddressDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
   editMode: boolean
+  clientConfig: ClientConfig
 }
 
 export function IpAddressDrawer (props: IpAddressDrawerProps) {
   const { $t } = useIntl()
-  const { visible, setVisible, editMode } = props
+  const { visible, setVisible, editMode, clientConfig } = props
   const [form] = Form.useForm()
   const [addType, setAddType ] = useState(1)
   const [resetField, setResetField] = useState(false)
   const [updateConfig] = useUpdateRadiusClientConfigMutation()
-
-  const onSubmit = async (data: any) => {
-    try {
-      const payload = {
-        ipAddress: [data.singleIpAddress]
-      }
-      await updateConfig(
-        {
-          payload
-        }).unwrap()
-      form.resetFields()
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
-    }
-  }
+  const [singleIpAddress, setSingleIpAddress] = useState('')
 
   const resetFields = () => {
     setResetField(true)
@@ -58,10 +43,26 @@ export function IpAddressDrawer (props: IpAddressDrawerProps) {
         save: editMode ? $t({ defaultMessage: 'Save' }) : $t({ defaultMessage: 'Add' })
       })}
       onSave={async (addAnotherRuleChecked: boolean) => {
-        form.submit()
-        // if (!addAnotherRuleChecked) {
-        //   onClose()
-        // }
+        try {
+          await form.validateFields()
+          try {
+            const payload = {
+              ipAddress: clientConfig.ipAddress?.concat(singleIpAddress)
+            }
+            await updateConfig({ payload }).unwrap()
+            form.resetFields()
+          } catch {
+            showToast({
+              type: 'error',
+              content: $t({ defaultMessage: 'An error occurred' })
+            })
+          }
+          if (!addAnotherRuleChecked) {
+            onClose()
+          }
+        } catch (error) {
+          console.log(error) // eslint-disable-line no-console
+        }
       }}
     />
   )
@@ -70,12 +71,21 @@ export function IpAddressDrawer (props: IpAddressDrawerProps) {
     setAddType(e.target.value)
   }
 
-  const content = <Form layout='vertical' form={form} onFinish={onSubmit}>
+  const ipAddressRegExp = (value: string) =>{
+    // eslint-disable-next-line max-len
+    const REG = new RegExp(/((^\s*((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))\s*$)|(^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$))/)
+    if (value && !REG.test(value)) {
+      return Promise.reject($t({ defaultMessage: 'Invalid IP address format' }))
+    }
+    return Promise.resolve()
+  }
+
+  const content = <Form layout='vertical' form={form}>
     <Form.Item name='addressType' initialValue={1}>
       <Radio.Group value={addType} onChange={onRadioChange}>
         <Space direction='vertical'>
           <Radio value={1}>{$t({ defaultMessage: 'Single IP Address' })}</Radio>
-          <Radio value={2}>{$t({ defaultMessage: 'IP Address Range' })}</Radio>
+          <Radio value={2} disabled>{$t({ defaultMessage: 'IP Address Range' })}</Radio>
         </Space>
       </Radio.Group>
     </Form.Item>
@@ -86,9 +96,11 @@ export function IpAddressDrawer (props: IpAddressDrawerProps) {
             name='singleIpAddress'
             label='IP Address'
             rules={[
-              { required: true, message: $t({ defaultMessage: 'Please enter ip address' }) }
+              { required: true, message: $t({ defaultMessage: 'Please enter ip address' }) },
+              { validator: (_, value) => ipAddressRegExp(value) }
             ]}
-            children={<Input/>}/>
+            children={<Input value={singleIpAddress}
+              onChange={(e) => setSingleIpAddress(e.target.value)}/>}/>
         </Col>
       </Row>
     }
@@ -118,7 +130,6 @@ export function IpAddressDrawer (props: IpAddressDrawerProps) {
 
   return (
     <Drawer
-      //eslint-disable-next-line max-len
       title={$t({ defaultMessage: 'Add Incoming IP Address' })}
       visible={visible}
       onClose={() => setVisible(false)}
