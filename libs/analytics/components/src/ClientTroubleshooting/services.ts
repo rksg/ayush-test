@@ -1,7 +1,7 @@
 import { gql } from 'graphql-request'
 
 import { dataApi }        from '@acx-ui/analytics/services'
-import { incidentCodes  } from '@acx-ui/analytics/utils'
+import { incidentCodes, Incident  } from '@acx-ui/analytics/utils'
 import { DateFilter }     from '@acx-ui/utils'
 
 export type ConnectionEvent = {
@@ -18,7 +18,7 @@ export type ClientInfoData = {
   connectionDetailsByAp: object[]
   connectionEvents: ConnectionEvent[]
   connectionQualities: object[]
-  incidents: object[]
+  incidents: Incident[]
 }
 interface Response <ClientInfoData> {
     client: ClientInfoData

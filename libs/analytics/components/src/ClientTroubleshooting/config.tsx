@@ -5,7 +5,9 @@ import { formatter }        from '@acx-ui/utils'
 import {
   categoryOptions,
   mapCodeToFailureText,
-  clientEventDescription
+  clientEventDescription,
+  Incident,
+  shortDescription
 } from '@acx-ui/analytics/utils'
 
 import { ConnectionEvent } from './services'
