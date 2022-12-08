@@ -87,7 +87,7 @@ export const GuestClient = {
       guestStatus: 'Disabled',
       notes: '',
       maxNumberOfClients: 3
-    },
+    }
   ]
 }
 

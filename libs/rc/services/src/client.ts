@@ -77,7 +77,7 @@ export const clientApi = baseClientApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           showActivityMessage(msg,
-            [ 
+            [
               'RegeneratePass',
               'DisableGuest',
               'EnableGuest'

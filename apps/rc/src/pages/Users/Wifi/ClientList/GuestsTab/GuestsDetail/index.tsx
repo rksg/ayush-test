@@ -5,6 +5,7 @@ import moment                                              from 'moment-timezone
 import { useIntl }                                         from 'react-intl'
 
 import { Button, cssStr, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
 import { ArrowExpand }                       from '@acx-ui/icons'
 import { useGetGuestsListQuery }             from '@acx-ui/rc/services'
 import {
@@ -21,11 +22,9 @@ import {
   renderExpires,
   renderGuestType
 } from '../GuestsTable'
-import { DrawerFormItem } from '../styledComponents'
 
 import { GenerateNewPasswordModal } from './generateNewPasswordModal'
 import { useGuestActions }          from './guestActions'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 
 interface GuestDetailsDrawerProps {

@@ -1,5 +1,4 @@
-import { Form } from 'antd'
-import styled   from 'styled-components/macro'
+import styled from 'styled-components/macro'
 
 import { MobilePhoneOutlined, EnvelopClosedOutlined, PrinterOutlined } from '@acx-ui/icons'
 
@@ -13,7 +12,6 @@ export const MobilePhoneOutlinedIcon = styled(MobilePhoneOutlined)`
   height: 24px;
   margin-right: 5px;
 `
-
 
 export const EnvelopClosedOutlinedIcon = styled(EnvelopClosedOutlined)`
   width: 24px;

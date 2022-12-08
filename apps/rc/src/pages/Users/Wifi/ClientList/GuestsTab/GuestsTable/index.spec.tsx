@@ -1,5 +1,7 @@
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
+import { useIsSplitOn }       from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
 import { Provider }           from '@acx-ui/store'
 import {
@@ -15,8 +17,6 @@ import { GuestClient, GuestNetworkList } from '../../../__tests__/fixtures'
 
 
 import GuestsTable from '.'
-import userEvent from '@testing-library/user-event'
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
 
 jest.mock('socket.io-client')
 
@@ -31,7 +31,7 @@ describe('Guest Table', () => {
         (req, res, ctx) => res(ctx.json(GuestClient))
       ),
       rest.post(
-        CommonUrlsInfo.getVMNetworksList.url, 
+        CommonUrlsInfo.getVMNetworksList.url,
         (req, res, ctx) => res(ctx.json(GuestNetworkList))
       )
     )
@@ -127,7 +127,7 @@ describe('Guest Table', () => {
         <GuestsTable />
       </Provider>, {
         route: { params, path: '/:tenantId/users/wifi/guests' },
-         wrapper: Provider
+        wrapper: Provider
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
@@ -144,7 +144,7 @@ describe('Guest Table', () => {
         <GuestsTable />
       </Provider>, {
         route: { params, path: '/:tenantId/users/wifi/guests' },
-         wrapper: Provider
+        wrapper: Provider
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
@@ -161,7 +161,7 @@ describe('Guest Table', () => {
         <GuestsTable />
       </Provider>, {
         route: { params, path: '/:tenantId/users/wifi/guests' },
-         wrapper: Provider
+        wrapper: Provider
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
@@ -181,7 +181,7 @@ describe('Guest Table', () => {
         <GuestsTable />
       </Provider>, {
         route: { params, path: '/:tenantId/users/wifi/guests' },
-         wrapper: Provider
+        wrapper: Provider
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
@@ -192,13 +192,13 @@ describe('Guest Table', () => {
     fireEvent.click(await screen.findByText(/generate new password/i))
     fireEvent.click(screen.getByRole('checkbox', {
       name: /send to phone/i
-    })) 
+    }))
     fireEvent.click(screen.getByRole('checkbox', {
       name: /send to phone/i
-    })) 
+    }))
     fireEvent.click(screen.getByRole('checkbox', {
       name: /send to email/i
-    })) 
+    }))
     const generateButton = screen.getByRole('button', { name: /generate/i })
     await userEvent.click(generateButton)
 
@@ -210,7 +210,7 @@ describe('Guest Table', () => {
         <GuestsTable />
       </Provider>, {
         route: { params, path: '/:tenantId/users/wifi/guests' },
-         wrapper: Provider
+        wrapper: Provider
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
@@ -227,7 +227,7 @@ describe('Guest Table', () => {
         <GuestsTable />
       </Provider>, {
         route: { params, path: '/:tenantId/users/wifi/guests' },
-         wrapper: Provider
+        wrapper: Provider
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
