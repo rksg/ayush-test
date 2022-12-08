@@ -26,7 +26,7 @@ function getCols (intl: ReturnType<typeof useIntl>, releaseTag: boolean, showAll
       defaultSortOrder: 'ascend',
       render: (data, row) => {
         return releaseTag ?
-          <TenantLink to={`users/wifi/clients/${row.clientMac}/details/overview`}>{data || '--'}</TenantLink>
+          <TenantLink to={`users/wifi/clients/${row.clientMac}/details/overview?hostname=${data}`}>{data || '--'}</TenantLink>
           : <> {data || '--'} </>
       }
     },
