@@ -21,7 +21,7 @@ export interface DpskSaveData {
   expirationDate?: string; // If 'expirationType' is SPECIFIED_DATE then this field is the related date in format YYYY-MM-DD.
   networkIds?: string[]
 }
-export interface DpskPassphrase {
+export interface NewDpskPassphrase {
   id: string;
   passphrase: string;
   username?: string;

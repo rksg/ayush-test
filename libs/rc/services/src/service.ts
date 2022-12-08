@@ -29,7 +29,7 @@ import {
   Portal,
   PortalUrlsInfo,
   NewTableResult,
-  DpskPassphrase,
+  NewDpskPassphrase,
   transferTableResult,
   DpskPassphrasesSaveData
 } from '@acx-ui/rc/utils'
@@ -413,15 +413,15 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'DpskPassphrase', id: 'LIST' }]
     }),
-    dpskPassphraseList: build.query<TableResult<DpskPassphrase>, RequestPayload>({
+    dpskPassphraseList: build.query<TableResult<NewDpskPassphrase>, RequestPayload>({
       query: ({ params }) => {
         const getDpskPassphraseListReq = createHttpRequest(DpskUrls.getPassphraseList, params)
         return {
           ...getDpskPassphraseListReq
         }
       },
-      transformResponse (result: NewTableResult<DpskPassphrase>) {
-        return transferTableResult<DpskPassphrase>(result)
+      transformResponse (result: NewTableResult<NewDpskPassphrase>) {
+        return transferTableResult<NewDpskPassphrase>(result)
       },
       providesTags: [{ type: 'DpskPassphrase', id: 'LIST' }]
     }),

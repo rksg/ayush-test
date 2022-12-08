@@ -8,9 +8,9 @@ import {
   useDeleteDpskPassphraseListMutation,
   useDpskPassphraseListQuery
 } from '@acx-ui/rc/services'
-import { DpskPassphrase, useTableQuery } from '@acx-ui/rc/utils'
-import { useParams }                     from '@acx-ui/react-router-dom'
-import { formatter }                     from '@acx-ui/utils'
+import { NewDpskPassphrase, useTableQuery } from '@acx-ui/rc/utils'
+import { useParams }                        from '@acx-ui/react-router-dom'
+import { formatter }                        from '@acx-ui/utils'
 
 import DpskPassphraseDrawer from './DpskPassphraseDrawer'
 
@@ -28,7 +28,7 @@ export default function DpskPassphraseManagement () {
     }
   })
 
-  const columns: TableProps<DpskPassphrase>['columns'] = [
+  const columns: TableProps<NewDpskPassphrase>['columns'] = [
     {
       key: 'createdDate',
       title: $t({ defaultMessage: 'Passphrase Created' }),
@@ -89,10 +89,10 @@ export default function DpskPassphraseManagement () {
     }
   ]
 
-  const rowActions: TableProps<DpskPassphrase>['rowActions'] = [
+  const rowActions: TableProps<NewDpskPassphrase>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: (selectedRows: DpskPassphrase[], clearSelection) => {
+      onClick: (selectedRows: NewDpskPassphrase[], clearSelection) => {
         showActionModal({
           type: 'confirm',
           customContent: {
@@ -123,7 +123,7 @@ export default function DpskPassphraseManagement () {
       setVisible={setAddPassphrasesDrawerVisible}
     />
     <Loader states={[tableQuery]}>
-      <Table<DpskPassphrase>
+      <Table<NewDpskPassphrase>
         columns={columns}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
