@@ -72,7 +72,7 @@ exports[`ClientList should render list correctly 1`] = `
                 </div>
                 <div
                   class="ant-tabs-ink-bar ant-tabs-ink-bar-animated"
-                  style="left: 0px; width: 0px;"
+                  style="left: 0px; width: 1280px;"
                 />
               </div>
             </div>
@@ -941,7 +941,7 @@ exports[`ClientList should render list correctly 1`] = `
                                 class="ant-table-cell"
                               >
                                 <a
-                                  href="/t/tenant-id/devices/aps/false/details/overview"
+                                  href="/t/tenant-id/devices/wifi/false/details/overview"
                                 >
                                   UI team ONLY
                                 </a>

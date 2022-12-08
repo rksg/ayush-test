@@ -31,6 +31,14 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/eventalarmapi/:tenantId/alarm/meta'
   },
+  clearAlarm: {
+    method: 'delete',
+    url: '/api/eventalarmapi/:tenantId/alarm/clear/:alarmId'
+  },
+  clearAllAlarm: {
+    method: 'delete',
+    url: '/api/eventalarmapi/:tenantId/alarm'
+  },
   getEventListMeta: {
     method: 'post',
     url: '/api/eventalarmapi/:tenantId/event/meta'
@@ -215,6 +223,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/rogue/ap'
   },
+  getOldVenueRogueAp: {
+    method: 'post',
+    url: '/api/viewmodel/tenant/:tenantId/venue/:venueId/rogue/ap'
+  },
   updateVenueRogueAp: {
     method: 'put',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/rogue/ap'
@@ -247,6 +259,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/user-profile'
   },
+  updateUserProfile: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/user-profile'
+  },
   getVenueDHCPServiceProfile: {
     //Retrieve Venue DHCP Service Profile Settings
     method: 'get',
@@ -275,6 +291,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getApDetailHeader: {
     method: 'get',
     url: '/api/viewmodel/tenant/:tenantId/ap/:serialNumber/detailheader'
+  },
+  getCloudVersion: {
+    method: 'get',
+    url: '/api/upgrade/tenant/:tenantId/upgrade-version'
   },
   getClientSessionHistory: {
     method: 'post',

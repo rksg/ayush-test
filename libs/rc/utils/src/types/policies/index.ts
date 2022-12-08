@@ -1,3 +1,5 @@
+export * from './rogueApDetectionPolicy'
+
 export enum PolicyType {
   ACCESS_CONTROL = 'Access Control',
   VLAN_POOL = 'VLAN Pool',
