@@ -22,41 +22,22 @@ import {
 import { TenantLink } from '@acx-ui/react-router-dom'
 import { getIntl }    from '@acx-ui/utils'
 
-import { GuestsDetail } from '../GuestsDetail'
-
-const defaultPayload = {
-  searchString: '',
-  searchTargetFields: [
-    'name',
-    'mobilePhoneNumber',
-    'emailAddress'],
-  fields: [
-    'creationDate',
-    'name',
-    'passDurationHours',
-    'id',
-    'networkId',
-    'maxNumberOfClients',
-    'notes',
-    'clients',
-    'guestStatus',
-    'emailAddress',
-    'mobilePhoneNumber',
-    'guestType',
-    'ssid',
-    'socialLogin',
-    'expiryDate',
-    'cog'
-  ]
-}
+import { defaultGuestPayload, GuestsDetail } from '../GuestsDetail'
 
 export default function GuestsTable () {
+  const [visible, setVisible] = useState(false)
+  const [currentGuest, setCurrentGuest] = useState({} as Guest)
+
   const { $t } = useIntl()
   const GuestsTable = () => {
     const tableQuery = useTableQuery({
       useQuery: useGetGuestsListQuery,
-      defaultPayload
+      defaultPayload: defaultGuestPayload
     })
+
+    const onClose = () => {
+      setVisible(false)
+    }
 
     const notificationMessage =
       <span style={{
@@ -76,9 +57,6 @@ export default function GuestsTable () {
           {$t({ defaultMessage: 'Add Guest Pass Network' })}
         </Button>
       </span>
-
-    const [visible, setVisible] = useState(false)
-    const [currentGuest, setCurrentGuest] = useState({} as Guest)
 
     const columns: TableProps<Guest>['columns'] = [
       {
@@ -161,10 +139,6 @@ export default function GuestsTable () {
         }
       }
     ]
-
-    const onClose = () => {
-      setVisible(false)
-    }
 
     return (
       <Loader states={[

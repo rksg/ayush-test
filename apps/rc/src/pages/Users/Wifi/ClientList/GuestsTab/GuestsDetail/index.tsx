@@ -23,8 +23,8 @@ import {
 } from '../GuestsTable'
 import { DrawerFormItem } from '../styledComponents'
 
-import { useGuestActions } from './guestActions'
 import { GenerateNewPasswordModal } from './generateNewPasswordModal'
+import { useGuestActions }          from './guestActions'
 
 
 interface GuestDetailsDrawerProps {
@@ -32,7 +32,7 @@ interface GuestDetailsDrawerProps {
   triggerClose: () => void
 }
 
-const defaultPayload = {
+export const defaultGuestPayload = {
   searchString: '',
   searchTargetFields: [
     'name',
@@ -64,9 +64,12 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
   const { currentGuest } = props
   const { tenantId } = useParams()
   const [guestDetail, setGuestDetail] = useState({} as Guest)
+  const [generateModalVisible, setGenerateModalVisible] = useState(false)
+  const guestAction = useGuestActions()
+
   const tableQuery = useTableQuery({
     useQuery: useGetGuestsListQuery,
-    defaultPayload
+    defaultPayload: defaultGuestPayload
   })
 
   const hasOnlineClient = function (row: Guest) {
@@ -78,9 +81,7 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
     if (guest) {
       setGuestDetail(guest)
     }
-
-  }, [tableQuery])
-
+  }, [currentGuest.id, tableQuery])
 
   const renderStatus = function (row: Guest) {
     if(Object.keys(row).length === 0) {
@@ -162,7 +163,6 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
     }
   ]
 
-  const guestAction = useGuestActions()
   const handleMenuClick: MenuProps['onClick'] = (e) => {
     switch (e.key) {
       case 'deleteGuest':
@@ -184,9 +184,6 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
         break
     }
   }
-
-  const [generateModalVisible, setGenerateModalVisible] = useState(false)
-
 
   const menu = (
     <Menu
@@ -222,7 +219,6 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
       })}
     />
   )
-
 
   return (<Form
     labelCol={{ span: 10 }}
@@ -291,7 +287,9 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
         pagination={false}
       />}
 
-    <GenerateNewPasswordModal {...{ generateModalVisible, setGenerateModalVisible, guestDetail }}
+    <GenerateNewPasswordModal {...{
+      generateModalVisible, setGenerateModalVisible, guestDetail, tenantId
+    }}
     />
   </Form>
   )

@@ -141,6 +141,15 @@ export const clientApi = baseClientApi.injectEndpoints({
         }
       }
     }),
+    generateGuestPassword: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(ClientUrlsInfo.generateGuestPassword, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     getDpskPassphraseByQuery: build.query<DpskPassphrase, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.getDpskPassphraseByQuery, params)
@@ -225,5 +234,6 @@ export const {
   useGetGuestsMutation,
   useDeleteGuestsMutation,
   useEnableGuestsMutation,
-  useDisableGuestsMutation
+  useDisableGuestsMutation,
+  useGenerateGuestPasswordMutation
 } = clientApi
