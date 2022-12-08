@@ -44,6 +44,7 @@ import ServicesTable            from './pages/Services/ServicesTable'
 import WifiCallingDetailView    from './pages/Services/WifiCalling/WifiCallingDetail/WifiCallingDetailView'
 import WifiCallingConfigureForm from './pages/Services/WifiCalling/WifiCallingForm/WifiCallingConfigureForm'
 import WifiCallingForm          from './pages/Services/WifiCalling/WifiCallingForm/WifiCallingForm'
+import Timeline                 from './pages/Timeline'
 import SwitchClientList         from './pages/Users/Switch/ClientList'
 import WifiClientDetails        from './pages/Users/Wifi/ClientDetails'
 import WifiClientList           from './pages/Users/Wifi/ClientList'
@@ -56,6 +57,7 @@ export default function RcRoutes () {
       <Route path='services/*' element={<ServiceRoutes />} />
       <Route path='policies/*' element={<PolicyRoutes />} />
       <Route path='users/*' element={<UserRoutes />} />
+      <Route path='timeline/*' element={<TimelineRoutes />} />
     </Route>
   )
   return (
@@ -241,6 +243,15 @@ function UserRoutes () {
       />
       <Route path='users/switch' element={<TenantNavigate replace to='/users/switch/clients' />} />
       <Route path='users/switch/clients' element={<SwitchClientList />} />
+    </Route>
+  )
+}
+
+function TimelineRoutes () {
+  return rootRoutes(
+    <Route path='t/:tenantId'>
+      <Route path='timeline' element={<TenantNavigate replace to='/timeline/activities' />} />
+      <Route path='timeline/:activeTab' element={<Timeline />} />
     </Route>
   )
 }

@@ -262,7 +262,7 @@ function Table <RecordType extends Record<string, any>> (
     {props.actions && <Space
       size={0}
       split={<UI.Divider type='vertical' />}
-      style={{ display: 'flex', justifyContent: 'flex-end' }}>
+      style={{ display: 'flex', justifyContent: 'flex-end', margin: '3px 0' }}>
       {props.actions?.map((action, index) => <Button
         key={index}
         type='link'
