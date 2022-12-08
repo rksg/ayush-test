@@ -51,7 +51,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   const PropertiesTab = () => {
     return (
       <Form
-        labelCol={{ span: 9 }}
+        labelCol={{ span: 10 }}
         labelAlign='left'
         style={{ marginTop: currentAP?.deviceStatusSeverity === ApVenueStatusEnum.OPERATIONAL ? '15px' : 0 }}
       >
