@@ -1,3 +1,9 @@
+import { useParams } from '@acx-ui/react-router-dom'
+
+export enum AccountTier {
+  GOLD = 'Gold',
+  PLATINUM = 'Platinum'
+}
 
 export enum AccountVertical {
   DEFAULT = 'Default',
@@ -64,11 +70,22 @@ const cache = new Map()
 // Fetch JWT token payload data
 export function getJwtTokenPayload () {
   const jwt = getCookie('JWT')
-
+  // eslint-disable-next-line no-console
+  console.log(`JWT: ${jwt}`)
   if (jwt === null) {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const { tenantId } = useParams()
     // eslint-disable-next-line no-console
-    console.error('No JWT token found!')
-    return null
+    console.error('No JWT token found! So setting default JWT values')
+    const jwtToken: { tenantType: AccountType;
+      acx_account_vertical: AccountVertical;
+      tenantId: string | undefined; acx_account_tier: AccountTier } = {
+        acx_account_tier: AccountTier.GOLD,
+        acx_account_vertical: AccountVertical.DEFAULT,
+        tenantType: AccountType.REC,
+        tenantId: tenantId
+      }
+    return jwtToken
   }
 
   if (cache.has(jwt)) return cache.get(jwt)
