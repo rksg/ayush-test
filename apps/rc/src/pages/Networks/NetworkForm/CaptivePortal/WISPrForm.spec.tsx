@@ -2,9 +2,10 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo, WifiUrlsInfo }                                              from '@acx-ui/rc/utils'
-import { Provider }                                                                  from '@acx-ui/store'
-import { mockServer, render, screen, fireEvent, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { StepsForm }                             from '@acx-ui/components'
+import { CommonUrlsInfo, WifiUrlsInfo }          from '@acx-ui/rc/utils'
+import { Provider }                              from '@acx-ui/store'
+import { mockServer, render, screen, fireEvent } from '@acx-ui/test-utils'
 
 import {
   venuesResponse,
@@ -16,21 +17,9 @@ import {
   externalProviders,
   wisprDataWPA2
 } from '../__tests__/fixtures'
-import NetworkForm from '../NetworkForm'
+import NetworkFormContext from '../NetworkFormContext'
 
-async function fillInBeforeSettings (networkName: string) {
-  const insertInput = await screen.findByLabelText(/Network Name/)
-  fireEvent.change(insertInput, { target: { value: networkName } })
-  fireEvent.blur(insertInput)
-  const validating = await screen.findByRole('img', { name: 'loading' })
-  await waitForElementToBeRemoved(validating)
-  await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
-
-  await waitFor(async () => {
-    expect(await screen.findByRole('heading', { level: 3, name: 'Portal Type' })).toBeVisible()
-  })
-  await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
-}
+import { WISPrForm } from './WISPrForm'
 
 describe('CaptiveNetworkForm-WISPr', () => {
   beforeEach(() => {
@@ -67,11 +56,13 @@ describe('CaptiveNetworkForm-WISPr', () => {
   const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', action: 'edit' }
 
   it('should test WISPr network successfully', async () => {
-    const { asFragment } = render(<Provider><NetworkForm /></Provider>, { route: { params } })
+    const { asFragment } = render(<Provider><NetworkFormContext.Provider
+      value={{
+        editMode: true, cloneMode: true, data: wisprDataWPA2
+      }}
+    ><StepsForm><StepsForm.StepForm><WISPrForm /></StepsForm.StepForm>
+      </StepsForm></NetworkFormContext.Provider></Provider>, { route: { params } })
     expect(asFragment()).toMatchSnapshot()
-
-    await fillInBeforeSettings('WISPr network test')
-
     await userEvent.click((await screen.findAllByTitle('Select provider'))[0])
     await userEvent.click((await screen.findAllByTitle('Skyfii'))[0])
     await userEvent.click((await screen.findAllByTitle('Select Region'))[0])
@@ -93,7 +84,7 @@ describe('CaptiveNetworkForm-WISPr', () => {
     fireEvent.blur(ips[2])
     fireEvent.change(ips[3], { target: { value: '2.3.3.2' } })
     fireEvent.blur(ips[3])
-    await userEvent.click(await screen.findByText('Next'))
+    await userEvent.click(await screen.findByText('Finish'))
     fireEvent.change(ips[3], { target: { value: '2.3.3.1' } })
     fireEvent.blur(ips[3])
     fireEvent.change(secrets[0], { target: { value: 'xxxxxxxxxx' } })
@@ -143,6 +134,5 @@ describe('CaptiveNetworkForm-WISPr', () => {
     await userEvent.click(await screen.findByRole('checkbox',
       { name: /Enable MAC auth bypass/ }))
     await userEvent.click(await screen.findByText('More details'))
-    await userEvent.click(await screen.findByText('Next'))
   })
 })

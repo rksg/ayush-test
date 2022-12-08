@@ -307,8 +307,8 @@ export const wisprDataWPA2={
     wisprPage: {
       captivePortalUrl: 'http://aa.bb',
       externalProviderName: 'Select provider',
-      authRadius: { secondary: true },
-      accountingRadius: { secondary: true }
+      authRadius: { secondary: {} },
+      accountingRadius: { secondary: {} }
     }
   },
   wlan: {
