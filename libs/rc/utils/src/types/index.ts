@@ -6,7 +6,8 @@ import {
   ApDeviceStatusEnum,
   GuestNetworkTypeEnum,
   WlanSecurityEnum,
-  NetworkTypeEnum, QosPriorityEnum
+  NetworkTypeEnum,
+  QosPriorityEnum
 } from '../constants'
 import { AAAWlanAdvancedCustomization }  from '../models/AAAWlanAdvancedCustomization'
 import { DpskWlanAdvancedCustomization } from '../models/DpskWlanAdvancedCustomization'
@@ -28,6 +29,8 @@ export * from './msp'
 export * from './edge'
 export * from './portalService'
 export * from './client'
+export * from './components'
+export * from './switch'
 
 export interface CommonResult {
   requestId: string
@@ -56,7 +59,7 @@ export interface NetworkDetail {
   tenantId: string
   name: string
   venues: NetworkVenue[]
-  id: string,
+  id: string
   wlan: {
     wlanSecurity: WlanSecurityEnum,
     ssid?: string;
@@ -67,7 +70,7 @@ export interface NetworkDetail {
       AAAWlanAdvancedCustomization |
       DpskWlanAdvancedCustomization |
       PskWlanAdvancedCustomization;
-  },
+  }
 }
 
 export interface Venue {
@@ -367,6 +370,31 @@ export interface WifiCallingSetting {
 export interface WifiCallingSettingContextType {
   wifiCallingSettingList: WifiCallingSetting[],
   setWifiCallingSettingList: (wifiCallingSettingList: WifiCallingSetting[]) => void
+}
+
+export interface CloudVersion {
+  versionUpgradeDate: string,
+  currentVersion: VersionInfo,
+  futureVersion: VersionInfo,
+  scheduleVersionList: string[]
+}
+
+enum UpgradeType {
+  STANDDARD,
+  HOTFIX
+}
+interface VersionInfo {
+  affectsNetwork: boolean
+  createdDate: string
+  description: string
+  name: string
+  id: string
+  releaseNotesUrl: string
+  scheduleNow: boolean
+  upgradeTime: string
+  type: UpgradeType | undefined
+  features: string[]
+
 }
 
 export interface catchErrorDetails {
