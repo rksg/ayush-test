@@ -485,7 +485,7 @@ exports[`DHCPForm should create DHCP successfully 1`] = `
                               >
                                 <div
                                   class="ant-space ant-space-horizontal ant-space-align-center"
-                                  style="display: flex; justify-content: flex-end;"
+                                  style="display: flex; justify-content: flex-end; margin: 3px 0px;"
                                 >
                                   <div
                                     class="ant-space-item"
