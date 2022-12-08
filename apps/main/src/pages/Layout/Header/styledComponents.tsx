@@ -161,14 +161,7 @@ export const VersionNameContainer = styled.div`
   font-size: 16px;
   color: var(--acx-primary-white);
 `
-export const ActiveButton = styled(LayoutUI.ButtonSolid)`
-  background: var(--acx-neutrals-80) !important;
+export const DisabledButton = styled(LayoutUI.ButtonSolid)`
   color: var(--acx-neutrals-60) !important;
-`
-export const HelpButton = styled(LayoutUI.ButtonSolid)`
-  background: var(--acx-neutrals-80) !important;
-  color: var(--acx-neutrals-60) !important;
-  :hover > svg {
-    stroke: var(--acx-neutrals-70);
-  }
+  background-color: var(--acx-neutrals-70);
 `
