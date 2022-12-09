@@ -77,9 +77,11 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
             </Col>
           )}
           <Col span={24}>
-            <TimeLine
-              data={results.data}
-              filters={filters}/>
+            <Loader states={[results]}>
+              <TimeLine
+                data={results.data}
+                filters={filters}/>
+            </Loader>
           </Col>
         </Row>
       </Col>

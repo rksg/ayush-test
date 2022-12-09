@@ -69,7 +69,8 @@ export type DisplayEvent = {
   radio: string,
   state: string,
   event: string,
-  category: string
+  category: string,
+  type: string
 }
 export const eventColorByCategory = {
   [DISCONNECT]: '--acx-neutrals-50',
@@ -185,9 +186,19 @@ export const ClientTroubleShootingConfig = {
           label: defineMessage({ defaultMessage: '6 GHz' })
         }
       ]
-    } ],
+    }
+  ],
   timeLine: [
-    { title: defineMessage({ defaultMessage: 'Connection Events' }) },
+    {
+      title: defineMessage({ defaultMessage: 'Connection Events' }),
+      chartType: 'scatter',
+      subtitle: [
+        { title: defineMessage({ defaultMessage: 'Success' }), chartType: 'scatter' },
+        { title: defineMessage({ defaultMessage: 'Failure' }), chartType: 'scatter' },
+        { title: defineMessage({ defaultMessage: 'Slow' }), chartType: 'scatter' },
+        { title: defineMessage({ defaultMessage: 'Disconnect' }), chartType: 'scatter' }
+      ]
+    },
     { title: defineMessage({ defaultMessage: 'Roaming' }) },
     { title: defineMessage({ defaultMessage: 'Connection Quality' }) },
     { title: defineMessage({ defaultMessage: 'Network Incidents' }) }

@@ -1,4 +1,4 @@
-import { Dispatch, RefObject, SetStateAction, useCallback, useEffect, useRef, useState } from 'react'
+import { Dispatch, RefObject, SetStateAction, useCallback, useEffect, useRef, useState, RefCallback, useImperativeHandle } from 'react'
 
 import { Row, Col }                                from 'antd'
 import { TooltipComponentFormatterCallbackParams } from 'echarts'
@@ -7,12 +7,13 @@ import { renderToString }                          from 'react-dom/server'
 
 import { formatter } from '@acx-ui/utils'
 
-import { cssStr }     from '../../theme/helper'
+import { cssStr }   from '../../theme/helper'
 import {
   tooltipOptions,
   axisLabelOptions,
   xAxisOptions,
-  dateAxisFormatter
+  dateAxisFormatter,
+  dataZoomOptions
 } from '../Chart/helper'
 import { TooltipWrapper } from '../Chart/styledComponents'
 
@@ -37,7 +38,8 @@ export interface ConfigChangeChartProps
     brushWidth?: number, // default 1 day = 24 * 60 * 60 * 1000
     onDotClick?: (params: unknown) => void,
     title: string,
-    count: number
+    count: number,
+    chartRef?: RefCallback<ReactECharts>
   }
 
 export const mapping = [
@@ -181,6 +183,7 @@ export function SingleLineScatterChart ({
   chartBoundary,
   selectedData,
   onDotClick,
+  chartRef,
   ...props
 }: ConfigChangeChartProps) {
 
@@ -188,6 +191,7 @@ export function SingleLineScatterChart ({
   const rowHeight = 20
   const placeholderRows = 0 // for tracker
   const eChartsRef = useRef<ReactECharts>(null)
+  useImperativeHandle(chartRef, () => eChartsRef.current!)
 
   const [selected, setSelected] = useState<number|undefined>(selectedData)
   const [_, setBoundary] = useState({
@@ -268,13 +272,13 @@ export function SingleLineScatterChart ({
       {
         id: 'zoom',
         type: 'inside',
-        orient: 'horizontal',
         // TODO: set zoom limitation if supported (https://github.com/apache/echarts/issues/12907)
-        minValueSpan: 60 * 60 * 1000, // hour
-        moveOnMouseMove: false,
-        moveOnMouseWheel: false
+        minValueSpan: 60 * 60 * 1000 // hour
+        // moveOnMouseMove: false,
+        // moveOnMouseWheel: false
       }
     ],
+
     series: mapping.slice().reverse().map(
       ({ key, label }) =>
         ({
