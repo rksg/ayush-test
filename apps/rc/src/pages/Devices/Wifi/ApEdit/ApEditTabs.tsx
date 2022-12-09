@@ -72,7 +72,7 @@ function ApEditTabs () {
   return (
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>
       <Tabs.TabPane tab={intl.$t({ defaultMessage: 'AP Details' })} key='details' />
-      { currentAP?.deviceStatusSeverity === ApVenueStatusEnum.OPERATIONAL
+      { typeof currentAP?.model !== 'undefined'
         && <Tabs.TabPane tab={intl.$t({ defaultMessage: 'Settings' })} key='settings' /> }
     </Tabs>
   )
