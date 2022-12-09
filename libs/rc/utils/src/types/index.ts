@@ -6,7 +6,8 @@ import {
   ApDeviceStatusEnum,
   GuestNetworkTypeEnum,
   WlanSecurityEnum,
-  NetworkTypeEnum, QosPriorityEnum
+  NetworkTypeEnum,
+  QosPriorityEnum
 } from '../constants'
 import { AAAWlanAdvancedCustomization }  from '../models/AAAWlanAdvancedCustomization'
 import { DpskWlanAdvancedCustomization } from '../models/DpskWlanAdvancedCustomization'
@@ -21,12 +22,16 @@ import { EPDG }    from './services'
 export * from './ap'
 export * from './venue'
 export * from './network'
+export * from './any-network'
 export * from './user'
 export * from './services'
 export * from './msp'
 export * from './edge'
-export * from './policy'
+export * from './policies'
 export * from './client'
+export * from './components'
+export * from './switch'
+
 export interface CommonResult {
   requestId: string
   response?:{}
@@ -54,7 +59,7 @@ export interface NetworkDetail {
   tenantId: string
   name: string
   venues: NetworkVenue[]
-  id: string,
+  id: string
   wlan: {
     wlanSecurity: WlanSecurityEnum,
     ssid?: string;
@@ -65,7 +70,7 @@ export interface NetworkDetail {
       AAAWlanAdvancedCustomization |
       DpskWlanAdvancedCustomization |
       PskWlanAdvancedCustomization;
-  },
+  }
 }
 
 export interface Venue {
@@ -123,6 +128,84 @@ export interface AlarmMeta {
 }
 
 export type Alarm = AlarmBase & AlarmMeta
+
+export interface Activity {
+  admin: {
+    name: string
+    email: string
+    ip: string
+    id: string
+    interface: string
+  }
+  descriptionData: { name: string, value:string }[]
+  descriptionTemplate: string
+  endDatetime: string
+  notification: { enabled: boolean, type: string }
+  product: string
+  requestId: string
+  severity: string
+  startDatetime: string
+  status: string
+  steps: {
+    id: string,
+    description: string,
+    status: string,
+    progressType: string
+    startDatetime: string
+    endDatetime: string
+  }[]
+tenantId: string
+useCase: string
+}
+
+export interface EventBase {
+  apMac: string
+  entity_id: string
+  entity_type: string
+  event_datetime: string
+  id: string
+  macAddress: string
+  message: string
+  name: string
+  product: string
+  radio: string
+  raw_event: string
+  serialNumber: string
+  severity: string
+  venueId: string
+}
+
+export interface EventMeta {
+  id: EventBase['id']
+  apGroupId: string
+  apName: string
+  isApExists: boolean
+  isSwitchExists: boolean
+  isVenueExists: boolean
+  switchName: string
+  venueName: string
+}
+
+export type Event = EventBase & EventMeta
+
+export interface AdminLogBase {
+  adminName: string
+  entity_id: string
+  entity_type: string
+  event_datetime: string
+  id: string
+  message: string
+  raw_event: string
+  severity: string
+}
+
+export interface AdminLogMeta {
+  id: AdminLogBase['id']
+  isApExists: boolean
+  isSwitchExists: boolean
+}
+
+export type AdminLog = AdminLogBase & AdminLogMeta
 
 export enum EventSeverityEnum {
   CRITICAL = 'Critical',
@@ -367,6 +450,31 @@ export interface WifiCallingSettingContextType {
   setWifiCallingSettingList: (wifiCallingSettingList: WifiCallingSetting[]) => void
 }
 
+export interface CloudVersion {
+  versionUpgradeDate: string,
+  currentVersion: VersionInfo,
+  futureVersion: VersionInfo,
+  scheduleVersionList: string[]
+}
+
+enum UpgradeType {
+  STANDDARD,
+  HOTFIX
+}
+interface VersionInfo {
+  affectsNetwork: boolean
+  createdDate: string
+  description: string
+  name: string
+  id: string
+  releaseNotesUrl: string
+  scheduleNow: boolean
+  upgradeTime: string
+  type: UpgradeType | undefined
+  features: string[]
+
+}
+
 export interface catchErrorDetails {
   code: string,
   message: string
@@ -398,4 +506,16 @@ export interface EventMeta {
   isVenueExists: boolean,
   networkId: string,
   venueName: string,
+}
+
+export interface ClientStatistic {
+  applications: number;
+  apsConnected: number;
+  avgRateBPS: string;
+  avgSessionLengthSeconds: unknown | number;
+  sessions: number;
+  userTrafficBytes: number;
+  userTraffic5GBytes: number;
+  userTraffic6GBytes: number;
+  userTraffic24GBytes: number;
 }

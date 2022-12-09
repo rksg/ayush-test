@@ -461,7 +461,7 @@ exports[`PortalDemo should render portal demo successfully 1`] = `
                 </span>
               </div>
               <button
-                class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__Button-sc-cby53p-6 cjBqyi styledComponents__Popover-sc-cby53p-41"
+                class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW styledComponents__Button-sc-cby53p-6 cjBqyi styledComponents__Popover-sc-cby53p-41"
                 type="button"
               >
                 <span>
@@ -469,7 +469,7 @@ exports[`PortalDemo should render portal demo successfully 1`] = `
                 </span>
               </button>
               <button
-                class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__Button-sc-cby53p-6 cjBqyi"
+                class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW styledComponents__Button-sc-cby53p-6 cjBqyi"
                 type="button"
               >
                 <span>
@@ -477,7 +477,7 @@ exports[`PortalDemo should render portal demo successfully 1`] = `
                 </span>
               </button>
               <button
-                class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__Button-sc-cby53p-6 cjBqyi"
+                class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW styledComponents__Button-sc-cby53p-6 cjBqyi"
                 type="button"
               >
                 <span>

@@ -206,7 +206,7 @@ exports[`CaptiveNetworkForm-SelfSignIn should test Self sign in network successf
                                             </span>
                                           </label>
                                           <button
-                                            class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                                            class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 eAazoW"
                                             title="settingicon"
                                             type="button"
                                           >
@@ -259,7 +259,7 @@ exports[`CaptiveNetworkForm-SelfSignIn should test Self sign in network successf
                                             </span>
                                           </label>
                                           <button
-                                            class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                                            class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 eAazoW"
                                             title="settingicon"
                                             type="button"
                                           >
@@ -312,7 +312,7 @@ exports[`CaptiveNetworkForm-SelfSignIn should test Self sign in network successf
                                             </span>
                                           </label>
                                           <button
-                                            class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                                            class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 eAazoW"
                                             title="settingicon"
                                             type="button"
                                           >
@@ -365,7 +365,7 @@ exports[`CaptiveNetworkForm-SelfSignIn should test Self sign in network successf
                                             </span>
                                           </label>
                                           <button
-                                            class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                                            class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 eAazoW"
                                             title="settingicon"
                                             type="button"
                                           >
@@ -830,8 +830,8 @@ exports[`CaptiveNetworkForm-SelfSignIn should test Self sign in network successf
                                   style="margin-left: -5px; margin-bottom: -3px;"
                                 />
                                 <button
-                                  class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                                  style="height: auto; margin-left: 14px;"
+                                  class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 eAazoW"
+                                  style="margin-left: 14px;"
                                   type="button"
                                 >
                                   <span>
@@ -886,7 +886,7 @@ exports[`CaptiveNetworkForm-SelfSignIn should test Self sign in network successf
             style="margin-right: 12px;"
           >
             <button
-              class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 kkpPZG"
+              class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 bxQmA-d"
               type="button"
             >
               <span>
@@ -898,7 +898,7 @@ exports[`CaptiveNetworkForm-SelfSignIn should test Self sign in network successf
             class="ant-space-item"
           >
             <button
-              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
               type="button"
             >
               <span>

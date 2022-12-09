@@ -21,10 +21,14 @@ import {
   WifiCallingUrls,
   WifiUrlsInfo,
   MdnsProxyForwardingRule,
+  WifiCallingFormContextType,
+  WifiCallingSetting,
+  DpskSaveData,
+  DpskUrls,
   PortalDetailInstances,
   Portal,
   PortalUrlsInfo,
-  WifiCallingFormContextType, WifiCallingSetting
+  DpskList
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
@@ -357,6 +361,45 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }]
     }),
+    createDpsk: build.mutation<DpskSaveData, RequestPayload<DpskSaveData>>({
+      query: ({ params, payload }) => {
+        const createDpskReq = createHttpRequest(DpskUrls.addDpsk, params)
+        return {
+          ...createDpskReq,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    updateDpsk: build.mutation<DpskSaveData, RequestPayload<DpskSaveData>>({
+      query: ({ params, payload }) => {
+        const updateDpskReq = createHttpRequest(DpskUrls.updateDpsk, params)
+        return {
+          ...updateDpskReq,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    dpskList: build.query<DpskList, RequestPayload>({
+      query: () => {
+        const getDpskListReq = createHttpRequest(DpskUrls.getDpskList)
+        return {
+          ...getDpskListReq
+        }
+      },
+      providesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    getDpsk: build.query<DpskSaveData, RequestPayload>({
+      query: ({ params, payload }) => {
+        const getDpskReq = createHttpRequest(DpskUrls.getDpsk, params)
+        return {
+          ...getDpskReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Service', id: 'DETAIL' }]
+    }),
     portalNetworkInstances: build.query<TableResult<PortalDetailInstances>, RequestPayload>({
       query: ({ params }) => {
         const instancesRes = createHttpRequest(PortalUrlsInfo.getPortalNetworkInstances, params)
@@ -413,6 +456,10 @@ export const {
   useGetWifiCallingServiceListQuery,
   useCreateWifiCallingServiceMutation,
   useUpdateWifiCallingServiceMutation,
+  useCreateDpskMutation,
+  useUpdateDpskMutation,
+  useGetDpskQuery,
+  useLazyDpskListQuery,
   useGetPortalQuery,
   useSavePortalMutation,
   usePortalNetworkInstancesQuery,

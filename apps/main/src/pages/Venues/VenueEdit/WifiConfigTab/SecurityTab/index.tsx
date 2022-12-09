@@ -12,7 +12,8 @@ import {
   useGetVenueRogueApQuery,
   useUpdateVenueRogueApMutation
 } from '@acx-ui/rc/services'
-import { useParams } from '@acx-ui/react-router-dom'
+import { getPolicyRoutePath, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
+import { TenantLink, useParams }                           from '@acx-ui/react-router-dom'
 
 import { VenueEditContext } from '../../'
 
@@ -223,10 +224,19 @@ export function SecurityTab () {
             <Form.Item
               name='roguePolicyId'
               label={$t({ defaultMessage: 'Rogue AP Classification Profile:' })}
-              style={{ width: '200px' }}
               initialValue={selected}
             >
-              <Select children={selectOptions} />
+              <Space>
+                <Select children={selectOptions} style={{ width: '200px' }} />
+                <TenantLink
+                  to={getPolicyRoutePath({
+                    type: PolicyType.ROGUE_AP_DETECTION,
+                    oper: PolicyOperation.CREATE
+                  })}
+                >
+                  {$t({ defaultMessage: 'Add Profile' })}
+                </TenantLink>
+              </Space>
             </Form.Item>
           </FieldsetItem>
         </StepsForm.StepForm>
