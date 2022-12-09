@@ -1,10 +1,22 @@
 
+import { ReactNode } from 'react'
+
 import { List }               from 'antd'
 import { IntlShape, useIntl } from 'react-intl'
 import AutoSizer              from 'react-virtualized-auto-sizer'
 
+
+import {
+  incidentInformation,
+  Incident,
+  calculateSeverity,
+  incidentSeverities,
+  shortDescription
+} from '@acx-ui/analytics/utils'
 import { ArrowCollapse } from '@acx-ui/icons'
+import { TenantLink }    from '@acx-ui/react-router-dom'
 import { formatter }     from '@acx-ui/utils'
+
 
 import { transformEvents, DisplayEvent, formatEventDesc, eventColorByCategory } from './config'
 import { ClientInfoData }                                                       from './services'
@@ -14,12 +26,18 @@ import { Filters } from '.'
 
 
 type HistoryContentProps = {
-    historyContentToggle : boolean,
-    setHistoryContentToggle : CallableFunction,
-    data?: ClientInfoData,
-    filters: Filters
-  }
-
+  historyContentToggle : boolean,
+  setHistoryContentToggle : CallableFunction,
+  data?: ClientInfoData,
+  filters: Filters
+}
+type Item = {
+  id?: string,
+  date: string,
+  description: string,
+  title: string,
+  icon: ReactNode
+}
 const transformData = (clientInfo: ClientInfoData, filters: Filters, intl: IntlShape) => {
   const types = filters ? filters.type ?? [] : []
   const radios = filters ? filters.radio ?? [] : []
@@ -28,32 +46,51 @@ const transformData = (clientInfo: ClientInfoData, filters: Filters, intl: IntlS
     types,
     radios
   ) as DisplayEvent[]
-  return events.map((event: DisplayEvent) => {
-    const color = eventColorByCategory[event.category as keyof typeof eventColorByCategory]
+  const incidents = clientInfo.incidents.map((incident: Incident) => {
+    const {
+      category,
+      subCategory,
+      shortDescription: desc
+    } = incidentInformation[incident.code]
+    const severity = calculateSeverity(incident.severity)
+    const color = incidentSeverities[severity].color
+    const title = shortDescription({ ...incident, shortDescription: desc })
     return {
-      date: formatter('dateTimeFormatWithSeconds')(event.start),
-      description: formatEventDesc(event, intl),
-      icon: <UI.EventTypeIcon color={color} />
+      id: incident.id,
+      start: +new Date(incident.startTime),
+      date: formatter('dateTimeFormatWithSeconds')(incident.startTime),
+      description: `${intl.$t(category)} (${intl.$t(subCategory)})`,
+      title,
+      icon: <UI.IncidentEvent color={color}>{severity}</UI.IncidentEvent>
     }
   })
+  return [ ...events.map((event: DisplayEvent) => {
+    const color = eventColorByCategory[event.category as keyof typeof eventColorByCategory]
+    return {
+      start: event.start,
+      date: formatter('dateTimeFormatWithSeconds')(event.start),
+      description: formatEventDesc(event, intl),
+      title: formatEventDesc(event, intl),
+      icon: <UI.EventTypeIcon color={color} />
+    }
+  }),
+  ...incidents
+  ].sort((a,b) => a.start - b.start)
 }
-const sampleData = [
-  {
-    date: '06/07/2022 11:21:48',
-    description: 'Infrastructure (Service availabilty)',
-    icon: <UI.EventTypeIcon color='--acx-semantics-green-50'/>
-  },
-  {
-    date: '06/07/2022 11:21:48',
-    description: 'Client assiocated (802.11) @ Home_R860 (AA:BB:CC:DD:FF:GG)',
-    icon: <UI.EventTypeIcon color='--acx-neutrals-50'/>
-  },
-  {
-    date: '06/07/2022 11:21:48',
-    description: 'Client assiocated (802.11) @ Home_R860 (AA:BB:CC:DD:FF:GG)',
-    icon: <UI.IncidentEvent color='--acx-semantics-red-50'>P1</UI.IncidentEvent>
-  }
-]
+
+
+const renderItem = (item: Item) => {
+  const Item = <List.Item title={item.title}>
+    <List.Item.Meta
+      avatar={item.icon}
+      title={item.date}
+      description={item.description} />
+  </List.Item>
+  return item.id
+    ? <TenantLink to={`analytics/incidents/${item.id}`}>{Item}</TenantLink>
+    : Item
+}
+
 export function History (props : HistoryContentProps) {
   const intl = useIntl()
   const { $t } = intl
@@ -79,14 +116,7 @@ export function History (props : HistoryContentProps) {
             <List
               itemLayout='horizontal'
               dataSource={histData}
-              renderItem={(item) => (
-                <List.Item title={item.description}>
-                  <List.Item.Meta
-                    avatar={item.icon}
-                    title={item.date}
-                    description={item.description} />
-                </List.Item>
-              )}
+              renderItem={renderItem}
             />
           </UI.HistoryContent>
         )}

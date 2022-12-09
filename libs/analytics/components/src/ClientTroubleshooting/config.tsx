@@ -3,7 +3,9 @@ import { defineMessage, IntlShape } from 'react-intl'
 import {
   categoryOptions,
   mapCodeToFailureText,
-  clientEventDescription
+  clientEventDescription,
+  Incident,
+  shortDescription
 } from '@acx-ui/analytics/utils'
 import { formatter } from '@acx-ui/utils'
 
