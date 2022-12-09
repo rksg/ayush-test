@@ -3,10 +3,11 @@ import React from 'react'
 import { Popover } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { mapCodeToFailureText, mapCodeToReason } from '@acx-ui/analytics/utils'
-import { formatter }                             from '@acx-ui/utils'
+import { clientEventDescription, mapCodeToReason } from '@acx-ui/analytics/utils'
+import { formatter }                               from '@acx-ui/utils'
 
 import { FAILURE, DisplayEvent, SLOW, DISCONNECT } from './config'
+import Details                                     from './EventDetails'
 import * as UI                                     from './styledComponents'
 
 const useConnectionDetail = (event: DisplayEvent) => {
@@ -15,44 +16,35 @@ const useConnectionDetail = (event: DisplayEvent) => {
   const isFailure = event.category === FAILURE
   const isSlow = event.category === SLOW
   const isDisconnect = event.category === DISCONNECT
-  const { mac, apName, ssid, radio, code, ttc } = event
-  const data = [
-    $t({ defaultMessage: 'AP MAC: {mac}' }, { mac }),
-    $t({ defaultMessage: 'AP Name: {apName}' }, { apName }),
-    $t({ defaultMessage: 'SSID: {ssid}' }, { ssid }),
-    $t({ defaultMessage: 'Radio: {radio} GHz' }, { radio })
-  ]
+  const { mac, apName, ssid, radio, code, ttc, state } = event
 
   const eventDetails = [
-    { label: $t({ defaultMessage: 'AP MAC:' }), content: $t({ defaultMessage: '{mac}' }, { mac }) },
-    { label: $t({ defaultMessage: 'AP Name:' }), content: $t({ defaultMessage: '{apName}' },
+    { label: $t({ defaultMessage: 'AP MAC:' }), value: $t({ defaultMessage: '{mac}' }, { mac }) },
+    { label: $t({ defaultMessage: 'AP Name:' }), value: $t({ defaultMessage: '{apName}' },
       { apName }) },
-    { label: $t({ defaultMessage: 'SSID:' }), content: $t({ defaultMessage: '{ssid}' }, { ssid }) },
-    { label: $t({ defaultMessage: 'Radio:' }), content: $t({ defaultMessage: '{radio}' },
+    { label: $t({ defaultMessage: 'SSID:' }), value: $t({ defaultMessage: '{ssid}' }, { ssid }) },
+    { label: $t({ defaultMessage: 'Radio:' }), value: $t({ defaultMessage: '{radio}' },
       { radio: radio ? formatter('radioFormat')(radio) : $t({ defaultMessage: 'Unknown' }) }) }
   ]
 
   if (isFailure) {
-    const failureType = mapCodeToFailureText(code, intl)
+    const failureType = mapCodeToReason(code, intl)
     eventDetails.push({
       label: $t({ defaultMessage: 'Failure Type:' }),
-      content: $t({ defaultMessage: '{failureType}' }, { failureType })
+      value: $t({ defaultMessage: '{failureType}' }, { failureType })
     })
 
-    const reason = mapCodeToReason(code, intl)
+    const reason = clientEventDescription(event.failedMsgId, state)
     eventDetails.push({
       label: $t({ defaultMessage: 'Reason:' }),
-      content: $t({ defaultMessage: '{reason}' }, { reason })
+      value: $t({ defaultMessage: '{reason}' }, { reason: reason.defaultMessage as string })
     })
-
-    data.push($t({ defaultMessage: 'Failure Type: {failureType}' }, { failureType }))
-    data.push($t({ defaultMessage: 'Reason: {reason}' },{ reason }))
   }
 
   if (isSlow) {
     eventDetails.push({
       label: $t({ defaultMessage: 'Time to Connect:' }),
-      content: $t({ defaultMessage: '{ttc}' }, { ttc: formatter('durationFormat')(ttc) })
+      value: $t({ defaultMessage: '{ttc}' }, { ttc: formatter('durationFormat')(ttc) })
     })
   }
 
@@ -60,21 +52,20 @@ const useConnectionDetail = (event: DisplayEvent) => {
     const reason = mapCodeToReason(code, intl)
     eventDetails.push({
       label: $t({ defaultMessage: 'Reason:' }),
-      content: $t({ defaultMessage: '{reason}' }, { reason })
+      value: $t({ defaultMessage: '{reason}' }, { reason })
     })
   }
 
-  return Object.values(data).join('\n')
+  return eventDetails
 }
 
 export function ConnectionEvents ({ children, event }:
   { children?: React.ReactNode, event: DisplayEvent }) {
-  const { $t } = useIntl()
+  const rowData = useConnectionDetail(event)
   return (
     <UI.PopoverWrapper>
       <Popover
-        title={$t({ defaultMessage: 'Connection Event Details' })} // TODO: update
-        content={useConnectionDetail(event)}
+        content={<Details fields={rowData} />}
         trigger={['focus', 'click']}
         placement='left'
         getPopupContainer={(triggerNode) => triggerNode}
