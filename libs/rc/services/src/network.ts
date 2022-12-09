@@ -21,6 +21,10 @@ import {
   WifiUrlsInfo
 } from '@acx-ui/rc/utils'
 
+const RKS_NEW_UI = {
+  'x-rks-new-ui': true
+}
+
 export const baseNetworkApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'networkApi',
@@ -50,10 +54,6 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       providesTags: [{ type: 'Network', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          if (msg.status !== 'SUCCESS') return
-          if (!['DeleteNetwork', 'AddNetworkDeep', 'UpdateNetworkDeep'].includes(msg.useCase))
-            return
-
           showActivityMessage(msg, ['AddNetworkDeep', 'DeleteNetwork', 'UpdateNetworkDeep'], () => {
             api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'LIST' }]))
           })
@@ -62,7 +62,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
     }),
     addNetwork: build.mutation<Network, RequestPayload>({
       query: ({ params, payload }) => {
-        const createNetworkReq = createHttpRequest(WifiUrlsInfo.addNetworkDeep, params)
+        const createNetworkReq = createHttpRequest(WifiUrlsInfo.addNetworkDeep, params, RKS_NEW_UI)
         return {
           ...createNetworkReq,
           body: payload
@@ -72,7 +72,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
     }),
     updateNetwork: build.mutation<Network, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.updateNetworkDeep, params)
+        const req = createHttpRequest(WifiUrlsInfo.updateNetworkDeep, params, RKS_NEW_UI)
         return {
           ...req,
           body: payload
@@ -125,7 +125,9 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           FetchBaseQueryError,
           FetchBaseQueryMeta
         >)
-        const networkQuery = await fetchWithBQ(createHttpRequest(WifiUrlsInfo.getNetwork, params))
+        const networkQuery = await fetchWithBQ(
+          createHttpRequest(WifiUrlsInfo.getNetwork, params, RKS_NEW_UI)
+        )
         return networkQuery as QueryReturnValue<NetworkSaveData,
         FetchBaseQueryError,
         FetchBaseQueryMeta>
@@ -143,7 +145,12 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           showActivityMessage(msg,
-            ['AddNetworkVenue', 'DeleteNetworkVenue', 'UpdateNetworkDeep'], () => {
+            [
+              'AddNetworkVenue',
+              'DeleteNetworkVenue',
+              'UpdateNetworkDeep',
+              'UpdateNetworkVenue'
+            ], () => {
               api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'DETAIL' }]))
             })
         })
@@ -353,6 +360,7 @@ export const {
   useNetworkListQuery,
   useLazyNetworkListQuery,
   useGetNetworkQuery,
+  useLazyGetNetworkQuery,
   useNetworkDetailHeaderQuery,
   useNetworkVenueListQuery,
   useAddNetworkMutation,

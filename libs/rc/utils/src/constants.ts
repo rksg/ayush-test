@@ -111,7 +111,8 @@ export enum ServiceType {
   DHCP = 'DHCP',
   WIFI_CALLING = 'Wi-Fi Calling',
   MDNS_PROXY = 'MDNS_PROXY',
-  DPSK = 'DPSK'
+  DPSK = 'DPSK',
+  NETWORK_SEGMENTATION = 'Network Segmentation'
 }
 export enum ServiceTechnology {
   WIFI = 'WI-FI',
@@ -127,9 +128,9 @@ export enum ServiceAdminState {
 }
 
 export enum DHCPConfigTypeEnum {
-  SIMPLE = 'SIMPLE',
-  MULTIPLE = 'MULTIPLE',
-  HIERARCHICAL = 'HIERARCHICAL'
+  SIMPLE = 'EnableOnEachAPs',
+  MULTIPLE = 'EnableOnMultipleAPs',
+  HIERARCHICAL = 'EnableOnHierarchicalAPs'
 }
 
 export enum RadiusErrorsType {

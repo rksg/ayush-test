@@ -3,11 +3,16 @@ import { useState } from 'react'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo, ServiceType, Venue }                                                 from '@acx-ui/rc/utils'
+import {
+  CommonUrlsInfo,
+  ServiceType,
+  Venue,
+  getServiceRoutePath,
+  ServiceOperation
+} from '@acx-ui/rc/utils'
 import { Provider }                                                                           from '@acx-ui/store'
 import { mockServer, render, renderHook, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
-import { getServiceRoutePath, ServiceOperation }         from '../../serviceRouteUtils'
 import { mockedApList, mockedTenantId, mockedVenueList } from '../MdnsProxyForm/__tests__/fixtures'
 
 import { MdnsProxyScopeApDrawer } from './MdnsProxyScopeApDrawer'
@@ -88,7 +93,7 @@ describe('MdnsProxyScopeApDrawer', () => {
     // Click Activate button in the row actions
     await userEvent.click(await screen.findByRole('button', { name: 'Activate' }))
 
-    // Check if each record is activated
+    // Check if the record is activated
     await waitFor(() => {
       expect(within(targetRow).getByRole('switch')).toBeChecked()
     })

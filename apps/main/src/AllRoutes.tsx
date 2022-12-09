@@ -10,6 +10,7 @@ import NetworksBase     from './pages/Networks'
 import PoliciesBase     from './pages/Policies'
 import SearchResults    from './pages/SearchResults'
 import ServicesBase     from './pages/Services'
+import { UserProfile }  from './pages/UserProfile'
 import UsersBase        from './pages/Users'
 import { VenueDetails } from './pages/Venues/VenueDetails'
 import { VenueEdit }    from './pages/Venues/VenueEdit'
@@ -26,6 +27,7 @@ function AllRoutes () {
       <Route path='t/:tenantId' element={<Layout />}>
         <Route index element={<TenantNavigate replace to='/dashboard' />} />
         <Route path='dashboard' element={<Dashboard />} />
+        <Route path='userprofile' element={<UserProfile />} />
         <Route path='analytics/*' element={<AnalyticsBase />}>
           <Route path='*' element={<AnalyticsRoutes />} />
         </Route>

@@ -31,7 +31,20 @@ describe('ApTabs', () => {
     await waitFor(() => screen.findByText('Clients (1)'))
     fireEvent.click(await screen.findByText('Clients (1)'))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/devices/aps/${params.serialNumber}/details/clients`,
+      pathname: `/t/${params.tenantId}/devices/wifi/${params.serialNumber}/details/clients`,
+      hash: '',
+      search: ''
+    })
+  })
+  it('should handle troubleshooting tab changes', async () => {
+    render(<Provider>
+      <ApTabs apDetail={apDetailData} />
+    </Provider>, { route: { params } })
+    await waitFor(() => screen.findByText(/Troubleshooting/))
+    fireEvent.click(await screen.findByText(/Troubleshooting/))
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      pathname:
+        `/t/${params.tenantId}/devices/wifi/${params.serialNumber}/details/troubleshooting/ping`,
       hash: '',
       search: ''
     })

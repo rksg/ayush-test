@@ -72,7 +72,7 @@ const WifiCallingSummaryForm = () => {
           label={$t({ defaultMessage: 'Wireless Networks' }) + `(${state.networkIds.length})`}
         >
           <>
-            {state.networkIds.map(network => {
+            {state.networksName.map(network => {
               return <div key={network}>{network}</div>
             })}
           </>

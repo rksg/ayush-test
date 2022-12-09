@@ -28,7 +28,7 @@ export function MdnsProxyInstancesTable () {
       sorter: true,
       render: (data, row) => {
         // eslint-disable-next-line max-len
-        return <TenantLink to={`/devices/aps/${row.serialNumber}/details/overview`}>{data}</TenantLink>
+        return <TenantLink to={`/devices/wifi/${row.serialNumber}/details/overview`}>{data}</TenantLink>
       }
     },
     {
@@ -71,37 +71,37 @@ export function MdnsProxyInstancesTable () {
           </>
         )
       }
-    },
-    {
-      title: $t({ defaultMessage: 'Client Queries' }),
-      dataIndex: 'clientQueries',
-      key: 'clientQueries',
-      sorter: true,
-      render: () => {
-        // TODO: API is not ready, this is mocked data for display
-        return 0
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Server Responses' }),
-      dataIndex: 'serverResponses',
-      key: 'serverResponses',
-      sorter: true,
-      render: () => {
-        // TODO: API is not ready, this is mocked data for display
-        return 0
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Types of mDNS Services' }),
-      dataIndex: 'typesCount',
-      key: 'typesCount',
-      sorter: true,
-      render: () => {
-        // TODO: API is not ready, this is mocked data for display
-        return 0
-      }
     }
+    // {
+    //   title: $t({ defaultMessage: 'Client Queries' }),
+    //   dataIndex: 'clientQueries',
+    //   key: 'clientQueries',
+    //   sorter: true,
+    //   render: () => {
+    //     // TODO: API is not ready, this is mocked data for display
+    //     return 0
+    //   }
+    // },
+    // {
+    //   title: $t({ defaultMessage: 'Server Responses' }),
+    //   dataIndex: 'serverResponses',
+    //   key: 'serverResponses',
+    //   sorter: true,
+    //   render: () => {
+    //     // TODO: API is not ready, this is mocked data for display
+    //     return 0
+    //   }
+    // },
+    // {
+    //   title: $t({ defaultMessage: 'Types of mDNS Services' }),
+    //   dataIndex: 'typesCount',
+    //   key: 'typesCount',
+    //   sorter: true,
+    //   render: () => {
+    //     // TODO: API is not ready, this is mocked data for display
+    //     return 0
+    //   }
+    // }
   ]
 
   return (

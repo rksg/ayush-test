@@ -31,6 +31,18 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/eventalarmapi/:tenantId/alarm/meta'
   },
+  clearAlarm: {
+    method: 'delete',
+    url: '/api/eventalarmapi/:tenantId/alarm/clear/:alarmId'
+  },
+  clearAllAlarm: {
+    method: 'delete',
+    url: '/api/eventalarmapi/:tenantId/alarm'
+  },
+  getEventListMeta: {
+    method: 'post',
+    url: '/api/eventalarmapi/:tenantId/event/meta'
+  },
   getApsList: {
     method: 'post',
     url: '/api/viewmodel/:tenantId/aps'
@@ -119,6 +131,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/service/:serviceId'
   },
+  getDHCPService: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/dhcpconfigserviceprofiles/:serviceId'
+  },
   saveDHCPService: {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/network/deep?quickAck=true'
@@ -142,6 +158,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getUploadURL: {
     method: 'post',
     url: '/api/file/tenant/:tenantId/upload-url'
+  },
+  getAllDevices: {
+    method: 'post',
+    url: '/api/viewmodel/tenant/:tenantId/venue/:venueId/devices'
   },
   getVenueCapabilities: {
     method: 'get',
@@ -203,6 +223,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/rogue/ap'
   },
+  getOldVenueRogueAp: {
+    method: 'post',
+    url: '/api/viewmodel/tenant/:tenantId/venue/:venueId/rogue/ap'
+  },
   updateVenueRogueAp: {
     method: 'put',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/rogue/ap'
@@ -235,9 +259,62 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/user-profile'
   },
+  updateUserProfile: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/user-profile'
+  },
+  getVenueDHCPServiceProfile: {
+    //Retrieve Venue DHCP Service Profile Settings
+    method: 'get',
+    url: '/api/venues/:venueId/dhcpconfigserviceprofilesettings'
+  },
+  getVenueActivePools: {
+    //Get Venue Active DHCP Pool
+    method: 'get',
+    url: '/api/venues/:venueId/activedhcppools'
+  },
+  getVenueLeases: {
+    //Get Venue Active DHCP Pool
+    method: 'get',
+    url: '/api/venues/:venueId/dhcpConfigServiceProfileLeases'
+  },
+  getDHCPProfiles: {
+    //Get Venue Active DHCP Pool
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/dhcpconfigserviceprofiles'
+  },
+  activeVenueDHCPPool: {
+    //Get Venue Active DHCP Pool
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/venues/:venueId/dhcppools/:dhcppoolId'
+  },
   getApDetailHeader: {
     method: 'get',
     url: '/api/viewmodel/tenant/:tenantId/ap/:serialNumber/detailheader'
+  },
+  getCloudVersion: {
+    method: 'get',
+    url: '/api/upgrade/tenant/:tenantId/upgrade-version'
+  },
+  getClientSessionHistory: {
+    method: 'post',
+    url: '/api/reporting/tenant/:tenantId/report/clientSessionHistory'
+  },
+  getClientList: {
+    method: 'post',
+    url: '/api/viewmodel/:tenantId/client/clientlist'
+  },
+  getHistoricalClientList: {
+    method: 'post',
+    url: '/api/eventalarmapi/:tenantId/event/hist_client_list'
+  },
+  getClientMeta: {
+    method: 'post',
+    url: '/api/viewmodel/:tenantId/client/meta'
+  },
+  getGuestsList: {
+    method: 'post',
+    url: '/api/viewmodel/tenant/:tenantId/guests'
   },
   getApNetworkList: {
     method: 'post',

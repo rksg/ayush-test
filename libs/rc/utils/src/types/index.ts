@@ -6,7 +6,8 @@ import {
   ApDeviceStatusEnum,
   GuestNetworkTypeEnum,
   WlanSecurityEnum,
-  NetworkTypeEnum, QosPriorityEnum
+  NetworkTypeEnum,
+  QosPriorityEnum
 } from '../constants'
 import { AAAWlanAdvancedCustomization }  from '../models/AAAWlanAdvancedCustomization'
 import { DpskWlanAdvancedCustomization } from '../models/DpskWlanAdvancedCustomization'
@@ -15,8 +16,8 @@ import { OpenWlanAdvancedCustomization } from '../models/OpenWlanAdvancedCustomi
 import { PskWlanAdvancedCustomization }  from '../models/PskWlanAdvancedCustomization'
 import { TrustedCAChain }                from '../models/TrustedCAChain'
 
-import { EPDG } from './wifiCallingService'
-
+import { ApModel } from './ap'
+import { EPDG }    from './services'
 
 export * from './ap'
 export * from './venue'
@@ -25,9 +26,11 @@ export * from './user'
 export * from './services'
 export * from './msp'
 export * from './edge'
-export * from './policy'
-export * from './wifiCallingService'
+export * from './policies'
 export * from './portalService'
+export * from './client'
+export * from './components'
+export * from './switch'
 export * from './macRegistrationList'
 export * from './persona'
 
@@ -58,7 +61,7 @@ export interface NetworkDetail {
   tenantId: string
   name: string
   venues: NetworkVenue[]
-  id: string,
+  id: string
   wlan: {
     wlanSecurity: WlanSecurityEnum,
     ssid?: string;
@@ -69,7 +72,7 @@ export interface NetworkDetail {
       AAAWlanAdvancedCustomization |
       DpskWlanAdvancedCustomization |
       PskWlanAdvancedCustomization;
-  },
+  }
 }
 
 export interface Venue {
@@ -371,6 +374,31 @@ export interface WifiCallingSettingContextType {
   setWifiCallingSettingList: (wifiCallingSettingList: WifiCallingSetting[]) => void
 }
 
+export interface CloudVersion {
+  versionUpgradeDate: string,
+  currentVersion: VersionInfo,
+  futureVersion: VersionInfo,
+  scheduleVersionList: string[]
+}
+
+enum UpgradeType {
+  STANDDARD,
+  HOTFIX
+}
+interface VersionInfo {
+  affectsNetwork: boolean
+  createdDate: string
+  description: string
+  name: string
+  id: string
+  releaseNotesUrl: string
+  scheduleNow: boolean
+  upgradeTime: string
+  type: UpgradeType | undefined
+  features: string[]
+
+}
+
 export interface catchErrorDetails {
   code: string,
   message: string
@@ -382,4 +410,24 @@ export interface catchErrorResponse {
     requestId: string
   },
   status: number
+}
+
+export enum ClientStatusEnum {
+  HISTORICAL = 'historical',
+  CONNECTED = 'connected'
+}
+
+export interface Capabilities {
+	apModels: ApModel[]
+	version: string
+}
+
+export interface EventMeta {
+  apName: string,
+  id: string,
+  isApExists: boolean,
+  isClientExists: boolean,
+  isVenueExists: boolean,
+  networkId: string,
+  venueName: string,
 }

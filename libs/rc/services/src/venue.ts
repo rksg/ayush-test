@@ -14,7 +14,7 @@ import {
   VenueExtended,
   VenueDetailHeader,
   APMesh,
-  VenueCapabilities,
+  Capabilities,
   VenueLed,
   VenueApModels,
   ExternalAntenna,
@@ -32,12 +32,17 @@ import {
   VenueSettings,
   VenueSwitchConfiguration,
   ConfigurationProfile,
+  VenueDHCPProfile,
+  DHCPLeases,
   VenueDefaultRegulatoryChannels,
   VenueDefaultRegulatoryChannelsForm,
   TriBandSettings,
   AvailableLteBands,
   VenueApModelCellular,
-  UploadUrlResponse
+  UploadUrlResponse,
+  NetworkDeviceResponse,
+  NetworkDevicePayload,
+  RogueOldApResponseType
 } from '@acx-ui/rc/utils'
 
 
@@ -251,7 +256,16 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'VenueFloorPlan', id: 'DETAIL' }]
     }),
-    getVenueCapabilities: build.query<VenueCapabilities, RequestPayload>({
+    getAllDevices: build.query<NetworkDeviceResponse, RequestPayload<NetworkDevicePayload>>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getAllDevices, params)
+        return {
+          ...req,
+          body: payload as NetworkDevicePayload
+        }
+      }
+    }),
+    getVenueCapabilities: build.query<Capabilities, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(CommonUrlsInfo.getVenueCapabilities, params)
         return{
@@ -558,6 +572,15 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       }
     }),
+    getOldVenueRogueAp: build.query<TableResult<RogueOldApResponseType>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getOldVenueRogueAp, params)
+        return{
+          ...req,
+          body: payload
+        }
+      }
+    }),
     updateVenueRogueAp: build.mutation<VenueRogueAp, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(CommonUrlsInfo.updateVenueRogueAp, params)
@@ -575,7 +598,42 @@ export const venueApi = baseVenueApi.injectEndpoints({
           ...req
         }
       }
+    }),
+    venueDHCPProfile: build.query<VenueDHCPProfile, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getVenueDHCPServiceProfile, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Venue', id: 'DHCPProfile' }]
+    }),
+    venueActivePools: build.query<string[] | null, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getVenueActivePools, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    venuesLeasesList: build.query<DHCPLeases[], RequestPayload>({
+      query: ({ params }) => {
+        const leasesList = createHttpRequest(CommonUrlsInfo.getVenueLeases, params)
+        return {
+          ...leasesList
+        }
+      }
+    }),
+    activateDHCPPool: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.activeVenueDHCPPool, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
     })
+
   })
 })
 
@@ -599,6 +657,7 @@ export const {
   useAddFloorPlanMutation,
   useGetUploadURLMutation,
   useUpdateFloorPlanMutation,
+  useGetAllDevicesQuery,
   useGetVenueCapabilitiesQuery,
   useGetVenueApModelsQuery,
   useGetVenueLedOnQuery,
@@ -616,12 +675,17 @@ export const {
   useGetDenialOfServiceProtectionQuery,
   useUpdateDenialOfServiceProtectionMutation,
   useGetVenueRogueApQuery,
+  useGetOldVenueRogueApQuery,
   useUpdateVenueRogueApMutation,
   useGetRoguePoliciesQuery,
   useConfigProfilesQuery,
   useVenueSwitchSettingQuery,
   useUpdateVenueSwitchSettingMutation,
   useSwitchConfigProfileQuery,
+  useVenueDHCPProfileQuery,
+  useVenueActivePoolsQuery,
+  useVenuesLeasesListQuery,
+  useActivateDHCPPoolMutation,
   useVenueDefaultRegulatoryChannelsQuery,
   useGetDefaultRadioCustomizationQuery,
   useGetVenueRadioCustomizationQuery,

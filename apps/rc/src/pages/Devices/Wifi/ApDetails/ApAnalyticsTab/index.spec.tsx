@@ -74,12 +74,12 @@ describe('ApAnalyticsTab', () => {
     </Provider>, {
       route: {
         params: { tenantId: 't1', serialNumber: '000000000001' },
-        path: '/t/:tenantId/devices/aps/:serialNumber/details/analytics'
+        path: '/t/:tenantId/devices/wifi/:serialNumber/details/analytics'
       }
     })
     fireEvent.click(await screen.findByText('Health'))
     expect(mockedUsedNavigate.mock.calls[0][0].pathname).toEqual(
-      '/t/t1/devices/aps/000000000001/details/analytics/health/overview'
+      '/t/t1/devices/wifi/000000000001/details/analytics/health/overview'
     )
   })
 })
