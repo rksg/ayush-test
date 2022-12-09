@@ -1,3 +1,7 @@
+import { IntlShape } from 'react-intl'
+
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+import { cssStr } from '@acx-ui/components'
 import {
   Amazon,
   Android,
@@ -116,3 +120,40 @@ const convertClientOsType = (origOsType: string) => {
   return osType
 }
 
+export function getRssiStatus (intl: IntlShape, value?: number) {
+  const rssi = Number(value)
+  if (rssi < -80) {
+    return {
+      tooltip: intl.$t({ defaultMessage: 'Poor' }),
+      color: cssStr('--acx-semantics-red-50')
+    }
+  } else if (rssi <= -68 && rssi >= -80) {
+    return {
+      tooltip: intl.$t({ defaultMessage: 'Acceptable' }),
+      color: cssStr('--acx-semantics-yellow-40')
+    }
+  } else if (rssi && rssi > -68) {
+    return {
+      tooltip: intl.$t({ defaultMessage: 'Good' }),
+      color: cssStr('--acx-semantics-green-50')
+    }
+  }
+  return {
+    tooltip: '',
+    color: ''
+  }
+}
+
+export function getNoiseFloorStatus (intl: IntlShape, value: number) {
+  const noise = Number(value)
+  if (noise <= -75) {
+    return {
+      tooltip: intl.$t({ defaultMessage: 'Low' }),
+      color: cssStr('--acx-semantics-green-50')
+    }
+  }
+  return {
+    tooltip: intl.$t({ defaultMessage: 'High' }),
+    color: cssStr('--acx-semantics-red-50')
+  }
+}

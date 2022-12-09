@@ -5,13 +5,19 @@ import moment        from 'moment-timezone'
 
 import { DateRange } from '@acx-ui/utils'
 
-import { RangePicker } from '.'
+import { DatePicker, RangePicker } from '.'
 
 function Wrapper (props: { children: React.ReactNode }) {
   return <div {...props} style={{ position: 'absolute', top: 100, left: 500 }} />
 }
 
-storiesOf('DatePicker', module).add('with default ranges', () => (
+storiesOf('DatePicker', module).add('Basic', () => (
+  <Wrapper>
+    <DatePicker />
+  </Wrapper>
+))
+
+storiesOf('DatePicker', module).add('RangePicker - default ranges', () => (
   <Wrapper>
     <RangePicker
       selectionType={DateRange.last24Hours}
@@ -23,7 +29,8 @@ storiesOf('DatePicker', module).add('with default ranges', () => (
     />
   </Wrapper>
 ))
-storiesOf('DatePicker', module).add('with custom ranges', () => (
+
+storiesOf('DatePicker', module).add('RangePicker - custom ranges', () => (
   <Wrapper>
     <RangePicker
       selectionType={DateRange.last24Hours}
@@ -36,7 +43,8 @@ storiesOf('DatePicker', module).add('with custom ranges', () => (
     />
   </Wrapper>
 ))
-storiesOf('DatePicker', module).add('with custom time picker and ranges ', () => (
+
+storiesOf('DatePicker', module).add('RangePicker - custom time picker and ranges ', () => (
   <Wrapper>
     <RangePicker
       selectionType={DateRange.last24Hours}
@@ -50,7 +58,7 @@ storiesOf('DatePicker', module).add('with custom time picker and ranges ', () =>
   </Wrapper>
 ))
 
-storiesOf('DatePicker', module).add('with restricted date selection', () => (
+storiesOf('DatePicker', module).add('RangePicker - restricted date selection', () => (
   <Wrapper>
     <RangePicker
       rangeOptions={[DateRange.last24Hours, DateRange.last7Days]}
@@ -65,7 +73,8 @@ storiesOf('DatePicker', module).add('with restricted date selection', () => (
     />
   </Wrapper>
 ))
-storiesOf('DatePicker', module).add('with user default selected date', () => (
+
+storiesOf('DatePicker', module).add('RangePicker - user default selected date', () => (
   <Wrapper>
     <RangePicker
       rangeOptions={[DateRange.today, DateRange.last7Days, DateRange.lastMonth]}

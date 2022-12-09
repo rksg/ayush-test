@@ -5,7 +5,11 @@ import { useIntl }               from 'react-intl'
 import { Button, DisabledButton, PageHeader, RangePicker } from '@acx-ui/components'
 import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { ArrowExpand, ClockOutlined }                      from '@acx-ui/icons'
-import { dateRangeForLast, useDateFilter }                 from '@acx-ui/utils'
+import {
+  useParams,
+  useSearchParams
+} from '@acx-ui/react-router-dom'
+import { dateRangeForLast, useDateFilter } from '@acx-ui/utils'
 
 import ClientDetailTabs from './ClientDetailTabs'
 
@@ -30,6 +34,9 @@ function DatePicker () {
 
 function ClientDetailPageHeader () {
   const { $t } = useIntl()
+  const { clientId } = useParams()
+  const [searchParams] = useSearchParams()
+
   const menu = (
     <Menu
       items={[{
@@ -47,10 +54,17 @@ function ClientDetailPageHeader () {
 
   return (
     <PageHeader
-      title={$t({ defaultMessage: 'User-1' })}
-      // TODO: navigate to /users/aps/{userType}
+      title={<Space size={4}>{clientId}
+        {
+          searchParams.get('hostname') &&
+          searchParams.get('hostname') !== clientId &&
+          <Space style={{ fontSize: '14px', marginLeft: '8px' }} size={0}>
+            ({searchParams.get('hostname')})
+          </Space>
+        }
+      </Space>}
       breadcrumb={[
-        { text: $t({ defaultMessage: 'WiFi Users' }), link: '/users' }
+        { text: $t({ defaultMessage: 'WiFi Users' }), link: '/users/wifi/clients' }
       ]}
       extra={[
         <DatePicker key='date-filter' />,

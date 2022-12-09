@@ -1,14 +1,11 @@
-import { useContext } from 'react'
+import { Form, Input, Col, Radio, Row, Space } from 'antd'
+import { useIntl }                             from 'react-intl'
 
-import { Form, Input, Col, Radio, Row, Space, RadioChangeEvent } from 'antd'
-import { useIntl }                                               from 'react-intl'
-
-import { StepsForm }                             from '@acx-ui/components'
-import { DHCPConfigTypeEnum, ServiceTechnology } from '@acx-ui/rc/utils'
+import { StepsForm }          from '@acx-ui/components'
+import { DHCPConfigTypeEnum } from '@acx-ui/rc/utils'
 
 import { dhcpTypes, dhcpTypesDesc } from './contentsMap'
 import { DHCPDiagram }              from './DHCPDiagram/DHCPDiagram'
-import DHCPFormContext              from './DHCPFormContext'
 import DHCPPoolTable                from './DHCPPool'
 import { RadioDescription }         from './styledComponents'
 
@@ -18,8 +15,7 @@ export function SettingForm () {
   const intl = useIntl()
 
   const type = useWatch<DHCPConfigTypeEnum>('dhcpConfig')
-  const createType = useWatch<ServiceTechnology>('createType')
-  const { saveState, updateSaveState } = useContext(DHCPFormContext)
+  // const createType = useWatch<ServiceTechnology>('createType')
 
   const types = Object.values(DHCPConfigTypeEnum)
 
@@ -48,27 +44,6 @@ export function SettingForm () {
         />
 
         <Form.Item
-          name='createType'
-          style={{ display: 'none' }}
-          initialValue={ServiceTechnology.WIFI}
-          label={intl.$t({ defaultMessage: 'Type' })}>
-          <Radio.Group onChange={(e: RadioChangeEvent) => {
-            updateSaveState({
-              ...saveState,
-              createType: e.target.value as ServiceTechnology
-            })
-          }}>
-            <Radio value={ServiceTechnology.WIFI}>
-              {intl.$t({ defaultMessage: 'Wi-Fi' })}
-            </Radio>
-            <Radio value={ServiceTechnology.SWITCH}>
-              {intl.$t({ defaultMessage: 'Switch' })}
-            </Radio>
-          </Radio.Group>
-        </Form.Item>
-
-        {createType === ServiceTechnology.WIFI &&
-        <Form.Item
           name='dhcpConfig'
           initialValue={DHCPConfigTypeEnum.SIMPLE}
           label={intl.$t({ defaultMessage: 'DHCP Configuration' })}
@@ -87,12 +62,12 @@ export function SettingForm () {
               ))}
             </Space>
           </Radio.Group>
-        </Form.Item>}
+        </Form.Item>
 
       </Col>
-      {createType === ServiceTechnology.WIFI && <Col span={10}>
+      <Col span={10}>
         <DHCPDiagram type={type}/>
-      </Col>}
+      </Col>
     </Row>
     <Row gutter={20}>
       <Col span={20}>

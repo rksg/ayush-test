@@ -74,7 +74,7 @@ export function useMenuConfig () {
       name: $t({ defaultMessage: 'Timeline' }),
       inactiveIcon: CalendarDateOutlined,
       activeIcon: CalendarDateSolid,
-      disabled: true
+      disabled: !useIsSplitOn(Features.TIMELINE)
     },
     {
       path: '/reports',
@@ -117,16 +117,16 @@ export function useMenuConfig () {
       name: $t({ defaultMessage: 'Devices' }),
       inactiveIcon: DevicesOutlined,
       activeIcon: DevicesSolid,
-      disabled: !useIsSplitOn(Features.DEVICES),
       routes:
         [
           {
-            path: '/devices/aps',
+            path: '/devices/wifi',
             name: $t({ defaultMessage: 'WiFi' })
           },
           {
-            path: '/devices/switches',
-            name: $t({ defaultMessage: 'Switch' })
+            path: '/devices/switch',
+            name: $t({ defaultMessage: 'Switch' }),
+            disabled: !useIsSplitOn(Features.DEVICES)
           }
         ]
     },
@@ -155,15 +155,15 @@ export function useMenuConfig () {
       name: $t({ defaultMessage: 'Users' }),
       inactiveIcon: AccountCircleOutlined,
       activeIcon: AccountCircleSolid,
-      disabled: !useIsSplitOn(Features.USERS),
       routes: [
         {
-          path: '/users/aps',
+          path: '/users/wifi',
           name: $t({ defaultMessage: 'WiFi' })
         },
         {
-          path: '/users/switches',
-          name: $t({ defaultMessage: 'Switch' })
+          path: '/users/switch',
+          name: $t({ defaultMessage: 'Switch' }),
+          disabled: !useIsSplitOn(Features.USERS)
         }
       ]
     },

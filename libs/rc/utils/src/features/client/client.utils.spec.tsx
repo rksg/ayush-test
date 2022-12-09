@@ -1,8 +1,18 @@
+import '@testing-library/jest-dom'
+import { useIntl } from 'react-intl'
+
 import {
-  render
+  render,
+  renderHook
 } from '@acx-ui/test-utils'
 
-import { getClientHealthClass, getDeviceTypeIcon, getOsTypeIcon } from '.'
+import {
+  getClientHealthClass,
+  getDeviceTypeIcon,
+  getNoiseFloorStatus,
+  getRssiStatus,
+  getOsTypeIcon
+} from '.'
 
 jest.mock('@acx-ui/icons', ()=> {
   const icons = jest.requireActual('@acx-ui/icons')
@@ -65,3 +75,45 @@ describe('Test getDeviceTypeIcon function', () => {
   })
 })
 
+
+describe('getRssiStatus', () => {
+  it('Should take care of poor value correctly', async () => {
+    expect(renderHook(() => getRssiStatus(useIntl(), -90)).result.current).toEqual({
+      tooltip: 'Poor',
+      color: '#ED1C24'
+    })
+  })
+  it('Should take care of acceptable value correctly', async () => {
+    expect(renderHook(() => getRssiStatus(useIntl(), -78)).result.current).toEqual({
+      tooltip: 'Acceptable',
+      color: '#F9C34B'
+    })
+  })
+  it('Should take care of good value correctly', async () => {
+    expect(renderHook(() => getRssiStatus(useIntl(), -30)).result.current).toEqual({
+      tooltip: 'Good',
+      color: '#23AB36'
+    })
+  })
+  it('Should take care of empty value correctly', async () => {
+    expect(renderHook(() => getRssiStatus(useIntl(), null)).result.current).toEqual({
+      tooltip: '',
+      color: ''
+    })
+  })
+})
+
+describe('getNoiseFloorStatus', () => {
+  it('Should take care of low value correctly', async () => {
+    expect(renderHook(() => getNoiseFloorStatus(useIntl(), -80)).result.current).toEqual({
+      tooltip: 'Low',
+      color: '#23AB36'
+    })
+  })
+  it('Should take care of high value correctly', async () => {
+    expect(renderHook(() => getNoiseFloorStatus(useIntl(), -60)).result.current).toEqual({
+      tooltip: 'High',
+      color: '#ED1C24'
+    })
+  })
+})
