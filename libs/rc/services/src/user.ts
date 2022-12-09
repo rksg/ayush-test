@@ -3,10 +3,13 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import {
   CommonUrlsInfo,
   createHttpRequest,
+  ProfileDataToUpdate,
   RequestPayload,
   UserSettings,
-  UserProfile
+  UserProfile,
+  CloudVersion
 } from '@acx-ui/rc/utils'
+
 
 export const baseUserApi = createApi({
   baseQuery: fetchBaseQuery(),
@@ -35,6 +38,17 @@ export const userApi = baseUserApi.injectEndpoints({
         return result
       }
     }),
+    getCloudVersion: build.query<CloudVersion, RequestPayload>({
+      query: ({ params }) => {
+        const cloudVersionReq = createHttpRequest(
+          CommonUrlsInfo.getCloudVersion,
+          params
+        )
+        return {
+          ...cloudVersionReq
+        }
+      }
+    }),
     getUserProfile: build.query<UserProfile, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(
@@ -44,12 +58,29 @@ export const userApi = baseUserApi.injectEndpoints({
         return {
           ...req
         }
+      },
+      transformResponse (userProfile: UserProfile) {
+        userProfile.initials =
+          userProfile.firstName[0].toUpperCase() + userProfile.lastName[0].toUpperCase()
+        userProfile.fullName = `${userProfile.firstName} ${userProfile.lastName}`
+        return userProfile
+      }
+    }),
+    updateUserProfile: build.mutation<ProfileDataToUpdate, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.updateUserProfile, params)
+        return {
+          ...req,
+          body: payload
+        }
       }
     })
   })
 })
-
 export const {
   useGetAllUserSettingsQuery,
-  useLazyGetUserProfileQuery
+  useGetCloudVersionQuery,
+  useGetUserProfileQuery,
+  useLazyGetUserProfileQuery,
+  useUpdateUserProfileMutation
 } = userApi

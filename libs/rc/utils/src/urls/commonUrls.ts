@@ -31,9 +31,25 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/eventalarmapi/:tenantId/alarm/meta'
   },
+  getActivityList: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/activity/query'
+  },
+  getEventList: {
+    method: 'post',
+    url: '/api/eventalarmapi/:tenantId/event/eventlist'
+  },
   getEventListMeta: {
     method: 'post',
     url: '/api/eventalarmapi/:tenantId/event/meta'
+  },
+  clearAlarm: {
+    method: 'delete',
+    url: '/api/eventalarmapi/:tenantId/alarm/clear/:alarmId'
+  },
+  clearAllAlarm: {
+    method: 'delete',
+    url: '/api/eventalarmapi/:tenantId/alarm'
   },
   getApsList: {
     method: 'post',
@@ -215,6 +231,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/rogue/ap'
   },
+  getOldVenueRogueAp: {
+    method: 'post',
+    url: '/api/viewmodel/tenant/:tenantId/venue/:venueId/rogue/ap'
+  },
   updateVenueRogueAp: {
     method: 'put',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/rogue/ap'
@@ -247,6 +267,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/user-profile'
   },
+  updateUserProfile: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/user-profile'
+  },
   getVenueDHCPServiceProfile: {
     //Retrieve Venue DHCP Service Profile Settings
     method: 'get',
@@ -276,21 +300,21 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/viewmodel/tenant/:tenantId/ap/:serialNumber/detailheader'
   },
-  getHistoricalClientList: {
-    method: 'post',
-    url: '/api/eventalarmapi/:tenantId/event/hist_client_list'
+  getCloudVersion: {
+    method: 'get',
+    url: '/api/upgrade/tenant/:tenantId/upgrade-version'
   },
   getClientSessionHistory: {
     method: 'post',
     url: '/api/reporting/tenant/:tenantId/report/clientSessionHistory'
   },
-  getClientList: {
+  getHistoricalClientList: {
     method: 'post',
-    url: '/api/viewmodel/:tenantId/client/clientlist'
+    url: '/api/eventalarmapi/:tenantId/event/hist_client_list'
   },
-  getClientMeta: {
+  getHistoricalStatisticsReportsV2: {
     method: 'post',
-    url: '/api/viewmodel/:tenantId/client/meta'
+    url: '/api/reporting/tenant/:tenantId/report/clientStats/v2'
   },
   getGuestsList: {
     method: 'post',

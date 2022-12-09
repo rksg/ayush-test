@@ -43,6 +43,7 @@ export type PAGINATION = {
 }
 
 const DEFAULT_PAGINATION = {
+  page: 1,
   current: 1,
   pageSize: 10,
   total: 0

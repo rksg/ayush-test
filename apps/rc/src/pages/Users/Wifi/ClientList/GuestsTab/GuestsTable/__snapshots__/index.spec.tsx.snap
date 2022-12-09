@@ -10,14 +10,14 @@ exports[`Guest Table should render table 1`] = `
     >
       <div
         class="ant-space ant-space-horizontal ant-space-align-center"
-        style="display: flex; justify-content: flex-end;"
+        style="display: flex; justify-content: flex-end; margin: 3px 0px;"
       >
         <div
           class="ant-space-item"
           style="margin-right: 0px;"
         >
           <button
-            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
             type="button"
           >
             <span>
@@ -39,7 +39,7 @@ exports[`Guest Table should render table 1`] = `
           style="margin-right: 0px;"
         >
           <button
-            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
             disabled=""
             type="button"
           >
@@ -61,7 +61,7 @@ exports[`Guest Table should render table 1`] = `
           class="ant-space-item"
         >
           <button
-            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
             type="button"
           >
             <span>
@@ -683,8 +683,7 @@ exports[`Guest Table should render table 1`] = `
                                 class="ant-table-cell"
                               >
                                 <button
-                                  class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                                  style="font-size: 12px;"
+                                  class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
                                   type="button"
                                 >
                                   <span>
@@ -696,8 +695,7 @@ exports[`Guest Table should render table 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <button
-                                  class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                                  style="font-size: 12px;"
+                                  class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
                                   type="button"
                                 >
                                   <span>
@@ -748,8 +746,7 @@ exports[`Guest Table should render table 1`] = `
                                 class="ant-table-cell"
                               >
                                 <button
-                                  class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                                  style="font-size: 12px;"
+                                  class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
                                   type="button"
                                 >
                                   <span>
@@ -761,8 +758,7 @@ exports[`Guest Table should render table 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <button
-                                  class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                                  style="font-size: 12px;"
+                                  class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
                                   type="button"
                                 >
                                   <span>
@@ -815,8 +811,7 @@ exports[`Guest Table should render table 1`] = `
                                 class="ant-table-cell"
                               >
                                 <button
-                                  class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                                  style="font-size: 12px;"
+                                  class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
                                   type="button"
                                 >
                                   <span>
@@ -828,8 +823,7 @@ exports[`Guest Table should render table 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <button
-                                  class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                                  style="font-size: 12px;"
+                                  class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
                                   type="button"
                                 >
                                   <span>
@@ -880,8 +874,7 @@ exports[`Guest Table should render table 1`] = `
                                 class="ant-table-cell"
                               >
                                 <button
-                                  class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                                  style="font-size: 12px;"
+                                  class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
                                   type="button"
                                 >
                                   <span>
@@ -893,8 +886,7 @@ exports[`Guest Table should render table 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <button
-                                  class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                                  style="font-size: 12px;"
+                                  class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
                                   type="button"
                                 >
                                   <span>

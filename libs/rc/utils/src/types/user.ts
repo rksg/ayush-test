@@ -2,14 +2,7 @@ export interface UserSettings {
   [key: string]: string
 }
 
-export enum DetailLevel {
-  BASIC_USER = 'ba',
-  IT_PROFESSIONAL = 'it',
-  SUPER_USER = 'su',
-  DEBUGGING = 'debug'
-}
-
-interface RegionValue {
+export interface RegionValue {
   name: string;
   description: string;
   link: string;
@@ -42,4 +35,18 @@ export interface UserProfile {
   externalId: string;
   cloudCertStatus: string;
   email: string;
+  initials: string;
+  fullName: string;
+}
+
+export interface ProfileDataToUpdate {
+  detailLevel: DetailLevel;
+  dateFormat: string;
+}
+
+export enum DetailLevel {
+  BASIC_USER = 'ba',
+  IT_PROFESSIONAL = 'it',
+  SUPER_USER = 'su',
+  DEBUGGING = 'debug'
 }

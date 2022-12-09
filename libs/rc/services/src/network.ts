@@ -54,10 +54,6 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       providesTags: [{ type: 'Network', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          if (msg.status !== 'SUCCESS') return
-          if (!['DeleteNetwork', 'AddNetworkDeep', 'UpdateNetworkDeep'].includes(msg.useCase))
-            return
-
           showActivityMessage(msg, ['AddNetworkDeep', 'DeleteNetwork', 'UpdateNetworkDeep'], () => {
             api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'LIST' }]))
           })

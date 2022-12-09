@@ -4,6 +4,7 @@ import {
   Client,
   ClientList,
   ClientListMeta,
+  ClientStatistic,
   ClientUrlsInfo,
   CommonUrlsInfo,
   createHttpRequest,
@@ -34,14 +35,14 @@ export const clientApi = baseClientApi.injectEndpoints({
     getClientList: build.query<TableResult<ClientList>, RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
         const clientListInfo = {
-          ...createHttpRequest(CommonUrlsInfo.getClientList, arg.params),
+          ...createHttpRequest(ClientUrlsInfo.getClientList, arg.params),
           body: arg.payload
         }
         const clientListQuery = await fetchWithBQ(clientListInfo)
         const clientList = clientListQuery.data as TableResult<ClientList>
 
         const clientListMetaInfo = {
-          ...createHttpRequest(CommonUrlsInfo.getClientMeta, arg.params),
+          ...createHttpRequest(ClientUrlsInfo.getClientMeta, arg.params),
           body: {
             fields: ['switchSerialNumber', 'venueName', 'apName', 'switchName'],
             filters: {
@@ -108,15 +109,6 @@ export const clientApi = baseClientApi.injectEndpoints({
         }
       }
     }),
-    getDpskPassphraseByQuery: build.query<DpskPassphrase, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getDpskPassphraseByQuery, params)
-        return{
-          ...req,
-          body: payload
-        }
-      }
-    }),
     getHistoricalClientList: build.query<TableResult<Client>, RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
         const clientDetails = {
@@ -146,6 +138,24 @@ export const clientApi = baseClientApi.injectEndpoints({
               }
             })
           }
+        }
+      }
+    }),
+    getHistoricalStatisticsReports: build.query<ClientStatistic, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getHistoricalStatisticsReportsV2, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    getDpskPassphraseByQuery: build.query<DpskPassphrase, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getDpskPassphraseByQuery, params)
+        return{
+          ...req,
+          body: payload
         }
       }
     })
@@ -190,5 +200,7 @@ export const {
   useLazyGetDpskPassphraseByQueryQuery,
   useGetHistoricalClientListQuery,
   useLazyGetHistoricalClientListQuery,
-  useGetClientListQuery
+  useGetClientListQuery,
+  useGetHistoricalStatisticsReportsQuery,
+  useLazyGetHistoricalStatisticsReportsQuery
 } = clientApi
