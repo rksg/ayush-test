@@ -218,8 +218,8 @@ function ConnectedNetworkFilter (
     })
   })
   return (
-    <Loader states={[queryResults]}>
-      <UI.Container>
+    <UI.Container>
+      <Loader states={[queryResults]}>
         <Select
           placeholder={$t({ defaultMessage: 'Entire Organization' })}
           multiple={false}
@@ -239,7 +239,8 @@ function ConnectedNetworkFilter (
             }
           }}
         />
-      </UI.Container>
-    </Loader>
+      </Loader>
+    </UI.Container>
+
   )
 }
