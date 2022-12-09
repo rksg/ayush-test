@@ -1,4 +1,4 @@
-import { getJwtTokenPayload } from './jwtToken'
+import { getJwtTokenPayload, getTenantId } from './jwtToken'
 
 describe('jwtToken', () => {
   const oldCookie = document.cookie
@@ -17,6 +17,28 @@ describe('jwtToken', () => {
     }
     const spy = jest.spyOn(console, 'error').mockImplementation(() => {})
     expect(getJwtTokenPayload()).toEqual(token)
+    expect(spy).toBeCalledWith('No JWT token found! So setting default JWT values')
+  })
+
+  it('return token with tenant value from default values, when JWT not available', () => {
+    // eslint-disable-next-line max-len
+    const url = 'http://dummy.com/api/ui/t/e3d0c24e808d42b1832d47db4c2a7914/dashboard/reports/(reportsAux:wifi-reports/wifi-dashboard-reports)'
+    Object.defineProperty(window, 'location', {
+      value: {
+        href: url,
+        pathname: url
+      }
+    })
+    document.cookie = ''
+    const token = {
+      acx_account_tier: 'Gold',
+      acx_account_vertical: 'Default',
+      acx_account_type: 'REC',
+      tenantId: getTenantId()
+    }
+    const spy = jest.spyOn(console, 'error').mockImplementation(() => {})
+    expect(getJwtTokenPayload()).toEqual(token)
+    expect(getTenantId()).toEqual('e3d0c24e808d42b1832d47db4c2a7914')
     expect(spy).toBeCalledWith('No JWT token found! So setting default JWT values')
   })
 
