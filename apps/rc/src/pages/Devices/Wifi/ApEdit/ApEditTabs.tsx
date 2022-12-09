@@ -4,7 +4,6 @@ import { useIntl } from 'react-intl'
 
 import { Tabs }                                   from '@acx-ui/components'
 import { useApViewModelQuery }                    from '@acx-ui/rc/services'
-import { ApVenueStatusEnum }                      from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useParams,
