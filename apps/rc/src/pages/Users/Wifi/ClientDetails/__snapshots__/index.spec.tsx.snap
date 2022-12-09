@@ -107,7 +107,7 @@ exports[`ClientDetails should navigate to reports tab correctly 1`] = `
                 style="cursor: not-allowed;"
               >
                 <button
-                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
                   disabled=""
                   style="pointer-events: none;"
                   type="button"
@@ -125,7 +125,7 @@ exports[`ClientDetails should navigate to reports tab correctly 1`] = `
               class="ant-space-item"
             >
               <button
-                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 kkpPZG ant-dropdown-trigger"
+                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 bxQmA-d ant-dropdown-trigger"
                 type="button"
               >
                 <div
@@ -427,7 +427,7 @@ exports[`ClientDetails should navigate to timeline tab correctly 1`] = `
                 style="cursor: not-allowed;"
               >
                 <button
-                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
                   disabled=""
                   style="pointer-events: none;"
                   type="button"
@@ -445,7 +445,7 @@ exports[`ClientDetails should navigate to timeline tab correctly 1`] = `
               class="ant-space-item"
             >
               <button
-                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 kkpPZG ant-dropdown-trigger"
+                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 bxQmA-d ant-dropdown-trigger"
                 type="button"
               >
                 <div
@@ -747,7 +747,7 @@ exports[`ClientDetails should navigate to troubleshooting tab correctly 1`] = `
                 style="cursor: not-allowed;"
               >
                 <button
-                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
                   disabled=""
                   style="pointer-events: none;"
                   type="button"
@@ -765,7 +765,7 @@ exports[`ClientDetails should navigate to troubleshooting tab correctly 1`] = `
               class="ant-space-item"
             >
               <button
-                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 kkpPZG ant-dropdown-trigger"
+                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 bxQmA-d ant-dropdown-trigger"
                 type="button"
               >
                 <div
@@ -1519,7 +1519,7 @@ exports[`ClientDetails should render correctly 1`] = `
                 style="cursor: not-allowed;"
               >
                 <button
-                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
                   disabled=""
                   style="pointer-events: none;"
                   type="button"
@@ -1537,7 +1537,7 @@ exports[`ClientDetails should render correctly 1`] = `
               class="ant-space-item"
             >
               <button
-                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 kkpPZG ant-dropdown-trigger"
+                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 bxQmA-d ant-dropdown-trigger"
                 type="button"
               >
                 <div

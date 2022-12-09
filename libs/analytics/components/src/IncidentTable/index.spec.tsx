@@ -1,5 +1,7 @@
 import '@testing-library/jest-dom'
 
+import userEvent from '@testing-library/user-event'
+
 import { dataApiURL }              from '@acx-ui/analytics/services'
 import { IncidentFilter }          from '@acx-ui/analytics/utils'
 import { BrowserRouter as Router } from '@acx-ui/react-router-dom'
@@ -9,13 +11,20 @@ import {
   render, screen,
   fireEvent,
   waitForElementToBeRemoved,
-  mockGraphqlMutation
+  mockGraphqlMutation,
+  within
 } from '@acx-ui/test-utils'
 import { DateRange } from '@acx-ui/utils'
 
 import { api } from './services'
 
 import { IncidentTable } from './index'
+
+const mockedNavigate = jest.fn()
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockedNavigate
+}))
 
 const incidentTests = [
   {
@@ -413,5 +422,30 @@ describe('IncidentTable', () => {
     )
     fireEvent.click(await screen.findByTestId('CloseSymbol'))
     expect(screen.queryByText('Root cause:')).toBeNull()
+  })
+  it('should navigate to incident details when click on details button in drawer', async () => {
+    mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
+      data: { network: { hierarchyNode: { incidents: incidentTests } } }
+    })
+
+    render(<Provider><IncidentTable filters={filters}/></Provider>,{
+      route: {
+        path: '/t/:tenantId/analytics/incidents',
+        params: { tenantId: '1' }
+      }
+    })
+
+    await userEvent.click(
+      await screen.findByText(
+        'RADIUS failures are unusually high in Access Point: r710_!216 (60:D0:2C:22:6B:90)'
+      )
+    )
+    const drawer = await screen.findByRole('dialog')
+    const button = await within(drawer).findByRole('button', { name: 'More Details' })
+
+    await userEvent.click(button)
+    expect(mockedNavigate).lastCalledWith(expect.objectContaining({
+      pathname: `/t/1/analytics/incidents/${incidentTests[0].id}`
+    }))
   })
 })

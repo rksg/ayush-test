@@ -6,6 +6,40 @@ exports[`Guest Table should render table 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
+      class="ant-alert ant-alert-info styledComponents__AlertStyle-sc-1c2evo5-0 lfjPoV"
+      data-show="true"
+      role="alert"
+    >
+      <svg
+        class="ant-alert-icon"
+        data-testid="InformationSolid"
+      />
+      <div
+        class="ant-alert-content"
+      >
+        <div
+          class="ant-alert-message"
+        >
+          <span
+            style="display: grid; grid-template-columns: 400px 100px; padding-top: 2px;"
+          >
+            <span>
+              Guests cannot be added since there are no guest networks
+            </span>
+            <button
+              class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
+              disabled=""
+              type="button"
+            >
+              <span>
+                Add Guest Pass Network
+              </span>
+            </button>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div
       class="styledComponents__Wrapper-sc-1abm7iv-13 crtNbp"
     >
       <div
@@ -621,8 +655,7 @@ exports[`Guest Table should render table 1`] = `
                                 class="ant-table-cell"
                               >
                                 <button
-                                  class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                                  style="font-size: 12px;"
+                                  class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
                                   type="button"
                                 >
                                   <span>
@@ -634,8 +667,7 @@ exports[`Guest Table should render table 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <button
-                                  class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                                  style="font-size: 12px;"
+                                  class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
                                   type="button"
                                 >
                                   <span>
@@ -686,8 +718,7 @@ exports[`Guest Table should render table 1`] = `
                                 class="ant-table-cell"
                               >
                                 <button
-                                  class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                                  style="font-size: 12px;"
+                                  class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
                                   type="button"
                                 >
                                   <span>
@@ -699,8 +730,7 @@ exports[`Guest Table should render table 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <button
-                                  class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                                  style="font-size: 12px;"
+                                  class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
                                   type="button"
                                 >
                                   <span>
@@ -753,8 +783,7 @@ exports[`Guest Table should render table 1`] = `
                                 class="ant-table-cell"
                               >
                                 <button
-                                  class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                                  style="font-size: 12px;"
+                                  class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
                                   type="button"
                                 >
                                   <span>
@@ -766,8 +795,7 @@ exports[`Guest Table should render table 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <button
-                                  class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                                  style="font-size: 12px;"
+                                  class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
                                   type="button"
                                 >
                                   <span>
@@ -818,8 +846,7 @@ exports[`Guest Table should render table 1`] = `
                                 class="ant-table-cell"
                               >
                                 <button
-                                  class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                                  style="font-size: 12px;"
+                                  class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
                                   type="button"
                                 >
                                   <span>
@@ -831,8 +858,7 @@ exports[`Guest Table should render table 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <button
-                                  class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
-                                  style="font-size: 12px;"
+                                  class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
                                   type="button"
                                 >
                                   <span>

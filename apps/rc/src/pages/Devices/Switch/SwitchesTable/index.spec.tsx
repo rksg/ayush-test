@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { SwitchUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }     from '@acx-ui/store'
 import {
   mockServer,
@@ -28,7 +28,7 @@ describe('Switch List Table', () => {
   it('should show import CSV dialog', async () => {
     mockServer.use(
       rest.post(
-        WifiUrlsInfo.importSwitches.url,
+        SwitchUrlsInfo.importSwitches.url,
         (req, res, ctx) => res(ctx.json({
           txId: 'f83cdf6e-df01-466d-88ba-58e2f2c211c6'
         }))
