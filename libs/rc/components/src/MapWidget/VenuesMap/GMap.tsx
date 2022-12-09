@@ -166,7 +166,7 @@ const GMap: React.FC<MapProps> = ({
         if(cluster){
           setMarkerClusterer(new MarkerClusterer({
             map,
-            markers,
+            markers: visibleMarkers,
             renderer: new VenueClusterRenderer(map, intl, onNavigate),
             algorithm: new SuperClusterAlgorithm({ maxZoom: 17 }),
             onClusterClick: onClusterClick
