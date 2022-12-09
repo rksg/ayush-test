@@ -44,14 +44,12 @@ import ServicesTable            from './pages/Services/ServicesTable'
 import WifiCallingDetailView    from './pages/Services/WifiCalling/WifiCallingDetail/WifiCallingDetailView'
 import WifiCallingConfigureForm from './pages/Services/WifiCalling/WifiCallingForm/WifiCallingConfigureForm'
 import WifiCallingForm          from './pages/Services/WifiCalling/WifiCallingForm/WifiCallingForm'
-import SwitchClientList         from './pages/Users/Switch/ClientList'
-import WifiClientDetails        from './pages/Users/Wifi/ClientDetails'
-import WifiClientList           from './pages/Users/Wifi/ClientList'
 import PersonaPortal            from './pages/Users/Persona'
 import PersonaDetails           from './pages/Users/Persona/PersonaDetails'
 import PersonaGroupDetails      from './pages/Users/Persona/PersonaGroupDetails'
-import UserApDetails            from './pages/Users/Wifi/ApDetails'
-import UserApList               from './pages/Users/Wifi/ApList'
+import SwitchClientList         from './pages/Users/Switch/ClientList'
+import WifiClientDetails        from './pages/Users/Wifi/ClientDetails'
+import WifiClientList           from './pages/Users/Wifi/ClientList'
 
 export default function RcRoutes () {
   const routes = rootRoutes(

@@ -28,7 +28,7 @@ function PersonaPageHeader () {
       breadcrumb={[
         { text: $t({ defaultMessage: 'Users' }), link: '/users' }
       ]}
-      footer={<ContentSwitcher tabDetails={tabDetails} align={'left'} space={0} />}
+      footer={<ContentSwitcher tabDetails={tabDetails} align={'left'} />}
     />
   )
 }
