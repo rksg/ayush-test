@@ -15,10 +15,6 @@ export * from './types/client'
 export * from './types'
 export * from './pipes'
 
-export * from './pipes/networkPipes'
-export * from './pipes/apPipes'
-export * from './pipes/commonPipes'
-
 export * from './features'
 export * from './common'
 export * from './ipUtilsService'

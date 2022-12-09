@@ -134,7 +134,7 @@ describe('Guest Table', () => {
 
     fireEvent.click(await screen.findByText('disable_client'))
     await screen.findByText('Guest Details')
-    await fireEvent.mouseEnter(screen.getByText(/actions/i))
+    await fireEvent.mouseEnter(await screen.findByText(/actions/i))
     fireEvent.click(await screen.findByText(/enable guest/i))
   })
 
@@ -151,7 +151,7 @@ describe('Guest Table', () => {
 
     fireEvent.click(await screen.findByText('test3'))
     await screen.findByText('Guest Details')
-    await fireEvent.mouseEnter(screen.getByText(/actions/i))
+    await fireEvent.mouseEnter(await screen.findByText(/actions/i))
     fireEvent.click(await screen.findByText(/disable guest/i))
   })
 
@@ -168,7 +168,7 @@ describe('Guest Table', () => {
 
     fireEvent.click(await screen.findByText('test3'))
     await screen.findByText('Guest Details')
-    await fireEvent.mouseEnter(screen.getByText(/actions/i))
+    await fireEvent.mouseEnter(await screen.findByText(/actions/i))
     fireEvent.click(await screen.findByText(/generate new password/i))
     const cancelButton = screen.getByRole('button', { name: 'Cancel' })
     await userEvent.click(cancelButton)
@@ -188,7 +188,7 @@ describe('Guest Table', () => {
 
     fireEvent.click(await screen.findByText('test4'))
     await screen.findByText('Guest Details')
-    await fireEvent.mouseEnter(screen.getByText(/actions/i))
+    await fireEvent.mouseEnter(await screen.findByText(/actions/i))
     fireEvent.click(await screen.findByText(/generate new password/i))
     fireEvent.click(screen.getByRole('checkbox', {
       name: /send to phone/i
@@ -217,7 +217,7 @@ describe('Guest Table', () => {
 
     fireEvent.click(await screen.findByText('test3'))
     await screen.findByText('Guest Details')
-    await fireEvent.mouseEnter(screen.getByText(/actions/i))
+    await fireEvent.mouseEnter(await screen.findByText(/actions/i))
     fireEvent.click(await screen.findByText(/download information/i))
   })
 
@@ -234,7 +234,7 @@ describe('Guest Table', () => {
 
     fireEvent.click(await screen.findByText('test3'))
     await screen.findByText('Guest Details')
-    await fireEvent.mouseEnter(screen.getByText(/actions/i))
+    await fireEvent.mouseEnter(await screen.findByText(/actions/i))
     fireEvent.click(await screen.findByText(/delete guest/i))
     await screen.findByText(/are you sure you want to delete this guest\?/i)
     fireEvent.click(screen.getByRole('button', {
