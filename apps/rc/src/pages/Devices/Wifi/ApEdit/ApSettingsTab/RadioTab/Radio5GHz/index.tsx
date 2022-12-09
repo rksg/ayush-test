@@ -50,8 +50,8 @@ export function Radio5GHz (props: { venueId: string, serialNumber: string }) {
     useVenueSettings
   ] = [
     useWatch<boolean>('enable50G'),
-    useWatch<string>(['radioParams50G', 'method']),
-    useWatch<string>(['radioParams50G', 'channelBandwidth']),
+    useWatch<string>(['apRadioParams50G', 'method']),
+    useWatch<string>(['apRadioParams50G', 'channelBandwidth']),
     useWatch<boolean>('useVenueSettings')
   ]
 
