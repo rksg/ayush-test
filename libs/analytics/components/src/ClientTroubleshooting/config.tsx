@@ -47,13 +47,7 @@ export const TYPES = {
   CONNECTION_EVENTS: 'connectionEvents',
   ROAMING: 'roaming'
 }
-
-export const eventsToHide = [
-  EVENT_STATES.JOIN,
-  EVENT_STATES.SPURIOUS_DISCONNECT,
-  EVENT_STATES.SPURIOUS_INFO_UPDATED
-]
-
+// In RA these events are hidden
 export const spuriousEvents = [
   EVENT_STATES.JOIN,
   EVENT_STATES.SPURIOUS_DISCONNECT,
@@ -102,7 +96,7 @@ export const transformEvents = (
     const filterRadios = selectedRadios.map(e => filterEventMap[e as keyof typeof filterEventMap])
     const time = +new Date(timestamp)
   
-    let skip = eventsToHide.includes(state)
+    let skip = spuriousEvents.includes(state)
       || filterEventTypes.length && !filterEventTypes.includes(eventType)
       || filterRadios.length && !filterRadios.includes(radio)
   

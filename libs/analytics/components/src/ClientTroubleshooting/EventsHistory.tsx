@@ -23,8 +23,7 @@ import {
   transformEvents,
   DisplayEvent,
   formatEventDesc,
-  eventColorByCategory,
-  spuriousEvents
+  eventColorByCategory
 } from './config'
 import { ReactNode } from 'react'
 
@@ -39,8 +38,7 @@ type Item = {
   date: string,
   description: string,
   title: string,
-  icon: ReactNode,
-  isSpuriousDisconnect?: boolean
+  icon: ReactNode
 }
 const transformData = (clientInfo: ClientInfoData, filters: Filters, intl: IntlShape) => {
   const types = filters ? filters.type ?? [] : []
@@ -75,7 +73,6 @@ const transformData = (clientInfo: ClientInfoData, filters: Filters, intl: IntlS
     date: formatter('dateTimeFormatWithSeconds')(event.start),
     description: formatEventDesc(event, intl),
     title: formatEventDesc(event, intl),
-    isSpuriousDisconnect: spuriousEvents.includes(event.state),
     icon: <UI.EventTypeIcon color={color} />
    }
   }),
@@ -90,7 +87,6 @@ const renderItem = (item: Item) => {
       avatar={item.icon}
       title={item.date}
       description={item.description}
-      style={{ opacity: item.isSpuriousDisconnect ? 0.4: 1 }}
     />
   </List.Item>
   return item.id

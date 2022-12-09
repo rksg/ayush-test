@@ -61,7 +61,7 @@ export const IncidentEvent = styled.span`
   display: inline-block;
   border-radius: 8px;
   background-color: var(${props => props.color});
-  font-size: var(--acx-body-6-font-size);
+  font-size: 8px;
   height: 12px;
   width: 16px;
   color: var(--acx-primary-white);  
@@ -69,6 +69,7 @@ export const IncidentEvent = styled.span`
   margin: 2px 0 0 -8px;
   text-align: center;
   vertical-align: top;
+  line-height: 12px;
 `
 export const StyledPlusSquareOutlined = styled(PlusSquareOutlined)`
    width: 16px; 
