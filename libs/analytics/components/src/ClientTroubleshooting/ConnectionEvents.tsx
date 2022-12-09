@@ -7,7 +7,7 @@ import { mapCodeToFailureText, mapCodeToReason } from '@acx-ui/analytics/utils'
 import { formatter }                             from '@acx-ui/utils'
 
 import { FAILURE, DisplayEvent, SLOW, DISCONNECT } from './config'
-import * as UI                   from './styledComponents'
+import * as UI                                     from './styledComponents'
 
 const useConnectionDetail = (event: DisplayEvent) => {
   const intl = useIntl()
@@ -25,7 +25,8 @@ const useConnectionDetail = (event: DisplayEvent) => {
 
   const eventDetails = [
     { label: $t({ defaultMessage: 'AP MAC:' }), content: $t({ defaultMessage: '{mac}' }, { mac }) },
-    { label: $t({ defaultMessage: 'AP Name:' }), content: $t({ defaultMessage: '{apName}' }, { apName }) },
+    { label: $t({ defaultMessage: 'AP Name:' }), content: $t({ defaultMessage: '{apName}' },
+      { apName }) },
     { label: $t({ defaultMessage: 'SSID:' }), content: $t({ defaultMessage: '{ssid}' }, { ssid }) },
     { label: $t({ defaultMessage: 'Radio:' }), content: $t({ defaultMessage: '{radio}' },
       { radio: radio ? formatter('radioFormat')(radio) : $t({ defaultMessage: 'Unknown' }) }) }
@@ -51,7 +52,7 @@ const useConnectionDetail = (event: DisplayEvent) => {
   if (isSlow) {
     eventDetails.push({
       label: $t({ defaultMessage: 'Time to Connect:' }),
-      content: $t({ defaultMessage: '{ttc}'}, { ttc: formatter('durationFormat')(ttc)})
+      content: $t({ defaultMessage: '{ttc}' }, { ttc: formatter('durationFormat')(ttc) })
     })
   }
 
