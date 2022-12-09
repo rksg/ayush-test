@@ -1,23 +1,24 @@
-import { useContext, useRef } from 'react'
+import { useContext, useEffect } from 'react'
 
-import { useDrag } from 'react-dnd'
-import { useIntl } from 'react-intl'
+import { useDrag }       from 'react-dnd'
+import { getEmptyImage } from 'react-dnd-html5-backend'
+import { useIntl }       from 'react-intl'
 
 import { DeviceOutlined, SignalUp }         from '@acx-ui/icons'
 import { NetworkDevice, NetworkDeviceType } from '@acx-ui/rc/utils'
 
 import { NetworkDeviceContext } from '..'
 
-import * as UI from './styledComponents'
+import CustomDragLayer from './CustomDragLayer'
+import * as UI         from './styledComponents'
 
 export default function UnplacedDevice (props: { device: NetworkDevice }) {
 
   const { device } = props
-  const previewRef = useRef(null)
   const { $t } = useIntl()
   const deviceContext = useContext(NetworkDeviceContext) as Function
 
-  const [{ isDragging }, drag] = useDrag(() => ({
+  const [{ isDragging }, drag, dragPreview] = useDrag(() => ({
     type: 'device',
     item: { device: device, markerRef: null },
     collect: monitor => ({
@@ -34,26 +35,40 @@ export default function UnplacedDevice (props: { device: NetworkDevice }) {
     }
   }))
 
-  return <UI.ListItem
-    isdragging={isDragging}
-    ref={drag}> { !isDragging ? (<> <div style={{
-      width: '24px',
-      height: '24px',
-      margin: '0px 8px'
-    }}>  {
-        device?.networkDeviceType === NetworkDeviceType.switch
-          ? <DeviceOutlined id='_device' ref={previewRef}/>
-          : <SignalUp id='_device' ref={previewRef}/>
+  useEffect(() => {
+    dragPreview(getEmptyImage())
+  }, [])
+
+  return <> <div>
+    <UI.ListItem
+      ref={drag}
+      isdragging={isDragging ? true : false}>
+      { isDragging ?
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          lineHeight: '24px',
+          width: '100%'
+        }}>
+          <span>
+            { $t({ defaultMessage: 'Drop here to unplace' }) }
+          </span>
+        </div>
+        : <>
+          <div style={{
+            width: '24px',
+            height: '24px',
+            margin: '0px 8px'
+          }}>  {
+              device?.networkDeviceType === NetworkDeviceType.switch
+                ? <DeviceOutlined/>
+                : <SignalUp/>
+            }
+          </div> {device?.name}
+        </>
       }
-    </div> {device?.name} </> ): <div style={{
-      display: 'flex',
-      justifyContent: 'center',
-      lineHeight: '24px',
-      width: '100%'
-    }}>
-      <span>
-        { $t({ defaultMessage: 'Drop here to unplace' }) }
-      </span>
-    </div>
-    } </UI.ListItem>
+      <CustomDragLayer device={device}/>
+    </UI.ListItem>
+  </div>
+  </>
 }

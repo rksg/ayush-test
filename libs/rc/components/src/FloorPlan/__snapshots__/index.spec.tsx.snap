@@ -241,6 +241,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
         >
           <button
             class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV ant-dropdown-trigger"
+            disabled=""
             type="button"
           >
             <span>
@@ -630,6 +631,7 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
         >
           <button
             class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV ant-dropdown-trigger"
+            disabled=""
             type="button"
           >
             <span>

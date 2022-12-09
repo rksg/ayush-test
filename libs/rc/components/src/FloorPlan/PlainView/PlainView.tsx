@@ -29,6 +29,23 @@ export enum ImageMode {
   ORIGINAL = 'original'
 }
 
+export function setUpdatedLocation (device: NetworkDevice,
+  placementCoords: XYCoord, imageCoords: XYCoord): NetworkDevice {
+
+  if (!device.position)
+    device.position = { floorplanId: '', x: 0, y: 0, xPercent: 0, yPercent: 0 }
+
+  if (placementCoords.x <= imageCoords.x && placementCoords.y <= imageCoords.y) {
+    Object.assign(device.position, {
+      x: placementCoords.x,
+      y: placementCoords.y,
+      xPercent: (placementCoords.x / imageCoords.x) * 100,
+      yPercent: (placementCoords.y / imageCoords.y) * 100
+    })
+  }
+  return device
+}
+
 export function getImageFitPercentage (containerCoordsX: number,
   containerCoordsY: number, imageCoordsX: number, imageCoordsY: number) {
   let differencePercentage = 0
@@ -104,6 +121,17 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
           markerRef: RefObject<HTMLDivElement>;
       }, unknown>) => {
 
+        item.device.position = {
+          ...item.device.position,
+          floorplanId: selectedFloorPlan?.id
+        }
+        const imageCoords = {
+          x: imageRef?.current?.offsetWidth || 0,
+          y: imageRef?.current?.offsetHeight || 0
+        }
+
+        const placementCoords: XYCoord = { x: 0, y: 0 }
+
         if (item.markerRef) {
           const marker = item.markerRef.current?.children[0] as HTMLDivElement
 
@@ -117,60 +145,27 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
             y: marker && marker?.offsetTop || 0
           }
 
-          const placementCoords: {
-            x: number,
-            y: number
-          } = {
-            x: newCoords.x + markerCoords.x + 36,
-            y: newCoords.y + markerCoords.y + 36
-          }
-          setUpdatedLocation(item.device, placementCoords)
+          placementCoords.x = newCoords.x + markerCoords.x + 36
+          placementCoords.y = newCoords.y + markerCoords.y + 36
         } else {
           const newCoords = monitor.getClientOffset() as XYCoord
 
-          const imageCoords = {
-            x: imageContainerRef?.current?.offsetWidth || 0,
-            y: imageContainerRef?.current?.offsetHeight || 0
-          }
+          const imgX = imageRef?.current?.getBoundingClientRect().x || 0
+          const imgY = imageRef?.current?.getBoundingClientRect().y || 0
 
-          const placementCoords: {
-            x: number,
-            y: number
-          } = {
-            x: newCoords.x - imageCoords.x,
-            y: newCoords.y - imageCoords.y
-          }
-
-          setUpdatedLocation(item.device, placementCoords)
+          placementCoords.x = newCoords.x - imgX || 0
+          placementCoords.y = newCoords.y - imgY || 0
         }
+        const positionedDevice: NetworkDevice =
+            setUpdatedLocation(item.device, placementCoords, imageCoords)
+        setCoordinates(positionedDevice)
       },
       collect: (monitor) => ({
         isActive: monitor.canDrop() && monitor.isOver()
       })
-    })
+    }),
+    [selectedFloorPlan]
   )
-
-  function setUpdatedLocation (device: NetworkDevice,
-    placementCoords: XYCoord) {
-
-    const imageCoords = {
-      x: imageRef?.current?.offsetWidth || 0,
-      y: imageRef?.current?.offsetHeight || 0
-    }
-    if (!device.position)
-      device.position = { floorplanId: '', x: 0, y: 0, xPercent: 0, yPercent: 0 }
-
-    if (placementCoords.x <= imageCoords.x && placementCoords.y <= imageCoords.y) {
-      Object.assign(device.position, {
-        floorplanId: selectedFloorPlan?.id,
-        x: placementCoords.x,
-        y: placementCoords.y,
-        xPercent: (placementCoords.x / imageCoords.x) * 100,
-        yPercent: (placementCoords.y / imageCoords.y) * 100
-      })
-    }
-    setCoordinates(device)
-  }
 
   function onFloorPlanSelectionHandler (floorPlan: FloorPlanDto) {
     if (floorPlan.imageId !== selectedFloorPlan.imageId)

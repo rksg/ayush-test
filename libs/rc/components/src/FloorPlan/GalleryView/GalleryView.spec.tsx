@@ -6,6 +6,8 @@ import { HTML5Backend } from 'react-dnd-html5-backend'
 import { ApDeviceStatusEnum, FloorPlanDto, NetworkDeviceType, SwitchStatusEnum, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
 import { fireEvent, render, screen }                                                                     from '@acx-ui/test-utils'
 
+import { NetworkDeviceContext } from '..'
+
 import GalleryView from './GalleryView'
 
 
@@ -87,6 +89,11 @@ const networkDevices: {
       id: '302002015732',
       name: '3 02002015736',
       serialNumber: '302002015732',
+      position: {
+        floorplanId: '94bed28abef24175ab58a3800d01e24a',
+        xPercent: 65.20548,
+        yPercent: 9.839357
+      },
       xPercent: 65.20548,
       yPercent: 9.839357,
       networkDeviceType: NetworkDeviceType.ap
@@ -108,20 +115,44 @@ const networkDevices: {
   }
 }
 
-const networkDeviceType: NetworkDeviceType[] = []
+const _networkDevicesVisibility: NetworkDeviceType[] = []
+
+for (let deviceType in NetworkDeviceType) {
+  if (deviceType === NetworkDeviceType.rogue_ap) {
+    continue // rouge ap is not controlled(placed) by user
+  }
+  const _deviceType = deviceType as keyof typeof NetworkDeviceType
+  const networkDevicetype = NetworkDeviceType[_deviceType] as NetworkDeviceType
+  _networkDevicesVisibility.push(networkDevicetype)
+}
 
 
 describe('Floor Plan Gallery View', () => {
 
   it('should render correctly Gallery View', async () => {
 
-    const { asFragment } = render(<DndProvider backend={HTML5Backend}><GalleryView
-      floorPlans={list}
-      onFloorPlanClick={jest.fn()}
-      networkDevices={networkDevices}
-      networkDevicesVisibility={networkDeviceType}/></DndProvider>)
+    const { asFragment } = render(<NetworkDeviceContext.Provider value={jest.fn()}>
+      <DndProvider backend={HTML5Backend}><GalleryView
+        setCoordinates={jest.fn()}
+        floorPlans={list}
+        onFloorPlanClick={jest.fn()}
+        networkDevices={networkDevices}
+        networkDevicesVisibility={_networkDevicesVisibility}/></DndProvider>
+    </NetworkDeviceContext.Provider>)
     const component = await screen.findAllByTestId('fpImage')
     expect(component.length).toEqual(list.length)
+
+    expect(await screen.findByTestId('SignalUp')).toBeVisible()
+
+    const src = await screen.findByTestId('SignalUp')
+    const dst = await screen.findAllByTestId('fpImage')
+
+    fireEvent.dragStart(src)
+    fireEvent.dragEnter(dst[0])
+    fireEvent.drop(dst[0])
+    fireEvent.dragLeave(dst[0])
+    fireEvent.dragEnd(src)
+
     expect(asFragment()).toMatchSnapshot()
   })
 
@@ -129,11 +160,11 @@ describe('Floor Plan Gallery View', () => {
     const onFloorPlanClick = jest.fn()
 
     render(<DndProvider backend={HTML5Backend}><GalleryView
+      setCoordinates={jest.fn()}
       floorPlans={list}
       onFloorPlanClick={onFloorPlanClick}
       networkDevices={networkDevices}
-      networkDevicesVisibility={networkDeviceType}
-    /></DndProvider>)
+      networkDevicesVisibility={_networkDevicesVisibility}/></DndProvider>)
 
     const images = screen.getAllByTestId('fpImage')
     fireEvent.click(images[1])

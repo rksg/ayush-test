@@ -1,7 +1,11 @@
-import { List } from 'antd'
-import styled   from 'styled-components'
+import { List }    from 'antd'
+import { XYCoord } from 'react-dnd'
+import styled      from 'styled-components'
 
 export const DeviceList = styled(List)`
+    box-shadow: 0px 4px 8px var(--acx-neutrals-40);
+    background: var(--acx-primary-white);
+
     .ant-list-items {
         max-height: 180px;
         overflow: overlay;
@@ -24,4 +28,16 @@ export const ListItem = styled(List.Item)<{ isdragging: boolean }>`
     &:hover {
         box-shadow: 0px 4px 8px var(--acx-neutrals-30);
     }
+`
+
+export const CustomDeviceMarker = styled('div')<{ clientOffset: XYCoord }>`
+    transform: translate(${props => props.clientOffset?.x}px,
+    ${props => props.clientOffset.y}px);
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 `

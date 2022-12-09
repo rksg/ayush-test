@@ -14,13 +14,20 @@ import * as UI from './styledComponents'
 
 
 export default function GalleryView (props: {
+  setCoordinates: Function,
   floorPlans: FloorPlanDto[],
   onFloorPlanClick: Function,
   networkDevices: {
     [key: string]: TypeWiseNetworkDevices
   },
   networkDevicesVisibility: NetworkDeviceType[] }) {
-  const { floorPlans, onFloorPlanClick, networkDevices, networkDevicesVisibility } = { ...props }
+  const {
+    setCoordinates,
+    floorPlans,
+    onFloorPlanClick,
+    networkDevices,
+    networkDevicesVisibility
+  } = { ...props }
   const [span, setSpan] = useState(12)
 
   useEffect(() => {
@@ -35,6 +42,7 @@ export default function GalleryView (props: {
     <Row gutter={[16, 20]}>
       { floorPlans?.map((floorPlan, index) => <Col key={index} span={span}>
         <GalleryCard
+          setCoordinates={setCoordinates}
           floorPlan={floorPlan}
           networkDevicesVisibility={networkDevicesVisibility}
           networkDevices={networkDevices}
@@ -45,6 +53,7 @@ export default function GalleryView (props: {
 }
 
 function GalleryCard (props: {
+  setCoordinates: Function
   floorPlan: FloorPlanDto,
   networkDevicesVisibility: NetworkDeviceType[],
   networkDevices: {
@@ -52,7 +61,13 @@ function GalleryCard (props: {
   },
   onFloorPlanClick: Function,
   }) {
-  const { floorPlan, networkDevicesVisibility, networkDevices, onFloorPlanClick } = { ...props }
+  const {
+    setCoordinates,
+    floorPlan,
+    networkDevicesVisibility,
+    networkDevices,
+    onFloorPlanClick
+  } = { ...props }
 
 
   const imageRef = useRef<HTMLImageElement>(null)
@@ -62,11 +77,7 @@ function GalleryCard (props: {
   }
 
   const [{ isActive }, drop] = useDrop(
-    dropConfig()
-  )
-
-  function dropConfig () {
-    return () => ({
+    () => ({
       accept: 'device',
       drop: (item: { device: NetworkDevice, markerRef: RefObject<HTMLDivElement> },
         monitor: DropTargetMonitor<{
@@ -101,7 +112,7 @@ function GalleryCard (props: {
         isActive: monitor.canDrop() && monitor.isOver()
       })
     })
-  }
+  )
 
   function setUpdatedLocation (device: NetworkDevice,
     placementCoords: XYCoord) {
@@ -119,7 +130,7 @@ function GalleryCard (props: {
         yPercent: (placementCoords.y / imageCoords.y) * 100
       })
     }
-    // setCoordinates(device)
+    setCoordinates(device)
   }
 
 

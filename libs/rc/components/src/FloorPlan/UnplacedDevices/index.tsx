@@ -1,12 +1,13 @@
-import { ChangeEvent, ReactNode, useCallback, useEffect, useState } from 'react'
+import { ReactNode, useState } from 'react'
 
 import { Divider, Dropdown, Input, Menu, Space } from 'antd'
-import { debounce, remove }                      from 'lodash'
+import { remove }                                from 'lodash'
 import { useIntl }                               from 'react-intl'
 
 import { Button }                                                   from '@acx-ui/components'
 import { ArrowExpand, SearchOutlined }                              from '@acx-ui/icons'
 import { NetworkDevice, NetworkDeviceType, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
+import { getIntl }                                                  from '@acx-ui/utils'
 
 import * as UI        from './styledComponents'
 import UnplacedDevice from './UnplacedDevice'
@@ -16,48 +17,34 @@ export interface SelectInfo {
 }
 
 export function getDeviceFilterLabel (networkDeviceType: NetworkDeviceType) {
+  const { $t } = getIntl()
+
   switch (networkDeviceType) {
     case NetworkDeviceType.ap:
-      return 'Wi-Fi APs'
+      return $t({ defaultMessage: 'Wi-Fi APs' })
     case NetworkDeviceType.lte_ap:
-      return 'LTE APs'
+      return $t({ defaultMessage: 'LTE APs' })
     case NetworkDeviceType.switch:
-      return 'Switches'
+      return $t({ defaultMessage: 'Switches' })
     case NetworkDeviceType.cloudpath:
-      return 'Cloudpath Servers'
+      return $t({ defaultMessage: 'Cloudpath Servers' })
     default:
       return undefined  // should not reach this statement
   }
 }
 
-export function UnplacedDevices (props: { unplacedDevicesState: TypeWiseNetworkDevices }) {
-  const { unplacedDevicesState } = props
+export function UnplacedDevices (props: { unplacedDevicesState: TypeWiseNetworkDevices,
+  closeDropdown: Function }) {
+  const { unplacedDevicesState, closeDropdown } = props
   const unplacedDevices: NetworkDevice[] = []
 
   const [selectedDeviceType, setSelectedDeviceType] = useState<string>('All')
   Object.values(unplacedDevicesState)
     .forEach(item => { if(item.length) {unplacedDevices.push(...item)} })
-  const [filterDevices, setFilteredDevices] = useState<NetworkDevice[]>(unplacedDevices)
-
-  useEffect(() => {
-    setFilteredDevices([])
-    Object.values(unplacedDevicesState)
-      .forEach(item => { if(item.length) {unplacedDevices.push(...item)} })
-
-    setFilteredDevices(unplacedDevices)
-
-  }, [unplacedDevicesState])
 
   const { $t } = useIntl()
 
   const networkDeviceTypeArray = Object.values(NetworkDeviceType)
-
-  const filterDeviceByName = useCallback(debounce((event: ChangeEvent) => {
-    const _compare = (event.target as HTMLInputElement).value
-    const _filteredDevices = filterDevices.filter((device) => device.name.toLowerCase()
-      .includes(_compare.toLocaleLowerCase()))
-    setFilteredDevices(_filteredDevices)
-  }, 200), [])
 
   // need to handle this with lte_enabled once we get lte_enabled status from userProfile.
   // refer current implentation in rc-ui. for now skipping lte_ap
@@ -89,19 +76,19 @@ export function UnplacedDevices (props: { unplacedDevicesState: TypeWiseNetworkD
     items={items}
     onSelect={(item) => selectedOption(item)}
   />
+
+  function closeOverlay () {
+    closeDropdown(true)
+  }
   return <UI.DeviceList
-    style={{ boxShadow: '0px 4px 8px var(--acx-neutrals-40)',
-      background: '#fff'
-    }}
     size='large'
     header={
       <div><Input
         data-testid='text-search'
         size='middle'
         style={{ width: '144px', maxHeight: '180px' }}
-        placeholder='Search...'
+        placeholder={$t({ defaultMessage: 'Search...' })}
         prefix={<SearchOutlined />}
-        onChange={(ev) => filterDeviceByName(ev)}
       />
       <Divider type='vertical' style={{ margin: '0 4px' }}/>
       <Dropdown overlay={menuItems}>
@@ -109,7 +96,7 @@ export function UnplacedDevices (props: { unplacedDevicesState: TypeWiseNetworkD
           <Space>
             { selectedDeviceType !== 'All'
               ? getDeviceFilterLabel(selectedDeviceType as NetworkDeviceType)
-              : 'All' }
+              : $t({ defaultMessage: 'All' }) }
             <ArrowExpand />
           </Space>
         </Button>
@@ -122,13 +109,14 @@ export function UnplacedDevices (props: { unplacedDevicesState: TypeWiseNetworkD
         display: 'flex',
         justifyContent: 'end'
       }}>
-        <Button type='primary'> { $t({ defaultMessage: 'Close' } )}</Button></div>
+        <Button type='primary' onClick={closeOverlay}>
+          { $t({ defaultMessage: 'Close' } )}</Button></div>
     }
     bordered
     dataSource={selectedDeviceType === 'All' ?
       unplacedDevices
       : unplacedDevices.filter((device) => device.networkDeviceType === selectedDeviceType)}
     renderItem={(item) =>
-      (<UnplacedDevice device={item as NetworkDevice} /> as ReactNode)}
+      (<UnplacedDevice device={item as NetworkDevice}/> as ReactNode)}
   />
 }

@@ -56,7 +56,7 @@ describe('Floor Plans Unlpaced Device list', () => {
 
     await render(<NetworkDeviceContext.Provider value={jest.fn()}>
       <DndProvider backend={HTML5Backend}>
-        <UnplacedDevices unplacedDevicesState={unplacedDevicesState} />
+        <UnplacedDevices closeDropdown={jest.fn()} unplacedDevicesState={unplacedDevicesState} />
       </DndProvider>
     </NetworkDeviceContext.Provider>)
 

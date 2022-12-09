@@ -48,6 +48,7 @@ export function FloorPlan () {
   const [unplacedDevicesCount, setUnplacedDevicesCount] = useState<number>(0)
   const [unplacedDevicesState, setUnplacedDevicesState]
   = useState<TypeWiseNetworkDevices>({} as TypeWiseNetworkDevices)
+  const [closeOverlay, setCloseOverlay] = useState<boolean>(false)
 
   const defaultDevices = {
     ap: [],
@@ -268,7 +269,6 @@ export function FloorPlan () {
   }
 
   const setCoordinates = function (device: NetworkDevice) {
-    // console.log(device)
     publishDevicePositionUpdate(device, false)
   }
 
@@ -295,12 +295,19 @@ export function FloorPlan () {
   }
 
   function clearDevice (device: NetworkDevice) {
-    // console.log(device)
     publishDevicePositionUpdate(device, true)
   }
 
   const _props = {
     unplacedDevicesState: unplacedDevicesState
+  }
+
+  function closeDropdown () {
+    setCloseOverlay(!closeOverlay)
+  }
+
+  function onVisibleChange (flag: boolean) {
+    setCloseOverlay(flag)
   }
 
   return (
@@ -317,6 +324,7 @@ export function FloorPlan () {
             <UI.FloorPlanContainer>
               { showGalleryView ?
                 <GalleryView
+                  setCoordinates={setCoordinates}
                   floorPlans={floorPlans ?? []}
                   onFloorPlanClick={onFloorPlanClick}
                   networkDevices={devicesByFlooplanId}
@@ -337,9 +345,15 @@ export function FloorPlan () {
                   onAddEditFloorPlan={onAddEditFloorPlan}
                   isEditMode={false}/>
                 <Dropdown trigger={['click']}
+                  onVisibleChange={onVisibleChange}
+                  visible={closeOverlay}
+                  disabled={
+                    (!showGalleryView && unplacedDevicesCount) ? false : true}
                   overlay={
-                    <UnplacedDevices {..._props} />}>
-                  <Button size='small' type='link' disabled={unplacedDevicesCount ? false : true}>
+                    <UnplacedDevices {..._props} closeDropdown={closeDropdown}/>}>
+                  <Button
+                    size='small'
+                    type='link'>
                     {$t({ defaultMessage: 'Unplaced Devices ({unplacedDevicesCount})' },
                       { unplacedDevicesCount })}
                   </Button>
