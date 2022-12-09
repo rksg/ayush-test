@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 
 import { generatePath, Params } from 'react-router-dom'
 
