@@ -19,7 +19,13 @@ import {
 import * as UI from './styledComponents'
 import { ClientInfoData } from './services'
 import { Filters } from '.'
-import { transformEvents, DisplayEvent, formatEventDesc, eventColorByCategory } from './config'
+import {
+  transformEvents,
+  DisplayEvent,
+  formatEventDesc,
+  eventColorByCategory,
+  spuriousEvents
+} from './config'
 import { ReactNode } from 'react'
 
 type HistoryContentProps = {
@@ -33,7 +39,8 @@ type Item = {
   date: string,
   description: string,
   title: string,
-  icon: ReactNode
+  icon: ReactNode,
+  isSpuriousDisconnect?: boolean
 }
 const transformData = (clientInfo: ClientInfoData, filters: Filters, intl: IntlShape) => {
   const types = filters ? filters.type ?? [] : []
@@ -68,6 +75,7 @@ const transformData = (clientInfo: ClientInfoData, filters: Filters, intl: IntlS
     date: formatter('dateTimeFormatWithSeconds')(event.start),
     description: formatEventDesc(event, intl),
     title: formatEventDesc(event, intl),
+    isSpuriousDisconnect: spuriousEvents.includes(event.state),
     icon: <UI.EventTypeIcon color={color} />
    }
   }),
@@ -81,7 +89,9 @@ const renderItem = (item: Item) => {
     <List.Item.Meta
       avatar={item.icon}
       title={item.date}
-      description={item.description} />
+      description={item.description}
+      style={{ opacity: item.isSpuriousDisconnect ? 0.4: 1 }}
+    />
   </List.Item>
   return item.id
   ? <TenantLink to={`analytics/incidents/${item.id}`}>{Item}</TenantLink> 
