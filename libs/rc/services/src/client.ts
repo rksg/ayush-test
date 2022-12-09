@@ -12,7 +12,10 @@ import {
   EventMeta,
   getClientHealthClass,
   Guest,
+  Network,
+  onSocketActivityChanged,
   RequestPayload,
+  showActivityMessage,
   TableResult,
   transformByte,
   WifiUrlsInfo
@@ -56,6 +59,47 @@ export const clientApi = baseClientApi.injectEndpoints({
           ? { data: aggregatedList }
           : { error: clientListQuery.error as FetchBaseQueryError }
       }
+    }),
+    getGuestsList: build.query<TableResult<Guest>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          CommonUrlsInfo.getGuestsList,
+          params
+        )
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      keepUnusedDataFor: 0,
+      providesTags: [{ type: 'Guest', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          showActivityMessage(msg, ['AddGuest', 'DeleteGuest'], () => {
+            api.dispatch(clientApi.util.invalidateTags([{ type: 'Guest', id: 'LIST' }]))
+          })
+        })
+      }
+    }),
+    addGuestPass: build.mutation<Guest, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.addGuestPass, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Guest', id: 'LIST' }]
+    }),
+    getGuestNetworkList: build.query<TableResult<Network>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const networkListReq = createHttpRequest(CommonUrlsInfo.getVMNetworksList, params)
+        return {
+          ...networkListReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Guest', id: 'LIST' }]
     }),
     getClientDetails: build.query<Client, RequestPayload>({
       query: ({ params }) => {
@@ -106,19 +150,6 @@ export const clientApi = baseClientApi.injectEndpoints({
         }
       }
     }),
-    getGuestsList: build.query<TableResult<Guest>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(
-          CommonUrlsInfo.getGuestsList,
-          params
-        )
-        return {
-          ...req,
-          body: payload
-        }
-      },
-      providesTags: [{ type: 'Guest', id: 'LIST' }]
-    }),
     getDpskPassphraseByQuery: build.query<DpskPassphrase, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.getDpskPassphraseByQuery, params)
@@ -160,6 +191,9 @@ export const aggregatedClientListData = (clientList: TableResult<ClientList>,
   }
 }
 export const {
+  useGetGuestsListQuery,
+  useAddGuestPassMutation,
+  useLazyGetGuestNetworkListQuery,
   useGetClientDetailsQuery,
   useLazyGetClientDetailsQuery,
   useGetDpskPassphraseByQueryQuery,
@@ -168,6 +202,5 @@ export const {
   useLazyGetHistoricalClientListQuery,
   useGetClientListQuery,
   useGetHistoricalStatisticsReportsQuery,
-  useLazyGetHistoricalStatisticsReportsQuery,
-  useGetGuestsListQuery
+  useLazyGetHistoricalStatisticsReportsQuery
 } = clientApi

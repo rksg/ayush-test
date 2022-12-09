@@ -81,5 +81,6 @@ export const {
   useGetAllUserSettingsQuery,
   useGetCloudVersionQuery,
   useGetUserProfileQuery,
+  useLazyGetUserProfileQuery,
   useUpdateUserProfileMutation
 } = userApi
