@@ -961,7 +961,7 @@ exports[`HistoricalClientsTable should render correctly 1`] = `
     </div>
     <span
       class="ant-typography"
-      style="font-size: 10px; color: rgb(128, 130, 132);"
+      style="font-size: 10px;"
     >
       * There are more historical clients than can be displayed. If you don’t see the client you are looking for, narrow the list by entering a more specific text in the search box.
     </span>

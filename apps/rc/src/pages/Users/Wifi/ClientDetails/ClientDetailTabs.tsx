@@ -5,7 +5,7 @@ import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { notAvailableMsg }                       from '@acx-ui/utils'
 
-function ApDetailTabs () {
+function ClientDetailTabs () {
   const { $t } = useIntl()
   const params = useParams()
   const basePath = useTenantLink(`/users/wifi/clients/${params.clientId}/details/`)
@@ -48,4 +48,4 @@ function ApDetailTabs () {
   )
 }
 
-export default ApDetailTabs
+export default ClientDetailTabs

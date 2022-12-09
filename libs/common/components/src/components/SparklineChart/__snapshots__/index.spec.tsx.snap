@@ -31,7 +31,7 @@ exports[`SparklineChart should render component 1`] = `
       <path
         d="M128 638.8C128 638.8 256 559.2 384 479.6C512 400 512 400 640 320.4C768 240.8 768 240.8 896 161.2C1024 81.6 1152 2 1152 2"
         fill="none"
-        stroke="#2565B6"
+        stroke="none"
         stroke-linejoin="bevel"
       />
     </g>
@@ -55,11 +55,11 @@ exports[`SparklineChart should render component 1`] = `
     >
       <stop
         offset="0%"
-        stop-color="#5496EA"
+        stop-color="none"
       />
       <stop
         offset="100%"
-        stop-color="#FFFFFF"
+        stop-color="none"
       />
     </lineargradient>
   </defs>
@@ -97,7 +97,7 @@ exports[`SparklineChart should render component with trendLine having green 1`] 
       <path
         d="M106.6667 665.3333C106.6667 665.3333 213.3333 599 320 532.6667C426.6667 466.3334 426.6666 466.3333 533.3333 400C640 333.6667 640 333.6667 746.6667 267.3333C853.3333 201 853.3333 201 960 134.6667C1066.6667 68.3333 1173.3334 2 1173.3334 2"
         fill="none"
-        stroke="#23AB36"
+        stroke="none"
         stroke-linejoin="bevel"
       />
     </g>
@@ -121,11 +121,11 @@ exports[`SparklineChart should render component with trendLine having green 1`] 
     >
       <stop
         offset="0%"
-        stop-color="#88D392"
+        stop-color="none"
       />
       <stop
         offset="100%"
-        stop-color="#FFFFFF"
+        stop-color="none"
       />
     </lineargradient>
   </defs>
@@ -163,7 +163,7 @@ exports[`SparklineChart should render component with trendLine having red 1`] = 
       <path
         d="M106.6667 638.8C106.6667 638.8 213.3333 559.2 320 479.6C426.6667 400 426.6666 400 533.3333 320.4C640 240.8 640 240.8 746.6667 161.2C853.3333 81.6 907.9155 2 960 2C1121.2488 2 1173.3334 798 1173.3334 798"
         fill="none"
-        stroke="#ED1C24"
+        stroke="none"
         stroke-linejoin="bevel"
       />
     </g>
@@ -187,11 +187,11 @@ exports[`SparklineChart should render component with trendLine having red 1`] = 
     >
       <stop
         offset="0%"
-        stop-color="#F4777C"
+        stop-color="none"
       />
       <stop
         offset="100%"
-        stop-color="#FFFFFF"
+        stop-color="none"
       />
     </lineargradient>
   </defs>

@@ -10,13 +10,13 @@ exports[`Create DHCP: Option detail should render correctly 1`] = `
     >
       <div
         class="ant-space ant-space-horizontal ant-space-align-center"
-        style="display: flex; justify-content: flex-end;"
+        style="display: flex; justify-content: flex-end; margin: 3px 0px;"
       >
         <div
           class="ant-space-item"
         >
           <button
-            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
             type="button"
           >
             <span>

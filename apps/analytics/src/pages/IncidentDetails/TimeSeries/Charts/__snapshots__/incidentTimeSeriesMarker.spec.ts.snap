@@ -92,7 +92,7 @@ Array [
     },
     "endTime": "2022-07-20T02:42:00.000Z",
     "itemStyle": Object {
-      "color": "#FAD278",
+      "color": "",
       "opacity": 1,
     },
     "startTime": "2022-07-19T05:15:00.000Z",
@@ -187,7 +187,7 @@ Array [
     },
     "endTime": "2022-04-08T13:15:00.000Z",
     "itemStyle": Object {
-      "color": "#FAD278",
+      "color": "",
       "opacity": 0.3,
     },
     "startTime": "2022-04-08T12:15:00.000Z",

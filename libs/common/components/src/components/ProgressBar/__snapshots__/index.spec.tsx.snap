@@ -16,23 +16,23 @@ exports[`ProgressBar should match snapshot 1`] = `
     >
       <div
         class="ant-progress-steps-item ant-progress-steps-item-active"
-        style="background-color: rgb(237, 28, 36); width: 14px; height: 10px;"
+        style="width: 14px; height: 10px;"
       />
       <div
         class="ant-progress-steps-item"
-        style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
+        style="width: 14px; height: 10px;"
       />
       <div
         class="ant-progress-steps-item"
-        style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
+        style="width: 14px; height: 10px;"
       />
       <div
         class="ant-progress-steps-item"
-        style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
+        style="width: 14px; height: 10px;"
       />
       <div
         class="ant-progress-steps-item"
-        style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
+        style="width: 14px; height: 10px;"
       />
     </div>
   </div>
@@ -51,23 +51,23 @@ exports[`ProgressBar should match snapshot 1`] = `
     >
       <div
         class="ant-progress-steps-item ant-progress-steps-item-active"
-        style="background-color: rgb(249, 195, 75); width: 14px; height: 10px;"
+        style="width: 14px; height: 10px;"
       />
       <div
         class="ant-progress-steps-item ant-progress-steps-item-active"
-        style="background-color: rgb(249, 195, 75); width: 14px; height: 10px;"
+        style="width: 14px; height: 10px;"
       />
       <div
         class="ant-progress-steps-item"
-        style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
+        style="width: 14px; height: 10px;"
       />
       <div
         class="ant-progress-steps-item"
-        style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
+        style="width: 14px; height: 10px;"
       />
       <div
         class="ant-progress-steps-item"
-        style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
+        style="width: 14px; height: 10px;"
       />
     </div>
   </div>
@@ -86,23 +86,23 @@ exports[`ProgressBar should match snapshot 1`] = `
     >
       <div
         class="ant-progress-steps-item ant-progress-steps-item-active"
-        style="background-color: rgb(249, 195, 75); width: 14px; height: 10px;"
+        style="width: 14px; height: 10px;"
       />
       <div
         class="ant-progress-steps-item ant-progress-steps-item-active"
-        style="background-color: rgb(249, 195, 75); width: 14px; height: 10px;"
+        style="width: 14px; height: 10px;"
       />
       <div
         class="ant-progress-steps-item ant-progress-steps-item-active"
-        style="background-color: rgb(249, 195, 75); width: 14px; height: 10px;"
+        style="width: 14px; height: 10px;"
       />
       <div
         class="ant-progress-steps-item"
-        style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
+        style="width: 14px; height: 10px;"
       />
       <div
         class="ant-progress-steps-item"
-        style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
+        style="width: 14px; height: 10px;"
       />
     </div>
   </div>
@@ -121,23 +121,23 @@ exports[`ProgressBar should match snapshot 1`] = `
     >
       <div
         class="ant-progress-steps-item ant-progress-steps-item-active"
-        style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+        style="width: 14px; height: 10px;"
       />
       <div
         class="ant-progress-steps-item ant-progress-steps-item-active"
-        style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+        style="width: 14px; height: 10px;"
       />
       <div
         class="ant-progress-steps-item ant-progress-steps-item-active"
-        style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+        style="width: 14px; height: 10px;"
       />
       <div
         class="ant-progress-steps-item ant-progress-steps-item-active"
-        style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+        style="width: 14px; height: 10px;"
       />
       <div
         class="ant-progress-steps-item"
-        style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
+        style="width: 14px; height: 10px;"
       />
     </div>
   </div>
@@ -156,23 +156,23 @@ exports[`ProgressBar should match snapshot 1`] = `
     >
       <div
         class="ant-progress-steps-item ant-progress-steps-item-active"
-        style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+        style="width: 14px; height: 10px;"
       />
       <div
         class="ant-progress-steps-item ant-progress-steps-item-active"
-        style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+        style="width: 14px; height: 10px;"
       />
       <div
         class="ant-progress-steps-item ant-progress-steps-item-active"
-        style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+        style="width: 14px; height: 10px;"
       />
       <div
         class="ant-progress-steps-item ant-progress-steps-item-active"
-        style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+        style="width: 14px; height: 10px;"
       />
       <div
         class="ant-progress-steps-item ant-progress-steps-item-active"
-        style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
+        style="width: 14px; height: 10px;"
       />
     </div>
   </div>

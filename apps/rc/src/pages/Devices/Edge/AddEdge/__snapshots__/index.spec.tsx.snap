@@ -401,7 +401,7 @@ exports[`AddEdge should create AddEdge successfully 1`] = `
             style="margin-right: 12px;"
           >
             <button
-              class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 kkpPZG"
+              class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 bxQmA-d"
               type="button"
             >
               <span>
@@ -413,7 +413,7 @@ exports[`AddEdge should create AddEdge successfully 1`] = `
             class="ant-space-item"
           >
             <button
-              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
               type="button"
             >
               <span>

@@ -534,19 +534,19 @@ exports[`Search Results should render tables correctly 1`] = `
                                                     <g>
                                                       <path
                                                         d="M0 395L0 405L0 395"
-                                                        fill="#FAD278"
+                                                        fill="none"
                                                       />
                                                       <path
                                                         d="M0 395L238.08 395L238.08 405L0 405L0 395"
-                                                        fill="#F7B41E"
+                                                        fill="none"
                                                       />
                                                       <path
                                                         d="M238.08 395L238.08 405L238.08 395"
-                                                        fill="#EC7100"
+                                                        fill="none"
                                                       />
                                                       <path
                                                         d="M238.08 395L1278 395A2 2 0 0 1 1280 397L1280 403A2 2 0 0 1 1278 405L238.08 405L238.08 395"
-                                                        fill="#ED1C24"
+                                                        fill="none"
                                                       />
                                                     </g>
                                                   </svg>
@@ -2659,7 +2659,7 @@ exports[`Search Results should render tables correctly 1`] = `
                                                     <g>
                                                       <path
                                                         d="M0 395L1278 395A2 2 0 0 1 1280 397L1280 403A2 2 0 0 1 1278 405L0 405L0 395"
-                                                        fill="#EBEDEE"
+                                                        fill="none"
                                                       />
                                                     </g>
                                                   </svg>
@@ -2680,7 +2680,7 @@ exports[`Search Results should render tables correctly 1`] = `
                                               class="ant-space-item"
                                             >
                                               <a
-                                                href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/devices/wifi/932173000117/details/incidents"
+                                                href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/devices/wifi/932173000117/details/analytics/incidents/overview"
                                               >
                                                 0
                                               </a>
@@ -2712,11 +2712,7 @@ exports[`Search Results should render tables correctly 1`] = `
                                           class="ant-table-cell"
                                           style="text-align: center;"
                                         >
-                                          <a
-                                            href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/aps/932173000117/details/clients"
-                                          >
-                                            0
-                                          </a>
+                                          0
                                         </td>
                                         <td
                                           class="ant-table-cell"

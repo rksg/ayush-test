@@ -105,7 +105,7 @@ exports[`RadioSettingsTab should render correctly 1`] = `
                       style="padding-left: 10px; padding-right: 10px;"
                     >
                       <button
-                        class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                        class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 eAazoW"
                         type="button"
                       >
                         <span>
@@ -1072,7 +1072,7 @@ exports[`RadioSettingsTab should render correctly 1`] = `
                           <div>
                             <button
                               ant-click-animating-without-extra-node="false"
-                              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__BarButton-sc-a5e24y-4 styledComponents__BarButton5G-sc-a5e24y-5 iICpmb YcLbK"
+                              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW styledComponents__BarButton-sc-a5e24y-4 styledComponents__BarButton5G-sc-a5e24y-5 iICpmb YcLbK"
                               disabled=""
                               style="width: 250px;"
                               type="button"
@@ -1083,7 +1083,7 @@ exports[`RadioSettingsTab should render correctly 1`] = `
                             </button>
                             <button
                               ant-click-animating-without-extra-node="false"
-                              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__BarButton-sc-a5e24y-4 styledComponents__BarButton5G-sc-a5e24y-5 iICpmb YcLbK"
+                              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW styledComponents__BarButton-sc-a5e24y-4 styledComponents__BarButton5G-sc-a5e24y-5 iICpmb YcLbK"
                               disabled=""
                               style="width: 506px;"
                               type="button"
@@ -1095,7 +1095,7 @@ exports[`RadioSettingsTab should render correctly 1`] = `
                           </div>
                           <button
                             ant-click-animating-without-extra-node="false"
-                            class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__BarButton-sc-a5e24y-4 styledComponents__BarButtonDFS-sc-a5e24y-6 iICpmb iZSRbR"
+                            class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW styledComponents__BarButton-sc-a5e24y-4 styledComponents__BarButtonDFS-sc-a5e24y-6 iICpmb iZSRbR"
                             disabled=""
                             style="width: 506px; left: 128px;"
                             type="button"
@@ -1450,7 +1450,7 @@ exports[`RadioSettingsTab should render correctly 1`] = `
               style="margin-right: 12px;"
             >
               <button
-                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 kkpPZG"
+                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 bxQmA-d"
                 type="button"
               >
                 <span>
@@ -1462,7 +1462,7 @@ exports[`RadioSettingsTab should render correctly 1`] = `
               class="ant-space-item"
             >
               <button
-                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
                 type="button"
               >
                 <span>
@@ -1583,7 +1583,7 @@ exports[`RadioSettingsTab should render correctly with 40Mhz bandwidth 1`] = `
                       style="padding-left: 10px; padding-right: 10px;"
                     >
                       <button
-                        class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                        class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 eAazoW"
                         type="button"
                       >
                         <span>
@@ -2551,7 +2551,7 @@ exports[`RadioSettingsTab should render correctly with 40Mhz bandwidth 1`] = `
                           <div>
                             <button
                               ant-click-animating-without-extra-node="false"
-                              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__BarButton-sc-a5e24y-4 styledComponents__BarButton5G-sc-a5e24y-5 iICpmb YcLbK"
+                              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW styledComponents__BarButton-sc-a5e24y-4 styledComponents__BarButton5G-sc-a5e24y-5 iICpmb YcLbK"
                               disabled=""
                               style="width: 250px;"
                               type="button"
@@ -2562,7 +2562,7 @@ exports[`RadioSettingsTab should render correctly with 40Mhz bandwidth 1`] = `
                             </button>
                             <button
                               ant-click-animating-without-extra-node="false"
-                              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__BarButton-sc-a5e24y-4 styledComponents__BarButton5G-sc-a5e24y-5 iICpmb YcLbK"
+                              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW styledComponents__BarButton-sc-a5e24y-4 styledComponents__BarButton5G-sc-a5e24y-5 iICpmb YcLbK"
                               disabled=""
                               style="width: 506px;"
                               type="button"
@@ -2574,7 +2574,7 @@ exports[`RadioSettingsTab should render correctly with 40Mhz bandwidth 1`] = `
                           </div>
                           <button
                             ant-click-animating-without-extra-node="false"
-                            class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__BarButton-sc-a5e24y-4 styledComponents__BarButtonDFS-sc-a5e24y-6 iICpmb iZSRbR"
+                            class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW styledComponents__BarButton-sc-a5e24y-4 styledComponents__BarButtonDFS-sc-a5e24y-6 iICpmb iZSRbR"
                             disabled=""
                             style="width: 506px; left: 128px;"
                             type="button"
@@ -3361,7 +3361,7 @@ exports[`RadioSettingsTab should render correctly with 40Mhz bandwidth 1`] = `
               style="margin-right: 12px;"
             >
               <button
-                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 kkpPZG"
+                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 bxQmA-d"
                 type="button"
               >
                 <span>
@@ -3373,7 +3373,7 @@ exports[`RadioSettingsTab should render correctly with 40Mhz bandwidth 1`] = `
               class="ant-space-item"
             >
               <button
-                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
                 type="button"
               >
                 <span>
@@ -3494,7 +3494,7 @@ exports[`RadioSettingsTab should render correctly with Auto bandwidth 1`] = `
                       style="padding-left: 10px; padding-right: 10px;"
                     >
                       <button
-                        class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                        class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 eAazoW"
                         type="button"
                       >
                         <span>
@@ -4460,7 +4460,7 @@ exports[`RadioSettingsTab should render correctly with Auto bandwidth 1`] = `
                           <div>
                             <button
                               ant-click-animating-without-extra-node="false"
-                              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__BarButton-sc-a5e24y-4 styledComponents__BarButton5G-sc-a5e24y-5 iICpmb YcLbK"
+                              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW styledComponents__BarButton-sc-a5e24y-4 styledComponents__BarButton5G-sc-a5e24y-5 iICpmb YcLbK"
                               disabled=""
                               style="width: 250px;"
                               type="button"
@@ -4471,7 +4471,7 @@ exports[`RadioSettingsTab should render correctly with Auto bandwidth 1`] = `
                             </button>
                             <button
                               ant-click-animating-without-extra-node="false"
-                              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__BarButton-sc-a5e24y-4 styledComponents__BarButton5G-sc-a5e24y-5 iICpmb YcLbK"
+                              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW styledComponents__BarButton-sc-a5e24y-4 styledComponents__BarButton5G-sc-a5e24y-5 iICpmb YcLbK"
                               disabled=""
                               style="width: 506px;"
                               type="button"
@@ -4483,7 +4483,7 @@ exports[`RadioSettingsTab should render correctly with Auto bandwidth 1`] = `
                           </div>
                           <button
                             ant-click-animating-without-extra-node="false"
-                            class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV styledComponents__BarButton-sc-a5e24y-4 styledComponents__BarButtonDFS-sc-a5e24y-6 iICpmb iZSRbR"
+                            class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW styledComponents__BarButton-sc-a5e24y-4 styledComponents__BarButtonDFS-sc-a5e24y-6 iICpmb iZSRbR"
                             disabled=""
                             style="width: 506px; left: 128px;"
                             type="button"
@@ -4838,7 +4838,7 @@ exports[`RadioSettingsTab should render correctly with Auto bandwidth 1`] = `
               style="margin-right: 12px;"
             >
               <button
-                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 kkpPZG"
+                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 bxQmA-d"
                 type="button"
               >
                 <span>
@@ -4850,7 +4850,7 @@ exports[`RadioSettingsTab should render correctly with Auto bandwidth 1`] = `
               class="ant-space-item"
             >
               <button
-                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
                 type="button"
               >
                 <span>
