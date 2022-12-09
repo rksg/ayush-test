@@ -81,7 +81,29 @@ export function useMenuConfig () {
       name: $t({ defaultMessage: 'Reports' }),
       inactiveIcon: ReportsOutlined,
       activeIcon: ReportsSolid,
-      disabled: true
+      disabled: false,
+      routes: [
+        {
+          path: '/reports/network',
+          name: $t({ defaultMessage: 'Network' })
+        },
+        {
+          path: '/reports/aps',
+          name: $t({ defaultMessage: 'APs' })
+        },
+        {
+          path: '/reports/switches',
+          name: $t({ defaultMessage: 'Switches' })
+        },
+        {
+          path: '/reports/clients',
+          name: $t({ defaultMessage: 'Wireless Clients' })
+        },
+        {
+          path: '/reports/applications',
+          name: $t({ defaultMessage: 'Applications' })
+        }
+      ]
     },
     genPlaceholder(),
     {
