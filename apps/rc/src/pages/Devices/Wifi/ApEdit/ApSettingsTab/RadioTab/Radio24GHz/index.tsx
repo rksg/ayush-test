@@ -91,12 +91,14 @@ export function Radio24GHz (props: { venueId: string, serialNumber: string }) {
       )
     }
 
-    if(allowedChannels || allowedAPChannels){
-      let selectedChannels = setSelectedChannels(allowedAPChannels, allowedChannels)
-      selectedChannels = selectedChannels.filter(item => item)
-      form.setFieldValue(['apRadioParams24G', 'allowedChannels'], selectedChannels)
-    }else if(allowedVenueChannels){
+    if(useVenueSettings){
       form.setFieldValue(['apRadioParams24G', 'allowedChannels'], allowedVenueChannels)
+    }else{
+      if(allowedChannels.length > 0){
+        form.setFieldValue(['apRadioParams24G', 'allowedChannels'], allowedChannels)
+      }else{
+        form.setFieldValue(['apRadioParams24G', 'allowedChannels'], allowedAPChannels)
+      }
     }
 
     if(venueData){
@@ -121,22 +123,7 @@ export function Radio24GHz (props: { venueId: string, serialNumber: string }) {
       }
     }
   }, [defaultChannelsData, channelBandwidth, allowedChannels, allowedAPChannels,
-    allowedVenueChannels, venueData])
-
-  const setSelectedChannels = (channels: string[], selected: string[]) => {
-    if (_.isEmpty(channels)) {
-      return []
-    }
-
-    selected = (!selected) ? channels : selected
-
-    return channels.map((channel) => {
-      if(selected.indexOf(channel) > -1){
-        return channel
-      }
-      return null
-    })
-  }
+    allowedVenueChannels, venueData, useVenueSettings])
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function formatter (value: any) {

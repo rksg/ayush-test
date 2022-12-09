@@ -1137,10 +1137,10 @@ exports[`RadioSettingsTab should render correctly 1`] = `
                                           id="0_apRadioParams50G_allowedChannels"
                                         >
                                           <label
-                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                           >
                                             <span
-                                              class="ant-checkbox ant-checkbox-disabled"
+                                              class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                             >
                                               <input
                                                 checked=""
@@ -1164,10 +1164,10 @@ exports[`RadioSettingsTab should render correctly 1`] = `
                                             </span>
                                           </label>
                                           <label
-                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                           >
                                             <span
-                                              class="ant-checkbox ant-checkbox-disabled"
+                                              class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                             >
                                               <input
                                                 checked=""
@@ -1191,10 +1191,10 @@ exports[`RadioSettingsTab should render correctly 1`] = `
                                             </span>
                                           </label>
                                           <label
-                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                           >
                                             <span
-                                              class="ant-checkbox ant-checkbox-disabled"
+                                              class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                             >
                                               <input
                                                 checked=""
@@ -1218,10 +1218,10 @@ exports[`RadioSettingsTab should render correctly 1`] = `
                                             </span>
                                           </label>
                                           <label
-                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                           >
                                             <span
-                                              class="ant-checkbox ant-checkbox-disabled"
+                                              class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                             >
                                               <input
                                                 checked=""
@@ -1677,10 +1677,10 @@ exports[`RadioSettingsTab should render correctly 1`] = `
                                             </span>
                                           </label>
                                           <label
-                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                           >
                                             <span
-                                              class="ant-checkbox ant-checkbox-disabled"
+                                              class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                             >
                                               <input
                                                 checked=""
@@ -1704,10 +1704,10 @@ exports[`RadioSettingsTab should render correctly 1`] = `
                                             </span>
                                           </label>
                                           <label
-                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                           >
                                             <span
-                                              class="ant-checkbox ant-checkbox-disabled"
+                                              class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                             >
                                               <input
                                                 checked=""
@@ -1731,10 +1731,10 @@ exports[`RadioSettingsTab should render correctly 1`] = `
                                             </span>
                                           </label>
                                           <label
-                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                           >
                                             <span
-                                              class="ant-checkbox ant-checkbox-disabled"
+                                              class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                             >
                                               <input
                                                 checked=""
@@ -1758,10 +1758,10 @@ exports[`RadioSettingsTab should render correctly 1`] = `
                                             </span>
                                           </label>
                                           <label
-                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                           >
                                             <span
-                                              class="ant-checkbox ant-checkbox-disabled"
+                                              class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                             >
                                               <input
                                                 checked=""
@@ -2430,6 +2430,7 @@ exports[`RadioSettingsTab should render correctly with 40Mhz bandwidth 1`] = `
                                             class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                           >
                                             <input
+                                              checked=""
                                               class="ant-checkbox-input"
                                               disabled=""
                                               type="checkbox"
@@ -2456,6 +2457,7 @@ exports[`RadioSettingsTab should render correctly with 40Mhz bandwidth 1`] = `
                                             class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                           >
                                             <input
+                                              checked=""
                                               class="ant-checkbox-input"
                                               disabled=""
                                               type="checkbox"
@@ -2482,6 +2484,7 @@ exports[`RadioSettingsTab should render correctly with 40Mhz bandwidth 1`] = `
                                             class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                           >
                                             <input
+                                              checked=""
                                               class="ant-checkbox-input"
                                               disabled=""
                                               type="checkbox"
@@ -2508,6 +2511,7 @@ exports[`RadioSettingsTab should render correctly with 40Mhz bandwidth 1`] = `
                                             class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                           >
                                             <input
+                                              checked=""
                                               class="ant-checkbox-input"
                                               disabled=""
                                               type="checkbox"
@@ -2534,6 +2538,7 @@ exports[`RadioSettingsTab should render correctly with 40Mhz bandwidth 1`] = `
                                             class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                           >
                                             <input
+                                              checked=""
                                               class="ant-checkbox-input"
                                               disabled=""
                                               type="checkbox"
@@ -2560,6 +2565,7 @@ exports[`RadioSettingsTab should render correctly with 40Mhz bandwidth 1`] = `
                                             class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                           >
                                             <input
+                                              checked=""
                                               class="ant-checkbox-input"
                                               disabled=""
                                               type="checkbox"
@@ -2586,6 +2592,7 @@ exports[`RadioSettingsTab should render correctly with 40Mhz bandwidth 1`] = `
                                             class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                           >
                                             <input
+                                              checked=""
                                               class="ant-checkbox-input"
                                               disabled=""
                                               type="checkbox"
@@ -2612,6 +2619,7 @@ exports[`RadioSettingsTab should render correctly with 40Mhz bandwidth 1`] = `
                                             class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                           >
                                             <input
+                                              checked=""
                                               class="ant-checkbox-input"
                                               disabled=""
                                               type="checkbox"
@@ -2638,6 +2646,7 @@ exports[`RadioSettingsTab should render correctly with 40Mhz bandwidth 1`] = `
                                             class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                           >
                                             <input
+                                              checked=""
                                               class="ant-checkbox-input"
                                               disabled=""
                                               type="checkbox"
@@ -2664,6 +2673,7 @@ exports[`RadioSettingsTab should render correctly with 40Mhz bandwidth 1`] = `
                                             class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                           >
                                             <input
+                                              checked=""
                                               class="ant-checkbox-input"
                                               disabled=""
                                               type="checkbox"
@@ -2690,6 +2700,7 @@ exports[`RadioSettingsTab should render correctly with 40Mhz bandwidth 1`] = `
                                             class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                           >
                                             <input
+                                              checked=""
                                               class="ant-checkbox-input"
                                               disabled=""
                                               type="checkbox"
@@ -3043,10 +3054,10 @@ exports[`RadioSettingsTab should render correctly with 40Mhz bandwidth 1`] = `
                                           id="0_apRadioParams50G_allowedChannels"
                                         >
                                           <label
-                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                           >
                                             <span
-                                              class="ant-checkbox ant-checkbox-disabled"
+                                              class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                             >
                                               <input
                                                 checked=""
@@ -3070,10 +3081,10 @@ exports[`RadioSettingsTab should render correctly with 40Mhz bandwidth 1`] = `
                                             </span>
                                           </label>
                                           <label
-                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                           >
                                             <span
-                                              class="ant-checkbox ant-checkbox-disabled"
+                                              class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                             >
                                               <input
                                                 checked=""
@@ -3097,10 +3108,10 @@ exports[`RadioSettingsTab should render correctly with 40Mhz bandwidth 1`] = `
                                             </span>
                                           </label>
                                           <label
-                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                           >
                                             <span
-                                              class="ant-checkbox ant-checkbox-disabled"
+                                              class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                             >
                                               <input
                                                 checked=""
@@ -3124,10 +3135,10 @@ exports[`RadioSettingsTab should render correctly with 40Mhz bandwidth 1`] = `
                                             </span>
                                           </label>
                                           <label
-                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                           >
                                             <span
-                                              class="ant-checkbox ant-checkbox-disabled"
+                                              class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                             >
                                               <input
                                                 checked=""
@@ -3583,10 +3594,10 @@ exports[`RadioSettingsTab should render correctly with 40Mhz bandwidth 1`] = `
                                             </span>
                                           </label>
                                           <label
-                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                           >
                                             <span
-                                              class="ant-checkbox ant-checkbox-disabled"
+                                              class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                             >
                                               <input
                                                 checked=""
@@ -3610,10 +3621,10 @@ exports[`RadioSettingsTab should render correctly with 40Mhz bandwidth 1`] = `
                                             </span>
                                           </label>
                                           <label
-                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                           >
                                             <span
-                                              class="ant-checkbox ant-checkbox-disabled"
+                                              class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                             >
                                               <input
                                                 checked=""
@@ -3637,10 +3648,10 @@ exports[`RadioSettingsTab should render correctly with 40Mhz bandwidth 1`] = `
                                             </span>
                                           </label>
                                           <label
-                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                           >
                                             <span
-                                              class="ant-checkbox ant-checkbox-disabled"
+                                              class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                             >
                                               <input
                                                 checked=""
@@ -3664,10 +3675,10 @@ exports[`RadioSettingsTab should render correctly with 40Mhz bandwidth 1`] = `
                                             </span>
                                           </label>
                                           <label
-                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                           >
                                             <span
-                                              class="ant-checkbox ant-checkbox-disabled"
+                                              class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                             >
                                               <input
                                                 checked=""
@@ -4336,6 +4347,7 @@ exports[`RadioSettingsTab should render correctly with Auto bandwidth 1`] = `
                                             class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                           >
                                             <input
+                                              checked=""
                                               class="ant-checkbox-input"
                                               disabled=""
                                               type="checkbox"
@@ -4362,6 +4374,7 @@ exports[`RadioSettingsTab should render correctly with Auto bandwidth 1`] = `
                                             class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                           >
                                             <input
+                                              checked=""
                                               class="ant-checkbox-input"
                                               disabled=""
                                               type="checkbox"
@@ -4388,6 +4401,7 @@ exports[`RadioSettingsTab should render correctly with Auto bandwidth 1`] = `
                                             class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                           >
                                             <input
+                                              checked=""
                                               class="ant-checkbox-input"
                                               disabled=""
                                               type="checkbox"
@@ -4414,6 +4428,7 @@ exports[`RadioSettingsTab should render correctly with Auto bandwidth 1`] = `
                                             class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                           >
                                             <input
+                                              checked=""
                                               class="ant-checkbox-input"
                                               disabled=""
                                               type="checkbox"
@@ -4440,6 +4455,7 @@ exports[`RadioSettingsTab should render correctly with Auto bandwidth 1`] = `
                                             class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                           >
                                             <input
+                                              checked=""
                                               class="ant-checkbox-input"
                                               disabled=""
                                               type="checkbox"
@@ -4466,6 +4482,7 @@ exports[`RadioSettingsTab should render correctly with Auto bandwidth 1`] = `
                                             class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                           >
                                             <input
+                                              checked=""
                                               class="ant-checkbox-input"
                                               disabled=""
                                               type="checkbox"
@@ -4492,6 +4509,7 @@ exports[`RadioSettingsTab should render correctly with Auto bandwidth 1`] = `
                                             class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                           >
                                             <input
+                                              checked=""
                                               class="ant-checkbox-input"
                                               disabled=""
                                               type="checkbox"
@@ -4518,6 +4536,7 @@ exports[`RadioSettingsTab should render correctly with Auto bandwidth 1`] = `
                                             class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                           >
                                             <input
+                                              checked=""
                                               class="ant-checkbox-input"
                                               disabled=""
                                               type="checkbox"
@@ -4544,6 +4563,7 @@ exports[`RadioSettingsTab should render correctly with Auto bandwidth 1`] = `
                                             class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                           >
                                             <input
+                                              checked=""
                                               class="ant-checkbox-input"
                                               disabled=""
                                               type="checkbox"
@@ -4570,6 +4590,7 @@ exports[`RadioSettingsTab should render correctly with Auto bandwidth 1`] = `
                                             class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                           >
                                             <input
+                                              checked=""
                                               class="ant-checkbox-input"
                                               disabled=""
                                               type="checkbox"
@@ -4596,6 +4617,7 @@ exports[`RadioSettingsTab should render correctly with Auto bandwidth 1`] = `
                                             class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                           >
                                             <input
+                                              checked=""
                                               class="ant-checkbox-input"
                                               disabled=""
                                               type="checkbox"
@@ -4947,10 +4969,10 @@ exports[`RadioSettingsTab should render correctly with Auto bandwidth 1`] = `
                                           id="0_apRadioParams50G_allowedChannels"
                                         >
                                           <label
-                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                           >
                                             <span
-                                              class="ant-checkbox ant-checkbox-disabled"
+                                              class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                             >
                                               <input
                                                 checked=""
@@ -4974,10 +4996,10 @@ exports[`RadioSettingsTab should render correctly with Auto bandwidth 1`] = `
                                             </span>
                                           </label>
                                           <label
-                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                           >
                                             <span
-                                              class="ant-checkbox ant-checkbox-disabled"
+                                              class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                             >
                                               <input
                                                 checked=""
@@ -5001,10 +5023,10 @@ exports[`RadioSettingsTab should render correctly with Auto bandwidth 1`] = `
                                             </span>
                                           </label>
                                           <label
-                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                           >
                                             <span
-                                              class="ant-checkbox ant-checkbox-disabled"
+                                              class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                             >
                                               <input
                                                 checked=""
@@ -5028,10 +5050,10 @@ exports[`RadioSettingsTab should render correctly with Auto bandwidth 1`] = `
                                             </span>
                                           </label>
                                           <label
-                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                           >
                                             <span
-                                              class="ant-checkbox ant-checkbox-disabled"
+                                              class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                             >
                                               <input
                                                 checked=""
@@ -5487,10 +5509,10 @@ exports[`RadioSettingsTab should render correctly with Auto bandwidth 1`] = `
                                             </span>
                                           </label>
                                           <label
-                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                           >
                                             <span
-                                              class="ant-checkbox ant-checkbox-disabled"
+                                              class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                             >
                                               <input
                                                 checked=""
@@ -5514,10 +5536,10 @@ exports[`RadioSettingsTab should render correctly with Auto bandwidth 1`] = `
                                             </span>
                                           </label>
                                           <label
-                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                           >
                                             <span
-                                              class="ant-checkbox ant-checkbox-disabled"
+                                              class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                             >
                                               <input
                                                 checked=""
@@ -5541,10 +5563,10 @@ exports[`RadioSettingsTab should render correctly with Auto bandwidth 1`] = `
                                             </span>
                                           </label>
                                           <label
-                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                           >
                                             <span
-                                              class="ant-checkbox ant-checkbox-disabled"
+                                              class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                             >
                                               <input
                                                 checked=""
@@ -5568,10 +5590,10 @@ exports[`RadioSettingsTab should render correctly with Auto bandwidth 1`] = `
                                             </span>
                                           </label>
                                           <label
-                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
+                                            class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-disabled ant-checkbox-wrapper-in-form-item ant-checkbox-group-item"
                                           >
                                             <span
-                                              class="ant-checkbox ant-checkbox-disabled"
+                                              class="ant-checkbox ant-checkbox-checked ant-checkbox-disabled"
                                             >
                                               <input
                                                 checked=""
