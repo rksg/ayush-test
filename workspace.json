@@ -22,7 +22,6 @@
     "rc-services": "libs/rc/services",
     "rc-utils": "libs/rc/utils",
     "react-router-dom": "libs/common/react-router-dom",
-    "reports-services": "libs/reports/services",
     "reports": "apps/reports"
   }
 }
