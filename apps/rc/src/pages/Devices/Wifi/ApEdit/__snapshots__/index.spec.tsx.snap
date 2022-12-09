@@ -126,7 +126,7 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
                 </div>
                 <div
                   class="ant-tabs-ink-bar ant-tabs-ink-bar-animated"
-                  style="left: 0px; width: 1280px;"
+                  style="left: 0px; width: 0px;"
                 />
               </div>
             </div>
@@ -270,7 +270,7 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
           </div>
           <div
             class="ant-tabs-ink-bar ant-tabs-ink-bar-animated"
-            style="left: 0px; width: 1280px;"
+            style="left: 0px; width: 0px;"
           />
         </div>
       </div>
@@ -334,7 +334,7 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
           tabindex="0"
         >
           <div
-            class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+            class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
           >
             <section
               class="styledComponents__Wrapper-sc-1ibvcih-2 kZHgWB"
