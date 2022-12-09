@@ -7,16 +7,10 @@ export interface ApiInfo {
 }
 // TODO: BE dependency ACX-17955 for UI ACX-18598, ACX-18541, ACX-18659
 const Jwt = () => {
-  const jwt = sessionStorage.getItem('jwt')
-  // useEffect(() => {
-  //   fetch('Some_API').then(response => {
-  //     // eslint-disable-next-line no-console
-  //     console.log(response.headers)
-  //   })
-  // }, [])
-  // eslint-disable-next-line no-console
-  if (!jwt) return console.log('NO JWT TOKEN FOUND!!!!!')
-  return jwt
+  if (sessionStorage.getItem('jwt')) {
+    return sessionStorage.getItem('jwt')
+    // eslint-disable-next-line no-console
+  } else return console.error('NO JWT TOKEN FOUND!!!!!')
 }
 
 // eslint-disable-next-line no-console
