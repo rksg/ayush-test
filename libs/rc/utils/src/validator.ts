@@ -87,15 +87,15 @@ export function walledGardensRegExp (value:string) {
   if (!value) {
     return Promise.resolve()
   }
-  let checkPromise = Promise.resolve()
+  let isValid = true
   const walledGardens = value.split('\n')
   const walledGardenRegex = new RegExp(/^(((\*\.){0,1})(([a-zA-Z0-9*]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.){1,})([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9]){1,}(((\/[0-9]{1,2}){0,1}|(\s+(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){2,}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))))$/)
-  walledGardens.map(walledGarden=>{
+  walledGardens.forEach(walledGarden=>{
     if (walledGarden.trim()&&!walledGardenRegex.test(walledGarden.trim())) {
-      checkPromise = Promise.reject($t(validationMessages.walledGarden))
+      isValid = false
     }
   })
-  return checkPromise
+  return isValid ? Promise.resolve() : Promise.reject($t(validationMessages.walledGarden))
 }
 export function syslogServerRegExp (value: string) {
   const { $t } = getIntl()
