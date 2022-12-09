@@ -58,7 +58,7 @@ describe('NetworkDetails', () => {
       networkId: '373377b0cb6e46ea8982b1c80aabe1fa',
       activeTab: 'overview'
     }
-    const { asFragment } = render(<Provider><NetworkDetails /></Provider>, {
+    render(<Provider><NetworkDetails /></Provider>, {
       route: { params, path: '/:tenantId/:networkId/:activeTab' }
     })
 
