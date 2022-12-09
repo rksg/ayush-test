@@ -6,8 +6,6 @@ import {
   categoryOptions,
   mapCodeToFailureText,
   clientEventDescription,
-  Incident,
-  shortDescription
 } from '@acx-ui/analytics/utils'
 
 import { ConnectionEvent } from './services'
@@ -71,7 +69,7 @@ export const eventColorByCategory = {
   [FAILURE]: '--acx-semantics-red-50',
   [SLOW]: '--acx-semantics-yellow-50'
 }
-export const categorizeEvent = (name: string, ttc: number) => {
+export const categorizeEvent = (name: string, ttc: number | null) => {
   const successEvents = [INFO_UPDATED, JOIN, ROAMED].map(
     key => filterEventMap[key as keyof typeof filterEventMap]
   )
@@ -95,7 +93,6 @@ export const transformEvents = (
     const filterEventTypes = selectedEventTypes.map(e => filterEventMap[e as keyof typeof filterEventMap])
     const filterRadios = selectedRadios.map(e => filterEventMap[e as keyof typeof filterEventMap])
     const time = +new Date(timestamp)
-  
     let skip = spuriousEvents.includes(state)
       || filterEventTypes.length && !filterEventTypes.includes(eventType)
       || filterRadios.length && !filterRadios.includes(radio)

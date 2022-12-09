@@ -1,5 +1,6 @@
 
 import { List }    from 'antd'
+import { flatten } from 'lodash'
 import { IntlShape, useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
@@ -13,7 +14,8 @@ import {
   Incident,
   calculateSeverity,
   incidentSeverities,
-  shortDescription
+  shortDescription,
+  categoryOptions
 } from '@acx-ui/analytics/utils'
 
 import * as UI from './styledComponents'
@@ -35,20 +37,23 @@ type HistoryContentProps = {
 }
 type Item = {
   id?: string,
+  start: number,
   date: string,
   description: string,
   title: string,
   icon: ReactNode
 }
+
 const transformData = (clientInfo: ClientInfoData, filters: Filters, intl: IntlShape) => {
   const types = filters ? filters.type ?? [] : []
   const radios = filters ? filters.radio ?? [] : []
+  const selectedCategories: string[] = filters ? filters.category ?? [] : []
   const events = transformEvents(
     clientInfo.connectionEvents,
-    types,
-    radios
+    flatten(types),
+    flatten(radios)
   ) as DisplayEvent[]
-  const incidents = clientInfo.incidents.map((incident: Incident) => {
+  const incidents = clientInfo.incidents.reduce((acc, incident: Incident) => {
     const {
       category,
       subCategory,
@@ -57,15 +62,25 @@ const transformData = (clientInfo: ClientInfoData, filters: Filters, intl: IntlS
     const severity = calculateSeverity(incident.severity)
     const color = incidentSeverities[severity].color
     const title = shortDescription({ ...incident, shortDescription: desc })
-    return {
+    const cat = categoryOptions.find(
+      ({ label }) => intl.$t(label) === intl.$t(category)
+    )
+    if (selectedCategories.length &&
+      cat &&
+      !flatten(selectedCategories).includes(cat.value)
+    ) {
+      return acc
+    }
+    acc.push({
       id: incident.id,
       start: +new Date(incident.startTime),
       date: formatter('dateTimeFormatWithSeconds')(incident.startTime),
       description: `${intl.$t(category)} (${intl.$t(subCategory)})`,
       title,
       icon: <UI.IncidentEvent color={color}>{severity}</UI.IncidentEvent>
-    }
-  })
+    })
+    return acc
+  }, [] as Item[])
   return [ ...events.map((event: DisplayEvent) => {
     const color = eventColorByCategory[event.category as keyof typeof eventColorByCategory]
    return {
