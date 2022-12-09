@@ -378,3 +378,10 @@ export const getDeviceConnectionStatusColors = () => [
   cssStr(deviceStatusColors.alerting), // Transient Issue
   cssStr(deviceStatusColors.disconnected) // Requires Attention
 ]
+
+export const deviceCategoryColors = {
+  Malicious: '--acx-accents-orange-50',
+  Ignored: '--acx-semantics-green-70',
+  Unclassified: '--acx-accents-blue-60',
+  Known: '--acx-semantics-green-50'
+}

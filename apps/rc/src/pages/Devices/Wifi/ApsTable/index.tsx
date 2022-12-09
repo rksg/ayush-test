@@ -6,18 +6,22 @@ import {
   Dropdown,
   PageHeader
 } from '@acx-ui/components'
-import { ApTable }    from '@acx-ui/rc/components'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { ApTable }                from '@acx-ui/rc/components'
+import { TenantLink }             from '@acx-ui/react-router-dom'
+import { notAvailableMsg }        from '@acx-ui/utils'
 
 export default function ApsTable () {
   const { $t } = useIntl()
   const addMenu = <Menu
     items={[{
       key: 'ap',
-      label: <TenantLink to='devices/aps/add'>{$t({ defaultMessage: 'AP' })}</TenantLink>
+      label: <TenantLink to='devices/wifi/add'>{$t({ defaultMessage: 'AP' })}</TenantLink>
     }, {
       key: 'import-from-file',
-      label: <TenantLink to='TODO'>{$t({ defaultMessage: 'Import from file' })}</TenantLink>
+      label: <TenantLink to='TODO'>{$t({ defaultMessage: 'Import from file' })}</TenantLink>,
+      title: $t(notAvailableMsg),
+      disabled: !useIsSplitOn(Features.DEVICES)
     }, {
       key: 'ap-group',
       label: <TenantLink to='devices/apgroups/add'>

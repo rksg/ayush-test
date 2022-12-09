@@ -212,7 +212,7 @@ export function LanPorts () {
         onFormChange={handleFormChange}
         onCancel={() => navigate({
           ...basePath,
-          pathname: `${basePath.pathname}/aps/${serialNumber}/details/overview`
+          pathname: `${basePath.pathname}/wifi/${serialNumber}/details/overview`
         })
         }
         buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
