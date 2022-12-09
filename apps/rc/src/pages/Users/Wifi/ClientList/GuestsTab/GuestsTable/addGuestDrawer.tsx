@@ -37,7 +37,7 @@ import {
   PrintIcon,
   CheckboxLabel,
   FooterDiv
-}   from './styledComponents'
+}   from '../styledComponents'
 
 interface AddGuestProps {
     visible: boolean
