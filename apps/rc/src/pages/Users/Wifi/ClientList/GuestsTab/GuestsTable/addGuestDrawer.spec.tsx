@@ -58,28 +58,28 @@ describe('Add Guest Drawer', () => {
       </Provider>, { route: { params } }
     )
     await userEvent.type(
-      screen.getByRole('textbox', { name: 'Guest Name' }),
+      await screen.findByRole('textbox', { name: 'Guest Name' }),
       'wifitest'
     )
     await userEvent.type(
-      screen.getByRole('textbox', { name: 'Mobile Phone' }),
+      await screen.findByRole('textbox', { name: 'Mobile Phone' }),
       '+12052220123'
     )
     await userEvent.type(
-      screen.getByRole('textbox', { name: 'Email' }),
+      await screen.findByRole('textbox', { name: 'Email' }),
       'ruckus@commscope.com'
     )
     await userEvent.type(
-      screen.getByRole('textbox', { name: 'Note' }),
+      await screen.findByRole('textbox', { name: 'Note' }),
       'test wifi'
     )
 
     const allowedNetworkCombo = await screen.findAllByRole('combobox')
     fireEvent.mouseDown(allowedNetworkCombo[0])
-    const option = screen.getAllByText('guest pass wlan1')
+    const option = await screen.findAllByText('guest pass wlan1')
     await userEvent.click(option[0])
 
-    fireEvent.click(screen.getByTestId('saveBtn'))
+    fireEvent.click(await screen.findByTestId('saveBtn'))
     expect(asFragment()).toMatchSnapshot()
   })
   it('should created guest without delivery methods correctly', async () => {
@@ -89,18 +89,18 @@ describe('Add Guest Drawer', () => {
       </Provider>, { route: { params } }
     )
     await userEvent.type(
-      screen.getByRole('textbox', { name: 'Guest Name' }),
+      await screen.findByRole('textbox', { name: 'Guest Name' }),
       'wifitest'
     )
 
     const allowedNetworkCombo = await screen.findAllByRole('combobox')
     fireEvent.mouseDown(allowedNetworkCombo[0])
-    const option = screen.getAllByText('guest pass wlan1')
+    const option = await screen.findAllByText('guest pass wlan1')
     await userEvent.click(option[0])
 
-    await userEvent.click(screen.getByRole('checkbox', { name: /Print Guest pass/ }))
+    await userEvent.click(await screen.findByRole('checkbox', { name: /Print Guest pass/ }))
 
-    fireEvent.click(screen.getByTestId('saveBtn'))
+    fireEvent.click(await screen.findByTestId('saveBtn'))
     expect(asFragment()).toMatchSnapshot()
   })
   it('should created guest without expiration period correctly', async () => {
@@ -115,16 +115,16 @@ describe('Add Guest Drawer', () => {
       </Provider>, { route: { params } }
     )
     await userEvent.type(
-      screen.getByRole('textbox', { name: 'Guest Name' }),
+      await screen.findByRole('textbox', { name: 'Guest Name' }),
       'wifitest'
     )
 
     const allowedNetworkCombo = await screen.findAllByRole('combobox')
     fireEvent.mouseDown(allowedNetworkCombo[0])
-    const option = screen.getAllByText('guest pass wlan1')
+    const option = await screen.findAllByText('guest pass wlan1')
     await userEvent.click(option[0])
 
-    fireEvent.click(screen.getByTestId('saveBtn'))
+    fireEvent.click(await screen.findByTestId('saveBtn'))
     expect(asFragment()).toMatchSnapshot()
   })
   it('should created guest without expiration and unit day period correctly', async () => {
@@ -140,16 +140,16 @@ describe('Add Guest Drawer', () => {
       </Provider>, { route: { params } }
     )
     await userEvent.type(
-      screen.getByRole('textbox', { name: 'Guest Name' }),
+      await screen.findByRole('textbox', { name: 'Guest Name' }),
       'wifitest'
     )
 
     const allowedNetworkCombo = await screen.findAllByRole('combobox')
     fireEvent.mouseDown(allowedNetworkCombo[0])
-    const option = screen.getAllByText('guest pass wlan1')
+    const option = await screen.findAllByText('guest pass wlan1')
     await userEvent.click(option[0])
 
-    fireEvent.click(screen.getByTestId('saveBtn'))
+    fireEvent.click(await screen.findByTestId('saveBtn'))
     expect(asFragment()).toMatchSnapshot()
   })
   it('should handle error correctly', async () => {
@@ -170,28 +170,28 @@ describe('Add Guest Drawer', () => {
       </Provider>, { route: { params } }
     )
     await userEvent.type(
-      screen.getByRole('textbox', { name: 'Guest Name' }),
+      await screen.findByRole('textbox', { name: 'Guest Name' }),
       'wifitest'
     )
     await userEvent.type(
-      screen.getByRole('textbox', { name: 'Mobile Phone' }),
+      await screen.findByRole('textbox', { name: 'Mobile Phone' }),
       '+12052220123'
     )
     await userEvent.type(
-      screen.getByRole('textbox', { name: 'Email' }),
+      await screen.findByRole('textbox', { name: 'Email' }),
       'ruckus@commscope.com'
     )
     await userEvent.type(
-      screen.getByRole('textbox', { name: 'Note' }),
+      await screen.findByRole('textbox', { name: 'Note' }),
       'test wifi'
     )
 
     const allowedNetworkCombo = await screen.findAllByRole('combobox')
     fireEvent.mouseDown(allowedNetworkCombo[0])
-    const option = screen.getAllByText('guest pass wlan1')
+    const option = await screen.findAllByText('guest pass wlan1')
     await userEvent.click(option[0])
 
-    fireEvent.click(screen.getByTestId('saveBtn'))
+    fireEvent.click(await screen.findByTestId('saveBtn'))
     expect(asFragment()).toMatchSnapshot()
   })
   it('should handle error 400 correctly', async () => {
@@ -212,28 +212,28 @@ describe('Add Guest Drawer', () => {
       </Provider>, { route: { params } }
     )
     await userEvent.type(
-      screen.getByRole('textbox', { name: 'Guest Name' }),
+      await screen.findByRole('textbox', { name: 'Guest Name' }),
       'wifitest'
     )
     await userEvent.type(
-      screen.getByRole('textbox', { name: 'Mobile Phone' }),
+      await screen.findByRole('textbox', { name: 'Mobile Phone' }),
       '+12052220123'
     )
     await userEvent.type(
-      screen.getByRole('textbox', { name: 'Email' }),
+      await screen.findByRole('textbox', { name: 'Email' }),
       'ruckus@commscope.com'
     )
     await userEvent.type(
-      screen.getByRole('textbox', { name: 'Note' }),
+      await screen.findByRole('textbox', { name: 'Note' }),
       'test wifi'
     )
 
     const allowedNetworkCombo = await screen.findAllByRole('combobox')
     fireEvent.mouseDown(allowedNetworkCombo[0])
-    const option = screen.getAllByText('guest pass wlan1')
+    const option = await screen.findAllByText('guest pass wlan1')
     await userEvent.click(option[0])
 
-    fireEvent.click(screen.getByTestId('saveBtn'))
+    fireEvent.click(await screen.findByTestId('saveBtn'))
 
     expect(asFragment()).toMatchSnapshot()
   })
@@ -255,28 +255,28 @@ describe('Add Guest Drawer', () => {
       </Provider>, { route: { params } }
     )
     await userEvent.type(
-      screen.getByRole('textbox', { name: 'Guest Name' }),
+      await screen.findByRole('textbox', { name: 'Guest Name' }),
       'wifitest'
     )
     await userEvent.type(
-      screen.getByRole('textbox', { name: 'Mobile Phone' }),
+      await screen.findByRole('textbox', { name: 'Mobile Phone' }),
       '+12052220123'
     )
     await userEvent.type(
-      screen.getByRole('textbox', { name: 'Email' }),
+      await screen.findByRole('textbox', { name: 'Email' }),
       'ruckus@commscope.com'
     )
     await userEvent.type(
-      screen.getByRole('textbox', { name: 'Note' }),
+      await screen.findByRole('textbox', { name: 'Note' }),
       'test wifi'
     )
 
     const allowedNetworkCombo = await screen.findAllByRole('combobox')
     fireEvent.mouseDown(allowedNetworkCombo[0])
-    const option = screen.getAllByText('guest pass wlan1')
+    const option = await screen.findAllByText('guest pass wlan1')
     await userEvent.click(option[0])
 
-    fireEvent.click(screen.getByTestId('saveBtn'))
+    fireEvent.click(await screen.findByTestId('saveBtn'))
 
     expect(asFragment()).toMatchSnapshot()
   })
@@ -299,28 +299,28 @@ describe('Add Guest Drawer', () => {
       </Provider>, { route: { params } }
     )
     await userEvent.type(
-      screen.getByRole('textbox', { name: 'Guest Name' }),
+      await screen.findByRole('textbox', { name: 'Guest Name' }),
       'wifitest'
     )
     await userEvent.type(
-      screen.getByRole('textbox', { name: 'Mobile Phone' }),
+      await screen.findByRole('textbox', { name: 'Mobile Phone' }),
       '+12052220123'
     )
     await userEvent.type(
-      screen.getByRole('textbox', { name: 'Email' }),
+      await screen.findByRole('textbox', { name: 'Email' }),
       'ruckus@commscope.com'
     )
     await userEvent.type(
-      screen.getByRole('textbox', { name: 'Note' }),
+      await screen.findByRole('textbox', { name: 'Note' }),
       'test wifi'
     )
 
     const allowedNetworkCombo = await screen.findAllByRole('combobox')
     fireEvent.mouseDown(allowedNetworkCombo[0])
-    const option = screen.getAllByText('guest pass wlan1')
+    const option = await screen.findAllByText('guest pass wlan1')
     await userEvent.click(option[0])
 
-    fireEvent.click(screen.getByTestId('saveBtn'))
+    fireEvent.click(await screen.findByTestId('saveBtn'))
 
     expect(asFragment()).toMatchSnapshot()
   })
@@ -350,23 +350,23 @@ describe('Add Guest Drawer', () => {
       </Provider>, { route: { params } }
     )
     await userEvent.type(
-      screen.getByRole('textbox', { name: 'Guest Name' }),
+      await screen.findByRole('textbox', { name: 'Guest Name' }),
       'wifitest'
     )
     await userEvent.type(
-      screen.getByRole('textbox', { name: 'Mobile Phone' }),
+      await screen.findByRole('textbox', { name: 'Mobile Phone' }),
       '+12052220123'
     )
     await userEvent.type(
-      screen.getByRole('textbox', { name: 'Email' }),
+      await screen.findByRole('textbox', { name: 'Email' }),
       'ruckus@commscope.com'
     )
     await userEvent.type(
-      screen.getByRole('textbox', { name: 'Note' }),
+      await screen.findByRole('textbox', { name: 'Note' }),
       'test wifi'
     )
 
-    fireEvent.click(screen.getByTestId('saveBtn'))
+    fireEvent.click(await screen.findByTestId('saveBtn'))
     expect(asFragment()).toMatchSnapshot()
   })
   it('test getMomentLocale', async () => {
@@ -384,7 +384,7 @@ describe('Add Guest Drawer', () => {
       </Provider>, { route: { params } }
     )
 
-    fireEvent.click(screen.getByTestId('cancelBtn'))
+    fireEvent.click(await screen.findByTestId('cancelBtn'))
     expect(asFragment()).toMatchSnapshot()
   })
 })
