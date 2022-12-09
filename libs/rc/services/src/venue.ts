@@ -41,7 +41,8 @@ import {
   VenueApModelCellular,
   UploadUrlResponse,
   NetworkDeviceResponse,
-  NetworkDevicePayload
+  NetworkDevicePayload,
+  RogueOldApResponseType
 } from '@acx-ui/rc/utils'
 
 
@@ -601,6 +602,15 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       }
     }),
+    getOldVenueRogueAp: build.query<TableResult<RogueOldApResponseType>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getOldVenueRogueAp, params)
+        return{
+          ...req,
+          body: payload
+        }
+      }
+    }),
     updateVenueRogueAp: build.mutation<VenueRogueAp, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(CommonUrlsInfo.updateVenueRogueAp, params)
@@ -697,6 +707,7 @@ export const {
   useGetDenialOfServiceProtectionQuery,
   useUpdateDenialOfServiceProtectionMutation,
   useGetVenueRogueApQuery,
+  useGetOldVenueRogueApQuery,
   useUpdateVenueRogueApMutation,
   useGetRoguePoliciesQuery,
   useConfigProfilesQuery,

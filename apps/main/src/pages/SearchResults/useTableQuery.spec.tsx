@@ -91,6 +91,7 @@ describe('useTableQuery', () => {
     })
 
     expect(result.current.pagination).toStrictEqual({
+      page: 1,
       current: 1,
       pageSize: 5,
       total: 0

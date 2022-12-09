@@ -251,9 +251,9 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
 
   return (
     <>
-      <Row justify='space-between'>
+      <Row justify='space-between' style={{ height: '2rem', alignItems: 'center' }}>
         <Col>
-          <Typography.Title level={4} style={{ fontWeight: 'bold', lineHeight: '2rem' }}>
+          <Typography.Title level={4} style={{ fontWeight: 'bold', marginBottom: '0' }}>
             {selectedFloorPlan?.name}
           </Typography.Title>
         </Col>

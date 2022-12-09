@@ -225,6 +225,10 @@ function Table <RecordType extends Record<string, any>> (
     }
   } : undefined
   const hasEllipsisColumn = columns.some(column => column.ellipsis)
+  const components = _.merge({},
+    props.components || {},
+    type === 'tall' ? { header: { cell: ResizableColumn } } : {}
+  ) as TableProps<RecordType>['components']
   const onRow: TableProps<RecordType>['onRow'] = function (record) {
     const defaultOnRow = props.onRow?.(record)
     return {
@@ -258,7 +262,7 @@ function Table <RecordType extends Record<string, any>> (
     {props.actions && <Space
       size={0}
       split={<UI.Divider type='vertical' />}
-      style={{ display: 'flex', justifyContent: 'flex-end' }}>
+      style={{ display: 'flex', justifyContent: 'flex-end', margin: '3px 0' }}>
       {props.actions?.map((action, index) => <Button
         key={index}
         type='link'
@@ -303,7 +307,7 @@ function Table <RecordType extends Record<string, any>> (
         ...getResizeProps(col),
         children: col.children?.map(getResizeProps)
       })): columns) as typeof columns}
-      components={type === 'tall' ? { header: { cell: ResizableColumn } } : undefined}
+      components={_.isEmpty(components) ? undefined : components}
       options={{ setting, reload: false, density: false }}
       columnsState={{
         ...columnsState,

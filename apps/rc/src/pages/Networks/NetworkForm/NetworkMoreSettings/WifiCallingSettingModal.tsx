@@ -91,7 +91,7 @@ export function WifiCallingSettingModal () {
     <>
       <Button type='link'
         onClick={showModal}
-        style={{ paddingLeft: '10px', justifyContent: 'left' }}
+        style={{ height: '34px', marginInlineStart: '15px' }}
       >
         {$t({ defaultMessage: 'Select profiles' })}
       </Button>
