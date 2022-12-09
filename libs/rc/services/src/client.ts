@@ -1,15 +1,21 @@
 import { createApi, fetchBaseQuery, FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 
 import {
+  Client,
   ClientList,
   ClientListMeta,
+  ClientStatistic,
+  ClientUrlsInfo,
   CommonUrlsInfo,
   createHttpRequest,
+  DpskPassphrase,
+  EventMeta,
   getClientHealthClass,
   Guest,
   RequestPayload,
   TableResult,
-  transformByte
+  transformByte,
+  WifiUrlsInfo
 } from '@acx-ui/rc/utils'
 import { convertEpochToRelativeTime, formatter } from '@acx-ui/utils'
 
@@ -26,14 +32,14 @@ export const clientApi = baseClientApi.injectEndpoints({
     getClientList: build.query<TableResult<ClientList>, RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
         const clientListInfo = {
-          ...createHttpRequest(CommonUrlsInfo.getClientList, arg.params),
+          ...createHttpRequest(ClientUrlsInfo.getClientList, arg.params),
           body: arg.payload
         }
         const clientListQuery = await fetchWithBQ(clientListInfo)
         const clientList = clientListQuery.data as TableResult<ClientList>
 
         const clientListMetaInfo = {
-          ...createHttpRequest(CommonUrlsInfo.getClientMeta, arg.params),
+          ...createHttpRequest(ClientUrlsInfo.getClientMeta, arg.params),
           body: {
             fields: ['switchSerialNumber', 'venueName', 'apName', 'switchName'],
             filters: {
@@ -51,6 +57,55 @@ export const clientApi = baseClientApi.injectEndpoints({
           : { error: clientListQuery.error as FetchBaseQueryError }
       }
     }),
+    getClientDetails: build.query<Client, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(ClientUrlsInfo.getClientDetails, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    getHistoricalClientList: build.query<TableResult<Client>, RequestPayload>({
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const clientDetails = {
+          ...createHttpRequest(CommonUrlsInfo.getHistoricalClientList, arg.params),
+          body: arg.payload
+        }
+        const baseDetailsQuery = await fetchWithBQ(clientDetails)
+        const baseDetails = baseDetailsQuery.data as TableResult<Client>
+
+        const metaInfo = {
+          ...createHttpRequest(CommonUrlsInfo.getEventListMeta, arg.params),
+          body: {
+            fields: ['networkId', 'venueName', 'apName'],
+            filters: { id: baseDetails?.data?.map(d => d.id) }
+          }
+        }
+        const metaListQuery = await fetchWithBQ(metaInfo)
+        const metaList = metaListQuery?.data as { data: EventMeta[] }
+
+        return {
+          data: {
+            ...baseDetails,
+            data: baseDetails?.data?.map((item) => {
+              return {
+                ...item,
+                ...metaList?.data?.filter(data => data.id === item.id)?.[0]
+              }
+            })
+          }
+        }
+      }
+    }),
+    getHistoricalStatisticsReports: build.query<ClientStatistic, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getHistoricalStatisticsReportsV2, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     getGuestsList: build.query<TableResult<Guest>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(
@@ -63,8 +118,16 @@ export const clientApi = baseClientApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Guest', id: 'LIST' }]
+    }),
+    getDpskPassphraseByQuery: build.query<DpskPassphrase, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getDpskPassphraseByQuery, params)
+        return{
+          ...req,
+          body: payload
+        }
+      }
     })
-
   })
 })
 
@@ -97,6 +160,14 @@ export const aggregatedClientListData = (clientList: TableResult<ClientList>,
   }
 }
 export const {
+  useGetClientDetailsQuery,
+  useLazyGetClientDetailsQuery,
+  useGetDpskPassphraseByQueryQuery,
+  useLazyGetDpskPassphraseByQueryQuery,
+  useGetHistoricalClientListQuery,
+  useLazyGetHistoricalClientListQuery,
   useGetClientListQuery,
+  useGetHistoricalStatisticsReportsQuery,
+  useLazyGetHistoricalStatisticsReportsQuery,
   useGetGuestsListQuery
 } = clientApi

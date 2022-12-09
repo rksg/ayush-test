@@ -29,7 +29,8 @@ import {
   successResponse,
   venueData,
   venueLanPorts,
-  venueSetting
+  venueSetting,
+  deviceAps
 } from '../../__tests__/fixtures'
 
 import { ApEdit } from './'
@@ -74,6 +75,8 @@ describe('ApEdit', () => {
         (_, res, ctx) => res(ctx.json(apDetailsList[0]))),
       rest.post(WifiUrlsInfo.getDhcpAp.url,
         (_, res, ctx) => res(ctx.json(dhcpAp[0]))),
+      rest.post(CommonUrlsInfo.getApsList.url,
+        (_, res, ctx) => res(ctx.json(deviceAps))),
       rest.put(WifiUrlsInfo.updateAp.url,
         (_, res, ctx) => res(ctx.json(successResponse)))
     )
@@ -98,7 +101,7 @@ describe('ApEdit', () => {
     it('should handle data updated', async () => {
       render(<Provider><ApEdit /></Provider>, {
         route: { params },
-        path: '/:tenantId/devices/aps/:serialNumber/edit/:activeTab'
+        path: '/:tenantId/devices/wifi/:serialNumber/edit/:activeTab'
       })
 
       await screen.findByText('test ap')
@@ -117,12 +120,12 @@ describe('ApEdit', () => {
         fireEvent.change(within(dialog).getByTestId('coordinates-input'),
           { target: { value: '51.508506, -0.124915' } })
       })
-      await userEvent.click(await within(dialog).findByRole('button', { name: 'Apply' }))
+      await fireEvent.click(await within(dialog).findByRole('button', { name: 'Apply' }))
       expect(await screen.findByText('Please confirm that...')).toBeVisible()
-      await userEvent.click(await screen.findByRole('button', { name: 'Drop It' }))
+      await fireEvent.click(await screen.findByRole('button', { name: 'Drop It' }))
 
       await waitForElementToBeRemoved(() => screen.queryAllByRole('dialog'))
-      await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+      await fireEvent.click(await screen.findByRole('button', { name: 'Apply' }))
     })
 
     it('should handle invalid changes', async () => {
@@ -136,7 +139,7 @@ describe('ApEdit', () => {
       )
       render(<Provider><ApEdit /></Provider>, {
         route: { params },
-        path: '/:tenantId/devices/aps/:serialNumber/edit/:activeTab'
+        path: '/:tenantId/devices/wifi/:serialNumber/edit/:activeTab'
       })
 
       await screen.findByText('test ap')
@@ -169,7 +172,7 @@ describe('ApEdit', () => {
 
       render(<Provider><ApEdit /></Provider>, {
         route: { params },
-        path: '/:tenantId/devices/aps/:serialNumber/edit/:activeTab'
+        path: '/:tenantId/devices/wifi/:serialNumber/edit/:activeTab'
       })
       await screen.findByText('test ap')
       await waitFor(async () => {
@@ -188,7 +191,7 @@ describe('ApEdit', () => {
       )
       render(<Provider><ApEdit /></Provider>, {
         route: { params },
-        path: '/:tenantId/devices/aps/:serialNumber/edit/:activeTab'
+        path: '/:tenantId/devices/wifi/:serialNumber/edit/:activeTab'
       })
       await screen.findByText('test ap')
       await waitFor(async () => {
@@ -198,13 +201,12 @@ describe('ApEdit', () => {
       expect(screen.getByLabelText(/Venue/)).toBeDisabled()
       await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
       await screen.findByText('Error occurred while updating AP')
-      await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     })
 
     it('should open unsaved changes modal', async () => {
       render(<Provider><ApEdit /></Provider>, {
         route: { params },
-        path: '/:tenantId/devices/aps/:serialNumber/edit/:activeTab'
+        path: '/:tenantId/devices/wifi/:serialNumber/edit/:activeTab'
       })
 
       await screen.findByText('test ap')
@@ -221,7 +223,7 @@ describe('ApEdit', () => {
     it('should open invalid changes modal', async () => {
       render(<Provider><ApEdit /></Provider>, {
         route: { params },
-        path: '/:tenantId/devices/aps/:serialNumber/edit/:activeTab'
+        path: '/:tenantId/devices/wifi/:serialNumber/edit/:activeTab'
       })
 
       await screen.findByText('test ap')
@@ -237,7 +239,7 @@ describe('ApEdit', () => {
 
       await userEvent.click(await screen.findByText('Back to device details'))
       await showInvalidChangesModal('AP Details', false)
-      await userEvent.click(await screen.findByRole('tab', { name: 'Settings' }))
+      await userEvent.click(await screen.findByText('Back to device details'))
       await showInvalidChangesModal('AP Details', true)
     })
   })
@@ -264,7 +266,9 @@ describe('ApEdit', () => {
         rest.get(CommonUrlsInfo.getVenueSettings.url,
           (_, res, ctx) => res(ctx.json(venueSetting))),
         rest.get(CommonUrlsInfo.getVenueLanPorts.url,
-          (_, res, ctx) => res(ctx.json(venueLanPorts)))
+          (_, res, ctx) => res(ctx.json(venueLanPorts))),
+        rest.post(CommonUrlsInfo.getApsList.url,
+          (_, res, ctx) => res(ctx.json(deviceAps)))
       )
     })
     afterEach(() => Modal.destroyAll())
@@ -272,7 +276,7 @@ describe('ApEdit', () => {
     it('should render correctly', async () => {
       const { asFragment } = render(<Provider><ApEdit /></Provider>, {
         route: { params },
-        path: '/:tenantId/devices/aps/:serialNumber/edit/:activeTab/:activeSubTab'
+        path: '/:tenantId/devices/wifi/:serialNumber/edit/:activeTab/:activeSubTab'
       })
       await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
       await screen.findByText('test ap')
@@ -284,7 +288,7 @@ describe('ApEdit', () => {
     it('should handle customized setting updated', async () => {
       render(<Provider><ApEdit /></Provider>, {
         route: { params },
-        path: '/:tenantId/devices/aps/:serialNumber/edit/:activeTab/:activeSubTab'
+        path: '/:tenantId/devices/wifi/:serialNumber/edit/:activeTab/:activeSubTab'
       })
       await screen.findByText('test ap')
       await screen.findByText(/Currently using LAN port settings of the venue/)
@@ -306,7 +310,7 @@ describe('ApEdit', () => {
 
       render(<Provider><ApEdit /></Provider>, {
         route: { params },
-        path: '/:tenantId/devices/aps/:serialNumber/edit/:activeTab/:activeSubTab'
+        path: '/:tenantId/devices/wifi/:serialNumber/edit/:activeTab/:activeSubTab'
       })
       await screen.findByText('test ap')
       await screen.findByText(/Custom settings/)
@@ -319,7 +323,7 @@ describe('ApEdit', () => {
     it('should open unsaved changes modal', async () => {
       render(<Provider><ApEdit /></Provider>, {
         route: { params },
-        path: '/:tenantId/devices/aps/:serialNumber/edit/:activeTab/:activeSubTab'
+        path: '/:tenantId/devices/wifi/:serialNumber/edit/:activeTab/:activeSubTab'
       })
       await screen.findByText('test ap')
       await screen.findByText(/Currently using LAN port settings of the venue/)
@@ -339,7 +343,7 @@ describe('ApEdit', () => {
 
       render(<Provider><ApEdit /></Provider>, {
         route: { params },
-        path: '/:tenantId/devices/aps/:serialNumber/edit/:activeTab/:activeSubTab'
+        path: '/:tenantId/devices/wifi/:serialNumber/edit/:activeTab/:activeSubTab'
       })
       await screen.findByText('test ap')
       await screen.findByText(/Custom settings/)

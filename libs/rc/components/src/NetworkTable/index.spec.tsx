@@ -169,12 +169,12 @@ describe('NetworkTable', () => {
 
   afterAll(() => mockedUseNavigate.mockReset())
 
-  const NetworkTableWrapper = ({ option, globalSearch }:
+  const NetworkTableWrapper = ({ option, selectable }:
     { option: TABLE_QUERY<Network, RequestPayload<unknown>, unknown>,
-      globalSearch?: string
+      selectable: boolean
     }) => {
     const tableQuery = useTableQuery(option)
-    return <NetworkTable tableQuery={tableQuery} globalSearch={globalSearch}/>
+    return <NetworkTable tableQuery={tableQuery} selectable={selectable}/>
   }
 
   it('should render table', async () => {
@@ -189,6 +189,7 @@ describe('NetworkTable', () => {
     const { asFragment } = render(
       <Provider>
         <NetworkTableWrapper
+          selectable={true}
           option={{
             useQuery: useNetworkListQuery,
             defaultPayload: defaultNetworkPayload }}
@@ -202,7 +203,7 @@ describe('NetworkTable', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 
-  it('should render table with globalSearch', async () => {
+  it('should render table with selectable=false', async () => {
 
     await store.dispatch(
       networkApi.endpoints.networkList.initiate({
@@ -214,10 +215,10 @@ describe('NetworkTable', () => {
     const { asFragment } = render(
       <Provider>
         <NetworkTableWrapper
+          selectable={false}
           option={{
             useQuery: useNetworkListQuery,
             defaultPayload: defaultNetworkPayload }}
-          globalSearch={'network-01'}
         />
       </Provider>, {
         route: { params, path: '/:tenantId/networks' }
@@ -240,6 +241,7 @@ describe('NetworkTable', () => {
     render(
       <Provider>
         <NetworkTableWrapper
+          selectable={true}
           option={{
             useQuery: useNetworkListQuery,
             defaultPayload: defaultNetworkPayload }}
@@ -276,6 +278,7 @@ describe('NetworkTable', () => {
     render(
       <Provider>
         <NetworkTableWrapper
+          selectable={true}
           option={{
             useQuery: useNetworkListQuery,
             defaultPayload: defaultNetworkPayload }}

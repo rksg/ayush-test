@@ -1,6 +1,9 @@
 import { IntlShape } from 'react-intl'
 
+import { getIntl } from '@acx-ui/utils'
+
 import { ApDeviceStatusEnum, DeviceConnectionStatus } from '../constants'
+import { QosPriorityEnum }                            from '../constants'
 
 export enum APView {
   AP_LIST,
@@ -90,4 +93,25 @@ export function transformApStatus ({ $t }: IntlShape, status: ApDeviceStatusEnum
   }
 
   return { message, deviceStatus }
+}
+
+export function transformQosPriorityType (type: QosPriorityEnum) {
+  const { $t } = getIntl()
+  let transform = ''
+  switch (type) {
+    case QosPriorityEnum.WIFICALLING_PRI_BE:
+      transform = $t({ defaultMessage: 'Best Effort' })
+      break
+    case QosPriorityEnum.WIFICALLING_PRI_BG:
+      transform = $t({ defaultMessage: 'Background' })
+      break
+    case QosPriorityEnum.WIFICALLING_PRI_VIDEO:
+      transform = $t({ defaultMessage: 'Video' })
+      break
+    case QosPriorityEnum.WIFICALLING_PRI_VOICE:
+      transform = $t({ defaultMessage: 'Voice' })
+      break
+  }
+
+  return transform
 }

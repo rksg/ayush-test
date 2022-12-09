@@ -1,5 +1,9 @@
-import { ConnectedClientsTable } from '@acx-ui/rc/components'
+import { ConnectedClientsTable, HistoricalClientsTable } from '@acx-ui/rc/components'
 
 export function ClientsTab () {
-  return <ConnectedClientsTable />
+  return <>
+    <ConnectedClientsTable />
+    {/* TODO: change string from search input */}
+    {false && <HistoricalClientsTable searchString='' />}
+  </>
 }

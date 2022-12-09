@@ -27,7 +27,6 @@ import {
   ApRadio,
   APPhoto,
   ApViewModel,
-  VenueCapabilities,
   VenueDefaultApGroup,
   AddApGroup,
   CommonResult,
@@ -162,7 +161,7 @@ export const apApi = baseApApi.injectEndpoints({
         }
       }
     }),
-    wifiCapabilities: build.query<VenueCapabilities, RequestPayload>({
+    wifiCapabilities: build.query<Capabilities, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.getWifiCapabilities, params)
         return {
@@ -441,6 +440,7 @@ export const {
   usePingApMutation,
   useTraceRouteApMutation,
   useGetApQuery,
+  useLazyGetApQuery,
   useUpdateApMutation,
   useAddApGroupMutation,
   useApGroupListQuery,
@@ -470,6 +470,7 @@ export const {
   useGetApLanPortsQuery,
   useUpdateApLanPortsMutation,
   useGetApCapabilitiesQuery,
+  useLazyGetApCapabilitiesQuery,
   useUpdateApCustomizationMutation,
   useResetApCustomizationMutation
 } = apApi
