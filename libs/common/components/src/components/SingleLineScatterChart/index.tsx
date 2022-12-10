@@ -20,16 +20,34 @@ import { TooltipWrapper } from '../Chart/styledComponents'
 import type { ECharts, EChartsOption, SeriesOption } from 'echarts'
 import type { EChartsReactProps }                    from 'echarts-for-react'
 
-export interface ConfigChange {
-  id: number;
-  timestamp: string;
-  type: string;
-  name: string;
-  key: string;
-  oldValues: unknown;
-  newValues: unknown;
+// export interface ConfigChange {
+//   id: number;
+//   timestamp: string;
+//   type: string;
+//   name: string;
+//   key: string;
+//   oldValues: unknown;
+//   newValues: unknown;
+// }
+export interface ConfigChange{
+  timestamp: string,
+  event: string,
+  ttc: string,
+  mac: string,
+  apName: string,
+  path: [],
+  code: string,
+  state: string,
+  failedMsgId: string,
+  messageIds: string,
+  radio: string,
+  ssid: string
+  type: string
+  key: string
+  start: number,
+  end: number,
+  category: string
 }
-
 export interface ConfigChangeChartProps
   extends Omit<EChartsReactProps, 'option' | 'opts'> {
     data: ConfigChange[]
@@ -39,7 +57,8 @@ export interface ConfigChangeChartProps
     onDotClick?: (params: unknown) => void,
     title: string,
     count: number,
-    chartRef?: RefCallback<ReactECharts>
+    chartRef?: RefCallback<ReactECharts>,
+    tooltopEnabled : boolean
   }
 
 export const mapping = [
@@ -51,8 +70,10 @@ export const hexToRGB = (hex: string) =>
 export const getSelectedDot = (color: string) =>
 // eslint-disable-next-line max-len
   `image://data:image/svg+xml;utf8,<svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M10 5.5C10 7.98528 7.98528 10 5.5 10C3.01472 10 1 7.98528 1 5.5C1 3.01472 3.01472 1 5.5 1C7.98528 1 10 3.01472 10 5.5ZM11 5.5C11 8.53757 8.53757 11 5.5 11C2.46243 11 0 8.53757 0 5.5C0 2.46243 2.46243 0 5.5 0C8.53757 0 11 2.46243 11 5.5ZM5.5 9C7.433 9 9 7.433 9 5.5C9 3.567 7.433 2 5.5 2C3.567 2 2 3.567 2 5.5C2 7.433 3.567 9 5.5 9Z" fill="${color}"/></svg>`
+
+// change this to correct check
 export const getSymbol = (selected: number) =>
-  (value: [number, string, ConfigChange]) => (value[2].id !== selected)
+  (value: [number, string, ConfigChange]) => (value[2].start !== selected)
     ? 'circle'
     : getSelectedDot(hexToRGB(mapping.filter(({ key }) => key === value[2].type)[0].color))
 
@@ -110,7 +131,7 @@ export const useDotClick = (
   }) {
     if(params.componentSubType !== 'scatter') return
     const data = params.data as [number, string, ConfigChange]
-    setSelected(data[2].id)
+    setSelected(data[2].mac as unknown as number)
     onDotClick && onDotClick(data[2])
   }, [setSelected, onDotClick])
 
@@ -184,6 +205,7 @@ export function SingleLineScatterChart ({
   selectedData,
   onDotClick,
   chartRef,
+  tooltopEnabled,
   ...props
 }: ConfigChangeChartProps) {
 
@@ -194,10 +216,10 @@ export function SingleLineScatterChart ({
   useImperativeHandle(chartRef, () => eChartsRef.current!)
 
   const [selected, setSelected] = useState<number|undefined>(selectedData)
-  const [_, setBoundary] = useState({
-    min: chartBoundary[0],
-    max: chartBoundary[1]
-  })
+  // const [_, setBoundary] = useState({
+  //   min: chartBoundary[0],
+  //   max: chartBoundary[1]
+  // })
   useDotClick(eChartsRef, onDotClick, setSelected)
 
   const option: EChartsOption = {
@@ -211,23 +233,38 @@ export function SingleLineScatterChart ({
       // height: (mapping.length + placeholderRows) * rowHeight
 
     },
-    toolbox: { show: false },
-    tooltip: {
-      // TODO: tooltip shows x-Position (https://github.com/apache/echarts/issues/16621)
-      trigger: 'axis',
-      axisPointer: {
-        axis: 'x',
-        animation: false,
-        lineStyle: {
-          color: cssStr('--acx-neutrals-70'),
-          type: 'solid',
-          width: 1
-        }
-      },
-      formatter: tooltipFormatter,
-      ...tooltipOptions(),
-      position: (point) => [point[0] + 10, 0] // 10 for gap between tooltip and tracker
+    // toolbox: { show: true },
+    toolbox: {
+      feature: {
+        dataZoom: {
+          yAxisIndex: 'none',
+          brushStyle: { color: 'rgba(0, 0, 0, 0.05)' },
+          icon: { back: 'path://', zoom: 'path://' }
+        },
+        brush: { type: ['rect'], icon: { rect: 'path://' } }
+      }
     },
+    ...(tooltopEnabled ? {
+      tooltip: {
+        // TODO: tooltip shows x-Position (https://github.com/apache/echarts/issues/16621)
+        trigger: 'axis',
+        axisPointer: {
+          axis: 'x',
+          animation: false,
+          lineStyle: {
+            color: cssStr('--acx-neutrals-70'),
+            type: 'solid',
+            width: 1
+          }
+        },
+        formatter: tooltipFormatter ,
+        ...tooltipOptions(),
+        position: (point) => [point[0] + 10, 0]
+      }
+    } : {
+      tooltip: { show: false }
+    }),
+
     xAxis: {
       ...xAxisOptions(),
       type: 'time',
@@ -270,10 +307,10 @@ export function SingleLineScatterChart ({
     },
     dataZoom: [
       {
-        id: 'zoom',
-        type: 'inside',
+        // id: 'zoom',
+        type: 'inside'
         // TODO: set zoom limitation if supported (https://github.com/apache/echarts/issues/12907)
-        minValueSpan: 60 * 60 * 1000 // hour
+        // minValueSpan: 60 * 60 * 1000 // hour
         // moveOnMouseMove: false,
         // moveOnMouseWheel: false
       }
@@ -287,15 +324,14 @@ export function SingleLineScatterChart ({
           symbol: getSymbol(selected as number),
           symbolSize: 10,
           colorBy: 'series',
-          animation: false,
+          // animation: false,
           data: data
-            .filter((record) => record.type === key)
-            .map((record) => [parseInt(record.timestamp, 10), label, record])
+            .map((record) => [record.start, label, record])
         } as SeriesOption)
     ),
     color: mapping.map(({ color }) => color).slice().reverse()
   }
-
+  console.log(option)
   return (
     <Row gutter={[16, 16]}>
       <Col span={4} >
@@ -310,16 +346,16 @@ export function SingleLineScatterChart ({
             ...props,
             style: {
               ...props.style,
-              WebkitUserSelect: 'none',
+              // WebkitUserSelect: 'none',
               width: 'auto',
               height: (mapping.length + placeholderRows) * rowHeight  // +1 for x-axis
             }
           }}
           ref={eChartsRef}
           option={option}
-          onEvents={{
-            datazoom: useDatazoom(chartBoundary, setBoundary)
-          }}
+          // onEvents={{
+          //   datazoom: useDatazoom(chartBoundary, setBoundary)
+          // }}
         />
       </Col>
     </Row>

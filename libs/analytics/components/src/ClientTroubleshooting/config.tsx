@@ -191,12 +191,29 @@ export const ClientTroubleShootingConfig = {
   timeLine: [
     {
       title: defineMessage({ defaultMessage: 'Connection Events' }),
+      value: 'connectionEvents',
       chartType: 'scatter',
       subtitle: [
-        { title: defineMessage({ defaultMessage: 'Success' }), chartType: 'scatter' },
-        { title: defineMessage({ defaultMessage: 'Failure' }), chartType: 'scatter' },
-        { title: defineMessage({ defaultMessage: 'Slow' }), chartType: 'scatter' },
-        { title: defineMessage({ defaultMessage: 'Disconnect' }), chartType: 'scatter' }
+        {
+          title: defineMessage({ defaultMessage: 'Success' }),
+          chartType: 'scatter',
+          value: 'success'
+        },
+        {
+          title: defineMessage({ defaultMessage: 'Failure' }),
+          chartType: 'scatter',
+          value: 'failure'
+        },
+        {
+          title: defineMessage({ defaultMessage: 'Slow' }),
+          chartType: 'scatter',
+          value: 'slow'
+        },
+        {
+          title: defineMessage({ defaultMessage: 'Disconnect' }),
+          chartType: 'scatter',
+          value: 'disconnect'
+        }
       ]
     },
     { title: defineMessage({ defaultMessage: 'Roaming' }) },

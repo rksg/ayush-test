@@ -9,9 +9,9 @@ import { useIntl }  from 'react-intl'
 import { SingleLineScatterChart } from '@acx-ui/components'
 import { useDateFilter }          from '@acx-ui/utils'
 
-import { ClientTroubleShootingConfig, SUCCESS, FAILURE, SLOW, DISCONNECT, transformEvents, DisplayEvent, TYPES } from './config'
-import { ClientInfoData,ConnectionEvent }                                                                        from './services'
-import * as UI                                                                                                   from './styledComponents'
+import { ClientTroubleShootingConfig, SUCCESS, FAILURE, SLOW, DISCONNECT, transformEvents, DisplayEvent, TYPES, formatEventDesc, eventColorByCategory } from './config'
+import { ClientInfoData,ConnectionEvent }                                                                                                               from './services'
+import * as UI                                                                                                                                          from './styledComponents'
 
 import { Filters } from '.'
 
@@ -20,33 +20,53 @@ type TimeLineProps = {
   data?: ClientInfoData,
   filters: Filters
 }
+export interface Event{
+  timestamp: string,
+  event: string,
+  ttc: string,
+  mac: string,
+  apName: string,
+  path: [],
+  code: string,
+  state: string,
+  failedMsgId: string,
+  messageIds: string,
+  radio: string,
+  ssid: string
+  type: string
+  key: string
+  start: number,
+  end: number,
+  category: string
+}
+
  type TimelineData = {
-  category :{
-   [SUCCESS]: DisplayEvent[] | [];
-   [FAILURE]: DisplayEvent[] | [];
-   [DISCONNECT]: DisplayEvent[] | [];
-   [SLOW]: DisplayEvent[] | [];
-   allEvents: DisplayEvent[] | [];
+  connectionEvents :{
+   [SUCCESS]: Event[] | [];
+   [FAILURE]: Event[] | [];
+   [DISCONNECT]: Event[] | [];
+   [SLOW]: Event[] | [];
+   allEvents: Event[] | [];
  }
  }
-const getTimelineData = (events: DisplayEvent[]) =>
+const getTimelineData = (events: Event[]) =>
   events.reduce(
     (acc, event) => {
       if (event.type === TYPES.CONNECTION_EVENTS) {
-        acc['category']['allEvents'] = [...acc['category']['allEvents'], event]
+        acc['connectionEvents']['allEvents'] = [...acc['connectionEvents']['allEvents'], event]
         if (event.category === SUCCESS)
-          acc['category'][SUCCESS] = [...acc['category'][SUCCESS], event]
+          acc['connectionEvents'][SUCCESS] = [...acc['connectionEvents'][SUCCESS], event]
         if (event.category === FAILURE)
-          acc['category'][FAILURE] = [...acc['category'][FAILURE], event]
+          acc['connectionEvents'][FAILURE] = [...acc['connectionEvents'][FAILURE], event]
         if (event.category === DISCONNECT)
-          acc['category'][DISCONNECT] = [...acc['category'][DISCONNECT], event]
+          acc['connectionEvents'][DISCONNECT] = [...acc['connectionEvents'][DISCONNECT], event]
         if (event.category === SLOW)
-          acc['category'][SLOW] = [...acc['category'][SLOW], event]
+          acc['connectionEvents'][SLOW] = [...acc['connectionEvents'][SLOW], event]
       }
       return acc
     },
     {
-      category: {
+      connectionEvents: {
         [SUCCESS]: [],
         [FAILURE]: [],
         [DISCONNECT]: [],
@@ -55,6 +75,15 @@ const getTimelineData = (events: DisplayEvent[]) =>
       }
     } as TimelineData
   )
+  // const tooltipFormatter = (params: TooltipComponentFormatterCallbackParams) => {
+  //   const [ time ] = (Array.isArray(params)
+  //     ? params[0].data : params.data) as [number]
+  //   return renderToString(
+  //     <TooltipWrapper>
+  //       <time dateTime={new Date(time).toJSON()}>{formatter('dateTimeFormat')(time) as string}</time>
+  //     </TooltipWrapper>
+  //   )
+  // }
 export function TimeLine (props : TimeLineProps){
   const { $t } = useIntl()
   const { data, filters } = props
@@ -64,7 +93,7 @@ export function TimeLine (props : TimeLineProps){
     data?.connectionEvents as ConnectionEvent[],
     types,
     radios
-  ) as DisplayEvent[]
+  ) as Event[]
   const TimelineData = getTimelineData(events)
   const connectChart = (chart: ReactECharts | null) => {
     if (chart) {
@@ -72,22 +101,33 @@ export function TimeLine (props : TimeLineProps){
       instance.group = 'timeSeriesGroup'
     }
   }
+  console.log(TimelineData)
   useEffect(() => { connect('timeSeriesGroup') }, [])
   const { startDate, endDate } = useDateFilter()
   const chartBoundary = [moment(startDate).valueOf() , moment(endDate).valueOf() ]
-  const sampleData = new Array((chartBoundary[1] - chartBoundary[0])/(12 * 60 * 60 * 1000))
-    .fill(0).map((_,index)=>({
-      id: index,
-      timestamp: `${chartBoundary[0] + 12 * 60 * 60 * 1000 * index}`,
-      type: 'ap',
-      name: 'name',
-      key: 'key',
-      oldValues: [ 'oldValues' ],
-      newValues: [ 'newValues' ]
-    }))
-  console.log(TimelineData)
-  console.log(sampleData)
-
+  // const sampleData = new Array(
+  //   (chartBoundary[1] - chartBoundary[0]) / (12 * 60 * 60 * 1000)
+  // )
+  //   .fill(0)
+  //   .map((_, index) => ({
+  //     id: index,
+  //     timestamp: `${chartBoundary[0] + 12 * 60 * 60 * 1000 * index}`,
+  //     type: 'ap',
+  //     name: 'name',
+  //     key: 'key',
+  //     oldValues: ['oldValues'],
+  //     newValues: ['newValues'],
+  //     description: formatEventDesc(event, intl),
+  //     icon: (
+  //       <UI.EventTypeIcon
+  //         color={
+  //           eventColorByCategory[
+  //             event.category as keyof typeof eventColorByCategory
+  //           ]
+  //         }
+  //       />
+  //     )
+  //   }))
   return (
     <UI.CollapseBox
       bordered={false}
@@ -103,39 +143,55 @@ export function TimeLine (props : TimeLineProps){
         <Panel
           header={
             <UI.TimelineTitle>
-              { config?.chartType === 'scatter'
-                ? <SingleLineScatterChart
+              {config?.chartType === 'scatter' ? (
+                <SingleLineScatterChart
                   style={{ width: 850 }}
-                  data={sampleData}
+                  data={
+                    TimelineData[config.value as keyof TimelineData][
+                      'allEvents'
+                    ]
+                  }
                   chartBoundary={chartBoundary}
                   chartRef={connectChart}
                   title={$t(config.title)}
                   count={8}
-                  onDotClick={(params)=>{
-                  // eslint-disable-next-line no-console
+                  tooltopEnabled
+                  onDotClick={(params) => {
+                    // eslint-disable-next-line no-console
                     console.log(params)
-                  }}/>
-                : $t(config.title)
-              }
-            </UI.TimelineTitle>}
+                  }}
+                />
+              ) : (
+                $t(config.title)
+              )}
+            </UI.TimelineTitle>
+          }
           key={index}>
           <UI.TimelineSubContent>
             {config?.subtitle?.map((subtitle, index) =>
-              subtitle?.chartType === 'scatter'
-                ? <SingleLineScatterChart
+              subtitle?.chartType === 'scatter' ? (
+                <SingleLineScatterChart
                   style={{ width: 850 }}
-                  data={sampleData}
+                  data={
+                    TimelineData[config.value as keyof TimelineData][
+                      subtitle.value as keyof TimelineData['connectionEvents']
+                    ]
+                  }
                   chartBoundary={chartBoundary}
                   chartRef={connectChart}
                   title={$t(subtitle.title)}
                   count={8}
                   key={index}
-                  onDotClick={(params)=>{
+                  tooltopEnabled={false}
+                  onDotClick={(params) => {
                     // eslint-disable-next-line no-console
                     console.log(params)
-                  }}/>
-                : $t(subtitle.title))
-            }
+                  }}
+                />
+              ) : (
+                $t(subtitle.title)
+              )
+            )}
           </UI.TimelineSubContent>
         </Panel>
       ))}
