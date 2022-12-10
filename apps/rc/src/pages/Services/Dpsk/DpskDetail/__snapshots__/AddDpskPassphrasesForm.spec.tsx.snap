@@ -124,7 +124,7 @@ exports[`AddDpskPassphrasesForm should render the form 1`] = `
             class=""
             title=""
           >
-            Number of devices per passphrase
+            Number of Devices Per Passphrase
             <svg
               data-testid="QuestionMarkCircleOutlined"
             />
