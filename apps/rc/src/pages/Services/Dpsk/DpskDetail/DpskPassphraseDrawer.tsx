@@ -4,7 +4,7 @@ import { Form, Radio, RadioChangeEvent, Space } from 'antd'
 import { useIntl }                              from 'react-intl'
 import { useParams }                            from 'react-router-dom'
 
-import { Drawer }                           from '@acx-ui/components'
+import { Drawer, showToast }                from '@acx-ui/components'
 import { useCreateDpskPassphrasesMutation } from '@acx-ui/rc/services'
 import {
   CreateDpskPassphrasesFormFields,
@@ -80,7 +80,10 @@ export default function DpskPassphraseDrawer (props: DpskPassphraseDrawerProps) 
 
       onClose()
     } catch (error) {
-      if (error instanceof Error) throw error
+      showToast({
+        type: 'error',
+        content: $t({ defaultMessage: 'An error occurred' })
+      })
     }
   }
 

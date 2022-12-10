@@ -1,3 +1,9 @@
+import { CreateDpskPassphrasesFormFields } from '@acx-ui/rc/utils'
+
+export const mockedTenantId = '15320bc221d94d2cb537fa0189fee742'
+
+export const mockedServiceId = '4b76b1952c80401b8500b00d68106576'
+
 export const mockedDpsk = {
   id: '123456789',
   name: 'Fake DPSK',
@@ -5,6 +11,55 @@ export const mockedDpsk = {
   passphraseFormat: 'NUMBERS_ONLY',
   expirationType: 'HOURS_AFTER_TIME',
   expirationOffset: 1
+}
+
+export const mockedDpskPassphrase: Partial<CreateDpskPassphrasesFormFields> = {
+  numberOfPassphrases: 5,
+  numberOfDevices: 1,
+  passphrase: '12345678',
+  username: 'User 1',
+  vlanId: 'vlan 123',
+  mac: 'aa:bb:cc:dd:ee:ff'
+}
+
+export const mockedDpskPassphraseList = {
+  content: [
+    {
+      id: '__PASSPHRASE_ID_1__',
+      passphrase: 'abced12345',
+      username: 'DPSK_USER_1',
+      vlanId: 'VLAN-1',
+      mac: null,
+      numberOfDevices: 3,
+      createdDate: '2022-12-07T21:39:00',
+      expirationDate: '2022-12-08T08:39:00'
+    },
+    {
+      id: '__PASSPHRASE_ID_2__',
+      passphrase: 'zxcvb!@#$%',
+      username: 'DPSK_USER_2',
+      vlanId: 'VLAN-2',
+      mac: 'AA:BB:CC:11:22:33',
+      numberOfDevices: 1,
+      createdDate: '2022-12-08T09:00:00',
+      expirationDate: '2022-12-09T12:00:00'
+    },
+    {
+      id: '__PASSPHRASE_ID_3__',
+      passphrase: 'JjCc87!!!!!',
+      username: 'DPSK_USER_3',
+      vlanId: 'VLAN-3',
+      mac: null,
+      numberOfDevices: 2,
+      createdDate: '2022-12-22T14:20:00',
+      expirationDate: '2022-12-26T11:00:00'
+    }
+  ],
+  totalElements: 3,
+  totalPages: 1,
+  page: 0,
+  size: 20,
+  sort: []
 }
 
 export const mockedNetworks = {

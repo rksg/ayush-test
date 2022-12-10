@@ -55,7 +55,7 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
       <Form.Item
         label={
           <>
-            { $t({ defaultMessage: 'Number of devices per passphrase' }) }
+            { $t({ defaultMessage: 'Number of Devices Per Passphrase' }) }
             <Tooltip
               placement='bottom'
               title={<FormattedMessage
@@ -134,7 +134,7 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
         name='username'
         children={<Input />}
       />
-      {numberOfDevices && numberOfDevices === 1 &&
+      {numberOfDevices === 1 &&
         <Form.Item
           label={
             <>

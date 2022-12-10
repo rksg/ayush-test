@@ -1,5 +1,5 @@
-import { useIntl }                      from 'react-intl'
-import { Path, useNavigate, useParams } from 'react-router-dom'
+import { useIntl }         from 'react-intl'
+import { Path, useParams } from 'react-router-dom'
 
 import { Button, DisabledButton, PageHeader, Tabs } from '@acx-ui/components'
 import { ClockOutlined }                            from '@acx-ui/icons'
@@ -11,7 +11,7 @@ import {
   getServiceListRoutePath,
   ServiceOperation
 } from '@acx-ui/rc/utils'
-import { TenantLink, useTenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink, useTenantLink, useNavigate } from '@acx-ui/react-router-dom'
 
 import { dpskTabNameMapping }   from './contentsMap'
 import DpskOverview             from './DpskOverview'

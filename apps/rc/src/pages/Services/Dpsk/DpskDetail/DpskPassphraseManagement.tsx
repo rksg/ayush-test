@@ -98,6 +98,7 @@ export default function DpskPassphraseManagement () {
           customContent: {
             action: 'DELETE',
             entityName: $t({ defaultMessage: 'Passphrase' }),
+            entityValue: selectedRows[0].username,
             numOfEntities: selectedRows.length
           },
           onOk: () => {

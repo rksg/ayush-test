@@ -1,5 +1,5 @@
-import { rest }    from 'msw'
-import { useIntl } from 'react-intl'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import {
   CommonUrlsInfo,
@@ -10,7 +10,8 @@ import {
   getServiceRoutePath,
   ServiceOperation
 } from '@acx-ui/rc/utils'
-import { Provider } from '@acx-ui/store'
+import { To, useTenantLink } from '@acx-ui/react-router-dom'
+import { Provider }          from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -18,14 +19,27 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { mockedNetworks, mockedDpsk } from './__tests__/fixtures'
-import { dpskTabNameMapping }         from './contentsMap'
-import DpskDetails                    from './DpskDetails'
+import {
+  mockedNetworks,
+  mockedDpsk,
+  mockedDpskPassphraseList,
+  mockedTenantId,
+  mockedServiceId
+} from './__tests__/fixtures'
+import DpskDetails from './DpskDetails'
+
+const mockedUseNavigate = jest.fn()
+
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
+  useNavigate: () => mockedUseNavigate,
+  useTenantLink: (to: To) => to
+}))
 
 describe('DpskDetails', () => {
-  const params = {
-    tenantId: '15320bc221d94d2cb537fa0189fee742',
-    serviceId: '4b76b1952c80401b8500b00d68106576',
+  const paramsForOverviewTab = {
+    tenantId: mockedTenantId,
+    serviceId: mockedServiceId,
     activeTab: DpskDetailsTabKey.OVERVIEW
   }
   // eslint-disable-next-line max-len
@@ -39,6 +53,10 @@ describe('DpskDetails', () => {
     rest.get(
       DpskUrls.getDpsk.url,
       (req, res, ctx) => res(ctx.json(mockedDpsk))
+    ),
+    rest.get(
+      DpskUrls.getPassphraseList.url,
+      (req, res, ctx) => res(ctx.json(mockedDpskPassphraseList))
     )
   )
 
@@ -47,7 +65,7 @@ describe('DpskDetails', () => {
       <Provider>
         <DpskDetails />
       </Provider>, {
-        route: { params, path: detailPath }
+        route: { params: paramsForOverviewTab, path: detailPath }
       }
     )
 
@@ -55,12 +73,8 @@ describe('DpskDetails', () => {
   })
 
   it('should render the Passphrase Management tab', async () => {
-    const { result: passphraseMgmtTabName } = renderHook(() => {
-      return useIntl().$t(dpskTabNameMapping[DpskDetailsTabKey.PASSPHRASE_MGMT])
-    })
-
     const passphraseTabParams = {
-      ...params,
+      ...paramsForOverviewTab,
       activeTab: DpskDetailsTabKey.PASSPHRASE_MGMT
     }
 
@@ -75,22 +89,44 @@ describe('DpskDetails', () => {
       }
     )
 
-    const targetTab = await screen.findByRole('tabpanel', { name: passphraseMgmtTabName.current })
+    const targetTab = await screen.findByRole('tabpanel', { name: /Passphrase Management/ })
     expect(targetTab).toBeInTheDocument()
   })
 
-  it('should navigate to the edit page', async () => {
-    const editLink = `/t/${params.tenantId}/` + getServiceDetailsLink({
-      type: ServiceType.DPSK,
-      oper: ServiceOperation.EDIT,
-      serviceId: params.serviceId
+  it('should navigate to the Passphrase Management tab', async () => {
+    const { result: passphraseTabPath } = renderHook(() => {
+      return useTenantLink(getServiceDetailsLink({
+        type: ServiceType.DPSK,
+        oper: ServiceOperation.DETAIL,
+        serviceId: mockedServiceId,
+        activeTab: DpskDetailsTabKey.PASSPHRASE_MGMT
+      }))
     })
 
     render(
       <Provider>
         <DpskDetails />
       </Provider>, {
-        route: { params, path: detailPath }
+        route: { params: paramsForOverviewTab, path: detailPath }
+      }
+    )
+
+    await userEvent.click(await screen.findByRole('tab', { name: /Passphrase Management/ }))
+    expect(mockedUseNavigate).toHaveBeenCalledWith(passphraseTabPath.current)
+  })
+
+  it('should navigate to the edit page', async () => {
+    const editLink = `/t/${paramsForOverviewTab.tenantId}/` + getServiceDetailsLink({
+      type: ServiceType.DPSK,
+      oper: ServiceOperation.EDIT,
+      serviceId: paramsForOverviewTab.serviceId
+    })
+
+    render(
+      <Provider>
+        <DpskDetails />
+      </Provider>, {
+        route: { params: paramsForOverviewTab, path: detailPath }
       }
     )
 
