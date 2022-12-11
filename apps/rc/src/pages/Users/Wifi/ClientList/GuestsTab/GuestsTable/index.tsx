@@ -24,64 +24,45 @@ import {
 import { TenantLink } from '@acx-ui/react-router-dom'
 import { getIntl }    from '@acx-ui/utils'
 
-import { GuestsDetail } from '../GuestsDetail'
-
-const defaultPayload = {
-  searchString: '',
-  searchTargetFields: [
-    'name',
-    'mobilePhoneNumber',
-    'emailAddress'],
-  fields: [
-    'creationDate',
-    'name',
-    'passDurationHours',
-    'id',
-    'networkId',
-    'maxNumberOfClients',
-    'notes',
-    'clients',
-    'guestStatus',
-    'emailAddress',
-    'mobilePhoneNumber',
-    'guestType',
-    'ssid',
-    'socialLogin',
-    'expiryDate',
-    'cog'
-  ]
-}
-
-const defaultGuestNetworkPayload = {
-  searchString: '',
-  fields: [
-    'check-all',
-    'name',
-    'description',
-    'nwSubType',
-    'venues',
-    'aps',
-    'clients',
-    'vlan',
-    'cog',
-    'ssid',
-    'vlanPool',
-    'captiveType',
-    'id'
-  ],
-  filters: {
-    nwSubType: ['guest'],
-    captiveType: ['GuestPass']
-  }
-}
+import { defaultGuestPayload, GuestsDetail } from '../GuestsDetail'
 
 export default function GuestsTable () {
+  const [visible, setVisible] = useState(false)
+  const [currentGuest, setCurrentGuest] = useState({} as Guest)
+
+  const defaultGuestNetworkPayload = {
+    searchString: '',
+    fields: [
+      'check-all',
+      'name',
+      'description',
+      'nwSubType',
+      'venues',
+      'aps',
+      'clients',
+      'vlan',
+      'cog',
+      'ssid',
+      'vlanPool',
+      'captiveType',
+      'id'
+    ],
+    filters: {
+      nwSubType: ['guest'],
+      captiveType: ['GuestPass']
+    }
+  }
+
   const { $t } = useIntl()
   const GuestsTable = () => {
     const tableQuery = useTableQuery({
       useQuery: useGetGuestsListQuery,
-      defaultPayload
+      defaultPayload: defaultGuestPayload
     })
+
+    const onClose = () => {
+      setVisible(false)
+    }
 
     const networkListQuery = useTableQuery<Network, RequestPayload<unknown>, unknown>({
       useQuery: useNetworkListQuery,
@@ -104,15 +85,12 @@ export default function GuestsTable () {
         </Button>
       </span>
 
-    const [visible, setVisible] = useState(false)
-    const [currentGuest, setCurrentGuest] = useState({} as Guest)
-
     const columns: TableProps<Guest>['columns'] = [
       {
         key: 'creationDate',
         title: $t({ defaultMessage: 'Created' }),
         dataIndex: 'creationDate',
-        sorter: false,
+        sorter: true,
         defaultSortOrder: 'ascend',
         render: (data, row) =>
           <Button
@@ -190,10 +168,6 @@ export default function GuestsTable () {
       }
     ]
 
-    const onClose = () => {
-      setVisible(false)
-    }
-
     return (
       <Loader states={[
         tableQuery
@@ -207,7 +181,7 @@ export default function GuestsTable () {
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
-          rowKey='name'
+          rowKey='id'
         />
 
         <Drawer
@@ -217,6 +191,7 @@ export default function GuestsTable () {
           mask={false}
           children={
             <GuestsDetail
+              triggerClose={onClose}
               currentGuest={currentGuest}
             />
           }
