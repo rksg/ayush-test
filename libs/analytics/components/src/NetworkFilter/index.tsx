@@ -232,6 +232,7 @@ function ConnectedNetworkFilter (
           showSearch={{ filter: search }}
           allowClear
           dropdownAlign={{
+            points: ['bl', 'tr'],
             useCssTransform: true,
             overflow: {
               adjustX: true,
