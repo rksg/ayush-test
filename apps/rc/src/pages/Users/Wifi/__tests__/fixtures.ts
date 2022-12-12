@@ -47,7 +47,7 @@ export const GuestClient = {
       id: '99fbe8f0-bc9c-4f95-ac07-54146cf5c117',
       creationDate: '2022-11-20T08:57:12.338Z',
       mobilePhoneNumber: '+886933222333',
-      emailAddress: '',
+      emailAddress: 'a@email.com',
       guestType: 'GuestPass',
       ssid: 'guest pass wlan',
       networkId: '3f04e252a9d04180855813131d007aca',
@@ -74,6 +74,40 @@ export const GuestClient = {
         networkSsid: 'guest pass wlan',
         connectSince: '2022-11-28T14:55:15.924Z'
       }]
+    }, {
+      name: 'disable_client',
+      id: '37a626e9-5d97-4349-b7a5-8822c62d3000',
+      creationDate: '2022-11-27T08:15:14.690Z',
+      expiryDate: '2022-12-28T08:15:14.695Z',
+      emailAddress: '',
+      guestType: 'GuestPass',
+      ssid: 'guest pass wlan',
+      networkId: '3f04e252a9d04180855813131d007000',
+      passDurationHours: 168,
+      guestStatus: 'Disabled',
+      notes: '',
+      maxNumberOfClients: 3
+    }
+  ]
+}
+
+export const GuestNetworkList = {
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      name: 'NMS-app6-GUEST',
+      id: '0189575828434f94a7c0b0e611379d26',
+      vlan: 1,
+      nwSubType: 'guest',
+      captiveType: 'GuestPass',
+      ssid: 'NMS-app6-GUEST',
+      venues: {
+        count: 1,
+        names: ['UI-TEST-VENUE']
+      },
+      aps: 3,
+      clients: 0
     }
   ]
 }
