@@ -34,10 +34,10 @@ const useConnectionDetail = (event: DisplayEvent) => {
       value: $t({ defaultMessage: '{failureType}' }, { failureType })
     })
 
-    const reason = clientEventDescription(event.failedMsgId, state)
+    const reason = clientEventDescription(event.event, state)
     eventDetails.push({
       label: $t({ defaultMessage: 'Reason:' }),
-      value: $t({ defaultMessage: '{reason}' }, { reason: reason.defaultMessage as string })
+      value: $t(reason)
     })
   }
 
@@ -49,7 +49,7 @@ const useConnectionDetail = (event: DisplayEvent) => {
   }
 
   if (isDisconnect) {
-    const reason = mapCodeToReason(code, intl)
+    const reason = mapCodeToReason(event.event, intl)
     eventDetails.push({
       label: $t({ defaultMessage: 'Reason:' }),
       value: $t({ defaultMessage: '{reason}' }, { reason })

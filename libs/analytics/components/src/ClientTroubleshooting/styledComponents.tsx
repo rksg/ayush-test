@@ -89,18 +89,4 @@ export const TimelineTitle = styled.span`
 
 export const PopoverWrapper = styled.div`
   cursor: pointer;
-
-  .ant-popover-title {
-    border-bottom: 0px;
-    font-family: var(--acx-neutral-brand-font);
-    font-weight: var(--acx-headline-5-font-weight-bold);
-    font-size: var(--acx-subtitle-6-font-size);
-    line-height: var(--acx-headline-5-line-height);
-    padding-top: 16px;
-  }
-
-  .ant-popover-inner-content {
-    font-family: var(--acx-neutral-brand-font);
-    font-size: var(--acx-subtitle-6-font-size);
-  }
 `

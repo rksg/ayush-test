@@ -1,5 +1,7 @@
 import { Fragment, Attributes } from 'react'
 
+import { useIntl } from 'react-intl'
+
 import * as UI from './styledComponents'
 
 
@@ -12,15 +14,19 @@ const DetailsRow = ({ key, label, value }:
 }
 
 const Details = ({ fields }: { fields: Array<{ label: string, value: string }> }) => {
-  return <UI.DetailsContainer>
-    {fields.map((field, index) =>
-      <DetailsRow
-        key={index}
-        label={field.label}
-        value={field.value}
-      />
-    )}
-  </UI.DetailsContainer>
+  const { $t } = useIntl()
+  return <>
+    <UI.Header>{$t({ defaultMessage: 'Connection Event Details' })}</UI.Header>
+    <UI.RowContainer>
+      {fields.map((field, index) =>
+        <DetailsRow
+          key={index}
+          label={field.label}
+          value={field.value}
+        />
+      )}
+    </UI.RowContainer>
+  </>
 }
 
 export default Details
