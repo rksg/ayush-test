@@ -3,14 +3,11 @@ import styled, { css } from 'styled-components/macro'
 import {  PlusSquareOutlined, MinusSquareOutlined } from '@acx-ui/icons'
 
 const eventIconStyle = css`
-  position: relative;
-  display: inline-block;
-  top: -5px;
+  display: flex;
+  margin-top: 3px;
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  line-height: 16px;
-  margin-right: 3px;
 `
 export const History = styled.div`
   border-radius: 4px;
@@ -29,24 +26,24 @@ export const HistoryContent = styled.div`
   padding : 0 16px 0px 16px;  
   .ant-list-item-meta-title {
     color: var(--acx-neutrals-70);
-    font-size: 10px;
+    font-size: var(--acx-subtitle-6-font-size);
   }
   .ant-list-item-meta-description {
-    color: var(--acx-primary-black);
-    font-size: 10px;
+    color: var(--acx-neutrals-100);
+    font-size: var(--acx-subtitle-6-font-size);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
   .ant-list-item-meta-avatar {
-    margin-right: 2px;
+    margin-right: 5px;
   }
   overflow: auto;
 `
 export const HistoryContentTitle = styled.span`
   font-weight: 600;
-  font-size: 14px;
-  line-height: 20px;
+  font-size: var(--acx-headline-4-font-size);
+  line-height: var(--acx-subtitle-4-line-height);
   color: var(--acx-primary-black);
 `
 export const HistoryIcon = styled.span`
@@ -67,10 +64,10 @@ export const IncidentEvent = styled.span`
   width: 16px;
   color: var(--acx-primary-white);  
   font-weight: var(--acx-body-font-weight-bold);
-  margin-left:-5px;
-  line-height: 12px;
+  margin: 2px 0 0 -8px;
   text-align: center;
   vertical-align: top;
+  line-height: 12px;
 `
 export const StyledPlusSquareOutlined = styled(PlusSquareOutlined)`
    width: 16px; 

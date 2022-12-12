@@ -45,13 +45,7 @@ export const TYPES = {
   CONNECTION_EVENTS: 'connectionEvents',
   ROAMING: 'roaming'
 }
-
-export const eventsToHide = [
-  EVENT_STATES.JOIN,
-  EVENT_STATES.SPURIOUS_DISCONNECT,
-  EVENT_STATES.SPURIOUS_INFO_UPDATED
-]
-
+// In RA these events are hidden
 export const spuriousEvents = [
   EVENT_STATES.JOIN,
   EVENT_STATES.SPURIOUS_DISCONNECT,
@@ -75,7 +69,7 @@ export const eventColorByCategory = {
   [FAILURE]: '--acx-semantics-red-50',
   [SLOW]: '--acx-semantics-yellow-50'
 }
-export const categorizeEvent = (name: string, ttc: number) => {
+export const categorizeEvent = (name: string, ttc: number | null) => {
   const successEvents = [INFO_UPDATED, JOIN, ROAMED].map(
     key => filterEventMap[key as keyof typeof filterEventMap]
   )
@@ -99,9 +93,8 @@ export const transformEvents = (
   const filterEventTypes =
     selectedEventTypes.map(e => filterEventMap[e as keyof typeof filterEventMap])
   const filterRadios = selectedRadios.map(e => filterEventMap[e as keyof typeof filterEventMap])
-  const time = new Date(timestamp).getTime()
-
-  let skip = eventsToHide.includes(state)
+  const time = +new Date(timestamp)
+  let skip = spuriousEvents.includes(state)
       || filterEventTypes.length && !filterEventTypes.includes(eventType)
       || filterRadios.length && !filterRadios.includes(radio)
 
