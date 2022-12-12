@@ -134,7 +134,8 @@ export default function ServicesTable () {
     [ServiceType.MDNS_PROXY]: [], // TODO: API not ready
     [ServiceType.PORTAL]: [], // TODO: API not ready
     [ServiceType.WIFI_CALLING]: useDeleteWifiCallingServiceMutation(),
-    [ServiceType.NETWORK_SEGMENTATION]: [] // TODO: API not ready
+    [ServiceType.NETWORK_SEGMENTATION]: [], // TODO: API not ready
+    [ServiceType.WEBAUTH_SWITCH]: [] // TODO: API not ready
   }
 
   const rowActions: TableProps<Service>['rowActions'] = [

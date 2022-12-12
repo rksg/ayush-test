@@ -28,7 +28,11 @@ import {
   PortalDetailInstances,
   Portal,
   PortalUrlsInfo,
-  DpskList
+  DpskList,
+  NetworkSegmentationUrls,
+  WebAuthTemplate,
+  AccessSwitch,
+  DistributionSwitch
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
@@ -417,6 +421,72 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    getWebAuthTemplate: build.query<WebAuthTemplate, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest( NetworkSegmentationUrls.getWebAuthTemplate, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    webAuthTemplateList: build.query<TableResult<WebAuthTemplate>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest( NetworkSegmentationUrls.getWebAuthTemplateList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    createWebAuthTemplate: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest( NetworkSegmentationUrls.addWebAuthTemplate, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    updateWebAuthTemplate: build.mutation<WebAuthTemplate, RequestPayload<WebAuthTemplate>>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest( NetworkSegmentationUrls.updateWebAuthTemplate, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    deleteWebAuthTemplate: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest( NetworkSegmentationUrls.deleteWebAuthTemplate, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+
+    getAccessSwitches: build.query<TableResult<AccessSwitch>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest( NetworkSegmentationUrls.getAccessSwitches, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    getDistributionSwitches: build.query<TableResult<DistributionSwitch>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest( NetworkSegmentationUrls.getAccessSwitches, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
     })
 
   })
@@ -454,5 +524,12 @@ export const {
   useGetPortalQuery,
   useSavePortalMutation,
   usePortalNetworkInstancesQuery,
-  useGetPortalProfileDetailQuery
+  useGetPortalProfileDetailQuery,
+  useLazyGetWebAuthTemplateQuery,
+  useWebAuthTemplateListQuery,
+  useCreateWebAuthTemplateMutation,
+  useUpdateWebAuthTemplateMutation,
+  useDeleteWebAuthTemplateMutation,
+  useGetAccessSwitchesQuery,
+  useGetDistributionSwitchesQuery
 } = serviceApi
