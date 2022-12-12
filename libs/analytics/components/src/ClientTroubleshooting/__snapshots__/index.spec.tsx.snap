@@ -12,27 +12,23 @@ exports[`ClientTroubleshootingTab should render correctly with search params 1`]
     >
       <div
         class="ant-row"
-        style="margin: -8px -8px -8px -8px;"
+        style="margin: -8px -8px -8px -8px; justify-content: end;"
       >
         <div
-          class="ant-col ant-col-12"
+          class="ant-col ant-col-15"
           style="padding: 8px 8px 8px 8px;"
-        />
-        <div
-          class="ant-col ant-col-12"
-          style="padding: 8px 8px 8px 8px; justify-content: end;"
         >
           <div
             class="ant-row"
-            style="margin: -2px -2px -2px -2px; justify-content: end;"
+            style="margin: -3px -3px -3px -3px; justify-content: end;"
           >
             <div
               class="ant-col ant-col-8"
-              style="padding: 2px 2px 2px 2px;"
+              style="padding: 3px 3px 3px 3px;"
             >
               <div
-                class="ant-select ant-cascader styledComponents__Cascader-sc-jlwno5-0 cLnUfA ant-select-multiple ant-select-allow-clear ant-select-show-search"
-                style="max-width: 132px;"
+                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
+                style="max-width: 180px;"
               >
                 <div
                   class="ant-select-selector"
@@ -47,12 +43,15 @@ exports[`ClientTroubleshootingTab should render correctly with search params 1`]
                     >
                       <span
                         class="ant-select-selection-item"
-                        title="+ 1 ..."
                       >
                         <span
                           class="ant-select-selection-item-content"
                         >
-                          + 1 ...
+                          <div
+                            title="Performance"
+                          >
+                            2 categories selected
+                          </div>
                         </span>
                       </span>
                     </div>
@@ -92,6 +91,32 @@ exports[`ClientTroubleshootingTab should render correctly with search params 1`]
                 </div>
                 <span
                   aria-hidden="true"
+                  class="ant-select-arrow"
+                  style="user-select: none;"
+                  unselectable="on"
+                >
+                  <span
+                    aria-label="down"
+                    class="anticon anticon-down ant-select-suffix"
+                    role="img"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      data-icon="down"
+                      fill="currentColor"
+                      focusable="false"
+                      height="1em"
+                      viewBox="64 64 896 896"
+                      width="1em"
+                    >
+                      <path
+                        d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                      />
+                    </svg>
+                  </span>
+                </span>
+                <span
+                  aria-hidden="true"
                   class="ant-select-clear"
                   style="user-select: none;"
                   unselectable="on"
@@ -120,11 +145,11 @@ exports[`ClientTroubleshootingTab should render correctly with search params 1`]
             </div>
             <div
               class="ant-col ant-col-8"
-              style="padding: 2px 2px 2px 2px;"
+              style="padding: 3px 3px 3px 3px;"
             >
               <div
-                class="ant-select ant-cascader styledComponents__Cascader-sc-jlwno5-0 cLnUfA ant-select-multiple ant-select-allow-clear ant-select-show-search"
-                style="max-width: 132px;"
+                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
+                style="max-width: 180px;"
               >
                 <div
                   class="ant-select-selector"
@@ -171,15 +196,41 @@ exports[`ClientTroubleshootingTab should render correctly with search params 1`]
                     All Types
                   </span>
                 </div>
+                <span
+                  aria-hidden="true"
+                  class="ant-select-arrow"
+                  style="user-select: none;"
+                  unselectable="on"
+                >
+                  <span
+                    aria-label="down"
+                    class="anticon anticon-down ant-select-suffix"
+                    role="img"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      data-icon="down"
+                      fill="currentColor"
+                      focusable="false"
+                      height="1em"
+                      viewBox="64 64 896 896"
+                      width="1em"
+                    >
+                      <path
+                        d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                      />
+                    </svg>
+                  </span>
+                </span>
               </div>
             </div>
             <div
               class="ant-col ant-col-8"
-              style="padding: 2px 2px 2px 2px;"
+              style="padding: 3px 3px 3px 3px;"
             >
               <div
-                class="ant-select ant-cascader styledComponents__Cascader-sc-jlwno5-0 cLnUfA ant-select-multiple ant-select-allow-clear ant-select-show-search"
-                style="max-width: 132px;"
+                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
+                style="max-width: 180px;"
               >
                 <div
                   class="ant-select-selector"
@@ -226,6 +277,32 @@ exports[`ClientTroubleshootingTab should render correctly with search params 1`]
                     All Radios
                   </span>
                 </div>
+                <span
+                  aria-hidden="true"
+                  class="ant-select-arrow"
+                  style="user-select: none;"
+                  unselectable="on"
+                >
+                  <span
+                    aria-label="down"
+                    class="anticon anticon-down ant-select-suffix"
+                    role="img"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      data-icon="down"
+                      fill="currentColor"
+                      focusable="false"
+                      height="1em"
+                      viewBox="64 64 896 896"
+                      width="1em"
+                    >
+                      <path
+                        d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                      />
+                    </svg>
+                  </span>
+                </span>
               </div>
             </div>
           </div>
@@ -507,27 +584,23 @@ exports[`ClientTroubleshootingTab should render correctly without search params 
     >
       <div
         class="ant-row"
-        style="margin: -8px -8px -8px -8px;"
+        style="margin: -8px -8px -8px -8px; justify-content: end;"
       >
         <div
-          class="ant-col ant-col-12"
+          class="ant-col ant-col-15"
           style="padding: 8px 8px 8px 8px;"
-        />
-        <div
-          class="ant-col ant-col-12"
-          style="padding: 8px 8px 8px 8px; justify-content: end;"
         >
           <div
             class="ant-row"
-            style="margin: -2px -2px -2px -2px; justify-content: end;"
+            style="margin: -3px -3px -3px -3px; justify-content: end;"
           >
             <div
               class="ant-col ant-col-8"
-              style="padding: 2px 2px 2px 2px;"
+              style="padding: 3px 3px 3px 3px;"
             >
               <div
-                class="ant-select ant-cascader styledComponents__Cascader-sc-jlwno5-0 cLnUfA ant-select-multiple ant-select-allow-clear ant-select-show-search"
-                style="max-width: 132px;"
+                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
+                style="max-width: 180px;"
               >
                 <div
                   class="ant-select-selector"
@@ -574,15 +647,41 @@ exports[`ClientTroubleshootingTab should render correctly without search params 
                     All Categories
                   </span>
                 </div>
+                <span
+                  aria-hidden="true"
+                  class="ant-select-arrow"
+                  style="user-select: none;"
+                  unselectable="on"
+                >
+                  <span
+                    aria-label="down"
+                    class="anticon anticon-down ant-select-suffix"
+                    role="img"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      data-icon="down"
+                      fill="currentColor"
+                      focusable="false"
+                      height="1em"
+                      viewBox="64 64 896 896"
+                      width="1em"
+                    >
+                      <path
+                        d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                      />
+                    </svg>
+                  </span>
+                </span>
               </div>
             </div>
             <div
               class="ant-col ant-col-8"
-              style="padding: 2px 2px 2px 2px;"
+              style="padding: 3px 3px 3px 3px;"
             >
               <div
-                class="ant-select ant-cascader styledComponents__Cascader-sc-jlwno5-0 cLnUfA ant-select-multiple ant-select-allow-clear ant-select-show-search"
-                style="max-width: 132px;"
+                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
+                style="max-width: 180px;"
               >
                 <div
                   class="ant-select-selector"
@@ -629,15 +728,41 @@ exports[`ClientTroubleshootingTab should render correctly without search params 
                     All Types
                   </span>
                 </div>
+                <span
+                  aria-hidden="true"
+                  class="ant-select-arrow"
+                  style="user-select: none;"
+                  unselectable="on"
+                >
+                  <span
+                    aria-label="down"
+                    class="anticon anticon-down ant-select-suffix"
+                    role="img"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      data-icon="down"
+                      fill="currentColor"
+                      focusable="false"
+                      height="1em"
+                      viewBox="64 64 896 896"
+                      width="1em"
+                    >
+                      <path
+                        d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                      />
+                    </svg>
+                  </span>
+                </span>
               </div>
             </div>
             <div
               class="ant-col ant-col-8"
-              style="padding: 2px 2px 2px 2px;"
+              style="padding: 3px 3px 3px 3px;"
             >
               <div
-                class="ant-select ant-cascader styledComponents__Cascader-sc-jlwno5-0 cLnUfA ant-select-multiple ant-select-allow-clear ant-select-show-search"
-                style="max-width: 132px;"
+                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
+                style="max-width: 180px;"
               >
                 <div
                   class="ant-select-selector"
@@ -684,6 +809,32 @@ exports[`ClientTroubleshootingTab should render correctly without search params 
                     All Radios
                   </span>
                 </div>
+                <span
+                  aria-hidden="true"
+                  class="ant-select-arrow"
+                  style="user-select: none;"
+                  unselectable="on"
+                >
+                  <span
+                    aria-label="down"
+                    class="anticon anticon-down ant-select-suffix"
+                    role="img"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      data-icon="down"
+                      fill="currentColor"
+                      focusable="false"
+                      height="1em"
+                      viewBox="64 64 896 896"
+                      width="1em"
+                    >
+                      <path
+                        d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                      />
+                    </svg>
+                  </span>
+                </span>
               </div>
             </div>
           </div>
@@ -965,27 +1116,23 @@ exports[`ClientTroubleshootingTab should set search param on option selection 1`
     >
       <div
         class="ant-row"
-        style="margin: -8px -8px -8px -8px;"
+        style="margin: -8px -8px -8px -8px; justify-content: end;"
       >
         <div
-          class="ant-col ant-col-12"
+          class="ant-col ant-col-15"
           style="padding: 8px 8px 8px 8px;"
-        />
-        <div
-          class="ant-col ant-col-12"
-          style="padding: 8px 8px 8px 8px; justify-content: end;"
         >
           <div
             class="ant-row"
-            style="margin: -2px -2px -2px -2px; justify-content: end;"
+            style="margin: -3px -3px -3px -3px; justify-content: end;"
           >
             <div
               class="ant-col ant-col-8"
-              style="padding: 2px 2px 2px 2px;"
+              style="padding: 3px 3px 3px 3px;"
             >
               <div
-                class="ant-select ant-cascader styledComponents__Cascader-sc-jlwno5-0 cLnUfA ant-select-multiple ant-select-allow-clear ant-select-show-search"
-                style="max-width: 132px;"
+                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
+                style="max-width: 180px;"
               >
                 <div
                   class="ant-select-selector"
@@ -1000,12 +1147,15 @@ exports[`ClientTroubleshootingTab should set search param on option selection 1`
                     >
                       <span
                         class="ant-select-selection-item"
-                        title="+ 0 ..."
                       >
                         <span
                           class="ant-select-selection-item-content"
                         >
-                          + 0 ...
+                          <div
+                            title="Performance"
+                          >
+                            1 category selected
+                          </div>
                         </span>
                       </span>
                     </div>
@@ -1043,6 +1193,32 @@ exports[`ClientTroubleshootingTab should set search param on option selection 1`
                     </div>
                   </div>
                 </div>
+                <span
+                  aria-hidden="true"
+                  class="ant-select-arrow"
+                  style="user-select: none;"
+                  unselectable="on"
+                >
+                  <span
+                    aria-label="down"
+                    class="anticon anticon-down ant-select-suffix"
+                    role="img"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      data-icon="down"
+                      fill="currentColor"
+                      focusable="false"
+                      height="1em"
+                      viewBox="64 64 896 896"
+                      width="1em"
+                    >
+                      <path
+                        d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                      />
+                    </svg>
+                  </span>
+                </span>
                 <div
                   style="position: absolute; top: 0px; left: 0px; width: 100%;"
                 >
@@ -1122,7 +1298,7 @@ exports[`ClientTroubleshootingTab should set search param on option selection 1`
                           </ul>
                         </div>
                         <div
-                          class="styledComponents__ButtonDiv-sc-jlwno5-1 bPKlWZ"
+                          class="styledComponents__ButtonDiv-sc-9z6ynb-1 kNCyfI"
                         >
                           <button
                             class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
@@ -1176,11 +1352,11 @@ exports[`ClientTroubleshootingTab should set search param on option selection 1`
             </div>
             <div
               class="ant-col ant-col-8"
-              style="padding: 2px 2px 2px 2px;"
+              style="padding: 3px 3px 3px 3px;"
             >
               <div
-                class="ant-select ant-cascader styledComponents__Cascader-sc-jlwno5-0 cLnUfA ant-select-multiple ant-select-allow-clear ant-select-show-search"
-                style="max-width: 132px;"
+                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
+                style="max-width: 180px;"
               >
                 <div
                   class="ant-select-selector"
@@ -1227,15 +1403,41 @@ exports[`ClientTroubleshootingTab should set search param on option selection 1`
                     All Types
                   </span>
                 </div>
+                <span
+                  aria-hidden="true"
+                  class="ant-select-arrow"
+                  style="user-select: none;"
+                  unselectable="on"
+                >
+                  <span
+                    aria-label="down"
+                    class="anticon anticon-down ant-select-suffix"
+                    role="img"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      data-icon="down"
+                      fill="currentColor"
+                      focusable="false"
+                      height="1em"
+                      viewBox="64 64 896 896"
+                      width="1em"
+                    >
+                      <path
+                        d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                      />
+                    </svg>
+                  </span>
+                </span>
               </div>
             </div>
             <div
               class="ant-col ant-col-8"
-              style="padding: 2px 2px 2px 2px;"
+              style="padding: 3px 3px 3px 3px;"
             >
               <div
-                class="ant-select ant-cascader styledComponents__Cascader-sc-jlwno5-0 cLnUfA ant-select-multiple ant-select-allow-clear ant-select-show-search"
-                style="max-width: 132px;"
+                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
+                style="max-width: 180px;"
               >
                 <div
                   class="ant-select-selector"
@@ -1282,6 +1484,32 @@ exports[`ClientTroubleshootingTab should set search param on option selection 1`
                     All Radios
                   </span>
                 </div>
+                <span
+                  aria-hidden="true"
+                  class="ant-select-arrow"
+                  style="user-select: none;"
+                  unselectable="on"
+                >
+                  <span
+                    aria-label="down"
+                    class="anticon anticon-down ant-select-suffix"
+                    role="img"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      data-icon="down"
+                      fill="currentColor"
+                      focusable="false"
+                      height="1em"
+                      viewBox="64 64 896 896"
+                      width="1em"
+                    >
+                      <path
+                        d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                      />
+                    </svg>
+                  </span>
+                </span>
               </div>
             </div>
           </div>
