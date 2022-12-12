@@ -1,8 +1,9 @@
-import { useIntl } from 'react-intl'
+import { ConnectedClientsTable, HistoricalClientsTable } from '@acx-ui/rc/components'
 
 export function ClientsTab () {
-  const { $t } = useIntl()
   return <>
-    { $t({ defaultMessage: 'Clients Tab' })}
+    <ConnectedClientsTable />
+    {/* TODO: change string from search input */}
+    {false && <HistoricalClientsTable searchString='' />}
   </>
 }

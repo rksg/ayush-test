@@ -402,7 +402,7 @@ exports[`NetworkApGroupDialog should render correctly 1`] = `
       class="ant-modal-footer"
     >
       <button
-        class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+        class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
         type="button"
       >
         <span>
@@ -410,7 +410,7 @@ exports[`NetworkApGroupDialog should render correctly 1`] = `
         </span>
       </button>
       <button
-        class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 kkpPZG"
+        class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 bxQmA-d"
         type="button"
       >
         <span>

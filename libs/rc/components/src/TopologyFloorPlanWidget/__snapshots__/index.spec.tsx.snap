@@ -25,7 +25,7 @@ exports[`TopologyFloorPlanWidget should render correctly 1`] = `
                 class="ant-space-item"
               >
                 <div
-                  class="styledComponents__Title-sc-13w5wfx-5 eyxVFQ"
+                  class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
                 />
               </div>
             </div>
@@ -49,7 +49,7 @@ exports[`TopologyFloorPlanWidget should render correctly 1`] = `
             style="width: 1280px; height: 800px;"
           >
             <div
-              style="text-align: left; padding: 10px 0px;"
+              style="text-align: left; padding: 8px 0px;"
             >
               <div
                 class="styledComponents__Wrapper-sc-c4vpsp-0 eBLcPR"

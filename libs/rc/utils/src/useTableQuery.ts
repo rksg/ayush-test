@@ -9,6 +9,10 @@ export interface RequestPayload <Payload = unknown> extends Record<string,unknow
   params?: Params<string>
   payload?: Payload
 }
+export interface RequestFormData <FormData = unknown> {
+  params?: Params<string>
+  payload?: FormData
+}
 
 export interface TableResult <ResultItemType, ResultExtra = unknown> {
   data: ResultItemType[]
@@ -39,6 +43,7 @@ export type PAGINATION = {
 }
 
 const DEFAULT_PAGINATION = {
+  page: 1,
   current: 1,
   pageSize: 10,
   total: 0

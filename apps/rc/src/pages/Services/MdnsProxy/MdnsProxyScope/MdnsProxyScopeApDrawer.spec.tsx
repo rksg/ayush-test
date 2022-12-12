@@ -93,7 +93,7 @@ describe('MdnsProxyScopeApDrawer', () => {
     // Click Activate button in the row actions
     await userEvent.click(await screen.findByRole('button', { name: 'Activate' }))
 
-    // Check if each record is activated
+    // Check if the record is activated
     await waitFor(() => {
       expect(within(targetRow).getByRole('switch')).toBeChecked()
     })

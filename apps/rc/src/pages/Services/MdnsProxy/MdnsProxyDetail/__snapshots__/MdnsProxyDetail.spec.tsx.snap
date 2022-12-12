@@ -70,7 +70,7 @@ exports[`MdnsProxyDetail should render the detail view 1`] = `
                 style="cursor: not-allowed;"
               >
                 <button
-                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
                   disabled=""
                   style="pointer-events: none;"
                   type="button"
@@ -91,7 +91,7 @@ exports[`MdnsProxyDetail should render the detail view 1`] = `
                 href="/t/15320bc221d94d2cb537fa0189fee742/services/mdnsProxy/4b76b1952c80401b8500b00d68106576/edit"
               >
                 <button
-                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 eAazoW"
                   type="button"
                 >
                   <span>
@@ -147,7 +147,7 @@ exports[`MdnsProxyDetail should render the detail view 1`] = `
                       class="ant-space-item"
                     >
                       <div
-                        class="styledComponents__Title-sc-13w5wfx-5 eyxVFQ"
+                        class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
                       >
                         Instances ()
                       </div>
