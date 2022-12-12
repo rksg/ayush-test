@@ -12,7 +12,14 @@ describe('EventsHistory', () => {
     }
     const { asFragment } = render(
       <Provider>
-        <History historyContentToggle setHistoryContentToggle={jest.fn()} />
+        <History
+          historyContentToggle
+          setHistoryContentToggle={jest.fn()}
+          filters={{
+            category: undefined,
+            type: undefined,
+            radio: undefined
+          }} />
       </Provider>,
       {
         route: {
