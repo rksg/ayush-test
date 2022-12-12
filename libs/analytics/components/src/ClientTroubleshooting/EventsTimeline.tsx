@@ -9,9 +9,10 @@ import { useIntl }  from 'react-intl'
 import { SingleLineScatterChart } from '@acx-ui/components'
 import { useDateFilter }          from '@acx-ui/utils'
 
-import { ClientTroubleShootingConfig, SUCCESS, FAILURE, SLOW, DISCONNECT, transformEvents, DisplayEvent, TYPES, formatEventDesc, eventColorByCategory } from './config'
-import { ClientInfoData,ConnectionEvent }                                                                                                               from './services'
-import * as UI                                                                                                                                          from './styledComponents'
+
+import { ClientTroubleShootingConfig, SUCCESS, FAILURE, SLOW, DISCONNECT, transformEvents, TYPES, formatEventDesc, eventColorByCategory } from './config'
+import { ClientInfoData,ConnectionEvent }                                                                                                 from './services'
+import * as UI                                                                                                                            from './styledComponents'
 
 import { Filters } from '.'
 
@@ -84,6 +85,8 @@ const getTimelineData = (events: Event[]) =>
   //     </TooltipWrapper>
   //   )
   // }
+
+
 export function TimeLine (props : TimeLineProps){
   const { $t } = useIntl()
   const { data, filters } = props
@@ -101,33 +104,9 @@ export function TimeLine (props : TimeLineProps){
       instance.group = 'timeSeriesGroup'
     }
   }
-  console.log(TimelineData)
   useEffect(() => { connect('timeSeriesGroup') }, [])
   const { startDate, endDate } = useDateFilter()
   const chartBoundary = [moment(startDate).valueOf() , moment(endDate).valueOf() ]
-  // const sampleData = new Array(
-  //   (chartBoundary[1] - chartBoundary[0]) / (12 * 60 * 60 * 1000)
-  // )
-  //   .fill(0)
-  //   .map((_, index) => ({
-  //     id: index,
-  //     timestamp: `${chartBoundary[0] + 12 * 60 * 60 * 1000 * index}`,
-  //     type: 'ap',
-  //     name: 'name',
-  //     key: 'key',
-  //     oldValues: ['oldValues'],
-  //     newValues: ['newValues'],
-  //     description: formatEventDesc(event, intl),
-  //     icon: (
-  //       <UI.EventTypeIcon
-  //         color={
-  //           eventColorByCategory[
-  //             event.category as keyof typeof eventColorByCategory
-  //           ]
-  //         }
-  //       />
-  //     )
-  //   }))
   return (
     <UI.CollapseBox
       bordered={false}
@@ -154,12 +133,15 @@ export function TimeLine (props : TimeLineProps){
                   chartBoundary={chartBoundary}
                   chartRef={connectChart}
                   title={$t(config.title)}
-                  count={8}
+                  count={TimelineData[config.value as keyof TimelineData][
+                    'allEvents'
+                  ].length}
                   tooltopEnabled
                   onDotClick={(params) => {
                     // eslint-disable-next-line no-console
                     console.log(params)
                   }}
+                  mapping={config.chartMapping}
                 />
               ) : (
                 $t(config.title)
@@ -180,13 +162,18 @@ export function TimeLine (props : TimeLineProps){
                   chartBoundary={chartBoundary}
                   chartRef={connectChart}
                   title={$t(subtitle.title)}
-                  count={8}
+                  count={TimelineData[config.value as keyof TimelineData][
+                    subtitle.value as keyof TimelineData['connectionEvents']
+                  ].length}
                   key={index}
                   tooltopEnabled={false}
                   onDotClick={(params) => {
                     // eslint-disable-next-line no-console
                     console.log(params)
                   }}
+
+                  mapping={subtitle.chartMapping}
+
                 />
               ) : (
                 $t(subtitle.title)
