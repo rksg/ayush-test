@@ -211,7 +211,7 @@ exports[`CaptiveNetworkForm-SelfSignIn should test Self sign in network successf
                                             type="button"
                                           >
                                             <svg
-                                              class="styledComponents__ConfigurationSolid-sc-p8nkv6-5 jpPcLv"
+                                              class="styledComponents__ConfigurationSolid-sc-p8nkv6-5 jnmUcd"
                                               data-testid="ConfigurationSolid"
                                             />
                                           </button>
@@ -264,7 +264,7 @@ exports[`CaptiveNetworkForm-SelfSignIn should test Self sign in network successf
                                             type="button"
                                           >
                                             <svg
-                                              class="styledComponents__ConfigurationSolid-sc-p8nkv6-5 jpPcLv"
+                                              class="styledComponents__ConfigurationSolid-sc-p8nkv6-5 jnmUcd"
                                               data-testid="ConfigurationSolid"
                                             />
                                           </button>
@@ -317,7 +317,7 @@ exports[`CaptiveNetworkForm-SelfSignIn should test Self sign in network successf
                                             type="button"
                                           >
                                             <svg
-                                              class="styledComponents__ConfigurationSolid-sc-p8nkv6-5 jpPcLv"
+                                              class="styledComponents__ConfigurationSolid-sc-p8nkv6-5 jnmUcd"
                                               data-testid="ConfigurationSolid"
                                             />
                                           </button>
@@ -370,7 +370,7 @@ exports[`CaptiveNetworkForm-SelfSignIn should test Self sign in network successf
                                             type="button"
                                           >
                                             <svg
-                                              class="styledComponents__ConfigurationSolid-sc-p8nkv6-5 jpPcLv"
+                                              class="styledComponents__ConfigurationSolid-sc-p8nkv6-5 jnmUcd"
                                               data-testid="ConfigurationSolid"
                                             />
                                           </button>

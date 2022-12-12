@@ -130,7 +130,7 @@ function getAAADiagram (props: AaaDiagramProps) {
   return props.enableAuthProxy ? AaaProxyDiagram : AaaDiagram
 }
 
-export function getCaptivePortalDiagram (props: CaptivePortalDiagramProps) {
+function getCaptivePortalDiagram (props: CaptivePortalDiagramProps) {
   const type = props.networkPortalType as GuestNetworkTypeEnum
   const isCloudDeployment = props.cloudpathType === CloudpathDeploymentTypeEnum.Cloud
 

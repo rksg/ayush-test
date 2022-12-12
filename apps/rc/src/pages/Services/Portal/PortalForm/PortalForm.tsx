@@ -7,9 +7,9 @@ import {
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
-import { useGetPortalQuery }                                 from '@acx-ui/rc/services'
-import { defaultAlternativeLang, defaultComDisplay, Portal } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }             from '@acx-ui/react-router-dom'
+import { useGetPortalQuery }                                                          from '@acx-ui/rc/services'
+import { defaultAlternativeLang, defaultComDisplay, getServiceListRoutePath, Portal } from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }                                      from '@acx-ui/react-router-dom'
 
 import Photo                     from '../../../../assets/images/portal-demo/PortalPhoto.svg'
 import Powered                   from '../../../../assets/images/portal-demo/PoweredLogo.svg'
@@ -59,7 +59,7 @@ export const PortalForm = (props:{
   const { networkView, backToNetwork } = props
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const linkToServices = useTenantLink('/services')
+  const linkToServices = useTenantLink(getServiceListRoutePath(true))
   const params = useParams()
   const editMode = params.action === 'edit' && !networkView
   const [portalData, setPortalData]=useState<Portal>(initialPortalData)

@@ -73,9 +73,12 @@ export function domainsNameRegExp (value: string[], required: boolean) {
   // eslint-disable-next-line max-len
   const re = new RegExp(/^(\*(\.[0-9A-Za-z]{1,63})+(\.\*)?|([0-9A-Za-z]{1,63}\.)+\*|([0-9A-Za-z]{1,63}(\.[0-9A-Za-z]{1,63})+))$/)
   let checkPromise = Promise.resolve()
-  value&&value?.map(domain => {
+  value&&value.every(domain => {
     if (required && !re.test(domain)) {
       checkPromise = Promise.reject($t(validationMessages.invalid))
+      return false
+    }else{
+      return true
     }
   })
 
@@ -90,9 +93,12 @@ export function walledGardensRegExp (value:string) {
   let isValid = true
   const walledGardens = value.split('\n')
   const walledGardenRegex = new RegExp(/^(((\*\.){0,1})(([a-zA-Z0-9*]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.){1,})([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9]){1,}(((\/[0-9]{1,2}){0,1}|(\s+(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){2,}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))))$/)
-  walledGardens.forEach(walledGarden=>{
+  walledGardens.every(walledGarden=>{
     if (walledGarden.trim()&&!walledGardenRegex.test(walledGarden.trim())) {
       isValid = false
+      return false
+    }else {
+      return true
     }
   })
   return isValid ? Promise.resolve() : Promise.reject($t(validationMessages.walledGarden))

@@ -327,5 +327,9 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getExternalProviders: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/network/external-providers'
+  },
+  getGlobalValues: {
+    method: 'get',
+    url: '/api/ui/globalValues'
   }
 }

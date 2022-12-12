@@ -9,7 +9,7 @@ import Photo              from '../../../../assets/images/portal-demo/PortalPhot
 import Powered            from '../../../../assets/images/portal-demo/PoweredLogo.svg'
 import Logo               from '../../../../assets/images/portal-demo/RuckusCloud.svg'
 import { getLanguage }    from '../../commonUtils'
-import PortalPreviewModal from '../PortalSummary/PortalPreviewModal'
+import PortalPreviewModal from '../PortalPreviewModal'
 export default function PortalOverview (props: { demoValue: Demo }) {
   const { $t } = useIntl()
   const { demoValue } = props

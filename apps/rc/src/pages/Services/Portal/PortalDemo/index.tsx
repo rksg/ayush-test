@@ -11,7 +11,7 @@ import { Demo, GuestNetworkTypeEnum, PortalLanguageEnum, PortalViewEnum } from '
 import { captiveTypesDescription } from '../../../Networks/NetworkForm/contentsMap'
 import { getLanguage }             from '../../commonUtils'
 import { portalViewTypes }         from '../contentsMap'
-import PortalPreviewModal          from '../PortalSummary/PortalPreviewModal'
+import PortalPreviewModal          from '../PortalPreviewModal'
 import * as UI                     from '../styledComponents'
 
 import PortalBackground         from './PortalBackground'
@@ -61,8 +61,6 @@ export default function PortalDemo ({
     updateViewContent={(data)=>onChange?.({ ...demoValue, ...data })}
   />
   const networkPreview = (isPreview && fromNetwork)
-  const displayLangCode = getLanguage(demoValue.displayLangCode as keyof typeof PortalLanguageEnum)
-  const [networkDisplayLang, setNetworkDisplayLang] = useState(displayLangCode)
   const type= view === PortalViewEnum.ClickThrough? GuestNetworkTypeEnum.ClickThrough :
     (view === PortalViewEnum.GuestPassConnect || view ===PortalViewEnum.GuestPassForgot)?
       GuestNetworkTypeEnum.GuestPass:
@@ -70,12 +68,6 @@ export default function PortalDemo ({
         GuestNetworkTypeEnum.SelfSignIn:
         view === PortalViewEnum.HostApproval?
           GuestNetworkTypeEnum.HostApproval:GuestNetworkTypeEnum.ClickThrough
-  useEffect(()=>{
-    if(networkPreview){
-      setNetworkDisplayLang(getLanguage(
-        demoValue.displayLangCode as keyof typeof PortalLanguageEnum))
-    }
-  },[demoValue])
   const viewKeys = Object.keys(PortalViewEnum) as Array<keyof typeof PortalViewEnum>
   const alternativeLang = demoValue.alternativeLang
   let langs = [] as string[]

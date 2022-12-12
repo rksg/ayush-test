@@ -24,21 +24,21 @@ export default function PortalComponents (props:{
         children={<div>
           {valueKeys.map((key => <UI.CommonLabel key={key+'label'}>
             <UI.ComponentLabel key={key}>
-              {$t(portalComponentsValue[key])}
+              {$t(portalComponentsValue[PortalComponentsEnum[key]])}
             </UI.ComponentLabel>
             <Switch
               key={key+'switch'}
-              checked={demoValue?.componentDisplay?.[key]}
+              checked={demoValue?.componentDisplay?.[PortalComponentsEnum[key]]}
               onClick={(value)=>{
                 updateViewContent({ ...demoValue, componentDisplay:
-                  { ...demoValue.componentDisplay, [key]: value } })
+                  { ...demoValue.componentDisplay, [PortalComponentsEnum[key]]: value } })
               }}
             />
-            {key === 'termsConditions'&&<PortalTermsModal
+            {key === 'TermsConditions'&&<PortalTermsModal
               terms={demoValue?.termsCondition}
               updateTermsConditions={(value)=>
                 updateViewContent({ ...demoValue, termsCondition: value })}/>}
-            {key === 'wifi4eu'&&<PortalWifi4euModal wifi4eu={demoValue?.wifi4EUNetworkId}
+            {key === 'Wifi4eu'&&<PortalWifi4euModal wifi4eu={demoValue?.wifi4EUNetworkId}
               updateWiFi4EU={(value)=> updateViewContent({
                 ...demoValue, wifi4EUNetworkId: value })}/>}
           </UI.CommonLabel>

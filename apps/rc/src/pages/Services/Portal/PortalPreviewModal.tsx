@@ -5,8 +5,8 @@ import { useIntl } from 'react-intl'
 import { showActionModal } from '@acx-ui/components'
 import { Demo }            from '@acx-ui/rc/utils'
 
-import PortalDemo from '../PortalDemo'
-import * as UI    from '../styledComponents'
+import PortalDemo from './PortalDemo'
+import * as UI    from './styledComponents'
 
 export default function PortalPreviewModal (props:{
   demoValue?: Demo

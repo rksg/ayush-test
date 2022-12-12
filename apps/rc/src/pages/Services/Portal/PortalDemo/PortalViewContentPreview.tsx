@@ -33,7 +33,7 @@ export default function PortalViewContentPreview (props:{
       />}
       {componentDisplay.welcome && <div
         style={{ minHeight: 25 * ((demoValue.welcomeSize)
-          /PortalDemoDefaultSize.welcomeSize) , outline: 0,
+          /PortalDemoDefaultSize.welcomeSize) , outline: 0, textAlign: 'center',
         lineHeight: 20*((demoValue.welcomeSize)
           /PortalDemoDefaultSize.welcomeSize) + 'px',
         width: 310*((demoValue.welcomeSize)

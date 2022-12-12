@@ -181,7 +181,7 @@ exports[`PortalDemo should render portal demo preview successfully 1`] = `
               style="height: 105px; max-width: 425px;"
             />
             <div
-              style="min-height: 25px; outline: 0; line-height: 20px; width: 310px; max-width: 425px; font-size: 16px;"
+              style="min-height: 25px; outline: 0; text-align: center; line-height: 20px; width: 310px; max-width: 425px; font-size: 16px;"
             >
               Welcome to the Guest Access login page
             </div>

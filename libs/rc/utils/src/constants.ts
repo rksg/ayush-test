@@ -488,11 +488,11 @@ export enum PortalLanguageEnum{
 }
 
 export enum PortalComponentsEnum{
-  logo = 'logo',
-  welcome = 'welcome',
-  photo = 'photo',
-  secondaryText = 'secondaryText',
-  termsConditions = 'termsConditions',
-  poweredBy = 'poweredBy',
-  wifi4eu = 'wifi4eu'
+  Logo = 'logo',
+  Welcome = 'welcome',
+  Photo = 'photo',
+  SecondaryText = 'secondaryText',
+  TermsConditions = 'termsConditions',
+  PoweredBy = 'poweredBy',
+  Wifi4eu = 'wifi4eu'
 }
