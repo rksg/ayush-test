@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EventDetails renders Details correctly 1`] = `
+<DocumentFragment>
+  <h3
+    class="sc-bczRLJ bcJKaK"
+  >
+    Connection Event Details
+  </h3>
+  <dl
+    class="sc-gsnTZi iLOyRZ"
+  >
+    <dt
+      class="sc-dkzDqf kVNeuV"
+    >
+      label1
+    </dt>
+    <dd
+      class="sc-hKMtZM iWLUww"
+    >
+      value1
+    </dd>
+    <dt
+      class="sc-dkzDqf kVNeuV"
+    >
+      label2
+    </dt>
+    <dd
+      class="sc-hKMtZM iWLUww"
+    >
+      value2
+    </dd>
+  </dl>
+</DocumentFragment>
+`;
