@@ -1,8 +1,8 @@
 import { gql } from 'graphql-request'
 
-import { dataApi }        from '@acx-ui/analytics/services'
+import { dataApi }                  from '@acx-ui/analytics/services'
 import { incidentCodes, Incident  } from '@acx-ui/analytics/utils'
-import { DateFilter }     from '@acx-ui/utils'
+import { DateFilter }               from '@acx-ui/utils'
 
 export type ConnectionEvent = {
   event: string,
