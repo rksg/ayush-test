@@ -26,35 +26,9 @@ import {
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { getIntl }               from '@acx-ui/utils'
 
-import { GuestsDetail } from '../GuestsDetail'
+import { defaultGuestPayload, GuestsDetail } from '../GuestsDetail'
 
 import { AddGuestDrawer } from './addGuestDrawer'
-
-const defaultPayload = {
-  searchString: '',
-  searchTargetFields: [
-    'name',
-    'mobilePhoneNumber',
-    'emailAddress'],
-  fields: [
-    'creationDate',
-    'name',
-    'passDurationHours',
-    'id',
-    'networkId',
-    'maxNumberOfClients',
-    'notes',
-    'clients',
-    'guestStatus',
-    'emailAddress',
-    'mobilePhoneNumber',
-    'guestType',
-    'ssid',
-    'socialLogin',
-    'expiryDate',
-    'cog'
-  ]
-}
 
 const payload = {
   fields: ['name', 'defaultGuestCountry', 'id'],
@@ -68,36 +42,36 @@ const payload = {
   url: '/api/viewmodel/tenant/{tenantId}/network'
 }
 
-const defaultGuestNetworkPayload = {
-  searchString: '',
-  fields: [
-    'check-all',
-    'name',
-    'description',
-    'nwSubType',
-    'venues',
-    'aps',
-    'clients',
-    'vlan',
-    'cog',
-    'ssid',
-    'vlanPool',
-    'captiveType',
-    'id'
-  ],
-  filters: {
-    nwSubType: ['guest'],
-    captiveType: ['GuestPass']
-  }
-}
-
 export default function GuestsTable () {
+  const defaultGuestNetworkPayload = {
+    searchString: '',
+    fields: [
+      'check-all',
+      'name',
+      'description',
+      'nwSubType',
+      'venues',
+      'aps',
+      'clients',
+      'vlan',
+      'cog',
+      'ssid',
+      'vlanPool',
+      'captiveType',
+      'id'
+    ],
+    filters: {
+      nwSubType: ['guest'],
+      captiveType: ['GuestPass']
+    }
+  }
+
   const { $t } = useIntl()
   const params = useParams()
   const GuestsTable = () => {
     const tableQuery = useTableQuery({
       useQuery: useGetGuestsListQuery,
-      defaultPayload
+      defaultPayload: defaultGuestPayload
     })
 
     const networkListQuery = useTableQuery<Network, RequestPayload<unknown>, unknown>({
@@ -142,7 +116,7 @@ export default function GuestsTable () {
         key: 'creationDate',
         title: $t({ defaultMessage: 'Created' }),
         dataIndex: 'creationDate',
-        sorter: false,
+        sorter: true,
         defaultSortOrder: 'ascend',
         render: (data, row) =>
           <Button
@@ -237,7 +211,7 @@ export default function GuestsTable () {
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
-          rowKey='name'
+          rowKey='id'
           actions={[{
             label: $t({ defaultMessage: 'Add Guest' }),
             onClick: () => setDrawerVisible(true),
@@ -262,6 +236,7 @@ export default function GuestsTable () {
           mask={false}
           children={
             <GuestsDetail
+              triggerClose={onClose}
               currentGuest={currentGuest}
             />
           }

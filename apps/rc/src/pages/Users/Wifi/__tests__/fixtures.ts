@@ -50,7 +50,7 @@ export const GuestClient = {
       id: '99fbe8f0-bc9c-4f95-ac07-54146cf5c117',
       creationDate: '2022-11-20T08:57:12.338Z',
       mobilePhoneNumber: '+886933222333',
-      emailAddress: '',
+      emailAddress: 'a@email.com',
       guestType: 'GuestPass',
       ssid: 'guest pass wlan',
       networkId: '3f04e252a9d04180855813131d007aca',
@@ -58,27 +58,88 @@ export const GuestClient = {
       guestStatus: 'Online (1)',
       notes: '',
       maxNumberOfClients: 2,
-      clients: [
-        {
-          osType: 'ios',
-          healthCheckStatus: 'good',
-          clientMac: 'AA:AA:AA:AA:AA:AA',
-          ipAddress: '1.1.1.1',
-          username: 'user',
-          hostname: 'host',
-          venueId: '0004e252a9d04180855813131d007aca',
-          venueName: 'testVenue',
-          apMac: 'BB:BB:BB:BB:BB:BB',
-          apSerialNumber: '422039000038',
-          apName: 'testAp',
-          switchSerialNumber: '',
-          switchName: '',
-          networkId: '3f04e252a9d04180855813131d007aca',
-          networkName: 'guest pass wlan',
-          networkSsid: 'guest pass wlan',
-          connectSince: '2022-11-28T14:55:15.924Z'
-        }
-      ]
+      clients: [{
+        osType: 'ios',
+        healthCheckStatus: 'good',
+        clientMac: 'AA:AA:AA:AA:AA:AA',
+        ipAddress: '1.1.1.1',
+        username: 'user',
+        hostname: 'host',
+        venueId: '0004e252a9d04180855813131d007aca',
+        venueName: 'testVenue',
+        apMac: 'BB:BB:BB:BB:BB:BB',
+        apSerialNumber: '422039000038',
+        apName: 'testAp',
+        switchSerialNumber: '',
+        switchName: '',
+        networkId: '3f04e252a9d04180855813131d007aca',
+        networkName: 'guest pass wlan',
+        networkSsid: 'guest pass wlan',
+        connectSince: '2022-11-28T14:55:15.924Z'
+      }]
+    }, {
+      name: 'disable_client',
+      id: '37a626e9-5d97-4349-b7a5-8822c62d3000',
+      creationDate: '2022-11-27T08:15:14.690Z',
+      expiryDate: '2022-12-28T08:15:14.695Z',
+      emailAddress: '',
+      guestType: 'GuestPass',
+      ssid: 'guest pass wlan',
+      networkId: '3f04e252a9d04180855813131d007000',
+      passDurationHours: 168,
+      guestStatus: 'Disabled',
+      notes: '',
+      maxNumberOfClients: 3
+    }
+  ]
+}
+
+export const UserProfile = {
+  region: '[NA]',
+  allowedRegions: [
+    {
+      name: 'US',
+      description: 'United States of America',
+      link: 'https://devalto.ruckuswireless.com',
+      current: true
+    }
+  ],
+  externalId: '0032h00000LUqUKAA1',
+  pver: 'acx-hybrid',
+  companyName: 'Dog Company 1093',
+  firstName: 'FisrtName 1093',
+  lastName: 'LastName 1093',
+  username: 'dog1093@email.com',
+  role: 'PRIME_ADMIN',
+  roles: ['PRIME_ADMIN'],
+  detailLevel: 'debug',
+  dateFormat: 'yyyy/mm/dd',
+  email: 'dog1093@email.com',
+  var: false,
+  tenantId: 'd1ec841a4ff74436b23bca6477f6a631',
+  varTenantId: 'd1ec841a4ff74436b23bca6477f6a631',
+  adminId: '2cfff8a9345843f88be768dbf833592f',
+  support: false,
+  dogfood: false
+}
+
+export const GuestNetworkList = {
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      name: 'NMS-app6-GUEST',
+      id: '0189575828434f94a7c0b0e611379d26',
+      vlan: 1,
+      nwSubType: 'guest',
+      captiveType: 'GuestPass',
+      ssid: 'NMS-app6-GUEST',
+      venues: {
+        count: 1,
+        names: ['UI-TEST-VENUE']
+      },
+      aps: 3,
+      clients: 0
     }
   ]
 }
@@ -112,35 +173,6 @@ export const AllowedNetworkSingleList = {
       defaultGuestCountry: 'United States'
     }
   ]
-}
-
-export const UserProfile = {
-  region: '[NA]',
-  allowedRegions: [
-    {
-      name: 'US',
-      description: 'United States of America',
-      link: 'https://devalto.ruckuswireless.com',
-      current: true
-    }
-  ],
-  externalId: '0032h00000LUqUKAA1',
-  pver: 'acx-hybrid',
-  companyName: 'Dog Company 1093',
-  firstName: 'FisrtName 1093',
-  lastName: 'LastName 1093',
-  username: 'dog1093@email.com',
-  role: 'PRIME_ADMIN',
-  roles: ['PRIME_ADMIN'],
-  detailLevel: 'debug',
-  dateFormat: 'yyyy/mm/dd',
-  email: 'dog1093@email.com',
-  var: false,
-  tenantId: 'd1ec841a4ff74436b23bca6477f6a631',
-  varTenantId: 'd1ec841a4ff74436b23bca6477f6a631',
-  adminId: '2cfff8a9345843f88be768dbf833592f',
-  support: false,
-  dogfood: false
 }
 
 export const AddGuestPassResponse = {
