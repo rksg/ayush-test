@@ -13,7 +13,7 @@ import { EdgePort, EdgeViewModel, EdgeResourceUtilizationEnum, EdgePortAdminStat
 
 import { SpaceWrapper } from '../SpaceWrapper/index'
 
-import { EdgeDetailsDrawer }  from './EdgeDetailsDrawer'
+import EdgeDetailsDrawer      from './EdgeDetailsDrawer'
 import EdgePortsListDrawer    from './EdgePortsListDrawer'
 import { EdgeSysResourceBox } from './EdgeSysResourceBox'
 

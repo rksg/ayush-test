@@ -2,8 +2,7 @@
 import { Divider, Form } from 'antd'
 import { useIntl }       from 'react-intl'
 
-import { ContentSwitcher, ContentSwitcherProps, Drawer } from '@acx-ui/components'
-// import { useEdgePortsQuery, useApRadioCustomizationQuery, useGetVenueQuery }                   from '@acx-ui/rc/services'
+import { ContentSwitcher, ContentSwitcherProps, Drawer }    from '@acx-ui/components'
 import { EdgeViewModel, EdgeStatusEnum, EdgePort, EdgeDNS } from '@acx-ui/rc/utils'
 import { TenantLink }                                       from '@acx-ui/react-router-dom'
 
@@ -17,26 +16,11 @@ interface EdgeDetailsDrawerProps {
   edgePortsSetting: EdgePort[]
 }
 
-export const EdgeDetailsDrawer = (props: EdgeDetailsDrawerProps) => {
+const EdgeDetailsDrawer = (props: EdgeDetailsDrawerProps) => {
   const { $t } = useIntl()
-  //   const { tenantId, serialNumber } = useParams()
   const { visible, setVisible, currentEdge, edgePortsSetting } = props
 
-  // TODO: request port list from API
-  //   const { data: venueData } = useGetVenueQuery({
-  //     params: { tenantId, venueId: currentEdge?.venueId }
-  //   },
-  //   {
-  //     skip: !currentEdge?.venueId
-  //   })
-
-  //   const { data: edgePortsSetting } = useEdgePortsQuery({
-  //     params: { tenantId, serialNumber }
-  //   },
-  //   {
-  //     skip: currentEdge?.deviceStatus !== EdgeStatusEnum.OPERATIONAL
-  //   })
-  const dnsSetting: EdgeDNS = ''
+  const dnsSetting: EdgeDNS = currentEdge?.dns1 || ''
 
   const onClose = () => {
     setVisible(false)
@@ -144,6 +128,7 @@ export const EdgeDetailsDrawer = (props: EdgeDetailsDrawerProps) => {
       />
     }
   ]
+
   const content = <ContentSwitcher tabDetails={tabDetails} size='large' space={5} />
 
   return (
@@ -158,3 +143,4 @@ export const EdgeDetailsDrawer = (props: EdgeDetailsDrawerProps) => {
 }
 
 
+export default EdgeDetailsDrawer

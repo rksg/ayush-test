@@ -6,9 +6,9 @@ import {
   TableProps,
   Drawer
 } from '@acx-ui/components'
-import { EdgePort }                   from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { formatter }                  from '@acx-ui/utils'
+import { EdgePort }                              from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { formatter }                             from '@acx-ui/utils'
 
 
 const EdgePortsTable = ({ data }: { data: EdgePort[] }) => {
@@ -21,6 +21,12 @@ const EdgePortsTable = ({ data }: { data: EdgePort[] }) => {
       dataIndex: 'portId',
       sorter: true,
       defaultSortOrder: 'ascend'
+    },
+    {
+      title: $t({ defaultMessage: 'Port' }),
+      key: 'portName',
+      dataIndex: 'portName',
+      sorter: true
     },
     {
       title: $t({ defaultMessage: 'Status' }),
@@ -68,6 +74,7 @@ const EdgePortsTable = ({ data }: { data: EdgePort[] }) => {
 
   return (
     <Table
+      rowKey='portId'
       columns={columns}
       dataSource={data}
     />
@@ -78,16 +85,17 @@ const EdgePortsListDrawer = ({ visible, setVisible, edgePortsSetting }:
    { visible: boolean, setVisible: (visible: boolean) => void,
     edgePortsSetting: EdgePort[] }) => {
   const { $t } = useIntl()
+  const params = useParams()
   const navigate = useNavigate()
-  const basePath = useTenantLink('')
+  const basePath = useTenantLink('/devices/edge')
   const onClose = () => {
     setVisible(false)
   }
+
   const handlePortSettingClick = () => {
-    // TODO: confirm the URL of port configuration page.
     navigate({
       ...basePath,
-      pathname: `${basePath.pathname}/edge-details/edit/ports`
+      pathname: `${basePath.pathname}/${params.serialNumber}/edit/ports`
     })
   }
 

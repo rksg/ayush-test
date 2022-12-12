@@ -10,12 +10,12 @@ export interface EdgeGeneralSetting {
 }
 
 export interface EdgeResourceUtilization {
-  cpuTotal: number
-  cpuUsed: number
-  memTotal: number
-  memUsed: number
-  diskTotal: number
-  diskUsed: number
+  cpuTotal?: number
+  cpuUsed?: number
+  memTotal?: number
+  memUsed?: number
+  diskTotal?: number
+  diskUsed?: number
 }
 export interface Edge extends EdgeResourceUtilization {
   name: string
@@ -28,8 +28,8 @@ export interface Edge extends EdgeResourceUtilization {
   venueName: string
   venueId: string
   tags: string[]
-    description?: string
-    fwVersion?: string
+  description?: string
+  fwVersion?: string
 }
 export interface EdgeViewModel extends EdgeResourceUtilization {
   serialNumber: string

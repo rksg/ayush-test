@@ -114,7 +114,7 @@ export const EdgeDetailsPageHeader = () => {
             })
           }
         >{$t({ defaultMessage: 'Configure' })}</Button>,
-        <EdgeBulb count={0} />
+        <EdgeBulb key='bulbCount' count={0} />
       ]}
       footer={<EdgeDetailsTabs currentEdge={currentEdge as EdgeViewModel} />}
     />

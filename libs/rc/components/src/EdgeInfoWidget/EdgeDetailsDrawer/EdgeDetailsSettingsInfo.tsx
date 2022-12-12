@@ -37,6 +37,7 @@ export const EdgeDetailsSettingsInfo = (props: EdgeDetailsSettingsInfoProps) => 
       { edgePortsSetting && edgePortsSetting.map(
         item =>
           <Form.Item
+            key={`port-${item.portId}`}
             label={$t({ defaultMessage: 'Port {id}' }, { id: item.portId })}
             children={
               displayEnabled(item.adminStatus, item.portType)
