@@ -100,7 +100,7 @@ export function Select (props: CascaderProps) {
     return (
       <UI.Cascader
         {...antProps}
-        style={{ maxWidth: 165 }}
+        style={{ maxWidth: 180 }}
         showArrow={true}
         value={currentValues}
         multiple
@@ -119,7 +119,7 @@ export function Select (props: CascaderProps) {
             {$t(selectedItemsDesc,{
               count: currentValues.length,
               singular: $t(entityName.singular),
-              plural: $t(entityName.plural),
+              plural: $t(entityName.plural)
             })}
           </div>
         }
