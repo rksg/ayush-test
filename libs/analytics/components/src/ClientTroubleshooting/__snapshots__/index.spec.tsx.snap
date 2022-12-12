@@ -27,8 +27,8 @@ exports[`ClientTroubleshootingTab should render correctly with search params 1`]
               style="padding: 3px 3px 3px 3px;"
             >
               <div
-                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 iuIJOH ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
-                style="max-width: 165px;"
+                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
+                style="max-width: 180px;"
               >
                 <div
                   class="ant-select-selector"
@@ -50,7 +50,7 @@ exports[`ClientTroubleshootingTab should render correctly with search params 1`]
                           <div
                             title="Performance"
                           >
-                            2 items selected
+                            2 categories selected
                           </div>
                         </span>
                       </span>
@@ -148,8 +148,8 @@ exports[`ClientTroubleshootingTab should render correctly with search params 1`]
               style="padding: 3px 3px 3px 3px;"
             >
               <div
-                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 iuIJOH ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
-                style="max-width: 165px;"
+                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
+                style="max-width: 180px;"
               >
                 <div
                   class="ant-select-selector"
@@ -229,8 +229,8 @@ exports[`ClientTroubleshootingTab should render correctly with search params 1`]
               style="padding: 3px 3px 3px 3px;"
             >
               <div
-                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 iuIJOH ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
-                style="max-width: 165px;"
+                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
+                style="max-width: 180px;"
               >
                 <div
                   class="ant-select-selector"
@@ -599,8 +599,8 @@ exports[`ClientTroubleshootingTab should render correctly without search params 
               style="padding: 3px 3px 3px 3px;"
             >
               <div
-                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 iuIJOH ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
-                style="max-width: 165px;"
+                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
+                style="max-width: 180px;"
               >
                 <div
                   class="ant-select-selector"
@@ -680,8 +680,8 @@ exports[`ClientTroubleshootingTab should render correctly without search params 
               style="padding: 3px 3px 3px 3px;"
             >
               <div
-                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 iuIJOH ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
-                style="max-width: 165px;"
+                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
+                style="max-width: 180px;"
               >
                 <div
                   class="ant-select-selector"
@@ -761,8 +761,8 @@ exports[`ClientTroubleshootingTab should render correctly without search params 
               style="padding: 3px 3px 3px 3px;"
             >
               <div
-                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 iuIJOH ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
-                style="max-width: 165px;"
+                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
+                style="max-width: 180px;"
               >
                 <div
                   class="ant-select-selector"
@@ -1131,8 +1131,8 @@ exports[`ClientTroubleshootingTab should set search param on option selection 1`
               style="padding: 3px 3px 3px 3px;"
             >
               <div
-                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 iuIJOH ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
-                style="max-width: 165px;"
+                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
+                style="max-width: 180px;"
               >
                 <div
                   class="ant-select-selector"
@@ -1154,7 +1154,7 @@ exports[`ClientTroubleshootingTab should set search param on option selection 1`
                           <div
                             title="Performance"
                           >
-                            1 items selected
+                            1 category selected
                           </div>
                         </span>
                       </span>
@@ -1355,8 +1355,8 @@ exports[`ClientTroubleshootingTab should set search param on option selection 1`
               style="padding: 3px 3px 3px 3px;"
             >
               <div
-                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 iuIJOH ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
-                style="max-width: 165px;"
+                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
+                style="max-width: 180px;"
               >
                 <div
                   class="ant-select-selector"
@@ -1436,8 +1436,8 @@ exports[`ClientTroubleshootingTab should set search param on option selection 1`
               style="padding: 3px 3px 3px 3px;"
             >
               <div
-                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 iuIJOH ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
-                style="max-width: 165px;"
+                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
+                style="max-width: 180px;"
               >
                 <div
                   class="ant-select-selector"

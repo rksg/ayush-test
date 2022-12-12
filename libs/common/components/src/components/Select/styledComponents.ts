@@ -24,6 +24,7 @@ export const Cascader = styled(AntCascader)`
     min-width: 110px;
     padding-right: 0px;
     margin-right: 0px;
+    margin-bottom: 0px;
 }
 `
 export const ButtonDiv = styled.div`

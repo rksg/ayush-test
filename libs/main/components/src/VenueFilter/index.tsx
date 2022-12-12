@@ -1,4 +1,4 @@
-import { useIntl } from 'react-intl'
+import { useIntl, defineMessage } from 'react-intl'
 
 import { Select, Loader }                      from '@acx-ui/components'
 import { useVenuesListQuery }                  from '@acx-ui/rc/services'
@@ -39,6 +39,10 @@ export function VenueFilter () {
     <UI.Container>
       <Loader states={[queryResults]}>
         <Select
+          entityName={{
+            singular: defineMessage({ defaultMessage: 'venue' }),
+            plural: defineMessage({ defaultMessage: 'venues' })
+          }}
           placeholder={$t({ defaultMessage: 'Entire Organization' })}
           multiple
           defaultValue={value}

@@ -981,8 +981,8 @@ exports[`ClientDetails should navigate to troubleshooting tab correctly 1`] = `
               style="padding: 3px 3px 3px 3px;"
             >
               <div
-                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 iuIJOH ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
-                style="max-width: 165px;"
+                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
+                style="max-width: 180px;"
               >
                 <div
                   class="ant-select-selector"
@@ -1062,8 +1062,8 @@ exports[`ClientDetails should navigate to troubleshooting tab correctly 1`] = `
               style="padding: 3px 3px 3px 3px;"
             >
               <div
-                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 iuIJOH ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
-                style="max-width: 165px;"
+                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
+                style="max-width: 180px;"
               >
                 <div
                   class="ant-select-selector"
@@ -1143,8 +1143,8 @@ exports[`ClientDetails should navigate to troubleshooting tab correctly 1`] = `
               style="padding: 3px 3px 3px 3px;"
             >
               <div
-                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 iuIJOH ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
-                style="max-width: 165px;"
+                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
+                style="max-width: 180px;"
               >
                 <div
                   class="ant-select-selector"

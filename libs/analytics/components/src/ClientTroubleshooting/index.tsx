@@ -32,6 +32,7 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
               {ClientTroubleShootingConfig.selection.map((config) => (
                 <Col span={8} key={config.selectionType}>
                   <Select
+                    entityName={config.entityName}
                     multiple
                     defaultValue={
                       read()?.[
