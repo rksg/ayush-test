@@ -2,10 +2,10 @@ import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { ContentSwitcher, ContentSwitcherProps, Tabs } from '@acx-ui/components'
+import { useIsSplitOn, Features }                      from '@acx-ui/feature-toggle'
 
 import { VenueMeshApsTable } from './VenueMeshAps'
 import { VenueRogueAps }     from './VenueRogueAps'
-import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
 
 export function VenueDevicesTab () {
   const { $t } = useIntl()
