@@ -28,7 +28,7 @@ export const types = [
   { type: NetworkTypeEnum.PSK, disabled: false },
   { type: NetworkTypeEnum.DPSK, disabled: true },
   { type: NetworkTypeEnum.AAA, disabled: false },
-  { type: NetworkTypeEnum.CAPTIVEPORTAL, disabled: false },
+  { type: NetworkTypeEnum.CAPTIVEPORTAL, disabled: true },
   { type: NetworkTypeEnum.OPEN, disabled: false }
 ]
 
