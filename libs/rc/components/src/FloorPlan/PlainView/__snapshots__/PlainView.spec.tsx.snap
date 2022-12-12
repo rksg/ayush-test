@@ -230,7 +230,7 @@ exports[`Floor Plan Plain View Should click delete button 1`] = `
         class="ant-space-item"
       >
         <button
-          class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV sc-jqUVSM jcChGv"
+          class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 eAazoW sc-jqUVSM jcChGv"
           data-testid="galleryIcon"
           type="button"
         >
@@ -573,7 +573,7 @@ exports[`Floor Plan Plain View Should click edit button 1`] = `
         class="ant-space-item"
       >
         <button
-          class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV sc-jqUVSM jcChGv"
+          class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 eAazoW sc-jqUVSM jcChGv"
           data-testid="galleryIcon"
           type="button"
         >
@@ -914,7 +914,7 @@ exports[`Floor Plan Plain View Should load image 1`] = `
         class="ant-space-item"
       >
         <button
-          class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV sc-jqUVSM jcChGv"
+          class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 eAazoW sc-jqUVSM jcChGv"
           data-testid="galleryIcon"
           type="button"
         >
@@ -1258,7 +1258,7 @@ exports[`Floor Plan Plain View should open gallery view 1`] = `
       >
         <button
           ant-click-animating-without-extra-node="false"
-          class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV sc-jqUVSM jcChGv"
+          class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 eAazoW sc-jqUVSM jcChGv"
           data-testid="galleryIcon"
           type="button"
         >
@@ -1599,7 +1599,7 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
         class="ant-space-item"
       >
         <button
-          class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV sc-jqUVSM jcChGv"
+          class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 eAazoW sc-jqUVSM jcChGv"
           data-testid="galleryIcon"
           type="button"
         >
@@ -1942,7 +1942,7 @@ exports[`Floor Plan Plain View should trigger onFloorPlanSelectionHandler 1`] = 
         class="ant-space-item"
       >
         <button
-          class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV sc-jqUVSM jcChGv"
+          class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 eAazoW sc-jqUVSM jcChGv"
           data-testid="galleryIcon"
           type="button"
         >
@@ -2285,7 +2285,7 @@ exports[`Floor Plan Plain View test zoom fit button 1`] = `
         class="ant-space-item"
       >
         <button
-          class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV sc-jqUVSM jcChGv"
+          class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 eAazoW sc-jqUVSM jcChGv"
           data-testid="galleryIcon"
           type="button"
         >
@@ -2628,7 +2628,7 @@ exports[`Floor Plan Plain View test zoom original button 1`] = `
         class="ant-space-item"
       >
         <button
-          class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV sc-jqUVSM jcChGv"
+          class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 eAazoW sc-jqUVSM jcChGv"
           data-testid="galleryIcon"
           type="button"
         >
@@ -2971,7 +2971,7 @@ exports[`Floor Plan Plain View test zoom-in button 1`] = `
         class="ant-space-item"
       >
         <button
-          class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV sc-jqUVSM jcChGv"
+          class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 eAazoW sc-jqUVSM jcChGv"
           data-testid="galleryIcon"
           type="button"
         >
@@ -3314,7 +3314,7 @@ exports[`Floor Plan Plain View test zoom-out button 1`] = `
         class="ant-space-item"
       >
         <button
-          class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 iHTOeV sc-jqUVSM jcChGv"
+          class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 eAazoW sc-jqUVSM jcChGv"
           data-testid="galleryIcon"
           type="button"
         >
