@@ -213,23 +213,21 @@ export default function GuestsTable () {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          actions={[{
+          actions={useIsSplitOn(Features.USERS) ? [{
             label: $t({ defaultMessage: 'Add Guest' }),
             onClick: () => setDrawerVisible(true),
-            disabled: !useIsSplitOn(Features.DEVICES) &&
-              allowedNetworkList.length === 0 ? true : false
-          },{
+            disabled: allowedNetworkList.length === 0 ? true : false
+          }, {
             label: $t({ defaultMessage: 'Add Guest Pass Network' }),
-            onClick: () => {},
-            disabled: !useIsSplitOn(Features.DEVICES) && true //TODO: Need guest service support
+            onClick: () => { },
+            disabled: true //TODO: Need guest service support
           },
           {
             label: $t({ defaultMessage: 'Import from file' }),
-            onClick: () => {},
-            disabled: !useIsSplitOn(Features.DEVICES) &&
-              allowedNetworkList.length === 0? true : false
+            onClick: () => { },
+            disabled: true // TODO: Wait for import support
           }
-          ]}
+          ] : []}
         />
 
         <Drawer
