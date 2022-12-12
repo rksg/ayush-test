@@ -269,7 +269,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           showActivityMessage(msg, [
             'UpdateSwitchPosition',
-            'UpdateApPosition'], () => {
+            'UpdateApPosition',
+            'UpdateCloudpathServerPosition'], () => {
             api.dispatch(venueApi.util.invalidateTags([{ type: 'VenueFloorPlan', id: 'DEVICE' }]))
           })
         })
@@ -288,6 +289,16 @@ export const venueApi = baseVenueApi.injectEndpoints({
     updateApPosition: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(CommonUrlsInfo.UpdateApPosition, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'VenueFloorPlan', id: 'DEVICE' }]
+    }),
+    updateCloudpathServerPosition: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.UpdateCloudpathServerPosition, params)
         return {
           ...req,
           body: payload
@@ -690,6 +701,7 @@ export const {
   useGetAllDevicesQuery,
   useUpdateSwitchPositionMutation,
   useUpdateApPositionMutation,
+  useUpdateCloudpathServerPositionMutation,
   useGetVenueCapabilitiesQuery,
   useGetVenueApModelsQuery,
   useGetVenueLedOnQuery,

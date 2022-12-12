@@ -7,10 +7,10 @@ import { HTML5Backend }           from 'react-dnd-html5-backend'
 import { useIntl }                from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
-import { Button, Loader, showActionModal }                                                                                                                                                             from '@acx-ui/components'
-import { BulbOutlined }                                                                                                                                                                                from '@acx-ui/icons'
-import { useAddFloorPlanMutation, useDeleteFloorPlanMutation, useFloorPlanListQuery, useGetAllDevicesQuery, useUpdateApPositionMutation, useUpdateFloorPlanMutation, useUpdateSwitchPositionMutation } from '@acx-ui/rc/services'
-import { FloorPlanDto, FloorPlanFormDto, NetworkDevice, NetworkDevicePayload, NetworkDevicePosition, NetworkDeviceType, TypeWiseNetworkDevices }                                                       from '@acx-ui/rc/utils'
+import { Button, Loader, showActionModal }                                                                                                                                                                                                       from '@acx-ui/components'
+import { BulbOutlined }                                                                                                                                                                                                                          from '@acx-ui/icons'
+import { useAddFloorPlanMutation, useDeleteFloorPlanMutation, useFloorPlanListQuery, useGetAllDevicesQuery, useUpdateApPositionMutation, useUpdateCloudpathServerPositionMutation, useUpdateFloorPlanMutation, useUpdateSwitchPositionMutation } from '@acx-ui/rc/services'
+import { FloorPlanDto, FloorPlanFormDto, NetworkDevice, NetworkDevicePayload, NetworkDevicePosition, NetworkDeviceType, TypeWiseNetworkDevices }                                                                                                 from '@acx-ui/rc/utils'
 
 import AddEditFloorplanModal from './FloorPlanModal'
 import GalleryView           from './GalleryView/GalleryView'
@@ -135,6 +135,11 @@ export function FloorPlan () {
     updateApPosition,
     { isLoading: isUpdateApPosition }
   ] = useUpdateApPositionMutation()
+
+  const [
+    updateCloudpathServerPosition,
+    { isLoading: isUpdateCloudpathServerPosition }
+  ] = useUpdateCloudpathServerPositionMutation()
 
   const galleryViewHandler = () => {
     setShowGalleryView(true)
@@ -276,20 +281,20 @@ export function FloorPlan () {
   function publishDevicePositionUpdate (device: NetworkDevice, clear: boolean) {
     switch (device.networkDeviceType) {
       case NetworkDeviceType.ap:
-        // TODO: UpdateApPosition
         updateApPosition({ params: { ...params, serialNumber: device.serialNumber },
           payload: (clear ? clearDevicePositionValues : device.position) })
         break
       case NetworkDeviceType.lte_ap:
-        // TODO: Need to add
+        updateApPosition({ params: { ...params, serialNumber: device.serialNumber },
+          payload: (clear ? clearDevicePositionValues : device.position) })
         break
       case NetworkDeviceType.switch:
-        // TODO: UpdateSwitchPosition
         updateSwitchPosition({ params: { ...params, serialNumber: device.serialNumber },
           payload: clear ? clearDevicePositionValues : device.position })
         break
       case NetworkDeviceType.cloudpath:
-        // TODO: UpdateCloudpathServerPosition
+        updateCloudpathServerPosition({ params: { ...params, cloudpathServerId: device.id },
+          payload: clear ? clearDevicePositionValues : device.position })
         break
     }
   }
@@ -316,7 +321,8 @@ export function FloorPlan () {
       { isLoading: false, isFetching: isAddFloorPlanUpdating },
       { isLoading: false, isFetching: isUpdateFloorPlanUpdating },
       { isLoading: false, isFetching: isUpdateSwitchPosition },
-      { isLoading: false, isFetching: isUpdateApPosition }
+      { isLoading: false, isFetching: isUpdateApPosition },
+      { isLoading: false, isFetching: isUpdateCloudpathServerPosition }
     ]}>
       {floorPlans?.length ?
         <NetworkDeviceContext.Provider value={clearDevice}>
