@@ -1,17 +1,35 @@
 import { MemoryRouter, BrowserRouter } from 'react-router-dom'
 
-import { Provider }                  from '@acx-ui/store'
-import { render, screen, fireEvent } from '@acx-ui/test-utils'
+import { dataApiURL }                                  from '@acx-ui/analytics/services'
+import { Provider, store }                             from '@acx-ui/store'
+import { render, screen, fireEvent, mockGraphqlQuery } from '@acx-ui/test-utils'
+
+import { api } from './services'
 
 import { ClientTroubleshooting } from './index'
 
 describe('ClientTroubleshootingTab', () => {
+
+  beforeEach(() => {
+    store.dispatch(api.util.resetApiState())
+  })
+
   it('should render correctly without search params', async () => {
     const params = {
       tenantId: 'tenant-id',
       activeTab: 'troubleshooting',
       clientId: 'mac'
     }
+
+    mockGraphqlQuery(dataApiURL, 'ClientInfo', {
+      data: {
+        connectionDetailsByAp: [],
+        connectionEvents: [],
+        connectionQualities: [],
+        incidents: []
+      }
+    })
+
     const { asFragment } = render(
       <Provider><ClientTroubleshooting clientMac='mac' /></Provider>,
       {
@@ -45,7 +63,8 @@ describe('ClientTroubleshootingTab', () => {
         search: '?clientTroubleShootingSelections=%257B%2522category%2522%253A%255B%255B%2522performance%2522%255D%252C%255B%2522Infrastructure%2522%255D%255D%257D'
       }]}>
         <ClientTroubleshooting clientMac='mac' />
-      </MemoryRouter>
+      </MemoryRouter>,
+      { wrapper: Provider }
     )
     fireEvent.click(await screen.findByTestId('ArrowExpand'))
     expect(await screen.findByText('History')).toBeVisible()
@@ -63,7 +82,8 @@ describe('ClientTroubleshootingTab', () => {
     const { asFragment } = render(
       <BrowserRouter window={window}>
         <ClientTroubleshooting clientMac='mac' />
-      </BrowserRouter>
+      </BrowserRouter>,
+      { wrapper: Provider }
     )
     await screen.findByText('All Categories')
 
