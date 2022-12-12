@@ -11,6 +11,7 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                      from '@acx-ui/feature-toggle'
 import { useGetGuestsListQuery, useNetworkListQuery, useLazyGetGuestNetworkListQuery } from '@acx-ui/rc/services'
 import {
   useTableQuery,
@@ -215,16 +216,18 @@ export default function GuestsTable () {
           actions={[{
             label: $t({ defaultMessage: 'Add Guest' }),
             onClick: () => setDrawerVisible(true),
-            disabled: allowedNetworkList.length === 0 ? true : false
+            disabled: !useIsSplitOn(Features.DEVICES) &&
+              allowedNetworkList.length === 0 ? true : false
           },{
             label: $t({ defaultMessage: 'Add Guest Pass Network' }),
             onClick: () => {},
-            disabled: true //TODO: Need guest service support
+            disabled: !useIsSplitOn(Features.DEVICES) && true //TODO: Need guest service support
           },
           {
             label: $t({ defaultMessage: 'Import from file' }),
             onClick: () => {},
-            disabled: allowedNetworkList.length === 0? true : false
+            disabled: !useIsSplitOn(Features.DEVICES) &&
+              allowedNetworkList.length === 0? true : false
           }
           ]}
         />
