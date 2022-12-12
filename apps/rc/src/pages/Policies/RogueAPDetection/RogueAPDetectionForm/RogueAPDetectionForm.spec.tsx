@@ -293,8 +293,8 @@ describe('RogueAPDetectionForm', () => {
 
     await screen.findByText('test-venue2')
 
-    const finishBtn = await screen.findByRole('button', { name: 'Finish' })
+    const finishBtn = await screen.findByText('Finish')
 
-    await userEvent.click(finishBtn)
+    fireEvent.click(finishBtn)
   })
 })
