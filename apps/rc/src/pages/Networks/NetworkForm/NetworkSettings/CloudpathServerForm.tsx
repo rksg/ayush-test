@@ -47,7 +47,9 @@ export function CloudpathServerForm () {
           children={selectOptions} />
       </Form.Item>
 
-      <Button type='link'>{ $t({ defaultMessage: 'Add Server' }) }</Button>
+      <Button type='link' style={{ marginBottom: '16px' }}>
+        { $t({ defaultMessage: 'Add Server' }) }
+      </Button>
 
       {selected && (<>
         <Form.Item

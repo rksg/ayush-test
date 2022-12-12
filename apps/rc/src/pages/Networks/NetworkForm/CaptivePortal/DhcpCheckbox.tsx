@@ -122,7 +122,7 @@ export function DhcpCheckbox () {
         }}
         trigger='click'
       >
-        <Button type='link' style={{ height: 'auto', marginLeft: '14px' }}>
+        <Button type='link' style={{ marginLeft: '14px' }}>
           {intl.$t({ defaultMessage: 'More details' })}
         </Button>
       </Popover>
