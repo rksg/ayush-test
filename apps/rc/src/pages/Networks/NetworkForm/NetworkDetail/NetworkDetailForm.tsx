@@ -26,7 +26,7 @@ const { useWatch } = Form
 
 export const types = [
   { type: NetworkTypeEnum.PSK, disabled: false },
-  { type: NetworkTypeEnum.DPSK, disabled: true },
+  { type: NetworkTypeEnum.DPSK, disabled: false },
   { type: NetworkTypeEnum.AAA, disabled: false },
   { type: NetworkTypeEnum.CAPTIVEPORTAL, disabled: true },
   { type: NetworkTypeEnum.OPEN, disabled: false }
@@ -61,6 +61,12 @@ export function NetworkDetailForm () {
       .map(n => n.name)
 
     return checkObjectNotExists(list, value, intl.$t({ defaultMessage: 'Network' }))
+  }
+
+  const isNetworkTypeDisabled = (type: NetworkTypeEnum) => {
+    const targetType = types.find(t => t.type === type)
+
+    return targetType ? targetType.disabled : true
   }
 
   return (
@@ -106,8 +112,7 @@ export function NetworkDetailForm () {
                   {types.map(({ type, disabled }) => (
                     <Radio key={type} value={type} disabled={disabled}>
                       <Tooltip
-                        title={[NetworkTypeEnum.DPSK, NetworkTypeEnum.CAPTIVEPORTAL]
-                          .indexOf(type) > -1 ? intl.$t(notAvailableMsg) : ''}>
+                        title={isNetworkTypeDisabled(type) ? intl.$t(notAvailableMsg) : ''}>
                         {intl.$t(networkTypes[type])}
                         <RadioDescription>
                           {intl.$t(networkTypesDescription[type])}
