@@ -18,12 +18,15 @@ import {
   useClearAllAlarmMutation,
   useGetAlarmCountQuery,
   eventAlarmApi }  from '@acx-ui/rc/services'
-import { Alarm, CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
-import { useParams }                            from '@acx-ui/react-router-dom'
-import { store }                                from '@acx-ui/store'
-import { formatter }                            from '@acx-ui/utils'
+import { Alarm, CommonUrlsInfo, useTableQuery, EventSeverityEnum } from '@acx-ui/rc/utils'
+import { useParams, TenantLink }                                   from '@acx-ui/react-router-dom'
+import { store }                                                   from '@acx-ui/store'
+import { formatter }                                               from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
+
+
+
 
 const defaultArray: Alarm[] = []
 
@@ -104,6 +107,17 @@ export default function AlarmsHeaderButton () {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tableQuery.data, severity, data])
 
+  const getIconBySeverity = (severity: string)=>{
+    if(severity===EventSeverityEnum.MAJOR){
+      return <UI.WarningTriang />
+    }
+    else if(severity===EventSeverityEnum.CRITICAL){
+      return <UI.WarningCircle />
+    }else{
+      return <></>
+    }
+
+  }
   const alarmList = <>
     <UI.FilterRow>
       <Select value={severity}
@@ -171,11 +185,13 @@ export default function AlarmsHeaderButton () {
               </Tooltip>
             ]}>
               <UI.Meta
-                avatar={<UI.WarningCircle />}
+                avatar={getIconBySeverity(alarm.severity)}
                 title={alarm.message}
                 description={
                   <UI.SpaceBetween>
-                    <UI.DeviceLink>{alarm.apName}</UI.DeviceLink>
+                    <TenantLink
+                      to={`/devices/wifi/${alarm.entityId}/details/overview`}>{alarm.apName}
+                    </TenantLink>
                     <UI.ListTime>{formatter('calendarFormat')(alarm.startTime)}</UI.ListTime>
                   </UI.SpaceBetween>
                 }
