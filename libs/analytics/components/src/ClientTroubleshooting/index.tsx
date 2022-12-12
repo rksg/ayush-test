@@ -3,8 +3,8 @@ import { useState } from 'react'
 import { Row, Col }               from 'antd'
 import { useIntl, defineMessage } from 'react-intl'
 
-import { NetworkFilter, Button, Loader }      from '@acx-ui/components'
 import { useEncodedParameter, useDateFilter } from '@acx-ui/utils'
+import { Select, Button, Loader }      from '@acx-ui/components'
 
 import { ClientTroubleShootingConfig } from './config'
 import { History }                     from './EventsHistory'
@@ -30,15 +30,13 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
   return (
     <Row gutter={[16, 16]} style={{ flex: 1 }}>
       <Col span={historyContentToggle ? 18 : 24}>
-        <Row gutter={[16, 16]}>
-          <Col span={historyContentToggle ? 12 : 10} />
-          <Col
-            span={historyContentToggle ? 12 : 10}
-            style={{ justifyContent: 'end' }}>
-            <Row style={{ justifyContent: 'end' }} gutter={[4, 4]}>
+        <Row style={{ justifyContent: 'end' }} gutter={[16, 16]}>
+          <Col span={historyContentToggle ? 15 : 11}>
+            <Row style={{ justifyContent: 'end' }} gutter={[6, 6]}>
               {ClientTroubleShootingConfig.selection.map((config) => (
-                <Col span={historyContentToggle ? 8 : 7} key={config.selectionType}>
-                  <NetworkFilter
+                <Col span={8} key={config.selectionType}>
+                  <Select
+                    entityName={config.entityName}
                     multiple
                     defaultValue={
                       filters?.[
@@ -53,7 +51,7 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
                     options={config.options.map((option) => {
                       return { ...option, label: $t(option.label) }
                     })}
-                    style={{ maxWidth: 132 }}
+                    style={{ minWidth: 150 }}
                     onApply={(value: selectionType) =>
                       write({ ...filters, [config.selectionType]: value })
                     }

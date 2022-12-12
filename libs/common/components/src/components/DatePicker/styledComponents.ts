@@ -3,30 +3,32 @@ import styled                from 'styled-components/macro'
 
 import { DateRange, defaultRanges } from '@acx-ui/utils'
 
-type WrapperProps = {
+type RangePickerWrapperProps = {
   rangeOptions?: DateRange[];
   selectionType: DateRange;
 }
-/* eslint-disable max-len */
-export const Wrapper = styled.div<WrapperProps>`
-  --acx-date-picker-ranges-width: 125px;
 
-  > .ant-picker {
-    width: 23em;
-    padding: 6px 11px 5px;
-    background: var(--acx-primary-white);
-    border-color: var(--acx-primary-black);
-    > div:first-of-type {
-      margin-left: 22px;
-    }
-    > .ant-picker-suffix {
-      position: absolute;
-      left: 3px;
-      width: 18px;
-    }
-    .ant-picker-active-bar {
-      background: var(--acx-accents-blue-50);
-      margin-left: 33px;
+/* eslint-disable max-len */
+export const Wrapper = styled.div`
+  .ant-picker-input {
+    .ant-picker-clear {
+      span[role=img] {
+        svg { display: none; }
+
+        &::after {
+          content: '';
+          display: inline-block;
+          width: 14px;
+          height: 14px;
+          background-size: 12px 12px;
+          // encodeURIComponent(renderToStaticMarkup(<Close />))
+          background-image: url("data:image/svg+xml,%3Csvg%20width%3D%2218%22%20height%3D%2218%22%20viewBox%3D%220%200%2018%2018%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20class%3D%22NestedListSingle__CloseIcon-sc-1yefg1u-0%20lilJnS%22%3E%3Cpath%20d%3D%22M14.0625%203.9375L3.9375%2014.0625%22%20stroke%3D%22%23333333%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3C%2Fpath%3E%3Cpath%20d%3D%22M14.0625%2014.0625L3.9375%203.9375%22%20stroke%3D%22%23333333%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E");
+          background-repeat: no-repeat;
+          background-position: 50% 50%;
+          background-color: white;
+          margin-right: -4px;
+        }
+      }
     }
   }
 
@@ -36,10 +38,6 @@ export const Wrapper = styled.div<WrapperProps>`
     & .ant-picker-panel {
       border: none;
     }
-    & .ant-picker-header-super-prev-btn,
-    & .ant-picker-header-super-next-btn {
-      display: none;
-    }
 
     .ant-picker-panel-container {
       border-radius: 4px;
@@ -48,7 +46,7 @@ export const Wrapper = styled.div<WrapperProps>`
       padding-left: var(--acx-date-picker-ranges-width);
     }
 
-    .ant-picker-date-panel {
+    .ant-picker-panel {
       .ant-picker-header {
         align-items: baseline;
         border-bottom: none;
@@ -76,36 +74,7 @@ export const Wrapper = styled.div<WrapperProps>`
         }
       }
     }
-    .ant-picker-ranges {
-      li:nth-child(${(props) =>
-    props.rangeOptions
-      ? props.rangeOptions.indexOf(props.selectionType) + 1
-      : Object.keys(defaultRanges()).indexOf(props.selectionType) + 1}) {
-        font-weight: var(--acx-body-font-weight-bold);
-      }
-      li {
-        span.ant-tag {
-          padding: 0;
-          margin: 0;
-        }
-      }
-      position: absolute;
-      width: var(--acx-date-picker-ranges-width);
-      top: 10px;
-      bottom: 10px;
-      left: 0px;
-      display: flex;
-      flex-direction: column;
-      background-color: var(--acx-neutrals-10);
-      padding: 10px 20px;
-      border-radius: 4px 0 0 4px;
-      .ant-picker-preset > .ant-tag-blue {
-        color: var(--acx-neutrals-100);
-        background: var(--acx-neutrals-10);
-        border-color: var(--acx-neutrals-10);
-        cursor: pointer;
-      }
-    }
+
     .ant-picker-cell-in-view.ant-picker-cell-selected .ant-picker-cell-inner,
     .ant-picker-cell-in-view.ant-picker-cell-range-start .ant-picker-cell-inner,
     .ant-picker-cell-in-view.ant-picker-cell-range-end .ant-picker-cell-inner {
@@ -152,10 +121,78 @@ export const Wrapper = styled.div<WrapperProps>`
     }
 
     .ant-picker-footer {
+      display: none;
+    }
+  }
+`
+/* eslint-enable */
+
+export const RangePickerWrapper = styled(Wrapper)<RangePickerWrapperProps>`
+  --acx-date-picker-ranges-width: 125px;
+
+  > .ant-picker {
+    width: 23em;
+    padding: 6px 11px 5px;
+    background: var(--acx-primary-white);
+    border-color: var(--acx-primary-black);
+    > div:first-of-type {
+      margin-left: 22px;
+    }
+    > .ant-picker-suffix {
+      position: absolute;
+      left: 3px;
+      width: 18px;
+    }
+    .ant-picker-active-bar {
+      background: var(--acx-accents-blue-50);
+      margin-left: 33px;
+    }
+  }
+
+  .ant-picker-dropdown {
+    & .ant-picker-header-super-prev-btn,
+    & .ant-picker-header-super-next-btn {
+      display: none;
+    }
+
+    .ant-picker-footer {
+      display: block;
       border-bottom: 0;
+
       .ant-picker-footer-extra {
         padding: 0;
         border-bottom: 0;
+      }
+
+      .ant-picker-ranges {
+        li:nth-child(${
+  (props) => props.rangeOptions
+    ? props.rangeOptions.indexOf(props.selectionType) + 1
+    : Object.keys(defaultRanges()).indexOf(props.selectionType) + 1}) {
+          font-weight: var(--acx-body-font-weight-bold);
+        }
+        li {
+          span.ant-tag {
+            padding: 0;
+            margin: 0;
+          }
+        }
+        position: absolute;
+        width: var(--acx-date-picker-ranges-width);
+        top: 10px;
+        bottom: 10px;
+        left: 0px;
+        display: flex;
+        flex-direction: column;
+        background-color: var(--acx-neutrals-10);
+        padding: 10px 20px;
+        border-radius: 4px 0 0 4px;
+        .ant-picker-preset > .ant-tag-blue {
+          color: var(--acx-neutrals-100);
+          background: var(--acx-neutrals-10);
+          border-color: var(--acx-neutrals-10);
+          cursor: pointer;
+        }
       }
     }
   }

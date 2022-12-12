@@ -3,6 +3,7 @@ import { useContext } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Tabs }                                  from '@acx-ui/components'
+import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { VenueEditContext, EditContext } from '../index'
@@ -67,7 +68,11 @@ export function WifiConfigTab () {
       <Tabs.TabPane tab={tabTitleMap('security')} key='security'>
         <SecurityTab />
       </Tabs.TabPane>
-      <Tabs.TabPane tab={tabTitleMap('servers')} key='servers'>
+      <Tabs.TabPane
+        disabled={!useIsSplitOn(Features.DEVICES)}
+        tab={tabTitleMap('servers')}
+        key='servers'
+      >
         {$t({ defaultMessage: 'External Servers' })}
       </Tabs.TabPane>
       <Tabs.TabPane tab={tabTitleMap('settings')} key='settings'>
