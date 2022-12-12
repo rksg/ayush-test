@@ -187,6 +187,16 @@ export const getHumanizedLocale = (langCode?: string) => {
   return LOCALE_MAP.has(langCode) ? LOCALE_MAP.get(langCode) : langCode
 }
 
+export const humanizedDate = (validDuration: number, langCode: string) => {
+  const langService = new HumanizeDurationLanguage()
+  const humanizer = new HumanizeDuration(langService)
+  return humanizer.humanize(validDuration, {
+    language: langCode,
+    round: true,
+    units: ['d', 'h']
+  })
+}
+
 export function AddGuestDrawer (props: AddGuestProps) {
   const { $t } = useIntl()
   const [form] = Form.useForm()
@@ -229,16 +239,6 @@ export function AddGuestDrawer (props: AddGuestProps) {
   }
 
   const numberOfDevicesOptions = createNumberOfDevicesList()
-
-  const humanizedDate = (validDuration: number, langCode: string) => {
-    const langService = new HumanizeDurationLanguage()
-    const humanizer = new HumanizeDuration(langService)
-    return humanizer.humanize(validDuration, {
-      language: langCode,
-      round: true,
-      units: ['d', 'h']
-    })
-  }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const genTemplate = (guestDetails: any, langDictionary: any) => {
