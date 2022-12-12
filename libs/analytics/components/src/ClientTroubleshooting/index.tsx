@@ -3,8 +3,8 @@ import { useState } from 'react'
 import { Row, Col }               from 'antd'
 import { useIntl, defineMessage } from 'react-intl'
 
-import { NetworkFilter, Button, Loader } from '@acx-ui/components'
-import { useEncodedParameter, useDateFilter }   from '@acx-ui/utils'
+import { NetworkFilter, Button, Loader }      from '@acx-ui/components'
+import { useEncodedParameter, useDateFilter } from '@acx-ui/utils'
 
 import { ClientTroubleShootingConfig } from './config'
 import { History }                     from './EventsHistory'
