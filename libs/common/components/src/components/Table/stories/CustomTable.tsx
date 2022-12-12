@@ -76,6 +76,7 @@ export function CustomTable () {
         onClick: () => showToast({ type: 'info', content: 'Add Item Clicked' })
       }, {
         label: 'Add Other Item',
+        disabled: true,
         onClick: () => showToast({ type: 'info', content: 'Add Other Item Clicked' })
       }]}
     />

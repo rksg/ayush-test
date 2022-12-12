@@ -28,7 +28,7 @@ const useConnectionDetail = (event: DisplayEvent) => {
   ]
 
   if (isFailure) {
-    const failureType = mapCodeToReason(code, intl)
+    const failureType = (code) ? mapCodeToReason(code, intl) : 'Unknown'
     eventDetails.push({
       label: $t({ defaultMessage: 'Failure Type:' }),
       value: $t({ defaultMessage: '{failureType}' }, { failureType })

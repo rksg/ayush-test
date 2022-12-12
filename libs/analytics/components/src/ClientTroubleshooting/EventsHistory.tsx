@@ -24,7 +24,8 @@ import {
   transformEvents,
   DisplayEvent,
   formatEventDesc,
-  eventColorByCategory
+  eventColorByCategory,
+  INCIDENT
 } from './config'
 import { ConnectionEvents } from './ConnectionEvents'
 import { ClientInfoData }   from './services'
@@ -37,7 +38,7 @@ type HistoryContentProps = {
   historyContentToggle : boolean,
   setHistoryContentToggle : CallableFunction,
   data?: ClientInfoData,
-  filters: Filters
+  filters: Filters | null
 }
 type Item = {
   id?: string,
@@ -47,17 +48,14 @@ type Item = {
   title: string,
   icon: ReactNode
 }
-
-const transformData = (clientInfo: ClientInfoData, filters: Filters, intl: IntlShape) => {
-  const types = filters ? filters.type ?? [] : []
-  const radios = filters ? filters.radio ?? [] : []
-  const selectedCategories: string[] = filters ? filters.category ?? [] : []
-  const events = transformEvents(
-    clientInfo.connectionEvents,
-    flatten(types),
-    flatten(radios)
-  ) as DisplayEvent[]
-  const incidents = clientInfo.incidents.reduce((acc, incident: Incident) => {
+// If needed (for incident timeline chart) move this menthod to config
+export const transformIncidents = (
+  incidents: Incident[],
+  selectedCategories: string [],
+  selectedTypes: string [],
+  intl: IntlShape
+) =>
+  incidents.reduce((acc, incident: Incident) => {
     const {
       category,
       subCategory,
@@ -69,9 +67,10 @@ const transformData = (clientInfo: ClientInfoData, filters: Filters, intl: IntlS
     const cat = categoryOptions.find(
       ({ label }) => intl.$t(label) === intl.$t(category)
     )
-    if (selectedCategories.length &&
+    if ((selectedCategories.length &&
       cat &&
-      !flatten(selectedCategories).includes(cat.value)
+      !selectedCategories.includes(cat.value)) ||
+      (selectedTypes.length && !selectedTypes.includes(INCIDENT))
     ) {
       return acc
     }
@@ -85,6 +84,22 @@ const transformData = (clientInfo: ClientInfoData, filters: Filters, intl: IntlS
     })
     return acc
   }, [] as Item[])
+
+const transformData = (clientInfo: ClientInfoData, filters: Filters, intl: IntlShape) => {
+  const types: string[] = flatten(filters ? filters.type ?? [[]] : [[]])
+  const radios: string[] = flatten(filters ? filters.radio ?? [[]] : [[]])
+  const selectedCategories: string[] = flatten(filters ? filters.category ?? [[]] : [[]])
+  const events = transformEvents(
+    clientInfo.connectionEvents,
+    types,
+    radios
+  ) as DisplayEvent[]
+  const incidents = transformIncidents(
+    clientInfo.incidents,
+    selectedCategories,
+    types,
+    intl
+  )
   return [ ...events.map((event: DisplayEvent) => {
     const color = eventColorByCategory[event.category as keyof typeof eventColorByCategory]
     return {
@@ -117,7 +132,7 @@ export function History (props : HistoryContentProps) {
   const intl = useIntl()
   const { $t } = intl
   const { setHistoryContentToggle, historyContentToggle, data, filters } = props
-  const histData = transformData(data!, filters, intl)
+  const histData = transformData(data!, filters!, intl)
   return (
     <UI.History>
       <UI.HistoryHeader>
@@ -126,6 +141,7 @@ export function History (props : HistoryContentProps) {
         </UI.HistoryContentTitle>
         <UI.HistoryIcon>
           <ArrowCollapse
+            data-testid='history-collapse'
             onClick={() => {
               setHistoryContentToggle(!historyContentToggle)
             }}
