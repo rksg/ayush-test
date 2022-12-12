@@ -13,14 +13,13 @@ import { useParams, Link } from 'react-router-dom'
 import { GridRow, Button }                                                      from '@acx-ui/components'
 import { DeleteOutlinedIcon }                                                   from '@acx-ui/icons'
 import { useGetDHCPProfileListQuery, useVenueDHCPProfileQuery, useApListQuery } from '@acx-ui/rc/services'
-import {  DHCPProfileAps }                                                      from '@acx-ui/rc/utils'
+import {  DHCPProfileAps, DHCPSaveData }                                        from '@acx-ui/rc/utils'
 import {
   useTenantLink
 } from '@acx-ui/react-router-dom'
 
 import useDHCPInfo                                               from './hooks/useDHCPInfo'
 import { AntSelect, IconContainer, AddBtnContainer, StyledForm } from './styledComponents'
-
 
 
 const { Option } = AntSelect
@@ -140,7 +139,7 @@ const VenueDHCPForm = (props: {
           rules={[{ required: true, message: $t({ defaultMessage: 'Username is required' }) }]}
         >
           <AntSelect placeholder={$t({ defaultMessage: 'Select Service...' })}>
-            {dhcpProfileList?.map( dhcp =>
+            {dhcpProfileList?.map( (dhcp:DHCPSaveData) =>
               <Option key={dhcp.id} value={dhcp.id}>
                 {dhcp.serviceName}
               </Option>

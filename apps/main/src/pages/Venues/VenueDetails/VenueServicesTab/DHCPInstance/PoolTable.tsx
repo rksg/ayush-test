@@ -99,7 +99,7 @@ export default function VenuePoolTable (){
         const MINUTE = 1000 * 60
         const HOUR = MINUTE * 60
         return formatter('longDurationFormat')
-        (_.parseInt(rowData.leaseTimeHours)* HOUR + _.parseInt(rowData.leaseTimeMinutes) * MINUTE)
+        ((rowData.leaseTimeHours || 0 * HOUR) + (rowData.leaseTimeMinutes || 0 * MINUTE))
       }
     },
     {

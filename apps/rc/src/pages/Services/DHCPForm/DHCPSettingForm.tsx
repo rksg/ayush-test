@@ -15,7 +15,7 @@ export function SettingForm () {
   const intl = useIntl()
 
   const type = useWatch<DHCPConfigTypeEnum>('dhcpConfig')
-  // const createType = useWatch<ServiceTechnology>('createType')
+
 
   const types = Object.values(DHCPConfigTypeEnum)
 
@@ -24,7 +24,7 @@ export function SettingForm () {
       <Col span={10}>
         <StepsForm.Title>{intl.$t({ defaultMessage: 'Settings' })}</StepsForm.Title>
         <Form.Item
-          name='name'
+          name='serviceName'
           label={intl.$t({ defaultMessage: 'Service Name' })}
           rules={[
             { required: true },
@@ -36,15 +36,9 @@ export function SettingForm () {
           hasFeedback
           children={<Input />}
         />
-        <Form.Item
-          name='tags'
-          style={{ display: 'none' }}
-          label={intl.$t({ defaultMessage: 'Tags' })}
-          children={<Input />}
-        />
 
         <Form.Item
-          name='dhcpConfig'
+          name='dhcpMode'
           initialValue={DHCPConfigTypeEnum.SIMPLE}
           label={intl.$t({ defaultMessage: 'DHCP Configuration' })}
           rules={[{ required: true,

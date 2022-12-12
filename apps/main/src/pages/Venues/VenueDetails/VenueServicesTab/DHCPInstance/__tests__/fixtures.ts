@@ -346,7 +346,7 @@ const handlers:Array<RestHandler> = [
   rest.get(CommonUrlsInfo.getVenueDHCPServiceProfile.url,(_,res,ctx) =>
     res(ctx.json(serviceProfile))
   ),
-  rest.get(CommonUrlsInfo.getDHCPService.url,(_,res,ctx) =>
+  rest.get(CommonUrlsInfo.getDHCProfileDetail.url,(_,res,ctx) =>
     res(ctx.json(serviceById))
   ),
   rest.get(CommonUrlsInfo.getDHCPProfiles.url,(_,res,ctx) =>

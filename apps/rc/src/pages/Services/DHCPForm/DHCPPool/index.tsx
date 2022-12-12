@@ -5,9 +5,9 @@ import TextArea                                                      from 'antd/
 import _                                                             from 'lodash'
 import { useIntl }                                                   from 'react-intl'
 
-import { Drawer }                                            from '@acx-ui/components'
-import { DHCPPool, networkWifiIpRegExp, subnetMaskIpRegExp } from '@acx-ui/rc/utils'
-import { getIntl, validationMessages }                       from '@acx-ui/utils'
+import { Drawer }                                                       from '@acx-ui/components'
+import { DHCPPool, LeaseUnit, networkWifiIpRegExp, subnetMaskIpRegExp } from '@acx-ui/rc/utils'
+import { getIntl, validationMessages }                                  from '@acx-ui/utils'
 
 import { PoolOption } from './PoolOption'
 import { PoolTable }  from './PoolTable'
@@ -15,11 +15,10 @@ import { PoolTable }  from './PoolTable'
 
 const initPoolData: Partial<DHCPPool> = {
   id: '0',
-  allowWired: false,
   dhcpOptions: [],
   leaseTime: 24,
-  leaseUnit: 'Hours',
-  vlan: 300
+  leaseUnit: LeaseUnit.HOURS,
+  vlanId: 300
 }
 
 type DHCPPoolTableProps = {
@@ -118,7 +117,7 @@ export default function DHCPPoolTable ({
           children={<Switch />}
         />
         <Form.Item
-          name='ip'
+          name='subnetAddress'
           label={$t({ defaultMessage: 'IP Address' })}
           rules={[
             { required: true },
@@ -127,7 +126,7 @@ export default function DHCPPoolTable ({
           children={<Input />}
         />
         <Form.Item
-          name='mask'
+          name='subnetMask'
           label={$t({ defaultMessage: 'Subnet Mask' })}
           rules={[
             { required: true },
@@ -137,7 +136,7 @@ export default function DHCPPoolTable ({
         />
         <Form.Item label={$t({ defaultMessage: 'Excluded Range' })}>
           <Space align='start'>
-            <Form.Item name='excludedRangeStart'
+            <Form.Item name='startIpAddress'
               rules={[
                 { required: false },
                 { validator: (_, value) => networkWifiIpRegExp(value) }
@@ -146,7 +145,7 @@ export default function DHCPPoolTable ({
             />
             <div style={{ marginTop: 7 }}>-</div>
             <Form.Item
-              name='excludedRangeEnd'
+              name='endIpAddress'
               rules={[
                 { required: false },
                 { validator: (_, value) => networkWifiIpRegExp(value) }
@@ -156,7 +155,7 @@ export default function DHCPPoolTable ({
           </Space>
         </Form.Item>
         <Form.Item
-          name='primaryDNS'
+          name='primaryDnsIp'
           label={$t({ defaultMessage: 'Primary DNS IP' })}
           rules={[
             { validator: (_, value) => networkWifiIpRegExp(value) }
@@ -164,7 +163,7 @@ export default function DHCPPoolTable ({
           children={<Input />}
         />
         <Form.Item
-          name='secondaryDNS'
+          name='secondaryDnsIp'
           label={$t({ defaultMessage: 'Secondary DNS IP' })}
           rules={[
             { validator: (_, value) => networkWifiIpRegExp(value) }
@@ -185,15 +184,14 @@ export default function DHCPPoolTable ({
             </Form.Item>
             <Form.Item noStyle name='leaseUnit'>
               <Select data-testid='leaseType'>
-                <Option value={'Days'}>{$t({ defaultMessage: 'Days' })}</Option>
-                <Option value={'Hours'}>{$t({ defaultMessage: 'Hours' })}</Option>
-                <Option value={'Minutes'}>{$t({ defaultMessage: 'Minutes' })}</Option>
+                <Option value={'leaseTimeHours'}>{$t({ defaultMessage: 'Hours' })}</Option>
+                <Option value={'leaseTimeMinutes'}>{$t({ defaultMessage: 'Minutes' })}</Option>
               </Select>
             </Form.Item>
           </Space>
         </Form.Item>
         <Form.Item
-          name='vlan'
+          name='vlanId'
           rules={[
             { required: true }
           ]}

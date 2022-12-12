@@ -1,10 +1,10 @@
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { PageHeader, DisabledButton, GridRow, GridCol }             from '@acx-ui/components'
-import { ClockOutlined }                                            from '@acx-ui/icons'
-import { useDhcpVenueInstancesQuery, useGetDHCPProfileDetailQuery } from '@acx-ui/rc/services'
-import { useTableQuery }                                            from '@acx-ui/rc/utils'
+import { PageHeader, DisabledButton, GridRow, GridCol }       from '@acx-ui/components'
+import { ClockOutlined }                                      from '@acx-ui/icons'
+import { useDhcpVenueInstancesQuery, useGetDHCPProfileQuery } from '@acx-ui/rc/services'
+import { useTableQuery }                                      from '@acx-ui/rc/utils'
 
 import DHCPInstancesTable from './DHCPInstancesTable'
 import DHCPOverview       from './DHCPOverview'
@@ -27,7 +27,7 @@ export default function DHCPServiceDetail () {
     defaultPayload
   })
 
-  const { data } = useGetDHCPProfileDetailQuery({ params })
+  const { data } = useGetDHCPProfileQuery({ params })
 
 
   return (

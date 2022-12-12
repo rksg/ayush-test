@@ -1,7 +1,3 @@
-import {
-  DHCPConfigTypeEnum
-} from '../../constants'
-
 export * from './dhcpService'
 export * from './dpskService'
 export * from './wifiCallingService'
@@ -96,57 +92,6 @@ export interface RadiusService {
 export enum VlanType {
   VLAN = 'vlanId',
   Pool = 'vlanPool'
-}
-
-export interface DHCPPool {
-  id: string;
-  name: string;
-  description?: string;
-  allowWired: boolean;
-  ip: string;
-  mask: string;
-  excludedRangeStart?: string;
-  excludedRangeEnd?: string;
-  primaryDnsIp: string;
-  secondaryDnsIp: string;
-  leaseTime: number;
-  leaseTimeHours: string;
-  leaseTimeMinutes: string;
-  leaseUnit: string;
-  vlan: number;
-  dhcpOptions: DHCPOption[];
-  activated?: boolean;
-}
-
-export interface DHCPOption{
-  optId: string;
-  id: number;
-  optName: string;
-  format: string;
-  value: string;
-}
-
-export interface CreateDHCPFormFields {
-  serviceName: string;
-  // tags: string[];
-  // createType: ServiceTechnology;
-  dhcpMode: DHCPConfigTypeEnum;
-  dhcpPools: DHCPPool[];
-  venueIds: string[];
-}
-
-export interface DHCPSaveData extends CreateDHCPFormFields {
-  id?: string;
-}
-
-export interface DHCPVenue {
-  id?: string
-  name?: string
-  scheduler: {
-    type: string
-  }
-  venueId: string
-  dhcpId: string
 }
 
 export interface VenueDHCPProfile {

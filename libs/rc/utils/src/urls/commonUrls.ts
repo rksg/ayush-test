@@ -131,13 +131,13 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/service/:serviceId'
   },
-  getDHCPService: {
-    method: 'get',
-    url: '/api/tenant/:tenantId/wifi/dhcpconfigserviceprofiles/:serviceId'
-  },
-  saveDHCPService: {
+  addDHCPService: {
     method: 'post',
-    url: '/api/tenant/:tenantId/wifi/network/deep?quickAck=true'
+    url: '/dhcpConfigServiceProfiles'
+  },
+  updateDHCPService: {
+    method: 'put',
+    url: '/dhcpConfigServiceProfiles/:dhcpServiceProfileId'
   },
   getVenueFloorplans: {
     method: 'get',
@@ -207,10 +207,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/dhcp-service-profile/instances/:serviceId'
   },
-  getDHCProfileDetail: {
-    method: 'get',
-    url: '/api/tenant/:tenantId/dhcp-service-profile/:serviceId'
-  },
   getDenialOfServiceProtection: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/dos-protection'
@@ -263,10 +259,14 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/api/tenant/:tenantId/user-profile'
   },
-  getVenueDHCPServiceProfile: {
-    //Retrieve Venue DHCP Service Profile Settings
+  getDHCProfileDetail: {
     method: 'get',
-    url: '/api/venues/:venueId/dhcpconfigserviceprofilesettings'
+    url: '/api/dhcpConfigServiceProfiles/:serviceId'
+  },
+  getDHCPProfiles: {
+    //Get DHCP Profiles LIST
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/dhcpconfigserviceprofiles'
   },
   getVenueActivePools: {
     //Get Venue Active DHCP Pool
@@ -274,14 +274,9 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/api/venues/:venueId/activedhcppools'
   },
   getVenueLeases: {
-    //Get Venue Active DHCP Pool
+    //Get Venue Venue Leases data
     method: 'get',
     url: '/api/venues/:venueId/dhcpConfigServiceProfileLeases'
-  },
-  getDHCPProfiles: {
-    //Get Venue Active DHCP Pool
-    method: 'get',
-    url: '/api/tenant/:tenantId/wifi/dhcpconfigserviceprofiles'
   },
   activeVenueDHCPPool: {
     //Get Venue Active DHCP Pool

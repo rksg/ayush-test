@@ -1,13 +1,14 @@
 import { useState } from 'react'
 
-import { useIntl, defineMessage } from 'react-intl'
+import { useIntl, defineMessage, FormattedMessage } from 'react-intl'
 
 import {
   Alert,
   Table,
   TableProps
 } from '@acx-ui/components'
-import { DHCPPool } from '@acx-ui/rc/utils'
+import { DHCPPool, LeaseUnit } from '@acx-ui/rc/utils'
+
 
 
 export function PoolTable (props:{
@@ -49,15 +50,15 @@ export function PoolTable (props:{
       sorter: true
     },
     {
-      key: 'ip',
+      key: 'subnetAddress',
       title: $t({ defaultMessage: 'IP Address' }),
-      dataIndex: 'ip',
+      dataIndex: 'subnetAddress',
       sorter: true
     },
     {
-      key: 'mask',
+      key: 'subnetMask',
       title: $t({ defaultMessage: 'Subnet Mask' }),
-      dataIndex: 'mask',
+      dataIndex: 'subnetMask',
       sorter: true
     },
     {
@@ -65,13 +66,21 @@ export function PoolTable (props:{
       title: $t({ defaultMessage: 'Lease Time' }),
       dataIndex: 'leaseTime',
       render: (data, row) =>{
-        return data + ' ' + row.leaseUnit
+        if(row.leaseUnit===LeaseUnit.HOURS){
+          return <FormattedMessage defaultMessage='{number} hours' values={{ number: data }} />
+        }
+        if(row.leaseUnit===LeaseUnit.MINUTES){
+          return <FormattedMessage defaultMessage='{number} Minutes' values={{ number: data }} />
+        }
+        else {
+          return ''
+        }
       }
     },
     {
-      key: 'vlan',
+      key: 'vlanId',
       title: $t({ defaultMessage: 'Vlan' }),
-      dataIndex: 'vlan'
+      dataIndex: 'vlanId'
     },
     {
       key: 'NumberOfHosts',
