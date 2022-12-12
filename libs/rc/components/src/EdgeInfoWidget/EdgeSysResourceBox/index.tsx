@@ -24,7 +24,8 @@ export const EdgeSysResourceBox = styled((props: EdgeStateCardProps) => {
   })
 
   const usedPercentage:number = totalVal ? Math.round(value/totalVal): totalVal
-  const freeValue = formatter(type === EdgeResourceUtilizationEnum.CPU ? 'radioFormat' : 'bytesFormat')(totalVal - value)
+  const freeValue = formatter(type === EdgeResourceUtilizationEnum.CPU ?
+    'radioFormat' : 'bytesFormat')(totalVal - value)
 
   return (
     <SpaceWrapper className={className}>
@@ -33,7 +34,8 @@ export const EdgeSysResourceBox = styled((props: EdgeStateCardProps) => {
           <Tooltip title={$t({ defaultMessage: '{freeValue} free' }, { freeValue })}>
             <AntStatistic
               title={statisticTitle}
-              value={formatter(type === EdgeResourceUtilizationEnum.CPU ? 'radioFormat' : 'bytesFormat')(value)}
+              value={formatter(type === EdgeResourceUtilizationEnum.CPU ?
+                'radioFormat' : 'bytesFormat')(value)}
               suffix={$t({ defaultMessage: '({usedPercentage}%)' }, { usedPercentage })}
             />
           </Tooltip>
