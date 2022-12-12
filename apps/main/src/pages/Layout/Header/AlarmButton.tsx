@@ -25,9 +25,6 @@ import { formatter }                                               from '@acx-ui
 
 import * as UI from './styledComponents'
 
-
-
-
 const defaultArray: Alarm[] = []
 
 const defaultPayload: {
