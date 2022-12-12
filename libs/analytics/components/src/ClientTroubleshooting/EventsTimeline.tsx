@@ -1,18 +1,24 @@
 import { useEffect } from 'react'
 
-import { Collapse } from 'antd'
-import { connect }  from 'echarts'
-import ReactECharts from 'echarts-for-react'
-import moment       from 'moment-timezone'
-import { useIntl }  from 'react-intl'
+import { Collapse }                                         from 'antd'
+import { connect, TooltipComponentFormatterCallbackParams } from 'echarts'
+import ReactECharts                                         from 'echarts-for-react'
+import moment                                               from 'moment-timezone'
+import { renderToString }                                   from 'react-dom/server'
+import { useIntl }                                          from 'react-intl'
 
+import {
+  mapCodeToFailureText,
+  clientEventDescription
+} from '@acx-ui/analytics/utils'
 import { SingleLineScatterChart } from '@acx-ui/components'
 import { useDateFilter }          from '@acx-ui/utils'
+import { formatter }              from '@acx-ui/utils'
 
 
-import { ClientTroubleShootingConfig, SUCCESS, FAILURE, SLOW, DISCONNECT, transformEvents, TYPES, formatEventDesc, eventColorByCategory } from './config'
-import { ClientInfoData,ConnectionEvent }                                                                                                 from './services'
-import * as UI                                                                                                                            from './styledComponents'
+import { ClientTroubleShootingConfig, SUCCESS, FAILURE, SLOW, DISCONNECT, transformEvents, TYPES, formatEventDesc, DisplayEvent } from './config'
+import { ClientInfoData,ConnectionEvent }                                                                                         from './services'
+import * as UI                                                                                                                    from './styledComponents'
 
 import { Filters } from '.'
 
@@ -76,19 +82,10 @@ const getTimelineData = (events: Event[]) =>
       }
     } as TimelineData
   )
-  // const tooltipFormatter = (params: TooltipComponentFormatterCallbackParams) => {
-  //   const [ time ] = (Array.isArray(params)
-  //     ? params[0].data : params.data) as [number]
-  //   return renderToString(
-  //     <TooltipWrapper>
-  //       <time dateTime={new Date(time).toJSON()}>{formatter('dateTimeFormat')(time) as string}</time>
-  //     </TooltipWrapper>
-  //   )
-  // }
-
 
 export function TimeLine (props : TimeLineProps){
   const { $t } = useIntl()
+  const intl = useIntl()
   const { data, filters } = props
   const types = filters ? filters.type ?? [] : []
   const radios = filters ? filters.radio ?? [] : []
@@ -104,12 +101,27 @@ export function TimeLine (props : TimeLineProps){
       instance.group = 'timeSeriesGroup'
     }
   }
+  const tooltipFormatter = (params: TooltipComponentFormatterCallbackParams) => {
+    const evtObj = Array.isArray(params) && Array.isArray(params[0].data) ? params[0].data[2] : ''
+    const { code, apName, mac, radio, state, event } = evtObj as unknown as DisplayEvent
+    const ap = [apName, mac ? `(${mac})` : ''].filter(Boolean).join(' ')
+    const tooltipText = [
+      code ? `${mapCodeToFailureText(code, intl)}:` : '',
+      `${intl.$t(clientEventDescription(event,state))} @`,
+      `${ap} ${formatter('radioFormat')(radio)}`
+    ].filter(Boolean).join(' ')
+
+    return renderToString(
+      <UI.TooltipWrapper>
+        {tooltipText}
+      </UI.TooltipWrapper>
+    )
+  }
   useEffect(() => { connect('timeSeriesGroup') }, [])
   const { startDate, endDate } = useDateFilter()
   const chartBoundary = [moment(startDate).valueOf() , moment(endDate).valueOf() ]
   return (
     <UI.CollapseBox
-      bordered={false}
       expandIcon={({ isActive }) =>
         isActive ? (
           <UI.StyledMinusSquareOutlined />
@@ -121,10 +133,11 @@ export function TimeLine (props : TimeLineProps){
       {ClientTroubleShootingConfig.timeLine.map((config, index) => (
         <Panel
           header={
-            <UI.TimelineTitle>
+            <UI.TimelineTitle
+              onClick={(event) => event.stopPropagation()}>
               {config?.chartType === 'scatter' ? (
                 <SingleLineScatterChart
-                  style={{ width: 850 }}
+                  style={{ width: 850, marginBottom: 8 }}
                   data={
                     TimelineData[config.value as keyof TimelineData][
                       'allEvents'
@@ -133,10 +146,13 @@ export function TimeLine (props : TimeLineProps){
                   chartBoundary={chartBoundary}
                   chartRef={connectChart}
                   title={$t(config.title)}
-                  count={TimelineData[config.value as keyof TimelineData][
-                    'allEvents'
-                  ].length}
+                  count={
+                    TimelineData[config.value as keyof TimelineData][
+                      'allEvents'
+                    ].length
+                  }
                   tooltopEnabled
+                  tooltipFormatter={tooltipFormatter}
                   onDotClick={(params) => {
                     // eslint-disable-next-line no-console
                     console.log(params)
@@ -153,7 +169,7 @@ export function TimeLine (props : TimeLineProps){
             {config?.subtitle?.map((subtitle, index) =>
               subtitle?.chartType === 'scatter' ? (
                 <SingleLineScatterChart
-                  style={{ width: 850 }}
+                  style={{ width: 850, marginBottom: 4 }}
                   data={
                     TimelineData[config.value as keyof TimelineData][
                       subtitle.value as keyof TimelineData['connectionEvents']
@@ -162,18 +178,19 @@ export function TimeLine (props : TimeLineProps){
                   chartBoundary={chartBoundary}
                   chartRef={connectChart}
                   title={$t(subtitle.title)}
-                  count={TimelineData[config.value as keyof TimelineData][
-                    subtitle.value as keyof TimelineData['connectionEvents']
-                  ].length}
+                  count={
+                    TimelineData[config.value as keyof TimelineData][
+                      subtitle.value as keyof TimelineData['connectionEvents']
+                    ].length
+                  }
                   key={index}
-                  tooltopEnabled={false}
+                  tooltipFormatter={tooltipFormatter}
+                  tooltopEnabled
                   onDotClick={(params) => {
                     // eslint-disable-next-line no-console
                     console.log(params)
                   }}
-
                   mapping={subtitle.chartMapping}
-
                 />
               ) : (
                 $t(subtitle.title)

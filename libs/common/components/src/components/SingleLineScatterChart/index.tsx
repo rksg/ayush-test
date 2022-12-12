@@ -1,9 +1,9 @@
 import { Dispatch, RefObject, SetStateAction, useCallback, useEffect, useRef, useState, RefCallback, useImperativeHandle } from 'react'
 
-import { Row, Col }                                from 'antd'
-import { TooltipComponentFormatterCallbackParams } from 'echarts'
-import ReactECharts                                from 'echarts-for-react'
-import { renderToString }                          from 'react-dom/server'
+import { Row, Col }                                           from 'antd'
+import ReactECharts                                           from 'echarts-for-react'
+import {  TooltipFormatterCallback, TopLevelFormatterParams } from 'echarts/types/dist/shared'
+import { renderToString }                                     from 'react-dom/server'
 
 import { formatter } from '@acx-ui/utils'
 
@@ -60,7 +60,8 @@ export interface ConfigChangeChartProps
     count: number,
     chartRef?: RefCallback<ReactECharts>,
     tooltopEnabled : boolean,
-    mapping: { key: string, label: string, color: string }[]
+    mapping: { key: string, label: string, color: string }[],
+    tooltipFormatter: TooltipFormatterCallback<TopLevelFormatterParams>
   }
 
 export const mapping1 = [
@@ -163,15 +164,15 @@ export const useBoundaryChange = (
   }, [boundary])
 }
 
-const tooltipFormatter = (params: TooltipComponentFormatterCallbackParams) => {
-  const [ time ] = (Array.isArray(params)
-    ? params[0].data : params.data) as [number]
-  return renderToString(
-    <TooltipWrapper>
-      <time dateTime={new Date(time).toJSON()}>{formatter('dateTimeFormat')(time) as string}</time>
-    </TooltipWrapper>
-  )
-}
+// const tooltipFormatter = (params: TooltipComponentFormatterCallbackParams) => {
+//   const [ time ] = (Array.isArray(params)
+//     ? params[0].data : params.data) as [number]
+//   return renderToString(
+//     <TooltipWrapper>
+//       <time dateTime={new Date(time).toJSON()}>{formatter('dateTimeFormat')(time) as string}</time>
+//     </TooltipWrapper>
+//   )
+// }
 
 export const useDatazoom = (
   chartBoundary: number[], setBoundary: Dispatch<SetStateAction<{ min: number, max: number }>>
@@ -209,6 +210,7 @@ export function SingleLineScatterChart ({
   chartRef,
   tooltopEnabled,
   mapping,
+  tooltipFormatter,
   ...props
 }: ConfigChangeChartProps) {
 
@@ -312,8 +314,8 @@ export function SingleLineScatterChart ({
         // symbol: getSymbol(selected as number),
         symbolSize: 10,
         animation: false,
-        data: data
-          .map((record) => [record.start, 'series 1', record]),
+        data: data.length > 1 ? data
+          .map((record) => [record.start, 'series 1', record]) : [0,0],
         itemStyle: {
           color: function (params) {
             return cssStr(
