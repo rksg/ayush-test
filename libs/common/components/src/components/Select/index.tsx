@@ -3,9 +3,9 @@ import React from 'react'
 import {
   CascaderProps as AntCascaderProps
 } from 'antd'
-import { DefaultOptionType }      from 'antd/es/cascader'
-import { SingleValueType }        from 'rc-cascader/lib/Cascader'
-import { useIntl, defineMessage } from 'react-intl'
+import { DefaultOptionType }                         from 'antd/es/cascader'
+import { SingleValueType }                           from 'rc-cascader/lib/Cascader'
+import { useIntl, defineMessage, MessageDescriptor } from 'react-intl'
 
 import { Button } from '../Button'
 
@@ -27,13 +27,24 @@ export type CascaderProps = AntCascaderProps<Option> & {
   onApply: (
     cascaderSelected: SingleValueType | SingleValueType[] | undefined
   ) => void
+  entityName: {
+    singular: MessageDescriptor
+    plural: MessageDescriptor
+  }
+}
+
+Select.defaultProps = {
+  entityName: {
+    singular: defineMessage({ defaultMessage: 'item' }),
+    plural: defineMessage({ defaultMessage: 'items' })
+  }
 }
 
 const selectedItemsDesc = defineMessage({
-  defaultMessage: '{selectedItemsCount} items selected'
+  defaultMessage: '{count} {count, plural, one {{singular}} other {{plural}}} selected'
 })
 export function Select (props: CascaderProps) {
-  const { onApply, ...antProps } = props
+  const { onApply, entityName, ...antProps } = props
   const { $t } = useIntl()
   const initialValues = props.defaultValue || []
   const [
@@ -105,7 +116,11 @@ export function Select (props: CascaderProps) {
         removeIcon={open ? undefined : null}
         maxTagPlaceholder={
           <div title={currentLabels?.join(', ')}>
-            {$t(selectedItemsDesc,{ selectedItemsCount: currentValues.length })}
+            {$t(selectedItemsDesc,{
+              count: currentValues.length,
+              singular: $t(entityName.singular),
+              plural: $t(entityName.plural),
+            })}
           </div>
         }
       />

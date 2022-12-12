@@ -90,6 +90,6 @@ describe('venue Filter', () => {
       setNodeFilter
     }
     render(<Provider><VenueFilter /></Provider>, { route })
-    await screen.findByText('1 items selected')
+    await screen.findByText('1 venue selected')
   })
 })
