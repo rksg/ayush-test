@@ -351,7 +351,7 @@ describe('ApEdit', () => {
 
       const tabPanel = screen.getAllByRole('tabpanel', { hidden: false })[2]
       fireEvent.mouseDown(within(tabPanel).getByLabelText(/Port type/))
-      await userEvent.click(await screen.getAllByText('GENERAL')[1])
+      await fireEvent.click(await screen.getAllByText('GENERAL')[1])
       expect(within(tabPanel).getByLabelText(/VLAN untag ID/)).not.toBeDisabled()
       expect(within(tabPanel).getByLabelText(/VLAN member/)).not.toBeDisabled()
 
