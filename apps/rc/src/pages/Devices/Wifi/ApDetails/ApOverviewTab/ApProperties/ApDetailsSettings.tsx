@@ -46,7 +46,7 @@ export const ApDetailsSettings = (props: ApDetailsSettingsProps) => {
       <Form.Item
         label={'5 GHz'}
         children={
-          displayEnabled(radioSetting?.enable24G)
+          displayEnabled(radioSetting?.enable50G)
         }
       />
       <Divider/>
