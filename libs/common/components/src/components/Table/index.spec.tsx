@@ -346,6 +346,23 @@ describe('Table component', () => {
     expect(actions[0].onClick).toBeCalled()
   })
 
+  it('renders disabled action items', async () => {
+    const actions = [
+      { label: 'Action 1', disabled: true, onClick: jest.fn() },
+      { label: 'Action 2', disabled: true, onClick: jest.fn() }
+    ]
+
+    render(<Table
+      actions={actions}
+      columns={testColumns}
+      dataSource={testData}
+    />)
+
+    const action1 = await screen.findByRole('button', { name: actions[0].label })
+    expect(action1).toBeVisible()
+    expect(actions[0].onClick).not.toBeCalled()
+  })
+
   it('hides rowAction when visible == false', async () => {
     const [onEdit, onDelete] = [jest.fn(), jest.fn()]
     const Component = () => {
