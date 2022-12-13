@@ -6,7 +6,6 @@ import { useIntl }              from 'react-intl'
 import { Button, Card, PageHeader, Subtitle, Table } from '@acx-ui/components'
 import { useWebAuthTemplateListQuery }               from '@acx-ui/rc/services'
 import {
-  AccessSwitch,
   ServiceType,
   WebAuthTemplate,
   getServiceDetailsLink,
@@ -14,21 +13,6 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
-
-const mockData = {
-  id: 'zxzz',
-  name: 'Mock Template name',
-  webAuth_password_label: 'DPSK Password',
-  webAuth_custom_title: 'Enter your Password below and press the button',
-  webAuth_custom_top: 'Welcome to Ruckus Networks Web Authentication Homepage',
-  webAuth_custom_login_button: 'Login',
-  webAuth_custom_bottom: `This network is restricted to authorized users only.
-    Violators may be subjected to legal prosecution.
-    Acitvity on this network is monitored and may be used as evidence in a court of law.
-    Copyright 2022 Ruckus Networks`,
-  switches: [] as AccessSwitch[],
-  tag: 'abc, 123'
-}
 
 export function NetworkSegAuthSummary ({ data }: { data: WebAuthTemplate }) {
   const { $t } = useIntl()
@@ -85,7 +69,7 @@ export default function NetworkSegAuthDetail () {
   }
 
   const { data: tableResult } = useWebAuthTemplateListQuery({ params, payload })
-  const data = tableResult?.data[0] || mockData
+  const data = tableResult?.data[0] as WebAuthTemplate
 
   const columns = React.useMemo(() => {
     return [{

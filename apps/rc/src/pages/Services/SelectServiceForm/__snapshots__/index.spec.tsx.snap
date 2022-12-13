@@ -333,30 +333,67 @@ exports[`Select Service Form should render form 1`] = `
                               >
                                 More Services
                               </h3>
-                              <label
-                                class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
+                              <div
+                                class="ant-space ant-space-horizontal ant-space-align-center"
                               >
-                                <span
-                                  class="ant-radio"
+                                <div
+                                  class="ant-space-item"
+                                  style="margin-right: 8px;"
                                 >
-                                  <input
-                                    class="ant-radio-input"
-                                    type="radio"
-                                    value="PORTAL"
-                                  />
-                                  <span
-                                    class="ant-radio-inner"
-                                  />
-                                </span>
-                                <span>
-                                  Portal
-                                  <div
-                                    class="styledComponents__RadioDescription-sc-994pwt-1 hpLkuH"
+                                  <label
+                                    class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
                                   >
-                                    Provides "portal" for guest access. Includes hotspot access (Passpoint, OpenRoaming)
-                                  </div>
-                                </span>
-                              </label>
+                                    <span
+                                      class="ant-radio"
+                                    >
+                                      <input
+                                        class="ant-radio-input"
+                                        type="radio"
+                                        value="PORTAL"
+                                      />
+                                      <span
+                                        class="ant-radio-inner"
+                                      />
+                                    </span>
+                                    <span>
+                                      Portal
+                                      <div
+                                        class="styledComponents__RadioDescription-sc-994pwt-1 hpLkuH"
+                                      >
+                                        Provides "portal" for guest access. Includes hotspot access (Passpoint, OpenRoaming)
+                                      </div>
+                                    </span>
+                                  </label>
+                                </div>
+                                <div
+                                  class="ant-space-item"
+                                >
+                                  <label
+                                    class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
+                                  >
+                                    <span
+                                      class="ant-radio"
+                                    >
+                                      <input
+                                        class="ant-radio-input"
+                                        type="radio"
+                                        value="Web Auth"
+                                      />
+                                      <span
+                                        class="ant-radio-inner"
+                                      />
+                                    </span>
+                                    <span>
+                                      Network Segmentation Auth Page for Switch
+                                      <div
+                                        class="styledComponents__RadioDescription-sc-994pwt-1 hpLkuH"
+                                      >
+                                        Network Segmentation Auth Page for Switch Description
+                                      </div>
+                                    </span>
+                                  </label>
+                                </div>
+                              </div>
                             </div>
                           </div>
                         </div>
