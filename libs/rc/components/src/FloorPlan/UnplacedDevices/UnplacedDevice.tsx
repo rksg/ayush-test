@@ -39,7 +39,7 @@ export default function UnplacedDevice (props: { device: NetworkDevice }) {
     dragPreview(getEmptyImage())
   }, [])
 
-  return <> <div>
+  return <> <div key={device?.id}>
     <UI.ListItem
       ref={drag}
       isdragging={isDragging ? true : false}>
@@ -67,7 +67,7 @@ export default function UnplacedDevice (props: { device: NetworkDevice }) {
           </div> {device?.name}
         </>
       }
-      <CustomDragLayer device={device}/>
+      { isDragging && <CustomDragLayer key={device?.id} device={device}/> }
     </UI.ListItem>
   </div>
   </>
