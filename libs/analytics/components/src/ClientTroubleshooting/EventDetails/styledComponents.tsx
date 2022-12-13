@@ -10,6 +10,13 @@ export const Header = styled.h3`
   color: var(--acx-primary-black);
 `
 
+export const CloseSpan = styled.span`
+  cursor: pointer;
+  position: absolute;
+  right: 5px;
+  top: 5px;
+`
+
 export const RowContainer = styled.dl`
   display: grid;
   grid-template-columns: 60px 1fr;

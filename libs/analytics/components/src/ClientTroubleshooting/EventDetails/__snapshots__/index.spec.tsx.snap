@@ -8,25 +8,25 @@ exports[`EventDetails renders Details correctly 1`] = `
     Connection Event Details
   </h3>
   <dl
-    class="sc-gsnTZi iLOyRZ"
+    class="sc-dkzDqf ghqaWu"
   >
     <dt
-      class="sc-dkzDqf kVNeuV"
+      class="sc-hKMtZM dqLvfG"
     >
       label1
     </dt>
     <dd
-      class="sc-hKMtZM iWLUww"
+      class="sc-eCYdqJ bkYxGt"
     >
       value1
     </dd>
     <dt
-      class="sc-dkzDqf kVNeuV"
+      class="sc-hKMtZM dqLvfG"
     >
       label2
     </dt>
     <dd
-      class="sc-hKMtZM iWLUww"
+      class="sc-eCYdqJ bkYxGt"
     >
       value2
     </dd>
