@@ -233,6 +233,5 @@ function ConnectedNetworkFilter (
         />
       </Loader>
     </UI.Container>
-
   )
 }
