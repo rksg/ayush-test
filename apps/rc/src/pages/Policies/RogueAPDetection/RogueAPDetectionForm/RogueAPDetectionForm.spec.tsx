@@ -195,8 +195,8 @@ describe('RogueAPDetectionForm', () => {
     fireEvent.change(screen.getByRole('textbox', { name: /policy name/i }),
       { target: { value: 'policyTestName' } })
 
-    fireEvent.change(screen.getByRole('textbox', { name: /tags/i }),
-      { target: { value: 'a,b,c' } })
+    fireEvent.change(screen.getByRole('textbox', { name: /description/i }),
+      { target: { value: 'desc1' } })
 
     fireEvent.click(screen.getByRole('button', {
       name: /add rule/i
@@ -268,7 +268,7 @@ describe('RogueAPDetectionForm', () => {
     expect(screen.getAllByText('Settings')).toBeTruthy()
     expect(screen.getAllByText('Scope')).toBeTruthy()
 
-
+    await screen.findByRole('heading', { name: 'Settings', level: 3 })
 
     fireEvent.change(screen.getByRole('textbox', { name: /policy name/i }),
       { target: { value: 'test6' } })
@@ -290,6 +290,8 @@ describe('RogueAPDetectionForm', () => {
 
 
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+
+    await screen.findByRole('heading', { name: 'Scope', level: 3 })
 
     await screen.findByText('test-venue2')
 

@@ -5,6 +5,7 @@ import { useIntl } from 'react-intl'
 import { Card, Table, TableProps }             from '@acx-ui/components'
 import { useVenueRoguePolicyQuery }            from '@acx-ui/rc/services'
 import { useTableQuery, VenueRoguePolicyType } from '@acx-ui/rc/utils'
+import { TenantLink }                          from '@acx-ui/react-router-dom'
 
 import { RogueAPDetailContext } from './RogueAPDetectionDetailView'
 
@@ -37,18 +38,24 @@ const RogueAPDetectionVenueDetail = () => {
       title: $t({ defaultMessage: 'Venue Name' }),
       dataIndex: 'name',
       key: 'name',
-      searchable: true
+      searchable: true,
+      sorter: true,
+      render: (data, row) => {
+        return <TenantLink to={`/venues/${row.id}/venue-details/overview`}>{row.name}</TenantLink>
+      }
     },
     {
       title: $t({ defaultMessage: 'Address' }),
       dataIndex: 'city',
+      sorter: true,
       key: 'city'
     },
     {
       title: $t({ defaultMessage: 'Rogue APs' }),
       dataIndex: 'rogueAps',
+      sorter: true,
       key: 'rogueAps',
-      render: (row) => row ? row : 0
+      render: (row) => row ? Number(row) : 0
     }
   ]
 

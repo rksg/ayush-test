@@ -570,6 +570,17 @@ export const venueApi = baseVenueApi.injectEndpoints({
         return{
           ...req
         }
+      },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UpdateVenueRogueAp',
+            'UpdateDenialOfServiceProtection'
+          ]
+          showActivityMessage(msg, activities, () => {
+            api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'LIST' }]))
+          })
+        })
       }
     }),
     getOldVenueRogueAp: build.query<TableResult<RogueOldApResponseType>, RequestPayload>({
