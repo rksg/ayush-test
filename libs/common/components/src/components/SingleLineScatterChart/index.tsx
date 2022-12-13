@@ -3,19 +3,14 @@ import { Dispatch, RefObject, SetStateAction, useCallback, useEffect, useRef, us
 import { Row, Col }                                           from 'antd'
 import ReactECharts                                           from 'echarts-for-react'
 import {  TooltipFormatterCallback, TopLevelFormatterParams } from 'echarts/types/dist/shared'
-import { renderToString }                                     from 'react-dom/server'
 
-import { formatter } from '@acx-ui/utils'
-
-import { cssStr }   from '../../theme/helper'
+import { cssStr }     from '../../theme/helper'
 import {
   tooltipOptions,
   axisLabelOptions,
   xAxisOptions,
-  dateAxisFormatter,
-  dataZoomOptions
+  dateAxisFormatter
 } from '../Chart/helper'
-import { TooltipWrapper } from '../Chart/styledComponents'
 
 import type { ECharts, EChartsOption, SeriesOption } from 'echarts'
 import type { EChartsReactProps }                    from 'echarts-for-react'
@@ -219,6 +214,7 @@ export function SingleLineScatterChart ({
   const eChartsRef = useRef<ReactECharts>(null)
   useImperativeHandle(chartRef, () => eChartsRef.current!)
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selected, setSelected] = useState<number|undefined>(selectedData)
   useDotClick(eChartsRef, onDotClick, setSelected)
 

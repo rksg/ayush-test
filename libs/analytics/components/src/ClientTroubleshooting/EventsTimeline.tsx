@@ -16,9 +16,9 @@ import { useDateFilter }          from '@acx-ui/utils'
 import { formatter }              from '@acx-ui/utils'
 
 
-import { ClientTroubleShootingConfig, SUCCESS, FAILURE, SLOW, DISCONNECT, transformEvents, TYPES, formatEventDesc, DisplayEvent } from './config'
-import { ClientInfoData,ConnectionEvent }                                                                                         from './services'
-import * as UI                                                                                                                    from './styledComponents'
+import { ClientTroubleShootingConfig, SUCCESS, FAILURE, SLOW, DISCONNECT, transformEvents, TYPES, DisplayEvent } from './config'
+import { ClientInfoData,ConnectionEvent }                                                                        from './services'
+import * as UI                                                                                                   from './styledComponents'
 
 import { Filters } from '.'
 
@@ -188,7 +188,7 @@ export function TimeLine (props : TimeLineProps){
                   tooltopEnabled
                   onDotClick={(params) => {
                     // eslint-disable-next-line no-console
-                    console.log(params)
+                    console.log(params as DisplayEvent)
                   }}
                   mapping={subtitle.chartMapping}
                 />

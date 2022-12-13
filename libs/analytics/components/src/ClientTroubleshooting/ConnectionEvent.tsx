@@ -61,14 +61,20 @@ const useConnectionDetail = (event: DisplayEvent) => {
 
 export function ConnectionEvent ({ children, event }:
   { children?: React.ReactNode, event: DisplayEvent }) {
+  const [open, setOpen] = React.useState(false)
+  const handleOpenChange = (newOpen: boolean) => { setOpen(newOpen) }
+  const hide = () => { setOpen(false) }
   const rowData = useConnectionDetail(event)
   return (
     <UI.PopoverWrapper>
       <Popover
-        content={<Details fields={rowData} />}
-        trigger={['focus', 'click']}
+        content={<Details fields={rowData} openHandler={hide}/>}
+        trigger={'click'}
         placement='left'
         getPopupContainer={(triggerNode) => triggerNode}
+        visible={open}
+        onVisibleChange={handleOpenChange}
+        arrowPointAtCenter
       >
         {children}
       </Popover>

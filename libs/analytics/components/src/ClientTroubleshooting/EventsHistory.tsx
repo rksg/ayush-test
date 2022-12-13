@@ -28,8 +28,8 @@ import {
   INCIDENT
 } from './config'
 import { ConnectionEvent } from './ConnectionEvent'
-import { ClientInfoData }   from './services'
-import * as UI              from './styledComponents'
+import { ClientInfoData }  from './services'
+import * as UI             from './styledComponents'
 
 import { Filters } from '.'
 
