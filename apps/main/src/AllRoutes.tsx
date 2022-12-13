@@ -2,21 +2,22 @@ import React from 'react'
 
 import { Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
 
-import AnalyticsBase    from './pages/Analytics'
-import Dashboard        from './pages/Dashboard'
-import DevicesBase      from './pages/Devices'
-import Layout           from './pages/Layout'
-import NetworksBase     from './pages/Networks'
-import PoliciesBase     from './pages/Policies'
-import SearchResults    from './pages/SearchResults'
-import ServicesBase     from './pages/Services'
-import TimelineBase     from './pages/Timeline'
-import { UserProfile }  from './pages/UserProfile'
-import UsersBase        from './pages/Users'
-import { VenueDetails } from './pages/Venues/VenueDetails'
-import { VenueEdit }    from './pages/Venues/VenueEdit'
-import { VenuesForm }   from './pages/Venues/VenuesForm'
-import { VenuesTable }  from './pages/Venues/VenuesTable'
+import AnalyticsBase         from './pages/Analytics'
+import Dashboard             from './pages/Dashboard'
+import DevicesBase           from './pages/Devices'
+import Layout                from './pages/Layout'
+import NetworksBase          from './pages/Networks'
+import PoliciesBase          from './pages/Policies'
+import SearchResults         from './pages/SearchResults'
+import ServicesBase          from './pages/Services'
+import TimelineBase          from './pages/Timeline'
+import { UserProfile }       from './pages/UserProfile'
+import UsersBase             from './pages/Users'
+import { VenueDetails }      from './pages/Venues/VenueDetails'
+import { VenueEdit }         from './pages/Venues/VenueEdit'
+import { VenuesForm }        from './pages/Venues/VenuesForm'
+import { VenuesTable }       from './pages/Venues/VenuesTable'
+import ServiceValidationBase from './pages/ServiceValidation'
 
 const RcRoutes = React.lazy(() => import('rc/Routes'))
 const AnalyticsRoutes = React.lazy(() => import('analytics/Routes'))
@@ -34,6 +35,9 @@ function AllRoutes () {
         </Route>
         <Route path='timeline/*' element={<TimelineBase />}>
           <Route path='*' element={<RcRoutes />} />
+        </Route>
+        <Route path='serviceValidation/*' element={<AnalyticsBase />}>
+          <Route path='*' element={<AnalyticsRoutes />} />
         </Route>
         <Route path='devices/*' element={<DevicesBase />}>
           <Route path='*' element={<RcRoutes />} />

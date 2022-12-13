@@ -1,8 +1,8 @@
 import { useIntl } from 'react-intl'
-import styled      from 'styled-components/macro'
+import styled from 'styled-components/macro'
 
 import { LayoutProps, LayoutUI, genPlaceholder } from '@acx-ui/components'
-import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   AIOutlined as AIOutlinedBase,
   AISolid as AISolidBase,
@@ -34,7 +34,7 @@ const AdminSolid = styled(AdminSolidBase)`${LayoutUI.iconSolidOverride}`
 const ServicesSolid = styled(ServicesSolidBase)`${LayoutUI.iconSolidOverride}`
 const PoliciesSolid = styled(PoliciesSolidBase)`${LayoutUI.iconSolidOverride}`
 
-export function useMenuConfig () {
+export function useMenuConfig() {
   const { $t } = useIntl()
   const config: LayoutProps['menuConfig'] = [
     {
@@ -75,6 +75,24 @@ export function useMenuConfig () {
       inactiveIcon: CalendarDateOutlined,
       activeIcon: CalendarDateSolid,
       disabled: !useIsSplitOn(Features.TIMELINE)
+    },
+    {
+      path: '/serviceValidation',
+      name: $t({ defaultMessage: 'Service Validation' }),
+      inactiveIcon: CalendarDateOutlined,
+      activeIcon: CalendarDateSolid,
+      disabled: !useIsSplitOn(Features.TIMELINE),
+      routes: [
+        // TODO: add back when needed, comment for now
+        // {
+        //   path: '/serviceValidation/networkHealth',
+        //   name: $t({ defaultMessage: 'Network Health' })
+        // },
+        {
+          path: '/serviceValidation/videoCallQoe',
+          name: $t({ defaultMessage: 'Video Call QoE' })
+        }
+      ]
     },
     {
       path: '/reports',

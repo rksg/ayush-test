@@ -76,6 +76,18 @@ const config: LayoutProps['menuConfig'] = [
     activeIcon: CalendarDateSolid
   },
   {
+    path: '/servicevalidation',
+    name: 'Service Validation',
+    inactiveIcon: CalendarDateOutlined,
+    activeIcon: CalendarDateSolid,
+    routes: [
+      {
+        path: '/servicevalidation/videoCallQoe',
+        name: 'Video Call QoE'
+      },
+    ]
+  },
+  {
     path: '/reports',
     name: 'Reports',
     inactiveIcon: ReportsOutlined,
