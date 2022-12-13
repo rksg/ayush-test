@@ -62,19 +62,23 @@ describe('Floor Plans Unlpaced Device list', () => {
 
     expect(await screen.findAllByTestId('SignalUp')).toHaveLength(2)
 
-    expect(screen.getAllByRole('listitem')[0]).not.toBeNull()
+    expect(await screen.getAllByRole('listitem')[0]).not.toBeNull()
 
     await userEvent.click(await screen.findByText('All'))
 
     await userEvent.click(await screen.findByText('Wi-Fi APs'))
 
-    expect(screen.getAllByRole('listitem')).toHaveLength(1)
+    await expect(await screen.getAllByRole('listitem')[0]).not.toBeNull()
 
     const searchInput = screen.getByTestId('text-search')
 
     await fireEvent.change(searchInput, { target: { value: 'AP' } })
 
-    const _listItem = screen.getAllByRole('listitem')[0]
+    await fireEvent.click(await screen.findByText('All'))
+
+    await fireEvent.change(searchInput, { target: { value: '' } })
+
+    const _listItem = await screen.getAllByRole('listitem')[0]
 
     fireEvent.dragStart(_listItem)
 
