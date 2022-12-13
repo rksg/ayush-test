@@ -214,6 +214,112 @@ describe('Guest Table', () => {
 
   })
 
+  it('should click "generate new password" validation 1', async () => {
+    const json = {
+      requestId: '96dcffb7-583a-499a-8305-def359adf8b4',
+      response: {
+        id: '0b71a2d4-6dc0-4616-8d1e-105deee0ad72',
+        createdDate: 1670475350467,
+        name: 'guest1',
+        disabled: false,
+        networkId: 'd50b652907b64a008e8af2d160b29b64',
+        notes: '',
+        email: 'test@commscope.com',
+        mobilePhoneNumber: '+886988000000',
+        macAddresses: [ ],
+        ssid: 'test guest',
+        deliveryMethods: [ 'PRINT' ],
+        guestUserType: 'GuestPass',
+        expiration: {
+          activationType: 'Creation',
+          duration: 7,
+          unit: 'Day'
+        },
+        locale: 'en',
+        password: '886007'
+      }
+    }
+    mockServer.use(
+      rest.post(
+        ClientUrlsInfo.generateGuestPassword.url,
+        (req, res, ctx) => res(ctx.json(json))
+      )
+    )
+
+    render(
+      <Provider>
+        <GuestsTable />
+      </Provider>, {
+        route: { params, path: '/:tenantId/users/wifi/guests' },
+        wrapper: Provider
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    fireEvent.click(await screen.findByText('test4'))
+    await screen.findByText('Guest Details')
+    await fireEvent.mouseEnter(await screen.findByText(/actions/i))
+    fireEvent.click(await screen.findByText(/generate new password/i))
+    fireEvent.click(screen.getByRole('checkbox', {
+      name: /print guest pass/i
+    }))
+    const generateButton = screen.getByRole('button', { name: /generate/i })
+    await userEvent.click(generateButton)
+  })
+
+  it('should click "generate new password" validation 2', async () => {
+    const json = {
+      requestId: '96dcffb7-583a-499a-8305-def359adf8b4',
+      response: {
+        id: '0b71a2d4-6dc0-4616-8d1e-105deee0ad72',
+        createdDate: 1670475350467,
+        name: 'guest1',
+        disabled: false,
+        networkId: 'd50b652907b64a008e8af2d160b29b64',
+        notes: '',
+        email: 'test@commscope.com',
+        mobilePhoneNumber: '+886988000000',
+        macAddresses: [ ],
+        ssid: 'test guest',
+        deliveryMethods: [ 'PRINT' ],
+        guestUserType: 'GuestPass',
+        expiration: {
+          activationType: 'Creation',
+          duration: 7,
+          unit: 'Hour'
+        },
+        locale: 'en',
+        password: '886007'
+      }
+    }
+    mockServer.use(
+      rest.post(
+        ClientUrlsInfo.generateGuestPassword.url,
+        (req, res, ctx) => res(ctx.json(json))
+      )
+    )
+
+    render(
+      <Provider>
+        <GuestsTable />
+      </Provider>, {
+        route: { params, path: '/:tenantId/users/wifi/guests' },
+        wrapper: Provider
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    fireEvent.click(await screen.findByText('test4'))
+    await screen.findByText('Guest Details')
+    await fireEvent.mouseEnter(await screen.findByText(/actions/i))
+    fireEvent.click(await screen.findByText(/generate new password/i))
+    fireEvent.click(screen.getByRole('checkbox', {
+      name: /print guest pass/i
+    }))
+    const generateButton = screen.getByRole('button', { name: /generate/i })
+    await userEvent.click(generateButton)
+  })
+
   it('should click "download" correctly', async () => {
     render(
       <Provider>
@@ -250,5 +356,33 @@ describe('Guest Table', () => {
     fireEvent.click(screen.getByRole('button', {
       name: /delete guest/i
     }))
+  })
+
+  it('should handle error for generate password', async () => {
+    mockServer.use(
+      rest.post(
+        ClientUrlsInfo.generateGuestPassword.url,
+        (req, res, ctx) => res(ctx.status(404), ctx.json({}))
+      )
+    )
+    render(
+      <Provider>
+        <GuestsTable />
+      </Provider>, {
+        route: { params, path: '/:tenantId/users/wifi/guests' },
+        wrapper: Provider
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    fireEvent.click(await screen.findByText('test4'))
+    await screen.findByText('Guest Details')
+    await fireEvent.mouseEnter(await screen.findByText(/actions/i))
+    fireEvent.click(await screen.findByText(/generate new password/i))
+    fireEvent.click(screen.getByRole('checkbox', {
+      name: /print guest pass/i
+    }))
+    const generateButton = screen.getByRole('button', { name: /generate/i })
+    await userEvent.click(generateButton)
+    expect(await screen.findByText('An error occurred')).toBeVisible()
   })
 })

@@ -19,7 +19,6 @@ import {
 import { getIntl } from '@acx-ui/utils'
 
 import {
-  genUpdatedTemplate,
   getHumanizedLocale,
   getMomentLocale,
   humanizedDate,
@@ -92,18 +91,16 @@ export function GenerateNewPasswordModal (props: {
   const generateGuestPrint = async (guests: Guest,
     useUpdatedTemplate: boolean, expiresDate?: string) => {
     const guestToPrint = prepareGuestToPrint(guests, expiresDate)
-    const printTemplate = getGuestPrintTemplate(await guestToPrint, useUpdatedTemplate)
+    const printTemplate = getGuestPrintTemplate(await guestToPrint)
     const pdfGenerator = new PdfGeneratorService()
     pdfGenerator.generatePrint(printTemplate)
   }
 
   const getGuestPrintTemplate =
-  (guestDetails: { langCode: LangCode }, useUpdatedTemplate: boolean) => {
-    const langDictionary = getGuestDictionaryByLangCode(guestDetails.langCode)
-    return (useUpdatedTemplate) ?
-      genUpdatedTemplate(guestDetails, langDictionary) :
-      genTemplate(guestDetails, langDictionary)
-  }
+    (guestDetails: { langCode: LangCode }) => {
+      const langDictionary = getGuestDictionaryByLangCode(guestDetails.langCode)
+      return genTemplate(guestDetails, langDictionary)
+    }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const prepareGuestToPrint = async (guest: any, expiresDate: any) =>{
