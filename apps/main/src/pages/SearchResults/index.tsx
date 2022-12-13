@@ -1,108 +1,121 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import { IntlShape, useIntl } from 'react-intl'
+import { useParams }          from 'react-router-dom'
 
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
-
-import { GridRow, GridCol, PageHeader }         from '@acx-ui/components'
-import { CollapseActive, CollapseInactive }     from '@acx-ui/icons'
-import { useVenuesListQuery }                   from '@acx-ui/rc/services'
-import { RequestPayload, useTableQuery, Venue } from '@acx-ui/rc/utils'
+import { PageHeader, Loader } from '@acx-ui/components'
+import {
+  ApTable,
+  defaultApPayload,
+  NetworkTable,
+  defaultNetworkPayload
+}           from '@acx-ui/rc/components'
+import {
+  useApListQuery,
+  useNetworkListQuery,
+  useVenuesListQuery
+}       from '@acx-ui/rc/services'
+import {
+  RequestPayload,
+  useTableQuery,
+  Network,
+  Venue,
+  AP,
+  ApExtraParams
+} from '@acx-ui/rc/utils'
 
 import { defaultVenuePayload, VenueTable } from '../Venues/VenuesTable'
 
+import NoData              from './NoData'
 import { Collapse, Panel } from './styledComponents'
 
 
-function useSearchTerm () {
-  const { searchVal } = useParams()
-  return searchVal
-}
+const pagination = { pageSize: 5 }
 
-function SearchHeader ({ count }: { count: number }) {
-  const searchVal = useSearchTerm()
-  const { $t } = useIntl()
-  return (
-    <PageHeader
-      title={$t(
-        { defaultMessage: 'Search Results for "{searchVal}" ({count})' },
-        { searchVal, count }
-      )}
-    />
-  )
-}
-
-const SearchTableWrapper = ({ children, count, title }
-: { children: React.ReactNode, count: number, title: string }) => {
-  const { $t } = useIntl()
-  return <GridCol col={{ span: 24 }} style={{ height: '280px' }}>
-    <Collapse
-      defaultActiveKey={[title]}
-      expandIconPosition='end'
-      expandIcon={({ isActive }) => (isActive)
-        ? <CollapseActive />
-        : <CollapseInactive />
-      }
-      bordered={false}
-    >
-      <Panel
-        key={title}
-        header={$t({ defaultMessage: '{title} ({count})' }, {
-          title,
-          count
-        })}
-      >
-        {children}
-      </Panel>
-    </Collapse>
-  </GridCol>
-}
-
-function SearchResult () {
-  const { $t } = useIntl()
-  const globalSearch = useSearchTerm()
-  const [count, setCount] = useState(0)
-
-  const searchPayload = {
-    ...defaultVenuePayload,
-    searchString: globalSearch,
-    searchTargetFields: ['name', 'description']
-  }
-
-  const tableQuery = useTableQuery<Venue, RequestPayload<unknown>, unknown>({
-    useQuery: useVenuesListQuery,
-    defaultPayload: searchPayload,
-    pagination: {
-      pageSize: 5
+const searches = [
+  (searchString: string, $t: IntlShape['$t']) => {
+    const result = useTableQuery<Venue, RequestPayload<unknown>, unknown>({
+      useQuery: useVenuesListQuery,
+      defaultPayload: {
+        ...defaultVenuePayload,
+        searchString,
+        searchTargetFields: ['name', 'description']
+      },
+      pagination
+    })
+    return {
+      result,
+      title: $t({ defaultMessage: 'Venues' }),
+      component: <VenueTable tableQuery={result} />
     }
-  })
+  },
+  (searchString: string, $t: IntlShape['$t']) => {
+    const result = useTableQuery<Network, RequestPayload<unknown>, unknown>({
+      useQuery: useNetworkListQuery,
+      defaultPayload: {
+        ...defaultNetworkPayload,
+        searchString,
+        searchTargetFields: ['name', 'description']
+      },
+      pagination
+    })
+    return {
+      result,
+      title: $t({ defaultMessage: 'Networks' }),
+      component: <NetworkTable tableQuery={result} />
+    }
+  },
+  (searchString: string, $t: IntlShape['$t']) => {
+    const result = useTableQuery<AP, RequestPayload<unknown>, ApExtraParams>({
+      useQuery: useApListQuery,
+      defaultPayload: {
+        ...defaultApPayload,
+        searchString,
+        searchTargetFields: ['name', 'model', 'IP', 'apMac', 'tags', 'serialNumber']
+      },
+      pagination
+    })
+    return {
+      result,
+      title: $t({ defaultMessage: 'APs' }),
+      component: <ApTable tableQuery={result} />
+    }
+  }
+]
 
-  const venueCount = tableQuery.data?.totalCount ?? 0
-
-  useEffect(() => {
-    // sum all table queries here
-    setCount(() => venueCount)
-  }, [globalSearch, venueCount])
-
-  return (
-    <Fragment key='search-results'>
-      <SearchHeader key='search-header' count={count}/>
-      <GridRow>
-        <SearchTableWrapper
-          title={$t({ defaultMessage: 'Venue' })}
-          count={venueCount}
+function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
+  const { $t } = useIntl()
+  const results = searches.map(search => search(searchVal as string, $t))
+  const count = results.reduce((count, { result }) => count + (result.data?.totalCount || 0), 0)
+  return <Loader states={results.map(({ result }) => ({ ...result, isFetching: false }))}>
+    {count
+      ? <>
+        <PageHeader title={$t(
+          { defaultMessage: 'Search Results for "{searchVal}" ({count})' },
+          { searchVal, count }
+        )} />
+        <Collapse
+          defaultActiveKey={Object.keys(results)}
         >
-          <VenueTable
-            key={`venue-search-${globalSearch}`}
-            globalSearch={globalSearch}
-            tableQuery={tableQuery}
-          />
-        </SearchTableWrapper>
-      </GridRow>
-    </Fragment>
-  )
+          {
+            results.map(({ component, title, result: { data } }, index) => data?.totalCount
+              ? <Panel key={index} header={`${title} (${data?.totalCount})`}>{component}</Panel>
+              : null
+            )
+          }
+        </Collapse>
+      </>
+      : <>
+        <PageHeader title={$t(
+          { defaultMessage: 'Hmmmm... we couldn\'t find any match for "{searchVal}"' },
+          { searchVal }
+        )} />
+        <NoData />
+      </>
+    }
+
+  </Loader>
 }
 
 export default function SearchResults () {
   const { searchVal } = useParams()
-  return <SearchResult key={searchVal}/>
+  return <SearchResult key={searchVal} searchVal={searchVal} />
 }

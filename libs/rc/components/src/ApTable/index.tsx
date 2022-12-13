@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React from 'react'
 
 import { Badge, Space } from 'antd'
@@ -11,6 +12,7 @@ import {
   StackedBarChart,
   cssStr
 } from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useApListQuery
 } from '@acx-ui/rc/services'
@@ -24,7 +26,9 @@ import {
   transformApStatus,
   transformDisplayNumber,
   transformDisplayText,
-  useTableQuery
+  useTableQuery,
+  TableQuery,
+  RequestPayload
 } from '@acx-ui/rc/utils'
 import { getFilters }                         from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
@@ -33,7 +37,7 @@ import { useApActions } from '../useApActions'
 
 
 
-const defaultPayload = {
+export const defaultApPayload = {
   searchString: '',
   fields: [
     'name', 'deviceStatus', 'model', 'IP', 'apMac', 'venueName',
@@ -88,22 +92,25 @@ export const APStatus = (
 
 interface ApTableProps
   extends Omit<TableProps<AP>, 'columns'> {
+  tableQuery?: TableQuery<AP, RequestPayload<unknown>, ApExtraParams>
 }
 
-export function ApTable (props?: ApTableProps) {
+export function ApTable (props: ApTableProps) {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const params = useParams()
   const filters = getFilters(params)
-  const tableQuery = useTableQuery({
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const tableQuery = props.tableQuery ?? useTableQuery({
     useQuery: useApListQuery,
     defaultPayload: {
-      ...defaultPayload,
+      ...defaultApPayload,
       filters
     }
   })
 
   const apAction = useApActions()
+  const releaseTag = useIsSplitOn(Features.DEVICES)
 
   const tableData = tableQuery.data?.data ?? []
 
@@ -122,7 +129,7 @@ export function ApTable (props?: ApTableProps) {
       dataIndex: 'name',
       sorter: true,
       render: (data, row) => (
-        <TenantLink to={`/devices/aps/${row.serialNumber}/details/overview`}>{data}</TenantLink>
+        <TenantLink to={`/devices/wifi/${row.serialNumber}/details/overview`}>{data}</TenantLink>
       )
     }, {
       key: 'deviceStatus',
@@ -171,7 +178,7 @@ export function ApTable (props?: ApTableProps) {
             showTotal={false}
             barColors={[cssStr(deviceStatusColors.empty)]}
           />
-          <TenantLink to={`/devices/aps/${row.serialNumber}/details/incidents`}>
+          <TenantLink to={`/devices/wifi/${row.serialNumber}/details/analytics/incidents/overview`}>
             {data ? data: 0}
           </TenantLink>
         </Space>)
@@ -204,11 +211,13 @@ export function ApTable (props?: ApTableProps) {
       title: $t({ defaultMessage: 'Clients' }),
       dataIndex: 'clients',
       align: 'center',
-      render: (data, row) => (
-        <TenantLink to={`/aps/${row.serialNumber}/details/clients`}>
-          {transformDisplayNumber(row.clients)}
-        </TenantLink>
-      )
+      render: (data, row) => {
+        return releaseTag ?
+          <TenantLink to={`/devices/wifi/${row.serialNumber}/details/clients`}>
+            {transformDisplayNumber(row.clients)}
+          </TenantLink>
+          : <>{transformDisplayNumber(row.clients)}</>
+      }
     }, {
       key: 'deviceGroupName',
       title: $t({ defaultMessage: 'AP Group' }),

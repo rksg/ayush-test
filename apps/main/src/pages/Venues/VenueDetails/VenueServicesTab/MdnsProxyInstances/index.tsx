@@ -18,7 +18,7 @@ export default function MdnsProxyInstances () {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
-  const addApPath = useTenantLink('devices/aps/add')
+  const addApPath = useTenantLink('devices/wifi/add')
 
   const tableQuery = useTableQuery({
     useQuery: useApListQuery,
@@ -42,7 +42,7 @@ export default function MdnsProxyInstances () {
       sorter: true,
       render: (data, row) => {
         // eslint-disable-next-line max-len
-        return <TenantLink to={`/devices/aps/${row.serialNumber}/details/overview`}>{data}</TenantLink>
+        return <TenantLink to={`/devices/wifi/${row.serialNumber}/details/overview`}>{data}</TenantLink>
       }
     },
     {

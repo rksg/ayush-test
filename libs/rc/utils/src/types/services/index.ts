@@ -1,9 +1,9 @@
 import {
-  DHCPConfigTypeEnum,
-  ServiceTechnology
+  DHCPConfigTypeEnum
 } from '../../constants'
 
 export * from './dhcpService'
+export * from './dpskService'
 export * from './wifiCallingService'
 export * from './networkSegmentationService'
 export * from './mdnsProxyService'
@@ -100,7 +100,7 @@ export enum VlanType {
 }
 
 export interface DHCPPool {
-  id: number;
+  id: string;
   name: string;
   description?: string;
   allowWired: boolean;
@@ -108,12 +108,15 @@ export interface DHCPPool {
   mask: string;
   excludedRangeStart?: string;
   excludedRangeEnd?: string;
-  primaryDNS: string;
-  secondaryDNS: string;
+  primaryDnsIp: string;
+  secondaryDnsIp: string;
   leaseTime: number;
+  leaseTimeHours: string;
+  leaseTimeMinutes: string;
   leaseUnit: string;
   vlan: number;
   dhcpOptions: DHCPOption[];
+  activated?: boolean;
 }
 
 export interface DHCPOption{
@@ -125,12 +128,12 @@ export interface DHCPOption{
 }
 
 export interface CreateDHCPFormFields {
-  name: string;
-  tags: string[];
-  createType: ServiceTechnology;
-  dhcpConfig: DHCPConfigTypeEnum;
+  serviceName: string;
+  // tags: string[];
+  // createType: ServiceTechnology;
+  dhcpMode: DHCPConfigTypeEnum;
   dhcpPools: DHCPPool[];
-  venues: DHCPVenue[];
+  venueIds: string[];
 }
 
 export interface DHCPSaveData extends CreateDHCPFormFields {
@@ -146,3 +149,25 @@ export interface DHCPVenue {
   venueId: string
   dhcpId: string
 }
+
+export interface VenueDHCPProfile {
+  serviceProfileId: string,
+  enabled: boolean,
+  dhcpServiceAps: DHCPProfileAps[]
+}
+
+export interface DHCPProfileAps {
+  serialNumber: string,
+  role: string
+}
+
+export interface DHCPLeases {
+  hostName: string,
+  ipAddress: string,
+  dhcpPoolId: string,
+  dhcpPoolName: string,
+  macAddress: string,
+  status: string,
+  leaseExpiration: string
+}
+

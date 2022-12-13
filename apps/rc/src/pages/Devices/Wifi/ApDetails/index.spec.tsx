@@ -59,7 +59,7 @@ describe('ApDetails', () => {
       activeTab: 'overview'
     }
     render(<Provider><ApDetails /></Provider>, {
-      route: { params, path: '/:tenantId/devices/aps/:serialNumber/details/:activeTab' }
+      route: { params, path: '/:tenantId/devices/wifi/:serialNumber/details/:activeTab' }
     })
 
     expect(await screen.findByText('Overview')).toBeVisible()
@@ -73,7 +73,7 @@ describe('ApDetails', () => {
       activeTab: 'analytics'
     }
     const { asFragment } = render(<Provider><ApDetails /></Provider>, {
-      route: { params, path: '/:tenantId/devices/aps/:serialNumber/details/:activeTab' }
+      route: { params, path: '/:tenantId/devices/wifi/:serialNumber/details/:activeTab' }
     })
     expect(asFragment()).toMatchSnapshot()
   })
@@ -85,7 +85,7 @@ describe('ApDetails', () => {
       activeTab: 'troubleshooting'
     }
     const { asFragment } = render(<Provider><ApDetails /></Provider>, {
-      route: { params, path: '/:tenantId/devices/aps/:serialNumber/details/:activeTab' }
+      route: { params, path: '/:tenantId/devices/wifi/:serialNumber/details/:activeTab' }
     })
     expect(asFragment()).toMatchSnapshot()
   })
@@ -97,7 +97,7 @@ describe('ApDetails', () => {
       activeTab: 'reports'
     }
     const { asFragment } = render(<Provider><ApDetails /></Provider>, {
-      route: { params, path: '/:tenantId/devices/aps/:serialNumber/details/:activeTab' }
+      route: { params, path: '/:tenantId/devices/wifi/:serialNumber/details/:activeTab' }
     })
     expect(asFragment()).toMatchSnapshot()
   })
@@ -109,7 +109,7 @@ describe('ApDetails', () => {
       activeTab: 'networks'
     }
     const { asFragment } = render(<Provider><ApDetails /></Provider>, {
-      route: { params, path: '/:tenantId/devices/aps/:serialNumber/details/:activeTab' }
+      route: { params, path: '/:tenantId/devices/wifi/:serialNumber/details/:activeTab' }
     })
     expect(asFragment()).toMatchSnapshot()
   })
@@ -121,7 +121,7 @@ describe('ApDetails', () => {
       activeTab: 'clients'
     }
     const { asFragment } = render(<Provider><ApDetails /></Provider>, {
-      route: { params, path: '/:tenantId/devices/aps/:serialNumber/details/:activeTab' }
+      route: { params, path: '/:tenantId/devices/wifi/:serialNumber/details/:activeTab' }
     })
     expect(asFragment()).toMatchSnapshot()
   })
@@ -133,7 +133,7 @@ describe('ApDetails', () => {
       activeTab: 'services'
     }
     const { asFragment } = render(<Provider><ApDetails /></Provider>, {
-      route: { params, path: '/:tenantId/devices/aps/:serialNumber/details/:activeTab' }
+      route: { params, path: '/:tenantId/devices/wifi/:serialNumber/details/:activeTab' }
     })
     expect(asFragment()).toMatchSnapshot()
   })
@@ -145,7 +145,7 @@ describe('ApDetails', () => {
       activeTab: 'timeline'
     }
     const { asFragment } = render(<Provider><ApDetails /></Provider>, {
-      route: { params, path: '/:tenantId/devices/aps/:serialNumber/details/:activeTab' }
+      route: { params, path: '/:tenantId/devices/wifi/:serialNumber/details/:activeTab' }
     })
     expect(asFragment()).toMatchSnapshot()
   })
@@ -157,7 +157,7 @@ describe('ApDetails', () => {
       activeTab: 'not-exist'
     }
     render(<Provider><ApDetails /></Provider>, {
-      route: { params, path: '/:tenantId/devices/aps/:serialNumber/details/:activeTab' }
+      route: { params, path: '/:tenantId/devices/wifi/:serialNumber/details/:activeTab' }
     })
 
     expect(screen.getAllByRole('tab').filter(x => x.getAttribute('aria-selected') === 'true'))
@@ -170,7 +170,7 @@ describe('ApDetails', () => {
       activeTab: 'overview'
     }
     render(<Provider><ApDetails /></Provider>, {
-      route: { params, path: '/:tenantId/devices/aps/:serialNumber/details/:activeTab' }
+      route: { params, path: '/:tenantId/devices/wifi/:serialNumber/details/:activeTab' }
     })
 
     await userEvent.click(await screen.findByRole('button', { name: 'Configure' }))
