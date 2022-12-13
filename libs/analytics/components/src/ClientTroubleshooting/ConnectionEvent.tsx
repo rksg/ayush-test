@@ -1,17 +1,16 @@
 import React from 'react'
 
 import { Popover } from 'antd'
-import { useIntl } from 'react-intl'
 
 import { clientEventDescription, mapCodeToReason } from '@acx-ui/analytics/utils'
-import { formatter }                               from '@acx-ui/utils'
+import { formatter, getIntl }                      from '@acx-ui/utils'
 
 import { FAILURE, DisplayEvent, SLOW, DISCONNECT } from './config'
 import Details                                     from './EventDetails'
 import * as UI                                     from './styledComponents'
 
 const useConnectionDetail = (event: DisplayEvent) => {
-  const intl = useIntl()
+  const intl = getIntl()
   const { $t } = intl
   const isFailure = event.category === FAILURE
   const isSlow = event.category === SLOW
@@ -59,7 +58,7 @@ const useConnectionDetail = (event: DisplayEvent) => {
   return eventDetails
 }
 
-export function ConnectionEvent ({ children, event }:
+export function ConnectionEventPopover ({ children, event }:
   { children?: React.ReactNode, event: DisplayEvent }) {
   const [open, setOpen] = React.useState(false)
   const handleOpenChange = (newOpen: boolean) => { setOpen(newOpen) }

@@ -131,6 +131,7 @@ export const useDotClick = (
     const data = params.data as [number, string, ConfigChange]
     setSelected(data[2].mac as unknown as number)
     onDotClick && onDotClick(data[2])
+    // need to edit to listen to mouse event
   }, [setSelected, onDotClick])
 
   useEffect(() => {

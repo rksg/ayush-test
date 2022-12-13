@@ -17,7 +17,7 @@ import { formatter }              from '@acx-ui/utils'
 
 
 import { ClientTroubleShootingConfig, SUCCESS, FAILURE, SLOW, DISCONNECT, transformEvents, TYPES, DisplayEvent } from './config'
-import { ClientInfoData,ConnectionEvent }                                                                        from './services'
+import { ClientInfoData, ConnectionEvent }                                                                       from './services'
 import * as UI                                                                                                   from './styledComponents'
 
 import { Filters } from '.'
@@ -153,10 +153,7 @@ export function TimeLine (props : TimeLineProps){
                   }
                   tooltopEnabled
                   tooltipFormatter={tooltipFormatter}
-                  onDotClick={(params) => {
-                    // eslint-disable-next-line no-console
-                    console.log(params)
-                  }}
+                  onDotClick={() => {}}
                   mapping={config.chartMapping}
                 />
               ) : (
@@ -186,10 +183,7 @@ export function TimeLine (props : TimeLineProps){
                   key={index}
                   tooltipFormatter={tooltipFormatter}
                   tooltopEnabled
-                  onDotClick={(params) => {
-                    // eslint-disable-next-line no-console
-                    console.log(params as DisplayEvent)
-                  }}
+                  onDotClick={() => {}}
                   mapping={subtitle.chartMapping}
                 />
               ) : (

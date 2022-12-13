@@ -1,7 +1,7 @@
 import { cleanup, render, fireEvent, screen } from '@acx-ui/test-utils'
 
 import { DisplayEvent }    from './config'
-import { ConnectionEvent } from './ConnectionEvent'
+import { ConnectionEventPopover } from './ConnectionEvent'
 
 const successEvent: DisplayEvent = {
   timestamp: '2022-11-14T06:33:31.646Z',
@@ -111,37 +111,37 @@ describe('ConnectionEvent', () => {
   afterEach(() => cleanup())
 
   it('renders correctly for success event', async () => {
-    const { asFragment } = render(<ConnectionEvent event={successEvent}>test</ConnectionEvent>)
+    const { asFragment } = render(<ConnectionEventPopover event={successEvent}>test</ConnectionEventPopover>)
     fireEvent.click(await screen.findByText(/test/i))
     expect(asFragment()).toMatchSnapshot()
   })
 
   it('renders correctly for failureEvent event', async () => {
-    const { asFragment } = render(<ConnectionEvent event={failureEvent}>test</ConnectionEvent>)
+    const { asFragment } = render(<ConnectionEventPopover event={failureEvent}>test</ConnectionEventPopover>)
     fireEvent.click(await screen.findByText(/test/i))
     expect(asFragment()).toMatchSnapshot()
   })
 
   it('renders correctly for disconnect event', async () => {
-    const { asFragment } = render(<ConnectionEvent event={disconnectEvent}>test</ConnectionEvent>)
+    const { asFragment } = render(<ConnectionEventPopover event={disconnectEvent}>test</ConnectionEventPopover>)
     fireEvent.click(await screen.findByText(/test/i))
     expect(asFragment()).toMatchSnapshot()
   })
 
   it('renders correctly for slow event', async () => {
-    const { asFragment } = render(<ConnectionEvent event={slowEvent}>test</ConnectionEvent>)
+    const { asFragment } = render(<ConnectionEventPopover event={slowEvent}>test</ConnectionEventPopover>)
     fireEvent.click(await screen.findByText(/test/i))
     expect(asFragment()).toMatchSnapshot()
   })
 
   it('renders correctly for unknown radio', async () => {
-    const { asFragment } = render(<ConnectionEvent event={unknownRadio}>test</ConnectionEvent>)
+    const { asFragment } = render(<ConnectionEventPopover event={unknownRadio}>test</ConnectionEventPopover>)
     fireEvent.click(await screen.findByText(/test/i))
     expect(asFragment()).toMatchSnapshot()
   })
 
   it('renders correctly for unknown failure', async () => {
-    const { asFragment } = render(<ConnectionEvent event={unknownFailure}>test</ConnectionEvent>)
+    const { asFragment } = render(<ConnectionEventPopover event={unknownFailure}>test</ConnectionEventPopover>)
     fireEvent.click(await screen.findByText(/test/i))
     expect(asFragment()).toMatchSnapshot()
   })

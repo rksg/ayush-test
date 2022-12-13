@@ -1,4 +1,4 @@
-import { Fragment, Attributes } from 'react'
+import { Fragment } from 'react'
 
 import { useIntl } from 'react-intl'
 
@@ -7,9 +7,8 @@ import { CloseSymbol } from '@acx-ui/icons'
 import * as UI from './styledComponents'
 
 
-const DetailsRow = ({ key, label, value }:
-  { key: Attributes['key'], label: string, value: string }) => {
-  return <Fragment key={key}>
+const DetailsRow = ({ label, value }: { label: string, value: string }) => {
+  return <Fragment key={value}>
     <UI.RowLabel>{label}</UI.RowLabel>
     <UI.RowValue>{value}</UI.RowValue>
   </Fragment>
