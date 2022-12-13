@@ -6,7 +6,7 @@ import { useIntl }  from 'react-intl'
 import {
   useAnalyticsFilter
 } from '@acx-ui/analytics/utils'
-import { showToast }                           from '@acx-ui/components'
+import { GridCol, GridRow, showToast }                           from '@acx-ui/components'
 import {
   useLazyGetApCapabilitiesQuery,
   useLazyGetApQuery,
@@ -27,6 +27,7 @@ import {
 import { ClientOverviewWidget } from './ClientOverviewWidget'
 import { ClientProperties }     from './ClientProperties'
 import * as UI                  from './styledComponents'
+import { TrafficByUsage, TrafficByVolume } from '@acx-ui/analytics/components'
 
 const clientPayload = {
   searchString: '',
@@ -142,8 +143,8 @@ export function ClientOverviewTab () {
     }
   }, [filters, isTribandAp])
 
-  return <Row gutter={24}>
-    <Col span={18}>
+  return <GridRow>
+    <GridCol col={{ span: 18 }}>
       <UI.CardWrapper>
         <ClientOverviewWidget
           clientStatistic={clientStatistics}
@@ -151,12 +152,27 @@ export function ClientOverviewTab () {
           clientDetails={clientDetails}
         />
       </UI.CardWrapper>
-    </Col>
-    <Col span={6}>
+      <GridRow>
+        <GridCol col={{ span: 24 }} style={{ marginTop: '12px', height: '292px', background: '#F7F7F7' }}>
+          {$t({ defaultMessage: 'TODO: Top 10 Applications by traffic volume' })}
+        </GridCol>
+      </GridRow>
+      <GridRow>
+        <GridCol col={{ span: 24 }} style={{ marginTop: '12px', height: '292px' }}>
+          <TrafficByUsage filters={{...filters, mac: clientId}} />
+        </GridCol>
+      </GridRow>
+      <GridRow>
+        <GridCol col={{ span: 24 }} style={{ marginTop: '12px', height: '292px' }}>
+          {/* <TrafficByVolume filters={filters} /> */}
+        </GridCol>
+      </GridRow>
+    </GridCol>
+    <GridCol col={{ span: 6 }}>
       <ClientProperties
         clientStatus={clientStatus}
         clientDetails={clientDetails}
       />
-    </Col>
-  </Row>
+    </GridCol>
+  </GridRow>
 }
