@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Col, Form, Input, RadioChangeEvent, Row, Space } from 'antd'
 import { Radio }                                          from 'antd'
+import Checkbox, { CheckboxChangeEvent }                  from 'antd/lib/checkbox'
 import { useIntl }                                        from 'react-intl'
 
-import { Drawer, showToast }                   from '@acx-ui/components'
+import { Button, Drawer, showToast }           from '@acx-ui/components'
 import { useUpdateRadiusClientConfigMutation } from '@acx-ui/rc/services'
 import { ClientConfig }                        from '@acx-ui/rc/utils'
 
@@ -12,60 +13,89 @@ interface IpAddressDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
   editMode: boolean
+  editIpAddress?: string
   clientConfig: ClientConfig
+}
+
+interface ipAddressForm {
+  singleIpAddress : string
 }
 
 export function IpAddressDrawer (props: IpAddressDrawerProps) {
   const { $t } = useIntl()
-  const { visible, setVisible, editMode, clientConfig } = props
+  const { visible, setVisible, editMode, clientConfig, editIpAddress } = props
   const [form] = Form.useForm()
   const [addType, setAddType ] = useState(1)
   const [resetField, setResetField] = useState(false)
-  const [updateConfig] = useUpdateRadiusClientConfigMutation()
-  const [singleIpAddress, setSingleIpAddress] = useState('')
+  const [updateConfig, updateConfigState] = useUpdateRadiusClientConfigMutation()
+  const [checked, setChecked] = useState(false)
 
   const resetFields = () => {
     setResetField(true)
+    setChecked(false)
     onClose()
   }
+
+  useEffect(()=>{
+    if (editIpAddress !== null && visible) {
+      form.setFieldValue('singleIpAddress', editIpAddress)
+    }
+  }, [editIpAddress, visible])
 
   const onClose = () => {
     setVisible(false)
     form.resetFields()
   }
 
-  const footer = (
-    <Drawer.FormFooter
-      showAddAnother={true}
-      onCancel={resetFields}
-      buttonLabel={({
-        addAnother: $t({ defaultMessage: 'Add Another Address' }),
-        save: editMode ? $t({ defaultMessage: 'Save' }) : $t({ defaultMessage: 'Add' })
-      })}
-      onSave={async (addAnotherRuleChecked: boolean) => {
-        try {
-          await form.validateFields()
-          try {
-            const payload = {
-              ipAddress: clientConfig.ipAddress?.concat(singleIpAddress)
-            }
-            await updateConfig({ payload }).unwrap()
-            form.resetFields()
-          } catch {
-            showToast({
-              type: 'error',
-              content: $t({ defaultMessage: 'An error occurred' })
-            })
-          }
-          if (!addAnotherRuleChecked) {
-            onClose()
-          }
-        } catch (error) {
-          console.log(error) // eslint-disable-line no-console
+  const onSubmit = async (data: ipAddressForm) => {
+    try {
+      let payload
+      if(editMode) {
+        payload = {
+          // eslint-disable-next-line max-len
+          ipAddress: clientConfig.ipAddress?.filter((e) => e !== editIpAddress).concat(data.singleIpAddress)
         }
-      }}
-    />
-  )
+      }else {
+        payload = {
+          ipAddress: clientConfig.ipAddress?.concat(data.singleIpAddress)
+        }
+      }
+      await updateConfig({ payload }).unwrap()
+      form.resetFields()
+      if (!checked) {
+        onClose()
+      }
+    } catch {
+      showToast({
+        type: 'error',
+        content: $t({ defaultMessage: 'An error occurred' })
+      })
+    }
+  }
+
+  const footer = [
+    <div key='footerAddAnother'>
+      {!editMode &&
+        < Checkbox
+          onChange={(e: CheckboxChangeEvent) => setChecked(e.target.checked)}
+          checked={checked}
+          children='Add Another IP Address'
+        />
+      }
+    </div>,
+    <div key='footer'>
+      <Button key='cancel' onClick={resetFields} >
+        { $t({ defaultMessage: 'Cancel' }) }
+      </Button>
+      <Button
+        key='submit'
+        type={'secondary'}
+        onClick={() => form.submit()}
+        loading={updateConfigState.isLoading}>
+        Apply
+      </Button>
+    </div>
+  ]
 
   const onRadioChange = (e: RadioChangeEvent) => {
     setAddType(e.target.value)
@@ -80,7 +110,7 @@ export function IpAddressDrawer (props: IpAddressDrawerProps) {
     return Promise.resolve()
   }
 
-  const content = <Form layout='vertical' form={form}>
+  const content = <Form layout='vertical' form={form} onFinish={onSubmit}>
     <Form.Item name='addressType' initialValue={1}>
       <Radio.Group value={addType} onChange={onRadioChange}>
         <Space direction='vertical'>
@@ -96,11 +126,10 @@ export function IpAddressDrawer (props: IpAddressDrawerProps) {
             name='singleIpAddress'
             label='IP Address'
             rules={[
-              { required: true, message: $t({ defaultMessage: 'Please enter ip address' }) },
+              { required: true },
               { validator: (_, value) => ipAddressRegExp(value) }
             ]}
-            children={<Input value={singleIpAddress}
-              onChange={(e) => setSingleIpAddress(e.target.value)}/>}/>
+            children={<Input/>}/>
         </Col>
       </Row>
     }
@@ -130,7 +159,8 @@ export function IpAddressDrawer (props: IpAddressDrawerProps) {
 
   return (
     <Drawer
-      title={$t({ defaultMessage: 'Add Incoming IP Address' })}
+      // eslint-disable-next-line max-len
+      title={editMode ? $t({ defaultMessage: 'Edit Incoming IP Address' }): $t({ defaultMessage: 'Add Incoming IP Address' })}
       visible={visible}
       onClose={() => setVisible(false)}
       children={content}
