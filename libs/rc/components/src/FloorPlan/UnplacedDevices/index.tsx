@@ -1,8 +1,8 @@
-import { ReactNode, useState } from 'react'
+import { ChangeEvent, ReactNode, useEffect, useState } from 'react'
 
-import { Divider, Dropdown, Input, Menu, Space } from 'antd'
-import { remove }                                from 'lodash'
-import { useIntl }                               from 'react-intl'
+import { Divider, Dropdown, Input, Menu, Space, Typography } from 'antd'
+import { remove }                                            from 'lodash'
+import { useIntl }                                           from 'react-intl'
 
 import { Button }                                                   from '@acx-ui/components'
 import { ArrowExpand, SearchOutlined }                              from '@acx-ui/icons'
@@ -39,12 +39,32 @@ export function UnplacedDevices (props: { unplacedDevicesState: TypeWiseNetworkD
   const unplacedDevices: NetworkDevice[] = []
 
   const [selectedDeviceType, setSelectedDeviceType] = useState<string>('All')
+  const [filterDevices, setFilteredDevices] = useState<NetworkDevice[]>()
+  const [filteredText, setFilteredText] = useState<string>('')
   Object.values(unplacedDevicesState)
     .forEach(item => { if(item.length) {unplacedDevices.push(...item)} })
 
   const { $t } = useIntl()
 
   const networkDeviceTypeArray = Object.values(NetworkDeviceType)
+
+  useEffect(() => {
+    setFilteredDevices([])
+
+    if (selectedDeviceType === 'All') {
+      const _filtered: NetworkDevice[] = unplacedDevices
+        .filter((device) => device.name.toLowerCase()
+          .includes(filteredText.toLowerCase()))
+      setFilteredDevices(_filtered)
+    } else {
+      const _filtered: NetworkDevice[] = unplacedDevices
+        .filter((device) => device.networkDeviceType === selectedDeviceType
+        && device.name.toLowerCase()
+          .includes(filteredText.toLowerCase()))
+      setFilteredDevices(_filtered)
+    }
+
+  }, [filteredText, selectedDeviceType, unplacedDevicesState])
 
   // need to handle this with lte_enabled once we get lte_enabled status from userProfile.
   // refer current implentation in rc-ui. for now skipping lte_ap
@@ -70,6 +90,11 @@ export function UnplacedDevices (props: { unplacedDevicesState: TypeWiseNetworkD
     setSelectedDeviceType(item.selectedKeys[0])
   }
 
+  function filterByName (ev: ChangeEvent) {
+    const text = (ev.target as HTMLInputElement).value
+    setFilteredText(text)
+  }
+
   const menuItems = <Menu
     selectable
     defaultSelectedKeys={['All']}
@@ -89,14 +114,21 @@ export function UnplacedDevices (props: { unplacedDevicesState: TypeWiseNetworkD
         style={{ width: '144px', maxHeight: '180px' }}
         placeholder={$t({ defaultMessage: 'Search...' })}
         prefix={<SearchOutlined />}
+        onChange={filterByName}
       />
       <Divider type='vertical' style={{ margin: '0 4px' }}/>
       <Dropdown overlay={menuItems}>
         <Button data-testid='trigger' size='middle' style={{ width: '108px' }}>
           <Space>
-            { selectedDeviceType !== 'All'
-              ? getDeviceFilterLabel(selectedDeviceType as NetworkDeviceType)
-              : $t({ defaultMessage: 'All' }) }
+            <Typography.Paragraph
+              ellipsis={{ rows: 1, expandable: false }}
+              style={{
+                width: '72px',
+                margin: '0'
+              }}> { selectedDeviceType !== 'All'
+                ? getDeviceFilterLabel(selectedDeviceType as NetworkDeviceType)
+                : $t({ defaultMessage: 'All' }) }
+            </Typography.Paragraph>
             <ArrowExpand />
           </Space>
         </Button>
@@ -113,9 +145,7 @@ export function UnplacedDevices (props: { unplacedDevicesState: TypeWiseNetworkD
           { $t({ defaultMessage: 'Close' } )}</Button></div>
     }
     bordered
-    dataSource={selectedDeviceType === 'All' ?
-      unplacedDevices
-      : unplacedDevices.filter((device) => device.networkDeviceType === selectedDeviceType)}
+    dataSource={filterDevices}
     renderItem={(item) =>
       (<UnplacedDevice device={item as NetworkDevice}/> as ReactNode)}
   />
