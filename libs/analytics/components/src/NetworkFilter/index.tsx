@@ -233,11 +233,7 @@ function ConnectedNetworkFilter (
           dropdownAlign={{
             // https://github.com/react-component/trigger/blob/eac2f8f3b846b14cc5663af8a148201361835587/src/interface.ts#L9
             useCssTransform: true,
-            points: ['tr','bc'],
-            overflow: {
-              adjustX: true,
-              adjustY: true
-            }
+            points: ['tr','bc']
           }}
         />
       </Loader>
