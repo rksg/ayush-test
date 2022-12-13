@@ -71,7 +71,7 @@ export default function NetworkSegAuthDetail () {
   const payload = {
     searchString: '',
     filters: {
-      id: [params.webAuthId]
+      id: [params.serviceId]
     },
     fields: [
       'name', 'id',
@@ -116,7 +116,7 @@ export default function NetworkSegAuthDetail () {
             to={getServiceDetailsLink({
               type: ServiceType.WEBAUTH_SWITCH,
               oper: ServiceOperation.EDIT,
-              serviceId: params.webAuthId as string
+              serviceId: params.serviceId as string
             })}
             key='edit'
           >
@@ -126,40 +126,6 @@ export default function NetworkSegAuthDetail () {
       />
       <Card title={$t({ defaultMessage: 'Attributes' })}>
         <NetworkSegAuthSummary data={data} />
-        {/*        <Form layout='vertical' wrapperCol={{ span: 14 }} labelCol={{ span: 14 }}>
-          <GridRow>
-            <GridCol col={{ span: 6 }}>
-              <Form.Item label={$t({ defaultMessage: 'Header' })} >
-                <Typography.Paragraph ellipsis={true} children={data?.webAuth_custom_top} />
-              </Form.Item>
-            </GridCol>
-            <GridCol col={{ span: 6 }}>
-              <Form.Item
-                label={$t({ defaultMessage: 'Title' })}
-                children={<Typography.Paragraph ellipsis={true} children={data?.webAuth_custom_title} />} />
-            </GridCol>
-            <GridCol col={{ span: 6 }}>
-              <Form.Item
-                label={$t({ defaultMessage: 'Password Label' })}
-                children={<Typography.Paragraph ellipsis={true} children={data?.webAuth_password_label} />} />
-            </GridCol>
-            <GridCol col={{ span: 6 }}>
-              <Form.Item
-                label={$t({ defaultMessage: 'Tags' })}
-                children={<Typography.Paragraph ellipsis={true} children={data?.tag} />} />
-            </GridCol>
-            <GridCol col={{ span: 6 }}>
-              <Form.Item
-                label={$t({ defaultMessage: 'Button' })}
-                children={<Typography.Paragraph ellipsis={true} children={data?.webAuth_custom_login_button} />} />
-            </GridCol>
-            <GridCol col={{ span: 18 }}>
-              <Form.Item
-                label={$t({ defaultMessage: 'Footer' })}
-                children={<Typography.Paragraph ellipsis={true} children={data?.webAuth_custom_bottom} />} />
-            </GridCol>
-          </GridRow>
-        </Form>*/}
       </Card>
       <br /><br />
 

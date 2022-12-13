@@ -1,13 +1,11 @@
 import { Form } from 'antd'
 import styled   from 'styled-components/macro'
 
-export const FormItemWithReset = styled(Form.Item)`
-  .ant-input-group > .ant-input {
-    border-radius: 4px;
+export const TextAreaWithReset = styled(Form.Item)`
+  .ant-form-item-control-input-content > .ant-form-item {
+    margin-bottom: 0;
   }
-
-  .ant-input-group-addon {
-    border: 0;
-    background-color: transparent;
+  .ant-form-item-control-input-content > .ant-btn {
+    width: 130px
   }
 `
