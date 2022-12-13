@@ -141,6 +141,7 @@ export function RadioSettingsChannels (props: {
             onChange={handleClickGroupChannels}
             options={channelGroupList?.map((group: channelGroupOption) => ({
               label: <Tooltip
+                key={group?.channels?.[0].value}
                 title={disabled
                   ? ''
                   : (group.selected

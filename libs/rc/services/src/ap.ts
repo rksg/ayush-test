@@ -33,7 +33,8 @@ import {
   PacketCaptureState,
   Capabilities,
   PacketCaptureOperationResponse,
-  ApRadioCustomization
+  ApRadioCustomization,
+  VenueDefaultRegulatoryChannels
 } from '@acx-ui/rc/utils'
 import { formatter } from '@acx-ui/utils'
 
@@ -403,7 +404,8 @@ export const apApi = baseApApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'Details' }, { type: 'Ap', id: 'LanPorts' }]
     }),
 
     startPacketCapture: build.mutation<PacketCaptureOperationResponse, RequestPayload>({
@@ -424,6 +426,14 @@ export const apApi = baseApApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Ap', id: 'Details' }, { type: 'Ap', id: 'LanPorts' }]
+    }),
+    getApValidChannel: build.query<VenueDefaultRegulatoryChannels, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getApValidChannel, params)
+        return {
+          ...req
+        }
+      }
     })
   })
 })
@@ -472,7 +482,8 @@ export const {
   useGetApCapabilitiesQuery,
   useLazyGetApCapabilitiesQuery,
   useUpdateApCustomizationMutation,
-  useResetApCustomizationMutation
+  useResetApCustomizationMutation,
+  useGetApValidChannelQuery
 } = apApi
 
 
