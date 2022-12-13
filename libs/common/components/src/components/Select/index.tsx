@@ -3,9 +3,9 @@ import React from 'react'
 import {
   CascaderProps as AntCascaderProps
 } from 'antd'
-import { DefaultOptionType } from 'antd/es/cascader'
-import { SingleValueType }   from 'rc-cascader/lib/Cascader'
-import { useIntl }           from 'react-intl'
+import { DefaultOptionType }                         from 'antd/es/cascader'
+import { SingleValueType }                           from 'rc-cascader/lib/Cascader'
+import { useIntl, defineMessage, MessageDescriptor } from 'react-intl'
 
 import { Button } from '../Button'
 
@@ -27,11 +27,24 @@ export type CascaderProps = AntCascaderProps<Option> & {
   onApply: (
     cascaderSelected: SingleValueType | SingleValueType[] | undefined
   ) => void
+  entityName: {
+    singular: MessageDescriptor
+    plural: MessageDescriptor
+  }
 }
 
+Select.defaultProps = {
+  entityName: {
+    singular: defineMessage({ defaultMessage: 'item' }),
+    plural: defineMessage({ defaultMessage: 'items' })
+  }
+}
 
-export function NetworkFilter (props: CascaderProps) {
-  const { onApply, ...antProps } = props
+const selectedItemsDesc = defineMessage({
+  defaultMessage: '{count} {count, plural, one {{singular}} other {{plural}}} selected'
+})
+export function Select (props: CascaderProps) {
+  const { onApply, entityName, ...antProps } = props
   const { $t } = useIntl()
   const initialValues = props.defaultValue || []
   const [
@@ -76,22 +89,42 @@ export function NetworkFilter (props: CascaderProps) {
         </Button>
       </UI.ButtonDiv>
     </>
-
-    return <UI.Cascader
-      {...antProps}
-      value={currentValues}
-      multiple
-      onChange={setCurrentValues}
-      dropdownRender={withFooter}
-      expandTrigger='hover'
-      maxTagCount='responsive'
-      showSearch
-      onDropdownVisibleChange={setOpen}
-      open={open}
-      getPopupContainer={(triggerNode) => triggerNode.parentNode}
-      onClear={antProps.allowClear ? onClearMultiple : undefined}
-      removeIcon={open ? undefined : null}
-    />
+    const currentLabels = antProps.options?.reduce(
+      (acc: React.ReactNode[], option: Option) => {
+        if ((currentValues as string[]).flat().includes(option.value as string))
+          return [...acc, option.label]
+        return acc
+      },
+      []
+    )
+    return (
+      <UI.Cascader
+        {...antProps}
+        style={{ maxWidth: 180 }}
+        showArrow={true}
+        value={currentValues}
+        multiple
+        onChange={setCurrentValues}
+        dropdownRender={withFooter}
+        expandTrigger='hover'
+        maxTagCount='responsive'
+        showSearch
+        onDropdownVisibleChange={setOpen}
+        open={open}
+        getPopupContainer={(triggerNode) => triggerNode.parentNode}
+        onClear={antProps.allowClear ? onClearMultiple : undefined}
+        removeIcon={open ? undefined : null}
+        maxTagPlaceholder={
+          <div title={currentLabels?.join(', ')}>
+            {$t(selectedItemsDesc,{
+              count: currentValues.length,
+              singular: $t(entityName.singular),
+              plural: $t(entityName.plural)
+            })}
+          </div>
+        }
+      />
+    )
   } else {
     return <UI.Cascader
       {...antProps}

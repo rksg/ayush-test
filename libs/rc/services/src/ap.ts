@@ -404,7 +404,8 @@ export const apApi = baseApApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'Details' }, { type: 'Ap', id: 'LanPorts' }]
     }),
 
     startPacketCapture: build.mutation<PacketCaptureOperationResponse, RequestPayload>({

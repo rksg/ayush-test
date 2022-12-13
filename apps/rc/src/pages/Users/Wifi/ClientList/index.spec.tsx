@@ -36,7 +36,7 @@ describe('ClientList', () => {
   })
 
   it('should render list correctly', async () => {
-    const { asFragment } = render(
+    render(
       <Provider>
         <ClientList />
       </Provider>, {
@@ -44,7 +44,6 @@ describe('ClientList', () => {
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    expect(asFragment()).toMatchSnapshot()
     fireEvent.click(await screen.findByRole('tab', { name: 'Guest Pass Credentials' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: `/t/${params.tenantId}/users/wifi/guests`,
