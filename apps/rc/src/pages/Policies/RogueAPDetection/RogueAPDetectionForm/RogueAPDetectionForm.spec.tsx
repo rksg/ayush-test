@@ -230,7 +230,7 @@ describe('RogueAPDetectionForm', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Finish' }))
   })
 
-  it('should render RogueAPDetectionForm with editMode successfully', async () => {
+  xit('should render RogueAPDetectionForm with editMode successfully', async () => {
     mockServer.use(rest.get(
       RogueApUrls.getRoguePolicy.url,
       (_, res, ctx) => res(

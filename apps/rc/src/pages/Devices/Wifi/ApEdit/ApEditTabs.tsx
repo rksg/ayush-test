@@ -4,7 +4,6 @@ import { useIntl } from 'react-intl'
 
 import { Tabs }                                   from '@acx-ui/components'
 import { useApViewModelQuery }                    from '@acx-ui/rc/services'
-import { ApVenueStatusEnum }                      from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useParams,
@@ -72,7 +71,7 @@ function ApEditTabs () {
   return (
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>
       <Tabs.TabPane tab={intl.$t({ defaultMessage: 'AP Details' })} key='details' />
-      { currentAP?.deviceStatusSeverity === ApVenueStatusEnum.OPERATIONAL
+      { typeof currentAP?.model !== 'undefined'
         && <Tabs.TabPane tab={intl.$t({ defaultMessage: 'Settings' })} key='settings' /> }
     </Tabs>
   )
