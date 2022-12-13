@@ -227,7 +227,6 @@ function ConnectedNetworkFilter (
           value={raw}
           options={queryResults.data}
           onApply={(value) => onApply(value, setNetworkPath)}
-          placement='bottomRight'
           displayRender={displayRender}
           showSearch={{ filter: search }}
           allowClear
