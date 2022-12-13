@@ -273,8 +273,6 @@ describe('RogueAPDetectionForm', () => {
     fireEvent.change(screen.getByRole('textbox', { name: /policy name/i }),
       { target: { value: 'test6' } })
 
-    await screen.findByText(/add rule/i)
-
     fireEvent.click(screen.getByRole('button', {
       name: /add rule/i
     }))
@@ -292,6 +290,8 @@ describe('RogueAPDetectionForm', () => {
 
 
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+
+    await screen.findByRole('heading', { name: 'Scope', level: 3 })
 
     await screen.findByText('test-venue2')
 
