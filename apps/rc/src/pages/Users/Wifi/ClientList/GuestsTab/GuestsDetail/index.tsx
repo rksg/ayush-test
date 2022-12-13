@@ -212,10 +212,16 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
         guestDetail.guestStatus === GuestStatusEnum.DISABLED) {
           return false
         } else if (guestDetail.guestStatus === GuestStatusEnum.EXPIRED
-          && (item.key === 'disableGuest' || item.key === 'enableGuest'
-            || item.key === 'generatePassword')) {
+          && (item.key === 'disableGuest' || item.key === 'enableGuest')) {
           return false
         }
+
+        if (item.key === 'generatePassword') {
+          return guestDetail.guestStatus === GuestStatusEnum.ONLINE ||
+            ((guestDetail.guestStatus === GuestStatusEnum.OFFLINE) &&
+              guestDetail.networkId && !guestDetail.socialLogin)
+        }
+
         return true
       })}
     />

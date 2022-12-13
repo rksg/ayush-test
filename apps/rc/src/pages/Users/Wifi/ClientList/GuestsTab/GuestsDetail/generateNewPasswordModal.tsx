@@ -1,12 +1,30 @@
 import { useState } from 'react'
 
 import { Checkbox, Form, Tooltip, Typography } from 'antd'
+import moment                                  from 'moment'
+import { useParams }                           from 'react-router-dom'
 
 import { cssStr, Modal, showToast }         from '@acx-ui/components'
 import { useGenerateGuestPasswordMutation } from '@acx-ui/rc/services'
-import { Guest }                            from '@acx-ui/rc/utils'
-import { getIntl }                          from '@acx-ui/utils'
+import {
+  useLazyGetNetworkQuery,
+  useLazyGetUserProfileQuery
+} from '@acx-ui/rc/services'
+import {
+  getGuestDictionaryByLangCode,
+  Guest,
+  LangCode,
+  PdfGeneratorService
+} from '@acx-ui/rc/utils'
+import { getIntl } from '@acx-ui/utils'
 
+import {
+  genUpdatedTemplate,
+  getHumanizedLocale,
+  getMomentLocale,
+  humanizedDate,
+  genTemplate
+} from '../GuestsTable/addGuestDrawer'
 import {
   CheckboxLabel,
   EnvelopClosedOutlinedIcon,
@@ -28,6 +46,10 @@ export function GenerateNewPasswordModal (props: {
   }
 
   const [generateGuestPassword] = useGenerateGuestPasswordMutation()
+  const [getNetwork] = useLazyGetNetworkQuery()
+  const [getUserProfile] = useLazyGetUserProfileQuery()
+  const params = useParams()
+
 
   const saveModal = (async () => {
     try {
@@ -36,9 +58,12 @@ export function GenerateNewPasswordModal (props: {
         tenantId: props.tenantId,
         guestId: props.guestDetail.id
       }
-      await generateGuestPassword({ params, payload }).unwrap().then(
-        closeModal
-      )
+      await generateGuestPassword({ params, payload }).unwrap()
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .then((data: any) => {
+          handleGuestPassResponse(data.response)
+          closeModal()
+        })
     } catch {
       showToast({
         type: 'error',
@@ -46,6 +71,81 @@ export function GenerateNewPasswordModal (props: {
       })
     }
   })
+
+
+  const handleGuestPassResponse = async (jsonGuest: Guest ) => {
+    let printCondition = jsonGuest.deliveryMethods.indexOf('PRINT') !== -1
+    let guest= { ...jsonGuest, langCode: '' }
+
+    if (printCondition) {
+      const networkData = await getNetwork({
+        params: { tenantId: params.tenantId, networkId: jsonGuest.networkId }
+      })
+      const langCode = (networkData?.data && networkData?.data?.guestPortal &&
+        networkData?.data?.guestPortal?.guestPage &&
+        networkData?.data?.guestPortal?.guestPage.langCode) || ''
+      guest.langCode = langCode
+      generateGuestPrint(guest, false)
+    }
+  }
+
+  const generateGuestPrint = async (guests: Guest,
+    useUpdatedTemplate: boolean, expiresDate?: string) => {
+    const guestToPrint = prepareGuestToPrint(guests, expiresDate)
+    const printTemplate = getGuestPrintTemplate(await guestToPrint, useUpdatedTemplate)
+    const pdfGenerator = new PdfGeneratorService()
+    pdfGenerator.generatePrint(printTemplate)
+  }
+
+  const getGuestPrintTemplate =
+  (guestDetails: { langCode: LangCode }, useUpdatedTemplate: boolean) => {
+    const langDictionary = getGuestDictionaryByLangCode(guestDetails.langCode)
+    return (useUpdatedTemplate) ?
+      genUpdatedTemplate(guestDetails, langDictionary) :
+      genTemplate(guestDetails, langDictionary)
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const prepareGuestToPrint = async (guest: any, expiresDate: any) =>{
+    const currentMoment = moment()
+    const userProfile = await getUserProfile({ params })
+    const currentDate = currentMoment.format(userProfile.data?.dateFormat.toUpperCase())
+    const langCode = guest.langCode || guest.locale
+    const momentLocale = getMomentLocale(langCode)
+    moment.locale(momentLocale)
+
+    const name = guest.name
+    const wifiNetwork = guest.ssid
+    let password = ''
+    let guestExpiresDate = expiresDate
+
+    if (guest.password) {
+      password = guest.password
+      if (!guestExpiresDate) {
+        if (guest.expirationDate) {
+          guestExpiresDate = guest.expirationDate
+        } else {
+          if (guest.expiration.unit === 'Hour') {
+            guestExpiresDate = currentMoment.clone().add('hours', guest.expiration.duration)
+          } else {
+            guestExpiresDate = currentMoment.clone().add('days', guest.expiration.duration)
+          }
+        }
+      }
+    }
+    const validForDuration = moment(guestExpiresDate).diff(currentMoment)
+    const huminitazationLangCode = getHumanizedLocale(langCode) || ''
+    const validFor = humanizedDate(validForDuration, huminitazationLangCode)
+
+    return {
+      validFor: validFor,
+      currentDate: currentDate,
+      password: password,
+      wifiNetwork: wifiNetwork,
+      name: name,
+      langCode: langCode
+    }
+  }
 
   const { $t } = getIntl()
   const [form] = Form.useForm()
@@ -112,7 +212,6 @@ export function GenerateNewPasswordModal (props: {
             <Checkbox
               value='PRINT'
               style={{ marginLeft: '0px', alignItems: 'start' }}
-              disabled={true} //Wait for merge code from add guest
             >
               <PrinterOutlinedIcon />
               <CheckboxLabel>{$t({ defaultMessage: 'Print Guest pass' })}</CheckboxLabel>
