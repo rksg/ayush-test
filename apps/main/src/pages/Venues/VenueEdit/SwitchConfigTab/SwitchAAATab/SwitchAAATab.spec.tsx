@@ -84,11 +84,6 @@ describe('SwitchAAATab', () => {
     )
     render(<Provider><SwitchAAATab /></Provider>, { route: { params } })
 
-    await waitForElementToBeRemoved(
-      () => screen.queryAllByRole('img', { name: 'loader' }),
-      { timeout: 10000 }
-    )
-
     const settingsBtn = screen.getByRole('link', { name: 'Settings' })
     fireEvent.click(settingsBtn)
 
