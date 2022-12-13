@@ -32,5 +32,9 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   getSwitchDetailHeader: {
     method: 'get',
     url: '/api/viewmodel/:tenantId/switch/:switchId'
+  },
+  getSwitchPortlist: {
+    method: 'post',
+    url: '/api/viewmodel/:tenantId/switch/portlist'
   }
 }

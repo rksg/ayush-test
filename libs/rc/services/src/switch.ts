@@ -4,7 +4,9 @@ import {
   createHttpRequest,
   RequestPayload,
   SwitchUrlsInfo,
-  SwitchViewModel
+  SwitchViewModel,
+  SwitchPortViewModel,
+  TableResult
 } from '@acx-ui/rc/utils'
 
 export const baseSwitchApi = createApi({
@@ -23,7 +25,22 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req
         }
       }
+    }),
+    switchPortlist: build.query<TableResult<SwitchPortViewModel>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.getSwitchPortlist,
+          params
+        )
+        return {
+          ...req,
+          body: payload
+        }
+      }
     })
   })
 })
-export const { useSwitchDetailHeaderQuery } = switchApi
+export const {
+  useSwitchDetailHeaderQuery,
+  useSwitchPortlistQuery
+} = switchApi
