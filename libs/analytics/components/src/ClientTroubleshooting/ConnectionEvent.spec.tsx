@@ -1,4 +1,4 @@
-import { render, fireEvent, screen } from '@acx-ui/test-utils'
+import { cleanup, render, fireEvent, screen } from '@acx-ui/test-utils'
 
 import { DisplayEvent }    from './config'
 import { ConnectionEvent } from './ConnectionEvent'
@@ -101,7 +101,15 @@ const unknownRadio = {
   radio: ''
 }
 
+const unknownFailure = {
+  ...failureEvent,
+  code: null
+}
+
 describe('ConnectionEvent', () => {
+
+  afterEach(() => cleanup())
+
   it('renders correctly for success event', async () => {
     const { asFragment } = render(<ConnectionEvent event={successEvent}>test</ConnectionEvent>)
     fireEvent.click(await screen.findByText(/test/i))
@@ -128,6 +136,12 @@ describe('ConnectionEvent', () => {
 
   it('renders correctly for unknown radio', async () => {
     const { asFragment } = render(<ConnectionEvent event={unknownRadio}>test</ConnectionEvent>)
+    fireEvent.click(await screen.findByText(/test/i))
+    expect(asFragment()).toMatchSnapshot()
+  })
+
+  it('renders correctly for unknown failure', async () => {
+    const { asFragment } = render(<ConnectionEvent event={unknownFailure}>test</ConnectionEvent>)
     fireEvent.click(await screen.findByText(/test/i))
     expect(asFragment()).toMatchSnapshot()
   })

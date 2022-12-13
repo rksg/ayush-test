@@ -40,53 +40,53 @@ exports[`ConnectionEvent renders correctly for disconnect event 1`] = `
                     Connection Event Details
                   </h3>
                   <dl
-                    class="sc-gsnTZi iLOyRZ"
+                    class="sc-dkzDqf ghqaWu"
                   >
                     <dt
-                      class="sc-dkzDqf kVNeuV"
+                      class="sc-hKMtZM dqLvfG"
                     >
                       AP MAC:
                     </dt>
                     <dd
-                      class="sc-hKMtZM iWLUww"
+                      class="sc-eCYdqJ bkYxGt"
                     >
                       94:B3:4F:3D:15:B0
                     </dd>
                     <dt
-                      class="sc-dkzDqf kVNeuV"
+                      class="sc-hKMtZM dqLvfG"
                     >
                       AP Name:
                     </dt>
                     <dd
-                      class="sc-hKMtZM iWLUww"
+                      class="sc-eCYdqJ bkYxGt"
                     >
                       R750-11-112
                     </dd>
                     <dt
-                      class="sc-dkzDqf kVNeuV"
+                      class="sc-hKMtZM dqLvfG"
                     >
                       SSID:
                     </dt>
                     <dd
-                      class="sc-hKMtZM iWLUww"
+                      class="sc-eCYdqJ bkYxGt"
                     />
                     <dt
-                      class="sc-dkzDqf kVNeuV"
+                      class="sc-hKMtZM dqLvfG"
                     >
                       Radio:
                     </dt>
                     <dd
-                      class="sc-hKMtZM iWLUww"
+                      class="sc-eCYdqJ bkYxGt"
                     >
                       5 GHz
                     </dd>
                     <dt
-                      class="sc-dkzDqf kVNeuV"
+                      class="sc-hKMtZM dqLvfG"
                     >
                       Reason:
                     </dt>
                     <dd
-                      class="sc-hKMtZM iWLUww"
+                      class="sc-eCYdqJ bkYxGt"
                     >
                       Client disconnected
                     </dd>
@@ -142,63 +142,63 @@ exports[`ConnectionEvent renders correctly for failureEvent event 1`] = `
                     Connection Event Details
                   </h3>
                   <dl
-                    class="sc-gsnTZi iLOyRZ"
+                    class="sc-dkzDqf ghqaWu"
                   >
                     <dt
-                      class="sc-dkzDqf kVNeuV"
+                      class="sc-hKMtZM dqLvfG"
                     >
                       AP MAC:
                     </dt>
                     <dd
-                      class="sc-hKMtZM iWLUww"
+                      class="sc-eCYdqJ bkYxGt"
                     >
                       AA:AA:AA:AA:AA:AA
                     </dd>
                     <dt
-                      class="sc-dkzDqf kVNeuV"
+                      class="sc-hKMtZM dqLvfG"
                     >
                       AP Name:
                     </dt>
                     <dd
-                      class="sc-hKMtZM iWLUww"
+                      class="sc-eCYdqJ bkYxGt"
                     >
                       R750-11-112
                     </dd>
                     <dt
-                      class="sc-dkzDqf kVNeuV"
+                      class="sc-hKMtZM dqLvfG"
                     >
                       SSID:
                     </dt>
                     <dd
-                      class="sc-hKMtZM iWLUww"
+                      class="sc-eCYdqJ bkYxGt"
                     />
                     <dt
-                      class="sc-dkzDqf kVNeuV"
+                      class="sc-hKMtZM dqLvfG"
                     >
                       Radio:
                     </dt>
                     <dd
-                      class="sc-hKMtZM iWLUww"
+                      class="sc-eCYdqJ bkYxGt"
                     >
                       5 GHz
                     </dd>
                     <dt
-                      class="sc-dkzDqf kVNeuV"
+                      class="sc-hKMtZM dqLvfG"
                     >
                       Failure Type:
                     </dt>
                     <dd
-                      class="sc-hKMtZM iWLUww"
+                      class="sc-eCYdqJ bkYxGt"
                     >
                       EAPOL Failures
                     </dd>
                     <dt
-                      class="sc-dkzDqf kVNeuV"
+                      class="sc-hKMtZM dqLvfG"
                     >
                       Reason:
                     </dt>
                     <dd
-                      class="sc-hKMtZM iWLUww"
+                      class="sc-eCYdqJ bkYxGt"
                     >
                       PSK Failure (passphrase mismatch) - Invalid MIC
                     </dd>
@@ -254,53 +254,53 @@ exports[`ConnectionEvent renders correctly for slow event 1`] = `
                     Connection Event Details
                   </h3>
                   <dl
-                    class="sc-gsnTZi iLOyRZ"
+                    class="sc-dkzDqf ghqaWu"
                   >
                     <dt
-                      class="sc-dkzDqf kVNeuV"
+                      class="sc-hKMtZM dqLvfG"
                     >
                       AP MAC:
                     </dt>
                     <dd
-                      class="sc-hKMtZM iWLUww"
+                      class="sc-eCYdqJ bkYxGt"
                     >
                       94:B3:4F:3D:15:B0
                     </dd>
                     <dt
-                      class="sc-dkzDqf kVNeuV"
+                      class="sc-hKMtZM dqLvfG"
                     >
                       AP Name:
                     </dt>
                     <dd
-                      class="sc-hKMtZM iWLUww"
+                      class="sc-eCYdqJ bkYxGt"
                     >
                       R750-11-112
                     </dd>
                     <dt
-                      class="sc-dkzDqf kVNeuV"
+                      class="sc-hKMtZM dqLvfG"
                     >
                       SSID:
                     </dt>
                     <dd
-                      class="sc-hKMtZM iWLUww"
+                      class="sc-eCYdqJ bkYxGt"
                     />
                     <dt
-                      class="sc-dkzDqf kVNeuV"
+                      class="sc-hKMtZM dqLvfG"
                     >
                       Radio:
                     </dt>
                     <dd
-                      class="sc-hKMtZM iWLUww"
+                      class="sc-eCYdqJ bkYxGt"
                     >
                       5 GHz
                     </dd>
                     <dt
-                      class="sc-dkzDqf kVNeuV"
+                      class="sc-hKMtZM dqLvfG"
                     >
                       Time to Connect:
                     </dt>
                     <dd
-                      class="sc-hKMtZM iWLUww"
+                      class="sc-eCYdqJ bkYxGt"
                     >
                       1 s
                     </dd>
@@ -356,45 +356,157 @@ exports[`ConnectionEvent renders correctly for success event 1`] = `
                     Connection Event Details
                   </h3>
                   <dl
-                    class="sc-gsnTZi iLOyRZ"
+                    class="sc-dkzDqf ghqaWu"
                   >
                     <dt
-                      class="sc-dkzDqf kVNeuV"
+                      class="sc-hKMtZM dqLvfG"
                     >
                       AP MAC:
                     </dt>
                     <dd
-                      class="sc-hKMtZM iWLUww"
+                      class="sc-eCYdqJ bkYxGt"
                     >
                       94:B3:4F:3D:15:B0
                     </dd>
                     <dt
-                      class="sc-dkzDqf kVNeuV"
+                      class="sc-hKMtZM dqLvfG"
                     >
                       AP Name:
                     </dt>
                     <dd
-                      class="sc-hKMtZM iWLUww"
+                      class="sc-eCYdqJ bkYxGt"
                     >
                       R750-11-112
                     </dd>
                     <dt
-                      class="sc-dkzDqf kVNeuV"
+                      class="sc-hKMtZM dqLvfG"
                     >
                       SSID:
                     </dt>
                     <dd
-                      class="sc-hKMtZM iWLUww"
+                      class="sc-eCYdqJ bkYxGt"
                     />
                     <dt
-                      class="sc-dkzDqf kVNeuV"
+                      class="sc-hKMtZM dqLvfG"
                     >
                       Radio:
                     </dt>
                     <dd
-                      class="sc-hKMtZM iWLUww"
+                      class="sc-eCYdqJ bkYxGt"
                     >
                       5 GHz
+                    </dd>
+                  </dl>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </span>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`ConnectionEvent renders correctly for unknown failure 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__PopoverWrapper-sc-hmshlr-10 hvDant"
+  >
+    <span
+      class="ant-popover-open"
+    >
+      test
+      <div
+        style="position: absolute; top: 0px; left: 0px; width: 100%;"
+      >
+        <div>
+          <div
+            class="ant-popover"
+            style="opacity: 0;"
+          >
+            <div
+              class="ant-popover-content"
+            >
+              <div
+                class="ant-popover-arrow"
+              >
+                <span
+                  class="ant-popover-arrow-content"
+                />
+              </div>
+              <div
+                class="ant-popover-inner"
+                role="tooltip"
+              >
+                <div
+                  class="ant-popover-inner-content"
+                >
+                  <h3
+                    class="sc-bczRLJ bcJKaK"
+                  >
+                    Connection Event Details
+                  </h3>
+                  <dl
+                    class="sc-dkzDqf ghqaWu"
+                  >
+                    <dt
+                      class="sc-hKMtZM dqLvfG"
+                    >
+                      AP MAC:
+                    </dt>
+                    <dd
+                      class="sc-eCYdqJ bkYxGt"
+                    >
+                      AA:AA:AA:AA:AA:AA
+                    </dd>
+                    <dt
+                      class="sc-hKMtZM dqLvfG"
+                    >
+                      AP Name:
+                    </dt>
+                    <dd
+                      class="sc-eCYdqJ bkYxGt"
+                    >
+                      R750-11-112
+                    </dd>
+                    <dt
+                      class="sc-hKMtZM dqLvfG"
+                    >
+                      SSID:
+                    </dt>
+                    <dd
+                      class="sc-eCYdqJ bkYxGt"
+                    />
+                    <dt
+                      class="sc-hKMtZM dqLvfG"
+                    >
+                      Radio:
+                    </dt>
+                    <dd
+                      class="sc-eCYdqJ bkYxGt"
+                    >
+                      5 GHz
+                    </dd>
+                    <dt
+                      class="sc-hKMtZM dqLvfG"
+                    >
+                      Failure Type:
+                    </dt>
+                    <dd
+                      class="sc-eCYdqJ bkYxGt"
+                    >
+                      Unknown
+                    </dd>
+                    <dt
+                      class="sc-hKMtZM dqLvfG"
+                    >
+                      Reason:
+                    </dt>
+                    <dd
+                      class="sc-eCYdqJ bkYxGt"
+                    >
+                      PSK Failure (passphrase mismatch) - Invalid MIC
                     </dd>
                   </dl>
                 </div>
@@ -448,43 +560,43 @@ exports[`ConnectionEvent renders correctly for unknown radio 1`] = `
                     Connection Event Details
                   </h3>
                   <dl
-                    class="sc-gsnTZi iLOyRZ"
+                    class="sc-dkzDqf ghqaWu"
                   >
                     <dt
-                      class="sc-dkzDqf kVNeuV"
+                      class="sc-hKMtZM dqLvfG"
                     >
                       AP MAC:
                     </dt>
                     <dd
-                      class="sc-hKMtZM iWLUww"
+                      class="sc-eCYdqJ bkYxGt"
                     >
                       94:B3:4F:3D:15:B0
                     </dd>
                     <dt
-                      class="sc-dkzDqf kVNeuV"
+                      class="sc-hKMtZM dqLvfG"
                     >
                       AP Name:
                     </dt>
                     <dd
-                      class="sc-hKMtZM iWLUww"
+                      class="sc-eCYdqJ bkYxGt"
                     >
                       R750-11-112
                     </dd>
                     <dt
-                      class="sc-dkzDqf kVNeuV"
+                      class="sc-hKMtZM dqLvfG"
                     >
                       SSID:
                     </dt>
                     <dd
-                      class="sc-hKMtZM iWLUww"
+                      class="sc-eCYdqJ bkYxGt"
                     />
                     <dt
-                      class="sc-dkzDqf kVNeuV"
+                      class="sc-hKMtZM dqLvfG"
                     >
                       Radio:
                     </dt>
                     <dd
-                      class="sc-hKMtZM iWLUww"
+                      class="sc-eCYdqJ bkYxGt"
                     >
                       Unknown
                     </dd>
