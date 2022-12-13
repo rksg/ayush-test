@@ -84,7 +84,7 @@ const config: LayoutProps['menuConfig'] = [
       {
         path: '/servicevalidation/videoCallQoe',
         name: 'Video Call QoE'
-      },
+      }
     ]
   },
   {

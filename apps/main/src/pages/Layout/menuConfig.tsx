@@ -1,8 +1,8 @@
 import { useIntl } from 'react-intl'
-import styled from 'styled-components/macro'
+import styled      from 'styled-components/macro'
 
 import { LayoutProps, LayoutUI, genPlaceholder } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 import {
   AIOutlined as AIOutlinedBase,
   AISolid as AISolidBase,
@@ -25,7 +25,9 @@ import {
   ServicesOutlined,
   ServicesSolid as ServicesSolidBase,
   SpeedIndicatorOutlined,
-  SpeedIndicatorSolid
+  SpeedIndicatorSolid,
+  ServiceValidationSolid,
+  ServiceValidationOutlined
 } from '@acx-ui/icons'
 
 const AIOutlined = styled(AIOutlinedBase)`${LayoutUI.iconOutlinedOverride}`
@@ -34,7 +36,7 @@ const AdminSolid = styled(AdminSolidBase)`${LayoutUI.iconSolidOverride}`
 const ServicesSolid = styled(ServicesSolidBase)`${LayoutUI.iconSolidOverride}`
 const PoliciesSolid = styled(PoliciesSolidBase)`${LayoutUI.iconSolidOverride}`
 
-export function useMenuConfig() {
+export function useMenuConfig () {
   const { $t } = useIntl()
   const config: LayoutProps['menuConfig'] = [
     {
@@ -79,9 +81,8 @@ export function useMenuConfig() {
     {
       path: '/serviceValidation',
       name: $t({ defaultMessage: 'Service Validation' }),
-      inactiveIcon: CalendarDateOutlined,
-      activeIcon: CalendarDateSolid,
-      disabled: !useIsSplitOn(Features.TIMELINE),
+      inactiveIcon: ServiceValidationOutlined,
+      activeIcon: ServiceValidationSolid,
       routes: [
         // TODO: add back when needed, comment for now
         // {
