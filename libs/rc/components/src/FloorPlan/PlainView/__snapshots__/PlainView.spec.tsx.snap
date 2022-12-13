@@ -93,7 +93,7 @@ exports[`Floor Plan Plain View Should click delete button 1`] = `
       class="sc-evZas fMXKrO"
     >
       <div
-        class="styledComponents__Wrapper-sc-1352uh8-0 bstzEh"
+        class="styledComponents__Wrapper-sc-1352uh8-0 ilNUvb"
       >
         <div
           class="styledComponents__FallbackWrapper-sc-1352uh8-1 doEIjj"
@@ -404,7 +404,7 @@ exports[`Floor Plan Plain View Should click edit button 1`] = `
       class="sc-evZas fMXKrO"
     >
       <div
-        class="styledComponents__Wrapper-sc-1352uh8-0 bstzEh"
+        class="styledComponents__Wrapper-sc-1352uh8-0 ilNUvb"
       >
         <div
           class="styledComponents__FallbackWrapper-sc-1352uh8-1 doEIjj"
@@ -715,7 +715,7 @@ exports[`Floor Plan Plain View Should load image 1`] = `
       class="sc-evZas fMXKrO"
     >
       <div
-        class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+        class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
       />
     </div>
   </div>
@@ -994,7 +994,7 @@ exports[`Floor Plan Plain View should open gallery view 1`] = `
       class="sc-evZas fMXKrO"
     >
       <div
-        class="styledComponents__Wrapper-sc-1352uh8-0 bstzEh"
+        class="styledComponents__Wrapper-sc-1352uh8-0 ilNUvb"
       >
         <div
           class="styledComponents__FallbackWrapper-sc-1352uh8-1 doEIjj"
@@ -1306,7 +1306,7 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
       class="sc-evZas fMXKrO"
     >
       <div
-        class="styledComponents__Wrapper-sc-1352uh8-0 bstzEh"
+        class="styledComponents__Wrapper-sc-1352uh8-0 ilNUvb"
       >
         <div
           class="styledComponents__FallbackWrapper-sc-1352uh8-1 doEIjj"
@@ -1617,7 +1617,7 @@ exports[`Floor Plan Plain View should trigger onFloorPlanSelectionHandler 1`] = 
       class="sc-evZas fMXKrO"
     >
       <div
-        class="styledComponents__Wrapper-sc-1352uh8-0 bstzEh"
+        class="styledComponents__Wrapper-sc-1352uh8-0 ilNUvb"
       >
         <div
           class="styledComponents__FallbackWrapper-sc-1352uh8-1 doEIjj"
@@ -1928,7 +1928,7 @@ exports[`Floor Plan Plain View test zoom fit button 1`] = `
       class="sc-evZas fMXKrO"
     >
       <div
-        class="styledComponents__Wrapper-sc-1352uh8-0 bstzEh"
+        class="styledComponents__Wrapper-sc-1352uh8-0 ilNUvb"
       >
         <div
           class="styledComponents__FallbackWrapper-sc-1352uh8-1 doEIjj"
@@ -2239,7 +2239,7 @@ exports[`Floor Plan Plain View test zoom original button 1`] = `
       class="sc-evZas fMXKrO"
     >
       <div
-        class="styledComponents__Wrapper-sc-1352uh8-0 bstzEh"
+        class="styledComponents__Wrapper-sc-1352uh8-0 ilNUvb"
       >
         <div
           class="styledComponents__FallbackWrapper-sc-1352uh8-1 doEIjj"
@@ -2550,7 +2550,7 @@ exports[`Floor Plan Plain View test zoom-in button 1`] = `
       class="sc-evZas fMXKrO"
     >
       <div
-        class="styledComponents__Wrapper-sc-1352uh8-0 bstzEh"
+        class="styledComponents__Wrapper-sc-1352uh8-0 ilNUvb"
       >
         <div
           class="styledComponents__FallbackWrapper-sc-1352uh8-1 doEIjj"
@@ -2861,7 +2861,7 @@ exports[`Floor Plan Plain View test zoom-out button 1`] = `
       class="sc-evZas fMXKrO"
     >
       <div
-        class="styledComponents__Wrapper-sc-1352uh8-0 bstzEh"
+        class="styledComponents__Wrapper-sc-1352uh8-0 ilNUvb"
       >
         <div
           class="styledComponents__FallbackWrapper-sc-1352uh8-1 doEIjj"

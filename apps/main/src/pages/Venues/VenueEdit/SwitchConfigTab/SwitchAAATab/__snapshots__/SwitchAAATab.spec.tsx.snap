@@ -150,7 +150,7 @@ exports[`SwitchAAATab should render correctly 1`] = `
                         Servers & Users
                       </h3>
                       <div
-                        class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+                        class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
                       >
                         <div
                           class="styledComponents__AAAServers-sc-1m2ni0r-0 ZnKYN"
@@ -188,7 +188,7 @@ exports[`SwitchAAATab should render correctly 1`] = `
                                   class="ant-collapse-content-box"
                                 >
                                   <div
-                                    class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+                                    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
                                   >
                                     <div
                                       class="styledComponents__Wrapper-sc-1abm7iv-13 gzZsiC"
@@ -682,7 +682,7 @@ exports[`SwitchAAATab should render correctly 1`] = `
                                   class="ant-collapse-content-box"
                                 >
                                   <div
-                                    class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+                                    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
                                   >
                                     <div
                                       class="styledComponents__Wrapper-sc-1abm7iv-13 gzZsiC"
@@ -1017,7 +1017,7 @@ exports[`SwitchAAATab should render correctly 1`] = `
                                   class="ant-collapse-content-box"
                                 >
                                   <div
-                                    class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+                                    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
                                   >
                                     <div
                                       class="styledComponents__Wrapper-sc-1abm7iv-13 gzZsiC"
@@ -1304,7 +1304,7 @@ exports[`SwitchAAATab should render correctly 1`] = `
                           type="text"
                         />
                         <div
-                          class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+                          class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
                         >
                           <fieldset
                             class="styledComponents__Fieldset-sc-azs30w-0 iIfzQF"
