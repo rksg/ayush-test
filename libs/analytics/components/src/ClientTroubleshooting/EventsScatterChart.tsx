@@ -184,11 +184,11 @@ export function EventsScatterChart ({
     series: [
       {
         type: 'scatter',
-        name: 'CT Events series',
-        symbolSize: 10,
+        name: props.title,
+        symbolSize: 8,
         animation: false,
         data: data.length > 1 ? data
-          .map((record) => [record.start, 'CT Events series', record]) : [0,0],
+          .map((record) => [record.start, props.title, record]) : [0,0],
         itemStyle: {
           color: function (params) {
             const eventObj = Array.isArray(params.data) ? params.data[2] : ''
