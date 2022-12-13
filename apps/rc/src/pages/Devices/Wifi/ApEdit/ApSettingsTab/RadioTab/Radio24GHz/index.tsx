@@ -7,6 +7,7 @@ import { useIntl }                                from 'react-intl'
 import { RadioSettingsChannels }           from '@acx-ui/rc/components'
 import {
   useGetApRadioQuery,
+  useGetApValidChannelQuery,
   useGetVenueRadioCustomizationQuery,
   useVenueDefaultRegulatoryChannelsQuery
 } from '@acx-ui/rc/services'
@@ -66,6 +67,16 @@ export function Radio24GHz (props: { venueId: string, serialNumber: string }) {
       }
     })
 
+  const { allowedAPChannels } =
+    useGetApValidChannelQuery({ params: { tenantId, serialNumber } }, {
+      selectFromResult ({ data }) {
+        const channelType = channelBandwidth === 'AUTO' ?
+          channelBandwidth.toLowerCase() : channelBandwidth
+        return {
+          allowedAPChannels: data?.['2.4GChannels'][channelType] || []
+        }
+      }
+    })
 
   useEffect(() => {
     if(defaultChannelsData){
@@ -80,10 +91,14 @@ export function Radio24GHz (props: { venueId: string, serialNumber: string }) {
       )
     }
 
-    if(allowedChannels){
-      form.setFieldValue(['apRadioParams24G', 'allowedChannels'], allowedChannels)
-    }else if(allowedVenueChannels){
+    if(useVenueSettings){
       form.setFieldValue(['apRadioParams24G', 'allowedChannels'], allowedVenueChannels)
+    }else{
+      if(allowedChannels.length > 0){
+        form.setFieldValue(['apRadioParams24G', 'allowedChannels'], allowedChannels)
+      }else{
+        form.setFieldValue(['apRadioParams24G', 'allowedChannels'], allowedAPChannels)
+      }
     }
 
     if(venueData){
@@ -107,7 +122,8 @@ export function Radio24GHz (props: { venueId: string, serialNumber: string }) {
         setTxPowerLabel(Object.values(channelTxPowerObject[0].label.defaultMessage[0])[1])
       }
     }
-  }, [defaultChannelsData, channelBandwidth, allowedChannels, allowedVenueChannels, venueData])
+  }, [defaultChannelsData, channelBandwidth, allowedChannels, allowedAPChannels,
+    allowedVenueChannels, venueData, useVenueSettings])
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function formatter (value: any) {
