@@ -63,12 +63,14 @@ export interface Guest {
     maxDevices: number
     deliveryMethods: DelieverType[]
     expiryDate?: string
+    creationDate?: string
     passDurationHours?: number
     ssid?: string
     name?: string
     maxNumberOfClients?: number,
     guestStatus: GuestStatusEnum,
-    clients?: GuestClient[]
+    clients?: GuestClient[],
+    langCode?: string
 }
 
 export interface GuestClient {

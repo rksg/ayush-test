@@ -17,7 +17,7 @@ exports[`AP Form - Add should render correctly 1`] = `
               class="ant-breadcrumb-link"
             >
               <a
-                href="/t/tenant-id/devices/aps"
+                href="/t/tenant-id/devices/wifi"
               >
                 Access Points
               </a>
@@ -146,7 +146,7 @@ exports[`AP Form - Add should render correctly 1`] = `
                     style="padding-left: 10px; padding-right: 10px;"
                   >
                     <div
-                      class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+                      class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
                     >
                       <div
                         class="ant-form-item"
@@ -475,7 +475,7 @@ exports[`AP Form - Add should render correctly 1`] = `
             style="margin-right: 12px;"
           >
             <button
-              class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 kkpPZG"
+              class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 bxQmA-d"
               type="button"
             >
               <span>
@@ -487,7 +487,7 @@ exports[`AP Form - Add should render correctly 1`] = `
             class="ant-space-item"
           >
             <button
-              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
               type="button"
             >
               <span>

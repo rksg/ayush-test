@@ -2,6 +2,7 @@
 import { ReactNode } from 'react'
 
 import { List }               from 'antd'
+import { flatten }            from 'lodash'
 import { IntlShape, useIntl } from 'react-intl'
 import AutoSizer              from 'react-virtualized-auto-sizer'
 
@@ -11,16 +12,23 @@ import {
   Incident,
   calculateSeverity,
   incidentSeverities,
-  shortDescription
+  shortDescription,
+  categoryOptions
 } from '@acx-ui/analytics/utils'
 import { ArrowCollapse } from '@acx-ui/icons'
 import { TenantLink }    from '@acx-ui/react-router-dom'
 import { formatter }     from '@acx-ui/utils'
 
 
-import { transformEvents, DisplayEvent, formatEventDesc, eventColorByCategory } from './config'
-import { ClientInfoData }                                                       from './services'
-import * as UI                                                                  from './styledComponents'
+import {
+  transformEvents,
+  DisplayEvent,
+  formatEventDesc,
+  eventColorByCategory,
+  INCIDENT
+} from './config'
+import { ClientInfoData } from './services'
+import * as UI            from './styledComponents'
 
 import { Filters } from '.'
 
@@ -29,24 +37,24 @@ type HistoryContentProps = {
   historyContentToggle : boolean,
   setHistoryContentToggle : CallableFunction,
   data?: ClientInfoData,
-  filters: Filters
+  filters: Filters | null
 }
 type Item = {
   id?: string,
+  start: number,
   date: string,
   description: string,
   title: string,
   icon: ReactNode
 }
-const transformData = (clientInfo: ClientInfoData, filters: Filters, intl: IntlShape) => {
-  const types = filters ? filters.type ?? [] : []
-  const radios = filters ? filters.radio ?? [] : []
-  const events = transformEvents(
-    clientInfo.connectionEvents,
-    types,
-    radios
-  ) as DisplayEvent[]
-  const incidents = clientInfo.incidents.map((incident: Incident) => {
+// If needed (for incident timeline chart) move this menthod to config
+export const transformIncidents = (
+  incidents: Incident[],
+  selectedCategories: string [],
+  selectedTypes: string [],
+  intl: IntlShape
+) =>
+  incidents.reduce((acc, incident: Incident) => {
     const {
       category,
       subCategory,
@@ -55,15 +63,42 @@ const transformData = (clientInfo: ClientInfoData, filters: Filters, intl: IntlS
     const severity = calculateSeverity(incident.severity)
     const color = incidentSeverities[severity].color
     const title = shortDescription({ ...incident, shortDescription: desc })
-    return {
+    const cat = categoryOptions.find(
+      ({ label }) => intl.$t(label) === intl.$t(category)
+    )
+    if ((selectedCategories.length &&
+      cat &&
+      !selectedCategories.includes(cat.value)) ||
+      (selectedTypes.length && !selectedTypes.includes(INCIDENT))
+    ) {
+      return acc
+    }
+    acc.push({
       id: incident.id,
       start: +new Date(incident.startTime),
       date: formatter('dateTimeFormatWithSeconds')(incident.startTime),
       description: `${intl.$t(category)} (${intl.$t(subCategory)})`,
       title,
       icon: <UI.IncidentEvent color={color}>{severity}</UI.IncidentEvent>
-    }
-  })
+    })
+    return acc
+  }, [] as Item[])
+
+const transformData = (clientInfo: ClientInfoData, filters: Filters, intl: IntlShape) => {
+  const types: string[] = flatten(filters ? filters.type ?? [[]] : [[]])
+  const radios: string[] = flatten(filters ? filters.radio ?? [[]] : [[]])
+  const selectedCategories: string[] = flatten(filters ? filters.category ?? [[]] : [[]])
+  const events = transformEvents(
+    clientInfo.connectionEvents,
+    types,
+    radios
+  ) as DisplayEvent[]
+  const incidents = transformIncidents(
+    clientInfo.incidents,
+    selectedCategories,
+    types,
+    intl
+  )
   return [ ...events.map((event: DisplayEvent) => {
     const color = eventColorByCategory[event.category as keyof typeof eventColorByCategory]
     return {
@@ -84,7 +119,8 @@ const renderItem = (item: Item) => {
     <List.Item.Meta
       avatar={item.icon}
       title={item.date}
-      description={item.description} />
+      description={item.description}
+    />
   </List.Item>
   return item.id
     ? <TenantLink to={`analytics/incidents/${item.id}`}>{Item}</TenantLink>
@@ -95,7 +131,7 @@ export function History (props : HistoryContentProps) {
   const intl = useIntl()
   const { $t } = intl
   const { setHistoryContentToggle, historyContentToggle, data, filters } = props
-  const histData = transformData(data!, filters, intl)
+  const histData = transformData(data!, filters!, intl)
   return (
     <UI.History>
       <UI.HistoryHeader>
@@ -104,6 +140,7 @@ export function History (props : HistoryContentProps) {
         </UI.HistoryContentTitle>
         <UI.HistoryIcon>
           <ArrowCollapse
+            data-testid='history-collapse'
             onClick={() => {
               setHistoryContentToggle(!historyContentToggle)
             }}

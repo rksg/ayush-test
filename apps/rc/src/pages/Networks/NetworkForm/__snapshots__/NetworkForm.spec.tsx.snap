@@ -984,7 +984,7 @@ exports[`NetworkForm should create captive portal successfully 1`] = `
                     </div>
                     <div>
                       <button
-                        class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                        class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 eAazoW"
                         type="button"
                       >
                         <span>
@@ -1053,7 +1053,7 @@ exports[`NetworkForm should create captive portal successfully 1`] = `
                           class="ant-form-item-control-input-content"
                         >
                           <div
-                            class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+                            class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
                           >
                             <div
                               class="styledComponents__FallbackWrapper-sc-1352uh8-1 cUVMCE"
@@ -2090,7 +2090,7 @@ exports[`NetworkForm should create captive portal successfully 1`] = `
             style="margin-right: 12px;"
           >
             <button
-              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
               type="button"
             >
               <span>
@@ -2109,7 +2109,7 @@ exports[`NetworkForm should create captive portal successfully 1`] = `
                 style="margin-right: 12px;"
               >
                 <button
-                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
                   disabled=""
                   type="button"
                 >
@@ -2122,7 +2122,7 @@ exports[`NetworkForm should create captive portal successfully 1`] = `
                 class="ant-space-item"
               >
                 <button
-                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 kkpPZG"
+                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 bxQmA-d"
                   type="button"
                 >
                   <span>
@@ -3123,7 +3123,7 @@ exports[`NetworkForm should create captive portal without redirect url successfu
                     </div>
                     <div>
                       <button
-                        class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                        class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 eAazoW"
                         type="button"
                       >
                         <span>
@@ -3192,7 +3192,7 @@ exports[`NetworkForm should create captive portal without redirect url successfu
                           class="ant-form-item-control-input-content"
                         >
                           <div
-                            class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+                            class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
                           >
                             <div
                               class="styledComponents__FallbackWrapper-sc-1352uh8-1 cUVMCE"
@@ -4229,7 +4229,7 @@ exports[`NetworkForm should create captive portal without redirect url successfu
             style="margin-right: 12px;"
           >
             <button
-              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
               type="button"
             >
               <span>
@@ -4248,7 +4248,7 @@ exports[`NetworkForm should create captive portal without redirect url successfu
                 style="margin-right: 12px;"
               >
                 <button
-                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
                   disabled=""
                   type="button"
                 >
@@ -4261,7 +4261,7 @@ exports[`NetworkForm should create captive portal without redirect url successfu
                 class="ant-space-item"
               >
                 <button
-                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 kkpPZG"
+                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 bxQmA-d"
                   type="button"
                 >
                   <span>
@@ -4910,7 +4910,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                     </div>
                     <div>
                       <button
-                        class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                        class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 eAazoW"
                         type="button"
                       >
                         <span>
@@ -4979,7 +4979,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                           class="ant-form-item-control-input-content"
                         >
                           <div
-                            class="styledComponents__Wrapper-sc-1352uh8-0 bstzEh"
+                            class="styledComponents__Wrapper-sc-1352uh8-0 ilNUvb"
                           >
                             <div
                               class="styledComponents__FallbackWrapper-sc-1352uh8-1 cUVMCE"
@@ -5226,7 +5226,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
             style="margin-right: 12px;"
           >
             <button
-              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
               type="button"
             >
               <span>
@@ -5245,7 +5245,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                 style="margin-right: 12px;"
               >
                 <button
-                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
                   disabled=""
                   type="button"
                 >
@@ -5258,7 +5258,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                 class="ant-space-item"
               >
                 <button
-                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 kkpPZG"
+                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 bxQmA-d"
                   type="button"
                 >
                   <span>

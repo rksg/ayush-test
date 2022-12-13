@@ -3,9 +3,7 @@ import { defineMessage, IntlShape } from 'react-intl'
 import {
   categoryOptions,
   mapCodeToFailureText,
-  clientEventDescription,
-  Incident,
-  shortDescription
+  clientEventDescription
 } from '@acx-ui/analytics/utils'
 import { formatter } from '@acx-ui/utils'
 
@@ -47,13 +45,7 @@ export const TYPES = {
   CONNECTION_EVENTS: 'connectionEvents',
   ROAMING: 'roaming'
 }
-
-export const eventsToHide = [
-  EVENT_STATES.JOIN,
-  EVENT_STATES.SPURIOUS_DISCONNECT,
-  EVENT_STATES.SPURIOUS_INFO_UPDATED
-]
-
+// In RA these events are hidden
 export const spuriousEvents = [
   EVENT_STATES.JOIN,
   EVENT_STATES.SPURIOUS_DISCONNECT,
@@ -69,7 +61,7 @@ export const connectionChartMapping = [
 export type DisplayEvent = {
   start: number,
   end: number,
-  code: string,
+  code: string | null,
   apName: string,
   mac: string,
   radio: string,
@@ -84,7 +76,7 @@ export const eventColorByCategory = {
   [FAILURE]: '--acx-semantics-red-50',
   [SLOW]: '--acx-semantics-yellow-50'
 }
-export const categorizeEvent = (name: string, ttc: number) => {
+export const categorizeEvent = (name: string, ttc: number | null) => {
   const successEvents = [INFO_UPDATED, JOIN, ROAMED].map(
     key => filterEventMap[key as keyof typeof filterEventMap]
   )
@@ -98,7 +90,7 @@ export const transformEvents = (
   events: ConnectionEvent[], selectedEventTypes: string[], selectedRadios: string[]
 ) => events.reduce((acc, data, index) => {
   const { event, state, timestamp, mac, ttc, radio, code, failedMsgId } = data
-  if (code === 'eap' && EAPOLMessageIds.includes(failedMsgId)) {
+  if (code === 'eap' && failedMsgId && EAPOLMessageIds.includes(failedMsgId)) {
     data = { ...data, code: 'eapol' }
   }
 
@@ -106,15 +98,15 @@ export const transformEvents = (
   const eventType = category === 'failure' ? filterEventMap[FAILURE] : event
 
   const filterEventTypes = selectedEventTypes.map(
-    (e) => filterEventMap[e as keyof typeof filterEventMap]
+    e => filterEventMap[e as keyof typeof filterEventMap]
   )
-  const filterRadios = selectedRadios.map(e => filterEventMap[e as keyof typeof filterEventMap])
+  const filterRadios = selectedRadios.map(
+    e => filterEventMap[e as keyof typeof filterEventMap]
+  )
   const time = +new Date(timestamp)
-
-  let skip =
-    eventsToHide.includes(state) ||
-    (filterEventTypes.length && !filterEventTypes.includes(eventType)) ||
-    (filterRadios.length && !filterRadios.includes(radio))
+  let skip = spuriousEvents.includes(state)
+      || filterEventTypes.length && !filterEventTypes.includes(eventType)
+      || filterRadios.length && !filterRadios.includes(radio)
 
   if (skip) return acc
 
@@ -142,12 +134,20 @@ export const formatEventDesc = (evtObj: DisplayEvent, intl: IntlShape) : string 
 export const ClientTroubleShootingConfig = {
   selection: [
     {
+      entityName: {
+        singular: defineMessage({ defaultMessage: 'category' }),
+        plural: defineMessage({ defaultMessage: 'categories' })
+      },
       selectionType: 'category',
       defaultValue: [],
       placeHolder: defineMessage({ defaultMessage: 'All Categories' }),
       options: categoryOptions
     },
     {
+      entityName: {
+        singular: defineMessage({ defaultMessage: 'type' }),
+        plural: defineMessage({ defaultMessage: 'types' })
+      },
       selectionType: 'type',
       defaultValue: [],
       placeHolder: defineMessage({ defaultMessage: 'All Types' }),
@@ -175,6 +175,10 @@ export const ClientTroubleShootingConfig = {
       ]
     },
     {
+      entityName: {
+        singular: defineMessage({ defaultMessage: 'radio' }),
+        plural: defineMessage({ defaultMessage: 'radios' })
+      },
       selectionType: 'radio',
       defaultValue: [],
       placeHolder: defineMessage({ defaultMessage: 'All Radios' }),

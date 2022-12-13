@@ -45,31 +45,35 @@ exports[`ApSettingsTab should render correctly 1`] = `
             </div>
           </div>
           <div
-            class="ant-tabs-tab"
+            class="ant-tabs-tab ant-tabs-tab-disabled"
           >
             <div
               aria-controls="rc-tabs-test-panel-proxy"
+              aria-disabled="true"
               aria-selected="false"
               class="ant-tabs-tab-btn"
               id="rc-tabs-test-tab-proxy"
               role="tab"
-              tabindex="0"
             >
-              mDNS Proxy
+              <span>
+                mDNS Proxy
+              </span>
             </div>
           </div>
           <div
-            class="ant-tabs-tab"
+            class="ant-tabs-tab ant-tabs-tab-disabled"
           >
             <div
               aria-controls="rc-tabs-test-panel-multicast"
+              aria-disabled="true"
               aria-selected="false"
               class="ant-tabs-tab-btn"
               id="rc-tabs-test-tab-multicast"
               role="tab"
-              tabindex="0"
             >
-              Directed Multicast
+              <span>
+                Directed Multicast
+              </span>
             </div>
           </div>
           <div
@@ -128,7 +132,7 @@ exports[`ApSettingsTab should render correctly 1`] = `
           tabindex="0"
         >
           <div
-            class="styledComponents__Wrapper-sc-1352uh8-0 bstzEh"
+            class="styledComponents__Wrapper-sc-1352uh8-0 ilNUvb"
           >
             <div
               class="styledComponents__FallbackWrapper-sc-1352uh8-1 doEIjj"

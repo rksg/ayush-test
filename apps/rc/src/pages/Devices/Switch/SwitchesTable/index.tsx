@@ -11,7 +11,7 @@ export default function SwitchesTable () {
       <PageHeader
         title={$t({ defaultMessage: 'Switch' })}
         extra={[
-          <TenantLink to='/devices/switches/add' key='add'>
+          <TenantLink to='/devices/switch/add' key='add'>
             <Button type='primary'>{ $t({ defaultMessage: 'Add' }) }</Button>
           </TenantLink>
         ]}

@@ -16,9 +16,9 @@ import {
   shortDescription,
   formattedPath
 } from '@acx-ui/analytics/utils'
-import { Loader, TableProps, Drawer, Tooltip } from '@acx-ui/components'
-import { TenantLink }                          from '@acx-ui/react-router-dom'
-import { formatter }                           from '@acx-ui/utils'
+import { Loader, TableProps, Drawer, Tooltip, Button } from '@acx-ui/components'
+import { TenantLink, useNavigateToPath }               from '@acx-ui/react-router-dom'
+import { formatter }                                   from '@acx-ui/utils'
 
 import {
   useIncidentsListQuery,
@@ -36,8 +36,9 @@ import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 
 const IncidentDrawerContent = (props: { selectedIncidentToShowDescription: Incident }) => {
   const { $t } = useIntl()
-  const { metadata } = props.selectedIncidentToShowDescription
+  const { metadata, id } = props.selectedIncidentToShowDescription
   const [{ rootCauses }] = getRootCauseAndRecommendations(props.selectedIncidentToShowDescription)
+  const gotoIncident = useNavigateToPath(`/analytics/incidents/${id}`)
   const values = {
     p: (text: string) => <UI.DrawerPara>{text}</UI.DrawerPara>,
     ol: (text: string) => <UI.DrawerOrderList>{text}</UI.DrawerOrderList>,
@@ -57,7 +58,12 @@ const IncidentDrawerContent = (props: { selectedIncidentToShowDescription: Incid
       <UI.IncidentRootCauses>
         {$t(defineMessage({ defaultMessage: 'Root cause' }))}{':'}
       </UI.IncidentRootCauses>
-      <FormattedMessage {...rootCauses} values={values} />
+      <div>
+        <FormattedMessage {...rootCauses} values={values} />
+        <Button type='link' onClick={gotoIncident} size='small'>
+          {$t({ defaultMessage: 'More Details' })}
+        </Button>
+      </div>
     </UI.IncidentDrawerContent>
   )
 }

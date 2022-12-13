@@ -23,7 +23,7 @@ export function useFFList (): { featureList?: string[], betaList?: string[] } {
   const treatment = useTreatments([Features.PLM_FF], {
     tier: jwtPayload?.acx_account_tier,
     vertical: jwtPayload?.acx_account_vertical,
-    tenantType: jwtPayload?.tenantType,
+    tenantType: jwtPayload?.acx_account_type,
     tenantId: jwtPayload?.tenantId
   })[Features.PLM_FF]
 
@@ -34,7 +34,7 @@ export function useFFList (): { featureList?: string[], betaList?: string[] } {
 
   const featureKey = [
     'feature',
-    jwtPayload?.tenantType,
+    jwtPayload?.acx_account_type,
     jwtPayload?.acx_account_vertical
   ].join('-') as keyof typeof defaultConfig
 
