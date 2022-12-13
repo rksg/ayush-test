@@ -5,12 +5,20 @@ import { categoryOptions } from '@acx-ui/analytics/utils'
 export const ClientTroubleShootingConfig = {
   selection: [
     {
+      entityName: {
+        singular: defineMessage({ defaultMessage: 'category' }),
+        plural: defineMessage({ defaultMessage: 'categories' })
+      },
       selectionType: 'category',
       defaultValue: [],
       placeHolder: defineMessage({ defaultMessage: 'All Categories' }),
       options: categoryOptions
     },
     {
+      entityName: {
+        singular: defineMessage({ defaultMessage: 'type' }),
+        plural: defineMessage({ defaultMessage: 'types' })
+      },
       selectionType: 'type',
       defaultValue: [],
       placeHolder: defineMessage({ defaultMessage: 'All Types' }),
@@ -38,6 +46,10 @@ export const ClientTroubleShootingConfig = {
       ]
     },
     {
+      entityName: {
+        singular: defineMessage({ defaultMessage: 'radio' }),
+        plural: defineMessage({ defaultMessage: 'radios' })
+      },
       selectionType: 'radio',
       defaultValue: [],
       placeHolder: defineMessage({ defaultMessage: 'All Radios' }),
