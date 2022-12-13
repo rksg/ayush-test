@@ -5,8 +5,6 @@ import { useIntl } from 'react-intl'
 // import AutoSizer   from 'react-virtualized-auto-sizer'
 import styled from 'styled-components'
 
-// import { getChartData }                           from '@acx-ui/rc/components'
-// import { AnalyticsFilter }                                                                   from '@acx-ui/analytics/utils'
 import { cssStr, GridRow, GridCol, Loader , DonutChart, onChartClick, NoActiveData, Button } from '@acx-ui/components'
 import type { DonutChartData, DonutChartProps }                                              from '@acx-ui/components'
 import { EdgePort, EdgeViewModel, EdgeResourceUtilizationEnum, EdgePortAdminStatusEnum }     from '@acx-ui/rc/utils'
@@ -162,6 +160,8 @@ export const EdgeInfoWidget = styled(({ className, currentEdge, edgePortsSetting
     </GridRow>
   )
 })`
+background-color: var(--acx-neutrals-10);
+
 & > .ant-col {
   height: 176px;
 

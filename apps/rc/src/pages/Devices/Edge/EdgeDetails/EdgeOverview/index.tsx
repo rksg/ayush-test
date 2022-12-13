@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { useParams } from 'react-router-dom'
 import styled        from 'styled-components/macro'
 
@@ -14,14 +12,24 @@ export const EdgeOverview = styled(({ className }:{ className?: string }) => {
   const params = useParams()
 
   const edgeViewModelPayload = {
-    // fields: ['name', 'venueName', 'type',
-    //   'serialNumber', 'ports', 'ip', 'model', 'fwVersion',
-    //   'deviceStatus', 'deviceSeverity', 'venueId', 'tags'],
+    fields: [
+      'name',
+      'venueName',
+      'type',
+      'serialNumber',
+      'ports',
+      'ip',
+      'model',
+      'fwVersion',
+      'deviceStatus',
+      'deviceSeverity',
+      'venueId',
+      'tags'
+    ],
     filters: { serialNumber: [params.serialNumber] } }
 
-  // eslint-disable-next-line max-len
-  const { data: currentEdge, isLoading: isLoadingEdgeViewModel }
-  = useEdgeBySerialNumberQuery({
+  const { data: currentEdge, isLoading: isLoadingEdgeViewModel } =
+  useEdgeBySerialNumberQuery({
     params, payload: edgeViewModelPayload
   })
 
@@ -49,6 +57,8 @@ export const EdgeOverview = styled(({ className }:{ className?: string }) => {
     duplexSpeed: 100* Math.pow(12, 6),
     ip: '1.1.1.2'
   }]
+
+  // TODO: wait for API
   //   const { data: edgePortsSetting, isLaoding: isPortListLoading } = useEdgePortsListQuery({
   //     params: { tenantId, serialNumber }
   //   })
@@ -64,7 +74,7 @@ export const EdgeOverview = styled(({ className }:{ className?: string }) => {
       </GridCol>
 
       {/* TODO: wait for API*/}
-      <GridCol col={{ span: 24 }} className='statistic'>
+      <GridCol col={{ span: 24 }} className='statistic upTimeWidget'>
         <EdgeUpTimeWidget />
       </GridCol>
 
@@ -73,14 +83,15 @@ export const EdgeOverview = styled(({ className }:{ className?: string }) => {
         <EdgeTrafficByVolumeWidget />
       </GridCol>
       {/* TODO: wait for API*/}
-      <GridCol col={{ span: 12 }} className='statistic' >
+      <GridCol col={{ span: 12 }} className='statistic'>
         <EdgeTrafficByVolumeWidget />
       </GridCol>
       {/* TODO: wait for API*/}
       <GridCol col={{ span: 12 }} className='statistic'>
         <EdgePortsByTrafficWidget
           edgePortsSetting={edgePortsSetting as EdgePort[]}
-          isLoading={isPortListLoading}/>
+          isLoading={isPortListLoading}
+        />
       </GridCol>
     </GridRow>
 
@@ -88,5 +99,9 @@ export const EdgeOverview = styled(({ className }:{ className?: string }) => {
 })`
 div.statistic {
     height: 280px;
+
+    &.upTimeWidget {
+      height: 100px;
+    }
 }
 `

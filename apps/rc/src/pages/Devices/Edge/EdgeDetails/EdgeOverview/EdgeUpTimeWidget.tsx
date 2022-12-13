@@ -21,16 +21,12 @@ const Wrapper = styled.div`
     height: 100%;
     display: flex;
     flex-direction: column;
-    border-radius: 8px;
     padding: 12px 16px;
-    border: 1px solid var(--acx-neutrals-20);
-    box-shadow: 0px 2px 4px rgba(51, 51, 51, 0.08);
   }
   .ant-card-head {
     padding: 0;
     border-bottom: none;
     min-height: 0;
-    margin-bottom: 10px;
   }
   .ant-card-head-title {
     padding: 0;
@@ -80,15 +76,48 @@ export const EdgeUpTimeWidget = () => {
               <Typography.Title level={5}>
                 {$t({ defaultMessage: 'Total Uptime:' })}
               </Typography.Title>
+              {/* TODO: wait for API. */}
               <Subtitle level={5}>22h 15m</Subtitle>
               <Typography.Title level={4}>
                 {$t({ defaultMessage: 'Total Downtime:' })}
               </Typography.Title>
+              {/* TODO: wait for API. */}
               <Subtitle level={4}>1h</Subtitle>
             </SpaceWrapper>
           }
         >
           <NoData/>
+
+          {/* TODO: wait for API. */}
+          {/* TODO: need "xAxis.show" can be configurable */}
+          {/*
+            <StackedBarChart
+              style={{ height: 40, width: '100%' }}
+              data={[
+                {
+                  category: 'uptime',
+                  // eslint-disable-next-line max-len
+                  series: [
+                    { name: '2018-08-15T10:04:01.339Z', value: 60 },
+                    { name: '2018-08-15T11:04:01.339Z', value: 30 },
+                    { name: '2018-08-15T11:34:01.339Z', value: 1 },
+                    { name: '2018-08-15T11:35:01.339Z', value: 30 },
+                  ],
+                  // series: data.uptime
+                },
+              ]}
+              showTooltip={false}
+              showLabels={false}
+              showTotal={false}
+              // eslint-disable-next-line max-len
+              barColors={[
+                cssStr('--acx-semantics-green-50'),
+                cssStr('--acx-neutrals-20'),
+                cssStr('--acx-semantics-green-50'),
+                cssStr('--acx-neutrals-20'),
+              ]}
+            />
+            */}
         </AntCard>
       </Wrapper>
     </Loader>
