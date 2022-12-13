@@ -59,7 +59,7 @@ const useConnectionDetail = (event: DisplayEvent) => {
   return eventDetails
 }
 
-export function ConnectionEvents ({ children, event }:
+export function ConnectionEvent ({ children, event }:
   { children?: React.ReactNode, event: DisplayEvent }) {
   const rowData = useConnectionDetail(event)
   return (
