@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Drawer }  from 'antd'
 import moment      from 'moment-timezone'
@@ -11,76 +11,68 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
-import { useGetGuestsListQuery, useNetworkListQuery } from '@acx-ui/rc/services'
+import { Features, useIsSplitOn }                                                      from '@acx-ui/feature-toggle'
+import { useGetGuestsListQuery, useNetworkListQuery, useLazyGetGuestNetworkListQuery } from '@acx-ui/rc/services'
 import {
   useTableQuery,
   Guest,
   GuestTypesEnum,
   transformDisplayText,
   GuestStatusEnum,
-  RequestPayload,
-  Network
+  Network,
+  NetworkTypeEnum,
+  GuestNetworkTypeEnum,
+  RequestPayload
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
-import { getIntl }    from '@acx-ui/utils'
+import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { getIntl }               from '@acx-ui/utils'
 
-import { GuestsDetail } from '../GuestsDetail'
+import { defaultGuestPayload, GuestsDetail } from '../GuestsDetail'
 
-const defaultPayload = {
-  searchString: '',
-  searchTargetFields: [
-    'name',
-    'mobilePhoneNumber',
-    'emailAddress'],
-  fields: [
-    'creationDate',
-    'name',
-    'passDurationHours',
-    'id',
-    'networkId',
-    'maxNumberOfClients',
-    'notes',
-    'clients',
-    'guestStatus',
-    'emailAddress',
-    'mobilePhoneNumber',
-    'guestType',
-    'ssid',
-    'socialLogin',
-    'expiryDate',
-    'cog'
-  ]
-}
+import { AddGuestDrawer } from './addGuestDrawer'
 
-const defaultGuestNetworkPayload = {
-  searchString: '',
-  fields: [
-    'check-all',
-    'name',
-    'description',
-    'nwSubType',
-    'venues',
-    'aps',
-    'clients',
-    'vlan',
-    'cog',
-    'ssid',
-    'vlanPool',
-    'captiveType',
-    'id'
-  ],
+const payload = {
+  fields: ['name', 'defaultGuestCountry', 'id'],
+  sortField: 'name',
+  sortOrder: 'ASC',
+  pageSize: 10000,
   filters: {
-    nwSubType: ['guest'],
-    captiveType: ['GuestPass']
-  }
+    nwSubType: [NetworkTypeEnum.CAPTIVEPORTAL],
+    captiveType: [GuestNetworkTypeEnum.GuestPass]
+  },
+  url: '/api/viewmodel/tenant/{tenantId}/network'
 }
 
 export default function GuestsTable () {
+  const defaultGuestNetworkPayload = {
+    searchString: '',
+    fields: [
+      'check-all',
+      'name',
+      'description',
+      'nwSubType',
+      'venues',
+      'aps',
+      'clients',
+      'vlan',
+      'cog',
+      'ssid',
+      'vlanPool',
+      'captiveType',
+      'id'
+    ],
+    filters: {
+      nwSubType: ['guest'],
+      captiveType: ['GuestPass']
+    }
+  }
+
   const { $t } = useIntl()
+  const params = useParams()
   const GuestsTable = () => {
     const tableQuery = useTableQuery({
       useQuery: useGetGuestsListQuery,
-      defaultPayload
+      defaultPayload: defaultGuestPayload
     })
 
     const networkListQuery = useTableQuery<Network, RequestPayload<unknown>, unknown>({
@@ -105,14 +97,27 @@ export default function GuestsTable () {
       </span>
 
     const [visible, setVisible] = useState(false)
+    const [drawerVisible, setDrawerVisible] = useState(false)
     const [currentGuest, setCurrentGuest] = useState({} as Guest)
+    const [allowedNetworkList, setAllowedNetworkList] = useState<Network[]>([])
+
+    const [getNetworkList] = useLazyGetGuestNetworkListQuery()
+
+    const getAllowedNetworkList = async () => {
+      const list = await (getNetworkList({ params, payload }, true).unwrap())
+      setAllowedNetworkList(list.data)
+    }
+
+    useEffect(() => {
+      getAllowedNetworkList()
+    }, [])
 
     const columns: TableProps<Guest>['columns'] = [
       {
         key: 'creationDate',
         title: $t({ defaultMessage: 'Created' }),
         dataIndex: 'creationDate',
-        sorter: false,
+        sorter: true,
         defaultSortOrder: 'ascend',
         render: (data, row) =>
           <Button
@@ -207,7 +212,22 @@ export default function GuestsTable () {
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
-          rowKey='name'
+          rowKey='id'
+          actions={useIsSplitOn(Features.USERS) ? [{
+            label: $t({ defaultMessage: 'Add Guest' }),
+            onClick: () => setDrawerVisible(true),
+            disabled: allowedNetworkList.length === 0 ? true : false
+          }, {
+            label: $t({ defaultMessage: 'Add Guest Pass Network' }),
+            onClick: () => { },
+            disabled: true //TODO: Need guest service support
+          },
+          {
+            label: $t({ defaultMessage: 'Import from file' }),
+            onClick: () => { },
+            disabled: true // TODO: Wait for import support
+          }
+          ] : []}
         />
 
         <Drawer
@@ -217,10 +237,16 @@ export default function GuestsTable () {
           mask={false}
           children={
             <GuestsDetail
+              triggerClose={onClose}
               currentGuest={currentGuest}
             />
           }
           width={'550px'}
+        />
+
+        <AddGuestDrawer
+          visible={drawerVisible}
+          setVisible={setDrawerVisible}
         />
       </Loader>
     )
