@@ -39,7 +39,7 @@ export const LabelContainer = styled.div`
   justify-content: space-between;
 `
 export const Label = styled.div`
-  max-width: 180px;
+  max-width: 100px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
