@@ -97,6 +97,7 @@ export const CollapseBox = styled(Collapse)`
     };
    .ant-collapse-header {
     padding-bottom: 0px !important;
+    padding-right: 0px !important;
    };`
 export const TooltipWrapper = styled.div`
    font-size: var(--acx-body-5-font-size);

@@ -17,10 +17,9 @@ import {
   useDatazoom,
   useLegendSelectChanged,
   ConfigChangeChart,
-  ConfigChange
-} from '.'
-
-import type { TooltipFormatterParams } from '../Chart/helper'
+  ConfigChange,
+  TooltipFormatterParams
+} from '@acx-ui/components'
 
 describe('ConfigChangeChart',() => {
   describe('hexToRGB',() => {

@@ -19,7 +19,6 @@ export type Filters = {
 type SingleValueType = (string | number)[]
 type selectionType = SingleValueType | SingleValueType[] | undefined
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
   const [historyContentToggle, setHistoryContentToggle] = useState(true)
   const { $t } = useIntl()
@@ -85,11 +84,11 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
       </Col>
       {historyContentToggle && (
         <Col span={6}>
-          <Loader states={[results]}>
+          <Loader states={[results]} >
             <History
               setHistoryContentToggle={setHistoryContentToggle}
               historyContentToggle
-              data={results.data}
+              data={results?.data}
               filters={filters}
             />
           </Loader>

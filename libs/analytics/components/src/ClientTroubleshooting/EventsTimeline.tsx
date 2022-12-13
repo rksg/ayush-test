@@ -11,16 +11,17 @@ import {
   mapCodeToFailureText,
   clientEventDescription
 } from '@acx-ui/analytics/utils'
-import { SingleLineScatterChart } from '@acx-ui/components'
-import { useDateFilter }          from '@acx-ui/utils'
-import { formatter }              from '@acx-ui/utils'
+import { useDateFilter } from '@acx-ui/utils'
+import { formatter }     from '@acx-ui/utils'
 
 
 import { ClientTroubleShootingConfig, SUCCESS, FAILURE, SLOW, DISCONNECT, transformEvents, TYPES, formatEventDesc, DisplayEvent } from './config'
+import { EventsScatterChart }                                                                                                     from './EventsScatterChart'
 import { ClientInfoData,ConnectionEvent }                                                                                         from './services'
 import * as UI                                                                                                                    from './styledComponents'
 
 import { Filters } from '.'
+
 
 const { Panel } = Collapse
 type TimeLineProps = {
@@ -46,16 +47,17 @@ export interface Event{
   end: number,
   category: string
 }
-
+type EventCategoryMap = {
+  [SUCCESS]: Event[] | [];
+  [FAILURE]: Event[] | [];
+  [DISCONNECT]: Event[] | [];
+  [SLOW]: Event[] | [];
+  allEvents: Event[] | [];
+}
  type TimelineData = {
-  connectionEvents :{
-   [SUCCESS]: Event[] | [];
-   [FAILURE]: Event[] | [];
-   [DISCONNECT]: Event[] | [];
-   [SLOW]: Event[] | [];
-   allEvents: Event[] | [];
+  connectionEvents :EventCategoryMap
  }
- }
+
 const getTimelineData = (events: Event[]) =>
   events.reduce(
     (acc, event) => {
@@ -98,7 +100,7 @@ export function TimeLine (props : TimeLineProps){
   const connectChart = (chart: ReactECharts | null) => {
     if (chart) {
       const instance = chart.getEchartsInstance()
-      instance.group = 'timeSeriesGroup'
+      instance.group = 'eventtTmeSeriesGroup'
     }
   }
   const tooltipFormatter = (params: TooltipComponentFormatterCallbackParams) => {
@@ -117,88 +119,78 @@ export function TimeLine (props : TimeLineProps){
       </UI.TooltipWrapper>
     )
   }
-  useEffect(() => { connect('timeSeriesGroup') }, [])
+  useEffect(() => { connect('eventtTmeSeriesGroup') }, [])
   const { startDate, endDate } = useDateFilter()
   const chartBoundary = [moment(startDate).valueOf() , moment(endDate).valueOf() ]
   return (
-    <UI.CollapseBox
-      expandIcon={({ isActive }) =>
-        isActive ? (
-          <UI.StyledMinusSquareOutlined />
-        ) : (
-          <UI.StyledPlusSquareOutlined />
-        )
-      }
-      ghost>
-      {ClientTroubleShootingConfig.timeLine.map((config, index) => (
-        <Panel
-          header={
-            <UI.TimelineTitle
-              onClick={(event) => event.stopPropagation()}>
-              {config?.chartType === 'scatter' ? (
-                <SingleLineScatterChart
-                  style={{ width: 850, marginBottom: 8 }}
-                  data={
-                    TimelineData[config.value as keyof TimelineData][
-                      'allEvents'
-                    ]
-                  }
-                  chartBoundary={chartBoundary}
-                  chartRef={connectChart}
-                  title={$t(config.title)}
-                  count={
-                    TimelineData[config.value as keyof TimelineData][
-                      'allEvents'
-                    ].length
-                  }
-                  tooltopEnabled
-                  tooltipFormatter={tooltipFormatter}
-                  onDotClick={(params) => {
+    <div>
+      <UI.CollapseBox
+        expandIcon={({ isActive }) =>
+          isActive ? (
+            <UI.StyledMinusSquareOutlined />
+          ) : (
+            <UI.StyledPlusSquareOutlined />
+          )
+        }
+        ghost>
+        {ClientTroubleShootingConfig.timeLine.map((config, index) => (
+          <Panel
+            header={
+              <UI.TimelineTitle
+                onClick={(event) => event.stopPropagation()}>
+                {config?.chartType === 'scatter' ? (
+                  <EventsScatterChart
+                    style={{ width: 'auto', marginBottom: 8 }}
+                    data={
+                      TimelineData[config.value as keyof TimelineData][
+                        'allEvents'
+                      ]
+                    }
+                    chartBoundary={chartBoundary}
+                    chartRef={connectChart}
+                    title={$t(config.title)}
+                    tooltopEnabled
+                    tooltipFormatter={tooltipFormatter}
+                    onDotClick={(params) => {
                     // eslint-disable-next-line no-console
-                    console.log(params)
-                  }}
-                  mapping={config.chartMapping}
-                />
-              ) : (
-                $t(config.title)
+                      console.log(params)
+                    }}
+                  />
+                ) : (
+                  $t(config.title)
+                )}
+              </UI.TimelineTitle>
+            }
+            key={index}>
+            <UI.TimelineSubContent>
+              {config?.subtitle?.map((subtitle, index) =>
+                subtitle?.chartType === 'scatter' ? (
+                  <EventsScatterChart
+                    style={{ width: 'auto', marginBottom: 4 }}
+                    data={
+                      TimelineData[config.value as keyof TimelineData][
+                      subtitle.value as keyof EventCategoryMap
+                      ]
+                    }
+                    chartBoundary={chartBoundary}
+                    chartRef={connectChart}
+                    title={$t(subtitle.title)}
+                    key={index}
+                    tooltipFormatter={tooltipFormatter}
+                    tooltopEnabled
+                    onDotClick={(params) => {
+                    // eslint-disable-next-line no-console
+                      console.log(params)
+                    }}
+                  />
+                ) : (
+                  $t(subtitle.title)
+                )
               )}
-            </UI.TimelineTitle>
-          }
-          key={index}>
-          <UI.TimelineSubContent>
-            {config?.subtitle?.map((subtitle, index) =>
-              subtitle?.chartType === 'scatter' ? (
-                <SingleLineScatterChart
-                  style={{ width: 850, marginBottom: 4 }}
-                  data={
-                    TimelineData[config.value as keyof TimelineData][
-                      subtitle.value as keyof TimelineData['connectionEvents']
-                    ]
-                  }
-                  chartBoundary={chartBoundary}
-                  chartRef={connectChart}
-                  title={$t(subtitle.title)}
-                  count={
-                    TimelineData[config.value as keyof TimelineData][
-                      subtitle.value as keyof TimelineData['connectionEvents']
-                    ].length
-                  }
-                  key={index}
-                  tooltipFormatter={tooltipFormatter}
-                  tooltopEnabled
-                  onDotClick={(params) => {
-                    // eslint-disable-next-line no-console
-                    console.log(params)
-                  }}
-                  mapping={subtitle.chartMapping}
-                />
-              ) : (
-                $t(subtitle.title)
-              )
-            )}
-          </UI.TimelineSubContent>
-        </Panel>
-      ))}
-    </UI.CollapseBox>
+            </UI.TimelineSubContent>
+          </Panel>
+        ))}
+      </UI.CollapseBox>
+    </div>
   )
 }

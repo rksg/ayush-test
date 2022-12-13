@@ -51,12 +51,6 @@ export const spuriousEvents = [
   EVENT_STATES.SPURIOUS_DISCONNECT,
   EVENT_STATES.SPURIOUS_INFO_UPDATED
 ]
-export const connectionChartMapping = [
-  { key: DISCONNECT, label: DISCONNECT, color: '--acx-neutrals-50' },
-  { key: SUCCESS, label: SUCCESS, color: '--acx-semantics-green-50' },
-  { key: FAILURE, label: FAILURE, color: '--acx-semantics-red-50' },
-  { key: SLOW, label: SLOW, color: '--acx-semantics-yellow-50' }
-] as { key: string, label: string, color: string }[]
 
 export type DisplayEvent = {
   start: number,
@@ -201,33 +195,28 @@ export const ClientTroubleShootingConfig = {
   timeLine: [
     {
       title: defineMessage({ defaultMessage: 'Connection Events' }),
-      value: 'connectionEvents',
+      value: TYPES.CONNECTION_EVENTS,
       chartType: 'scatter',
-      chartMapping: connectionChartMapping,
       subtitle: [
         {
           title: defineMessage({ defaultMessage: 'Success' }),
           chartType: 'scatter',
-          value: 'success',
-          chartMapping: connectionChartMapping
+          value: SUCCESS
         },
         {
           title: defineMessage({ defaultMessage: 'Failure' }),
           chartType: 'scatter',
-          value: 'failure',
-          chartMapping: connectionChartMapping
+          value: FAILURE
         },
         {
           title: defineMessage({ defaultMessage: 'Slow' }),
           chartType: 'scatter',
-          value: 'slow',
-          chartMapping: connectionChartMapping
+          value: SLOW
         },
         {
           title: defineMessage({ defaultMessage: 'Disconnect' }),
           chartType: 'scatter',
-          value: 'disconnect',
-          chartMapping: connectionChartMapping
+          value: DISCONNECT
         }
       ]
     },
