@@ -91,7 +91,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
     }),
     addNetworkVenue: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.addNetworkVenue, params)
+        const req = createHttpRequest(WifiUrlsInfo.addNetworkVenue, params, RKS_NEW_UI)
         return {
           ...req,
           body: payload
@@ -101,7 +101,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
     }),
     updateNetworkVenue: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.updateNetworkVenue, params)
+        const req = createHttpRequest(WifiUrlsInfo.updateNetworkVenue, params, RKS_NEW_UI)
         return {
           ...req,
           body: payload
@@ -111,7 +111,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
     }),
     deleteNetworkVenue: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.deleteNetworkVenue, params)
+        const req = createHttpRequest(WifiUrlsInfo.deleteNetworkVenue, params, RKS_NEW_UI)
         return {
           ...req
         }

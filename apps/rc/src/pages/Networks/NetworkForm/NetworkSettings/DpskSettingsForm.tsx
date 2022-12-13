@@ -116,6 +116,11 @@ function DpskServiceSelector () {
   const [ dpskOptions, setDpskOptions ] = useState<DefaultOptionType[]>([])
   const [ selectedDpsk, setSelectedDpsk ] = useState<DpskSaveData>()
   const { data: dpskList } = useDpskListQuery({})
+  const dpskServiceProfileId = useWatch('dpskServiceProfileId')
+
+  const findService = (serviceId: string) => {
+    return dpskList?.content.find((dpsk: DpskSaveData) => dpsk.id === serviceId)
+  }
 
   useEffect(() => {
     if (dpskList?.content) {
@@ -125,9 +130,11 @@ function DpskServiceSelector () {
     }
   }, [dpskList])
 
-  const findService = (serviceId: string) => {
-    return dpskList?.content.find(dpsk => dpsk.id === serviceId)
-  }
+  useEffect(() => {
+    if (dpskServiceProfileId && !selectedDpsk && dpskList) {
+      setSelectedDpsk(findService(dpskServiceProfileId))
+    }
+  }, [dpskServiceProfileId, selectedDpsk, dpskList])
 
   const onServiceChange = (value: string) => {
     setSelectedDpsk(findService(value))
