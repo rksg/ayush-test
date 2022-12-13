@@ -1804,19 +1804,495 @@ exports[`ClientDetails should render correctly 1`] = `
     class="styledComponents__Spacer-sc-xov27h-1 ikA-dJH"
   />
   <div
-    class="ant-row"
-    style="margin-left: -12px; margin-right: -12px;"
+    class="ant-row Grid__GridRow-sc-5irhjd-2"
+    style="margin: -10px -10px -10px -10px;"
   >
     <div
-      class="ant-col ant-col-18"
-      style="padding-left: 12px; padding-right: 12px;"
+      class="ant-col ant-col-18 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
     >
       <div
-        class="styledComponents__CardWrapper-sc-75u9lp-0 hIZIkF"
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
       >
         <div
-          class="styledComponents__Wrapper-sc-13w5wfx-4 dnleil"
-          type="solid-bg"
+          class="styledComponents__CardWrapper-sc-75u9lp-0 hIZIkF"
+        >
+          <div
+            class="styledComponents__Wrapper-sc-13w5wfx-4 dnleil"
+            type="solid-bg"
+          >
+            <div
+              class="ant-card"
+            >
+              <div
+                class="ant-card-head"
+              >
+                <div
+                  class="ant-card-head-wrapper"
+                >
+                  <div
+                    class="ant-card-head-title"
+                  >
+                    <div
+                      class="ant-space ant-space-horizontal ant-space-align-center"
+                    >
+                      <div
+                        class="ant-space-item"
+                      >
+                        <div
+                          class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-card-extra"
+                  >
+                    <div
+                      class="ant-space ant-space-horizontal ant-space-align-center"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div
+                class="ant-card-body"
+              >
+                <div
+                  class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+                >
+                  <div
+                    class="ant-row Grid__GridRow-sc-5irhjd-2"
+                    style="margin: -10px -10px -10px -10px; flex-grow: 1;"
+                  >
+                    <div
+                      class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                      style="padding: 10px 10px 10px 10px;"
+                    >
+                      <div
+                        class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-75u9lp-1 gpuLvB"
+                      >
+                        <div
+                          class="styledComponents__Title-sc-75u9lp-2 kWZKtZ"
+                        >
+                          Current Status
+                        </div>
+                        <h2
+                          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+                        >
+                          Disconnected
+                        </h2>
+                      </div>
+                    </div>
+                    <div
+                      class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                      style="padding: 10px 10px 10px 10px;"
+                    >
+                      <div
+                        class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-75u9lp-1 gpuLvB"
+                      >
+                        <div
+                          class="styledComponents__Title-sc-75u9lp-2 kWZKtZ"
+                        >
+                          APs Connected
+                        </div>
+                        <h2
+                          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+                        >
+                          1
+                        </h2>
+                      </div>
+                    </div>
+                    <div
+                      class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                      style="padding: 10px 10px 10px 10px;"
+                    >
+                      <div
+                        class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-75u9lp-1 gpuLvB"
+                      >
+                        <div
+                          class="styledComponents__Title-sc-75u9lp-2 kWZKtZ"
+                        >
+                          Avg. Rate
+                        </div>
+                        <h2
+                          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+                        >
+                          141 KB
+                        </h2>
+                      </div>
+                    </div>
+                    <div
+                      class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                      style="padding: 10px 10px 10px 10px;"
+                    >
+                      <div
+                        class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-75u9lp-1 gpuLvB"
+                      >
+                        <div
+                          class="styledComponents__Title-sc-75u9lp-2 kWZKtZ"
+                        >
+                          User Traffic
+                        </div>
+                        <h2
+                          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+                        >
+                          1.44 GB
+                        </h2>
+                      </div>
+                    </div>
+                    <div
+                      class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                      style="padding: 10px 10px 10px 10px;"
+                    >
+                      <div
+                        class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-75u9lp-1 gpuLvB"
+                      >
+                        <div
+                          class="styledComponents__Title-sc-75u9lp-2 kWZKtZ"
+                        >
+                          Total Connected Time
+                        </div>
+                        <h2
+                          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+                        >
+                          30 m 3 s
+                        </h2>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-row Grid__GridRow-sc-5irhjd-2"
+                    style="margin: -10px -10px -10px -10px; flex-grow: 1;"
+                  >
+                    <div
+                      class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                      style="padding: 10px 10px 10px 10px;"
+                    >
+                      <div
+                        class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-75u9lp-1 gpuLvB"
+                      >
+                        <div
+                          class="styledComponents__Title-sc-75u9lp-2 kWZKtZ"
+                        >
+                          Applications
+                        </div>
+                        <h2
+                          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+                        >
+                          73
+                        </h2>
+                      </div>
+                    </div>
+                    <div
+                      class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                      style="padding: 10px 10px 10px 10px;"
+                    >
+                      <div
+                        class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-75u9lp-1 gpuLvB"
+                      >
+                        <div
+                          class="styledComponents__Title-sc-75u9lp-2 kWZKtZ"
+                        >
+                          Avg. Session Length
+                        </div>
+                        <h2
+                          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+                        >
+                          -
+                        </h2>
+                      </div>
+                    </div>
+                    <div
+                      class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                      style="padding: 10px 10px 10px 10px;"
+                    >
+                      <div
+                        class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-75u9lp-1 gpuLvB"
+                      >
+                        <div
+                          class="styledComponents__Title-sc-75u9lp-2 kWZKtZ"
+                        >
+                          Sessions
+                        </div>
+                        <h2
+                          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+                        >
+                          1
+                        </h2>
+                      </div>
+                    </div>
+                    <div
+                      class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                      style="padding: 10px 10px 10px 10px;"
+                    >
+                      <div
+                        class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-75u9lp-1 gpuLvB"
+                      >
+                        <div
+                          class="echarts-for-react "
+                          size-sensor-id="1"
+                          style="height: 160px; position: relative;"
+                        >
+                          <div
+                            style="position: relative; overflow: hidden; width: 1280px; height: 800px;"
+                          >
+                            <svg
+                              baseProfile="full"
+                              height="800"
+                              style="position:absolute;left:0;top:0;user-select:none"
+                              version="1.1"
+                              width="1280"
+                              xmlns="http://www.w3.org/2000/svg"
+                              xmlns:xlink="http://www.w3.org/1999/xlink"
+                            >
+                              <rect
+                                fill="none"
+                                fill-opacity="1"
+                                height="800"
+                                id="0"
+                                width="1280"
+                                x="0"
+                                y="0"
+                              />
+                              <g>
+                                <path
+                                  d="M-5 -8l5 0l0 16l-5 0Z"
+                                  fill="none"
+                                  transform="translate(7 686.6667)"
+                                />
+                                <text
+                                  dominant-baseline="central"
+                                  fill="#333333"
+                                  style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                  text-anchor="end"
+                                  transform="translate(7 686.6667)"
+                                  xml:space="preserve"
+                                >
+                                  6 GHz
+                                </text>
+                                <path
+                                  d="M-5 -8l5 0l0 16l-5 0Z"
+                                  fill="none"
+                                  transform="translate(7 460)"
+                                />
+                                <text
+                                  dominant-baseline="central"
+                                  fill="#333333"
+                                  style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                  text-anchor="end"
+                                  transform="translate(7 460)"
+                                  xml:space="preserve"
+                                >
+                                  5 GHz
+                                </text>
+                                <path
+                                  d="M-7 -8l7 0l0 16l-7 0Z"
+                                  fill="none"
+                                  transform="translate(7 233.3333)"
+                                />
+                                <text
+                                  dominant-baseline="central"
+                                  fill="#333333"
+                                  style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                  text-anchor="end"
+                                  transform="translate(7 233.3333)"
+                                  xml:space="preserve"
+                                >
+                                  2.4 GHz
+                                </text>
+                                <path
+                                  d="M15 680.6667L15 692.6667L15 680.6667"
+                                  fill="#ADCFFA"
+                                />
+                                <path
+                                  d="M15 454L1225.4 454A4 4 0 0 1 1229.4 458L1229.4 462A4 4 0 0 1 1225.4 466L15 466L15 454"
+                                  fill="#5496EA"
+                                />
+                                <path
+                                  d="M15 227.3333L15 239.3333L15 227.3333"
+                                  fill="#2565B6"
+                                />
+                                <path
+                                  d="M0 -8l2 0l0 16l-2 0Z"
+                                  fill="none"
+                                  transform="translate(20 686.6667)"
+                                />
+                                <path
+                                  d="M0 -0.5l2 0l0 1l-2 0Z"
+                                  fill="none"
+                                  transform="translate(20 686.6667)"
+                                />
+                                <text
+                                  dominant-baseline="central"
+                                  fill="#333333"
+                                  style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
+                                  text-anchor="start"
+                                  transform="translate(20 686.6667)"
+                                >
+                                  --
+                                </text>
+                                <path
+                                  d="M0 -8l6 0l0 16l-6 0Z"
+                                  fill="none"
+                                  transform="translate(1234.4 460)"
+                                />
+                                <path
+                                  d="M0 -0.5l6 0l0 1l-6 0Z"
+                                  fill="none"
+                                  transform="translate(1234.4 460)"
+                                />
+                                <text
+                                  dominant-baseline="central"
+                                  fill="#333333"
+                                  style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
+                                  text-anchor="start"
+                                  transform="translate(1234.4 460)"
+                                >
+                                  1.44GB
+                                </text>
+                                <path
+                                  d="M0 -8l2 0l0 16l-2 0Z"
+                                  fill="none"
+                                  transform="translate(20 233.3333)"
+                                />
+                                <path
+                                  d="M0 -0.5l2 0l0 1l-2 0Z"
+                                  fill="none"
+                                  transform="translate(20 233.3333)"
+                                />
+                                <text
+                                  dominant-baseline="central"
+                                  fill="#333333"
+                                  style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
+                                  text-anchor="start"
+                                  transform="translate(20 233.3333)"
+                                >
+                                  --
+                                </text>
+                                <path
+                                  d="M-5 -5l10 0l0 10l-10 0Z"
+                                  fill="rgb(0,0,0)"
+                                  fill-opacity="0"
+                                  stroke="#ccc"
+                                  stroke-width="0"
+                                  transform="translate(1260 5)"
+                                />
+                              </g>
+                            </svg>
+                          </div>
+                          <div
+                            class=""
+                          />
+                          <object
+                            class="size-sensor-object"
+                            data="about:blank"
+                            style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+                            tabindex="-1"
+                            type="text/html"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                      style="padding: 10px 10px 10px 10px;"
+                    >
+                      <div
+                        class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-75u9lp-1 gpuLvB"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-row Grid__GridRow-sc-5irhjd-2"
+          style="margin: -10px -10px -10px -10px;"
+        >
+          <div
+            class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
+            style="padding: 10px 10px 10px 10px;"
+          >
+            <div
+              class="Grid__Container-sc-5irhjd-1 zzbxI"
+              style="margin-top: 12px; height: 292px; background: rgb(247, 247, 247);"
+            >
+              TODO: Top 10 Applications by traffic volume
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-row Grid__GridRow-sc-5irhjd-2"
+          style="margin: -10px -10px -10px -10px;"
+        >
+          <div
+            class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
+            style="padding: 10px 10px 10px 10px;"
+          >
+            <div
+              class="Grid__Container-sc-5irhjd-1 zzbxI"
+              style="margin-top: 12px; height: 292px;"
+            >
+              <div
+                class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+              >
+                <div
+                  class="styledComponents__FallbackWrapper-sc-1352uh8-1 doEIjj"
+                >
+                  <p>
+                    Something went wrong.
+                  </p>
+                  <p>
+                    {"name":"FetchError","message":"request to http://localhost/api/a4rc/api/rsa-data-api/graphql/analytics failed, reason: connect ECONNREFUSED 127.0.0.1:80","stack":"FetchError: request to http://localhost/api/a4rc/api/rsa-data-api/graphql/analytics failed, reason: connect ECONNREFUSED 127.0.0.1:80\\n    at NodeClientRequest.&lt;anonymous&gt; (/home/ann/acx-ui/node_modules/node-fetch/lib/index.js:1491:11)\\n    at NodeClientRequest.emit (node:events:539:35)\\n    at NodeClientRequest.Object.&lt;anonymous&gt;.NodeClientRequest.emit (/home/ann/acx-ui/node_modules/@mswjs/interceptors/src/interceptors/ClientRequest/NodeClientRequest.ts:284:22)\\n    at Socket.socketErrorListener (node:_http_client:454:9)\\n    at Socket.emit (node:events:527:28)\\n    at emitErrorNT (node:internal/streams/destroy:157:8)\\n    at emitErrorCloseNT (node:internal/streams/destroy:122:3)\\n    at processTicksAndRejections (node:internal/process/task_queues:83:21)","code":"ECONNREFUSED"}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-row Grid__GridRow-sc-5irhjd-2"
+          style="margin: -10px -10px -10px -10px;"
+        >
+          <div
+            class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
+            style="padding: 10px 10px 10px 10px;"
+          >
+            <div
+              class="Grid__Container-sc-5irhjd-1 zzbxI"
+              style="margin-top: 12px; height: 292px;"
+            >
+              <div
+                class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+              >
+                <div
+                  class="styledComponents__FallbackWrapper-sc-1352uh8-1 doEIjj"
+                >
+                  <p>
+                    Something went wrong.
+                  </p>
+                  <p>
+                    {"name":"FetchError","message":"request to http://localhost/api/a4rc/api/rsa-data-api/graphql/analytics failed, reason: connect ECONNREFUSED 127.0.0.1:80","stack":"FetchError: request to http://localhost/api/a4rc/api/rsa-data-api/graphql/analytics failed, reason: connect ECONNREFUSED 127.0.0.1:80\\n    at NodeClientRequest.&lt;anonymous&gt; (/home/ann/acx-ui/node_modules/node-fetch/lib/index.js:1491:11)\\n    at NodeClientRequest.emit (node:events:539:35)\\n    at NodeClientRequest.Object.&lt;anonymous&gt;.NodeClientRequest.emit (/home/ann/acx-ui/node_modules/@mswjs/interceptors/src/interceptors/ClientRequest/NodeClientRequest.ts:284:22)\\n    at Socket.socketErrorListener (node:_http_client:454:9)\\n    at Socket.emit (node:events:527:28)\\n    at emitErrorNT (node:internal/streams/destroy:157:8)\\n    at emitErrorCloseNT (node:internal/streams/destroy:122:3)\\n    at processTicksAndRejections (node:internal/process/task_queues:83:21)","code":"ECONNREFUSED"}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div
+          class="styledComponents__Wrapper-sc-13w5wfx-4 lhrXqm"
+          type="default"
         >
           <div
             class="ant-card"
@@ -1857,404 +2333,10 @@ exports[`ClientDetails should render correctly 1`] = `
               <div
                 class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
               >
-                <div
-                  class="ant-row Grid__GridRow-sc-5irhjd-2"
-                  style="margin: -10px -10px -10px -10px; flex-grow: 1;"
-                >
-                  <div
-                    class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
-                    style="padding: 10px 10px 10px 10px;"
-                  >
-                    <div
-                      class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-75u9lp-1 gpuLvB"
-                    >
-                      <div
-                        class="styledComponents__Title-sc-75u9lp-2 kWZKtZ"
-                      >
-                        Current Status
-                      </div>
-                      <h2
-                        class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
-                      >
-                        Disconnected
-                      </h2>
-                    </div>
-                  </div>
-                  <div
-                    class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
-                    style="padding: 10px 10px 10px 10px;"
-                  >
-                    <div
-                      class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-75u9lp-1 gpuLvB"
-                    >
-                      <div
-                        class="styledComponents__Title-sc-75u9lp-2 kWZKtZ"
-                      >
-                        APs Connected
-                      </div>
-                      <h2
-                        class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
-                      >
-                        1
-                      </h2>
-                    </div>
-                  </div>
-                  <div
-                    class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
-                    style="padding: 10px 10px 10px 10px;"
-                  >
-                    <div
-                      class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-75u9lp-1 gpuLvB"
-                    >
-                      <div
-                        class="styledComponents__Title-sc-75u9lp-2 kWZKtZ"
-                      >
-                        Avg. Rate
-                      </div>
-                      <h2
-                        class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
-                      >
-                        141 KB
-                      </h2>
-                    </div>
-                  </div>
-                  <div
-                    class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
-                    style="padding: 10px 10px 10px 10px;"
-                  >
-                    <div
-                      class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-75u9lp-1 gpuLvB"
-                    >
-                      <div
-                        class="styledComponents__Title-sc-75u9lp-2 kWZKtZ"
-                      >
-                        User Traffic
-                      </div>
-                      <h2
-                        class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
-                      >
-                        1.44 GB
-                      </h2>
-                    </div>
-                  </div>
-                  <div
-                    class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
-                    style="padding: 10px 10px 10px 10px;"
-                  >
-                    <div
-                      class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-75u9lp-1 gpuLvB"
-                    >
-                      <div
-                        class="styledComponents__Title-sc-75u9lp-2 kWZKtZ"
-                      >
-                        Total Connected Time
-                      </div>
-                      <h2
-                        class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
-                      >
-                        30 m 3 s
-                      </h2>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="ant-row Grid__GridRow-sc-5irhjd-2"
-                  style="margin: -10px -10px -10px -10px; flex-grow: 1;"
-                >
-                  <div
-                    class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
-                    style="padding: 10px 10px 10px 10px;"
-                  >
-                    <div
-                      class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-75u9lp-1 gpuLvB"
-                    >
-                      <div
-                        class="styledComponents__Title-sc-75u9lp-2 kWZKtZ"
-                      >
-                        Applications
-                      </div>
-                      <h2
-                        class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
-                      >
-                        73
-                      </h2>
-                    </div>
-                  </div>
-                  <div
-                    class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
-                    style="padding: 10px 10px 10px 10px;"
-                  >
-                    <div
-                      class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-75u9lp-1 gpuLvB"
-                    >
-                      <div
-                        class="styledComponents__Title-sc-75u9lp-2 kWZKtZ"
-                      >
-                        Avg. Session Length
-                      </div>
-                      <h2
-                        class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
-                      >
-                        -
-                      </h2>
-                    </div>
-                  </div>
-                  <div
-                    class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
-                    style="padding: 10px 10px 10px 10px;"
-                  >
-                    <div
-                      class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-75u9lp-1 gpuLvB"
-                    >
-                      <div
-                        class="styledComponents__Title-sc-75u9lp-2 kWZKtZ"
-                      >
-                        Sessions
-                      </div>
-                      <h2
-                        class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
-                      >
-                        1
-                      </h2>
-                    </div>
-                  </div>
-                  <div
-                    class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
-                    style="padding: 10px 10px 10px 10px;"
-                  >
-                    <div
-                      class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-75u9lp-1 gpuLvB"
-                    >
-                      <div
-                        class="echarts-for-react "
-                        size-sensor-id="1"
-                        style="height: 160px; position: relative;"
-                      >
-                        <div
-                          style="position: relative; overflow: hidden; width: 1280px; height: 800px;"
-                        >
-                          <svg
-                            baseProfile="full"
-                            height="800"
-                            style="position:absolute;left:0;top:0;user-select:none"
-                            version="1.1"
-                            width="1280"
-                            xmlns="http://www.w3.org/2000/svg"
-                            xmlns:xlink="http://www.w3.org/1999/xlink"
-                          >
-                            <rect
-                              fill="none"
-                              fill-opacity="1"
-                              height="800"
-                              id="0"
-                              width="1280"
-                              x="0"
-                              y="0"
-                            />
-                            <g>
-                              <path
-                                d="M-5 -8l5 0l0 16l-5 0Z"
-                                fill="none"
-                                transform="translate(7 686.6667)"
-                              />
-                              <text
-                                dominant-baseline="central"
-                                fill="#333333"
-                                style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
-                                text-anchor="end"
-                                transform="translate(7 686.6667)"
-                                xml:space="preserve"
-                              >
-                                6 GHz
-                              </text>
-                              <path
-                                d="M-5 -8l5 0l0 16l-5 0Z"
-                                fill="none"
-                                transform="translate(7 460)"
-                              />
-                              <text
-                                dominant-baseline="central"
-                                fill="#333333"
-                                style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
-                                text-anchor="end"
-                                transform="translate(7 460)"
-                                xml:space="preserve"
-                              >
-                                5 GHz
-                              </text>
-                              <path
-                                d="M-7 -8l7 0l0 16l-7 0Z"
-                                fill="none"
-                                transform="translate(7 233.3333)"
-                              />
-                              <text
-                                dominant-baseline="central"
-                                fill="#333333"
-                                style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
-                                text-anchor="end"
-                                transform="translate(7 233.3333)"
-                                xml:space="preserve"
-                              >
-                                2.4 GHz
-                              </text>
-                              <path
-                                d="M15 680.6667L15 692.6667L15 680.6667"
-                                fill="#ADCFFA"
-                              />
-                              <path
-                                d="M15 454L1225.4 454A4 4 0 0 1 1229.4 458L1229.4 462A4 4 0 0 1 1225.4 466L15 466L15 454"
-                                fill="#5496EA"
-                              />
-                              <path
-                                d="M15 227.3333L15 239.3333L15 227.3333"
-                                fill="#2565B6"
-                              />
-                              <path
-                                d="M0 -8l2 0l0 16l-2 0Z"
-                                fill="none"
-                                transform="translate(20 686.6667)"
-                              />
-                              <path
-                                d="M0 -0.5l2 0l0 1l-2 0Z"
-                                fill="none"
-                                transform="translate(20 686.6667)"
-                              />
-                              <text
-                                dominant-baseline="central"
-                                fill="#333333"
-                                style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
-                                text-anchor="start"
-                                transform="translate(20 686.6667)"
-                              >
-                                --
-                              </text>
-                              <path
-                                d="M0 -8l6 0l0 16l-6 0Z"
-                                fill="none"
-                                transform="translate(1234.4 460)"
-                              />
-                              <path
-                                d="M0 -0.5l6 0l0 1l-6 0Z"
-                                fill="none"
-                                transform="translate(1234.4 460)"
-                              />
-                              <text
-                                dominant-baseline="central"
-                                fill="#333333"
-                                style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
-                                text-anchor="start"
-                                transform="translate(1234.4 460)"
-                              >
-                                1.44GB
-                              </text>
-                              <path
-                                d="M0 -8l2 0l0 16l-2 0Z"
-                                fill="none"
-                                transform="translate(20 233.3333)"
-                              />
-                              <path
-                                d="M0 -0.5l2 0l0 1l-2 0Z"
-                                fill="none"
-                                transform="translate(20 233.3333)"
-                              />
-                              <text
-                                dominant-baseline="central"
-                                fill="#333333"
-                                style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
-                                text-anchor="start"
-                                transform="translate(20 233.3333)"
-                              >
-                                --
-                              </text>
-                              <path
-                                d="M-5 -5l10 0l0 10l-10 0Z"
-                                fill="rgb(0,0,0)"
-                                fill-opacity="0"
-                                stroke="#ccc"
-                                stroke-width="0"
-                                transform="translate(1260 5)"
-                              />
-                            </g>
-                          </svg>
-                        </div>
-                        <div
-                          class=""
-                        />
-                        <object
-                          class="size-sensor-object"
-                          data="about:blank"
-                          style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
-                          tabindex="-1"
-                          type="text/html"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
-                    style="padding: 10px 10px 10px 10px;"
-                  >
-                    <div
-                      class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-75u9lp-1 gpuLvB"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
-      class="ant-col ant-col-6"
-      style="padding-left: 12px; padding-right: 12px;"
-    >
-      <div
-        class="styledComponents__Wrapper-sc-13w5wfx-4 lhrXqm"
-        type="default"
-      >
-        <div
-          class="ant-card"
-        >
-          <div
-            class="ant-card-head"
-          >
-            <div
-              class="ant-card-head-wrapper"
-            >
-              <div
-                class="ant-card-head-title"
-              >
-                <div
-                  class="ant-space ant-space-horizontal ant-space-align-center"
-                >
-                  <div
-                    class="ant-space-item"
-                  >
-                    <div
-                      class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
-                    />
-                  </div>
-                </div>
-              </div>
-              <div
-                class="ant-card-extra"
-              >
-                <div
-                  class="ant-space ant-space-horizontal ant-space-align-center"
+                <form
+                  class="ant-form ant-form-horizontal styledComponents__Form-sc-75u9lp-3 gatxQg"
                 />
               </div>
-            </div>
-          </div>
-          <div
-            class="ant-card-body"
-          >
-            <div
-              class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
-            >
-              <form
-                class="ant-form ant-form-horizontal styledComponents__Form-sc-75u9lp-3 gatxQg"
-              />
             </div>
           </div>
         </div>
