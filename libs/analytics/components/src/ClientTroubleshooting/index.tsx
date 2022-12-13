@@ -88,7 +88,7 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
             <History
               setHistoryContentToggle={setHistoryContentToggle}
               historyContentToggle
-              data={results?.data}
+              data={results.data}
               filters={filters}
             />
           </Loader>

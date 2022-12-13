@@ -216,7 +216,8 @@ export const ClientTroubleShootingConfig = {
         {
           title: defineMessage({ defaultMessage: 'Disconnect' }),
           chartType: 'scatter',
-          value: DISCONNECT
+          value: DISCONNECT,
+          isLast: true
         }
       ]
     },

@@ -96,6 +96,8 @@ export function EventsScatterChart ({
   const eChartsRef = useRef<ReactECharts>(null)
   useImperativeHandle(chartRef, () => eChartsRef.current!)
 
+  // This is for popup selection
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selected, setSelected] = useState<number|undefined>(selectedData)
   useDotClick(eChartsRef, onDotClick, setSelected)
 
@@ -115,8 +117,7 @@ export function EventsScatterChart ({
           yAxisIndex: 'none',
           brushStyle: { color: 'rgba(0, 0, 0, 0.05)' },
           icon: { back: 'path://', zoom: 'path://' }
-        },
-        brush: { type: ['rect'], icon: { rect: 'path://' } }
+        }
       }
     },
     ...(tooltopEnabled ? {
@@ -184,11 +185,11 @@ export function EventsScatterChart ({
     series: [
       {
         type: 'scatter',
-        name: 'series 1',
+        name: 'CT Events series',
         symbolSize: 10,
         animation: false,
         data: data.length > 1 ? data
-          .map((record) => [record.start, 'series 1', record]) : [0,0],
+          .map((record) => [record.start, 'CT Events series', record]) : [0,0],
         itemStyle: {
           color: function (params) {
             const eventObj = Array.isArray(params.data) ? params.data[2] : ''

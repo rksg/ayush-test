@@ -98,26 +98,15 @@ export const CollapseBox = styled(Collapse)`
    .ant-collapse-header {
     padding-bottom: 0px !important;
     padding-right: 0px !important;
-   };`
+   };
+   .ant-collapse-content-box{
+    padding-right: 0px;
+   }`
 export const TooltipWrapper = styled.div`
-   font-size: var(--acx-body-5-font-size);
-   line-height: var(--acx-body-5-line-height);
-   color: var(--acx-primary-white);
-   max-width: 200px;
-   white-space: normal;
-   word-wrap: break-word;
- 
-   time { font-weight: var(--acx-body-font-weight-bold); }
- 
-   > ul {
-     padding: 0px;
-     margin: 0px;
-     list-style-type: none;
-     padding-top: 4px;
-   }
-   > li {
-     font-weight: var(--acx-body-font-weight);
-     margin-bottom: 4px;
-     &:is(:last-child) { margin-bottom: unset; }
-   }
- `
+    color: var(--acx-primary-white);
+    font-size: var(--acx-subtitle-6-font-size);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    background-color: transparent;
+    `

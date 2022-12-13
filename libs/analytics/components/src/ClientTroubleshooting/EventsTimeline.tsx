@@ -7,12 +7,7 @@ import moment                                               from 'moment-timezon
 import { renderToString }                                   from 'react-dom/server'
 import { useIntl }                                          from 'react-intl'
 
-import {
-  mapCodeToFailureText,
-  clientEventDescription
-} from '@acx-ui/analytics/utils'
 import { useDateFilter } from '@acx-ui/utils'
-import { formatter }     from '@acx-ui/utils'
 
 
 import { ClientTroubleShootingConfig, SUCCESS, FAILURE, SLOW, DISCONNECT, transformEvents, TYPES, formatEventDesc, DisplayEvent } from './config'
@@ -62,15 +57,30 @@ const getTimelineData = (events: Event[]) =>
   events.reduce(
     (acc, event) => {
       if (event.type === TYPES.CONNECTION_EVENTS) {
-        acc['connectionEvents']['allEvents'] = [...acc['connectionEvents']['allEvents'], event]
+        acc[TYPES.CONNECTION_EVENTS as keyof TimelineData]['allEvents'] = [
+          ...acc[TYPES.CONNECTION_EVENTS as keyof TimelineData]['allEvents'],
+          event
+        ]
         if (event.category === SUCCESS)
-          acc['connectionEvents'][SUCCESS] = [...acc['connectionEvents'][SUCCESS], event]
+          acc[TYPES.CONNECTION_EVENTS as keyof TimelineData][SUCCESS] = [
+            ...acc[TYPES.CONNECTION_EVENTS as keyof TimelineData][SUCCESS],
+            event
+          ]
         if (event.category === FAILURE)
-          acc['connectionEvents'][FAILURE] = [...acc['connectionEvents'][FAILURE], event]
+          acc[TYPES.CONNECTION_EVENTS as keyof TimelineData][FAILURE] = [
+            ...acc[TYPES.CONNECTION_EVENTS as keyof TimelineData][FAILURE],
+            event
+          ]
         if (event.category === DISCONNECT)
-          acc['connectionEvents'][DISCONNECT] = [...acc['connectionEvents'][DISCONNECT], event]
+          acc[TYPES.CONNECTION_EVENTS as keyof TimelineData][DISCONNECT] = [
+            ...acc[TYPES.CONNECTION_EVENTS as keyof TimelineData][DISCONNECT],
+            event
+          ]
         if (event.category === SLOW)
-          acc['connectionEvents'][SLOW] = [...acc['connectionEvents'][SLOW], event]
+          acc[TYPES.CONNECTION_EVENTS as keyof TimelineData][SLOW] = [
+            ...acc[TYPES.CONNECTION_EVENTS as keyof TimelineData][SLOW],
+            event
+          ]
       }
       return acc
     },
@@ -103,19 +113,26 @@ export function TimeLine (props : TimeLineProps){
       instance.group = 'eventtTmeSeriesGroup'
     }
   }
-  const tooltipFormatter = (params: TooltipComponentFormatterCallbackParams) => {
-    const evtObj = Array.isArray(params) && Array.isArray(params[0].data) ? params[0].data[2] : ''
-    const { code, apName, mac, radio, state, event } = evtObj as unknown as DisplayEvent
-    const ap = [apName, mac ? `(${mac})` : ''].filter(Boolean).join(' ')
-    const tooltipText = [
-      code ? `${mapCodeToFailureText(code, intl)}:` : '',
-      `${intl.$t(clientEventDescription(event,state))} @`,
-      `${ap} ${formatter('radioFormat')(radio)}`
-    ].filter(Boolean).join(' ')
-
+  const mainCharttooltipFormatter = (params: TooltipComponentFormatterCallbackParams) => {
+    const evtObj =
+      (Array.isArray(params) && Array.isArray(params[0].data)
+        ? (params[0].data[2])
+        : '') as unknown as DisplayEvent
     return renderToString(
       <UI.TooltipWrapper>
-        {tooltipText}
+        {moment(evtObj.start).format('MMM DD')}
+      </UI.TooltipWrapper>
+    )
+  }
+  const subCharttooltipFormatter = (params: TooltipComponentFormatterCallbackParams) => {
+    const evtObj =
+      (Array.isArray(params) && Array.isArray(params[0].data)
+        ? (params[0].data[2])
+        : '') as unknown as DisplayEvent
+    const tooltipText = formatEventDesc(evtObj, intl)
+    return renderToString(
+      <UI.TooltipWrapper>
+        {moment(evtObj.start).format('HH:mm:ss')} {tooltipText}
       </UI.TooltipWrapper>
     )
   }
@@ -123,74 +140,72 @@ export function TimeLine (props : TimeLineProps){
   const { startDate, endDate } = useDateFilter()
   const chartBoundary = [moment(startDate).valueOf() , moment(endDate).valueOf() ]
   return (
-    <div>
-      <UI.CollapseBox
-        expandIcon={({ isActive }) =>
-          isActive ? (
-            <UI.StyledMinusSquareOutlined />
-          ) : (
-            <UI.StyledPlusSquareOutlined />
-          )
-        }
-        ghost>
-        {ClientTroubleShootingConfig.timeLine.map((config, index) => (
-          <Panel
-            header={
-              <UI.TimelineTitle
-                onClick={(event) => event.stopPropagation()}>
-                {config?.chartType === 'scatter' ? (
-                  <EventsScatterChart
-                    style={{ width: 'auto', marginBottom: 8 }}
-                    data={
-                      TimelineData[config.value as keyof TimelineData][
-                        'allEvents'
-                      ]
-                    }
-                    chartBoundary={chartBoundary}
-                    chartRef={connectChart}
-                    title={$t(config.title)}
-                    tooltopEnabled
-                    tooltipFormatter={tooltipFormatter}
-                    onDotClick={(params) => {
+    <UI.CollapseBox
+      expandIcon={({ isActive }) =>
+        isActive ? (
+          <UI.StyledMinusSquareOutlined />
+        ) : (
+          <UI.StyledPlusSquareOutlined />
+        )
+      }
+      ghost>
+      {ClientTroubleShootingConfig.timeLine.map((config, index) => (
+        <Panel
+          header={
+            <UI.TimelineTitle
+              onClick={(event) => event.stopPropagation()}>
+              {config?.chartType === 'scatter' ? (
+                <EventsScatterChart
+                  style={{ width: 'auto', marginBottom: 8 }}
+                  data={
+                    TimelineData[config.value as keyof TimelineData][
+                      'allEvents'
+                    ]
+                  }
+                  chartBoundary={chartBoundary}
+                  chartRef={connectChart}
+                  title={$t(config.title)}
+                  tooltopEnabled
+                  tooltipFormatter={mainCharttooltipFormatter}
+                  onDotClick={(params) => {
                     // eslint-disable-next-line no-console
-                      console.log(params)
-                    }}
-                  />
-                ) : (
-                  $t(config.title)
-                )}
-              </UI.TimelineTitle>
-            }
-            key={index}>
-            <UI.TimelineSubContent>
-              {config?.subtitle?.map((subtitle, index) =>
-                subtitle?.chartType === 'scatter' ? (
-                  <EventsScatterChart
-                    style={{ width: 'auto', marginBottom: 4 }}
-                    data={
-                      TimelineData[config.value as keyof TimelineData][
-                      subtitle.value as keyof EventCategoryMap
-                      ]
-                    }
-                    chartBoundary={chartBoundary}
-                    chartRef={connectChart}
-                    title={$t(subtitle.title)}
-                    key={index}
-                    tooltipFormatter={tooltipFormatter}
-                    tooltopEnabled
-                    onDotClick={(params) => {
-                    // eslint-disable-next-line no-console
-                      console.log(params)
-                    }}
-                  />
-                ) : (
-                  $t(subtitle.title)
-                )
+                    console.log(params)
+                  }}
+                />
+              ) : (
+                $t(config.title)
               )}
-            </UI.TimelineSubContent>
-          </Panel>
-        ))}
-      </UI.CollapseBox>
-    </div>
+            </UI.TimelineTitle>
+          }
+          key={index}>
+          <UI.TimelineSubContent>
+            {config?.subtitle?.map((subtitle, index) =>
+              subtitle?.chartType === 'scatter' ? (
+                <EventsScatterChart
+                  style={{ width: 'auto', marginBottom: 4 }}
+                  data={
+                    TimelineData[config.value as keyof TimelineData][
+                      subtitle.value as keyof EventCategoryMap
+                    ]
+                  }
+                  chartBoundary={chartBoundary}
+                  chartRef={connectChart}
+                  title={$t(subtitle.title)}
+                  key={index}
+                  tooltipFormatter={subCharttooltipFormatter}
+                  tooltopEnabled={!!subtitle?.isLast}
+                  onDotClick={(params) => {
+                    // eslint-disable-next-line no-console
+                    console.log(params)
+                  }}
+                />
+              ) : (
+                $t(subtitle.title)
+              )
+            )}
+          </UI.TimelineSubContent>
+        </Panel>
+      ))}
+    </UI.CollapseBox>
   )
 }
