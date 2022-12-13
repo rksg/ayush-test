@@ -33,7 +33,7 @@ export default function UnplacedDevice (props: { device: NetworkDevice }) {
 
       }
     }
-  }))
+  }), [device])
 
   useEffect(() => {
     dragPreview(getEmptyImage())
