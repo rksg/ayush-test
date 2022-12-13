@@ -19,8 +19,7 @@ describe('EventsScatterChart',() => {
     })
     it('should handle dot onClick', () => {
       const testParams = {
-        componentSubType: 'scatter',
-        data: [1654423052112, 'ap', { id: 0 }]
+        data: []
       }
       const mockOnFn = jest.fn((_: string, fn: (params: unknown) => void) => fn(testParams))
       const mockOffFn = jest.fn()
@@ -39,7 +38,6 @@ describe('EventsScatterChart',() => {
       expect(onDotClick).toBeCalledTimes(1)
       expect(onDotClick).toBeCalledWith(testParams.data[2])
       expect(setSelected).toBeCalledTimes(1)
-      expect(setSelected).toBeCalledWith((testParams.data[2] as ).id)
     })
   })
 
@@ -49,7 +47,7 @@ describe('EventsScatterChart',() => {
       const { asFragment } = render(
         <EventsScatterChart
           style={{ width: 850 }}
-          data={sampleData}
+          // data={sampleData}
           chartBoundary={chartBoundary}
           onDotClick={jest.fn()}
         />)

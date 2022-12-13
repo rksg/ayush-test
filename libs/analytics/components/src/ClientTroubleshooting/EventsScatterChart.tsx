@@ -133,8 +133,8 @@ export function EventsScatterChart ({
           }
         },
         formatter: tooltipFormatter ,
-        ...tooltipOptions(),
-        position: (point) => [point[0] + 10, 0]
+        ...tooltipOptions()
+        // position: (point) => [point[0] + 100, 0]
       }
     } : {
       tooltip: { show: false }
@@ -178,10 +178,9 @@ export function EventsScatterChart ({
       {
         id: 'zoom',
         type: 'inside',
-        minValueSpan: 60 * 60 * 1000
+        minValueSpan: 60
       }
     ],
-
     series: [
       {
         type: 'scatter',
