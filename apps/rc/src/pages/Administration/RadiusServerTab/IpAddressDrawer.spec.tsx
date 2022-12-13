@@ -1,15 +1,25 @@
 import { fireEvent } from '@testing-library/react'
 import userEvent     from '@testing-library/user-event'
+import { rest }      from 'msw'
 
-import { Provider }       from '@acx-ui/store'
-import { render, screen } from '@acx-ui/test-utils'
+import { RadiusClientConfigUrlsInfo }      from '@acx-ui/rc/utils'
+import { Provider }                        from '@acx-ui/store'
+import { act, mockServer, render, screen } from '@acx-ui/test-utils'
 
 import { IpAddressDrawer } from './IpAddressDrawer'
 
 
 describe('IpAddressDrawer', () => {
+  beforeEach(() => {
+    mockServer.use(
+      rest.patch(
+        RadiusClientConfigUrlsInfo.updateRadiusClient.url,
+        (req, res, ctx) => res(ctx.json({}))
+      )
+    )
+  })
 
-  it('should submit drawer successfully', async () => {
+  it('should add ip address successfully', async () => {
     render(
       <Provider>
         <IpAddressDrawer
@@ -21,16 +31,49 @@ describe('IpAddressDrawer', () => {
       </Provider>
     )
 
-    let saveButton = screen.getByText('Add')
+    let saveButton = screen.getByText('Apply')
     expect(saveButton).toBeTruthy()
     let cancelButton = screen.getByText('Cancel')
     expect(cancelButton).toBeTruthy()
 
-    fireEvent.click(saveButton)
-
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Add Another IP Address' }))
     // eslint-disable-next-line max-len
     await userEvent.type(await screen.findByRole('textbox', { name: 'IP Address' }), '192.168.1.1')
-    fireEvent.click(saveButton)
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    await act(async () => {
+      fireEvent.click(saveButton)
+    })
+  })
+
+  it('should edit ip address successfully', async () => {
+    render(
+      <Provider>
+        <IpAddressDrawer
+          visible={true}
+          setVisible={jest.fn()}
+          editMode={true}
+          clientConfig={{ ipAddress: ['192.168.1.1', '192.168.1.2'] }}
+          editIpAddress={'192.168.1.1'}
+        />
+      </Provider>
+    )
+
+    let saveButton = screen.getByText('Apply')
+    expect(saveButton).toBeTruthy()
+    let cancelButton = screen.getByText('Cancel')
+    expect(cancelButton).toBeTruthy()
+
+    const ipaddressInput = await screen.findByRole('textbox', { name: 'IP Address' })
+    expect(ipaddressInput).toHaveValue('192.168.1.1')
+
+    await userEvent.clear(ipaddressInput)
+    await userEvent.type(ipaddressInput, '192.168.1.3')
+    expect(ipaddressInput).toHaveValue('192.168.1.3')
+
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    await act(async () => {
+      fireEvent.click(saveButton)
+    })
   })
 
   it('should cancel drawer successfully', async () => {

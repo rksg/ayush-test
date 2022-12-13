@@ -3,37 +3,36 @@ import { useEffect, useState } from 'react'
 import { Button, Col, Form, Input, Row, Space, Typography } from 'antd'
 import { useIntl }                                          from 'react-intl'
 
-import { Loader, showToast, Table }                                           from '@acx-ui/components'
+import { Loader, showActionModal, showToast, Table, TableProps }              from '@acx-ui/components'
 import { useGetRadiusClientConfigQuery, useUpdateRadiusClientConfigMutation } from '@acx-ui/rc/services'
 import { ClientConfig }                                                       from '@acx-ui/rc/utils'
 
 import { IpAddressDrawer } from './IpAddressDrawer'
+
+interface clientConfig {
+  secret ?: string
+  ipAddress ?: string[]
+}
 
 export function RadiusServerForm () {
   const { $t } = useIntl()
   const { Paragraph } = Typography
   const [ changePassword, setChangePassword ] = useState<boolean>(false)
   const [visible, setVisible] = useState(false)
+  const [isEditMode, setIsEditMode] = useState(false)
+  const [editIpaddress, setEditIpaddress] = useState('')
 
   const [form] = Form.useForm()
 
   const queryResult = useGetRadiusClientConfigQuery({})
   const data = queryResult.data
-  const [updateConfig] = useUpdateRadiusClientConfigMutation()
+  const [updateConfig, updateConfigState] = useUpdateRadiusClientConfigMutation()
 
   useEffect(() => {
     if(data) {
       form.setFieldValue('secret', data?.secret)
     }
   }, [data, form])
-
-  const useColumns = [
-    {
-      title: 'ipAddress',
-      dataIndex: 'ipAddress',
-      key: 'ipAddress'
-    }
-  ]
 
   const generatePassword = () => {
     const chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
@@ -45,20 +44,50 @@ export function RadiusServerForm () {
     return password
   }
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: clientConfig) => {
     try {
       const payload = {
         secret: data.secret
       }
       await updateConfig({ payload }).unwrap()
       setChangePassword(false)
-    } catch {
+    } catch (error){
       showToast({
         type: 'error',
         content: $t({ defaultMessage: 'An error occurred' })
       })
     }
   }
+
+  const ipTableRowActions: TableProps<{ ipAddress:string }>['rowActions'] = [{
+    visible: (selectedRows) => selectedRows.length === 1,
+    label: $t({ defaultMessage: 'Edit' }),
+    onClick: (selectedRows, clearSelection) => {
+      setEditIpaddress(selectedRows[0].ipAddress)
+      setVisible(true)
+      setIsEditMode(true)
+      clearSelection()
+    }
+  },
+  {
+    label: $t({ defaultMessage: 'Delete' }),
+    onClick: (rows, clearSelection) => {
+      showActionModal({
+        type: 'confirm',
+        customContent: {
+          action: 'DELETE',
+          entityName: $t({ defaultMessage: 'IP address' }),
+          entityValue: rows[0].ipAddress
+        },
+        onOk: () => {
+          const payload = {
+            ipAddress: [...data?.ipAddress ?? []].filter((e) => e !== rows[0].ipAddress)
+          }
+          updateConfig({ payload }).then(clearSelection)
+        }
+      })
+    }
+  }]
 
   return(
     <Loader states={[queryResult]}>
@@ -103,6 +132,7 @@ export function RadiusServerForm () {
                       htmlType='submit'>{
                         $t({ defaultMessage: 'Save' })}</Button>
                     <Button type='link'
+                      loading={updateConfigState.isLoading}
                       onClick={() => {
                         form.setFieldValue('secret', data?.secret)
                         setChangePassword(false)
@@ -116,25 +146,37 @@ export function RadiusServerForm () {
               <Row>
                 <Col span={10}>
                   <Table
-                    columns={useColumns}
+                    columns={[
+                      {
+                        title: 'ipAddress',
+                        dataIndex: 'ipAddress',
+                        key: 'ipAddress'
+                      }
+                    ]}
                     dataSource={data?.ipAddress?.map( e => { return { key: e, ipAddress: e }})}
                     showHeader={false}
-                    type='form'
+                    rowSelection={{ type: 'radio' }}
+                    rowActions={ipTableRowActions}
+                    type={'form'}
+                    actions={[{
+                      label: 'Add IP Address',
+                      onClick: () => {
+                        setVisible(true)
+                        setIsEditMode(false)
+                      }
+                    }]}
                   />
                 </Col>
               </Row>
-            </Form.Item>
-            <Form.Item>
-              <Button type='link' onClick={() => setVisible(true)}>
-                {$t({ defaultMessage: 'Add IP Address' })}</Button>
             </Form.Item>
           </Form>
         </Col>
         <IpAddressDrawer
           visible={visible}
           setVisible={setVisible}
-          editMode={false}
+          editMode={isEditMode}
           clientConfig={data?? {} as ClientConfig}
+          editIpAddress={isEditMode ? editIpaddress : ''}
         />
       </Row>
     </Loader>
