@@ -217,7 +217,7 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
         }
 
         if (item.key === 'generatePassword') {
-          return guestDetail.guestStatus === GuestStatusEnum.ONLINE ||
+          return(guestDetail.guestStatus?.indexOf(GuestStatusEnum.ONLINE) !== -1) ||
             ((guestDetail.guestStatus === GuestStatusEnum.OFFLINE) &&
               guestDetail.networkId && !guestDetail.socialLogin)
         }

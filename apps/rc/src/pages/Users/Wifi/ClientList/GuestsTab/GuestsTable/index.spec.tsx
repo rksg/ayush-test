@@ -1,9 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }       from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
-import { Provider }           from '@acx-ui/store'
+import { useIsSplitOn }                   from '@acx-ui/feature-toggle'
+import { ClientUrlsInfo, CommonUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                       from '@acx-ui/store'
 import {
   fireEvent,
   mockServer,
@@ -12,8 +12,11 @@ import {
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
-
-import { GuestClient, GuestNetworkList } from '../../../__tests__/fixtures'
+import {
+  GuestClient,
+  GuestNetworkList,
+  RegenerateGuestPassword
+} from '../../../__tests__/fixtures'
 
 
 import GuestsTable from '.'
@@ -33,6 +36,10 @@ describe('Guest Table', () => {
       rest.post(
         CommonUrlsInfo.getVMNetworksList.url,
         (req, res, ctx) => res(ctx.json(GuestNetworkList))
+      ),
+      rest.post(
+        ClientUrlsInfo.generateGuestPassword.url,
+        (req, res, ctx) => res(ctx.json(RegenerateGuestPassword))
       )
     )
     params = {
@@ -198,6 +205,9 @@ describe('Guest Table', () => {
     }))
     fireEvent.click(screen.getByRole('checkbox', {
       name: /send to email/i
+    }))
+    fireEvent.click(screen.getByRole('checkbox', {
+      name: /print guest pass/i
     }))
     const generateButton = screen.getByRole('button', { name: /generate/i })
     await userEvent.click(generateButton)
