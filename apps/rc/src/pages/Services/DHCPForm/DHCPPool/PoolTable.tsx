@@ -42,6 +42,18 @@ export function PoolTable (props:{
     }
   ]
 
+  const countIpRangeSize = (startIpAddress: string, endIpAddress: string): number =>{
+    const convertIpToLong = (ipAddress: string): number => {
+      const ipArray = ipAddress.split('.').map(ip => parseInt(ip, 10))
+      return ipArray[0] * 16777216 + ipArray[1] * 65536 + ipArray[2] * 256 + ipArray[3]
+    }
+
+    const startLong = convertIpToLong(startIpAddress)
+    const endLong = convertIpToLong(endIpAddress)
+
+    return endLong - startLong + 1
+  }
+
   const columns: TableProps<DHCPPool>['columns'] = [
     {
       key: 'name',
@@ -85,7 +97,10 @@ export function PoolTable (props:{
     {
       key: 'NumberOfHosts',
       title: $t({ defaultMessage: 'Number of hosts' }),
-      dataIndex: 'NumberOfhosts'
+      dataIndex: 'subnetAddress',
+      render: (_data, row) =>{
+        return countIpRangeSize(row.startIpAddress, row.endIpAddress)
+      }
     }
   ]
   let actions = readonly ? []: [{

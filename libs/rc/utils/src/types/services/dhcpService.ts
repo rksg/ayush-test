@@ -26,8 +26,8 @@ export interface DHCPPool {
   // allowWired: boolean;
   subnetAddress: string;
   subnetMask: string;
-  startIpAddress?: string;
-  endIpAddress?: string;
+  startIpAddress: string;
+  endIpAddress: string;
   primaryDnsIp: string;
   secondaryDnsIp: string;
 

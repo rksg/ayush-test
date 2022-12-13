@@ -9,6 +9,8 @@ import { Drawer }                                                       from '@a
 import { DHCPPool, LeaseUnit, networkWifiIpRegExp, subnetMaskIpRegExp } from '@acx-ui/rc/utils'
 import { getIntl, validationMessages }                                  from '@acx-ui/utils'
 
+import { RequiredStart } from '../styledComponents'
+
 import { PoolOption } from './PoolOption'
 import { PoolTable }  from './PoolTable'
 
@@ -134,11 +136,17 @@ export default function DHCPPoolTable ({
           ]}
           children={<Input />}
         />
-        <Form.Item label={$t({ defaultMessage: 'Excluded Range' })}>
+        <Form.Item label={
+          <RequiredStart title='IP Address Range'>
+            <label className='require'>
+              {$t({ defaultMessage: 'IP Address Range' })}
+            </label>
+          </RequiredStart>
+        }>
           <Space align='start'>
             <Form.Item name='startIpAddress'
               rules={[
-                { required: false },
+                { required: true },
                 { validator: (_, value) => networkWifiIpRegExp(value) }
               ]}
               children={<Input/>}
@@ -147,7 +155,7 @@ export default function DHCPPoolTable ({
             <Form.Item
               name='endIpAddress'
               rules={[
-                { required: false },
+                { required: true },
                 { validator: (_, value) => networkWifiIpRegExp(value) }
               ]}
               children={<Input />}
