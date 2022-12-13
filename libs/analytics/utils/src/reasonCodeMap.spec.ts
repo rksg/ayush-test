@@ -9,7 +9,8 @@ import {
   clientEventDescription,
   mapCodeToReason,
   mapCodeToAttempt,
-  MapElement
+  MapElement,
+  mapCodeToFailureText
 } from './reasonCodeMap'
 
 describe('readCodesIntoMap', () => {
@@ -76,5 +77,12 @@ describe('mapCodeToAttempt', () => {
   })
   it('renders code if nothing matches', () => {
     expect(renderHook(() => mapCodeToAttempt('test', useIntl())).result.current).toEqual('test')
+  })
+})
+
+describe('mapCodeToFailureText', () => {
+  it('renders text for given code', () => {
+    expect(renderHook(() => mapCodeToFailureText('eap', useIntl())).result.current)
+      .toEqual('EAP')
   })
 })

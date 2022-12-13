@@ -64,7 +64,5 @@ export function mapCodeToAttempt (code: string, intl: IntlShape) {
   return (typeof reason === 'string') ? reason : intl.$t(reason)
 }
 
-export function mapCodeToFailureText (code: string, intl: IntlShape) {
-  const reason = failureCodeTextMap[code as keyof typeof failureCodeTextMap]
-  return (typeof reason === 'string') ? reason : intl.$t(reason)
-}
+export const mapCodeToFailureText = (code: string, intl: IntlShape) =>
+  intl.$t(failureCodeTextMap[code as keyof typeof failureCodeTextMap])
