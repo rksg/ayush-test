@@ -18,10 +18,10 @@ import {
   useClearAllAlarmMutation,
   useGetAlarmCountQuery,
   eventAlarmApi }  from '@acx-ui/rc/services'
-import { Alarm, CommonUrlsInfo, useTableQuery, EventSeverityEnum } from '@acx-ui/rc/utils'
-import { useParams, TenantLink }                                   from '@acx-ui/react-router-dom'
-import { store }                                                   from '@acx-ui/store'
-import { formatter }                                               from '@acx-ui/utils'
+import { Alarm, CommonUrlsInfo, useTableQuery, EventSeverityEnum, EventTypeEnum } from '@acx-ui/rc/utils'
+import { useParams, TenantLink }                                                  from '@acx-ui/react-router-dom'
+import { store }                                                                  from '@acx-ui/store'
+import { formatter }                                                              from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -113,8 +113,25 @@ export default function AlarmsHeaderButton () {
     }else{
       return <></>
     }
-
   }
+  const getDeviceLink = (alarm:Alarm)=>{
+    switch (alarm.entityType) {
+      case EventTypeEnum.AP: {
+        return <TenantLink
+          to={`/devices/wifi/${alarm.entityId}/details/overview`}>{alarm.apName}
+        </TenantLink>
+      }
+      // case EventTypeEnum.SWITCH: {
+      //   return <TenantLink
+      //   to={`/devices/switch/${alarm.entityId}/details/overview`}>{alarm.switchName}
+      //   </TenantLink>
+      // }
+      default: {
+        return <UI.EmptyLink>{alarm.apName}</UI.EmptyLink>
+      }
+    }
+  }
+
   const alarmList = <>
     <UI.FilterRow>
       <Select value={severity}
@@ -186,9 +203,7 @@ export default function AlarmsHeaderButton () {
                 title={alarm.message}
                 description={
                   <UI.SpaceBetween>
-                    <TenantLink
-                      to={`/devices/wifi/${alarm.entityId}/details/overview`}>{alarm.apName}
-                    </TenantLink>
+                    {getDeviceLink(alarm)}
                     <UI.ListTime>{formatter('calendarFormat')(alarm.startTime)}</UI.ListTime>
                   </UI.SpaceBetween>
                 }
@@ -221,4 +236,3 @@ export default function AlarmsHeaderButton () {
     />
   </>
 }
-

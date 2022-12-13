@@ -122,7 +122,7 @@ export const WarningTriang = styled(WarningTriangleSolid)`
   }
 `
 
-export const DeviceLink = styled.span`
+export const EmptyLink = styled.span`
   color: var(--acx-accents-blue-50);
 `
 export const ListTime = styled(SpaceBetween)`
