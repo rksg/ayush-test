@@ -68,7 +68,7 @@ export type DisplayEvent = ConnectionEvent & {
   state: string,
   event: string,
   category: string,
-  type: string
+  type?: string
 }
 export const eventColorByCategory = {
   [DISCONNECT]: '--acx-neutrals-50',
