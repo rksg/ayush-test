@@ -13,7 +13,9 @@ import {
 
 export const defaultNetworkPath: NetworkPath = [{ type: 'network', name: 'Network' }]
 
-export type AnalyticsFilter = DateFilter & { path: NetworkPath } & { filter? : pathFilter } & { mac?: string }
+export type AnalyticsFilter = DateFilter & { path: NetworkPath }
+& { filter? : pathFilter } & { mac?: string }
+
 type NetworkFilter = { path: NetworkPath, raw: object }
 
 export function useAnalyticsFilter () {

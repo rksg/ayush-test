@@ -34,22 +34,22 @@ describe('trafficByUsageWidgetApi', () => {
         }
       }
     }
-    mockGraphqlQuery(dataApiURL, 'ClientTrafficByUsage', {
+    mockGraphqlQuery(dataApiURL, 'ClientTrafficByBand', {
       data: expectedResult
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.trafficByUsage.initiate(props)
+      api.endpoints.trafficByBand.initiate(props)
     )
     expect(status).toBe('fulfilled')
     expect(data).toStrictEqual(expectedResult.client.timeSeries)
     expect(error).toBe(undefined)
   })
   it('should return error', async () => {
-    mockGraphqlQuery(dataApiURL, 'ClientTrafficByUsage', {
+    mockGraphqlQuery(dataApiURL, 'ClientTrafficByBand', {
       error: new Error('something went wrong!')
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.trafficByUsage.initiate(props)
+      api.endpoints.trafficByBand.initiate(props)
     )
     expect(status).toBe('rejected')
     expect(data).toBe(undefined)

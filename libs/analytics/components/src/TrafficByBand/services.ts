@@ -4,11 +4,12 @@ import { gql } from 'graphql-request'
 import { dataApi }                               from '@acx-ui/analytics/services'
 import { AnalyticsFilter, calculateGranularity } from '@acx-ui/analytics/utils'
 
-export type TrafficByUsageData = {
+export type TrafficByBandData = {
   time: string[]
-  userRxTraffic: number[]
   userTraffic: number[]
-  userTxTraffic: number[]
+  userTraffic_2_4: number[]
+  userTraffic_5: number[]
+  userTraffic_6: number[]
 }
 
 interface Response <TimeSeriesData> {
@@ -19,19 +20,20 @@ interface Response <TimeSeriesData> {
 
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    trafficByUsage: build.query<
-      TrafficByUsageData,
+    trafficByBand: build.query<
+      TrafficByBandData,
       AnalyticsFilter
     >({
       query: (payload) => ({
         document: gql`
-          query ClientTrafficByUsage($mac: String, $start: DateTime, $end: DateTime, $granularity: String) {
+          query ClientTrafficByBand($mac: String, $start: DateTime, $end: DateTime, $granularity: String) {
             client(mac: $mac, start: $start, end: $end) {
               timeSeries(granularity: $granularity) {
                 time
                 userTraffic
-                userRxTraffic: userTraffic(direction: "rx")
-                userTxTraffic: userTraffic(direction: "tx")
+                userTraffic_2_4: userTraffic(band: "2.4")
+                userTraffic_5: userTraffic(band: "5")
+                userTraffic_6: userTraffic(band: "6")
               }
             }
           }
@@ -43,11 +45,11 @@ export const api = dataApi.injectEndpoints({
           granularity: calculateGranularity(payload.startDate, payload.endDate)
         }
       }),
-      transformResponse: (response: Response<TrafficByUsageData>) => {
+      transformResponse: (response: Response<TrafficByBandData>) => {
         return response.client.timeSeries
       }
     })
   })
 })
 
-export const { useTrafficByUsageQuery } = api
+export const { useTrafficByBandQuery } = api

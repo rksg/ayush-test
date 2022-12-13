@@ -8,7 +8,7 @@ import { DateRange }                        from '@acx-ui/utils'
 
 import { api } from './services'
 
-import { TrafficByUsage } from './index'
+import { TrafficByBand } from './index'
 
 const sample = {
   time: [
@@ -33,7 +33,7 @@ const sampleNoData = {
   userTxTraffic: [null]
 }
 
-describe('TrafficByUsageWidget', () => {
+describe('TrafficByBandWidget', () => {
   const filters : AnalyticsFilter = {
     startDate: '2022-01-01T00:00:00+08:00',
     endDate: '2022-01-02T00:00:00+08:00',
@@ -47,36 +47,36 @@ describe('TrafficByUsageWidget', () => {
   )
 
   it('should render loader', () => {
-    mockGraphqlQuery(dataApiURL, 'ClientTrafficByUsage', {
+    mockGraphqlQuery(dataApiURL, 'ClientTrafficByBand', {
       data: { client: { timeSeries: sample } }
     })
-    render(<Provider> <TrafficByUsage filters={filters}/></Provider>)
+    render(<Provider> <TrafficByBand filters={filters}/></Provider>)
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
   })
   it('should render chart', async () => {
-    mockGraphqlQuery(dataApiURL, 'ClientTrafficByUsage', {
+    mockGraphqlQuery(dataApiURL, 'ClientTrafficByBand', {
       data: { client: { timeSeries: sample } }
     })
-    const { asFragment } =render(<Provider> <TrafficByUsage filters={filters}/></Provider>)
-    await screen.findByText('Traffic by Usage')
+    const { asFragment } =render(<Provider> <TrafficByBand filters={filters}/></Provider>)
+    await screen.findByText('Traffic by Band')
     // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
   })
   it('should render error', async () => {
     jest.spyOn(console, 'error').mockImplementation(() => {})
-    mockGraphqlQuery(dataApiURL, 'ClientTrafficByUsage', {
+    mockGraphqlQuery(dataApiURL, 'ClientTrafficByBand', {
       error: new Error('something went wrong!')
     })
-    render(<Provider> <TrafficByUsage filters={filters}/> </Provider>)
+    render(<Provider> <TrafficByBand filters={filters}/> </Provider>)
     await screen.findByText('Something went wrong.')
     jest.resetAllMocks()
   })
   it('should render "No data to display" when data is empty', async () => {
     jest.spyOn(console, 'error').mockImplementation(() => {})
-    mockGraphqlQuery(dataApiURL, 'ClientTrafficByUsage', {
+    mockGraphqlQuery(dataApiURL, 'ClientTrafficByBand', {
       data: { client: { timeSeries: sampleNoData } }
     })
-    render( <Provider> <TrafficByUsage filters={filters}/> </Provider>)
+    render( <Provider> <TrafficByBand filters={filters}/> </Provider>)
     expect(await screen.findByText('No data to display')).toBeVisible()
     jest.resetAllMocks()
   })

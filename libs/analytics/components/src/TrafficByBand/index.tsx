@@ -6,23 +6,24 @@ import { Card, Loader, MultiLineTimeSeriesChart, NoData } from '@acx-ui/componen
 import { formatter }                                      from '@acx-ui/utils'
 
 import {
-  useTrafficByUsageQuery,
-  TrafficByUsageData
+  useTrafficByBandQuery,
+  TrafficByBandData
 } from './services'
 
 
-type Key = keyof Omit<TrafficByUsageData, 'time'>
+type Key = keyof Omit<TrafficByBandData, 'time'>
 
-export { TrafficByUsageWidget as TrafficByUsage }
+export { TrafficByBandWidget as TrafficByBand }
 
-function TrafficByUsageWidget ({ filters }: { filters : AnalyticsFilter }) {
+function TrafficByBandWidget ({ filters }: { filters : AnalyticsFilter }) {
   const { $t } = useIntl()
   const seriesMapping = [
-    { key: 'userTraffic', name: $t({ defaultMessage: 'Total' }) },
-    { key: 'userRxTraffic', name: $t({ defaultMessage: 'From Client' }) },
-    { key: 'userTxTraffic', name: $t({ defaultMessage: 'To Client' }) }
+    { key: 'userTraffic', name: $t({ defaultMessage: 'All Bands' }) },
+    { key: 'userTraffic_2_4', name: $t({ defaultMessage: '2.4 GHz' }) },
+    { key: 'userTraffic_5', name: $t({ defaultMessage: '5 GHz' }) },
+    { key: 'userTraffic_6', name: $t({ defaultMessage: '6 GHz' }) }
   ] as Array<{ key: Key, name: string }>
-  const queryResults = useTrafficByUsageQuery(filters, {
+  const queryResults = useTrafficByBandQuery(filters, {
     selectFromResult: ({ data, ...rest }) => ({
       data: getSeriesData(data!, seriesMapping),
       ...rest
@@ -30,7 +31,7 @@ function TrafficByUsageWidget ({ filters }: { filters : AnalyticsFilter }) {
   })
   return (
     <Loader states={[queryResults]}>
-      <Card title={$t({ defaultMessage: 'Traffic by Usage' })}>
+      <Card title={$t({ defaultMessage: 'Traffic by Band' })}>
         <AutoSizer>
           {({ height, width }) => (
             queryResults.data.length ?
@@ -47,4 +48,4 @@ function TrafficByUsageWidget ({ filters }: { filters : AnalyticsFilter }) {
   )
 }
 
-export default TrafficByUsageWidget
+export default TrafficByBandWidget
