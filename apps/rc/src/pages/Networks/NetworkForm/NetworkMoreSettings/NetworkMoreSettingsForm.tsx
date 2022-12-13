@@ -13,7 +13,7 @@ import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 import { get }                 from 'lodash'
 import { useIntl }             from 'react-intl'
 
-import { Button }         from '@acx-ui/components'
+import { Button }        from '@acx-ui/components'
 import {
   useVlanPoolListQuery
 } from '@acx-ui/rc/services'
