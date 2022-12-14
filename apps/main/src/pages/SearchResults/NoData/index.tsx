@@ -86,7 +86,8 @@ function NoData () {
           />
         </UI.ListWrapper>
       </UI.StyledGridCol>
-      <GridCol col={{ span: 12 }}>
+      {/* Hide until we get final image */}
+      <GridCol col={{ span: 12 }} style={{ display: 'none' }}>
         <SearchResultNoData />
       </GridCol>
     </GridRow>
