@@ -11,14 +11,13 @@ const Jwt = () => {
   } else {
     // eslint-disable-next-line no-console
     console.error('JWT TOKEN NOT FOUND!!!!!')
-    return ''
+    return null
   }
 }
 
-const defaultHeaders = {
+let defaultHeaders = {
   'Content-Type': 'application/json',
-  'Accept': 'application/json',
-  'Authorization': `Bearer ${Jwt()}`
+  'Accept': 'application/json'
 }
 
 export const createHttpRequest = (
@@ -26,6 +25,14 @@ export const createHttpRequest = (
   paramValues?: Params<string>,
   customHeaders?: Record<string, unknown>
 ) => {
+  const tokenHeader = {
+    'Authorization': ''
+  }
+  if (Jwt() !== null) {
+    tokenHeader.Authorization = `Bearer ${Jwt()}`
+    defaultHeaders = { ...tokenHeader, ...defaultHeaders }
+    console.log('default header tokenheader', defaultHeaders)
+  }
   const headers = { ...defaultHeaders, ...customHeaders }
   const url = generatePath(`${apiInfo.url}`, paramValues)
   return {
