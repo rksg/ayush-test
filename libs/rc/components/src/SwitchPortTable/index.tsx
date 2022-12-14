@@ -53,8 +53,7 @@ export function SwitchPortTable ({ isVenueLevel } : {
     title: $t({ defaultMessage: 'Port Number' }),
     dataIndex: 'portIdentifier',
     sorter: true,
-    defaultSortOrder: 'ascend',
-    searchable: true
+    defaultSortOrder: 'ascend'
   }, {
     key: 'name',
     title: $t({ defaultMessage: 'Port Name' }),
@@ -64,14 +63,12 @@ export function SwitchPortTable ({ isVenueLevel } : {
     key: 'switchName',
     title: $t({ defaultMessage: 'Switch' }),
     dataIndex: 'switchName',
-    sorter: true,
-    filterable: true
+    sorter: true
   }, {
     key: 'status',
     title: $t({ defaultMessage: 'Status' }),
     dataIndex: 'status',
-    sorter: true,
-    filterable: true
+    sorter: true
   }, {
     key: 'adminStatus',
     title: $t({ defaultMessage: 'Admin Status' }),
@@ -112,7 +109,6 @@ export function SwitchPortTable ({ isVenueLevel } : {
     title: $t({ defaultMessage: 'VLANs' }),
     dataIndex: 'vlanIds',
     sorter: true,
-    filterable: true,
     render: (data, row) => <Space size={2}>
       <UI.TagsOutlineIcon /> {row.unTaggedVlan || '--'}
       <UI.TagsSolidIcon /> { filterUntaggedVlan(row.vlanIds, row.unTaggedVlan) }
@@ -139,8 +135,7 @@ export function SwitchPortTable ({ isVenueLevel } : {
     key: 'neighborName',
     title: $t({ defaultMessage: 'Neighbor Name' }),
     dataIndex: 'neighborName',
-    sorter: true,
-    searchable: true
+    sorter: true
   }, {
     key: 'opticsType',
     title: $t({ defaultMessage: 'Optics' }),
