@@ -151,4 +151,14 @@ describe('ConnectionEvent', () => {
     fireEvent.click(await screen.findByText(/test/i))
     expect(asFragment()).toMatchSnapshot()
   })
+
+  it('renders correctly on popover close', async () => {
+    const { asFragment } =
+      render(<ConnectionEventPopover event={successEvent}>test</ConnectionEventPopover>)
+    expect(asFragment()).toMatchSnapshot()
+    fireEvent.click(await screen.findByText(/test/i))
+    expect(asFragment()).toMatchSnapshot()
+    fireEvent.click(await screen.findByTestId(/CloseSymbol/i))
+    expect(asFragment()).toMatchSnapshot()
+  })
 })
