@@ -68,7 +68,7 @@ describe('MdnsProxyInstances', () => {
   })
 
   it('should navigate to the Add AP form', async () => {
-    const { result } = renderHook(() => useTenantLink('devices/aps/add'))
+    const { result } = renderHook(() => useTenantLink('devices/wifi/add'))
 
     render(
       <Provider>

@@ -194,7 +194,7 @@ function SettingsForm () {
             extra={intl.$t({ defaultMessage: 'Must be 26 hex characters' })}
             children={<Input.Password />}
           />
-          <div style={{ position: 'absolute', top: '105px', right: '15px' }}>
+          <div style={{ position: 'absolute', top: '111px', right: '15px' }}>
             <Button type='link' onClick={onGenerateHexKey}>
               {intl.$t({ defaultMessage: 'Generate' })}
             </Button>

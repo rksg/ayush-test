@@ -69,6 +69,7 @@ export function LanPorts () {
   const [isDhcpEnabled, setIsDhcpEnabled] = useState(false)
   const [formInitializing, setFormInitializing] = useState(true)
   const [lanData, setLanData] = useState([] as LanPort[])
+  const [activeTabIndex, setActiveTabIndex] = useState(0)
   // TODO: rbac
   const isAllowUpdate = true // this.rbacService.isRoleAllowed('UpdateWifiApSetting');
   const isAllowReset = true // this.rbacService.isRoleAllowed('ResetWifiApSetting');
@@ -91,7 +92,7 @@ export function LanPorts () {
         setVenueLanPorts(venueLanPorts)
         setSelectedModel(lanPorts)
         setSelectedModelCaps(modelCaps as CapabilitiesApModel)
-        setSelectedPortCaps(modelCaps?.lanPorts?.[0] as LanPort)
+        setSelectedPortCaps(modelCaps?.lanPorts?.[activeTabIndex] as LanPort)
         setUseVenueSettings(apLanPorts?.useVenueSettings ?? true)
         setIsDhcpEnabled(venueSettings?.dhcpServiceSetting?.enabled ?? false)
         setLanData(lanPorts?.lanPorts as LanPort[])
@@ -111,6 +112,7 @@ export function LanPorts () {
 
   const onTabChange = (tab: string) => {
     const tabIndex = Number(tab.split('-')[1]) - 1
+    setActiveTabIndex(tabIndex)
     setSelectedPortCaps(selectedModelCaps?.lanPorts?.[tabIndex] as LanPort)
   }
 
@@ -212,7 +214,7 @@ export function LanPorts () {
         onFormChange={handleFormChange}
         onCancel={() => navigate({
           ...basePath,
-          pathname: `${basePath.pathname}/aps/${serialNumber}/details/overview`
+          pathname: `${basePath.pathname}/wifi/${serialNumber}/details/overview`
         })
         }
         buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}

@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React from 'react'
 
 import { Badge, Space } from 'antd'
@@ -11,6 +12,7 @@ import {
   StackedBarChart,
   cssStr
 } from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useApListQuery
 } from '@acx-ui/rc/services'
@@ -104,10 +106,12 @@ export function ApTable (props: ApTableProps) {
     defaultPayload: {
       ...defaultApPayload,
       filters
-    }
+    },
+    pollingInterval: 30000 //TODO: Wait for confirm the interval with PLM
   })
 
   const apAction = useApActions()
+  const releaseTag = useIsSplitOn(Features.DEVICES)
 
   const tableData = tableQuery.data?.data ?? []
 
@@ -126,7 +130,7 @@ export function ApTable (props: ApTableProps) {
       dataIndex: 'name',
       sorter: true,
       render: (data, row) => (
-        <TenantLink to={`/devices/aps/${row.serialNumber}/details/overview`}>{data}</TenantLink>
+        <TenantLink to={`/devices/wifi/${row.serialNumber}/details/overview`}>{data}</TenantLink>
       )
     }, {
       key: 'deviceStatus',
@@ -175,7 +179,7 @@ export function ApTable (props: ApTableProps) {
             showTotal={false}
             barColors={[cssStr(deviceStatusColors.empty)]}
           />
-          <TenantLink to={`/devices/aps/${row.serialNumber}/details/incidents`}>
+          <TenantLink to={`/devices/wifi/${row.serialNumber}/details/analytics/incidents/overview`}>
             {data ? data: 0}
           </TenantLink>
         </Space>)
@@ -208,11 +212,13 @@ export function ApTable (props: ApTableProps) {
       title: $t({ defaultMessage: 'Clients' }),
       dataIndex: 'clients',
       align: 'center',
-      render: (_, row) => (
-        <TenantLink to={`/aps/${row.serialNumber}/details/clients`}>
-          {transformDisplayNumber(row.clients)}
-        </TenantLink>
-      )
+      render: (data, row) => {
+        return releaseTag ?
+          <TenantLink to={`/devices/wifi/${row.serialNumber}/details/clients`}>
+            {transformDisplayNumber(row.clients)}
+          </TenantLink>
+          : <>{transformDisplayNumber(row.clients)}</>
+      }
     }, {
       key: 'deviceGroupName',
       title: $t({ defaultMessage: 'AP Group' }),

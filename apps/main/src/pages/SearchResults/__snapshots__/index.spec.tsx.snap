@@ -2582,7 +2582,7 @@ exports[`Search Results should render tables correctly 1`] = `
                                           class="ant-table-cell"
                                         >
                                           <a
-                                            href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/devices/aps/932173000117/details/overview"
+                                            href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/devices/wifi/932173000117/details/overview"
                                           >
                                             350-11-69
                                           </a>
@@ -2680,7 +2680,7 @@ exports[`Search Results should render tables correctly 1`] = `
                                               class="ant-space-item"
                                             >
                                               <a
-                                                href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/devices/aps/932173000117/details/incidents"
+                                                href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/devices/wifi/932173000117/details/analytics/incidents/overview"
                                               >
                                                 0
                                               </a>
@@ -2712,11 +2712,7 @@ exports[`Search Results should render tables correctly 1`] = `
                                           class="ant-table-cell"
                                           style="text-align: center;"
                                         >
-                                          <a
-                                            href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/aps/932173000117/details/clients"
-                                          >
-                                            0
-                                          </a>
+                                          0
                                         </td>
                                         <td
                                           class="ant-table-cell"

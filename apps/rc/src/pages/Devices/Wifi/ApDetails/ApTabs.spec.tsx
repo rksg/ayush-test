@@ -28,10 +28,10 @@ describe('ApTabs', () => {
     render(<Provider>
       <ApTabs apDetail={apDetailData} />
     </Provider>, { route: { params } })
-    await waitFor(() => screen.findByText('Clients (1)'))
-    fireEvent.click(await screen.findByText('Clients (1)'))
+    await waitFor(() => screen.findByText('Networks (2)'))
+    fireEvent.click(await screen.findByText('Networks (2)'))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/devices/aps/${params.serialNumber}/details/clients`,
+      pathname: `/t/${params.tenantId}/devices/wifi/${params.serialNumber}/details/networks`,
       hash: '',
       search: ''
     })
@@ -44,7 +44,7 @@ describe('ApTabs', () => {
     fireEvent.click(await screen.findByText(/Troubleshooting/))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname:
-        `/t/${params.tenantId}/devices/aps/${params.serialNumber}/details/troubleshooting/ping`,
+        `/t/${params.tenantId}/devices/wifi/${params.serialNumber}/details/troubleshooting/ping`,
       hash: '',
       search: ''
     })

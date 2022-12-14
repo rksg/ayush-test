@@ -131,6 +131,10 @@ export const validationMessages = {
   emailAddress: defineMessage({
     defaultMessage: 'Please enter a valid email address',
     description: 'Validation - email address checks'
+  }),
+  phoneNumber: defineMessage({
+    defaultMessage: 'Please enter a valid phone number',
+    description: 'Validation - phone number checks'
   })
 }
 
