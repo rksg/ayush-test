@@ -4,7 +4,7 @@ import {  PlusSquareOutlined, MinusSquareOutlined } from '@acx-ui/icons'
 
 const eventIconStyle = css`
   display: flex;
-  margin-top: 3px;
+  margin-top: 2px;
   width: 8px;
   height: 8px;
   border-radius: 50%;
@@ -64,7 +64,7 @@ export const IncidentEvent = styled.span`
   width: 16px;
   color: var(--acx-primary-white);  
   font-weight: var(--acx-body-font-weight-bold);
-  margin: 2px 0 0 -8px;
+  margin: 1px 0 0 -8px;
   text-align: center;
   vertical-align: top;
   line-height: 12px;
