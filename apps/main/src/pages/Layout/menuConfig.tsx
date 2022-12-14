@@ -84,7 +84,7 @@ export function useMenuConfig () {
       disabled: false,
       routes: [
         {
-          path: '/reports/network',
+          path: '/reports/network/wireless',
           name: $t({ defaultMessage: 'Network' })
         },
         {

@@ -2,11 +2,16 @@
 import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                          from '@acx-ui/store'
 
-import { NetworkReport }      from './pages/NetworkReport'
-import { ApplicationsReport } from './pages/Reports/Applications'
-import { ApsReport }          from './pages/Reports/Aps'
-import { ClientsReport }      from './pages/Reports/Clients'
-import { SwitchesReport }     from './pages/Reports/Switches'
+import { Report }        from './pages/Reports'
+import { NetworkReport } from './pages/Reports/Network'
+import { ReportType  }   from './pages/Reports/reportsMapping'
+
+const reports = {
+  aps: <Report type={ReportType.ACCESS_POINT}/>,
+  switches: <Report type={ReportType.SWITCH}/>,
+  clients: <Report type={ReportType.CLIENT}/>,
+  applications: <Report type={ReportType.APPLICATION} />
+}
 
 export default function ReportsRoutes () {
   const routes = rootRoutes(
@@ -16,10 +21,10 @@ export default function ReportsRoutes () {
       <Route
         path='reports/network/:activeTab'
         element={<NetworkReport />} />
-      <Route path='reports/aps' element={<ApsReport />} />
-      <Route path='reports/switches' element={<SwitchesReport />} />
-      <Route path='reports/clients' element={<ClientsReport />} />
-      <Route path='reports/applications' element={<ApplicationsReport />} />
+      <Route path='reports/aps' element={reports.aps} />
+      <Route path='reports/switches' element={reports.switches} />
+      <Route path='reports/clients' element={reports.clients}/>
+      <Route path='reports/applications' element={reports.applications} />
     </Route>
   )
   return (

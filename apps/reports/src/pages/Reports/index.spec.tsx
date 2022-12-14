@@ -1,0 +1,36 @@
+import { Provider }       from '@acx-ui/store'
+import { render, screen } from '@acx-ui/test-utils'
+
+import { ReportType } from './reportsMapping'
+
+import { Report } from './index'
+
+jest.mock('./ReportHeader', () => ({
+  ReportHeader: () => <div data-testid='reportHeader' />
+}))
+jest.mock('./EmbeddedDashboard', () => ({
+  __esModule: true,
+  default: () => <div data-testid='reportPage' />
+}))
+
+describe('Report', () => {
+  const params = { tenantId: 'tenant-id' }
+
+  it('should render the report with Header', async () => {
+    render(
+      <Provider>
+        <Report type={ReportType.ACCESS_POINT} withHeader/>
+      </Provider>, { route: { params } })
+    expect(await screen.findByTestId('reportHeader')).toBeTruthy()
+    expect(await screen.findByTestId('reportPage')).toBeTruthy()
+  })
+
+  it('should render the report without Header', async () => {
+    render(
+      <Provider>
+        <Report type={ReportType.ACCESS_POINT} withHeader={false}/>
+      </Provider>, { route: { params } })
+    expect(await screen.findByTestId('reportPage')).toBeTruthy()
+    expect(screen.queryByTestId('reportHeader')).toBeFalsy()
+  })
+})

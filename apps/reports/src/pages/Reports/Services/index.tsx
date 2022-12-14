@@ -1,6 +1,8 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
-import { createHttpRequest, RequestPayload } from '@acx-ui/rc/utils'
+import { ApiInfo, createHttpRequest, RequestPayload } from '@acx-ui/rc/utils'
+
+const BASE_RELATIVE_URL = '/api/a4rc/explorer'
 
 export const reportsBaseApi = createApi({
   baseQuery: fetchBaseQuery(),
@@ -21,21 +23,22 @@ export interface DashboardMetadata {
   }
 }
 
-const getEmbeddedReportToken = {
-  method: 'post',
-  url: '/api/a4rc/explorer/api/v1/security/guest_token'
+export const ReportUrlsInfo: { [key: string]: ApiInfo } = {
+  getEmbeddedReportToken: {
+    method: 'post',
+    url: `${BASE_RELATIVE_URL}/api/v1/security/guest_token`
+  },
+  getEmbeddedDashboardMeta: {
+    method: 'post',
+    url: `${BASE_RELATIVE_URL}/api/v1/dashboard/embedded`
+  }
 }
 
-const getEmbeddedDashboardMeta = {
-  method: 'post',
-  url: '/api/a4rc/explorer/api/v1/dashboard/embedded'
-}
-
-const reportsApi = reportsBaseApi.injectEndpoints({
+export const reportsApi = reportsBaseApi.injectEndpoints({
   endpoints: (build) => ({
     guestToken: build.mutation<string, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(getEmbeddedReportToken, params)
+        const req = createHttpRequest(ReportUrlsInfo.getEmbeddedReportToken, params)
         return {
           ...req,
           body: payload
@@ -47,13 +50,13 @@ const reportsApi = reportsBaseApi.injectEndpoints({
     }),
     embeddedId: build.mutation<string, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(getEmbeddedDashboardMeta, params)
+        const req = createHttpRequest(ReportUrlsInfo.getEmbeddedDashboardMeta, params)
         return {
           ...req,
           body: payload
         }
       },
-      transformResponse: (response : DashboardMetadata) =>{
+      transformResponse: (response : DashboardMetadata) => {
         return response.result.uuid
       }
     })
