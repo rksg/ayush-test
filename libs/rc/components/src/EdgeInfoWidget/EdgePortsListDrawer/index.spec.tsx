@@ -1,5 +1,5 @@
-import { Provider }                          from '@acx-ui/store'
-import { render,screen, fireEvent, waitFor } from '@acx-ui/test-utils'
+import { Provider }                 from '@acx-ui/store'
+import { render,screen, fireEvent } from '@acx-ui/test-utils'
 
 import { tenantID, currentEdge, edgePortsSetting } from '../__tests__/fixtures'
 
@@ -46,7 +46,6 @@ describe('Edge Ports List', () => {
         route: { params, path: '/:tenantId/devices/edge/:serialNumber/edge-details/overview' }
       })
 
-    await waitFor(() => screen.findByText('Configure Port Settings'))
     fireEvent.click(await screen.findByText('Configure Port Settings'))
 
     expect(mockedUsedNavigate).toHaveBeenCalledWith({

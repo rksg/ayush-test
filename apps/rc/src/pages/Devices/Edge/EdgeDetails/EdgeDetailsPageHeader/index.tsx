@@ -45,9 +45,20 @@ export const EdgeDetailsPageHeader = () => {
   const params = useParams()
 
   const edgeViewModelPayload = {
-    // fields: ['name', 'venueName', 'type',
-    //   'serialNumber', 'ports', 'ip', 'model', 'fwVersion',
-    //   'deviceStatus', 'deviceSeverity', 'venueId', 'tags'],
+    fields: [
+      'name',
+      'venueName',
+      'type',
+      'serialNumber',
+      'ports',
+      'ip',
+      'model',
+      'fwVersion',
+      'deviceStatus',
+      'deviceSeverity',
+      'venueId',
+      'tags'
+    ],
     filters: { serialNumber: [params.serialNumber] } }
   const { data: currentEdge }
   = useEdgeBySerialNumberQuery({

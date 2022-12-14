@@ -1,3 +1,5 @@
+import { EdgePort, EdgePortTypeEnum } from '@acx-ui/rc/utils'
+
 export const mockVenueData = {
   fields: ['name', 'id'],
   totalCount: 3,
@@ -88,3 +90,26 @@ export const mockEdgeData = {
   edgeName: 'edgeName',
   tags: ['tag1', 'tag2']
 }
+
+export const edgePortsSetting:EdgePort[] = [{
+  portId: '1',
+  portName: 'Port 1',
+  status: 'Up',
+  adminStatus: 'Enabled',
+  portType: EdgePortTypeEnum.WAN,
+  mac: 'AA:BB:CC:DD:EE:FF',
+  speed: 12* Math.pow(12, 6),
+  duplexSpeed: 100* Math.pow(12, 6),
+  ip: '1.1.1.1'
+},
+{
+  portId: '2',
+  portName: 'Port 2',
+  status: 'Down',
+  adminStatus: 'Disabled',
+  portType: EdgePortTypeEnum.LAN,
+  mac: 'AA:BB:CC:DD:EE:FF',
+  speed: 10* Math.pow(12, 6),
+  duplexSpeed: 100* Math.pow(12, 6),
+  ip: '1.1.1.2'
+}]

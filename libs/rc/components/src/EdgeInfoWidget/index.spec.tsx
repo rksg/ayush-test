@@ -34,9 +34,26 @@ describe('Edge Information Widget', () => {
 
     expect(asFragment().querySelector('svg')).toBeDefined()
   })
+
+
+  it('should display drawer when clicked on ports donut chart', async () => {
+    const { asFragment } = render(
+      <Provider>
+        <EdgeInfoWidget currentEdge={currentEdge} edgePortsSetting={edgePortsSetting} isLoading={false} />
+      </Provider>, {
+        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edge-details/overview' }
+      })
+
+    const firstRender = asFragment()
+    expect(firstRender.querySelector('svg')).toBeDefined()
+    expect(firstRender.querySelectorAll('div[_echarts_instance_^="ec_"]').length).toBe(1)
+    let target = firstRender.querySelectorAll('path[stroke-linejoin="round"]')
+    expect(target.length).toBe(2)
+    fireEvent.click(firstRender.querySelectorAll('path[stroke-linejoin="round"]')[0])
+  })
 })
 
-describe('shoud render resource utilization chart correctly', () => {
+describe('Edge resource utilization chart', () => {
   let params: { tenantId: string, serialNumber: string } =
   { tenantId: tenantID, serialNumber: currentEdge.serialNumber }
 
