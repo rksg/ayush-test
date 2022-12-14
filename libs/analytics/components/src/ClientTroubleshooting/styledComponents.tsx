@@ -1,4 +1,3 @@
-import { Collapse }    from 'antd'
 import styled, { css } from 'styled-components/macro'
 
 import {  PlusSquareOutlined, MinusSquareOutlined } from '@acx-ui/icons'
@@ -88,36 +87,3 @@ export const TimelineTitle = styled.span`
 export const PopoverWrapper = styled.div`
   cursor: pointer;
 `
-export const TimelineSubContent = styled.span`
-   line-height: 16px;
-   font-weight: var(--acx-body-font-weight);
-   font-size: 12px;`
-export const CollapseBox = styled(Collapse)`
-  .ant-collapse-content {
-    margin-left : 30px;
-    };
-   .ant-collapse-header {
-    padding-bottom: 0px !important;
-   };`
-export const TooltipWrapper = styled.div`
-   font-size: var(--acx-body-5-font-size);
-   line-height: var(--acx-body-5-line-height);
-   color: var(--acx-primary-white);
-   max-width: 200px;
-   white-space: normal;
-   word-wrap: break-word;
- 
-   time { font-weight: var(--acx-body-font-weight-bold); }
- 
-   > ul {
-     padding: 0px;
-     margin: 0px;
-     list-style-type: none;
-     padding-top: 4px;
-   }
-   > li {
-     font-weight: var(--acx-body-font-weight);
-     margin-bottom: 4px;
-     &:is(:last-child) { margin-bottom: unset; }
-   }
- `
