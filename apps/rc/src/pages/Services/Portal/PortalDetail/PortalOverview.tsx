@@ -30,7 +30,7 @@ export default function PortalOverview (props: { demoValue: Demo }) {
       const dataArray = err.data?.split('\n')||[]
       const dataObj= {} as { [key:string]:string }
       dataArray.forEach( (item: string) => {
-        dataObj[item.split('=')[0]] = item.split('=')[1]
+        dataObj[item.split('=')[0]?.trim()] = item.split('=')[1]?.trim()
       })
       setPortalLang(dataObj)
     })
