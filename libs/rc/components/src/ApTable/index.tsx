@@ -106,7 +106,8 @@ export function ApTable (props: ApTableProps) {
     defaultPayload: {
       ...defaultApPayload,
       filters
-    }
+    },
+    pollingInterval: 30000 //TODO: Wait for confirm the interval with PLM
   })
 
   const apAction = useApActions()
