@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import {
   EdgeUrlsInfo,
   TableResult,
-  EdgeViewModel,
+  EdgeStatus,
   createHttpRequest,
   EdgeGeneralSetting,
   RequestPayload
@@ -48,7 +48,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Edge', id: 'LIST' }]
     }),
-    getEdgeList: build.query<TableResult<EdgeViewModel>, RequestPayload>({
+    getEdgeList: build.query<TableResult<EdgeStatus>, RequestPayload>({
       query: ({ payload, params }) => {
         const req = createHttpRequest(EdgeUrlsInfo.getEdgeList, params)
         return {
@@ -85,7 +85,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Edge', id: 'LIST' }]
     }),
-    edgeBySerialNumber: build.query<EdgeViewModel, RequestPayload>({
+    edgeBySerialNumber: build.query<EdgeStatus, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(EdgeUrlsInfo.getEdgeList, params)
         return {
@@ -93,8 +93,8 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           body: payload
         }
       },
-      transformResponse (result: TableResult<EdgeViewModel>) {
-        return transformEdgeViewModel(result?.data[0])
+      transformResponse (result: TableResult<EdgeStatus>) {
+        return transformEdgeStatus(result?.data[0])
       }
     })
   })
@@ -111,7 +111,7 @@ export const {
   useEdgeBySerialNumberQuery
 } = edgeApi
 
-const transformEdgeViewModel = (result: EdgeViewModel) => {
+const transformEdgeStatus = (result: EdgeStatus) => {
   const edge = JSON.parse(JSON.stringify(result))
 
   return edge

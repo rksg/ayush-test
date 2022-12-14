@@ -12,7 +12,7 @@ import { Button, PageHeader, RangePicker } from '@acx-ui/components'
 import { ArrowExpand, BulbOutlined }       from '@acx-ui/icons'
 import { useEdgeBySerialNumberQuery }      from '@acx-ui/rc/services'
 import {
-  EdgeViewModel,
+  EdgeStatus,
   EdgeStatusEnum
 } from '@acx-ui/rc/utils'
 import {
@@ -44,7 +44,7 @@ export const EdgeDetailsPageHeader = () => {
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
   const params = useParams()
 
-  const edgeViewModelPayload = {
+  const edgeStatusPayload = {
     fields: [
       'name',
       'venueName',
@@ -62,7 +62,7 @@ export const EdgeDetailsPageHeader = () => {
     filters: { serialNumber: [params.serialNumber] } }
   const { data: currentEdge }
   = useEdgeBySerialNumberQuery({
-    params, payload: edgeViewModelPayload
+    params, payload: edgeStatusPayload
   })
 
   const navigate = useNavigate()
@@ -127,7 +127,7 @@ export const EdgeDetailsPageHeader = () => {
         >{$t({ defaultMessage: 'Configure' })}</Button>,
         <EdgeBulb key='bulbCount' count={0} />
       ]}
-      footer={<EdgeDetailsTabs currentEdge={currentEdge as EdgeViewModel} />}
+      footer={<EdgeDetailsTabs currentEdge={currentEdge as EdgeStatus} />}
     />
   )
 }

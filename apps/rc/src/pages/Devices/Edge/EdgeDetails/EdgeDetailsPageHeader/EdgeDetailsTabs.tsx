@@ -2,10 +2,10 @@
 import { useIntl } from 'react-intl'
 
 import { Tabs }                                  from '@acx-ui/components'
-import { EdgeStatusEnum, EdgeViewModel }         from '@acx-ui/rc/utils'
+import { EdgeStatusEnum, EdgeStatus }            from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-const EdgeDetailsTabs = (props:{ currentEdge: EdgeViewModel }) => {
+const EdgeDetailsTabs = (props:{ currentEdge: EdgeStatus }) => {
   const { $t } = useIntl()
   const params = useParams()
   const basePath = useTenantLink(`/devices/edge/${params.serialNumber}/edge-details`)

@@ -1,7 +1,7 @@
-import { EdgePortTypeEnum, EdgeStatusEnum, ApVenueStatusEnum, EdgeViewModel, EdgePort } from '@acx-ui/rc/utils'
+import { EdgePortTypeEnum, EdgeStatusEnum, ApVenueStatusEnum, EdgeStatus, EdgePort } from '@acx-ui/rc/utils'
 
 export const tenantID = 'ecc2d7cf9d2342fdb31ae0e24958fcac'
-export const currentEdge:EdgeViewModel = {
+export const currentEdge:EdgeStatus = {
   name: 'edge-01',
   serialNumber: 'edge-111000001',
   venueId: '97b77f8a82324a1faa0f4cc3f56d1ef0',

@@ -2,9 +2,9 @@
 import { Divider, Form } from 'antd'
 import { useIntl }       from 'react-intl'
 
-import { ContentSwitcher, ContentSwitcherProps, Drawer }    from '@acx-ui/components'
-import { EdgeViewModel, EdgeStatusEnum, EdgePort, EdgeDNS } from '@acx-ui/rc/utils'
-import { TenantLink }                                       from '@acx-ui/react-router-dom'
+import { ContentSwitcher, ContentSwitcherProps, Drawer } from '@acx-ui/components'
+import { EdgeStatus, EdgeStatusEnum, EdgePort, EdgeDNS } from '@acx-ui/rc/utils'
+import { TenantLink }                                    from '@acx-ui/react-router-dom'
 
 
 import { EdgeDetailsSettingsInfo } from './EdgeDetailsSettingsInfo'
@@ -12,7 +12,7 @@ import { EdgeDetailsSettingsInfo } from './EdgeDetailsSettingsInfo'
 interface EdgeDetailsDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
-  currentEdge: EdgeViewModel,
+  currentEdge: EdgeStatus,
   edgePortsSetting: EdgePort[]
 }
 

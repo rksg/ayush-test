@@ -7,7 +7,7 @@ import styled from 'styled-components'
 
 import { cssStr, GridRow, GridCol, Loader , DonutChart, onChartClick, NoActiveData, Button } from '@acx-ui/components'
 import type { DonutChartData, DonutChartProps }                                              from '@acx-ui/components'
-import { EdgePort, EdgeViewModel, EdgeResourceUtilizationEnum, EdgePortAdminStatusEnum }     from '@acx-ui/rc/utils'
+import { EdgePort, EdgeStatus, EdgeResourceUtilizationEnum, EdgePortAdminStatusEnum }        from '@acx-ui/rc/utils'
 
 import { SpaceWrapper } from '../SpaceWrapper/index'
 
@@ -106,7 +106,7 @@ const EdgePortsWidget = ({ isLoading, edgePortsSetting }:
 }
 
 export const EdgeInfoWidget = styled(({ className, currentEdge, edgePortsSetting, isLoading }:
-   { className?: string, currentEdge: EdgeViewModel, edgePortsSetting: EdgePort[], isLoading: boolean }) => {
+   { className?: string, currentEdge: EdgeStatus, edgePortsSetting: EdgePort[], isLoading: boolean }) => {
   const { $t } = useIntl()
   const [visible, setVisible] = React.useState(false)
   const moreDetailsHandler = () => {
@@ -154,7 +154,7 @@ export const EdgeInfoWidget = styled(({ className, currentEdge, edgePortsSetting
       <EdgeDetailsDrawer
         visible={visible}
         setVisible={setVisible}
-        currentEdge={currentEdge as EdgeViewModel}
+        currentEdge={currentEdge as EdgeStatus}
         edgePortsSetting={edgePortsSetting as EdgePort[]}
       />
     </GridRow>

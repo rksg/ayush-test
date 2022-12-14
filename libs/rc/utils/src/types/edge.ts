@@ -31,7 +31,7 @@ export interface Edge extends EdgeResourceUtilization {
   description?: string
   fwVersion?: string
 }
-export interface EdgeViewModel extends EdgeResourceUtilization {
+export interface EdgeStatus extends EdgeResourceUtilization {
   serialNumber: string
   venueId: string
   venueName: string

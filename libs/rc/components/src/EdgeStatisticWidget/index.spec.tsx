@@ -2,7 +2,7 @@
 import {
   EdgeStatusEnum,
   ApVenueStatusEnum,
-  EdgeViewModel,
+  EdgeStatus,
   EdgePort,
   EdgePortTypeEnum
 } from '@acx-ui/rc/utils'
@@ -12,7 +12,7 @@ import { render }    from '@acx-ui/test-utils'
 import { EdgePortsByTrafficWidget, EdgeTrafficByVolumeWidget } from '.'
 
 const tenantID = 'ecc2d7cf9d2342fdb31ae0e24958fcac'
-const currentEdge:EdgeViewModel = {
+const currentEdge:EdgeStatus = {
   name: 'edge-01',
   serialNumber: 'edge-111000001',
   venueId: '97b77f8a82324a1faa0f4cc3f56d1ef0',
