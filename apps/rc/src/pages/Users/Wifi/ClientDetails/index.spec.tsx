@@ -28,6 +28,12 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
+/* eslint-disable max-len */
+jest.mock('@acx-ui/analytics/components', () => ({
+  TrafficByBand: () => <div data-testid={'analytics-TrafficByBand'} title='TrafficByBand' />,
+  TrafficByUsage: () => <div data-testid={'analytics-TrafficByUsage'} title='TrafficByUsage' />,
+  ClientTroubleshooting: () => <div data-testid={'analytics-ClientTroubleshooting'} title='ClientTroubleshooting' />
+}))
 
 describe('ClientDetails', () => {
   mockServer.use(
