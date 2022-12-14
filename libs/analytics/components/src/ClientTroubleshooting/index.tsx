@@ -54,6 +54,7 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
                     onApply={(value: selectionType) =>
                       write({ ...filters, [config.selectionType]: value })
                     }
+                    allowClear
                   />
                 </Col>
               ))}
