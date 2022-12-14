@@ -2,6 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 import {
   createHttpRequest,
+  RequestFormData,
   RequestPayload,
   SwitchUrlsInfo,
   SwitchViewModel,
@@ -12,8 +13,9 @@ import {
 export const baseSwitchApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'switchApi',
+  tagTypes: ['Switch'],
   refetchOnMountOrArgChange: true,
-  endpoints: () => ({ })
+  endpoints: () => ({})
 })
 
 export const switchApi = baseSwitchApi.injectEndpoints({
@@ -37,10 +39,24 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    importSwitches: build.mutation<{}, RequestFormData>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.importSwitches, params, {
+          'Content-Type': undefined,
+          'Accept': '*/*'
+        })
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Switch', id: 'LIST' }]
     })
   })
 })
 export const {
   useSwitchDetailHeaderQuery,
-  useSwitchPortlistQuery
+  useSwitchPortlistQuery,
+  useImportSwitchesMutation
 } = switchApi

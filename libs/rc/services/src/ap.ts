@@ -103,6 +103,19 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
     }),
+    importAp: build.mutation<{}, RequestFormData>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.addAp, params, {
+          'Content-Type': undefined,
+          'Accept': '*/*'
+        })
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
+    }),
     getAp: build.query<ApDeep, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.getAp, params)
@@ -259,6 +272,15 @@ export const apApi = baseApApi.injectEndpoints({
         }
       }
     }),
+    blinkLedAp: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.blinkLedAp, params)
+        return{
+          ...req
+        }
+      }
+    }),
+
     pingAp: build.mutation<PingAp, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.pingAp, params)
@@ -330,14 +352,7 @@ export const apApi = baseApApi.injectEndpoints({
         }
       }
     }),
-    blinkLedAp: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.blinkLedAp, params)
-        return{
-          ...req
-        }
-      }
-    }),
+
     getApPhoto: build.query<APPhoto, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.getApPhoto, params)
@@ -466,6 +481,7 @@ export const {
   useRebootApMutation,
   useBlinkLedApMutation,
   useFactoryResetApMutation,
+  useImportApMutation,
   useLazyGetDhcpApQuery,
   useGetApPhotoQuery,
   useAddApPhotoMutation,
