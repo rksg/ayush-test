@@ -6,9 +6,7 @@ import {
 import { VenueFilter }                     from '@acx-ui/main/components'
 import { useDateFilter, dateRangeForLast } from '@acx-ui/utils'
 
-import NetworkReportTabs from '../NetworkReport/NetworkReportTabs'
-
-export function ReportHeader (props: { name: string }) {
+export function ReportHeader (props: { name: string, footer?: React.ReactNode }) {
   const name = props.name
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
 
@@ -29,7 +27,7 @@ export function ReportHeader (props: { name: string }) {
           selectionType={range}
         />
       ]}
-      footer={name === 'Network' && <NetworkReportTabs />}
+      footer={props.footer && props.footer}
     />
   )
 }

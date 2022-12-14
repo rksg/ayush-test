@@ -14,6 +14,9 @@ jest.mock('./pages/Dashboard', () => () => {
 jest.mock('analytics/Routes', () => () => {
   return <div data-testid='analytics' />
 }, { virtual: true })
+jest.mock('reports/Routes', () => () => {
+  return <div data-testid='reports' />
+}, { virtual: true })
 jest.mock('rc/Routes', () => () => {
   return (
     <>
@@ -55,6 +58,15 @@ describe('AllRoutes', () => {
       }
     })
     await screen.findByTestId('analytics')
+  })
+  test('should navigate to reports/*', async () => {
+    render(<Provider><AllRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/reports/network/wireless',
+        wrapRoutes: false
+      }
+    })
+    await screen.findByTestId('reports')
   })
 
   test('should navigate to devices/*', async () => {

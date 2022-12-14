@@ -3,7 +3,7 @@ import { useIntl } from 'react-intl'
 import { Tabs }                                  from '@acx-ui/components'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-function NetworkReportTabs () {
+export function NetworkReportTabs () {
   const { $t } = useIntl()
   const params = useParams()
   const basePath = useTenantLink('/reports/network/')
@@ -22,5 +22,3 @@ function NetworkReportTabs () {
     </Tabs>
   )
 }
-
-export default NetworkReportTabs
