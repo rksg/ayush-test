@@ -28,9 +28,10 @@ describe('trafficByUsageWidgetApi', () => {
             '2022-04-07T10:00:00.000Z',
             '2022-04-07T10:15:00.000Z'
           ],
-          userRxTraffic: [1, 2, 3, 4, 5],
-          userTraffic: [6, 7, 8, 9, 10],
-          userTxTraffic: [11, 12, 13, 14, 15]
+          userTraffic: [1, 2, 3, 4, 5],
+          userTraffic_2_4: [6, 7, 8, 9, 10],
+          userTraffic_5: [11, 12, 13, 14, 15],
+          userTraffic_6: [11, 12, 13, 14, 15]
         }
       }
     }
