@@ -26,12 +26,11 @@ export const createHttpRequest = (
   customHeaders?: Record<string, unknown>
 ) => {
   const tokenHeader = {
-    'Authorization': ''
+    Authorization: ''
   }
   if (Jwt() !== null) {
     tokenHeader.Authorization = `Bearer ${Jwt()}`
     defaultHeaders = { ...tokenHeader, ...defaultHeaders }
-    console.log('default header tokenheader', defaultHeaders)
   }
   const headers = { ...defaultHeaders, ...customHeaders }
   const url = generatePath(`${apiInfo.url}`, paramValues)
