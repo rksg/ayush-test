@@ -369,15 +369,15 @@ exports[`VenueMeshAps should render correctly 1`] = `
             </div>
           </div>
           <div
-            class="ant-tabs-tab"
+            class="ant-tabs-tab ant-tabs-tab-disabled"
           >
             <div
               aria-controls="rc-tabs-test-panel-switch"
+              aria-disabled="true"
               aria-selected="false"
               class="ant-tabs-tab-btn"
               id="rc-tabs-test-tab-switch"
               role="tab"
-              tabindex="0"
             >
               Switch
             </div>
@@ -476,13 +476,14 @@ exports[`VenueMeshAps should render correctly 1`] = `
                         </span>
                       </label>
                       <label
-                        class="ant-radio-button-wrapper"
+                        class="ant-radio-button-wrapper ant-radio-button-wrapper-disabled"
                       >
                         <span
-                          class="ant-radio-button"
+                          class="ant-radio-button ant-radio-button-disabled"
                         >
                           <input
                             class="ant-radio-button-input"
+                            disabled=""
                             type="radio"
                             value="apGroups"
                           />
@@ -495,13 +496,14 @@ exports[`VenueMeshAps should render correctly 1`] = `
                         </span>
                       </label>
                       <label
-                        class="ant-radio-button-wrapper"
+                        class="ant-radio-button-wrapper ant-radio-button-wrapper-disabled"
                       >
                         <span
-                          class="ant-radio-button"
+                          class="ant-radio-button ant-radio-button-disabled"
                         >
                           <input
                             class="ant-radio-button-input"
+                            disabled=""
                             type="radio"
                             value="rogueAps"
                           />

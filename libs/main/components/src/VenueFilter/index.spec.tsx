@@ -90,6 +90,6 @@ describe('venue Filter', () => {
       setNodeFilter
     }
     render(<Provider><VenueFilter /></Provider>, { route })
-    await screen.findByText('+ 0 ...') // TODO figure out why the filter is not rendering the value
+    await screen.findByText('1 venue selected')
   })
 })

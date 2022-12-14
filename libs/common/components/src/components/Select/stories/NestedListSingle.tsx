@@ -1,4 +1,4 @@
-import { NetworkFilter, Option } from '..'
+import { Select, Option } from '..'
 
 import { onApply } from './utils'
 
@@ -57,7 +57,7 @@ const options: Option[] = [
 
 export function NestedListSingle () {
   return <div style={{ width: 200 }}>
-    <NetworkFilter
+    <Select
       placeholder='Entire Organization'
       defaultValue={['v1', 'v1-s', 'v1-s-s2']}
       options={options}

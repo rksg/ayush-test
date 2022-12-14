@@ -31,7 +31,7 @@ export interface WifiCallingFormContextType {
 export interface EPDG {
   name?: string
   domain: string
-  ip: string
+  ip?: string
 }
 
 export enum WifiCallingActionTypes {

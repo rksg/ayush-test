@@ -6,6 +6,7 @@ import {
   ClientListMeta,
   ClientStatistic,
   ClientUrlsInfo,
+  CommonResult,
   CommonUrlsInfo,
   createHttpRequest,
   DpskPassphrase,
@@ -17,6 +18,7 @@ import {
   RequestPayload,
   showActivityMessage,
   TableResult,
+  downloadFile,
   transformByte,
   WifiUrlsInfo
 } from '@acx-ui/rc/utils'
@@ -71,19 +73,26 @@ export const clientApi = baseClientApi.injectEndpoints({
           body: payload
         }
       },
-      keepUnusedDataFor: 0,
       providesTags: [{ type: 'Guest', id: 'LIST' }],
+      keepUnusedDataFor: 0,
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg, ['AddGuest', 'DeleteGuest'], () => {
-            api.dispatch(clientApi.util.invalidateTags([{ type: 'Guest', id: 'LIST' }]))
-          })
+          showActivityMessage(msg,
+            [
+              'RegeneratePass',
+              'DisableGuest',
+              'EnableGuest',
+              'AddGuest',
+              'DeleteGuest'
+            ], () => {
+              api.dispatch(clientApi.util.invalidateTags([{ type: 'Guest', id: 'LIST' }]))
+            })
         })
       }
     }),
-    addGuestPass: build.mutation<Guest, RequestPayload>({
+    deleteGuests: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.addGuestPass, params)
+        const req = createHttpRequest(ClientUrlsInfo.deleteGuests, params)
         return {
           ...req,
           body: payload
@@ -91,21 +100,67 @@ export const clientApi = baseClientApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Guest', id: 'LIST' }]
     }),
-    getGuestNetworkList: build.query<TableResult<Network>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const networkListReq = createHttpRequest(CommonUrlsInfo.getVMNetworksList, params)
+    disableGuests: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(ClientUrlsInfo.disableGuests, params)
         return {
-          ...networkListReq,
-          body: payload
+          ...req
         }
       },
-      providesTags: [{ type: 'Guest', id: 'LIST' }]
+      invalidatesTags: [{ type: 'Guest', id: 'LIST' }]
+    }),
+    enableGuests: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(ClientUrlsInfo.enableGuests, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Guest', id: 'LIST' }]
+    }),
+    getGuests: build.mutation<{ data: BlobPart }, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(ClientUrlsInfo.getGuests, params)
+
+        return {
+          ...req,
+          responseHandler: async (response) => {
+            const headerContent = response.headers.get('content-disposition')
+            const fileName = headerContent ? JSON.parse(
+              headerContent.split('filename=')[1]) : 'Guests Information.csv'
+            downloadFile(response, fileName)
+          },
+          body: payload,
+          headers: {
+            'Content-Type': 'application/json',
+            'accept': 'application/json,text/plain,*/*'
+          }
+        }
+      }
     }),
     getClientDetails: build.query<Client, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(ClientUrlsInfo.getClientDetails, params)
         return {
           ...req
+        }
+      }
+    }),
+    generateGuestPassword: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(ClientUrlsInfo.generateGuestPassword, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    getDpskPassphraseByQuery: build.query<DpskPassphrase, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getDpskPassphraseByQuery, params)
+        return{
+          ...req,
+          body: payload
         }
       }
     }),
@@ -150,14 +205,25 @@ export const clientApi = baseClientApi.injectEndpoints({
         }
       }
     }),
-    getDpskPassphraseByQuery: build.query<DpskPassphrase, RequestPayload>({
+    addGuestPass: build.mutation<Guest, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getDpskPassphraseByQuery, params)
-        return{
+        const req = createHttpRequest(CommonUrlsInfo.addGuestPass, params)
+        return {
           ...req,
           body: payload
         }
-      }
+      },
+      invalidatesTags: [{ type: 'Guest', id: 'LIST' }]
+    }),
+    getGuestNetworkList: build.query<TableResult<Network>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const networkListReq = createHttpRequest(CommonUrlsInfo.getVMNetworksList, params)
+        return {
+          ...networkListReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Guest', id: 'LIST' }]
     })
   })
 })
@@ -201,6 +267,11 @@ export const {
   useGetHistoricalClientListQuery,
   useLazyGetHistoricalClientListQuery,
   useGetClientListQuery,
+  useGetGuestsMutation,
+  useDeleteGuestsMutation,
+  useEnableGuestsMutation,
+  useDisableGuestsMutation,
+  useGenerateGuestPasswordMutation,
   useGetHistoricalStatisticsReportsQuery,
   useLazyGetHistoricalStatisticsReportsQuery
 } = clientApi
