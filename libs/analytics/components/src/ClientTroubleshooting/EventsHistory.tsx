@@ -28,8 +28,8 @@ import {
   INCIDENT
 } from './config'
 import { ConnectionEventPopover } from './ConnectionEvent'
-import { ClientInfoData }  from './services'
-import * as UI             from './styledComponents'
+import { ClientInfoData }         from './services'
+import * as UI                    from './styledComponents'
 
 import { Filters } from '.'
 
@@ -107,7 +107,9 @@ const transformData = (clientInfo: ClientInfoData, filters: Filters, intl: IntlS
       date: formatter('dateTimeFormatWithSeconds')(event.start),
       description: formatEventDesc(event, intl),
       title: formatEventDesc(event, intl),
-      icon: <ConnectionEventPopover event={event}><UI.EventTypeIcon color={color} /></ConnectionEventPopover>
+      icon: <ConnectionEventPopover event={event}>
+        <UI.EventTypeIcon color={color} />
+      </ConnectionEventPopover>
     }
   }),
   ...incidents
