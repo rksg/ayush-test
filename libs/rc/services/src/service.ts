@@ -426,6 +426,14 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    getPortalLang: build.mutation<{ res : { data : string } }, RequestPayload>({
+      query: ({ params }) => {
+        const portalLang = createHttpRequest(PortalUrlsInfo.getPortalLang, params)
+        return {
+          ...portalLang
+        }
+      }
     })
 
   })
@@ -464,5 +472,6 @@ export const {
   useSavePortalMutation,
   usePortalNetworkInstancesQuery,
   useGetPortalProfileDetailQuery,
-  useGetPortalProfileListQuery
+  useGetPortalProfileListQuery,
+  useGetPortalLangMutation
 } = serviceApi

@@ -125,7 +125,7 @@ export const LayoutContent = styled(AntLayout)<{ $isPreview: boolean | undefined
   background-repeat: no-repeat;
   align-items: center;
   ${props => props.$isPreview ? css`
-  height:100%; `: css`height: auto;`}
+  height:100%;`: css`height: 608px;`}
   margin-bottom:10px;
 `
 export const LayoutView = styled(AntLayout)<{ $type: string | null }>`
@@ -142,7 +142,8 @@ export const LayoutView = styled(AntLayout)<{ $type: string | null }>`
   background-color: var(--acx-primary-white);
   background-position: center;
   background-repeat: no-repeat;
-  height:auto;
+  height:100%;
+  overflow-y:auto;
 `
 export const LayoutViewContent = styled(AntLayout)<{ isbg: string | null }>`
   ${props=>props.isbg === 'true'?css`opacity:0.8;`:css`opacity:1;`}
@@ -153,8 +154,6 @@ export const LayoutViewContent = styled(AntLayout)<{ isbg: string | null }>`
   background-color: var(--acx-primary-white) !important;
   background-position: center;
   background-repeat: no-repeat;
-  height:auto;
-  min-height:250px;
   padding-bottom:10px;
 `
 export const Label = styled.label`
@@ -230,7 +229,7 @@ export const FieldInputSmall = styled.input`
 export const PortalButton = styled.button`
   margin-top:20px;
   margin-bottom:10px;
-  width:223px;
+  width:275px;
   height:32px;
   background-color:var(--acx-accents-orange-50);
   color:var(--acx-primary-white);
@@ -283,6 +282,8 @@ export const ViewSectionText = styled.div`
   padding-top: 5px;
   font-size: 11px;
   color:var(--acx-neutrals-60);
+  text-align:left;
+  margin-left:70px;
 `
 export const ViewSectionTitle = styled.div`
   font-size:18px;

@@ -53,6 +53,7 @@ const initialPortalData : Portal ={
 }
 
 export const PortalForm = (props:{
+  editMode?:boolean,
   networkView?:boolean,
   backToNetwork?: (value?: Portal) => void
 }) => {
@@ -61,7 +62,7 @@ export const PortalForm = (props:{
   const navigate = useNavigate()
   const linkToServices = useTenantLink(getServiceListRoutePath(true))
   const params = useParams()
-  const editMode = params.action === 'edit' && !networkView
+  const editMode = props.editMode && !networkView
   const [portalData, setPortalData]=useState<Portal>(initialPortalData)
   const formRef = useRef<StepsFormInstance<Portal>>()
 

@@ -55,11 +55,11 @@ describe('PortalDemo', () => {
   it('should render portal demo successfully', async () => {
 
     const { asFragment } = render(
-      <PortalFormContext.Provider value={{ error: true }}>
+      <Provider>
         <Form>
           <PortalDemo value={mockDemo} />
         </Form>
-      </PortalFormContext.Provider>
+      </Provider>
     )
     expect(asFragment()).toMatchSnapshot()
     const file = new File(['logo ruckus'],
@@ -102,7 +102,7 @@ describe('PortalDemo', () => {
     await userEvent.click((await screen.findAllByTitle('colorpick'))[1])
 
     await userEvent.click(await screen.findByTitle('#F5A623'))
-    await userEvent.click(await screen.findByText('Email Message'))
+    await userEvent.click((await screen.findAllByRole('tab'))[1])
     await userEvent.click((await screen.findAllByPlaceholderText('buttonsetting'))[1])
 
     await userEvent.click((await screen.findAllByTitle('colorpick'))[2])
@@ -115,7 +115,7 @@ describe('PortalDemo', () => {
     await userEvent.click(await screen.findByPlaceholderText('buttonsetting'))
     await userEvent.click((await screen.findAllByTitle('colorpick'))[1])
     await userEvent.click(await screen.findByTitle('#F5A623'))
-    await userEvent.click(await screen.findByText('Login'))
+    await userEvent.click((await screen.findAllByRole('tab'))[1])
     await userEvent.click((await screen.findAllByPlaceholderText('buttonsetting'))[1])
     await userEvent.click((await screen.findAllByTitle('colorpick'))[2])
     await userEvent.click(await screen.findByTitle('#F5A623'))
@@ -124,7 +124,7 @@ describe('PortalDemo', () => {
     await userEvent.click(await screen.findByPlaceholderText('buttonsetting'))
     await userEvent.click((await screen.findAllByTitle('colorpick'))[1])
     await userEvent.click(await screen.findByTitle('#F5A623'))
-    await userEvent.click(await screen.findByText('Login'))
+    await userEvent.click((await screen.findAllByRole('tab'))[1])
     await userEvent.click((await screen.findAllByPlaceholderText('buttonsetting'))[1])
     await userEvent.click((await screen.findAllByTitle('colorpick'))[2])
     await userEvent.click(await screen.findByTitle('#F5A623'))

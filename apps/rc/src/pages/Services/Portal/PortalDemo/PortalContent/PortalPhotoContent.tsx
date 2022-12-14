@@ -38,7 +38,7 @@ export default function PortalPhotoContent (props: {
         alt='Photo png'
         style={{ cursor: cursor, outline: outline, height: (demoValue.photoRatio||
           PortalDemoDefaultSize.photoRatio) ,
-        maxWidth: 425 }}
+        maxWidth: 425, marginTop: 10 }}
         onMouseOver={()=>{setCursor('pointer')
           setOutline(dashedOutline)}}
         onMouseLeave={()=>{

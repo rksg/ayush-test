@@ -54,7 +54,7 @@ exports[`PortalForm should edit open Portal successfully 1`] = `
             <h1
               class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
             >
-              Edit Portal Service
+              Add Portal Service
             </h1>
           </span>
         </div>
@@ -217,9 +217,9 @@ exports[`PortalForm should edit open Portal successfully 1`] = `
                           <label
                             class=""
                             for="settings_demo"
-                            title="Demo"
+                            title="Portal Design"
                           >
-                            Demo
+                            Portal Design
                           </label>
                         </div>
                         <div
@@ -441,7 +441,7 @@ exports[`PortalForm should edit open Portal successfully 1`] = `
                                   </div>
                                 </div>
                                 <section
-                                  class="ant-layout styledComponents__LayoutContent-sc-cby53p-8 jxWsyY"
+                                  class="ant-layout styledComponents__LayoutContent-sc-cby53p-8 cMtjcZ"
                                   id="democontent"
                                 >
                                   <svg
@@ -451,71 +451,70 @@ exports[`PortalForm should edit open Portal successfully 1`] = `
                                     title="background setting"
                                   />
                                   <section
-                                    class="ant-layout styledComponents__LayoutView-sc-cby53p-9 gMkhdZ"
+                                    class="ant-layout styledComponents__LayoutView-sc-cby53p-9 iwxLDo"
                                     style="background-image: url();"
                                   >
-                                    <section
-                                      class="ant-layout styledComponents__LayoutViewContent-sc-cby53p-10 fcheRJ"
-                                      isbg="false"
-                                    >
-                                      <img
-                                        alt="Logo"
-                                        class="styledComponents__Img-sc-cby53p-15 bxRRHj styledComponents__Popover-sc-cby53p-41"
-                                        src="RuckusCloud.svg"
-                                        style="height: 105px; cursor: none; outline: none; max-width: 425px;"
-                                      />
-                                      <input
-                                        class="styledComponents__Input-sc-cby53p-17 cQzrOu styledComponents__Popover-sc-cby53p-41"
-                                        placeholder="welcometext"
-                                        style="cursor: none; outline: none; height: 25px; font-weight: 600; line-height: 20px; width: 310px; max-width: 425px; font-size: 16px;"
-                                        type="text"
-                                        value="Welcome to the Guest Access login page"
-                                      />
-                                      <img
-                                        alt="Photo png"
-                                        class="styledComponents__Img-sc-cby53p-15 bxRRHj styledComponents__Popover-sc-cby53p-41"
-                                        src="PortalPhoto.svg"
-                                        style="cursor: none; outline: none; height: 170px; max-width: 425px;"
-                                      />
-                                      <div
-                                        class="styledComponents__FieldText-sc-cby53p-18 cCAmOP styledComponents__Popover-sc-cby53p-41"
-                                        placeholder="sectexthere"
-                                        style="cursor: none; outline: none; line-height: 16px; max-width: 425px; font-size: 12px;"
+                                    <div>
+                                      <section
+                                        class="ant-layout styledComponents__LayoutViewContent-sc-cby53p-10 ftbAka"
+                                        isbg="false"
                                       >
-                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet.
-                                      </div>
-                                      <button
-                                        class="styledComponents__PortalButton-sc-cby53p-22 bKdacB styledComponents__Popover-sc-cby53p-41"
-                                        placeholder="buttonsetting"
-                                        style="cursor: none; outline: none;"
-                                      >
-                                        Connect To Wi-Fi
-                                      </button>
-                                      <div
-                                        class="styledComponents__SelectedDiv-sc-cby53p-43 caZqfT"
-                                        style="padding-left: 200px;"
-                                      >
+                                        <img
+                                          alt="Logo"
+                                          class="styledComponents__Img-sc-cby53p-15 bxRRHj styledComponents__Popover-sc-cby53p-41"
+                                          src="RuckusCloud.svg"
+                                          style="height: 105px; cursor: none; outline: none; max-width: 425px; margin-top: 50px; margin-bottom: 20px;"
+                                        />
+                                        <input
+                                          class="styledComponents__Input-sc-cby53p-17 cQzrOu styledComponents__Popover-sc-cby53p-41"
+                                          placeholder="welcometext"
+                                          style="cursor: none; outline: none; height: 25px; font-weight: 600; line-height: 20px; width: 310px; max-width: 425px; font-size: 16px;"
+                                          type="text"
+                                          value="Welcome to the Guest Access login page"
+                                        />
+                                        <img
+                                          alt="Photo png"
+                                          class="styledComponents__Img-sc-cby53p-15 bxRRHj styledComponents__Popover-sc-cby53p-41"
+                                          src="PortalPhoto.svg"
+                                          style="cursor: none; outline: none; height: 170px; max-width: 425px; margin-top: 10px;"
+                                        />
+                                        <textarea
+                                          class="ant-input styledComponents__Popover-sc-cby53p-41"
+                                          placeholder="sectexthere"
+                                          rows="4"
+                                          style="cursor: none; outline: none; resize: none; border: 0px; line-height: 16px; max-width: 425px; min-height: 60px; font-size: 12px;"
+                                        >
+                                          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet.
+                                        </textarea>
+                                        <button
+                                          class="styledComponents__PortalButton-sc-cby53p-22 junwuq styledComponents__Popover-sc-cby53p-41"
+                                          placeholder="buttonsetting"
+                                          style="cursor: none; outline: none;"
+                                        />
                                         <div
-                                          class="styledComponents__Popover-sc-cby53p-41"
-                                          placeholder="poweredbackground"
-                                          style="outline: none; cursor: none;"
+                                          class="styledComponents__SelectedDiv-sc-cby53p-43 caZqfT"
+                                          style="padding-left: 200px;"
                                         >
                                           <div
-                                            class="styledComponents__FieldText-sc-cby53p-18 cCAmOP styledComponents__Popover-sc-cby53p-41"
-                                            placeholder="poweredtext"
-                                            style="font-size: 14px; width: 152px; line-height: 24px; max-width: 425px; text-align: left; cursor: none; outline: none;"
+                                            class="styledComponents__Popover-sc-cby53p-41"
+                                            placeholder="poweredbackground"
+                                            style="outline: none; cursor: none;"
                                           >
-                                            Powered By
+                                            <div
+                                              class="styledComponents__FieldText-sc-cby53p-18 cCAmOP styledComponents__Popover-sc-cby53p-41"
+                                              placeholder="poweredtext"
+                                              style="font-size: 14px; width: 152px; line-height: 24px; max-width: 425px; text-align: left; cursor: none; outline: none;"
+                                            />
+                                            <img
+                                              alt="poweredimage"
+                                              class="styledComponents__Img-sc-cby53p-15 bxRRHj styledComponents__Popover-sc-cby53p-41"
+                                              src="PoweredLogo.svg"
+                                              style="margin-left: 50px; cursor: none; outline: none; height: 50px; max-width: 425px;"
+                                            />
                                           </div>
-                                          <img
-                                            alt="poweredimage"
-                                            class="styledComponents__Img-sc-cby53p-15 bxRRHj styledComponents__Popover-sc-cby53p-41"
-                                            src="PoweredLogo.svg"
-                                            style="margin-left: 50px; cursor: none; outline: none; height: 50px; max-width: 425px;"
-                                          />
                                         </div>
-                                      </div>
-                                    </section>
+                                      </section>
+                                    </div>
                                   </section>
                                 </section>
                               </div>

@@ -34,7 +34,7 @@ const PortalSettingForm = (props:{
         <Col flex={1}>
           <Form.Item
             name='demo'
-            label={$t({ defaultMessage: 'Demo' })}
+            label={$t({ defaultMessage: 'Portal Design' })}
             children={<PortalDemo resetDemo={() => resetDemoField()}/>}
           />
         </Col>

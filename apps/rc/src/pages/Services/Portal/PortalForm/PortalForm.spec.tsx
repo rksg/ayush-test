@@ -38,7 +38,7 @@ describe('PortalForm', () => {
       'textbox', { name: 'Service Name' }),'create Portal test')
     await userEvent.click(await screen.findByText('Reset'))
     await userEvent.click(await screen.findByText('Finish'))
-
+    expect(await screen.findByText('English')).toBeVisible()
 
   })
 })

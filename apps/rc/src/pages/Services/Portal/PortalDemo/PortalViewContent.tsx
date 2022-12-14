@@ -24,10 +24,11 @@ import PortalViewTerms            from './PortalViewTerms'
 export default function PortalViewContent (props:{
   view: PortalViewEnum,
   demoValue: Demo,
-  updateViewContent:(value:Demo)=>void
+  updateViewContent:(value:Demo)=>void,
+  portalLang: { [key:string]:string }
 }) {
   const dashedOutline = 'dashed 1px var(--acx-neutrals-50)'
-  const { view, demoValue, updateViewContent } = props
+  const { view, demoValue, updateViewContent, portalLang } = props
   const [cursor, setCursor]=useState('none')
   const [outline, setOutline]=useState('none')
   const componentDisplay = demoValue.componentDisplay
@@ -44,8 +45,10 @@ export default function PortalViewContent (props:{
         componentDisplay: { ...demoValue.componentDisplay, logo: data.show as boolean } })
     }}
   />
+  const isLogoPhotoHide = !componentDisplay.logo && !componentDisplay.photo&&
+    !componentDisplay.wifi4eu
   return (
-    <UI.LayoutViewContent isbg={isbg}>
+    <UI.LayoutViewContent isbg={isbg} style={isLogoPhotoHide?{ paddingTop: 150 }:{}}>
       {componentDisplay.wifi4eu && <UI.Img src={Wifi4eu}
         alt={'Wifi4eu'}
         height={120} />}
@@ -57,7 +60,7 @@ export default function PortalViewContent (props:{
         <UI.Img src={demoValue.logo}
           alt={'Logo'}
           style={{ height: (demoValue.logoRatio||PortalDemoDefaultSize.logoRatio),
-            cursor: cursor, outline: outline,maxWidth: 425 }}
+            cursor: cursor, outline: outline,maxWidth: 425, marginTop: 50, marginBottom: 20 }}
           onMouseOver={()=>{setCursor('pointer')
             setOutline(dashedOutline)}}
           onMouseLeave={()=>{
@@ -86,52 +89,59 @@ export default function PortalViewContent (props:{
         <PortalSecondaryTextContent
           demoValue={demoValue}
           updateSecText={(data)=>{
-            updateViewContent({ ...demoValue, secondarySize: data.size, componentDisplay:
-              { ...demoValue.componentDisplay, secondaryText: data.show as boolean },
-            secondaryColor: data.color })}}
+            updateViewContent({ ...demoValue, secondarySize: data.size||demoValue.secondarySize,
+              componentDisplay: { ...demoValue.componentDisplay,
+                secondaryText: data.show as boolean }, secondaryColor: data.color||
+                demoValue.secondaryColor, secondaryText: data.text||'' })}}
         />}
       {view === PortalViewEnum.ClickThrough && <PortalViewGoThrough
+        portalLang={portalLang}
         demoValue={demoValue}
         updateBtn={(data)=>{
           updateViewContent({ ...demoValue, buttonColor: data.color })}}
       />}
       {view === PortalViewEnum.GuestPassConnect && <PortalViewGuestConnect
+        portalLang={portalLang}
         demoValue={demoValue}
         updateBtn={(data)=>{
           updateViewContent({ ...demoValue, buttonColor: data.color })}}
       />}
       {view === PortalViewEnum.GuestPassForgot && <PortalViewGuestForget
+        portalLang={portalLang}
         demoValue={demoValue}
         updateBtn={(data)=>{
           updateViewContent({ ...demoValue, buttonColor: data.color })}}
       />}
       {view === PortalViewEnum.SelfSignIn &&
-      <PortalViewSelfSignConnect/>}
+      <PortalViewSelfSignConnect portalLang={portalLang}/>}
       {view === PortalViewEnum.SelfSignInRegister &&
       <PortalViewSelfSignRegister
+        portalLang={portalLang}
         demoValue={demoValue}
         updateBtn={(data)=>{
           updateViewContent({ ...demoValue, buttonColor: data.color })}}
       />}
       {view === PortalViewEnum.HostApproval &&
       <PortalViewHostApproval
+        portalLang={portalLang}
         demoValue={demoValue}
         updateBtn={(data)=>{
           updateViewContent({ ...demoValue, buttonColor: data.color })}}
       />}
       {view === PortalViewEnum.ConnectionConfirmed &&
-      <PortalViewConfirm/>}
+      <PortalViewConfirm portalLang={portalLang}/>}
       {view === PortalViewEnum.TermCondition &&
       <PortalViewTerms demoValue={demoValue}
+        portalLang={portalLang}
         updateBtn={(data)=>{
           updateViewContent({ ...demoValue, buttonColor: data.color })}}/>}
       {componentDisplay.termsConditions &&<UI.FieldText>{
-        'By clicking the connect button, you are accepting the'
-      }&nbsp;&nbsp;
+        props.portalLang.acceptTermsMsg2?.replace('{0}','')}&nbsp;&nbsp;
       <UI.FieldTextLink>
-        {'terms & conditions'}
+        {props.portalLang.acceptTermsLink}
       </UI.FieldTextLink></UI.FieldText>}
       {componentDisplay.poweredBy &&<PortalPoweredByContent
+        portalLang={portalLang}
         demoValue={demoValue}
         updatePoweredBy={(data)=>{
           updateViewContent({ ...demoValue, poweredImg: data.url||demoValue.poweredImg,

@@ -1,20 +1,40 @@
 
+import { useEffect, useState } from 'react'
+
 import { Typography } from 'antd'
 import { useIntl }    from 'react-intl'
 
 import { Card, GridCol, GridRow }   from '@acx-ui/components'
+import { useGetPortalLangMutation } from '@acx-ui/rc/services'
 import { Demo, PortalLanguageEnum } from '@acx-ui/rc/utils'
+import { useParams }                from '@acx-ui/react-router-dom'
 
 import Photo              from '../../../../assets/images/portal-demo/PortalPhoto.svg'
 import Powered            from '../../../../assets/images/portal-demo/PoweredLogo.svg'
 import Logo               from '../../../../assets/images/portal-demo/RuckusCloud.svg'
 import { getLanguage }    from '../../commonUtils'
 import PortalPreviewModal from '../PortalPreviewModal'
+
 export default function PortalOverview (props: { demoValue: Demo }) {
   const { $t } = useIntl()
   const { demoValue } = props
   const newDemo = { ...demoValue, poweredImg: demoValue.poweredImg || Powered,
     logo: demoValue.logo || Logo, photo: demoValue.photo || Photo }
+  const params = useParams()
+  const [getPortalLang] = useGetPortalLangMutation()
+  const [portalLang, setPortalLang]=useState({} as { [key:string]:string })
+  useEffect(()=>{
+    getPortalLang({ params: { ...params, messageName: 'messages_'+
+    newDemo.displayLangCode+'.properties' } }).unwrap().then(()=>{
+    }, err=>{
+      const dataArray = err.data?.split('\n')||[]
+      const dataObj= {} as { [key:string]:string }
+      dataArray.forEach( (item: string) => {
+        dataObj[item.split('=')[0]] = item.split('=')[1]
+      })
+      setPortalLang(dataObj)
+    })
+  }, [])
   return (
     <Card>
       <GridRow>
@@ -34,7 +54,7 @@ export default function PortalOverview (props: { demoValue: Demo }) {
             $t({ defaultMessage: 'ON' }):$t({ defaultMessage: 'OFF' })}</Typography.Text>
         </GridCol>
         <GridCol col={{ span: 4 }}>
-          <Card.Title><PortalPreviewModal demoValue={newDemo}/></Card.Title>
+          <Card.Title><PortalPreviewModal demoValue={newDemo} portalLang={portalLang}/></Card.Title>
         </GridCol>
       </GridRow>
 

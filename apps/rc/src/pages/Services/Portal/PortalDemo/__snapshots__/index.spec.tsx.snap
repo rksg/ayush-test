@@ -157,81 +157,77 @@ exports[`PortalDemo should render portal demo preview successfully 1`] = `
         </div>
       </div>
       <section
-        class="ant-layout styledComponents__LayoutContent-sc-cby53p-8 dElHxN"
+        class="ant-layout styledComponents__LayoutContent-sc-cby53p-8 clwTrF"
         id="democontent"
       >
         <section
-          class="ant-layout styledComponents__LayoutView-sc-cby53p-9 gMkhdZ"
+          class="ant-layout styledComponents__LayoutView-sc-cby53p-9 iwxLDo"
           style="background-image: url();"
         >
-          <section
-            class="ant-layout styledComponents__LayoutViewContent-sc-cby53p-10 fcheRJ"
-            isbg="false"
-          >
-            <img
-              alt="Wifi4eu"
-              class="styledComponents__Img-sc-cby53p-15 bxRRHj"
-              height="120"
-              src="WiFi4euBanner.svg"
-            />
-            <img
-              alt="Logo"
-              class="styledComponents__Img-sc-cby53p-15 bxRRHj"
-              src="RuckusCloud.svg"
-              style="height: 105px; max-width: 425px;"
-            />
-            <div
-              style="min-height: 25px; outline: 0; text-align: center; line-height: 20px; width: 310px; max-width: 425px; font-size: 16px;"
+          <div>
+            <section
+              class="ant-layout styledComponents__LayoutViewContent-sc-cby53p-10 ftbAka"
+              isbg="false"
             >
-              Welcome to the Guest Access login page
-            </div>
-            <img
-              alt="Photo png"
-              class="styledComponents__Img-sc-cby53p-15 bxRRHj"
-              src="PortalPhoto.svg"
-              style="height: 170px; max-width: 425px;"
-            />
-            <div
-              class="styledComponents__FieldText-sc-cby53p-18 cCAmOP"
-              style="line-height: 16px; max-width: 425px; font-size: 12px;"
-            >
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet.
-            </div>
-            <button
-              class="styledComponents__PortalButton-sc-cby53p-22 bKdacB"
-            >
-              Connect To Wi-Fi
-            </button>
-            <div
-              class="styledComponents__FieldText-sc-cby53p-18 cCAmOP"
-            >
-              By clicking the connect button, you are accepting the  
+              <img
+                alt="Wifi4eu"
+                class="styledComponents__Img-sc-cby53p-15 bxRRHj"
+                height="120"
+                src="WiFi4euBanner.svg"
+              />
+              <img
+                alt="Logo"
+                class="styledComponents__Img-sc-cby53p-15 bxRRHj"
+                src="RuckusCloud.svg"
+                style="height: 105px; max-width: 425px; margin-top: 50px; margin-bottom: 20px;"
+              />
               <div
-                class="styledComponents__FieldTextLink-sc-cby53p-23 eNBZnc"
+                style="min-height: 25px; outline: 0; text-align: center; line-height: 20px; width: 310px; max-width: 425px; font-size: 16px;"
               >
-                terms & conditions
+                Welcome to the Guest Access login page
               </div>
-            </div>
-            <div
-              class="styledComponents__SelectedDiv-sc-cby53p-43 caZqfT"
-              style="padding-left: 200px;"
-            >
-              <div>
+              <img
+                alt="Photo png"
+                class="styledComponents__Img-sc-cby53p-15 bxRRHj"
+                src="PortalPhoto.svg"
+                style="height: 170px; max-width: 425px; margin-top: 10px;"
+              />
+              <div
+                class="styledComponents__FieldText-sc-cby53p-18 cCAmOP"
+                style="line-height: 16px; max-width: 425px; font-size: 12px;"
+              >
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet.
+              </div>
+              <button
+                class="styledComponents__PortalButton-sc-cby53p-22 junwuq"
+              />
+              <div
+                class="styledComponents__FieldText-sc-cby53p-18 cCAmOP"
+              >
+                  
                 <div
-                  class="styledComponents__FieldText-sc-cby53p-18 cCAmOP"
-                  style="font-size: 14px; line-height: 24px; max-width: 425px; text-align: left;"
-                >
-                  Powered By
-                </div>
-                <img
-                  alt="Powered by"
-                  class="styledComponents__Img-sc-cby53p-15 bxRRHj"
-                  src="PoweredLogo.svg"
-                  style="margin-left: 40px; height: 50px; max-width: 425px;"
+                  class="styledComponents__FieldTextLink-sc-cby53p-23 eNBZnc"
                 />
               </div>
-            </div>
-          </section>
+              <div
+                class="styledComponents__SelectedDiv-sc-cby53p-43 caZqfT"
+                style="padding-left: 200px;"
+              >
+                <div>
+                  <div
+                    class="styledComponents__FieldText-sc-cby53p-18 cCAmOP"
+                    style="font-size: 14px; line-height: 24px; max-width: 425px; text-align: left;"
+                  />
+                  <img
+                    alt="Powered by"
+                    class="styledComponents__Img-sc-cby53p-15 bxRRHj"
+                    src="PoweredLogo.svg"
+                    style="margin-left: 40px; height: 50px; max-width: 425px;"
+                  />
+                </div>
+              </div>
+            </section>
+          </div>
         </section>
       </section>
     </div>
@@ -489,7 +485,7 @@ exports[`PortalDemo should render portal demo successfully 1`] = `
         </div>
       </div>
       <section
-        class="ant-layout styledComponents__LayoutContent-sc-cby53p-8 jxWsyY"
+        class="ant-layout styledComponents__LayoutContent-sc-cby53p-8 cMtjcZ"
         id="democontent"
       >
         <svg
@@ -499,87 +495,84 @@ exports[`PortalDemo should render portal demo successfully 1`] = `
           title="background setting"
         />
         <section
-          class="ant-layout styledComponents__LayoutView-sc-cby53p-9 gMkhdZ"
+          class="ant-layout styledComponents__LayoutView-sc-cby53p-9 iwxLDo"
           style="background-image: url();"
         >
-          <section
-            class="ant-layout styledComponents__LayoutViewContent-sc-cby53p-10 fcheRJ"
-            isbg="false"
-          >
-            <img
-              alt="Wifi4eu"
-              class="styledComponents__Img-sc-cby53p-15 bxRRHj"
-              height="120"
-              src="WiFi4euBanner.svg"
-            />
-            <img
-              alt="Logo"
-              class="styledComponents__Img-sc-cby53p-15 bxRRHj styledComponents__Popover-sc-cby53p-41"
-              src="RuckusCloud.svg"
-              style="height: 105px; cursor: none; outline: none; max-width: 425px;"
-            />
-            <input
-              class="styledComponents__Input-sc-cby53p-17 cQzrOu styledComponents__Popover-sc-cby53p-41"
-              placeholder="welcometext"
-              style="cursor: none; outline: none; height: 25px; font-weight: 600; line-height: 20px; width: 310px; max-width: 425px; font-size: 16px;"
-              type="text"
-              value="Welcome to the Guest Access login page"
-            />
-            <img
-              alt="Photo png"
-              class="styledComponents__Img-sc-cby53p-15 bxRRHj styledComponents__Popover-sc-cby53p-41"
-              src="PortalPhoto.svg"
-              style="cursor: none; outline: none; height: 170px; max-width: 425px;"
-            />
-            <div
-              class="styledComponents__FieldText-sc-cby53p-18 cCAmOP styledComponents__Popover-sc-cby53p-41"
-              placeholder="sectexthere"
-              style="cursor: none; outline: none; line-height: 16px; max-width: 425px; font-size: 12px;"
+          <div>
+            <section
+              class="ant-layout styledComponents__LayoutViewContent-sc-cby53p-10 ftbAka"
+              isbg="false"
             >
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet.
-            </div>
-            <button
-              class="styledComponents__PortalButton-sc-cby53p-22 bKdacB styledComponents__Popover-sc-cby53p-41"
-              placeholder="buttonsetting"
-              style="cursor: none; outline: none;"
-            >
-              Connect To Wi-Fi
-            </button>
-            <div
-              class="styledComponents__FieldText-sc-cby53p-18 cCAmOP"
-            >
-              By clicking the connect button, you are accepting the  
-              <div
-                class="styledComponents__FieldTextLink-sc-cby53p-23 eNBZnc"
+              <img
+                alt="Wifi4eu"
+                class="styledComponents__Img-sc-cby53p-15 bxRRHj"
+                height="120"
+                src="WiFi4euBanner.svg"
+              />
+              <img
+                alt="Logo"
+                class="styledComponents__Img-sc-cby53p-15 bxRRHj styledComponents__Popover-sc-cby53p-41"
+                src="RuckusCloud.svg"
+                style="height: 105px; cursor: none; outline: none; max-width: 425px; margin-top: 50px; margin-bottom: 20px;"
+              />
+              <input
+                class="styledComponents__Input-sc-cby53p-17 cQzrOu styledComponents__Popover-sc-cby53p-41"
+                placeholder="welcometext"
+                style="cursor: none; outline: none; height: 25px; font-weight: 600; line-height: 20px; width: 310px; max-width: 425px; font-size: 16px;"
+                type="text"
+                value="Welcome to the Guest Access login page"
+              />
+              <img
+                alt="Photo png"
+                class="styledComponents__Img-sc-cby53p-15 bxRRHj styledComponents__Popover-sc-cby53p-41"
+                src="PortalPhoto.svg"
+                style="cursor: none; outline: none; height: 170px; max-width: 425px; margin-top: 10px;"
+              />
+              <textarea
+                class="ant-input styledComponents__Popover-sc-cby53p-41"
+                placeholder="sectexthere"
+                rows="4"
+                style="cursor: none; outline: none; resize: none; border: 0px; line-height: 16px; max-width: 425px; min-height: 60px; font-size: 12px;"
               >
-                terms & conditions
-              </div>
-            </div>
-            <div
-              class="styledComponents__SelectedDiv-sc-cby53p-43 caZqfT"
-              style="padding-left: 200px;"
-            >
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet.
+              </textarea>
+              <button
+                class="styledComponents__PortalButton-sc-cby53p-22 junwuq styledComponents__Popover-sc-cby53p-41"
+                placeholder="buttonsetting"
+                style="cursor: none; outline: none;"
+              />
               <div
-                class="styledComponents__Popover-sc-cby53p-41"
-                placeholder="poweredbackground"
-                style="outline: none; cursor: none;"
+                class="styledComponents__FieldText-sc-cby53p-18 cCAmOP"
               >
+                  
                 <div
-                  class="styledComponents__FieldText-sc-cby53p-18 cCAmOP styledComponents__Popover-sc-cby53p-41"
-                  placeholder="poweredtext"
-                  style="font-size: 14px; width: 152px; line-height: 24px; max-width: 425px; text-align: left; cursor: none; outline: none;"
-                >
-                  Powered By
-                </div>
-                <img
-                  alt="poweredimage"
-                  class="styledComponents__Img-sc-cby53p-15 bxRRHj styledComponents__Popover-sc-cby53p-41"
-                  src="PoweredLogo.svg"
-                  style="margin-left: 50px; cursor: none; outline: none; height: 50px; max-width: 425px;"
+                  class="styledComponents__FieldTextLink-sc-cby53p-23 eNBZnc"
                 />
               </div>
-            </div>
-          </section>
+              <div
+                class="styledComponents__SelectedDiv-sc-cby53p-43 caZqfT"
+                style="padding-left: 200px;"
+              >
+                <div
+                  class="styledComponents__Popover-sc-cby53p-41"
+                  placeholder="poweredbackground"
+                  style="outline: none; cursor: none;"
+                >
+                  <div
+                    class="styledComponents__FieldText-sc-cby53p-18 cCAmOP styledComponents__Popover-sc-cby53p-41"
+                    placeholder="poweredtext"
+                    style="font-size: 14px; width: 152px; line-height: 24px; max-width: 425px; text-align: left; cursor: none; outline: none;"
+                  />
+                  <img
+                    alt="poweredimage"
+                    class="styledComponents__Img-sc-cby53p-15 bxRRHj styledComponents__Popover-sc-cby53p-41"
+                    src="PoweredLogo.svg"
+                    style="margin-left: 50px; cursor: none; outline: none; height: 50px; max-width: 425px;"
+                  />
+                </div>
+              </div>
+            </section>
+          </div>
         </section>
       </section>
     </div>

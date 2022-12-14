@@ -4,12 +4,13 @@ import { useEffect, useState } from 'react'
 import { Tooltip }                                  from 'antd'
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
-import { Alert }                                                          from '@acx-ui/components'
-import { QuestionMarkCircleOutlined }                                     from '@acx-ui/icons'
-import { Demo, GuestNetworkTypeEnum, PortalLanguageEnum, PortalViewEnum } from '@acx-ui/rc/utils'
+import { Alert }                                      from '@acx-ui/components'
+import { QuestionMarkCircleOutlined }                 from '@acx-ui/icons'
+import { useGetPortalLangMutation }                   from '@acx-ui/rc/services'
+import { Demo, GuestNetworkTypeEnum, PortalViewEnum } from '@acx-ui/rc/utils'
+import { useParams }                                  from '@acx-ui/react-router-dom'
 
 import { captiveTypesDescription } from '../../../Networks/NetworkForm/contentsMap'
-import { getLanguage }             from '../../commonUtils'
 import { portalViewTypes }         from '../contentsMap'
 import PortalPreviewModal          from '../PortalPreviewModal'
 import * as UI                     from '../styledComponents'
@@ -22,6 +23,8 @@ import PortalViewContentPreview from './PortalViewContentPreview'
 
 
 
+
+
 type PortalDemoProps = {
   networkSocial?: { [key:string]:boolean },
   networkViewType?: GuestNetworkTypeEnum,
@@ -29,7 +32,8 @@ type PortalDemoProps = {
   isPreview?: boolean,
   value?: Demo,
   resetDemo?: () => void,
-  onChange?: (data: Demo) => void
+  onChange?: (data: Demo) => void,
+  viewPortalLang?: { [key:string]:string },
 }
 export default function PortalDemo ({
   networkSocial,
@@ -38,7 +42,8 @@ export default function PortalDemo ({
   isPreview,
   value,
   resetDemo,
-  onChange
+  onChange,
+  viewPortalLang
 }: PortalDemoProps) {
   const { $t } = useIntl()
   const { Option } = UI.Select
@@ -48,7 +53,6 @@ export default function PortalDemo ({
     tablet: false,
     mobile: false
   })
-  const [showLanguage, setShowLanguage] = useState(false)
   const [showComponent, setShowComponent] = useState(false)
   const [view, setView] = useState(PortalViewEnum.ClickThrough)
   const demoValue = value as Demo
@@ -69,14 +73,24 @@ export default function PortalDemo ({
         view === PortalViewEnum.HostApproval?
           GuestNetworkTypeEnum.HostApproval:GuestNetworkTypeEnum.ClickThrough
   const viewKeys = Object.keys(PortalViewEnum) as Array<keyof typeof PortalViewEnum>
-  const alternativeLang = demoValue.alternativeLang
-  let langs = [] as string[]
-  const langKeys = Object.keys(alternativeLang || {}) as Array<keyof typeof PortalLanguageEnum>
-  langKeys.map((key) =>{
-    if(alternativeLang?.[key]) langs.push(getLanguage(key))
-    return langs
-  }
-  )
+  const params = useParams()
+  const [getPortalLang] = useGetPortalLangMutation()
+  const [portalLang, setPortalLang]=useState(viewPortalLang || {} as { [key:string]:string })
+  useEffect(()=>{
+    if(!isPreview && demoValue.displayLangCode){
+      getPortalLang({ params: { ...params, messageName: 'messages_'+
+      demoValue.displayLangCode+'.properties' } }).unwrap().then(()=>{
+      }, err=>{
+        const dataArray = err.data?.split('\n') || []
+        const dataObj= {} as { [key:string]:string }
+        dataArray.forEach( (item: string) => {
+          dataObj[item.split('=')[0]?.trim()] = item.split('=')[1]?.trim()
+        })
+        setPortalLang(dataObj)
+      })
+    }
+  }, [demoValue.displayLangCode])
+
   return (
     <div style={isPreview? { width: '100%', minWidth: 1100, height: '100%' } : {
       width: '95%', minWidth: 1100 }}>
@@ -150,7 +164,7 @@ export default function PortalDemo ({
                 onVisibleChange={(data)=>setShowComponent(data)}
               ><UI.Button type='default' size='small'>{$t({ defaultMessage: 'Components' })}
                 </UI.Button></UI.Popover>
-              <PortalPreviewModal demoValue={demoValue}/>
+              <PortalPreviewModal demoValue={demoValue} portalLang={portalLang}/>
               <UI.Button type='default'
                 size='small'
                 onClick={()=>{
@@ -170,14 +184,18 @@ export default function PortalDemo ({
         <UI.LayoutView $type={screen}
           style={{ backgroundImage: 'url("'+(isPreview?value:demoValue)?.bgImage+'")',
             backgroundColor: (isPreview?value:demoValue)?.bgColor }}>
-          {isPreview?<PortalViewContentPreview view={view}
-            networkSocial={networkSocial}
-            networkViewType={networkViewType}
-            demoValue={value as Demo}/>:
-            <PortalViewContent view={view}
-              demoValue={demoValue}
-              updateViewContent={(data)=>onChange?.({ ...demoValue, ...data })}
-            />}
+          <div>
+            {isPreview?<PortalViewContentPreview view={view}
+              networkSocial={networkSocial}
+              networkViewType={networkViewType}
+              portalLang={portalLang}
+              demoValue={value as Demo}/>:
+              <PortalViewContent view={view}
+                portalLang={portalLang}
+                demoValue={demoValue}
+                updateViewContent={(data)=>onChange?.({ ...demoValue, ...data })}
+              />}
+          </div>
         </UI.LayoutView>
       </UI.LayoutContent>
     </div>)

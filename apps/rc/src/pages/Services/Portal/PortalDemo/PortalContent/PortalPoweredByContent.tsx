@@ -9,6 +9,7 @@ import PortalImageTools          from '../PortalImageTools'
 import PortalPopover             from '../PortalPopover'
 
 export default function PortalPoweredByContent (props: {
+  portalLang: { [key:string]:string },
   demoValue: Demo,
   updatePoweredBy:(value: { url?:string,size?:number,show?:boolean,text?:string,
     textsize?:number,bgcolor?:string,color?:string }) => void
@@ -125,7 +126,7 @@ export default function PortalPoweredByContent (props: {
             setOutlineTwoText(dashedOutline)
           }}
           >
-            {'Powered By'}</UI.FieldText></PortalPopover>}
+            {props.portalLang.poweredBy}</UI.FieldText></PortalPopover>}
           {demoValue.componentDisplay?.poweredBy && <PortalPopover
             content={poweredImgTools}
             visible={poweredImgClicked}

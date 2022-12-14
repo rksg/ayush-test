@@ -17,19 +17,23 @@ export default function PortalViewContentPreview (props:{
   networkViewType?: GuestNetworkTypeEnum,
   view: PortalViewEnum,
   demoValue: Demo,
-  isPreview?:boolean
+  isPreview?:boolean,
+  portalLang: { [key:string]:string }
 }) {
-  const { view, demoValue, networkViewType,networkSocial } = props
+  const { view, demoValue, networkViewType,networkSocial,portalLang } = props
   const componentDisplay = demoValue?.componentDisplay
   const isbg = demoValue?.bgImage ? 'true' : 'false'
+  const isLogoPhotoHide = !componentDisplay.logo && !componentDisplay.photo&&
+    !componentDisplay.wifi4eu
   return (
-    <UI.LayoutViewContent isbg={isbg}>
+    <UI.LayoutViewContent isbg={isbg} style={isLogoPhotoHide?{ paddingTop: 150 }:{}}>
       {componentDisplay.wifi4eu && <UI.Img src={Wifi4eu}
         alt={'Wifi4eu'}
         height={120} />}
       {componentDisplay.logo &&<UI.Img src={demoValue.logo}
         alt={'Logo'}
-        style={{ height: (demoValue.logoRatio||PortalDemoDefaultSize.logoRatio) ,maxWidth: 425 }}
+        style={{ height: (demoValue.logoRatio||PortalDemoDefaultSize.logoRatio) ,maxWidth: 425,
+          marginTop: 50, marginBottom: 20 }}
       />}
       {componentDisplay.welcome && <div
         style={{ minHeight: 25 * ((demoValue.welcomeSize)
@@ -43,7 +47,7 @@ export default function PortalViewContentPreview (props:{
       {componentDisplay.photo &&<UI.Img src={demoValue.photo}
         alt={'Photo png'}
         style={{ height: (demoValue.photoRatio||PortalDemoDefaultSize.photoRatio) ,
-          maxWidth: 425 }}
+          maxWidth: 425, marginTop: 10 }}
       />}
       {componentDisplay.secondaryText &&<UI.FieldText
         style={{ lineHeight: 16 * ((demoValue.secondarySize||
@@ -54,23 +58,27 @@ export default function PortalViewContentPreview (props:{
       </UI.FieldText>}
       {((view === PortalViewEnum.ClickThrough && !networkViewType) ||
         networkViewType === GuestNetworkTypeEnum.ClickThrough) && <PortalViewGoThrough
+        portalLang={portalLang}
         demoValue={demoValue}
         isPreview={true}
       />}
       {((view === PortalViewEnum.GuestPassConnect && !networkViewType) ||
         networkViewType === GuestNetworkTypeEnum.GuestPass) && <PortalViewGuestConnect
+        portalLang={portalLang}
         demoValue={demoValue}
         isPreview={true}
       />}
       {view === PortalViewEnum.GuestPassForgot && <PortalViewGuestForget
+        portalLang={portalLang}
         demoValue={demoValue}
         isPreview={true}
       />}
       {((view === PortalViewEnum.SelfSignIn && !networkViewType) ||
         networkViewType === GuestNetworkTypeEnum.SelfSignIn) &&
-      <PortalViewSelfSignConnect networkSocial={networkSocial}/>}
+      <PortalViewSelfSignConnect networkSocial={networkSocial} portalLang={portalLang}/>}
       {view === PortalViewEnum.SelfSignInRegister &&
       <PortalViewSelfSignRegister
+        portalLang={portalLang}
         demoValue={demoValue}
         isPreview={true}
       />}
@@ -79,18 +87,20 @@ export default function PortalViewContentPreview (props:{
       <PortalViewHostApproval
         demoValue={demoValue}
         isPreview={true}
+        portalLang={portalLang}
       />}
       {view === PortalViewEnum.ConnectionConfirmed &&
-      <PortalViewConfirm/>}
+      <PortalViewConfirm portalLang={portalLang}/>}
       {view === PortalViewEnum.TermCondition &&
       <PortalViewTerms
+        portalLang={portalLang}
         demoValue={demoValue}
         isPreview={true}/>}
       {componentDisplay.termsConditions &&<UI.FieldText>{
-        'By clicking the connect button, you are accepting the'
+        props.portalLang.acceptTermsMsg2?.replace('{0}','')
       }&nbsp;&nbsp;
       <UI.FieldTextLink>
-        {'terms & conditions'}
+        {props.portalLang.acceptTermsLink}
       </UI.FieldTextLink></UI.FieldText>}
       {componentDisplay.poweredBy && <UI.SelectedDiv style={{ paddingLeft: 200/((
         demoValue.poweredImgRatio)/PortalDemoDefaultSize.poweredImgRatio) }}>
@@ -102,7 +112,7 @@ export default function PortalViewContentPreview (props:{
             maxWidth: 425, color: demoValue.poweredColor,textAlign: 'left'
           }}
           >
-            {'Powered By'}</UI.FieldText>}
+            {props.portalLang.poweredBy}</UI.FieldText>}
           {componentDisplay.poweredBy && <UI.Img src={demoValue.poweredImg}
             alt={'Powered by'}
             style={{ marginLeft:
