@@ -803,7 +803,7 @@ exports[`NetworkForm should create captive portal successfully 1`] = `
                                   >
                                     <div
                                       class="ant-space-item"
-                                      style="margin-right: 8px;"
+                                      style="margin-right: 2px;"
                                     >
                                       <svg
                                         data-testid="InformationSolid"
@@ -2942,7 +2942,7 @@ exports[`NetworkForm should create captive portal without redirect url successfu
                                   >
                                     <div
                                       class="ant-space-item"
-                                      style="margin-right: 8px;"
+                                      style="margin-right: 2px;"
                                     >
                                       <svg
                                         data-testid="InformationSolid"
