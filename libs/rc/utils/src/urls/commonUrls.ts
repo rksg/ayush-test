@@ -137,7 +137,7 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   updateDHCPService: {
     method: 'put',
-    url: '/dhcpConfigServiceProfiles/:dhcpServiceProfileId'
+    url: '/dhcpConfigServiceProfiles/:serviceId'
   },
   getVenueFloorplans: {
     method: 'get',

@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useRef, useEffect } from 'react'
 
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
@@ -7,16 +7,20 @@ import {
   PageHeader,
   StepsForm,
   StepsFormInstance,
-  showToast
+  showToast,
+  Loader
 } from '@acx-ui/components'
 import { useGetDHCPProfileQuery, useSaveOrUpdateDHCPMutation } from '@acx-ui/rc/services'
-import { DHCPSaveData, DHCPConfigTypeEnum }                    from '@acx-ui/rc/utils'
+import { DHCPSaveData }                                        from '@acx-ui/rc/utils'
 import { useParams, useTenantLink, useNavigate, useLocation }  from '@acx-ui/react-router-dom'
 
-import DHCPFormContext from './DHCPFormContext'
 import { SettingForm } from './DHCPSettingForm'
 
-export default function DHCPForm () {
+interface DHCPFormProps {
+  editMode?: boolean
+}
+
+export default function DHCPForm (props: DHCPFormProps) {
   const { $t } = useIntl()
 
   const params = useParams()
@@ -26,36 +30,29 @@ export default function DHCPForm () {
   }
   const locationState:LocationState = useLocation().state as LocationState
 
-  const editMode = params.action === 'edit'
+  const { editMode } = props
 
   const formRef = useRef<StepsFormInstance<DHCPSaveData>>()
 
   const navigate = useNavigate()
   const linkToServices = useTenantLink('/services')
 
+  const {
+    data,
+    isFetching,
+    isLoading
+  } = useGetDHCPProfileQuery({ params })
 
-  //API Call
-  const { data } = useGetDHCPProfileQuery({ params })
   const [
-    saveOrUpdateDHCP
+    saveOrUpdateDHCP,
+    { isLoading: isFormSubmitting }
   ] = useSaveOrUpdateDHCPMutation()
 
-  const [saveState, updateSaveState] = useState<DHCPSaveData>({
-    serviceName: '',
-    dhcpMode: DHCPConfigTypeEnum.SIMPLE,
-    dhcpPools: []
-  })
-
-  const updateSaveData = (saveData: Partial<DHCPSaveData>) => {
-    updateSaveState({ ...saveState, ...saveData })
-  }
 
   useEffect(() => {
     if (data) {
       formRef?.current?.resetFields()
-
       formRef?.current?.setFieldsValue(data)
-      updateSaveData(data)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data])
@@ -65,7 +62,6 @@ export default function DHCPForm () {
       convertLeashTimeforBackend(data)
       const payload = editMode ? _.omit(data, 'id') : data
       await saveOrUpdateDHCP({ params: { tenantId: params.tenantId }, payload }).unwrap()
-      navigate(linkToServices, { replace: true })
     } catch {
       showToast({
         type: 'error',
@@ -91,8 +87,7 @@ export default function DHCPForm () {
           { text: $t({ defaultMessage: 'Services' }), link: '/services' }
         ]}
       />
-
-      <DHCPFormContext.Provider value={{ editMode, saveState, updateSaveState }}>
+      <Loader states={[{ isLoading: isLoading || isFormSubmitting, isFetching: isFetching }]}>
         <StepsForm<DHCPSaveData>
           formRef={formRef}
           editMode={editMode}
@@ -100,9 +95,10 @@ export default function DHCPForm () {
           onFinish={
             async (data)=>{
               handleAddOrUpdateDHCP(data)
-
-              if(locationState.origin){
+              if(locationState?.origin){
                 navigate(locationState.origin.pathname, { state: locationState.param })
+              }else{
+                navigate(linkToServices, { replace: true })
               }
             }
           }
@@ -110,15 +106,11 @@ export default function DHCPForm () {
           <StepsForm.StepForm
             name='settings'
             title={$t({ defaultMessage: 'DHCP Settings' })}
-            onFinish={async data => {
-              updateSaveData(data)
-              return true
-            }}
           >
             <SettingForm />
           </StepsForm.StepForm>
         </StepsForm>
-      </DHCPFormContext.Provider>
+      </Loader>
     </>
   )
 }
