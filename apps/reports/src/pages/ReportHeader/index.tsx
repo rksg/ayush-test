@@ -1,14 +1,19 @@
+import { useContext } from 'react'
+
 import moment from 'moment'
 
+import { NetworkFilter } from '@acx-ui/analytics/components'
 import {
   RangePicker,
   PageHeader } from '@acx-ui/components'
-import { VenueFilter }                     from '@acx-ui/main/components'
 import { useDateFilter, dateRangeForLast } from '@acx-ui/utils'
+
+import { NetworkFilterWithBandContext } from '../../Routes'
 
 export function ReportHeader (props: { name: string, footer?: React.ReactNode }) {
   const name = props.name
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
+  const { setFilterData } = useContext(NetworkFilterWithBandContext)
 
   return (
     <PageHeader
@@ -17,7 +22,13 @@ export function ReportHeader (props: { name: string, footer?: React.ReactNode })
         { text: 'Report', link: '/reports' }
       ]}
       extra={[
-        <VenueFilter key='hierarchy-filter'/>,
+        <NetworkFilter
+          key='network-filter'
+          shouldQuerySwitch={false}
+          showBand={true}
+          replaceWithId={true}
+          onApplyWithBand={setFilterData}
+        />,
         <RangePicker
           key='range-picker'
           selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
