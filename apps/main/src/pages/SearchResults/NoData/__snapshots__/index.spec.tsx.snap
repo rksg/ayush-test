@@ -144,6 +144,7 @@ exports[`SearchResults - NoData should render correctly for snapshot test with t
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="display: none;"
       >
         <svg
           data-testid="SearchResultNoData"
@@ -410,6 +411,7 @@ exports[`SearchResults - NoData should render correctly for snapshot test with t
     >
       <div
         class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="display: none;"
       >
         <svg
           data-testid="SearchResultNoData"
