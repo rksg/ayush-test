@@ -145,7 +145,7 @@ export function ClientOverviewTab () {
   // TODO: Remove background: '#F7F7F7' and Add Top 10 Applications Component
   return <GridRow>
     <GridCol col={{ span: 18 }}>
-      <GridRow gutter={[20, 20]}>
+      <GridRow>
         <GridCol col={{ span: 24 }}>
           <UI.CardWrapper>
             <ClientOverviewWidget
