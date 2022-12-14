@@ -30,7 +30,9 @@ import {
   DpskList,
   convertMdnsProxyFormDataToApiPayload,
   MdnsProxyGetApiResponse,
-  convertApiPayloadToMdnsProxyFormData
+  convertApiPayloadToMdnsProxyFormData,
+  onSocketActivityChanged,
+  showActivityMessage
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
@@ -337,7 +339,19 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           ...wifiCallingServiceListReq
         }
       },
-      providesTags: [{ type: 'Service', id: 'LIST' }]
+      providesTags: [{ type: 'Service', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          showActivityMessage(msg, [
+            'Add WiFi Calling Service Profile',
+            'Update WiFi Calling Service Profile',
+            'Delete WiFi Calling Service Profile',
+            'Delete WiFi Calling Service Profiles'
+          ], () => {
+            api.dispatch(serviceApi.util.invalidateTags([{ type: 'Service', id: 'LIST' }]))
+          })
+        })
+      }
     }),
     createWifiCallingService: build.mutation<WifiCallingFormContextType, RequestPayload>({
       query: ({ params, payload }) => {

@@ -154,15 +154,10 @@ describe('WifiCallingNetworkTable', () => {
 
     fireEvent.click(activateButton[0])
 
-    await screen.findByText('Activate 1 network(s)')
-
-
     fireEvent.click(item)
     let deactivateButton = screen.getAllByText('Deactivate')
 
     fireEvent.click(deactivateButton[0])
-
-    await screen.findByText('Deactivate 1 network(s)')
 
   }, 20000)
 })
