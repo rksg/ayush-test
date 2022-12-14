@@ -1,12 +1,13 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 
 import { Popover } from 'antd'
+import { useIntl } from 'react-intl'
 
 import { clientEventDescription, mapCodeToReason } from '@acx-ui/analytics/utils'
 import { formatter, getIntl }                      from '@acx-ui/utils'
 
 import { FAILURE, DisplayEvent, SLOW, DISCONNECT } from './config'
-import Details                                     from './EventDetails'
+import { Details }                                 from './EventDetails'
 import * as UI                                     from './styledComponents'
 
 const useConnectionDetail = (event: DisplayEvent) => {
@@ -60,16 +61,20 @@ const useConnectionDetail = (event: DisplayEvent) => {
 
 export function ConnectionEventPopover ({ children, event }:
   { children?: React.ReactNode, event: DisplayEvent }) {
+  const { $t } = useIntl()
   const [open, setOpen] = React.useState(false)
   const handleOpenChange = (newOpen: boolean) => { setOpen(newOpen) }
   const hide = () => { setOpen(false) }
   const rowData = useConnectionDetail(event)
+  const failureExtra: ReactNode = (event.category === 'failure')
+    ? $t({ defaultMessage: 'Failure Sequence Diagram' })
+    : null
   return (
     <UI.PopoverWrapper>
       <Popover
-        content={<Details fields={rowData} openHandler={hide}/>}
-        trigger={'click'}
-        placement='left'
+        content={<Details fields={rowData} openHandler={hide} extra={failureExtra}/>}
+        trigger='click'
+        placement='right'
         getPopupContainer={(triggerNode) => triggerNode}
         visible={open}
         onVisibleChange={handleOpenChange}

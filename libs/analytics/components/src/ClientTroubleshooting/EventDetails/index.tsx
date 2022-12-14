@@ -1,4 +1,4 @@
-import { Fragment } from 'react'
+import { Fragment, ReactNode } from 'react'
 
 import { useIntl } from 'react-intl'
 
@@ -14,9 +14,19 @@ const DetailsRow = ({ label, value }: { label: string, value: string }) => {
   </Fragment>
 }
 
-const Details = ({ fields, openHandler }: {
+const detailsRowList = ({ fields }: { fields: Array<{ label: string, value: string }> }) => {
+  return fields.map((field, index) =>
+    <DetailsRow
+      key={index}
+      label={field.label}
+      value={field.value}
+    />)
+}
+
+export const Details = ({ fields, openHandler, extra }: {
   fields: Array<{ label: string, value: string }>,
-  openHandler?: () => void
+  openHandler?: () => void,
+  extra?: ReactNode
 }) => {
   const { $t } = useIntl()
   return <>
@@ -24,16 +34,18 @@ const Details = ({ fields, openHandler }: {
       {openHandler && <UI.CloseSpan onClick={openHandler}><CloseSymbol /></UI.CloseSpan>}
       {$t({ defaultMessage: 'Connection Event Details' })}
     </UI.Header>
-    <UI.RowContainer>
-      {fields.map((field, index) =>
-        <DetailsRow
-          key={index}
-          label={field.label}
-          value={field.value}
-        />
-      )}
-    </UI.RowContainer>
+    {
+      (extra)
+        ? <UI.ColumnContainer>
+          <UI.RowContainer>
+            {detailsRowList({ fields })}
+          </UI.RowContainer>
+          <UI.VerticalLine />
+          {extra}
+        </UI.ColumnContainer>
+        : <UI.RowContainer>
+          {detailsRowList({ fields })}
+        </UI.RowContainer>
+    }
   </>
 }
-
-export default Details

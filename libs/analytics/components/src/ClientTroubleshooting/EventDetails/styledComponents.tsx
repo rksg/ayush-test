@@ -51,3 +51,16 @@ export const RowValue = styled.dd`
   font-family: var(--acx-neutral-brand-font);
   color: var(--acx-primary-black);
 `
+
+export const ColumnContainer = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  justify-content: center;
+  align-items: center;
+  grid-gap: 10px;
+`
+
+export const VerticalLine = styled.div`
+  height: 100%;
+  border-left: 1px solid var(--acx-neutrals-30);
+`
