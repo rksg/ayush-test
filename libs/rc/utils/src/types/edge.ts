@@ -20,6 +20,11 @@ export interface EdgeViewModel {
   tags: string[]
 }
 
+export interface EdgeDnsServers {
+  primary: string
+  secondary: string
+}
+
 export enum EdgeStatusEnum {
   NEVER_CONTACTED_CLOUD = '1_01_NeverContactedCloud',
   INITIALIZING = '1_07_Initializing',

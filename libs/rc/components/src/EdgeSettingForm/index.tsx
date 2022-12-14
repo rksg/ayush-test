@@ -4,13 +4,14 @@ import { Form, Input, Select, Tooltip } from 'antd'
 import TextArea                         from 'antd/lib/input/TextArea'
 import { useIntl }                      from 'react-intl'
 
-import { Alert }                      from '@acx-ui/components'
+import { Alert, Loader }              from '@acx-ui/components'
 import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 import { useVenuesListQuery }         from '@acx-ui/rc/services'
 import { useParams }                  from '@acx-ui/react-router-dom'
 
 interface EdgeSettingFormProps {
   isEdit?: boolean
+  isFetching?: boolean
 }
 
 const defaultPayload = {
@@ -26,11 +27,12 @@ export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
   const { $t } = useIntl()
   const params = useParams()
   const [showOtpMessage, setShowOtpMessage] = useState(false)
-  const { venueOptions } = useVenuesListQuery({ params:
+  const { venueOptions, isLoading: isVenuesListLoading } = useVenuesListQuery({ params:
     { tenantId: params.tenantId }, payload: defaultPayload }, {
-    selectFromResult: ({ data }) => {
+    selectFromResult: ({ data, isLoading }) => {
       return {
-        venueOptions: data?.data.map(item => ({ label: item.name, value: item.id }))
+        venueOptions: data?.data.map(item => ({ label: item.name, value: item.id })),
+        isLoading
       }
     }
   })
@@ -40,7 +42,10 @@ export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
   }
 
   return (
-    <>
+    <Loader states={[{
+      isLoading: isVenuesListLoading,
+      isFetching: props.isFetching
+    }]}>
       <Form.Item
         name='venueId'
         label={$t({ defaultMessage: 'Venue' })}
@@ -100,6 +105,6 @@ export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
         showIcon /> :
         null
       }
-    </>
+    </Loader>
   )
 }
