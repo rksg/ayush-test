@@ -25,6 +25,10 @@ export const ListWrapper = styled.div`
     border-bottom: 0px;
   }
 
+  .ant-list {
+    padding-bottom: 14px;
+  }
+
   .ant-list-header {
     font-family: var(--acx-neutral-brand-font);
     font-weight: var(--acx-headline-5-font-weight-bold);
