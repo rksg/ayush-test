@@ -13,20 +13,23 @@ import {
 import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                          from '@acx-ui/store'
 
-import Edges                    from './pages/Devices/Edge'
-import AddEdge                  from './pages/Devices/Edge/AddEdge'
-import EditEdge                 from './pages/Devices/Edge/EdgeDetails/EditEdge'
-import SwitchDetails            from './pages/Devices/Switch/SwitchDetails'
-import SwitchesTable            from './pages/Devices/Switch/SwitchesTable'
-import ApDetails                from './pages/Devices/Wifi/ApDetails'
-import { ApEdit }               from './pages/Devices/Wifi/ApEdit'
-import { ApForm }               from './pages/Devices/Wifi/ApForm'
-import { ApGroupForm }          from './pages/Devices/Wifi/ApGroupForm'
-import ApsTable                 from './pages/Devices/Wifi/ApsTable'
-import NetworkDetails           from './pages/Networks/NetworkDetails/NetworkDetails'
-import NetworkForm              from './pages/Networks/NetworkForm/NetworkForm'
-import NetworksTable            from './pages/Networks/NetworksTable'
-import PoliciesTable            from './pages/Policies/PoliciesTable'
+import Edges                      from './pages/Devices/Edge'
+import AddEdge                    from './pages/Devices/Edge/AddEdge'
+import EditEdge                   from './pages/Devices/Edge/EdgeDetails/EditEdge'
+import SwitchDetails              from './pages/Devices/Switch/SwitchDetails'
+import SwitchesTable              from './pages/Devices/Switch/SwitchesTable'
+import ApDetails                  from './pages/Devices/Wifi/ApDetails'
+import { ApEdit }                 from './pages/Devices/Wifi/ApEdit'
+import { ApForm }                 from './pages/Devices/Wifi/ApForm'
+import { ApGroupForm }            from './pages/Devices/Wifi/ApGroupForm'
+import ApsTable                   from './pages/Devices/Wifi/ApsTable'
+import NetworkDetails             from './pages/Networks/NetworkDetails/NetworkDetails'
+import NetworkForm                from './pages/Networks/NetworkForm/NetworkForm'
+import NetworksTable              from './pages/Networks/NetworksTable'
+import PoliciesTable              from './pages/Policies/PoliciesTable'
+import RogueAPDetectionDetailView
+  from './pages/Policies/RogueAPDetection/RogueAPDetectionDetail/RogueAPDetectionDetailView'
+import RogueAPDetectionForm     from './pages/Policies/RogueAPDetection/RogueAPDetectionForm/RogueAPDetectionForm'
 import SelectPolicyForm         from './pages/Policies/SelectPolicyForm'
 import DHCPDetail               from './pages/Services/DHCPDetail'
 import DHCPForm                 from './pages/Services/DHCPForm/DHCPForm'
@@ -42,6 +45,7 @@ import ServicesTable            from './pages/Services/ServicesTable'
 import WifiCallingDetailView    from './pages/Services/WifiCalling/WifiCallingDetail/WifiCallingDetailView'
 import WifiCallingConfigureForm from './pages/Services/WifiCalling/WifiCallingForm/WifiCallingConfigureForm'
 import WifiCallingForm          from './pages/Services/WifiCalling/WifiCallingForm/WifiCallingForm'
+import Timeline                 from './pages/Timeline'
 import SwitchClientList         from './pages/Users/Switch/ClientList'
 import WifiClientDetails        from './pages/Users/Wifi/ClientDetails'
 import WifiClientList           from './pages/Users/Wifi/ClientList'
@@ -54,6 +58,7 @@ export default function RcRoutes () {
       <Route path='services/*' element={<ServiceRoutes />} />
       <Route path='policies/*' element={<PolicyRoutes />} />
       <Route path='users/*' element={<UserRoutes />} />
+      <Route path='timeline/*' element={<TimelineRoutes />} />
     </Route>
   )
   return (
@@ -209,17 +214,17 @@ function PolicyRoutes () {
       <Route
         // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.CREATE })}
-        element={<h1>Rogue AP detection create page</h1>}
+        element={<RogueAPDetectionForm edit={false}/>}
       />
       <Route
         // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.EDIT })}
-        element={<h1>Rogue AP detection edit page</h1>}
+        element={<RogueAPDetectionForm edit={true}/>}
       />
       <Route
         // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.DETAIL })}
-        element={<h1>Rogue AP detection details page</h1>}
+        element={<RogueAPDetectionDetailView />}
       />
     </Route>
   )
@@ -243,6 +248,15 @@ function UserRoutes () {
       />
       <Route path='users/switch' element={<TenantNavigate replace to='/users/switch/clients' />} />
       <Route path='users/switch/clients' element={<SwitchClientList />} />
+    </Route>
+  )
+}
+
+function TimelineRoutes () {
+  return rootRoutes(
+    <Route path='t/:tenantId'>
+      <Route path='timeline' element={<TenantNavigate replace to='/timeline/activities' />} />
+      <Route path='timeline/:activeTab' element={<Timeline />} />
     </Route>
   )
 }

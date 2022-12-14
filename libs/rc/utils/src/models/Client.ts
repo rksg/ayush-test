@@ -41,6 +41,8 @@ export class Client {
   wifiCallingTotal?: number
   wifiCallingTx?: number
   wifiCallingRx?: number
+  isVenueExists?: boolean
+  isApExists?: boolean
 
   constructor () {
     this.clientMac = ''

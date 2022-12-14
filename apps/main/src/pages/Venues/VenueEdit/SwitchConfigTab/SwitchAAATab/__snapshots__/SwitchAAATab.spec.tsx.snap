@@ -172,7 +172,7 @@ exports[`SwitchAAATab should render correctly 1`] = `
                                 >
                                   <svg
                                     class="ant-collapse-arrow"
-                                    data-testid="CollapseActive"
+                                    data-testid="CollapseInactive"
                                   />
                                 </div>
                                 <span
@@ -195,13 +195,13 @@ exports[`SwitchAAATab should render correctly 1`] = `
                                     >
                                       <div
                                         class="ant-space ant-space-horizontal ant-space-align-center"
-                                        style="display: flex; justify-content: flex-end;"
+                                        style="display: flex; justify-content: flex-end; margin: 3px 0px;"
                                       >
                                         <div
                                           class="ant-space-item"
                                         >
                                           <button
-                                            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                                            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
                                             type="button"
                                           >
                                             <span>
@@ -666,7 +666,7 @@ exports[`SwitchAAATab should render correctly 1`] = `
                                 >
                                   <svg
                                     class="ant-collapse-arrow"
-                                    data-testid="CollapseActive"
+                                    data-testid="CollapseInactive"
                                   />
                                 </div>
                                 <span
@@ -689,13 +689,13 @@ exports[`SwitchAAATab should render correctly 1`] = `
                                     >
                                       <div
                                         class="ant-space ant-space-horizontal ant-space-align-center"
-                                        style="display: flex; justify-content: flex-end;"
+                                        style="display: flex; justify-content: flex-end; margin: 3px 0px;"
                                       >
                                         <div
                                           class="ant-space-item"
                                         >
                                           <button
-                                            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                                            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
                                             type="button"
                                           >
                                             <span>
@@ -1001,7 +1001,7 @@ exports[`SwitchAAATab should render correctly 1`] = `
                                 >
                                   <svg
                                     class="ant-collapse-arrow"
-                                    data-testid="CollapseActive"
+                                    data-testid="CollapseInactive"
                                   />
                                 </div>
                                 <span
@@ -1024,13 +1024,13 @@ exports[`SwitchAAATab should render correctly 1`] = `
                                     >
                                       <div
                                         class="ant-space ant-space-horizontal ant-space-align-center"
-                                        style="display: flex; justify-content: flex-end;"
+                                        style="display: flex; justify-content: flex-end; margin: 3px 0px;"
                                       >
                                         <div
                                           class="ant-space-item"
                                         >
                                           <button
-                                            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                                            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
                                             type="button"
                                           >
                                             <span>
@@ -1903,7 +1903,7 @@ exports[`SwitchAAATab should render correctly 1`] = `
             style="margin-right: 12px;"
           >
             <button
-              class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 kkpPZG"
+              class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 bxQmA-d"
               type="button"
             >
               <span>
@@ -1915,7 +1915,7 @@ exports[`SwitchAAATab should render correctly 1`] = `
             class="ant-space-item"
           >
             <button
-              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
               type="button"
             >
               <span>
