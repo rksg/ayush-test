@@ -108,7 +108,7 @@ function SettingsForm () {
           WlanSecurityEnum.WPAPersonal,
           WlanSecurityEnum.WEP
         ].indexOf(wlanSecurity) > -1 &&
-          <Space align='start'>
+          <Space align='start' size={2}>
             <InformationSolid />
             {SecurityOptionsDescription.WPA2_DESCRIPTION_WARNING}
           </Space>
