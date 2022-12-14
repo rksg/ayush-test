@@ -145,25 +145,23 @@ export function ClientOverviewTab () {
   // TODO: Remove background: '#F7F7F7' and Add Top 10 Applications Component
   return <GridRow>
     <GridCol col={{ span: 18 }}>
-      <UI.CardWrapper>
-        <ClientOverviewWidget
-          clientStatistic={clientStatistics}
-          clientStatus={clientStatus}
-          clientDetails={clientDetails}
-        />
-      </UI.CardWrapper>
-      <GridRow>
-        <GridCol col={{ span: 24 }} style={{ marginTop: '12px', height: '292px', background: '#F7F7F7' }}>
+      <GridRow gutter={[20, 20]}>
+        <GridCol col={{ span: 24 }}>
+          <UI.CardWrapper>
+            <ClientOverviewWidget
+              clientStatistic={clientStatistics}
+              clientStatus={clientStatus}
+              clientDetails={clientDetails}
+            />
+          </UI.CardWrapper>
+        </GridCol>
+        <GridCol col={{ span: 24 }} style={{ height: '292px', background: '#F7F7F7' }}>
           {$t({ defaultMessage: 'TODO: Top 10 Applications by traffic volume' })}
         </GridCol>
-      </GridRow>
-      <GridRow>
-        <GridCol col={{ span: 24 }} style={{ marginTop: '12px', height: '292px' }}>
+        <GridCol col={{ span: 24 }} style={{ height: '292px' }}>
           <TrafficByUsage filters={{ ...filters, mac: clientId?.toUpperCase() }} />
         </GridCol>
-      </GridRow>
-      <GridRow>
-        <GridCol col={{ span: 24 }} style={{ marginTop: '12px', height: '292px' }}>
+        <GridCol col={{ span: 24 }} style={{ height: '292px' }}>
           <TrafficByBand filters={{ ...filters, mac: clientId?.toUpperCase() }} />
         </GridCol>
       </GridRow>
