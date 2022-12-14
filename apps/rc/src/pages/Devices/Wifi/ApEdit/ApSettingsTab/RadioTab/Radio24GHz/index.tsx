@@ -96,7 +96,9 @@ export function Radio24GHz (props: { venueId: string, serialNumber: string }) {
       form.setFieldValue(['apRadioParams24G', 'allowedChannels'], allowedVenueChannels)
     }else{
       if(channelMethod === 'MANUAL'){
-        form.setFieldValue(['apRadioParams24G', 'allowedChannels'], [manualChannel?.toString()])
+        form.validateFields([['apRadioParams24G', 'allowedChannels']])
+        form.setFieldValue(['apRadioParams24G', 'allowedChannels'],
+          manualChannel!== 0 ? [manualChannel?.toString()] : [])
       }else{
         if(allowedChannels.length > 0){
           form.setFieldValue(['apRadioParams24G', 'allowedChannels'], allowedChannels)
@@ -127,8 +129,8 @@ export function Radio24GHz (props: { venueId: string, serialNumber: string }) {
         setTxPowerLabel(Object.values(channelTxPowerObject[0].label.defaultMessage[0])[1])
       }
     }
-  }, [defaultChannelsData, channelBandwidth, allowedChannels, allowedAPChannels,
-    allowedVenueChannels, venueData, useVenueSettings, channelMethod])
+  }, [defaultChannelsData, channelBandwidth,
+    venueData, useVenueSettings, channelMethod])
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function formatter (value: any) {
@@ -225,7 +227,7 @@ export function Radio24GHz (props: { venueId: string, serialNumber: string }) {
           }
         </Col>
       </Row>
-      {enable24G &&
+      {(useVenueSettings || enable24G) &&
       <Row gutter={20}>
         <Col span={14}>
           <div>{$t({ defaultMessage: 'Channel selection:' })}</div>
