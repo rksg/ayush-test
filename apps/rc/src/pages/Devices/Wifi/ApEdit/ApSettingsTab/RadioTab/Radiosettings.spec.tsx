@@ -43,6 +43,9 @@ describe('RadioSettingsTab', () => {
         WifiUrlsInfo.getVenueDefaultRegulatoryChannels.url,
         (_, res, ctx) => res(ctx.json(validRadioChannels))),
       rest.get(
+        WifiUrlsInfo.getApValidChannel.url,
+        (_, res, ctx) => res(ctx.json(validRadioChannels))),
+      rest.get(
         WifiUrlsInfo.getVenueRadioCustomization.url,
         (_, res, ctx) => res(ctx.json(apRadioCustomization))),
       rest.put(

@@ -55,7 +55,6 @@ const WifiCallingDrawer = (props: WifiCallingDrawerProps) => {
       name='ip'
       label={$t({ defaultMessage: 'IP Address' })}
       rules={[
-        { required: true },
         { validator: (_, value) => serverIpAddressRegExp(value) }
       ]}
       initialValue={serviceIndex !== undefined ? state.ePDG[serviceIndex].ip : ''}

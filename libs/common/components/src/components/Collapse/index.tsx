@@ -4,8 +4,8 @@ import { CollapseActive, CollapseInactive } from '@acx-ui/icons'
 
 
 const defaultCollapseIcon: CollapseProps['expandIcon'] = ({ isActive }) => (isActive)
-  ? <CollapseActive />
-  : <CollapseInactive />
+  ? <CollapseInactive />
+  : <CollapseActive />
 
 export function Collapse (props: CollapseProps) {
   const { expandIcon, expandIconPosition, bordered, ...rest } = props
