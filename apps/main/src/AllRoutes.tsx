@@ -8,8 +8,11 @@ import DevicesBase      from './pages/Devices'
 import Layout           from './pages/Layout'
 import NetworksBase     from './pages/Networks'
 import PoliciesBase     from './pages/Policies'
+import ReportsBase      from './pages/Reports'
 import SearchResults    from './pages/SearchResults'
 import ServicesBase     from './pages/Services'
+import TimelineBase     from './pages/Timeline'
+import { UserProfile }  from './pages/UserProfile'
 import UsersBase        from './pages/Users'
 import { VenueDetails } from './pages/Venues/VenueDetails'
 import { VenueEdit }    from './pages/Venues/VenueEdit'
@@ -18,6 +21,7 @@ import { VenuesTable }  from './pages/Venues/VenuesTable'
 
 const RcRoutes = React.lazy(() => import('rc/Routes'))
 const AnalyticsRoutes = React.lazy(() => import('analytics/Routes'))
+const ReportsRoutes = React.lazy(() => import('reports/Routes'))
 const MspRoutes = React.lazy(() => import('msp/Routes'))
 
 function AllRoutes () {
@@ -26,8 +30,15 @@ function AllRoutes () {
       <Route path='t/:tenantId' element={<Layout />}>
         <Route index element={<TenantNavigate replace to='/dashboard' />} />
         <Route path='dashboard' element={<Dashboard />} />
+        <Route path='userprofile' element={<UserProfile />} />
         <Route path='analytics/*' element={<AnalyticsBase />}>
           <Route path='*' element={<AnalyticsRoutes />} />
+        </Route>
+        <Route path='timeline/*' element={<TimelineBase />}>
+          <Route path='*' element={<RcRoutes />} />
+        </Route>
+        <Route path='reports/*' element={<ReportsBase />}>
+          <Route path='*' element={<ReportsRoutes />} />
         </Route>
         <Route path='devices/*' element={<DevicesBase />}>
           <Route path='*' element={<RcRoutes />} />

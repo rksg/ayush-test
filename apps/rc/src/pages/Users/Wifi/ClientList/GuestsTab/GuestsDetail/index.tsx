@@ -16,8 +16,6 @@ import {
   renderExpires,
   renderGuestType
 } from '../GuestsTable'
-import { DrawerFormItem } from '../styledComponents'
-
 
 interface GuestDetailsDrawerProps {
   currentGuest: Guest,
@@ -80,7 +78,7 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
       sorter: false,
       defaultSortOrder: 'ascend',
       render: function (data, row) {
-        return <TenantLink to={`/devices/aps/${row.serialNumber}/details/overview`}>
+        return <TenantLink to={`/devices/wifi/${row.serialNumber}/details/overview`}>
           {row.apName}
         </TenantLink>
       }
@@ -100,6 +98,7 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
       sorter: false,
       defaultSortOrder: 'ascend',
       render: function (data, row) {
+        // TODO: Wait for framework support userprofile-format dateTimeFormats
         return moment(row.connectSince).format('DD/MM/YYYY HH:mm')
       }
     }
@@ -109,47 +108,48 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
     labelCol={{ span: 10 }}
     labelAlign='left' >
 
-    <DrawerFormItem
+    <Form.Item
       label={$t({ defaultMessage: 'Guest Type:' })}
       children={renderGuestType(currentGuest.guestType)} />
 
-    <DrawerFormItem
+    <Form.Item
       label={$t({ defaultMessage: 'Guest Name:' })}
       children={currentGuest.name} />
 
-    <DrawerFormItem
+    <Form.Item
       label={$t({ defaultMessage: 'Mobile Phone:' })}
       children={transformDisplayText(currentGuest.mobilePhoneNumber)} />
 
-    <DrawerFormItem
+    <Form.Item
       label={$t({ defaultMessage: 'Email:' })}
       children={transformDisplayText(currentGuest.emailAddress)} />
 
-    <DrawerFormItem
+    <Form.Item
       label={$t({ defaultMessage: 'Notes:' })}
       children={transformDisplayText(currentGuest.notes)} />
 
     <Divider />
 
-    <DrawerFormItem
+    <Form.Item
       label={$t({ defaultMessage: 'Allowed Network:' })}
       children={renderAllowedNetwork(currentGuest)} />
 
-    <DrawerFormItem
+    {/* TODO: Wait for framework support userprofile-format dateTimeFormats */}
+    <Form.Item
       label={$t({ defaultMessage: 'Guest Created:' })}
-      children={moment(currentGuest.expiryDate).format('DD/MM/YYYY HH:mm')} />
+      children={moment(currentGuest.creationDate).format('DD/MM/YYYY HH:mm')} />
 
-    <DrawerFormItem
+    <Form.Item
       label={$t({ defaultMessage: 'Access Expires:' })}
       children={renderExpires(currentGuest)} />
 
-    <DrawerFormItem
+    <Form.Item
       label={$t({ defaultMessage: 'Max. Number of Clients:' })}
       children={currentGuest.maxNumberOfClients || '0'} />
 
     <Divider />
 
-    <DrawerFormItem
+    <Form.Item
       label={$t({ defaultMessage: 'Status:' })}
       children={renderStatus(currentGuest)} />
 

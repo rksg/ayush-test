@@ -79,9 +79,8 @@ export function AccessControlForm () {
           {$t({ defaultMessage: 'Access Control' })}
         </UI.Subtitle>
 
-        <span>
-          {!enabledProfile && <SaveAsAcProfileButton />}
-        </span>
+        {!enabledProfile && <SaveAsAcProfileButton />}
+
         <Button
           type='link'
           onClick={() => {

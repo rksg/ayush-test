@@ -325,9 +325,26 @@
   .ant-pagination {
     font-size: var(--acx-body-5-font-size);
     font-weight: var(--acx-body-font-weight-bold);
-    .ant-pagination-item {
-      border: 0;
+
+    .ant-pagination-prev,
+    .ant-pagination-next {
+      min-width: 24px;
+      height: 24px;
       line-height: 24px;
+      margin: 0;
+    }
+
+    .ant-pagination-item-link {
+      background: transparent;
+      border-color: transparent;
+    }
+
+    .ant-pagination-item {
+      min-width: 24px;
+      height: 24px;
+      line-height: 24px;
+      margin: 0;
+      border: 0;
       &.ant-pagination-item-active {
         font-weight: var(--acx-body-font-weight-bold);
         background: var(--acx-accents-blue-50);
@@ -799,5 +816,12 @@
   .gm-style-iw-d {
     overflow: hidden !important;
     max-height: 255px !important;
+  }
+
+  // Data Studio embedded reports iframe
+  #acx-report iframe {
+    width: 100%;
+    height: 100vh;
+    border: none;
   }
 }

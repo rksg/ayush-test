@@ -298,82 +298,6 @@ exports[`DHCPForm should create DHCP successfully 1`] = `
                     </div>
                     <div
                       class="ant-form-item"
-                      style="display: none;"
-                    >
-                      <div
-                        class="ant-row ant-form-item-row"
-                      >
-                        <div
-                          class="ant-col ant-form-item-label"
-                        >
-                          <label
-                            class=""
-                            for="settings_createType"
-                            title="Type"
-                          >
-                            Type
-                          </label>
-                        </div>
-                        <div
-                          class="ant-col ant-form-item-control"
-                        >
-                          <div
-                            class="ant-form-item-control-input"
-                          >
-                            <div
-                              class="ant-form-item-control-input-content"
-                            >
-                              <div
-                                class="ant-radio-group ant-radio-group-outline"
-                                id="settings_createType"
-                              >
-                                <label
-                                  class="ant-radio-wrapper ant-radio-wrapper-checked ant-radio-wrapper-in-form-item"
-                                >
-                                  <span
-                                    class="ant-radio ant-radio-checked"
-                                  >
-                                    <input
-                                      checked=""
-                                      class="ant-radio-input"
-                                      type="radio"
-                                      value="WI-FI"
-                                    />
-                                    <span
-                                      class="ant-radio-inner"
-                                    />
-                                  </span>
-                                  <span>
-                                    Wi-Fi
-                                  </span>
-                                </label>
-                                <label
-                                  class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
-                                >
-                                  <span
-                                    class="ant-radio"
-                                  >
-                                    <input
-                                      class="ant-radio-input"
-                                      type="radio"
-                                      value="SWITCH"
-                                    />
-                                    <span
-                                      class="ant-radio-inner"
-                                    />
-                                  </span>
-                                  <span>
-                                    Switch
-                                  </span>
-                                </label>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div
-                      class="ant-form-item"
                     >
                       <div
                         class="ant-row ant-form-item-row"
@@ -419,7 +343,7 @@ exports[`DHCPForm should create DHCP successfully 1`] = `
                                           checked=""
                                           class="ant-radio-input"
                                           type="radio"
-                                          value="SIMPLE"
+                                          value="EnableOnEachAPs"
                                         />
                                         <span
                                           class="ant-radio-inner"
@@ -448,7 +372,7 @@ exports[`DHCPForm should create DHCP successfully 1`] = `
                                         <input
                                           class="ant-radio-input"
                                           type="radio"
-                                          value="MULTIPLE"
+                                          value="EnableOnMultipleAPs"
                                         />
                                         <span
                                           class="ant-radio-inner"
@@ -476,7 +400,7 @@ exports[`DHCPForm should create DHCP successfully 1`] = `
                                         <input
                                           class="ant-radio-input"
                                           type="radio"
-                                          value="HIERARCHICAL"
+                                          value="EnableOnHierarchicalAPs"
                                         />
                                         <span
                                           class="ant-radio-inner"
@@ -561,13 +485,13 @@ exports[`DHCPForm should create DHCP successfully 1`] = `
                               >
                                 <div
                                   class="ant-space ant-space-horizontal ant-space-align-center"
-                                  style="display: flex; justify-content: flex-end;"
+                                  style="display: flex; justify-content: flex-end; margin: 3px 0px;"
                                 >
                                   <div
                                     class="ant-space-item"
                                   >
                                     <button
-                                      class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                                      class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
                                       type="button"
                                     >
                                       <span>
@@ -1197,35 +1121,6 @@ exports[`DHCPForm should create DHCP successfully 1`] = `
                         >
                           <label
                             class=""
-                            title="Tags:"
-                          >
-                            Tags:
-                          </label>
-                        </div>
-                        <div
-                          class="ant-col ant-form-item-control"
-                        >
-                          <div
-                            class="ant-form-item-control-input"
-                          >
-                            <div
-                              class="ant-form-item-control-input-content"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div
-                      class="ant-form-item"
-                    >
-                      <div
-                        class="ant-row ant-form-item-row"
-                      >
-                        <div
-                          class="ant-col ant-form-item-label"
-                        >
-                          <label
-                            class=""
                             title="DHCP Configuration:"
                           >
                             DHCP Configuration:
@@ -1725,7 +1620,7 @@ exports[`DHCPForm should create DHCP successfully 1`] = `
             style="margin-right: 12px;"
           >
             <button
-              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
               type="button"
             >
               <span>
@@ -1744,7 +1639,7 @@ exports[`DHCPForm should create DHCP successfully 1`] = `
                 style="margin-right: 12px;"
               >
                 <button
-                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
                   disabled=""
                   type="button"
                 >
@@ -1757,7 +1652,7 @@ exports[`DHCPForm should create DHCP successfully 1`] = `
                 class="ant-space-item"
               >
                 <button
-                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 kkpPZG"
+                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 bxQmA-d"
                   type="button"
                 >
                   <span>
