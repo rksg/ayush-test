@@ -104,16 +104,19 @@ export default function AlarmsHeaderButton () {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tableQuery.data, severity, data])
 
-  const getIconBySeverity = (severity: string)=>{
-    if(severity===EventSeverityEnum.MAJOR){
-      return <UI.WarningTriang />
+  const getIconBySeverity = (severity: EventSeverityEnum)=>{
+
+    const SeverityIcon = {
+      [EventSeverityEnum.MAJOR]: <UI.WarningTriang />,
+      [EventSeverityEnum.CRITICAL]: <UI.WarningCircle />,
+      [EventSeverityEnum.MINOR]: <></>,
+      [EventSeverityEnum.WARNING]: <></>,
+      [EventSeverityEnum.INFORMATIONAL]: <></>
     }
-    else if(severity===EventSeverityEnum.CRITICAL){
-      return <UI.WarningCircle />
-    }else{
-      return <></>
-    }
+
+    return SeverityIcon[severity]
   }
+
   const getDeviceLink = (alarm:Alarm)=>{
     switch (alarm.entityType) {
       case EventTypeEnum.AP: {
@@ -199,7 +202,7 @@ export default function AlarmsHeaderButton () {
               </Tooltip>
             ]}>
               <UI.Meta
-                avatar={getIconBySeverity(alarm.severity)}
+                avatar={getIconBySeverity(alarm.severity as EventSeverityEnum)}
                 title={alarm.message}
                 description={
                   <UI.SpaceBetween>
