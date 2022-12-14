@@ -133,7 +133,6 @@ export function EventsScatterChart ({
           }
         },
         formatter: tooltipFormatter,
-        position: 'top',
         ...tooltipOptions(true)
       }
     } : {
