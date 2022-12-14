@@ -195,20 +195,22 @@ export const dateAxisFormatter = () => {
   }
 }
 
-export const tooltipOptions = () => ({
+export const tooltipOptions = (invertColor?: boolean, disableConfine?: boolean) => ({
   textStyle: {
-    color: cssStr('--acx-primary-white'),
+    color: (invertColor) ? cssStr('--acx-primary-black') : cssStr('--acx-primary-white'),
     fontFamily: cssStr('--acx-neutral-brand-font'),
     fontSize: cssNumber('--acx-body-5-font-size'),
     lineHeight: cssNumber('--acx-body-5-line-height'),
     fontWeight: cssNumber('--acx-body-font-weight')
   },
-  backgroundColor: cssStr('--acx-primary-black'),
+  backgroundColor: (invertColor) ? cssStr('--acx-primary-white') : cssStr('--acx-primary-black'),
   borderRadius: 2,
   borderWidth: 0,
   padding: 8,
-  confine: true,
-  extraCssText: 'box-shadow: 0px 4px 8px rgba(51, 51, 51, 0.08); z-index: 4;'
+  confine: !disableConfine,
+  extraCssText: (invertColor)
+    ? 'box-shadow: none; z-index: 4;'
+    : 'box-shadow: 0px 4px 8px rgba(51, 51, 51, 0.08); z-index: 4;'
 } as TooltipComponentOption)
 
 export const timeSeriesTooltipFormatter = (

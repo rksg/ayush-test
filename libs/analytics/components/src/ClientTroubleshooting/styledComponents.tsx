@@ -103,10 +103,8 @@ export const CollapseBox = styled(Collapse)`
     padding-right: 0px;
    }`
 export const TooltipWrapper = styled.div`
-    color: var(--acx-primary-white);
     font-size: var(--acx-subtitle-6-font-size);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    background-color: transparent;
     `
