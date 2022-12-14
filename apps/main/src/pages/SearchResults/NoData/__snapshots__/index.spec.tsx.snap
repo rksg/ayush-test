@@ -28,7 +28,7 @@ exports[`SearchResults - NoData should render correctly for snapshot test with t
         class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__StyledGridCol-sc-1kfpqgc-1 gdXNzW"
       >
         <div
-          class="styledComponents__ListWrapper-sc-1kfpqgc-2 hrHpjX"
+          class="styledComponents__ListWrapper-sc-1kfpqgc-2 hgqLmw"
         >
           <div
             class="ant-list ant-list-vertical ant-list-sm ant-list-split"
@@ -183,7 +183,7 @@ exports[`SearchResults - NoData should render correctly for snapshot test with t
         class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__StyledGridCol-sc-1kfpqgc-1 gdXNzW"
       >
         <div
-          class="styledComponents__ListWrapper-sc-1kfpqgc-2 hrHpjX"
+          class="styledComponents__ListWrapper-sc-1kfpqgc-2 hgqLmw"
         >
           <div
             class="ant-list ant-list-vertical ant-list-sm ant-list-split"
