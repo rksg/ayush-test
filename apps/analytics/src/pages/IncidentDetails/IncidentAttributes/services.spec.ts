@@ -1,18 +1,10 @@
-import { configureStore } from '@reduxjs/toolkit'
-
-import { dataApi, dataApiURL } from '@acx-ui/analytics/services'
-import { mockGraphqlQuery }    from '@acx-ui/test-utils'
+import { dataApiURL }       from '@acx-ui/analytics/services'
+import { store }            from '@acx-ui/store'
+import { mockGraphqlQuery } from '@acx-ui/test-utils'
 
 import { impactedApi } from './services'
 
 describe('impactedApi.impactedAPs', () => {
-  const store = configureStore({
-    reducer: {
-      [dataApi.reducerPath]: dataApi.reducer
-    },
-    middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware().concat([dataApi.middleware])
-  })
   const payload = { id: 'id', search: '', n: 100 }
   afterEach(() =>
     store.dispatch(impactedApi.util.resetApiState())
@@ -43,13 +35,6 @@ describe('impactedApi.impactedAPs', () => {
 })
 
 describe('impactedApi.impactedClients', () => {
-  const store = configureStore({
-    reducer: {
-      [dataApi.reducerPath]: dataApi.reducer
-    },
-    middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware().concat([dataApi.middleware])
-  })
   const payload = { id: 'id', search: '', n: 100 }
   afterEach(() =>
     store.dispatch(impactedApi.util.resetApiState())

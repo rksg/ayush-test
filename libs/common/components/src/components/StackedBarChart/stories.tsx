@@ -1,5 +1,6 @@
 import { withKnobs,object, boolean } from '@storybook/addon-knobs'
 import { storiesOf }                 from '@storybook/react'
+import { defineMessage }             from 'react-intl'
 
 import { StackedBarChart } from '.'
 
@@ -29,12 +30,27 @@ export const data = [{
   ]
 }]
 
+export const singleBar = [{
+  category: 'Something',
+  series: [
+    { name: 'P1', value: 4 },
+    { name: 'P2', value: 3 },
+    { name: 'P3', value: 5 },
+    { name: 'P4', value: 8 }
+  ]
+}]
+
 storiesOf('StackedBarChart', module)
   .addDecorator(withKnobs)
   .add('Chart View', () => <StackedBarChart
     style={{ height: 110, width: 400 }}
     showLabels
     data={data} />)
+  .add('Single Chart View', () => <StackedBarChart
+    style={{ height: 110, width: 400 }}
+    showLabels={false}
+    barWidth={20}
+    data={singleBar} />)
   .add('With Knobs', () => <StackedBarChart
     style={{ height: 110, width: 250 }}
     showLabels={boolean('Show Labels', false)}
@@ -56,6 +72,9 @@ storiesOf('StackedBarChart', module)
             style={{ height: 30, width: 120 }}
             data={data.slice(2, 3)}
             showLabels={false}
+            tooltipFormat={defineMessage({
+              defaultMessage: '<span><b>{formattedValue}</b></span>'
+            })}
             showTotal={false} />
           </td>
         </tr>
@@ -65,6 +84,9 @@ storiesOf('StackedBarChart', module)
             style={{ height: 30, width: 120 }}
             data={data.slice(1, 2)}
             showLabels={false}
+            tooltipFormat={defineMessage({
+              defaultMessage: '<span><b>{formattedValue}</b></span>'
+            })}
             showTotal={false} />
           </td>
         </tr>

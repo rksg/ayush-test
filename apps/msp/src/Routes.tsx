@@ -2,13 +2,29 @@ import { ConfigProvider }                    from '@acx-ui/components'
 import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                          from '@acx-ui/store'
 
-import Layout from './pages/Layout'
+import { DeviceInventory } from './pages/DeviceInventory'
+import { Integrators }     from './pages/Integrators'
+import Layout              from './pages/Layout'
+import { LicensesTab }     from './pages/LicensesTab'
+import { MspCustomers }    from './pages/MspCustomers'
+import { VarCustomers }    from './pages/VarCustomers'
 
 export default function MspRoutes () {
   const routes = rootRoutes(
     <Route path='v/:tenantId' element={<Layout />}>
-      <Route index element={<TenantNavigate to='/dashboard' tenantType='v' />} />
-      <Route path='dashboard' element={<div>MSP Page</div>} />
+      <Route index element={<TenantNavigate replace to='/dashboard' tenantType='v'/>} />
+      <Route
+        path='dashboard'
+        element={<TenantNavigate replace to='/dashboard/mspCustomers' tenantType='v'/>}
+      />
+      <Route path='dashboard/mspCustomers' element={<MspCustomers />} />
+      <Route path='dashboard/mspCustomers/create' element={<div>Add Customer Account</div>} />
+      <Route path='dashboard/varCustomers' element={<VarCustomers />} />
+      <Route path='integrators' element={<Integrators />} />
+      <Route path='integrators/create' element={<div>Add Integrator</div>} />
+      <Route path='deviceinventory' element={<DeviceInventory />} />
+      <Route path='msplicenses' element={<LicensesTab />} />
+      <Route path='portalSetting' element={<div>Portal Setting</div>} />
     </Route>
   )
   return (

@@ -61,17 +61,80 @@ async function loadJp (): Promise<Messages> {
   return Object.assign({}, combine, flattenMessages(combine as unknown as NestedMessages))
 }
 
-const localeLoaders = {
-  'en-US': loadEnUS,
-  'de-DE': loadDe,
-  'ja-JP': loadJp
+async function loadEs (): Promise<Messages> {
+  const [base, proBase, translation] = await Promise.all([
+    import('antd/lib/locale/es_ES').then(result => result.default),
+    import('@ant-design/pro-provider/lib/locale/es_ES').then(result => result.default),
+    fetch(localePath('es-ES')).then(res => res.json()) as Promise<NestedMessages>
+  ])
+
+  const combine = merge({}, base, proBase, translation)
+  return Object.assign({}, combine, flattenMessages(combine as unknown as NestedMessages))
 }
 
+async function loadFr (): Promise<Messages> {
+  const [base, proBase, translation] = await Promise.all([
+    import('antd/lib/locale/fr_FR').then(result => result.default),
+    import('@ant-design/pro-provider/lib/locale/fr_FR').then(result => result.default),
+    fetch(localePath('fr-FR')).then(res => res.json()) as Promise<NestedMessages>
+  ])
+
+  const combine = merge({}, base, proBase, translation)
+  return Object.assign({}, combine, flattenMessages(combine as unknown as NestedMessages))
+}
+
+async function loadKoKR (): Promise<Messages> {
+  const [base, proBase, translation] = await Promise.all([
+    import('antd/lib/locale/ko_KR').then(result => result.default),
+    import('@ant-design/pro-provider/lib/locale/ko_KR').then(result => result.default),
+    fetch(localePath('ko-KR')).then(res => res.json()) as Promise<NestedMessages>
+  ])
+
+  const combine = merge({}, base, proBase, translation)
+  return Object.assign({}, combine, flattenMessages(combine as unknown as NestedMessages))
+}
+
+async function loadZhCN (): Promise<Messages> {
+  const [base, proBase, translation] = await Promise.all([
+    import('antd/lib/locale/zh_CN').then(result => result.default),
+    import('@ant-design/pro-provider/lib/locale/zh_CN').then(result => result.default),
+    fetch(localePath('zh-CN')).then(res => res.json()) as Promise<NestedMessages>
+  ])
+
+  const combine = merge({}, base, proBase, translation)
+  return Object.assign({}, combine, flattenMessages(combine as unknown as NestedMessages))
+}
+
+async function loadPtBR (): Promise<Messages> {
+  const [base, proBase, translation] = await Promise.all([
+    import('antd/lib/locale/pt_BR').then(result => result.default),
+    import('@ant-design/pro-provider/lib/locale/pt_BR').then(result => result.default),
+    fetch(localePath('pt-BR')).then(res => res.json()) as Promise<NestedMessages>
+  ])
+
+  const combine = merge({}, base, proBase, translation)
+  return Object.assign({}, combine, flattenMessages(combine as unknown as NestedMessages))
+}
+
+export const localeLoaders = {
+  'en-US': loadEnUS,
+  'de-DE': loadDe,
+  'ja-JP': loadJp,
+  'es-ES': loadEs,
+  'fr-FR': loadFr,
+  'ko-KR': loadKoKR,
+  'pt-BR': loadPtBR,
+  'zh-CN': loadZhCN
+}
+
+const allowedLang = Object.keys(localeLoaders)
 type Key = keyof typeof localeLoaders
 const cache: Partial<Record<Key, Messages>> = {}
-export async function loadLocale (locale: Key) {
+export async function loadLocale (locale: Key, ignoreCache = false) {
+  // fallback when browser detected or url param provided lang not supported
+  locale = allowedLang.includes(locale) ? locale : 'en-US'
   const result = cache[locale]
-  if (result) { return result }
+  if (!ignoreCache && result) { return result }
 
   cache[locale] = await localeLoaders[locale]()
   return cache[locale]
@@ -106,11 +169,11 @@ function LocaleProvider (props: LocaleProviderProps) {
 
   useEffect(() => {
     loadLocale(lang).then((message) => {
-      setMessages(() => message)
       setUpIntl({
         locale: lang,
         messages: message
       })
+      setMessages(() => message)
     })
   }, [lang])
 

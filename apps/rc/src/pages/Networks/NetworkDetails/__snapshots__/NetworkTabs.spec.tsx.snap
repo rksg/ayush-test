@@ -3,7 +3,7 @@
 exports[`NetworkTabs should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="ant-tabs ant-tabs-top"
+    class="ant-tabs ant-tabs-top styledComponents__Tabs-sc-1afcsfc-0 bceCuj"
   >
     <div
       class="ant-tabs-nav"
@@ -17,17 +17,19 @@ exports[`NetworkTabs should render correctly 1`] = `
           style="transform: translate(0px, 0px);"
         >
           <div
-            class="ant-tabs-tab ant-tabs-tab-active"
+            class="ant-tabs-tab ant-tabs-tab-active ant-tabs-tab-disabled"
           >
             <div
               aria-controls="rc-tabs-test-panel-overview"
+              aria-disabled="true"
               aria-selected="true"
               class="ant-tabs-tab-btn"
               id="rc-tabs-test-tab-overview"
               role="tab"
-              tabindex="0"
             >
-              Overview
+              <span>
+                Overview
+              </span>
             </div>
           </div>
           <div
@@ -59,45 +61,51 @@ exports[`NetworkTabs should render correctly 1`] = `
             </div>
           </div>
           <div
-            class="ant-tabs-tab"
+            class="ant-tabs-tab ant-tabs-tab-disabled"
           >
             <div
               aria-controls="rc-tabs-test-panel-services"
+              aria-disabled="true"
               aria-selected="false"
               class="ant-tabs-tab-btn"
               id="rc-tabs-test-tab-services"
               role="tab"
-              tabindex="0"
             >
-              Services (0)
+              <span>
+                Services (0)
+              </span>
             </div>
           </div>
           <div
-            class="ant-tabs-tab"
+            class="ant-tabs-tab ant-tabs-tab-disabled"
           >
             <div
               aria-controls="rc-tabs-test-panel-events"
+              aria-disabled="true"
               aria-selected="false"
               class="ant-tabs-tab-btn"
               id="rc-tabs-test-tab-events"
               role="tab"
-              tabindex="0"
             >
-              Events
+              <span>
+                Events
+              </span>
             </div>
           </div>
           <div
-            class="ant-tabs-tab"
+            class="ant-tabs-tab ant-tabs-tab-disabled"
           >
             <div
               aria-controls="rc-tabs-test-panel-incidents"
+              aria-disabled="true"
               aria-selected="false"
               class="ant-tabs-tab-btn"
               id="rc-tabs-test-tab-incidents"
               role="tab"
-              tabindex="0"
             >
-              Incidents
+              <span>
+                Incidents
+              </span>
             </div>
           </div>
           <div

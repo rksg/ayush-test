@@ -1,7 +1,7 @@
 import { rest } from 'msw'
 
-import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
-import { Provider }           from '@acx-ui/store'
+import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                     from '@acx-ui/store'
 import {
   fireEvent,
   mockServer,
@@ -11,7 +11,9 @@ import {
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
-import { NetworksTable } from '.'
+import NetworksTable from '.'
+
+jest.mock('socket.io-client')
 
 const list = {
   totalCount: 10,
@@ -155,14 +157,15 @@ const list = {
 
 describe('Networks Table', () => {
   let params: { tenantId: string }
-  beforeEach(async () => {
+
+  beforeEach(() => {
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getVMNetworksList.url,
         (req, res, ctx) => res(ctx.json(list))
       ),
       rest.delete(
-        CommonUrlsInfo.deleteNetwork.url,
+        WifiUrlsInfo.deleteNetwork.url,
         (req, res, ctx) => res(ctx.json({ requestId: '' }))
       )
     )
@@ -186,6 +189,24 @@ describe('Networks Table', () => {
     await screen.findByText('network-01')
   })
 
+  it('should click disabled row', async () => {
+    const { asFragment } = render(
+      <Provider>
+        <NetworksTable />
+      </Provider>, {
+        route: { params, path: '/:tenantId/networks' }
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    expect(asFragment()).toMatchSnapshot()
+
+    const row = await screen.findByRole('row', { name: /network-02/i })
+    fireEvent.click(row)
+
+    await screen.findByText('Add Wi-Fi Network')
+    await screen.findByText('network-02')
+  })
+
   it('should delete selected row', async () => {
     const { asFragment } = render(
       <Provider>
@@ -206,7 +227,5 @@ describe('Networks Table', () => {
     await screen.findByText('Delete "network-01"?')
     const deleteNetworkButton = await screen.findByText('Delete Network')
     fireEvent.click(deleteNetworkButton)
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
   }, 15000)
 })

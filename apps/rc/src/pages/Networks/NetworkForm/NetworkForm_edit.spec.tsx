@@ -2,8 +2,8 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
-import { Provider }           from '@acx-ui/store'
+import { CommonUrlsInfo, WifiUrlsInfo  } from '@acx-ui/rc/utils'
+import { Provider }                      from '@acx-ui/store'
 import {
   mockServer,
   render, screen,
@@ -14,12 +14,17 @@ import {
 import {
   venuesResponse,
   networksResponse,
-  successResponse
+  successResponse,
+  venueListResponse,
+  policyListResponse
 } from './__tests__/fixtures'
-import { NetworkForm } from './NetworkForm'
+import { types }   from './NetworkDetail/NetworkDetailForm'
+import NetworkForm from './NetworkForm'
+
+types[3].disabled = false
 
 async function fillInBeforeSettings (networkName: string) {
-  const insertInput = screen.getByLabelText('Network Name')
+  const insertInput = screen.getByLabelText(/Network Name/)
   fireEvent.change(insertInput, { target: { value: networkName } })
   fireEvent.blur(insertInput)
   const validating = await screen.findByRole('img', { name: 'loading' })
@@ -95,15 +100,33 @@ describe('NetworkForm', () => {
     mockServer.use(
       rest.get(CommonUrlsInfo.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
-      rest.get(CommonUrlsInfo.getNetwork.url,
+      rest.get(WifiUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(networkResponse))),
+      rest.post(CommonUrlsInfo.getNetworkDeepList.url,
+        (_, res, ctx) => res(ctx.json({ response: [networkResponse] }))),
       rest.post(CommonUrlsInfo.getNetworksVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuesResponse))),
       rest.post(CommonUrlsInfo.getVMNetworksList.url,
         (_, res, ctx) => res(ctx.json(networksResponse))),
-      rest.post(CommonUrlsInfo.updateNetworkDeep.url,
+      rest.put(WifiUrlsInfo.updateNetworkDeep.url.split('?')[0],
         (_, res, ctx) => res(ctx.json(successResponse))),
       rest.get(CommonUrlsInfo.getCloudpathList.url,
+        (_, res, ctx) => res(ctx.json([]))),
+      rest.post(CommonUrlsInfo.getVenuesList.url,
+        (_, res, ctx) => res(ctx.json(venueListResponse))),
+      rest.post(CommonUrlsInfo.getL2AclPolicyList.url,
+        (_, res, ctx) => res(ctx.json(policyListResponse))),
+      rest.post(CommonUrlsInfo.getL3AclPolicyList.url,
+        (_, res, ctx) => res(ctx.json(policyListResponse))),
+      rest.post(CommonUrlsInfo.getDevicePolicyList.url,
+        (_, res, ctx) => res(ctx.json(policyListResponse))),
+      rest.post(CommonUrlsInfo.getApplicationPolicyList.url,
+        (_, res, ctx) => res(ctx.json(policyListResponse))),
+      rest.get(CommonUrlsInfo.getWifiCallingProfileList.url,
+        (_, res, ctx) => res(ctx.json(policyListResponse))),
+      rest.get(CommonUrlsInfo.getVlanPoolList.url,
+        (_, res, ctx) => res(ctx.json([]))),
+      rest.get(CommonUrlsInfo.getAccessControlProfileList.url,
         (_, res, ctx) => res(ctx.json([])))
     )
   })
@@ -120,10 +143,10 @@ describe('NetworkForm', () => {
 
     await fillInBeforeSettings('open network edit test')
 
-    await screen.findByRole('heading', { level: 3, name: 'Open Settings' })
+    screen.getByText('Settings')
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
-
-    await screen.findByRole('heading', { level: 3, name: 'Venues' })
+    const button = screen.getByRole('button', { name: /venues/i })
+    await button.click()
     await userEvent.click(screen.getByText('Finish'))
   })
 })

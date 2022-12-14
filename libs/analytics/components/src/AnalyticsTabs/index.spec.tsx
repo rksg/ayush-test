@@ -1,0 +1,64 @@
+import '@testing-library/jest-dom'
+import * as router from 'react-router-dom'
+
+import { AnalyticsFilter }           from '@acx-ui/analytics/utils'
+import { Provider }                  from '@acx-ui/store'
+import { render, screen, fireEvent } from '@acx-ui/test-utils'
+
+import { AnalyticsTabs } from '.'
+
+const mockedUsedNavigate = jest.fn()
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockedUsedNavigate,
+  useParams: jest.fn()
+}))
+
+describe('AnalyticsTabs', () => {
+  beforeEach(() => {
+    mockedUsedNavigate.mockReset()
+  })
+  it('should handle default tab', async () => {
+    jest.spyOn(router, 'useParams').mockImplementation(
+      () => ({ tenantId: 't1', serialNumber: '000000000001' })
+    )
+    render(<Provider>
+      <AnalyticsTabs
+        healthPath='/t/t1/devices/wifi/000000000001/details/analytics/health'
+        healthFilter={{} as AnalyticsFilter}
+        incidentFilter={{} as AnalyticsFilter}
+      />
+    </Provider>, {
+      route: {
+        params: { tenantId: 't1', serialNumber: '000000000001' },
+        path: '/t/:tenantId/devices/wifi/:serialNumber/details/analytics'
+      }
+    })
+    fireEvent.click(await screen.findByText('Health'))
+    expect(mockedUsedNavigate.mock.calls[0][0].pathname).toEqual(
+      '/t/t1/devices/wifi/000000000001/details/analytics/health/overview'
+    )
+  })
+  it('should handle tab changes', async () => {
+    jest.spyOn(router, 'useParams').mockImplementation(
+      () => ({ tenantId: 't1', serialNumber: '000000000001', activeSubTab: 'incidents' })
+    )
+    render(<Provider>
+      <AnalyticsTabs
+        healthPath='/t/t1/devices/wifi/000000000001/details/analytics/health'
+        healthFilter={{} as AnalyticsFilter}
+        incidentFilter={{} as AnalyticsFilter}
+      />
+    </Provider>, {
+      route: {
+        params: { tenantId: 't1', serialNumber: '000000000001', activeSubTab: 'incidents' },
+        path: '/t/:tenantId/devices/wifi/:serialNumber/details/analytics/incidents/overview'
+      }
+    })
+    fireEvent.click(await screen.findByText('Health'))
+    expect(mockedUsedNavigate.mock.calls[0][0].pathname).toEqual(
+      '/t/t1/devices/wifi/000000000001/details/analytics/health/overview'
+    )
+  })
+})

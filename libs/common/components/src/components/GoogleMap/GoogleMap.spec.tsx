@@ -97,3 +97,10 @@ describe('GoogleMap', () => {
     expect(markers[0].setMap).toHaveBeenCalledWith(null)
   })
 })
+
+describe('GoogleMap.NotEnabled', () => {
+  it('should render correctly', () => {
+    const { asFragment } = render(<GoogleMap.NotEnabled/>)
+    expect(asFragment()).toMatchSnapshot()
+  })
+})

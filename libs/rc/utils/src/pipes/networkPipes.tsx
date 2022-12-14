@@ -3,12 +3,30 @@ import React from 'react'
 import { defineMessage, FormattedMessage, IntlShape, MessageDescriptor, useIntl } from 'react-intl'
 
 import { GuestNetworkTypeEnum, NetworkTypeEnum, PassphraseExpirationEnum, PassphraseFormatEnum, WlanSecurityEnum } from '../constants'
-import { Network }                                                                                                 from '../types/network'                                                                                              
+import { Network }                                                                                                 from '../types/network'
 
 export enum DpskNetworkType {
   FORMAT = 'PassphraseFormat',
   LENGTH = 'PassphraseLength',
   EXPIRATION = 'PassphraseExpiration'
+}
+
+const passphraseFormatLabel: Record<PassphraseFormatEnum, MessageDescriptor> = {
+  [PassphraseFormatEnum.MOST_SECURED]: defineMessage({ defaultMessage: 'Most Secured' }),
+  [PassphraseFormatEnum.KEYBOARD_FRIENDLY]: defineMessage({ defaultMessage: 'Keyboard Friendly' }),
+  [PassphraseFormatEnum.NUMBERS_ONLY]: defineMessage({ defaultMessage: 'Numbers Only' })
+}
+
+const passphraseExpirationLabel: Record<PassphraseExpirationEnum, MessageDescriptor> = {
+  [PassphraseExpirationEnum.UNLIMITED]: defineMessage({ defaultMessage: 'Unlimited' }),
+  [PassphraseExpirationEnum.ONE_DAY]: defineMessage({ defaultMessage: '1 day' }),
+  [PassphraseExpirationEnum.TWO_DAYS]: defineMessage({ defaultMessage: '2 days' }),
+  [PassphraseExpirationEnum.ONE_WEEK]: defineMessage({ defaultMessage: '1 week' }),
+  [PassphraseExpirationEnum.TWO_WEEKS]: defineMessage({ defaultMessage: '2 weeks' }),
+  [PassphraseExpirationEnum.ONE_MONTH]: defineMessage({ defaultMessage: '1 month' }),
+  [PassphraseExpirationEnum.SIX_MONTHS]: defineMessage({ defaultMessage: '6 months' }),
+  [PassphraseExpirationEnum.ONE_YEAR]: defineMessage({ defaultMessage: '1 year' }),
+  [PassphraseExpirationEnum.TWO_YEARS]: defineMessage({ defaultMessage: '2 years' })
 }
 
 export function transformDpskNetwork (
@@ -18,52 +36,16 @@ export function transformDpskNetwork (
 ) {
   let displayValue = ''
   if (type === DpskNetworkType.FORMAT) {
-    switch (value) {
-      case PassphraseFormatEnum.MOST_SECURED:
-        displayValue = $t({ defaultMessage: 'Most Secured' })
-        break
-      case PassphraseFormatEnum.KEYBOARD_FRIENDLY:
-        displayValue = $t({ defaultMessage: 'Keyboard Friendly' })
-        break
-      case PassphraseFormatEnum.NUMBERS_ONLY:
-        displayValue = $t({ defaultMessage: 'Numbers Only' })
-        break
-      default:
-        displayValue = $t({ defaultMessage: 'Error: Can not detect passphrase format value' })
+    displayValue = $t(passphraseFormatLabel[value as PassphraseFormatEnum])
+    if (!displayValue) {
+      displayValue = $t({ defaultMessage: 'Error: Can not detect passphrase format value' })
     }
   } else if (type === 'PassphraseLength') {
     displayValue = $t({ defaultMessage: '{count} Characters' }, { count: value })
   } else if (type === 'PassphraseExpiration') {
-    switch (value) {
-      case PassphraseExpirationEnum.UNLIMITED:
-        displayValue = $t({ defaultMessage: 'Unlimited' })
-        break
-      case PassphraseExpirationEnum.ONE_DAY:
-        displayValue = $t({ defaultMessage: '1 day' })
-        break
-      case PassphraseExpirationEnum.TWO_DAYS:
-        displayValue = $t({ defaultMessage: '2 days' })
-        break
-      case PassphraseExpirationEnum.ONE_WEEK:
-        displayValue = $t({ defaultMessage: '1 week' })
-        break
-      case PassphraseExpirationEnum.TWO_WEEKS:
-        displayValue = $t({ defaultMessage: '2 weeks' })
-        break
-      case PassphraseExpirationEnum.ONE_MONTH:
-        displayValue = $t({ defaultMessage: '1 month' })
-        break
-      case PassphraseExpirationEnum.SIX_MONTHS:
-        displayValue = $t({ defaultMessage: '6 months' })
-        break
-      case PassphraseExpirationEnum.ONE_YEAR:
-        displayValue = $t({ defaultMessage: '1 year' })
-        break
-      case PassphraseExpirationEnum.TWO_YEARS:
-        displayValue = $t({ defaultMessage: '2 years' })
-        break
-      default:
-        displayValue = $t({ defaultMessage: 'Error: Can not detect passphrase expiration value' })
+    displayValue = $t(passphraseExpirationLabel[value as PassphraseExpirationEnum])
+    if (!displayValue) {
+      displayValue = $t({ defaultMessage: 'Error: Can not detect passphrase expiration value' })
     }
   }
 
@@ -123,6 +105,10 @@ export const wlanSecurity: Record<WlanSecurityEnum, MessageDescriptor> = {
   [WlanSecurityEnum.WPA3]: defineMessage({
     defaultMessage: 'WPA3',
     description: 'WLAN security type - WPA3'
+  }),
+  [WlanSecurityEnum.None]: defineMessage({
+    defaultMessage: 'None',
+    description: 'WLAN security type - None'
   })
 }
 

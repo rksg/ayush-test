@@ -4,12 +4,25 @@ require('@testing-library/jest-dom')
 const { registerTsProject } = require('nx/src/utils/register')
 const cleanupRegisteredPaths = registerTsProject('.', 'tsconfig.base.json')
 
-const { mockServer, mockLightTheme } = require('@acx-ui/test-utils')
+const { mockServer, mockDOMSize, mockLightTheme } = require('@acx-ui/test-utils')
 const config = require('@acx-ui/config')
 const { setUpIntl } = require('@acx-ui/utils')
 const { mockInstances } = require('@googlemaps/jest-mocks')
 const { Loader } = require('@googlemaps/js-api-loader')
 const { rest } = require('msw')
+const nodeCrypto = require('crypto')
+const { configure } = require('@testing-library/dom')
+
+configure({ asyncUtilTimeout: 3000 })
+
+jest.mock('socket.io-client', () => ({
+  connect: jest.fn().mockImplementation(() => ({
+    hasListeners: jest.fn().mockReturnValue(true),
+    on: jest.fn(),
+    off: jest.fn(),
+    send: jest.fn()
+  }))
+}))
 
 beforeAll(() => {
   mockServer.listen()
@@ -19,6 +32,7 @@ beforeAll(() => {
   })
 })
 beforeEach(async () => {
+  mockDOMSize(1280, 800)
   const env = require('./apps/main/src/env.json')
   mockServer.use(rest.get(`${document.baseURI}env.json`, (_, res, ctx) => res(ctx.json(env))))
   await config.initialize()
@@ -47,6 +61,12 @@ Object.defineProperty(window, 'matchMedia', {
   }))
 })
 
+window.crypto = {
+  getRandomValues: function (buffer) {
+    return nodeCrypto.randomFillSync(buffer)
+  }
+}
+
 jest.mock('libs/common/components/src/theme/helper', () => ({
   __esModule: true,
   cssStr: jest.fn(property => mockLightTheme[property]),
@@ -56,13 +76,23 @@ jest.mock('libs/common/components/src/theme/helper', () => ({
 jest.mock('@acx-ui/feature-toggle', () => ({
   SplitProvider: ({ children }) =>
     require('react').createElement('div', null, children),
-  useSplitTreatment: jest.fn(),
+  useIsSplitOn: jest.fn(),
+  useIsTierAllowed: jest.fn(),
   useFFList: jest.fn(),
-  useEvaluateFeature: jest.fn(),
   Features: {}
 }), { virtual: true })
+
+jest.mock('@acx-ui/icons', ()=> {
+  const React = jest.requireActual('react')
+  const icons = jest.requireActual('@acx-ui/icons')
+  const keys = Object.keys(icons).map(key => [key, (props) => React.createElement('svg', {
+    'data-testid': key,
+    ...props
+  })])
+  return Object.fromEntries(keys)
+}, { virtual: true })
 
 // For Error: Not implemented: HTMLCanvasElement.prototype.getContext (without installing the canvas npm package)
 HTMLCanvasElement.prototype.getContext = () => null
 
-jest.setTimeout(10000)
+jest.setTimeout(20000)

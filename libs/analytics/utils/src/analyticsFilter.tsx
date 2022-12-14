@@ -1,73 +1,65 @@
-import React, { ReactNode, useContext } from 'react'
+import { useMemo } from 'react'
 
-import { Buffer } from 'buffer'
+import { useLocation }  from '@acx-ui/react-router-dom'
+import {
+  generateVenueFilter,
+  DateFilter,
+  pathFilter,
+  NetworkPath,
+  NodeType,
+  useDateFilter,
+  useEncodedParameter
+} from '@acx-ui/utils'
 
-import { useSearchParams } from 'react-router-dom'
-
-import { DateFilterContext, getDateRangeFilter, DateFilter } from '@acx-ui/utils'
-
-import type { NetworkPath } from './types/incidents'
-
-interface AnalyticsFilterProps {
-  path: NetworkPath
-  raw?: object
-  setNetworkPath: CallableFunction
-  getNetworkFilter: CallableFunction
-}
 export const defaultNetworkPath: NetworkPath = [{ type: 'network', name: 'Network' }]
 
-export const defaultAnalyticsFilter = {
-  path: defaultNetworkPath,
-  raw: [],
-  setNetworkPath: () => {}, // abstract, comsumer should wrap provider
-  getNetworkFilter: () => ({ path: defaultNetworkPath })
-} as const
-
-export const AnalyticsFilterContext = React.createContext<AnalyticsFilterProps>(
-  defaultAnalyticsFilter
-)
-export type AnalyticsFilter = DateFilter & { path: NetworkPath }
+export type AnalyticsFilter = DateFilter & { path: NetworkPath } & { filter? : pathFilter }
+type NetworkFilter = { path: NetworkPath, raw: object }
 
 export function useAnalyticsFilter () {
-  const { getNetworkFilter, setNetworkPath } = useContext(AnalyticsFilterContext)
-  const { path, raw } = getNetworkFilter()
-  const { dateFilter } = useContext(DateFilterContext)
-  const { range, startDate, endDate } = dateFilter
-  return {
-    filters: {
-      path: path.length ? path : defaultNetworkPath,
-      ...getDateRangeFilter(range, startDate, endDate)
-    } as const,
-    setNetworkPath,
-    raw
-  }
-}
+  const { read, write } = useEncodedParameter<NetworkFilter>('analyticsNetworkFilter')
+  const { pathname } = useLocation()
+  const { dateFilter } = useDateFilter()
 
-export function AnalyticsFilterProvider (props: { children: ReactNode }) {
-  const [search, setSearch] = useSearchParams()
-  const getNetworkFilter = () => search.has('analyticsNetworkFilter')
-    ? JSON.parse(
-      Buffer.from(search.get('analyticsNetworkFilter') as string, 'base64').toString('ascii')
-    )
-    : { path: [], raw: [] }
+  return useMemo(() => {
+    const isHealthPage = pathname.includes('/analytics/health')
+    const getNetworkFilter = () => {
+      let networkFilter = read() || { path: defaultNetworkPath, raw: [] }
+      const { path: currentPath, raw: rawVal } = networkFilter
+      let path, filter, raw
+      if (isHealthPage) {
+        if (currentPath.some(({ type }: { type: NodeType }) => type === 'switchGroup')) {
+          path = defaultNetworkPath
+          raw = []
+        } else {
+          path = currentPath
+          raw = rawVal
+        }
+      } else { // incident page, ...
+        if (currentPath.length === 2) { // venues
+          filter = generateVenueFilter([currentPath[1].name])
+          path = defaultNetworkPath
+        } else {
+          path = currentPath
+        }
+        raw = rawVal
+      }
+      return { networkFilter: { filter, path }, raw }
+    }
 
-  const setNetworkPath = (path: NetworkPath, raw: object) => {
-    search.set(
-      'analyticsNetworkFilter',
-      Buffer.from(JSON.stringify({ path, raw })).toString('base64')
-    )
-    setSearch(search, { replace: true })
-  }
-  const { path } = getNetworkFilter()
-  const providerValue = {
-    path: path.length ? path : defaultNetworkPath,
-    setNetworkPath,
-    getNetworkFilter
-  }
-  return (
-    <AnalyticsFilterContext.Provider
-      {...props}
-      value={providerValue}
-    />
-  )
+    const setNetworkPath = (path: NetworkPath, raw: object) => {
+      write({ path, raw })
+    }
+
+    const { networkFilter, raw } = getNetworkFilter()
+    return {
+      filters: {
+        ...dateFilter,
+        ...networkFilter
+      } as AnalyticsFilter,
+      setNetworkPath,
+      getNetworkFilter,
+      raw
+    }
+  }, [dateFilter, pathname, read, write])
 }

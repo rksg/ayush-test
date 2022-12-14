@@ -1,28 +1,168 @@
+import { APMeshRole }                       from '../constants'
+import { CapabilitiesApModel, PoeModeEnum } from '../models'
+import { ApDeep }                           from '../models/ApDeep'
+import { ApPacketCaptureStateEnum }         from '../models/ApPacketCaptureEnum'
+import { DeviceGps }                        from '../models/DeviceGps'
+import { DhcpApInfo }                       from '../models/DhcpApInfo'
+import { ExternalAntenna }                  from '../models/ExternalAntenna'
+import { VenueLanPort }                     from '../models/VenueLanPort'
 
-export interface APRadio {
-  channel?: number,
-  band: string,
-  radioId: number,
-  txPower?: string,
-  Rssi: string
-}
+import { ApVenueStatusEnum } from '.'
+
 export interface AP {
   IP?: string
   apMac?: string
   apStatusData?: {
-    APRadio?: Array<APRadio>
+    APRadio?: Array<RadioProperties>
+    cellularInfo: CelluarInfo
+    APSystem?: {
+      uptime?: number
+    }
   },
-  clients?: number,
-  deviceGroupId: string,
-  deviceGroupName?: string,
-  deviceStatus: string,
-  meshRole: string,
-  model: string,
-  name?: string,
-  serialNumber: string,
-  tags: string,
-  venueId: string,
+  clients?: number
+  deviceGroupId: string
+  deviceGroupName?: string
+  deviceStatus: string
+  meshRole: string
+  model: string
+  name?: string
+  serialNumber: string
+  tags: string
+  venueId: string
   venueName: string
+  description?: string
+  deviceGps?: DeviceGps
+  deviceStatusSeverity?: ApVenueStatusEnum,
+  lastSeenTime?: string
+  uptime?: string
+  password?: string
+  extIp?: string
+  deviceModelType?: string
+  fwVersion?: string
+  isMeshEnable?: boolean
+  rootAP?: {
+    name: string
+    serialNumber?: string
+  }
+  hops?: number
+  apDownRssi?: number
+  apUpRssi: number
+}
+
+export interface ApViewModel extends AP {
+  channel24?: RadioProperties
+  channel50?: RadioProperties
+  channelL50?: RadioProperties
+  channelU50?: RadioProperties
+  channel60?: RadioProperties
+}
+
+export interface CelluarInfo {
+  cellularIsSIM0Present: string
+  cellularIMSISIM0: string
+  cellularICCIDSIM0: string
+  cellularTxBytesSIM0: string
+  cellularRxBytesSIM0: string
+  cellularSwitchCountSIM0: string
+  cellularNWLostCountSIM0: string
+  cellularCardRemovalCountSIM0: string
+  cellularDHCPTimeoutCountSIM0: string
+  cellularDHCPTimeoutCountSIM1: string
+  cellularIsSIM1Present: string
+  cellularIMSISIM1: string
+  cellularICCIDSIM1: string
+  cellularTxBytesSIM1: string
+  cellularRxBytesSIM1: string
+  cellularSwitchCountSIM1: string
+  cellularNWLostCountSIM1: string
+  cellularCardRemovalCountSIM1: string
+  cellularDHCPTimeoutCountSIM?: string
+  cellularActiveSim: string
+  cellularConnectionStatus: string
+  cellularSignalStrength: string
+  cellularWanInterface: string
+  cellular3G4GChannel: number
+  cellularRoamingStatus: string
+  cellularBand: string
+  cellularIMEI: string
+  cellularLTEFirmware: string
+  cellularOperator: string
+  cellularCountry: string
+  cellularIPaddress: string
+  cellularSubnetMask: string
+  cellularDefaultGateway: string
+  cellularRadioUptime: number
+  cellularUplinkBandwidth: string
+  cellularDownlinkBandwidth: string
+  cellularRSRP: number
+  cellularRSRQ: number
+  cellularSINR: number
+  cellularECIO: number
+  cellularRSCP: number
+}
+
+export interface CellularSim {
+  sim0Present: boolean
+  sim0PresentData: SimPresentData
+  sim1Present: boolean
+  sim1PresentData: SimPresentData,
+  simPresent: string
+}
+
+export interface SimPresentData {
+  cellularIMSI: string
+  cellularICCID: string
+  cellularTxBytes: string
+  cellularRxBytes: string
+  cellularSwitchCount: string
+  cellularNWLostCount: string
+  cellularCardRemovalCount: string
+  cellularDHCPTimeoutCount: string
+}
+
+export interface ApDetails {
+  serialNumber: string
+  apGroupId: string
+  venueId: string
+  lanPorts?: ApLanPort
+  name: string
+  description: string
+  softDeleted: boolean
+  model: string
+  updatedDate: string
+  deviceGps?: DeviceGps
+}
+
+export interface ApGroup {
+  aps?: ApDeep[],
+  id: string,
+  isDefault: boolean,
+  name: string,
+  venueId: string
+}
+
+export interface AddApGroup {
+  venueId: string,
+  apSerialNumbers?: unknown[],
+  name: string,
+  id?: string
+}
+
+export interface VenueDefaultApGroup {
+  id: string
+  isDefault: boolean
+  venueId: string,
+  aps?: ApDeep[]
+}
+
+export interface ApDetailHeader {
+  title: string,
+  headers: {
+    overview: string,
+    clients: number,
+    networks: number,
+    services: number
+  }
 }
 
 export interface ApExtraParams {
@@ -36,4 +176,172 @@ export interface ApExtraParams {
 export interface ApStatusDetails {
   name: string,
   serialNumber: string
+}
+export interface APMesh {
+  IP?: string
+  apMac?: string
+  apStatusData?: {
+    APRadio?: Array<RadioProperties>
+  },
+  clients?: { count: number, names: string[] },
+  deviceGroupId?: string,
+  deviceGroupName?: string,
+  deviceStatus?: string,
+  meshRole: APMeshRole,
+  hops?: number,
+  downlink?: APMesh[],
+  uplink?: Uplink[],
+  model: string,
+  name?: string,
+  serialNumber: string,
+  tags?: string,
+  venueId: string,
+  venueName: string,
+  apUpRssi?: number,
+  apDownRssi?: number,
+  rssi?: number,
+  children?: APMesh[],
+  txFrames?: string,
+  rxBytes?: string,
+  txBytes?: string,
+  rxFrames?: string,
+  type?: number,
+  upMac?: string
+}
+interface Uplink{
+  txFrames: string,
+  rssi: number,
+  rxBytes: string,
+  txBytes: string,
+  rxFrames: string,
+  type: number,
+  upMac: string
+}
+export interface LanPort {
+	defaultType: string
+	id: string
+	isPoeOutPort: boolean
+	isPoePort: boolean
+	supportDisable: boolean
+	trunkPortOnly: boolean
+	untagId: number
+	vlanMembers: string,
+	enabled?: boolean,
+	portId?: string,
+	type?: 'ACCESS' | 'GENERAL' | 'TRUNK'
+}
+
+export interface ApModel {
+	allowDfsCountry: string[],
+	canSupportCellular: boolean,
+	canSupportLacp: boolean,
+	canSupportPoeMode: boolean,
+	canSupportPoeOut: boolean,
+	capabilityScore: number,
+	has160MHzChannelBandwidth: boolean,
+	isOutdoor: boolean,
+	lanPortPictureDownloadUrl: string,
+	lanPorts: LanPort[],
+	ledOn: boolean,
+	lldpAdInterval: number,
+	lldpEnable: boolean,
+	lldpHoldTime: number,
+	lldpMgmtEnable: boolean,
+	model: string,
+	pictureDownloadUrl: string,
+	poeModeCapabilities?: string[],
+	trunkPortOnly?: boolean,
+	requireOneEnabledTrunkPort: boolean,
+	simCardPrimaryEnabled: boolean,
+	simCardPrimaryRoaming: boolean,
+	simCardSecondaryEnabled: boolean,
+	simCardSecondaryRoaming: boolean,
+	supportChannel144: boolean,
+	supportDual5gMode: boolean,
+	supportTriRadio: boolean
+}
+
+export interface PingAp {
+  targetHost: string
+}
+
+export interface RadioProperties {
+  Rssi: string;
+  txPower?: string;
+  channel: string;
+  band?: string;
+  radioId?: number
+  operativeChannelBandwidth?: string
+}
+
+export enum GpsFieldStatus {
+  INITIAL,
+  FROM_VENUE,
+  MANUAL
+}
+
+export interface ApLanPort {
+  lanPorts: LanPort[]
+  useVenueSettings: boolean
+}
+
+export interface ApRadio {
+  enable24G: boolean
+  enable50G: boolean
+  useVenueSettings: boolean
+}
+
+
+export interface APPhoto {
+  createdDate: string,
+  id: string,
+  imageId: string,
+  imageName: string,
+  imageUrl: string,
+  updatedDate: string
+}
+export interface DhcpAp {
+  requestId: string,
+  response?: DhcpApInfo[]
+}
+
+export interface PacketCaptureState {
+  status: ApPacketCaptureStateEnum,
+  fileName?: string,
+  fileUrl?: string,
+  sessionId?: string
+}
+
+export interface Capabilities {
+  version?: string,
+  apModels: CapabilitiesApModel[]
+}
+
+export interface ModelLanPorts {
+  lanPorts?: ModelLanPort[],
+  useVenueSettings?: boolean,
+  label?: string,
+  value?: string,
+  poeMode?: PoeModeEnum,
+  poeOut?: boolean,
+  model?: string
+}
+
+export interface PacketCaptureOperationResponse {
+  requestId: string;
+  response?: {
+    sessionId: string;
+  }
+}
+export class ModelLanPort extends VenueLanPort {
+  header?: string
+}
+
+export interface WifiApSetting {
+  useVenueSettings: boolean;
+  externalAntenna?: ExternalAntenna;
+  poeOut?: boolean;
+  poeMode?: string;
+  lanPorts?: LanPort[];
+  lan?: LanPort[];
 }

@@ -1,13 +1,8 @@
-import React, { useState, useRef, ChangeEventHandler } from 'react'
+import React, { useState, useRef, ChangeEventHandler, useEffect } from 'react'
 
-import {
-  Form,
-  Input,
-  Row,
-  Col,
-  Typography
-} from 'antd'
-import { useIntl } from 'react-intl'
+import { Row, Col, Form, Input } from 'antd'
+import _                         from 'lodash'
+import { useIntl }               from 'react-intl'
 
 import {
   GoogleMap,
@@ -17,18 +12,21 @@ import {
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
-import { get }                                          from '@acx-ui/config'
-import { useSplitTreatment }                            from '@acx-ui/feature-toggle'
-import { SearchOutlined }                               from '@acx-ui/icons'
-import { useAddVenueMutation, useLazyVenuesListQuery }  from '@acx-ui/rc/services'
-import { Address, VenueSaveData, checkObjectNotExists } from '@acx-ui/rc/utils'
+import { get }                    from '@acx-ui/config'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { SearchOutlined }         from '@acx-ui/icons'
+import {
+  useAddVenueMutation,
+  useLazyVenuesListQuery,
+  useGetVenueQuery,
+  useUpdateVenueMutation
+} from '@acx-ui/rc/services'
+import { Address, VenueExtended, checkObjectNotExists } from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-
-import { CloseIcon, AddressContainer } from './styledComponents'
 
 interface AddressComponent {
   long_name?: string;
@@ -121,13 +119,14 @@ const defaultAddress: Address = {
 
 export function VenuesForm () {
   const intl = useIntl()
-  const isMapEnabled = useSplitTreatment('acx-ui-maps-api-toggle')
+  const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const navigate = useNavigate()
-  const formRef = useRef<StepsFormInstance<VenueSaveData>>()
+  const formRef = useRef<StepsFormInstance<VenueExtended>>()
   const params = useParams()
 
   const linkToVenues = useTenantLink('/venues')
   const [addVenue] = useAddVenueMutation()
+  const [updateVenue] = useUpdateVenueMutation()
   const [zoom, setZoom] = useState(1)
   const [center, setCenter] = useState<google.maps.LatLngLiteral>({
     lat: 0,
@@ -135,6 +134,35 @@ export function VenuesForm () {
   })
   const [marker, setMarker] = React.useState<google.maps.LatLng>()
   const [address, updateAddress] = useState<Address>(isMapEnabled? {} : defaultAddress)
+
+  const { tenantId, venueId, action } = useParams()
+  const { data } = useGetVenueQuery({ params: { tenantId, venueId } })
+
+  useEffect(() => {
+    if (data) {
+      formRef.current?.setFieldsValue({
+        name: data?.name,
+        description: data?.description,
+        address: data?.address
+      })
+      updateAddress(data?.address as Address)
+
+      if (isMapEnabled && window.google) {
+        const latlng = new google.maps.LatLng({
+          lat: Number(data?.address?.latitude),
+          lng: Number(data?.address?.longitude)
+        })
+        setMarker(latlng)
+        setCenter(latlng.toJSON())
+        setZoom(16)
+      }
+    }
+
+    if ( action !== 'edit') { // Add mode
+      const initialAddress = isMapEnabled ? '' : defaultAddress.addressLine
+      formRef.current?.setFieldValue(['address', 'addressLine'], initialAddress)
+    }
+  }, [data, isMapEnabled, window.google])
 
   const venuesListPayload = {
     searchString: '',
@@ -144,33 +172,47 @@ export function VenuesForm () {
     pageSize: 10000
   }
   const [venuesList] = useLazyVenuesListQuery()
+  const [sameCountry, setSameCountry] = useState(true)
   const nameValidator = async (value: string) => {
     const payload = { ...venuesListPayload, searchString: value }
     const list = (await venuesList({ params, payload }, true)
-      .unwrap()).data.map(n => ({ name: n.name }))
-    return checkObjectNotExists(intl, list, { name: value } , 'Venue')
+      .unwrap()).data.filter(n => n.id !== data?.id).map(n => ({ name: n.name }))
+    return checkObjectNotExists(list, { name: value } , intl.$t({ defaultMessage: 'Venue' }))
   }
+  const addressValidator = async (value: string) => {
+    const isEdit = action === 'edit'
+    const isSameValue = value ===
+      formRef.current?.getFieldsValue(['address', 'addressLine']).address?.addressLine
 
-  const addressValidator = async () => {
-    if(Object.keys(address).length === 0){
+    if (isEdit && !_.isEmpty(value) && isSameValue && !sameCountry) {
       return Promise.reject(
-        intl.$t({ defaultMessage: 'Please select address from suggested list' })
+        `${intl.$t({ defaultMessage: 'Address must be in ' })} ${data?.address.country}`
       )
     }
     return Promise.resolve()
   }
+
 
   const addressOnChange: ChangeEventHandler<HTMLInputElement> = async (event) => {
     updateAddress({})
     const autocomplete = new google.maps.places.Autocomplete(event.target)
     autocomplete.addListener('place_changed', async () => {
       const place = autocomplete.getPlace()
-
-      formRef.current?.setFieldsValue({
-        address: { addressLine: place.formatted_address }
-      })
-
       const { latlng, address } = await addressParser(place)
+      const isSameCountry = data && (data?.address.country === address.country) || false
+      setSameCountry(isSameCountry)
+      let errorList = []
+
+      if (action === 'edit' && !isSameCountry) {
+        errorList.push(
+          `${intl.$t({ defaultMessage: 'Address must be in ' })} ${data?.address.country}`)
+      }
+
+      formRef.current?.setFields([{
+        name: ['address', 'addressLine'],
+        value: place.formatted_address,
+        errors: errorList
+      }])
 
       setMarker(latlng)
       setCenter(latlng.toJSON())
@@ -179,7 +221,7 @@ export function VenuesForm () {
     })
   }
 
-  const handleAddVenue = async (values: VenueSaveData) => {
+  const handleAddVenue = async (values: VenueExtended) => {
     try {
       const formData = { ...values }
       formData.address = address
@@ -193,87 +235,88 @@ export function VenuesForm () {
     }
   }
 
+  const handleEditVenue = async (values: VenueExtended) => {
+    try {
+      const formData = { ...values }
+      formData.address = address
+      await updateVenue({ params, payload: formData }).unwrap()
+      navigate(linkToVenues, { replace: true })
+    } catch {
+      showToast({
+        type: 'error',
+        content: intl.$t({ defaultMessage: 'An error occurred' })
+      })
+    }
+  }
+
   return (
     <>
-      <PageHeader
+      {action !== 'edit' && <PageHeader
         title={intl.$t({ defaultMessage: 'Add New Venue' })}
         breadcrumb={[
-          { text: 'Venues', link: '/venues' }
+          { text: intl.$t({ defaultMessage: 'Venues' }), link: '/venues' }
         ]}
-      />
+      />}
       <StepsForm
         formRef={formRef}
-        onFinish={handleAddVenue}
+        onFinish={action === 'edit' ? handleEditVenue : handleAddVenue}
         onCancel={() => navigate(linkToVenues)}
+        buttonLabel={{ submit: action === 'edit' ?
+          intl.$t({ defaultMessage: 'Save' }):
+          intl.$t({ defaultMessage: 'Add' }) }}
       >
         <StepsForm.StepForm>
-          <Form.Item
-            name='name'
-            label={intl.$t({ defaultMessage: 'Venue Name' })}
-            rules={[{
-              required: true
-            },{
-              validator: (_, value) => nameValidator(value)
-            }]}
-            wrapperCol={{ span: 5 }}
-            validateFirst
-            hasFeedback
-            children={<Input />} />
-          <Form.Item
-            name='description'
-            label={intl.$t({ defaultMessage: 'Description' })}
-            wrapperCol={{ span: 5 }}
-            children={<Input.TextArea rows={2} maxLength={180} />} />
-          {/*
-        <Form.Item
-        name='tags'
-        label='Tags:'
-        children={<Input />} />
-        */}
-          <Row align='middle'>
-            <Col span={2} style={{ textAlign: 'left' }}>
-              <span className='ant-form-item-label'>
-                <label className='ant-form-item-required'>
-                  {intl.$t({ defaultMessage: 'Address' })}
-                </label>
-              </span>
-            </Col>
-            <Col span={9} style={{ textAlign: 'right' }}>
-              <span className='ant-form-item-label'>
-                <label>
-                  {intl.$t({
-                    defaultMessage: 'Make sure to include a city and country in the address'
-                  })}
-                </label>
-              </span>
+          <Row gutter={20}>
+            <Col span={8}>
+              <Form.Item
+                name='name'
+                label={intl.$t({ defaultMessage: 'Venue Name' })}
+                rules={[{
+                  required: true
+                },{
+                  validator: (_, value) => nameValidator(value)
+                }]}
+                validateFirst
+                hasFeedback
+                children={<Input />}
+              />
+              <Form.Item
+                name='description'
+                label={intl.$t({ defaultMessage: 'Description' })}
+                children={<Input.TextArea rows={2} maxLength={180} />}
+              />
+              {/*
+              <Form.Item
+              name='tags'
+              label='Tags:'
+              children={<Input />} />
+              */}
             </Col>
           </Row>
-          <Row>
-            <Col span={11}
-              style={{
-                aspectRatio: '470 / 260',
-                position: 'relative',
-                marginBottom: 30
-              }}>
-              <AddressContainer
-                style={{
-                  position: 'absolute',
-                  zIndex: 10,
-                  width: 'calc(100% - 24px)',
-                  margin: 12
-                }}>
+          <Row gutter={20}>
+            <Col span={10}>
+              <GoogleMap.FormItem
+                label={intl.$t({ defaultMessage: 'Address' })}
+                required
+                extra={intl.$t({
+                  defaultMessage: 'Make sure to include a city and country in the address'
+                })}
+              >
                 <Form.Item
+                  noStyle
+                  label={intl.$t({ defaultMessage: 'Address' })}
                   name={['address', 'addressLine']}
                   rules={[{
                     required: isMapEnabled ? true : false
-                  },{
-                    validator: () => addressValidator(),
-                    validateTrigger: 'onChange'
-                  }]}
-                  initialValue={!isMapEnabled ? defaultAddress.addressLine : ''}
+                  }, {
+                    validator: (_, value) => addressValidator(value),
+                    validateTrigger: 'onBlur'
+                  }
+                  ]}
                 >
                   <Input
-                    allowClear={{ clearIcon: <CloseIcon /> }}
+                    allowClear
+                    placeholder={intl.$t({ defaultMessage: 'Set address here' })}
                     prefix={<SearchOutlined />}
                     onChange={addressOnChange}
                     data-testid='address-input'
@@ -281,25 +324,21 @@ export function VenuesForm () {
                     value={address.addressLine}
                   />
                 </Form.Item>
-              </AddressContainer>
-              {isMapEnabled ?
-                <GoogleMap
-                  libraries={['places']}
-                  mapTypeControl={false}
-                  streetViewControl={false}
-                  fullscreenControl={false}
-                  zoom={zoom}
-                  center={center}
-                >
-                  {marker && <GoogleMapMarker position={marker} />}
-                </GoogleMap>
-                :
-                <Typography.Title level={2}
-                  style={{ textAlign: 'center', paddingTop: '3em' }}
-                >
-                Map is not enabled
-                </Typography.Title>
-              }
+                {isMapEnabled ?
+                  <GoogleMap
+                    libraries={['places']}
+                    mapTypeControl={false}
+                    streetViewControl={false}
+                    fullscreenControl={false}
+                    zoom={zoom}
+                    center={center}
+                  >
+                    {marker && <GoogleMapMarker position={marker} />}
+                  </GoogleMap>
+                  :
+                  <GoogleMap.NotEnabled />
+                }
+              </GoogleMap.FormItem>
             </Col>
           </Row>
         </StepsForm.StepForm>

@@ -5,11 +5,14 @@ import {
   PassphraseFormatEnum,
   WlanSecurityEnum
 } from '../constants'
-import { AAAWlanAdvancedCustomization }  from '../models/AAAWlanAdvancedCustomization'
-import { DpskWlanAdvancedCustomization } from '../models/DpskWlanAdvancedCustomization'
-import { NetworkVenue }                  from '../models/NetworkVenue'
-import { OpenWlanAdvancedCustomization } from '../models/OpenWlanAdvancedCustomization'
-import { PskWlanAdvancedCustomization }  from '../models/PskWlanAdvancedCustomization'
+import { AAAWlanAdvancedCustomization }   from '../models/AAAWlanAdvancedCustomization'
+import { DpskWlanAdvancedCustomization }  from '../models/DpskWlanAdvancedCustomization'
+import { GuestPortal }                    from '../models/GuestPortal'
+import { GuestWlanAdvancedCustomization } from '../models/GuestWlanAdvancedCustomization'
+import { NetworkVenue }                   from '../models/NetworkVenue'
+import { OpenWlanAdvancedCustomization }  from '../models/OpenWlanAdvancedCustomization'
+import { PskWlanAdvancedCustomization }   from '../models/PskWlanAdvancedCustomization'
+import { Radius }                         from '../models/Radius'
 
 
 export interface CreateNetworkFormFields {
@@ -59,7 +62,7 @@ export interface NetworkDetail {
     ssid?: string;
     vlanId?: number;
     enable?: boolean;
-    advancedCustomization?:  
+    advancedCustomization?:
       OpenWlanAdvancedCustomization |
       AAAWlanAdvancedCustomization |
       DpskWlanAdvancedCustomization |
@@ -68,8 +71,8 @@ export interface NetworkDetail {
 }
 
 export interface NetworkSaveData {
-  name?: string;
   id?: string;
+  name?: string;
   tenantId?: string;
   description?: string;
   type?: NetworkTypeEnum;
@@ -81,6 +84,8 @@ export interface NetworkSaveData {
   isCloudpathEnabled?: boolean;
   cloudpathServerId?: string;
   venues?: NetworkVenue[];
+  redirectUrl?: string;
+  guestPortal?: GuestPortal;
   wlan?: {
     ssid?: string;
     vlanId?: number;
@@ -94,38 +99,17 @@ export interface NetworkSaveData {
     macAuthMacFormat?: string;
     wlanSecurity?: WlanSecurityEnum;
     wepHexKey?: string;
-    advancedCustomization?: 
+    advancedCustomization?:
       OpenWlanAdvancedCustomization |
       AAAWlanAdvancedCustomization |
       DpskWlanAdvancedCustomization |
-      PskWlanAdvancedCustomization;
+      PskWlanAdvancedCustomization |
+      GuestWlanAdvancedCustomization
   };
   wlanSecurity?: WlanSecurityEnum;
   dpskWlanSecurity?: WlanSecurityEnum;
-  authRadius?: {
-    primary: {
-      ip: string;
-      port: string;
-      sharedSecret: string;
-    };
-    secondary: {
-      ip: string;
-      port: string;
-      sharedSecret: string;
-    };
-  };
-  accountingRadius?: {
-    primary: {
-      ip: string;
-      port: string;
-      sharedSecret: string;
-    };
-    secondary: {
-      ip: string;
-      port: string;
-      sharedSecret: string;
-    };
-  };
+  authRadius?: Radius;
+  accountingRadius?: Radius;
   passphraseLength?: number;
   passphraseFormat?: PassphraseFormatEnum;
   expiration?: PassphraseExpirationEnum;

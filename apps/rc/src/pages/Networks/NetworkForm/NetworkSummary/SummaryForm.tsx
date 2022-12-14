@@ -100,6 +100,13 @@ export function SummaryForm (props: {
                 label={$t({ defaultMessage: 'Authentication Server' })}
                 children={`${selected.authRadius.primary.ip}:${selected.authRadius.primary.port}`}
               />
+              {selected.accountingRadius &&
+                <Form.Item
+                  label={$t({ defaultMessage: 'Accounting Service' })}
+                  children={`${selected.accountingRadius?.primary.ip}:
+                    ${selected.accountingRadius?.primary.port}`}
+                />
+              }
               <Form.Item
                 label={$t({ defaultMessage: 'Shared Secret' })}
                 children={<Input.Password

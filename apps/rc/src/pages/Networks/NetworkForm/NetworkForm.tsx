@@ -4,7 +4,6 @@ import _                                     from 'lodash'
 import { defineMessage, useIntl, IntlShape } from 'react-intl'
 
 import {
-  Button,
   PageHeader,
   showToast,
   showActionModal,
@@ -31,6 +30,10 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
+
+import { OnboardingForm } from './CaptivePortal/OnboardingForm'
+import { PortalTypeForm } from './CaptivePortal/PortalTypeForm'
+import { PortalWebForm }  from './CaptivePortal/PortalWebForm'
 import {
   multipleConflictMessage,
   radiusErrorMessage
@@ -58,19 +61,17 @@ const settingTitle = defineMessage({
   }`
 })
 
-export function NetworkForm () {
+export default function NetworkForm () {
   const intl = useIntl()
   const navigate = useNavigate()
   const linkToNetworks = useTenantLink('/networks')
   const params = useParams()
   const editMode = params.action === 'edit'
   const cloneMode = params.action === 'clone'
-  const [networkType, setNetworkType] = useState<NetworkTypeEnum | undefined>()
 
   const [addNetwork] = useAddNetworkMutation()
   const [updateNetwork] = useUpdateNetworkMutation()
   const [getValidateRadius] = useLazyValidateRadiusQuery()
-  const [enableMoreSettings, setEnabled] = useState(false)
 
   const formRef = useRef<StepsFormInstance<NetworkSaveData>>()
 
@@ -105,6 +106,19 @@ export function NetworkForm () {
       updateSaveData({ ...data, isCloudpathEnabled: data.cloudpathServerId !== undefined })
     }
   }, [data])
+
+  const handlePortalWebPage = async (data: NetworkSaveData) => {
+    const tmpGuestPageState = {
+      guestPortal: {
+        ...saveState?.guestPortal,
+        guestPage: {
+          ...data
+        }
+      }
+    }
+    updateSaveData({ ...saveState, ...tmpGuestPageState } as NetworkSaveData)
+    return true
+  }
 
   const handleAddNetwork = async () => {
     try {
@@ -223,13 +237,19 @@ export function NetworkForm () {
   return (
     <>
       <PageHeader
-        title={editMode ?
-          intl.$t({ defaultMessage: 'Edit Network' }) : intl.$t({ defaultMessage: 'Add Network' })}
+        title={editMode
+          ? intl.$t({ defaultMessage: 'Edit Network' })
+          : intl.$t({ defaultMessage: 'Create New Network' })}
         breadcrumb={[
           { text: intl.$t({ defaultMessage: 'Networks' }), link: '/networks' }
         ]}
       />
-      <NetworkFormContext.Provider value={{ setNetworkType, editMode, cloneMode, data }}>
+      <NetworkFormContext.Provider value={{
+        editMode,
+        cloneMode,
+        data: saveState,
+        setData: updateSaveState
+      }}>
         <StepsForm<NetworkSaveData>
           formRef={formRef}
           editMode={editMode}
@@ -250,7 +270,7 @@ export function NetworkForm () {
 
           <StepsForm.StepForm
             name='settings'
-            title={intl.$t(settingTitle, { type: networkType })}
+            title={intl.$t(settingTitle, { type: saveState.type })}
             onFinish={async (data) => {
               const radiusChanged = !_.isEqual(data?.authRadius, saveState?.authRadius)
                           || !_.isEqual(data?.accountingRadius, saveState?.accountingRadius)
@@ -264,7 +284,7 @@ export function NetworkForm () {
                   ...{ type: saveState.type },
                   ...data
                 }
-                let settingSaveData = tranferSettingsToSave(settingData)
+                let settingSaveData = tranferSettingsToSave(settingData, editMode)
                 if(!editMode) {
                   settingSaveData = transferMoreSettingsToSave(data, settingSaveData)
                 }
@@ -274,27 +294,48 @@ export function NetworkForm () {
               return false
             }}
           >
-            {saveState.type === NetworkTypeEnum.AAA && <AaaSettingsForm />}
-            {saveState.type === NetworkTypeEnum.OPEN && <OpenSettingsForm />}
-            {saveState.type === NetworkTypeEnum.DPSK && <DpskSettingsForm />}
-            {saveState.type === NetworkTypeEnum.PSK && <PskSettingsForm />}
+            {saveState.type === NetworkTypeEnum.AAA && <AaaSettingsForm saveState={saveState}/>}
+            {saveState.type === NetworkTypeEnum.OPEN && <OpenSettingsForm saveState={saveState}/>}
+            {saveState.type === NetworkTypeEnum.DPSK && <DpskSettingsForm saveState={saveState}/>}
+            {saveState.type === NetworkTypeEnum.CAPTIVEPORTAL && <PortalTypeForm />}
+            {saveState.type === NetworkTypeEnum.PSK && <PskSettingsForm saveState={saveState}/>}
 
-            {!editMode && <>
-              <Button
-                type='link'
-                onClick={() => {
-                  setEnabled(!enableMoreSettings)
+          </StepsForm.StepForm>
+          {editMode &&
+            <StepsForm.StepForm
+              name='moreSettings'
+              title={intl.$t({ defaultMessage: 'More Settings' })}
+              onFinish={async (data) => {
+                const settingSaveData = transferMoreSettingsToSave(data, saveState)
+
+                updateSaveData(settingSaveData)
+                return true
+              }}>
+
+              <NetworkMoreSettingsForm wlanData={saveState} />
+
+            </StepsForm.StepForm>}
+          { saveState.type === NetworkTypeEnum.CAPTIVEPORTAL &&
+              <StepsForm.StepForm
+                name='onboarding'
+                title={intl.$t({ defaultMessage: 'Onboarding' })}
+                onFinish={async () => {
+                  return true
                 }}
               >
-                {enableMoreSettings ? intl.$t({ defaultMessage: 'Show less settings' }) :
-                  intl.$t({ defaultMessage: 'Show more settings' })}
-              </Button>
-              {enableMoreSettings &&
-                <NetworkMoreSettingsForm wlanData={saveState} />}
-            </>
-            }
-          </StepsForm.StepForm>
+                <OnboardingForm />
+              </StepsForm.StepForm>
+          }
 
+          { saveState.type === NetworkTypeEnum.CAPTIVEPORTAL &&
+              <StepsForm.StepForm
+                name='portalweb'
+                title={intl.$t({ defaultMessage: 'Portal Web Page' })}
+                onFinish={handlePortalWebPage}
+              >
+                <PortalWebForm />
+              </StepsForm.StepForm>
+          }
           <StepsForm.StepForm
             name='venues'
             title={intl.$t({ defaultMessage: 'Venues' })}
@@ -315,6 +356,7 @@ export function NetworkForm () {
     </>
   )
 }
+
 
 function showConfigConflictModal (
   message: string,
@@ -359,7 +401,7 @@ function showConfigConflictModal (
       ...tranferSettingsToSave({
         ...saveState,
         ...data
-      }),
+      }, editMode),
       ...authRadius && { authRadius },
       ...accountingRadius && { accountingRadius }
     } as Partial<CreateNetworkFormFields>
@@ -382,7 +424,7 @@ function showConfigConflictModal (
       ...{ type: saveState.type },
       ...data
     }
-    let settingSaveData = tranferSettingsToSave(settingData)
+    let settingSaveData = tranferSettingsToSave(settingData, editMode)
     if(!editMode) {
       settingSaveData = transferMoreSettingsToSave(data, settingSaveData)
     }

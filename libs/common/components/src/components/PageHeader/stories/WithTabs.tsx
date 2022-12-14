@@ -10,7 +10,8 @@ import { Button }     from '../../Button'
 export function WithTabs () {
   return <BrowserRouter>
     <PageHeader
-      title='With Tabs'
+      title={Array(10).join('A Very Long Title ')}
+      subTitle={Array(15).join('A very long subtitle ')}
       breadcrumb={[
         { text: 'Networks', link: '/networks' }
       ]}

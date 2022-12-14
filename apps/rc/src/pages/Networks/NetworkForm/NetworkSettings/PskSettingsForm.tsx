@@ -1,9 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect } from 'react'
 
-import {
-  QuestionCircleOutlined,
-  ExclamationCircleFilled
-} from '@ant-design/icons'
 import { Space } from 'antd'
 import {
   Col,
@@ -11,17 +7,18 @@ import {
   Row,
   Select,
   Switch,
-  Tooltip,
   Input
 } from 'antd'
-import { useIntl } from 'react-intl'
+import { useIntl, FormattedMessage } from 'react-intl'
 
 import {
   StepsForm,
   Button,
-  Subtitle
+  Subtitle,
+  Tooltip
 } from '@acx-ui/components'
-import { useCloudpathListQuery } from '@acx-ui/rc/services'
+import { InformationSolid, QuestionMarkCircleOutlined } from '@acx-ui/icons'
+import { ToggleButton, IpPortSecretForm }               from '@acx-ui/rc/components'
 import {
   ManagementFrameProtectionEnum,
   PskWlanSecurityEnum,
@@ -32,27 +29,29 @@ import {
   AaaServerTypeEnum,
   AaaServerOrderEnum,
   trailingNorLeadingSpaces,
-  NetworkTypeEnum,
   WlanSecurityEnum,
   WifiNetworkMessages,
-  hexRegExp
+  hexRegExp,
+  passphraseRegExp,
+  NetworkSaveData,
+  generateHexKey
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
 
-import { IpPortSecretForm } from '../../../../components/IpPortSecretForm'
-import { ToggleButton }     from '../../../../components/ToggleButton'
-import { NetworkDiagram }   from '../NetworkDiagram/NetworkDiagram'
-import NetworkFormContext   from '../NetworkFormContext'
+import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
+import NetworkFormContext          from '../NetworkFormContext'
+import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 
 const { Option } = Select
 
 const { useWatch } = Form
 
-export function PskSettingsForm () {
-  const { data } = useContext(NetworkFormContext)
+export function PskSettingsForm (props: {
+  saveState: NetworkSaveData
+}) {
+  const { editMode, cloneMode, data } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
   useEffect(()=>{
-    if(data){
+    if((editMode || cloneMode) && data){
       form.setFieldsValue({
         wlan: {
           passphrase: data.wlan?.passphrase,
@@ -73,72 +72,22 @@ export function PskSettingsForm () {
       })
     }
   }, [data])
-  const [
-    selectedId,
-    macAddressAuthentication
-  ] = [
-    useWatch('cloudpathServerId'),
-    useWatch('macAddressAuthentication')
-  ]
-  const { selected } = useCloudpathListQuery({ params: useParams() }, {
-    selectFromResult ({ data }) {
-      return {
-        selected: data?.find((item) => item.id === selectedId)
-      }
-    }
-  })
 
   return (
     <Row gutter={20}>
       <Col span={10}>
         <SettingsForm />
+        {!(editMode) && <NetworkMoreSettingsForm wlanData={props.saveState} />}
       </Col>
-      <Col span={14}>
-        <NetworkDiagram
-          type={NetworkTypeEnum.PSK}
-          cloudpathType={selected?.deploymentType}
-          enableMACAuth={macAddressAuthentication}
-        />
-        <AaaButtons />
+      <Col span={14} style={{ height: '100%' }}>
+        <NetworkDiagram />
       </Col>
     </Row>
   )
 }
 
-function AaaButtons () {
-  const { $t } = useIntl()
-  const [enableAaaAuthBtn, setEnableAaaAuthBtn] = useState(true)
-  const [
-    isCloudpathEnabled,
-    enableAuthProxy,
-    enableAccountingService,
-    enableAccountingProxy
-  ] = [
-    useWatch('isCloudpathEnabled'),
-    useWatch('enableAuthProxy'),
-    useWatch('enableAccountingService'),
-    useWatch('enableAccountingProxy')
-  ]
-  const show = enableAuthProxy !== Boolean(enableAccountingProxy) &&
-    enableAccountingService &&
-    !isCloudpathEnabled
-
-  if (!show) return null
-
-  return (
-    <Space align='center' style={{ display: 'flex', justifyContent: 'center' }}>
-      <Button type='link' disabled={enableAaaAuthBtn} onClick={() => setEnableAaaAuthBtn(true)}>
-        {$t({ defaultMessage: 'Authentication Service' })}
-      </Button>
-      <Button type='link' disabled={!enableAaaAuthBtn} onClick={() => setEnableAaaAuthBtn(false)}>
-        {$t({ defaultMessage: 'Accounting Service' })}
-      </Button>
-    </Space>
-  )
-}
-
 function SettingsForm () {
-  const { editMode } = useContext(NetworkFormContext)
+  const { editMode, data, setData } = useContext(NetworkFormContext)
   const intl = useIntl()
   const form = Form.useFormInstance()
   const [
@@ -160,7 +109,7 @@ function SettingsForm () {
           WlanSecurityEnum.WEP
         ].indexOf(wlanSecurity) > -1 &&
           <Space align='start'>
-            <ExclamationCircleFilled />
+            <InformationSolid />
             {SecurityOptionsDescription.WPA2_DESCRIPTION_WARNING}
           </Space>
         }
@@ -181,11 +130,8 @@ function SettingsForm () {
       { macAuthMacFormatOptions[key as keyof typeof macAuthMacFormatOptions] }
     </Option>
   ))
-  const generateHexKey = () => {
-    let hexKey = ''
-    while (hexKey.length < 26) {
-      hexKey += Math.random().toString(16).substring(2)
-    }
+  const onGenerateHexKey = () => {
+    let hexKey = generateHexKey(26)
     form.setFieldsValue({ wlan: { wepHexKey: hexKey.substring(0, 26) } })
   }
   const securityOnChange = (value: string) => {
@@ -213,6 +159,9 @@ function SettingsForm () {
         break
     }
   }
+  const onMacAuthChange = (checked: boolean) => {
+    setData && setData({ ...data, wlan: { macAddressAuthentication: checked } })
+  }
 
   return (
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
@@ -225,8 +174,11 @@ function SettingsForm () {
               ??SecurityOptionsPassphraseLabel.WPA2Personal}
             rules={[
               { required: true, min: 8 },
-              { validator: (_, value) => trailingNorLeadingSpaces(intl, value) }
+              { max: 64 },
+              { validator: (_, value) => trailingNorLeadingSpaces(value) },
+              { validator: (_, value) => passphraseRegExp(value) }
             ]}
+            validateFirst
             extra={intl.$t({ defaultMessage: '8 characters minimum' })}
             children={<Input.Password />}
           />
@@ -237,13 +189,13 @@ function SettingsForm () {
             label={SecurityOptionsPassphraseLabel[PskWlanSecurityEnum.WEP]}
             rules={[
               { required: true },
-              { validator: (_, value) => hexRegExp(intl, value) }
+              { validator: (_, value) => hexRegExp(value) }
             ]}
             extra={intl.$t({ defaultMessage: 'Must be 26 hex characters' })}
             children={<Input.Password />}
           />
-          <div style={{ position: 'absolute', top: '105px', right: '15px' }}>
-            <Button type='link' onClick={generateHexKey}>
+          <div style={{ position: 'absolute', top: '111px', right: '15px' }}>
+            <Button type='link' onClick={onGenerateHexKey}>
               {intl.$t({ defaultMessage: 'Generate' })}
             </Button>
           </div>
@@ -257,8 +209,11 @@ function SettingsForm () {
             }
             rules={[
               { required: true, min: 8 },
-              { validator: (_, value) => trailingNorLeadingSpaces(intl, value) }
+              { max: 64 },
+              { validator: (_, value) => trailingNorLeadingSpaces(value) },
+              { validator: (_, value) => passphraseRegExp(value) }
             ]}
+            validateFirst
             extra={intl.$t({ defaultMessage: '8 characters minimum' })}
             children={<Input.Password />}
           />
@@ -276,7 +231,21 @@ function SettingsForm () {
         {[WlanSecurityEnum.WPA2Personal, WlanSecurityEnum.WPA3, WlanSecurityEnum.WPA23Mixed]
           .includes(wlanSecurity) &&
           <Form.Item
-            label={intl.$t({ defaultMessage: 'Management Frame Protection (802.11w)' })}
+            label={<>
+              { intl.$t({ defaultMessage: 'Management Frame Protection (802.11w)' }) }
+              <Tooltip
+                title={<FormattedMessage
+                  {...WifiNetworkMessages.NETWORK_MFP_TOOLTIP}
+                  values={{
+                    p: (text: string) => <p>{text}</p>,
+                    ul: (text: string) => <ul>{text}</ul>,
+                    li: (text: string) => <li>{text}</li>
+                  }}
+                />}
+                placement='bottom'>
+                <QuestionMarkCircleOutlined />
+              </Tooltip>
+            </>}
             name={['wlan', 'managementFrameProtection']}
             initialValue={ManagementFrameProtectionEnum.Disabled}
           >
@@ -293,11 +262,14 @@ function SettingsForm () {
         <Form.Item>
           <Form.Item>
             <Form.Item noStyle name={['wlan', 'macAddressAuthentication']} valuePropName='checked'>
-              <Switch disabled={editMode} />
+              <Switch disabled={editMode} onChange={onMacAuthChange}/>
             </Form.Item>
             <span>{intl.$t({ defaultMessage: 'Use MAC Auth' })}</span>
-            <Tooltip title={WifiNetworkMessages.ENABLE_MAC_AUTH_TOOLTIP} placement='bottom'>
-              <QuestionCircleOutlined />
+            <Tooltip
+              title={intl.$t(WifiNetworkMessages.ENABLE_MAC_AUTH_TOOLTIP)}
+              placement='bottom'
+            >
+              <QuestionMarkCircleOutlined />
             </Tooltip>
           </Form.Item>
         </Form.Item>

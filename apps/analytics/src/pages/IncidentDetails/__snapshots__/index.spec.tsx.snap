@@ -6,7 +6,7 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
   >
     <div
-      class="styledComponents__Wrapper-sc-xov27h-0 dGyrAP"
+      class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
     >
       <div
         class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -55,9 +55,26 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
               class="ant-page-header-heading-title"
             >
               <h1
-                class="ant-typography"
+                aria-label="Incident Details"
+                class="ant-typography ant-typography-ellipsis ant-typography-single-line"
               >
                 Incident Details
+                <span
+                  aria-hidden="true"
+                  style="position: fixed; display: block; left: 0px; top: 0px; z-index: -9999; visibility: hidden; pointer-events: none; word-break: keep-all; white-space: nowrap;"
+                >
+                  lg
+                </span>
+                <span
+                  aria-hidden="true"
+                  style="position: fixed; display: block; left: 0px; top: 0px; z-index: -9999; visibility: hidden; pointer-events: none; width: 0px; white-space: normal; margin: 0px; padding: 0px;"
+                >
+                  <span
+                    aria-hidden="true"
+                  >
+                    ...
+                  </span>
+                </span>
               </h1>
               <span
                 class="styledComponents__Pill-sc-j61ge1-0 kucCZT"
@@ -66,13 +83,33 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
                 P3
               </span>
             </span>
-            <span
-              class="ant-page-header-heading-sub-title"
-              title="EAP failures are unusually high in Access Point: RuckusAP (70:CA:97:01:A0:C0)"
-            >
-              EAP failures are unusually high in Access Point: RuckusAP (70:CA:97:01:A0:C0)
-            </span>
           </div>
+        </div>
+        <div
+          class="ant-page-header-content"
+        >
+          <span
+            aria-label="EAP failures are unusually high in Access Point: RuckusAP (70:CA:97:01:A0:C0)"
+            class="ant-typography ant-typography-ellipsis ant-typography-single-line"
+          >
+            EAP failures are unusually high in Access Point: RuckusAP (70:CA:97:01:A0:C0)
+            <span
+              aria-hidden="true"
+              style="position: fixed; display: block; left: 0px; top: 0px; z-index: -9999; visibility: hidden; pointer-events: none; word-break: keep-all; white-space: nowrap;"
+            >
+              lg
+            </span>
+            <span
+              aria-hidden="true"
+              style="position: fixed; display: block; left: 0px; top: 0px; z-index: -9999; visibility: hidden; pointer-events: none; width: 0px; white-space: normal; margin: 0px; padding: 0px;"
+            >
+              <span
+                aria-hidden="true"
+              >
+                ...
+              </span>
+            </span>
+          </span>
         </div>
       </div>
     </div>
@@ -90,7 +127,15 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
           <div
             class="styledComponents__FixedAutoSizer-sc-cwxgii-0 eRhgSF"
             style="overflow: visible; height: 0px; width: 0px;"
-          />
+          >
+            <div
+              style="width: 1280px;"
+            >
+              <div
+                data-testid="incidentAttributes"
+              />
+            </div>
+          </div>
           <div
             class="resize-triggers"
           >
@@ -98,7 +143,7 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
               class="expand-trigger"
             >
               <div
-                style="width: 1px; height: 1px;"
+                style="width: 1281px; height: 801px;"
               />
             </div>
             <div
@@ -115,7 +160,7 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-3 gHqQDa"
+            class="styledComponents__Wrapper-sc-13w5wfx-4 dnleil"
             type="solid-bg"
           >
             <div
@@ -131,8 +176,16 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
                     class="ant-card-head-title"
                   >
                     <div
-                      class="styledComponents__Title-sc-13w5wfx-4 klEBQV"
-                    />
+                      class="ant-space ant-space-horizontal ant-space-align-center"
+                    >
+                      <div
+                        class="ant-space-item"
+                      >
+                        <div
+                          class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                        />
+                      </div>
+                    </div>
                   </div>
                   <div
                     class="ant-card-extra"
@@ -147,7 +200,7 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
                 class="ant-card-body"
               >
                 <section
-                  class="styledComponents__Wrapper-sc-117mefi-3 gnybBH"
+                  class="styledComponents__Wrapper-sc-117mefi-3 ggPtaU"
                 >
                   <div
                     class="ant-space ant-space-horizontal ant-space-align-start"
@@ -158,9 +211,8 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
                     >
                       <svg
                         class="styledComponents__BulbOutlinedIcon-sc-117mefi-0 glgoAW"
-                      >
-                        BulbOutlined.svg
-                      </svg>
+                        data-testid="BulbOutlined"
+                      />
                     </div>
                     <div
                       class="ant-space-item"
@@ -184,7 +236,7 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
                         class="Grid__Container-sc-5irhjd-1 zzbxI"
                       >
                         <div
-                          class="styledComponents__Title-sc-13w5wfx-4 styledComponents__Subtitle-sc-117mefi-2 klEBQV looZqI"
+                          class="styledComponents__Title-sc-13w5wfx-5 styledComponents__Subtitle-sc-117mefi-2 hYNJuf looZqI"
                         >
                           Root Cause Analysis
                         </div>
@@ -201,7 +253,7 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
                         class="Grid__Container-sc-5irhjd-1 zzbxI"
                       >
                         <div
-                          class="styledComponents__Title-sc-13w5wfx-4 styledComponents__Subtitle-sc-117mefi-2 klEBQV looZqI"
+                          class="styledComponents__Title-sc-13w5wfx-5 styledComponents__Subtitle-sc-117mefi-2 hYNJuf looZqI"
                         >
                           Recommended Action
                         </div>
@@ -223,6 +275,7 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
       >
         <div
           class="Grid__Container-sc-5irhjd-1 zzbxI"
+          style="min-height: 228px;"
         >
           <div
             data-testid="networkImpact"
@@ -235,10 +288,11 @@ exports[`incident details should render Incident Details Page correctly 1`] = `
       >
         <div
           class="Grid__Container-sc-5irhjd-1 zzbxI"
+          style="min-height: 250px;"
         >
-          <div>
-            time series section
-          </div>
+          <div
+            data-testid="timeSeries"
+          />
         </div>
       </div>
     </div>

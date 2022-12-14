@@ -16,7 +16,6 @@ Object {
         "value": 1,
       },
     ],
-    "key": "WLAN",
   },
   "clientManufacturer": Object {
     "count": 2,
@@ -32,7 +31,6 @@ Object {
         "value": 1,
       },
     ],
-    "key": "clientManufacturer",
   },
   "radio": Object {
     "count": 2,
@@ -48,7 +46,6 @@ Object {
         "value": 1,
       },
     ],
-    "key": "radio",
   },
   "reason": Object {
     "count": 2,
@@ -59,7 +56,6 @@ Object {
         "value": 2,
       },
     ],
-    "key": "reason",
   },
 }
 `;

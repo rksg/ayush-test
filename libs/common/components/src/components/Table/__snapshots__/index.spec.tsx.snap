@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Table component dynamically scales based on scroll prop 1`] = `
+exports[`Table component renders compact table 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-6 dRjmqW"
+    class="styledComponents__Wrapper-sc-1abm7iv-13 hSrKcM"
   >
     <div
       class="ant-pro-table"
@@ -17,38 +17,7 @@ exports[`Table component dynamically scales based on scroll prop 1`] = `
         >
           <div
             class="ant-pro-table-list-toolbar"
-          >
-            <div
-              class="ant-pro-table-list-toolbar-container"
-            >
-              <div
-                class="ant-pro-table-list-toolbar-left"
-              />
-              <div
-                class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-right"
-              >
-                <div
-                  class="ant-space-item"
-                >
-                  <div
-                    class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-setting-items"
-                  >
-                    <div
-                      class="ant-space-item"
-                    >
-                      <div
-                        class="ant-pro-table-list-toolbar-setting-item"
-                      >
-                        <div
-                          data-testid="settings-outlined"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          />
           <div
             class="ant-table-wrapper"
           >
@@ -59,81 +28,48 @@ exports[`Table component dynamically scales based on scroll prop 1`] = `
                 class="ant-spin-container"
               >
                 <div
-                  class="ant-table ant-table-middle ant-table-fixed-header ant-table-has-fix-right"
+                  class="ant-table ant-table-middle ant-table-scroll-horizontal"
                 >
                   <div
                     class="ant-table-container"
                   >
                     <div
-                      class="ant-table-header"
-                      style="overflow: hidden;"
+                      class="ant-table-content"
+                      style="overflow-x: auto; overflow-y: hidden;"
                     >
                       <table
-                        style="table-layout: fixed; visibility: hidden;"
+                        style="width: 100%; min-width: 100%; table-layout: auto;"
                       >
                         <colgroup />
                         <thead
                           class="ant-table-thead"
                         >
                           <tr>
-                            <td>
-                              <div
-                                data-testid="react-resizable"
-                              />
-                            </td>
                             <th
                               class="ant-table-cell"
                             >
                               Name
                             </th>
-                            <td>
-                              <div
-                                data-testid="react-resizable"
-                              />
-                            </td>
                             <th
                               class="ant-table-cell"
                             >
-                              Age
+                              <span
+                                class="styledComponents__TitleWithTooltip-sc-1abm7iv-1 gemmlX"
+                              >
+                                Age
+                                <svg
+                                  class="styledComponents__InformationTooltip-sc-1abm7iv-0"
+                                  data-testid="InformationOutlined"
+                                />
+                              </span>
                             </th>
-                            <td>
-                              <div
-                                data-testid="react-resizable"
-                              />
-                            </td>
                             <th
                               class="ant-table-cell"
                             >
                               Address
                             </th>
-                            <td>
-                              <div
-                                data-testid="react-resizable"
-                              />
-                            </td>
-                            <th
-                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
-                              style="position: sticky; right: 0px;"
-                            />
                           </tr>
                         </thead>
-                      </table>
-                    </div>
-                    <div
-                      class="ant-table-body"
-                      style="overflow-y: scroll; max-height: max-content;"
-                    >
-                      <table
-                        style="table-layout: fixed;"
-                      >
-                        <colgroup>
-                          <col />
-                          <col />
-                          <col />
-                          <col
-                            style="width: 32px;"
-                          />
-                        </colgroup>
                         <tbody
                           class="ant-table-tbody"
                         >
@@ -169,15 +105,6 @@ exports[`Table component dynamically scales based on scroll prop 1`] = `
                                  
                               </div>
                             </td>
-                            <td
-                              style="padding: 0px; border: 0px; height: 0px;"
-                            >
-                              <div
-                                style="height: 0px; overflow: hidden;"
-                              >
-                                 
-                              </div>
-                            </td>
                           </tr>
                           <tr
                             class="ant-table-row ant-table-row-level-0"
@@ -185,17 +112,19 @@ exports[`Table component dynamically scales based on scroll prop 1`] = `
                           >
                             <td
                               class="ant-table-cell"
-                            />
+                            >
+                              John Doe
+                            </td>
                             <td
                               class="ant-table-cell"
-                            />
+                            >
+                              32
+                            </td>
                             <td
                               class="ant-table-cell"
-                            />
-                            <td
-                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
-                              style="position: sticky; right: 0px;"
-                            />
+                            >
+                              sample address
+                            </td>
                           </tr>
                           <tr
                             class="ant-table-row ant-table-row-level-0"
@@ -203,17 +132,19 @@ exports[`Table component dynamically scales based on scroll prop 1`] = `
                           >
                             <td
                               class="ant-table-cell"
-                            />
+                            >
+                              Jane Doe
+                            </td>
                             <td
                               class="ant-table-cell"
-                            />
+                            >
+                              33
+                            </td>
                             <td
                               class="ant-table-cell"
-                            />
-                            <td
-                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
-                              style="position: sticky; right: 0px;"
-                            />
+                            >
+                              new address
+                            </td>
                           </tr>
                           <tr
                             class="ant-table-row ant-table-row-level-0"
@@ -221,103 +152,25 @@ exports[`Table component dynamically scales based on scroll prop 1`] = `
                           >
                             <td
                               class="ant-table-cell"
-                            />
+                            >
+                              Will Smith
+                            </td>
                             <td
                               class="ant-table-cell"
-                            />
+                            >
+                              45
+                            </td>
                             <td
                               class="ant-table-cell"
-                            />
-                            <td
-                              class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
-                              style="position: sticky; right: 0px;"
-                            />
+                            >
+                              address
+                            </td>
                           </tr>
                         </tbody>
                       </table>
                     </div>
                   </div>
                 </div>
-                <ul
-                  class="ant-pagination ant-pagination-mini ant-table-pagination ant-table-pagination-center"
-                  unselectable="unselectable"
-                >
-                  <li
-                    aria-disabled="true"
-                    class="ant-pagination-prev ant-pagination-disabled"
-                    title="Previous Page"
-                  >
-                    <button
-                      class="ant-pagination-item-link"
-                      disabled=""
-                      tabindex="-1"
-                      type="button"
-                    >
-                      <span
-                        aria-label="left"
-                        class="anticon anticon-left"
-                        role="img"
-                      >
-                        <svg
-                          aria-hidden="true"
-                          data-icon="left"
-                          fill="currentColor"
-                          focusable="false"
-                          height="1em"
-                          viewBox="64 64 896 896"
-                          width="1em"
-                        >
-                          <path
-                            d="M724 218.3V141c0-6.7-7.7-10.4-12.9-6.3L260.3 486.8a31.86 31.86 0 000 50.3l450.8 352.1c5.3 4.1 12.9.4 12.9-6.3v-77.3c0-4.9-2.3-9.6-6.1-12.6l-360-281 360-281.1c3.8-3 6.1-7.7 6.1-12.6z"
-                          />
-                        </svg>
-                      </span>
-                    </button>
-                  </li>
-                  <li
-                    class="ant-pagination-item ant-pagination-item-1 ant-pagination-item-active"
-                    tabindex="0"
-                    title="1"
-                  >
-                    <a
-                      rel="nofollow"
-                    >
-                      1
-                    </a>
-                  </li>
-                  <li
-                    aria-disabled="true"
-                    class="ant-pagination-next ant-pagination-disabled"
-                    title="Next Page"
-                  >
-                    <button
-                      class="ant-pagination-item-link"
-                      disabled=""
-                      tabindex="-1"
-                      type="button"
-                    >
-                      <span
-                        aria-label="right"
-                        class="anticon anticon-right"
-                        role="img"
-                      >
-                        <svg
-                          aria-hidden="true"
-                          data-icon="right"
-                          fill="currentColor"
-                          focusable="false"
-                          height="1em"
-                          viewBox="64 64 896 896"
-                          width="1em"
-                        >
-                          <path
-                            d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"
-                          />
-                        </svg>
-                      </span>
-                    </button>
-                  </li>
-                </ul>
               </div>
             </div>
           </div>
@@ -328,10 +181,10 @@ exports[`Table component dynamically scales based on scroll prop 1`] = `
 </DocumentFragment>
 `;
 
-exports[`Table component renders compact table 1`] = `
+exports[`Table component renders form table 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-6 jxBzxC"
+    class="styledComponents__Wrapper-sc-1abm7iv-13 gwcANN"
   >
     <div
       class="ant-pro-table"
@@ -366,7 +219,7 @@ exports[`Table component renders compact table 1`] = `
                       style="overflow-x: auto; overflow-y: hidden;"
                     >
                       <table
-                        style="min-width: 100%; table-layout: auto;"
+                        style="width: 100%; min-width: 100%; table-layout: auto;"
                       >
                         <colgroup />
                         <thead
@@ -385,8 +238,9 @@ exports[`Table component renders compact table 1`] = `
                                 class="styledComponents__TitleWithTooltip-sc-1abm7iv-1 gemmlX"
                               >
                                 Age
-                                <div
-                                  data-testid="information-outlined"
+                                <svg
+                                  class="styledComponents__InformationTooltip-sc-1abm7iv-0"
+                                  data-testid="InformationOutlined"
                                 />
                               </span>
                             </th>
@@ -511,7 +365,7 @@ exports[`Table component renders compact table 1`] = `
 exports[`Table component should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-6 dRjmqW"
+    class="styledComponents__Wrapper-sc-1abm7iv-13 crtNbp"
   >
     <div
       class="ant-pro-table"
@@ -547,8 +401,8 @@ exports[`Table component should render correctly 1`] = `
                       <div
                         class="ant-pro-table-list-toolbar-setting-item"
                       >
-                        <div
-                          data-testid="settings-outlined"
+                        <svg
+                          data-testid="SettingsOutlined"
                         />
                       </div>
                     </div>
@@ -591,52 +445,50 @@ exports[`Table component should render correctly 1`] = `
                           class="ant-table-thead"
                         >
                           <tr>
-                            <td>
-                              <div
-                                data-testid="react-resizable"
-                              />
-                            </td>
                             <th
                               class="ant-table-cell"
+                              data-testid="react-resizable"
                             >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                              />
                               Name
                             </th>
-                            <td>
-                              <div
-                                data-testid="react-resizable"
-                              />
-                            </td>
                             <th
                               class="ant-table-cell"
+                              data-testid="react-resizable"
                             >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                              />
                               <span
                                 class="styledComponents__TitleWithTooltip-sc-1abm7iv-1 gemmlX"
                               >
                                 Age
-                                <div
-                                  data-testid="information-outlined"
+                                <svg
+                                  class="styledComponents__InformationTooltip-sc-1abm7iv-0"
+                                  data-testid="InformationOutlined"
                                 />
                               </span>
                             </th>
-                            <td>
-                              <div
-                                data-testid="react-resizable"
-                              />
-                            </td>
                             <th
                               class="ant-table-cell"
+                              data-testid="react-resizable"
                             >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                              />
                               Address
                             </th>
-                            <td>
-                              <div
-                                data-testid="react-resizable"
-                              />
-                            </td>
                             <th
                               class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              data-testid="react-resizable"
                               style="position: sticky; right: 0px;"
-                            />
+                            >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                              />
+                            </th>
                           </tr>
                         </thead>
                         <tbody
@@ -854,7 +706,7 @@ exports[`Table component should render correctly 1`] = `
 exports[`Table component should render multi select table and render action buttons correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-6 cgfdYN"
+    class="styledComponents__Wrapper-sc-1abm7iv-13 gzZsiC"
   >
     <div
       class="ant-pro-table"
@@ -890,8 +742,8 @@ exports[`Table component should render multi select table and render action butt
                       <div
                         class="ant-pro-table-list-toolbar-setting-item"
                       >
-                        <div
-                          data-testid="settings-outlined"
+                        <svg
+                          data-testid="SettingsOutlined"
                         />
                       </div>
                     </div>
@@ -937,14 +789,13 @@ exports[`Table component should render multi select table and render action butt
                           class="ant-table-thead"
                         >
                           <tr>
-                            <td>
-                              <div
-                                data-testid="react-resizable"
-                              />
-                            </td>
                             <th
                               class="ant-table-cell ant-table-selection-column"
+                              data-testid="react-resizable"
                             >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                              />
                               <div
                                 class="ant-table-selection"
                               >
@@ -966,52 +817,50 @@ exports[`Table component should render multi select table and render action butt
                                 </label>
                               </div>
                             </th>
-                            <td>
-                              <div
-                                data-testid="react-resizable"
-                              />
-                            </td>
                             <th
                               class="ant-table-cell"
+                              data-testid="react-resizable"
                             >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                              />
                               Name
                             </th>
-                            <td>
-                              <div
-                                data-testid="react-resizable"
-                              />
-                            </td>
                             <th
                               class="ant-table-cell"
+                              data-testid="react-resizable"
                             >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                              />
                               <span
                                 class="styledComponents__TitleWithTooltip-sc-1abm7iv-1 gemmlX"
                               >
                                 Age
-                                <div
-                                  data-testid="information-outlined"
+                                <svg
+                                  class="styledComponents__InformationTooltip-sc-1abm7iv-0"
+                                  data-testid="InformationOutlined"
                                 />
                               </span>
                             </th>
-                            <td>
-                              <div
-                                data-testid="react-resizable"
-                              />
-                            </td>
                             <th
                               class="ant-table-cell"
+                              data-testid="react-resizable"
                             >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                              />
                               Address
                             </th>
-                            <td>
-                              <div
-                                data-testid="react-resizable"
-                              />
-                            </td>
                             <th
                               class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              data-testid="react-resizable"
                               style="position: sticky; right: 0px;"
-                            />
+                            >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                              />
+                            </th>
                           </tr>
                         </thead>
                         <tbody
@@ -1298,7 +1147,7 @@ exports[`Table component should render multi select table and render action butt
 exports[`Table component should render multi select table and render action buttons correctly 2`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-6 cgfdYN"
+    class="styledComponents__Wrapper-sc-1abm7iv-13 gzZsiC"
   >
     <div
       class="ant-pro-table"
@@ -1334,8 +1183,8 @@ exports[`Table component should render multi select table and render action butt
                       <div
                         class="ant-pro-table-list-toolbar-setting-item"
                       >
-                        <div
-                          data-testid="settings-outlined"
+                        <svg
+                          data-testid="SettingsOutlined"
                         />
                       </div>
                     </div>
@@ -1386,12 +1235,13 @@ exports[`Table component should render multi select table and render action butt
                               class="ant-space-item"
                             >
                               <button
-                                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__CloseButton-sc-1abm7iv-3 bLesss"
+                                class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__CloseButton-sc-1abm7iv-5 dRUGlG"
+                                data-id="table-clear-btn"
                                 title="Clear selection"
                                 type="button"
                               >
-                                <div
-                                  data-testid="cancel-circle"
+                                <svg
+                                  data-testid="CancelCircle"
                                 />
                               </button>
                             </div>
@@ -1408,7 +1258,7 @@ exports[`Table component should render multi select table and render action butt
                               style="margin-right: 0px;"
                             >
                               <button
-                                class="styledComponents__ActionButton-sc-1abm7iv-4 cGXuIp"
+                                class="styledComponents__ActionButton-sc-1abm7iv-6 fNiKLL"
                                 type="button"
                               >
                                 Edit
@@ -1419,7 +1269,7 @@ exports[`Table component should render multi select table and render action butt
                               style="margin-right: 0px;"
                             >
                               <div
-                                class="ant-divider ant-divider-vertical"
+                                class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1abm7iv-14 jcXayc"
                                 role="separator"
                               />
                             </span>
@@ -1427,7 +1277,7 @@ exports[`Table component should render multi select table and render action butt
                               class="ant-space-item"
                             >
                               <button
-                                class="styledComponents__ActionButton-sc-1abm7iv-4 cGXuIp"
+                                class="styledComponents__ActionButton-sc-1abm7iv-6 fNiKLL"
                                 type="button"
                               >
                                 Delete
@@ -1479,14 +1329,13 @@ exports[`Table component should render multi select table and render action butt
                           class="ant-table-thead"
                         >
                           <tr>
-                            <td>
-                              <div
-                                data-testid="react-resizable"
-                              />
-                            </td>
                             <th
                               class="ant-table-cell ant-table-selection-column"
+                              data-testid="react-resizable"
                             >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                              />
                               <div
                                 class="ant-table-selection"
                               >
@@ -1509,52 +1358,50 @@ exports[`Table component should render multi select table and render action butt
                                 </label>
                               </div>
                             </th>
-                            <td>
-                              <div
-                                data-testid="react-resizable"
-                              />
-                            </td>
                             <th
                               class="ant-table-cell"
+                              data-testid="react-resizable"
                             >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                              />
                               Name
                             </th>
-                            <td>
-                              <div
-                                data-testid="react-resizable"
-                              />
-                            </td>
                             <th
                               class="ant-table-cell"
+                              data-testid="react-resizable"
                             >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                              />
                               <span
                                 class="styledComponents__TitleWithTooltip-sc-1abm7iv-1 gemmlX"
                               >
                                 Age
-                                <div
-                                  data-testid="information-outlined"
+                                <svg
+                                  class="styledComponents__InformationTooltip-sc-1abm7iv-0"
+                                  data-testid="InformationOutlined"
                                 />
                               </span>
                             </th>
-                            <td>
-                              <div
-                                data-testid="react-resizable"
-                              />
-                            </td>
                             <th
                               class="ant-table-cell"
+                              data-testid="react-resizable"
                             >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                              />
                               Address
                             </th>
-                            <td>
-                              <div
-                                data-testid="react-resizable"
-                              />
-                            </td>
                             <th
                               class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              data-testid="react-resizable"
                               style="position: sticky; right: 0px;"
-                            />
+                            >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                              />
+                            </th>
                           </tr>
                         </thead>
                         <tbody
@@ -1841,7 +1688,7 @@ exports[`Table component should render multi select table and render action butt
 exports[`Table component should render multi select table and render action buttons correctly 3`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-6 cgfdYN"
+    class="styledComponents__Wrapper-sc-1abm7iv-13 gzZsiC"
   >
     <div
       class="ant-pro-table"
@@ -1877,8 +1724,8 @@ exports[`Table component should render multi select table and render action butt
                       <div
                         class="ant-pro-table-list-toolbar-setting-item"
                       >
-                        <div
-                          data-testid="settings-outlined"
+                        <svg
+                          data-testid="SettingsOutlined"
                         />
                       </div>
                     </div>
@@ -1924,14 +1771,13 @@ exports[`Table component should render multi select table and render action butt
                           class="ant-table-thead"
                         >
                           <tr>
-                            <td>
-                              <div
-                                data-testid="react-resizable"
-                              />
-                            </td>
                             <th
                               class="ant-table-cell ant-table-selection-column"
+                              data-testid="react-resizable"
                             >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                              />
                               <div
                                 class="ant-table-selection"
                               >
@@ -1953,52 +1799,50 @@ exports[`Table component should render multi select table and render action butt
                                 </label>
                               </div>
                             </th>
-                            <td>
-                              <div
-                                data-testid="react-resizable"
-                              />
-                            </td>
                             <th
                               class="ant-table-cell"
+                              data-testid="react-resizable"
                             >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                              />
                               Name
                             </th>
-                            <td>
-                              <div
-                                data-testid="react-resizable"
-                              />
-                            </td>
                             <th
                               class="ant-table-cell"
+                              data-testid="react-resizable"
                             >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                              />
                               <span
                                 class="styledComponents__TitleWithTooltip-sc-1abm7iv-1 gemmlX"
                               >
                                 Age
-                                <div
-                                  data-testid="information-outlined"
+                                <svg
+                                  class="styledComponents__InformationTooltip-sc-1abm7iv-0"
+                                  data-testid="InformationOutlined"
                                 />
                               </span>
                             </th>
-                            <td>
-                              <div
-                                data-testid="react-resizable"
-                              />
-                            </td>
                             <th
                               class="ant-table-cell"
+                              data-testid="react-resizable"
                             >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                              />
                               Address
                             </th>
-                            <td>
-                              <div
-                                data-testid="react-resizable"
-                              />
-                            </td>
                             <th
                               class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                              data-testid="react-resizable"
                               style="position: sticky; right: 0px;"
-                            />
+                            >
+                              <div
+                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                              />
+                            </th>
                           </tr>
                         </thead>
                         <tbody

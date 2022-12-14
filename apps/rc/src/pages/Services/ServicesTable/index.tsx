@@ -1,18 +1,20 @@
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
-import { useServiceListQuery, useDeleteServiceMutation }                  from '@acx-ui/rc/services'
+import { useDeleteWifiCallingServiceMutation, useServiceListQuery }       from '@acx-ui/rc/services'
 import {
   ServiceType,
   useTableQuery,
   Service,
   ServiceTechnology,
-  ServiceStatus,
-  ServiceAdminState
+  getSelectServiceRoutePath,
+  getServiceDetailsLink,
+  ServiceOperation
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { serviceAdminStateLabelMapping, serviceStatusLabelMapping, serviceTechnologyabelMapping, serviceTypeLabelMapping } from '../contentsMap'
+import { serviceTypeLabelMapping, serviceTechnologyLabelMapping } from '../contentsMap'
+
 
 function useColumns () {
   const { $t } = useIntl()
@@ -26,7 +28,14 @@ function useColumns () {
       defaultSortOrder: 'ascend',
       render: function (data, row) {
         return (
-          <TenantLink to={`/services/${row.id}/service-details/overview`}>{data}</TenantLink>
+          <TenantLink
+            to={getServiceDetailsLink({
+              type: row.type as ServiceType,
+              oper: ServiceOperation.DETAIL,
+              serviceId: row.id
+            })}>
+            {data}
+          </TenantLink>
         )
       }
     },
@@ -39,31 +48,32 @@ function useColumns () {
         return $t(serviceTypeLabelMapping[data as ServiceType])
       }
     },
-    {
-      key: 'status',
-      title: $t({ defaultMessage: 'Status' }),
-      dataIndex: 'status',
-      sorter: true,
-      render: function (data) {
-        return $t(serviceStatusLabelMapping[data as ServiceStatus])
-      }
-    },
-    {
-      key: 'adminState',
-      title: $t({ defaultMessage: 'Admin State' }),
-      dataIndex: 'adminState',
-      sorter: true,
-      render: function (data) {
-        return $t(serviceAdminStateLabelMapping[data as ServiceAdminState])
-      }
-    },
+    // # The fields have not been defined
+    // {
+    //   key: 'status',
+    //   title: $t({ defaultMessage: 'Status' }),
+    //   dataIndex: 'status',
+    //   sorter: true,
+    //   render: function (data) {
+    //     return $t(serviceStatusLabelMapping[data as ServiceStatus])
+    //   }
+    // },
+    // {
+    //   key: 'adminState',
+    //   title: $t({ defaultMessage: 'Admin State' }),
+    //   dataIndex: 'adminState',
+    //   sorter: true,
+    //   render: function (data) {
+    //     return $t(serviceAdminStateLabelMapping[data as ServiceAdminState])
+    //   }
+    // },
     {
       key: 'technology',
       title: $t({ defaultMessage: 'Technology' }),
       dataIndex: 'technology',
       sorter: true,
       render: function (data) {
-        return $t(serviceTechnologyabelMapping[data as ServiceTechnology])
+        return $t(serviceTechnologyLabelMapping[data as ServiceTechnology])
       }
     },
     {
@@ -73,12 +83,13 @@ function useColumns () {
       sorter: true,
       align: 'center'
     },
-    {
-      key: 'health',
-      title: $t({ defaultMessage: 'Health' }),
-      dataIndex: 'health',
-      sorter: true
-    },
+    // # The field has not been defined
+    // {
+    //   key: 'health',
+    //   title: $t({ defaultMessage: 'Health' }),
+    //   dataIndex: 'health',
+    //   sorter: true
+    // },
     {
       key: 'tags',
       title: $t({ defaultMessage: 'Tags' }),
@@ -107,23 +118,29 @@ const defaultPayload = {
   ]
 }
 
-export function ServicesTable () {
+export default function ServicesTable () {
   const { $t } = useIntl()
+  const { tenantId } = useParams()
+  const navigate = useNavigate()
+  const tenantBasePath: Path = useTenantLink('')
 
-  const ServicesTable = () => {
-    const tableQuery = useTableQuery({
-      useQuery: useServiceListQuery,
-      defaultPayload
-    })
-    const { tenantId } = useParams()
-    const [
-      deleteService,
-      { isLoading: isDeleteServiceUpdating }
-    ] = useDeleteServiceMutation()
+  const tableQuery = useTableQuery({
+    useQuery: useServiceListQuery,
+    defaultPayload
+  })
+  const deleteServiceFnMapping = {
+    [ServiceType.DHCP]: [], // TODO: API not ready
+    [ServiceType.DPSK]: [], // TODO: API not ready
+    [ServiceType.MDNS_PROXY]: [], // TODO: API not ready
+    [ServiceType.PORTAL]: [], // TODO: API not ready
+    [ServiceType.WIFI_CALLING]: useDeleteWifiCallingServiceMutation(),
+    [ServiceType.NETWORK_SEGMENTATION]: [] // TODO: API not ready
+  }
 
-    const actions: TableProps<Service>['actions'] = [{
+  const rowActions: TableProps<Service>['rowActions'] = [
+    {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: ([{ name, id }], clearSelection) => {
+      onClick: ([{ id, name, type }], clearSelection) => {
         showActionModal({
           type: 'confirm',
           customContent: {
@@ -131,41 +148,56 @@ export function ServicesTable () {
             entityName: $t({ defaultMessage: 'Service' }),
             entityValue: name
           },
-          onOk: () => deleteService({ params: { tenantId, serviceId: id } })
-            .then(clearSelection)
+          onOk: () => {
+            const [ deleteFn ] = deleteServiceFnMapping[type]
+            deleteFn({ params: { tenantId, serviceId: id } }).then(clearSelection)
+          }
         })
       }
-    }]
+    },
+    {
+      label: $t({ defaultMessage: 'Edit' }),
+      onClick: ([{ type, id }]) => {
+        navigate({
+          ...tenantBasePath,
+          pathname: `${tenantBasePath.pathname}/` + getServiceDetailsLink({
+            type: type as ServiceType,
+            oper: ServiceOperation.EDIT,
+            serviceId: id
+          })
+        })
+      }
+    }
+  ]
 
-    return (
-      <Loader states={[
-        tableQuery,
-        { isLoading: false, isFetching: isDeleteServiceUpdating }
-      ]}>
+  return (
+    <>
+      <PageHeader
+        title={
+          $t({
+            defaultMessage: 'Services ({serviceCount})'
+          },
+          {
+            serviceCount: tableQuery.data?.totalCount
+          })
+        }
+        extra={[
+          <TenantLink to={getSelectServiceRoutePath(true)} key='add'>
+            <Button type='primary'>{$t({ defaultMessage: 'Add Service' })}</Button>
+          </TenantLink>
+        ]}
+      />
+      <Loader states={[tableQuery]}>
         <Table
           columns={useColumns()}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          actions={actions}
+          rowActions={rowActions}
           rowSelection={{ type: 'radio' }}
         />
       </Loader>
-    )
-  }
-
-  return (
-    <>
-      <PageHeader
-        title={$t({ defaultMessage: 'Services' })}
-        extra={[
-          <TenantLink to='/services/select' key='add'>
-            <Button type='primary'>{$t({ defaultMessage: 'Add Service' })}</Button>
-          </TenantLink>
-        ]}
-      />
-      <ServicesTable />
     </>
   )
 }

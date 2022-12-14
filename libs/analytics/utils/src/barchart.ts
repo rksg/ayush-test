@@ -44,19 +44,19 @@ export function getBarChartSeriesData (
   let space = ' '
   data && data.forEach(datum =>{
     const row = Object.values(datum)
-    // Bar chart groups the category names which leads to overlapping of bars on the axis, 
+    // Bar chart groups the category names which leads to overlapping of bars on the axis,
     // adding space to the names makes the value unique. These spaces are trimmed in the axisLabelFormatter.
     if(uniqueColumnName){
       const index = dimensions.indexOf(uniqueColumnName)
       if(index>=0){
-        row[index] = space + row[index] 
+        row[index] = space + row[index]
         space = ' ' + space
       }
     }
     source.unshift(row)
   })
   const seriesEncode: BarChartData['seriesEncode'] = seriesMapping
-  
+
   return {
     dimensions,
     source,

@@ -1,40 +1,55 @@
-import React from 'react'
-
 import { useIntl } from 'react-intl'
 
-import { Layout as LayoutComponent } from '@acx-ui/components'
-import { SplitProvider }             from '@acx-ui/feature-toggle'
-import { Outlet }                    from '@acx-ui/react-router-dom'
-import { DateFilterProvider }        from '@acx-ui/utils'
+import { Tooltip } from '@acx-ui/components'
+import {
+  Layout as LayoutComponent,
+  LayoutUI
+}                        from '@acx-ui/components'
+import { SplitProvider }   from '@acx-ui/feature-toggle'
+import { Outlet }          from '@acx-ui/react-router-dom'
+import { notAvailableMsg } from '@acx-ui/utils'
 
-import HeaderButtons     from './HeaderButtons'
-import HeaderDropDown    from './HeaderDropDown'
+import ActivityButton from './Header/ActivityButton'
+import AlarmButton    from './Header/AlarmButton'
+import HelpButton     from './Header/HelpButton'
+// import LicenseBar        from './Header/LicenseBar'
+// import RegionButton      from './Header/RegionButton'
+import UserButton        from './Header/UserButton'
 import { useMenuConfig } from './menuConfig'
-import * as UI           from './styledComponents'
+import SearchBar         from './SearchBar'
 
 function Layout () {
-  const { $t } = useIntl()
-  const headerDropdownList = [
-    $t({ defaultMessage: 'MSP Space' })
-  ]
+
   return (
-    <SplitProvider>
-      <DateFilterProvider>
-        <UI.Wrapper>
-          <LayoutComponent
-            menuConfig={useMenuConfig()}
-            content={<Outlet />}
-            leftHeaderContent={
-              <HeaderDropDown
-                list={headerDropdownList}
-                selected={headerDropdownList[0]}
-              />
-            }
-            rightHeaderContent={<HeaderButtons />}
-          />
-        </UI.Wrapper>
-      </DateFilterProvider>
-    </SplitProvider>
+    <LayoutComponent
+      menuConfig={useMenuConfig()}
+      content={<Outlet />}
+      // leftHeaderContent={
+      //   <div style={{ width: '40%', display: 'flex', alignItems: 'center' }}>
+      //     {/* <RegionButton/>
+      //     <LicenseBar/> */}
+      //   </div>
+      // }
+      rightHeaderContent={<>
+        <SearchBar />
+        <LayoutUI.Divider />
+        <AlarmButton/>
+        <ActivityButton/>
+        <Tooltip placement='bottomRight' title={useIntl().$t(notAvailableMsg)}>
+          <HelpButton/>
+        </Tooltip>
+        <Tooltip placement='bottomRight' title={useIntl().$t(notAvailableMsg)}>
+          <UserButton/>
+        </Tooltip>
+      </>}
+    />
   )
 }
-export default Layout
+
+function LayoutWithSplitProvider () {
+  return <SplitProvider>
+    <Layout />
+  </SplitProvider>
+}
+
+export default LayoutWithSplitProvider

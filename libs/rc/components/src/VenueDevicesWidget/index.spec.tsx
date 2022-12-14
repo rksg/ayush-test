@@ -1,0 +1,34 @@
+import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
+import { Provider  }          from '@acx-ui/store'
+import { render,
+  screen, mockRestApiQuery,
+  waitForElementToBeRemoved
+} from '@acx-ui/test-utils'
+
+import { VenueDevicesWidget } from '.'
+
+jest.mock('@acx-ui/icons', ()=> {
+  const icons = jest.requireActual('@acx-ui/icons')
+  const keys = Object.keys(icons).map(key => [key, () => <div data-testid={key} />])
+  return Object.fromEntries(keys)
+})
+
+const params = {
+  tenantId: 'tenant-id',
+  venueId: 'venue-id'
+}
+
+describe('Venue Overview Devices Widget', () => {
+  beforeEach(() => {
+    mockRestApiQuery(CommonUrlsInfo.getVenueDetailsHeader.url, 'get',{})
+  })
+
+  it('should render loader and then chart', async () => {
+    const { asFragment } = render(<Provider><VenueDevicesWidget /></Provider>,
+      { route: { params } })
+    expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await screen.findByText('Devices')
+    expect(asFragment().querySelector('svg')).toBeDefined()
+  })
+})

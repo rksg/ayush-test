@@ -16,12 +16,12 @@ export function AaaServer ( props: {
   const { serverType, summaryData } = props
   const primaryTitle = intl.$t(contents.aaaServerTypes[AaaServerOrderEnum.PRIMARY])
   const secondaryTitle = intl.$t(contents.aaaServerTypes[AaaServerOrderEnum.SECONDARY])
-  
-  const enableSecondaryServer = serverType === AaaServerTypeEnum.AUTHENTICATION ? 
-    summaryData.enableSecondaryAuthServer : 
-    summaryData.enableSecondaryAcctServer 
-  
-  return (    
+
+  const enableSecondaryServer = serverType === AaaServerTypeEnum.AUTHENTICATION ?
+    summaryData.enableSecondaryAuthServer :
+    summaryData.enableSecondaryAcctServer
+
+  return (
     <React.Fragment>
       {getAaaServerData(
         primaryTitle,
@@ -31,7 +31,7 @@ export function AaaServer ( props: {
         intl
       )}
       {
-        enableSecondaryServer && 
+        enableSecondaryServer &&
           getAaaServerData(
             secondaryTitle,
             `${get(summaryData, `${serverType}.${AaaServerOrderEnum.SECONDARY}.ip`)}`+
@@ -43,14 +43,14 @@ export function AaaServer ( props: {
     </React.Fragment>
   )
 }
-  
+
 function getAaaServerData (
   title: string,
   ipPort: string,
   sharedSecret: string,
   intl: IntlShape
 ) {
-  return (    
+  return (
     <React.Fragment>
       <Form.Item
         label={intl.$t({ defaultMessage: '{title}:' }, { title })}

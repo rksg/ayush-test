@@ -1,16 +1,19 @@
 import { useContext } from 'react'
 
-import {
-  QuestionCircleOutlined
-} from '@ant-design/icons'
-import { Form, Input, Col, Radio, Row, Space, Tooltip } from 'antd'
-import TextArea                                         from 'antd/lib/input/TextArea'
-import { useIntl }                                      from 'react-intl'
+import { Form, Input, Col, Radio, Row, Space } from 'antd'
+import TextArea                                from 'antd/lib/input/TextArea'
+import { useIntl }                             from 'react-intl'
 
-import { StepsForm }                                    from '@acx-ui/components'
-import { useLazyNetworkListQuery }                      from '@acx-ui/rc/services'
-import { NetworkTypeEnum, checkObjectNotExists, Venue } from '@acx-ui/rc/utils'
-import { useParams }                                    from '@acx-ui/react-router-dom'
+import { StepsForm, Tooltip }         from '@acx-ui/components'
+import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
+import { useLazyNetworkListQuery }    from '@acx-ui/rc/services'
+import {
+  NetworkTypeEnum,
+  WifiNetworkMessages,
+  checkObjectNotExists,
+  hasGraveAccentAndDollarSign } from '@acx-ui/rc/utils'
+import { useParams }       from '@acx-ui/react-router-dom'
+import { notAvailableMsg } from '@acx-ui/utils'
 
 import { ToggleButton }                          from '../../../../components/ToggleButton'
 import { networkTypesDescription, networkTypes } from '../contentsMap'
@@ -21,6 +24,14 @@ import { RadioDescription }                      from '../styledComponents'
 import type { RadioChangeEvent } from 'antd'
 
 const { useWatch } = Form
+
+export const types = [
+  { type: NetworkTypeEnum.PSK, disabled: false },
+  { type: NetworkTypeEnum.DPSK, disabled: true },
+  { type: NetworkTypeEnum.AAA, disabled: false },
+  { type: NetworkTypeEnum.CAPTIVEPORTAL, disabled: true },
+  { type: NetworkTypeEnum.OPEN, disabled: false }
+]
 
 export function NetworkDetailForm () {
   const intl = useIntl()
@@ -36,14 +47,14 @@ export function NetworkDetailForm () {
     useWatch('differentSSID')
   ]
 
-  const { 
-    setNetworkType: setSettingStepTitle, 
+  const {
+    setNetworkType: setSettingStepTitle,
     editMode,
     cloneMode,
-    data 
+    data
   } = useContext(NetworkFormContext)
   const onChange = (e: RadioChangeEvent) => {
-    setSettingStepTitle(e.target.value as NetworkTypeEnum)
+    setData && setData({ ...data, type: e.target.value as NetworkTypeEnum })
   }
   const networkListPayload = {
     searchString: '',
@@ -61,13 +72,13 @@ export function NetworkDetailForm () {
       .filter(n => n.id !== params.networkId)
       .map(n => n.name)
 
-    return checkObjectNotExists(intl, list, value, intl.$t({ defaultMessage: 'Network' }))
+    return checkObjectNotExists(list, value, intl.$t({ defaultMessage: 'Network' }))
   }
 
   const ssidValidator = async (value: string) => {
     interface Ipayload {
-      venueId: string, 
-      networkId?: string, 
+      venueId: string,
+      networkId?: string,
       ssids:string[]
     }
     // TODO: Get NetworkForm Venues
@@ -109,12 +120,21 @@ export function NetworkDetailForm () {
         <StepsForm.Title>{intl.$t({ defaultMessage: 'Network Details' })}</StepsForm.Title>
         <Form.Item
           name='name'
-          label={intl.$t({ defaultMessage: 'Network Name' })}
+          label={<>
+            { intl.$t({ defaultMessage: 'Network Name' }) }
+            <Tooltip
+              title={intl.$t(WifiNetworkMessages.NETWORK_NAME_TOOLTIP)}
+              placement='bottom'
+            >
+              <QuestionMarkCircleOutlined />
+            </Tooltip>
+          </>}
           rules={[
             { required: true },
             { min: 2 },
             { max: 32 },
-            { validator: (_, value) => nameValidator(value) }
+            { validator: (_, value) => nameValidator(value) },
+            { validator: (_, value) => hasGraveAccentAndDollarSign(value) }
           ]}
           validateFirst
           hasFeedback
@@ -160,10 +180,14 @@ export function NetworkDetailForm () {
                 <Space direction='vertical'>
                   {types.map(({ type, disabled }) => (
                     <Radio key={type} value={type} disabled={disabled}>
-                      {intl.$t(networkTypes[type])}
-                      <RadioDescription>
-                        {intl.$t(networkTypesDescription[type])}
-                      </RadioDescription>
+                      <Tooltip
+                        title={[NetworkTypeEnum.DPSK, NetworkTypeEnum.CAPTIVEPORTAL]
+                          .indexOf(type) > -1 ? intl.$t(notAvailableMsg) : ''}>
+                        {intl.$t(networkTypes[type])}
+                        <RadioDescription>
+                          {intl.$t(networkTypesDescription[type])}
+                        </RadioDescription>
+                      </Tooltip>
                     </Radio>
                   ))}
                 </Space>
@@ -182,8 +206,10 @@ export function NetworkDetailForm () {
       </Col>
 
       <Col span={14}>
-        <NetworkDiagram type={type}/>
+        <NetworkDiagram />
       </Col>
     </Row>
   )
 }
+
+

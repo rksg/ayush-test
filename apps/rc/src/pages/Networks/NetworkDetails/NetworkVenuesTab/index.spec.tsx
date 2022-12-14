@@ -1,10 +1,15 @@
 /* eslint-disable max-len */
 import '@testing-library/jest-dom'
+
 import { rest } from 'msw'
 
-import * as config         from '@acx-ui/config'
-import { networkApi }      from '@acx-ui/rc/services'
-import { CommonUrlsInfo }  from '@acx-ui/rc/utils'
+import * as config      from '@acx-ui/config'
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { networkApi }   from '@acx-ui/rc/services'
+import {
+  CommonUrlsInfo,
+  WifiUrlsInfo
+} from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
   act,
@@ -17,78 +22,20 @@ import {
   within
 } from '@acx-ui/test-utils'
 
+import {
+  network,
+  user,
+  list,
+  timezoneRes,
+  params,
+  networkVenue_allAps,
+  networkVenue_apgroup,
+  vlanPoolList
+} from './__tests__/fixtures'
+
 import { NetworkVenuesTab } from './index'
 
-const network = {
-  type: 'aaa',
-  tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-  venues: [
-    {
-      venueId: 'd7b1a9a350634115a92ee7b0f11c7e75',
-      dual5gEnabled: true,
-      tripleBandEnabled: false,
-      networkId: '373377b0cb6e46ea8982b1c80aabe1fa',
-      allApGroupsRadio: 'Both',
-      isAllApGroups: true,
-      allApGroupsRadioTypes: ['2.4-GHz', '5-GHz'],
-      id: '7a97953dc55f4645b3cdbf1527f3d7cb'
-    }
-  ],
-  wlan: {
-    enabled: true,
-    ssid: '03',
-    vlanId: 1
-  },
-  name: '03',
-  enableAuthProxy: false,
-  enableAccountingProxy: false,
-  id: '373377b0cb6e46ea8982b1c80aabe1fa'
-}
-
-const user = { COMMON: '{"supportTriRadio":true,"tab-venue-clients":"wifi"}' }
-
-const list = {
-  totalCount: 2,
-  page: 1,
-  data: [
-    {
-      id: 'd7b1a9a350634115a92ee7b0f11c7e75',
-      name: 'network-venue-1',
-      description: '',
-      city: 'Melbourne, Victoria',
-      country: 'Australia',
-      latitude: '-37.8145092',
-      longitude: '144.9704868',
-      networks: { count: 1, names: ['03'], vlans: [1] },
-      aggregatedApStatus: { '1_01_NeverContactedCloud': 1 },
-      status: '1_InSetupPhase',
-      mesh: { enabled: false },
-      allApDisabled: false
-    },
-    {
-      id: '02e2ddbc88e1428987666d31edbc3d9a',
-      name: 'My-Venue',
-      description: 'My-Venue',
-      city: 'New York',
-      country: 'United States',
-      latitude: '40.7691341',
-      longitude: '-73.94297689999999',
-      switchClients: 2,
-      switches: 1,
-      status: '1_InSetupPhase',
-      mesh: { enabled: false },
-      wlan: { wlanSecurity: 'WPA3' }
-    }
-  ]
-}
-
-const timezoneRes = { // location=-37.8145092,144.9704868
-  dstOffset: 0,
-  rawOffset: 36000,
-  status: 'OK',
-  timeZoneId: 'Australia/Melbourne',
-  timeZoneName: 'Australian Eastern Standard Time'
-}
+jest.mock('socket.io-client')
 
 describe('NetworkVenuesTab', () => {
   beforeAll(async () => {
@@ -103,35 +50,45 @@ describe('NetworkVenuesTab', () => {
     act(() => {
       store.dispatch(networkApi.util.resetApiState())
     })
-  })
 
-  it('should render correctly', async () => {
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getNetworksVenuesList.url,
         (req, res, ctx) => res(ctx.json(list))
       ),
+      rest.post(
+        CommonUrlsInfo.venueNetworkApGroup.url,
+        (req, res, ctx) => res(ctx.json({ response: [networkVenue_allAps, networkVenue_apgroup] }))
+      ),
       rest.get(
-        CommonUrlsInfo.getNetwork.url,
+        WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json(network))
+      ),
+      rest.post(
+        CommonUrlsInfo.getNetworkDeepList.url,
+        (req, res, ctx) => res(ctx.json({ response: [network] }))
       ),
       rest.get(
         CommonUrlsInfo.getAllUserSettings.url,
         (req, res, ctx) => res(ctx.json(user))
+      ),
+      rest.get(
+        WifiUrlsInfo.getVlanPools.url,
+        (req, res, ctx) => res(ctx.json(vlanPoolList))
+      ),
+      rest.put(
+        WifiUrlsInfo.updateNetworkVenue.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json({}))
       )
     )
-    const params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-      networkId: '373377b0cb6e46ea8982b1c80aabe1fa'
-    }
+  })
 
-    const { asFragment } = render(<Provider><NetworkVenuesTab /></Provider>, {
+  it('should render correctly', async () => {
+    render(<Provider><NetworkVenuesTab /></Provider>, {
       route: { params, path: '/:tenantId/:networkId' }
     })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
-    expect(asFragment()).toMatchSnapshot()
 
     const row1 = await screen.findByRole('row', { name: /network-venue-1/i })
     expect(within(row1).queryAllByRole('button')).toHaveLength(4)
@@ -145,24 +102,7 @@ describe('NetworkVenuesTab', () => {
   })
 
   it('activate Network', async () => {
-    mockServer.use(
-      rest.post(
-        CommonUrlsInfo.getNetworksVenuesList.url,
-        (req, res, ctx) => res(ctx.json(list))
-      ),
-      rest.get(
-        CommonUrlsInfo.getNetwork.url,
-        (req, res, ctx) => res(ctx.json(network))
-      ),
-      rest.get(
-        CommonUrlsInfo.getAllUserSettings.url,
-        (req, res, ctx) => res(ctx.json(user))
-      )
-    )
-    const params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-      networkId: '373377b0cb6e46ea8982b1c80aabe1fa'
-    }
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
 
     render(<Provider><NetworkVenuesTab /></Provider>, {
       route: { params, path: '/:tenantId/:networkId' }
@@ -170,36 +110,37 @@ describe('NetworkVenuesTab', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
+    const newApGroup2 = {
+      ...networkVenue_apgroup,
+      venueId: '02e2ddbc88e1428987666d31edbc3d9a',
+      allApGroupsRadioTypes: ['2.4-GHz', '5-GHz', '6-GHz'],
+      isAllApGroups: false,
+      scheduler: {
+        type: 'ALWAYS_ON'
+      },
+      apGroups: [{ ...networkVenue_apgroup.apGroups[0], id: '6cb1e831973a4d60924ac59f1bda073c' }]
+    }
+
     const newVenues = [
       ...network.venues,
-      {
-        ...network.venues[0],
-        venueId: '02e2ddbc88e1428987666d31edbc3d9a',
-        allApGroupsRadioTypes: ['2.4-GHz', '5-GHz', '6-GHz'],
-        isAllApGroups: false,
-        scheduler: {
-          type: 'ALWAYS_ON'
-        },
-        apGroups: [{
-          radio: 'Both',
-          radioTypes: ['2.4-GHz'],
-          isDefault: true,
-          id: '6cb1e831973a4d60924ac59f1bda073c',
-          apGroupId: 'b88d85d886f741a08f521244cb8cc5c5',
-          apGroupName: 'APs not assigned to any group',
-          vlanPoolId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-          vlanPoolName: 'pool1'
-        }]
-      }
+      newApGroup2
     ]
     mockServer.use(
       rest.get(
-        CommonUrlsInfo.getNetwork.url,
+        WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json({ ...network, venues: newVenues }))
       ),
       rest.post(
-        CommonUrlsInfo.addNetworkVenue.url,
+        CommonUrlsInfo.getNetworkDeepList.url,
+        (req, res, ctx) => res(ctx.json({ response: [{ ...network, venues: newVenues }] }))
+      ),
+      rest.post(
+        WifiUrlsInfo.addNetworkVenue.url,
         (req, res, ctx) => res(ctx.json({ requestId: '123' }))
+      ),
+      rest.post(
+        CommonUrlsInfo.venueNetworkApGroup.url,
+        (req, res, ctx) => res(ctx.json({ response: [networkVenue_allAps, newApGroup2] }))
       )
     )
 
@@ -213,6 +154,9 @@ describe('NetworkVenuesTab', () => {
     await waitFor(() => rows.forEach(row => expect(row).toBeChecked()))
 
     const row2 = await screen.findByRole('row', { name: /My-Venue/i })
+
+    await screen.findByRole('row', { name: /VLAN Pool/i })
+
     expect(row2).toHaveTextContent('VLAN Pool: pool1 (Custom)')
     expect(row2).toHaveTextContent('Unassigned APs')
     expect(row2).toHaveTextContent('24/7')
@@ -220,39 +164,28 @@ describe('NetworkVenuesTab', () => {
   })
 
   it('deactivate Network', async () => {
-    mockServer.use(
-      rest.post(
-        CommonUrlsInfo.getNetworksVenuesList.url,
-        (req, res, ctx) => res(ctx.json(list))
-      ),
-      rest.get(
-        CommonUrlsInfo.getNetwork.url,
-        (req, res, ctx) => res(ctx.json(network))
-      ),
-      rest.get(
-        CommonUrlsInfo.getAllUserSettings.url,
-        (req, res, ctx) => res(ctx.json(user))
-      )
-    )
-    const params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-      networkId: '373377b0cb6e46ea8982b1c80aabe1fa'
-    }
-
     render(<Provider><NetworkVenuesTab /></Provider>, {
       route: { params, path: '/:tenantId/:networkId' }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     mockServer.use(
       rest.get(
-        CommonUrlsInfo.getNetwork.url,
+        WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json({ ...network, venues: [] }))
       ),
+      rest.post(
+        CommonUrlsInfo.getNetworkDeepList.url,
+        (req, res, ctx) => res(ctx.json({ response: [{ ...network, venues: [] }] }))
+      ),
       rest.delete(
-        CommonUrlsInfo.deleteNetworkVenue.url,
+        WifiUrlsInfo.deleteNetworkVenue.url,
         (req, res, ctx) => res(ctx.json({ requestId: '456' }))
+      ),
+      rest.post(
+        CommonUrlsInfo.venueNetworkApGroup.url,
+        (req, res, ctx) => res(ctx.json({ response: [networkVenue_apgroup] }))
       )
     )
 
@@ -267,25 +200,6 @@ describe('NetworkVenuesTab', () => {
   })
 
   it('Table action bar activate Network', async () => {
-    mockServer.use(
-      rest.post(
-        CommonUrlsInfo.getNetworksVenuesList.url,
-        (req, res, ctx) => res(ctx.json(list))
-      ),
-      rest.get(
-        CommonUrlsInfo.getNetwork.url,
-        (req, res, ctx) => res(ctx.json(network))
-      ),
-      rest.get(
-        CommonUrlsInfo.getAllUserSettings.url,
-        (req, res, ctx) => res(ctx.json(user))
-      )
-    )
-    const params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-      networkId: '373377b0cb6e46ea8982b1c80aabe1fa'
-    }
-
     render(<Provider><NetworkVenuesTab /></Provider>, {
       route: { params, path: '/:tenantId/:networkId' }
     })
@@ -294,15 +208,19 @@ describe('NetworkVenuesTab', () => {
 
     mockServer.use(
       rest.get(
-        CommonUrlsInfo.getNetwork.url,
+        WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json({ ...network, venues: [] }))
       ),
+      rest.post(
+        CommonUrlsInfo.getNetworkDeepList.url,
+        (req, res, ctx) => res(ctx.json({ response: [{ ...network, venues: [] }] }))
+      ),
       rest.delete(
-        CommonUrlsInfo.deleteNetworkVenue.url,
+        WifiUrlsInfo.deleteNetworkVenue.url,
         (req, res, ctx) => res(ctx.json({ requestId: '456' }))
       ),
       rest.put(
-        CommonUrlsInfo.updateNetworkDeep.url.split('?')[0],
+        WifiUrlsInfo.updateNetworkDeep.url.split('?')[0],
         (req, res, ctx) => res(ctx.json({}))
       )
     )
@@ -323,25 +241,17 @@ describe('NetworkVenuesTab', () => {
   })
 
   it('Table action bar activate Network and show modal', async () => {
-    list.data[1].allApDisabled = true
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getNetworksVenuesList.url,
-        (req, res, ctx) => res(ctx.json(list))
-      ),
-      rest.get(
-        CommonUrlsInfo.getNetwork.url,
-        (req, res, ctx) => res(ctx.json(network))
-      ),
-      rest.get(
-        CommonUrlsInfo.getAllUserSettings.url,
-        (req, res, ctx) => res(ctx.json(user))
+        (req, res, ctx) => res(ctx.json({ ...list,
+          data: [
+            list.data[0],
+            { ...list.data[1], allApDisabled: true }
+          ]
+        }))
       )
     )
-    const params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-      networkId: '373377b0cb6e46ea8982b1c80aabe1fa'
-    }
 
     render(<Provider><NetworkVenuesTab /></Provider>, {
       route: { params, path: '/:tenantId/:networkId' }
@@ -351,15 +261,19 @@ describe('NetworkVenuesTab', () => {
 
     mockServer.use(
       rest.get(
-        CommonUrlsInfo.getNetwork.url,
+        WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json({ ...network, venues: [] }))
       ),
+      rest.post(
+        CommonUrlsInfo.getNetworkDeepList.url,
+        (req, res, ctx) => res(ctx.json({ response: [{ ...network, venues: [] }] }))
+      ),
       rest.delete(
-        CommonUrlsInfo.deleteNetworkVenue.url,
+        WifiUrlsInfo.deleteNetworkVenue.url,
         (req, res, ctx) => res(ctx.json({ requestId: '456' }))
       ),
       rest.put(
-        CommonUrlsInfo.updateNetworkDeep.url.split('?')[0],
+        WifiUrlsInfo.updateNetworkDeep.url.split('?')[0],
         (req, res, ctx) => res(ctx.json({}))
       )
     )
@@ -380,42 +294,27 @@ describe('NetworkVenuesTab', () => {
   })
 
   it('Table action bar deactivate Network', async () => {
-    mockServer.use(
-      rest.post(
-        CommonUrlsInfo.getNetworksVenuesList.url,
-        (req, res, ctx) => res(ctx.json(list))
-      ),
-      rest.get(
-        CommonUrlsInfo.getNetwork.url,
-        (req, res, ctx) => res(ctx.json(network))
-      ),
-      rest.get(
-        CommonUrlsInfo.getAllUserSettings.url,
-        (req, res, ctx) => res(ctx.json(user))
-      )
-    )
-    const params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-      networkId: '373377b0cb6e46ea8982b1c80aabe1fa'
-    }
-
     render(<Provider><NetworkVenuesTab /></Provider>, {
       route: { params, path: '/:tenantId/:networkId' }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     mockServer.use(
       rest.get(
-        CommonUrlsInfo.getNetwork.url,
+        WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json({ ...network, venues: [] }))
       ),
+      rest.post(
+        CommonUrlsInfo.getNetworkDeepList.url,
+        (req, res, ctx) => res(ctx.json({ response: [{ ...network, venues: [] }] }))
+      ),
       rest.delete(
-        CommonUrlsInfo.deleteNetworkVenue.url,
+        WifiUrlsInfo.deleteNetworkVenue.url,
         (req, res, ctx) => res(ctx.json({ requestId: '456' }))
       ),
       rest.put(
-        CommonUrlsInfo.updateNetworkDeep.url.split('?')[0],
+        WifiUrlsInfo.updateNetworkDeep.url.split('?')[0],
         (req, res, ctx) => res(ctx.json({}))
       )
     )
@@ -436,6 +335,24 @@ describe('NetworkVenuesTab', () => {
   })
 
   it('has custom scheduling', async () => {
+
+    const newAPGroups = [{
+      radio: 'Both',
+      radioTypes: ['5-GHz','2.4-GHz'],
+      isDefault: true,
+      apGroupId: 'b88d85d886f741a08f521244cb8cc5c5',
+      id: '6cb1e831973a4d60924ac59f1bda073c',
+      apGroupName: 'APs not assigned to any group',
+      vlanId: 1
+    },{
+      radio: 'Both',
+      radioTypes: ['5-GHz','2.4-GHz'],
+      isDefault: false,
+      apGroupId: '8ef01f614f1644d3869815aae82036b3',
+      id: '9308685565fc47258f9adb5f09875bd0',
+      apGroupName: 'bbb',
+      vlanId: 1
+    }]
 
     const newVenues = [
       {
@@ -465,40 +382,27 @@ describe('NetworkVenuesTab', () => {
           sat: '111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111'
         },
         isAllApGroups: false,
-        apGroups: [{
-          radio: 'Both',
-          radioTypes: ['5-GHz','2.4-GHz'],
-          isDefault: true,
-          apGroupId: 'b88d85d886f741a08f521244cb8cc5c5',
-          id: '6cb1e831973a4d60924ac59f1bda073c',
-          apGroupName: 'APs not assigned to any group',
-          vlanId: 1
-        },{
-          radio: 'Both',
-          radioTypes: ['5-GHz','2.4-GHz'],
-          isDefault: false,
-          apGroupId: '8ef01f614f1644d3869815aae82036b3',
-          id: '9308685565fc47258f9adb5f09875bd0',
-          apGroupName: 'bbb',
-          vlanId: 1
-        }]
+        apGroups: newAPGroups
       }
     ]
 
     const requestSpy = jest.fn()
 
     mockServer.use(
-      rest.post(
-        CommonUrlsInfo.getNetworksVenuesList.url,
-        (req, res, ctx) => res(ctx.json(list))
-      ),
       rest.get(
-        CommonUrlsInfo.getNetwork.url,
+        WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json({ ...network, venues: newVenues }))
       ),
-      rest.get(
-        CommonUrlsInfo.getAllUserSettings.url,
-        (req, res, ctx) => res(ctx.json(user))
+      rest.post(
+        CommonUrlsInfo.getNetworkDeepList.url,
+        (req, res, ctx) => res(ctx.json({ response: [{ ...network, venues: newVenues }] }))
+      ),
+      rest.post(
+        CommonUrlsInfo.venueNetworkApGroup.url,
+        (req, res, ctx) => res(ctx.json({ response: [
+          networkVenue_allAps,
+          { ...networkVenue_apgroup, apGroups: newAPGroups }
+        ] }))
       ),
       rest.get(
         'https://maps.googleapis.com/maps/api/timezone/json',
@@ -508,10 +412,6 @@ describe('NetworkVenuesTab', () => {
         }
       )
     )
-    const params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-      networkId: '373377b0cb6e46ea8982b1c80aabe1fa'
-    }
 
     jest.useFakeTimers()
     jest.setSystemTime(new Date(Date.parse('2022-08-04T01:20:00+10:00'))) // Australian Eastern Standard Time
@@ -558,23 +458,22 @@ describe('NetworkVenuesTab', () => {
     ]
 
     mockServer.use(
-      rest.post(
-        CommonUrlsInfo.getNetworksVenuesList.url,
-        (req, res, ctx) => res(ctx.json(list))
-      ),
       rest.get(
-        CommonUrlsInfo.getNetwork.url,
+        WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json({ ...network, venues: newVenues }))
       ),
-      rest.get(
-        CommonUrlsInfo.getAllUserSettings.url,
-        (req, res, ctx) => res(ctx.json(user))
+      rest.post(
+        CommonUrlsInfo.getNetworkDeepList.url,
+        (req, res, ctx) => res(ctx.json({ response: [{ ...network, venues: newVenues }] }))
+      ),
+      rest.post(
+        CommonUrlsInfo.venueNetworkApGroup.url,
+        (req, res, ctx) => res(ctx.json({ response: [
+          { ...networkVenue_allAps, apGroups: newVenues[0].apGroups },
+          networkVenue_apgroup
+        ] }))
       )
     )
-    const params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-      networkId: '373377b0cb6e46ea8982b1c80aabe1fa'
-    }
 
     render(<Provider><NetworkVenuesTab /></Provider>, {
       route: { params, path: '/:tenantId/:networkId' }
@@ -587,5 +486,47 @@ describe('NetworkVenuesTab', () => {
     expect(row).toHaveTextContent('APG1')
     expect(row).toHaveTextContent('All')
     expect(row).toHaveTextContent('VLAN-1 (Custom)')
+
+    fireEvent.click(within(row).getByText('APG1'))
+    const dialog = await waitFor(async () => screen.findByRole('dialog'))
+
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Cancel' }))
+
+    fireEvent.click(within(row).getByText('VLAN-1 (Custom)'))
+    // Switch to 'All APs' radio
+    fireEvent.click(within(dialog).getByLabelText('All APs', { exact: false }))
+
+    // Switch to 'AP groups' radio
+    fireEvent.click(within(dialog).getByLabelText('Select specific AP groups', { exact: false }))
+
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Apply' }))
+  })
+
+
+  it('setup NetworkApGroupDialog', async () => {
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.venueNetworkApGroup.url,
+        (req, res, ctx) => res(ctx.json({ response: [networkVenue_apgroup] }))
+      )
+    )
+
+    render(<Provider><NetworkVenuesTab /></Provider>, {
+      route: { params, path: '/:tenantId/:networkId' }
+    })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    const row = await screen.findByRole('row', { name: /network-venue-1/i })
+
+    fireEvent.click(within(row).getByText('All APs'))
+
+    const dialog = await waitFor(async () => screen.findByRole('dialog'))
+
+    // click 'x' of Radio tag '5 GHz'
+    const radioTag = within(dialog).getByTitle('5 GHz')
+    fireEvent.click(within(radioTag).getByRole('img', { name: 'close', hidden: true }))
+
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Apply' }))
   })
 })

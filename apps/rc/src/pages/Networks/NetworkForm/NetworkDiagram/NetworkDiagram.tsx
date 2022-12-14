@@ -1,12 +1,17 @@
-import { Row, Col } from 'antd'
-import { useIntl }  from 'react-intl'
+import { useContext, useState } from 'react'
 
+import { Row, Col, Space } from 'antd'
+import { useIntl }         from 'react-intl'
+
+import { Button }                from '@acx-ui/components'
+import { useCloudpathListQuery } from '@acx-ui/rc/services'
 import {
   CloudpathDeploymentTypeEnum,
   CloudpathServer,
   GuestNetworkTypeEnum,
   NetworkTypeEnum
 } from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import AaaCloudpathCloudDiagram      from '../../../../assets/images/network-wizard-diagrams/aaa-cloudpath-cloud-deployment.png'
 import AaaCloudpathOnPremDiagram     from '../../../../assets/images/network-wizard-diagrams/aaa-cloudpath-on-prem-deployment.png'
@@ -29,7 +34,9 @@ import SelfSignInDiagram             from '../../../../assets/images/network-wiz
 import WISPrWithPskDiagram           from '../../../../assets/images/network-wizard-diagrams/wispr-psk.png'
 import WISPrDiagram                  from '../../../../assets/images/network-wizard-diagrams/wispr.png'
 import { networkTypes }              from '../contentsMap'
+import NetworkFormContext            from '../NetworkFormContext'
 import { Diagram }                   from '../styledComponents'
+
 
 interface DiagramProps {
   type?: NetworkTypeEnum;
@@ -37,29 +44,23 @@ interface DiagramProps {
 }
 
 interface DefaultDiagramProps extends DiagramProps {
-  type: undefined;
 }
 interface DpskDiagramProps extends DiagramProps {
-  type: NetworkTypeEnum.DPSK;
 }
 
 interface OpenDiagramProps extends DiagramProps {
-  type: NetworkTypeEnum.OPEN;
 }
 
 interface PskDiagramProps extends DiagramProps {
-  type: NetworkTypeEnum.PSK;
   enableMACAuth?: boolean;
 }
 interface AaaDiagramProps extends DiagramProps {
-  type: NetworkTypeEnum.AAA;
   enableAuthProxy?: boolean;
   enableAccountingProxy?: boolean;
   enableAaaAuthBtn?: boolean;
   showButtons?: boolean;
 }
 interface CaptivePortalDiagramProps extends DiagramProps {
-  type: NetworkTypeEnum.CAPTIVEPORTAL;
   networkPortalType?: GuestNetworkTypeEnum;
   wisprWithPsk?: boolean;
 }
@@ -147,8 +148,42 @@ function getCaptivePortalDiagram (props: CaptivePortalDiagramProps) {
 
 export function NetworkDiagram (props: NetworkDiagramProps) {
   const { $t } = useIntl()
-  const title = props.type ? $t(networkTypes[props.type]) : undefined
-  const diagram = getDiagram({ ...props })
+  const { data } = useContext(NetworkFormContext)
+  const [enableAaaAuthBtn, setEnableAaaAuthBtn] = useState(true)
+  const title = data?.type ? $t(networkTypes[data?.type]) : undefined
+
+  const showButtons = data?.enableAuthProxy !== !!data?.enableAccountingProxy
+  && data?.enableAccountingService && !data?.isCloudpathEnabled
+  const { selected } = useCloudpathListQuery({ params: useParams() }, {
+    selectFromResult ({ data: cloudData }) {
+      return {
+        selected: cloudData?.find((item: CloudpathServer) => item.id === data?.cloudpathServerId)
+      }
+    }
+  })
+
+  const enableMACAuth = data?.wlan?.macAddressAuthentication
+
+  const diagram = getDiagram({
+    ...data,
+    ...{ showButtons, enableAaaAuthBtn, cloudpathType: selected?.deploymentType, enableMACAuth },
+    ...props
+  })
+
+
+  function AaaButtons () {
+    const { $t } = useIntl()
+    return (
+      <Space align='center' style={{ display: 'flex', justifyContent: 'center' }}>
+        <Button type='link' disabled={enableAaaAuthBtn} onClick={() => setEnableAaaAuthBtn(true)}>
+          { $t({ defaultMessage: 'Authentication Service' }) }
+        </Button>
+        <Button type='link' disabled={!enableAaaAuthBtn} onClick={() => setEnableAaaAuthBtn(false)}>
+          { $t({ defaultMessage: 'Accounting Service' }) }
+        </Button>
+      </Space>
+    )
+  }
 
   return (
     <Row justify='center'>
@@ -156,6 +191,7 @@ export function NetworkDiagram (props: NetworkDiagramProps) {
         <Diagram>
           {diagram && <img src={diagram} alt={title} />}
         </Diagram>
+        {showButtons && <AaaButtons />}
       </Col>
     </Row>
   )

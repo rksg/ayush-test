@@ -3,12 +3,15 @@ import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
+import { rest }  from 'msw'
 
-import { Provider }          from '@acx-ui/store'
-import { fireEvent, within } from '@acx-ui/test-utils'
-import { render, screen }    from '@acx-ui/test-utils'
+import { CommonUrlsInfo }                                from '@acx-ui/rc/utils'
+import { Provider }                                      from '@acx-ui/store'
+import { mockServer, fireEvent, within, render, screen } from '@acx-ui/test-utils'
 
-import { NetworkMoreSettingsForm } from './NetworkMoreSettingsForm'
+import { policyListResponse } from '../__tests__/fixtures'
+
+import { MoreSettingsForm, NetworkMoreSettingsForm } from './NetworkMoreSettingsForm'
 
 const mockWlanData = {
   name: 'test',
@@ -18,6 +21,40 @@ const mockWlanData = {
 }
 
 describe('NetworkMoreSettingsForm', () => {
+  beforeEach(() => {
+
+    const devicePolicyResponse = [{
+      data: [{
+        id: 'e3ea3749907f4feb95e9b46fe69aae0b',
+        name: 'p1',
+        rulesCount: 1,
+        networksCount: 0
+      }],
+      fields: [
+        'name',
+        'id'],
+      totalCount: 1,
+      totalPages: 1,
+      page: 1
+    }]
+
+    mockServer.use(
+      rest.post(CommonUrlsInfo.getDevicePolicyList.url,
+        (req, res, ctx) => res(ctx.json(devicePolicyResponse))),
+      rest.post(CommonUrlsInfo.getL2AclPolicyList.url,
+        (_, res, ctx) => res(ctx.json(policyListResponse))),
+      rest.post(CommonUrlsInfo.getL3AclPolicyList.url,
+        (_, res, ctx) => res(ctx.json(policyListResponse))),
+      rest.post(CommonUrlsInfo.getApplicationPolicyList.url,
+        (_, res, ctx) => res(ctx.json(policyListResponse))),
+      rest.get(CommonUrlsInfo.getWifiCallingProfileList.url,
+        (_, res, ctx) => res(ctx.json(policyListResponse))),
+      rest.get(CommonUrlsInfo.getVlanPoolList.url,
+        (_, res, ctx) => res(ctx.json([]))),
+      rest.get(CommonUrlsInfo.getAccessControlProfileList.url,
+        (_, res, ctx) => res(ctx.json([])))
+    )
+  })
   it('should render More settings form successfully', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
@@ -29,6 +66,8 @@ describe('NetworkMoreSettingsForm', () => {
       </Provider>, {
         route: { params }
       })
+    const button = screen.getByText(/show more settings/i)
+    await userEvent.click(button)
 
     expect(asFragment()).toMatchSnapshot()
   })
@@ -38,7 +77,7 @@ describe('NetworkMoreSettingsForm', () => {
     render(
       <Provider>
         <Form>
-          <NetworkMoreSettingsForm wlanData={mockWlanData} />
+          <MoreSettingsForm wlanData={mockWlanData} />
         </Form>
       </Provider>,
       { route: { params } })
@@ -56,7 +95,7 @@ describe('NetworkMoreSettingsForm', () => {
     render(
       <Provider>
         <Form>
-          <NetworkMoreSettingsForm wlanData={mockWlanData} />
+          <MoreSettingsForm wlanData={mockWlanData} />
         </Form>
       </Provider>,
       { route: { params } })
@@ -73,7 +112,7 @@ describe('NetworkMoreSettingsForm', () => {
     render(
       <Provider>
         <Form>
-          <NetworkMoreSettingsForm wlanData={mockWlanData} />
+          <MoreSettingsForm wlanData={mockWlanData} />
         </Form>
       </Provider>,
       { route: { params } })
@@ -83,8 +122,6 @@ describe('NetworkMoreSettingsForm', () => {
 
     expect(screen.getByText(/arp request rate limit/i)).toBeVisible()
     expect(screen.getByText(/dhcp request rate limit/i)).toBeVisible()
-
-
   })
 
   it('after click Access Control', async () => {
@@ -92,7 +129,7 @@ describe('NetworkMoreSettingsForm', () => {
     render(
       <Provider>
         <Form>
-          <NetworkMoreSettingsForm wlanData={mockWlanData} />
+          <MoreSettingsForm wlanData={mockWlanData} />
         </Form>
       </Provider>,
       { route: { params } })
@@ -153,7 +190,7 @@ describe('NetworkMoreSettingsForm', () => {
     render(
       <Provider>
         <Form>
-          <NetworkMoreSettingsForm wlanData={mockDpskWlanData} />
+          <MoreSettingsForm wlanData={mockDpskWlanData} />
         </Form>
       </Provider>,
       { route: { params } })
@@ -162,8 +199,29 @@ describe('NetworkMoreSettingsForm', () => {
     const enableFastRoamingCheckbox = screen.getByTestId('enableFastRoaming')
     fireEvent.click(enableFastRoamingCheckbox)
     expect(screen.getByText(/mobility domain id/i)).toBeVisible()
+  })
 
+  it('Adjust BBS Min Rate value', async () => {
+    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+    render(
+      <Provider>
+        <Form>
+          <MoreSettingsForm wlanData={mockWlanData} />
+        </Form>
+      </Provider>,
+      { route: { params } })
 
+    await userEvent.click(screen.getByText(/none/i))
+    await userEvent.click(screen.getByText(/5.5 Mbps/i))
+    const mgmtTxRateSelect = screen.getByTestId('mgmtTxRateSelect')
+    expect(within(mgmtTxRateSelect).getByText(/5.5 mbps/i)).toBeVisible()
+
+    const ofdmCheckbox = screen.getByRole('checkbox', {
+      name: /enable ofdm only \(disable 802\.11b\)/i
+    })
+
+    await userEvent.click(ofdmCheckbox)
+    expect(within(mgmtTxRateSelect).getByText(/6 Mbps/i)).toBeVisible()
   })
 })
 

@@ -6,31 +6,25 @@ import { IntlProvider }   from 'react-intl'
 
 import { DateRange } from '@acx-ui/utils'
 
-import { RangePicker } from '.'
+import { DatePicker, RangePicker } from '.'
 
-jest.mock('@acx-ui/icons', () => ({
-  CaretDownSolid: () => <div>CaretDownSolid</div>,
-  ClockOutlined: () => <div>ClockOutlined</div>
-}))
-
-describe('CalenderRangePicker', () => {
-  it('should render default CalenderRangePicker', () => {
-    const { asFragment } = render(
+describe('DatePicker', () => {
+  it('should open when click on date select', async () => {
+    render(
       <IntlProvider locale='en'>
-        <RangePicker
-          selectionType={DateRange.custom}
-          onDateApply={() => {}}
-          selectedRange={{
-            startDate: moment('01/01/2022').subtract(1, 'days').seconds(0),
-            endDate: moment('01/01/2022').seconds(0)
-          }}
-        />
+        <DatePicker />
       </IntlProvider>
     )
-    expect(asFragment()).toMatchSnapshot()
+    const user = userEvent.setup()
+    const calenderSelect = await screen.findByPlaceholderText('Select date')
+    await user.click(calenderSelect)
+    expect(await screen.findByText('Su')).toBeDefined()
   })
-  it('should open CalenderRangePicker when click on date select', async () => {
-    const { container } = render(
+})
+
+describe('RangePicker', () => {
+  it('should open when click on date select', async () => {
+    render(
       <IntlProvider locale='en'>
         <RangePicker
           selectionType={DateRange.last24Hours}
@@ -49,10 +43,9 @@ describe('CalenderRangePicker', () => {
     const user = userEvent.setup()
     const calenderSelect = await screen.findByPlaceholderText('Start date')
     await user.click(calenderSelect)
-    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
-    expect(container).not.toHaveClass('ant-picker-dropdown-hidden')
+    expect(await screen.findAllByText('Su')).toHaveLength(2)
   })
-  it('should close CalenderRangePicker when click on apply', async () => {
+  it('should close when click on apply', async () => {
     const { container } = render(
       <IntlProvider locale='en'>
         <RangePicker
@@ -77,7 +70,7 @@ describe('CalenderRangePicker', () => {
     // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
     expect(container.getElementsByClassName('ant-picker-dropdown-hidden').length).toBe(1)
   })
-  it('should close CalenderRangePicker when click outside', async () => {
+  it('should close when click outside', async () => {
     const { container } = render(
       <IntlProvider locale='en'>
         <RangePicker
@@ -96,13 +89,12 @@ describe('CalenderRangePicker', () => {
     const user = userEvent.setup()
     const calenderSelect = await screen.findByPlaceholderText('Start date')
     await user.click(calenderSelect)
-    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
-    expect(container).not.toHaveClass('ant-picker-dropdown-hidden')
+    expect(await screen.findAllByText('Su')).toHaveLength(2)
     await user.click(document.body)
     // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
     expect(container.getElementsByClassName('ant-picker-dropdown-hidden').length).toBe(1)
   })
-  it('should close CalenderRangePicker when click on cancel', async () => {
+  it('should close when click on cancel', async () => {
     const { container } = render(
       <IntlProvider locale='en'>
         <RangePicker
@@ -124,7 +116,7 @@ describe('CalenderRangePicker', () => {
     // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
     expect(container.getElementsByClassName('ant-picker-dropdown-hidden').length).toBe(1)
   })
-  it('should close CalenderRangePicker when click on ranges', async () => {
+  it('should close when click on ranges', async () => {
     Object.defineProperty(HTMLElement.prototype, 'innerText', {
       get () {
         return this.textContent
@@ -316,8 +308,9 @@ describe('CalenderRangePicker', () => {
     await user.click(dateSelect[0])
     expect(screen.getByRole('display-date-range')).toHaveTextContent('- Jan 01 2022')
   })
-  it('should disable future time selection when startdate and end date are same', async () => {
+  it('should disable apply when startdate and end date are same', async () => {
     const onDateChange = jest.fn()
+    const apply = jest.fn()
     render(
       <IntlProvider locale='en'>
         <RangePicker
@@ -327,7 +320,7 @@ describe('CalenderRangePicker', () => {
             endDate: moment('03/01/2022').hours(12)
           }}
           onDateChange={onDateChange}
-          onDateApply={() => {}}
+          onDateApply={apply}
           showTimePicker
         />
       </IntlProvider>
@@ -340,5 +333,8 @@ describe('CalenderRangePicker', () => {
     const hourSelect = await screen.findAllByText('11')
     await user.click(hourSelect[hourSelect.length - 1])
     expect(screen.getByRole('display-date-range')).not.toHaveTextContent('11:')
+    const applyButton = await screen.findByText('Apply')
+    await user.click(applyButton)
+    expect(apply).toBeCalledTimes(0)
   })
 })

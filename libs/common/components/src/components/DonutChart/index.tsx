@@ -26,15 +26,17 @@ interface DonutChartOptionalProps {
   animation: boolean,
   showLabel: boolean,
   showTotal: boolean,
-  type: 'small' | 'large'
+  legend: 'value' | 'name' | 'name-value',
+  size: 'small' | 'large'
 }
 
 const defaultProps: DonutChartOptionalProps = {
-  showLegend: true,
-  animation: true,
+  showLegend: false,
+  animation: false,
   showLabel: false,
   showTotal: true,
-  type: 'small'
+  legend: 'value',
+  size: 'small'
 }
 
 DonutChart.defaultProps = { ...defaultProps }
@@ -65,7 +67,7 @@ export function DonutChart ({
   const sum = data.reduce((acc, cur) => acc + cur.value, 0)
   const colors = data.map(series => series.color)
   const isEmpty = data.length === 0 || (data.length === 1 && data[0].name === '')
-  const isSmall = props.type === 'small'
+  const isSmall = props.size === 'small'
 
   if (data.length === 0) { // Adding empty data to show center label
     data.push({
@@ -138,8 +140,8 @@ export function DonutChart ({
       textVerticalAlign: 'top',
       textAlign: props.showLegend && !isEmpty ? 'center' : undefined,
       itemGap: 4,
-      textStyle: styles[props.type].title,
-      subtextStyle: styles[props.type].value
+      textStyle: styles[props.size].title,
+      subtextStyle: styles[props.size].value
     },
     legend: {
       show: props.showLegend,
@@ -159,13 +161,19 @@ export function DonutChart ({
       },
       formatter: name => {
         const value = find(data, (pie) => pie.name === name)?.value
-        return `${dataFormatter(value)}`
+        switch(props.legend) {
+          case 'name': return name
+          case 'name-value': return `${name} - ${dataFormatter(value)}`
+          case 'value':
+          default:
+            return `${dataFormatter(value)}`
+        }
       }
     },
     color: colors,
     series: [
       {
-        animation: !isEmpty,
+        animation: false,
         data,
         type: 'pie',
         cursor: props.onClick ? 'pointer' : 'auto',
@@ -198,7 +206,7 @@ export function DonutChart ({
           length2: isSmall ? 5 : 10
         },
         itemStyle: {
-          borderWidth: props.type === 'large' ? 2 : 1,
+          borderWidth: props.size === 'large' ? 2 : 1,
           borderColor: isEmpty ? cssStr('--acx-neutrals-25') : cssStr('--acx-primary-white')
         }
       }

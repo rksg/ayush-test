@@ -1,10 +1,13 @@
 import { useEffect, useState, useRef, useCallback } from 'react'
 
-import { DatePicker as AntdDatePicker } from 'antd'
-import { useIntl }                      from 'react-intl'
+import {
+  DatePicker as AntDatePicker,
+  DatePickerProps as AntDatePickerProps
+} from 'antd'
+import { useIntl } from 'react-intl'
 
-import { ClockOutlined }                                           from '@acx-ui/icons'
-import { dateTimeFormats, defaultRanges, DateRange, dateRangeMap } from '@acx-ui/utils'
+import { ClockOutlined }                                                        from '@acx-ui/icons'
+import { dateTimeFormats, defaultRanges, DateRange, dateRangeMap, resetRanges } from '@acx-ui/utils'
 
 import { DatePickerFooter } from './DatePickerFooter'
 import * as UI              from './styledComponents'
@@ -30,7 +33,7 @@ interface DatePickerProps {
   onDateApply: Function;
   selectionType: DateRange;
 }
-const AntdRangePicker = AntdDatePicker.RangePicker
+const AntRangePicker = AntDatePicker.RangePicker
 const { dateFormat, dateTimeFormat } = dateTimeFormats
 
 export const RangePicker = ({
@@ -66,6 +69,7 @@ export const RangePicker = ({
         setIscalenderOpen(false)
       }
       if (Object.values(DateRange).includes(target.innerText as DateRange)) {
+        resetRanges()
         onDateApply({
           range: target.innerText as DateRange
         })
@@ -90,8 +94,12 @@ export const RangePicker = ({
     }
   }, {})
   return (
-    <UI.Wrapper ref={componentRef} rangeOptions={rangeOptions} selectionType={selectionType}>
-      <AntdRangePicker
+    <UI.RangePickerWrapper
+      ref={componentRef}
+      rangeOptions={rangeOptions}
+      selectionType={selectionType}
+    >
+      <AntRangePicker
         ranges={rangesWithi18n as RangesType}
         placement='bottomRight'
         disabledDate={disabledDate}
@@ -117,6 +125,15 @@ export const RangePicker = ({
         format={showTimePicker ? dateTimeFormat : dateFormat}
         allowClear={false}
       />
-    </UI.Wrapper>
+    </UI.RangePickerWrapper>
   )
 }
+
+export const DatePicker = (props: AntDatePickerProps) => (
+  <UI.Wrapper>
+    <AntDatePicker
+      {...props}
+      getPopupContainer={(triggerNode: HTMLElement) => triggerNode}
+    />
+  </UI.Wrapper>
+)

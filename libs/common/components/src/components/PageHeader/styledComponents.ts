@@ -5,55 +5,52 @@ export const Wrapper = styled.div`
   top: calc(var(--acx-header-height) + var(--acx-content-vertical-space));
   z-index: 5;
   background-color: var(--acx-primary-white);
-
+  padding: 0 var(--acx-content-horizontal-space);
+  margin: 0 calc(var(--acx-content-horizontal-space) * -1);
   .ant-page-header {
     padding: 0;
+    margin: 4px 0 var(--acx-content-vertical-space);
     &-heading {
+      gap: 12px;
       h1 {
         margin-bottom: 0;
       }
       &-left {
-        overflow: visible;
         flex-direction: column;
+        margin: 0;
       }
-      &-sub-title {
-        align-self: flex-start;
-        margin-top: 6px;
-        color: var(--acx-primary-black);
-        font-size: var(--acx-body-4-font-size);
-        line-height: var(--acx-body-4-line-height);
-        font-weight: var(--acx-body-font-weight);
+      &-extra {
+        margin: 0;
+        > .ant-space {
+          gap: 12px !important;
+        }
       }
       &-title {
-        overflow: visible;
+        width: 100%;
         align-self: flex-start;
         display: flex;
         gap: 10px;
         align-items: center;
       }
-      margin-bottom: var(--acx-content-vertical-space);
+    }
+    &-content {
+      padding: 6px 0 0;
+      color: var(--acx-primary-black);
+      font-size: var(--acx-body-4-font-size);
+      line-height: var(--acx-body-4-line-height);
+      font-weight: var(--acx-body-font-weight);
     }
     .ant-breadcrumb + .ant-page-header-heading {
-      margin-top: 6px;
+      margin-top: 3px;
     }
     &.has-footer {
-      .ant-page-header-heading {
-        margin-bottom: 0;
+      margin-bottom: 0;
+      .ant-page-header-content {
+        padding-bottom: 2px;
       }
-    }
-    &-footer {
-      .ant-tabs {
-        border-bottom: 1px solid var(--acx-neutrals-30);
-        .ant-tabs-tab {
-          padding: 4px 0 14px 0;
-          &.ant-tabs-tab-active .ant-tabs-tab-btn {
-            font-weight: var(--acx-subtitle-4-font-weight);
-          }
-        }
+      .ant-page-header-footer {
+        margin-top: 8px;
       }
-    }
-    .ant-tabs-tab + .ant-tabs-tab {
-      margin-left: 30px;
     }
   }
 `

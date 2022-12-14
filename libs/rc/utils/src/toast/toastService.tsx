@@ -1,11 +1,13 @@
 /* eslint-disable no-console */
 import { LoadingOutlined } from '@ant-design/icons'
 import * as _              from 'lodash'
+import { IntlShape }       from 'react-intl'
 import { generatePath }    from 'react-router-dom'
 import styled              from 'styled-components/macro'
 
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { showToast, ToastProps, ToastType } from '@acx-ui/components'
+import { showActionModal, showToast, ToastProps, ToastType } from '@acx-ui/components'
+import { getIntl }                                           from '@acx-ui/utils'
 
 import { rcToastTemplates } from './toastTemplate'
 
@@ -78,18 +80,18 @@ const routeToPage = (link: string, queryParams: QueryParams) => {
   window.location.href = url
 }
 
-const showDetails = () => {
-  // TODO: params: message: {[key: string]: string}
-  // Details Modal
-  // if (this.dialogService.isModalShown('TechnicalDetailsDialogComponent')) {
-  //   return;
-  // }
-
-  // this.dialogService.show('TechnicalDetailsDialogComponent', TechnicalDetailsDialogComponent, {
-  //   message: message.detail
-  // }).then(x => {
-  //   this.dialogService.close('TechnicalDetailsDialogComponent');
-  // });
+const showDetails = (tx: Transaction, intl: IntlShape) => {
+  showActionModal({
+    type: 'error',
+    title: intl.$t({ defaultMessage: 'Technical Details' }),
+    content: intl.$t({
+      defaultMessage: 'The following information was reported for the error you encountered'
+    }),
+    customContent: {
+      action: 'SHOW_ERRORS',
+      errorDetails: JSON.parse((tx?.error) as string)
+    }
+  })
 }
 
 const Countdown = styled.div`
@@ -133,10 +135,11 @@ export const showActivityMessage = (tx: Transaction, useCase: string[], callback
 export const refetchByUsecase = (tx: Transaction, useCase: string[], callback: Function) => {
   if (proceedByUsecase(tx, useCase)) {
     callback()
-  }  
+  }
 }
 
 export const showTxToast = (tx: Transaction) => {
+  const intl = getIntl()
   if (tx.attributes && tx.attributes.name) {
     // calculate max_name_length
     const fullLength = getToastMessage(tx).length
@@ -179,7 +182,7 @@ export const showTxToast = (tx: Transaction) => {
   if (msg.severity === 'error' as ToastType) {
     config = {
       ...config,
-      link: { onClick: () => showDetails() }
+      link: { onClick: () => showDetails(tx, intl) }
     }
   }
   if (msg.data?.link) {

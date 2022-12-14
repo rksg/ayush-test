@@ -1,4 +1,5 @@
 import { Space }   from 'antd'
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import {
@@ -9,12 +10,13 @@ import {
   Loader,
   StackedBarChart,
   cssStr,
+  showActionModal,
   deviceStatusColors,
   getDeviceConnectionStatusColors
 } from '@acx-ui/components'
-import { useVenuesListQuery }                       from '@acx-ui/rc/services'
-import { useTableQuery, ApDeviceStatusEnum, Venue } from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate }                  from '@acx-ui/react-router-dom'
+import { useVenuesListQuery, useDeleteVenueMutation }                                              from '@acx-ui/rc/services'
+import { useTableQuery, ApDeviceStatusEnum, Venue, ApVenueStatusEnum, TableQuery, RequestPayload } from '@acx-ui/rc/utils'
+import { TenantLink, useNavigate, useParams }                                                      from '@acx-ui/react-router-dom'
 
 function useColumns () {
   const { $t } = useIntl()
@@ -43,6 +45,7 @@ function useColumns () {
     },
     {
       key: 'incidents',
+      dataIndex: 'incidents',
       title: () => {
         return (
           <>
@@ -55,6 +58,7 @@ function useColumns () {
     },
     {
       key: 'health',
+      dataIndex: 'health',
       title: () => {
         return (
           <>
@@ -68,11 +72,12 @@ function useColumns () {
     {
       title: $t({ defaultMessage: 'Services' }),
       key: 'services',
+      dataIndex: 'services',
       align: 'center'
     },
     {
       title: $t({ defaultMessage: 'Wi-Fi APs' }),
-      align: 'center',
+      align: 'left',
       key: 'aggregatedApStatus',
       dataIndex: 'aggregatedApStatus',
       render: function (data, row) {
@@ -135,6 +140,7 @@ function useColumns () {
     },
     {
       key: 'tags',
+      dataIndex: 'tags',
       title: $t({ defaultMessage: 'Tags' })
     }
   ]
@@ -142,7 +148,7 @@ function useColumns () {
   return columns
 }
 
-const defaultPayload = {
+export const defaultVenuePayload = {
   fields: [
     'check-all',
     'name',
@@ -165,38 +171,76 @@ const defaultPayload = {
   sortOrder: 'ASC'
 }
 
-export function VenuesTable () {
+type VenueTableProps = {
+  tableQuery: TableQuery<Venue, RequestPayload<unknown>, unknown>,
+  rowSelection?: TableProps<Venue>['rowSelection']
+}
+
+export const VenueTable = ({ tableQuery, rowSelection }: VenueTableProps) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const VenuesTable = () => {
-    const tableQuery = useTableQuery({
-      useQuery: useVenuesListQuery,
-      defaultPayload
-    })
+  const columns = useColumns()
 
-    const actions: TableProps<Venue>['actions'] = [{
-      label: $t({ defaultMessage: 'Edit' }),
-      onClick: (selectedRows) => {
-        navigate(`${selectedRows[0].id}/edit/details`, { replace: false })
-      }
-    }]
+  const { tenantId } = useParams()
+  const [
+    deleteVenue,
+    { isLoading: isDeleteVenueUpdating }
+  ] = useDeleteVenueMutation()
 
-    return (
-      <Loader states={[
-        tableQuery
-      ]}>
-        <Table
-          columns={useColumns()}
-          dataSource={tableQuery.data?.data}
-          pagination={tableQuery.pagination}
-          onChange={tableQuery.handleTableChange}
-          rowKey='id'
-          actions={actions}
-          rowSelection={{ type: 'checkbox' }}
-        />
-      </Loader>
-    )
-  }
+  const rowActions: TableProps<Venue>['rowActions'] = [{
+    visible: (selectedRows) => selectedRows.length === 1,
+    label: $t({ defaultMessage: 'Edit' }),
+    onClick: (selectedRows) => {
+      navigate(`${selectedRows[0].id}/edit/details`, { replace: false })
+    }
+  },
+  {
+    label: $t({ defaultMessage: 'Delete' }),
+    onClick: (rows, clearSelection) => {
+      showActionModal({
+        type: 'confirm',
+        customContent: {
+          action: 'DELETE',
+          entityName: $t({ defaultMessage: 'Venues' }),
+          entityValue: rows.length === 1 ? rows[0].name : undefined,
+          numOfEntities: rows.length,
+          confirmationText: shouldShowConfirmation(rows) ? 'Delete' : undefined
+        },
+        onOk: () => { rows.length === 1 ?
+          deleteVenue({ params: { tenantId, venueId: rows[0].id } })
+            .then(clearSelection) :
+          deleteVenue({ params: { tenantId }, payload: rows.map(item => item.id) })
+            .then(clearSelection)
+        }
+      })
+    }
+  }]
+
+  return (
+    <Loader states={[
+      tableQuery,
+      { isLoading: false, isFetching: isDeleteVenueUpdating }
+    ]}>
+      <Table
+        columns={columns}
+        dataSource={tableQuery.data?.data}
+        pagination={tableQuery.pagination}
+        onChange={tableQuery.handleTableChange}
+        rowKey='id'
+        rowActions={rowActions}
+        rowSelection={rowSelection}
+      />
+    </Loader>
+  )
+}
+
+export function VenuesTable () {
+  const { $t } = useIntl()
+
+  const tableQuery = useTableQuery<Venue, RequestPayload<unknown>, unknown>({
+    useQuery: useVenuesListQuery,
+    defaultPayload: defaultVenuePayload
+  })
 
   return (
     <>
@@ -208,7 +252,7 @@ export function VenuesTable () {
           </TenantLink>
         ]}
       />
-      <VenuesTable />
+      <VenueTable tableQuery={tableQuery} rowSelection={{ type: 'checkbox' }} />
     </>
   )
 }
@@ -233,7 +277,8 @@ function getApStatusChart (apStatus: Venue['aggregatedApStatus']) {
   ]]
 
   const series = Object.entries(apStatus).reduce((counts, [key, value]) => {
-    const index = apStatusMap.findIndex(s => s.includes(key as ApDeviceStatusEnum))
+    const index = apStatusMap.findIndex(s =>
+      String(s).toLowerCase().includes((key).toLowerCase()))
     counts[index] += value as number
     return counts
   }, [0, 0, 0, 0]).map((data, index) => ({
@@ -268,4 +313,11 @@ function getEmptyStatusChart () {
     showTotal={false}
     barColors={[cssStr(deviceStatusColors.empty)]}
   />
+}
+
+function shouldShowConfirmation (selectedVenues: Venue[]) {
+  const venues = selectedVenues.filter(v => {
+    return v['status'] !== ApVenueStatusEnum.IN_SETUP_PHASE || !_.isEmpty(v['aggregatedApStatus'])
+  })
+  return venues.length > 0
 }

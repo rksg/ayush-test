@@ -18,6 +18,8 @@ import {
 
 import { Venues } from './Venues'
 
+jest.mock('socket.io-client')
+
 const list = {
   totalCount: 2,
   page: 1,

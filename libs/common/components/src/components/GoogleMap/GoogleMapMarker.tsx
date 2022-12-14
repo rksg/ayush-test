@@ -1,8 +1,10 @@
 import { useEffect, useRef } from 'react'
 
-export type MarkerProps = google.maps.MarkerOptions
+export interface MarkerProps extends google.maps.MarkerOptions {
+  onDragEnd?: Function
+}
 
-export const GoogleMapMarker: React.FC<google.maps.MarkerOptions> = (options) => {
+export const GoogleMapMarker: React.FC<MarkerProps> = (options) => {
   const marker = useRef<google.maps.Marker>(new google.maps.Marker())
 
   useEffect(() => {
@@ -10,6 +12,12 @@ export const GoogleMapMarker: React.FC<google.maps.MarkerOptions> = (options) =>
     current.setOptions(options)
     return () => { current.setMap(null) }
   }, [options])
+
+  useEffect(() => {
+    if (options?.draggable && options?.onDragEnd) {
+      marker.current.addListener('dragend', options?.onDragEnd)
+    }
+  }, [])
 
   return null
 }

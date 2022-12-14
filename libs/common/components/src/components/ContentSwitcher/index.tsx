@@ -2,10 +2,11 @@ import { FC, ReactNode, useState } from 'react'
 
 import { SelectionControl, SelectionControlOptionProps } from '../SelectionControl'
 interface TabDetail {
-  label: string
+  label: ReactNode
   value: string
-  children: ReactNode,
+  children: ReactNode
   icon?: ReactNode
+  disabled?: boolean
 }
 
 export interface ContentSwitcherProps {
@@ -13,23 +14,28 @@ export interface ContentSwitcherProps {
   tabDetails: Array<TabDetail>
   size?: 'small' | 'large'
   align?: 'left' | 'right' | 'center'
-  space?: number
+}
+
+const sizeSpaceMap = {
+  small: '8px',
+  large: '15px'
 }
 
 export const ContentSwitcher: FC<ContentSwitcherProps> = (props) => {
-  const { tabDetails, defaultValue, size, align, space } = props
+  const { tabDetails, defaultValue, size, align } = props
 
   const options: SelectionControlOptionProps[] = tabDetails.map(tabDetail=>{
     return {
       label: tabDetail.label,
       value: tabDetail.value,
-      icon: tabDetail.icon
+      icon: tabDetail.icon,
+      disabled: tabDetail.disabled
     }
   })
   const [activeContent, setActiveContent] = useState(defaultValue || options[0].value)
   return(
     <>
-      <div style={{ textAlign: align, padding: `${space}px 0px` }}>
+      <div style={{ textAlign: align, padding: `${sizeSpaceMap[size!]} 0px` }}>
         <SelectionControl options={options}
           defaultValue={defaultValue || options[0].value}
           size={size}
@@ -46,6 +52,5 @@ export const ContentSwitcher: FC<ContentSwitcherProps> = (props) => {
 
 ContentSwitcher.defaultProps = {
   size: 'small',
-  align: 'center',
-  space: 10
+  align: 'center'
 }

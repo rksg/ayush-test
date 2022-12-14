@@ -40,7 +40,7 @@ const basicData = [
   }
 ]
 
-const actions: TableProps<(typeof basicData)[0]>['actions'] = [
+const actions: TableProps<(typeof basicData)[0]>['rowActions'] = [
   {
     label: 'Edit',
     onClick: (selectedRows) => showToast({
@@ -63,7 +63,7 @@ export function MultiSelectTable () {
     <Table
       columns={basicColumns}
       dataSource={basicData}
-      actions={actions}
+      rowActions={actions}
       rowSelection={{ defaultSelectedRowKeys: [] }}
     />
   </>)

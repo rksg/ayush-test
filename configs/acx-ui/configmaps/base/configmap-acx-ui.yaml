@@ -3,5 +3,7 @@ kind: ConfigMap
 metadata:
   name: configmap-acx-ui
 data:
-   google.maps.key: "AIzaSyDq4QI2gdhGotqFiR28ZXk_RkbWtZ-IMDQ"
-   split.io.key: "s56i5harnvpksqb6a5kom1phqncj9d6ujf92"
+  google.maps.key: "AIzaSyDq4QI2gdhGotqFiR28ZXk_RkbWtZ-IMDQ"
+  split.io.key: "s56i5harnvpksqb6a5kom1phqncj9d6ujf92"
+  pendo.api.key: "b775f526-720b-449c-7fca-f45b7c3df0ae"
+  disable.pendo: "false"

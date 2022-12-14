@@ -19,7 +19,7 @@ const { Option } = Select
 const { useWatch } = Form
 
 export function CloudpathServerForm () {
-  const { data } = useContext(NetworkFormContext)
+  const { data, setData } = useContext(NetworkFormContext)
   const { $t } = useIntl()
 
   const selectedId = useWatch('cloudpathServerId')
@@ -32,6 +32,9 @@ export function CloudpathServerForm () {
     }
   })
 
+  const onSelect = (selectedId: string) => {
+    setData && setData({ ...data, cloudpathServerId: selectedId })
+  }
   return (
     <>
       <Form.Item
@@ -40,10 +43,13 @@ export function CloudpathServerForm () {
         initialValue={data?.cloudpathServerId}
         rules={[{ required: true }]}>
         <Select placeholder={$t({ defaultMessage: 'Select...' })}
+          onSelect={onSelect}
           children={selectOptions} />
       </Form.Item>
 
-      <Button type='link'>{ $t({ defaultMessage: 'Add Server' }) }</Button>
+      <Button type='link' style={{ marginBottom: '16px' }}>
+        { $t({ defaultMessage: 'Add Server' }) }
+      </Button>
 
       {selected && (<>
         <Form.Item
@@ -61,6 +67,21 @@ export function CloudpathServerForm () {
             selected.authRadius.primary.port
           }
         />
+        { selected.accountingRadius &&
+          <>
+            <Subtitle level={4}>
+              { $t({ defaultMessage: 'Radius Accounting Service' }) }
+            </Subtitle>
+            <Form.Item
+              label={$t({ defaultMessage: 'IP Address' })}
+              children={
+                selected.accountingRadius?.primary.ip +
+                ':' +
+                selected.accountingRadius?.primary.port
+              }
+            />
+          </>
+        }
         <Form.Item
           label={$t({ defaultMessage: 'Radius Shared Secret' })}
           children={<Input.Password

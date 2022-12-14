@@ -53,7 +53,7 @@ export {
   customRenderHook as renderHook
 }
 
-function wrapper (options?: CustomOptions) {
+function wrapper (options?: CustomOptions & { wrapper?: RenderOptions['wrapper'] }) {
   return function Wrapper (props: { children: ReactElement }) {
     let wrappedUI = props.children
     if (options?.wrapper) {

@@ -1,8 +1,9 @@
+import { useRef } from 'react'
+
 import { LabelFormatterCallback, RegisteredSeriesOption }           from 'echarts'
 import { TooltipComponentFormatterCallbackParams }                  from 'echarts'
 import ReactECharts                                                 from 'echarts-for-react'
 import { CallbackDataParams, GridOption, TooltipFormatterCallback } from 'echarts/types/dist/shared'
-
 
 import type { BarChartData } from '@acx-ui/analytics/utils'
 
@@ -12,8 +13,11 @@ import {
   barChartSeriesLabelOptions,
   legendOptions,
   legendTextStyleOptions,
-  tooltipOptions
-} from '../Chart/helper'
+  tooltipOptions,
+  EventParams,
+  qualitativeColorSet
+}                 from '../Chart/helper'
+import { useLegendSelectChanged } from '../Chart/useLegendSelectChanged'
 
 import type { EChartsOption }     from 'echarts'
 import type { EChartsReactProps } from 'echarts-for-react'
@@ -23,22 +27,25 @@ export interface BarChartProps
   extends Omit<EChartsReactProps, 'option' | 'opts'> {
   data: TChartData,
   grid?: GridOption,
-  barColors: string[]
+  barColors?: string[]
   barWidth?: number
   labelFormatter?: string | LabelFormatterCallback<CallbackDataParams>
   tooltipFormatter?: string | TooltipFormatterCallback<TooltipComponentFormatterCallbackParams>
-  labelRichStyle?: object
+  labelRichStyle?: object,
+  onClick?: (params: EventParams) => void
 }
 
 const getSeries = (
   data: BarChartData,
   barColors: string[],
   labelFormatter: string | LabelFormatterCallback<CallbackDataParams> | undefined,
-  labelRichStyle: object | undefined): RegisteredSeriesOption['bar'][] => {
-
+  labelRichStyle: object | undefined,
+  clickable?: boolean
+): RegisteredSeriesOption['bar'][] => {
   return data?.seriesEncode.map(encode => ({
     type: 'bar',
-    silent: true,
+    silent: !clickable,
+    cursor: clickable ? 'pointer' : 'auto',
     colorBy: data?.seriesEncode?.length === 1 ? 'data' : undefined,
     color: data?.seriesEncode?.length === 1 ? barColors : undefined,
     encode: encode,
@@ -55,6 +62,9 @@ const getSeries = (
   }))
 }
 
+export const handleOnClick = (onClick: BarChartProps<BarChartData>['onClick']) =>
+  (params: EventParams) => onClick && onClick(params)
+
 export function BarChart<TChartData extends BarChartData>
 ({
   data,
@@ -62,11 +72,16 @@ export function BarChart<TChartData extends BarChartData>
   labelFormatter,
   tooltipFormatter,
   labelRichStyle,
-  barColors,
+  barColors = qualitativeColorSet(),
   barWidth,
+  onClick,
   ...props
 }: BarChartProps<TChartData>) {
+  const eChartsRef = useRef<ReactECharts>(null)
+  useLegendSelectChanged(eChartsRef)
+
   const option: EChartsOption = {
+    animation: false,
     grid: { ...gridOptions(), ...gridProps },
     dataset: {
       dimensions: data.dimensions,
@@ -114,14 +129,15 @@ export function BarChart<TChartData extends BarChartData>
         }
       }
     },
-
-    series: getSeries(data, barColors, labelFormatter, labelRichStyle)
+    series: getSeries(data, barColors, labelFormatter, labelRichStyle, !!onClick)
   }
 
   return (
     <ReactECharts
+      ref={eChartsRef}
       {...props}
       opts={{ renderer: 'svg' }}
-      option={option} />
+      option={option}
+      onEvents={{ click: handleOnClick(onClick!) }} />
   )
 }

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 
 import {
   Col,
@@ -8,54 +8,62 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { StepsForm }             from '@acx-ui/components'
-import { useCloudpathListQuery } from '@acx-ui/rc/services'
-import { NetworkTypeEnum }       from '@acx-ui/rc/utils'
-import { useParams }             from '@acx-ui/react-router-dom'
+import { StepsForm }       from '@acx-ui/components'
+import { NetworkSaveData } from '@acx-ui/rc/utils'
 
 import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext from '../NetworkFormContext'
 
-import { CloudpathServerForm } from './CloudpathServerForm'
+import { NetworkMoreSettingsForm } from './../NetworkMoreSettings/NetworkMoreSettingsForm'
+import { CloudpathServerForm }     from './CloudpathServerForm'
 
 const { useWatch } = Form
 
-export function OpenSettingsForm () {
-  const { data } = useContext(NetworkFormContext)
+export function OpenSettingsForm (props: {
+  saveState: NetworkSaveData
+}) {
+  const { editMode, cloneMode, data } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
-  if(data){
-    form.setFieldsValue({
-      isCloudpathEnabled: data.cloudpathServerId !== undefined
-    })
-  }
-  const selectedId = useWatch('cloudpathServerId')
-  const { selected } = useCloudpathListQuery({ params: useParams() }, {
-    selectFromResult ({ data }) {
-      return {
-        selected: data?.find((item) => item.id === selectedId)
-      }
+
+  useEffect(()=>{
+    if((editMode || cloneMode) && data){
+      form.setFieldsValue({
+        isCloudpathEnabled: data.isCloudpathEnabled
+      })
     }
-  })
+  }, [data])
 
   return (
     <Row gutter={20}>
       <Col span={10}>
         <SettingsForm />
+        {!(editMode) && <NetworkMoreSettingsForm wlanData={props.saveState} />}
       </Col>
-      <Col span={14}>
-        <NetworkDiagram
-          type={NetworkTypeEnum.OPEN}
-          cloudpathType={selected?.deploymentType}
-        />
+      <Col span={14} style={{ height: '100%' }}>
+        <NetworkDiagram />
       </Col>
     </Row>
   )
 }
 
 function SettingsForm () {
+  const form = Form.useFormInstance()
   const isCloudpathEnabled = useWatch<boolean>('isCloudpathEnabled')
-  const { editMode } = useContext(NetworkFormContext)
+  const { editMode, data, setData } = useContext(NetworkFormContext)
   const { $t } = useIntl()
+
+  const onCloudPathChange = (checked: boolean) => {
+    if(checked){
+      delete data?.authRadius
+      delete data?.accountingRadius
+    }else{
+      delete data?.cloudpathServerId
+      form.setFieldsValue({
+        cloudpathServerId: ''
+      })
+    }
+    setData && setData({ ...data, isCloudpathEnabled: checked })
+  }
 
   return (
     <>
@@ -63,7 +71,7 @@ function SettingsForm () {
 
       <Form.Item>
         <Form.Item noStyle name='isCloudpathEnabled' valuePropName='checked'>
-          <Switch disabled={editMode} />
+          <Switch disabled={editMode} onChange={onCloudPathChange} />
         </Form.Item>
         <span>{$t({ defaultMessage: 'Use Cloudpath Server' })}</span>
       </Form.Item>

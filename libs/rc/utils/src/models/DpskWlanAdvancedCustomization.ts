@@ -4,7 +4,7 @@ import { VlanPool }               from './VlanPool'
 import { WlanRadioCustomization } from './WlanRadioCustomization'
 
 export class DpskWlanAdvancedCustomization {
-  devicePolicyId?: string
+  devicePolicyId?: string | null
 
   l2AclPolicyId?: string
 

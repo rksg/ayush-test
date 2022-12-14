@@ -1,16 +1,9 @@
 import '@testing-library/jest-dom'
-import { render, screen, fireEvent } from '@testing-library/react'
 
-import { BulbOutlined } from '@acx-ui/icons'
+import { BulbOutlined }              from '@acx-ui/icons'
+import { render, screen, fireEvent } from '@acx-ui/test-utils'
 
 import { Drawer } from '.'
-
-
-jest.mock('@acx-ui/icons', ()=> ({
-  CloseSymbol: () => <div data-testid='close-symbol'/>,
-  ArrowBack: () => <div data-testid='arrow-back'/>,
-  BulbOutlined: () => <div data-testid='icon'/>
-}), { virtual: true })
 
 const onClose = jest.fn()
 const resetFields = jest.fn()
@@ -84,8 +77,8 @@ describe('Drawer', () => {
 
     await screen.findByText('Test Custom Drawer')
     await screen.findByText('Test Custom DrawerSubtitle')
-    await screen.findAllByTestId('icon')
-    await screen.findAllByTestId('arrow-back')
+    await screen.findAllByTestId('BulbOutlined')
+    await screen.findAllByTestId('ArrowBack')
     await screen.findByText('Back')
 
     fireEvent.click(closeButton)
@@ -99,5 +92,48 @@ describe('Drawer', () => {
 
     fireEvent.click(backButton)
     expect(handleBackClick).toBeCalled()
+  })
+
+  describe('FormFooter', () => {
+    it('should render form footer', async () => {
+      const mockOnCancel = jest.fn()
+      const mockOnSave = jest.fn()
+      const { asFragment } = render(
+        <Drawer.FormFooter
+          onCancel={mockOnCancel}
+          onSave={mockOnSave}
+        />
+      )
+      expect(asFragment()).toMatchSnapshot()
+      fireEvent.click(screen.getByRole('button', { name: 'Save' }))
+      expect(mockOnSave).toBeCalledWith(false)
+      fireEvent.click(screen.getByRole('button', { name: 'Cancel' }))
+      expect(mockOnCancel).toBeCalled()
+    })
+
+    it('should handle add another checkbox events', async () => {
+      const mockOnCancel = jest.fn()
+      const mockOnSave = jest.fn()
+      render(
+        <Drawer.FormFooter
+          showAddAnother={true}
+          onCancel={mockOnCancel}
+          onSave={mockOnSave}
+          buttonLabel={{
+            addAnother: 'Checkbox',
+            cancel: 'Back',
+            save: 'OK'
+          }}
+        />
+      )
+      const addAnother = screen.getByRole('checkbox', { name: 'Checkbox' })
+      expect(addAnother).not.toBeChecked()
+      fireEvent.click(addAnother)
+      expect(addAnother).toBeChecked()
+      fireEvent.click(screen.getByRole('button', { name: 'OK' }))
+      expect(mockOnSave).toBeCalledWith(true)
+      fireEvent.click(screen.getByRole('button', { name: 'Back' }))
+      expect(mockOnCancel).toBeCalled()
+    })
   })
 })

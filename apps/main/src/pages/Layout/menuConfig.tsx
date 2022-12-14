@@ -1,101 +1,157 @@
-import { uniqueId } from 'lodash'
-import { useIntl }  from 'react-intl'
+import { useIntl } from 'react-intl'
+import styled      from 'styled-components/macro'
 
-import * as UI from './styledComponents'
+import { LayoutProps, LayoutUI, genPlaceholder } from '@acx-ui/components'
+import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
+import {
+  AIOutlined as AIOutlinedBase,
+  AISolid as AISolidBase,
+  AccountCircleOutlined,
+  AccountCircleSolid,
+  AdminOutlined,
+  AdminSolid as AdminSolidBase,
+  CalendarDateOutlined,
+  CalendarDateSolid,
+  DevicesOutlined,
+  DevicesSolid,
+  LocationOutlined,
+  LocationSolid,
+  NetworksOutlined,
+  NetworksSolid,
+  PoliciesOutlined,
+  PoliciesSolid as PoliciesSolidBase,
+  ReportsOutlined,
+  ReportsSolid,
+  ServicesOutlined,
+  ServicesSolid as ServicesSolidBase,
+  SpeedIndicatorOutlined,
+  SpeedIndicatorSolid
+} from '@acx-ui/icons'
 
-const genPlaceholder = () => ({
-  path: `/${uniqueId()}/placeholder`,
-  name: ' '
-})
+const AIOutlined = styled(AIOutlinedBase)`${LayoutUI.iconOutlinedOverride}`
+const AISolid = styled(AISolidBase)`${LayoutUI.iconOutlinedOverride}`
+const AdminSolid = styled(AdminSolidBase)`${LayoutUI.iconSolidOverride}`
+const ServicesSolid = styled(ServicesSolidBase)`${LayoutUI.iconSolidOverride}`
+const PoliciesSolid = styled(PoliciesSolidBase)`${LayoutUI.iconSolidOverride}`
 
 export function useMenuConfig () {
   const { $t } = useIntl()
-  const config = [
+  const config: LayoutProps['menuConfig'] = [
     {
       path: '/dashboard',
       name: $t({ defaultMessage: 'Dashboard' }),
-      disableIcon: UI.SpeedIndicatorIcon,
-      enableIcon: UI.EnabledSpeedIndicatorIcon
+      inactiveIcon: SpeedIndicatorOutlined,
+      activeIcon: SpeedIndicatorSolid
     },
     {
       path: '/analytics',
       name: $t({ defaultMessage: 'AI Analytics' }),
-      disableIcon: UI.AIAnalyticsIcon,
-      enableIcon: UI.AIAnalyticsIcon,
+      inactiveIcon: AIOutlined,
+      activeIcon: AISolid,
       routes: [
         {
           path: '/analytics/incidents',
           name: $t({ defaultMessage: 'Incidents' })
         },
-        {
-          path: '/analytics/recommendations',
-          name: $t({ defaultMessage: 'Recommendations' })
-        },
+        // TODO: add back when needed, comment for now
+        // {
+        //   path: '/analytics/recommendations',
+        //   name: $t({ defaultMessage: 'Recommendations' })
+        // },
         {
           path: '/analytics/health',
           name: $t({ defaultMessage: 'Health' })
-        },
-        {
-          path: '/analytics/configChange',
-          name: $t({ defaultMessage: 'Config Change' })
         }
+        // TODO: add back when needed, comment for now
+        // {
+        //   path: '/analytics/configChange',
+        //   name: $t({ defaultMessage: 'Config Change' })
+        // }
       ]
     },
     {
       path: '/timeline',
       name: $t({ defaultMessage: 'Timeline' }),
-      disableIcon: UI.CalendarIcon,
-      enableIcon: UI.EnabledCalendarIcon
+      inactiveIcon: CalendarDateOutlined,
+      activeIcon: CalendarDateSolid,
+      disabled: !useIsSplitOn(Features.TIMELINE)
     },
     {
       path: '/reports',
       name: $t({ defaultMessage: 'Reports' }),
-      disableIcon: UI.ReportsIcon,
-      enableIcon: UI.EnabledReportsIcon
+      inactiveIcon: ReportsOutlined,
+      activeIcon: ReportsSolid,
+      disabled: true
     },
     genPlaceholder(),
     {
       path: '/venues',
       name: $t({ defaultMessage: 'Venues' }),
-      disableIcon: UI.LocationIcon,
-      enableIcon: UI.EnabledLocationIcon
+      inactiveIcon: LocationOutlined,
+      activeIcon: LocationSolid
     },
     {
       path: '/devices',
       name: $t({ defaultMessage: 'Devices' }),
-      disableIcon: UI.DevicesIcon,
-      enableIcon: UI.EnabledDevicesIcon
+      inactiveIcon: DevicesOutlined,
+      activeIcon: DevicesSolid,
+      routes:
+        [
+          {
+            path: '/devices/wifi',
+            name: $t({ defaultMessage: 'WiFi' })
+          },
+          {
+            path: '/devices/switch',
+            name: $t({ defaultMessage: 'Switch' }),
+            disabled: !useIsSplitOn(Features.DEVICES)
+          }
+        ]
     },
     {
       path: '/networks',
       name: $t({ defaultMessage: 'Networks' }),
-      disableIcon: UI.NetworksIcon,
-      enableIcon: UI.EnabledNetworksIcon
+      inactiveIcon: NetworksOutlined,
+      activeIcon: NetworksSolid
     },
     {
       path: '/services',
       name: $t({ defaultMessage: 'Services' }),
-      disableIcon: UI.ServicesIcon,
-      enableIcon: UI.EnabledServicesIcon
+      inactiveIcon: ServicesOutlined,
+      activeIcon: ServicesSolid,
+      disabled: !useIsSplitOn(Features.SERVICES)
     },
     {
       path: '/policies',
       name: $t({ defaultMessage: 'Policies' }),
-      disableIcon: UI.ServicesIcon,
-      enableIcon: UI.EnabledServicesIcon
+      inactiveIcon: PoliciesOutlined,
+      activeIcon: PoliciesSolid,
+      disabled: !useIsSplitOn(Features.POLICIES)
     },
     {
       path: '/users',
       name: $t({ defaultMessage: 'Users' }),
-      disableIcon: UI.AccountIcon,
-      enableIcon: UI.EnabledAccountIcon
+      inactiveIcon: AccountCircleOutlined,
+      activeIcon: AccountCircleSolid,
+      routes: [
+        {
+          path: '/users/wifi',
+          name: $t({ defaultMessage: 'WiFi' })
+        },
+        {
+          path: '/users/switch',
+          name: $t({ defaultMessage: 'Switch' }),
+          disabled: !useIsSplitOn(Features.USERS)
+        }
+      ]
     },
     genPlaceholder(),
     {
       path: '/administration',
       name: $t({ defaultMessage: 'Administration' }),
-      disableIcon: UI.ConfigurationIcon,
-      enableIcon: UI.EnabledConfigurationIcon
+      inactiveIcon: AdminOutlined,
+      activeIcon: AdminSolid,
+      disabled: true
     }
   ]
   return config

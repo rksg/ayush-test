@@ -2,15 +2,18 @@ import { get } from 'lodash'
 
 import {
   NetworkTypeEnum,
-  CreateNetworkFormFields,
   NetworkSaveData,
   OpenWlanAdvancedCustomization,
   AAAWlanAdvancedCustomization,
   DpskWlanAdvancedCustomization,
-  PskWlanAdvancedCustomization
+  PskWlanAdvancedCustomization,
+  GuestWlanAdvancedCustomization,
+  WlanSecurityEnum,
+  RfBandUsageEnum,
+  PhyTypeConstraintEnum
 } from '@acx-ui/rc/utils'
 
-const parseAaaSettingDataToSave = (data: NetworkSaveData) => {
+const parseAaaSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => {
   let saveData = {
     enableAccountingService: data.enableAccountingService,
     isCloudpathEnabled: data.isCloudpathEnabled
@@ -103,34 +106,48 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData) => {
       }
     }
   }
-  saveData = {
-    ...saveData,
-    ...{
-      wlan: {
-        wlanSecurity: data.wlanSecurity,
-        advancedCustomization: new AAAWlanAdvancedCustomization(),
-        bypassCNA: false,
-        bypassCPUsingMacAddressAuthentication: false,
-        enable: true,
-        managementFrameProtection: 'Disabled',
-        vlanId: 1
+  if (editMode) {
+    saveData = {
+      ...saveData,
+      ...{
+        wlan: {
+          wlanSecurity: data.wlanSecurity
+        }
+      }
+    }
+  } else {
+    saveData = {
+      ...saveData,
+      ...{
+        wlan: {
+          wlanSecurity: data.wlanSecurity,
+          advancedCustomization: new AAAWlanAdvancedCustomization(),
+          bypassCNA: false,
+          bypassCPUsingMacAddressAuthentication: false,
+          enable: true,
+          managementFrameProtection: 'Disabled',
+          vlanId: 1
+        }
       }
     }
   }
 
+
   return saveData
 }
 
-const parseOpenSettingDataToSave = (data: NetworkSaveData) => {
+const parseOpenSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => {
   let saveData = { ...data }
 
-  saveData = {
-    ...saveData,
-    ...{
-      wlan: {
-        advancedCustomization: new OpenWlanAdvancedCustomization(),
-        enable: true,
-        vlanId: 1
+  if (!editMode) {
+    saveData = {
+      ...saveData,
+      ...{
+        wlan: {
+          advancedCustomization: new OpenWlanAdvancedCustomization(),
+          enable: true,
+          vlanId: 1
+        }
       }
     }
   }
@@ -138,14 +155,46 @@ const parseOpenSettingDataToSave = (data: NetworkSaveData) => {
   return saveData
 }
 
-const parseDpskSettingDataToSave = (data: NetworkSaveData) => {
+const parseCaptivePortalDataToSave = (data: NetworkSaveData) => {
   let saveData = { ...data,
     ...{
       wlan: {
-        wlanSecurity: data.dpskWlanSecurity,
-        enable: true,
+        wlanSecurity: WlanSecurityEnum.None,
+        bypassCPUsingMacAddressAuthentication: true,
+        advancedCustomization: new GuestWlanAdvancedCustomization(),
+        macAddressAuthentication: false,
         vlanId: 1,
-        advancedCustomization: new DpskWlanAdvancedCustomization()
+        enabled: true,
+        bypassCNA: false
+      }
+    }
+  }
+  saveData.type = data.type
+  saveData.guestPortal = { ...data.guestPortal }
+  return saveData
+}
+
+const parseDpskSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => {
+  let saveData
+  if (editMode) {
+    saveData = {
+      ...data,
+      ...{
+        wlan: {
+          wlanSecurity: data.dpskWlanSecurity
+        }
+      }
+    }
+  } else {
+    saveData = {
+      ...data,
+      ...{
+        wlan: {
+          wlanSecurity: data.dpskWlanSecurity,
+          enable: true,
+          vlanId: 1,
+          advancedCustomization: new DpskWlanAdvancedCustomization()
+        }
       }
     }
   }
@@ -159,7 +208,7 @@ const parseDpskSettingDataToSave = (data: NetworkSaveData) => {
   return saveData
 }
 
-const parsePskSettingDataToSave = (data: NetworkSaveData) => {
+const parsePskSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => {
   let saveData = {
     enableAccountingService: data.enableAccountingService
   }
@@ -228,15 +277,27 @@ const parsePskSettingDataToSave = (data: NetworkSaveData) => {
     }
   }
 
-  saveData = {
-    ...saveData,
-    ...{
-      type: data.type,
-      wlan: {
-        ...data.wlan,
-        advancedCustomization: new PskWlanAdvancedCustomization(),
-        enable: true,
-        vlanId: 1
+  if (editMode) {
+    saveData = {
+      ...saveData,
+      ...{
+        type: data.type,
+        wlan: {
+          ...data.wlan
+        }
+      }
+    }
+  } else {
+    saveData = {
+      ...saveData,
+      ...{
+        type: data.type,
+        wlan: {
+          ...data.wlan,
+          advancedCustomization: new PskWlanAdvancedCustomization(),
+          enable: true,
+          vlanId: 1
+        }
       }
     }
   }
@@ -244,7 +305,7 @@ const parsePskSettingDataToSave = (data: NetworkSaveData) => {
   return saveData
 }
 
-export function transferDetailToSave (data: CreateNetworkFormFields) {
+export function transferDetailToSave (data: NetworkSaveData) {
   return {
     name: data.name,
     description: data.description,
@@ -255,24 +316,63 @@ export function transferDetailToSave (data: CreateNetworkFormFields) {
   }
 }
 
-export function tranferSettingsToSave (data: NetworkSaveData) {
+export function tranferSettingsToSave (data: NetworkSaveData, editMode: boolean) {
   const networkSaveDataParser = {
-    [NetworkTypeEnum.AAA]: parseAaaSettingDataToSave(data),
-    [NetworkTypeEnum.OPEN]: parseOpenSettingDataToSave(data),
-    [NetworkTypeEnum.DPSK]: parseDpskSettingDataToSave(data),
-    [NetworkTypeEnum.PSK]: parsePskSettingDataToSave(data)
+    [NetworkTypeEnum.AAA]: parseAaaSettingDataToSave(data, editMode),
+    [NetworkTypeEnum.OPEN]: parseOpenSettingDataToSave(data, editMode),
+    [NetworkTypeEnum.DPSK]: parseDpskSettingDataToSave(data, editMode),
+    [NetworkTypeEnum.CAPTIVEPORTAL]: parseCaptivePortalDataToSave(data),
+    [NetworkTypeEnum.PSK]: parsePskSettingDataToSave(data, editMode)
   }
   return networkSaveDataParser[data.type as keyof typeof networkSaveDataParser]
 }
 
 export function transferMoreSettingsToSave (data: NetworkSaveData, originalData: NetworkSaveData) {
-  const advancedCustomization = {
+  let advancedCustomization = {
     ...originalData?.wlan?.advancedCustomization,
     ...data?.wlan?.advancedCustomization
-  } as OpenWlanAdvancedCustomization | 
-       AAAWlanAdvancedCustomization | 
-       DpskWlanAdvancedCustomization | 
+  } as OpenWlanAdvancedCustomization |
+       AAAWlanAdvancedCustomization |
+       DpskWlanAdvancedCustomization |
        PskWlanAdvancedCustomization
+
+  if (get(data, 'wlan.advancedCustomization.dnsProxyEnabled')) {
+    advancedCustomization.dnsProxy = { dnsProxyRules: get(data, 'dnsProxyRules') }
+  }
+
+  // radioCustomization
+  advancedCustomization.radioCustomization = {
+    ...advancedCustomization.radioCustomization,
+    rfBandUsage: RfBandUsageEnum.BOTH,
+    bssMinimumPhyRate: get(data, 'bssMinimumPhyRate'),
+    phyTypeConstraint: get(data, 'enableOfdmOnly') ?
+      PhyTypeConstraintEnum.OFDM : PhyTypeConstraintEnum.NONE,
+    managementFrameMinimumPhyRate: get(data, 'managementFrameMinimumPhyRate')
+  }
+
+  // loadControlForm
+  if(get(data, 'totalUplinkLimited') === false) {
+    advancedCustomization.totalUplinkRateLimiting = 0
+  }
+
+  if(get(data, 'totalDownlinkLimited') === false) {
+    advancedCustomization.totalDownlinkRateLimiting = 0
+  }
+  // accessControlForm
+  if (!get(data, 'wlan.advancedCustomization.devicePolicyId')) {
+    advancedCustomization.devicePolicyId = null
+  }
+
+  if (get(data, 'wlan.advancedCustomization.vlanPool')) {
+    advancedCustomization.vlanPool = JSON.parse(get(data, 'wlan.advancedCustomization.vlanPool'))
+  }
+  // accessControlForm
+  if (!Number.isInteger(get(data, 'wlan.advancedCustomization.userUplinkRateLimiting'))) {
+    advancedCustomization.userUplinkRateLimiting = 0
+  }
+  if (!Number.isInteger(get(data, 'wlan.advancedCustomization.userDownlinkRateLimiting'))) {
+    advancedCustomization.userDownlinkRateLimiting = 0
+  }
 
   let saveData:NetworkSaveData = {
     ...originalData,

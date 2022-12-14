@@ -8,6 +8,7 @@ import {
   readCodesIntoMap,
   clientEventDescription,
   mapCodeToReason,
+  mapCodeToAttempt,
   MapElement
 } from './reasonCodeMap'
 
@@ -59,5 +60,21 @@ describe('mapCodeToReason', () => {
   })
   it('renders code if nothing matches', () => {
     expect(renderHook(() => mapCodeToReason('abc', useIntl())).result.current).toEqual('abc')
+  })
+})
+
+describe('mapCodeToAttempt', () => {
+  it('renders text for given code', () => {
+    expect(renderHook(() => mapCodeToAttempt('eap', useIntl())).result.current)
+      .toEqual('EAP Attempts')
+    expect(renderHook(() => mapCodeToAttempt('assoc', useIntl())).result.current)
+      .toEqual('Association Attempts')
+    expect(renderHook(() => mapCodeToAttempt('auth', useIntl())).result.current)
+      .toEqual('Authentication Attempts')
+    expect(renderHook(() => mapCodeToAttempt('dhcp', useIntl())).result.current)
+      .toEqual('DHCP Attempts')
+  })
+  it('renders code if nothing matches', () => {
+    expect(renderHook(() => mapCodeToAttempt('test', useIntl())).result.current).toEqual('test')
   })
 })

@@ -1,13 +1,17 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { TableProps }        from '@acx-ui/components'
-import { useParams, Params } from '@acx-ui/react-router-dom'
-import { UseQuery }          from '@acx-ui/types'
+import { TableProps } from 'antd'
 
-export interface RequestPayload <Payload = unknown> {
+import { useParams, Params }        from '@acx-ui/react-router-dom'
+import { UseQuery, UseQueryResult } from '@acx-ui/types'
+
+export interface RequestPayload <Payload = unknown> extends Record<string,unknown> {
   params?: Params<string>
   payload?: Payload
+}
+export interface RequestFormData <FormData = unknown> {
+  params?: Params<string>
+  payload?: FormData
 }
 
 export interface TableResult <ResultItemType, ResultExtra = unknown> {
@@ -28,17 +32,19 @@ export interface TABLE_QUERY <
     { params: Params<string>, payload: Payload }
   >
   apiParams?: Record<string, string>
-  pagination?: PAGINATION
+  pagination?: Partial<PAGINATION>
   sorter?: SORTER
   rowKey?: string
+  pollingInterval?: number
 }
-export interface PAGINATION {
+export type PAGINATION = {
   current: number,
   pageSize: number,
   total: number
 }
 
 const DEFAULT_PAGINATION = {
+  page: 1,
   current: 1,
   pageSize: 10,
   total: 0
@@ -63,39 +69,62 @@ const transferSorter = (order:string) => {
   return order === 'ascend' ? SORTER_ABBR.ascend : SORTER_ABBR.descend
 }
 
+export interface TableQuery<ResultType, Payload, ResultExtra>
+  extends UseQueryResult<TableResult<ResultType, ResultExtra>> {
+  pagination: PAGINATION,
+  sorter: SORTER,
+  setSorter: React.Dispatch<React.SetStateAction<SORTER>>,
+  handleTableChange: TableProps<ResultType>['onChange'],
+  payload: Payload,
+  setPayload: React.Dispatch<React.SetStateAction<Payload>>,
+}
+
 export function useTableQuery <
   ResultType,
-  Payload,
+  Payload extends RequestPayload<unknown>,
   ResultExtra
 > (option: TABLE_QUERY<ResultType, Payload, ResultExtra>) {
-  const [pagination, setPagination] = useState({
+
+  const initialPagination = {
     ...DEFAULT_PAGINATION,
     ...(option?.pagination || {})
-  })
-  const [sorter, setSorter] = useState({
+  }
+
+  const initialSorter = {
     ...DEFAULT_SORTER,
     ...(option?.sorter || {})
-  })
-  const [payload, setPayload] = useState({
-    ...option.defaultPayload,
-    ...(pagination as unknown as Partial<Payload>),
-    ...(sorter as unknown as Partial<Payload>)
-  })
+  }
 
+  const initialPayload = {
+    ...option.defaultPayload,
+    ...(initialPagination as unknown as Partial<Payload>),
+    ...(initialSorter as unknown as Partial<Payload>)
+  } as Payload
+
+  const [pagination, setPagination] = useState<PAGINATION>(initialPagination)
+  const [sorter, setSorter] = useState<SORTER>(initialSorter)
+  const [payload, setPayload] = useState<Payload>(initialPayload)
+
+  const params = useParams()
   // RTKQuery
+
+  const pollingInterval = option.pollingInterval ? {
+    pollingInterval: option.pollingInterval
+  } : {}
+
   const api = option.useQuery({
-    params: { ...useParams(), ...option.apiParams },
-    payload: payload as Payload
-  })
+    params: { ...params, ...option.apiParams },
+    payload: payload
+  }, pollingInterval)
 
   useEffect(() => {
     const handlePagination = (data?: TableResult<ResultType>) => {
       if (data) {
-        setPagination({
-          ...DEFAULT_PAGINATION,
+        setPagination((prev) => ({
+          ...prev,
           current: data.page,
           total: data.totalCount
-        })
+        }))
       }
     }
     handlePagination(api.data)
@@ -111,8 +140,10 @@ export function useTableQuery <
       ? sorters[0]
       : sorters
 
+    const sorterKey = Array.isArray(sorter.field) ? sorter.columnKey : sorter.field
+
     const tableProps = {
-      sortField: sorter.field || DEFAULT_SORTER.sortField,
+      sortField: sorterKey || DEFAULT_SORTER.sortField,
       sortOrder: sorter.order ? transferSorter(sorter.order) : DEFAULT_SORTER.sortOrder,
       page: pagination.current,
       pageSize: pagination.pageSize
@@ -128,5 +159,5 @@ export function useTableQuery <
     payload,
     setPayload,
     ...api
-  }
+  } as TableQuery<ResultType, Payload, ResultExtra>
 }

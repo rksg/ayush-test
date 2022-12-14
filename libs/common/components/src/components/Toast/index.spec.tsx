@@ -31,6 +31,19 @@ describe('Toast', () => {
       })
     })
     await screen.findByText('This is a toast')
+    expect(screen.getByRole('img', { name: 'close' })).toBeInTheDocument()
+  })
+
+  it('renders content with no close button', async () => {
+    act(() => {
+      showToast({
+        type: 'info',
+        closable: false,
+        content: 'This is a toast'
+      })
+    })
+    await screen.findByText('This is a toast')
+    expect(screen.queryByRole('img', { name: 'close' })).not.toBeInTheDocument()
   })
 
   it('renders extra content', async () => {

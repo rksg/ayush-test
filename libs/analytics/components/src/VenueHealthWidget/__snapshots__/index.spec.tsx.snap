@@ -1,0 +1,309 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Health Widget should render KPI widgets 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+  >
+    <div
+      class="styledComponents__Wrapper-sc-13w5wfx-4 lhrXqm"
+      type="default"
+    >
+      <div
+        class="ant-card"
+      >
+        <div
+          class="ant-card-head"
+        >
+          <div
+            class="ant-card-head-wrapper"
+          >
+            <div
+              class="ant-card-head-title"
+            >
+              <div
+                class="ant-space ant-space-horizontal ant-space-align-center"
+              >
+                <div
+                  class="ant-space-item"
+                >
+                  <div
+                    class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              class="ant-card-extra"
+            >
+              <div
+                class="ant-space ant-space-horizontal ant-space-align-center"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-card-body"
+        >
+          <div
+            class="ant-row Grid__GridRow-sc-5irhjd-2"
+            style="margin: -10px -10px -10px -10px; flex-grow: 1;"
+          >
+            <div
+              class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
+              style="padding: 10px 10px 10px 10px;"
+            >
+              <div
+                class="Grid__Container-sc-5irhjd-1 zzbxI"
+              >
+                <div
+                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1chsnnf-0 dLhrn"
+                >
+                  <div
+                    class="ant-space-item"
+                  >
+                    <div
+                      class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                    >
+                      Client Experience
+                      <svg
+                        class="styledComponents__HistoricalOutlinedIcon-sc-13w5wfx-2 styledComponents__HistoricalIcon-sc-1chsnnf-1 dGmXEJ dtUtKV"
+                        data-testid="HistoricalOutlined"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="ant-col ant-col-7 Grid__ColInner-sc-5irhjd-0 XtIJT"
+              style="padding: 10px 10px 10px 10px;"
+            >
+              <div
+                class="Grid__Container-sc-5irhjd-1 zzbxI"
+              >
+                <div
+                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1chsnnf-0 dLhrn"
+                >
+                  <div
+                    class="ant-space-item"
+                  >
+                    <div
+                      data-name="connectionSuccess"
+                      data-testid="kpiWidget"
+                    >
+                      Kpi Widget
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="ant-col ant-col-7 Grid__ColInner-sc-5irhjd-0 XtIJT"
+              style="padding: 10px 10px 10px 10px;"
+            >
+              <div
+                class="Grid__Container-sc-5irhjd-1 zzbxI"
+              >
+                <div
+                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1chsnnf-0 dLhrn"
+                >
+                  <div
+                    class="ant-space-item"
+                  >
+                    <div
+                      data-name="timeToConnect"
+                      data-testid="kpiWidget"
+                      data-threshold="1000"
+                    >
+                      Kpi Widget
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="ant-col ant-col-7 Grid__ColInner-sc-5irhjd-0 XtIJT"
+              style="padding: 10px 10px 10px 10px;"
+            >
+              <div
+                class="Grid__Container-sc-5irhjd-1 zzbxI"
+              >
+                <div
+                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1chsnnf-0 dLhrn"
+                >
+                  <div
+                    class="ant-space-item"
+                  >
+                    <div
+                      data-name="clientThroughput"
+                      data-testid="kpiWidget"
+                      data-threshold="5000"
+                    >
+                      Kpi Widget
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Health Widget should render KPI widgets for empty threshold value 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+  >
+    <div
+      class="styledComponents__Wrapper-sc-13w5wfx-4 lhrXqm"
+      type="default"
+    >
+      <div
+        class="ant-card"
+      >
+        <div
+          class="ant-card-head"
+        >
+          <div
+            class="ant-card-head-wrapper"
+          >
+            <div
+              class="ant-card-head-title"
+            >
+              <div
+                class="ant-space ant-space-horizontal ant-space-align-center"
+              >
+                <div
+                  class="ant-space-item"
+                >
+                  <div
+                    class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              class="ant-card-extra"
+            >
+              <div
+                class="ant-space ant-space-horizontal ant-space-align-center"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-card-body"
+        >
+          <div
+            class="ant-row Grid__GridRow-sc-5irhjd-2"
+            style="margin: -10px -10px -10px -10px; flex-grow: 1;"
+          >
+            <div
+              class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
+              style="padding: 10px 10px 10px 10px;"
+            >
+              <div
+                class="Grid__Container-sc-5irhjd-1 zzbxI"
+              >
+                <div
+                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1chsnnf-0 dLhrn"
+                >
+                  <div
+                    class="ant-space-item"
+                  >
+                    <div
+                      class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                    >
+                      Client Experience
+                      <svg
+                        class="styledComponents__HistoricalOutlinedIcon-sc-13w5wfx-2 styledComponents__HistoricalIcon-sc-1chsnnf-1 dGmXEJ dtUtKV"
+                        data-testid="HistoricalOutlined"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="ant-col ant-col-7 Grid__ColInner-sc-5irhjd-0 XtIJT"
+              style="padding: 10px 10px 10px 10px;"
+            >
+              <div
+                class="Grid__Container-sc-5irhjd-1 zzbxI"
+              >
+                <div
+                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1chsnnf-0 dLhrn"
+                >
+                  <div
+                    class="ant-space-item"
+                  >
+                    <div
+                      data-name="connectionSuccess"
+                      data-testid="kpiWidget"
+                    >
+                      Kpi Widget
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="ant-col ant-col-7 Grid__ColInner-sc-5irhjd-0 XtIJT"
+              style="padding: 10px 10px 10px 10px;"
+            >
+              <div
+                class="Grid__Container-sc-5irhjd-1 zzbxI"
+              >
+                <div
+                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1chsnnf-0 dLhrn"
+                >
+                  <div
+                    class="ant-space-item"
+                  >
+                    <div
+                      data-name="timeToConnect"
+                      data-testid="kpiWidget"
+                      data-threshold="2000"
+                    >
+                      Kpi Widget
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="ant-col ant-col-7 Grid__ColInner-sc-5irhjd-0 XtIJT"
+              style="padding: 10px 10px 10px 10px;"
+            >
+              <div
+                class="Grid__Container-sc-5irhjd-1 zzbxI"
+              >
+                <div
+                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1chsnnf-0 dLhrn"
+                >
+                  <div
+                    class="ant-space-item"
+                  >
+                    <div
+                      data-name="clientThroughput"
+                      data-testid="kpiWidget"
+                      data-threshold="10000"
+                    >
+                      Kpi Widget
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;

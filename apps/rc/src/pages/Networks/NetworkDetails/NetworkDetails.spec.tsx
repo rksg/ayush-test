@@ -1,11 +1,12 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { CommonUrlsInfo }             from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                     from '@acx-ui/store'
+import { mockServer, render, screen }   from '@acx-ui/test-utils'
 
-import { NetworkDetails } from './NetworkDetails'
+import NetworkDetails from './NetworkDetails'
+
 
 const network = {
   type: 'aaa',
@@ -35,11 +36,13 @@ const networkDetailHeaderData = {
   }
 }
 
+jest.mock('socket.io-client')
+
 describe('NetworkDetails', () => {
   beforeEach(() => {
     mockServer.use(
       rest.get(
-        CommonUrlsInfo.getNetwork.url,
+        WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json(network))
       ),
       rest.get(
@@ -55,14 +58,12 @@ describe('NetworkDetails', () => {
       networkId: '373377b0cb6e46ea8982b1c80aabe1fa',
       activeTab: 'overview'
     }
-    const { asFragment } = render(<Provider><NetworkDetails /></Provider>, {
+    render(<Provider><NetworkDetails /></Provider>, {
       route: { params, path: '/:tenantId/:networkId/:activeTab' }
     })
 
     expect(await screen.findByText('testNetwork')).toBeVisible()
     expect(screen.getAllByRole('tab')).toHaveLength(6)
-
-    expect(asFragment()).toMatchSnapshot()
   })
 
   it('should not have active tab if it does not exist', async () => {

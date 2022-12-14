@@ -1,80 +1,76 @@
 import { useState, useContext, useEffect } from 'react'
 
-
-import {
-  QuestionCircleOutlined
-} from '@ant-design/icons'
-import { Radio, Space } from 'antd'
+import { Radio, RadioChangeEvent, Space } from 'antd'
 import {
   Col,
   Form,
   InputNumber,
   Row,
-  Select,
-  Tooltip
+  Select
 } from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { StepsForm, Subtitle }                                      from '@acx-ui/components'
-import { useCloudpathListQuery }                                    from '@acx-ui/rc/services'
-import { WlanSecurityEnum, NetworkTypeEnum, PassphraseFormatEnum, DpskNetworkType,
+import { StepsForm, Subtitle, Tooltip }                             from '@acx-ui/components'
+import { QuestionMarkCircleOutlined }                               from '@acx-ui/icons'
+import { WlanSecurityEnum, PassphraseFormatEnum, DpskNetworkType,
   transformDpskNetwork, PassphraseExpirationEnum, NetworkSaveData }      from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
 
-import { NetworkDiagram }    from '../NetworkDiagram/NetworkDiagram'
-import NetworkFormContext    from '../NetworkFormContext'
-import { FieldExtraTooltip } from '../styledComponents'
+import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
+import NetworkFormContext from '../NetworkFormContext'
 
-import { CloudpathServerForm } from './CloudpathServerForm'
+import { NetworkMoreSettingsForm } from './../NetworkMoreSettings/NetworkMoreSettingsForm'
+import { CloudpathServerForm }     from './CloudpathServerForm'
 
 const { Option } = Select
 
 const { useWatch } = Form
 
-export function DpskSettingsForm () {
-  const { data } = useContext(NetworkFormContext)
+export function DpskSettingsForm (props: {
+  saveState: NetworkSaveData
+}) {
+  const { editMode, cloneMode, data } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
   useEffect(()=>{
-    if(data){
+    if((editMode || cloneMode) && data){
       form.setFieldsValue({
-        isCloudpathEnabled: data.cloudpathServerId !== undefined,
+        isCloudpathEnabled: data.isCloudpathEnabled,
         dpskPassphraseGeneration: data?.dpskPassphraseGeneration,
         dpskWlanSecurity: data?.wlan?.wlanSecurity
       })
     }
   }, [data])
-  const selectedId = useWatch('cloudpathServerId')
-  const { selected } = useCloudpathListQuery({ params: useParams() }, {
-    selectFromResult ({ data }) {
-      return {
-        selected: data?.find((item) => item.id === selectedId)
-      }
-    }
-  })
 
   return (
     <Row gutter={20}>
       <Col span={10}>
         <SettingsForm />
+        {!(editMode) && <NetworkMoreSettingsForm wlanData={props.saveState} />}
       </Col>
-      <Col span={14}>
-        <NetworkDiagram
-          type={NetworkTypeEnum.DPSK}
-          cloudpathType={selected?.deploymentType}
-        />
+      <Col span={14} style={{ height: '100%' }}>
+        <NetworkDiagram />
       </Col>
     </Row>
   )
 }
 
 function SettingsForm () {
-  const { editMode } = useContext(NetworkFormContext)
+  const form = Form.useFormInstance()
+  const { editMode, data, setData } = useContext(NetworkFormContext)
   const { $t } = useIntl()
   const [
     isCloudpathEnabled
   ] = [
     useWatch('isCloudpathEnabled')
   ]
+
+  const onCloudPathChange = (e: RadioChangeEvent) => {
+    if(e.target.value){
+      form.setFieldsValue({
+        cloudpathServerId: ''
+      })
+    }
+    setData && setData({ ...data, isCloudpathEnabled: e.target.value })
+  }
 
   return (
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
@@ -97,7 +93,7 @@ function SettingsForm () {
           name='isCloudpathEnabled'
           initialValue={false}
         >
-          <Radio.Group>
+          <Radio.Group onChange={onCloudPathChange}>
             <Space direction='vertical'>
               <Radio value={false} disabled={editMode}>
                 { $t({ defaultMessage: 'Use the DPSK Service' }) }
@@ -164,61 +160,52 @@ function PassphraseGeneration () {
   return (
     <div style={{ display: isCloudpathEnabled ? 'none' : 'block' }}>
       <Subtitle level={3}>{ $t({ defaultMessage: 'Passphrase Generation Parameters' }) }</Subtitle>
-      <Row align='middle' gutter={8}>
-        <Col span={23}>
-          <Form.Item
-            name={['dpskPassphraseGeneration', 'format']}
-            label={$t({ defaultMessage: 'Passphrase format' })}
-            rules={[{ required: true }]}
-            initialValue={state.dpskPassphraseGeneration?.format}
-            extra={passphraseFormatDescription[
-              state.dpskPassphraseGeneration?.format?
-                state?.dpskPassphraseGeneration?.format:
-                PassphraseFormatEnum.MOST_SECURED]}
-          >
-            <Select
-              onChange={onFormatChange}
-            >
-              {passphraseOptions}
-            </Select>
-          </Form.Item>
-        </Col>
-        <Col span={1}>
-          <FieldExtraTooltip>
-            <Tooltip
-              placement='bottom'
-              title={<FormattedMessage
-                defaultMessage={`<p>Format options:</p>
-                  <p>Most secured - all printable ASCII characters can be used</p>
-                  <p>Keyboard friendly - only letters and numbers will be used</p>
-                  <p>Numbers only - only numbers will be used</p>
-                `}
-                values={{ p: (chunks) => <p>{chunks}</p> }}
-              />}
-              children={<QuestionCircleOutlined />}
-            />
-          </FieldExtraTooltip>
-        </Col>
-      </Row>
 
-      <Row align='middle' gutter={8}>
-        <Col span={23}>
-          <Form.Item
-            name={['dpskPassphraseGeneration', 'length']}
-            label={$t({ defaultMessage: 'Passphrase length' })}
-            rules={[{ required: true }]}
-            initialValue={state.dpskPassphraseGeneration?.length}
-            children={<InputNumber min={8} max={63} style={{ width: '100%' }}/>}
+      <Form.Item
+        name={['dpskPassphraseGeneration', 'format']}
+        label={<>
+          { $t({ defaultMessage: 'Passphrase format' }) }
+          <Tooltip
+            placement='bottom'
+            title={<FormattedMessage
+              defaultMessage={`<p>Format options:</p>
+                <p>Most secured - all printable ASCII characters can be used</p>
+                <p>Keyboard friendly - only letters and numbers will be used</p>
+                <p>Numbers only - only numbers will be used</p>
+              `}
+              values={{ p: (chunks) => <p>{chunks}</p> }}
+            />}
+            children={<QuestionMarkCircleOutlined />}
           />
-        </Col>
-        <Col span={1}>
+        </>}
+        rules={[{ required: true }]}
+        initialValue={state.dpskPassphraseGeneration?.format}
+        extra={passphraseFormatDescription[
+          state.dpskPassphraseGeneration?.format?
+            state?.dpskPassphraseGeneration?.format:
+            PassphraseFormatEnum.MOST_SECURED]}
+      >
+        <Select
+          onChange={onFormatChange}
+        >
+          {passphraseOptions}
+        </Select>
+      </Form.Item>
+
+      <Form.Item
+        name={['dpskPassphraseGeneration', 'length']}
+        label={<>
+          { $t({ defaultMessage: 'Passphrase length' }) }
           <Tooltip
             title={$t({ defaultMessage: 'Number of characters in passphrase. Valid range 8-63' })}
             placement='bottom'
-            children={<QuestionCircleOutlined />}
+            children={<QuestionMarkCircleOutlined />}
           />
-        </Col>
-      </Row>
+        </>}
+        rules={[{ required: true }]}
+        initialValue={state.dpskPassphraseGeneration?.length}
+        children={<InputNumber min={8} max={63} style={{ width: '100%' }}/>}
+      />
 
       <Form.Item
         name={['dpskPassphraseGeneration', 'expiration']}
@@ -236,3 +223,4 @@ function PassphraseGeneration () {
     </div>
   )
 }
+

@@ -5,16 +5,14 @@ export function WithButton () {
   return (
     <Card
       title={'Title'}
-      onExpandClick={() => {}}
+      onArrowClick={() => {}}
       onMoreClick={() => {}}
     >
-      <div>
-        <p>With Button</p>
-        <p>More content</p>
-        <p>More content</p>
-        <p>More content</p>
-        <p>More content</p>
-      </div>
+      <p>With Button</p>
+      <p>More content</p>
+      <p>More content</p>
+      <p>More content</p>
+      <p>More content</p>
     </Card>
   )
 }

@@ -1,21 +1,27 @@
 import React, { useEffect, useState } from 'react'
 
-import { ClockCircleOutlined }    from '@ant-design/icons'
-import { Switch, Tooltip }        from 'antd'
+import { Form, Switch }           from 'antd'
 import _                          from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
 import {
   Alert,
-  Button,
   Loader,
   showActionModal,
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useSplitTreatment } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import {
+  NetworkApGroupDialog,
+  transformVLAN,
+  transformAps,
+  transformRadios,
+  transformScheduling
+} from '@acx-ui/rc/components'
 import {
   useAddNetworkVenueMutation,
+  useUpdateNetworkVenueMutation,
   useDeleteNetworkVenueMutation,
   useNetworkVenueListQuery,
   useUpdateNetworkMutation
@@ -26,18 +32,24 @@ import {
   NetworkVenue,
   Venue,
   generateDefaultNetworkVenue,
-  VLAN_PREFIX,
-  ISlotIndex,
-  getSchedulingCustomTooltip,
-  fetchVenueTimeZone,
-  getCurrentTimeSlotIndex,
-  RadioTypeEnum,
-  NetworkVenueScheduler,
-  SchedulerTypeEnum
+  useScheduleSlotIndexMap,
+  aggregateApGroupPayload,
+  RadioTypeEnum
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
 import { useGetNetwork } from '../services'
+
+import { NetworkVenueScheduleDialog } from './NetworkVenueScheduleDialog'
+
+import type { FormFinishInfo } from 'rc-field-form/es/FormContext'
+
+interface ApGroupModalState { // subset of ApGroupModalWidgetProps
+  visible: boolean,
+  wlan?: NetworkSaveData['wlan'],
+  networkVenue?: NetworkVenue,
+  venueName?: string
+}
 
 const defaultPayload = {
   searchString: '',
@@ -69,6 +81,16 @@ const notificationMessage = defineMessage({
   defaultMessage: 'No venues activating this network. Use the ON/OFF switches in the list to select the activating venues'
 })
 
+interface SchedulingModalState {
+  visible: boolean,
+  networkVenue?: NetworkVenue,
+  venue?: Venue
+}
+
+interface schedule {
+  [key: string]: string
+}
+
 export function NetworkVenuesTab () {
   const { $t } = useIntl()
   const tableQuery = useTableQuery({
@@ -76,9 +98,17 @@ export function NetworkVenuesTab () {
     defaultPayload
   })
   const [tableData, setTableData] = useState(defaultArray)
+  const [apGroupModalState, setApGroupModalState] = useState<ApGroupModalState>({
+    visible: false
+  })
+  const [scheduleModalState, setScheduleModalState] = useState<SchedulingModalState>({
+    visible: false
+  })
+
   const params = useParams()
   const [updateNetwork] = useUpdateNetworkMutation()
-  const triBandRadioFeatureFlag = useSplitTreatment(Features.TRI_RADIO)
+  const [updateNetworkVenue] = useUpdateNetworkVenueMutation()
+  const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
   const networkQuery = useGetNetwork()
   const [
     addNetworkVenue,
@@ -89,28 +119,30 @@ export function NetworkVenuesTab () {
     { isLoading: isDeleteNetworkUpdating }
   ] = useDeleteNetworkVenueMutation()
 
-  const [venueSlotIndexMap, setVenueSlotIndexMap] = useState<Record<string,ISlotIndex>>({})
+
+  const getCurrentVenue = (row: Venue) => {
+    if (!row.activated.isActivated) {
+      return
+    }
+    const network = networkQuery.data
+    const venueId = row.id
+    let venue = row.deepVenue
+    if (!venue) {
+      venue = network?.venues?.find(v => v.venueId === venueId)
+    }
+    return venue
+  }
 
   useEffect(()=>{
-    const updateVenueCurrentSlotIndexMap = async (venueId: string, venueLatitude: string, venueLongitude: string) => {
-      const timeZone = await fetchVenueTimeZone(Number(venueLatitude), Number(venueLongitude))
-      const slotIndex = getCurrentTimeSlotIndex(timeZone)
-      setVenueSlotIndexMap(prevSlotIndexMap => ({ ...prevSlotIndexMap, ...{ [venueId]: slotIndex } }))
-    }
-
     if (tableQuery.data && networkQuery.data) {
       const data: React.SetStateAction<Venue[]> = []
       tableQuery.data.data.forEach(item => {
-        const activatedVenue = networkQuery.data?.venues?.find(
+        const activatedVenue = item.deepVenue || networkQuery.data?.venues?.find(
           i => i.venueId === item.id
         )
-
-        if (activatedVenue?.scheduler?.type === SchedulerTypeEnum.CUSTOM) {
-          updateVenueCurrentSlotIndexMap(item.id, item.latitude, item.longitude)
-        }
-
         data.push({
           ...item,
+          deepVenue: activatedVenue,
           // work around of read-only records from RTKQ
           activated: activatedVenue ? { isActivated: true } : { ...item.activated }
         })
@@ -118,6 +150,8 @@ export function NetworkVenuesTab () {
       setTableData(data)
     }
   }, [tableQuery.data, networkQuery.data])
+
+  const scheduleSlotIndexMap = useScheduleSlotIndexMap(tableData)
 
   const activateNetwork = async (checked: boolean, row: Venue) => {
     // TODO: Service
@@ -137,7 +171,7 @@ export function NetworkVenuesTab () {
     if (!checked && network?.venues) {
       network?.venues.forEach((venue: NetworkVenue) => {
         if (venue.venueId === row.id || venue.id === row.id) {
-          deactivateNetworkVenueId = row.id
+          deactivateNetworkVenueId = venue.id ? venue.id : row.id
         }
       })
     }
@@ -212,7 +246,7 @@ export function NetworkVenuesTab () {
     return networkVenues
   }
 
-  const actions: TableProps<Venue>['actions'] = [
+  const rowActions: TableProps<Venue>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Activate' }),
       onClick: (rows, clearSelection) => {
@@ -289,7 +323,7 @@ export function NetworkVenuesTab () {
       title: $t({ defaultMessage: 'VLAN' }),
       dataIndex: 'vlan',
       render: function (data, row) {
-        return transformVLAN(row)
+        return transformVLAN(getCurrentVenue(row), networkQuery.data?.wlan, (e) => handleClickApGroups(row, e))
       }
     },
     {
@@ -298,7 +332,7 @@ export function NetworkVenuesTab () {
       dataIndex: 'aps',
       width: 80,
       render: function (data, row) {
-        return transformAps(row)
+        return transformAps(getCurrentVenue(row), (e) => handleClickApGroups(row, e))
       }
     },
     {
@@ -307,7 +341,7 @@ export function NetworkVenuesTab () {
       dataIndex: 'radios',
       width: 140,
       render: function (data, row) {
-        return transformRadios(row)
+        return transformRadios(getCurrentVenue(row), (e) => handleClickApGroups(row, e))
       }
     },
     {
@@ -315,187 +349,90 @@ export function NetworkVenuesTab () {
       title: $t({ defaultMessage: 'Scheduling' }),
       dataIndex: 'scheduling',
       render: function (data, row) {
-        return transformScheduling(row)
+        return transformScheduling(getCurrentVenue(row), scheduleSlotIndexMap[row.id], (e) => handleClickScheduling(row, e))
       }
     }
   ]
 
-  const getCurrentVenue = (row: Venue) => {
-    if (!row.activated.isActivated) {
-      return null
-    }
-
-    const network = networkQuery.data
-    const venueId = row.id
-    let currentVenue = row.deepVenue
-
-    if (!currentVenue) {
-      currentVenue = network?.venues?.find(venue => venue.venueId === venueId)
-    }
-
-    return currentVenue
-  }
-
-  const transformVLAN = (row: Venue) => {
-    let currentVenue = getCurrentVenue(row)
-    let result = ''
-
-    let valuePrefix = ''
-    let vlanString
-    let valueSuffix = ''
-
-    if (currentVenue) {
-      if (!currentVenue.isAllApGroups && Array.isArray(currentVenue.apGroups) && currentVenue.apGroups.length > 1) {
-        vlanString = $t({ defaultMessage: 'Per AP Group' })
-      }
-      else if (!currentVenue.isAllApGroups && currentVenue?.apGroups?.length === 1) {
-        valueSuffix = $t({ defaultMessage: '(Custom)' })
-        const firstApGroup = currentVenue.apGroups[0]
-
-        if (firstApGroup?.vlanPoolId) {
-          valuePrefix = VLAN_PREFIX.POOL
-          vlanString = firstApGroup.vlanPoolName
-        } else if (firstApGroup?.vlanId) {
-          valuePrefix = VLAN_PREFIX.VLAN
-          vlanString = firstApGroup?.vlanId?.toString()
-        }
-
-        if (!vlanString) {
-          valuePrefix = VLAN_PREFIX.VLAN
-          vlanString = '1' // default fallback to avoid unavailable vlan1 of default ap group
-        }
-      }
-      else {
-        valueSuffix = $t({ defaultMessage: '(Default)' })
-        const network = networkQuery.data
-        const wlan = network?.wlan
-
-        if (wlan?.advancedCustomization?.vlanPool) {
-          vlanString = wlan.advancedCustomization.vlanPool.name
-          valuePrefix = VLAN_PREFIX.POOL
-        } else if (wlan?.vlanId) {
-          vlanString = wlan?.vlanId
-          valuePrefix = VLAN_PREFIX.VLAN
-        }
-      }
-      result = `${valuePrefix}${vlanString} ${valueSuffix}`
-      return <Button type='link'>{result}</Button>
-    }
-    return result
-  }
-
-  const transformAps = (row: Venue) => {
-    let currentVenue = getCurrentVenue(row)
-    let result = ''
-
-    if (currentVenue) {
-      if (currentVenue.isAllApGroups) {
-        result = $t({ defaultMessage: 'All APs' })
-      } else if (Array.isArray(currentVenue.apGroups)) {
-        const firstApGroup = currentVenue.apGroups[0]
-        if (currentVenue.apGroups.length > 1) {
-          result = `${currentVenue.apGroups.length} ${$t({ defaultMessage: 'AP Groups' })}`
-        } else if(firstApGroup?.isDefault) {
-          result = $t({ defaultMessage: 'Unassigned APs' })
-        } else if(firstApGroup?.apGroupName) {
-          result = firstApGroup.apGroupName
-        }
-      }
-      return <Button type='link'>{result}</Button>
-    }
-    return result
-  }
-
-  const transformRadios = (row: Venue) => {
-    let currentVenue = getCurrentVenue(row)
-    let result = ''
-    if (currentVenue) {
-      if (currentVenue.isAllApGroups) {
-        if (currentVenue.allApGroupsRadioTypes && currentVenue.allApGroupsRadioTypes.length > 0) {
-          if (currentVenue.allApGroupsRadioTypes.length === 3) {
-            result = $t({ defaultMessage: 'All' })
-          } else {
-            result = currentVenue.allApGroupsRadioTypes.join(', ').replace(/-/g, ' ')
-          }
-        } else {
-          if (currentVenue.allApGroupsRadio !== 'Both') {
-            result = currentVenue.allApGroupsRadio.replace(/-/g, ' ')
-          } else {
-            result = $t({ defaultMessage: '2.4 GHz / 5 GHz' })
-          }
-        }
-      } else if (currentVenue.isAllApGroups !== undefined && Array.isArray(currentVenue.apGroups)) {
-        if (currentVenue.apGroups.length === 1) {
-          const firstApGroup = currentVenue.apGroups[0]
-          if (firstApGroup.radioTypes && firstApGroup.radioTypes.length > 0) {
-            if (firstApGroup.radioTypes.length === 3) {
-              result = $t({ defaultMessage: 'All' })
-            } else {
-              result = firstApGroup.radioTypes.join(', ').replace(/-/g, ' ')
-            }
-          } else {
-            result = firstApGroup.radio !== 'Both' ? firstApGroup.radio.replace(/-/g, ' ') : $t({ defaultMessage: '2.4 GHz / 5 GHz' })
-          }
-        } else if (currentVenue.apGroups.length > 1) {
-          result = $t({ defaultMessage: 'Per AP Group' })
-        }
-      }
-      return <Button type='link'>{result}</Button>
-    }
-    return result
-  }
-
-  const transformScheduling = (row: Venue) => {
-    let currentVenue = getCurrentVenue(row)
-    let result = ''
-    const scheduler = currentVenue?.scheduler
-    const venueId = row.id
-    const currentTimeIdx = venueSlotIndexMap[venueId]
-
-    if (currentVenue) {
-      let tooltip = ''
-      if (scheduler) {
-        let message = '', dayName = '', timeString = ''
-        switch (scheduler.type) {
-          case SchedulerTypeEnum.ALWAYS_ON:
-            result = $t({ defaultMessage: '24/7' })
-            message = $t({ defaultMessage: 'Network is ON 24/7' })
-            break
-          case SchedulerTypeEnum.CUSTOM:
-            result = $t({ defaultMessage: 'custom' })
-            if (currentTimeIdx) {
-              const day = currentTimeIdx.day.toLowerCase()
-              const time = currentTimeIdx.timeIndex
-              const dayData = scheduler[day as keyof NetworkVenueScheduler]
-              if (dayData?.charAt(time) === '1') {
-                result = $t({ defaultMessage: 'ON now' })
-                message = $t({ defaultMessage: 'Scheduled to be on until ' })
-              } else {
-                result = $t({ defaultMessage: 'OFF now' })
-                message = $t({ defaultMessage: 'Currently off. Scheduled to turn on at ' })
-              }
-              [dayName, timeString] = getSchedulingCustomTooltip(scheduler, currentTimeIdx)
-            }
-            break
-          default:
-            break
-        }
-        tooltip = `${message} ${dayName} ${timeString}`
-      } else {
-        result = $t({ defaultMessage: '24/7' })
-        tooltip = $t({ defaultMessage: 'Network is ON 24/7' })
-      }
-      return (
-        <Tooltip title={tooltip}>
-          <Button type='link' onClick={(e) => handleClickScheduling(row, e)}>{result} <ClockCircleOutlined /></Button>
-        </Tooltip>
-      )
-    }
-    return result
-  }
-
   const handleClickScheduling = (row: Venue, e: React.MouseEvent<HTMLElement, MouseEvent>) => {
     e.preventDefault()
+    setScheduleModalState({
+      visible: true,
+      venue: row,
+      networkVenue: getCurrentVenue(row)
+    })
+  }
+
+  const handleClickApGroups = (row: Venue, e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    e.preventDefault()
+    setApGroupModalState({
+      visible: true,
+      venueName: row.name,
+      wlan: networkQuery.data?.wlan,
+      networkVenue: getCurrentVenue(row)
+    })
+  }
+
+  const handleCancel = () => {
+    setApGroupModalState({
+      visible: false
+    })
+    setScheduleModalState({
+      visible: false
+    })
+  }
+
+
+  const handleFormFinish = (name: string, newData: FormFinishInfo) => {
+    if (name === 'networkApGroupForm') {
+      let oldData = _.cloneDeep(apGroupModalState.networkVenue)
+      const payload = aggregateApGroupPayload(newData, oldData)
+
+      updateNetworkVenue({ params: {
+        tenantId: params.tenantId,
+        networkVenueId: payload.id
+      }, payload: payload }).then(()=>{
+        setApGroupModalState({
+          visible: false
+        })
+      })
+    }
+  }
+
+  const handleScheduleFormFinish = (name: string, info: FormFinishInfo) => {
+    let data = _.cloneDeep(scheduleModalState.networkVenue)
+    // const schdule = info.values.map
+
+    let tmpScheduleList: schedule = { type: info.values?.scheduler.type }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let map: { [key: string]: any } = info.values?.scheduler
+    for (let key in map) {
+      if(key === 'type'){
+        continue
+      }
+      if (map.hasOwnProperty(key) && map['type'] === 'CUSTOM') {
+        let scheduleList: string[] = []
+        for(let i = 0; i < 96; i++){
+          scheduleList.push('0')
+        }
+        map[key].map((item: string) => {
+          const value = parseInt(item.split('_')[1], 10)
+          scheduleList[value] = '1'
+        })
+        tmpScheduleList[key] = scheduleList.join('')
+      }
+    }
+
+    const payload = _.assign(data, { scheduler: tmpScheduleList })
+
+    updateNetworkVenue({ params: {
+      tenantId: params.tenantId,
+      networkVenueId: payload.id
+    }, payload: payload }).then(()=>{
+      setScheduleModalState({
+        visible: false
+      })
+    })
   }
 
   return (
@@ -511,7 +448,7 @@ export function NetworkVenuesTab () {
       }
       <Table
         rowKey='id'
-        actions={actions}
+        rowActions={rowActions}
         rowSelection={{
           type: 'checkbox'
         }}
@@ -520,6 +457,26 @@ export function NetworkVenuesTab () {
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
       />
+      <Form.Provider
+        onFormFinish={handleFormFinish}
+      >
+        <NetworkApGroupDialog
+          {...apGroupModalState}
+          tenantId={params.tenantId}
+          formName='networkApGroupForm'
+          onCancel={handleCancel}
+        />
+      </Form.Provider>
+      <Form.Provider
+        onFormFinish={handleScheduleFormFinish}
+      >
+        <NetworkVenueScheduleDialog
+          {...scheduleModalState}
+          formName='networkVenueScheduleForm'
+          network={networkQuery.data}
+          onCancel={handleCancel}
+        />
+      </Form.Provider>
     </Loader>
   )
 }
