@@ -37,6 +37,13 @@ exports[`ConnectionEvent renders correctly for disconnect event 1`] = `
                   <h3
                     class="sc-bczRLJ bcJKaK"
                   >
+                    <span
+                      class="sc-gsnTZi iHYaxS"
+                    >
+                      <svg
+                        data-testid="CloseSymbol"
+                      />
+                    </span>
                     Connection Event Details
                   </h3>
                   <dl
@@ -139,70 +146,85 @@ exports[`ConnectionEvent renders correctly for failureEvent event 1`] = `
                   <h3
                     class="sc-bczRLJ bcJKaK"
                   >
+                    <span
+                      class="sc-gsnTZi iHYaxS"
+                    >
+                      <svg
+                        data-testid="CloseSymbol"
+                      />
+                    </span>
                     Connection Event Details
                   </h3>
-                  <dl
-                    class="sc-dkzDqf ghqaWu"
+                  <div
+                    class="sc-jSMfEi jytKoq"
                   >
-                    <dt
-                      class="sc-hKMtZM dqLvfG"
+                    <dl
+                      class="sc-dkzDqf ghqaWu"
                     >
-                      AP MAC:
-                    </dt>
-                    <dd
-                      class="sc-eCYdqJ bkYxGt"
-                    >
-                      AA:AA:AA:AA:AA:AA
-                    </dd>
-                    <dt
-                      class="sc-hKMtZM dqLvfG"
-                    >
-                      AP Name:
-                    </dt>
-                    <dd
-                      class="sc-eCYdqJ bkYxGt"
-                    >
-                      R750-11-112
-                    </dd>
-                    <dt
-                      class="sc-hKMtZM dqLvfG"
-                    >
-                      SSID:
-                    </dt>
-                    <dd
-                      class="sc-eCYdqJ bkYxGt"
+                      <dt
+                        class="sc-hKMtZM dqLvfG"
+                      >
+                        AP MAC:
+                      </dt>
+                      <dd
+                        class="sc-eCYdqJ bkYxGt"
+                      >
+                        AA:AA:AA:AA:AA:AA
+                      </dd>
+                      <dt
+                        class="sc-hKMtZM dqLvfG"
+                      >
+                        AP Name:
+                      </dt>
+                      <dd
+                        class="sc-eCYdqJ bkYxGt"
+                      >
+                        R750-11-112
+                      </dd>
+                      <dt
+                        class="sc-hKMtZM dqLvfG"
+                      >
+                        SSID:
+                      </dt>
+                      <dd
+                        class="sc-eCYdqJ bkYxGt"
+                      />
+                      <dt
+                        class="sc-hKMtZM dqLvfG"
+                      >
+                        Radio:
+                      </dt>
+                      <dd
+                        class="sc-eCYdqJ bkYxGt"
+                      >
+                        5 GHz
+                      </dd>
+                      <dt
+                        class="sc-hKMtZM dqLvfG"
+                      >
+                        Failure Type:
+                      </dt>
+                      <dd
+                        class="sc-eCYdqJ bkYxGt"
+                      >
+                        EAPOL Failures
+                      </dd>
+                      <dt
+                        class="sc-hKMtZM dqLvfG"
+                      >
+                        Reason:
+                      </dt>
+                      <dd
+                        class="sc-eCYdqJ bkYxGt"
+                      >
+                        PSK Failure (passphrase mismatch) - Invalid MIC
+                      </dd>
+                    </dl>
+                    <div
+                      class="sc-gKXOVf cttlZi"
                     />
-                    <dt
-                      class="sc-hKMtZM dqLvfG"
-                    >
-                      Radio:
-                    </dt>
-                    <dd
-                      class="sc-eCYdqJ bkYxGt"
-                    >
-                      5 GHz
-                    </dd>
-                    <dt
-                      class="sc-hKMtZM dqLvfG"
-                    >
-                      Failure Type:
-                    </dt>
-                    <dd
-                      class="sc-eCYdqJ bkYxGt"
-                    >
-                      EAPOL Failures
-                    </dd>
-                    <dt
-                      class="sc-hKMtZM dqLvfG"
-                    >
-                      Reason:
-                    </dt>
-                    <dd
-                      class="sc-eCYdqJ bkYxGt"
-                    >
-                      PSK Failure (passphrase mismatch) - Invalid MIC
-                    </dd>
-                  </dl>
+                    Failure Sequence Diagram
+                  </div>
                 </div>
               </div>
             </div>
@@ -251,6 +273,13 @@ exports[`ConnectionEvent renders correctly for slow event 1`] = `
                   <h3
                     class="sc-bczRLJ bcJKaK"
                   >
+                    <span
+                      class="sc-gsnTZi iHYaxS"
+                    >
+                      <svg
+                        data-testid="CloseSymbol"
+                      />
+                    </span>
                     Connection Event Details
                   </h3>
                   <dl
@@ -353,6 +382,13 @@ exports[`ConnectionEvent renders correctly for success event 1`] = `
                   <h3
                     class="sc-bczRLJ bcJKaK"
                   >
+                    <span
+                      class="sc-gsnTZi iHYaxS"
+                    >
+                      <svg
+                        data-testid="CloseSymbol"
+                      />
+                    </span>
                     Connection Event Details
                   </h3>
                   <dl
@@ -445,70 +481,85 @@ exports[`ConnectionEvent renders correctly for unknown failure 1`] = `
                   <h3
                     class="sc-bczRLJ bcJKaK"
                   >
+                    <span
+                      class="sc-gsnTZi iHYaxS"
+                    >
+                      <svg
+                        data-testid="CloseSymbol"
+                      />
+                    </span>
                     Connection Event Details
                   </h3>
-                  <dl
-                    class="sc-dkzDqf ghqaWu"
+                  <div
+                    class="sc-jSMfEi jytKoq"
                   >
-                    <dt
-                      class="sc-hKMtZM dqLvfG"
+                    <dl
+                      class="sc-dkzDqf ghqaWu"
                     >
-                      AP MAC:
-                    </dt>
-                    <dd
-                      class="sc-eCYdqJ bkYxGt"
-                    >
-                      AA:AA:AA:AA:AA:AA
-                    </dd>
-                    <dt
-                      class="sc-hKMtZM dqLvfG"
-                    >
-                      AP Name:
-                    </dt>
-                    <dd
-                      class="sc-eCYdqJ bkYxGt"
-                    >
-                      R750-11-112
-                    </dd>
-                    <dt
-                      class="sc-hKMtZM dqLvfG"
-                    >
-                      SSID:
-                    </dt>
-                    <dd
-                      class="sc-eCYdqJ bkYxGt"
+                      <dt
+                        class="sc-hKMtZM dqLvfG"
+                      >
+                        AP MAC:
+                      </dt>
+                      <dd
+                        class="sc-eCYdqJ bkYxGt"
+                      >
+                        AA:AA:AA:AA:AA:AA
+                      </dd>
+                      <dt
+                        class="sc-hKMtZM dqLvfG"
+                      >
+                        AP Name:
+                      </dt>
+                      <dd
+                        class="sc-eCYdqJ bkYxGt"
+                      >
+                        R750-11-112
+                      </dd>
+                      <dt
+                        class="sc-hKMtZM dqLvfG"
+                      >
+                        SSID:
+                      </dt>
+                      <dd
+                        class="sc-eCYdqJ bkYxGt"
+                      />
+                      <dt
+                        class="sc-hKMtZM dqLvfG"
+                      >
+                        Radio:
+                      </dt>
+                      <dd
+                        class="sc-eCYdqJ bkYxGt"
+                      >
+                        5 GHz
+                      </dd>
+                      <dt
+                        class="sc-hKMtZM dqLvfG"
+                      >
+                        Failure Type:
+                      </dt>
+                      <dd
+                        class="sc-eCYdqJ bkYxGt"
+                      >
+                        Unknown
+                      </dd>
+                      <dt
+                        class="sc-hKMtZM dqLvfG"
+                      >
+                        Reason:
+                      </dt>
+                      <dd
+                        class="sc-eCYdqJ bkYxGt"
+                      >
+                        PSK Failure (passphrase mismatch) - Invalid MIC
+                      </dd>
+                    </dl>
+                    <div
+                      class="sc-gKXOVf cttlZi"
                     />
-                    <dt
-                      class="sc-hKMtZM dqLvfG"
-                    >
-                      Radio:
-                    </dt>
-                    <dd
-                      class="sc-eCYdqJ bkYxGt"
-                    >
-                      5 GHz
-                    </dd>
-                    <dt
-                      class="sc-hKMtZM dqLvfG"
-                    >
-                      Failure Type:
-                    </dt>
-                    <dd
-                      class="sc-eCYdqJ bkYxGt"
-                    >
-                      Unknown
-                    </dd>
-                    <dt
-                      class="sc-hKMtZM dqLvfG"
-                    >
-                      Reason:
-                    </dt>
-                    <dd
-                      class="sc-eCYdqJ bkYxGt"
-                    >
-                      PSK Failure (passphrase mismatch) - Invalid MIC
-                    </dd>
-                  </dl>
+                    Failure Sequence Diagram
+                  </div>
                 </div>
               </div>
             </div>
@@ -557,6 +608,13 @@ exports[`ConnectionEvent renders correctly for unknown radio 1`] = `
                   <h3
                     class="sc-bczRLJ bcJKaK"
                   >
+                    <span
+                      class="sc-gsnTZi iHYaxS"
+                    >
+                      <svg
+                        data-testid="CloseSymbol"
+                      />
+                    </span>
                     Connection Event Details
                   </h3>
                   <dl
