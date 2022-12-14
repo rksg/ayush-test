@@ -7,16 +7,20 @@ import { AP, useTableQuery }       from '@acx-ui/rc/utils'
 import { TenantLink }              from '@acx-ui/react-router-dom'
 import { formatter }               from '@acx-ui/utils'
 
-export function MdnsProxyInstancesTable () {
+interface MdnsProxyInstancesTableProps {
+  apList: string[] | null
+}
+
+export function MdnsProxyInstancesTable (props: MdnsProxyInstancesTableProps) {
   const { $t } = useIntl()
-  // const params = useParams()
+  const { apList } = props
   const bytesFormatter = formatter('bytesFormat')
 
   const tableQuery = useTableQuery({
     useQuery: useApListQuery,
     defaultPayload: {
-      fields: ['name', 'model', 'apMac', 'venueName', 'venueId', 'clients', 'serialNumber']
-      // filters: { mdnsProxyServiceId: [params.serviceId] } // TODO: API is not ready
+      fields: ['name', 'model', 'apMac', 'venueName', 'venueId', 'clients', 'serialNumber'],
+      filters: { serialNumber: apList ? apList : [''] }
     }
   })
 
