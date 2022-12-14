@@ -10,8 +10,13 @@ import { useDateFilter, dateRangeForLast } from '@acx-ui/utils'
 
 import { NetworkFilterWithBandContext } from '../../Routes'
 
-export function ReportHeader (props: { name: string, footer?: React.ReactNode }) {
-  const name = props.name
+export type FilterMode = 'ap' | 'switch' | 'both'
+
+export function ReportHeader (props: { name: string,
+   mode?:FilterMode,
+    footer?: React.ReactNode }) {
+  const { name, mode = 'both' } = props
+  const shouldQuerySwitch = mode === 'both' || mode === 'switch'
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
   const { setFilterData } = useContext(NetworkFilterWithBandContext)
 
@@ -24,8 +29,9 @@ export function ReportHeader (props: { name: string, footer?: React.ReactNode })
       extra={[
         <NetworkFilter
           key='network-filter'
-          shouldQuerySwitch={false}
-          showBand={true}
+          shouldQuerySwitch={shouldQuerySwitch}
+          showBand={mode === 'ap'}
+          multiple={true}
           replaceWithId={true}
           onApplyWithBand={setFilterData}
         />,

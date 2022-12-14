@@ -1,5 +1,7 @@
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
+import { FilterMode } from '../ReportHeader'
+
 export enum ReportType {
   OVERVIEW = 'overview',
   NETWORK = 'network',
@@ -40,4 +42,18 @@ export const reportTypeDataStudioMapping: Record<ReportType, string> = {
   [ReportType.AP_DETAIL]: 'AP Details',
   [ReportType.SWITCH_DETAIL]: 'Switch Details',
   [ReportType.CLIENT_DETAIL]: 'Client Details'
+}
+
+export const reportTypeModeMapping: Record<ReportType, FilterMode> = {
+  [ReportType.OVERVIEW]: 'both',
+  [ReportType.NETWORK]: 'both',
+  [ReportType.APPLICATION]: 'both',
+  [ReportType.CLIENT]: 'ap',
+  [ReportType.ACCESS_POINT]: 'ap',
+  [ReportType.SWITCH]: 'switch',
+  [ReportType.WIRELESS]: 'ap',
+  [ReportType.WIRED]: 'switch',
+  [ReportType.AP_DETAIL]: 'ap',
+  [ReportType.SWITCH_DETAIL]: 'switch',
+  [ReportType.CLIENT_DETAIL]: 'ap'
 }

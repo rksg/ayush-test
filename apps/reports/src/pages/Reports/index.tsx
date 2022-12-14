@@ -6,7 +6,8 @@ import EmbeddedDashboard from '../Reports/EmbeddedDashboard'
 import {
   ReportType,
   reportTypeLabelMapping,
-  reportTypeDataStudioMapping } from './reportsMapping'
+  reportTypeDataStudioMapping,
+  reportTypeModeMapping } from './reportsMapping'
 
 export function Report (props: {
   type: ReportType
@@ -16,7 +17,8 @@ export function Report (props: {
   const { $t } = useIntl()
   return (
     <>
-      { withHeader && <ReportHeader name={$t(reportTypeLabelMapping[type])} /> }
+      { withHeader && <ReportHeader name={$t(reportTypeLabelMapping[type])}
+        mode={reportTypeModeMapping[type]}/> }
       <EmbeddedDashboard embedDashboardName={reportTypeDataStudioMapping[type]} />
     </>
   )

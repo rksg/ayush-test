@@ -83,6 +83,7 @@ type ConnectedNetworkFilterProps = {
     shouldQuerySwitch : boolean,
     withIncidents?: boolean,
     showBand?: boolean,
+    multiple?: boolean,
     replaceWithId?:boolean,
     onApplyWithBand?: ({ paths, bands }:{ paths:NetworkPath[],bands?:CheckboxValueType[] }) => void
    }
@@ -263,6 +264,7 @@ function ConnectedNetworkFilter (
   { shouldQuerySwitch,
     withIncidents,
     showBand,
+    multiple,
     replaceWithId,
     onApplyWithBand } : ConnectedNetworkFilterProps
 ) {
@@ -295,13 +297,13 @@ function ConnectedNetworkFilter (
       <Loader states={[queryResults]}>
         <NetworkFilter
           placeholder={$t({ defaultMessage: 'Entire Organization' })}
-          multiple={false}
+          multiple={multiple}
           showBand={showBand}
           defaultValue={raw}
           value={raw}
           options={queryResults.data}
           onApply={(value,bands) => {
-            if(showBand){
+            if(showBand || multiple){
               let paths:NetworkPath[]=[]
               if(value?.length){
                 value.forEach(item => {
