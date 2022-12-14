@@ -11,7 +11,8 @@ import {
   Tooltip,
   Button
 } from '@acx-ui/components'
-import { NotificationSolid } from '@acx-ui/icons'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { NotificationSolid }      from '@acx-ui/icons'
 import {
   useAlarmsListQuery,
   useClearAlarmMutation,
@@ -59,6 +60,8 @@ export default function AlarmsHeaderButton () {
   const { $t } = useIntl()
 
   const [modalState, setModalOpen] = useState<boolean>()
+
+  const toggleForSwitch = useIsSplitOn(Features.DEVICES)
 
   const getCount = function () {
     if (data?.summary?.alarms?.totalCount) {
@@ -124,11 +127,16 @@ export default function AlarmsHeaderButton () {
           to={`/devices/wifi/${alarm.entityId}/details/overview`}>{alarm.apName}
         </TenantLink>
       }
-      // case EventTypeEnum.SWITCH: {
-      //   return <TenantLink
-      //   to={`/devices/switch/${alarm.entityId}/details/overview`}>{alarm.switchName}
-      //   </TenantLink>
-      // }
+      case EventTypeEnum.SWITCH: {
+        if(toggleForSwitch){
+          return <TenantLink
+            to={`/devices/switch/${alarm.entityId}/${alarm.serialNumber}/details/timeline`}>
+            {alarm.switchName}
+          </TenantLink>
+        }else{
+          return <UI.EmptyLink>{alarm.switchName}</UI.EmptyLink>
+        }
+      }
       default: {
         return <UI.EmptyLink>{alarm.apName}</UI.EmptyLink>
       }
