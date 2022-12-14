@@ -11,7 +11,6 @@ import Photo                     from '../../../../assets/images/portal-demo/Por
 import Powered                   from '../../../../assets/images/portal-demo/PoweredLogo.svg'
 import Logo                      from '../../../../assets/images/portal-demo/RuckusCloud.svg'
 import { PortalDemoDefaultSize } from '../../commonUtils'
-import PortalFormContext         from '../PortalForm/PortalFormContext'
 
 import PortalDemo from './index'
 
