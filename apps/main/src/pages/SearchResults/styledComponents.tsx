@@ -1,7 +1,8 @@
-import { Collapse as AntCollapse } from 'antd'
-import styled                      from 'styled-components'
+import styled from 'styled-components'
 
-export const Collapse = styled(AntCollapse)`
+import { Collapse as AcxCollapse } from '@acx-ui/components'
+
+export const Collapse = styled(AcxCollapse)`
   .ant-collapse-content {
     background-color: var(--acx-primary-white) !important;
   }
@@ -10,7 +11,7 @@ export const Collapse = styled(AntCollapse)`
   }
 `
 
-export const Panel = styled(AntCollapse.Panel)`
+export const Panel = styled(AcxCollapse.Panel)`
   .ant-collapse-header {
     padding: 13px 10px !important;
   }

@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import _                             from 'lodash'
+import { generatePath }              from 'react-router-dom'
 
 import {
   ApExtraParams,
@@ -16,6 +17,7 @@ import {
   ApRadioChannelsForm,
   onSocketActivityChanged,
   RequestPayload,
+  RequestFormData,
   showActivityMessage,
   TableResult,
   RadioProperties,
@@ -23,15 +25,16 @@ import {
   WifiApSetting,
   ApLanPort,
   ApRadio,
+  APPhoto,
   ApViewModel,
-  VenueCapabilities,
   VenueDefaultApGroup,
   AddApGroup,
   CommonResult,
   PacketCaptureState,
   Capabilities,
   PacketCaptureOperationResponse,
-  ApRadioCustomization
+  ApRadioCustomization,
+  VenueDefaultRegulatoryChannels
 } from '@acx-ui/rc/utils'
 import { formatter } from '@acx-ui/utils'
 
@@ -100,6 +103,19 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
     }),
+    importAp: build.mutation<{}, RequestFormData>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.addAp, params, {
+          'Content-Type': undefined,
+          'Accept': '*/*'
+        })
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
+    }),
     getAp: build.query<ApDeep, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.getAp, params)
@@ -159,7 +175,7 @@ export const apApi = baseApApi.injectEndpoints({
         }
       }
     }),
-    wifiCapabilities: build.query<VenueCapabilities, RequestPayload>({
+    wifiCapabilities: build.query<Capabilities, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.getWifiCapabilities, params)
         return {
@@ -256,6 +272,15 @@ export const apApi = baseApApi.injectEndpoints({
         }
       }
     }),
+    blinkLedAp: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.blinkLedAp, params)
+        return{
+          ...req
+        }
+      }
+    }),
+
     pingAp: build.mutation<PingAp, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.pingAp, params)
@@ -319,7 +344,6 @@ export const apApi = baseApApi.injectEndpoints({
         }
       }
     }),
-
     getPacketCaptureState: build.query<PacketCaptureState, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.getPacketCaptureState, params)
@@ -329,15 +353,36 @@ export const apApi = baseApApi.injectEndpoints({
       }
     }),
 
-    blinkLedAp: build.mutation<CommonResult, RequestPayload>({
+    getApPhoto: build.query<APPhoto, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.blinkLedAp, params)
+        const req = createHttpRequest(WifiUrlsInfo.getApPhoto, params)
         return{
           ...req
         }
-      }
+      },
+      providesTags: [{ type: 'Ap', id: 'PHOTO' }],
+      keepUnusedDataFor: 0
     }),
-
+    addApPhoto: build.mutation<{}, RequestFormData>({
+      query: ({ params, payload }) => {
+        const url = generatePath(`${WifiUrlsInfo.addApPhoto.url}`, params)
+        return{
+          url: `${window.location.origin}${url}`,
+          method: 'POST',
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'PHOTO' }]
+    }),
+    deleteApPhoto: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.deleteApPhoto, params)
+        return{
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'PHOTO' }]
+    }),
     stopPacketCapture: build.mutation<PingAp, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.stopPacketCapture, params)
@@ -374,7 +419,8 @@ export const apApi = baseApApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'Details' }, { type: 'Ap', id: 'LanPorts' }]
     }),
 
     startPacketCapture: build.mutation<PacketCaptureOperationResponse, RequestPayload>({
@@ -395,6 +441,14 @@ export const apApi = baseApApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Ap', id: 'Details' }, { type: 'Ap', id: 'LanPorts' }]
+    }),
+    getApValidChannel: build.query<VenueDefaultRegulatoryChannels, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getApValidChannel, params)
+        return {
+          ...req
+        }
+      }
     })
   })
 })
@@ -411,6 +465,7 @@ export const {
   usePingApMutation,
   useTraceRouteApMutation,
   useGetApQuery,
+  useLazyGetApQuery,
   useUpdateApMutation,
   useAddApGroupMutation,
   useApGroupListQuery,
@@ -426,7 +481,11 @@ export const {
   useRebootApMutation,
   useBlinkLedApMutation,
   useFactoryResetApMutation,
+  useImportApMutation,
   useLazyGetDhcpApQuery,
+  useGetApPhotoQuery,
+  useAddApPhotoMutation,
+  useDeleteApPhotoMutation,
   useGetApRadioQuery,
   useUpdateApRadioMutation,
   useDeleteApRadioMutation,
@@ -437,8 +496,10 @@ export const {
   useGetApLanPortsQuery,
   useUpdateApLanPortsMutation,
   useGetApCapabilitiesQuery,
+  useLazyGetApCapabilitiesQuery,
   useUpdateApCustomizationMutation,
-  useResetApCustomizationMutation
+  useResetApCustomizationMutation,
+  useGetApValidChannelQuery
 } = apApi
 
 

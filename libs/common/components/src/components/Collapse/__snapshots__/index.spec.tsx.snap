@@ -1,0 +1,72 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Collapse should render start icon & bordered collapse correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="ant-collapse ant-collapse-icon-position-start"
+  >
+    <div
+      class="ant-collapse-item ant-collapse-item-active"
+    >
+      <div
+        aria-expanded="true"
+        class="ant-collapse-header"
+        role="button"
+        tabindex="0"
+      >
+        <div
+          class="ant-collapse-expand-icon"
+        >
+          <svg
+            class="ant-collapse-arrow"
+            data-testid="CollapseInactive"
+          />
+        </div>
+        <span
+          class="ant-collapse-header-text"
+        >
+          test1
+        </span>
+      </div>
+      <div
+        class="ant-collapse-content ant-collapse-content-active"
+      >
+        <div
+          class="ant-collapse-content-box"
+        />
+      </div>
+    </div>
+    <div
+      class="ant-collapse-item ant-collapse-item-active"
+    >
+      <div
+        aria-expanded="true"
+        class="ant-collapse-header"
+        role="button"
+        tabindex="0"
+      >
+        <div
+          class="ant-collapse-expand-icon"
+        >
+          <svg
+            class="ant-collapse-arrow"
+            data-testid="CollapseInactive"
+          />
+        </div>
+        <span
+          class="ant-collapse-header-text"
+        >
+          test2
+        </span>
+      </div>
+      <div
+        class="ant-collapse-content ant-collapse-content-active"
+      >
+        <div
+          class="ant-collapse-content-box"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;

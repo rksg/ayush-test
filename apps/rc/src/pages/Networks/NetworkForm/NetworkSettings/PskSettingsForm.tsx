@@ -108,7 +108,7 @@ function SettingsForm () {
           WlanSecurityEnum.WPAPersonal,
           WlanSecurityEnum.WEP
         ].indexOf(wlanSecurity) > -1 &&
-          <Space align='start'>
+          <Space align='start' size={2}>
             <InformationSolid />
             {SecurityOptionsDescription.WPA2_DESCRIPTION_WARNING}
           </Space>
@@ -194,7 +194,7 @@ function SettingsForm () {
             extra={intl.$t({ defaultMessage: 'Must be 26 hex characters' })}
             children={<Input.Password />}
           />
-          <div style={{ position: 'absolute', top: '105px', right: '15px' }}>
+          <div style={{ position: 'absolute', top: '111px', right: '15px' }}>
             <Button type='link' onClick={onGenerateHexKey}>
               {intl.$t({ defaultMessage: 'Generate' })}
             </Button>

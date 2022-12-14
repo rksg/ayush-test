@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 
+import { useIntl } from 'react-intl'
+
 import {
   ConnectedClientsOverTime,
   NetworkHistory,
@@ -14,10 +16,13 @@ import { ApInfoWidget }                           from '@acx-ui/rc/components'
 import { useApDetailsQuery, useApViewModelQuery } from '@acx-ui/rc/services'
 import { ApDetails, ApViewModel }                 from '@acx-ui/rc/utils'
 import { useParams }                              from '@acx-ui/react-router-dom'
+import { notAvailableMsg }                        from '@acx-ui/utils'
 
+import { ApPhoto }      from './ApPhoto'
 import { ApProperties } from './ApProperties'
 
 export function ApOverviewTab () {
+  const { $t } = useIntl()
   const { filters } = useAnalyticsFilter()
   const [ apFilter, setApFilter ] = useState(null as unknown as AnalyticsFilter)
   const params = useParams()
@@ -42,19 +47,19 @@ export function ApOverviewTab () {
         path: [{ type: 'AP', name: currentAP.apMac as string }]
       })
     }
-  }, [currentAP])
+  }, [currentAP, filters])
 
 
-  return (  // TODO: Remove background: '#F7F7F7' and Add other widgets
+  return (  // TODO: Remove background: '#F7F7F7' and Add Floor plan
     <GridRow>
       <GridCol col={{ span: 18 }} style={{ height: '152px' }}>
         { apFilter && <ApInfoWidget currentAP={currentAP as ApViewModel} filters={apFilter} /> }
       </GridCol>
-      <GridCol col={{ span: 6 }} style={{ height: '152px', background: '#F7F7F7' }}>
-        AP Photo
+      <GridCol col={{ span: 6 }} style={{ height: '152px' }}>
+        <ApPhoto />
       </GridCol>
       <GridCol col={{ span: 18 }} style={{ background: '#F7F7F7' }}>
-        Floor Plan
+        {$t(notAvailableMsg)}
       </GridCol>
       <GridCol col={{ span: 6 }}>
         <ApProperties

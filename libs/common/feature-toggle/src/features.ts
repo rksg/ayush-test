@@ -13,5 +13,7 @@ export enum Features {
   DEVICES = 'acx-ui-devices',
   USERS = 'acx-ui-users',
   DELETE_SOLO = 'ap-delete-with-solo-image-toggle',
-  EDGES = 'acx-ui-edges-toggle'
+  EDGES = 'acx-ui-edges-toggle',
+  CLIENT_TROUBLESHOOTING = 'acx-ui-client-troubleshooting-toggle',
+  TIMELINE = 'acx-ui-timeline-toggle'
 }

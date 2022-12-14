@@ -4,7 +4,7 @@ import { Switch }    from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { showToast, Table, TableProps }                       from '@acx-ui/components'
+import { Table, TableProps }                                  from '@acx-ui/components'
 import { useGetWifiCallingServiceQuery, useNetworkListQuery } from '@acx-ui/rc/services'
 import {
   Network,
@@ -101,14 +101,6 @@ const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
         networksName: selectRows.map(row => row.name)
       }
     } as WifiCallingActionPayload)
-
-    showToast({
-      type: 'info',
-      content: $t(
-        { defaultMessage: 'Activate {count} network(s)' },
-        { count: selectRows.length }
-      )
-    })
   }
 
   const deactivateNetwork = (selectRows: Network[]) => {
@@ -118,14 +110,6 @@ const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
         networkIds: selectRows.map(row => row.id)
       }
     } as WifiCallingActionPayload)
-
-    showToast({
-      type: 'info',
-      content: $t(
-        { defaultMessage: 'Deactivate {count} network(s)' },
-        { count: selectRows.length }
-      )
-    })
   }
 
 

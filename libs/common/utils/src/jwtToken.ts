@@ -1,3 +1,7 @@
+export enum AccountTier {
+  GOLD = 'Gold',
+  PLATINUM = 'Platinum'
+}
 
 export enum AccountVertical {
   DEFAULT = 'Default',
@@ -25,7 +29,7 @@ interface JwtToken {
   acx_account_activation_date: string
   acx_account_activation_flag: boolean
   acx_account_regions: AccountRegion[]
-  acx_account_tier: string
+  acx_account_tier: AccountTier
   acx_account_type: AccountType
   acx_account_vertical: AccountVertical
   acx_trial_in_progress: boolean
@@ -66,9 +70,20 @@ export function getJwtTokenPayload () {
   const jwt = getCookie('JWT')
 
   if (jwt === null) {
+    const tenantId = getTenantId()
     // eslint-disable-next-line no-console
-    console.error('No JWT token found!')
-    return null
+    console.error('No JWT token found! So setting default JWT values')
+    const jwtToken: {
+      acx_account_tier: AccountTier;
+      acx_account_vertical: AccountVertical;
+      acx_account_type: AccountType;
+      tenantId: string | undefined } = {
+        acx_account_tier: AccountTier.GOLD,
+        acx_account_vertical: AccountVertical.DEFAULT,
+        acx_account_type: AccountType.REC,
+        tenantId: tenantId
+      }
+    return jwtToken
   }
 
   if (cache.has(jwt)) return cache.get(jwt)
@@ -90,4 +105,12 @@ function getCookie (key: string) {
 
   const valueStart = start + key.length + 1
   return document.cookie.slice(valueStart, end)
+}
+
+export function getTenantId () {
+  const chunks = window.location.pathname.split('/')
+  for (const c in chunks) {
+    if (['v', 't'].includes(chunks[c])) { return chunks[Number(c) + 1] }
+  }
+  return
 }

@@ -142,6 +142,7 @@ export function RadioSettingsChannels (props: {
             onChange={handleClickGroupChannels}
             options={channelGroupList?.map((group: channelGroupOption) => ({
               label: <Tooltip
+                key={group?.channels?.[0].value}
                 title={props.disabled
                   ? ''
                   : (group.selected
@@ -150,7 +151,8 @@ export function RadioSettingsChannels (props: {
                 }
                 className='channels'
               >{
-                  group?.channels.map((item: RadioChannel) => <span>{ item.value }</span>)
+                  group?.channels.map((item: RadioChannel) =>
+                    <span key={item.value}>{ item.value }</span>)
                 }</Tooltip>,
               value: group?.channels?.[0].value
             }))}

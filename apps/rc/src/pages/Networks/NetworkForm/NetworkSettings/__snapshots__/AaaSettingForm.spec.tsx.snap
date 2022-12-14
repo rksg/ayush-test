@@ -475,13 +475,14 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                                               style="margin-bottom: 8px;"
                                             >
                                               <label
-                                                class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
+                                                class="ant-radio-wrapper ant-radio-wrapper-disabled ant-radio-wrapper-in-form-item"
                                               >
                                                 <span
-                                                  class="ant-radio"
+                                                  class="ant-radio ant-radio-disabled"
                                                 >
                                                   <input
                                                     class="ant-radio-input"
+                                                    disabled=""
                                                     type="radio"
                                                     value="guest"
                                                   />
@@ -632,7 +633,7 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                     </div>
                     <div>
                       <button
-                        class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                        class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 eAazoW"
                         type="button"
                       >
                         <span>
@@ -948,7 +949,7 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
             style="margin-right: 12px;"
           >
             <button
-              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
               type="button"
             >
               <span>
@@ -967,7 +968,7 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                 style="margin-right: 12px;"
               >
                 <button
-                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
                   disabled=""
                   type="button"
                 >
@@ -980,7 +981,7 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                 class="ant-space-item"
               >
                 <button
-                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 kkpPZG"
+                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 bxQmA-d"
                   type="button"
                 >
                   <span>

@@ -9,6 +9,10 @@ export interface RequestPayload <Payload = unknown> extends Record<string,unknow
   params?: Params<string>
   payload?: Payload
 }
+export interface RequestFormData <FormData = unknown> {
+  params?: Params<string>
+  payload?: FormData
+}
 
 export interface TableResult <ResultItemType, ResultExtra = unknown> {
   data: ResultItemType[]
@@ -31,6 +35,7 @@ export interface TABLE_QUERY <
   pagination?: Partial<PAGINATION>
   sorter?: SORTER
   rowKey?: string
+  pollingInterval?: number
 }
 export type PAGINATION = {
   current: number,
@@ -39,6 +44,7 @@ export type PAGINATION = {
 }
 
 const DEFAULT_PAGINATION = {
+  page: 1,
   current: 1,
   pageSize: 10,
   total: 0
@@ -102,10 +108,14 @@ export function useTableQuery <
   const params = useParams()
   // RTKQuery
 
+  const pollingInterval = option.pollingInterval ? {
+    pollingInterval: option.pollingInterval
+  } : {}
+
   const api = option.useQuery({
     params: { ...params, ...option.apiParams },
     payload: payload
-  })
+  }, pollingInterval)
 
   useEffect(() => {
     const handlePagination = (data?: TableResult<ResultType>) => {

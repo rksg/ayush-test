@@ -59,17 +59,19 @@ exports[`ApTabs should render correctly 1`] = `
             </div>
           </div>
           <div
-            class="ant-tabs-tab"
+            class="ant-tabs-tab ant-tabs-tab-disabled"
           >
             <div
               aria-controls="rc-tabs-test-panel-reports"
+              aria-disabled="true"
               aria-selected="false"
               class="ant-tabs-tab-btn"
               id="rc-tabs-test-tab-reports"
               role="tab"
-              tabindex="0"
             >
-              Reports
+              <span>
+                Reports
+              </span>
             </div>
           </div>
           <div
@@ -87,45 +89,51 @@ exports[`ApTabs should render correctly 1`] = `
             </div>
           </div>
           <div
-            class="ant-tabs-tab"
+            class="ant-tabs-tab ant-tabs-tab-disabled"
           >
             <div
               aria-controls="rc-tabs-test-panel-clients"
+              aria-disabled="true"
               aria-selected="false"
               class="ant-tabs-tab-btn"
               id="rc-tabs-test-tab-clients"
               role="tab"
-              tabindex="0"
             >
-              Clients (1)
+              <span>
+                Clients (1)
+              </span>
             </div>
           </div>
           <div
-            class="ant-tabs-tab"
+            class="ant-tabs-tab ant-tabs-tab-disabled"
           >
             <div
               aria-controls="rc-tabs-test-panel-services"
+              aria-disabled="true"
               aria-selected="false"
               class="ant-tabs-tab-btn"
               id="rc-tabs-test-tab-services"
               role="tab"
-              tabindex="0"
             >
-              Services (3)
+              <span>
+                Services (3)
+              </span>
             </div>
           </div>
           <div
-            class="ant-tabs-tab"
+            class="ant-tabs-tab ant-tabs-tab-disabled"
           >
             <div
               aria-controls="rc-tabs-test-panel-timeline"
+              aria-disabled="true"
               aria-selected="false"
               class="ant-tabs-tab-btn"
               id="rc-tabs-test-tab-timeline"
               role="tab"
-              tabindex="0"
             >
-              Timeline
+              <span>
+                Timeline 
+              </span>
             </div>
           </div>
           <div

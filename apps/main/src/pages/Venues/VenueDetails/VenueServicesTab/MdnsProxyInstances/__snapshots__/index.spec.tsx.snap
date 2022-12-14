@@ -15,13 +15,13 @@ exports[`MdnsProxyInstances should render table with the giving data 1`] = `
     >
       <div
         class="ant-space ant-space-horizontal ant-space-align-center"
-        style="display: flex; justify-content: flex-end;"
+        style="display: flex; justify-content: flex-end; margin: 3px 0px;"
       >
         <div
           class="ant-space-item"
         >
           <button
-            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
             type="button"
           >
             <span>
@@ -362,7 +362,7 @@ exports[`MdnsProxyInstances should render table with the giving data 1`] = `
                                 class="ant-table-cell"
                               >
                                 <a
-                                  href="/t/6de6a5239a1441cfb9c7fde93aa613fe/devices/aps/121749001049/details/overview"
+                                  href="/t/6de6a5239a1441cfb9c7fde93aa613fe/devices/wifi/121749001049/details/overview"
                                 >
                                   AP-R610
                                 </a>
@@ -409,7 +409,7 @@ exports[`MdnsProxyInstances should render table with the giving data 1`] = `
                                 class="ant-table-cell"
                               >
                                 <a
-                                  href="/t/6de6a5239a1441cfb9c7fde93aa613fe/devices/aps/121749001050/details/overview"
+                                  href="/t/6de6a5239a1441cfb9c7fde93aa613fe/devices/wifi/121749001050/details/overview"
                                 >
                                   AP-R510
                                 </a>
