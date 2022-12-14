@@ -1,8 +1,6 @@
 import { Space }   from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
-import { useParams } from '@acx-ui/react-router-dom'
-import { getIntl }   from '@acx-ui/utils'
 
 import {
   Table,
@@ -10,7 +8,6 @@ import {
   Tooltip,
   Loader
 } from '@acx-ui/components'
-
 import { useSwitchPortlistQuery } from '@acx-ui/rc/services'
 import {
   getSwitchModel,
@@ -18,6 +15,8 @@ import {
   SwitchPortViewModel,
   useTableQuery
 } from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
+import { getIntl }   from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
