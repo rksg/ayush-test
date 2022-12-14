@@ -129,7 +129,7 @@ const EdgeDetailsDrawer = (props: EdgeDetailsDrawerProps) => {
     }
   ]
 
-  const content = <ContentSwitcher tabDetails={tabDetails} size='large' space={5} />
+  const content = <ContentSwitcher tabDetails={tabDetails} size='small' />
 
   return (
     <Drawer
