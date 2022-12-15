@@ -131,7 +131,11 @@ describe('Persona Details', () => {
       <Provider>
         <PersonaDetails />
       </Provider>, {
-        route: { params, path: '/:tenantId/users/persona-group/:personaGroupId/persona/:personaId' }
+        route: {
+          params,
+          // eslint-disable-next-line max-len
+          path: '/:tenantId/users/persona-management/persona-group/:personaGroupId/persona/:personaId'
+        }
       }
     )
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
@@ -146,7 +150,8 @@ describe('Persona Details', () => {
       <Provider>
         <PersonaDetails />
       </Provider>, {
-        route: { params, path: '/:tenantId/users/persona-group/:personaGroupId/persona/:personaId' }
+        // eslint-disable-next-line max-len
+        route: { params, path: '/:tenantId/users/persona-management/persona-group/:personaGroupId/persona/:personaId' }
       }
     )
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
@@ -160,7 +165,8 @@ describe('Persona Details', () => {
       <Provider>
         <PersonaDetails />
       </Provider>, {
-        route: { params, path: '/:tenantId/users/persona-group/:personaGroupId/persona/:personaId' }
+        // eslint-disable-next-line max-len
+        route: { params, path: '/:tenantId/users/persona-management/persona-group/:personaGroupId/persona/:personaId' }
       }
     )
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
@@ -186,7 +192,8 @@ describe('Persona Details', () => {
       <Provider>
         <PersonaDevicesTable persona={mockPersona} title={'Devices'}/>
       </Provider>, {
-        route: { params, path: '/:tenantId/users/persona-group/:personaGroupId/persona/:personaId' }
+        // eslint-disable-next-line max-len
+        route: { params, path: '/:tenantId/users/persona-management/persona-group/:personaGroupId/persona/:personaId' }
       }
     )
 

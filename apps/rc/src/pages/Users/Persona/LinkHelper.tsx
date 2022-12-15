@@ -4,7 +4,7 @@ import { TenantLink } from '@acx-ui/react-router-dom'
 export function PersonaGroupLink (props: { personaGroupId?: string, name?: string }) {
   const { personaGroupId, name } = props
   return (
-    <TenantLink to={`users/persona-group/${personaGroupId}`}>
+    <TenantLink to={`users/persona-management/persona-group/${personaGroupId}`}>
       {name ?? personaGroupId}
     </TenantLink>
   )
@@ -18,7 +18,9 @@ export function PersonaDetailsLink (
 {
   const { personaGroupId, personaId, name } = props
   return (
-    <TenantLink to={`users/persona-group/${personaGroupId}/persona/${personaId}`}>
+    <TenantLink
+      to={`users/persona-management/persona-group/${personaGroupId}/persona/${personaId}`}
+    >
       {name ?? personaId}
     </TenantLink>
   )

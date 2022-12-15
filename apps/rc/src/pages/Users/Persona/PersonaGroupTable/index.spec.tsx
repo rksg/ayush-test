@@ -106,7 +106,7 @@ describe('Persona Group Table', () => {
       <Provider>
         <PersonaGroupTable />
       </Provider>, {
-        route: { params, path: '/:tenantId/users/persona-group' }
+        route: { params, path: '/:tenantId/users/persona-management/persona-group' }
       })
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
@@ -136,7 +136,7 @@ describe('Persona Group Table', () => {
       <Provider>
         <PersonaGroupTable />
       </Provider>, {
-        route: { params, path: '/:tenantId/users/persona-group' }
+        route: { params, path: '/:tenantId/users/persona-management/persona-group' }
       })
 
     //   80 |       70 |   66.66 |   80.95
@@ -159,7 +159,7 @@ describe('Persona Group Table', () => {
       <Provider>
         <PersonaGroupTable />
       </Provider>, {
-        route: { params, path: '/:tenantId/users/persona-group' }
+        route: { params, path: '/:tenantId/users/persona-management/persona-group' }
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
@@ -180,7 +180,7 @@ describe('Persona Group Table', () => {
       <Provider>
         <PersonaGroupTable />
       </Provider>, {
-        route: { params, path: '/:tenantId/users/persona-group' }
+        route: { params, path: '/:tenantId/users/persona-management/persona-group' }
       })
 
     await screen.findByText('Create Persona Group')

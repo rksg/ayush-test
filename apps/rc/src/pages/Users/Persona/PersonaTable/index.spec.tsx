@@ -67,7 +67,7 @@ describe('Persona Table', () => {
       <Provider>
         <PersonaTable />
       </Provider>, {
-        route: { params, path: '/:tenantId/users/persona-group' }
+        route: { params, path: '/:tenantId/users/persona-management/persona-group' }
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
@@ -86,7 +86,7 @@ describe('Persona Table', () => {
       <Provider>
         <PersonaTable />
       </Provider>, {
-        route: { params, path: '/:tenantId/users/persona-group' }
+        route: { params, path: '/:tenantId/users/persona-management/persona-group' }
       })
 
     const createButton = await screen.findByRole('button', { name: /Add Persona/i })

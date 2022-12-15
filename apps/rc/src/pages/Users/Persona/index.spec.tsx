@@ -15,7 +15,7 @@ describe('Persona Portal', () => {
       <Provider>
         <PersonaPortal />
       </Provider>, {
-        route: { params, path: '/:tenantId/users/persona-group' }
+        route: { params, path: '/:tenantId/users/persona-management/persona-group' }
       }
     )
 

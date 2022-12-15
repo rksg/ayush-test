@@ -37,7 +37,7 @@ function PersonaGroupDetailsPageHeader (props: {
       breadcrumb={[
         {
           text: $t({ defaultMessage: 'Persona Group' }),
-          link: 'users/persona-group'
+          link: 'users/persona-management'
         }
       ]}
     />

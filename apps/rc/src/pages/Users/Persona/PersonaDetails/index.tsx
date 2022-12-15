@@ -192,7 +192,7 @@ function PersonaDetailsPageHeader (props: {
       breadcrumb={[
         {
           text: $t({ defaultMessage: 'Persona' }),
-          link: 'users/persona'
+          link: 'users/persona-management/persona'
         }
       ]}
     />

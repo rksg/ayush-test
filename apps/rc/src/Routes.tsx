@@ -244,11 +244,17 @@ function UserRoutes () {
       />
       <Route path='users/switch' element={<TenantNavigate replace to='/users/switch/clients' />} />
       <Route path='users/switch/clients' element={<SwitchClientList />} />
-      <Route path='users/persona' element={<PersonaPortal />} />
-      <Route path='users/persona-group' element={<PersonaPortal />} />
-      <Route path='users/persona-group/:personaGroupId' element={<PersonaGroupDetails />} />
       <Route
-        path='users/persona-group/:personaGroupId/persona/:personaId'
+        path='users/persona-management'
+        element={<TenantNavigate replace to='/users/persona-management/persona-group' />}
+      />
+      <Route path='users/persona-management/:activeTab' element={<PersonaPortal />} />
+      <Route
+        path='users/persona-management/persona-group/:personaGroupId'
+        element={<PersonaGroupDetails />}
+      />
+      <Route
+        path='users/persona-management/persona-group/:personaGroupId/persona/:personaId'
         element={<PersonaDetails />}
       />
     </Route>
