@@ -352,7 +352,7 @@ describe('Config utils', () => {
         state: 'normal',
         type: 'connectionEvents'
       },
-      desc: 'EAPOL: PSK Failure (passphrase mismatch) - Invalid MIC @ R750-11-112 5 GHz'
+      desc: 'EAPOL Failure: PSK Failure (passphrase mismatch) - Invalid MIC @ R750-11-112 5 GHz'
     }]
     data.forEach(({ event, desc }) => {
       expect(formatEventDesc(event, getIntl())).toEqual(desc)
