@@ -16,6 +16,7 @@ import { GridCol, GridRow, StepsForm } from '@acx-ui/components'
 import {
   QuestionMarkCircleOutlined
 } from '@acx-ui/icons'
+import { useGlobalValuesQuery }           from '@acx-ui/rc/services'
 import {
   domainsNameRegExp,
   GuestNetworkTypeEnum, NetworkTypeEnum
@@ -146,6 +147,13 @@ export function SelfSignInForm () {
       setAllowedSignValue(allowedSignValueTemp)
     }
   }, [data])
+  const globalValues= useGlobalValuesQuery({})
+  const [redirectURL, setRedirectURL]=useState('')
+  useEffect(()=>{
+    if(globalValues){
+      setRedirectURL(globalValues?.data?.['CAPTIVE_PORTAL_DOMAIN_NAME']||'')
+    }
+  }, [globalValues])
   return (
     <GridRow>
       <GridCol col={{ span: 12 }}>
@@ -187,7 +195,7 @@ export function SelfSignInForm () {
                   <UI.Facebook />
                   {$t({ defaultMessage: 'Facebook' })}
                 </UI.Checkbox>
-                {facebook && <FacebookSetting />}
+                {facebook && <FacebookSetting redirectURL={redirectURL}/>}
               </>
             </Form.Item>
             <Form.Item name={['guestPortal', 'socialIdentities', 'google']}
@@ -199,7 +207,7 @@ export function SelfSignInForm () {
                   <UI.Google />
                   {$t({ defaultMessage: 'Google' })}
                 </UI.Checkbox>
-                {google && <GoogleSetting />}
+                {google && <GoogleSetting redirectURL={redirectURL}/>}
               </>
             </Form.Item>
             <Form.Item name={['guestPortal', 'socialIdentities', 'twitter']}
@@ -211,7 +219,7 @@ export function SelfSignInForm () {
                   <UI.Twitter />
                   {$t({ defaultMessage: 'Twitter' })}
                 </UI.Checkbox>
-                {twitter && <TwitterSetting />}
+                {twitter && <TwitterSetting redirectURL={redirectURL}/>}
               </>
             </Form.Item>
             <Form.Item name={['guestPortal', 'socialIdentities', 'linkedin']}
@@ -223,7 +231,7 @@ export function SelfSignInForm () {
                   <UI.LinkedIn />
                   {$t({ defaultMessage: 'LinkedIn' })}
                 </UI.Checkbox>
-                {linkedin && <LinkedInSetting />}
+                {linkedin && <LinkedInSetting redirectURL={redirectURL}/>}
               </>
             </Form.Item></>
         </Form.Item>

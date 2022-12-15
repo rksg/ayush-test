@@ -15,7 +15,9 @@ import SocialAuthURL from './SocialAuthURL'
 type DataType = {
   guestPortal: GuestPortal
 }
-export default function TwitterSetting () {
+export default function TwitterSetting (props:{
+  redirectURL: string
+}) {
   const {
     data,
     editMode,
@@ -94,7 +96,7 @@ export default function TwitterSetting () {
         {$t({ defaultMessage: 'and paste the following URI in the app settings under:' })}
       </label><br/>
       <label>{$t({ defaultMessage: 'Settings > Callback URL' })}</label><br/>
-      <SocialAuthURL/></>
+      <SocialAuthURL redirectURL={props.redirectURL}/></>
     </Form.Item>
   </Form>
   return (

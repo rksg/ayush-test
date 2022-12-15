@@ -15,7 +15,9 @@ import SocialAuthURL from './SocialAuthURL'
 type DataType = {
   guestPortal: GuestPortal
 }
-export default function FacebookSetting () {
+export default function FacebookSetting (props:{
+  redirectURL: string
+}) {
   const {
     data,
     editMode,
@@ -96,7 +98,7 @@ export default function FacebookSetting () {
       </label><br/>
       <label>{$t({ defaultMessage: 'Facebook Login > Settings > Client '+
       'OAuth Settings > Valid OAuth redirect URIs' })}</label>
-      <SocialAuthURL/></>
+      <SocialAuthURL redirectURL={props.redirectURL}/></>
     </Form.Item>
   </Form>
   return (

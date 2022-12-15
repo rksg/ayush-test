@@ -1,22 +1,18 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef } from 'react'
 
 import { Input, InputRef } from 'antd'
 import { useIntl }         from 'react-intl'
 
-import { Button }               from '@acx-ui/components'
-import { useGlobalValuesQuery } from '@acx-ui/rc/services'
+import { Button } from '@acx-ui/components'
 
 
-export default function SocialAuthURL () {
+
+export default function SocialAuthURL (props:{
+  redirectURL: string
+}) {
   const { $t } = useIntl()
+  const { redirectURL } = props
   const inputKey = useRef<InputRef>(null)
-  const globalValues= useGlobalValuesQuery({})
-  const [redirectURL, setRedirectURL]=useState('')
-  useEffect(()=>{
-    if(globalValues){
-      setRedirectURL(globalValues?.data?.['CAPTIVE_PORTAL_DOMAIN_NAME']||'')
-    }
-  }, [globalValues])
   return (
     <>
       <Input value={`https://${redirectURL}/g/ui/social`}

@@ -8,10 +8,7 @@ import { Provider }                              from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent } from '@acx-ui/test-utils'
 
 import {
-  venuesResponse,
   venueListResponse,
-  networksResponse,
-  successResponse,
   networkDeepResponse,
   dhcpResponse,
   selfsignData
@@ -30,20 +27,14 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
     mockServer.use(
       rest.get(CommonUrlsInfo.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
-      rest.post(CommonUrlsInfo.getNetworksVenuesList.url,
-        (_, res, ctx) => res(ctx.json(venuesResponse))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
-      rest.post(CommonUrlsInfo.getVMNetworksList.url,
-        (_, res, ctx) => res(ctx.json(networksResponse))),
-      rest.post(WifiUrlsInfo.addNetworkDeep.url.replace('?quickAck=true', ''),
-        (_, res, ctx) => res(ctx.json(successResponse))),
       rest.get(WifiUrlsInfo.GetDefaultDhcpServiceProfileForGuestNetwork.url,
         (_, res, ctx) => res(ctx.json(dhcpResponse))),
-      rest.post(CommonUrlsInfo.validateRadius.url,
-        (_, res, ctx) => res(ctx.json(successResponse))),
-      rest.post(CommonUrlsInfo.getVenuesList.url,
-        (_, res, ctx) => res(ctx.json(venueListResponse))),
+      rest.get(CommonUrlsInfo.getCloudpathList.url,
+        (_, res, ctx) => res(ctx.json([]))),
+      rest.get(CommonUrlsInfo.getGlobalValues.url,
+        (_, res, ctx) => res(ctx.json({}))),
       rest.get(WifiUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(selfSignInRes))),
       rest.post(CommonUrlsInfo.getNetworkDeepList.url,
@@ -65,8 +56,6 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
 
     await userEvent.click(await screen.findByRole('checkbox',
       { name: /SMS Token/ }))
-    await userEvent.click(await screen.findByText('Finish'))
-
     await userEvent.click(await screen.findByRole('checkbox',
       { name: /SMS Token/ }))
     await userEvent.click(await screen.findByRole('checkbox', { name: /Allowed Domains/ }))

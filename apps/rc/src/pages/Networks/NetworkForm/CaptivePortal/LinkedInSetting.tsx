@@ -15,7 +15,9 @@ import SocialAuthURL from './SocialAuthURL'
 type DataType = {
   guestPortal: GuestPortal
 }
-export default function LinkedInSetting () {
+export default function LinkedInSetting (props:{
+  redirectURL: string
+}) {
   const {
     data,
     editMode,
@@ -96,7 +98,7 @@ export default function LinkedInSetting () {
       </label><br/>
       <label>{$t({ defaultMessage: 'Authentication > OAuth 2.0 > '+
       'Authorized Redirect URLs' })}</label>
-      <SocialAuthURL/></>
+      <SocialAuthURL redirectURL={props.redirectURL}/></>
     </Form.Item>
   </Form>
   return (

@@ -16,7 +16,9 @@ import SocialAuthURL from './SocialAuthURL'
 type DataType = {
   guestPortal: GuestPortal
 }
-export default function GoogleSetting () {
+export default function GoogleSetting (props:{
+  redirectURL: string
+}) {
   const {
     data,
     editMode,
@@ -96,7 +98,7 @@ export default function GoogleSetting () {
       </label><br/>
       <label>{$t({ defaultMessage: 'Credentials > OAuth 2.0 client IDs > '+
       'Click on client name > Authorized redirect URIs' })}</label>
-      <SocialAuthURL/></>
+      <SocialAuthURL redirectURL={props.redirectURL}/></>
     </Form.Item>
   </Form>
   return (
