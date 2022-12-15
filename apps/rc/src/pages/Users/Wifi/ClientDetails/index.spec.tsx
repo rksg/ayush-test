@@ -1,5 +1,6 @@
 import { rest } from 'msw'
 
+import { useIsSplitOn }                                 from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo, ClientUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                     from '@acx-ui/store'
 import {
@@ -20,6 +21,8 @@ import {
   eventMetaList,
   histClientList
 } from '../__tests__/fixtures'
+
+import ClientDetailPageHeader from './ClientDetailPageHeader'
 
 import ClientDetails from '.'
 
@@ -124,4 +127,15 @@ describe('ClientDetails', () => {
       .toHaveLength(0)
   })
 
+  it('should render ClientDetailPageHeader correctly', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true) // mock Features.DEVICES
+    const params = {
+      tenantId: 'tenant-id',
+      clientId: 'user-id',
+      activeTab: 'overview'
+    }
+    render(<Provider><ClientDetailPageHeader /></Provider>, {
+      route: { params, path: '/:tenantId/users/wifi/clients' }
+    })
+  })
 })

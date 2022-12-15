@@ -101,6 +101,10 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/radio'
   },
+  getApValidChannel: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/valid-channel'
+  },
   getWifiCapabilities: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/capabilities'

@@ -19,7 +19,7 @@ exports[`Collapse should render start icon & bordered collapse correctly 1`] = `
         >
           <svg
             class="ant-collapse-arrow"
-            data-testid="CollapseActive"
+            data-testid="CollapseInactive"
           />
         </div>
         <span
@@ -50,7 +50,7 @@ exports[`Collapse should render start icon & bordered collapse correctly 1`] = `
         >
           <svg
             class="ant-collapse-arrow"
-            data-testid="CollapseActive"
+            data-testid="CollapseInactive"
           />
         </div>
         <span
