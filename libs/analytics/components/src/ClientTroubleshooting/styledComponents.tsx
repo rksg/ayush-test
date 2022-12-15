@@ -105,10 +105,12 @@ export const CollapseBox = styled(Collapse)`
    }`
 
 export const TooltipWrapper = styled.div`
+    color: var(--acx-primary-white);
     font-size: var(--acx-subtitle-6-font-size);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    background-color: transparent;
     `
 
 export const TimelineLoaderWrapper = styled.div`

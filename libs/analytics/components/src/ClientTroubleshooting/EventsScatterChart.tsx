@@ -132,9 +132,9 @@ export function EventsScatterChart ({
             width: 1
           }
         },
-        formatter: tooltipFormatter,
-        position: 'top',
-        ...tooltipOptions(true)
+        formatter: tooltipFormatter ,
+        ...tooltipOptions()
+        // position: (point) => [point[0] + 100, 0]
       }
     } : {
       tooltip: { show: false }
