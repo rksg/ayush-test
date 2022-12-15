@@ -2,6 +2,7 @@ import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { ContentSwitcher, ContentSwitcherProps, Tabs } from '@acx-ui/components'
+import { useIsSplitOn, Features }                      from '@acx-ui/feature-toggle'
 
 import { VenueMeshApsTable } from './VenueMeshAps'
 import { VenueRogueAps }     from './VenueRogueAps'
@@ -17,11 +18,13 @@ export function VenueDevicesTab () {
     {
       label: $t({ defaultMessage: 'AP Groups' }),
       value: 'apGroups',
+      disabled: !useIsSplitOn(Features.DEVICES),
       children: <span>apGroups</span>
     },
     {
       label: $t({ defaultMessage: 'Rogue APs' }),
       value: 'rogueAps',
+      disabled: !useIsSplitOn(Features.SERVICES),
       children: <VenueRogueAps />
     }
   ]
@@ -47,7 +50,10 @@ export function VenueDevicesTab () {
           </AutoSizer>
         </div>
       </Tabs.TabPane>
-      <Tabs.TabPane tab={$t({ defaultMessage: 'Switch' })} key='switch'>
+      <Tabs.TabPane
+        tab={$t({ defaultMessage: 'Switch' })}
+        key='switch'
+        disabled={!useIsSplitOn(Features.DEVICES)}>
         {$t({ defaultMessage: 'Switch' })}
       </Tabs.TabPane>
     </Tabs>

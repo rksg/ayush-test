@@ -1,7 +1,9 @@
 /* eslint-disable max-len */
-import { isEqual, includes } from 'lodash'
+import { PhoneNumberType, PhoneNumberUtil } from 'google-libphonenumber'
+import { isEqual, includes }                from 'lodash'
 
 import { getIntl, validationMessages } from '@acx-ui/utils'
+
 
 export function networkWifiIpRegExp (value: string) {
   const { $t } = getIntl()
@@ -362,4 +364,37 @@ export function emailRegExp (value: string) {
   return Promise.resolve()
 }
 
+export function phoneRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp (/^[+][1-9]{1,3}\s?([0-9s-]|[- ]){10,16}$/)
 
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.phoneNumber))
+  }
+
+  if (value && !ValidatePhoneNumber(value)){
+    return Promise.reject($t(validationMessages.phoneNumber))
+  }
+  return Promise.resolve()
+}
+
+export function ValidatePhoneNumber (phoneNumber: string) {
+  const phoneNumberUtil = PhoneNumberUtil.getInstance()
+  let number
+  let phoneNumberType
+  try {
+    number = phoneNumberUtil.parse(phoneNumber, '')
+    phoneNumberType = phoneNumberUtil.getNumberType(number)
+  } catch (e) {
+    return false
+  }
+  if (!number) {
+    return false
+  } else {
+    if (!phoneNumberUtil.isValidNumber(number) ||
+      (phoneNumberType !== PhoneNumberType.MOBILE && phoneNumberType !== PhoneNumberType.FIXED_LINE_OR_MOBILE)) {
+      return false
+    }
+  }
+  return true
+}

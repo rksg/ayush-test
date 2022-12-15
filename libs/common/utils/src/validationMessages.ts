@@ -132,6 +132,10 @@ export const validationMessages = {
     defaultMessage: `Please make sure that all destinations comply to
       allowed formats. For more information see the help information`,
     description: 'Validation - walled garden checks'
+  }),
+  phoneNumber: defineMessage({
+    defaultMessage: 'Please enter a valid phone number',
+    description: 'Validation - phone number checks'
   })
 }
 

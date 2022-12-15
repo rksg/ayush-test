@@ -58,14 +58,12 @@ describe('NetworkDetails', () => {
       networkId: '373377b0cb6e46ea8982b1c80aabe1fa',
       activeTab: 'overview'
     }
-    const { asFragment } = render(<Provider><NetworkDetails /></Provider>, {
+    render(<Provider><NetworkDetails /></Provider>, {
       route: { params, path: '/:tenantId/:networkId/:activeTab' }
     })
 
     expect(await screen.findByText('testNetwork')).toBeVisible()
     expect(screen.getAllByRole('tab')).toHaveLength(6)
-
-    expect(asFragment()).toMatchSnapshot()
   })
 
   it('should not have active tab if it does not exist', async () => {
