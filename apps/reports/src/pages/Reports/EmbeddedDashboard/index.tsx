@@ -27,10 +27,12 @@ function Report (props: ReportProps) {
 
   const HOST_NAME = process.env['NODE_ENV'] === 'development' ?
     'https://alto.local.mlisa.io' : window.location.origin
+    // Change the url above for superset local dev (docker-compose) setup
+    // Ex: http://localhost:8088
 
   useEffect(() => {
     const embeddedData = {
-      allowed_domains: [ HOST_NAME ],
+      allowed_domains: [HOST_NAME],
       dashboard_title: embedDashboardName
     }
     embeddedId({ payload: embeddedData }).unwrap().then(uuid => setDashboardEmbeddedId(uuid))

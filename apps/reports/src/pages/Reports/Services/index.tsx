@@ -27,10 +27,14 @@ export const ReportUrlsInfo: { [key: string]: ApiInfo } = {
   getEmbeddedReportToken: {
     method: 'post',
     url: `${BASE_RELATIVE_URL}/api/v1/security/guest_token`
+    // Comment above and enable this proxy for superset local dev (docker-compose) setup
+    // url: '/api/v1/security/guest_token/'
   },
   getEmbeddedDashboardMeta: {
     method: 'post',
     url: `${BASE_RELATIVE_URL}/api/v1/dashboard/embedded`
+    // Comment above and enable this proxy for superset local dev (docker-compose) setup
+    // url: '/api/v1/dashboard/embedded'
   }
 }
 
