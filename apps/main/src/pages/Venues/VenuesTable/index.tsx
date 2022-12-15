@@ -277,7 +277,8 @@ function getApStatusChart (apStatus: Venue['aggregatedApStatus']) {
   ]]
 
   const series = Object.entries(apStatus).reduce((counts, [key, value]) => {
-    const index = apStatusMap.findIndex(s => s.includes(key as ApDeviceStatusEnum))
+    const index = apStatusMap.findIndex(s =>
+      String(s).toLowerCase().includes((key).toLowerCase()))
     counts[index] += value as number
     return counts
   }, [0, 0, 0, 0]).map((data, index) => ({

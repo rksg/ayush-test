@@ -95,7 +95,7 @@ export const getAggregatedList = function (
       let msgMeta = metaList.data.find((d) => d.id === base.id)
       const result = { ...base, ...msgMeta } as Alarm
       const placeholder = '@@'
-      const matches = message.match(new RegExp(`${placeholder}\\w+`, 'g'))
+      const matches = message.match(new RegExp(`${placeholder}\\w+`, 'g'))||[]
       for (const match of matches) {
         const key = match.replace(placeholder, '') as keyof Alarm
         message = message.replace(match, result[key])

@@ -13,6 +13,7 @@ import {
   EventMeta,
   getClientHealthClass,
   Guest,
+  Network,
   onSocketActivityChanged,
   RequestPayload,
   showActivityMessage,
@@ -81,7 +82,9 @@ export const clientApi = baseClientApi.injectEndpoints({
             [
               'RegeneratePass',
               'DisableGuest',
-              'EnableGuest'
+              'EnableGuest',
+              'AddGuest',
+              'DeleteGuest'
             ], () => {
               api.dispatch(clientApi.util.invalidateTags([{ type: 'Guest', id: 'LIST' }]))
             })
@@ -203,6 +206,26 @@ export const clientApi = baseClientApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    addGuestPass: build.mutation<Guest, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.addGuestPass, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Guest', id: 'LIST' }]
+    }),
+    getGuestNetworkList: build.query<TableResult<Network>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const networkListReq = createHttpRequest(CommonUrlsInfo.getVMNetworksList, params)
+        return {
+          ...networkListReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Guest', id: 'LIST' }]
     })
   })
 })
@@ -236,6 +259,9 @@ export const aggregatedClientListData = (clientList: TableResult<ClientList>,
   }
 }
 export const {
+  useGetGuestsListQuery,
+  useAddGuestPassMutation,
+  useLazyGetGuestNetworkListQuery,
   useGetClientDetailsQuery,
   useLazyGetClientDetailsQuery,
   useGetDpskPassphraseByQueryQuery,
@@ -250,6 +276,5 @@ export const {
   useDisableGuestsMutation,
   useGenerateGuestPasswordMutation,
   useGetHistoricalStatisticsReportsQuery,
-  useLazyGetHistoricalStatisticsReportsQuery,
-  useGetGuestsListQuery
+  useLazyGetHistoricalStatisticsReportsQuery
 } = clientApi
