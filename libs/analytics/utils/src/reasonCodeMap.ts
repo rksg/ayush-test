@@ -65,4 +65,4 @@ export function mapCodeToAttempt (code: string, intl: IntlShape) {
 }
 
 export const mapCodeToFailureText = (code: string, intl: IntlShape) =>
-  `${intl.$t(failureCodeTextMap[code as keyof typeof failureCodeTextMap])} Failure`
+  intl.$t(failureCodeTextMap[code as keyof typeof failureCodeTextMap])
