@@ -1,0 +1,6 @@
+# Guest Name - Mandatory - between 1 to 256 characters
+# Mobile Phone - Optional - Make sure to use a valid format including the country code (e.g. +#-###-###-#### / +########### / #-###-###-####/ ###########)
+# Email - Optional
+# Notes - Optional - maximum 180 characters
+
+Guest Name,Mobile Phone,Email,Notes

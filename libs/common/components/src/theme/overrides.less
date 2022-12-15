@@ -169,6 +169,9 @@
   .ant-cascader {
     width: 100%;
 
+    // fixes extra space appearing when clicking on selected items
+    > [aria-live='polite'] { display: none !important; }
+
     &-menu {
       border-right: 1px solid var(--acx-neutrals-20);
 
