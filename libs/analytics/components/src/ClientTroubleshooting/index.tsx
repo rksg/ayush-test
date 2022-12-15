@@ -10,6 +10,7 @@ import { ClientTroubleShootingConfig } from './config'
 import { History }                     from './EventsHistory'
 import { TimeLine }                    from './EventsTimeline'
 import { useClientInfoQuery }          from './services'
+import * as UI                         from './styledComponents'
 
 export type Filters = {
   category?: [];
@@ -75,11 +76,13 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
             </Col>
           )}
           <Col span={24}>
-            <Loader states={[results]}>
-              <TimeLine
-                data={results.data}
-                filters={filters}/>
-            </Loader>
+            <UI.TimelineLoaderWrapper>
+              <Loader states={[results]}>
+                <TimeLine
+                  data={results.data}
+                  filters={filters}/>
+              </Loader>
+            </UI.TimelineLoaderWrapper>
           </Col>
         </Row>
       </Col>

@@ -3,8 +3,6 @@ import styled, { css } from 'styled-components/macro'
 
 import {  PlusSquareOutlined, MinusSquareOutlined } from '@acx-ui/icons'
 
-
-
 const eventIconStyle = css`
   display: flex;
   margin-top: 3px;
@@ -77,11 +75,13 @@ export const StyledPlusSquareOutlined = styled(PlusSquareOutlined)`
    path{
       stroke:var(--acx-accents-blue-50);
     }`
+
 export const StyledMinusSquareOutlined = styled(MinusSquareOutlined)`
    width: 16px;
    path{
       stroke:var(--acx-accents-blue-50);
     }`
+
 export const TimelineTitle = styled.span`
    line-height: 24px;
    font-weight: var(--acx-body-font-weight-bold);
@@ -91,6 +91,7 @@ export const TimelineSubContent = styled.span`
    line-height: 16px;
    font-weight: var(--acx-body-font-weight);
    font-size: 12px;`
+
 export const CollapseBox = styled(Collapse)`
   .ant-collapse-content {
     margin-left : 30px;
@@ -102,9 +103,15 @@ export const CollapseBox = styled(Collapse)`
    .ant-collapse-content-box{
     padding-right: 0px;
    }`
+
 export const TooltipWrapper = styled.div`
     font-size: var(--acx-subtitle-6-font-size);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     `
+
+export const TimelineLoaderWrapper = styled.div`
+  height: 100%;
+  padding-top: 5px;
+`
