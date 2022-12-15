@@ -57,18 +57,8 @@ export interface EdgeDetails {
   model: string
   updatedDate: string
 }
-
-export enum EdgeStatusEnum {
-  NEVER_CONTACTED_CLOUD = '1_01_NeverContactedCloud',
-  INITIALIZING = '1_07_Initializing',
-  NEEDS_CONFIG = '1_10_NeedsConfig',
-  OPERATIONAL = '2_00_Operational',
-  APPLYING_CONFIGURATION = '2_02_ApplyingConfiguration',
-  DISCONNECTED_FROM_CLOUD = '3_04_DisconnectedFromCloud'
-}
-
 export interface EdgePort {
-  portType: EdgePortTypeEnum.UNCONFIG | EdgePortTypeEnum.WAN | EdgePortTypeEnum.LAN
+  portType: EdgePortTypeEnum.UNSPECIFIED | EdgePortTypeEnum.WAN | EdgePortTypeEnum.LAN
 	portId: string
   portName:string
   status: string
