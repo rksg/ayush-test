@@ -5,7 +5,8 @@ import AnalyticsRoutes from './Routes'
 
 jest.mock('@acx-ui/analytics/components', () => ({
   HealthPage: () => <div data-testid='healthPage' />,
-  IncidentListPage: () => <div data-testid='incidentsListPage' />
+  IncidentListPage: () => <div data-testid='incidentsListPage' />,
+  VideoCallQoePage: () => <div data-testid='VideoCallQoePage' />
 }))
 
 jest.mock('./pages/IncidentDetails', () => () => {
@@ -21,6 +22,15 @@ test('should redirect analytics to analytics/incidents', async () => {
   })
   expect(screen.getByTestId('incidentsListPage')).toBeVisible()
 })
+test('should redirect service validation to serviceValidation/videoCallQoe', async () => {
+  render(<Provider><AnalyticsRoutes /></Provider>, {
+    route: {
+      path: '/t/tenantId/serviceValidation',
+      wrapRoutes: false
+    }
+  })
+  expect(screen.getByTestId('VideoCallQoePage')).toBeVisible()
+})
 test('should navigate to analytics/incidents', async () => {
   render(<Provider><AnalyticsRoutes /></Provider>, {
     route: {
@@ -29,6 +39,15 @@ test('should navigate to analytics/incidents', async () => {
     }
   })
   expect(screen.getByTestId('incidentsListPage')).toBeVisible()
+})
+test('should navigate to serviceValidation/videoCallQoe', async () => {
+  render(<Provider><AnalyticsRoutes /></Provider>, {
+    route: {
+      path: '/t/tenantId/serviceValidation/videoCallQoe',
+      wrapRoutes: false
+    }
+  })
+  expect(screen.getByTestId('VideoCallQoePage')).toBeVisible()
 })
 test('should navigate to analytics/recommendations', () => {
   render(<Provider><AnalyticsRoutes /></Provider>, {

@@ -6,14 +6,13 @@ function VideoCallQoePage () {
   const { $t } = useIntl()
   return (
     <PageHeader
+      title={$t({ defaultMessage: 'Video Call QoE' })}
       breadcrumb={[
         {
           text: $t({ defaultMessage: 'Service Validation' }),
           link: '/serviceValidation/videoCallQoe'
         }
       ]}
-      title={$t({ defaultMessage: 'Video Call QoE' })}
-
     />
   )
 }
