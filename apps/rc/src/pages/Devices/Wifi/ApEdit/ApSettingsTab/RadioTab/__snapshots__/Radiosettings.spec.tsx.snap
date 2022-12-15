@@ -1012,7 +1012,9 @@ exports[`RadioSettingsTab should render correctly 1`] = `
                                   <span
                                     id="0_apRadioParams50G_channelBandwidth"
                                     value="AUTO"
-                                  />
+                                  >
+                                    80MHz
+                                  </span>
                                 </div>
                               </div>
                             </div>
@@ -4844,7 +4846,9 @@ exports[`RadioSettingsTab should render correctly with Auto bandwidth 1`] = `
                                   <span
                                     id="0_apRadioParams50G_channelBandwidth"
                                     value="AUTO"
-                                  />
+                                  >
+                                    80MHz
+                                  </span>
                                 </div>
                               </div>
                             </div>
