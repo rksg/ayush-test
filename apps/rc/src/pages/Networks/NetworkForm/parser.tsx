@@ -311,7 +311,7 @@ export function transferDetailToSave (data: NetworkSaveData) {
     description: data.description,
     type: data.type,
     wlan: {
-      ssid: data.ssid || data.name
+      ssid: data.wlan?.ssid || data.name
     }
   }
 }
