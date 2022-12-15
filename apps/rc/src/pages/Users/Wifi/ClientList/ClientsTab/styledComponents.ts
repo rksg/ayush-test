@@ -22,3 +22,15 @@ export const ClientLink = styled(Link)`
     padding: 0;
   }
 `
+
+export const SearchBarDiv = styled.div`
+  width: 400px;
+  display: flex;
+  padding-bottom: 4px;
+  gap: 5px;
+`
+
+export const SearchCountDiv = styled.div`
+  padding-bottom: 16px;
+  display: flex;
+`

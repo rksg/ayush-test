@@ -6,7 +6,7 @@ import { Anchor, Tooltip }                               from '@acx-ui/component
 import { QuestionMarkCircleOutlined }                    from '@acx-ui/icons'
 import { ConnectedClientsTable, HistoricalClientsTable } from '@acx-ui/rc/components'
 
-import { ClientLink, ClientSearchBar } from './styledComponents'
+import { ClientLink, ClientSearchBar, SearchBarDiv, SearchCountDiv } from './styledComponents'
 
 export function ClientsTab () {
   const intl = useIntl()
@@ -20,7 +20,7 @@ export function ClientsTab () {
   }
 
   return <>
-    <div style={{ width: '400px', display: 'flex', paddingBottom: '4px', gap: '5px' }}>
+    <SearchBarDiv>
       <ClientSearchBar
         placeHolder='Search for connected and historical clients...'
         onChange={async (value)=>{
@@ -36,8 +36,8 @@ export function ClientsTab () {
       >
         <QuestionMarkCircleOutlined />
       </Tooltip>
-    </div>
-    <div style={{ paddingBottom: '16px', display: 'flex' }}>
+    </SearchBarDiv>
+    <SearchCountDiv>
       {searchValue.length >= 2 &&
         intl.$t({ defaultMessage: 'Search Results: {connectedClientCount} Connected clients | ' },
           { connectedClientCount })
@@ -50,7 +50,7 @@ export function ClientsTab () {
             title={intl.$t({ defaultMessage: '{historicalClientCount} Historical clients' },
               { historicalClientCount })} />
         </Anchor>}
-    </div>
+    </SearchCountDiv>
     <ConnectedClientsTable
       searchString={searchValue}
       setConnectedClientCount={setConnectedClientCount} />
