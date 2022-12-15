@@ -27,7 +27,7 @@ export const baseClientApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'clientApi',
   refetchOnMountOrArgChange: true,
-  tagTypes: ['Client', 'Guest'],
+  tagTypes: ['Client', 'Guest', 'HistoricalClient'],
   endpoints: () => ({ })
 })
 
@@ -59,7 +59,8 @@ export const clientApi = baseClientApi.injectEndpoints({
         return clientListQuery.data
           ? { data: aggregatedList }
           : { error: clientListQuery.error as FetchBaseQueryError }
-      }
+      },
+      providesTags: [{ type: 'Client', id: 'LIST' }]
     }),
     getGuestsList: build.query<TableResult<Guest>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -191,7 +192,8 @@ export const clientApi = baseClientApi.injectEndpoints({
             })
           }
         }
-      }
+      },
+      providesTags: [{ type: 'HistoricalClient', id: 'LIST' }]
     }),
     getHistoricalStatisticsReports: build.query<ClientStatistic, RequestPayload>({
       query: ({ params, payload }) => {
@@ -241,6 +243,7 @@ export const {
   useGetHistoricalClientListQuery,
   useLazyGetHistoricalClientListQuery,
   useGetClientListQuery,
+  useLazyGetClientListQuery,
   useGetGuestsMutation,
   useDeleteGuestsMutation,
   useEnableGuestsMutation,
