@@ -41,7 +41,7 @@ export default function NetworkDeviceMarker ({
         deviceContext(item.device)
       }
     }
-  }))
+  }), [device])
 
   let className = 'device-container'
 
@@ -55,7 +55,8 @@ export default function NetworkDeviceMarker ({
     className += ' context-Album'
 
 
-  return <div ref={markerContainerRef}><Tooltip title={device?.name}>
+  return <div ref={markerContainerRef}><Tooltip
+    title={device?.name || device?.switchName || device?.serialNumber}>
     <UI.DeviceContainer
       ref={drag}
       className={className}

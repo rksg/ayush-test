@@ -110,7 +110,7 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
 
   useEffect(() => {
     prepareImageTofit(defaultFloorPlan)
-  },[floorPlans, defaultFloorPlan, prepareImageTofit])
+  },[defaultFloorPlan])
 
   const [{ isActive }, drop] = useDrop(
     () => ({

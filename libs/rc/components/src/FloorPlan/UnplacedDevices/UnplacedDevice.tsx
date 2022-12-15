@@ -64,7 +64,7 @@ export default function UnplacedDevice (props: { device: NetworkDevice }) {
                 ? <DeviceOutlined/>
                 : <SignalUp/>
             }
-          </div> {device?.name}
+          </div> {device?.name || device?.switchName || device?.serialNumber}
         </>
       }
       { isDragging && <CustomDragLayer key={device?.id} device={device}/> }
