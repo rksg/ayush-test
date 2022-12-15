@@ -22,6 +22,7 @@ export { VenuesDashboardWidget } from './VenuesDashboardWidget'
 export { WifiSignal } from './WifiSignal'
 export { ConnectedClientsTable } from './ConnectedClientsTable'
 export { StatusLight } from './StatusLight'
+export { PersonaGroupSelect } from './PersonaGroupSelect'
 
 export * from './pipes/apGroupPipes'
 export * from './ExpirationDateSelector'

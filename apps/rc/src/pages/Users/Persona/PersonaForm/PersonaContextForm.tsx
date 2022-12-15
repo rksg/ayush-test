@@ -1,12 +1,13 @@
 import { useEffect } from 'react'
 
-import { Form, FormInstance, Input, InputNumber, Select } from 'antd'
-import TextArea                                           from 'antd/lib/input/TextArea'
-import { useIntl }                                        from 'react-intl'
+import { Form, FormInstance, Input, InputNumber } from 'antd'
+import TextArea                                   from 'antd/lib/input/TextArea'
+import { useIntl }                                from 'react-intl'
 
-import { useGetPersonaGroupListQuery } from '@acx-ui/rc/services'
-import { Persona }                     from '@acx-ui/rc/utils'
-import { validationMessages }          from '@acx-ui/utils'
+import { PersonaGroupSelect }   from '@acx-ui/rc/components'
+import { emailRegExp, Persona } from '@acx-ui/rc/utils'
+import { validationMessages }   from '@acx-ui/utils'
+
 
 
 import { PersonaCreateMode } from './index'
@@ -28,23 +29,6 @@ export function PersonaContextForm (props: {
     }
   }, [defaultValue])
 
-  const personaGroupList = useGetPersonaGroupListQuery({
-    params: { size: '2147483647', page: '0' }
-  })
-
-  const emailRegExp = (value: string) => {
-    // TODO: extract email validation to utils
-    const reg = new RegExp('^[a-zA-Z0-9_!#$%&\'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$')
-
-    if (!value) return Promise.resolve()
-
-    if (value && value.trim() && reg.test(value)) {
-      return Promise.resolve()
-    } else {
-      return Promise.reject('Please enter a valid email address')
-    }
-  }
-
   return (
     <Form
       form={form}
@@ -65,9 +49,8 @@ export function PersonaContextForm (props: {
         hidden={isCreateFromFile}
         name='email'
         label={$t({ defaultMessage: 'Email' })}
-        rules={[{
-          validator: (_, value) => emailRegExp(value)
-        }]}
+        rules={[
+          { validator: (_, value) => emailRegExp(value) }]}
         children={<Input />}
       />
       <Form.Item
@@ -83,12 +66,9 @@ export function PersonaContextForm (props: {
           { required: true }
         ]}
         children={
-          <Select
+          <PersonaGroupSelect
             onChange={onGroupChange}
             disabled={!!defaultValue?.groupId}
-            options={
-              personaGroupList.data?.content
-                .map(group => ({ value: group.id, label: group.name }))}
           />
         }
       />

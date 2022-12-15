@@ -1,9 +1,7 @@
 import React, { useEffect } from 'react'
 
-import { Form }           from 'antd'
-import { FormProvider }   from 'antd/lib/form/context'
-import { FormFinishInfo } from 'rc-field-form/es/FormContext'
-import { useIntl }        from 'react-intl'
+import { Form }    from 'antd'
+import { useIntl } from 'react-intl'
 
 
 import { Button, Drawer, showToast }                                 from '@acx-ui/components'
@@ -37,9 +35,7 @@ export function PersonaGroupDrawer (props: PersonaGroupDrawerProps) {
 
   const triggerSubmit = () => form.submit()
 
-  const onFormFinish = async (name: string, info: FormFinishInfo) => {
-    const contextData: PersonaGroup = info.values as PersonaGroup
-
+  const onFinish = async (contextData: PersonaGroup) => {
     try {
       isEdit
         ? await handleEditPersonaGroup(contextData)
@@ -106,12 +102,11 @@ export function PersonaGroupDrawer (props: PersonaGroupDrawerProps) {
       visible={visible}
       onClose={onClose}
       children={
-        <FormProvider onFormFinish={onFormFinish}>
-          <PersonaGroupForm
-            form={form}
-            defaultValue={data}
-          />
-        </FormProvider>
+        <PersonaGroupForm
+          form={form}
+          defaultValue={data}
+          onFinish={onFinish}
+        />
       }
       footer={footer}
     />

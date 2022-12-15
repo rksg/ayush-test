@@ -81,6 +81,7 @@ function PersonaDetails () {
             value={personaDetailsQuery.data?.dpskPassphrase}
           />
           <Button
+            ghost
             icon={<CopyOutlined />}
             onClick={() =>
               navigator.clipboard.writeText(personaDetailsQuery.data?.dpskPassphrase ?? '')

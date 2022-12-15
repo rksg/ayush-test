@@ -33,6 +33,7 @@ export * from './components'
 export * from './switch'
 export * from './macRegistrationList'
 export * from './persona'
+export * from './property'
 
 export interface CommonResult {
   requestId: string

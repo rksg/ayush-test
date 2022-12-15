@@ -12,10 +12,11 @@ import { PersonaGroup, useNewTableQuery } from '@acx-ui/rc/utils'
 
 export function PersonaGroupForm (props: {
   form: FormInstance,
-  defaultValue?: PersonaGroup
+  defaultValue?: PersonaGroup,
+  onFinish: (values: PersonaGroup) => void
 }) {
   const { $t } = useIntl()
-  const { form, defaultValue } = props
+  const { form, defaultValue, onFinish } = props
 
   const macRegistrationPoolList = useNewTableQuery({
     useQuery: useMacRegListsQuery,
@@ -34,7 +35,9 @@ export function PersonaGroupForm (props: {
       form={form}
       layout={'vertical'}
       name={'personaGroupForm'}
-      initialValues={defaultValue}
+      // FIXME: for demo use case
+      initialValues={{ ...defaultValue, dpskPoolId: 'demo-dpsk-pool-id' }}
+      onFinish={onFinish}
     >
       <Space direction={'vertical'} size={16} style={{ display: 'flex' }}>
         <Row>
