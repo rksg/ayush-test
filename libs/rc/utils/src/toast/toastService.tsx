@@ -125,10 +125,18 @@ const proceedByUsecase = (tx: Transaction, useCase: string[]) => {
   return true
 }
 
-export const showActivityMessage = (tx: Transaction, useCase: string[], callback?: Function) => {
-  if (proceedByUsecase(tx, useCase)) {
-    showTxToast(tx)
-    if (callback) callback()
+// eslint-disable-next-line max-len
+export const showActivityMessage = (tx: Transaction, useCase: string[], callback?: Function, requestId?: string) => {
+  if (requestId) {
+    if (proceedByUsecase(tx, useCase) && tx.requestId === requestId) {
+      showTxToast(tx)
+      if (callback) callback()
+    }
+  } else {
+    if (proceedByUsecase(tx, useCase)) {
+      showTxToast(tx)
+      if (callback) callback()
+    }
   }
 }
 

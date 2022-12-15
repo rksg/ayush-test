@@ -33,16 +33,18 @@ const AccessControlSettingForm = () => {
           initialValue={''}
           children={<Input />}
         />
+      </GridCol>
+      <GridCol col={{ span: 15 }}>
         <Form.Item
           name='accessControlComponent'
-          label={$t({ defaultMessage: 'Access control components' })}
+          label={$t({ defaultMessage: 'Access Control Components' })}
           rules={[
             { required: true }
           ]}
           initialValue={{
             layer2: {
               macAddressList: [],
-              access: ''
+              access: 'ALLOW'
             },
             layer3: {
               ruleList: [],

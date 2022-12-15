@@ -28,8 +28,8 @@ import {
   PortalDetailInstances,
   Portal,
   PortalUrlsInfo,
-  DpskList
-} from '@acx-ui/rc/utils'
+  DpskList, onSocketActivityChanged, showActivityMessage
+} from '@acx-ui/rc/utils';
 import {
   CloudpathServer,
   L2AclPolicy,
@@ -85,6 +85,16 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           ...l2AclPolicyListReq,
           body: payload
         }
+      },
+      providesTags: [{ type: 'Service', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          showActivityMessage(msg, [
+            'AddL2AclPolicy'
+          ], () => {
+            api.dispatch(serviceApi.util.invalidateTags([{ type: 'Service', id: 'LIST' }]))
+          }, requestArgs.requestId as string)
+        })
       }
     }),
     l3AclPolicyList: build.query<TableResult<L3AclPolicy>, RequestPayload>({

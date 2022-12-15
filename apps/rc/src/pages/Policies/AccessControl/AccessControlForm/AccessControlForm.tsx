@@ -7,8 +7,8 @@ import {
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
-import { AccessControlProfile }       from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { AccessControlProfile, getPolicyListRoutePath } from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink }                   from '@acx-ui/react-router-dom'
 
 import AccessControlSettingForm from './AccessControlSettingForm'
 
@@ -19,24 +19,14 @@ type AccessControlFormProps = {
 const AccessControlForm = (props: AccessControlFormProps) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const linkToPolicies = useTenantLink('/policies')
+  const linkToPolicies = useTenantLink(getPolicyListRoutePath(true))
   const { edit } = props
 
   const formRef = useRef<StepsFormInstance<AccessControlProfile>>()
 
-  const handleAddAccessControlPolicy = async () => {
+  const handleAccessControlPolicy = async (isEdit: boolean) => {
     try {
-      navigate(linkToPolicies, { replace: true })
-    } catch(error) {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
-    }
-  }
-
-  const handleUpdateAccessControlPolicy = async () => {
-    try {
+      console.log(isEdit ? 'update access control policy' : 'add access control policy')
       navigate(linkToPolicies, { replace: true })
     } catch(error) {
       showToast({
@@ -53,16 +43,13 @@ const AccessControlForm = (props: AccessControlFormProps) => {
           ? $t({ defaultMessage: 'Edit Access Control Policy' })
           : $t({ defaultMessage: 'Add Access Control Policy' })}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Policies' }), link: '/policies' }
+          { text: $t({ defaultMessage: 'Policies' }), link: getPolicyListRoutePath() }
         ]}
       />
       <StepsForm<AccessControlProfile>
         formRef={formRef}
         onCancel={() => navigate(linkToPolicies)}
-        onFinish={edit
-          ? handleUpdateAccessControlPolicy
-          : handleAddAccessControlPolicy
-        }
+        onFinish={() => handleAccessControlPolicy(edit)}
       >
         <StepsForm.StepForm<AccessControlProfile>
           name='settings'

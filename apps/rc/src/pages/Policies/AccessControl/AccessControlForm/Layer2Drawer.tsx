@@ -1,50 +1,116 @@
-import React, { Dispatch, SetStateAction, useRef, useState } from 'react'
+import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
 
-import { Form, Input, Tag } from 'antd'
-import { useIntl }          from 'react-intl'
+import { Col, Form, Input, Row, Select, Tag } from 'antd'
+import _                                      from 'lodash'
+import { useIntl }                            from 'react-intl'
+import styled, { css }                        from 'styled-components/macro'
 
-import { Button, Drawer, showToast, Table, TableProps } from '@acx-ui/components'
-import { DeleteSolid, DownloadOutlined }                from '@acx-ui/icons'
+import { Button, Drawer, showToast, Table, TableProps }                               from '@acx-ui/components'
+import { DeleteSolid, DownloadOutlined }                                              from '@acx-ui/icons'
+import { useAddL2AclPolicyMutation, useGetL2AclPolicyQuery, useL2AclPolicyListQuery } from '@acx-ui/rc/services'
+import { CommonResult }                                                               from '@acx-ui/rc/utils'
+import { useParams }                                                                  from '@acx-ui/react-router-dom'
 
 const { useWatch } = Form
+const { Option } = Select
+
+export enum AccessStatus {
+  ALLOW = 'ALLOW',
+  BLOCK = 'BLOCK'
+}
 
 export interface Layer2DrawerObject {
-  macAddressList: { macAddress: string }[],
-  access: string
+  l2AclPolicyId: string
 }
 
 export interface Layer2DrawerProps {
+  inputName?: string[]
   fields?: Layer2DrawerObject,
   setFields?: Dispatch<Layer2DrawerObject>
 }
 
+const RuleContentWrapper = styled.div`
+  border: 1px solid var(--acx-neutrals-50);
+  padding: 10px;
+  border-radius: 4px;
+`
+
+const ViewDetailsWrapper = styled.span<{ $policyId: string }>`
+  ${props => props.$policyId
+    ? css`cursor: pointer;`
+    : css`cursor: not-allowed; color: darkgray;`}
+`
+
 const Layer2Drawer = (props: Layer2DrawerProps) => {
   const { $t } = useIntl()
-  const { fields, setFields } = props
+  const params = useParams()
+  const { inputName = ['l2AclPolicyId'] } = props
   const inputRef = useRef(null)
-  const [visible, setVisible] = useState(true)
+  const [visible, setVisible] = useState(false)
   const [ruleDrawerVisible, setRuleDrawerVisible] = useState(false)
   const [addressTags, setAddressTags] = useState([] as string[])
   const [inputValue, setInputValue] = useState('')
+  const [queryPolicyId, setQueryPolicyId] = useState('')
+  const [requestId, setRequestId] = useState('')
   const form = Form.useFormInstance()
   const [contentForm] = Form.useForm()
   const MAC_ADDRESS_LIMIT = 128
 
   const [
-    accessStatus
+    accessStatus,
+    policyName,
+    l2AclPolicyId
   ] = [
-    useWatch<string>(['accessControlComponent', 'layer2', 'access'])
+    useWatch<string>('layer2Access', contentForm),
+    useWatch<string>('policyName', contentForm),
+    useWatch<string>('l2AclPolicyId', contentForm)
   ]
 
-  const initMacAddressList = fields && fields.macAddressList
-    ? fields.macAddressList
-    : form.getFieldValue([
-      'accessControlComponent', 'layer2', 'macAddressList'
-    ])
+  const [ createL2AclPolicy ] = useAddL2AclPolicyMutation()
 
-  const [macAddressList, setMacAddressList] = useState(
-    initMacAddressList ?? [] as { macAddress: string }[]
+  const { layer2SelectOptions } = useL2AclPolicyListQuery({
+    params: { ...params, requestId: requestId },
+    payload: {
+      fields: ['name', 'id'], sortField: 'name',
+      sortOrder: 'ASC', page: 1, pageSize: 10000
+    }
+  }, {
+    selectFromResult ({ data }) {
+      return {
+        layer2SelectOptions: data?.data?.map(
+          item => {
+            return <Option key={item.id}>{item.name}</Option>
+          }) ?? []
+      }
+    }
+  })
+
+  const { data: layer2PolicyInfo } = useGetL2AclPolicyQuery(
+    {
+      params: { ...params, l2AclPolicyId: l2AclPolicyId }
+    },
+    { skip: l2AclPolicyId === '' || l2AclPolicyId === undefined }
   )
+
+  const isViewMode = () => {
+    if (queryPolicyId === '') {
+      return false
+    }
+
+    return !_.isNil(layer2PolicyInfo)
+  }
+
+  useEffect(() => {
+    if (isViewMode() && layer2PolicyInfo) {
+      contentForm.setFieldValue('policyName', layer2PolicyInfo.name)
+      contentForm.setFieldValue('layer2Access', layer2PolicyInfo.access)
+      setMacAddressList(layer2PolicyInfo.macAddresses.map(address => ({
+        macAddress: address
+      })))
+    }
+  }, [layer2PolicyInfo, queryPolicyId])
+
+  const [macAddressList, setMacAddressList] = useState([] as { macAddress: string }[])
 
   const basicColumns: TableProps<{ macAddress: string }>['columns'] = [
     {
@@ -55,11 +121,11 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
       render: (data, row: { macAddress: string }) => {
         return <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <span style={{ lineHeight: '21px' }}>{row.macAddress}</span>
-          <DeleteSolid
+          { _.isNil(layer2PolicyInfo) && <DeleteSolid
             data-testid={row.macAddress}
             height={21}
             onClick={() => handleDelAction(row.macAddress)}
-          />
+          /> }
         </div>
       }
     }
@@ -69,6 +135,12 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
     const updateAddressList = macAddressList
       .filter((address: { macAddress: string }) => address.macAddress !== macAddress)
     setMacAddressList(updateAddressList)
+  }
+
+  const clearFieldsValue = () => {
+    contentForm.setFieldValue('policyName', undefined)
+    contentForm.setFieldValue('layer2Access', undefined)
+    setMacAddressList([])
   }
 
   const handleAddAction = () => {
@@ -99,6 +171,8 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
 
   const handleLayer2DrawerClose = () => {
     setVisible(false)
+    setQueryPolicyId('')
+    clearFieldsValue()
   }
 
   const handleTagClose = (removedTag: string) => {
@@ -107,7 +181,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
   }
 
   const validateAccessStatus = () => {
-    if (accessStatus === '' || fields?.access === '') {
+    if (accessStatus === undefined) {
       return Promise.reject($t({ defaultMessage: 'Please select one of the status' }))
     }
     return Promise.resolve()
@@ -126,8 +200,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
     split.forEach(char => {
       if (event.target.value.toString().includes(char)) {
         inputValue = event.target.value.toString().split(char)[0]
-        setInputValue(inputValue)
-        handleInputConfirm()
+        handleInputConfirm(inputValue)
         inputValue = ''
       }
     })
@@ -135,7 +208,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
     setInputValue(inputValue)
   }
 
-  const handleInputConfirm = () => {
+  const handleInputConfirm = (inputValue: string) => {
     if (!inputValue || !ruleDrawerVisible) return
     if (inputValue && addressTags.indexOf(inputValue) === -1 && macAddressRegExp(inputValue)) {
       setAddressTags([...addressTags, inputValue])
@@ -146,22 +219,73 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
         content: $t({ defaultMessage: 'invalided or existing MAC Address' })
       })
     }
+
     setInputValue('')
   }
 
-  const actions = [{
+  const actions = !isViewMode() ? [{
     label: $t({ defaultMessage: 'Add' }),
     onClick: handleAddAction
   }, {
     label: $t({ defaultMessage: 'Clear list' }),
     onClick: handleClearAction
-  }]
+  }] : []
+
+  const handleL2AclPolicy = async (edit: boolean) => {
+    try {
+      if (!edit) {
+        const l2AclRes: CommonResult = await createL2AclPolicy({
+          params: params,
+          payload: {
+            name: policyName,
+            access: accessStatus,
+            macAddresses: macAddressList.map((item: { macAddress: string }) =>
+              item.macAddress
+            ),
+            description: null
+          }
+        }).unwrap()
+        let responseData = l2AclRes.response as {
+          [key: string]: string
+        }
+        contentForm.setFieldValue('l2AclPolicyId', responseData.id)
+        setQueryPolicyId(responseData.id)
+        setRequestId(l2AclRes.requestId)
+      } else {
+        // await updateRoguePolicy({
+        //   params,
+        //   payload: transformPayload(state, true)
+        // }).unwrap()
+      }
+    } catch(error) {
+      const responseData = error as { status: number, data: { [key: string]: string } }
+      showToast({
+        type: 'error',
+        duration: 10,
+        content: $t({ defaultMessage: 'An error occurred: {error}' }, {
+          error: responseData.data.error
+        })
+      })
+    }
+  }
 
   const content = <>
     <Form layout='horizontal' form={contentForm}>
       <Form.Item
+        name={'policyName'}
+        label={$t({ defaultMessage: 'Policy Name:' })}
+        rules={[
+          { required: true }
+        ]}
+        labelCol={{ span: 5 }}
+        labelAlign={'left'}
+        children={<Input disabled={isViewMode()}/>}
+      />
+      <Form.Item
         name='layer2Access'
         label={$t({ defaultMessage: 'Access' })}
+        labelCol={{ span: 5 }}
+        labelAlign={'left'}
         rules={[
           { validator: () => validateAccessStatus() }
         ]}
@@ -170,19 +294,15 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
         <div style={{ width: '100%' }}>
           <Button
             onClick={() => {
-              form && form.setFieldValue(['accessControlComponent', 'layer2', 'access'], 'ALLOW')
-              if (fields && setFields) {
-                setFields({
-                  ...fields,
-                  access: 'ALLOW'
-                })
-              }
+              contentForm.setFieldValue('layer2Access', AccessStatus.ALLOW)
             }}
+            disabled={isViewMode()}
             style={{
               height: '50px',
               width: '50%',
               borderRadius: '0',
-              backgroundColor: accessStatus === 'ALLOW' || fields?.access === 'ALLOW'
+              // eslint-disable-next-line max-len
+              backgroundColor: accessStatus === AccessStatus.ALLOW
                 ? '#dff0f9'
                 : '#fff'
             }}>
@@ -201,19 +321,15 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
           </Button>
           <Button
             onClick={() => {
-              form && form.setFieldValue(['accessControlComponent', 'layer2', 'access'], 'BLOCK')
-              if (fields && setFields) {
-                setFields({
-                  ...fields,
-                  access: 'BLOCK'
-                })
-              }
+              contentForm.setFieldValue('layer2Access', AccessStatus.BLOCK)
             }}
+            disabled={isViewMode()}
             style={{
               height: '50px',
               width: '50%',
               borderRadius: '0',
-              backgroundColor: accessStatus === 'BLOCK' || fields?.access === 'BLOCK'
+              // eslint-disable-next-line max-len
+              backgroundColor: accessStatus === AccessStatus.BLOCK
                 ? '#dff0f9'
                 : '#fff'
             }}>
@@ -236,7 +352,10 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
     <Form layout='vertical' form={contentForm}>
       <Form.Item
         name='layer2AccessMacAddress'
-        label={`${$t({ defaultMessage: 'MAC Address' })} ( ${macAddressList.length}/128 )`}
+        label={$t(
+          { defaultMessage: 'MAC Address ( {count}/128 )' },
+          { count: macAddressList.length })
+        }
         style={{ flexDirection: 'column' }}
         rules={[
           { validator: () => validateMacAddressCount() }
@@ -270,11 +389,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
     )
   })
 
-  const ruleContent = <div style={{
-    border: '1px solid var(--acx-neutrals-50)',
-    padding: '10px',
-    borderRadius: '4px'
-  }}>
+  const ruleContent = <RuleContentWrapper>
     {tagChild}
     <Input
       ref={inputRef}
@@ -282,22 +397,61 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
       value={inputValue}
       placeholder={$t({ defaultMessage: 'Enter MAC addresses, separated by comma or semicolon' })}
       onChange={handleInputChange}
-      onBlur={handleInputConfirm}
-      onPressEnter={handleInputConfirm}
+      onBlur={() => handleInputConfirm(inputValue)}
+      onPressEnter={() => handleInputConfirm(inputValue)}
     />
-  </div>
+  </RuleContentWrapper>
 
   return (
     <>
-      <span
-        style={{ cursor: 'pointer' }}
-        onClick={() => setVisible(true)}>
-        {$t({ defaultMessage: 'Change' })}
-      </span>
+      <Row justify={'space-between'} style={{ width: '300px' }}>
+        <Col span={12} style={{ textAlign: 'center' }}>
+          <Form form={contentForm}>
+            <Form.Item
+              name={'l2AclPolicyId'}
+              rules={[{
+                message: $t({ defaultMessage: 'Please select Layer 2 profile' })
+              }]}
+              children={
+                <Select
+                  placeholder={$t({ defaultMessage: 'Select profile...' })}
+                  onChange={(value) => {
+                    setQueryPolicyId(value)
+                    // contentForm.setFieldValue('l2AclPolicyId', value)
+                  }}
+                  children={layer2SelectOptions}
+                />
+              }
+            />
+          </Form>
+        </Col>
+        <Col span={6} style={{ textAlign: 'center' }}>
+          <ViewDetailsWrapper $policyId={l2AclPolicyId}
+            onClick={() => {
+              if (l2AclPolicyId) {
+                setVisible(true)
+                setQueryPolicyId(l2AclPolicyId)
+              }
+            }}>
+            {$t({ defaultMessage: 'View Details' })}
+          </ViewDetailsWrapper>
+        </Col>
+        <Col span={5} style={{ textAlign: 'center' }}>
+          <span
+            style={{ cursor: 'pointer' }}
+            onClick={() => {
+              setVisible(true)
+              setQueryPolicyId('')
+            }}>
+            {$t({ defaultMessage: 'Add New' })}
+          </span>
+        </Col>
+      </Row>
       <Drawer
         title={$t({ defaultMessage: 'Layer 2 Settings' })}
         visible={visible}
         onClose={handleLayer2DrawerClose}
+        destroyOnClose={true}
         children={content}
         footer={
           <Drawer.FormFooter
@@ -306,14 +460,8 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
             onSave={async () => {
               try {
                 await contentForm.validateFields()
-                form && form.setFieldValue(['accessControlComponent', 'layer2'], {
-                  macAddressList: macAddressList
-                })
-                if (fields && setFields) {
-                  setFields({
-                    ...fields,
-                    macAddressList: macAddressList
-                  })
+                if (!isViewMode()) {
+                  await handleL2AclPolicy(false)
                 }
                 handleLayer2DrawerClose()
               } catch (error) {

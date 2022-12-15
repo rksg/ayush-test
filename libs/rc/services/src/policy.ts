@@ -13,8 +13,13 @@ import {
   RogueAPDetectionContextType,
   RogueAPDetectionTempType,
   VenueRoguePolicyType,
-  TableResult, onSocketActivityChanged, showActivityMessage
-} from '@acx-ui/rc/utils'
+  TableResult,
+  onSocketActivityChanged,
+  showActivityMessage,
+  AccessControlUrls,
+  CommonResult,
+  l2AclPolicyInfoType
+} from '@acx-ui/rc/utils';
 
 export const basePolicyApi = createApi({
   baseQuery: fetchBaseQuery(),
@@ -39,6 +44,25 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    addL2AclPolicy: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AccessControlUrls.addL2AclPolicy, params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    getL2AclPolicy: build.query<l2AclPolicyInfoType, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(AccessControlUrls.getL2AclPolicy, params, RKS_NEW_UI)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
     }),
     getRoguePolicyList: build.query<RogueAPDetectionTempType[], RequestPayload>({
       query: ({ params }) => {
@@ -104,6 +128,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
 
 export const {
   useAddRoguePolicyMutation,
+  useAddL2AclPolicyMutation,
+  useGetL2AclPolicyQuery,
   useGetRoguePolicyListQuery,
   useUpdateRoguePolicyMutation,
   useRoguePolicyQuery,
