@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import { EdgeUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider  }    from '@acx-ui/store'
@@ -30,6 +31,10 @@ describe('Edge Detail Page Header', () => {
       rest.post(
         EdgeUrlsInfo.getEdgeList.url,
         (req, res, ctx) => res(ctx.json({ data: [currentEdge] }))
+      ),
+      rest.delete(
+        EdgeUrlsInfo.deleteEdge.url,
+        (req, res, ctx) => res(ctx.status(200))
       )
     )
   })
@@ -44,6 +49,7 @@ describe('Edge Detail Page Header', () => {
 
     fireEvent.click(screen.getByText('More Actions'))
   })
+
   it('should redirect to edge general setting page after clicked configure', async () => {
     render(
       <Provider>
@@ -58,5 +64,23 @@ describe('Edge Detail Page Header', () => {
       hash: '',
       search: ''
     })
+  })
+
+  it('should redirect to edge list after deleted edge', async () => {
+    render(
+      <Provider>
+        <EdgeDetailsPageHeader />
+      </Provider>, {
+        route: { params }
+      })
+
+    const dropdownBtn = screen.getByRole('button', { name: 'More Actions' })
+    await userEvent.click(dropdownBtn)
+
+    const deleteBtn = await screen.findByRole('menuitem', { name: 'Delete SmartEdge' })
+    await userEvent.click(deleteBtn)
+
+    await screen.findByText(`Delete "${currentEdge.name}"?`)
+    await userEvent.click(screen.getByRole('button', { name: 'Delete Edge' }))
   })
 })

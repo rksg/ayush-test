@@ -8,9 +8,9 @@ import {
 import moment      from 'moment'
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, RangePicker } from '@acx-ui/components'
-import { ArrowExpand, BulbOutlined }       from '@acx-ui/icons'
-import { useEdgeBySerialNumberQuery }      from '@acx-ui/rc/services'
+import { Button, PageHeader, RangePicker, showActionModal }  from '@acx-ui/components'
+import { ArrowExpand, BulbOutlined }                         from '@acx-ui/icons'
+import { useEdgeBySerialNumberQuery, useDeleteEdgeMutation } from '@acx-ui/rc/services'
 import {
   EdgeStatus,
   EdgeStatusEnum
@@ -43,6 +43,7 @@ export const EdgeDetailsPageHeader = () => {
   const { $t } = useIntl()
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
   const params = useParams()
+  const { serialNumber } = params
 
   const edgeStatusPayload = {
     fields: [
@@ -59,20 +60,45 @@ export const EdgeDetailsPageHeader = () => {
       'venueId',
       'tags'
     ],
-    filters: { serialNumber: [params.serialNumber] } }
+    filters: { serialNumber: [serialNumber] } }
   const { data: currentEdge }
   = useEdgeBySerialNumberQuery({
     params, payload: edgeStatusPayload
   })
 
   const navigate = useNavigate()
-  const basePath = useTenantLink(`/devices/edge/${params.serialNumber}`)
+  const basePath = useTenantLink('')
+  const [ deleteEdge ] = useDeleteEdgeMutation()
 
   const status = currentEdge?.deviceStatus as EdgeStatusEnum
   const currentEdgeOperational = status === EdgeStatusEnum.OPERATIONAL
 
-  const handleMenuClick: MenuProps['onClick'] = () => {
-    if (!params.serialNumber) return
+
+  const handleMenuClick: MenuProps['onClick'] = (e) => {
+    if (!serialNumber) return
+
+    const actionMap = {
+      delete: (_sn: string) => {
+        showActionModal({
+          type: 'confirm',
+          customContent: {
+            action: 'DELETE',
+            entityName: $t({ defaultMessage: 'Edge' }),
+            entityValue: currentEdge?.name,
+            numOfEntities: 1
+          },
+          onOk: () => {
+            deleteEdge({ params: { serialNumber: _sn } })
+              .then(() => {
+                // navigate back to list page
+                navigate(`${basePath.pathname}/devices/edge/list`)
+              })
+          }
+        })
+      }
+    }
+
+    actionMap[e.key as keyof typeof actionMap](serialNumber)
   }
 
   const menu = (
@@ -121,7 +147,7 @@ export const EdgeDetailsPageHeader = () => {
           onClick={() =>
             navigate({
               ...basePath,
-              pathname: `${basePath.pathname}/edit/general-settings`
+              pathname: `${basePath.pathname}/devices/edge/${serialNumber}/edit/general-settings`
             })
           }
         >{$t({ defaultMessage: 'Configure' })}</Button>,

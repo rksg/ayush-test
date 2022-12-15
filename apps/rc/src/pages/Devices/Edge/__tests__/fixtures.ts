@@ -88,6 +88,7 @@ export const mockEdgeData = {
   edgeGroupId: '',
   description: 'This is description rr',
   edgeName: 'edgeName',
+  name: 'edgeName',
   tags: ['tag1', 'tag2']
 }
 
