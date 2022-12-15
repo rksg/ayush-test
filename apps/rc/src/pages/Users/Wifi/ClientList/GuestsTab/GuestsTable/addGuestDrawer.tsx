@@ -281,7 +281,7 @@ export function AddGuestDrawer (props: AddGuestProps) {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const prepareGuestToPrint = async (guest: any, guestNumber: any, expiresDate: any) =>{
+  const prepareGuestToPrint = async (guest: any, guestNumber: any) =>{
     const currentMoment = moment()
     const userProfile = await getUserProfile({ params })
     const currentDate = currentMoment.format(userProfile.data?.dateFormat.toUpperCase())
@@ -292,19 +292,17 @@ export function AddGuestDrawer (props: AddGuestProps) {
     const name = guest.name
     const wifiNetwork = guest.ssid
     let password = ''
-    let guestExpiresDate = expiresDate
+    let guestExpiresDate = moment()
 
     if (guest.password) {
       password = guest.password
-      if (!guestExpiresDate) {
-        if (guest.expirationDate) {
-          guestExpiresDate = guest.expirationDate
+      if (guest.expirationDate) {
+        guestExpiresDate = guest.expirationDate
+      } else {
+        if (guest.expiration.unit === 'Hour') {
+          guestExpiresDate = currentMoment.clone().add('hours', guest.expiration.duration)
         } else {
-          if (guest.expiration.unit === 'Hour') {
-            guestExpiresDate = currentMoment.clone().add('hours', guest.expiration.duration)
-          } else {
-            guestExpiresDate = currentMoment.clone().add('days', guest.expiration.duration)
-          }
+          guestExpiresDate = currentMoment.clone().add('days', guest.expiration.duration)
         }
       }
     }
@@ -323,14 +321,14 @@ export function AddGuestDrawer (props: AddGuestProps) {
     }
   }
 
-  const generateGuestPrint = async (guests: Guest[], useUpdatedTemplate: boolean, expiresDate?: string) =>{
+  const generateGuestPrint = async (guests: Guest[], useUpdatedTemplate: boolean) =>{
     let printTemplate = ''
     for (let i = 0; i < guests.length; i++) {
       /** Insert page break if multi-page */
       if (i > 0) {
         printTemplate = printTemplate + '<div class=\'page-break-before\'>&nbsp;</div>'
       }
-      const guestToPrint = prepareGuestToPrint(guests[i], i, expiresDate)
+      const guestToPrint = prepareGuestToPrint(guests[i], i)
       printTemplate = printTemplate + getGuestPrintTemplate(await guestToPrint, useUpdatedTemplate)
     }
     const pdfGenerator = new PdfGeneratorService()
@@ -350,7 +348,7 @@ export function AddGuestDrawer (props: AddGuestProps) {
     if (printCondition) {
       const networkData = await getNetwork({
         params: { tenantId: params.tenantId, networkId: jsonGuest.response[0].networkId } })
-      const langCode = (networkData?.data && networkData?.data?.guestPortal && networkData?.data?.guestPortal?.guestPage && networkData?.data?.guestPortal?.guestPage.langCode) || ''
+      const langCode = (networkData?.data?.guestPortal?.guestPage?.langCode) || ''
       for (let i = 0; i < guestsArr.length; i++) {
         guestsArr[i].langCode = langCode
       }

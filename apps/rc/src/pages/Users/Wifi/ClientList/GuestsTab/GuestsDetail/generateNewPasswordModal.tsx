@@ -74,23 +74,19 @@ export function GenerateNewPasswordModal (props: {
 
   const handleGuestPassResponse = async (jsonGuest: Guest ) => {
     let printCondition = jsonGuest.deliveryMethods.indexOf('PRINT') !== -1
-    let guest= { ...jsonGuest, langCode: '' }
+    let guest = { ...jsonGuest, langCode: '' }
 
     if (printCondition) {
       const networkData = await getNetwork({
         params: { tenantId: params.tenantId, networkId: jsonGuest.networkId }
       })
-      const langCode = (networkData?.data && networkData?.data?.guestPortal &&
-        networkData?.data?.guestPortal?.guestPage &&
-        networkData?.data?.guestPortal?.guestPage.langCode) || ''
-      guest.langCode = langCode
-      generateGuestPrint(guest, false)
+      guest.langCode = networkData?.data?.guestPortal?.guestPage?.langCode || ''
+      generateGuestPrint(guest)
     }
   }
 
-  const generateGuestPrint = async (guests: Guest,
-    useUpdatedTemplate: boolean, expiresDate?: string) => {
-    const guestToPrint = prepareGuestToPrint(guests, expiresDate)
+  const generateGuestPrint = async (guests: Guest) => {
+    const guestToPrint = prepareGuestToPrint(guests)
     const printTemplate = getGuestPrintTemplate(await guestToPrint)
     const pdfGenerator = new PdfGeneratorService()
     pdfGenerator.generatePrint(printTemplate)
@@ -103,7 +99,7 @@ export function GenerateNewPasswordModal (props: {
     }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const prepareGuestToPrint = async (guest: any, expiresDate: any) =>{
+  const prepareGuestToPrint = async (guest: any) =>{
     const currentMoment = moment()
     const userProfile = await getUserProfile({ params })
     const currentDate = currentMoment.format(userProfile.data?.dateFormat.toUpperCase())
@@ -114,19 +110,17 @@ export function GenerateNewPasswordModal (props: {
     const name = guest.name
     const wifiNetwork = guest.ssid
     let password = ''
-    let guestExpiresDate = expiresDate
+    let guestExpiresDate = moment()
 
     if (guest.password) {
       password = guest.password
-      if (!guestExpiresDate) {
-        if (guest.expirationDate) {
-          guestExpiresDate = guest.expirationDate
+      if (guest.expirationDate) {
+        guestExpiresDate = guest.expirationDate
+      } else {
+        if (guest.expiration.unit === 'Hour') {
+          guestExpiresDate = currentMoment.clone().add('hours', guest.expiration.duration)
         } else {
-          if (guest.expiration.unit === 'Hour') {
-            guestExpiresDate = currentMoment.clone().add('hours', guest.expiration.duration)
-          } else {
-            guestExpiresDate = currentMoment.clone().add('days', guest.expiration.duration)
-          }
+          guestExpiresDate = currentMoment.clone().add('days', guest.expiration.duration)
         }
       }
     }
