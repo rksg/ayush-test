@@ -15,6 +15,7 @@ import DHCPForm from './DHCPForm'
 
 
 const dhcpResponse: DHCPSaveData = {
+  venueIds: [],
   id: '78f92fbf80334e8b83cddd3210db4920',
   serviceName: 'DhcpConfigServiceProfile1',
   dhcpMode: DHCPConfigTypeEnum.MULTIPLE,

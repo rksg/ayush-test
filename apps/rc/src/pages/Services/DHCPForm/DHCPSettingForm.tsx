@@ -14,7 +14,7 @@ const { useWatch } = Form
 export function SettingForm () {
   const intl = useIntl()
 
-  const type = useWatch<DHCPConfigTypeEnum>('dhcpConfig')
+  const type = useWatch<DHCPConfigTypeEnum>('dhcpMode')
 
 
   const types = Object.values(DHCPConfigTypeEnum)

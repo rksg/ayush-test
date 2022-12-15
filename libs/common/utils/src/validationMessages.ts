@@ -127,6 +127,14 @@ export const validationMessages = {
   emailAddress: defineMessage({
     defaultMessage: 'Please enter a valid email address',
     description: 'Validation - email address checks'
+  }),
+  ipRangeInvalid: defineMessage({
+    defaultMessage: 'The End IP address should swap Start IP address',
+    description: 'Validation - IP address range'
+  }),
+  ipRangeExceed: defineMessage({
+    defaultMessage: 'The DHCP pool size should not exceed 1000',
+    description: 'Validation - Cellular IP pool size'
   })
 }
 

@@ -1,120 +1,72 @@
 import { rest } from 'msw'
 
-import { CommonUrlsInfo, DHCPConfigTypeEnum, ServiceTechnology } from '@acx-ui/rc/utils'
-import { Provider }                                              from '@acx-ui/store'
+import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
+import { Provider }           from '@acx-ui/store'
 import {
   mockServer,
   render,
-  screen
+  screen,
+  waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
 import DHCPServiceDetail from '.'
 
 const list = {
-  fields: [
-    'id',
-    'venueName',
-    'aps',
-    'switches',
-    'health',
-    'successfulAllocations',
-    'unsuccessfulAllocations',
-    'droppedPackets',
-    'capacity'
-  ],
-  totalCount: 20,
+  fields: ['name', 'switches', 'id', 'aggregatedApStatus'],
+  totalCount: 3,
   page: 1,
   data: [
-    {
-      id: '1',
-      venue: {
-        id: '7ae27179b7b84de89eb7e56d9b15943d',
-        name: 'Aparna-Venue'
-      },
-      aps: 45,
-      switches: 8,
-      health: 0.7,
-      successfulAllocations: 80,
-      unsuccessfulAllocations: 23,
-      droppedPackets: 93,
-      capacity: 69
-    },
-    {
-      id: 2,
-      venue: {
-        id: '3b11bcaffd6f4f4f9b2805b6fe24bf8b',
-        name: 'bdcPerformanceVenue'
-      },
-      aps: 13,
-      switches: 8,
-      health: 0.95,
-      successfulAllocations: 90,
-      unsuccessfulAllocations: 30,
-      droppedPackets: 90,
-      capacity: 68
-    },
-    {
-      id: 3,
-      venue: {
-        id: 'aac17720c83e475f83ef626d159be9ea',
-        name: 'Govind'
-      },
-      aps: 13,
-      switches: 8,
-      health: 0.3,
-      successfulAllocations: 77,
-      unsuccessfulAllocations: 20,
-      droppedPackets: 55,
-      capacity: 63
-    },
-    {
-      id: 4,
-      venue: {
-        id: 'ecfab902ac80448c9b6cf1e2e80cc035',
-        name: 'Jimmy-Venue'
-      },
-      aps: 13,
-      switches: 8,
-      health: 0.1,
-      successfulAllocations: 77,
-      unsuccessfulAllocations: 20,
-      droppedPackets: 55,
-      capacity: 63
-    }
-  ]
-}
-const detailResult = {
-  id: 1,
-  name: 'test',
-  dhcpPools: [1,2,3,4],
-  tags: [],
-  createType: ServiceTechnology.WIFI,
-  dhcpConfig: DHCPConfigTypeEnum.SIMPLE,
-  venues: []
+    { id: 'e16f5cb9aded49f6acd5891eb8897890', name: 'dfggsrgesr' },
+    { id: '57db532207814948aa61b156e1cf2b9e', name: 'RT Nagar' },
+    { id: '2725fdb455ec4785b1a633039b70b1aa', name: 'test_UK',
+      aggregatedApStatus: { '1_01_NeverContactedCloud': 1 } }]
 }
 
+const detailResult = {
+  venueIds: [
+    'e16f5cb9aded49f6acd5891eb8897890',
+    '57db532207814948aa61b156e1cf2b9e',
+    '2725fdb455ec4785b1a633039b70b1aa'
+  ],
+  dhcpMode: 'EnableOnMultipleAPs',
+  dhcpPools: [
+    {
+      name: 'DhcpServiceProfile#1',
+      vlanId: 1001,
+      subnetAddress: '192.168.1.0',
+      subnetMask: '255.255.255.0',
+      startIpAddress: '192.168.1.1',
+      endIpAddress: '192.168.1.254',
+      leaseTimeHours: 0,
+      leaseTimeMinutes: 30,
+      id: '14eb1818309c434da928410fa2298ea5',
+      description: 'description1'
+    }
+  ],
+  serviceName: 'DhcpConfigServiceProfile1',
+  id: '78f92fbf80334e8b83cddd3210db4920'
+}
 
 describe('DHCP Detail Page', () => {
   let params: { tenantId: string, serviceId: string }
   beforeEach(async () => {
     params = {
-      tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1',
-      serviceId: '373377b0cb6e46ea8982b1c80aabe1fa'
+      tenantId: 'e3d0c24e808d42b1832d47db4c2a7914',
+      serviceId: '78f92fbf80334e8b83cddd3210db4920'
     }
     mockServer.use(
       rest.get(
-        CommonUrlsInfo.getDHCPVenueInstances.url,
-        (req, res, ctx) => res(ctx.json(list))
-      ),
-      rest.get(
         CommonUrlsInfo.getDHCProfileDetail.url,
         (req, res, ctx) => res(ctx.json(detailResult))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVenuesList.url,
+        (req, res, ctx) => res(ctx.json(list))
       )
     )
   })
 
   it('should render detail page', async () => {
-
     render(
       <Provider>
         <DHCPServiceDetail />
@@ -122,9 +74,8 @@ describe('DHCP Detail Page', () => {
         route: { params, path: '/:tenantId/services/dhcp/:serviceId/detail' }
       })
 
-
-    expect(await screen.findByText((`Instances (${list.data.length})`))).toBeInTheDocument()
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect(await screen.findByText(('Number of Pools'))).toBeInTheDocument()
+    expect(await screen.findByText((`Instances (${list.data.length})`))).toBeInTheDocument()
   })
-
 })

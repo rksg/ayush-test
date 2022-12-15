@@ -321,3 +321,22 @@ export function emailRegExp (value: string) {
 }
 
 
+export function countIpRangeSize (startIpAddress: string, endIpAddress: string) {
+  const { $t } = getIntl()
+  const convertIpToLong = (ipAddress: string): number => {
+    const ipArray = ipAddress.split('.').map(ip => parseInt(ip, 10))
+    return ipArray[0] * 16777216 + ipArray[1] * 65536 + ipArray[2] * 256 + ipArray[3]
+  }
+
+  const startLong = convertIpToLong(startIpAddress)
+  const endLong = convertIpToLong(endIpAddress)
+
+  const numIp = endLong - startLong + 1
+
+  if (numIp <= 0) {
+    return Promise.reject($t(validationMessages.ipRangeInvalid))
+  } else if (numIp > 1000) {
+    return Promise.reject($t(validationMessages.ipRangeExceed))
+  }
+  return Promise.resolve()
+}

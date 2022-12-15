@@ -34,6 +34,9 @@ describe('Create DHCP: Pool detail', () => {
     await userEvent.type(screen.getByRole('textbox', { name: 'Subnet Mask' }), '255.255.0.0')
     await userEvent.type(screen.getByTestId('leaseTime'), '24')
     await userEvent.type(screen.getByRole('spinbutton', { name: 'VLAN' }), '30')
+    await userEvent.type(screen.getByRole('textbox', { name: 'Start Host Address' }), '1.1.1.1')
+    await userEvent.type(screen.getByRole('textbox', { name: 'End Host Address' }), '1.1.1.2')
+
 
     const addOptButton = screen.getByRole('button', { name: 'Add option' })
     await userEvent.click(addOptButton)
