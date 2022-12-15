@@ -35,8 +35,6 @@ export function PersonaDrawer (props: PersonaDrawerProps) {
     }
   }, [visible])
 
-  const triggerSubmit = () => form.submit()
-
   const onFormFinish = async (name: string, info: FormFinishInfo) => {
     const contextData: Persona = info.values as Persona
 
@@ -82,24 +80,17 @@ export function PersonaDrawer (props: PersonaDrawerProps) {
     }).unwrap()
   }
 
-  const footer = [
-    <div key={'footer'} style={{ width: '100%', display: 'flex', justifyContent: 'end' }}>
-      <Button key='cancel' onClick={onClose} >
-        { $t({ defaultMessage: 'Cancel' }) }
-      </Button>
-      <Button
-        key='submit'
-        type={'secondary'}
-        onClick={triggerSubmit}
-        loading={addPersonaState.isLoading || updatePersonaState.isLoading}
-      >
-        { isEdit
+  const footer = (
+    <Drawer.FormFooter
+      buttonLabel={{
+        save: isEdit
           ? $t({ defaultMessage: 'Apply' })
           : $t({ defaultMessage: 'Add' })
-        }
-      </Button>
-    </div>
-  ]
+      }}
+      onSave={async () => form.submit()}
+      onCancel={onClose}
+    />
+  )
 
   return (
     <Drawer

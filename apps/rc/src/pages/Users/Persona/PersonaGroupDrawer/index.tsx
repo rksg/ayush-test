@@ -23,8 +23,8 @@ export function PersonaGroupDrawer (props: PersonaGroupDrawerProps) {
   const { $t } = useIntl()
   const [form] = Form.useForm()
   const { isEdit, data, visible, onClose } = props
-  const [addPersonaGroup, addPersonaGroupState] = useAddPersonaGroupMutation()
-  const [updatePersonaGroup, updatePersonaGroupState] = useUpdatePersonaGroupMutation()
+  const [addPersonaGroup] = useAddPersonaGroupMutation()
+  const [updatePersonaGroup] = useUpdatePersonaGroupMutation()
 
   useEffect(() => {
     // make sure that reset the form fields while close the Drawer
@@ -32,8 +32,6 @@ export function PersonaGroupDrawer (props: PersonaGroupDrawerProps) {
       form.resetFields()
     }
   }, [visible])
-
-  const triggerSubmit = () => form.submit()
 
   const onFinish = async (contextData: PersonaGroup) => {
     try {
@@ -72,23 +70,16 @@ export function PersonaGroupDrawer (props: PersonaGroupDrawerProps) {
     return updatePersonaGroup({ params: { groupId: data?.id }, payload: patchData }).unwrap()
   }
 
-  const footer = [
-    <div key={'footer'} style={{ width: '100%', display: 'flex', justifyContent: 'end' }}>
-      <Button key='cancel' onClick={onClose}>
-        { $t({ defaultMessage: 'Cancel' }) }
-      </Button>
-      <Button
-        key='submit'
-        type={'secondary'}
-        onClick={triggerSubmit}
-        loading={addPersonaGroupState.isLoading || updatePersonaGroupState.isLoading}
-      >
-        { isEdit
+  const footer = (
+    <Drawer.FormFooter
+      buttonLabel={{
+        save: isEdit
           ? $t({ defaultMessage: 'Apply' })
-          : $t({ defaultMessage: 'Add' }) }
-      </Button>
-    </div>
-  ]
+          : $t({ defaultMessage: 'Add' })
+      }}
+      onSave={async () => form.submit()}
+      onCancel={onClose}
+    />)
 
   return (
     <Drawer
