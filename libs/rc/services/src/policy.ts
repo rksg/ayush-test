@@ -19,7 +19,7 @@ import {
   AccessControlUrls,
   CommonResult,
   l2AclPolicyInfoType
-} from '@acx-ui/rc/utils';
+} from '@acx-ui/rc/utils'
 
 export const basePolicyApi = createApi({
   baseQuery: fetchBaseQuery(),

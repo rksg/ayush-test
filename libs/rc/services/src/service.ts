@@ -29,7 +29,7 @@ import {
   Portal,
   PortalUrlsInfo,
   DpskList, onSocketActivityChanged, showActivityMessage
-} from '@acx-ui/rc/utils';
+} from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
   L2AclPolicy,

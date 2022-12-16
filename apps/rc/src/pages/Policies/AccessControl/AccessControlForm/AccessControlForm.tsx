@@ -24,17 +24,16 @@ const AccessControlForm = (props: AccessControlFormProps) => {
 
   const formRef = useRef<StepsFormInstance<AccessControlProfile>>()
 
-  const handleAccessControlPolicy = async (isEdit: boolean) => {
-    try {
-      console.log(isEdit ? 'update access control policy' : 'add access control policy')
-      navigate(linkToPolicies, { replace: true })
-    } catch(error) {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
-    }
-  }
+  // const handleAccessControlPolicy = async (isEdit: boolean) => {
+  //   try {
+  //     navigate(linkToPolicies, { replace: true })
+  //   } catch(error) {
+  //     showToast({
+  //       type: 'error',
+  //       content: $t({ defaultMessage: 'An error occurred' })
+  //     })
+  //   }
+  // }
 
   return (
     <>
@@ -49,7 +48,7 @@ const AccessControlForm = (props: AccessControlFormProps) => {
       <StepsForm<AccessControlProfile>
         formRef={formRef}
         onCancel={() => navigate(linkToPolicies)}
-        onFinish={() => handleAccessControlPolicy(edit)}
+        // onFinish={() => handleAccessControlPolicy(edit)}
       >
         <StepsForm.StepForm<AccessControlProfile>
           name='settings'
