@@ -182,9 +182,12 @@ export function NetworkDetailForm () {
               </Tooltip>
             </>}
             rules={[
-              { required: true },
-              { min: 2 },
-              { max: 32 },
+              { required: true,
+                message: intl.$t({ defaultMessage: 'The SSID must be configured.' }) },
+              { min: 2,
+                message: intl.$t({ defaultMessage: 'The SSID must be at least 2 characters' }) },
+              { max: 32,
+                message: intl.$t({ defaultMessage: 'The SSID must be up to 32 characters' }) },
               { validator: (_, value) => ssidValidator(value) }
             ]}
             validateFirst

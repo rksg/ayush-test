@@ -87,12 +87,21 @@ const networkResponse = {
     ssid: 'open',
     enabled: true
   },
+  venues: [{
+    tripleBandEnabled: false,
+    venueId: '16b11938ee934928a796534e2ee47661',
+    vlanPoolId: '0753a360ad9945b88249039ef6734498',
+    dual5gEnabled: false,
+    id: 'cf932d30cdd7492f8737da38a3e7b7af',
+    isAllApGroups: true,
+    networkId: '48477700abd34d14ac18746280d071f5',
+    allApGroupsRadio: 'Both'
+  }],
   type: 'open',
   name: 'open network test',
   description: 'open network test description',
   id: '5d45082c812c45fbb9aab24420f39bf0'
 }
-
 
 describe('NetworkForm', () => {
   beforeEach(() => {
@@ -204,6 +213,67 @@ describe('NetworkForm', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
     expect(await screen.findByRole('heading', { name: /settings/i })).toBeVisible()
+  })
+
+  it('should try ssid validation successfully', async () => {
+    const json = {
+      requestId: '04a97b0b-c3ff-4184-812c-3267029e3f08',
+      response: [{
+        venueId: '908c47ee1cd445838c3bf71d4addccdf',
+        tripleBandEnabled: false,
+        networkId: '573c1d9efc5e4d9eada3f9b8be199186',
+        apGroups: [{
+          apGroupId: '3243f76d6cb04fa7ab18d0e6d17b6f18',
+          radio: 'Both',
+          radioTypes: ['2.4-GHz', '5-GHz'],
+          isDefault: true,
+          validationErrorReachedMaxConnectedNetworksLimit: false,
+          validationErrorSsidAlreadyActivated: false,
+          validationErrorReachedMaxConnectedCaptiveNetworksLimit: false,
+          validationError: false,
+          id: 'b5275fde5b5f4a119665cd3a8bde30e5'
+        }, {
+          apGroupId: '068a4db6f47d418ebbbdbca741253735',
+          radio: 'Both',
+          radioTypes: ['2.4-GHz', '5-GHz'],
+          isDefault: false,
+          apGroupName: 'hhh',
+          validationErrorReachedMaxConnectedNetworksLimit: false,
+          validationErrorSsidAlreadyActivated: true,
+          validationErrorReachedMaxConnectedCaptiveNetworksLimit: false,
+          validationError: false,
+          id: '5aee44348f174c94aeec545e8e7162fb'
+        }],
+        allApGroupsRadio: 'Both',
+        isAllApGroups: false
+      }]
+    }
+
+    mockServer.use(rest.post(
+      CommonUrlsInfo.venueNetworkApGroup.url,
+      (req, res, ctx) => res(ctx.json(json))
+    ))
+
+    const params = {
+      networkId: '5d45082c812c45fbb9aab24420f39bf0'
+      , tenantId: 'tenant-id', action: 'edit'
+    }
+
+    render(<Provider><NetworkForm /></Provider>, {
+      route: { params }
+    })
+
+    await fillInBeforeSettings('open network edit test')
+
+    screen.getByText('Settings')
+    const ssidInput = await screen.findByRole('textbox', { name: /ssid/i })
+    fireEvent.change(ssidInput, { target: { value: 'testSsid222' } })
+    fireEvent.blur(ssidInput)
+    fireEvent.change(ssidInput, { target: { value: '11111111111111111111111111111111111111' } })
+    fireEvent.blur(ssidInput)
+    fireEvent.change(ssidInput, { target: { value: '1' } })
+    fireEvent.blur(ssidInput)
+    expect(await screen.findByRole('alert')).toBeVisible()
   })
 })
 
