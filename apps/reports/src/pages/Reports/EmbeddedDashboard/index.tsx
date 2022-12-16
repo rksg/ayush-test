@@ -1,15 +1,11 @@
-
 import { useEffect, useState } from 'react'
 
 import { Buffer } from 'buffer'
 
 import { embedDashboard } from '@superset-ui/embedded-sdk'
-import moment             from 'moment'
 
-import {
-  Loader
-} from '@acx-ui/components'
-import { useDateFilter } from '@acx-ui/utils'
+import { Loader }                                    from '@acx-ui/components'
+import { useDateFilter, convertDateTimeToSqlFormat } from '@acx-ui/utils'
 
 import { useGuestTokenMutation, useEmbeddedIdMutation } from '../Services'
 
@@ -19,7 +15,6 @@ interface ReportProps {
 
 function Report (props: ReportProps) {
   const { embedDashboardName } = props
-
   const [ guestToken ] = useGuestTokenMutation()
   const [ embeddedId ] = useEmbeddedIdMutation()
   const { startDate, endDate } = useDateFilter()
@@ -39,22 +34,22 @@ function Report (props: ReportProps) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [embedDashboardName])
 
-  const payload = {
+  const guestTokenPayload = {
     user: {},
     resources: [{
       type: 'dashboard',
       id: dashboardEmbeddedId
     }],
     rls: [{
-      clause: `"__time" >= '${moment.utc(startDate).format('YYYY-MM-DD HH:mm:ss')}' AND
-        "__time" < '${moment.utc(endDate).format('YYYY-MM-DD HH:mm:ss')}'`
+      clause: `"__time" >= '${convertDateTimeToSqlFormat(startDate)}' AND
+              "__time" < '${convertDateTimeToSqlFormat(endDate)}'`
     }]
   }
 
   const fetchGuestTokenFromBackend = async () => {
     // eslint-disable-next-line no-console
     console.log('%c[ACX] -> Refreshing guest token for Embedded Report', 'color: cyan')
-    return await guestToken({ payload }).unwrap()
+    return await guestToken({ payload: guestTokenPayload }).unwrap()
   }
 
   /**

@@ -167,7 +167,8 @@ export const dateTimeFormats = {
   hourFormat: 'HH',
   timeFormat: 'HH:mm',
   secondFormat: 'HH:mm:ss',
-  dateTime12hourFormat: 'DD/MM/YYYY hh:mm A'
+  dateTime12hourFormat: 'DD/MM/YYYY hh:mm A',
+  sqlDateTimeFormat: 'YYYY-MM-DD HH:mm:ss'
 } as const
 
 const countFormat: MessageDescriptor = defineMessage({
@@ -214,6 +215,10 @@ export function formatter (
 
 export function convertEpochToRelativeTime (timestamp: number) {
   return moment(new Date().getTime()).diff(moment.unix(timestamp))
+}
+
+export function convertDateTimeToSqlFormat (dateTime: string): string {
+  return moment.utc(dateTime).format(dateTimeFormats.sqlDateTimeFormat)
 }
 
 function isIntlFormat (name: string): name is keyof typeof intlFormats {
