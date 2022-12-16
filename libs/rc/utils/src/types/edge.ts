@@ -1,4 +1,4 @@
-import { EdgePortTypeEnum } from '../models/EdgePortTypeEnum'
+import { EdgePortTypeEnum } from '../models/EdgeEnum'
 
 export interface EdgeGeneralSetting {
   description: string
