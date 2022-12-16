@@ -292,6 +292,15 @@ exports[`NetworkForm should create PSK network with WPA2 successfully 1`] = `
                         </div>
                       </div>
                     </div>
+                    <button
+                      class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 eAazoW"
+                      id="details_differentSSID"
+                      type="button"
+                    >
+                      <span>
+                        Set different SSID
+                      </span>
+                    </button>
                     <div
                       class="ant-form-item"
                     >

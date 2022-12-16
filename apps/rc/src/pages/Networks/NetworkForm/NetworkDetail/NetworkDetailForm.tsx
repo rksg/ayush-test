@@ -1,8 +1,5 @@
 import { useContext, useEffect, useState } from 'react'
 
-import {
-  QuestionCircleOutlined
-} from '@ant-design/icons'
 import { Form, Input, Col, Radio, Row, Space } from 'antd'
 import TextArea                                from 'antd/lib/input/TextArea'
 import _                                       from 'lodash'
@@ -27,16 +24,10 @@ import { RadioDescription }                      from '../styledComponents'
 
 import type { RadioChangeEvent } from 'antd'
 import { format } from 'path'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 const { useWatch } = Form
 
-export const types = [
-  { type: NetworkTypeEnum.PSK, disabled: false },
-  { type: NetworkTypeEnum.DPSK, disabled: true },
-  { type: NetworkTypeEnum.AAA, disabled: false },
-  { type: NetworkTypeEnum.CAPTIVEPORTAL, disabled: true },
-  { type: NetworkTypeEnum.OPEN, disabled: false }
-]
 
 export function NetworkDetailForm () {
   const intl = useIntl()
@@ -129,9 +120,9 @@ export function NetworkDetailForm () {
 
   const types = [
     { type: NetworkTypeEnum.PSK, disabled: false },
-    { type: NetworkTypeEnum.DPSK, disabled: false },
+    { type: NetworkTypeEnum.DPSK, disabled: !useIsSplitOn(Features.SERVICES) },
     { type: NetworkTypeEnum.AAA, disabled: false },
-    { type: NetworkTypeEnum.CAPTIVEPORTAL, disabled: true },
+    { type: NetworkTypeEnum.CAPTIVEPORTAL, disabled: !useIsSplitOn(Features.SERVICES) },
     { type: NetworkTypeEnum.OPEN, disabled: false }
   ]
 
