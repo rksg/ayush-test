@@ -1,0 +1,101 @@
+import { useRef, useEffect, useState } from 'react'
+
+import { useIntl } from 'react-intl'
+
+import {
+  PageHeader, showToast,
+  StepsForm,
+  StepsFormInstance
+} from '@acx-ui/components'
+import { useAaaPolicyQuery, useAddAAAPolicyMutation, useUpdateAAAPolicyMutation } from '@acx-ui/rc/services'
+import {
+  AAAPolicyType,
+  getPolicyListRoutePath
+} from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+
+import AAASettingForm from './AAASettingForm'
+
+type AAAFormProps = {
+  edit: boolean
+}
+
+const AAAForm = (props: AAAFormProps) => {
+  const { $t } = useIntl()
+  const navigate = useNavigate()
+  const linkToPolicies = useTenantLink(getPolicyListRoutePath())
+  const params = useParams()
+  const { edit } = props
+  const formRef = useRef<StepsFormInstance<AAAPolicyType>>()
+  const { data } = useAaaPolicyQuery({ params })
+  const [ createAAAPolicy ] = useAddAAAPolicyMutation()
+
+  const [ updateAAAPolicy ] = useUpdateAAAPolicyMutation()
+  const [saveState, updateSaveState] = useState<AAAPolicyType>({
+    profileName: ''
+  })
+  const updateSaveData = (saveData: Partial<AAAPolicyType>) => {
+    updateSaveState({ ...saveState, ...saveData })
+  }
+  useEffect(() => {
+    if (data) {
+      formRef?.current?.resetFields()
+      formRef?.current?.setFieldsValue(data)
+      updateSaveData(data)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data])
+  const handleAAAPolicy = async (edit: boolean) => {
+    try {
+      if (!edit) {
+        await createAAAPolicy({
+          params,
+          payload: saveState
+        }).unwrap()
+      } else {
+        await updateAAAPolicy({
+          params,
+          payload: saveState
+        }).unwrap()
+      }
+      navigate(linkToPolicies, { replace: true })
+    } catch(error) {
+      showToast({
+        type: 'error',
+        duration: 10,
+        content: $t({ defaultMessage: 'An error occurred' })
+      })
+    }
+  }
+  return (
+    <>
+      <PageHeader
+        title={edit
+          ? $t({ defaultMessage: 'Edit AAA (802.1x) Server' })
+          : $t({ defaultMessage: 'Add AAA (802.1x) Server' })}
+        breadcrumb={[
+          { text: $t({ defaultMessage: 'Policies' }), link: getPolicyListRoutePath() }
+        ]}
+      />
+      <StepsForm<AAAPolicyType>
+        formRef={formRef}
+        onCancel={() => navigate(linkToPolicies)}
+        onFinish={() => handleAAAPolicy(edit)}
+      >
+        <StepsForm.StepForm
+          name='settings'
+          title={$t({ defaultMessage: 'Settings' })}
+          onFinish={async (data) => {
+            delete data.useAs
+            updateSaveData(data)
+            return true
+          }}
+        >
+          <AAASettingForm edit={edit} formRef={formRef} saveState={saveState}/>
+        </StepsForm.StepForm>
+      </StepsForm>
+    </>
+  )
+}
+
+export default AAAForm

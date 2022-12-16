@@ -1,4 +1,5 @@
 export * from './rogueApDetectionPolicy'
+export * from './AAAPolicy'
 
 export enum PolicyType {
   ACCESS_CONTROL = 'Access Control',

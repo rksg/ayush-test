@@ -13,7 +13,7 @@ import {
   RogueAPDetectionContextType,
   RogueAPDetectionTempType,
   VenueRoguePolicyType,
-  TableResult, onSocketActivityChanged, showActivityMessage
+  TableResult, onSocketActivityChanged, showActivityMessage, AAAPolicyType, AaaUrls, AAATempType
 } from '@acx-ui/rc/utils'
 
 export const basePolicyApi = createApi({
@@ -97,6 +97,54 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    addAAAPolicy: build.mutation<AAAPolicyType, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AaaUrls.addAAAPolicy, params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    getAAAPolicyList: build.query<AAATempType[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(AaaUrls.getAAAPolicyList, params, RKS_NEW_UI)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'DETAIL' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          showActivityMessage(msg, [
+            'Add AAA Policy Profile',
+            'Update AAA Policy Profile'
+          ], () => {
+            api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
+          })
+        })
+      }
+    }),
+    aaaPolicy: build.query<AAAPolicyType, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(AaaUrls.getAAAPolicy, params, RKS_NEW_UI)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+    }),
+    updateAAAPolicy: build.mutation<AAAPolicyType, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AaaUrls.updateAAAPolicy, params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
     })
   })
 })
@@ -108,5 +156,9 @@ export const {
   useUpdateRoguePolicyMutation,
   useRoguePolicyQuery,
   useVenueRoguePolicyQuery,
-  usePolicyListQuery
+  usePolicyListQuery,
+  useAddAAAPolicyMutation,
+  useGetAAAPolicyListQuery,
+  useUpdateAAAPolicyMutation,
+  useAaaPolicyQuery
 } = policyApi
