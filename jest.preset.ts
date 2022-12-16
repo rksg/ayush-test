@@ -1,12 +1,20 @@
 process.env.TZ = 'UTC'
 const nxPreset = require('@nrwl/jest/preset')
 
+const esModules = [
+  'react-dnd',
+  'dnd-core',
+  '@react-dnd'
+].join('|')
+
 module.exports = {
   ...nxPreset,
   moduleNameMapper: {
     '^antd/es/(.*)$': `${__dirname}/node_modules/antd/lib/$1`
   },
+  transformIgnorePatterns: [`/node_modules/(?!${esModules})`],
   transform: {
+    [`(${esModules}).+\\.[tj]sx?$`]: ['babel-jest', { presets: ['@nrwl/react/babel'] }],
     '\\.svg$': `${__dirname}/tools/tests/svgrTransformer.js`,
     '\\.(png|jpg|jpeg|webp)$': `${__dirname}/tools/tests/imagerTransformer.js`
   },
