@@ -3,6 +3,8 @@ import { isEqual, includes } from 'lodash'
 
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
+const Netmask = require('netmask').Netmask
+
 export function networkWifiIpRegExp (value: string) {
   const { $t } = getIntl()
   const re = new RegExp('^((22[0-3]|2[0-1][0-9]|1[0-9][0-9]|[1-9][0-9]|[1-9])\\.)((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){2}((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))$')
@@ -321,12 +323,13 @@ export function emailRegExp (value: string) {
 }
 
 
+export const convertIpToLong = (ipAddress: string): number => {
+  const ipArray = ipAddress.split('.').map(ip => parseInt(ip, 10))
+  return ipArray[0] * 16777216 + ipArray[1] * 65536 + ipArray[2] * 256 + ipArray[3]
+}
+
 export function countIpRangeSize (startIpAddress: string, endIpAddress: string) {
   const { $t } = getIntl()
-  const convertIpToLong = (ipAddress: string): number => {
-    const ipArray = ipAddress.split('.').map(ip => parseInt(ip, 10))
-    return ipArray[0] * 16777216 + ipArray[1] * 65536 + ipArray[2] * 256 + ipArray[3]
-  }
 
   const startLong = convertIpToLong(startIpAddress)
   const endLong = convertIpToLong(endIpAddress)
@@ -337,6 +340,23 @@ export function countIpRangeSize (startIpAddress: string, endIpAddress: string) 
     return Promise.reject($t(validationMessages.ipRangeInvalid))
   } else if (numIp > 1000) {
     return Promise.reject($t(validationMessages.ipRangeExceed))
+  }
+  return Promise.resolve()
+}
+
+export function IpInSubnetPool (ipAddress: string, subnetAddress:string, subnetMask:string) {
+  const { $t } = getIntl()
+  const getSubnetInfo = (ipAddress: string, subnetMask: string) => {
+    return new Netmask(ipAddress + '/' + subnetMask)
+  }
+
+  const subnetInfo = getSubnetInfo(subnetAddress, subnetMask)
+  const firstIpLong = convertIpToLong(subnetInfo.first)
+  const lastIpLong = convertIpToLong(subnetInfo.last)
+  const testIpLong = convertIpToLong(ipAddress)
+
+  if (testIpLong < firstIpLong || testIpLong > lastIpLong) {
+    return Promise.reject($t(validationMessages.ipNotInSubnetPool))
   }
   return Promise.resolve()
 }

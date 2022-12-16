@@ -3,10 +3,10 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 
 import { networkApi }      from '@acx-ui/rc/services'
+import { LeaseUnit }       from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import { render, screen }  from '@acx-ui/test-utils'
 
-import { LeaseUnit } from '@acx-ui/rc/utils'
 import { PoolTable } from './PoolTable'
 
 const list = {

@@ -192,7 +192,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     saveOrUpdateDHCP: build.mutation<DHCPSaveData, RequestPayload>({
       query: ({ params, payload }:{ params:Params, payload:DHCPSaveData }) => {
         let dhcpReq
-        if(_.isEmpty(payload.id)){
+        if(_.isEmpty(params.serviceId)){
           dhcpReq = createHttpRequest(CommonUrlsInfo.addDHCPService, params, RKS_NEW_UI)
         }else{
           dhcpReq = createHttpRequest(CommonUrlsInfo.updateDHCPService, params, RKS_NEW_UI)

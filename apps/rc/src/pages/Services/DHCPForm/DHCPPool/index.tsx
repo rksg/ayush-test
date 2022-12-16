@@ -5,9 +5,15 @@ import TextArea                                                      from 'antd/
 import _                                                             from 'lodash'
 import { useIntl }                                                   from 'react-intl'
 
-import { Drawer }                                                                         from '@acx-ui/components'
-import { DHCPPool, LeaseUnit, networkWifiIpRegExp, subnetMaskIpRegExp, countIpRangeSize } from '@acx-ui/rc/utils'
-import { getIntl, validationMessages }                                                    from '@acx-ui/utils'
+import { Drawer }  from '@acx-ui/components'
+import {
+  DHCPPool,
+  LeaseUnit,
+  networkWifiIpRegExp,
+  subnetMaskIpRegExp,
+  countIpRangeSize,
+  IpInSubnetPool } from '@acx-ui/rc/utils'
+import { getIntl, validationMessages } from '@acx-ui/utils'
 
 import { PoolOption } from './PoolOption'
 import { PoolTable }  from './PoolTable'
@@ -148,7 +154,11 @@ export default function DHCPPoolTable ({
           label={$t({ defaultMessage: 'Start Host Address' })}
           rules={[
             { required: true },
-            { validator: (_, value) => networkWifiIpRegExp(value) }
+            { validator: (_, value) => networkWifiIpRegExp(value) },
+            { validator: (_, value) => IpInSubnetPool(
+              value,
+              form.getFieldValue('subnetAddress'),
+              form.getFieldValue('subnetMask')) }
           ]}
           children={<Input />}
         />

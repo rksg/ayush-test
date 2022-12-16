@@ -135,6 +135,10 @@ export const validationMessages = {
   ipRangeExceed: defineMessage({
     defaultMessage: 'The DHCP pool size should not exceed 1000',
     description: 'Validation - Cellular IP pool size'
+  }),
+  ipNotInSubnetPool: defineMessage({
+    defaultMessage: 'IP address is not in the subnet pool',
+    description: 'Validation - Cellular IP pool size'
   })
 }
 

@@ -2,7 +2,6 @@
 import { useState, useEffect } from 'react'
 
 import { Switch }                 from 'antd'
-import _                          from 'lodash'
 import { useIntl, FormattedList } from 'react-intl'
 import { useParams }              from 'react-router-dom'
 

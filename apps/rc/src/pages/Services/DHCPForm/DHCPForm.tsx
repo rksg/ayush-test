@@ -57,11 +57,10 @@ export default function DHCPForm (props: DHCPFormProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data])
 
-  const handleAddOrUpdateDHCP = async (data: DHCPSaveData) => {
+  const handleAddOrUpdateDHCP = async (formData: DHCPSaveData) => {
     try {
-      convertLeashTimeforBackend(data)
-      const payload = editMode ? _.omit(data, 'id') : data
-      await saveOrUpdateDHCP({ params: { tenantId: params.tenantId }, payload }).unwrap()
+      convertLeashTimeforBackend(formData)
+      await saveOrUpdateDHCP({ params, payload: formData }).unwrap()
     } catch {
       showToast({
         type: 'error',
@@ -72,6 +71,8 @@ export default function DHCPForm (props: DHCPFormProps) {
 
   const convertLeashTimeforBackend = (data: DHCPSaveData) => {
     _.each(data.dhcpPools, (pool, index) => {
+      pool.leaseTimeMinutes = 0
+      pool.leaseTimeHours = 0
       if(pool.leaseUnit) pool[pool.leaseUnit] = pool.leaseTime
       data.dhcpPools[index] = _.omit(pool, 'leaseUnit', 'leaseTime')
     })
@@ -87,7 +88,7 @@ export default function DHCPForm (props: DHCPFormProps) {
           { text: $t({ defaultMessage: 'Services' }), link: '/services' }
         ]}
       />
-      <Loader states={[{ isLoading: isLoading || isFormSubmitting, isFetching: isFetching }]}>
+      <Loader states={[{ isLoading: isLoading }]}>
         <StepsForm<DHCPSaveData>
           formRef={formRef}
           editMode={editMode}

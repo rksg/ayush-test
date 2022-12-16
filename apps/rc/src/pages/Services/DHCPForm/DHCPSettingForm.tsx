@@ -24,6 +24,10 @@ export function SettingForm () {
       <Col span={10}>
         <StepsForm.Title>{intl.$t({ defaultMessage: 'Settings' })}</StepsForm.Title>
         <Form.Item
+          name='id'
+          hidden
+        />
+        <Form.Item
           name='serviceName'
           label={intl.$t({ defaultMessage: 'Service Name' })}
           rules={[
@@ -67,6 +71,11 @@ export function SettingForm () {
       <Col span={20}>
         <Form.Item
           name='dhcpPools'
+          rules={[
+            {
+              required: true,
+              message: intl.$t({ defaultMessage: 'Please create DHCP pools' })
+            }]}
           label={intl.$t({ defaultMessage: 'Set DHCP Pools' })}
           children={<DHCPPoolTable />}
         />
