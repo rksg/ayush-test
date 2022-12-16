@@ -7,20 +7,12 @@ import { CloseSymbol } from '@acx-ui/icons'
 import * as UI from './styledComponents'
 
 
-const DetailsRow = ({ label, value }: { label: string, value: string }) => {
-  return <Fragment key={value}>
-    <UI.RowLabel>{label}</UI.RowLabel>
-    <UI.RowValue>{value}</UI.RowValue>
-  </Fragment>
-}
-
 const detailsRowList = ({ fields }: { fields: Array<{ label: string, value: string }> }) => {
   return fields.map((field, index) =>
-    <DetailsRow
-      key={index}
-      label={field.label}
-      value={field.value}
-    />)
+    <Fragment key={index}>
+      <UI.RowLabel>{field.label}</UI.RowLabel>
+      <UI.RowValue>{field.value}</UI.RowValue>
+    </Fragment>)
 }
 
 export const Details = ({ fields, openHandler, extra }: {
