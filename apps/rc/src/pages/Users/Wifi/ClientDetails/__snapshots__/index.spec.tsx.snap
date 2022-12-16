@@ -958,7 +958,7 @@ exports[`ClientDetails should navigate to troubleshooting tab correctly 1`] = `
   />
   <div
     class="ant-row"
-    style="margin: -8px -8px -8px -8px;"
+    style="margin: -8px -8px -8px -8px; flex: 1;"
   >
     <div
       class="ant-col ant-col-18"
@@ -1349,136 +1349,38 @@ exports[`ClientDetails should navigate to troubleshooting tab correctly 1`] = `
       style="padding: 8px 8px 8px 8px;"
     >
       <div
-        class="styledComponents__History-sc-hmshlr-0 fbrcHL"
+        class="styledComponents__Wrapper-sc-1352uh8-0 ilNUvb"
       >
         <div
-          class="styledComponents__HistoryHeader-sc-hmshlr-1 gxxomy"
+          class="styledComponents__FallbackWrapper-sc-1352uh8-1 cUVMCE"
         >
           <span
-            class="styledComponents__HistoryContentTitle-sc-hmshlr-3 kdrcWS"
-          >
-            History
-          </span>
-          <span
-            class="styledComponents__HistoryIcon-sc-hmshlr-4 bpPEdb"
-          >
-            <svg
-              data-testid="ArrowExpand"
-              style="transform: rotate(180deg); cursor: pointer; line-height: 20px;"
-            />
-          </span>
-        </div>
-        <div
-          class="styledComponents__HistoryContent-sc-hmshlr-2 cUGlmL"
-        >
-          <div
-            class="ant-list ant-list-split"
+            aria-label="loader"
+            role="img"
           >
             <div
-              class="ant-spin-nested-loading"
+              aria-busy="true"
+              aria-live="polite"
+              class="ant-spin ant-spin-lg ant-spin-spinning"
             >
-              <div
-                class="ant-spin-container"
+              <span
+                class="ant-spin-dot ant-spin-dot-spin"
               >
-                <ul
-                  class="ant-list-items"
-                >
-                  <li
-                    class="ant-list-item"
-                  >
-                    <div
-                      class="ant-list-item-meta"
-                    >
-                      <div
-                        class="ant-list-item-meta-avatar"
-                      >
-                        <span
-                          class="styledComponents__EventTypeIcon-sc-hmshlr-5 haoSVP"
-                          color="--acx-semantics-green-50"
-                        />
-                      </div>
-                      <div
-                        class="ant-list-item-meta-content"
-                      >
-                        <h4
-                          class="ant-list-item-meta-title"
-                        >
-                          06/07/2022 11:21:48
-                        </h4>
-                        <div
-                          class="ant-list-item-meta-description"
-                        >
-                          Infrastructure (Service availabilty)
-                        </div>
-                      </div>
-                    </div>
-                  </li>
-                  <li
-                    class="ant-list-item"
-                  >
-                    <div
-                      class="ant-list-item-meta"
-                    >
-                      <div
-                        class="ant-list-item-meta-avatar"
-                      >
-                        <span
-                          class="styledComponents__EventTypeIcon-sc-hmshlr-5 wBlry"
-                          color="--acx-neutrals-50"
-                        />
-                      </div>
-                      <div
-                        class="ant-list-item-meta-content"
-                      >
-                        <h4
-                          class="ant-list-item-meta-title"
-                        >
-                          06/07/2022 11:21:48
-                        </h4>
-                        <div
-                          class="ant-list-item-meta-description"
-                        >
-                          Client assiocated (802.11) @ Home_R860 (AA:BB:CC:DD:FF:GG)
-                        </div>
-                      </div>
-                    </div>
-                  </li>
-                  <li
-                    class="ant-list-item"
-                  >
-                    <div
-                      class="ant-list-item-meta"
-                    >
-                      <div
-                        class="ant-list-item-meta-avatar"
-                      >
-                        <span
-                          class="styledComponents__IncidentEvent-sc-hmshlr-6 hEsQOF"
-                          color="--acx-semantics-red-50"
-                        >
-                          P1
-                        </span>
-                      </div>
-                      <div
-                        class="ant-list-item-meta-content"
-                      >
-                        <h4
-                          class="ant-list-item-meta-title"
-                        >
-                          06/07/2022 11:21:48
-                        </h4>
-                        <div
-                          class="ant-list-item-meta-description"
-                        >
-                          Client assiocated (802.11) @ Home_R860 (AA:BB:CC:DD:FF:GG)
-                        </div>
-                      </div>
-                    </div>
-                  </li>
-                </ul>
-              </div>
+                <i
+                  class="ant-spin-dot-item"
+                />
+                <i
+                  class="ant-spin-dot-item"
+                />
+                <i
+                  class="ant-spin-dot-item"
+                />
+                <i
+                  class="ant-spin-dot-item"
+                />
+              </span>
             </div>
-          </div>
+          </span>
         </div>
       </div>
     </div>
@@ -1855,7 +1757,7 @@ exports[`ClientDetails should render correctly 1`] = `
               class="ant-card-body"
             >
               <div
-                class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+                class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
               >
                 <div
                   class="ant-row Grid__GridRow-sc-5irhjd-2"
@@ -2250,7 +2152,7 @@ exports[`ClientDetails should render correctly 1`] = `
             class="ant-card-body"
           >
             <div
-              class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+              class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
             >
               <form
                 class="ant-form ant-form-horizontal styledComponents__Form-sc-75u9lp-3 gatxQg"

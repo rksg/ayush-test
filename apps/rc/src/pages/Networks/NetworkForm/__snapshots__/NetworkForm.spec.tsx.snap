@@ -1053,7 +1053,7 @@ exports[`NetworkForm should create captive portal successfully 1`] = `
                           class="ant-form-item-control-input-content"
                         >
                           <div
-                            class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+                            class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
                           >
                             <div
                               class="styledComponents__FallbackWrapper-sc-1352uh8-1 cUVMCE"
@@ -3192,7 +3192,7 @@ exports[`NetworkForm should create captive portal without redirect url successfu
                           class="ant-form-item-control-input-content"
                         >
                           <div
-                            class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+                            class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
                           >
                             <div
                               class="styledComponents__FallbackWrapper-sc-1352uh8-1 cUVMCE"
@@ -4979,7 +4979,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                           class="ant-form-item-control-input-content"
                         >
                           <div
-                            class="styledComponents__Wrapper-sc-1352uh8-0 bstzEh"
+                            class="styledComponents__Wrapper-sc-1352uh8-0 ilNUvb"
                           >
                             <div
                               class="styledComponents__FallbackWrapper-sc-1352uh8-1 cUVMCE"
