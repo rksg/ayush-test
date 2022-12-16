@@ -15,7 +15,7 @@ export function Report (props: {
 }) {
   const { type, withHeader } = props
   const { $t } = useIntl()
-  const shouldHideBand = ['app'].includes(type)
+  const shouldHideBand = ['app','ap'].includes(type)
   return (
     <>
       { withHeader && <ReportHeader name={$t(reportTypeLabelMapping[type])}
