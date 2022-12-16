@@ -231,7 +231,7 @@ exports[`NetworkFilter renders simple list with bands, triggers onApply with mul
               class="styledComponents__ButtonDiv-sc-jlwno5-1 bPKlWZ"
             >
               <button
-                class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
                 type="button"
               >
                 <span>
@@ -239,7 +239,7 @@ exports[`NetworkFilter renders simple list with bands, triggers onApply with mul
                 </span>
               </button>
               <button
-                class="ant-btn ant-btn-primary ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kkpPZG"
+                class="ant-btn ant-btn-primary ant-btn-sm styledComponents__Button-sc-zk1lj8-0 bxQmA-d"
                 type="button"
               >
                 <span>

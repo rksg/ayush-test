@@ -222,6 +222,46 @@ describe('Network Filter', () => {
     })
   })
 
+  it('should list only venues having APs', async () => {
+    const mockFn = jest.fn()
+    mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
+      data: { network: { hierarchyNode: networkHierarchy } }
+    })
+    mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
+      data: { network: { hierarchyNode: { incidents: mockIncidents } } }
+    })
+    const { asFragment } = render(<Provider><NetworkFilter
+      shouldQuerySwitch
+      showBand={true}
+      onApplyWithBand={mockFn}
+      replaceWithId={true}
+      filterMode={'ap'}
+    /></Provider>)
+    await screen.findByText('Entire Organization')
+    await userEvent.click(screen.getByRole('combobox'))
+    expect(asFragment()).toMatchSnapshot()
+  })
+
+  it('should list only venues having Switches', async () => {
+    const mockFn = jest.fn()
+    mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
+      data: { network: { hierarchyNode: networkHierarchy } }
+    })
+    mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
+      data: { network: { hierarchyNode: { incidents: mockIncidents } } }
+    })
+    const { asFragment } = render(<Provider><NetworkFilter
+      shouldQuerySwitch
+      showBand={true}
+      onApplyWithBand={mockFn}
+      replaceWithId={true}
+      filterMode={'switch'}
+    /></Provider>)
+    await screen.findByText('Entire Organization')
+    await userEvent.click(screen.getByRole('combobox'))
+    expect(asFragment()).toMatchSnapshot()
+  })
+
   it('should select network node and bands with onApplyFn', async () => {
     mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
       data: { network: { hierarchyNode: networkHierarchy } }
