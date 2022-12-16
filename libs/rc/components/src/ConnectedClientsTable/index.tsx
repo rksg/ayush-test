@@ -353,20 +353,22 @@ export const ConnectedClientsTable =
     }
 
     return (
-      <Loader states={[
-        tableQuery
-      ]}>
-        <Subtitle level={4}>
-          {$t({ defaultMessage: 'Connected Clients' })}
-        </Subtitle>
-        <Table
-          columns={getCols(useIntl(), releaseTag, showAllColumns)}
-          dataSource={tableQuery.data?.data}
-          pagination={tableQuery.pagination}
-          onChange={tableQuery.handleTableChange}
-          rowKey='clientMac'
-        />
-      </Loader>
+      <UI.ClientTableDiv>
+        <Loader states={[
+          tableQuery
+        ]}>
+          <Subtitle level={4}>
+            {$t({ defaultMessage: 'Connected Clients' })}
+          </Subtitle>
+          <Table
+            columns={getCols(useIntl(), releaseTag, showAllColumns)}
+            dataSource={tableQuery.data?.data}
+            pagination={tableQuery.pagination}
+            onChange={tableQuery.handleTableChange}
+            rowKey='clientMac'
+          />
+        </Loader>
+      </UI.ClientTableDiv>
     )
   }
 

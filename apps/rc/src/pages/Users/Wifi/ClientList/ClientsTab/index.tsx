@@ -22,7 +22,7 @@ export function ClientsTab () {
   return <>
     <SearchBarDiv>
       <ClientSearchBar
-        placeHolder='Search for connected and historical clients...'
+        placeHolder={intl.$t({ defaultMessage: 'Search for connected and historical clients...' })}
         onChange={async (value)=>{
           if(value.length === 0 || value.length >= 2){
             setSearchValue(value)
