@@ -1,13 +1,12 @@
-import React, { useContext } from 'react'
+import React from 'react'
 
-import { useIntl } from 'react-intl'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
 import { Card, Table, TableProps }             from '@acx-ui/components'
 import { useVenueRoguePolicyQuery }            from '@acx-ui/rc/services'
 import { useTableQuery, VenueRoguePolicyType } from '@acx-ui/rc/utils'
 import { TenantLink }                          from '@acx-ui/react-router-dom'
-
-import { RogueAPDetailContext } from './RogueAPDetectionDetailView'
 
 const defaultPayload = {
   url: '/api/viewmodel/tenant/{tenantId}/venue',
@@ -27,12 +26,13 @@ const defaultPayload = {
   page: 1,
   pageSize: 25,
   filters: {
-    id: [] as string[]
+    'rogueDetection.policyId': [] as string[]
   }
 }
 
 const RogueAPDetectionVenueDetail = () => {
   const { $t } = useIntl()
+  const params = useParams()
   const basicColumns: TableProps<VenueRoguePolicyType>['columns'] = [
     {
       title: $t({ defaultMessage: 'Venue Name' }),
@@ -53,20 +53,17 @@ const RogueAPDetectionVenueDetail = () => {
     {
       title: $t({ defaultMessage: 'Rogue APs' }),
       dataIndex: 'rogueAps',
-      sorter: true,
       key: 'rogueAps',
       render: (row) => row ? Number(row) : 0
     }
   ]
-
-  const { filtersId } = useContext(RogueAPDetailContext)
 
   const tableQuery = useTableQuery({
     useQuery: useVenueRoguePolicyQuery,
     defaultPayload: {
       ...defaultPayload,
       filters: {
-        id: filtersId
+        'rogueDetection.policyId': [params.policyId]
       }
     }
   })
