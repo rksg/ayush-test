@@ -520,3 +520,14 @@ export interface ClientStatistic {
   userTraffic6GBytes: number;
   userTraffic24GBytes: number;
 }
+
+export interface PlmMessageBanner {
+  createdBy: string,
+  createdDate: string,
+  description: string,
+  endTime: string,
+  id: string,
+  startTime: string,
+  tenantType: string,
+  updatedDate: string
+}
