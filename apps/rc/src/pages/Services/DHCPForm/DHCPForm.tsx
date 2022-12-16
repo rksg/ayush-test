@@ -39,13 +39,11 @@ export default function DHCPForm (props: DHCPFormProps) {
 
   const {
     data,
-    isFetching,
     isLoading
   } = useGetDHCPProfileQuery({ params }, { skip: !editMode })
 
   const [
-    saveOrUpdateDHCP,
-    { isLoading: isFormSubmitting }
+    saveOrUpdateDHCP
   ] = useSaveOrUpdateDHCPMutation()
 
 
