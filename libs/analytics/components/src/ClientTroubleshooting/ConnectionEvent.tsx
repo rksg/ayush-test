@@ -13,9 +13,6 @@ import * as UI                                     from './styledComponents'
 const useConnectionDetail = (event: DisplayEvent) => {
   const intl = getIntl()
   const { $t } = intl
-  const isFailure = event.category === FAILURE
-  const isSlow = event.category === SLOW
-  const isDisconnect = event.category === DISCONNECT
   const { mac, apName, ssid, radio, code, ttc, state } = event
 
   const eventDetails = [
@@ -27,35 +24,40 @@ const useConnectionDetail = (event: DisplayEvent) => {
       { radio: radio ? formatter('radioFormat')(radio) : $t({ defaultMessage: 'Unknown' }) }) }
   ]
 
-  if (isFailure) {
-    const failureType = (code)
-      ? mapCodeToFailureText(code, intl)
-      : $t({ defaultMessage: 'Unknown' })
-    eventDetails.push({
-      label: $t({ defaultMessage: 'Failure Type:' }),
-      value: $t({ defaultMessage: '{failureType}' }, { failureType })
-    })
+  switch (event.category) {
+    case FAILURE: {
+      const failureType = (code)
+        ? mapCodeToFailureText(code, intl)
+        : $t({ defaultMessage: 'Unknown' })
+      eventDetails.push({
+        label: $t({ defaultMessage: 'Failure Type:' }),
+        value: $t({ defaultMessage: '{failureType}' }, { failureType })
+      })
 
-    const reason = clientEventDescription(event.event, state)
-    eventDetails.push({
-      label: $t({ defaultMessage: 'Reason:' }),
-      value: $t(reason)
-    })
-  }
+      const reason = clientEventDescription(event.event, state)
+      eventDetails.push({
+        label: $t({ defaultMessage: 'Reason:' }),
+        value: $t(reason)
+      })
+      break
+    }
 
-  if (isSlow) {
-    eventDetails.push({
-      label: $t({ defaultMessage: 'Time to Connect:' }),
-      value: $t({ defaultMessage: '{ttc}' }, { ttc: formatter('durationFormat')(ttc) })
-    })
-  }
+    case SLOW: {
+      eventDetails.push({
+        label: $t({ defaultMessage: 'Time to Connect:' }),
+        value: $t({ defaultMessage: '{ttc}' }, { ttc: formatter('durationFormat')(ttc) })
+      })
+      break
+    }
 
-  if (isDisconnect) {
-    const reason = mapCodeToReason(event.event, intl)
-    eventDetails.push({
-      label: $t({ defaultMessage: 'Reason:' }),
-      value: $t({ defaultMessage: '{reason}' }, { reason })
-    })
+    case DISCONNECT: {
+      const reason = mapCodeToReason(event.event, intl)
+      eventDetails.push({
+        label: $t({ defaultMessage: 'Reason:' }),
+        value: $t({ defaultMessage: '{reason}' }, { reason })
+      })
+      break
+    }
   }
 
   return eventDetails
@@ -65,7 +67,6 @@ export function ConnectionEventPopover ({ children, event }:
   { children?: React.ReactNode, event: DisplayEvent }) {
   const { $t } = useIntl()
   const [open, setOpen] = React.useState(false)
-  const handleOpenChange = (newOpen: boolean) => { setOpen(newOpen) }
   const hide = () => { setOpen(false) }
   const rowData = useConnectionDetail(event)
   const failureExtra: ReactNode = (event.category === 'failure')
@@ -79,7 +80,7 @@ export function ConnectionEventPopover ({ children, event }:
         placement='right'
         getPopupContainer={(triggerNode) => triggerNode}
         visible={open}
-        onVisibleChange={handleOpenChange}
+        onVisibleChange={setOpen}
         arrowPointAtCenter
       >
         {children}
