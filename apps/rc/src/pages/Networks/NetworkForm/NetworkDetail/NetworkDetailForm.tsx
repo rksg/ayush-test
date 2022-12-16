@@ -5,7 +5,7 @@ import TextArea                                from 'antd/lib/input/TextArea'
 import _                                       from 'lodash'
 import { useIntl }                             from 'react-intl'
 
-import { Button, StepsForm, Tooltip }                                  from '@acx-ui/components'
+import { Button, StepsForm, Tooltip, cssStr }                          from '@acx-ui/components'
 import { Features, useIsSplitOn }                                      from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined }                                  from '@acx-ui/icons'
 import { useLazyGetVenueNetworkApGroupQuery, useLazyNetworkListQuery } from '@acx-ui/rc/services'
@@ -154,6 +154,7 @@ export function NetworkDetailForm () {
         <Form.Item noStyle name='differentSSID'>
           <Button
             type='link'
+            style={{ fontSize: cssStr('--acx-body-4-font-size') }}
             onClick={() => {
               setDifferentSSID(!differentSSID)
             }}
