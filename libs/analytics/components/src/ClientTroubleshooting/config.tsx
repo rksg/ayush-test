@@ -61,8 +61,7 @@ export type DisplayEvent = ConnectionEvent & {
   radio: string,
   state: string,
   event: string,
-  category: string,
-  type?: string
+  category: string
 }
 export const eventColorByCategory = {
   [DISCONNECT]: '--acx-neutrals-50',
