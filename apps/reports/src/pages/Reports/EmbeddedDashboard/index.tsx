@@ -27,7 +27,7 @@ function Report (props: ReportProps) {
   const [ embeddedId ] = useEmbeddedIdMutation()
   const { startDate, endDate } = useDateFilter()
   const [dashboardEmbeddedId, setDashboardEmbeddedId] = useState<string | null>(null)
-  const { filterData } = useContext(NetworkFilterWithBandContext)
+  const { filterData, setFilterData } = useContext(NetworkFilterWithBandContext)
   const { paths, bands } = filterData
   const { networkClause, bandClause } = getNetworkFilterRlsClause(paths,bands as Band[])
 
@@ -35,6 +35,8 @@ function Report (props: ReportProps) {
     'https://alto.local.mlisa.io' : window.location.origin
 
   useEffect(() => {
+    // Reset filter context on report change
+    setFilterData({})
     const embeddedData = {
       allowed_domains: [ HOST_NAME ],
       dashboard_title: embedDashboardName
