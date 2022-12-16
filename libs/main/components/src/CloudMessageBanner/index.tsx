@@ -14,7 +14,7 @@ export function CloudMessageBanner () {
 
   const { data } = useGetPlmMessageBannerQuery({ params })
   useEffect(() => {
-    if (data) {
+    if (data && data.description) {
       if (data?.description) setMessageFlag(true)
     }
   }, [data])
@@ -22,17 +22,19 @@ export function CloudMessageBanner () {
   return (
     showMessage ? (<UI.Container>
       <UI.Label>
-        <span style={{ float: 'left', marginRight: '7px' }}>
+        <div
+          style={{ float: 'left', marginRight: '7px' }}>
           <Icon component={UI.InformationIcon}/>
-        </span>
+        </div>
         {data?.description}
-        <span
+        <div
           style={{ float: 'right', cursor: 'pointer' }}
           onClick={() => {
             setMessageFlag(false)
           }}>
-          <Icon component={UI.CloseIcon}/>
-        </span>
+          <Icon
+            component={UI.CloseIcon}/>
+        </div>
       </UI.Label>
     </UI.Container>)
       : null
