@@ -247,6 +247,7 @@ exports[`NetworkForm should create AAA network successfully 1`] = `
                     </h3>
                     <div
                       class="ant-form-item"
+                      style="margin-bottom: 5px;"
                     >
                       <div
                         class="ant-row ant-form-item-row"

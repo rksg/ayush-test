@@ -247,6 +247,7 @@ exports[`NetworkForm should create PSK network with WPA2 successfully 1`] = `
                     </h3>
                     <div
                       class="ant-form-item"
+                      style="margin-bottom: 5px;"
                     >
                       <div
                         class="ant-row ant-form-item-row"

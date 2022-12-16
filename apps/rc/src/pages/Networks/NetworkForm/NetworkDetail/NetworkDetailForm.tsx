@@ -131,6 +131,7 @@ export function NetworkDetailForm () {
         <StepsForm.Title>{intl.$t({ defaultMessage: 'Network Details' })}</StepsForm.Title>
         <Form.Item
           name='name'
+          style={{ marginBottom: '5px' }}
           label={<>
             { intl.$t({ defaultMessage: 'Network Name' }) }
             <Tooltip
