@@ -6,6 +6,7 @@ import _                                       from 'lodash'
 import { useIntl }                             from 'react-intl'
 
 import { Button, StepsForm, Tooltip }                                  from '@acx-ui/components'
+import { Features, useIsSplitOn }                                      from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined }                                  from '@acx-ui/icons'
 import { useLazyGetVenueNetworkApGroupQuery, useLazyNetworkListQuery } from '@acx-ui/rc/services'
 import {
@@ -23,8 +24,6 @@ import NetworkFormContext                        from '../NetworkFormContext'
 import { RadioDescription }                      from '../styledComponents'
 
 import type { RadioChangeEvent } from 'antd'
-import { format } from 'path'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 const { useWatch } = Form
 

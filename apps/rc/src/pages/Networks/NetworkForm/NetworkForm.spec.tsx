@@ -3,6 +3,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                     from '@acx-ui/store'
 import {
@@ -23,7 +24,6 @@ import {
   networkDeepResponse
 } from './__tests__/fixtures'
 import NetworkForm from './NetworkForm'
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
 
 export const dhcpResponse = {
   name: 'DHCP-Guest',
