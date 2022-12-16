@@ -10,24 +10,25 @@ import { getIntl }                                from '@acx-ui/utils'
 
 import DnsServer       from './DnsServer'
 import GeneralSettings from './GeneralSettings'
+import Ports           from './Ports'
 
-const intl = getIntl()
+const { $t } = getIntl()
 
 const tabs = {
   'general-settings': {
-    title: intl.$t({ defaultMessage: 'General Settings' }),
+    title: $t({ defaultMessage: 'General Settings' }),
     content: <GeneralSettings />
   },
   'ports': {
-    title: intl.$t({ defaultMessage: 'Ports' }),
-    content: <>Ports</>
+    title: $t({ defaultMessage: 'Ports' }),
+    content: <Ports />
   },
   'dns': {
-    title: intl.$t({ defaultMessage: 'DNS Server' }),
+    title: $t({ defaultMessage: 'DNS Server' }),
     content: <DnsServer />
   },
   'routes': {
-    title: intl.$t({ defaultMessage: 'Static Routes' }),
+    title: $t({ defaultMessage: 'Static Routes' }),
     content: <>Static Routes</>
   }
 }

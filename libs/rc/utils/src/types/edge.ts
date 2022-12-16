@@ -1,3 +1,5 @@
+import { EdgePortTypeEnum } from '../models'
+
 export interface EdgeSaveData {
   description: string
   edgeGroupId: string
@@ -20,16 +22,20 @@ export interface EdgeViewModel {
   tags: string[]
 }
 
+export interface EdgePortConfig {
+  id: string
+  portType: EdgePortTypeEnum.WAN | EdgePortTypeEnum.LAN | EdgePortTypeEnum.UNSPECIFIED
+  name: string
+  mac: string
+  enabled: boolean
+  ipMode: 'DHCP' | 'STATIC'
+  ip: string
+  subnet: string
+  gateway: string
+  natEnabled: boolean
+}
+
 export interface EdgeDnsServers {
   primary: string
   secondary: string
-}
-
-export enum EdgeStatusEnum {
-  NEVER_CONTACTED_CLOUD = '1_01_NeverContactedCloud',
-  INITIALIZING = '1_07_Initializing',
-  NEEDS_CONFIG = '1_10_NeedsConfig',
-  OPERATIONAL = '2_00_Operational',
-  APPLYING_CONFIGURATION = '2_02_ApplyingConfiguration',
-  DISCONNECTED_FROM_CLOUD = '3_04_DisconnectedFromCloud'
 }
