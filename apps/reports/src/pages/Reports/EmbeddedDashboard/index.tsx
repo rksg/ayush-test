@@ -4,14 +4,13 @@ import { useContext, useEffect, useState } from 'react'
 import { Buffer } from 'buffer'
 
 import { embedDashboard } from '@superset-ui/embedded-sdk'
-import moment             from 'moment'
 
 import { getNetworkFilterRlsClause } from '@acx-ui/analytics/components'
 import {
   Band,
   Loader
 } from '@acx-ui/components'
-import { useDateFilter } from '@acx-ui/utils'
+import { useDateFilter, convertDateTimeToSqlFormat } from '@acx-ui/utils'
 
 import { NetworkFilterWithBandContext }                 from '../../../Routes'
 import { useGuestTokenMutation, useEmbeddedIdMutation } from '../Services'
@@ -22,7 +21,6 @@ interface ReportProps {
 
 function Report (props: ReportProps) {
   const { embedDashboardName } = props
-
   const [ guestToken ] = useGuestTokenMutation()
   const [ embeddedId ] = useEmbeddedIdMutation()
   const { startDate, endDate } = useDateFilter()
@@ -33,37 +31,39 @@ function Report (props: ReportProps) {
 
   const HOST_NAME = process.env['NODE_ENV'] === 'development' ?
     'https://alto.local.mlisa.io' : window.location.origin
+    // Change the url above for superset local dev (docker-compose) setup
+    // Ex: http://localhost:8088
 
   useEffect(() => {
     // Reset filter context on report change
     setFilterData({})
     const embeddedData = {
-      allowed_domains: [ HOST_NAME ],
+      allowed_domains: [HOST_NAME],
       dashboard_title: embedDashboardName
     }
     embeddedId({ payload: embeddedData }).unwrap().then(uuid => setDashboardEmbeddedId(uuid))
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [embedDashboardName])
 
-  const payload = {
+  const guestTokenPayload = {
     user: {},
     resources: [{
       type: 'dashboard',
       id: dashboardEmbeddedId
     }],
     rls: [{
-      clause: `"__time" >= '${moment.utc(startDate).format('YYYY-MM-DD HH:mm:ss')}' AND
-        "__time" < '${moment.utc(endDate).format('YYYY-MM-DD HH:mm:ss')}'
+      clause: `"__time" >= '${convertDateTimeToSqlFormat(startDate)}' AND
+        "__time" < '${convertDateTimeToSqlFormat(endDate)}'
         ${networkClause}
-        ${bandClause}
-        `
+        ${bandClause}`
     }]
   }
 
   const fetchGuestTokenFromBackend = async () => {
     // eslint-disable-next-line no-console
-    console.log('%c[ACX] -> Refreshing guest token for Embedded Report', 'color: cyan')
-    return await guestToken({ payload }).unwrap()
+    console.log('%c[%s][ACX] -> Refreshing guest token for Embedded Report',
+      'color: cyan', new Date().toLocaleString())
+    return await guestToken({ payload: guestTokenPayload }).unwrap()
   }
 
   /**
