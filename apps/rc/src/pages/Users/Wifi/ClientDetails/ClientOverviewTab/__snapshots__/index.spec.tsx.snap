@@ -68,7 +68,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render corr
                       class="ant-card-body"
                     >
                       <div
-                        class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+                        class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
                       >
                         <div
                           class="ant-row Grid__GridRow-sc-5irhjd-2"
@@ -1212,7 +1212,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                       class="ant-card-body"
                     >
                       <div
-                        class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+                        class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
                       >
                         <div
                           class="ant-row Grid__GridRow-sc-5irhjd-2"
@@ -1653,7 +1653,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
               class="ant-card-body"
             >
               <div
-                class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+                class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
               >
                 <form
                   class="ant-form ant-form-horizontal styledComponents__Form-sc-75u9lp-3 gatxQg"
@@ -2566,7 +2566,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                       class="ant-card-body"
                     >
                       <div
-                        class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+                        class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
                       >
                         <div
                           class="ant-row Grid__GridRow-sc-5irhjd-2"
@@ -3982,7 +3982,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                       class="ant-card-body"
                     >
                       <div
-                        class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+                        class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
                       >
                         <div
                           class="ant-row Grid__GridRow-sc-5irhjd-2"
@@ -4423,7 +4423,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
               class="ant-card-body"
             >
               <div
-                class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+                class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
               >
                 <form
                   class="ant-form ant-form-horizontal styledComponents__Form-sc-75u9lp-3 gatxQg"
@@ -5126,7 +5126,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                       class="ant-card-body"
                     >
                       <div
-                        class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+                        class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
                       >
                         <div
                           class="ant-row Grid__GridRow-sc-5irhjd-2"
@@ -6258,7 +6258,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client c
                       class="ant-card-body"
                     >
                       <div
-                        class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+                        class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
                       >
                         <div
                           class="ant-row Grid__GridRow-sc-5irhjd-2"
@@ -6699,7 +6699,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client c
               class="ant-card-body"
             >
               <div
-                class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+                class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
               >
                 <form
                   class="ant-form ant-form-horizontal styledComponents__Form-sc-75u9lp-3 gatxQg"
@@ -7753,7 +7753,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client w
                       class="ant-card-body"
                     >
                       <div
-                        class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+                        class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
                       >
                         <div
                           class="ant-row Grid__GridRow-sc-5irhjd-2"
@@ -9230,7 +9230,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render dpsk cli
                       class="ant-card-body"
                     >
                       <div
-                        class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+                        class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
                       >
                         <div
                           class="ant-row Grid__GridRow-sc-5irhjd-2"
@@ -9671,7 +9671,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render dpsk cli
               class="ant-card-body"
             >
               <div
-                class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+                class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
               >
                 <form
                   class="ant-form ant-form-horizontal styledComponents__Form-sc-75u9lp-3 gatxQg"
@@ -10934,7 +10934,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                       class="ant-card-body"
                     >
                       <div
-                        class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+                        class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
                       >
                         <div
                           class="ant-row Grid__GridRow-sc-5irhjd-2"
@@ -11375,7 +11375,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
               class="ant-card-body"
             >
               <div
-                class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+                class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
               >
                 <form
                   class="ant-form ant-form-horizontal styledComponents__Form-sc-75u9lp-3 gatxQg"
@@ -12701,7 +12701,7 @@ exports[`ClientOverviewTab OverviewWidget should render client info correctly 1`
                       class="ant-card-body"
                     >
                       <div
-                        class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+                        class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
                       >
                         <div
                           class="ant-row Grid__GridRow-sc-5irhjd-2"
@@ -14196,7 +14196,7 @@ exports[`ClientOverviewTab OverviewWidget should render correctly when search pa
                       class="ant-card-body"
                     >
                       <div
-                        class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+                        class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
                       >
                         <div
                           class="ant-row Grid__GridRow-sc-5irhjd-2"
@@ -15340,7 +15340,7 @@ exports[`ClientOverviewTab OverviewWidget should render historical client info c
                       class="ant-card-body"
                     >
                       <div
-                        class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+                        class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
                       >
                         <div
                           class="ant-row Grid__GridRow-sc-5irhjd-2"
@@ -15781,7 +15781,7 @@ exports[`ClientOverviewTab OverviewWidget should render historical client info c
               class="ant-card-body"
             >
               <div
-                class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+                class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
               >
                 <form
                   class="ant-form ant-form-horizontal styledComponents__Form-sc-75u9lp-3 gatxQg"

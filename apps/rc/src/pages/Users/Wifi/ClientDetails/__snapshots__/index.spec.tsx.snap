@@ -1346,7 +1346,7 @@ exports[`ClientDetails should render correctly 1`] = `
                       class="ant-card-body"
                     >
                       <div
-                        class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+                        class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
                       >
                         <div
                           class="ant-row Grid__GridRow-sc-5irhjd-2"
@@ -1787,7 +1787,7 @@ exports[`ClientDetails should render correctly 1`] = `
               class="ant-card-body"
             >
               <div
-                class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+                class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
               >
                 <form
                   class="ant-form ant-form-horizontal styledComponents__Form-sc-75u9lp-3 gatxQg"
