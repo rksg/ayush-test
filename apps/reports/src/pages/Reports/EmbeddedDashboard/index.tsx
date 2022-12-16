@@ -48,7 +48,8 @@ function Report (props: ReportProps) {
 
   const fetchGuestTokenFromBackend = async () => {
     // eslint-disable-next-line no-console
-    console.log('%c[ACX] -> Refreshing guest token for Embedded Report', 'color: cyan')
+    console.log('%c[%s][ACX] -> Refreshing guest token for Embedded Report',
+      'color: cyan', new Date().toLocaleString())
     return await guestToken({ payload: guestTokenPayload }).unwrap()
   }
 
