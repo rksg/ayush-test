@@ -70,9 +70,9 @@ exports[`Venue DHCP Instance should render DHCP instance correctly 1`] = `
                       Service Name
                     </div>
                     <a
-                      href="/t/tenant-id/services/dhcp/serviceProfileId1/detail"
+                      href="/t/tenant-id/services/dhcp/78f92fbf80334e8b83cddd3210db4920/detail"
                     >
-                      service 1
+                      DhcpConfigServiceProfile1
                     </a>
                   </div>
                 </div>
@@ -103,7 +103,7 @@ exports[`Venue DHCP Instance should render DHCP instance correctly 1`] = `
                     >
                       DHCP Configuration
                     </div>
-                    Each APs
+                    Multiple APs
                   </div>
                 </div>
                 <div
@@ -118,7 +118,7 @@ exports[`Venue DHCP Instance should render DHCP instance correctly 1`] = `
                     >
                       DHCP Pools
                     </div>
-                    2
+                    1
                   </div>
                 </div>
                 <div
@@ -224,7 +224,7 @@ exports[`Venue DHCP Instance should render DHCP instance correctly 1`] = `
               />
             </span>
             <span>
-              Pools (2)
+              Pools (1)
             </span>
           </label>
           <label
@@ -243,7 +243,7 @@ exports[`Venue DHCP Instance should render DHCP instance correctly 1`] = `
               />
             </span>
             <span>
-              Lease Table (1 Online)
+              Lease Table (2 Online)
             </span>
           </label>
         </div>
@@ -548,29 +548,31 @@ exports[`Venue DHCP Instance should render DHCP instance correctly 1`] = `
                                 </tr>
                                 <tr
                                   class="ant-table-row ant-table-row-level-0"
-                                  data-row-key="PoolId1"
+                                  data-row-key="407f330356924da2a4255212c1f6d54a"
                                 >
                                   <td
                                     class="ant-table-cell"
                                   >
                                     <a
-                                      href="/t/tenant-id/venues/PoolId1/venue-details/overview"
+                                      href="/t/tenant-id/venues/407f330356924da2a4255212c1f6d54a/venue-details/overview"
                                     >
-                                      dhcp pool 1
+                                      DhcpPool#1
                                     </a>
                                   </td>
                                   <td
                                     class="ant-table-cell"
-                                  />
-                                  <td
-                                    class="ant-table-cell"
                                   >
-                                    255.255.252.0
+                                    192.168.1.1 - 192.168.1.254
                                   </td>
                                   <td
                                     class="ant-table-cell"
                                   >
-                                    22 hours
+                                    255.255.255.0
+                                  </td>
+                                  <td
+                                    class="ant-table-cell"
+                                  >
+                                    30 milliseconds
                                   </td>
                                   <td
                                     class="ant-table-cell"
@@ -601,16 +603,31 @@ exports[`Venue DHCP Instance should render DHCP instance correctly 1`] = `
                                 </tr>
                                 <tr
                                   class="ant-table-row ant-table-row-level-0"
-                                  data-row-key="PoolId2"
+                                  data-row-key="214864919d2c492c8ef745754daf45b8"
                                 >
                                   <td
                                     class="ant-table-cell"
                                   >
                                     <a
-                                      href="/t/tenant-id/venues/PoolId2/venue-details/overview"
+                                      href="/t/tenant-id/venues/214864919d2c492c8ef745754daf45b8/venue-details/overview"
                                     >
-                                      dhcp pool 2
+                                      DhcpPool#2
                                     </a>
+                                  </td>
+                                  <td
+                                    class="ant-table-cell"
+                                  >
+                                    192.168.2.1 - 192.168.2.254
+                                  </td>
+                                  <td
+                                    class="ant-table-cell"
+                                  >
+                                    255.255.255.0
+                                  </td>
+                                  <td
+                                    class="ant-table-cell"
+                                  >
+                                    30 milliseconds
                                   </td>
                                   <td
                                     class="ant-table-cell"
@@ -618,24 +635,62 @@ exports[`Venue DHCP Instance should render DHCP instance correctly 1`] = `
                                   <td
                                     class="ant-table-cell"
                                   >
-                                    255.255.252.0
+                                    <button
+                                      aria-checked="true"
+                                      class="ant-switch ant-switch-checked"
+                                      role="switch"
+                                      type="button"
+                                    >
+                                      <div
+                                        class="ant-switch-handle"
+                                      />
+                                      <span
+                                        class="ant-switch-inner"
+                                      />
+                                    </button>
+                                  </td>
+                                  <td
+                                    class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                    style="position: sticky; right: 0px;"
+                                  />
+                                </tr>
+                                <tr
+                                  class="ant-table-row ant-table-row-level-0"
+                                  data-row-key="bdd840d08fcc426dba174e2224d1eaad"
+                                >
+                                  <td
+                                    class="ant-table-cell"
+                                  >
+                                    <a
+                                      href="/t/tenant-id/venues/bdd840d08fcc426dba174e2224d1eaad/venue-details/overview"
+                                    >
+                                      DhcpPool#3
+                                    </a>
                                   </td>
                                   <td
                                     class="ant-table-cell"
                                   >
-                                    22 hours
+                                    192.168.3.1 - 192.168.3.254
                                   </td>
                                   <td
                                     class="ant-table-cell"
                                   >
-                                    168.195.1.1, 8.8.8.9
+                                    255.255.255.0
                                   </td>
+                                  <td
+                                    class="ant-table-cell"
+                                  >
+                                    30 milliseconds
+                                  </td>
+                                  <td
+                                    class="ant-table-cell"
+                                  />
                                   <td
                                     class="ant-table-cell"
                                   >
                                     <button
-                                      aria-checked="false"
-                                      class="ant-switch"
+                                      aria-checked="true"
+                                      class="ant-switch ant-switch-checked"
                                       role="switch"
                                       type="button"
                                     >

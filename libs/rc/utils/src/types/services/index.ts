@@ -94,24 +94,6 @@ export enum VlanType {
   Pool = 'vlanPool'
 }
 
-export interface VenueDHCPProfile {
-  serviceProfileId: string,
-  enabled: boolean,
-  dhcpServiceAps: DHCPProfileAps[]
-}
 
-export interface DHCPProfileAps {
-  serialNumber: string,
-  role: string
-}
 
-export interface DHCPLeases {
-  hostName: string,
-  ipAddress: string,
-  dhcpPoolId: string,
-  dhcpPoolName: string,
-  macAddress: string,
-  status: string,
-  leaseExpiration: string
-}
 

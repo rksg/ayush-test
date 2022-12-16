@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef } from 'react'
 
 import { Col, Form, Input, InputNumber, Row, Select, Space, Switch } from 'antd'
 import TextArea                                                      from 'antd/lib/input/TextArea'
@@ -68,10 +68,6 @@ export default function DHCPPoolTable ({
     })
     handleChanged()
   }
-
-  const [startIpAddress] = [
-    Form.useWatch('startIpAddress')
-  ]
 
   const onSubmit = (data: DHCPPool) => {
     let id = data.id

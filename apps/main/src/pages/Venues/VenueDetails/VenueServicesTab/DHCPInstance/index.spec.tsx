@@ -22,7 +22,7 @@ describe('Venue DHCP Instance', () => {
       route: { params, path: '/:tenantId/venues/:venueId/venue-details/services' }
     })
 
-    await screen.findByText('service 1')
+    await screen.findByText('DhcpConfigServiceProfile1')
     await userEvent.click(screen.getByRole('button', { name: 'Manage Local Service' }))
 
     expect(asFragment()).toMatchSnapshot()
@@ -40,7 +40,7 @@ describe('Venue DHCP Instance', () => {
     activeButton = await screen.findByText('Confirm')
     fireEvent.click(activeButton)
 
-    await userEvent.click(screen.getByRole('radio', { name: 'Lease Table (1 Online)' }))
+    await userEvent.click(screen.getByRole('radio', { name: 'Lease Table (2 Online)' }))
     jest.setTimeout(100)
   })
 

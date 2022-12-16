@@ -17,9 +17,7 @@ const DHCPInstance = () => {
   const { $t } = useIntl()
   const params = useParams()
 
-  const { data: leasesList } = useVenuesLeasesListQuery({
-    params: { venueId: params.venueId }
-  })
+  const { data: leasesList } = useVenuesLeasesListQuery({ params })
 
   const { data: venueDHCPProfile } = useVenueDHCPProfileQuery({
     params

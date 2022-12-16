@@ -39,21 +39,24 @@ const VenueDHCPForm = (props: {
   const { data: apList } = useApListQuery({ params })
 
   const [gateways, setGateways] = useState<DHCPProfileAps[]>()
-
+  let natGatewayList = _.groupBy(venueDHCPProfile?.dhcpServiceAps, 'role').NatGateway || []
   useEffect(() => {
-    const natGatewayList = _.groupBy(venueDHCPProfile?.dhcpServiceAps, 'role').NatGateway || []
-    setGateways(natGatewayList)
-
-    form.setFieldsValue({
-      enabled: venueDHCPProfile?.enabled,
-      serviceId: dhcpInfo?.id,
-      primaryServerSN: dhcpInfo?.primaryDHCP.serialNumber,
-      backupServerSN: dhcpInfo?.secondaryDHCP.serialNumber,
-      gateways: natGatewayList
-    })
+    const initVal = getInitValue()
+    setGateways(initVal.gateways)
+    form.setFieldsValue(initVal)
   }, [venueDHCPProfile, form, dhcpInfo.id, dhcpInfo.primaryDHCP.serialNumber,
     dhcpInfo.secondaryDHCP.serialNumber])
 
+  const getInitValue = ()=>{
+    const natGatewayList = _.groupBy(venueDHCPProfile?.dhcpServiceAps, 'role').NatGateway || []
+    return {
+      enabled: venueDHCPProfile?.enabled,
+      serviceProfileId: dhcpInfo?.id,
+      primaryServerSN: dhcpInfo?.primaryDHCP.serialNumber,
+      backupServerSN: dhcpInfo?.secondaryDHCP.serialNumber,
+      gateways: natGatewayList
+    }
+  }
 
   const gatewaysList = (gateways && gateways.length>0) ? gateways?.map((item,index)=>{
     const currentVal = form.getFieldsValue().gateways[index]
@@ -122,6 +125,13 @@ const VenueDHCPForm = (props: {
     layout='vertical'
     validateTrigger='onBlur'
     form={form}
+    initialValues={{
+      enabled: venueDHCPProfile?.enabled,
+      serviceProfileId: dhcpInfo?.id,
+      primaryServerSN: dhcpInfo?.primaryDHCP.serialNumber,
+      backupServerSN: dhcpInfo?.secondaryDHCP.serialNumber,
+      gateways: natGatewayList
+    }}
   >
     <StyledForm.Item name='enabled'
       label={$t({ defaultMessage: 'Service State' })}
@@ -134,7 +144,7 @@ const VenueDHCPForm = (props: {
     <StyledForm.Item label={$t({ defaultMessage: 'DHCP service' })}>
       <Space>
         <StyledForm.Item
-          name='serviceId'
+          name='serviceProfileId'
           noStyle
           rules={[{ required: true, message: $t({ defaultMessage: 'Username is required' }) }]}
         >

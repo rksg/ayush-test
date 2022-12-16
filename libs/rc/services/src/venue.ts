@@ -33,6 +33,7 @@ import {
   VenueSwitchConfiguration,
   ConfigurationProfile,
   VenueDHCPProfile,
+  VenueDHCPPoolInst,
   DHCPLeases,
   VenueDefaultRegulatoryChannels,
   VenueDefaultRegulatoryChannelsForm,
@@ -608,13 +609,14 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       providesTags: [{ type: 'Venue', id: 'DHCPProfile' }]
     }),
-    venueActivePools: build.query<string[] | null, RequestPayload>({
+    venueDHCPPools: build.query<VenueDHCPPoolInst[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(CommonUrlsInfo.getVenueActivePools, params)
         return{
           ...req
         }
-      }
+      },
+      providesTags: [{ type: 'Venue', id: 'DHCPProfile' }]
     }),
     venuesLeasesList: build.query<DHCPLeases[], RequestPayload>({
       query: ({ params }) => {
@@ -632,7 +634,17 @@ export const venueApi = baseVenueApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    updateVenueDHCPProfile: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.updateVenueDHCPProfile, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
     })
+
 
   })
 })
@@ -683,9 +695,10 @@ export const {
   useUpdateVenueSwitchSettingMutation,
   useSwitchConfigProfileQuery,
   useVenueDHCPProfileQuery,
-  useVenueActivePoolsQuery,
+  useVenueDHCPPoolsQuery,
   useVenuesLeasesListQuery,
   useActivateDHCPPoolMutation,
+  useUpdateVenueDHCPProfileMutation,
   useVenueDefaultRegulatoryChannelsQuery,
   useGetDefaultRadioCustomizationQuery,
   useGetVenueRadioCustomizationQuery,

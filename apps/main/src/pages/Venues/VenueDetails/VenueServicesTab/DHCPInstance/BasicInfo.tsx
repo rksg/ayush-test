@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
 
-import { Button, Form } from 'antd'
-import _                from 'lodash'
-import { useIntl }      from 'react-intl'
-import { useLocation }  from 'react-router-dom'
+import { Button, Form }           from 'antd'
+import _                          from 'lodash'
+import { useIntl }                from 'react-intl'
+import { useLocation, useParams } from 'react-router-dom'
 
-import { Modal, GridRow, GridCol, Card } from '@acx-ui/components'
-import { TenantLink }                    from '@acx-ui/react-router-dom'
+import { Modal, GridRow, GridCol, Card }     from '@acx-ui/components'
+import { useUpdateVenueDHCPProfileMutation } from '@acx-ui/rc/services'
+import { TenantLink }                        from '@acx-ui/react-router-dom'
 
 import useDHCPInfo   from './hooks/useDHCPInfo'
 import VenueDHCPForm from './VenueDHCPForm'
@@ -15,7 +16,10 @@ export default function BasicInfo () {
   type LocationState = {
     showConfig?: boolean
   }
+  const params = useParams()
   const locationState:LocationState = useLocation().state as LocationState
+
+  const [updateVenueDHCPProfile] = useUpdateVenueDHCPProfileMutation()
 
   const [visible, setVisible] = useState(locationState?.showConfig ? true : false)
   const { $t } = useIntl()
@@ -25,6 +29,40 @@ export default function BasicInfo () {
   const natGateway = _.take(dhcpInfo.gateway, DISPLAY_GATEWAY_MAX_NUM)
 
   const [form] = Form.useForm()
+
+
+  const payloadTransverter = (data:{
+    enabled: boolean;
+    serviceProfileId: string;
+    primaryServerSN: string;
+    backupServerSN: string;
+    gateways:[];
+  })=>{
+    const payload = {
+      enabled: data.enabled,
+      serviceProfileId: data.serviceProfileId,
+      dhcpServiceAps: [{
+        serialNumber: data.primaryServerSN,
+        role: 'PrimaryServer'
+      }]
+    }
+    if(data.backupServerSN){
+      payload.dhcpServiceAps.push({
+        serialNumber: data.backupServerSN,
+        role: 'BackupServer'
+      })
+    }
+    const gateways = data.gateways.map((item:{ serialNumber:string }) => {
+      return {
+        serialNumber: item.serialNumber,
+        role: 'NatGateway'
+      }
+    })
+    if(!_.isEmpty(gateways)){
+      payload.dhcpServiceAps = payload.dhcpServiceAps.concat(gateways)
+    }
+    return payload
+  }
 
   return <>
     <Card type='solid-bg'>
@@ -95,14 +133,14 @@ export default function BasicInfo () {
       okText={$t({ defaultMessage: 'Apply' })}
       width={650}
       onCancel={() => {
-        // const form = formRef as React.MutableRefObject<FormInstance>
         setVisible(false)
-        // form.current.resetFields()
+        form.resetFields()
       }}
-      onOk={() => {
-        // formRef?.current?.getFieldsValue()
-        // form.current.submit()
-        form.getFieldsValue()
+      onOk={async () => {
+        const payload = payloadTransverter(form.getFieldsValue())
+        await updateVenueDHCPProfile({
+          params: { ...params }, payload
+        }).unwrap()
         setVisible(false)
       }}
     >

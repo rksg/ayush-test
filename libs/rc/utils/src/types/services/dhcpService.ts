@@ -58,3 +58,42 @@ export interface DHCPSaveData extends CreateDHCPFormFields {
   id?: string;
   venueIds: string[];
 }
+
+export interface VenueDHCPProfile {
+  serviceProfileId: string,
+  enabled: boolean,
+  dhcpServiceAps: DHCPProfileAps[],
+  wanPortSelectionMode: string,
+}
+
+export interface DHCPProfileAps {
+  serialNumber: string,
+  role: string
+}
+
+export interface DHCPLeases {
+  hostName: string,
+  ipAddress: string,
+  dhcpPoolId: string,
+  dhcpPoolName: string,
+  macAddress: string,
+  status: string,
+  leaseExpiration: string
+}
+export interface VenueDHCPPoolInst {
+  name: string,
+  vlanId: number,
+  subnetAddress: string,
+  subnetMask: string,
+  startIpAddress: string,
+  endIpAddress: string,
+  primaryDnsIp: string,
+  secondaryDnsIp: string,
+  leaseTimeHours: number,
+  leaseTimeMinutes: number,
+  totalIpCount: number,
+  usedIpCount: number
+  active: boolean,
+  id: string,
+
+}

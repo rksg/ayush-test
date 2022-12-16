@@ -274,20 +274,27 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/api/venues/:venueId/dhcpconfigserviceprofilesettings'
   },
   getVenueActivePools: {
-    //Get Venue Active DHCP Pool
+    //Venue Active DhcpPool list
     method: 'get',
-    url: '/api/venues/:venueId/activedhcppools'
+    url: '/api/venues/:venueId/dhcpPools'
   },
   getVenueLeases: {
     //Get Venue Venue Leases data
     method: 'get',
-    url: '/api/venues/:venueId/dhcpConfigServiceProfileLeases'
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/dhcpPoolLease'
+    // url: '/api/venues/:venueId/dhcpConfigServiceProfileLeases'
   },
   activeVenueDHCPPool: {
     //Get Venue Active DHCP Pool
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/venues/:venueId/dhcppools/:dhcppoolId'
   },
+  updateVenueDHCPProfile: {
+    //Setup Venue DHCP Service Profile
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/dhcpConfigServiceProfile'
+  },
+
   getApDetailHeader: {
     method: 'get',
     url: '/api/viewmodel/tenant/:tenantId/ap/:serialNumber/detailheader'
