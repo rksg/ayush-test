@@ -85,6 +85,7 @@ type ConnectedNetworkFilterProps = {
     showBand?: boolean,
     multiple?: boolean,
     replaceWithId?:boolean,
+    filterMode?: 'ap' | 'switch' | 'both'
     onApplyWithBand?: ({ paths, bands }:{ paths:NetworkPath[],bands?:CheckboxValueType[] }) => void
    }
 const getSeverityFromIncidents = (
@@ -143,11 +144,23 @@ const getFilterData = (
   data: Child[],
   $t: CallableFunction,
   nodesWithSeverities: VenuesWithSeverityNodes,
+  filterMode:string,
   replaceWithId?: boolean
 ): Option[] => {
   const venues: { [key: string]: Option } = {}
   for (const { id, name, path, aps, switches } of data) {
-    if (!venues[name]) {
+    const shouldPushVenue = ()=>{
+      if(filterMode==='both')
+        return true
+      if(filterMode === 'ap' && aps?.length)
+        return true
+      if(filterMode === 'switch' && switches?.length)
+        return true
+
+      return false
+    }
+
+    if (shouldPushVenue() && !venues[name]) {
       venues[name] = {
         label: (
           <LabelWithSeverityCicle
@@ -165,7 +178,7 @@ const getFilterData = (
       }
     }
     const venue = venues[name]
-    if (aps?.length && venue.children) {
+    if (venue && aps?.length && venue.children && ['ap','both'].includes(filterMode)) {
       venue.children.push({
         label: (
           <UI.NonSelectableItem key={name}>
@@ -198,7 +211,7 @@ const getFilterData = (
         })
       })
     }
-    if (switches?.length && venue.children) {
+    if (venue && switches?.length && venue.children && ['switch','both'].includes(filterMode)) {
       venue.children.push({
         label: (
           <UI.NonSelectableItem key={name}>
@@ -264,6 +277,7 @@ function ConnectedNetworkFilter (
   { shouldQuerySwitch,
     withIncidents,
     showBand,
+    filterMode='both',
     multiple,
     replaceWithId,
     onApplyWithBand } : ConnectedNetworkFilterProps
@@ -288,7 +302,8 @@ function ConnectedNetworkFilter (
   const queryResults = useNetworkFilterQuery(omit(networkFilter, 'path', 'filter'), {
     selectFromResult: ({ data, ...rest }) => ({
       data: data ?
-        getFilterData(data, $t, incidentsList.data as VenuesWithSeverityNodes, replaceWithId) : [],
+        getFilterData(data, $t, incidentsList.data as VenuesWithSeverityNodes,
+          filterMode, replaceWithId) : [],
       ...rest
     })
   })

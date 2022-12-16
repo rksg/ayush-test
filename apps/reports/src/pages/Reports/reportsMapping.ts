@@ -47,7 +47,7 @@ export const reportTypeDataStudioMapping: Record<ReportType, string> = {
 export const reportTypeModeMapping: Record<ReportType, FilterMode> = {
   [ReportType.OVERVIEW]: 'both',
   [ReportType.NETWORK]: 'both',
-  [ReportType.APPLICATION]: 'both',
+  [ReportType.APPLICATION]: 'ap',
   [ReportType.CLIENT]: 'ap',
   [ReportType.ACCESS_POINT]: 'ap',
   [ReportType.SWITCH]: 'switch',

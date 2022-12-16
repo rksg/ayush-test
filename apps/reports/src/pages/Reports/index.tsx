@@ -15,10 +15,12 @@ export function Report (props: {
 }) {
   const { type, withHeader } = props
   const { $t } = useIntl()
+  const shouldHideBand = ['app'].includes(type)
   return (
     <>
       { withHeader && <ReportHeader name={$t(reportTypeLabelMapping[type])}
-        mode={reportTypeModeMapping[type]}/> }
+        mode={reportTypeModeMapping[type]}
+        shouldHideBand={shouldHideBand}/> }
       <EmbeddedDashboard embedDashboardName={reportTypeDataStudioMapping[type]} />
     </>
   )
