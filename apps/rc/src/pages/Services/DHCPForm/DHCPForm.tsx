@@ -41,7 +41,7 @@ export default function DHCPForm (props: DHCPFormProps) {
     data,
     isFetching,
     isLoading
-  } = useGetDHCPProfileQuery({ params })
+  } = useGetDHCPProfileQuery({ params }, { skip: !editMode })
 
   const [
     saveOrUpdateDHCP,

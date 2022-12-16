@@ -131,14 +131,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/service/:serviceId'
   },
-  addDHCPService: {
-    method: 'post',
-    url: '/dhcpConfigServiceProfiles'
-  },
-  updateDHCPService: {
-    method: 'put',
-    url: '/dhcpConfigServiceProfiles/:serviceId'
-  },
   getVenueFloorplans: {
     method: 'get',
     url: '/api/tenant/:tenantId/venue/:venueId/floor-plan'
@@ -259,14 +251,27 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/api/tenant/:tenantId/user-profile'
   },
+  addDHCPService: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/dhcpConfigServiceProfile'
+  },
+  updateDHCPService: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/wifi/dhcpConfigServiceProfile/:serviceId'
+  },
   getDHCProfileDetail: {
     method: 'get',
-    url: '/api/dhcpConfigServiceProfiles/:serviceId'
+    url: '/api/tenant/:tenantId/wifi/dhcpConfigServiceProfile/:serviceId'
   },
   getDHCPProfiles: {
     //Get DHCP Profiles LIST
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/dhcpconfigserviceprofiles'
+  },
+  getVenueDHCPServiceProfile: {
+    //Retrieve Venue DHCP Service Profile Settings
+    method: 'get',
+    url: '/api/venues/:venueId/dhcpconfigserviceprofilesettings'
   },
   getVenueActivePools: {
     //Get Venue Active DHCP Pool
