@@ -1,12 +1,15 @@
 import '@testing-library/jest-dom'
 
-import { screen } from '@testing-library/react'
+import { screen }       from '@testing-library/react'
+import { DndProvider }  from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
 
 import { ApDeviceStatusEnum, FloorPlanDto, NetworkDeviceType, SwitchStatusEnum } from '@acx-ui/rc/utils'
 import { render }                                                                from '@acx-ui/test-utils'
 
 
 import NetworkDevices from '.'
+
 
 
 const networkDeviceType = Object.values(NetworkDeviceType)
@@ -26,7 +29,8 @@ const deviceData = [{
     deviceStatus: SwitchStatusEnum.NEVER_CONTACTED_CLOUD,
     floorplanId: '94bed28abef24175ab58a3800d01e24a',
     id: 'FEK3224R72N',
-    name: 'FEK3224R232N',
+    name: '',
+    switchName: '',
     serialNumber: 'FEK3224R72N',
     xPercent: 52.739727,
     yPercent: 7.056452,
@@ -57,14 +61,13 @@ describe('Floor Plans Nework Devices', () => {
 
   it('should render correctly', async () => {
 
-    await render(<NetworkDevices
-      imageLoaded={true}
+    await render(<DndProvider backend={HTML5Backend}><NetworkDevices
       networkDevicesVisibility={networkDeviceType}
       selectedFloorPlan={floorplan}
       networkDevices={{ '94bed28abef24175ab58a3800d01e24a': deviceData[0] }}
       galleryMode={false}
       contextAlbum={false}
-      context='Ap'/>)
+      context='Ap'/></DndProvider>)
 
     expect(await screen.findByTestId('SignalUp')).toBeVisible()
   })
