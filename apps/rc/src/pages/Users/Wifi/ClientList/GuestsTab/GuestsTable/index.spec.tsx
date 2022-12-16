@@ -23,6 +23,8 @@ jest.mock('socket.io-client')
 describe('Guest Table', () => {
   let params: { tenantId: string }
 
+  global.URL.createObjectURL = jest.fn()
+
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockServer.use(
