@@ -91,11 +91,14 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       providesTags: [{ type: 'Service', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg, [
-            'AddL2AclPolicy'
-          ], () => {
-            api.dispatch(serviceApi.util.invalidateTags([{ type: 'Service', id: 'LIST' }]))
-          }, requestArgs.requestId as string)
+          const params = requestArgs.params as { requestId: string }
+          if (params.requestId) {
+            showActivityMessage(msg, [
+              'AddL2AclPolicy'
+            ],() => {
+              api.dispatch(serviceApi.util.invalidateTags([{ type: 'Service', id: 'LIST' }]))
+            }, params.requestId as string)
+          }
         })
       }
     }),

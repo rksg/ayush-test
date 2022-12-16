@@ -44,7 +44,7 @@ const ViewDetailsWrapper = styled.span<{ $policyId: string }>`
 const Layer2Drawer = (props: Layer2DrawerProps) => {
   const { $t } = useIntl()
   const params = useParams()
-  const { inputName = ['l2AclPolicyId'] } = props
+  const { inputName = [] } = props
   const inputRef = useRef(null)
   const [visible, setVisible] = useState(false)
   const [ruleDrawerVisible, setRuleDrawerVisible] = useState(false)
@@ -63,7 +63,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
   ] = [
     useWatch<string>('layer2Access', contentForm),
     useWatch<string>('policyName', contentForm),
-    useWatch<string>('l2AclPolicyId', contentForm)
+    useWatch<string>('l2AclPolicyId')
   ]
 
   const [ createL2AclPolicy ] = useAddL2AclPolicyMutation()
@@ -248,7 +248,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
         let responseData = l2AclRes.response as {
           [key: string]: string
         }
-        contentForm.setFieldValue('l2AclPolicyId', responseData.id)
+        form.setFieldValue('l2AclPolicyId', responseData.id)
         setQueryPolicyId(responseData.id)
         setRequestId(l2AclRes.requestId)
       } else {
@@ -406,24 +406,22 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
     <>
       <Row justify={'space-between'} style={{ width: '300px' }}>
         <Col span={12} style={{ textAlign: 'center' }}>
-          <Form form={contentForm}>
-            <Form.Item
-              name={'l2AclPolicyId'}
-              rules={[{
-                message: $t({ defaultMessage: 'Please select Layer 2 profile' })
-              }]}
-              children={
-                <Select
-                  placeholder={$t({ defaultMessage: 'Select profile...' })}
-                  onChange={(value) => {
-                    setQueryPolicyId(value)
-                    // contentForm.setFieldValue('l2AclPolicyId', value)
-                  }}
-                  children={layer2SelectOptions}
-                />
-              }
-            />
-          </Form>
+          <Form.Item
+            name={[...inputName, 'l2AclPolicyId']}
+            rules={[{
+              message: $t({ defaultMessage: 'Please select Layer 2 profile' })
+            }]}
+            children={
+              <Select
+                placeholder={$t({ defaultMessage: 'Select profile...' })}
+                onChange={(value) => {
+                  setQueryPolicyId(value)
+                  // contentForm.setFieldValue('l2AclPolicyId', value)
+                }}
+                children={layer2SelectOptions}
+              />
+            }
+          />
         </Col>
         <Col span={6} style={{ textAlign: 'center' }}>
           <ViewDetailsWrapper $policyId={l2AclPolicyId}

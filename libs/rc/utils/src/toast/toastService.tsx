@@ -119,24 +119,20 @@ export const CountdownNode = (props: { n: number }) => (
   </Countdown>
 )
 
-const proceedByUsecase = (tx: Transaction, useCase: string[]) => {
+const proceedByUsecase = (tx: Transaction, useCase: string[], requestId?: string) => {
   if (tx.status === TxStatus.IN_PROGRESS) return false
   if (!useCase.includes(tx.useCase)) return false
+  if (requestId && tx.requestId !== requestId) return false
   return true
 }
 
-// eslint-disable-next-line max-len
-export const showActivityMessage = (tx: Transaction, useCase: string[], callback?: Function, requestId?: string) => {
-  if (requestId) {
-    if (proceedByUsecase(tx, useCase) && tx.requestId === requestId) {
-      showTxToast(tx)
-      if (callback) callback()
-    }
-  } else {
-    if (proceedByUsecase(tx, useCase)) {
-      showTxToast(tx)
-      if (callback) callback()
-    }
+export const showActivityMessage = (
+  tx: Transaction, useCase: string[],
+  callback?: Function, requestId?: string
+) => {
+  if (proceedByUsecase(tx, useCase, requestId)) {
+    showTxToast(tx)
+    if (callback) callback()
   }
 }
 
