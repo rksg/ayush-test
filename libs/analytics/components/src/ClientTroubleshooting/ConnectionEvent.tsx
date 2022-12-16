@@ -3,8 +3,8 @@ import React, { ReactNode } from 'react'
 import { Popover } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { clientEventDescription, mapCodeToReason } from '@acx-ui/analytics/utils'
-import { formatter, getIntl }                      from '@acx-ui/utils'
+import { clientEventDescription, mapCodeToFailureText, mapCodeToReason } from '@acx-ui/analytics/utils'
+import { formatter, getIntl }                                            from '@acx-ui/utils'
 
 import { FAILURE, DisplayEvent, SLOW, DISCONNECT } from './config'
 import { Details }                                 from './EventDetails'
@@ -28,7 +28,9 @@ const useConnectionDetail = (event: DisplayEvent) => {
   ]
 
   if (isFailure) {
-    const failureType = (code) ? mapCodeToReason(code, intl) : 'Unknown'
+    const failureType = (code)
+      ? mapCodeToFailureText(code, intl)
+      : $t({ defaultMessage: 'Unknown' })
     eventDetails.push({
       label: $t({ defaultMessage: 'Failure Type:' }),
       value: $t({ defaultMessage: '{failureType}' }, { failureType })

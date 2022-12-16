@@ -207,7 +207,7 @@ exports[`ConnectionEvent renders correctly for failureEvent event 1`] = `
                       <dd
                         class="sc-eCYdqJ bkYxGt"
                       >
-                        EAPOL Failures
+                        EAPOL Failure
                       </dd>
                       <dt
                         class="sc-hKMtZM dqLvfG"
