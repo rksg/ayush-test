@@ -11,6 +11,12 @@ export const DeviceContainer = styled('div')`
     margin: -21px 0 0 -21px;
   }
 
+  &.context-Album {
+    width:6px;
+    height:6px;
+    margin: -3px 0 0 -3px;
+  }
+
   svg {
     transform: rotate(45deg);
   }
@@ -112,11 +118,6 @@ export const DeviceContainer = styled('div')`
         }
       }
     }
-  }
-  &.context-Album {
-    width:6px;
-    height:6px;
-    margin: 6px 0 0 6px;
   }
 }
 `
