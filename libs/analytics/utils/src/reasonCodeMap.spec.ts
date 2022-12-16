@@ -83,6 +83,6 @@ describe('mapCodeToAttempt', () => {
 describe('mapCodeToFailureText', () => {
   it('renders text for given code', () => {
     expect(renderHook(() => mapCodeToFailureText('eap', useIntl())).result.current)
-      .toEqual('EAP')
+      .toEqual('EAP Failure')
   })
 })
