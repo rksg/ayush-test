@@ -13,7 +13,7 @@ import { networkHierarchy }  from './__tests__/fixtures'
 import { api }               from './services'
 import { NonSelectableItem } from './styledComponents'
 
-import { NetworkFilter, onApply, displayRender, getNetworkFilterRlsClause } from './index'
+import { NetworkFilter, onApply, displayRender, getSupersetRlsClause } from './index'
 
 const mockIncidents = [
   {
@@ -444,7 +444,7 @@ describe('Network Filter with incident severity', () => {
   })
 })
 
-describe('getNetworkFilterRlsClause',()=>{
+describe('getSupersetRlsClause',()=>{
   it('should return RLS clause based network filters',()=>{
     const paths:NetworkPath[] = [
       [{
@@ -502,7 +502,7 @@ describe('getNetworkFilterRlsClause',()=>{
         name: '38:FF:36:13:DB:D0'
       }]
     ]
-    const rlsClause = getNetworkFilterRlsClause(paths,['6','2.4'])
+    const rlsClause = getSupersetRlsClause(paths,['6','2.4'])
     expect(rlsClause).toMatchSnapshot()
   })
 })

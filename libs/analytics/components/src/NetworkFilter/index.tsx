@@ -15,7 +15,7 @@ import { LabelWithSeverityCicle }                   from './LabelWithSeverityCir
 import { Child, useNetworkFilterQuery, ApOrSwitch } from './services'
 import * as UI                                      from './styledComponents'
 
-export const getNetworkFilterRlsClause = (paths?:NetworkPath[],bands?:Band[]) => {
+export const getSupersetRlsClause = (paths?:NetworkPath[],bands?:Band[]) => {
   let bandClause = ''
   let zoneClause = ''
   let apClause = ''

@@ -5,7 +5,7 @@ import { Buffer } from 'buffer'
 
 import { embedDashboard } from '@superset-ui/embedded-sdk'
 
-import { getNetworkFilterRlsClause } from '@acx-ui/analytics/components'
+import { getSupersetRlsClause } from '@acx-ui/analytics/components'
 import {
   Band,
   Loader
@@ -27,7 +27,7 @@ function Report (props: ReportProps) {
   const [dashboardEmbeddedId, setDashboardEmbeddedId] = useState<string | null>(null)
   const { filterData } = useContext(NetworkFilterWithBandContext)
   const { paths, bands } = filterData
-  const { networkClause, bandClause } = getNetworkFilterRlsClause(paths,bands as Band[])
+  const { networkClause, bandClause } = getSupersetRlsClause(paths,bands as Band[])
 
   const HOST_NAME = process.env['NODE_ENV'] === 'development' ?
     'https://alto.local.mlisa.io' : window.location.origin
