@@ -1,6 +1,8 @@
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
+import { NetworkFilterWithBandContext } from '../../../Routes'
+
 import { NetworkReport } from '.'
 
 jest.mock('./NetworkReportTabs', () => ({
@@ -16,12 +18,20 @@ describe('Network Report', () => {
     activeTab: 'wireless'
   }
   it('should render wireless tab correctly', async () => {
-    render(<Provider><NetworkReport /></Provider>, { route: { params } })
+    render(<Provider>
+      <NetworkFilterWithBandContext.Provider value={{ filterData: {}, setFilterData: () => {} }}>
+        <NetworkReport />
+      </NetworkFilterWithBandContext.Provider>
+    </Provider>, { route: { params } })
     expect(await screen.findByTestId('networkReportTabs')).toBeTruthy()
   })
   it('should render wired tab correctly', async () => {
     params.activeTab = 'wired'
-    render(<Provider><NetworkReport /></Provider>, { route: { params } })
+    render(<Provider>
+      <NetworkFilterWithBandContext.Provider value={{ filterData: {}, setFilterData: () => {} }}>
+        <NetworkReport />
+      </NetworkFilterWithBandContext.Provider>
+    </Provider>, { route: { params } })
     expect(await screen.findByTestId('networkReportTabs')).toBeTruthy()
   })
 })
