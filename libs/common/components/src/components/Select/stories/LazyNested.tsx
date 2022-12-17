@@ -27,7 +27,7 @@ const mockData = () => {
 }
 
 // storybook is non-deterministic when creating children with mockData
-export function LazyNestedSingle ({ multiple=false,showBand=false, defaultBand=[] }:
+export function LazyNested ({ multiple=false,showBand=false, defaultBand=[] }:
   { multiple?:boolean,showBand?:boolean, defaultBand?:Band[] }) {
   const [options, setOptions] = React.useState<DefaultOptionType[]>([])
   const [loading, setLoading] = React.useState(false)
@@ -63,4 +63,8 @@ export function LazyNestedSingle ({ multiple=false,showBand=false, defaultBand=[
       changeOnSelect
     />
   </div>
+}
+
+export function LazyNestedWithBand (){
+  return <LazyNested showBand={true} defaultBand={['5']}/>
 }

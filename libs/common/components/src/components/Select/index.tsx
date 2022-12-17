@@ -70,6 +70,8 @@ export function Select (props: CascaderProps) {
   const [open, setOpen] = React.useState(false)
   const [selectedBands, setSelectedBands] = React.useState<CheckboxValueType[]>(initialBands)
   useEffect(() => {
+    // eslint-disable-next-line no-console
+    console.log('Band Reset done.', { defaultBand })
     setSelectedBands(defaultBand || [])
   }, [defaultBand])
 
