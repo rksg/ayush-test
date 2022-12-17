@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react'
+/* eslint-disable max-len */
+import { useEffect, useState } from 'react'
 
-import { Col, Row } from 'antd'
-import { useIntl }  from 'react-intl'
+import { useIntl } from 'react-intl'
 
+import { TrafficByBand, TrafficByUsage } from '@acx-ui/analytics/components'
 import {
   useAnalyticsFilter
 } from '@acx-ui/analytics/utils'
-import { showToast }                           from '@acx-ui/components'
+import { GridCol, GridRow, showToast }         from '@acx-ui/components'
 import {
   useLazyGetApCapabilitiesQuery,
   useLazyGetApQuery,
@@ -141,22 +142,35 @@ export function ClientOverviewTab () {
       getClientData()
     }
   }, [filters, isTribandAp])
-
-  return <Row gutter={24}>
-    <Col span={18}>
-      <UI.CardWrapper>
-        <ClientOverviewWidget
-          clientStatistic={clientStatistics}
-          clientStatus={clientStatus}
-          clientDetails={clientDetails}
-        />
-      </UI.CardWrapper>
-    </Col>
-    <Col span={6}>
+  // TODO: Remove background: '#F7F7F7' and Add Top 10 Applications Component
+  return <GridRow>
+    <GridCol col={{ span: 18 }}>
+      <GridRow>
+        <GridCol col={{ span: 24 }}>
+          <UI.CardWrapper>
+            <ClientOverviewWidget
+              clientStatistic={clientStatistics}
+              clientStatus={clientStatus}
+              clientDetails={clientDetails}
+            />
+          </UI.CardWrapper>
+        </GridCol>
+        <GridCol col={{ span: 24 }} style={{ height: '292px', background: '#F7F7F7' }}>
+          {$t({ defaultMessage: 'TODO: Top 10 Applications by traffic volume' })}
+        </GridCol>
+        <GridCol col={{ span: 24 }} style={{ height: '292px' }}>
+          <TrafficByUsage filters={{ ...filters, mac: clientId?.toUpperCase() }} />
+        </GridCol>
+        <GridCol col={{ span: 24 }} style={{ height: '292px' }}>
+          <TrafficByBand filters={{ ...filters, mac: clientId?.toUpperCase() }} />
+        </GridCol>
+      </GridRow>
+    </GridCol>
+    <GridCol col={{ span: 6 }}>
       <ClientProperties
         clientStatus={clientStatus}
         clientDetails={clientDetails}
       />
-    </Col>
-  </Row>
+    </GridCol>
+  </GridRow>
 }

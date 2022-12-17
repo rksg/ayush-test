@@ -2,7 +2,7 @@ import React from 'react'
 
 import { DefaultOptionType } from 'antd/es/cascader'
 
-import { Band, NetworkFilter, Option } from '..'
+import { Band, Select, Option } from '..'
 
 import { onApply } from './utils'
 
@@ -51,7 +51,7 @@ export function LazyNestedSingle ({ multiple=false,showBand=false, defaultBand=[
   }
 
   return <div style={{ width: 200 }}>
-    <NetworkFilter
+    <Select
       multiple={multiple}
       showBand={showBand}
       defaultBand={defaultBand}

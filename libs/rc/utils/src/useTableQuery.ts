@@ -35,6 +35,7 @@ export interface TABLE_QUERY <
   pagination?: Partial<PAGINATION>
   sorter?: SORTER
   rowKey?: string
+  pollingInterval?: number
 }
 export type PAGINATION = {
   current: number,
@@ -107,10 +108,14 @@ export function useTableQuery <
   const params = useParams()
   // RTKQuery
 
+  const pollingInterval = option.pollingInterval ? {
+    pollingInterval: option.pollingInterval
+  } : {}
+
   const api = option.useQuery({
     params: { ...params, ...option.apiParams },
     payload: payload
-  })
+  }, pollingInterval)
 
   useEffect(() => {
     const handlePagination = (data?: TableResult<ResultType>) => {

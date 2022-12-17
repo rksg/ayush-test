@@ -171,6 +171,18 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/viewmodel/tenant/:tenantId/venue/:venueId/devices'
   },
+  UpdateSwitchPosition: {
+    method: 'put',
+    url: '/api/switch/tenant/:tenantId/switch/:serialNumber/position'
+  },
+  UpdateApPosition: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/position'
+  },
+  UpdateCloudpathServerPosition: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/wifi/cloudpaths/:cloudpathServerId/floorPositions'
+  },
   getVenueCapabilities: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/capabilities'
@@ -319,6 +331,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getGuestsList: {
     method: 'post',
     url: '/api/viewmodel/tenant/:tenantId/guests'
+  },
+  addGuestPass: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/guest-user'
   },
   getApNetworkList: {
     method: 'post',

@@ -1608,10 +1608,10 @@ exports[`Network Filter with incident severity should not show any severity circ
     class="styledComponents__Container-sc-1x390s8-1 hKankr"
   >
     <div
-      class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+      class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
     >
       <div
-        class="ant-select ant-cascader styledComponents__Cascader-sc-jlwno5-0 cLnUfA ant-select-single ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
+        class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-single ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
       >
         <div
           class="ant-select-selector"
@@ -1756,10 +1756,10 @@ exports[`Network Filter with incident severity should show only venue severities
     class="styledComponents__Container-sc-1x390s8-1 hKankr"
   >
     <div
-      class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+      class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
     >
       <div
-        class="ant-select ant-cascader styledComponents__Cascader-sc-jlwno5-0 cLnUfA ant-select-single ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
+        class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-single ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
       >
         <div
           class="ant-select-selector"
@@ -1904,10 +1904,10 @@ exports[`Network Filter with incident severity should show severity only once on
     class="styledComponents__Container-sc-1x390s8-1 hKankr"
   >
     <div
-      class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+      class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
     >
       <div
-        class="ant-select ant-cascader styledComponents__Cascader-sc-jlwno5-0 cLnUfA ant-select-single ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
+        class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-single ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
       >
         <div
           class="ant-select-selector"

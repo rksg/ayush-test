@@ -127,6 +127,18 @@ export const validationMessages = {
   emailAddress: defineMessage({
     defaultMessage: 'Please enter a valid email address',
     description: 'Validation - email address checks'
+  }),
+  phoneNumber: defineMessage({
+    defaultMessage: 'Please enter a valid phone number',
+    description: 'Validation - phone number checks'
+  }),
+  oneRadioChannel: defineMessage({
+    defaultMessage: 'Please select one channel',
+    description: 'Validation - radio channel checks'
+  }),
+  twoRadioChannels: defineMessage({
+    defaultMessage: 'Please select at least two channels',
+    description: 'Validation - radio channel checks'
   })
 }
 
