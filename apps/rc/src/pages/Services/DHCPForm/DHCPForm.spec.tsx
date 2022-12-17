@@ -37,14 +37,12 @@ describe('DHCPForm', () => {
       ))
 
 
-
     const params = { serviceId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
     const { asFragment } = render(<Provider><DHCPForm /></Provider>, {
       route: { params }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     fillInBeforeSettings('DhcpConfigServiceProfile1')
 

@@ -156,6 +156,25 @@ exports[`DHCPForm should edit open DHCP successfully 1`] = `
                         Settings
                       </h3>
                       <div
+                        class="ant-form-item ant-form-item-has-success ant-form-item-hidden"
+                      >
+                        <div
+                          class="ant-row ant-form-item-row"
+                        >
+                          <div
+                            class="ant-col ant-form-item-control"
+                          >
+                            <div
+                              class="ant-form-item-control-input"
+                            >
+                              <div
+                                class="ant-form-item-control-input-content"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
                         class="ant-form-item ant-form-item-has-feedback ant-form-item-is-validating"
                       >
                         <div
@@ -383,7 +402,7 @@ exports[`DHCPForm should edit open DHCP successfully 1`] = `
                       style="padding-left: 10px; padding-right: 10px;"
                     >
                       <div
-                        class="ant-form-item ant-form-item-has-success"
+                        class="ant-form-item ant-form-item-is-validating"
                       >
                         <div
                           class="ant-row ant-form-item-row"
@@ -392,7 +411,7 @@ exports[`DHCPForm should edit open DHCP successfully 1`] = `
                             class="ant-col ant-form-item-label"
                           >
                             <label
-                              class=""
+                              class="ant-form-item-required"
                               for="settings_dhcpPools"
                               title="Set DHCP Pools"
                             >

@@ -39,11 +39,13 @@ export default function DHCPForm (props: DHCPFormProps) {
 
   const {
     data,
+    isFetching,
     isLoading
   } = useGetDHCPProfileQuery({ params }, { skip: !editMode })
 
   const [
-    saveOrUpdateDHCP
+    saveOrUpdateDHCP,
+    { isLoading: isFormSubmitting }
   ] = useSaveOrUpdateDHCPMutation()
 
 
@@ -86,7 +88,7 @@ export default function DHCPForm (props: DHCPFormProps) {
           { text: $t({ defaultMessage: 'Services' }), link: '/services' }
         ]}
       />
-      <Loader states={[{ isLoading: isLoading }]}>
+      <Loader states={[{ isLoading: isLoading || isFormSubmitting, isFetching: isFetching }]}>
         <StepsForm<DHCPSaveData>
           formRef={formRef}
           editMode={editMode}
