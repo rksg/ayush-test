@@ -218,6 +218,18 @@ describe('Network Filter', () => {
         [{ name: 'Network', type: 'network' }, { name: 'id5', type: 'switchGroup' }],
         [{ name: 'Network', type: 'network' }, { name: 'id4', type: 'switchGroup' }],
         [{ name: 'Network', type: 'network' }, { name: 'id1', type: 'zone' }]
+      ],
+      value: [
+        [
+          '[{"type":"network","name":"Network"},{"type":"switchGroup","name":"id5"}]',
+          'switchesswg1'
+        ],
+        [
+          '[{"type":"network","name":"Network"},{"type":"switchGroup","name":"id4"}]'
+        ],
+        [
+          '[{"type":"network","name":"Network"},{"type":"zone","name":"id1"}]'
+        ]
       ]
     })
   })
