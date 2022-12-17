@@ -1,11 +1,12 @@
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 
 import moment from 'moment'
 
 import { NetworkFilter } from '@acx-ui/analytics/components'
 import {
   RangePicker,
-  PageHeader } from '@acx-ui/components'
+  PageHeader,
+  Band } from '@acx-ui/components'
 import { useDateFilter, dateRangeForLast } from '@acx-ui/utils'
 
 import { NetworkFilterWithBandContext } from '../../Routes'
@@ -21,7 +22,14 @@ export function ReportHeader (props: {
   const shouldQuerySwitch = ['switch','both'].includes(mode)
   const showBand = !shouldHideBand && ['ap','both'].includes(mode)
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
-  const { setFilterData } = useContext(NetworkFilterWithBandContext)
+  const { filterData, setFilterData } = useContext(NetworkFilterWithBandContext)
+  const { value: raw, bands } = filterData
+
+  useEffect(()=>{
+    // Reset only any those dependency changes
+    setFilterData({})
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mode, showBand, shouldQuerySwitch])
 
   return (
     <PageHeader
@@ -37,6 +45,8 @@ export function ReportHeader (props: {
           multiple={true}
           replaceWithId={true}
           filterMode={mode}
+          defaultValue={raw}
+          defaultBand={bands as Band[]}
           onApplyWithBand={setFilterData}
         />,
         <RangePicker

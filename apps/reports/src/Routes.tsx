@@ -3,6 +3,7 @@ import { createContext, useState } from 'react'
 
 
 import { CheckboxValueType } from 'antd/lib/checkbox/Group'
+import { SingleValueType }   from 'rc-cascader/lib/Cascader'
 
 import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                          from '@acx-ui/store'
@@ -14,7 +15,8 @@ import { ReportType  }   from './pages/Reports/reportsMapping'
 
 export interface NetworkFilterWithBand {
   paths?: NetworkPath[],
-  bands?: CheckboxValueType[]
+  bands?: CheckboxValueType[],
+  value?: SingleValueType | SingleValueType[]
 }
 
 export const NetworkFilterWithBandContext = createContext({} as {

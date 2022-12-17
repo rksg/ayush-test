@@ -86,7 +86,13 @@ type ConnectedNetworkFilterProps = {
     multiple?: boolean,
     replaceWithId?:boolean,
     filterMode?: 'ap' | 'switch' | 'both'
-    onApplyWithBand?: ({ paths, bands }:{ paths:NetworkPath[],bands?:CheckboxValueType[] }) => void
+    defaultValue?: SingleValueType | SingleValueType[],
+    defaultBand?: Band[],
+    onApplyWithBand?: ({ paths, bands }:{
+      paths:NetworkPath[],
+      bands?:CheckboxValueType[],
+      value?: SingleValueType | SingleValueType[]
+    }) => void
    }
 const getSeverityFromIncidents = (
   incidentsList: Incident[]
@@ -280,6 +286,8 @@ function ConnectedNetworkFilter (
     filterMode='both',
     multiple,
     replaceWithId,
+    defaultValue,
+    defaultBand,
     onApplyWithBand } : ConnectedNetworkFilterProps
 ) {
   const { $t } = useIntl()
@@ -314,8 +322,9 @@ function ConnectedNetworkFilter (
           placeholder={$t({ defaultMessage: 'Entire Organization' })}
           multiple={multiple}
           showBand={showBand}
-          defaultValue={raw}
-          value={raw}
+          defaultValue={defaultValue || raw}
+          defaultBand={defaultBand || []}
+          value={defaultValue || raw}
           options={queryResults.data}
           onApply={(value,bands) => {
             if(showBand || multiple){
@@ -340,7 +349,7 @@ function ConnectedNetworkFilter (
                 paths.push(defaultNetworkPath)
               }
               if(onApplyWithBand)
-                onApplyWithBand({ paths, bands })
+                onApplyWithBand({ paths, bands, value: value || [] })
             }else{
               onApply(value, setNetworkPath)
             }

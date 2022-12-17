@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import {
   Checkbox,
@@ -48,8 +48,18 @@ export function NetworkFilter (props: CascaderProps) {
     setCurrentValues
   ] = React.useState<SingleValueType | SingleValueType[]>(initialValues)
   const [savedValues, setSavedValues] = React.useState(initialValues)
+
+  useEffect(() => {
+    setCurrentValues(defaultValue || [])
+    setSavedValues(defaultValue || [])
+  }, [defaultValue])
+
   const [open, setOpen] = React.useState(false)
   const [selectedBands, setSelectedBands] = React.useState<CheckboxValueType[]>(initialBands)
+  useEffect(() => {
+    setSelectedBands(defaultBand || [])
+  }, [defaultBand])
+
   const onBandChange = (checkedValues: CheckboxValueType[]) => {
     setSelectedBands(checkedValues)
   }

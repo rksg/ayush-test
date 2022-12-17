@@ -25,7 +25,7 @@ function Report (props: ReportProps) {
   const [ embeddedId ] = useEmbeddedIdMutation()
   const { startDate, endDate } = useDateFilter()
   const [dashboardEmbeddedId, setDashboardEmbeddedId] = useState<string | null>(null)
-  const { filterData, setFilterData } = useContext(NetworkFilterWithBandContext)
+  const { filterData } = useContext(NetworkFilterWithBandContext)
   const { paths, bands } = filterData
   const { networkClause, bandClause } = getNetworkFilterRlsClause(paths,bands as Band[])
 
@@ -35,8 +35,6 @@ function Report (props: ReportProps) {
     // Ex: http://localhost:8088
 
   useEffect(() => {
-    // Reset filter context on report change
-    setFilterData({})
     const embeddedData = {
       allowed_domains: [HOST_NAME],
       dashboard_title: embedDashboardName
