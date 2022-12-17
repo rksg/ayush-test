@@ -1,6 +1,6 @@
 import { render, fireEvent, screen } from '@acx-ui/test-utils'
 
-import { Details } from '.'
+import { Details } from './EventDetails'
 
 describe('EventDetails', () => {
 

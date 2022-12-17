@@ -36,7 +36,7 @@ exports[`ConnectionEvent renders correctly for disconnect event 1`] = `
                 class="ant-popover-inner-content"
               >
                 <div
-                  class="sc-eCYdqJ hLiyJh"
+                  class="styledComponents__DetailsWrapper-sc-hmshlr-15 lIKqt"
                 >
                   <div
                     class="ant-row"
@@ -45,10 +45,10 @@ exports[`ConnectionEvent renders correctly for disconnect event 1`] = `
                       class="ant-col ant-col-24"
                     >
                       <div
-                        class="sc-gsnTZi cSuiOv"
+                        class="styledComponents__CloseRowWrapper-sc-hmshlr-12 hJblHN"
                       >
                         <span
-                          class="sc-dkzDqf guTdNS"
+                          class="styledComponents__CloseIconContainer-sc-hmshlr-13 hAHWZx"
                         >
                           <svg
                             data-testid="CloseSymbol"
@@ -64,7 +64,7 @@ exports[`ConnectionEvent renders correctly for disconnect event 1`] = `
                       class="ant-col ant-col-24"
                     >
                       <h3
-                        class="sc-bczRLJ fkbqwg"
+                        class="styledComponents__Header-sc-hmshlr-11 bjXUdp"
                       >
                         Connection Event Details
                       </h3>
@@ -83,7 +83,7 @@ exports[`ConnectionEvent renders correctly for disconnect event 1`] = `
                           class="ant-col ant-col-12"
                         >
                           <div
-                            class="sc-jSMfEi kbAonz"
+                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
                           >
                             AP MAC:
                           </div>
@@ -92,7 +92,7 @@ exports[`ConnectionEvent renders correctly for disconnect event 1`] = `
                           class="ant-col ant-col-12 ant-col-pull-5"
                         >
                           <div
-                            class="sc-gKXOVf fZCycS"
+                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
                           >
                             94:B3:4F:3D:15:B0
                           </div>
@@ -105,7 +105,7 @@ exports[`ConnectionEvent renders correctly for disconnect event 1`] = `
                           class="ant-col ant-col-12"
                         >
                           <div
-                            class="sc-jSMfEi kbAonz"
+                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
                           >
                             AP Name:
                           </div>
@@ -114,7 +114,7 @@ exports[`ConnectionEvent renders correctly for disconnect event 1`] = `
                           class="ant-col ant-col-12 ant-col-pull-5"
                         >
                           <div
-                            class="sc-gKXOVf fZCycS"
+                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
                           >
                             R750-11-112
                           </div>
@@ -127,7 +127,7 @@ exports[`ConnectionEvent renders correctly for disconnect event 1`] = `
                           class="ant-col ant-col-12"
                         >
                           <div
-                            class="sc-jSMfEi kbAonz"
+                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
                           >
                             SSID:
                           </div>
@@ -136,7 +136,7 @@ exports[`ConnectionEvent renders correctly for disconnect event 1`] = `
                           class="ant-col ant-col-12 ant-col-pull-5"
                         >
                           <div
-                            class="sc-gKXOVf fZCycS"
+                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
                           />
                         </div>
                       </div>
@@ -147,7 +147,7 @@ exports[`ConnectionEvent renders correctly for disconnect event 1`] = `
                           class="ant-col ant-col-12"
                         >
                           <div
-                            class="sc-jSMfEi kbAonz"
+                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
                           >
                             Radio:
                           </div>
@@ -156,7 +156,7 @@ exports[`ConnectionEvent renders correctly for disconnect event 1`] = `
                           class="ant-col ant-col-12 ant-col-pull-5"
                         >
                           <div
-                            class="sc-gKXOVf fZCycS"
+                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
                           >
                             5 GHz
                           </div>
@@ -169,7 +169,7 @@ exports[`ConnectionEvent renders correctly for disconnect event 1`] = `
                           class="ant-col ant-col-12"
                         >
                           <div
-                            class="sc-jSMfEi kbAonz"
+                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
                           >
                             Reason:
                           </div>
@@ -178,7 +178,7 @@ exports[`ConnectionEvent renders correctly for disconnect event 1`] = `
                           class="ant-col ant-col-12 ant-col-pull-5"
                         >
                           <div
-                            class="sc-gKXOVf fZCycS"
+                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
                           >
                             Client disconnected
                           </div>
@@ -233,7 +233,7 @@ exports[`ConnectionEvent renders correctly for failureEvent event 1`] = `
                 class="ant-popover-inner-content"
               >
                 <div
-                  class="sc-eCYdqJ hLiyJh"
+                  class="styledComponents__DetailsWrapper-sc-hmshlr-15 lIKqt"
                 >
                   <div
                     class="ant-row"
@@ -242,10 +242,10 @@ exports[`ConnectionEvent renders correctly for failureEvent event 1`] = `
                       class="ant-col ant-col-24"
                     >
                       <div
-                        class="sc-gsnTZi cSuiOv"
+                        class="styledComponents__CloseRowWrapper-sc-hmshlr-12 hJblHN"
                       >
                         <span
-                          class="sc-dkzDqf guTdNS"
+                          class="styledComponents__CloseIconContainer-sc-hmshlr-13 hAHWZx"
                         >
                           <svg
                             data-testid="CloseSymbol"
@@ -261,7 +261,7 @@ exports[`ConnectionEvent renders correctly for failureEvent event 1`] = `
                       class="ant-col ant-col-24"
                     >
                       <h3
-                        class="sc-bczRLJ fkbqwg"
+                        class="styledComponents__Header-sc-hmshlr-11 bjXUdp"
                       >
                         Connection Event Details
                       </h3>
@@ -280,7 +280,7 @@ exports[`ConnectionEvent renders correctly for failureEvent event 1`] = `
                           class="ant-col ant-col-10"
                         >
                           <div
-                            class="sc-jSMfEi kbAonz"
+                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
                           >
                             AP MAC:
                           </div>
@@ -289,7 +289,7 @@ exports[`ConnectionEvent renders correctly for failureEvent event 1`] = `
                           class="ant-col ant-col-10 ant-col-push-1"
                         >
                           <div
-                            class="sc-gKXOVf fZCycS"
+                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
                           >
                             AA:AA:AA:AA:AA:AA
                           </div>
@@ -302,7 +302,7 @@ exports[`ConnectionEvent renders correctly for failureEvent event 1`] = `
                           class="ant-col ant-col-10"
                         >
                           <div
-                            class="sc-jSMfEi kbAonz"
+                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
                           >
                             AP Name:
                           </div>
@@ -311,7 +311,7 @@ exports[`ConnectionEvent renders correctly for failureEvent event 1`] = `
                           class="ant-col ant-col-10 ant-col-push-1"
                         >
                           <div
-                            class="sc-gKXOVf fZCycS"
+                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
                           >
                             R750-11-112
                           </div>
@@ -324,7 +324,7 @@ exports[`ConnectionEvent renders correctly for failureEvent event 1`] = `
                           class="ant-col ant-col-10"
                         >
                           <div
-                            class="sc-jSMfEi kbAonz"
+                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
                           >
                             SSID:
                           </div>
@@ -333,7 +333,7 @@ exports[`ConnectionEvent renders correctly for failureEvent event 1`] = `
                           class="ant-col ant-col-10 ant-col-push-1"
                         >
                           <div
-                            class="sc-gKXOVf fZCycS"
+                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
                           />
                         </div>
                       </div>
@@ -344,7 +344,7 @@ exports[`ConnectionEvent renders correctly for failureEvent event 1`] = `
                           class="ant-col ant-col-10"
                         >
                           <div
-                            class="sc-jSMfEi kbAonz"
+                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
                           >
                             Radio:
                           </div>
@@ -353,7 +353,7 @@ exports[`ConnectionEvent renders correctly for failureEvent event 1`] = `
                           class="ant-col ant-col-10 ant-col-push-1"
                         >
                           <div
-                            class="sc-gKXOVf fZCycS"
+                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
                           >
                             5 GHz
                           </div>
@@ -366,7 +366,7 @@ exports[`ConnectionEvent renders correctly for failureEvent event 1`] = `
                           class="ant-col ant-col-10"
                         >
                           <div
-                            class="sc-jSMfEi kbAonz"
+                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
                           >
                             Failure Type:
                           </div>
@@ -375,7 +375,7 @@ exports[`ConnectionEvent renders correctly for failureEvent event 1`] = `
                           class="ant-col ant-col-10 ant-col-push-1"
                         >
                           <div
-                            class="sc-gKXOVf fZCycS"
+                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
                           >
                             EAPOL Failure
                           </div>
@@ -388,7 +388,7 @@ exports[`ConnectionEvent renders correctly for failureEvent event 1`] = `
                           class="ant-col ant-col-10"
                         >
                           <div
-                            class="sc-jSMfEi kbAonz"
+                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
                           >
                             Reason:
                           </div>
@@ -397,7 +397,7 @@ exports[`ConnectionEvent renders correctly for failureEvent event 1`] = `
                           class="ant-col ant-col-10 ant-col-push-1"
                         >
                           <div
-                            class="sc-gKXOVf fZCycS"
+                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
                           >
                             PSK Failure (passphrase mismatch) - Invalid MIC
                           </div>
@@ -408,7 +408,7 @@ exports[`ConnectionEvent renders correctly for failureEvent event 1`] = `
                       class="ant-col ant-col-1 ant-col-pull-1"
                     >
                       <div
-                        class="sc-hKMtZM jMqzxu"
+                        class="styledComponents__VerticalLine-sc-hmshlr-14 eFmWgZ"
                       />
                     </div>
                     <div
@@ -464,7 +464,7 @@ exports[`ConnectionEvent renders correctly for slow event 1`] = `
                 class="ant-popover-inner-content"
               >
                 <div
-                  class="sc-eCYdqJ hLiyJh"
+                  class="styledComponents__DetailsWrapper-sc-hmshlr-15 lIKqt"
                 >
                   <div
                     class="ant-row"
@@ -473,10 +473,10 @@ exports[`ConnectionEvent renders correctly for slow event 1`] = `
                       class="ant-col ant-col-24"
                     >
                       <div
-                        class="sc-gsnTZi cSuiOv"
+                        class="styledComponents__CloseRowWrapper-sc-hmshlr-12 hJblHN"
                       >
                         <span
-                          class="sc-dkzDqf guTdNS"
+                          class="styledComponents__CloseIconContainer-sc-hmshlr-13 hAHWZx"
                         >
                           <svg
                             data-testid="CloseSymbol"
@@ -492,7 +492,7 @@ exports[`ConnectionEvent renders correctly for slow event 1`] = `
                       class="ant-col ant-col-24"
                     >
                       <h3
-                        class="sc-bczRLJ fkbqwg"
+                        class="styledComponents__Header-sc-hmshlr-11 bjXUdp"
                       >
                         Connection Event Details
                       </h3>
@@ -511,7 +511,7 @@ exports[`ConnectionEvent renders correctly for slow event 1`] = `
                           class="ant-col ant-col-12"
                         >
                           <div
-                            class="sc-jSMfEi kbAonz"
+                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
                           >
                             AP MAC:
                           </div>
@@ -520,7 +520,7 @@ exports[`ConnectionEvent renders correctly for slow event 1`] = `
                           class="ant-col ant-col-12 ant-col-pull-5"
                         >
                           <div
-                            class="sc-gKXOVf fZCycS"
+                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
                           >
                             94:B3:4F:3D:15:B0
                           </div>
@@ -533,7 +533,7 @@ exports[`ConnectionEvent renders correctly for slow event 1`] = `
                           class="ant-col ant-col-12"
                         >
                           <div
-                            class="sc-jSMfEi kbAonz"
+                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
                           >
                             AP Name:
                           </div>
@@ -542,7 +542,7 @@ exports[`ConnectionEvent renders correctly for slow event 1`] = `
                           class="ant-col ant-col-12 ant-col-pull-5"
                         >
                           <div
-                            class="sc-gKXOVf fZCycS"
+                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
                           >
                             R750-11-112
                           </div>
@@ -555,7 +555,7 @@ exports[`ConnectionEvent renders correctly for slow event 1`] = `
                           class="ant-col ant-col-12"
                         >
                           <div
-                            class="sc-jSMfEi kbAonz"
+                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
                           >
                             SSID:
                           </div>
@@ -564,7 +564,7 @@ exports[`ConnectionEvent renders correctly for slow event 1`] = `
                           class="ant-col ant-col-12 ant-col-pull-5"
                         >
                           <div
-                            class="sc-gKXOVf fZCycS"
+                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
                           />
                         </div>
                       </div>
@@ -575,7 +575,7 @@ exports[`ConnectionEvent renders correctly for slow event 1`] = `
                           class="ant-col ant-col-12"
                         >
                           <div
-                            class="sc-jSMfEi kbAonz"
+                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
                           >
                             Radio:
                           </div>
@@ -584,7 +584,7 @@ exports[`ConnectionEvent renders correctly for slow event 1`] = `
                           class="ant-col ant-col-12 ant-col-pull-5"
                         >
                           <div
-                            class="sc-gKXOVf fZCycS"
+                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
                           >
                             5 GHz
                           </div>
@@ -597,7 +597,7 @@ exports[`ConnectionEvent renders correctly for slow event 1`] = `
                           class="ant-col ant-col-12"
                         >
                           <div
-                            class="sc-jSMfEi kbAonz"
+                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
                           >
                             Time to Connect:
                           </div>
@@ -606,7 +606,7 @@ exports[`ConnectionEvent renders correctly for slow event 1`] = `
                           class="ant-col ant-col-12 ant-col-pull-5"
                         >
                           <div
-                            class="sc-gKXOVf fZCycS"
+                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
                           >
                             1 s
                           </div>
@@ -661,7 +661,7 @@ exports[`ConnectionEvent renders correctly for success event 1`] = `
                 class="ant-popover-inner-content"
               >
                 <div
-                  class="sc-eCYdqJ hLiyJh"
+                  class="styledComponents__DetailsWrapper-sc-hmshlr-15 lIKqt"
                 >
                   <div
                     class="ant-row"
@@ -670,10 +670,10 @@ exports[`ConnectionEvent renders correctly for success event 1`] = `
                       class="ant-col ant-col-24"
                     >
                       <div
-                        class="sc-gsnTZi cSuiOv"
+                        class="styledComponents__CloseRowWrapper-sc-hmshlr-12 hJblHN"
                       >
                         <span
-                          class="sc-dkzDqf guTdNS"
+                          class="styledComponents__CloseIconContainer-sc-hmshlr-13 hAHWZx"
                         >
                           <svg
                             data-testid="CloseSymbol"
@@ -689,7 +689,7 @@ exports[`ConnectionEvent renders correctly for success event 1`] = `
                       class="ant-col ant-col-24"
                     >
                       <h3
-                        class="sc-bczRLJ fkbqwg"
+                        class="styledComponents__Header-sc-hmshlr-11 bjXUdp"
                       >
                         Connection Event Details
                       </h3>
@@ -708,7 +708,7 @@ exports[`ConnectionEvent renders correctly for success event 1`] = `
                           class="ant-col ant-col-12"
                         >
                           <div
-                            class="sc-jSMfEi kbAonz"
+                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
                           >
                             AP MAC:
                           </div>
@@ -717,7 +717,7 @@ exports[`ConnectionEvent renders correctly for success event 1`] = `
                           class="ant-col ant-col-12 ant-col-pull-5"
                         >
                           <div
-                            class="sc-gKXOVf fZCycS"
+                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
                           >
                             94:B3:4F:3D:15:B0
                           </div>
@@ -730,7 +730,7 @@ exports[`ConnectionEvent renders correctly for success event 1`] = `
                           class="ant-col ant-col-12"
                         >
                           <div
-                            class="sc-jSMfEi kbAonz"
+                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
                           >
                             AP Name:
                           </div>
@@ -739,7 +739,7 @@ exports[`ConnectionEvent renders correctly for success event 1`] = `
                           class="ant-col ant-col-12 ant-col-pull-5"
                         >
                           <div
-                            class="sc-gKXOVf fZCycS"
+                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
                           >
                             R750-11-112
                           </div>
@@ -752,7 +752,7 @@ exports[`ConnectionEvent renders correctly for success event 1`] = `
                           class="ant-col ant-col-12"
                         >
                           <div
-                            class="sc-jSMfEi kbAonz"
+                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
                           >
                             SSID:
                           </div>
@@ -761,7 +761,7 @@ exports[`ConnectionEvent renders correctly for success event 1`] = `
                           class="ant-col ant-col-12 ant-col-pull-5"
                         >
                           <div
-                            class="sc-gKXOVf fZCycS"
+                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
                           />
                         </div>
                       </div>
@@ -772,7 +772,7 @@ exports[`ConnectionEvent renders correctly for success event 1`] = `
                           class="ant-col ant-col-12"
                         >
                           <div
-                            class="sc-jSMfEi kbAonz"
+                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
                           >
                             Radio:
                           </div>
@@ -781,7 +781,7 @@ exports[`ConnectionEvent renders correctly for success event 1`] = `
                           class="ant-col ant-col-12 ant-col-pull-5"
                         >
                           <div
-                            class="sc-gKXOVf fZCycS"
+                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
                           >
                             5 GHz
                           </div>
@@ -836,7 +836,7 @@ exports[`ConnectionEvent renders correctly for unknown failure 1`] = `
                 class="ant-popover-inner-content"
               >
                 <div
-                  class="sc-eCYdqJ hLiyJh"
+                  class="styledComponents__DetailsWrapper-sc-hmshlr-15 lIKqt"
                 >
                   <div
                     class="ant-row"
@@ -845,10 +845,10 @@ exports[`ConnectionEvent renders correctly for unknown failure 1`] = `
                       class="ant-col ant-col-24"
                     >
                       <div
-                        class="sc-gsnTZi cSuiOv"
+                        class="styledComponents__CloseRowWrapper-sc-hmshlr-12 hJblHN"
                       >
                         <span
-                          class="sc-dkzDqf guTdNS"
+                          class="styledComponents__CloseIconContainer-sc-hmshlr-13 hAHWZx"
                         >
                           <svg
                             data-testid="CloseSymbol"
@@ -864,7 +864,7 @@ exports[`ConnectionEvent renders correctly for unknown failure 1`] = `
                       class="ant-col ant-col-24"
                     >
                       <h3
-                        class="sc-bczRLJ fkbqwg"
+                        class="styledComponents__Header-sc-hmshlr-11 bjXUdp"
                       >
                         Connection Event Details
                       </h3>
@@ -883,7 +883,7 @@ exports[`ConnectionEvent renders correctly for unknown failure 1`] = `
                           class="ant-col ant-col-10"
                         >
                           <div
-                            class="sc-jSMfEi kbAonz"
+                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
                           >
                             AP MAC:
                           </div>
@@ -892,7 +892,7 @@ exports[`ConnectionEvent renders correctly for unknown failure 1`] = `
                           class="ant-col ant-col-10 ant-col-push-1"
                         >
                           <div
-                            class="sc-gKXOVf fZCycS"
+                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
                           >
                             AA:AA:AA:AA:AA:AA
                           </div>
@@ -905,7 +905,7 @@ exports[`ConnectionEvent renders correctly for unknown failure 1`] = `
                           class="ant-col ant-col-10"
                         >
                           <div
-                            class="sc-jSMfEi kbAonz"
+                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
                           >
                             AP Name:
                           </div>
@@ -914,7 +914,7 @@ exports[`ConnectionEvent renders correctly for unknown failure 1`] = `
                           class="ant-col ant-col-10 ant-col-push-1"
                         >
                           <div
-                            class="sc-gKXOVf fZCycS"
+                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
                           >
                             R750-11-112
                           </div>
@@ -927,7 +927,7 @@ exports[`ConnectionEvent renders correctly for unknown failure 1`] = `
                           class="ant-col ant-col-10"
                         >
                           <div
-                            class="sc-jSMfEi kbAonz"
+                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
                           >
                             SSID:
                           </div>
@@ -936,7 +936,7 @@ exports[`ConnectionEvent renders correctly for unknown failure 1`] = `
                           class="ant-col ant-col-10 ant-col-push-1"
                         >
                           <div
-                            class="sc-gKXOVf fZCycS"
+                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
                           />
                         </div>
                       </div>
@@ -947,7 +947,7 @@ exports[`ConnectionEvent renders correctly for unknown failure 1`] = `
                           class="ant-col ant-col-10"
                         >
                           <div
-                            class="sc-jSMfEi kbAonz"
+                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
                           >
                             Radio:
                           </div>
@@ -956,7 +956,7 @@ exports[`ConnectionEvent renders correctly for unknown failure 1`] = `
                           class="ant-col ant-col-10 ant-col-push-1"
                         >
                           <div
-                            class="sc-gKXOVf fZCycS"
+                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
                           >
                             5 GHz
                           </div>
@@ -969,7 +969,7 @@ exports[`ConnectionEvent renders correctly for unknown failure 1`] = `
                           class="ant-col ant-col-10"
                         >
                           <div
-                            class="sc-jSMfEi kbAonz"
+                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
                           >
                             Failure Type:
                           </div>
@@ -978,7 +978,7 @@ exports[`ConnectionEvent renders correctly for unknown failure 1`] = `
                           class="ant-col ant-col-10 ant-col-push-1"
                         >
                           <div
-                            class="sc-gKXOVf fZCycS"
+                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
                           >
                             Unknown
                           </div>
@@ -991,7 +991,7 @@ exports[`ConnectionEvent renders correctly for unknown failure 1`] = `
                           class="ant-col ant-col-10"
                         >
                           <div
-                            class="sc-jSMfEi kbAonz"
+                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
                           >
                             Reason:
                           </div>
@@ -1000,7 +1000,7 @@ exports[`ConnectionEvent renders correctly for unknown failure 1`] = `
                           class="ant-col ant-col-10 ant-col-push-1"
                         >
                           <div
-                            class="sc-gKXOVf fZCycS"
+                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
                           >
                             PSK Failure (passphrase mismatch) - Invalid MIC
                           </div>
@@ -1011,7 +1011,7 @@ exports[`ConnectionEvent renders correctly for unknown failure 1`] = `
                       class="ant-col ant-col-1 ant-col-pull-1"
                     >
                       <div
-                        class="sc-hKMtZM jMqzxu"
+                        class="styledComponents__VerticalLine-sc-hmshlr-14 eFmWgZ"
                       />
                     </div>
                     <div
@@ -1067,7 +1067,7 @@ exports[`ConnectionEvent renders correctly for unknown radio 1`] = `
                 class="ant-popover-inner-content"
               >
                 <div
-                  class="sc-eCYdqJ hLiyJh"
+                  class="styledComponents__DetailsWrapper-sc-hmshlr-15 lIKqt"
                 >
                   <div
                     class="ant-row"
@@ -1076,10 +1076,10 @@ exports[`ConnectionEvent renders correctly for unknown radio 1`] = `
                       class="ant-col ant-col-24"
                     >
                       <div
-                        class="sc-gsnTZi cSuiOv"
+                        class="styledComponents__CloseRowWrapper-sc-hmshlr-12 hJblHN"
                       >
                         <span
-                          class="sc-dkzDqf guTdNS"
+                          class="styledComponents__CloseIconContainer-sc-hmshlr-13 hAHWZx"
                         >
                           <svg
                             data-testid="CloseSymbol"
@@ -1095,7 +1095,7 @@ exports[`ConnectionEvent renders correctly for unknown radio 1`] = `
                       class="ant-col ant-col-24"
                     >
                       <h3
-                        class="sc-bczRLJ fkbqwg"
+                        class="styledComponents__Header-sc-hmshlr-11 bjXUdp"
                       >
                         Connection Event Details
                       </h3>
@@ -1114,7 +1114,7 @@ exports[`ConnectionEvent renders correctly for unknown radio 1`] = `
                           class="ant-col ant-col-12"
                         >
                           <div
-                            class="sc-jSMfEi kbAonz"
+                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
                           >
                             AP MAC:
                           </div>
@@ -1123,7 +1123,7 @@ exports[`ConnectionEvent renders correctly for unknown radio 1`] = `
                           class="ant-col ant-col-12 ant-col-pull-5"
                         >
                           <div
-                            class="sc-gKXOVf fZCycS"
+                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
                           >
                             94:B3:4F:3D:15:B0
                           </div>
@@ -1136,7 +1136,7 @@ exports[`ConnectionEvent renders correctly for unknown radio 1`] = `
                           class="ant-col ant-col-12"
                         >
                           <div
-                            class="sc-jSMfEi kbAonz"
+                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
                           >
                             AP Name:
                           </div>
@@ -1145,7 +1145,7 @@ exports[`ConnectionEvent renders correctly for unknown radio 1`] = `
                           class="ant-col ant-col-12 ant-col-pull-5"
                         >
                           <div
-                            class="sc-gKXOVf fZCycS"
+                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
                           >
                             R750-11-112
                           </div>
@@ -1158,7 +1158,7 @@ exports[`ConnectionEvent renders correctly for unknown radio 1`] = `
                           class="ant-col ant-col-12"
                         >
                           <div
-                            class="sc-jSMfEi kbAonz"
+                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
                           >
                             SSID:
                           </div>
@@ -1167,7 +1167,7 @@ exports[`ConnectionEvent renders correctly for unknown radio 1`] = `
                           class="ant-col ant-col-12 ant-col-pull-5"
                         >
                           <div
-                            class="sc-gKXOVf fZCycS"
+                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
                           />
                         </div>
                       </div>
@@ -1178,7 +1178,7 @@ exports[`ConnectionEvent renders correctly for unknown radio 1`] = `
                           class="ant-col ant-col-12"
                         >
                           <div
-                            class="sc-jSMfEi kbAonz"
+                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
                           >
                             Radio:
                           </div>
@@ -1187,7 +1187,7 @@ exports[`ConnectionEvent renders correctly for unknown radio 1`] = `
                           class="ant-col ant-col-12 ant-col-pull-5"
                         >
                           <div
-                            class="sc-gKXOVf fZCycS"
+                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
                           >
                             Unknown
                           </div>
@@ -1254,7 +1254,7 @@ exports[`ConnectionEvent renders correctly on popover close 2`] = `
                 class="ant-popover-inner-content"
               >
                 <div
-                  class="sc-eCYdqJ hLiyJh"
+                  class="styledComponents__DetailsWrapper-sc-hmshlr-15 lIKqt"
                 >
                   <div
                     class="ant-row"
@@ -1263,10 +1263,10 @@ exports[`ConnectionEvent renders correctly on popover close 2`] = `
                       class="ant-col ant-col-24"
                     >
                       <div
-                        class="sc-gsnTZi cSuiOv"
+                        class="styledComponents__CloseRowWrapper-sc-hmshlr-12 hJblHN"
                       >
                         <span
-                          class="sc-dkzDqf guTdNS"
+                          class="styledComponents__CloseIconContainer-sc-hmshlr-13 hAHWZx"
                         >
                           <svg
                             data-testid="CloseSymbol"
@@ -1282,7 +1282,7 @@ exports[`ConnectionEvent renders correctly on popover close 2`] = `
                       class="ant-col ant-col-24"
                     >
                       <h3
-                        class="sc-bczRLJ fkbqwg"
+                        class="styledComponents__Header-sc-hmshlr-11 bjXUdp"
                       >
                         Connection Event Details
                       </h3>
@@ -1301,7 +1301,7 @@ exports[`ConnectionEvent renders correctly on popover close 2`] = `
                           class="ant-col ant-col-12"
                         >
                           <div
-                            class="sc-jSMfEi kbAonz"
+                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
                           >
                             AP MAC:
                           </div>
@@ -1310,7 +1310,7 @@ exports[`ConnectionEvent renders correctly on popover close 2`] = `
                           class="ant-col ant-col-12 ant-col-pull-5"
                         >
                           <div
-                            class="sc-gKXOVf fZCycS"
+                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
                           >
                             94:B3:4F:3D:15:B0
                           </div>
@@ -1323,7 +1323,7 @@ exports[`ConnectionEvent renders correctly on popover close 2`] = `
                           class="ant-col ant-col-12"
                         >
                           <div
-                            class="sc-jSMfEi kbAonz"
+                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
                           >
                             AP Name:
                           </div>
@@ -1332,7 +1332,7 @@ exports[`ConnectionEvent renders correctly on popover close 2`] = `
                           class="ant-col ant-col-12 ant-col-pull-5"
                         >
                           <div
-                            class="sc-gKXOVf fZCycS"
+                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
                           >
                             R750-11-112
                           </div>
@@ -1345,7 +1345,7 @@ exports[`ConnectionEvent renders correctly on popover close 2`] = `
                           class="ant-col ant-col-12"
                         >
                           <div
-                            class="sc-jSMfEi kbAonz"
+                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
                           >
                             SSID:
                           </div>
@@ -1354,7 +1354,7 @@ exports[`ConnectionEvent renders correctly on popover close 2`] = `
                           class="ant-col ant-col-12 ant-col-pull-5"
                         >
                           <div
-                            class="sc-gKXOVf fZCycS"
+                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
                           />
                         </div>
                       </div>
@@ -1365,7 +1365,7 @@ exports[`ConnectionEvent renders correctly on popover close 2`] = `
                           class="ant-col ant-col-12"
                         >
                           <div
-                            class="sc-jSMfEi kbAonz"
+                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
                           >
                             Radio:
                           </div>
@@ -1374,7 +1374,7 @@ exports[`ConnectionEvent renders correctly on popover close 2`] = `
                           class="ant-col ant-col-12 ant-col-pull-5"
                         >
                           <div
-                            class="sc-gKXOVf fZCycS"
+                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
                           >
                             5 GHz
                           </div>
@@ -1427,7 +1427,7 @@ exports[`ConnectionEvent renders correctly on popover close 3`] = `
                 class="ant-popover-inner-content"
               >
                 <div
-                  class="sc-eCYdqJ hLiyJh"
+                  class="styledComponents__DetailsWrapper-sc-hmshlr-15 lIKqt"
                 >
                   <div
                     class="ant-row"
@@ -1436,10 +1436,10 @@ exports[`ConnectionEvent renders correctly on popover close 3`] = `
                       class="ant-col ant-col-24"
                     >
                       <div
-                        class="sc-gsnTZi cSuiOv"
+                        class="styledComponents__CloseRowWrapper-sc-hmshlr-12 hJblHN"
                       >
                         <span
-                          class="sc-dkzDqf guTdNS"
+                          class="styledComponents__CloseIconContainer-sc-hmshlr-13 hAHWZx"
                         >
                           <svg
                             data-testid="CloseSymbol"
@@ -1455,7 +1455,7 @@ exports[`ConnectionEvent renders correctly on popover close 3`] = `
                       class="ant-col ant-col-24"
                     >
                       <h3
-                        class="sc-bczRLJ fkbqwg"
+                        class="styledComponents__Header-sc-hmshlr-11 bjXUdp"
                       >
                         Connection Event Details
                       </h3>
@@ -1474,7 +1474,7 @@ exports[`ConnectionEvent renders correctly on popover close 3`] = `
                           class="ant-col ant-col-12"
                         >
                           <div
-                            class="sc-jSMfEi kbAonz"
+                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
                           >
                             AP MAC:
                           </div>
@@ -1483,7 +1483,7 @@ exports[`ConnectionEvent renders correctly on popover close 3`] = `
                           class="ant-col ant-col-12 ant-col-pull-5"
                         >
                           <div
-                            class="sc-gKXOVf fZCycS"
+                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
                           >
                             94:B3:4F:3D:15:B0
                           </div>
@@ -1496,7 +1496,7 @@ exports[`ConnectionEvent renders correctly on popover close 3`] = `
                           class="ant-col ant-col-12"
                         >
                           <div
-                            class="sc-jSMfEi kbAonz"
+                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
                           >
                             AP Name:
                           </div>
@@ -1505,7 +1505,7 @@ exports[`ConnectionEvent renders correctly on popover close 3`] = `
                           class="ant-col ant-col-12 ant-col-pull-5"
                         >
                           <div
-                            class="sc-gKXOVf fZCycS"
+                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
                           >
                             R750-11-112
                           </div>
@@ -1518,7 +1518,7 @@ exports[`ConnectionEvent renders correctly on popover close 3`] = `
                           class="ant-col ant-col-12"
                         >
                           <div
-                            class="sc-jSMfEi kbAonz"
+                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
                           >
                             SSID:
                           </div>
@@ -1527,7 +1527,7 @@ exports[`ConnectionEvent renders correctly on popover close 3`] = `
                           class="ant-col ant-col-12 ant-col-pull-5"
                         >
                           <div
-                            class="sc-gKXOVf fZCycS"
+                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
                           />
                         </div>
                       </div>
@@ -1538,7 +1538,7 @@ exports[`ConnectionEvent renders correctly on popover close 3`] = `
                           class="ant-col ant-col-12"
                         >
                           <div
-                            class="sc-jSMfEi kbAonz"
+                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
                           >
                             Radio:
                           </div>
@@ -1547,7 +1547,7 @@ exports[`ConnectionEvent renders correctly on popover close 3`] = `
                           class="ant-col ant-col-12 ant-col-pull-5"
                         >
                           <div
-                            class="sc-gKXOVf fZCycS"
+                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
                           >
                             5 GHz
                           </div>
