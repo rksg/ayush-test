@@ -11,6 +11,9 @@ import {
   Tooltip
 } from '@acx-ui/components'
 import {
+  MultiFactor
+} from '@acx-ui/msp/components'
+import {
   useGetUserProfileQuery,
   useUpdateUserProfileMutation
 } from '@acx-ui/rc/services'
@@ -99,6 +102,8 @@ export function UserProfile () {
       pathname: location.from
     }, { replace: true })
   }
+
+  const showNotification = false
 
   const UserData = () => {
     return (
@@ -270,36 +275,37 @@ export function UserProfile () {
   }
 
   const SecurityTab = () => {
-    return (
-      <StepsForm
-        buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
-        onFinish={async () => handleCancel()}
-        onCancel={async () => handleCancel()}
-      >
-        <StepsForm.StepForm>
-          <Row gutter={20}>
-            <Col span={8}>
-              <h4 ><b>{$t({ defaultMessage: 'Multi-Factor Authentication' })}</b></h4>
+    return <MultiFactor/>
+    // return (
+    //   <StepsForm
+    //     buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
+    //     onFinish={async () => handleCancel()}
+    //     onCancel={async () => handleCancel()}
+    //   >
+    //     <StepsForm.StepForm>
+    //       <Row gutter={20}>
+    //         <Col span={8}>
+    //           <h4 ><b>{$t({ defaultMessage: 'Multi-Factor Authentication' })}</b></h4>
 
-              <Form.Item style={{ marginTop: '15px' }}
-                name='mfa_status'
-                label={$t({ defaultMessage: 'Multi-Factor Authentication' })}
-                tooltip={$t({ defaultMessage:
-                  'This option is controlled by the Prime-Administrator(s) of this account.' +
-                  'If they turn it on, you will be able to manage here your authentication ' +
-                  'settings' })}
-                rules={[{
-                  required: false
-                }]}
-                children={
-                  <h4>Off</h4>
-                }
-              />
-            </Col>
-          </Row>
-        </StepsForm.StepForm>
-      </StepsForm>
-    )
+    //           <Form.Item style={{ marginTop: '15px' }}
+    //             name='mfa_status'
+    //             label={$t({ defaultMessage: 'Multi-Factor Authentication' })}
+    //             tooltip={$t({ defaultMessage:
+    //               'This option is controlled by the Prime-Administrator(s) of this account.' +
+    //               'If they turn it on, you will be able to manage here your authentication ' +
+    //               'settings' })}
+    //             rules={[{
+    //               required: false
+    //             }]}
+    //             children={
+    //               <h4>Off</h4>
+    //             }
+    //           />
+    //         </Col>
+    //       </Row>
+    //     </StepsForm.StepForm>
+    //   </StepsForm>
+    // )
   }
 
   return (
@@ -309,15 +315,15 @@ export function UserProfile () {
       />
       <UserData/>
 
-      <Tabs activeKey={'Settings'}>
-        <Tabs.TabPane
+      <Tabs >
+        {showNotification && <Tabs.TabPane
           tab={<Tooltip title={$t(notAvailableMsg)}>
             {$t({ defaultMessage: 'Notifications' })}
           </Tooltip>}
           disabled={true}
           key='Notfications'>
           <NotificationTab />
-        </Tabs.TabPane>
+        </Tabs.TabPane>}
 
         <Tabs.TabPane
           tab={$t({ defaultMessage: 'Settings' })}
@@ -326,10 +332,7 @@ export function UserProfile () {
         </Tabs.TabPane>
 
         <Tabs.TabPane
-          tab={<Tooltip title={$t(notAvailableMsg)}>
-            {$t({ defaultMessage: 'Security' })}
-          </Tooltip>}
-          disabled={true}
+          tab={$t({ defaultMessage: 'Security' })}
           key='Security'>
           <SecurityTab />
         </Tabs.TabPane>
@@ -338,7 +341,7 @@ export function UserProfile () {
           tab={<Tooltip title={$t(notAvailableMsg)}>
             {$t({ defaultMessage: 'Recent Logins' })}
           </Tooltip>}
-          disabled={true}
+          disabled={false}
           key='RecentLogins'>
           <RecentLogin />
         </Tabs.TabPane>
