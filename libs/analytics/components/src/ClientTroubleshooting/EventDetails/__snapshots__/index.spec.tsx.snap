@@ -2,34 +2,81 @@
 
 exports[`EventDetails renders Details correctly 1`] = `
 <DocumentFragment>
-  <h3
-    class="sc-bczRLJ bcJKaK"
+  <div
+    class="sc-eCYdqJ hLiyJh"
   >
-    Connection Event Details
-  </h3>
-  <dl
-    class="sc-dkzDqf ghqaWu"
-  >
-    <dt
-      class="sc-hKMtZM dqLvfG"
+    <div
+      class="ant-row"
     >
-      label1
-    </dt>
-    <dd
-      class="sc-eCYdqJ bkYxGt"
+      <div
+        class="ant-col ant-col-24"
+      />
+    </div>
+    <div
+      class="ant-row"
     >
-      value1
-    </dd>
-    <dt
-      class="sc-hKMtZM dqLvfG"
+      <div
+        class="ant-col ant-col-24"
+      >
+        <h3
+          class="sc-bczRLJ fkbqwg"
+        >
+          Connection Event Details
+        </h3>
+      </div>
+    </div>
+    <div
+      class="ant-row"
     >
-      label2
-    </dt>
-    <dd
-      class="sc-eCYdqJ bkYxGt"
-    >
-      value2
-    </dd>
-  </dl>
+      <div
+        class="ant-col ant-col-24"
+      >
+        <div
+          class="ant-row"
+        >
+          <div
+            class="ant-col ant-col-12"
+          >
+            <div
+              class="sc-jSMfEi kbAonz"
+            >
+              label1
+            </div>
+          </div>
+          <div
+            class="ant-col ant-col-12 ant-col-pull-5"
+          >
+            <div
+              class="sc-gKXOVf fZCycS"
+            >
+              value1
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-row"
+        >
+          <div
+            class="ant-col ant-col-12"
+          >
+            <div
+              class="sc-jSMfEi kbAonz"
+            >
+              label2
+            </div>
+          </div>
+          <div
+            class="ant-col ant-col-12 ant-col-pull-5"
+          >
+            <div
+              class="sc-gKXOVf fZCycS"
+            >
+              value2
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </DocumentFragment>
 `;

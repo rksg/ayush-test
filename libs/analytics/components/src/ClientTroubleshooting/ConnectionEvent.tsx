@@ -69,7 +69,7 @@ export function ConnectionEventPopover ({ children, event }:
   const [open, setOpen] = React.useState(false)
   const hide = () => { setOpen(false) }
   const rowData = useConnectionDetail(event)
-  const failureExtra: ReactNode = (event.category === 'failure')
+  const failureExtra: ReactNode = (event.category === FAILURE)
     ? $t({ defaultMessage: 'Failure Sequence Diagram' })
     : null
   return (
@@ -77,8 +77,8 @@ export function ConnectionEventPopover ({ children, event }:
       <Popover
         content={<Details fields={rowData} openHandler={hide} extra={failureExtra}/>}
         trigger='click'
-        placement='right'
-        getPopupContainer={(triggerNode) => triggerNode}
+        placement='bottom'
+        getPopupContainer={(triggerNode) => triggerNode.parentElement as HTMLElement}
         visible={open}
         onVisibleChange={setOpen}
         arrowPointAtCenter

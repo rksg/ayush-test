@@ -1,18 +1,29 @@
 import { Fragment, ReactNode } from 'react'
 
-import { useIntl } from 'react-intl'
+import { Col, Row } from 'antd'
+import { useIntl }  from 'react-intl'
 
 import { CloseSymbol } from '@acx-ui/icons'
 
 import * as UI from './styledComponents'
 
-
-const detailsRowList = ({ fields }: { fields: Array<{ label: string, value: string }> }) => {
+const detailsRowList = (
+  fields: Array<{ label: string, value: string }>,
+  extra?: ReactNode
+) => {
+  const span = extra ? 10 : 12
+  const pull = extra ? 0 : 5
+  const push = extra ? 1 : 0
   return fields.map((field, index) =>
-    <Fragment key={index}>
-      <UI.RowLabel>{field.label}</UI.RowLabel>
-      <UI.RowValue>{field.value}</UI.RowValue>
-    </Fragment>)
+    <Row key={index} gutter={[0, 0]}>
+      <Col span={span}>
+        <UI.DetailsRowLabel>{field.label}</UI.DetailsRowLabel>
+      </Col>
+      <Col span={span} pull={pull} push={push}>
+        <UI.DetailsRowValue>{field.value}</UI.DetailsRowValue>
+      </Col>
+    </Row>
+  )
 }
 
 export const Details = ({ fields, openHandler, extra }: {
@@ -21,23 +32,35 @@ export const Details = ({ fields, openHandler, extra }: {
   extra?: ReactNode
 }) => {
   const { $t } = useIntl()
-  return <>
-    <UI.Header>
-      {openHandler && <UI.CloseSpan onClick={openHandler}><CloseSymbol /></UI.CloseSpan>}
-      {$t({ defaultMessage: 'Connection Event Details' })}
-    </UI.Header>
-    {
-      (extra)
-        ? <UI.ColumnContainer>
-          <UI.RowContainer>
-            {detailsRowList({ fields })}
-          </UI.RowContainer>
-          <UI.VerticalLine />
-          {extra}
-        </UI.ColumnContainer>
-        : <UI.RowContainer>
-          {detailsRowList({ fields })}
-        </UI.RowContainer>
-    }
-  </>
+  return <UI.DetailsWrapper>
+    <Row gutter={[0, 0]}>
+      <Col span={24}>
+        {openHandler && <UI.CloseRowWrapper onClick={openHandler}>
+          <UI.CloseIconContainer>
+            <CloseSymbol />
+          </UI.CloseIconContainer>
+        </UI.CloseRowWrapper>}
+      </Col>
+    </Row>
+    <Row gutter={[0, 0]}>
+      <Col span={24}>
+        <UI.Header>
+          {$t({ defaultMessage: 'Connection Event Details' })}
+        </UI.Header>
+      </Col>
+    </Row>
+    <Row>
+      {
+        (extra)
+          ? <>
+            <Col span={16}>{detailsRowList(fields, extra)}</Col>
+            <Col span={1} pull={1}><UI.VerticalLine /></Col>
+            <Col span={6}>{extra}</Col>
+          </>
+          : <Col span={24}>
+            {detailsRowList(fields)}
+          </Col>
+      }
+    </Row>
+  </UI.DetailsWrapper>
 }

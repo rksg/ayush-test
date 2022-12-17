@@ -9,102 +9,190 @@ exports[`ConnectionEvent renders correctly for disconnect event 1`] = `
       class="ant-popover-open"
     >
       test
-      <div
-        style="position: absolute; top: 0px; left: 0px; width: 100%;"
-      >
-        <div>
+    </span>
+    <div
+      style="position: absolute; top: 0px; left: 0px; width: 100%;"
+    >
+      <div>
+        <div
+          class="ant-popover"
+          style="opacity: 0;"
+        >
           <div
-            class="ant-popover"
-            style="opacity: 0;"
+            class="ant-popover-content"
           >
             <div
-              class="ant-popover-content"
+              class="ant-popover-arrow"
+            >
+              <span
+                class="ant-popover-arrow-content"
+              />
+            </div>
+            <div
+              class="ant-popover-inner"
+              role="tooltip"
             >
               <div
-                class="ant-popover-arrow"
-              >
-                <span
-                  class="ant-popover-arrow-content"
-                />
-              </div>
-              <div
-                class="ant-popover-inner"
-                role="tooltip"
+                class="ant-popover-inner-content"
               >
                 <div
-                  class="ant-popover-inner-content"
+                  class="sc-eCYdqJ hLiyJh"
                 >
-                  <h3
-                    class="sc-bczRLJ bcJKaK"
+                  <div
+                    class="ant-row"
                   >
-                    <span
-                      class="sc-gsnTZi iHYaxS"
+                    <div
+                      class="ant-col ant-col-24"
                     >
-                      <svg
-                        data-testid="CloseSymbol"
-                      />
-                    </span>
-                    Connection Event Details
-                  </h3>
-                  <dl
-                    class="sc-dkzDqf ghqaWu"
+                      <div
+                        class="sc-gsnTZi cSuiOv"
+                      >
+                        <span
+                          class="sc-dkzDqf guTdNS"
+                        >
+                          <svg
+                            data-testid="CloseSymbol"
+                          />
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-row"
                   >
-                    <dt
-                      class="sc-hKMtZM dqLvfG"
+                    <div
+                      class="ant-col ant-col-24"
                     >
-                      AP MAC:
-                    </dt>
-                    <dd
-                      class="sc-eCYdqJ bkYxGt"
+                      <h3
+                        class="sc-bczRLJ fkbqwg"
+                      >
+                        Connection Event Details
+                      </h3>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-row"
+                  >
+                    <div
+                      class="ant-col ant-col-24"
                     >
-                      94:B3:4F:3D:15:B0
-                    </dd>
-                    <dt
-                      class="sc-hKMtZM dqLvfG"
-                    >
-                      AP Name:
-                    </dt>
-                    <dd
-                      class="sc-eCYdqJ bkYxGt"
-                    >
-                      R750-11-112
-                    </dd>
-                    <dt
-                      class="sc-hKMtZM dqLvfG"
-                    >
-                      SSID:
-                    </dt>
-                    <dd
-                      class="sc-eCYdqJ bkYxGt"
-                    />
-                    <dt
-                      class="sc-hKMtZM dqLvfG"
-                    >
-                      Radio:
-                    </dt>
-                    <dd
-                      class="sc-eCYdqJ bkYxGt"
-                    >
-                      5 GHz
-                    </dd>
-                    <dt
-                      class="sc-hKMtZM dqLvfG"
-                    >
-                      Reason:
-                    </dt>
-                    <dd
-                      class="sc-eCYdqJ bkYxGt"
-                    >
-                      Client disconnected
-                    </dd>
-                  </dl>
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col ant-col-12"
+                        >
+                          <div
+                            class="sc-jSMfEi kbAonz"
+                          >
+                            AP MAC:
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-12 ant-col-pull-5"
+                        >
+                          <div
+                            class="sc-gKXOVf fZCycS"
+                          >
+                            94:B3:4F:3D:15:B0
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col ant-col-12"
+                        >
+                          <div
+                            class="sc-jSMfEi kbAonz"
+                          >
+                            AP Name:
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-12 ant-col-pull-5"
+                        >
+                          <div
+                            class="sc-gKXOVf fZCycS"
+                          >
+                            R750-11-112
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col ant-col-12"
+                        >
+                          <div
+                            class="sc-jSMfEi kbAonz"
+                          >
+                            SSID:
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-12 ant-col-pull-5"
+                        >
+                          <div
+                            class="sc-gKXOVf fZCycS"
+                          />
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col ant-col-12"
+                        >
+                          <div
+                            class="sc-jSMfEi kbAonz"
+                          >
+                            Radio:
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-12 ant-col-pull-5"
+                        >
+                          <div
+                            class="sc-gKXOVf fZCycS"
+                          >
+                            5 GHz
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col ant-col-12"
+                        >
+                          <div
+                            class="sc-jSMfEi kbAonz"
+                          >
+                            Reason:
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-12 ant-col-pull-5"
+                        >
+                          <div
+                            class="sc-gKXOVf fZCycS"
+                          >
+                            Client disconnected
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </span>
+    </div>
   </div>
 </DocumentFragment>
 `;
@@ -118,112 +206,216 @@ exports[`ConnectionEvent renders correctly for failureEvent event 1`] = `
       class="ant-popover-open"
     >
       test
-      <div
-        style="position: absolute; top: 0px; left: 0px; width: 100%;"
-      >
-        <div>
+    </span>
+    <div
+      style="position: absolute; top: 0px; left: 0px; width: 100%;"
+    >
+      <div>
+        <div
+          class="ant-popover"
+          style="opacity: 0;"
+        >
           <div
-            class="ant-popover"
-            style="opacity: 0;"
+            class="ant-popover-content"
           >
             <div
-              class="ant-popover-content"
+              class="ant-popover-arrow"
+            >
+              <span
+                class="ant-popover-arrow-content"
+              />
+            </div>
+            <div
+              class="ant-popover-inner"
+              role="tooltip"
             >
               <div
-                class="ant-popover-arrow"
-              >
-                <span
-                  class="ant-popover-arrow-content"
-                />
-              </div>
-              <div
-                class="ant-popover-inner"
-                role="tooltip"
+                class="ant-popover-inner-content"
               >
                 <div
-                  class="ant-popover-inner-content"
+                  class="sc-eCYdqJ hLiyJh"
                 >
-                  <h3
-                    class="sc-bczRLJ bcJKaK"
-                  >
-                    <span
-                      class="sc-gsnTZi iHYaxS"
-                    >
-                      <svg
-                        data-testid="CloseSymbol"
-                      />
-                    </span>
-                    Connection Event Details
-                  </h3>
                   <div
-                    class="sc-jSMfEi jytKoq"
+                    class="ant-row"
                   >
-                    <dl
-                      class="sc-dkzDqf ghqaWu"
-                    >
-                      <dt
-                        class="sc-hKMtZM dqLvfG"
-                      >
-                        AP MAC:
-                      </dt>
-                      <dd
-                        class="sc-eCYdqJ bkYxGt"
-                      >
-                        AA:AA:AA:AA:AA:AA
-                      </dd>
-                      <dt
-                        class="sc-hKMtZM dqLvfG"
-                      >
-                        AP Name:
-                      </dt>
-                      <dd
-                        class="sc-eCYdqJ bkYxGt"
-                      >
-                        R750-11-112
-                      </dd>
-                      <dt
-                        class="sc-hKMtZM dqLvfG"
-                      >
-                        SSID:
-                      </dt>
-                      <dd
-                        class="sc-eCYdqJ bkYxGt"
-                      />
-                      <dt
-                        class="sc-hKMtZM dqLvfG"
-                      >
-                        Radio:
-                      </dt>
-                      <dd
-                        class="sc-eCYdqJ bkYxGt"
-                      >
-                        5 GHz
-                      </dd>
-                      <dt
-                        class="sc-hKMtZM dqLvfG"
-                      >
-                        Failure Type:
-                      </dt>
-                      <dd
-                        class="sc-eCYdqJ bkYxGt"
-                      >
-                        EAPOL Failure
-                      </dd>
-                      <dt
-                        class="sc-hKMtZM dqLvfG"
-                      >
-                        Reason:
-                      </dt>
-                      <dd
-                        class="sc-eCYdqJ bkYxGt"
-                      >
-                        PSK Failure (passphrase mismatch) - Invalid MIC
-                      </dd>
-                    </dl>
                     <div
-                      class="sc-gKXOVf cttlZi"
-                    />
-                    Failure Sequence Diagram
+                      class="ant-col ant-col-24"
+                    >
+                      <div
+                        class="sc-gsnTZi cSuiOv"
+                      >
+                        <span
+                          class="sc-dkzDqf guTdNS"
+                        >
+                          <svg
+                            data-testid="CloseSymbol"
+                          />
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-row"
+                  >
+                    <div
+                      class="ant-col ant-col-24"
+                    >
+                      <h3
+                        class="sc-bczRLJ fkbqwg"
+                      >
+                        Connection Event Details
+                      </h3>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-row"
+                  >
+                    <div
+                      class="ant-col ant-col-16"
+                    >
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col ant-col-10"
+                        >
+                          <div
+                            class="sc-jSMfEi kbAonz"
+                          >
+                            AP MAC:
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-10 ant-col-push-1"
+                        >
+                          <div
+                            class="sc-gKXOVf fZCycS"
+                          >
+                            AA:AA:AA:AA:AA:AA
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col ant-col-10"
+                        >
+                          <div
+                            class="sc-jSMfEi kbAonz"
+                          >
+                            AP Name:
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-10 ant-col-push-1"
+                        >
+                          <div
+                            class="sc-gKXOVf fZCycS"
+                          >
+                            R750-11-112
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col ant-col-10"
+                        >
+                          <div
+                            class="sc-jSMfEi kbAonz"
+                          >
+                            SSID:
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-10 ant-col-push-1"
+                        >
+                          <div
+                            class="sc-gKXOVf fZCycS"
+                          />
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col ant-col-10"
+                        >
+                          <div
+                            class="sc-jSMfEi kbAonz"
+                          >
+                            Radio:
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-10 ant-col-push-1"
+                        >
+                          <div
+                            class="sc-gKXOVf fZCycS"
+                          >
+                            5 GHz
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col ant-col-10"
+                        >
+                          <div
+                            class="sc-jSMfEi kbAonz"
+                          >
+                            Failure Type:
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-10 ant-col-push-1"
+                        >
+                          <div
+                            class="sc-gKXOVf fZCycS"
+                          >
+                            EAPOL Failure
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col ant-col-10"
+                        >
+                          <div
+                            class="sc-jSMfEi kbAonz"
+                          >
+                            Reason:
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-10 ant-col-push-1"
+                        >
+                          <div
+                            class="sc-gKXOVf fZCycS"
+                          >
+                            PSK Failure (passphrase mismatch) - Invalid MIC
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="ant-col ant-col-1 ant-col-pull-1"
+                    >
+                      <div
+                        class="sc-hKMtZM jMqzxu"
+                      />
+                    </div>
+                    <div
+                      class="ant-col ant-col-6"
+                    >
+                      Failure Sequence Diagram
+                    </div>
                   </div>
                 </div>
               </div>
@@ -231,7 +423,7 @@ exports[`ConnectionEvent renders correctly for failureEvent event 1`] = `
           </div>
         </div>
       </div>
-    </span>
+    </div>
   </div>
 </DocumentFragment>
 `;
@@ -245,102 +437,190 @@ exports[`ConnectionEvent renders correctly for slow event 1`] = `
       class="ant-popover-open"
     >
       test
-      <div
-        style="position: absolute; top: 0px; left: 0px; width: 100%;"
-      >
-        <div>
+    </span>
+    <div
+      style="position: absolute; top: 0px; left: 0px; width: 100%;"
+    >
+      <div>
+        <div
+          class="ant-popover"
+          style="opacity: 0;"
+        >
           <div
-            class="ant-popover"
-            style="opacity: 0;"
+            class="ant-popover-content"
           >
             <div
-              class="ant-popover-content"
+              class="ant-popover-arrow"
+            >
+              <span
+                class="ant-popover-arrow-content"
+              />
+            </div>
+            <div
+              class="ant-popover-inner"
+              role="tooltip"
             >
               <div
-                class="ant-popover-arrow"
-              >
-                <span
-                  class="ant-popover-arrow-content"
-                />
-              </div>
-              <div
-                class="ant-popover-inner"
-                role="tooltip"
+                class="ant-popover-inner-content"
               >
                 <div
-                  class="ant-popover-inner-content"
+                  class="sc-eCYdqJ hLiyJh"
                 >
-                  <h3
-                    class="sc-bczRLJ bcJKaK"
+                  <div
+                    class="ant-row"
                   >
-                    <span
-                      class="sc-gsnTZi iHYaxS"
+                    <div
+                      class="ant-col ant-col-24"
                     >
-                      <svg
-                        data-testid="CloseSymbol"
-                      />
-                    </span>
-                    Connection Event Details
-                  </h3>
-                  <dl
-                    class="sc-dkzDqf ghqaWu"
+                      <div
+                        class="sc-gsnTZi cSuiOv"
+                      >
+                        <span
+                          class="sc-dkzDqf guTdNS"
+                        >
+                          <svg
+                            data-testid="CloseSymbol"
+                          />
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-row"
                   >
-                    <dt
-                      class="sc-hKMtZM dqLvfG"
+                    <div
+                      class="ant-col ant-col-24"
                     >
-                      AP MAC:
-                    </dt>
-                    <dd
-                      class="sc-eCYdqJ bkYxGt"
+                      <h3
+                        class="sc-bczRLJ fkbqwg"
+                      >
+                        Connection Event Details
+                      </h3>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-row"
+                  >
+                    <div
+                      class="ant-col ant-col-24"
                     >
-                      94:B3:4F:3D:15:B0
-                    </dd>
-                    <dt
-                      class="sc-hKMtZM dqLvfG"
-                    >
-                      AP Name:
-                    </dt>
-                    <dd
-                      class="sc-eCYdqJ bkYxGt"
-                    >
-                      R750-11-112
-                    </dd>
-                    <dt
-                      class="sc-hKMtZM dqLvfG"
-                    >
-                      SSID:
-                    </dt>
-                    <dd
-                      class="sc-eCYdqJ bkYxGt"
-                    />
-                    <dt
-                      class="sc-hKMtZM dqLvfG"
-                    >
-                      Radio:
-                    </dt>
-                    <dd
-                      class="sc-eCYdqJ bkYxGt"
-                    >
-                      5 GHz
-                    </dd>
-                    <dt
-                      class="sc-hKMtZM dqLvfG"
-                    >
-                      Time to Connect:
-                    </dt>
-                    <dd
-                      class="sc-eCYdqJ bkYxGt"
-                    >
-                      1 s
-                    </dd>
-                  </dl>
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col ant-col-12"
+                        >
+                          <div
+                            class="sc-jSMfEi kbAonz"
+                          >
+                            AP MAC:
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-12 ant-col-pull-5"
+                        >
+                          <div
+                            class="sc-gKXOVf fZCycS"
+                          >
+                            94:B3:4F:3D:15:B0
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col ant-col-12"
+                        >
+                          <div
+                            class="sc-jSMfEi kbAonz"
+                          >
+                            AP Name:
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-12 ant-col-pull-5"
+                        >
+                          <div
+                            class="sc-gKXOVf fZCycS"
+                          >
+                            R750-11-112
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col ant-col-12"
+                        >
+                          <div
+                            class="sc-jSMfEi kbAonz"
+                          >
+                            SSID:
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-12 ant-col-pull-5"
+                        >
+                          <div
+                            class="sc-gKXOVf fZCycS"
+                          />
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col ant-col-12"
+                        >
+                          <div
+                            class="sc-jSMfEi kbAonz"
+                          >
+                            Radio:
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-12 ant-col-pull-5"
+                        >
+                          <div
+                            class="sc-gKXOVf fZCycS"
+                          >
+                            5 GHz
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col ant-col-12"
+                        >
+                          <div
+                            class="sc-jSMfEi kbAonz"
+                          >
+                            Time to Connect:
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-12 ant-col-pull-5"
+                        >
+                          <div
+                            class="sc-gKXOVf fZCycS"
+                          >
+                            1 s
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </span>
+    </div>
   </div>
 </DocumentFragment>
 `;
@@ -354,92 +634,168 @@ exports[`ConnectionEvent renders correctly for success event 1`] = `
       class="ant-popover-open"
     >
       test
-      <div
-        style="position: absolute; top: 0px; left: 0px; width: 100%;"
-      >
-        <div>
+    </span>
+    <div
+      style="position: absolute; top: 0px; left: 0px; width: 100%;"
+    >
+      <div>
+        <div
+          class="ant-popover"
+          style="opacity: 0;"
+        >
           <div
-            class="ant-popover"
-            style="opacity: 0;"
+            class="ant-popover-content"
           >
             <div
-              class="ant-popover-content"
+              class="ant-popover-arrow"
+            >
+              <span
+                class="ant-popover-arrow-content"
+              />
+            </div>
+            <div
+              class="ant-popover-inner"
+              role="tooltip"
             >
               <div
-                class="ant-popover-arrow"
-              >
-                <span
-                  class="ant-popover-arrow-content"
-                />
-              </div>
-              <div
-                class="ant-popover-inner"
-                role="tooltip"
+                class="ant-popover-inner-content"
               >
                 <div
-                  class="ant-popover-inner-content"
+                  class="sc-eCYdqJ hLiyJh"
                 >
-                  <h3
-                    class="sc-bczRLJ bcJKaK"
+                  <div
+                    class="ant-row"
                   >
-                    <span
-                      class="sc-gsnTZi iHYaxS"
+                    <div
+                      class="ant-col ant-col-24"
                     >
-                      <svg
-                        data-testid="CloseSymbol"
-                      />
-                    </span>
-                    Connection Event Details
-                  </h3>
-                  <dl
-                    class="sc-dkzDqf ghqaWu"
+                      <div
+                        class="sc-gsnTZi cSuiOv"
+                      >
+                        <span
+                          class="sc-dkzDqf guTdNS"
+                        >
+                          <svg
+                            data-testid="CloseSymbol"
+                          />
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-row"
                   >
-                    <dt
-                      class="sc-hKMtZM dqLvfG"
+                    <div
+                      class="ant-col ant-col-24"
                     >
-                      AP MAC:
-                    </dt>
-                    <dd
-                      class="sc-eCYdqJ bkYxGt"
+                      <h3
+                        class="sc-bczRLJ fkbqwg"
+                      >
+                        Connection Event Details
+                      </h3>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-row"
+                  >
+                    <div
+                      class="ant-col ant-col-24"
                     >
-                      94:B3:4F:3D:15:B0
-                    </dd>
-                    <dt
-                      class="sc-hKMtZM dqLvfG"
-                    >
-                      AP Name:
-                    </dt>
-                    <dd
-                      class="sc-eCYdqJ bkYxGt"
-                    >
-                      R750-11-112
-                    </dd>
-                    <dt
-                      class="sc-hKMtZM dqLvfG"
-                    >
-                      SSID:
-                    </dt>
-                    <dd
-                      class="sc-eCYdqJ bkYxGt"
-                    />
-                    <dt
-                      class="sc-hKMtZM dqLvfG"
-                    >
-                      Radio:
-                    </dt>
-                    <dd
-                      class="sc-eCYdqJ bkYxGt"
-                    >
-                      5 GHz
-                    </dd>
-                  </dl>
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col ant-col-12"
+                        >
+                          <div
+                            class="sc-jSMfEi kbAonz"
+                          >
+                            AP MAC:
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-12 ant-col-pull-5"
+                        >
+                          <div
+                            class="sc-gKXOVf fZCycS"
+                          >
+                            94:B3:4F:3D:15:B0
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col ant-col-12"
+                        >
+                          <div
+                            class="sc-jSMfEi kbAonz"
+                          >
+                            AP Name:
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-12 ant-col-pull-5"
+                        >
+                          <div
+                            class="sc-gKXOVf fZCycS"
+                          >
+                            R750-11-112
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col ant-col-12"
+                        >
+                          <div
+                            class="sc-jSMfEi kbAonz"
+                          >
+                            SSID:
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-12 ant-col-pull-5"
+                        >
+                          <div
+                            class="sc-gKXOVf fZCycS"
+                          />
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col ant-col-12"
+                        >
+                          <div
+                            class="sc-jSMfEi kbAonz"
+                          >
+                            Radio:
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-12 ant-col-pull-5"
+                        >
+                          <div
+                            class="sc-gKXOVf fZCycS"
+                          >
+                            5 GHz
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </span>
+    </div>
   </div>
 </DocumentFragment>
 `;
@@ -453,112 +809,216 @@ exports[`ConnectionEvent renders correctly for unknown failure 1`] = `
       class="ant-popover-open"
     >
       test
-      <div
-        style="position: absolute; top: 0px; left: 0px; width: 100%;"
-      >
-        <div>
+    </span>
+    <div
+      style="position: absolute; top: 0px; left: 0px; width: 100%;"
+    >
+      <div>
+        <div
+          class="ant-popover"
+          style="opacity: 0;"
+        >
           <div
-            class="ant-popover"
-            style="opacity: 0;"
+            class="ant-popover-content"
           >
             <div
-              class="ant-popover-content"
+              class="ant-popover-arrow"
+            >
+              <span
+                class="ant-popover-arrow-content"
+              />
+            </div>
+            <div
+              class="ant-popover-inner"
+              role="tooltip"
             >
               <div
-                class="ant-popover-arrow"
-              >
-                <span
-                  class="ant-popover-arrow-content"
-                />
-              </div>
-              <div
-                class="ant-popover-inner"
-                role="tooltip"
+                class="ant-popover-inner-content"
               >
                 <div
-                  class="ant-popover-inner-content"
+                  class="sc-eCYdqJ hLiyJh"
                 >
-                  <h3
-                    class="sc-bczRLJ bcJKaK"
-                  >
-                    <span
-                      class="sc-gsnTZi iHYaxS"
-                    >
-                      <svg
-                        data-testid="CloseSymbol"
-                      />
-                    </span>
-                    Connection Event Details
-                  </h3>
                   <div
-                    class="sc-jSMfEi jytKoq"
+                    class="ant-row"
                   >
-                    <dl
-                      class="sc-dkzDqf ghqaWu"
-                    >
-                      <dt
-                        class="sc-hKMtZM dqLvfG"
-                      >
-                        AP MAC:
-                      </dt>
-                      <dd
-                        class="sc-eCYdqJ bkYxGt"
-                      >
-                        AA:AA:AA:AA:AA:AA
-                      </dd>
-                      <dt
-                        class="sc-hKMtZM dqLvfG"
-                      >
-                        AP Name:
-                      </dt>
-                      <dd
-                        class="sc-eCYdqJ bkYxGt"
-                      >
-                        R750-11-112
-                      </dd>
-                      <dt
-                        class="sc-hKMtZM dqLvfG"
-                      >
-                        SSID:
-                      </dt>
-                      <dd
-                        class="sc-eCYdqJ bkYxGt"
-                      />
-                      <dt
-                        class="sc-hKMtZM dqLvfG"
-                      >
-                        Radio:
-                      </dt>
-                      <dd
-                        class="sc-eCYdqJ bkYxGt"
-                      >
-                        5 GHz
-                      </dd>
-                      <dt
-                        class="sc-hKMtZM dqLvfG"
-                      >
-                        Failure Type:
-                      </dt>
-                      <dd
-                        class="sc-eCYdqJ bkYxGt"
-                      >
-                        Unknown
-                      </dd>
-                      <dt
-                        class="sc-hKMtZM dqLvfG"
-                      >
-                        Reason:
-                      </dt>
-                      <dd
-                        class="sc-eCYdqJ bkYxGt"
-                      >
-                        PSK Failure (passphrase mismatch) - Invalid MIC
-                      </dd>
-                    </dl>
                     <div
-                      class="sc-gKXOVf cttlZi"
-                    />
-                    Failure Sequence Diagram
+                      class="ant-col ant-col-24"
+                    >
+                      <div
+                        class="sc-gsnTZi cSuiOv"
+                      >
+                        <span
+                          class="sc-dkzDqf guTdNS"
+                        >
+                          <svg
+                            data-testid="CloseSymbol"
+                          />
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-row"
+                  >
+                    <div
+                      class="ant-col ant-col-24"
+                    >
+                      <h3
+                        class="sc-bczRLJ fkbqwg"
+                      >
+                        Connection Event Details
+                      </h3>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-row"
+                  >
+                    <div
+                      class="ant-col ant-col-16"
+                    >
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col ant-col-10"
+                        >
+                          <div
+                            class="sc-jSMfEi kbAonz"
+                          >
+                            AP MAC:
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-10 ant-col-push-1"
+                        >
+                          <div
+                            class="sc-gKXOVf fZCycS"
+                          >
+                            AA:AA:AA:AA:AA:AA
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col ant-col-10"
+                        >
+                          <div
+                            class="sc-jSMfEi kbAonz"
+                          >
+                            AP Name:
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-10 ant-col-push-1"
+                        >
+                          <div
+                            class="sc-gKXOVf fZCycS"
+                          >
+                            R750-11-112
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col ant-col-10"
+                        >
+                          <div
+                            class="sc-jSMfEi kbAonz"
+                          >
+                            SSID:
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-10 ant-col-push-1"
+                        >
+                          <div
+                            class="sc-gKXOVf fZCycS"
+                          />
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col ant-col-10"
+                        >
+                          <div
+                            class="sc-jSMfEi kbAonz"
+                          >
+                            Radio:
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-10 ant-col-push-1"
+                        >
+                          <div
+                            class="sc-gKXOVf fZCycS"
+                          >
+                            5 GHz
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col ant-col-10"
+                        >
+                          <div
+                            class="sc-jSMfEi kbAonz"
+                          >
+                            Failure Type:
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-10 ant-col-push-1"
+                        >
+                          <div
+                            class="sc-gKXOVf fZCycS"
+                          >
+                            Unknown
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col ant-col-10"
+                        >
+                          <div
+                            class="sc-jSMfEi kbAonz"
+                          >
+                            Reason:
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-10 ant-col-push-1"
+                        >
+                          <div
+                            class="sc-gKXOVf fZCycS"
+                          >
+                            PSK Failure (passphrase mismatch) - Invalid MIC
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="ant-col ant-col-1 ant-col-pull-1"
+                    >
+                      <div
+                        class="sc-hKMtZM jMqzxu"
+                      />
+                    </div>
+                    <div
+                      class="ant-col ant-col-6"
+                    >
+                      Failure Sequence Diagram
+                    </div>
                   </div>
                 </div>
               </div>
@@ -566,7 +1026,7 @@ exports[`ConnectionEvent renders correctly for unknown failure 1`] = `
           </div>
         </div>
       </div>
-    </span>
+    </div>
   </div>
 </DocumentFragment>
 `;
@@ -580,92 +1040,168 @@ exports[`ConnectionEvent renders correctly for unknown radio 1`] = `
       class="ant-popover-open"
     >
       test
-      <div
-        style="position: absolute; top: 0px; left: 0px; width: 100%;"
-      >
-        <div>
+    </span>
+    <div
+      style="position: absolute; top: 0px; left: 0px; width: 100%;"
+    >
+      <div>
+        <div
+          class="ant-popover"
+          style="opacity: 0;"
+        >
           <div
-            class="ant-popover"
-            style="opacity: 0;"
+            class="ant-popover-content"
           >
             <div
-              class="ant-popover-content"
+              class="ant-popover-arrow"
+            >
+              <span
+                class="ant-popover-arrow-content"
+              />
+            </div>
+            <div
+              class="ant-popover-inner"
+              role="tooltip"
             >
               <div
-                class="ant-popover-arrow"
-              >
-                <span
-                  class="ant-popover-arrow-content"
-                />
-              </div>
-              <div
-                class="ant-popover-inner"
-                role="tooltip"
+                class="ant-popover-inner-content"
               >
                 <div
-                  class="ant-popover-inner-content"
+                  class="sc-eCYdqJ hLiyJh"
                 >
-                  <h3
-                    class="sc-bczRLJ bcJKaK"
+                  <div
+                    class="ant-row"
                   >
-                    <span
-                      class="sc-gsnTZi iHYaxS"
+                    <div
+                      class="ant-col ant-col-24"
                     >
-                      <svg
-                        data-testid="CloseSymbol"
-                      />
-                    </span>
-                    Connection Event Details
-                  </h3>
-                  <dl
-                    class="sc-dkzDqf ghqaWu"
+                      <div
+                        class="sc-gsnTZi cSuiOv"
+                      >
+                        <span
+                          class="sc-dkzDqf guTdNS"
+                        >
+                          <svg
+                            data-testid="CloseSymbol"
+                          />
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-row"
                   >
-                    <dt
-                      class="sc-hKMtZM dqLvfG"
+                    <div
+                      class="ant-col ant-col-24"
                     >
-                      AP MAC:
-                    </dt>
-                    <dd
-                      class="sc-eCYdqJ bkYxGt"
+                      <h3
+                        class="sc-bczRLJ fkbqwg"
+                      >
+                        Connection Event Details
+                      </h3>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-row"
+                  >
+                    <div
+                      class="ant-col ant-col-24"
                     >
-                      94:B3:4F:3D:15:B0
-                    </dd>
-                    <dt
-                      class="sc-hKMtZM dqLvfG"
-                    >
-                      AP Name:
-                    </dt>
-                    <dd
-                      class="sc-eCYdqJ bkYxGt"
-                    >
-                      R750-11-112
-                    </dd>
-                    <dt
-                      class="sc-hKMtZM dqLvfG"
-                    >
-                      SSID:
-                    </dt>
-                    <dd
-                      class="sc-eCYdqJ bkYxGt"
-                    />
-                    <dt
-                      class="sc-hKMtZM dqLvfG"
-                    >
-                      Radio:
-                    </dt>
-                    <dd
-                      class="sc-eCYdqJ bkYxGt"
-                    >
-                      Unknown
-                    </dd>
-                  </dl>
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col ant-col-12"
+                        >
+                          <div
+                            class="sc-jSMfEi kbAonz"
+                          >
+                            AP MAC:
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-12 ant-col-pull-5"
+                        >
+                          <div
+                            class="sc-gKXOVf fZCycS"
+                          >
+                            94:B3:4F:3D:15:B0
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col ant-col-12"
+                        >
+                          <div
+                            class="sc-jSMfEi kbAonz"
+                          >
+                            AP Name:
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-12 ant-col-pull-5"
+                        >
+                          <div
+                            class="sc-gKXOVf fZCycS"
+                          >
+                            R750-11-112
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col ant-col-12"
+                        >
+                          <div
+                            class="sc-jSMfEi kbAonz"
+                          >
+                            SSID:
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-12 ant-col-pull-5"
+                        >
+                          <div
+                            class="sc-gKXOVf fZCycS"
+                          />
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col ant-col-12"
+                        >
+                          <div
+                            class="sc-jSMfEi kbAonz"
+                          >
+                            Radio:
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-12 ant-col-pull-5"
+                        >
+                          <div
+                            class="sc-gKXOVf fZCycS"
+                          >
+                            Unknown
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </span>
+    </div>
   </div>
 </DocumentFragment>
 `;
@@ -691,92 +1227,168 @@ exports[`ConnectionEvent renders correctly on popover close 2`] = `
       class="ant-popover-open"
     >
       test
-      <div
-        style="position: absolute; top: 0px; left: 0px; width: 100%;"
-      >
-        <div>
+    </span>
+    <div
+      style="position: absolute; top: 0px; left: 0px; width: 100%;"
+    >
+      <div>
+        <div
+          class="ant-popover"
+          style="opacity: 0;"
+        >
           <div
-            class="ant-popover"
-            style="opacity: 0;"
+            class="ant-popover-content"
           >
             <div
-              class="ant-popover-content"
+              class="ant-popover-arrow"
+            >
+              <span
+                class="ant-popover-arrow-content"
+              />
+            </div>
+            <div
+              class="ant-popover-inner"
+              role="tooltip"
             >
               <div
-                class="ant-popover-arrow"
-              >
-                <span
-                  class="ant-popover-arrow-content"
-                />
-              </div>
-              <div
-                class="ant-popover-inner"
-                role="tooltip"
+                class="ant-popover-inner-content"
               >
                 <div
-                  class="ant-popover-inner-content"
+                  class="sc-eCYdqJ hLiyJh"
                 >
-                  <h3
-                    class="sc-bczRLJ bcJKaK"
+                  <div
+                    class="ant-row"
                   >
-                    <span
-                      class="sc-gsnTZi iHYaxS"
+                    <div
+                      class="ant-col ant-col-24"
                     >
-                      <svg
-                        data-testid="CloseSymbol"
-                      />
-                    </span>
-                    Connection Event Details
-                  </h3>
-                  <dl
-                    class="sc-dkzDqf ghqaWu"
+                      <div
+                        class="sc-gsnTZi cSuiOv"
+                      >
+                        <span
+                          class="sc-dkzDqf guTdNS"
+                        >
+                          <svg
+                            data-testid="CloseSymbol"
+                          />
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-row"
                   >
-                    <dt
-                      class="sc-hKMtZM dqLvfG"
+                    <div
+                      class="ant-col ant-col-24"
                     >
-                      AP MAC:
-                    </dt>
-                    <dd
-                      class="sc-eCYdqJ bkYxGt"
+                      <h3
+                        class="sc-bczRLJ fkbqwg"
+                      >
+                        Connection Event Details
+                      </h3>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-row"
+                  >
+                    <div
+                      class="ant-col ant-col-24"
                     >
-                      94:B3:4F:3D:15:B0
-                    </dd>
-                    <dt
-                      class="sc-hKMtZM dqLvfG"
-                    >
-                      AP Name:
-                    </dt>
-                    <dd
-                      class="sc-eCYdqJ bkYxGt"
-                    >
-                      R750-11-112
-                    </dd>
-                    <dt
-                      class="sc-hKMtZM dqLvfG"
-                    >
-                      SSID:
-                    </dt>
-                    <dd
-                      class="sc-eCYdqJ bkYxGt"
-                    />
-                    <dt
-                      class="sc-hKMtZM dqLvfG"
-                    >
-                      Radio:
-                    </dt>
-                    <dd
-                      class="sc-eCYdqJ bkYxGt"
-                    >
-                      5 GHz
-                    </dd>
-                  </dl>
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col ant-col-12"
+                        >
+                          <div
+                            class="sc-jSMfEi kbAonz"
+                          >
+                            AP MAC:
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-12 ant-col-pull-5"
+                        >
+                          <div
+                            class="sc-gKXOVf fZCycS"
+                          >
+                            94:B3:4F:3D:15:B0
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col ant-col-12"
+                        >
+                          <div
+                            class="sc-jSMfEi kbAonz"
+                          >
+                            AP Name:
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-12 ant-col-pull-5"
+                        >
+                          <div
+                            class="sc-gKXOVf fZCycS"
+                          >
+                            R750-11-112
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col ant-col-12"
+                        >
+                          <div
+                            class="sc-jSMfEi kbAonz"
+                          >
+                            SSID:
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-12 ant-col-pull-5"
+                        >
+                          <div
+                            class="sc-gKXOVf fZCycS"
+                          />
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col ant-col-12"
+                        >
+                          <div
+                            class="sc-jSMfEi kbAonz"
+                          >
+                            Radio:
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-12 ant-col-pull-5"
+                        >
+                          <div
+                            class="sc-gKXOVf fZCycS"
+                          >
+                            5 GHz
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </span>
+    </div>
   </div>
 </DocumentFragment>
 `;
@@ -788,92 +1400,168 @@ exports[`ConnectionEvent renders correctly on popover close 3`] = `
   >
     <span>
       test
-      <div
-        style="position: absolute; top: 0px; left: 0px; width: 100%;"
-      >
-        <div>
+    </span>
+    <div
+      style="position: absolute; top: 0px; left: 0px; width: 100%;"
+    >
+      <div>
+        <div
+          class="ant-popover ant-popover-hidden"
+          style="pointer-events: none;"
+        >
           <div
-            class="ant-popover ant-popover-hidden"
-            style="pointer-events: none;"
+            class="ant-popover-content"
           >
             <div
-              class="ant-popover-content"
+              class="ant-popover-arrow"
+            >
+              <span
+                class="ant-popover-arrow-content"
+              />
+            </div>
+            <div
+              class="ant-popover-inner"
+              role="tooltip"
             >
               <div
-                class="ant-popover-arrow"
-              >
-                <span
-                  class="ant-popover-arrow-content"
-                />
-              </div>
-              <div
-                class="ant-popover-inner"
-                role="tooltip"
+                class="ant-popover-inner-content"
               >
                 <div
-                  class="ant-popover-inner-content"
+                  class="sc-eCYdqJ hLiyJh"
                 >
-                  <h3
-                    class="sc-bczRLJ bcJKaK"
+                  <div
+                    class="ant-row"
                   >
-                    <span
-                      class="sc-gsnTZi iHYaxS"
+                    <div
+                      class="ant-col ant-col-24"
                     >
-                      <svg
-                        data-testid="CloseSymbol"
-                      />
-                    </span>
-                    Connection Event Details
-                  </h3>
-                  <dl
-                    class="sc-dkzDqf ghqaWu"
+                      <div
+                        class="sc-gsnTZi cSuiOv"
+                      >
+                        <span
+                          class="sc-dkzDqf guTdNS"
+                        >
+                          <svg
+                            data-testid="CloseSymbol"
+                          />
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-row"
                   >
-                    <dt
-                      class="sc-hKMtZM dqLvfG"
+                    <div
+                      class="ant-col ant-col-24"
                     >
-                      AP MAC:
-                    </dt>
-                    <dd
-                      class="sc-eCYdqJ bkYxGt"
+                      <h3
+                        class="sc-bczRLJ fkbqwg"
+                      >
+                        Connection Event Details
+                      </h3>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-row"
+                  >
+                    <div
+                      class="ant-col ant-col-24"
                     >
-                      94:B3:4F:3D:15:B0
-                    </dd>
-                    <dt
-                      class="sc-hKMtZM dqLvfG"
-                    >
-                      AP Name:
-                    </dt>
-                    <dd
-                      class="sc-eCYdqJ bkYxGt"
-                    >
-                      R750-11-112
-                    </dd>
-                    <dt
-                      class="sc-hKMtZM dqLvfG"
-                    >
-                      SSID:
-                    </dt>
-                    <dd
-                      class="sc-eCYdqJ bkYxGt"
-                    />
-                    <dt
-                      class="sc-hKMtZM dqLvfG"
-                    >
-                      Radio:
-                    </dt>
-                    <dd
-                      class="sc-eCYdqJ bkYxGt"
-                    >
-                      5 GHz
-                    </dd>
-                  </dl>
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col ant-col-12"
+                        >
+                          <div
+                            class="sc-jSMfEi kbAonz"
+                          >
+                            AP MAC:
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-12 ant-col-pull-5"
+                        >
+                          <div
+                            class="sc-gKXOVf fZCycS"
+                          >
+                            94:B3:4F:3D:15:B0
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col ant-col-12"
+                        >
+                          <div
+                            class="sc-jSMfEi kbAonz"
+                          >
+                            AP Name:
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-12 ant-col-pull-5"
+                        >
+                          <div
+                            class="sc-gKXOVf fZCycS"
+                          >
+                            R750-11-112
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col ant-col-12"
+                        >
+                          <div
+                            class="sc-jSMfEi kbAonz"
+                          >
+                            SSID:
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-12 ant-col-pull-5"
+                        >
+                          <div
+                            class="sc-gKXOVf fZCycS"
+                          />
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col ant-col-12"
+                        >
+                          <div
+                            class="sc-jSMfEi kbAonz"
+                          >
+                            Radio:
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-12 ant-col-pull-5"
+                        >
+                          <div
+                            class="sc-gKXOVf fZCycS"
+                          >
+                            5 GHz
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </span>
+    </div>
   </div>
 </DocumentFragment>
 `;
