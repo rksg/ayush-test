@@ -68,13 +68,15 @@ export function Select (props: CascaderProps) {
   }, [defaultValue])
 
   const [open, setOpen] = React.useState(false)
-  const [selectedBands, setSelectedBands] = React.useState<CheckboxValueType[]>(initialBands)
+  const [currentBands, setCurrentBands] = React.useState<CheckboxValueType[]>(initialBands)
+  const [savedBands, setSavedBands] = React.useState<CheckboxValueType[]>(initialBands)
   useEffect(() => {
-    setSelectedBands(defaultBand || [])
+    setCurrentBands(defaultBand || [])
+    setSavedBands(defaultBand || [])
   }, [defaultBand])
 
   const onBandChange = (checkedValues: CheckboxValueType[]) => {
-    setSelectedBands(checkedValues)
+    setCurrentBands(checkedValues)
   }
 
   const onClear = () => {
@@ -89,19 +91,24 @@ export function Select (props: CascaderProps) {
       event.preventDefault()
       setOpen(false)
       setCurrentValues(savedValues)
+      setCurrentBands(savedBands)
     }
     const onApplyProps = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
       event.preventDefault()
       setOpen(false)
       setSavedValues(currentValues)
+      setSavedBands(currentBands)
       if(showBand)
-        onApply(currentValues, selectedBands)
+        onApply(currentValues, currentBands)
       else
         onApply(currentValues)
     }
     const onClearMultiple = () => {
       onClear()
-      onApply([])
+      setSavedBands(initialBands)
+      setCurrentValues([])
+      setCurrentBands([])
+      onApply([],[])
     }
 
     const withFooter = (menus: JSX.Element) => <>
@@ -124,6 +131,7 @@ export function Select (props: CascaderProps) {
             }
             ]}
             defaultValue={initialBands}
+            value={currentBands}
             onChange={onBandChange}/>
         </div>)}
       <UI.ButtonDiv>
@@ -143,6 +151,15 @@ export function Select (props: CascaderProps) {
       },
       []
     )
+    let { placeholder } = antProps
+    if(currentBands.length){
+      placeholder =$t(selectedItemsDesc, {
+        count: currentBands.length,
+        singular: $t(defineMessage({ defaultMessage: 'band' })),
+        plural: $t(defineMessage({ defaultMessage: 'bands' }))
+      })
+      currentLabels?.push(placeholder)
+    }
     return (
       <UI.Cascader
         {...antProps}
@@ -160,6 +177,7 @@ export function Select (props: CascaderProps) {
         getPopupContainer={(triggerNode) => triggerNode.parentNode}
         onClear={antProps.allowClear ? onClearMultiple : undefined}
         removeIcon={open ? undefined : null}
+        placeholder={placeholder}
         maxTagPlaceholder={
           <div title={currentLabels?.join(', ')}>
             {$t(selectedItemsDesc,{

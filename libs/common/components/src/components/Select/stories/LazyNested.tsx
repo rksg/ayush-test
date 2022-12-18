@@ -61,6 +61,7 @@ export function LazyNested ({ multiple=false,showBand=false, defaultBand=[] }:
       loadData={loadData}
       loading={loading}
       changeOnSelect
+      allowClear={true}
     />
   </div>
 }
