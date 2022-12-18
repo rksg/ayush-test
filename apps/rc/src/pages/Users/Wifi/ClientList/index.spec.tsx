@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }                   from '@acx-ui/feature-toggle'
 import { ClientUrlsInfo, CommonUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                       from '@acx-ui/store'
 import {
@@ -59,6 +60,7 @@ describe('ClientList', () => {
     })
   })
   it('should render search response correctly', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(
       <Provider>
         <ClientList />
