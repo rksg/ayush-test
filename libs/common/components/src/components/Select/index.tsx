@@ -146,7 +146,7 @@ export function Select (props: CascaderProps) {
     const currentLabels = antProps.options?.reduce(
       (acc: React.ReactNode[], option: Option) => {
         if ((currentValues as string[]).flat().includes(option.value as string))
-          return [...acc, option.label]
+          return [...acc, option.displayLabel || option.label]
         return acc
       },
       []

@@ -11,7 +11,7 @@ import { Select, CascaderProps, Option } from './index'
 
 afterEach(cleanup)
 
-describe('NetworkFilter', () => {
+describe('Select', () => {
   const CustomCascader: React.FC<CascaderProps> = (props: CascaderProps) => (
     <Select {...props} />
   )
@@ -305,7 +305,7 @@ describe('NetworkFilter', () => {
     expect(onClearMock).toBeCalledTimes(1)
     expect(onClearMock).toBeCalledWith()
     expect(onApplyMock).toBeCalledTimes(3)
-    expect(onApplyMock).toHaveBeenNthCalledWith(3, [])
+    expect(onApplyMock).toHaveBeenNthCalledWith(3, [],[])
   })
 
 })

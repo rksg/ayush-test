@@ -2,7 +2,7 @@ import { useContext, useEffect } from 'react'
 
 import moment from 'moment'
 
-import { NetworkFilter } from '@acx-ui/analytics/components'
+import { NetworkFilter, FilterMode } from '@acx-ui/analytics/components'
 import {
   RangePicker,
   PageHeader,
@@ -10,8 +10,6 @@ import {
 import { useDateFilter, dateRangeForLast } from '@acx-ui/utils'
 
 import { NetworkFilterWithBandContext } from '../../Routes'
-
-export type FilterMode = 'ap' | 'switch' | 'both'
 
 export function ReportHeader (props: {
   name: string,

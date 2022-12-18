@@ -1,6 +1,6 @@
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
-import { FilterMode } from '../ReportHeader'
+import { FilterMode } from '@acx-ui/analytics/components'
 
 export enum ReportType {
   OVERVIEW = 'overview',

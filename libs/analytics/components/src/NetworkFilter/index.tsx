@@ -15,6 +15,8 @@ import { LabelWithSeverityCicle }                   from './LabelWithSeverityCir
 import { Child, useNetworkFilterQuery, ApOrSwitch } from './services'
 import * as UI                                      from './styledComponents'
 
+export type FilterMode = 'ap' | 'switch' | 'both'
+
 export const getSupersetRlsClause = (paths?:NetworkPath[],bands?:Band[]) => {
   let bandClause = ''
   let zoneClause = ''
@@ -85,7 +87,7 @@ type ConnectedNetworkFilterProps = {
     showBand?: boolean,
     multiple?: boolean,
     replaceWithId?:boolean,
-    filterMode?: 'ap' | 'switch' | 'both'
+    filterMode?: FilterMode,
     defaultValue?: SingleValueType | SingleValueType[],
     defaultBand?: Band[],
     onApplyWithBand?: ({ paths, bands }:{

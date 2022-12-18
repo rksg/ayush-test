@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`NetworkFilter renders simple list with bands, triggers onApply with multi-select 1`] = `
+exports[`Select renders simple list with bands, triggers onApply with multi-select 1`] = `
 <DocumentFragment>
   <div
     class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-focused ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
@@ -24,7 +24,7 @@ exports[`NetworkFilter renders simple list with bands, triggers onApply with mul
               class="ant-select-selection-item-content"
             >
               <div
-                title="SSID 1, SSID 2"
+                title="SSID 1, SSID 2, 2 bands selected"
               >
                 2 items selected
               </div>

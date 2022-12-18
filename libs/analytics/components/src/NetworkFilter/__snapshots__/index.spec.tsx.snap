@@ -752,7 +752,7 @@ exports[`Network Filter should select network node and bands 1`] = `
                   class="ant-select-selection-item-content"
                 >
                   <div
-                    title="[object Object], [object Object], [object Object]"
+                    title="swg, swg1, venue, 2 bands selected"
                   >
                     3 items selected
                   </div>
@@ -1350,7 +1350,7 @@ exports[`Network Filter should select network node and bands with onApplyFn 1`] 
           <span
             class="ant-select-selection-placeholder"
           >
-            Entire Organization
+            2 bands selected
           </span>
         </div>
         <span

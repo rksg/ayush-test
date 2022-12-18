@@ -1,10 +1,11 @@
 import { useIntl } from 'react-intl'
 
-import { useParams } from '@acx-ui/react-router-dom'
+import { FilterMode } from '@acx-ui/analytics/components'
+import { useParams }  from '@acx-ui/react-router-dom'
 
-import { FilterMode, ReportHeader } from '../../ReportHeader'
-import { Report }                   from '../../Reports'
-import { ReportType }               from '../reportsMapping'
+import { ReportHeader } from '../../ReportHeader'
+import { Report }       from '../../Reports'
+import { ReportType }   from '../reportsMapping'
 
 import { NetworkReportTabs } from './NetworkReportTabs'
 
