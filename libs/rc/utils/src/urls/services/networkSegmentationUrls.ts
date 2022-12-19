@@ -3,23 +3,23 @@ import { ApiInfo } from '../../apiService'
 export const NetworkSegmentationUrls: { [key: string]: ApiInfo } = {
   getWebAuthTemplate: {
     method: 'get',
-    url: '/api/switch/tenant/:tenantId/webAuthPageTemplates/:templateId'
+    url: '/api/switch/tenant/:tenantId/webAuthPageTemplates/:serviceId'
   },
   getWebAuthTemplateList: {
     method: 'post',
-    url: '/api/switch/tenant/:tenantId/webAuthPageTemplates'
+    url: '/api/switch/tenant/:tenantId/webAuthPageTemplates/query'
   },
   addWebAuthTemplate: {
     method: 'post',
-    url: '/api/switch/tenant/:tenantId/webAuthPageTemplates/template'
+    url: '/api/switch/tenant/:tenantId/webAuthPageTemplates'
   },
   updateWebAuthTemplate: {
     method: 'put',
-    url: '/api/switch/tenant/:tenantId/webAuthPageTemplates/template/:templateId'
+    url: '/api/switch/tenant/:tenantId/webAuthPageTemplates/:serviceId'
   },
   deleteWebAuthTemplate: {
     method: 'delete',
-    url: '/api/switch/tenant/:tenantId/webAuthPageTemplates/template/:templateId'
+    url: '/api/switch/tenant/:tenantId/webAuthPageTemplates/:serviceId'
   },
 
   getAccessSwitches: {
