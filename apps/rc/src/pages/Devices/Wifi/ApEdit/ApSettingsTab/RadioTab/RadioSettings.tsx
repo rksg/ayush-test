@@ -9,7 +9,8 @@ import {
   useGetVenueQuery,
   useGetApRadioQuery,
   useUpdateApRadioMutation,
-  useDeleteApRadioMutation
+  useDeleteApRadioMutation,
+  useVenueDefaultRegulatoryChannelsQuery
 } from '@acx-ui/rc/services'
 import {
   ApRadioChannelsForm
@@ -51,6 +52,8 @@ export function RadioSettings () {
 
   const { data: venue } = useGetVenueQuery({ params: { tenantId, venueId } })
 
+  const { data: defaultChannelsData } =
+    useVenueDefaultRegulatoryChannelsQuery({ params: { tenantId, venueId } })
   // TODO
   // const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
 
@@ -89,6 +92,26 @@ export function RadioSettings () {
     if(venueSetting){
       deleteApRadio({ params: { tenantId, serialNumber } })
     }else{
+      if(formData.apRadioParams24G.method === 'MANUAL'){
+        const channelBandwidth =
+          formData.apRadioParams24G.channelBandwidth === 'AUTO' ? 'auto' :
+            formData.apRadioParams24G.channelBandwidth
+        formData.apRadioParams24G.allowedChannels =
+          defaultChannelsData?.['2.4GChannels'][channelBandwidth] || []
+        formData.apRadioParams24G.manualChannel =
+          parseInt(formData.apRadioParams24G.allowedChannels[0], 10)
+      }
+      if(formData.apRadioParams50G.method === 'MANUAL'){
+        const channelBandwidth =
+          formData.apRadioParams50G.channelBandwidth === 'AUTO' ? 'auto' :
+            formData.apRadioParams50G.channelBandwidth
+        formData.apRadioParams50G.allowedChannels =
+          defaultChannelsData?.
+            ['5GChannels']['indoor'][channelBandwidth] || []
+        formData.apRadioParams50G.manualChannel =
+          parseInt(formData.apRadioParams50G.allowedChannels[0], 10)
+      }
+
       updateApRadio({
         params: { tenantId, serialNumber },
         payload: formData
