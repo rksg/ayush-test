@@ -21,7 +21,7 @@ export default function VenuePoolTable (){
   const [tableData, setTableData] = useState<VenueDHCPPoolInst[]>()
 
   const { data: dhcpPoolsList } = useVenueDHCPPoolsQuery({
-    params: { venueId: params.venueId }
+    params
   })
 
 

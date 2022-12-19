@@ -38,13 +38,21 @@ export default function BasicInfo () {
     backupServerSN: string;
     gateways:[];
   })=>{
-    const payload = {
+    const payload:{
+      enabled:Boolean
+      serviceProfileId:string
+      dhcpServiceAps: Array<object>
+    } = {
       enabled: data.enabled,
       serviceProfileId: data.serviceProfileId,
-      dhcpServiceAps: [{
+      dhcpServiceAps: []
+    }
+
+    if(data.primaryServerSN){
+      payload.dhcpServiceAps.push({
         serialNumber: data.primaryServerSN,
         role: 'PrimaryServer'
-      }]
+      })
     }
     if(data.backupServerSN){
       payload.dhcpServiceAps.push({
@@ -52,15 +60,19 @@ export default function BasicInfo () {
         role: 'BackupServer'
       })
     }
-    const gateways = data.gateways.map((item:{ serialNumber:string }) => {
-      return {
-        serialNumber: item.serialNumber,
-        role: 'NatGateway'
+
+    if(data.gateways){
+      const gateways = data.gateways.map((item:{ serialNumber:string }) => {
+        return {
+          serialNumber: item.serialNumber,
+          role: 'NatGateway'
+        }
+      })
+      if(!_.isEmpty(gateways)){
+        payload.dhcpServiceAps = payload.dhcpServiceAps.concat(gateways)
       }
-    })
-    if(!_.isEmpty(gateways)){
-      payload.dhcpServiceAps = payload.dhcpServiceAps.concat(gateways)
     }
+
     return payload
   }
 
@@ -137,11 +149,18 @@ export default function BasicInfo () {
         form.resetFields()
       }}
       onOk={async () => {
-        const payload = payloadTransverter(form.getFieldsValue())
-        await updateVenueDHCPProfile({
-          params: { ...params }, payload
-        }).unwrap()
-        setVisible(false)
+        try {
+          const valid = await form.validateFields()
+          if (valid) {
+            const payload = payloadTransverter(form.getFieldsValue())
+            await updateVenueDHCPProfile({
+              params: { ...params }, payload
+            }).unwrap()
+            setVisible(false)
+          }
+        } catch (error) {
+          console.log(error) // eslint-disable-line no-console
+        }
       }}
     >
       <VenueDHCPForm form={form} />

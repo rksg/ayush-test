@@ -266,7 +266,7 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getDHCPProfiles: {
     //Get DHCP Profiles LIST
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/dhcpconfigserviceprofiles'
+    url: '/api/tenant/:tenantId/wifi/dhcpConfigServiceProfile'
   },
   getVenueDHCPServiceProfile: {
     //Retrieve Venue DHCP Service Profile Settings
@@ -276,7 +276,7 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getVenueActivePools: {
     //Venue Active DhcpPool list
     method: 'get',
-    url: '/api/venues/:venueId/dhcpPools'
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/dhcpPool'
   },
   getVenueLeases: {
     //Get Venue Venue Leases data
@@ -285,9 +285,9 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     // url: '/api/venues/:venueId/dhcpConfigServiceProfileLeases'
   },
   activeVenueDHCPPool: {
-    //Get Venue Active DHCP Pool
+    //set DHCP Pool Active
     method: 'post',
-    url: '/api/tenant/:tenantId/wifi/venues/:venueId/dhcppools/:dhcppoolId'
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/dhcpPool/:dhcppoolId'
   },
   updateVenueDHCPProfile: {
     //Setup Venue DHCP Service Profile
