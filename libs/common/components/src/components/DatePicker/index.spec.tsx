@@ -33,7 +33,7 @@ describe('RangePicker', () => {
             endDate: moment().seconds(0)
           }}
           onDateApply={() => {}}
-          rangeOptions={[DateRange.today, DateRange.last7Days]}
+          rangeOptions={[DateRange.last24Hours, DateRange.last7Days]}
           showTimePicker
           enableDates={[moment().subtract(7, 'days').seconds(0), moment().seconds(0)]}
         />
@@ -51,7 +51,7 @@ describe('RangePicker', () => {
         <RangePicker
           selectionType={DateRange.last7Days}
           onDateApply={() => {}}
-          rangeOptions={[DateRange.today, DateRange.last7Days]}
+          rangeOptions={[DateRange.last24Hours, DateRange.last7Days]}
           showTimePicker
           selectedRange={{
             startDate: moment().subtract(7, 'days').seconds(0),
@@ -76,7 +76,7 @@ describe('RangePicker', () => {
         <RangePicker
           onDateApply={() => {}}
           selectionType={DateRange.last7Days}
-          rangeOptions={[DateRange.today, DateRange.last7Days]}
+          rangeOptions={[DateRange.last24Hours, DateRange.last7Days]}
           showTimePicker
           selectedRange={{
             startDate: moment().subtract(7, 'days').seconds(0),
@@ -100,7 +100,7 @@ describe('RangePicker', () => {
         <RangePicker
           onDateApply={() => {}}
           selectionType={DateRange.last7Days}
-          rangeOptions={[DateRange.today, DateRange.last7Days]}
+          rangeOptions={[DateRange.last24Hours, DateRange.last7Days]}
           selectedRange={{
             startDate: moment().subtract(7, 'days').seconds(0),
             endDate: moment().seconds(0)
@@ -127,7 +127,7 @@ describe('RangePicker', () => {
         <RangePicker
           onDateApply={() => {}}
           selectionType={DateRange.last7Days}
-          rangeOptions={[DateRange.today, DateRange.last7Days]}
+          rangeOptions={[DateRange.last24Hours, DateRange.last7Days]}
           selectedRange={{
             startDate: moment().subtract(7, 'days').seconds(0),
             endDate: moment().seconds(0)
@@ -138,7 +138,7 @@ describe('RangePicker', () => {
     const user = userEvent.setup()
     const calenderSelect = await screen.findByPlaceholderText('Start date')
     await user.click(calenderSelect)
-    await user.click(await screen.findByText('Today'))
+    await user.click(await screen.findByText('Last 24 Hours'))
     // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
     expect(container.getElementsByClassName('ant-picker-dropdown-hidden').length).toBe(1)
   })
@@ -172,7 +172,7 @@ describe('RangePicker', () => {
         <RangePicker
           selectionType={DateRange.last7Days}
           showTimePicker
-          rangeOptions={[DateRange.today, DateRange.last7Days]}
+          rangeOptions={[DateRange.last24Hours, DateRange.last7Days]}
           onDateChange={onDateChange}
           onDateApply={() => {}}
           selectedRange={{
@@ -199,7 +199,7 @@ describe('RangePicker', () => {
         <RangePicker
           showTimePicker
           selectionType={DateRange.last7Days}
-          rangeOptions={[DateRange.today, DateRange.last7Days]}
+          rangeOptions={[DateRange.last24Hours, DateRange.last7Days]}
           onDateChange={onDateChange}
           onDateApply={() => {}}
           selectedRange={{
@@ -226,7 +226,7 @@ describe('RangePicker', () => {
       <IntlProvider locale='en'>
         <RangePicker
           showTimePicker
-          rangeOptions={[DateRange.today, DateRange.last7Days]}
+          rangeOptions={[DateRange.last24Hours, DateRange.last7Days]}
           onDateChange={onDateChange}
           selectionType={DateRange.custom}
           onDateApply={() => {}}
