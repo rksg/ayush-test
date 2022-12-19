@@ -208,7 +208,7 @@ describe('RadioSettingsTab', () => {
 
     fireEvent.click(await screen.findByRole('button', { name: 'Apply Radio' }))
   })
-  it('should render correctly with MANUAL method', async () => {
+  it('should render 5GHz channels correctly with MANUAL method', async () => {
     apRadioCustomization.radioParams50G.channelBandwidth = 'AUTO'
     render(
       <Provider>
@@ -235,6 +235,34 @@ describe('RadioSettingsTab', () => {
     const option = screen.getByText(/manual/i)
     fireEvent.click(option)
     fireEvent.click(await screen.findByText('36'))
+
+    fireEvent.click(await screen.findByRole('button', { name: 'Apply Radio' }))
+  })
+  it('should render 2.4GHz channels correctly with MANUAL method', async () => {
+    apRadioCustomization.radioParams24G.channelBandwidth = 'AUTO'
+    render(
+      <Provider>
+        <ApEditContext.Provider value={{
+          editContextData: {
+            tabTitle: '',
+            isDirty: false,
+            updateChanges: jest.fn(),
+            discardChanges: jest.fn()
+          },
+          setEditContextData: jest.fn(),
+          editRadioContextData: {},
+          setEditRadioContextData: jest.fn()
+        }}
+        >
+          <RadioSettings />
+        </ApEditContext.Provider>
+      </Provider>, { route: { params } })
+
+    fireEvent.click(await screen.findByRole('tab', { name: '2.4 GHz' }))
+    fireEvent.mouseDown(await screen.findByRole('combobox', { name: /channel/i }))
+    const option = screen.getByText(/manual/i)
+    fireEvent.click(option)
+    fireEvent.click(await screen.findByText('1'))
 
     fireEvent.click(await screen.findByRole('button', { name: 'Apply Radio' }))
   })

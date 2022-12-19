@@ -96,20 +96,20 @@ export function RadioSettings () {
         const channelBandwidth =
           formData.apRadioParams24G.channelBandwidth === 'AUTO' ? 'auto' :
             formData.apRadioParams24G.channelBandwidth
-        formData.apRadioParams24G.allowedChannels =
-          defaultChannelsData?.['2.4GChannels'][channelBandwidth] || []
         formData.apRadioParams24G.manualChannel =
           parseInt(formData.apRadioParams24G.allowedChannels[0], 10)
+        formData.apRadioParams24G.allowedChannels =
+          defaultChannelsData?.['2.4GChannels'][channelBandwidth] || []
       }
       if(formData.apRadioParams50G.method === 'MANUAL'){
         const channelBandwidth =
           formData.apRadioParams50G.channelBandwidth === 'AUTO' ? 'auto' :
             formData.apRadioParams50G.channelBandwidth
+        formData.apRadioParams50G.manualChannel =
+          parseInt(formData.apRadioParams50G.allowedChannels[0], 10)
         formData.apRadioParams50G.allowedChannels =
           defaultChannelsData?.
             ['5GChannels']['indoor'][channelBandwidth] || []
-        formData.apRadioParams50G.manualChannel =
-          parseInt(formData.apRadioParams50G.allowedChannels[0], 10)
       }
 
       updateApRadio({
