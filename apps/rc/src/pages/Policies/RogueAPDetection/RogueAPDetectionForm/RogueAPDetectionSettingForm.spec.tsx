@@ -1,9 +1,8 @@
 import React from 'react'
 
-import { act }   from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
-import { Form }  from 'antd'
-import { rest }  from 'msw'
+import { act }  from '@testing-library/react'
+import { Form } from 'antd'
+import { rest } from 'msw'
 
 import { policyApi }                                                         from '@acx-ui/rc/services'
 import { RogueAPDetectionContextType, RogueApUrls, RogueAPRule, RogueVenue } from '@acx-ui/rc/utils'
