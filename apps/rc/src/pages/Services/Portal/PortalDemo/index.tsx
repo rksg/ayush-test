@@ -90,7 +90,9 @@ export default function PortalDemo ({
       })
     }
   }, [demoValue.displayLangCode])
-
+  useEffect(()=>{
+    if(isPreview&&viewPortalLang)setPortalLang(viewPortalLang)
+  },[viewPortalLang])
   return (
     <div style={isPreview? { width: '100%', minWidth: 1100, height: '100%' } : {
       width: '95%', minWidth: 1100 }}>

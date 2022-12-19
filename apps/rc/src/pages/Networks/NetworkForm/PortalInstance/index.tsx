@@ -5,9 +5,9 @@ import _                from 'lodash'
 import { useIntl }      from 'react-intl'
 import { useParams }    from 'react-router-dom'
 
-import { GridCol, GridRow, StepsForm }  from '@acx-ui/components'
-import { useGetPortalProfileListQuery } from '@acx-ui/rc/services'
-import { Demo, Portal }                 from '@acx-ui/rc/utils'
+import { GridCol, GridRow, StepsForm }                            from '@acx-ui/components'
+import { useGetPortalLangMutation, useGetPortalProfileListQuery } from '@acx-ui/rc/services'
+import { Demo, Portal }                                           from '@acx-ui/rc/utils'
 
 import Photo              from '../../../../assets/images/portal-demo/PortalPhoto.svg'
 import Powered            from '../../../../assets/images/portal-demo/PoweredLogo.svg'
@@ -62,6 +62,23 @@ const PortalInstance = (props:{
       setPortalList(portalServices)
     }
   },[data])
+  const [getPortalLang] = useGetPortalLangMutation()
+  const [portalLang, setPortalLang]=useState({} as { [key:string]:string })
+  useEffect(()=>{
+    if(demoValue.displayLangCode){
+      getPortalLang({ params: { ...params, messageName: 'messages_'+
+      demoValue.displayLangCode+'.properties' } }).unwrap().then(()=>{
+      }, err=>{
+        const dataArray = err.data?.split('\n')||[]
+        const dataObj= {} as { [key:string]:string }
+        dataArray.forEach( (item: string) => {
+          dataObj[item.split('=')[0]?.trim()] = item.split('=')[1]?.trim()
+        })
+        setPortalLang(dataObj)
+      })
+    }
+
+  }, [demoValue])
   return (
     <>
       <GridRow>
@@ -106,6 +123,7 @@ const PortalInstance = (props:{
           fromNetwork={true}
           networkViewType={networkData?.guestPortal?.guestNetworkType}
           networkSocial={socials}
+          viewPortalLang={portalLang}
         />
       </GridRow>}
     </>
