@@ -26,7 +26,7 @@ export default function SelectServiceForm () {
   const servicesTablePath: Path = useTenantLink(getServiceListRoutePath(true))
   const tenantBasePath: Path = useTenantLink('')
   const isNetworkSegmentationEnable = useIsSplitOn(Features.NETWORK_SEGMENTATION)
-  const displayNetworkSegmentationOption = isNetworkSegmentationEnable ? 'block' : 'none';
+  const displayNetworkSegmentationOption = isNetworkSegmentationEnable ? 'block' : 'none'
 
   const navigateToCreateService = async function (data: { serviceType: ServiceType }) {
     const serviceCreatePath = getServiceRoutePath({
