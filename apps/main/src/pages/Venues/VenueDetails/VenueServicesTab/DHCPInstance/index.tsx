@@ -24,7 +24,7 @@ const DHCPInstance = () => {
   })
   const { data: dhcpProfile } = useGetDHCPProfileQuery({
     params: { ...params, serviceId: venueDHCPProfile?.serviceProfileId }
-  })
+  }, { skip: !venueDHCPProfile?.serviceProfileId })
 
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
     {
@@ -46,7 +46,7 @@ const DHCPInstance = () => {
       <GridCol col={{ span: 24 }}>
         <BasicInfo/>
       </GridCol>
-      <ContentSwitcher tabDetails={tabDetails} size='large' />
+      {venueDHCPProfile?.enabled && <ContentSwitcher tabDetails={tabDetails} size='large' />}
     </GridRow>
   )
 }

@@ -3,30 +3,35 @@ import { useParams } from 'react-router-dom'
 
 import { useGetDHCPProfileQuery, useVenueDHCPProfileQuery, useApListQuery } from '@acx-ui/rc/services'
 import { DHCPConfigTypeMessages }                                           from '@acx-ui/rc/utils'
+import {  DHCPProfileAps }                                                  from '@acx-ui/rc/utils'
 
 export default function useDHCPInfo () {
 
   const params = useParams()
 
-  const { data: venueDHCPProfile } = useVenueDHCPProfileQuery({
+  const data = useVenueDHCPProfileQuery({
     params
   })
   const { data: apList } = useApListQuery({ params })
   const apListGroupSN = _.keyBy(apList?.data, 'serialNumber')
   const { data: dhcpProfile } = useGetDHCPProfileQuery({
-    params: { ...params, serviceId: venueDHCPProfile?.serviceProfileId }
-  })
+    params: { ...params, serviceId: data?.data?.serviceProfileId||'' }
+  }, { skip: !data.data?.serviceProfileId })
 
-  const primaryServerSN = venueDHCPProfile?.dhcpServiceAps[
-    _.findIndex(venueDHCPProfile?.dhcpServiceAps, { role: 'PrimaryServer' })].serialNumber
-  const backupServerSN = venueDHCPProfile?.dhcpServiceAps[
-    _.findIndex(venueDHCPProfile?.dhcpServiceAps, { role: 'BackupServer' })].serialNumber
-  const gatewayList = _.groupBy(venueDHCPProfile?.dhcpServiceAps, 'role').NatGateway || []
+  let primaryServerSN='', backupServerSN='', gatewayList:DHCPProfileAps[]=[]
+  if(data?.data?.dhcpServiceAps){
+    primaryServerSN = data?.data?.dhcpServiceAps[
+      _.findIndex(data?.data?.dhcpServiceAps, { role: 'PrimaryServer' })].serialNumber
+    backupServerSN = data?.data?.dhcpServiceAps[
+      _.findIndex(data?.data?.dhcpServiceAps, { role: 'BackupServer' })].serialNumber
+    gatewayList = _.groupBy(data?.data?.dhcpServiceAps, 'role').NatGateway || []
+  }
+
 
   const displayData = {
     id: dhcpProfile?.id,
     name: dhcpProfile?.serviceName,
-    status: venueDHCPProfile?.enabled === true,
+    status: data?.data?.enabled === true,
     configurationType: dhcpProfile ? DHCPConfigTypeMessages[dhcpProfile.dhcpMode]:null,
     poolsNum: dhcpProfile? dhcpProfile?.dhcpPools.length : 0,
     primaryDHCP: {

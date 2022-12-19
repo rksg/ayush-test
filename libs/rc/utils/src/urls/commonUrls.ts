@@ -271,7 +271,7 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getVenueDHCPServiceProfile: {
     //Retrieve Venue DHCP Service Profile Settings
     method: 'get',
-    url: '/api/venues/:venueId/dhcpconfigserviceprofilesettings'
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/dhcpConfigServiceProfile'
   },
   getVenueActivePools: {
     //Venue Active DhcpPool list
