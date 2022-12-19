@@ -37,6 +37,8 @@ import DpskForm                 from './pages/Services/Dpsk/DpskForm/DpskForm'
 import MdnsProxyDetail          from './pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail'
 import MdnsProxyForm            from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
 import NetworkSegmentationForm  from './pages/Services/NetworkSegmentationForm/NetworkSegmentationForm'
+import NetworkSegAuthDetail     from './pages/Services/NetworkSegWebAuth/NetworkSegAuthDetail'
+import NetworkSegAuthForm       from './pages/Services/NetworkSegWebAuth/NetworkSegAuthForm'
 import PortalServiceDetail      from './pages/Services/Portal/PortalDetail'
 import PortalForm               from './pages/Services/Portal/PortalForm/PortalForm'
 import SelectServiceForm        from './pages/Services/SelectServiceForm'
@@ -184,6 +186,21 @@ function ServiceRoutes () {
         path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
           oper: ServiceOperation.EDIT })}
         element={<NetworkSegmentationForm/>}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.WEBAUTH_SWITCH,
+          oper: ServiceOperation.CREATE })}
+        element={<NetworkSegAuthForm/>}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.WEBAUTH_SWITCH,
+          oper: ServiceOperation.EDIT })}
+        element={<NetworkSegAuthForm/>}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.WEBAUTH_SWITCH,
+          oper: ServiceOperation.DETAIL })}
+        element={<NetworkSegAuthDetail/>}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.CREATE })}

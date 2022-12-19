@@ -107,12 +107,20 @@ export default function SelectServiceForm () {
                 <Typography.Title level={3}>
                   { $t({ defaultMessage: 'More Services' }) }
                 </Typography.Title>
-                <Radio key={ServiceType.PORTAL} value={ServiceType.PORTAL}>
-                  {$t(serviceTypeLabelMapping[ServiceType.PORTAL])}
-                  <UI.RadioDescription>
-                    {$t(serviceTypeDescMapping[ServiceType.PORTAL])}
-                  </UI.RadioDescription>
-                </Radio>
+                <Space>
+                  <Radio key={ServiceType.PORTAL} value={ServiceType.PORTAL}>
+                    {$t(serviceTypeLabelMapping[ServiceType.PORTAL])}
+                    <UI.RadioDescription>
+                      {$t(serviceTypeDescMapping[ServiceType.PORTAL])}
+                    </UI.RadioDescription>
+                  </Radio>
+                  <Radio key={ServiceType.WEBAUTH_SWITCH} value={ServiceType.WEBAUTH_SWITCH}>
+                    {$t(serviceTypeLabelMapping[ServiceType.WEBAUTH_SWITCH])}
+                    <UI.RadioDescription>
+                      {$t(serviceTypeDescMapping[ServiceType.WEBAUTH_SWITCH])}
+                    </UI.RadioDescription>
+                  </Radio>
+                </Space>
               </UI.CategoryContainer>
             </Radio.Group>
           </Form.Item>
