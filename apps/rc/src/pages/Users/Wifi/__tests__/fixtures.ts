@@ -144,6 +144,32 @@ export const GuestNetworkList = {
   ]
 }
 
+export const RegenerateGuestPassword = {
+  requestId: '96dcffb7-583a-499a-8305-def359adf8b4',
+  response: {
+    id: '0b71a2d4-6dc0-4616-8d1e-105deee0ad72',
+    createdDate: 1670475350467,
+    name: 'guest1',
+    disabled: false,
+    networkId: 'd50b652907b64a008e8af2d160b29b64',
+    notes: '',
+    email: 'test@commscope.com',
+    mobilePhoneNumber: '+886988000000',
+    macAddresses: [ ],
+    ssid: 'test guest',
+    deliveryMethods: [ 'PRINT' ],
+    guestUserType: 'GuestPass',
+    expiration: {
+      activationType: 'Creation',
+      duration: 7,
+      unit: 'Day'
+    },
+    locale: 'en',
+    password: '886007',
+    expirationDate: 1671080150481
+  }
+}
+
 export const AllowedNetworkList = {
   fields: ['name', 'id', 'defaultGuestCountry'],
   totalCount: 2,

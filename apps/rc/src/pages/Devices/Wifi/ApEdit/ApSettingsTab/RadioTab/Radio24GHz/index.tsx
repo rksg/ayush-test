@@ -58,11 +58,12 @@ export function Radio24GHz (props: { venueId: string, serialNumber: string }) {
     }
   })
 
-  const { allowedChannels } =
+  const { allowedChannels, manualChannel } =
     useGetApRadioQuery({ params: { tenantId, serialNumber } }, {
       selectFromResult ({ data }) {
         return {
-          allowedChannels: data?.apRadioParams24G?.allowedChannels || []
+          allowedChannels: data?.apRadioParams24G?.allowedChannels || [],
+          manualChannel: data?.apRadioParams24G.manualChannel
         }
       }
     })
@@ -94,10 +95,16 @@ export function Radio24GHz (props: { venueId: string, serialNumber: string }) {
     if(useVenueSettings){
       form.setFieldValue(['apRadioParams24G', 'allowedChannels'], allowedVenueChannels)
     }else{
-      if(allowedChannels.length > 0){
-        form.setFieldValue(['apRadioParams24G', 'allowedChannels'], allowedChannels)
+      if(channelMethod === 'MANUAL'){
+        form.validateFields([['apRadioParams24G', 'allowedChannels']])
+        form.setFieldValue(['apRadioParams24G', 'allowedChannels'],
+          manualChannel!== 0 ? [manualChannel?.toString()] : [])
       }else{
-        form.setFieldValue(['apRadioParams24G', 'allowedChannels'], allowedAPChannels)
+        if(allowedChannels.length > 0){
+          form.setFieldValue(['apRadioParams24G', 'allowedChannels'], allowedChannels)
+        }else{
+          form.setFieldValue(['apRadioParams24G', 'allowedChannels'], allowedAPChannels)
+        }
       }
     }
 
@@ -122,8 +129,8 @@ export function Radio24GHz (props: { venueId: string, serialNumber: string }) {
         setTxPowerLabel(Object.values(channelTxPowerObject[0].label.defaultMessage[0])[1])
       }
     }
-  }, [defaultChannelsData, channelBandwidth, allowedChannels, allowedAPChannels,
-    allowedVenueChannels, venueData, useVenueSettings])
+  }, [defaultChannelsData, channelBandwidth,
+    venueData, useVenueSettings, channelMethod])
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function formatter (value: any) {
@@ -220,7 +227,7 @@ export function Radio24GHz (props: { venueId: string, serialNumber: string }) {
           }
         </Col>
       </Row>
-      {enable24G &&
+      {(useVenueSettings || enable24G) &&
       <Row gutter={20}>
         <Col span={14}>
           <div>{$t({ defaultMessage: 'Channel selection:' })}</div>
@@ -237,12 +244,13 @@ export function Radio24GHz (props: { venueId: string, serialNumber: string }) {
           groupSize={1}
           channelList={defaultChannels.map(item => ({
             value: item,
-            selected: allowedChannels?.includes(item)
+            selected: false
           }))}
           displayBarSettings={[]}
           channelBars={channelBars}
           disabled={useVenueSettings}
           editContext={ApEditContext}
+          channelMethod={channelMethod}
         />
           }
         </Col>

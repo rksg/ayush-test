@@ -356,3 +356,29 @@ export function ValidatePhoneNumber (phoneNumber: string) {
   }
   return true
 }
+
+export function validateRadioChannel (channelMethod: string | undefined, channels: string[]){
+  if(typeof channelMethod === 'undefined'){
+    return
+  }
+
+  const { $t } = getIntl()
+  if(channels.length === 0){
+    if(channelMethod === 'MANUAL'){
+      return Promise.reject($t({ defaultMessage: 'Please select one channel' }))
+    }else{
+      return Promise.reject($t({ defaultMessage: 'Please select at least two channels' }))
+    }
+  }
+  if(channelMethod === 'MANUAL'){
+    if (channels.length !== 1) {
+      return Promise.reject($t(validationMessages.oneRadioChannel))
+    }
+  }else{
+    if (channels.length < 2) {
+      return Promise.reject($t(validationMessages.twoRadioChannels))
+    }
+  }
+  return Promise.resolve()
+
+}
