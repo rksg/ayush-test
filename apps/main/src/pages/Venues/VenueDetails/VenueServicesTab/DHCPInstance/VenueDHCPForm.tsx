@@ -4,8 +4,7 @@ import React, { useState, useEffect } from 'react'
 import {
   Switch,
   FormInstance,
-  Space,
-  Form
+  Space
 } from 'antd'
 import _                   from 'lodash'
 import { useIntl }         from 'react-intl'
@@ -16,10 +15,9 @@ import { DeleteOutlinedIcon } from '@acx-ui/icons'
 import {
   useGetDHCPProfileListQuery,
   useVenueDHCPProfileQuery,
-  useApListQuery,
-  useGetDHCPProfileQuery } from '@acx-ui/rc/services'
-import {  DHCPProfileAps, DHCPSaveData } from '@acx-ui/rc/utils'
-import { DHCPConfigTypeMessages }        from '@acx-ui/rc/utils'
+  useApListQuery
+} from '@acx-ui/rc/services'
+import {  DHCPProfileAps, DHCPSaveData, DHCPConfigTypeEnum } from '@acx-ui/rc/utils'
 import {
   useTenantLink
 } from '@acx-ui/react-router-dom'
@@ -27,13 +25,11 @@ import {
 import useDHCPInfo                                               from './hooks/useDHCPInfo'
 import { AntSelect, IconContainer, AddBtnContainer, StyledForm } from './styledComponents'
 
-import { DHCPConfigTypeEnum } from '@acx-ui/rc/utils'
 
 import {  } from '@acx-ui/rc/services'
 
 
 const { Option } = AntSelect
-const { useWatch } = Form
 const VenueDHCPForm = (props: {
   form: FormInstance,
 }) => {
