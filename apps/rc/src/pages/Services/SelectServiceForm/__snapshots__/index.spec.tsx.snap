@@ -230,6 +230,7 @@ exports[`Select Service Form should render form 1`] = `
                                 >
                                   <label
                                     class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
+                                    style="display: none;"
                                   >
                                     <span
                                       class="ant-radio"
