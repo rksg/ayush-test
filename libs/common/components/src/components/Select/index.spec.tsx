@@ -165,6 +165,42 @@ describe('Select', () => {
     expect(onApplyMock).toHaveBeenCalledWith([['n1'], ['n2']],['6','2.4'])
   })
 
+  it('should render bands disabled, reset default bands and apply', async () => {
+    const options: Option[] = [
+      {
+        value: 'n1',
+        label: 'SSID 1'
+      },
+      {
+        value: 'n2',
+        label: 'SSID 2'
+      },
+      {
+        value: 'n3',
+        label: 'SSID 3'
+      },
+      {
+        value: 'n4',
+        label: 'SSID 4'
+      }
+    ]
+
+    const onApplyMock = jest.fn()
+    const { asFragment } = render(
+      <CustomCascader
+        options={options}
+        onApply={onApplyMock}
+        defaultValue={['n3']}
+        showBand={true}
+        defaultBand={['5']}
+        isBandDisabled={true}
+      />)
+    await userEvent.click(await screen.findByRole('combobox'))
+    expect(asFragment()).toMatchSnapshot()
+    expect(onApplyMock).toBeCalledTimes(1)
+    expect(onApplyMock).toHaveBeenCalledWith(['n3'],[])
+  })
+
   it('reverts to previous values on cancel', async () => {
     const options: Option[] = [
       {
