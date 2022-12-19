@@ -34,11 +34,12 @@ export default function PortalComponents (props:{
                   { ...demoValue.componentDisplay, [PortalComponentsEnum[key]]: value } })
               }}
             />
-            {key === 'TermsConditions'&&<PortalTermsModal
+            {PortalComponentsEnum[key] === PortalComponentsEnum.TermsConditions&&<PortalTermsModal
               terms={demoValue?.termsCondition}
               updateTermsConditions={(value)=>
                 updateViewContent({ ...demoValue, termsCondition: value })}/>}
-            {key === 'Wifi4eu'&&<PortalWifi4euModal wifi4eu={demoValue?.wifi4EUNetworkId}
+            {PortalComponentsEnum[key] === PortalComponentsEnum.Wifi4eu&&<PortalWifi4euModal
+              wifi4eu={demoValue?.wifi4EUNetworkId}
               updateWiFi4EU={(value)=> updateViewContent({
                 ...demoValue, wifi4EUNetworkId: value })}/>}
           </UI.CommonLabel>
