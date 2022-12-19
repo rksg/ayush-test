@@ -188,15 +188,16 @@ exports[`Select renders simple list with bands, triggers onApply with multi-sele
               </ul>
             </div>
             <div
-              style="padding: 10px; width: 350px;"
+              class="styledComponents__RadioBandsWrapper-sc-9z6ynb-3 gmHPNt"
             >
               <span
+                class="styledComponents__RadioBandLabel-sc-9z6ynb-4 bFvOPD"
                 style="margin-right: 10px;"
               >
                 Radio:
               </span>
               <div
-                class="ant-checkbox-group"
+                class="ant-checkbox-group styledComponents__CheckboxGroup-sc-9z6ynb-5 eQvQIn"
               >
                 <label
                   class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-group-item"
