@@ -128,14 +128,6 @@ describe('RogueAPDetectionSettingForm', () => {
     })).toBeTruthy()
 
     await screen.findByRole('heading', { name: 'Settings', level: 3 })
-
-    await screen.findByRole('button', {
-      name: /next/i
-    })
-
-    await userEvent.click(screen.getByRole('button', {
-      name: /next/i
-    }))
   })
 
   it('should render RogueAPDetectionSettingForm with editMode successfully', async () => {
