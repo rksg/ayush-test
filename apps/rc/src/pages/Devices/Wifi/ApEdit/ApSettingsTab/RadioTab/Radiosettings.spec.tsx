@@ -232,7 +232,7 @@ describe('RadioSettingsTab', () => {
     fireEvent.click(await screen.findByRole('button', { name: 'Lower 5G' }))
     fireEvent.click(await screen.findByRole('button', { name: 'Upper 5G' }))
     fireEvent.mouseDown(await screen.findByRole('combobox', { name: /channel/i }))
-    const option = await screen.findByText(/manual/i)
+    const option = screen.getByText(/manual/i)
     fireEvent.click(option)
     fireEvent.click(await screen.findByText('36'))
 
