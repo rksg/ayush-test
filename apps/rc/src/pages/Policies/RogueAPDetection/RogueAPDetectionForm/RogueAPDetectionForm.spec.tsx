@@ -171,9 +171,7 @@ describe('RogueAPDetectionForm', () => {
         dispatch: setRogueAPConfigure
       }}>
         <Form>
-          <div data-testid={'aaaaa'}>
-            <RogueAPDetectionForm edit={false}/>
-          </div>
+          <RogueAPDetectionForm edit={false}/>
         </Form>
       </RogueAPDetectionContext.Provider>
       , {
@@ -201,8 +199,6 @@ describe('RogueAPDetectionForm', () => {
 
     fireEvent.change(screen.getByRole('textbox', { name: /description/i }),
       { target: { value: 'desc1' } })
-
-    screen.logTestingPlaygroundURL(screen.getByTestId('aaaaa'))
 
     await userEvent.click(screen.getByRole('button', {
       name: /add rule/i
