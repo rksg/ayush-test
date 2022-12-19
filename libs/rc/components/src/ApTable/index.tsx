@@ -273,7 +273,7 @@ export function ApTable (props: ApTableProps) {
         return (
           <span>
             <Badge color={`var(${iconColor})`}
-              text={row.poePortInfo}
+              text={transformDisplayText(row.poePortInfo)}
             />
           </span>
         )
