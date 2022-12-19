@@ -525,7 +525,7 @@ export const {
   useSavePortalMutation,
   usePortalNetworkInstancesQuery,
   useGetPortalProfileDetailQuery,
-  useLazyGetWebAuthTemplateQuery,
+  useGetWebAuthTemplateQuery,
   useWebAuthTemplateListQuery,
   useCreateWebAuthTemplateMutation,
   useUpdateWebAuthTemplateMutation,

@@ -4,7 +4,7 @@ import { Col, Row, Typography } from 'antd'
 import { useIntl }              from 'react-intl'
 
 import { Button, Card, PageHeader, Subtitle, Table } from '@acx-ui/components'
-import { useWebAuthTemplateListQuery }               from '@acx-ui/rc/services'
+import { useGetWebAuthTemplateQuery }                from '@acx-ui/rc/services'
 import {
   ServiceType,
   WebAuthTemplate,
@@ -14,7 +14,7 @@ import {
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
 
-export function NetworkSegAuthSummary ({ data }: { data: WebAuthTemplate }) {
+export function NetworkSegAuthSummary ({ data }: { data?: WebAuthTemplate }) {
   const { $t } = useIntl()
   return <Row gutter={[24, 16]}>
     <Col span={6}>
@@ -52,24 +52,7 @@ export default function NetworkSegAuthDetail () {
   const { $t } = useIntl()
   const params = useParams()
 
-  const payload = {
-    searchString: '',
-    filters: {
-      id: [params.serviceId]
-    },
-    fields: [
-      'name', 'id',
-      'webAuth_password_label',
-      'webAuth_custom_title',
-      'webAuth_custom_top',
-      'webAuth_custom_login_button',
-      'webAuth_custom_bottom',
-      'switches', 'tag'
-    ]
-  }
-
-  const { data: tableResult } = useWebAuthTemplateListQuery({ params, payload })
-  const data = tableResult?.data[0] as WebAuthTemplate
+  const { data } = useGetWebAuthTemplateQuery({ params })
 
   const columns = React.useMemo(() => {
     return [{
