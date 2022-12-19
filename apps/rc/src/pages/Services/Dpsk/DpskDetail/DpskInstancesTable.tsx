@@ -67,6 +67,7 @@ export default function DpskInstancesTable () {
         columns={columns}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
+        onChange={tableQuery.handleTableChange}
         rowKey='id'
       />
     </Loader>
