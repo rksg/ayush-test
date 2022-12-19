@@ -446,7 +446,7 @@ exports[`DpskForm should render the form 1`] = `
                                 id="details_expiration_mode"
                               >
                                 <div
-                                  class="sc-bZnhIo iiJnNY"
+                                  class="sc-ciZhAO glSKGG"
                                 >
                                   <label
                                     class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
@@ -469,7 +469,7 @@ exports[`DpskForm should render the form 1`] = `
                                   </label>
                                 </div>
                                 <div
-                                  class="sc-bZnhIo kvLKmP"
+                                  class="sc-ciZhAO jYXYYp"
                                 >
                                   <label
                                     class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
@@ -492,7 +492,7 @@ exports[`DpskForm should render the form 1`] = `
                                   </label>
                                 </div>
                                 <div
-                                  class="sc-bZnhIo hsWyTK"
+                                  class="sc-ciZhAO hjJrEE""
                                 >
                                   <label
                                     class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
