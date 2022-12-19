@@ -16,12 +16,13 @@ const useConnectionDetail = (event: DisplayEvent) => {
   const { mac, apName, ssid, radio, code, ttc, state } = event
 
   const eventDetails = [
-    { label: $t({ defaultMessage: 'AP MAC:' }), value: $t({ defaultMessage: '{mac}' }, { mac }) },
-    { label: $t({ defaultMessage: 'AP Name:' }), value: $t({ defaultMessage: '{apName}' },
-      { apName }) },
-    { label: $t({ defaultMessage: 'SSID:' }), value: $t({ defaultMessage: '{ssid}' }, { ssid }) },
-    { label: $t({ defaultMessage: 'Radio:' }), value: $t({ defaultMessage: '{radio}' },
-      { radio: radio ? formatter('radioFormat')(radio) : $t({ defaultMessage: 'Unknown' }) }) }
+    { label: $t({ defaultMessage: 'AP MAC:' }), value: mac },
+    { label: $t({ defaultMessage: 'AP Name:' }), value: apName },
+    { label: $t({ defaultMessage: 'SSID:' }), value: ssid as string },
+    { label: $t({ defaultMessage: 'Radio:' }), value: radio
+      ? formatter('radioFormat')(radio)
+      : $t({ defaultMessage: 'Unknown' })
+    }
   ]
 
   switch (event.category) {
@@ -31,7 +32,7 @@ const useConnectionDetail = (event: DisplayEvent) => {
         : $t({ defaultMessage: 'Unknown' })
       eventDetails.push({
         label: $t({ defaultMessage: 'Failure Type:' }),
-        value: $t({ defaultMessage: '{failureType}' }, { failureType })
+        value: failureType
       })
 
       const reason = clientEventDescription(event.event, state)
@@ -45,7 +46,7 @@ const useConnectionDetail = (event: DisplayEvent) => {
     case SLOW: {
       eventDetails.push({
         label: $t({ defaultMessage: 'Time to Connect:' }),
-        value: $t({ defaultMessage: '{ttc}' }, { ttc: formatter('durationFormat')(ttc) })
+        value: formatter('durationFormat')(ttc)
       })
       break
     }
@@ -54,7 +55,7 @@ const useConnectionDetail = (event: DisplayEvent) => {
       const reason = mapCodeToReason(event.event, intl)
       eventDetails.push({
         label: $t({ defaultMessage: 'Reason:' }),
-        value: $t({ defaultMessage: '{reason}' }, { reason })
+        value: reason
       })
       break
     }
