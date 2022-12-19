@@ -4,7 +4,6 @@ import { Col, Form, Row }            from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
 import { Button, Loader, StepsForm, StepsFormInstance, Tabs } from '@acx-ui/components'
-import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
 import {
   useGetApQuery,
   useGetVenueQuery,
@@ -52,7 +51,9 @@ export function RadioSettings () {
 
   const { data: venue } = useGetVenueQuery({ params: { tenantId, venueId } })
 
-  const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
+  // TODO
+  // const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
+
   useEffect(() => {
     // TODO
     // if(venueCaps){
@@ -75,7 +76,7 @@ export function RadioSettings () {
         updateWifiRadio: handleUpdateRadioSettings
       })
     }
-  }, [venueSavedChannelsData, triBandRadioFeatureFlag, data])
+  }, [venueSavedChannelsData, data])
 
   const [currentTab, setCurrentTab] = useState('Normal24GHz')
 

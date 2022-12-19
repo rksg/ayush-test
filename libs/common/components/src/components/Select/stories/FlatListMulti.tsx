@@ -1,4 +1,4 @@
-import { NetworkFilter, Option } from '..'
+import { Select, Option } from '..'
 
 import { onApply } from './utils'
 
@@ -31,7 +31,7 @@ const options: Option[] = [
 
 export function FlatListMulti () {
   return <div style={{ width: 300 }}>
-    <NetworkFilter
+    <Select
       multiple
       defaultValue={[['n3'], ['n6']]}
       placeholder='Entire Organization'
