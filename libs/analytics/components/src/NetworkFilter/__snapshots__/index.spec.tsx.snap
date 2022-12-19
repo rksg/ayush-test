@@ -3,7 +3,7 @@
 exports[`Network Filter should list only venues having APs 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Container-sc-1x390s8-1 hKankr"
+    class="styledComponents__Container-sc-1x390s8-1 dJUCQh"
   >
     <div
       class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
@@ -262,15 +262,16 @@ exports[`Network Filter should list only venues having APs 1`] = `
                   </ul>
                 </div>
                 <div
-                  style="padding: 10px; width: 350px;"
+                  class="styledComponents__RadioBandsWrapper-sc-9z6ynb-3 gmHPNt"
                 >
                   <span
+                    class="styledComponents__RadioBandLabel-sc-9z6ynb-4 bFvOPD"
                     style="margin-right: 10px;"
                   >
                     Radio:
                   </span>
                   <div
-                    class="ant-checkbox-group"
+                    class="ant-checkbox-group styledComponents__CheckboxGroup-sc-9z6ynb-5 eQvQIn"
                   >
                     <label
                       class="ant-checkbox-wrapper ant-checkbox-group-item"
@@ -364,7 +365,7 @@ exports[`Network Filter should list only venues having APs 1`] = `
 exports[`Network Filter should list only venues having Switches 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Container-sc-1x390s8-1 hKankr"
+    class="styledComponents__Container-sc-1x390s8-1 dJUCQh"
   >
     <div
       class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
@@ -623,15 +624,16 @@ exports[`Network Filter should list only venues having Switches 1`] = `
                   </ul>
                 </div>
                 <div
-                  style="padding: 10px; width: 350px;"
+                  class="styledComponents__RadioBandsWrapper-sc-9z6ynb-3 gmHPNt"
                 >
                   <span
+                    class="styledComponents__RadioBandLabel-sc-9z6ynb-4 bFvOPD"
                     style="margin-right: 10px;"
                   >
                     Radio:
                   </span>
                   <div
-                    class="ant-checkbox-group"
+                    class="ant-checkbox-group styledComponents__CheckboxGroup-sc-9z6ynb-5 eQvQIn"
                   >
                     <label
                       class="ant-checkbox-wrapper ant-checkbox-group-item"
@@ -725,7 +727,7 @@ exports[`Network Filter should list only venues having Switches 1`] = `
 exports[`Network Filter should select network node and bands 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Container-sc-1x390s8-1 hKankr"
+    class="styledComponents__Container-sc-1x390s8-1 dJUCQh"
   >
     <div
       class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
@@ -1173,15 +1175,16 @@ exports[`Network Filter should select network node and bands 1`] = `
                   </ul>
                 </div>
                 <div
-                  style="padding: 10px; width: 350px;"
+                  class="styledComponents__RadioBandsWrapper-sc-9z6ynb-3 gmHPNt"
                 >
                   <span
+                    class="styledComponents__RadioBandLabel-sc-9z6ynb-4 bFvOPD"
                     style="margin-right: 10px;"
                   >
                     Radio:
                   </span>
                   <div
-                    class="ant-checkbox-group"
+                    class="ant-checkbox-group styledComponents__CheckboxGroup-sc-9z6ynb-5 eQvQIn"
                   >
                     <label
                       class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-group-item"
@@ -1301,7 +1304,7 @@ exports[`Network Filter should select network node and bands 1`] = `
 exports[`Network Filter should select network node and bands with onApplyFn 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Container-sc-1x390s8-1 hKankr"
+    class="styledComponents__Container-sc-1x390s8-1 dJUCQh"
   >
     <div
       class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
@@ -1614,15 +1617,16 @@ exports[`Network Filter should select network node and bands with onApplyFn 1`] 
                   </ul>
                 </div>
                 <div
-                  style="padding: 10px; width: 350px;"
+                  class="styledComponents__RadioBandsWrapper-sc-9z6ynb-3 gmHPNt"
                 >
                   <span
+                    class="styledComponents__RadioBandLabel-sc-9z6ynb-4 bFvOPD"
                     style="margin-right: 10px;"
                   >
                     Radio:
                   </span>
                   <div
-                    class="ant-checkbox-group"
+                    class="ant-checkbox-group styledComponents__CheckboxGroup-sc-9z6ynb-5 eQvQIn"
                   >
                     <label
                       class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-group-item"
@@ -1716,7 +1720,7 @@ exports[`Network Filter should select network node and bands with onApplyFn 1`] 
 exports[`Network Filter with incident severity should not show any severity circle when hierarchyNode is empty 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Container-sc-1x390s8-1 hKankr"
+    class="styledComponents__Container-sc-1x390s8-1 dJUCQh"
   >
     <div
       class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
@@ -1864,7 +1868,7 @@ exports[`Network Filter with incident severity should not show any severity circ
 exports[`Network Filter with incident severity should show only venue severities 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Container-sc-1x390s8-1 hKankr"
+    class="styledComponents__Container-sc-1x390s8-1 dJUCQh"
   >
     <div
       class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
@@ -2012,7 +2016,7 @@ exports[`Network Filter with incident severity should show only venue severities
 exports[`Network Filter with incident severity should show severity only once on each node 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Container-sc-1x390s8-1 hKankr"
+    class="styledComponents__Container-sc-1x390s8-1 dJUCQh"
   >
     <div
       class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
