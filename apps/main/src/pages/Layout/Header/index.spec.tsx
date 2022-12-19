@@ -12,7 +12,8 @@ import {
 
 
 // import About       from './About'
-import AlarmButton from './AlarmButton'
+import AlarmButton    from './AlarmButton'
+import ActivityButton from './ActivityButton'
 // import Firewall    from './Firewall'
 
 
@@ -203,6 +204,20 @@ describe('Header Component', () => {
     await waitFor(async () => {
       expect(await screen.findByText(('testamy_ap'))).toBeInTheDocument()
     })
+    expect(asFragment()).toMatchSnapshot()
+    const cancelBtn = await screen.findByRole('button',{ name: 'Close' })
+    await userEvent.click(cancelBtn)
+  })
+
+  it('should render Activity component correctly', async () => {
+    const { asFragment } = render(
+      <Provider>
+        <ActivityButton/>
+      </Provider>, {
+        route: { params, path: '/:tenantId/' }
+      })
+    const activityBtn = await screen.getByRole('button', { name: /clock\-circle/i })
+    await userEvent.click(activityBtn)
     expect(asFragment()).toMatchSnapshot()
     const cancelBtn = await screen.findByRole('button',{ name: 'Close' })
     await userEvent.click(cancelBtn)
