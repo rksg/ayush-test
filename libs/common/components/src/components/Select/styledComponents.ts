@@ -1,5 +1,5 @@
-import { Cascader as AntCascader } from 'antd'
-import styled                      from 'styled-components/macro'
+import { Checkbox, Cascader as AntCascader } from 'antd'
+import styled                                from 'styled-components/macro'
 
 export const Cascader = styled(AntCascader)`
   .ant-select-selector {
@@ -44,4 +44,29 @@ export const Span = styled.span`
   margin-top: 2px;
   margin-bottom: 2px;
   margin-left: 2px;
+`
+export const RadioBandsWrapper = styled.div`
+  margin-top: 4px;
+  border-top: 1px solid var(--acx-neutrals-20);
+  padding: 10px;
+  width: 350px;
+`
+export const RadioBandLabel = styled.span`
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  font-weight: var(--acx-body-font-weight);
+`
+export const CheckboxGroup = styled(Checkbox.Group)`
+  .ant-checkbox-wrapper {
+    > span {
+      &:first-child {
+        /* do nothing */
+      }
+      &:last-child {
+        font-size: var(--acx-body-4-font-size);
+        line-height: var(--acx-body-4-line-height);
+        font-weight: var(--acx-body-font-weight);
+      }
+    }
+  }
 `

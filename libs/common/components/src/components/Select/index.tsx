@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 
 import {
-  Checkbox,
   CascaderProps as AntCascaderProps
 } from 'antd'
 import { DefaultOptionType }                         from 'antd/es/cascader'
@@ -114,9 +113,11 @@ export function Select (props: CascaderProps) {
     const withFooter = (menus: JSX.Element) => <>
       {menus}
       {showBand && (
-        <div style={{ padding: '10px', width: '350px' }}>
-          <span style={{ marginRight: '10px' }}>Radio:</span>
-          <Checkbox.Group
+        <UI.RadioBandsWrapper>
+          <UI.RadioBandLabel style={{ marginRight: '10px' }}>
+            {$t({ defaultMessage: 'Radio' })}:
+          </UI.RadioBandLabel>
+          <UI.CheckboxGroup
             options={[{
               label: '6 GHz',
               value: '6'
@@ -133,7 +134,7 @@ export function Select (props: CascaderProps) {
             defaultValue={initialBands}
             value={currentBands}
             onChange={onBandChange}/>
-        </div>)}
+        </UI.RadioBandsWrapper>)}
       <UI.ButtonDiv>
         <Button size='small' onClick={onCancel}>
           {$t({ defaultMessage: 'Cancel' })}
