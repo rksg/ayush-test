@@ -469,7 +469,7 @@ exports[`DpskForm should render the form 1`] = `
                                   </label>
                                 </div>
                                 <div
-                                  class="sc-ciZhAO jYXYYp"
+                                  class="sc-cCsOjp gMrlhl"
                                 >
                                   <label
                                     class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
@@ -492,7 +492,7 @@ exports[`DpskForm should render the form 1`] = `
                                   </label>
                                 </div>
                                 <div
-                                  class="sc-ciZhAO hjJrEE"
+                                  class="sc-cCsOjp koomPI"
                                 >
                                   <label
                                     class="ant-radio-wrapper ant-radio-wrapper-in-form-item"

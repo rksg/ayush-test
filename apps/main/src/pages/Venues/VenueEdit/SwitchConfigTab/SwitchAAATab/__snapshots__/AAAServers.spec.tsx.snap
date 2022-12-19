@@ -3,7 +3,7 @@
 exports[`AAAServers should render RADIUS list correctly and edit row data 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
       class="styledComponents__AAAServers-sc-1m2ni0r-0 ZnKYN"
@@ -41,7 +41,7 @@ exports[`AAAServers should render RADIUS list correctly and edit row data 1`] = 
               class="ant-collapse-content-box"
             >
               <div
-                class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+                class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
               >
                 <div
                   class="styledComponents__Wrapper-sc-1abm7iv-13 gzZsiC"
@@ -634,7 +634,7 @@ exports[`AAAServers should render RADIUS list correctly and edit row data 1`] = 
               class="ant-collapse-content-box"
             >
               <div
-                class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+                class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
               >
                 <div
                   class="styledComponents__Wrapper-sc-1abm7iv-13 gzZsiC"
@@ -969,7 +969,7 @@ exports[`AAAServers should render RADIUS list correctly and edit row data 1`] = 
               class="ant-collapse-content-box"
             >
               <div
-                class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+                class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
               >
                 <div
                   class="styledComponents__Wrapper-sc-1abm7iv-13 gzZsiC"
@@ -1241,7 +1241,7 @@ exports[`AAAServers should render RADIUS list correctly and edit row data 1`] = 
 exports[`AAAServers should render empty lists and alert message correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
       class="styledComponents__AAAServers-sc-1m2ni0r-0 ZnKYN"
@@ -1298,7 +1298,7 @@ exports[`AAAServers should render empty lists and alert message correctly 1`] = 
               class="ant-collapse-content-box"
             >
               <div
-                class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+                class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
               >
                 <div
                   class="styledComponents__Wrapper-sc-1abm7iv-13 gzZsiC"
@@ -1633,7 +1633,7 @@ exports[`AAAServers should render empty lists and alert message correctly 1`] = 
               class="ant-collapse-content-box"
             >
               <div
-                class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+                class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
               >
                 <div
                   class="styledComponents__Wrapper-sc-1abm7iv-13 gzZsiC"
@@ -1968,7 +1968,7 @@ exports[`AAAServers should render empty lists and alert message correctly 1`] = 
               class="ant-collapse-content-box"
             >
               <div
-                class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+                class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
               >
                 <div
                   class="styledComponents__Wrapper-sc-1abm7iv-13 gzZsiC"

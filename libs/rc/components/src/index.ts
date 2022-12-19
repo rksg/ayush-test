@@ -25,6 +25,7 @@ export { VenuesDashboardWidget } from './VenuesDashboardWidget'
 export { WifiSignal } from './WifiSignal'
 export { ConnectedClientsTable } from './ConnectedClientsTable'
 export { StatusLight } from './StatusLight'
+export { ClientHealthIcon } from './ClientHealthIcon'
 
 export * from './EdgeStatisticWidget'
 export * from './pipes/apGroupPipes'
