@@ -5,7 +5,7 @@ import { Switch }                 from 'antd'
 import { useIntl, FormattedList } from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
-import { Table, TableProps, showActionModal } from '@acx-ui/components'
+import { Table, TableProps, showActionModal, Loader } from '@acx-ui/components'
 import {
   useVenueDHCPPoolsQuery,
   useActivateDHCPPoolMutation } from '@acx-ui/rc/services'
@@ -14,13 +14,15 @@ import { TenantLink }        from '@acx-ui/react-router-dom'
 import { formatter }         from '@acx-ui/utils'
 
 
+
 export default function VenuePoolTable (){
   const params = useParams()
   const { $t } = useIntl()
 
   const [tableData, setTableData] = useState<VenueDHCPPoolInst[]>()
 
-  const { data: dhcpPoolsList } = useVenueDHCPPoolsQuery({
+
+  const venueDHCPPools = useVenueDHCPPoolsQuery({
     params
   })
 
@@ -44,15 +46,14 @@ export default function VenuePoolTable (){
 
 
   useEffect(() => {
-    setTableData(dhcpPoolsList)
-  }, [dhcpPoolsList])
-
+    setTableData(venueDHCPPools.data)
+  }, [venueDHCPPools.data])
 
   const columns: TableProps<VenueDHCPPoolInst>['columns'] = [
     {
       key: 'name',
       title: $t({ defaultMessage: 'Pool Name' }),
-      dataIndex: 'venue',
+      dataIndex: 'name',
       sorter: true,
       render: function (_data, row) {
         return (
@@ -62,9 +63,9 @@ export default function VenuePoolTable (){
       }
     },
     {
-      key: 'APs',
+      key: 'startIpAddress',
       title: $t({ defaultMessage: 'Address Pool' }),
-      dataIndex: 'aps',
+      dataIndex: 'startIpAddress',
       render: function (_data, row) {
         return $t({ defaultMessage: '{start} - {end}' },
           { start: row.startIpAddress, end: row.endIpAddress })
@@ -127,10 +128,15 @@ export default function VenuePoolTable (){
   ]
 
   return (
-    <Table
-      columns={columns}
-      dataSource={tableData}
-      rowKey='id'
-    />
+    <Loader states={[{
+      isLoading: venueDHCPPools.isLoading,
+      isFetching: venueDHCPPools.isFetching
+    }]}>
+      <Table
+        columns={columns}
+        dataSource={tableData}
+        rowKey='id'
+      />
+    </Loader>
   )
 }
