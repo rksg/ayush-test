@@ -1,14 +1,22 @@
 import { useEffect, useState } from 'react'
 
-import { Divider, Dropdown, Form, Menu, MenuProps, Space } from 'antd'
-import moment                                              from 'moment-timezone'
-import { useIntl }                                         from 'react-intl'
+import { Divider,
+  Dropdown,
+  Form,
+  Menu,
+  MenuProps,
+  Space } from 'antd'
+import moment      from 'moment-timezone'
+import { useIntl } from 'react-intl'
+
 
 import { Button, cssStr, Table, TableProps } from '@acx-ui/components'
 import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
 import { ArrowExpand }                       from '@acx-ui/icons'
+import { ClientHealthIcon }                  from '@acx-ui/rc/components'
 import { useGetGuestsListQuery }             from '@acx-ui/rc/services'
 import {
+  getOsTypeIcon,
   Guest,
   GuestClient,
   GuestStatusEnum,
@@ -22,10 +30,10 @@ import {
   renderExpires,
   renderGuestType
 } from '../GuestsTable'
+import * as UI from '../styledComponents'
 
 import { GenerateNewPasswordModal } from './generateNewPasswordModal'
 import { useGuestActions }          from './guestActions'
-
 
 interface GuestDetailsDrawerProps {
   currentGuest: Guest,
@@ -105,15 +113,19 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
       title: $t({ defaultMessage: 'OS' }),
       dataIndex: 'osType',
       sorter: false,
-      defaultSortOrder: 'ascend'
-      // render: function (data, row) {} //TODO: Wait for connected clients
+      defaultSortOrder: 'ascend',
+      render: function (data) {
+        return <UI.IconContainer>{getOsTypeIcon(data as string)}</UI.IconContainer>
+      }
     }, {
       key: 'healthCheckStatus',
       title: $t({ defaultMessage: 'Health' }),
       dataIndex: 'healthCheckStatus',
       sorter: false,
-      defaultSortOrder: 'ascend'
-      // render: function (data, row) {} //TODO: Wait for connected clients
+      defaultSortOrder: 'ascend',
+      render: (data, row) => {
+        return row.healthCheckStatus ? <ClientHealthIcon type={row.healthCheckStatus} /> : '--'
+      }
     }, {
       key: 'clientMac',
       title: $t({ defaultMessage: 'MAC Address' }),
@@ -212,10 +224,16 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
         guestDetail.guestStatus === GuestStatusEnum.DISABLED) {
           return false
         } else if (guestDetail.guestStatus === GuestStatusEnum.EXPIRED
-          && (item.key === 'disableGuest' || item.key === 'enableGuest'
-            || item.key === 'generatePassword')) {
+          && (item.key === 'disableGuest' || item.key === 'enableGuest')) {
           return false
         }
+
+        if (item.key === 'generatePassword') {
+          return(guestDetail.guestStatus?.indexOf(GuestStatusEnum.ONLINE) !== -1) ||
+            ((guestDetail.guestStatus === GuestStatusEnum.OFFLINE) &&
+              guestDetail.networkId && !guestDetail.socialLogin)
+        }
+
         return true
       })}
     />
