@@ -1,8 +1,9 @@
 import React from 'react'
 
-import { act }  from '@testing-library/react'
-import { Form } from 'antd'
-import { rest } from 'msw'
+import { act }   from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
+import { rest }  from 'msw'
 
 import { policyApi }                                                         from '@acx-ui/rc/services'
 import { RogueAPDetectionContextType, RogueApUrls, RogueAPRule, RogueVenue } from '@acx-ui/rc/utils'
@@ -13,6 +14,7 @@ import RogueAPDetectionContext from '../RogueAPDetectionContext'
 
 import RogueAPDetectionForm        from './RogueAPDetectionForm'
 import RogueAPDetectionSettingForm from './RogueAPDetectionSettingForm'
+
 
 
 const policyListContent = [
@@ -124,6 +126,16 @@ describe('RogueAPDetectionSettingForm', () => {
     expect(screen.getByRole('columnheader', {
       name: /category/i
     })).toBeTruthy()
+
+    await screen.findByRole('heading', { name: 'Settings', level: 3 })
+
+    await screen.findByRole('button', {
+      name: /next/i
+    })
+
+    await userEvent.click(screen.getByRole('button', {
+      name: /next/i
+    }))
   })
 
   it('should render RogueAPDetectionSettingForm with editMode successfully', async () => {
