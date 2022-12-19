@@ -83,7 +83,7 @@ const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormProps) =>
               { max: 32 },
               { validator: async (rule, value) => {
                 if (!edit && value
-                    && data && data?.findIndex((policy) => policy.name === value) !== -1) {
+                    && data?.findIndex((policy) => policy.name === value) !== -1) {
                   return Promise.reject(
                     $t({ defaultMessage: 'The rogue policy with that name already exists' })
                   )
@@ -107,6 +107,9 @@ const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormProps) =>
           <Form.Item
             name='description'
             label={$t({ defaultMessage: 'Description' })}
+            rules={[
+              { max: 255 }
+            ]}
             initialValue={state.description}
             children={<Input
               onChange={(event => handleDescription(event.target.value))}/>}
