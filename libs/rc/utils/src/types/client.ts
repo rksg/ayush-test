@@ -70,7 +70,8 @@ export interface Guest {
     maxNumberOfClients?: number,
     guestStatus: GuestStatusEnum,
     clients?: GuestClient[],
-    langCode?: string
+    langCode?: string,
+    socialLogin?: string
 }
 
 export interface GuestClient {

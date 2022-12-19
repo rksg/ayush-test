@@ -197,6 +197,38 @@ export const humanizedDate = (validDuration: number, langCode: string) => {
   })
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const genTemplate = (guestDetails: any, langDictionary: any) => {
+  return `
+    <div class="color-2" style="text-align: left; margin-bottom: 2cm; font-size: 11pt;font-weight: normal">` + guestDetails.currentDate + `</div>
+    <div style="margin-bottom: 1cm;">
+       <img src="data:image/jpeg;base64; ` + base64Images.guestLogo + `" style="width: 3cm;margin:0 auto;">
+    </div>
+    <div class="color-1" style="font-size: 28px; margin-bottom: 1.2cm; word-break:break-all;">
+       ` + langDictionary['hello'] + guestDetails.name + `</div>
+    <div class="color-2" style="opacity: 0.5; font-size: 14px; margin-bottom: 1.5cm;">` + langDictionary['youCanAccess'] + `</div>
+    <div id="credentials` + guestDetails.guestNumber + `" style="display: inline-block !important; min-width: 10cm">
+    <div style="text-align: left;font-size: 12pt;">` + langDictionary['wifiNetwork'] + `</div>
+    <div class="network" style="border: solid 1px black; border-radius: 0.1cm; text-align: left;padding: 0.5cm;margin-bottom: 1cm;display:flex !important;align-items: center;">
+      <img src="data:image/jpeg;base64; ` + base64Images.wlanIcon + `" style="width: 1.3cm;height: 1.3cm;margin-right: 0.5cm;">
+      <span class="color-1" style="word-break: break-all;text-align: left; font-size: 24px; vertical-align: middle;">` + guestDetails.wifiNetwork + `</span>
+    </div>
+    <div style="text-align: left;font-size: 12pt;">` + langDictionary['password'] + `</div>
+    <div style="border: solid 1px black; border-radius: 0.1cm; text-align: left;padding: 0.5cm;margin-bottom: 1cm;display: flex !important; align-items:center;">
+      <img src="data:image/jpeg;base64; ` + base64Images.lockIcon + `" style="width: 1.3cm; height: 1.3cm;margin-right: 0.5cm">
+      <span class="color-1" style="text-align: left; font-size: 24px; vertical-align: middle;">` + guestDetails.password + `</span>
+    </div>
+    </div>
+    <div class="color-2" style="margin-bottom: 1.5cm;font-size: 14px;">` + langDictionary['accessIsValid'] + guestDetails.validFor + `</div>
+    <div class="color-1" style="font-size: 20px; margin-bottom: 0.5cm;">` + langDictionary['enjoy'] + `</div>
+    <div class="color-3" style="border-top: solid 1px black; margin: 0 auto; padding-top: 0.5cm; width: 6cm; font-size: 10px;">
+      <div style="margin: 0px 75px 10px -5px;">` + langDictionary['poweredBy'] + `</div></div>
+    <div>
+      <img src="data:image/jpeg;base64; ` + base64Images.ruckusLogo + `" style="width: 3.5cm;margin: 0 auto">
+    </div>`
+}
+
+
 export function AddGuestDrawer (props: AddGuestProps) {
   const { $t } = useIntl()
   const [form] = Form.useForm()
@@ -240,37 +272,6 @@ export function AddGuestDrawer (props: AddGuestProps) {
 
   const numberOfDevicesOptions = createNumberOfDevicesList()
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const genTemplate = (guestDetails: any, langDictionary: any) => {
-    return `
-      <div class="color-2" style="text-align: left; margin-bottom: 2cm; font-size: 11pt;font-weight: normal">` + guestDetails.currentDate + `</div>
-      <div style="margin-bottom: 1cm;">
-         <img src="data:image/jpeg;base64; ` + base64Images.guestLogo + `" style="width: 3cm;margin:0 auto;">
-      </div>
-      <div class="color-1" style="font-size: 28px; margin-bottom: 1.2cm; word-break:break-all;">
-         ` + langDictionary['hello'] + guestDetails.name + `</div>
-      <div class="color-2" style="opacity: 0.5; font-size: 14px; margin-bottom: 1.5cm;">` + langDictionary['youCanAccess'] + `</div>
-      <div id="credentials` + guestDetails.guestNumber + `" style="display: inline-block !important; min-width: 10cm">
-      <div style="text-align: left;font-size: 12pt;">` + langDictionary['wifiNetwork'] + `</div>
-      <div class="network" style="border: solid 1px black; border-radius: 0.1cm; text-align: left;padding: 0.5cm;margin-bottom: 1cm;display:flex !important;align-items: center;">
-        <img src="data:image/jpeg;base64; ` + base64Images.wlanIcon + `" style="width: 1.3cm;height: 1.3cm;margin-right: 0.5cm;">
-        <span class="color-1" style="word-break: break-all;text-align: left; font-size: 24px; vertical-align: middle;">` + guestDetails.wifiNetwork + `</span>
-      </div>
-      <div style="text-align: left;font-size: 12pt;">` + langDictionary['password'] + `</div>
-      <div style="border: solid 1px black; border-radius: 0.1cm; text-align: left;padding: 0.5cm;margin-bottom: 1cm;display: flex !important; align-items:center;">
-        <img src="data:image/jpeg;base64; ` + base64Images.lockIcon + `" style="width: 1.3cm; height: 1.3cm;margin-right: 0.5cm">
-        <span class="color-1" style="text-align: left; font-size: 24px; vertical-align: middle;">` + guestDetails.password + `</span>
-      </div>
-      </div>
-      <div class="color-2" style="margin-bottom: 1.5cm;font-size: 14px;">` + langDictionary['accessIsValid'] + guestDetails.validFor + `</div>
-      <div class="color-1" style="font-size: 20px; margin-bottom: 0.5cm;">` + langDictionary['enjoy'] + `</div>
-      <div class="color-3" style="border-top: solid 1px black; margin: 0 auto; padding-top: 0.5cm; width: 6cm; font-size: 10px;">
-        <div style="margin: 0px 75px 10px -5px;">` + langDictionary['poweredBy'] + `</div></div>
-      <div>
-        <img src="data:image/jpeg;base64; ` + base64Images.ruckusLogo + `" style="width: 3.5cm;margin: 0 auto">
-      </div>`
-  }
-
   const getGuestPrintTemplate =
   (guestDetails: { langCode: LangCode }, useUpdatedTemplate: boolean) => {
     const langDictionary = getGuestDictionaryByLangCode(guestDetails.langCode)
@@ -280,7 +281,7 @@ export function AddGuestDrawer (props: AddGuestProps) {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const prepareGuestToPrint = async (guest: any, guestNumber: any, expiresDate: any) =>{
+  const prepareGuestToPrint = async (guest: any, guestNumber: any) =>{
     const currentMoment = moment()
     const userProfile = await getUserProfile({ params })
     const currentDate = currentMoment.format(userProfile.data?.dateFormat.toUpperCase())
@@ -291,19 +292,17 @@ export function AddGuestDrawer (props: AddGuestProps) {
     const name = guest.name
     const wifiNetwork = guest.ssid
     let password = ''
-    let guestExpiresDate = expiresDate
+    let guestExpiresDate = moment()
 
     if (guest.password) {
       password = guest.password
-      if (!guestExpiresDate) {
-        if (guest.expirationDate) {
-          guestExpiresDate = guest.expirationDate
+      if (guest.expirationDate) {
+        guestExpiresDate = guest.expirationDate
+      } else {
+        if (guest.expiration.unit === 'Hour') {
+          guestExpiresDate = currentMoment.clone().add('hours', guest.expiration.duration)
         } else {
-          if (guest.expiration.unit === 'Hour') {
-            guestExpiresDate = currentMoment.clone().add('hours', guest.expiration.duration)
-          } else {
-            guestExpiresDate = currentMoment.clone().add('days', guest.expiration.duration)
-          }
+          guestExpiresDate = currentMoment.clone().add('days', guest.expiration.duration)
         }
       }
     }
@@ -322,14 +321,14 @@ export function AddGuestDrawer (props: AddGuestProps) {
     }
   }
 
-  const generateGuestPrint = async (guests: Guest[], useUpdatedTemplate: boolean, expiresDate?: string) =>{
+  const generateGuestPrint = async (guests: Guest[], useUpdatedTemplate: boolean) =>{
     let printTemplate = ''
     for (let i = 0; i < guests.length; i++) {
       /** Insert page break if multi-page */
       if (i > 0) {
         printTemplate = printTemplate + '<div class=\'page-break-before\'>&nbsp;</div>'
       }
-      const guestToPrint = prepareGuestToPrint(guests[i], i, expiresDate)
+      const guestToPrint = prepareGuestToPrint(guests[i], i)
       printTemplate = printTemplate + getGuestPrintTemplate(await guestToPrint, useUpdatedTemplate)
     }
     const pdfGenerator = new PdfGeneratorService()
@@ -349,7 +348,7 @@ export function AddGuestDrawer (props: AddGuestProps) {
     if (printCondition) {
       const networkData = await getNetwork({
         params: { tenantId: params.tenantId, networkId: jsonGuest.response[0].networkId } })
-      const langCode = (networkData?.data && networkData?.data?.guestPortal && networkData?.data?.guestPortal?.guestPage && networkData?.data?.guestPortal?.guestPage.langCode) || ''
+      const langCode = (networkData?.data?.guestPortal?.guestPage?.langCode) || ''
       for (let i = 0; i < guestsArr.length; i++) {
         guestsArr[i].langCode = langCode
       }

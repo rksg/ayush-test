@@ -3,7 +3,7 @@
 exports[`Health Widget should render KPI widgets 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
       class="styledComponents__Wrapper-sc-13w5wfx-4 lhrXqm"
@@ -157,7 +157,7 @@ exports[`Health Widget should render KPI widgets 1`] = `
 exports[`Health Widget should render KPI widgets for empty threshold value 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
       class="styledComponents__Wrapper-sc-13w5wfx-4 lhrXqm"
