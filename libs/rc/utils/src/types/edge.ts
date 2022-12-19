@@ -1,4 +1,4 @@
-import { EdgePortTypeEnum } from '../models'
+import { EdgeIpModeEnum, EdgePortTypeEnum } from '../models'
 
 export interface EdgeSaveData {
   description: string
@@ -28,11 +28,20 @@ export interface EdgePortConfig {
   name: string
   mac: string
   enabled: boolean
-  ipMode: 'DHCP' | 'STATIC'
+  ipMode: EdgeIpModeEnum.DHCP | EdgeIpModeEnum.STATIC
   ip: string
   subnet: string
   gateway: string
   natEnabled: boolean
+}
+
+export interface EdgeSubInterface {
+  id: string
+  portType: EdgePortTypeEnum.WAN | EdgePortTypeEnum.LAN | EdgePortTypeEnum.UNSPECIFIED
+  ipMode: EdgeIpModeEnum.DHCP | EdgeIpModeEnum.STATIC
+  ip: string
+  subnet: string
+  vlan: number
 }
 
 export interface EdgeDnsServers {

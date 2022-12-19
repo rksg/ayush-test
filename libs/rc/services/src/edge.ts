@@ -104,6 +104,24 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    getPortConfig: build.query<EdgeDnsServers, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getPortConfig, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Edge', id: 'DETAIL' }]
+    }),
+    updatePortConfig: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.updatePortConfig, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
     })
   })
 })
@@ -117,5 +135,7 @@ export const {
   useDeleteEdgeMutation,
   useSendOtpMutation,
   useGetDnsServersQuery,
-  useUpdateDnsServersMutation
+  useUpdateDnsServersMutation,
+  useGetPortConfigQuery,
+  useUpdatePortConfigMutation
 } = edgeApi

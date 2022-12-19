@@ -1,9 +1,9 @@
 import { createContext, useEffect, useState } from 'react'
 
-import { Tabs }                                  from '@acx-ui/components'
-import { EdgePortConfig, EdgePortTypeEnum }      from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { getIntl }                               from '@acx-ui/utils'
+import { Tabs }                                             from '@acx-ui/components'
+import { EdgeIpModeEnum, EdgePortConfig, EdgePortTypeEnum } from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }            from '@acx-ui/react-router-dom'
+import { getIntl }                                          from '@acx-ui/utils'
 
 import PortsGeneral from './PortsGeneral'
 import SubInterface from './SubInterface'
@@ -37,11 +37,11 @@ const Ports = () => {
     setPorts([
       {
         id: 'port_1',
-        portType: EdgePortTypeEnum.WAN,
+        portType: 'WAN' as EdgePortTypeEnum,
         name: 'port 1',
         mac: 'AA:AA:AA:AA:AA:AA',
         enabled: true,
-        ipMode: 'STATIC',
+        ipMode: 'STATIC' as EdgeIpModeEnum,
         ip: '1.1.1.1',
         subnet: '2.2.2.2',
         gateway: '3.3.3.3',
@@ -49,11 +49,11 @@ const Ports = () => {
       },
       {
         id: 'port_2',
-        portType: EdgePortTypeEnum.LAN,
+        portType: 'LAN' as EdgePortTypeEnum,
         name: 'port 2',
         mac: 'BB:BB:BB:BB:BB:BB',
         enabled: true,
-        ipMode: 'STATIC',
+        ipMode: 'STATIC' as EdgeIpModeEnum,
         ip: '4.4.4.4',
         subnet: '5.5.5.5',
         gateway: '6.6.6.6',
@@ -61,11 +61,11 @@ const Ports = () => {
       },
       {
         id: 'port_3',
-        portType: EdgePortTypeEnum.UNSPECIFIED,
+        portType: 'PORT_TYPE_UNSPECIFIED' as EdgePortTypeEnum,
         name: 'port 3',
         mac: 'CC:CC:CC:CC:CC:CC',
         enabled: true,
-        ipMode: 'STATIC',
+        ipMode: 'STATIC' as EdgeIpModeEnum,
         ip: '7.7.7.7',
         subnet: '8.8.8.8',
         gateway: '9.9.9.9',

@@ -36,5 +36,13 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
   updateDnsServers: {
     method: 'PATCH',
     url: '/api/edges/:serialNumber/dnsServers'
+  },
+  getPortConfig: {
+    method: 'get',
+    url: '/api/edges/:serialNumber/portConfig'
+  },
+  updatePortConfig: {
+    method: 'PATCH',
+    url: '/api/edges/:serialNumber/portConfig'
   }
 }

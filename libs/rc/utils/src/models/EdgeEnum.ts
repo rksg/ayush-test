@@ -4,6 +4,11 @@ export enum EdgePortTypeEnum {
   LAN = 'LAN'
 }
 
+export enum EdgeIpModeEnum {
+  DHCP = 'DHCP',
+  STATIC = 'STATIC'
+}
+
 export enum EdgePortAdminStatusEnum {
   Enabled = 'Enabled',
   Disabled = 'Disabled'
