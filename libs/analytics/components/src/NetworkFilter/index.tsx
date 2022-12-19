@@ -90,6 +90,7 @@ type ConnectedNetworkFilterProps = {
     defaultValue?: SingleValueType | SingleValueType[],
     defaultBand?: Band[],
     isBandDisabled?: boolean,
+    bandDisabledReason?: string,
     onApplyWithBand?: ({ paths, bands }:{
       paths:NetworkPath[],
       bands?:CheckboxValueType[],
@@ -295,6 +296,7 @@ function ConnectedNetworkFilter (
     defaultValue,
     defaultBand,
     isBandDisabled=false,
+    bandDisabledReason,
     onApplyWithBand } : ConnectedNetworkFilterProps
 ) {
   const { $t } = useIntl()
@@ -332,6 +334,7 @@ function ConnectedNetworkFilter (
           defaultValue={defaultValue || raw}
           defaultBand={defaultBand || []}
           isBandDisabled={isBandDisabled}
+          bandDisabledReason={bandDisabledReason}
           value={defaultValue || raw}
           options={queryResults.data}
           onApply={(value,bands) => {

@@ -6,6 +6,7 @@ import {
 import { DefaultOptionType }                         from 'antd/es/cascader'
 import { SingleValueType }                           from 'rc-cascader/lib/Cascader'
 import { useIntl, defineMessage, MessageDescriptor } from 'react-intl'
+import { Tooltip } from '@acx-ui/components'
 
 import { Button } from '../Button'
 
@@ -38,6 +39,7 @@ export type CascaderProps = AntCascaderProps<Option> & {
   },
   showBand?: boolean,
   isBandDisabled?: boolean
+  bandDisabledReason?: string
   defaultBand?: Band[]
 }
 
@@ -58,6 +60,7 @@ export function Select (props: CascaderProps) {
     defaultValue,
     defaultBand,
     isBandDisabled = false,
+    bandDisabledReason,
     ...antProps } = props
   const { $t } = useIntl()
   const initialValues = defaultValue || []
@@ -151,6 +154,9 @@ export function Select (props: CascaderProps) {
             defaultValue={initialBands}
             value={currentBands}
             onChange={onBandChange}/>
+          {isBandDisabled && bandDisabledReason && (<Tooltip title={bandDisabledReason}>
+            <UI.InfoIcon/>
+          </Tooltip>)}
         </UI.RadioBandsWrapper>)}
       <UI.ButtonDiv>
         <Button size='small' onClick={onCancel}>

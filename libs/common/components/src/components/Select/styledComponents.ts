@@ -1,6 +1,8 @@
 import { Checkbox, Cascader as AntCascader } from 'antd'
 import styled                                from 'styled-components/macro'
 
+import { InformationOutlined } from '@acx-ui/icons'
+
 export const Cascader = styled(AntCascader)`
   .ant-select-selector {
     border-color: var(--acx-primary-black) !important;
@@ -69,4 +71,8 @@ export const CheckboxGroup = styled(Checkbox.Group)`
       }
     }
   }
+`
+
+export const InfoIcon = styled(InformationOutlined)`
+  margin-bottom: -5px;
 `

@@ -15,8 +15,9 @@ export function ReportHeader (props: {
   name: string,
   mode?:FilterMode,
   isBandDisabled?: boolean,
+  bandDisabledReason?: string,
   footer?: React.ReactNode }) {
-  const { name, mode = 'both', isBandDisabled=false } = props
+  const { name, mode = 'both', isBandDisabled=false, bandDisabledReason } = props
   const shouldQuerySwitch = ['switch','both'].includes(mode)
   const showBand = ['ap','both'].includes(mode)
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
@@ -46,6 +47,7 @@ export function ReportHeader (props: {
           defaultValue={raw}
           defaultBand={bands as Band[]}
           isBandDisabled={isBandDisabled}
+          bandDisabledReason={bandDisabledReason}
           onApplyWithBand={setFilterData}
         />,
         <RangePicker

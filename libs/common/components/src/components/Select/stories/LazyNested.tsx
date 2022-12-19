@@ -59,6 +59,7 @@ export function LazyNested ({ multiple=false,
       showBand={showBand}
       defaultBand={defaultBand}
       isBandDisabled={isBandDisabled}
+      bandDisabledReason={'Disabled for storybook.'}
       placeholder='Entire Organization'
       options={options as Option[]}
       onApply={onApply}

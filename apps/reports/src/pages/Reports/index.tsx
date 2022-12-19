@@ -16,11 +16,16 @@ export function Report (props: {
   const { type, withHeader } = props
   const { $t } = useIntl()
   const isBandDisabled = [ReportType.APPLICATION,ReportType.ACCESS_POINT].includes(type)
+  let bandDisabledReason = isBandDisabled ?
+    'Testing' : ''
+
   return (
     <>
       { withHeader && <ReportHeader name={$t(reportTypeLabelMapping[type])}
         mode={reportTypeModeMapping[type]}
-        isBandDisabled={isBandDisabled}/> }
+        isBandDisabled={isBandDisabled}
+        bandDisabledReason={bandDisabledReason}
+      /> }
       <EmbeddedDashboard embedDashboardName={reportTypeDataStudioMapping[type]} />
     </>
   )
