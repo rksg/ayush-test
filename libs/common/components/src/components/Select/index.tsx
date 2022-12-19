@@ -37,6 +37,7 @@ export type CascaderProps = AntCascaderProps<Option> & {
     plural: MessageDescriptor
   },
   showBand?: boolean,
+  isBandDisabled?: boolean
   defaultBand?: Band[]
 }
 
@@ -51,10 +52,16 @@ const selectedItemsDesc = defineMessage({
   defaultMessage: '{count} {count, plural, one {{singular}} other {{plural}}} selected'
 })
 export function Select (props: CascaderProps) {
-  const { onApply, entityName, showBand, defaultValue, defaultBand, ...antProps } = props
+  const { onApply,
+    entityName,
+    showBand,
+    defaultValue,
+    defaultBand,
+    isBandDisabled = false,
+    ...antProps } = props
   const { $t } = useIntl()
   const initialValues = defaultValue || []
-  const initialBands = defaultBand || []
+  const initialBands = isBandDisabled ? [] : defaultBand || []
   const [
     currentValues,
     setCurrentValues
@@ -62,17 +69,26 @@ export function Select (props: CascaderProps) {
   const [savedValues, setSavedValues] = React.useState(initialValues)
 
   useEffect(() => {
-    setCurrentValues(defaultValue || [])
-    setSavedValues(defaultValue || [])
+    setCurrentValues(initialValues)
+    setSavedValues(initialValues)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultValue])
 
   const [open, setOpen] = React.useState(false)
   const [currentBands, setCurrentBands] = React.useState<CheckboxValueType[]>(initialBands)
   const [savedBands, setSavedBands] = React.useState<CheckboxValueType[]>(initialBands)
   useEffect(() => {
-    setCurrentBands(defaultBand || [])
-    setSavedBands(defaultBand || [])
+    setCurrentBands(initialBands)
+    setSavedBands(initialBands)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultBand])
+
+  useEffect(()=>{
+    if(defaultBand?.length && isBandDisabled){
+      onApply(currentValues, [])
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[isBandDisabled])
 
   const onBandChange = (checkedValues: CheckboxValueType[]) => {
     setCurrentBands(checkedValues)
@@ -118,6 +134,7 @@ export function Select (props: CascaderProps) {
             {$t({ defaultMessage: 'Radio' })}:
           </UI.RadioBandLabel>
           <UI.CheckboxGroup
+            disabled={isBandDisabled}
             options={[{
               label: '6 GHz',
               value: '6'

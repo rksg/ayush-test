@@ -14,20 +14,20 @@ import { NetworkFilterWithBandContext } from '../../Routes'
 export function ReportHeader (props: {
   name: string,
   mode?:FilterMode,
-  shouldHideBand?: boolean,
+  isBandDisabled?: boolean,
   footer?: React.ReactNode }) {
-  const { name, mode = 'both', shouldHideBand=false } = props
+  const { name, mode = 'both', isBandDisabled=false } = props
   const shouldQuerySwitch = ['switch','both'].includes(mode)
-  const showBand = !shouldHideBand && ['ap','both'].includes(mode)
+  const showBand = ['ap','both'].includes(mode)
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
   const { filterData, setFilterData } = useContext(NetworkFilterWithBandContext)
   const { value: raw, bands } = filterData
 
   useEffect(()=>{
-    // Reset only any those dependency changes
+    // Reset when filter mode changes
     setFilterData({})
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mode, showBand, shouldQuerySwitch])
+  }, [mode])
 
   return (
     <PageHeader
@@ -45,6 +45,7 @@ export function ReportHeader (props: {
           filterMode={mode}
           defaultValue={raw}
           defaultBand={bands as Band[]}
+          isBandDisabled={isBandDisabled}
           onApplyWithBand={setFilterData}
         />,
         <RangePicker
