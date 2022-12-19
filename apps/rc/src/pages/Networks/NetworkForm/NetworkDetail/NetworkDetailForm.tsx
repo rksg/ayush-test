@@ -39,7 +39,7 @@ export function NetworkDetailForm () {
   } = useContext(NetworkFormContext)
 
   const [differentSSID, setDifferentSSID] = useState(false)
-
+  const form = Form.useFormInstance()
   const onChange = (e: RadioChangeEvent) => {
     setData && setData({ ...data, type: e.target.value as NetworkTypeEnum })
   }
@@ -157,6 +157,10 @@ export function NetworkDetailForm () {
             type='link'
             style={{ fontSize: cssStr('--acx-body-4-font-size') }}
             onClick={() => {
+              if (!differentSSID) {
+                const name = form.getFieldValue('name')
+                form.setFieldValue(['wlan', 'ssid'], name)
+              }
               setDifferentSSID(!differentSSID)
             }}
           >
