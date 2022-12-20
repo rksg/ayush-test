@@ -18,7 +18,7 @@ describe('Venue DHCP Instance', () => {
     mockServer.use(...handlers)
 
     const params = { tenantId: 'tenant-id', venueId: '3b11bcaffd6f4f4f9b2805b6fe24bf8b' }
-    const { asFragment } = render(<Provider><DHCPInstance /></Provider>, {
+    render(<Provider><DHCPInstance /></Provider>, {
       route: { params, path: '/:tenantId/venues/:venueId/venue-details/services' }
     })
 
