@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import { gql } from 'graphql-request'
 
-import { dataApi }   from '@acx-ui/analytics/services'
+import { dataApi }  from '@acx-ui/analytics/services'
 import {
   IncidentFilter,
   incidentSeverities,

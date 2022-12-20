@@ -2,7 +2,7 @@ import { configureStore, isRejectedWithValue }            from '@reduxjs/toolkit
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 import { generatePath }                                   from 'react-router-dom'
 
-import { dataApi }              from '@acx-ui/analytics/services'
+import { dataApi }             from '@acx-ui/analytics/services'
 import {
   baseNetworkApi as networkApi,
   baseVenueApi as venueApi,

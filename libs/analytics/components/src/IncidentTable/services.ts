@@ -2,7 +2,7 @@ import { gql }               from 'graphql-request'
 import moment                from 'moment-timezone'
 import { MessageDescriptor } from 'react-intl'
 
-import { dataApi }     from '@acx-ui/analytics/services'
+import { dataApi }    from '@acx-ui/analytics/services'
 import {
   IncidentFilter,
   incidentCodes,

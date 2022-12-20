@@ -6,7 +6,7 @@ import { MessageDescriptor } from 'react-intl'
 
 import { incidentSeverities } from '@acx-ui/analytics/utils'
 
-import { cssStr }               from '../../theme/helper'
+import { cssStr }              from '../../theme/helper'
 import {
   tooltipOptions,
   stackedBarTooltipFormatter,

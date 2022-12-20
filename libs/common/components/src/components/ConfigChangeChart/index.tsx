@@ -6,7 +6,7 @@ import { renderToString }                          from 'react-dom/server'
 
 import { formatter } from '@acx-ui/utils'
 
-import { cssStr }      from '../../theme/helper'
+import { cssStr }     from '../../theme/helper'
 import {
   legendTextStyleOptions,
   tooltipOptions,

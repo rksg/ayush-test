@@ -3,7 +3,7 @@ import React from 'react'
 import { ClockCircleOutlined } from '@ant-design/icons'
 import { Tooltip }             from 'antd'
 
-import { Button }  from '@acx-ui/components'
+import { Button } from '@acx-ui/components'
 import {
   NetworkSaveData,
   NetworkVenue,

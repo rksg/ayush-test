@@ -3,8 +3,8 @@ import React, { useEffect, useState } from 'react'
 import { Divider, Form, Space } from 'antd'
 import { useIntl }              from 'react-intl'
 
-import { Card, Loader, Subtitle, Tooltip }                                        from '@acx-ui/components'
-import { WifiSignal }                                                             from '@acx-ui/rc/components'
+import { Card, Loader, Subtitle, Tooltip }                                     from '@acx-ui/components'
+import { WifiSignal }                                                          from '@acx-ui/rc/components'
 import {
   useLazyGetApQuery,
   useLazyGetNetworkQuery,

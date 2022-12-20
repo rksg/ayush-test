@@ -7,7 +7,7 @@ import { TrafficByBand, TrafficByUsage } from '@acx-ui/analytics/components'
 import {
   useAnalyticsFilter
 } from '@acx-ui/analytics/utils'
-import { GridCol, GridRow, showToast }          from '@acx-ui/components'
+import { GridCol, GridRow, showToast }         from '@acx-ui/components'
 import {
   useLazyGetApCapabilitiesQuery,
   useLazyGetApQuery,
