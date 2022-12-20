@@ -157,3 +157,9 @@ export interface SwitchPortViewModel extends GridDataRow {
   unitState: SwitchStatusEnum; // stack unit status (Online/Offline)
   SwitchPortStackingPortField: boolean;
 }
+
+export enum STACK_MEMBERSHIP {
+  ACTIVE = 'Active',
+  STANDBY = 'Standby',
+  MEMBER = 'Member',
+}

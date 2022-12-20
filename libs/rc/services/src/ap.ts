@@ -52,7 +52,7 @@ export const apApi = baseApApi.injectEndpoints({
   endpoints: (build) => ({
     apList: build.query<TableResult<APExtended, ApExtraParams>, RequestPayload>({
       query: ({ params, payload }) => {
-        const apListReq = createHttpRequest(CommonUrlsInfo.getApsList, params)
+        const apListReq = createHttpRequest(CommonUrlsInfo.getApGroupedList, params)
         return {
           ...apListReq,
           body: payload

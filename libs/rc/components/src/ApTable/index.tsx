@@ -40,13 +40,26 @@ import { useApActions } from '../useApActions'
 export const defaultApPayload = {
   searchString: '',
   fields: [
-    'name', 'deviceStatus', 'model', 'IP', 'apMac', 'venueName',
-    'switchName', 'meshRole', 'clients', 'deviceGroupName',
-    'apStatusData.APRadio.band', 'tags', 'serialNumber',
-    'venueId', 'apStatusData.APRadio.radioId', 'apStatusData.APRadio.channel',
-    'poePort', 'apStatusData.lanPortStatus.phyLink', 'apStatusData.lanPortStatus.port',
-    'fwVersion'
-  ]
+    "check-all",
+    "name",
+    "deviceStatus",
+    "model",
+    "meshRole",
+    "IP",
+    "apMac",
+    "venueName",
+    "switchName",
+    "clients",
+    "deviceGroupName",
+    "apStatusData.APRadio.band",
+    "tags",
+    "serialNumber",
+    "fwVersion",
+    "cog",
+    "venueId",
+    "apStatusData.APRadio.radioId",
+    "apStatusData.APRadio.channel"
+  ],
 }
 
 const handleStatusColor = (status: DeviceConnectionStatus) => {
@@ -107,7 +120,16 @@ export function ApTable (props: ApTableProps) {
     useQuery: useApListQuery,
     defaultPayload: {
       ...defaultApPayload,
-      filters
+      filters: {...filters, "deviceStatusSeverity": [
+        "2_Operational"
+      ]},
+      groupBy: {
+        "AggregationRequestDto": {
+            "name": "deviceGroupName",
+            "fieldName": "deviceGroupName.keyword",
+            "type": "terms"
+        }
+      }
     },
     pollingInterval: 30000 //TODO: Wait for confirm the interval with PLM
   })
@@ -280,7 +302,6 @@ export function ApTable (props: ApTableProps) {
       }
     }] as TableProps<APExtended>['columns']
   }, [$t, tableQuery.data?.extra])
-
 
   const isActionVisible = (
     selectedRows: APExtended[],

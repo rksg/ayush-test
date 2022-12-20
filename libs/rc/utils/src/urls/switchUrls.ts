@@ -29,6 +29,14 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/api/switch/tenant/:tenantId/aaaServer'
   },
+  getSwitchList: {
+    method: 'post',
+    url: '/api/viewmodel/:tenantId/switch/switchlist'
+  },
+  getMemberList: {
+    method: 'post',
+    url: '/api/viewmodel/:tenantId/switch/memberlist'
+  },
   getSwitchDetailHeader: {
     method: 'get',
     url: '/api/viewmodel/:tenantId/switch/:switchId'
