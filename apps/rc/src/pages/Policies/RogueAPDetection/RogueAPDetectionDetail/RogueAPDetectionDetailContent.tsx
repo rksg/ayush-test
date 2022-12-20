@@ -1,8 +1,8 @@
 import React, { useContext, useEffect } from 'react'
 
-import { Row, Typography }        from 'antd'
-import { FormattedList, useIntl } from 'react-intl'
-import { useParams }              from 'react-router-dom'
+import { Row, Typography } from 'antd'
+import { useIntl }         from 'react-intl'
+import { useParams }       from 'react-router-dom'
 
 import { Card, GridCol, GridRow } from '@acx-ui/components'
 import { useRoguePolicyQuery }    from '@acx-ui/rc/services'
@@ -30,13 +30,21 @@ const RogueAPDetectionDetailContent = () => {
   if (data) {
     return <Card>
       <GridRow>
+        {/* TODO: temporarily hidden until tags column has been supported */}
+        {/*<GridCol col={{ span: 4 }}>*/}
+        {/*  <Card.Title>*/}
+        {/*    {$t({ defaultMessage: 'Tags' })}*/}
+        {/*  </Card.Title>*/}
+        {/*  <Paragraph>*/}
+        {/*    <FormattedList type='conjunction' value={[]} />*/}
+        {/*  </Paragraph>*/}
+        {/*</GridCol>*/}
+
         <GridCol col={{ span: 4 }}>
           <Card.Title>
-            {$t({ defaultMessage: 'Tags' })}
+            {$t({ defaultMessage: 'Description' })}
           </Card.Title>
-          <Paragraph>
-            <FormattedList type='conjunction' value={[]} />
-          </Paragraph>
+          <Paragraph>{data.description}</Paragraph>
         </GridCol>
 
         <GridCol col={{ span: 4 }}>
