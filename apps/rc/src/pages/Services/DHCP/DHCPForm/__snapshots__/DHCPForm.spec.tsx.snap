@@ -298,7 +298,7 @@ exports[`DHCPForm should create DHCP successfully 1`] = `
                                         <span>
                                           Simple DHCP
                                           <div
-                                            class="styledComponents__RadioDescription-sc-187er8i-1 jGYpZc"
+                                            class="styledComponents__RadioDescription-sc-1u235u9-1 KGVxU"
                                           >
                                             Each AP in this venue is running it’s own DHCP server instance. Typically configured when APs are at different sites and roaming is not required
                                           </div>
@@ -327,7 +327,7 @@ exports[`DHCPForm should create DHCP successfully 1`] = `
                                         <span>
                                           Multiple AP DHCP
                                           <div
-                                            class="styledComponents__RadioDescription-sc-187er8i-1 jGYpZc"
+                                            class="styledComponents__RadioDescription-sc-1u235u9-1 KGVxU"
                                           >
                                             Designated APs in this venue are running the DHCP Server instance. Typically configured when multiple APs are at the same site and roaming across APs is needed
                                           </div>
@@ -355,7 +355,7 @@ exports[`DHCPForm should create DHCP successfully 1`] = `
                                         <span>
                                           Hierarchical AP DHCP
                                           <div
-                                            class="styledComponents__RadioDescription-sc-187er8i-1 jGYpZc"
+                                            class="styledComponents__RadioDescription-sc-1u235u9-1 KGVxU"
                                           >
                                             Designated APs in this venue are running the DHCP Server instance. The DHCP server APs connected to the WAN, the rest of APs get their Private IP address from a local IP Pool with VLAN ID 1 from the DHCP Server AP
                                           </div>
@@ -381,7 +381,7 @@ exports[`DHCPForm should create DHCP successfully 1`] = `
                           class="ant-col"
                         >
                           <div
-                            class="styledComponents__Diagram-sc-187er8i-0 hdEhRb"
+                            class="styledComponents__Diagram-sc-1u235u9-0 hidFeP"
                           >
                             <img
                               alt=""
