@@ -18,12 +18,13 @@ export interface EdgeStateCardProps {
 
 export const EdgeSysResourceBox = styled((props: EdgeStateCardProps) => {
   const { $t } = useIntl()
-  const { className, type, title = '', value = 0, totalVal = 0 } = props
+  const { className, type, title, value = 0, totalVal = 0 } = props
   const statisticTitle = title.split(' ').map(item => {
     return item+'\r\n'
   })
 
-  const usedPercentage:number = totalVal ? Math.round(value/totalVal): totalVal
+  const usedValue:number = totalVal ? value/totalVal: totalVal
+  const usedPercentage:number = Math.round(usedValue * 100)
   const freeValue = formatter(type === EdgeResourceUtilizationEnum.CPU ?
     'radioFormat' : 'bytesFormat')(totalVal - value)
 

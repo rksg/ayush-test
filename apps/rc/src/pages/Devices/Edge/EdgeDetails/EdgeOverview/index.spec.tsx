@@ -1,23 +1,23 @@
 /* eslint-disable max-len */
 import { rest } from 'msw'
 
-import { EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider  }    from '@acx-ui/store'
+import { EdgeUrlsInfo }       from '@acx-ui/rc/utils'
+import { Provider  }          from '@acx-ui/store'
 import {
   render,
   screen,
-  mockServer
+  mockServer,
+  waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
 import { mockEdgeData as currentEdge } from '../../__tests__/fixtures'
 
 import { EdgeOverview } from '.'
 
-jest.mock('@acx-ui/rc/components', () => ({
-  EdgeInfoWidget: () => <div data-testid={'rc-EdgeInfoWidget'} title='EdgeInfoWidget' />,
-  EdgeTrafficByVolumeWidget: () => <div data-testid={'analytics-EdgeTrafficByVolumeWidget'} title='EdgeTrafficByVolumeWidget' />,
-  EdgePortsByTrafficWidget: () => <div data-testid={'analytics-EdgePortsByTrafficWidget'} title='EdgePortsByTrafficWidget' />
+jest.mock('./EdgeUpTimeWidget', () => ({
+  EdgeUpTimeWidget: () => <div data-testid={'EdgeUpTimeWidget'} title='EdgeUpTimeWidget' />
 }))
+
 
 describe('Edge Detail Overview Tab', () => {
   let params: { tenantId: string, serialNumber: string } =
@@ -27,12 +27,17 @@ describe('Edge Detail Overview Tab', () => {
     mockServer.use(
       rest.post(
         EdgeUrlsInfo.getEdgeList.url,
-        (req, res, ctx) => res(ctx.json({ data: [currentEdge] }))
+        (_req, res, ctx) => {
+          return res(
+            ctx.delay(1000),
+            ctx.json({ data: [currentEdge] })
+          )
+        }
       )
     )
   })
 
-  it('should render correctly', async () => {
+  it('should render loading correctly', async () => {
     render(
       <Provider>
         <EdgeOverview />
@@ -40,7 +45,6 @@ describe('Edge Detail Overview Tab', () => {
         route: { params }
       })
 
-    expect(await screen.findAllByTestId(/^analytics/)).toHaveLength(3)
-    expect(await screen.findAllByTestId(/^rc/)).toHaveLength(1) })
-
+    await waitForElementToBeRemoved(await screen.findByRole('img', { name: 'loader' }))
+  })
 })

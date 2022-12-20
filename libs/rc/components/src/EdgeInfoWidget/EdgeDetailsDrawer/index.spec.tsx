@@ -27,6 +27,24 @@ describe('Edge Detail Drawer', () => {
     fireEvent.click(button)
   })
 
+  it('should render -- if data is undefined', async () => {
+    const edgeWithoutModel = { ...currentEdge }
+    delete edgeWithoutModel.cpuUsed
+    delete edgeWithoutModel.fwVersion
+
+    render(<Provider>
+      <EdgeDetailsDrawer
+        visible={true}
+        setVisible={() => {}}
+        currentEdge={edgeWithoutModel}
+        edgePortsSetting={edgePortsSetting}
+      />
+    </Provider>, { route: { params } })
+
+    const emptyLabel = await screen.findAllByText('--')
+    expect(emptyLabel.length).toBe(2)
+  })
+
   it('should have correct link to venue detail page', async () => {
     render(<Provider>
       <EdgeDetailsDrawer
