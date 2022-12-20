@@ -10,8 +10,8 @@ import { ReportType }   from '../reportsMapping'
 import { NetworkReportTabs } from './NetworkReportTabs'
 
 const tabs = {
-  wireless: () => <Report type={ReportType.WIRELESS} withHeader={false} />,
-  wired: () => <Report type={ReportType.WIRED} withHeader={false} />
+  wireless: () => <Report type={ReportType.WIRELESS} withHeader={false}/>,
+  wired: () => <Report type={ReportType.WIRED} withHeader={false}/>
 }
 
 export function NetworkReport () {
@@ -23,6 +23,7 @@ export function NetworkReport () {
     <ReportHeader
       name={$t({ defaultMessage: 'Network' })}
       mode={mode}
+      showFilter
       footer={<NetworkReportTabs />}/>
     { Tab && <Tab /> }
   </>

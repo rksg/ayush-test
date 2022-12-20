@@ -12,8 +12,9 @@ import {
 export function Report (props: {
   type: ReportType
   withHeader?: boolean
+  showFilter?: boolean
 }) {
-  const { type, withHeader } = props
+  const { type, withHeader, showFilter } = props
   const { $t } = useIntl()
   const isRadioBandDisabled = [ReportType.APPLICATION,ReportType.ACCESS_POINT].includes(type)
   let radioBandDisabledReason = isRadioBandDisabled ?
@@ -25,6 +26,7 @@ export function Report (props: {
         mode={reportTypeModeMapping[type]}
         isRadioBandDisabled={isRadioBandDisabled}
         radioBandDisabledReason={radioBandDisabledReason}
+        showFilter={showFilter}
       /> }
       <EmbeddedDashboard embedDashboardName={reportTypeDataStudioMapping[type]} />
     </>
@@ -32,5 +34,6 @@ export function Report (props: {
 }
 
 Report.defaultProps = {
-  withHeader: true
+  withHeader: true,
+  showFilter: true
 }

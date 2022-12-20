@@ -14,10 +14,17 @@ import { NetworkFilterWithBandContext } from '../../Routes'
 export function ReportHeader (props: {
   name: string,
   mode?:FilterMode,
+  showFilter?: boolean
   isRadioBandDisabled?: boolean,
   radioBandDisabledReason?: string,
   footer?: React.ReactNode }) {
-  const { name, mode = 'both', isRadioBandDisabled=false, radioBandDisabledReason } = props
+  const {
+    name,
+    mode = 'both',
+    isRadioBandDisabled=false,
+    radioBandDisabledReason,
+    showFilter=true
+  } = props
   const shouldQuerySwitch = ['switch','both'].includes(mode)
   const showRadioBand = ['ap','both'].includes(mode)
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
@@ -37,7 +44,7 @@ export function ReportHeader (props: {
         { text: 'Report', link: '/reports' }
       ]}
       extra={[
-        <NetworkFilter
+        showFilter && <NetworkFilter
           key='reports-network-filter'
           shouldQuerySwitch={shouldQuerySwitch}
           showRadioBand={showRadioBand}
@@ -60,6 +67,7 @@ export function ReportHeader (props: {
         />
       ]}
       footer={props.footer && props.footer}
+      footerSpacer={false}
     />
   )
 }

@@ -25,25 +25,28 @@ export const NetworkFilterWithBandContext = createContext({} as {
 })
 
 const reports = {
-  aps: <Report type={ReportType.ACCESS_POINT}/>,
-  switches: <Report type={ReportType.SWITCH}/>,
-  clients: <Report type={ReportType.CLIENT}/>,
-  applications: <Report type={ReportType.APPLICATION} />
+  overview: <Report type={ReportType.OVERVIEW} showFilter={false} />,
+  aps: <Report type={ReportType.ACCESS_POINT} />,
+  switches: <Report type={ReportType.SWITCH} />,
+  clients: <Report type={ReportType.CLIENT} />,
+  applications: <Report type={ReportType.APPLICATION} />,
+  wlans: <Report type={ReportType.WLAN} />,
+  airtime: <Report type={ReportType.AIRTIME_UTILIZATION} />
 }
 
 export default function ReportsRoutes () {
   const [filterData, setFilterData] = useState<NetworkFilterWithBand>({})
   const routes = rootRoutes(
     <Route path='t/:tenantId'>
-      <Route path='reports'
-        element={<TenantNavigate replace to='/reports/network/wireless' />}/>
-      <Route
-        path='reports/network/:activeTab'
-        element={<NetworkReport />} />
+      <Route path='reports'element={<TenantNavigate replace to='/reports/overview' />}/>
+      <Route path='reports/overview' element={reports.overview}/>
+      <Route path='reports/network/:activeTab'element={<NetworkReport />} />
       <Route path='reports/aps' element={reports.aps} />
       <Route path='reports/switches' element={reports.switches} />
       <Route path='reports/clients' element={reports.clients}/>
       <Route path='reports/applications' element={reports.applications} />
+      <Route path='reports/wlans' element={reports.wlans} />
+      <Route path='reports/airtime' element={reports.airtime} />
     </Route>
   )
   return (

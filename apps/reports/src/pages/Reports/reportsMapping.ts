@@ -11,6 +11,8 @@ export enum ReportType {
   CLIENT = 'client',
   ACCESS_POINT = 'ap',
   SWITCH = 'switch',
+  WLAN='wlan',
+  AIRTIME_UTILIZATION = 'airtimeUtilization',
   AP_DETAIL = 'apDetail',
   SWITCH_DETAIL = 'switchDetail',
   CLIENT_DETAIL = 'clientDetail'
@@ -27,7 +29,9 @@ export const reportTypeLabelMapping: Record<ReportType, MessageDescriptor> = {
   [ReportType.WIRED]: defineMessage({ defaultMessage: 'Wired' }),
   [ReportType.AP_DETAIL]: defineMessage({ defaultMessage: 'AP Details' }),
   [ReportType.SWITCH_DETAIL]: defineMessage({ defaultMessage: 'Switch Details' }),
-  [ReportType.CLIENT_DETAIL]: defineMessage({ defaultMessage: 'Client Details' })
+  [ReportType.CLIENT_DETAIL]: defineMessage({ defaultMessage: 'Client Details' }),
+  [ReportType.WLAN]: defineMessage({ defaultMessage: 'WLANs' }),
+  [ReportType.AIRTIME_UTILIZATION]: defineMessage({ defaultMessage: 'Airtime Utilization' })
 }
 
 export const reportTypeDataStudioMapping: Record<ReportType, string> = {
@@ -41,7 +45,9 @@ export const reportTypeDataStudioMapping: Record<ReportType, string> = {
   [ReportType.WIRED]: 'Wired Network',
   [ReportType.AP_DETAIL]: 'AP Details',
   [ReportType.SWITCH_DETAIL]: 'Switch Details',
-  [ReportType.CLIENT_DETAIL]: 'Client Details'
+  [ReportType.CLIENT_DETAIL]: 'Client Details',
+  [ReportType.WLAN]: 'WLAN',
+  [ReportType.AIRTIME_UTILIZATION]: 'Airtime Utilization Report'
 }
 
 export const reportTypeModeMapping: Record<ReportType, FilterMode> = {
@@ -55,5 +61,7 @@ export const reportTypeModeMapping: Record<ReportType, FilterMode> = {
   [ReportType.WIRED]: 'switch',
   [ReportType.AP_DETAIL]: 'ap',
   [ReportType.SWITCH_DETAIL]: 'switch',
-  [ReportType.CLIENT_DETAIL]: 'ap'
+  [ReportType.CLIENT_DETAIL]: 'ap',
+  [ReportType.WLAN]: 'ap',
+  [ReportType.AIRTIME_UTILIZATION]: 'ap'
 }
