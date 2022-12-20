@@ -1,4 +1,7 @@
+import { Network } from '..'
+
 export interface AAAPolicyType{
+  id?: string,
   profileName: string,
   tags?: string[],
   radiusServer?: AAARadiusServer,
@@ -26,4 +29,8 @@ export enum AAAPurposeEnum{
   AUTHENTICATION = 'Authentication',
   AUTHORIZATION = 'Authorization',
   ACCOUNTING = 'Accounting'
+}
+export interface AAADetailInstances{
+  id?: string,
+  network: Network
 }

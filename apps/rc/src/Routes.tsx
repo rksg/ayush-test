@@ -26,6 +26,7 @@ import ApsTable                   from './pages/Devices/Wifi/ApsTable'
 import NetworkDetails             from './pages/Networks/NetworkDetails/NetworkDetails'
 import NetworkForm                from './pages/Networks/NetworkForm/NetworkForm'
 import NetworksTable              from './pages/Networks/NetworksTable'
+import AAAPolicyDetail            from './pages/Policies/AAA/AAADetail'
 import AAAForm                    from './pages/Policies/AAA/AAAForm/AAAForm'
 import PoliciesTable              from './pages/Policies/PoliciesTable'
 import RogueAPDetectionDetailView
@@ -231,6 +232,11 @@ function PolicyRoutes () {
         // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.EDIT })}
         element={<AAAForm edit={true}/>}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.DETAIL })}
+        element={<AAAPolicyDetail/>}
       />
     </Route>
   )

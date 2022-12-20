@@ -13,7 +13,13 @@ import {
   RogueAPDetectionContextType,
   RogueAPDetectionTempType,
   VenueRoguePolicyType,
-  TableResult, onSocketActivityChanged, showActivityMessage, AAAPolicyType, AaaUrls, AAATempType
+  TableResult,
+  onSocketActivityChanged,
+  showActivityMessage,
+  AAAPolicyType,
+  AaaUrls,
+  AAATempType,
+  AAADetailInstances
 } from '@acx-ui/rc/utils'
 
 export const basePolicyApi = createApi({
@@ -145,6 +151,24 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    aaaNetworkInstances: build.query<TableResult<AAADetailInstances>, RequestPayload>({
+      query: ({ params }) => {
+        const instancesRes = createHttpRequest(AaaUrls.getAAANetworkInstances, params, RKS_NEW_UI)
+        return {
+          ...instancesRes
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    getAAAProfileDetail: build.query<AAAPolicyType | undefined, RequestPayload>({
+      query: ({ params }) => {
+        const aaaDetailReq = createHttpRequest(AaaUrls.getAAAProfileDetail, params, RKS_NEW_UI)
+        return {
+          ...aaaDetailReq
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'LIST' }]
     })
   })
 })
@@ -160,5 +184,7 @@ export const {
   useAddAAAPolicyMutation,
   useGetAAAPolicyListQuery,
   useUpdateAAAPolicyMutation,
-  useAaaPolicyQuery
+  useAaaPolicyQuery,
+  useAaaNetworkInstancesQuery,
+  useGetAAAProfileDetailQuery
 } = policyApi

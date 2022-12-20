@@ -20,5 +20,13 @@ export const AaaUrls: { [key: string]: ApiInfo } = {
   getAAAPolicyList: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/aaaPolicyProfiles'
+  },
+  getAAANetworkInstances: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/aaa-policy-profile/instances/:policyId'
+  },
+  getAAAProfileDetail: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/aaa-policy-profile/:policyId'
   }
 }
