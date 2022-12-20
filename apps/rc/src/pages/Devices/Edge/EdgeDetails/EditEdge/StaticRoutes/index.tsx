@@ -100,7 +100,7 @@ const StaticRoutes = () => {
     setRoutesData([...newRoutesData])
   }
 
-  const handleFinish = async (values: void) => {
+  const handleFinish = async () => {
     try {
       const payload = {
         routes: routesData
