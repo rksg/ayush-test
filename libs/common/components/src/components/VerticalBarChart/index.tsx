@@ -7,7 +7,7 @@ import { renderToString } from 'react-dom/server'
 import type { BarChartData } from '@acx-ui/analytics/utils'
 import { formatter }         from '@acx-ui/utils'
 
-import { cssStr }    from '../../theme/helper'
+import { cssStr }     from '../../theme/helper'
 import {
   gridOptions,
   tooltipOptions,

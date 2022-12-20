@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { useLocation }  from '@acx-ui/react-router-dom'
+import { useLocation }   from '@acx-ui/react-router-dom'
 import {
   generateVenueFilter,
   DateFilter,

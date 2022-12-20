@@ -1,7 +1,7 @@
 import { rest } from 'msw'
 
-import { ClientUrlsInfo }     from '@acx-ui/rc/utils'
-import { Provider }           from '@acx-ui/store'
+import { ClientUrlsInfo }      from '@acx-ui/rc/utils'
+import { Provider }            from '@acx-ui/store'
 import {
   mockServer,
   render,

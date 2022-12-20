@@ -4,7 +4,7 @@ import ProLayout             from '@ant-design/pro-layout'
 import { isEmpty, uniqueId } from 'lodash'
 import { useIntl }           from 'react-intl'
 
-import { Logo }   from '@acx-ui/icons'
+import { Logo }    from '@acx-ui/icons'
 import {
   TenantType,
   useLocation,

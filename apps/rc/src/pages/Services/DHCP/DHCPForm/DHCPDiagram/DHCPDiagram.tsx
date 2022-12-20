@@ -6,9 +6,9 @@ import {
 
 
 //FIXME: replace these picture when UX ready
-import HierarchicalDiagram from '../../../../assets/images/service-dhcp-diagrams/hierarchicalDHCP.png'
-import MultipleDiagram     from '../../../../assets/images/service-dhcp-diagrams/multipleAPDHCP.png'
-import SimpleDiagram       from '../../../../assets/images/service-dhcp-diagrams/simpleDHCP.png'
+import HierarchicalDiagram from '../../../../../assets/images/service-dhcp-diagrams/hierarchicalDHCP.png'
+import MultipleDiagram     from '../../../../../assets/images/service-dhcp-diagrams/multipleAPDHCP.png'
+import SimpleDiagram       from '../../../../../assets/images/service-dhcp-diagrams/simpleDHCP.png'
 import { Diagram }         from '../styledComponents'
 
 

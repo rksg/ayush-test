@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom'
-import { dataApiURL }            from '@acx-ui/analytics/services'
+import { dataApiURL }             from '@acx-ui/analytics/services'
 import {
   fakeIncident,
   IncidentCode,

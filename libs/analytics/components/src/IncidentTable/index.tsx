@@ -25,7 +25,7 @@ import {
   useMuteIncidentsMutation,
   IncidentTableRow
 } from './services'
-import * as UI           from './styledComponents'
+import * as UI            from './styledComponents'
 import {
   GetIncidentBySeverity,
   ShortIncidentDescription,

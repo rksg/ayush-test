@@ -5,8 +5,8 @@ import { fakeIncident, Incident } from '@acx-ui/analytics/utils'
 import { Provider }               from '@acx-ui/store'
 import { render, screen }         from '@acx-ui/test-utils'
 
-import { incidentTests } from './__tests__/fixtures'
-import { transformData } from './services'
+import { incidentTests }  from './__tests__/fixtures'
+import { transformData }  from './services'
 import {
   GetIncidentBySeverity,
   IncidentTableComponentProps,
