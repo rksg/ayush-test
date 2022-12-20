@@ -2,13 +2,23 @@
 import { useEffect, useState } from 'react'
 
 
-import { Checkbox, Col, Divider, Form, Input, InputNumber, Radio, Row, Select } from 'antd'
-import { PhoneNumberUtil }                                                      from 'google-libphonenumber'
-import { HumanizeDuration, HumanizeDurationLanguage }                           from 'humanize-duration-ts'
-import _                                                                        from 'lodash'
-import moment                                                                   from 'moment'
-import { useIntl }                                                              from 'react-intl'
-import { useParams }                                                            from 'react-router-dom'
+import {
+  Checkbox,
+  Col,
+  Divider,
+  Form,
+  Input,
+  InputNumber,
+  Radio,
+  Row,
+  Select
+} from 'antd'
+import { PhoneNumberUtil }                            from 'google-libphonenumber'
+import { HumanizeDuration, HumanizeDurationLanguage } from 'humanize-duration-ts'
+import _                                              from 'lodash'
+import moment                                         from 'moment'
+import { useIntl }                                    from 'react-intl'
+import { useParams }                                  from 'react-router-dom'
 
 import { Button, Drawer, cssStr, showActionModal } from '@acx-ui/components'
 import {
@@ -30,6 +40,7 @@ import {
   Guest,
   LangCode
 } from '@acx-ui/rc/utils'
+import { getIntl } from '@acx-ui/utils'
 
 import {
   MobilePhoneSolidIcon,
@@ -37,7 +48,7 @@ import {
   PrintIcon,
   CheckboxLabel,
   FooterDiv
-}   from '../styledComponents'
+} from '../styledComponents'
 
 interface AddGuestProps {
     visible: boolean
@@ -228,30 +239,37 @@ export const genTemplate = (guestDetails: any, langDictionary: any) => {
     </div>`
 }
 
+export type GuestErrorRes = {
+  error: {
+    status: number
+    rootCauseErrors: {
+      code: string
+      message: string
+    }[]
+  },
+  requestId: string
+}
 
-export function AddGuestDrawer (props: AddGuestProps) {
+export type GuestResponse = { requestId: string, response: Guest[] }
+
+export function GuestFields (props: { withBasicFields: boolean }) {
   const { $t } = useIntl()
-  const [form] = Form.useForm()
-  const { visible, setVisible } = props
   const params = useParams()
-  const [phoneNumberError, setPhoneNumberError] = useState(true)
-  const [emailError, setEmailError] = useState(true)
-  const [allowedNetworkList, setAllowedNetworkList] = useState<Network[]>()
+  const withBasicFields = props.withBasicFields
+  const form = Form.useFormInstance()
+
+  const [phoneNumberError, setPhoneNumberError] = useState(withBasicFields)
+  const [emailError, setEmailError] = useState(withBasicFields)
 
   const timeTypeValidPassOptions = [
-    { label: 'Hours', value: 'Hour' }, { label: 'Days', value: 'Day' }]
+    { label: $t({ defaultMessage: 'Hours' }), value: 'Hour' },
+    { label: $t({ defaultMessage: 'Days' }), value: 'Day' }
+  ]
 
   const examplePhoneNumber = PhoneNumberUtil.getInstance().getExampleNumber('US')
 
-  const [
-    addGuestPass
-  ] = useAddGuestPassMutation()
-
   const [getNetworkList] = useLazyGetGuestNetworkListQuery()
-  const [getNetwork] = useLazyGetNetworkQuery()
-  const [getUserProfile] = useLazyGetUserProfileQuery()
-
-
+  const [allowedNetworkList, setAllowedNetworkList] = useState<Network[]>()
   const getAllowedNetworkList = async () => {
     const list = await (getNetworkList({ params, payload }, true).unwrap())
     setAllowedNetworkList(list.data)
@@ -266,155 +284,10 @@ export function AddGuestDrawer (props: AddGuestProps) {
     for (let i = 1; i <= 5; i++) {
       list.push({ label: i.toString(), value: i })
     }
-    list.push({ label: 'Unlimited', value: -1 })
+    list.push({ label: $t({ defaultMessage: 'Unlimited' }), value: -1 })
     return list
   }
-
   const numberOfDevicesOptions = createNumberOfDevicesList()
-
-  const getGuestPrintTemplate =
-  (guestDetails: { langCode: LangCode }, useUpdatedTemplate: boolean) => {
-    const langDictionary = getGuestDictionaryByLangCode(guestDetails.langCode)
-    return (useUpdatedTemplate) ?
-      genUpdatedTemplate(guestDetails, langDictionary) :
-      genTemplate(guestDetails, langDictionary)
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const prepareGuestToPrint = async (guest: any, guestNumber: any) =>{
-    const currentMoment = moment()
-    const userProfile = await getUserProfile({ params })
-    const currentDate = currentMoment.format(userProfile.data?.dateFormat.toUpperCase())
-    const langCode = guest.langCode || guest.locale
-    const momentLocale = getMomentLocale(langCode)
-    moment.locale(momentLocale)
-
-    const name = guest.name
-    const wifiNetwork = guest.ssid
-    let password = ''
-    let guestExpiresDate = moment()
-
-    if (guest.password) {
-      password = guest.password
-      if (guest.expirationDate) {
-        guestExpiresDate = guest.expirationDate
-      } else {
-        if (guest.expiration.unit === 'Hour') {
-          guestExpiresDate = currentMoment.clone().add('hours', guest.expiration.duration)
-        } else {
-          guestExpiresDate = currentMoment.clone().add('days', guest.expiration.duration)
-        }
-      }
-    }
-    const validForDuration = moment(guestExpiresDate).diff(currentMoment)
-    const huminitazationLangCode = getHumanizedLocale(langCode) || ''
-    const validFor = humanizedDate(validForDuration, huminitazationLangCode)
-
-    return {
-      guestNumber: guestNumber,
-      validFor: validFor,
-      currentDate: currentDate,
-      password: password,
-      wifiNetwork: wifiNetwork,
-      name: name,
-      langCode: langCode
-    }
-  }
-
-  const generateGuestPrint = async (guests: Guest[], useUpdatedTemplate: boolean) =>{
-    let printTemplate = ''
-    for (let i = 0; i < guests.length; i++) {
-      /** Insert page break if multi-page */
-      if (i > 0) {
-        printTemplate = printTemplate + '<div class=\'page-break-before\'>&nbsp;</div>'
-      }
-      const guestToPrint = prepareGuestToPrint(guests[i], i)
-      printTemplate = printTemplate + getGuestPrintTemplate(await guestToPrint, useUpdatedTemplate)
-    }
-    const pdfGenerator = new PdfGeneratorService()
-    pdfGenerator.generatePrint(printTemplate)
-  }
-
-  const handleGuestPassResponse = async (jsonGuest: { requestId: string, response: Guest[] }) => {
-    let printCondition = false
-    let guestsArr: Guest[] = []
-    if (jsonGuest.response) {
-      printCondition = jsonGuest.response[0].deliveryMethods.indexOf('PRINT') !== -1
-      for (let i = 0; i < jsonGuest.response.length; i++) {
-        guestsArr[i] = { ...jsonGuest.response[i], langCode: '' }
-      }
-    }
-
-    if (printCondition) {
-      const networkData = await getNetwork({
-        params: { tenantId: params.tenantId, networkId: jsonGuest.response[0].networkId } })
-      const langCode = (networkData?.data?.guestPortal?.guestPage?.langCode) || ''
-      for (let i = 0; i < guestsArr.length; i++) {
-        guestsArr[i].langCode = langCode
-      }
-      generateGuestPrint(guestsArr, false)
-    }
-  }
-
-  const onClose = () => {
-    setVisible(false)
-  }
-
-  const onSave = async () => {
-    const payload = [form.getFieldsValue()]
-    if(form.getFieldValue('deliveryMethods').length === 0){
-      showActionModal({
-        type: 'warning',
-        title: $t({ defaultMessage: 'Guest pass won’t be printed or sent' }),
-        // eslint-disable-next-line max-len
-        content: $t({ defaultMessage: 'You haven’t selected to print or send the password to the guest. Create guest pass anyway?' }),
-        customContent: {
-          action: 'CUSTOM_BUTTONS',
-          buttons: [{
-            text: 'cancel',
-            type: 'link', // TODO: will change after DS update
-            key: 'cancel',
-            closeAfterAction: true
-          }, {
-            text: $t({ defaultMessage: 'Yes, create guest pass' }),
-            type: 'primary',
-            key: 'override',
-            closeAfterAction: true,
-            handler () {
-              addGuestPass({ params: { tenantId: params.tenantId }, payload: payload })
-              setVisible(false)
-            }
-          }]
-        }
-      })
-    }else{
-      addGuestPass({ params: { tenantId: params.tenantId }, payload: payload })
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .then((res: any) => {
-          if (res.error &&
-            (res.error.status === 400 || res.error.status === 422 || res.error.status === 409)) {
-            const errors = res.error.data.error.rootCauseErrors || []
-            if (errors[0].code === 'GUEST-409001') {
-              showActionModal({
-                type: 'error',
-                title: $t({ defaultMessage: 'Mobile Phone Already Registered' }),
-                // eslint-disable-next-line max-len
-                content: $t({ defaultMessage: 'A guest with the same mobile phone number already exists on the selected guest network. Please select a different network or change the guest\'s mobile phone number.' })
-              })
-            } else {
-              showActionModal({
-                type: 'error',
-                title: 'Error',
-                content: errors[0].message
-              })
-            }
-          } else {
-            handleGuestPassResponse(res.data)
-          }
-        })
-      setVisible(false)
-    }
-  }
 
   const onPhoneNumberChange = () => {
     const deliveryMethods = form.getFieldValue('deliveryMethods')
@@ -450,52 +323,54 @@ export function AddGuestDrawer (props: AddGuestProps) {
     })
   }
 
-  const content =
-  <Form layout='vertical' form={form} onFinish={onSave} data-testid='guest-form'>
-    <Form.Item
-      name='name'
-      label={$t({ defaultMessage: 'Guest Name' })}
-      rules={[
-        { required: true },
-        { min: 1 },
-        { max: 256 },
-        { validator: (_, value) => excludeExclamationRegExp(value) }
-      ]}
-      children={<Input />}
-    />
-    <Form.Item
-      name='mobilePhoneNumber'
-      label={$t({ defaultMessage: 'Mobile Phone' })}
-      rules={[
-        { validator: (_, value) => phoneRegExp(value) }
-      ]}
-      initialValue={null}
-      children={
-        <Input
-          // eslint-disable-next-line max-len
-          placeholder={`+${examplePhoneNumber.getCountryCode()} ${examplePhoneNumber.getNationalNumberOrDefault()}`}
-          onChange={onPhoneNumberChange}
-        />
-      }
-    />
-    <Form.Item
-      name='email'
-      label={$t({ defaultMessage: 'Email' })}
-      rules={[
-        { validator: (_, value) => emailRegExp(value) }
-      ]}
-      initialValue={''}
-      children={<Input onChange={onEmailChange} />}
-    />
-    <Form.Item
-      name='notes'
-      label={$t({ defaultMessage: 'Note' })}
-      initialValue={''}
-      rules={[
-        { max: 180 }
-      ]}
-      children={<Input />}
-    />
+  return (<>
+    { withBasicFields === true && (<>
+      <Form.Item
+        name='name'
+        label={$t({ defaultMessage: 'Guest Name' })}
+        rules={[
+          { required: true },
+          { min: 1 },
+          { max: 256 },
+          { validator: (_, value) => excludeExclamationRegExp(value) }
+        ]}
+        children={<Input />}
+      />
+      <Form.Item
+        name='mobilePhoneNumber'
+        label={$t({ defaultMessage: 'Mobile Phone' })}
+        rules={[
+          { validator: (_, value) => phoneRegExp(value) }
+        ]}
+        initialValue={null}
+        children={
+          <Input
+            // eslint-disable-next-line max-len
+            placeholder={`+${examplePhoneNumber.getCountryCode()} ${examplePhoneNumber.getNationalNumberOrDefault()}`}
+            onChange={onPhoneNumberChange}
+          />
+        }
+      />
+      <Form.Item
+        name='email'
+        label={$t({ defaultMessage: 'Email' })}
+        rules={[
+          { validator: (_, value) => emailRegExp(value) }
+        ]}
+        initialValue={''}
+        children={<Input onChange={onEmailChange} />}
+      />
+      <Form.Item
+        name='notes'
+        label={$t({ defaultMessage: 'Note' })}
+        initialValue={''}
+        rules={[
+          { max: 180 }
+        ]}
+        children={<Input />}
+      />
+    </>)}
+
     <Divider style={{ margin: '4px 0px 20px', background: cssStr('--acx-neutrals-30') }}/>
     <Form.Item
       name={'networkId'}
@@ -599,7 +474,48 @@ export function AddGuestDrawer (props: AddGuestProps) {
         </Checkbox.Group>
       }
     />
-  </Form>
+  </>)
+}
+
+
+export function AddGuestDrawer (props: AddGuestProps) {
+  const { $t } = useIntl()
+  const [form] = Form.useForm()
+  const { visible, setVisible } = props
+  const params = useParams()
+  const { handleGuestPassResponse } = useHandleGuestPassResponse({ tenantId: params.tenantId! })
+
+  const [
+    addGuestPass
+  ] = useAddGuestPassMutation()
+
+  const onClose = () => {
+    setVisible(false)
+  }
+
+  const onSave = async () => {
+    const payload = [form.getFieldsValue()]
+    if(form.getFieldValue('deliveryMethods').length === 0){
+      showNoSendConfirm(()=>{
+        addGuestPass({ params: { tenantId: params.tenantId }, payload: payload })
+        setVisible(false)
+      })
+    }
+    else{
+      addGuestPass({ params: { tenantId: params.tenantId }, payload: payload })
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .then((res: any) => {
+          if (res.error &&
+            (res.error.status === 400 || res.error.status === 422 || res.error.status === 409)) {
+            showGuestErrorModal(res.error.data)
+          } else {
+            handleGuestPassResponse(res.data)
+          }
+        })
+      setVisible(false)
+    }
+  }
+
 
   const footer = [
     <Button
@@ -622,9 +538,148 @@ export function AddGuestDrawer (props: AddGuestProps) {
       title={'Add Guest Pass'}
       visible={visible}
       onClose={onClose}
-      children={content}
+      children={
+        <Form layout='vertical' form={form} onFinish={onSave} data-testid='guest-form'>
+          <GuestFields withBasicFields={true} />
+        </Form>
+      }
       footer={<FooterDiv>{footer}</FooterDiv>}
       maskClosable={true}
     />
   )
+}
+
+export function showNoSendConfirm (callback: ()=>void) {
+  const { $t } = getIntl()
+  showActionModal({
+    type: 'warning',
+    title: $t({ defaultMessage: 'Guest pass won’t be printed or sent' }),
+    // eslint-disable-next-line max-len
+    content: $t({ defaultMessage: 'You haven’t selected to print or send the password to the guest. Create guest pass anyway?' }),
+    customContent: {
+      action: 'CUSTOM_BUTTONS',
+      buttons: [{
+        text: 'cancel',
+        type: 'link', // TODO: will change after DS update
+        key: 'cancel',
+        closeAfterAction: true
+      }, {
+        text: $t({ defaultMessage: 'Yes, create guest pass' }),
+        type: 'primary',
+        key: 'override',
+        closeAfterAction: true,
+        handler: callback
+      }]
+    }
+  })
+}
+
+export function showGuestErrorModal (errorRes: GuestErrorRes) {
+  const { $t } = getIntl()
+  const errors = errorRes.error.rootCauseErrors || []
+  if (errors[0].code === 'GUEST-409001') {
+    showActionModal({
+      type: 'error',
+      title: $t({ defaultMessage: 'Mobile Phone Already Registered' }),
+      // eslint-disable-next-line max-len
+      content: $t({ defaultMessage: 'A guest with the same mobile phone number already exists on the selected guest network. Please select a different network or change the guest\'s mobile phone number.' })
+    })
+  } else {
+    showActionModal({
+      type: 'error',
+      title: 'Error',
+      content: errors[0].message
+    })
+  }
+}
+
+export function useHandleGuestPassResponse (params: { tenantId: string }) {
+  const [getNetwork] = useLazyGetNetworkQuery()
+  const [getUserProfile] = useLazyGetUserProfileQuery()
+
+  const getGuestPrintTemplate =
+  (guestDetails: { langCode: LangCode }, useUpdatedTemplate: boolean) => {
+    const langDictionary = getGuestDictionaryByLangCode(guestDetails.langCode)
+    return (useUpdatedTemplate) ?
+      genUpdatedTemplate(guestDetails, langDictionary) :
+      genTemplate(guestDetails, langDictionary)
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const prepareGuestToPrint = async (guest: any, guestNumber: any) =>{
+    const currentMoment = moment()
+    const userProfile = await getUserProfile({ params })
+    const currentDate = currentMoment.format(userProfile.data?.dateFormat.toUpperCase())
+    const langCode = guest.langCode || guest.locale
+    const momentLocale = getMomentLocale(langCode)
+    moment.locale(momentLocale)
+
+    const name = guest.name
+    const wifiNetwork = guest.ssid
+    let password = ''
+    let guestExpiresDate = moment()
+
+    if (guest.password) {
+      password = guest.password
+      if (guest.expirationDate) {
+        guestExpiresDate = guest.expirationDate
+      } else {
+        if (guest.expiration.unit === 'Hour') {
+          guestExpiresDate = currentMoment.clone().add('hours', guest.expiration.duration)
+        } else {
+          guestExpiresDate = currentMoment.clone().add('days', guest.expiration.duration)
+        }
+      }
+    }
+    const validForDuration = moment(guestExpiresDate).diff(currentMoment)
+    const huminitazationLangCode = getHumanizedLocale(langCode) || ''
+    const validFor = humanizedDate(validForDuration, huminitazationLangCode)
+
+    return {
+      guestNumber: guestNumber,
+      validFor: validFor,
+      currentDate: currentDate,
+      password: password,
+      wifiNetwork: wifiNetwork,
+      name: name,
+      langCode: langCode
+    }
+  }
+
+  const generateGuestPrint = async (guests: Guest[], useUpdatedTemplate: boolean) =>{
+    let printTemplate = ''
+    for (let i = 0; i < guests.length; i++) {
+      /** Insert page break if multi-page */
+      if (i > 0) {
+        printTemplate = printTemplate + '<div class=\'page-break-before\'>&nbsp;</div>'
+      }
+      const guestToPrint = prepareGuestToPrint(guests[i], i)
+      printTemplate = printTemplate + getGuestPrintTemplate(await guestToPrint, useUpdatedTemplate)
+    }
+    const pdfGenerator = new PdfGeneratorService()
+    pdfGenerator.generatePrint(printTemplate)
+  }
+
+  const handleGuestPassResponse = async (jsonGuest: GuestResponse) => {
+    let printCondition = false
+    let guestsArr: Guest[] = []
+    if (jsonGuest.response) {
+      printCondition = jsonGuest.response[0].deliveryMethods.indexOf('PRINT') !== -1
+      for (let i = 0; i < jsonGuest.response.length; i++) {
+        guestsArr[i] = { ...jsonGuest.response[i], langCode: '' }
+      }
+    }
+
+    if (printCondition) {
+      const networkData = await getNetwork({
+        params: { tenantId: params.tenantId, networkId: jsonGuest.response[0].networkId } })
+      const langCode = (networkData?.data?.guestPortal?.guestPage?.langCode) || ''
+      for (let i = 0; i < guestsArr.length; i++) {
+        guestsArr[i].langCode = langCode
+      }
+      generateGuestPrint(guestsArr, false)
+    }
+  }
+
+  return { handleGuestPassResponse }
 }
