@@ -16,6 +16,7 @@ import { Provider }                          from '@acx-ui/store'
 import Edges                      from './pages/Devices/Edge'
 import AddEdge                    from './pages/Devices/Edge/AddEdge'
 import EditEdge                   from './pages/Devices/Edge/EdgeDetails/EditEdge'
+import { AddSwitchForm } from './pages/Devices/Switch/AddSwitchForm'
 import SwitchDetails              from './pages/Devices/Switch/SwitchDetails'
 import SwitchesTable              from './pages/Devices/Switch/SwitchesTable'
 import ApDetails                  from './pages/Devices/Wifi/ApDetails'
@@ -77,6 +78,7 @@ function DeviceRoutes () {
         element={<ApEdit />}
       />
       <Route path='devices/apgroups/:action' element={<ApGroupForm />} />
+      <Route path='devices/switch/:action' element={<AddSwitchForm />} />
       <Route
         path='devices/wifi/:serialNumber/details/:activeTab'
         element={<ApDetails />} />
