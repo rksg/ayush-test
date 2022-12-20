@@ -10,7 +10,7 @@ export const nodeMap = (
  */
 export const RCCDNodeMap = {
   1: nodeMap('1', 0, 'CCD_MODULE_TYPE_UE', 'Client Device'),
-  2: nodeMap('2', 1, 'CCD_MODULE_TYPE_AP', 'Access Point ({{apMac}})'),
+  2: nodeMap('2', 1, 'CCD_MODULE_TYPE_AP', 'Access Point ({apMac})'),
   3: nodeMap('3', 3, 'CCD_MODULE_TYPE_C_PLANE', 'Control Plane'),
   4: nodeMap('4', 2, 'CCD_MODULE_TYPE_D_PLANE', 'Data Plane'),
   5: nodeMap('5', 4, 'CCD_MODULE_TYPE_DHCP_SERVER', 'DHCP'),
@@ -100,7 +100,6 @@ export const RCCDContentMap = {
   //   'Message sent by CCD to DomainService to indicate the client monitoring has ended'
   // )
 }
-
 
 export const getRCCDFlow = ({ messageIds, failedMsgId }:
 {
