@@ -107,6 +107,10 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
     return row.guestStatus
   }
 
+  const renderMaxNumberOfClients = function (value?: number) {
+    return value ? (value === -1) ? 'Unlimited' : value : '0'
+  }
+
   const columns: TableProps<GuestClient>['columns'] = [
     {
       key: 'osType',
@@ -294,7 +298,7 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
 
     <Form.Item
       label={$t({ defaultMessage: 'Max. Number of Clients:' })}
-      children={guestDetail.maxNumberOfClients || '0'} />
+      children={renderMaxNumberOfClients(guestDetail.maxNumberOfClients)} />
 
     <Divider />
 
