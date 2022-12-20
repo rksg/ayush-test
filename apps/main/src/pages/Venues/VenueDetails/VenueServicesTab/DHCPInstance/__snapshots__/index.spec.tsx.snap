@@ -645,8 +645,8 @@ exports[`Venue DHCP Instance should render DHCP instance correctly 1`] = `
                                     >
                                       <button
                                         ant-click-animating="true"
-                                        aria-checked="true"
-                                        class="ant-switch ant-switch-checked"
+                                        aria-checked="false"
+                                        class="ant-switch"
                                         role="switch"
                                         type="button"
                                       >
