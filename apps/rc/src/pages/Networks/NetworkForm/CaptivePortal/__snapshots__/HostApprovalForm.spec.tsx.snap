@@ -253,6 +253,7 @@ exports[`CaptiveNetworkForm-HostApproval should test Host approval network succe
                     </h3>
                     <div
                       class="ant-form-item"
+                      style="margin-bottom: 5px;"
                     >
                       <div
                         class="ant-row ant-form-item-row"
@@ -298,6 +299,16 @@ exports[`CaptiveNetworkForm-HostApproval should test Host approval network succe
                         </div>
                       </div>
                     </div>
+                    <button
+                      class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 eAazoW"
+                      id="details_differentSSID"
+                      style="font-size: 12px;"
+                      type="button"
+                    >
+                      <span>
+                        Set different SSID
+                      </span>
+                    </button>
                     <div
                       class="ant-form-item"
                     >
@@ -2408,7 +2419,7 @@ exports[`CaptiveNetworkForm-HostApproval should test Host approval network succe
                           class="ant-form-item-control-input-content"
                         >
                           <div
-                            class="styledComponents__Wrapper-sc-1352uh8-0 bstzEh"
+                            class="styledComponents__Wrapper-sc-1352uh8-0 ilNUvb"
                           >
                             <div
                               class="styledComponents__FallbackWrapper-sc-1352uh8-1 cUVMCE"
