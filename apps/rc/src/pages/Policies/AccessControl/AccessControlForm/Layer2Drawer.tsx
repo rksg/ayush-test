@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
+import React, { SetStateAction, useEffect, useRef, useState } from 'react'
 
 import { Col, Form, Input, Row, Select, Tag } from 'antd'
 import _                                      from 'lodash'
@@ -25,8 +25,6 @@ export interface Layer2DrawerObject {
 
 export interface Layer2DrawerProps {
   inputName?: string[]
-  fields?: Layer2DrawerObject,
-  setFields?: Dispatch<Layer2DrawerObject>
 }
 
 const RuleContentWrapper = styled.div`
@@ -63,12 +61,12 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
   ] = [
     useWatch<string>('layer2Access', contentForm),
     useWatch<string>('policyName', contentForm),
-    useWatch<string>('l2AclPolicyId')
+    useWatch<string>([...inputName, 'l2AclPolicyId'])
   ]
 
   const [ createL2AclPolicy ] = useAddL2AclPolicyMutation()
 
-  const { layer2SelectOptions } = useL2AclPolicyListQuery({
+  const { layer2SelectOptions, layer2List } = useL2AclPolicyListQuery({
     params: { ...params, requestId: requestId },
     payload: {
       fields: ['name', 'id'], sortField: 'name',
@@ -80,7 +78,8 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
         layer2SelectOptions: data?.data?.map(
           item => {
             return <Option key={item.id}>{item.name}</Option>
-          }) ?? []
+          }) ?? [],
+        layer2List: data?.data?.map(item => item.name)
       }
     }
   })
@@ -251,11 +250,6 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
         form.setFieldValue('l2AclPolicyId', responseData.id)
         setQueryPolicyId(responseData.id)
         setRequestId(l2AclRes.requestId)
-      } else {
-        // await updateRoguePolicy({
-        //   params,
-        //   payload: transformPayload(state, true)
-        // }).unwrap()
       }
     } catch(error) {
       const responseData = error as { status: number, data: { [key: string]: string } }
@@ -275,7 +269,15 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
         name={'policyName'}
         label={$t({ defaultMessage: 'Policy Name:' })}
         rules={[
-          { required: true }
+          { required: true,
+            validator: (_, value) => {
+              if (layer2List && layer2List.find(layer2 => layer2 === value)) {
+                return Promise.reject($t({
+                  defaultMessage: 'A policy with that name already exists'
+                }))
+              }
+              return Promise.resolve()}
+          }
         ]}
         labelCol={{ span: 5 }}
         labelAlign={'left'}
