@@ -6,6 +6,8 @@ import { PageHeader, StepsForm, StepsFormInstance } from '@acx-ui/components'
 import { NetworkSegmentationSaveData }              from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink }    from '@acx-ui/react-router-dom'
 
+import AccessSwitchSetting            from './AccessSwitch/AccessSwitchSetting'
+import DistributionSwitchSetting      from './DistributionSwitch/DistributionSwitchSetting'
 import { GeneralSettings }            from './GeneralSettings'
 import NetworkSegmentationFormContext from './NetworkSegmentationFormContext'
 
@@ -58,16 +60,14 @@ export default function NetworkSegmentationForm () {
 
           <StepsForm.StepForm
             name='distSwitch'
-            title={$t({ defaultMessage: 'Dist Switch' })}
-          >
-
+            title={$t({ defaultMessage: 'Dist Switch' })}>
+            <DistributionSwitchSetting />
           </StepsForm.StepForm>
 
           <StepsForm.StepForm
             name='accessSwitch'
-            title={$t({ defaultMessage: 'Access Switch' })}
-          >
-
+            title={$t({ defaultMessage: 'Access Switch' })}>
+            <AccessSwitchSetting />
           </StepsForm.StepForm>
 
           <StepsForm.StepForm
