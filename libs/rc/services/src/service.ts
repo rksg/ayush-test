@@ -10,6 +10,7 @@ import { v4 as uuidv4 } from 'uuid'
 
 import {
   CommonUrlsInfo,
+  DHCPUrls,
   createHttpRequest,
   RequestPayload,
   TableResult,
@@ -162,7 +163,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     }),
     getDHCPProfileList: build.query<DHCPSaveData[] | null, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getDHCPProfiles, params)
+        const req = createHttpRequest(DHCPUrls.getDHCPProfiles, params)
         return{
           ...req
         }
@@ -170,7 +171,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     }),
     getDHCPProfile: build.query<DHCPSaveData | null, RequestPayload>({
       query: ({ params }) => {
-        const dhcpDetailReq = createHttpRequest(CommonUrlsInfo.getDHCProfileDetail, params)
+        const dhcpDetailReq = createHttpRequest(DHCPUrls.getDHCProfileDetail, params)
         return {
           ...dhcpDetailReq
         }
@@ -195,9 +196,9 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       query: ({ params, payload }:{ params:Params, payload:DHCPSaveData }) => {
         let dhcpReq
         if(_.isEmpty(params.serviceId)){
-          dhcpReq = createHttpRequest(CommonUrlsInfo.addDHCPService, params, RKS_NEW_UI)
+          dhcpReq = createHttpRequest(DHCPUrls.addDHCPService, params, RKS_NEW_UI)
         }else{
-          dhcpReq = createHttpRequest(CommonUrlsInfo.updateDHCPService, params, RKS_NEW_UI)
+          dhcpReq = createHttpRequest(DHCPUrls.updateDHCPService, params, RKS_NEW_UI)
         }
         return {
           ...dhcpReq,

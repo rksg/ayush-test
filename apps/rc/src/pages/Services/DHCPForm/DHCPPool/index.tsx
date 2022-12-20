@@ -220,8 +220,7 @@ export default function DHCPPoolTable ({
           children={<InputNumber
             disabled={!vlanEnable}
             min={1}
-            max={4094}
-            style={{ width: '100%' }} />}
+            max={4094} />}
         />
         <Form.Item name='dhcpOptions' style={{ height: 0 }}></Form.Item>
       </Col>

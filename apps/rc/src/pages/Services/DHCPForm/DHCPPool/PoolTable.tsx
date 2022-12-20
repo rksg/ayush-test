@@ -79,7 +79,7 @@ export function PoolTable (props:{
       dataIndex: 'leaseTime',
       render: (data, row) =>{
         if(row.leaseUnit===LeaseUnit.HOURS){
-          return <FormattedMessage defaultMessage='{number} hours' values={{ number: data }} />
+          return <FormattedMessage defaultMessage='{number} Hours' values={{ number: data }} />
         }
         if(row.leaseUnit===LeaseUnit.MINUTES){
           return <FormattedMessage defaultMessage='{number} Minutes' values={{ number: data }} />

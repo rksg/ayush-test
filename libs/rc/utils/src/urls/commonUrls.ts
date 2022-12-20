@@ -271,50 +271,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/api/tenant/:tenantId/user-profile'
   },
-  addDHCPService: {
-    method: 'post',
-    url: '/api/tenant/:tenantId/wifi/dhcpConfigServiceProfile'
-  },
-  updateDHCPService: {
-    method: 'put',
-    url: '/api/tenant/:tenantId/wifi/dhcpConfigServiceProfile/:serviceId'
-  },
-  getDHCProfileDetail: {
-    method: 'get',
-    url: '/api/tenant/:tenantId/wifi/dhcpConfigServiceProfile/:serviceId'
-  },
-  getDHCPProfiles: {
-    //Get DHCP Profiles LIST
-    method: 'get',
-    url: '/api/tenant/:tenantId/wifi/dhcpConfigServiceProfile'
-  },
-  getVenueDHCPServiceProfile: {
-    //Retrieve Venue DHCP Service Profile Settings
-    method: 'get',
-    url: '/api/tenant/:tenantId/wifi/venue/:venueId/dhcpConfigServiceProfile'
-  },
-  getVenueActivePools: {
-    //Venue Active DhcpPool list
-    method: 'get',
-    url: '/api/tenant/:tenantId/wifi/venue/:venueId/dhcpPool'
-  },
-  getVenueLeases: {
-    //Get Venue Venue Leases data
-    method: 'get',
-    url: '/api/tenant/:tenantId/wifi/venue/:venueId/dhcpPoolLease'
-    // url: '/api/venues/:venueId/dhcpConfigServiceProfileLeases'
-  },
-  activeVenueDHCPPool: {
-    //set DHCP Pool Active
-    method: 'post',
-    url: '/api/tenant/:tenantId/wifi/venue/:venueId/dhcpPool/:dhcppoolId'
-  },
-  updateVenueDHCPProfile: {
-    //Setup Venue DHCP Service Profile
-    method: 'post',
-    url: '/api/tenant/:tenantId/wifi/venue/:venueId/dhcpConfigServiceProfile'
-  },
-
   getApDetailHeader: {
     method: 'get',
     url: '/api/viewmodel/tenant/:tenantId/ap/:serialNumber/detailheader'

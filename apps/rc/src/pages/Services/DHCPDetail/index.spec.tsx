@@ -1,7 +1,7 @@
 import { rest } from 'msw'
 
-import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
-import { Provider }           from '@acx-ui/store'
+import { CommonUrlsInfo, DHCPUrls } from '@acx-ui/rc/utils'
+import { Provider }                 from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -56,7 +56,7 @@ describe('DHCP Detail Page', () => {
     }
     mockServer.use(
       rest.get(
-        CommonUrlsInfo.getDHCProfileDetail.url,
+        DHCPUrls.getDHCProfileDetail.url,
         (req, res, ctx) => res(ctx.json(detailResult))
       ),
       rest.post(

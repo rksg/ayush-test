@@ -2,8 +2,8 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo, DHCPConfigTypeEnum, DHCPSaveData } from '@acx-ui/rc/utils'
-import { Provider }                                         from '@acx-ui/store'
+import { CommonUrlsInfo, DHCPUrls, DHCPConfigTypeEnum, DHCPSaveData } from '@acx-ui/rc/utils'
+import { Provider }                                                   from '@acx-ui/store'
 import {
   mockServer,
   render, screen,
@@ -57,7 +57,7 @@ describe('DHCPForm', () => {
     mockServer.use(
       rest.get(CommonUrlsInfo.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
-      rest.get(CommonUrlsInfo.getDHCProfileDetail.url,
+      rest.get(DHCPUrls.getDHCProfileDetail.url,
         (_, res, ctx) => {
           return res(ctx.json(dhcpResponse))
         })

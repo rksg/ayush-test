@@ -1,7 +1,7 @@
 
 import { rest,RestHandler } from 'msw'
 
-import { CommonUrlsInfo } from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, DHCPUrls } from '@acx-ui/rc/utils'
 
 const aps ={
   fields: [
@@ -392,25 +392,25 @@ const handlers:Array<RestHandler> = [
   rest.post(CommonUrlsInfo.getApsList.url,(_,res,ctx) =>
     res(ctx.json(aps))
   ),
-  rest.get(CommonUrlsInfo.getVenueDHCPServiceProfile.url,(_,res,ctx) =>
+  rest.get(DHCPUrls.getVenueDHCPServiceProfile.url,(_,res,ctx) =>
     res(ctx.json(serviceProfile))
   ),
-  rest.get(CommonUrlsInfo.getDHCProfileDetail.url,(_,res,ctx) =>
+  rest.get(DHCPUrls.getDHCProfileDetail.url,(_,res,ctx) =>
     res(ctx.json(serviceById))
   ),
-  rest.get(CommonUrlsInfo.getDHCPProfiles.url,(_,res,ctx) =>
+  rest.get(DHCPUrls.getDHCPProfiles.url,(_,res,ctx) =>
     res(ctx.json(dhcpProfileList))
   ),
-  rest.get(CommonUrlsInfo.getVenueLeases.url,(_,res,ctx) =>
+  rest.get(DHCPUrls.getVenueLeases.url,(_,res,ctx) =>
     res(ctx.json(leaseList))
   ),
-  rest.get(CommonUrlsInfo.getVenueActivePools.url,(_,res,ctx) =>
+  rest.get(DHCPUrls.getVenueActivePools.url,(_,res,ctx) =>
     res(ctx.json(pools))
   ),
-  rest.post(CommonUrlsInfo.activeVenueDHCPPool.url,(_,res,ctx) =>
+  rest.post(DHCPUrls.activeVenueDHCPPool.url,(_,res,ctx) =>
     res(ctx.json(successResponse))
   ),
-  rest.post(CommonUrlsInfo.updateVenueDHCPProfile.url,(_,res,ctx) =>
+  rest.post(DHCPUrls.updateVenueDHCPProfile.url,(_,res,ctx) =>
     res(ctx.json(successResponse))
   )]
 

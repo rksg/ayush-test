@@ -2,8 +2,8 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }       from '@acx-ui/store'
+import { DHCPUrls, CommonUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                 from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -32,7 +32,7 @@ describe('DHCPForm', () => {
         res(ctx.json({ COMMON: '{}' }))
       ),
       rest.post(
-        CommonUrlsInfo.addDHCPService.url.replace('?quickAck=true', ''),
+        DHCPUrls.addDHCPService.url.replace('?quickAck=true', ''),
         (_, res, ctx) => res(ctx.json(successResponse))
       ))
 

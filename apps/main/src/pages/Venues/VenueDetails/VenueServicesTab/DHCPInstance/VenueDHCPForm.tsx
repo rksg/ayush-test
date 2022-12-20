@@ -168,7 +168,7 @@ const VenueDHCPForm = (props: {
         <StyledForm.Item
           name='serviceProfileId'
           noStyle
-          rules={[{ required: true, message: $t({ defaultMessage: 'Username is required' }) }]}
+          rules={[{ required: true, message: $t({ defaultMessage: 'DHCP service is required' }) }]}
         >
           <AntSelect onChange={(val)=>{
             setDHCPServiceID(val as string)

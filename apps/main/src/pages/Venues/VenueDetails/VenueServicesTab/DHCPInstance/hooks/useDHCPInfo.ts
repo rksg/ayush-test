@@ -9,29 +9,29 @@ export default function useDHCPInfo () {
 
   const params = useParams()
 
-  const data = useVenueDHCPProfileQuery({
+  const { data: venueDHCPProfile } = useVenueDHCPProfileQuery({
     params
   })
   const { data: apList } = useApListQuery({ params })
   const apListGroupSN = _.keyBy(apList?.data, 'serialNumber')
   const { data: dhcpProfile } = useGetDHCPProfileQuery({
-    params: { ...params, serviceId: data?.data?.serviceProfileId||'' }
-  }, { skip: !data.data?.serviceProfileId })
+    params: { ...params, serviceId: venueDHCPProfile?.serviceProfileId||'' }
+  }, { skip: !venueDHCPProfile?.serviceProfileId })
 
   let primaryServerSN='', backupServerSN='', gatewayList:DHCPProfileAps[]=[]
-  if(data?.data?.dhcpServiceAps){
-    primaryServerSN = data?.data?.dhcpServiceAps[
-      _.findIndex(data?.data?.dhcpServiceAps, { role: 'PrimaryServer' })].serialNumber
-    backupServerSN = data?.data?.dhcpServiceAps[
-      _.findIndex(data?.data?.dhcpServiceAps, { role: 'BackupServer' })].serialNumber
-    gatewayList = _.groupBy(data?.data?.dhcpServiceAps, 'role').NatGateway || []
+  if(venueDHCPProfile?.dhcpServiceAps){
+    primaryServerSN = venueDHCPProfile?.dhcpServiceAps[
+      _.findIndex(venueDHCPProfile?.dhcpServiceAps, { role: 'PrimaryServer' })].serialNumber
+    backupServerSN = venueDHCPProfile?.dhcpServiceAps[
+      _.findIndex(venueDHCPProfile?.dhcpServiceAps, { role: 'BackupServer' })].serialNumber
+    gatewayList = _.groupBy(venueDHCPProfile?.dhcpServiceAps, 'role').NatGateway || []
   }
 
 
   const displayData = {
     id: dhcpProfile?.id,
     name: dhcpProfile?.serviceName,
-    status: data?.data?.enabled === true,
+    status: venueDHCPProfile?.enabled === true,
     configurationType: dhcpProfile ? DHCPConfigTypeMessages[dhcpProfile.dhcpMode]:null,
     poolsNum: dhcpProfile? dhcpProfile?.dhcpPools.length : 0,
     primaryDHCP: {

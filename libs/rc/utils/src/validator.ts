@@ -391,6 +391,7 @@ export const convertIpToLong = (ipAddress: string): number => {
 
 export function countIpRangeSize (startIpAddress: string, endIpAddress: string) {
   const { $t } = getIntl()
+  const maxRange = 1000
 
   const startLong = convertIpToLong(startIpAddress)
   const endLong = convertIpToLong(endIpAddress)
@@ -399,8 +400,8 @@ export function countIpRangeSize (startIpAddress: string, endIpAddress: string) 
 
   if (numIp <= 0) {
     return Promise.reject($t(validationMessages.ipRangeInvalid))
-  } else if (numIp > 1000) {
-    return Promise.reject($t(validationMessages.ipRangeExceed))
+  } else if (numIp > maxRange) {
+    return Promise.reject($t(validationMessages.ipRangeExceed, { range: maxRange }))
   }
   return Promise.resolve()
 }
