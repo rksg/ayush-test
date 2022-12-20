@@ -53,8 +53,8 @@ const AdminLogTable = ({ tableQuery }: AdminLogTableProps) => {
       dataIndex: 'entity_type',
       sorter: true,
       render: function (_, row) {
-        const msg = adminLogTypeMapping[row.entity_type as keyof typeof adminLogTypeMapping]
-        return $t(msg)
+        const type = row.entity_type.toUpperCase() as keyof typeof adminLogTypeMapping
+        return $t(adminLogTypeMapping[type])
       }
     },
     {
