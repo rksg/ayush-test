@@ -598,6 +598,10 @@ exports[`Select should render bands disabled, reset default bands and apply 1`] 
                   </span>
                 </label>
               </div>
+              <svg
+                class="styledComponents__InfoIcon-sc-9z6ynb-6 fnOXKk"
+                data-testid="InformationOutlined"
+              />
             </div>
             <div
               class="styledComponents__ButtonDiv-sc-9z6ynb-1 kNCyfI"

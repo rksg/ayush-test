@@ -194,6 +194,7 @@ describe('Select', () => {
         showBand={true}
         defaultBand={['5']}
         isBandDisabled={true}
+        bandDisabledReason={'Disabled for test case.'}
       />)
     await userEvent.click(await screen.findByRole('combobox'))
     expect(asFragment()).toMatchSnapshot()

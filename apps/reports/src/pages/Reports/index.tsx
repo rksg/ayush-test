@@ -17,7 +17,7 @@ export function Report (props: {
   const { $t } = useIntl()
   const isBandDisabled = [ReportType.APPLICATION,ReportType.ACCESS_POINT].includes(type)
   let bandDisabledReason = isBandDisabled ?
-    'Testing' : ''
+    $t({ defaultMessage: 'Radio Band is not available fo this report.' }) : ''
 
   return (
     <>

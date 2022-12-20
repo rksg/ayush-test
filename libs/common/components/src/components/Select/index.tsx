@@ -6,9 +6,10 @@ import {
 import { DefaultOptionType }                         from 'antd/es/cascader'
 import { SingleValueType }                           from 'rc-cascader/lib/Cascader'
 import { useIntl, defineMessage, MessageDescriptor } from 'react-intl'
-import { Tooltip } from '@acx-ui/components'
 
-import { Button } from '../Button'
+import { Button }  from '../Button'
+import { Tooltip } from '../Tooltip'
+
 
 import * as UI from './styledComponents'
 
