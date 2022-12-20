@@ -131,9 +131,9 @@ export function Radio5GHz (props: { venueId: string, serialNumber: string }) {
     }else{
       if(channelMethod === 'MANUAL'){
         setGroupSize(1)
-        form.validateFields([['apRadioParams50G', 'allowedChannels']])
         form.setFieldValue(['apRadioParams50G', 'allowedChannels'],
           manualChannel!== 0 ? [manualChannel?.toString()] : [])
+        form.validateFields([['apRadioParams50G', 'allowedChannels']])
       }else{
         if(allowedChannels.length > 0){
           form.setFieldValue(['apRadioParams50G', 'allowedChannels'], allowedChannels)
