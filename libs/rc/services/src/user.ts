@@ -74,7 +74,59 @@ export const userApi = baseUserApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    getMfaTenantDetails: build.query<UserProfile, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          CommonUrlsInfo.getUserProfile,
+          params
+        )
+        return {
+          ...req
+        }
+      },
+      transformResponse (userProfile: UserProfile) {
+        userProfile.initials =
+          userProfile.firstName[0].toUpperCase() + userProfile.lastName[0].toUpperCase()
+        userProfile.fullName = `${userProfile.firstName} ${userProfile.lastName}`
+        return userProfile
+      }
+    }),
+    getMfaAdminDetails: build.query<UserProfile, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          CommonUrlsInfo.getUserProfile,
+          params
+        )
+        return {
+          ...req
+        }
+      },
+      transformResponse (userProfile: UserProfile) {
+        userProfile.initials =
+          userProfile.firstName[0].toUpperCase() + userProfile.lastName[0].toUpperCase()
+        userProfile.fullName = `${userProfile.firstName} ${userProfile.lastName}`
+        return userProfile
+      }
+    }),
+    getMfaMasterCode: build.query<UserProfile, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          CommonUrlsInfo.getMfaMasterCode,
+          params
+        )
+        return {
+          ...req
+        }
+      },
+      transformResponse (userProfile: UserProfile) {
+        userProfile.initials =
+          userProfile.firstName[0].toUpperCase() + userProfile.lastName[0].toUpperCase()
+        userProfile.fullName = `${userProfile.firstName} ${userProfile.lastName}`
+        return userProfile
+      }
     })
+
   })
 })
 export const {
@@ -82,5 +134,8 @@ export const {
   useGetCloudVersionQuery,
   useGetUserProfileQuery,
   useLazyGetUserProfileQuery,
-  useUpdateUserProfileMutation
+  useUpdateUserProfileMutation,
+  useGetMfaTenantDetailsQuery,
+  useGetMfaAdminDetailsQuery,
+  useGetMfaMasterCodeQuery
 } = userApi
