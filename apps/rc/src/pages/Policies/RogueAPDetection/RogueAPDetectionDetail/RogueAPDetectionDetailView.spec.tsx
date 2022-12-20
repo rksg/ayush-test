@@ -53,7 +53,7 @@ const venueDetailContent = {
       },
       status: '1_InSetupPhase',
       rogueDetection: {
-        policyId: '14d6ee52df3a48988f91558bac54c1ae',
+        policyId: 'policyId1',
         policyName: 'Default profile',
         enabled: false
       }
@@ -69,7 +69,7 @@ const venueDetailContent = {
       status: '1_InSetupPhase',
       rogueDetection: {
         policyId: 'policyId1',
-        policyName: 'Default policyId1 profile',
+        policyName: 'Default profile',
         enabled: true
       }
     }
@@ -118,8 +118,10 @@ describe('RogueAPDetectionDetailView', () => {
 
     await screen.findByText(/venue name/i)
 
+    await screen.findByText(/instance \(2\)/i)
+
     await screen.findByRole('cell', {
-      name: /test-venue2/i
+      name: 'test-venue2'
     })
   })
 })

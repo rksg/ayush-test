@@ -13,6 +13,11 @@ export const rogueAPDetectionReducer = (
         ...state,
         policyName: action.payload.policyName
       }
+    case RogueAPDetectionActionTypes.DESCRIPTION:
+      return {
+        ...state,
+        description: action.payload.description
+      }
     case RogueAPDetectionActionTypes.TAGS:
       return {
         ...state,
