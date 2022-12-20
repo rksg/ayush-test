@@ -20,7 +20,8 @@ import {
   TableResult,
   downloadFile,
   transformByte,
-  WifiUrlsInfo
+  WifiUrlsInfo,
+  RequestFormData
 } from '@acx-ui/rc/utils'
 import { convertEpochToRelativeTime, formatter } from '@acx-ui/utils'
 
@@ -226,6 +227,19 @@ export const clientApi = baseClientApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Guest', id: 'LIST' }]
+    }),
+    importGuestPass: build.mutation<{}, RequestFormData>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.importGuestPass, params, {
+          'Content-Type': undefined,
+          'Accept': '*/*'
+        })
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Guest', id: 'LIST' }]
     })
   })
 })
@@ -276,5 +290,6 @@ export const {
   useDisableGuestsMutation,
   useGenerateGuestPasswordMutation,
   useGetHistoricalStatisticsReportsQuery,
-  useLazyGetHistoricalStatisticsReportsQuery
+  useLazyGetHistoricalStatisticsReportsQuery,
+  useImportGuestPassMutation
 } = clientApi

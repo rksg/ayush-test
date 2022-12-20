@@ -320,23 +320,6 @@ describe('Guest Table', () => {
     await userEvent.click(generateButton)
   })
 
-  it('should click "download" correctly', async () => {
-    render(
-      <Provider>
-        <GuestsTable />
-      </Provider>, {
-        route: { params, path: '/:tenantId/users/wifi/guests' },
-        wrapper: Provider
-      })
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
-    fireEvent.click(await screen.findByText('test3'))
-    await screen.findByText('Guest Details')
-    await fireEvent.mouseEnter(await screen.findByText(/actions/i))
-    fireEvent.click(await screen.findByText(/download information/i))
-  })
-
   it('should click "delete" correctly', async () => {
     render(
       <Provider>
@@ -384,5 +367,22 @@ describe('Guest Table', () => {
     const generateButton = screen.getByRole('button', { name: /generate/i })
     await userEvent.click(generateButton)
     expect(await screen.findByText('An error occurred')).toBeVisible()
+  })
+
+  it('should click "download" correctly', async () => {
+    render(
+      <Provider>
+        <GuestsTable />
+      </Provider>, {
+        route: { params, path: '/:tenantId/users/wifi/guests' },
+        wrapper: Provider
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    fireEvent.click(await screen.findByText('test3'))
+    await screen.findByText('Guest Details')
+    await fireEvent.mouseEnter(await screen.findByText(/actions/i))
+    fireEvent.click(await screen.findByText(/download information/i))
   })
 })

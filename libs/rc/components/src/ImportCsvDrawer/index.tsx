@@ -6,6 +6,7 @@ import {
 } from '@ant-design/icons'
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 import {
+  Form,
   Space,
   Typography,
   Upload
@@ -20,11 +21,20 @@ import * as UI from './styledComponents'
 type importErrorRes = {
   errors: {
     code: number
-    description: string
-  }[]
+    description?: string
+    message?: string
+  }[],
   downloadUrl?: string
   txId: string
-  fileErrorsCount: number
+} | {
+  error: {
+    status: number
+    rootCauseErrors: {
+      code: string
+      message: string
+    }[]
+  },
+  requestId: string
 }
 
 interface ImportCsvDrawerProps extends DrawerProps {
@@ -32,7 +42,7 @@ interface ImportCsvDrawerProps extends DrawerProps {
   maxSize: number
   maxEntries: number
   importError?: FetchBaseQueryError
-  importRequest: (file: FormData)=>void
+  importRequest: (formData: FormData, values: object)=>void
   type: 'AP' | 'Switch' | 'GuestPass' | 'DPSK'
 }
 
@@ -43,6 +53,7 @@ export const CsvSize = {
 
 export function ImportCsvDrawer (props: ImportCsvDrawerProps) {
   const { $t } = useIntl()
+  const [form] = Form.useForm()
 
   const { maxSize, maxEntries, temlateLink, importError, importRequest } = props
 
@@ -53,13 +64,27 @@ export function ImportCsvDrawer (props: ImportCsvDrawerProps) {
   const bytesFormatter = formatter('bytesFormat')
 
   useEffect(()=>{
+    form.resetFields()
     setFormData(undefined)
     setFileDescription('')
-  }, [props.visible])
+  }, [form, props.visible])
 
   useEffect(()=>{
     if (importError?.data) {
-      const { errors, downloadUrl } = importError?.data as importErrorRes
+      const errorObj = importError?.data as importErrorRes
+      let errors, downloadUrl
+      let description = ''
+
+      if ('errors' in errorObj) {
+        errors = errorObj.errors
+        downloadUrl = errorObj.downloadUrl
+        description = errors[0].description || errors[0].message!
+      }
+      if ('error' in errorObj) {
+        errors = errorObj.error.rootCauseErrors
+        description = errors[0].message
+      }
+
       setFormData(undefined)
       setFileDescription(<>
         { errors && <Typography.Text type='danger'><WarningOutlined /> {$t(
@@ -67,8 +92,7 @@ export function ImportCsvDrawer (props: ImportCsvDrawerProps) {
               one {{description}}
               other {{count} errors found.}
           }` },
-          { count: errors.length,
-            description: errors[0].description }
+          { count: errors.length, description }
         )}</Typography.Text>}
         { downloadUrl && <Typography.Link href={downloadUrl}
           onClick={(e)=>{
@@ -112,8 +136,10 @@ export function ImportCsvDrawer (props: ImportCsvDrawerProps) {
   }
 
   const okHandler = () => {
-    setConfirmLoading(true)
-    formData && importRequest(formData)
+    form.validateFields().then(values => {
+      setConfirmLoading(true)
+      formData && importRequest(formData, values)
+    }).catch(() => {})
   }
 
   return (<UI.ImportFileDrawer {...props}
@@ -159,5 +185,8 @@ export function ImportCsvDrawer (props: ImportCsvDrawerProps) {
         { defaultMessage: 'File size cannot exceed {maxSize}' },
         { maxSize: bytesFormatter(maxSize) })}</li>
     </ul>
+    <Form layout='vertical' form={form} >
+      {props.children}
+    </Form>
   </UI.ImportFileDrawer>)
 }

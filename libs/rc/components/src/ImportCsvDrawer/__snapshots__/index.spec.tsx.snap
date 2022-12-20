@@ -104,6 +104,9 @@ exports[`Import CSV Drawer should render correctly 1`] = `
           File size cannot exceed 5 MB
         </li>
       </ul>
+      <form
+        class="ant-form ant-form-vertical"
+      />
     </div>
     <div
       class="ant-drawer-footer"
@@ -267,6 +270,9 @@ exports[`Import CSV Drawer show errors 1`] = `
           File size cannot exceed 5 MB
         </li>
       </ul>
+      <form
+        class="ant-form ant-form-vertical"
+      />
     </div>
     <div
       class="ant-drawer-footer"
