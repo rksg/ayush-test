@@ -1,8 +1,8 @@
 import { Switch }  from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps } from '@acx-ui/components'
-import { useApListQuery }            from '@acx-ui/rc/services'
+import { Loader, showActionModal, Table, TableProps }          from '@acx-ui/components'
+import { useApListQuery, useDeleteMdnsProxyInstancesMutation } from '@acx-ui/rc/services'
 import {
   AP,
   getServiceDetailsLink,
@@ -10,15 +10,14 @@ import {
   ServiceType,
   useTableQuery
 }   from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
 
 export default function MdnsProxyInstances () {
   const { $t } = useIntl()
   const params = useParams()
-  const navigate = useNavigate()
-  const addApPath = useTenantLink('devices/wifi/add')
+  const [ deleteInstances ] = useDeleteMdnsProxyInstancesMutation()
 
   const tableQuery = useTableQuery({
     useQuery: useApListQuery,
@@ -31,14 +30,41 @@ export default function MdnsProxyInstances () {
   })
 
   const handleAddAction = () => {
-    navigate(addApPath)
   }
+
+  const rowActions: TableProps<AP>['rowActions'] = [
+    {
+      label: $t({ defaultMessage: 'Change' }),
+      onClick: () => {}
+    },
+    {
+      label: $t({ defaultMessage: 'Remove' }),
+      onClick: (rows: AP[], clearSelection) => {
+        showActionModal({
+          type: 'confirm',
+          customContent: {
+            action: 'DELETE',
+            entityName: $t({ defaultMessage: 'Instances' }),
+            numOfEntities: rows.length,
+            entityValue: rows[0].name
+          },
+          onOk: () => {
+            deleteInstances({
+              // params: { ...params, serviceId: rows[0].multicasDnsProxyServiceProfileId },
+              params,
+              payload: rows.map(r => r.serialNumber)
+            }).then(clearSelection)
+          }
+        })
+      }
+    }
+  ]
 
   const columns: TableProps<AP>['columns'] = [
     {
       title: $t({ defaultMessage: 'AP Name' }),
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'apName',
+      key: 'apName',
       sorter: true,
       render: (data, row) => {
         // eslint-disable-next-line max-len
@@ -47,8 +73,8 @@ export default function MdnsProxyInstances () {
     },
     {
       title: $t({ defaultMessage: 'Service' }),
-      dataIndex: 'mdnsProxyServiceName',
-      key: 'mdnsProxyServiceName',
+      dataIndex: 'serviceName',
+      key: 'serviceName',
       sorter: true,
       render: (data) => {
         return <TenantLink
@@ -65,18 +91,14 @@ export default function MdnsProxyInstances () {
     },
     {
       title: $t({ defaultMessage: 'Forwarding rules' }),
-      dataIndex: 'rules',
-      key: 'rules',
-      sorter: true,
-      render: () => {
-        // TODO: API is not ready, this is mocked data for display
-        return 0
-      }
+      dataIndex: 'numberOfRules',
+      key: 'numberOfRules',
+      sorter: true
     },
     {
       title: $t({ defaultMessage: 'Active' }),
-      dataIndex: 'mdnsProxyServiceId',
-      key: 'mdnsProxyServiceId',
+      dataIndex: 'multicasDnsProxyServiceProfileId',
+      key: 'multicasDnsProxyServiceProfileId',
       render: function () {
         // TODO: API is not ready
         return <Switch
@@ -96,10 +118,12 @@ export default function MdnsProxyInstances () {
           columns={columns}
           dataSource={tableQuery.data?.data}
           actions={[{
-            label: $t({ defaultMessage: 'Add AP' }),
+            label: $t({ defaultMessage: 'Add Instance' }),
             onClick: handleAddAction
           }]}
           rowKey='serialNumber'
+          rowActions={rowActions}
+          rowSelection={{ type: 'radio' }}
         />
       </Loader>
     </>

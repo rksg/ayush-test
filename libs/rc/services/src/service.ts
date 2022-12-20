@@ -246,6 +246,15 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }]
     }),
+    deleteMdnsProxyInstances: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MdnsProxyUrls.deleteMdnsProxyInstances, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     getDHCP: build.query<DHCPSaveData | null, RequestPayload>({
       async queryFn ({ params }, _queryApi, _extraOptions, fetch) {
         if (!params?.serviceId) return Promise.resolve({ data: null } as QueryReturnValue<
@@ -458,6 +467,7 @@ export const {
   useUpdateMdnsProxyMutation,
   useDeleteMdnsProxyMutation,
   useDeleteMdnsProxyListMutation,
+  useDeleteMdnsProxyInstancesMutation,
   useDeleteWifiCallingServiceMutation,
   useGetWifiCallingServiceQuery,
   useGetWifiCallingServiceListQuery,
