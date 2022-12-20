@@ -657,7 +657,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Venue', id: 'DHCPProfile' }]
+      providesTags: [{ type: 'Venue', id: 'poolList' }]
     }),
     venuesLeasesList: build.query<DHCPLeases[], RequestPayload>({
       query: ({ params }) => {

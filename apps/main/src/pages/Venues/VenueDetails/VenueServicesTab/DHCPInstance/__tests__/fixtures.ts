@@ -312,7 +312,7 @@ const serviceById = {
 
 const dhcpProfileList = [{
   id: '78f92fbf80334e8b83cddd3210db4920',
-  serviceName: 'service 1',
+  serviceName: 'DhcpConfigServiceProfile1',
   dhcpMode: 'EnableOnEachAPs',
   dhcpPoolIds: ['poolId1', 'poolId2'],
   venueIds: ['venueId1', 'venueId2']

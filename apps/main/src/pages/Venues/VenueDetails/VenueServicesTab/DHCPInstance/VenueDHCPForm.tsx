@@ -79,7 +79,9 @@ const VenueDHCPForm = (props: {
   }
 
   const gatewaysList = (gateways && gateways.length>0) ? gateways?.map((item,index)=>{
-    const currentVal = form.getFieldsValue().gateways[index]
+    const fieldsGateways = form.getFieldsValue().gateways
+    const currentVal = fieldsGateways ? fieldsGateways[index] : null
+
     return <div key={index}><GridRow style={{ marginLeft: 0, marginRight: 0,
       marginTop: 0, marginBottom: 0 }}>
       <StyledForm.Item name={['gateways', index, 'serialNumber']}>

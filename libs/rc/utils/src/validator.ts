@@ -382,7 +382,7 @@ export function validateRadioChannel (channelMethod: string | undefined, channel
     }
   }
   return Promise.resolve()
-
+}
 
 export const convertIpToLong = (ipAddress: string): number => {
   const ipArray = ipAddress.split('.').map(ip => parseInt(ip, 10))
@@ -421,4 +421,3 @@ export function IpInSubnetPool (ipAddress: string, subnetAddress:string, subnetM
   }
   return Promise.resolve()
 }
-

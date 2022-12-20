@@ -46,7 +46,9 @@ export default function VenuePoolTable (){
 
 
   useEffect(() => {
-    setTableData(venueDHCPPools.data)
+    if(venueDHCPPools.data){
+      setTableData(venueDHCPPools.data)
+    }
   }, [venueDHCPPools.data])
 
   const columns: TableProps<VenueDHCPPoolInst>['columns'] = [

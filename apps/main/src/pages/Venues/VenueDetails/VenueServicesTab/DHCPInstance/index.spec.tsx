@@ -23,9 +23,8 @@ describe('Venue DHCP Instance', () => {
     })
 
     await screen.findByText('DhcpConfigServiceProfile1')
-    await userEvent.click(screen.getByRole('button', { name: 'Manage Local Service' }))
-
-    expect(asFragment()).toMatchSnapshot()
+    const buttonmanage = screen.getByRole('button', { name: 'Manage Local Service' })
+    await userEvent.click(buttonmanage)
 
     await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
     await userEvent.click(screen.getByRole('button', { name: 'Manage Local Service' }))
@@ -40,8 +39,9 @@ describe('Venue DHCP Instance', () => {
     activeButton = await screen.findByText('Confirm')
     fireEvent.click(activeButton)
 
+    expect(asFragment()).toMatchSnapshot()
+
     await userEvent.click(screen.getByRole('radio', { name: 'Lease Table (2 Online)' }))
-    jest.setTimeout(100)
   })
 
 })
