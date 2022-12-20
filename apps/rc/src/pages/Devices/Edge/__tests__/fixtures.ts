@@ -93,3 +93,20 @@ export const mockEdgeDnsServersData = {
   primary: '1.1.1.1',
   secondary: '2.2.2.2'
 }
+
+export const mockStaticRoutes = {
+  routes: [
+    {
+      id: 'row1',
+      destIp: '10.100.120.0',
+      destSubnet: '255.255.255.0',
+      nextHop: '10.100.2.1'
+    },
+    {
+      id: 'row2',
+      destIp: '10.100.2.0',
+      destSubnet: '255.255.255.0',
+      nextHop: '10.100.1.1'
+    }
+  ]
+}

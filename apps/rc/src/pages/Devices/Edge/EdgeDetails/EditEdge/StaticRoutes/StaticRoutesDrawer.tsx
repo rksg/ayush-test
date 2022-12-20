@@ -4,14 +4,15 @@ import { useEffect } from 'react'
 import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
 
-import { Drawer }           from '@acx-ui/components'
-import { EdgeStaticRoutes } from '@acx-ui/rc/utils'
+import { Drawer }                                                     from '@acx-ui/components'
+import { EdgeStaticRoute, serverIpAddressRegExp, subnetMaskIpRegExp } from '@acx-ui/rc/utils'
 
 interface StaticRoutesDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
-  addRoute: (data: EdgeStaticRoutes) => void
-  data?: EdgeStaticRoutes
+  addRoute: (data: EdgeStaticRoute) => void
+  data?: EdgeStaticRoute
+  allRoutes?: EdgeStaticRoute[] // For validation
 }
 
 const StaticRoutesDrawer = (props: StaticRoutesDrawerProps) => {
@@ -38,30 +39,67 @@ const StaticRoutesDrawer = (props: StaticRoutesDrawerProps) => {
   }
 
   const handleSave = async (addAnother: boolean) => {
-    formRef.submit()
-    if(!addAnother) {
-      handleClose()
-    }
+    formRef.validateFields().then(() => {
+      formRef.submit()
+      if(!addAnother) {
+        handleClose()
+      }
+    }).catch(() => {
+      //do nothing...
+    })
   }
 
-  const drawerContent = <Form layout='vertical' form={formRef} onFinish={addRoute}>
+  const handleFinish = (data: EdgeStaticRoute) => {
+    addRoute({
+      ...data,
+      id: data.destIp + data.destSubnet
+    })
+    formRef.resetFields()
+  }
+
+  const validateDuplicate = (ip: string, subnet: string) => {
+    if(props.allRoutes &&
+      props.allRoutes.filter(item => item.destIp === ip && item.destSubnet === subnet)
+        .length > 0) {
+      return Promise.reject($t({
+        defaultMessage: 'Each route should have unique Network Address + Subnet Mask'
+      }))
+    }
+    return Promise.resolve()
+  }
+
+  const drawerContent = <Form layout='vertical' form={formRef} onFinish={handleFinish}>
     <Form.Item
-      name='networkAddress'
-      label='Network Address'
-      rules={[{ required: true }]}
+      name='destIp'
+      label={$t({ defaultMessage: 'Network Address' })}
+      rules={[
+        { required: true },
+        { validator: (_, value) => serverIpAddressRegExp(value) },
+        { validator: (_, value) => validateDuplicate(value, formRef.getFieldValue('destSubnet')) }
+      ]}
       children={<Input />}
+      validateFirst
     />
     <Form.Item
-      name='subnetMask'
-      label='Subnet Mask'
-      rules={[{ required: true }]}
+      name='destSubnet'
+      label={$t({ defaultMessage: 'Subnet Mask' })}
+      rules={[
+        { required: true },
+        { validator: (_, value) => subnetMaskIpRegExp(value) },
+        { validator: (_, value) => validateDuplicate(formRef.getFieldValue('destIp'), value) }
+      ]}
       children={<Input />}
+      validateFirst
     />
     <Form.Item
-      name='gateway'
-      label='Gateway'
-      rules={[{ required: true }]}
+      name='nextHop'
+      label={$t({ defaultMessage: 'Gateway' })}
+      rules={[
+        { required: true },
+        { validator: (_, value) => serverIpAddressRegExp(value) }
+      ]}
       children={<Input />}
+      validateFirst
     />
   </Form>
 

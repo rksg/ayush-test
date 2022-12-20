@@ -25,11 +25,15 @@ export interface EdgeDnsServers {
   secondary: string
 }
 
-export interface EdgeStaticRoutes {
+export interface EdgeStaticRoute {
   id: string
-  networkAddress: string
-  subnetMask: string
-  gateway: string
+  destIp: string
+  destSubnet: string
+  nextHop: string
+}
+
+export interface EdgeStaticRouteConfig {
+  routes: EdgeStaticRoute[]
 }
 
 export enum EdgeStatusEnum {

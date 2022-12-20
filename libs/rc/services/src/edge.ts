@@ -4,10 +4,7 @@ import {
   CommonResult,
   createHttpRequest,
   EdgeDnsServers,
-  EdgeSaveData,
-  EdgeUrlsInfo,
-  EdgeViewModel,
-  RequestPayload,
+  EdgeSaveData, EdgeStaticRouteConfig, EdgeUrlsInfo, EdgeViewModel, RequestPayload,
   TableResult
 } from '@acx-ui/rc/utils'
 
@@ -104,6 +101,25 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    getStaticRoutes: build.query<EdgeStaticRouteConfig, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getStaticRoutes, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Edge', id: 'DETAIL_ROUTES' }]
+    }),
+    updateStaticRoutes: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.updateStaticRoutes, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Edge', id: 'DETAIL_ROUTES' }]
     })
   })
 })
@@ -117,5 +133,7 @@ export const {
   useDeleteEdgeMutation,
   useSendOtpMutation,
   useGetDnsServersQuery,
-  useUpdateDnsServersMutation
+  useUpdateDnsServersMutation,
+  useGetStaticRoutesQuery,
+  useUpdateStaticRoutesMutation
 } = edgeApi

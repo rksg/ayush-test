@@ -1,12 +1,15 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import {
   Col, Row
 } from 'antd'
-import { useIntl } from 'react-intl'
+import { useIntl }                from 'react-intl'
+import { useNavigate, useParams } from 'react-router-dom'
 
-import { Loader, StepsForm, Table, TableProps, Button } from '@acx-ui/components'
-import { EdgeStaticRoutes }                             from '@acx-ui/rc/utils'
+import { Loader, StepsForm, Table, TableProps, Button, showToast } from '@acx-ui/components'
+import { useGetStaticRoutesQuery, useUpdateStaticRoutesMutation }  from '@acx-ui/rc/services'
+import { EdgeStaticRoute }                                         from '@acx-ui/rc/utils'
+import { useTenantLink }                                           from '@acx-ui/react-router-dom'
 
 import StaticRoutesDrawer from './StaticRoutesDrawer'
 
@@ -14,29 +17,43 @@ import StaticRoutesDrawer from './StaticRoutesDrawer'
 const StaticRoutes = () => {
 
   const { $t } = useIntl()
+  const params = useParams()
+  const navigate = useNavigate()
+  const linkToEdgeList = useTenantLink('/devices/edge/list')
   const [drawerVisible, setDrawerVisible] = useState(false)
-  const [routesData, setRoutesData] = useState<EdgeStaticRoutes[]>([])
-  const [currentEditData, setCurrentEditData] = useState<EdgeStaticRoutes>()
+  const [routesData, setRoutesData] = useState<EdgeStaticRoute[]>([])
+  const [currentEditData, setCurrentEditData] = useState<EdgeStaticRoute>()
+  const { data, isFetching: isDataFetching }= useGetStaticRoutesQuery({ params: params })
+  const [
+    updateStaticRoutes,
+    { isLoading: isStaticRoutesUpdating }
+  ] = useUpdateStaticRoutesMutation()
 
-  const columns: TableProps<EdgeStaticRoutes>['columns'] = [
+  useEffect(() => {
+    if(data && data.routes) {
+      setRoutesData(data.routes)
+    }
+  }, [data])
+
+  const columns: TableProps<EdgeStaticRoute>['columns'] = [
     {
       title: $t({ defaultMessage: 'Network Address' }),
-      key: 'networkAddress',
-      dataIndex: 'networkAddress'
+      key: 'destIp',
+      dataIndex: 'destIp'
     },
     {
       title: $t({ defaultMessage: 'Subnet Mask' }),
-      key: 'subnetMask',
-      dataIndex: 'subnetMask'
+      key: 'destSubnet',
+      dataIndex: 'destSubnet'
     },
     {
       title: $t({ defaultMessage: 'Gateway' }),
-      key: 'gateway',
-      dataIndex: 'gateway'
+      key: 'nextHop',
+      dataIndex: 'nextHop'
     }
   ]
 
-  const rowActions: TableProps<EdgeStaticRoutes>['rowActions'] = [
+  const rowActions: TableProps<EdgeStaticRoute>['rowActions'] = [
     {
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
@@ -49,11 +66,7 @@ const StaticRoutes = () => {
       onClick: (selectedRows, clearSelection) => {
         setRoutesData(routesData.filter(item => {
           for(let deletedItem of selectedRows) {
-            if(deletedItem.id && deletedItem.id === item.id) {
-              return false
-            }
-            if(deletedItem.networkAddress === item.networkAddress &&
-              deletedItem.subnetMask === item.subnetMask) {
+            if(deletedItem.id === item.id) {
               return false
             }
           }
@@ -64,7 +77,7 @@ const StaticRoutes = () => {
     }
   ]
 
-  const openDrawer = (data?: EdgeStaticRoutes) => {
+  const openDrawer = (data?: EdgeStaticRoute) => {
     setCurrentEditData(data)
     setDrawerVisible(true)
   }
@@ -75,32 +88,54 @@ const StaticRoutes = () => {
     </Button>
   ]
 
-  const addRoute = (data: EdgeStaticRoutes) => {
+  const addRoute = (data: EdgeStaticRoute) => {
     setRoutesData([...routesData, data])
   }
 
+  const handleFinish = async (values: void) => {
+    try {
+      const payload = {
+        routes: routesData
+      }
+      await updateStaticRoutes({ params: params, payload: payload }).unwrap()
+    } catch {
+      showToast({
+        type: 'error',
+        content: $t({ defaultMessage: 'An error occurred' })
+      })
+    }
+  }
+
   return (
-    <StepsForm
+    <StepsForm<void>
+      onFinish={handleFinish}
+      onCancel={() => navigate(linkToEdgeList)}
       buttonLabel={{ submit: $t({ defaultMessage: 'Apply Static Routes' }) }}
     >
       <StepsForm.StepForm>
         <Row>
           <Col span={7}>
-            <Loader>
+            <Loader states={[
+              {
+                isLoading: false,
+                isFetching: isDataFetching || isStaticRoutesUpdating
+              }
+            ]}>
               <StaticRoutesDrawer
                 visible={drawerVisible}
                 setVisible={setDrawerVisible}
                 addRoute={addRoute}
                 data={currentEditData}
+                allRoutes={routesData}
               />
-              <Table<EdgeStaticRoutes>
+              <Table<EdgeStaticRoute>
                 headerTitle={$t({ defaultMessage: 'Set Static Routes' })}
                 toolBarRender={toolBarRender}
                 columns={columns}
                 rowActions={rowActions}
                 dataSource={routesData}
                 rowSelection={{ type: 'checkbox' }}
-                rowKey='networkAddress'
+                rowKey='id'
                 type='form'
               />
             </Loader>
