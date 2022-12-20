@@ -5,12 +5,12 @@ export interface ApiInfo {
   method: string;
 }
 
-const Jwt = () => {
+const getJwtTokenPayload = () => {
   if (sessionStorage.getItem('jwt')) {
     return sessionStorage.getItem('jwt')
   } else {
     // eslint-disable-next-line no-console
-    console.error('JWT TOKEN NOT FOUND!!!!!')
+    console.warn('JWT TOKEN NOT FOUND!!!!!')
     return null
   }
 }
@@ -29,8 +29,8 @@ export const createHttpRequest = (
   const tokenHeader = {
     Authorization: ''
   }
-  if (Jwt() !== null) {
-    tokenHeader.Authorization = `Bearer ${Jwt()}`
+  if (getJwtTokenPayload() !== null) {
+    tokenHeader.Authorization = `Bearer ${getJwtTokenPayload()}`
     defaultHeaders = { ...tokenHeader, ...defaultHeaders }
   }
   const headers = { ...defaultHeaders, ...customHeaders }

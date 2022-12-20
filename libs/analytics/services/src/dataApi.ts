@@ -3,12 +3,12 @@ import { graphqlRequestBaseQuery } from '@rtk-query/graphql-request-base-query'
 
 export const dataApiURL = `${window.location.origin}/api/a4rc/api/rsa-data-api/graphql/analytics`
 
-const Jwt = () => {
+const getJwtTokenPayload = () => {
   if (sessionStorage.getItem('jwt')) {
     return sessionStorage.getItem('jwt')
   } else {
     // eslint-disable-next-line no-console
-    console.error('JWT TOKEN NOT FOUND!!!!!')
+    console.warn('JWT TOKEN NOT FOUND!!!!!')
     return null
   }
 }
@@ -19,7 +19,7 @@ export const dataApi = createApi({
   baseQuery: graphqlRequestBaseQuery({
     url: dataApiURL,
     requestHeaders: {
-      Authorization: `Bearer ${Jwt()}`
+      Authorization: `Bearer ${getJwtTokenPayload()}`
     }
   }),
   reducerPath: 'analytics-data-api',
