@@ -25,7 +25,7 @@ export default function SelectServiceForm () {
   const navigate = useNavigate()
   const servicesTablePath: Path = useTenantLink(getServiceListRoutePath(true))
   const tenantBasePath: Path = useTenantLink('')
-  const NetworkSegmentationEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION)
+  const networkSegmentationEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION)
 
   const navigateToCreateService = async function (data: { serviceType: ServiceType }) {
     const serviceCreatePath = getServiceRoutePath({
@@ -77,7 +77,7 @@ export default function SelectServiceForm () {
                       {$t(serviceTypeDescMapping[ServiceType.DPSK])}
                     </UI.RadioDescription>
                   </Radio>
-                  {NetworkSegmentationEnabled &&
+                  {networkSegmentationEnabled &&
                     <Radio key={ServiceType.NETWORK_SEGMENTATION}
                       value={ServiceType.NETWORK_SEGMENTATION}>
                       {$t(serviceTypeLabelMapping[ServiceType.NETWORK_SEGMENTATION])}
