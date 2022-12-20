@@ -20,21 +20,23 @@ const GeneralSettings = () => {
   const params = useParams()
   const linkToEdgeList = useTenantLink('/devices/edge/list')
   const formRef = useRef<StepsFormInstance<EdgeSaveData>>()
-  const { data: edgeInfoData } = useGetEdgeQuery({ params: { serialNumber: params.serialNumber } })
-  const [upadteEdge] = useUpdateEdgeMutation()
+  const { data: edgeGeneralSettings } = useGetEdgeQuery({
+    params: { serialNumber: params.serialNumber }
+  })
+  const [upadteEdge, { isLoading: isEdgeUpdating }] = useUpdateEdgeMutation()
 
   useEffect(() => {
-    if(edgeInfoData) {
+    if(edgeGeneralSettings) {
       formRef.current?.setFieldsValue({
-        venueId: edgeInfoData?.venueId || '',
-        edgeGroupId: edgeInfoData?.edgeGroupId || '',
-        name: edgeInfoData?.name || '',
-        serialNumber: edgeInfoData?.serialNumber || '',
-        description: edgeInfoData?.description || '',
-        tags: edgeInfoData?.tags || ''
+        venueId: edgeGeneralSettings?.venueId || '',
+        edgeGroupId: edgeGeneralSettings?.edgeGroupId || '',
+        name: edgeGeneralSettings?.name || '',
+        serialNumber: edgeGeneralSettings?.serialNumber || '',
+        description: edgeGeneralSettings?.description || '',
+        tags: edgeGeneralSettings?.tags || ''
       })
     }
-  }, [edgeInfoData])
+  }, [edgeGeneralSettings])
 
   const handleUpdateEdge = async (data: EdgeSaveData) => {
     try {
@@ -49,8 +51,8 @@ const GeneralSettings = () => {
       }
       delete payload.serialNumber // serial number can not be sent in update API's payload
       await upadteEdge({ params: params, payload: payload }).unwrap()
-      navigate(linkToEdgeList, { replace: true })
     } catch {
+      // TODO error message not be defined
       showToast({
         type: 'error',
         content: $t({ defaultMessage: 'An error occurred' })
@@ -68,7 +70,7 @@ const GeneralSettings = () => {
       <StepsForm.StepForm>
         <Row gutter={20}>
           <Col span={8}>
-            <EdgeSettingForm isEdit />
+            <EdgeSettingForm isFetching={isEdgeUpdating} isEdit />
           </Col>
         </Row>
       </StepsForm.StepForm>

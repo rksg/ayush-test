@@ -20,6 +20,11 @@ export interface EdgeViewModel {
   tags: string[]
 }
 
+export interface EdgeDnsServers {
+  primary: string
+  secondary: string
+}
+
 export interface EdgeStaticRoutes {
   id: string
   networkAddress: string
