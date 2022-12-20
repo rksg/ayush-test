@@ -84,11 +84,6 @@ export function useMenuConfig () {
       inactiveIcon: ServiceValidationOutlined,
       activeIcon: ServiceValidationSolid,
       routes: [
-        // TODO: add back when needed, comment for now
-        // {
-        //   path: '/serviceValidation/networkHealth',
-        //   name: $t({ defaultMessage: 'Network Health' })
-        // },
         {
           path: '/serviceValidation/videoCallQoe',
           name: $t({ defaultMessage: 'Video Call QoE' })
