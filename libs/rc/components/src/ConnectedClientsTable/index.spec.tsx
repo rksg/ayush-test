@@ -1,6 +1,6 @@
 import { rest } from 'msw'
 
-import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
+import { ClientUrlsInfo }     from '@acx-ui/rc/utils'
 import { Provider }           from '@acx-ui/store'
 import {
   mockServer,
@@ -19,11 +19,11 @@ describe('Connected Clients Table', () => {
   beforeEach(() => {
     mockServer.use(
       rest.post(
-        CommonUrlsInfo.getClientList.url,
+        ClientUrlsInfo.getClientList.url,
         (req, res, ctx) => res(ctx.json(clientList))
       ),
       rest.post(
-        CommonUrlsInfo.getClientMeta.url,
+        ClientUrlsInfo.getClientMeta.url,
         (req, res, ctx) => res(ctx.json(clientMeta))
       )
     )

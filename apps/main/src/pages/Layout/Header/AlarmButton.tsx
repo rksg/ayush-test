@@ -1,25 +1,30 @@
 /* eslint-disable react/jsx-no-comment-textnodes */
 import { useEffect, useState } from 'react'
 
-import { Badge, Select, Button } from 'antd'
-import { PaginationConfig }      from 'antd/lib/pagination'
-import { useIntl }               from 'react-intl'
+import { Badge, Select }    from 'antd'
+import { PaginationConfig } from 'antd/lib/pagination'
+import { useIntl }          from 'react-intl'
 
-import { LayoutUI, GridRow, GridCol, Loader, Tooltip } from '@acx-ui/components'
-import { NotificationSolid }                           from '@acx-ui/icons'
+import {
+  LayoutUI,
+  Loader,
+  Tooltip,
+  Button
+} from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { NotificationSolid }      from '@acx-ui/icons'
 import {
   useAlarmsListQuery,
   useClearAlarmMutation,
   useClearAllAlarmMutation,
   useGetAlarmCountQuery,
   eventAlarmApi }  from '@acx-ui/rc/services'
-import { Alarm, CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
-import { useParams }                            from '@acx-ui/react-router-dom'
-import { store }                                from '@acx-ui/store'
-import { formatter }                            from '@acx-ui/utils'
+import { Alarm, CommonUrlsInfo, useTableQuery, EventSeverityEnum, EventTypeEnum } from '@acx-ui/rc/utils'
+import { useParams, TenantLink }                                                  from '@acx-ui/react-router-dom'
+import { store }                                                                  from '@acx-ui/store'
+import { formatter }                                                              from '@acx-ui/utils'
 
-import { ListItem, AcknowledgeCircle, WarningCircle, ClearButton, Meta, DeviceLink, ListTable, Drawer } from './styledComponents'
-
+import * as UI from './styledComponents'
 
 const defaultArray: Alarm[] = []
 
@@ -55,6 +60,8 @@ export default function AlarmsHeaderButton () {
   const { $t } = useIntl()
 
   const [modalState, setModalOpen] = useState<boolean>()
+
+  const toggleForSwitch = useIsSplitOn(Features.DEVICES)
 
   const getCount = function () {
     if (data?.summary?.alarms?.totalCount) {
@@ -100,60 +107,94 @@ export default function AlarmsHeaderButton () {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tableQuery.data, severity, data])
 
+  const getIconBySeverity = (severity: EventSeverityEnum)=>{
+
+    const SeverityIcon = {
+      [EventSeverityEnum.MAJOR]: <UI.WarningTriang />,
+      [EventSeverityEnum.CRITICAL]: <UI.WarningCircle />,
+      [EventSeverityEnum.MINOR]: <></>,
+      [EventSeverityEnum.WARNING]: <></>,
+      [EventSeverityEnum.INFORMATIONAL]: <></>
+    }
+
+    return SeverityIcon[severity]
+  }
+
+  const getDeviceLink = (alarm:Alarm)=>{
+    switch (alarm.entityType) {
+      case EventTypeEnum.AP: {
+        return <TenantLink
+          to={`/devices/wifi/${alarm.entityId}/details/overview`}>{alarm.apName}
+        </TenantLink>
+      }
+      case EventTypeEnum.SWITCH: {
+        if(toggleForSwitch){
+          return <TenantLink
+            to={`/devices/switch/${alarm.entityId}/${alarm.serialNumber}/details/timeline`}>
+            {alarm.switchName}
+          </TenantLink>
+        }else{
+          return <UI.EmptyLink>{alarm.switchName}</UI.EmptyLink>
+        }
+      }
+      default: {
+        return <UI.EmptyLink>{alarm.apName}</UI.EmptyLink>
+      }
+    }
+  }
+
   const alarmList = <>
-    <GridRow style={{ paddingBottom: 5 }}>
-      <GridCol col={{ span: 8 }}>
-        <Select value={severity}
-          onChange={(val)=>{
-            setSeverity(val)
-          }}>
-          <Select.Option value={'all'}>
-            { $t({ defaultMessage: 'All Severities' }) }
-          </Select.Option>
-          <Select.Option value={'Critical'}>
-            { $t({ defaultMessage: 'Critical' }) }
-          </Select.Option>
-          <Select.Option value={'Major'}>
-            { $t({ defaultMessage: 'Major' }) }
-          </Select.Option>
-        </Select>
-      </GridCol>
-      <GridCol col={{ span: 9, offset: 7 }} >
-        <Button type='link'
-          disabled={tableQuery.data?.totalCount===0}
-          style={{ height: 20, fontWeight: 700 }}
-          onClick={async ()=>{
-            await clearAllAlarm({ params: { ...params } })
-            //FIXME: temporary workaround to waiting for backend add websocket to refresh the RTK cache automatically
-            setTimeout(() => {
-              store.dispatch(
-                eventAlarmApi.util.invalidateTags([
-                  { type: 'Alarms', id: 'LIST' },
-                  { type: 'Alarms', id: 'OVERVIEW' }
-                ]))
-            }, 1000)
-          }}>
-          {$t({ defaultMessage: 'Clear all alarms' })}
-        </Button>
-      </GridCol>
-    </GridRow>
+    <UI.FilterRow>
+      <Select value={severity}
+        size='small'
+        onChange={(val)=>{
+          setSeverity(val)
+        }}>
+        <Select.Option value={'all'}>
+          { $t({ defaultMessage: 'All Severities' }) }
+        </Select.Option>
+        <Select.Option value={'Critical'}>
+          { $t({ defaultMessage: 'Critical' }) }
+        </Select.Option>
+        <Select.Option value={'Major'}>
+          { $t({ defaultMessage: 'Major' }) }
+        </Select.Option>
+      </Select>
+      <Button type='link'
+        disabled={tableQuery.data?.totalCount===0}
+        size='small'
+        style={{ fontWeight: 'var(--acx-body-font-weight-bold)' }}
+        onClick={async ()=>{
+          await clearAllAlarm({ params: { ...params } })
+          //FIXME: temporary workaround to waiting for backend add websocket to refresh the RTK cache automatically
+          setTimeout(() => {
+            store.dispatch(
+              eventAlarmApi.util.invalidateTags([
+                { type: 'Alarms', id: 'LIST' },
+                { type: 'Alarms', id: 'OVERVIEW' }
+              ]))
+          }, 1000)
+        }}>
+        {$t({ defaultMessage: 'Clear all alarms' })}
+      </Button>
+    </UI.FilterRow>
     <Loader states={[
       tableQuery,{ isLoading: false, isFetching: isAlarmCleaning||isAllAlarmCleaning }
     ]}>
-      <ListTable
+      <UI.ListTable
         itemLayout='horizontal'
         pagination={tableQuery.pagination as PaginationConfig}
         dataSource={tableData}
         renderItem={(item) => {
           const alarm = item as Alarm
           return (
-            <ListItem actions={[
+            <UI.ListItem actions={[
               <Tooltip placement='topLeft'
                 title={$t({ defaultMessage: 'Clear this alarm' })}
                 arrowPointAtCenter>
-                <ClearButton
+                <UI.ClearButton
                   ghost={true}
-                  icon={<AcknowledgeCircle/>}
+                  icon={<UI.AcknowledgeCircle/>}
                   onClick={async ()=>{
                     await clearAlarm({ params: { ...params, alarmId: alarm.id } })
                     //FIXME: temporary workaround to waiting for backend add websocket to refresh the RTK cache automatically
@@ -168,21 +209,17 @@ export default function AlarmsHeaderButton () {
                 />
               </Tooltip>
             ]}>
-              <Meta
-                avatar={<WarningCircle />}
+              <UI.Meta
+                avatar={getIconBySeverity(alarm.severity as EventSeverityEnum)}
                 title={alarm.message}
                 description={
-                  <GridRow>
-                    <GridCol col={{ span: 5 }}>
-                      <DeviceLink>{alarm.apName}</DeviceLink>
-                    </GridCol>
-                    <GridCol col={{ span: 9, offset: 10 }}>
-                      {formatter('calendarFormat')(alarm.startTime)}
-                    </GridCol>
-                  </GridRow>
+                  <UI.SpaceBetween>
+                    {getDeviceLink(alarm)}
+                    <UI.ListTime>{formatter('calendarFormat')(alarm.startTime)}</UI.ListTime>
+                  </UI.SpaceBetween>
                 }
               />
-            </ListItem>
+            </UI.ListItem>
           )}}
       />
     </Loader>
@@ -198,7 +235,7 @@ export default function AlarmsHeaderButton () {
           setModalOpen(true)
         }}/>}
     />
-    <Drawer
+    <UI.Drawer
       width={400}
       title={$t({ defaultMessage: 'Alarms' })}
       visible={modalState}
@@ -210,4 +247,3 @@ export default function AlarmsHeaderButton () {
     />
   </>
 }
-

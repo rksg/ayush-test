@@ -4,7 +4,6 @@ import { Col, Form, Row }            from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
 import { Button, Loader, StepsForm, StepsFormInstance, Tabs } from '@acx-ui/components'
-import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
 import {
   useGetApQuery,
   useGetVenueQuery,
@@ -15,7 +14,7 @@ import {
 import {
   ApRadioChannelsForm
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { ApEditContext } from '../..'
 
@@ -24,6 +23,8 @@ import { Radio5GHz }  from './Radio5GHz'
 
 export function RadioSettings () {
   const { $t } = useIntl()
+  const navigate = useNavigate()
+  const basePath = useTenantLink('/devices/')
 
   const {
     editContextData,
@@ -50,7 +51,9 @@ export function RadioSettings () {
 
   const { data: venue } = useGetVenueQuery({ params: { tenantId, venueId } })
 
-  const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
+  // TODO
+  // const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
+
   useEffect(() => {
     // TODO
     // if(venueCaps){
@@ -73,7 +76,7 @@ export function RadioSettings () {
         updateWifiRadio: handleUpdateRadioSettings
       })
     }
-  }, [venueSavedChannelsData, triBandRadioFeatureFlag, data])
+  }, [venueSavedChannelsData, data])
 
   const [currentTab, setCurrentTab] = useState('Normal24GHz')
 
@@ -122,6 +125,10 @@ export function RadioSettings () {
         formRef={formRef}
         onFormChange={handleChange}
         onFinish={handleUpdateRadioSettings}
+        onCancel={() => navigate({
+          ...basePath,
+          pathname: `${basePath.pathname}/wifi`
+        })}
         buttonLabel={{
           submit: $t({ defaultMessage: 'Apply Radio' })
         }}

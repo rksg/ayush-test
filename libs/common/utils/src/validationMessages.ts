@@ -139,6 +139,18 @@ export const validationMessages = {
   ipNotInSubnetPool: defineMessage({
     defaultMessage: 'IP address is not in the subnet pool',
     description: 'Validation - Cellular IP pool size'
+  }),
+  phoneNumber: defineMessage({
+    defaultMessage: 'Please enter a valid phone number',
+    description: 'Validation - phone number checks'
+  }),
+  oneRadioChannel: defineMessage({
+    defaultMessage: 'Please select one channel',
+    description: 'Validation - radio channel checks'
+  }),
+  twoRadioChannels: defineMessage({
+    defaultMessage: 'Please select at least two channels',
+    description: 'Validation - radio channel checks'
   })
 }
 

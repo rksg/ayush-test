@@ -31,6 +31,18 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/eventalarmapi/:tenantId/alarm/meta'
   },
+  getActivityList: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/activity/query'
+  },
+  getEventList: {
+    method: 'post',
+    url: '/api/eventalarmapi/:tenantId/event/eventlist'
+  },
+  getEventListMeta: {
+    method: 'post',
+    url: '/api/eventalarmapi/:tenantId/event/meta'
+  },
   clearAlarm: {
     method: 'delete',
     url: '/api/eventalarmapi/:tenantId/alarm/clear/:alarmId'
@@ -38,10 +50,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   clearAllAlarm: {
     method: 'delete',
     url: '/api/eventalarmapi/:tenantId/alarm'
-  },
-  getEventListMeta: {
-    method: 'post',
-    url: '/api/eventalarmapi/:tenantId/event/meta'
   },
   getApsList: {
     method: 'post',
@@ -154,6 +162,18 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getAllDevices: {
     method: 'post',
     url: '/api/viewmodel/tenant/:tenantId/venue/:venueId/devices'
+  },
+  UpdateSwitchPosition: {
+    method: 'put',
+    url: '/api/switch/tenant/:tenantId/switch/:serialNumber/position'
+  },
+  UpdateApPosition: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/position'
+  },
+  UpdateCloudpathServerPosition: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/wifi/cloudpaths/:cloudpathServerId/floorPositions'
   },
   getVenueCapabilities: {
     method: 'get',
@@ -307,21 +327,21 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/reporting/tenant/:tenantId/report/clientSessionHistory'
   },
-  getClientList: {
-    method: 'post',
-    url: '/api/viewmodel/:tenantId/client/clientlist'
-  },
   getHistoricalClientList: {
     method: 'post',
     url: '/api/eventalarmapi/:tenantId/event/hist_client_list'
   },
-  getClientMeta: {
+  getHistoricalStatisticsReportsV2: {
     method: 'post',
-    url: '/api/viewmodel/:tenantId/client/meta'
+    url: '/api/reporting/tenant/:tenantId/report/clientStats/v2'
   },
   getGuestsList: {
     method: 'post',
     url: '/api/viewmodel/tenant/:tenantId/guests'
+  },
+  addGuestPass: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/guest-user'
   },
   getApNetworkList: {
     method: 'post',

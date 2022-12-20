@@ -69,7 +69,9 @@ export interface Guest {
     name?: string
     maxNumberOfClients?: number,
     guestStatus: GuestStatusEnum,
-    clients?: GuestClient[]
+    clients?: GuestClient[],
+    langCode?: string,
+    socialLogin?: string
 }
 
 export interface GuestClient {

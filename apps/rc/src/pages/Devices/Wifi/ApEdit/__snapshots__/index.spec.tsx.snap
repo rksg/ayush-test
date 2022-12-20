@@ -68,7 +68,7 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
               class="ant-space-item"
             >
               <button
-                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 eAazoW"
                 type="button"
               >
                 <span>
@@ -245,13 +245,16 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
           >
             <div
               aria-controls="rc-tabs-test-panel-proxy"
+              aria-disabled="false"
               aria-selected="false"
               class="ant-tabs-tab-btn"
               id="rc-tabs-test-tab-proxy"
               role="tab"
               tabindex="0"
             >
-              mDNS Proxy
+              <span>
+                mDNS Proxy
+              </span>
             </div>
           </div>
           <div
@@ -259,13 +262,16 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
           >
             <div
               aria-controls="rc-tabs-test-panel-multicast"
+              aria-disabled="false"
               aria-selected="false"
               class="ant-tabs-tab-btn"
               id="rc-tabs-test-tab-multicast"
               role="tab"
               tabindex="0"
             >
-              Directed Multicast
+              <span>
+                Directed Multicast
+              </span>
             </div>
           </div>
           <div
@@ -334,7 +340,7 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
           tabindex="0"
         >
           <div
-            class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+            class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
           >
             <section
               class="styledComponents__Wrapper-sc-1ibvcih-2 kZHgWB"
@@ -430,7 +436,7 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
                                 >
                                   Currently using LAN port settings of the venue (
                                   <button
-                                    class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                                    class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
                                     style="vertical-align: middle;"
                                     type="button"
                                   >
@@ -444,7 +450,7 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
                                   class="ant-space-item"
                                 >
                                   <button
-                                    class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                                    class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
                                     type="button"
                                   >
                                     <span>
@@ -1295,7 +1301,7 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
                       style="margin-right: 12px;"
                     >
                       <button
-                        class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 kkpPZG"
+                        class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 bxQmA-d"
                         type="button"
                       >
                         <span>
@@ -1307,7 +1313,7 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
                       class="ant-space-item"
                     >
                       <button
-                        class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                        class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
                         type="button"
                       >
                         <span>

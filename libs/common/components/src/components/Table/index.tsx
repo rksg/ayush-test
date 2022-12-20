@@ -47,7 +47,8 @@ export interface TableProps <RecordType>
     rowKey?: Exclude<ProAntTableProps<RecordType, ParamsType>['rowKey'], Function>
     columns: TableColumn<RecordType, 'text'>[]
     actions?: Array<{
-      label: string
+      label: string,
+      disabled?: boolean,
       onClick: () => void
     }>
     rowActions?: Array<{
@@ -262,11 +263,12 @@ function Table <RecordType extends Record<string, any>> (
     {props.actions && <Space
       size={0}
       split={<UI.Divider type='vertical' />}
-      style={{ display: 'flex', justifyContent: 'flex-end' }}>
+      style={{ display: 'flex', justifyContent: 'flex-end', margin: '3px 0' }}>
       {props.actions?.map((action, index) => <Button
         key={index}
         type='link'
         size='small'
+        disabled={action.disabled}
         onClick={action.onClick}
         children={action.label}
       />)}
