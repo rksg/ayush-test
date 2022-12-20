@@ -10,24 +10,28 @@ import {
   Loader,
   showToast,
   StepsForm,
-  StepsFormInstance
+  StepsFormInstance,
+  Tooltip
 } from '@acx-ui/components'
 import {
   useVenuesListQuery,
   useLazyVenueDefaultApGroupQuery,
   useAddApGroupMutation,
-  useLazyApGroupsListQuery
+  useLazyApGroupsListQuery,
+  useLazyGetVlansByVenueQuery
 } from '@acx-ui/rc/services'
 import {
   ApDeep,
   AddApGroup,
-  checkObjectNotExists
+  checkObjectNotExists,
+  SwitchMessages
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
+import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 
 const { Option } = Select
 
@@ -62,7 +66,7 @@ export function AddSwitchForm () {
   const [apGroupsList] = useLazyApGroupsListQuery()
   const [addApGroup] = useAddApGroupMutation()
   const [venueOption, setVenueOption] = useState([] as DefaultOptionType[])
-  const [apsOption, setApsOption] = useState([] as TransferItem[])
+  const [dhcpClientOption, setDhcpClientOption] = useState([] as DefaultOptionType[])
 
   const apGroupsListPayload = {
     searchString: '',
@@ -81,14 +85,14 @@ export function AddSwitchForm () {
   }, [venuesList])
 
   const handleVenueChange = async (value: string) => {
-    const defaultApGroupOption = value ?
-      (await venueDefaultApGroup({ params: { tenantId: tenantId, venueId: value } })).data
-        ?.aps?.map((item: ApDeep) => ({
-          name: item.name.toString(), key: item.serialNumber
+    const vlansByVenue = value ?
+      (await getVlansByVenue({ params: { tenantId: tenantId, venueId: value } })).data
+        ?.map((item: {vlanId: string}) => ({
+          label: item.vlanId, value: item.vlanId
         })) : []
 
     formRef.current?.validateFields(['name'])
-    setApsOption(defaultApGroupOption as TransferItem[])
+    setDhcpClientOption(vlansByVenue as DefaultOptionType[])
   }
 
   const handleAddSwitch = async (values: AddApGroup) => {
@@ -123,6 +127,14 @@ export function AddSwitchForm () {
       return false
     }
   }
+
+
+  const listPayload = {
+    fields: ['name', 'id'], sortField: 'name',
+    sortOrder: 'ASC', page: 1, pageSize: 10000
+  }
+  
+  const [ getVlansByVenue ] = useLazyGetVlansByVenueQuery()
 
   return <>
     {action === 'add' && <PageHeader
@@ -185,8 +197,10 @@ export function AddSwitchForm () {
                 initialValue={MEMEBER_TYPE.STANDALONE}
                 label={$t({ defaultMessage: 'Add as' })}
               >
-                {/* <Radio.Group onChange={onChange}> */}
-                <Radio.Group >
+                <Radio.Group 
+                
+                // onChange={} 
+                >
                   <Space direction='vertical'>
                     <Radio key={MEMEBER_TYPE.STANDALONE} value={MEMEBER_TYPE.STANDALONE} >
                       {$t({ defaultMessage: 'Standalone switch' })}
@@ -208,9 +222,8 @@ export function AddSwitchForm () {
                 children={<Input />}
               />
 
-
               <Form.Item
-                name='name'
+                name='description'
                 label={$t({ defaultMessage: 'Description' })}
                 rules={[
                   { min: 1, transform: (value) => value.trim() },
@@ -220,23 +233,52 @@ export function AddSwitchForm () {
               />
 
               <Form.Item
-                label={$t({ defaultMessage: 'Firmware Type:' })}
-                name='maxRate'>
-                <Select
-                  onChange={function (value: string) {
-                    // if (value == MaxRateEnum.UNLIMITED) {
-                    //   form.setFieldValue(['wlan', 'advancedCustomization', 'totalUplinkRateLimiting'], 0)
-                    //   form.setFieldValue(['wlan', 'advancedCustomization', 'totalDownlinkRateLimiting'], 0)
-                    // }
-                  }}>
-                  <Option value={'2'}>
-                    {$t({ defaultMessage: 'Unlimited' })}
+                name='specifiedType'
+                initialValue={FIRMWARE.AUTO}
+                label={<>
+                  {$t({ defaultMessage: 'Firmware Type:' })}
+                  <Tooltip
+                    title={$t(SwitchMessages.FIRMWARE_TYPE_TOOLTIP)}
+                    placement='bottom'
+                  >
+                    <QuestionMarkCircleOutlined />
+                  </Tooltip>
+                </>}
+              >
+                <Select>
+                  <Option value={FIRMWARE.AUTO}>
+                    {$t({ defaultMessage: 'Factory default' })}
                   </Option>
-                  <Option value={'1'}>
-                    {$t({ defaultMessage: 'Per AP' })}
+                  <Option value={FIRMWARE.SWITCH}>
+                    {$t({ defaultMessage: 'Switch' })}
+                  </Option>
+                  <Option value={FIRMWARE.ROUTER}>
+                    {$t({ defaultMessage: 'Router' })}
                   </Option>
                 </Select>
               </Form.Item>
+
+              <Form.Item
+                name='initialVlanId'
+                initialValue={null}
+                label={<>
+                  {$t({ defaultMessage: 'DHCP Client:' })}
+                  <Tooltip
+                    title={$t(SwitchMessages.DHCP_CLIENT_TOOLTIP)}
+                    placement='bottom'
+                  >
+                    <QuestionMarkCircleOutlined />
+                  </Tooltip>
+                </>}
+                children={
+                  <Select 
+                    disabled={dhcpClientOption.length < 1}
+                    options={[
+                      { label: $t({ defaultMessage: 'Select VLAN...' }), value: null },
+                      ...dhcpClientOption
+                    ]} />
+                }
+              />
 
             </Col>
           </Row>

@@ -55,6 +55,15 @@ export enum macAuthMacFormatOptions {
   Lower = 'aabbccddeeff',
 }
 
+/* eslint-disable max-len */
+export const SwitchMessages = {
+  FIRMWARE_TYPE_TOOLTIP: defineMessage({
+    defaultMessage: 'Firmware type will only be applied to factory default switches. Switches with pre-existing configuration will not be affected by this setting to prevent connectivity loss.'
+  }),
+  DHCP_CLIENT_TOOLTIP: defineMessage({
+    defaultMessage: 'DHCP Client interface will only be applied to factory default switches. Switches with pre-existing configuration will not get this change to prevent connectivity loss.'
+  })
+}
 
 /* eslint-disable max-len */
 export const WifiNetworkMessages = {
