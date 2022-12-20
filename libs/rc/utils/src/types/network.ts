@@ -17,6 +17,7 @@ import { Radius }                         from '../models/Radius'
 
 export interface CreateNetworkFormFields {
   name: string;
+  ssid?: string;
   description?: string;
   type: NetworkTypeEnum;
   isCloudpathEnabled?: boolean;

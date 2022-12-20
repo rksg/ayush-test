@@ -21,6 +21,7 @@ export { ReactComponent as ApplicationsSolid } from './icons/ApplicationsSolid.s
 export { ReactComponent as ArrowBack } from './icons/ArrowBack.svg'
 export { ReactComponent as ArrowChevronLeft } from './icons/ArrowChevronLeft.svg'
 export { ReactComponent as ArrowChevronRight } from './icons/ArrowChevronRight.svg'
+export { ReactComponent as ArrowCollapse } from './icons/ArrowCollapse.svg'
 export { ReactComponent as ArrowCorner } from './icons/ArrowCorner.svg'
 export { ReactComponent as ArrowExpand } from './icons/ArrowExpand.svg'
 export { ReactComponent as ArrowsOut } from './icons/ArrowsOut.svg'

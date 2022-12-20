@@ -3,6 +3,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                     from '@acx-ui/store'
 import {
@@ -22,10 +23,7 @@ import {
   cloudpathResponse,
   networkDeepResponse
 } from './__tests__/fixtures'
-import { types }   from './NetworkDetail/NetworkDetailForm'
 import NetworkForm from './NetworkForm'
-
-types[3].disabled = false
 
 export const dhcpResponse = {
   name: 'DHCP-Guest',
@@ -41,6 +39,7 @@ export const dhcpResponse = {
 describe('NetworkForm', () => {
 
   beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     networkDeepResponse.name = 'open network test'
     mockServer.use(
       rest.get(CommonUrlsInfo.getAllUserSettings.url,
@@ -96,6 +95,33 @@ describe('NetworkForm', () => {
     await userEvent.click(screen.getByText('Finish'))
   })
 
+  it('should create different SSID successfully', async () => {
+    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+
+    const { asFragment } = render(<Provider><NetworkForm /></Provider>, {
+      route: { params }
+    })
+
+    expect(asFragment()).toMatchSnapshot()
+
+    const insertInput = screen.getByLabelText(/Network Name/)
+    fireEvent.change(insertInput, { target: { value: 'open network test' } })
+    fireEvent.blur(insertInput)
+    const validating = await screen.findByRole('img', { name: 'loading' })
+    await waitForElementToBeRemoved(validating, { timeout: 7000 })
+
+    fireEvent.click(await screen.findByText(/set different ssid/i))
+    fireEvent.click(await screen.findByText(/same as network name/i))
+    fireEvent.click(await screen.findByText(/set different ssid/i))
+    const ssidInput = await screen.findByRole('textbox', { name: /ssid/i })
+    fireEvent.change(ssidInput, { target: { value: 'testSsid' } })
+    fireEvent.blur(ssidInput)
+
+    userEvent.click(screen.getByRole('radio', { name: /Open Network/ }))
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+    expect(await screen.findByRole('heading', { name: /settings/i })).toBeVisible()
+  })
+
   it('should create open network with cloud path option successfully', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
@@ -133,11 +159,9 @@ describe('NetworkForm', () => {
   it('should create captive portal successfully', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
-    const { asFragment } = render(<Provider><NetworkForm /></Provider>, {
+    render(<Provider><NetworkForm /></Provider>, {
       route: { params }
     })
-
-    expect(asFragment()).toMatchSnapshot()
 
     const insertInput = screen.getByLabelText(/Network Name/)
     fireEvent.change(insertInput, { target: { value: 'open network test' } })
@@ -176,11 +200,9 @@ describe('NetworkForm', () => {
   it('should create captive portal without redirect url successfully', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
-    const { asFragment } = render(<Provider><NetworkForm /></Provider>, {
+    render(<Provider><NetworkForm /></Provider>, {
       route: { params }
     })
-
-    expect(asFragment()).toMatchSnapshot()
 
     const insertInput = screen.getByLabelText(/Network Name/)
     fireEvent.change(insertInput, { target: { value: 'open network test' } })
