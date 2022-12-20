@@ -3,10 +3,12 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import {
   CommonUrlsInfo,
   createHttpRequest,
+  MfaDetailStatus,
   ProfileDataToUpdate,
   RequestPayload,
   UserSettings,
   UserProfile,
+  UserUrlsInfo,
   CloudVersion
 } from '@acx-ui/rc/utils'
 
@@ -75,27 +77,25 @@ export const userApi = baseUserApi.injectEndpoints({
         }
       }
     }),
-    getMfaTenantDetails: build.query<UserProfile, RequestPayload>({
+    getMfaTenantDetails: build.query<MfaDetailStatus, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(
-          CommonUrlsInfo.getUserProfile,
+          UserUrlsInfo.getMfaTenantDetails,
           params
         )
         return {
           ...req
         }
       },
-      transformResponse (userProfile: UserProfile) {
-        userProfile.initials =
-          userProfile.firstName[0].toUpperCase() + userProfile.lastName[0].toUpperCase()
-        userProfile.fullName = `${userProfile.firstName} ${userProfile.lastName}`
-        return userProfile
+      transformResponse (mfaDetail: MfaDetailStatus) {
+        mfaDetail.enabled = mfaDetail.tenantStatus === 'ENABLED'
+        return mfaDetail
       }
     }),
     getMfaAdminDetails: build.query<UserProfile, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(
-          CommonUrlsInfo.getUserProfile,
+          UserUrlsInfo.getMfaAdminDetails,
           params
         )
         return {
@@ -112,7 +112,7 @@ export const userApi = baseUserApi.injectEndpoints({
     getMfaMasterCode: build.query<UserProfile, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(
-          CommonUrlsInfo.getMfaMasterCode,
+          UserUrlsInfo.getMfaMasterCode,
           params
         )
         return {

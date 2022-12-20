@@ -50,3 +50,11 @@ export enum DetailLevel {
   SUPER_USER = 'su',
   DEBUGGING = 'debug'
 }
+
+export interface MfaDetailStatus {
+  mfaMethods: string[];
+  recoveryCodes: string[];
+  tenantStatus: string;
+  userId: string;
+  enabled: boolean;
+}

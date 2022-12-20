@@ -36,7 +36,7 @@ export const RecoveryCodes = (props: RecoveryCodeDrawerProps) => {
     setVisible(false)
   }
 
-  form.setFieldValue('result', recoveryCode)
+  form.setFieldValue('result', recoveryCode.join('\n'))
 
   const content =
   <Form layout='vertical' form={form} onFinish={onClose}>
@@ -66,6 +66,7 @@ export const RecoveryCodes = (props: RecoveryCodeDrawerProps) => {
 
   const footer = [
     <Drawer.FormFooter
+      buttonLabel={{ save: $t({ defaultMessage: 'Ok' }) }}
       onCancel={resetFields}
       onSave={async () => handleSave()}
     />
