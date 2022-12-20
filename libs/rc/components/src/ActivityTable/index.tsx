@@ -72,11 +72,7 @@ const ActivityTable = ({ tableQuery }: ActivityTableProps) => {
     {
       key: 'source',
       title: $t({ defaultMessage: 'Source' }),
-      dataIndex: 'source',
-      sorter: true,
-      render: function (_, row) {
-        return row.admin.name
-      }
+      dataIndex: ['admin', 'name']
     },
     {
       key: 'description',
