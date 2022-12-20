@@ -11,13 +11,11 @@ export interface NetworkSegmentationSaveData extends CreateNetworkSegmentationFo
 export interface WebAuthTemplate {
   name: string
   id: string
-  webAuth_userId_label?: string
-  webAuth_password_label?: string
-  webAuth_custom_title?: string
-  webAuth_custom_top?: string
-  webAuth_custom_login_button?: string
-  webAuth_custom_bottom?: string
-  switches?: AccessSwitch[]
+  webAuthPasswordLabel?: string
+  webAuthCustomTitle?: string
+  webAuthCustomTop?: string
+  webAuthCustomLoginButton?: string
+  webAuthCustomBottom?: string
   tag?: string
 }
 

@@ -195,7 +195,7 @@ function ServiceRoutes () {
       <Route
         path={getServiceRoutePath({ type: ServiceType.WEBAUTH_SWITCH,
           oper: ServiceOperation.EDIT })}
-        element={<NetworkSegAuthForm/>}
+        element={<NetworkSegAuthForm editMode={true} />}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.WEBAUTH_SWITCH,

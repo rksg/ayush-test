@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 
 import {
   Form,
@@ -17,6 +17,7 @@ import {
   Subtitle
 } from '@acx-ui/components'
 import {
+  useGetWebAuthTemplateQuery,
   useCreateWebAuthTemplateMutation,
   useUpdateWebAuthTemplateMutation
 } from '@acx-ui/rc/services'
@@ -29,37 +30,45 @@ import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import * as UI from './styledComponents'
 
 export const defaultTemplateData = {
-  webAuth_password_label: 'DPSK Password',
-  webAuth_custom_title: 'Enter your Password below and press the button',
-  webAuth_custom_top: 'Welcome to Ruckus Networks Web Authentication Homepage',
-  webAuth_custom_login_button: 'Login',
-  webAuth_custom_bottom: `This network is restricted to authorized users only.
+  webAuthPasswordLabel: 'DPSK Password',
+  webAuthCustomTitle: 'Enter your Password below and press the button',
+  webAuthCustomTop: 'Welcome to Ruckus Networks Web Authentication Homepage',
+  webAuthCustomLoginButton: 'Login',
+  webAuthCustomBottom: `This network is restricted to authorized users only.
     Violators may be subjected to legal prosecution.
     Acitvity on this network is monitored and may be used as evidence in a court of law.
     Copyright 2022 Ruckus Networks`
 }
 
-export default function NetworkSegAuthForm () {
+export default function NetworkSegAuthForm (props: { editMode?: boolean }) {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
   const linkToServices = useTenantLink(getServiceListRoutePath(true))
 
+  const editMode = props.editMode === true
+
   const [createWebAuthTemplate] = useCreateWebAuthTemplateMutation()
   const [updateWebAuthTemplate] = useUpdateWebAuthTemplateMutation()
+  const { data: editData } = useGetWebAuthTemplateQuery({ params }, { skip: !editMode })
 
-  const editMode = params.action === 'edit'
 
   const formRef = useRef<StepsFormInstance<WebAuthTemplate>>()
 
-  const saveData = async (data: WebAuthTemplate) => {
+  useEffect(() => {
+    if (editData && editMode) {
+      formRef.current?.setFieldsValue(editData)
+    }
+  }, [editData, editMode])
+
+  const saveData = async (saveData: WebAuthTemplate) => {
     // const saveData = transferFormFieldsToSaveData(data)
 
     try {
       if (editMode) {
-        await updateWebAuthTemplate({ params, payload: data }).unwrap()
+        await updateWebAuthTemplate({ params, payload: saveData }).unwrap()
       } else {
-        await createWebAuthTemplate({ params, payload: _.omit(data, 'id') }).unwrap()
+        await createWebAuthTemplate({ params, payload: _.omit(saveData, 'id') }).unwrap()
       }
 
       navigate(linkToServices, { replace: true })
@@ -110,6 +119,7 @@ export default function NetworkSegAuthForm () {
           name='settings'
           title={$t({ defaultMessage: 'Settings' })}
           layout='vertical'
+          initialValues={editData}
           wrapperCol={{ span: 14 }} >
           <StepsForm.Title>
             {$t({ defaultMessage: 'Settings' })}</StepsForm.Title>
@@ -127,15 +137,15 @@ export default function NetworkSegAuthForm () {
           </Form.Item>
           <Subtitle level={4}>
             {$t({ defaultMessage: 'Auth Page Details' })}</Subtitle>
-          <WebAuthFormItem name='webAuth_custom_top'
+          <WebAuthFormItem name='webAuthCustomTop'
             label={$t({ defaultMessage: 'Header' })} />
-          <WebAuthFormItem name='webAuth_custom_title'
+          <WebAuthFormItem name='webAuthCustomTitle'
             label={$t({ defaultMessage: 'Title' })} />
-          <WebAuthFormItem name='webAuth_password_label'
+          <WebAuthFormItem name='webAuthPasswordLabel'
             label={$t({ defaultMessage: 'Password Label' })} />
-          <WebAuthFormItem name='webAuth_custom_login_button'
+          <WebAuthFormItem name='webAuthCustomLoginButton'
             label={$t({ defaultMessage: 'Button Text' })} />
-          <WebAuthFormItem name='webAuth_custom_bottom'
+          <WebAuthFormItem name='webAuthCustomBottom'
             label={$t({ defaultMessage: 'Footer' })} />
         </StepsForm.StepForm>
       </StepsForm>
