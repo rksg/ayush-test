@@ -9,6 +9,7 @@ import { formatter }                            from '@acx-ui/utils'
 import { TimelineDrawer } from '../TimelineDrawer'
 
 import { productMapping, severityMapping, statusMapping } from './mapping'
+import { replaceStrings }                                 from './replaceStrings'
 
 
 interface ActivityTableProps {
@@ -27,11 +28,7 @@ const ActivityTable = ({ tableQuery }: ActivityTableProps) => {
     const values = descriptionData?.reduce((agg, data) =>
       ({ ...agg, [data.name]: data.value })
     , {} as Record<string, string>)
-    let message = descriptionTemplate
-    message && message.match(new RegExp(/@@\w+/, 'g'))?.forEach(match => {
-      message = message.replace(match, values[match.replace('@@','')])
-    })
-    return message
+    return replaceStrings(descriptionTemplate, values)
   }
 
   const columns: TableProps<Activity>['columns'] = [

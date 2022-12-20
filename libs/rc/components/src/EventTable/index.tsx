@@ -6,6 +6,7 @@ import { Loader, Table, TableProps, Button } from '@acx-ui/components'
 import { Event, RequestPayload, TableQuery } from '@acx-ui/rc/utils'
 import { formatter }                         from '@acx-ui/utils'
 
+import { replaceStrings } from '../ActivityTable/replaceStrings'
 import { TimelineDrawer } from '../TimelineDrawer'
 
 import { severityMapping, eventTypeMapping, productMapping } from './mapping'
@@ -30,10 +31,7 @@ const EventTable = ({ tableQuery }: EventTableProps) => {
 
   const getDescription = (data: Event) => {
     let message = data.message && JSON.parse(data.message).message_template
-    message && message.match(new RegExp(/@@\w+/, 'g'))?.forEach((match: string) => {
-      message = message.replace(match, data[match.replace('@@','') as keyof Event])
-    })
-    return message
+    return replaceStrings(message, data)
   }
   const columns: TableProps<Event>['columns'] = [
     {
