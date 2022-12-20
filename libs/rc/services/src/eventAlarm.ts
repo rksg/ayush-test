@@ -59,7 +59,7 @@ export const eventAlarmApi = baseEventAlarmApi.injectEndpoints({
     }),
     clearAllAlarm: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.clearAlarm, params)
+        const req = createHttpRequest(CommonUrlsInfo.clearAllAlarm, params)
         return {
           ...req
         }
