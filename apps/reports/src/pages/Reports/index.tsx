@@ -15,16 +15,16 @@ export function Report (props: {
 }) {
   const { type, withHeader } = props
   const { $t } = useIntl()
-  const isBandDisabled = [ReportType.APPLICATION,ReportType.ACCESS_POINT].includes(type)
-  let bandDisabledReason = isBandDisabled ?
+  const isRadioBandDisabled = [ReportType.APPLICATION,ReportType.ACCESS_POINT].includes(type)
+  let radioBandDisabledReason = isRadioBandDisabled ?
     $t({ defaultMessage: 'Radio Band is not available fo this report.' }) : ''
 
   return (
     <>
       { withHeader && <ReportHeader name={$t(reportTypeLabelMapping[type])}
         mode={reportTypeModeMapping[type]}
-        isBandDisabled={isBandDisabled}
-        bandDisabledReason={bandDisabledReason}
+        isRadioBandDisabled={isRadioBandDisabled}
+        radioBandDisabledReason={radioBandDisabledReason}
       /> }
       <EmbeddedDashboard embedDashboardName={reportTypeDataStudioMapping[type]} />
     </>

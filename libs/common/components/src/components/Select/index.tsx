@@ -15,7 +15,7 @@ import * as UI from './styledComponents'
 
 import type { CheckboxValueType } from 'antd/es/checkbox/Group'
 
-export type Band = '6' | '5' | '2.4'
+export type RadioBand = '6' | '5' | '2.4'
 
 // taken from antd Cascader API: https://ant.design/components/cascader/#Option
 export interface Option {
@@ -32,16 +32,16 @@ export type CascaderProps = AntCascaderProps<Option> & {
   // based on antd, the multiple flag determines the type of DefaultOptionType
   onApply: (
     cascaderSelected: SingleValueType | SingleValueType[] | undefined,
-    bandsSelected?: CheckboxValueType[]
+    radioBandsSelected?: CheckboxValueType[]
   ) => void
   entityName: {
     singular: MessageDescriptor
     plural: MessageDescriptor
   },
-  showBand?: boolean,
-  isBandDisabled?: boolean
-  bandDisabledReason?: string
-  defaultBand?: Band[]
+  showRadioBand?: boolean,
+  isRadioBandDisabled?: boolean
+  radioBandDisabledReason?: string
+  defaultRadioBand?: RadioBand[]
 }
 
 Select.defaultProps = {
@@ -57,15 +57,15 @@ const selectedItemsDesc = defineMessage({
 export function Select (props: CascaderProps) {
   const { onApply,
     entityName,
-    showBand,
+    showRadioBand,
     defaultValue,
-    defaultBand,
-    isBandDisabled = false,
-    bandDisabledReason,
+    defaultRadioBand,
+    isRadioBandDisabled = false,
+    radioBandDisabledReason,
     ...antProps } = props
   const { $t } = useIntl()
   const initialValues = defaultValue || []
-  const initialBands = isBandDisabled ? [] : defaultBand || []
+  const initialRadioBands = isRadioBandDisabled ? [] : defaultRadioBand || []
   const [
     currentValues,
     setCurrentValues
@@ -79,23 +79,25 @@ export function Select (props: CascaderProps) {
   }, [defaultValue])
 
   const [open, setOpen] = React.useState(false)
-  const [currentBands, setCurrentBands] = React.useState<CheckboxValueType[]>(initialBands)
-  const [savedBands, setSavedBands] = React.useState<CheckboxValueType[]>(initialBands)
+  const [currentRadioBands, setCurrentRadioBands] = React
+    .useState<CheckboxValueType[]>(initialRadioBands)
+  const [savedRadioBands, setSavedRadioBands] = React
+    .useState<CheckboxValueType[]>(initialRadioBands)
   useEffect(() => {
-    setCurrentBands(initialBands)
-    setSavedBands(initialBands)
+    setCurrentRadioBands(initialRadioBands)
+    setSavedRadioBands(initialRadioBands)
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [defaultBand])
+  }, [defaultRadioBand])
 
   useEffect(()=>{
-    if(defaultBand?.length && isBandDisabled){
+    if(defaultRadioBand?.length && isRadioBandDisabled){
       onApply(currentValues, [])
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[isBandDisabled])
+  },[isRadioBandDisabled])
 
-  const onBandChange = (checkedValues: CheckboxValueType[]) => {
-    setCurrentBands(checkedValues)
+  const onRadioBandChange = (checkedValues: CheckboxValueType[]) => {
+    setCurrentRadioBands(checkedValues)
   }
 
   const onClear = () => {
@@ -105,40 +107,40 @@ export function Select (props: CascaderProps) {
     setOpen(false)
   }
 
-  if (props.multiple || showBand) {
+  if (props.multiple || showRadioBand) {
     const onCancel = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
       event.preventDefault()
       setOpen(false)
       setCurrentValues(savedValues)
-      setCurrentBands(savedBands)
+      setCurrentRadioBands(savedRadioBands)
     }
     const onApplyProps = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
       event.preventDefault()
       setOpen(false)
       setSavedValues(currentValues)
-      setSavedBands(currentBands)
-      if(showBand)
-        onApply(currentValues, currentBands)
+      setSavedRadioBands(currentRadioBands)
+      if(showRadioBand)
+        onApply(currentValues, currentRadioBands)
       else
         onApply(currentValues)
     }
     const onClearMultiple = () => {
       onClear()
-      setSavedBands(initialBands)
+      setSavedRadioBands(initialRadioBands)
       setCurrentValues([])
-      setCurrentBands([])
+      setCurrentRadioBands([])
       onApply([],[])
     }
 
     const withFooter = (menus: JSX.Element) => <>
       {menus}
-      {showBand && (
+      {showRadioBand && (
         <UI.RadioBandsWrapper>
           <UI.RadioBandLabel style={{ marginRight: '10px' }}>
             {$t({ defaultMessage: 'Radio' })}:
           </UI.RadioBandLabel>
           <UI.CheckboxGroup
-            disabled={isBandDisabled}
+            disabled={isRadioBandDisabled}
             options={[{
               label: '6 GHz',
               value: '6'
@@ -152,12 +154,13 @@ export function Select (props: CascaderProps) {
               value: '2.4'
             }
             ]}
-            defaultValue={initialBands}
-            value={currentBands}
-            onChange={onBandChange}/>
-          {isBandDisabled && bandDisabledReason && (<Tooltip title={bandDisabledReason}>
-            <UI.InfoIcon/>
-          </Tooltip>)}
+            defaultValue={initialRadioBands}
+            value={currentRadioBands}
+            onChange={onRadioBandChange}/>
+          {isRadioBandDisabled && radioBandDisabledReason &&
+           (<Tooltip title={radioBandDisabledReason}>
+             <UI.InfoIcon/>
+           </Tooltip>)}
         </UI.RadioBandsWrapper>)}
       <UI.ButtonDiv>
         <Button size='small' onClick={onCancel}>
@@ -177,9 +180,9 @@ export function Select (props: CascaderProps) {
       []
     )
     let { placeholder } = antProps
-    if(currentBands.length){
+    if(currentRadioBands.length){
       placeholder =$t(selectedItemsDesc, {
-        count: currentBands.length,
+        count: currentRadioBands.length,
         singular: $t(defineMessage({ defaultMessage: 'band' })),
         plural: $t(defineMessage({ defaultMessage: 'bands' }))
       })

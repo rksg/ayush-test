@@ -21,12 +21,12 @@ export const helper = (val?: SingleValueType | SingleValueType[]) => {
 
 export const onApply = (
   selectedOptions?: SingleValueType | SingleValueType[],
-  bandsSelected?: CheckboxValueType[]
+  radioBandsSelected?: CheckboxValueType[]
 ) => {
   showToast({
     type: 'success',
     content: `Cascader Options Selected: ${helper(selectedOptions)}
-    Bands Selected: ${bandsSelected}
+     | Radio Bands Selected: ${radioBandsSelected?.length ? radioBandsSelected : 'none' }
     `
   })
 }

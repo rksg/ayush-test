@@ -6,7 +6,7 @@ import { NetworkFilter, FilterMode } from '@acx-ui/analytics/components'
 import {
   RangePicker,
   PageHeader,
-  Band } from '@acx-ui/components'
+  RadioBand } from '@acx-ui/components'
 import { useDateFilter, dateRangeForLast } from '@acx-ui/utils'
 
 import { NetworkFilterWithBandContext } from '../../Routes'
@@ -14,12 +14,12 @@ import { NetworkFilterWithBandContext } from '../../Routes'
 export function ReportHeader (props: {
   name: string,
   mode?:FilterMode,
-  isBandDisabled?: boolean,
-  bandDisabledReason?: string,
+  isRadioBandDisabled?: boolean,
+  radioBandDisabledReason?: string,
   footer?: React.ReactNode }) {
-  const { name, mode = 'both', isBandDisabled=false, bandDisabledReason } = props
+  const { name, mode = 'both', isRadioBandDisabled=false, radioBandDisabledReason } = props
   const shouldQuerySwitch = ['switch','both'].includes(mode)
-  const showBand = ['ap','both'].includes(mode)
+  const showRadioBand = ['ap','both'].includes(mode)
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
   const { filterData, setFilterData } = useContext(NetworkFilterWithBandContext)
   const { value: raw, bands } = filterData
@@ -40,15 +40,15 @@ export function ReportHeader (props: {
         <NetworkFilter
           key='reports-network-filter'
           shouldQuerySwitch={shouldQuerySwitch}
-          showBand={showBand}
+          showRadioBand={showRadioBand}
           multiple={true}
           replaceWithId={true}
           filterMode={mode}
           defaultValue={raw}
-          defaultBand={bands as Band[]}
-          isBandDisabled={isBandDisabled}
-          bandDisabledReason={bandDisabledReason}
-          onApplyWithBand={setFilterData}
+          defaultRadioBand={bands as RadioBand[]}
+          isRadioBandDisabled={isRadioBandDisabled}
+          radioBandDisabledReason={radioBandDisabledReason}
+          onApplyWithRadioBand={setFilterData}
         />,
         <RangePicker
           key='range-picker'

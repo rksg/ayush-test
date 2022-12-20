@@ -191,8 +191,8 @@ describe('Network Filter', () => {
     })
     const { asFragment } = render(<Provider><NetworkFilter
       shouldQuerySwitch
-      showBand={true}
-      onApplyWithBand={mockFn}
+      showRadioBand={true}
+      onApplyWithRadioBand={mockFn}
       replaceWithId={true}
     /></Provider>)
     await screen.findByText('Entire Organization')
@@ -244,8 +244,8 @@ describe('Network Filter', () => {
     })
     const { asFragment } = render(<Provider><NetworkFilter
       shouldQuerySwitch
-      showBand={true}
-      onApplyWithBand={mockFn}
+      showRadioBand={true}
+      onApplyWithRadioBand={mockFn}
       replaceWithId={true}
       filterMode={'ap'}
     /></Provider>)
@@ -264,8 +264,8 @@ describe('Network Filter', () => {
     })
     const { asFragment } = render(<Provider><NetworkFilter
       shouldQuerySwitch
-      showBand={true}
-      onApplyWithBand={mockFn}
+      showRadioBand={true}
+      onApplyWithRadioBand={mockFn}
       replaceWithId={true}
       filterMode={'switch'}
     /></Provider>)
@@ -283,7 +283,7 @@ describe('Network Filter', () => {
     })
     const { asFragment } = render(<Provider><NetworkFilter
       shouldQuerySwitch
-      showBand={true}
+      showRadioBand={true}
       replaceWithId={true}
     /></Provider>)
     await screen.findByText('Entire Organization')

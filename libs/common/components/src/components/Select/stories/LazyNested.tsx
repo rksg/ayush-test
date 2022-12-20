@@ -2,7 +2,7 @@ import React from 'react'
 
 import { DefaultOptionType } from 'antd/es/cascader'
 
-import { Band, Select, Option } from '..'
+import { RadioBand, Select, Option } from '..'
 
 import { onApply } from './utils'
 
@@ -28,10 +28,11 @@ const mockData = () => {
 
 // storybook is non-deterministic when creating children with mockData
 export function LazyNested ({ multiple=false,
-  showBand=false,
-  defaultBand=[],
-  isBandDisabled=false }:
-  { multiple?:boolean,showBand?:boolean, defaultBand?:Band[], isBandDisabled?:boolean }) {
+  showRadioBand=false,
+  defaultRadioBand=[],
+  isRadioBandDisabled=false }:
+  { multiple?:boolean,showRadioBand?:boolean,
+     defaultRadioBand?:RadioBand[], isRadioBandDisabled?:boolean }) {
   const [options, setOptions] = React.useState<DefaultOptionType[]>([])
   const [loading, setLoading] = React.useState(false)
 
@@ -56,10 +57,10 @@ export function LazyNested ({ multiple=false,
   return <div style={{ width: 200 }}>
     <Select
       multiple={multiple}
-      showBand={showBand}
-      defaultBand={defaultBand}
-      isBandDisabled={isBandDisabled}
-      bandDisabledReason={'Disabled for storybook.'}
+      showRadioBand={showRadioBand}
+      defaultRadioBand={defaultRadioBand}
+      isRadioBandDisabled={isRadioBandDisabled}
+      radioBandDisabledReason={'Disabled for storybook.'}
       placeholder='Entire Organization'
       options={options as Option[]}
       onApply={onApply}
@@ -72,9 +73,9 @@ export function LazyNested ({ multiple=false,
 }
 
 export function LazyNestedWithBand (){
-  return <LazyNested showBand={true} defaultBand={['5']}/>
+  return <LazyNested showRadioBand={true} defaultRadioBand={['5']}/>
 }
 
 export function LazyNestedWithBandDisabled (){
-  return <LazyNested showBand={true} defaultBand={['2.4']} isBandDisabled={true}/>
+  return <LazyNested showRadioBand={true} defaultRadioBand={['2.4']} isRadioBandDisabled={true}/>
 }

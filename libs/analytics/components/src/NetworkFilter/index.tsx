@@ -5,7 +5,7 @@ import { SingleValueType }           from 'rc-cascader/lib/Cascader'
 import { useIntl }                   from 'react-intl'
 
 import { useAnalyticsFilter, calculateSeverity, defaultNetworkPath, Incident, decodeUnicode } from '@acx-ui/analytics/utils'
-import { Select, Option, Loader, Band }                                                       from '@acx-ui/components'
+import { Select, Option, Loader, RadioBand }                                                  from '@acx-ui/components'
 import { NetworkPath }                                                                        from '@acx-ui/utils'
 
 import { useIncidentsListQuery } from '../IncidentTable/services'
@@ -16,16 +16,16 @@ import * as UI                                      from './styledComponents'
 
 export type FilterMode = 'ap' | 'switch' | 'both'
 
-export const getSupersetRlsClause = (paths?:NetworkPath[],bands?:Band[]) => {
-  let bandClause = ''
+export const getSupersetRlsClause = (paths?:NetworkPath[],radioBands?:RadioBand[]) => {
+  let radioBandClause = ''
   let zoneClause = ''
   let apClause = ''
   let switchGroupClause = ''
   let switchClause = ''
   let networkClause = ''
 
-  if(bands?.length){
-    bandClause = `AND "band" in (${bands.map(band=>`'${band}'`).join(', ')})`
+  if(radioBands?.length){
+    radioBandClause = `AND "band" in (${radioBands.map(radioBand=>`'${radioBand}'`).join(', ')})`
   }
 
   if(paths?.length){
@@ -70,7 +70,7 @@ export const getSupersetRlsClause = (paths?:NetworkPath[],bands?:Band[]) => {
   }
 
   return {
-    bandClause,
+    radioBandClause,
     networkClause
   }
 }
@@ -83,15 +83,15 @@ export type VenuesWithSeverityNodes = { [key: string]: NodesWithSeverity[] }
 type ConnectedNetworkFilterProps = {
     shouldQuerySwitch : boolean,
     withIncidents?: boolean,
-    showBand?: boolean,
+    showRadioBand?: boolean,
     multiple?: boolean,
     replaceWithId?:boolean,
     filterMode?: FilterMode,
     defaultValue?: SingleValueType | SingleValueType[],
-    defaultBand?: Band[],
-    isBandDisabled?: boolean,
-    bandDisabledReason?: string,
-    onApplyWithBand?: ({ paths, bands }:{
+    defaultRadioBand?: RadioBand[],
+    isRadioBandDisabled?: boolean,
+    radioBandDisabledReason?: string,
+    onApplyWithRadioBand?: ({ paths, bands, value }:{
       paths:NetworkPath[],
       bands?:CheckboxValueType[],
       value?: SingleValueType | SingleValueType[]
@@ -289,15 +289,15 @@ export { ConnectedNetworkFilter as NetworkFilter }
 function ConnectedNetworkFilter (
   { shouldQuerySwitch,
     withIncidents,
-    showBand,
+    showRadioBand,
     filterMode='both',
     multiple,
     replaceWithId,
     defaultValue,
-    defaultBand,
-    isBandDisabled=false,
-    bandDisabledReason,
-    onApplyWithBand } : ConnectedNetworkFilterProps
+    defaultRadioBand,
+    isRadioBandDisabled=false,
+    radioBandDisabledReason,
+    onApplyWithRadioBand } : ConnectedNetworkFilterProps
 ) {
   const { $t } = useIntl()
   const { setNetworkPath, filters, raw } = useAnalyticsFilter()
@@ -330,15 +330,15 @@ function ConnectedNetworkFilter (
         <Select
           placeholder={$t({ defaultMessage: 'Entire Organization' })}
           multiple={multiple}
-          showBand={showBand}
+          showRadioBand={showRadioBand}
           defaultValue={defaultValue || raw}
-          defaultBand={defaultBand || []}
-          isBandDisabled={isBandDisabled}
-          bandDisabledReason={bandDisabledReason}
+          defaultRadioBand={defaultRadioBand || []}
+          isRadioBandDisabled={isRadioBandDisabled}
+          radioBandDisabledReason={radioBandDisabledReason}
           value={defaultValue || raw}
           options={queryResults.data}
           onApply={(value,bands) => {
-            if(showBand || multiple){
+            if(showRadioBand || multiple){
               let paths:NetworkPath[]=[]
               if(value?.length){
                 value.forEach(item => {
@@ -359,8 +359,8 @@ function ConnectedNetworkFilter (
               }else{
                 paths.push(defaultNetworkPath)
               }
-              if(onApplyWithBand)
-                onApplyWithBand({ paths, bands, value: value || [] })
+              if(onApplyWithRadioBand)
+                onApplyWithRadioBand({ paths, bands, value: value || [] })
             }else{
               onApply(value, setNetworkPath)
             }

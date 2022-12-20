@@ -147,7 +147,7 @@ describe('Select', () => {
       <CustomCascader
         options={options}
         onApply={onApplyMock}
-        showBand={true}
+        showRadioBand={true}
       />)
     await userEvent.click(await screen.findByRole('combobox'))
     const allOptions = screen.getAllByRole('menuitemcheckbox')
@@ -191,10 +191,10 @@ describe('Select', () => {
         options={options}
         onApply={onApplyMock}
         defaultValue={['n3']}
-        showBand={true}
-        defaultBand={['5']}
-        isBandDisabled={true}
-        bandDisabledReason={'Disabled for test case.'}
+        showRadioBand={true}
+        defaultRadioBand={['5']}
+        isRadioBandDisabled={true}
+        radioBandDisabledReason={'Disabled for test case.'}
       />)
     await userEvent.click(await screen.findByRole('combobox'))
     expect(asFragment()).toMatchSnapshot()
