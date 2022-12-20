@@ -177,7 +177,6 @@ describe('RogueAPDetectionForm', () => {
       , {
         wrapper: wrapper,
         route: {
-          path: '/policies/rogueAp/create',
           params: { tenantId: 'tenantId1' }
         }
       }
@@ -193,17 +192,21 @@ describe('RogueAPDetectionForm', () => {
       { target: { value: 'test' } })
 
     fireEvent.change(screen.getByRole('textbox', { name: /policy name/i }),
-      { target: { value: 'policyTestName' } })
+      { target: { value: '' } })
 
-    fireEvent.change(screen.getByRole('textbox', { name: /tags/i }),
-      { target: { value: 'a,b,c' } })
+    fireEvent.change(screen.getByRole('textbox', { name: /policy name/i }),
+      { target: { value: 'policyTestName-modify' } })
 
-    fireEvent.click(screen.getByRole('button', {
+    fireEvent.change(screen.getByRole('textbox', { name: /description/i }),
+      { target: { value: 'desc1' } })
+
+    await userEvent.click(screen.getByRole('button', {
       name: /add rule/i
     }))
 
-    fireEvent.change(screen.getByRole('textbox', { name: /rule name/i }),
-      { target: { value: 'rule1' } })
+    await screen.findByText(/add classification rule/i)
+
+    await userEvent.type(screen.getByRole('textbox', { name: /rule name/i }), 'rule1')
 
     fireEvent.change(screen.getByTestId('selectRogueRule'), {
       target: { value: 'CTSAbuseRule' }
@@ -230,7 +233,7 @@ describe('RogueAPDetectionForm', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Finish' }))
   })
 
-  xit('should render RogueAPDetectionForm with editMode successfully', async () => {
+  it('should render RogueAPDetectionForm with editMode successfully', async () => {
     mockServer.use(rest.get(
       RogueApUrls.getRoguePolicy.url,
       (_, res, ctx) => res(
@@ -271,9 +274,9 @@ describe('RogueAPDetectionForm', () => {
     await screen.findByRole('heading', { name: 'Settings', level: 3 })
 
     fireEvent.change(screen.getByRole('textbox', { name: /policy name/i }),
-      { target: { value: 'test6' } })
+      { target: { value: 'test-modify' } })
 
-    fireEvent.click(screen.getByRole('button', {
+    await userEvent.click(screen.getByRole('button', {
       name: /add rule/i
     }))
 
