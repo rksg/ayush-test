@@ -25,8 +25,7 @@ export default function SelectServiceForm () {
   const navigate = useNavigate()
   const servicesTablePath: Path = useTenantLink(getServiceListRoutePath(true))
   const tenantBasePath: Path = useTenantLink('')
-  // eslint-disable-next-line max-len
-  const displayNetworkSegmentationOption = useIsSplitOn(Features.NETWORK_SEGMENTATION) ? 'block' : 'none'
+  const NetworkSegmentationEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION)
 
   const navigateToCreateService = async function (data: { serviceType: ServiceType }) {
     const serviceCreatePath = getServiceRoutePath({
@@ -78,15 +77,16 @@ export default function SelectServiceForm () {
                       {$t(serviceTypeDescMapping[ServiceType.DPSK])}
                     </UI.RadioDescription>
                   </Radio>
-                  <Radio key={ServiceType.NETWORK_SEGMENTATION}
-                    style={{ display: displayNetworkSegmentationOption }}
-                    value={ServiceType.NETWORK_SEGMENTATION}>
+                  {NetworkSegmentationEnabled &&
+                    <Radio key={ServiceType.NETWORK_SEGMENTATION}
+                      value={ServiceType.NETWORK_SEGMENTATION}>
+                      {$t(serviceTypeLabelMapping[ServiceType.NETWORK_SEGMENTATION])}
+                      <UI.RadioDescription>
+                        {$t(serviceTypeDescMapping[ServiceType.NETWORK_SEGMENTATION])}
+                      </UI.RadioDescription>
+                    </Radio>
+                  }
 
-                    {$t(serviceTypeLabelMapping[ServiceType.NETWORK_SEGMENTATION])}
-                    <UI.RadioDescription>
-                      {$t(serviceTypeDescMapping[ServiceType.NETWORK_SEGMENTATION])}
-                    </UI.RadioDescription>
-                  </Radio>
                 </Space>
               </UI.CategoryContainer>
               <UI.CategoryContainer>
