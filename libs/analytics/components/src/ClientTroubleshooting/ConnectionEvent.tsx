@@ -1,12 +1,12 @@
 import React, { ReactNode } from 'react'
 
 import { Popover } from 'antd'
-import { useIntl } from 'react-intl'
 
 import { clientEventDescription, mapCodeToFailureText, mapCodeToReason } from '@acx-ui/analytics/utils'
 import { formatter, getIntl }                                            from '@acx-ui/utils'
 
 import { FAILURE, DisplayEvent, SLOW, DISCONNECT } from './config'
+import { ConnectionSequenceDiagram }               from './ConnectionSequenceDiagram'
 import { Details }                                 from './EventDetails'
 import * as UI                                     from './styledComponents'
 
@@ -66,12 +66,15 @@ const useConnectionDetail = (event: DisplayEvent) => {
 
 export function ConnectionEventPopover ({ children, event }:
   { children?: React.ReactNode, event: DisplayEvent }) {
-  const { $t } = useIntl()
   const [open, setOpen] = React.useState(false)
   const hide = () => { setOpen(false) }
   const rowData = useConnectionDetail(event)
   const failureExtra: ReactNode = (event.category === FAILURE)
-    ? $t({ defaultMessage: 'Failure Sequence Diagram' })
+    ? <ConnectionSequenceDiagram
+      failedMsgId={event.failedMsgId ?? ''}
+      messageIds={event.messageIds ?? []}
+      apMac={event.mac}
+    />
     : null
   return (
     <UI.PopoverWrapper>

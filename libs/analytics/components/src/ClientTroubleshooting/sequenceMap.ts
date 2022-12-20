@@ -103,11 +103,11 @@ export const RCCDContentMap = {
 
 export const getRCCDFlow = ({ messageIds, failedMsgId }:
 {
-  messageIds: Array<keyof typeof RCCDContentMap>,
-  failedMsgId: keyof typeof RCCDContentMap
+  messageIds: Array<string>,
+  failedMsgId: string
 }) => {
   const steps = messageIds.map(messageId => {
-    const message = RCCDContentMap[messageId]
+    const message = RCCDContentMap[messageId as unknown as keyof typeof RCCDContentMap]
     if (!message) return null
     return { ...message, state: messageId === failedMsgId ? 'failed' : 'normal' }
   }).filter(Boolean) as ({
