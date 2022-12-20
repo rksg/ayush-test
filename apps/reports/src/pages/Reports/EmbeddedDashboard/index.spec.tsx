@@ -5,7 +5,8 @@ import { store }      from '@acx-ui/store'
 import { render }     from '@acx-ui/test-utils'
 import { mockServer } from '@acx-ui/test-utils'
 
-import {  ReportUrlsInfo, reportsApi } from '../Services'
+import { NetworkFilterWithBandContext } from '../../../Routes'
+import {  ReportUrlsInfo, reportsApi }  from '../Services'
 
 import EmbeddedDashboard from '.'
 
@@ -55,7 +56,9 @@ describe('EmbeddedDashboard', () => {
       (req, res, ctx) => res(ctx.json(getEmbeddedReponse))
     )
     render(<Provider>
-      <EmbeddedDashboard embedDashboardName={'some dashboard'} />
+      <NetworkFilterWithBandContext.Provider value={{ filterData: {}, setFilterData: () => {} }}>
+        <EmbeddedDashboard embedDashboardName={'some dashboard'} />
+      </NetworkFilterWithBandContext.Provider>
     </Provider>, { route: { params } })
     // expect(mockEmbedDashboard).toHaveBeenCalledWith()
     // TODO - Will revisit this

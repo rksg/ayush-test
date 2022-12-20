@@ -17,14 +17,14 @@ test('should redirect reports to reports/network/wireless', async () => {
       wrapRoutes: false
     }
   })
-  expect(screen.getByTestId('networkReport')).toBeTruthy()
+  expect(screen.getByTestId('someReport')).toBeTruthy()
 })
-test('should navigate to reports/applications', async () => {
+test('should navigate to reports/network/wireless', async () => {
   render(<Provider><ReportsRoutes /></Provider>, {
     route: {
-      path: '/t/tenantId/reports/applications',
+      path: '/t/tenantId/reports/network/wireless',
       wrapRoutes: false
     }
   })
-  expect(screen.getByTestId('someReport')).toBeTruthy()
+  expect(screen.getByTestId('networkReport')).toBeTruthy()
 })

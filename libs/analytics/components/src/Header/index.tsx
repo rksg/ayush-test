@@ -3,7 +3,7 @@ import { ReactElement } from 'react'
 import moment                     from 'moment-timezone'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { nodeTypes, useAnalyticsFilter }                                      from '@acx-ui/analytics/utils'
+import { decodeUnicode, nodeTypes, useAnalyticsFilter }                       from '@acx-ui/analytics/utils'
 import { PageHeader, PageHeaderProps, Loader, RangePicker, SuspenseBoundary } from '@acx-ui/components'
 import { useDateFilter, dateRangeForLast, NodeType }                          from '@acx-ui/utils'
 
@@ -74,7 +74,7 @@ export const Header = ({ shouldQuerySwitch, withIncidents, ...props }: HeaderPro
     </Loader>}
     title={<Loader states={[state]} fallback={<Spinner size='default' />}>
       {filter || path.length > 1 ?
-        (results.data?.name || name as string) // ap/switch name from data || venue name from filter
+        decodeUnicode(results.data?.name || name as string) // ap/switch name from data || venue name from filter
         : props.title}
     </Loader>}
     extra={[

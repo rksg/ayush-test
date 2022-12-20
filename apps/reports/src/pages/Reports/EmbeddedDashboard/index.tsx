@@ -1,12 +1,18 @@
-import { useEffect, useState } from 'react'
+
+import { useContext, useEffect, useState } from 'react'
 
 import { Buffer } from 'buffer'
 
 import { embedDashboard } from '@superset-ui/embedded-sdk'
 
-import { Loader }                                    from '@acx-ui/components'
+import { getSupersetRlsClause } from '@acx-ui/analytics/components'
+import {
+  RadioBand,
+  Loader
+} from '@acx-ui/components'
 import { useDateFilter, convertDateTimeToSqlFormat } from '@acx-ui/utils'
 
+import { NetworkFilterWithBandContext }                 from '../../../Routes'
 import { useGuestTokenMutation, useEmbeddedIdMutation } from '../Services'
 
 interface ReportProps {
@@ -19,6 +25,9 @@ function Report (props: ReportProps) {
   const [ embeddedId ] = useEmbeddedIdMutation()
   const { startDate, endDate } = useDateFilter()
   const [dashboardEmbeddedId, setDashboardEmbeddedId] = useState<string | null>(null)
+  const { filterData } = useContext(NetworkFilterWithBandContext)
+  const { paths, bands } = filterData
+  const { networkClause, radioBandClause } = getSupersetRlsClause(paths,bands as RadioBand[])
 
   const HOST_NAME = process.env['NODE_ENV'] === 'development' ?
     'https://alto.local.mlisa.io' : window.location.origin
@@ -42,7 +51,9 @@ function Report (props: ReportProps) {
     }],
     rls: [{
       clause: `"__time" >= '${convertDateTimeToSqlFormat(startDate)}' AND
-              "__time" < '${convertDateTimeToSqlFormat(endDate)}'`
+        "__time" < '${convertDateTimeToSqlFormat(endDate)}'
+        ${networkClause}
+        ${radioBandClause}`
     }]
   }
 
@@ -74,7 +85,7 @@ function Report (props: ReportProps) {
       })
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[startDate, endDate, dashboardEmbeddedId])
+  },[startDate, endDate, filterData, dashboardEmbeddedId])
 
   return (
     <Loader>

@@ -1,13 +1,41 @@
+import { useContext, useEffect } from 'react'
+
 import moment from 'moment'
 
+import { NetworkFilter, FilterMode } from '@acx-ui/analytics/components'
 import {
   RangePicker,
-  PageHeader } from '@acx-ui/components'
+  PageHeader,
+  RadioBand } from '@acx-ui/components'
 import { useDateFilter, dateRangeForLast } from '@acx-ui/utils'
 
-export function ReportHeader (props: { name: string, footer?: React.ReactNode }) {
-  const name = props.name
+import { NetworkFilterWithBandContext } from '../../Routes'
+
+export function ReportHeader (props: {
+  name: string,
+  mode?:FilterMode,
+  showFilter?: boolean
+  isRadioBandDisabled?: boolean,
+  radioBandDisabledReason?: string,
+  footer?: React.ReactNode }) {
+  const {
+    name,
+    mode = 'both',
+    isRadioBandDisabled=false,
+    radioBandDisabledReason,
+    showFilter=true
+  } = props
+  const shouldQuerySwitch = ['switch','both'].includes(mode)
+  const showRadioBand = ['ap','both'].includes(mode)
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
+  const { filterData, setFilterData } = useContext(NetworkFilterWithBandContext)
+  const { value: raw, bands } = filterData
+
+  useEffect(()=>{
+    // Reset when filter mode changes
+    setFilterData({})
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mode])
 
   return (
     <PageHeader
@@ -16,6 +44,19 @@ export function ReportHeader (props: { name: string, footer?: React.ReactNode })
         { text: 'Report', link: '/reports' }
       ]}
       extra={[
+        showFilter && <NetworkFilter
+          key='reports-network-filter'
+          shouldQuerySwitch={shouldQuerySwitch}
+          showRadioBand={showRadioBand}
+          multiple={true}
+          replaceWithId={true}
+          filterMode={mode}
+          defaultValue={raw}
+          defaultRadioBand={bands as RadioBand[]}
+          isRadioBandDisabled={isRadioBandDisabled}
+          radioBandDisabledReason={radioBandDisabledReason}
+          onApplyWithRadioBand={setFilterData}
+        />,
         <RangePicker
           key='range-picker'
           selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
@@ -26,6 +67,7 @@ export function ReportHeader (props: { name: string, footer?: React.ReactNode })
         />
       ]}
       footer={props.footer && props.footer}
+      footerSpacer={false}
     />
   )
 }
