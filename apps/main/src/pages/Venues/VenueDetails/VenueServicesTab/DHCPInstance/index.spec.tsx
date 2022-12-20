@@ -39,7 +39,6 @@ describe('Venue DHCP Instance', () => {
     activeButton = await screen.findByText('Confirm')
     fireEvent.click(activeButton)
 
-    expect(asFragment()).toMatchSnapshot()
 
     await userEvent.click(screen.getByRole('radio', { name: 'Lease Table (2 Online)' }))
   })
