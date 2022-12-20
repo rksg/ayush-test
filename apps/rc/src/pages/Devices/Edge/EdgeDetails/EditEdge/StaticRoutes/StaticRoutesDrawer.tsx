@@ -11,14 +11,15 @@ interface StaticRoutesDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
   addRoute: (data: EdgeStaticRoute) => void
+  editRoute: (data: EdgeStaticRoute) => void
   data?: EdgeStaticRoute
-  allRoutes?: EdgeStaticRoute[] // For validation
+  allRoutes: EdgeStaticRoute[] // For validation
 }
 
 const StaticRoutesDrawer = (props: StaticRoutesDrawerProps) => {
 
   const { $t } = useIntl()
-  const { visible, setVisible, addRoute, data } = props
+  const { visible, setVisible, addRoute, editRoute, data, allRoutes } = props
   const [formRef] = Form.useForm()
 
   useEffect(() => {
@@ -49,18 +50,22 @@ const StaticRoutesDrawer = (props: StaticRoutesDrawerProps) => {
     })
   }
 
-  const handleFinish = (data: EdgeStaticRoute) => {
-    addRoute({
-      ...data,
-      id: data.destIp + data.destSubnet
-    })
+  const handleFinish = (formData: EdgeStaticRoute) => {
+    if(data) {
+      editRoute({ ...formData, id: data.id })
+    } else {
+      addRoute({
+        ...formData,
+        id: formData.destIp + formData.destSubnet
+      })
+    }
     formRef.resetFields()
   }
 
   const validateDuplicate = (ip: string, subnet: string) => {
-    if(props.allRoutes &&
-      props.allRoutes.filter(item => item.destIp === ip && item.destSubnet === subnet)
-        .length > 0) {
+    if((data?.destIp !== ip || data?.destSubnet !== subnet) &&
+      allRoutes && allRoutes.filter(item => item.destIp === ip && item.destSubnet === subnet)
+      .length > 0) {
       return Promise.reject($t({
         defaultMessage: 'Each route should have unique Network Address + Subnet Mask'
       }))

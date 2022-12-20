@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import {
   Col, Row
 } from 'antd'
+import { cloneDeep }              from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
@@ -92,6 +93,13 @@ const StaticRoutes = () => {
     setRoutesData([...routesData, data])
   }
 
+  const editRoute = (data: EdgeStaticRoute) => {
+    const editIndex = routesData.findIndex(item => item.id === data.id)
+    const newRoutesData = cloneDeep(routesData)
+    newRoutesData[editIndex] = data
+    setRoutesData([...newRoutesData])
+  }
+
   const handleFinish = async (values: void) => {
     try {
       const payload = {
@@ -125,6 +133,7 @@ const StaticRoutes = () => {
                 visible={drawerVisible}
                 setVisible={setDrawerVisible}
                 addRoute={addRoute}
+                editRoute={editRoute}
                 data={currentEditData}
                 allRoutes={routesData}
               />
