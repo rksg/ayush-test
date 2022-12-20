@@ -9,7 +9,7 @@ import {
 import { Provider  } from '@acx-ui/store'
 import { render }    from '@acx-ui/test-utils'
 
-import { EdgePortsByTrafficWidget, EdgeTrafficByVolumeWidget } from '.'
+import { EdgePortsByTrafficWidget, EdgeTrafficByVolumeWidget, EdgeResourceUtilizationWidget } from '.'
 
 const tenantID = 'ecc2d7cf9d2342fdb31ae0e24958fcac'
 const currentEdge:EdgeStatus = {
@@ -81,6 +81,18 @@ describe('Edge Statistic Widget', () => {
     const { asFragment } = render(
       <Provider>
         <EdgeTrafficByVolumeWidget/>
+      </Provider>,{
+        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edge-details/overview' }
+      })
+
+    expect(asFragment().querySelector('svg')).toBeDefined()
+    expect(asFragment().querySelectorAll('div[_echarts_instance_^="ec_"]').length).toBe(0)
+  })
+
+  it('shoud render EdgeResourceUtilizationWidget with no data', async () => {
+    const { asFragment } = render(
+      <Provider>
+        <EdgeResourceUtilizationWidget/>
       </Provider>,{
         route: { params, path: '/:tenantId/devices/edge/:serialNumber/edge-details/overview' }
       })

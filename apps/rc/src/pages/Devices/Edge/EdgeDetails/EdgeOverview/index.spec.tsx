@@ -1,13 +1,12 @@
 /* eslint-disable max-len */
 import { rest } from 'msw'
 
-import { EdgeUrlsInfo }       from '@acx-ui/rc/utils'
-import { Provider  }          from '@acx-ui/store'
+import { EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider  }    from '@acx-ui/store'
 import {
   render,
   screen,
-  mockServer,
-  waitForElementToBeRemoved
+  mockServer
 } from '@acx-ui/test-utils'
 
 import { mockEdgeData as currentEdge } from '../../__tests__/fixtures'
@@ -29,7 +28,7 @@ describe('Edge Detail Overview Tab', () => {
         EdgeUrlsInfo.getEdgeList.url,
         (_req, res, ctx) => {
           return res(
-            ctx.delay(1000),
+            ctx.delay(500),
             ctx.json({ data: [currentEdge] })
           )
         }
@@ -37,7 +36,7 @@ describe('Edge Detail Overview Tab', () => {
     )
   })
 
-  it('should render loading correctly', async () => {
+  it('should render no data correctly', async () => {
     render(
       <Provider>
         <EdgeOverview />
@@ -45,6 +44,7 @@ describe('Edge Detail Overview Tab', () => {
         route: { params }
       })
 
-    await waitForElementToBeRemoved(await screen.findByRole('img', { name: 'loader' }))
+    await screen.findByText('No data')
   })
+
 })

@@ -24,7 +24,7 @@ describe('Edge Information Widget', () => {
   it('should render ports donut chart correctly', async () => {
     const { asFragment } = render(
       <Provider>
-        <EdgeInfoWidget currentEdge={currentEdge} edgePortsSetting={edgePortsSetting} isLoading={false} />
+        <EdgeInfoWidget currentEdge={currentEdge} edgePortsSetting={edgePortsSetting} isEdgeStatusLoading={false} isPortListLoading={false} />
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/:serialNumber/edge-details/overview' }
       })
@@ -36,7 +36,7 @@ describe('Edge Information Widget', () => {
   it('should display drawer when clicked on ports donut chart', async () => {
     const { asFragment } = render(
       <Provider>
-        <EdgeInfoWidget currentEdge={currentEdge} edgePortsSetting={edgePortsSetting} isLoading={false} />
+        <EdgeInfoWidget currentEdge={currentEdge} edgePortsSetting={edgePortsSetting} isEdgeStatusLoading={false} isPortListLoading={false} />
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/:serialNumber/edge-details/overview' }
       })
@@ -52,11 +52,11 @@ describe('Edge Information Widget', () => {
   it('should display loading icon while waiting for response', async () => {
     render(
       <Provider>
-        <EdgeInfoWidget currentEdge={currentEdge} edgePortsSetting={edgePortsSetting} isLoading={true}/>
+        <EdgeInfoWidget currentEdge={currentEdge} edgePortsSetting={edgePortsSetting} isEdgeStatusLoading={true} isPortListLoading={true} />
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/:serialNumber/edge-details/overview' }
       })
 
-    expect(await screen.findByRole('img', { name: 'loader' })).toBeTruthy()
+    expect(await screen.findAllByRole('img', { name: 'loader' })).toBeTruthy()
   })
 })

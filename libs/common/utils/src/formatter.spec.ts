@@ -69,6 +69,15 @@ describe('formatter', () => {
     2.4: '2.4 GHz',
     5: '5 GHz'
   }))
+
+  it('cpuUtilizationFormat', () => testFormat('cpuUtilizationFormat', {
+    20: '0.02 kHz',
+    300: '0.3 kHz',
+    5000: '5 kHz',
+    12000000: '12 MHz',
+    6000000000: '6 GHz'
+  }))
+
   it('floatFormat', () => testFormat('floatFormat', {
     0.05: '0.05',
     0.0600: '0.06',

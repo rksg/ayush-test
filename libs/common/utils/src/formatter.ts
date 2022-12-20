@@ -10,6 +10,7 @@ import { getIntl } from './intlUtil'
 
 const bytes = [' B', ' KB', ' MB', ' GB', ' TB', ' PB', ' EB', ' ZB', ' YB']
 const watts = [' mW', ' W', ' kW', ' MW', ' GW', ' TW', ' PW']
+const hertz = [' kHz', ' MHz', ' GHz', ' THz']
 
 const networkSpeed = [
   ' Kbps',
@@ -146,6 +147,8 @@ export const formats = {
   bytesFormat: (number:number) => numberFormat(1024, bytes, number),
   networkSpeedFormat: (number: number) => numberFormat(1000, networkSpeed, number),
   radioFormat: (value: string|number) => `${value} GHz`,
+  // assume cpu utilization data is in Hz, so transform it into minimum unit - kHz by default
+  cpuUtilizationFormat: (number: number) => numberFormat(1000, hertz, number / 1000),
   floatFormat: (number: number) => numeral(number).format('0.[000]'),
   enabledFormat: (value: boolean) => (value ? 'Enabled' : 'Disabled'),
   ratioFormat: ([x, y]:[number, number]) => `${x} / ${y}`,

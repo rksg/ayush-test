@@ -2,13 +2,14 @@ import { Statistic as AntStatistic } from 'antd'
 import { useIntl }                   from 'react-intl'
 import styled                        from 'styled-components/macro'
 
-import { Tooltip, GridCol, GridRow }   from '@acx-ui/components'
-import { EdgeResourceUtilizationEnum } from '@acx-ui/rc/utils'
-import { formatter }                   from '@acx-ui/utils'
+import { Tooltip, GridCol, GridRow, Loader } from '@acx-ui/components'
+import { EdgeResourceUtilizationEnum }       from '@acx-ui/rc/utils'
+import { formatter }                         from '@acx-ui/utils'
 
 import { SpaceWrapper } from '../../SpaceWrapper/index'
 
 export interface EdgeStateCardProps {
+    isLoading: boolean,
     type: string
     title: string
     value?: number
@@ -18,7 +19,14 @@ export interface EdgeStateCardProps {
 
 export const EdgeSysResourceBox = styled((props: EdgeStateCardProps) => {
   const { $t } = useIntl()
-  const { className, type, title, value = 0, totalVal = 0 } = props
+  const {
+    className,
+    isLoading,
+    type,
+    title,
+    value = 0,
+    totalVal = 0
+  } = props
   const statisticTitle = title.split(' ').map(item => {
     return item+'\r\n'
   })
@@ -26,23 +34,25 @@ export const EdgeSysResourceBox = styled((props: EdgeStateCardProps) => {
   const usedValue:number = totalVal ? value/totalVal: totalVal
   const usedPercentage:number = Math.round(usedValue * 100)
   const freeValue = formatter(type === EdgeResourceUtilizationEnum.CPU ?
-    'radioFormat' : 'bytesFormat')(totalVal - value)
+    'cpuUtilizationFormat' : 'bytesFormat')(totalVal - value)
 
   return (
-    <SpaceWrapper className={className}>
-      <GridRow>
-        <GridCol col={{ span: 24 }} >
-          <Tooltip title={$t({ defaultMessage: '{freeValue} free' }, { freeValue })}>
-            <AntStatistic
-              title={statisticTitle}
-              value={formatter(type === EdgeResourceUtilizationEnum.CPU ?
-                'radioFormat' : 'bytesFormat')(value)}
-              suffix={$t({ defaultMessage: '({usedPercentage}%)' }, { usedPercentage })}
-            />
-          </Tooltip>
-        </GridCol>
-      </GridRow>
-    </SpaceWrapper>
+    <Loader states={[{ isLoading }]}>
+      <SpaceWrapper className={className}>
+        <GridRow>
+          <GridCol col={{ span: 24 }} >
+            <Tooltip title={$t({ defaultMessage: '{freeValue} free' }, { freeValue })}>
+              <AntStatistic
+                title={statisticTitle}
+                value={formatter(type === EdgeResourceUtilizationEnum.CPU ?
+                  'cpuUtilizationFormat' : 'bytesFormat')(value)}
+                suffix={$t({ defaultMessage: '({usedPercentage}%)' }, { usedPercentage })}
+              />
+            </Tooltip>
+          </GridCol>
+        </GridRow>
+      </SpaceWrapper>
+    </Loader>
   )
 })`
   .ant-statistic {

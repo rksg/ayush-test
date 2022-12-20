@@ -105,8 +105,8 @@ const EdgePortsWidget = ({ isLoading, edgePortsSetting }:
   </>)
 }
 
-export const EdgeInfoWidget = styled(({ className, currentEdge, edgePortsSetting, isLoading }:
-   { className?: string, currentEdge: EdgeStatus, edgePortsSetting: EdgePort[], isLoading: boolean }) => {
+export const EdgeInfoWidget = styled(({ className, currentEdge, edgePortsSetting, isEdgeStatusLoading, isPortListLoading }:
+   { className?: string, currentEdge: EdgeStatus, edgePortsSetting: EdgePort[], isEdgeStatusLoading: boolean, isPortListLoading: boolean }) => {
   const { $t } = useIntl()
   const [visible, setVisible] = React.useState(false)
   const moreDetailsHandler = () => {
@@ -119,10 +119,11 @@ export const EdgeInfoWidget = styled(({ className, currentEdge, edgePortsSetting
         <EdgeAlarmWidget />
       </GridCol>
       <GridCol col={{ span: 4 }}>
-        <EdgePortsWidget isLoading={isLoading} edgePortsSetting={edgePortsSetting} />
+        <EdgePortsWidget isLoading={isPortListLoading} edgePortsSetting={edgePortsSetting} />
       </GridCol>
       <GridCol col={{ span: 4 }}>
         <EdgeSysResourceBox
+          isLoading={isEdgeStatusLoading}
           type={EdgeResourceUtilizationEnum.STORAGE}
           title={$t({ defaultMessage: 'Storage Usage' })}
           value={currentEdge?.diskUsed}
@@ -131,6 +132,7 @@ export const EdgeInfoWidget = styled(({ className, currentEdge, edgePortsSetting
       </GridCol>
       <GridCol col={{ span: 4 }}>
         <EdgeSysResourceBox
+          isLoading={isEdgeStatusLoading}
           type={EdgeResourceUtilizationEnum.MEMORY}
           title={$t({ defaultMessage: 'Memory Usage' })}
           value={currentEdge?.memUsed}
@@ -139,6 +141,7 @@ export const EdgeInfoWidget = styled(({ className, currentEdge, edgePortsSetting
       </GridCol>
       <GridCol col={{ span: 4 }}>
         <EdgeSysResourceBox
+          isLoading={isEdgeStatusLoading}
           type={EdgeResourceUtilizationEnum.CPU}
           title={$t({ defaultMessage: 'CPU Usage' })}
           value={currentEdge?.cpuUsed}

@@ -28,6 +28,7 @@ describe('Edge resource utilization chart', () => {
     render(
       <Provider>
         <EdgeSysResourceBox
+          isLoading={false}
           type={EdgeResourceUtilizationEnum.STORAGE}
           title={'Storage Usage'}
           value={currentEdge?.diskUsed}
@@ -45,6 +46,7 @@ describe('Edge resource utilization chart', () => {
     render(
       <Provider>
         <EdgeSysResourceBox
+          isLoading={false}
           type={EdgeResourceUtilizationEnum.CPU}
           title={'CPU Usage'}
           value={currentEdge?.cpuUsed}
@@ -58,7 +60,7 @@ describe('Edge resource utilization chart', () => {
     fireEvent.mouseOver(targetBox)
 
     const freeValue = (currentEdge?.cpuTotal ?? 0) - (currentEdge?.cpuUsed ?? 0)
-    const exptectedValue = formatter('radioFormat')(freeValue)
+    const exptectedValue = formatter('cpuUtilizationFormat')(freeValue)
 
     await waitFor(() => {
       expect(screen.getByRole('tooltip').textContent).toBe(exptectedValue + ' free')
@@ -72,6 +74,7 @@ describe('Edge resource utilization chart', () => {
     render(
       <Provider>
         <EdgeSysResourceBox
+          isLoading={false}
           type={EdgeResourceUtilizationEnum.MEMORY}
           title={'Memory Usage'}
           value={memUsed}
@@ -91,6 +94,7 @@ describe('Edge resource utilization chart', () => {
     render(
       <Provider>
         <EdgeSysResourceBox
+          isLoading={false}
           type={EdgeResourceUtilizationEnum.MEMORY}
           title={'Memory Usage'}
           value={memUsed}
@@ -110,6 +114,7 @@ describe('Edge resource utilization chart', () => {
     render(
       <Provider>
         <EdgeSysResourceBox
+          isLoading={false}
           type={EdgeResourceUtilizationEnum.MEMORY}
           title={'Memory Usage'}
           totalVal={memTotal}

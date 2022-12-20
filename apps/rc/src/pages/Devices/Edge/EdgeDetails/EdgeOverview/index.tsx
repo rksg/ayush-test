@@ -1,10 +1,15 @@
 import { useParams } from 'react-router-dom'
 import styled        from 'styled-components/macro'
 
-import { GridCol, GridRow }                                                    from '@acx-ui/components'
-import { EdgeInfoWidget, EdgeTrafficByVolumeWidget, EdgePortsByTrafficWidget } from '@acx-ui/rc/components'
-import { useEdgeBySerialNumberQuery }                                          from '@acx-ui/rc/services'
-import { EdgePort, EdgeStatus, EdgePortTypeEnum }                              from '@acx-ui/rc/utils'
+import { GridCol, GridRow }  from '@acx-ui/components'
+import {
+  EdgeInfoWidget,
+  EdgeTrafficByVolumeWidget,
+  EdgeResourceUtilizationWidget,
+  EdgePortsByTrafficWidget
+} from '@acx-ui/rc/components'
+import { useEdgeBySerialNumberQuery }             from '@acx-ui/rc/services'
+import { EdgePort, EdgeStatus, EdgePortTypeEnum } from '@acx-ui/rc/utils'
 
 import { EdgeUpTimeWidget } from './EdgeUpTimeWidget'
 
@@ -69,7 +74,8 @@ export const EdgeOverview = styled(({ className }:{ className?: string }) => {
         <EdgeInfoWidget
           currentEdge={currentEdge as EdgeStatus}
           edgePortsSetting={edgePortsSetting as EdgePort[]}
-          isLoading={isLoadingEdgeStatus || isFetchingEdgeStatus || isPortListLoading}
+          isEdgeStatusLoading={isLoadingEdgeStatus || isFetchingEdgeStatus}
+          isPortListLoading={isPortListLoading}
         />
       </GridCol>
 
@@ -84,7 +90,7 @@ export const EdgeOverview = styled(({ className }:{ className?: string }) => {
       </GridCol>
       {/* TODO: wait for API*/}
       <GridCol col={{ span: 12 }} className='statistic'>
-        <EdgeTrafficByVolumeWidget />
+        <EdgeResourceUtilizationWidget />
       </GridCol>
       {/* TODO: wait for API*/}
       <GridCol col={{ span: 12 }} className='statistic'>
