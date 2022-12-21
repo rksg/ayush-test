@@ -45,10 +45,10 @@ const stepFlowColorHelper = (state: string) => (state === 'failed')
 
 const stepFlowMapper = (color: string) => ({
   left: css`
-    border-right: 9px solid ${color};
+    border-right: 6px solid ${color};
   `,
   right: css`
-    border-left: 9px solid ${color};
+    border-left: 6px solid ${color};
   `
 })
 
@@ -61,7 +61,7 @@ export const StepFlow = styled.div.attrs((props: { direction: string, state: str
   &:after {
     content: '';
     display: block;
-    height: 6px;
+    height: 2px;
     background-color: ${props => stepFlowColorHelper(props.state)};
     flex: 1;
     ${props => (props.direction === 'left') ? 'margin-right: 2px' : 'margin-left: 2px'};
@@ -71,7 +71,7 @@ export const StepFlow = styled.div.attrs((props: { direction: string, state: str
     content: '';
     display: block;
     border: 0 solid transparent;
-    border-width: 7px 0;
+    border-width: 3px 0;
     ${props => {
     const color = stepFlowColorHelper(props.state)
     const stepFlowColor = stepFlowMapper(color)[props.direction as 'left' | 'right']
