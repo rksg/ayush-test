@@ -1,7 +1,6 @@
 /* eslint-disable max-len */
 import { useEffect, useState } from 'react'
 
-
 import {
   Checkbox,
   Col,
@@ -38,7 +37,8 @@ import {
   base64Images,
   PdfGeneratorService,
   Guest,
-  LangCode
+  LangCode,
+  GuestErrorRes
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
@@ -239,16 +239,7 @@ export const genTemplate = (guestDetails: any, langDictionary: any) => {
     </div>`
 }
 
-export type GuestErrorRes = {
-  error: {
-    status: number
-    rootCauseErrors: {
-      code: string
-      message: string
-    }[]
-  },
-  requestId: string
-}
+
 
 export type GuestResponse = {
   requestId: string,

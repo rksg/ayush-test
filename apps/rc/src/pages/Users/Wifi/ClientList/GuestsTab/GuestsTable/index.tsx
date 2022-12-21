@@ -31,7 +31,8 @@ import {
   Network,
   NetworkTypeEnum,
   GuestNetworkTypeEnum,
-  RequestPayload
+  RequestPayload,
+  GuestErrorRes
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { getIntl }               from '@acx-ui/utils'
@@ -40,7 +41,6 @@ import { defaultGuestPayload, GuestsDetail } from '../GuestsDetail'
 
 import {
   AddGuestDrawer,
-  GuestErrorRes,
   GuestFields,
   GuestResponse,
   showGuestErrorModal,

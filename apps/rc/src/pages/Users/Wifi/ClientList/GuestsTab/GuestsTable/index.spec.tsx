@@ -323,6 +323,23 @@ describe('Guest Table', () => {
     await userEvent.click(generateButton)
   })
 
+  it('should click "download" correctly', async () => {
+    render(
+      <Provider>
+        <GuestsTable />
+      </Provider>, {
+        route: { params, path: '/:tenantId/users/wifi/guests' },
+        wrapper: Provider
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    fireEvent.click(await screen.findByText('test3'))
+    await screen.findByText('Guest Details')
+    await fireEvent.mouseEnter(await screen.findByText(/actions/i))
+    fireEvent.click(await screen.findByText(/download information/i))
+  })
+
   it('should click "delete" correctly', async () => {
     render(
       <Provider>
@@ -342,23 +359,6 @@ describe('Guest Table', () => {
     fireEvent.click(screen.getByRole('button', {
       name: /delete guest/i
     }))
-  })
-
-  it('should click "download" correctly', async () => {
-    render(
-      <Provider>
-        <GuestsTable />
-      </Provider>, {
-        route: { params, path: '/:tenantId/users/wifi/guests' },
-        wrapper: Provider
-      })
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
-    fireEvent.click(await screen.findByText('test3'))
-    await screen.findByText('Guest Details')
-    await fireEvent.mouseEnter(await screen.findByText(/actions/i))
-    fireEvent.click(await screen.findByText(/download information/i))
   })
 
   it('should handle error for generate password', async () => {
@@ -425,8 +425,8 @@ describe('Guest Table', () => {
     const allowedNetworkCombo =
       await within(dialog).findByLabelText('Allowed Network', { exact: false })
     fireEvent.mouseDown(allowedNetworkCombo)
-    const option = await screen.findAllByText('guest pass wlan1')
-    await userEvent.click(option[0])
+    const option = await screen.findByText('guest pass wlan1')
+    fireEvent.click(option)
 
     fireEvent.click(await within(dialog).findByLabelText('Print Guest pass', { exact: false }))
 

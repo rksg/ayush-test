@@ -1,6 +1,6 @@
 import userEvent from '@testing-library/user-event'
 
-import { render, screen } from '@acx-ui/test-utils'
+import { fireEvent, render, screen, within } from '@acx-ui/test-utils'
 
 import { CsvSize, ImportCsvDrawer } from '.'
 
@@ -57,6 +57,8 @@ describe('Import CSV Drawer', () => {
     const dialog = await screen.findByRole('dialog')
 
     expect(dialog).toHaveTextContent('3 errors found.')
+
+    fireEvent.click(await within(dialog).findByRole('link', { name: 'See errors' }))
   })
 
   it('upload file', async () => {

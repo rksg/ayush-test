@@ -14,6 +14,7 @@ import {
 import { useIntl } from 'react-intl'
 
 import { Button, DrawerProps } from '@acx-ui/components'
+import { GuestErrorRes }       from '@acx-ui/rc/utils'
 import { formatter }           from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
@@ -26,16 +27,7 @@ type importErrorRes = {
   }[],
   downloadUrl?: string
   txId: string
-} | {
-  error: {
-    status: number
-    rootCauseErrors: {
-      code: string
-      message: string
-    }[]
-  },
-  requestId: string
-}
+} | GuestErrorRes
 
 interface ImportCsvDrawerProps extends DrawerProps {
   temlateLink: string
@@ -80,7 +72,7 @@ export function ImportCsvDrawer (props: ImportCsvDrawerProps) {
         downloadUrl = errorObj.downloadUrl
         description = errors[0].description || errors[0].message!
       }
-      if ('error' in errorObj) {
+      if ('error' in errorObj) { // narrowing to GuestErrorRes
         errors = errorObj.error.rootCauseErrors
         description = errors[0].message
       }
