@@ -5,21 +5,26 @@ import TextArea                                                      from 'antd/
 import _                                                             from 'lodash'
 import { useIntl }                                                   from 'react-intl'
 
-import { Drawer }                                            from '@acx-ui/components'
-import { DHCPPool, networkWifiIpRegExp, subnetMaskIpRegExp } from '@acx-ui/rc/utils'
-import { getIntl, validationMessages }                       from '@acx-ui/utils'
+import { Drawer }  from '@acx-ui/components'
+import {
+  DHCPPool,
+  LeaseUnit,
+  networkWifiIpRegExp,
+  subnetMaskIpRegExp,
+  countIpRangeSize,
+  IpInSubnetPool } from '@acx-ui/rc/utils'
+import { getIntl, validationMessages } from '@acx-ui/utils'
 
-import { PoolOption } from './PoolOption'
-import { PoolTable }  from './PoolTable'
+// import { PoolOption } from './poolOptions/PoolOption'
+import { PoolTable } from './PoolTable'
 
 
 const initPoolData: Partial<DHCPPool> = {
   id: '0',
-  allowWired: false,
   dhcpOptions: [],
   leaseTime: 24,
-  leaseUnit: 'Hours',
-  vlan: 300
+  leaseUnit: LeaseUnit.HOURS,
+  vlanId: 300
 }
 
 type DHCPPoolTableProps = {
@@ -51,6 +56,7 @@ export default function DHCPPoolTable ({
   const [form] = Form.useForm<DHCPPool>()
   const valueMap = useRef<Record<string, DHCPPool>>(value ? _.keyBy(value, 'id') : {})
   const [visible, setVisible] = useState(false)
+  const [vlanEnable, setVlanEnable] = useState(true)
 
   const values = () => Object.values(valueMap.current)
 
@@ -115,10 +121,18 @@ export default function DHCPPoolTable ({
           name='allowWired'
           label={$t({ defaultMessage: 'Allow AP wired clients' })}
           valuePropName='checked'
-          children={<Switch />}
+          children={<Switch
+            onChange={(checked: boolean)=>{
+              if(checked){
+                form.setFieldsValue({ vlanId: 1 })
+                setVlanEnable(false)
+              } else {
+                setVlanEnable(true)
+              }
+            }}/>}
         />
         <Form.Item
-          name='ip'
+          name='subnetAddress'
           label={$t({ defaultMessage: 'IP Address' })}
           rules={[
             { required: true },
@@ -127,7 +141,7 @@ export default function DHCPPoolTable ({
           children={<Input />}
         />
         <Form.Item
-          name='mask'
+          name='subnetMask'
           label={$t({ defaultMessage: 'Subnet Mask' })}
           rules={[
             { required: true },
@@ -135,28 +149,33 @@ export default function DHCPPoolTable ({
           ]}
           children={<Input />}
         />
-        <Form.Item label={$t({ defaultMessage: 'Excluded Range' })}>
-          <Space align='start'>
-            <Form.Item name='excludedRangeStart'
-              rules={[
-                { required: false },
-                { validator: (_, value) => networkWifiIpRegExp(value) }
-              ]}
-              children={<Input/>}
-            />
-            <div style={{ marginTop: 7 }}>-</div>
-            <Form.Item
-              name='excludedRangeEnd'
-              rules={[
-                { required: false },
-                { validator: (_, value) => networkWifiIpRegExp(value) }
-              ]}
-              children={<Input />}
-            />
-          </Space>
-        </Form.Item>
         <Form.Item
-          name='primaryDNS'
+          name='startIpAddress'
+          label={$t({ defaultMessage: 'Start Host Address' })}
+          rules={[
+            { required: true },
+            { validator: (_, value) => networkWifiIpRegExp(value) },
+            { validator: (_, value) => IpInSubnetPool(
+              value,
+              form.getFieldValue('subnetAddress'),
+              form.getFieldValue('subnetMask')) }
+          ]}
+          children={<Input />}
+        />
+        <Form.Item
+          name='endIpAddress'
+          label={$t({ defaultMessage: 'End Host Address' })}
+          rules={[
+            { required: true },
+            { validator: (_, value) => networkWifiIpRegExp(value) },
+            { validator: (_, value) => countIpRangeSize(
+              form.getFieldValue('startIpAddress'), value)
+            }
+          ]}
+          children={<Input />}
+        />
+        <Form.Item
+          name='primaryDnsIp'
           label={$t({ defaultMessage: 'Primary DNS IP' })}
           rules={[
             { validator: (_, value) => networkWifiIpRegExp(value) }
@@ -164,7 +183,7 @@ export default function DHCPPoolTable ({
           children={<Input />}
         />
         <Form.Item
-          name='secondaryDNS'
+          name='secondaryDnsIp'
           label={$t({ defaultMessage: 'Secondary DNS IP' })}
           rules={[
             { validator: (_, value) => networkWifiIpRegExp(value) }
@@ -185,31 +204,25 @@ export default function DHCPPoolTable ({
             </Form.Item>
             <Form.Item noStyle name='leaseUnit'>
               <Select data-testid='leaseType'>
-                <Option value={'Days'}>{$t({ defaultMessage: 'Days' })}</Option>
-                <Option value={'Hours'}>{$t({ defaultMessage: 'Hours' })}</Option>
-                <Option value={'Minutes'}>{$t({ defaultMessage: 'Minutes' })}</Option>
+                <Option value={'leaseTimeHours'}>{$t({ defaultMessage: 'Hours' })}</Option>
+                <Option value={'leaseTimeMinutes'}>{$t({ defaultMessage: 'Minutes' })}</Option>
               </Select>
             </Form.Item>
           </Space>
         </Form.Item>
         <Form.Item
-          name='vlan'
+          name='vlanId'
           rules={[
             { required: true }
           ]}
+
           label={$t({ defaultMessage: 'VLAN' })}
-          children={<InputNumber min={1} max={4094} style={{ width: '100%' }} />}
+          children={<InputNumber
+            disabled={!vlanEnable}
+            min={1}
+            max={4094} />}
         />
         <Form.Item name='dhcpOptions' style={{ height: 0 }}></Form.Item>
-      </Col>
-    </Row>
-    <Row>
-      <Col span={24}>
-        <Form.Item
-          name='dhcpOptions'
-          label={$t({ defaultMessage: 'Add DHCP options:' })}
-          children={<PoolOption />}
-        />
       </Col>
     </Row>
   </Form>
@@ -246,7 +259,7 @@ export default function DHCPPoolTable ({
                 onClose()
               }
             } catch (error) {
-              if (error instanceof Error) throw error
+              // if (error instanceof Error) throw error
             }
           }}
         />

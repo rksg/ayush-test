@@ -1,13 +1,14 @@
 import { useState } from 'react'
 
-import { useIntl, defineMessage } from 'react-intl'
+import { useIntl, defineMessage, FormattedMessage } from 'react-intl'
 
 import {
   Alert,
   Table,
   TableProps
 } from '@acx-ui/components'
-import { DHCPPool } from '@acx-ui/rc/utils'
+import { DHCPPool, LeaseUnit } from '@acx-ui/rc/utils'
+
 
 
 export function PoolTable (props:{
@@ -18,7 +19,7 @@ export function PoolTable (props:{
   readonly?: Boolean
 }) {
   const { $t } = useIntl()
-  const { data, readonly=false } = props
+  const { data } = props
   const [ errorVisible, showError ] = useState<Boolean>(false)
   const errorMessage = defineMessage({
     defaultMessage: 'Only one record can be selected for editing!'
@@ -41,6 +42,18 @@ export function PoolTable (props:{
     }
   ]
 
+  const countIpRangeSize = (startIpAddress: string, endIpAddress: string): number =>{
+    const convertIpToLong = (ipAddress: string): number => {
+      const ipArray = ipAddress.split('.').map(ip => parseInt(ip, 10))
+      return ipArray[0] * 16777216 + ipArray[1] * 65536 + ipArray[2] * 256 + ipArray[3]
+    }
+
+    const startLong = convertIpToLong(startIpAddress)
+    const endLong = convertIpToLong(endIpAddress)
+
+    return endLong - startLong + 1
+  }
+
   const columns: TableProps<DHCPPool>['columns'] = [
     {
       key: 'name',
@@ -49,15 +62,15 @@ export function PoolTable (props:{
       sorter: true
     },
     {
-      key: 'ip',
+      key: 'subnetAddress',
       title: $t({ defaultMessage: 'IP Address' }),
-      dataIndex: 'ip',
+      dataIndex: 'subnetAddress',
       sorter: true
     },
     {
-      key: 'mask',
+      key: 'subnetMask',
       title: $t({ defaultMessage: 'Subnet Mask' }),
-      dataIndex: 'mask',
+      dataIndex: 'subnetMask',
       sorter: true
     },
     {
@@ -65,21 +78,32 @@ export function PoolTable (props:{
       title: $t({ defaultMessage: 'Lease Time' }),
       dataIndex: 'leaseTime',
       render: (data, row) =>{
-        return data + ' ' + row.leaseUnit
+        if(row.leaseUnit===LeaseUnit.HOURS){
+          return <FormattedMessage defaultMessage='{number} Hours' values={{ number: data }} />
+        }
+        if(row.leaseUnit===LeaseUnit.MINUTES){
+          return <FormattedMessage defaultMessage='{number} Minutes' values={{ number: data }} />
+        }
+        else {
+          return ''
+        }
       }
     },
     {
-      key: 'vlan',
+      key: 'vlanId',
       title: $t({ defaultMessage: 'Vlan' }),
-      dataIndex: 'vlan'
+      dataIndex: 'vlanId'
     },
     {
       key: 'NumberOfHosts',
       title: $t({ defaultMessage: 'Number of hosts' }),
-      dataIndex: 'NumberOfhosts'
+      dataIndex: 'subnetAddress',
+      render: (_data, row) =>{
+        return countIpRangeSize(row.startIpAddress, row.endIpAddress)
+      }
     }
   ]
-  let actions = readonly ? []: [{
+  let actions = [{
     label: $t({ defaultMessage: 'Add DHCP Pool' }),
     onClick: () => props.onAdd?.()
   }]
@@ -92,7 +116,7 @@ export function PoolTable (props:{
         dataSource={data}
         rowActions={rowActions}
         actions={actions}
-        rowSelection={readonly ? undefined : {}}
+        rowSelection={{}}
       />
     </>
   )

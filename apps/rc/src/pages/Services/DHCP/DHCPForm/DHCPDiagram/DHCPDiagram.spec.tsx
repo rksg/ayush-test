@@ -9,7 +9,7 @@ describe('DHCPDiagram', () => {
   it('should render default diagram successfully', async () => {
     render(<DHCPDiagram type={undefined} />)
     const diagram = screen.getByRole('img') as HTMLImageElement
-    expect(diagram.src).toContain('dpsk.png')
+    expect(diagram.src).toContain('simpleDHCP.png')
   })
 
   describe('DHCPDiagram - SIMPLE', () => {
@@ -17,7 +17,7 @@ describe('DHCPDiagram', () => {
     it('should render SIMPLE diagram successfully', async () => {
       render(<DHCPDiagram type={type} />)
       const diagram = screen.getByRole('img') as HTMLImageElement
-      expect(diagram.src).toContain('dpsk.png')
+      expect(diagram.src).toContain('simpleDHCP.png')
     })
   })
   describe('DHCPDiagram - MULTIPLE', () => {
@@ -25,7 +25,7 @@ describe('DHCPDiagram', () => {
     it('should render MULTIPLE diagram successfully', async () => {
       render(<DHCPDiagram type={type} />)
       const diagram = screen.getByRole('img') as HTMLImageElement
-      expect(diagram.src).toContain('open.png')
+      expect(diagram.src).toContain('multipleAPDHCP.png')
     })
   })
 
@@ -34,7 +34,7 @@ describe('DHCPDiagram', () => {
     it('should render HIERARCHICAL diagram successfully', async () => {
       render(<DHCPDiagram type={type} />)
       const diagram = screen.getByRole('img') as HTMLImageElement
-      expect(diagram.src).toContain('open-cloudpath-on-prem-deployment.png')
+      expect(diagram.src).toContain('hierarchicalDHCP.png')
     })
   })
 

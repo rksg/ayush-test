@@ -6,9 +6,9 @@ import {
 
 
 //FIXME: replace these picture when UX ready
-import SimpleDiagram       from '../../../../assets/images/network-wizard-diagrams/dpsk.png'
-import HierarchicalDiagram from '../../../../assets/images/network-wizard-diagrams/open-cloudpath-on-prem-deployment.png'
-import MultipleDiagram     from '../../../../assets/images/network-wizard-diagrams/open.png'
+import HierarchicalDiagram from '../../../../../assets/images/service-dhcp-diagrams/hierarchicalDHCP.png'
+import MultipleDiagram     from '../../../../../assets/images/service-dhcp-diagrams/multipleAPDHCP.png'
+import SimpleDiagram       from '../../../../../assets/images/service-dhcp-diagrams/simpleDHCP.png'
 import { Diagram }         from '../styledComponents'
 
 
@@ -29,10 +29,10 @@ export function DHCPDiagram (props: DHCPDiagramProps) {
   const diagram = diagramMapping[props.type || DHCPConfigTypeEnum.SIMPLE]
 
   return (
-    <Row justify='center'>
+    <Row justify='start'>
       <Col>
         <Diagram>
-          {diagram && <img src={diagram} alt={''}/>}
+          {diagram && <img src={diagram} alt={''} width={550} />}
         </Diagram>
       </Col>
     </Row>
