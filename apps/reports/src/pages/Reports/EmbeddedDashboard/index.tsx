@@ -12,8 +12,8 @@ import {
 } from '@acx-ui/components'
 import { useDateFilter, convertDateTimeToSqlFormat } from '@acx-ui/utils'
 
-import { NetworkFilterWithBandContext }                 from '../../../Routes'
-import { useGuestTokenMutation, useEmbeddedIdMutation } from '../Services'
+import { NetworkFilterWithBandContext }                                    from '../../../Routes'
+import { useGuestTokenMutation, useEmbeddedIdMutation, BASE_RELATIVE_URL } from '../Services'
 
 interface ReportProps {
   embedDashboardName: string
@@ -29,10 +29,14 @@ function Report (props: ReportProps) {
   const { paths, bands } = filterData
   const { networkClause, radioBandClause } = getSupersetRlsClause(paths,bands as RadioBand[])
 
-  const HOST_NAME = process.env['NODE_ENV'] === 'development' ?
-    'https://alto.local.mlisa.io' : window.location.origin
-    // Change the url above for superset local dev (docker-compose) setup
-    // Ex: http://localhost:8088
+  // Hostname - Backend service where superset is running.
+  // For developement use https://devalto.ruckuswireless.com', for devalto.
+  // If using devalto, ensure the Cookie value is passed using modheader.
+  // This step is required, as the iframe requests is not proxied locally
+  // TODO: Add local proxy to handle iframe requests
+  const HOST_NAME = process.env['NODE_ENV'] === 'development'
+    ? 'https://alto.local.mlisa.io' // Dev
+    : window.location.origin // Production
 
   useEffect(() => {
     const embeddedData = {
@@ -50,10 +54,12 @@ function Report (props: ReportProps) {
       id: dashboardEmbeddedId
     }],
     rls: [{
-      clause: `"__time" >= '${convertDateTimeToSqlFormat(startDate)}' AND
+      clause: `
+        "__time" >= '${convertDateTimeToSqlFormat(startDate)}' AND
         "__time" < '${convertDateTimeToSqlFormat(endDate)}'
         ${networkClause}
-        ${radioBandClause}`
+        ${radioBandClause}
+      `
     }]
   }
 
@@ -64,20 +70,12 @@ function Report (props: ReportProps) {
     return await guestToken({ payload: guestTokenPayload }).unwrap()
   }
 
-  /**
-   * Based on the deployement, change supersetDomain accordingly
-   * some examples below
-   * supersetDomain: 'http://localhost:49827/analytics/explorer',
-   * supersetDomain: 'https://local.mlisa.io/analytics/explorer',
-   * supersetDomain: 'http://34.173.141.78:8088',
-   * supersetDomain: 'http://localhost:9000',
-   */
   useEffect(()=> {
     window.Buffer = Buffer
     if (dashboardEmbeddedId && dashboardEmbeddedId.length > 0) {
       embedDashboard({
         id: dashboardEmbeddedId,
-        supersetDomain: `${HOST_NAME}/api/a4rc/explorer`,
+        supersetDomain: `${HOST_NAME}${BASE_RELATIVE_URL}`,
         mountPoint: document.getElementById('acx-report')!,
         fetchGuestToken: () => fetchGuestTokenFromBackend(),
         dashboardUiConfig: { hideChartControls: true, hideTitle: true }
