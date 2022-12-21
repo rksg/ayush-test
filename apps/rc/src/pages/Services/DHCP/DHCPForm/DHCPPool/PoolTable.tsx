@@ -103,7 +103,7 @@ export function PoolTable (props:{
       }
     }
   ]
-  let actions = readonly ? []: [{
+  let actions = [{
     label: $t({ defaultMessage: 'Add DHCP Pool' }),
     onClick: () => props.onAdd?.()
   }]
@@ -116,7 +116,7 @@ export function PoolTable (props:{
         dataSource={data}
         rowActions={rowActions}
         actions={actions}
-        rowSelection={readonly ? undefined : {}}
+        rowSelection={{}}
       />
     </>
   )

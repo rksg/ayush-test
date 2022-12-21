@@ -54,7 +54,6 @@ export default function DHCPForm (props: DHCPFormProps) {
       formRef?.current?.resetFields()
       formRef?.current?.setFieldsValue(data)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data])
 
   const handleAddOrUpdateDHCP = async (formData: DHCPSaveData) => {
@@ -95,7 +94,7 @@ export default function DHCPForm (props: DHCPFormProps) {
           onCancel={() => navigate(linkToServices)}
           onFinish={
             async (data)=>{
-              handleAddOrUpdateDHCP(data)
+              await handleAddOrUpdateDHCP(data)
               if(locationState?.origin){
                 navigate(locationState.origin.pathname, { state: locationState.param })
               }else{
@@ -108,7 +107,7 @@ export default function DHCPForm (props: DHCPFormProps) {
             name='settings'
             title={$t({ defaultMessage: 'DHCP Settings' })}
           >
-            <SettingForm />
+            <SettingForm editMode={editMode}/>
           </StepsForm.StepForm>
         </StepsForm>
       </Loader>

@@ -30,6 +30,12 @@ describe('Create DHCP: Pool detail', () => {
     const addButton = screen.getByRole('button', { name: 'Add DHCP Pool' })
     await userEvent.click(addButton)
     await userEvent.type(screen.getByRole('textbox', { name: 'Pool Name' }), 'pool1')
+
+    const button = screen.getAllByRole('switch')
+    await userEvent.click(button[0])
+    await new Promise((r)=>{setTimeout(r, 1000)})
+    await userEvent.click(button[0])
+
     await userEvent.type(screen.getByRole('textbox', { name: 'IP Address' }), '10.20.30.0')
     await userEvent.type(screen.getByRole('textbox', { name: 'Subnet Mask' }), '255.255.255.0')
     await userEvent.type(screen.getByTestId('leaseTime'), '24')
@@ -37,18 +43,12 @@ describe('Create DHCP: Pool detail', () => {
     await userEvent.type(screen.getByRole('textbox', { name: 'Start Host Address' }), '10.20.30.1')
     await userEvent.type(screen.getByRole('textbox', { name: 'End Host Address' }), '10.20.30.2')
 
-
-    const addOptButton = screen.getByRole('button', { name: 'Add option' })
-    await userEvent.click(addOptButton)
-    await userEvent.type(screen.getByRole('textbox', { name: 'Option ID' }), '21')
-    await userEvent.type(screen.getByRole('textbox', { name: 'Option Name' }), 'option1')
-    await userEvent.type(screen.getByRole('textbox', { name: 'Option Format' }), 'IP')
-    await userEvent.type(screen.getByRole('textbox', { name: 'Option Value' }), '1.1.1.1')
-    await userEvent.click(screen.getByRole('button', { name: 'Save' }))
     await userEvent.click(screen.getByRole('button', { name: 'Add' }))
 
+
+
     await userEvent.click(addButton)
-    await userEvent.type(screen.getByRole('textbox', { name: 'Pool Name' }), 'pool2')
+    await userEvent.type(screen.getByRole('textbox', { name: 'Pool Name' }), 'pool1')
     await userEvent.type(screen.getByRole('textbox', { name: 'IP Address' }), '1.1.1.1')
     await userEvent.type(screen.getByRole('textbox', { name: 'Subnet Mask' }), '255.255.0.0')
     await userEvent.type(screen.getByTestId('leaseTime'), '24')
@@ -56,6 +56,12 @@ describe('Create DHCP: Pool detail', () => {
 
     await userEvent.click(screen.getByRole('button', { name: 'Add' }))
     await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
+
+
+    userEvent.click(screen.getByText('pool1'))
+    await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Update' }))
+
     userEvent.click(screen.getByText('pool1'))
     await userEvent.click(await screen.findByRole('button', { name: 'Delete' }))
   }, 20000)

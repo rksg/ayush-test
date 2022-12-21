@@ -167,6 +167,22 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         return{
           ...req
         }
+      },
+      providesTags: [{ type: 'Service', id: 'DHCP' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          showActivityMessage(msg, [
+            'Add DHCP Config Service Profile',
+            'Update DHCP Config Service Profile',
+            'Delete DHCP Config Service Profile',
+            'Delete DHCP Config Service Profiles'
+          ], () => {
+            api.dispatch(serviceApi.util.invalidateTags([
+              { type: 'Service', id: 'LIST' },
+              { type: 'Service', id: 'DHCP' }
+            ]))
+          })
+        })
       }
     }),
     getDHCPProfile: build.query<DHCPSaveData | null, RequestPayload>({

@@ -1,40 +1,59 @@
 import { Form, Input, Col, Radio, Row, Space } from 'antd'
 import { useIntl }                             from 'react-intl'
 
-import { StepsForm }          from '@acx-ui/components'
-import { DHCPConfigTypeEnum } from '@acx-ui/rc/utils'
+import { StepsForm }                  from '@acx-ui/components'
+import { useGetDHCPProfileListQuery } from '@acx-ui/rc/services'
+import { DHCPConfigTypeEnum }         from '@acx-ui/rc/utils'
+import { useParams }                  from '@acx-ui/react-router-dom'
 
 import { dhcpTypes, dhcpTypesDesc } from './contentsMap'
 import { DHCPDiagram }              from './DHCPDiagram/DHCPDiagram'
 import DHCPPoolTable                from './DHCPPool'
 import { RadioDescription }         from './styledComponents'
 
+interface DHCPFormProps {
+  editMode?: boolean
+}
 
 const { useWatch } = Form
-export function SettingForm () {
-  const intl = useIntl()
-
+export function SettingForm (props: DHCPFormProps) {
+  const { $t } = useIntl()
+  const { editMode } = props
   const type = useWatch<DHCPConfigTypeEnum>('dhcpMode')
 
-
   const types = Object.values(DHCPConfigTypeEnum)
+  const params = useParams()
+  const { data: dhcpProfileList } = useGetDHCPProfileListQuery({ params })
 
+
+  const nameValidator = async (_rule: unknown, value: string) => {
+    return new Promise<void>((resolve, reject) => {
+      if (!editMode && value && dhcpProfileList?.length && dhcpProfileList?.findIndex((profile) =>
+        profile.serviceName === value) !== -1
+      ) {
+        return reject(
+          $t({ defaultMessage: 'The DHCP service with that name already exists' })
+        )
+      }
+      return resolve()
+    })
+  }
   return (<>
     <Row gutter={20}>
       <Col span={10}>
-        <StepsForm.Title>{intl.$t({ defaultMessage: 'Settings' })}</StepsForm.Title>
+        <StepsForm.Title>{$t({ defaultMessage: 'Settings' })}</StepsForm.Title>
         <Form.Item
           name='id'
           hidden
         />
         <Form.Item
           name='serviceName'
-          label={intl.$t({ defaultMessage: 'Service Name' })}
+          label={$t({ defaultMessage: 'Service Name' })}
           rules={[
             { required: true },
             { min: 2 },
-            { max: 32 }
-          // { validator: (_, value) => nameValidator(value) }
+            { max: 32 },
+            { validator: nameValidator }
           ]}
           validateFirst
           hasFeedback
@@ -44,17 +63,17 @@ export function SettingForm () {
         <Form.Item
           name='dhcpMode'
           initialValue={DHCPConfigTypeEnum.SIMPLE}
-          label={intl.$t({ defaultMessage: 'DHCP Configuration' })}
+          label={$t({ defaultMessage: 'DHCP Configuration' })}
           rules={[{ required: true,
-            message: intl.$t({ defaultMessage: 'Please select DHCP Configuration' }) }]}
+            message: $t({ defaultMessage: 'Please select DHCP Configuration' }) }]}
         >
           <Radio.Group>
             <Space direction='vertical'>
               {types.map(type => (
                 <Radio key={type} value={type}>
-                  {intl.$t(dhcpTypes[type])}
+                  {$t(dhcpTypes[type])}
                   <RadioDescription>
-                    {intl.$t(dhcpTypesDesc[type])}
+                    {$t(dhcpTypesDesc[type])}
                   </RadioDescription>
                 </Radio>
               ))}
@@ -74,9 +93,9 @@ export function SettingForm () {
           rules={[
             {
               required: true,
-              message: intl.$t({ defaultMessage: 'Please create DHCP pools' })
+              message: $t({ defaultMessage: 'Please create DHCP pools' })
             }]}
-          label={intl.$t({ defaultMessage: 'Set DHCP Pools' })}
+          label={$t({ defaultMessage: 'Set DHCP Pools' })}
           children={<DHCPPoolTable />}
         />
       </Col>

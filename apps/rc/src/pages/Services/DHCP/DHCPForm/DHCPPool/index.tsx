@@ -15,8 +15,8 @@ import {
   IpInSubnetPool } from '@acx-ui/rc/utils'
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
-import { PoolOption } from './PoolOption'
-import { PoolTable }  from './PoolTable'
+// import { PoolOption } from './poolOptions/PoolOption'
+import { PoolTable } from './PoolTable'
 
 
 const initPoolData: Partial<DHCPPool> = {
@@ -225,15 +225,6 @@ export default function DHCPPoolTable ({
         <Form.Item name='dhcpOptions' style={{ height: 0 }}></Form.Item>
       </Col>
     </Row>
-    <Row>
-      <Col span={24}>
-        <Form.Item
-          name='dhcpOptions'
-          label={$t({ defaultMessage: 'Add DHCP options:' })}
-          children={<PoolOption />}
-        />
-      </Col>
-    </Row>
   </Form>
 
   return (
@@ -268,7 +259,7 @@ export default function DHCPPoolTable ({
                 onClose()
               }
             } catch (error) {
-              if (error instanceof Error) throw error
+              // if (error instanceof Error) throw error
             }
           }}
         />
