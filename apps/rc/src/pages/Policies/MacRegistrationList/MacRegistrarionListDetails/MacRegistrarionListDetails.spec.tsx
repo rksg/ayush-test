@@ -69,13 +69,13 @@ describe('MacRegistrationListDetails', () => {
   it('should render correctly', async () => {
     const params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-      macRegistrationListId: '373377b0cb6e46ea8982b1c80aabe1fa',
+      policyId: '373377b0cb6e46ea8982b1c80aabe1fa',
       activeTab: 'overview'
     }
 
     render(<Provider><MacRegistrationListDetails /></Provider>, {
       // eslint-disable-next-line max-len
-      route: { params, path: '/:tenantId/:macRegistrationListId/:activeTab' }
+      route: { params, path: '/:tenantId/:policyId/:activeTab' }
     })
 
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
@@ -94,11 +94,11 @@ describe('MacRegistrationListDetails', () => {
   it('should not have active tab if it does not exist', async () => {
     const params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-      macRegistrationListId: '373377b0cb6e46ea8982b1c80aabe1fa',
+      policyId: '373377b0cb6e46ea8982b1c80aabe1fa',
       activeTab: 'not-exist'
     }
     render(<Provider><MacRegistrationListDetails /></Provider>, {
-      route: { params, path: '/:tenantId/:macRegistrationListId/:activeTab' }
+      route: { params, path: '/:tenantId/:policyId/:activeTab' }
     })
 
     expect(screen.getAllByRole('tab').filter(x => x.getAttribute('aria-selected') === 'true'))

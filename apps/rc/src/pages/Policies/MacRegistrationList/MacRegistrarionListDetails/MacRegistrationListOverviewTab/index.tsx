@@ -7,7 +7,7 @@ import { useParams }                         from 'react-router-dom'
 import { Card, Loader }          from '@acx-ui/components'
 import { useGetMacRegListQuery } from '@acx-ui/rc/services'
 
-import { expirationTimeUnits, toTimeString } from '../../MacRegistrationListUtils'
+import { returnExpirationString } from '../../MacRegistrationListUtils'
 
 import { NetworkTable } from './NetworkTable'
 
@@ -38,10 +38,7 @@ export function MacRegistrationListOverviewTab () {
                 <Form.Item
                   label={$t({ defaultMessage: 'List Expiration' })}
                 >
-                  <Paragraph>{!data?.expirationEnabled ? 'Never expires' :
-                    data.expirationType === 'SPECIFIED_DATE' ?
-                      // eslint-disable-next-line max-len
-                      toTimeString(data?.expirationDate) : `After ${data.expirationOffset} ${expirationTimeUnits[data.expirationType ?? '']}`}</Paragraph>
+                  <Paragraph>{returnExpirationString(data ?? {}) ?? ''}</Paragraph>
                 </Form.Item>
               </Col>
               <Col span={6}>

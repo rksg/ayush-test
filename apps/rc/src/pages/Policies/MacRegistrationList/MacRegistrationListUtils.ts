@@ -1,5 +1,8 @@
 import moment from 'moment-timezone'
 
+import {
+  MacRegistrationPool
+} from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
 export function macAddressRegExp (value: string) {
@@ -19,15 +22,6 @@ export function macAddressRegExp (value: string) {
   return Promise.resolve()
 }
 
-export function dateValidationRegExp (value: string) {
-  const { $t } = getIntl()
-  const today = new Date()
-  if(value && new Date(value) < today) {
-    return Promise.reject($t({ defaultMessage: 'The expiration date must be in the future' }))
-  }
-  return Promise.resolve()
-}
-
 export const expirationTimeUnits: Record<string, string> = {
   HOURS_AFTER_TIME: 'Hours' ,
   DAYS_AFTER_TIME: 'Days',
@@ -40,3 +34,14 @@ export const toTimeString = (value?: string) => {
   return value ? moment(value).utc().format('MM/DD/YYYY') : ''
 }
 
+export const returnExpirationString = (data: Partial<MacRegistrationPool>) => {
+  if(!data.expirationEnabled){
+    return 'Never expires'
+  } else {
+    if(data.expirationType === 'SPECIFIED_DATE') {
+      return toTimeString(data?.expirationDate)
+    } else {
+      return 'After ' + data.expirationOffset + ' ' + expirationTimeUnits[data.expirationType ?? '']
+    }
+  }
+}

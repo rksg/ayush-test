@@ -143,7 +143,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'MacRegistration', id: 'LIST' }]
+      invalidatesTags: [{ type: 'MacRegistrationPool', id: 'LIST' }]
     }),
     deleteMacRegList: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
@@ -211,5 +211,7 @@ export const {
   useGetRoguePolicyListQuery,
   useUpdateRoguePolicyMutation,
   useRoguePolicyQuery,
-  useVenueRoguePolicyQuery
+  useVenueRoguePolicyQuery,
+  useLazyMacRegListsQuery,
+  useLazyMacRegistrationsQuery
 } = policyApi

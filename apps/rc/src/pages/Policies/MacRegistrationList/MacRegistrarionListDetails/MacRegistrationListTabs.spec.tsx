@@ -6,7 +6,7 @@ import { render, screen, fireEvent } from '@acx-ui/test-utils'
 import MacRegistrationListTabs from './MacRegistrationListTabs'
 
 const mockedUsedNavigate = jest.fn()
-const params = { macRegistrationListId: 'macRegistrationList-id', tenantId: 'tenant-id' }
+const params = { policyId: 'macRegistrationList-id', tenantId: 'tenant-id' }
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -17,8 +17,7 @@ describe('MacRegistrationListTab', () =>{
 
   it('should render correctly', async () => {
     // eslint-disable-next-line max-len
-    const { asFragment } = render(<Provider><MacRegistrationListTabs /></Provider>, { route: { params } })
-    expect(asFragment()).toMatchSnapshot()
+    render(<Provider><MacRegistrationListTabs /></Provider>, { route: { params } })
     await screen.findByText('Overview')
     await screen.findByText('MAC Registrations')
   })
@@ -28,7 +27,7 @@ describe('MacRegistrationListTab', () =>{
     fireEvent.click(await screen.findByText('MAC Registrations'))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       // eslint-disable-next-line max-len
-      pathname: `/t/${params.tenantId}/policies/mac-registration-lists/${params.macRegistrationListId}/mac-registration-lists-details/mac_registrations`,
+      pathname: `/t/${params.tenantId}/policies/macRegistrationList/${params.policyId}/detail/macRegistrations`,
       hash: '',
       search: ''
     })

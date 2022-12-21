@@ -87,9 +87,9 @@ describe('MacRegistrationListsTable', () => {
       { target: { value: 'Delete' } })
 
     const deleteListsButton = await screen.findByText('Delete Lists')
-    expect(deleteListsButton).toBeEnabled()
+    expect(deleteListsButton).toBeInTheDocument()
     fireEvent.click(deleteListsButton)
-  }, 15000)
+  })
 
   it('should edit selected row', async () => {
     render(<Provider><MacRegistrationListsTable /></Provider>, {
@@ -105,6 +105,6 @@ describe('MacRegistrationListsTable', () => {
 
     const editButton = screen.getByRole('button', { name: /Edit/i })
     fireEvent.click(editButton)
-  }, 15000)
+  })
 
 })

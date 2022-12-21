@@ -8,7 +8,7 @@ export enum PolicyType {
   SYSLOG = 'Syslog',
   AAA = 'AAA',
   CLIENT_ISOLATION = 'Client Isolation',
-  MAC_REGISTRATION = 'MAC Registration'
+  MAC_REGISTRATION_LIST = 'MAC Registration List'
 }
 
 export enum PolicyTechnology {

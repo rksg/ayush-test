@@ -1,39 +1,64 @@
 
-import { fireEvent } from '@testing-library/react'
-import userEvent     from '@testing-library/user-event'
-import { Form }      from 'antd'
+import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
+import { rest }  from 'msw'
 
-import { MacRegistrationPool } from '@acx-ui/rc/utils'
-import { render, screen }      from '@acx-ui/test-utils'
-
-import MacRegistrationListFormContext from '../MacRegistrationListFormContext'
+import {  MacRegListUrlsInfo }        from '@acx-ui/rc/utils'
+import { Provider }                   from '@acx-ui/store'
+import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import { MacRegistrationListSettingForm } from './MacRegistrationListSettingForm'
+
+const list = {
+  content: [
+    {
+      id: 'efce7414-1c78-4312-ad5b-ae03f28dbc68',
+      name: 'Registration pool',
+      description: '',
+      autoCleanup: true,
+      priority: 1,
+      ssidRegex: 'mac-auth',
+      enabled: true,
+      expirationEnabled: false,
+      registrationCount: 5
+    }
+  ],
+  pageable: {
+    sort: { unsorted: true, sorted: false, empty: true },
+    pageNumber: 0,
+    pageSize: 10,
+    offset: 0,
+    paged: true,
+    unpaged: false
+  },
+  totalPages: 1,
+  totalElements: 1,
+  last: true,
+  sort: { unsorted: true, sorted: false, empty: true },
+  numberOfElements: 1,
+  first: true,
+  size: 10,
+  number: 0,
+  empty: false
+}
 
 describe('MacRegistrationListSettingForm', () => {
 
   it('should render form successfully', async () => {
+    mockServer.use(
+      rest.get(
+        MacRegListUrlsInfo.getMacRegistrationPools.url,
+        (req, res, ctx) => res(ctx.json(list))
+      )
+    )
+
     render(
-      <MacRegistrationListFormContext.Provider value={{ editMode: false,
-        data: {} as MacRegistrationPool, setData: jest.fn() }}>
+      <Provider>
         <Form>
           <MacRegistrationListSettingForm />
         </Form>
-      </MacRegistrationListFormContext.Provider>
+      </Provider>
     )
-
-    fireEvent.change(screen.getByRole('textbox', { name: /name/i }),
-      { target: { value: 'test-policy' } })
-
-    await userEvent.click(screen.getByRole('radio', { name: /by date/i }))
-    const datePicker = screen.getByRole('img', { name: /calendar/i })
-    expect(datePicker).toBeTruthy()
-
-    await userEvent.click(screen.getByRole('radio', { name: /after.../i }))
-    const timeUnit = screen.getByRole('generic', { name: /hours/i })
-    expect(timeUnit).toBeTruthy()
-
-    const accessPolicySet = screen.getByRole('combobox', { name: /Access Policy Set/i })
-    expect(accessPolicySet).toBeTruthy()
+    await userEvent.type(await screen.findByRole('textbox', { name: 'Name' }), 'mac-auth-2')
   })
 })

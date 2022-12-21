@@ -1,5 +1,7 @@
 import { Moment } from 'moment-timezone'
 
+import { ExpirationDateEntity, ExpirationType } from '../components'
+
 export interface MacRegistrationPool {
   id?: string
   autoCleanup?: boolean
@@ -11,9 +13,10 @@ export interface MacRegistrationPool {
   ssidRegex?: string
   registrationCount?: number
   policyId?: string
-  expirationType?: string
+  expirationType?: ExpirationType
   expirationOffset?: number
   expirationDate?: string
+  defaultAccess ?: boolean
 }
 
 export interface MacRegistrationPoolFormFields {
@@ -25,8 +28,8 @@ export interface MacRegistrationPoolFormFields {
   expireDate: Moment
   expireAfter: number
   expireTimeUnit: string
-  // expireTimeUnit: 'MINUTES_AFTER_TIME' | 'HOURS_AFTER_TIME' | 'DAYS_AFTER_TIME' | 'WEEKS_AFTER_TIME' | 'MONTHS_AFTER_TIME' | 'YEARS_AFTER_TIME'
   defaultAccess: string
+  expiration: ExpirationDateEntity;
 }
 
 export interface MacRegistration {
@@ -37,7 +40,6 @@ export interface MacRegistration {
   macAddress?: string
   revoked?: boolean
   username?: string
-  deviceName?: string
-  listExpiration?: number
   createDate?: string
+  expiration?: ExpirationDateEntity
 }

@@ -1,18 +1,25 @@
 import React, { useEffect, useState } from 'react'
 
-import { Col, DatePicker, Form, Input, Row, Space } from 'antd'
-import { Radio }                                    from 'antd'
-import moment                                       from 'moment-timezone'
-import { useIntl }                                  from 'react-intl'
+import { Col, Form, Input, Row, Space } from 'antd'
+import { Radio }                        from 'antd'
+import moment                           from 'moment-timezone'
+import { useIntl }                      from 'react-intl'
 
-import { Drawer, showToast }                                               from '@acx-ui/components'
-import { useAddMacRegistrationMutation, useUpdateMacRegistrationMutation } from '@acx-ui/rc/services'
+import { Button, Drawer, showToast } from '@acx-ui/components'
+import { ExpirationDateSelector }    from '@acx-ui/rc/components'
 import {
+  useAddMacRegistrationMutation, useLazyMacRegistrationsQuery,
+  useUpdateMacRegistrationMutation
+} from '@acx-ui/rc/services'
+import {
+  checkObjectNotExists,
+  ExpirationDateEntity,
+  ExpirationMode,
   MacRegistration
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { dateValidationRegExp, macAddressRegExp } from '../../MacRegistrationListUtils'
+import { macAddressRegExp } from '../../MacRegistrationListUtils'
 
 interface MacAddressDrawerProps {
   visible: boolean
@@ -26,17 +33,34 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
   const { visible, setVisible, isEdit, editData } = props
   const [resetField, setResetField] = useState(false)
   const [form] = Form.useForm()
-  const [ isExpired, addType ] = [ Form.useWatch('listExpiration', form),
+  const [ addType ] = [ Form.useWatch('listExpiration', form),
     Form.useWatch('importAction', form)]
-  const [addMacRegistration] = useAddMacRegistrationMutation()
-  const [editMacRegistration] = useUpdateMacRegistrationMutation()
+  const [addMacRegistration, addMacRegistrationState] = useAddMacRegistrationMutation()
+  const [editMacRegistration, editMacRegistrationState] = useUpdateMacRegistrationMutation()
   const { policyId } = useParams()
+  const [ macReg ] = useLazyMacRegistrationsQuery()
+
+  const macAddressValidator = async (value: string) => {
+    const list = (await macReg({
+      params: { policyId }
+    }).unwrap()).content
+      .filter(n => n.id !== editData?.id)
+      .map(n => ({ name: n.macAddress }))
+    // eslint-disable-next-line max-len
+    return checkObjectNotExists(list, { name: value } , intl.$t({ defaultMessage: 'Mac Address' }))
+  }
 
   useEffect(()=>{
     if (editData && visible) {
+      let expiration: ExpirationDateEntity = new ExpirationDateEntity()
+      if(editData.expirationDate) {
+        expiration.setToByDate(editData.expirationDate!)
+      }
+      else {
+        expiration.setToNever()
+      }
       form.setFieldsValue(editData)
-      form.setFieldValue('expirationDate', moment(editData.expirationDate))
-      form.setFieldValue('listExpiration', 2)
+      form.setFieldValue('expiration', expiration)
     }
   }, [editData, visible])
 
@@ -55,10 +79,9 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
       if (isEdit) {
         const payload = {
           username: data.username?.length === 0 ? null : data.username,
-          // deviceName: data.deviceName,
           email: data.email?.length === 0 ? null : data.email,
-          expirationDate: data.listExpiration === 1 ? null :
-            moment(data.expirationDate).format('YYYY-MM-DDT23:59:59[Z]')
+          expirationDate: data.expiration?.mode === ExpirationMode.NEVER ? null :
+            moment.utc(data.expiration?.date).format('YYYY-MM-DDT23:59:59[Z]')
         }
         await editMacRegistration(
           {
@@ -69,10 +92,9 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
         const payload = {
           macAddress: data.macAddress,
           username: data.username?.length === 0 ? null : data.username,
-          // deviceName: data.deviceName,
           email: data.email?.length === 0 ? null : data.email,
-          expirationDate: data.listExpiration === 1 ? null :
-            moment(data.expirationDate).format('YYYY-MM-DDT23:59:59[Z]')
+          expirationDate: data.expiration?.mode === ExpirationMode.NEVER ? null :
+            moment(data.expiration?.date).format('YYYY-MM-DDT23:59:59[Z]')
         }
         await addMacRegistration({
           params: { policyId },
@@ -96,14 +118,14 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
         label={intl.$t({ defaultMessage: 'MAC Address' })}
         rules={[
           { required: true, message: intl.$t({ defaultMessage: 'Please enter MAC Address' }) },
-          { validator: (_, value) => macAddressRegExp(value) }
-        ]}>
+          { validator: (_, value) => macAddressRegExp(value) },
+          { validator: (_, value) => macAddressValidator(value) }
+        ]}
+        validateFirst
+        hasFeedback>
         <Input disabled={isEdit}/>
       </Form.Item>
       <Form.Item name='username' label={intl.$t({ defaultMessage: 'Username' })}>
-        <Input/>
-      </Form.Item>
-      <Form.Item name='deviceName' label={intl.$t({ defaultMessage: 'DeviceName' })}>
         <Input/>
       </Form.Item>
       <Form.Item name='email'
@@ -113,28 +135,16 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
         label={intl.$t({ defaultMessage: 'E-mail' })}>
         <Input/>
       </Form.Item>
-      <Form.Item name='listExpiration'
+      <ExpirationDateSelector
+        inputName={'expiration'}
         label={intl.$t({ defaultMessage: 'MAC Address Expiration' })}
-        initialValue={1}>
-        <Radio.Group>
-          <Space direction='vertical'>
-            <Radio value={1}>{intl.$t({ defaultMessage: 'Never expires (Same as list)' })}</Radio>
-            <Space>
-              <Radio value={2}>{intl.$t({ defaultMessage: 'By date' })}</Radio>
-              { isExpired === 2 &&
-                <Form.Item
-                  name='expirationDate'
-                  rules={[
-                    { required: true,
-                      message: intl.$t({ defaultMessage: 'Please choose expiration date' }) },
-                    { validator: (_, value) => dateValidationRegExp(value) }]}>
-                  <DatePicker placeholder={intl.$t({ defaultMessage: 'Choose date' })} />
-                </Form.Item>
-              }
-            </Space>
-          </Space>
-        </Radio.Group>
-      </Form.Item>
+        modeLabel={{
+          [ExpirationMode.NEVER]: intl.$t({ defaultMessage: 'Never expires (Same as list)' })
+        }}
+        modeAvailability={{
+          [ExpirationMode.AFTER_TIME]: false
+        }}
+      />
     </Col>
   </Row>
 
@@ -153,13 +163,21 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
     }
   </Form>
 
-  const footer = (
-    <Drawer.FormFooter
-      onCancel={resetFields}
-      buttonLabel={{ save: (addType === 1 ? 'Import List' : (isEdit ? 'Done' : 'Add')) }}
-      onSave={async () => { form.submit() }}
-    />
-  )
+  const footer =
+    [
+      <div key={'footer'} style={{ width: '100%', display: 'flex', justifyContent: 'end' }}>
+        <Button loading={addMacRegistrationState.isLoading || editMacRegistrationState.isLoading}
+          key='saveBtn'
+          onClick={() => form.submit()}
+          type={'primary'} >
+          {addType === 1 ? intl.$t({ defaultMessage: 'Import List' }) :
+            (isEdit ? intl.$t({ defaultMessage: 'Done' }) : intl.$t({ defaultMessage: 'Add' }) )}
+        </Button>
+        <Button key='cancelBtn' onClick={resetFields}>
+          {intl.$t({ defaultMessage: 'Cancel' })}
+        </Button>
+      </div>
+    ]
 
   return (
     <Drawer

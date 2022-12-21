@@ -6,7 +6,7 @@ import { MacRegistrationsTab }            from './MacRegistrationsTab'
 
 const tabs = {
   overview: MacRegistrationListOverviewTab,
-  mac_registrations: MacRegistrationsTab
+  macRegistrations: MacRegistrationsTab
 }
 
 export default function MacRegistrationListDetails () {

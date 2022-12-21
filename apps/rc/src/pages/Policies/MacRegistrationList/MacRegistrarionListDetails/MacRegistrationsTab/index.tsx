@@ -91,10 +91,7 @@ export function MacRegistrationsTab () {
       title: $t({ defaultMessage: 'Mac Address' }),
       key: 'macAddress',
       dataIndex: 'macAddress',
-      sorter: true,
-      render: function (data, row) {
-        return row.macAddress
-      }
+      sorter: true
     },
     {
       title: $t({ defaultMessage: 'Status' }),
@@ -103,30 +100,23 @@ export function MacRegistrationsTab () {
       render: function (data, row) {
         if (row.revoked) {
           return 'Revoked'
-        } else {
-          if (row.expirationDate) {
-            return row.expirationDate < new Date().toISOString() ? 'Expired' : 'Active'
-          }
-          return 'unknown'
         }
+        if (row.expirationDate) {
+          return row.expirationDate < new Date().toISOString() ? 'Expired' : 'Active'
+        }
+        return 'Unknown'
       }
     },
     {
       title: $t({ defaultMessage: 'Username' }),
       key: 'username',
       dataIndex: 'username',
-      sorter: true,
-      render: function (data, row) {
-        return row.username
-      }
+      sorter: true
     },
     {
       title: $t({ defaultMessage: 'E-Mail' }),
       key: 'email',
-      dataIndex: 'email',
-      render: function (data, row) {
-        return row.email
-      }
+      dataIndex: 'email'
     },
     {
       title: $t({ defaultMessage: 'Registration Date' }),
@@ -142,7 +132,8 @@ export function MacRegistrationsTab () {
       dataIndex: 'expirationDate',
       sorter: true,
       render: function (data, row) {
-        return toTimeString(row.expirationDate)
+        // eslint-disable-next-line max-len
+        return row.expirationDate ? toTimeString(row.expirationDate) : 'Never expires (Same as list)'
       }
     }
   ]
@@ -167,7 +158,7 @@ export function MacRegistrationsTab () {
         rowActions={rowActions}
         rowSelection={{ type: 'radio' }}
         actions={[{
-          label: 'Add Mac Address',
+          label: $t({ defaultMessage: 'Add Mac Address' }),
           onClick: () => {
             setIsEditMode(false)
             setVisible(true)

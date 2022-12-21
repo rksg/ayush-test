@@ -21,6 +21,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
+import { returnExpirationString } from '../MacRegistrationListUtils'
+
 
 function useColumns () {
   const { $t } = useIntl()
@@ -36,7 +38,7 @@ function useColumns () {
           // eslint-disable-next-line max-len
           <TenantLink
             to={getPolicyDetailsLink({
-              type: PolicyType.MAC_REGISTRATION,
+              type: PolicyType.MAC_REGISTRATION_LIST,
               oper: PolicyOperation.DETAIL,
               policyId: row.id!,
               activeTab: MacRegistrationDetailsTabKey.OVERVIEW
@@ -46,21 +48,36 @@ function useColumns () {
       }
     },
     {
-      title: $t({ defaultMessage: 'Mac Address Count' }),
+      title: $t({ defaultMessage: 'List Expiration' }),
+      key: 'listExpiration',
+      dataIndex: 'listExpiration',
+      align: 'center',
+      render: function (data, row) {
+        return returnExpirationString(row)
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Default Access' }),
+      key: 'defaultAccess',
+      dataIndex: 'defaultAccess',
+      align: 'center',
+      render: function (data, row) {
+        return row.defaultAccess ? 'Accept' : 'Reject'
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Access Policy Set' }),
+      key: 'policySet',
+      dataIndex: 'policySet',
+      align: 'center'
+    },
+    {
+      title: $t({ defaultMessage: 'Mac Addresses' }),
       key: 'registrationCount',
       dataIndex: 'registrationCount',
       align: 'center',
       render: function (data, row) {
         return row.registrationCount ?? 0
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Policy Count' }),
-      key: 'policyCount',
-      dataIndex: 'policyCount',
-      align: 'center',
-      render: function (data, row) {
-        return row.policyId ?? 0
       }
     }
   ]
@@ -90,7 +107,7 @@ export default function MacRegistrationListsTable () {
         navigate({
           ...tenantBasePath,
           pathname: `${tenantBasePath.pathname}/` + getPolicyDetailsLink({
-            type: PolicyType.MAC_REGISTRATION,
+            type: PolicyType.MAC_REGISTRATION_LIST,
             oper: PolicyOperation.EDIT,
             policyId: selectedRows[0].id!
           })
@@ -148,7 +165,7 @@ export default function MacRegistrationListsTable () {
           <TenantLink
             key='add'
             // eslint-disable-next-line max-len
-            to={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION, oper: PolicyOperation.CREATE })}
+            to={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.CREATE })}
           >
             <Button type='primary'>{ $t({ defaultMessage: 'Add MAC Registration List' }) }</Button>
           </TenantLink>

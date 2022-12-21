@@ -1,76 +1,37 @@
-import { Form, Input, Col, Radio, Row, Space, Select, DatePicker, InputNumber, Switch } from 'antd'
-import { useIntl }                                                                      from 'react-intl'
+import { Form, Input, Col,  Row, Space, Select, Switch } from 'antd'
+import { useIntl }                                       from 'react-intl'
 
 import { Button, SelectionControl } from '@acx-ui/components'
-
-import { dateValidationRegExp, expirationTimeUnits } from '../../MacRegistrationListUtils'
+import { ExpirationDateSelector }   from '@acx-ui/rc/components'
+import { useLazyMacRegListsQuery }  from '@acx-ui/rc/services'
+import { checkObjectNotExists }     from '@acx-ui/rc/utils'
+import { useParams }                from '@acx-ui/react-router-dom'
 
 export function MacRegistrationListSettingForm () {
   const { $t } = useIntl()
-  const form = Form.useFormInstance()
-  const isExpired = Form.useWatch('listExpiration', form)
+  const [ macRegList ] = useLazyMacRegListsQuery()
+  const { policyId } = useParams()
 
-  const renderExpirationSelect = () => {
-    const rows = []
-    for (let k in expirationTimeUnits) {
-      rows.push(<Select.Option value={k}>{expirationTimeUnits[k]}</Select.Option>)
-    }
-    return <Select children={rows} />
+  const nameValidator = async (value: string) => {
+    const list = (await macRegList({}).unwrap()).content.filter(n => n.id !== policyId)
+      .map(n => ({ name: n.name }))
+    // eslint-disable-next-line max-len
+    return checkObjectNotExists(list, { name: value } , $t({ defaultMessage: 'Mac Registration List' }))
   }
 
   return (
     <Row>
-      <Col span={14}>
+      <Col span={10}>
         <Form.Item name='name'
           label={$t({ defaultMessage: 'Name' })}
           rules={[
-            { required: true }
+            { required: true },
+            { validator: (_, value) => nameValidator(value) }
           ]}
+          validateFirst
+          hasFeedback
           children={<Input/>}
         />
-        <Form.Item name='listExpiration'
-          label={$t({ defaultMessage: 'List Expiration' })}
-          initialValue={1}>
-          <Radio.Group>
-            <Space direction='vertical'>
-              <Radio value={1}>Never expires</Radio>
-              <Space>
-                <Radio value={2}>By date</Radio>
-                {isExpired === 2 &&
-                  <Form.Item name='expireDate'
-                    rules={[
-                      {
-                        required: true,
-                        message: $t({ defaultMessage: 'Please enter Expiration Date' })
-                      },
-                      { validator: (_, value) => dateValidationRegExp(value) }
-                    ]}>
-                    <DatePicker name='datepicker'
-                      placeholder={$t({ defaultMessage: 'Choose date' })}/>
-                  </Form.Item>
-                }
-              </Space>
-              <Space>
-                <Radio value={3}>After...</Radio>
-                {isExpired === 3 &&
-                  <>
-                    <Form.Item name='expireAfter'
-                      initialValue={1}
-                      rules={[
-                        { required: true, message: $t({ defaultMessage: 'Please enter number' }) },
-                        { type: 'number', min: 1 }
-                      ]}
-                      children={<InputNumber min={1} />}
-                    />
-                    <Form.Item name='expireTimeUnit' initialValue='HOURS_AFTER_TIME'>
-                      {renderExpirationSelect()}
-                    </Form.Item>
-                  </>
-                }
-              </Space>
-            </Space>
-          </Radio.Group>
-        </Form.Item>
         <Space direction='horizontal' size='middle'>
           <Form.Item name='autoCleanup'
             valuePropName='checked'
@@ -79,26 +40,29 @@ export function MacRegistrationListSettingForm () {
             <Switch/>
           </Form.Item>
         </Space>
-        <Form.Item name='defaultAccess' label={$t({ defaultMessage: 'Default Access' })}>
+        <Form.Item name='defaultAccess'
+          label={$t({ defaultMessage: 'Default Access' })}
+          initialValue={'accept'}>
           <SelectionControl
-            defaultValue='accept'
             options={[{ value: 'accept', label: 'ACCEPT' },
               { value: 'reject', label: 'REJECT' }]}
           />
         </Form.Item>
+        <ExpirationDateSelector
+          inputName={'expiration'}
+          label={$t({ defaultMessage: 'List Expiration' })}
+        />
       </Col>
       <Col span={24}>
         <Row align='middle'>
-          <Col span={14}>
+          <Col span={10}>
             <Form.Item name='access_policy_set'
               label={$t({ defaultMessage: 'Access Policy Set' })}
               rules={[
                 { required: false,
                   message: $t({ defaultMessage: 'Please choose Access Policy Set' }) }
-              ]}>
-              <Select placeholder={$t({ defaultMessage: 'Select...' })}>
-              </Select>
-            </Form.Item>
+              ]}
+              children={<Select placeholder={$t({ defaultMessage: 'Select...' })}/>}/>
           </Col>
           <Col offset={1}>
             <Button type='link'>

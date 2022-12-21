@@ -21,13 +21,13 @@ function MacRegistrationListTabs () {
 
   const tabsPathMapping: Record<MacRegistrationDetailsTabKey, Path> = {
     [MacRegistrationDetailsTabKey.OVERVIEW]: useTenantLink(getPolicyDetailsLink({
-      type: PolicyType.MAC_REGISTRATION,
+      type: PolicyType.MAC_REGISTRATION_LIST,
       oper: PolicyOperation.DETAIL,
       policyId: policyId!,
       activeTab: MacRegistrationDetailsTabKey.OVERVIEW
     })),
     [MacRegistrationDetailsTabKey.MAC_REGISTRATIONS]: useTenantLink(getPolicyDetailsLink({
-      type: PolicyType.MAC_REGISTRATION,
+      type: PolicyType.MAC_REGISTRATION_LIST,
       oper: PolicyOperation.DETAIL,
       policyId: policyId!,
       activeTab: MacRegistrationDetailsTabKey.MAC_REGISTRATIONS

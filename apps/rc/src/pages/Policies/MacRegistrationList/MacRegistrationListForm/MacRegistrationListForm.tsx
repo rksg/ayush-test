@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
 
-import { Col, Row, Typography, Form } from 'antd'
-import moment                         from 'moment-timezone'
-import { useIntl }                    from 'react-intl'
+import { Col, Row } from 'antd'
+import moment       from 'moment-timezone'
+import { useIntl }  from 'react-intl'
 
 import { Loader, PageHeader, showToast, StepsForm, StepsFormInstance } from '@acx-ui/components'
 import {
@@ -17,13 +17,10 @@ import {
   useMacRegListTableQuery,
   getPolicyRoutePath,
   PolicyType,
-  PolicyOperation
+  PolicyOperation, ExpirationDateEntity, ExpirationMode, ExpirationType
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { expirationTimeUnits, toTimeString } from '../MacRegistrationListUtils'
-
-import MacRegistrationListFormContext     from './MacRegistrationListFormContext'
 import { MacRegistrationListSettingForm } from './MacRegistrationListSetting/MacRegistrationListSettingForm'
 
 
@@ -36,15 +33,14 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
   const { editMode = false } = props
   const { policyId } = useParams()
   // eslint-disable-next-line max-len
-  const linkToList = useTenantLink('/' + getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION, oper: PolicyOperation.LIST }))
+  const linkToList = useTenantLink('/' + getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.LIST }))
   const navigate = useNavigate()
   const formRef = useRef<StepsFormInstance<MacRegistrationPoolFormFields>>()
-  const [poolSaveState, setPoolSaveState] = useState<MacRegistrationPool>({})
+  // const [poolSaveState, setPoolSaveState] = useState<MacRegistrationPool>({})
 
-  const { data, isLoading } = useGetMacRegListQuery({ params: { policyId } })
+  const { data, isLoading } = useGetMacRegListQuery({ params: { policyId } }, { skip: !editMode })
   const [addMacRegList] = useAddMacRegListMutation()
   const [updateMacRegList, { isLoading: isUpdating }] = useUpdateMacRegListMutation()
-  const { Paragraph } = Typography
 
   const tableQuery = useMacRegListTableQuery({
     useQuery: useMacRegListsQuery,
@@ -53,75 +49,63 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
   })
 
   useEffect(() => {
-    if (data) {
+    if (data && editMode) {
       formRef.current?.setFieldsValue({
         name: data?.name,
         autoCleanup: data.autoCleanup,
-        ...toListExpirationFieldsValue(data)
+        ...transferDataToExpirationFormFields(data)
         // defaultAccess
         // policyId
       })
-      setPoolSaveState({ ...data })
+      // setPoolSaveState({ ...data })
     }
-  }, [data])
+  }, [data, editMode])
 
-  const updatePoolSaveData = (data: MacRegistrationPoolFormFields) => {
-    const saveData = {
-      name: data.name,
-      autoCleanup: data.autoCleanup,
-      priority: (editMode ? undefined : tableQuery.data ? tableQuery.data.totalElements + 1 : 0),
-      ...toListExpirationPayload(data)
-      // defaultAccess
-      // policyId
-    }
-    setPoolSaveState(saveData)
-  }
-
-  // eslint-disable-next-line max-len
-  const toListExpirationPayload = (data: MacRegistrationPoolFormFields) => {
-    if (data.listExpiration === 1) {
-      return {
+  const transferExpirationFormFieldsToData = (data: ExpirationDateEntity) => {
+    let expiration
+    if (data.mode === ExpirationMode.NEVER) {
+      expiration = {
         expirationEnabled: false
       }
-    } else if (data.listExpiration === 2) {
-      return {
-        expirationType: 'SPECIFIED_DATE',
-        expirationDate: moment(data.expireDate).format('YYYY-MM-DDT23:59:59[Z]'),
+    } else if (data.mode === ExpirationMode.BY_DATE) {
+      expiration = {
+        expirationType: ExpirationType.SPECIFIED_DATE,
+        expirationDate: moment.utc(data.date).format('YYYY-MM-DDT23:59:59[Z]'),
         expirationEnabled: true
       }
     } else {
-      return {
-        expirationType: data.expireTimeUnit,
-        expirationOffset: data.expireAfter,
+      expiration = {
+        expirationType: data.type,
+        expirationOffset: data.offset,
         expirationEnabled: true
       }
     }
+    return expiration
   }
 
-  const toListExpirationFieldsValue = (data: MacRegistrationPool) => {
+  const transferDataToExpirationFormFields = (data: MacRegistrationPool) => {
+    let expiration: ExpirationDateEntity = new ExpirationDateEntity()
     if (!data.expirationEnabled) {
-      return {
-        listExpiration: 1
-      }
+      expiration.setToNever()
+    } else if (data.expirationType === ExpirationType.SPECIFIED_DATE) {
+      expiration.setToByDate(data.expirationDate!)
     } else {
-      if (data.expirationType === 'SPECIFIED_DATE') {
-        return {
-          listExpiration: 2,
-          expireDate: moment(data.expirationDate).utc()
-        }
-      } else {
-        return {
-          listExpiration: 3,
-          expireAfter: data.expirationOffset,
-          expireTimeUnit: data.expirationType
-        }
-      }
+      expiration.setToAfterTime(data.expirationType!, data.expirationOffset!)
     }
+    return { expiration }
   }
 
-  const handleAddList = async () => {
+  const handleAddList = async (data: MacRegistrationPoolFormFields) => {
     try {
-      await addMacRegList({ payload: poolSaveState }).unwrap()
+      const saveData = {
+        name: data.name,
+        autoCleanup: data.autoCleanup,
+        priority: (editMode ? undefined : tableQuery.data ? tableQuery.data.totalElements + 1 : 0),
+        ...transferExpirationFormFieldsToData(data.expiration)
+        // defaultAccess
+        // policyId
+      }
+      await addMacRegList({ payload: saveData }).unwrap()
       navigate(linkToList, { replace: true })
     } catch (error) {
       showToast({
@@ -137,7 +121,7 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
     try {
       const saveData = {
         name: data.name,
-        ...toListExpirationPayload(data),
+        ...transferExpirationFormFieldsToData(data.expiration),
         autoCleanup: data.autoCleanup
         // defaultAccess
         // policyId
@@ -157,134 +141,39 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
     }
   }
 
-  const editContent = () => {
-    return (
-      <StepsForm.StepForm>
-        <Loader states={[{
-          isLoading: isLoading,
-          isFetching: isUpdating
-        }]}>
-          <Row>
-            <Col span={14}>
-              <MacRegistrationListSettingForm/>
-            </Col>
-          </Row>
-        </Loader>
-      </StepsForm.StepForm>
-    )
-  }
-
-  const addContent = () => {
-    return (
-      <>
-        <StepsForm.StepForm title={intl.$t({ defaultMessage: '1. Settings' })}
-          onFinish={async (data: MacRegistrationPoolFormFields) => {
-            updatePoolSaveData(data)
-            return true
-          }}>
-          <Row>
-            <Col span={14}>
-              <StepsForm.Title children={intl.$t({ defaultMessage: 'Settings' })}/>
-              <MacRegistrationListSettingForm/>
-            </Col>
-          </Row>
-        </StepsForm.StepForm>
-        <StepsForm.StepForm title={intl.$t({ defaultMessage: '2. Summary' })} >
-          <Row>
-            <Col span={16}>
-              <StepsForm.Title children={intl.$t({ defaultMessage: 'Summary' })}/>
-              <Row>
-                <Col span={24}>
-                  <h4 style={{ fontWeight: 'bold' }}>{intl.$t({ defaultMessage: 'Settings' })}</h4>
-                </Col>
-                <Col span={8}>
-                  <Form.Item
-                    label={intl.$t({ defaultMessage: 'Name' })}
-                  >
-                    <Paragraph>{poolSaveState.name}</Paragraph>
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item
-                    label={intl.$t({ defaultMessage: 'List Expiration' })}
-                  >
-                    <Paragraph>{!poolSaveState?.expirationEnabled ? 'Never expires' :
-                      // eslint-disable-next-line max-len
-                      poolSaveState.expirationType === 'SPECIFIED_DATE' ? toTimeString(poolSaveState.expirationDate) : `After ${poolSaveState.expirationOffset} ${expirationTimeUnits[poolSaveState.expirationType ?? '']}`}</Paragraph>
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item
-                    label={intl.$t({ defaultMessage: 'Automatically clean expired entries' })}
-                  >
-                    <Paragraph>{poolSaveState.autoCleanup ? 'Yes' : 'No'}</Paragraph>
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item
-                    label={intl.$t({ defaultMessage: 'Behavior' })}
-                  >
-                    <Paragraph>
-                      {intl.$t({ defaultMessage: 'Always redirect to authenticate user' })}
-                    </Paragraph>
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item
-                    label={intl.$t({ defaultMessage: 'Redirect URL' })}
-                  >
-                    <Paragraph>http://www.website.com</Paragraph>
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item
-                    label={intl.$t({ defaultMessage: 'Default Access' })}
-                  >
-                    <Paragraph>Accept</Paragraph>
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item
-                    label={intl.$t({ defaultMessage: 'Access Policy' })}
-                  >
-                    <Paragraph>{''}</Paragraph>
-                  </Form.Item>
-                </Col>
-              </Row>
-            </Col>
-          </Row>
-        </StepsForm.StepForm>
-      </>
-    )
-  }
-
   return (
     <>
       <PageHeader
         title={editMode
-          ? intl.$t({ defaultMessage: 'Configure' }) + ' ' + data?.name
+          ? intl.$t({ defaultMessage: 'Configure {listName}' }, { listName: data?.name })
           : intl.$t({ defaultMessage: 'Add MAC Registration List' })}
         breadcrumb={[
           {
             text: intl.$t({ defaultMessage: 'Policies & Profiles > MAC Registration Lists' }),
             // eslint-disable-next-line max-len
-            link: getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION, oper: PolicyOperation.LIST })
+            link: getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.LIST })
           }
         ]}
       />
-      <MacRegistrationListFormContext.Provider value={{
-        editMode,
-        data: poolSaveState,
-        setData: setPoolSaveState
-      }}>
-        <StepsForm
-          editMode={editMode}
-          formRef={formRef}
-          onCancel={() => navigate(linkToList)}
-          onFinish={editMode ? handleEditList : handleAddList}>
-          {editMode ? editContent() : addContent()}
-        </StepsForm>
-      </MacRegistrationListFormContext.Provider>
+      <StepsForm<MacRegistrationPoolFormFields>
+        editMode={editMode}
+        formRef={formRef}
+        buttonLabel={{ submit: 'Apply' }}
+        onCancel={() => navigate(linkToList)}
+        onFinish={editMode ? handleEditList : handleAddList}>
+        <StepsForm.StepForm<MacRegistrationPoolFormFields>>
+          <Loader states={[{
+            isLoading: isLoading,
+            isFetching: isUpdating
+          }]}>
+            <Row>
+              <Col span={14}>
+                <MacRegistrationListSettingForm/>
+              </Col>
+            </Row>
+          </Loader>
+        </StepsForm.StepForm>
+      </StepsForm>
     </>
   )
 }
