@@ -51,6 +51,7 @@ export function ReportHeader (props: {
           multiple={true}
           replaceWithId={true}
           filterMode={mode}
+          overrideUrlFilter={true}
           defaultValue={raw}
           defaultRadioBand={bands as RadioBand[]}
           isRadioBandDisabled={isRadioBandDisabled}

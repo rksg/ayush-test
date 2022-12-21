@@ -87,6 +87,7 @@ type ConnectedNetworkFilterProps = {
     multiple?: boolean,
     replaceWithId?:boolean,
     filterMode?: FilterMode,
+    overrideUrlFilter?: boolean,
     defaultValue?: SingleValueType | SingleValueType[],
     defaultRadioBand?: RadioBand[],
     isRadioBandDisabled?: boolean,
@@ -291,6 +292,7 @@ function ConnectedNetworkFilter (
     withIncidents,
     showRadioBand,
     filterMode='both',
+    overrideUrlFilter=false,
     multiple,
     replaceWithId,
     defaultValue,
@@ -324,6 +326,7 @@ function ConnectedNetworkFilter (
       ...rest
     })
   })
+  const rawVal = overrideUrlFilter ? [] : raw
   return (
     <UI.Container>
       <Loader states={[queryResults]}>
@@ -331,11 +334,11 @@ function ConnectedNetworkFilter (
           placeholder={$t({ defaultMessage: 'Entire Organization' })}
           multiple={multiple}
           showRadioBand={showRadioBand}
-          defaultValue={defaultValue || raw}
+          defaultValue={defaultValue || rawVal}
           defaultRadioBand={defaultRadioBand || []}
           isRadioBandDisabled={isRadioBandDisabled}
           radioBandDisabledReason={radioBandDisabledReason}
-          value={defaultValue || raw}
+          value={defaultValue || rawVal}
           options={queryResults.data}
           onApply={(value,bands) => {
             if(showRadioBand || multiple){
