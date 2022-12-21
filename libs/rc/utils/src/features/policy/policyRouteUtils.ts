@@ -39,7 +39,7 @@ const typePathMapping: Record<PolicyType, string> = {
   [PolicyType.ROGUE_AP_DETECTION]: 'rogueAp',
   [PolicyType.SYSLOG]: 'syslog',
   [PolicyType.VLAN_POOL]: 'vlanPool',
-  [PolicyType.MAC_REGISTRATION]: 'macRegistration'
+  [PolicyType.MAC_REGISTRATION_LIST]: 'macRegistrationList'
 }
 
 export function getPolicyRoutePath (props: PolicyRoutePathProps): string {
@@ -74,7 +74,7 @@ export function getSelectPolicyRoutePath (prefixSlash = false): string {
 }
 
 function hasTab ({ type, oper }: PolicyRoutePathProps): boolean {
-  if (type === PolicyType.MAC_REGISTRATION && oper === PolicyOperation.DETAIL) {
+  if (type === PolicyType.MAC_REGISTRATION_LIST && oper === PolicyOperation.DETAIL) {
     return true
   }
   return false

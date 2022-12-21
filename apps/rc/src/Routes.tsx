@@ -225,18 +225,19 @@ function PolicyRoutes () {
       />
       <Route
         // eslint-disable-next-line max-len
-        path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION, oper: PolicyOperation.DETAIL })}
+        path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.DETAIL })}
         element={<MacRegistrationListDetails />} />
       <Route
-        path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION, oper: PolicyOperation.LIST })}
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.LIST })}
         element={<MacRegistrationListsTable />} />
       <Route
         // eslint-disable-next-line max-len
-        path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION, oper: PolicyOperation.CREATE })}
+        path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.CREATE })}
         element={<MacRegistrationListForm />} />
       <Route
         // eslint-disable-next-line max-len
-        path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION, oper: PolicyOperation.EDIT })}
+        path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.EDIT })}
         element={<MacRegistrationListForm editMode={true} />}
       />
     </Route>
