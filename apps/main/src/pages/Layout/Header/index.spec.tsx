@@ -193,32 +193,28 @@ describe('Header Component', () => {
   // })
 
   it('should render Alarm component correctly', async () => {
-    const { asFragment } = render(
-      <Provider>
-        <AlarmButton/>
-      </Provider>, {
-        route: { params, path: '/:tenantId/' }
-      })
+    render(<Provider>
+      <AlarmButton/>
+    </Provider>, {
+      route: { params, path: '/:tenantId/' }
+    })
     const alarmBtn = await screen.findByRole('button')
     await userEvent.click(alarmBtn)
     await waitFor(async () => {
       expect(await screen.findByText(('testamy_ap'))).toBeInTheDocument()
     })
-    expect(asFragment()).toMatchSnapshot()
     const cancelBtn = await screen.findByRole('button',{ name: 'Close' })
     await userEvent.click(cancelBtn)
   })
 
   it('should render Activity component correctly', async () => {
-    const { asFragment } = render(
-      <Provider>
-        <ActivityButton/>
-      </Provider>, {
-        route: { params, path: '/:tenantId/' }
-      })
+    render(<Provider>
+      <ActivityButton/>
+    </Provider>, {
+      route: { params, path: '/:tenantId/' }
+    })
     const activityBtn = screen.getByRole('button', { name: /clock\-circle/i })
     await userEvent.click(activityBtn)
-    expect(asFragment()).toMatchSnapshot()
     const cancelBtn = await screen.findByRole('button',{ name: 'Close' })
     await userEvent.click(cancelBtn)
   })

@@ -1,7 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`AAAServers should render RADIUS list correctly and delete data 1`] = `<DocumentFragment />`;
-
 exports[`AAAServers should render RADIUS list correctly and edit row data 1`] = `
 <DocumentFragment>
   <div
