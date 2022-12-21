@@ -45,4 +45,12 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/switch/tenant/:tenantId/profile/vlans/venue/:venueId'
   },
+  addSwitch: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/switch'
+  },
+  addStackMember: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/switch/:stackSerialNumber/member/:newStackMemberSerialNumber'
+  }
 }

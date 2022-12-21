@@ -7,7 +7,8 @@ import {
   SwitchUrlsInfo,
   SwitchViewModel,
   SwitchPortViewModel,
-  TableResult
+  TableResult,
+  Switch
 } from '@acx-ui/rc/utils'
 
 export const baseSwitchApi = createApi({
@@ -48,6 +49,15 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
+    addSwitch: build.mutation<Switch, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.addSwitch, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     importSwitches: build.mutation<{}, RequestFormData>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(SwitchUrlsInfo.importSwitches, params, {
@@ -68,5 +78,6 @@ export const {
   useSwitchPortlistQuery,
   useImportSwitchesMutation,
   useGetVlansByVenueQuery,
-  useLazyGetVlansByVenueQuery
+  useLazyGetVlansByVenueQuery,
+  useAddSwitchMutation
 } = switchApi
