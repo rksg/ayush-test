@@ -67,7 +67,7 @@ export default function SwitchesTable () {
         }}
         onClose={()=>setImportVisible(false)}
       />
-      <SwitchTable isVenueLevel={false} />
+      <SwitchTable />
     </>
   )
 }

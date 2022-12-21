@@ -1,36 +1,43 @@
-import { Space }   from 'antd'
+import { Space, Badge }   from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import {
   Table,
   TableProps,
-  Tooltip,
-  Loader
+  Loader,
 } from '@acx-ui/components'
-import { useSwitchListQuery, useSwitchPortlistQuery } from '@acx-ui/rc/services'
+import { useSwitchListQuery } from '@acx-ui/rc/services'
 import {
-  getSwitchModel,
-  isOperationalSwitch,
+  getSwitchStatusString,
+  handleStatusColor,
   STACK_MEMBERSHIP,
   SwitchPortViewModel,
   SwitchStatusEnum,
+  transformSwitchStatus,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { useNavigate, useParams } from '@acx-ui/react-router-dom'
-import { getIntl }   from '@acx-ui/utils'
+import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { useSwitchActions } from '../useSwitchActions'
 
-import * as UI from './styledComponents'
+export const SwitchStatus = (
+  { row, showText = true }: { row: any, showText?: boolean }
+) => {
+  const apStatus = transformSwitchStatus(row.deviceStatus, row.configReady, row.syncedSwitchConfig, row.suspendingDeployTime)
+  return (
+    <span>
+      <Badge color={handleStatusColor(apStatus.deviceStatus)}
+        text={showText ? getSwitchStatusString(row) : ''}
+      />
+    </span>
+  )
+}
 
-const STACK_PORT_FIELD = 'SwitchPortStackingPortField'
-
-export function SwitchTable ({ isVenueLevel } : {
-  isVenueLevel: boolean
+export function SwitchTable ({ showAllColumns } : {
+  showAllColumns?: boolean
 }) {
   const { $t } = useIntl()
-  const navigate = useNavigate()
-  const { serialNumber } = useParams()
-
+  const params = useParams()
   const tableQuery = useTableQuery({
     useQuery: useSwitchListQuery,
     defaultPayload: {
@@ -42,13 +49,16 @@ export function SwitchTable ({ isVenueLevel } : {
     }
   })
 
+  const switchAction = useSwitchActions()
+  const tableData = tableQuery.data?.data ?? []
+
   const getStackMemberStatus = (unitStatus: string) => {
     if (unitStatus === STACK_MEMBERSHIP.ACTIVE) {
-      return $t({ defaultMessage: ' (Active)' })
+      return $t({ defaultMessage: '(Active)' })
     } else if (unitStatus === STACK_MEMBERSHIP.STANDBY) {
-      return $t({ defaultMessage: ' (Standby)' })
+      return $t({ defaultMessage: '(Standby)' })
     } else {
-      return $t({ defaultMessage: ' (Member)' })
+      return $t({ defaultMessage: '(Member)' })
     }
   }
 
@@ -58,37 +68,49 @@ export function SwitchTable ({ isVenueLevel } : {
     dataIndex: 'name',
     sorter: true,
     defaultSortOrder: 'ascend',
+    disable: true,
     render: (data, row) => {
+      const displayName = <>{ data || row.switchName || row.serialNumber }</>
       return <>
-        { data || row.switchName || row.serialNumber }
-        { !row.isFirstLevel && getStackMemberStatus(row.unitStatus) }
+        {
+          row.isFirstLevel ? 
+          <TenantLink to={`/devices/switch/${row.id}/${row.serialNumber}/details/overview`}>
+            {displayName}
+          </TenantLink> :
+           <Space>
+             {displayName}
+             {getStackMemberStatus(row.unitStatus)}
+           </Space>
+        }
       </>
     }
   }, {
-    key: 'switchName',
+    key: 'deviceStatus',
     title: $t({ defaultMessage: 'Status' }),
-    dataIndex: 'switchName',
-    sorter: true
-  }, {
-    key: 'status',
-    title: $t({ defaultMessage: 'Model' }),
-    dataIndex: 'status',
-    sorter: true
-  }, {
-    key: 'adminStatus',
-    title: $t({ defaultMessage: 'Serial Number' }),
-    dataIndex: 'adminStatus',
+    dataIndex: 'deviceStatus',
     sorter: true,
-    // show: false
+    render: (data, row) => <SwitchStatus row={row} />
   }, {
-    key: 'portSpeed',
-    title: $t({ defaultMessage: 'MAC Address' }),
-    dataIndex: 'portSpeed',
+    key: 'model',
+    title: $t({ defaultMessage: 'Model' }),
+    dataIndex: 'model',
     sorter: true
   }, {
-    key: 'poeType',
+    key: 'activeSerial',
+    title: $t({ defaultMessage: 'Serial Number' }),
+    dataIndex: 'activeSerial',
+    sorter: true,
+    show: !!showAllColumns
+  }, {
+    key: 'switchMac',
+    title: $t({ defaultMessage: 'MAC Address' }),
+    dataIndex: 'switchMac',
+    sorter: true,
+    render: (data) => typeof data === 'string' && data.toUpperCase()
+  }, {
+    key: 'ipAddress',
     title: $t({ defaultMessage: 'IP Address' }),
-    dataIndex: 'poeType',
+    dataIndex: 'ipAddress',
     sorter: true
   },
   // { TODO: Health scope
@@ -97,20 +119,26 @@ export function SwitchTable ({ isVenueLevel } : {
   //   dataIndex: 'incidents',
   // },
   {
-    key: 'poeUsed',
+    key: 'venueName',
     title: $t({ defaultMessage: 'Venue' }),
-    dataIndex: 'poeUsed',
+    dataIndex: 'venueName',
     sorter: true,
+    render: (data, row) => (
+      <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>{data}</TenantLink>
+    )
   }, {
-    key: 'vlanIds',
+    key: 'uptime',
     title: $t({ defaultMessage: 'Up Time' }),
-    dataIndex: 'vlanIds',
+    dataIndex: 'uptime',
     sorter: true,
   }, {
-    key: 'signalIn',
+    key: 'clientCount',
     title: $t({ defaultMessage: 'Clients' }),
-    dataIndex: 'signalIn',
-    sorter: true
+    dataIndex: 'clientCount',
+    sorter: true,
+    render: (data, row) => (
+      <TenantLink to={`/devices/switch/${row.id}/${row.serialNumber}/details/clients`}>{data || 0}</TenantLink>
+    )
   },
   // { TODO: tags
   //   key: 'tags',
@@ -119,19 +147,10 @@ export function SwitchTable ({ isVenueLevel } : {
   // }
 ]
 
-  const getColumns = () => columns.filter(
-    item => !isVenueLevel
-      ? item.key !== 'switchName'
-      : item
-  )
-
   const isActionVisible = (
     selectedRows: SwitchPortViewModel[],
-    { selectOne, isOperational }: { selectOne?: boolean, isOperational?: boolean }) => {
+    { selectOne }: { selectOne?: boolean }) => {
     let visible = true
-    if (isOperational) {
-      visible = selectedRows.every(ap => ap.deviceStatus === SwitchStatusEnum.OPERATIONAL)
-    }
     if (selectOne) {
       visible = visible && selectedRows.length === 1
     }
@@ -141,25 +160,27 @@ export function SwitchTable ({ isVenueLevel } : {
   const rowActions: TableProps<SwitchPortViewModel>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
     visible: (rows) => isActionVisible(rows, { selectOne: true }),
+    disabled: true,
     onClick: (rows) => {
-      // navigate(`${rows[0].serialNumber}/edit/details`, { replace: false })
-    }
-  }, {
-    label: $t({ defaultMessage: 'Delete' }),
-    onClick: async (rows, clearSelection) => {
       // TODO:
     }
   }, {
-    label: $t({ defaultMessage: 'Reboot' }),
-    visible: (rows) => isActionVisible(rows, { selectOne: true, isOperational: true }),
+    label: $t({ defaultMessage: 'CLI Session' }),
+    visible: (rows) => isActionVisible(rows, { selectOne: true }),
+    disabled: true,
     onClick: (rows, clearSelection) => {
       // TODO:
     }
   }, {
-    label: $t({ defaultMessage: 'Download Log' }),
-    visible: (rows) => isActionVisible(rows, { selectOne: true, isOperational: true }),
+    label: $t({ defaultMessage: 'Stack Switches' }),
+    disabled: true,
     onClick: (rows) => {
       // TODO:
+    }
+  }, {
+    label: $t({ defaultMessage: 'Delete' }),
+    onClick: async (rows, clearSelection) => {
+      switchAction.showDeleteSwitches(rows, params.tenantId, clearSelection)
     }
   }]
 
@@ -168,8 +189,8 @@ export function SwitchTable ({ isVenueLevel } : {
 
   return <Loader states={[tableQuery]}>
     <Table
-      columns={getColumns()}
-      dataSource={transformData(tableQuery.data?.data)}
+      columns={columns}
+      dataSource={tableData}
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
       rowKey='serialNumber'
@@ -184,90 +205,4 @@ export function SwitchTable ({ isVenueLevel } : {
       }}
     />
   </Loader>
-}
-
-function transformData (data?: SwitchPortViewModel[]) {
-  // return data?.map((port: SwitchPortViewModel) => {
-  //   return {
-  //     ...port,
-  //     inactiveRow: !!getInactiveTooltip(port),
-  //     inactiveTooltip: getInactiveTooltip(port)
-  //   }
-  // })
-  return data
-}
-
-function getInactiveTooltip (port: SwitchPortViewModel): string {
-  const { $t } = getIntl()
-
-  if (!isOperationalSwitchPort(port)) {
-    return $t({
-      defaultMessage: 'The port can not be edited since it is on a switch that is not operational'
-    })
-  }
-
-  if (isStackPort(port)) {
-    return $t({ defaultMessage: 'This is a stacking port and can not be configured' })
-  }
-
-  if (isLAGMemberPort(port)) {
-    return $t({ defaultMessage: 'This is a LAG member port and can not be configured' })
-  }
-
-  return ''
-}
-
-function isLAGMemberPort (port: SwitchPortViewModel): boolean {
-  // 0: default, -1: after lag delete
-  return !!port.lagId && port.lagId.trim() !== '0' && port.lagId.trim() !== '-1'
-}
-
-function isOperationalSwitchPort (port: SwitchPortViewModel): boolean {
-  return port && port.deviceStatus
-    ? isOperationalSwitch(port.deviceStatus, port.syncedSwitchConfig)
-    : false
-}
-
-function isStackPort (port: SwitchPortViewModel): boolean {
-  const slot = port.portIdentifier.split('/')?.[1]
-  if (isICX7650Port(getSwitchModel(port.switchUnitId)) && (slot === '3' || slot === '4')) {
-    return true
-  }
-
-  // Normal port
-  if (!port[STACK_PORT_FIELD]) {
-    return false
-  }
-
-  // The switch is not in stack mode
-  // Note: SZ limitation: should still block ICX7650 default stacking port even it's in standalone mode
-  if (port.stack === false && !isICX7650Port(getSwitchModel(port.switchUnitId))) {
-    return false
-  }
-
-  return port[STACK_PORT_FIELD]
-}
-
-function isICX7650Port (switchModel?: string) {
-  return switchModel?.includes('7650')
-}
-
-function filterUntaggedVlan (vlanIds?: string, unTaggedVlan?: string) {
-  if (vlanIds) {
-    let vlanIdsArray = vlanIds?.split(' ')
-    if (unTaggedVlan) {
-      let taggedVlan = ''
-      if (vlanIdsArray.length > 1) {
-        vlanIdsArray = _.remove(vlanIdsArray, n => n !== unTaggedVlan)
-        vlanIdsArray.sort((a, b) => Number(a) - Number(b))
-        taggedVlan = vlanIdsArray.join(', ')
-      } else {
-        taggedVlan = '--'
-      }
-      return taggedVlan
-    } else {
-      return vlanIdsArray.join(', ')
-    }
-  }
-  return '--'
 }

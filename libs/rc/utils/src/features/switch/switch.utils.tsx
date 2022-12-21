@@ -1,4 +1,8 @@
 import { SwitchStatusEnum } from '../../types'
+import { useIntl } from 'react-intl'
+import { DeviceConnectionStatus } from '../../constants'
+import _ from 'lodash'
+import { deviceStatusColors } from '@acx-ui/components'
 
 export const modelMap: ReadonlyMap<string, string> = new Map([
   ['CRH', 'ICX7750-48F'],
@@ -57,6 +61,10 @@ export const isOperationalSwitch = (status: SwitchStatusEnum, syncedSwitchConfig
   return status === SwitchStatusEnum.OPERATIONAL && syncedSwitchConfig
 }
 
+export const isStrictOperationalSwitch = (status: SwitchStatusEnum, configReady:boolean, syncedSwitchConfig: boolean) => { 
+  return status === SwitchStatusEnum.OPERATIONAL && syncedSwitchConfig && configReady;
+}
+
 export const getSwitchModel = (serial: string) => {
   if (!serial || serial.length < 3) {
     return 'Unknown'
@@ -64,4 +72,77 @@ export const getSwitchModel = (serial: string) => {
 
   const productCode = serial.slice(0, 3)
   return modelMap.get(productCode)
+}
+
+export const transformSwitchStatus = (switchStatusEnum: SwitchStatusEnum, configReady = true, 
+  syncedSwitchConfig = true, suspendingDeployTime = '') => {
+    const { $t } = useIntl()
+    let message = ''
+    let deviceStatus = DeviceConnectionStatus.INITIAL
+    let isOperational = false
+    switch (switchStatusEnum) {
+      case SwitchStatusEnum.NEVER_CONTACTED_CLOUD:
+        message = $t({ defaultMessage: 'Never contacted cloud' })
+        deviceStatus = DeviceConnectionStatus.INITIAL
+        break
+      case SwitchStatusEnum.INITIALIZING:
+        message = $t({ defaultMessage: 'Initializing' })
+        deviceStatus = DeviceConnectionStatus.INITIAL
+        break
+      case SwitchStatusEnum.FIRMWARE_UPD_START:
+        message = $t({ defaultMessage: 'Firmware Updating' })
+        deviceStatus = DeviceConnectionStatus.CONNECTED
+        break
+      // case SwitchStatusEnum.FIRMWARE_UPD_VALIDATING_PARAMETERS:
+      //   return 'Firmware Update - Validating Parameters';
+      // case SwitchStatusEnum.FIRMWARE_UPD_DOWNLOADING:
+      //   return 'Firmware Update - Downloading';
+      // case SwitchStatusEnum.FIRMWARE_UPD_VALIDATING_IMAGE:
+      //   return 'Firmware Update - Validating Image';
+      // case SwitchStatusEnum.FIRMWARE_UPD_SYNCING_TO_REMOTE:
+      //   return 'Firmware Update - Syncing To Remote';
+      // case SwitchStatusEnum.FIRMWARE_UPD_WRITING_TO_FLASH:
+      //   return 'Firmware Update - Writing To Flash';
+      // case SwitchStatusEnum.FIRMWARE_UPD_FAIL:
+      //   return 'Firmware Update - Failed';
+      // case SwitchStatusEnum.APPLYING_FIRMWARE:
+      //   return 'Firmware updating';
+      case SwitchStatusEnum.OPERATIONAL:
+        if (configReady && syncedSwitchConfig) {
+          if (suspendingDeployTime && suspendingDeployTime.length > 0) {
+            message = $t({ defaultMessage: 'Operational - applying configuration' })
+          }
+          isOperational = true
+          message = $t({ defaultMessage: 'Operational' })
+        } else if (!syncedSwitchConfig) {
+          message = $t({ defaultMessage: 'Synchronizing data' })
+        } else {
+          message = $t({ defaultMessage: 'Operational - Synchronizing' })
+        }
+        deviceStatus = DeviceConnectionStatus.CONNECTED
+        break
+      // case SwitchStatusEnum.DISCONNECTED:
+      //   return 'Disconnected from cloud';
+      // case SwitchStatusEnum.STACK_MEMBER_NEVER_CONTACTED:
+      //   return 'Never contacted Active Switch';
+      default:
+        message = $t({ defaultMessage: 'Never contacted cloud' })
+        deviceStatus = DeviceConnectionStatus.INITIAL
+    }
+    return { message, deviceStatus, isOperational }
+}
+
+export const getSwitchStatusString = (row: any) => {
+  const { $t } = useIntl()
+  const status = transformSwitchStatus(row.deviceStatus, row.configReady, row.syncedSwitchConfig, row.suspendingDeployTime)
+  const isSync = !_.isEmpty(row.syncDataId) && status.isOperational;
+  const isStrictOperational = isStrictOperationalSwitch(row.deviceStatus, row.configReady, row.syncedSwitchConfig)
+  let switchStatus = ( isStrictOperational && row.operationalWarning == true) ? 
+    status.message + ' ' + $t({ defaultMessage: '- Warning' }) : status.message;
+
+  return isSync ? switchStatus + ' ' + $t({ defaultMessage: '- Syncing' }) : switchStatus;
+}
+
+export const handleStatusColor = (status: DeviceConnectionStatus) => {
+  return `var(${deviceStatusColors[status]})`
 }
