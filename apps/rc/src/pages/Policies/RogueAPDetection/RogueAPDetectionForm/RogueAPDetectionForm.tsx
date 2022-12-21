@@ -97,6 +97,7 @@ const RogueAPDetectionForm = (props: RogueAPDetectionFormProps) => {
       />
       <StepsForm<RogueAPDetectionContextType>
         formRef={formRef}
+        editMode={edit}
         onCancel={() => navigate(linkToPolicies)}
         onFinish={() => handleRogueAPDetectionPolicy(edit)}
       >
