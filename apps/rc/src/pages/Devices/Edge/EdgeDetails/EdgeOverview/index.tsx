@@ -33,8 +33,7 @@ export const EdgeOverview = styled(({ className }:{ className?: string }) => {
     ],
     filters: { serialNumber: [params.serialNumber] } }
 
-  const { data: currentEdge, isLoading: isLoadingEdgeStatus, isFetching: isFetchingEdgeStatus } =
-  useEdgeBySerialNumberQuery({
+  const { data: currentEdge, isLoading: isLoadingEdgeStatus } = useEdgeBySerialNumberQuery({
     params, payload: edgeStatusPayload
   })
 
@@ -74,7 +73,7 @@ export const EdgeOverview = styled(({ className }:{ className?: string }) => {
         <EdgeInfoWidget
           currentEdge={currentEdge as EdgeStatus}
           edgePortsSetting={edgePortsSetting as EdgePort[]}
-          isEdgeStatusLoading={isLoadingEdgeStatus || isFetchingEdgeStatus}
+          isEdgeStatusLoading={isLoadingEdgeStatus}
           isPortListLoading={isPortListLoading}
         />
       </GridCol>

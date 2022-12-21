@@ -2,13 +2,15 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider  }    from '@acx-ui/store'
+import * as CommonComponent from '@acx-ui/components'
+import { EdgeUrlsInfo }     from '@acx-ui/rc/utils'
+import { Provider  }        from '@acx-ui/store'
 import {
   render,
   screen,
   fireEvent,
-  mockServer
+  mockServer,
+  waitFor
 } from '@acx-ui/test-utils'
 
 
@@ -16,6 +18,7 @@ import { mockEdgeData as currentEdge } from '../../__tests__/fixtures'
 
 import { EdgeDetailsPageHeader } from '.'
 
+const mockedShowActionModal = jest.fn()
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -82,5 +85,33 @@ describe('Edge Detail Page Header', () => {
 
     await screen.findByText(`Delete "${currentEdge.name}"?`)
     await userEvent.click(screen.getByRole('button', { name: 'Delete Edge' }))
+    await waitFor(() => {
+      expect(mockedUsedNavigate).toHaveBeenCalledWith(`/t/${params.tenantId}/devices/edge/list`)
+    })
   })
+
+  it('should do nothing if serialNumber in URL is "undefined"', async () => {
+    let invalidParams: { tenantId: string, serialNumber: string } =
+    { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac', serialNumber: 'undefined' }
+
+    jest.spyOn(CommonComponent, 'showActionModal').mockImplementation(
+      mockedShowActionModal
+    )
+
+    render(
+      <Provider>
+        <EdgeDetailsPageHeader />
+      </Provider>, {
+        route: { params: invalidParams }
+      })
+
+    const dropdownBtn = screen.getByRole('button', { name: 'More Actions' })
+    await userEvent.click(dropdownBtn)
+
+    const deleteBtn = await screen.findByRole('menuitem', { name: 'Delete SmartEdge' })
+    await userEvent.click(deleteBtn)
+
+    expect(mockedShowActionModal).toBeCalledTimes(0)
+  })
+
 })

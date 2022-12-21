@@ -75,7 +75,7 @@ export const EdgeDetailsPageHeader = () => {
 
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
-    if (!serialNumber) return
+    if (!serialNumber || serialNumber === 'undefined') return
 
     const actionMap = {
       delete: (_sn: string) => {

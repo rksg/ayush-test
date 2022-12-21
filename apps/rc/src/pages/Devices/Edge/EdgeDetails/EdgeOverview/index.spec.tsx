@@ -28,7 +28,6 @@ describe('Edge Detail Overview Tab', () => {
         EdgeUrlsInfo.getEdgeList.url,
         (_req, res, ctx) => {
           return res(
-            ctx.delay(500),
             ctx.json({ data: [currentEdge] })
           )
         }
@@ -36,7 +35,7 @@ describe('Edge Detail Overview Tab', () => {
     )
   })
 
-  it('should render no data correctly', async () => {
+  it('should render loading image and it should display No data after image disappear', async () => {
     render(
       <Provider>
         <EdgeOverview />
@@ -44,7 +43,7 @@ describe('Edge Detail Overview Tab', () => {
         route: { params }
       })
 
+    screen.getAllByRole('img', { name: 'loader' })
     await screen.findByText('No data')
   })
-
 })
