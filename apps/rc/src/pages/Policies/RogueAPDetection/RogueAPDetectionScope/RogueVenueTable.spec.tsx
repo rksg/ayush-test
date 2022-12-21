@@ -18,6 +18,7 @@ import { mockServer, render, screen } from '@acx-ui/test-utils'
 import RogueAPDetectionContext from '../RogueAPDetectionContext'
 
 import RogueVenueTable from './RogueVenueTable'
+import { userEvent } from '@storybook/testing-library';
 
 
 const venueTable = {
@@ -81,6 +82,44 @@ const venueTable = {
   ]
 }
 
+const venueTables = {
+  fields: [
+    'country',
+    'city',
+    'name',
+    'switches',
+    'id',
+    'aggregatedApStatus',
+    'rogueDetection',
+    'status'
+  ],
+  totalCount: 63,
+  page: 1,
+  data: [
+    {
+      id: '4ca20c8311024ac5956d366f15d96e03',
+      name: 'test-venue2',
+      city: 'Toronto, Ontario',
+      country: 'Canada',
+      aggregatedApStatus: {
+        '2_00_Operational': 5
+      },
+      status: '1_InSetupPhase',
+      rogueDetection: {
+        policyId: 'policyId1',
+        policyName: 'Default policyId1 profile',
+        enabled: true
+      }
+    },
+    ...Array.from(Array(63).keys()).map(key => {
+      return {
+        id: `name_${key}`,
+        name: key
+      }
+    })
+  ]
+}
+
 const wrapper = ({ children }: { children: React.ReactElement }) => {
   return <Provider>
     {children}
@@ -104,18 +143,16 @@ const ruleState = {
   policyName: '',
   tags: [],
   description: '',
-  rules: [...Array.from(Array(63).keys()).map(key => {
-    return {
-      name: `name_${key}`,
-      priority: key,
-      type: RogueRuleType.CTS_ABUSE_RULE,
-      classification: RogueCategory.KNOWN
-    }
-  })] as RogueAPRule[],
+  rules: [] as RogueAPRule[],
   venues: [{
     id: '4ca20c8311024ac5956d366f15d96e03',
     name: 'test-venue2'
-  }] as RogueVenue[]
+  }, ...Array.from(Array(63).keys()).map(key => {
+    return {
+      id: `name_${key}`,
+      name: key
+    }
+  })] as RogueVenue[]
 } as RogueAPDetectionContextType
 
 describe('RogueVenueTable', () => {
@@ -183,11 +220,11 @@ describe('RogueVenueTable', () => {
     fireEvent.click(deactivateBtn)
   })
 
-  it('render RogueVenueTable with maximum rule', async () => {
+  it('render RogueVenueTable with maximum venue', async () => {
     mockServer.use(rest.post(
       RogueApUrls.getVenueRoguePolicy.url,
       (_, res, ctx) => res(
-        ctx.json(venueTable)
+        ctx.json(venueTables)
       )
     ))
 
@@ -222,7 +259,7 @@ describe('RogueVenueTable', () => {
       name: /activate/i
     })).toBeTruthy()
 
-    await screen.findByText('test-venue')
+    await screen.findByText('test-venue2')
 
     screen.getByText('test-venue2')
 
@@ -234,5 +271,7 @@ describe('RogueVenueTable', () => {
 
     const activateBtn = screen.getByRole('button', { name: 'Activate' })
     fireEvent.click(activateBtn)
+
+    await userEvent.click(screen.getByTestId('switchBtn_4ca20c8311024ac5956d366f15d96e03'))
   })
 })

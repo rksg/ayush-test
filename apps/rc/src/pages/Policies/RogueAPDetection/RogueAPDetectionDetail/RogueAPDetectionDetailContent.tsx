@@ -21,7 +21,7 @@ const RogueAPDetectionDetailContent = () => {
 
   useEffect(() => {
     if (data){
-      const filtersIdList = data.venues ? data.venues.map(venue => venue.id) : ['UNDEFINED']
+      const filtersIdList = data.venues?.map(venue => venue.id) ?? ['UNDEFINED']
       setFiltersId(filtersIdList)
       setPolicyName(data.name ?? '')
     }
