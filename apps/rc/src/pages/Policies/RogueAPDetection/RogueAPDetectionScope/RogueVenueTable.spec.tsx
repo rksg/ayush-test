@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { userEvent }              from '@storybook/testing-library'
 import { act, fireEvent, within } from '@testing-library/react'
 import { rest }                   from 'msw'
 
@@ -8,9 +9,7 @@ import {
   RogueAPDetectionContextType,
   RogueApUrls,
   RogueAPRule,
-  RogueVenue,
-  RogueRuleType,
-  RogueCategory
+  RogueVenue
 } from '@acx-ui/rc/utils'
 import { Provider, store }            from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
@@ -18,7 +17,7 @@ import { mockServer, render, screen } from '@acx-ui/test-utils'
 import RogueAPDetectionContext from '../RogueAPDetectionContext'
 
 import RogueVenueTable from './RogueVenueTable'
-import { userEvent } from '@storybook/testing-library';
+
 
 
 const venueTable = {
