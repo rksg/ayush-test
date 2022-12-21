@@ -1,4 +1,4 @@
-import styled from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 
 export const Wrapper = styled.section.attrs((props: { layers: Array<unknown> }) => props)`
   display: grid;
@@ -48,22 +48,20 @@ const stepFlowColorHelper = (state: string) => (state === 'normal')
   : 'var(--acx-semantics-red-50)'
 
 const stepFlowMapper = (color: string) => ({
-  left: `
+  left: css`
     border-right: 9px solid ${color};
   `,
-  right: `
-    border-left: 9px solids ${color};
+  right: css`
+    border-left: 9px solid ${color};
   `
 })
 
 export const StepFlow = styled.div.attrs((props: { direction: string, state: string }) => props)`
-  height: 25px;
+  height: 10px;
   align-self: center;
   display: flex;
   align-items: center;
-  flex-direction: ${props => props.direction === 'left'
-    ? 'row'
-    : 'row-reverse'};
+  flex-direction: ${props => props.direction === 'left' ? 'row' : 'row-reverse'};
   &:before, &:after {
     content: '';
     display: block;
@@ -80,7 +78,7 @@ export const StepFlow = styled.div.attrs((props: { direction: string, state: str
     const color = stepFlowColorHelper(props.state)
     const stepFlowColor = stepFlowMapper(color)[props.direction as 'left' | 'right']
     return stepFlowColor
-  }}
+  }};
   }
 ` // before missing directions, flex-directions to flip based on left / right direction
 
