@@ -40,26 +40,26 @@ import { useApActions } from '../useApActions'
 export const defaultApPayload = {
   searchString: '',
   fields: [
-    "check-all",
-    "name",
-    "deviceStatus",
-    "model",
-    "meshRole",
-    "IP",
-    "apMac",
-    "venueName",
-    "switchName",
-    "clients",
-    "deviceGroupName",
-    "apStatusData.APRadio.band",
-    "tags",
-    "serialNumber",
-    "fwVersion",
-    "cog",
-    "venueId",
-    "apStatusData.APRadio.radioId",
-    "apStatusData.APRadio.channel"
-  ],
+    'check-all',
+    'name',
+    'deviceStatus',
+    'model',
+    'meshRole',
+    'IP',
+    'apMac',
+    'venueName',
+    'switchName',
+    'clients',
+    'deviceGroupName',
+    'apStatusData.APRadio.band',
+    'tags',
+    'serialNumber',
+    'fwVersion',
+    'cog',
+    'venueId',
+    'apStatusData.APRadio.radioId',
+    'apStatusData.APRadio.channel'
+  ]
 }
 
 const handleStatusColor = (status: DeviceConnectionStatus) => {
@@ -120,14 +120,14 @@ export function ApTable (props: ApTableProps) {
     useQuery: useApListQuery,
     defaultPayload: {
       ...defaultApPayload,
-      filters: {...filters, "deviceStatusSeverity": [
-        "2_Operational"
-      ]},
+      filters: { ...filters, deviceStatusSeverity: [
+        '2_Operational'
+      ] },
       groupBy: {
-        "AggregationRequestDto": {
-            "name": "deviceGroupName",
-            "fieldName": "deviceGroupName.keyword",
-            "type": "terms"
+        AggregationRequestDto: {
+          name: 'deviceGroupName',
+          fieldName: 'deviceGroupName.keyword',
+          type: 'terms'
         }
       }
     },

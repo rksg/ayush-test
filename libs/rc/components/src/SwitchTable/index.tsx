@@ -1,23 +1,25 @@
-import { Space, Badge }   from 'antd'
-import _           from 'lodash'
-import { useIntl } from 'react-intl'
+/* eslint-disable max-len */
+import { Space, Badge } from 'antd'
+import { useIntl }      from 'react-intl'
 
 import {
   Table,
   TableProps,
   Loader,
+  deviceStatusColors
 } from '@acx-ui/components'
 import { useSwitchListQuery } from '@acx-ui/rc/services'
 import {
   getSwitchStatusString,
-  handleStatusColor,
   STACK_MEMBERSHIP,
   SwitchPortViewModel,
-  SwitchStatusEnum,
   transformSwitchStatus,
-  useTableQuery
+  getSwitchName,
+  useTableQuery,
+  DeviceConnectionStatus
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+
 import { useSwitchActions } from '../useSwitchActions'
 
 export const SwitchStatus = (
@@ -33,6 +35,10 @@ export const SwitchStatus = (
   )
 }
 
+const handleStatusColor = (status: DeviceConnectionStatus) => {
+  return `var(${deviceStatusColors[status]})`
+}
+
 export function SwitchTable ({ showAllColumns } : {
   showAllColumns?: boolean
 }) {
@@ -41,10 +47,10 @@ export function SwitchTable ({ showAllColumns } : {
   const tableQuery = useTableQuery({
     useQuery: useSwitchListQuery,
     defaultPayload: {
-      "fields":[
-        "check-all","name","deviceStatus","model","activeSerial","switchMac","ipAddress","venueName","uptime",
-        "clientCount","cog","id","serialNumber","isStack","formStacking","venueId","switchName","configReady",
-        "syncedSwitchConfig","syncDataId","operationalWarning","cliApplied","suspendingDeployTime"
+      fields: [
+        'check-all','name','deviceStatus','model','activeSerial','switchMac','ipAddress','venueName','uptime',
+        'clientCount','cog','id','serialNumber','isStack','formStacking','venueId','switchName','configReady',
+        'syncedSwitchConfig','syncDataId','operationalWarning','cliApplied','suspendingDeployTime'
       ]
     }
   })
@@ -70,17 +76,16 @@ export function SwitchTable ({ showAllColumns } : {
     defaultSortOrder: 'ascend',
     disable: true,
     render: (data, row) => {
-      const displayName = <>{ data || row.switchName || row.serialNumber }</>
       return <>
         {
-          row.isFirstLevel ? 
-          <TenantLink to={`/devices/switch/${row.id}/${row.serialNumber}/details/overview`}>
-            {displayName}
-          </TenantLink> :
-           <Space>
-             {displayName}
-             {getStackMemberStatus(row.unitStatus)}
-           </Space>
+          row.isFirstLevel ?
+            <TenantLink to={`/devices/switch/${row.id}/${row.serialNumber}/details/overview`}>
+              {getSwitchName(row)}
+            </TenantLink> :
+            <Space>
+              <>{getSwitchName(row)}</>
+              {getStackMemberStatus(row.unitStatus)}
+            </Space>
         }
       </>
     }
@@ -130,7 +135,7 @@ export function SwitchTable ({ showAllColumns } : {
     key: 'uptime',
     title: $t({ defaultMessage: 'Up Time' }),
     dataIndex: 'uptime',
-    sorter: true,
+    sorter: true
   }, {
     key: 'clientCount',
     title: $t({ defaultMessage: 'Clients' }),
@@ -139,13 +144,13 @@ export function SwitchTable ({ showAllColumns } : {
     render: (data, row) => (
       <TenantLink to={`/devices/switch/${row.id}/${row.serialNumber}/details/clients`}>{data || 0}</TenantLink>
     )
-  },
+  }
   // { TODO: tags
   //   key: 'tags',
   //   title: $t({ defaultMessage: 'Tags' }),
   //   dataIndex: 'tags'
   // }
-]
+  ]
 
   const isActionVisible = (
     selectedRows: SwitchPortViewModel[],
@@ -161,20 +166,20 @@ export function SwitchTable ({ showAllColumns } : {
     label: $t({ defaultMessage: 'Edit' }),
     visible: (rows) => isActionVisible(rows, { selectOne: true }),
     disabled: true,
-    onClick: (rows) => {
+    onClick: () => {
       // TODO:
     }
   }, {
     label: $t({ defaultMessage: 'CLI Session' }),
     visible: (rows) => isActionVisible(rows, { selectOne: true }),
     disabled: true,
-    onClick: (rows, clearSelection) => {
+    onClick: () => {
       // TODO:
     }
   }, {
     label: $t({ defaultMessage: 'Stack Switches' }),
     disabled: true,
-    onClick: (rows) => {
+    onClick: () => {
       // TODO:
     }
   }, {

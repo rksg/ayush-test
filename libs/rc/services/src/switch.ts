@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery, FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
+import _                                                  from 'lodash'
 
 import {
   createHttpRequest,
@@ -8,9 +9,10 @@ import {
   SwitchViewModel,
   SwitchPortViewModel,
   TableResult,
-  STACK_MEMBERSHIP
+  STACK_MEMBERSHIP,
+  onSocketActivityChanged,
+  showActivityMessage
 } from '@acx-ui/rc/utils'
-import _ from 'lodash'
 
 export const baseSwitchApi = createApi({
   baseQuery: fetchBaseQuery(),
@@ -32,12 +34,12 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         const list = listQuery.data as TableResult<any>
         const stackMembers:{ [index:string]: any } = {}
         const stacks: string[] = []
-        list.data.forEach(async(item:any, index:number) => {
+        list.data.forEach(async (item:any) => {
           if(item.isStack || item.formStacking){
-            stacks.push(item.serialNumber)          
+            stacks.push(item.serialNumber)
           }
         })
-        const allStacksMember:any = await Promise.all(stacks.map(id => 
+        const allStacksMember:any = await Promise.all(stacks.map(id =>
           fetchWithBQ(genStackMemberPayload(arg, id))
         ))
         stacks.forEach((id:string, index:number) => {
@@ -49,19 +51,29 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         return listQuery.data
           ? { data: aggregatedList }
           : { error: listQuery.error as FetchBaseQueryError }
+      },
+      keepUnusedDataFor: 0,
+      providesTags: [{ type: 'Switch', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'Delete Switch'
+          ]
+          showActivityMessage(msg, activities, () => {
+            api.dispatch(switchApi.util.invalidateTags([{ type: 'Switch', id: 'LIST' }]))
+          })
+        })
       }
     }),
-    stackMemberList: build.query<TableResult<any>, RequestPayload>({
+    deleteSwitches: build.mutation<any, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(
-          SwitchUrlsInfo.getMemberList,
-          params
-        )
+        const req = createHttpRequest(SwitchUrlsInfo.deleteSwitches, params)
         return {
           ...req,
           body: payload
         }
-      }
+      },
+      invalidatesTags: [{ type: 'Switch', id: 'LIST' }]
     }),
     switchDetailHeader: build.query<SwitchViewModel, RequestPayload>({
       query: ({ params }) => {
@@ -104,29 +116,29 @@ const genStackMemberPayload = (arg:RequestPayload<unknown>, serialNumber:string)
     ...createHttpRequest(SwitchUrlsInfo.getMemberList, arg.params),
     body: {
       fields: [
-        "activeUnitId",
-        "unitId",
-        "unitStatus",
-        "check-all",
-        "name",
-        "deviceStatus",
-        "model",
-        "activeSerial",
-        "switchMac",
-        "ipAddress",
-        "venueName",
-        "uptime",
-        "cog",
-        "id",
-        "serialNumber",
-        "venueId",
-        "switchName",
-        "configReady",
-        "syncedSwitchConfig",
-        "syncDataId",
-        "operationalWarning",
-        "cliApplied",
-        "suspendingDeployTime"
+        'activeUnitId',
+        'unitId',
+        'unitStatus',
+        'check-all',
+        'name',
+        'deviceStatus',
+        'model',
+        'activeSerial',
+        'switchMac',
+        'ipAddress',
+        'venueName',
+        'uptime',
+        'cog',
+        'id',
+        'serialNumber',
+        'venueId',
+        'switchName',
+        'configReady',
+        'syncedSwitchConfig',
+        'syncDataId',
+        'operationalWarning',
+        'cliApplied',
+        'suspendingDeployTime'
       ],
       filters: {
         activeUnitId: [serialNumber]
@@ -163,7 +175,7 @@ export const aggregatedSwitchListData = (switches: TableResult<any>,
 
 export const {
   useSwitchListQuery,
-  useStackMemberListQuery,
+  useDeleteSwitchesMutation,
   useSwitchDetailHeaderQuery,
   useSwitchPortlistQuery,
   useImportSwitchesMutation
