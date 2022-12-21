@@ -205,3 +205,18 @@ export const DisabledButton = styled(LayoutUI.ButtonSolid)`
 export const LinkButton = styled(Button)`
   font-weight: var(--acx-body-font-weight-bold);
 `
+
+export const ActivityMeta = styled(List.Item.Meta)`
+  .ant-list-item-meta-avatar {
+    margin-right: 1px;
+    flex: 1;
+  }
+  .ant-list-item-meta-content{
+    flex: 10;
+  }
+  .ant-list-item-meta-title,
+  .ant-list-item-meta-description {
+    font-size: var(--acx-body-4-font-size);
+    line-height: var(--acx-body-4-line-height);
+  }
+`

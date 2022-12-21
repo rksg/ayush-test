@@ -122,7 +122,7 @@ export default function ActivityHeaderButton () {
           const activity = item as Activity
           return (
             <UI.ListItem>
-              <UI.Meta
+              <UI.ActivityMeta
                 title={getDescription(activity.descriptionTemplate, activity.descriptionData)}
                 avatar={getIcon(activity.status)}
                 description={
