@@ -56,7 +56,7 @@ const RogueAPDetectionForm = (props: RogueAPDetectionFormProps) => {
     return {
       id: edit ? params.policyId : '',
       name: state.policyName,
-      description: '',
+      description: state.description,
       rules: state.rules,
       venues: state.venues
     }
