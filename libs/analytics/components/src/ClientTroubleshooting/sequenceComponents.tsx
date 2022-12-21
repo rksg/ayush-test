@@ -27,7 +27,7 @@ export const Container = styled.section.attrs((props: { layers: Array<unknown> }
 export const Layer = styled.div`
   grid-row: 1 / -1;
   width: 16px;
-  background-color: var(--acx-primary-white);
+  background-color: var(--acx-neutrals-70);
   justify-self: end;
   margin: 0 -16px;
   margin-left: 0;
@@ -35,11 +35,11 @@ export const Layer = styled.div`
   display: flex;
   align-items: center;
   span {
-    color: var(--acx-primary-black);
+    color: var(--acx-primary-white);
     font-size: 10px;
-    position: sticky;
-    top: 11px;
-    opacity: 0.9;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
   }
 `
 

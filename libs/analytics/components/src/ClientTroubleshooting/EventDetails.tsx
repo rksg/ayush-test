@@ -32,7 +32,7 @@ export const Details = ({ fields, openHandler, extra }: {
   extra?: ReactNode
 }) => {
   const { $t } = useIntl()
-  return <UI.DetailsWrapper>
+  return <UI.DetailsWrapper extra={extra}>
     <Row gutter={[0, 0]}>
       <Col span={24}>
         {openHandler && <UI.CloseRowWrapper onClick={openHandler}>

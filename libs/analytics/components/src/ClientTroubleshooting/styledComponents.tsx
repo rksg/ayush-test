@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import styled, { css } from 'styled-components/macro'
 
 import {  PlusSquareOutlined, MinusSquareOutlined } from '@acx-ui/icons'
@@ -100,9 +102,11 @@ export const Header = styled.h3`
 export const CloseRowWrapper = styled.div`
   text-align: end;
 `
-export const CloseIconContainer = styled.span`
+export const CloseIconContainer = styled.span.attrs((props: { extra?: ReactNode }) => props)`
   cursor: pointer;
   position: absolute;
+  left: ${props => props.extra ? '-3px' : 'auto'};
+  right: ${props => props.extra ? '-57%' : 'auto'};
 `
 
 export const VerticalLine = styled.div`
@@ -110,9 +114,9 @@ export const VerticalLine = styled.div`
   width: 100%;
   border-right: 1px solid var(--acx-neutrals-30);
 `
-export const DetailsWrapper = styled.div`
+export const DetailsWrapper = styled.div.attrs((props: { extra?: ReactNode }) => props)`
   width: 250px;
-  height: 100%;
+  overflow: ${props => props.extra ? 'scroll' : 'initial'};
 `
 
 export const DetailsRowLabel = styled.div`
