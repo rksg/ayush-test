@@ -19,7 +19,7 @@ export function PoolTable (props:{
   readonly?: Boolean
 }) {
   const { $t } = useIntl()
-  const { data, readonly=false } = props
+  const { data } = props
   const [ errorVisible, showError ] = useState<Boolean>(false)
   const errorMessage = defineMessage({
     defaultMessage: 'Only one record can be selected for editing!'
