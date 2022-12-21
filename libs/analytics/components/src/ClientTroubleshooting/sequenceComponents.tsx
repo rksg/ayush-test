@@ -5,8 +5,8 @@ export const Wrapper = styled.section.attrs((props: { layers: Array<unknown> }) 
   grid-gap: 0px 16px;
   padding-left: 8px;
   grid-template-columns:
-    minmax(140px, 260px)
-    ${props => Array(props.layers.length - 1).fill('minmax(20px, 60px)').join('\n')}
+    minmax(max-content, 200px)
+    ${props => Array(props.layers.length - 1).fill('minmax(max-content, 60px)').join('\n')}
   ;
 `
 
@@ -15,8 +15,8 @@ export const Container = styled.section.attrs((props: { layers: Array<unknown> }
   display: grid;
   grid-gap: 0px 16px;
   grid-template-columns:
-    minmax(140px, 260px)
-    ${props => Array(props.layers.length - 1).fill('minmax(20px, 60px)').join('\n')}
+    minmax(min-content, 200px)
+    ${props => Array(props.layers.length - 1).fill('minmax(max-content, 60px)').join('\n')}
   ;
 `
 
