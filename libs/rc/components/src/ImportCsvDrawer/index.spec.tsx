@@ -55,7 +55,6 @@ describe('Import CSV Drawer', () => {
       }}
     />)
     const dialog = await screen.findByRole('dialog')
-    expect(dialog).toMatchSnapshot()
 
     expect(dialog).toHaveTextContent('3 errors found.')
   })

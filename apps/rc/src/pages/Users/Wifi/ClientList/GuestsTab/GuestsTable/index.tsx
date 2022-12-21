@@ -139,7 +139,7 @@ export default function GuestsTable () {
         setImportVisible(false)
         handleGuestPassResponse(importResult.data as GuestResponse)
       }
-      if (importResult?.error && 'data' in importResult.error) {
+      if (importResult.isError && importResult?.error && 'data' in importResult.error) {
         showGuestErrorModal(importResult?.error.data as GuestErrorRes)
       }
     },[importResult])
@@ -272,7 +272,8 @@ export default function GuestsTable () {
           },
           {
             label: $t({ defaultMessage: 'Import from file' }),
-            onClick: () => setImportVisible(true)
+            onClick: () => setImportVisible(true),
+            disabled: allowedNetworkList.length === 0 ? true : false
           }
           ] : []}
         />

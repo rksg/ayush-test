@@ -416,7 +416,6 @@ export function GuestFields ({ withBasicFields = true }: { withBasicFields?: boo
           initialValue={'Day'}
           children={<Select
             options={timeTypeValidPassOptions}
-            defaultValue={timeTypeValidPassOptions[1].value}
           />}
           style={{ paddingLeft: '5px' }}
         />
@@ -561,7 +560,7 @@ export function showNoSendConfirm (callback: ()=>void) {
     customContent: {
       action: 'CUSTOM_BUTTONS',
       buttons: [{
-        text: 'cancel',
+        text: $t({ defaultMessage: 'Cancel' }),
         type: 'link', // TODO: will change after DS update
         key: 'cancel',
         closeAfterAction: true

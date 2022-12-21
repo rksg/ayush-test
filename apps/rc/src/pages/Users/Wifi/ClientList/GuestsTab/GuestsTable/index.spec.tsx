@@ -9,12 +9,14 @@ import {
   mockServer,
   render,
   screen,
-  waitForElementToBeRemoved
+  waitFor,
+  waitForElementToBeRemoved,
+  within
 } from '@acx-ui/test-utils'
 
 import {
+  AllowedNetworkList,
   GuestClient,
-  GuestNetworkList,
   RegenerateGuestPassword
 } from '../../../__tests__/fixtures'
 
@@ -25,6 +27,7 @@ jest.mock('socket.io-client')
 
 describe('Guest Table', () => {
   let params: { tenantId: string }
+  global.URL.createObjectURL = jest.fn()
 
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
@@ -35,7 +38,7 @@ describe('Guest Table', () => {
       ),
       rest.post(
         CommonUrlsInfo.getVMNetworksList.url,
-        (req, res, ctx) => res(ctx.json(GuestNetworkList))
+        (req, res, ctx) => res(ctx.json(AllowedNetworkList))
       ),
       rest.post(
         ClientUrlsInfo.generateGuestPassword.url,
@@ -341,6 +344,23 @@ describe('Guest Table', () => {
     }))
   })
 
+  it('should click "download" correctly', async () => {
+    render(
+      <Provider>
+        <GuestsTable />
+      </Provider>, {
+        route: { params, path: '/:tenantId/users/wifi/guests' },
+        wrapper: Provider
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    fireEvent.click(await screen.findByText('test3'))
+    await screen.findByText('Guest Details')
+    await fireEvent.mouseEnter(await screen.findByText(/actions/i))
+    fireEvent.click(await screen.findByText(/download information/i))
+  })
+
   it('should handle error for generate password', async () => {
     mockServer.use(
       rest.post(
@@ -369,7 +389,23 @@ describe('Guest Table', () => {
     expect(await screen.findByText('An error occurred')).toBeVisible()
   })
 
-  it('should click "download" correctly', async () => {
+  it('should show "Import from file" correctly', async () => {
+    mockServer.use(
+      rest.post(
+        ClientUrlsInfo.importGuestPass.url,
+        (req, res, ctx) => res(ctx.status(400), ctx.json({
+          requestId: '12b13705-fcf4-4fd2-94b9-2ef93106e396',
+          error: {
+            rootCauseErrors: [ {
+              code: 'GUEST-400002',
+              message: 'File does not contain any entries'
+            } ],
+            request: { },
+            status: 400
+          }
+        }))
+      )
+    )
     render(
       <Provider>
         <GuestsTable />
@@ -377,12 +413,27 @@ describe('Guest Table', () => {
         route: { params, path: '/:tenantId/users/wifi/guests' },
         wrapper: Provider
       })
+    const importBtn = await screen.findByRole('button', { name: 'Import from file' })
+    await waitFor(() => expect(importBtn).toBeEnabled())
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    fireEvent.click(importBtn)
+    const dialog = await screen.findByRole('dialog')
+    const csvFile = new File([''], 'guests_import_template.csv', { type: 'text/csv' })
+    // eslint-disable-next-line testing-library/no-node-access
+    await userEvent.upload(document.querySelector('input[type=file]')!, csvFile)
 
-    fireEvent.click(await screen.findByText('test3'))
-    await screen.findByText('Guest Details')
-    await fireEvent.mouseEnter(await screen.findByText(/actions/i))
-    fireEvent.click(await screen.findByText(/download information/i))
+    const allowedNetworkCombo =
+      await within(dialog).findByLabelText('Allowed Network', { exact: false })
+    fireEvent.mouseDown(allowedNetworkCombo)
+    const option = await screen.findAllByText('guest pass wlan1')
+    await userEvent.click(option[0])
+
+    fireEvent.click(await within(dialog).findByLabelText('Print Guest pass', { exact: false }))
+
+    fireEvent.click(await within(dialog).findByRole('button', { name: 'Import' }))
+
+    fireEvent.click(await screen.findByRole('button', { name: 'Yes, create guest pass' }))
+
+    await waitFor(() => expect(dialog).toHaveTextContent('File does not contain any entries'))
   })
 })
