@@ -33,5 +33,13 @@ describe('dateUtil', () => {
         startDate: '2021-12-31T00:00:00+00:00'
       })
     })
+    it('corrects range input to default one', () => {
+      const dateFilter = getDateRangeFilter('not valid' as DateRange)
+      expect(dateFilter).toMatchObject({
+        range: 'not valid',
+        endDate: '2022-01-01T00:00:00+00:00',
+        startDate: '2021-12-31T00:00:00+00:00'
+      })
+    })
   })
 })
