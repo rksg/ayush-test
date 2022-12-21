@@ -40,14 +40,13 @@ describe('EditEdge static routes', () => {
   })
 
   it('should create StaticRoutes successfully', async () => {
-    const { asFragment } = render(
+    render(
       <Provider>
         <StaticRoutes />
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit/routes' }
       })
-    await screen.findByText('10.100.120.0')
-    expect(asFragment()).toMatchSnapshot()
+    expect((await screen.findAllByRole('row')).length).toBe(2)
   })
 
   it('Add a route setting validation failed', async () => {
