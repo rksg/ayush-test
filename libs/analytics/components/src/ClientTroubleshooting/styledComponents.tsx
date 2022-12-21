@@ -106,7 +106,7 @@ export const CloseIconContainer = styled.span.attrs((props: { extra?: ReactNode 
   cursor: pointer;
   position: absolute;
   left: ${props => props.extra ? '-3px' : 'auto'};
-  right: ${props => props.extra ? '-57%' : 'auto'};
+  right: ${props => props.extra ? '-100%' : 'auto'};
 `
 
 export const VerticalLine = styled.div`

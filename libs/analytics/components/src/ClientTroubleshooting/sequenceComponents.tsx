@@ -3,11 +3,11 @@ import styled, { css } from 'styled-components/macro'
 export const Wrapper = styled.section.attrs((props: { layers: Array<unknown> }) => props)`
   display: grid;
   grid-gap: 0px 16px;
-  padding-left: 8px;
   grid-template-columns:
     minmax(max-content, 200px)
     ${props => Array(props.layers.length - 1).fill('minmax(max-content, 60px)').join('\n')}
   ;
+  padding-left: 24px;
 `
 
 export const Container = styled.section.attrs((props: { layers: Array<unknown> }) => props)`
@@ -30,6 +30,7 @@ export const Layer = styled.div`
   writing-mode: vertical-lr;
   display: flex;
   align-items: center;
+
   span {
     color: var(--acx-primary-white);
     font-size: 10px;
@@ -78,17 +79,15 @@ export const StepFlow = styled.div.attrs((props: { direction: string, state: str
     return stepFlowColor}}
 
   }
-` // before missing directions, flex-directions to flip based on left / right direction
+`
 
 export const StepLabel = styled.p.attrs((prop: { state: string }) => prop)`
   align-self: center;
-  padding: 0 8px;
-  margin: 0;
-  margin-left: -8px;
   grid-column: 1 / 2;
   font-size: 11px;
   color: var(--acx-primary-black);
   overflow: hidden;
   text-overflow: ellipsis;
   font-weight: ${props => props.state === 'failed' ? 'bold' : 'normal'};
+  margin-bottom: 0px;
 `

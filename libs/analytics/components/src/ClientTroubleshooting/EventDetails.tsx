@@ -36,7 +36,7 @@ export const Details = ({ fields, openHandler, extra }: {
     <Row gutter={[0, 0]}>
       <Col span={24}>
         {openHandler && <UI.CloseRowWrapper onClick={openHandler}>
-          <UI.CloseIconContainer>
+          <UI.CloseIconContainer extra={extra}>
             <CloseSymbol />
           </UI.CloseIconContainer>
         </UI.CloseRowWrapper>}
