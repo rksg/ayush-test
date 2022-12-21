@@ -1,15 +1,17 @@
 import React from 'react'
 
-import { IntlShape, MessageDescriptor, useIntl } from 'react-intl'
+import { IntlShape, useIntl } from 'react-intl'
 
 import * as UI         from './sequenceComponents'
 import { getRCCDFlow } from './sequenceMap'
 
 const fillOne = (index: number) => `${index + 1} / ${index + 2}`
-const translatedChildren = (layer: string | MessageDescriptor, apMac: string, intl: IntlShape) =>
+const translatedChildren = (
+  layer: string | (({ apMac }: { apMac: string }) => string),
+  apMac: string, intl: IntlShape) =>
   (typeof layer === 'string')
     ? intl.$t({ defaultMessage: '{layer}' }, { layer })
-    : intl.$t(layer, { apMac })
+    : layer({ apMac })
 
 export const ConnectionSequenceDiagram = ({ messageIds, failedMsgId, apMac }:
   {
