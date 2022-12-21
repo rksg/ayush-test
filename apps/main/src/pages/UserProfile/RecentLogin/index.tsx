@@ -1,17 +1,21 @@
 import { SortOrder } from 'antd/lib/table/interface'
 import { useIntl }   from 'react-intl'
 
-import {
-  // Loader,
-  Table,
-  TableProps
-} from '@acx-ui/components'
+// import {
+//   // Loader,
+//   Table,
+//   TableProps
+// } from '@acx-ui/components'
 // import {
 //   useEventListQuery
 // } from '@acx-ui/rc/services'
 // import {
 //   useTableQuery
 // } from '@acx-ui/rc/utils'
+import { Loader, Table, TableProps, Button  }      from '@acx-ui/components'
+import { useAdminLogsQuery }                       from '@acx-ui/rc/services'
+import { AdminLog, CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
+import { formatter }                               from '@acx-ui/utils'
 
 export interface EventList {
   adminName: string;
@@ -21,41 +25,70 @@ export interface EventList {
   message: string;
   raw_event: string;
   severity: string;
+  event_datetime: string;
 }
 
 export function RecentLogin () {
   const { $t } = useIntl()
+  const tableQuery = useTableQuery({
+    useQuery: useAdminLogsQuery,
+    defaultPayload: {
+      url: CommonUrlsInfo.getEventList.url,
+      fields: [
+        'event_datetime',
+        'severity',
+        'entity_type',
+        'entity_id',
+        'message',
+        'apMac',
+        'clientMac',
+        'apName',
+        'switchName',
+        'serialNumber',
+        'networkName',
+        'networkId',
+        'ssid',
+        'radio',
+        'raw_event',
+        'product',
+        'sourceType',
+        'adminName',
+        'clientName',
+        'userName',
+        'hostname',
+        'adminEmail',
+        'administratorEmail',
+        'venueName',
+        'venueId',
+        'apGroupId',
+        'apGroupName',
+        'floorPlanName',
+        'recipientName',
+        'transactionId'
+      ],
+      searchString: 'logged',
+      filters: {
+        entity_type: ['ADMIN', 'NOTIFICATION']
+      }
+    },
+    sorter: {
+      sortField: 'event_datetime',
+      sortOrder: 'DESC'
+    }
+  })
 
+  let dataS
+  if(tableQuery.data && tableQuery.data?.totalCount > 5) {
+    dataS = tableQuery.data?.data.slice(0, 5)
+  }
+  // tableQuery.data?.totalCount > 5 ? tableQuery.data?.data.slice(0, 5) 
   const columnsRecentLogin: TableProps<EventList>['columns'] = [
     {
-      title: $t({ defaultMessage: 'IP Address' }),
-      dataIndex: 'tenantName',
-      key: 'ipaddress',
-      defaultSortOrder: 'ascend' as SortOrder,
-      render: function () {
-        return (
-          '192.168.52.93'
-        )
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Location' }),
-      dataIndex: 'tenantEmail',
-      key: 'location',
-      render: function () {
-        return (
-          'Sunnyvale, CA, United States'
-        )
-      }
-    },
-    {
       title: $t({ defaultMessage: 'Date' }),
-      dataIndex: 'acceptInvite',
+      dataIndex: 'event_datetime',
       key: 'date',
-      render: function () {
-        return (
-          '5/16/2022 06:55'
-        )
+      render: function (_, row) {
+        return formatter('dateTimeFormatWithSeconds')(row.event_datetime)
       }
     }
   ]
@@ -77,15 +110,15 @@ export function RecentLogin () {
     // })
 
     return (
-      // <Loader states={[tableQuery]}>
-      <Table
-        columns={columnsRecentLogin}
-        // dataSource={tableQuery.data?.data}
-        style={{ width: '600px' }}
-        rowKey='id'
-        type={'form'}
-      />
-      // </Loader>
+      <Loader states={[tableQuery]}>
+        <Table
+          columns={columnsRecentLogin}
+          dataSource={tableQuery.data?.data}
+          style={{ width: '600px' }}
+          rowKey='id'
+          type={'form'}
+        />
+      </Loader>
     )
   }
 

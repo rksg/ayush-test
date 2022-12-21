@@ -24,16 +24,8 @@ export const RecoveryCodes = (props: RecoveryCodeDrawerProps) => {
 
   const onClose = () => {
     setVisible(false)
-    form.resetFields()
-  }
-
-  const resetFields = () => {
     setResetField(true)
-    onClose()
-  }
-
-  const handleSave = () => {
-    setVisible(false)
+    form.resetFields()
   }
 
   form.setFieldValue('result', recoveryCode.join('\n'))
@@ -64,21 +56,12 @@ export const RecoveryCodes = (props: RecoveryCodeDrawerProps) => {
     </label>
   </Form>
 
-  const footer = [
-    <Drawer.FormFooter
-      buttonLabel={{ save: $t({ defaultMessage: 'Ok' }) }}
-      onCancel={resetFields}
-      onSave={async () => handleSave()}
-    />
-  ]
-
   return (
     <Drawer
       title={$t({ defaultMessage: 'Recovery Codes' })}
       visible={visible}
       onClose={onClose}
       children={content}
-      footer={footer}
       destroyOnClose={resetField}
       width={'336'}
     />

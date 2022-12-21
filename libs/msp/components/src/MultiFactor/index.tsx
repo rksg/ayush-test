@@ -27,17 +27,32 @@ export const MultiFactor = () => {
   const [recoveryCodeVisible, setRecoveryCodeVisible] = useState(false)
   const [authAppVisible, setAuthAppVisible] = useState(false)
   const [otpVisible, setOtpVisible] = useState(false)
-  const [mfaStatus, setMfaStatus] = useState('Off')
+  const [mfaStatus, setMfaStatus] = useState(false)
   const [mfaRecoveryCode, setRecoveryCode] = useState([] as string[])
+  const [mfaUserId, setUserId] = useState('')
+  const [mfaSmsToggle, setSmsToggle] = useState(true)
+  const [mfaAuthAppToggle, setAuthAppToggle] = useState(true)
+
+  const smsSublabel = 'We will send you a code via SMS or Email'
+  const authAppSublabel = 'You’ll receive a login code via an authentication app'
 
   const { data } = useGetMfaTenantDetailsQuery({ params: { tenantId } })
 
   useEffect(() => {
     if (data) {
-      setMfaStatus(data.enabled ? 'On' : 'Off')
+      setMfaStatus(data.enabled)
       setRecoveryCode(data.recoveryCodes ? data.recoveryCodes : [])
+      setUserId(data.userId)
     }
   }, [data])
+
+  const onChangeSms = (checked: boolean) => {
+    // checked ? setSmsToggle(true) : setSmsToggle(false)
+  }
+
+  const onChangeAuthApp = (checked: boolean) => {
+    // setAuthAppToggle(checked)
+  }
 
   const AuthenticationMethod = () => {
     return (
@@ -45,32 +60,54 @@ export const MultiFactor = () => {
         <Col span={8}>
           <Subtitle level={5} >
             { $t({ defaultMessage: 'Set authentication method' }) }</Subtitle>
-          <StepsForm.FieldLabel width='275px'>
+          <UI.FieldLabel2 width='275px'>
             <OtpLabel>
               {$t({ defaultMessage: 'One Time Password (OTP)' })}
-          We will send you a code via SMS or Email
+              {smsSublabel}
             </OtpLabel>
             <Form.Item
               name='email_format'
               rules={[{
                 required: false
               }]}
-              children={<Switch></Switch>}
+              children={<Switch onChange={onChangeSms}></Switch>}
             />
-          </StepsForm.FieldLabel>
-          <StepsForm.FieldLabel width='275px'>
+            {mfaSmsToggle && <Form.Item
+              name='email_format'
+              rules={[{
+                required: false
+              }]}
+              children={<UI.FieldTextLink onClick={()=>setOtpVisible(true)}>
+                {$t({ defaultMessage: 'Set' })}
+              </UI.FieldTextLink>
+              }
+            />}
+          </UI.FieldLabel2>
+
+          <UI.FieldLabel2 width='275px'>
             <OtpLabel>
               {$t({ defaultMessage: 'Authentication App' })}
-          You’ll receive a login code via an authentication app
+              {authAppSublabel}
             </OtpLabel>
             <Form.Item
               name='email_format'
               rules={[{
                 required: false
               }]}
-              children={<Switch></Switch>}
+              children={<Switch onChange={onChangeAuthApp}></Switch>}
             />
-          </StepsForm.FieldLabel>
+            {mfaAuthAppToggle && <Form.Item
+              name='email_format'
+              rules={[{
+                required: false
+              }]}
+              children={<UI.FieldTextLink onClick={()=>setAuthAppVisible(true)}>
+                {$t({ defaultMessage: 'Set' })}
+              </UI.FieldTextLink>
+              }
+            />}
+          </UI.FieldLabel2>
+
         </Col>
       </Row>
     )
@@ -86,7 +123,7 @@ export const MultiFactor = () => {
             <OtpLabel>
               {$t({ defaultMessage: 'Recovery Codes' })}
               {'User recovery codes to log in if you can’t receive a verification code via ' +
-          'email, SMS, or an auth app'}
+               'email, SMS, or an auth app'}
             </OtpLabel>
             <Form.Item
               name='email_format'
@@ -124,13 +161,13 @@ export const MultiFactor = () => {
                   'If they turn it on, you will be able to manage here your authentication ' +
                   'settings' })}
                 children={
-                  <label>{mfaStatus}</label>
+                  <label>{mfaStatus ? 'On' : 'Off'}</label>
                 }
               />
             </Col>
           </Row>
-          {mfaStatus === 'On' && <AuthenticationMethod />}
-          {mfaStatus === 'On' && <BackupAuthenticationMethod />}
+          {mfaStatus && <AuthenticationMethod />}
+          {mfaStatus && <BackupAuthenticationMethod />}
         </StepsForm.StepForm>
       </StepsForm>
       {recoveryCodeVisible &&<RecoveryCodes
@@ -141,6 +178,7 @@ export const MultiFactor = () => {
       {authAppVisible &&<AuthApp
         visible={authAppVisible}
         setVisible={setAuthAppVisible}
+        userId={mfaUserId}
       />}
       {otpVisible &&<OneTimePassword
         visible={otpVisible}

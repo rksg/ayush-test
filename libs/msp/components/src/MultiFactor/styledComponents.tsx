@@ -26,3 +26,16 @@ const linkStyle = css`
 export const FieldTextLink = styled.div`
   ${linkStyle}
 `
+
+export const FieldLabel = styled.div<{ width: string }>`
+  font-size: var(--acx-body-4-font-size);
+  display: grid;
+  grid-template-columns: ${props => props.width} 1fr;
+  align-items: baseline;
+`
+export const FieldLabel2 = styled.div<{ width: string }>`
+  font-size: var(--acx-body-4-font-size);
+  display: grid;
+  grid-template-columns: ${props => props.width} 43px 20px;
+  align-items: baseline;
+`

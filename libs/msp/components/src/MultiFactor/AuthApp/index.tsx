@@ -1,23 +1,39 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
-import { Form }    from 'antd'
-import { useIntl } from 'react-intl'
+import { Form, Input } from 'antd'
+import { useIntl }     from 'react-intl'
 
 import {
   Drawer
 } from '@acx-ui/components'
+import {
+  useMfaRegisterPhoneMutation
+} from '@acx-ui/rc/services'
 
 interface AuthAppProps {
   visible: boolean
   setVisible: (visible: boolean) => void
+  userId: string
 }
 
 export const AuthApp = (props: AuthAppProps) => {
   const { $t } = useIntl()
 
-  const { visible, setVisible } = props
+  const { visible, setVisible, userId } = props
   const [resetField, setResetField] = useState(false)
   const [form] = Form.useForm()
+
+  // const { data } = useMfaRegisterPhoneMutation({ params: { userId: userId } })
+
+  const key = 'ASFVZB7MCMYICUNR'
+  const url =
+  'https://chart.googleapis.com/chart?chs=200x200&chld=M%%7C0&cht=qr&chl=otpauth%3A%2F%2Ftotp%2FRUCKUSCloud%3Anull%3Fsecret%3DASFVZB7MCMYICUNR%26issuer%3DRUCKUSCloud'
+  // useEffect(() => {
+  //   if (data) {
+  //     // setMfaStatus(data.enabled)
+  //     // setRecoveryCode(data.recoveryCodes ? data.recoveryCodes : [])
+  //   }
+  // }, [data])
 
   const onClose = () => {
     setVisible(false)
@@ -52,12 +68,16 @@ export const AuthApp = (props: AuthAppProps) => {
     <div style={{ marginTop: '13px' }}/><label >
       { $t({ defaultMessage: '3. Scan the QR code below:' }) }
     </label>
+    <div /><img style={{ marginLeft: '13px', marginTop: '10px', width: '135px' }}
+      src={url}
+      alt={url}
+    />
 
     <div style={{ marginTop: '13px' }}/><label style={{ marginLeft: '13px' }}>
       { $t({ defaultMessage: 'Or enter this key into the app:' }) }
     </label>
-    <div /><label style={{ marginLeft: '13px' }} >
-      { $t({ defaultMessage: '9DRCEV435RXEG3FD' }) }
+    <div /><label style={{ marginLeft: '13px', fontWeight: 'bold' }} >
+      { key }
     </label>
 
     <div style={{ marginTop: '13px' }}/><label >
@@ -66,11 +86,13 @@ export const AuthApp = (props: AuthAppProps) => {
     <div/><label style={{ marginLeft: '13px' }}>
       { $t({ defaultMessage: 'authentication app:' }) }
     </label>
+    {<Input style={{ marginLeft: '13px', marginTop: '5px', width: '255px' }}/>}
 
   </Form>
 
   const footer = [
     <Drawer.FormFooter
+      buttonLabel={{ save: $t({ defaultMessage: 'Confirm' }) }}
       onCancel={resetFields}
       onSave={async () => handleSave()}
     />

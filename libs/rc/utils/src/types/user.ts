@@ -58,3 +58,8 @@ export interface MfaDetailStatus {
   userId: string;
   enabled: boolean;
 }
+
+export interface MfaAuthApp {
+  key: string;
+  url: string;
+}

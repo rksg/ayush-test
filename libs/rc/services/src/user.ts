@@ -3,6 +3,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import {
   CommonUrlsInfo,
   createHttpRequest,
+  MfaAuthApp,
   MfaDetailStatus,
   ProfileDataToUpdate,
   RequestPayload,
@@ -109,21 +110,29 @@ export const userApi = baseUserApi.injectEndpoints({
         return userProfile
       }
     }),
-    getMfaMasterCode: build.query<UserProfile, RequestPayload>({
+    // getMfaMasterCode: build.query<UserProfile, RequestPayload>({
+    //   query: ({ params }) => {
+    //     const req = createHttpRequest(
+    //       UserUrlsInfo.getMfaMasterCode,
+    //       params
+    //     )
+    //     return {
+    //       ...req
+    //     }
+    //   },
+    //   transformResponse (userProfile: UserProfile) {
+    //     userProfile.initials =
+    //       userProfile.firstName[0].toUpperCase() + userProfile.lastName[0].toUpperCase()
+    //     userProfile.fullName = `${userProfile.firstName} ${userProfile.lastName}`
+    //     return userProfile
+    //   }
+    // }),
+    mfaRegisterPhone: build.mutation<MfaAuthApp, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(
-          UserUrlsInfo.getMfaMasterCode,
-          params
-        )
+        const req = createHttpRequest(UserUrlsInfo.mfaRegisterPhone, params)
         return {
           ...req
         }
-      },
-      transformResponse (userProfile: UserProfile) {
-        userProfile.initials =
-          userProfile.firstName[0].toUpperCase() + userProfile.lastName[0].toUpperCase()
-        userProfile.fullName = `${userProfile.firstName} ${userProfile.lastName}`
-        return userProfile
       }
     })
 
@@ -137,5 +146,6 @@ export const {
   useUpdateUserProfileMutation,
   useGetMfaTenantDetailsQuery,
   useGetMfaAdminDetailsQuery,
-  useGetMfaMasterCodeQuery
+  // useGetMfaMasterCodeQuery,
+  useMfaRegisterPhoneMutation
 } = userApi

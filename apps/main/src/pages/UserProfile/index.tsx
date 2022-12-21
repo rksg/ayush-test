@@ -276,36 +276,6 @@ export function UserProfile () {
 
   const SecurityTab = () => {
     return <MultiFactor/>
-    // return (
-    //   <StepsForm
-    //     buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
-    //     onFinish={async () => handleCancel()}
-    //     onCancel={async () => handleCancel()}
-    //   >
-    //     <StepsForm.StepForm>
-    //       <Row gutter={20}>
-    //         <Col span={8}>
-    //           <h4 ><b>{$t({ defaultMessage: 'Multi-Factor Authentication' })}</b></h4>
-
-    //           <Form.Item style={{ marginTop: '15px' }}
-    //             name='mfa_status'
-    //             label={$t({ defaultMessage: 'Multi-Factor Authentication' })}
-    //             tooltip={$t({ defaultMessage:
-    //               'This option is controlled by the Prime-Administrator(s) of this account.' +
-    //               'If they turn it on, you will be able to manage here your authentication ' +
-    //               'settings' })}
-    //             rules={[{
-    //               required: false
-    //             }]}
-    //             children={
-    //               <h4>Off</h4>
-    //             }
-    //           />
-    //         </Col>
-    //       </Row>
-    //     </StepsForm.StepForm>
-    //   </StepsForm>
-    // )
   }
 
   return (
@@ -338,9 +308,7 @@ export function UserProfile () {
         </Tabs.TabPane>
 
         <Tabs.TabPane
-          tab={<Tooltip title={$t(notAvailableMsg)}>
-            {$t({ defaultMessage: 'Recent Logins' })}
-          </Tooltip>}
+          tab={$t({ defaultMessage: 'Recent Logins' })}
           disabled={false}
           key='RecentLogins'>
           <RecentLogin />

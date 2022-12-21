@@ -21,7 +21,7 @@ export const OneTimePassword = (props: OneTimePasswordProps) => {
 
   const { visible, setVisible } = props
   const [resetField, setResetField] = useState(false)
-  const [modalVisible, setModalVisible] = useState(true)
+  const [modalVisible, setModalVisible] = useState(false)
   const [form] = Form.useForm()
 
   const onClose = () => {
