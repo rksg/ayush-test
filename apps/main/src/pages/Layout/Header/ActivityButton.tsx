@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 import { ClockCircleFilled } from '@ant-design/icons'
 import { Select }            from 'antd'
@@ -29,15 +29,21 @@ const getIcon = (
       return <InProgress />
     case 'FAILED':
       return <CancelCircleSolid />
+    case 'OFFLINE':
+      return <div />
   }
   return
 }
 
 const defaultPayload: {
   url: string
+  filters?: {
+    status?: string[]
+  }
   fields: string[]
 } = {
   url: CommonUrlsInfo.getActivityList.url,
+  filters: { status: ['all'] },
   fields: [
     'startDatetime',
     'endDatetime',
@@ -69,6 +75,13 @@ export default function ActivityHeaderButton () {
     }
   })
 
+  useEffect(()=>{
+    tableQuery.setPayload({
+      ...tableQuery.payload,
+      filters: status==='all' ? {} : { status: [status] }
+    })
+  }, [status])
+
   const activityList = <>
     <UI.FilterRow>
       <Select value={status}
@@ -79,16 +92,13 @@ export default function ActivityHeaderButton () {
         <Select.Option value={'all'}>
           { $t({ defaultMessage: 'All Statuses' }) }
         </Select.Option>
-        <Select.Option value={'Pending'}>
+        <Select.Option value={'PENDING'}>
           { $t({ defaultMessage: 'Pending' }) }
         </Select.Option>
-        <Select.Option value={'InProgress'}>
+        <Select.Option value={'INPROGRESS'}>
           { $t({ defaultMessage: 'In Progress' }) }
         </Select.Option>
-        <Select.Option value={'Failed'}>
-          { $t({ defaultMessage: 'Failed' }) }
-        </Select.Option>
-        <Select.Option value={'Completed'}>
+        <Select.Option value={'SUCCESS'}>
           { $t({ defaultMessage: 'Completed' }) }
         </Select.Option>
       </Select>

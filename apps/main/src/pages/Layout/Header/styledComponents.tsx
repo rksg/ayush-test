@@ -208,7 +208,7 @@ export const LinkButton = styled(Button)`
 
 export const ActivityMeta = styled(List.Item.Meta)`
   .ant-list-item-meta-avatar {
-    margin-right: 1px;
+    margin-right: 0px;
     flex: 1;
   }
   .ant-list-item-meta-content{
