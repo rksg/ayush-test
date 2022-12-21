@@ -128,6 +128,11 @@ export type RogueAPDetectionActionPayload = {
     policyName: string
   }
 } | {
+  type: RogueAPDetectionActionTypes.DESCRIPTION,
+  payload: {
+    description: string
+  }
+} | {
   type: RogueAPDetectionActionTypes.TAGS,
   payload: {
     tags: string[]

@@ -34,7 +34,12 @@ export function ClientsTab () {
           }}
         />
         <Tooltip
-          title={<FormattedMessage {...getSearchToolTipText()} />}
+          title={<FormattedMessage {...getSearchToolTipText()}
+            values={{
+              div: (contents) => <div>{contents}</div>,
+              ul: (contents) => <ul>{contents}</ul>,
+              li: (contents) => <li>{contents}</li>
+            }}/>}
           placement='bottom'
           style={{ gap: '10px' }}
         >
