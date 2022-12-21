@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import { ClockCircleFilled } from '@ant-design/icons'
 import { Select }            from 'antd'
@@ -16,8 +16,6 @@ import { useTenantLink, useNavigate }                                   from '@a
 import { formatter }                                                    from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
-
-const defaultArray: Activity[] = []
 
 const getIcon = (
   status: Activity['status']
@@ -71,18 +69,6 @@ export default function ActivityHeaderButton () {
     }
   })
 
-  const [tableData, setTableData] = useState(defaultArray)
-
-  useEffect(()=>{
-    if (tableQuery.data?.data) {
-      setTableData(tableQuery.data.data)
-    }
-
-    tableQuery.setPayload(tableQuery.payload)
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tableQuery.data, status])
-
   const activityList = <>
     <UI.FilterRow>
       <Select value={status}
@@ -131,7 +117,7 @@ export default function ActivityHeaderButton () {
             return tableQuery?.handleTableChange?.(pagination, {}, {}, extra)
           }
         }}
-        dataSource={tableData}
+        dataSource={tableQuery.data?.data}
         renderItem={(item) => {
           const activity = item as Activity
           return (

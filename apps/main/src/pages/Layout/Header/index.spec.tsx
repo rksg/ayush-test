@@ -216,7 +216,7 @@ describe('Header Component', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/' }
       })
-    const activityBtn = await screen.getByRole('button', { name: /clock\-circle/i })
+    const activityBtn = screen.getByRole('button', { name: /clock\-circle/i })
     await userEvent.click(activityBtn)
     expect(asFragment()).toMatchSnapshot()
     const cancelBtn = await screen.findByRole('button',{ name: 'Close' })
