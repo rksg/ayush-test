@@ -230,7 +230,7 @@ export const clientApi = baseClientApi.injectEndpoints({
     }),
     importGuestPass: build.mutation<{}, RequestFormData>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.importGuestPass, params, {
+        const req = createHttpRequest(ClientUrlsInfo.importGuestPass, params, {
           'Content-Type': undefined,
           'Accept': '*/*'
         })

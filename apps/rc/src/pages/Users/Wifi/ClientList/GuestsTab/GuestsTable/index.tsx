@@ -301,6 +301,7 @@ export default function GuestsTable () {
           maxEntries={250}
           temlateLink='assets/templates/guests_import_template.csv'
           visible={importVisible}
+          isLoading={importResult.isLoading}
           importError={importResult.error as FetchBaseQueryError}
           importRequest={(formData, values)=>{
             const formValues = values as Guest
@@ -308,9 +309,9 @@ export default function GuestsTable () {
               showNoSendConfirm(()=>{
                 importRequestHandler(formData, formValues)
               })
-              return
+            } else {
+              importRequestHandler(formData, formValues)
             }
-            importRequestHandler(formData, formValues)
           }}
           onClose={()=>setImportVisible(false)} >
           <GuestFields withBasicFields={false} />

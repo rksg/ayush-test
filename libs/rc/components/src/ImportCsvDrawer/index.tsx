@@ -41,6 +41,7 @@ interface ImportCsvDrawerProps extends DrawerProps {
   temlateLink: string
   maxSize: number
   maxEntries: number
+  isLoading?: boolean
   importError?: FetchBaseQueryError
   importRequest: (formData: FormData, values: object)=>void
   type: 'AP' | 'Switch' | 'GuestPass' | 'DPSK'
@@ -55,10 +56,9 @@ export function ImportCsvDrawer (props: ImportCsvDrawerProps) {
   const { $t } = useIntl()
   const [form] = Form.useForm()
 
-  const { maxSize, maxEntries, temlateLink, importError, importRequest } = props
+  const { maxSize, maxEntries, isLoading, temlateLink, importError, importRequest } = props
 
   const [fileDescription, setFileDescription] = useState<ReactNode>('')
-  const [confirmLoading, setConfirmLoading] = useState(false)
   const [formData, setFormData] = useState<FormData>()
 
   const bytesFormatter = formatter('bytesFormat')
@@ -67,7 +67,6 @@ export function ImportCsvDrawer (props: ImportCsvDrawerProps) {
     form.resetFields()
     setFormData(undefined)
     setFileDescription('')
-    setConfirmLoading(false)
   }, [form, props.visible])
 
   useEffect(()=>{
@@ -102,7 +101,6 @@ export function ImportCsvDrawer (props: ImportCsvDrawerProps) {
           {$t({ defaultMessage: 'See errors' })}
         </Typography.Link>}
       </>)
-      setConfirmLoading(false)
     }
   }, [$t, importError])
 
@@ -138,7 +136,6 @@ export function ImportCsvDrawer (props: ImportCsvDrawerProps) {
 
   const okHandler = () => {
     form.validateFields().then(values => {
-      setConfirmLoading(true)
       formData && importRequest(formData, values)
     }).catch(() => {})
   }
@@ -150,7 +147,7 @@ export function ImportCsvDrawer (props: ImportCsvDrawerProps) {
     footer={<div>
       <Button
         disabled={!formData}
-        loading={confirmLoading}
+        loading={isLoading}
         onClick={() => okHandler()}
         type={'secondary'}
       >

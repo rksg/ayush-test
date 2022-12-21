@@ -555,8 +555,9 @@ export function showNoSendConfirm (callback: ()=>void) {
   showActionModal({
     type: 'warning',
     title: $t({ defaultMessage: 'Guest pass won’t be printed or sent' }),
-    // eslint-disable-next-line max-len
-    content: $t({ defaultMessage: 'You haven’t selected to print or send the password to the guest. Create guest pass anyway?' }),
+    content: $t({ defaultMessage: `
+      You haven’t selected to print or send the password to the guest.
+      Create guest pass anyway?` }),
     customContent: {
       action: 'CUSTOM_BUTTONS',
       buttons: [{
@@ -582,8 +583,9 @@ export function showGuestErrorModal (errorRes: GuestErrorRes) {
     showActionModal({
       type: 'error',
       title: $t({ defaultMessage: 'Mobile Phone Already Registered' }),
-      // eslint-disable-next-line max-len
-      content: $t({ defaultMessage: 'A guest with the same mobile phone number already exists on the selected guest network. Please select a different network or change the guest\'s mobile phone number.' })
+      content: $t({ defaultMessage: `
+        A guest with the same mobile phone number already exists on the selected guest network.
+        Please select a different network or change the guest's mobile phone number.` })
     })
   } else {
     showActionModal({
