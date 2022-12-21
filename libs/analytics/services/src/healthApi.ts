@@ -125,7 +125,7 @@ export const healthApi = dataApi.injectEndpoints({
         }
       `,
         variables: {
-          path: payload.path,
+          path: [...payload.path, payload.filter?.networkNodes?.at(0)?.at(0)],
           start: payload.startDate,
           end: payload.endDate,
           granularity: payload.granularity ||
