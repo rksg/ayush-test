@@ -67,6 +67,7 @@ export function ImportCsvDrawer (props: ImportCsvDrawerProps) {
     form.resetFields()
     setFormData(undefined)
     setFileDescription('')
+    setConfirmLoading(false)
   }, [form, props.visible])
 
   useEffect(()=>{

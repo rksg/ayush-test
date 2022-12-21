@@ -250,14 +250,15 @@ export type GuestErrorRes = {
   requestId: string
 }
 
-export type GuestResponse = { requestId: string, response: Guest[] }
+export type GuestResponse = {
+  requestId: string,
+  response: Guest[] | { data: Guest[], downloadUrl: string } }
 
-export function GuestFields (props: { withBasicFields: boolean }) {
+export function GuestFields ({ withBasicFields = true }: { withBasicFields?: boolean }) {
   const { $t } = useIntl()
   const params = useParams()
-  const withBasicFields = props.withBasicFields
   const form = Form.useFormInstance()
-
+  // Don't disable phone and email if withBasicFields == false
   const [phoneNumberError, setPhoneNumberError] = useState(withBasicFields)
   const [emailError, setEmailError] = useState(withBasicFields)
 
@@ -540,7 +541,7 @@ export function AddGuestDrawer (props: AddGuestProps) {
       onClose={onClose}
       children={
         <Form layout='vertical' form={form} onFinish={onSave} data-testid='guest-form'>
-          <GuestFields withBasicFields={true} />
+          <GuestFields />
         </Form>
       }
       footer={<FooterDiv>{footer}</FooterDiv>}
@@ -663,16 +664,21 @@ export function useHandleGuestPassResponse (params: { tenantId: string }) {
   const handleGuestPassResponse = async (jsonGuest: GuestResponse) => {
     let printCondition = false
     let guestsArr: Guest[] = []
-    if (jsonGuest.response) {
-      printCondition = jsonGuest.response[0].deliveryMethods.indexOf('PRINT') !== -1
-      for (let i = 0; i < jsonGuest.response.length; i++) {
-        guestsArr[i] = { ...jsonGuest.response[i], langCode: '' }
+    let jsonGuestData = jsonGuest.response as Guest[]
+    if ('data' in jsonGuest.response) {
+      jsonGuestData = jsonGuest.response.data
+    }
+
+    if (jsonGuestData) {
+      printCondition = jsonGuestData[0].deliveryMethods.indexOf('PRINT') !== -1
+      for (let i = 0; i < jsonGuestData.length; i++) {
+        guestsArr[i] = { ...jsonGuestData[i], langCode: '' }
       }
     }
 
     if (printCondition) {
       const networkData = await getNetwork({
-        params: { tenantId: params.tenantId, networkId: jsonGuest.response[0].networkId } })
+        params: { tenantId: params.tenantId, networkId: jsonGuestData[0].networkId } })
       const langCode = (networkData?.data?.guestPortal?.guestPage?.langCode) || ''
       for (let i = 0; i < guestsArr.length; i++) {
         guestsArr[i].langCode = langCode

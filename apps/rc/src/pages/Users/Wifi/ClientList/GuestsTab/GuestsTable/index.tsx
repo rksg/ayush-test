@@ -44,6 +44,7 @@ import {
   GuestFields,
   GuestResponse,
   showGuestErrorModal,
+  showNoSendConfirm,
   useHandleGuestPassResponse
 } from './addGuestDrawer'
 
@@ -142,6 +143,22 @@ export default function GuestsTable () {
         showGuestErrorModal(importResult?.error.data as GuestErrorRes)
       }
     },[importResult])
+
+    const importRequestHandler = (formData: FormData, values: Guest) => {
+      // flat object (2 level)
+      Object.entries(values).forEach(([key, value])=>{
+        if (Array.isArray(value)) {
+          formData.append(key, value.join(','))
+        } else if (typeof value === 'object'){
+          Object.entries(value).forEach(([subKey, subValue])=>{
+            formData.append(`${key}.${subKey}`, subValue as string)
+          })
+        } else {
+          formData.append(key, value as string)
+        }
+      })
+      importCsv({ params, payload: formData })
+    }
 
     const columns: TableProps<Guest>['columns'] = [
       {
@@ -286,17 +303,14 @@ export default function GuestsTable () {
           visible={importVisible}
           importError={importResult.error as FetchBaseQueryError}
           importRequest={(formData, values)=>{
-            // flat object (2 level)
-            Object.entries(values).forEach(([key, value])=>{
-              if (typeof value === 'object') {
-                Object.entries(value).forEach(([subKey, subValue])=>{
-                  formData.append(`${key}.${subKey}`, subValue as string)
-                })
-              } else {
-                formData.append(key, value as string)
-              }
-            })
-            importCsv({ params, payload: formData })
+            const formValues = values as Guest
+            if(formValues.deliveryMethods.length === 0){
+              showNoSendConfirm(()=>{
+                importRequestHandler(formData, formValues)
+              })
+              return
+            }
+            importRequestHandler(formData, formValues)
           }}
           onClose={()=>setImportVisible(false)} >
           <GuestFields withBasicFields={false} />
