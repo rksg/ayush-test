@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 import { ApiInfo, createHttpRequest, RequestPayload } from '@acx-ui/rc/utils'
 
-const BASE_RELATIVE_URL = '/api/a4rc/explorer'
+export const BASE_RELATIVE_URL = '/api/a4rc/explorer'
 
 export const reportsBaseApi = createApi({
   baseQuery: fetchBaseQuery(),
