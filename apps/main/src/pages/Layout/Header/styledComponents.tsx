@@ -7,8 +7,8 @@ import {
 } from 'antd'
 import styled from 'styled-components/macro'
 
-import { LayoutUI, GridRow, GridCol, Drawer as AntdDrawer }               from '@acx-ui/components'
-import { WarningCircleSolid, CheckMarkCircleSolid, LogOut as AntdLogOut } from '@acx-ui/icons'
+import { LayoutUI, GridRow, GridCol, Drawer as AntdDrawer }                                     from '@acx-ui/components'
+import { WarningCircleSolid, WarningTriangleSolid, CheckMarkCircleSolid, LogOut as AntdLogOut } from '@acx-ui/icons'
 
 
 type CopyableTextProps = {
@@ -95,6 +95,10 @@ export const FilterRow = styled(SpaceBetween)`
 export const Meta = styled(List.Item.Meta)`
   .ant-list-item-meta-avatar {
     margin-right: 10px;
+    flex: 1;
+  }
+  .ant-list-item-meta-content{
+    flex: 10;
   }
   .ant-list-item-meta-title,
   .ant-list-item-meta-description {
@@ -108,7 +112,17 @@ export const WarningCircle = styled(WarningCircleSolid)`
     stroke: var(--acx-semantics-red-50);
   }
 `
-export const DeviceLink = styled.span`
+
+export const WarningTriang = styled(WarningTriangleSolid)`
+  path:nth-child(1) {
+    fill: var(--acx-accents-orange-30);
+  }
+  path:nth-child(3) {
+    stroke: var(--acx-accents-orange-30);
+  }
+`
+
+export const EmptyLink = styled.span`
   color: var(--acx-accents-blue-50);
 `
 export const ListTime = styled(SpaceBetween)`

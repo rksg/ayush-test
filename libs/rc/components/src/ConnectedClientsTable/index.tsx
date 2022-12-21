@@ -334,30 +334,41 @@ const defaultPayload = {
     'apName','clientVlan','networkId','switchName','healthStatusReason','lastUpdateTime']
 }
 
-export const ConnectedClientsTable = (props:{ showAllColumns?: boolean }) => {
+export const ConnectedClientsTable =
+(props: { showAllColumns?: boolean, searchString: string, setConnectedClientCount: (connectClientCount: number) => void }) => {
   const { $t } = useIntl()
-  const { showAllColumns } = props
+  const { showAllColumns, searchString, setConnectedClientCount } = props
   const releaseTag = useIsSplitOn(Features.USERS)
+
+  defaultPayload.searchString = searchString
+
   const ConnectedClientsTable = () => {
     const tableQuery = useTableQuery({
       useQuery: useGetClientListQuery,
       defaultPayload
     })
+
+    if(tableQuery.data?.data){
+      setConnectedClientCount(tableQuery.data?.totalCount)
+    }
+
     return (
-      <Loader states={[
-        tableQuery
-      ]}>
-        <Subtitle level={4}>
-          {$t({ defaultMessage: 'Connected Clients' })}
-        </Subtitle>
-        <Table
-          columns={getCols(useIntl(), releaseTag, showAllColumns)}
-          dataSource={tableQuery.data?.data}
-          pagination={tableQuery.pagination}
-          onChange={tableQuery.handleTableChange}
-          rowKey='clientMac'
-        />
-      </Loader>
+      <UI.ClientTableDiv>
+        <Loader states={[
+          tableQuery
+        ]}>
+          <Subtitle level={4}>
+            {$t({ defaultMessage: 'Connected Clients' })}
+          </Subtitle>
+          <Table
+            columns={getCols(useIntl(), releaseTag, showAllColumns)}
+            dataSource={tableQuery.data?.data}
+            pagination={tableQuery.pagination}
+            onChange={tableQuery.handleTableChange}
+            rowKey='clientMac'
+          />
+        </Loader>
+      </UI.ClientTableDiv>
     )
   }
 

@@ -7,18 +7,19 @@ exports[`Floor Plan Thumbnail Image should render correctly 1`] = `
   >
     <div
       active="0"
-      class="ant-card-grid sc-iBkjds zCSKy"
+      class="ant-card-grid sc-iBkjds fLxaat"
       data-testid="thumbnailBg"
     >
-      <div />
       <div
-        class="ant-image"
+        style="width: 100%; height: 53px; position: relative;"
       >
+        <div>
+           
+        </div>
         <img
           alt="Thumbnail for TEST_2"
-          class="ant-image-img"
           src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg"
-          style="height: 53px; width: 78px;"
+          style="width: 100%; height: 100%;"
         />
       </div>
     </div>

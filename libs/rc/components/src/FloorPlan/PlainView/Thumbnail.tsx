@@ -1,4 +1,3 @@
-import { Image }                                     from 'antd'
 import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
 import { FloorPlanDto, NetworkDeviceType, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
@@ -35,20 +34,20 @@ export default function Thumbnail (props: {
       hoverable={false}
       active={active}
       data-testid='thumbnailBg'>
-      <NetworkDevices
-        imageLoaded={true}
-        networkDevicesVisibility={networkDevicesVisibility}
-        selectedFloorPlan={floorPlan}
-        networkDevices={networkDevices}
-        contextAlbum={true}
-        galleryMode={false}
-        context=''/>
-      <Image
-        style={{ width: '78px', height: '53px' }}
-        preview={false}
-        src={floorPlan.imageUrl}
-        alt={$t(altMessage,
-          { floorPlanName: floorPlan?.name })}/>
+      <div style={{ width: '100%', height: '53px', position: 'relative' }}>
+        <NetworkDevices
+          networkDevicesVisibility={networkDevicesVisibility}
+          selectedFloorPlan={floorPlan}
+          networkDevices={networkDevices}
+          contextAlbum={true}
+          galleryMode={false}
+          context=''/>
+        <img
+          style={{ width: '100%', height: '100%' }}
+          src={floorPlan.imageUrl}
+          alt={$t(altMessage,
+            { floorPlanName: floorPlan?.name })}/>
+      </div>
     </UI.StyledCardGrid>
     <UI.ImageDesc key={floorPlan.name} active={active}>
       {floorPlan.name}

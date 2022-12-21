@@ -3,7 +3,7 @@
 exports[`Search Results should render tables correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
       class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
@@ -64,7 +64,7 @@ exports[`Search Results should render tables correctly 1`] = `
           >
             <svg
               class="ant-collapse-arrow"
-              data-testid="CollapseActive"
+              data-testid="CollapseInactive"
             />
           </div>
           <span
@@ -80,7 +80,7 @@ exports[`Search Results should render tables correctly 1`] = `
             class="ant-collapse-content-box"
           >
             <div
-              class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+              class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
             >
               <div
                 class="styledComponents__Wrapper-sc-1abm7iv-13 crtNbp"
@@ -722,7 +722,7 @@ exports[`Search Results should render tables correctly 1`] = `
           >
             <svg
               class="ant-collapse-arrow"
-              data-testid="CollapseActive"
+              data-testid="CollapseInactive"
             />
           </div>
           <span
@@ -738,7 +738,7 @@ exports[`Search Results should render tables correctly 1`] = `
             class="ant-collapse-content-box"
           >
             <div
-              class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+              class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
             >
               <div
                 class="styledComponents__Wrapper-sc-1abm7iv-13 crtNbp"
@@ -1767,7 +1767,7 @@ exports[`Search Results should render tables correctly 1`] = `
           >
             <svg
               class="ant-collapse-arrow"
-              data-testid="CollapseActive"
+              data-testid="CollapseInactive"
             />
           </div>
           <span
@@ -1783,7 +1783,7 @@ exports[`Search Results should render tables correctly 1`] = `
             class="ant-collapse-content-box"
           >
             <div
-              class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+              class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
             >
               <div
                 class="styledComponents__Wrapper-sc-1abm7iv-13 crtNbp"

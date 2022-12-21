@@ -84,7 +84,7 @@ const dashboardOverview = {
 }
 
 const alarmList = {
-  totalCount: 1,
+  totalCount: 2,
   page: 1,
   data: [
     {
@@ -95,6 +95,15 @@ const alarmList = {
       entityId: '272002000493',
       id: '272002000493_ap_status',
       message: '{ "message_template": "AP @@apName disconnected from the cloud controller." }'
+    },
+    {
+      severity: 'Critical',
+      entityId: '212002008925',
+      entityType: 'AP',
+      id: '212002008925_ap_status',
+      message: '{ "message_template": "AP @@apName disconnected from the cloud controller." }',
+      serialNumber: '212002008925',
+      startTime: 1670911389000
     }
   ],
   subsequentQueries: [
@@ -122,6 +131,13 @@ const alarmList = {
 const alarmMeta = {
   data: [
     {
+      venueName: 'test_US',
+      switchName: '212002008925',
+      id: '212002008925_ap_status',
+      isSwitchExists: false,
+      apName: 'UI_SDC_AP'
+    },
+    {
       venueName: 'test_amy',
       switchName: '272002000493',
       id: '272002000493_ap_status',
@@ -129,11 +145,7 @@ const alarmMeta = {
       apName: 'testamy_ap'
     }
   ],
-  fields: [
-    'venueName',
-    'apName',
-    'switchName'
-  ]
+  fields: ['venueName', 'apName', 'switchName']
 }
 
 describe('Header Component', () => {
