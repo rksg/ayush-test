@@ -108,3 +108,13 @@ export interface SwitchTransactionResp {
   requestId: string;
   response: Switch;
 }
+
+export interface SwitchStack {
+  key: string,
+  id: string,
+	activeSerial: string,
+	venueName: string,
+	serialNumber: string,
+  order?: number,
+  model: string
+}

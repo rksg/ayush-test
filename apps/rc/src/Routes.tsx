@@ -16,6 +16,7 @@ import { Provider }                          from '@acx-ui/store'
 import Edges                      from './pages/Devices/Edge'
 import AddEdge                    from './pages/Devices/Edge/AddEdge'
 import EditEdge                   from './pages/Devices/Edge/EdgeDetails/EditEdge'
+import { StackForm }              from './pages/Devices/Switch/StackForm'
 import SwitchDetails              from './pages/Devices/Switch/SwitchDetails'
 import SwitchesTable              from './pages/Devices/Switch/SwitchesTable'
 import ApDetails                  from './pages/Devices/Wifi/ApDetails'
@@ -98,6 +99,7 @@ function DeviceRoutes () {
         path='devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         element={<EditEdge />} />
       <Route path='devices/switch' element={<SwitchesTable />} />
+      <Route path='devices/switch/stack/add' element={<StackForm />} />
       <Route path='devices/edge/list' element={<Edges />} />
     </Route>
   )
