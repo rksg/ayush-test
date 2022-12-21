@@ -108,7 +108,7 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
   }
 
   const renderMaxNumberOfClients = function (value?: number) {
-    return value ? (value === -1) ? 'Unlimited' : value : '0'
+    return value ? (value === -1) ? $t({ defaultMessage: 'Unlimited' }) : value : '0'
   }
 
   const columns: TableProps<GuestClient>['columns'] = [
