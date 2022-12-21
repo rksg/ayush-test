@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { useEffect, useState } from 'react'
 
@@ -7,17 +8,17 @@ import { useIntl }                from 'react-intl'
 
 import { Button, cssStr }         from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { RadioSettingsChannels }  from '@acx-ui/rc/components'
 
-import { VenueEditContext } from '../../..'
+import { RadioSettingsChannels } from '../RadioSettingsChannels'
+
 import {
   ApRadioTypeDataKeyMap,
   ApRadioTypeEnum, ChannelBars,
   RadioChannel,
   SelectItemOption,
-  split5GChannels
-} from '../contents'
-
+  split5GChannels,
+  VenueRadioTypeDataKeyMap
+} from './RadioSettingsContents'
 import { RadioSettingsForm } from './RadioSettingsForm'
 
 
@@ -43,23 +44,34 @@ export function SingleRadioSettings (props:{
   inherit5G?: boolean,
   radioType: ApRadioTypeEnum,
   bandwidthOptions: SelectItemOption[],
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   supportChannels: any,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   editContext: React.Context<any>,
   onResetDefaultValue?: Function,
-  testId?: string
+  testId?: string,
+  isUseVenueSettings?: boolean,
+  supportDfsChannels?: any
 }) {
 
   const { $t } = useIntl()
   const form = Form.useFormInstance()
-  const { disable = false, inherit5G = false, context = 'venue', testId } = props
-  const { radioType, supportChannels, bandwidthOptions, editContext } = props
+  const {
+    disable = false,
+    inherit5G = false,
+    context = 'venue',
+    isUseVenueSettings = false,
+    testId } = props
+  const {
+    radioType,
+    supportChannels,
+    bandwidthOptions,
+    editContext,
+    supportDfsChannels } = props
   const isSupportRadio = bandwidthOptions?.length > 0
   const displayRadioBarSettings = ['5G', 'DFS']
-  const radioDataKey = ApRadioTypeDataKeyMap[radioType]
+  const radioDataKey = (context === 'venue') ?
+    VenueRadioTypeDataKeyMap[radioType] : ApRadioTypeDataKeyMap[radioType]
 
-  //const methodFieldName = [...radioDataKey, 'method']
+  const methodFieldName = [...radioDataKey, 'method']
   const channelBandwidthFieldName = [...radioDataKey, 'channelBandwidth']
   const allowedChannelsFieldName = [...radioDataKey, 'allowedChannels']
   const allowedIndoorChannelsFieldName = [...radioDataKey, 'allowedIndoorChannels']
@@ -76,6 +88,7 @@ export function SingleRadioSettings (props:{
   const [groupSize, setGroupSize] = useState(1)
   const [oldBandwidth, setOldBandwidth] = useState<string>()
   const [oldCombinChannels, setOldCombinChannels] = useState<boolean>()
+  const [oldChannelMethod, setOldChannelMethod] = useState<String>()
   const [channelErrMsg, setChannelErrMsg] = useState<string>()
   const [indoorChannelErrMsg, setIndoorChannelErrMsg] = useState<string>()
   const [outdoorChannelErrMsg, setOutdoorChannelErrMsg] = useState<string>()
@@ -125,14 +138,14 @@ export function SingleRadioSettings (props:{
   */
 
   const [
-    //channelMethod,
+    channelMethod,
     channelBandwidth,
     allowedChannels,
     allowedIndoorChannels,
     allowedOutdoorChannels,
     combinChannels
   ] = [
-    //useWatch<string>(methodFieldName),
+    useWatch<string>(methodFieldName),
     useWatch<string>(channelBandwidthFieldName),
     useWatch<string[]>(allowedChannelsFieldName),
     useWatch<string[]>(allowedIndoorChannelsFieldName),
@@ -161,8 +174,10 @@ export function SingleRadioSettings (props:{
 
     if (!isEmpty(supportChannels)) {
       const bandwidth = (channelBandwidth === 'AUTO')? 'auto' : channelBandwidth
+      const isRadio24G = radioType === ApRadioTypeEnum.Radio24G
+      const isManualSelect = channelMethod === 'MANUAL'
 
-      const gz = (radioType === ApRadioTypeEnum.Radio24G) ? 1 : HzToSizeMap[bandwidth]
+      const gz = (isRadio24G || isManualSelect) ? 1 : HzToSizeMap[bandwidth]
       setGroupSize(gz)
 
       if ( !hasIndoorBandwidth && !hasOutdoorBandwidth ) {
@@ -172,7 +187,7 @@ export function SingleRadioSettings (props:{
         const isShowChannelBar = showChannelBarRadios.includes(radioType)
         if (isShowChannelBar) {
           const chBars = Object.assign(channelBars, split5GChannels(availableCannels))
-          chBars.dfsChannels = []
+          chBars.dfsChannels = supportDfsChannels && supportDfsChannels[bandwidth] || []
           setIndoorChannelBars(chBars)
         }
 
@@ -183,6 +198,17 @@ export function SingleRadioSettings (props:{
           }
           setOldBandwidth(bandwidth)
         }
+
+        if (context === 'ap') {
+          if (oldChannelMethod && isManualSelect) {
+            form.setFieldValue(allowedChannelsFieldName, [])
+          }
+
+          if (oldChannelMethod !== channelMethod) {
+            setOldChannelMethod(channelMethod)
+          }
+        }
+
       } else {
         const { indoor, outdoor, dfs } = supportChannels
         const availableDfsChannels = dfs[bandwidth] || []
@@ -224,12 +250,25 @@ export function SingleRadioSettings (props:{
       }
     }
 
-  }, [supportChannels, channelBandwidth, radioType, allowIndoorForOutdoor, combinChannels])
+  }, [supportChannels, channelBandwidth, radioType,
+    allowIndoorForOutdoor, combinChannels, channelMethod])
+
 
   useEffect(() => {
     const validateChannels = (channelList: string[]) => {
       let errorMessage = ''
-      if (channelList && channelList.length < 2) {
+      if (!channelList) {
+        return errorMessage
+      }
+
+      const isManualSelect = channelMethod === 'MANUAL'
+      const channelLength = channelList.length || 0
+
+      if (isManualSelect) {
+        if (channelLength != 1) {
+          errorMessage = $t({ defaultMessage: 'Please select one channels' })
+        }
+      } else if (channelLength < 2) {
         errorMessage = $t({ defaultMessage: 'Please select at least two channels' })
       }
       return errorMessage
@@ -263,6 +302,8 @@ export function SingleRadioSettings (props:{
               radioDataKey={radioDataKey}
               disabled={inherit5G || disable}
               channelBandwidthOptions={bandwidthOptions}
+              context={context}
+              isUseVenueSettings={isUseVenueSettings}
             />
           </Col>
           { context === 'venue' && !inherit5G && !disable &&
@@ -322,8 +363,8 @@ export function SingleRadioSettings (props:{
                 channelList={channelList}
                 displayBarSettings={displayRadioBarSettings}
                 channelBars={channelBars}
-                disabled={inherit5G || disable}
-                editContext={VenueEditContext}
+                disabled={inherit5G || disable || isUseVenueSettings}
+                editContext={editContext}
               />
             </Col>
           </Row>
@@ -351,7 +392,7 @@ export function SingleRadioSettings (props:{
                 displayBarSettings={displayRadioBarSettings}
                 channelBars={indoorChannelBars}
                 disabled={inherit5G || disable}
-                editContext={VenueEditContext}
+                editContext={editContext}
               />
             </Col>
           </Row>
@@ -409,7 +450,7 @@ export function SingleRadioSettings (props:{
                 displayBarSettings={displayRadioBarSettings}
                 channelBars={indoorChannelBars}
                 disabled={inherit5G || disable}
-                editContext={VenueEditContext}
+                editContext={editContext}
               />
             </Col>
           </Row>

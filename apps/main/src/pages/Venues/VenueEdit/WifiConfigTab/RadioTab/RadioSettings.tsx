@@ -17,6 +17,12 @@ import styled       from 'styled-components/macro'
 import { Loader, StepsForm, StepsFormInstance, Tabs } from '@acx-ui/components'
 import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined }                 from '@acx-ui/icons'
+import { ApRadioTypeEnum,
+  channelBandwidth24GOptions,
+  channelBandwidth5GOptions,
+  channelBandwidth6GOptions,
+  SelectItemOption,
+  SingleRadioSettings }                               from '@acx-ui/rc/components'
 import {
   // useLazyApListQuery,
   // useGetVenueCapabilitiesQuery,
@@ -28,19 +34,12 @@ import {
   useUpdateVenueTripleBandRadioSettingsMutation
 } from '@acx-ui/rc/services'
 import {
-  VenueDefaultRegulatoryChannelsForm
+  VenueRadioCustomization
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
 import { VenueEditContext } from '../..'
 
-import {
-  ApRadioTypeEnum,
-  channelBandwidth24GOptions,
-  channelBandwidth5GOptions,
-  channelBandwidth6GOptions,
-  SelectItemOption } from './contents'
-import { SingleRadioSettings } from './RadioSettings/SingleRadioSettings'
 
 const displayWidth = '40px'
 const RadioLegends = styled.div`
@@ -86,7 +85,7 @@ export function RadioSettings () {
 
   const { tenantId, venueId } = useParams()
 
-  const formRef = useRef<StepsFormInstance<VenueDefaultRegulatoryChannelsForm>>()
+  const formRef = useRef<StepsFormInstance<VenueRadioCustomization>>()
   const [isTriBandRadio, setIsTriBandRadio] = useState(false)
   const [isDual5gMode, setIsDual5gMode] = useState(true)
 
@@ -214,7 +213,7 @@ export function RadioSettings () {
     // }catch(e){ return e }
     //}
 
-    const setRadioFormData = (data: VenueDefaultRegulatoryChannelsForm) => {
+    const setRadioFormData = (data: VenueRadioCustomization) => {
       setEditRadioContextData({ radioData: data })
       formRef?.current?.setFieldsValue(data)
 
@@ -258,7 +257,7 @@ export function RadioSettings () {
     setIsUpper5gInherit(e.target.value)
   }
 
-  const update5gData = (formData: VenueDefaultRegulatoryChannelsForm) => {
+  const update5gData = (formData: VenueRadioCustomization) => {
     const { radioParams50G } = formData
     const curForm = formRef.current
 
@@ -272,7 +271,7 @@ export function RadioSettings () {
     }
   }
 
-  const updateDual5gData = (formData: VenueDefaultRegulatoryChannelsForm) => {
+  const updateDual5gData = (formData: VenueRadioCustomization) => {
     const { radioParamsDual5G } = formData
     const curForm = formRef.current
 
@@ -322,7 +321,7 @@ export function RadioSettings () {
     }
   }
 
-  const update6gData = (formData: VenueDefaultRegulatoryChannelsForm) => {
+  const update6gData = (formData: VenueRadioCustomization) => {
     const { radioParams6G } = formData
     const curForm = formRef.current
     const isSupport6g = bandwidth6GOptions.length > 0
@@ -339,9 +338,7 @@ export function RadioSettings () {
   }
 
   const handleUpdateRadioSettings =
-  async (formData: VenueDefaultRegulatoryChannelsForm) => {
-    // eslint-disable-next-line no-console
-    console.log('handleUpdateRadioSettings')
+  async (formData: VenueRadioCustomization) => {
 
     update5gData(formData)
 
@@ -365,8 +362,6 @@ export function RadioSettings () {
   }
 
   const handleChange = () => {
-    // eslint-disable-next-line no-console
-    console.log('handleChange')
 
     setEditContextData({
       ...editContextData,

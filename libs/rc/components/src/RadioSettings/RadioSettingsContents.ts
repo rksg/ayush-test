@@ -27,6 +27,15 @@ export const channelSelectionMethodsOptions = [
   { label: defineMessage({ defaultMessage: 'Background Scanning' }), value: 'BACKGROUND_SCANNING' }
 ]
 
+export const apChannelSelectionMethodsOptions = channelSelectionMethodsOptions.concat([
+  { label: defineMessage({ defaultMessage: 'Manual channel selection' }), value: 'MANUAL' }
+])
+
+export const apChannelSelectionMethods6GOptions = [
+  { label: defineMessage({ defaultMessage: 'Channel Fly' }), value: 'CHANNELFLY' },
+  { label: defineMessage({ defaultMessage: 'Manual channel selection' }), value: 'MANUAL' }
+]
+
 export const channelBandwidth24GOptions = [
   { label: 'Auto', value: 'AUTO' },
   { label: '20 MHz', value: '20MHz' },
@@ -95,12 +104,20 @@ export enum ApRadioTypeEnum {
   RadioUpper5G = 'upper5G'
 }
 
-export const ApRadioTypeDataKeyMap = {
+export const VenueRadioTypeDataKeyMap = {
   [ApRadioTypeEnum.Radio24G]: ['radioParams24G'],
   [ApRadioTypeEnum.Radio5G]: ['radioParams50G'],
   [ApRadioTypeEnum.Radio6G]: ['radioParams6G'],
   [ApRadioTypeEnum.RadioLower5G]: ['radioParamsDual5G', 'radioParamsLower5G'],
   [ApRadioTypeEnum.RadioUpper5G]: ['radioParamsDual5G', 'radioParamsUpper5G']
+}
+
+export const ApRadioTypeDataKeyMap = {
+  [ApRadioTypeEnum.Radio24G]: ['apRadioParams24G'],
+  [ApRadioTypeEnum.Radio5G]: ['apRadioParams50G'],
+  [ApRadioTypeEnum.Radio6G]: ['apRadioParams6G'],
+  [ApRadioTypeEnum.RadioLower5G]: ['apRadioParamsDual5G', 'radioParamsLower5G'],
+  [ApRadioTypeEnum.RadioUpper5G]: ['apRadioParamsDual5G', 'radioParamsUpper5G']
 }
 
 export function split5GChannels (radio5GChannels: string[]) {

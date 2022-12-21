@@ -258,7 +258,9 @@ export interface ApModel {
 	simCardSecondaryRoaming: boolean,
 	supportChannel144: boolean,
 	supportDual5gMode: boolean,
-	supportTriRadio: boolean
+	supportTriRadio: boolean,
+  maxChannelization5G?: number,
+  maxChannelization6G?: number
 }
 
 export interface PingAp {

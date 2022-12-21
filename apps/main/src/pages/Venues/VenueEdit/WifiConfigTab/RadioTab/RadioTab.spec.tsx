@@ -2,13 +2,13 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                                     from '@acx-ui/feature-toggle'
-import { venueApi }                                                         from '@acx-ui/rc/services'
-import { CommonUrlsInfo, VenueDefaultRegulatoryChannelsForm, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                                  from '@acx-ui/store'
-import { mockServer, screen, render, within }                               from '@acx-ui/test-utils'
+import { useIsSplitOn }                                          from '@acx-ui/feature-toggle'
+import { venueApi }                                              from '@acx-ui/rc/services'
+import { CommonUrlsInfo, VenueRadioCustomization, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                       from '@acx-ui/store'
+import { mockServer, screen, render, within }                    from '@acx-ui/test-utils'
 
-import { VenueEditContext }       from '../..'
+import { VenueEditContext }        from '../..'
 import {
   venueData,
   venueSetting,
@@ -74,7 +74,7 @@ describe('RadioTab', () => {
         editRadioContextData: {
           apiApModels: externalAntennaApModels,
           apModels: externalAntennaApModels,
-          radioData: radioCustomizationData as VenueDefaultRegulatoryChannelsForm
+          radioData: radioCustomizationData as VenueRadioCustomization
         },
         setEditRadioContextData: jest.fn()
       }}>
@@ -128,7 +128,7 @@ describe('RadioTab', () => {
         editRadioContextData: {
           apiApModels: externalAntennaApModels,
           apModels: externalAntennaApModels,
-          radioData: radioCustomizationData as VenueDefaultRegulatoryChannelsForm
+          radioData: radioCustomizationData as VenueRadioCustomization
         },
         setEditRadioContextData: jest.fn()
       }}>
@@ -166,7 +166,7 @@ describe('RadioTab', () => {
 
           apiApModels: externalAntennaApModels,
           apModels: externalAntennaApModels,
-          radioData: radioCustomizationData as VenueDefaultRegulatoryChannelsForm
+          radioData: radioCustomizationData as VenueRadioCustomization
         },
         setEditRadioContextData: jest.fn()
       }}>

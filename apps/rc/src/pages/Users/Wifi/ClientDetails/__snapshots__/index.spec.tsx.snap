@@ -2053,119 +2053,17 @@ exports[`ClientDetails should render correctly 1`] = `
                             />
                             <g>
                               <path
-                                d="M-5 -8l5 0l0 16l-5 0Z"
-                                fill="none"
-                                transform="translate(7 686.6667)"
-                              />
-                              <text
-                                dominant-baseline="central"
-                                fill="#333333"
-                                style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
-                                text-anchor="end"
-                                transform="translate(7 686.6667)"
-                                xml:space="preserve"
-                              >
-                                6 GHz
-                              </text>
-                              <path
-                                d="M-5 -8l5 0l0 16l-5 0Z"
-                                fill="none"
-                                transform="translate(7 460)"
-                              />
-                              <text
-                                dominant-baseline="central"
-                                fill="#333333"
-                                style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
-                                text-anchor="end"
-                                transform="translate(7 460)"
-                                xml:space="preserve"
-                              >
-                                5 GHz
-                              </text>
-                              <path
-                                d="M-7 -8l7 0l0 16l-7 0Z"
-                                fill="none"
-                                transform="translate(7 233.3333)"
-                              />
-                              <text
-                                dominant-baseline="central"
-                                fill="#333333"
-                                style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
-                                text-anchor="end"
-                                transform="translate(7 233.3333)"
-                                xml:space="preserve"
-                              >
-                                2.4 GHz
-                              </text>
-                              <path
                                 d="M15 680.6667L15 692.6667L15 680.6667"
-                                fill="#ADCFFA"
+                                fill="none"
                               />
                               <path
                                 d="M15 454L1225.4 454A4 4 0 0 1 1229.4 458L1229.4 462A4 4 0 0 1 1225.4 466L15 466L15 454"
-                                fill="#5496EA"
+                                fill="none"
                               />
                               <path
                                 d="M15 227.3333L15 239.3333L15 227.3333"
-                                fill="#2565B6"
-                              />
-                              <path
-                                d="M0 -8l2 0l0 16l-2 0Z"
                                 fill="none"
-                                transform="translate(20 686.6667)"
                               />
-                              <path
-                                d="M0 -0.5l2 0l0 1l-2 0Z"
-                                fill="none"
-                                transform="translate(20 686.6667)"
-                              />
-                              <text
-                                dominant-baseline="central"
-                                fill="#333333"
-                                style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
-                                text-anchor="start"
-                                transform="translate(20 686.6667)"
-                              >
-                                --
-                              </text>
-                              <path
-                                d="M0 -8l6 0l0 16l-6 0Z"
-                                fill="none"
-                                transform="translate(1234.4 460)"
-                              />
-                              <path
-                                d="M0 -0.5l6 0l0 1l-6 0Z"
-                                fill="none"
-                                transform="translate(1234.4 460)"
-                              />
-                              <text
-                                dominant-baseline="central"
-                                fill="#333333"
-                                style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
-                                text-anchor="start"
-                                transform="translate(1234.4 460)"
-                              >
-                                1.44GB
-                              </text>
-                              <path
-                                d="M0 -8l2 0l0 16l-2 0Z"
-                                fill="none"
-                                transform="translate(20 233.3333)"
-                              />
-                              <path
-                                d="M0 -0.5l2 0l0 1l-2 0Z"
-                                fill="none"
-                                transform="translate(20 233.3333)"
-                              />
-                              <text
-                                dominant-baseline="central"
-                                fill="#333333"
-                                style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
-                                text-anchor="start"
-                                transform="translate(20 233.3333)"
-                              >
-                                --
-                              </text>
                               <path
                                 d="M-5 -5l10 0l0 10l-10 0Z"
                                 fill="rgb(0,0,0)"

@@ -1,5 +1,5 @@
-import { Form, Select, Slider, InputNumber, Space } from 'antd'
-import { useIntl }                                  from 'react-intl'
+import { Form, Slider, InputNumber, Space } from 'antd'
+import { useIntl }                          from 'react-intl'
 
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
@@ -10,8 +10,12 @@ import {
   SelectItemOption,
   bssMinRate6GOptions,
   mgmtTxRate6GOptions,
-  txPowerAdjustment6GOptions
-} from '../contents'
+  txPowerAdjustment6GOptions,
+  apChannelSelectionMethodsOptions,
+  apChannelSelectionMethods6GOptions
+} from './RadioSettingsContents'
+import { RadioFormSelect } from './styledComponents'
+
 
 
 const { useWatch } = Form
@@ -20,7 +24,9 @@ export function RadioSettingsForm (props:{
   radioType: ApRadioTypeEnum,
   radioDataKey: string[],
   disabled?: boolean,
-  channelBandwidthOptions: SelectItemOption[]
+  channelBandwidthOptions: SelectItemOption[],
+  context?: string
+  isUseVenueSettings?: boolean
 }) {
 
   const { $t } = useIntl()
@@ -29,7 +35,10 @@ export function RadioSettingsForm (props:{
   const { radioType,
     disabled = false,
     radioDataKey,
-    channelBandwidthOptions } = props
+    channelBandwidthOptions,
+    context = 'venue',
+    isUseVenueSettings = false
+  } = props
 
   /*
   const {
@@ -46,6 +55,11 @@ export function RadioSettingsForm (props:{
   const bssMinRate6gFieldName = [...radioDataKey, 'bssMinRate6G']
   const mgmtTxRate6gFieldName = [...radioDataKey, 'mgmtTxRate6G']
 
+  const channelSelectionOpts = (context === 'venue') ?
+    channelSelectionMethodsOptions :
+    (radioType === ApRadioTypeEnum.Radio6G) ?
+      apChannelSelectionMethods6GOptions : apChannelSelectionMethodsOptions
+
   const [channelMethod] = [useWatch<string>(methodFieldName)]
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -58,9 +72,12 @@ export function RadioSettingsForm (props:{
       <Form.Item
         label={$t({ defaultMessage: 'Channel selection method:' })}
         name={methodFieldName}>
-        <Select
-          disabled={disabled || radioType==='6G'}
-          options={channelSelectionMethodsOptions?.map(p =>
+        <RadioFormSelect
+          disabled={disabled || (context === 'venue' && radioType==='6G')}
+          bordered={!isUseVenueSettings}
+          showArrow={!isUseVenueSettings}
+          className={isUseVenueSettings? 'readOnly' : undefined}
+          options={channelSelectionOpts?.map(p =>
             ({ label: $t(p.label), value: p.value }))}
         />
       </Form.Item>
@@ -71,7 +88,7 @@ export function RadioSettingsForm (props:{
           'block' : 'none' }}
       >
         <Slider
-          disabled={disabled}
+          disabled={disabled || isUseVenueSettings}
           tipFormatter={formatter}
           style={{ width: '240px' }}
           min={1}
@@ -79,35 +96,44 @@ export function RadioSettingsForm (props:{
           marks={{ 1: '1%', 100: '100%' }}
         />
       </Form.Item>
-      <Space>
-        <Form.Item
-          label={$t({ defaultMessage: 'Run background scan every:' })}
-          name={scanIntervalFieldName}
-          rules={[
-            { required: true },
-            { type: 'number', min: 1 },
-            { type: 'number', max: 65535 }
-          ]}
-        >
-          <InputNumber disabled={disabled} min={1} max={65535}/>
-        </Form.Item>
-        <div style={{ marginLeft: '-72px', paddingTop: '5px' }}>
-          {$t({ defaultMessage: 'Seconds' })}
-        </div>
-      </Space>
+      {context === 'venue' &&
+        <Space>
+          <Form.Item
+            label={$t({ defaultMessage: 'Run background scan every:' })}
+            name={scanIntervalFieldName}
+            rules={[
+              { required: true },
+              { type: 'number', min: 1 },
+              { type: 'number', max: 65535 }
+            ]}
+          >
+            <InputNumber disabled={disabled} min={1} max={65535}/>
+          </Form.Item>
+          <div style={{ marginLeft: '-72px', paddingTop: '5px' }}>
+            {$t({ defaultMessage: 'Seconds' })}
+          </div>
+        </Space>
+      }
       <Form.Item
         label={$t({ defaultMessage: 'Bandwidth:' })}
         name={channelBandwidthFieldName}>
-        <Select
+        <RadioFormSelect
           disabled={disabled}
+          bordered={!isUseVenueSettings}
+          showArrow={!isUseVenueSettings}
+          open={isUseVenueSettings? false : undefined}
+          className={isUseVenueSettings? 'readOnly' : undefined}
           options={channelBandwidthOptions}
         />
       </Form.Item>
       <Form.Item
         label={$t({ defaultMessage: 'Transmit Power adjustment:' })}
         name={txPowerFieldName}>
-        <Select
+        <RadioFormSelect
           disabled={disabled}
+          bordered={!isUseVenueSettings}
+          showArrow={!isUseVenueSettings}
+          className={isUseVenueSettings? 'readOnly' : undefined}
           options={(radioType === ApRadioTypeEnum.Radio6G)?
             txPowerAdjustment6GOptions : txPowerAdjustmentOptions}
         />
@@ -117,16 +143,22 @@ export function RadioSettingsForm (props:{
         <Form.Item
           label={$t({ defaultMessage: 'BSS Min Rate:' })}
           name={bssMinRate6gFieldName}>
-          <Select
+          <RadioFormSelect
             disabled={disabled}
+            bordered={!isUseVenueSettings}
+            showArrow={!isUseVenueSettings}
+            className={isUseVenueSettings? 'readOnly' : undefined}
             options={bssMinRate6GOptions}
           />
         </Form.Item>
         <Form.Item
           label={$t({ defaultMessage: 'Mgmt Tx Rate:' })}
           name={mgmtTxRate6gFieldName}>
-          <Select
+          <RadioFormSelect
             disabled={disabled}
+            bordered={!isUseVenueSettings}
+            showArrow={!isUseVenueSettings}
+            className={isUseVenueSettings? 'readOnly' : undefined}
             options={mgmtTxRate6GOptions}
           />
         </Form.Item>
