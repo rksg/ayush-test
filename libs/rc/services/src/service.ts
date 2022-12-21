@@ -112,6 +112,19 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           ...l3AclPolicyListReq,
           body: payload
         }
+      },
+      providesTags: [{ type: 'Service', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const params = requestArgs.params as { requestId: string }
+          if (params.requestId) {
+            showActivityMessage(msg, [
+              'AddL3AclPolicy'
+            ],() => {
+              api.dispatch(serviceApi.util.invalidateTags([{ type: 'Service', id: 'LIST' }]))
+            }, params.requestId as string)
+          }
+        })
       }
     }),
     devicePolicyList: build.query<TableResult<DevicePolicy>, RequestPayload>({

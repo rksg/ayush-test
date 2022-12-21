@@ -698,9 +698,6 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     </Fieldset>
   </Form>
 
-  console.table(contentForm.getFieldsValue(), drawerForm.getFieldsValue())
-  console.log(layer3RuleList)
-
   return (
     <>
       <Row justify={'space-between'} style={{ width: '300px' }}>

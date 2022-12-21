@@ -18,7 +18,7 @@ import {
   showActivityMessage,
   AccessControlUrls,
   CommonResult,
-  l2AclPolicyInfoType
+  l2AclPolicyInfoType, l3AclPolicyInfoType, AvcApp, AvcCat
 } from '@acx-ui/rc/utils'
 
 export const basePolicyApi = createApi({
@@ -58,6 +58,25 @@ export const policyApi = basePolicyApi.injectEndpoints({
     getL2AclPolicy: build.query<l2AclPolicyInfoType, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(AccessControlUrls.getL2AclPolicy, params, RKS_NEW_UI)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+    }),
+    addL3AclPolicy: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AccessControlUrls.addL3AclPolicy, params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    getL3AclPolicy: build.query<l3AclPolicyInfoType, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(AccessControlUrls.getL3AclPolicy, params, RKS_NEW_UI)
         return {
           ...req
         }
@@ -121,15 +140,39 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    avcCatList: build.query<AvcCat[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const avcCatListReq = createHttpRequest(AccessControlUrls.getAvcCat, params)
+        return {
+          ...avcCatListReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    avcAppList: build.query<AvcApp[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const avcAppListReq = createHttpRequest(AccessControlUrls.getAvcApp, params)
+        return {
+          ...avcAppListReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'LIST' }]
     })
   })
 })
 
 
 export const {
+  useAvcCatListQuery,
+  useAvcAppListQuery,
   useAddRoguePolicyMutation,
   useAddL2AclPolicyMutation,
   useGetL2AclPolicyQuery,
+  useAddL3AclPolicyMutation,
+  useGetL3AclPolicyQuery,
   useGetRoguePolicyListQuery,
   useUpdateRoguePolicyMutation,
   useRoguePolicyQuery,

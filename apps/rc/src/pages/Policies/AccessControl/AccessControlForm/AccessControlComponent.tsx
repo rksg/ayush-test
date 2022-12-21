@@ -4,9 +4,10 @@ import { Form, Switch } from 'antd'
 import { useIntl }      from 'react-intl'
 import styled           from 'styled-components/macro'
 
-// import DeviceOSDrawer from './DeviceOSDrawer'
 import Layer2Drawer from './Layer2Drawer'
-// import Layer3Drawer   from './Layer3Drawer'
+import Layer3Drawer from './Layer3Drawer'
+// import DeviceOSDrawer from './DeviceOSDrawer'
+// import ApplicationsDrawer from './ApplicationsDrawer'
 const { useWatch } = Form
 
 const AccessComponentWrapper = styled.div`
@@ -66,7 +67,7 @@ const AccessControlComponent = () => {
             children={<Switch />}
           />
 
-          {enableLayer3 && '<Layer3Drawer />'}
+          {enableLayer3 && <Layer3Drawer />}
         </AccessComponentWrapper>
       </FieldLabel>
 

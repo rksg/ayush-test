@@ -55,6 +55,9 @@ const AccessControlSettingForm = () => {
               ruleList: [],
               defaultAccess: 'ALLOW',
               access: 'ALLOW'
+            },
+            applications: {
+              ruleList: []
             }
           }}
           children={<AccessControlComponent />}
