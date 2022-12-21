@@ -7,33 +7,17 @@ import { useIntl }           from 'react-intl'
 import {
   LayoutUI,
   Loader,
-  Tooltip,
-  Badge,
-  Button
+  Badge
 } from '@acx-ui/components'
 import { CancelCircleSolid, CheckMarkCircleSolid, Pending, InProgress } from '@acx-ui/icons'
 import { useActivitiesQuery }                                           from '@acx-ui/rc/services'
-import { Activity, CommonUrlsInfo, useTableQuery }                      from '@acx-ui/rc/utils'
+import { Activity, CommonUrlsInfo, useTableQuery, getDescription }      from '@acx-ui/rc/utils'
 import { useTenantLink, useNavigate }                                   from '@acx-ui/react-router-dom'
 import { formatter }                                                    from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
 const defaultArray: Activity[] = []
-
-const getDescription = (
-  descriptionTemplate: Activity['descriptionTemplate'],
-  descriptionData: Activity['descriptionData']
-) => {
-  const values = descriptionData?.reduce((agg, data) =>
-    ({ ...agg, [data.name]: data.value })
-  , {} as Record<string, string>)
-  let message = descriptionTemplate
-  message && message.match(new RegExp(/@@\w+/, 'g'))?.forEach(match => {
-    message = message.replace(match, values[match.replace('@@','')])
-  })
-  return message
-}
 
 const getIcon = (
   status: Activity['status']
@@ -122,13 +106,12 @@ export default function ActivityHeaderButton () {
           { $t({ defaultMessage: 'Completed' }) }
         </Select.Option>
       </Select>
-      <Button type='link'
+      <UI.LinkButton type='link'
         disabled={tableQuery.data?.totalCount === 0}
         size='small'
-        style={{ fontWeight: 'var(--acx-body-font-weight-bold)' }}
         onClick={() => navigate(basePath)}>
         {$t({ defaultMessage: 'View all activities' })}
-      </Button>
+      </UI.LinkButton>
     </UI.FilterRow>
     <Loader states={[tableQuery]}>
       <UI.ListTable
@@ -139,9 +122,7 @@ export default function ActivityHeaderButton () {
           onChange: (page, pageSize) => {
             const pagination = {
               current: page,
-              pageSize,
-              sortField: 'startDatetime',
-              sortOrder: 'DESC'
+              pageSize
             }
             const extra = {
               currentDataSource: [] as Activity[],
@@ -158,7 +139,8 @@ export default function ActivityHeaderButton () {
               <UI.Meta
                 title={getDescription(activity.descriptionTemplate, activity.descriptionData)}
                 avatar={getIcon(activity.status)}
-                description={<UI.ListTime>{formatter('calendarFormat')(activity.startDatetime)}</UI.ListTime>}
+                description={
+                  <UI.ListTime>{formatter('calendarFormat')(activity.startDatetime)}</UI.ListTime>}
               />
             </UI.ListItem>
           )}}

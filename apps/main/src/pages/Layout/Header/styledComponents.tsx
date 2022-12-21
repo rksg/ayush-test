@@ -187,3 +187,7 @@ export const DisabledButton = styled(LayoutUI.ButtonSolid)`
   color: var(--acx-neutrals-60) !important;
   background-color: var(--acx-neutrals-70);
 `
+
+export const LinkButton = styled(Button)`
+  font-weight: var(--acx-body-font-weight-bold);
+`

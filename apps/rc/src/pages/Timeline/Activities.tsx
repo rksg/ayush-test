@@ -2,10 +2,10 @@ import { useState } from 'react'
 
 import { defineMessage, useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps, Button }       from '@acx-ui/components'
-import { useActivitiesQuery }                      from '@acx-ui/rc/services'
-import { Activity, CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
-import { formatter }                               from '@acx-ui/utils'
+import { Loader, Table, TableProps, Button }                       from '@acx-ui/components'
+import { useActivitiesQuery }                                      from '@acx-ui/rc/services'
+import { Activity, CommonUrlsInfo, useTableQuery, getDescription } from '@acx-ui/rc/utils'
+import { formatter }                                               from '@acx-ui/utils'
 
 import { productMapping, severityMapping, statusMapping } from './mapping'
 import { TimelineDrawer }                                 from './TimelineDrawer'
@@ -35,20 +35,6 @@ const Activities = () => {
       sortOrder: 'DESC'
     }
   })
-
-  const getDescription = (
-    descriptionTemplate: Activity['descriptionTemplate'],
-    descriptionData: Activity['descriptionData']
-  ) => {
-    const values = descriptionData?.reduce((agg, data) =>
-      ({ ...agg, [data.name]: data.value })
-    , {} as Record<string, string>)
-    let message = descriptionTemplate
-    message && message.match(new RegExp(/@@\w+/, 'g'))?.forEach(match => {
-      message = message.replace(match, values[match.replace('@@','')])
-    })
-    return message
-  }
 
   const columns: TableProps<Activity>['columns'] = [
     {
