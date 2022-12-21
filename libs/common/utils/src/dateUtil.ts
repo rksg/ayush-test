@@ -9,6 +9,7 @@ export enum DateRange {
   custom = 'Custom',
 }
 
+type Ranges = Record<string, [moment.Moment, moment.Moment]>
 let ranges = defaultRanges()
 
 export const resetRanges = () => { ranges = defaultRanges() }
@@ -21,7 +22,7 @@ export function getDateRangeFilter (
   const [startDate, endDate] =
     range === DateRange.custom && start && end
       ? [start, end]
-      : (ranges as Record<string, [moment.Moment, moment.Moment]>)[range].map(
+      : ((ranges as Ranges)[range] ?? ranges[DateRange.last24Hours]).map(
         (date: moment.Moment) => date.format()
       )
   return { startDate, endDate, range }
