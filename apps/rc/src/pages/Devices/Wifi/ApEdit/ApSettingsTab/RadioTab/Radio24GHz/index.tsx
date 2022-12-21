@@ -96,9 +96,9 @@ export function Radio24GHz (props: { venueId: string, serialNumber: string }) {
       form.setFieldValue(['apRadioParams24G', 'allowedChannels'], allowedVenueChannels)
     }else{
       if(channelMethod === 'MANUAL'){
-        form.validateFields([['apRadioParams24G', 'allowedChannels']])
         form.setFieldValue(['apRadioParams24G', 'allowedChannels'],
           manualChannel!== 0 ? [manualChannel?.toString()] : [])
+        form.validateFields([['apRadioParams24G', 'allowedChannels']])
       }else{
         if(allowedChannels.length > 0){
           form.setFieldValue(['apRadioParams24G', 'allowedChannels'], allowedChannels)

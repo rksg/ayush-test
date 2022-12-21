@@ -41,6 +41,23 @@ describe('RogueAPDetectionReducer test', () => {
       tags: ['tag1', 'tag2', 'tag3']
     })
   })
+  it('should update the description data when DESCRIPTION action is dispatched', () => {
+    const initState = {} as RogueAPDetectionContextType
+
+    const action = {
+      type: RogueAPDetectionActionTypes.DESCRIPTION,
+      payload: {
+        description: 'desc1'
+      }
+    }
+
+    const updatedState = rogueAPDetectionReducer(initState, action as RogueAPDetectionActionPayload)
+
+    expect(updatedState).toEqual({
+      ...initState,
+      description: 'desc1'
+    })
+  })
   it('should update the rule when RULE related action is dispatched', () => {
     const initState = {} as RogueAPDetectionContextType
 
