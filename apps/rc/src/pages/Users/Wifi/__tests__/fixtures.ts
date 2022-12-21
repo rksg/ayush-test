@@ -14,7 +14,7 @@ export const GuestClient = {
       passDurationHours: 1,
       guestStatus: 'Expired',
       notes: '',
-      maxNumberOfClients: 'Unlimited'
+      maxNumberOfClients: -1
     },
     {
       name: 'test2',
