@@ -957,532 +957,9 @@ exports[`ClientDetails should navigate to troubleshooting tab correctly 1`] = `
     class="styledComponents__Spacer-sc-xov27h-1 ikA-dJH"
   />
   <div
-    class="ant-row"
-    style="margin: -8px -8px -8px -8px;"
-  >
-    <div
-      class="ant-col ant-col-18"
-      style="padding: 8px 8px 8px 8px;"
-    >
-      <div
-        class="ant-row"
-        style="margin: -8px -8px -8px -8px; justify-content: end;"
-      >
-        <div
-          class="ant-col ant-col-15"
-          style="padding: 8px 8px 8px 8px;"
-        >
-          <div
-            class="ant-row"
-            style="margin: -3px -3px -3px -3px; justify-content: end;"
-          >
-            <div
-              class="ant-col ant-col-8"
-              style="padding: 3px 3px 3px 3px;"
-            >
-              <div
-                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
-                style="max-width: 180px;"
-              >
-                <div
-                  class="ant-select-selector"
-                >
-                  <div
-                    class="ant-select-selection-overflow"
-                  >
-                    <div
-                      class="ant-select-selection-overflow-item ant-select-selection-overflow-item-suffix"
-                      style="opacity: 1; order: 0;"
-                    >
-                      <div
-                        class="ant-select-selection-search"
-                        style="width: 0px;"
-                      >
-                        <input
-                          aria-autocomplete="list"
-                          aria-controls="rc_select_TEST_OR_SSR_list"
-                          aria-expanded="false"
-                          aria-haspopup="listbox"
-                          aria-owns="rc_select_TEST_OR_SSR_list"
-                          autocomplete="off"
-                          class="ant-select-selection-search-input"
-                          id="rc_select_TEST_OR_SSR"
-                          readonly=""
-                          role="combobox"
-                          style="opacity: 0;"
-                          type="search"
-                          unselectable="on"
-                          value=""
-                        />
-                        <span
-                          aria-hidden="true"
-                          class="ant-select-selection-search-mirror"
-                        >
-                           
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <span
-                    class="ant-select-selection-placeholder"
-                  >
-                    All Categories
-                  </span>
-                </div>
-                <span
-                  aria-hidden="true"
-                  class="ant-select-arrow"
-                  style="user-select: none;"
-                  unselectable="on"
-                >
-                  <span
-                    aria-label="down"
-                    class="anticon anticon-down ant-select-suffix"
-                    role="img"
-                  >
-                    <svg
-                      aria-hidden="true"
-                      data-icon="down"
-                      fill="currentColor"
-                      focusable="false"
-                      height="1em"
-                      viewBox="64 64 896 896"
-                      width="1em"
-                    >
-                      <path
-                        d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
-                      />
-                    </svg>
-                  </span>
-                </span>
-              </div>
-            </div>
-            <div
-              class="ant-col ant-col-8"
-              style="padding: 3px 3px 3px 3px;"
-            >
-              <div
-                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
-                style="max-width: 180px;"
-              >
-                <div
-                  class="ant-select-selector"
-                >
-                  <div
-                    class="ant-select-selection-overflow"
-                  >
-                    <div
-                      class="ant-select-selection-overflow-item ant-select-selection-overflow-item-suffix"
-                      style="opacity: 1; order: 0;"
-                    >
-                      <div
-                        class="ant-select-selection-search"
-                        style="width: 0px;"
-                      >
-                        <input
-                          aria-autocomplete="list"
-                          aria-controls="rc_select_TEST_OR_SSR_list"
-                          aria-expanded="false"
-                          aria-haspopup="listbox"
-                          aria-owns="rc_select_TEST_OR_SSR_list"
-                          autocomplete="off"
-                          class="ant-select-selection-search-input"
-                          id="rc_select_TEST_OR_SSR"
-                          readonly=""
-                          role="combobox"
-                          style="opacity: 0;"
-                          type="search"
-                          unselectable="on"
-                          value=""
-                        />
-                        <span
-                          aria-hidden="true"
-                          class="ant-select-selection-search-mirror"
-                        >
-                           
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <span
-                    class="ant-select-selection-placeholder"
-                  >
-                    All Types
-                  </span>
-                </div>
-                <span
-                  aria-hidden="true"
-                  class="ant-select-arrow"
-                  style="user-select: none;"
-                  unselectable="on"
-                >
-                  <span
-                    aria-label="down"
-                    class="anticon anticon-down ant-select-suffix"
-                    role="img"
-                  >
-                    <svg
-                      aria-hidden="true"
-                      data-icon="down"
-                      fill="currentColor"
-                      focusable="false"
-                      height="1em"
-                      viewBox="64 64 896 896"
-                      width="1em"
-                    >
-                      <path
-                        d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
-                      />
-                    </svg>
-                  </span>
-                </span>
-              </div>
-            </div>
-            <div
-              class="ant-col ant-col-8"
-              style="padding: 3px 3px 3px 3px;"
-            >
-              <div
-                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
-                style="max-width: 180px;"
-              >
-                <div
-                  class="ant-select-selector"
-                >
-                  <div
-                    class="ant-select-selection-overflow"
-                  >
-                    <div
-                      class="ant-select-selection-overflow-item ant-select-selection-overflow-item-suffix"
-                      style="opacity: 1; order: 0;"
-                    >
-                      <div
-                        class="ant-select-selection-search"
-                        style="width: 0px;"
-                      >
-                        <input
-                          aria-autocomplete="list"
-                          aria-controls="rc_select_TEST_OR_SSR_list"
-                          aria-expanded="false"
-                          aria-haspopup="listbox"
-                          aria-owns="rc_select_TEST_OR_SSR_list"
-                          autocomplete="off"
-                          class="ant-select-selection-search-input"
-                          id="rc_select_TEST_OR_SSR"
-                          readonly=""
-                          role="combobox"
-                          style="opacity: 0;"
-                          type="search"
-                          unselectable="on"
-                          value=""
-                        />
-                        <span
-                          aria-hidden="true"
-                          class="ant-select-selection-search-mirror"
-                        >
-                           
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <span
-                    class="ant-select-selection-placeholder"
-                  >
-                    All Radios
-                  </span>
-                </div>
-                <span
-                  aria-hidden="true"
-                  class="ant-select-arrow"
-                  style="user-select: none;"
-                  unselectable="on"
-                >
-                  <span
-                    aria-label="down"
-                    class="anticon anticon-down ant-select-suffix"
-                    role="img"
-                  >
-                    <svg
-                      aria-hidden="true"
-                      data-icon="down"
-                      fill="currentColor"
-                      focusable="false"
-                      height="1em"
-                      viewBox="64 64 896 896"
-                      width="1em"
-                    >
-                      <path
-                        d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
-                      />
-                    </svg>
-                  </span>
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="ant-col ant-col-24"
-          style="padding: 8px 8px 8px 8px;"
-        >
-          <div
-            class="ant-collapse ant-collapse-icon-position-start ant-collapse-borderless ant-collapse-ghost"
-          >
-            <div
-              class="ant-collapse-item"
-            >
-              <div
-                aria-expanded="false"
-                class="ant-collapse-header"
-                role="button"
-                tabindex="0"
-              >
-                <div
-                  class="ant-collapse-expand-icon"
-                >
-                  <svg
-                    class="styledComponents__StyledPlusSquareOutlined-sc-hmshlr-7 iWQXdq ant-collapse-arrow"
-                    data-testid="PlusSquareOutlined"
-                  />
-                </div>
-                <span
-                  class="ant-collapse-header-text"
-                >
-                  <span
-                    class="styledComponents__TimelineTitle-sc-hmshlr-9 dVavPp"
-                  >
-                    Connection Events
-                  </span>
-                </span>
-              </div>
-            </div>
-            <div
-              class="ant-collapse-item"
-            >
-              <div
-                aria-expanded="false"
-                class="ant-collapse-header"
-                role="button"
-                tabindex="0"
-              >
-                <div
-                  class="ant-collapse-expand-icon"
-                >
-                  <svg
-                    class="styledComponents__StyledPlusSquareOutlined-sc-hmshlr-7 iWQXdq ant-collapse-arrow"
-                    data-testid="PlusSquareOutlined"
-                  />
-                </div>
-                <span
-                  class="ant-collapse-header-text"
-                >
-                  <span
-                    class="styledComponents__TimelineTitle-sc-hmshlr-9 dVavPp"
-                  >
-                    Roaming
-                  </span>
-                </span>
-              </div>
-            </div>
-            <div
-              class="ant-collapse-item"
-            >
-              <div
-                aria-expanded="false"
-                class="ant-collapse-header"
-                role="button"
-                tabindex="0"
-              >
-                <div
-                  class="ant-collapse-expand-icon"
-                >
-                  <svg
-                    class="styledComponents__StyledPlusSquareOutlined-sc-hmshlr-7 iWQXdq ant-collapse-arrow"
-                    data-testid="PlusSquareOutlined"
-                  />
-                </div>
-                <span
-                  class="ant-collapse-header-text"
-                >
-                  <span
-                    class="styledComponents__TimelineTitle-sc-hmshlr-9 dVavPp"
-                  >
-                    Connection Quality
-                  </span>
-                </span>
-              </div>
-            </div>
-            <div
-              class="ant-collapse-item"
-            >
-              <div
-                aria-expanded="false"
-                class="ant-collapse-header"
-                role="button"
-                tabindex="0"
-              >
-                <div
-                  class="ant-collapse-expand-icon"
-                >
-                  <svg
-                    class="styledComponents__StyledPlusSquareOutlined-sc-hmshlr-7 iWQXdq ant-collapse-arrow"
-                    data-testid="PlusSquareOutlined"
-                  />
-                </div>
-                <span
-                  class="ant-collapse-header-text"
-                >
-                  <span
-                    class="styledComponents__TimelineTitle-sc-hmshlr-9 dVavPp"
-                  >
-                    Network Incidents
-                  </span>
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
-      class="ant-col ant-col-6"
-      style="padding: 8px 8px 8px 8px;"
-    >
-      <div
-        class="styledComponents__History-sc-hmshlr-0 fbrcHL"
-      >
-        <div
-          class="styledComponents__HistoryHeader-sc-hmshlr-1 gxxomy"
-        >
-          <span
-            class="styledComponents__HistoryContentTitle-sc-hmshlr-3 kdrcWS"
-          >
-            History
-          </span>
-          <span
-            class="styledComponents__HistoryIcon-sc-hmshlr-4 bpPEdb"
-          >
-            <svg
-              data-testid="ArrowExpand"
-              style="transform: rotate(180deg); cursor: pointer; line-height: 20px;"
-            />
-          </span>
-        </div>
-        <div
-          class="styledComponents__HistoryContent-sc-hmshlr-2 cUGlmL"
-        >
-          <div
-            class="ant-list ant-list-split"
-          >
-            <div
-              class="ant-spin-nested-loading"
-            >
-              <div
-                class="ant-spin-container"
-              >
-                <ul
-                  class="ant-list-items"
-                >
-                  <li
-                    class="ant-list-item"
-                  >
-                    <div
-                      class="ant-list-item-meta"
-                    >
-                      <div
-                        class="ant-list-item-meta-avatar"
-                      >
-                        <span
-                          class="styledComponents__EventTypeIcon-sc-hmshlr-5 haoSVP"
-                          color="--acx-semantics-green-50"
-                        />
-                      </div>
-                      <div
-                        class="ant-list-item-meta-content"
-                      >
-                        <h4
-                          class="ant-list-item-meta-title"
-                        >
-                          06/07/2022 11:21:48
-                        </h4>
-                        <div
-                          class="ant-list-item-meta-description"
-                        >
-                          Infrastructure (Service availabilty)
-                        </div>
-                      </div>
-                    </div>
-                  </li>
-                  <li
-                    class="ant-list-item"
-                  >
-                    <div
-                      class="ant-list-item-meta"
-                    >
-                      <div
-                        class="ant-list-item-meta-avatar"
-                      >
-                        <span
-                          class="styledComponents__EventTypeIcon-sc-hmshlr-5 wBlry"
-                          color="--acx-neutrals-50"
-                        />
-                      </div>
-                      <div
-                        class="ant-list-item-meta-content"
-                      >
-                        <h4
-                          class="ant-list-item-meta-title"
-                        >
-                          06/07/2022 11:21:48
-                        </h4>
-                        <div
-                          class="ant-list-item-meta-description"
-                        >
-                          Client assiocated (802.11) @ Home_R860 (AA:BB:CC:DD:FF:GG)
-                        </div>
-                      </div>
-                    </div>
-                  </li>
-                  <li
-                    class="ant-list-item"
-                  >
-                    <div
-                      class="ant-list-item-meta"
-                    >
-                      <div
-                        class="ant-list-item-meta-avatar"
-                      >
-                        <span
-                          class="styledComponents__IncidentEvent-sc-hmshlr-6 hEsQOF"
-                          color="--acx-semantics-red-50"
-                        >
-                          P1
-                        </span>
-                      </div>
-                      <div
-                        class="ant-list-item-meta-content"
-                      >
-                        <h4
-                          class="ant-list-item-meta-title"
-                        >
-                          06/07/2022 11:21:48
-                        </h4>
-                        <div
-                          class="ant-list-item-meta-description"
-                        >
-                          Client assiocated (802.11) @ Home_R860 (AA:BB:CC:DD:FF:GG)
-                        </div>
-                      </div>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+    data-testid="analytics-ClientTroubleshooting"
+    title="ClientTroubleshooting"
+  />
 </DocumentFragment>
 `;
 
@@ -1804,19 +1281,474 @@ exports[`ClientDetails should render correctly 1`] = `
     class="styledComponents__Spacer-sc-xov27h-1 ikA-dJH"
   />
   <div
-    class="ant-row"
-    style="margin-left: -12px; margin-right: -12px;"
+    class="ant-row Grid__GridRow-sc-5irhjd-2"
+    style="margin: -10px -10px -10px -10px;"
   >
     <div
-      class="ant-col ant-col-18"
-      style="padding-left: 12px; padding-right: 12px;"
+      class="ant-col ant-col-18 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
     >
       <div
-        class="styledComponents__CardWrapper-sc-75u9lp-0 hIZIkF"
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
       >
         <div
-          class="styledComponents__Wrapper-sc-13w5wfx-4 dnleil"
-          type="solid-bg"
+          class="ant-row Grid__GridRow-sc-5irhjd-2"
+          style="margin: -10px -10px -10px -10px;"
+        >
+          <div
+            class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
+            style="padding: 10px 10px 10px 10px;"
+          >
+            <div
+              class="Grid__Container-sc-5irhjd-1 zzbxI"
+            >
+              <div
+                class="styledComponents__CardWrapper-sc-75u9lp-0 hIZIkF"
+              >
+                <div
+                  class="styledComponents__Wrapper-sc-13w5wfx-4 dnleil"
+                  type="solid-bg"
+                >
+                  <div
+                    class="ant-card"
+                  >
+                    <div
+                      class="ant-card-head"
+                    >
+                      <div
+                        class="ant-card-head-wrapper"
+                      >
+                        <div
+                          class="ant-card-head-title"
+                        >
+                          <div
+                            class="ant-space ant-space-horizontal ant-space-align-center"
+                          >
+                            <div
+                              class="ant-space-item"
+                            >
+                              <div
+                                class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="ant-card-extra"
+                        >
+                          <div
+                            class="ant-space ant-space-horizontal ant-space-align-center"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="ant-card-body"
+                    >
+                      <div
+                        class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+                      >
+                        <div
+                          class="ant-row Grid__GridRow-sc-5irhjd-2"
+                          style="margin: -10px -10px -10px -10px; flex-grow: 1;"
+                        >
+                          <div
+                            class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                            style="padding: 10px 10px 10px 10px;"
+                          >
+                            <div
+                              class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-75u9lp-1 gpuLvB"
+                            >
+                              <div
+                                class="styledComponents__Title-sc-75u9lp-2 kWZKtZ"
+                              >
+                                Current Status
+                              </div>
+                              <h2
+                                class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+                              >
+                                Disconnected
+                              </h2>
+                            </div>
+                          </div>
+                          <div
+                            class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                            style="padding: 10px 10px 10px 10px;"
+                          >
+                            <div
+                              class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-75u9lp-1 gpuLvB"
+                            >
+                              <div
+                                class="styledComponents__Title-sc-75u9lp-2 kWZKtZ"
+                              >
+                                APs Connected
+                              </div>
+                              <h2
+                                class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+                              >
+                                1
+                              </h2>
+                            </div>
+                          </div>
+                          <div
+                            class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                            style="padding: 10px 10px 10px 10px;"
+                          >
+                            <div
+                              class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-75u9lp-1 gpuLvB"
+                            >
+                              <div
+                                class="styledComponents__Title-sc-75u9lp-2 kWZKtZ"
+                              >
+                                Avg. Rate
+                              </div>
+                              <h2
+                                class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+                              >
+                                141 KB
+                              </h2>
+                            </div>
+                          </div>
+                          <div
+                            class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                            style="padding: 10px 10px 10px 10px;"
+                          >
+                            <div
+                              class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-75u9lp-1 gpuLvB"
+                            >
+                              <div
+                                class="styledComponents__Title-sc-75u9lp-2 kWZKtZ"
+                              >
+                                User Traffic
+                              </div>
+                              <h2
+                                class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+                              >
+                                1.44 GB
+                              </h2>
+                            </div>
+                          </div>
+                          <div
+                            class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                            style="padding: 10px 10px 10px 10px;"
+                          >
+                            <div
+                              class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-75u9lp-1 gpuLvB"
+                            >
+                              <div
+                                class="styledComponents__Title-sc-75u9lp-2 kWZKtZ"
+                              >
+                                Total Connected Time
+                              </div>
+                              <h2
+                                class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+                              >
+                                30 m 3 s
+                              </h2>
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="ant-row Grid__GridRow-sc-5irhjd-2"
+                          style="margin: -10px -10px -10px -10px; flex-grow: 1;"
+                        >
+                          <div
+                            class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                            style="padding: 10px 10px 10px 10px;"
+                          >
+                            <div
+                              class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-75u9lp-1 gpuLvB"
+                            >
+                              <div
+                                class="styledComponents__Title-sc-75u9lp-2 kWZKtZ"
+                              >
+                                Applications
+                              </div>
+                              <h2
+                                class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+                              >
+                                73
+                              </h2>
+                            </div>
+                          </div>
+                          <div
+                            class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                            style="padding: 10px 10px 10px 10px;"
+                          >
+                            <div
+                              class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-75u9lp-1 gpuLvB"
+                            >
+                              <div
+                                class="styledComponents__Title-sc-75u9lp-2 kWZKtZ"
+                              >
+                                Avg. Session Length
+                              </div>
+                              <h2
+                                class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+                              >
+                                -
+                              </h2>
+                            </div>
+                          </div>
+                          <div
+                            class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                            style="padding: 10px 10px 10px 10px;"
+                          >
+                            <div
+                              class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-75u9lp-1 gpuLvB"
+                            >
+                              <div
+                                class="styledComponents__Title-sc-75u9lp-2 kWZKtZ"
+                              >
+                                Sessions
+                              </div>
+                              <h2
+                                class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+                              >
+                                1
+                              </h2>
+                            </div>
+                          </div>
+                          <div
+                            class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                            style="padding: 10px 10px 10px 10px;"
+                          >
+                            <div
+                              class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-75u9lp-1 gpuLvB"
+                            >
+                              <div
+                                class="echarts-for-react "
+                                size-sensor-id="1"
+                                style="height: 160px; position: relative;"
+                              >
+                                <div
+                                  style="position: relative; overflow: hidden; width: 1280px; height: 800px;"
+                                >
+                                  <svg
+                                    baseProfile="full"
+                                    height="800"
+                                    style="position:absolute;left:0;top:0;user-select:none"
+                                    version="1.1"
+                                    width="1280"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                                  >
+                                    <rect
+                                      fill="none"
+                                      fill-opacity="1"
+                                      height="800"
+                                      id="0"
+                                      width="1280"
+                                      x="0"
+                                      y="0"
+                                    />
+                                    <g>
+                                      <path
+                                        d="M-5 -8l5 0l0 16l-5 0Z"
+                                        fill="none"
+                                        transform="translate(7 686.6667)"
+                                      />
+                                      <text
+                                        dominant-baseline="central"
+                                        fill="#333333"
+                                        style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                        text-anchor="end"
+                                        transform="translate(7 686.6667)"
+                                        xml:space="preserve"
+                                      >
+                                        6 GHz
+                                      </text>
+                                      <path
+                                        d="M-5 -8l5 0l0 16l-5 0Z"
+                                        fill="none"
+                                        transform="translate(7 460)"
+                                      />
+                                      <text
+                                        dominant-baseline="central"
+                                        fill="#333333"
+                                        style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                        text-anchor="end"
+                                        transform="translate(7 460)"
+                                        xml:space="preserve"
+                                      >
+                                        5 GHz
+                                      </text>
+                                      <path
+                                        d="M-7 -8l7 0l0 16l-7 0Z"
+                                        fill="none"
+                                        transform="translate(7 233.3333)"
+                                      />
+                                      <text
+                                        dominant-baseline="central"
+                                        fill="#333333"
+                                        style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                                        text-anchor="end"
+                                        transform="translate(7 233.3333)"
+                                        xml:space="preserve"
+                                      >
+                                        2.4 GHz
+                                      </text>
+                                      <path
+                                        d="M15 680.6667L15 692.6667L15 680.6667"
+                                        fill="#ADCFFA"
+                                      />
+                                      <path
+                                        d="M15 454L1225.4 454A4 4 0 0 1 1229.4 458L1229.4 462A4 4 0 0 1 1225.4 466L15 466L15 454"
+                                        fill="#5496EA"
+                                      />
+                                      <path
+                                        d="M15 227.3333L15 239.3333L15 227.3333"
+                                        fill="#2565B6"
+                                      />
+                                      <path
+                                        d="M0 -8l2 0l0 16l-2 0Z"
+                                        fill="none"
+                                        transform="translate(20 686.6667)"
+                                      />
+                                      <path
+                                        d="M0 -0.5l2 0l0 1l-2 0Z"
+                                        fill="none"
+                                        transform="translate(20 686.6667)"
+                                      />
+                                      <text
+                                        dominant-baseline="central"
+                                        fill="#333333"
+                                        style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
+                                        text-anchor="start"
+                                        transform="translate(20 686.6667)"
+                                      >
+                                        --
+                                      </text>
+                                      <path
+                                        d="M0 -8l6 0l0 16l-6 0Z"
+                                        fill="none"
+                                        transform="translate(1234.4 460)"
+                                      />
+                                      <path
+                                        d="M0 -0.5l6 0l0 1l-6 0Z"
+                                        fill="none"
+                                        transform="translate(1234.4 460)"
+                                      />
+                                      <text
+                                        dominant-baseline="central"
+                                        fill="#333333"
+                                        style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
+                                        text-anchor="start"
+                                        transform="translate(1234.4 460)"
+                                      >
+                                        1.44GB
+                                      </text>
+                                      <path
+                                        d="M0 -8l2 0l0 16l-2 0Z"
+                                        fill="none"
+                                        transform="translate(20 233.3333)"
+                                      />
+                                      <path
+                                        d="M0 -0.5l2 0l0 1l-2 0Z"
+                                        fill="none"
+                                        transform="translate(20 233.3333)"
+                                      />
+                                      <text
+                                        dominant-baseline="central"
+                                        fill="#333333"
+                                        style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
+                                        text-anchor="start"
+                                        transform="translate(20 233.3333)"
+                                      >
+                                        --
+                                      </text>
+                                      <path
+                                        d="M-5 -5l10 0l0 10l-10 0Z"
+                                        fill="rgb(0,0,0)"
+                                        fill-opacity="0"
+                                        stroke="#ccc"
+                                        stroke-width="0"
+                                        transform="translate(1260 5)"
+                                      />
+                                    </g>
+                                  </svg>
+                                </div>
+                                <div
+                                  class=""
+                                />
+                                <object
+                                  class="size-sensor-object"
+                                  data="about:blank"
+                                  style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+                                  tabindex="-1"
+                                  type="text/html"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                            style="padding: 10px 10px 10px 10px;"
+                          >
+                            <div
+                              class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-75u9lp-1 gpuLvB"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
+            style="padding: 10px 10px 10px 10px;"
+          >
+            <div
+              class="Grid__Container-sc-5irhjd-1 zzbxI"
+              style="height: 292px; background: rgb(247, 247, 247);"
+            >
+              TODO: Top 10 Applications by traffic volume
+            </div>
+          </div>
+          <div
+            class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
+            style="padding: 10px 10px 10px 10px;"
+          >
+            <div
+              class="Grid__Container-sc-5irhjd-1 zzbxI"
+              style="height: 292px;"
+            >
+              <div
+                data-testid="analytics-TrafficByUsage"
+                title="TrafficByUsage"
+              />
+            </div>
+          </div>
+          <div
+            class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
+            style="padding: 10px 10px 10px 10px;"
+          >
+            <div
+              class="Grid__Container-sc-5irhjd-1 zzbxI"
+              style="height: 292px;"
+            >
+              <div
+                data-testid="analytics-TrafficByBand"
+                title="TrafficByBand"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+      >
+        <div
+          class="styledComponents__Wrapper-sc-13w5wfx-4 lhrXqm"
+          type="default"
         >
           <div
             class="ant-card"
@@ -1855,304 +1787,12 @@ exports[`ClientDetails should render correctly 1`] = `
               class="ant-card-body"
             >
               <div
-                class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+                class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
               >
-                <div
-                  class="ant-row Grid__GridRow-sc-5irhjd-2"
-                  style="margin: -10px -10px -10px -10px; flex-grow: 1;"
-                >
-                  <div
-                    class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
-                    style="padding: 10px 10px 10px 10px;"
-                  >
-                    <div
-                      class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-75u9lp-1 gpuLvB"
-                    >
-                      <div
-                        class="styledComponents__Title-sc-75u9lp-2 kWZKtZ"
-                      >
-                        Current Status
-                      </div>
-                      <h2
-                        class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
-                      >
-                        Disconnected
-                      </h2>
-                    </div>
-                  </div>
-                  <div
-                    class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
-                    style="padding: 10px 10px 10px 10px;"
-                  >
-                    <div
-                      class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-75u9lp-1 gpuLvB"
-                    >
-                      <div
-                        class="styledComponents__Title-sc-75u9lp-2 kWZKtZ"
-                      >
-                        APs Connected
-                      </div>
-                      <h2
-                        class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
-                      >
-                        1
-                      </h2>
-                    </div>
-                  </div>
-                  <div
-                    class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
-                    style="padding: 10px 10px 10px 10px;"
-                  >
-                    <div
-                      class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-75u9lp-1 gpuLvB"
-                    >
-                      <div
-                        class="styledComponents__Title-sc-75u9lp-2 kWZKtZ"
-                      >
-                        Avg. Rate
-                      </div>
-                      <h2
-                        class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
-                      >
-                        141 KB
-                      </h2>
-                    </div>
-                  </div>
-                  <div
-                    class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
-                    style="padding: 10px 10px 10px 10px;"
-                  >
-                    <div
-                      class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-75u9lp-1 gpuLvB"
-                    >
-                      <div
-                        class="styledComponents__Title-sc-75u9lp-2 kWZKtZ"
-                      >
-                        User Traffic
-                      </div>
-                      <h2
-                        class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
-                      >
-                        1.44 GB
-                      </h2>
-                    </div>
-                  </div>
-                  <div
-                    class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
-                    style="padding: 10px 10px 10px 10px;"
-                  >
-                    <div
-                      class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-75u9lp-1 gpuLvB"
-                    >
-                      <div
-                        class="styledComponents__Title-sc-75u9lp-2 kWZKtZ"
-                      >
-                        Total Connected Time
-                      </div>
-                      <h2
-                        class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
-                      >
-                        30 m 3 s
-                      </h2>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="ant-row Grid__GridRow-sc-5irhjd-2"
-                  style="margin: -10px -10px -10px -10px; flex-grow: 1;"
-                >
-                  <div
-                    class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
-                    style="padding: 10px 10px 10px 10px;"
-                  >
-                    <div
-                      class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-75u9lp-1 gpuLvB"
-                    >
-                      <div
-                        class="styledComponents__Title-sc-75u9lp-2 kWZKtZ"
-                      >
-                        Applications
-                      </div>
-                      <h2
-                        class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
-                      >
-                        73
-                      </h2>
-                    </div>
-                  </div>
-                  <div
-                    class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
-                    style="padding: 10px 10px 10px 10px;"
-                  >
-                    <div
-                      class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-75u9lp-1 gpuLvB"
-                    >
-                      <div
-                        class="styledComponents__Title-sc-75u9lp-2 kWZKtZ"
-                      >
-                        Avg. Session Length
-                      </div>
-                      <h2
-                        class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
-                      >
-                        -
-                      </h2>
-                    </div>
-                  </div>
-                  <div
-                    class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
-                    style="padding: 10px 10px 10px 10px;"
-                  >
-                    <div
-                      class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-75u9lp-1 gpuLvB"
-                    >
-                      <div
-                        class="styledComponents__Title-sc-75u9lp-2 kWZKtZ"
-                      >
-                        Sessions
-                      </div>
-                      <h2
-                        class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
-                      >
-                        1
-                      </h2>
-                    </div>
-                  </div>
-                  <div
-                    class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
-                    style="padding: 10px 10px 10px 10px;"
-                  >
-                    <div
-                      class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-75u9lp-1 gpuLvB"
-                    >
-                      <div
-                        class="echarts-for-react "
-                        size-sensor-id="1"
-                        style="height: 160px; position: relative;"
-                      >
-                        <div
-                          style="position: relative; overflow: hidden; width: 1280px; height: 800px;"
-                        >
-                          <svg
-                            baseProfile="full"
-                            height="800"
-                            style="position:absolute;left:0;top:0;user-select:none"
-                            version="1.1"
-                            width="1280"
-                            xmlns="http://www.w3.org/2000/svg"
-                            xmlns:xlink="http://www.w3.org/1999/xlink"
-                          >
-                            <rect
-                              fill="none"
-                              fill-opacity="1"
-                              height="800"
-                              id="0"
-                              width="1280"
-                              x="0"
-                              y="0"
-                            />
-                            <g>
-                              <path
-                                d="M15 680.6667L15 692.6667L15 680.6667"
-                                fill="none"
-                              />
-                              <path
-                                d="M15 454L1225.4 454A4 4 0 0 1 1229.4 458L1229.4 462A4 4 0 0 1 1225.4 466L15 466L15 454"
-                                fill="none"
-                              />
-                              <path
-                                d="M15 227.3333L15 239.3333L15 227.3333"
-                                fill="none"
-                              />
-                              <path
-                                d="M-5 -5l10 0l0 10l-10 0Z"
-                                fill="rgb(0,0,0)"
-                                fill-opacity="0"
-                                stroke="#ccc"
-                                stroke-width="0"
-                                transform="translate(1260 5)"
-                              />
-                            </g>
-                          </svg>
-                        </div>
-                        <div
-                          class=""
-                        />
-                        <object
-                          class="size-sensor-object"
-                          data="about:blank"
-                          style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
-                          tabindex="-1"
-                          type="text/html"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
-                    style="padding: 10px 10px 10px 10px;"
-                  >
-                    <div
-                      class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-75u9lp-1 gpuLvB"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
-      class="ant-col ant-col-6"
-      style="padding-left: 12px; padding-right: 12px;"
-    >
-      <div
-        class="styledComponents__Wrapper-sc-13w5wfx-4 lhrXqm"
-        type="default"
-      >
-        <div
-          class="ant-card"
-        >
-          <div
-            class="ant-card-head"
-          >
-            <div
-              class="ant-card-head-wrapper"
-            >
-              <div
-                class="ant-card-head-title"
-              >
-                <div
-                  class="ant-space ant-space-horizontal ant-space-align-center"
-                >
-                  <div
-                    class="ant-space-item"
-                  >
-                    <div
-                      class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
-                    />
-                  </div>
-                </div>
-              </div>
-              <div
-                class="ant-card-extra"
-              >
-                <div
-                  class="ant-space ant-space-horizontal ant-space-align-center"
+                <form
+                  class="ant-form ant-form-horizontal styledComponents__Form-sc-75u9lp-3 gatxQg"
                 />
               </div>
-            </div>
-          </div>
-          <div
-            class="ant-card-body"
-          >
-            <div
-              class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
-            >
-              <form
-                class="ant-form ant-form-horizontal styledComponents__Form-sc-75u9lp-3 gatxQg"
-              />
             </div>
           </div>
         </div>

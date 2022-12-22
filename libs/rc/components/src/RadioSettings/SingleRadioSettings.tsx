@@ -187,7 +187,7 @@ export function SingleRadioSettings (props:{
         const isShowChannelBar = showChannelBarRadios.includes(radioType)
         if (isShowChannelBar) {
           const chBars = Object.assign(channelBars, split5GChannels(availableCannels))
-          chBars.dfsChannels = supportDfsChannels && supportDfsChannels[bandwidth] || []
+          chBars.dfsChannels = (supportDfsChannels && supportDfsChannels[bandwidth]) || []
           setIndoorChannelBars(chBars)
         }
 
@@ -265,7 +265,7 @@ export function SingleRadioSettings (props:{
       const channelLength = channelList.length || 0
 
       if (isManualSelect) {
-        if (channelLength != 1) {
+        if (channelLength !== 1) {
           errorMessage = $t({ defaultMessage: 'Please select one channels' })
         }
       } else if (channelLength < 2) {

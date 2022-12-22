@@ -17,7 +17,7 @@ describe('Collapse', () => {
 
   it('should render default collapse correctly', async () => {
     render(<SampleCollapse />)
-    expect(await screen.findAllByTestId('CollapseActive')).toHaveLength(2)
+    expect(await screen.findAllByTestId('CollapseInactive')).toHaveLength(2)
   })
 
   it('should render active collapse correctly', async () => {

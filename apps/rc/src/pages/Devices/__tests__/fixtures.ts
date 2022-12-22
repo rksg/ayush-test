@@ -2301,7 +2301,7 @@ export const validRadioChannels = {
   }
 }
 
-export const apRadioCustomization = {
+export const venueRadioCustomization = {
   radioParams6G: {
     method: 'CHANNELFLY',
     scanInterval: 10,
@@ -2574,4 +2574,90 @@ export const deviceAps = {
       deviceModelType: 'Indoor'
     }
   ]
+}
+
+export const portlistData = {
+  data: [{
+    adminStatus: 'Up',
+    broadcastIn: '436434',
+    broadcastOut: '2432',
+    cloudPort: true,
+    crcErr: '0',
+    deviceStatus: 'ONLINE',
+    id: '38-45-3b-3b-b8-10_1-1-1',
+    inDiscard: '0',
+    inErr: '0',
+    lagId: '0',
+    lagName: '',
+    multicastIn: '348193',
+    multicastOut: '19730',
+    name: 'GigabitEthernet1/1/1',
+    neighborName: 'HP1920S_6F_DC_F3_8U_10.206.2.4',
+    opticsType: '1 Gbits per second copper',
+    outErr: '0',
+    poeEnabled: true,
+    poeTotal: 0,
+    poeType: 'n/a',
+    poeUsed: 0,
+    portId: '38-45-3b-3b-b8-10_1-1-1',
+    portIdentifier: '1/1/1',
+    portSpeed: '1 Gb/sec',
+    signalIn: 0,
+    signalOut: 0,
+    stack: false,
+    status: 'Up',
+    switchMac: '38:45:3b:3b:b8:10',
+    switchModel: 'ICX7650-48ZP',
+    switchName: 'ICX7650-48ZP Router',
+    switchSerial: '38:45:3b:3b:b8:10',
+    switchUnitId: 'EZC4312T00C',
+    syncedSwitchConfig: true,
+    unTaggedVlan: '1',
+    unitState: 'ONLINE',
+    unitStatus: 'Standalone',
+    usedInFormingStack: false,
+    vlanIds: '1'
+  }, {
+    adminStatus: 'Up',
+    broadcastIn: '0',
+    broadcastOut: '0',
+    cloudPort: false,
+    crcErr: '0',
+    deviceStatus: 'ONLINE',
+    id: '38-45-3b-3b-b8-11_1-1-2',
+    inDiscard: '0',
+    inErr: '0',
+    lagId: '1',
+    lagName: 'test1',
+    multicastIn: '0',
+    multicastOut: '0',
+    name: 'GigabitEthernet1/1/2',
+    neighborName: '',
+    opticsType: '1 Gbits per second copper',
+    outErr: '0',
+    poeEnabled: true,
+    poeTotal: 0,
+    poeType: 'n/a',
+    poeUsed: 0,
+    portId: '38-45-3b-3b-b8-11_1-1-2',
+    portIdentifier: '1/1/2',
+    portSpeed: 'link down or no traffic',
+    signalIn: 0,
+    signalOut: 0,
+    stack: false,
+    status: 'Down',
+    switchMac: '38:45:3b:3b:b8:10',
+    switchModel: 'ICX7650-48ZP',
+    switchName: 'ICX7650-48ZP Router',
+    switchSerial: '38:45:3b:3b:b8:10',
+    switchUnitId: 'EZC4312T00C',
+    syncedSwitchConfig: true,
+    unTaggedVlan: '1',
+    unitState: 'ONLINE',
+    unitStatus: 'Standalone',
+    usedInFormingStack: false,
+    vlanIds: '1'
+  }],
+  page: 1,
+  totalCount: 2
 }

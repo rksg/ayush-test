@@ -263,6 +263,11 @@ export function ApPacketCaptureForm () {
               <Form.Item
                 name='frameTypeFilter'
                 label={$t({ defaultMessage: 'Frame Type Filter:' })}
+                rules={[{
+                  required: true,
+                  message: $t({ defaultMessage: 'You must select at least one frame type' +
+                      ' to filter by' })
+                }]}
                 initialValue={['MANAGEMENT', 'CONTROL', 'DATA']}
                 children={
                   <Checkbox.Group style={{ display: 'grid', rowGap: '5px' }}>

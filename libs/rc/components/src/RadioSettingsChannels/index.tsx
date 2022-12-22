@@ -4,7 +4,8 @@ import { Space, Form }                        from 'antd'
 import { intersection, findIndex, map, uniq } from 'lodash'
 import { useIntl }                            from 'react-intl'
 
-import { Tooltip } from '@acx-ui/components'
+import { Tooltip }              from '@acx-ui/components'
+import { validateRadioChannel } from '@acx-ui/rc/utils'
 
 import { BarButton5G, BarButtonDFS, CheckboxGroup } from './styledComponents'
 
@@ -29,6 +30,7 @@ export function RadioSettingsChannels (props: {
   groupSize: number,
   channelList: RadioChannel[],
   displayBarSettings: string[],
+  channelMethod?: string,
   disabled?: boolean,
   readonly?: boolean,
   channelBars: {
@@ -94,6 +96,7 @@ export function RadioSettingsChannels (props: {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleClickGroupChannels = async (checkedValues: any) => {
+    form.validateFields([props.formName])
     const selectedValue = await getSelectedValues(channelGroupValueList, checkedValues)
     form.setFieldValue(props.formName, selectedValue)
     updateChannelGroupList(selectedValue)
@@ -134,6 +137,10 @@ export function RadioSettingsChannels (props: {
     <Space style={{ display: 'flex' }}>
       <Form.Item
         name={props.formName}
+        validateFirst
+        rules={[
+          { validator: (_, value) => validateRadioChannel(props.channelMethod, value) }
+        ]}
         children={
           <CheckboxGroup
             className={props.groupSize ? `group-${props.groupSize}` : ''}

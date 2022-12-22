@@ -18,6 +18,7 @@ export interface AP {
     APSystem?: {
       uptime?: number
     }
+    lanPortStatus?: Array<LanPortStatusProperties>
   },
   clients?: number
   deviceGroupId: string
@@ -47,14 +48,26 @@ export interface AP {
   hops?: number
   apDownRssi?: number
   apUpRssi: number
+  poePort?: string
 }
 
 export interface ApViewModel extends AP {
-  channel24?: RadioProperties
-  channel50?: RadioProperties
-  channelL50?: RadioProperties
-  channelU50?: RadioProperties
+  channel24?: RadioProperties,
+  channel50?: RadioProperties,
+  channelL50?: RadioProperties,
+  channelU50?: RadioProperties,
   channel60?: RadioProperties
+}
+
+export interface APExtended extends AP {
+  channel24?: string,
+  channel50?: string,
+  channelL50?: string,
+  channelU50?: string,
+  channel60?: string,
+  hasPoeStatus?: boolean,
+  isPoEStatusUp?: boolean,
+  poePortInfo?: string
 }
 
 export interface CelluarInfo {
@@ -149,8 +162,8 @@ export interface AddApGroup {
 }
 
 export interface VenueDefaultApGroup {
-  id: string
-  isDefault: boolean
+  id: string,
+  isDefault: boolean,
   venueId: string,
   aps?: ApDeep[]
 }
@@ -268,12 +281,17 @@ export interface PingAp {
 }
 
 export interface RadioProperties {
-  Rssi: string;
-  txPower?: string;
-  channel: string;
-  band?: string;
-  radioId?: number
+  Rssi: string,
+  txPower?: string,
+  channel: string,
+  band?: string,
+  radioId?: number,
   operativeChannelBandwidth?: string
+}
+
+export interface LanPortStatusProperties {
+  phyLink: string,
+  port: string
 }
 
 export enum GpsFieldStatus {
@@ -283,13 +301,13 @@ export enum GpsFieldStatus {
 }
 
 export interface ApLanPort {
-  lanPorts: LanPort[]
+  lanPorts: LanPort[],
   useVenueSettings: boolean
 }
 
 export interface ApRadio {
-  enable24G: boolean
-  enable50G: boolean
+  enable24G: boolean,
+  enable50G: boolean,
   useVenueSettings: boolean
 }
 

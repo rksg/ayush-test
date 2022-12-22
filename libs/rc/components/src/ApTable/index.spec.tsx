@@ -46,12 +46,23 @@ const list = {
             Rssi: null,
             radioId: 1
           }
+        ],
+        lanPortStatus: [
+          {
+            phyLink: 'Down ',
+            port: '0'
+          },
+          {
+            phyLink: 'Up 1000Mbps full',
+            port: '1'
+          }
         ]
       },
       meshRole: 'DISABLED',
       deviceGroupId: '4fe4e02d7ef440c4affd28c620f93073',
       tags: '',
-      deviceGroupName: ''
+      deviceGroupName: '',
+      poePort: '1'
     }, {
       serialNumber: '000000000002',
       name: 'mock-ap-2',
