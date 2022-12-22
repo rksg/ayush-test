@@ -112,13 +112,11 @@ export interface SwitchTransactionResp {
   response: Switch;
 }
 
-export interface SwitchStack {
-  key: string,
-  id: string,
-	activeSerial: string,
-	venueName: string,
-	serialNumber: string,
-  order?: number,
+export interface SwitchTable {
+  key: string
+  id: string
+  order?: number
+  active?: boolean
   model: string
 }
 
