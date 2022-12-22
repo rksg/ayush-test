@@ -44,6 +44,7 @@ export interface RogueOldApResponseType {
 export interface RogueAPDetectionTempType {
     id: string,
     name: string,
+    description?: string,
     venues: RogueVenue[],
     rules: number
 }
@@ -192,4 +193,8 @@ export type RogueAPDetectionActionPayload = {
     oldIndex: number,
     newIndex: number
   }
+}
+
+export enum RogueApConstant {
+  DefaultProfile = 'Default profile'
 }
