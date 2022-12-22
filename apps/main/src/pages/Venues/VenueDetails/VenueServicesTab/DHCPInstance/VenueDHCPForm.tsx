@@ -10,10 +10,14 @@ import _                   from 'lodash'
 import { useIntl }         from 'react-intl'
 import { useParams, Link } from 'react-router-dom'
 
-import { GridRow, Button }                                                      from '@acx-ui/components'
-import { DeleteOutlinedIcon }                                                   from '@acx-ui/icons'
-import { useGetDHCPProfileListQuery, useVenueDHCPProfileQuery, useApListQuery } from '@acx-ui/rc/services'
-import {  DHCPProfileAps }                                                      from '@acx-ui/rc/utils'
+import { GridRow, Button }    from '@acx-ui/components'
+import { DeleteOutlinedIcon } from '@acx-ui/icons'
+import {
+  useGetDHCPProfileListQuery,
+  useVenueDHCPProfileQuery,
+  useApListQuery
+} from '@acx-ui/rc/services'
+import {  DHCPProfileAps, DHCPSaveData, DHCPConfigTypeEnum } from '@acx-ui/rc/utils'
 import {
   useTenantLink
 } from '@acx-ui/react-router-dom'
@@ -22,9 +26,10 @@ import useDHCPInfo                                               from './hooks/u
 import { AntSelect, IconContainer, AddBtnContainer, StyledForm } from './styledComponents'
 
 
+import {  } from '@acx-ui/rc/services'
+
 
 const { Option } = AntSelect
-
 const VenueDHCPForm = (props: {
   form: FormInstance,
 }) => {
@@ -40,24 +45,43 @@ const VenueDHCPForm = (props: {
   const { data: apList } = useApListQuery({ params })
 
   const [gateways, setGateways] = useState<DHCPProfileAps[]>()
+  const [dhcpServiceID, setDHCPServiceID] = useState('')
+  const [isSimpleMode, setIsSimpleMode] = useState(true)
 
+  const getSelectedDHCPMode = ()=> {
+    if(dhcpProfileList && dhcpServiceID){
+      return dhcpProfileList[_.findIndex(dhcpProfileList, { id: dhcpServiceID })].dhcpMode
+    }else{
+      return DHCPConfigTypeEnum.SIMPLE
+    }
+  }
   useEffect(() => {
-    const natGatewayList = _.groupBy(venueDHCPProfile?.dhcpServiceAps, 'role').NatGateway || []
-    setGateways(natGatewayList)
+    setIsSimpleMode(getSelectedDHCPMode() === DHCPConfigTypeEnum.SIMPLE)
+  },[dhcpServiceID])
 
-    form.setFieldsValue({
-      enabled: venueDHCPProfile?.enabled,
-      serviceId: dhcpInfo?.id,
-      primaryServerSN: dhcpInfo?.primaryDHCP.serialNumber,
-      backupServerSN: dhcpInfo?.secondaryDHCP.serialNumber,
-      gateways: natGatewayList
-    })
+  let natGatewayList = _.groupBy(venueDHCPProfile?.dhcpServiceAps, 'role').NatGateway || []
+  useEffect(() => {
+    const initVal = getInitValue()
+    setGateways(initVal.gateways)
+    form.setFieldsValue(initVal)
   }, [venueDHCPProfile, form, dhcpInfo.id, dhcpInfo.primaryDHCP.serialNumber,
     dhcpInfo.secondaryDHCP.serialNumber])
 
+  const getInitValue = ()=>{
+    const natGatewayList = _.groupBy(venueDHCPProfile?.dhcpServiceAps, 'role').NatGateway || []
+    return {
+      enabled: venueDHCPProfile?.enabled,
+      serviceProfileId: dhcpInfo?.id,
+      primaryServerSN: dhcpInfo?.primaryDHCP.serialNumber,
+      backupServerSN: dhcpInfo?.secondaryDHCP.serialNumber,
+      gateways: natGatewayList
+    }
+  }
 
   const gatewaysList = (gateways && gateways.length>0) ? gateways?.map((item,index)=>{
-    const currentVal = form.getFieldsValue().gateways[index]
+    const fieldsGateways = form.getFieldsValue().gateways
+    const currentVal = fieldsGateways ? fieldsGateways[index] : null
+
     return <div key={index}><GridRow style={{ marginLeft: 0, marginRight: 0,
       marginTop: 0, marginBottom: 0 }}>
       <StyledForm.Item name={['gateways', index, 'serialNumber']}>
@@ -123,6 +147,13 @@ const VenueDHCPForm = (props: {
     layout='vertical'
     validateTrigger='onBlur'
     form={form}
+    initialValues={{
+      enabled: venueDHCPProfile?.enabled,
+      serviceProfileId: dhcpInfo?.id,
+      primaryServerSN: dhcpInfo?.primaryDHCP.serialNumber,
+      backupServerSN: dhcpInfo?.secondaryDHCP.serialNumber,
+      gateways: natGatewayList
+    }}
   >
     <StyledForm.Item name='enabled'
       label={$t({ defaultMessage: 'Service State' })}
@@ -135,12 +166,15 @@ const VenueDHCPForm = (props: {
     <StyledForm.Item label={$t({ defaultMessage: 'DHCP service' })}>
       <Space>
         <StyledForm.Item
-          name='serviceId'
+          name='serviceProfileId'
           noStyle
-          rules={[{ required: true, message: $t({ defaultMessage: 'Username is required' }) }]}
+          rules={[{ required: true, message: $t({ defaultMessage: 'DHCP service is required' }) }]}
         >
-          <AntSelect placeholder={$t({ defaultMessage: 'Select Service...' })}>
-            {dhcpProfileList?.map( dhcp =>
+          <AntSelect onChange={(val)=>{
+            setDHCPServiceID(val as string)
+          }}
+          placeholder={$t({ defaultMessage: 'Select Service...' })}>
+            {dhcpProfileList?.map( (dhcp:DHCPSaveData) =>
               <Option key={dhcp.id} value={dhcp.id}>
                 {dhcp.serviceName}
               </Option>
@@ -162,7 +196,8 @@ const VenueDHCPForm = (props: {
 
     <StyledForm.Item label={$t({ defaultMessage: 'Primary Server' })}
       name='primaryServerSN'
-      rules={[{ required: true }]}>
+      hidden={isSimpleMode}
+      rules={[{ required: isSimpleMode ? false : true }]}>
       <AntSelect placeholder={$t({ defaultMessage: 'Select AP...' })}>
         {apList?.data?.map( ap =>
           <Option key={ap.serialNumber} value={ap.serialNumber}>
@@ -172,6 +207,7 @@ const VenueDHCPForm = (props: {
       </AntSelect>
     </StyledForm.Item>
     <StyledForm.Item label={$t({ defaultMessage: 'Secondary Server' })}
+      hidden={isSimpleMode}
       name='backupServerSN'>
       <AntSelect placeholder={$t({ defaultMessage: 'Select AP...' })}>
         {apList?.data?.map( ap =>
@@ -181,9 +217,10 @@ const VenueDHCPForm = (props: {
         )}
       </AntSelect>
     </StyledForm.Item>
+    {!isSimpleMode &&
     <StyledForm.Item label={$t({ defaultMessage: 'Gateway' })}>
       {gatewaysList}
-    </StyledForm.Item>
+    </StyledForm.Item>}
   </StyledForm>
 }
 

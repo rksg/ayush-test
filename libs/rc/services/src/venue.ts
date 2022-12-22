@@ -2,6 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 import {
   CommonUrlsInfo,
+  DHCPUrls,
   WifiUrlsInfo,
   SwitchUrlsInfo,
   createHttpRequest,
@@ -33,6 +34,7 @@ import {
   VenueSwitchConfiguration,
   ConfigurationProfile,
   VenueDHCPProfile,
+  VenueDHCPPoolInst,
   DHCPLeases,
   VenueDefaultRegulatoryChannels,
   VenueDefaultRegulatoryChannelsForm,
@@ -653,24 +655,25 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     venueDHCPProfile: build.query<VenueDHCPProfile, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getVenueDHCPServiceProfile, params)
+        const req = createHttpRequest(DHCPUrls.getVenueDHCPServiceProfile, params)
         return{
           ...req
         }
       },
       providesTags: [{ type: 'Venue', id: 'DHCPProfile' }]
     }),
-    venueActivePools: build.query<string[] | null, RequestPayload>({
+    venueDHCPPools: build.query<VenueDHCPPoolInst[], RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getVenueActivePools, params)
+        const req = createHttpRequest(DHCPUrls.getVenueActivePools, params)
         return{
           ...req
         }
-      }
+      },
+      providesTags: [{ type: 'Venue', id: 'poolList' }]
     }),
     venuesLeasesList: build.query<DHCPLeases[], RequestPayload>({
       query: ({ params }) => {
-        const leasesList = createHttpRequest(CommonUrlsInfo.getVenueLeases, params)
+        const leasesList = createHttpRequest(DHCPUrls.getVenueLeases, params)
         return {
           ...leasesList
         }
@@ -678,13 +681,23 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     activateDHCPPool: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.activeVenueDHCPPool, params)
+        const req = createHttpRequest(DHCPUrls.activeVenueDHCPPool, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    updateVenueDHCPProfile: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(DHCPUrls.updateVenueDHCPProfile, params)
         return {
           ...req,
           body: payload
         }
       }
     })
+
 
   })
 })
@@ -738,9 +751,10 @@ export const {
   useUpdateVenueSwitchSettingMutation,
   useSwitchConfigProfileQuery,
   useVenueDHCPProfileQuery,
-  useVenueActivePoolsQuery,
+  useVenueDHCPPoolsQuery,
   useVenuesLeasesListQuery,
   useActivateDHCPPoolMutation,
+  useUpdateVenueDHCPProfileMutation,
   useVenueDefaultRegulatoryChannelsQuery,
   useGetDefaultRadioCustomizationQuery,
   useGetVenueRadioCustomizationQuery,

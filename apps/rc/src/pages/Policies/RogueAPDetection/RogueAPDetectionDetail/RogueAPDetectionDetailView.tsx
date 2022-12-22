@@ -28,7 +28,7 @@ const RogueAPDetectionDetailView = () => {
   return (
     <RogueAPDetailContext.Provider value={{ filtersId, setFiltersId, policyName, setPolicyName }}>
       <PageHeader
-        title={policyName ?? `${$t({ defaultMessage: 'Rogue AP Detection policy' })}`}
+        title={policyName}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Policies' }), link: getPolicyListRoutePath() }
         ]}
