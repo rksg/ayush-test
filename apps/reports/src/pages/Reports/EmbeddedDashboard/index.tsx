@@ -35,7 +35,7 @@ function Report (props: ReportProps) {
   // This step is required, as the iframe requests is not proxied locally
   // TODO: Add local proxy to handle iframe requests
   const HOST_NAME = process.env['NODE_ENV'] === 'development'
-    ? 'https://alto.local.mlisa.io' // Dev
+    ? 'https://devalto.ruckuswireless.com' // Dev
     : window.location.origin // Production
 
   useEffect(() => {

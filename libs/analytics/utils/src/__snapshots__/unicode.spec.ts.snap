@@ -1,5 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`Unicode decodeUnicode 1`] = `"JHHJKJ%^&&*()OKJJHGGBNYTRFCHHBVF"`;
-
-exports[`Unicode with pound sign unicode 1`] = `"Pay me 30£"`;

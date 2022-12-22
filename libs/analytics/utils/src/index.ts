@@ -18,6 +18,5 @@ export {
 } from './reasonCodeMap'
 export * from './timeseries'
 export * from './sorters'
-export * from './unicode'
 export * from './types/incidents'
 export * from './types/timeseries'

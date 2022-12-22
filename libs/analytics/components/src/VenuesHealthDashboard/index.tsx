@@ -2,7 +2,7 @@ import { mean }    from 'lodash'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { AnalyticsFilter, kpiConfig, decodeUnicode } from '@acx-ui/analytics/utils'
+import { AnalyticsFilter, kpiConfig } from '@acx-ui/analytics/utils'
 import {
   HistoricalCard,
   Loader,
@@ -33,13 +33,12 @@ export function VenuesHealthDashboard ({
       dataIndex: 'zoneName',
       key: 'zoneName',
       render: function (text: unknown, row) {
-        const venueName = decodeUnicode(text as string)
         return (
           <UI.VenueName>
             <TenantLink
               to={`/venues/${row.zoneId}/venue-details/overview`}
-              title={venueName}>
-              {venueName}
+              title={text as string}>
+              {text as string}
             </TenantLink>
           </UI.VenueName>
         )

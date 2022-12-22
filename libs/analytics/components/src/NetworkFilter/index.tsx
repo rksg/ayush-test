@@ -4,9 +4,9 @@ import { omit, groupBy, pick, find } from 'lodash'
 import { SingleValueType }           from 'rc-cascader/lib/Cascader'
 import { useIntl }                   from 'react-intl'
 
-import { useAnalyticsFilter, calculateSeverity, defaultNetworkPath, Incident, decodeUnicode } from '@acx-ui/analytics/utils'
-import { Select, Option, Loader, RadioBand }                                                  from '@acx-ui/components'
-import { NetworkPath }                                                                        from '@acx-ui/utils'
+import { useAnalyticsFilter, calculateSeverity, defaultNetworkPath, Incident } from '@acx-ui/analytics/utils'
+import { Select, Option, Loader, RadioBand }                                   from '@acx-ui/components'
+import { NetworkPath }                                                         from '@acx-ui/utils'
 
 import { useIncidentsListQuery } from '../IncidentTable/services'
 
@@ -158,11 +158,7 @@ const getFilterData = (
   replaceWithId?: boolean
 ): Option[] => {
   const venues: { [key: string]: Option } = {}
-  for (const { id, name: rawName, path: rawPath, aps, switches } of data) {
-    const path = replaceWithId ?
-      rawPath.map(item=> ({ ...item,name: decodeUnicode(item.name) })) : rawPath
-    const name = replaceWithId ? decodeUnicode(rawName) : rawName
-    const displayLabel:string = decodeUnicode(rawName)
+  for (const { id, name, path, aps, switches } of data) {
     const shouldPushVenue = ()=>{
       if(filterMode==='both')
         return true
@@ -183,11 +179,11 @@ const getFilterData = (
               nodesWithSeverities[name],
               'venue'
             )}
-            name={displayLabel}
+            name={name}
           />
         ),
         value: replaceWithId ? JSON.stringify(path).replace(name,id) : JSON.stringify(path),
-        displayLabel,
+        displayLabel: name,
         children: [] as Option[]
       }
     }
