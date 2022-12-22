@@ -41,11 +41,11 @@ const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormProps) =>
     })
   }
 
-  const handleTags = (tags: string[]) => {
+  const handleDescription = (desc: string) => {
     dispatch({
-      type: RogueAPDetectionActionTypes.TAGS,
+      type: RogueAPDetectionActionTypes.DESCRIPTION,
       payload: {
-        tags: tags
+        description: desc
       }
     })
   }
@@ -58,82 +58,89 @@ const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormProps) =>
         payload: {
           state: {
             ...state,
+            description: policyData.description ?? '',
             policyName: policyData.name ?? '',
             venues: policyData.venues ?? []
           }
         }
       })
       setOriginalName(policyData.name)
-      formRef?.current?.setFieldValue('policyName', policyData.name ? policyData.name : '')
+      formRef?.current?.setFieldValue('policyName', policyData.name ?? '')
+      formRef?.current?.setFieldValue('description', policyData.description ?? '')
     }
   }, [data])
 
 
   return (
-    <Row gutter={20}>
-      <Col span={10}>
-        <StepsForm.Title>{$t({ defaultMessage: 'Settings' })}</StepsForm.Title>
-        <Form.Item
-          name='policyName'
-          label={$t({ defaultMessage: 'Policy Name' })}
-          rules={[
-            { required: true },
-            { min: 2 },
-            { max: 32 },
-            { validator: async (rule, value) => {
-              if (!edit && value
-                  && data && data?.findIndex((policy) => policy.name === value) !== -1) {
-                return Promise.reject(
-                  $t({ defaultMessage: 'The rogue policy with that name already exists' })
-                )
-              }
-              if (edit && value && value !== originalName
-                  && data?.filter((policy) => policy.name !== originalName)
-                    .findIndex((policy) => policy.name === value) !== -1) {
-                return Promise.reject(
-                  $t({ defaultMessage: 'The rogue policy with that name already exists' })
-                )
-              }
-              return Promise.resolve()
-            } }
-          ]}
-          validateFirst
-          hasFeedback
-          initialValue={state.policyName}
-          children={<Input
-            onChange={(event => {handlePolicyName(event.target.value)})}/>}
-        />
-        <Form.Item
-          name='tags'
-          label={$t({ defaultMessage: 'Tags' })}
-          initialValue={state.tags?.join(',')}
-          children={<Input
-            onChange={(event => handleTags(event.target.value.split(',')))}/>}
-        />
-
-        <Form.Item
-          name='rules'
-          label={$t({ defaultMessage: 'Classification rules' })}
-          rules={[
-            { validator: async () => {
-              return new Promise<void>((resolve, reject) => {
-                if (state.rules.length === 0) {
-                  return reject(
-                    $t({ defaultMessage: 'No rules have been created yet' })
+    <>
+      <Row gutter={20}>
+        <Col span={10}>
+          <StepsForm.Title>{$t({ defaultMessage: 'Settings' })}</StepsForm.Title>
+          <Form.Item
+            name='policyName'
+            label={$t({ defaultMessage: 'Policy Name' })}
+            rules={[
+              { required: true },
+              { min: 2 },
+              { max: 32 },
+              { validator: async (rule, value) => {
+                if (!edit && value
+                    && data?.findIndex((policy) => policy.name === value) !== -1) {
+                  return Promise.reject(
+                    $t({ defaultMessage: 'The rogue policy with that name already exists' })
                   )
                 }
-                return resolve()
-              })
-            } }
-          ]}
-        >
-          <RuleTable edit={edit}/>
-        </Form.Item>
-      </Col>
-
-      <Col span={14}>
-      </Col>
-    </Row>
+                if (edit && value && value !== originalName
+                    && data?.filter((policy) => policy.name !== originalName)
+                      .findIndex((policy) => policy.name === value) !== -1) {
+                  return Promise.reject(
+                    $t({ defaultMessage: 'The rogue policy with that name already exists' })
+                  )
+                }
+                return Promise.resolve()
+              } }
+            ]}
+            validateFirst
+            hasFeedback
+            initialValue={state.policyName}
+            children={<Input
+              onChange={(event => {handlePolicyName(event.target.value)})}/>}
+          />
+          <Form.Item
+            name='description'
+            label={$t({ defaultMessage: 'Description' })}
+            rules={[
+              { max: 255 }
+            ]}
+            initialValue={state.description}
+            children={<Input
+              onChange={(event => handleDescription(event.target.value))}/>}
+          />
+        </Col>
+      </Row>
+      <Row>
+        <Col span={17}>
+          <Form.Item
+            name='rules'
+            label={$t({ defaultMessage: 'Classification rules' })}
+            rules={[
+              { validator: async () => {
+                return new Promise<void>((resolve, reject) => {
+                  if (state.rules.length === 0) {
+                    return reject(
+                      $t({ defaultMessage: 'No rules have been created yet' })
+                    )
+                  }
+                  return resolve()
+                })
+              } }
+            ]}
+          >
+            <RuleTable edit={edit}/>
+          </Form.Item>
+        </Col>
+      </Row>
+    </>
   )
 }
 

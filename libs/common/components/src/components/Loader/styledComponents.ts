@@ -5,7 +5,7 @@ export const Wrapper = styled.div<{ $isLoading?: boolean }>`
   flex: 1;
   display: flex;
   flex-direction: column;
-
+  height: 100%;
   ${props => props.$isLoading ? css`
     background-color: var(--acx-neutrals-10);
   ` : ''}

@@ -1,5 +1,6 @@
 import { rest } from 'msw'
 
+import { useIsSplitOn }                                 from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo, ClientUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                     from '@acx-ui/store'
 import {
@@ -21,12 +22,20 @@ import {
   histClientList
 } from '../__tests__/fixtures'
 
+import ClientDetailPageHeader from './ClientDetailPageHeader'
+
 import ClientDetails from '.'
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
+}))
+/* eslint-disable max-len */
+jest.mock('@acx-ui/analytics/components', () => ({
+  TrafficByBand: () => <div data-testid={'analytics-TrafficByBand'} title='TrafficByBand' />,
+  TrafficByUsage: () => <div data-testid={'analytics-TrafficByUsage'} title='TrafficByUsage' />,
+  ClientTroubleshooting: () => <div data-testid={'analytics-ClientTroubleshooting'} title='ClientTroubleshooting' />
 }))
 
 describe('ClientDetails', () => {
@@ -124,4 +133,15 @@ describe('ClientDetails', () => {
       .toHaveLength(0)
   })
 
+  it('should render ClientDetailPageHeader correctly', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true) // mock Features.DEVICES
+    const params = {
+      tenantId: 'tenant-id',
+      clientId: 'user-id',
+      activeTab: 'overview'
+    }
+    render(<Provider><ClientDetailPageHeader /></Provider>, {
+      route: { params, path: '/:tenantId/users/wifi/clients' }
+    })
+  })
 })
