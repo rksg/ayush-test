@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components/macro'
 
 export const Wrapper = styled.section.attrs((props: { layers: Array<unknown> }) => props)`
   display: grid;
-  grid-gap: 0px 16px;
+  grid-gap: 5px 15px;
   grid-template-columns:
     minmax(max-content, 200px)
     ${props => Array(props.layers.length - 1).fill('minmax(max-content, 60px)').join('\n')}
@@ -17,7 +17,7 @@ export const Wrapper = styled.section.attrs((props: { layers: Array<unknown> }) 
 export const Container = styled.section.attrs((props: { layers: Array<unknown> }) => props)`
   grid-area: 1 / 1 / -1 / -1;
   display: grid;
-  grid-gap: 0px 16px;
+  grid-gap: 5px 15px;
   grid-template-columns:
     minmax(min-content, 200px)
     ${props => Array(props.layers.length - 1).fill('minmax(max-content, 60px)').join('\n')}

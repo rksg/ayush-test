@@ -102,11 +102,11 @@ export const Header = styled.h3`
 export const CloseRowWrapper = styled.div`
   text-align: end;
 `
-export const CloseIconContainer = styled.span.attrs((props: { extra?: ReactNode }) => props)`
+export const CloseIconContainer = styled.span`
   cursor: pointer;
   position: absolute;
-  left: ${props => props.extra ? '-3px' : 'auto'};
-  right: ${props => props.extra ? '-100%' : 'auto'};
+  right: 1px;
+  z-index: 1;
 `
 
 export const VerticalLine = styled.div`
