@@ -26,7 +26,6 @@ import {
   transformApStatus,
   transformDisplayNumber,
   transformDisplayText,
-  useTableQuery,
   TableQuery,
   RequestPayload,
   usePollingTableQuery
