@@ -3,7 +3,7 @@
 exports[`ConnectionEvent renders correctly for disconnect event 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__PopoverWrapper-sc-hmshlr-10 hvDant"
+    class="styledComponents__PopoverWrapper-sc-hmshlr-10 cTuHbt"
   >
     <span
       class="ant-popover-open"
@@ -36,7 +36,7 @@ exports[`ConnectionEvent renders correctly for disconnect event 1`] = `
                 class="ant-popover-inner-content"
               >
                 <div
-                  class="styledComponents__DetailsWrapper-sc-hmshlr-15 lIKqt"
+                  class="styledComponents__DetailsWrapper-sc-hmshlr-15 hnYoBb"
                 >
                   <div
                     class="ant-row"
@@ -48,7 +48,7 @@ exports[`ConnectionEvent renders correctly for disconnect event 1`] = `
                         class="styledComponents__CloseRowWrapper-sc-hmshlr-12 hJblHN"
                       >
                         <span
-                          class="styledComponents__CloseIconContainer-sc-hmshlr-13 hAHWZx"
+                          class="styledComponents__CloseIconContainer-sc-hmshlr-13 hMSoNj"
                         >
                           <svg
                             data-testid="CloseSymbol"
@@ -64,7 +64,7 @@ exports[`ConnectionEvent renders correctly for disconnect event 1`] = `
                       class="ant-col ant-col-24"
                     >
                       <h3
-                        class="styledComponents__Header-sc-hmshlr-11 bjXUdp"
+                        class="styledComponents__Header-sc-hmshlr-11 iTvmhc"
                       >
                         Connection Event Details
                       </h3>
@@ -200,7 +200,7 @@ exports[`ConnectionEvent renders correctly for disconnect event 1`] = `
 exports[`ConnectionEvent renders correctly for failureEvent event 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__PopoverWrapper-sc-hmshlr-10 hvDant"
+    class="styledComponents__PopoverWrapper-sc-hmshlr-10 cTuHbt"
   >
     <span
       class="ant-popover-open"
@@ -233,7 +233,7 @@ exports[`ConnectionEvent renders correctly for failureEvent event 1`] = `
                 class="ant-popover-inner-content"
               >
                 <div
-                  class="styledComponents__DetailsWrapper-sc-hmshlr-15 lIKqt"
+                  class="styledComponents__DetailsWrapper-sc-hmshlr-15 gIlkzl"
                 >
                   <div
                     class="ant-row"
@@ -245,7 +245,7 @@ exports[`ConnectionEvent renders correctly for failureEvent event 1`] = `
                         class="styledComponents__CloseRowWrapper-sc-hmshlr-12 hJblHN"
                       >
                         <span
-                          class="styledComponents__CloseIconContainer-sc-hmshlr-13 hAHWZx"
+                          class="styledComponents__CloseIconContainer-sc-hmshlr-13 hMSoNj"
                         >
                           <svg
                             data-testid="CloseSymbol"
@@ -261,7 +261,7 @@ exports[`ConnectionEvent renders correctly for failureEvent event 1`] = `
                       class="ant-col ant-col-24"
                     >
                       <h3
-                        class="styledComponents__Header-sc-hmshlr-11 bjXUdp"
+                        class="styledComponents__Header-sc-hmshlr-11 iTvmhc"
                       >
                         Connection Event Details
                       </h3>
@@ -271,7 +271,7 @@ exports[`ConnectionEvent renders correctly for failureEvent event 1`] = `
                     class="ant-row"
                   >
                     <div
-                      class="ant-col ant-col-16"
+                      class="ant-col"
                     >
                       <div
                         class="ant-row"
@@ -405,14 +405,14 @@ exports[`ConnectionEvent renders correctly for failureEvent event 1`] = `
                       </div>
                     </div>
                     <div
-                      class="ant-col ant-col-1 ant-col-pull-1"
+                      class="ant-col ant-col-2"
                     >
                       <div
                         class="styledComponents__VerticalLine-sc-hmshlr-14 eFmWgZ"
                       />
                     </div>
                     <div
-                      class="ant-col ant-col-6"
+                      class="ant-col ant-col-4 ant-col-push-1"
                     >
                       Failure Sequence Diagram
                     </div>
@@ -431,7 +431,7 @@ exports[`ConnectionEvent renders correctly for failureEvent event 1`] = `
 exports[`ConnectionEvent renders correctly for slow event 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__PopoverWrapper-sc-hmshlr-10 hvDant"
+    class="styledComponents__PopoverWrapper-sc-hmshlr-10 cTuHbt"
   >
     <span
       class="ant-popover-open"
@@ -464,7 +464,7 @@ exports[`ConnectionEvent renders correctly for slow event 1`] = `
                 class="ant-popover-inner-content"
               >
                 <div
-                  class="styledComponents__DetailsWrapper-sc-hmshlr-15 lIKqt"
+                  class="styledComponents__DetailsWrapper-sc-hmshlr-15 hnYoBb"
                 >
                   <div
                     class="ant-row"
@@ -476,7 +476,7 @@ exports[`ConnectionEvent renders correctly for slow event 1`] = `
                         class="styledComponents__CloseRowWrapper-sc-hmshlr-12 hJblHN"
                       >
                         <span
-                          class="styledComponents__CloseIconContainer-sc-hmshlr-13 hAHWZx"
+                          class="styledComponents__CloseIconContainer-sc-hmshlr-13 hMSoNj"
                         >
                           <svg
                             data-testid="CloseSymbol"
@@ -492,7 +492,7 @@ exports[`ConnectionEvent renders correctly for slow event 1`] = `
                       class="ant-col ant-col-24"
                     >
                       <h3
-                        class="styledComponents__Header-sc-hmshlr-11 bjXUdp"
+                        class="styledComponents__Header-sc-hmshlr-11 iTvmhc"
                       >
                         Connection Event Details
                       </h3>
@@ -628,7 +628,7 @@ exports[`ConnectionEvent renders correctly for slow event 1`] = `
 exports[`ConnectionEvent renders correctly for success event 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__PopoverWrapper-sc-hmshlr-10 hvDant"
+    class="styledComponents__PopoverWrapper-sc-hmshlr-10 cTuHbt"
   >
     <span
       class="ant-popover-open"
@@ -661,7 +661,7 @@ exports[`ConnectionEvent renders correctly for success event 1`] = `
                 class="ant-popover-inner-content"
               >
                 <div
-                  class="styledComponents__DetailsWrapper-sc-hmshlr-15 lIKqt"
+                  class="styledComponents__DetailsWrapper-sc-hmshlr-15 hnYoBb"
                 >
                   <div
                     class="ant-row"
@@ -673,7 +673,7 @@ exports[`ConnectionEvent renders correctly for success event 1`] = `
                         class="styledComponents__CloseRowWrapper-sc-hmshlr-12 hJblHN"
                       >
                         <span
-                          class="styledComponents__CloseIconContainer-sc-hmshlr-13 hAHWZx"
+                          class="styledComponents__CloseIconContainer-sc-hmshlr-13 hMSoNj"
                         >
                           <svg
                             data-testid="CloseSymbol"
@@ -689,7 +689,7 @@ exports[`ConnectionEvent renders correctly for success event 1`] = `
                       class="ant-col ant-col-24"
                     >
                       <h3
-                        class="styledComponents__Header-sc-hmshlr-11 bjXUdp"
+                        class="styledComponents__Header-sc-hmshlr-11 iTvmhc"
                       >
                         Connection Event Details
                       </h3>
@@ -803,7 +803,7 @@ exports[`ConnectionEvent renders correctly for success event 1`] = `
 exports[`ConnectionEvent renders correctly for unknown failure 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__PopoverWrapper-sc-hmshlr-10 hvDant"
+    class="styledComponents__PopoverWrapper-sc-hmshlr-10 cTuHbt"
   >
     <span
       class="ant-popover-open"
@@ -836,7 +836,7 @@ exports[`ConnectionEvent renders correctly for unknown failure 1`] = `
                 class="ant-popover-inner-content"
               >
                 <div
-                  class="styledComponents__DetailsWrapper-sc-hmshlr-15 lIKqt"
+                  class="styledComponents__DetailsWrapper-sc-hmshlr-15 gIlkzl"
                 >
                   <div
                     class="ant-row"
@@ -848,7 +848,7 @@ exports[`ConnectionEvent renders correctly for unknown failure 1`] = `
                         class="styledComponents__CloseRowWrapper-sc-hmshlr-12 hJblHN"
                       >
                         <span
-                          class="styledComponents__CloseIconContainer-sc-hmshlr-13 hAHWZx"
+                          class="styledComponents__CloseIconContainer-sc-hmshlr-13 hMSoNj"
                         >
                           <svg
                             data-testid="CloseSymbol"
@@ -864,7 +864,7 @@ exports[`ConnectionEvent renders correctly for unknown failure 1`] = `
                       class="ant-col ant-col-24"
                     >
                       <h3
-                        class="styledComponents__Header-sc-hmshlr-11 bjXUdp"
+                        class="styledComponents__Header-sc-hmshlr-11 iTvmhc"
                       >
                         Connection Event Details
                       </h3>
@@ -874,7 +874,7 @@ exports[`ConnectionEvent renders correctly for unknown failure 1`] = `
                     class="ant-row"
                   >
                     <div
-                      class="ant-col ant-col-16"
+                      class="ant-col"
                     >
                       <div
                         class="ant-row"
@@ -1008,14 +1008,14 @@ exports[`ConnectionEvent renders correctly for unknown failure 1`] = `
                       </div>
                     </div>
                     <div
-                      class="ant-col ant-col-1 ant-col-pull-1"
+                      class="ant-col ant-col-2"
                     >
                       <div
                         class="styledComponents__VerticalLine-sc-hmshlr-14 eFmWgZ"
                       />
                     </div>
                     <div
-                      class="ant-col ant-col-6"
+                      class="ant-col ant-col-4 ant-col-push-1"
                     >
                       Failure Sequence Diagram
                     </div>
@@ -1034,7 +1034,7 @@ exports[`ConnectionEvent renders correctly for unknown failure 1`] = `
 exports[`ConnectionEvent renders correctly for unknown radio 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__PopoverWrapper-sc-hmshlr-10 hvDant"
+    class="styledComponents__PopoverWrapper-sc-hmshlr-10 cTuHbt"
   >
     <span
       class="ant-popover-open"
@@ -1067,7 +1067,7 @@ exports[`ConnectionEvent renders correctly for unknown radio 1`] = `
                 class="ant-popover-inner-content"
               >
                 <div
-                  class="styledComponents__DetailsWrapper-sc-hmshlr-15 lIKqt"
+                  class="styledComponents__DetailsWrapper-sc-hmshlr-15 hnYoBb"
                 >
                   <div
                     class="ant-row"
@@ -1079,7 +1079,7 @@ exports[`ConnectionEvent renders correctly for unknown radio 1`] = `
                         class="styledComponents__CloseRowWrapper-sc-hmshlr-12 hJblHN"
                       >
                         <span
-                          class="styledComponents__CloseIconContainer-sc-hmshlr-13 hAHWZx"
+                          class="styledComponents__CloseIconContainer-sc-hmshlr-13 hMSoNj"
                         >
                           <svg
                             data-testid="CloseSymbol"
@@ -1095,7 +1095,7 @@ exports[`ConnectionEvent renders correctly for unknown radio 1`] = `
                       class="ant-col ant-col-24"
                     >
                       <h3
-                        class="styledComponents__Header-sc-hmshlr-11 bjXUdp"
+                        class="styledComponents__Header-sc-hmshlr-11 iTvmhc"
                       >
                         Connection Event Details
                       </h3>
@@ -1209,7 +1209,7 @@ exports[`ConnectionEvent renders correctly for unknown radio 1`] = `
 exports[`ConnectionEvent renders correctly on popover close 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__PopoverWrapper-sc-hmshlr-10 hvDant"
+    class="styledComponents__PopoverWrapper-sc-hmshlr-10 cTuHbt"
   >
     <span>
       test
@@ -1221,7 +1221,7 @@ exports[`ConnectionEvent renders correctly on popover close 1`] = `
 exports[`ConnectionEvent renders correctly on popover close 2`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__PopoverWrapper-sc-hmshlr-10 hvDant"
+    class="styledComponents__PopoverWrapper-sc-hmshlr-10 cTuHbt"
   >
     <span
       class="ant-popover-open"
@@ -1254,7 +1254,7 @@ exports[`ConnectionEvent renders correctly on popover close 2`] = `
                 class="ant-popover-inner-content"
               >
                 <div
-                  class="styledComponents__DetailsWrapper-sc-hmshlr-15 lIKqt"
+                  class="styledComponents__DetailsWrapper-sc-hmshlr-15 hnYoBb"
                 >
                   <div
                     class="ant-row"
@@ -1266,7 +1266,7 @@ exports[`ConnectionEvent renders correctly on popover close 2`] = `
                         class="styledComponents__CloseRowWrapper-sc-hmshlr-12 hJblHN"
                       >
                         <span
-                          class="styledComponents__CloseIconContainer-sc-hmshlr-13 hAHWZx"
+                          class="styledComponents__CloseIconContainer-sc-hmshlr-13 hMSoNj"
                         >
                           <svg
                             data-testid="CloseSymbol"
@@ -1282,7 +1282,7 @@ exports[`ConnectionEvent renders correctly on popover close 2`] = `
                       class="ant-col ant-col-24"
                     >
                       <h3
-                        class="styledComponents__Header-sc-hmshlr-11 bjXUdp"
+                        class="styledComponents__Header-sc-hmshlr-11 iTvmhc"
                       >
                         Connection Event Details
                       </h3>
@@ -1396,7 +1396,7 @@ exports[`ConnectionEvent renders correctly on popover close 2`] = `
 exports[`ConnectionEvent renders correctly on popover close 3`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__PopoverWrapper-sc-hmshlr-10 hvDant"
+    class="styledComponents__PopoverWrapper-sc-hmshlr-10 cTuHbt"
   >
     <span>
       test
@@ -1427,7 +1427,7 @@ exports[`ConnectionEvent renders correctly on popover close 3`] = `
                 class="ant-popover-inner-content"
               >
                 <div
-                  class="styledComponents__DetailsWrapper-sc-hmshlr-15 lIKqt"
+                  class="styledComponents__DetailsWrapper-sc-hmshlr-15 hnYoBb"
                 >
                   <div
                     class="ant-row"
@@ -1439,7 +1439,7 @@ exports[`ConnectionEvent renders correctly on popover close 3`] = `
                         class="styledComponents__CloseRowWrapper-sc-hmshlr-12 hJblHN"
                       >
                         <span
-                          class="styledComponents__CloseIconContainer-sc-hmshlr-13 hAHWZx"
+                          class="styledComponents__CloseIconContainer-sc-hmshlr-13 hMSoNj"
                         >
                           <svg
                             data-testid="CloseSymbol"
@@ -1455,7 +1455,7 @@ exports[`ConnectionEvent renders correctly on popover close 3`] = `
                       class="ant-col ant-col-24"
                     >
                       <h3
-                        class="styledComponents__Header-sc-hmshlr-11 bjXUdp"
+                        class="styledComponents__Header-sc-hmshlr-11 iTvmhc"
                       >
                         Connection Event Details
                       </h3>

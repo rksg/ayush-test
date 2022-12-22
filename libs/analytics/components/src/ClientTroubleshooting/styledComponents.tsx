@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import styled, { css } from 'styled-components/macro'
 
 import {  PlusSquareOutlined, MinusSquareOutlined } from '@acx-ui/icons'
@@ -86,6 +88,9 @@ export const TimelineTitle = styled.span`
 
 export const PopoverWrapper = styled.div`
   cursor: pointer;
+  .ant-popover-inner-content {
+    padding: 0px;
+  }
 `
 
 export const Header = styled.h3`
@@ -95,6 +100,7 @@ export const Header = styled.h3`
   text-align: left;
   font-family: var(--acx-neutral-brand-font);
   color: var(--acx-primary-black);
+  margin-bottom: 0px;
 `
 
 export const CloseRowWrapper = styled.div`
@@ -103,6 +109,8 @@ export const CloseRowWrapper = styled.div`
 export const CloseIconContainer = styled.span`
   cursor: pointer;
   position: absolute;
+  right: 11px;
+  top: -11px;
 `
 
 export const VerticalLine = styled.div`
@@ -110,9 +118,12 @@ export const VerticalLine = styled.div`
   width: 100%;
   border-right: 1px solid var(--acx-neutrals-30);
 `
-export const DetailsWrapper = styled.div`
-  width: 250px;
+export const DetailsWrapper = styled.div.attrs((props: { extra?: ReactNode }) => props)`
+  width: ${props => props.extra ? '500px' : '250px'};
   height: 100%;
+  padding-top: 16px;
+  padding-left: var(--acx-content-vertical-space);
+  padding-bottom: 15px;
 `
 
 export const DetailsRowLabel = styled.div`
