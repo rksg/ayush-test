@@ -22,9 +22,9 @@ export interface EdgeViewModel {
   tags: string[]
 }
 
-export interface EdgePortConfig {
+export interface EdgePort {
   id: string
-  portType: EdgePortTypeEnum.WAN | EdgePortTypeEnum.LAN | EdgePortTypeEnum.UNSPECIFIED
+  portType: EdgePortTypeEnum.WAN | EdgePortTypeEnum.LAN | EdgePortTypeEnum.UNCONFIGURED
   name: string
   mac: string
   enabled: boolean
@@ -35,9 +35,13 @@ export interface EdgePortConfig {
   natEnabled: boolean
 }
 
+export interface EdgePortConfig {
+  ports: EdgePort[]
+}
+
 export interface EdgeSubInterface {
   id: string
-  portType: EdgePortTypeEnum.WAN | EdgePortTypeEnum.LAN | EdgePortTypeEnum.UNSPECIFIED
+  portType: EdgePortTypeEnum.WAN | EdgePortTypeEnum.LAN | EdgePortTypeEnum.UNCONFIGURED
   ipMode: EdgeIpModeEnum.DHCP | EdgeIpModeEnum.STATIC
   ip: string
   subnet: string

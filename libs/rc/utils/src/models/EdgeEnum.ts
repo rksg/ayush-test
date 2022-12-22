@@ -1,5 +1,5 @@
 export enum EdgePortTypeEnum {
-  UNSPECIFIED = 'PORT_TYPE_UNSPECIFIED',
+  UNCONFIGURED = 'UNCONFIGURED',
   WAN = 'WAN',
   LAN = 'LAN'
 }

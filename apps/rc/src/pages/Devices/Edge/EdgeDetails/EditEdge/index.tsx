@@ -40,6 +40,7 @@ const EditEdgeTabs = () => {
   const basePath = useTenantLink(`/devices/edge/${serialNumber}/edit`)
 
   const onTabChange = (activeKey: string) => {
+    if(activeKey === 'ports') activeKey = activeKey + '/ports-general'
     navigate({
       ...basePath,
       pathname: `${basePath.pathname}/${activeKey}`

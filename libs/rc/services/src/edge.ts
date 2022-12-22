@@ -4,6 +4,7 @@ import {
   CommonResult,
   createHttpRequest,
   EdgeDnsServers,
+  EdgePortConfig,
   EdgeSaveData,
   EdgeUrlsInfo,
   EdgeViewModel,
@@ -105,7 +106,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         }
       }
     }),
-    getPortConfig: build.query<EdgeDnsServers, RequestPayload>({
+    getPortConfig: build.query<EdgePortConfig, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(EdgeUrlsInfo.getPortConfig, params)
         return {

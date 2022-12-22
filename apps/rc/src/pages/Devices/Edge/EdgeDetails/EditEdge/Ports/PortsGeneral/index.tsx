@@ -7,7 +7,7 @@ import { useIntl }                                             from 'react-intl'
 
 import { ContentSwitcher, ContentSwitcherProps, Loader, showToast, StepsForm, StepsFormInstance } from '@acx-ui/components'
 import { useUpdatePortConfigMutation }                                                            from '@acx-ui/rc/services'
-import { EdgeIpModeEnum, EdgePortConfig, EdgePortTypeEnum }                                       from '@acx-ui/rc/utils'
+import { EdgeIpModeEnum, EdgePort, EdgePortTypeEnum }                                             from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink }                                                  from '@acx-ui/react-router-dom'
 
 import { PortsContext } from '..'
@@ -24,7 +24,7 @@ const PortConfigForm = (props: ConfigFormProps) => {
   const navigate = useNavigate()
   const params = useParams()
   const linkToEdgeList = useTenantLink('/devices/edge/list')
-  const formRef = useRef<StepsFormInstance<EdgePortConfig>>()
+  const formRef = useRef<StepsFormInstance<EdgePort>>()
   const { ports, setPorts } = useContext(PortsContext)
   const [updatePortConfig, { isLoading: isPortConfigUpdating }] = useUpdatePortConfigMutation()
 
@@ -32,7 +32,7 @@ const PortConfigForm = (props: ConfigFormProps) => {
   const portTypeOptions = [
     {
       label: $t({ defaultMessage: 'Select port type..' }),
-      value: EdgePortTypeEnum.UNSPECIFIED
+      value: EdgePortTypeEnum.UNCONFIGURED
     },
     {
       label: $t({ defaultMessage: 'WAN' }),
@@ -60,7 +60,12 @@ const PortConfigForm = (props: ConfigFormProps) => {
       const newData = cloneDeep(ports)
       newData[props.index] = {
         ...ports[props.index],
-        [changeField.name as keyof EdgePortConfig]: changeField.value
+        [changeField.name.toString() as keyof EdgePort]: changeField.value
+      }
+      if(changeField.name.toString() === 'portType'
+          && EdgePortTypeEnum.LAN === changeField.value) {
+        newData[props.index].ipMode = EdgeIpModeEnum.STATIC
+        newData[props.index].natEnabled = false
       }
       setPorts(newData)
     }
@@ -110,7 +115,7 @@ const PortConfigForm = (props: ConfigFormProps) => {
               </Radio.Group>
             }
           />
-          {currentConfig.ipMode === EdgeIpModeEnum.STATIC ?
+          {currentConfig.ipMode === EdgeIpModeEnum.STATIC &&
             <>
               <Form.Item
                 name='ip'
@@ -137,7 +142,7 @@ const PortConfigForm = (props: ConfigFormProps) => {
                 children={<Input />}
               />
             </>
-            : null}
+          }
           <StepsForm.FieldLabel width='120px'>
             {$t({ defaultMessage: 'Use NAT Service' })}
             <Form.Item
@@ -194,14 +199,14 @@ const PortConfigForm = (props: ConfigFormProps) => {
               <Form.Item
                 name='portType'
                 label={$t({ defaultMessage: 'Port Type' })}
-                initialValue={EdgePortTypeEnum.UNSPECIFIED}
+                initialValue={EdgePortTypeEnum.UNCONFIGURED}
                 children={
                   <Select
                     options={portTypeOptions}
                   />
                 }
               />
-              {currentConfig.portType !== EdgePortTypeEnum.UNSPECIFIED ?
+              {currentConfig.portType !== EdgePortTypeEnum.UNCONFIGURED &&
                 <>
                   <StepsForm.FieldLabel width='120px'>
                     {$t({ defaultMessage: 'Port Enabled' })}
@@ -211,14 +216,14 @@ const PortConfigForm = (props: ConfigFormProps) => {
                       children={<Switch />}
                     />
                   </StepsForm.FieldLabel>
-                  {currentConfig.enabled ?
+                  {currentConfig.enabled &&
                     <>
                       <StepsForm.Title>{$t({ defaultMessage: 'IP Settings' })}</StepsForm.Title>
                       {getFieldsByPortType(currentConfig.portType)}
                     </>
-                    : null}
+                  }
                 </>
-                : null}
+              }
             </Col>
           </Row>
         </StepsForm.StepForm>
