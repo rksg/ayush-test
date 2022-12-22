@@ -52,7 +52,7 @@ jest.mock('./pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail', () => ()
   return <div data-testid='MdnsProxyDetail' />
 })
 
-jest.mock('./pages/Services/DHCPForm/DHCPForm', () => () => {
+jest.mock('./pages/Services/DHCP/DHCPForm/DHCPForm', () => () => {
   return <div data-testid='DHCPForm' />
 })
 
@@ -60,7 +60,7 @@ jest.mock('./pages/Services/Portal/PortalForm/PortalForm', () => () => {
   return <div data-testid='PortalForm' />
 })
 
-jest.mock('./pages/Services/DHCPDetail', () => () => {
+jest.mock('./pages/Services/DHCP/DHCPDetail', () => () => {
   return <div data-testid='DHCPDetail' />
 })
 
