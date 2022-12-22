@@ -611,6 +611,59 @@ exports[`PoliciesTable should render table 1`] = `
                                 style="position: sticky; right: 0px;"
                               />
                             </tr>
+                            <tr
+                              class="ant-table-row ant-table-row-level-0"
+                              data-row-key="bbc80e33-2547-4d34-870f-b7f245fcfccc"
+                            >
+                              <td
+                                class="ant-table-cell ant-table-selection-column"
+                              >
+                                <label
+                                  class="ant-radio-wrapper"
+                                >
+                                  <span
+                                    class="ant-radio"
+                                  >
+                                    <input
+                                      class="ant-radio-input"
+                                      type="radio"
+                                      value=""
+                                    />
+                                    <span
+                                      class="ant-radio-inner"
+                                    />
+                                  </span>
+                                </label>
+                              </td>
+                              <td
+                                class="ant-table-cell ant-table-column-sort"
+                              >
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/policies/rogueAp/bbc80e33-2547-4d34-870f-b7f245fcfccc/detail"
+                                >
+                                  Default profile
+                                </a>
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              >
+                                Rogue AP Detection
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              >
+                                Wi-Fi
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              >
+                                8
+                              </td>
+                              <td
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                style="position: sticky; right: 0px;"
+                              />
+                            </tr>
                           </tbody>
                         </table>
                       </div>
