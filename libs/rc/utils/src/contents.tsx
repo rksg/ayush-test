@@ -62,6 +62,9 @@ export const SwitchMessages = {
   }),
   DHCP_CLIENT_TOOLTIP: defineMessage({
     defaultMessage: 'DHCP Client interface will only be applied to factory default switches. Switches with pre-existing configuration will not get this change to prevent connectivity loss.'
+  }),
+  ADD_AS_MEMBER_TOOLTIP: defineMessage({
+    defaultMessage: 'Based on the switch serial number you entered, compatible stacks of the same model are listed here.'
   })
 }
 

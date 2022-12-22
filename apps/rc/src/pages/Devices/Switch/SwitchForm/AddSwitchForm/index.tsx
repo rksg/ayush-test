@@ -27,7 +27,8 @@ import {
   SWITCH_SERIAL_PATTERN,
   Switch,
   getSwitchModel,
-  SwitchViewModel
+  SwitchViewModel,
+  IGMP_SNOOPING_TYPE
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -35,7 +36,9 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-import * as UI from './styledComponents'
+import * as UI from '../styledComponents'
+import { SwitchUpgradeNotification, SWITCH_UPGRADE_NOTIFICATION_TYPE } from '../../SwitchUpgradeNotification'
+import _ from 'lodash'
 
 const { Option } = Select
 
@@ -100,7 +103,7 @@ export function AddSwitchForm () {
     const memberList =
       (await getSwitchList({ params: { tenantId: tenantId }, payload }, true))
         .data?.data
-        .filter(stack => stack.serialNumber !== serialNumber)
+        .filter((item: SwitchViewModel) => item.serialNumber !== serialNumber)
         .map((item: SwitchViewModel) => (
           {
             label: item.name || item.serialNumber || item.id,
@@ -134,10 +137,26 @@ export function AddSwitchForm () {
     setDhcpClientOption(vlansByVenue as DefaultOptionType[])
   }
 
+  const defaultAddSwitchPayload = {
+    name: '',
+    id: '',
+    description: '',
+    venueId: '',
+    stackMembers: [],
+    trustPorts: [],
+    enableStack: false,
+    jumboMode: false,
+    igmpSnooping: IGMP_SNOOPING_TYPE.NONE,
+    spanningTreePriority: '',
+    initialVlanId: '',
+    rearModule: 'none'
+  }
+
   const handleAddSwitch = async (values: Switch) => {
     if (switchRole === MEMEBER_TYPE.STANDALONE) {
       try {
         const payload = {
+          ...defaultAddSwitchPayload,
           ...values
         }
         await addSwitch({ params: { tenantId: tenantId }, payload }).unwrap()
@@ -167,7 +186,6 @@ export function AddSwitchForm () {
   }
 
   const serialNumberRegExp = function (value: string) {
-    // eslint-disable-next-line max-len
     const re = new RegExp(SWITCH_SERIAL_PATTERN)
     if (value && !re.test(value)) {
       return Promise.reject($t({ defaultMessage: 'Serial number is invalid' }))
@@ -177,7 +195,6 @@ export function AddSwitchForm () {
       setSwitchModel(getSwitchModel(value) || '')
       setSerialNumber(value)
     }
-
     return Promise.resolve()
   }
 
@@ -202,7 +219,6 @@ export function AddSwitchForm () {
       }}
     >
       <StepsForm.StepForm>
-
         <Loader states={[{
           isLoading: venuesList.isLoading
         }]}>
@@ -229,7 +245,7 @@ export function AddSwitchForm () {
               />
 
               <Form.Item
-                name='serialNumber'
+                name='id'
                 label={$t({ defaultMessage: 'Serial Number' })}
                 rules={[
                   { required: true },
@@ -239,19 +255,34 @@ export function AddSwitchForm () {
                 children={<Input />}
               />
 
+              <SwitchUpgradeNotification
+              isDisplay={!_.isEmpty(switchModel)}
+              isDisplayHeader={true}
+              type={ switchRole === MEMEBER_TYPE.STANDALONE ? 
+                SWITCH_UPGRADE_NOTIFICATION_TYPE.SWITCH : 
+                SWITCH_UPGRADE_NOTIFICATION_TYPE.STACK }
+              validateModel={[switchModel]}
+              />
+
               <Form.Item
-                name='switchRole'
-                initialValue={MEMEBER_TYPE.STANDALONE}
-                label={$t({ defaultMessage: 'Add as' })}
+                label={<>
+                  {$t({ defaultMessage: 'Add as' })}
+                  {switchRole === MEMEBER_TYPE.MEMBER && <Tooltip
+                    title={$t(SwitchMessages.FIRMWARE_TYPE_TOOLTIP)}
+                    placement='bottom'
+                  >
+                    <QuestionMarkCircleOutlined />
+                  </Tooltip>}
+                </>}
               >
                 <Radio.Group
+                defaultValue={MEMEBER_TYPE.STANDALONE}
                   onChange={(e: RadioChangeEvent) => {
                     return setSwitchRole(e.target.value)
                   }}
                 >
-                  {/* <Space direction='vertical'> */}
                   <UI.FieldSpace columns={'auto'}>
-                    <Radio key={MEMEBER_TYPE.STANDALONE} value={MEMEBER_TYPE.STANDALONE} >
+                    <Radio key={MEMEBER_TYPE.STANDALONE} value={MEMEBER_TYPE.STANDALONE}>
                       {$t({ defaultMessage: 'Standalone switch' })}
                     </Radio>
                   </UI.FieldSpace>
@@ -284,7 +315,6 @@ export function AddSwitchForm () {
 
                   </UI.FieldSpace>
 
-                  {/* </Space> */}
                 </Radio.Group>
               </Form.Item>
               {switchRole === MEMEBER_TYPE.STANDALONE && <>
@@ -333,9 +363,7 @@ export function AddSwitchForm () {
                     </Option>
                   </Select>
                 </Form.Item>
-
               </>}
-
 
               <Form.Item
                 name='initialVlanId'
