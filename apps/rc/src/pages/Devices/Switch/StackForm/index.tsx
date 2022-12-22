@@ -207,6 +207,7 @@ export function StackForm () {
             ]}
           >
             <Input
+              data-testid={`serialNumber${row.key}`}
               onChange={() => handleChange(row, index)}
               style={{ textTransform: 'uppercase' }}
             />
