@@ -44,6 +44,7 @@ export interface RogueOldApResponseType {
 export interface RogueAPDetectionTempType {
     id: string,
     name: string,
+    description?: string,
     venues: RogueVenue[],
     rules: number
 }

@@ -49,6 +49,17 @@ const mockTableResult = {
         'tag3',
         'tag4'
       ]
+    },
+    {
+      id: 'bbc80e33-2547-4d34-870f-b7f245fcfccc',
+      name: 'Default Profile',
+      type: 'Rogue AP Detection',
+      technology: 'WI-FI',
+      scope: '8',
+      tags: [
+        'tag3',
+        'tag4'
+      ]
     }
   ]
 }
@@ -100,6 +111,26 @@ describe('PoliciesTable', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     const selectedPolicyName = mockTableResult.data[0].name
+    const row = await screen.findByRole('row', { name: new RegExp(selectedPolicyName) })
+    await userEvent.click(within(row).getByRole('radio'))
+
+    await userEvent.click(screen.getByRole('button', { name: /delete/i }))
+
+    await screen.findByText('Delete "' + selectedPolicyName + '"?')
+    await userEvent.click(await screen.findByRole('button', { name: /Delete Policy/i }))
+  })
+
+  it('should not delete default profile successfully', async () => {
+    render(
+      <Provider>
+        <PoliciesTable />
+      </Provider>, {
+        route: { params, path: '/:tenantId/' + getPolicyListRoutePath() }
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    const selectedPolicyName = 'Default Profile'
     const row = await screen.findByRole('row', { name: new RegExp(selectedPolicyName) })
     await userEvent.click(within(row).getByRole('radio'))
 

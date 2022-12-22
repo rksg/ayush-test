@@ -24,6 +24,7 @@ const RogueAPDetectionDetailView = () => {
   const params = useParams()
   const [filtersId, setFiltersId] = useState([] as string[])
   const [policyName, setPolicyName] = useState('' as string)
+  const DEFAULT_PROFILE = 'Default profile'
 
   return (
     <RogueAPDetailContext.Provider value={{ filtersId, setFiltersId, policyName, setPolicyName }}>
@@ -32,7 +33,7 @@ const RogueAPDetectionDetailView = () => {
         breadcrumb={[
           { text: $t({ defaultMessage: 'Policies' }), link: getPolicyListRoutePath() }
         ]}
-        extra={[
+        extra={policyName !== DEFAULT_PROFILE ? [
           <TenantLink to={getPolicyDetailsLink({
             type: PolicyType.ROGUE_AP_DETECTION,
             oper: PolicyOperation.EDIT,
@@ -43,7 +44,7 @@ const RogueAPDetectionDetailView = () => {
               {$t({ defaultMessage: 'Configure' })}
             </Button>
           </TenantLink>
-        ]}
+        ]: []}
       />
 
       <GridRow>

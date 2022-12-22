@@ -1,7 +1,8 @@
-import { useIntl } from 'react-intl'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
-import { usePolicyListQuery }                                             from '@acx-ui/rc/services'
+import { useDelRoguePolicyMutation, usePolicyListQuery }                  from '@acx-ui/rc/services'
 import {
   useTableQuery,
   Policy,
@@ -85,8 +86,12 @@ const defaultPayload = {
 
 export default function PoliciesTable () {
   const { $t } = useIntl()
+  const params = useParams()
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
+  const DEFAULT_PROFILE = 'Default profile'
+
+  const [ delRoguePolicy ] = useDelRoguePolicyMutation()
 
   const tableQuery = useTableQuery({
     useQuery: usePolicyListQuery,
@@ -96,7 +101,8 @@ export default function PoliciesTable () {
   const rowActions: TableProps<Policy>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: ([{ id, name, type }]) => {
+      visible: ([row]) => row && row.name !== DEFAULT_PROFILE,
+      onClick: ([{ id, name }], clearSelection) => {
         showActionModal({
           type: 'confirm',
           customContent: {
@@ -104,16 +110,20 @@ export default function PoliciesTable () {
             entityName: $t({ defaultMessage: 'Policy' }),
             entityValue: name
           },
-          onOk: () => {
-            // TODO
-            // eslint-disable-next-line no-console
-            console.log('Delete policy: ', id, type)
+          onOk: async () => {
+            await delRoguePolicy({
+              params: {
+                ...params, policyId: id
+              }
+            }).unwrap()
+            clearSelection()
           }
         })
       }
     },
     {
       label: $t({ defaultMessage: 'Edit' }),
+      visible: ([row]) => row && row.name !== DEFAULT_PROFILE,
       onClick: ([{ type, id }]) => {
         navigate({
           ...tenantBasePath,
