@@ -1,17 +1,11 @@
 import React from 'react'
 
-import { IntlShape, useIntl } from 'react-intl'
+import { useIntl } from 'react-intl'
 
 import * as UI         from './sequenceComponents'
 import { getRCCDFlow } from './sequenceMap'
 
 const fillOne = (index: number) => `${index + 1} / ${index + 2}`
-const translatedChildren = (
-  layer: string | (({ apMac }: { apMac: string }) => string),
-  apMac: string, intl: IntlShape) =>
-  (typeof layer === 'string')
-    ? intl.$t({ defaultMessage: '{layer}' }, { layer })
-    : layer({ apMac })
 
 export const ConnectionSequenceDiagram = ({ messageIds, failedMsgId, apMac }:
   {
@@ -19,7 +13,7 @@ export const ConnectionSequenceDiagram = ({ messageIds, failedMsgId, apMac }:
     failedMsgId: string,
     apMac: string }
 ) => {
-  const intl = useIntl()
+  const { $t } = useIntl()
   if (!(messageIds && messageIds.length)) return null
 
   const { layers, steps } = getRCCDFlow({ messageIds, failedMsgId })
@@ -29,7 +23,7 @@ export const ConnectionSequenceDiagram = ({ messageIds, failedMsgId, apMac }:
       {layers.map((layer, index) => <UI.Layer
         key={`layer-${index}`}
         style={{ gridColumn: fillOne(index) }}
-        children={<span>{translatedChildren(layer, apMac, intl)}</span>} // find a way for dynamic intl
+        children={<span>{$t(layer, { apMac })}</span>} // find a way for dynamic intl
       />)}
       <UI.Container layers={layers}>
         {steps.map((step, index) => (

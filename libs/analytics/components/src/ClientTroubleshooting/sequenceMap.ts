@@ -1,25 +1,29 @@
+import { defineMessage, MessageDescriptor } from 'react-intl'
+
 export const nodeMap = (
   id: string,
   order: number,
   code: string,
-  label: string | (({ apMac }: { apMac: string }) => string)
+  label: MessageDescriptor
 ) => ({ id, order, code, label })
 
 /**
  * Reference: https://jira-wiki.ruckuswireless.com/pages/viewpage.action?spaceKey=Team&title=RCCD+Enhancement+Feature%3A+Simplified+Message+Type
  */
 export const RCCDNodeMap = {
-  1: nodeMap('1', 0, 'CCD_MODULE_TYPE_UE', 'Client Device'),
-  2: nodeMap('2', 1, 'CCD_MODULE_TYPE_AP', (({ apMac }) => `AP (${apMac})`)),
-  3: nodeMap('3', 3, 'CCD_MODULE_TYPE_C_PLANE', 'Control Plane'),
-  4: nodeMap('4', 2, 'CCD_MODULE_TYPE_D_PLANE', 'Data Plane'),
-  5: nodeMap('5', 4, 'CCD_MODULE_TYPE_DHCP_SERVER', 'DHCP'),
-  6: nodeMap('6', 5, 'CCD_MODULE_TYPE_RADIUS', 'AAA Server'),
-  7: nodeMap('7', 6, 'CCD_MODULE_TYPE_LDAP', 'LDAP'),
-  8: nodeMap('8', 7, 'CCD_MODULE_TYPE_ACTIVE_DIRECTORY', 'Active Directory Server'),
-  9: nodeMap('9', 8, 'CCD_MODULE_TYPE_SUBSCRIBER_PORTAL', 'Captive Portal'),
-  10: nodeMap('10', 9, 'CCD_MODULE_TYPE_OSU', 'OSU'),
-  99: nodeMap('99', 10, 'CCD_MODULE_TYPE_BCAST', 'Broadcast')
+  1: nodeMap('1', 0, 'CCD_MODULE_TYPE_UE', defineMessage({ defaultMessage: 'Client Device' })),
+  2: nodeMap('2', 1, 'CCD_MODULE_TYPE_AP', defineMessage({ defaultMessage: 'AP ({apMac})' })),
+  3: nodeMap('3', 3, 'CCD_MODULE_TYPE_C_PLANE', defineMessage({ defaultMessage: 'Control Plane' })),
+  4: nodeMap('4', 2, 'CCD_MODULE_TYPE_D_PLANE', defineMessage({ defaultMessage: 'Data Plane' })),
+  5: nodeMap('5', 4, 'CCD_MODULE_TYPE_DHCP_SERVER', defineMessage({ defaultMessage: 'DHCP' })),
+  6: nodeMap('6', 5, 'CCD_MODULE_TYPE_RADIUS', defineMessage({ defaultMessage: 'AAA Server' })),
+  7: nodeMap('7', 6, 'CCD_MODULE_TYPE_LDAP', defineMessage({ defaultMessage: 'LDAP' })),
+  8: nodeMap('8', 7, 'CCD_MODULE_TYPE_ACTIVE_DIRECTORY',
+    defineMessage({ defaultMessage: 'Active Directory Server' })),
+  9: nodeMap('9', 8, 'CCD_MODULE_TYPE_SUBSCRIBER_PORTAL',
+    defineMessage({ defaultMessage: 'Captive Portal' })),
+  10: nodeMap('10', 9, 'CCD_MODULE_TYPE_OSU', defineMessage({ defaultMessage: 'OSU' })),
+  99: nodeMap('99', 10, 'CCD_MODULE_TYPE_BCAST', defineMessage({ defaultMessage: 'Broadcast' }))
 }
 
 const contentMap = (

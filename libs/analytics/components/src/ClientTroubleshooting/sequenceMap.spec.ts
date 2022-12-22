@@ -1,12 +1,14 @@
+import { defineMessage } from 'react-intl'
+
 import { getRCCDFlow } from './sequenceMap'
 
 describe('sequenceMap', () => {
   it('should return expected object', () => {
-    const rccdFlow = getRCCDFlow({ messageIds: [1, 2], failedMsgId: 1 })
+    const rccdFlow = getRCCDFlow({ messageIds: ['1', '2'], failedMsgId: '1' })
     expect(rccdFlow).toStrictEqual({
       layers: [
-        'Client Device',
-        'Access Point ({apMac})'
+        defineMessage({ defaultMessage: 'Client Device' }),
+        defineMessage({ defaultMessage: 'AP ({apMac})' })
       ],
       steps: [
         {
@@ -26,11 +28,11 @@ describe('sequenceMap', () => {
   })
 
   it('should return null object', () => {
-    const nullFlow = getRCCDFlow({ messageIds: [1, 2], failedMsgId: 3 })
+    const nullFlow = getRCCDFlow({ messageIds: ['1', '2'], failedMsgId: '3' })
     expect(nullFlow).toStrictEqual({
       layers: [
-        'Client Device',
-        'Access Point ({apMac})'
+        defineMessage({ defaultMessage: 'Client Device' }),
+        defineMessage({ defaultMessage: 'AP ({apMac})' })
       ],
       steps: [
         {
@@ -49,5 +51,21 @@ describe('sequenceMap', () => {
     })
   })
 
-  // todo: one more case for left
+  it('should return left direction object', () => {
+    const leftFlow = getRCCDFlow({ messageIds: ['21'], failedMsgId: '21' })
+    expect(leftFlow).toStrictEqual({
+      layers: [
+        defineMessage({ defaultMessage: 'Client Device' }),
+        defineMessage({ defaultMessage: 'AP ({apMac})' })
+      ],
+      steps: [
+        {
+          column: [1, 2],
+          direction: 'left',
+          label: '4-Way Handshake - Frame 1',
+          state: 'failed'
+        }
+      ]
+    })
+  })
 })
