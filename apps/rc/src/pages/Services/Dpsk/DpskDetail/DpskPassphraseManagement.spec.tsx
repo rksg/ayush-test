@@ -42,15 +42,13 @@ describe('DpskPassphraseManagement', () => {
   })
 
   it('should render the Passphrase Management view', async () => {
-    const { asFragment } = render(
+    render(
       <Provider>
         <DpskPassphraseManagement />
       </Provider>, {
         route: { params: paramsForPassphraseTab, path: detailPath }
       }
     )
-
-    expect(asFragment()).toMatchSnapshot()
 
     const targetRecord = mockedDpskPassphraseList.content[0]
 

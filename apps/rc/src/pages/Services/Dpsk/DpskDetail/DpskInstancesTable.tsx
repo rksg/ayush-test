@@ -60,7 +60,7 @@ export default function DpskInstancesTable () {
           defaultMessage: 'Instances ({instanceCount})'
         },
         {
-          instanceCount: tableQuery.data?.data.length
+          instanceCount: tableQuery.data?.totalCount
         })}
       </Card.Title>
       <Table<Network>

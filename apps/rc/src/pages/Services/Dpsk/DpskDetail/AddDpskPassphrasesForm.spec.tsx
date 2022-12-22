@@ -7,17 +7,6 @@ import { render, renderHook, screen }      from '@acx-ui/test-utils'
 import AddDpskPassphrasesForm from './AddDpskPassphrasesForm'
 
 describe('AddDpskPassphrasesForm', () => {
-  it('should render the form', () => {
-    const { result: formRef } = renderHook(() => {
-      const [ form ] = Form.useForm<CreateDpskPassphrasesFormFields>()
-      return form
-    })
-
-    const { asFragment } = render(<AddDpskPassphrasesForm form={formRef.current} />)
-
-    expect(asFragment()).toMatchSnapshot()
-  })
-
   it('should hide the MAC Address field when selecting Unlimited option', async () => {
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm<CreateDpskPassphrasesFormFields>()

@@ -60,18 +60,6 @@ describe('DpskDetails', () => {
     )
   )
 
-  it('should render the detail view', () => {
-    const { asFragment } = render(
-      <Provider>
-        <DpskDetails />
-      </Provider>, {
-        route: { params: paramsForOverviewTab, path: detailPath }
-      }
-    )
-
-    expect(asFragment()).toMatchSnapshot()
-  })
-
   it('should render the Passphrase Management tab', async () => {
     const passphraseTabParams = {
       ...paramsForOverviewTab,
