@@ -19,25 +19,26 @@ import {
 import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 import {
   useVenuesListQuery,
-  useLazyVenueDefaultApGroupQuery,
-  useAddApGroupMutation,
-  useLazyApGroupsListQuery,
+  useLazyGetSwitchListQuery,
   useLazyGetVlansByVenueQuery,
   useAddSwitchMutation
 } from '@acx-ui/rc/services'
 import {
   ApDeep,
-  AddApGroup,
-  checkObjectNotExists,
   SwitchMessages,
   SWITCH_SERIAL_PATTERN,
-  Switch
+  Switch,
+  getSwitchModel,
+  SwitchViewModel
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
+
+import * as UI from './styledComponents'
+import Item from 'antd/lib/list/Item'
 
 const { Option } = Select
 
@@ -71,6 +72,47 @@ export function AddSwitchForm () {
   const [venueOption, setVenueOption] = useState([] as DefaultOptionType[])
   const [dhcpClientOption, setDhcpClientOption] = useState([] as DefaultOptionType[])
   const [switchRole, setSwitchRole] = useState(MEMEBER_TYPE.STANDALONE as MEMEBER_TYPE)
+  const [getSwitchList] = useLazyGetSwitchListQuery()
+  const [switchOptions, setSwitchOptions] = useState([] as DefaultOptionType[])
+  const [venueId, setVenueId] = useState('')
+  const [switchModel, setSwitchModel] = useState('')
+  const [serialNumber, setSerialNumber] = useState('')
+
+  const switchListPayload = {
+    searchString: '',
+    fields: ['name', 'serialNumber', 'id'],
+
+    searchTargetFields: ['model'],
+    pageSize: 10000
+  }
+
+  useEffect(() => {
+    if (venueId && switchModel && switchRole === MEMEBER_TYPE.MEMBER) {
+      handleSwitchList()
+    }
+  }, [venueId, switchModel, switchRole, serialNumber])
+
+  const handleSwitchList = async () => {
+    const payload = {
+      ...switchListPayload,
+      searchString: switchModel,
+      filters: { isStack: [true], venueId: [venueId] }
+    }
+    const memberList =
+      (await getSwitchList({ params: { tenantId: tenantId }, payload }, true))
+        .data?.data
+        .filter(stack => stack.serialNumber !== serialNumber)
+        .map((item: SwitchViewModel) => (
+          {
+            label: item.name || item.serialNumber || item.id,
+            value: item.id || item.serialNumber
+          }
+        )) || []
+
+    const exisingStack = memberList.length > 0 ? memberList[0].value : null
+    formRef.current?.setFieldValue('existingStack', exisingStack)
+    setSwitchOptions(memberList)
+  }
 
 
   useEffect(() => {
@@ -82,6 +124,7 @@ export function AddSwitchForm () {
   }, [venuesList])
 
   const handleVenueChange = async (value: string) => {
+    setVenueId(value)
     const vlansByVenue = value ?
       (await getVlansByVenue({ params: { tenantId: tenantId, venueId: value } })).data
         ?.map((item: { vlanId: string }) => ({
@@ -118,7 +161,12 @@ export function AddSwitchForm () {
     if (value && !re.test(value)) {
       return Promise.reject($t({ defaultMessage: 'Serial number is invalid' }))
     }
-    // this.validateModel = [this.switchUtilsService.getSwitchModel(this.id.value)]
+
+    if(value && re.test(value)) {
+      setSwitchModel(getSwitchModel(value) || '')
+      setSerialNumber(value)
+    }
+
     return Promise.resolve()
   }
 
@@ -157,7 +205,8 @@ export function AddSwitchForm () {
                 </>}
                 initialValue={null}
                 rules={[{
-                  required: true
+                  required: true,
+                  message: $t({ defaultMessage: 'Please select Venue' })
                 }]}
                 children={<Select
                   options={[
@@ -189,28 +238,43 @@ export function AddSwitchForm () {
                     return setSwitchRole(e.target.value)
                   }}
                 >
-                  <Space direction='vertical'>
+                  {/* <Space direction='vertical'> */}
+                  <UI.FieldSpace columns={'auto'}>
                     <Radio key={MEMEBER_TYPE.STANDALONE} value={MEMEBER_TYPE.STANDALONE} >
                       {$t({ defaultMessage: 'Standalone switch' })}
                     </Radio>
+                  </UI.FieldSpace>
+
+                  <UI.FieldSpace columns={'140px 190px'}>
                     <Radio key={MEMEBER_TYPE.MEMBER}
-                      style={{ height: '35px' }}
                       value={MEMEBER_TYPE.MEMBER} >
                       {$t({ defaultMessage: 'Member in stack' })}
-                      {switchRole === MEMEBER_TYPE.MEMBER &&
-                        <Select style={{ width: 100, marginLeft: 10 }} >
-                          <Option value={FIRMWARE.AUTO}>
-                            {$t({ defaultMessage: 'Factory default' })}
-                          </Option>
-                          <Option value={FIRMWARE.SWITCH}>
-                            {$t({ defaultMessage: 'Switch' })}
-                          </Option>
-                          <Option value={FIRMWARE.ROUTER}>
-                            {$t({ defaultMessage: 'Router' })}
-                          </Option>
-                        </Select>}
                     </Radio>
-                  </Space>
+                    {switchRole === MEMEBER_TYPE.MEMBER &&
+                      <Form.Item
+                        name='existingStack'
+                        initialValue={null}
+                        rules={[{
+                          required: true,
+                          message: $t({ defaultMessage: 'Please select Stack' })
+                        }]}
+                      >
+                        <Select
+                          disabled={switchOptions.length < 1}
+                          options={switchOptions.length < 1 ? [
+                            {
+                              label: $t({ defaultMessage: 'No compatible stacks' }),
+                              value: null
+                            }
+                          ] : switchOptions}
+                        />
+
+                      </Form.Item>
+
+                    }
+                  </UI.FieldSpace>
+
+                  {/* </Space> */}
                 </Radio.Group>
               </Form.Item>
               {switchRole === MEMEBER_TYPE.STANDALONE && <>
@@ -284,6 +348,7 @@ export function AddSwitchForm () {
                     ]} />
                 }
               />
+
 
             </Col>
           </Row>

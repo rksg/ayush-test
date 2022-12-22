@@ -70,6 +70,15 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Switch', id: 'LIST' }]
+    }),
+    getSwitchList: build.query<TableResult<SwitchViewModel>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const switchListReq = createHttpRequest(SwitchUrlsInfo.getSwitchList, params)
+        return {
+          ...switchListReq,
+          body: payload
+        }
+      }
     })
   })
 })
@@ -79,5 +88,7 @@ export const {
   useImportSwitchesMutation,
   useGetVlansByVenueQuery,
   useLazyGetVlansByVenueQuery,
-  useAddSwitchMutation
+  useAddSwitchMutation,
+  useGetSwitchListQuery,
+  useLazyGetSwitchListQuery
 } = switchApi
