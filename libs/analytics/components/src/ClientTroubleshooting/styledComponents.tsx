@@ -1,8 +1,10 @@
 import { Collapse }    from 'antd'
 import styled, { css } from 'styled-components/macro'
 
+import {
+  ResetWrapper
+} from '@acx-ui/components'
 import {  PlusSquareOutlined, MinusSquareOutlined } from '@acx-ui/icons'
-
 const eventIconStyle = css`
   display: flex;
   margin-top: 3px;
@@ -116,4 +118,14 @@ export const TooltipWrapper = styled.div`
 export const TimelineLoaderWrapper = styled.div`
   height: 100%;
   padding-top: 5px;
+`
+export const Wrapper = styled(ResetWrapper)`
+  svg {
+    // special color code to target path of brush
+    path[stroke="#123456"] {
+      stroke-dasharray: 2;
+      stroke: var(--acx-accents-blue-50);
+      clip-path: inset(0 round 5px);
+    }
+  }
 `

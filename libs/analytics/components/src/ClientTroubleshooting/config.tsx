@@ -43,7 +43,9 @@ export const EVENT_STATES = {
 
 export const TYPES = {
   CONNECTION_EVENTS: 'connectionEvents',
-  ROAMING: 'roaming'
+  ROAMING: 'roaming',
+  CONNECTION_QUALITY: 'connectionQuality',
+  NETWORK_INCIDENTS: 'networkIncidents'
 }
 // In RA these events are hidden
 export const spuriousEvents = [
@@ -221,8 +223,17 @@ export const ClientTroubleShootingConfig = {
         }
       ]
     },
-    { title: defineMessage({ defaultMessage: 'Roaming' }) },
-    { title: defineMessage({ defaultMessage: 'Connection Quality' }) },
-    { title: defineMessage({ defaultMessage: 'Network Incidents' }) }
+    {
+      title: defineMessage({ defaultMessage: 'Roaming' }),
+      value: TYPES.ROAMING
+    },
+    {
+      title: defineMessage({ defaultMessage: 'Connection Quality' }),
+      value: TYPES.CONNECTION_QUALITY
+    },
+    {
+      title: defineMessage({ defaultMessage: 'Network Incidents' }),
+      value: TYPES.NETWORK_INCIDENTS
+    }
   ]
 }
