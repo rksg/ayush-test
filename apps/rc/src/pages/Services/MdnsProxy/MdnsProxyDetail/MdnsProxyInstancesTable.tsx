@@ -1,11 +1,11 @@
-import { Divider } from 'antd'
+// import { Divider } from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Card, Table, TableProps } from '@acx-ui/components'
 import { useApListQuery }          from '@acx-ui/rc/services'
 import { AP, useTableQuery }       from '@acx-ui/rc/utils'
 import { TenantLink }              from '@acx-ui/react-router-dom'
-import { formatter }               from '@acx-ui/utils'
+// import { formatter }               from '@acx-ui/utils'
 
 interface MdnsProxyInstancesTableProps {
   apList: string[] | null
@@ -14,7 +14,7 @@ interface MdnsProxyInstancesTableProps {
 export function MdnsProxyInstancesTable (props: MdnsProxyInstancesTableProps) {
   const { $t } = useIntl()
   const { apList } = props
-  const bytesFormatter = formatter('bytesFormat')
+  // const bytesFormatter = formatter('bytesFormat')
 
   const tableQuery = useTableQuery({
     useQuery: useApListQuery,
@@ -43,39 +43,39 @@ export function MdnsProxyInstancesTable (props: MdnsProxyInstancesTableProps) {
       render: (data, row) => {
         return <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>{data}</TenantLink>
       }
-    },
-    {
-      title: $t({ defaultMessage: 'Rx Packets/Bytes' }),
-      dataIndex: 'rx',
-      key: 'rx',
-      sorter: true,
-      render: () => {
-        // TODO: API is not ready, this is mocked data for display
-        return (
-          <>
-            {1000}
-            <Divider type='vertical' />
-            {bytesFormatter(860000)}
-          </>
-        )
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Tx Packets/Bytes' }),
-      dataIndex: 'tx',
-      key: 'tx',
-      sorter: true,
-      render: () => {
-        // TODO: API is not ready, this is mocked data for display
-        return (
-          <>
-            {1500}
-            <Divider type='vertical' />
-            {bytesFormatter(1060000)}
-          </>
-        )
-      }
     }
+    // {
+    //   title: $t({ defaultMessage: 'Rx Packets/Bytes' }),
+    //   dataIndex: 'rx',
+    //   key: 'rx',
+    //   sorter: true,
+    //   render: () => {
+    //     // TODO: API is not ready, this is mocked data for display
+    //     return (
+    //       <>
+    //         {1000}
+    //         <Divider type='vertical' />
+    //         {bytesFormatter(860000)}
+    //       </>
+    //     )
+    //   }
+    // },
+    // {
+    //   title: $t({ defaultMessage: 'Tx Packets/Bytes' }),
+    //   dataIndex: 'tx',
+    //   key: 'tx',
+    //   sorter: true,
+    //   render: () => {
+    //     // TODO: API is not ready, this is mocked data for display
+    //     return (
+    //       <>
+    //         {1500}
+    //         <Divider type='vertical' />
+    //         {bytesFormatter(1060000)}
+    //       </>
+    //     )
+    //   }
+    // }
     // {
     //   title: $t({ defaultMessage: 'Client Queries' }),
     //   dataIndex: 'clientQueries',

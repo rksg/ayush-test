@@ -32,7 +32,8 @@ import {
   MdnsProxyGetApiResponse,
   convertApiPayloadToMdnsProxyFormData,
   onSocketActivityChanged,
-  showActivityMessage
+  showActivityMessage,
+  MdnsProxyAp
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
@@ -51,7 +52,7 @@ const RKS_NEW_UI = {
 export const baseServiceApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'serviceApi',
-  tagTypes: ['Service'],
+  tagTypes: ['Service', 'MdnsProxyAp'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })
@@ -246,14 +247,31 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }]
     }),
-    deleteMdnsProxyInstances: build.mutation<CommonResult, RequestPayload>({
+    deleteMdnsProxyAps: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(MdnsProxyUrls.deleteMdnsProxyInstances, params)
+        const req = createHttpRequest(MdnsProxyUrls.deleteMdnsProxyAps, params)
         return {
           ...req,
           body: payload
         }
-      }
+      },
+      invalidatesTags: [{ type: 'MdnsProxyAp', id: 'LIST' }]
+    }),
+    getMdnsProxyAps: build.query<TableResult<MdnsProxyAp>, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(MdnsProxyUrls.getMdnsProxyApsByVenue, params)
+        return {
+          ...req
+        }
+      },
+      transformResponse (response: MdnsProxyAp[]) {
+        return {
+          data: response,
+          page: 0,
+          totalCount: response.length
+        }
+      },
+      providesTags: [{ type: 'MdnsProxyAp', id: 'LIST' }]
     }),
     getDHCP: build.query<DHCPSaveData | null, RequestPayload>({
       async queryFn ({ params }, _queryApi, _extraOptions, fetch) {
@@ -467,7 +485,8 @@ export const {
   useUpdateMdnsProxyMutation,
   useDeleteMdnsProxyMutation,
   useDeleteMdnsProxyListMutation,
-  useDeleteMdnsProxyInstancesMutation,
+  useDeleteMdnsProxyApsMutation,
+  useGetMdnsProxyApsQuery,
   useDeleteWifiCallingServiceMutation,
   useGetWifiCallingServiceQuery,
   useGetWifiCallingServiceListQuery,

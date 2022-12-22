@@ -1,11 +1,11 @@
 import { Switch }  from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Loader, showActionModal, Table, TableProps }          from '@acx-ui/components'
-import { useApListQuery, useDeleteMdnsProxyInstancesMutation } from '@acx-ui/rc/services'
+import { Loader, showActionModal, Table, TableProps }             from '@acx-ui/components'
+import { useGetMdnsProxyApsQuery, useDeleteMdnsProxyApsMutation } from '@acx-ui/rc/services'
 import {
-  AP,
   getServiceDetailsLink,
+  MdnsProxyAp,
   ServiceOperation,
   ServiceType,
   useTableQuery
@@ -17,41 +17,35 @@ import * as UI from './styledComponents'
 export default function MdnsProxyInstances () {
   const { $t } = useIntl()
   const params = useParams()
-  const [ deleteInstances ] = useDeleteMdnsProxyInstancesMutation()
+  const [ deleteInstances ] = useDeleteMdnsProxyApsMutation()
 
   const tableQuery = useTableQuery({
-    useQuery: useApListQuery,
-    defaultPayload: {
-      // TODO: API is not ready to return these fields
-      // fields: ['name', 'serialNumber', 'mdnsProxyServiceId', 'mdnsProxyServiceName', 'rules'],
-      fields: ['name', 'serialNumber'],
-      filters: { venueId: [params.venueId] }
-    }
+    useQuery: useGetMdnsProxyApsQuery,
+    defaultPayload: {}
   })
 
   const handleAddAction = () => {
   }
 
-  const rowActions: TableProps<AP>['rowActions'] = [
+  const rowActions: TableProps<MdnsProxyAp>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Change' }),
       onClick: () => {}
     },
     {
       label: $t({ defaultMessage: 'Remove' }),
-      onClick: (rows: AP[], clearSelection) => {
+      onClick: (rows: MdnsProxyAp[], clearSelection) => {
         showActionModal({
           type: 'confirm',
           customContent: {
             action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Instances' }),
+            entityName: $t({ defaultMessage: 'Instance' }),
             numOfEntities: rows.length,
-            entityValue: rows[0].name
+            entityValue: rows[0].apName
           },
           onOk: () => {
             deleteInstances({
-              // params: { ...params, serviceId: rows[0].multicasDnsProxyServiceProfileId },
-              params,
+              params: { ...params, serviceId: rows[0].serviceId },
               payload: rows.map(r => r.serialNumber)
             }).then(clearSelection)
           }
@@ -60,7 +54,7 @@ export default function MdnsProxyInstances () {
     }
   ]
 
-  const columns: TableProps<AP>['columns'] = [
+  const columns: TableProps<MdnsProxyAp>['columns'] = [
     {
       title: $t({ defaultMessage: 'AP Name' }),
       dataIndex: 'apName',
@@ -76,14 +70,12 @@ export default function MdnsProxyInstances () {
       dataIndex: 'serviceName',
       key: 'serviceName',
       sorter: true,
-      render: (data) => {
+      render: (data, row) => {
         return <TenantLink
           to={getServiceDetailsLink({
             type: ServiceType.MDNS_PROXY,
             oper: ServiceOperation.DETAIL,
-            // TODO: API is not ready to return this field
-            // serviceId: row.mdnsProxyServiceId
-            serviceId: '12345'
+            serviceId: row.serviceId
           })}>
           {data}
         </TenantLink>
@@ -91,18 +83,28 @@ export default function MdnsProxyInstances () {
     },
     {
       title: $t({ defaultMessage: 'Forwarding rules' }),
-      dataIndex: 'numberOfRules',
-      key: 'numberOfRules',
-      sorter: true
+      dataIndex: 'rules',
+      key: 'rules',
+      sorter: false,
+      render: (data, row) => {
+        return row.rules ? row.rules.length : 0
+      }
     },
     {
       title: $t({ defaultMessage: 'Active' }),
       dataIndex: 'multicasDnsProxyServiceProfileId',
       key: 'multicasDnsProxyServiceProfileId',
-      render: function () {
-        // TODO: API is not ready
+      render: function (data, row) {
         return <Switch
-          checked={false}
+          checked={true}
+          onChange={checked => {
+            if (checked) return
+
+            deleteInstances({
+              params: { ...params, serviceId: row.serviceId },
+              payload: [row.serialNumber]
+            })
+          }}
         />
       }
     }
@@ -114,13 +116,14 @@ export default function MdnsProxyInstances () {
         { $t({ defaultMessage: 'APs Running mDNS Proxy service' }) }
       </UI.TableTitle>
       <Loader states={[tableQuery]}>
-        <Table<AP>
+        <Table<MdnsProxyAp>
           columns={columns}
           dataSource={tableQuery.data?.data}
           actions={[{
             label: $t({ defaultMessage: 'Add Instance' }),
             onClick: handleAddAction
           }]}
+          onChange={tableQuery.handleTableChange}
           rowKey='serialNumber'
           rowActions={rowActions}
           rowSelection={{ type: 'radio' }}

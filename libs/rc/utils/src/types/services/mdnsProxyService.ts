@@ -29,3 +29,13 @@ export interface MdnsProxyGetApiResponse {
   rules?: MdnsProxyForwardingRule[];
   aps?: { serialNumber: string, venueId: string }[]
 }
+
+export interface MdnsProxyAp {
+  serialNumber: string;
+  apName: string;
+  venueId: string;
+  venueName: string;
+  serviceId: string;
+  serviceName: string;
+  rules: MdnsProxyForwardingRule[]
+}
