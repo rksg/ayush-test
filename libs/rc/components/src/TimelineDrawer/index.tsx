@@ -10,6 +10,7 @@ export interface DrawerProps {
   onClose: () => void
   data: { title: MessageDescriptor, value: string }[]
   onBackClick?: () => void
+  width?: number
 }
 
 export const TimelineDrawer = (props: DrawerProps) => {
@@ -26,5 +27,6 @@ export const TimelineDrawer = (props: DrawerProps) => {
       />)
     }</Form>}
     onBackClick={props.onBackClick}
+    width={props.width}
   />
 }

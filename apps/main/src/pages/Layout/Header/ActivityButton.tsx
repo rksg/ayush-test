@@ -1,18 +1,18 @@
 import { useState, useEffect } from 'react'
 
-import { ClockCircleFilled } from '@ant-design/icons'
-import { Select, Form }      from 'antd'
-import { SorterResult }      from 'antd/lib/table/interface'
-import moment                from 'moment-timezone'
-import { useIntl }           from 'react-intl'
+import { ClockCircleFilled }      from '@ant-design/icons'
+import { Select }                 from 'antd'
+import { SorterResult }           from 'antd/lib/table/interface'
+import { severityMapping }        from 'libs/rc/components/src/ActivityTable/mapping'
+import { TimelineDrawer }         from 'libs/rc/components/src/TimelineDrawer'
+import moment                     from 'moment-timezone'
+import { defineMessage, useIntl } from 'react-intl'
 
-import { noDataSymbol } from '@acx-ui/analytics/utils'
 import {
   LayoutUI,
   Loader,
   Badge
 } from '@acx-ui/components'
-import { Drawer }                                                       from '@acx-ui/components'
 import { CancelCircleSolid, CheckMarkCircleSolid, Pending, InProgress } from '@acx-ui/icons'
 import { useActivitiesQuery }                                           from '@acx-ui/rc/services'
 import { Activity, CommonUrlsInfo, useTableQuery, getDescription }      from '@acx-ui/rc/utils'
@@ -157,47 +157,40 @@ export default function ActivityHeaderButton () {
     </Loader>
   </>
 
-  const severityMapping = {
-    Critical: $t({ defaultMessage: 'Critical' }),
-    Major: $t({ defaultMessage: 'Major' }),
-    Minor: $t({ defaultMessage: 'Minor' }),
-    Warning: $t({ defaultMessage: 'Warning' }),
-    Info: $t({ defaultMessage: 'Informational' })
-  }
-
   const getDrawerData = (data: Activity) => [
     {
-      title: $t({ defaultMessage: 'Start Time' }),
+      title: defineMessage({ defaultMessage: 'Start Time' }),
       value: formatter('dateTimeFormatWithSeconds')(data.startDatetime)
     },
     {
-      title: $t({ defaultMessage: 'End Time' }),
+      title: defineMessage({ defaultMessage: 'End Time' }),
       value: formatter('dateTimeFormatWithSeconds')(data.endDatetime)
     },
     {
-      title: $t({ defaultMessage: 'Severity' }),
+      title: defineMessage({ defaultMessage: 'Severity' }),
       value: (() => {
-        return severityMapping[data.severity as keyof typeof severityMapping]
+        const msg = severityMapping[data.severity as keyof typeof severityMapping]
+        return $t(msg)
       })()
     },
     {
-      title: $t({ defaultMessage: 'Event Type' }),
+      title: defineMessage({ defaultMessage: 'Event Type' }),
       value: 'Admin activity'
     },
     {
-      title: $t({ defaultMessage: 'Source' }),
+      title: defineMessage({ defaultMessage: 'Source' }),
       value: data.admin.name
     },
     {
-      title: $t({ defaultMessage: 'Admin IP' }),
+      title: defineMessage({ defaultMessage: 'Admin IP' }),
       value: data.admin.ip
     },
     {
-      title: $t({ defaultMessage: 'Admin Interface' }),
+      title: defineMessage({ defaultMessage: 'Admin Interface' }),
       value: data.admin.interface
     },
     {
-      title: $t({ defaultMessage: 'Description' }),
+      title: defineMessage({ defaultMessage: 'Description' }),
       value: (() => getDescription(data.descriptionTemplate, data.descriptionData))()
     }
   ]
@@ -221,19 +214,13 @@ export default function ActivityHeaderButton () {
       mask={true}
       children={activityList}
     />
-    {detailModal && <Drawer
+    {detailModal && <TimelineDrawer
       width={464}
-      title={$t({ defaultMessage: 'Activity Details' })}
+      title={defineMessage({ defaultMessage: 'Activity Details' })}
       visible={detailModal}
       onClose={()=>setDetailModalOpen(false)}
       onBackClick={()=>setDetailModalOpen(false)}
-      children={<Form labelCol={{ span: 10 }} labelAlign='left'>{
-        getDrawerData?.(detail!).map(({ title, value }, i) => <Form.Item
-          key={i}
-          label={title}
-          children={value || noDataSymbol}
-        />)
-      }</Form>}
+      data={getDrawerData?.(detail!)}
     />}
   </>
 }
