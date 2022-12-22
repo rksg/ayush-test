@@ -156,6 +156,15 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         })
       }
     }),
+    getVenueNetworkApGroup: build.query<TableResult<NetworkVenue>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.venueNetworkApGroup, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     apNetworkList: build.query<TableResult<Network>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(CommonUrlsInfo.getApNetworkList, params)
@@ -361,6 +370,8 @@ export const {
   useLazyNetworkListQuery,
   useGetNetworkQuery,
   useLazyGetNetworkQuery,
+  useGetVenueNetworkApGroupQuery,
+  useLazyGetVenueNetworkApGroupQuery,
   useNetworkDetailHeaderQuery,
   useNetworkVenueListQuery,
   useAddNetworkMutation,
