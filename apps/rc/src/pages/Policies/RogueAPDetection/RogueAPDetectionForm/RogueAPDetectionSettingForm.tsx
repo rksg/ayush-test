@@ -58,13 +58,15 @@ const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormProps) =>
         payload: {
           state: {
             ...state,
+            description: policyData.description ?? '',
             policyName: policyData.name ?? '',
             venues: policyData.venues ?? []
           }
         }
       })
       setOriginalName(policyData.name)
-      formRef?.current?.setFieldValue('policyName', policyData.name ? policyData.name : '')
+      formRef?.current?.setFieldValue('policyName', policyData.name ?? '')
+      formRef?.current?.setFieldValue('description', policyData.description ?? '')
     }
   }, [data])
 

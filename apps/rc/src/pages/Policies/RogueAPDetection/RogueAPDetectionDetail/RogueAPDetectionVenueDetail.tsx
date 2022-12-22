@@ -16,7 +16,6 @@ const defaultPayload = {
     'city',
     'country',
     'switches',
-    'rogueAps',
     'aggregatedApStatus',
     'rogueDetection',
     'status'
@@ -52,9 +51,11 @@ const RogueAPDetectionVenueDetail = () => {
     },
     {
       title: $t({ defaultMessage: 'Rogue APs' }),
-      dataIndex: 'rogueAps',
-      key: 'rogueAps',
-      render: (row) => row ? Number(row) : 0
+      dataIndex: 'aggregatedApStatus',
+      key: 'aggregatedApStatus',
+      render: (data, row) => {
+        return Object.values(row.aggregatedApStatus ?? {}).reduce((a, b) => a + b, 0)
+      }
     }
   ]
 
