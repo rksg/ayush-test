@@ -1,12 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react'
 
-import { syncBuiltinESMExports } from 'module'
 
-import { Col, Form, Input, Row, Select, Transfer , Radio, Space, RadioChangeEvent } from 'antd'
-import { DefaultOptionType }                                                        from 'antd/lib/select'
-import { TransferItem }                                                             from 'antd/lib/transfer'
-import _                                                                            from 'lodash'
-import { useIntl }                                                                  from 'react-intl'
+import { Col, Form, Input, Row, Select, Radio, RadioChangeEvent } from 'antd'
+import { DefaultOptionType }                                      from 'antd/lib/select'
+import { useIntl }                                                from 'react-intl'
 
 import {
   PageHeader,
@@ -21,7 +18,8 @@ import {
   useVenuesListQuery,
   useLazyGetSwitchListQuery,
   useLazyGetVlansByVenueQuery,
-  useAddSwitchMutation
+  useAddSwitchMutation,
+  useAddStackMemberMutation
 } from '@acx-ui/rc/services'
 import {
   ApDeep,
@@ -38,7 +36,6 @@ import {
 } from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
-import Item from 'antd/lib/list/Item'
 
 const { Option } = Select
 
@@ -69,6 +66,7 @@ export function AddSwitchForm () {
   const venuesList = useVenuesListQuery({ params: { tenantId: tenantId }, payload: defaultPayload })
 
   const [addSwitch] = useAddSwitchMutation()
+  const [addStackMember] = useAddStackMemberMutation()
   const [venueOption, setVenueOption] = useState([] as DefaultOptionType[])
   const [dhcpClientOption, setDhcpClientOption] = useState([] as DefaultOptionType[])
   const [switchRole, setSwitchRole] = useState(MEMEBER_TYPE.STANDALONE as MEMEBER_TYPE)
@@ -90,6 +88,7 @@ export function AddSwitchForm () {
     if (venueId && switchModel && switchRole === MEMEBER_TYPE.MEMBER) {
       handleSwitchList()
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [venueId, switchModel, switchRole, serialNumber])
 
   const handleSwitchList = async () => {
@@ -150,9 +149,21 @@ export function AddSwitchForm () {
         })
       }
     } else if (switchRole === MEMEBER_TYPE.MEMBER) {
-
+      const params = {
+        tenantId,
+        stackSerialNumber: formRef.current?.getFieldValue('existingStack'),
+        newStackMemberSerialNumber: serialNumber
+      }
+      try {
+        await addStackMember({ params }).unwrap()
+        navigate(`${basePath.pathname}/switch`, { replace: true })
+      } catch {
+        showToast({
+          type: 'error',
+          content: $t({ defaultMessage: 'An error occurred' })
+        })
+      }
     }
-
   }
 
   const serialNumberRegExp = function (value: string) {
@@ -245,7 +256,7 @@ export function AddSwitchForm () {
                     </Radio>
                   </UI.FieldSpace>
 
-                  <UI.FieldSpace columns={'140px 190px'}>
+                  <UI.FieldSpace columns={'140px 190px 10px'}>
                     <Radio key={MEMEBER_TYPE.MEMBER}
                       value={MEMEBER_TYPE.MEMBER} >
                       {$t({ defaultMessage: 'Member in stack' })}
@@ -268,10 +279,9 @@ export function AddSwitchForm () {
                             }
                           ] : switchOptions}
                         />
-
                       </Form.Item>
-
                     }
+
                   </UI.FieldSpace>
 
                   {/* </Space> */}
@@ -349,7 +359,6 @@ export function AddSwitchForm () {
                 }
               />
 
-
             </Col>
           </Row>
         </Loader>
@@ -357,3 +366,4 @@ export function AddSwitchForm () {
     </StepsForm>
   </>
 }
+

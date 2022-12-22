@@ -79,6 +79,16 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    addStackMember: build.mutation<{}, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.addStackMember, params)
+        return {
+          ...req
+          // body:
+        }
+      },
+      invalidatesTags: [{ type: 'Switch', id: 'LIST' }]
     })
   })
 })
@@ -89,6 +99,7 @@ export const {
   useGetVlansByVenueQuery,
   useLazyGetVlansByVenueQuery,
   useAddSwitchMutation,
+  useAddStackMemberMutation,
   useGetSwitchListQuery,
   useLazyGetSwitchListQuery
 } = switchApi
