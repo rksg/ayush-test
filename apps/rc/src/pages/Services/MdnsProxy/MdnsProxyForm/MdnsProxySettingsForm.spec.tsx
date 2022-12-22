@@ -1,20 +1,33 @@
 import userEvent   from '@testing-library/user-event'
 import { Form }    from 'antd'
+import { rest }    from 'msw'
 import { useIntl } from 'react-intl'
 
-import { MdnsProxyForwardingRule, BridgeServiceEnum } from '@acx-ui/rc/utils'
-import { render, renderHook, screen, within }         from '@acx-ui/test-utils'
+import { MdnsProxyForwardingRule, BridgeServiceEnum, MdnsProxyUrls } from '@acx-ui/rc/utils'
+import { Provider }                                                  from '@acx-ui/store'
+import { mockServer, render, renderHook, screen, within }            from '@acx-ui/test-utils'
 
 import { mdnsProxyForwardingRuleTypeLabelMapping as ruleTypeLabelMapping } from '../../contentsMap'
 
-import { mockedForwardingRules } from './__tests__/fixtures'
-import MdnsProxyFormContext      from './MdnsProxyFormContext'
-import { MdnsProxySettingsForm } from './MdnsProxySettingsForm'
+import { mockedForwardingRules, mockedMdnsProxyList } from './__tests__/fixtures'
+import MdnsProxyFormContext                           from './MdnsProxyFormContext'
+import { MdnsProxySettingsForm }                      from './MdnsProxySettingsForm'
 
 
 describe('MdnsProxySettingsForm', () => {
+  mockServer.use(
+    rest.get(
+      MdnsProxyUrls.getMdnsProxyList.url,
+      (req, res, ctx) => res(ctx.json({ ...mockedMdnsProxyList }))
+    )
+  )
+
   it('should render the form', () => {
-    const { asFragment } = render(<Form><MdnsProxySettingsForm /></Form>)
+    const { asFragment } = render(
+      <Provider>
+        <Form><MdnsProxySettingsForm /></Form>
+      </Provider>
+    )
 
     expect(asFragment()).toMatchSnapshot()
   })
@@ -31,9 +44,9 @@ describe('MdnsProxySettingsForm', () => {
     })
 
     render(
-      <Form>
-        <MdnsProxySettingsForm />
-      </Form>
+      <Provider>
+        <Form><MdnsProxySettingsForm /></Form>
+      </Provider>
     )
 
     await userEvent.click(await screen.findByRole('button', { name: 'Add Rule' }))
@@ -69,18 +82,20 @@ describe('MdnsProxySettingsForm', () => {
     const dataSource = mockedForwardingRules.slice(0, 1)
 
     render(
-      <MdnsProxyFormContext.Provider
-        value={{
-          editMode: false,
-          currentData: {
-            name: 'mDNS Proxy 123',
-            forwardingRules: dataSource
-          }
-        }}>
-        <Form>
-          <MdnsProxySettingsForm />
-        </Form>
-      </MdnsProxyFormContext.Provider>
+      <Provider>
+        <MdnsProxyFormContext.Provider
+          value={{
+            editMode: false,
+            currentData: {
+              name: 'mDNS Proxy 123',
+              forwardingRules: dataSource
+            }
+          }}>
+          <Form>
+            <MdnsProxySettingsForm />
+          </Form>
+        </MdnsProxyFormContext.Provider>
+      </Provider>
     )
 
     const targetRule: MdnsProxyForwardingRule = dataSource[0]
@@ -114,18 +129,20 @@ describe('MdnsProxySettingsForm', () => {
 
   it('should delete forwarding rule', async () => {
     render(
-      <MdnsProxyFormContext.Provider
-        value={{
-          editMode: false,
-          currentData: {
-            name: 'mDNS Proxy 123',
-            forwardingRules: mockedForwardingRules
-          }
-        }}>
-        <Form>
-          <MdnsProxySettingsForm />
-        </Form>
-      </MdnsProxyFormContext.Provider>
+      <Provider>
+        <MdnsProxyFormContext.Provider
+          value={{
+            editMode: false,
+            currentData: {
+              name: 'mDNS Proxy 123',
+              forwardingRules: mockedForwardingRules
+            }
+          }}>
+          <Form>
+            <MdnsProxySettingsForm />
+          </Form>
+        </MdnsProxyFormContext.Provider>
+      </Provider>
     )
 
     const targetRule: MdnsProxyForwardingRule = mockedForwardingRules[1]

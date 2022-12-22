@@ -1,6 +1,10 @@
 import { ApiInfo } from '../../apiService'
 
 export const MdnsProxyUrls: { [key: string]: ApiInfo } = {
+  getMdnsProxyList: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/mDnsProxyServiceProfiles'
+  },
   getMdnsProxy: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/mDnsProxyServiceProfiles/:serviceId'

@@ -183,9 +183,9 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     }),
     getMdnsProxy: build.query<MdnsProxyFormData, RequestPayload>({
       query: ({ params, payload }) => {
-        const mdnsProxyReq = createHttpRequest(MdnsProxyUrls.getMdnsProxy, params)
+        const req = createHttpRequest(MdnsProxyUrls.getMdnsProxy, params)
         return {
-          ...mdnsProxyReq,
+          ...req,
           body: payload
         }
       },
@@ -205,6 +205,15 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         return result
       },
       providesTags: [{ type: 'Service', id: 'DETAIL' }]
+    }),
+    getMdnsProxyList: build.query<MdnsProxyGetApiResponse[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(MdnsProxyUrls.getMdnsProxyList, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Service', id: 'LIST' }]
     }),
     updateMdnsProxy: build.mutation<MdnsProxyFormData, RequestPayload<MdnsProxyFormData>>({
       query: ({ params, payload }) => {
@@ -481,6 +490,7 @@ export const {
   useAccessControlProfileListQuery,
   useGetDHCPProfileListQuery,
   useGetMdnsProxyQuery,
+  useLazyGetMdnsProxyListQuery,
   useAddMdnsProxyMutation,
   useUpdateMdnsProxyMutation,
   useDeleteMdnsProxyMutation,

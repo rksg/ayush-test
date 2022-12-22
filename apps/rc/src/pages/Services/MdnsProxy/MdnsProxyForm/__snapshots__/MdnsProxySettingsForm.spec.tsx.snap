@@ -18,6 +18,12 @@ exports[`MdnsProxySettingsForm should render the form 1`] = `
         >
           Settings
         </h3>
+        <input
+          class="ant-input"
+          id="id"
+          type="hidden"
+          value=""
+        />
         <div
           class="ant-form-item"
         >

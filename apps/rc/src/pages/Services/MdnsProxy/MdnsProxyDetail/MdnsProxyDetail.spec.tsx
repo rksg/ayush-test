@@ -1,6 +1,7 @@
 import { rest } from 'msw'
 
 import {
+  CommonUrlsInfo,
   getServiceDetailsLink,
   getServiceRoutePath,
   MdnsProxyUrls,
@@ -10,7 +11,12 @@ import {
 import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
-import { mockedGetApiResponse } from '../MdnsProxyForm/__tests__/fixtures'
+import {
+  mockedApList,
+  mockedEmptyApList,
+  mockedGetApiResponse,
+  mockedGetApiResponseWithoutAps
+} from '../MdnsProxyForm/__tests__/fixtures'
 
 import MdnsProxyDetail from './MdnsProxyDetail'
 
@@ -18,6 +24,10 @@ mockServer.use(
   rest.get(
     MdnsProxyUrls.getMdnsProxy.url,
     (req, res, ctx) => res(ctx.json({ ...mockedGetApiResponse }))
+  ),
+  rest.post(
+    CommonUrlsInfo.getApsList.url,
+    (req, res, ctx) => res(ctx.json({ ...mockedApList }))
   )
 )
 
@@ -39,6 +49,29 @@ describe('MdnsProxyDetail', () => {
     )
 
     expect(asFragment()).toMatchSnapshot()
+  })
+
+  it('should render the detail view without AP instances', async () => {
+    mockServer.use(
+      rest.get(
+        MdnsProxyUrls.getMdnsProxy.url,
+        (req, res, ctx) => res(ctx.json({ ...mockedGetApiResponseWithoutAps }))
+      ),
+      rest.post(
+        CommonUrlsInfo.getApsList.url,
+        (req, res, ctx) => res(ctx.json({ ...mockedEmptyApList }))
+      )
+    )
+
+    render(
+      <Provider>
+        <MdnsProxyDetail />
+      </Provider>, {
+        route: { params, path: detailPath }
+      }
+    )
+
+    expect(await screen.findByText('Instances (0)')).toBeVisible()
   })
 
   it('should navigate to the edit page', async () => {

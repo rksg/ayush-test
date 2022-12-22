@@ -9,15 +9,24 @@ import {
   getServiceRoutePath,
   ServiceOperation
 } from '@acx-ui/rc/utils'
-import { Path, To, useTenantLink }                from '@acx-ui/react-router-dom'
-import { Provider }                               from '@acx-ui/store'
-import { mockServer, render, renderHook, screen } from '@acx-ui/test-utils'
+import { Path, To, useTenantLink } from '@acx-ui/react-router-dom'
+import { Provider }                from '@acx-ui/store'
+import {
+  fireEvent,
+  logRoles,
+  mockServer,
+  render,
+  renderHook,
+  screen,
+  waitForElementToBeRemoved
+} from '@acx-ui/test-utils'
 
 import {
   mockedTenantId,
   mockedVenueList,
   mockedGetApiResponse,
-  mockedServiceId
+  mockedServiceId,
+  mockedMdnsProxyList
 } from './__tests__/fixtures'
 import MdnsProxyForm from './MdnsProxyForm'
 
@@ -59,11 +68,15 @@ describe('MdnsProxyForm', () => {
       ),
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
-        (req, res, ctx) => res(ctx.json(mockedVenueList))
+        (req, res, ctx) => res(ctx.json({ ...mockedVenueList }))
       ),
       rest.get(
         websocketServerUrl,
         (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.get(
+        MdnsProxyUrls.getMdnsProxyList.url,
+        (req, res, ctx) => res(ctx.json([...mockedMdnsProxyList]))
       )
     )
   })
@@ -77,8 +90,11 @@ describe('MdnsProxyForm', () => {
       }
     )
 
-    await userEvent.type(await screen.findByRole('textbox', { name: /service name/i }), 'My mDNS')
+    await userEvent.type(await screen.findByRole('textbox', { name: /Service Name/ }), 'My mDNS')
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+
+    const validating = await screen.findByRole('img', { name: 'loading' })
+    await waitForElementToBeRemoved(validating, { timeout: 2000 })
 
     await screen.findByRole('heading', { name: 'Scope', level: 3 })
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))

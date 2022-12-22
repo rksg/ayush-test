@@ -114,6 +114,8 @@ export function MdnsProxyInstancesTable (props: MdnsProxyInstancesTableProps) {
       <Table<AP>
         columns={columns}
         dataSource={tableQuery.data?.data}
+        pagination={tableQuery.pagination}
+        onChange={tableQuery.handleTableChange}
         rowKey='serialNumber'
       />
     </Card>
