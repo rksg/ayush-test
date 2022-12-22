@@ -1,14 +1,18 @@
 import { useState, useEffect } from 'react'
 
 import { ClockCircleFilled } from '@ant-design/icons'
-import { Select }            from 'antd'
+import { Select, Form }      from 'antd'
+import { SorterResult }      from 'antd/lib/table/interface'
+import moment                from 'moment-timezone'
 import { useIntl }           from 'react-intl'
 
+import { noDataSymbol } from '@acx-ui/analytics/utils'
 import {
   LayoutUI,
   Loader,
   Badge
 } from '@acx-ui/components'
+import { Drawer }                                                       from '@acx-ui/components'
 import { CancelCircleSolid, CheckMarkCircleSolid, Pending, InProgress } from '@acx-ui/icons'
 import { useActivitiesQuery }                                           from '@acx-ui/rc/services'
 import { Activity, CommonUrlsInfo, useTableQuery, getDescription }      from '@acx-ui/rc/utils'
@@ -27,7 +31,7 @@ const getIcon = (
       return <Pending />
     case 'INPROGRESS':
       return <InProgress />
-    case 'FAILED':
+    case 'FAIL':
       return <CancelCircleSolid />
     case 'OFFLINE':
       return <div />
@@ -37,13 +41,10 @@ const getIcon = (
 
 const defaultPayload: {
   url: string
-  filters?: {
-    status?: string[]
-  }
+  filters?: Record<string, string|[string]>
   fields: string[]
 } = {
   url: CommonUrlsInfo.getActivityList.url,
-  filters: { status: ['all'] },
   fields: [
     'startDatetime',
     'endDatetime',
@@ -60,8 +61,10 @@ export default function ActivityHeaderButton () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/timeline')
-  const [modalState, setModalOpen] = useState<boolean>()
   const [status, setStatus] = useState('all')
+  const [detail, setDetail] = useState<Activity>()
+  const [detailModal, setDetailModalOpen] = useState<boolean>()
+  const [activityModal, setActivityModalOpen] = useState<boolean>()
 
   const tableQuery = useTableQuery({
     useQuery: useActivitiesQuery,
@@ -78,7 +81,11 @@ export default function ActivityHeaderButton () {
   useEffect(()=>{
     tableQuery.setPayload({
       ...tableQuery.payload,
-      filters: status==='all' ? {} : { status: [status] }
+      filters: {
+        fromTime: moment().subtract(7,'d').format(),
+        toTime: moment().format(),
+        ...(status === 'all' ? {} : { status: [status] })
+      }
     })
   }, [status])
 
@@ -103,7 +110,6 @@ export default function ActivityHeaderButton () {
         </Select.Option>
       </Select>
       <UI.LinkButton type='link'
-        disabled={tableQuery.data?.totalCount === 0}
         size='small'
         onClick={() => navigate(basePath)}>
         {$t({ defaultMessage: 'View all activities' })}
@@ -120,18 +126,25 @@ export default function ActivityHeaderButton () {
               current: page,
               pageSize
             }
+            const sorter = {
+              field: 'startDatetime',
+              order: 'descend'
+            } as SorterResult<Activity>
             const extra = {
               currentDataSource: [] as Activity[],
               action: 'paginate' as const
             }
-            return tableQuery?.handleTableChange?.(pagination, {}, {}, extra)
+            return tableQuery?.handleTableChange?.(pagination, {}, sorter, extra)
           }
         }}
         dataSource={tableQuery.data?.data}
-        renderItem={(item) => {
+        renderItem={item => {
           const activity = item as Activity
           return (
-            <UI.ListItem>
+            <UI.ListItem onClick={() => {
+              setDetailModalOpen(true)
+              setDetail(activity)
+            }}>
               <UI.ActivityMeta
                 title={getDescription(activity.descriptionTemplate, activity.descriptionData)}
                 avatar={getIcon(activity.status)}
@@ -144,24 +157,83 @@ export default function ActivityHeaderButton () {
     </Loader>
   </>
 
+  const severityMapping = {
+    Critical: $t({ defaultMessage: 'Critical' }),
+    Major: $t({ defaultMessage: 'Major' }),
+    Minor: $t({ defaultMessage: 'Minor' }),
+    Warning: $t({ defaultMessage: 'Warning' }),
+    Info: $t({ defaultMessage: 'Informational' })
+  }
+
+  const getDrawerData = (data: Activity) => [
+    {
+      title: $t({ defaultMessage: 'Start Time' }),
+      value: formatter('dateTimeFormatWithSeconds')(data.startDatetime)
+    },
+    {
+      title: $t({ defaultMessage: 'End Time' }),
+      value: formatter('dateTimeFormatWithSeconds')(data.endDatetime)
+    },
+    {
+      title: $t({ defaultMessage: 'Severity' }),
+      value: (() => {
+        return severityMapping[data.severity as keyof typeof severityMapping]
+      })()
+    },
+    {
+      title: $t({ defaultMessage: 'Event Type' }),
+      value: 'Admin activity'
+    },
+    {
+      title: $t({ defaultMessage: 'Source' }),
+      value: data.admin.name
+    },
+    {
+      title: $t({ defaultMessage: 'Admin IP' }),
+      value: data.admin.ip
+    },
+    {
+      title: $t({ defaultMessage: 'Admin Interface' }),
+      value: data.admin.interface
+    },
+    {
+      title: $t({ defaultMessage: 'Description' }),
+      value: (() => getDescription(data.descriptionTemplate, data.descriptionData))()
+    }
+  ]
+
   return <>
     <Badge
       overflowCount={9}
       offset={[-3, 0]}
       children={<LayoutUI.ButtonSolid icon={<ClockCircleFilled />}
         onClick={()=>{
-          setModalOpen(true)
+          setActivityModalOpen(true)
         }}/>}
     />
     <UI.Drawer
       width={464}
       title={$t({ defaultMessage: 'Activities' })}
-      visible={modalState}
+      visible={activityModal}
       onClose={() => {
-        setModalOpen(false)
+        setActivityModalOpen(false)
       }}
       mask={true}
       children={activityList}
     />
+    {detailModal && <Drawer
+      width={464}
+      title={$t({ defaultMessage: 'Activity Details' })}
+      visible={detailModal}
+      onClose={()=>setDetailModalOpen(false)}
+      onBackClick={()=>setDetailModalOpen(false)}
+      children={<Form labelCol={{ span: 10 }} labelAlign='left'>{
+        getDrawerData?.(detail!).map(({ title, value }, i) => <Form.Item
+          key={i}
+          label={title}
+          children={value || noDataSymbol}
+        />)
+      }</Form>}
+    />}
   </>
 }
