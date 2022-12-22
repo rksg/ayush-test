@@ -413,7 +413,56 @@ exports[`ConnectionEvent renders correctly for failureEvent event 1`] = `
                     </div>
                     <div
                       class="ant-col ant-col-6 ant-col-push-1"
-                    />
+                    >
+                      <section
+                        class="sequenceComponents__Wrapper-sc-1ybkcwq-0 bAIWVU"
+                      >
+                        <div
+                          class="sequenceComponents__Layer-sc-1ybkcwq-2 iCshqs"
+                          style="grid-column: 1 / 2;"
+                        >
+                          <span>
+                            Client Device
+                          </span>
+                        </div>
+                        <div
+                          class="sequenceComponents__Layer-sc-1ybkcwq-2 iCshqs"
+                          style="grid-column: 2 / 3;"
+                        >
+                          <span>
+                            AP (AA:AA:AA:AA:AA:AA)
+                          </span>
+                        </div>
+                        <section
+                          class="sequenceComponents__Container-sc-1ybkcwq-1 kOwIFP"
+                        >
+                          <p
+                            class="sequenceComponents__StepLabel-sc-1ybkcwq-4 dAeisY"
+                            style="grid-row: 1 / 2;"
+                            title="4-Way Handshake - Frame 1"
+                          >
+                            4-Way Handshake - Frame 1
+                          </p>
+                          <div
+                            class="sequenceComponents__StepFlow-sc-1ybkcwq-3 brHWLa"
+                            direction="left"
+                            style="grid-column: 2 / 3; grid-row: 1 / 2;"
+                          />
+                          <p
+                            class="sequenceComponents__StepLabel-sc-1ybkcwq-4 eCdTqC"
+                            style="grid-row: 2 / 3;"
+                            title="4-Way Handshake - Frame 2"
+                          >
+                            4-Way Handshake - Frame 2
+                          </p>
+                          <div
+                            class="sequenceComponents__StepFlow-sc-1ybkcwq-3 IfVvv"
+                            direction="right"
+                            style="grid-column: 2 / 3; grid-row: 2 / 3;"
+                          />
+                        </section>
+                      </section>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1014,7 +1063,56 @@ exports[`ConnectionEvent renders correctly for unknown failure 1`] = `
                     </div>
                     <div
                       class="ant-col ant-col-6 ant-col-push-1"
-                    />
+                    >
+                      <section
+                        class="sequenceComponents__Wrapper-sc-1ybkcwq-0 bAIWVU"
+                      >
+                        <div
+                          class="sequenceComponents__Layer-sc-1ybkcwq-2 iCshqs"
+                          style="grid-column: 1 / 2;"
+                        >
+                          <span>
+                            Client Device
+                          </span>
+                        </div>
+                        <div
+                          class="sequenceComponents__Layer-sc-1ybkcwq-2 iCshqs"
+                          style="grid-column: 2 / 3;"
+                        >
+                          <span>
+                            AP (AA:AA:AA:AA:AA:AA)
+                          </span>
+                        </div>
+                        <section
+                          class="sequenceComponents__Container-sc-1ybkcwq-1 kOwIFP"
+                        >
+                          <p
+                            class="sequenceComponents__StepLabel-sc-1ybkcwq-4 dAeisY"
+                            style="grid-row: 1 / 2;"
+                            title="4-Way Handshake - Frame 1"
+                          >
+                            4-Way Handshake - Frame 1
+                          </p>
+                          <div
+                            class="sequenceComponents__StepFlow-sc-1ybkcwq-3 brHWLa"
+                            direction="left"
+                            style="grid-column: 2 / 3; grid-row: 1 / 2;"
+                          />
+                          <p
+                            class="sequenceComponents__StepLabel-sc-1ybkcwq-4 eCdTqC"
+                            style="grid-row: 2 / 3;"
+                            title="4-Way Handshake - Frame 2"
+                          >
+                            4-Way Handshake - Frame 2
+                          </p>
+                          <div
+                            class="sequenceComponents__StepFlow-sc-1ybkcwq-3 IfVvv"
+                            direction="right"
+                            style="grid-column: 2 / 3; grid-row: 2 / 3;"
+                          />
+                        </section>
+                      </section>
+                    </div>
                   </div>
                 </div>
               </div>

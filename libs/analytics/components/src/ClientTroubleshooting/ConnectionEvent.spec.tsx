@@ -93,7 +93,8 @@ const failureEvent: DisplayEvent = {
     }
   ],
   ttc: null,
-  timestamp: '2022-11-14T06:33:31.646Z'
+  timestamp: '2022-11-14T06:33:31.646Z',
+  messageIds: ['21', '22']
 }
 
 const unknownRadio = {
@@ -104,6 +105,11 @@ const unknownRadio = {
 const unknownFailure = {
   ...failureEvent,
   code: null
+}
+
+const nullFailedIdFailure = {
+  ...failureEvent,
+  failedMsgId: null
 }
 
 describe('ConnectionEvent', () => {
@@ -160,5 +166,10 @@ describe('ConnectionEvent', () => {
     expect(asFragment()).toMatchSnapshot()
     fireEvent.click(await screen.findByTestId(/CloseSymbol/i))
     expect(asFragment()).toMatchSnapshot()
+  })
+
+  it('renders correctly for null failedMsgId', async () => {
+    render(<ConnectionEventPopover event={nullFailedIdFailure}>test</ConnectionEventPopover>)
+    fireEvent.click(await screen.findByText(/test/i))
   })
 })

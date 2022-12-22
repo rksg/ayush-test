@@ -27,28 +27,14 @@ describe('sequenceMap', () => {
     })
   })
 
-  it('should return null object', () => {
-    const nullFlow = getRCCDFlow({ messageIds: ['1', '2'], failedMsgId: '3' })
-    expect(nullFlow).toStrictEqual({
-      layers: [
-        defineMessage({ defaultMessage: 'Client Device' }),
-        defineMessage({ defaultMessage: 'AP ({apMac})' })
-      ],
-      steps: [
-        {
-          column: [1, 2],
-          direction: 'right',
-          label: 'Probe Request',
-          state: 'normal'
-        },
-        {
-          column: [1, 2],
-          direction: 'right',
-          label: '802.11 Authentication Request',
-          state: 'normal'
-        }
-      ]
-    })
+  it('should return empty flow', () => {
+    const emptyFlow = getRCCDFlow({ messageIds: [], failedMsgId: '' })
+    expect(emptyFlow).toStrictEqual({ layers: [], steps: [] })
+  })
+
+  it('should return null flow', () => {
+    const nullFlow = getRCCDFlow({ messageIds: ['a'], failedMsgId: '' })
+    expect(nullFlow).toStrictEqual({ layers: [], steps: [] })
   })
 
   it('should return left direction object', () => {
