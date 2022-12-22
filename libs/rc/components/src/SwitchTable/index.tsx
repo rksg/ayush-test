@@ -12,7 +12,7 @@ import { useSwitchListQuery } from '@acx-ui/rc/services'
 import {
   getSwitchStatusString,
   STACK_MEMBERSHIP,
-  SwitchPortViewModel,
+  SwitchRow,
   transformSwitchStatus,
   getSwitchName,
   useTableQuery,
@@ -23,7 +23,7 @@ import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { useSwitchActions } from '../useSwitchActions'
 
 export const SwitchStatus = (
-  { row, showText = true }: { row: any, showText?: boolean }
+  { row, showText = true }: { row: SwitchRow, showText?: boolean }
 ) => {
   const apStatus = transformSwitchStatus(row.deviceStatus, row.configReady, row.syncedSwitchConfig, row.suspendingDeployTime)
   return (
@@ -68,7 +68,7 @@ export function SwitchTable ({ showAllColumns } : {
     }
   }
 
-  const columns: TableProps<any>['columns'] = [{
+  const columns: TableProps<SwitchRow>['columns'] = [{
     key: 'name',
     title: $t({ defaultMessage: 'Switch' }),
     dataIndex: 'name',
@@ -84,7 +84,7 @@ export function SwitchTable ({ showAllColumns } : {
             </TenantLink> :
             <Space>
               <>{getSwitchName(row)}</>
-              {getStackMemberStatus(row.unitStatus)}
+              {getStackMemberStatus(row.unitStatus || '')}
             </Space>
         }
       </>
@@ -153,7 +153,7 @@ export function SwitchTable ({ showAllColumns } : {
   ]
 
   const isActionVisible = (
-    selectedRows: SwitchPortViewModel[],
+    selectedRows: SwitchRow[],
     { selectOne }: { selectOne?: boolean }) => {
     let visible = true
     if (selectOne) {
@@ -162,7 +162,7 @@ export function SwitchTable ({ showAllColumns } : {
     return visible
   }
 
-  const rowActions: TableProps<SwitchPortViewModel>['rowActions'] = [{
+  const rowActions: TableProps<SwitchRow>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
     visible: (rows) => isActionVisible(rows, { selectOne: true }),
     disabled: true,

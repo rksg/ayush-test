@@ -7,6 +7,7 @@ import {
 } from '@acx-ui/rc/services'
 import {
   getSwitchName,
+  SwitchRow,
   SwitchStatusEnum
 } from '@acx-ui/rc/utils'
 
@@ -14,14 +15,14 @@ export function useSwitchActions () {
   const { $t } = useIntl()
   const [ deleteSwitches ] = useDeleteSwitchesMutation()
 
-  function shouldHideConfirmation (selectedRows: any[]) {
+  function shouldHideConfirmation (selectedRows: SwitchRow[]) {
     const noVerificationStatus = [SwitchStatusEnum.NEVER_CONTACTED_CLOUD, SwitchStatusEnum.DISCONNECTED]
     return selectedRows.every(record => {
       return noVerificationStatus.indexOf(record.deviceStatus) !== -1
     })
   }
 
-  const showDeleteSwitches = async ( rows: any[], tenantId?: string, callBack?: ()=>void ) => {
+  const showDeleteSwitches = async ( rows: SwitchRow[], tenantId?: string, callBack?: ()=>void ) => {
     showActionModal({
       type: 'confirm',
       customContent: {

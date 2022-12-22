@@ -86,7 +86,7 @@ export class SwitchViewModel extends Switch {
   type?: string
   configReady = false
   syncedSwitchConfig = false
-  serialNumber?: string
+  serialNumber = ''
   isStack?: boolean
   deviceStatus?: SwitchStatusEnum
   model?: string
@@ -106,9 +106,48 @@ export class SwitchViewModel extends Switch {
   firmwareVersion?: string
 }
 
-export interface SwitchTransactionResp {
-  requestId: string;
-  response: Switch;
+export interface SwitchRow {
+  id: string
+  model: string
+  serialNumber: string
+  activeSerial: string
+  deviceStatus: SwitchStatusEnum
+  switchMac: string
+  isStack: boolean
+  name: string
+  venueId: string
+  venueName: string
+  configReady: boolean
+  syncDataEndTime: string
+  cliApplied: boolean
+  formStacking: boolean
+  suspendingDeployTime: string
+  uptime?: string
+  syncedSwitchConfig?: boolean
+  children?: StackMember[]
+  isFirstLevel?: boolean
+  unitStatus?: STACK_MEMBERSHIP
+  syncDataId?: string
+  operationalWarning?: boolean
+  switchName?: string
+}
+
+export interface StackMember {
+  venueName: string
+  serialNumber: string
+  operStatusFound: boolean
+  switchMac: string
+  activeSerial: string
+  id: string
+  uptime: string
+  order: number
+  unitStatus?: STACK_MEMBERSHIP
+}
+
+export enum STACK_MEMBERSHIP {
+  ACTIVE = 'Active',
+  STANDBY = 'Standby',
+  MEMBER = 'Member',
 }
 
 export interface SwitchPortViewModel extends GridDataRow {
@@ -156,10 +195,4 @@ export interface SwitchPortViewModel extends GridDataRow {
   unitStatus: string; // stack unit role (Standalone/Member...etc)
   unitState: SwitchStatusEnum; // stack unit status (Online/Offline)
   SwitchPortStackingPortField: boolean;
-}
-
-export enum STACK_MEMBERSHIP {
-  ACTIVE = 'Active',
-  STANDBY = 'Standby',
-  MEMBER = 'Member',
 }

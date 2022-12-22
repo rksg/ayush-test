@@ -11,7 +11,9 @@ import {
   TableResult,
   STACK_MEMBERSHIP,
   onSocketActivityChanged,
-  showActivityMessage
+  showActivityMessage,
+  SwitchRow,
+  StackMember
 } from '@acx-ui/rc/utils'
 
 export const baseSwitchApi = createApi({
@@ -24,21 +26,22 @@ export const baseSwitchApi = createApi({
 
 export const switchApi = baseSwitchApi.injectEndpoints({
   endpoints: (build) => ({
-    switchList: build.query<TableResult<any>, RequestPayload>({
+    switchList: build.query<TableResult<SwitchRow>, RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
         const listInfo = {
           ...createHttpRequest(SwitchUrlsInfo.getSwitchList, arg.params),
           body: arg.payload
         }
         const listQuery = await fetchWithBQ(listInfo)
-        const list = listQuery.data as TableResult<any>
-        const stackMembers:{ [index:string]: any } = {}
+        const list = listQuery.data as TableResult<SwitchRow>
+        const stackMembers:{ [index:string]: StackMember[] } = {}
         const stacks: string[] = []
-        list.data.forEach(async (item:any) => {
+        list.data.forEach(async (item:SwitchRow) => {
           if(item.isStack || item.formStacking){
             stacks.push(item.serialNumber)
           }
         })
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const allStacksMember:any = await Promise.all(stacks.map(id =>
           fetchWithBQ(genStackMemberPayload(arg, id))
         ))
@@ -65,7 +68,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         })
       }
     }),
-    deleteSwitches: build.mutation<any, RequestPayload>({
+    deleteSwitches: build.mutation<SwitchRow, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(SwitchUrlsInfo.deleteSwitches, params)
         return {
@@ -147,9 +150,9 @@ const genStackMemberPayload = (arg:RequestPayload<unknown>, serialNumber:string)
   }
 }
 
-export const aggregatedSwitchListData = (switches: TableResult<any>,
-  stackMembers:any) => {
-  const data:any[] = []
+export const aggregatedSwitchListData = (switches: TableResult<SwitchRow>,
+  stackMembers:{ [index:string]: StackMember[] }) => {
+  const data:SwitchRow[] = []
   switches.data.forEach(item => {
     const tmp = {
       ...item,
@@ -157,7 +160,7 @@ export const aggregatedSwitchListData = (switches: TableResult<any>,
     }
     if (stackMembers[item.serialNumber]) {
       const tmpMember = _.cloneDeep(stackMembers[item.serialNumber])
-      tmpMember.forEach((member:any, index:number) => {
+      tmpMember.forEach((member: StackMember, index: number) => {
         if (member.serialNumber === tmp.serialNumber) {
           tmpMember[index].unitStatus = STACK_MEMBERSHIP.ACTIVE
         }

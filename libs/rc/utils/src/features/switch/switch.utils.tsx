@@ -1,9 +1,10 @@
 /* eslint-disable max-len */
-import _           from 'lodash'
-import { useIntl } from 'react-intl'
+import _ from 'lodash'
 
-import { DeviceConnectionStatus } from '../../constants'
-import { SwitchStatusEnum }       from '../../types'
+import { getIntl } from '@acx-ui/utils'
+
+import { DeviceConnectionStatus }      from '../../constants'
+import { SwitchRow, SwitchStatusEnum } from '../../types'
 
 export const modelMap: ReadonlyMap<string, string> = new Map([
   ['CRH', 'ICX7750-48F'],
@@ -77,7 +78,7 @@ export const getSwitchModel = (serial: string) => {
 
 export const transformSwitchStatus = (switchStatusEnum: SwitchStatusEnum, configReady = true,
   syncedSwitchConfig = true, suspendingDeployTime = '') => {
-  const { $t } = useIntl()
+  const { $t } = getIntl()
   let message = ''
   let deviceStatus = DeviceConnectionStatus.INITIAL
   let isOperational = false
@@ -151,17 +152,17 @@ export const transformSwitchStatus = (switchStatusEnum: SwitchStatusEnum, config
   return { message, deviceStatus, isOperational }
 }
 
-export const getSwitchStatusString = (row: any) => {
-  const { $t } = useIntl()
+export const getSwitchStatusString = (row: SwitchRow) => {
+  const { $t } = getIntl()
   const status = transformSwitchStatus(row.deviceStatus, row.configReady, row.syncedSwitchConfig, row.suspendingDeployTime)
   const isSync = !_.isEmpty(row.syncDataId) && status.isOperational
-  const isStrictOperational = isStrictOperationalSwitch(row.deviceStatus, row.configReady, row.syncedSwitchConfig)
+  const isStrictOperational = isStrictOperationalSwitch(row.deviceStatus, row.configReady, !!row.syncedSwitchConfig)
   let switchStatus = ( isStrictOperational && row.operationalWarning === true) ?
     status.message + ' ' + $t({ defaultMessage: '- Warning' }) : status.message
 
   return isSync ? switchStatus + ' ' + $t({ defaultMessage: '- Syncing' }) : switchStatus
 }
 
-export const getSwitchName = (row: any) => {
+export const getSwitchName = (row: SwitchRow) => {
   return row.name || row.switchName || row.serialNumber
 }
