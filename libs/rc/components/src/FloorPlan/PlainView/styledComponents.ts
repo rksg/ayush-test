@@ -18,7 +18,7 @@ export const StyledSpace = styled(Space)`
 
 export const StyledCardGrid = styled(Card.Grid)<{ active: number }>`
   width: 100px;
-  padding: 9px 13px 6px;
+  padding: 6px;
   border-radius: 4px;
   height: 68px;
   border: 1px solid;

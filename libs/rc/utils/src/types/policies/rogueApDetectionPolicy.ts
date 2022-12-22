@@ -44,6 +44,7 @@ export interface RogueOldApResponseType {
 export interface RogueAPDetectionTempType {
     id: string,
     name: string,
+    description?: string,
     venues: RogueVenue[],
     rules: number
 }
@@ -128,6 +129,11 @@ export type RogueAPDetectionActionPayload = {
     policyName: string
   }
 } | {
+  type: RogueAPDetectionActionTypes.DESCRIPTION,
+  payload: {
+    description: string
+  }
+} | {
   type: RogueAPDetectionActionTypes.TAGS,
   payload: {
     tags: string[]
@@ -187,4 +193,8 @@ export type RogueAPDetectionActionPayload = {
     oldIndex: number,
     newIndex: number
   }
+}
+
+export enum RogueApConstant {
+  DefaultProfile = 'Default profile'
 }

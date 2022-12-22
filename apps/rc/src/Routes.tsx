@@ -31,8 +31,8 @@ import RogueAPDetectionDetailView
   from './pages/Policies/RogueAPDetection/RogueAPDetectionDetail/RogueAPDetectionDetailView'
 import RogueAPDetectionForm     from './pages/Policies/RogueAPDetection/RogueAPDetectionForm/RogueAPDetectionForm'
 import SelectPolicyForm         from './pages/Policies/SelectPolicyForm'
-import DHCPDetail               from './pages/Services/DHCPDetail'
-import DHCPForm                 from './pages/Services/DHCPForm/DHCPForm'
+import DHCPDetail               from './pages/Services/DHCP/DHCPDetail'
+import DHCPForm                 from './pages/Services/DHCP/DHCPForm/DHCPForm'
 import DpskDetails              from './pages/Services/Dpsk/DpskDetail/DpskDetails'
 import DpskForm                 from './pages/Services/Dpsk/DpskForm/DpskForm'
 import MdnsProxyDetail          from './pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail'
@@ -89,6 +89,10 @@ function DeviceRoutes () {
         element={<ApDetails />} />
       <Route
         path='devices/switch/:switchId/:serialNumber/details/:activeTab'
+        element={<SwitchDetails />}
+      />
+      <Route
+        path='devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab'
         element={<SwitchDetails />}
       />
       <Route path='devices/edge/add' element={<AddEdge />} />
@@ -162,7 +166,7 @@ function ServiceRoutes () {
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.EDIT })}
-        element={<DHCPForm/>}
+        element={<DHCPForm editMode={true}/>}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.DETAIL })}
