@@ -1,6 +1,6 @@
 import { useRef, useReducer } from 'react'
 
-import { useIntl } from 'react-intl'
+import { FormattedList, useIntl } from 'react-intl'
 
 import {
   PageHeader, showToast,
@@ -81,9 +81,10 @@ const RogueAPDetectionForm = (props: RogueAPDetectionFormProps) => {
       const errorResponse = error as catchErrorResponse
       showToast({
         type: 'error',
-        content: ($t({ defaultMessage: 'An error occurred: {message}' }, {
-          message: errorResponse.data.errors.map(error => error.message).join(',')
-        }))
+        content: (<div>
+          <p style={{ textAlign: 'left' }}>{$t({ defaultMessage: 'An error occurred' })}</p>
+          <FormattedList value={errorResponse.data.errors.map(error => error.message)} />
+        </div>)
       })
     }
   }
