@@ -91,7 +91,8 @@ export function MacRegistrationsTab () {
       title: $t({ defaultMessage: 'Mac Address' }),
       key: 'macAddress',
       dataIndex: 'macAddress',
-      sorter: true
+      sorter: true,
+      defaultSortOrder: 'ascend'
     },
     {
       title: $t({ defaultMessage: 'Status' }),

@@ -33,6 +33,7 @@ function useColumns () {
       dataIndex: 'name',
       sorter: true,
       searchable: true,
+      defaultSortOrder: 'ascend',
       render: function (data, row) {
         return (
           // eslint-disable-next-line max-len
