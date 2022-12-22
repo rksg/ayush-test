@@ -12,8 +12,6 @@ import {
 import { Path, To, useTenantLink } from '@acx-ui/react-router-dom'
 import { Provider }                from '@acx-ui/store'
 import {
-  fireEvent,
-  logRoles,
   mockServer,
   render,
   renderHook,
