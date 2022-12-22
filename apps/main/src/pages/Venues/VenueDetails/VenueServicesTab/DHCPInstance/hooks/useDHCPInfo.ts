@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom'
 
 import { useGetDHCPProfileQuery, useVenueDHCPProfileQuery, useApListQuery } from '@acx-ui/rc/services'
 import { DHCPConfigTypeMessages }                                           from '@acx-ui/rc/utils'
+import {  DHCPProfileAps }                                                  from '@acx-ui/rc/utils'
 
 export default function useDHCPInfo () {
 
@@ -14,14 +15,18 @@ export default function useDHCPInfo () {
   const { data: apList } = useApListQuery({ params })
   const apListGroupSN = _.keyBy(apList?.data, 'serialNumber')
   const { data: dhcpProfile } = useGetDHCPProfileQuery({
-    params: { ...params, serviceId: venueDHCPProfile?.serviceProfileId }
-  })
+    params: { ...params, serviceId: venueDHCPProfile?.serviceProfileId||'' }
+  }, { skip: !venueDHCPProfile?.serviceProfileId })
 
-  const primaryServerSN = venueDHCPProfile?.dhcpServiceAps[
-    _.findIndex(venueDHCPProfile?.dhcpServiceAps, { role: 'PrimaryServer' })].serialNumber
-  const backupServerSN = venueDHCPProfile?.dhcpServiceAps[
-    _.findIndex(venueDHCPProfile?.dhcpServiceAps, { role: 'BackupServer' })].serialNumber
-  const gatewayList = _.groupBy(venueDHCPProfile?.dhcpServiceAps, 'role').NatGateway || []
+  let primaryServerSN='', backupServerSN='', gatewayList:DHCPProfileAps[]=[]
+  if(venueDHCPProfile?.dhcpServiceAps){
+    primaryServerSN = venueDHCPProfile?.dhcpServiceAps[
+      _.findIndex(venueDHCPProfile?.dhcpServiceAps, { role: 'PrimaryServer' })].serialNumber
+    backupServerSN = venueDHCPProfile?.dhcpServiceAps[
+      _.findIndex(venueDHCPProfile?.dhcpServiceAps, { role: 'BackupServer' })].serialNumber
+    gatewayList = _.groupBy(venueDHCPProfile?.dhcpServiceAps, 'role').NatGateway || []
+  }
+
 
   const displayData = {
     id: dhcpProfile?.id,
