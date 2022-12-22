@@ -16,8 +16,9 @@ import { OpenWlanAdvancedCustomization } from '../models/OpenWlanAdvancedCustomi
 import { PskWlanAdvancedCustomization }  from '../models/PskWlanAdvancedCustomization'
 import { TrustedCAChain }                from '../models/TrustedCAChain'
 
-import { ApModel } from './ap'
-import { EPDG }    from './services'
+import { ApModel }          from './ap'
+import { EPDG }             from './services'
+import { SwitchStatusEnum } from './switch'
 
 export * from './ap'
 export * from './venue'
@@ -241,15 +242,6 @@ export enum ApVenueStatusEnum {
   OPERATIONAL = '2_Operational',
   REQUIRES_ATTENTION = '3_RequiresAttention',
   TRANSIENT_ISSUE = '4_TransientIssue'
-}
-
-export enum SwitchStatusEnum {
-  NEVER_CONTACTED_CLOUD = 'PREPROVISIONED',
-  INITIALIZING = 'INITIALIZING',
-  APPLYING_FIRMWARE = 'APPLYINGFIRMWARE',
-  OPERATIONAL = 'ONLINE',
-  DISCONNECTED = 'OFFLINE',
-  STACK_MEMBER_NEVER_CONTACTED = 'STACK_MEMBER_PREPROVISIONED'
 }
 
 export type ChartData = {
@@ -519,4 +511,10 @@ export interface ClientStatistic {
   userTraffic5GBytes: number;
   userTraffic6GBytes: number;
   userTraffic24GBytes: number;
+}
+
+export const GridInactiveRowDataFlag = 'inactiveRow'
+export interface GridDataRow {
+  inactiveTooltip?: string;
+  [GridInactiveRowDataFlag]?: boolean;
 }

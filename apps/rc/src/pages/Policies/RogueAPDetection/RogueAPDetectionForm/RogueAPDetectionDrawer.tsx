@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { Form, Input, Select, Tooltip } from 'antd'
 import { useIntl }                      from 'react-intl'
@@ -56,13 +56,23 @@ const RogueAPDetectionDrawer = (props: RogueAPDetectionDrawerProps) => {
     onClose()
   }
 
+  useEffect(() => {
+    if (isEditMode && queryRuleName) {
+      setRuleName(queryRuleName)
+      form.setFieldValue('ruleName', queryRuleName)
+    }
+  }, [isEditMode, queryRuleName])
+
   const selectRule = (
     <div style={{ display: 'flex', alignItems: 'center' }}>
       <Select
         data-testid='selectRogueRule'
         defaultValue={ruleObj.type}
         style={{ width: '70%', marginRight: '5px' }}
-        onChange={(options) => setRuleType(options.toString() as RogueRuleType)}>
+        onChange={(options) => {
+          setRuleType(options.toString() as RogueRuleType)
+          form.setFieldValue('type', options)
+        }}>
         <Option value={RogueRuleType.AD_HOC_RULE}>
           {$t({ defaultMessage: 'Ad Hoc' })}
         </Option>
@@ -166,7 +176,19 @@ const RogueAPDetectionDrawer = (props: RogueAPDetectionDrawerProps) => {
     <Form.Item
       name='type'
       label={$t({ defaultMessage: 'Rule Type' })}
-      rules={[{ required: true }]}
+      rules={[
+        { required: true },
+        { validator: (rule, value) => {
+          if (value && state.rules
+            .filter(e => isEditMode ? (e.type !== ruleObj.type) : true)
+            .findIndex(e => e.type === value) !== -1) {
+            return Promise.reject(
+              $t({ defaultMessage: 'A Rule with that type already exists in this Policy' })
+            )
+          }
+          return Promise.resolve()
+        } }
+      ]}
       initialValue={ruleObj.type}
       children={selectRule}
     />

@@ -12,7 +12,8 @@ import {
   createHttpRequest,
   CommonUrlsInfo,
   TableResult,
-  RequestPayload
+  RequestPayload,
+  onSocketActivityChanged
 } from '@acx-ui/rc/utils'
 
 import { getMetaList } from './utils'
@@ -33,6 +34,7 @@ const metaFields = [
 export const baseTimelineApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'timelineApi',
+  tagTypes: ['Activity', 'Event', 'AdminLog'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })
@@ -40,6 +42,7 @@ export const baseTimelineApi = createApi({
 export const timelineApi = baseTimelineApi.injectEndpoints({
   endpoints: (build) => ({
     activities: build.query<TableResult<Activity>, RequestPayload>({
+      providesTags: [{ type: 'Activity', id: 'LIST' }],
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
         const activityListInfo = {
           ...createHttpRequest(CommonUrlsInfo.getActivityList, arg.params),
@@ -50,9 +53,15 @@ export const timelineApi = baseTimelineApi.injectEndpoints({
         return baseList
           ? { data: baseList }
           : { error: baseListQuery.error as FetchBaseQueryError }
+      },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, () => {
+          api.dispatch(timelineApi.util.invalidateTags([{ type: 'Activity', id: 'LIST' }]))
+        })
       }
     }),
     events: build.query<TableResult<Event>, RequestPayload>({
+      providesTags: [{ type: 'Event', id: 'LIST' }],
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
         const eventListInfo = {
           ...createHttpRequest(CommonUrlsInfo.getEventList, arg.params),
@@ -82,6 +91,7 @@ export const timelineApi = baseTimelineApi.injectEndpoints({
       }
     }),
     adminLogs: build.query<TableResult<AdminLog>, RequestPayload>({
+      providesTags: [{ type: 'AdminLog', id: 'LIST' }],
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
         const adminlogListInfo = {
           ...createHttpRequest(CommonUrlsInfo.getEventList, arg.params),
