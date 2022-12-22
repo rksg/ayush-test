@@ -194,3 +194,7 @@ export type RogueAPDetectionActionPayload = {
     newIndex: number
   }
 }
+
+export enum RogueApConstant {
+  DefaultProfile = 'Default profile'
+}

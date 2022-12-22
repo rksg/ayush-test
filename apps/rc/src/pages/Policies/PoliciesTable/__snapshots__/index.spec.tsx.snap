@@ -641,7 +641,7 @@ exports[`PoliciesTable should render table 1`] = `
                                 <a
                                   href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/policies/rogueAp/bbc80e33-2547-4d34-870f-b7f245fcfccc/detail"
                                 >
-                                  Default Profile
+                                  Default profile
                                 </a>
                               </td>
                               <td

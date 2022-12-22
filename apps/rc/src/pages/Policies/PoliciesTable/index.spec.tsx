@@ -52,7 +52,7 @@ const mockTableResult = {
     },
     {
       id: 'bbc80e33-2547-4d34-870f-b7f245fcfccc',
-      name: 'Default Profile',
+      name: 'Default profile',
       type: 'Rogue AP Detection',
       technology: 'WI-FI',
       scope: '8',
@@ -130,13 +130,12 @@ describe('PoliciesTable', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    const selectedPolicyName = 'Default Profile'
+    const selectedPolicyName = 'Default profile'
     const row = await screen.findByRole('row', { name: new RegExp(selectedPolicyName) })
     await userEvent.click(within(row).getByRole('radio'))
 
-    await userEvent.click(screen.getByRole('button', { name: /delete/i }))
+    const delBtn = screen.queryByText('delete')
 
-    await screen.findByText('Delete "' + selectedPolicyName + '"?')
-    await userEvent.click(await screen.findByRole('button', { name: /Delete Policy/i }))
+    expect(delBtn).not.toBeInTheDocument()
   })
 })
