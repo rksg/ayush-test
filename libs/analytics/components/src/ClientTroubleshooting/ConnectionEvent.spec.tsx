@@ -29,7 +29,8 @@ const successEvent: DisplayEvent = {
   radio: '5',
   start: 1668407611646,
   end: 1668407611646,
-  category: 'success'
+  category: 'success',
+  ssid: 'cliexp4'
 }
 
 const slowEvent = {
@@ -121,69 +122,76 @@ describe('ConnectionEvent', () => {
 
   afterEach(() => cleanup())
 
-  it('renders correctly for success event', async () => {
-    const { asFragment } =
-      render(<ConnectionEventPopover event={successEvent}>test</ConnectionEventPopover>)
-    fireEvent.click(await screen.findByText(/test/i))
-    expect(asFragment()).toMatchSnapshot()
+  it('renders correctly for success event', () => {
+    render(<ConnectionEventPopover event={successEvent}>test</ConnectionEventPopover>)
+    fireEvent.click(screen.getByText(/test/i))
+    expect(screen.getByText(successEvent.mac)).toHaveTextContent(successEvent.mac)
+    expect(screen.getByText(successEvent.apName)).toHaveTextContent(successEvent.apName)
+    const stringSsid = successEvent.ssid as string
+    expect(screen.getByText(stringSsid)).toHaveTextContent(stringSsid)
+    expect(screen.getByText(/5 GHz/i)).toHaveTextContent(/5 GHz/i)
   })
 
-  it('renders correctly for failureEvent event', async () => {
-    const { asFragment } =
-      render(<ConnectionEventPopover event={failureEvent}>test</ConnectionEventPopover>)
-    fireEvent.click(await screen.findByText(/test/i))
-    expect(asFragment()).toMatchSnapshot()
+  it('renders correctly for failureEvent event', () => {
+    render(<ConnectionEventPopover event={failureEvent}>test</ConnectionEventPopover>)
+    fireEvent.click(screen.getByText(/test/i))
+    expect(screen.getByText('AP (AA:AA:AA:AA:AA:AA)'))
+      .toHaveTextContent('AP (AA:AA:AA:AA:AA:AA)')
+    expect(screen.getByText(/4-Way Handshake - Frame 1/i))
+      .toHaveTextContent(/4-Way Handshake - Frame 1/i)
+    expect(screen.getByText(/4-Way Handshake - Frame 2/i))
+      .toHaveTextContent(/4-Way Handshake - Frame 2/i)
   })
 
   it('renders correctly for disconnect event', async () => {
-    const { asFragment } =
-      render(<ConnectionEventPopover event={disconnectEvent}>test</ConnectionEventPopover>)
+    render(<ConnectionEventPopover event={disconnectEvent}>test</ConnectionEventPopover>)
     fireEvent.click(await screen.findByText(/test/i))
-    expect(asFragment()).toMatchSnapshot()
+    expect(screen.getByText(/Client disconnected/i)).toHaveTextContent(/Client disconnected/i)
+    expect(screen.getByText(/Reason:/i)).toHaveTextContent(/Reason:/i)
   })
 
-  it('renders correctly for slow event', async () => {
-    const { asFragment } =
-      render(<ConnectionEventPopover event={slowEvent}>test</ConnectionEventPopover>)
-    fireEvent.click(await screen.findByText(/test/i))
-    expect(asFragment()).toMatchSnapshot()
+  it('renders correctly for slow event', () => {
+    render(<ConnectionEventPopover event={slowEvent}>test</ConnectionEventPopover>)
+    fireEvent.click(screen.getByText(/test/i))
+    expect(screen.getByText(/Time to Connect/i)).toHaveTextContent(/Time to Connect/i)
+    expect(screen.getByText(/1 s/i)).toHaveTextContent(/1 s/i)
   })
 
-  it('renders correctly for unknown radio', async () => {
-    const { asFragment } =
-      render(<ConnectionEventPopover event={unknownRadio}>test</ConnectionEventPopover>)
-    fireEvent.click(await screen.findByText(/test/i))
-    expect(asFragment()).toMatchSnapshot()
+  it('renders correctly for unknown radio', () => {
+    render(<ConnectionEventPopover event={unknownRadio}>test</ConnectionEventPopover>)
+    fireEvent.click(screen.getByText(/test/i))
+    expect(screen.getByText(/Unknown/i)).toHaveTextContent(/Unknown/i)
   })
 
-  it('renders correctly for unknown failure', async () => {
-    const { asFragment } =
-      render(<ConnectionEventPopover event={unknownFailure}>test</ConnectionEventPopover>)
-    fireEvent.click(await screen.findByText(/test/i))
-    expect(asFragment()).toMatchSnapshot()
+  it('renders correctly for unknown failure', () => {
+    render(<ConnectionEventPopover event={unknownFailure}>test</ConnectionEventPopover>)
+    fireEvent.click(screen.getByText(/test/i))
+    expect(screen.getByText(/Unknown/i)).toHaveTextContent(/Unknown/i)
   })
 
-  it('renders correctly for null failedMsgId', async () => {
+  it('renders correctly for null failedMsgId', () => {
     const { asFragment } =
       render(<ConnectionEventPopover event={nullFailedIdFailure}>test</ConnectionEventPopover>)
-    fireEvent.click(await screen.findByText(/test/i))
-    expect(asFragment()).toMatchSnapshot()
+    fireEvent.click(screen.getByText(/test/i))
+    const test = asFragment().querySelectorAll('section')
+    expect(test).toHaveLength(2)
   })
 
 
-  it('renders correctly for null empty messageId', async () => {
+  it('renders correctly for null empty messageId', () => {
     const { asFragment } =
       render(<ConnectionEventPopover event={emptyMessageIds}>test</ConnectionEventPopover>)
-    fireEvent.click(await screen.findByText(/test/i))
-    expect(asFragment()).toMatchSnapshot()
+    fireEvent.click(screen.getByText(/test/i))
+    const test = asFragment().querySelectorAll('section')
+    expect(test).toHaveLength(0)
   })
 
-  it('renders correctly on popover close', async () => {
+  it('renders correctly on popover close', () => {
     const { asFragment } =
       render(<ConnectionEventPopover event={successEvent}>test</ConnectionEventPopover>)
     const original = asFragment()
-    fireEvent.click(await screen.findByText(/test/i))
-    fireEvent.click(await screen.findByTestId(/CloseSymbol/i))
+    fireEvent.click(screen.getByText(/test/i))
+    fireEvent.click(screen.getByTestId(/CloseSymbol/i))
     const closed = asFragment()
     expect(original).toMatchObject(closed)
   })

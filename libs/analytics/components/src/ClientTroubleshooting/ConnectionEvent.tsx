@@ -82,7 +82,7 @@ export function ConnectionEventPopover ({ children, event }:
         content={<Details fields={rowData} openHandler={hide} extra={failureExtra}/>}
         trigger='click'
         placement='bottom'
-        getPopupContainer={() => document.body}
+        getPopupContainer={(triggerNode) => triggerNode.parentElement as HTMLElement}
         visible={open}
         onVisibleChange={setOpen}
         arrowPointAtCenter
