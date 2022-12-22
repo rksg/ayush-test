@@ -115,8 +115,9 @@ export const VerticalLine = styled.div`
   border-right: 1px solid var(--acx-neutrals-30);
 `
 export const DetailsWrapper = styled.div.attrs((props: { extra?: ReactNode }) => props)`
-  width: 250px;
-  overflow: ${props => props.extra ? 'scroll' : 'initial'};
+  width: ${props => props.extra ? '500px' : '250px'};
+  overflow-x: hidden;
+  overflow-y: scroll;
 `
 
 export const DetailsRowLabel = styled.div`

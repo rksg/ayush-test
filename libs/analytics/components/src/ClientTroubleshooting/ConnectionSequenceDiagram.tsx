@@ -30,7 +30,6 @@ export const ConnectionSequenceDiagram = ({ messageIds, failedMsgId, apMac }:
           <React.Fragment key={`step-${index}`}>
             <UI.StepLabel
               style={{ gridRow: fillOne(index) }}
-              state={step.state}
               title={step.label}
               children={step.label}
             />

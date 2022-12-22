@@ -7,7 +7,11 @@ export const Wrapper = styled.section.attrs((props: { layers: Array<unknown> }) 
     minmax(max-content, 200px)
     ${props => Array(props.layers.length - 1).fill('minmax(max-content, 60px)').join('\n')}
   ;
-  padding-left: 24px;
+  font-family: var(--acx-neutral-brand-font);
+  line-height: var(--acx-body-5-line-height);
+  font-style: normal;
+  font-weight: var(--acx-body-font-weight);
+  font-size: var(--acx-body-5-font-size);
 `
 
 export const Container = styled.section.attrs((props: { layers: Array<unknown> }) => props)`
@@ -33,7 +37,6 @@ export const Layer = styled.div`
 
   span {
     color: var(--acx-primary-white);
-    font-size: 10px;
     position: relative;
     top: 50%;
     transform: translateY(-50%);
@@ -81,13 +84,13 @@ export const StepFlow = styled.div.attrs((props: { direction: string, state: str
   }
 `
 
-export const StepLabel = styled.p.attrs((prop: { state: string }) => prop)`
+export const StepLabel = styled.p`
   align-self: center;
   grid-column: 1 / 2;
   font-size: 11px;
   color: var(--acx-primary-black);
   overflow: hidden;
   text-overflow: ellipsis;
-  font-weight: ${props => props.state === 'failed' ? 'bold' : 'normal'};
   margin-bottom: 0px;
+  font-size: var(--acx-body-5-font-size);
 `
