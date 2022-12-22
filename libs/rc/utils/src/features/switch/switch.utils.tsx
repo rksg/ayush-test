@@ -117,7 +117,7 @@ export const transformSwitchStatus = (switchStatusEnum: SwitchStatusEnum, config
       break
     case SwitchStatusEnum.FIRMWARE_UPD_FAIL:
       message = $t({ defaultMessage: 'Firmware Update - Failed' })
-      deviceStatus = DeviceConnectionStatus.CONNECTED
+      deviceStatus = DeviceConnectionStatus.DISCONNECTED
       break
     case SwitchStatusEnum.APPLYING_FIRMWARE:
       message = $t({ defaultMessage: 'Firmware updating' })
@@ -127,9 +127,10 @@ export const transformSwitchStatus = (switchStatusEnum: SwitchStatusEnum, config
       if (configReady && syncedSwitchConfig) {
         if (suspendingDeployTime && suspendingDeployTime.length > 0) {
           message = $t({ defaultMessage: 'Operational - applying configuration' })
+        } else {
+          message = $t({ defaultMessage: 'Operational' })
+          isOperational = true
         }
-        isOperational = true
-        message = $t({ defaultMessage: 'Operational' })
       } else if (!syncedSwitchConfig) {
         message = $t({ defaultMessage: 'Synchronizing data' })
       } else {
