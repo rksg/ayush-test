@@ -181,10 +181,10 @@ describe('ConnectionEvent', () => {
   it('renders correctly on popover close', async () => {
     const { asFragment } =
       render(<ConnectionEventPopover event={successEvent}>test</ConnectionEventPopover>)
-    expect(asFragment()).toMatchSnapshot()
+    const original = asFragment()
     fireEvent.click(await screen.findByText(/test/i))
-    expect(asFragment()).toMatchSnapshot()
     fireEvent.click(await screen.findByTestId(/CloseSymbol/i))
-    expect(asFragment()).toMatchSnapshot()
+    const closed = asFragment()
+    expect(original).toMatchObject(closed)
   })
 })
