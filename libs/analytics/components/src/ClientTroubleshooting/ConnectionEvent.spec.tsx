@@ -112,6 +112,11 @@ const nullFailedIdFailure = {
   failedMsgId: null
 }
 
+const emptyMessageIds = {
+  ...failureEvent,
+  messageIds: []
+}
+
 describe('ConnectionEvent', () => {
 
   afterEach(() => cleanup())
@@ -158,6 +163,21 @@ describe('ConnectionEvent', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 
+  it('renders correctly for null failedMsgId', async () => {
+    const { asFragment } =
+      render(<ConnectionEventPopover event={nullFailedIdFailure}>test</ConnectionEventPopover>)
+    fireEvent.click(await screen.findByText(/test/i))
+    expect(asFragment()).toMatchSnapshot()
+  })
+
+
+  it('renders correctly for null empty messageId', async () => {
+    const { asFragment } =
+      render(<ConnectionEventPopover event={emptyMessageIds}>test</ConnectionEventPopover>)
+    fireEvent.click(await screen.findByText(/test/i))
+    expect(asFragment()).toMatchSnapshot()
+  })
+
   it('renders correctly on popover close', async () => {
     const { asFragment } =
       render(<ConnectionEventPopover event={successEvent}>test</ConnectionEventPopover>)
@@ -166,10 +186,5 @@ describe('ConnectionEvent', () => {
     expect(asFragment()).toMatchSnapshot()
     fireEvent.click(await screen.findByTestId(/CloseSymbol/i))
     expect(asFragment()).toMatchSnapshot()
-  })
-
-  it('renders correctly for null failedMsgId', async () => {
-    render(<ConnectionEventPopover event={nullFailedIdFailure}>test</ConnectionEventPopover>)
-    fireEvent.click(await screen.findByText(/test/i))
   })
 })

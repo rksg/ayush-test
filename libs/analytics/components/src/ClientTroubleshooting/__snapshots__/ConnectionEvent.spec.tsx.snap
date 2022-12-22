@@ -475,6 +475,513 @@ exports[`ConnectionEvent renders correctly for failureEvent event 1`] = `
 </DocumentFragment>
 `;
 
+exports[`ConnectionEvent renders correctly for null empty messageId 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__PopoverWrapper-sc-hmshlr-10 hvDant"
+  >
+    <span
+      class="ant-popover-open"
+    >
+      test
+    </span>
+    <div
+      style="position: absolute; top: 0px; left: 0px; width: 100%;"
+    >
+      <div>
+        <div
+          class="ant-popover"
+          style="opacity: 0;"
+        >
+          <div
+            class="ant-popover-content"
+          >
+            <div
+              class="ant-popover-arrow"
+            >
+              <span
+                class="ant-popover-arrow-content"
+              />
+            </div>
+            <div
+              class="ant-popover-inner"
+              role="tooltip"
+            >
+              <div
+                class="ant-popover-inner-content"
+              >
+                <div
+                  class="styledComponents__DetailsWrapper-sc-hmshlr-15 lbUHYY"
+                >
+                  <div
+                    class="ant-row"
+                  >
+                    <div
+                      class="ant-col ant-col-24"
+                    >
+                      <div
+                        class="styledComponents__CloseRowWrapper-sc-hmshlr-12 hJblHN"
+                      >
+                        <span
+                          class="styledComponents__CloseIconContainer-sc-hmshlr-13 fuRCet"
+                        >
+                          <svg
+                            data-testid="CloseSymbol"
+                          />
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-row"
+                  >
+                    <div
+                      class="ant-col ant-col-24"
+                    >
+                      <h3
+                        class="styledComponents__Header-sc-hmshlr-11 bjXUdp"
+                      >
+                        Connection Event Details
+                      </h3>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-row"
+                  >
+                    <div
+                      class="ant-col ant-col-16"
+                    >
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col ant-col-10"
+                        >
+                          <div
+                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
+                          >
+                            AP MAC:
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-10 ant-col-push-1"
+                        >
+                          <div
+                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
+                          >
+                            AA:AA:AA:AA:AA:AA
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col ant-col-10"
+                        >
+                          <div
+                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
+                          >
+                            AP Name:
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-10 ant-col-push-1"
+                        >
+                          <div
+                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
+                          >
+                            R750-11-112
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col ant-col-10"
+                        >
+                          <div
+                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
+                          >
+                            SSID:
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-10 ant-col-push-1"
+                        >
+                          <div
+                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
+                          />
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col ant-col-10"
+                        >
+                          <div
+                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
+                          >
+                            Radio:
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-10 ant-col-push-1"
+                        >
+                          <div
+                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
+                          >
+                            5 GHz
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col ant-col-10"
+                        >
+                          <div
+                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
+                          >
+                            Failure Type:
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-10 ant-col-push-1"
+                        >
+                          <div
+                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
+                          >
+                            EAPOL Failure
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col ant-col-10"
+                        >
+                          <div
+                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
+                          >
+                            Reason:
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-10 ant-col-push-1"
+                        >
+                          <div
+                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
+                          >
+                            PSK Failure (passphrase mismatch) - Invalid MIC
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="ant-col ant-col-1"
+                    >
+                      <div
+                        class="styledComponents__VerticalLine-sc-hmshlr-14 eFmWgZ"
+                      />
+                    </div>
+                    <div
+                      class="ant-col ant-col-6 ant-col-push-1"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`ConnectionEvent renders correctly for null failedMsgId 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__PopoverWrapper-sc-hmshlr-10 hvDant"
+  >
+    <span
+      class="ant-popover-open"
+    >
+      test
+    </span>
+    <div
+      style="position: absolute; top: 0px; left: 0px; width: 100%;"
+    >
+      <div>
+        <div
+          class="ant-popover"
+          style="opacity: 0;"
+        >
+          <div
+            class="ant-popover-content"
+          >
+            <div
+              class="ant-popover-arrow"
+            >
+              <span
+                class="ant-popover-arrow-content"
+              />
+            </div>
+            <div
+              class="ant-popover-inner"
+              role="tooltip"
+            >
+              <div
+                class="ant-popover-inner-content"
+              >
+                <div
+                  class="styledComponents__DetailsWrapper-sc-hmshlr-15 lbUHYY"
+                >
+                  <div
+                    class="ant-row"
+                  >
+                    <div
+                      class="ant-col ant-col-24"
+                    >
+                      <div
+                        class="styledComponents__CloseRowWrapper-sc-hmshlr-12 hJblHN"
+                      >
+                        <span
+                          class="styledComponents__CloseIconContainer-sc-hmshlr-13 fuRCet"
+                        >
+                          <svg
+                            data-testid="CloseSymbol"
+                          />
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-row"
+                  >
+                    <div
+                      class="ant-col ant-col-24"
+                    >
+                      <h3
+                        class="styledComponents__Header-sc-hmshlr-11 bjXUdp"
+                      >
+                        Connection Event Details
+                      </h3>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-row"
+                  >
+                    <div
+                      class="ant-col ant-col-16"
+                    >
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col ant-col-10"
+                        >
+                          <div
+                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
+                          >
+                            AP MAC:
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-10 ant-col-push-1"
+                        >
+                          <div
+                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
+                          >
+                            AA:AA:AA:AA:AA:AA
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col ant-col-10"
+                        >
+                          <div
+                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
+                          >
+                            AP Name:
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-10 ant-col-push-1"
+                        >
+                          <div
+                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
+                          >
+                            R750-11-112
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col ant-col-10"
+                        >
+                          <div
+                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
+                          >
+                            SSID:
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-10 ant-col-push-1"
+                        >
+                          <div
+                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
+                          />
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col ant-col-10"
+                        >
+                          <div
+                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
+                          >
+                            Radio:
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-10 ant-col-push-1"
+                        >
+                          <div
+                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
+                          >
+                            5 GHz
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col ant-col-10"
+                        >
+                          <div
+                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
+                          >
+                            Failure Type:
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-10 ant-col-push-1"
+                        >
+                          <div
+                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
+                          >
+                            EAPOL Failure
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row"
+                      >
+                        <div
+                          class="ant-col ant-col-10"
+                        >
+                          <div
+                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
+                          >
+                            Reason:
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-10 ant-col-push-1"
+                        >
+                          <div
+                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
+                          >
+                            PSK Failure (passphrase mismatch) - Invalid MIC
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="ant-col ant-col-1"
+                    >
+                      <div
+                        class="styledComponents__VerticalLine-sc-hmshlr-14 eFmWgZ"
+                      />
+                    </div>
+                    <div
+                      class="ant-col ant-col-6 ant-col-push-1"
+                    >
+                      <section
+                        class="sequenceComponents__Wrapper-sc-1ybkcwq-0 bAIWVU"
+                      >
+                        <div
+                          class="sequenceComponents__Layer-sc-1ybkcwq-2 iCshqs"
+                          style="grid-column: 1 / 2;"
+                        >
+                          <span>
+                            Client Device
+                          </span>
+                        </div>
+                        <div
+                          class="sequenceComponents__Layer-sc-1ybkcwq-2 iCshqs"
+                          style="grid-column: 2 / 3;"
+                        >
+                          <span>
+                            AP (AA:AA:AA:AA:AA:AA)
+                          </span>
+                        </div>
+                        <section
+                          class="sequenceComponents__Container-sc-1ybkcwq-1 kOwIFP"
+                        >
+                          <p
+                            class="sequenceComponents__StepLabel-sc-1ybkcwq-4 dAeisY"
+                            style="grid-row: 1 / 2;"
+                            title="4-Way Handshake - Frame 1"
+                          >
+                            4-Way Handshake - Frame 1
+                          </p>
+                          <div
+                            class="sequenceComponents__StepFlow-sc-1ybkcwq-3 brHWLa"
+                            direction="left"
+                            style="grid-column: 2 / 3; grid-row: 1 / 2;"
+                          />
+                          <p
+                            class="sequenceComponents__StepLabel-sc-1ybkcwq-4 dAeisY"
+                            style="grid-row: 2 / 3;"
+                            title="4-Way Handshake - Frame 2"
+                          >
+                            4-Way Handshake - Frame 2
+                          </p>
+                          <div
+                            class="sequenceComponents__StepFlow-sc-1ybkcwq-3 hzoKYH"
+                            direction="right"
+                            style="grid-column: 2 / 3; grid-row: 2 / 3;"
+                          />
+                        </section>
+                      </section>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
 exports[`ConnectionEvent renders correctly for slow event 1`] = `
 <DocumentFragment>
   <div
