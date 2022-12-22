@@ -56,7 +56,7 @@ const RogueAPDetectionForm = (props: RogueAPDetectionFormProps) => {
     return {
       id: edit ? params.policyId : '',
       name: state.policyName,
-      description: '',
+      description: state.description,
       rules: state.rules,
       venues: state.venues
     }
@@ -97,6 +97,7 @@ const RogueAPDetectionForm = (props: RogueAPDetectionFormProps) => {
       />
       <StepsForm<RogueAPDetectionContextType>
         formRef={formRef}
+        editMode={edit}
         onCancel={() => navigate(linkToPolicies)}
         onFinish={() => handleRogueAPDetectionPolicy(edit)}
       >

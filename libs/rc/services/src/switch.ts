@@ -6,7 +6,9 @@ import {
   RequestPayload,
   SwitchUrlsInfo,
   SwitchViewModel,
-  Vlan
+  Vlan,
+  SwitchPortViewModel,
+  TableResult
 } from '@acx-ui/rc/utils'
 
 export const baseSwitchApi = createApi({
@@ -14,7 +16,7 @@ export const baseSwitchApi = createApi({
   reducerPath: 'switchApi',
   tagTypes: ['Switch'],
   refetchOnMountOrArgChange: true,
-  endpoints: () => ({ })
+  endpoints: () => ({})
 })
 
 export const switchApi = baseSwitchApi.injectEndpoints({
@@ -24,6 +26,18 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         const req = createHttpRequest(SwitchUrlsInfo.getSwitchDetailHeader, params)
         return {
           ...req
+        }
+      }
+    }),
+    switchPortlist: build.query<TableResult<SwitchPortViewModel>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.getSwitchPortlist,
+          params
+        )
+        return {
+          ...req,
+          body: payload
         }
       }
     }),
@@ -53,5 +67,6 @@ export const switchApi = baseSwitchApi.injectEndpoints({
 export const {
   useSwitchDetailHeaderQuery,
   useImportSwitchesMutation,
-  useLazyGetVlansByVenueQuery
+  useLazyGetVlansByVenueQuery,
+  useSwitchPortlistQuery
 } = switchApi
