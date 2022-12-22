@@ -1,9 +1,9 @@
-import { EventTable }                                           from '@acx-ui/rc/components'
-import { useEventsQuery }                                       from '@acx-ui/rc/services'
-import { Event, CommonUrlsInfo, useTableQuery, RequestPayload } from '@acx-ui/rc/utils'
+import { EventTable }                                  from '@acx-ui/rc/components'
+import { useEventsQuery }                              from '@acx-ui/rc/services'
+import { Event, CommonUrlsInfo, usePollingTableQuery } from '@acx-ui/rc/utils'
 
 const Events = () => {
-  const tableQuery = useTableQuery<Event, RequestPayload<unknown>, unknown>({
+  const tableQuery = usePollingTableQuery<Event>({
     useQuery: useEventsQuery,
     defaultPayload: {
       url: CommonUrlsInfo.getEventList.url,

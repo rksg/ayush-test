@@ -81,8 +81,8 @@ export interface TableQuery<ResultType, Payload, ResultExtra>
 
 export function usePollingTableQuery <
   ResultType,
-  Payload extends RequestPayload<unknown>,
-  ResultExtra
+  Payload extends RequestPayload<unknown> = RequestPayload<unknown>,
+  ResultExtra = unknown
 > (params:
   TABLE_QUERY<ResultType, Payload, ResultExtra> &
   { option?: Omit<UseQueryOptions, 'pollingInterval'> }
@@ -91,15 +91,15 @@ export function usePollingTableQuery <
     ...params,
     option: {
       ...params.option || {},
-      pollingInterval: 30000 //TODO: Wait for confirm the interval with PLM
+      pollingInterval: 30000 // TODO: Wait for confirm the interval with PLM
     }
   })
 }
 
 export function useTableQuery <
   ResultType,
-  Payload extends RequestPayload<unknown>,
-  ResultExtra
+  Payload extends RequestPayload<unknown> = RequestPayload<unknown>,
+  ResultExtra = unknown
 > (option: TABLE_QUERY<ResultType, Payload, ResultExtra>) {
 
   const initialPagination = {

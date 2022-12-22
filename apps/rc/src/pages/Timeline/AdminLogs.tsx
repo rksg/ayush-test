@@ -1,9 +1,9 @@
-import { AdminLogTable }                                           from '@acx-ui/rc/components'
-import { useAdminLogsQuery }                                       from '@acx-ui/rc/services'
-import { AdminLog, CommonUrlsInfo, RequestPayload, useTableQuery } from '@acx-ui/rc/utils'
+import { AdminLogTable }                                  from '@acx-ui/rc/components'
+import { useAdminLogsQuery }                              from '@acx-ui/rc/services'
+import { AdminLog, CommonUrlsInfo, usePollingTableQuery } from '@acx-ui/rc/utils'
 
 const AdminLogs = () => {
-  const tableQuery = useTableQuery<AdminLog, RequestPayload<unknown>, unknown>({
+  const tableQuery = usePollingTableQuery<AdminLog>({
     useQuery: useAdminLogsQuery,
     defaultPayload: {
       url: CommonUrlsInfo.getEventList.url,
