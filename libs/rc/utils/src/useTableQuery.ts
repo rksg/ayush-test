@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react'
 
 import { TableProps } from 'antd'
 
-import { useParams, Params }        from '@acx-ui/react-router-dom'
-import { UseQuery, UseQueryResult } from '@acx-ui/types'
+import { useParams, Params }                         from '@acx-ui/react-router-dom'
+import { UseQuery, UseQueryResult, UseQueryOptions } from '@acx-ui/types'
 
 export interface RequestPayload <Payload = unknown> extends Record<string,unknown> {
   params?: Params<string>
@@ -35,7 +35,7 @@ export interface TABLE_QUERY <
   pagination?: Partial<PAGINATION>
   sorter?: SORTER
   rowKey?: string
-  pollingInterval?: number
+  option?: UseQueryOptions
 }
 export type PAGINATION = {
   current: number,
@@ -79,6 +79,23 @@ export interface TableQuery<ResultType, Payload, ResultExtra>
   setPayload: React.Dispatch<React.SetStateAction<Payload>>,
 }
 
+export function usePollingTableQuery <
+  ResultType,
+  Payload extends RequestPayload<unknown>,
+  ResultExtra
+> (params:
+  TABLE_QUERY<ResultType, Payload, ResultExtra> &
+  { option?: Omit<UseQueryOptions, 'pollingInterval'> }
+) {
+  return useTableQuery({
+    ...params,
+    option: {
+      ...params.option || {},
+      pollingInterval: 30000 //TODO: Wait for confirm the interval with PLM
+    }
+  })
+}
+
 export function useTableQuery <
   ResultType,
   Payload extends RequestPayload<unknown>,
@@ -106,16 +123,10 @@ export function useTableQuery <
   const [payload, setPayload] = useState<Payload>(initialPayload)
 
   const params = useParams()
-  // RTKQuery
-
-  const pollingInterval = option.pollingInterval ? {
-    pollingInterval: option.pollingInterval
-  } : {}
-
   const api = option.useQuery({
     params: { ...params, ...option.apiParams },
     payload: payload
-  }, pollingInterval)
+  }, option.option)
 
   useEffect(() => {
     const handlePagination = (data?: TableResult<ResultType>) => {
