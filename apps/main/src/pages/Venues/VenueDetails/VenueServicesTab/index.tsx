@@ -13,7 +13,7 @@ export function VenueServicesTab () {
     <Tabs type='card' defaultActiveKey={ServiceType.DHCP}>
       <Tabs.TabPane key={ServiceType.DHCP}
         tab={$t({ defaultMessage: 'DHCP' })}>
-        <Tabs>
+        <Tabs type='third'>
           <Tabs.TabPane tab={$t({ defaultMessage: 'Wi-Fi' })}
             key={'wifi'}>
             <DHCPInstance/>
