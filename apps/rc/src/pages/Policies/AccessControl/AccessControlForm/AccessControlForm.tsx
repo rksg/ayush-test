@@ -42,7 +42,7 @@ const AccessControlForm = (props: AccessControlFormProps) => {
           ? $t({ defaultMessage: 'Edit Access Control Policy' })
           : $t({ defaultMessage: 'Add Access Control Policy' })}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Policies' }), link: getPolicyListRoutePath() }
+          { text: $t({ defaultMessage: 'Policies' }), link: getPolicyListRoutePath(true) }
         ]}
       />
       <StepsForm<AccessControlProfile>

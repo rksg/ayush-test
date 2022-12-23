@@ -418,7 +418,6 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
                 placeholder={$t({ defaultMessage: 'Select profile...' })}
                 onChange={(value) => {
                   setQueryPolicyId(value)
-                  // contentForm.setFieldValue('l2AclPolicyId', value)
                 }}
                 children={layer2SelectOptions}
               />

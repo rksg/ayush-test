@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { Col, Form, Input, Radio, RadioChangeEvent, Row, Select } from 'antd'
 import _                                                          from 'lodash'
 import { useIntl }                                                from 'react-intl'
+import { useParams }                                              from 'react-router-dom'
 import styled, { css }                                            from 'styled-components/macro'
 
 import {
@@ -21,7 +22,6 @@ import {
   useL3AclPolicyListQuery
 } from '@acx-ui/rc/services'
 import { CommonResult, macAddressRegExp, serverIpAddressRegExp, subnetMaskIpRegExp } from '@acx-ui/rc/utils'
-import { useParams }                                                                 from '@acx-ui/react-router-dom'
 
 const { useWatch } = Form
 const { Option } = Select
@@ -44,7 +44,6 @@ interface Layer3NetworkCol {
   enableIpSubnet?: boolean
 }
 
-
 interface Layer3Rule {
   id?: string,
   priority: number,
@@ -53,6 +52,12 @@ interface Layer3Rule {
   protocol: string,
   source: Layer3NetworkCol,
   destination: Layer3NetworkCol
+}
+
+enum RuleSourceType {
+  ANY = 'Any',
+  SUBNET = 'Subnet',
+  IP = 'Ip'
 }
 
 const ViewDetailsWrapper = styled.span<{ $policyId: string }>`
@@ -181,7 +186,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
   const [sourceValue, setSourceValue] = useState(1)
   const [destValue, setDestValue] = useState(1)
 
-  const RuleSource =['Any', 'Subnet', 'Ip']
+  const RuleSource =[RuleSourceType.ANY, RuleSourceType.SUBNET, RuleSourceType.IP]
 
   const renderNetworkColumn = (network: Layer3NetworkCol) => {
     if (network && network.type === 'Subnet') {
@@ -309,13 +314,10 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         setRequestId(l3AclRes.requestId)
       }
     } catch(error) {
-      const responseData = error as { status: number, data: { [key: string]: string } }
       showToast({
         type: 'error',
         duration: 10,
-        content: $t({ defaultMessage: 'An error occurred: {error}' }, {
-          error: responseData.data.error
-        })
+        content: $t({ defaultMessage: 'An error occurred' })
       })
     }
   }
@@ -330,7 +332,15 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       drawerForm.setFieldValue('access', editRow.access)
       drawerForm.setFieldValue('protocol', editRow.protocol)
       drawerForm.setFieldValue('source', editRow.source)
+      drawerForm.setFieldValue(['sourceNetworkAddress'], editRow.source.subnet)
+      drawerForm.setFieldValue(['sourceMask'], editRow.source.mask)
+      drawerForm.setFieldValue(['sourceIp'], editRow.source.ip)
+      drawerForm.setFieldValue(['sourcePort'], editRow.source.port)
       drawerForm.setFieldValue('destination', editRow.destination)
+      drawerForm.setFieldValue(['destinationNetworkAddress'], editRow.destination.subnet)
+      drawerForm.setFieldValue(['destinationMask'], editRow.destination.mask)
+      drawerForm.setFieldValue(['destinationIp'], editRow.destination.ip)
+      drawerForm.setFieldValue(['destinationPort'], editRow.destination.port)
       clearSelection()
     }
   },{
@@ -427,7 +437,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       onChange={(evt) => {
         setLayer3Rule({
           ...layer3Rule,
-          protocol: evt.target.value
+          protocol: evt
         })
       }}
     >
@@ -499,7 +509,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     <Table
       columns={basicColumns}
       dataSource={layer3RuleList as Layer3Rule[]}
-      rowKey='id'
+      rowKey='priority'
       actions={actions}
       rowActions={rowActions}
       rowSelection={{ type: 'radio' }}
@@ -549,13 +559,13 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       >
         <GridRow >
           <GridCol col={{ span: 24 }}>
-            <Radio value={1}>
+            <Radio name={RuleSourceType.ANY} value={1}>
               {$t({ defaultMessage: 'Any IP Address' })}
             </Radio>
           </GridCol>
 
           <GridCol col={{ span: 5 }}>
-            <Radio value={2}>
+            <Radio name={RuleSourceType.SUBNET} value={2}>
               {$t({ defaultMessage: 'Subnet Network Address' })}
             </Radio>
           </GridCol>
@@ -570,7 +580,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
                     { validator: (_, value) => macAddressRegExp(value) }
                   ]}
                 >
-                  <Input placeholder={$t({ defaultMessage: 'Network Address' })}/>
+                  <Input placeholder={$t({ defaultMessage: 'Source Network Address' })}/>
                 </Form.Item>
                 <Form.Item
                   style={{ width: '48%' }}
@@ -580,13 +590,13 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
                     { validator: (_, value) => subnetMaskIpRegExp(value) }
                   ]}
                 >
-                  <Input placeholder={$t({ defaultMessage: 'Mask' })}/>
+                  <Input placeholder={$t({ defaultMessage: 'Source Mask' })}/>
                 </Form.Item>
               </div> : null}
           </GridCol>
 
           <GridCol col={{ span: 5 }}>
-            <Radio value={3}>
+            <Radio name={RuleSourceType.IP} value={3}>
               {$t({ defaultMessage: 'IP Address' })}
             </Radio>
           </GridCol>
@@ -598,7 +608,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
                 { validator: (_, value) => serverIpAddressRegExp(value) }
               ]}
             >
-              <Input />
+              <Input placeholder={$t({ defaultMessage: 'Source Ip' })}/>
             </Form.Item> : null}
           </GridCol>
         </GridRow>
@@ -630,7 +640,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       >
         <GridRow >
           <GridCol col={{ span: 24 }}>
-            <Radio value={1}>
+            <Radio name={'a'} value={1}>
               {$t({ defaultMessage: 'Any IP Address' })}
             </Radio>
           </GridCol>
@@ -650,7 +660,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
                     { required: true, message: 'You must specify subnet network' }
                   ]}
                 >
-                  <Input placeholder={$t({ defaultMessage: 'Network Address' })}/>
+                  <Input placeholder={$t({ defaultMessage: 'Destination Network Address' })}/>
                 </Form.Item>
                 <Form.Item
                   style={{ width: '48%' }}
@@ -659,7 +669,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
                     { required: true, message: 'You must specify mask' }
                   ]}
                 >
-                  <Input placeholder={$t({ defaultMessage: 'Mask' })}/>
+                  <Input placeholder={$t({ defaultMessage: 'Destination Mask' })}/>
                 </Form.Item>
               </div> : null}
           </GridCol>
@@ -676,7 +686,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
                 { required: true, message: 'You must specify IP Address' }
               ]}
             >
-              <Input />
+              <Input placeholder={$t({ defaultMessage: 'Destination Ip' })}/>
             </Form.Item> : null}
           </GridCol>
         </GridRow>
@@ -712,7 +722,6 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
                 placeholder={$t({ defaultMessage: 'Select profile...' })}
                 onChange={(value) => {
                   setQueryPolicyId(value)
-                  // contentForm.setFieldValue('l2AclPolicyId', value)
                 }}
                 children={layer3SelectOptions}
               />
