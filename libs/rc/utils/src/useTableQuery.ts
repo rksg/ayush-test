@@ -91,7 +91,7 @@ export function usePollingTableQuery <
     ...params,
     option: {
       ...params.option || {},
-      pollingInterval: 30000 // TODO: Wait for confirm the interval with PLM
+      pollingInterval: 300_000
     }
   })
 }
