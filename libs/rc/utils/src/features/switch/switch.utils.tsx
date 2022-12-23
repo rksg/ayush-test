@@ -159,9 +159,9 @@ export const getSwitchStatusString = (row: SwitchRow) => {
   const isSync = !_.isEmpty(row.syncDataId) && status.isOperational
   const isStrictOperational = isStrictOperationalSwitch(row.deviceStatus, row.configReady, !!row.syncedSwitchConfig)
   let switchStatus = ( isStrictOperational && row.operationalWarning === true) ?
-    status.message + ' ' + $t({ defaultMessage: '- Warning' }) : status.message
+    $t({ defaultMessage: '{statusMessage} - Warning' }, { statusMessage: status.message }) : status.message
 
-  return isSync ? switchStatus + ' ' + $t({ defaultMessage: '- Syncing' }) : switchStatus
+  return isSync ? $t({ defaultMessage: '{switchStatus} - Syncing' }, { switchStatus }) : switchStatus
 }
 
 export const getSwitchName = (row: SwitchRow) => {

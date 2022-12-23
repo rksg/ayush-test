@@ -25,10 +25,10 @@ import { useSwitchActions } from '../useSwitchActions'
 export const SwitchStatus = (
   { row, showText = true }: { row: SwitchRow, showText?: boolean }
 ) => {
-  const apStatus = transformSwitchStatus(row.deviceStatus, row.configReady, row.syncedSwitchConfig, row.suspendingDeployTime)
+  const switchStatus = transformSwitchStatus(row.deviceStatus, row.configReady, row.syncedSwitchConfig, row.suspendingDeployTime)
   return (
     <span>
-      <Badge color={handleStatusColor(apStatus.deviceStatus)}
+      <Badge color={handleStatusColor(switchStatus.deviceStatus)}
         text={showText ? getSwitchStatusString(row) : ''}
       />
     </span>
@@ -155,11 +155,7 @@ export function SwitchTable ({ showAllColumns } : {
   const isActionVisible = (
     selectedRows: SwitchRow[],
     { selectOne }: { selectOne?: boolean }) => {
-    let visible = true
-    if (selectOne) {
-      visible = visible && selectedRows.length === 1
-    }
-    return visible
+    return !!selectOne && selectedRows.length === 1
   }
 
   const rowActions: TableProps<SwitchRow>['rowActions'] = [{
@@ -209,5 +205,6 @@ export function SwitchTable ({ showAllColumns } : {
         }
       }}
     />
+    {/* TODO: rowKey{(record)=> record.serialNumber + (record.isFirstLevel && 'stack')} */}
   </Loader>
 }
