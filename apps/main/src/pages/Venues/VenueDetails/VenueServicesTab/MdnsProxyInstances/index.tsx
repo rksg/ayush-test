@@ -24,32 +24,18 @@ export default function MdnsProxyInstances () {
     defaultPayload: {}
   })
 
-  const handleAddAction = () => {
-  }
+  // const handleAddAction = () => {
+  // }
 
   const rowActions: TableProps<MdnsProxyAp>['rowActions'] = [
-    {
-      label: $t({ defaultMessage: 'Change' }),
-      onClick: () => {}
-    },
+    // {
+    //   label: $t({ defaultMessage: 'Change' }),
+    //   onClick: () => {}
+    // },
     {
       label: $t({ defaultMessage: 'Remove' }),
       onClick: (rows: MdnsProxyAp[], clearSelection) => {
-        showActionModal({
-          type: 'confirm',
-          customContent: {
-            action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Instance' }),
-            numOfEntities: rows.length,
-            entityValue: rows[0].apName
-          },
-          onOk: () => {
-            deleteInstances({
-              params: { ...params, serviceId: rows[0].serviceId },
-              payload: rows.map(r => r.serialNumber)
-            }).then(clearSelection)
-          }
-        })
+        doDelete(rows, clearSelection)
       }
     }
   ]
@@ -100,15 +86,30 @@ export default function MdnsProxyInstances () {
           onChange={checked => {
             if (checked) return
 
-            deleteInstances({
-              params: { ...params, serviceId: row.serviceId },
-              payload: [row.serialNumber]
-            })
+            doDelete([row])
           }}
         />
       }
     }
   ]
+
+  const doDelete = (rows: MdnsProxyAp[], callback = () => {}) => {
+    showActionModal({
+      type: 'confirm',
+      customContent: {
+        action: 'DELETE',
+        entityName: $t({ defaultMessage: 'Instance' }),
+        numOfEntities: rows.length,
+        entityValue: rows[0].apName
+      },
+      onOk: () => {
+        deleteInstances({
+          params: { ...params, serviceId: rows[0].serviceId },
+          payload: rows.map(r => r.serialNumber)
+        }).then(callback)
+      }
+    })
+  }
 
   return (
     <>
@@ -119,10 +120,10 @@ export default function MdnsProxyInstances () {
         <Table<MdnsProxyAp>
           columns={columns}
           dataSource={tableQuery.data?.data}
-          actions={[{
-            label: $t({ defaultMessage: 'Add Instance' }),
-            onClick: handleAddAction
-          }]}
+          // actions={[{
+          //   label: $t({ defaultMessage: 'Add Instance' }),
+          //   onClick: handleAddAction
+          // }]}
           onChange={tableQuery.handleTableChange}
           rowKey='serialNumber'
           rowActions={rowActions}

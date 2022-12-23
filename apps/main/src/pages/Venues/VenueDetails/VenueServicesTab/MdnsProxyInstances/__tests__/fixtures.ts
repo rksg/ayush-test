@@ -13,6 +13,26 @@ export const mockedVenueApList = [
     serialNumber: '987898003022',
     apName: 'Jacky-Test-2',
     serviceId: '456',
-    serviceName: 'My mDNS Proxy 2'
+    serviceName: 'My mDNS Proxy 2',
+    rules: [
+      {
+        enabled: true,
+        service: 'AIRDISK',
+        fromVlan: 1,
+        toVlan: 2
+      },
+      {
+        enabled: true,
+        service: 'AIRPLAY',
+        fromVlan: 3,
+        toVlan: 4
+      },
+      {
+        enabled: true,
+        service: 'AIRPORT_MANAGEMENT',
+        fromVlan: 5,
+        toVlan: 6
+      }
+    ]
   }
 ]

@@ -109,8 +109,12 @@ export function MdnsProxyInstancesTable (props: MdnsProxyInstancesTableProps) {
   ]
 
   return (
-    // eslint-disable-next-line max-len
-    <Card title={$t({ defaultMessage: 'Instances ({instanceCount})' }, { instanceCount: tableQuery.data?.data.length })}>
+    <Card title={
+      $t(
+        { defaultMessage: 'Instances ({count})' },
+        { count: tableQuery.data?.totalCount }
+      )
+    }>
       <Table<AP>
         columns={columns}
         dataSource={tableQuery.data?.data}

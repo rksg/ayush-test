@@ -9,7 +9,8 @@ import {
   render,
   waitForElementToBeRemoved,
   screen,
-  renderHook
+  renderHook,
+  within
 } from '@acx-ui/test-utils'
 
 import { mockedVenueApList, mockedTenantId, mockedVenueId } from './__tests__/fixtures'
@@ -63,6 +64,50 @@ describe('MdnsProxyInstances', () => {
     const targetRow = screen.getByRole('row', { name: new RegExp(targetAp.apName) })
 
     expect(targetRow).toBeInTheDocument()
+  })
+
+  it('should remove the AP instance from mDNS Proxy service', async () => {
+    render(
+      <Provider>
+        <MdnsProxyInstances />
+      </Provider>, {
+        route: { params, path }
+      }
+    )
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    const targetAp = mockedVenueApList[0]
+    const targetRow = screen.getByRole('row', { name: new RegExp(targetAp.apName) })
+
+    await userEvent.click(within(targetRow).getByRole('radio'))
+
+    await userEvent.click(screen.getByRole('button', { name: /remove/i }))
+
+    expect(await screen.findByText('Delete "' + targetAp.apName + '"?')).toBeVisible()
+
+    await userEvent.click(await screen.findByRole('button', { name: /Delete Instance/i }))
+  })
+
+  it('should deactivate the AP instance from mDNS Proxy service', async () => {
+    render(
+      <Provider>
+        <MdnsProxyInstances />
+      </Provider>, {
+        route: { params, path }
+      }
+    )
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    const targetAp = mockedVenueApList[0]
+    const targetRow = screen.getByRole('row', { name: new RegExp(targetAp.apName) })
+
+    await userEvent.click(within(targetRow).getByRole('switch'))
+
+    expect(await screen.findByText('Delete "' + targetAp.apName + '"?')).toBeVisible()
+
+    await userEvent.click(await screen.findByRole('button', { name: /Delete Instance/i }))
   })
 
   xit('should navigate to the Add AP form', async () => {

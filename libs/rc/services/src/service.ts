@@ -59,7 +59,7 @@ const RKS_NEW_UI = {
 export const baseServiceApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'serviceApi',
-  tagTypes: ['Service', 'MdnsProxyAp'],
+  tagTypes: ['Service', 'MdnsProxy', 'MdnsProxyAp'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })
@@ -74,7 +74,23 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Service', id: 'LIST' }]
+      providesTags: [{ type: 'Service', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          showActivityMessage(msg, [
+            'Add Multicast DNS Proxy Service Profile',
+            'Update Multicast DNS Proxy Service Profile',
+            'Delete Multicast DNS Proxy Service Profile',
+            'Delete Multicast DNS Proxy Service Profiles',
+            'Activate Multicast DNS Proxy Service Profiles',
+            'Deactivate Multicast DNS Proxy Service Profiles'
+          ], () => {
+            api.dispatch(serviceApi.util.invalidateTags([
+              { type: 'Service', id: 'LIST' }
+            ]))
+          })
+        })
+      }
     }),
     cloudpathList: build.query<CloudpathServer[], RequestPayload>({
       query: ({ params }) => {
@@ -260,7 +276,24 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Service', id: 'LIST' }]
+      providesTags: [{ type: 'MdnsProxy', id: 'LIST' }, { type: 'Service', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          showActivityMessage(msg, [
+            'Add Multicast DNS Proxy Service Profile',
+            'Update Multicast DNS Proxy Service Profile',
+            'Delete Multicast DNS Proxy Service Profile',
+            'Delete Multicast DNS Proxy Service Profiles',
+            'Activate Multicast DNS Proxy Service Profiles',
+            'Deactivate Multicast DNS Proxy Service Profiles'
+          ], () => {
+            api.dispatch(serviceApi.util.invalidateTags([
+              { type: 'Service', id: 'LIST' },
+              { type: 'MdnsProxy', id: 'LIST' }
+            ]))
+          })
+        })
+      }
     }),
     updateMdnsProxy: build.mutation<MdnsProxyFormData, RequestPayload<MdnsProxyFormData>>({
       query: ({ params, payload }) => {
