@@ -42,7 +42,7 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-import { TableContainer, DisabledDeleteOutlinedIcon } from './styledComponents'
+import { TableContainer, DisabledDeleteOutlinedIcon, RequiredDotSpan } from './styledComponents'
 
 const defaultPayload = {
   fields: ['name', 'country', 'latitude', 'longitude', 'dhcp', 'id'],
@@ -253,7 +253,6 @@ export function StackForm () {
               <DeleteOutlinedIcon />
             )
           }
-          style={{ height: '16px' }}
           disabled={tableData.length <= 1}
           onClick={() => handleDelete(index, row)}
         />
@@ -301,7 +300,7 @@ export function StackForm () {
         onCancel={() =>
           navigate({
             ...basePath,
-            pathname: `${basePath.pathname}/wifi`
+            pathname: `${basePath.pathname}/switch`
           })
         }
         buttonLabel={{ submit: $t({ defaultMessage: 'Add' }) }}
@@ -391,7 +390,7 @@ export function StackForm () {
                 />
                 <StepsForm.Title style={{ marginBottom: '0' }}>
                   {$t({ defaultMessage: 'Stack Member' })}
-                  <span style={{ color: 'red' }}> *</span>
+                  <RequiredDotSpan> *</RequiredDotSpan>
                 </StepsForm.Title>
                 <Typography.Text
                   type='secondary'

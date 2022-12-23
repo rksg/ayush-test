@@ -37,3 +37,7 @@ export const DisabledDeleteOutlinedIcon = styled(DeleteOutlinedIcon)`
     stroke: var(--acx-neutrals-40);
   }
 `
+
+export const RequiredDotSpan = styled.span`
+  color: var(--acx-accents-orange-50)
+`

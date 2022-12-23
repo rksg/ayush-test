@@ -414,7 +414,7 @@ exports[`Switch Stack Form - Add should render correctly 1`] = `
                       >
                         Stack Member
                         <span
-                          style="color: red;"
+                          class="styledComponents__RequiredDotSpan-sc-wgbcob-2 gkSFPO"
                         >
                            *
                         </span>
@@ -655,7 +655,6 @@ exports[`Switch Stack Form - Add should render correctly 1`] = `
                                                       class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 eAazoW"
                                                       data-testid="deleteBtn1"
                                                       role="deleteBtn"
-                                                      style="height: 16px;"
                                                       type="button"
                                                     >
                                                       <svg
@@ -765,7 +764,6 @@ exports[`Switch Stack Form - Add should render correctly 1`] = `
                                                       class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 eAazoW"
                                                       data-testid="deleteBtn2"
                                                       role="deleteBtn"
-                                                      style="height: 16px;"
                                                       type="button"
                                                     >
                                                       <svg
@@ -875,7 +873,6 @@ exports[`Switch Stack Form - Add should render correctly 1`] = `
                                                       class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 eAazoW"
                                                       data-testid="deleteBtn3"
                                                       role="deleteBtn"
-                                                      style="height: 16px;"
                                                       type="button"
                                                     >
                                                       <svg
