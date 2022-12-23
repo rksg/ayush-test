@@ -231,7 +231,7 @@ export function StackForm () {
         return (
           <Form.Item name={'active'} initialValue={activeRow}>
             <Radio.Group onChange={radioOnChange}>
-              <Radio key={row.key} value={row.key} />
+              <Radio data-testId={`active${row.key}`} key={row.key} value={row.key} />
             </Radio.Group>
           </Form.Item>
         )
@@ -242,6 +242,7 @@ export function StackForm () {
       dataIndex: 'action',
       render: (data, row, index) => (
         <Button
+          data-testId={`deleteBtn${row.key}`}
           type='link'
           key='delete'
           role='deleteBtn'
