@@ -47,11 +47,10 @@ const GeneralSettings = () => {
           payload.tags = data.tags
         }
       }
-      
+
       // Following config cannot be sent in update API's payload
       delete payload.venueId
       delete payload.serialNumber
-
 
       await upadteEdge({ params: params, payload: payload }).unwrap()
       navigate(linkToEdgeList, { replace: true })
