@@ -3,7 +3,7 @@
 exports[`EventDetails renders Details correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__DetailsWrapper-sc-hmshlr-15 kaOLpG"
+    class="styledComponents__DetailsWrapper-sc-hmshlr-15 bgnJyD"
   >
     <div
       class="ant-row"
@@ -19,7 +19,7 @@ exports[`EventDetails renders Details correctly 1`] = `
         class="ant-col ant-col-24"
       >
         <h3
-          class="styledComponents__Header-sc-hmshlr-11 bjXUdp"
+          class="styledComponents__Header-sc-hmshlr-11 iTvmhc"
         >
           Connection Event Details
         </h3>
