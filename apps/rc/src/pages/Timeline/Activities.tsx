@@ -1,9 +1,9 @@
-import { ActivityTable }                                  from '@acx-ui/rc/components'
-import { useActivitiesQuery }                             from '@acx-ui/rc/services'
-import { Activity, CommonUrlsInfo, usePollingTableQuery } from '@acx-ui/rc/utils'
+import { ActivityTable }                           from '@acx-ui/rc/components'
+import { useActivitiesQuery }                      from '@acx-ui/rc/services'
+import { Activity, CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
 
 const Activities = () => {
-  const tableQuery = usePollingTableQuery<Activity>({
+  const tableQuery = useTableQuery<Activity>({
     useQuery: useActivitiesQuery,
     defaultPayload: {
       url: CommonUrlsInfo.getActivityList.url,
