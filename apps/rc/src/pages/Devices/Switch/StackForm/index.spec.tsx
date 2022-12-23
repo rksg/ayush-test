@@ -3,9 +3,9 @@ import userEvent      from '@testing-library/user-event'
 import { Modal }      from 'antd'
 import { rest }       from 'msw'
 
-import { apApi, venueApi }                              from '@acx-ui/rc/services'
-import { CommonUrlsInfo, SwitchUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                              from '@acx-ui/store'
+import { apApi, venueApi }                from '@acx-ui/rc/services'
+import { CommonUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -16,12 +16,8 @@ import {
 
 import {
   venuelist,
-  venueCaps,
-  aplist,
   apGrouplist,
-  successResponse,
-  apDetailsList
-} from '../../__tests__/fixtures'
+  successResponse } from '../../__tests__/fixtures'
 
 import { StackForm } from '.'
 
