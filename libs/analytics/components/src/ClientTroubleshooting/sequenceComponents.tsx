@@ -4,8 +4,8 @@ export const Wrapper = styled.section.attrs((props: { layers: Array<unknown> }) 
   display: grid;
   grid-gap: 5px 15px;
   grid-template-columns:
-    minmax(max-content, 200px)
-    ${props => Array(props.layers.length - 1).fill('minmax(max-content, 60px)').join('\n')}
+    minmax(max-content, 160px)
+    ${props => Array(props.layers.length - 1).fill('minmax(max-content, 20px)').join('\n')}
   ;
   font-family: var(--acx-neutral-brand-font);
   line-height: var(--acx-body-5-line-height);
@@ -19,8 +19,8 @@ export const Container = styled.section.attrs((props: { layers: Array<unknown> }
   display: grid;
   grid-gap: 5px 15px;
   grid-template-columns:
-    minmax(min-content, 200px)
-    ${props => Array(props.layers.length - 1).fill('minmax(max-content, 60px)').join('\n')}
+    minmax(min-content, 160px)
+    ${props => Array(props.layers.length - 1).fill('minmax(max-content, 20px)').join('\n')}
   ;
 `
 
