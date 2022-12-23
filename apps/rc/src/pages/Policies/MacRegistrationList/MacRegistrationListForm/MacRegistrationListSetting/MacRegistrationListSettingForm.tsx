@@ -1,5 +1,5 @@
-import { Form, Input, Col,  Row, Space, Select, Switch } from 'antd'
-import { useIntl }                                       from 'react-intl'
+import { Form, Input, Col,  Row, Select, Switch } from 'antd'
+import { useIntl }                                from 'react-intl'
 
 import { Button, SelectionControl } from '@acx-ui/components'
 import { ExpirationDateSelector }   from '@acx-ui/rc/components'
@@ -32,20 +32,18 @@ export function MacRegistrationListSettingForm () {
           hasFeedback
           children={<Input/>}
         />
-        <Space direction='horizontal' size='middle'>
-          <Form.Item name='autoCleanup'
-            valuePropName='checked'
-            initialValue={true}
-            label={$t({ defaultMessage: 'Automatically clean expired entries' })}>
-            <Switch/>
-          </Form.Item>
-        </Space>
+        <Form.Item name='autoCleanup'
+          valuePropName='checked'
+          initialValue={true}
+          label={$t({ defaultMessage: 'Automatically clean expired entries' })}>
+          <Switch/>
+        </Form.Item>
         <Form.Item name='defaultAccess'
           label={$t({ defaultMessage: 'Default Access' })}
           initialValue={'accept'}>
           <SelectionControl
-            options={[{ value: 'accept', label: 'ACCEPT' },
-              { value: 'reject', label: 'REJECT' }]}
+            options={[{ value: 'accept', label: $t({ defaultMessage: 'ACCEPT' }) },
+              { value: 'reject', label: $t({ defaultMessage: 'REJECT' }) }]}
           />
         </Form.Item>
         <ExpirationDateSelector

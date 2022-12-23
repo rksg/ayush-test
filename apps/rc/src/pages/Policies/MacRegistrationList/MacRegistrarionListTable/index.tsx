@@ -63,7 +63,8 @@ function useColumns () {
       dataIndex: 'defaultAccess',
       align: 'center',
       render: function (data, row) {
-        return row.defaultAccess ? 'Accept' : 'Reject'
+        return row.defaultAccess ? $t({ defaultMessage: 'Accept' }) :
+          $t({ defaultMessage: 'Reject' })
       }
     },
     {
@@ -73,7 +74,7 @@ function useColumns () {
       align: 'center'
     },
     {
-      title: $t({ defaultMessage: 'Mac Addresses' }),
+      title: $t({ defaultMessage: 'MAC Addresses' }),
       key: 'registrationCount',
       dataIndex: 'registrationCount',
       align: 'center',

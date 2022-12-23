@@ -1,6 +1,7 @@
 import moment from 'moment-timezone'
 
 import {
+  ExpirationType,
   MacRegistrationPool
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
@@ -35,13 +36,15 @@ export const toTimeString = (value?: string) => {
 }
 
 export const returnExpirationString = (data: Partial<MacRegistrationPool>) => {
+  const { $t } = getIntl()
   if(!data.expirationEnabled){
-    return 'Never expires'
+    return $t({ defaultMessage: 'Never expires' })
   } else {
-    if(data.expirationType === 'SPECIFIED_DATE') {
+    if(data.expirationType === ExpirationType.SPECIFIED_DATE) {
       return toTimeString(data?.expirationDate)
     } else {
-      return 'After ' + data.expirationOffset + ' ' + expirationTimeUnits[data.expirationType ?? '']
+      // eslint-disable-next-line max-len
+      return $t({ defaultMessage: 'After {offset} {unit}' }, { offset: data.expirationOffset, unit: expirationTimeUnits[data.expirationType ?? ''] })
     }
   }
 }

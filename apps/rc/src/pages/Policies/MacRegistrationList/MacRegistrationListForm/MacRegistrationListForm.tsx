@@ -13,10 +13,10 @@ import {
 } from '@acx-ui/rc/services'
 import {
   MacRegistrationPoolFormFields,
-  MacRegistrationPool,
   getPolicyRoutePath,
   PolicyType,
-  PolicyOperation, ExpirationDateEntity, ExpirationMode, ExpirationType, useTableQuery
+  PolicyOperation, useTableQuery, ExpirationDateEntity, ExpirationMode, ExpirationType,
+  MacRegistrationPool
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -158,7 +158,7 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
       <StepsForm<MacRegistrationPoolFormFields>
         editMode={editMode}
         formRef={formRef}
-        buttonLabel={{ submit: 'Apply' }}
+        buttonLabel={{ submit: intl.$t({ defaultMessage: 'Apply' }) }}
         onCancel={() => navigate(linkToList)}
         onFinish={editMode ? handleEditList : handleAddList}>
         <StepsForm.StepForm<MacRegistrationPoolFormFields>>

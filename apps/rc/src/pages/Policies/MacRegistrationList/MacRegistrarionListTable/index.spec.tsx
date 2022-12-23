@@ -1,6 +1,6 @@
 import { rest } from 'msw'
 
-import {  MacRegListUrlsInfo }                                                      from '@acx-ui/rc/utils'
+import { ExpirationType, MacRegListUrlsInfo }                                       from '@acx-ui/rc/utils'
 import { Provider }                                                                 from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
@@ -11,14 +11,40 @@ const list = {
   content: [
     {
       id: 'efce7414-1c78-4312-ad5b-ae03f28dbc68',
-      name: 'Registration pool',
+      name: 'Registration pool-1',
       description: '',
       autoCleanup: true,
       priority: 1,
-      ssidRegex: 'cecil-mac-auth',
+      ssidRegex: 'mac-auth-1',
       enabled: true,
       expirationEnabled: false,
       registrationCount: 5
+    },
+    {
+      id: 'efce7414-1c78-4312-ad5b-ae03f28dbc67',
+      name: 'Registration pool-2',
+      description: '',
+      autoCleanup: true,
+      priority: 1,
+      ssidRegex: 'mac-auth-2',
+      enabled: true,
+      expirationEnabled: true,
+      expirationDate: '2022-11-02T06:59:59Z',
+      registrationCount: 6,
+      expirationType: ExpirationType.SPECIFIED_DATE
+    },
+    {
+      id: 'efce7414-1c78-4312-ad5b-ae03f28dbc69',
+      name: 'Registration pool-3',
+      description: '',
+      autoCleanup: true,
+      priority: 1,
+      ssidRegex: 'mac-auth-3',
+      enabled: true,
+      expirationEnabled: true,
+      expirationType: ExpirationType.DAYS_AFTER_TIME,
+      expirationOffset: 5,
+      registrationCount: 6
     }
   ],
   pageable: {
@@ -30,10 +56,10 @@ const list = {
     unpaged: false
   },
   totalPages: 1,
-  totalElements: 1,
+  totalElements: 3,
   last: true,
   sort: { unsorted: true, sorted: false, empty: true },
-  numberOfElements: 1,
+  numberOfElements: 3,
   first: true,
   size: 10,
   number: 0,
@@ -59,10 +85,10 @@ describe('MacRegistrationListsTable', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    const row1 = await screen.findByRole('row', { name: /Registration pool/ })
+    const row1 = await screen.findByRole('row', { name: /Registration pool-1/ })
     expect(row1).toHaveTextContent('5')
 
-    const row = await screen.findByRole('row', { name: /registration pool/i })
+    const row = await screen.findByRole('row', { name: /registration pool-1/i })
     fireEvent.click(within(row).getByRole('radio'))
   })
 
@@ -75,13 +101,13 @@ describe('MacRegistrationListsTable', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    const row = await screen.findByRole('row', { name: /Registration pool/ })
+    const row = await screen.findByRole('row', { name: /Registration pool-1/ })
     fireEvent.click(within(row).getByRole('radio'))
 
     const deleteButton = screen.getByRole('button', { name: /delete/i })
     fireEvent.click(deleteButton)
 
-    await screen.findByText('Delete "Registration pool"?')
+    await screen.findByText('Delete "Registration pool-1"?')
 
     fireEvent.change(screen.getByRole('textbox', { name: /type the word "delete" to confirm:/i }),
       { target: { value: 'Delete' } })
@@ -100,7 +126,7 @@ describe('MacRegistrationListsTable', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    const row = await screen.findByRole('row', { name: /Registration pool/ })
+    const row = await screen.findByRole('row', { name: /Registration pool-1/ })
     fireEvent.click(within(row).getByRole('radio'))
 
     const editButton = screen.getByRole('button', { name: /Edit/i })

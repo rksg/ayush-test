@@ -47,7 +47,7 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
       .filter(n => n.id !== editData?.id)
       .map(n => ({ name: n.macAddress }))
     // eslint-disable-next-line max-len
-    return checkObjectNotExists(list, { name: value } , intl.$t({ defaultMessage: 'Mac Address' }))
+    return checkObjectNotExists(list, { name: value } , intl.$t({ defaultMessage: 'MAC Address' }))
   }
 
   useEffect(()=>{
@@ -117,7 +117,7 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
       <Form.Item name='macAddress'
         label={intl.$t({ defaultMessage: 'MAC Address' })}
         rules={[
-          { required: true, message: intl.$t({ defaultMessage: 'Please enter MAC Address' }) },
+          { required: true },
           { validator: (_, value) => macAddressRegExp(value) },
           { validator: (_, value) => macAddressValidator(value) }
         ]}
@@ -175,7 +175,7 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
   return (
     <Drawer
       //eslint-disable-next-line max-len
-      title={isEdit ? intl.$t({ defaultMessage: 'Edit Mac Address' }) : intl.$t({ defaultMessage: 'Add Mac Address' })}
+      title={isEdit ? intl.$t({ defaultMessage: 'Edit MAC Address' }) : intl.$t({ defaultMessage: 'Add MAC Address' })}
       visible={visible}
       onClose={onClose}
       children={content}

@@ -50,10 +50,9 @@ export function MacRegistrationsTab () {
         type: 'confirm',
         customContent: {
           action: 'DELETE',
-          entityName: $t({ defaultMessage: 'Mac Addresses' }),
+          entityName: $t({ defaultMessage: 'MAC Addresses' }),
           entityValue: rows.length === 1 ? rows[0].macAddress : undefined,
-          numOfEntities: rows.length,
-          confirmationText: 'Delete'
+          numOfEntities: rows.length
         },
         onOk: () => {
           // eslint-disable-next-line max-len
@@ -88,7 +87,7 @@ export function MacRegistrationsTab () {
 
   const columns: TableProps<MacRegistration>['columns'] = [
     {
-      title: $t({ defaultMessage: 'Mac Address' }),
+      title: $t({ defaultMessage: 'MAC Address' }),
       key: 'macAddress',
       dataIndex: 'macAddress',
       sorter: true,
@@ -100,10 +99,11 @@ export function MacRegistrationsTab () {
       dataIndex: 'status',
       render: function (data, row) {
         if (row.revoked) {
-          return 'Revoked'
+          return $t({ defaultMessage: 'Revoked' })
         }
         if (row.expirationDate) {
-          return row.expirationDate < new Date().toISOString() ? 'Expired' : 'Active'
+          // eslint-disable-next-line max-len
+          return row.expirationDate < new Date().toISOString() ? $t({ defaultMessage: 'Expired' }) : $t({ defaultMessage: 'Active' })
         }
         return 'Unknown'
       }
@@ -134,7 +134,7 @@ export function MacRegistrationsTab () {
       sorter: true,
       render: function (data, row) {
         // eslint-disable-next-line max-len
-        return row.expirationDate ? toTimeString(row.expirationDate) : 'Never expires (Same as list)'
+        return row.expirationDate ? toTimeString(row.expirationDate) : $t({ defaultMessage: 'Never expires (Same as list)' })
       }
     }
   ]
@@ -159,7 +159,7 @@ export function MacRegistrationsTab () {
         rowActions={rowActions}
         rowSelection={{ type: 'radio' }}
         actions={[{
-          label: $t({ defaultMessage: 'Add Mac Address' }),
+          label: $t({ defaultMessage: 'Add MAC Address' }),
           onClick: () => {
             setIsEditMode(false)
             setVisible(true)

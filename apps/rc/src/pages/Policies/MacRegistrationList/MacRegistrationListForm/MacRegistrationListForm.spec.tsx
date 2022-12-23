@@ -1,12 +1,14 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { getPolicyRoutePath,
+import {
+  ExpirationType,
+  getPolicyRoutePath,
   MacRegListUrlsInfo, PolicyOperation, PolicyType
 } from '@acx-ui/rc/utils'
-import { Path, To, useTenantLink }                         from '@acx-ui/react-router-dom'
-import { Provider }                                        from '@acx-ui/store'
-import { mockServer, render, renderHook, screen, waitFor } from '@acx-ui/test-utils'
+import { Path, To, useTenantLink }                                                    from '@acx-ui/react-router-dom'
+import { Provider }                                                                   from '@acx-ui/store'
+import { mockServer, render, renderHook, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import {
   mockedCreateFormData
@@ -39,8 +41,8 @@ const macRegList = {
   name: 'Registration pool',
   priority: 1,
   ssidRegex: 'mac-auth',
-  expirationType: 'HOURS_AFTER_TIME',
-  expirationOffset: 60
+  expirationType: ExpirationType.SPECIFIED_DATE,
+  expirationDate: '2050-11-02T06:59:59Z'
 }
 
 const list = {
@@ -136,9 +138,18 @@ describe('MacRegistrationListForm', () => {
     await userEvent.click(screen.getByText('Days'))
 
     await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
+
+    const validating = await screen.findByRole('img', { name: 'loading' })
+    await waitForElementToBeRemoved(validating)
   })
 
-  it('should render Edit form', async () => {
+  it('should edit list and show error Toast', async () => {
+    mockServer.use(
+      rest.patch(
+        MacRegListUrlsInfo.updateMacRegistrationPool.url,
+        (req, res, ctx) => res(ctx.status(500), ctx.json({}))
+      )
+    )
     render(
       <Provider>
         <MacRegistrationListForm editMode={true} />
@@ -153,6 +164,12 @@ describe('MacRegistrationListForm', () => {
     // Verify service name
     const nameInput = await screen.findByDisplayValue(macRegList.name)
     expect(nameInput).toBeInTheDocument()
+
+    await screen.findByRole('button', { name: 'Cancel' })
+    await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+
+    const errorMsgElem = await screen.findByText('An error occurred')
+    expect(errorMsgElem).toBeInTheDocument()
   })
 
   it('should edit list successfully', async () => {
@@ -167,6 +184,7 @@ describe('MacRegistrationListForm', () => {
       <Provider><MacRegistrationListForm
         editMode={true}/>
       </Provider>, {
+        // eslint-disable-next-line max-len
         route: { params: { tenantId: 'tenant-id', policyId: '373377b0cb6e46ea8982b1c80aabe1fa1' },
           path: editPath }
       })
@@ -179,6 +197,9 @@ describe('MacRegistrationListForm', () => {
 
     await screen.findByRole('button', { name: 'Cancel' })
     await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+
+    const validating = await screen.findByRole('img', { name: 'loading' })
+    await waitForElementToBeRemoved(validating)
   })
 
   it('should navigate to the Select service page when clicking Cancel button', async () => {

@@ -45,21 +45,23 @@ export function MacRegistrationListOverviewTab () {
                 <Form.Item
                   label={$t({ defaultMessage: 'Automatically clean expired entries' })}
                 >
-                  <Paragraph>{data?.autoCleanup ? 'Yes' : 'No'}</Paragraph>
+                  <Paragraph>{data?.autoCleanup ? $t({ defaultMessage: 'Yes' }) :
+                    $t({ defaultMessage: 'No' })}</Paragraph>
                 </Form.Item>
               </Col>
               <Col span={6}>
                 <Form.Item
                   label={$t({ defaultMessage: 'Behavior' })}
                 >
-                  <Paragraph>Always redirect to authenticate user</Paragraph>
+                  {/* eslint-disable-next-line max-len */}
+                  <Paragraph>{$t({ defaultMessage: 'Always redirect to authenticate user' })}</Paragraph>
                 </Form.Item>
               </Col>
               <Col span={6}>
                 <Form.Item
                   label={$t({ defaultMessage: 'Default Access' })}
                 >
-                  <Paragraph>Access</Paragraph>
+                  <Paragraph>{$t({ defaultMessage: 'Access' })}</Paragraph>
                 </Form.Item>
               </Col>
               <Col span={6}>
