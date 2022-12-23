@@ -17,7 +17,7 @@ import {
   MacRegistrationPool,
   PolicyOperation,
   PolicyType,
-  useMacRegListTableQuery
+  useTableQuery
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -91,7 +91,7 @@ export default function MacRegistrationListsTable () {
   const tenantBasePath: Path = useTenantLink('')
 
   const MacRegistrationListsTable = () => {
-    const tableQuery = useMacRegListTableQuery({
+    const tableQuery = useTableQuery({
       useQuery: useMacRegListsQuery,
       defaultPayload: {}
     })
@@ -142,7 +142,7 @@ export default function MacRegistrationListsTable () {
       ]}>
         <Table
           columns={useColumns()}
-          dataSource={tableQuery.data?.content}
+          dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'

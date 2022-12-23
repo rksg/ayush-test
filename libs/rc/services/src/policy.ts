@@ -8,7 +8,6 @@ import {
   createHttpRequest,
   MacRegistration,
   MacRegistrationPool,
-  MacTableResult,
   MacRegListUrlsInfo,
   CommonResult,
   CommonUrlsInfo,
@@ -20,7 +19,7 @@ import {
   VenueRoguePolicyType,
   TableResult,
   onSocketActivityChanged,
-  showActivityMessage
+  showActivityMessage, NewTableResult, transferTableResult
 } from '@acx-ui/rc/utils'
 
 export const basePolicyApi = createApi({
@@ -105,7 +104,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       providesTags: [{ type: 'Policy', id: 'LIST' }]
     }),
-    macRegLists: build.query<MacTableResult<MacRegistrationPool>, RequestPayload>({
+    macRegLists: build.query<TableResult<MacRegistrationPool>, RequestPayload>({
       query: ({ params }) => {
         const poolsReq = createHttpRequest(MacRegListUrlsInfo.getMacRegistrationPools, params)
         return {
@@ -113,15 +112,21 @@ export const policyApi = basePolicyApi.injectEndpoints({
           params
         }
       },
+      transformResponse (result: NewTableResult<MacRegistrationPool>) {
+        return transferTableResult<MacRegistrationPool>(result)
+      },
       providesTags: [{ type: 'MacRegistrationPool', id: 'LIST' }]
     }),
-    macRegistrations: build.query<MacTableResult<MacRegistration>, RequestPayload>({
+    macRegistrations: build.query<TableResult<MacRegistration>, RequestPayload>({
       query: ({ params }) => {
         const poolsReq = createHttpRequest(MacRegListUrlsInfo.getMacRegistrations, params)
         return {
           ...poolsReq,
           params
         }
+      },
+      transformResponse (result: NewTableResult<MacRegistration>) {
+        return transferTableResult<MacRegistration>(result)
       },
       providesTags: [{ type: 'MacRegistration', id: 'LIST' }]
     }),

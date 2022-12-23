@@ -7,8 +7,8 @@ import {
   useDeleteMacRegistrationMutation,
   useMacRegistrationsQuery, useUpdateMacRegistrationMutation
 } from '@acx-ui/rc/services'
-import { MacRegistration, useMacRegListTableQuery } from '@acx-ui/rc/utils'
-import { useParams }                                from '@acx-ui/react-router-dom'
+import { MacRegistration, useTableQuery } from '@acx-ui/rc/utils'
+import { useParams }                      from '@acx-ui/react-router-dom'
 
 import { MacAddressDrawer } from '../../MacRegistrationListForm/MacRegistrationListMacAddresses/MacAddressDrawer'
 import { toTimeString }     from '../../MacRegistrationListUtils'
@@ -20,7 +20,7 @@ export function MacRegistrationsTab () {
   const [isEditMode, setIsEditMode] = useState(false)
   const [editData, setEditData] = useState({ } as MacRegistration)
 
-  const tableQuery = useMacRegListTableQuery({
+  const tableQuery = useTableQuery({
     useQuery: useMacRegistrationsQuery,
     defaultPayload: {}
   })
@@ -152,7 +152,7 @@ export function MacRegistrationsTab () {
       />
       <Table
         columns={columns}
-        dataSource={tableQuery.data?.content}
+        dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         rowKey='id'

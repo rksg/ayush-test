@@ -14,10 +14,9 @@ import {
 import {
   MacRegistrationPoolFormFields,
   MacRegistrationPool,
-  useMacRegListTableQuery,
   getPolicyRoutePath,
   PolicyType,
-  PolicyOperation, ExpirationDateEntity, ExpirationMode, ExpirationType
+  PolicyOperation, ExpirationDateEntity, ExpirationMode, ExpirationType, useTableQuery
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -42,7 +41,7 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
   const [addMacRegList] = useAddMacRegListMutation()
   const [updateMacRegList, { isLoading: isUpdating }] = useUpdateMacRegListMutation()
 
-  const tableQuery = useMacRegListTableQuery({
+  const tableQuery = useTableQuery({
     useQuery: useMacRegListsQuery,
     apiParams: { size: '10', page: '0' },
     defaultPayload: {}
@@ -65,7 +64,8 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
     let expiration
     if (data.mode === ExpirationMode.NEVER) {
       expiration = {
-        expirationEnabled: false
+        expirationEnabled: false,
+        expirationDate: null
       }
     } else if (data.mode === ExpirationMode.BY_DATE) {
       expiration = {
@@ -100,7 +100,7 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
       const saveData = {
         name: data.name,
         autoCleanup: data.autoCleanup,
-        priority: (editMode ? undefined : tableQuery.data ? tableQuery.data.totalElements + 1 : 0),
+        priority: (editMode ? undefined : tableQuery.data ? tableQuery.data.totalCount + 1 : 0),
         ...transferExpirationFormFieldsToData(data.expiration)
         // defaultAccess
         // policyId

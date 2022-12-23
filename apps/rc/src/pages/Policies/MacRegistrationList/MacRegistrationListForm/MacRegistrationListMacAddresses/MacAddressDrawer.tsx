@@ -5,7 +5,7 @@ import { Radio }                        from 'antd'
 import moment                           from 'moment-timezone'
 import { useIntl }                      from 'react-intl'
 
-import { Button, Drawer, showToast } from '@acx-ui/components'
+import { Drawer, showToast }         from '@acx-ui/components'
 import { ExpirationDateSelector }    from '@acx-ui/rc/components'
 import {
   useAddMacRegistrationMutation, useLazyMacRegistrationsQuery,
@@ -35,15 +35,15 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
   const [form] = Form.useForm()
   const [ addType ] = [ Form.useWatch('listExpiration', form),
     Form.useWatch('importAction', form)]
-  const [addMacRegistration, addMacRegistrationState] = useAddMacRegistrationMutation()
-  const [editMacRegistration, editMacRegistrationState] = useUpdateMacRegistrationMutation()
+  const [addMacRegistration] = useAddMacRegistrationMutation()
+  const [editMacRegistration] = useUpdateMacRegistrationMutation()
   const { policyId } = useParams()
   const [ macReg ] = useLazyMacRegistrationsQuery()
 
   const macAddressValidator = async (value: string) => {
     const list = (await macReg({
       params: { policyId }
-    }).unwrap()).content
+    }).unwrap()).data
       .filter(n => n.id !== editData?.id)
       .map(n => ({ name: n.macAddress }))
     // eslint-disable-next-line max-len
@@ -163,21 +163,14 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
     }
   </Form>
 
-  const footer =
-    [
-      <div key={'footer'} style={{ width: '100%', display: 'flex', justifyContent: 'end' }}>
-        <Button loading={addMacRegistrationState.isLoading || editMacRegistrationState.isLoading}
-          key='saveBtn'
-          onClick={() => form.submit()}
-          type={'primary'} >
-          {addType === 1 ? intl.$t({ defaultMessage: 'Import List' }) :
-            (isEdit ? intl.$t({ defaultMessage: 'Done' }) : intl.$t({ defaultMessage: 'Add' }) )}
-        </Button>
-        <Button key='cancelBtn' onClick={resetFields}>
-          {intl.$t({ defaultMessage: 'Cancel' })}
-        </Button>
-      </div>
-    ]
+  const footer = (
+    <Drawer.FormFooter
+      onCancel={resetFields}
+      buttonLabel={{ save: (addType === 1 ? intl.$t({ defaultMessage: 'Import List' }):
+        (isEdit ? intl.$t({ defaultMessage: 'Done' }) : intl.$t({ defaultMessage: 'Add' }))) }}
+      onSave={async () => { form.submit() }}
+    />
+  )
 
   return (
     <Drawer

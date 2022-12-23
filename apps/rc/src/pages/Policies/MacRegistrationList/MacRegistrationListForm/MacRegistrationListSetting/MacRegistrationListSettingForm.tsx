@@ -13,7 +13,7 @@ export function MacRegistrationListSettingForm () {
   const { policyId } = useParams()
 
   const nameValidator = async (value: string) => {
-    const list = (await macRegList({}).unwrap()).content.filter(n => n.id !== policyId)
+    const list = (await macRegList({}).unwrap()).data.filter(n => n.id !== policyId)
       .map(n => ({ name: n.name }))
     // eslint-disable-next-line max-len
     return checkObjectNotExists(list, { name: value } , $t({ defaultMessage: 'Mac Registration List' }))
