@@ -368,12 +368,6 @@ export function StackForm () {
                     </>
                   }
                   initialValue={null}
-                  rules={[
-                    {
-                      required: apGroupOption?.length === 0 ? false : true,
-                      message: $t({ defaultMessage: 'This field is required' })
-                    }
-                  ]}
                   children={
                     <Select
                       disabled={apGroupOption?.length === 0}
