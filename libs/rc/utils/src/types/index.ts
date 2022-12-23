@@ -147,11 +147,11 @@ export interface Activity {
   requestId: string
   severity: string
   startDatetime: string
-  status: string
+  status: 'PENDING' | 'INPROGRESS' | 'SUCCESS' | 'FAIL' | 'OFFLINE'
   steps: {
     id: string,
     description: string,
-    status: string,
+    status: 'PENDING' | 'INPROGRESS' | 'SUCCESS' | 'FAIL' | 'OFFLINE',
     progressType: string
     startDatetime: string
     endDatetime: string

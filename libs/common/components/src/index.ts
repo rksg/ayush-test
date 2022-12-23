@@ -43,4 +43,4 @@ export * from './theme/helper'
 export * from './components/Modal'
 export * from './components/SearchBar'
 export * from './components/Collapse'
-
+export * from './components/Timeline'

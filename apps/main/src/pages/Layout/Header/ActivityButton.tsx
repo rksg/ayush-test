@@ -11,33 +11,15 @@ import { defineMessage, useIntl } from 'react-intl'
 import {
   LayoutUI,
   Loader,
-  Badge
+  Badge,
+  StatusIcon
 } from '@acx-ui/components'
-import { CancelCircleSolid, CheckMarkCircleSolid, Pending, InProgress } from '@acx-ui/icons'
-import { useActivitiesQuery }                                           from '@acx-ui/rc/services'
-import { Activity, CommonUrlsInfo, useTableQuery, getDescription }      from '@acx-ui/rc/utils'
-import { useTenantLink, useNavigate }                                   from '@acx-ui/react-router-dom'
-import { formatter }                                                    from '@acx-ui/utils'
+import { useActivitiesQuery }                                      from '@acx-ui/rc/services'
+import { Activity, CommonUrlsInfo, useTableQuery, getDescription } from '@acx-ui/rc/utils'
+import { useTenantLink, useNavigate }                              from '@acx-ui/react-router-dom'
+import { formatter }                                               from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
-
-const getIcon = (
-  status: Activity['status']
-) => {
-  switch(status) {
-    case 'SUCCESS':
-      return <CheckMarkCircleSolid />
-    case 'PENDING':
-      return <Pending />
-    case 'INPROGRESS':
-      return <InProgress />
-    case 'FAIL':
-      return <CancelCircleSolid />
-    case 'OFFLINE':
-      return <div />
-  }
-  return
-}
 
 const defaultPayload: {
   url: string
@@ -147,7 +129,7 @@ export default function ActivityHeaderButton () {
             }}>
               <UI.ActivityMeta
                 title={getDescription(activity.descriptionTemplate, activity.descriptionData)}
-                avatar={getIcon(activity.status)}
+                avatar={<StatusIcon status={activity.status as Activity['status']}/>}
                 description={
                   <UI.ListTime>{formatter('calendarFormat')(activity.startDatetime)}</UI.ListTime>}
               />

@@ -1,8 +1,8 @@
-import { Form }                       from 'antd'
+import { Divider, Form }              from 'antd'
 import { MessageDescriptor, useIntl } from 'react-intl'
 
-import { noDataSymbol } from '@acx-ui/analytics/utils'
-import { Drawer }       from '@acx-ui/components'
+import { noDataSymbol }                   from '@acx-ui/analytics/utils'
+import { Drawer, Timeline, TimelineItem } from '@acx-ui/components'
 
 export interface DrawerProps {
   title: MessageDescriptor
@@ -11,6 +11,7 @@ export interface DrawerProps {
   data: { title: MessageDescriptor, value: string }[]
   onBackClick?: () => void
   width?: number
+  timeLine?: TimelineItem[]
 }
 
 export const TimelineDrawer = (props: DrawerProps) => {
@@ -19,13 +20,21 @@ export const TimelineDrawer = (props: DrawerProps) => {
     title={$t(props.title)}
     visible={props.visible}
     onClose={props.onClose}
-    children={<Form labelCol={{ span: 10 }} labelAlign='left'>{
-      props.data.map(({ title, value }, i) => <Form.Item
-        key={i}
-        label={$t(title)}
-        children={value || noDataSymbol}
-      />)
-    }</Form>}
+    children={<>
+      <Form labelCol={{ span: 10 }} labelAlign='left'>{
+        props.data.map(({ title, value }, i) =>
+          <Form.Item
+            key={i}
+            label={$t(title)}
+            children={value || noDataSymbol}
+          />)
+      }</Form>
+      {props.timeLine && props.timeLine.length > 0 &&
+        (<>
+          <Divider/>
+          <Timeline items={props.timeLine}/>
+        </>)}
+    </>}
     onBackClick={props.onBackClick}
     width={props.width}
   />

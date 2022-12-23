@@ -4,13 +4,14 @@ import { Activity } from './types'
 
 export function replaceStrings <Data> (
   template: string | undefined,
-  data: Data
+  data: Data | undefined
 ) {
   if (template === undefined) return ''
 
   const matches = template.match(new RegExp(/(@@|%%)\w+/, 'g')) || []
   for (const match of matches) {
     const value = String(_.get(data, match.slice(2), ''))
+    if(!value) return '-'
     template = template.replace(match, value)
   }
 

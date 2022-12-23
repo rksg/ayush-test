@@ -4,7 +4,8 @@ describe('replaceStrings', () => {
   it('convert template correctly', () => {
     expect(replaceStrings(undefined, {})).toEqual('')
     expect(replaceStrings('without template', {})).toEqual('without template')
-    expect(replaceStrings('with @@template', {})).toEqual('with ')
+    expect(replaceStrings('with @@template', {})).toEqual('-')
+    expect(replaceStrings('with @@template', undefined)).toEqual('-')
     expect(replaceStrings('with @@template', { template: 'value' })).toEqual('with value')
     expect(replaceStrings('with %%template', { template: 'value' })).toEqual('with value')
     expect(replaceStrings('with @@template1, %%template2, and @@template3', {

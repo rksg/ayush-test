@@ -1,0 +1,120 @@
+import React, { useState } from 'react'
+
+import { Timeline as AntTimeline, Descriptions } from 'antd'
+import { defineMessage, useIntl }                from 'react-intl'
+
+import {
+  InProgress,
+  Pending,
+  CancelCircleSolid,
+  CheckMarkCircleSolid,
+  StepPoint,
+  StepPointEmpty,
+  PlusSquareSolid,
+  MinusSquareSolid
+}                    from '@acx-ui/icons'
+import { formatter } from '@acx-ui/utils'
+
+import {
+  ItemWrapper,
+  ContentWrapper,
+  DescriptionWrapper,
+  StatusWrapper,
+  ExpanderWrapper,
+  WithExpanderWrapper,
+  Wrapper,
+  Status
+} from './styledComponents'
+
+interface StatusIconProps { status: Status}
+
+export const StatusIcon = (props: StatusIconProps) => {
+  switch(props.status) {
+    case 'SUCCESS':
+      return <CheckMarkCircleSolid />
+    case 'PENDING':
+      return <Pending />
+    case 'INPROGRESS':
+      return <InProgress />
+    case 'FAIL':
+      return <CancelCircleSolid />
+    case 'OFFLINE': // TODO: need to update icon once we get it
+      return <Pending />
+  }
+}
+
+const statusMap = {
+  SUCCESS: defineMessage({ defaultMessage: 'Success' }),
+  PENDING: defineMessage({ defaultMessage: 'Pending' }),
+  INPROGRESS: defineMessage({ defaultMessage: 'In progress' }),
+  FAIL: defineMessage({ defaultMessage: 'Failed' }),
+  OFFLINE: defineMessage({ defaultMessage: 'Offline' })
+}
+
+const StatusComp = (props: StatusIconProps) => {
+  const { $t } = useIntl()
+  return <StatusWrapper status={props.status}>
+    <StatusIcon status={props.status}/>{$t(statusMap[props.status])}
+  </StatusWrapper>
+}
+
+export interface TimelineItem {
+  status: 'PENDING' | 'INPROGRESS' | 'SUCCESS' | 'FAIL' | 'OFFLINE',
+  startDatetime: string,
+  endDatetime: string,
+  description: string,
+  children?: React.ReactElement
+}
+
+interface TimelineProps {
+  items: TimelineItem[]
+}
+
+const Timeline = (props: TimelineProps) => {
+  const { $t } = useIntl()
+  const [ expand, setExpand ] = useState<Record<string, boolean>>({})
+
+  return <Wrapper>
+    <Descriptions>
+      <Descriptions.Item label={$t({ defaultMessage: 'Current Status' })}>
+        {$t(statusMap[props.items[0].status])}
+      </Descriptions.Item>
+    </Descriptions>
+    <AntTimeline>
+      {props.items.map((item, index)=>[
+        <AntTimeline.Item
+          key={`timeline-start-${index}`}
+          dot={item.startDatetime ? <StepPoint/> : <StepPointEmpty/>}>
+          {item.startDatetime ? formatter('dateTimeFormatWithSeconds')(item.startDatetime) : '--'}
+        </AntTimeline.Item>,
+        <AntTimeline.Item
+          key={`timeline-end-${index}`}
+          dot={item.endDatetime ? <StepPoint/> : <StepPointEmpty/>}>
+          <ItemWrapper>
+            {item.endDatetime ? formatter('dateTimeFormatWithSeconds')(item.endDatetime) : '--'}
+            <ContentWrapper>
+              <WithExpanderWrapper>
+                <div>
+                  <StatusComp status={item.status}/>
+                  <DescriptionWrapper>{item.description}</DescriptionWrapper>
+                </div>
+                <ExpanderWrapper onClick={()=> {
+                  const key = `${item.startDatetime}-${item.endDatetime}`
+                  setExpand({ ...expand, [key]: !expand[key] })
+                }}>
+                  {item.children
+                    ? expand[`${item.startDatetime}-${item.endDatetime}`]
+                      ? <MinusSquareSolid/> : <PlusSquareSolid/>
+                    : null}
+                </ExpanderWrapper>
+              </WithExpanderWrapper>
+              { expand[`${item.startDatetime}-${item.endDatetime}`] ? item.children : null}
+            </ContentWrapper>
+          </ItemWrapper>
+        </AntTimeline.Item>
+      ])}
+    </AntTimeline>
+  </Wrapper>
+}
+
+export { Timeline }

@@ -17,7 +17,7 @@ interface ActivityTableProps {
 const ActivityTable = ({ tableQuery }: ActivityTableProps) => {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
-  const [current, setCurrent] = useState<Activity>()
+  const [current, setCurrent] = useState<string>()
 
   const columns: TableProps<Activity>['columns'] = [
     {
@@ -32,7 +32,7 @@ const ActivityTable = ({ tableQuery }: ActivityTableProps) => {
           size='small'
           onClick={()=>{
             setVisible(true)
-            setCurrent(row as Activity)
+            setCurrent(row.requestId)
           }}
         >{formatter('dateTimeFormatWithSeconds')(row.startDatetime)}</Button>
       }
@@ -123,7 +123,10 @@ const ActivityTable = ({ tableQuery }: ActivityTableProps) => {
       title={defineMessage({ defaultMessage: 'Activity Details' })}
       visible={visible}
       onClose={()=>setVisible(false)}
-      data={getDrawerData(current!)}
+      data={getDrawerData(tableQuery.data?.data
+        .find(row => current && row.requestId === current)!)}
+      timeLine={tableQuery.data?.data
+        .find(row => current && row.requestId === current)?.steps}
     /> }
   </Loader>
 }
