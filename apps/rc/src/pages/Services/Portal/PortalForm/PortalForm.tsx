@@ -1,15 +1,17 @@
 import { useEffect, useRef, useState } from 'react'
 
+import { RcFile }  from 'antd/lib/upload'
 import { useIntl } from 'react-intl'
 
 import {
   PageHeader,
+  showToast,
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
-import { useGetPortalQuery }                                                          from '@acx-ui/rc/services'
-import { defaultAlternativeLang, defaultComDisplay, getServiceListRoutePath, Portal } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }                                      from '@acx-ui/react-router-dom'
+import { useGetPortalQuery, useSavePortalMutation, useUpdatePortalMutation, useUploadURLMutation } from '@acx-ui/rc/services'
+import { defaultAlternativeLang, defaultComDisplay, getServiceListRoutePath, Portal }              from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }                                                   from '@acx-ui/react-router-dom'
 
 import Photo                     from '../../../../assets/images/portal-demo/PortalPhoto.svg'
 import Powered                   from '../../../../assets/images/portal-demo/PoweredLogo.svg'
@@ -19,14 +21,15 @@ import { PortalDemoDefaultSize } from '../../commonUtils'
 import PortalFormContext from './PortalFormContext'
 import PortalSettingForm from './PortalSettingForm'
 
+
 const initialPortalData : Portal ={
   serviceName: '',
   network: [],
-  demo: {
-    bgColor: 'var(--acx-primary-white)',
+  content: {
+    bgColor: '#FFFFFF',
     bgImage: '',
     welcomeText: 'Welcome to the Guest Access login page',
-    welcomeColor: 'var(--acx-primary-black)',
+    welcomeColor: '#333333',
     welcomeSize: PortalDemoDefaultSize.welcomeSize,
     photo: Photo,
     photoRatio: PortalDemoDefaultSize.photoRatio,
@@ -34,11 +37,11 @@ const initialPortalData : Portal ={
     logoRatio: PortalDemoDefaultSize.logoRatio,
     secondaryText: 'Lorem ipsum dolor sit amet, '+
     'consectetur adipiscing elit. Aenean euismod bibendum laoreet.',
-    secondaryColor: 'var(--acx-primary-black)',
+    secondaryColor: '#333333',
     secondarySize: PortalDemoDefaultSize.secondarySize,
-    buttonColor: 'var(--acx-accents-orange-50)',
-    poweredBgColor: 'var(--acx-primary-white)',
-    poweredColor: 'var(--acx-primary-black)',
+    buttonColor: '#EC7100',
+    poweredBgColor: '#FFFFFF',
+    poweredColor: '#333333',
     poweredSize: PortalDemoDefaultSize.poweredSize,
     poweredImg: Powered,
     poweredImgRatio: PortalDemoDefaultSize.poweredImgRatio,
@@ -62,32 +65,81 @@ export const PortalForm = (props:{
   const navigate = useNavigate()
   const linkToServices = useTenantLink(getServiceListRoutePath(true))
   const params = useParams()
+  const prefix = '/api/file/tenant/'+params.tenantId+'/'
   const editMode = props.editMode && !networkView
   const [portalData, setPortalData]=useState<Portal>(initialPortalData)
   const formRef = useRef<StepsFormInstance<Portal>>()
-
+  const [uploadURL] = useUploadURLMutation()
   const { data } = useGetPortalQuery({ params })
-
+  const [savePortal] = useSavePortalMutation()
+  const [updatePortal] = useUpdatePortalMutation()
+  const updateFileId = async (file: RcFile) =>{
+    let fileId = ''
+    await uploadURL({ params, payload: { fileExtension:
+      file.name.split('.')[1] } }).unwrap().then( async res=>{
+      await fetch(res.signedUrl, { method: 'put', body: file, headers: {
+        'Content-Type': ''
+      } }).then(()=>{
+        fileId = res.fileId
+      })
+    })
+    return fileId
+  }
   const handleAddPortalService = async (data : Portal) => {
-    networkView? backToNetwork?.(data) : navigate(linkToServices, { replace: true })
-    // try {
-    //   networkView? backToNetwork?.() : navigate(linkToServices, { replace: true })
-    // } catch {
-    //   showToast({
-    //     type: 'error',
-    //     content: $t({ defaultMessage: 'An error occurred' })
-    //   })
-    // }
+    try {
+      const payload = { serviceName: data.serviceName, tags: 'test', content: {
+        ...data.content, logo: data?.content?.logo&&data?.content?.logo.indexOf(prefix)>=0?
+          data?.content?.logo?.replace(prefix,''): '',
+        photo: data?.content?.photo&&data?.content?.photo.indexOf(prefix)>=0?
+          data?.content?.photo?.replace(prefix,''): '',
+        poweredImg: data?.content?.poweredImg&&data?.content?.poweredImg.indexOf(prefix)>=0?
+          data?.content?.poweredImg?.replace(prefix,''): '',
+        bgImage: data?.content?.bgImage&&data?.content?.bgImage.indexOf(prefix)>=0?
+          data?.content?.bgImage?.replace(prefix,''): ''
+      } }
+      if(portalData.bgFile){
+        payload.content.bgImage = await updateFileId(portalData.bgFile)
+      }
+      if(portalData.logoFile){
+        payload.content.logo = await updateFileId(portalData.logoFile)
+      }
+      if(portalData.photoFile){
+        payload.content.photo = await updateFileId(portalData.photoFile)
+      }
+      if(portalData.poweredFile){
+        payload.content.poweredImg = await updateFileId(portalData.poweredFile)
+      }
+
+      if(editMode){
+        updatePortal({ params: { tenantId: params.tenantId, serviceId: params.serviceId },
+          payload: payload }).unwrap()
+      }
+      else await savePortal({ params: { tenantId: params.tenantId }, payload: payload }).unwrap()
+        .then((res)=>{
+          data.id = res.response?.id
+          data.content = payload.content
+        })
+      networkView? backToNetwork?.(data) : navigate(linkToServices, { replace: true })
+    } catch {
+      showToast({
+        type: 'error',
+        content: $t({ defaultMessage: 'An error occurred' })
+      })
+    }
   }
   const updateSaveData = (saveData: Partial<Portal>) => {
     setPortalData({ ...portalData, ...saveData })
   }
   useEffect(() => {
-    //formRef?.current?.setFieldsValue(portalData)
     if (data) {
+      const formatData = { ...data, content: {
+        ...data.content, logo: data.content?.logo ? (prefix+data.content.logo):Logo,
+        photo: data.content?.photo ? (prefix+data.content.photo):Photo,
+        poweredImg: data.content?.poweredImg ? (prefix+data.content.poweredImg):Powered,
+        bgImage: data.content?.bgImage ? (prefix+data.content.bgImage):'' } } as Portal
       formRef?.current?.resetFields()
-      formRef?.current?.setFieldsValue(data)
-      updateSaveData(data)
+      formRef?.current?.setFieldsValue(formatData)
+      updateSaveData(formatData)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data])
@@ -105,22 +157,19 @@ export const PortalForm = (props:{
           formRef={formRef}
           onCancel={() => networkView? backToNetwork?.()
             : navigate(linkToServices)}
-          onFinish={(data) => handleAddPortalService(data)}
+          onFinish={async (data) => {
+            if(data.content.componentDisplay.wifi4eu && !data.content.wifi4EUNetworkId){
+              return false
+            }
+            return handleAddPortalService(data)}}
         >
           <StepsForm.StepForm
             name='settings'
             title={$t({ defaultMessage: 'Settings' })}
             initialValues={initialPortalData}
-            onFinish={async (data) => {
-              if(data.demo.componentDisplay.wifi4eu && !data.demo.wifi4EUNetworkId){
-                return false
-              }
-              updateSaveData(data)
-              return true
-            }}
           >
             <PortalSettingForm resetDemoField={()=>{
-              formRef.current?.setFieldsValue({ demo: { ...portalData.demo } })
+              formRef.current?.setFieldsValue({ content: { ...portalData.content } })
             }}/>
           </StepsForm.StepForm>
         </StepsForm>

@@ -1,3 +1,5 @@
+import { RcFile } from 'antd/lib/upload'
+
 import { Network } from '../network'
 
 export interface Portal{
@@ -5,7 +7,11 @@ export interface Portal{
   serviceName: string
   tags?: string[]
   network: PortalNetwork[]
-  demo: Demo
+  content: Demo,
+  logoFile?: RcFile,
+  bgFile?: RcFile,
+  photoFile?: RcFile,
+  poweredFile?: RcFile
 }
 export interface PortalNetwork extends Network{
 }

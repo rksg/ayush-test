@@ -1,5 +1,7 @@
 import { useState } from 'react'
 
+import { RcFile } from 'antd/lib/upload'
+
 import { Demo } from '@acx-ui/rc/utils'
 
 
@@ -11,7 +13,7 @@ import PortalPopover             from '../PortalPopover'
 export default function PortalPhotoContent (props: {
   demoValue: Demo,
   updatePhoto: (value: { url?: string, size?: number, show?: boolean,
-    color?:string, text?:string }) => void
+    color?:string, text?:string, file?: RcFile }) => void
 }) {
   const { demoValue, updatePhoto } = props
   const dashedOutline = 'dashed 1px var(--acx-neutrals-50)'

@@ -1,5 +1,7 @@
 import { useState } from 'react'
 
+import { RcFile } from 'antd/lib/upload'
+
 import { Demo } from '@acx-ui/rc/utils'
 
 
@@ -12,7 +14,7 @@ export default function PortalPoweredByContent (props: {
   portalLang: { [key:string]:string },
   demoValue: Demo,
   updatePoweredBy:(value: { url?:string,size?:number,show?:boolean,text?:string,
-    textsize?:number,bgcolor?:string,color?:string }) => void
+    textsize?:number,bgcolor?:string,color?:string, file?:RcFile }) => void
 }) {
   const { demoValue, updatePoweredBy } = props
   const dashedOutline = 'dashed 1px var(--acx-neutrals-50)'
@@ -39,7 +41,7 @@ export default function PortalPoweredByContent (props: {
     defaultSize={PortalDemoDefaultSize.poweredImgRatio}
     updateDemoImg={(data)=>{
       updatePoweredBy({ ...data, textsize: demoValue.poweredSize,
-        bgcolor: demoValue.poweredBgColor })
+        bgcolor: demoValue.poweredBgColor, file: data.file })
     }}
   />
   const poweredTextTools = <PortalImageTools

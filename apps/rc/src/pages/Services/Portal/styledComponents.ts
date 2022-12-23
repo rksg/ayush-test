@@ -139,9 +139,9 @@ export const LayoutView = styled(AntLayout)<{ $type: string | null }>`
   max-width:600px;
   `}
   align-items:center;
-  background-color: var(--acx-primary-white);
-  background-position: center;
-  background-repeat: no-repeat;
+  background-color: var(--acx-primary-white) !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
   height:100%;
   overflow-y:auto;
 `

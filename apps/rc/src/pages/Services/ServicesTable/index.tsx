@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
-import { useDeleteWifiCallingServiceMutation, useServiceListQuery }       from '@acx-ui/rc/services'
+import { Button, PageHeader, Table, TableProps, Loader, showActionModal }                    from '@acx-ui/components'
+import { useDeletePortalMutation, useDeleteWifiCallingServiceMutation, useServiceListQuery } from '@acx-ui/rc/services'
 import {
   ServiceType,
   useTableQuery,
@@ -132,7 +132,7 @@ export default function ServicesTable () {
     [ServiceType.DHCP]: [], // TODO: API not ready
     [ServiceType.DPSK]: [], // TODO: API not ready
     [ServiceType.MDNS_PROXY]: [], // TODO: API not ready
-    [ServiceType.PORTAL]: [], // TODO: API not ready
+    [ServiceType.PORTAL]: useDeletePortalMutation(),
     [ServiceType.WIFI_CALLING]: useDeleteWifiCallingServiceMutation(),
     [ServiceType.NETWORK_SEGMENTATION]: [] // TODO: API not ready
   }

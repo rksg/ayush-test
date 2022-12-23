@@ -7,7 +7,7 @@ import { useCloudpathListQuery, useVenuesListQuery }                           f
 import { Demo, NetworkSaveData, NetworkTypeEnum, transformDisplayText, Venue } from '@acx-ui/rc/utils'
 import { useParams }                                                           from '@acx-ui/react-router-dom'
 
-import { GuestNetworkTypeLabel, networkTypes } from '../contentsMap'
+import { captiveTypes, networkTypes } from '../contentsMap'
 
 import { AaaSummaryForm }    from './AaaSummaryForm'
 import { DpskSummaryForm }   from './DpskSummaryForm'
@@ -85,8 +85,8 @@ export function SummaryForm (props: {
           {summaryData.type === NetworkTypeEnum.CAPTIVEPORTAL && <Form.Item
             label={$t({ defaultMessage: 'Type:' })}
             children={(summaryData.type && $t(networkTypes[summaryData.type]))+' - '+
-              (summaryData.guestPortal?.guestNetworkType && $t({ defaultMessage: '{type}' },
-                { type: GuestNetworkTypeLabel[summaryData.guestPortal?.guestNetworkType] }))}
+              (summaryData.guestPortal?.guestNetworkType &&
+                 $t(captiveTypes[summaryData.guestPortal?.guestNetworkType]))}
           />}
           {summaryData.type !== NetworkTypeEnum.PSK &&
           <Form.Item

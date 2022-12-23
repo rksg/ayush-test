@@ -12,7 +12,6 @@ import { Demo, Portal }                                           from '@acx-ui/
 import Photo              from '../../../../assets/images/portal-demo/PortalPhoto.svg'
 import Powered            from '../../../../assets/images/portal-demo/PoweredLogo.svg'
 import Logo               from '../../../../assets/images/portal-demo/RuckusCloud.svg'
-import WiFi4eu            from '../../../../assets/images/portal-demo/WiFi4euBanner.svg'
 import PortalDemo         from '../../../Services/Portal/PortalDemo'
 import NetworkFormContext from '../NetworkFormContext'
 
@@ -25,6 +24,7 @@ const PortalInstance = (props:{
 }) => {
   const { $t } = useIntl()
   const params = useParams()
+  const prefix = '/api/file/tenant/'+params.tenantId+'/'
   const { useWatch } = Form
   const form = Form.useFormInstance()
   const networkData = useContext(NetworkFormContext).data
@@ -43,23 +43,26 @@ const PortalInstance = (props:{
   const portalServiceID = useWatch(['guestPortal','serviceId'])
   const { data } = useGetPortalProfileListQuery({ params })
   const [demoValue, setDemoValue]= useState({} as Demo)
-  const portalServices = data?.map(m => ({ label: m.serviceName, value: m.id })) ?? []
+  const portalServices = data?.content?.map(m => ({ label: m.serviceName, value: m.id })) ?? []
   const [portalList, setPortalList]= useState(portalServices)
   const [portalData, setPortalData]= useState([] as Portal[])
   const setPortal = (value:string)=>{
     const currentPortal = _.find(portalData,{ id: value })
-    const tempValue={ ...currentPortal?.demo as Demo,
-      poweredImg: currentPortal?.demo.poweredImg || Powered,
-      logo: currentPortal?.demo.logo || Logo,
-      photo: currentPortal?.demo.photo || Photo,
-      wifi4EUNetworkId: currentPortal?.demo.wifi4EUNetworkId || WiFi4eu }
+    const content = currentPortal?.content as Demo
+    const tempValue={ ...content,
+      poweredImg: content.poweredImg?
+        (prefix+content.poweredImg):Powered,
+      logo: content.logo?(prefix+content.logo):Logo,
+      photo: content.photo?(prefix+content.photo): Photo,
+      bgImage: content.bgImage?(prefix+content.bgImage):'' ,
+      wifi4EUNetworkId: content.wifi4EUNetworkId || '' }
     setDemoValue(tempValue)
     props.updatePortalData?.(tempValue)
   }
   useEffect(()=>{
     if(data){
-      setPortalData([...data as Portal[]])
-      setPortalList(portalServices)
+      setPortalData([...data.content as Portal[]])
+      setPortalList(data?.content?.map(m => ({ label: m.serviceName, value: m.id })) ?? [])
     }
   },[data])
   const [getPortalLang] = useGetPortalLangMutation()
@@ -104,15 +107,19 @@ const PortalInstance = (props:{
           />
           <Form.Item>
             <PortalServiceModal updateInstance={(data)=>{
-              const idNow = Date.now()
-              portalData.push({ ...data, id: data.id || idNow+'' })
+              portalData.push({ ...data, id: data.id })
               portalList.push({
-                label: data.serviceName, value: data.id || idNow+'' })
+                label: data.serviceName, value: data.id })
               setPortalList([...portalList])
               setPortalData([...portalData])
-              form.setFieldValue(['guestPortal','serviceId'], data.id || idNow+'')
-              props.updatePortalData?.(data.demo)
-              setDemoValue(data.demo)
+              form.setFieldValue(['guestPortal','serviceId'], data.id)
+              props.updatePortalData?.(data.content)
+              setDemoValue({ ...data.content,
+                poweredImg: data.content.poweredImg?
+                  (prefix+data.content.poweredImg):Powered,
+                logo: data.content.logo?(prefix+data.content.logo):Logo,
+                photo: data.content.photo?(prefix+data.content.photo): Photo,
+                bgImage: data.content.bgImage?(prefix+data.content.bgImage):'' })
             }}/>
           </Form.Item>
         </GridCol>

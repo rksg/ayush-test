@@ -1,17 +1,18 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { Tooltip }                                  from 'antd'
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
-import { Alert }                                      from '@acx-ui/components'
-import { QuestionMarkCircleOutlined }                 from '@acx-ui/icons'
-import { useGetPortalLangMutation }                   from '@acx-ui/rc/services'
-import { Demo, GuestNetworkTypeEnum, PortalViewEnum } from '@acx-ui/rc/utils'
-import { useParams }                                  from '@acx-ui/react-router-dom'
+import { Alert }                                              from '@acx-ui/components'
+import { QuestionMarkCircleOutlined }                         from '@acx-ui/icons'
+import { useGetPortalLangMutation }                           from '@acx-ui/rc/services'
+import { Demo, GuestNetworkTypeEnum, Portal, PortalViewEnum } from '@acx-ui/rc/utils'
+import { useParams }                                          from '@acx-ui/react-router-dom'
 
 import { captiveTypesDescription } from '../../../Networks/NetworkForm/contentsMap'
 import { portalViewTypes }         from '../contentsMap'
+import PortalFormContext           from '../PortalForm/PortalFormContext'
 import PortalPreviewModal          from '../PortalPreviewModal'
 import * as UI                     from '../styledComponents'
 
@@ -53,6 +54,10 @@ export default function PortalDemo ({
     tablet: false,
     mobile: false
   })
+  const {
+    portalData,
+    setPortalData
+  } = useContext(PortalFormContext)
   const [showComponent, setShowComponent] = useState(false)
   const [view, setView] = useState(PortalViewEnum.ClickThrough)
   const demoValue = value as Demo
@@ -179,8 +184,9 @@ export default function PortalDemo ({
       <UI.LayoutContent id={networkPreview?'noid':'democontent'} $isPreview={isPreview}>
         {!isPreview&&<PortalBackground $isDesk={marked.desk}
           backgroundColor={demoValue.bgColor}
-          updateBackgroundImg={(data: string) =>
-            onChange?.({ ...demoValue, bgImage: data })}
+          updateBackgroundImg={({ url, file }) =>{
+            setPortalData?.({ ...portalData as Portal, bgFile: file })
+            onChange?.({ ...demoValue, bgImage: url })}}
           updateBackgroundColor={(data: string) =>
             onChange?.({ ...demoValue, bgColor: data })}/>}
         <UI.LayoutView $type={screen}

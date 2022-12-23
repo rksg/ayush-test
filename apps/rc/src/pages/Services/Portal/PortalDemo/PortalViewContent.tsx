@@ -1,10 +1,11 @@
 
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 
-import { Demo, PortalViewEnum } from '@acx-ui/rc/utils'
+import { Demo, Portal, PortalViewEnum } from '@acx-ui/rc/utils'
 
 import Wifi4eu                   from '../../../../assets/images/portal-demo/WiFi4euBanner.svg'
 import { PortalDemoDefaultSize } from '../../commonUtils'
+import PortalFormContext         from '../PortalForm/PortalFormContext'
 import * as UI                   from '../styledComponents'
 
 import PortalPhotoContent         from './PortalContent/PortalPhotoContent'
@@ -27,6 +28,10 @@ export default function PortalViewContent (props:{
   updateViewContent:(value:Demo)=>void,
   portalLang: { [key:string]:string }
 }) {
+  const {
+    portalData,
+    setPortalData
+  } = useContext(PortalFormContext)
   const dashedOutline = 'dashed 1px var(--acx-neutrals-50)'
   const { view, demoValue, updateViewContent, portalLang } = props
   const [cursor, setCursor]=useState('none')
@@ -41,6 +46,9 @@ export default function PortalViewContent (props:{
     showText={false}
     showColorPic={false}
     updateDemoImg={(data)=>{
+      if(data.file){
+        setPortalData?.({ ...portalData as Portal, logoFile: data.file })
+      }
       updateViewContent({ ...demoValue, logo: data.url, logoRatio: data.size,
         componentDisplay: { ...demoValue.componentDisplay, logo: data.show as boolean } })
     }}
@@ -82,6 +90,9 @@ export default function PortalViewContent (props:{
         <PortalPhotoContent
           demoValue={demoValue}
           updatePhoto={(data)=>{
+            if(data.file){
+              setPortalData?.({ ...portalData as Portal, photoFile: data.file })
+            }
             updateViewContent({ ...demoValue, photo: data.url, photoRatio: data.size,
               componentDisplay: { ...demoValue.componentDisplay, photo: data.show as boolean } })}}
         />}
@@ -144,6 +155,9 @@ export default function PortalViewContent (props:{
         portalLang={portalLang}
         demoValue={demoValue}
         updatePoweredBy={(data)=>{
+          if(data.file){
+            setPortalData?.({ ...portalData as Portal, poweredFile: data.file })
+          }
           updateViewContent({ ...demoValue, poweredImg: data.url||demoValue.poweredImg,
             componentDisplay: { ...demoValue.componentDisplay, poweredBy: data.show as boolean },
             poweredImgRatio: data.size||demoValue.poweredImgRatio,

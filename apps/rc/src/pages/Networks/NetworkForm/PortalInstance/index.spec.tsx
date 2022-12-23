@@ -23,8 +23,17 @@ describe('Portal Instance Page', () => {
     mockServer.use(
       rest.get(
         PortalUrlsInfo.getPortalProfileList.url,
-        (req, res, ctx) => res(ctx.json(portalList))
-      )
+        (req, res, ctx) => res(ctx.json({ content: portalList }))
+      ),
+      rest.post(
+        PortalUrlsInfo.getPortalProfileList.url,
+        (req, res, ctx) => res(ctx.json({ }))
+      ),
+      rest.get(PortalUrlsInfo.getPortalLang.url,
+        (req, res, ctx) => {
+          return res(ctx.status(404),ctx.json(
+            'acceptTermsMsg = I accept the\nacceptTermsLink= terms & conditions'))
+        })
     )
   })
 

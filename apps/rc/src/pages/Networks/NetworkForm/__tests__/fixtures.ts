@@ -345,7 +345,7 @@ export const guestpassData={
 export const portalList =[{
   id: 2,
   serviceName: 'test2',
-  demo: {
+  content: {
     welcomeText: 'Welcome to the Guest Access login page',
     welcomeColor: '#333333',
     bgImage: '',

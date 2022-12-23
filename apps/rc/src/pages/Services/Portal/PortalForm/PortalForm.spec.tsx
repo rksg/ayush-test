@@ -14,6 +14,49 @@ export const successResponse = { requestId: 'request-id' }
 
 
 describe('PortalForm', () => {
+  it('should create Portal with file successfully', async () => {
+    mockServer.use(
+      rest.get(CommonUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
+        res(ctx.json({ COMMON: '{}' }))
+      ),
+      rest.post(
+        PortalUrlsInfo.savePortal.url.replace('?quickAck=true', ''),
+        (_, res, ctx) => {return res(ctx.json(successResponse))}
+      ),
+      rest.get(PortalUrlsInfo.getPortalLang.url,
+        (_, res, ctx) => {
+          return res(ctx.json({ signedUrl: 'test', fileId: 'test' }))
+        }),
+      rest.post(CommonUrlsInfo.getUploadURL.url,
+        (_, res, ctx) => {
+          return res(ctx.json({ signedUrl: '/api/test', fileId: 'test' }))
+        }),
+      rest.get(PortalUrlsInfo.getPortalProfileList.url,
+        (_, res, ctx) => {
+          return res(ctx.json({ content: [{ id: 'test', serviceName: 'test' }] }))
+        })
+    )
+
+    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', type: 'wifi' }
+
+    render(<Provider><PortalForm /></Provider>, {
+      route: { params }
+    })
+    //step 1 setting form
+    await userEvent.type(await screen.findByRole(
+      'textbox', { name: 'Service Name' }),'create Portal test')
+    await userEvent.click(await screen.findByText('Reset'))
+    const file = new File(['logo ruckus'],
+      'https://storage.cloud.google.com/ruckus-web-1/acx-ui-static-resources/logo-ruckus.png',
+      { type: 'image/png' })
+    await userEvent.click(await screen.findByTitle('background setting'))
+
+    await userEvent.upload(await screen.findByLabelText('Select image'),file)
+    await userEvent.click(await screen.findByText('Select image'))
+    await userEvent.click(await screen.findByText('Finish'))
+    expect(await screen.findByText('English')).toBeVisible()
+
+  })
   it('should create Portal successfully', async () => {
     mockServer.use(
       rest.get(CommonUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
@@ -22,23 +65,27 @@ describe('PortalForm', () => {
       rest.post(
         PortalUrlsInfo.savePortal.url.replace('?quickAck=true', ''),
         (_, res, ctx) => {return res(ctx.json(successResponse))}
-      )
+      ),
+      rest.get(PortalUrlsInfo.getPortalLang.url,
+        (_, res, ctx) => {
+          return res(ctx.json({ signedUrl: 'test', fileId: 'test' }))
+        }),
+      rest.get(PortalUrlsInfo.getPortalProfileList.url,
+        (_, res, ctx) => {
+          return res(ctx.json({ }))
+        })
     )
 
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', type: 'wifi' }
 
-    const { asFragment } = render(<Provider><PortalForm /></Provider>, {
+    render(<Provider><PortalForm /></Provider>, {
       route: { params }
     })
-
-    expect(asFragment()).toMatchSnapshot()
 
     //step 1 setting form
     await userEvent.type(await screen.findByRole(
       'textbox', { name: 'Service Name' }),'create Portal test')
-    await userEvent.click(await screen.findByText('Reset'))
     await userEvent.click(await screen.findByText('Finish'))
-    expect(await screen.findByText('English')).toBeVisible()
 
   })
 })

@@ -12,12 +12,13 @@ import {
   wisprDataWPA23,
   wisprDataWep,
   selfsignData,
-  portalList
+  portalList,
+  wisprDataWPA2
 } from '../__tests__/fixtures'
 
 import { PortalSummaryForm } from './PortalSummaryForm'
 
-const portalData = portalList[0].demo
+const portalData = portalList[0].content
 
 describe('PortalSummaryForm', () => {
   it('should render host approval successfully', async () => {
@@ -114,5 +115,21 @@ describe('PortalSummaryForm', () => {
     )
 
     expect(asFragment()).toMatchSnapshot()
+  })
+  it('should render wispr wpa2 successfully', async () => {
+    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+    portalData.componentDisplay.wifi4eu = true
+    wisprDataWPA2.wlan.bypassCPUsingMacAddressAuthentication = false
+    render(
+      <Provider>
+        <Form>
+          <PortalSummaryForm summaryData={wisprDataWPA2} portalData={portalData}/>
+        </Form>
+      </Provider>,
+      {
+        route: { params }
+      }
+    )
+
   })
 })

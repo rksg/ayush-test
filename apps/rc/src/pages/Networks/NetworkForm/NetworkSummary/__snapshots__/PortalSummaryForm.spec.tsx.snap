@@ -98,6 +98,37 @@ exports[`PortalSummaryForm should render guest pass successfully 1`] = `
         </div>
       </div>
     </div>
+    <div
+      class="ant-form-item"
+    >
+      <div
+        class="ant-row ant-form-item-row"
+      >
+        <div
+          class="ant-col ant-form-item-label"
+        >
+          <label
+            class=""
+            title="WiFi4EU Snippet:"
+          >
+            WiFi4EU Snippet
+          </label>
+        </div>
+        <div
+          class="ant-col ant-form-item-control"
+        >
+          <div
+            class="ant-form-item-control-input"
+          >
+            <div
+              class="ant-form-item-control-input-content"
+            >
+              OFF
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </form>
 </DocumentFragment>
 `;
@@ -273,6 +304,37 @@ exports[`PortalSummaryForm should render host approval successfully 1`] = `
               class="ant-form-item-control-input-content"
             >
               English
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-form-item"
+    >
+      <div
+        class="ant-row ant-form-item-row"
+      >
+        <div
+          class="ant-col ant-form-item-label"
+        >
+          <label
+            class=""
+            title="WiFi4EU Snippet:"
+          >
+            WiFi4EU Snippet
+          </label>
+        </div>
+        <div
+          class="ant-col ant-form-item-control"
+        >
+          <div
+            class="ant-form-item-control-input"
+          >
+            <div
+              class="ant-form-item-control-input-content"
+            >
+              OFF
             </div>
           </div>
         </div>
@@ -502,6 +564,37 @@ exports[`PortalSummaryForm should render self sign in successfully 1`] = `
               class="ant-form-item-control-input-content"
             >
               English
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-form-item"
+    >
+      <div
+        class="ant-row ant-form-item-row"
+      >
+        <div
+          class="ant-col ant-form-item-label"
+        >
+          <label
+            class=""
+            title="WiFi4EU Snippet:"
+          >
+            WiFi4EU Snippet
+          </label>
+        </div>
+        <div
+          class="ant-col ant-form-item-control"
+        >
+          <div
+            class="ant-form-item-control-input"
+          >
+            <div
+              class="ant-form-item-control-input-content"
+            >
+              OFF
             </div>
           </div>
         </div>
@@ -761,6 +854,37 @@ exports[`PortalSummaryForm should render wispr none successfully 1`] = `
               class="ant-form-item-control-input-content"
             >
               English
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-form-item"
+    >
+      <div
+        class="ant-row ant-form-item-row"
+      >
+        <div
+          class="ant-col ant-form-item-label"
+        >
+          <label
+            class=""
+            title="WiFi4EU Snippet:"
+          >
+            WiFi4EU Snippet
+          </label>
+        </div>
+        <div
+          class="ant-col ant-form-item-control"
+        >
+          <div
+            class="ant-form-item-control-input"
+          >
+            <div
+              class="ant-form-item-control-input-content"
+            >
+              OFF
             </div>
           </div>
         </div>
@@ -1062,6 +1186,37 @@ exports[`PortalSummaryForm should render wispr wep successfully 1`] = `
         </div>
       </div>
     </div>
+    <div
+      class="ant-form-item"
+    >
+      <div
+        class="ant-row ant-form-item-row"
+      >
+        <div
+          class="ant-col ant-form-item-label"
+        >
+          <label
+            class=""
+            title="WiFi4EU Snippet:"
+          >
+            WiFi4EU Snippet
+          </label>
+        </div>
+        <div
+          class="ant-col ant-form-item-control"
+        >
+          <div
+            class="ant-form-item-control-input"
+          >
+            <div
+              class="ant-form-item-control-input-content"
+            >
+              OFF
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </form>
 </DocumentFragment>
 `;
@@ -1175,9 +1330,9 @@ exports[`PortalSummaryForm should render wispr wpa23 successfully 1`] = `
         >
           <label
             class=""
-            title="Passphrase:"
+            title="WPA2 Passphrase:"
           >
-            Passphrase
+            WPA2 Passphrase
           </label>
         </div>
         <div
@@ -1421,6 +1576,37 @@ exports[`PortalSummaryForm should render wispr wpa23 successfully 1`] = `
               class="ant-form-item-control-input-content"
             >
               English
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-form-item"
+    >
+      <div
+        class="ant-row ant-form-item-row"
+      >
+        <div
+          class="ant-col ant-form-item-label"
+        >
+          <label
+            class=""
+            title="WiFi4EU Snippet:"
+          >
+            WiFi4EU Snippet
+          </label>
+        </div>
+        <div
+          class="ant-col ant-form-item-control"
+        >
+          <div
+            class="ant-form-item-control-input"
+          >
+            <div
+              class="ant-form-item-control-input-content"
+            >
+              OFF
             </div>
           </div>
         </div>

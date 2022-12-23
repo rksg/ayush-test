@@ -1,11 +1,20 @@
-import { Form }    from 'antd'
-import { useIntl } from 'react-intl'
+import { Form }                                      from 'antd'
+import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
 import { Button, showActionModal } from '@acx-ui/components'
 
-
+const appDescriptions: Record<string, MessageDescriptor> = {
+  google: defineMessage({ defaultMessage: '-The selected Google app will affect the popup '+
+  'that users see on their first sign in to the network' }),
+  facebook: defineMessage({ defaultMessage: '-The selected Facebook app will '+
+  'affect the popup that users see on their first sign in to the network' }),
+  linkedin: defineMessage({ defaultMessage: '-The selected LinkedIn app will affect the popup '+
+  'that users see on their first sign in to the network' }),
+  twitter: defineMessage({ defaultMessage: '-The selected Twitter app will affect the popup '+
+  'that users see on their first sign in to the network' })
+}
 export default function PreviewApp (props:{
-  appDescription?: string,
+  type: string,
   companyDes?: string,
   appPhoto?: string
 }) {
@@ -13,11 +22,11 @@ export default function PreviewApp (props:{
   const getContent = <Form layout='vertical'>
     <Form.Item
       label={<>
-        {$t({ defaultMessage: '{appDes}' }, { appDes: props.appDescription })}
+        {$t(appDescriptions[props.type])}
       </>}/>
     <Form.Item
       label={<>
-        {$t({ defaultMessage: '{comDes}' }, { comDes: props.companyDes||
+        {$t({ defaultMessage:
         '-Actual UI may be different and is not under Ruckus Wireless responsibility' })}
       </>}/>
     <Form.Item children={

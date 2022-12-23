@@ -22,9 +22,9 @@ export function DomainsInput (props:{
     <Form.Item
       name={['guestPortal','hostGuestConfig', props.name||'hostDomains']}
       label={<>
-        {$t({ defaultMessage: '{labelValue}' },{ labelValue: props.label || 'Host Domains' })}
-        <Tooltip title={$t({ defaultMessage: '{toolTip}' },{ toolTip: props.toolTip ||
-          'Only hosts from these domains will be allowed to approve guest requests' })}
+        {$t({ defaultMessage: 'Host Domains' })}
+        <Tooltip title={$t({ defaultMessage:
+         'Only hosts from these domains will be allowed to approve guest requests' })}
         placement='bottom'>
           <QuestionMarkCircleOutlined />
         </Tooltip>

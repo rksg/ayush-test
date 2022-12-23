@@ -29,8 +29,6 @@ export default function FacebookSetting (props:{
   const [visible, setVisible]=useState(false)
   const [appIDValue, setAppIDValue]=useState('')
   const [appSecretValue, setAppSecretValue]=useState('')
-  const description='-The selected Facebook app will '+
-  'affect the popup that users see on their first sign in to the network'
   useEffect(()=>{
     if((editMode || cloneMode) && data){
       form.setFieldValue(['guestPortal','socialIdentities',
@@ -63,8 +61,8 @@ export default function FacebookSetting (props:{
     }}
   >
     <Form.Item label={$t({ defaultMessage: 'Select Facebook app to be used for sign in' })}
-      extra={<div style={{ textAlign: 'right', marginTop: -63 }}>
-        <PreviewApp appDescription={description} appPhoto={appPhoto}/></div>}
+      extra={<div style={{ textAlign: 'right', marginTop: -60 }}>
+        <PreviewApp type='facebook' appPhoto={appPhoto}/></div>}
     />
     <Form.Item
       name={['guestPortal','socialIdentities','facebook','config','appId']}

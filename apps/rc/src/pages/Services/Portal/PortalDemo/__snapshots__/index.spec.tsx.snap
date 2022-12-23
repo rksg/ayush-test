@@ -161,7 +161,7 @@ exports[`PortalDemo should render portal demo preview successfully 1`] = `
         id="democontent"
       >
         <section
-          class="ant-layout styledComponents__LayoutView-sc-cby53p-9 iwxLDo"
+          class="ant-layout styledComponents__LayoutView-sc-cby53p-9 bwudpP"
           style="background-image: url();"
         >
           <div>
@@ -495,7 +495,7 @@ exports[`PortalDemo should render portal demo successfully 1`] = `
           title="background setting"
         />
         <section
-          class="ant-layout styledComponents__LayoutView-sc-cby53p-9 iwxLDo"
+          class="ant-layout styledComponents__LayoutView-sc-cby53p-9 bwudpP"
           style="background-image: url();"
         >
           <div>

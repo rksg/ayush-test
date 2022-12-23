@@ -82,7 +82,6 @@ describe('PortalDemo', () => {
     await userEvent.click(await screen.findByTitle('colorpick'))
     await userEvent.click(await screen.findByTitle('eyehide'))
     await userEvent.type(await screen.findByPlaceholderText('welcometext'),'welcome text')
-
     fireEvent.mouseOver(await screen.findByPlaceholderText('buttonsetting'))
     fireEvent.mouseLeave(await screen.findByPlaceholderText('buttonsetting'))
     fireEvent.click(await screen.findByPlaceholderText('buttonsetting'))
@@ -168,18 +167,20 @@ describe('PortalDemo', () => {
     await userEvent.click(await screen.findByTitle('plusen'))
     await userEvent.click(await screen.findByTitle('minusen'))
 
-    await userEvent.upload(await screen.findByPlaceholderText('contentimageupload'), file)
-    await userEvent.click(await screen.findByTitle('pictureout'))
+    await userEvent.upload((await screen.findAllByPlaceholderText('contentimageupload'))[0], file)
+    await userEvent.click((await screen.findAllByTitle('pictureout'))[0])
     await userEvent.click(await screen.findByRole('img',{ name: 'Logo' }))
     fireEvent.mouseLeave(await screen.findByRole('img',{ name: 'Logo' }))
     await userEvent.click(await screen.findByRole('img',{ name: 'Photo png' }))
     await userEvent.click((await screen.findAllByTitle('plusen'))[1])
+    await userEvent.upload((await screen.findAllByPlaceholderText('contentimageupload'))[1], file)
+    await userEvent.click((await screen.findAllByTitle('pictureout'))[1])
     await userEvent.click(await screen.findByRole('img',{ name: 'Photo png' }))
     fireEvent.mouseLeave(await screen.findByRole('img',{ name: 'Photo png' }))
 
     await userEvent.click(await screen.findByPlaceholderText('sectexthere'))
     await userEvent.click((await screen.findAllByTitle('textplus'))[1])
-    await userEvent.click(await screen.findByPlaceholderText('sectexthere'))
+    await userEvent.type(await screen.findByPlaceholderText('sectexthere'),'sec text')
     fireEvent.mouseLeave(await screen.findByPlaceholderText('sectexthere'))
 
     await userEvent.click(await screen.findByPlaceholderText('poweredtext'))
@@ -189,6 +190,8 @@ describe('PortalDemo', () => {
 
     await userEvent.click(await screen.findByRole('img',{ name: 'poweredimage' }))
     await userEvent.click((await screen.findAllByTitle('plusen'))[2])
+    await userEvent.upload((await screen.findAllByPlaceholderText('contentimageupload'))[2], file)
+    await userEvent.click((await screen.findAllByTitle('pictureout'))[2])
     await userEvent.click(await screen.findByRole('img',{ name: 'poweredimage' }))
     fireEvent.mouseLeave(await screen.findByRole('img',{ name: 'poweredimage' }))
 

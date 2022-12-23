@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo, GuestNetworkTypeEnum, WifiUrlsInfo }                        from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, GuestNetworkTypeEnum, PortalUrlsInfo, WifiUrlsInfo }        from '@acx-ui/rc/utils'
 import { Provider }                                                                  from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -12,7 +12,8 @@ import {
   networksResponse,
   successResponse,
   networkDeepResponse,
-  dhcpResponse
+  dhcpResponse,
+  portalList
 } from '../__tests__/fixtures'
 import NetworkForm from '../NetworkForm'
 
@@ -54,7 +55,19 @@ describe('CaptiveNetworkForm-ClickThrough', () => {
       rest.get(WifiUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(clickThroughData))),
       rest.post(CommonUrlsInfo.getNetworkDeepList.url,
-        (_, res, ctx) => res(ctx.json({ response: [clickThroughData] })))
+        (_, res, ctx) => res(ctx.json({ response: [clickThroughData] }))),
+      rest.get(PortalUrlsInfo.getPortalProfileList.url,
+        (_, res, ctx) => res(ctx.json({ content: portalList }))
+      ),
+      rest.post(PortalUrlsInfo.savePortal.url,
+        (_, res, ctx) => res(ctx.json({
+          requestId: 'request-id', id: 'test', serviceName: 'test' }))
+      ),
+      rest.get(PortalUrlsInfo.getPortalLang.url,
+        (_, res, ctx) => {
+          return res(ctx.status(404),ctx.json(
+            'acceptTermsMsg = I accept the\nacceptTermsLink= terms & conditions'))
+        })
     )
   })
 
@@ -80,6 +93,5 @@ describe('CaptiveNetworkForm-ClickThrough', () => {
       'textbox', { name: 'Service Name' }),'create Portal test')
     await userEvent.click(await screen.findByText('Reset'))
     await userEvent.click(await screen.findByText('Finish'))
-    await userEvent.click(await screen.findByText('Next'))
   })
 })

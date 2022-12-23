@@ -75,7 +75,7 @@ export function PortalSummaryForm (props: {
        summaryData.wlan?.wlanSecurity !== WlanSecurityEnum.None &&
        summaryData.wlan?.passphrase &&
         <Form.Item
-          label={summaryData.wlanSecurity === WlanSecurityEnum.WPA23Mixed ?
+          label={summaryData.wlan?.wlanSecurity === WlanSecurityEnum.WPA23Mixed ?
             $t({ defaultMessage: 'WPA2 Passphrase:' }) :
             $t({ defaultMessage: 'Passphrase:' })
           }
@@ -91,7 +91,7 @@ export function PortalSummaryForm (props: {
         summaryData.wlan?.wlanSecurity === WlanSecurityEnum.WPA23Mixed) &&
         summaryData.wlan?.saePassphrase &&
         <Form.Item
-          label={summaryData.wlanSecurity === WlanSecurityEnum.WPA3?
+          label={summaryData.wlan?.wlanSecurity === WlanSecurityEnum.WPA3?
             $t({ defaultMessage: 'SAE Passphrase:' }) :
             $t({ defaultMessage: 'WPA3 SAE Passphrase:' })
           }
@@ -161,7 +161,7 @@ export function PortalSummaryForm (props: {
         children={$t({ defaultMessage: '{lang}' }, { lang:
           getLanguage(portalData?.displayLangCode as keyof typeof PortalLanguageEnum) })}
       />}
-      {portalData?.componentDisplay?.wifi4eu&&<Form.Item
+      {portalData?.componentDisplay&&<Form.Item
         label={$t({ defaultMessage: 'WiFi4EU Snippet:' })}
         children={portalData?.componentDisplay?.wifi4eu?
           $t({ defaultMessage: 'ON' }):$t({ defaultMessage: 'OFF' })}

@@ -30,7 +30,8 @@ import {
   PortalUrlsInfo,
   DpskList,
   onSocketActivityChanged,
-  showActivityMessage
+  showActivityMessage,
+  UploadUrlResponse
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
@@ -285,7 +286,26 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       providesTags: [{ type: 'Service', id: 'DETAIL' }]
     }),
-    savePortal: build.mutation<Service, RequestPayload>({
+    deletePortal: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(PortalUrlsInfo.deletePortal, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    updatePortal: build.mutation<Service, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PortalUrlsInfo.updatePortal, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    savePortal: build.mutation<{ response: { [key:string]:string } }, RequestPayload>({
       query: ({ params, payload }) => {
         const createPortalReq = createHttpRequest(
           PortalUrlsInfo.savePortal, params
@@ -432,7 +452,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       providesTags: [{ type: 'Service', id: 'LIST' }]
     }),
-    getPortalProfileList: build.query<Portal[] | null, RequestPayload>({
+    getPortalProfileList: build.query<{ content: Portal[] }, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(PortalUrlsInfo.getPortalProfileList, params)
         return{
@@ -448,8 +468,16 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           ...portalLang
         }
       }
+    }),
+    uploadURL: build.mutation<UploadUrlResponse, RequestPayload>({
+      query: ({ params, payload }) => {
+        const createUploadReq = createHttpRequest(CommonUrlsInfo.getUploadURL, params, RKS_NEW_UI)
+        return {
+          ...createUploadReq,
+          body: payload
+        }
+      }
     })
-
   })
 })
 
@@ -486,6 +514,10 @@ export const {
   useSavePortalMutation,
   usePortalNetworkInstancesQuery,
   useGetPortalProfileDetailQuery,
+  useLazyGetPortalProfileListQuery,
   useGetPortalProfileListQuery,
-  useGetPortalLangMutation
+  useGetPortalLangMutation,
+  useDeletePortalMutation,
+  useUpdatePortalMutation,
+  useUploadURLMutation
 } = serviceApi

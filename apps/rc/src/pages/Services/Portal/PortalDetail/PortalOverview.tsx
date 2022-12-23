@@ -18,9 +18,14 @@ import PortalPreviewModal from '../PortalPreviewModal'
 export default function PortalOverview (props: { demoValue: Demo }) {
   const { $t } = useIntl()
   const { demoValue } = props
-  const newDemo = { ...demoValue, poweredImg: demoValue.poweredImg || Powered,
-    logo: demoValue.logo || Logo, photo: demoValue.photo || Photo }
   const params = useParams()
+  const prefix = '/api/file/tenant/'+params.tenantId+'/'
+  const newDemo = { ...demoValue, poweredImg: demoValue.poweredImg?
+    (prefix+demoValue.poweredImg):Powered,
+  logo: demoValue.logo?(prefix+demoValue.logo):Logo,
+  photo: demoValue.photo?(prefix+demoValue.photo): Photo,
+  bgImage: demoValue.bgImage?(prefix+demoValue.bgImage):'' }
+
   const [getPortalLang] = useGetPortalLangMutation()
   const [portalLang, setPortalLang]=useState({} as { [key:string]:string })
   useEffect(()=>{
