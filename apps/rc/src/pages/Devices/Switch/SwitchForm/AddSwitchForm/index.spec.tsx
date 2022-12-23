@@ -2,15 +2,14 @@ import { initialize } from '@googlemaps/jest-mocks'
 import userEvent      from '@testing-library/user-event'
 import { rest }       from 'msw'
 
-import { apApi, venueApi }    from '@acx-ui/rc/services'
-import { CommonUrlsInfo, SwitchUrlsInfo }     from '@acx-ui/rc/utils'
-import { Provider, store }    from '@acx-ui/store'
+import { venueApi }                       from '@acx-ui/rc/services'
+import { CommonUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                from '@acx-ui/store'
 import {
   mockServer,
   render,
   screen,
   fireEvent,
-  waitFor,
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
