@@ -65,6 +65,9 @@ export const SwitchMessages = {
   }),
   ADD_AS_MEMBER_TOOLTIP: defineMessage({
     defaultMessage: 'Based on the switch serial number you entered, compatible stacks of the same model are listed here.'
+  }),
+  MEMBER_NOT_SUPPORT_STACKING_TOOLTIP: defineMessage({
+    defaultMessage: 'ICX7150-C08P/C08PT does not support stacking'
   })
 }
 

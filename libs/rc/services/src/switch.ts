@@ -29,7 +29,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
-    getVlansByVenue: build.query<{vlanId: string}[], RequestPayload>({
+    getVlansByVenue: build.query<{ vlanId: string }[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(SwitchUrlsInfo.getVlansByVenue, params)
         return {
