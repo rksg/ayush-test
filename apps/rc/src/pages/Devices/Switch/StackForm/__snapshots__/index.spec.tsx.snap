@@ -419,7 +419,7 @@ exports[`Switch Stack Form - Add should render correctly 1`] = `
                         </span>
                       </h3>
                       <span
-                        class="ant-typography ant-typography-secondary styledComponents__TypographyText-sc-wgbcob-4 hPRVPO"
+                        class="ant-typography ant-typography-secondary styledComponents__TypographyText-sc-wgbcob-4 emagBf"
                       >
                         Stack members will be ordered according to the order in which they were entered here. You can always modify this later.
                       </span>

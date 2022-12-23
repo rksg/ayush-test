@@ -54,5 +54,5 @@ export const StepFormTitle = styled(StepsForm.Title)`
 
 export const TypographyText = styled(Typography.Text)`
   margin-bottom: 10px;
-  fontSize: 10px;
+  font-size: 10px;
 `
