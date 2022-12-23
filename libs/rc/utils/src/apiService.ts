@@ -29,6 +29,7 @@ export const createHttpRequest = (
   const tokenHeader = {
     Authorization: ''
   }
+  defaultHeaders['x-rks-tenantid'] = getTenantId()
   if (getJwtTokenPayload() !== null) {
     tokenHeader.Authorization = `Bearer ${getJwtTokenPayload()}`
     defaultHeaders = { ...tokenHeader, ...defaultHeaders }
