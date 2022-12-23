@@ -12,6 +12,7 @@ export const Wrapper = styled.section.attrs((props: { layers: Array<unknown> }) 
   font-style: normal;
   font-weight: var(--acx-body-font-weight);
   font-size: var(--acx-body-5-font-size);
+  padding-left: 24px;
 `
 
 export const Container = styled.section.attrs((props: { layers: Array<unknown> }) => props)`

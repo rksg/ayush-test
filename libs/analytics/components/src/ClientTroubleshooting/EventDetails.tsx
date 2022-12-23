@@ -55,7 +55,7 @@ export const Details = ({ fields, openHandler, extra }: {
           ? <>
             <Col span={8}>{detailsRowList(fields, extra)}</Col>
             <Col span={2}><UI.VerticalLine /></Col>
-            <Col span={4} push={2}>{extra}</Col>
+            <Col span={4}>{extra}</Col>
           </>
           : <Col span={24}>
             {detailsRowList(fields)}
