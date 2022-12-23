@@ -4,10 +4,10 @@ import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 import { Menu, MenuProps }     from 'antd'
 import { useIntl }             from 'react-intl'
 
-import { Button, Dropdown, PageHeader } from '@acx-ui/components'
-import { ImportCsvDrawer, CsvSize }     from '@acx-ui/rc/components'
-import { useImportSwitchesMutation }    from '@acx-ui/rc/services'
-import { TenantLink, useParams }        from '@acx-ui/react-router-dom'
+import { Button, Dropdown, PageHeader }          from '@acx-ui/components'
+import { ImportCsvDrawer, CsvSize, SwitchTable } from '@acx-ui/rc/components'
+import { useImportSwitchesMutation }             from '@acx-ui/rc/services'
+import { TenantLink, useParams }                 from '@acx-ui/react-router-dom'
 
 
 export default function SwitchesTable () {
@@ -55,7 +55,6 @@ export default function SwitchesTable () {
           }</Dropdown>
         ]}
       />
-      {/* TODO: Switch list */}
       <ImportCsvDrawer type='Switch'
         title={$t({ defaultMessage: 'Import from file' })}
         maxSize={CsvSize['5MB']}
@@ -66,7 +65,9 @@ export default function SwitchesTable () {
         importRequest={(formData)=>{
           importCsv({ params: { tenantId }, payload: formData })
         }}
-        onClose={()=>setImportVisible(false)}/>
+        onClose={()=>setImportVisible(false)}
+      />
+      <SwitchTable />
     </>
   )
 }
