@@ -41,6 +41,7 @@ export const Layer = styled.div`
     position: relative;
     top: 50%;
     transform: translateY(-50%);
+    padding: 10px 0px;
   }
 `
 
