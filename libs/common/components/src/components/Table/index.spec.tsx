@@ -330,7 +330,7 @@ describe('Table component', () => {
       columns={testColumns}
       dataSource={treeData}
       rowKey={(record)=> record.key + (!record.isFirstLevel ? 'child' : '')}
-      seletedRowKey='key'
+      selectedRowKey='key'
       rowSelection={{ type: 'radio', onChange }}
     />)
 

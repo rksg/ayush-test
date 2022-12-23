@@ -45,7 +45,7 @@ export interface TableProps <RecordType>
     /** @default 'tall' */
     type?: 'tall' | 'compact' | 'tooltip' | 'form' | 'compactBordered'
     rowKey?: ProAntTableProps<RecordType, ParamsType>['rowKey']
-    seletedRowKey?: string
+    selectedRowKey?: string
     columns: TableColumn<RecordType, 'text'>[]
     actions?: Array<{
       label: string,
@@ -158,7 +158,7 @@ function Table <RecordType extends Record<string, any>> (
   } : false
 
   const rowKey = typeof props.rowKey === 'function' ?
-                 props.seletedRowKey as unknown as keyof RecordType :
+                 props.selectedRowKey as unknown as keyof RecordType :
                  (props.rowKey ?? 'key') as keyof RecordType
 
   const [selectedRowKeys, setSelectedRowKeys] = useSelectedRowKeys(props.rowSelection)
