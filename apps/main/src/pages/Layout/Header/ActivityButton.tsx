@@ -3,8 +3,6 @@ import { useState, useEffect } from 'react'
 import { ClockCircleFilled }      from '@ant-design/icons'
 import { Select }                 from 'antd'
 import { SorterResult }           from 'antd/lib/table/interface'
-import { severityMapping }        from 'libs/rc/components/src/ActivityTable/mapping'
-import { TimelineDrawer }         from 'libs/rc/components/src/TimelineDrawer'
 import moment                     from 'moment-timezone'
 import { defineMessage, useIntl } from 'react-intl'
 
@@ -14,10 +12,15 @@ import {
   Badge,
   StatusIcon
 } from '@acx-ui/components'
+import {
+  TimelineDrawer,
+  ActivityseverityMapping as severityMapping
+} from '@acx-ui/rc/components'
 import { useActivitiesQuery }                                      from '@acx-ui/rc/services'
 import { Activity, CommonUrlsInfo, useTableQuery, getDescription } from '@acx-ui/rc/utils'
 import { useTenantLink, useNavigate }                              from '@acx-ui/react-router-dom'
 import { formatter }                                               from '@acx-ui/utils'
+
 
 import * as UI from './styledComponents'
 
