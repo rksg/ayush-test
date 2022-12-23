@@ -198,7 +198,7 @@ export function StackForm () {
             name={`serialNumber${row.key}`}
             rules={[
               {
-                required: index === 0 ? true : false,
+                required: formRef.current?.getFieldValue('active') === row.key ? true : false,
                 message: $t({ defaultMessage: 'This field is required' })
               },
               { validator: (_, value) => validatorSwitchModel(value) },
