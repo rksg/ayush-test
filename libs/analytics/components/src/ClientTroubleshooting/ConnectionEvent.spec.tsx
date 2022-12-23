@@ -174,7 +174,7 @@ describe('ConnectionEvent', () => {
       render(<ConnectionEventPopover event={nullFailedIdFailure}>test</ConnectionEventPopover>)
     fireEvent.click(screen.getByText(/test/i))
     const test = asFragment().querySelectorAll('section')
-    expect(test).toHaveLength(2)
+    expect(test).toHaveLength(0)
   })
 
 
