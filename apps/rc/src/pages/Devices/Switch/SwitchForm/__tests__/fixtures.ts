@@ -31,16 +31,29 @@ export const venueListResponse = {
 
 
 export const swtichListResponse = {
-  fields: [
-    'serialNumber',
-    'name',
-    'syncDataStartTime'],
-  totalCount: 1,
+  totalCount: 2,
   page: 1,
   data: [
     {
-      serialNumber: 'FEK3230S0A0',
+      id: 'FEK0000S0A0',
+      serialNumber: 'FEK0000S0A0',
       name: '7150stack',
+      configReady: true,
+      syncDataEndTime: ''
+    },
+    {
+      serialNumber: 'FEK0010S0A0',
+      name: '7150stack',
+      configReady: true,
+      syncDataEndTime: ''
+    },
+    {
+      serialNumber: 'FEK0040S0A0',
+      configReady: true,
+      syncDataEndTime: ''
+    },
+    {
+      id: 'FEK0030S0A0',
       configReady: true,
       syncDataEndTime: ''
     }]

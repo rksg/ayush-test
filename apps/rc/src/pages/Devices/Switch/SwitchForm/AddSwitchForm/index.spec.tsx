@@ -78,9 +78,12 @@ describe('Add switch form', () => {
     fireEvent.mouseDown(screen.getByLabelText(/Venue/))
     await userEvent.click(await screen.getAllByText('My-Venue')[0])
     fireEvent.change(screen.getByLabelText(/serial number/i), { target: { value: 'FEK3231S0A0' } })
-    await userEvent.click(screen.getByRole('radio', {
-      name: /member in stack/i
-    }))
+    screen.getByLabelText(/serial number/i).focus()
+    fireEvent.change(screen.getByLabelText(/switch name/i), { target: { value: 'Switch Name' } })
+    await userEvent.click(screen.getByText(/member in stack/i))
+
+    await screen.findByText('7150stack')
+
     await userEvent.click(await screen.findByRole('button', { name: /add/i }))
     expect(await screen.findByRole('heading', { name: /switch/i } )).toBeVisible()
   })
@@ -99,6 +102,54 @@ describe('Add switch form', () => {
       hash: '',
       search: ''
     })
+  })
+
+  it('should handle error for add standalone switch correctly', async () => {
+    mockServer.use(
+      rest.post(SwitchUrlsInfo.addSwitch.url,
+        (_, res, ctx) => {
+          return res(ctx.status(400))
+        })
+    )
+    render(<Provider><AddSwitchForm /></Provider>, {
+      route: { params, path: '/:tenantId/devices/switch/:action' }
+    })
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    expect(await screen.findByText(/add switch/i)).toBeVisible()
+    fireEvent.mouseDown(screen.getByLabelText(/Venue/))
+    await userEvent.click(await screen.getAllByText('My-Venue')[0])
+    fireEvent.change(screen.getByLabelText(/serial number/i), { target: { value: 'FMF3250Q06L' } })
+    fireEvent.change(screen.getByLabelText(/switch name/i), { target: { value: 'Switch Name' } })
+    fireEvent.change(screen.getByLabelText(/description/i), { target: { value: 'Description' } })
+    fireEvent.mouseDown(screen.getByLabelText(/standalone switch/i))
+    await userEvent.click(await screen.findByRole('button', { name: /add/i }))
+    expect(await screen.findByRole('heading', { name: /switch/i } )).toBeVisible()
+  })
+
+  it('should handle error for add stack member correctly', async () => {
+
+    mockServer.use(
+      rest.post(SwitchUrlsInfo.addStackMember.url,
+        (_, res, ctx) => {
+          return res(ctx.status(400))
+        })
+    )
+    render(<Provider><AddSwitchForm /></Provider>, {
+      route: { params, path: '/:tenantId/devices/switch/:action' }
+    })
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    expect(await screen.findByText(/add switch/i)).toBeVisible()
+    fireEvent.mouseDown(screen.getByLabelText(/Venue/))
+    await userEvent.click(await screen.getAllByText('My-Venue')[0])
+    fireEvent.change(screen.getByLabelText(/serial number/i), { target: { value: 'FEK3231S0A0' } })
+    screen.getByLabelText(/serial number/i).focus()
+    fireEvent.change(screen.getByLabelText(/switch name/i), { target: { value: 'Switch Name' } })
+    await userEvent.click(screen.getByText(/member in stack/i))
+
+    await screen.findByText('7150stack')
+
+    await userEvent.click(await screen.findByRole('button', { name: /add/i }))
+    expect(await screen.findByRole('heading', { name: /switch/i } )).toBeVisible()
   })
 })
 
