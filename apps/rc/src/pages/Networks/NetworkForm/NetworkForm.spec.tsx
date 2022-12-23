@@ -67,8 +67,8 @@ describe('NetworkForm', () => {
         (_, res, ctx) => res(ctx.json({ content: portalList }))
       ),
       rest.post(PortalUrlsInfo.savePortal.url,
-        (_, res, ctx) => res(ctx.json({
-          requestId: 'request-id', id: 'test', serviceName: 'test' }))
+        (_, res, ctx) => res(ctx.json({ response: {
+          requestId: 'request-id', id: 'test', serviceName: 'test' } }))
       ),
       rest.get(PortalUrlsInfo.getPortalLang.url,
         (_, res, ctx) => {
@@ -201,8 +201,7 @@ describe('NetworkForm', () => {
       'textbox', { name: 'Service Name' }),'create Portal test')
     await userEvent.click(await screen.findByText('Reset'))
     await userEvent.click(await screen.findByText('Finish'))
-    await userEvent.click(await screen.findByRole('combobox'))
-    await userEvent.click(await screen.findByTitle('test2'))
+    await userEvent.click(await screen.findByTitle('create Portal test'))
     await userEvent.click(screen.getByText('Next'))
 
     await screen.findByRole('heading', { level: 3, name: 'Venues' })
@@ -243,8 +242,7 @@ describe('NetworkForm', () => {
       'textbox', { name: 'Service Name' }),'create Portal test2')
     await userEvent.click(await screen.findByText('Reset'))
     await userEvent.click(await screen.findByText('Finish'))
-    await userEvent.click(await screen.findByRole('combobox'))
-    await userEvent.click(await screen.findByTitle('test2'))
+    await userEvent.click(await screen.findByTitle('create Portal test2'))
     await userEvent.click(screen.getByText('Next'))
 
     await screen.findByRole('heading', { level: 3, name: 'Venues' })
