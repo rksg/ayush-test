@@ -409,8 +409,7 @@ exports[`Switch Stack Form - Add should render correctly 1`] = `
                         </div>
                       </div>
                       <h3
-                        class="ant-typography styledComponents__Title-sc-1ibvcih-3 dConwg"
-                        style="margin-bottom: 0px;"
+                        class="ant-typography styledComponents__Title-sc-1ibvcih-3 styledComponents__StepFormTitle-sc-wgbcob-3 dConwg ezBzXN"
                       >
                         Stack Member
                         <span
@@ -420,13 +419,12 @@ exports[`Switch Stack Form - Add should render correctly 1`] = `
                         </span>
                       </h3>
                       <span
-                        class="ant-typography ant-typography-secondary"
-                        style="margin-bottom: 20px; font-size: 10px;"
+                        class="ant-typography ant-typography-secondary styledComponents__TypographyText-sc-wgbcob-4 hPRVPO"
                       >
                         Stack members will be ordered according to the order in which they were entered here. You can always modify this later.
                       </span>
                       <div
-                        class="styledComponents__TableContainer-sc-wgbcob-0 gugjaW"
+                        class="styledComponents__TableContainer-sc-wgbcob-0 dcEoDV"
                       >
                         <div
                           class="styledComponents__Wrapper-sc-1abm7iv-13 gwcANN"
@@ -492,7 +490,7 @@ exports[`Switch Stack Form - Add should render correctly 1`] = `
                                                   <th
                                                     class="ant-table-cell"
                                                   >
-                                                    Action
+                                                    Active
                                                   </th>
                                                   <th
                                                     class="ant-table-cell"

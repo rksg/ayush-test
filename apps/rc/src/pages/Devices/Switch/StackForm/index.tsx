@@ -8,8 +8,7 @@ import {
   RadioChangeEvent,
   Row,
   Select,
-  Tooltip,
-  Typography
+  Tooltip
 } from 'antd'
 import { DefaultOptionType } from 'antd/lib/select'
 import { useIntl }           from 'react-intl'
@@ -42,7 +41,7 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-import { TableContainer, DisabledDeleteOutlinedIcon, RequiredDotSpan } from './styledComponents'
+import { TableContainer, DisabledDeleteOutlinedIcon, RequiredDotSpan, StepFormTitle, TypographyText } from './styledComponents'
 
 const defaultPayload = {
   fields: ['name', 'country', 'latitude', 'longitude', 'dhcp', 'id'],
@@ -114,7 +113,7 @@ export function StackForm () {
       const payload = {
         name: values.name || '',
         id: formRef.current?.getFieldValue(`serialNumber${activeRow}`),
-        description: values.venueId,
+        description: values.description,
         venueId: values.venueId,
         stackMembers: tableData.map((item) => ({ id: item.id })),
         enableStack: true,
@@ -199,7 +198,7 @@ export function StackForm () {
             name={`serialNumber${row.key}`}
             rules={[
               {
-                required: true,
+                required: index === 0 ? true : false,
                 message: $t({ defaultMessage: 'This field is required' })
               },
               { validator: (_, value) => validatorSwitchModel(value) },
@@ -224,14 +223,14 @@ export function StackForm () {
       }
     },
     {
-      title: $t({ defaultMessage: 'Action' }),
+      title: $t({ defaultMessage: 'Active' }),
       dataIndex: 'active',
       key: 'active',
       render: function (data, row) {
         return (
           <Form.Item name={'active'} initialValue={activeRow}>
             <Radio.Group onChange={radioOnChange}>
-              <Radio data-testId={`active${row.key}`} key={row.key} value={row.key} />
+              <Radio data-testid={`active${row.key}`} key={row.key} value={row.key} />
             </Radio.Group>
           </Form.Item>
         )
@@ -242,7 +241,7 @@ export function StackForm () {
       dataIndex: 'action',
       render: (data, row, index) => (
         <Button
-          data-testId={`deleteBtn${row.key}`}
+          data-testid={`deleteBtn${row.key}`}
           type='link'
           key='delete'
           role='deleteBtn'
@@ -388,14 +387,11 @@ export function StackForm () {
                     />
                   }
                 />
-                <StepsForm.Title style={{ marginBottom: '0' }}>
+                <StepFormTitle>
                   {$t({ defaultMessage: 'Stack Member' })}
                   <RequiredDotSpan> *</RequiredDotSpan>
-                </StepsForm.Title>
-                <Typography.Text
-                  type='secondary'
-                  style={{ marginBottom: '20px', fontSize: '10px' }}
-                >
+                </StepFormTitle>
+                <TypographyText type='secondary'>
                   {
                     $t({
                       defaultMessage:
@@ -403,7 +399,7 @@ export function StackForm () {
                         'Stack members will be ordered according to the order in which they were entered here. You can always modify this later.'
                     })
                   }
-                </Typography.Text>
+                </TypographyText>
                 <TableContainer>
                   <Table columns={columns} dataSource={tableData} type='form' />
                   {tableData.length < 12 && (

@@ -1,5 +1,7 @@
-import styled from 'styled-components/macro'
+import { Typography } from 'antd'
+import styled         from 'styled-components/macro'
 
+import { StepsForm }          from '@acx-ui/components'
 import { DeleteOutlinedIcon } from '@acx-ui/icons'
 
 export const TableContainer = styled.div`
@@ -23,8 +25,11 @@ export const TableContainer = styled.div`
     color: var(--acx-neutrals-60);
   }
   .ant-pro-table .ant-table-tbody > tr > td:nth-child(3),
-  .ant-pro-table .ant-table-tbody > tr > td:nth-child(4)  {
+  .ant-pro-table .ant-table-tbody > tr > td:nth-child(4) {
     text-align: center;
+  }
+  .ant-pro-table .ant-table-tbody > tr > td:nth-child(5) {
+    top: 3px;
   }
   button{
     align-items: start;
@@ -40,4 +45,14 @@ export const DisabledDeleteOutlinedIcon = styled(DeleteOutlinedIcon)`
 
 export const RequiredDotSpan = styled.span`
   color: var(--acx-accents-orange-50)
+`
+
+export const StepFormTitle = styled(StepsForm.Title)`
+  margin-bottom: 5px !important;
+  margin-top: 20px;
+`
+
+export const TypographyText = styled(Typography.Text)`
+  margin-bottom: 10px;
+  fontSize: 10px;
 `
