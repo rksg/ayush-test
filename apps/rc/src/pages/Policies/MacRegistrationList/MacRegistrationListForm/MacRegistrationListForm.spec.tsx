@@ -170,6 +170,47 @@ describe('MacRegistrationListForm', () => {
 
     const errorMsgElem = await screen.findByText('An error occurred')
     expect(errorMsgElem).toBeInTheDocument()
+
+    const closeBtn = await screen.findByRole('img', { name: 'close' })
+    await userEvent.click(closeBtn)
+  })
+
+  it('should add list and show error Toast', async () => {
+    mockServer.use(
+      rest.post(
+        MacRegListUrlsInfo.createMacRegistrationPool.url,
+        (req, res, ctx) => res(ctx.status(500), ctx.json({}))
+      )
+    )
+    render(
+      <Provider>
+        <MacRegistrationListForm/>
+      </Provider>, {
+        route: {
+          params: { tenantId: 'tenant-id', policyId: '373377b0cb6e46ea8982b1c80aabe1fa1' },
+          path: editPath
+        }
+      }
+    )
+
+    await userEvent.type(
+      await screen.findByRole('textbox', { name: /name/i }),
+      'test'
+    )
+
+    const expirationModeElem = screen.getByRole('radio', { name: /Never/i })
+    await userEvent.click(expirationModeElem)
+
+    await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
+
+    const validating = await screen.findByRole('img', { name: 'loading' })
+    await waitForElementToBeRemoved(validating)
+
+    const errorMsgElem = await screen.findByText('An error occurred')
+    expect(errorMsgElem).toBeInTheDocument()
+
+    const closeBtn = await screen.findByRole('img', { name: 'close' })
+    await userEvent.click(closeBtn)
   })
 
   it('should edit list successfully', async () => {

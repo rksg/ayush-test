@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 
 import { Col, Row } from 'antd'
-import moment       from 'moment-timezone'
 import { useIntl }  from 'react-intl'
 
 import { Loader, PageHeader, showToast, StepsForm, StepsFormInstance } from '@acx-ui/components'
@@ -15,10 +14,11 @@ import {
   MacRegistrationPoolFormFields,
   getPolicyRoutePath,
   PolicyType,
-  PolicyOperation, useTableQuery, ExpirationDateEntity, ExpirationMode, ExpirationType,
-  MacRegistrationPool
+  PolicyOperation, useTableQuery
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+
+import { transferDataToExpirationFormFields, transferExpirationFormFieldsToData } from '../MacRegistrationListUtils'
 
 import { MacRegistrationListSettingForm } from './MacRegistrationListSetting/MacRegistrationListSettingForm'
 
@@ -59,41 +59,6 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
       // setPoolSaveState({ ...data })
     }
   }, [data, editMode])
-
-  const transferExpirationFormFieldsToData = (data: ExpirationDateEntity) => {
-    let expiration
-    if (data.mode === ExpirationMode.NEVER) {
-      expiration = {
-        expirationEnabled: false,
-        expirationDate: null
-      }
-    } else if (data.mode === ExpirationMode.BY_DATE) {
-      expiration = {
-        expirationType: ExpirationType.SPECIFIED_DATE,
-        expirationDate: moment.utc(data.date).format('YYYY-MM-DDT23:59:59[Z]'),
-        expirationEnabled: true
-      }
-    } else {
-      expiration = {
-        expirationType: data.type,
-        expirationOffset: data.offset,
-        expirationEnabled: true
-      }
-    }
-    return expiration
-  }
-
-  const transferDataToExpirationFormFields = (data: MacRegistrationPool) => {
-    let expiration: ExpirationDateEntity = new ExpirationDateEntity()
-    if (!data.expirationEnabled) {
-      expiration.setToNever()
-    } else if (data.expirationType === ExpirationType.SPECIFIED_DATE) {
-      expiration.setToByDate(data.expirationDate!)
-    } else {
-      expiration.setToAfterTime(data.expirationType!, data.expirationOffset!)
-    }
-    return { expiration }
-  }
 
   const handleAddList = async (data: MacRegistrationPoolFormFields) => {
     try {

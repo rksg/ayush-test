@@ -1,4 +1,5 @@
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import {  MacRegListUrlsInfo }                                                      from '@acx-ui/rc/utils'
 import { Provider }                                                                 from '@acx-ui/store'
@@ -76,22 +77,22 @@ describe('MacRegistrationsTab', () => {
     expect(row2).toHaveTextContent('dolore pariatur adipisicing esse Excepteur')
 
     fireEvent.click(within(row1).getByRole('radio'))
-    const deleteButton = screen.getByRole('button', { name: /delete/i })
-    fireEvent.click(deleteButton)
+    await userEvent.click(await screen.findByRole('button', { name: /delete/i }))
+    await screen.findByText('Delete "11-22-33-44-55-66"?')
+    fireEvent.click(screen.getByText('Delete MAC Addresses'))
 
     fireEvent.click(within(row2).getByRole('radio'))
-    const revokeButton = screen.getByRole('button', { name: /edit/i })
-    fireEvent.click(revokeButton)
+    fireEvent.click(screen.getByRole('button', { name: /edit/i }))
 
     fireEvent.click(within(row2).getByRole('radio'))
-    const unrevokeButton = screen.getByRole('button', { name: /unrevoke/i })
-    fireEvent.click(unrevokeButton)
+    fireEvent.click(screen.getByRole('button', { name: /unrevoke/i }))
 
     fireEvent.click(within(row2).getByRole('radio'))
-    const editButton = screen.getByRole('button', { name: /edit/i })
-    fireEvent.click(editButton)
+    fireEvent.click(screen.getByRole('button', { name: 'Revoke' }))
 
-    const addButton = await screen.findByRole('button', { name: /add mac address/i })
-    fireEvent.click(addButton)
+    fireEvent.click(within(row2).getByRole('radio'))
+    fireEvent.click(screen.getByRole('button', { name: /edit/i }))
+
+    fireEvent.click(await screen.findByRole('button', { name: /add mac address/i }))
   })
 })

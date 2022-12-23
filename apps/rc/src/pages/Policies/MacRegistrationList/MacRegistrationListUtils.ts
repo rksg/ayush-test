@@ -1,6 +1,7 @@
 import moment from 'moment-timezone'
 
 import {
+  ExpirationDateEntity, ExpirationMode,
   ExpirationType,
   MacRegistrationPool
 } from '@acx-ui/rc/utils'
@@ -47,4 +48,39 @@ export const returnExpirationString = (data: Partial<MacRegistrationPool>) => {
       return $t({ defaultMessage: 'After {offset} {unit}' }, { offset: data.expirationOffset, unit: expirationTimeUnits[data.expirationType ?? ''] })
     }
   }
+}
+
+export const transferExpirationFormFieldsToData = (data: ExpirationDateEntity) => {
+  let expiration
+  if (data.mode === ExpirationMode.NEVER) {
+    expiration = {
+      expirationEnabled: false,
+      expirationDate: null
+    }
+  } else if (data.mode === ExpirationMode.BY_DATE) {
+    expiration = {
+      expirationType: ExpirationType.SPECIFIED_DATE,
+      expirationDate: moment.utc(data.date).format('YYYY-MM-DDT23:59:59[Z]'),
+      expirationEnabled: true
+    }
+  } else {
+    expiration = {
+      expirationType: data.type,
+      expirationOffset: data.offset,
+      expirationEnabled: true
+    }
+  }
+  return expiration
+}
+
+export const transferDataToExpirationFormFields = (data: MacRegistrationPool) => {
+  let expiration: ExpirationDateEntity = new ExpirationDateEntity()
+  if (!data.expirationEnabled) {
+    expiration.setToNever()
+  } else if (data.expirationType === ExpirationType.SPECIFIED_DATE) {
+    expiration.setToByDate(data.expirationDate!)
+  } else {
+    expiration.setToAfterTime(data.expirationType!, data.expirationOffset!)
+  }
+  return { expiration }
 }
