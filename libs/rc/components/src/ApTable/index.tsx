@@ -281,7 +281,6 @@ export function ApTable (props: ApTableProps) {
     }] as TableProps<APExtended>['columns']
   }, [$t, tableQuery.data?.extra])
 
-
   const isActionVisible = (
     selectedRows: APExtended[],
     { selectOne, isOperational }: { selectOne?: boolean, isOperational?: boolean }) => {

@@ -14,15 +14,28 @@ import SwitchesTable from '.'
 describe('Switch List Table', () => {
   const params = { tenantId: 'tenant-id' }
 
+  beforeEach(() => {
+    mockServer.use(
+      rest.post(
+        SwitchUrlsInfo.getSwitchList.url,
+        (req, res, ctx) => res(ctx.json({ data: [] }))
+      ),
+      rest.post(
+        SwitchUrlsInfo.getMemberList.url,
+        (req, res, ctx) => res(ctx.json({ data: [] }))
+      )
+    )
+  })
+
   it('should render table', async () => {
-    const { asFragment } = render(
+    render(
       <Provider>
         <SwitchesTable />
       </Provider>, {
         route: { params, path: '/:tenantId/devices/switch' }
       })
-
-    expect(asFragment()).toMatchSnapshot()
+    const table = await screen.findByRole('table')
+    expect(table).toBeVisible()
   })
 
   it('should show import CSV dialog', async () => {
