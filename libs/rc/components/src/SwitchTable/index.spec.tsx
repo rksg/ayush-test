@@ -120,7 +120,10 @@ describe('SwitchTable', () => {
     for (const [index, item] of Object.entries(switchList.data)) {
       expect(await within(rows[Number(index)]).findByText(item.model)).toBeVisible()
     }
-    // await userEvent.click(await screen.findByRole('button'))
+
+    const row1 = await screen.findByRole('row', { name: /FEK4224R19X/i })
+    await userEvent.click(await within(row1).findByRole('button'))
+    expect(await within(tbody).findByText('FEK4224R18X')).toBeVisible()
   })
 
   it('Table action bar Delete', async () => {
