@@ -195,7 +195,6 @@ export function SwitchTable ({ showAllColumns } : {
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
       rowKey={(record)=> record.serialNumber + (!record.isFirstLevel ? 'stack-member' : '')}
-      selectedRowKey='serialNumber'
       rowActions={rowActions}
       rowSelection={{
         type: 'checkbox',

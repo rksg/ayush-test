@@ -45,7 +45,6 @@ export interface TableProps <RecordType>
     /** @default 'tall' */
     type?: 'tall' | 'compact' | 'tooltip' | 'form' | 'compactBordered'
     rowKey?: ProAntTableProps<RecordType, ParamsType>['rowKey']
-    selectedRowKey?: string
     columns: TableColumn<RecordType, 'text'>[]
     actions?: Array<{
       label: string,
@@ -157,15 +156,14 @@ function Table <RecordType extends Record<string, any>> (
     children: <SettingsOutlined/>
   } : false
 
-  const rowKey = typeof props.rowKey === 'function' ?
-                 props.selectedRowKey as unknown as keyof RecordType :
-                 (props.rowKey ?? 'key') as keyof RecordType
+  const rowKey = (props.rowKey ?? 'key')
 
   const [selectedRowKeys, setSelectedRowKeys] = useSelectedRowKeys(props.rowSelection)
 
   const getSelectedRows = useCallback((selectedRowKeys: Key[]) => {
     return props.dataSource?.filter(item => {
-      return selectedRowKeys.includes(item[rowKey] as unknown as Key)
+      return selectedRowKeys.includes(typeof rowKey === 'function' ?
+        rowKey(item) : item[rowKey] as unknown as Key)
     }) ?? []
   }, [props.dataSource, rowKey])
 
@@ -173,7 +171,7 @@ function Table <RecordType extends Record<string, any>> (
     if (!props.rowSelection) return
     if (rowSelection?.getCheckboxProps?.(record)?.disabled) return
 
-    const key = record[rowKey] as unknown as Key
+    const key = typeof rowKey === 'function' ? rowKey(record) : record[rowKey] as unknown as Key
     const isSelected = selectedRowKeys.includes(key)
 
     let newKeys: Key[] | undefined
