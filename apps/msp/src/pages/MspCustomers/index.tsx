@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
+import { Link }    from 'react-router-dom'
 
 import {
   Button,
@@ -30,7 +31,7 @@ import {
   MspEc,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink, MspTenantLink } from '@acx-ui/react-router-dom'
+import { getBasePath, TenantLink, MspTenantLink } from '@acx-ui/react-router-dom'
 
 const transformApEntitlement = (row: MspEc) => {
   return row.wifiLicenses ? row.wifiLicenses : 0
@@ -131,9 +132,10 @@ export function MspCustomers () {
       searchable: true,
       sorter: true,
       defaultSortOrder: 'ascend',
-      render: function (data) {
+      render: function (data, row) {
+        const to = `${getBasePath()}/t/${row.id}`
         return (
-          <TenantLink to={''}>{data}</TenantLink>
+          <Link to={to}>{data}</Link>
         )
       }
     },
@@ -232,6 +234,13 @@ export function MspCustomers () {
       render: function (data, row) {
         return transformExpirationDate(row)
       }
+    },
+    {
+      title: $t({ defaultMessage: 'Tenant Id' }),
+      dataIndex: 'id',
+      key: 'id',
+      show: false,
+      sorter: true
     }
   ]
 
