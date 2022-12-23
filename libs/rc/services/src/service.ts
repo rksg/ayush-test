@@ -57,7 +57,7 @@ const RKS_NEW_UI = {
 export const baseServiceApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'serviceApi',
-  tagTypes: ['Service', 'DpskPassphrase'],
+  tagTypes: ['Service', 'Dpsk', 'DpskPassphrase'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })
@@ -395,7 +395,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+      invalidatesTags: [{ type: 'Dpsk', id: 'LIST' }]
     }),
     updateDpsk: build.mutation<DpskSaveData, RequestPayload<DpskSaveData>>({
       query: ({ params, payload }) => {
@@ -405,16 +405,19 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+      invalidatesTags: [{ type: 'Dpsk', id: 'LIST' }]
     }),
-    dpskList: build.query<NewTableResult<DpskSaveData>, RequestPayload>({
+    getDpskList: build.query<TableResult<DpskSaveData>, RequestPayload>({
       query: () => {
         const getDpskListReq = createHttpRequest(DpskUrls.getDpskList)
         return {
           ...getDpskListReq
         }
       },
-      providesTags: [{ type: 'Service', id: 'LIST' }]
+      providesTags: [{ type: 'Dpsk', id: 'LIST' }],
+      transformResponse (result: NewTableResult<DpskSaveData>) {
+        return transferTableResult<DpskSaveData>(result)
+      }
     }),
     getDpsk: build.query<DpskSaveData, RequestPayload>({
       query: ({ params, payload }) => {
@@ -424,7 +427,17 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Service', id: 'DETAIL' }]
+      providesTags: [{ type: 'Dpsk', id: 'DETAIL' }]
+    }),
+    deleteDpsk: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(DpskUrls.deleteDpsk, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Dpsk', id: 'LIST' }]
     }),
     createDpskPassphrases: build.mutation<CommonResult, RequestPayload<DpskPassphrasesSaveData>>({
       query: ({ params, payload }) => {
@@ -507,7 +520,9 @@ export const {
   useCreateDpskMutation,
   useUpdateDpskMutation,
   useGetDpskQuery,
-  useLazyDpskListQuery,
+  useGetDpskListQuery,
+  useLazyGetDpskListQuery,
+  useDeleteDpskMutation,
   useDpskPassphraseListQuery,
   useCreateDpskPassphrasesMutation,
   useDeleteDpskPassphraseListMutation,
