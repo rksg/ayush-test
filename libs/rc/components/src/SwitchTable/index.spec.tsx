@@ -72,7 +72,7 @@ const stackMemberList = {
     },
     {
       venueName: 'test',
-      serialNumber: 'FEK4224R18X',
+      serialNumber: 'stack-member',
       operStatusFound: false,
       switchMac: '',
       activeSerial: 'FEK4224R18X',
@@ -123,7 +123,7 @@ describe('SwitchTable', () => {
 
     const row1 = await screen.findByRole('row', { name: /FEK4224R19X/i })
     await userEvent.click(await within(row1).findByRole('button'))
-    expect(await within(tbody).findByText('FEK4224R18X')).toBeVisible()
+    expect(await within(tbody).findByText('stack-member')).toBeVisible()
   })
 
   it('Table action bar Delete', async () => {
