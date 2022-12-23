@@ -85,13 +85,13 @@ export function usePollingTableQuery <
   ResultExtra = unknown
 > (params:
   TABLE_QUERY<ResultType, Payload, ResultExtra> &
-  { option?: Omit<UseQueryOptions, 'pollingInterval'> }
+  { option?: UseQueryOptions }
 ) {
   return useTableQuery({
     ...params,
     option: {
-      ...params.option || {},
-      pollingInterval: 300_000
+      pollingInterval: 30_000,
+      ...(params.option || {})
     }
   })
 }

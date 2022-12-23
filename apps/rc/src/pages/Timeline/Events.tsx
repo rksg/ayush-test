@@ -49,7 +49,8 @@ const Events = () => {
     sorter: {
       sortField: 'event_datetime',
       sortOrder: 'DESC'
-    }
+    },
+    option: { pollingInterval: 300_000 }
   })
   return <EventTable tableQuery={tableQuery}/>
 }
