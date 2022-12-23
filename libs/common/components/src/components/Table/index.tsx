@@ -44,7 +44,8 @@ export interface TableProps <RecordType>
   'bordered' | 'columns' | 'title' | 'type' | 'rowSelection'> {
     /** @default 'tall' */
     type?: 'tall' | 'compact' | 'tooltip' | 'form' | 'compactBordered'
-    rowKey?: Exclude<ProAntTableProps<RecordType, ParamsType>['rowKey'], Function>
+    rowKey?: ProAntTableProps<RecordType, ParamsType>['rowKey']
+    seletedRowKey?: string
     columns: TableColumn<RecordType, 'text'>[]
     actions?: Array<{
       label: string,
@@ -156,7 +157,9 @@ function Table <RecordType extends Record<string, any>> (
     children: <SettingsOutlined/>
   } : false
 
-  const rowKey = (props.rowKey ?? 'key') as keyof RecordType
+  const rowKey = typeof props.rowKey === 'function' ?
+                 props.seletedRowKey as unknown as keyof RecordType :
+                 (props.rowKey ?? 'key') as keyof RecordType
 
   const [selectedRowKeys, setSelectedRowKeys] = useSelectedRowKeys(props.rowSelection)
 

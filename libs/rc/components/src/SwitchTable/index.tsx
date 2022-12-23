@@ -194,7 +194,8 @@ export function SwitchTable ({ showAllColumns } : {
       dataSource={tableData}
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
-      rowKey='serialNumber'
+      rowKey={(record)=> record.serialNumber + (!record.isFirstLevel ? 'stack-member' : '')}
+      seletedRowKey='serialNumber'
       rowActions={rowActions}
       rowSelection={{
         type: 'checkbox',
@@ -205,6 +206,5 @@ export function SwitchTable ({ showAllColumns } : {
         }
       }}
     />
-    {/* TODO: rowKey{(record)=> record.serialNumber + (record.isFirstLevel && 'stack')} */}
   </Loader>
 }
