@@ -28,11 +28,12 @@ jest.mock('react-router-dom', () => ({
 }))
 
 async function fillInForm () {
-  fireEvent.change(screen.getByLabelText(/Stack Name/), { target: { value: 'test stack' } })
-  fireEvent.change(screen.getByLabelText(/Description/), { target: { value: 'test description' } })
-  fireEvent.change(screen.getByTestId(/serialNumber1/), { target: { value: 'FEK4124R20X' } })
-  fireEvent.change(screen.getByTestId(/serialNumber2/), { target: { value: 'FEK4124R21X' } })
-  fireEvent.change(screen.getByTestId(/serialNumber3/), { target: { value: 'FEK4124R22X' } })
+  fireEvent.change(await screen.findByLabelText(/Stack Name/), { target: { value: 'test stack' } })
+  fireEvent.change(await screen.findByLabelText(/Description/),
+    { target: { value: 'test description' } })
+  fireEvent.change(await screen.findByTestId(/serialNumber1/), { target: { value: 'FEK4124R20X' } })
+  fireEvent.change(await screen.findByTestId(/serialNumber2/), { target: { value: 'FEK4124R21X' } })
+  fireEvent.change(await screen.findByTestId(/serialNumber3/), { target: { value: 'FEK4124R22X' } })
 }
 
 async function changeVenue () {
@@ -85,8 +86,9 @@ describe('Switch Stack Form - Add', () => {
     await changeVenue()
     await fillInForm()
 
-    fireEvent.change(screen.getByLabelText(/Stack Name/), { target: { value: 'test stack' } })
-    fireEvent.change(screen.getByLabelText(/Description/),
+    fireEvent.change(await screen.findByLabelText(/Stack Name/),
+      { target: { value: 'test stack' } })
+    fireEvent.change(await screen.findByLabelText(/Description/),
       { target: { value: 'test description' } })
 
     await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
@@ -117,7 +119,8 @@ describe('Switch Stack Form - Add', () => {
     await changeVenue()
     await fillInForm()
 
-    fireEvent.change(screen.getByTestId(/serialNumber3/), { target: { value: 'FEK4124R20X' } })
+    fireEvent.change(await screen.findByTestId(/serialNumber3/),
+      { target: { value: 'FEK4124R20X' } })
     screen.getByTestId(/serialNumber3/).focus()
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     await screen.findByText(/Serial number is invalid/)
@@ -132,7 +135,8 @@ describe('Switch Stack Form - Add', () => {
     await changeVenue()
     await fillInForm()
 
-    fireEvent.change(screen.getByTestId(/serialNumber3/), { target: { value: 'FMG4124R20X' } })
+    fireEvent.change(await screen.findByTestId(/serialNumber3/),
+      { target: { value: 'FMG4124R20X' } })
     screen.getByTestId(/serialNumber3/).focus()
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     await screen.findByText(/Serial number is invalid/)
@@ -147,7 +151,7 @@ describe('Switch Stack Form - Add', () => {
     await changeVenue()
     await fillInForm()
 
-    fireEvent.change(screen.getByTestId(/serialNumber3/), { target: { value: 'AAA' } })
+    fireEvent.change(await screen.findByTestId(/serialNumber3/), { target: { value: 'AAA' } })
     screen.getByTestId(/serialNumber3/).focus()
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     await screen.findByText(/Serial number is invalid/)
