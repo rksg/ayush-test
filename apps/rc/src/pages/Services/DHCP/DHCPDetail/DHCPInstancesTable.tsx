@@ -52,7 +52,7 @@ export default function DHCPInstancesTable (){
       render: function (_data, row) {
         return (
           <TenantLink
-            to={`/venues/${row.id}/venue-details/overview`}>{row.id}</TenantLink>
+            to={`/venues/${row.id}/venue-details/overview`}>{row.name}</TenantLink>
         )
       }
     },
