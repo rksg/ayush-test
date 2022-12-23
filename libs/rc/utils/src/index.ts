@@ -8,8 +8,6 @@ export * from './onSocketActivityChanged'
 export * from './useTableQuery'
 export * from './validator'
 export * from './models'
-export * from './getDescription'
-export * from './replaceStrings'
 
 export * from './types/user'
 export * from './types/venue'
