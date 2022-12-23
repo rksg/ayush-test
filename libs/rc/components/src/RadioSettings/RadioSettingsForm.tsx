@@ -30,7 +30,6 @@ export function RadioSettingsForm (props:{
 }) {
 
   const { $t } = useIntl()
-  //const form = Form.useFormInstance()
   const radio6GRateControlFeatureFlag = useIsSplitOn(Features.RADIO6G_RATE_CONTROL)
   const { radioType,
     disabled = false,
@@ -39,13 +38,6 @@ export function RadioSettingsForm (props:{
     context = 'venue',
     isUseVenueSettings = false
   } = props
-
-  /*
-  const {
-    editContextData,
-    setEditContextData
-  } = useContext(props.editContext)
-  */
 
   const methodFieldName = [...radioDataKey, 'method']
   const changeIntervalFieldName = [...radioDataKey, 'changeInterval']

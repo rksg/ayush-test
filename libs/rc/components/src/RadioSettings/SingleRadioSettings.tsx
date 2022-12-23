@@ -95,15 +95,8 @@ export function SingleRadioSettings (props:{
 
   let hasIndoorBandwidth = false
   let hasOutdoorBandwidth = false
-  //let hasDfsBandwidth = false
   let allowIndoorForOutdoor = false
   let hasIndoorForOutdoor = false
-  /*
-  let bandwidthList: string[] = []
-  let bandwidthIndoorList = []
-  let bandwidthOutdoorList = []
-  let bandwidthDfsList = []
-  */
 
   const allowIndoorForOutdoorFeatureFlag = useIsSplitOn(Features.ALLOW_INDOOR_CHANNEL_TOGGLE)
 
@@ -111,18 +104,8 @@ export function SingleRadioSettings (props:{
     const { indoor, outdoor, indoorForOutdoorAp } = supportChannels
     hasIndoorBandwidth = !isEmpty(indoor)
     hasOutdoorBandwidth = !isEmpty(outdoor)
-    //hasDfsBandwidth = !isEmpty(dfs)
     hasIndoorForOutdoor = !isEmpty(indoorForOutdoorAp)
 
-    /*
-    if (!hasIndoorBandwidth && !hasOutdoorBandwidth) {
-      bandwidthList = Object.keys(supportChannels)
-    }
-
-    bandwidthIndoorList = hasIndoorBandwidth? Object.keys(indoor) : []
-    bandwidthOutdoorList = hasOutdoorBandwidth? Object.keys(outdoor) : []
-    bandwidthDfsList = hasDfsBandwidth? Object.keys(dfs): []
-    */
     allowIndoorForOutdoor = (radioType === ApRadioTypeEnum.Radio5G
                              && hasIndoorForOutdoor === true
                              && allowIndoorForOutdoorFeatureFlag)

@@ -83,8 +83,8 @@ describe('RadioSettingsTab', () => {
     expect(asFragment()).toMatchSnapshot()
     fireEvent.click(await screen.findByRole('button', { name: 'Apply Radio' }))
   })
-  xit('should render correctly with Auto bandwidth', async () => {
-    venueRadioCustomization.radioParams50G.channelBandwidth = 'AUTO'
+  it('should render correctly with Auto bandwidth', async () => {
+    apDeviceRadio.apRadioParams50G.channelBandwidth = 'AUTO'
     render(
       <Provider>
         <ApEditContext.Provider value={{
@@ -115,7 +115,7 @@ describe('RadioSettingsTab', () => {
     fireEvent.click(await screen.findByRole('button', { name: 'Apply Radio' }))
   })
   xit('should render correctly with 40Mhz bandwidth', async () => {
-    venueRadioCustomization.radioParams50G.channelBandwidth = '40Mhz'
+    apDeviceRadio.apRadioParams50G.channelBandwidth = '40Mhz'
     render(
       <Provider>
         <ApEditContext.Provider value={{
@@ -146,7 +146,7 @@ describe('RadioSettingsTab', () => {
     fireEvent.click(await screen.findByRole('button', { name: 'Apply Radio' }))
   })
   xit('should render correctly with 80Mhz bandwidth', async () => {
-    venueRadioCustomization.radioParams50G.channelBandwidth = '80Mhz'
+    apDeviceRadio.apRadioParams50G.channelBandwidth = '80Mhz'
     render(
       <Provider>
         <ApEditContext.Provider value={{
@@ -177,7 +177,7 @@ describe('RadioSettingsTab', () => {
     fireEvent.click(await screen.findByRole('button', { name: 'Apply Radio' }))
   })
   xit('should render correctly with 160Mhz bandwidth', async () => {
-    venueRadioCustomization.radioParams50G.channelBandwidth = '160Mhz'
+    apDeviceRadio.apRadioParams50G.channelBandwidth = '160Mhz'
     render(
       <Provider>
         <ApEditContext.Provider value={{
@@ -208,7 +208,7 @@ describe('RadioSettingsTab', () => {
     fireEvent.click(await screen.findByRole('button', { name: 'Apply Radio' }))
   })
   xit('should render 5GHz channels correctly with MANUAL method', async () => {
-    venueRadioCustomization.radioParams50G.channelBandwidth = 'AUTO'
+    apDeviceRadio.apRadioParams50G.channelBandwidth = 'AUTO'
     render(
       <Provider>
         <ApEditContext.Provider value={{
@@ -238,7 +238,7 @@ describe('RadioSettingsTab', () => {
     fireEvent.click(await screen.findByRole('button', { name: 'Apply Radio' }))
   })
   xit('should render 2.4GHz channels correctly with MANUAL method', async () => {
-    venueRadioCustomization.radioParams24G.channelBandwidth = 'AUTO'
+    apDeviceRadio.apRadioParams24G.channelBandwidth = 'AUTO'
     render(
       <Provider>
         <ApEditContext.Provider value={{
@@ -266,7 +266,7 @@ describe('RadioSettingsTab', () => {
     fireEvent.click(await screen.findByRole('button', { name: 'Apply Radio' }))
   })
   it('should render correctly with cancel action', async () => {
-    venueRadioCustomization.radioParams50G.channelBandwidth = 'AUTO'
+    apDeviceRadio.apRadioParams50G.channelBandwidth = 'AUTO'
     render(
       <Provider>
         <ApEditContext.Provider value={{
