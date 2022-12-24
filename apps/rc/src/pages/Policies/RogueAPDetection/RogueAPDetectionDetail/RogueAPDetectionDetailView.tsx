@@ -9,9 +9,9 @@ import {
   Button,
   PageHeader
 } from '@acx-ui/components'
-import { getPolicyListRoutePath, PolicyType, RogueAPDetailContextType } from '@acx-ui/rc/utils'
-import { getPolicyDetailsLink, PolicyOperation }                        from '@acx-ui/rc/utils'
-import { TenantLink }                                                   from '@acx-ui/react-router-dom'
+import { getPolicyListRoutePath, PolicyType, RogueApConstant, RogueAPDetailContextType } from '@acx-ui/rc/utils'
+import { getPolicyDetailsLink, PolicyOperation }                                         from '@acx-ui/rc/utils'
+import { TenantLink }                                                                    from '@acx-ui/react-router-dom'
 
 
 import RogueAPDetectionDetailContent from './RogueAPDetectionDetailContent'
@@ -28,11 +28,11 @@ const RogueAPDetectionDetailView = () => {
   return (
     <RogueAPDetailContext.Provider value={{ filtersId, setFiltersId, policyName, setPolicyName }}>
       <PageHeader
-        title={policyName ?? `${$t({ defaultMessage: 'Rogue AP Detection policy' })}`}
+        title={policyName}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Policies' }), link: getPolicyListRoutePath() }
         ]}
-        extra={[
+        extra={policyName !== RogueApConstant.DefaultProfile ? [
           <TenantLink to={getPolicyDetailsLink({
             type: PolicyType.ROGUE_AP_DETECTION,
             oper: PolicyOperation.EDIT,
@@ -43,7 +43,7 @@ const RogueAPDetectionDetailView = () => {
               {$t({ defaultMessage: 'Configure' })}
             </Button>
           </TenantLink>
-        ]}
+        ]: []}
       />
 
       <GridRow>
