@@ -1,6 +1,6 @@
-import { fireEvent } from '@testing-library/react'
-import userEvent     from '@testing-library/user-event'
-import { rest }      from 'msw'
+import { fireEvent, waitForElementToBeRemoved } from '@testing-library/react'
+import userEvent                                from '@testing-library/user-event'
+import { rest }                                 from 'msw'
 
 import { RadiusClientConfigUrlsInfo }      from '@acx-ui/rc/utils'
 import { Provider }                        from '@acx-ui/store'
@@ -43,6 +43,9 @@ describe('IpAddressDrawer', () => {
     await act(async () => {
       fireEvent.click(saveButton)
     })
+
+    const validating = await screen.findByRole('img', { name: 'loading' })
+    await waitForElementToBeRemoved(validating)
   })
 
   it('should edit ip address successfully', async () => {
@@ -74,6 +77,30 @@ describe('IpAddressDrawer', () => {
     await act(async () => {
       fireEvent.click(saveButton)
     })
+  })
+
+  it('Add conflict ip address and show error toast correctly', async () => {
+    mockServer.use(
+      rest.patch(
+        RadiusClientConfigUrlsInfo.updateRadiusClient.url,
+        (req, res, ctx) => res(ctx.status(409), ctx.json({}))
+      )
+    )
+
+    render(
+      <Provider>
+        <IpAddressDrawer
+          visible={true}
+          setVisible={jest.fn()}
+          clientConfig={{}}
+        />
+      </Provider>
+    )
+    // eslint-disable-next-line max-len
+    await userEvent.type(await screen.findByRole('textbox', { name: 'IP Address' }), '192.168.1.1')
+    await userEvent.click(await screen.findByText('Apply'))
+
+    await screen.findByText('IP Address already exists')
   })
 
   it('should cancel drawer successfully', async () => {
