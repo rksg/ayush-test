@@ -1,7 +1,5 @@
 import { generatePath, Params } from 'react-router-dom'
 
-// import {  JwtToken } from '@acx-ui/utils'
-
 export interface ApiInfo {
   url: string;
   method: string;
@@ -38,17 +36,16 @@ const getTenanetIdFromJwt = (jwt: string) => {
   return getTenantId()
 }
 
-let defaultHeaders = {
-  'Content-Type': 'application/json',
-  'Accept': 'application/json'
-}
-
 export const createHttpRequest = (
   apiInfo: ApiInfo,
   paramValues?: Params<string>,
   customHeaders?: Record<string, unknown>,
   ignoreHeader?: boolean
 ) => {
+  let defaultHeaders = {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json'
+  }
   const tokenHeader = {
     Authorization: ''
   }

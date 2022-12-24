@@ -34,6 +34,17 @@ export const mspApi = baseMspApi.injectEndpoints({
       },
       providesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
+    mspCustomerListDropdown: build.query<TableResult<MspEc>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const mspCustomerListReq =
+        createHttpRequest(MspUrlsInfo.getMspCustomersList, params, {}, true)
+        return {
+          ...mspCustomerListReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
     deleteMspEc: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(MspUrlsInfo.deleteMspEcAccount, params)
@@ -128,6 +139,7 @@ export const mspApi = baseMspApi.injectEndpoints({
 })
 export const {
   useMspCustomerListQuery,
+  useMspCustomerListDropdownQuery,
   useDeleteMspEcMutation,
   useVarCustomerListQuery,
   useInviteCustomerListQuery,
