@@ -92,7 +92,7 @@ describe('RadiusServerTab', () => {
     const addAddressButton = screen.getByRole('button', { name: 'Add IP Address' })
     expect(addAddressButton).toBeTruthy()
     fireEvent.click(addAddressButton)
-    expect(screen.getByRole('checkbox', { name: 'Add Another Address' })).toBeTruthy()
+    expect(screen.getByRole('checkbox', { name: 'Add Another IP Address' })).toBeTruthy()
     const addressInput = screen.getByRole('textbox', { name: 'IP Address' })
     expect(addressInput).toHaveValue('')
 

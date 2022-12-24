@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react'
 
-import { Col, Form, Input, RadioChangeEvent, Row, Space } from 'antd'
-import { Radio }                                          from 'antd'
-import Checkbox, { CheckboxChangeEvent }                  from 'antd/lib/checkbox'
-import { useIntl }                                        from 'react-intl'
+import { Col, Form, Input, Row }         from 'antd'
+import Checkbox, { CheckboxChangeEvent } from 'antd/lib/checkbox'
+import { useIntl }                       from 'react-intl'
 
 import { Button, Drawer, showToast }           from '@acx-ui/components'
 import { useUpdateRadiusClientConfigMutation } from '@acx-ui/rc/services'
@@ -12,7 +11,7 @@ import { ClientConfig }                        from '@acx-ui/rc/utils'
 interface IpAddressDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
-  editMode: boolean
+  editMode?: boolean
   editIpAddress?: string
   clientConfig: ClientConfig
 }
@@ -21,11 +20,14 @@ interface ipAddressForm {
   singleIpAddress : string
 }
 
+interface httpErrorResponse {
+  status: number
+}
+
 export function IpAddressDrawer (props: IpAddressDrawerProps) {
   const { $t } = useIntl()
-  const { visible, setVisible, editMode, clientConfig, editIpAddress } = props
+  const { visible, setVisible, editMode = false, clientConfig, editIpAddress } = props
   const [form] = Form.useForm()
-  const [addType, setAddType ] = useState(1)
   const [resetField, setResetField] = useState(false)
   const [updateConfig, updateConfigState] = useUpdateRadiusClientConfigMutation()
   const [checked, setChecked] = useState(false)
@@ -57,7 +59,8 @@ export function IpAddressDrawer (props: IpAddressDrawerProps) {
         }
       }else {
         payload = {
-          ipAddress: clientConfig.ipAddress?.concat(data.singleIpAddress)
+          // eslint-disable-next-line max-len
+          ipAddress: clientConfig.ipAddress ? clientConfig.ipAddress?.concat(data.singleIpAddress) : data.singleIpAddress
         }
       }
       await updateConfig({ payload }).unwrap()
@@ -65,10 +68,18 @@ export function IpAddressDrawer (props: IpAddressDrawerProps) {
       if (!checked) {
         onClose()
       }
-    } catch {
+    } catch(error) {
+      const errorResponse = error as httpErrorResponse
+      let message
+      if(errorResponse.status === 409) {
+        message = $t({ defaultMessage: 'IP Address already exists' })
+      }
+      else{
+        message = $t({ defaultMessage: 'An error occurred' })
+      }
       showToast({
         type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
+        content: message
       })
     }
   }
@@ -79,7 +90,7 @@ export function IpAddressDrawer (props: IpAddressDrawerProps) {
         < Checkbox
           onChange={(e: CheckboxChangeEvent) => setChecked(e.target.checked)}
           checked={checked}
-          children='Add Another IP Address'
+          children={$t({ defaultMessage: 'Add Another IP Address' })}
         />
       }
     </div>,
@@ -97,10 +108,6 @@ export function IpAddressDrawer (props: IpAddressDrawerProps) {
     </div>
   ]
 
-  const onRadioChange = (e: RadioChangeEvent) => {
-    setAddType(e.target.value)
-  }
-
   const ipAddressRegExp = (value: string) =>{
     // eslint-disable-next-line max-len
     const REG = new RegExp(/((^\s*((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))\s*$)|(^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$))/)
@@ -111,50 +118,18 @@ export function IpAddressDrawer (props: IpAddressDrawerProps) {
   }
 
   const content = <Form layout='vertical' form={form} onFinish={onSubmit}>
-    <Form.Item name='addressType' initialValue={1}>
-      <Radio.Group value={addType} onChange={onRadioChange}>
-        <Space direction='vertical'>
-          <Radio value={1}>{$t({ defaultMessage: 'Single IP Address' })}</Radio>
-          <Radio value={2} disabled>{$t({ defaultMessage: 'IP Address Range' })}</Radio>
-        </Space>
-      </Radio.Group>
-    </Form.Item>
-    {addType === 1 &&
-      <Row>
-        <Col span={8}>
-          <Form.Item
-            name='singleIpAddress'
-            label='IP Address'
-            rules={[
-              { required: true },
-              { validator: (_, value) => ipAddressRegExp(value) }
-            ]}
-            children={<Input/>}/>
-        </Col>
-      </Row>
-    }
-    {addType === 2 &&
-      <Row>
-        <Col span={16}>
-          <Space>
-            <Form.Item
-              name='ipAddressRangeStart'
-              label='Start IP Address'
-              rules={[
-                { required: true, message: $t({ defaultMessage: 'Please enter start IP address' }) }
-              ]}
-              children={<Input/>}/>
-            <Form.Item
-              name='ipAddressRangeEnd'
-              label='End IP Address'
-              rules={[
-                { required: true, message: $t({ defaultMessage: 'Please enter end IP address' }) }
-              ]}
-              children={<Input/>}/>
-          </Space>
-        </Col>
-      </Row>
-    }
+    <Row>
+      <Col span={12}>
+        <Form.Item
+          name='singleIpAddress'
+          label='IP Address'
+          rules={[
+            { required: true },
+            { validator: (_, value) => ipAddressRegExp(value) }
+          ]}
+          children={<Input/>}/>
+      </Col>
+    </Row>
   </Form>
 
   return (
@@ -166,7 +141,7 @@ export function IpAddressDrawer (props: IpAddressDrawerProps) {
       children={content}
       footer={footer}
       destroyOnClose={resetField}
-      width={500}
+      width={400}
     />
   )
 }
