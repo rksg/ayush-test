@@ -37,6 +37,7 @@ export enum SwitchStatusEnum {
 }
 
 export class Switch {
+  key?: string
   name: string
   id: string
   description?: string
@@ -148,6 +149,14 @@ export enum STACK_MEMBERSHIP {
   ACTIVE = 'Active',
   STANDBY = 'Standby',
   MEMBER = 'Member',
+}
+
+export interface SwitchTable {
+  key: string
+  id: string
+  order?: number
+  active?: boolean
+  model: string
 }
 
 export interface SwitchPortViewModel extends GridDataRow {

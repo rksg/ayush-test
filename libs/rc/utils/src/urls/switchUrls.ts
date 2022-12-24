@@ -52,5 +52,13 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   importSwitches: {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/import'
+  },
+  getVlansByVenue: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/profile/vlans/venue/:venueId'
+  },
+  addSwitch: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/switch'
   }
 }
