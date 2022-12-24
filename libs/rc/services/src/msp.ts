@@ -37,7 +37,7 @@ export const mspApi = baseMspApi.injectEndpoints({
     mspCustomerListDropdown: build.query<TableResult<MspEc>, RequestPayload>({
       query: ({ params, payload }) => {
         const mspCustomerListReq =
-        createHttpRequest(MspUrlsInfo.getMspCustomersList, params, {}, true)
+        createHttpRequest(MspUrlsInfo.getMspCustomersListDropdown, params, {}, true)
         return {
           ...mspCustomerListReq,
           body: payload

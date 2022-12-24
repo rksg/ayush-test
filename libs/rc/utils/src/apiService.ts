@@ -5,6 +5,13 @@ export interface ApiInfo {
   method: string;
 }
 
+export const TenantIdFromJwt = () => {
+  const jwtToken = getJwtTokenPayload()
+  const tenanetIdFromJwt = getTenanetIdFromJwt(jwtToken as string)
+
+  return tenanetIdFromJwt
+}
+
 export const isDelegationMode = () => {
   const jwtToken = getJwtTokenPayload()
 

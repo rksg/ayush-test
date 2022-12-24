@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 
 import { Select } from 'antd'
 
-import { useMspCustomerListDropdownQuery } from '@acx-ui/rc/services'
-import { MspEc, useTableQuery }            from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink }      from '@acx-ui/react-router-dom'
+import { useMspCustomerListDropdownQuery }       from '@acx-ui/rc/services'
+import { MspEc, TenantIdFromJwt, useTableQuery } from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink }            from '@acx-ui/react-router-dom'
 
 const defaultArray: MspEc[] = []
 
@@ -30,6 +30,7 @@ export function MspEcDropdownList () {
 
   const tableQuery = useTableQuery({
     useQuery: useMspCustomerListDropdownQuery,
+    apiParams: { mspTenantId: TenantIdFromJwt() },
     defaultPayload
   })
 
