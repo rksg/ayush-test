@@ -11,10 +11,36 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { useNetworkVenueListQuery }                           from '@acx-ui/rc/services'
-import { RadioEnum, SchedulerTypeEnum, useTableQuery, Venue } from '@acx-ui/rc/utils'
+import { NetworkApGroupDialog, transformAps, transformRadios } from '@acx-ui/rc/components'
+import { useNetworkVenueListQuery }                            from '@acx-ui/rc/services'
+import {
+  aggregateApGroupPayload,
+  NetworkSaveData,
+  NetworkVenue, RadioEnum,
+  SchedulerTypeEnum,
+  useTableQuery,
+  Venue } from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import NetworkFormContext from '../NetworkFormContext'
+
+
+import type { FormFinishInfo } from 'rc-field-form/es/FormContext'
+
+interface ApGroupModalState { // subset of ApGroupModalWidgetProps
+  visible: boolean,
+  wlan?: NetworkSaveData['wlan'],
+  networkVenue?: NetworkVenue,
+  venueName?: string
+}
+
+// TODO: Scheduling
+// interface SchedulingModalState {
+//   visible: boolean,
+//   networkVenue?: NetworkVenue,
+//   venue?: Venue
+// }
+
 
 const defaultPayload = {
   searchString: '',
@@ -57,6 +83,7 @@ export function Venues () {
   const { editMode, cloneMode, data, setData } = useContext(NetworkFormContext)
 
   const venues = Form.useWatch('venues')
+  const params = useParams()
 
   const { $t } = useIntl()
   const tableQuery = useTableQuery({
@@ -67,6 +94,15 @@ export function Venues () {
 
   const [tableData, setTableData] = useState(defaultArray)
   const [activateVenues, setActivateVenues] = useState(defaultArray)
+
+  // AP group form
+  const [apGroupModalState, setApGroupModalState] = useState<ApGroupModalState>({
+    visible: false
+  })
+  // TODO: Scheduling
+  // const [scheduleModalState, setScheduleModalState] = useState<SchedulingModalState>({
+  //   visible: false
+  // })
 
   const handleVenueSaveData = (selectedRows: Venue[]) => {
     const defaultSetup = {
@@ -244,7 +280,7 @@ export function Venues () {
       dataIndex: 'aps',
       width: 80,
       render: function (data, row) {
-        return row.activated.isActivated ? 'All APs' : ''
+        return transformAps(getCurrentVenue(row), (e) => handleClickApGroups(row, e))
       }
     },
     {
@@ -253,7 +289,7 @@ export function Venues () {
       dataIndex: 'radios',
       width: 140,
       render: function (data, row) {
-        return row.activated.isActivated ? '2.4 GHz / 5 GHz' : ''
+        return transformRadios(getCurrentVenue(row), (e) => handleClickApGroups(row, e))
       }
     },
     {
@@ -265,6 +301,85 @@ export function Venues () {
       }
     }
   ]
+
+  const getCurrentVenue = (row: Venue) => {
+    if (!row.activated.isActivated) {
+      return
+    }
+    const network = data
+    const venueId = row.id
+    let venue = row.deepVenue
+    if (!venue) {
+      venue = network?.venues?.find(v => v.venueId === venueId)
+    }
+    return venue
+  }
+
+  // TODO: Scheduling
+  // const handleClickScheduling = (row: Venue, e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+  //   e.preventDefault()
+  //   setScheduleModalState({
+  //     visible: true,
+  //     venue: row,
+  //     networkVenue: getCurrentVenue(row)
+  //   })
+  // }
+
+
+  const handleClickApGroups = (row: Venue, e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    e.preventDefault()
+    setApGroupModalState({
+      visible: true,
+      venueName: row.name,
+      wlan: data?.wlan,
+      networkVenue: getCurrentVenue(row)
+    })
+  }
+
+  const handleApGroupFormFinish = (name: string, newData: FormFinishInfo) => {
+    if (name === 'networkApGroupForm') {
+      let oldData = _.cloneDeep(apGroupModalState.networkVenue)
+      const payload = aggregateApGroupPayload(newData, oldData, true)
+
+      let selectedVenues = data?.venues?.map((row) => {
+        if(row.venueId ===payload.venueId) {
+          return { ...row, ...payload }
+        } else {return row}
+      })
+
+      if(selectedVenues) {
+        setData && setData({ ...data, venues: selectedVenues })
+        form.setFieldsValue({ venues: selectedVenues })
+      }
+
+      let currentTableData: Venue[] = []
+      const currentIndex = tableData.findIndex(item => item.id === payload.venueId)
+      tableData.forEach((item, index)=>{
+        if (index === currentIndex) {
+          currentTableData.push(
+            { ...item, deepVenue: payload }
+          )
+        } else {
+          currentTableData.push(item)
+        }
+      })
+
+      setTableData(currentTableData)
+      setApGroupModalState({
+        visible: false
+      })
+    }
+  }
+
+  const handleCancel = () => {
+    setApGroupModalState({
+      visible: false
+    })
+    // TODO: Scheduling
+    // setScheduleModalState({
+    //   visible: false
+    // })
+  }
 
   return (
     <>
@@ -280,9 +395,20 @@ export function Venues () {
             }}
             columns={columns}
             dataSource={[...tableData]}
+
             pagination={tableQuery.pagination}
             onChange={tableQuery.handleTableChange}
           />
+          <Form.Provider
+            onFormFinish={handleApGroupFormFinish}
+          >
+            <NetworkApGroupDialog
+              {...apGroupModalState}
+              tenantId={params.tenantId}
+              formName='networkApGroupForm'
+              onCancel={handleCancel}
+            />
+          </Form.Provider>
         </Loader>
       </Form.Item>
     </>

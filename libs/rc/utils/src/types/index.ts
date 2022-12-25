@@ -102,7 +102,8 @@ export interface Venue {
   // radios ??
   // scheduling ??
   activated: { isActivated: boolean, isDisabled?: boolean }
-  deepVenue?: NetworkVenue
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  deepVenue?: any
   disabledActivation: boolean
   networkId? : string
   vlanPoolId?: string
