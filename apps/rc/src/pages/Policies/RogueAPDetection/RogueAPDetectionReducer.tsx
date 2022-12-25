@@ -95,13 +95,15 @@ export const rogueAPDetectionReducer = (
         }
       }
       const venueAddIds = state.venues.map(venue => venue.id)
+      const updateVenues = [...state.venues]
       action.payload.map(venue => {
         if (venueAddIds.findIndex(venueExistId => venueExistId === venue.id) === -1) {
-          state.venues.push(venue)
+          updateVenues.push(venue)
         }
       })
       return {
-        ...state
+        ...state,
+        venues: updateVenues
       }
     case RogueAPDetectionActionTypes.REMOVE_VENUES:
       const venueRemoveIds = action.payload.map(venue => venue.id)
