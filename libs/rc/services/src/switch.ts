@@ -88,14 +88,6 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
-    getVlansByVenue: build.query<{ vlanId: string }[], RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getVlansByVenue, params)
-        return {
-          ...req
-        }
-      }
-    }),
     switchPortlist: build.query<TableResult<SwitchPortViewModel>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(
@@ -237,10 +229,10 @@ export const {
   useDeleteSwitchesMutation,
   useSwitchDetailHeaderQuery,
   useImportSwitchesMutation,
+  useGetVlansByVenueQuery,
   useLazyGetVlansByVenueQuery,
   useSwitchPortlistQuery,
   useSaveSwitchMutation,
-  useGetVlansByVenueQuery,
   useAddSwitchMutation,
   useAddStackMemberMutation,
   useGetSwitchListQuery,

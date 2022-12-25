@@ -29,7 +29,8 @@ import {
   Switch,
   getSwitchModel,
   SwitchViewModel,
-  IGMP_SNOOPING_TYPE
+  IGMP_SNOOPING_TYPE,
+  Vlan
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -132,7 +133,7 @@ export function AddSwitchForm () {
     setVenueId(value)
     const vlansByVenue = value ?
       (await getVlansByVenue({ params: { tenantId: tenantId, venueId: value } })).data
-        ?.map((item: { vlanId: string }) => ({
+        ?.map((item: Vlan) => ({
           label: item.vlanId, value: item.vlanId
         })) : []
 
