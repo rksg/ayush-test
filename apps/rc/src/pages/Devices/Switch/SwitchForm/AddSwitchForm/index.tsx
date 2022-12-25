@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react'
 
 import { Col, Form, Input, Row, Select, Radio, RadioChangeEvent } from 'antd'
 import { DefaultOptionType }                                      from 'antd/lib/select'
+import _                                                          from 'lodash'
 import { useIntl }                                                from 'react-intl'
 
 import {
@@ -36,9 +37,8 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-import * as UI from '../styledComponents'
 import { SwitchUpgradeNotification, SWITCH_UPGRADE_NOTIFICATION_TYPE } from '../../SwitchUpgradeNotification'
-import _ from 'lodash'
+import * as UI                                                         from '../styledComponents'
 
 const { Option } = Select
 
@@ -74,9 +74,12 @@ export function AddSwitchForm () {
   const [dhcpClientOption, setDhcpClientOption] = useState([] as DefaultOptionType[])
   const [switchRole, setSwitchRole] = useState(MEMEBER_TYPE.STANDALONE as MEMEBER_TYPE)
   const [getSwitchList] = useLazyGetSwitchListQuery()
+  const [ getVlansByVenue ] = useLazyGetVlansByVenueQuery()
   const [switchOptions, setSwitchOptions] = useState([] as DefaultOptionType[])
   const [venueId, setVenueId] = useState('')
   const [switchModel, setSwitchModel] = useState('')
+  const [isSupportStack, setIsSupportStack] = useState(true)
+  const [isOnlyFirmware, setIsOnlyFirmware] = useState(false)
   const [serialNumber, setSerialNumber] = useState('')
 
   const switchListPayload = {
@@ -155,6 +158,7 @@ export function AddSwitchForm () {
   const handleAddSwitch = async (values: Switch) => {
     if (switchRole === MEMEBER_TYPE.STANDALONE) {
       try {
+        if (isOnlyFirmware) { values.specifiedType = FIRMWARE.AUTO }
         const payload = {
           ...defaultAddSwitchPayload,
           ...values
@@ -186,19 +190,28 @@ export function AddSwitchForm () {
   }
 
   const serialNumberRegExp = function (value: string) {
+    const modelNotSupportStack = ['ICX7150-C08P', 'ICX7150-C08PT']
+    // Only 7150-C08P/C08PT are Switch Only.
+    // Only 7850 all models are Router Only.
+    const modelOnlyFirmware = ['ICX7150-C08P', 'ICX7150-C08PT', 'ICX7850']
     const re = new RegExp(SWITCH_SERIAL_PATTERN)
     if (value && !re.test(value)) {
       return Promise.reject($t({ defaultMessage: 'Serial number is invalid' }))
     }
 
     if(value && re.test(value)) {
-      setSwitchModel(getSwitchModel(value) || '')
+      const model = getSwitchModel(value) || ''
+      setSwitchModel(model)
+      // notSupportStackModel.find(item => model?.indexOf(item) > -1)
+      setIsSupportStack(!(modelNotSupportStack.indexOf(model) > -1))
+      setIsOnlyFirmware(!!modelOnlyFirmware.find(item => model?.indexOf(item) > -1))
       setSerialNumber(value)
     }
     return Promise.resolve()
   }
 
-  const [ getVlansByVenue ] = useLazyGetVlansByVenueQuery()
+
+
 
   return <>
     {action === 'add' && <PageHeader
@@ -224,7 +237,6 @@ export function AddSwitchForm () {
         }]}>
           <Row gutter={20}>
             <Col span={8}>
-              <StepsForm.Title>{$t({ defaultMessage: 'Group Details' })}</StepsForm.Title>
               <Form.Item
                 name='venueId'
                 label={<>
@@ -256,17 +268,23 @@ export function AddSwitchForm () {
               />
 
               <SwitchUpgradeNotification
-              isDisplay={!_.isEmpty(switchModel)}
-              isDisplayHeader={true}
-              type={ switchRole === MEMEBER_TYPE.STANDALONE ? 
-                SWITCH_UPGRADE_NOTIFICATION_TYPE.SWITCH : 
-                SWITCH_UPGRADE_NOTIFICATION_TYPE.STACK }
-              validateModel={[switchModel]}
+                isDisplay={!_.isEmpty(switchModel)}
+                isDisplayHeader={true}
+                type={switchRole === MEMEBER_TYPE.STANDALONE ?
+                  SWITCH_UPGRADE_NOTIFICATION_TYPE.SWITCH :
+                  SWITCH_UPGRADE_NOTIFICATION_TYPE.STACK}
+                validateModel={[switchModel]}
               />
 
               <Form.Item
                 label={<>
                   {$t({ defaultMessage: 'Add as' })}
+                  {!isSupportStack && <Tooltip
+                    title={$t(SwitchMessages.MEMBER_NOT_SUPPORT_STACKING_TOOLTIP)}
+                    placement='bottom'
+                  >
+                    <QuestionMarkCircleOutlined />
+                  </Tooltip>}
                   {switchRole === MEMEBER_TYPE.MEMBER && <Tooltip
                     title={$t(SwitchMessages.FIRMWARE_TYPE_TOOLTIP)}
                     placement='bottom'
@@ -276,7 +294,7 @@ export function AddSwitchForm () {
                 </>}
               >
                 <Radio.Group
-                defaultValue={MEMEBER_TYPE.STANDALONE}
+                  defaultValue={MEMEBER_TYPE.STANDALONE}
                   onChange={(e: RadioChangeEvent) => {
                     return setSwitchRole(e.target.value)
                   }}
@@ -289,7 +307,8 @@ export function AddSwitchForm () {
 
                   <UI.FieldSpace columns={'140px 190px 10px'}>
                     <Radio key={MEMEBER_TYPE.MEMBER}
-                      value={MEMEBER_TYPE.MEMBER} >
+                      value={MEMEBER_TYPE.MEMBER}
+                      disabled={!isSupportStack} >
                       {$t({ defaultMessage: 'Member in stack' })}
                     </Radio>
                     {switchRole === MEMEBER_TYPE.MEMBER &&
@@ -351,7 +370,7 @@ export function AddSwitchForm () {
                     </Tooltip>
                   </>}
                 >
-                  <Select>
+                  <Select disabled={isOnlyFirmware}>
                     <Option value={FIRMWARE.AUTO}>
                       {$t({ defaultMessage: 'Factory default' })}
                     </Option>

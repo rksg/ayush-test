@@ -1,6 +1,7 @@
-import { Button } from '@acx-ui/components'
-import { WarningTriangleOutlined } from '@acx-ui/icons'
 import styled from 'styled-components'
+
+import { Button }                  from '@acx-ui/components'
+import { WarningTriangleOutlined } from '@acx-ui/icons'
 
 export const UpgradeNotification = styled.div`
   display: grid;

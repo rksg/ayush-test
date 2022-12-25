@@ -1,102 +1,155 @@
-// import { initialize } from '@googlemaps/jest-mocks'
-// import userEvent      from '@testing-library/user-event'
-// import { Modal }      from 'antd'
-// import { rest }       from 'msw'
+import { initialize } from '@googlemaps/jest-mocks'
+import userEvent      from '@testing-library/user-event'
+import { rest }       from 'msw'
 
-// import { apApi, venueApi }              from '@acx-ui/rc/services'
-// import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-// import { Provider, store }              from '@acx-ui/store'
-// import {
-//   mockServer,
-//   render,
-//   screen,
-//   fireEvent,
-//   waitFor,
-//   waitForElementToBeRemoved
-// } from '@acx-ui/test-utils'
+import { venueApi }                       from '@acx-ui/rc/services'
+import { CommonUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                from '@acx-ui/store'
+import {
+  mockServer,
+  render,
+  screen,
+  fireEvent,
+  waitForElementToBeRemoved
+} from '@acx-ui/test-utils'
 
-// import {
-//   venuelist,
-//   apGroupsList,
-//   venueDefaultApGroup
-// } from '../__tests__/fixtures'
+import { swtichListResponse, venueListResponse, vlansByVenueListResponse } from '../__tests__/fixtures'
 
-// import { ApGroupForm } from '.'
+import { AddSwitchForm } from '.'
 
-// const mockedUsedNavigate = jest.fn()
-// jest.mock('react-router-dom', () => ({
-//   ...jest.requireActual('react-router-dom'),
-//   useNavigate: () => mockedUsedNavigate
-// }))
+//switchListEmptyResponse
+//vlansByVenueListEmptyResponse
+const mockedUsedNavigate = jest.fn()
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockedUsedNavigate
+}))
+
+describe('Add switch form', () => {
+  const params = { tenantId: 'tenant-id', action: 'add' }
+  beforeEach(() => {
+    store.dispatch(venueApi.util.resetApiState())
+    initialize()
+    mockServer.use(
+      rest.post(CommonUrlsInfo.getVenuesList.url,
+        (_, res, ctx) => res(ctx.json(venueListResponse))),
+      rest.post(SwitchUrlsInfo.getSwitchList.url,
+        (_, res, ctx) => res(ctx.json(swtichListResponse))),
+      rest.get(SwitchUrlsInfo.getVlansByVenue.url,
+        (_, res, ctx) => res(ctx.json(vlansByVenueListResponse))),
+      rest.post(SwitchUrlsInfo.addSwitch.url,
+        (_, res, ctx) => res(ctx.json({ requestId: 'request-id' }))),
+      rest.post(SwitchUrlsInfo.addStackMember.url,
+        (_, res, ctx) => res(ctx.json({ requestId: 'request-id' }))
+      )
+    )
+  })
+
+  it('should render correctly', async () => {
+    render(<Provider><AddSwitchForm /></Provider>, {
+      route: { params, path: '/:tenantId/devices/switch/:action' }
+    })
+    expect(await screen.findByText(/add switch/i)).toBeVisible()
+  })
 
 
-// describe('AP Group Form - Add', () => {
-//   const params = { tenantId: 'tenant-id', action: 'add' }
-//   beforeEach(() => {
-//     store.dispatch(apApi.util.resetApiState())
-//     store.dispatch(venueApi.util.resetApiState())
-//     initialize()
+  it('should add standalone switch correctly', async () => {
+    render(<Provider><AddSwitchForm /></Provider>, {
+      route: { params, path: '/:tenantId/devices/switch/:action' }
+    })
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    expect(await screen.findByText(/add switch/i)).toBeVisible()
+    fireEvent.mouseDown(screen.getByLabelText(/Venue/))
+    await userEvent.click(await screen.getAllByText('My-Venue')[0])
+    fireEvent.change(screen.getByLabelText(/serial number/i), { target: { value: 'FMF3250Q06L' } })
+    fireEvent.change(screen.getByLabelText(/switch name/i), { target: { value: 'Switch Name' } })
+    fireEvent.change(screen.getByLabelText(/description/i), { target: { value: 'Description' } })
+    fireEvent.mouseDown(screen.getByLabelText(/standalone switch/i))
+    await userEvent.click(await screen.findByRole('button', { name: /add/i }))
+    expect(await screen.findByRole('heading', { name: /switch/i } )).toBeVisible()
+  })
 
-//     mockServer.use(
-//       rest.post(CommonUrlsInfo.getVenuesList.url,
-//         (_, res, ctx) => res(ctx.json(venuelist)))
-//     )
+  it('should add stack member correctly', async () => {
+    render(<Provider><AddSwitchForm /></Provider>, {
+      route: { params, path: '/:tenantId/devices/switch/:action' }
+    })
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    expect(await screen.findByText(/add switch/i)).toBeVisible()
+    fireEvent.mouseDown(screen.getByLabelText(/Venue/))
+    await userEvent.click(await screen.getAllByText('My-Venue')[0])
+    fireEvent.change(screen.getByLabelText(/serial number/i), { target: { value: 'FEK3231S0A0' } })
+    screen.getByLabelText(/serial number/i).focus()
+    fireEvent.change(screen.getByLabelText(/switch name/i), { target: { value: 'Switch Name' } })
+    await userEvent.click(screen.getByText(/member in stack/i))
 
-//     mockServer.use(
-//       rest.post(WifiUrlsInfo.getApGroupsList.url,
-//         (_, res, ctx) => res(ctx.json(apGroupsList)))
-//     )
+    await screen.findByText('7150stack')
 
-//     mockServer.use(
-//       rest.get(WifiUrlsInfo.getVenueDefaultApGroup.url,
-//         (_, res, ctx) => res(ctx.json(venueDefaultApGroup)))
-//     )
+    await userEvent.click(await screen.findByRole('button', { name: /add/i }))
+    expect(await screen.findByRole('heading', { name: /switch/i } )).toBeVisible()
+  })
 
-//   })
-//   afterEach(() => {
-//     Modal.destroyAll()
-//   })
-//   it('should render correctly', async () => {
-//     const { asFragment } = render(<Provider><ApGroupForm /></Provider>, {
-//       route: { params, path: '/:tenantId/devices/apgroups/:action' }
-//     })
+  it('should cancel chanage correctly', async () => {
+    render(<Provider><AddSwitchForm /></Provider>, {
+      route: { params, path: '/:tenantId/devices/switch/:action' }
+    })
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    expect(await screen.findByText(/add switch/i)).toBeVisible()
+    fireEvent.change(screen.getByLabelText(/serial number/i), { target: { value: 'invalid' } })
+    await userEvent.click(await screen.findByRole('button', { name: /add/i }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      pathname: `/t/${params.tenantId}/devices/switch`,
+      hash: '',
+      search: ''
+    })
+  })
 
-//     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-//     expect(asFragment()).toMatchSnapshot()
-//     expect(await screen.findByText('Add AP Group')).toBeVisible()
-//     expect(await screen.findByText('Select venue...')).toBeVisible()
-//     expect(await screen.findByText('Group Member')).toBeVisible()
-//     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
-//     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-//       pathname: `/t/${params.tenantId}/devices/wifi`,
-//       hash: '',
-//       search: ''
-//     })
-//   })
+  it('should handle error for add standalone switch correctly', async () => {
+    mockServer.use(
+      rest.post(SwitchUrlsInfo.addSwitch.url,
+        (_, res, ctx) => {
+          return res(ctx.status(400))
+        })
+    )
+    render(<Provider><AddSwitchForm /></Provider>, {
+      route: { params, path: '/:tenantId/devices/switch/:action' }
+    })
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    expect(await screen.findByText(/add switch/i)).toBeVisible()
+    fireEvent.mouseDown(screen.getByLabelText(/Venue/))
+    await userEvent.click(await screen.getAllByText('My-Venue')[0])
+    fireEvent.change(screen.getByLabelText(/serial number/i), { target: { value: 'FMF3250Q06L' } })
+    fireEvent.change(screen.getByLabelText(/switch name/i), { target: { value: 'Switch Name' } })
+    fireEvent.change(screen.getByLabelText(/description/i), { target: { value: 'Description' } })
+    fireEvent.mouseDown(screen.getByLabelText(/standalone switch/i))
+    await userEvent.click(await screen.findByRole('button', { name: /add/i }))
+    expect(await screen.findByRole('heading', { name: /switch/i } )).toBeVisible()
+  })
 
-//   it('add ap group', async () => {
-//     render(<Provider><ApGroupForm /></Provider>, {
-//       route: { params, path: '/:tenantId/devices/apgroups/:action' }
-//     })
+  it('should handle error for add stack member correctly', async () => {
 
-//     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-//     expect(await screen.findByText('Add AP Group')).toBeVisible()
-//     expect(await screen.findByText('Select venue...')).toBeVisible()
-//     expect(await screen.findByText('Group Member')).toBeVisible()
+    mockServer.use(
+      rest.post(SwitchUrlsInfo.addStackMember.url,
+        (_, res, ctx) => {
+          return res(ctx.status(400))
+        })
+    )
+    render(<Provider><AddSwitchForm /></Provider>, {
+      route: { params, path: '/:tenantId/devices/switch/:action' }
+    })
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    expect(await screen.findByText(/add switch/i)).toBeVisible()
+    fireEvent.mouseDown(screen.getByLabelText(/Venue/))
+    await userEvent.click(await screen.getAllByText('My-Venue')[0])
+    fireEvent.change(screen.getByLabelText(/serial number/i), { target: { value: 'FEK3231S0A0' } })
+    screen.getByLabelText(/serial number/i).focus()
+    fireEvent.change(screen.getByLabelText(/switch name/i), { target: { value: 'Switch Name' } })
+    await userEvent.click(screen.getByText(/member in stack/i))
 
-//     fireEvent.change(screen.getByLabelText(/Group Name/), { target: { value: 'ap group' } })
-//     fireEvent.mouseDown(screen.getByLabelText(/Venue/))
-//     await userEvent.click(await screen.getAllByText('My-Venue')[0])
-//     await waitFor(() => screen.findByText(/for ap group 2/i))
-//     await userEvent.click(screen.getByText(/for ap group 2/i))
-//     await userEvent.click(screen.getByRole('button', {
-//       name: /right add/i
-//     }))
-//     await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
-//     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-//       pathname: `/t/${params.tenantId}/devices/wifi`,
-//       hash: '',
-//       search: ''
-//     })
-//   })
-// })
+    await screen.findByText('7150stack')
+
+    await userEvent.click(await screen.findByRole('button', { name: /add/i }))
+    expect(await screen.findByRole('heading', { name: /switch/i } )).toBeVisible()
+  })
+})
+
