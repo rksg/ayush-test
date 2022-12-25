@@ -41,7 +41,8 @@ export default function SwitchesTable () {
       label: $t({ defaultMessage: 'Import from file' })
     }, {
       key: 'add-stack',
-      label: $t({ defaultMessage: 'Switch Stack' })
+      label: <TenantLink to='devices/switch/stack/add'>
+        {$t({ defaultMessage: 'Switch Stack' })}</TenantLink>
     }]}
   />
 
