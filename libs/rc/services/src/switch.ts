@@ -100,6 +100,15 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
+    addSwitch: build.mutation<Switch, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.addSwitch, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     importSwitches: build.mutation<{}, RequestFormData>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(SwitchUrlsInfo.importSwitches, params, {
@@ -109,6 +118,25 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         return {
           ...req,
           body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Switch', id: 'LIST' }]
+    }),
+    getSwitchList: build.query<TableResult<SwitchViewModel>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const switchListReq = createHttpRequest(SwitchUrlsInfo.getSwitchList, params)
+        return {
+          ...switchListReq,
+          body: payload
+        }
+      }
+    }),
+    addStackMember: build.mutation<{}, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.addStackMember, params)
+        return {
+          ...req
+          // body:
         }
       },
       invalidatesTags: [{ type: 'Switch', id: 'LIST' }]
@@ -201,7 +229,12 @@ export const {
   useDeleteSwitchesMutation,
   useSwitchDetailHeaderQuery,
   useImportSwitchesMutation,
+  useGetVlansByVenueQuery,
   useLazyGetVlansByVenueQuery,
   useSwitchPortlistQuery,
-  useSaveSwitchMutation
+  useSaveSwitchMutation,
+  useAddSwitchMutation,
+  useAddStackMemberMutation,
+  useGetSwitchListQuery,
+  useLazyGetSwitchListQuery
 } = switchApi

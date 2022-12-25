@@ -60,5 +60,9 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   addSwitch: {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/switch'
+  },
+  addStackMember: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/switch/:stackSerialNumber/member/:newStackMemberSerialNumber'
   }
 }

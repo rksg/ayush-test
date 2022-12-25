@@ -19,6 +19,7 @@ import EditEdge                   from './pages/Devices/Edge/EdgeDetails/EditEdg
 import { StackForm }              from './pages/Devices/Switch/StackForm'
 import SwitchDetails              from './pages/Devices/Switch/SwitchDetails'
 import SwitchesTable              from './pages/Devices/Switch/SwitchesTable'
+import { AddSwitchForm }          from './pages/Devices/Switch/SwitchForm/AddSwitchForm'
 import ApDetails                  from './pages/Devices/Wifi/ApDetails'
 import { ApEdit }                 from './pages/Devices/Wifi/ApEdit'
 import { ApForm }                 from './pages/Devices/Wifi/ApForm'
@@ -78,6 +79,7 @@ function DeviceRoutes () {
         element={<ApEdit />}
       />
       <Route path='devices/apgroups/:action' element={<ApGroupForm />} />
+      <Route path='devices/switch/:action' element={<AddSwitchForm />} />
       <Route
         path='devices/wifi/:serialNumber/details/:activeTab'
         element={<ApDetails />} />
