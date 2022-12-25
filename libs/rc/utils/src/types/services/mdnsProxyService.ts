@@ -13,7 +13,7 @@ export interface MdnsProxyScopeData {
 export interface MdnsProxyFormData {
   id?: string;
   name: string;
-  forwardingRules?: MdnsProxyForwardingRule[];
+  rules?: MdnsProxyForwardingRule[];
   scope?: MdnsProxyScopeData[];
 }
 

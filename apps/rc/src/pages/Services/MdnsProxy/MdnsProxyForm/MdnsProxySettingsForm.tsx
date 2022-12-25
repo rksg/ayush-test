@@ -16,7 +16,7 @@ import MdnsProxyFormContext from './MdnsProxyFormContext'
 export function MdnsProxySettingsForm () {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
-  const forwardingRules = Form.useWatch('forwardingRules')
+  const rules = Form.useWatch('rules')
   const { currentData } = useContext(MdnsProxyFormContext)
   const params = useParams()
   const id = Form.useWatch<string>('id', form)
@@ -30,13 +30,13 @@ export function MdnsProxySettingsForm () {
   const nameValidator = async (value: string) => {
     const list = (await mdnsProxyList({ params }).unwrap())
       .filter(mdnsProxy => mdnsProxy.id !== id)
-      .map(mdnsProxy => ({ serviceName: mdnsProxy.serviceName }))
+      .map(mdnsProxy => ({ serviceName: mdnsProxy.name }))
     // eslint-disable-next-line max-len
     return checkObjectNotExists(list, { serviceName: value } , $t({ defaultMessage: 'mDNS Proxy service' }))
   }
 
-  const handleSetForwardingRules = (rules: MdnsProxyForwardingRule[]) => {
-    form.setFieldValue('forwardingRules', rules)
+  const handleSetRules = (rules: MdnsProxyForwardingRule[]) => {
+    form.setFieldValue('rules', rules)
   }
 
   return (
@@ -60,13 +60,13 @@ export function MdnsProxySettingsForm () {
           children={<Input />}
         />
         <Form.Item
-          name='forwardingRules'
+          name='rules'
           label={$t({ defaultMessage: 'Forwarding Rules' })}
         >
           <MdnsProxyForwardingRulesTable
             readonly={false}
-            rules={forwardingRules}
-            setRules={handleSetForwardingRules}
+            rules={rules}
+            setRules={handleSetRules}
           />
         </Form.Item>
       </Col>

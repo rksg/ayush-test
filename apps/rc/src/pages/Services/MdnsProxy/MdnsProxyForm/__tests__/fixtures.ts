@@ -214,7 +214,7 @@ export const mockedEmptyApList = {
 
 export const mockedFormData: MdnsProxyFormData = {
   name: 'mDNS Proxy 123',
-  forwardingRules: mockedForwardingRules,
+  rules: mockedForwardingRules,
   scope: mockedScope
 }
 

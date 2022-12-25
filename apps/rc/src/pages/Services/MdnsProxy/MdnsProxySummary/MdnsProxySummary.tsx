@@ -38,7 +38,7 @@ export function MdnsProxySummary () {
             >
               <MdnsProxyForwardingRulesTable
                 readonly={true}
-                rules={currentData.forwardingRules}
+                rules={currentData.rules}
               />
             </Form.Item>
           </Col>

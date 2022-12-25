@@ -79,7 +79,7 @@ exports[`MdnsProxySettingsForm should render the form 1`] = `
             >
               <label
                 class=""
-                for="forwardingRules"
+                for="rules"
                 title="Forwarding Rules"
               >
                 Forwarding Rules

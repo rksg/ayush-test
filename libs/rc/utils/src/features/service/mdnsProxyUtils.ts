@@ -13,7 +13,7 @@ import {
 
 // eslint-disable-next-line max-len
 export function convertMdnsProxyFormDataToApiPayload (data: MdnsProxyFormData): MdnsProxyCreateApiPayload {
-  const convertedRules = convertMdnsProxyRule(data.forwardingRules)
+  const convertedRules = convertMdnsProxyRule(data.rules)
 
   return {
     serviceName: data.name,
@@ -34,7 +34,7 @@ export function convertApiPayloadToMdnsProxyFormData (response: MdnsProxyGetApiR
   return {
     id: response.id,
     name: response.serviceName,
-    forwardingRules: rules,
+    rules: rules,
     scope: extractScopeFromApiPayload(response.aps)
   }
 }

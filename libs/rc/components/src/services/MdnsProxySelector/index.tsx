@@ -49,7 +49,7 @@ export function MdnsProxySelector (props: MdnsProxySelectorProps) {
       </Form.Item>
       <MdnsProxyForwardingRulesTable
         readonly={true}
-        rules={selectedMdnsProxy?.forwardingRules}
+        rules={selectedMdnsProxy?.rules}
       />
     </>
   )

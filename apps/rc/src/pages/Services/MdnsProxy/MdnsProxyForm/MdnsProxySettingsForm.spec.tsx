@@ -9,52 +9,45 @@ import {
   MdnsProxyUrls,
   mdnsProxyRuleTypeLabelMapping
 } from '@acx-ui/rc/utils'
-import { Provider }                                       from '@acx-ui/store'
-import { mockServer, render, renderHook, screen, within } from '@acx-ui/test-utils'
+import { Provider }                               from '@acx-ui/store'
+import { mockServer, render, renderHook, screen } from '@acx-ui/test-utils'
 
-import { mockedForwardingRules, mockedMdnsProxyList } from './__tests__/fixtures'
-import MdnsProxyFormContext                           from './MdnsProxyFormContext'
-import { MdnsProxySettingsForm }                      from './MdnsProxySettingsForm'
+import { mockedMdnsProxyList }   from './__tests__/fixtures'
+import { MdnsProxySettingsForm } from './MdnsProxySettingsForm'
 
 
 describe('MdnsProxySettingsForm', () => {
   mockServer.use(
     rest.get(
       MdnsProxyUrls.getMdnsProxyList.url,
-      (req, res, ctx) => res(ctx.json({ ...mockedMdnsProxyList }))
+      (req, res, ctx) => res(ctx.json([...mockedMdnsProxyList]))
     )
   )
 
-  it('should render the form', () => {
-    const { asFragment } = render(
-      <Provider>
-        <Form><MdnsProxySettingsForm /></Form>
-      </Provider>
-    )
-
-    expect(asFragment()).toMatchSnapshot()
-  })
-
-  it('should create forwarding rule', async () => {
+  it('should set the fields value', async () => {
     const ruleToAdd: MdnsProxyForwardingRule = {
       service: BridgeServiceEnum.AIRPLAY,
       fromVlan: 1,
       toVlan: 2
     }
 
-    const { result: fakeRuleTypeLabel } = renderHook(() => {
+    const { result: ruleToAddTypeLabel } = renderHook(() => {
       return useIntl().$t(mdnsProxyRuleTypeLabelMapping[ruleToAdd.service])
     })
 
     render(
       <Provider>
         <Form><MdnsProxySettingsForm /></Form>
-      </Provider>
+      </Provider>, {
+        route: { params: { tenantId: '__tenant_ID__' }, path: '/:tenantId/' }
+      }
     )
+
+    await userEvent.type(await screen.findByRole('textbox', { name: /Service Name/i }), 'Test')
 
     await userEvent.click(await screen.findByRole('button', { name: 'Add Rule' }))
     await userEvent.click(await screen.findByRole('combobox', { name: 'Type' }))
-    await userEvent.click(screen.getByText(fakeRuleTypeLabel.current))
+    await userEvent.click(screen.getByText(ruleToAddTypeLabel.current))
 
     await userEvent.type(
       screen.getByRole('spinbutton', { name: /From VLAN/i }),
@@ -67,105 +60,8 @@ describe('MdnsProxySettingsForm', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Add' }))
 
     // Check if the created data can be found in the table
-    await screen.findByRole('cell', { name: fakeRuleTypeLabel.current })
+    await screen.findByRole('cell', { name: ruleToAddTypeLabel.current })
     await screen.findByRole('cell', { name: ruleToAdd.fromVlan.toString() })
     await screen.findByRole('cell', { name: ruleToAdd.toVlan.toString() })
-  })
-
-  it('should edit forwarding rule', async () => {
-    const ruleAfterEdit: MdnsProxyForwardingRule = {
-      service: BridgeServiceEnum.AIRPORT_MANAGEMENT,
-      fromVlan: 77,
-      toVlan: 88
-    }
-    const { result: ruleAfterEditTypeLabel } = renderHook(() => {
-      return useIntl().$t(mdnsProxyRuleTypeLabelMapping[ruleAfterEdit.service])
-    })
-
-    const dataSource = mockedForwardingRules.slice(0, 1)
-
-    render(
-      <Provider>
-        <MdnsProxyFormContext.Provider
-          value={{
-            editMode: false,
-            currentData: {
-              name: 'mDNS Proxy 123',
-              forwardingRules: dataSource
-            }
-          }}>
-          <Form>
-            <MdnsProxySettingsForm />
-          </Form>
-        </MdnsProxyFormContext.Provider>
-      </Provider>
-    )
-
-    const targetRule: MdnsProxyForwardingRule = dataSource[0]
-    const { result: targetRuleTypeLabel } = renderHook(() => {
-      return useIntl().$t(mdnsProxyRuleTypeLabelMapping[targetRule.service])
-    })
-
-    // eslint-disable-next-line max-len
-    const targetRow = await screen.findByRole('row', { name: new RegExp(targetRuleTypeLabel.current) })
-
-    await userEvent.click(within(targetRow).getByRole('radio'))
-    await userEvent.click(await screen.findByRole('button', { name: /Edit/i }))
-
-    await userEvent.click(await screen.findByRole('combobox', { name: 'Type' }))
-    await userEvent.click(screen.getByText(ruleAfterEditTypeLabel.current))
-
-    const fromVlanInput = screen.getByRole('spinbutton', { name: /From VLAN/i })
-    await userEvent.clear(fromVlanInput)
-    await userEvent.type(fromVlanInput, ruleAfterEdit.fromVlan.toString())
-
-    const toVlanInput = screen.getByRole('spinbutton', { name: /To VLAN/i })
-    await userEvent.clear(toVlanInput)
-    await userEvent.type(toVlanInput, ruleAfterEdit.toVlan.toString())
-
-    await userEvent.click(screen.getByRole('button', { name: 'Save' }))
-
-    await screen.findByRole('cell', { name: ruleAfterEditTypeLabel.current })
-    await screen.findByRole('cell', { name: ruleAfterEdit.fromVlan.toString() })
-    await screen.findByRole('cell', { name: ruleAfterEdit.toVlan.toString() })
-  })
-
-  it('should delete forwarding rule', async () => {
-    render(
-      <Provider>
-        <MdnsProxyFormContext.Provider
-          value={{
-            editMode: false,
-            currentData: {
-              name: 'mDNS Proxy 123',
-              forwardingRules: mockedForwardingRules
-            }
-          }}>
-          <Form>
-            <MdnsProxySettingsForm />
-          </Form>
-        </MdnsProxyFormContext.Provider>
-      </Provider>
-    )
-
-    const targetRule: MdnsProxyForwardingRule = mockedForwardingRules[1]
-    const { result: targetRuleTypeLabel } = renderHook(() => {
-      return useIntl().$t(mdnsProxyRuleTypeLabelMapping[targetRule.service])
-    })
-
-    // eslint-disable-next-line max-len
-    const targetRow = await screen.findByRole('row', { name: new RegExp(targetRuleTypeLabel.current) })
-
-    await userEvent.click(within(targetRow).getByRole('radio'))
-    await userEvent.click(await screen.findByRole('button', { name: /Delete/i }))
-
-    // eslint-disable-next-line max-len
-    expect(await screen.findByText('Delete "' + targetRuleTypeLabel.current + '"?')).toBeInTheDocument()
-    await userEvent.click(await screen.findByRole('button', { name: /Delete Rule/i }))
-
-
-    // eslint-disable-next-line max-len
-    const targetAfterDelete = screen.queryByRole('cell', { name: targetRuleTypeLabel.current })
-    expect(targetAfterDelete).toBeNull()
   })
 })
