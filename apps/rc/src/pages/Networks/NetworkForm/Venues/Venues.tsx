@@ -104,6 +104,32 @@ export function Venues () {
   //   visible: false
   // })
 
+  // TODO: Need query this API to display the data for edit mode
+  // const networkApGroupsQuery = useGetNetworkApGroupsQuery({ params: { tenantId },
+  //   payload: [{
+  //     networkId: networkVenue?.networkId,
+  //     ssids: [wlan?.ssid],
+  //     venueId: networkVenue?.venueId
+  //   }]
+  // }, { skip: !networkVenue || !wlan })
+  // if (venue) { //RC code
+  //   venue.deepVenue = venueApGroup;
+  //   if (this.network && this.network.venues) {
+  //     const deepVenueData = this.network.venues.find(x => x.venueId === venue.id);
+  //     if (deepVenueData) {
+  //       // make sure the vlanPoolId and vlanPoolName will keep in the deepVenueData for override later
+  //       if (deepVenueData.apGroups && venue.deepVenue.apGroups) {
+  //         venue.deepVenue.apGroups.forEach((apGroup, idx) => {
+  //           if (deepVenueData.apGroups[idx] && apGroup.vlanPoolId) {
+  //             _.assign(deepVenueData.apGroups[idx], apGroup);
+  //           }
+  //         })
+  //       }
+  //       venue.deepVenue = deepVenueData;
+  //     }
+  //   }
+
+
   const handleVenueSaveData = (selectedRows: Venue[]) => {
     const defaultSetup = {
       apGroups: [],
