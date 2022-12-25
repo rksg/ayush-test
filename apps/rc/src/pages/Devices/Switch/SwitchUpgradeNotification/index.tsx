@@ -1,7 +1,8 @@
 /* eslint-disable max-len */
 import { useIntl } from 'react-intl'
 
-import * as UI from './styledComponents'
+import * as UI                     from './styledComponents'
+import { SwitchRequirementsModal } from './switchRequirementsModal'
 
 const modelNeedUpgrade = {
   stack: ['ICX7150-C10ZP', 'ICX7150-24F'],
@@ -81,6 +82,7 @@ export function SwitchUpgradeNotification (props: {
 
       </UI.Content>
     </UI.Wrapper>
+    <SwitchRequirementsModal/>
   </UI.UpgradeNotification> : <></>
 
 }
