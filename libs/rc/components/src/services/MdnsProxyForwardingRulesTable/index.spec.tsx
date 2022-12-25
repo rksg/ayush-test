@@ -3,14 +3,12 @@ import { useIntl } from 'react-intl'
 
 import {
   MdnsProxyForwardingRule,
-  BridgeServiceEnum
+  BridgeServiceEnum,
+  mdnsProxyRuleTypeLabelMapping
 } from '@acx-ui/rc/utils'
 import { render, renderHook, screen, within } from '@acx-ui/test-utils'
 
-import { mdnsProxyForwardingRuleTypeLabelMapping as ruleTypeLabelMapping } from '../../contentsMap'
-
-import { mockedForwardingRules }         from './__tests__/fixtures'
-import { MdnsProxyForwardingRulesTable } from './MdnsProxyForwardingRulesTable'
+import { MdnsProxyForwardingRulesTable } from '.'
 
 
 jest.mock('antd', () => {
@@ -36,34 +34,44 @@ jest.mock('antd', () => {
   return { ...antd, Select }
 })
 
+export const mockedForwardingRules: MdnsProxyForwardingRule[] = [
+  {
+    id: '__UUID__rule1',
+    service: BridgeServiceEnum.AIRPLAY,
+    fromVlan: 10,
+    toVlan: 20
+  },
+  {
+    id: '__UUID__rule2',
+    service: BridgeServiceEnum.APPLETV,
+    fromVlan: 21,
+    toVlan: 30
+  }
+]
 
 describe('MdnsProxyForwardingRulesTable', () => {
   it('should render the table with the given data', async () => {
-    const { asFragment } = render(<MdnsProxyForwardingRulesTable rules={mockedForwardingRules} />)
-
-    expect(asFragment()).toMatchSnapshot()
+    render(<MdnsProxyForwardingRulesTable rules={mockedForwardingRules} />)
 
     const { result: targetTypeLabel } = renderHook(() => {
       const { $t } = useIntl()
-      return $t(ruleTypeLabelMapping[mockedForwardingRules[0].service])
+      return $t(mdnsProxyRuleTypeLabelMapping[mockedForwardingRules[0].service])
     })
 
     await screen.findByRole('row', { name: new RegExp(targetTypeLabel.current) })
   })
 
   it('should render the readonly table', async () => {
-    const { asFragment } = render(
+    render(
       <MdnsProxyForwardingRulesTable
         rules={mockedForwardingRules}
         readonly={true}
       />
     )
 
-    expect(asFragment()).toMatchSnapshot()
-
     const { result: targetTypeLabel } = renderHook(() => {
       const { $t } = useIntl()
-      return $t(ruleTypeLabelMapping[mockedForwardingRules[0].service])
+      return $t(mdnsProxyRuleTypeLabelMapping[mockedForwardingRules[0].service])
     })
 
     const targetRow = await screen.findByRole('row', { name: new RegExp(targetTypeLabel.current) })
@@ -81,7 +89,7 @@ describe('MdnsProxyForwardingRulesTable', () => {
     }
 
     const { result: fakeRuleTypeLabel } = renderHook(() => {
-      return useIntl().$t(ruleTypeLabelMapping[ruleToAdd.service])
+      return useIntl().$t(mdnsProxyRuleTypeLabelMapping[ruleToAdd.service])
     })
 
     render(

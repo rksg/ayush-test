@@ -5,11 +5,11 @@ import { useIntl }               from 'react-intl'
 import { useParams }             from 'react-router-dom'
 
 import { StepsForm }                                     from '@acx-ui/components'
+import { MdnsProxyForwardingRulesTable }                 from '@acx-ui/rc/components'
 import { useLazyGetMdnsProxyListQuery }                  from '@acx-ui/rc/services'
 import { checkObjectNotExists, MdnsProxyForwardingRule } from '@acx-ui/rc/utils'
 
-import MdnsProxyFormContext              from './MdnsProxyFormContext'
-import { MdnsProxyForwardingRulesTable } from './MdnsProxyForwardingRulesTable'
+import MdnsProxyFormContext from './MdnsProxyFormContext'
 
 
 

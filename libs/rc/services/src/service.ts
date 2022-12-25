@@ -5,9 +5,8 @@ import {
   FetchBaseQueryError,
   FetchBaseQueryMeta
 } from '@reduxjs/toolkit/query/react'
-import _                from 'lodash'
-import { Params }       from 'react-router-dom'
-import { v4 as uuidv4 } from 'uuid'
+import _          from 'lodash'
+import { Params } from 'react-router-dom'
 
 import {
   CommonUrlsInfo,
@@ -24,7 +23,6 @@ import {
   DHCPDetailInstances,
   WifiCallingUrls,
   WifiUrlsInfo,
-  MdnsProxyForwardingRule,
   WifiCallingFormContextType,
   WifiCallingSetting,
   DpskSaveData,
@@ -253,28 +251,19 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       },
       transformResponse (response: MdnsProxyGetApiResponse) {
-        const result = convertApiPayloadToMdnsProxyFormData(response)
-
-        if (!result.forwardingRules) {
-          return result
-        }
-
-        result.forwardingRules = result.forwardingRules.map((rule: MdnsProxyForwardingRule) => {
-          return {
-            ...rule,
-            id: uuidv4()
-          }
-        })
-        return result
+        return convertApiPayloadToMdnsProxyFormData(response)
       },
-      providesTags: [{ type: 'Service', id: 'DETAIL' }]
+      providesTags: [{ type: 'MdnsProxy', id: 'DETAIL' }]
     }),
-    getMdnsProxyList: build.query<MdnsProxyGetApiResponse[], RequestPayload>({
+    getMdnsProxyList: build.query<MdnsProxyFormData[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(MdnsProxyUrls.getMdnsProxyList, params)
         return {
           ...req
         }
+      },
+      transformResponse (response: MdnsProxyGetApiResponse[]) {
+        return response.map(result => convertApiPayloadToMdnsProxyFormData(result))
       },
       providesTags: [{ type: 'MdnsProxy', id: 'LIST' }, { type: 'Service', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
@@ -304,7 +293,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           body: convertedPayload
         }
       },
-      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+      invalidatesTags: [{ type: 'MdnsProxy', id: 'LIST' }]
     }),
     deleteMdnsProxy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
@@ -313,7 +302,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           ...req
         }
       },
-      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+      invalidatesTags: [{ type: 'MdnsProxy', id: 'LIST' }]
     }),
     deleteMdnsProxyList: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
@@ -334,7 +323,17 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           body: convertedPayload
         }
       },
-      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+      invalidatesTags: [{ type: 'MdnsProxy', id: 'LIST' }]
+    }),
+    addMdnsProxyAps: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MdnsProxyUrls.addMdnsProxyAps, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'MdnsProxyAp', id: 'LIST' }]
     }),
     deleteMdnsProxyAps: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -534,10 +533,12 @@ export const {
   useGetDHCPProfileListQuery,
   useGetMdnsProxyQuery,
   useLazyGetMdnsProxyListQuery,
+  useGetMdnsProxyListQuery,
   useAddMdnsProxyMutation,
   useUpdateMdnsProxyMutation,
   useDeleteMdnsProxyMutation,
   useDeleteMdnsProxyListMutation,
+  useAddMdnsProxyApsMutation,
   useDeleteMdnsProxyApsMutation,
   useGetMdnsProxyApsQuery,
   useDeleteWifiCallingServiceMutation,

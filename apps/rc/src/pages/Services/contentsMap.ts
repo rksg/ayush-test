@@ -1,7 +1,6 @@
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
 import {
-  BridgeServiceEnum,
   ServiceAdminState,
   ServiceStatus,
   ServiceTechnology,
@@ -38,39 +37,4 @@ export const serviceStatusLabelMapping: Record<ServiceStatus, MessageDescriptor>
 export const serviceAdminStateLabelMapping: Record<ServiceAdminState, MessageDescriptor> = {
   [ServiceAdminState.ENABLED]: defineMessage({ defaultMessage: 'Enabled' }),
   [ServiceAdminState.DISABLED]: defineMessage({ defaultMessage: 'Disabled' })
-}
-
-// eslint-disable-next-line max-len
-export const mdnsProxyForwardingRuleTypeLabelMapping: Record<BridgeServiceEnum, MessageDescriptor> = {
-  [BridgeServiceEnum.AIRDISK]: defineMessage({ defaultMessage: 'AirDisk' }),
-  [BridgeServiceEnum.AIRPLAY]: defineMessage({ defaultMessage: 'AirPlay' }),
-  // eslint-disable-next-line max-len
-  [BridgeServiceEnum.AIRPORT_MANAGEMENT]: defineMessage({ defaultMessage: 'Airport Management' }),
-  [BridgeServiceEnum.AIRPRINT]: defineMessage({ defaultMessage: 'AirPrint' }),
-  [BridgeServiceEnum.AIRTUNES]: defineMessage({ defaultMessage: 'AirTunes' }),
-  [BridgeServiceEnum.APPLETV]: defineMessage({ defaultMessage: 'Apple TV' }),
-  // eslint-disable-next-line max-len
-  [BridgeServiceEnum.APPLE_FILE_SHARING]: defineMessage({ defaultMessage: 'Apple File Sharing' }),
-  // eslint-disable-next-line max-len
-  [BridgeServiceEnum.APPLE_MOBILE_DEVICES]: defineMessage({ defaultMessage: 'Apple Mobile Devices' }),
-  // eslint-disable-next-line max-len
-  [BridgeServiceEnum.GOOGLE_CHROMECAST]: defineMessage({ defaultMessage: 'Google Chromecast' }),
-  [BridgeServiceEnum.ICLOUD_SYNC]: defineMessage({ defaultMessage: 'iCloud Sync' }),
-  // eslint-disable-next-line max-len
-  [BridgeServiceEnum.ITUNES_REMOTE]: defineMessage({ defaultMessage: 'iTunes Remote' }),
-  // eslint-disable-next-line max-len
-  [BridgeServiceEnum.ITUNES_SHARING]: defineMessage({ defaultMessage: 'iTunes Sharing' }),
-  // eslint-disable-next-line max-len
-  [BridgeServiceEnum.OPEN_DIRECTORY_MASTER]: defineMessage({ defaultMessage: 'Open Directory Master' }),
-  // eslint-disable-next-line max-len
-  [BridgeServiceEnum.OPTICAL_DISK_SHARING]: defineMessage({ defaultMessage: 'Optical Disk Sharing' }),
-  [BridgeServiceEnum.OTHER]: defineMessage({ defaultMessage: 'Other' }),
-  // eslint-disable-next-line max-len
-  [BridgeServiceEnum.SCREEN_SHARING]: defineMessage({ defaultMessage: 'Screen Sharing' }),
-  // eslint-disable-next-line max-len
-  [BridgeServiceEnum.SECURE_FILE_SHARING]: defineMessage({ defaultMessage: 'Secure File Sharing' }),
-  [BridgeServiceEnum.SECURE_SHELL]: defineMessage({ defaultMessage: 'Secure Shell' }),
-  [BridgeServiceEnum.WWW_HTTP]: defineMessage({ defaultMessage: 'WWW HTTP' }),
-  [BridgeServiceEnum.WWW_HTTPS]: defineMessage({ defaultMessage: 'WWW HTTPs' }),
-  [BridgeServiceEnum.XGRID]: defineMessage({ defaultMessage: 'Xgrid' })
 }

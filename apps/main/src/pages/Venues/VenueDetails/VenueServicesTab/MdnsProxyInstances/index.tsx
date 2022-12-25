@@ -1,8 +1,13 @@
+import { useState } from 'react'
+
 import { Switch }  from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Loader, showActionModal, Table, TableProps }             from '@acx-ui/components'
-import { useGetMdnsProxyApsQuery, useDeleteMdnsProxyApsMutation } from '@acx-ui/rc/services'
+import { Loader, showActionModal, Table, TableProps } from '@acx-ui/components'
+import {
+  useGetMdnsProxyApsQuery,
+  useDeleteMdnsProxyApsMutation
+} from '@acx-ui/rc/services'
 import {
   getServiceDetailsLink,
   MdnsProxyAp,
@@ -12,26 +17,37 @@ import {
 }   from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
-import * as UI from './styledComponents'
+import AddMdnsProxyInstanceDrawer from './AddMdnsProxyInstanceDrawer'
+import ChangeMdnsProxyDrawer      from './ChangeMdnsProxyDrawer'
+import * as UI                    from './styledComponents'
 
 export default function MdnsProxyInstances () {
   const { $t } = useIntl()
   const params = useParams()
   const [ deleteInstances ] = useDeleteMdnsProxyApsMutation()
+  const [ changeServiceDrawerVisible, setChangeServiceDrawerVisible ] = useState(false)
+  const [ addInstanceDrawerVisible, setAddInstanceDrawerVisible ] = useState(false)
+  const [ selectedApIds, setSelectedApIds ] = useState<string[]>([])
+  const [ selectedServiceId, setSelectedServiceId ] = useState<string>()
 
   const tableQuery = useTableQuery({
     useQuery: useGetMdnsProxyApsQuery,
     defaultPayload: {}
   })
 
-  // const handleAddAction = () => {
-  // }
+  const handleAddAction = () => {
+    setAddInstanceDrawerVisible(true)
+  }
 
   const rowActions: TableProps<MdnsProxyAp>['rowActions'] = [
-    // {
-    //   label: $t({ defaultMessage: 'Change' }),
-    //   onClick: () => {}
-    // },
+    {
+      label: $t({ defaultMessage: 'Change' }),
+      onClick: (rows: MdnsProxyAp[]) => {
+        setSelectedApIds(rows.map(r => r.serialNumber))
+        setSelectedServiceId(rows[0].serviceId)
+        setChangeServiceDrawerVisible(true)
+      }
+    },
     {
       label: $t({ defaultMessage: 'Remove' }),
       onClick: (rows: MdnsProxyAp[], clearSelection) => {
@@ -120,16 +136,27 @@ export default function MdnsProxyInstances () {
         <Table<MdnsProxyAp>
           columns={columns}
           dataSource={tableQuery.data?.data}
-          // actions={[{
-          //   label: $t({ defaultMessage: 'Add Instance' }),
-          //   onClick: handleAddAction
-          // }]}
+          actions={[{
+            label: $t({ defaultMessage: 'Add Instance' }),
+            onClick: handleAddAction
+          }]}
           onChange={tableQuery.handleTableChange}
           rowKey='serialNumber'
           rowActions={rowActions}
           rowSelection={{ type: 'radio' }}
         />
       </Loader>
+      <AddMdnsProxyInstanceDrawer
+        visible={addInstanceDrawerVisible}
+        setVisible={setAddInstanceDrawerVisible}
+        venueId={params.venueId}
+      />
+      <ChangeMdnsProxyDrawer
+        visible={changeServiceDrawerVisible}
+        setVisible={setChangeServiceDrawerVisible}
+        apSerialNumberList={selectedApIds}
+        initialServiceId={selectedServiceId}
+      />
     </>
   )
 }

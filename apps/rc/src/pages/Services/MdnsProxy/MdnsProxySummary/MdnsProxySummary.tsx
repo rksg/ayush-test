@@ -3,10 +3,10 @@ import { useContext } from 'react'
 import { Col, Form, Row, Space } from 'antd'
 import { useIntl }               from 'react-intl'
 
-import { StepsForm, Subtitle } from '@acx-ui/components'
+import { StepsForm, Subtitle }           from '@acx-ui/components'
+import { MdnsProxyForwardingRulesTable } from '@acx-ui/rc/components'
 
-import MdnsProxyFormContext              from '../MdnsProxyForm/MdnsProxyFormContext'
-import { MdnsProxyForwardingRulesTable } from '../MdnsProxyForm/MdnsProxyForwardingRulesTable'
+import MdnsProxyFormContext from '../MdnsProxyForm/MdnsProxyFormContext'
 
 import { MdnsProxySummaryVenues } from './MdnsProxySummaryVenue'
 

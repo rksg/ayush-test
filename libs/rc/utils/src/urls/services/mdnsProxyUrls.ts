@@ -25,6 +25,10 @@ export const MdnsProxyUrls: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/api/tenant/:tenantId/wifi/mDnsProxyServiceProfiles'
   },
+  addMdnsProxyAps: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/mDnsProxyServiceProfiles/:serviceId/aps'
+  },
   deleteMdnsProxyAps: {
     method: 'delete',
     url: '/api/tenant/:tenantId/wifi/mDnsProxyServiceProfiles/:serviceId/aps'

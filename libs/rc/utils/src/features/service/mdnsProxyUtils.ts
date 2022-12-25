@@ -1,4 +1,5 @@
-import _ from 'lodash'
+import _                from 'lodash'
+import { v4 as uuidv4 } from 'uuid'
 
 import { BonjourGatewayRule } from '../../models/BonjourGatewayRule'
 import {
@@ -8,6 +9,7 @@ import {
   MdnsProxyGetApiResponse,
   MdnsProxyScopeData
 } from '../../types/services'
+
 
 // eslint-disable-next-line max-len
 export function convertMdnsProxyFormDataToApiPayload (data: MdnsProxyFormData): MdnsProxyCreateApiPayload {
@@ -22,10 +24,17 @@ export function convertMdnsProxyFormDataToApiPayload (data: MdnsProxyFormData): 
 
 // eslint-disable-next-line max-len
 export function convertApiPayloadToMdnsProxyFormData (response: MdnsProxyGetApiResponse): MdnsProxyFormData {
+  const rules = (response.rules ?? []).map((rule: MdnsProxyForwardingRule) => {
+    return {
+      ...rule,
+      id: uuidv4()
+    }
+  })
+
   return {
     id: response.id,
     name: response.serviceName,
-    forwardingRules: response.rules,
+    forwardingRules: rules,
     scope: extractScopeFromApiPayload(response.aps)
   }
 }

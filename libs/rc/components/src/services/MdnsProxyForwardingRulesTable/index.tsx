@@ -3,12 +3,14 @@ import { useState } from 'react'
 import { useIntl }      from 'react-intl'
 import { v4 as uuidv4 } from 'uuid'
 
-import { showActionModal, Table, TableProps }         from '@acx-ui/components'
-import { MdnsProxyForwardingRule, BridgeServiceEnum } from '@acx-ui/rc/utils'
+import { showActionModal, Table, TableProps } from '@acx-ui/components'
+import {
+  MdnsProxyForwardingRule,
+  BridgeServiceEnum,
+  mdnsProxyRuleTypeLabelMapping
+} from '@acx-ui/rc/utils'
 
-import { mdnsProxyForwardingRuleTypeLabelMapping as ruleTypeLabelMapping } from '../../contentsMap'
-
-import { MdnsProxyForwardingRuleDrawer } from './MdnsProxyForwardingRuleDrawer'
+import { MdnsProxyForwardingRuleDrawer } from '../MdnsProxyForwardingRuleDrawer'
 
 interface MdnsProxyForwardingRulesTableProps {
   readonly?: boolean;
@@ -46,9 +48,9 @@ export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTa
   const getRuleTypeLabel = (rule: MdnsProxyForwardingRule): string => {
     if (rule.service === BridgeServiceEnum.OTHER) {
       // eslint-disable-next-line max-len
-      return `_${rule.mdnsName}._${rule.mdnsProtocol?.toLowerCase()} (${$t(ruleTypeLabelMapping[rule.service])})`
+      return `_${rule.mdnsName}._${rule.mdnsProtocol?.toLowerCase()} (${$t(mdnsProxyRuleTypeLabelMapping[rule.service])})`
     }
-    return $t(ruleTypeLabelMapping[rule.service])
+    return $t(mdnsProxyRuleTypeLabelMapping[rule.service])
   }
 
   const columns: TableProps<MdnsProxyForwardingRule>['columns'] = [

@@ -28,6 +28,8 @@ export { ClientHealthIcon } from './ClientHealthIcon'
 export { ActivityTable } from './ActivityTable'
 export { AdminLogTable } from './AdminLogTable'
 export { EventTable } from './EventTable'
+export { ApSelector } from './ApSelector'
 
+export * from './services'
 export * from './pipes/apGroupPipes'
 export * from './ExpirationDateSelector'

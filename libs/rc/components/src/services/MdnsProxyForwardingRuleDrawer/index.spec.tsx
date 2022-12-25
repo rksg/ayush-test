@@ -4,13 +4,14 @@ import userEvent   from '@testing-library/user-event'
 import { act }     from 'react-dom/test-utils'
 import { useIntl } from 'react-intl'
 
-import { MdnsProxyForwardingRule, BridgeServiceEnum } from '@acx-ui/rc/utils'
-import { render, renderHook, screen }                 from '@acx-ui/test-utils'
+import {
+  MdnsProxyForwardingRule,
+  BridgeServiceEnum,
+  mdnsProxyRuleTypeLabelMapping
+} from '@acx-ui/rc/utils'
+import { render, renderHook, screen } from '@acx-ui/test-utils'
 
-
-import { mdnsProxyForwardingRuleTypeLabelMapping as ruleTypeLabelMapping } from '../../contentsMap'
-
-import { MdnsProxyForwardingRuleDrawer } from './MdnsProxyForwardingRuleDrawer'
+import { MdnsProxyForwardingRuleDrawer } from '.'
 
 jest.mock('antd', () => {
   const antd = jest.requireActual('antd')
@@ -36,19 +37,6 @@ jest.mock('antd', () => {
 })
 
 describe('MdnsProxyForwardingRuleDrawer', () => {
-  it('should render the form', () => {
-    const { asFragment } = render(
-      <MdnsProxyForwardingRuleDrawer
-        editMode={false}
-        visible={true}
-        setVisible={jest.fn()}
-        setRule={jest.fn()}
-      />
-    )
-
-    expect(asFragment()).toMatchSnapshot()
-  })
-
   it('should close drawer', async () => {
     const { result: drawerVisible } = renderHook(() => {
       const [ visible, setVisible ] = useState(true)
@@ -84,7 +72,7 @@ describe('MdnsProxyForwardingRuleDrawer', () => {
     const setRule = jest.fn()
 
     const { result: fakeRuleTypeLabel } = renderHook(() => {
-      return useIntl().$t(ruleTypeLabelMapping[ruleToAdd.service])
+      return useIntl().$t(mdnsProxyRuleTypeLabelMapping[ruleToAdd.service])
     })
 
     render(
@@ -123,7 +111,7 @@ describe('MdnsProxyForwardingRuleDrawer', () => {
 
   it('should render the related fields when rule type is OTHER', async () => {
     const { result: fakeRuleTypeLabel } = renderHook(() => {
-      return useIntl().$t(ruleTypeLabelMapping[BridgeServiceEnum.OTHER])
+      return useIntl().$t(mdnsProxyRuleTypeLabelMapping[BridgeServiceEnum.OTHER])
     })
 
     render(

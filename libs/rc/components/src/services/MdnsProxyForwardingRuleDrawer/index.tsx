@@ -8,11 +8,10 @@ import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 import {
   MdnsProxyForwardingRule,
   BridgeServiceEnum,
-  BridgeServiceProtocolEnum
+  BridgeServiceProtocolEnum,
+  mdnsProxyRuleTypeLabelMapping
 } from '@acx-ui/rc/utils'
 import { validationMessages } from '@acx-ui/utils'
-
-import { mdnsProxyForwardingRuleTypeLabelMapping as ruleTypeLabelMapping } from '../../contentsMap'
 
 export interface MdnsProxyForwardingRuleDrawerProps {
   rule?: MdnsProxyForwardingRule;
@@ -142,10 +141,10 @@ function ForwardingRuleForm (props: ForwardingRuleFormProps) {
         <Select
           placeholder={$t({ defaultMessage: 'Select Type...' })}
           children={
-            Object.keys(ruleTypeLabelMapping).map((key) => {
+            Object.keys(mdnsProxyRuleTypeLabelMapping).map((key) => {
               return (
                 <Option key={key} value={key}>
-                  {$t(ruleTypeLabelMapping[key as BridgeServiceEnum])}
+                  {$t(mdnsProxyRuleTypeLabelMapping[key as BridgeServiceEnum])}
                 </Option>
               )
             })
