@@ -64,12 +64,12 @@ export function CustomDrawer () {
       showLoadingOnSave={showLoadingOnSave}
       onCancel={resetFields}
       onSave={async () => {
-        form.submit()
-
         if (showLoadingOnSave) {
           // Sleep 5 seconds to observe the loading indicator
           await new Promise(r => setTimeout(r, 5000))
         }
+
+        form.submit()
       }}
     />
   )
