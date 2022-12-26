@@ -1,19 +1,24 @@
-import { useState, useContext, useEffect } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
-import { Radio, RadioChangeEvent, Space } from 'antd'
+import { Radio, RadioChangeEvent, Space, Typography } from 'antd'
 import {
   Col,
   Form,
-  InputNumber,
   Row,
   Select
 } from 'antd'
-import { FormattedMessage, useIntl } from 'react-intl'
+import { DefaultOptionType } from 'antd/lib/select'
+import { useIntl }           from 'react-intl'
 
-import { StepsForm, Subtitle, Tooltip }                             from '@acx-ui/components'
-import { QuestionMarkCircleOutlined }                               from '@acx-ui/icons'
-import { WlanSecurityEnum, PassphraseFormatEnum, DpskNetworkType,
-  transformDpskNetwork, PassphraseExpirationEnum, NetworkSaveData }      from '@acx-ui/rc/utils'
+import { Button, StepsForm } from '@acx-ui/components'
+import { useDpskListQuery }  from '@acx-ui/rc/services'
+import {
+  WlanSecurityEnum,
+  NetworkSaveData,
+  DpskSaveData,
+  transformDpskNetwork,
+  DpskNetworkType
+} from '@acx-ui/rc/utils'
 
 import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext from '../NetworkFormContext'
@@ -34,7 +39,7 @@ export function DpskSettingsForm (props: {
     if((editMode || cloneMode) && data){
       form.setFieldsValue({
         isCloudpathEnabled: data.isCloudpathEnabled,
-        dpskPassphraseGeneration: data?.dpskPassphraseGeneration,
+        dpskServiceProfileId: data?.dpskServiceProfileId,
         dpskWlanSecurity: data?.wlan?.wlanSecurity
       })
     }
@@ -44,7 +49,7 @@ export function DpskSettingsForm (props: {
     <Row gutter={20}>
       <Col span={10}>
         <SettingsForm />
-        {!(editMode) && <NetworkMoreSettingsForm wlanData={props.saveState} />}
+        {!editMode && <NetworkMoreSettingsForm wlanData={props.saveState} />}
       </Col>
       <Col span={14} style={{ height: '100%' }}>
         <NetworkDiagram />
@@ -57,18 +62,11 @@ function SettingsForm () {
   const form = Form.useFormInstance()
   const { editMode, data, setData } = useContext(NetworkFormContext)
   const { $t } = useIntl()
-  const [
-    isCloudpathEnabled
-  ] = [
-    useWatch('isCloudpathEnabled')
-  ]
+  const isCloudpathEnabled = useWatch('isCloudpathEnabled')
 
   const onCloudPathChange = (e: RadioChangeEvent) => {
-    if(e.target.value){
-      form.setFieldsValue({
-        cloudpathServerId: ''
-      })
-    }
+    form.setFieldValue(e.target.value ? 'dpskServiceProfileId' : 'cloudpathServerId', '')
+
     setData && setData({ ...data, isCloudpathEnabled: e.target.value })
   }
 
@@ -106,121 +104,88 @@ function SettingsForm () {
         </Form.Item>
       </div>
       <div>
-        {isCloudpathEnabled ? <><CloudpathServerForm /><PassphraseGeneration /></> :
-          <PassphraseGeneration />}
+        {isCloudpathEnabled ? <CloudpathServerForm /> : <DpskServiceSelector />}
       </div>
     </Space>
   )
 }
 
-function PassphraseGeneration () {
-  const [
-    isCloudpathEnabled
-  ] = [
-    useWatch('isCloudpathEnabled')
-  ]
+function DpskServiceSelector () {
   const intl = useIntl()
   const $t = intl.$t
-  const [state, updateState] = useState<NetworkSaveData>({
-    dpskPassphraseGeneration: {
-      format: PassphraseFormatEnum.MOST_SECURED,
-      length: 18,
-      expiration: PassphraseExpirationEnum.UNLIMITED
+  const [ dpskOptions, setDpskOptions ] = useState<DefaultOptionType[]>([])
+  const [ selectedDpsk, setSelectedDpsk ] = useState<DpskSaveData>()
+  const { data: dpskList } = useDpskListQuery({})
+  const dpskServiceProfileId = useWatch('dpskServiceProfileId')
+
+  const findService = (serviceId: string) => {
+    return dpskList?.content.find((dpsk: DpskSaveData) => dpsk.id === serviceId)
+  }
+
+  useEffect(() => {
+    if (dpskList?.content) {
+      setDpskOptions(dpskList.content.map((dpsk: DpskSaveData) => {
+        return { label: dpsk.name, value: dpsk.id }
+      }))
     }
-  })
+  }, [dpskList])
 
-  const updateData = (newData: Partial<typeof state>) => {
-    updateState({ ...state, ...newData })
-  }
+  useEffect(() => {
+    if (dpskServiceProfileId && !selectedDpsk && dpskList) {
+      setSelectedDpsk(findService(dpskServiceProfileId))
+    }
+  }, [dpskServiceProfileId, selectedDpsk, dpskList])
 
-  const passphraseOptions = Object.keys(PassphraseFormatEnum).map((key =>
-    <Option key={key}>{transformDpskNetwork(intl, DpskNetworkType.FORMAT, key)}</Option>
-  ))
-
-  const expirationOptions = Object.keys(PassphraseExpirationEnum).map((key =>
-    <Option key={key}>{transformDpskNetwork(intl, DpskNetworkType.EXPIRATION, key)}</Option>
-  ))
-
-  const onFormatChange = function (format: PassphraseFormatEnum) {
-    updateData({ dpskPassphraseGeneration: { format } })
-  }
-
-  const onExpirationChange = function (expiration: PassphraseExpirationEnum) {
-    updateData({ dpskPassphraseGeneration: { expiration } })
-  }
-
-  const passphraseFormatDescription = {
-    [PassphraseFormatEnum.MOST_SECURED]:
-      $t({ defaultMessage: 'Letters, numbers and symbols can be used' }),
-    [PassphraseFormatEnum.KEYBOARD_FRIENDLY]:
-      $t({ defaultMessage: 'Only letters and numbers can be used' }),
-    [PassphraseFormatEnum.NUMBERS_ONLY]: $t({ defaultMessage: 'Only numbers can be used' })
+  const onServiceChange = (value: string) => {
+    setSelectedDpsk(findService(value))
   }
 
   return (
-    <div style={{ display: isCloudpathEnabled ? 'none' : 'block' }}>
-      <Subtitle level={3}>{ $t({ defaultMessage: 'Passphrase Generation Parameters' }) }</Subtitle>
-
+    <>
       <Form.Item
-        name={['dpskPassphraseGeneration', 'format']}
-        label={<>
-          { $t({ defaultMessage: 'Passphrase format' }) }
-          <Tooltip
-            placement='bottom'
-            title={<FormattedMessage
-              defaultMessage={`<p>Format options:</p>
-                <p>Most secured - all printable ASCII characters can be used</p>
-                <p>Keyboard friendly - only letters and numbers will be used</p>
-                <p>Numbers only - only numbers will be used</p>
-              `}
-              values={{ p: (chunks) => <p>{chunks}</p> }}
-            />}
-            children={<QuestionMarkCircleOutlined />}
-          />
-        </>}
+        label={$t({ defaultMessage: 'DPSK Service' })}
+        name='dpskServiceProfileId'
         rules={[{ required: true }]}
-        initialValue={state.dpskPassphraseGeneration?.format}
-        extra={passphraseFormatDescription[
-          state.dpskPassphraseGeneration?.format?
-            state?.dpskPassphraseGeneration?.format:
-            PassphraseFormatEnum.MOST_SECURED]}
+        initialValue={''}
       >
         <Select
-          onChange={onFormatChange}
+          onChange={onServiceChange}
+          options={[
+            { label: $t({ defaultMessage: 'Select service...' }), value: '' },
+            ...dpskOptions
+          ]}
         >
-          {passphraseOptions}
         </Select>
       </Form.Item>
-
-      <Form.Item
-        name={['dpskPassphraseGeneration', 'length']}
-        label={<>
-          { $t({ defaultMessage: 'Passphrase length' }) }
-          <Tooltip
-            title={$t({ defaultMessage: 'Number of characters in passphrase. Valid range 8-63' })}
-            placement='bottom'
-            children={<QuestionMarkCircleOutlined />}
-          />
-        </>}
-        rules={[{ required: true }]}
-        initialValue={state.dpskPassphraseGeneration?.length}
-        children={<InputNumber min={8} max={63} style={{ width: '100%' }}/>}
-      />
-
-      <Form.Item
-        name={['dpskPassphraseGeneration', 'expiration']}
-        label={$t({ defaultMessage: 'Passphrase expiration' })}
-        rules={[{ required: true }]}
-        initialValue={state.dpskPassphraseGeneration?.expiration}
-      >
-        <Select
-          style={{ width: '100%' }}
-          onChange={onExpirationChange}
-        >
-          {expirationOptions}
-        </Select>
-      </Form.Item>
-    </div>
+      <Button type='link' style={{ marginBottom: '16px' }}>
+        { $t({ defaultMessage: 'Add DPSK Service' }) }
+      </Button>
+      { selectedDpsk &&
+        <>
+          <Form.Item label={$t({ defaultMessage: 'Passphrase Format' })}>
+            <Typography.Paragraph>
+              {transformDpskNetwork(intl, DpskNetworkType.FORMAT, selectedDpsk.passphraseFormat)}
+            </Typography.Paragraph>
+          </Form.Item>
+          <Form.Item label={$t({ defaultMessage: 'Passphrase Length' })}>
+            <Typography.Paragraph>
+              {transformDpskNetwork(intl, DpskNetworkType.LENGTH, selectedDpsk.passphraseLength)}
+            </Typography.Paragraph>
+          </Form.Item>
+          <Form.Item label={$t({ defaultMessage: 'Passphrase Expiration' })}>
+            <Typography.Paragraph>
+              {
+                // transformAdvancedDpskExpirationText(intl, {
+                //   expirationType: selectedDpsk.expirationType,
+                //   expirationDate: selectedDpsk.expirationDate,
+                //   expirationOffset: selectedDpsk.expirationOffset
+                // })
+                selectedDpsk.expirationType
+              }
+            </Typography.Paragraph>
+          </Form.Item>
+        </>
+      }
+    </>
   )
 }
-
