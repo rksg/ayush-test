@@ -10,11 +10,11 @@ exports[`ProgressPill should render correctly 1`] = `
     >
       <div
         class="ant-progress-inner"
-        style="border-radius: 0;"
+        style="background-color: rgb(196, 196, 196); border-radius: 0;"
       >
         <div
           class="ant-progress-bg"
-          style="width: 0%; height: 20px; border-radius: 0;"
+          style="width: 0%; height: 20px; border-radius: 0; background: rgb(84, 150, 234);"
         />
       </div>
     </div>
@@ -38,11 +38,11 @@ exports[`ProgressPill should render correctly 2`] = `
     >
       <div
         class="ant-progress-inner"
-        style="border-radius: 0;"
+        style="background-color: rgb(196, 196, 196); border-radius: 0;"
       >
         <div
           class="ant-progress-bg"
-          style="width: 33.33%; height: 20px; border-radius: 0;"
+          style="width: 33.33%; height: 20px; border-radius: 0; background: rgb(84, 150, 234);"
         />
       </div>
     </div>
@@ -66,11 +66,11 @@ exports[`ProgressPill should render correctly 3`] = `
     >
       <div
         class="ant-progress-inner"
-        style="border-radius: 0;"
+        style="background-color: rgb(196, 196, 196); border-radius: 0;"
       >
         <div
           class="ant-progress-bg"
-          style="width: 50%; height: 20px; border-radius: 0;"
+          style="width: 50%; height: 20px; border-radius: 0; background: rgb(84, 150, 234);"
         />
       </div>
     </div>
@@ -94,11 +94,11 @@ exports[`ProgressPill should render correctly 4`] = `
     >
       <div
         class="ant-progress-inner"
-        style="border-radius: 0;"
+        style="background-color: rgb(196, 196, 196); border-radius: 0;"
       >
         <div
           class="ant-progress-bg"
-          style="width: 66.66%; height: 20px; border-radius: 0;"
+          style="width: 66.66%; height: 20px; border-radius: 0; background: rgb(84, 150, 234);"
         />
       </div>
     </div>
@@ -122,11 +122,11 @@ exports[`ProgressPill should render correctly 5`] = `
     >
       <div
         class="ant-progress-inner"
-        style="border-radius: 0;"
+        style="background-color: rgb(196, 196, 196); border-radius: 0;"
       >
         <div
           class="ant-progress-bg"
-          style="width: 100%; height: 20px; border-radius: 0;"
+          style="width: 100%; height: 20px; border-radius: 0; background: rgb(84, 150, 234);"
         />
       </div>
     </div>
@@ -150,11 +150,11 @@ exports[`ProgressPill should render correctly 6`] = `
     >
       <div
         class="ant-progress-inner"
-        style="border-radius: 0;"
+        style="background-color: rgb(196, 196, 196); border-radius: 0;"
       >
         <div
           class="ant-progress-bg"
-          style="width: 100%; height: 20px; border-radius: 0;"
+          style="width: 100%; height: 20px; border-radius: 0; background: rgb(84, 150, 234);"
         />
       </div>
     </div>
@@ -178,11 +178,11 @@ exports[`ProgressPill should render with customized props 1`] = `
     >
       <div
         class="ant-progress-inner"
-        style="border-radius: 0;"
+        style="background-color: rgb(196, 196, 196); border-radius: 0;"
       >
         <div
           class="ant-progress-bg"
-          style="width: 66.66%; height: 20px; border-radius: 0;"
+          style="width: 66.66%; height: 20px; border-radius: 0; background: rgb(84, 150, 234);"
         />
       </div>
     </div>

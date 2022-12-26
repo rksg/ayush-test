@@ -754,19 +754,19 @@ exports[`Search Results should render tables correctly 1`] = `
                                                     <g>
                                                       <path
                                                         d="M0 395L0 405L0 395"
-                                                        fill="none"
+                                                        fill="#FAD278"
                                                       />
                                                       <path
                                                         d="M0 395L238.08 395L238.08 405L0 405L0 395"
-                                                        fill="none"
+                                                        fill="#F7B41E"
                                                       />
                                                       <path
                                                         d="M238.08 395L238.08 405L238.08 395"
-                                                        fill="none"
+                                                        fill="#EC7100"
                                                       />
                                                       <path
                                                         d="M238.08 395L1278 395A2 2 0 0 1 1280 397L1280 403A2 2 0 0 1 1278 405L238.08 405L238.08 395"
-                                                        fill="none"
+                                                        fill="#ED1C24"
                                                       />
                                                     </g>
                                                   </svg>
@@ -2879,7 +2879,7 @@ exports[`Search Results should render tables correctly 1`] = `
                                                     <g>
                                                       <path
                                                         d="M0 395L1278 395A2 2 0 0 1 1280 397L1280 403A2 2 0 0 1 1278 405L0 405L0 395"
-                                                        fill="none"
+                                                        fill="#EBEDEE"
                                                       />
                                                     </g>
                                                   </svg>
