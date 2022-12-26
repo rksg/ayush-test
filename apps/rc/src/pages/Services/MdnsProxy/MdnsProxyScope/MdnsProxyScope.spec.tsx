@@ -55,7 +55,7 @@ describe('MdnsProxyScope', () => {
     const targetVenueName = targetVenueScope.venueName!
     const targetVenueSelectedAps = targetVenueScope.aps.length.toString()
 
-    const { asFragment } = render(
+    render(
       <Provider>
         <MdnsProxyFormContext.Provider
           value={{
@@ -73,8 +73,6 @@ describe('MdnsProxyScope', () => {
         route: { params, path }
       }
     )
-
-    expect(asFragment()).toMatchSnapshot()
 
     const targetVenueRow = await screen.findByRole('row', { name: new RegExp(targetVenueName) })
 

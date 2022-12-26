@@ -39,18 +39,6 @@ describe('MdnsProxyDetail', () => {
   // eslint-disable-next-line max-len
   const detailPath = '/:tenantId/' + getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.DETAIL })
 
-  it('should render the detail view', () => {
-    const { asFragment } = render(
-      <Provider>
-        <MdnsProxyDetail />
-      </Provider>, {
-        route: { params, path: detailPath }
-      }
-    )
-
-    expect(asFragment()).toMatchSnapshot()
-  })
-
   it('should render the detail view without AP instances', async () => {
     mockServer.use(
       rest.get(
