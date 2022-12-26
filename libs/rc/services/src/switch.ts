@@ -1,4 +1,3 @@
-import { Acl } from './../../utils/src/types/venue';
 import { createApi, fetchBaseQuery, FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 import _                                                  from 'lodash'
 
@@ -8,6 +7,7 @@ import {
   RequestPayload,
   SwitchUrlsInfo,
   SwitchViewModel,
+  Acl,
   Vlan,
   SwitchPortViewModel,
   TableResult,
