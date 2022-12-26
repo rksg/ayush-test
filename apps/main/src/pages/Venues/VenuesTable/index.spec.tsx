@@ -1,9 +1,8 @@
 import { rest } from 'msw'
 
-import { useIsSplitOn }            from '@acx-ui/feature-toggle'
-import {  useDeleteVenueMutation } from '@acx-ui/rc/services'
-import { CommonUrlsInfo }          from '@acx-ui/rc/utils'
-import { Provider }                from '@acx-ui/store'
+import { useIsSplitOn }       from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
+import { Provider }           from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -17,7 +16,6 @@ import {
 import {
   venuelist
 } from '../__tests__/fixtures'
-
 
 import { VenuesTable } from '.'
 
@@ -129,8 +127,8 @@ describe('Venues Table', () => {
     expect(screen.queryByRole('columnheader', { name: 'SmartEdges' })).toBeFalsy()
   })
 
-  it('should not have edge device number', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
+  it('should have correct edge device quantity', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
 
     render(
       <Provider>
@@ -139,7 +137,7 @@ describe('Venues Table', () => {
         route: { params, path: '/:tenantId/venues' }
       })
 
-    await screen.findByText('My-Venue')
-    expect(screen.queryByRole('columnheader', { name: 'SmartEdges' })).toBeFalsy()
+    const row = await screen.findByRole('row', { name: /^test/ })
+    expect(within(row).getByRole('cell', { name: '3' })).toBeTruthy()
   })
 })
