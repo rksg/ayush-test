@@ -1,7 +1,8 @@
 import { useIntl } from 'react-intl'
 
-import { StatusLight }    from '@acx-ui/rc/components'
 import { EdgeStatusEnum } from '@acx-ui/rc/utils'
+
+import { StatusLight } from '../StatusLight'
 
 
 type EdgeStatusLightProps = {
