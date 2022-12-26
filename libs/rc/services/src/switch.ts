@@ -1,3 +1,4 @@
+import { Acl } from './../../utils/src/types/venue';
 import { createApi, fetchBaseQuery, FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 import _                                                  from 'lodash'
 
@@ -149,6 +150,14 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
+    getSwitchAcls: build.query<Acl[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getSwitchAcls, params)
+        return {
+          ...req
+        }
+      }
+    }),
     saveSwitch: build.mutation<Switch, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(SwitchUrlsInfo.addSwitch, params)
@@ -236,5 +245,6 @@ export const {
   useAddSwitchMutation,
   useAddStackMemberMutation,
   useGetSwitchListQuery,
-  useLazyGetSwitchListQuery
+  useLazyGetSwitchListQuery,
+  useGetSwitchAclsQuery
 } = switchApi
