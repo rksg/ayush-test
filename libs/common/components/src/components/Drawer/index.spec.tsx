@@ -111,6 +111,28 @@ describe('Drawer', () => {
       expect(mockOnCancel).toBeCalled()
     })
 
+    it('should render form footer with loading state', async () => {
+      const mockOnSave = jest.fn()
+
+      render(
+        <Drawer.FormFooter
+          showLoadingOnSave={true}
+          onCancel={jest.fn()}
+          onSave={async (checked) => {
+            mockOnSave(checked)
+
+            // Simulate the async request to verify the loading indicator
+            await new Promise(r => setTimeout(r, 500))
+          }}
+        />
+      )
+
+      fireEvent.click(screen.getByRole('button', { name: 'Save' }))
+      expect(mockOnSave).toBeCalledWith(false)
+
+      expect(await screen.findByRole('button', { name: 'loading Save' })).toBeInTheDocument()
+    })
+
     it('should handle add another checkbox events', async () => {
       const mockOnCancel = jest.fn()
       const mockOnSave = jest.fn()
