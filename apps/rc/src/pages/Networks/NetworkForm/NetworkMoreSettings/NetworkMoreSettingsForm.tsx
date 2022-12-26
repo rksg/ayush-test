@@ -442,6 +442,12 @@ export function MoreSettingsForm (props: {
           name={['wlan','advancedCustomization','clientInactivityTimeout']}
           label={$t({ defaultMessage: 'Client Inactivity Timeout:' })}
           initialValue={120}
+          rules={[{
+            type: 'number', max: 86400, min: 60,
+            message: $t({
+              defaultMessage: 'Client Inactivity Timeout must be between 60 and 86400'
+            })
+          }]}
           style={{ marginBottom: '15px' }}
           children={<InputNumber style={{ width: '150px' }} />}
         />
@@ -450,6 +456,12 @@ export function MoreSettingsForm (props: {
           name={['wlan','advancedCustomization','directedThreshold']}
           label={$t({ defaultMessage: 'Directed MC/BC Threshold:' })}
           initialValue={5}
+          rules={[{
+            type: 'number', max: 128, min: 0,
+            message: $t({
+              defaultMessage: 'Directed MC/BC Threshold must be between 0 and 128'
+            })
+          }]}
           style={{ marginBottom: '15px', width: '300px' }}
           extra={$t({ defaultMessage: `Per radio client count at which an AP will stop
           converting group addressed data traffic to unicast` })}
