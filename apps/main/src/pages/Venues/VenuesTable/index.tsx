@@ -83,6 +83,7 @@ function useColumns () {
       align: 'left',
       key: 'aggregatedApStatus',
       dataIndex: 'aggregatedApStatus',
+      sorter: true,
       render: function (data, row) {
         const count = row.aggregatedApStatus
           ? Object.values(row.aggregatedApStatus)
@@ -103,6 +104,7 @@ function useColumns () {
       title: $t({ defaultMessage: 'Wi-Fi Clients' }),
       key: 'clients',
       dataIndex: 'clients',
+      sorter: true,
       align: 'center',
       render: function (data, row) {
         return (
@@ -117,6 +119,7 @@ function useColumns () {
       title: $t({ defaultMessage: 'Switches' }),
       key: 'switches',
       dataIndex: 'switches',
+      sorter: true,
       align: 'center',
       render: function (data, row) {
         return (
@@ -131,6 +134,7 @@ function useColumns () {
       title: $t({ defaultMessage: 'Switch Clients' }),
       key: 'switchClients',
       dataIndex: 'switchClients',
+      sorter: true,
       align: 'center',
       render: function (data, row) {
         return (
