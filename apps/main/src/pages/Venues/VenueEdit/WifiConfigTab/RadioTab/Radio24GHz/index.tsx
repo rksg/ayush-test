@@ -14,6 +14,7 @@ import { useParams } from '@acx-ui/react-router-dom'
 import { VenueEditContext }  from '../../..'
 import {
   channelSelectionMethodsOptions,
+  LabelOfInput,
   txPowerAdjustmentOptions
 } from '../contents'
 
@@ -100,17 +101,22 @@ export function Radio24GHz () {
               marks={{ 1: '1%', 100: '100%' }}
             />
           </Form.Item>
-          <Form.Item
-            label={$t({ defaultMessage: 'Run background scan every:' })}
-            name={['radioParams24G', 'scanInterval']}
-            rules={[
-              { required: true },
-              { type: 'number', min: 1 },
-              { type: 'number', max: 65535 }
-            ]}
-            initialValue={20}
-            children={<InputNumber min={1} max={65535} />}
-          />
+          <div style={{ display: 'grid', gridTemplateColumns: '0px 1fr' }}>
+            <LabelOfInput>
+              { $t({ defaultMessage: 'Seconds' }) }
+            </LabelOfInput>
+            <Form.Item
+              label={$t({ defaultMessage: 'Run background scan every:' })}
+              name={['radioParams24G', 'scanInterval']}
+              rules={[
+                { required: true },
+                { type: 'number', min: 1 },
+                { type: 'number', max: 65535 }
+              ]}
+              initialValue={20}
+              children={<InputNumber min={1} max={65535} />}
+            />
+          </div>
           <Form.Item
             label={$t({ defaultMessage: 'Bandwidth:' })}
             name={['radioParams24G', 'channelBandwidth']}>

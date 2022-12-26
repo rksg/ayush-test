@@ -1,4 +1,6 @@
 import { defineMessage } from 'react-intl'
+import styled            from 'styled-components/macro'
+
 
 export interface AvailableLteBandOptions {
 	value: string,
@@ -45,3 +47,12 @@ export function split5GChannels (radio5GChannels: string[]) {
 
   return { lower5GChannels, upper5GChannels }
 }
+
+export const LabelOfInput = styled.span`
+    font-size: var(--acx-body-4-font-size);
+    line-height: 32px;
+    color: var(--acx-neutrals-60);
+    margin: 22px 0px 10px;
+    position: relative;
+    left: 100px;
+`
