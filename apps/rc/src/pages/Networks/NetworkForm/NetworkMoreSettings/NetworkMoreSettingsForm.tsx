@@ -304,7 +304,7 @@ export function MoreSettingsForm (props: {
           name='enableOfdmOnly'
           style={{ marginBottom: '15px' }}
           valuePropName='checked'
-          initialValue={false}
+          initialValue={true}
           children={
             <Checkbox
               onChange={onOfdmChange}
