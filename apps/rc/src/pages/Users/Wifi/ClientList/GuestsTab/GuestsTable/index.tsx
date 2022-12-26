@@ -273,7 +273,7 @@ export const renderAllowedNetwork = function (currentGuest: Guest) {
         {currentGuest.ssid}</TenantLink>
     )
   } else {
-    return $t({ defaultMessage: 'None' })
+    return $t({ defaultMessage: 'None [Network modified or deleted]' })
   }
 }
 
