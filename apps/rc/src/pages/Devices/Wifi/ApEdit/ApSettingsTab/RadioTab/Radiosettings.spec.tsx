@@ -545,8 +545,6 @@ describe('RadioSettingsTab with R760 AP', () => {
 
     const up5gTab = await screen.findByRole('tab', { name: 'Upper 5 GHz' })
     await userEvent.click(up5gTab)
-    await userEvent.click(await screen.findByRole('button', { name: 'Upper 5G' }))
-    await userEvent.click(await screen.findByRole('button', { name: 'DFS' }))
 
     const transmitSelect = await screen.findByRole('combobox', { name: /Transmit Power/i })
     await userEvent.click(transmitSelect)
