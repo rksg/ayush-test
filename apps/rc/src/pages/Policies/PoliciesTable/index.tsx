@@ -1,19 +1,21 @@
-import { useIntl } from 'react-intl'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
-import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
-import { usePolicyListQuery }                                             from '@acx-ui/rc/services'
+import { Button, Loader, PageHeader, showActionModal, Table, TableProps } from '@acx-ui/components'
+import { useDelRoguePolicyMutation, usePolicyListQuery }                  from '@acx-ui/rc/services'
 import {
-  useTableQuery,
-  Policy,
-  PolicyType,
-  PolicyTechnology,
   getPolicyDetailsLink,
   getSelectPolicyRoutePath,
-  PolicyOperation
+  Policy,
+  PolicyOperation,
+  PolicyTechnology,
+  PolicyType,
+  RogueApConstant,
+  useTableQuery
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { policyTypeLabelMapping, policyTechnologyLabelMapping } from '../contentsMap'
+import { policyTechnologyLabelMapping, policyTypeLabelMapping } from '../contentsMap'
 
 
 function useColumns () {
@@ -85,8 +87,11 @@ const defaultPayload = {
 
 export default function PoliciesTable () {
   const { $t } = useIntl()
+  const params = useParams()
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
+
+  const [ delRoguePolicy ] = useDelRoguePolicyMutation()
 
   const tableQuery = useTableQuery({
     useQuery: usePolicyListQuery,
@@ -96,7 +101,8 @@ export default function PoliciesTable () {
   const rowActions: TableProps<Policy>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: ([{ id, name, type }]) => {
+      visible: ([row]) => row && row.name !== RogueApConstant.DefaultProfile,
+      onClick: ([{ id, name, type }], clearSelection) => {
         showActionModal({
           type: 'confirm',
           customContent: {
@@ -104,16 +110,23 @@ export default function PoliciesTable () {
             entityName: $t({ defaultMessage: 'Policy' }),
             entityValue: name
           },
-          onOk: () => {
-            // TODO
-            // eslint-disable-next-line no-console
-            console.log('Delete policy: ', id, type)
+          onOk: async () => {
+            if (type === PolicyType.ROGUE_AP_DETECTION) {
+              await delRoguePolicy({
+                params: {
+                  ...params, policyId: id
+                }
+              }).unwrap()
+            }
+
+            clearSelection()
           }
         })
       }
     },
     {
       label: $t({ defaultMessage: 'Edit' }),
+      visible: ([row]) => row && row.name !== RogueApConstant.DefaultProfile,
       onClick: ([{ type, id }]) => {
         navigate({
           ...tenantBasePath,

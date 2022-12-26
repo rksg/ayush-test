@@ -17,8 +17,10 @@ import Edges                      from './pages/Devices/Edge'
 import AddEdge                    from './pages/Devices/Edge/AddEdge'
 import EdgeDetails                from './pages/Devices/Edge/EdgeDetails'
 import EditEdge                   from './pages/Devices/Edge/EdgeDetails/EditEdge'
+import { StackForm }              from './pages/Devices/Switch/StackForm'
 import SwitchDetails              from './pages/Devices/Switch/SwitchDetails'
 import SwitchesTable              from './pages/Devices/Switch/SwitchesTable'
+import { AddSwitchForm }          from './pages/Devices/Switch/SwitchForm/AddSwitchForm'
 import ApDetails                  from './pages/Devices/Wifi/ApDetails'
 import { ApEdit }                 from './pages/Devices/Wifi/ApEdit'
 import { ApForm }                 from './pages/Devices/Wifi/ApForm'
@@ -32,8 +34,8 @@ import RogueAPDetectionDetailView
   from './pages/Policies/RogueAPDetection/RogueAPDetectionDetail/RogueAPDetectionDetailView'
 import RogueAPDetectionForm     from './pages/Policies/RogueAPDetection/RogueAPDetectionForm/RogueAPDetectionForm'
 import SelectPolicyForm         from './pages/Policies/SelectPolicyForm'
-import DHCPDetail               from './pages/Services/DHCPDetail'
-import DHCPForm                 from './pages/Services/DHCPForm/DHCPForm'
+import DHCPDetail               from './pages/Services/DHCP/DHCPDetail'
+import DHCPForm                 from './pages/Services/DHCP/DHCPForm/DHCPForm'
 import DpskForm                 from './pages/Services/Dpsk/DpskForm/DpskForm'
 import MdnsProxyDetail          from './pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail'
 import MdnsProxyForm            from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
@@ -78,6 +80,7 @@ function DeviceRoutes () {
         element={<ApEdit />}
       />
       <Route path='devices/apgroups/:action' element={<ApGroupForm />} />
+      <Route path='devices/switch/:action' element={<AddSwitchForm />} />
       <Route
         path='devices/wifi/:serialNumber/details/:activeTab'
         element={<ApDetails />} />
@@ -105,6 +108,7 @@ function DeviceRoutes () {
       <Route path='devices/edge/:serialNumber/edge-details/:activeTab'
         element={<EdgeDetails />} />
       <Route path='devices/switch' element={<SwitchesTable />} />
+      <Route path='devices/switch/stack/add' element={<StackForm />} />
       <Route path='devices/edge/list' element={<Edges />} />
     </Route>
   )
@@ -168,7 +172,7 @@ function ServiceRoutes () {
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.EDIT })}
-        element={<DHCPForm/>}
+        element={<DHCPForm editMode={true}/>}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.DETAIL })}
