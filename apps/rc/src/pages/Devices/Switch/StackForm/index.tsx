@@ -11,6 +11,7 @@ import {
   Tooltip
 } from 'antd'
 import { DefaultOptionType } from 'antd/lib/select'
+import _                     from 'lodash'
 import { useIntl }           from 'react-intl'
 
 import {
@@ -41,7 +42,14 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-import { TableContainer, DisabledDeleteOutlinedIcon, RequiredDotSpan, StepFormTitle, TypographyText } from './styledComponents'
+import { SwitchUpgradeNotification, SWITCH_UPGRADE_NOTIFICATION_TYPE } from '../SwitchUpgradeNotification'
+
+import {
+  TableContainer,
+  DisabledDeleteOutlinedIcon,
+  RequiredDotSpan,
+  StepFormTitle,
+  TypographyText } from './styledComponents'
 
 const defaultPayload = {
   fields: ['name', 'country', 'latitude', 'longitude', 'dhcp', 'id'],
@@ -56,6 +64,7 @@ export function StackForm () {
   const formRef = useRef<StepsFormInstance<Switch>>()
   const navigate = useNavigate()
   const basePath = useTenantLink('/devices/')
+  const modelNotSupportStack = ['ICX7150-C08P', 'ICX7150-C08PT']
 
   const { data: venuesList, isLoading: isVenuesListLoading } =
     useVenuesListQuery({ params: { tenantId }, payload: defaultPayload })
@@ -64,6 +73,9 @@ export function StackForm () {
 
   const [venueOption, setVenueOption] = useState([] as DefaultOptionType[])
   const [apGroupOption, setApGroupOption] = useState([] as DefaultOptionType[])
+
+  const [validateModel, setValidateModel] = useState([] as string[])
+  const [visibleNotification, setVisibleNotification] = useState(false)
 
   const [activeRow, setActiveRow] = useState('1')
   const [rowKey, setRowKey] = useState(3)
@@ -93,6 +105,14 @@ export function StackForm () {
     dataRows[index].id = serialNumber
     dataRows[index].model = serialNumber && getSwitchModel(serialNumber)
     setTableData(dataRows)
+
+    const modelList = dataRows
+      .filter(
+        row => row.model &&
+        modelNotSupportStack.indexOf(row.model) === -1)
+      .map(row => row.model)
+    setValidateModel(modelList)
+    setVisibleNotification (modelList.length > 0)
   }
 
   const handleAddRow = () => {
@@ -147,7 +167,6 @@ export function StackForm () {
       return Promise.reject($t({ defaultMessage: 'Serial number is invalid' }))
     }
 
-    const modelNotSupportStack = ['ICX7150-C08P', 'ICX7150-C08PT']
     const model = getSwitchModel(serialNumber) || ''
 
     return modelNotSupportStack.indexOf(model) > -1
@@ -407,6 +426,14 @@ export function StackForm () {
                     </Button>
                   )}
                 </TableContainer>
+
+                <SwitchUpgradeNotification
+                  isDisplay={visibleNotification}
+                  isDisplayHeader={false}
+                  type={SWITCH_UPGRADE_NOTIFICATION_TYPE.STACK}
+                  validateModel={validateModel}
+                />
+
               </Loader>
             </Col>
           </Row>
