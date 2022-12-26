@@ -54,7 +54,7 @@ const RKS_NEW_UI = {
 export const baseServiceApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'serviceApi',
-  tagTypes: ['Service', 'Dpsk'],
+  tagTypes: ['Service', 'Dpsk', 'MdnsProxy', 'WifiCalling', 'DHCP'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })
@@ -159,7 +159,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           ...req
         }
       },
-      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }, { type: 'WifiCalling', id: 'LIST' }]
     }),
     getDHCPProfileList: build.query<DHCPSaveData[] | null, RequestPayload>({
       query: ({ params }) => {
@@ -168,7 +168,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Service', id: 'DHCP' }],
+      providesTags: [{ type: 'Service', id: 'LIST' }, { type: 'DHCP', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           showActivityMessage(msg, [
@@ -179,7 +179,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           ], () => {
             api.dispatch(serviceApi.util.invalidateTags([
               { type: 'Service', id: 'LIST' },
-              { type: 'Service', id: 'DHCP' }
+              { type: 'DHCP', id: 'LIST' }
             ]))
           })
         })
@@ -206,7 +206,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         })
         return dhcpProfile
       },
-      providesTags: [{ type: 'Service', id: 'DETAIL' }]
+      providesTags: [{ type: 'Service', id: 'DETAIL' }, { type: 'DHCP', id: 'DETAIL' }]
     }),
     saveOrUpdateDHCP: build.mutation<DHCPSaveData, RequestPayload>({
       query: ({ params, payload }:{ params:Params, payload:DHCPSaveData }) => {
@@ -221,7 +221,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }, { type: 'DHCP', id: 'LIST' }]
     }),
     getMdnsProxy: build.query<MdnsProxyFormData, RequestPayload>({
       query: ({ params, payload }) => {
@@ -244,7 +244,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         })
         return result
       },
-      providesTags: [{ type: 'Service', id: 'DETAIL' }]
+      providesTags: [{ type: 'MdnsProxy', id: 'DETAIL' }, { type: 'Service', id: 'DETAIL' }]
     }),
     updateMdnsProxy: build.mutation<MdnsProxyFormData, RequestPayload<MdnsProxyFormData>>({
       query: ({ params, payload }) => {
@@ -254,7 +254,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+      invalidatesTags: [{ type: 'MdnsProxy', id: 'LIST' }, { type: 'Service', id: 'LIST' }]
     }),
     deleteMdnsProxy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
@@ -263,7 +263,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           ...req
         }
       },
-      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+      invalidatesTags: [{ type: 'MdnsProxy', id: 'LIST' }, { type: 'Service', id: 'LIST' }]
     }),
     deleteMdnsProxyList: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
@@ -272,7 +272,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           ...req
         }
       },
-      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+      invalidatesTags: [{ type: 'MdnsProxy', id: 'LIST' }, { type: 'Service', id: 'LIST' }]
     }),
     addMdnsProxy: build.mutation<MdnsProxyFormData, RequestPayload<MdnsProxyFormData>>({
       query: ({ params, payload }) => {
@@ -287,7 +287,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+      invalidatesTags: [{ type: 'MdnsProxy', id: 'LIST' }, { type: 'Service', id: 'LIST' }]
     }),
     getPortal: build.query<Portal | null, RequestPayload>({
       async queryFn ({ params }, _queryApi, _extraOptions, fetch) {
@@ -335,7 +335,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Service', id: 'LIST' }]
+      providesTags: [{ type: 'Service', id: 'DETAIL' }, { type: 'WifiCalling', id: 'DETAIL' }]
     }),
     getWifiCallingServiceList: build.query<WifiCallingSetting[], RequestPayload>({
       query: ({ params }) => {
@@ -346,7 +346,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           ...wifiCallingServiceListReq
         }
       },
-      providesTags: [{ type: 'Service', id: 'LIST' }],
+      providesTags: [{ type: 'Service', id: 'LIST' }, { type: 'WifiCalling', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           showActivityMessage(msg, [
@@ -370,7 +370,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }, { type: 'WifiCalling', id: 'LIST' }]
     }),
     updateWifiCallingService: build.mutation<WifiCallingFormContextType, RequestPayload>({
       query: ({ params, payload }) => {
@@ -382,7 +382,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }, { type: 'WifiCalling', id: 'LIST' }]
     }),
     createDpsk: build.mutation<DpskSaveData, RequestPayload<DpskSaveData>>({
       query: ({ payload }) => {

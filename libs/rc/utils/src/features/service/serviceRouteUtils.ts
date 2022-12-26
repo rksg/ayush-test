@@ -5,7 +5,8 @@ import { ServiceType } from '../../constants'
 export enum ServiceOperation {
   CREATE,
   EDIT,
-  DETAIL
+  DETAIL,
+  LIST
 }
 
 interface ServiceRoutePathProps {
@@ -21,7 +22,8 @@ interface ServiceDetailsLinkProps extends ServiceRoutePathProps {
 const operationPathMapping: Record<ServiceOperation, string> = {
   [ServiceOperation.CREATE]: 'create',
   [ServiceOperation.EDIT]: ':serviceId/edit',
-  [ServiceOperation.DETAIL]: ':serviceId/detail'
+  [ServiceOperation.DETAIL]: ':serviceId/detail',
+  [ServiceOperation.LIST]: 'list'
 }
 
 const typePathMapping: Record<ServiceType, string> = {

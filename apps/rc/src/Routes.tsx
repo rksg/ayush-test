@@ -35,9 +35,11 @@ import RogueAPDetectionForm     from './pages/Policies/RogueAPDetection/RogueAPD
 import SelectPolicyForm         from './pages/Policies/SelectPolicyForm'
 import DHCPDetail               from './pages/Services/DHCP/DHCPDetail'
 import DHCPForm                 from './pages/Services/DHCP/DHCPForm/DHCPForm'
+import DHCPTable                from './pages/Services/DHCP/DHCPTable/DHCPTable'
 import DpskForm                 from './pages/Services/Dpsk/DpskForm/DpskForm'
 import MdnsProxyDetail          from './pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail'
 import MdnsProxyForm            from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
+import MdnsProxyTable           from './pages/Services/MdnsProxy/MdnsProxyTable/MdnsProxyTable'
 import NetworkSegmentationForm  from './pages/Services/NetworkSegmentationForm/NetworkSegmentationForm'
 import PortalServiceDetail      from './pages/Services/Portal/PortalDetail'
 import PortalForm               from './pages/Services/Portal/PortalForm/PortalForm'
@@ -150,6 +152,10 @@ function ServiceRoutes () {
         element={<MdnsProxyDetail />}
       />
       <Route
+        path={getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.LIST })}
+        element={<MdnsProxyTable />}
+      />
+      <Route
         // eslint-disable-next-line max-len
         path={getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.CREATE })}
         element={<WifiCallingForm />}
@@ -174,6 +180,10 @@ function ServiceRoutes () {
       <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.DETAIL })}
         element={<DHCPDetail/>}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.LIST })}
+        element={<DHCPTable/>}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.CREATE })}

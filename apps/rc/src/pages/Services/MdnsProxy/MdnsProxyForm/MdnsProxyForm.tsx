@@ -4,10 +4,10 @@ import _                   from 'lodash'
 import { useIntl }         from 'react-intl'
 import { Path, useParams } from 'react-router-dom'
 
-import { PageHeader, showToast, StepsForm }              from '@acx-ui/components'
-import { useAddMdnsProxyMutation, useGetMdnsProxyQuery } from '@acx-ui/rc/services'
-import { MdnsProxyFormData, getServiceListRoutePath }    from '@acx-ui/rc/utils'
-import { useTenantLink, useNavigate }                    from '@acx-ui/react-router-dom'
+import { PageHeader, showToast, StepsForm }                                                               from '@acx-ui/components'
+import { useAddMdnsProxyMutation, useGetMdnsProxyQuery }                                                  from '@acx-ui/rc/services'
+import { MdnsProxyFormData, getServiceListRoutePath, getServiceRoutePath, ServiceType, ServiceOperation } from '@acx-ui/rc/utils'
+import { useTenantLink, useNavigate }                                                                     from '@acx-ui/react-router-dom'
 
 import { MdnsProxyScope }   from '../MdnsProxyScope/MdnsProxyScope'
 import { MdnsProxySummary } from '../MdnsProxySummary/MdnsProxySummary'
@@ -66,7 +66,10 @@ export default function MdnsProxyForm ({ editMode = false }: MdnsProxyFormProps)
           : $t({ defaultMessage: 'Add mDNS Proxy Service' })
         }
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Services' }), link: '/services' }
+          {
+            text: $t({ defaultMessage: 'Services' }),
+            link: getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.LIST })
+          }
         ]}
       />
       <MdnsProxyFormContext.Provider value={{ editMode, currentData }}>

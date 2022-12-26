@@ -3,22 +3,22 @@ import { ApiInfo } from '../../apiService'
 export const MdnsProxyUrls: { [key: string]: ApiInfo } = {
   getMdnsProxy: {
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/mdnsProxyServiceProfiles/:serviceId'
+    url: '/api/tenant/:tenantId/wifi/mDnsProxyServiceProfiles/:serviceId'
   },
   addMdnsProxy: {
     method: 'post',
-    url: '/api/tenant/:tenantId/wifi/mdnsProxyServiceProfiles'
+    url: '/api/tenant/:tenantId/wifi/mDnsProxyServiceProfiles'
   },
   updateMdnsProxy: {
     method: 'put',
-    url: '/api/tenant/:tenantId/wifi/mdnsProxyServiceProfiles/:serviceId'
+    url: '/api/tenant/:tenantId/wifi/mDnsProxyServiceProfiles/:serviceId'
   },
   deleteMdnsProxy: {
-    method: 'get',
-    url: '/api/tenant/:tenantId/wifi/mdnsProxyServiceProfiles/:serviceId'
+    method: 'delete',
+    url: '/api/tenant/:tenantId/wifi/mDnsProxyServiceProfiles/:serviceId'
   },
   deleteMdnsProxyList: {
     method: 'delete',
-    url: '/api/tenant/:tenantId/wifi/mdnsProxyServiceProfiles'
+    url: '/api/tenant/:tenantId/wifi/mDnsProxyServiceProfiles'
   }
 }
