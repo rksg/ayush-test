@@ -72,6 +72,12 @@ export function NetworkDetailForm () {
     return checkObjectNotExists(list, value, intl.$t({ defaultMessage: 'Network' }))
   }
 
+  const isNetworkTypeDisabled = (type: NetworkTypeEnum) => {
+    const targetType = types.find(t => t.type === type)
+
+    return targetType ? targetType.disabled : true
+  }
+
   const ssidValidator = async (value: string) => {
     if (!editMode) { return Promise.resolve() }
     const venues = _.get(data, 'venues') || []
@@ -216,8 +222,7 @@ export function NetworkDetailForm () {
                   {types.map(({ type, disabled }) => (
                     <Radio key={type} value={type} disabled={disabled}>
                       <Tooltip
-                        title={[NetworkTypeEnum.DPSK, NetworkTypeEnum.CAPTIVEPORTAL]
-                          .indexOf(type) > -1 ? intl.$t(notAvailableMsg) : ''}>
+                        title={isNetworkTypeDisabled(type) ? intl.$t(notAvailableMsg) : ''}>
                         {intl.$t(networkTypes[type])}
                         <RadioDescription>
                           {intl.$t(networkTypesDescription[type])}
