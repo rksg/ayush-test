@@ -533,7 +533,13 @@ export function MoreSettingsForm (props: {
                 label={$t({ defaultMessage: 'Join Wait Time:' })}
                 style={{ marginBottom: '15px' }}
                 initialValue={30}
-                children={<Input style={{ width: '65px' }}></Input>}
+                rules={[{
+                  type: 'number', max: 60, min: 1,
+                  message: $t({
+                    defaultMessage: 'Join Wait Time must be between 1 and 60'
+                  })
+                }]}
+                children={<InputNumber style={{ width: '65px' }} />}
               />
 
             </div>
@@ -547,7 +553,13 @@ export function MoreSettingsForm (props: {
                 label={$t({ defaultMessage: 'Join Expire Time:' })}
                 style={{ marginBottom: '15px' }}
                 initialValue={300}
-                children={<Input style={{ width: '65px' }}></Input>}
+                rules={[{
+                  type: 'number', max: 300, min: 1,
+                  message: $t({
+                    defaultMessage: 'Join Expire Time must be between 1 and 300'
+                  })
+                }]}
+                children={<InputNumber style={{ width: '65px' }} />}
               />
 
             </div>
@@ -558,7 +570,13 @@ export function MoreSettingsForm (props: {
               label={$t({ defaultMessage: 'Join Wait Threshold:' })}
               style={{ marginBottom: '15px' }}
               initialValue={10}
-              children={<Input style={{ width: '65px' }}></Input>}
+              rules={[{
+                type: 'number', max: 50, min: 1,
+                message: $t({
+                  defaultMessage: 'Join Wait Threshold must be between 1 and 50'
+                })
+              }]}
+              children={<InputNumber style={{ width: '65px' }} />}
             />
           </>
 
