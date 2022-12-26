@@ -465,6 +465,45 @@ describe('SignaleRadioSettings component', () => {
     expect(channelSelecter).toEqual(expect.anything())
   })
 
+  it('should render AP Radio 6G singleRadioSettings', async () => {
+    const radioType = ApRadioTypeEnum.Radio6G
+    const bandwidthOptions = channelBandwidth6GOptions
+    const supportCh = validRadioChannels['6GChannels']
+
+    const { asFragment } = render (
+      <IntlProvider locale='en'>
+        <SingleRadioSettings
+          context='ap'
+          radioType={radioType}
+          bandwidthOptions={bandwidthOptions}
+          supportChannels={supportCh}
+          editContext={React.createContext({})}
+          isUseVenueSettings={false}
+        />
+      </IntlProvider>
+    )
+
+    await screen.findByText('Channel selection method')
+
+    const channelSelect = await screen.findByRole('combobox', { name: /Channel selection/i })
+    expect(channelSelect).not.toHaveAttribute('disabled')
+    await userEvent.click(channelSelect)
+    expect(await screen.findByTitle('Manual channel selection')).toBeDefined()
+    await userEvent.click((await screen.findByTitle('Manual channel selection')))
+
+    const bandwidthSelect = await screen.findByRole('combobox', { name: /Bandwidth/i })
+    await userEvent.click(bandwidthSelect)
+    expect((await screen.findByTitle('Auto'))).toBeDefined()
+    await userEvent.click((await screen.findByTitle('Auto')))
+
+    const transmitSelect = await screen.findByRole('combobox', { name: /Transmit Power/i })
+    await userEvent.click(transmitSelect)
+    await userEvent.click((await screen.findByTitle('Full')))
+
+    const channelSelecter = asFragment().querySelector('#apRadioParams6G_allowedChannels')
+    expect(channelSelecter).toEqual(expect.anything())
+  })
+
   it ('test the split5GChannels function', () => {
     const channels = validRadioChannels['5GChannels'].indoor['160MHz']
     const { lower5GChannels, upper5GChannels } = split5GChannels(channels)

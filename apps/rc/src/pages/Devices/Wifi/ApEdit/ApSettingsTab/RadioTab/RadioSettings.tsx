@@ -437,6 +437,12 @@ export function RadioSettings () {
         updateFormData(currentRadioData)
       }
     }
+
+    setEditContextData({
+      ...editContextData,
+      tabTitle: $t({ defaultMessage: 'Radio' }),
+      isDirty: true
+    })
   }
 
   const handleChange = () => {
@@ -625,60 +631,64 @@ export function RadioSettings () {
             )
             }
           </div>
-          <div style={{ display: currentTab === 'Lower5GHz' ? 'block' : 'none' }}>
-            <Form.Item
-              name={['apRadioParamsDual5G', 'lower5gEnabled']}
-              label={$t({ defaultMessage: 'Enable Lower 5 GHz band:' })}
-              valuePropName='checked'
-              style={{ marginTop: '16px' }}
-              initialValue={true}
-              children={isUseVenueSettings ?
-                <span>{$t({ defaultMessage: 'On' })}</span>
-                :<Switch onChange={(checked)=>onEnableChanged(checked, 'enableLower5G')} />
-              }
-            />
-            { (!isEnableLower5g && !isUseVenueSettings) ? (
-              <DisabledDiv>
-                {$t({ defaultMessage: 'Lower 5 GHz Radio is disabled' })}
-              </DisabledDiv>) : (
-              <SingleRadioSettings
-                context='ap'
-                radioType={ApRadioTypeEnum.RadioLower5G}
-                supportChannels={supportLower5GChannels}
-                supportDfsChannels={supportLowerDfsChannels}
-                bandwidthOptions={bandwidthLower5GOptions}
-                editContext={ApEditContext}
-                isUseVenueSettings={isUseVenueSettings} />
-            )
-            }
-          </div>
-          <div style={{ display: currentTab === 'Upper5GHz' ? 'block' : 'none' }}>
-            <Form.Item
-              name={['apRadioParamsDual5G', 'upper5gEnabled']}
-              label={$t({ defaultMessage: 'Enable Upper 5 GHz band:' })}
-              valuePropName='checked'
-              style={{ marginTop: '16px' }}
-              initialValue={true}
-              children={isUseVenueSettings ?
-                <span>{$t({ defaultMessage: 'On' })}</span>
-                :<Switch onChange={(checked)=>onEnableChanged(checked, 'enableUpper5G')} />
-              }
-            />
-            { (!isEnableUpper5g && !isUseVenueSettings) ? (
-              <DisabledDiv>
-                {$t({ defaultMessage: 'Upper 5 GHz Radio is disabled' })}
-              </DisabledDiv>) : (
-              <SingleRadioSettings
-                context='ap'
-                radioType={ApRadioTypeEnum.RadioUpper5G}
-                supportChannels={supportUpper5GChannels}
-                supportDfsChannels={supportUpperDfsChannels}
-                bandwidthOptions={bandwidthUpper5GOptions}
-                editContext={ApEditContext}
-                isUseVenueSettings={isUseVenueSettings} />
-            )
-            }
-          </div>
+          {isSupportDual5GAp && (
+            <>
+              <div style={{ display: currentTab === 'Lower5GHz' ? 'block' : 'none' }}>
+                <Form.Item
+                  name={['apRadioParamsDual5G', 'lower5gEnabled']}
+                  label={$t({ defaultMessage: 'Enable Lower 5 GHz band:' })}
+                  valuePropName='checked'
+                  style={{ marginTop: '16px' }}
+                  initialValue={true}
+                  children={isUseVenueSettings ?
+                    <span>{$t({ defaultMessage: 'On' })}</span>
+                    :<Switch onChange={(checked)=>onEnableChanged(checked, 'enableLower5G')} />
+                  }
+                />
+                { (!isEnableLower5g && !isUseVenueSettings) ? (
+                  <DisabledDiv>
+                    {$t({ defaultMessage: 'Lower 5 GHz Radio is disabled' })}
+                  </DisabledDiv>) : (
+                  <SingleRadioSettings
+                    context='ap'
+                    radioType={ApRadioTypeEnum.RadioLower5G}
+                    supportChannels={supportLower5GChannels}
+                    supportDfsChannels={supportLowerDfsChannels}
+                    bandwidthOptions={bandwidthLower5GOptions}
+                    editContext={ApEditContext}
+                    isUseVenueSettings={isUseVenueSettings} />
+                )
+                }
+              </div>
+              <div style={{ display: currentTab === 'Upper5GHz' ? 'block' : 'none' }}>
+                <Form.Item
+                  name={['apRadioParamsDual5G', 'upper5gEnabled']}
+                  label={$t({ defaultMessage: 'Enable Upper 5 GHz band:' })}
+                  valuePropName='checked'
+                  style={{ marginTop: '16px' }}
+                  initialValue={true}
+                  children={isUseVenueSettings ?
+                    <span>{$t({ defaultMessage: 'On' })}</span>
+                    :<Switch onChange={(checked)=>onEnableChanged(checked, 'enableUpper5G')} />
+                  }
+                />
+                { (!isEnableUpper5g && !isUseVenueSettings) ? (
+                  <DisabledDiv>
+                    {$t({ defaultMessage: 'Upper 5 GHz Radio is disabled' })}
+                  </DisabledDiv>) : (
+                  <SingleRadioSettings
+                    context='ap'
+                    radioType={ApRadioTypeEnum.RadioUpper5G}
+                    supportChannels={supportUpper5GChannels}
+                    supportDfsChannels={supportUpperDfsChannels}
+                    bandwidthOptions={bandwidthUpper5GOptions}
+                    editContext={ApEditContext}
+                    isUseVenueSettings={isUseVenueSettings} />
+                )
+                }
+              </div>
+            </>
+          )}
         </StepsForm.StepForm>
       </StepsForm>
     </Loader>
