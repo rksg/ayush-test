@@ -603,9 +603,15 @@ export function MoreSettingsForm (props: {
                 label={$t({ defaultMessage: 'Broadcast Probe Response Delay:' })}
                 style={{ marginBottom: '15px' }}
                 initialValue={15}
+                rules={[{
+                  type: 'number', max: 120, min: 8,
+                  message: $t({
+                    defaultMessage: 'Broadcast Probe Response Delay must be between 8 and 120'
+                  })
+                }]}
                 valuePropName='value'
                 children={
-                  <Input style={{ width: '65px', marginRight: '10px' }}></Input>
+                  <InputNumber style={{ width: '65px', marginRight: '10px' }} />
                 }
               />
 
@@ -619,9 +625,16 @@ export function MoreSettingsForm (props: {
                 label={$t({ defaultMessage: 'RSSI-Based Association Rejection Threshold:' })}
                 style={{ marginBottom: '15px' }}
                 initialValue={-75}
+                rules={[{
+                  type: 'number', max: -60, min: -90,
+                  message: $t({
+                    defaultMessage: 'RSSI-Based Association Rejection Threshold ' +
+                      'must be between -90 and -60'
+                  })
+                }]}
                 valuePropName='value'
               >
-                <Input style={{ width: '65px', marginRight: '10px' }}></Input>
+                <InputNumber style={{ width: '65px', marginRight: '10px' }} />
               </Form.Item>
             </div>
           </>}
