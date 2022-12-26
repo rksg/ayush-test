@@ -45,7 +45,8 @@ import {
   hasGraveAccentAndDollarSign,
   serialNumberRegExp,
   VenueExtended,
-  WifiNetworkMessages
+  WifiNetworkMessages,
+  gpsToFixed
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -451,8 +452,8 @@ export function ApForm () {
       children={selectedVenue?.id
         ? <Space style={{ display: 'flex', justifyContent: 'space-between' }}>
           {$t({ defaultMessage: '{latitude}, {longitude} {status}' }, {
-            latitude: deviceGps?.latitude || selectedVenue?.latitude,
-            longitude: deviceGps?.longitude || selectedVenue?.longitude,
+            latitude: gpsToFixed(deviceGps?.latitude || selectedVenue?.latitude),
+            longitude: gpsToFixed(deviceGps?.longitude || selectedVenue?.longitude),
             status: sameAsVenue ? '(As venue)' : ''
           })}
           <Space size={0} split={<UI.Divider />} >
