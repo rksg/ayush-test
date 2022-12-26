@@ -4,7 +4,6 @@ import {
   Checkbox,
   Collapse,
   Form,
-  Input,
   InputNumber,
   Select,
   Switch
@@ -633,9 +632,10 @@ export function MoreSettingsForm (props: {
                   })
                 }]}
                 valuePropName='value'
-              >
-                <InputNumber style={{ width: '65px', marginRight: '10px' }} />
-              </Form.Item>
+                children={
+                  <InputNumber style={{ width: '65px', marginRight: '10px' }} />
+                }
+              />
             </div>
           </>}
       </Panel>
