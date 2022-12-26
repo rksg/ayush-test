@@ -33,8 +33,16 @@ export const EdgeSysResourceBox = styled((props: EdgeStateCardProps) => {
 
   const usedValue:number = totalVal ? value/totalVal: totalVal
   const usedPercentage:number = Math.round(usedValue * 100)
-  const freeValue = formatter(type === EdgeResourceUtilizationEnum.CPU ?
-    'cpuUtilizationFormat' : 'bytesFormat')(totalVal - value)
+
+  let freeValue
+  if(type === EdgeResourceUtilizationEnum.CPU) {
+    freeValue = formatter('hertzFormat')((totalVal - value) / 1000)
+  } else {
+    freeValue = formatter('bytesFormat')(totalVal - value)
+  }
+
+  const chartValue = type === EdgeResourceUtilizationEnum.CPU
+    ? formatter('hertzFormat')(value / 1000) : formatter('bytesFormat')(value)
 
   return (
     <Loader states={[{ isLoading }]}>
@@ -44,8 +52,7 @@ export const EdgeSysResourceBox = styled((props: EdgeStateCardProps) => {
             <Tooltip title={$t({ defaultMessage: '{freeValue} free' }, { freeValue })}>
               <AntStatistic
                 title={statisticTitle}
-                value={formatter(type === EdgeResourceUtilizationEnum.CPU ?
-                  'cpuUtilizationFormat' : 'bytesFormat')(value)}
+                value={chartValue}
                 suffix={$t({ defaultMessage: '({usedPercentage}%)' }, { usedPercentage })}
               />
             </Tooltip>

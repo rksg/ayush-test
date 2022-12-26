@@ -27,7 +27,7 @@ function EdgeResourceUtilizationWidget () {
                 data={queryResults.data}
                 dataFormatter={formatter('bytesFormat')}
                 seriesFormatters={{
-                  cpu: formatter('cpuUtilizationFormat'),
+                  cpu: formatter('hertzFormat'),
                   memory: formatter('bytesFormat'),
                   storage: formatter('bytesFormat')
                 }}

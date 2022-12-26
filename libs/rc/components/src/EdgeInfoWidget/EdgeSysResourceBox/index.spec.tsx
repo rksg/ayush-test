@@ -60,7 +60,7 @@ describe('Edge resource utilization chart', () => {
     fireEvent.mouseOver(targetBox)
 
     const freeValue = (currentEdge?.cpuTotal ?? 0) - (currentEdge?.cpuUsed ?? 0)
-    const exptectedValue = formatter('cpuUtilizationFormat')(freeValue)
+    const exptectedValue = formatter('hertzFormat')(freeValue / 1000)
 
     await waitFor(() => {
       expect(screen.getByRole('tooltip').textContent).toBe(exptectedValue + ' free')

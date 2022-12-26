@@ -147,8 +147,7 @@ export const formats = {
   bytesFormat: (number:number) => numberFormat(1024, bytes, number),
   networkSpeedFormat: (number: number) => numberFormat(1000, networkSpeed, number),
   radioFormat: (value: string|number) => `${value} GHz`,
-  // assume cpu utilization data is in Hz, so transform it into minimum unit - kHz by default
-  cpuUtilizationFormat: (number: number) => numberFormat(1000, hertz, number / 1000),
+  hertzFormat: (number: number) => numberFormat(1000, hertz, number),
   floatFormat: (number: number) => numeral(number).format('0.[000]'),
   enabledFormat: (value: boolean) => (value ? 'Enabled' : 'Disabled'),
   ratioFormat: ([x, y]:[number, number]) => `${x} / ${y}`,
