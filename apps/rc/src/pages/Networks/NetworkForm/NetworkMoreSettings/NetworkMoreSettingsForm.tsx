@@ -4,7 +4,6 @@ import {
   Checkbox,
   Collapse,
   Form,
-  Input,
   InputNumber,
   Select,
   Switch
@@ -305,7 +304,7 @@ export function MoreSettingsForm (props: {
           name='enableOfdmOnly'
           style={{ marginBottom: '15px' }}
           valuePropName='checked'
-          initialValue={false}
+          initialValue={true}
           children={
             <Checkbox
               onChange={onOfdmChange}
@@ -427,8 +426,14 @@ export function MoreSettingsForm (props: {
               name={['wlan','advancedCustomization','mobilityDomainId']}
               label={$t({ defaultMessage: 'Mobility Domain ID' })}
               initialValue={1}
+              rules={[{
+                type: 'number', max: 65535, min: 1,
+                message: $t({
+                  defaultMessage: 'Mobility Domain ID must be between 1 and 65535'
+                })
+              }]}
               style={{ marginBottom: '15px' }}
-              children={<Input style={{ width: '150px' }}></Input>}
+              children={<InputNumber style={{ width: '150px' }} />}
             />
         }
 
@@ -436,6 +441,12 @@ export function MoreSettingsForm (props: {
           name={['wlan','advancedCustomization','clientInactivityTimeout']}
           label={$t({ defaultMessage: 'Client Inactivity Timeout:' })}
           initialValue={120}
+          rules={[{
+            type: 'number', max: 86400, min: 60,
+            message: $t({
+              defaultMessage: 'Client Inactivity Timeout must be between 60 and 86400'
+            })
+          }]}
           style={{ marginBottom: '15px' }}
           children={<InputNumber style={{ width: '150px' }} />}
         />
@@ -444,6 +455,12 @@ export function MoreSettingsForm (props: {
           name={['wlan','advancedCustomization','directedThreshold']}
           label={$t({ defaultMessage: 'Directed MC/BC Threshold:' })}
           initialValue={5}
+          rules={[{
+            type: 'number', max: 128, min: 0,
+            message: $t({
+              defaultMessage: 'Directed MC/BC Threshold must be between 0 and 128'
+            })
+          }]}
           style={{ marginBottom: '15px', width: '300px' }}
           extra={$t({ defaultMessage: `Per radio client count at which an AP will stop
           converting group addressed data traffic to unicast` })}
@@ -479,7 +496,13 @@ export function MoreSettingsForm (props: {
                   name={['wlan','advancedCustomization','joinRSSIThreshold']}
                   style={{ marginBottom: '10px', lineHeight: '32px' }}
                   initialValue={-85}
-                  children={<Input style={{ width: '65px' }} />}
+                  rules={[{
+                    type: 'number', max: -60, min: -90,
+                    message: $t({
+                      defaultMessage: 'Join RSSI Threshold must be between -90 and -60'
+                    })
+                  }]}
+                  children={<InputNumber style={{ width: '65px' }} />}
                 />
                 { $t({ defaultMessage: 'dBm' }) }
               </>}
@@ -509,7 +532,13 @@ export function MoreSettingsForm (props: {
                 label={$t({ defaultMessage: 'Join Wait Time:' })}
                 style={{ marginBottom: '15px' }}
                 initialValue={30}
-                children={<Input style={{ width: '65px' }}></Input>}
+                rules={[{
+                  type: 'number', max: 60, min: 1,
+                  message: $t({
+                    defaultMessage: 'Join Wait Time must be between 1 and 60'
+                  })
+                }]}
+                children={<InputNumber style={{ width: '65px' }} />}
               />
 
             </div>
@@ -523,7 +552,13 @@ export function MoreSettingsForm (props: {
                 label={$t({ defaultMessage: 'Join Expire Time:' })}
                 style={{ marginBottom: '15px' }}
                 initialValue={300}
-                children={<Input style={{ width: '65px' }}></Input>}
+                rules={[{
+                  type: 'number', max: 300, min: 1,
+                  message: $t({
+                    defaultMessage: 'Join Expire Time must be between 1 and 300'
+                  })
+                }]}
+                children={<InputNumber style={{ width: '65px' }} />}
               />
 
             </div>
@@ -534,7 +569,13 @@ export function MoreSettingsForm (props: {
               label={$t({ defaultMessage: 'Join Wait Threshold:' })}
               style={{ marginBottom: '15px' }}
               initialValue={10}
-              children={<Input style={{ width: '65px' }}></Input>}
+              rules={[{
+                type: 'number', max: 50, min: 1,
+                message: $t({
+                  defaultMessage: 'Join Wait Threshold must be between 1 and 50'
+                })
+              }]}
+              children={<InputNumber style={{ width: '65px' }} />}
             />
           </>
 
@@ -561,9 +602,15 @@ export function MoreSettingsForm (props: {
                 label={$t({ defaultMessage: 'Broadcast Probe Response Delay:' })}
                 style={{ marginBottom: '15px' }}
                 initialValue={15}
+                rules={[{
+                  type: 'number', max: 120, min: 8,
+                  message: $t({
+                    defaultMessage: 'Broadcast Probe Response Delay must be between 8 and 120'
+                  })
+                }]}
                 valuePropName='value'
                 children={
-                  <Input style={{ width: '65px', marginRight: '10px' }}></Input>
+                  <InputNumber style={{ width: '65px', marginRight: '10px' }} />
                 }
               />
 
@@ -577,10 +624,18 @@ export function MoreSettingsForm (props: {
                 label={$t({ defaultMessage: 'RSSI-Based Association Rejection Threshold:' })}
                 style={{ marginBottom: '15px' }}
                 initialValue={-75}
+                rules={[{
+                  type: 'number', max: -60, min: -90,
+                  message: $t({
+                    defaultMessage: 'RSSI-Based Association Rejection Threshold ' +
+                      'must be between -90 and -60'
+                  })
+                }]}
                 valuePropName='value'
-              >
-                <Input style={{ width: '65px', marginRight: '10px' }}></Input>
-              </Form.Item>
+                children={
+                  <InputNumber style={{ width: '65px', marginRight: '10px' }} />
+                }
+              />
             </div>
           </>}
       </Panel>

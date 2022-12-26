@@ -528,6 +528,7 @@ export function AddGuestDrawer (props: AddGuestProps) {
     <Row>
       <Col span={12}>
         <Form.Item
+          validateFirst
           name={['expiration', 'duration']}
           label={$t({ defaultMessage: 'Pass is Valid for' })}
           rules={[
