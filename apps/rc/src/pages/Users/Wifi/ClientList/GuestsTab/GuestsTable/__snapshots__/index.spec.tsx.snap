@@ -784,7 +784,9 @@ exports[`Guest Table should render table 1`] = `
                               <td
                                 class="ant-table-cell"
                               >
-                                <span>
+                                <span
+                                  style="color: rgb(237, 28, 36);"
+                                >
                                   Expired
                                 </span>
                               </td>
