@@ -497,7 +497,13 @@ export function MoreSettingsForm (props: {
                   name={['wlan','advancedCustomization','joinRSSIThreshold']}
                   style={{ marginBottom: '10px', lineHeight: '32px' }}
                   initialValue={-85}
-                  children={<Input style={{ width: '65px' }} />}
+                  rules={[{
+                    type: 'number', max: -60, min: -90,
+                    message: $t({
+                      defaultMessage: 'Join RSSI Threshold must be between -90 and -60'
+                    })
+                  }]}
+                  children={<InputNumber style={{ width: '65px' }} />}
                 />
                 { $t({ defaultMessage: 'dBm' }) }
               </>}
