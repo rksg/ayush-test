@@ -530,17 +530,20 @@ describe('RadioSettingsTab with R760 AP', () => {
         </ApEditContext.Provider>
       </Provider>, { route: { params } })
 
+    await screen.findByRole('tab', { name: '2.4 GHz' })
+
     const dual5GBtn = await screen.findByRole('radio',
       { name: /Split 5GHz into lower and upper bands/ })
     await userEvent.click(dual5GBtn)
 
     const low5gTab = await screen.findByRole('tab', { name: 'Lower 5 GHz' })
-    const up5gTab = await screen.findByRole('tab', { name: 'Upper 5 GHz' })
+
 
     await userEvent.click(low5gTab)
     await userEvent.click(await screen.findByRole('button', { name: 'Lower 5G' }))
     await userEvent.click(await screen.findByRole('button', { name: 'DFS' }))
 
+    const up5gTab = await screen.findByRole('tab', { name: 'Upper 5 GHz' })
     await userEvent.click(up5gTab)
     await userEvent.click(await screen.findByRole('button', { name: 'Upper 5G' }))
     await userEvent.click(await screen.findByRole('button', { name: 'DFS' }))
