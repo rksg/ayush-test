@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-import { Button, Subtitle }                  from '@acx-ui/components'
+import { Button, Subtitle }        from '@acx-ui/components'
 import { WarningTriangleOutlined } from '@acx-ui/icons'
 
 export const UpgradeNotification = styled.div`

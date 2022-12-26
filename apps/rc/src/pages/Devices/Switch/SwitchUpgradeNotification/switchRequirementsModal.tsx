@@ -56,10 +56,10 @@ export function SwitchRequirementsModal (props: {
           </UI.ListItems>
 
           <UI.ListItems>
-            {$t({ defaultMessage: 'For a TFTP upgrade, follow the procedure outlined in' })}
+            {$t({ defaultMessage: 'For a TFTP upgrade, follow the procedure outlined in the ' })}
             <a target='_blank'
               href={upgradeProcessUrl}
-              rel='noreferrer'> {$t({ defaultMessage: 'The Upgrade Process' })} </a>
+              rel='noreferrer'> {$t({ defaultMessage: 'Upgrade Process' })} </a>
             {$t({ defaultMessage: ' from the RUCKUS FastIron Software Upgrade Guide.' })}
           </UI.ListItems>
         </UI.List>
