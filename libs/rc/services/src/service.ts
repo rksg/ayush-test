@@ -388,14 +388,14 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       invalidatesTags: [{ type: 'Service', id: 'LIST' }]
     }),
     createDpsk: build.mutation<DpskSaveData, RequestPayload<DpskSaveData>>({
-      query: ({ params, payload }) => {
-        const createDpskReq = createHttpRequest(DpskUrls.addDpsk, params)
+      query: ({ payload }) => {
+        const createDpskReq = createHttpRequest(DpskUrls.addDpsk)
         return {
           ...createDpskReq,
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Dpsk', id: 'LIST' }]
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }, { type: 'Dpsk', id: 'LIST' }]
     }),
     updateDpsk: build.mutation<DpskSaveData, RequestPayload<DpskSaveData>>({
       query: ({ params, payload }) => {
@@ -405,7 +405,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Dpsk', id: 'LIST' }]
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }, { type: 'Dpsk', id: 'LIST' }]
     }),
     getDpskList: build.query<TableResult<DpskSaveData>, RequestPayload>({
       query: () => {
@@ -414,7 +414,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           ...getDpskListReq
         }
       },
-      providesTags: [{ type: 'Dpsk', id: 'LIST' }],
+      providesTags: [{ type: 'Service', id: 'LIST' }, { type: 'Dpsk', id: 'LIST' }],
       transformResponse (result: NewTableResult<DpskSaveData>) {
         return transferTableResult<DpskSaveData>(result)
       }
