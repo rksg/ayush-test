@@ -86,10 +86,16 @@ export function transformDpskNetwork (
 ) {
   let displayValue = ''
   if (type === DpskNetworkType.FORMAT) {
+    if (!value) {
+      return $t({ defaultMessage: 'Error: Can not detect passphrase format value' })
+    }
     displayValue = $t(passphraseFormatLabel[value as PassphraseFormatEnum])
   } else if (type === DpskNetworkType.LENGTH) {
     displayValue = $t({ defaultMessage: '{count} Characters' }, { count: value as number })
   } else if (type === DpskNetworkType.EXPIRATION) {
+    if (!value) {
+      return $t({ defaultMessage: 'Error: Can not detect passphrase expiration value' })
+    }
     displayValue = $t(passphraseExpirationLabel[value as PassphraseExpirationEnum])
   }
 

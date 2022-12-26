@@ -1,3 +1,5 @@
+import { NetworkSaveData, NetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
+
 export const networksResponse = {
   fields: ['name', 'id'],
   totalCount: 0,
@@ -234,4 +236,50 @@ export const policyListResponse = {
   totalCount: 0,
   totalPages: 0,
   page: 1
+}
+
+export const dpskListResponse = {
+  content: [
+    {
+      id: '123456789a',
+      name: 'DPSK Service 1',
+      passphraseLength: 18,
+      passphraseFormat: 'MOST_SECURED',
+      expirationType: null
+    },
+    {
+      id: '123456789b',
+      name: 'DPSK Service 2',
+      passphraseLength: 22,
+      passphraseFormat: 'KEYBOARD_FRIENDLY',
+      expirationType: 'SPECIFIED_DATE',
+      expirationDate: '2022-12-07'
+    },
+    {
+      id: '123456789c',
+      name: 'DPSK Service 3',
+      passphraseLength: 24,
+      passphraseFormat: 'KEYBOARD_FRIENDLY',
+      expirationType: 'NUMBERS_ONLY',
+      expirationOffset: 2
+    }
+  ],
+  totalElements: 3,
+  totalPages: 1,
+  page: 0,
+  size: 20,
+  sort: []
+}
+
+export const partialDpskNetworkEntity: NetworkSaveData = {
+  type: NetworkTypeEnum.DPSK,
+  wlan: {
+    wlanSecurity: WlanSecurityEnum.WPA2Personal,
+    vlanId: 1,
+    ssid: 'JackyDPSK'
+  },
+  tenantId: '6de6a5239a1441cfb9c7fde93aa613fe',
+  dpskServiceProfileId: dpskListResponse.content[1].id,
+  name: 'JackyDPSK',
+  id: '1887fef21cdf485cbe2583b8c5ec97f1'
 }
