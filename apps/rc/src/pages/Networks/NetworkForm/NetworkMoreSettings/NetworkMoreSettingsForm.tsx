@@ -427,8 +427,14 @@ export function MoreSettingsForm (props: {
               name={['wlan','advancedCustomization','mobilityDomainId']}
               label={$t({ defaultMessage: 'Mobility Domain ID' })}
               initialValue={1}
+              rules={[{
+                type: 'number', max: 65535, min: 1,
+                message: $t({
+                  defaultMessage: 'Mobility Domain ID must be between 1 and 65535'
+                })
+              }]}
               style={{ marginBottom: '15px' }}
-              children={<Input style={{ width: '150px' }}></Input>}
+              children={<InputNumber style={{ width: '150px' }} />}
             />
         }
 
