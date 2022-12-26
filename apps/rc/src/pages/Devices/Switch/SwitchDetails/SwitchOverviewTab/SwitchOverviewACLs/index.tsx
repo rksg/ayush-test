@@ -12,9 +12,8 @@ import {
 import { useGetSwitchAclsQuery }   from '@acx-ui/rc/services'
 import { Acl, transformTitleCase } from '@acx-ui/rc/utils'
 import {  useParams }              from '@acx-ui/react-router-dom'
-import { current } from '@reduxjs/toolkit'
+
 import { AclDetail } from './aclDetail'
-import * as UI from './styledComponents'
 
 export function SwitchOverviewACLs () {
   const { $t } = useIntl()
