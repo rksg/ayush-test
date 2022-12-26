@@ -1,7 +1,10 @@
 /* eslint-disable max-len */
+import { useState } from 'react'
+
 import { useIntl } from 'react-intl'
 
-import * as UI from './styledComponents'
+import * as UI                     from './styledComponents'
+import { SwitchRequirementsModal } from './switchRequirementsModal'
 
 const modelNeedUpgrade = {
   stack: ['ICX7150-C10ZP', 'ICX7150-24F'],
@@ -19,6 +22,7 @@ export function SwitchUpgradeNotification (props: {
     type: SWITCH_UPGRADE_NOTIFICATION_TYPE,
     validateModel: string[]
 }) {
+  const [modalVisible, setModalVisible] = useState(false)
   const { $t } = useIntl()
   const {
     isDisplay,
@@ -75,12 +79,17 @@ export function SwitchUpgradeNotification (props: {
         {content.description}<br/>
         <UI.Warning> {content.warning}</UI.Warning>
 
-        <UI.LinkButton type='link'>
+        <UI.LinkButton type='link'
+          onClick={() => {
+            setModalVisible(true)
+          }}
+        >
           {linkMessage}
         </UI.LinkButton>
 
       </UI.Content>
     </UI.Wrapper>
+    <SwitchRequirementsModal {...{ setModalVisible, modalVisible }}/>
   </UI.UpgradeNotification> : <></>
 
 }
