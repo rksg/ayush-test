@@ -1,11 +1,17 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { CommonUrlsInfo, Dashboard }  from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { useIsSplitOn }                            from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo, Dashboard, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                from '@acx-ui/store'
+import { mockServer, render, screen }              from '@acx-ui/test-utils'
 
 import { VenueDetails } from '../'
+
+import { mockEdgeList } from './__tests__/fixtures'
+
+import { VenueDevicesTab } from '.'
+
 
 const data: Dashboard = {
   summary: {
@@ -259,6 +265,8 @@ const meshData = {
 
 describe('VenueMeshAps', () => {
   let params: { tenantId: string, venueId: string, activeTab: string }
+  jest.mocked(useIsSplitOn).mockReturnValue(true)
+
   beforeEach(() => {
     mockServer.use(
       rest.get(
@@ -291,5 +299,49 @@ describe('VenueMeshAps', () => {
 
     await screen.findByText('R710')
 
+  })
+})
+
+describe('Venue device tab', () => {
+  let params: { tenantId: string, venueId: string, activeTab: string, activeSubTab: string }
+
+  beforeEach(() => {
+    mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getEdgeList.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeList))
+      )
+    )
+
+    params = {
+      tenantId: 'd1ec841a4ff74436b23bca6477f6a631',
+      venueId: '8caa8f5e01494b5499fa156a6c565138',
+      activeTab: 'devices',
+      activeSubTab: 'edge'
+    }
+  })
+
+
+  it('should render edge list correctly', async () => {
+    render(
+      <Provider>
+        <VenueDevicesTab />
+      </Provider>, {
+        route: { params, path: '/:tenantId/venues/:venueId/venue-details/:activeTab/:activeSubTab' }
+      })
+
+    expect(await screen.findByRole('cell', { name: /Smart Edge 3/ })).toBeTruthy()
+  })
+
+  it('should have correct href path to create new edge', async () => {
+    render(
+      <Provider>
+        <VenueDevicesTab />
+      </Provider>, {
+        route: { params, path: '/:tenantId/venues/:venueId/venue-details/:activeTab/:activeSubTab' }
+      })
+
+    const target = await screen.findByRole('link', { name: 'Add SmartEdge' })
+    expect(target.getAttribute('href')).toBe(`/t/${params.tenantId}/devices/edge/add`)
   })
 })

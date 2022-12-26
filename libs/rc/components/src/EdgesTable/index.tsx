@@ -14,8 +14,9 @@ import { EdgeStatusLight } from './EdgeStatusLight'
 
 export { EdgeStatusLight } from './EdgeStatusLight'
 
-export const EdgesTable = () => {
+interface EdgesTableProps extends Omit<TableProps<EdgeViewModel>, 'columns'> {}
 
+export const EdgesTable = (props: EdgesTableProps) => {
   const defaultPayload = {
     fields: [
       'name',
@@ -183,13 +184,13 @@ export const EdgesTable = () => {
       { isLoading: false, isFetching: isDeleteEdgeUpdating }
     ]}>
       <Table
+        {...props}
         columns={columns}
         dataSource={tableQuery?.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         rowKey='serialNumber'
         rowActions={rowActions}
-        rowSelection={{ type: 'checkbox' }}
       />
     </Loader>
   )

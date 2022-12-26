@@ -1,16 +1,16 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import { EdgeUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }     from '@acx-ui/store'
 import {
-  mockServer, render,
-  screen, within
+  mockServer,
+  render,
+  screen,
+  within
 } from '@acx-ui/test-utils'
 
 import { mockEdgeList } from './__tests__/fixtures'
-
 
 import { EdgesTable } from '.'
 
@@ -23,7 +23,6 @@ jest.mock('react-router-dom', () => ({
 describe('Edge Table', () => {
   let params: { tenantId: string }
   beforeEach(() => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
@@ -88,7 +87,7 @@ describe('Edge Table', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <EdgesTable />
+        <EdgesTable rowSelection={{ type: 'checkbox' }}/>
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/list' }
       })
@@ -106,7 +105,7 @@ describe('Edge Table', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <EdgesTable />
+        <EdgesTable rowSelection={{ type: 'checkbox' }}/>
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/list' }
       })
@@ -120,7 +119,7 @@ describe('Edge Table', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <EdgesTable />
+        <EdgesTable rowSelection={{ type: 'checkbox' }}/>
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/list' }
       })
@@ -135,7 +134,7 @@ describe('Edge Table', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <EdgesTable />
+        <EdgesTable rowSelection={{ type: 'checkbox' }}/>
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/list' }
       })
@@ -152,7 +151,7 @@ describe('Edge Table', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <EdgesTable />
+        <EdgesTable rowSelection={{ type: 'checkbox' }}/>
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/list' }
       })

@@ -24,7 +24,9 @@ const Edges = () => {
           </TenantLink>
         }
       />
-      <EdgesTable />
+      <EdgesTable
+        rowSelection={{ type: 'checkbox' }}
+      />
     </>
   )
 }
