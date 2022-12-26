@@ -479,23 +479,23 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                               >
                                                 <div
                                                   class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                  style="width: 14px; height: 10px;"
+                                                  style="background-color: rgb(249, 195, 75); width: 14px; height: 10px;"
                                                 />
                                                 <div
                                                   class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                  style="width: 14px; height: 10px;"
+                                                  style="background-color: rgb(249, 195, 75); width: 14px; height: 10px;"
                                                 />
                                                 <div
                                                   class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                  style="width: 14px; height: 10px;"
+                                                  style="background-color: rgb(249, 195, 75); width: 14px; height: 10px;"
                                                 />
                                                 <div
                                                   class="ant-progress-steps-item"
-                                                  style="width: 14px; height: 10px;"
+                                                  style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
                                                 />
                                                 <div
                                                   class="ant-progress-steps-item"
-                                                  style="width: 14px; height: 10px;"
+                                                  style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
                                                 />
                                               </div>
                                             </div>
@@ -585,23 +585,23 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                               >
                                                 <div
                                                   class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                  style="width: 14px; height: 10px;"
+                                                  style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
                                                 />
                                                 <div
                                                   class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                  style="width: 14px; height: 10px;"
+                                                  style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
                                                 />
                                                 <div
                                                   class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                  style="width: 14px; height: 10px;"
+                                                  style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
                                                 />
                                                 <div
                                                   class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                  style="width: 14px; height: 10px;"
+                                                  style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
                                                 />
                                                 <div
                                                   class="ant-progress-steps-item"
-                                                  style="width: 14px; height: 10px;"
+                                                  style="background-color: rgb(212, 212, 212); width: 14px; height: 10px;"
                                                 />
                                               </div>
                                             </div>
@@ -691,23 +691,23 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                               >
                                                 <div
                                                   class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                  style="width: 14px; height: 10px;"
+                                                  style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
                                                 />
                                                 <div
                                                   class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                  style="width: 14px; height: 10px;"
+                                                  style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
                                                 />
                                                 <div
                                                   class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                  style="width: 14px; height: 10px;"
+                                                  style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
                                                 />
                                                 <div
                                                   class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                  style="width: 14px; height: 10px;"
+                                                  style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
                                                 />
                                                 <div
                                                   class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                  style="width: 14px; height: 10px;"
+                                                  style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
                                                 />
                                               </div>
                                             </div>
@@ -797,23 +797,23 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                               >
                                                 <div
                                                   class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                  style="width: 14px; height: 10px;"
+                                                  style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
                                                 />
                                                 <div
                                                   class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                  style="width: 14px; height: 10px;"
+                                                  style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
                                                 />
                                                 <div
                                                   class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                  style="width: 14px; height: 10px;"
+                                                  style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
                                                 />
                                                 <div
                                                   class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                  style="width: 14px; height: 10px;"
+                                                  style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
                                                 />
                                                 <div
                                                   class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                  style="width: 14px; height: 10px;"
+                                                  style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
                                                 />
                                               </div>
                                             </div>
@@ -894,23 +894,23 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                               >
                                                 <div
                                                   class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                  style="width: 14px; height: 10px;"
+                                                  style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
                                                 />
                                                 <div
                                                   class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                  style="width: 14px; height: 10px;"
+                                                  style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
                                                 />
                                                 <div
                                                   class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                  style="width: 14px; height: 10px;"
+                                                  style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
                                                 />
                                                 <div
                                                   class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                  style="width: 14px; height: 10px;"
+                                                  style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
                                                 />
                                                 <div
                                                   class="ant-progress-steps-item ant-progress-steps-item-active"
-                                                  style="width: 14px; height: 10px;"
+                                                  style="background-color: rgb(35, 171, 54); width: 14px; height: 10px;"
                                                 />
                                               </div>
                                             </div>

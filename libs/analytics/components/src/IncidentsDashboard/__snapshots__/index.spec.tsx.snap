@@ -89,7 +89,7 @@ exports[`IncidentDashboard renders incident and category data 1`] = `
                   >
                     <div>
                       <div
-                        class="sc-jSMfEi cMZEQk"
+                        class="sc-jSMfEi fLvOfG"
                       />
                     </div>
                     <div>
@@ -120,7 +120,7 @@ exports[`IncidentDashboard renders incident and category data 1`] = `
                   >
                     <div>
                       <div
-                        class="sc-jSMfEi cMZEQk"
+                        class="sc-jSMfEi cUTJpv"
                       />
                     </div>
                     <div>
@@ -151,7 +151,7 @@ exports[`IncidentDashboard renders incident and category data 1`] = `
                   >
                     <div>
                       <div
-                        class="sc-jSMfEi cMZEQk"
+                        class="sc-jSMfEi fvCsOc"
                       />
                     </div>
                     <div>
@@ -182,7 +182,7 @@ exports[`IncidentDashboard renders incident and category data 1`] = `
                   >
                     <div>
                       <div
-                        class="sc-jSMfEi cMZEQk"
+                        class="sc-jSMfEi dkoUNd"
                       />
                     </div>
                     <div>
@@ -233,53 +233,140 @@ exports[`IncidentDashboard renders incident and category data 1`] = `
                     />
                     <g>
                       <path
-                        d="M27 654.1667L28.6373 654.1667L28.6373 664.1667L27 664.1667L27 654.1667"
+                        d="M-80 -0.5l80 0l0 1l-80 0Z"
                         fill="none"
+                        transform="translate(85 659.1667)"
+                      />
+                      <text
+                        dominant-baseline="central"
+                        fill="#5496EA"
+                        style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                        text-anchor="start"
+                        transform="translate(85 659.1667)"
+                        x="-80"
+                      >
+                        Infrastructure
+                      </text>
+                      <path
+                        d="M-80 -0.5l80 0l0 1l-80 0Z"
+                        fill="none"
+                        transform="translate(85 395.5)"
+                      />
+                      <text
+                        dominant-baseline="central"
+                        fill="#5496EA"
+                        style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                        text-anchor="start"
+                        transform="translate(85 395.5)"
+                        x="-80"
+                      >
+                        Performance
+                      </text>
+                      <path
+                        d="M-80 -0.5l80 0l0 1l-80 0Z"
+                        fill="none"
+                        transform="translate(85 131.8333)"
+                      />
+                      <text
+                        dominant-baseline="central"
+                        fill="#5496EA"
+                        style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                        text-anchor="start"
+                        transform="translate(85 131.8333)"
+                        x="-80"
+                      >
+                        Connection
+                      </text>
+                      <path
+                        d="M93 654.1667L94.5493 654.1667L94.5493 664.1667L93 664.1667L93 654.1667"
+                        fill="#FAD278"
                       />
                       <path
-                        d="M27 390.5L28.5555 390.5L28.5555 400.5L27 400.5L27 390.5"
-                        fill="none"
+                        d="M93 390.5L94.4719 390.5L94.4719 400.5L93 400.5L93 390.5"
+                        fill="#FAD278"
                       />
                       <path
-                        d="M27 126.8333L28.4736 126.8333L28.4736 136.8333L27 136.8333L27 126.8333"
-                        fill="none"
+                        d="M93 126.8333L94.3944 126.8333L94.3944 136.8333L93 136.8333L93 126.8333"
+                        fill="#FAD278"
                       />
                       <path
-                        d="M28.6373 654.1667L30.0291 654.1667L30.0291 664.1667L28.6373 664.1667L28.6373 654.1667"
-                        fill="none"
+                        d="M94.5493 654.1667L95.8663 654.1667L95.8663 664.1667L94.5493 664.1667L94.5493 654.1667"
+                        fill="#F7B41E"
                       />
                       <path
-                        d="M28.5555 390.5L29.8653 390.5L29.8653 400.5L28.5555 400.5L28.5555 390.5"
-                        fill="none"
+                        d="M94.4719 390.5L95.7113 390.5L95.7113 400.5L94.4719 400.5L94.4719 390.5"
+                        fill="#F7B41E"
                       />
                       <path
-                        d="M28.4736 126.8333L29.7016 126.8333L29.7016 136.8333L28.4736 136.8333L28.4736 126.8333"
-                        fill="none"
+                        d="M94.3944 126.8333L95.5564 126.8333L95.5564 136.8333L94.3944 136.8333L94.3944 126.8333"
+                        fill="#F7B41E"
                       />
                       <path
-                        d="M30.0291 654.1667L1176.1624 654.1667L1176.1624 664.1667L30.0291 664.1667L30.0291 654.1667"
-                        fill="none"
+                        d="M95.8663 654.1667L1180.3996 654.1667L1180.3996 664.1667L95.8663 664.1667L95.8663 654.1667"
+                        fill="#EC7100"
                       />
                       <path
-                        d="M29.8653 390.5L1094.132 390.5L1094.132 400.5L29.8653 400.5L29.8653 390.5"
-                        fill="none"
+                        d="M95.7113 390.5L1102.778 390.5L1102.778 400.5L95.7113 400.5L95.7113 390.5"
+                        fill="#EC7100"
                       />
                       <path
-                        d="M29.7016 126.8333L1012.1016 126.8333L1012.1016 136.8333L29.7016 136.8333L29.7016 126.8333"
-                        fill="none"
+                        d="M95.5564 126.8333L1025.1564 126.8333L1025.1564 136.8333L95.5564 136.8333L95.5564 126.8333"
+                        fill="#EC7100"
                       />
                       <path
-                        d="M1176.1624 654.1667A0.9005 0.9005 0 0 1 1177.0629 655.0672L1177.0629 663.2661A0.9005 0.9005 0 0 1 1176.1624 664.1667L1176.1624 654.1667"
-                        fill="none"
+                        d="M1180.3996 654.1667A0.8521 0.8521 0 0 1 1181.2517 655.0188L1181.2517 663.3145A0.8521 0.8521 0 0 1 1180.3996 664.1667L1180.3996 654.1667"
+                        fill="#ED1C24"
                       />
                       <path
-                        d="M1094.132 390.5A0.8187 0.8187 0 0 1 1094.9507 391.3187L1094.9507 399.6813A0.8187 0.8187 0 0 1 1094.132 400.5L1094.132 390.5"
-                        fill="none"
+                        d="M1102.778 390.5A0.7747 0.7747 0 0 1 1103.5527 391.2747L1103.5527 399.7253A0.7747 0.7747 0 0 1 1102.778 400.5L1102.778 390.5"
+                        fill="#ED1C24"
                       />
                       <path
-                        d="M1012.1016 126.8333A0.7368 0.7368 0 0 1 1012.8384 127.5701L1012.8384 136.0965A0.7368 0.7368 0 0 1 1012.1016 136.8333L1012.1016 126.8333"
-                        fill="none"
+                        d="M1025.1564 126.8333A0.6972 0.6972 0 0 1 1025.8536 127.5305L1025.8536 136.1361A0.6972 0.6972 0 0 1 1025.1564 136.8333L1025.1564 126.8333"
+                        fill="#ED1C24"
                       />
+                      <path
+                        d="M0 -8l5 0l0 16l-5 0Z"
+                        fill="none"
+                        transform="translate(1186.2517 659.1667)"
+                      />
+                      <text
+                        dominant-baseline="central"
+                        fill="#333333"
+                        style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                        text-anchor="start"
+                        transform="translate(1186.2517 659.1667)"
+                      >
+                        14048
+                      </text>
+                      <path
+                        d="M0 -8l5 0l0 16l-5 0Z"
+                        fill="none"
+                        transform="translate(1108.5527 395.5)"
+                      />
+                      <text
+                        dominant-baseline="central"
+                        fill="#333333"
+                        style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                        text-anchor="start"
+                        transform="translate(1108.5527 395.5)"
+                      >
+                        13045
+                      </text>
+                      <path
+                        d="M0 -8l5 0l0 16l-5 0Z"
+                        fill="none"
+                        transform="translate(1030.8536 131.8333)"
+                      />
+                      <text
+                        dominant-baseline="central"
+                        fill="#333333"
+                        style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+                        text-anchor="start"
+                        transform="translate(1030.8536 131.8333)"
+                      >
+                        12042
+                      </text>
                     </g>
                   </svg>
                 </div>
