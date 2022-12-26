@@ -774,7 +774,7 @@ exports[`Guest Table should render table 1`] = `
                               <td
                                 class="ant-table-cell"
                               >
-                                None
+                                None [Network modified or deleted]
                               </td>
                               <td
                                 class="ant-table-cell"
