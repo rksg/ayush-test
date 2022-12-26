@@ -137,11 +137,18 @@ export function Venues () {
       isAllApGroups: true,
       allApGroupsRadio: RadioEnum.Both
     }
-    const selected = selectedRows.map((row) => ({
-      ...defaultSetup,
-      venueId: row.id,
-      name: row.name
-    }))
+    const selected = selectedRows.map((row) => {
+      const existsVenue = (data?.venues?.find(venue => venue.venueId === row.id))
+      if (existsVenue) {
+        return existsVenue
+      } else {
+        return ({
+          ...defaultSetup,
+          venueId: row.id,
+          name: row.name
+        })
+      }
+    })
 
     setData && setData({ ...data, venues: selected })
     form.setFieldsValue({ venues: selected })
