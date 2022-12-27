@@ -1,10 +1,12 @@
-import { useContext, useEffect, useState } from 'react'
+import { Key, useContext, useEffect, useState } from 'react'
 
-import { Col, Row } from 'antd'
-import { useIntl }  from 'react-intl'
+import { Col, Row }  from 'antd'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
-import { Button, ContentSwitcher, ContentSwitcherProps, Loader, Table, TableProps } from '@acx-ui/components'
-import { EdgeSubInterface }                                                         from '@acx-ui/rc/utils'
+import { Button, ContentSwitcher, ContentSwitcherProps, Loader, showActionModal, Table, TableProps } from '@acx-ui/components'
+import { useDeleteSubInterfacesMutation, useGetSubInterfacesQuery }                                  from '@acx-ui/rc/services'
+import { EdgeSubInterface, useGetTableQuery }                                                        from '@acx-ui/rc/utils'
 
 import { PortsContext } from '..'
 import * as UI          from '../styledComponents'
@@ -13,7 +15,7 @@ import SubInterfaceDrawer from './SubInterfaceDrawer'
 
 
 interface SubInterfaceTableProps {
-  ip: string
+  index: number
   mac: string
   setIsFetching: React.Dispatch<React.SetStateAction<boolean>>
 }
@@ -21,9 +23,19 @@ interface SubInterfaceTableProps {
 const SubInterfaceTable = (props: SubInterfaceTableProps) => {
 
   const { $t } = useIntl()
+  const params = useParams()
   const [drawerVisible, setDrawerVisible] = useState(false)
-  const [routesData, setRoutesData] = useState<EdgeSubInterface[]>([])
   const [currentEditData, setCurrentEditData] = useState<EdgeSubInterface>()
+  const [selectedRows, setSelectedRows] = useState<Key[]>([])
+  const tableQuery = useGetTableQuery<EdgeSubInterface>({
+    useQuery: useGetSubInterfacesQuery,
+    apiParams: { mac: props.mac }
+  })
+  const [deleteSubInterfaces] = useDeleteSubInterfacesMutation()
+
+  useEffect(() => {
+    setSelectedRows([])
+  }, [props.mac])
 
   const columns: TableProps<EdgeSubInterface>['columns'] = [
     {
@@ -64,19 +76,23 @@ const SubInterfaceTable = (props: SubInterfaceTableProps) => {
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedRows, clearSelection) => {
-        setRoutesData(routesData.filter(item => {
-          for(let deletedItem of selectedRows) {
-            if(deletedItem.id && deletedItem.id === item.id) {
-              return false
-            }
-            // if(deletedItem.networkAddress === item.networkAddress &&
-            //   deletedItem.subnetMask === item.subnetMask) {
-            //   return false
-            // }
+        showActionModal({
+          type: 'confirm',
+          customContent: {
+            action: 'DELETE',
+            entityName: $t({ defaultMessage: 'Sub-Interface' }),
+            entityValue: selectedRows[0].vlan.toString(),
+            numOfEntities: selectedRows.length
+          },
+          onOk: () => {
+            deleteSubInterfaces({
+              params: {
+                ...params,
+                mac: props.mac,
+                subInterfaceId: selectedRows[0].id }
+            }).then(clearSelection)
           }
-          return true
-        }))
-        clearSelection()
+        })
       }
     }
   ]
@@ -98,27 +114,37 @@ const SubInterfaceTable = (props: SubInterfaceTableProps) => {
         {
           $t(
             { defaultMessage: 'IP Address: {ip}   |   MAC Address: {mac}' },
-            { ip: props.ip, mac: props.mac }
+            { ip: '', mac: props.mac }
           )
         }
       </UI.IpAndMac>
       <Row>
         <Col span={8}>
           <SubInterfaceDrawer
+            index={props.index}
             visible={drawerVisible}
             setVisible={setDrawerVisible}
-            // addRoute={addRoute}
             data={currentEditData}
           />
-          <Table<EdgeSubInterface>
-            toolBarRender={toolBarRender}
-            columns={columns}
-            rowActions={rowActions}
-            dataSource={routesData}
-            rowSelection={{ type: 'checkbox' }}
-            rowKey='networkAddress'
-            type='form'
-          />
+          <Loader states={[tableQuery]}>
+            <Table<EdgeSubInterface>
+              toolBarRender={toolBarRender}
+              dataSource={tableQuery?.data?.content}
+              pagination={tableQuery.pagination}
+              onChange={tableQuery.handleTableChange}
+              columns={columns}
+              rowActions={rowActions}
+              rowSelection={{
+                type: 'radio',
+                selectedRowKeys: selectedRows,
+                onChange: (key: Key[]) => {
+                  setSelectedRows(key)
+                }
+              }}
+              rowKey='id'
+              type='form'
+            />
+          </Loader>
         </Col>
       </Row>
     </>
@@ -137,7 +163,10 @@ const SubInterface = () => {
         return {
           label: $t({ defaultMessage: 'Port {index}' }, { index: index + 1 }),
           value: 'port_' + (index + 1),
-          children: <SubInterfaceTable ip={data.ip} mac={data.mac} setIsFetching={setIsFetching} />
+          children: <SubInterfaceTable
+            index={index}
+            mac={data.mac}
+            setIsFetching={setIsFetching} />
         }
       }))
     }

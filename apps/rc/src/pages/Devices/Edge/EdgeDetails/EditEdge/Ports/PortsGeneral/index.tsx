@@ -7,7 +7,7 @@ import { useIntl }                                             from 'react-intl'
 
 import { ContentSwitcher, ContentSwitcherProps, Loader, showToast, StepsForm, StepsFormInstance } from '@acx-ui/components'
 import { useUpdatePortConfigMutation }                                                            from '@acx-ui/rc/services'
-import { EdgeIpModeEnum, EdgePort, EdgePortTypeEnum }                                             from '@acx-ui/rc/utils'
+import { EdgeIpModeEnum, EdgePort, EdgePortTypeEnum, serverIpAddressRegExp, subnetMaskIpRegExp }  from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink }                                                  from '@acx-ui/react-router-dom'
 
 import { PortsContext } from '..'
@@ -78,17 +78,19 @@ const PortConfigForm = (props: ConfigFormProps) => {
           <Form.Item
             name='ip'
             label={$t({ defaultMessage: 'IP Address' })}
-            rules={[{
-              required: true
-            }]}
+            rules={[
+              { required: true },
+              { validator: (_, value) => serverIpAddressRegExp(value) }
+            ]}
             children={<Input />}
           />
           <Form.Item
             name='subnet'
             label={$t({ defaultMessage: 'Subnet Mask' })}
-            rules={[{
-              required: true
-            }]}
+            rules={[
+              { required: true },
+              { validator: (_, value) => subnetMaskIpRegExp(value) }
+            ]}
             children={<Input />}
           />
         </>
@@ -120,25 +122,28 @@ const PortConfigForm = (props: ConfigFormProps) => {
               <Form.Item
                 name='ip'
                 label={$t({ defaultMessage: 'IP Address' })}
-                rules={[{
-                  required: true
-                }]}
+                rules={[
+                  { required: true },
+                  { validator: (_, value) => serverIpAddressRegExp(value) }
+                ]}
                 children={<Input />}
               />
               <Form.Item
                 name='subnet'
                 label={$t({ defaultMessage: 'Subnet Mask' })}
-                rules={[{
-                  required: true
-                }]}
+                rules={[
+                  { required: true },
+                  { validator: (_, value) => subnetMaskIpRegExp(value) }
+                ]}
                 children={<Input />}
               />
               <Form.Item
                 name='gateway'
                 label={$t({ defaultMessage: 'Gateway' })}
-                rules={[{
-                  required: true
-                }]}
+                rules={[
+                  { required: true },
+                  { validator: (_, value) => serverIpAddressRegExp(value) }
+                ]}
                 children={<Input />}
               />
             </>
@@ -157,7 +162,7 @@ const PortConfigForm = (props: ConfigFormProps) => {
     return null
   }
 
-  const handlePortsGeneral = async () => {
+  const handleFinish = async () => {
     try {
       await updatePortConfig({ params: params, payload: { ports: ports } }).unwrap()
     } catch {
@@ -183,7 +188,7 @@ const PortConfigForm = (props: ConfigFormProps) => {
       <StepsForm
         formRef={formRef}
         onFormChange={updateContext}
-        onFinish={handlePortsGeneral}
+        onFinish={handleFinish}
         onCancel={() => navigate(linkToEdgeList)}
         buttonLabel={{ submit: $t({ defaultMessage: 'Apply Ports General' }) }}
       >
@@ -193,9 +198,8 @@ const PortConfigForm = (props: ConfigFormProps) => {
               <Form.Item
                 name='name'
                 label={$t({ defaultMessage: 'Port Name' })}
-              >
-                <Input />
-              </Form.Item>
+                children={<Input />}
+              />
               <Form.Item
                 name='portType'
                 label={$t({ defaultMessage: 'Port Type' })}

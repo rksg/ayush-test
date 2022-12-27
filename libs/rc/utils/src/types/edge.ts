@@ -39,12 +39,7 @@ export interface EdgePortConfig {
   ports: EdgePort[]
 }
 
-export interface EdgeSubInterface {
-  id: string
-  portType: EdgePortTypeEnum.WAN | EdgePortTypeEnum.LAN | EdgePortTypeEnum.UNCONFIGURED
-  ipMode: EdgeIpModeEnum.DHCP | EdgeIpModeEnum.STATIC
-  ip: string
-  subnet: string
+export interface EdgeSubInterface extends EdgePort {
   vlan: number
 }
 

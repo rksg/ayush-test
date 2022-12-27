@@ -1,15 +1,16 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 import {
+  PaginationQueryResult,
   CommonResult,
   createHttpRequest,
   EdgeDnsServers,
   EdgePortConfig,
   EdgeSaveData,
+  EdgeSubInterface,
   EdgeUrlsInfo,
-  EdgeViewModel,
-  RequestPayload,
-  TableResult
+  EdgeViewModel, QueryArgs,
+  RequestPayload, TableResult
 } from '@acx-ui/rc/utils'
 
 export const baseEdgeApi = createApi({
@@ -113,7 +114,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Edge', id: 'DETAIL' }]
+      providesTags: [{ type: 'Edge', id: 'DETAIL_PORTS' }]
     }),
     updatePortConfig: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -123,6 +124,47 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    // eslint-disable-next-line max-len
+    getSubInterfaces: build.query<PaginationQueryResult<EdgeSubInterface>, RequestPayload & QueryArgs>({
+      query: ({ params, queryArgs }) => {
+        const { current, pageSize } = queryArgs
+        const req = createHttpRequest(EdgeUrlsInfo.getSubInterfaces, params)
+        return {
+          ...req,
+          params: { page: current, pageSize }
+        }
+      },
+      providesTags: [{ type: 'Edge', id: 'DETAIL_SUB_INTERFACE' }]
+    }),
+    addSubInterfaces: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.addSubInterfaces, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Edge', id: 'DETAIL_SUB_INTERFACE' }]
+    }),
+    updateSubInterfaces: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.updateSubInterfaces, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Edge', id: 'DETAIL_SUB_INTERFACE' }]
+    }),
+    deleteSubInterfaces: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.deleteSubInterfaces, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Edge', id: 'DETAIL_SUB_INTERFACE' }]
     })
   })
 })
@@ -138,5 +180,9 @@ export const {
   useGetDnsServersQuery,
   useUpdateDnsServersMutation,
   useGetPortConfigQuery,
-  useUpdatePortConfigMutation
+  useUpdatePortConfigMutation,
+  useGetSubInterfacesQuery,
+  useAddSubInterfacesMutation,
+  useUpdateSubInterfacesMutation,
+  useDeleteSubInterfacesMutation
 } = edgeApi

@@ -3,7 +3,7 @@
 exports[`EdgeSettingForm should create EdgeSettingForm successfully 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
       class="ant-form-item"
@@ -250,7 +250,7 @@ exports[`EdgeSettingForm should create EdgeSettingForm successfully 1`] = `
 exports[`EdgeSettingForm should create EdgeSettingForm with edit mode successfully 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
       class="ant-form-item"
@@ -498,7 +498,7 @@ exports[`EdgeSettingForm should create EdgeSettingForm with edit mode successful
 exports[`EdgeSettingForm should show OTP message correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
       class="ant-form-item"

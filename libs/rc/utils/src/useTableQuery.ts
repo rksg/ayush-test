@@ -40,17 +40,17 @@ export interface TABLE_QUERY <
 export type PAGINATION = {
   current: number,
   pageSize: number,
-  total: number
+  total?: number
 }
 
-const DEFAULT_PAGINATION = {
+export const DEFAULT_PAGINATION = {
   page: 1,
   current: 1,
   pageSize: 10,
   total: 0
 }
 
-const SORTER_ABBR = {
+export const SORTER_ABBR = {
   descend: 'DESC',
   ascend: 'ASC'
 }
@@ -60,12 +60,12 @@ export interface SORTER {
   sortOrder: string
 }
 
-const DEFAULT_SORTER = {
+export const DEFAULT_SORTER = {
   sortField: 'name',
   sortOrder: SORTER_ABBR.ascend
 }
 
-const transferSorter = (order:string) => {
+export const transferSorter = (order:string) => {
   return order === 'ascend' ? SORTER_ABBR.ascend : SORTER_ABBR.descend
 }
 
