@@ -2940,60 +2940,16 @@ exports[`Search Results should render tables correctly 1`] = `
                                         <td
                                           class="ant-table-cell ant-table-cell-ellipsis"
                                           style="text-align: center;"
+                                          title="9"
                                         >
-                                          <span
-                                            aria-label="9"
-                                            class="ant-typography ant-typography-ellipsis ant-typography-single-line"
-                                            style="width: 100%; margin: 0px; padding: 0px;"
-                                            title=""
-                                          >
-                                            9
-                                            <span
-                                              aria-hidden="true"
-                                              style="position: fixed; display: block; left: 0px; top: 0px; z-index: -9999; visibility: hidden; pointer-events: none; word-break: keep-all; white-space: nowrap;"
-                                            >
-                                              lg
-                                            </span>
-                                            <span
-                                              aria-hidden="true"
-                                              style="position: fixed; display: block; left: 0px; top: 0px; z-index: -9999; visibility: hidden; pointer-events: none; width: 0px; white-space: normal; margin: 0px; padding: 0px;"
-                                            >
-                                              <span
-                                                aria-hidden="true"
-                                              >
-                                                ...
-                                              </span>
-                                            </span>
-                                          </span>
+                                          9
                                         </td>
                                         <td
                                           class="ant-table-cell ant-table-cell-ellipsis"
                                           style="text-align: center;"
+                                          title="40"
                                         >
-                                          <span
-                                            aria-label="40"
-                                            class="ant-typography ant-typography-ellipsis ant-typography-single-line"
-                                            style="width: 100%; margin: 0px; padding: 0px;"
-                                            title=""
-                                          >
-                                            40
-                                            <span
-                                              aria-hidden="true"
-                                              style="position: fixed; display: block; left: 0px; top: 0px; z-index: -9999; visibility: hidden; pointer-events: none; word-break: keep-all; white-space: nowrap;"
-                                            >
-                                              lg
-                                            </span>
-                                            <span
-                                              aria-hidden="true"
-                                              style="position: fixed; display: block; left: 0px; top: 0px; z-index: -9999; visibility: hidden; pointer-events: none; width: 0px; white-space: normal; margin: 0px; padding: 0px;"
-                                            >
-                                              <span
-                                                aria-hidden="true"
-                                              >
-                                                ...
-                                              </span>
-                                            </span>
-                                          </span>
+                                          40
                                         </td>
                                         <td
                                           class="ant-table-cell"

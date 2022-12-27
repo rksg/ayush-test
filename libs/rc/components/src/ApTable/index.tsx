@@ -237,7 +237,7 @@ export function ApTable (props: ApTableProps) {
           title: <Table.SubTitle children={channelTitleMap[channel as keyof ApExtraParams]} />,
           align: 'center',
           ellipsis: true,
-          render: transformDisplayText
+          render: (data: never, row: { [x: string]: string | undefined }) => transformDisplayText(row[channel])
         } : null)
         .filter(Boolean)
     }, {
@@ -280,7 +280,6 @@ export function ApTable (props: ApTableProps) {
       }
     }] as TableProps<APExtended>['columns']
   }, [$t, tableQuery.data?.extra])
-
 
   const isActionVisible = (
     selectedRows: APExtended[],

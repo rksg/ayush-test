@@ -1,14 +1,23 @@
 /* eslint-disable max-len */
 import { useEffect, useState } from 'react'
 
-
-import { Checkbox, Col, Divider, Form, Input, InputNumber, Radio, Row, Select } from 'antd'
-import { PhoneNumberUtil }                                                      from 'google-libphonenumber'
-import { HumanizeDuration, HumanizeDurationLanguage }                           from 'humanize-duration-ts'
-import _                                                                        from 'lodash'
-import moment                                                                   from 'moment'
-import { useIntl }                                                              from 'react-intl'
-import { useParams }                                                            from 'react-router-dom'
+import {
+  Checkbox,
+  Col,
+  Divider,
+  Form,
+  Input,
+  InputNumber,
+  Radio,
+  Row,
+  Select
+} from 'antd'
+import { PhoneNumberUtil }                            from 'google-libphonenumber'
+import { HumanizeDuration, HumanizeDurationLanguage } from 'humanize-duration-ts'
+import _                                              from 'lodash'
+import moment                                         from 'moment'
+import { useIntl }                                    from 'react-intl'
+import { useParams }                                  from 'react-router-dom'
 
 import { Button, Drawer, cssStr, showActionModal } from '@acx-ui/components'
 import {
@@ -28,8 +37,10 @@ import {
   base64Images,
   PdfGeneratorService,
   Guest,
-  LangCode
+  LangCode,
+  GuestErrorRes
 } from '@acx-ui/rc/utils'
+import { getIntl } from '@acx-ui/utils'
 
 import {
   MobilePhoneSolidIcon,
@@ -37,7 +48,7 @@ import {
   PrintIcon,
   CheckboxLabel,
   FooterDiv
-}   from '../styledComponents'
+} from '../styledComponents'
 
 interface AddGuestProps {
     visible: boolean
@@ -229,29 +240,28 @@ export const genTemplate = (guestDetails: any, langDictionary: any) => {
 }
 
 
-export function AddGuestDrawer (props: AddGuestProps) {
+
+export type GuestResponse = {
+  requestId: string,
+  response: Guest[] | { data: Guest[], downloadUrl: string } }
+
+export function GuestFields ({ withBasicFields = true }: { withBasicFields?: boolean }) {
   const { $t } = useIntl()
-  const [form] = Form.useForm()
-  const { visible, setVisible } = props
   const params = useParams()
-  const [phoneNumberError, setPhoneNumberError] = useState(true)
-  const [emailError, setEmailError] = useState(true)
-  const [allowedNetworkList, setAllowedNetworkList] = useState<Network[]>()
+  const form = Form.useFormInstance()
+  // Don't disable phone and email if withBasicFields == false
+  const [phoneNumberError, setPhoneNumberError] = useState(withBasicFields)
+  const [emailError, setEmailError] = useState(withBasicFields)
 
   const timeTypeValidPassOptions = [
-    { label: 'Hours', value: 'Hour' }, { label: 'Days', value: 'Day' }]
+    { label: $t({ defaultMessage: 'Hours' }), value: 'Hour' },
+    { label: $t({ defaultMessage: 'Days' }), value: 'Day' }
+  ]
 
   const examplePhoneNumber = PhoneNumberUtil.getInstance().getExampleNumber('US')
 
-  const [
-    addGuestPass
-  ] = useAddGuestPassMutation()
-
   const [getNetworkList] = useLazyGetGuestNetworkListQuery()
-  const [getNetwork] = useLazyGetNetworkQuery()
-  const [getUserProfile] = useLazyGetUserProfileQuery()
-
-
+  const [allowedNetworkList, setAllowedNetworkList] = useState<Network[]>()
   const getAllowedNetworkList = async () => {
     const list = await (getNetworkList({ params, payload }, true).unwrap())
     setAllowedNetworkList(list.data)
@@ -266,11 +276,329 @@ export function AddGuestDrawer (props: AddGuestProps) {
     for (let i = 1; i <= 5; i++) {
       list.push({ label: i.toString(), value: i })
     }
-    list.push({ label: 'Unlimited', value: -1 })
+    list.push({ label: $t({ defaultMessage: 'Unlimited' }), value: -1 })
     return list
   }
-
   const numberOfDevicesOptions = createNumberOfDevicesList()
+
+  const onPhoneNumberChange = () => {
+    const deliveryMethods = form.getFieldValue('deliveryMethods')
+    form.validateFields(['mobilePhoneNumber']).then(() => {
+      if(form.getFieldValue('mobilePhoneNumber') !== ''){
+        setPhoneNumberError(false)
+        deliveryMethods.push('SMS')
+        form.setFieldValue('deliveryMethods', _.uniq(deliveryMethods))
+      }
+    }).catch(err => {
+      if(err.errorFields.length > 0) {
+        setPhoneNumberError(true)
+        form.setFieldValue('deliveryMethods',
+          deliveryMethods.filter((e: string) => e !== 'SMS'))
+      }
+    })
+  }
+
+  const onEmailChange = () => {
+    const deliveryMethods = form.getFieldValue('deliveryMethods')
+    form.validateFields(['email']).then(() => {
+      if(form.getFieldValue('email') !== ''){
+        setEmailError(false)
+        deliveryMethods.push('MAIL')
+        form.setFieldValue('deliveryMethods', _.uniq(deliveryMethods))
+      }
+    }).catch(err => {
+      if(err.errorFields.length > 0) {
+        setEmailError(true)
+        form.setFieldValue('deliveryMethods',
+          deliveryMethods.filter((e: string) => e !== 'MAIL'))
+      }
+    })
+  }
+
+  const onUnitChange = (value: string) => {
+    form.setFields([{ name: ['expiration', 'duration'], value: value === 'Day' ? 7 : 24, errors: [] }])
+  }
+
+  const durationValidator = (value: number) => {
+    const unit = form.getFieldValue(['expiration', 'unit'])
+    if (unit === 'Day' && (value < 1 || value > 365)) {
+      return Promise.reject($t({ defaultMessage: 'Value must be between 1 and 365' }))
+    } else if (unit === 'Hour' && (value < 1 || value > 8760)) {
+      return Promise.reject($t({ defaultMessage: 'Value must be between 1 and 8760' }))
+    }
+    return Promise.resolve()
+  }
+
+  return (<>
+    { withBasicFields === true && (<>
+      <Form.Item
+        name='name'
+        label={$t({ defaultMessage: 'Guest Name' })}
+        rules={[
+          { required: true },
+          { min: 1 },
+          { max: 256 },
+          { validator: (_, value) => excludeExclamationRegExp(value) }
+        ]}
+        children={<Input />}
+      />
+      <Form.Item
+        name='mobilePhoneNumber'
+        label={$t({ defaultMessage: 'Mobile Phone' })}
+        rules={[
+          { validator: (_, value) => phoneRegExp(value) }
+        ]}
+        initialValue={null}
+        children={
+          <Input
+            // eslint-disable-next-line max-len
+            placeholder={`+${examplePhoneNumber.getCountryCode()} ${examplePhoneNumber.getNationalNumberOrDefault()}`}
+            onChange={onPhoneNumberChange}
+          />
+        }
+      />
+      <Form.Item
+        name='email'
+        label={$t({ defaultMessage: 'Email' })}
+        rules={[
+          { validator: (_, value) => emailRegExp(value) }
+        ]}
+        initialValue={''}
+        children={<Input onChange={onEmailChange} />}
+      />
+      <Form.Item
+        name='notes'
+        label={$t({ defaultMessage: 'Note' })}
+        initialValue={''}
+        rules={[
+          { max: 180 }
+        ]}
+        children={<Input />}
+      />
+    </>)}
+
+    <Divider style={{ margin: '4px 0px 20px', background: cssStr('--acx-neutrals-30') }}/>
+    <Form.Item
+      name={'networkId'}
+      label={$t({ defaultMessage: 'Allowed Network' })}
+      rules={[
+        { required: true }
+      ]}
+      initialValue={allowedNetworkList?.length === 1 ?
+        allowedNetworkList[0].id : ''}
+      children={<Select
+        options={allowedNetworkList?.map(p => ({ label: p.name, value: p.id }))}
+        disabled={allowedNetworkList?.length === 1}
+      />}
+    />
+
+    <Row>
+      <Col span={12}>
+        <Form.Item
+          name={['expiration', 'duration']}
+          label={$t({ defaultMessage: 'Pass is Valid for' })}
+          rules={[
+            {
+              required: true,
+              message: $t({ defaultMessage: 'This field is required' })
+            },
+            { validator: (_, value) => durationValidator(value) }
+          ]}
+          initialValue={7}
+          children={<InputNumber style={{ width: '100%' }}/>}
+          style={{ paddingRight: '5px' }}
+        />
+      </Col>
+      <Col span={12}>
+        <Form.Item
+          name={['expiration', 'unit']}
+          label={' '}
+          initialValue={'Day'}
+          children={<Select
+            options={timeTypeValidPassOptions}
+            onChange={onUnitChange}
+          />}
+          style={{ paddingLeft: '5px' }}
+        />
+      </Col>
+    </Row>
+    <Form.Item
+      name={['expiration', 'activationType']}
+      label={$t({ defaultMessage: 'Pass is valid from' })}
+      initialValue={'Creation'}
+      children={
+        <Radio.Group>
+          <Radio value={'Creation'}>
+            {$t({ defaultMessage: 'Now' })}
+          </Radio>
+
+          <Radio value={'Login'}>
+            {$t({ defaultMessage: 'First Login' })}
+          </Radio>
+        </Radio.Group>}
+    />
+    <Form.Item
+      name={'maxDevices'}
+      label={$t({ defaultMessage: 'Number of devices' })}
+      initialValue={3}
+      children={<Select
+        options={numberOfDevicesOptions}
+      />}
+    />
+    <Form.Item
+      name={'deliveryMethods'}
+      initialValue={['PRINT']}
+      children={
+        <Checkbox.Group style={{ display: 'grid', rowGap: '5px' }}>
+          <Checkbox value='SMS'
+            style={{ alignItems: 'start' }}
+            disabled={phoneNumberError}
+          >
+            <MobilePhoneSolidIcon />
+            <CheckboxLabel>{$t({ defaultMessage: 'Send to Phone' })}</CheckboxLabel>
+          </Checkbox>
+          <Checkbox
+            value='MAIL'
+            style={{ marginLeft: '0px', alignItems: 'start' }}
+            disabled={emailError}
+          >
+            <EnvelopClosedSolidIcon />
+            <CheckboxLabel>{$t({ defaultMessage: 'Send to Email' })}</CheckboxLabel>
+          </Checkbox>
+          <Checkbox
+            value='PRINT'
+            style={{ marginLeft: '0px', alignItems: 'start' }}
+          >
+            <PrintIcon />
+            <CheckboxLabel>{$t({ defaultMessage: 'Print Guest pass' })}</CheckboxLabel>
+          </Checkbox>
+        </Checkbox.Group>
+      }
+    />
+  </>)
+}
+
+
+export function AddGuestDrawer (props: AddGuestProps) {
+  const { $t } = useIntl()
+  const [form] = Form.useForm()
+  const { visible, setVisible } = props
+  const params = useParams()
+  const { handleGuestPassResponse } = useHandleGuestPassResponse({ tenantId: params.tenantId! })
+
+  const [
+    addGuestPass
+  ] = useAddGuestPassMutation()
+
+  const onClose = () => {
+    setVisible(false)
+  }
+
+  const onSave = async () => {
+    const payload = [form.getFieldsValue()]
+    if(form.getFieldValue('deliveryMethods').length === 0){
+      showNoSendConfirm(()=>{
+        addGuestPass({ params: { tenantId: params.tenantId }, payload: payload })
+        setVisible(false)
+      })
+    }
+    else{
+      addGuestPass({ params: { tenantId: params.tenantId }, payload: payload })
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .then((res: any) => {
+          if (res.error &&
+            (res.error.status === 400 || res.error.status === 422 || res.error.status === 409)) {
+            showGuestErrorModal(res.error.data)
+          } else {
+            handleGuestPassResponse(res.data)
+          }
+        })
+      setVisible(false)
+    }
+  }
+
+
+  const footer = [
+    <Button
+      data-testid='saveBtn'
+      key='saveBtn'
+      onClick={() => form.submit()}
+      type={'secondary'}>
+      {$t({ defaultMessage: 'Add' })}
+    </Button>,
+    <Button
+      data-testid='cancelBtn'
+      key='cancelBtn'
+      onClick={onClose}>
+      {$t({ defaultMessage: 'Cancel' })}
+    </Button>
+  ]
+
+  return (
+    <Drawer
+      title={'Add Guest Pass'}
+      visible={visible}
+      onClose={onClose}
+      children={
+        <Form layout='vertical' form={form} onFinish={onSave} data-testid='guest-form'>
+          <GuestFields />
+        </Form>
+      }
+      footer={<FooterDiv>{footer}</FooterDiv>}
+      maskClosable={true}
+    />
+  )
+}
+
+export function showNoSendConfirm (callback: ()=>void) {
+  const { $t } = getIntl()
+  showActionModal({
+    type: 'warning',
+    title: $t({ defaultMessage: 'Guest pass won’t be printed or sent' }),
+    content: $t({ defaultMessage: `
+      You haven’t selected to print or send the password to the guest.
+      Create guest pass anyway?` }),
+    customContent: {
+      action: 'CUSTOM_BUTTONS',
+      buttons: [{
+        text: $t({ defaultMessage: 'Cancel' }),
+        type: 'link', // TODO: will change after DS update
+        key: 'cancel',
+        closeAfterAction: true
+      }, {
+        text: $t({ defaultMessage: 'Yes, create guest pass' }),
+        type: 'primary',
+        key: 'override',
+        closeAfterAction: true,
+        handler: callback
+      }]
+    }
+  })
+}
+
+export function showGuestErrorModal (errorRes: GuestErrorRes) {
+  const { $t } = getIntl()
+  const errors = errorRes.error.rootCauseErrors || []
+  if (errors[0].code === 'GUEST-409001') {
+    showActionModal({
+      type: 'error',
+      title: $t({ defaultMessage: 'Mobile Phone Already Registered' }),
+      content: $t({ defaultMessage: `
+        A guest with the same mobile phone number already exists on the selected guest network.
+        Please select a different network or change the guest's mobile phone number.` })
+    })
+  } else {
+    showActionModal({
+      type: 'error',
+      title: 'Error',
+      content: errors[0].message
+    })
+  }
+}
+
+export function useHandleGuestPassResponse (params: { tenantId: string }) {
+  const [getNetwork] = useLazyGetNetworkQuery()
+  const [getUserProfile] = useLazyGetUserProfileQuery()
 
   const getGuestPrintTemplate =
   (guestDetails: { langCode: LangCode }, useUpdatedTemplate: boolean) => {
@@ -335,19 +663,24 @@ export function AddGuestDrawer (props: AddGuestProps) {
     pdfGenerator.generatePrint(printTemplate)
   }
 
-  const handleGuestPassResponse = async (jsonGuest: { requestId: string, response: Guest[] }) => {
+  const handleGuestPassResponse = async (jsonGuest: GuestResponse) => {
     let printCondition = false
     let guestsArr: Guest[] = []
-    if (jsonGuest.response) {
-      printCondition = jsonGuest.response[0].deliveryMethods.indexOf('PRINT') !== -1
-      for (let i = 0; i < jsonGuest.response.length; i++) {
-        guestsArr[i] = { ...jsonGuest.response[i], langCode: '' }
+    let jsonGuestData = jsonGuest.response as Guest[]
+    if ('data' in jsonGuest.response) {
+      jsonGuestData = jsonGuest.response.data
+    }
+
+    if (jsonGuestData) {
+      printCondition = jsonGuestData[0].deliveryMethods.indexOf('PRINT') !== -1
+      for (let i = 0; i < jsonGuestData.length; i++) {
+        guestsArr[i] = { ...jsonGuestData[i], langCode: '' }
       }
     }
 
     if (printCondition) {
       const networkData = await getNetwork({
-        params: { tenantId: params.tenantId, networkId: jsonGuest.response[0].networkId } })
+        params: { tenantId: params.tenantId, networkId: jsonGuestData[0].networkId } })
       const langCode = (networkData?.data?.guestPortal?.guestPage?.langCode) || ''
       for (let i = 0; i < guestsArr.length; i++) {
         guestsArr[i].langCode = langCode
@@ -356,275 +689,5 @@ export function AddGuestDrawer (props: AddGuestProps) {
     }
   }
 
-  const onClose = () => {
-    setVisible(false)
-  }
-
-  const onSave = async () => {
-    const payload = [form.getFieldsValue()]
-    if(form.getFieldValue('deliveryMethods').length === 0){
-      showActionModal({
-        type: 'warning',
-        title: $t({ defaultMessage: 'Guest pass won’t be printed or sent' }),
-        // eslint-disable-next-line max-len
-        content: $t({ defaultMessage: 'You haven’t selected to print or send the password to the guest. Create guest pass anyway?' }),
-        customContent: {
-          action: 'CUSTOM_BUTTONS',
-          buttons: [{
-            text: 'cancel',
-            type: 'link', // TODO: will change after DS update
-            key: 'cancel',
-            closeAfterAction: true
-          }, {
-            text: $t({ defaultMessage: 'Yes, create guest pass' }),
-            type: 'primary',
-            key: 'override',
-            closeAfterAction: true,
-            handler () {
-              addGuestPass({ params: { tenantId: params.tenantId }, payload: payload })
-              setVisible(false)
-            }
-          }]
-        }
-      })
-    }else{
-      addGuestPass({ params: { tenantId: params.tenantId }, payload: payload })
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .then((res: any) => {
-          if (res.error &&
-            (res.error.status === 400 || res.error.status === 422 || res.error.status === 409)) {
-            const errors = res.error.data.error.rootCauseErrors || []
-            if (errors[0].code === 'GUEST-409001') {
-              showActionModal({
-                type: 'error',
-                title: $t({ defaultMessage: 'Mobile Phone Already Registered' }),
-                // eslint-disable-next-line max-len
-                content: $t({ defaultMessage: 'A guest with the same mobile phone number already exists on the selected guest network. Please select a different network or change the guest\'s mobile phone number.' })
-              })
-            } else {
-              showActionModal({
-                type: 'error',
-                title: 'Error',
-                content: errors[0].message
-              })
-            }
-          } else {
-            handleGuestPassResponse(res.data)
-          }
-        })
-      setVisible(false)
-    }
-  }
-
-  const onPhoneNumberChange = () => {
-    const deliveryMethods = form.getFieldValue('deliveryMethods')
-    form.validateFields(['mobilePhoneNumber']).then(() => {
-      if(form.getFieldValue('mobilePhoneNumber') !== ''){
-        setPhoneNumberError(false)
-        deliveryMethods.push('SMS')
-        form.setFieldValue('deliveryMethods', _.uniq(deliveryMethods))
-      }
-    }).catch(err => {
-      if(err.errorFields.length > 0) {
-        setPhoneNumberError(true)
-        form.setFieldValue('deliveryMethods',
-          deliveryMethods.filter((e: string) => e !== 'SMS'))
-      }
-    })
-  }
-
-  const onEmailChange = () => {
-    const deliveryMethods = form.getFieldValue('deliveryMethods')
-    form.validateFields(['email']).then(() => {
-      if(form.getFieldValue('email') !== ''){
-        setEmailError(false)
-        deliveryMethods.push('MAIL')
-        form.setFieldValue('deliveryMethods', _.uniq(deliveryMethods))
-      }
-    }).catch(err => {
-      if(err.errorFields.length > 0) {
-        setEmailError(true)
-        form.setFieldValue('deliveryMethods',
-          deliveryMethods.filter((e: string) => e !== 'MAIL'))
-      }
-    })
-  }
-
-  const content =
-  <Form layout='vertical' form={form} onFinish={onSave} data-testid='guest-form'>
-    <Form.Item
-      name='name'
-      label={$t({ defaultMessage: 'Guest Name' })}
-      rules={[
-        { required: true },
-        { min: 1 },
-        { max: 256 },
-        { validator: (_, value) => excludeExclamationRegExp(value) }
-      ]}
-      children={<Input />}
-    />
-    <Form.Item
-      name='mobilePhoneNumber'
-      label={$t({ defaultMessage: 'Mobile Phone' })}
-      rules={[
-        { validator: (_, value) => phoneRegExp(value) }
-      ]}
-      initialValue={null}
-      children={
-        <Input
-          // eslint-disable-next-line max-len
-          placeholder={`+${examplePhoneNumber.getCountryCode()} ${examplePhoneNumber.getNationalNumberOrDefault()}`}
-          onChange={onPhoneNumberChange}
-        />
-      }
-    />
-    <Form.Item
-      name='email'
-      label={$t({ defaultMessage: 'Email' })}
-      rules={[
-        { validator: (_, value) => emailRegExp(value) }
-      ]}
-      initialValue={''}
-      children={<Input onChange={onEmailChange} />}
-    />
-    <Form.Item
-      name='notes'
-      label={$t({ defaultMessage: 'Note' })}
-      initialValue={''}
-      rules={[
-        { max: 180 }
-      ]}
-      children={<Input />}
-    />
-    <Divider style={{ margin: '4px 0px 20px', background: cssStr('--acx-neutrals-30') }}/>
-    <Form.Item
-      name={'networkId'}
-      label={$t({ defaultMessage: 'Allowed Network' })}
-      rules={[
-        { required: true }
-      ]}
-      initialValue={allowedNetworkList?.length === 1 ?
-        allowedNetworkList[0].id : ''}
-      children={<Select
-        options={allowedNetworkList?.map(p => ({ label: p.name, value: p.id }))}
-        disabled={allowedNetworkList?.length === 1}
-      />}
-    />
-
-    <Row>
-      <Col span={12}>
-        <Form.Item
-          name={['expiration', 'duration']}
-          label={$t({ defaultMessage: 'Pass is Valid for' })}
-          rules={[
-            { required: true },
-            {
-              type: 'number',
-              max: 365,
-              min: 1,
-              message: $t({
-                defaultMessage:
-                  'Primary WAN Recovery Timer must be between 10 and 300'
-              })
-            }
-          ]}
-          initialValue={7}
-          children={<InputNumber style={{ width: '100%' }}/>}
-          style={{ paddingRight: '5px' }}
-        />
-      </Col>
-      <Col span={12}>
-        <Form.Item
-          name={['expiration', 'unit']}
-          label={' '}
-          initialValue={'Day'}
-          children={<Select
-            options={timeTypeValidPassOptions}
-            defaultValue={timeTypeValidPassOptions[1].value}
-          />}
-          style={{ paddingLeft: '5px' }}
-        />
-      </Col>
-    </Row>
-    <Form.Item
-      name={['expiration', 'activationType']}
-      label={$t({ defaultMessage: 'Pass is valid from' })}
-      initialValue={'Creation'}
-      children={
-        <Radio.Group>
-          <Radio value={'Creation'}>
-            {$t({ defaultMessage: 'Now' })}
-          </Radio>
-
-          <Radio value={'Login'}>
-            {$t({ defaultMessage: 'First Login' })}
-          </Radio>
-        </Radio.Group>}
-    />
-    <Form.Item
-      name={'maxDevices'}
-      label={$t({ defaultMessage: 'Number of devices' })}
-      initialValue={3}
-      children={<Select
-        options={numberOfDevicesOptions}
-      />}
-    />
-    <Form.Item
-      name={'deliveryMethods'}
-      initialValue={['PRINT']}
-      children={
-        <Checkbox.Group style={{ display: 'grid', rowGap: '5px' }}>
-          <Checkbox value='SMS'
-            style={{ alignItems: 'start' }}
-            disabled={phoneNumberError}
-          >
-            <MobilePhoneSolidIcon />
-            <CheckboxLabel>{$t({ defaultMessage: 'Send to Phone' })}</CheckboxLabel>
-          </Checkbox>
-          <Checkbox
-            value='MAIL'
-            style={{ marginLeft: '0px', alignItems: 'start' }}
-            disabled={emailError}
-          >
-            <EnvelopClosedSolidIcon />
-            <CheckboxLabel>{$t({ defaultMessage: 'Send to Email' })}</CheckboxLabel>
-          </Checkbox>
-          <Checkbox
-            value='PRINT'
-            style={{ marginLeft: '0px', alignItems: 'start' }}
-          >
-            <PrintIcon />
-            <CheckboxLabel>{$t({ defaultMessage: 'Print Guest pass' })}</CheckboxLabel>
-          </Checkbox>
-        </Checkbox.Group>
-      }
-    />
-  </Form>
-
-  const footer = [
-    <Button
-      data-testid='saveBtn'
-      key='saveBtn'
-      onClick={() => form.submit()}
-      type={'secondary'}>
-      {$t({ defaultMessage: 'Add' })}
-    </Button>,
-    <Button
-      data-testid='cancelBtn'
-      key='cancelBtn'
-      onClick={onClose}>
-      {$t({ defaultMessage: 'Cancel' })}
-    </Button>
-  ]
-
-  return (
-    <Drawer
-      title={'Add Guest Pass'}
-      visible={visible}
-      onClose={onClose}
-      children={content}
-      footer={<FooterDiv>{footer}</FooterDiv>}
-      maskClosable={true}
-    />
-  )
+  return { handleGuestPassResponse }
 }
