@@ -34,15 +34,11 @@ export const EdgeSysResourceBox = styled((props: EdgeStateCardProps) => {
   const usedValue:number = totalVal ? value/totalVal: totalVal
   const usedPercentage:number = Math.round(usedValue * 100)
 
-  let freeValue
-  if(type === EdgeResourceUtilizationEnum.CPU) {
-    freeValue = formatter('hertzFormat')((totalVal - value) / 1000)
-  } else {
-    freeValue = formatter('bytesFormat')(totalVal - value)
-  }
+  const freeValue = formatter(type === EdgeResourceUtilizationEnum.CPU
+    ? 'hertzFormat' : 'bytesFormat')(totalVal - value)
 
-  const chartValue = type === EdgeResourceUtilizationEnum.CPU
-    ? formatter('hertzFormat')(value / 1000) : formatter('bytesFormat')(value)
+  const chartValue = formatter(type === EdgeResourceUtilizationEnum.CPU
+    ? 'hertzFormat' : 'bytesFormat')(value)
 
   return (
     <Loader states={[{ isLoading }]}>
