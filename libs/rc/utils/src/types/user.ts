@@ -50,3 +50,18 @@ export enum DetailLevel {
   SUPER_USER = 'su',
   DEBUGGING = 'debug'
 }
+
+export type GuestErrorRes = {
+  error: {
+    status: number
+    rootCauseErrors: {
+      code: string
+      message: string
+    }[]
+  },
+  requestId: string,
+  request: {
+    url: string,
+    method: string
+  }
+}

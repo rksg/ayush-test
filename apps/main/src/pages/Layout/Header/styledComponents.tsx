@@ -206,6 +206,16 @@ export const LinkButton = styled(Button)`
   font-weight: var(--acx-body-font-weight-bold);
 `
 
+export const ActivityItem = styled(List.Item)`
+  border-bottom: 0 !important;
+  .ant-list-item-action {
+    margin-left: 10px;
+  }
+  :hover {
+    cursor: pointer;
+  }
+`
+
 export const ActivityMeta = styled(List.Item.Meta)`
   .ant-list-item-meta-avatar {
     margin-right: 0px;

@@ -345,7 +345,8 @@ export const ConnectedClientsTable =
   const ConnectedClientsTable = () => {
     const tableQuery = useTableQuery({
       useQuery: useGetClientListQuery,
-      defaultPayload
+      defaultPayload,
+      pollingInterval: 30000
     })
 
     if(tableQuery.data?.data){
