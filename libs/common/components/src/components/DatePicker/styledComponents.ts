@@ -4,8 +4,9 @@ import styled                from 'styled-components/macro'
 import { DateRange, defaultRanges } from '@acx-ui/utils'
 
 type RangePickerWrapperProps = {
-  rangeOptions?: DateRange[];
-  selectionType: DateRange;
+  rangeOptions?: DateRange[]
+  selectionType: DateRange
+  isCalendarOpen: boolean
 }
 
 /* eslint-disable max-len */
@@ -131,7 +132,20 @@ export const RangePickerWrapper = styled(Wrapper)<RangePickerWrapperProps>`
   --acx-date-picker-ranges-width: 125px;
 
   > .ant-picker {
-    width: 23em;
+    &:not(.ant-picker-focused) {
+      transition: width 100ms ease-in 200ms;
+    }
+    ${({ selectionType, isCalendarOpen }) => selectionType !== DateRange.custom && !isCalendarOpen
+    ? `
+        width: 130px;
+        .ant-picker-range-separator, .ant-picker-input:nth-child(3) {
+          display: none;
+        }
+      `
+    : `
+        width: 322px;
+      `
+}
     padding: 6px 11px 5px;
     background: var(--acx-primary-white);
     border-color: var(--acx-primary-black);

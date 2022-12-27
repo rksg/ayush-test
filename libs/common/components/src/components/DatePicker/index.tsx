@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useCallback } from 'react'
+import { useEffect, useState, useRef, useCallback, Component } from 'react'
 
 import {
   DatePicker as AntDatePicker,
@@ -12,7 +12,9 @@ import { dateTimeFormats, defaultRanges, DateRange, dateRangeMap, resetRanges } 
 import { DatePickerFooter } from './DatePickerFooter'
 import * as UI              from './styledComponents'
 
-import type { Moment } from 'moment-timezone'
+import type { RangePickerProps }    from 'antd/lib/date-picker/generatePicker'
+import type { CommonPickerMethods } from 'antd/lib/date-picker/generatePicker/interface'
+import type { Moment }              from 'moment-timezone'
 
 export type DateRangeType = {
   startDate: Moment | null,
@@ -24,6 +26,8 @@ type RangesType = Record<
   string,
   Exclude<RangeBoundType, null> | (() => Exclude<RangeBoundType, null>)
 >
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type RangeRef = Component<RangePickerProps<Moment>, unknown, any> & CommonPickerMethods | null
 interface DatePickerProps {
   showTimePicker?: boolean;
   enableDates?: [Moment, Moment];
@@ -49,10 +53,11 @@ export const RangePicker = ({
   const { $t } = useIntl()
 
   const componentRef = useRef<HTMLDivElement | null>(null)
+  const rangeRef = useRef<RangeRef>(null)
 
   const [range, setRange] = useState<DateRangeType>(selectedRange)
 
-  const [isCalenderOpen, setIscalenderOpen] = useState<boolean>(false)
+  const [isCalendarOpen, setIsCalendarOpen] = useState<boolean>(false)
   const disabledDate = useCallback(
     (current: Moment) => {
       if (!enableDates) {
@@ -66,14 +71,15 @@ export const RangePicker = ({
     const handleClickForDatePicker = (event: MouseEvent) => {
       const target = event.target as HTMLInputElement
       if (componentRef.current && !componentRef.current.contains(event.target as Node)) {
-        setIscalenderOpen(false)
+        setIsCalendarOpen(false)
       }
       if (Object.values(DateRange).includes(target.innerText as DateRange)) {
         resetRanges()
+        rangeRef?.current?.blur()
+        setIsCalendarOpen(false)
         onDateApply({
-          range: target.innerText as DateRange
+          range: target.innerText as DateRange // TODO this will fail when translated
         })
-        setIscalenderOpen(false)
       }
     }
     document.addEventListener('click', handleClickForDatePicker)
@@ -98,13 +104,15 @@ export const RangePicker = ({
       ref={componentRef}
       rangeOptions={rangeOptions}
       selectionType={selectionType}
+      isCalendarOpen={isCalendarOpen}
     >
       <AntRangePicker
+        ref={rangeRef}
         ranges={rangesWithi18n as RangesType}
         placement='bottomRight'
         disabledDate={disabledDate}
-        open={isCalenderOpen}
-        onClick={() => setIscalenderOpen(true)}
+        open={isCalendarOpen}
+        onClick={() => setIsCalendarOpen(true)}
         getPopupContainer={(triggerNode: HTMLElement) => triggerNode}
         suffixIcon={<ClockOutlined />}
         onCalendarChange={(values: RangeValueType) =>
@@ -117,12 +125,15 @@ export const RangePicker = ({
             range={range}
             setRange={setRange}
             defaultValue={selectedRange}
-            setIsCalenderOpen={setIscalenderOpen}
+            setIsCalendarOpen={setIsCalendarOpen}
             onDateApply={onDateApply}
           />
         )}
         value={[range?.startDate, range?.endDate]}
-        format={showTimePicker ? dateTimeFormat : dateFormat}
+        format={isCalendarOpen || selectionType === DateRange.custom
+          ? (showTimePicker ? dateTimeFormat : dateFormat)
+          : `[${selectionType}]`
+        }
         allowClear={false}
       />
     </UI.RangePickerWrapper>
