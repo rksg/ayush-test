@@ -2,13 +2,19 @@ import { useState } from 'react'
 
 import { defineMessage, useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps, Button }                    from '@acx-ui/components'
-import { Activity, RequestPayload, TableQuery, getDescription } from '@acx-ui/rc/utils'
-import { formatter }                                            from '@acx-ui/utils'
+import { Loader, Table, TableProps, Button } from '@acx-ui/components'
+import {
+  Activity,
+  RequestPayload,
+  TableQuery,
+  getDescription,
+  productMapping,
+  severityMapping,
+  statusMapping
+} from '@acx-ui/rc/utils'
+import { formatter } from '@acx-ui/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
-
-import { productMapping, severityMapping, statusMapping } from './mapping'
 
 interface ActivityTableProps {
   tableQuery: TableQuery<Activity, RequestPayload<unknown>, unknown>

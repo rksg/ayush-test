@@ -28,6 +28,7 @@ export { ClientHealthIcon } from './ClientHealthIcon'
 export { ActivityTable } from './ActivityTable'
 export { AdminLogTable } from './AdminLogTable'
 export { EventTable } from './EventTable'
+export { TimelineDrawer } from './TimelineDrawer'
 
 export * from './pipes/apGroupPipes'
 export * from './ExpirationDateSelector'

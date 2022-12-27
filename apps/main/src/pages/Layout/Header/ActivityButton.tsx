@@ -3,8 +3,6 @@ import { useState, useEffect } from 'react'
 import { ClockCircleFilled }      from '@ant-design/icons'
 import { Select }                 from 'antd'
 import { SorterResult }           from 'antd/lib/table/interface'
-import { severityMapping }        from 'libs/rc/components/src/ActivityTable/mapping'
-import { TimelineDrawer }         from 'libs/rc/components/src/TimelineDrawer'
 import moment                     from 'moment-timezone'
 import { defineMessage, useIntl } from 'react-intl'
 
@@ -13,11 +11,12 @@ import {
   Loader,
   Badge
 } from '@acx-ui/components'
-import { CancelCircleSolid, CheckMarkCircleSolid, Pending, InProgress } from '@acx-ui/icons'
-import { useActivitiesQuery }                                           from '@acx-ui/rc/services'
-import { Activity, CommonUrlsInfo, useTableQuery, getDescription }      from '@acx-ui/rc/utils'
-import { useTenantLink, useNavigate }                                   from '@acx-ui/react-router-dom'
-import { formatter }                                                    from '@acx-ui/utils'
+import { CancelCircleSolid, CheckMarkCircleSolid, Pending, InProgress }             from '@acx-ui/icons'
+import { TimelineDrawer }                                                           from '@acx-ui/rc/components'
+import { useActivitiesQuery }                                                       from '@acx-ui/rc/services'
+import { Activity, CommonUrlsInfo, useTableQuery, getDescription, severityMapping } from '@acx-ui/rc/utils'
+import { useTenantLink, useNavigate }                                               from '@acx-ui/react-router-dom'
+import { formatter }                                                                from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -34,7 +33,7 @@ const getIcon = (
     case 'FAIL':
       return <CancelCircleSolid />
     case 'OFFLINE':
-      return <div />
+      return <div /> // TODO: Add offline icon
   }
   return
 }
@@ -141,7 +140,7 @@ export default function ActivityHeaderButton () {
         renderItem={item => {
           const activity = item as Activity
           return (
-            <UI.ListItem onClick={() => {
+            <UI.ActivityItem onClick={() => {
               setDetailModalOpen(true)
               setDetail(activity)
             }}>
@@ -151,7 +150,7 @@ export default function ActivityHeaderButton () {
                 description={
                   <UI.ListTime>{formatter('calendarFormat')(activity.startDatetime)}</UI.ListTime>}
               />
-            </UI.ListItem>
+            </UI.ActivityItem>
           )}}
       />
     </Loader>
@@ -191,7 +190,7 @@ export default function ActivityHeaderButton () {
     },
     {
       title: defineMessage({ defaultMessage: 'Description' }),
-      value: (() => getDescription(data.descriptionTemplate, data.descriptionData))()
+      value: getDescription(data.descriptionTemplate, data.descriptionData)
     }
   ]
 

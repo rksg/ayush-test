@@ -9,6 +9,7 @@ export * from './useTableQuery'
 export * from './validator'
 export * from './models'
 export * from './getDescription'
+export * from './activityMapping'
 
 export * from './types/user'
 export * from './types/venue'
