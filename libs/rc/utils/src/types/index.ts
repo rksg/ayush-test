@@ -33,6 +33,7 @@ export * from './portalService'
 export * from './client'
 export * from './components'
 export * from './switch'
+export * from './radiusClientConfig'
 
 export interface CommonResult {
   requestId: string
