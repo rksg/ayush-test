@@ -8,8 +8,8 @@ import { useGetEdgeQuery }                        from '@acx-ui/rc/services'
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { getIntl }                                from '@acx-ui/utils'
 
+import DnsServer       from './DnsServer'
 import GeneralSettings from './GeneralSettings'
-import Settings        from './Settings'
 
 const intl = getIntl()
 
@@ -18,9 +18,17 @@ const tabs = {
     title: intl.$t({ defaultMessage: 'General Settings' }),
     content: <GeneralSettings />
   },
-  'settings': {
-    title: intl.$t({ defaultMessage: 'Settings' }),
-    content: <Settings />
+  'ports': {
+    title: intl.$t({ defaultMessage: 'Ports' }),
+    content: <>Ports</>
+  },
+  'dns': {
+    title: intl.$t({ defaultMessage: 'DNS Server' }),
+    content: <DnsServer />
+  },
+  'routes': {
+    title: intl.$t({ defaultMessage: 'Static Routes' }),
+    content: <>Static Routes</>
   }
 }
 
@@ -31,8 +39,6 @@ const EditEdgeTabs = () => {
   const basePath = useTenantLink(`/devices/edge/${serialNumber}/edit`)
 
   const onTabChange = (activeKey: string) => {
-    if(activeKey === 'settings') activeKey = `${activeKey}/ports`
-
     navigate({
       ...basePath,
       pathname: `${basePath.pathname}/${activeKey}`
