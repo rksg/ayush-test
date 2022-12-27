@@ -25,14 +25,17 @@ import { useSwitchActions } from '../useSwitchActions'
 export const SwitchStatus = (
   { row, showText = true }: { row: SwitchRow, showText?: boolean }
 ) => {
-  const switchStatus = transformSwitchStatus(row.deviceStatus, row.configReady, row.syncedSwitchConfig, row.suspendingDeployTime)
-  return (
-    <span>
-      <Badge color={handleStatusColor(switchStatus.deviceStatus)}
-        text={showText ? getSwitchStatusString(row) : ''}
-      />
-    </span>
-  )
+  if(row){
+    const switchStatus = transformSwitchStatus(row.deviceStatus, row.configReady, row.syncedSwitchConfig, row.suspendingDeployTime)
+    return (
+      <span>
+        <Badge color={handleStatusColor(switchStatus.deviceStatus)}
+          text={showText ? getSwitchStatusString(row) : ''}
+        />
+      </span>
+    )
+  }
+  return null
 }
 
 const handleStatusColor = (status: DeviceConnectionStatus) => {

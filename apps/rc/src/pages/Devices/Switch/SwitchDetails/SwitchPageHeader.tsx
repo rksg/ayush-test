@@ -3,8 +3,9 @@ import { useIntl }               from 'react-intl'
 
 import { Button, PageHeader }         from '@acx-ui/components'
 import { ClockOutlined, ArrowExpand } from '@acx-ui/icons'
+import { SwitchStatus }               from '@acx-ui/rc/components'
 import { useSwitchDetailHeaderQuery } from '@acx-ui/rc/services'
-import { SwitchViewModel }            from '@acx-ui/rc/utils'
+import { SwitchRow, SwitchViewModel } from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useTenantLink,
@@ -57,6 +58,7 @@ function SwitchPageHeader () {
   return (
     <PageHeader
       title={data?.name || data?.switchName || data?.serialNumber || ''}
+      titleExtra={<SwitchStatus row={data as unknown as SwitchRow} />}
       breadcrumb={[
         { text: $t({ defaultMessage: 'Switches' }), link: '/devices/switch' }
       ]}
