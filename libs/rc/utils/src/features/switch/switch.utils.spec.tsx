@@ -1,8 +1,8 @@
 /* eslint-disable max-len */
 import '@testing-library/jest-dom'
 
-import { DeviceConnectionStatus } from '../../constants'
-import { SwitchStatusEnum }       from '../../types'
+import { DeviceConnectionStatus }            from '../../constants'
+import { SwitchStatusEnum, SwitchViewModel } from '../../types'
 
 import {
   isOperationalSwitch,
@@ -10,7 +10,8 @@ import {
   getSwitchName,
   isStrictOperationalSwitch,
   transformSwitchStatus,
-  getSwitchStatusString
+  getSwitchStatusString,
+  getPoeUsage
 } from '.'
 
 const switchRow ={
@@ -164,6 +165,31 @@ describe('switch.utils', () => {
       }
       expect(getSwitchStatusString(data)).toBe('Operational - Warning - Syncing')
     })
-
   })
+
+  describe('Test getPoeUsage function', () => {
+    it('should render correctly', async () => {
+      const switchDetail_1 = {
+        model: 'ICX7150-C08P',
+        id: 'FMF2249Q0JT'
+      }
+      const switchDetail_2 = {
+        model: 'ICX7150-C08P',
+        id: 'FMF2249Q0JT',
+        poeTotal: 2000,
+        poeUtilization: 1000
+      }
+      expect(getPoeUsage(switchDetail_1 as SwitchViewModel)).toStrictEqual({
+        used: 0,
+        total: 0,
+        percentage: '0%'
+      })
+      expect(getPoeUsage(switchDetail_2 as unknown as SwitchViewModel)).toStrictEqual({
+        used: 1,
+        total: 2,
+        percentage: '50%'
+      })
+    })
+  })
+
 })

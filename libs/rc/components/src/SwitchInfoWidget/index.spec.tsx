@@ -11,7 +11,7 @@ import { render,
   fireEvent } from '@acx-ui/test-utils'
 import { DateRange } from '@acx-ui/utils'
 
-import { switchDetail } from './__tests__/fixtures'
+import { switchDetail, stackDetailData } from './__tests__/fixtures'
 
 import { getChartData, SwitchInfoWidget } from '.'
 
@@ -131,7 +131,7 @@ describe('Switch Information Widget', () => {
     expect(await screen.findByText('No active alarms')).toBeVisible()
   })
 
-  it('should render drawer correctly', async () => {
+  it('should render switch drawer correctly', async () => {
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getAlarmsList.url,
@@ -155,6 +155,31 @@ describe('Switch Information Widget', () => {
     const button = screen.getByRole('button', { name: /close/i })
     fireEvent.click(button)
   })
+})
+
+it('should render stack drawer correctly', async () => {
+  mockServer.use(
+    rest.post(
+      CommonUrlsInfo.getAlarmsList.url,
+      (_, res, ctx) => res(ctx.json(alarmList))
+    ),
+    rest.post(
+      CommonUrlsInfo.getAlarmsListMeta.url,
+      (_, res, ctx) => res(ctx.json(alarmListMeta))
+    )
+  )
+
+  render(
+    <Provider>
+      <SwitchInfoWidget switchDetail={stackDetailData as unknown as SwitchViewModel} filters={filters}/>
+    </Provider>,
+    { route: { params } }
+  )
+  fireEvent.click(screen.getByText('More Details'))
+  expect(screen.getByText('Stack Details')).toBeVisible()
+  expect(await screen.findByText('FEK4224R19X')).toBeVisible()
+  const button = screen.getByRole('button', { name: /close/i })
+  fireEvent.click(button)
 })
 
 describe('getChartData', () => {

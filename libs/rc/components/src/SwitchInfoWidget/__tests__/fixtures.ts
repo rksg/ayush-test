@@ -27,3 +27,81 @@ export const switchDetail = {
   tenantId: 'fe892a451d7a486bbb3aee929d2dfcd1',
   activeSerial: 'FMF2249Q0JT'
 }
+
+export const stackDetailData = {
+  suspendingDeployTime: '',
+  stackMemberOrder: 'FEK4224R19X,FEK4224R18X,FEK4224R17X',
+  isStack: false,
+  rearModule: 'none',
+  staticOrDynamic: 'static',
+  deviceStatus: 'PREPROVISIONED',
+  sendedHostname: false,
+  switchMac: '',
+  venueId: 'eb4ef94ba7014f64b69be926faccbc09',
+  model: 'ICX7150-C12P',
+  id: 'FEK4224R19X',
+  floorplanId: '',
+  deviceType: 'DVCNWTYPE_SWITCH',
+  serialNumber: 'FEK4224R19X',
+  xPercent: 0,
+  yPercent: 0,
+  portsStatus: {
+  },
+  stackMember: false,
+  cliApplied: false,
+  stackMembers: [
+    {
+      model: 'ICX7150-C12P',
+      id: 'FEK4224R19X'
+    },
+    {
+      id: 'FEK4224R18X'
+    },
+    {
+      id: 'FEK4224R17X'
+    }
+  ],
+  poeUsage: {
+  },
+  venueName: 'test',
+  isIpFullContentParsed: false,
+  formStacking: true,
+  name: 'FEK4224R19X',
+  tenantId: 'fe892a451d7a486bbb3aee929d2dfcd1',
+  activeSerial: 'FEK4224R19X',
+  dns: 'http://localhost:3000/',
+  unitDetails: [
+    {
+      venueName: 'test',
+      unitStatus: 'Active',
+      unitId: 1,
+      serialNumber: 'FEK4224R19X',
+      operStatusFound: false,
+      switchMac: '',
+      activeSerial: 'FEK4224R19X',
+      id: 'FEK4224R19X',
+      uptime: '',
+      order: '1'
+    },
+    {
+      venueName: 'test',
+      serialNumber: 'FEK4224R18X',
+      operStatusFound: false,
+      switchMac: '',
+      activeSerial: 'FEK4224R18X',
+      id: 'FEK4224R18X',
+      uptime: '',
+      order: '2'
+    },
+    {
+      venueName: 'test',
+      serialNumber: 'FEK4224R17X',
+      operStatusFound: false,
+      switchMac: '',
+      activeSerial: 'FEK4224R17X',
+      id: 'FEK4224R17X',
+      uptime: '',
+      order: '3'
+    }
+  ]
+}
