@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { useIsSplitOn }                            from '@acx-ui/feature-toggle'
+import { useIsSplitOn, Features }                  from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo, Dashboard, EdgeUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                from '@acx-ui/store'
 import { mockServer, render, screen }              from '@acx-ui/test-utils'
@@ -265,7 +265,9 @@ const meshData = {
 
 describe('VenueMeshAps', () => {
   let params: { tenantId: string, venueId: string, activeTab: string }
-  jest.mocked(useIsSplitOn).mockReturnValue(true)
+  jest.mocked(useIsSplitOn).mockImplementation((feature: string) => {
+    return feature === Features.EDGES ? false: true
+  })
 
   beforeEach(() => {
     mockServer.use(

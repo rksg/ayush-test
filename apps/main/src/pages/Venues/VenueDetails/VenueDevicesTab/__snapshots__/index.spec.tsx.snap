@@ -66,75 +66,23 @@ exports[`VenueMeshAps should render correctly 1`] = `
               class="ant-space-item"
               style="margin-right: 8px;"
             >
-              <div
-                class="styledComponents__Wrapper-sc-8afdnk-0 styledComponents__RangePickerWrapper-sc-8afdnk-1 gteXel kdbiow"
+              <span
+                style="cursor: not-allowed;"
               >
-                <div
-                  class="ant-picker ant-picker-range"
+                <button
+                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
+                  disabled=""
+                  style="pointer-events: none;"
+                  type="button"
                 >
-                  <div
-                    class="ant-picker-input ant-picker-input-active"
-                  >
-                    <input
-                      autocomplete="off"
-                      placeholder="Start date"
-                      readonly=""
-                      size="19"
-                      value="Dec 26 2022 01:54"
-                    />
-                  </div>
-                  <div
-                    class="ant-picker-range-separator"
-                  >
-                    <span
-                      aria-label="to"
-                      class="ant-picker-separator"
-                    >
-                      <span
-                        aria-label="swap-right"
-                        class="anticon anticon-swap-right"
-                        role="img"
-                      >
-                        <svg
-                          aria-hidden="true"
-                          data-icon="swap-right"
-                          fill="currentColor"
-                          focusable="false"
-                          height="1em"
-                          viewBox="0 0 1024 1024"
-                          width="1em"
-                        >
-                          <path
-                            d="M873.1 596.2l-164-208A32 32 0 00684 376h-64.8c-6.7 0-10.4 7.7-6.3 13l144.3 183H152c-4.4 0-8 3.6-8 8v60c0 4.4 3.6 8 8 8h695.9c26.8 0 41.7-30.8 25.2-51.8z"
-                          />
-                        </svg>
-                      </span>
-                    </span>
-                  </div>
-                  <div
-                    class="ant-picker-input"
-                  >
-                    <input
-                      autocomplete="off"
-                      placeholder="End date"
-                      readonly=""
-                      size="19"
-                      value="Dec 27 2022 01:54"
-                    />
-                  </div>
-                  <div
-                    class="ant-picker-active-bar"
-                    style="left: 0px; width: 1280px; position: absolute;"
+                  <svg
+                    data-testid="ClockOutlined"
                   />
-                  <span
-                    class="ant-picker-suffix"
-                  >
-                    <svg
-                      data-testid="ClockOutlined"
-                    />
+                  <span>
+                    Last 24 Hours
                   </span>
-                </div>
-              </div>
+                </button>
+              </span>
             </div>
             <div
               class="ant-space-item"
@@ -183,16 +131,15 @@ exports[`VenueMeshAps should render correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-analytics"
-                    aria-disabled="false"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-analytics"
                     role="tab"
-                    tabindex="0"
                   >
                     <span>
                       AI Analytics
@@ -422,32 +369,17 @@ exports[`VenueMeshAps should render correctly 1`] = `
             </div>
           </div>
           <div
-            class="ant-tabs-tab"
+            class="ant-tabs-tab ant-tabs-tab-disabled"
           >
             <div
               aria-controls="rc-tabs-test-panel-switch"
-              aria-disabled="false"
+              aria-disabled="true"
               aria-selected="false"
               class="ant-tabs-tab-btn"
               id="rc-tabs-test-tab-switch"
               role="tab"
-              tabindex="0"
             >
               Switch
-            </div>
-          </div>
-          <div
-            class="ant-tabs-tab"
-          >
-            <div
-              aria-controls="rc-tabs-test-panel-edge"
-              aria-selected="false"
-              class="ant-tabs-tab-btn"
-              id="rc-tabs-test-tab-edge"
-              role="tab"
-              tabindex="0"
-            >
-              SmartEdge
             </div>
           </div>
           <div
@@ -544,13 +476,14 @@ exports[`VenueMeshAps should render correctly 1`] = `
                         </span>
                       </label>
                       <label
-                        class="ant-radio-button-wrapper"
+                        class="ant-radio-button-wrapper ant-radio-button-wrapper-disabled"
                       >
                         <span
-                          class="ant-radio-button"
+                          class="ant-radio-button ant-radio-button-disabled"
                         >
                           <input
                             class="ant-radio-button-input"
+                            disabled=""
                             type="radio"
                             value="apGroups"
                           />
@@ -563,13 +496,14 @@ exports[`VenueMeshAps should render correctly 1`] = `
                         </span>
                       </label>
                       <label
-                        class="ant-radio-button-wrapper"
+                        class="ant-radio-button-wrapper ant-radio-button-wrapper-disabled"
                       >
                         <span
-                          class="ant-radio-button"
+                          class="ant-radio-button ant-radio-button-disabled"
                         >
                           <input
                             class="ant-radio-button-input"
+                            disabled=""
                             type="radio"
                             value="rogueAps"
                           />
@@ -674,15 +608,6 @@ exports[`VenueMeshAps should render correctly 1`] = `
           aria-labelledby="rc-tabs-test-tab-switch"
           class="ant-tabs-tabpane"
           id="rc-tabs-test-panel-switch"
-          role="tabpanel"
-          style="display: none;"
-          tabindex="-1"
-        />
-        <div
-          aria-hidden="true"
-          aria-labelledby="rc-tabs-test-tab-edge"
-          class="ant-tabs-tabpane"
-          id="rc-tabs-test-panel-edge"
           role="tabpanel"
           style="display: none;"
           tabindex="-1"
