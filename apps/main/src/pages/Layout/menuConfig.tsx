@@ -144,7 +144,7 @@ export function useMenuConfig () {
           disabled: !useIsSplitOn(Features.USERS)
         },
         {
-          path: '/users/persona-group',
+          path: '/users/persona-management',
           name: $t({ defaultMessage: 'Persona Management' })
         }
       ]

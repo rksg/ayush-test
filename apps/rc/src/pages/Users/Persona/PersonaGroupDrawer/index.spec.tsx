@@ -1,7 +1,9 @@
 
-import { PersonaGroup }              from '@acx-ui/rc/utils'
-import { Provider }                  from '@acx-ui/store'
-import { render, screen, fireEvent } from '@acx-ui/test-utils'
+import { rest } from 'msw'
+
+import { PersonaGroup, PersonaUrls }             from '@acx-ui/rc/utils'
+import { Provider }                              from '@acx-ui/store'
+import { render, screen, fireEvent, mockServer } from '@acx-ui/test-utils'
 
 
 
@@ -17,11 +19,48 @@ const mockPersonaGroup: PersonaGroup = {
   propertyId: 'propertyId-100'
 }
 
+const mockPersonaGroupTableResult = {
+  totalCount: 3,
+  page: 1,
+  content: [{
+    id: 'aaaaaaaa',
+    name: 'Class A',
+    description: '',
+    macRegistrationPoolId: 'mac-id-1',
+    dpskPoolId: 'dpsk-pool-2',
+    nsgId: 'nsgId-700',
+    propertyId: 'propertyId-100'
+  },
+  {
+    id: 'cccccccc',
+    name: 'Class B',
+    description: '',
+    macRegistrationPoolId: 'mac-id-1',
+    dpskPoolId: 'dpsk-pool-1',
+    nsgId: 'nsgId-300',
+    propertyId: 'propertyId-400'
+  },
+  {
+    id: 'bbbbbbbb',
+    name: 'Class C',
+    description: '',
+    macRegistrationPoolId: 'mac-id-1',
+    dpskPoolId: 'dpsk-pool-1',
+    nsgId: 'nsgId-100',
+    propertyId: 'propertyId-600'
+  }]
+}
 
 describe('Persona Group Drawer', () => {
 
   beforeEach(async () => {
     // mock: addPersonaGroup, updatePersonaGroup, getMacRegistrationPoolList
+    mockServer.use(
+      rest.post(
+        PersonaUrls.searchPersonaGroupList.url,
+        (req, res, ctx) => res(ctx.json(mockPersonaGroupTableResult))
+      )
+    )
   })
 
   it('should add a persona group', async () => {

@@ -17,7 +17,6 @@ import {
   basePolicyApi as policyApi,
   baseClientApi as clientApi,
   baseSwitchApi as switchApi,
-  baseMacRegPoolApi as macRegPoolApi,
   basePersonaApi as personaApi
 } from '@acx-ui/rc/services'
 
@@ -73,7 +72,6 @@ export const store = configureStore({
     [policyApi.reducerPath]: policyApi.reducer,
     [clientApi.reducerPath]: clientApi.reducer,
     [switchApi.reducerPath]: switchApi.reducer,
-    [macRegPoolApi.reducerPath]: macRegPoolApi.reducer,
     [personaApi.reducerPath]: personaApi.reducer
   },
 
@@ -98,7 +96,6 @@ export const store = configureStore({
       policyApi.middleware,
       clientApi.middleware,
       switchApi.middleware,
-      macRegPoolApi.middleware,
       personaApi.middleware
     ])
   },

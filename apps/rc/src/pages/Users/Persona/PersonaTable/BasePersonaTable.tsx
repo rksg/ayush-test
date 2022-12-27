@@ -9,7 +9,7 @@ import {
   useGetPersonaGroupListQuery,
   useDeletePersonaMutation
 } from '@acx-ui/rc/services'
-import {  Persona, PersonaGroup, useNewTableQuery } from '@acx-ui/rc/utils'
+import {  Persona, PersonaGroup, useTableQuery } from '@acx-ui/rc/utils'
 
 import { PersonaDetailsLink, PersonaGroupLink } from '../LinkHelper'
 import { PersonaDrawer }                        from '../PersonaDrawer'
@@ -65,7 +65,7 @@ function useColumns (props: PersonaTableColProps) {
       title: $t({ defaultMessage: 'Persona Group' }),
       sorter: true,
       render: (_, row) => {
-        const name = personaGroupList.data?.content.find(group => group.id === row.groupId)?.name
+        const name = personaGroupList.data?.data.find(group => group.id === row.groupId)?.name
         return <PersonaGroupLink personaGroupId={row.groupId} name={name} />
       },
       ...props.groupId
@@ -104,18 +104,16 @@ export function BasePersonaTable (props: PersonaTableProps) {
   })
   const [deletePersona, { isLoading: isDeletePersonaUpdating }] = useDeletePersonaMutation()
 
-  const personaListQuery = useNewTableQuery({
+  const personaListQuery = useTableQuery({
     useQuery: useSearchPersonaListQuery,
-    defaultPayload: { },
-    skip: hasGroupId()
+    defaultPayload: { }
   })
 
-  const personaListByGroupIdQuery = useNewTableQuery({
+  const personaListByGroupIdQuery = useTableQuery({
     useQuery: useSearchPersonaListQuery,
     // FIXME: [before commit]: need to modify size to 10
     apiParams: { size: '2', page: '0' },
-    defaultPayload: { groupId: personaGroupId },
-    skip: !hasGroupId()
+    defaultPayload: { groupId: personaGroupId }
   })
 
   const actions: TableProps<PersonaGroup>['actions'] = [
@@ -176,8 +174,8 @@ export function BasePersonaTable (props: PersonaTableProps) {
         columns={columns}
         dataSource={
           hasGroupId()
-            ? personaListByGroupIdQuery.data?.content
-            : personaListQuery.data?.content
+            ? personaListByGroupIdQuery.data?.data
+            : personaListQuery.data?.data
         }
         pagination={
           hasGroupId()

@@ -4,11 +4,9 @@ import { Col, Form, FormInstance, Input, Row, Select, Space } from 'antd'
 import TextArea                                               from 'antd/lib/input/TextArea'
 import { useIntl }                                            from 'react-intl'
 
-import { Button, Subtitle }               from '@acx-ui/components'
-import { useMacRegListsQuery }            from '@acx-ui/rc/services'
-import { PersonaGroup, useNewTableQuery } from '@acx-ui/rc/utils'
-
-
+import { Button, Subtitle }                                        from '@acx-ui/components'
+import { useLazySearchPersonaGroupListQuery, useMacRegListsQuery } from '@acx-ui/rc/services'
+import { checkObjectNotExists, PersonaGroup, useTableQuery }       from '@acx-ui/rc/utils'
 
 export function PersonaGroupForm (props: {
   form: FormInstance,
@@ -18,11 +16,21 @@ export function PersonaGroupForm (props: {
   const { $t } = useIntl()
   const { form, defaultValue, onFinish } = props
 
-  const macRegistrationPoolList = useNewTableQuery({
+  const macRegistrationPoolList = useTableQuery({
     useQuery: useMacRegListsQuery,
     apiParams: { size: '2147483647', page: '0' },
     defaultPayload: { }
   })
+
+  const [searchPersonaGroupList] = useLazySearchPersonaGroupListQuery()
+
+  const nameValidator = async (name: string) => {
+    const list = (await searchPersonaGroupList({
+      params: { size: '2147483647', page: '0' },
+      payload: { keyword: name }
+    }, true).unwrap()).data.filter(g => g.id !== defaultValue?.id).map(g => ({ name: g.name }))
+    return checkObjectNotExists(list, { name } , $t({ defaultMessage: 'Persona Group' }))
+  }
 
   useEffect(() => {
     if (defaultValue) {
@@ -45,8 +53,14 @@ export function PersonaGroupForm (props: {
             <Form.Item
               name='name'
               label={$t({ defaultMessage: 'Persona Group Name' })}
+              hasFeedback
+              validateFirst
+              validateTrigger={['onBlur']}
               rules={
-                [{ required: true }]
+                [
+                  { required: true },
+                  { validator: (_, value) => nameValidator(value) }
+                ]
               }
               children={<Input />}
             />
@@ -96,7 +110,7 @@ export function PersonaGroupForm (props: {
                   disabled={!!defaultValue?.macRegistrationPoolId}
                   placeholder={$t({ defaultMessage: 'Select...' })}
                   options={
-                    macRegistrationPoolList.data?.content
+                    macRegistrationPoolList.data?.data
                       .map(pool => ({ value: pool.id, label: pool.name }))
                   }
                 />

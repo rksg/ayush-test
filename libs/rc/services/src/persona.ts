@@ -5,9 +5,9 @@ import {
   createHttpRequest,
   // createLocalHttpRequest as createHttpRequest,
   PersonaGroup,
-  NewTableResult,
+  TableResult,
   RequestPayload,
-  Persona, PersonaDevice
+  Persona, PersonaDevice, NewTableResult, transferTableResult
 } from '@acx-ui/rc/utils'
 
 export const basePersonaApi = createApi({
@@ -31,7 +31,7 @@ export const personaApi = basePersonaApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'PersonaGroup', id: 'LIST' }]
     }),
-    getPersonaGroupList: build.query<NewTableResult<PersonaGroup>, RequestPayload>({
+    getPersonaGroupList: build.query<TableResult<PersonaGroup>, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(PersonaUrls.getPersonaGroupList, params)
         return {
@@ -39,9 +39,12 @@ export const personaApi = basePersonaApi.injectEndpoints({
           params
         }
       },
+      transformResponse (result: NewTableResult<PersonaGroup>) {
+        return transferTableResult<PersonaGroup>(result)
+      },
       providesTags: [{ type: 'PersonaGroup', id: 'LIST' }]
     }),
-    searchPersonaGroupList: build.query<NewTableResult<PersonaGroup>, RequestPayload>({
+    searchPersonaGroupList: build.query<TableResult<PersonaGroup>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(PersonaUrls.searchPersonaGroupList, params)
         return {
@@ -49,6 +52,9 @@ export const personaApi = basePersonaApi.injectEndpoints({
           params,
           body: payload
         }
+      },
+      transformResponse (result: NewTableResult<PersonaGroup>) {
+        return transferTableResult<PersonaGroup>(result)
       },
       providesTags: [{ type: 'PersonaGroup', id: 'LIST' }]
     }),
@@ -94,13 +100,16 @@ export const personaApi = basePersonaApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Persona' }]
     }),
-    getPersonaList: build.query<NewTableResult<Persona>, RequestPayload>({
+    getPersonaList: build.query<TableResult<Persona>, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(PersonaUrls.getPersonaList, params)
         return {
           ...req,
           params
         }
+      },
+      transformResponse (result: NewTableResult<Persona>) {
+        return transferTableResult<Persona>(result)
       },
       providesTags: [{ type: 'Persona', id: 'LIST' }]
     }),
@@ -113,7 +122,7 @@ export const personaApi = basePersonaApi.injectEndpoints({
       },
       providesTags: [{ type: 'Persona', id: 'ID' }]
     }),
-    listPersonaByGroupId: build.query<NewTableResult<Persona>, RequestPayload>({
+    listPersonaByGroupId: build.query<TableResult<Persona>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(PersonaUrls.listPersonaByGroupId, params)
         return {
@@ -122,12 +131,15 @@ export const personaApi = basePersonaApi.injectEndpoints({
           payload
         }
       },
+      transformResponse (result: NewTableResult<Persona>) {
+        return transferTableResult<Persona>(result)
+      },
       providesTags: [
         { type: 'Persona', id: 'LIST' },
         { type: 'PersonaGroup', id: 'ID' }
       ]
     }),
-    searchPersonaList: build.query<NewTableResult<Persona>, RequestPayload>({
+    searchPersonaList: build.query<TableResult<Persona>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(PersonaUrls.searchPersonaList, params)
         return {
@@ -135,6 +147,9 @@ export const personaApi = basePersonaApi.injectEndpoints({
           params,
           body: payload
         }
+      },
+      transformResponse (result: NewTableResult<Persona>) {
+        return transferTableResult<Persona>(result)
       },
       providesTags: [{ type: 'Persona', id: 'LIST' }]
     }),
@@ -185,6 +200,7 @@ export const {
   useAddPersonaGroupMutation,
   useGetPersonaGroupListQuery,
   useSearchPersonaGroupListQuery,
+  useLazySearchPersonaGroupListQuery,
   useGetPersonaGroupByIdQuery,
   useLazyGetPersonaGroupByIdQuery,
   useUpdatePersonaGroupMutation,
@@ -195,6 +211,7 @@ export const {
   useAddPersonaMutation,
   useGetPersonaByIdQuery,
   useSearchPersonaListQuery,
+  useLazySearchPersonaListQuery,
   useUpdatePersonaMutation,
   useDeletePersonaMutation,
   useAddPersonaDevicesMutation,

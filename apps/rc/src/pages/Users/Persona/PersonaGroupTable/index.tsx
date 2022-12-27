@@ -8,7 +8,7 @@ import {
   useLazyGetMacRegListQuery,
   useDeletePersonaGroupMutation
 } from '@acx-ui/rc/services'
-import { PersonaGroup, useNewTableQuery } from '@acx-ui/rc/utils'
+import { PersonaGroup, useTableQuery } from '@acx-ui/rc/utils'
 
 import { DpskPoolLink, MacRegistrationPoolLink, NetworkSegmentationLink, PersonaGroupLink } from '../LinkHelper'
 import { PersonaGroupDrawer }                                                               from '../PersonaGroupDrawer'
@@ -106,7 +106,7 @@ export function PersonaGroupTable () {
     { isLoading: isDeletePersonaGroupUpdating }
   ] = useDeletePersonaGroupMutation()
 
-  const tableQuery = useNewTableQuery( {
+  const tableQuery = useTableQuery( {
     useQuery: useSearchPersonaGroupListQuery,
     apiParams: { sort: 'name,ASC' },
     defaultPayload: { }
@@ -117,7 +117,7 @@ export function PersonaGroupTable () {
 
     const macPoolMap = new Map()
 
-    tableQuery.data?.content.forEach(personaGroup => {
+    tableQuery.data?.data.forEach(personaGroup => {
       const id = personaGroup.macRegistrationPoolId
       if (!id) return
       getMacRegistrationById({ params: { macRegistrationListId: id } })
@@ -185,7 +185,7 @@ export function PersonaGroupTable () {
     >
       <Table
         columns={useColumns(macRegistrationPoolMap)}
-        dataSource={tableQuery.data?.content}
+        dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         rowKey='id'

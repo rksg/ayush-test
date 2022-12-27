@@ -4,7 +4,7 @@ import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 
-import { Button, Drawer, showToast }                                 from '@acx-ui/components'
+import { Drawer, showToast }                                         from '@acx-ui/components'
 import { useAddPersonaGroupMutation, useUpdatePersonaGroupMutation } from '@acx-ui/rc/services'
 import { PersonaGroup }                                              from '@acx-ui/rc/utils'
 

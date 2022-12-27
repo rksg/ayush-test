@@ -33,7 +33,6 @@ export * from './portalService'
 export * from './client'
 export * from './components'
 export * from './switch'
-export * from './macRegistrationList'
 export * from './persona'
 
 export interface CommonResult {

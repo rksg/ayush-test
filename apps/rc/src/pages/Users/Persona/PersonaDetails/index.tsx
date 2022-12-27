@@ -24,7 +24,7 @@ function PersonaDetails () {
   const { $t } = useIntl()
   const { personaGroupId, personaId } = useParams()
   const [personaGroupData, setPersonaGroupData] = useState<PersonaGroup>()
-  const [macPoolData, setMacPoolData] = useState({} as { id: string, name: string } | undefined)
+  const [macPoolData, setMacPoolData] = useState({} as { id?: string, name?: string } | undefined)
   const [editDrawerVisible, setEditDrawerVisible] = useState(false)
 
   // TODO: isLoading state?

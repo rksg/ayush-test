@@ -13,7 +13,7 @@ export function PersonaGroupSelect (props: SelectProps) {
     <Select
       {...props}
       options={
-        personaGroupList.data?.content
+        personaGroupList.data?.data
           .map(group => ({ value: group.id, label: group.name }))
       }
     />
