@@ -5,7 +5,6 @@ import { render,
   screen,
   fireEvent,
   waitFor } from '@acx-ui/test-utils'
-import { formatter } from '@acx-ui/utils'
 
 
 import { tenantID, currentEdge } from '../__tests__/fixtures'
