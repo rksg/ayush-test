@@ -206,6 +206,7 @@ export const ClientTroubleShootingConfig = {
         { key: 'slow', label: 'slow' },
         { key: 'disconnect', label: 'disconnect' }
       ] as { key: string, label: string, color: string }[],
+      showResetZoom: true,
       subtitle: [
         {
           title: defineMessage({ defaultMessage: 'Success' }),
@@ -286,6 +287,7 @@ export const ClientTroubleShootingConfig = {
       title: defineMessage({ defaultMessage: 'Network Incidents' }),
       value: TYPES.NETWORK_INCIDENTS,
       chartType: 'bar',
+      hasXaxisLabel: true,
       chartMapping: [
         { key: 'all', label: 'all' },
         { key: 'clientConnection', label: 'clientConnection' },
