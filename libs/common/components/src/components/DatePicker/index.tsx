@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useCallback, Component } from 'react'
+import { useMemo, useEffect, useState, useRef, useCallback, Component } from 'react'
 
 import {
   DatePicker as AntDatePicker,
@@ -21,11 +21,8 @@ export type DateRangeType = {
   endDate: Moment | null
 }
 type RangeValueType = [Moment | null, Moment | null] | null
-type RangeBoundType = [Moment, Moment] | null
-type RangesType = Record<
-  string,
-  Exclude<RangeBoundType, null> | (() => Exclude<RangeBoundType, null>)
->
+type RangeBoundType = [Moment, Moment]
+type RangesType = Record<string, RangeBoundType | (() => RangeBoundType)>
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type RangeRef = Component<RangePickerProps<Moment>, unknown, any> & CommonPickerMethods | null
 interface DatePickerProps {
@@ -51,16 +48,17 @@ export const RangePicker = ({
 }: DatePickerProps) => {
   const didMountRef = useRef(false)
   const { $t } = useIntl()
-  const ranges = defaultRanges(rangeOptions)
-  const translatedRanges: RangesType = Object.keys(ranges).reduce((acc, rangeOption) => ({
-    ...acc,
-    [$t(dateRangeMap[rangeOption as DateRange])]: ranges[rangeOption as DateRange]
-  }), {})
-  const rangeTranslations: Record<string, DateRange> = Object.keys(ranges)
-    .reduce((acc, rangeOption) => ({
-      ...acc,
-      [$t(dateRangeMap[rangeOption as DateRange])]: rangeOption
-    }), {})
+  const { translatedRanges, translatedOptions } = useMemo(() => {
+    const ranges = defaultRanges(rangeOptions)
+    const translatedRanges: RangesType = {}
+    const translatedOptions: Record<string, DateRange> = {}
+    for (const rangeOption in ranges) {
+      const translated = $t(dateRangeMap[rangeOption as DateRange])
+      translatedOptions[translated] = rangeOption as DateRange
+      translatedRanges[translated] = ranges[rangeOption as DateRange] as RangeBoundType
+    }
+    return { translatedRanges, translatedOptions }
+  }, [$t, rangeOptions])
   const componentRef = useRef<HTMLDivElement | null>(null)
   const rangeRef = useRef<RangeRef>(null)
   const [range, setRange] = useState<DateRangeType>(selectedRange)
@@ -80,7 +78,7 @@ export const RangePicker = ({
       if (componentRef.current && !componentRef.current.contains(event.target as Node)) {
         setIsCalendarOpen(false)
       }
-      const selectedRange = rangeTranslations[target.innerText]
+      const selectedRange = translatedOptions[target.innerText]
       if (selectedRange) {
         resetRanges()
         rangeRef?.current?.blur()
@@ -96,7 +94,7 @@ export const RangePicker = ({
     return () => {
       document.removeEventListener('click', handleClickForDatePicker)
     }
-  }, [range, onDateChange, onDateApply, rangeTranslations])
+  }, [range, onDateChange, onDateApply, translatedOptions])
   return (
     <UI.RangePickerWrapper
       ref={componentRef}
