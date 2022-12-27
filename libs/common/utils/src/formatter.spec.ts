@@ -71,9 +71,17 @@ describe('formatter', () => {
   }))
 
   it('hertzFormat', () => testFormat('hertzFormat', {
-    5: '5 kHz',
-    12000: '12 MHz',
-    6000000: '6 GHz'
+    0: '0 Hz',
+    1: '1 Hz',
+    5: '5 Hz',
+    10: '1 daHz',
+    100: '1 hHz',
+    200: '2 hHz',
+    1000: '1 kHz',
+    3000: '3 kHz',
+    12000000: '12 MHz',
+    6000000000: '6 GHz',
+    7000000000000: '7 THz'
   }))
 
   it('floatFormat', () => testFormat('floatFormat', {
