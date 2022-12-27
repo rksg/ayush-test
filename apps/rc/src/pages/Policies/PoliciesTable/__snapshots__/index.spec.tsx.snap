@@ -37,7 +37,7 @@ exports[`PoliciesTable should render table 1`] = `
                 href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/policies/select"
               >
                 <button
-                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 eAazoW"
                   type="button"
                 >
                   <span>
@@ -52,7 +52,7 @@ exports[`PoliciesTable should render table 1`] = `
     </div>
   </div>
   <div
-    class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
       class="styledComponents__Wrapper-sc-1abm7iv-13 gzZsiC"
@@ -589,6 +589,59 @@ exports[`PoliciesTable should render table 1`] = `
                                   href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/policies/rogueAp/aa080e33-26a7-4d34-870f-b7f312fcfccc/detail"
                                 >
                                   Policy 3
+                                </a>
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              >
+                                Rogue AP Detection
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              >
+                                Wi-Fi
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              >
+                                8
+                              </td>
+                              <td
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                style="position: sticky; right: 0px;"
+                              />
+                            </tr>
+                            <tr
+                              class="ant-table-row ant-table-row-level-0"
+                              data-row-key="bbc80e33-2547-4d34-870f-b7f245fcfccc"
+                            >
+                              <td
+                                class="ant-table-cell ant-table-selection-column"
+                              >
+                                <label
+                                  class="ant-radio-wrapper"
+                                >
+                                  <span
+                                    class="ant-radio"
+                                  >
+                                    <input
+                                      class="ant-radio-input"
+                                      type="radio"
+                                      value=""
+                                    />
+                                    <span
+                                      class="ant-radio-inner"
+                                    />
+                                  </span>
+                                </label>
+                              </td>
+                              <td
+                                class="ant-table-cell ant-table-column-sort"
+                              >
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/policies/rogueAp/bbc80e33-2547-4d34-870f-b7f245fcfccc/detail"
+                                >
+                                  Default profile
                                 </a>
                               </td>
                               <td

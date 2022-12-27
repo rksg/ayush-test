@@ -80,6 +80,7 @@ function useColumns () {
       align: 'left',
       key: 'aggregatedApStatus',
       dataIndex: 'aggregatedApStatus',
+      sorter: true,
       render: function (data, row) {
         const count = row.aggregatedApStatus
           ? Object.values(row.aggregatedApStatus)
@@ -100,6 +101,7 @@ function useColumns () {
       title: $t({ defaultMessage: 'Wi-Fi Clients' }),
       key: 'clients',
       dataIndex: 'clients',
+      sorter: true,
       align: 'center',
       render: function (data, row) {
         return (
@@ -114,6 +116,7 @@ function useColumns () {
       title: $t({ defaultMessage: 'Switches' }),
       key: 'switches',
       dataIndex: 'switches',
+      sorter: true,
       align: 'center',
       render: function (data, row) {
         return (
@@ -128,6 +131,7 @@ function useColumns () {
       title: $t({ defaultMessage: 'Switch Clients' }),
       key: 'switchClients',
       dataIndex: 'switchClients',
+      sorter: true,
       align: 'center',
       render: function (data, row) {
         return (
@@ -172,11 +176,11 @@ export const defaultVenuePayload = {
 }
 
 type VenueTableProps = {
-  tableQuery: TableQuery<Venue, RequestPayload<unknown>, unknown>
-  globalSearch?: string
+  tableQuery: TableQuery<Venue, RequestPayload<unknown>, unknown>,
+  rowSelection?: TableProps<Venue>['rowSelection']
 }
 
-export const VenueTable = ({ tableQuery, globalSearch }: VenueTableProps) => {
+export const VenueTable = ({ tableQuery, rowSelection }: VenueTableProps) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const columns = useColumns()
@@ -227,8 +231,8 @@ export const VenueTable = ({ tableQuery, globalSearch }: VenueTableProps) => {
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         rowKey='id'
-        rowActions={(globalSearch) ? undefined : rowActions}
-        rowSelection={(globalSearch) ? undefined : { type: 'checkbox' }}
+        rowActions={rowActions}
+        rowSelection={rowSelection}
       />
     </Loader>
   )
@@ -252,7 +256,7 @@ export function VenuesTable () {
           </TenantLink>
         ]}
       />
-      <VenueTable tableQuery={tableQuery}/>
+      <VenueTable tableQuery={tableQuery} rowSelection={{ type: 'checkbox' }} />
     </>
   )
 }
@@ -277,7 +281,8 @@ function getApStatusChart (apStatus: Venue['aggregatedApStatus']) {
   ]]
 
   const series = Object.entries(apStatus).reduce((counts, [key, value]) => {
-    const index = apStatusMap.findIndex(s => s.includes(key as ApDeviceStatusEnum))
+    const index = apStatusMap.findIndex(s =>
+      String(s).toLowerCase().includes((key).toLowerCase()))
     counts[index] += value as number
     return counts
   }, [0, 0, 0, 0]).map((data, index) => ({

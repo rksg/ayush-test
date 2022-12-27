@@ -1,4 +1,4 @@
-import { ReactNode, useContext, useEffect, useRef } from 'react'
+import { ReactNode, useContext, useEffect, useRef, useState } from 'react'
 
 import { Form, FormItemProps, InputNumber, Select, Space } from 'antd'
 import _                                                   from 'lodash'
@@ -6,13 +6,13 @@ import { FormattedMessage, useIntl }                       from 'react-intl'
 
 import { Fieldset, Loader, showToast, StepsForm, StepsFormInstance, Tooltip } from '@acx-ui/components'
 import {
-  useGetRoguePoliciesQuery,
   useGetDenialOfServiceProtectionQuery,
   useUpdateDenialOfServiceProtectionMutation,
   useGetVenueRogueApQuery,
-  useUpdateVenueRogueApMutation
+  useUpdateVenueRogueApMutation, useGetRoguePolicyListQuery
 } from '@acx-ui/rc/services'
-import { useParams } from '@acx-ui/react-router-dom'
+import { getPolicyRoutePath, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
+import { TenantLink, useParams }                           from '@acx-ui/react-router-dom'
 
 import { VenueEditContext } from '../../'
 
@@ -52,7 +52,9 @@ export function SecurityTab () {
   const { data: dosProctectionData } = useGetDenialOfServiceProtectionQuery({ params })
   const { data: venueRogueApData } = useGetVenueRogueApQuery({ params })
 
-  const { selectOptions, selected } = useGetRoguePoliciesQuery({ params },{
+  const [roguePolicyIdValue, setRoguePolicyIdValue] = useState('')
+
+  const { selectOptions, selected } = useGetRoguePolicyListQuery({ params },{
     selectFromResult ({ data }) {
       return {
         selectOptions: data?.map(item => <Option key={item.id}>{item.name}</Option>) ?? [],
@@ -67,7 +69,10 @@ export function SecurityTab () {
         formRef.current?.setFieldValue('roguePolicyId', selectOptions[0].key)
       }
     }
-  }, [selectOptions])
+    if (!roguePolicyIdValue && selected?.id) {
+      setRoguePolicyIdValue(selected.id)
+    }
+  }, [selectOptions, selected])
 
   useEffect(() => {
     if(dosProctectionData && venueRogueApData){
@@ -222,11 +227,28 @@ export function SecurityTab () {
             </Form.Item>
             <Form.Item
               name='roguePolicyId'
-              label={$t({ defaultMessage: 'Rogue AP Classification Profile:' })}
-              style={{ width: '200px' }}
-              initialValue={selected}
+              label={$t({ defaultMessage: 'Rogue AP Detection Policy Profile:' })}
+              initialValue={roguePolicyIdValue}
             >
-              <Select children={selectOptions} />
+              <Space>
+                <Select
+                  children={selectOptions}
+                  value={roguePolicyIdValue}
+                  onChange={(value => {
+                    formRef.current?.setFieldValue('roguePolicyId', value)
+                    setRoguePolicyIdValue(value)
+                  })}
+                  style={{ width: '200px' }}
+                />
+                <TenantLink
+                  to={getPolicyRoutePath({
+                    type: PolicyType.ROGUE_AP_DETECTION,
+                    oper: PolicyOperation.CREATE
+                  })}
+                >
+                  {$t({ defaultMessage: 'Add Profile' })}
+                </TenantLink>
+              </Space>
             </Form.Item>
           </FieldsetItem>
         </StepsForm.StepForm>

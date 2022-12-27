@@ -31,6 +31,26 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/eventalarmapi/:tenantId/alarm/meta'
   },
+  getActivityList: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/activity/query'
+  },
+  getEventList: {
+    method: 'post',
+    url: '/api/eventalarmapi/:tenantId/event/eventlist'
+  },
+  getEventListMeta: {
+    method: 'post',
+    url: '/api/eventalarmapi/:tenantId/event/meta'
+  },
+  clearAlarm: {
+    method: 'delete',
+    url: '/api/eventalarmapi/:tenantId/alarm/clear/:alarmId'
+  },
+  clearAllAlarm: {
+    method: 'delete',
+    url: '/api/eventalarmapi/:tenantId/alarm'
+  },
   getApsList: {
     method: 'post',
     url: '/api/viewmodel/:tenantId/aps'
@@ -119,10 +139,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/service/:serviceId'
   },
-  saveDHCPService: {
-    method: 'post',
-    url: '/api/tenant/:tenantId/wifi/network/deep?quickAck=true'
-  },
   getVenueFloorplans: {
     method: 'get',
     url: '/api/tenant/:tenantId/venue/:venueId/floor-plan'
@@ -146,6 +162,18 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getAllDevices: {
     method: 'post',
     url: '/api/viewmodel/tenant/:tenantId/venue/:venueId/devices'
+  },
+  UpdateSwitchPosition: {
+    method: 'put',
+    url: '/api/switch/tenant/:tenantId/switch/:serialNumber/position'
+  },
+  UpdateApPosition: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/position'
+  },
+  UpdateCloudpathServerPosition: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/wifi/cloudpaths/:cloudpathServerId/floorPositions'
   },
   getVenueCapabilities: {
     method: 'get',
@@ -191,10 +219,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/dhcp-service-profile/instances/:serviceId'
   },
-  getDHCProfileDetail: {
-    method: 'get',
-    url: '/api/tenant/:tenantId/dhcp-service-profile/:serviceId'
-  },
   getDenialOfServiceProtection: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/dos-protection'
@@ -206,6 +230,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getVenueRogueAp: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/rogue/ap'
+  },
+  getOldVenueRogueAp: {
+    method: 'post',
+    url: '/api/viewmodel/tenant/:tenantId/venue/:venueId/rogue/ap'
   },
   updateVenueRogueAp: {
     method: 'put',
@@ -239,21 +267,37 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/user-profile'
   },
+  updateUserProfile: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/user-profile'
+  },
   getApDetailHeader: {
     method: 'get',
     url: '/api/viewmodel/tenant/:tenantId/ap/:serialNumber/detailheader'
   },
-  getClientList: {
-    method: 'post',
-    url: '/api/viewmodel/:tenantId/client/clientlist'
+  getCloudVersion: {
+    method: 'get',
+    url: '/api/upgrade/tenant/:tenantId/upgrade-version'
   },
-  getClientMeta: {
+  getClientSessionHistory: {
     method: 'post',
-    url: '/api/viewmodel/:tenantId/client/meta'
+    url: '/api/reporting/tenant/:tenantId/report/clientSessionHistory'
+  },
+  getHistoricalClientList: {
+    method: 'post',
+    url: '/api/eventalarmapi/:tenantId/event/hist_client_list'
+  },
+  getHistoricalStatisticsReportsV2: {
+    method: 'post',
+    url: '/api/reporting/tenant/:tenantId/report/clientStats/v2'
   },
   getGuestsList: {
     method: 'post',
     url: '/api/viewmodel/tenant/:tenantId/guests'
+  },
+  addGuestPass: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/guest-user'
   },
   getApNetworkList: {
     method: 'post',

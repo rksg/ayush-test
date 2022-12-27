@@ -14,7 +14,7 @@ export function ApTroubleshootingTab () {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
-  const basePath = useTenantLink(`/devices/aps/${params.serialNumber}/details/troubleshooting/`)
+  const basePath = useTenantLink(`/devices/wifi/${params.serialNumber}/details/troubleshooting/`)
 
   const onTabChange = (tab: string) => {
     navigate({

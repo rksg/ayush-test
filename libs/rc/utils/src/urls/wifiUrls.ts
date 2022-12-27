@@ -101,6 +101,10 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/radio'
   },
+  getApValidChannel: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/valid-channel'
+  },
   getWifiCapabilities: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/capabilities'
@@ -212,6 +216,14 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   getApCapabilities: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/capabilities'
+  },
+  getDpskPassphraseByQuery: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/dpsk-passphrase/query'
+  },
+  getApCustomization: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/customization'
   },
   updateApCustomization: {
     method: 'put',

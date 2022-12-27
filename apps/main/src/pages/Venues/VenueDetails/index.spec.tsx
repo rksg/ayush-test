@@ -2,16 +2,17 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { venueApi }                   from '@acx-ui/rc/services'
-import { CommonUrlsInfo, Dashboard }  from '@acx-ui/rc/utils'
-import { Provider, store }            from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { venueApi }                            from '@acx-ui/rc/services'
+import { CommonUrlsInfo, DHCPUrls, Dashboard } from '@acx-ui/rc/utils'
+import { Provider, store }                     from '@acx-ui/store'
+import { mockServer, render, screen }          from '@acx-ui/test-utils'
 
 import {
   venueDetailHeaderData,
   venueNetworkList,
   networkDeepList,
-  venueNetworkApGroup
+  venueNetworkApGroup,
+  serviceProfile
 } from '../__tests__/fixtures'
 
 import { VenueDetails } from '.'
@@ -78,6 +79,10 @@ describe('VenueDetails', () => {
       rest.post(
         CommonUrlsInfo.venueNetworkApGroup.url,
         (req, res, ctx) => res(ctx.json(venueNetworkApGroup))
+      ),
+      rest.get(
+        DHCPUrls.getVenueDHCPServiceProfile.url,
+        (_,res,ctx) => res(ctx.json(serviceProfile))
       )
     )
   })

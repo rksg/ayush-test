@@ -54,10 +54,6 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       providesTags: [{ type: 'Network', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          if (msg.status !== 'SUCCESS') return
-          if (!['DeleteNetwork', 'AddNetworkDeep', 'UpdateNetworkDeep'].includes(msg.useCase))
-            return
-
           showActivityMessage(msg, ['AddNetworkDeep', 'DeleteNetwork', 'UpdateNetworkDeep'], () => {
             api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'LIST' }]))
           })
@@ -95,7 +91,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
     }),
     addNetworkVenue: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.addNetworkVenue, params)
+        const req = createHttpRequest(WifiUrlsInfo.addNetworkVenue, params, RKS_NEW_UI)
         return {
           ...req,
           body: payload
@@ -105,7 +101,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
     }),
     updateNetworkVenue: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.updateNetworkVenue, params)
+        const req = createHttpRequest(WifiUrlsInfo.updateNetworkVenue, params, RKS_NEW_UI)
         return {
           ...req,
           body: payload
@@ -115,7 +111,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
     }),
     deleteNetworkVenue: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.deleteNetworkVenue, params)
+        const req = createHttpRequest(WifiUrlsInfo.deleteNetworkVenue, params, RKS_NEW_UI)
         return {
           ...req
         }
@@ -158,6 +154,15 @@ export const networkApi = baseNetworkApi.injectEndpoints({
               api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'DETAIL' }]))
             })
         })
+      }
+    }),
+    getVenueNetworkApGroup: build.query<TableResult<NetworkVenue>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.venueNetworkApGroup, params)
+        return {
+          ...req,
+          body: payload
+        }
       }
     }),
     apNetworkList: build.query<TableResult<Network>, RequestPayload>({
@@ -364,6 +369,9 @@ export const {
   useNetworkListQuery,
   useLazyNetworkListQuery,
   useGetNetworkQuery,
+  useLazyGetNetworkQuery,
+  useGetVenueNetworkApGroupQuery,
+  useLazyGetVenueNetworkApGroupQuery,
   useNetworkDetailHeaderQuery,
   useNetworkVenueListQuery,
   useAddNetworkMutation,

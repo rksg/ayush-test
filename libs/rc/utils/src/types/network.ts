@@ -1,8 +1,6 @@
 import {
   GuestNetworkTypeEnum,
   NetworkTypeEnum,
-  PassphraseExpirationEnum,
-  PassphraseFormatEnum,
   WlanSecurityEnum
 } from '../constants'
 import { AAAWlanAdvancedCustomization }   from '../models/AAAWlanAdvancedCustomization'
@@ -17,6 +15,7 @@ import { Radius }                         from '../models/Radius'
 
 export interface CreateNetworkFormFields {
   name: string;
+  ssid?: string;
   description?: string;
   type: NetworkTypeEnum;
   isCloudpathEnabled?: boolean;
@@ -109,12 +108,5 @@ export interface NetworkSaveData {
   dpskWlanSecurity?: WlanSecurityEnum;
   authRadius?: Radius;
   accountingRadius?: Radius;
-  passphraseLength?: number;
-  passphraseFormat?: PassphraseFormatEnum;
-  expiration?: PassphraseExpirationEnum;
-  dpskPassphraseGeneration?: {
-    length?: number;
-    format?: PassphraseFormatEnum;
-    expiration?: PassphraseExpirationEnum;
-  }
+  dpskServiceProfileId?: string;
 }

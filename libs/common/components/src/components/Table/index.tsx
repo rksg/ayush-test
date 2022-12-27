@@ -44,10 +44,11 @@ export interface TableProps <RecordType>
   'bordered' | 'columns' | 'title' | 'type' | 'rowSelection'> {
     /** @default 'tall' */
     type?: 'tall' | 'compact' | 'tooltip' | 'form' | 'compactBordered'
-    rowKey?: Exclude<ProAntTableProps<RecordType, ParamsType>['rowKey'], Function>
+    rowKey?: ProAntTableProps<RecordType, ParamsType>['rowKey']
     columns: TableColumn<RecordType, 'text'>[]
     actions?: Array<{
-      label: string
+      label: string,
+      disabled?: boolean,
       onClick: () => void
     }>
     rowActions?: Array<{
@@ -155,13 +156,14 @@ function Table <RecordType extends Record<string, any>> (
     children: <SettingsOutlined/>
   } : false
 
-  const rowKey = (props.rowKey ?? 'key') as keyof RecordType
+  const rowKey = (props.rowKey ?? 'key')
 
   const [selectedRowKeys, setSelectedRowKeys] = useSelectedRowKeys(props.rowSelection)
 
   const getSelectedRows = useCallback((selectedRowKeys: Key[]) => {
     return props.dataSource?.filter(item => {
-      return selectedRowKeys.includes(item[rowKey] as unknown as Key)
+      return selectedRowKeys.includes(typeof rowKey === 'function' ?
+        rowKey(item) : item[rowKey] as unknown as Key)
     }) ?? []
   }, [props.dataSource, rowKey])
 
@@ -169,7 +171,7 @@ function Table <RecordType extends Record<string, any>> (
     if (!props.rowSelection) return
     if (rowSelection?.getCheckboxProps?.(record)?.disabled) return
 
-    const key = record[rowKey] as unknown as Key
+    const key = typeof rowKey === 'function' ? rowKey(record) : record[rowKey] as unknown as Key
     const isSelected = selectedRowKeys.includes(key)
 
     let newKeys: Key[] | undefined
@@ -225,6 +227,10 @@ function Table <RecordType extends Record<string, any>> (
     }
   } : undefined
   const hasEllipsisColumn = columns.some(column => column.ellipsis)
+  const components = _.merge({},
+    props.components || {},
+    type === 'tall' ? { header: { cell: ResizableColumn } } : {}
+  ) as TableProps<RecordType>['components']
   const onRow: TableProps<RecordType>['onRow'] = function (record) {
     const defaultOnRow = props.onRow?.(record)
     return {
@@ -258,11 +264,12 @@ function Table <RecordType extends Record<string, any>> (
     {props.actions && <Space
       size={0}
       split={<UI.Divider type='vertical' />}
-      style={{ display: 'flex', justifyContent: 'flex-end' }}>
+      style={{ display: 'flex', justifyContent: 'flex-end', margin: '3px 0' }}>
       {props.actions?.map((action, index) => <Button
         key={index}
         type='link'
         size='small'
+        disabled={action.disabled}
         onClick={action.onClick}
         children={action.label}
       />)}
@@ -303,7 +310,7 @@ function Table <RecordType extends Record<string, any>> (
         ...getResizeProps(col),
         children: col.children?.map(getResizeProps)
       })): columns) as typeof columns}
-      components={type === 'tall' ? { header: { cell: ResizableColumn } } : undefined}
+      components={_.isEmpty(components) ? undefined : components}
       options={{ setting, reload: false, density: false }}
       columnsState={{
         ...columnsState,

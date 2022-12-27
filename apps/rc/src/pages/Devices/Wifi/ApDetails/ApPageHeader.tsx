@@ -33,7 +33,8 @@ function ApPageHeader () {
   const apAction = useApActions()
 
   const navigate = useNavigate()
-  const basePath = useTenantLink(`/devices/aps/${serialNumber}`)
+  const basePath = useTenantLink(`/devices/wifi/${serialNumber}`)
+  const linkToWifi = useTenantLink('/devices/wifi/')
 
   const status = data?.headers.overview as ApDeviceStatusEnum
   const currentApOperational = status === ApDeviceStatusEnum.OPERATIONAL
@@ -48,7 +49,11 @@ function ApPageHeader () {
       delete: apAction.showDeleteAp
     }
 
-    actionMap[e.key as keyof typeof actionMap](serialNumber, tenantId)
+    if (e.key === 'delete') {
+      actionMap['delete'](serialNumber, tenantId, () => navigate(linkToWifi))
+    } else {
+      actionMap[e.key as keyof typeof actionMap](serialNumber, tenantId)
+    }
   }
 
   const menu = (
@@ -78,7 +83,7 @@ function ApPageHeader () {
       title={data?.title || ''}
       titleExtra={<APStatus status={status} showText={!currentApOperational} />}
       breadcrumb={[
-        { text: $t({ defaultMessage: 'Access Points' }), link: '/devices/aps' }
+        { text: $t({ defaultMessage: 'Access Points' }), link: '/devices/wifi' }
       ]}
       extra={[
         <RangePicker
