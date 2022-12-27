@@ -6,13 +6,15 @@ import {
   LayoutUI
 }                        from '@acx-ui/components'
 import { SplitProvider } from '@acx-ui/feature-toggle'
+import { HomeSolid }     from '@acx-ui/icons'
 import {
   MspEcDropdownList,
   RegionDropdown
 } from '@acx-ui/msp/components'
-import { isDelegationMode } from '@acx-ui/rc/utils'
-import { Outlet }           from '@acx-ui/react-router-dom'
-import { notAvailableMsg }  from '@acx-ui/utils'
+import { isDelegationMode }          from '@acx-ui/rc/utils'
+import { TenantIdFromJwt }           from '@acx-ui/rc/utils'
+import { getBasePath, Link, Outlet } from '@acx-ui/react-router-dom'
+import { notAvailableMsg }           from '@acx-ui/utils'
 
 import ActivityButton from './Header/ActivityButton'
 import AlarmButton    from './Header/AlarmButton'
@@ -38,7 +40,9 @@ function Layout () {
       leftHeaderContent={
         <>
           <RegionDropdown/>
-          {isDelegationMode() && <MspEcDropdownList/>}
+          {isDelegationMode() && <Link to={`${getBasePath()}/v/${TenantIdFromJwt()}`}>
+            <LayoutUI.Icon children={<HomeSolid />} />
+          </Link>}
         </>
 
         // <div style={{ width: '40%', display: 'flex', alignItems: 'center' }}>
@@ -47,6 +51,7 @@ function Layout () {
         // </div>
       }
       rightHeaderContent={<>
+        {isDelegationMode() && <MspEcDropdownList/>}
         <SearchBar />
         <LayoutUI.Divider />
         <AlarmButton/>
