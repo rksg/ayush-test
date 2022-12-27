@@ -155,7 +155,54 @@ describe('RadioTab', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
   })
 
-  it('should render Wi-Fi Radio Settings correctly', async () => {
+  it('should render Wi-Fi Radio Settings correctly when turn on/off tri-band button', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(<Provider>
+      <VenueEditContext.Provider value={{
+        editContextData: {},
+        setEditContextData: jest.fn(),
+        editRadioContextData: {
+          apiApModels: externalAntennaApModels,
+          apModels: externalAntennaApModels,
+          radioData: radioCustomizationData as VenueRadioCustomization
+        },
+        setEditRadioContextData: jest.fn()
+      }}>
+        <RadioTab />
+      </VenueEditContext.Provider>
+    </Provider>, { route: { params } })
+
+    // this would only be visible when loader removed
+    const sectionEl = await screen.findByTestId('radio-settings')
+    const section = within(sectionEl)
+
+    const triBand = await section.findByRole('switch')
+    // turn off tri-band radio
+    await userEvent.click(triBand)
+
+    await section.findByTestId('radio-24g-tab')
+    await section.findByTestId('radio-5g-tab')
+
+    // turn on tri-band radio
+    await userEvent.click(triBand)
+    await section.findByTestId('radio-6g-tab')
+
+    const dual5gBtn = await section.findByRole('radio',
+      { name: /Split 5GHz into lower and upper bands/i })
+
+    await userEvent.click(dual5gBtn)
+    expect(dual5gBtn).toBeChecked()
+
+    await section.findByTestId('radio-u5g-tab')
+    await userEvent.click(await section.findByRole('tab', { name: /Lower 5 GHz/ }))
+    await section.findByRole('radio', { name: /Custom Settings/i })
+
+    await section.findByTestId('radio-l5g-tab')
+    await userEvent.click(await section.findByRole('tab', { name: /Lower 5 GHz/ }))
+    await section.findByRole('radio', { name: /Custom Settings/i })
+  })
+
+  it('should render Wi-Fi Radio 2.4G Settings correctly', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<Provider>
       <VenueEditContext.Provider value={{
@@ -200,15 +247,44 @@ describe('RadioTab', () => {
     await userEvent.click(transmitSelect)
     await userEvent.click((await tab.findAllByTitle('Full'))[0])
 
-    /*
+    await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
+  })
+
+  it('should render Wi-Fi Radio 5G Settings correctly', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(<Provider>
+      <VenueEditContext.Provider value={{
+        editContextData: {},
+        setEditContextData: jest.fn(),
+        editRadioContextData: {
+          apiApModels: externalAntennaApModels,
+          apModels: externalAntennaApModels,
+          radioData: radioCustomizationData as VenueRadioCustomization
+        },
+        setEditRadioContextData: jest.fn()
+      }}>
+        <RadioTab />
+      </VenueEditContext.Provider>
+    </Provider>, { route: { params } })
+
+    // this would only be visible when loader removed
+    const sectionEl = await screen.findByTestId('radio-settings')
+    const section = within(sectionEl)
+
+    const triBand = await section.findByRole('switch')
+    await userEvent.click(triBand)
+
     // radio 5g settings
+    await userEvent.click(await section.findByRole('tab', { name: /5 GHz/ }))
     const tab5gEl = await section.findByTestId('radio-5g-tab')
     const tab5g = within(tab5gEl)
 
+    //screen.debug(tab5gEl, 100000)
     const channelSelect5g = await tab5g.findByRole('combobox', { name: /Channel selection/i })
     await userEvent.click(channelSelect5g)
     await userEvent.click((await tab5g.findAllByTitle('Background Scanning'))[0])
 
+    //screen.debug(channelSelect5g, 100000)
     const scanIntervalInput5g = await tab5g.findByLabelText('Run background scan every:')
     await userEvent.type(scanIntervalInput5g, '40')
 
@@ -219,7 +295,7 @@ describe('RadioTab', () => {
     const transmitSelect5g = await tab5g.findByRole('combobox', { name: /Transmit Power/i })
     await userEvent.click(transmitSelect5g)
     await userEvent.click((await tab5g.findAllByTitle('Auto'))[0])
-    */
+
     await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
   })
 })

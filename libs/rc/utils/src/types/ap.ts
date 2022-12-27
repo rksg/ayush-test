@@ -272,8 +272,8 @@ export interface ApModel {
 	supportChannel144: boolean,
 	supportDual5gMode: boolean,
 	supportTriRadio: boolean,
-  maxChannelization5G?: number,
-  maxChannelization6G?: number
+	maxChannelization5G?: number,
+	maxChannelization6G?: number
 }
 
 export interface PingAp {

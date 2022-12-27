@@ -51,7 +51,7 @@ const RadioLegends = styled.div`
     grid-template-columns: 209px 272px 92px;
     grid-column-gap: 11px;
     height: 16px;
-    
+
     .legend {
       border: 1px dashed var(--acx-neutrals-50);
       border-bottom: none;
@@ -580,7 +580,7 @@ export function RadioSettings () {
                   </Col>
                 </Row>
                 <SingleRadioSettings
-                  testId='radio-u5g-tab'
+                  testId='radio-l5g-tab'
                   inherit5G={isLower5gInherit}
                   radioType={ApRadioTypeEnum.RadioLower5G}
                   supportChannels={support5GLowerChannels}
