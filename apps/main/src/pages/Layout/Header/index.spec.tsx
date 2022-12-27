@@ -83,7 +83,7 @@ const dashboardOverview = {
 }
 
 const alarmList = {
-  totalCount: 1,
+  totalCount: 2,
   page: 1,
   data: [
     {
@@ -94,6 +94,15 @@ const alarmList = {
       entityId: '272002000493',
       id: '272002000493_ap_status',
       message: '{ "message_template": "AP @@apName disconnected from the cloud controller." }'
+    },
+    {
+      severity: 'Critical',
+      entityId: '212002008925',
+      entityType: 'AP',
+      id: '212002008925_ap_status',
+      message: '{ "message_template": "AP @@apName disconnected from the cloud controller." }',
+      serialNumber: '212002008925',
+      startTime: 1670911389000
     }
   ],
   subsequentQueries: [
@@ -121,6 +130,13 @@ const alarmList = {
 const alarmMeta = {
   data: [
     {
+      venueName: 'test_US',
+      switchName: '212002008925',
+      id: '212002008925_ap_status',
+      isSwitchExists: false,
+      apName: 'UI_SDC_AP'
+    },
+    {
       venueName: 'test_amy',
       switchName: '272002000493',
       id: '272002000493_ap_status',
@@ -128,11 +144,7 @@ const alarmMeta = {
       apName: 'testamy_ap'
     }
   ],
-  fields: [
-    'venueName',
-    'apName',
-    'switchName'
-  ]
+  fields: ['venueName', 'apName', 'switchName']
 }
 
 describe('Header Component', () => {
@@ -203,6 +215,12 @@ describe('Header Component', () => {
     await waitFor(async () => {
       expect(await screen.findByText(('testamy_ap'))).toBeInTheDocument()
     })
+
+    await userEvent.click((await screen.findAllByTitle('All Severities'))[0])
+    await userEvent.click((await screen.findAllByTitle('Major'))[0])
+
+    await userEvent.click((await screen.findByText('Clear all alarms')))
+
     expect(asFragment()).toMatchSnapshot()
     const cancelBtn = await screen.findByRole('button',{ name: 'Close' })
     await userEvent.click(cancelBtn)

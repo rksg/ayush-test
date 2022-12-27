@@ -1,12 +1,14 @@
-import { Modal,
+import {
+  Space,
+  Modal,
   List,
   Button,
   Typography
 } from 'antd'
 import styled from 'styled-components/macro'
 
-import { LayoutUI, GridRow, GridCol, Drawer as AntdDrawer }               from '@acx-ui/components'
-import { WarningCircleSolid, CheckMarkCircleSolid, LogOut as AntdLogOut } from '@acx-ui/icons'
+import { LayoutUI, GridRow, GridCol, Drawer as AntdDrawer }                                     from '@acx-ui/components'
+import { WarningCircleSolid, WarningTriangleSolid, CheckMarkCircleSolid, LogOut as AntdLogOut } from '@acx-ui/icons'
 
 
 type CopyableTextProps = {
@@ -14,15 +16,14 @@ type CopyableTextProps = {
 }
 
 export const UserNameButton = styled(LayoutUI.ButtonSolid)`
-    width: 32px;
-    height: 32px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-style: normal;
-    font-weight: 700;
-    font-family: var(--acx-accent-brand-font);
-    font-size: var(--acx-headline-5-font-weight-bold);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: var(--acx-headline-5-font-weight-bold);
+  font-family: var(--acx-accent-brand-font);
+  font-size: var(--acx-headline-5-font-size);
 `
 
 export const RowWrapper = styled.div`
@@ -82,21 +83,64 @@ export const CopyableText = styled(Typography.Paragraph)
   color: ${(props) => (props.color ? props.color : 'var(--acx-accents-blue-50)')};
 `
 
+export const SpaceBetween = styled(Space)`
+  justify-content: space-between;
+  width: 100%;
+`
+
+export const FilterRow = styled(SpaceBetween)`
+  margin-bottom: 5px;
+`
+
+export const Meta = styled(List.Item.Meta)`
+  .ant-list-item-meta-avatar {
+    margin-right: 10px;
+    flex: 1;
+  }
+  .ant-list-item-meta-content{
+    flex: 10;
+  }
+  .ant-list-item-meta-title,
+  .ant-list-item-meta-description {
+    font-size: var(--acx-body-4-font-size);
+    line-height: var(--acx-body-4-line-height);
+  }
+`
 export const WarningCircle = styled(WarningCircleSolid)`
   path:nth-child(2) {
     fill: var(--acx-semantics-red-50);
     stroke: var(--acx-semantics-red-50);
   }
 `
+
+export const WarningTriang = styled(WarningTriangleSolid)`
+  path:nth-child(1) {
+    fill: var(--acx-accents-orange-30);
+  }
+  path:nth-child(3) {
+    stroke: var(--acx-accents-orange-30);
+  }
+`
+
+export const EmptyLink = styled.span`
+  color: var(--acx-accents-blue-50);
+`
+export const ListTime = styled(SpaceBetween)`
+  font-size: var(--acx-body-5-font-size);
+  line-height: var(--acx-body-5-line-height);
+  color: var(--acx-neutrals-60);
+`
 export const ListTable = styled(List)`
   .ant-list-pagination {
+    margin: 16px 0;
     text-align: center;
   }
 `
 export const ListItem = styled(List.Item)`
-    .ant-list-item-action {
-      margin-left: 10px;
-    }
+  border-bottom: 0 !important;
+  .ant-list-item-action {
+    margin-left: 10px;
+  }
 `
 export const AcknowledgeCircle = styled(CheckMarkCircleSolid)`
   path:nth-child(1) {
@@ -130,21 +174,13 @@ export const ClearButton = styled(Button)`
   }
 `
 
-export const Meta = styled(List.Item.Meta)`
-  .ant-list-item-meta-avatar{
-    margin-right: 10px;
-  }
-`
-export const DeviceLink = styled.span`
-  color: var(--acx-accents-blue-50)
-`
 export const LogOut = styled(AntdLogOut)`
   width: 16px;
   height: 16px;
   margin-right: 5px;
 `
 export const Drawer = styled(AntdDrawer)`
-  .ant-drawer-body{
+  .ant-drawer-body {
     overflow-x: hidden;
   }
 `
@@ -161,14 +197,7 @@ export const VersionNameContainer = styled.div`
   font-size: 16px;
   color: var(--acx-primary-white);
 `
-export const ActiveButton = styled(LayoutUI.ButtonSolid)`
-  background: var(--acx-neutrals-80) !important;
+export const DisabledButton = styled(LayoutUI.ButtonSolid)`
   color: var(--acx-neutrals-60) !important;
-`
-export const HelpButton = styled(LayoutUI.ButtonSolid)`
-  background: var(--acx-neutrals-80) !important;
-  color: var(--acx-neutrals-60) !important;
-  :hover > svg {
-    stroke: var(--acx-neutrals-70);
-  }
+  background-color: var(--acx-neutrals-70);
 `

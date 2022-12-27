@@ -3,13 +3,14 @@
 import { Menu, Dropdown } from 'antd'
 import { useIntl }        from 'react-intl'
 
-// import { LayoutUI }                from '@acx-ui/components'
+import { Tooltip }                 from '@acx-ui/components'
 import { QuestionMarkCircleSolid } from '@acx-ui/icons'
+import { notAvailableMsg }         from '@acx-ui/utils'
 
 // import About    from './About'
 // import Firewall from './Firewall'
 
-import { HelpButton } from './styledComponents'
+import { DisabledButton } from './styledComponents'
 
 const UserButton = () => {
   const { $t } = useIntl()
@@ -70,7 +71,9 @@ const UserButton = () => {
 
   return (<>
     <Dropdown disabled overlay={menuHeaderDropdown} trigger={['click']} placement='bottomLeft'>
-      <HelpButton icon={<QuestionMarkCircleSolid />} />
+      <Tooltip title={useIntl().$t(notAvailableMsg)}>
+        <DisabledButton disabled icon={<QuestionMarkCircleSolid />} />
+      </Tooltip>
     </Dropdown>
     {/* <About modalState={aboutModalState} setIsModalOpen={setAboutModalOpen}/> */}
     {/* <Firewall modalState={firewallModalState} setIsModalOpen={setFirewallModalOpen}/> */}

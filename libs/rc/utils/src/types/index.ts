@@ -16,12 +16,14 @@ import { OpenWlanAdvancedCustomization } from '../models/OpenWlanAdvancedCustomi
 import { PskWlanAdvancedCustomization }  from '../models/PskWlanAdvancedCustomization'
 import { TrustedCAChain }                from '../models/TrustedCAChain'
 
-import { ApModel } from './ap'
-import { EPDG }    from './services'
+import { ApModel }          from './ap'
+import { EPDG }             from './services'
+import { SwitchStatusEnum } from './switch'
 
 export * from './ap'
 export * from './venue'
 export * from './network'
+export * from './any-network'
 export * from './user'
 export * from './services'
 export * from './policies'
@@ -129,6 +131,84 @@ export interface AlarmMeta {
 
 export type Alarm = AlarmBase & AlarmMeta
 
+export interface Activity {
+  admin: {
+    name: string
+    email: string
+    ip: string
+    id: string
+    interface: string
+  }
+  descriptionData: { name: string, value:string }[]
+  descriptionTemplate: string
+  endDatetime: string
+  notification: { enabled: boolean, type: string }
+  product: string
+  requestId: string
+  severity: string
+  startDatetime: string
+  status: string
+  steps: {
+    id: string,
+    description: string,
+    status: string,
+    progressType: string
+    startDatetime: string
+    endDatetime: string
+  }[]
+tenantId: string
+useCase: string
+}
+
+export interface EventBase {
+  apMac: string
+  entity_id: string
+  entity_type: string
+  event_datetime: string
+  id: string
+  macAddress: string
+  message: string
+  name: string
+  product: string
+  radio: string
+  raw_event: string
+  serialNumber: string
+  severity: string
+  venueId: string
+}
+
+export interface EventMeta {
+  id: EventBase['id']
+  apGroupId: string
+  apName: string
+  isApExists: boolean
+  isSwitchExists: boolean
+  isVenueExists: boolean
+  switchName: string
+  venueName: string
+}
+
+export type Event = EventBase & EventMeta
+
+export interface AdminLogBase {
+  adminName: string
+  entity_id: string
+  entity_type: string
+  event_datetime: string
+  id: string
+  message: string
+  raw_event: string
+  severity: string
+}
+
+export interface AdminLogMeta {
+  id: AdminLogBase['id']
+  isApExists: boolean
+  isSwitchExists: boolean
+}
+
+export type AdminLog = AdminLogBase & AdminLogMeta
+
 export enum EventSeverityEnum {
   CRITICAL = 'Critical',
   MAJOR = 'Major',
@@ -162,15 +242,6 @@ export enum ApVenueStatusEnum {
   OPERATIONAL = '2_Operational',
   REQUIRES_ATTENTION = '3_RequiresAttention',
   TRANSIENT_ISSUE = '4_TransientIssue'
-}
-
-export enum SwitchStatusEnum {
-  NEVER_CONTACTED_CLOUD = 'PREPROVISIONED',
-  INITIALIZING = 'INITIALIZING',
-  APPLYING_FIRMWARE = 'APPLYINGFIRMWARE',
-  OPERATIONAL = 'ONLINE',
-  DISCONNECTED = 'OFFLINE',
-  STACK_MEMBER_NEVER_CONTACTED = 'STACK_MEMBER_PREPROVISIONED'
 }
 
 export type ChartData = {
@@ -428,4 +499,22 @@ export interface EventMeta {
   isVenueExists: boolean,
   networkId: string,
   venueName: string,
+}
+
+export interface ClientStatistic {
+  applications: number;
+  apsConnected: number;
+  avgRateBPS: string;
+  avgSessionLengthSeconds: unknown | number;
+  sessions: number;
+  userTrafficBytes: number;
+  userTraffic5GBytes: number;
+  userTraffic6GBytes: number;
+  userTraffic24GBytes: number;
+}
+
+export const GridInactiveRowDataFlag = 'inactiveRow'
+export interface GridDataRow {
+  inactiveTooltip?: string;
+  [GridInactiveRowDataFlag]?: boolean;
 }

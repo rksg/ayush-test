@@ -14,7 +14,7 @@ describe('ClientTroubleshootingTab', () => {
     const { asFragment } = render(<Provider><ClientTroubleshootingTab /></Provider>, {
       route: { params, path: '/:tenantId/users/wifi/:clientId/details/:activeTab' }
     })
-    expect(await screen.findByTestId('ArrowExpand')).toBeVisible()
+    expect(await screen.findByText('All Categories')).toBeVisible()
     expect(asFragment()).toMatchSnapshot()
   })
 })

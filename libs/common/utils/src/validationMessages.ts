@@ -127,6 +127,30 @@ export const validationMessages = {
   emailAddress: defineMessage({
     defaultMessage: 'Please enter a valid email address',
     description: 'Validation - email address checks'
+  }),
+  ipRangeInvalid: defineMessage({
+    defaultMessage: 'The End IP address should swap Start IP address',
+    description: 'Validation - IP address range'
+  }),
+  ipRangeExceed: defineMessage({
+    defaultMessage: 'The DHCP pool size should not exceed {range}',
+    description: 'Validation - Cellular IP pool size'
+  }),
+  ipNotInSubnetPool: defineMessage({
+    defaultMessage: 'IP address is not in the subnet pool',
+    description: 'Validation - Cellular IP pool size'
+  }),
+  phoneNumber: defineMessage({
+    defaultMessage: 'Please enter a valid phone number',
+    description: 'Validation - phone number checks'
+  }),
+  oneRadioChannel: defineMessage({
+    defaultMessage: 'Please select one channel',
+    description: 'Validation - radio channel checks'
+  }),
+  twoRadioChannels: defineMessage({
+    defaultMessage: 'Please select at least two channels',
+    description: 'Validation - radio channel checks'
   })
 }
 

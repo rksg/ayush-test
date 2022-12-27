@@ -9,7 +9,6 @@ import {
   MacRegistration,
   MacRegistrationPool,
   MacRegListUrlsInfo,
-  CommonResult,
   CommonUrlsInfo,
   RequestPayload,
   Policy,
@@ -17,9 +16,8 @@ import {
   RogueAPDetectionContextType,
   RogueAPDetectionTempType,
   VenueRoguePolicyType,
-  TableResult,
-  onSocketActivityChanged,
-  showActivityMessage, NewTableResult, transferTableResult
+  TableResult, onSocketActivityChanged, showActivityMessage, CommonResult,
+  NewTableResult, transferTableResult
 } from '@acx-ui/rc/utils'
 
 export const basePolicyApi = createApi({
@@ -46,6 +44,15 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
     }),
+    delRoguePolicy: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(RogueApUrls.deleteRogueApPolicy, params, RKS_NEW_UI)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
     getRoguePolicyList: build.query<RogueAPDetectionTempType[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(RogueApUrls.getRoguePolicyList, params, RKS_NEW_UI)
@@ -64,6 +71,16 @@ export const policyApi = basePolicyApi.injectEndpoints({
           })
         })
       }
+    }),
+    delRoguePolicies: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(RogueApUrls.deleteRogueApPolicies, params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
     }),
     roguePolicy: build.query<RogueAPDetectionContextType, RequestPayload>({
       query: ({ params }) => {
@@ -102,7 +119,18 @@ export const policyApi = basePolicyApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Policy', id: 'LIST' }]
+      providesTags: [{ type: 'Policy', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          showActivityMessage(msg, [
+            'Add Rogue AP Policy Profile',
+            'Update Rogue AP Policy Profile',
+            'Delete Rogue AP Policy Profile'
+          ], () => {
+            api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
+          })
+        })
+      }
     }),
     macRegLists: build.query<TableResult<MacRegistrationPool>, RequestPayload>({
       query: ({ params }) => {
@@ -213,6 +241,8 @@ export const {
   useAddMacRegListMutation,
   useUpdateMacRegListMutation,
   useAddRoguePolicyMutation,
+  useDelRoguePolicyMutation,
+  useDelRoguePoliciesMutation,
   useGetRoguePolicyListQuery,
   useUpdateRoguePolicyMutation,
   useRoguePolicyQuery,

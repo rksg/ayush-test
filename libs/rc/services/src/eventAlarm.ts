@@ -5,7 +5,6 @@ import {
   Alarm,
   AlarmBase,
   AlarmMeta,
-  ApiInfo,
   createHttpRequest,
   CommonUrlsInfo,
   TableResult,
@@ -13,6 +12,8 @@ import {
   CommonResult,
   Dashboard
 } from '@acx-ui/rc/utils'
+
+import { getMetaList } from './utils'
 
 export const baseEventAlarmApi = createApi({
   baseQuery: fetchBaseQuery(),
@@ -33,7 +34,7 @@ export const eventAlarmApi = baseEventAlarmApi.injectEndpoints({
         const baseListQuery = await fetchWithBQ(alarmsListInfo)
         const baseList = baseListQuery.data as TableResult<AlarmBase>
 
-        const metaListInfo = getMetaList(baseList, {
+        const metaListInfo = getMetaList<AlarmBase>(baseList, {
           urlInfo: createHttpRequest(CommonUrlsInfo.getAlarmsListMeta, arg.params),
           fields: ['venueName', 'apName', 'switchName']
         })
@@ -58,7 +59,7 @@ export const eventAlarmApi = baseEventAlarmApi.injectEndpoints({
     }),
     clearAllAlarm: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.clearAlarm, params)
+        const req = createHttpRequest(CommonUrlsInfo.clearAllAlarm, params)
         return {
           ...req
         }
@@ -83,23 +84,6 @@ export const {
   useGetAlarmCountQuery
 } = eventAlarmApi
 
-
-export const getMetaList = function (
-  list: TableResult<AlarmBase>,
-  metaListInfo: { urlInfo: ApiInfo, fields: string[] }
-) {
-  const httpRequest = metaListInfo.urlInfo
-  const body = {
-    fields: metaListInfo.fields,
-    filters: {
-      id: list.data.map((item: { id: string }) => item.id)
-    }
-  }
-  return {
-    ...httpRequest, body
-  }
-}
-
 export const getAggregatedList = function (
   baseList: TableResult<AlarmBase>,
   metaList: TableResult<AlarmMeta>
@@ -111,7 +95,7 @@ export const getAggregatedList = function (
       let msgMeta = metaList.data.find((d) => d.id === base.id)
       const result = { ...base, ...msgMeta } as Alarm
       const placeholder = '@@'
-      const matches = message.match(new RegExp(`${placeholder}\\w+`, 'g'))
+      const matches = message.match(new RegExp(`${placeholder}\\w+`, 'g'))||[]
       for (const match of matches) {
         const key = match.replace(placeholder, '') as keyof Alarm
         message = message.replace(match, result[key])
