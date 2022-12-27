@@ -77,7 +77,7 @@ describe('EditEdge general settings', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit/general-settings' }
       })
-    const edgeNameInput = screen.getByRole('textbox', { name: 'SmartEdge Name' })
+    const edgeNameInput = await screen.findByRole('textbox', { name: 'SmartEdge Name' })
     fireEvent.change(edgeNameInput, { target: { value: 'edge_name_test' } })
     const serialNumberInput = screen.getByRole('textbox',
       { name: 'Serial Number' })
@@ -135,7 +135,7 @@ describe('EditEdge general settings api fail', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit/general-settings' }
       })
-    const edgeNameInput = screen.getByRole('textbox', { name: 'SmartEdge Name' })
+    const edgeNameInput = await screen.findByRole('textbox', { name: 'SmartEdge Name' })
     fireEvent.change(edgeNameInput, { target: { value: 'edge_name_test' } })
     const serialNumberInput = screen.getByRole('textbox',
       { name: 'Serial Number' })
