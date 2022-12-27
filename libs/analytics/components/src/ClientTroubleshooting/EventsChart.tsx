@@ -212,7 +212,7 @@ export function EventsChart ({
 
   useImperativeHandle(chartRef, () => eChartsRef.current!)
   const chartPadding = 10
-  const rowHeight = 20
+  const rowHeight = 22
   const placeholderRows = 2 // for tracker
   const legendWidth = 85
 
@@ -249,7 +249,7 @@ export function EventsChart ({
       },
       formatter: tooltipFormatter,
       ...tooltipOptions(),
-      position: (point) => [point[0] + 10, mapping.length * 30], // 10 for gap between tooltip and tracker,
+      position: (point) => [point[0] + 10, mapping.length * 30],
       enterable: true
     },
     xAxis: {
@@ -286,7 +286,7 @@ export function EventsChart ({
         show: true,
         lineStyle: {
           color: [cssStr('--acx-primary-white')],
-          width: 1
+          width: 4
         }
       },
       data: [
@@ -319,7 +319,6 @@ export function EventsChart ({
           name: label,
           symbol: 'circle',
           symbolSize: 8,
-          colorBy: 'series',
           animation: false,
           data: data
             .filter((record) => (record.seriesKey === key && record.type === 'connectionEvents'))
@@ -348,6 +347,7 @@ export function EventsChart ({
           style: {
             ...props.style,
             WebkitUserSelect: 'none',
+            marginBottom: 0,
             width: (props.style?.width as number) + legendWidth,
             height: (mapping.length + placeholderRows) * rowHeight // +1 for x-axis
           }

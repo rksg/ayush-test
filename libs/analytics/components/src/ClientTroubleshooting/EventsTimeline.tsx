@@ -99,12 +99,11 @@ const getTimelineData = (events: Event[]) =>
     } as TimelineData
   )
 export const mapping = [
-  { key: 'all', label: 'all', color: cssStr('--acx-viz-qualitative-5') },
-  { key: 'success', label: 'success', color: cssStr('--acx-viz-qualitative-4') },
-  { key: 'failure', label: 'failure', color: cssStr('--acx-viz-qualitative-2') },
-  { key: 'slow', label: 'slow', color: cssStr('--acx-viz-qualitative-1') },
-  { key: 'disconnect', label: 'disconnect', color: cssStr('--acx-viz-qualitative-3') }
-
+  { key: 'all', label: 'all' },
+  { key: 'success', label: 'success' },
+  { key: 'failure', label: 'failure' },
+  { key: 'slow', label: 'slow' },
+  { key: 'disconnect', label: 'disconnect' }
 ] as { key: string, label: string, color: string }[]
 export function TimeLine (props : TimeLineProps){
   const { $t } = useIntl()
@@ -164,65 +163,93 @@ export function TimeLine (props : TimeLineProps){
   ] as Event[]
   return (
     <Row gutter={[16, 16]} style={{ flex: 1 }}>
-      <Col span={8}>
-        <Row gutter={[16, 16]}>
+      <Col span={6}>
+        <Row gutter={[16, 16]} style={{ rowGap: '4px' }}>
           {ClientTroubleShootingConfig.timeLine.map((config, index) => (
             <>
-              <Col span={2}
-                onClick={() => onExpandToggle(config?.value, expandObj[
-                  config?.value as keyof TimelineData
-                ])}>
-                {expandObj[
-                  config?.value as keyof TimelineData
-                ] ? (
-                    <UI.StyledMinusSquareOutlined />
-                  ) : (
-                    <UI.StyledPlusSquareOutlined />
-                  )}
+              <Col
+                span={2}
+                onClick={() =>
+                  onExpandToggle(
+                    config?.value,
+                    expandObj[config?.value as keyof TimelineData]
+                  )
+                }>
+                {expandObj[config?.value as keyof TimelineData] ? (
+                  <UI.StyledMinusSquareOutlined />
+                ) : (
+                  <UI.StyledPlusSquareOutlined />
+                )}
               </Col>
 
-              <Col span={16}>{$t(config.title)}</Col>
-              <Col span={6}>{ TimelineData[config.value as keyof TimelineData]?.[
-                'allEvents'
-              ].length}</Col>
-              { expandObj[
-                  config?.value as keyof TimelineData
-              ] && config?.subtitle?.map((subtitle, index) =>
-                <>
-                  <Col span={2}/>
-                  <Col span={16}>{$t(subtitle.title)}</Col>
-                  <Col span={6}>{TimelineData?.[config.value as keyof TimelineData]?.[
-                      subtitle.value as keyof EventCategoryMap
-                  ].length}</Col>
-                </>
-              )}
+              <Col
+                span={18}
+                style={
+                  expandObj[config?.value as keyof TimelineData]
+                    ? {}
+                    : { marginBottom: 38 }
+                }>
+                <UI.TimelineTitle>{$t(config.title)}</UI.TimelineTitle>
+              </Col>
+              <Col style={{ lineHeight: '25px' }} span={4}>
+                <UI.TimelineCount>
+                  {
+                    TimelineData[config.value as keyof TimelineData]?.[
+                      'allEvents'
+                    ].length ?? 0
+                  }
+                </UI.TimelineCount>
+              </Col>
+              {expandObj[config?.value as keyof TimelineData] &&
+                config?.subtitle?.map((subtitle, index) => (
+                  <>
+                    <Col span={2} />
+                    <Col span={18}>
+                      <UI.TimelineSubContent>
+                        {$t(subtitle.title)}
+                      </UI.TimelineSubContent>
+                    </Col>
+                    <Col
+                      span={4}
+                      style={subtitle.isLast ? { marginBottom: 40 } : {}}>
+                      <UI.TimelineCount>
+                        {
+                          TimelineData?.[config.value as keyof TimelineData]?.[
+                            subtitle.value as keyof EventCategoryMap
+                          ].length ?? 0
+                        }
+                      </UI.TimelineCount>
+                    </Col>
+                  </>
+                ))}
             </>
           ))}
         </Row>
       </Col>
-      <Col span={16}>
-        <Row gutter={[16, 16]}>
+      <Col span={18}>
+        <Row gutter={[16, 16]} style={{ rowGap: 0 }}>
           {ClientTroubleShootingConfig.timeLine.map((config, index) => (
-
             <Col span={24}>
               <EventsChart
                 style={{ width: 'auto', marginBottom: 8 }}
                 data={
-                  expandObj[
-                    config?.value as keyof TimelineData
-                  ] ?ChartEvents : modifiedEvents.map((event) => {
+                  expandObj[config?.value as keyof TimelineData]
+                    ? ChartEvents
+                    : modifiedEvents.map((event) => {
                       return { ...event, seriesKey: 'all' }
                     })
                 }
                 chartBoundary={chartBoundary}
-                mapping={expandObj[
-                  config?.value as keyof TimelineData
-                ] ? mapping : [mapping[0]]}
+                mapping={
+                  expandObj[config?.value as keyof TimelineData]
+                    ? config.chartMapping
+                    : [config.chartMapping[0]]
+                }
                 chartRef={connectChart}
                 title={'test'}
                 tooltipFormatter={subCharttooltipFormatter}
                 onDotClick={(params) => {
-                // eslint-disable-next-line no-console
+                  // eslint-disable-next-line no-console
                   console.log(params)
                 }}
               />

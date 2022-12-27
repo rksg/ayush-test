@@ -199,6 +199,13 @@ export const ClientTroubleShootingConfig = {
       title: defineMessage({ defaultMessage: 'Connection Events' }),
       value: TYPES.CONNECTION_EVENTS,
       chartType: 'scatter',
+      chartMapping: [
+        { key: 'all', label: 'all' },
+        { key: 'success', label: 'success' },
+        { key: 'failure', label: 'failure' },
+        { key: 'slow', label: 'slow' },
+        { key: 'disconnect', label: 'disconnect' }
+      ] as { key: string, label: string, color: string }[],
       subtitle: [
         {
           title: defineMessage({ defaultMessage: 'Success' }),
@@ -227,11 +234,16 @@ export const ClientTroubleShootingConfig = {
       title: defineMessage({ defaultMessage: 'Roaming' }),
       value: TYPES.ROAMING,
       chartType: 'scatter',
+      chartMapping: [
+        { key: 'all', label: 'all' },
+        { key: 'network1_5GHz', label: 'network1_5GHz' }
+      ] as { key: string, label: string, color: string }[],
       subtitle: [
         {
           title: defineMessage({ defaultMessage: 'Network1_5GHz' }),
           chartType: 'bar',
-          value: 'network1_5GHz'
+          value: 'network1_5GHz',
+          isLast: true
         }
       ]
     },
@@ -239,6 +251,13 @@ export const ClientTroubleShootingConfig = {
       title: defineMessage({ defaultMessage: 'Connection Quality' }),
       value: TYPES.CONNECTION_QUALITY,
       chartType: 'bar',
+      chartMapping: [
+        { key: 'all', label: 'all' },
+        { key: 'rss', label: 'rss' },
+        { key: 'snr', label: 'snr' },
+        { key: 'clientThroughput', label: 'clientThroughput' },
+        { key: 'AvgMCS', label: 'AvgMCS' }
+      ] as { key: string, label: string, color: string }[],
       subtitle: [
         {
           title: defineMessage({ defaultMessage: 'RSS' }),
@@ -258,7 +277,8 @@ export const ClientTroubleShootingConfig = {
         {
           title: defineMessage({ defaultMessage: 'Avg. MCS(Downlink)' }),
           chartType: 'bar',
-          value: 'AvgMCS'
+          value: 'AvgMCS',
+          isLast: true
         }
       ]
     },
@@ -266,6 +286,12 @@ export const ClientTroubleShootingConfig = {
       title: defineMessage({ defaultMessage: 'Network Incidents' }),
       value: TYPES.NETWORK_INCIDENTS,
       chartType: 'bar',
+      chartMapping: [
+        { key: 'all', label: 'all' },
+        { key: 'clientConnection', label: 'clientConnection' },
+        { key: 'performance', label: 'performance' },
+        { key: 'infratructure', label: 'infratructure' }
+      ] as { key: string, label: string, color: string }[],
       subtitle: [
         {
           title: defineMessage({ defaultMessage: 'Client Connection' }),
@@ -280,7 +306,8 @@ export const ClientTroubleShootingConfig = {
         {
           title: defineMessage({ defaultMessage: 'Infratructure' }),
           chartType: 'bar',
-          value: 'infratructure'
+          value: 'infratructure',
+          isLast: true
         }
       ]
     }
