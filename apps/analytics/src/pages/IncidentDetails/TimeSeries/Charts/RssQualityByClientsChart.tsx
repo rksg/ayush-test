@@ -5,17 +5,11 @@ import _           from 'lodash'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { getSeriesData }                  from '@acx-ui/analytics/utils'
+import { getSeriesData, rssGroups }       from '@acx-ui/analytics/utils'
 import { Card, cssStr, StackedAreaChart } from '@acx-ui/components'
 import { formatter, getIntl }             from '@acx-ui/utils'
 
 import type { TimeSeriesChartProps } from '../types'
-
-const rssGroups = {
-  good: { lower: -74 },
-  average: { lower: -85, upper: -75 },
-  bad: { upper: -86 }
-}
 
 const sets = Object.entries(rssGroups).map(
   ([group, { lower, upper }]: [string, { lower?: number, upper?: number }]) => {

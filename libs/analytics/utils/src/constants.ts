@@ -75,3 +75,8 @@ export const categoryCodeMap = {
   }
 }
 
+export const rssGroups = {
+  good: { lower: -74 },
+  average: { lower: -85, upper: -75 },
+  bad: { upper: -86 }
+}

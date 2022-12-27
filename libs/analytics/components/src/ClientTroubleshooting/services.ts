@@ -16,10 +16,20 @@ export type ConnectionEvent = {
   apName: string,
   path: NetworkPath
 }
+
+export type ConnectionQuality = {
+  start: string,
+  end: string,
+  rss?: number | null,
+  snr?: number | null,
+  throughput?: number | null,
+  avgTxMCS?: number | null
+}
+
 export type ClientInfoData = {
   connectionDetailsByAp: object[]
   connectionEvents: ConnectionEvent[]
-  connectionQualities: object[]
+  connectionQualities: ConnectionQuality[]
   incidents: Incident[]
 }
 interface Response <ClientInfoData> {

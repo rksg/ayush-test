@@ -3,12 +3,14 @@ import { defineMessage, IntlShape } from 'react-intl'
 import {
   categoryOptions,
   mapCodeToFailureText,
-  clientEventDescription
+  clientEventDescription,
+  getConnectionQualityFor,
+  takeWorseQuality
 } from '@acx-ui/analytics/utils'
 import { formatter } from '@acx-ui/utils'
 
 
-import { ConnectionEvent } from './services'
+import { ConnectionEvent, ConnectionQuality } from './services'
 
 export const SUCCESS = 'success'
 export const SLOW = 'slow'
@@ -196,4 +198,37 @@ export const ClientTroubleShootingConfig = {
     { title: defineMessage({ defaultMessage: 'Connection Quality' }) },
     { title: defineMessage({ defaultMessage: 'Network Incidents' }) }
   ]
+}
+
+export const connectionQualityLabels = {
+  rss: { label: 'RSS', formatter: 'decibelMilliWattsFormat' },
+  snr: { label: 'SNR', formatter: 'decibelFormat' },
+  throughput: { label: 'Client Throughput', formatter: 'networkSpeedFormat' },
+  avgTxMCS: { label: 'Avg MCS (Downlink)', formatter: 'networkSpeedFormat' }
+}
+
+export const transformConnectionQualities = (connectionQualities: ConnectionQuality[]) => {
+  const mappedQuality = connectionQualities.map(val => ({
+    ...val,
+    rss: getConnectionQualityFor('rss', val.rss),
+    snr: getConnectionQualityFor('snr', val.snr),
+    throughput: getConnectionQualityFor('throughput', val.throughput),
+    avgTxMCS: getConnectionQualityFor('avgTxMCS', val.avgTxMCS),
+    all: null
+  }))
+
+  return {
+    all: mappedQuality.map(val => {
+      const originalQualities = [val.rss, val.snr, val.throughput, val.avgTxMCS]
+      const worseQuality = takeWorseQuality(...originalQualities as string[])
+      return {
+        ...val,
+        all: worseQuality
+      }
+    }),
+    rss: mappedQuality.filter((val) => val.rss),
+    snr: mappedQuality.filter((val) => val.snr),
+    throughput: mappedQuality.filter((val) => val.throughput),
+    avgTxMCS: mappedQuality.filter((val) => val.avgTxMCS)
+  }
 }
