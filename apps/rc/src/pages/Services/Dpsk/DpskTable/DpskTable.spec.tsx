@@ -19,7 +19,7 @@ import {
 } from '@acx-ui/test-utils'
 
 import { mockedDpskList } from './__tests__/fixtures'
-import DpsksTable         from './DpsksTable'
+import DpskTable          from './DpskTable'
 
 const mockedUseNavigate = jest.fn()
 const mockedTenantPath: Path = {
@@ -34,7 +34,7 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useTenantLink: (): Path => mockedTenantPath
 }))
 
-describe('DpsksTable', () => {
+describe('DpskTable', () => {
   const params = {
     tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
   }
@@ -54,7 +54,7 @@ describe('DpsksTable', () => {
   it('should render the table', async () => {
     render(
       <Provider>
-        <DpsksTable />
+        <DpskTable />
       </Provider>, {
         route: { params, path: tablePath }
       }
@@ -80,7 +80,7 @@ describe('DpsksTable', () => {
 
     render(
       <Provider>
-        <DpsksTable />
+        <DpskTable />
       </Provider>, {
         route: { params, path: tablePath }
       }
@@ -104,7 +104,7 @@ describe('DpsksTable', () => {
   it('should navigate to the Edit view', async () => {
     render(
       <Provider>
-        <DpsksTable />
+        <DpskTable />
       </Provider>, {
         route: { params, path: tablePath }
       }

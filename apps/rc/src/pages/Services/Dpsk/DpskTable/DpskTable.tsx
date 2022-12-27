@@ -17,7 +17,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
-export default function DpsksTable () {
+export default function DpskTable () {
   const intl = useIntl()
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
