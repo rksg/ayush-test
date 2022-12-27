@@ -1,3 +1,4 @@
+// rename to prevent it being parse by extraction process
 import { FormattedMessage as FormatMessage } from 'react-intl'
 
 import { Activity } from '../../types'
@@ -16,7 +17,8 @@ export const getActivityDescription = (
 
   return <FormatMessage
     id='activities-description-template'
-    defaultMessage={template}
+    // escape ' by replacing with '' as it is special character of formatjs
+    defaultMessage={template.replaceAll("'", "''")}
     values={{ b: (chunks) => <b>{chunks}</b> }}
   />
 }
