@@ -144,7 +144,8 @@ export function TimeLine (props : TimeLineProps){
     const tooltipText = formatEventDesc(evtObj, intl)
     return renderToString(
       <UI.TooltipWrapper>
-        {moment(evtObj.start).format('MMM DD HH:mm:ss')} {tooltipText}
+        <UI.TooltipDate>{moment(evtObj.start).format('MMM DD HH:mm:ss')} </UI.TooltipDate>
+        {tooltipText}
       </UI.TooltipWrapper>
     )
   }
