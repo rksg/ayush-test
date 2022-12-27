@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect,useState } from 'react'
 
-import { Collapse }                                         from 'antd'
 import { Row, Col }                                         from 'antd'
 import { connect, TooltipComponentFormatterCallbackParams } from 'echarts'
 import ReactECharts                                         from 'echarts-for-react'
@@ -14,16 +13,13 @@ import { useDateFilter } from '@acx-ui/utils'
 
 
 import { ClientTroubleShootingConfig, SUCCESS, FAILURE, SLOW, DISCONNECT, transformEvents, TYPES, formatEventDesc, DisplayEvent } from './config'
-// import { EventsChart }                                                                                                            from './EventsChart'
-import { EventsChart }                    from './EventsChart'
-import { EventsScatterChart }             from './EventsScatterChart'
-import { ClientInfoData,ConnectionEvent } from './services'
-import * as UI                            from './styledComponents'
+import { EventsChart }                                                                                                            from './EventsChart'
+import { ClientInfoData,ConnectionEvent }                                                                                         from './services'
+import * as UI                                                                                                                    from './styledComponents'
 
 import { Filters } from '.'
 
 
-const { Panel } = Collapse
 type TimeLineProps = {
   data?: ClientInfoData,
   filters: Filters
@@ -61,12 +57,6 @@ type EventCategoryMap = {
   connectionQuality : EventCategoryMap,
   networkIncidents : EventCategoryMap
  }
-export const mapping = [
-  { key: 'ap', label: 'AP', color: cssStr('--acx-viz-qualitative-4') },
-  { key: 'apGroup', label: 'AP Group', color: cssStr('--acx-viz-qualitative-3') },
-  { key: 'wlan', label: 'WLAN', color: cssStr('--acx-viz-qualitative-2') },
-  { key: 'venue', label: 'Venue', color: cssStr('--acx-viz-qualitative-1') }
-] as { key: string, label: string, color: string }[]
 const getTimelineData = (events: Event[]) =>
   events.reduce(
     (acc, event) => {
@@ -108,7 +98,14 @@ const getTimelineData = (events: Event[]) =>
       }
     } as TimelineData
   )
+export const mapping = [
+  { key: 'all', label: 'all', color: cssStr('--acx-viz-qualitative-5') },
+  { key: 'success', label: 'success', color: cssStr('--acx-viz-qualitative-4') },
+  { key: 'failure', label: 'failure', color: cssStr('--acx-viz-qualitative-2') },
+  { key: 'slow', label: 'slow', color: cssStr('--acx-viz-qualitative-1') },
+  { key: 'disconnect', label: 'disconnect', color: cssStr('--acx-viz-qualitative-3') }
 
+] as { key: string, label: string, color: string }[]
 export function TimeLine (props : TimeLineProps){
   const { $t } = useIntl()
   const intl = useIntl()
@@ -139,17 +136,6 @@ export function TimeLine (props : TimeLineProps){
       instance.group = 'eventtTmeSeriesGroup'
     }
   }
-  const mainCharttooltipFormatter = (params: TooltipComponentFormatterCallbackParams) => {
-    const evtObj =
-      (Array.isArray(params) && Array.isArray(params[0].data)
-        ? (params[0].data[2])
-        : '') as unknown as DisplayEvent
-    return renderToString(
-      <UI.TooltipWrapper>
-        {moment(evtObj.start).format('MMM DD')}
-      </UI.TooltipWrapper>
-    )
-  }
   const subCharttooltipFormatter = (params: TooltipComponentFormatterCallbackParams) => {
     const evtObj =
       (Array.isArray(params) && Array.isArray(params[0].data)
@@ -158,82 +144,13 @@ export function TimeLine (props : TimeLineProps){
     const tooltipText = formatEventDesc(evtObj, intl)
     return renderToString(
       <UI.TooltipWrapper>
-        {moment(evtObj.start).format('HH:mm:ss')} {tooltipText}
+        {moment(evtObj.start).format('MMM DD HH:mm:ss')} {tooltipText}
       </UI.TooltipWrapper>
     )
   }
   useEffect(() => { connect('eventtTmeSeriesGroup') }, [])
   const { startDate, endDate } = useDateFilter()
   const chartBoundary = [moment(startDate).valueOf() , moment(endDate).valueOf() ]
-  // return (
-  //   <UI.CollapseBox
-  //     expandIcon={({ isActive }) =>
-  //       isActive ? (
-  //         <UI.StyledMinusSquareOutlined />
-  //       ) : (
-  //         <UI.StyledPlusSquareOutlined />
-  //       )
-  //     }
-  //     ghost>
-  //     {ClientTroubleShootingConfig.timeLine.map((config, index) => (
-  //       <Panel
-  //         header={
-  //           <UI.TimelineTitle
-  //             onClick={(event) => event.stopPropagation()}>
-  //             {config?.chartType === 'scatter' ? (
-  //               <EventsScatterChart
-  //                 style={{ width: 'auto', marginBottom: 8 }}
-  //                 data={
-  //                   TimelineData[config.value as keyof TimelineData][
-  //                     'allEvents'
-  //                   ]
-  //                 }
-  //                 chartBoundary={chartBoundary}
-  //                 chartRef={connectChart}
-  //                 title={$t(config.title)}
-  //                 tooltopEnabled
-  //                 tooltipFormatter={mainCharttooltipFormatter}
-  //                 onDotClick={(params) => {
-  //                   // eslint-disable-next-line no-console
-  //                   console.log(params)
-  //                 }}
-  //               />
-  //             ) : (
-  //               $t(config.title)
-  //             )}
-  //           </UI.TimelineTitle>
-  //         }
-  //         key={index}>
-  //         <UI.TimelineSubContent>
-  //           {config?.subtitle?.map((subtitle, index) =>
-  //             subtitle?.chartType === 'scatter' ? (
-  //               <EventsScatterChart
-  //                 style={{ width: 'auto', marginBottom: 4 }}
-  //                 data={
-  //                   TimelineData[config.value as keyof TimelineData][
-  //                     subtitle.value as keyof EventCategoryMap
-  //                   ]
-  //                 }
-  //                 chartBoundary={chartBoundary}
-  //                 chartRef={connectChart}
-  //                 title={$t(subtitle.title)}
-  //                 key={index}
-  //                 tooltipFormatter={subCharttooltipFormatter}
-  //                 tooltopEnabled={!!subtitle?.isLast}
-  //                 onDotClick={(params) => {
-  //                   // eslint-disable-next-line no-console
-  //                   console.log(params)
-  //                 }}
-  //               />
-  //             ) : (
-  //               $t(subtitle.title)
-  //             )
-  //           )}
-  //         </UI.TimelineSubContent>
-  //       </Panel>
-  //     ))}
-  //   </UI.CollapseBox>
-  // )
   const modifiedEvents = [
     ...events.map((event) => {
       return { ...event, seriesKey: event.category }
@@ -244,7 +161,6 @@ export function TimeLine (props : TimeLineProps){
       return { ...event, seriesKey: 'all' }
     }), ...modifiedEvents
   ] as Event[]
-  console.log(ChartEvents)
   return (
     <Row gutter={[16, 16]} style={{ flex: 1 }}>
       <Col span={8}>
@@ -255,7 +171,6 @@ export function TimeLine (props : TimeLineProps){
                 onClick={() => onExpandToggle(config?.value, expandObj[
                   config?.value as keyof TimelineData
                 ])}>
-                {' '}
                 {expandObj[
                   config?.value as keyof TimelineData
                 ] ? (
@@ -266,38 +181,52 @@ export function TimeLine (props : TimeLineProps){
               </Col>
 
               <Col span={16}>{$t(config.title)}</Col>
-              <Col span={6}>{2}</Col>
+              <Col span={6}>{ TimelineData[config.value as keyof TimelineData]?.[
+                'allEvents'
+              ].length}</Col>
+              { expandObj[
+                  config?.value as keyof TimelineData
+              ] && config?.subtitle?.map((subtitle, index) =>
+                <>
+                  <Col span={2}/>
+                  <Col span={16}>{$t(subtitle.title)}</Col>
+                  <Col span={6}>{TimelineData?.[config.value as keyof TimelineData]?.[
+                      subtitle.value as keyof EventCategoryMap
+                  ].length}</Col>
+                </>
+              )}
             </>
           ))}
         </Row>
       </Col>
       <Col span={16}>
         <Row gutter={[16, 16]}>
-          <Col span={24}>
-            <EventsChart
-              style={{ width: 'auto', marginBottom: 8 }}
-              data={
-                ChartEvents
-              }
-              chartBoundary={chartBoundary}
-              chartRef={connectChart}
-              title={'test'}
-              tooltipFormatter={subCharttooltipFormatter}
-              onDotClick={(params) => {
+          {ClientTroubleShootingConfig.timeLine.map((config, index) => (
+
+            <Col span={24}>
+              <EventsChart
+                style={{ width: 'auto', marginBottom: 8 }}
+                data={
+                  expandObj[
+                    config?.value as keyof TimelineData
+                  ] ?ChartEvents : modifiedEvents.map((event) => {
+                      return { ...event, seriesKey: 'all' }
+                    })
+                }
+                chartBoundary={chartBoundary}
+                mapping={expandObj[
+                  config?.value as keyof TimelineData
+                ] ? mapping : [mapping[0]]}
+                chartRef={connectChart}
+                title={'test'}
+                tooltipFormatter={subCharttooltipFormatter}
+                onDotClick={(params) => {
                 // eslint-disable-next-line no-console
-                console.log(params)
-              }}
-            />
-          </Col>
-          <Col span={24}>
-            {'chart'}
-          </Col>
-          <Col span={24}>
-            {'chart'}
-          </Col>
-          <Col span={24}>
-            {'chart'}
-          </Col>
+                  console.log(params)
+                }}
+              />
+            </Col>
+          ))}
         </Row>
       </Col>
     </Row>

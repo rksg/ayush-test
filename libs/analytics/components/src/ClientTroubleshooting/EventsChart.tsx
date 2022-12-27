@@ -1,25 +1,18 @@
 import { Dispatch, RefObject, SetStateAction, useCallback, useEffect, useRef, useState,RefCallback, useImperativeHandle } from 'react'
 
-import { TooltipComponentFormatterCallbackParams }            from 'echarts'
+import { TooltipComponentOption }                             from 'echarts'
 import ReactECharts                                           from 'echarts-for-react'
 import {  TooltipFormatterCallback, TopLevelFormatterParams } from 'echarts/types/dist/shared'
-import { renderToString }                                     from 'react-dom/server'
 import { useIntl }                                            from 'react-intl'
 
-import { TooltipWrapper } from '@acx-ui/components'
-import { cssStr }         from '@acx-ui/components'
+import { cssStr,cssNumber } from '@acx-ui/components'
 import {
-  legendTextStyleOptions,
-  tooltipOptions,
-  axisLabelOptions,
+
   xAxisOptions,
-  dateAxisFormatter,
   useDataZoom,
   ResetButton
 } from '@acx-ui/components'
-import { formatter } from '@acx-ui/utils'
 
-import * as UI from './styledComponents'
 
 import type { ECharts, EChartsOption, SeriesOption } from 'echarts'
 import type { EChartsReactProps }                    from 'echarts-for-react'
@@ -55,17 +48,11 @@ export interface ConfigChangeChartProps
     onDotClick?: (params: unknown) => void,
     chartRef?: RefCallback<ReactECharts>,
     title: string,
-    tooltipFormatter: TooltipFormatterCallback<TopLevelFormatterParams>
+    tooltipFormatter: TooltipFormatterCallback<TopLevelFormatterParams>,
+    mapping: { key: string, label: string, color: string }[]
   }
 
-export const mapping = [
-  { key: 'all', label: 'all', color: cssStr('--acx-viz-qualitative-5') },
-  { key: 'success', label: 'success', color: cssStr('--acx-viz-qualitative-4') },
-  { key: 'failure', label: 'failure', color: cssStr('--acx-viz-qualitative-2') },
-  { key: 'slow', label: 'slow', color: cssStr('--acx-viz-qualitative-1') },
-  { key: 'disconnect', label: 'disconnect', color: cssStr('--acx-viz-qualitative-3') }
 
-] as { key: string, label: string, color: string }[]
 
 export const hexToRGB = (hex: string) =>
   `rgb(${hex.match(/[0-9A-F]{1,2}/g)?.map(hex => parseInt(hex, 16)).join(',')})`
@@ -195,15 +182,30 @@ export const useLegendSelectChanged = (
     }
   }, [setSelectedLegend])
 }
-
+export const tooltipOptions = () => ({
+  textStyle: {
+    color: 'black',
+    fontFamily: cssStr('--acx-neutral-brand-font'),
+    fontSize: cssNumber('--acx-body-5-font-size'),
+    lineHeight: cssNumber('--acx-body-5-line-height'),
+    fontWeight: cssNumber('--acx-body-font-weight')
+  },
+  // backgroundColor: cssStr('--acx-primary-black'),
+  borderRadius: 2,
+  borderWidth: 0,
+  padding: 8,
+  confine: true,
+  border: 'none',
+  extraCssText: 'box-shadow: 0px 0px 0px rgba(51, 51, 51, 0.08); z-index: 0;'
+} as TooltipComponentOption)
 export function EventsChart ({
   data,
   chartBoundary,
-  brushWidth = 24 * 60 * 60 * 1000,
   selectedData,
   onDotClick,
   chartRef,
   tooltipFormatter,
+  mapping,
   ...props
 }: ConfigChangeChartProps) {
   const { $t } = useIntl()
@@ -213,189 +215,12 @@ export function EventsChart ({
   const rowHeight = 20
   const placeholderRows = 2 // for tracker
   const legendWidth = 85
-  const brushHeight = mapping.length * rowHeight
-  const xAxisHeight = 30
 
   const eChartsRef = useRef<ReactECharts>(null)
   const [canResetZoom, resetZoomCallback] =
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   useDataZoom<any>(eChartsRef, true, data)
-  const [selected, setSelected] = useState<number|undefined>(selectedData)
-  // const [brushPositions, setBrushPositions] = useState(() => {
-  //   const brushes = [
-  //     [ chartBoundary[0], chartBoundary[0] + brushWidth ],
-  //     [ chartBoundary[1] - brushWidth, chartBoundary[1] ]
-  //   ]
-  //   return { actual: brushes, show: brushes }
-  // })
-  const [boundary, setBoundary] = useState({
-    min: chartBoundary[0],
-    max: chartBoundary[1]
-  })
-  // const [selectedLegend, setSelectedLegend] =
-  //   useState(mapping.map(({ label }) => label).reduce((selected, label) => {
-  //     selected[label as string] = true
-  //     return selected
-  //   }, {} as Record<string, boolean>))
-
-  // const draw =(areas: { actual: number[][], show:number[][] }) => {
-  //   if (!eChartsRef || !eChartsRef.current) return
-  //   const echartInstance = eChartsRef.current?.getEchartsInstance() as ECharts
-
-  // echartInstance.setOption({
-  //   graphic: {
-  //     elements: [
-  //       // For why line height can't be customized:
-  //       // Ref: https://github.com/apache/echarts/issues/17163
-  //       {
-  //         type: 'rect',
-  //         id: 'background',
-  //         slient: true,
-  //         x: 0,
-  //         y: 0,
-  //         z: -1,
-  //         shape: {
-  //           width: (props.style?.width as number) + legendWidth,
-  //           height: (mapping.length + placeholderRows + 1) * rowHeight // +1 for x-axis
-  //         },
-  //         style: { fill: cssStr('--acx-primary-white') },
-  //         cursor: 'default'
-  //       },
-  //       {
-  //         type: 'rect',
-  //         id: 'background-hide-tracker',
-  //         slient: true,
-  //         x: chartPadding, // gap between contianer and grid
-  //         y: 0,
-  //         z: 0,
-  //         shape: {
-  //           width: (props.style?.width as number) + legendWidth,
-  //           height: placeholderRows * rowHeight
-  //         },
-  //         style: { fill: cssStr('--acx-primary-white') },
-  //         cursor: 'default'
-  //       },
-  //       {
-  //         type: 'rect',
-  //         id: 'brush-bar',
-  //         slient: true,
-  //         x: chartPadding, // gap between contianer and grid
-  //         y: (placeholderRows-1) * rowHeight,
-  //         z: 1,
-  //         shape: { width: (props.style?.width as number), height: rowHeight, r: 3 },
-  //         style: { fill: cssStr('--acx-neutrals-20') },
-  //         cursor: 'default'
-  //       },{
-  //         type: 'group',
-  //         id: 'main',
-  //         children: areas.show.map((showArea: number[], index: number) => {
-  //           const position = showArea
-  //             .map((point) => echartInstance.convertToPixel('grid', [point]))
-  //             .map(([x]) => x)
-  //           const width = position[1] - position[0]
-  //           return {
-  //             type: 'group',
-  //             id: `brush-${index}`,
-  //             children: [
-  //               {
-  //                 type: 'rect',
-  //                 id: `invisible-${index}`,
-  //                 invisible: true,
-  //                 slient: width <= 0,
-  //                 x: position[0],
-  //                 y: (placeholderRows - 1) * rowHeight,
-  //                 z: 100,
-  //                 shape: { width, height: rowHeight },
-  //                 draggable: width <= 0 ? false : 'horizontal',
-  //                 cursor: width <= 0 ? 'default' : 'all-scroll',
-  //                 ondrag: function () {
-  //                   const [xPosition] = echartInstance.convertFromPixel('grid', [this.x])
-  //                   const newAreas = getDrawPosition(
-  //                     xPosition, brushWidth, boundary, areas.actual, index)
-  //                   draw(newAreas)
-  //                   setBrushPositions(newAreas)
-  //                 }
-  //               },
-  //               {
-  //                 type: 'rect',
-  //                 id: `text-box-${index}`,
-  //                 slient: true,
-  //                 invisible: width <= 0,
-  //                 textContent: {
-  //                   type: 'text',
-  //                   id: `text-box-inside-${index}`,
-  //                   slient: true,
-  //                   invisible: width <= 0,
-  //                   style: {
-  //                     text: index === 0 ? 'BEFORE' : 'AFTER',
-  //                     fill: cssStr('--acx-accents-blue-50'),
-  //                     fontSize: 9,
-  //                     fontWeight: 700
-  //                   }
-  //                 },
-  //                 textConfig: { position: 'insideBottom' },
-  //                 x: position[0],
-  //                 y: (placeholderRows - 2) * rowHeight,
-  //                 z: 100,
-  //                 shape: { width, height: rowHeight, r: 3 },
-  //                 style: {
-  //                   fill: 'transparent',
-  //                   stroke: 'transparent'
-  //                 },
-  //                 cursor: 'default'
-  //               },
-  //               {
-  //                 type: 'rect',
-  //                 id: `first-box-${index}`,
-  //                 slient: true,
-  //                 invisible: width <= 0,
-  //                 textContent: {
-  //                   type: 'text',
-  //                   id: `text-inside-${index}`,
-  //                   slient: true,
-  //                   invisible: width <= 0,
-  //                   style: {
-  //                     text: '|||',
-  //                     fill: cssStr('--acx-accents-blue-60')
-  //                   },
-  //                   cursor: 'default',
-  //                   z: 1
-  //                 },
-  //                 textConfig: { position: 'inside' },
-  //                 x: position[0],
-  //                 y: (placeholderRows - 1) * rowHeight,
-  //                 z: 1,
-  //                 shape: { width, height: rowHeight, r: 3 },
-  //                 style: {
-  //                   fill: cssStr('--acx-accents-blue-50'),
-  //                   stroke: cssStr('--acx-accents-blue-50')
-  //                 }
-  //               },
-  //               {
-  //                 type: 'rect',
-  //                 id: `second-box-${index}`,
-  //                 slient: true,
-  //                 invisible: width <= 0,
-  //                 x: position[0],
-  //                 y: (placeholderRows) * rowHeight + 3, // 3 px for gap between boxes
-  //                 z: 1,
-  //                 shape: { width, height: brushHeight, r: 3 },
-  //                 style: {
-  //                   fill: 'rgba(0, 0, 0, 0.05)', // --acx-primary-white 5%
-  //                   stroke: cssStr('--acx-accents-blue-50'),
-  //                   lineDash: 2,
-  //                   lineDashOffset: 2,
-  //                   lineWidth: 2
-  //                 },
-  //                 cursor: 'default'
-  //               }
-  //             ]
-  //           }
-  //         })
-  //       }]
-  //   }
-  // })
-  // }
+  const [_, setSelected] = useState<number|undefined>(selectedData)
 
   useDotClick(eChartsRef, onDotClick, setSelected)
   // useBoundaryChange(boundary, brushPositions, setBrushPositions, getZoomPosition, draw)
@@ -424,25 +249,16 @@ export function EventsChart ({
       },
       formatter: tooltipFormatter,
       ...tooltipOptions(),
-      position: (point) => [point[0] + 10, 0] // 10 for gap between tooltip and tracker
+      position: (point) => [point[0] + 10, mapping.length * 30], // 10 for gap between tooltip and tracker,
+      enterable: true
     },
-    // legend: {
-    //   orient: 'vertical',
-    //   right: chartPadding,
-    //   top: (placeholderRows - 1) * rowHeight,
-    //   icon: 'circle',
-    //   itemWidth: 8,
-    //   itemGap: 3,
-    //   padding: 0,
-    //   textStyle: legendTextStyleOptions(),
-    //   selected: selectedLegend
-    // },
     xAxis: {
       ...xAxisOptions(),
       type: 'time',
       axisLabel: {
-        ...axisLabelOptions(),
-        formatter: dateAxisFormatter()
+        // ...axisLabelOptions(),
+        // formatter: dateAxisFormatter()
+        show: false
       },
       min: chartBoundary[0],
       max: chartBoundary[1],
@@ -461,8 +277,8 @@ export function EventsChart ({
         show: true,
         areaStyle: {
           color: [
-            ...mapping.map(() => cssStr('--acx-neutrals-10')),
-            ...Array(placeholderRows).fill(0).map(() => cssStr('--acx-primary-white'))
+            ...Array(placeholderRows).fill(0).map(() => cssStr('--acx-primary-white')),
+            ...mapping.map(() => cssStr('--acx-neutrals-10'))
           ]
         }
       },
@@ -474,8 +290,8 @@ export function EventsChart ({
         }
       },
       data: [
-        ...mapping.map(({ label }) => label),
-        ...Array(placeholderRows).fill(0).map((_,index) => `placeholder${index}`)
+        ...Array(placeholderRows).fill(0).map((_,index) => `placeholder${index}`),
+        ...mapping.map(({ label }) => label)
       ]
     },
     toolbox: {
@@ -493,8 +309,6 @@ export function EventsChart ({
         id: 'zoom',
         type: 'inside',
         zoomLock: true,
-        // orient: 'horizontal',
-        // TODO: set zoom limitation if supported (https://github.com/apache/echarts/issues/12907)
         minValueSpan: 60
       }
     ],
@@ -524,7 +338,6 @@ export function EventsChart ({
           }
         } as SeriesOption)
     )
-    // color: mapping.map(({ color }) => color).slice().reverse()
   }
 
   return (
@@ -536,15 +349,11 @@ export function EventsChart ({
             ...props.style,
             WebkitUserSelect: 'none',
             width: (props.style?.width as number) + legendWidth,
-            height: (mapping.length + placeholderRows) * rowHeight + xAxisHeight // +1 for x-axis
+            height: (mapping.length + placeholderRows) * rowHeight // +1 for x-axis
           }
         }}
         ref={eChartsRef}
         option={option}
-        onEvents={{
-        // datazoom: useDatazoom(chartBoundary, setBoundary)
-        // legendselectchanged: useLegendSelectChanged(setSelectedLegend)
-        }}
       />
       <ResetButton
         size='small'

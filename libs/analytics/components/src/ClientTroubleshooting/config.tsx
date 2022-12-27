@@ -225,15 +225,64 @@ export const ClientTroubleShootingConfig = {
     },
     {
       title: defineMessage({ defaultMessage: 'Roaming' }),
-      value: TYPES.ROAMING
+      value: TYPES.ROAMING,
+      chartType: 'scatter',
+      subtitle: [
+        {
+          title: defineMessage({ defaultMessage: 'Network1_5GHz' }),
+          chartType: 'bar',
+          value: 'network1_5GHz'
+        }
+      ]
     },
     {
       title: defineMessage({ defaultMessage: 'Connection Quality' }),
-      value: TYPES.CONNECTION_QUALITY
+      value: TYPES.CONNECTION_QUALITY,
+      chartType: 'bar',
+      subtitle: [
+        {
+          title: defineMessage({ defaultMessage: 'RSS' }),
+          chartType: 'bar',
+          value: 'RSS'
+        },
+        {
+          title: defineMessage({ defaultMessage: 'SNR' }),
+          chartType: 'bar',
+          value: 'SNR'
+        },
+        {
+          title: defineMessage({ defaultMessage: 'Client Throughput' }),
+          chartType: 'bar',
+          value: 'clientThroughput'
+        },
+        {
+          title: defineMessage({ defaultMessage: 'Avg. MCS(Downlink)' }),
+          chartType: 'bar',
+          value: 'AvgMCS'
+        }
+      ]
     },
     {
       title: defineMessage({ defaultMessage: 'Network Incidents' }),
-      value: TYPES.NETWORK_INCIDENTS
+      value: TYPES.NETWORK_INCIDENTS,
+      chartType: 'bar',
+      subtitle: [
+        {
+          title: defineMessage({ defaultMessage: 'Client Connection' }),
+          chartType: 'bar',
+          value: 'clientConnection'
+        },
+        {
+          title: defineMessage({ defaultMessage: 'Performance' }),
+          chartType: 'bar',
+          value: 'performance'
+        },
+        {
+          title: defineMessage({ defaultMessage: 'Infratructure' }),
+          chartType: 'bar',
+          value: 'infratructure'
+        }
+      ]
     }
   ]
 }
