@@ -7,8 +7,10 @@ import {
   RequestPayload,
   SwitchUrlsInfo,
   SwitchViewModel,
+  Vlan,
   SwitchPortViewModel,
   TableResult,
+  Switch,
   STACK_MEMBERSHIP,
   onSocketActivityChanged,
   showActivityMessage,
@@ -98,12 +100,58 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
+    addSwitch: build.mutation<Switch, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.addSwitch, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     importSwitches: build.mutation<{}, RequestFormData>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(SwitchUrlsInfo.importSwitches, params, {
           'Content-Type': undefined,
           'Accept': '*/*'
         })
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Switch', id: 'LIST' }]
+    }),
+    getSwitchList: build.query<TableResult<SwitchViewModel>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const switchListReq = createHttpRequest(SwitchUrlsInfo.getSwitchList, params)
+        return {
+          ...switchListReq,
+          body: payload
+        }
+      }
+    }),
+    addStackMember: build.mutation<{}, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.addStackMember, params)
+        return {
+          ...req
+          // body:
+        }
+      },
+      invalidatesTags: [{ type: 'Switch', id: 'LIST' }]
+    }),
+    getVlansByVenue: build.query<Vlan[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getVlansByVenue, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    saveSwitch: build.mutation<Switch, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.addSwitch, params)
         return {
           ...req,
           body: payload
@@ -180,6 +228,13 @@ export const {
   useSwitchListQuery,
   useDeleteSwitchesMutation,
   useSwitchDetailHeaderQuery,
+  useImportSwitchesMutation,
+  useGetVlansByVenueQuery,
+  useLazyGetVlansByVenueQuery,
   useSwitchPortlistQuery,
-  useImportSwitchesMutation
+  useSaveSwitchMutation,
+  useAddSwitchMutation,
+  useAddStackMemberMutation,
+  useGetSwitchListQuery,
+  useLazyGetSwitchListQuery
 } = switchApi

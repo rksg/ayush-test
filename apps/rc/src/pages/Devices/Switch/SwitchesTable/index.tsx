@@ -41,7 +41,8 @@ export default function SwitchesTable () {
       label: $t({ defaultMessage: 'Import from file' })
     }, {
       key: 'add-stack',
-      label: $t({ defaultMessage: 'Switch Stack' })
+      label: <TenantLink to='devices/switch/stack/add'>
+        {$t({ defaultMessage: 'Switch Stack' })}</TenantLink>
     }]}
   />
 
@@ -61,6 +62,7 @@ export default function SwitchesTable () {
         maxEntries={50}
         temlateLink={importTemplateLink}
         visible={importVisible}
+        isLoading={importResult.isLoading}
         importError={importResult.error as FetchBaseQueryError}
         importRequest={(formData)=>{
           importCsv({ params: { tenantId }, payload: formData })
