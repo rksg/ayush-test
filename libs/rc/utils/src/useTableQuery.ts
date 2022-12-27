@@ -172,3 +172,20 @@ export function useTableQuery <
     ...api
   } as TableQuery<ResultType, Payload, ResultExtra>
 }
+
+export interface NewTableResult<T> {
+  totalElements: number;
+  totalPages: number;
+  page: number;
+  size: number;
+  sort: string[];
+  content: T[]
+}
+
+export function transferTableResult<T> (newResult: NewTableResult<T>): TableResult<T> {
+  return {
+    data: newResult.content,
+    page: newResult.page,
+    totalCount: newResult.totalElements
+  }
+}
