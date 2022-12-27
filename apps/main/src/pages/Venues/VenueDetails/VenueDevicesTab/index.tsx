@@ -1,22 +1,14 @@
-import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
-import styled      from 'styled-components/macro'
 
-import { ContentSwitcher, ContentSwitcherProps, Tabs, Button } from '@acx-ui/components'
-import { useIsSplitOn, Features }                              from '@acx-ui/feature-toggle'
-import { EdgesTable }                                          from '@acx-ui/rc/components'
-import { useParams, useTenantLink, useNavigate, TenantLink }   from '@acx-ui/react-router-dom'
+import { ContentSwitcher, ContentSwitcherProps, Tabs } from '@acx-ui/components'
+import { useIsSplitOn, Features }                      from '@acx-ui/feature-toggle'
+import { useParams, useTenantLink, useNavigate  }      from '@acx-ui/react-router-dom'
 
+import { VenueEdgesTable }   from './VenueEdgesTable'
 import { VenueMeshApsTable } from './VenueMeshAps'
 import { VenueRogueAps }     from './VenueRogueAps'
 
-
-const SpaceWrapper = styled(Space)`
-width: 100%;
-margin: 12px 0px;
-justify-content: flex-end;
-`
 
 export function VenueDevicesTab () {
   const { $t } = useIntl()
@@ -86,13 +78,7 @@ export function VenueDevicesTab () {
           tab={$t({ defaultMessage: 'SmartEdge' })}
           key='edge'
         >
-          <SpaceWrapper >
-            <TenantLink to='/devices/edge/add' key='add'>
-              <Button type='link'>{ $t({ defaultMessage: 'Add SmartEdge' }) }</Button>
-            </TenantLink>
-          </SpaceWrapper>
-
-          <EdgesTable />
+          <VenueEdgesTable />
         </Tabs.TabPane>
       )}
     </Tabs>

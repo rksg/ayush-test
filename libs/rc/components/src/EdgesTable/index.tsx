@@ -6,50 +6,55 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { useDeleteEdgeMutation, useGetEdgeListQuery, useSendOtpMutation } from '@acx-ui/rc/services'
-import { EdgeStatusEnum, EdgeViewModel, useTableQuery }                   from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useTenantLink }                         from '@acx-ui/react-router-dom'
+import { useDeleteEdgeMutation, useGetEdgeListQuery, useSendOtpMutation }           from '@acx-ui/rc/services'
+import { EdgeStatusEnum, EdgeViewModel, useTableQuery, TableQuery, RequestPayload } from '@acx-ui/rc/utils'
+import { TenantLink, useNavigate, useTenantLink }                                   from '@acx-ui/react-router-dom'
 
 import { EdgeStatusLight } from './EdgeStatusLight'
 
 export { EdgeStatusLight } from './EdgeStatusLight'
 
-interface EdgesTableProps extends Omit<TableProps<EdgeViewModel>, 'columns'> {}
+interface EdgesTableProps extends Omit<TableProps<EdgeViewModel>, 'columns'> {
+  tableQuery?: TableQuery<EdgeViewModel, RequestPayload<unknown>, unknown>
+}
+
+export const defaultEdgeTablePayload = {
+  fields: [
+    'name',
+    'deviceStatus',
+    'type',
+    'model',
+    'serialNumber',
+    'ip',
+    'ports',
+    'venueId',
+    'venueName',
+    'edgeGroupId',
+    'tags'
+  ],
+  filters: {},
+  sortField: 'name',
+  sortOrder: 'ASC'
+}
 
 export const EdgesTable = (props: EdgesTableProps) => {
-  const defaultPayload = {
-    fields: [
-      'name',
-      'deviceStatus',
-      'type',
-      'model',
-      'serialNumber',
-      'ip',
-      'ports',
-      'venueId',
-      'venueName',
-      'edgeGroupId',
-      'tags'
-    ],
-    filters: {},
-    sortField: 'name',
-    sortOrder: 'ASC'
-  }
-
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('')
-  const tableQuery = useTableQuery({
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const tableQuery = props.tableQuery ?? useTableQuery({
     useQuery: useGetEdgeListQuery,
-    defaultPayload
+    defaultPayload: defaultEdgeTablePayload
   })
+
   const [deleteEdge, { isLoading: isDeleteEdgeUpdating }] = useDeleteEdgeMutation()
   const [sendOtp] = useSendOtpMutation()
 
   const columns: TableProps<EdgeViewModel>['columns'] = [
     {
       title: $t({ defaultMessage: 'SmartEdge' }),
-      tooltip: 'test',
+      tooltip: $t({ defaultMessage: 'SmartEdge' }),
       key: 'name',
       dataIndex: 'name',
       sorter: true,
