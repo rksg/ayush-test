@@ -1,9 +1,10 @@
+import { Collapse }    from 'antd'
 import styled, { css } from 'styled-components/macro'
 
+import {
+  ResetWrapper
+} from '@acx-ui/components'
 import {  PlusSquareOutlined, MinusSquareOutlined } from '@acx-ui/icons'
-
-
-
 const eventIconStyle = css`
   display: flex;
   margin-top: 2px;
@@ -76,12 +77,59 @@ export const StyledPlusSquareOutlined = styled(PlusSquareOutlined)`
    path{
       stroke:var(--acx-accents-blue-50);
     }`
+
 export const StyledMinusSquareOutlined = styled(MinusSquareOutlined)`
    width: 16px;
    path{
       stroke:var(--acx-accents-blue-50);
     }`
+
 export const TimelineTitle = styled.span`
    line-height: 24px;
    font-weight: var(--acx-body-font-weight-bold);
    font-size: 12px;`
+
+export const TimelineSubContent = styled.span`
+   line-height: 16px;
+   font-weight: var(--acx-body-font-weight);
+   font-size: 12px;`
+
+export const CollapseBox = styled(Collapse)`
+  .ant-collapse-content {
+    margin-left : 30px;
+    };
+   .ant-collapse-header {
+    padding-bottom: 0px !important;
+    padding-right: 0px !important;
+   };
+   .ant-collapse-content-box{
+    padding-right: 0px;
+   }`
+
+export const TooltipWrapper = styled.div`
+    color: '#565758';
+    font-weight: 400;
+    font-size: var(--acx-subtitle-6-font-size);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    background-color: transparent;
+    `
+export const TooltipDate = styled.span`
+    color: '#565758';
+    font-weight: 700;
+    `
+export const TimelineLoaderWrapper = styled.div`
+  height: 100%;
+  padding-top: 5px;
+`
+export const Wrapper = styled(ResetWrapper)`
+  svg {
+    // special color code to target path of brush
+    path[stroke="#123456"] {
+      stroke-dasharray: 2;
+      stroke: var(--acx-accents-blue-50);
+      clip-path: inset(0 round 5px);
+    }
+  }
+`

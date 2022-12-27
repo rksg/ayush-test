@@ -10,6 +10,7 @@ import { ClientTroubleShootingConfig } from './config'
 import { History }                     from './EventsHistory'
 import { TimeLine }                    from './EventsTimeline'
 import { useClientInfoQuery }          from './services'
+import * as UI                         from './styledComponents'
 
 export type Filters = {
   category?: [];
@@ -19,7 +20,6 @@ export type Filters = {
 type SingleValueType = (string | number)[]
 type selectionType = SingleValueType | SingleValueType[] | undefined
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
   const [historyContentToggle, setHistoryContentToggle] = useState(true)
   const { $t } = useIntl()
@@ -55,6 +55,7 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
                     onApply={(value: selectionType) =>
                       write({ ...filters, [config.selectionType]: value })
                     }
+                    allowClear
                   />
                 </Col>
               ))}
@@ -75,13 +76,19 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
             </Col>
           )}
           <Col span={24}>
-            <TimeLine />
+            <UI.TimelineLoaderWrapper>
+              <Loader states={[results]}>
+                <TimeLine
+                  data={results.data}
+                  filters={filters}/>
+              </Loader>
+            </UI.TimelineLoaderWrapper>
           </Col>
         </Row>
       </Col>
       {historyContentToggle && (
         <Col span={6}>
-          <Loader states={[results]}>
+          <Loader states={[results]} >
             <History
               setHistoryContentToggle={setHistoryContentToggle}
               historyContentToggle

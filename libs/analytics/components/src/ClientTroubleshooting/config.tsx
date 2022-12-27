@@ -45,7 +45,9 @@ export const EVENT_STATES = {
 
 export const TYPES = {
   CONNECTION_EVENTS: 'connectionEvents',
-  ROAMING: 'roaming'
+  ROAMING: 'roaming',
+  CONNECTION_QUALITY: 'connectionQuality',
+  NETWORK_INCIDENTS: 'networkIncidents'
 }
 // In RA these events are hidden
 export const spuriousEvents = [
@@ -63,7 +65,8 @@ export type DisplayEvent = {
   radio: string,
   state: string,
   event: string,
-  category: string
+  category: string,
+  type: string
 }
 export const eventColorByCategory = {
   [DISCONNECT]: '--acx-neutrals-50',
@@ -191,12 +194,98 @@ export const ClientTroubleShootingConfig = {
           label: defineMessage({ defaultMessage: '6 GHz' })
         }
       ]
-    } ],
+    }
+  ],
   timeLine: [
-    { title: defineMessage({ defaultMessage: 'Connection Events' }) },
-    { title: defineMessage({ defaultMessage: 'Roaming' }) },
-    { title: defineMessage({ defaultMessage: 'Connection Quality' }) },
-    { title: defineMessage({ defaultMessage: 'Network Incidents' }) }
+    {
+      title: defineMessage({ defaultMessage: 'Connection Events' }),
+      value: TYPES.CONNECTION_EVENTS,
+      chartType: 'scatter',
+      subtitle: [
+        {
+          title: defineMessage({ defaultMessage: 'Success' }),
+          chartType: 'scatter',
+          value: SUCCESS
+        },
+        {
+          title: defineMessage({ defaultMessage: 'Failure' }),
+          chartType: 'scatter',
+          value: FAILURE
+        },
+        {
+          title: defineMessage({ defaultMessage: 'Slow' }),
+          chartType: 'scatter',
+          value: SLOW
+        },
+        {
+          title: defineMessage({ defaultMessage: 'Disconnect' }),
+          chartType: 'scatter',
+          value: DISCONNECT,
+          isLast: true
+        }
+      ]
+    },
+    {
+      title: defineMessage({ defaultMessage: 'Roaming' }),
+      value: TYPES.ROAMING,
+      chartType: 'scatter',
+      subtitle: [
+        {
+          title: defineMessage({ defaultMessage: 'Network1_5GHz' }),
+          chartType: 'bar',
+          value: 'network1_5GHz'
+        }
+      ]
+    },
+    {
+      title: defineMessage({ defaultMessage: 'Connection Quality' }),
+      value: TYPES.CONNECTION_QUALITY,
+      chartType: 'bar',
+      subtitle: [
+        {
+          title: defineMessage({ defaultMessage: 'RSS' }),
+          chartType: 'bar',
+          value: 'RSS'
+        },
+        {
+          title: defineMessage({ defaultMessage: 'SNR' }),
+          chartType: 'bar',
+          value: 'SNR'
+        },
+        {
+          title: defineMessage({ defaultMessage: 'Client Throughput' }),
+          chartType: 'bar',
+          value: 'clientThroughput'
+        },
+        {
+          title: defineMessage({ defaultMessage: 'Avg. MCS(Downlink)' }),
+          chartType: 'bar',
+          value: 'AvgMCS'
+        }
+      ]
+    },
+    {
+      title: defineMessage({ defaultMessage: 'Network Incidents' }),
+      value: TYPES.NETWORK_INCIDENTS,
+      chartType: 'bar',
+      subtitle: [
+        {
+          title: defineMessage({ defaultMessage: 'Client Connection' }),
+          chartType: 'bar',
+          value: 'clientConnection'
+        },
+        {
+          title: defineMessage({ defaultMessage: 'Performance' }),
+          chartType: 'bar',
+          value: 'performance'
+        },
+        {
+          title: defineMessage({ defaultMessage: 'Infratructure' }),
+          chartType: 'bar',
+          value: 'infratructure'
+        }
+      ]
+    }
   ]
 }
 
