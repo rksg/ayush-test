@@ -77,6 +77,7 @@ export default function ApsTable () {
         maxEntries={512}
         temlateLink={importTemplateLink}
         visible={importVisible}
+        isLoading={importResult.isLoading}
         importError={importResult.error as FetchBaseQueryError}
         importRequest={(formData)=>{
           importCsv({ params: { tenantId }, payload: formData })
