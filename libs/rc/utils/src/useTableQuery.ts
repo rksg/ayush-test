@@ -5,6 +5,9 @@ import { TableProps } from 'antd'
 import { useParams, Params }                         from '@acx-ui/react-router-dom'
 import { UseQuery, UseQueryResult, UseQueryOptions } from '@acx-ui/types'
 
+export const TABLE_QUERY_POLLING_INTERVAL = 30_000
+export const TABLE_QUERY_LONG_POLLING_INTERVAL = 300_000
+
 export interface RequestPayload <Payload = unknown> extends Record<string,unknown> {
   params?: Params<string>
   payload?: Payload
@@ -90,7 +93,7 @@ export function usePollingTableQuery <
   return useTableQuery({
     ...params,
     option: {
-      pollingInterval: 30_000,
+      pollingInterval: TABLE_QUERY_POLLING_INTERVAL,
       ...(params.option || {})
     }
   })

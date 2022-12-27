@@ -1,6 +1,11 @@
-import { EventTable }                                  from '@acx-ui/rc/components'
-import { useEventsQuery }                              from '@acx-ui/rc/services'
-import { Event, CommonUrlsInfo, usePollingTableQuery } from '@acx-ui/rc/utils'
+import { EventTable }     from '@acx-ui/rc/components'
+import { useEventsQuery } from '@acx-ui/rc/services'
+import {
+  TABLE_QUERY_LONG_POLLING_INTERVAL,
+  Event,
+  CommonUrlsInfo,
+  usePollingTableQuery
+} from '@acx-ui/rc/utils'
 
 const Events = () => {
   const tableQuery = usePollingTableQuery<Event>({
@@ -50,7 +55,7 @@ const Events = () => {
       sortField: 'event_datetime',
       sortOrder: 'DESC'
     },
-    option: { pollingInterval: 300_000 }
+    option: { pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL }
   })
   return <EventTable tableQuery={tableQuery}/>
 }

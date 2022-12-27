@@ -1,6 +1,11 @@
-import { AdminLogTable }                                  from '@acx-ui/rc/components'
-import { useAdminLogsQuery }                              from '@acx-ui/rc/services'
-import { AdminLog, CommonUrlsInfo, usePollingTableQuery } from '@acx-ui/rc/utils'
+import { AdminLogTable }     from '@acx-ui/rc/components'
+import { useAdminLogsQuery } from '@acx-ui/rc/services'
+import {
+  TABLE_QUERY_LONG_POLLING_INTERVAL,
+  AdminLog,
+  CommonUrlsInfo,
+  usePollingTableQuery
+} from '@acx-ui/rc/utils'
 
 const AdminLogs = () => {
   const tableQuery = usePollingTableQuery<AdminLog>({
@@ -46,7 +51,8 @@ const AdminLogs = () => {
     sorter: {
       sortField: 'event_datetime',
       sortOrder: 'DESC'
-    }
+    },
+    option: { pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL }
   })
   return <AdminLogTable tableQuery={tableQuery}/>
 }
