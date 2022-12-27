@@ -69,7 +69,7 @@ exports[`ApTraceRouteForm should render correctly 1`] = `
                   class="ant-form-item-control-input-content"
                 >
                   <button
-                    class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 kkpPZG"
+                    class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 bxQmA-d"
                     disabled=""
                     type="submit"
                   >
@@ -85,7 +85,7 @@ exports[`ApTraceRouteForm should render correctly 1`] = `
       </div>
     </div>
     <div
-      class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+      class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
     >
       <div
         class="ant-form-item"

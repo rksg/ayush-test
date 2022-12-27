@@ -62,14 +62,14 @@ export const getAlarmsDonutChartData = (overviewData?: Dashboard): DonutChartDat
 }
 
 export function AlarmWidget () {
-  const basePath = useTenantLink('/')
+  const basePath = useTenantLink('/devices')
   const navigate = useNavigate()
   const { $t } = useIntl()
 
   const onNavigate = (alarm: Alarm) => {
     let path = alarm.entityType === EventTypeEnum.AP
-      ? `aps/${alarm.serialNumber}/TODO`
-      : `switches/${alarm.serialNumber}/TODO`
+      ? `wifi/${alarm.serialNumber}/details/overview`
+      : `switch/${alarm.serialNumber}/details/overview`
 
     navigate({
       ...basePath,

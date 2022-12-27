@@ -446,7 +446,7 @@ exports[`DpskForm should render the form 1`] = `
                                 id="details_expiration_mode"
                               >
                                 <div
-                                  class="sc-cCsOjp jNZjCq"
+                                  class="sc-bZnhIo iiJnNY"
                                 >
                                   <label
                                     class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
@@ -469,7 +469,7 @@ exports[`DpskForm should render the form 1`] = `
                                   </label>
                                 </div>
                                 <div
-                                  class="sc-cCsOjp gMrlhl"
+                                  class="sc-bZnhIo kvLKmP"
                                 >
                                   <label
                                     class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
@@ -492,7 +492,7 @@ exports[`DpskForm should render the form 1`] = `
                                   </label>
                                 </div>
                                 <div
-                                  class="sc-cCsOjp koomPI"
+                                  class="sc-bZnhIo hsWyTK"
                                 >
                                   <label
                                     class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
@@ -538,7 +538,7 @@ exports[`DpskForm should render the form 1`] = `
             style="margin-right: 12px;"
           >
             <button
-              class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 kkpPZG"
+              class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 bxQmA-d"
               type="button"
             >
               <span>
@@ -550,7 +550,7 @@ exports[`DpskForm should render the form 1`] = `
             class="ant-space-item"
           >
             <button
-              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
               type="button"
             >
               <span>

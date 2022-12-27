@@ -1,44 +1,114 @@
-import { Divider, Form } from 'antd'
-import moment            from 'moment-timezone'
-import { useIntl }       from 'react-intl'
+import { useEffect, useState } from 'react'
 
-import { cssStr, Table, TableProps } from '@acx-ui/components'
+import { Divider,
+  Dropdown,
+  Form,
+  Menu,
+  MenuProps,
+  Space } from 'antd'
+import moment      from 'moment-timezone'
+import { useIntl } from 'react-intl'
+
+
+import { Button, cssStr, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
+import { ArrowExpand }                       from '@acx-ui/icons'
+import { ClientHealthIcon }                  from '@acx-ui/rc/components'
+import { useGetGuestsListQuery }             from '@acx-ui/rc/services'
 import {
+  getOsTypeIcon,
   Guest,
   GuestClient,
   GuestStatusEnum,
-  transformDisplayText
+  transformDisplayText,
+  useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
 import {
   renderAllowedNetwork,
   renderExpires,
   renderGuestType
 } from '../GuestsTable'
-import { DrawerFormItem } from '../styledComponents'
+import * as UI from '../styledComponents'
 
+import { GenerateNewPasswordModal } from './generateNewPasswordModal'
+import { useGuestActions }          from './guestActions'
 
 interface GuestDetailsDrawerProps {
   currentGuest: Guest,
+  triggerClose: () => void
 }
+
+export const defaultGuestPayload = {
+  searchString: '',
+  searchTargetFields: [
+    'name',
+    'mobilePhoneNumber',
+    'emailAddress'],
+  fields: [
+    'creationDate',
+    'name',
+    'passDurationHours',
+    'id',
+    'networkId',
+    'maxNumberOfClients',
+    'notes',
+    'clients',
+    'guestStatus',
+    'emailAddress',
+    'mobilePhoneNumber',
+    'guestType',
+    'ssid',
+    'socialLogin',
+    'expiryDate',
+    'cog'
+  ]
+}
+
 
 export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
   const { $t } = useIntl()
   const { currentGuest } = props
+  const { tenantId } = useParams()
+  const [guestDetail, setGuestDetail] = useState({} as Guest)
+  const [generateModalVisible, setGenerateModalVisible] = useState(false)
+  const guestAction = useGuestActions()
 
-  const hasOnlineClient = currentGuest.guestStatus.indexOf(GuestStatusEnum.ONLINE)!== -1
+  const tableQuery = useTableQuery({
+    useQuery: useGetGuestsListQuery,
+    defaultPayload: defaultGuestPayload
+  })
+
+  const hasOnlineClient = function (row: Guest) {
+    return row.guestStatus.indexOf(GuestStatusEnum.ONLINE) !== -1
+  }
+
+  useEffect(() => {
+    const guest = tableQuery.data?.data.filter((item: Guest) => item.id === currentGuest.id)[0]
+    if (guest) {
+      setGuestDetail(guest)
+    }
+  }, [currentGuest.id, tableQuery])
 
   const renderStatus = function (row: Guest) {
+    if(Object.keys(row).length === 0) {
+      return
+    }
+
     if (row.maxNumberOfClients !== -1 ||
       row.guestStatus.indexOf(GuestStatusEnum.NOT_APPLICABLE) === -1) {
       if (row.guestStatus === GuestStatusEnum.EXPIRED) {
         return <span style={{ color: cssStr('--acx-semantics-red-50') }}>{row.guestStatus}</span>
-      } else if (hasOnlineClient) {
+      } else if (hasOnlineClient(row)) {
         return <span style={{ color: cssStr('--acx-semantics-green-50') }}>{row.guestStatus}</span>
       }
     }
     return row.guestStatus
+  }
+
+  const renderMaxNumberOfClients = function (value?: number) {
+    return value ? (value === -1) ? $t({ defaultMessage: 'Unlimited' }) : value : '0'
   }
 
   const columns: TableProps<GuestClient>['columns'] = [
@@ -47,15 +117,19 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
       title: $t({ defaultMessage: 'OS' }),
       dataIndex: 'osType',
       sorter: false,
-      defaultSortOrder: 'ascend'
-      // render: function (data, row) {} //TODO: Wait for connected clients
+      defaultSortOrder: 'ascend',
+      render: function (data) {
+        return <UI.IconContainer>{getOsTypeIcon(data as string)}</UI.IconContainer>
+      }
     }, {
       key: 'healthCheckStatus',
       title: $t({ defaultMessage: 'Health' }),
       dataIndex: 'healthCheckStatus',
       sorter: false,
-      defaultSortOrder: 'ascend'
-      // render: function (data, row) {} //TODO: Wait for connected clients
+      defaultSortOrder: 'ascend',
+      render: (data, row) => {
+        return row.healthCheckStatus ? <ClientHealthIcon type={row.healthCheckStatus} /> : '--'
+      }
     }, {
       key: 'clientMac',
       title: $t({ defaultMessage: 'MAC Address' }),
@@ -100,66 +174,149 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
       sorter: false,
       defaultSortOrder: 'ascend',
       render: function (data, row) {
+        // TODO: Wait for framework support userprofile-format dateTimeFormats
         return moment(row.connectSince).format('DD/MM/YYYY HH:mm')
       }
     }
   ]
 
+  const handleMenuClick: MenuProps['onClick'] = (e) => {
+    switch (e.key) {
+      case 'deleteGuest':
+        guestAction.showDeleteGuest(guestDetail, tenantId, props.triggerClose)
+        break
+      case 'enableGuest':
+        guestAction.enableGuest(guestDetail, tenantId)
+        break
+      case 'disableGuest':
+        guestAction.disableGuest(guestDetail, tenantId)
+        break
+      case 'downloadInformation':
+        guestAction.showDownloadInformation(guestDetail, tenantId)
+        break
+      case 'generatePassword':
+        setGenerateModalVisible(true)
+        break
+      default:
+        break
+    }
+  }
+
+  const menu = (
+    <Menu
+      onClick={handleMenuClick}
+      items={[{
+        label: $t({ defaultMessage: 'Generate New Password' }),
+        key: 'generatePassword'
+      }, {
+        label: $t({ defaultMessage: 'Download Information' }),
+        key: 'downloadInformation'
+      }, {
+        label: $t({ defaultMessage: 'Disable Guest' }),
+        key: 'disableGuest'
+      }, {
+        label: $t({ defaultMessage: 'Enable Guest' }),
+        key: 'enableGuest'
+      }, {
+        label: $t({ defaultMessage: 'Delete Guest' }),
+        key: 'deleteGuest'
+      }].filter((item) => {
+        if (item.key === 'enableGuest' &&
+        guestDetail.guestStatus !== GuestStatusEnum.DISABLED) {
+          return false
+        } else if (item.key === 'disableGuest' &&
+        guestDetail.guestStatus === GuestStatusEnum.DISABLED) {
+          return false
+        } else if (guestDetail.guestStatus === GuestStatusEnum.EXPIRED
+          && (item.key === 'disableGuest' || item.key === 'enableGuest')) {
+          return false
+        }
+
+        if (item.key === 'generatePassword') {
+          return(guestDetail.guestStatus?.indexOf(GuestStatusEnum.ONLINE) !== -1) ||
+            ((guestDetail.guestStatus === GuestStatusEnum.OFFLINE) &&
+              guestDetail.networkId && !guestDetail.socialLogin)
+        }
+
+        return true
+      })}
+    />
+  )
+
   return (<Form
     labelCol={{ span: 10 }}
     labelAlign='left' >
+    <div style={{
+      textAlign: 'right'
+    }}>
+      {useIsSplitOn(Features.DEVICES) &&
+        <Dropdown overlay={menu} key='actions'>
+          <Button type='secondary'>
+            <Space>
+              {$t({ defaultMessage: 'Actions' })}
+              <ArrowExpand />
+            </Space>
+          </Button>
+        </Dropdown>
+      }
+    </div>
 
-    <DrawerFormItem
+    <Form.Item
       label={$t({ defaultMessage: 'Guest Type:' })}
-      children={renderGuestType(currentGuest.guestType)} />
+      children={renderGuestType(guestDetail.guestType)} />
 
-    <DrawerFormItem
+    <Form.Item
       label={$t({ defaultMessage: 'Guest Name:' })}
-      children={currentGuest.name} />
+      children={guestDetail.name} />
 
-    <DrawerFormItem
+    <Form.Item
       label={$t({ defaultMessage: 'Mobile Phone:' })}
-      children={transformDisplayText(currentGuest.mobilePhoneNumber)} />
+      children={transformDisplayText(guestDetail.mobilePhoneNumber)} />
 
-    <DrawerFormItem
+    <Form.Item
       label={$t({ defaultMessage: 'Email:' })}
-      children={transformDisplayText(currentGuest.emailAddress)} />
+      children={transformDisplayText(guestDetail.emailAddress)} />
 
-    <DrawerFormItem
+    <Form.Item
       label={$t({ defaultMessage: 'Notes:' })}
-      children={transformDisplayText(currentGuest.notes)} />
+      children={transformDisplayText(guestDetail.notes)} />
 
     <Divider />
 
-    <DrawerFormItem
+    <Form.Item
       label={$t({ defaultMessage: 'Allowed Network:' })}
-      children={renderAllowedNetwork(currentGuest)} />
+      children={renderAllowedNetwork(guestDetail)} />
 
-    <DrawerFormItem
+    {/* TODO: Wait for framework support userprofile-format dateTimeFormats */}
+    <Form.Item
       label={$t({ defaultMessage: 'Guest Created:' })}
-      children={moment(currentGuest.expiryDate).format('DD/MM/YYYY HH:mm')} />
+      children={moment(guestDetail.creationDate).format('DD/MM/YYYY HH:mm')} />
 
-    <DrawerFormItem
+    <Form.Item
       label={$t({ defaultMessage: 'Access Expires:' })}
-      children={renderExpires(currentGuest)} />
+      children={renderExpires(guestDetail)} />
 
-    <DrawerFormItem
+    <Form.Item
       label={$t({ defaultMessage: 'Max. Number of Clients:' })}
-      children={currentGuest.maxNumberOfClients || '0'} />
+      children={renderMaxNumberOfClients(guestDetail.maxNumberOfClients)} />
 
     <Divider />
 
-    <DrawerFormItem
+    <Form.Item
       label={$t({ defaultMessage: 'Status:' })}
-      children={renderStatus(currentGuest)} />
+      children={renderStatus(guestDetail)} />
 
-    {currentGuest.clients &&
+    {guestDetail.clients &&
       <Table
         columns={columns}
-        dataSource={currentGuest.clients}
+        dataSource={guestDetail.clients}
         pagination={false}
-        rowKey='clientMac'
       />}
+
+    <GenerateNewPasswordModal {...{
+      generateModalVisible, setGenerateModalVisible, guestDetail, tenantId
+    }}
+    />
   </Form>
   )
 }

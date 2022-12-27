@@ -97,7 +97,7 @@ const RuleTable = (props: RuleTableProps) => {
         }
       })
     }
-  }, [data, state.rules])
+  }, [data, state])
 
   const handleAddAction = () => {
     if (state.rules.length === 32) {

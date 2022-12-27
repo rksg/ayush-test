@@ -201,7 +201,6 @@ describe('ApEdit', () => {
       expect(screen.getByLabelText(/Venue/)).toBeDisabled()
       await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
       await screen.findByText('Error occurred while updating AP')
-      await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     })
 
     it('should open unsaved changes modal', async () => {
@@ -352,7 +351,7 @@ describe('ApEdit', () => {
 
       const tabPanel = screen.getAllByRole('tabpanel', { hidden: false })[2]
       fireEvent.mouseDown(within(tabPanel).getByLabelText(/Port type/))
-      await userEvent.click(await screen.getAllByText('GENERAL')[1])
+      await fireEvent.click(await screen.getAllByText('GENERAL')[1])
       expect(within(tabPanel).getByLabelText(/VLAN untag ID/)).not.toBeDisabled()
       expect(within(tabPanel).getByLabelText(/VLAN member/)).not.toBeDisabled()
 

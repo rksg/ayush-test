@@ -16,8 +16,10 @@ import { Provider }                          from '@acx-ui/store'
 import Edges                      from './pages/Devices/Edge'
 import AddEdge                    from './pages/Devices/Edge/AddEdge'
 import EditEdge                   from './pages/Devices/Edge/EdgeDetails/EditEdge'
+import { StackForm }              from './pages/Devices/Switch/StackForm'
 import SwitchDetails              from './pages/Devices/Switch/SwitchDetails'
 import SwitchesTable              from './pages/Devices/Switch/SwitchesTable'
+import { AddSwitchForm }          from './pages/Devices/Switch/SwitchForm/AddSwitchForm'
 import ApDetails                  from './pages/Devices/Wifi/ApDetails'
 import { ApEdit }                 from './pages/Devices/Wifi/ApEdit'
 import { ApForm }                 from './pages/Devices/Wifi/ApForm'
@@ -26,13 +28,17 @@ import ApsTable                   from './pages/Devices/Wifi/ApsTable'
 import NetworkDetails             from './pages/Networks/NetworkDetails/NetworkDetails'
 import NetworkForm                from './pages/Networks/NetworkForm/NetworkForm'
 import NetworksTable              from './pages/Networks/NetworksTable'
+import MacRegistrationListDetails
+  from './pages/Policies/MacRegistrationList/MacRegistrarionListDetails/MacRegistrarionListDetails'
+import MacRegistrationListsTable  from './pages/Policies/MacRegistrationList/MacRegistrarionListTable'
+import MacRegistrationListForm    from './pages/Policies/MacRegistrationList/MacRegistrationListForm/MacRegistrationListForm'
 import PoliciesTable              from './pages/Policies/PoliciesTable'
 import RogueAPDetectionDetailView
   from './pages/Policies/RogueAPDetection/RogueAPDetectionDetail/RogueAPDetectionDetailView'
 import RogueAPDetectionForm     from './pages/Policies/RogueAPDetection/RogueAPDetectionForm/RogueAPDetectionForm'
 import SelectPolicyForm         from './pages/Policies/SelectPolicyForm'
-import DHCPDetail               from './pages/Services/DHCPDetail'
-import DHCPForm                 from './pages/Services/DHCPForm/DHCPForm'
+import DHCPDetail               from './pages/Services/DHCP/DHCPDetail'
+import DHCPForm                 from './pages/Services/DHCP/DHCPForm/DHCPForm'
 import DpskForm                 from './pages/Services/Dpsk/DpskForm/DpskForm'
 import MdnsProxyDetail          from './pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail'
 import MdnsProxyForm            from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
@@ -44,6 +50,7 @@ import ServicesTable            from './pages/Services/ServicesTable'
 import WifiCallingDetailView    from './pages/Services/WifiCalling/WifiCallingDetail/WifiCallingDetailView'
 import WifiCallingConfigureForm from './pages/Services/WifiCalling/WifiCallingForm/WifiCallingConfigureForm'
 import WifiCallingForm          from './pages/Services/WifiCalling/WifiCallingForm/WifiCallingForm'
+import Timeline                 from './pages/Timeline'
 import PersonaPortal            from './pages/Users/Persona'
 import PersonaDetails           from './pages/Users/Persona/PersonaDetails'
 import PersonaGroupDetails      from './pages/Users/Persona/PersonaGroupDetails'
@@ -59,6 +66,7 @@ export default function RcRoutes () {
       <Route path='services/*' element={<ServiceRoutes />} />
       <Route path='policies/*' element={<PolicyRoutes />} />
       <Route path='users/*' element={<UserRoutes />} />
+      <Route path='timeline/*' element={<TimelineRoutes />} />
     </Route>
   )
   return (
@@ -78,6 +86,7 @@ function DeviceRoutes () {
         element={<ApEdit />}
       />
       <Route path='devices/apgroups/:action' element={<ApGroupForm />} />
+      <Route path='devices/switch/:action' element={<AddSwitchForm />} />
       <Route
         path='devices/wifi/:serialNumber/details/:activeTab'
         element={<ApDetails />} />
@@ -91,6 +100,10 @@ function DeviceRoutes () {
         path='devices/switch/:switchId/:serialNumber/details/:activeTab'
         element={<SwitchDetails />}
       />
+      <Route
+        path='devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab'
+        element={<SwitchDetails />}
+      />
       <Route path='devices/edge/add' element={<AddEdge />} />
       <Route
         path='devices/edge/:serialNumber/edit/:activeTab'
@@ -99,6 +112,7 @@ function DeviceRoutes () {
         path='devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         element={<EditEdge />} />
       <Route path='devices/switch' element={<SwitchesTable />} />
+      <Route path='devices/switch/stack/add' element={<StackForm />} />
       <Route path='devices/edge/list' element={<Edges />} />
     </Route>
   )
@@ -162,7 +176,7 @@ function ServiceRoutes () {
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.EDIT })}
-        element={<DHCPForm/>}
+        element={<DHCPForm editMode={true}/>}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.DETAIL })}
@@ -222,6 +236,23 @@ function PolicyRoutes () {
         path={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.DETAIL })}
         element={<RogueAPDetectionDetailView />}
       />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.DETAIL })}
+        element={<MacRegistrationListDetails />} />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.LIST })}
+        element={<MacRegistrationListsTable />} />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.CREATE })}
+        element={<MacRegistrationListForm />} />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.EDIT })}
+        element={<MacRegistrationListForm editMode={true} />}
+      />
     </Route>
   )
 }
@@ -257,6 +288,15 @@ function UserRoutes () {
         path='users/persona-management/persona-group/:personaGroupId/persona/:personaId'
         element={<PersonaDetails />}
       />
+    </Route>
+  )
+}
+
+function TimelineRoutes () {
+  return rootRoutes(
+    <Route path='t/:tenantId'>
+      <Route path='timeline' element={<TenantNavigate replace to='/timeline/activities' />} />
+      <Route path='timeline/:activeTab' element={<Timeline />} />
     </Route>
   )
 }

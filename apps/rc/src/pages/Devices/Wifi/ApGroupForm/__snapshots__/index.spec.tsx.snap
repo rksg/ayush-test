@@ -138,7 +138,7 @@ exports[`AP Group Form - Add should render correctly 1`] = `
                   type="text"
                 />
                 <div
-                  class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+                  class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
                 >
                   <div
                     class="ant-row"
@@ -683,7 +683,7 @@ exports[`AP Group Form - Add should render correctly 1`] = `
             style="margin-right: 12px;"
           >
             <button
-              class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 kkpPZG"
+              class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 bxQmA-d"
               type="button"
             >
               <span>
@@ -695,7 +695,7 @@ exports[`AP Group Form - Add should render correctly 1`] = `
             class="ant-space-item"
           >
             <button
-              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
               type="button"
             >
               <span>

@@ -1,7 +1,11 @@
 /* eslint-disable max-len */
-import { isEqual, includes } from 'lodash'
+import { PhoneNumberType, PhoneNumberUtil } from 'google-libphonenumber'
+import { isEqual, includes }                from 'lodash'
 
 import { getIntl, validationMessages } from '@acx-ui/utils'
+
+
+const Netmask = require('netmask').Netmask
 
 export function networkWifiIpRegExp (value: string) {
   const { $t } = getIntl()
@@ -320,4 +324,101 @@ export function emailRegExp (value: string) {
   return Promise.resolve()
 }
 
+export function phoneRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp (/^[+][1-9]{1,3}\s?([0-9s-]|[- ]){10,16}$/)
 
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.phoneNumber))
+  }
+
+  if (value && !ValidatePhoneNumber(value)){
+    return Promise.reject($t(validationMessages.phoneNumber))
+  }
+  return Promise.resolve()
+}
+
+export function ValidatePhoneNumber (phoneNumber: string) {
+  const phoneNumberUtil = PhoneNumberUtil.getInstance()
+  let number
+  let phoneNumberType
+  try {
+    number = phoneNumberUtil.parse(phoneNumber, '')
+    phoneNumberType = phoneNumberUtil.getNumberType(number)
+  } catch (e) {
+    return false
+  }
+  if (!number) {
+    return false
+  } else {
+    if (!phoneNumberUtil.isValidNumber(number) ||
+      (phoneNumberType !== PhoneNumberType.MOBILE && phoneNumberType !== PhoneNumberType.FIXED_LINE_OR_MOBILE)) {
+      return false
+    }
+  }
+  return true
+}
+
+export function validateRadioChannel (channelMethod: string | undefined, channels: string[]){
+  if(typeof channelMethod === 'undefined'){
+    return
+  }
+
+  const { $t } = getIntl()
+  if(channels.length === 0){
+    if(channelMethod === 'MANUAL'){
+      return Promise.reject($t({ defaultMessage: 'Please select one channel' }))
+    }else{
+      return Promise.reject($t({ defaultMessage: 'Please select at least two channels' }))
+    }
+  }
+  if(channelMethod === 'MANUAL'){
+    if (channels.length !== 1) {
+      return Promise.reject($t(validationMessages.oneRadioChannel))
+    }
+  }else{
+    if (channels.length < 2) {
+      return Promise.reject($t(validationMessages.twoRadioChannels))
+    }
+  }
+  return Promise.resolve()
+}
+
+export const convertIpToLong = (ipAddress: string): number => {
+  const ipArray = ipAddress.split('.').map(ip => parseInt(ip, 10))
+  return ipArray[0] * 16777216 + ipArray[1] * 65536 + ipArray[2] * 256 + ipArray[3]
+}
+
+export function countIpRangeSize (startIpAddress: string, endIpAddress: string) {
+  const { $t } = getIntl()
+  const maxRange = 1000
+
+  const startLong = convertIpToLong(startIpAddress)
+  const endLong = convertIpToLong(endIpAddress)
+
+  const numIp = endLong - startLong + 1
+
+  if (numIp <= 0) {
+    return Promise.reject($t(validationMessages.ipRangeInvalid))
+  } else if (numIp > maxRange) {
+    return Promise.reject($t(validationMessages.ipRangeExceed, { range: maxRange }))
+  }
+  return Promise.resolve()
+}
+
+export function IpInSubnetPool (ipAddress: string, subnetAddress:string, subnetMask:string) {
+  const { $t } = getIntl()
+  const getSubnetInfo = (ipAddress: string, subnetMask: string) => {
+    return new Netmask(ipAddress + '/' + subnetMask)
+  }
+
+  const subnetInfo = getSubnetInfo(subnetAddress, subnetMask)
+  const firstIpLong = convertIpToLong(subnetInfo.first)
+  const lastIpLong = convertIpToLong(subnetInfo.last)
+  const testIpLong = convertIpToLong(ipAddress)
+
+  if (testIpLong < firstIpLong || testIpLong > lastIpLong) {
+    return Promise.reject($t(validationMessages.ipNotInSubnetPool))
+  }
+  return Promise.resolve()
+}

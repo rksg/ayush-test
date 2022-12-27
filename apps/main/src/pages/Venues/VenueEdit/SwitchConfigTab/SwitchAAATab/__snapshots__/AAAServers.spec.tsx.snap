@@ -3,7 +3,7 @@
 exports[`AAAServers should render RADIUS list correctly and edit row data 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
       class="styledComponents__AAAServers-sc-1m2ni0r-0 ZnKYN"
@@ -25,7 +25,7 @@ exports[`AAAServers should render RADIUS list correctly and edit row data 1`] = 
             >
               <svg
                 class="ant-collapse-arrow"
-                data-testid="CollapseActive"
+                data-testid="CollapseInactive"
               />
             </div>
             <span
@@ -41,20 +41,20 @@ exports[`AAAServers should render RADIUS list correctly and edit row data 1`] = 
               class="ant-collapse-content-box"
             >
               <div
-                class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+                class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
               >
                 <div
                   class="styledComponents__Wrapper-sc-1abm7iv-13 gzZsiC"
                 >
                   <div
                     class="ant-space ant-space-horizontal ant-space-align-center"
-                    style="display: flex; justify-content: flex-end;"
+                    style="display: flex; justify-content: flex-end; margin: 3px 0px;"
                   >
                     <div
                       class="ant-space-item"
                     >
                       <button
-                        class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                        class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
                         type="button"
                       >
                         <span>
@@ -618,7 +618,7 @@ exports[`AAAServers should render RADIUS list correctly and edit row data 1`] = 
             >
               <svg
                 class="ant-collapse-arrow"
-                data-testid="CollapseActive"
+                data-testid="CollapseInactive"
               />
             </div>
             <span
@@ -634,20 +634,20 @@ exports[`AAAServers should render RADIUS list correctly and edit row data 1`] = 
               class="ant-collapse-content-box"
             >
               <div
-                class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+                class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
               >
                 <div
                   class="styledComponents__Wrapper-sc-1abm7iv-13 gzZsiC"
                 >
                   <div
                     class="ant-space ant-space-horizontal ant-space-align-center"
-                    style="display: flex; justify-content: flex-end;"
+                    style="display: flex; justify-content: flex-end; margin: 3px 0px;"
                   >
                     <div
                       class="ant-space-item"
                     >
                       <button
-                        class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                        class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
                         type="button"
                       >
                         <span>
@@ -953,7 +953,7 @@ exports[`AAAServers should render RADIUS list correctly and edit row data 1`] = 
             >
               <svg
                 class="ant-collapse-arrow"
-                data-testid="CollapseActive"
+                data-testid="CollapseInactive"
               />
             </div>
             <span
@@ -969,20 +969,20 @@ exports[`AAAServers should render RADIUS list correctly and edit row data 1`] = 
               class="ant-collapse-content-box"
             >
               <div
-                class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+                class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
               >
                 <div
                   class="styledComponents__Wrapper-sc-1abm7iv-13 gzZsiC"
                 >
                   <div
                     class="ant-space ant-space-horizontal ant-space-align-center"
-                    style="display: flex; justify-content: flex-end;"
+                    style="display: flex; justify-content: flex-end; margin: 3px 0px;"
                   >
                     <div
                       class="ant-space-item"
                     >
                       <button
-                        class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                        class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
                         type="button"
                       >
                         <span>
@@ -1241,7 +1241,7 @@ exports[`AAAServers should render RADIUS list correctly and edit row data 1`] = 
 exports[`AAAServers should render empty lists and alert message correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
       class="styledComponents__AAAServers-sc-1m2ni0r-0 ZnKYN"
@@ -1282,7 +1282,7 @@ exports[`AAAServers should render empty lists and alert message correctly 1`] = 
             >
               <svg
                 class="ant-collapse-arrow"
-                data-testid="CollapseActive"
+                data-testid="CollapseInactive"
               />
             </div>
             <span
@@ -1298,20 +1298,20 @@ exports[`AAAServers should render empty lists and alert message correctly 1`] = 
               class="ant-collapse-content-box"
             >
               <div
-                class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+                class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
               >
                 <div
                   class="styledComponents__Wrapper-sc-1abm7iv-13 gzZsiC"
                 >
                   <div
                     class="ant-space ant-space-horizontal ant-space-align-center"
-                    style="display: flex; justify-content: flex-end;"
+                    style="display: flex; justify-content: flex-end; margin: 3px 0px;"
                   >
                     <div
                       class="ant-space-item"
                     >
                       <button
-                        class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                        class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
                         type="button"
                       >
                         <span>
@@ -1617,7 +1617,7 @@ exports[`AAAServers should render empty lists and alert message correctly 1`] = 
             >
               <svg
                 class="ant-collapse-arrow"
-                data-testid="CollapseActive"
+                data-testid="CollapseInactive"
               />
             </div>
             <span
@@ -1633,20 +1633,20 @@ exports[`AAAServers should render empty lists and alert message correctly 1`] = 
               class="ant-collapse-content-box"
             >
               <div
-                class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+                class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
               >
                 <div
                   class="styledComponents__Wrapper-sc-1abm7iv-13 gzZsiC"
                 >
                   <div
                     class="ant-space ant-space-horizontal ant-space-align-center"
-                    style="display: flex; justify-content: flex-end;"
+                    style="display: flex; justify-content: flex-end; margin: 3px 0px;"
                   >
                     <div
                       class="ant-space-item"
                     >
                       <button
-                        class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                        class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
                         type="button"
                       >
                         <span>
@@ -1952,7 +1952,7 @@ exports[`AAAServers should render empty lists and alert message correctly 1`] = 
             >
               <svg
                 class="ant-collapse-arrow"
-                data-testid="CollapseActive"
+                data-testid="CollapseInactive"
               />
             </div>
             <span
@@ -1968,20 +1968,20 @@ exports[`AAAServers should render empty lists and alert message correctly 1`] = 
               class="ant-collapse-content-box"
             >
               <div
-                class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+                class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
               >
                 <div
                   class="styledComponents__Wrapper-sc-1abm7iv-13 gzZsiC"
                 >
                   <div
                     class="ant-space ant-space-horizontal ant-space-align-center"
-                    style="display: flex; justify-content: flex-end;"
+                    style="display: flex; justify-content: flex-end; margin: 3px 0px;"
                   >
                     <div
                       class="ant-space-item"
                     >
                       <button
-                        class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                        class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
                         type="button"
                       >
                         <span>

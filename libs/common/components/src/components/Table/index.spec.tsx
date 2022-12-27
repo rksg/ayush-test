@@ -24,7 +24,8 @@ type TestRow = {
   key: string,
   name: string,
   age: number,
-  address: string
+  address: string,
+  isFirstLevel?: boolean
 }
 
 describe('Table component', () => {
@@ -300,6 +301,52 @@ describe('Table component', () => {
     expect(onChange).toBeCalledTimes(2)
   })
 
+  it('Repeated key data: rowKey funciton single select row click', async () => {
+    const treeData = [
+      { key: '1',
+        name: 'John Doe',
+        age: 32,
+        address: 'sample address',
+        isFirstLevel: true,
+        children: [
+          {
+            key: '1',
+            name: 'Will Smith',
+            age: 32,
+            address: 'sample address',
+            isFirstLevel: false
+          }
+        ]
+      },
+      { key: '2',
+        name: 'Jane Doe',
+        age: 32,
+        address: 'sample address',
+        isFirstLevel: true
+      }
+    ]
+    const onChange = jest.fn()
+    render(<Table
+      columns={testColumns}
+      dataSource={treeData}
+      rowKey={(record)=> record.key + (!record.isFirstLevel ? 'child' : '')}
+      rowSelection={{ type: 'radio', onChange }}
+    />)
+
+    const tbody = (await screen.findAllByRole('rowgroup'))
+      .find(element => element.classList.contains('ant-table-tbody'))!
+
+    expect(tbody).toBeVisible()
+
+    const body = within(tbody)
+    fireEvent.click(await body.findByText(testData[1].name))
+    // to ensure it doesn't get unselected
+    fireEvent.click(await body.findByText(testData[1].name))
+    const selectedRow = (await body.findAllByRole('radio')) as HTMLInputElement[]
+    expect(selectedRow.filter(el => el.checked)).toHaveLength(1)
+    expect(onChange).toBeCalledTimes(1)
+  })
+
   it('calls onResetState', async () => {
     const reset = jest.fn()
     render(<Table
@@ -344,6 +391,23 @@ describe('Table component', () => {
     expect(actions[0].onClick).not.toBeCalled()
     fireEvent.click(action1)
     expect(actions[0].onClick).toBeCalled()
+  })
+
+  it('renders disabled action items', async () => {
+    const actions = [
+      { label: 'Action 1', disabled: true, onClick: jest.fn() },
+      { label: 'Action 2', disabled: true, onClick: jest.fn() }
+    ]
+
+    render(<Table
+      actions={actions}
+      columns={testColumns}
+      dataSource={testData}
+    />)
+
+    const action1 = await screen.findByRole('button', { name: actions[0].label })
+    expect(action1).toBeVisible()
+    expect(actions[0].onClick).not.toBeCalled()
   })
 
   it('hides rowAction when visible == false', async () => {
