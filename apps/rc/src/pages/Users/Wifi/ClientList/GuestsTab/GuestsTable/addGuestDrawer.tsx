@@ -315,6 +315,20 @@ export function GuestFields ({ withBasicFields = true }: { withBasicFields?: boo
     })
   }
 
+  const onUnitChange = (value: string) => {
+    form.setFields([{ name: ['expiration', 'duration'], value: value === 'Day' ? 7 : 24, errors: [] }])
+  }
+
+  const durationValidator = (value: number) => {
+    const unit = form.getFieldValue(['expiration', 'unit'])
+    if (unit === 'Day' && (value < 1 || value > 365)) {
+      return Promise.reject($t({ defaultMessage: 'Value must be between 1 and 365' }))
+    } else if (unit === 'Hour' && (value < 1 || value > 8760)) {
+      return Promise.reject($t({ defaultMessage: 'Value must be between 1 and 8760' }))
+    }
+    return Promise.resolve()
+  }
+
   return (<>
     { withBasicFields === true && (<>
       <Form.Item
@@ -384,16 +398,11 @@ export function GuestFields ({ withBasicFields = true }: { withBasicFields?: boo
           name={['expiration', 'duration']}
           label={$t({ defaultMessage: 'Pass is Valid for' })}
           rules={[
-            { required: true },
             {
-              type: 'number',
-              max: 365,
-              min: 1,
-              message: $t({
-                defaultMessage:
-                  'Primary WAN Recovery Timer must be between 10 and 300'
-              })
-            }
+              required: true,
+              message: $t({ defaultMessage: 'This field is required' })
+            },
+            { validator: (_, value) => durationValidator(value) }
           ]}
           initialValue={7}
           children={<InputNumber style={{ width: '100%' }}/>}
@@ -407,6 +416,7 @@ export function GuestFields ({ withBasicFields = true }: { withBasicFields?: boo
           initialValue={'Day'}
           children={<Select
             options={timeTypeValidPassOptions}
+            onChange={onUnitChange}
           />}
           style={{ paddingLeft: '5px' }}
         />
