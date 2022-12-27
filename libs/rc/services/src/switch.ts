@@ -15,7 +15,8 @@ import {
   onSocketActivityChanged,
   showActivityMessage,
   SwitchRow,
-  StackMember
+  StackMember,
+  VeViewModel
 } from '@acx-ui/rc/utils'
 
 export const baseSwitchApi = createApi({
@@ -149,6 +150,24 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
+    getSwitchRoutedList: build.query<TableResult<VeViewModel>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getSwitchRoutedList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    getVenueRoutedList: build.query<TableResult<VeViewModel>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getVenueRoutedList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     saveSwitch: build.mutation<Switch, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(SwitchUrlsInfo.addSwitch, params)
@@ -236,5 +255,7 @@ export const {
   useAddSwitchMutation,
   useAddStackMemberMutation,
   useGetSwitchListQuery,
-  useLazyGetSwitchListQuery
+  useLazyGetSwitchListQuery,
+  useGetVenueRoutedListQuery,
+  useGetSwitchRoutedListQuery
 } = switchApi

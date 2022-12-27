@@ -83,6 +83,25 @@ export class Switch {
   }
 }
 
+export interface VeViewModel {
+  name?: string
+  dhcpRelayAgent?: string
+  defaultVlan: boolean
+  deviceStatus: SwitchStatusEnum
+  id: string
+  ipAddress: string
+  ipAddressType?: IP_ADDRESS_TYPE
+  ipSubnetMask?: string
+  ospfArea?: string
+  stack: boolean
+  switchId: string
+  switchName?: string
+  syncedSwitchConfig: boolean
+  veId: number
+  vlanId: number
+  portTyp : string //ignore
+}
+
 export class SwitchViewModel extends Switch {
   type?: string
   configReady = false

@@ -64,5 +64,13 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   addStackMember: {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/switch/:stackSerialNumber/member/:newStackMemberSerialNumber'
+  },
+  getSwitchRoutedList: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/vePort/switch/:switchId/query'
+  },
+  getVenueRoutedList: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/vePort/venue/:venueId/query'
   }
 }
