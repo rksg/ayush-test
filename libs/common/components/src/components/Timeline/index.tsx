@@ -8,8 +8,6 @@ import {
   Pending,
   CancelCircleSolid,
   CheckMarkCircleSolid,
-  StepPoint,
-  StepPointEmpty,
   PlusSquareSolid,
   MinusSquareSolid
 }                    from '@acx-ui/icons'
@@ -23,7 +21,8 @@ import {
   ExpanderWrapper,
   WithExpanderWrapper,
   Wrapper,
-  Status
+  Status,
+  Step
 } from './styledComponents'
 
 interface StatusIconProps { status: Status}
@@ -84,12 +83,12 @@ const Timeline = (props: TimelineProps) => {
       {props.items.map((item, index)=>[
         <AntTimeline.Item
           key={`timeline-start-${index}`}
-          dot={item.startDatetime ? <StepPoint/> : <StepPointEmpty/>}>
+          dot={<Step $state={item.startDatetime ? 'current' : 'previous'} />}>
           {item.startDatetime ? formatter('dateTimeFormatWithSeconds')(item.startDatetime) : '--'}
         </AntTimeline.Item>,
         <AntTimeline.Item
           key={`timeline-end-${index}`}
-          dot={item.endDatetime ? <StepPoint/> : <StepPointEmpty/>}>
+          dot={<Step $state={item.endDatetime ? 'current' : 'previous'} />}>
           <ItemWrapper>
             {item.endDatetime ? formatter('dateTimeFormatWithSeconds')(item.endDatetime) : '--'}
             <ContentWrapper>

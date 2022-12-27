@@ -1,4 +1,4 @@
-import styled from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 
 export type Status = 'PENDING' | 'INPROGRESS' | 'SUCCESS' | 'FAIL' | 'OFFLINE'
 
@@ -68,6 +68,43 @@ export const StatusWrapper = styled.div<{ status: Status }>`
   line-height: var(--acx-body-4-line-height);
   font-weight: var(--acx-body-font-weight-bold);
   color: ${(props) => getStatusColor(props.status)};
+`
+
+const stepStyle = {
+  previous: css`
+    --dot-size: calc(var(--size) / 2);
+    width: var(--dot-size);
+    height: var(--dot-size);
+  `,
+  current: css`
+    --dot-size: var(--size);
+    width: var(--dot-size);
+    height: var(--dot-size);
+  `,
+  future: css``
+}
+export const Step = styled.div<{ $state: 'previous' | 'current' | 'future' }>`
+  --size: 8px;
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  border: 1px solid var(--acx-accents-orange-50);
+  background-color: var(--acx-primary-white);
+
+  position: relative;
+  &:before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    background-color: var(--acx-accents-orange-50);
+
+    ${props => stepStyle[props.$state]}
+  }
 `
 
 export const DescriptionWrapper = styled.div`
