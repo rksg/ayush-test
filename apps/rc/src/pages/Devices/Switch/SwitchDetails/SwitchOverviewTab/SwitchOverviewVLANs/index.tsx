@@ -11,12 +11,12 @@ import {
 } from '@acx-ui/components'
 import { useGetVlanListBySwitchLevelQuery }                                                         from '@acx-ui/rc/services'
 import { Vlan, transformTitleCase, useTableQuery, transformDisplayOnOff, SpanningTreeProtocolName } from '@acx-ui/rc/utils'
-import {  useParams }                                                                               from '@acx-ui/react-router-dom'
+
+import { VlanDetail } from './vlanDetail'
 
 
 export function SwitchOverviewVLANs () {
   const { $t } = useIntl()
-  const { tenantId, switchId } = useParams()
   const [currentRow, setCurrentRow] = useState({} as Vlan)
   const [drawerVisible, setDrawerVisible] = useState(false)
 
@@ -126,13 +126,12 @@ export function SwitchOverviewVLANs () {
         title={$t({ defaultMessage: 'View VLAN' })}
         visible={drawerVisible}
         onClose={onClose}
-        width={443}
         mask={false}
-      // children={
-      //   <AclDetail
-      //     row={currentRow}
-      //   />
-      // }
+        children={
+          <VlanDetail
+            row={currentRow}
+          />
+        }
       />
 
     </Loader>
