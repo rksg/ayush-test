@@ -54,7 +54,7 @@ describe('RadioSettingsTab', () => {
     )
   })
   it('should render correctly', async () => {
-    const { asFragment } = render(
+    render(
       <Provider>
         <ApEditContext.Provider value={{
           editContextData: {
@@ -81,7 +81,6 @@ describe('RadioSettingsTab', () => {
     fireEvent.click((await screen.findAllByTitle('Auto'))[0])
     fireEvent.click(await screen.findByRole('button', { name: 'Use Venue Settings' }))
 
-    expect(asFragment()).toMatchSnapshot()
     fireEvent.click(await screen.findByRole('button', { name: 'Apply Radio' }))
   })
   it('should render correctly with Auto bandwidth', async () => {
