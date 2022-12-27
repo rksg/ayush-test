@@ -1,10 +1,10 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { useIsSplitOn, Features }                  from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo, Dashboard, EdgeUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                from '@acx-ui/store'
-import { mockServer, render, screen }              from '@acx-ui/test-utils'
+import { fireEvent, mockServer, render, screen }   from '@acx-ui/test-utils'
 
 import { VenueDetails } from '../'
 
@@ -12,6 +12,12 @@ import { mockEdgeList } from './__tests__/fixtures'
 
 import { VenueDevicesTab } from '.'
 
+
+const mockedUsedNavigate = jest.fn()
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockedUsedNavigate
+}))
 
 const data: Dashboard = {
   summary: {
@@ -265,11 +271,11 @@ const meshData = {
 
 describe('VenueMeshAps', () => {
   let params: { tenantId: string, venueId: string, activeTab: string }
-  jest.mocked(useIsSplitOn).mockImplementation((feature: string) => {
-    return feature === Features.EDGES ? false: true
-  })
-
   beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockImplementation((feature: string) => {
+      return feature === Features.EDGES ? false: true
+    })
+
     mockServer.use(
       rest.get(
         CommonUrlsInfo.getDashboardOverview.url,
@@ -300,7 +306,6 @@ describe('VenueMeshAps', () => {
     expect(asFragment()).toMatchSnapshot()
 
     await screen.findByText('R710')
-
   })
 })
 
@@ -308,6 +313,8 @@ describe('Venue device tab', () => {
   let params: { tenantId: string, venueId: string, activeTab: string, activeSubTab: string }
 
   beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
     mockServer.use(
       rest.post(
         EdgeUrlsInfo.getEdgeList.url,
@@ -323,6 +330,23 @@ describe('Venue device tab', () => {
     }
   })
 
+  it('should direct to other tab correctly', async () => {
+    render(
+      <Provider>
+        <VenueDevicesTab />
+      </Provider>, {
+        route: { params, path: '/:tenantId/venues/:venueId/venue-details/:activeTab/:activeSubTab' }
+      })
+
+    const tab = await screen.findByRole('tab', { name: 'Switch' })
+    fireEvent.click(tab)
+
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      pathname: `/t/${params.tenantId}/venues/${params.venueId}/venue-details/devices/switch`,
+      hash: '',
+      search: ''
+    })
+  })
 
   it('should render edge list correctly', async () => {
     render(
