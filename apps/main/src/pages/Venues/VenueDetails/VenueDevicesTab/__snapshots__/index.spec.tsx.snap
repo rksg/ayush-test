@@ -80,7 +80,7 @@ exports[`VenueMeshAps should render correctly 1`] = `
                       placeholder="Start date"
                       readonly=""
                       size="19"
-                      value="Dec 25 2022 10:17"
+                      value="Dec 26 2022 01:54"
                     />
                   </div>
                   <div
@@ -119,7 +119,7 @@ exports[`VenueMeshAps should render correctly 1`] = `
                       placeholder="End date"
                       readonly=""
                       size="19"
-                      value="Dec 26 2022 10:17"
+                      value="Dec 27 2022 01:54"
                     />
                   </div>
                   <div
