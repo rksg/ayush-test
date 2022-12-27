@@ -3,6 +3,7 @@ import { rest } from 'msw'
 import { PortalUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }       from '@acx-ui/store'
 import {
+  findTBody,
   mockServer,
   render,
   screen,
@@ -149,9 +150,7 @@ describe('Portal Detail Page', () => {
     })
     expect(await screen.findByText('English')).toBeVisible()
     expect(await screen.findByText((`Instances (${list.data.length})`))).toBeVisible()
-    const body = await screen.findByRole('rowgroup', {
-      name: (_, element) => element.classList.contains('ant-table-tbody')
-    })
+    const body = await findTBody()
     await waitFor(() => expect(within(body).getAllByRole('row')).toHaveLength(4))
   })
 })
