@@ -74,9 +74,7 @@ describe('CaptiveNetworkForm-ClickThrough', () => {
   const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', action: 'edit' }
 
   it('should test Click through network successfully', async () => {
-    const { asFragment } = render(<Provider><NetworkForm /></Provider>, { route: { params } })
-    expect(asFragment()).toMatchSnapshot()
-
+    render(<Provider><NetworkForm /></Provider>, { route: { params } })
     await fillInBeforeSettings('Click through network test')
 
     await userEvent.click(await screen.findByRole('checkbox', { name: /Redirect users to/ }))

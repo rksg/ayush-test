@@ -90,11 +90,9 @@ describe('PortalForm', () => {
         })
     )
 
-    const { asFragment } = render(<Provider><PortalForm editMode={true}/></Provider>, {
+    render(<Provider><PortalForm editMode={true}/></Provider>, {
       route: { params }
     })
-
-    expect(asFragment()).toMatchSnapshot()
     fillInBeforeSettings('open portal edit test')
 
     await screen.findByRole('heading', { level: 3, name: 'Settings' })
@@ -129,11 +127,10 @@ describe('PortalForm', () => {
         })
     )
 
-    const { asFragment } = render(<Provider><PortalForm editMode={true}/></Provider>, {
+    render(<Provider><PortalForm editMode={true}/></Provider>, {
       route: { params }
     })
 
-    expect(asFragment()).toMatchSnapshot()
     fillInBeforeSettings('open portal edit test')
 
     await screen.findByRole('heading', { level: 3, name: 'Settings' })

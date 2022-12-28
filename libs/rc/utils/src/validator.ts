@@ -76,17 +76,11 @@ export function domainsNameRegExp (value: string[], required: boolean) {
   const { $t } = getIntl()
   // eslint-disable-next-line max-len
   const re = new RegExp(/^(\*(\.[0-9A-Za-z]{1,63})+(\.\*)?|([0-9A-Za-z]{1,63}\.)+\*|([0-9A-Za-z]{1,63}(\.[0-9A-Za-z]{1,63})+))$/)
-  let checkPromise = Promise.resolve()
-  value&&value.every(domain => {
-    if (required && !re.test(domain)) {
-      checkPromise = Promise.reject($t(validationMessages.invalid))
-      return false
-    }else{
-      return true
-    }
+  const isValid = value?.every(domain => {
+    return !(required && !re.test(domain))
   })
 
-  return checkPromise
+  return isValid ? Promise.resolve() : Promise.reject($t(validationMessages.invalid))
 }
 
 export function walledGardensRegExp (value:string) {

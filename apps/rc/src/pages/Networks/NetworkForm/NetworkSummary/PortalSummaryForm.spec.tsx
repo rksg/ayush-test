@@ -2,8 +2,8 @@ import '@testing-library/jest-dom'
 
 import { Form } from 'antd'
 
-import { Provider } from '@acx-ui/store'
-import { render }   from '@acx-ui/test-utils'
+import { Provider }       from '@acx-ui/store'
+import { render, screen } from '@acx-ui/test-utils'
 
 import {
   guestpassData,
@@ -23,7 +23,7 @@ const portalData = portalList[0].content
 describe('PortalSummaryForm', () => {
   it('should render host approval successfully', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
-    const { asFragment } = render(
+    render(
       <Provider>
         <Form>
           <PortalSummaryForm summaryData={hostapprovalData} portalData={portalData}/>
@@ -33,13 +33,12 @@ describe('PortalSummaryForm', () => {
         route: { params }
       }
     )
-
-    expect(asFragment()).toMatchSnapshot()
+    expect(await screen.findByText('Host Domains')).toBeVisible()
   })
 
   it('should render guest pass successfully', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
-    const { asFragment } = render(
+    render(
       <Provider>
         <Form>
           <PortalSummaryForm summaryData={guestpassData} portalData={portalData}/>
@@ -49,13 +48,12 @@ describe('PortalSummaryForm', () => {
         route: { params }
       }
     )
-
-    expect(asFragment()).toMatchSnapshot()
+    expect(await screen.findByText('English')).toBeVisible()
   })
 
   it('should render self sign in successfully', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
-    const { asFragment } = render(
+    render(
       <Provider>
         <Form>
           <PortalSummaryForm summaryData={selfsignData} portalData={portalData}/>
@@ -65,13 +63,12 @@ describe('PortalSummaryForm', () => {
         route: { params }
       }
     )
-
-    expect(asFragment()).toMatchSnapshot()
+    expect(await screen.findByText('Sign-in Option')).toBeVisible()
   })
 
   it('should render wispr none successfully', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
-    const { asFragment } = render(
+    render(
       <Provider>
         <Form>
           <PortalSummaryForm summaryData={wisprDataNone} portalData={portalData}/>
@@ -81,13 +78,13 @@ describe('PortalSummaryForm', () => {
         route: { params }
       }
     )
-
-    expect(asFragment()).toMatchSnapshot()
+    expect(await screen.findByText('Portal Provider'))
+      .toBeVisible()
   })
 
   it('should render wispr wpa23 successfully', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
-    const { asFragment } = render(
+    render(
       <Provider>
         <Form>
           <PortalSummaryForm summaryData={wisprDataWPA23} portalData={portalData}/>
@@ -97,13 +94,13 @@ describe('PortalSummaryForm', () => {
         route: { params }
       }
     )
-
-    expect(asFragment()).toMatchSnapshot()
+    expect(await screen.findByText('Portal Provider'))
+      .toBeVisible()
   })
 
   it('should render wispr wep successfully', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
-    const { asFragment } = render(
+    render(
       <Provider>
         <Form>
           <PortalSummaryForm summaryData={wisprDataWep} portalData={portalData}/>
@@ -113,8 +110,8 @@ describe('PortalSummaryForm', () => {
         route: { params }
       }
     )
-
-    expect(asFragment()).toMatchSnapshot()
+    expect(await screen.findByText('Portal Provider'))
+      .toBeVisible()
   })
   it('should render wispr wpa2 successfully', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
@@ -130,6 +127,7 @@ describe('PortalSummaryForm', () => {
         route: { params }
       }
     )
-
+    expect(await screen.findByText('Portal Provider'))
+      .toBeVisible()
   })
 })

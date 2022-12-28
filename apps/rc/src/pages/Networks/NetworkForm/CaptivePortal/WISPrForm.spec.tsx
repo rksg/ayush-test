@@ -56,13 +56,12 @@ describe('CaptiveNetworkForm-WISPr', () => {
   const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', action: 'edit' }
 
   it('should test WISPr network successfully', async () => {
-    const { asFragment } = render(<Provider><NetworkFormContext.Provider
+    render(<Provider><NetworkFormContext.Provider
       value={{
         editMode: true, cloneMode: true, data: wisprDataWPA2
       }}
     ><StepsForm><StepsForm.StepForm><WISPrForm /></StepsForm.StepForm>
       </StepsForm></NetworkFormContext.Provider></Provider>, { route: { params } })
-    expect(asFragment()).toMatchSnapshot()
     await userEvent.click((await screen.findAllByTitle('Select provider'))[0])
     await userEvent.click((await screen.findAllByTitle('Skyfii'))[0])
     await userEvent.click((await screen.findAllByTitle('Select Region'))[0])

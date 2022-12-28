@@ -45,15 +45,12 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
   const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', action: 'edit' }
 
   it('should test Self sign in network successfully', async () => {
-    const { asFragment } = render(<Provider><NetworkFormContext.Provider
+    render(<Provider><NetworkFormContext.Provider
       value={{
         editMode: true, cloneMode: true, data: selfsignData
       }}
     ><StepsForm><StepsForm.StepForm><SelfSignInForm /></StepsForm.StepForm>
       </StepsForm></NetworkFormContext.Provider></Provider>, { route: { params } })
-    expect(asFragment()).toMatchSnapshot()
-
-
     await userEvent.click(await screen.findByRole('checkbox',
       { name: /SMS Token/ }))
     await userEvent.click(await screen.findByRole('checkbox',
