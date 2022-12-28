@@ -56,7 +56,6 @@ export default function AddMdnsProxyInstanceDrawer (props: AddMdnsProxyInstanceD
           layout='vertical'
           form={form}
           preserve={false}
-          onFinish={onSave}
         >
           <ApSelector
             formItemProps={{
@@ -83,7 +82,7 @@ export default function AddMdnsProxyInstanceDrawer (props: AddMdnsProxyInstanceD
           onSave={async () => {
             try {
               await form.validateFields()
-              form.submit()
+              await onSave(form.getFieldsValue())
             } catch (error) {
               if (error instanceof Error) throw error
             }

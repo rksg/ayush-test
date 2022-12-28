@@ -50,7 +50,6 @@ export default function ChangeMdnsProxyDrawer (props: ChangeMdnsProxyDrawerProps
     <Form layout='vertical'
       form={form}
       preserve={false}
-      onFinish={onSave}
     >
       <MdnsProxySelector
         formItemProps={{
@@ -79,7 +78,7 @@ export default function ChangeMdnsProxyDrawer (props: ChangeMdnsProxyDrawerProps
           onSave={async () => {
             try {
               await form.validateFields()
-              form.submit()
+              await onSave(form.getFieldsValue())
             } catch (error) {
               if (error instanceof Error) throw error
             }
