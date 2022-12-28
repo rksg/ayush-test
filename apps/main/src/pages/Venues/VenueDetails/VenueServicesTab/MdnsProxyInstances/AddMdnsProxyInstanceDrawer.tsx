@@ -63,7 +63,6 @@ export default function AddMdnsProxyInstanceDrawer (props: AddMdnsProxyInstanceD
               name: 'apSerialNumber',
               rules: [{ required: true }]
             }}
-            allowClear={false}
             venueId={venueId}
           />
           <MdnsProxySelector
@@ -82,8 +81,12 @@ export default function AddMdnsProxyInstanceDrawer (props: AddMdnsProxyInstanceD
           })}
           onCancel={onClose}
           onSave={async () => {
-            await form.validateFields()
-            form.submit()
+            try {
+              await form.validateFields()
+              form.submit()
+            } catch (error) {
+              if (error instanceof Error) throw error
+            }
           }}
         />
       }

@@ -77,8 +77,12 @@ export default function ChangeMdnsProxyDrawer (props: ChangeMdnsProxyDrawerProps
           })}
           onCancel={onClose}
           onSave={async () => {
-            await form.validateFields()
-            form.submit()
+            try {
+              await form.validateFields()
+              form.submit()
+            } catch (error) {
+              if (error instanceof Error) throw error
+            }
           }}
         />
       }

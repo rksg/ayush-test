@@ -12,7 +12,6 @@ export interface ApSelectorProps {
   formItemProps?: FormItemProps
   placeholder?: string
   venueId?: string
-  allowClear?: boolean
 }
 
 const apListQueryDefaultPayload = {
@@ -28,8 +27,7 @@ export function ApSelector (props: ApSelectorProps) {
   const form = Form.useFormInstance()
   const {
     placeholder = $t({ defaultMessage: 'Select AP...' }),
-    venueId,
-    allowClear = true
+    venueId
   } = props
 
   const formItemProps = {
@@ -61,7 +59,7 @@ export function ApSelector (props: ApSelectorProps) {
           form.setFieldValue(formItemProps.name, selectedOptions![0])
           form.validateFields()
         }}
-        allowClear={allowClear}
+        allowClear={false}
       />
     </Form.Item>
   )
