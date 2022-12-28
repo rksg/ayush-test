@@ -20,7 +20,8 @@ import {
   TableResult,
   downloadFile,
   transformByte,
-  WifiUrlsInfo
+  WifiUrlsInfo,
+  RequestFormData
 } from '@acx-ui/rc/utils'
 import { convertEpochToRelativeTime, formatter } from '@acx-ui/utils'
 
@@ -28,7 +29,7 @@ export const baseClientApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'clientApi',
   refetchOnMountOrArgChange: true,
-  tagTypes: ['Client', 'Guest'],
+  tagTypes: ['Client', 'Guest', 'HistoricalClient'],
   endpoints: () => ({ })
 })
 
@@ -60,7 +61,8 @@ export const clientApi = baseClientApi.injectEndpoints({
         return clientListQuery.data
           ? { data: aggregatedList }
           : { error: clientListQuery.error as FetchBaseQueryError }
-      }
+      },
+      providesTags: [{ type: 'Client', id: 'LIST' }]
     }),
     getGuestsList: build.query<TableResult<Guest>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -194,7 +196,8 @@ export const clientApi = baseClientApi.injectEndpoints({
             })
           }
         }
-      }
+      },
+      providesTags: [{ type: 'HistoricalClient', id: 'LIST' }]
     }),
     getHistoricalStatisticsReports: build.query<ClientStatistic, RequestPayload>({
       query: ({ params, payload }) => {
@@ -224,6 +227,19 @@ export const clientApi = baseClientApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Guest', id: 'LIST' }]
+    }),
+    importGuestPass: build.mutation<{}, RequestFormData>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(ClientUrlsInfo.importGuestPass, params, {
+          'Content-Type': undefined,
+          'Accept': '*/*'
+        })
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Guest', id: 'LIST' }]
     })
   })
 })
@@ -267,11 +283,13 @@ export const {
   useGetHistoricalClientListQuery,
   useLazyGetHistoricalClientListQuery,
   useGetClientListQuery,
+  useLazyGetClientListQuery,
   useGetGuestsMutation,
   useDeleteGuestsMutation,
   useEnableGuestsMutation,
   useDisableGuestsMutation,
   useGenerateGuestPasswordMutation,
   useGetHistoricalStatisticsReportsQuery,
-  useLazyGetHistoricalStatisticsReportsQuery
+  useLazyGetHistoricalStatisticsReportsQuery,
+  useImportGuestPassMutation
 } = clientApi

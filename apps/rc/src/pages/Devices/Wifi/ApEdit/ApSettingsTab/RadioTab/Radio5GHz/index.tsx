@@ -68,11 +68,12 @@ export function Radio5GHz (props: { venueId: string, serialNumber: string }) {
       }
     })
 
-  const { allowedChannels } =
+  const { allowedChannels, manualChannel } =
     useGetApRadioQuery({ params: { tenantId, serialNumber } }, {
       selectFromResult ({ data }) {
         return {
-          allowedChannels: data?.apRadioParams50G?.allowedChannels || []
+          allowedChannels: data?.apRadioParams50G?.allowedChannels || [],
+          manualChannel: data?.apRadioParams50G.manualChannel
         }
       }
     })
@@ -128,10 +129,17 @@ export function Radio5GHz (props: { venueId: string, serialNumber: string }) {
     if(useVenueSettings){
       form.setFieldValue(['apRadioParams50G', 'allowedChannels'], allowedVenueChannels)
     }else{
-      if(allowedChannels.length > 0){
-        form.setFieldValue(['apRadioParams50G', 'allowedChannels'], allowedChannels)
+      if(channelMethod === 'MANUAL'){
+        setGroupSize(1)
+        form.setFieldValue(['apRadioParams50G', 'allowedChannels'],
+          manualChannel!== 0 ? [manualChannel?.toString()] : [])
+        form.validateFields([['apRadioParams50G', 'allowedChannels']])
       }else{
-        form.setFieldValue(['apRadioParams50G', 'allowedChannels'], allowedAPChannels)
+        if(allowedChannels.length > 0){
+          form.setFieldValue(['apRadioParams50G', 'allowedChannels'], allowedChannels)
+        }else{
+          form.setFieldValue(['apRadioParams50G', 'allowedChannels'], allowedAPChannels)
+        }
       }
     }
 
@@ -143,7 +151,7 @@ export function Radio5GHz (props: { venueId: string, serialNumber: string }) {
       }
 
       if(defaultChannelsData){
-        const channelBandwidthObject = Object.keys(defaultChannelsData['2.4GChannels'])
+        const channelBandwidthObject = Object.keys(defaultChannelsData['5GChannels']['indoor'])
           .filter(p => p.toUpperCase() === venueData?.channelBandwidth.toUpperCase())
         if(channelBandwidthObject.length > 0){
           setChannelBandwidthLabel(_.upperFirst(channelBandwidthObject[0]))
@@ -156,8 +164,8 @@ export function Radio5GHz (props: { venueId: string, serialNumber: string }) {
         setTxPowerLabel(Object.values(channelTxPowerObject[0].label.defaultMessage[0])[1])
       }
     }
-  }, [defaultChannelsData, channelBandwidth, allowedChannels, allowedAPChannels,
-    allowedVenueChannels, venueData, useVenueSettings])
+  }, [defaultChannelsData, channelBandwidth,
+    , venueData, useVenueSettings, channelMethod])
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function formatter (value: any) {
@@ -247,7 +255,7 @@ export function Radio5GHz (props: { venueId: string, serialNumber: string }) {
           }
         </Col>
       </Row>
-      {enable50G &&
+      {(useVenueSettings || enable50G) &&
       <Row gutter={20}>
         <Col span={24}>
           <div>{$t({ defaultMessage: 'Channel selection:' })}</div>
@@ -266,12 +274,13 @@ export function Radio5GHz (props: { venueId: string, serialNumber: string }) {
             groupSize={groupSize}
             channelList={defaultIndoorChannels.map(item => ({
               value: item,
-              selected: allowedChannels?.includes(item)
+              selected: false
             }))}
             displayBarSettings={['5G', 'DFS']}
             channelBars={indoorChannelBars}
             disabled={useVenueSettings}
             editContext={ApEditContext}
+            channelMethod={channelMethod}
           />
             }
           </div>

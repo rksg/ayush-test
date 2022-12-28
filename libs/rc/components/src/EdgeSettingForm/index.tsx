@@ -53,7 +53,7 @@ export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
           required: true
         }]}
       >
-        <Select options={venueOptions} />
+        <Select options={venueOptions} disabled={props.isEdit}/>
       </Form.Item>
       <Form.Item
         name='name'
