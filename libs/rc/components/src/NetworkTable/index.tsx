@@ -85,7 +85,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       key: 'clients',
       title: intl.$t({ defaultMessage: 'Clients' }),
       dataIndex: 'clients',
-      sorter: true,
+      sorter: false,
       align: 'center'
     },
     {
