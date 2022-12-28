@@ -10,7 +10,7 @@ import {
   showToast
 } from '@acx-ui/components'
 import { useGetDnsServersQuery, useUpdateDnsServersMutation } from '@acx-ui/rc/services'
-import { EdgeDnsServers }                                     from '@acx-ui/rc/utils'
+import { EdgeDnsServers, serverIpAddressRegExp }              from '@acx-ui/rc/utils'
 import {
   useNavigate, useParams, useTenantLink
 } from '@acx-ui/react-router-dom'
@@ -32,6 +32,19 @@ const DnsServer = () => {
   })
   const [updateDnsServers, { isLoading: isDnsServersUpdating }] = useUpdateDnsServersMutation()
 
+  useEffect(() => {
+    if(dnsServersData) {
+      formRef.current?.setFieldsValue({ ...dnsServersData })
+    }
+  }, [dnsServersData])
+
+  const havePrimary = (value: string) => {
+    if(value && !!!formRef.current?.getFieldValue('primary')) {
+      return Promise.reject($t({ defaultMessage: 'Must have primary DNS' }))
+    }
+    return Promise.resolve()
+  }
+
   const handleApplyDns = async (data: EdgeDnsServers) => {
     try {
       await updateDnsServers({ params: params, payload: data }).unwrap()
@@ -43,12 +56,6 @@ const DnsServer = () => {
       })
     }
   }
-
-  useEffect(() => {
-    if(dnsServersData) {
-      formRef.current?.setFieldsValue({ ...dnsServersData })
-    }
-  }, [dnsServersData])
 
   return (
     <StepsForm
@@ -67,12 +74,18 @@ const DnsServer = () => {
               <Form.Item
                 name='primary'
                 label={$t({ defaultMessage: 'Primary DNS Server' })}
-              >
-                <Input />
-              </Form.Item>
+                rules={[
+                  { validator: (_, value) => serverIpAddressRegExp(value) }
+                ]}
+                children={<Input />}
+              />
               <Form.Item
                 name='secondary'
                 label={$t({ defaultMessage: 'Secondary DNS Server' })}
+                rules={[
+                  { validator: (_, value) => serverIpAddressRegExp(value) },
+                  { validator: (_, value) => havePrimary(value) }
+                ]}
                 children={<Input />}
               />
             </Loader>
