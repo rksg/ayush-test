@@ -75,10 +75,8 @@ describe('MdnsProxyInstances', () => {
       }
     )
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
     const targetAp = mockedVenueApList[0]
-    const targetRow = screen.getByRole('row', { name: new RegExp(targetAp.apName) })
+    const targetRow = await screen.findByRole('row', { name: new RegExp(targetAp.apName) })
 
     await userEvent.click(within(targetRow).getByRole('radio'))
 
@@ -98,10 +96,8 @@ describe('MdnsProxyInstances', () => {
       }
     )
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
     const targetAp = mockedVenueApList[0]
-    const targetRow = screen.getByRole('row', { name: new RegExp(targetAp.apName) })
+    const targetRow = await screen.findByRole('row', { name: new RegExp(targetAp.apName) })
 
     await userEvent.click(within(targetRow).getByRole('switch'))
 
