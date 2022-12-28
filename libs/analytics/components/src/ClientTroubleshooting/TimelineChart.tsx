@@ -29,7 +29,6 @@ import {
 
 import type { ECharts, EChartsOption, SeriesOption } from 'echarts'
 import type { EChartsReactProps }                    from 'echarts-for-react'
-
 export interface Event {
   timestamp: string;
   event: string;
@@ -56,13 +55,11 @@ export interface TimelineChartProps
   data: Event[];
   chartBoundary: number[];
   selectedData?: number; // id
-  brushWidth?: number; // default 1 day = 24 * 60 * 60 * 1000
   onDotClick?: (params: unknown) => void;
   chartRef?: RefCallback<ReactECharts>;
-  title: string;
   hasXaxisLabel?: boolean;
   tooltipFormatter: TooltipFormatterCallback<TopLevelFormatterParams>;
-  mapping: { key: string; label: string; color: string }[];
+  mapping: { key: string; label: string; chartType: string }[];
   showResetZoom?: boolean
 }
 
@@ -195,6 +192,7 @@ export function TimelineChart ({
       trigger: 'axis',
       axisPointer: {
         axis: 'x',
+        status: 'show',
         animation: false,
         lineStyle: {
           color: cssStr('--acx-neutrals-70'),
@@ -204,8 +202,7 @@ export function TimelineChart ({
       },
       formatter: tooltipFormatter,
       ...tooltipOptions(),
-      position: (point) => [point[0] + 10, mapping.length * 30],
-      enterable: true
+      position: (point) => [point[0] + 10, mapping.length * 30]
     },
     xAxis: {
       ...xAxisOptions(),
@@ -219,8 +216,7 @@ export function TimelineChart ({
           axisLine: {
             show: true,
             lineStyle: {
-              color: '#D4D4D4',
-              width: 1,
+              color: cssStr('--acx-neutrals-30') ,
               type: 'solid'
             }
           }
@@ -289,9 +285,9 @@ export function TimelineChart ({
       .reverse()
       .slice()
       .map(
-        ({ key, label }) =>
+        ({ key, label, chartType }) =>
           ({
-            type: 'scatter',
+            type: chartType,
             name: label,
             symbol: 'circle',
             symbolSize: 8,
@@ -299,11 +295,11 @@ export function TimelineChart ({
             data: data
               .filter(
                 (record) =>
-                  record.seriesKey === key && record.type === 'connectionEvents'
+                  record.seriesKey === key
               )
               .map((record) => [record.start, record.seriesKey, record]),
             itemStyle: {
-              color: function (params) {
+              color: function (params: { data: Event[] }) {
                 const eventObj = Array.isArray(params.data)
                   ? params.data[2]
                   : ''
@@ -317,7 +313,7 @@ export function TimelineChart ({
               height: 20
             }
           } as SeriesOption)
-      )
+      ) as SeriesOption
   }
 
   return (

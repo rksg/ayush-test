@@ -199,17 +199,23 @@ export function TimeLine (props : TimeLineProps){
           {ClientTroubleShootingConfig.timeLine.map((config) => (
             <>
               <Col
-                span={2}
-                onClick={() =>
-                  onExpandToggle(
-                    config?.value,
-                    expandObj[config?.value as keyof TimelineData]
-                  )
-                }>
+                span={2}>
                 {expandObj[config?.value as keyof TimelineData] ? (
-                  <UI.StyledMinusSquareOutlined />
+                  <UI.StyledMinusSquareOutlined style={{ cursor: 'pointer' }}
+                    onClick={() =>
+                      onExpandToggle(
+                        config?.value,
+                        expandObj[config?.value as keyof TimelineData]
+                      )
+                    }/>
                 ) : (
-                  <UI.StyledPlusSquareOutlined />
+                  <UI.StyledPlusSquareOutlined style={{ cursor: 'pointer' }}
+                    onClick={() =>
+                      onExpandToggle(
+                        config?.value,
+                        expandObj[config?.value as keyof TimelineData]
+                      )
+                    }/>
                 )}
               </Col>
 
@@ -275,7 +281,6 @@ export function TimeLine (props : TimeLineProps){
                 }
                 hasXaxisLabel={config?.hasXaxisLabel}
                 chartRef={connectChart}
-                title={'test'}
                 tooltipFormatter={tooltipFormatter}
                 onDotClick={(params) => {
                   // eslint-disable-next-line no-console

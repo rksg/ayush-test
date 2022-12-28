@@ -25,7 +25,6 @@ export function useDataZoom<TChartData extends TimeSeriesChartData> (
   zoom?: TimeStampRange,
   onDataZoom?: (range: TimeStampRange, isReset: boolean) => void
 ): [boolean, () => void] {
-  console.log(data)
   const firstLastTimeStamp = useCallback((data: TChartData[]) => {
     const firstSeries = data[0].data
     const firstTimeStamp = firstSeries[0][0]
