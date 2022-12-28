@@ -6,7 +6,7 @@ import { FormFinishInfo } from 'rc-field-form/es/FormContext'
 import { useIntl }        from 'react-intl'
 
 
-import { Button, Drawer, showToast }                       from '@acx-ui/components'
+import { Drawer, showToast }                               from '@acx-ui/components'
 import { useAddPersonaMutation, useUpdatePersonaMutation } from '@acx-ui/rc/services'
 import { Persona }                                         from '@acx-ui/rc/utils'
 
@@ -25,8 +25,9 @@ export function PersonaDrawer (props: PersonaDrawerProps) {
   const { $t } = useIntl()
   const [form] = Form.useForm()
   const { isEdit, data, visible, onClose } = props
-  const [addPersona, addPersonaState] = useAddPersonaMutation()
-  const [updatePersona, updatePersonaState] = useUpdatePersonaMutation()
+  // FIXME: Add loading status on creating and updating
+  const [addPersona] = useAddPersonaMutation()
+  const [updatePersona] = useUpdatePersonaMutation()
 
   useEffect(()=> {
     // make sure that reset the form fields while close the Drawer
