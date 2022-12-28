@@ -281,7 +281,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
 
   }
 
-  const actions = !isViewMode() ?[{
+  const actions = !isViewMode() ? [{
     label: $t({ defaultMessage: 'Add' }),
     onClick: handleAddAction
   }] : []

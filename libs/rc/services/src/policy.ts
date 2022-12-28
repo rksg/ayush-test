@@ -18,8 +18,8 @@ import {
   showActivityMessage,
   AccessControlUrls,
   CommonResult,
-  l2AclPolicyInfoType, l3AclPolicyInfoType, AvcApp, AvcCat
-} from '@acx-ui/rc/utils'
+  l2AclPolicyInfoType, l3AclPolicyInfoType, AvcApp, AvcCat, DevicePolicy, devicePolicyInfoType
+} from '@acx-ui/rc/utils';
 
 export const basePolicyApi = createApi({
   baseQuery: fetchBaseQuery(),
@@ -82,6 +82,54 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+    }),
+    addDevicePolicy: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AccessControlUrls.addDevicePolicy, params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    getDevicePolicy: build.query<devicePolicyInfoType, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(AccessControlUrls.getDevicePolicy, params, RKS_NEW_UI)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+    }),
+    devicePolicyList: build.query<TableResult<DevicePolicy>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const devicePolicyListReq = createHttpRequest(
+          AccessControlUrls.getDevicePolicyList,
+          params
+        )
+        return {
+          ...devicePolicyListReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          console.log(msg)
+          const params = requestArgs.params as { requestId: string }
+          showActivityMessage(msg, [
+            'Add Device Policy Profile',
+            'Update Device Policy Profile',
+            'Delete Device Policy Profile',
+            'Delete Device Policy Profiles'
+          ], () => {
+            api.dispatch(policyApi.util.invalidateTags([
+              { type: 'Policy', id: 'LIST' }
+            ]))
+          }, params.requestId as string)
+        })
+      }
     }),
     getRoguePolicyList: build.query<RogueAPDetectionTempType[], RequestPayload>({
       query: ({ params }) => {
@@ -173,6 +221,9 @@ export const {
   useGetL2AclPolicyQuery,
   useAddL3AclPolicyMutation,
   useGetL3AclPolicyQuery,
+  useAddDevicePolicyMutation,
+  useGetDevicePolicyQuery,
+  useDevicePolicyListQuery,
   useGetRoguePolicyListQuery,
   useUpdateRoguePolicyMutation,
   useRoguePolicyQuery,

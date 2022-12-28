@@ -24,5 +24,17 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
   getAvcApp: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/capabilities/avc-app'
+  },
+  addDevicePolicy: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/device-policy'
+  },
+  getDevicePolicy: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/device-policy/:devicePolicyId'
+  },
+  getDevicePolicyList: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/device-policy/query'
   }
 }
