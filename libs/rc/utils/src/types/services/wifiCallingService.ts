@@ -25,7 +25,7 @@ export interface WifiCallingFormContextType {
   ePDG: EPDG[],
   networkIds: string[]
   networksName: string[],
-  epdgs?: EPDG[]
+  epdgs: EPDG[]
 }
 
 export interface EPDG {
@@ -46,6 +46,13 @@ export enum WifiCallingActionTypes {
   ADD_NETWORK_ID = 'ADD_NETWORK_ID',
   DELETE_NETWORK_ID = 'DELETE_NETWORK_ID',
   UPDATE_STATE = 'UPDATE_STATE'
+}
+
+export enum WifiCallingQosPriority {
+  WIFICALLING_PRI_VOICE = 'Voice',
+  WIFICALLING_PRI_VIDEO = 'Video',
+  WIFICALLING_PRI_BE = 'Best Effort',
+  WIFICALLING_PRI_BG = 'Background'
 }
 
 export type WifiCallingActionPayload = {

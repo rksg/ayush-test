@@ -84,6 +84,7 @@ const WifiCallingSettingForm = (props: WifiCallingSettingFormProps) => {
         payload: {
           state: {
             ...state,
+            ePDG: data.epdgs,
             serviceName: data.serviceName,
             tags: data.tags,
             description: data.description,
@@ -108,19 +109,18 @@ const WifiCallingSettingForm = (props: WifiCallingSettingFormProps) => {
           label={$t({ defaultMessage: 'Service Name' })}
           rules={[
             { required: true },
+            { whitespace: true },
             { min: 2 },
             { max: 32 },
             { validator: async (rule, value) => {
-              return new Promise<void>((resolve, reject) => {
-                if (!edit && value && dataList?.length && dataList?.findIndex((profile) =>
-                  profile.serviceName === value) !== -1
-                ) {
-                  return reject(
-                    $t({ defaultMessage: 'The wifi calling service with that name already exists' })
-                  )
-                }
-                return resolve()
-              })
+              if (!edit && value && dataList?.length && dataList?.findIndex((profile) =>
+                profile.serviceName === value) !== -1
+              ) {
+                return Promise.reject(
+                  $t({ defaultMessage: 'The wifi calling service with that name already exists' })
+                )
+              }
+              return Promise.resolve()
             } }
           ]}
           validateFirst

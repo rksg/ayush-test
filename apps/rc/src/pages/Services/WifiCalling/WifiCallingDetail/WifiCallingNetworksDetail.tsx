@@ -63,9 +63,10 @@ const WifiCallingNetworksDetail = () => {
   })
 
   let basicData = tableQuery.data?.data
+  let totalCount = tableQuery.data?.totalCount
 
   return (
-    <Card title={`${$t({ defaultMessage: 'Instance' })} (${basicData?.length})`}>
+    <Card title={`${$t({ defaultMessage: 'Instance' })} (${totalCount})`}>
       <div style={{ width: '100%' }}>
         <Table
           columns={basicColumns}
