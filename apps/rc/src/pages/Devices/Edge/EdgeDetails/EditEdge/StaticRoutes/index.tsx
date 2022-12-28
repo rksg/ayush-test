@@ -138,7 +138,7 @@ const StaticRoutes = () => {
                 allRoutes={routesData}
               />
               <Table<EdgeStaticRoute>
-                headerTitle={$t({ defaultMessage: 'Set Static Routes' })}
+                headerTitle={$t({ defaultMessage: 'Static Routes' })}
                 toolBarRender={toolBarRender}
                 columns={columns}
                 rowActions={rowActions}
