@@ -1,6 +1,6 @@
 import { FloorPlanDto, NetworkDeviceType, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
 
-import NetworkDeviceMarker from './NetworkDeviceMarker'
+import { NetworkDeviceMarker } from './NetworkDeviceMarker'
 
 
 
@@ -28,6 +28,10 @@ export default function NetworkDevices ({
         (networkDevicesVisibility.indexOf(device) !== -1)
             && networkDevices[selectedFloorPlan.id]
         && networkDevices[selectedFloorPlan.id][device].map(obj => {
+          // isActive will highlight devices, while in case of false
+          // it will blur device. this field is required for floorplan
+          // to highlight certain device only on AP device overview page.
+          obj.isActive = true
           return <NetworkDeviceMarker
             key={obj?.id}
             galleryMode={galleryMode}

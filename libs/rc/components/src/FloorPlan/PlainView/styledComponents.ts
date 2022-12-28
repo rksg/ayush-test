@@ -64,7 +64,7 @@ export const ImageContainerWrapper = styled('div')`
   margin: 30px auto 20px;
   position: relative;
   display: block;
-  overflow: overlay;
+  overflow: scroll;
   width: 100%;
   height: 280px;
   max-width: 100%;
@@ -97,10 +97,11 @@ export const ImageButtonsContainer = styled(Space).attrs({
       borderTop: '1px solid var(--acx-neutrals-30)'
     }
   })
-})`
+})<{ alignbottom: number }>`
   position: absolute;
-  bottom: 88px;
-  right: 0;
+  bottom: ${ props => props.alignbottom ? '88px' : '135px' };
+  z-index: 1;
+  right: 15px;
   border: 1px solid var(--acx-neutrals-30);
   border-radius: 4px;
 `

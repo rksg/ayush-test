@@ -30,6 +30,7 @@ export { ClientHealthIcon } from './ClientHealthIcon'
 export { ActivityTable } from './ActivityTable'
 export { AdminLogTable } from './AdminLogTable'
 export { EventTable } from './EventTable'
+export { NetworkDeviceMarker } from './FloorPlan/NetworkDevices/NetworkDeviceMarker'
 
 export * from './pipes/apGroupPipes'
 export * from './ExpirationDateSelector'

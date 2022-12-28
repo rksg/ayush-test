@@ -198,6 +198,17 @@ export const venueApi = baseVenueApi.injectEndpoints({
         return result.response as NetworkVenue[]
       }
     }),
+    getFloorPlan: build.query<FloorPlanDto, RequestPayload>({
+      query: ({ params }) => {
+        const floorPlansReq = createHttpRequest(CommonUrlsInfo.getFloorplan, params)
+        return {
+          ...floorPlansReq
+        }
+      },
+      transformResponse (result: FloorPlanDto) {
+        return result
+      }
+    }),
     floorPlanList: build.query<FloorPlanDto[], RequestPayload>({
       query: ({ params }) => {
         const floorPlansReq = createHttpRequest(CommonUrlsInfo.getVenueFloorplans, params)
@@ -717,6 +728,7 @@ export const {
   useMeshApsQuery,
   useDeleteVenueMutation,
   useGetNetworkApGroupsQuery,
+  useGetFloorPlanQuery,
   useFloorPlanListQuery,
   useDeleteFloorPlanMutation,
   useAddFloorPlanMutation,

@@ -14,21 +14,24 @@ import { calculateDeviceColor } from './utils'
 
 
 
-export default function NetworkDeviceMarker ({
+export function NetworkDeviceMarker ({
   galleryMode,
   contextAlbum,
   context,
-  device
+  device,
+  forbidDrag = false
 }:{ galleryMode: boolean,
     contextAlbum: boolean,
     context: string,
-    device: NetworkDevice
+    device: NetworkDevice,
+    forbidDrag?: boolean
 }) {
 
   const markerContainerRef = useRef<HTMLDivElement>(null)
   const deviceContext = useContext(NetworkDeviceContext) as Function
 
   const [{ isDragging }, drag] = useDrag(() => ({
+    canDrag: forbidDrag,
     type: 'device',
     item: { device, markerRef: markerContainerRef },
     collect: monitor => ({
@@ -64,7 +67,7 @@ export default function NetworkDeviceMarker ({
         {
           top: 'calc(' + device?.position?.yPercent + '%)',
           left: 'calc(' + device?.position?.xPercent + '%)',
-          opacity: isDragging ? 0.5 : 1
+          opacity: device?.isActive ? (isDragging ? 0.5 : 1) : 0.3
         }
       }>
       <div className={`marker ${calculateDeviceColor(device)}`}

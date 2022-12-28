@@ -149,9 +149,11 @@ describe('Floor Plan Gallery View', () => {
 
     fireEvent.dragStart(src)
     fireEvent.dragEnter(dst[0])
-    fireEvent.drop(dst[0])
-    fireEvent.dragLeave(dst[0])
-    fireEvent.dragEnd(src)
+    setTimeout(() => {
+      fireEvent.drop(dst[0])
+      fireEvent.dragLeave(dst[0])
+      fireEvent.dragEnd(src)
+    }, 100)
 
     expect(asFragment()).toMatchSnapshot()
   })
