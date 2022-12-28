@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect,useState } from 'react'
 
 import { Row, Col }                                         from 'antd'
@@ -163,7 +162,7 @@ export function TimeLine (props : TimeLineProps){
     connectionQuality: false,
     networkIncidents: false
   })
-  const onExpandToggle = (type: any, toggle : boolean) =>
+  const onExpandToggle = (type: keyof TimelineData, toggle : boolean) =>
     setExpandObj({
       ...expandObj,
       [type]: !toggle
@@ -204,7 +203,7 @@ export function TimeLine (props : TimeLineProps){
                   <UI.StyledMinusSquareOutlined style={{ cursor: 'pointer' }}
                     onClick={() =>
                       onExpandToggle(
-                        config?.value,
+                        config?.value as keyof TimelineData,
                         expandObj[config?.value as keyof TimelineData]
                       )
                     }/>
@@ -212,7 +211,7 @@ export function TimeLine (props : TimeLineProps){
                   <UI.StyledPlusSquareOutlined style={{ cursor: 'pointer' }}
                     onClick={() =>
                       onExpandToggle(
-                        config?.value,
+                        config?.value as keyof TimelineData,
                         expandObj[config?.value as keyof TimelineData]
                       )
                     }/>
@@ -282,10 +281,10 @@ export function TimeLine (props : TimeLineProps){
                 hasXaxisLabel={config?.hasXaxisLabel}
                 chartRef={connectChart}
                 tooltipFormatter={tooltipFormatter}
-                onDotClick={(params) => {
-                  // eslint-disable-next-line no-console
-                  console.log(params)
-                }}
+                // caputuring scatterplot dot click to open popover
+                // onDotClick={(params) => {
+                //   console.log(params)
+                // }}
               />
             </Col>
           ))}

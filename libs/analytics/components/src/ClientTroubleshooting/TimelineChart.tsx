@@ -18,8 +18,7 @@ import {
 } from 'echarts/types/dist/shared'
 import { useIntl } from 'react-intl'
 
-import type { TimeSeriesChartData } from '@acx-ui/analytics/utils'
-import { cssStr, cssNumber }        from '@acx-ui/components'
+import { cssStr, cssNumber } from '@acx-ui/components'
 import {
   xAxisOptions,
   ResetButton,
@@ -72,26 +71,6 @@ export interface TimelineChartProps
   showResetZoom?: boolean
 }
 
-export const getDragPosition = (
-  boundary: { min: number; max: number },
-  actualAreas: number[][],
-  index: number
-) => {
-  const range =
-    index === 0
-      ? [boundary.min, Math.min(actualAreas[1][0], boundary.max)]
-      : [Math.max(actualAreas[0][1], boundary.min), boundary.max]
-  const width = actualAreas[index][1] - actualAreas[index][0]
-  let newPosition = actualAreas[index].slice()
-  if (newPosition[0] < range[0]) {
-    newPosition = [range[0], range[0] + width]
-  }
-  if (newPosition[1] > range[1]) {
-    newPosition = [range[1] - width, range[1]]
-  }
-  return newPosition
-}
-
 export const getZoomPosition = (
   boundary: { min: number; max: number },
   actualArea: number[][],
@@ -140,11 +119,9 @@ export const useDotClick = (
     }
   }, [eChartsRef, handler])
 }
-function useDataZoom<TChartData extends TimeSeriesChartData> (
+function useDataZoom (
   eChartsRef: RefObject<ReactECharts>,
   zoomEnabled: boolean,
-  data: TChartData[],
-  zoom?: TimeStampRange,
   onDataZoom?: (range: TimeStampRange, isReset: boolean) => void
 ): [boolean, () => void] {
 
@@ -219,9 +196,8 @@ export function TimelineChart ({
 
   const eChartsRef = useRef<ReactECharts>(null)
   const [canResetZoom, resetZoomCallback] =
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    useDataZoom<any>(eChartsRef, true, data)
-  const [_, setSelected] = useState<number | undefined>(selectedData)
+    useDataZoom(eChartsRef, true)
+  const [selected, setSelected] = useState<number | undefined>(selectedData)
 
   useDotClick(eChartsRef, onDotClick, setSelected)
 
