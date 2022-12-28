@@ -11,7 +11,7 @@ import {
   Loader,
   Badge
 } from '@acx-ui/components'
-import { CancelCircleSolid, CheckMarkCircleSolid, Pending, InProgress }                     from '@acx-ui/icons'
+import { CheckMarkCircleSolid, Pending, InProgress }                                        from '@acx-ui/icons'
 import { TimelineDrawer }                                                                   from '@acx-ui/rc/components'
 import { useActivitiesQuery }                                                               from '@acx-ui/rc/services'
 import { Activity, CommonUrlsInfo, useTableQuery, getActivityDescription, severityMapping } from '@acx-ui/rc/utils'
@@ -31,7 +31,7 @@ const getIcon = (
     case 'INPROGRESS':
       return <InProgress />
     case 'FAIL':
-      return <CancelCircleSolid />
+      return <UI.RedCancelCircle />
     case 'OFFLINE':
       return <div /> // TODO: Add offline icon
   }
