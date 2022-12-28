@@ -1,4 +1,3 @@
-import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Button, Card }                                                          from '@acx-ui/components'
@@ -20,19 +19,27 @@ export interface ServiceCardProps {
   type: ServiceType
   technology: ServiceTechnology
   count?: number
-  action?: ServiceCardMode
+  action: ServiceCardMode
 }
 
 export function ServiceCard (props: ServiceCardProps) {
   const { $t } = useIntl()
-  const { type, technology, count, action: mode = ServiceCardMode.SELECT } = props
+  const { type, technology, count, action: mode } = props
+
+  const formatServiceName = () => {
+    const name = $t(serviceTypeLabelMapping[type])
+    if (!count) {
+      return name
+    }
+    return $t({ defaultMessage: '{name} ({count})' }, { name, count })
+  }
 
   return (
-    <Card title={$t(serviceTypeLabelMapping[type]) + (count === undefined ? '' : ` (${count})`)}>
+    <Card title={formatServiceName()}>
       <UI.DescriptionContainer>
         {$t(serviceTypeDescMapping[type])}
       </UI.DescriptionContainer>
-      <Space>
+      <UI.FooterRow>
         <TechnologyLabel technology={technology} />
         {/* TODO
         {mode === ServiceCardMode.SELECT &&
@@ -48,7 +55,7 @@ export function ServiceCard (props: ServiceCardProps) {
             <Button type='secondary'>{$t({ defaultMessage: 'To List' })}</Button>
           </TenantLink>
         }
-      </Space>
+      </UI.FooterRow>
     </Card>
   )
 }

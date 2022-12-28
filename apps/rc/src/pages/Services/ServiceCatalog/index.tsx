@@ -13,7 +13,6 @@ import { ServiceCard, ServiceCardMode } from '../ServiceCard'
 import * as UI from './styledComponents'
 
 
-
 export default function ServiceCatalog () {
   const { $t } = useIntl()
   const networkSegmentationEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION)
