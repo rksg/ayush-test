@@ -91,10 +91,11 @@ export const PopoverWrapper = styled.div`
   }
 `
 export const DetailsWrapper = styled.div`
-  height: 100%;
+  max-height: 175px;
   padding-top: 16px;
   padding-left: var(--acx-content-vertical-space);
   padding-bottom: 15px;
+  overflow: scroll;
 `
 export const Header = styled.h3`
   font-size: 10px;
