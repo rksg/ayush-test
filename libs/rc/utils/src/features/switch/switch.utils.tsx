@@ -198,3 +198,16 @@ export const getStackMemberStatus = (unitStatus: string, isDefaultMember?: boole
   }
   return
 }
+
+export const isEmpty = (params: unknown) => {
+  if (params == null) {
+    return true;
+  } else if (params === undefined) {
+    return true;
+  } else if (params === 'undefined') {
+    return true;
+  } else if (params === '') {
+    return true;
+  }
+  return false;
+}

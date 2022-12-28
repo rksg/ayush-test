@@ -6,7 +6,7 @@ import { AnalyticsFilter, useAnalyticsFilter }                                  
 import { GridCol, GridRow, Loader, Tabs }                                        from '@acx-ui/components'
 import { SwitchInfoWidget }                                                      from '@acx-ui/rc/components'
 import { useGetVenueQuery, useStackMemberListQuery, useSwitchDetailHeaderQuery } from '@acx-ui/rc/services'
-import { SwitchViewModel }                                                       from '@acx-ui/rc/utils'
+import { StackMember, SwitchViewModel }                                                       from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink }                                 from '@acx-ui/react-router-dom'
 
 import { SwitchOverviewACLs }            from './SwitchOverviewACLs'
@@ -81,7 +81,7 @@ export function SwitchOverviewTab () {
       style={{ marginTop: '25px' }}
     >
       <Tabs.TabPane tab={$t({ defaultMessage: 'Panel' })} key='panel'>
-        <SwitchOverviewPanel />
+        <SwitchOverviewPanel switchDetail={switchDetail} stackMember={stackMember?.data as StackMember[]} />
       </Tabs.TabPane>
       <Tabs.TabPane tab={$t({ defaultMessage: 'Ports' })} key='ports'>
         <SwitchOverviewPorts />

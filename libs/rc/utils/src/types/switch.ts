@@ -153,6 +153,10 @@ export interface StackMember {
   order: number
   unitStatus?: STACK_MEMBERSHIP
   unitId?: string
+  model?: string
+  deviceStatus?: SwitchStatusEnum
+  needAck?: boolean
+  newSerialNumber?: string
 }
 
 export enum STACK_MEMBERSHIP {
