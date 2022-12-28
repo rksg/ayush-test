@@ -33,7 +33,7 @@ export function ApProperties (props:{
         }}
       >
         <UI.Container>
-          <Descriptions>
+          <Descriptions labelWidthPercent={50}>
             <Descriptions.Item
               label={$t({ defaultMessage: 'Venue' })}
               children={
@@ -49,7 +49,7 @@ export function ApProperties (props:{
             />
           </Descriptions>
           <Divider/>
-          <Descriptions>
+          <Descriptions labelWidthPercent={50}>
             {
               currentAP?.deviceStatusSeverity === ApVenueStatusEnum.OPERATIONAL ?
                 (
