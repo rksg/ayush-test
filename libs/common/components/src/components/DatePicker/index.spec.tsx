@@ -6,26 +6,25 @@ import { IntlProvider }   from 'react-intl'
 
 import { DateRange } from '@acx-ui/utils'
 
-import { RangePicker } from '.'
+import { DatePicker, RangePicker } from '.'
 
-describe('CalenderRangePicker', () => {
-  it('should render default CalenderRangePicker', () => {
-    const { asFragment } = render(
+describe('DatePicker', () => {
+  it('should open when click on date select', async () => {
+    render(
       <IntlProvider locale='en'>
-        <RangePicker
-          selectionType={DateRange.custom}
-          onDateApply={() => {}}
-          selectedRange={{
-            startDate: moment('01/01/2022').subtract(1, 'days').seconds(0),
-            endDate: moment('01/01/2022').seconds(0)
-          }}
-        />
+        <DatePicker />
       </IntlProvider>
     )
-    expect(asFragment()).toMatchSnapshot()
+    const user = userEvent.setup()
+    const calenderSelect = await screen.findByPlaceholderText('Select date')
+    await user.click(calenderSelect)
+    expect(await screen.findByText('Su')).toBeDefined()
   })
-  it('should open CalenderRangePicker when click on date select', async () => {
-    const { container } = render(
+})
+
+describe('RangePicker', () => {
+  it('should open when click on date select', async () => {
+    render(
       <IntlProvider locale='en'>
         <RangePicker
           selectionType={DateRange.last24Hours}
@@ -34,7 +33,7 @@ describe('CalenderRangePicker', () => {
             endDate: moment().seconds(0)
           }}
           onDateApply={() => {}}
-          rangeOptions={[DateRange.today, DateRange.last7Days]}
+          rangeOptions={[DateRange.last24Hours, DateRange.last7Days]}
           showTimePicker
           enableDates={[moment().subtract(7, 'days').seconds(0), moment().seconds(0)]}
         />
@@ -44,16 +43,15 @@ describe('CalenderRangePicker', () => {
     const user = userEvent.setup()
     const calenderSelect = await screen.findByPlaceholderText('Start date')
     await user.click(calenderSelect)
-    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
-    expect(container).not.toHaveClass('ant-picker-dropdown-hidden')
+    expect(await screen.findAllByText('Su')).toHaveLength(2)
   })
-  it('should close CalenderRangePicker when click on apply', async () => {
+  it('should close when click on apply', async () => {
     const { container } = render(
       <IntlProvider locale='en'>
         <RangePicker
           selectionType={DateRange.last7Days}
           onDateApply={() => {}}
-          rangeOptions={[DateRange.today, DateRange.last7Days]}
+          rangeOptions={[DateRange.last24Hours, DateRange.last7Days]}
           showTimePicker
           selectedRange={{
             startDate: moment().subtract(7, 'days').seconds(0),
@@ -72,13 +70,13 @@ describe('CalenderRangePicker', () => {
     // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
     expect(container.getElementsByClassName('ant-picker-dropdown-hidden').length).toBe(1)
   })
-  it('should close CalenderRangePicker when click outside', async () => {
+  it('should close when click outside', async () => {
     const { container } = render(
       <IntlProvider locale='en'>
         <RangePicker
           onDateApply={() => {}}
           selectionType={DateRange.last7Days}
-          rangeOptions={[DateRange.today, DateRange.last7Days]}
+          rangeOptions={[DateRange.last24Hours, DateRange.last7Days]}
           showTimePicker
           selectedRange={{
             startDate: moment().subtract(7, 'days').seconds(0),
@@ -91,19 +89,18 @@ describe('CalenderRangePicker', () => {
     const user = userEvent.setup()
     const calenderSelect = await screen.findByPlaceholderText('Start date')
     await user.click(calenderSelect)
-    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
-    expect(container).not.toHaveClass('ant-picker-dropdown-hidden')
+    expect(await screen.findAllByText('Su')).toHaveLength(2)
     await user.click(document.body)
     // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
     expect(container.getElementsByClassName('ant-picker-dropdown-hidden').length).toBe(1)
   })
-  it('should close CalenderRangePicker when click on cancel', async () => {
+  it('should close when click on cancel', async () => {
     const { container } = render(
       <IntlProvider locale='en'>
         <RangePicker
           onDateApply={() => {}}
           selectionType={DateRange.last7Days}
-          rangeOptions={[DateRange.today, DateRange.last7Days]}
+          rangeOptions={[DateRange.last24Hours, DateRange.last7Days]}
           selectedRange={{
             startDate: moment().subtract(7, 'days').seconds(0),
             endDate: moment().seconds(0)
@@ -119,7 +116,7 @@ describe('CalenderRangePicker', () => {
     // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
     expect(container.getElementsByClassName('ant-picker-dropdown-hidden').length).toBe(1)
   })
-  it('should close CalenderRangePicker when click on ranges', async () => {
+  it('should close when click on ranges', async () => {
     Object.defineProperty(HTMLElement.prototype, 'innerText', {
       get () {
         return this.textContent
@@ -130,7 +127,7 @@ describe('CalenderRangePicker', () => {
         <RangePicker
           onDateApply={() => {}}
           selectionType={DateRange.last7Days}
-          rangeOptions={[DateRange.today, DateRange.last7Days]}
+          rangeOptions={[DateRange.last24Hours, DateRange.last7Days]}
           selectedRange={{
             startDate: moment().subtract(7, 'days').seconds(0),
             endDate: moment().seconds(0)
@@ -141,7 +138,7 @@ describe('CalenderRangePicker', () => {
     const user = userEvent.setup()
     const calenderSelect = await screen.findByPlaceholderText('Start date')
     await user.click(calenderSelect)
-    await user.click(await screen.findByText('Today'))
+    await user.click(await screen.findByText('Last 24 Hours'))
     // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
     expect(container.getElementsByClassName('ant-picker-dropdown-hidden').length).toBe(1)
   })
@@ -175,7 +172,7 @@ describe('CalenderRangePicker', () => {
         <RangePicker
           selectionType={DateRange.last7Days}
           showTimePicker
-          rangeOptions={[DateRange.today, DateRange.last7Days]}
+          rangeOptions={[DateRange.last24Hours, DateRange.last7Days]}
           onDateChange={onDateChange}
           onDateApply={() => {}}
           selectedRange={{
@@ -202,7 +199,7 @@ describe('CalenderRangePicker', () => {
         <RangePicker
           showTimePicker
           selectionType={DateRange.last7Days}
-          rangeOptions={[DateRange.today, DateRange.last7Days]}
+          rangeOptions={[DateRange.last24Hours, DateRange.last7Days]}
           onDateChange={onDateChange}
           onDateApply={() => {}}
           selectedRange={{
@@ -229,7 +226,7 @@ describe('CalenderRangePicker', () => {
       <IntlProvider locale='en'>
         <RangePicker
           showTimePicker
-          rangeOptions={[DateRange.today, DateRange.last7Days]}
+          rangeOptions={[DateRange.last24Hours, DateRange.last7Days]}
           onDateChange={onDateChange}
           selectionType={DateRange.custom}
           onDateApply={() => {}}

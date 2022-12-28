@@ -13,7 +13,8 @@ export interface ChannelBars {
 
 export const channelSelectionMethodsOptions = [
   { label: defineMessage({ defaultMessage: 'Channel Fly' }), value: 'CHANNELFLY' },
-  { label: defineMessage({ defaultMessage: 'Background Scanning' }), value: 'BACKGROUND_SCANNING' }
+  { label: defineMessage({ defaultMessage: 'Background Scanning' }), value: 'BACKGROUND_SCANNING' },
+  { label: defineMessage({ defaultMessage: 'Manual channel selection' }), value: 'MANUAL' }
 ]
 
 export const txPowerAdjustmentOptions = [

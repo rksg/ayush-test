@@ -87,7 +87,7 @@ exports[`EditEdge general settings should create GeneralSettings successfully 1`
                     style="padding-left: 10px; padding-right: 10px;"
                   >
                     <div
-                      class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+                      class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
                     >
                       <div
                         class="ant-form-item"
@@ -116,7 +116,7 @@ exports[`EditEdge general settings should create GeneralSettings successfully 1`
                                 class="ant-form-item-control-input-content"
                               >
                                 <div
-                                  class="ant-select ant-select-in-form-item ant-select-single ant-select-show-arrow"
+                                  class="ant-select ant-select-in-form-item ant-select-single ant-select-show-arrow ant-select-disabled"
                                 >
                                   <div
                                     class="ant-select-selector"
@@ -128,10 +128,12 @@ exports[`EditEdge general settings should create GeneralSettings successfully 1`
                                         aria-activedescendant="0_venueId_list_0"
                                         aria-autocomplete="list"
                                         aria-controls="0_venueId_list"
+                                        aria-expanded="false"
                                         aria-haspopup="listbox"
                                         aria-owns="0_venueId_list"
                                         autocomplete="off"
                                         class="ant-select-selection-search-input"
+                                        disabled=""
                                         id="0_venueId"
                                         readonly=""
                                         role="combobox"
@@ -347,7 +349,7 @@ exports[`EditEdge general settings should create GeneralSettings successfully 1`
             style="margin-right: 12px;"
           >
             <button
-              class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 kkpPZG"
+              class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 bxQmA-d"
               type="button"
             >
               <span>
@@ -359,7 +361,7 @@ exports[`EditEdge general settings should create GeneralSettings successfully 1`
             class="ant-space-item"
           >
             <button
-              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
               type="button"
             >
               <span>

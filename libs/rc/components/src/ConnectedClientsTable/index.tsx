@@ -1,12 +1,13 @@
 /* eslint-disable max-len */
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { Subtitle, Tooltip }                                           from '@acx-ui/components'
-import { Table, TableProps, Loader }                                   from '@acx-ui/components'
-import { useGetClientListQuery }                                       from '@acx-ui/rc/services'
-import { ClientList, getDeviceTypeIcon, getOsTypeIcon, useTableQuery } from '@acx-ui/rc/utils'
-import { TenantLink }                                                  from '@acx-ui/react-router-dom'
-import { formatter }                                                   from '@acx-ui/utils'
+import { Subtitle, Tooltip }                                                  from '@acx-ui/components'
+import { Table, TableProps, Loader }                                          from '@acx-ui/components'
+import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
+import { useGetClientListQuery }                                              from '@acx-ui/rc/services'
+import { ClientList, getDeviceTypeIcon, getOsTypeIcon, usePollingTableQuery } from '@acx-ui/rc/utils'
+import { TenantLink }                                                         from '@acx-ui/react-router-dom'
+import { formatter }                                                          from '@acx-ui/utils'
 
 import { ClientHealthIcon } from '../ClientHealthIcon'
 
@@ -15,7 +16,7 @@ import * as UI from './styledComponents'
 // TODO: userProfileService.userHasRole(user, 'OFFICE_ADMIN')
 const hasGuestManagerRole = false
 
-function getCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
+function getCols (intl: ReturnType<typeof useIntl>, releaseTag: boolean, showAllColumns?: boolean) {
   const columns: TableProps<ClientList>['columns'] = [
     {
       key: 'hostname',
@@ -23,8 +24,11 @@ function getCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       dataIndex: 'hostname',
       sorter: true,
       defaultSortOrder: 'ascend',
-      render: (data, row) =>
-        <TenantLink to={`users/wifi/clients/${row.clientMac}/details/overview`}>{data || '--'}</TenantLink>
+      render: (data, row) => {
+        return releaseTag ?
+          <TenantLink to={`users/wifi/clients/${row.clientMac}/details/overview?hostname=${data}`}>{data || '--'}</TenantLink>
+          : <> {data || '--'} </>
+      }
     },
     {
       key: 'osType',
@@ -118,7 +122,7 @@ function getCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
           return row.apName
         }else{
           return (
-            <TenantLink to={`/devices/aps/${data}/details/overview`}>{row.apName}</TenantLink>
+            <TenantLink to={`/devices/wifi/${data}/details/overview`}>{row.apName}</TenantLink>
           )
         }
       }
@@ -132,7 +136,7 @@ function getCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
           return '--'
         }else{
           return (
-            <TenantLink to={`/devices/switches/${data}/details/overview`}>{row.switchName}</TenantLink>
+            <TenantLink to={`/devices/switch/${data}/details/overview`}>{row.switchName}</TenantLink>
           )
         }
       }
@@ -330,29 +334,41 @@ const defaultPayload = {
     'apName','clientVlan','networkId','switchName','healthStatusReason','lastUpdateTime']
 }
 
-export const ConnectedClientsTable = (props:{ showAllColumns?: boolean }) => {
+export const ConnectedClientsTable =
+(props: { showAllColumns?: boolean, searchString: string, setConnectedClientCount: (connectClientCount: number) => void }) => {
   const { $t } = useIntl()
-  const { showAllColumns } = props
+  const { showAllColumns, searchString, setConnectedClientCount } = props
+  const releaseTag = useIsSplitOn(Features.USERS)
+
+  defaultPayload.searchString = searchString
+
   const ConnectedClientsTable = () => {
-    const tableQuery = useTableQuery({
+    const tableQuery = usePollingTableQuery({
       useQuery: useGetClientListQuery,
       defaultPayload
     })
+
+    if(tableQuery.data?.data){
+      setConnectedClientCount(tableQuery.data?.totalCount)
+    }
+
     return (
-      <Loader states={[
-        tableQuery
-      ]}>
-        <Subtitle level={4}>
-          {$t({ defaultMessage: 'Connected Clients' })}
-        </Subtitle>
-        <Table
-          columns={getCols(useIntl(), showAllColumns)}
-          dataSource={tableQuery.data?.data}
-          pagination={tableQuery.pagination}
-          onChange={tableQuery.handleTableChange}
-          rowKey='clientMac'
-        />
-      </Loader>
+      <UI.ClientTableDiv>
+        <Loader states={[
+          tableQuery
+        ]}>
+          <Subtitle level={4}>
+            {$t({ defaultMessage: 'Connected Clients' })}
+          </Subtitle>
+          <Table
+            columns={getCols(useIntl(), releaseTag, showAllColumns)}
+            dataSource={tableQuery.data?.data}
+            pagination={tableQuery.pagination}
+            onChange={tableQuery.handleTableChange}
+            rowKey='clientMac'
+          />
+        </Loader>
+      </UI.ClientTableDiv>
     )
   }
 

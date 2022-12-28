@@ -43,6 +43,9 @@ describe('RadioSettingsTab', () => {
         WifiUrlsInfo.getVenueDefaultRegulatoryChannels.url,
         (_, res, ctx) => res(ctx.json(validRadioChannels))),
       rest.get(
+        WifiUrlsInfo.getApValidChannel.url,
+        (_, res, ctx) => res(ctx.json(validRadioChannels))),
+      rest.get(
         WifiUrlsInfo.getVenueRadioCustomization.url,
         (_, res, ctx) => res(ctx.json(apRadioCustomization))),
       rest.put(
@@ -83,7 +86,7 @@ describe('RadioSettingsTab', () => {
   })
   it('should render correctly with Auto bandwidth', async () => {
     apRadioCustomization.radioParams50G.channelBandwidth = 'AUTO'
-    const { asFragment } = render(
+    render(
       <Provider>
         <ApEditContext.Provider value={{
           editContextData: {
@@ -110,12 +113,11 @@ describe('RadioSettingsTab', () => {
     fireEvent.click((await screen.findAllByTitle('Auto'))[0])
     fireEvent.click(await screen.findByRole('button', { name: 'Use Venue Settings' }))
 
-    expect(asFragment()).toMatchSnapshot()
     fireEvent.click(await screen.findByRole('button', { name: 'Apply Radio' }))
   })
   it('should render correctly with 40Mhz bandwidth', async () => {
     apRadioCustomization.radioParams50G.channelBandwidth = '40Mhz'
-    const { asFragment } = render(
+    render(
       <Provider>
         <ApEditContext.Provider value={{
           editContextData: {
@@ -142,7 +144,148 @@ describe('RadioSettingsTab', () => {
     fireEvent.click((await screen.findAllByTitle('Auto'))[0])
     fireEvent.click(await screen.findByRole('button', { name: 'Use Venue Settings' }))
 
-    expect(asFragment()).toMatchSnapshot()
     fireEvent.click(await screen.findByRole('button', { name: 'Apply Radio' }))
+  })
+  it('should render correctly with 80Mhz bandwidth', async () => {
+    apRadioCustomization.radioParams50G.channelBandwidth = '80Mhz'
+    render(
+      <Provider>
+        <ApEditContext.Provider value={{
+          editContextData: {
+            tabTitle: '',
+            isDirty: false,
+            updateChanges: jest.fn(),
+            discardChanges: jest.fn()
+          },
+          setEditContextData: jest.fn(),
+          editRadioContextData: {},
+          setEditRadioContextData: jest.fn()
+        }}
+        >
+          <RadioSettings />
+        </ApEditContext.Provider>
+      </Provider>, { route: { params } })
+
+    fireEvent.click(await screen.findByRole('tab', { name: '5 GHz' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'Lower 5G' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'Upper 5G' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'DFS' }))
+    const transmitSelect = await screen.findByRole('combobox', { name: /Transmit Power/i })
+    fireEvent.click(transmitSelect)
+    fireEvent.click((await screen.findAllByTitle('Auto'))[0])
+    fireEvent.click(await screen.findByRole('button', { name: 'Use Venue Settings' }))
+
+    fireEvent.click(await screen.findByRole('button', { name: 'Apply Radio' }))
+  })
+  it('should render correctly with 160Mhz bandwidth', async () => {
+    apRadioCustomization.radioParams50G.channelBandwidth = '160Mhz'
+    render(
+      <Provider>
+        <ApEditContext.Provider value={{
+          editContextData: {
+            tabTitle: '',
+            isDirty: false,
+            updateChanges: jest.fn(),
+            discardChanges: jest.fn()
+          },
+          setEditContextData: jest.fn(),
+          editRadioContextData: {},
+          setEditRadioContextData: jest.fn()
+        }}
+        >
+          <RadioSettings />
+        </ApEditContext.Provider>
+      </Provider>, { route: { params } })
+
+    fireEvent.click(await screen.findByRole('tab', { name: '5 GHz' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'Lower 5G' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'Upper 5G' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'DFS' }))
+    const transmitSelect = await screen.findByRole('combobox', { name: /Transmit Power/i })
+    fireEvent.click(transmitSelect)
+    fireEvent.click((await screen.findAllByTitle('Auto'))[0])
+    fireEvent.click(await screen.findByRole('button', { name: 'Use Venue Settings' }))
+
+    fireEvent.click(await screen.findByRole('button', { name: 'Apply Radio' }))
+  })
+  it('should render 5GHz channels correctly with MANUAL method', async () => {
+    apRadioCustomization.radioParams50G.channelBandwidth = 'AUTO'
+    render(
+      <Provider>
+        <ApEditContext.Provider value={{
+          editContextData: {
+            tabTitle: '',
+            isDirty: false,
+            updateChanges: jest.fn(),
+            discardChanges: jest.fn()
+          },
+          setEditContextData: jest.fn(),
+          editRadioContextData: {},
+          setEditRadioContextData: jest.fn()
+        }}
+        >
+          <RadioSettings />
+        </ApEditContext.Provider>
+      </Provider>, { route: { params } })
+
+    fireEvent.click(await screen.findByRole('tab', { name: '5 GHz' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'Lower 5G' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'Upper 5G' }))
+    fireEvent.mouseDown(await screen.findByRole('combobox', { name: /channel/i }))
+    const option = screen.getByText(/manual/i)
+    fireEvent.click(option)
+    fireEvent.click(await screen.findByText('36'))
+
+    fireEvent.click(await screen.findByRole('button', { name: 'Apply Radio' }))
+  })
+  it('should render 2.4GHz channels correctly with MANUAL method', async () => {
+    apRadioCustomization.radioParams24G.channelBandwidth = 'AUTO'
+    render(
+      <Provider>
+        <ApEditContext.Provider value={{
+          editContextData: {
+            tabTitle: '',
+            isDirty: false,
+            updateChanges: jest.fn(),
+            discardChanges: jest.fn()
+          },
+          setEditContextData: jest.fn(),
+          editRadioContextData: {},
+          setEditRadioContextData: jest.fn()
+        }}
+        >
+          <RadioSettings />
+        </ApEditContext.Provider>
+      </Provider>, { route: { params } })
+
+    fireEvent.click(await screen.findByRole('tab', { name: '2.4 GHz' }))
+    fireEvent.mouseDown(await screen.findByRole('combobox', { name: /channel/i }))
+    const option = screen.getByText(/manual/i)
+    fireEvent.click(option)
+    fireEvent.click(await screen.findByText('1'))
+
+    fireEvent.click(await screen.findByRole('button', { name: 'Apply Radio' }))
+  })
+  it('should render correctly with cancel action', async () => {
+    apRadioCustomization.radioParams50G.channelBandwidth = 'AUTO'
+    render(
+      <Provider>
+        <ApEditContext.Provider value={{
+          editContextData: {
+            tabTitle: '',
+            isDirty: false,
+            updateChanges: jest.fn(),
+            discardChanges: jest.fn()
+          },
+          setEditContextData: jest.fn(),
+          editRadioContextData: {},
+          setEditRadioContextData: jest.fn()
+        }}
+        >
+          <RadioSettings />
+        </ApEditContext.Provider>
+      </Provider>, { route: { params } })
+
+    fireEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
   })
 })

@@ -1,0 +1,187 @@
+import React, { useEffect, useState } from 'react'
+
+import { Col, Form, Input, Row, Space } from 'antd'
+import { Radio }                        from 'antd'
+import moment                           from 'moment-timezone'
+import { useIntl }                      from 'react-intl'
+
+import { Drawer, showToast }         from '@acx-ui/components'
+import { ExpirationDateSelector }    from '@acx-ui/rc/components'
+import {
+  useAddMacRegistrationMutation, useLazyMacRegistrationsQuery,
+  useUpdateMacRegistrationMutation
+} from '@acx-ui/rc/services'
+import {
+  checkObjectNotExists,
+  ExpirationDateEntity,
+  ExpirationMode,
+  MacRegistration
+} from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
+
+import { macAddressRegExp } from '../../MacRegistrationListUtils'
+
+interface MacAddressDrawerProps {
+  visible: boolean
+  setVisible: (visible: boolean) => void
+  isEdit: boolean
+  editData?: MacRegistration
+}
+
+export function MacAddressDrawer (props: MacAddressDrawerProps) {
+  const intl = useIntl()
+  const { visible, setVisible, isEdit, editData } = props
+  const [resetField, setResetField] = useState(false)
+  const [form] = Form.useForm()
+  const [ addType ] = [ Form.useWatch('listExpiration', form),
+    Form.useWatch('importAction', form)]
+  const [addMacRegistration] = useAddMacRegistrationMutation()
+  const [editMacRegistration] = useUpdateMacRegistrationMutation()
+  const { policyId } = useParams()
+  const [ macReg ] = useLazyMacRegistrationsQuery()
+
+  const macAddressValidator = async (value: string) => {
+    const list = (await macReg({
+      params: { policyId }
+    }).unwrap()).data
+      .filter(n => n.id !== editData?.id)
+      .map(n => ({ name: n.macAddress }))
+    // eslint-disable-next-line max-len
+    return checkObjectNotExists(list, { name: value } , intl.$t({ defaultMessage: 'MAC Address' }))
+  }
+
+  useEffect(()=>{
+    if (editData && visible) {
+      let expiration: ExpirationDateEntity = new ExpirationDateEntity()
+      if(editData.expirationDate) {
+        expiration.setToByDate(editData.expirationDate!)
+      }
+      else {
+        expiration.setToNever()
+      }
+      form.setFieldsValue(editData)
+      form.setFieldValue('expiration', expiration)
+    }
+  }, [editData, visible])
+
+  const resetFields = () => {
+    setResetField(true)
+    onClose()
+  }
+
+  const onClose = () => {
+    setVisible(false)
+    form.resetFields()
+  }
+
+  const onSubmit = async (data: MacRegistration) => {
+    try {
+      if (isEdit) {
+        const payload = {
+          username: data.username?.length === 0 ? null : data.username,
+          email: data.email?.length === 0 ? null : data.email,
+          expirationDate: data.expiration?.mode === ExpirationMode.NEVER ? null :
+            moment.utc(data.expiration?.date).format('YYYY-MM-DDT23:59:59[Z]')
+        }
+        await editMacRegistration(
+          {
+            params: { policyId, registrationId: editData?.id },
+            payload
+          }).unwrap()
+      } else {
+        const payload = {
+          macAddress: data.macAddress,
+          username: data.username?.length === 0 ? null : data.username,
+          email: data.email?.length === 0 ? null : data.email,
+          expirationDate: data.expiration?.mode === ExpirationMode.NEVER ? null :
+            moment(data.expiration?.date).format('YYYY-MM-DDT23:59:59[Z]')
+        }
+        await addMacRegistration({
+          params: { policyId },
+          payload
+        }).unwrap()
+      }
+      onClose()
+    } catch (error) {
+      showToast({
+        type: 'error',
+        content: intl.$t({ defaultMessage: 'An error occurred' }),
+        // FIXME: Correct the error message
+        link: { onClick: () => alert(JSON.stringify(error)) }
+      })
+    }
+  }
+
+  const addManuallyContent = <Row>
+    <Col span={16}>
+      <Form.Item name='macAddress'
+        label={intl.$t({ defaultMessage: 'MAC Address' })}
+        rules={[
+          { required: true },
+          { validator: (_, value) => macAddressRegExp(value) },
+          { validator: (_, value) => macAddressValidator(value) }
+        ]}
+        validateFirst
+        hasFeedback>
+        <Input disabled={isEdit}/>
+      </Form.Item>
+      <Form.Item name='username' label={intl.$t({ defaultMessage: 'Username' })}>
+        <Input/>
+      </Form.Item>
+      <Form.Item name='email'
+        rules={[
+          { type: 'email', message: intl.$t({ defaultMessage: 'E-mail is not a valid email' }) }
+        ]}
+        label={intl.$t({ defaultMessage: 'E-mail' })}>
+        <Input/>
+      </Form.Item>
+      <ExpirationDateSelector
+        inputName={'expiration'}
+        label={intl.$t({ defaultMessage: 'MAC Address Expiration' })}
+        modeLabel={{
+          [ExpirationMode.NEVER]: intl.$t({ defaultMessage: 'Never expires (Same as list)' })
+        }}
+        modeAvailability={{
+          [ExpirationMode.AFTER_TIME]: false
+        }}
+      />
+    </Col>
+  </Row>
+
+  const content = <Form layout='vertical' form={form} onFinish={onSubmit}>
+    {isEdit ? addManuallyContent :
+      <>
+        <Form.Item name='importAction' initialValue={2}>
+          <Radio.Group>
+            <Space direction='vertical'>
+              <Radio value={2}>{intl.$t({ defaultMessage: 'Add manually' })}</Radio>
+            </Space>
+          </Radio.Group>
+        </Form.Item>
+        {addType !== 1 && addManuallyContent}
+      </>
+    }
+  </Form>
+
+  const footer = (
+    <Drawer.FormFooter
+      onCancel={resetFields}
+      buttonLabel={{ save: (addType === 1 ? intl.$t({ defaultMessage: 'Import List' }):
+        (isEdit ? intl.$t({ defaultMessage: 'Done' }) : intl.$t({ defaultMessage: 'Add' }))) }}
+      onSave={async () => { form.submit() }}
+    />
+  )
+
+  return (
+    <Drawer
+      //eslint-disable-next-line max-len
+      title={isEdit ? intl.$t({ defaultMessage: 'Edit MAC Address' }) : intl.$t({ defaultMessage: 'Add MAC Address' })}
+      visible={visible}
+      onClose={onClose}
+      children={content}
+      footer={footer}
+      destroyOnClose={resetField}
+      width={600}
+    />
+  )
+}

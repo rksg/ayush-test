@@ -3,7 +3,7 @@
 exports[`EdgeSettingForm should create EdgeSettingForm successfully 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
       class="ant-form-item"
@@ -250,7 +250,7 @@ exports[`EdgeSettingForm should create EdgeSettingForm successfully 1`] = `
 exports[`EdgeSettingForm should create EdgeSettingForm with edit mode successfully 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
       class="ant-form-item"
@@ -279,7 +279,7 @@ exports[`EdgeSettingForm should create EdgeSettingForm with edit mode successful
               class="ant-form-item-control-input-content"
             >
               <div
-                class="ant-select ant-select-in-form-item ant-select-single ant-select-show-arrow"
+                class="ant-select ant-select-in-form-item ant-select-single ant-select-show-arrow ant-select-disabled"
               >
                 <div
                   class="ant-select-selector"
@@ -291,10 +291,12 @@ exports[`EdgeSettingForm should create EdgeSettingForm with edit mode successful
                       aria-activedescendant="venueId_list_0"
                       aria-autocomplete="list"
                       aria-controls="venueId_list"
+                      aria-expanded="false"
                       aria-haspopup="listbox"
                       aria-owns="venueId_list"
                       autocomplete="off"
                       class="ant-select-selection-search-input"
+                      disabled=""
                       id="venueId"
                       readonly=""
                       role="combobox"
@@ -498,7 +500,7 @@ exports[`EdgeSettingForm should create EdgeSettingForm with edit mode successful
 exports[`EdgeSettingForm should show OTP message correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
       class="ant-form-item"
