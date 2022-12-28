@@ -62,7 +62,8 @@ export interface VenueRoguePolicyType {
     policyName: string,
     enabled: boolean
   },
-  activate?: boolean
+  activate?: boolean,
+  rogueAps?: number
 }
 
 export interface RogueAPRule {
