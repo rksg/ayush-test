@@ -57,15 +57,39 @@ describe('EditEdge', () => {
     expect(generalSettingsTab.getAttribute('aria-selected')).toBeTruthy()
   })
 
-  it('Active Settings tab successfully', async () => {
-    params.activeTab = 'settings'
+  it('Active Ports tab successfully', async () => {
+    params.activeTab = 'ports'
     render(
       <Provider>
         <EditEdge />
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab' }
       })
-    const settingsTab = screen.getByRole('tab', { name: 'Settings' })
+    const settingsTab = screen.getByRole('tab', { name: 'Ports' })
+    expect(settingsTab.getAttribute('aria-selected')).toBeTruthy()
+  })
+
+  it('Active DNS Server tab successfully', async () => {
+    params.activeTab = 'dns'
+    render(
+      <Provider>
+        <EditEdge />
+      </Provider>, {
+        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab' }
+      })
+    const settingsTab = screen.getByRole('tab', { name: 'DNS Server' })
+    expect(settingsTab.getAttribute('aria-selected')).toBeTruthy()
+  })
+
+  it('Active Static Routes tab successfully', async () => {
+    params.activeTab = 'routes'
+    render(
+      <Provider>
+        <EditEdge />
+      </Provider>, {
+        route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab' }
+      })
+    const settingsTab = screen.getByRole('tab', { name: 'Static Routes' })
     expect(settingsTab.getAttribute('aria-selected')).toBeTruthy()
   })
 
@@ -78,9 +102,9 @@ describe('EditEdge', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab' }
       })
-    await user.click(screen.getByRole('tab', { name: 'Settings' }))
+    await user.click(screen.getByRole('tab', { name: 'DNS Server' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/devices/edge/${params.serialNumber}/edit/settings/ports`,
+      pathname: `/t/${params.tenantId}/devices/edge/${params.serialNumber}/edit/dns`,
       hash: '',
       search: ''
     })
