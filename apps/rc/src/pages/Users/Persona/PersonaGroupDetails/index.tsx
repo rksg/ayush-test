@@ -61,7 +61,7 @@ function PersonaGroupDetails () {
     const macPoolId = detailsQuery.data?.macRegistrationPoolId
 
     if (macPoolId) {
-      getMacRegistrationById({ params: { macRegistrationListId: macPoolId } })
+      getMacRegistrationById({ params: { policyId: macPoolId } })
         .then(result => {
           if (result.data) {
             setMacPoolDisplay({ id: macPoolId, name: result.data.name })

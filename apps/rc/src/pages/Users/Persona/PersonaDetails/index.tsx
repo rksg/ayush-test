@@ -50,7 +50,7 @@ function PersonaDetails () {
     if (!personaGroupData || !personaGroupData.macRegistrationPoolId) return
 
     getMacRegistrationById({
-      params: { macRegistrationListId: personaGroupData.macRegistrationPoolId }
+      params: { policyId: personaGroupData.macRegistrationPoolId }
     })
       .then(result => {
         if (!result.data) return

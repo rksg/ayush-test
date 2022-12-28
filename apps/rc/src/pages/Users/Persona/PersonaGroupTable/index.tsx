@@ -120,7 +120,7 @@ export function PersonaGroupTable () {
     tableQuery.data?.data.forEach(personaGroup => {
       const id = personaGroup.macRegistrationPoolId
       if (!id) return
-      getMacRegistrationById({ params: { macRegistrationListId: id } })
+      getMacRegistrationById({ params: { policyId: id } })
         .then(result => {
           if (result.data) {
             macPoolMap.set(id, result.data.name)
