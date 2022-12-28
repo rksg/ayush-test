@@ -50,3 +50,7 @@ export function getServiceListRoutePath (prefixSlash = false): string {
 export function getSelectServiceRoutePath (prefixSlash = false): string {
   return (prefixSlash ? '/' : '') + 'services/select'
 }
+
+export function getServiceCatalogRoutePath (prefixSlash = false): string {
+  return (prefixSlash ? '/' : '') + 'services/catalog'
+}

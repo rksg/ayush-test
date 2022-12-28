@@ -1,7 +1,7 @@
-import { defineMessage } from 'react-intl'
+import { defineMessage, MessageDescriptor } from 'react-intl'
 
 import {
-  DHCPConfigTypeEnum
+  DHCPConfigTypeEnum, ServiceTechnology
 } from './constants'
 
 export enum PskWlanSecurityEnum {
@@ -227,4 +227,9 @@ export const DHCPConfigTypeMessages = {
   [DHCPConfigTypeEnum.MULTIPLE]: defineMessage({ defaultMessage: 'Multiple APs' }),
   [DHCPConfigTypeEnum.SIMPLE]: defineMessage({ defaultMessage: 'Each APs' }),
   [DHCPConfigTypeEnum.HIERARCHICAL]: defineMessage({ defaultMessage: 'Hierarchical APs' })
+}
+
+export const serviceTechnologyLabelMapping: Record<ServiceTechnology, MessageDescriptor> = {
+  [ServiceTechnology.WIFI]: defineMessage({ defaultMessage: 'Wi-Fi' }),
+  [ServiceTechnology.SWITCH]: defineMessage({ defaultMessage: 'Switch' })
 }

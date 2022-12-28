@@ -4,14 +4,14 @@ import {
   MdnsProxyForwardingRuleTypeEnum,
   ServiceAdminState,
   ServiceStatus,
-  ServiceTechnology,
   ServiceType
 } from '@acx-ui/rc/utils'
 
 export const serviceTypeLabelMapping: Record<ServiceType, MessageDescriptor> = {
   [ServiceType.PORTAL]: defineMessage({ defaultMessage: 'Portal' }),
-  [ServiceType.DHCP]: defineMessage({ defaultMessage: 'DHCP' }),
+  [ServiceType.DHCP]: defineMessage({ defaultMessage: 'DHCP for Wi-Fi' }),
   [ServiceType.WIFI_CALLING]: defineMessage({ defaultMessage: 'Wi-Fi Calling' }),
+  // eslint-disable-next-line max-len
   [ServiceType.MDNS_PROXY]: defineMessage({ defaultMessage: 'mDNS Proxy' }),
   [ServiceType.DPSK]: defineMessage({ defaultMessage: 'DPSK' }),
   [ServiceType.NETWORK_SEGMENTATION]: defineMessage({ defaultMessage: 'Network Segmentation' })
@@ -26,10 +26,6 @@ export const serviceTypeDescMapping: Record<ServiceType, MessageDescriptor> = {
   [ServiceType.DPSK]: defineMessage({ defaultMessage: 'RUCKUS Dynamic Pre Shared Key Service' }),
   [ServiceType.NETWORK_SEGMENTATION]: defineMessage(
     { defaultMessage: 'Controls network traffic by different segments' })
-}
-export const serviceTechnologyLabelMapping: Record<ServiceTechnology, MessageDescriptor> = {
-  [ServiceTechnology.WIFI]: defineMessage({ defaultMessage: 'Wi-Fi' }),
-  [ServiceTechnology.SWITCH]: defineMessage({ defaultMessage: 'Switch' })
 }
 export const serviceStatusLabelMapping: Record<ServiceStatus, MessageDescriptor> = {
   [ServiceStatus.UP]: defineMessage({ defaultMessage: 'Up' }),

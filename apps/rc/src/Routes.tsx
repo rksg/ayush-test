@@ -8,7 +8,8 @@ import {
   getServiceListRoutePath,
   getSelectServiceRoutePath,
   ServiceOperation,
-  getServiceRoutePath
+  getServiceRoutePath,
+  getServiceCatalogRoutePath
 } from '@acx-ui/rc/utils'
 import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                          from '@acx-ui/store'
@@ -40,14 +41,16 @@ import DpskForm                 from './pages/Services/Dpsk/DpskForm/DpskForm'
 import MdnsProxyDetail          from './pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail'
 import MdnsProxyForm            from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
 import MdnsProxyTable           from './pages/Services/MdnsProxy/MdnsProxyTable/MdnsProxyTable'
+import MyServices               from './pages/Services/MyServices'
 import NetworkSegmentationForm  from './pages/Services/NetworkSegmentationForm/NetworkSegmentationForm'
 import PortalServiceDetail      from './pages/Services/Portal/PortalDetail'
 import PortalForm               from './pages/Services/Portal/PortalForm/PortalForm'
 import SelectServiceForm        from './pages/Services/SelectServiceForm'
-import ServicesTable            from './pages/Services/ServicesTable'
+import ServiceCatalog           from './pages/Services/ServiceCatalog'
 import WifiCallingDetailView    from './pages/Services/WifiCalling/WifiCallingDetail/WifiCallingDetailView'
 import WifiCallingConfigureForm from './pages/Services/WifiCalling/WifiCallingForm/WifiCallingConfigureForm'
 import WifiCallingForm          from './pages/Services/WifiCalling/WifiCallingForm/WifiCallingForm'
+import WifiCallingTable         from './pages/Services/WifiCalling/WifiCallingTable/WifiCallingTable'
 import Timeline                 from './pages/Timeline'
 import SwitchClientList         from './pages/Users/Switch/ClientList'
 import WifiClientDetails        from './pages/Users/Wifi/ClientDetails'
@@ -137,8 +140,9 @@ function NetworkRoutes () {
 function ServiceRoutes () {
   return rootRoutes(
     <Route path='t/:tenantId'>
-      <Route path={getServiceListRoutePath()} element={<ServicesTable />} />
+      <Route path={getServiceListRoutePath()} element={<MyServices />} />
       <Route path={getSelectServiceRoutePath()} element={<SelectServiceForm />} />
+      <Route path={getServiceCatalogRoutePath()} element={<ServiceCatalog />} />
       <Route
         path={getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.CREATE })}
         element={<MdnsProxyForm />}
@@ -168,6 +172,10 @@ function ServiceRoutes () {
         // eslint-disable-next-line max-len
         path={getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.DETAIL })}
         element={<WifiCallingDetailView />}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.LIST })}
+        element={<WifiCallingTable/>}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE })}

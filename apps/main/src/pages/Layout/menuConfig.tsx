@@ -27,6 +27,7 @@ import {
   SpeedIndicatorOutlined,
   SpeedIndicatorSolid
 } from '@acx-ui/icons'
+import { getServiceCatalogRoutePath, getServiceListRoutePath } from '@acx-ui/rc/utils'
 
 const AIOutlined = styled(AIOutlinedBase)`${LayoutUI.iconOutlinedOverride}`
 const AISolid = styled(AISolidBase)`${LayoutUI.iconOutlinedOverride}`
@@ -115,11 +116,21 @@ export function useMenuConfig () {
       activeIcon: NetworksSolid
     },
     {
-      path: '/services',
+      path: getServiceListRoutePath(true),
       name: $t({ defaultMessage: 'Services' }),
       inactiveIcon: ServicesOutlined,
       activeIcon: ServicesSolid,
-      disabled: !useIsSplitOn(Features.SERVICES)
+      disabled: !useIsSplitOn(Features.SERVICES),
+      routes: [
+        {
+          path: getServiceListRoutePath(true),
+          name: $t({ defaultMessage: 'My Services' })
+        },
+        {
+          path: getServiceCatalogRoutePath(true),
+          name: $t({ defaultMessage: 'Service Catalog' })
+        }
+      ]
     },
     {
       path: '/policies',
