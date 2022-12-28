@@ -11,9 +11,6 @@ export * from './models'
 export * from './getDescription'
 export * from './activityMapping'
 
-export * from './types/user'
-export * from './types/venue'
-export * from './types/client'
 export * from './types'
 export * from './pipes'
 
