@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
-import { useDeleteWifiCallingServiceMutation, useServiceListQuery }       from '@acx-ui/rc/services'
+import { Button, PageHeader, Table, TableProps, Loader, showActionModal, showToast } from '@acx-ui/components'
+import { useDeleteWifiCallingServiceMutation, useServiceListQuery }                  from '@acx-ui/rc/services'
 import {
   ServiceType,
   useTableQuery,
@@ -93,8 +93,7 @@ function useColumns () {
     {
       key: 'tags',
       title: $t({ defaultMessage: 'Tags' }),
-      dataIndex: 'tags',
-      sorter: true
+      dataIndex: 'tags'
     }
   ]
 
@@ -140,7 +139,7 @@ export default function ServicesTable () {
   const rowActions: TableProps<Service>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: ([{ id, name, type }], clearSelection) => {
+      onClick: ([{ id, name, type, scope }], clearSelection) => {
         showActionModal({
           type: 'confirm',
           customContent: {
@@ -149,8 +148,17 @@ export default function ServicesTable () {
             entityValue: name
           },
           onOk: () => {
-            const [ deleteFn ] = deleteServiceFnMapping[type]
-            deleteFn({ params: { tenantId, serviceId: id } }).then(clearSelection)
+            if (scope > 0) {
+              showToast({
+                type: 'error',
+                content: $t({
+                  defaultMessage: 'This profile is used in Network, it is not allowed to be deleted'
+                })
+              })
+            } else {
+              const [ deleteFn ] = deleteServiceFnMapping[type]
+              deleteFn({ params: { tenantId, serviceId: id } }).then(clearSelection)
+            }
           }
         })
       }

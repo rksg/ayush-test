@@ -3,8 +3,8 @@ import { useContext } from 'react'
 import { Form, Col, Row, Typography } from 'antd'
 import { useIntl }                    from 'react-intl'
 
-import { StepsForm } from '@acx-ui/components'
-
+import { StepsForm }              from '@acx-ui/components'
+import { WifiCallingQosPriority } from '@acx-ui/rc/utils'
 
 import WifiCallingFormContext from '../WifiCallingFormContext'
 
@@ -52,7 +52,7 @@ const WifiCallingSummaryForm = () => {
           name='qosPriority'
           label={$t({ defaultMessage: 'QoS Priority' })}
         >
-          <Paragraph>{state.qosPriority}</Paragraph>
+          <Paragraph>{WifiCallingQosPriority[state.qosPriority]}</Paragraph>
         </Form.Item>
 
         <Form.Item
@@ -61,7 +61,8 @@ const WifiCallingSummaryForm = () => {
         >
           <>
             {state.ePDG.map(ePDG => {
-              return <div key={`${ePDG.domain}`}>{ePDG.domain} ({ePDG.ip})</div>
+              const ipString = ePDG.ip ? `(${ePDG.ip})` : ''
+              return <div key={`${ePDG.domain}`}>{ePDG.domain} {ipString}</div>
             })}
           </>
 
