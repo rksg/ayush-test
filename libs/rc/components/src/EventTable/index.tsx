@@ -1,21 +1,77 @@
 import { useState } from 'react'
 
+import moment                     from 'moment'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps, Button } from '@acx-ui/components'
-import { Event, RequestPayload, TableQuery } from '@acx-ui/rc/utils'
-import { formatter }                         from '@acx-ui/utils'
+import { Loader, Table, TableProps, Button }                 from '@acx-ui/components'
+import { CommonUrlsInfo, Event, RequestPayload, TableQuery } from '@acx-ui/rc/utils'
+import { formatter, useDateFilter }                          from '@acx-ui/utils'
 
 import { replaceStrings } from '../ActivityTable/replaceStrings'
 import { TimelineDrawer } from '../TimelineDrawer'
 
 import { severityMapping, eventTypeMapping, productMapping } from './mapping'
 
+export const useEventTableFilter = () => {
+  const { startDate, endDate } = useDateFilter()
+  return {
+    fromTime: moment(startDate).milliseconds(0).toISOString().replace('.000', ''),
+    toTime: moment(endDate).milliseconds(0).toISOString().replace('.000', '')
+  }
+}
+
+export const defaultPayload = {
+  url: CommonUrlsInfo.getEventList.url,
+  fields: [
+    'event_datetime',
+    'severity',
+    'entity_type',
+    'product',
+    'entity_id',
+    'message',
+    'dpName',
+    'apMac',
+    'clientMac',
+    'macAddress',
+    'apName',
+    'switchName',
+    'serialNumber',
+    'networkName',
+    'networkId',
+    'ssid',
+    'radio',
+    'raw_event',
+    'sourceType',
+    'adminName',
+    'clientName',
+    'userName',
+    'hostname',
+    'adminEmail',
+    'administratorEmail',
+    'venueName',
+    'venueId',
+    'apGroupId',
+    'apGroupName',
+    'floorPlanName',
+    'recipientName',
+    'transactionId',
+    'name'
+  ],
+  filters: {
+    entity_type: ['AP', 'CLIENT', 'SWITCH', 'NETWORK']
+  }
+}
+
+export const defaultSorter = {
+  sortField: 'event_datetime',
+  sortOrder: 'DESC'
+}
+
 interface EventTableProps {
   tableQuery: TableQuery<Event, RequestPayload<unknown>, unknown>
 }
 
-const EventTable = ({ tableQuery }: EventTableProps) => {
+export const EventTable = ({ tableQuery }: EventTableProps) => {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
   const [current, setCurrent] = useState<Event>()
@@ -147,4 +203,4 @@ const EventTable = ({ tableQuery }: EventTableProps) => {
     />}
   </Loader>
 }
-export { EventTable }
+

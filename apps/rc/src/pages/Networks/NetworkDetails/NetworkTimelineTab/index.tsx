@@ -9,15 +9,12 @@ import { useTenantLink }                                       from '@acx-ui/rea
 
 const Events = () => {
   // TODO: add fromTime/toTime to filter when DatePicker is ready
-  const params = useParams()
+  const { networkId } = useParams()
   const tableQuery = useTableQuery<Event, RequestPayload<unknown>, unknown>({
     useQuery: useEventsQuery,
     defaultPayload: {
       ...eventDefaultPayload,
-      filters: {
-        ...eventDefaultPayload.filters,
-        serialNumber: [ params.serialNumber ]
-      }
+      filters: { ...eventDefaultPayload.filters, networkId: [ networkId ] }
     },
     sorter: eventDefaultSorter
   })
@@ -36,11 +33,11 @@ const tabs : {
   }
 ]
 
-export function SwitchTimelineTab () {
+export function NetworkTimelineTab () {
   const { $t } = useIntl()
-  const { activeSubTab = tabs[0].key, switchId, serialNumber } = useParams()
+  const { activeSubTab = tabs[0].key, networkId } = useParams()
   const navigate = useNavigate()
-  const basePath = useTenantLink(`/devices/switch/${switchId}/${serialNumber}/details/timeline/`)
+  const basePath = useTenantLink(`/networks/${networkId}/network-details/timeline/`)
   // TODO: remove istanbul and add unit test once there are more than 1 tab
   /* istanbul ignore next */
   const onTabChange = (tab: string) => {

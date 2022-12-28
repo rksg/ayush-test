@@ -29,7 +29,12 @@ export { StatusLight } from './StatusLight'
 export { ClientHealthIcon } from './ClientHealthIcon'
 export { ActivityTable } from './ActivityTable'
 export { AdminLogTable } from './AdminLogTable'
-export { EventTable } from './EventTable'
+export {
+  EventTable,
+  useEventTableFilter,
+  defaultPayload as eventDefaultPayload,
+  defaultSorter as eventDefaultSorter
+} from './EventTable'
 
 export * from './pipes/apGroupPipes'
 export * from './ExpirationDateSelector'
