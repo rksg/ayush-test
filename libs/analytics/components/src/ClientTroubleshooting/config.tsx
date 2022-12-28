@@ -250,8 +250,8 @@ export const ClientTroubleShootingConfig = {
         { key: 'all', label: 'all', chartType: 'bar' },
         { key: 'rss', label: 'rss', chartType: 'bar' },
         { key: 'snr', label: 'snr', chartType: 'bar' },
-        { key: 'clientThroughput', label: 'clientThroughput', chartType: 'bar' },
-        { key: 'AvgMCS', label: 'AvgMCS', chartType: 'bar' }
+        { key: 'throughput', label: 'throughput', chartType: 'bar' },
+        { key: 'avgTxMCS', label: 'avgTxMCS', chartType: 'bar' }
       ] as { key: string, label: string, chartType: string }[],
       subtitle: [
         {
@@ -279,7 +279,7 @@ export const ClientTroubleShootingConfig = {
       hasXaxisLabel: true,
       chartMapping: [
         { key: 'all', label: 'all', chartType: 'bar' },
-        { key: 'clientConnection', label: 'clientConnection', chartType: 'bar' },
+        { key: 'connection', label: 'clientConnection', chartType: 'bar' },
         { key: 'performance', label: 'performance', chartType: 'bar' },
         { key: 'infratructure', label: 'infratructure', chartType: 'bar' }
       ] as { key: string, label: string, chartType: string }[],
@@ -309,28 +309,31 @@ export const connectionQualityLabels = {
   avgTxMCS: { label: 'Avg MCS (Downlink)', formatter: 'networkSpeedFormat' }
 }
 
-export const transformConnectionQualities = (connectionQualities: ConnectionQuality[]) => {
-  const mappedQuality = connectionQualities.map(val => ({
-    ...val,
-    rss: getConnectionQualityFor('rss', val.rss),
-    snr: getConnectionQualityFor('snr', val.snr),
-    throughput: getConnectionQualityFor('throughput', val.throughput),
-    avgTxMCS: getConnectionQualityFor('avgTxMCS', val.avgTxMCS),
-    all: null
-  }))
+export const transformConnectionQualities = (connectionQualities?: ConnectionQuality[]) => {
+  if (typeof connectionQualities === 'undefined') {
+    return []
+  }
+
+  const mappedQuality = connectionQualities.map((val) => {
+    const rss = getConnectionQualityFor('rss', val.rss)
+    const snr = getConnectionQualityFor('snr', val.snr)
+    const throughput = getConnectionQualityFor('throughput', val.throughput)
+    const avgTxMCS = getConnectionQualityFor('avgTxMCS', val.avgTxMCS)
+    const worseQuality = takeWorseQuality(...[rss, snr, throughput, avgTxMCS])
+    return {
+      ...val,
+      rss,
+      snr,
+      throughput,
+      avgTxMCS,
+      all: worseQuality
+    }})
 
   return {
-    all: mappedQuality.map(val => {
-      const originalQualities = [val.rss, val.snr, val.throughput, val.avgTxMCS]
-      const worseQuality = takeWorseQuality(...originalQualities as string[])
-      return {
-        ...val,
-        all: worseQuality
-      }
-    }),
-    rss: mappedQuality.filter((val) => val.rss),
-    snr: mappedQuality.filter((val) => val.snr),
-    throughput: mappedQuality.filter((val) => val.throughput),
-    avgTxMCS: mappedQuality.filter((val) => val.avgTxMCS)
+    all: mappedQuality,
+    rss: mappedQuality.filter(val => val.rss),
+    snr: mappedQuality.filter(val => val.snr),
+    throughput: mappedQuality.filter(val => val.throughput),
+    avgTxMCS: mappedQuality.filter(val => val.avgTxMCS)
   }
 }

@@ -10,7 +10,8 @@ import {
   FAILURE,
   RADIO5G,
   RADIO2DOT4G,
-  ROAMED
+  ROAMED,
+  transformConnectionQualities
 } from './config'
 import { ConnectionEvent } from './services'
 
@@ -356,6 +357,93 @@ describe('Config utils', () => {
     }]
     data.forEach(({ event, desc }) => {
       expect(formatEventDesc(event, getIntl())).toEqual(desc)
+    })
+  })
+
+  describe('transformConnectionQualities', () => {
+    it('returns correct values on sample data', () => {
+      const testData = [
+        {
+          start: '2022-12-26T07:09:58.340Z',
+          end: '2022-12-26T07:12:00.000Z',
+          rss: null,
+          snr: 41,
+          throughput: 4300,
+          avgTxMCS: 8600
+        },
+        {
+          start: '2022-12-26T07:12:00.000Z',
+          end: '2022-12-26T07:15:00.000Z',
+          rss: -45,
+          snr: null,
+          throughput: 60500,
+          avgTxMCS: 81750
+        },
+        {
+          start: '2022-12-26T07:15:00.000Z',
+          end: '2022-12-26T07:18:00.000Z',
+          rss: -53.5,
+          snr: 52,
+          throughput: null,
+          avgTxMCS: 76000
+        },
+        {
+          start: '2022-12-26T10:15:00.000Z',
+          end: '2022-12-26T10:18:00.000Z',
+          rss: -54,
+          snr: 45,
+          throughput: 12900,
+          avgTxMCS: null
+        }
+      ]
+
+      const matchedData = [
+        {
+          start: '2022-12-26T07:09:58.340Z',
+          end: '2022-12-26T07:12:00.000Z',
+          rss: null,
+          snr: 'good',
+          throughput: 'good',
+          avgTxMCS: 'bad',
+          all: 'bad'
+        },
+        {
+          start: '2022-12-26T07:12:00.000Z',
+          end: '2022-12-26T07:15:00.000Z',
+          rss: 'good',
+          snr: null,
+          throughput: 'good',
+          avgTxMCS: 'good',
+          all: 'good'
+        },
+        {
+          start: '2022-12-26T07:15:00.000Z',
+          end: '2022-12-26T07:18:00.000Z',
+          rss: 'good',
+          snr: 'good',
+          throughput: null,
+          avgTxMCS: 'good',
+          all: 'good'
+        },
+        {
+          start: '2022-12-26T10:15:00.000Z',
+          end: '2022-12-26T10:18:00.000Z',
+          rss: 'good',
+          snr: 'good',
+          throughput: 'good',
+          avgTxMCS: null,
+          all: 'good'
+        }
+      ]
+
+      const transformedData = transformConnectionQualities(testData)
+      expect(transformedData).toStrictEqual({
+        all: matchedData,
+        rss: matchedData.filter(val => val.rss),
+        snr: matchedData.filter(val => val.snr),
+        throughput: matchedData.filter(val => val.throughput),
+        avgTxMCS: matchedData.filter(val => val.avgTxMCS)
+      })
     })
   })
 })
