@@ -63,6 +63,7 @@ interface FormFooterProps {
 
 const FormFooter = (props: FormFooterProps) => {
   const { $t } = useIntl()
+  const [ loading, setLoading ] = useState(false)
   const {
     showAddAnother = false,
     onCancel,
@@ -91,7 +92,11 @@ const FormFooter = (props: FormFooterProps) => {
           {buttonLabel.cancel}
         </Button>
         <Button
-          onClick={() => onSave(checked)}
+          loading={loading}
+          onClick={() => {
+            setLoading(true)
+            onSave(checked).finally(() => setLoading(false))
+          }}
           type={'secondary'}
         >
           {buttonLabel.save}
