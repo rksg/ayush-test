@@ -16,7 +16,7 @@ import {
 } from '@acx-ui/icons'
 import {
   CloudMessageBanner
-} from '@acx-ui/main/components'
+} from '@acx-ui/rc/components'
 import { Outlet, TenantLink } from '@acx-ui/react-router-dom'
 
 import { useMenuConfig } from './menuConfig'

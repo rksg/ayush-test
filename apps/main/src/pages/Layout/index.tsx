@@ -8,7 +8,7 @@ import {
 import { SplitProvider } from '@acx-ui/feature-toggle'
 import {
   CloudMessageBanner
-} from '@acx-ui/main/components'
+} from '@acx-ui/rc/components'
 import { Outlet }          from '@acx-ui/react-router-dom'
 import { notAvailableMsg } from '@acx-ui/utils'
 
