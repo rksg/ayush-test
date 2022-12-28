@@ -3,38 +3,38 @@ import { ApiInfo } from '../../apiService'
 export const DpskUrls: { [key: string]: ApiInfo } = {
   getDpsk: {
     method: 'get',
-    url: '/dpskServices/:serviceId'
+    url: '/api/dpskServices/:serviceId'
   },
   getDpskList: {
     method: 'get',
-    url: '/dpskServices'
+    url: '/api/dpskServices'
   },
   addDpsk: {
     method: 'post',
-    url: '/dpskServices'
+    url: '/api/dpskServices'
   },
   updateDpsk: {
     method: 'patch',
-    url: '/dpskServices/:serviceId'
+    url: '/api/dpskServices/:serviceId'
   },
   deleteDpsk: {
     method: 'delete',
-    url: '/dpskServices/:serviceId'
+    url: '/api/dpskServices/:serviceId'
   },
   getPassphraseList: {
     method: 'get',
-    url: '/dpskServices/:serviceId/passphrases'
+    url: '/api/dpskServices/:serviceId/passphrases'
   },
   addPassphrase: {
     method: 'post',
-    url: '/dpskServices/:serviceId/passphrases'
+    url: '/api/dpskServices/:serviceId/passphrases'
   },
   uploadPassphrases: {
     method: 'post',
-    url: '/dpskServices/:serviceId/passphrases/upload'
+    url: '/api/dpskServices/:serviceId/passphrases/upload'
   },
   deletePassphrase: {
     method: 'delete',
-    url: '/dpskServices/:serviceId/passphrases'
+    url: '/api/dpskServices/:serviceId/passphrases'
   }
 }
