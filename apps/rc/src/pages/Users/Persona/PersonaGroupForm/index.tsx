@@ -18,7 +18,7 @@ export function PersonaGroupForm (props: {
 
   const macRegistrationPoolList = useTableQuery({
     useQuery: useMacRegListsQuery,
-    apiParams: { size: '2147483647', page: '0' },
+    apiParams: { size: '2147483647', page: '0', sort: 'name,ASC' },
     defaultPayload: { }
   })
 

@@ -37,7 +37,7 @@ export function PersonaDevicesForm (props: PersonaDevicesFormProps) {
 
   const columns = [
     {
-      title: $t({ defaultMessage: 'Mac Address' }),
+      title: $t({ defaultMessage: 'MAC Address' }),
       dataIndex: 'macAddress',
       key: 'macAddress'
     },

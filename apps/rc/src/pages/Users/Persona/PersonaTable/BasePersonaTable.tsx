@@ -106,13 +106,13 @@ export function BasePersonaTable (props: PersonaTableProps) {
 
   const personaListQuery = useTableQuery({
     useQuery: useSearchPersonaListQuery,
+    apiParams: { sort: 'name,ASC' },
     defaultPayload: { }
   })
 
   const personaListByGroupIdQuery = useTableQuery({
     useQuery: useSearchPersonaListQuery,
-    // FIXME: [before commit]: need to modify size to 10
-    apiParams: { size: '2', page: '0' },
+    apiParams: { sort: 'name,ASC' },
     defaultPayload: { groupId: personaGroupId }
   })
 

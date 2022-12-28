@@ -140,7 +140,7 @@ const ImportManuallyForm = (props: { form: FormInstance }) => {
                 {...restField}
                 key={key}
                 name={[name, 'macAddress']}
-                label={$t({ defaultMessage: 'Mac Address' })}
+                label={$t({ defaultMessage: 'MAC Address' })}
                 rules={[
                   {
                     required: true,
