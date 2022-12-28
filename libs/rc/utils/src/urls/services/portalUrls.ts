@@ -28,5 +28,13 @@ export const PortalUrlsInfo: { [key: string]: ApiInfo } = {
   getPortalProfileDetail: {
     method: 'get',
     url: '/api/tenant/:tenantId/portal-service-profile/:serviceId'
+  },
+  getPortalList: {
+    method: 'get',
+    url: '/api/portalServiceProfiles'
+  },
+  deletePortal: {
+    method: 'delete',
+    url: '/api/portalServiceProfiles/:serviceId'
   }
 }

@@ -45,6 +45,7 @@ import MyServices               from './pages/Services/MyServices'
 import NetworkSegmentationForm  from './pages/Services/NetworkSegmentationForm/NetworkSegmentationForm'
 import PortalServiceDetail      from './pages/Services/Portal/PortalDetail'
 import PortalForm               from './pages/Services/Portal/PortalForm/PortalForm'
+import PortalTable              from './pages/Services/Portal/PortalTable'
 import SelectServiceForm        from './pages/Services/SelectServiceForm'
 import ServiceCatalog           from './pages/Services/ServiceCatalog'
 import WifiCallingDetailView    from './pages/Services/WifiCalling/WifiCallingDetail/WifiCallingDetailView'
@@ -222,6 +223,10 @@ function ServiceRoutes () {
       <Route
         path={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.DETAIL })}
         element={<PortalServiceDetail/>}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.LIST })}
+        element={<PortalTable/>}
       />
     </Route>
   )

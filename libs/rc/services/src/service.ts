@@ -33,7 +33,9 @@ import {
   PortalUrlsInfo,
   DpskList,
   onSocketActivityChanged,
-  showActivityMessage
+  showActivityMessage,
+  NewTableResult,
+  transferTableResult
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
@@ -54,7 +56,7 @@ const RKS_NEW_UI = {
 export const baseServiceApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'serviceApi',
-  tagTypes: ['Service', 'Dpsk', 'MdnsProxy', 'WifiCalling', 'DHCP'],
+  tagTypes: ['Service', 'Dpsk', 'MdnsProxy', 'WifiCalling', 'DHCP', 'Portal'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })
@@ -440,8 +442,29 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    getPortalList: build.query<TableResult<Portal>, RequestPayload>({
+      query: () => {
+        const req = createHttpRequest(PortalUrlsInfo.getPortalList)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Service', id: 'LIST' }, { type: 'Portal', id: 'LIST' }],
+      transformResponse (result: NewTableResult<Portal>) {
+        return transferTableResult<Portal>(result)
+      }
+    }),
+    deletePortal: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PortalUrlsInfo.deletePortal, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }, { type: 'Portal', id: 'LIST' }]
     })
-
   })
 })
 
@@ -477,5 +500,7 @@ export const {
   useGetPortalQuery,
   useSavePortalMutation,
   usePortalNetworkInstancesQuery,
-  useGetPortalProfileDetailQuery
+  useGetPortalProfileDetailQuery,
+  useGetPortalListQuery,
+  useDeletePortalMutation
 } = serviceApi
