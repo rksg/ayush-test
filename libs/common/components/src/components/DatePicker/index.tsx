@@ -95,12 +95,14 @@ export const RangePicker = ({
       document.removeEventListener('click', handleClickForDatePicker)
     }
   }, [range, onDateChange, onDateApply, translatedOptions])
+  const rangeText = `[${$t(dateRangeMap[selectionType])}]`
   return (
     <UI.RangePickerWrapper
       ref={componentRef}
       rangeOptions={rangeOptions}
       selectionType={selectionType}
       isCalendarOpen={isCalendarOpen}
+      rangeText={rangeText}
     >
       <AntRangePicker
         ref={rangeRef}
@@ -128,7 +130,7 @@ export const RangePicker = ({
         value={[range?.startDate, range?.endDate]}
         format={isCalendarOpen || selectionType === DateRange.custom
           ? (showTimePicker ? dateTimeFormat : dateFormat)
-          : `[${$t(dateRangeMap[selectionType])}]`
+          : rangeText
         }
         allowClear={false}
       />
