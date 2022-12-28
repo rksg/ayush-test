@@ -29,7 +29,7 @@ export function SwitchOverviewTab () {
     payload: {
       fields: ['activeUnitId', 'unitId', 'unitStatus', 'name', 'deviceStatus', 'model',
         'serialNumber', 'activeSerial', 'switchMac', 'ip', 'venueName', 'uptime'],
-      filters: { activeUnitId: [params.switchId] } } },
+      filters: { activeUnitId: [params.serialNumber] } } },
   { skip: !switchDetailQuery.isSuccess })
   const navigate = useNavigate()
   const basePath = useTenantLink(
@@ -50,7 +50,7 @@ export function SwitchOverviewTab () {
     if(switchDetail) {
       setSwitchFilter({
         ...filters,
-        path: [{ type: 'switch', name: switchDetail.switchMac as string }]
+        path: [{ type: 'switch', name: switchDetail.switchMac?.toUpperCase() as string }]
       })
     }
   }, [switchDetail, filters])

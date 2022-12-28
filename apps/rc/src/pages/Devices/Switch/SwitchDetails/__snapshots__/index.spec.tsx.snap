@@ -65,9 +65,7 @@ exports[`SwitchDetails should navigate to DHCP tab correctly 1`] = `
                 />
                 <span
                   class="ant-badge-status-text"
-                >
-                  Operational
-                </span>
+                />
               </span>
             </span>
           </span>
@@ -461,9 +459,7 @@ exports[`SwitchDetails should navigate to clients tab correctly 1`] = `
                 />
                 <span
                   class="ant-badge-status-text"
-                >
-                  Operational
-                </span>
+                />
               </span>
             </span>
           </span>
@@ -857,9 +853,7 @@ exports[`SwitchDetails should navigate to configuration tab correctly 1`] = `
                 />
                 <span
                   class="ant-badge-status-text"
-                >
-                  Operational
-                </span>
+                />
               </span>
             </span>
           </span>
@@ -1633,9 +1627,7 @@ exports[`SwitchDetails should navigate to reports tab correctly 1`] = `
                 />
                 <span
                   class="ant-badge-status-text"
-                >
-                  Operational
-                </span>
+                />
               </span>
             </span>
           </span>
@@ -2029,9 +2021,7 @@ exports[`SwitchDetails should navigate to timeline tab correctly 1`] = `
                 />
                 <span
                   class="ant-badge-status-text"
-                >
-                  Operational
-                </span>
+                />
               </span>
             </span>
           </span>
@@ -2425,9 +2415,7 @@ exports[`SwitchDetails should navigate to troubleshooting tab correctly 1`] = `
                 />
                 <span
                   class="ant-badge-status-text"
-                >
-                  Operational
-                </span>
+                />
               </span>
             </span>
           </span>

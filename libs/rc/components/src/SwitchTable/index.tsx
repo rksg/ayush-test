@@ -11,12 +11,12 @@ import {
 import { useSwitchListQuery } from '@acx-ui/rc/services'
 import {
   getSwitchStatusString,
-  STACK_MEMBERSHIP,
   SwitchRow,
   transformSwitchStatus,
   getSwitchName,
   useTableQuery,
-  DeviceConnectionStatus
+  DeviceConnectionStatus,
+  getStackMemberStatus
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
@@ -61,16 +61,6 @@ export function SwitchTable ({ showAllColumns } : {
   const switchAction = useSwitchActions()
   const tableData = tableQuery.data?.data ?? []
 
-  const getStackMemberStatus = (unitStatus: string) => {
-    if (unitStatus === STACK_MEMBERSHIP.ACTIVE) {
-      return $t({ defaultMessage: '(Active)' })
-    } else if (unitStatus === STACK_MEMBERSHIP.STANDBY) {
-      return $t({ defaultMessage: '(Standby)' })
-    } else {
-      return $t({ defaultMessage: '(Member)' })
-    }
-  }
-
   const columns: TableProps<SwitchRow>['columns'] = [{
     key: 'name',
     title: $t({ defaultMessage: 'Switch' }),
@@ -87,7 +77,7 @@ export function SwitchTable ({ showAllColumns } : {
             </TenantLink> :
             <Space>
               <>{getSwitchName(row)}</>
-              {getStackMemberStatus(row.unitStatus || '')}
+              <span>({getStackMemberStatus(row.unitStatus || '', true)})</span>
             </Space>
         }
       </>

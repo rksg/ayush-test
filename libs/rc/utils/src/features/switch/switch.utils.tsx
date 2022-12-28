@@ -3,8 +3,8 @@ import _ from 'lodash'
 
 import { getIntl } from '@acx-ui/utils'
 
-import { DeviceConnectionStatus }                       from '../../constants'
-import { SwitchRow, SwitchStatusEnum, SwitchViewModel } from '../../types'
+import { DeviceConnectionStatus }                                         from '../../constants'
+import { STACK_MEMBERSHIP, SwitchRow, SwitchStatusEnum, SwitchViewModel } from '../../types'
 
 export const modelMap: ReadonlyMap<string, string> = new Map([
   ['CRH', 'ICX7750-48F'],
@@ -185,3 +185,16 @@ export const getPoeUsage = (data: SwitchViewModel) => {
   }
 }
 
+export const getStackMemberStatus = (unitStatus: string, isDefaultMember?: boolean) => {
+  const { $t } = getIntl()
+  if (unitStatus === STACK_MEMBERSHIP.ACTIVE) {
+    return $t({ defaultMessage: 'Active' })
+  } else if (unitStatus === STACK_MEMBERSHIP.STANDBY) {
+    return $t({ defaultMessage: 'Standby' })
+  } else if (unitStatus === STACK_MEMBERSHIP.MEMBER) {
+    return $t({ defaultMessage: 'Member' })
+  } else if (isDefaultMember) {
+    return $t({ defaultMessage: 'Member' })
+  }
+  return
+}

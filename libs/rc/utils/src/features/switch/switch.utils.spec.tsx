@@ -1,8 +1,8 @@
 /* eslint-disable max-len */
 import '@testing-library/jest-dom'
 
-import { DeviceConnectionStatus }            from '../../constants'
-import { SwitchStatusEnum, SwitchViewModel } from '../../types'
+import { DeviceConnectionStatus }                              from '../../constants'
+import { STACK_MEMBERSHIP, SwitchStatusEnum, SwitchViewModel } from '../../types'
 
 import {
   isOperationalSwitch,
@@ -11,7 +11,8 @@ import {
   isStrictOperationalSwitch,
   transformSwitchStatus,
   getSwitchStatusString,
-  getPoeUsage
+  getPoeUsage,
+  getStackMemberStatus
 } from '.'
 
 const switchRow ={
@@ -189,6 +190,16 @@ describe('switch.utils', () => {
         total: 2,
         percentage: '50%'
       })
+    })
+  })
+
+  describe('Test getStackMemberStatus function', () => {
+    it('should render correctly', async () => {
+      expect(getStackMemberStatus(STACK_MEMBERSHIP.ACTIVE)).toBe('Active')
+      expect(getStackMemberStatus(STACK_MEMBERSHIP.STANDBY)).toBe('Standby')
+      expect(getStackMemberStatus(STACK_MEMBERSHIP.MEMBER)).toBe('Member')
+      expect(getStackMemberStatus('', true)).toBe('Member')
+      expect(getStackMemberStatus('')).toBeFalsy()
     })
   })
 

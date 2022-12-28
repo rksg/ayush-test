@@ -5,9 +5,9 @@ import { replace }               from 'lodash'
 import _                         from 'lodash'
 import { useIntl }               from 'react-intl'
 
-import { Drawer }                                         from '@acx-ui/components'
-import { SwitchViewModel, noDataDisplay, getSwitchModel } from '@acx-ui/rc/utils'
-import { TenantLink }                                     from '@acx-ui/react-router-dom'
+import { Drawer }                                                               from '@acx-ui/components'
+import { SwitchViewModel, noDataDisplay, getSwitchModel, getStackMemberStatus } from '@acx-ui/rc/utils'
+import { TenantLink }                                                           from '@acx-ui/react-router-dom'
 
 export interface DrawerProps {
   visible: boolean
@@ -116,7 +116,8 @@ export const SwitchDetailsDrawer = (props: DrawerProps) => {
                     onChange={event => parserUnitDetialsData(event)}
                     options={switchDetail?.unitDetails?.map((unit, index) => {
                       const stackRole = unit.unitStatus ?
-                        unit.unitStatus : $t({ defaultMessage: 'Unknown Role' })
+                        getStackMemberStatus(unit.unitStatus)
+                        : $t({ defaultMessage: 'Unknown Role' })
                       const stackUnitId = unit.unitId ? unit.unitId : unit.activeSerial
                       return({
                         value: index,
@@ -128,7 +129,7 @@ export const SwitchDetailsDrawer = (props: DrawerProps) => {
               />
               <Form.Item
                 label={$t({ defaultMessage: 'Stack membership' })}
-                children={unitDetial.stackMembership || noDataDisplay}
+                children={getStackMemberStatus(unitDetial.stackMembership) || noDataDisplay}
               />
               <Form.Item
                 label={$t({ defaultMessage: 'Stack ID' })}

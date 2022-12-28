@@ -1,11 +1,11 @@
 import { Dropdown, Menu, Space } from 'antd'
 import { useIntl }               from 'react-intl'
 
-import { Button, PageHeader }         from '@acx-ui/components'
-import { ClockOutlined, ArrowExpand } from '@acx-ui/icons'
-import { SwitchStatus }               from '@acx-ui/rc/components'
-import { useSwitchDetailHeaderQuery } from '@acx-ui/rc/services'
-import { SwitchRow, SwitchViewModel } from '@acx-ui/rc/utils'
+import { Button, PageHeader }                                                      from '@acx-ui/components'
+import { ClockOutlined, ArrowExpand }                                              from '@acx-ui/icons'
+import { SwitchStatus }                                                            from '@acx-ui/rc/components'
+import { useSwitchDetailHeaderQuery }                                              from '@acx-ui/rc/services'
+import { isStrictOperationalSwitch, SwitchRow, SwitchStatusEnum, SwitchViewModel } from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useTenantLink,
@@ -21,6 +21,9 @@ function SwitchPageHeader () {
 
   const navigate = useNavigate()
   const basePath = useTenantLink(`/devices/switch/${switchId}/${serialNumber}`)
+  const currentSwitchOperational = isStrictOperationalSwitch(
+    data?.deviceStatus as SwitchStatusEnum, !!data?.configReady, !!data?.syncedSwitchConfig)
+    && !data?.suspendingDeployTime
 
   // const handleMenuClick: MenuProps['onClick'] = (e) => { TODO:
   //   // console.log('click', e)
@@ -58,7 +61,8 @@ function SwitchPageHeader () {
   return (
     <PageHeader
       title={data?.name || data?.switchName || data?.serialNumber || ''}
-      titleExtra={<SwitchStatus row={data as unknown as SwitchRow} />}
+      titleExtra={
+        <SwitchStatus row={data as unknown as SwitchRow} showText={!currentSwitchOperational} />}
       breadcrumb={[
         { text: $t({ defaultMessage: 'Switches' }), link: '/devices/switch' }
       ]}
