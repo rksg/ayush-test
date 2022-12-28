@@ -36,8 +36,8 @@ jest.mock('./pages/Networks/NetworkDetails/NetworkDetails', () => () => {
   return <div data-testid='NetworkDetails' />
 })
 
-jest.mock('./pages/Services/ServicesTable', () => () => {
-  return <div data-testid='ServicesTable' />
+jest.mock('./pages/Services/MyServices', () => () => {
+  return <div data-testid='MyServices' />
 })
 
 jest.mock('./pages/Services/SelectServiceForm', () => () => {
@@ -212,7 +212,7 @@ describe('RcRoutes: Services', () => {
         wrapRoutes: false
       }
     })
-    expect(screen.getByTestId('ServicesTable')).toBeVisible()
+    expect(screen.getByTestId('MyServices')).toBeVisible()
   })
 
   test('should navigate to select service page', async () => {

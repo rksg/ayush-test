@@ -23,7 +23,7 @@ import * as UI from './styledComponents'
 export default function SelectServiceForm () {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const servicesTablePath: Path = useTenantLink(getServiceListRoutePath(true))
+  const myServicesPath: Path = useTenantLink(getServiceListRoutePath(true))
   const tenantBasePath: Path = useTenantLink('')
   const networkSegmentationEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION)
 
@@ -48,7 +48,7 @@ export default function SelectServiceForm () {
         ]}
       />
       <StepsForm
-        onCancel={() => navigate(servicesTablePath)}
+        onCancel={() => navigate(myServicesPath)}
         buttonLabel={{ submit: $t({ defaultMessage: 'Next' }) }}
       >
         <StepsForm.StepForm

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 
-import _                   from 'lodash'
-import { useIntl }         from 'react-intl'
-import { Path, useParams } from 'react-router-dom'
+import _             from 'lodash'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
 import { PageHeader, showToast, StepsForm }                                                               from '@acx-ui/components'
 import { useAddMdnsProxyMutation, useGetMdnsProxyQuery }                                                  from '@acx-ui/rc/services'
@@ -24,8 +24,7 @@ export default function MdnsProxyForm ({ editMode = false }: MdnsProxyFormProps)
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
-  const servicesPath = useTenantLink('/services')
-  const servicesTablePath: Path = useTenantLink(getServiceListRoutePath(true))
+  const myServicesPath = useTenantLink(getServiceListRoutePath(true))
   const [ currentData, setCurrentData ] = useState<MdnsProxyFormData>({} as MdnsProxyFormData)
   const { data: dataFromServer } = useGetMdnsProxyQuery({ params }, { skip: !editMode })
   const [ addMdnsProxy ] = useAddMdnsProxyMutation()
@@ -49,7 +48,7 @@ export default function MdnsProxyForm ({ editMode = false }: MdnsProxyFormProps)
     try {
       const payload = editMode ? data : _.omit(data, 'id')
       await addMdnsProxy({ params, payload }).unwrap()
-      navigate(servicesTablePath, { replace: true })
+      navigate(myServicesPath, { replace: true })
     } catch {
       showToast({
         type: 'error',
@@ -75,7 +74,7 @@ export default function MdnsProxyForm ({ editMode = false }: MdnsProxyFormProps)
       <MdnsProxyFormContext.Provider value={{ editMode, currentData }}>
         <StepsForm<MdnsProxyFormData>
           editMode={editMode}
-          onCancel={() => navigate(servicesPath)}
+          onCancel={() => navigate(myServicesPath)}
           onFinish={(data) => saveData(editMode, data)}
         >
           <StepsForm.StepForm
