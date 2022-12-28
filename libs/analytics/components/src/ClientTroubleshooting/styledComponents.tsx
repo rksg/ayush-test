@@ -1,5 +1,3 @@
-import { ReactNode } from 'react'
-
 import styled, { css } from 'styled-components/macro'
 
 import {  PlusSquareOutlined, MinusSquareOutlined } from '@acx-ui/icons'
@@ -17,7 +15,7 @@ export const History = styled.div`
   flex:1;
 `
 export const HistoryHeader = styled.div`
-  padding : 12px 0 12px 16px;
+  padding: 12px 0 12px 16px;
   display : flex
 `
 export const HistoryContent = styled.div`
@@ -25,7 +23,7 @@ export const HistoryContent = styled.div`
     border-bottom: none;
     padding: 0 0 8px 0;
   }
-  padding : 0 16px 0px 16px;  
+  padding: 0 16px 0px 16px;
   .ant-list-item-meta-title {
     color: var(--acx-neutrals-70);
     font-size: var(--acx-subtitle-6-font-size);
@@ -64,7 +62,7 @@ export const IncidentEvent = styled.span`
   font-size: 8px;
   height: 12px;
   width: 16px;
-  color: var(--acx-primary-white);  
+  color: var(--acx-primary-white);
   font-weight: var(--acx-body-font-weight-bold);
   margin: 1px 0 0 -8px;
   text-align: center;
@@ -72,7 +70,7 @@ export const IncidentEvent = styled.span`
   line-height: 12px;
 `
 export const StyledPlusSquareOutlined = styled(PlusSquareOutlined)`
-   width: 16px; 
+   width: 16px;
    path{
       stroke:var(--acx-accents-blue-50);
     }`
@@ -92,7 +90,12 @@ export const PopoverWrapper = styled.div`
     padding: 0px;
   }
 `
-
+export const DetailsWrapper = styled.div`
+  height: 100%;
+  padding-top: 16px;
+  padding-left: var(--acx-content-vertical-space);
+  padding-bottom: 15px;
+`
 export const Header = styled.h3`
   font-size: 10px;
   line-height: 16px;
@@ -100,9 +103,8 @@ export const Header = styled.h3`
   text-align: left;
   font-family: var(--acx-neutral-brand-font);
   color: var(--acx-primary-black);
-  margin-bottom: 0px;
+  margin-bottom: 2px;
 `
-
 export const CloseRowWrapper = styled.div`
   text-align: end;
 `
@@ -110,34 +112,31 @@ export const CloseIconContainer = styled.span`
   cursor: pointer;
   position: absolute;
   right: 11px;
-  top: -11px;
+  top: 11px;
 `
-
+export const Body = styled.div`
+  display: flex;
+  align-items: stretch;
+`
 export const VerticalLine = styled.div`
-  height: 100%;
-  width: 100%;
-  border-right: 1px solid var(--acx-neutrals-30);
+  width: 1px;
+  margin-right: 20px;
+  background: var(--acx-neutrals-30);
 `
-export const DetailsWrapper = styled.div.attrs((props: { extra?: ReactNode }) => props)`
-  width: ${props => props.extra ? '500px' : '250px'};
-  overflow: scroll;
-  height: 100%;
-  padding-top: 16px;
-  padding-left: var(--acx-content-vertical-space);
-  padding-bottom: 15px;
+export const ListDetails = styled.div`
+  width: 250px;
 `
-
-export const DetailsRowLabel = styled.div`
+const DetailsRow = styled.div`
+  white-space: nowrap;
   font-weight: var(--acx-subtitle-6-font-weight);
   font-size: var(--acx-subtitle-6-line-height);
   font-family: var(--acx-neutral-brand-font);
-  font-style: normal;
-  color: var(--acx-neutrals-70);
 `
-
-export const DetailsRowValue = styled.div`
-  font-weight: var(--acx-subtitle-6-font-weight);
-  font-size: var(--acx-subtitle-6-font-size);
-  font-family: var(--acx-neutral-brand-font);
+export const DetailsRowLabel = styled(DetailsRow)`
+  color: var(--acx-neutrals-70);
+  font-style: normal;
+  padding-right: 10px;
+`
+export const DetailsRowValue = styled(DetailsRow)`
   color: var(--acx-primary-black);
 `
