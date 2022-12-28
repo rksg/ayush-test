@@ -70,12 +70,27 @@ export function RadioSettings () {
     }
 
     if(venueSavedChannelsData){
-      setEditRadioContextData({ radioData: venueSavedChannelsData })
-      formRef?.current?.setFieldsValue(venueSavedChannelsData)
+      formRef?.current?.setFieldsValue({
+        ...venueSavedChannelsData,
+        apRadioParams24G: {
+          changeInterval: venueSavedChannelsData.apRadioParams24G.changeInterval,
+          channelBandwidth: venueSavedChannelsData.apRadioParams24G.channelBandwidth,
+          manualChannel: venueSavedChannelsData.apRadioParams24G.manualChannel,
+          method: venueSavedChannelsData.apRadioParams24G.method,
+          txPower: venueSavedChannelsData.apRadioParams24G.txPower
+        },
+        apRadioParams50G: {
+          changeInterval: venueSavedChannelsData.apRadioParams50G.changeInterval,
+          channelBandwidth: venueSavedChannelsData.apRadioParams50G.channelBandwidth,
+          manualChannel: venueSavedChannelsData.apRadioParams50G.manualChannel,
+          method: venueSavedChannelsData.apRadioParams50G.method,
+          txPower: venueSavedChannelsData.apRadioParams50G.txPower
+        }
+      })
       setVenueSetting(venueSavedChannelsData.useVenueSettings)
       setEditRadioContextData({
         ...editRadioContextData,
-        radioData: formRef.current?.getFieldsValue(),
+        radioData: venueSavedChannelsData,
         updateWifiRadio: handleUpdateRadioSettings
       })
     }
@@ -92,7 +107,7 @@ export function RadioSettings () {
     if(venueSetting){
       deleteApRadio({ params: { tenantId, serialNumber } })
     }else{
-      if(formData.apRadioParams24G.method === 'MANUAL'){
+      if(formData.apRadioParams24G && formData.apRadioParams24G.method === 'MANUAL'){
         const channelBandwidth =
           formData.apRadioParams24G.channelBandwidth === 'AUTO' ? 'auto' :
             formData.apRadioParams24G.channelBandwidth
@@ -101,7 +116,7 @@ export function RadioSettings () {
         formData.apRadioParams24G.allowedChannels =
           defaultChannelsData?.['2.4GChannels'][channelBandwidth] || []
       }
-      if(formData.apRadioParams50G.method === 'MANUAL'){
+      if(formData.apRadioParams50G && formData.apRadioParams50G.method === 'MANUAL'){
         const channelBandwidth =
           formData.apRadioParams50G.channelBandwidth === 'AUTO' ? 'auto' :
             formData.apRadioParams50G.channelBandwidth
