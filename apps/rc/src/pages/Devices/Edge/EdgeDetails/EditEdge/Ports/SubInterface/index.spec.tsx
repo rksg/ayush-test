@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { EdgePort, EdgeUrlsInfo }                        from '@acx-ui/rc/utils'
+import { EdgeUrlsInfo }                                  from '@acx-ui/rc/utils'
 import { Provider }                                      from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, within } from '@acx-ui/test-utils'
 
