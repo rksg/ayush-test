@@ -133,6 +133,7 @@ exports[`SwitchOverviewTab should navigate to ACLs tab correctly 1`] = `
           </div>
           <div
             class="ant-tabs-ink-bar ant-tabs-ink-bar-animated"
+            style="left: 0px; width: 0px;"
           />
         </div>
       </div>
@@ -223,38 +224,164 @@ exports[`SwitchOverviewTab should navigate to ACLs tab correctly 1`] = `
           tabindex="0"
         >
           <div
-            class="styledComponents__Wrapper-sc-1352uh8-0 ilNUvb"
+            class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
           >
             <div
-              class="styledComponents__FallbackWrapper-sc-1352uh8-1 doEIjj"
+              class="styledComponents__Wrapper-sc-1abm7iv-13 crtNbp"
             >
-              <span
-                aria-label="loader"
-                role="img"
+              <div
+                class="ant-pro-table"
               >
                 <div
-                  aria-busy="true"
-                  aria-live="polite"
-                  class="ant-spin ant-spin-lg ant-spin-spinning"
+                  class="ant-pro-card"
                 >
-                  <span
-                    class="ant-spin-dot ant-spin-dot-spin"
+                  <div
+                    class="ant-pro-card-body"
+                    style="padding-top: 0px;"
                   >
-                    <i
-                      class="ant-spin-dot-item"
-                    />
-                    <i
-                      class="ant-spin-dot-item"
-                    />
-                    <i
-                      class="ant-spin-dot-item"
-                    />
-                    <i
-                      class="ant-spin-dot-item"
-                    />
-                  </span>
+                    <div
+                      class="ant-pro-table-list-toolbar"
+                    >
+                      <div
+                        class="ant-pro-table-list-toolbar-container"
+                      >
+                        <div
+                          class="ant-pro-table-list-toolbar-left"
+                        />
+                        <div
+                          class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-right"
+                        >
+                          <div
+                            class="ant-space-item"
+                          >
+                            <div
+                              class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-setting-items"
+                            >
+                              <div
+                                class="ant-space-item"
+                              >
+                                <div
+                                  class="ant-pro-table-list-toolbar-setting-item"
+                                >
+                                  <svg
+                                    data-testid="SettingsOutlined"
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="ant-table-wrapper"
+                    >
+                      <div
+                        class="ant-spin-nested-loading"
+                      >
+                        <div
+                          class="ant-spin-container"
+                        >
+                          <div
+                            class="ant-table ant-table-middle ant-table-empty ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-right"
+                          >
+                            <div
+                              class="ant-table-container"
+                            >
+                              <div
+                                class="ant-table-content"
+                                style="overflow-x: auto; overflow-y: hidden;"
+                              >
+                                <table
+                                  style="min-width: 100%; table-layout: auto;"
+                                >
+                                  <colgroup>
+                                    <col />
+                                    <col />
+                                    <col
+                                      style="width: 32px;"
+                                    />
+                                  </colgroup>
+                                  <thead
+                                    class="ant-table-thead"
+                                  >
+                                    <tr>
+                                      <th
+                                        class="ant-table-cell"
+                                      >
+                                        ACL Name
+                                      </th>
+                                      <th
+                                        class="ant-table-cell"
+                                      >
+                                        ACL Type
+                                      </th>
+                                      <th
+                                        class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                        style="position: sticky; right: 0px;"
+                                      />
+                                    </tr>
+                                  </thead>
+                                  <tbody
+                                    class="ant-table-tbody"
+                                  >
+                                    <tr
+                                      aria-hidden="true"
+                                      class="ant-table-measure-row"
+                                      style="height: 0px; font-size: 0px;"
+                                    >
+                                      <td
+                                        style="padding: 0px; border: 0px; height: 0px;"
+                                      >
+                                        <div
+                                          style="height: 0px; overflow: hidden;"
+                                        >
+                                           
+                                        </div>
+                                      </td>
+                                      <td
+                                        style="padding: 0px; border: 0px; height: 0px;"
+                                      >
+                                        <div
+                                          style="height: 0px; overflow: hidden;"
+                                        >
+                                           
+                                        </div>
+                                      </td>
+                                      <td
+                                        style="padding: 0px; border: 0px; height: 0px;"
+                                      >
+                                        <div
+                                          style="height: 0px; overflow: hidden;"
+                                        >
+                                           
+                                        </div>
+                                      </td>
+                                    </tr>
+                                    <tr
+                                      class="ant-table-placeholder"
+                                    >
+                                      <td
+                                        class="ant-table-cell"
+                                        colspan="3"
+                                      >
+                                        <div
+                                          class="ant-table-expanded-row-fixed"
+                                          style="width: 0px; position: sticky; left: 0px; overflow: hidden;"
+                                        />
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </span>
+              </div>
             </div>
           </div>
         </div>
