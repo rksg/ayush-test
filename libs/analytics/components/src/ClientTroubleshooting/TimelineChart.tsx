@@ -197,6 +197,8 @@ export function TimelineChart ({
   const eChartsRef = useRef<ReactECharts>(null)
   const [canResetZoom, resetZoomCallback] =
     useDataZoom(eChartsRef, true)
+  // use selected event on dot click to show popover
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selected, setSelected] = useState<number | undefined>(selectedData)
 
   useDotClick(eChartsRef, onDotClick, setSelected)
@@ -335,7 +337,7 @@ export function TimelineChart ({
               }
             }
           } as SeriesOption)
-      ) as SeriesOption
+      )
   }
 
   return (

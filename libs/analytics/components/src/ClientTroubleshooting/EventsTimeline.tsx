@@ -1,4 +1,4 @@
-import { useEffect,useState } from 'react'
+import React, { useEffect,useState } from 'react'
 
 import { Row, Col }                                         from 'antd'
 import { connect, TooltipComponentFormatterCallbackParams } from 'echarts'
@@ -195,8 +195,8 @@ export function TimeLine (props : TimeLineProps){
     <Row gutter={[16, 16]} style={{ flex: 1 }}>
       <Col span={6}>
         <Row gutter={[16, 16]} style={{ rowGap: '4px' }}>
-          {ClientTroubleShootingConfig.timeLine.map((config) => (
-            <>
+          {ClientTroubleShootingConfig.timeLine.map((config, index) => (
+            <React.Fragment key={index}>
               <Col
                 span={2}>
                 {expandObj[config?.value as keyof TimelineData] ? (
@@ -254,7 +254,7 @@ export function TimeLine (props : TimeLineProps){
                     </Col>
                   </>
                 ))}
-            </>
+            </React.Fragment>
           ))}
         </Row>
       </Col>
@@ -282,9 +282,8 @@ export function TimeLine (props : TimeLineProps){
                 chartRef={connectChart}
                 tooltipFormatter={tooltipFormatter}
                 // caputuring scatterplot dot click to open popover
-                // onDotClick={(params) => {
-                //   console.log(params)
-                // }}
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                onDotClick={(params) => {}}
               />
             </Col>
           ))}
