@@ -36,151 +36,186 @@ exports[`ConnectionEvent renders correctly for disconnect event 1`] = `
                 class="ant-popover-inner-content"
               >
                 <div
-                  class="styledComponents__DetailsWrapper-sc-hmshlr-15 hnYoBb"
+                  class="styledComponents__DetailsWrapper-sc-hmshlr-11 bWOSwk"
                 >
+                  <span
+                    class="styledComponents__CloseIconContainer-sc-hmshlr-14 hipsnB"
+                  >
+                    <svg
+                      data-testid="CloseSymbol"
+                    />
+                  </span>
+                  <h3
+                    class="styledComponents__Header-sc-hmshlr-12 fYxfWF"
+                  >
+                    Connection Event Details
+                  </h3>
                   <div
-                    class="ant-row"
+                    class="styledComponents__Body-sc-hmshlr-15 gmSkie"
                   >
                     <div
-                      class="ant-col ant-col-24"
+                      class="styledComponents__ListDetails-sc-hmshlr-17 ixUqiQ"
                     >
                       <div
-                        class="styledComponents__CloseRowWrapper-sc-hmshlr-12 hJblHN"
-                      >
-                        <span
-                          class="styledComponents__CloseIconContainer-sc-hmshlr-13 hMSoNj"
-                        >
-                          <svg
-                            data-testid="CloseSymbol"
-                          />
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    class="ant-row"
-                  >
-                    <div
-                      class="ant-col ant-col-24"
-                    >
-                      <h3
-                        class="styledComponents__Header-sc-hmshlr-11 iTvmhc"
-                      >
-                        Connection Event Details
-                      </h3>
-                    </div>
-                  </div>
-                  <div
-                    class="ant-row"
-                  >
-                    <div
-                      class="ant-col ant-col-24"
-                    >
-                      <div
-                        class="ant-row"
+                        class="ant-row Grid__GridRow-sc-5irhjd-2"
+                        style="margin: -10px -10px -10px -10px;"
                       >
                         <div
-                          class="ant-col ant-col-12"
+                          class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
                         >
                           <div
-                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
                           >
-                            AP MAC:
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowLabel-sc-hmshlr-19 bWPQqV dtKbuE"
+                            >
+                              AP MAC:
+                            </div>
                           </div>
                         </div>
                         <div
-                          class="ant-col ant-col-12 ant-col-pull-5"
+                          class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
                         >
                           <div
-                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
                           >
-                            94:B3:4F:3D:15:B0
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowValue-sc-hmshlr-20 bWPQqV fGjurO"
+                            >
+                              94:B3:4F:3D:15:B0
+                            </div>
                           </div>
                         </div>
                       </div>
                       <div
-                        class="ant-row"
+                        class="ant-row Grid__GridRow-sc-5irhjd-2"
+                        style="margin: -10px -10px -10px -10px;"
                       >
                         <div
-                          class="ant-col ant-col-12"
+                          class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
                         >
                           <div
-                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
                           >
-                            AP Name:
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowLabel-sc-hmshlr-19 bWPQqV dtKbuE"
+                            >
+                              AP Name:
+                            </div>
                           </div>
                         </div>
                         <div
-                          class="ant-col ant-col-12 ant-col-pull-5"
+                          class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
                         >
                           <div
-                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
                           >
-                            R750-11-112
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowValue-sc-hmshlr-20 bWPQqV fGjurO"
+                            >
+                              R750-11-112
+                            </div>
                           </div>
                         </div>
                       </div>
                       <div
-                        class="ant-row"
+                        class="ant-row Grid__GridRow-sc-5irhjd-2"
+                        style="margin: -10px -10px -10px -10px;"
                       >
                         <div
-                          class="ant-col ant-col-12"
+                          class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
                         >
                           <div
-                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
                           >
-                            SSID:
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowLabel-sc-hmshlr-19 bWPQqV dtKbuE"
+                            >
+                              SSID:
+                            </div>
                           </div>
                         </div>
                         <div
-                          class="ant-col ant-col-12 ant-col-pull-5"
+                          class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
                         >
                           <div
-                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
-                          />
-                        </div>
-                      </div>
-                      <div
-                        class="ant-row"
-                      >
-                        <div
-                          class="ant-col ant-col-12"
-                        >
-                          <div
-                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
                           >
-                            Radio:
-                          </div>
-                        </div>
-                        <div
-                          class="ant-col ant-col-12 ant-col-pull-5"
-                        >
-                          <div
-                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
-                          >
-                            5 GHz
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowValue-sc-hmshlr-20 bWPQqV fGjurO"
+                            />
                           </div>
                         </div>
                       </div>
                       <div
-                        class="ant-row"
+                        class="ant-row Grid__GridRow-sc-5irhjd-2"
+                        style="margin: -10px -10px -10px -10px;"
                       >
                         <div
-                          class="ant-col ant-col-12"
+                          class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
                         >
                           <div
-                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
                           >
-                            Reason:
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowLabel-sc-hmshlr-19 bWPQqV dtKbuE"
+                            >
+                              Radio:
+                            </div>
                           </div>
                         </div>
                         <div
-                          class="ant-col ant-col-12 ant-col-pull-5"
+                          class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
                         >
                           <div
-                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
                           >
-                            Client disconnected
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowValue-sc-hmshlr-20 bWPQqV fGjurO"
+                            >
+                              5 GHz
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row Grid__GridRow-sc-5irhjd-2"
+                        style="margin: -10px -10px -10px -10px;"
+                      >
+                        <div
+                          class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
+                        >
+                          <div
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
+                          >
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowLabel-sc-hmshlr-19 bWPQqV dtKbuE"
+                            >
+                              Reason:
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
+                        >
+                          <div
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
+                          >
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowValue-sc-hmshlr-20 bWPQqV fGjurO"
+                            >
+                              Client disconnected
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -233,189 +268,227 @@ exports[`ConnectionEvent renders correctly for failureEvent event 1`] = `
                 class="ant-popover-inner-content"
               >
                 <div
-                  class="styledComponents__DetailsWrapper-sc-hmshlr-15 gIlkzl"
+                  class="styledComponents__DetailsWrapper-sc-hmshlr-11 bWOSwk"
                 >
+                  <span
+                    class="styledComponents__CloseIconContainer-sc-hmshlr-14 hipsnB"
+                  >
+                    <svg
+                      data-testid="CloseSymbol"
+                    />
+                  </span>
+                  <h3
+                    class="styledComponents__Header-sc-hmshlr-12 fYxfWF"
+                  >
+                    Connection Event Details
+                  </h3>
                   <div
-                    class="ant-row"
+                    class="styledComponents__Body-sc-hmshlr-15 gmSkie"
                   >
                     <div
-                      class="ant-col ant-col-24"
+                      class="styledComponents__ListDetails-sc-hmshlr-17 ixUqiQ"
                     >
                       <div
-                        class="styledComponents__CloseRowWrapper-sc-hmshlr-12 hJblHN"
+                        class="ant-row Grid__GridRow-sc-5irhjd-2"
+                        style="margin: -10px -10px -10px -10px;"
                       >
-                        <span
-                          class="styledComponents__CloseIconContainer-sc-hmshlr-13 hMSoNj"
+                        <div
+                          class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
                         >
-                          <svg
-                            data-testid="CloseSymbol"
-                          />
-                        </span>
+                          <div
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
+                          >
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowLabel-sc-hmshlr-19 bWPQqV dtKbuE"
+                            >
+                              AP MAC:
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
+                        >
+                          <div
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
+                          >
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowValue-sc-hmshlr-20 bWPQqV fGjurO"
+                            >
+                              AA:AA:AA:AA:AA:AA
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row Grid__GridRow-sc-5irhjd-2"
+                        style="margin: -10px -10px -10px -10px;"
+                      >
+                        <div
+                          class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
+                        >
+                          <div
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
+                          >
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowLabel-sc-hmshlr-19 bWPQqV dtKbuE"
+                            >
+                              AP Name:
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
+                        >
+                          <div
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
+                          >
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowValue-sc-hmshlr-20 bWPQqV fGjurO"
+                            >
+                              R750-11-112
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row Grid__GridRow-sc-5irhjd-2"
+                        style="margin: -10px -10px -10px -10px;"
+                      >
+                        <div
+                          class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
+                        >
+                          <div
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
+                          >
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowLabel-sc-hmshlr-19 bWPQqV dtKbuE"
+                            >
+                              SSID:
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
+                        >
+                          <div
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
+                          >
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowValue-sc-hmshlr-20 bWPQqV fGjurO"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row Grid__GridRow-sc-5irhjd-2"
+                        style="margin: -10px -10px -10px -10px;"
+                      >
+                        <div
+                          class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
+                        >
+                          <div
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
+                          >
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowLabel-sc-hmshlr-19 bWPQqV dtKbuE"
+                            >
+                              Radio:
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
+                        >
+                          <div
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
+                          >
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowValue-sc-hmshlr-20 bWPQqV fGjurO"
+                            >
+                              5 GHz
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row Grid__GridRow-sc-5irhjd-2"
+                        style="margin: -10px -10px -10px -10px;"
+                      >
+                        <div
+                          class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
+                        >
+                          <div
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
+                          >
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowLabel-sc-hmshlr-19 bWPQqV dtKbuE"
+                            >
+                              Failure Type:
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
+                        >
+                          <div
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
+                          >
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowValue-sc-hmshlr-20 bWPQqV fGjurO"
+                            >
+                              EAPOL Failure
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row Grid__GridRow-sc-5irhjd-2"
+                        style="margin: -10px -10px -10px -10px;"
+                      >
+                        <div
+                          class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
+                        >
+                          <div
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
+                          >
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowLabel-sc-hmshlr-19 bWPQqV dtKbuE"
+                            >
+                              Reason:
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
+                        >
+                          <div
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
+                          >
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowValue-sc-hmshlr-20 bWPQqV fGjurO"
+                            >
+                              PSK Failure (passphrase mismatch) - Invalid MIC
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div
-                    class="ant-row"
-                  >
                     <div
-                      class="ant-col ant-col-24"
-                    >
-                      <h3
-                        class="styledComponents__Header-sc-hmshlr-11 iTvmhc"
-                      >
-                        Connection Event Details
-                      </h3>
-                    </div>
-                  </div>
-                  <div
-                    class="ant-row"
-                  >
-                    <div
-                      class="ant-col"
-                    >
-                      <div
-                        class="ant-row"
-                      >
-                        <div
-                          class="ant-col ant-col-10"
-                        >
-                          <div
-                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
-                          >
-                            AP MAC:
-                          </div>
-                        </div>
-                        <div
-                          class="ant-col ant-col-10 ant-col-push-1"
-                        >
-                          <div
-                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
-                          >
-                            AA:AA:AA:AA:AA:AA
-                          </div>
-                        </div>
-                      </div>
-                      <div
-                        class="ant-row"
-                      >
-                        <div
-                          class="ant-col ant-col-10"
-                        >
-                          <div
-                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
-                          >
-                            AP Name:
-                          </div>
-                        </div>
-                        <div
-                          class="ant-col ant-col-10 ant-col-push-1"
-                        >
-                          <div
-                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
-                          >
-                            R750-11-112
-                          </div>
-                        </div>
-                      </div>
-                      <div
-                        class="ant-row"
-                      >
-                        <div
-                          class="ant-col ant-col-10"
-                        >
-                          <div
-                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
-                          >
-                            SSID:
-                          </div>
-                        </div>
-                        <div
-                          class="ant-col ant-col-10 ant-col-push-1"
-                        >
-                          <div
-                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
-                          />
-                        </div>
-                      </div>
-                      <div
-                        class="ant-row"
-                      >
-                        <div
-                          class="ant-col ant-col-10"
-                        >
-                          <div
-                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
-                          >
-                            Radio:
-                          </div>
-                        </div>
-                        <div
-                          class="ant-col ant-col-10 ant-col-push-1"
-                        >
-                          <div
-                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
-                          >
-                            5 GHz
-                          </div>
-                        </div>
-                      </div>
-                      <div
-                        class="ant-row"
-                      >
-                        <div
-                          class="ant-col ant-col-10"
-                        >
-                          <div
-                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
-                          >
-                            Failure Type:
-                          </div>
-                        </div>
-                        <div
-                          class="ant-col ant-col-10 ant-col-push-1"
-                        >
-                          <div
-                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
-                          >
-                            EAPOL Failure
-                          </div>
-                        </div>
-                      </div>
-                      <div
-                        class="ant-row"
-                      >
-                        <div
-                          class="ant-col ant-col-10"
-                        >
-                          <div
-                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
-                          >
-                            Reason:
-                          </div>
-                        </div>
-                        <div
-                          class="ant-col ant-col-10 ant-col-push-1"
-                        >
-                          <div
-                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
-                          >
-                            PSK Failure (passphrase mismatch) - Invalid MIC
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div
-                      class="ant-col ant-col-2"
-                    >
-                      <div
-                        class="styledComponents__VerticalLine-sc-hmshlr-14 eFmWgZ"
-                      />
-                    </div>
-                    <div
-                      class="ant-col ant-col-4 ant-col-push-1"
-                    >
-                      Failure Sequence Diagram
-                    </div>
+                      class="styledComponents__VerticalLine-sc-hmshlr-16 klcyzP"
+                    />
+                    Failure Sequence Diagram
                   </div>
                 </div>
               </div>
@@ -464,151 +537,186 @@ exports[`ConnectionEvent renders correctly for slow event 1`] = `
                 class="ant-popover-inner-content"
               >
                 <div
-                  class="styledComponents__DetailsWrapper-sc-hmshlr-15 hnYoBb"
+                  class="styledComponents__DetailsWrapper-sc-hmshlr-11 bWOSwk"
                 >
+                  <span
+                    class="styledComponents__CloseIconContainer-sc-hmshlr-14 hipsnB"
+                  >
+                    <svg
+                      data-testid="CloseSymbol"
+                    />
+                  </span>
+                  <h3
+                    class="styledComponents__Header-sc-hmshlr-12 fYxfWF"
+                  >
+                    Connection Event Details
+                  </h3>
                   <div
-                    class="ant-row"
+                    class="styledComponents__Body-sc-hmshlr-15 gmSkie"
                   >
                     <div
-                      class="ant-col ant-col-24"
+                      class="styledComponents__ListDetails-sc-hmshlr-17 ixUqiQ"
                     >
                       <div
-                        class="styledComponents__CloseRowWrapper-sc-hmshlr-12 hJblHN"
-                      >
-                        <span
-                          class="styledComponents__CloseIconContainer-sc-hmshlr-13 hMSoNj"
-                        >
-                          <svg
-                            data-testid="CloseSymbol"
-                          />
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    class="ant-row"
-                  >
-                    <div
-                      class="ant-col ant-col-24"
-                    >
-                      <h3
-                        class="styledComponents__Header-sc-hmshlr-11 iTvmhc"
-                      >
-                        Connection Event Details
-                      </h3>
-                    </div>
-                  </div>
-                  <div
-                    class="ant-row"
-                  >
-                    <div
-                      class="ant-col ant-col-24"
-                    >
-                      <div
-                        class="ant-row"
+                        class="ant-row Grid__GridRow-sc-5irhjd-2"
+                        style="margin: -10px -10px -10px -10px;"
                       >
                         <div
-                          class="ant-col ant-col-12"
+                          class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
                         >
                           <div
-                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
                           >
-                            AP MAC:
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowLabel-sc-hmshlr-19 bWPQqV dtKbuE"
+                            >
+                              AP MAC:
+                            </div>
                           </div>
                         </div>
                         <div
-                          class="ant-col ant-col-12 ant-col-pull-5"
+                          class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
                         >
                           <div
-                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
                           >
-                            94:B3:4F:3D:15:B0
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowValue-sc-hmshlr-20 bWPQqV fGjurO"
+                            >
+                              94:B3:4F:3D:15:B0
+                            </div>
                           </div>
                         </div>
                       </div>
                       <div
-                        class="ant-row"
+                        class="ant-row Grid__GridRow-sc-5irhjd-2"
+                        style="margin: -10px -10px -10px -10px;"
                       >
                         <div
-                          class="ant-col ant-col-12"
+                          class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
                         >
                           <div
-                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
                           >
-                            AP Name:
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowLabel-sc-hmshlr-19 bWPQqV dtKbuE"
+                            >
+                              AP Name:
+                            </div>
                           </div>
                         </div>
                         <div
-                          class="ant-col ant-col-12 ant-col-pull-5"
+                          class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
                         >
                           <div
-                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
                           >
-                            R750-11-112
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowValue-sc-hmshlr-20 bWPQqV fGjurO"
+                            >
+                              R750-11-112
+                            </div>
                           </div>
                         </div>
                       </div>
                       <div
-                        class="ant-row"
+                        class="ant-row Grid__GridRow-sc-5irhjd-2"
+                        style="margin: -10px -10px -10px -10px;"
                       >
                         <div
-                          class="ant-col ant-col-12"
+                          class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
                         >
                           <div
-                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
                           >
-                            SSID:
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowLabel-sc-hmshlr-19 bWPQqV dtKbuE"
+                            >
+                              SSID:
+                            </div>
                           </div>
                         </div>
                         <div
-                          class="ant-col ant-col-12 ant-col-pull-5"
+                          class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
                         >
                           <div
-                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
-                          />
-                        </div>
-                      </div>
-                      <div
-                        class="ant-row"
-                      >
-                        <div
-                          class="ant-col ant-col-12"
-                        >
-                          <div
-                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
                           >
-                            Radio:
-                          </div>
-                        </div>
-                        <div
-                          class="ant-col ant-col-12 ant-col-pull-5"
-                        >
-                          <div
-                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
-                          >
-                            5 GHz
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowValue-sc-hmshlr-20 bWPQqV fGjurO"
+                            />
                           </div>
                         </div>
                       </div>
                       <div
-                        class="ant-row"
+                        class="ant-row Grid__GridRow-sc-5irhjd-2"
+                        style="margin: -10px -10px -10px -10px;"
                       >
                         <div
-                          class="ant-col ant-col-12"
+                          class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
                         >
                           <div
-                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
                           >
-                            Time to Connect:
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowLabel-sc-hmshlr-19 bWPQqV dtKbuE"
+                            >
+                              Radio:
+                            </div>
                           </div>
                         </div>
                         <div
-                          class="ant-col ant-col-12 ant-col-pull-5"
+                          class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
                         >
                           <div
-                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
                           >
-                            1 s
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowValue-sc-hmshlr-20 bWPQqV fGjurO"
+                            >
+                              5 GHz
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row Grid__GridRow-sc-5irhjd-2"
+                        style="margin: -10px -10px -10px -10px;"
+                      >
+                        <div
+                          class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
+                        >
+                          <div
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
+                          >
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowLabel-sc-hmshlr-19 bWPQqV dtKbuE"
+                            >
+                              Time to Connect:
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
+                        >
+                          <div
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
+                          >
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowValue-sc-hmshlr-20 bWPQqV fGjurO"
+                            >
+                              1 s
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -661,129 +769,153 @@ exports[`ConnectionEvent renders correctly for success event 1`] = `
                 class="ant-popover-inner-content"
               >
                 <div
-                  class="styledComponents__DetailsWrapper-sc-hmshlr-15 hnYoBb"
+                  class="styledComponents__DetailsWrapper-sc-hmshlr-11 bWOSwk"
                 >
+                  <span
+                    class="styledComponents__CloseIconContainer-sc-hmshlr-14 hipsnB"
+                  >
+                    <svg
+                      data-testid="CloseSymbol"
+                    />
+                  </span>
+                  <h3
+                    class="styledComponents__Header-sc-hmshlr-12 fYxfWF"
+                  >
+                    Connection Event Details
+                  </h3>
                   <div
-                    class="ant-row"
+                    class="styledComponents__Body-sc-hmshlr-15 gmSkie"
                   >
                     <div
-                      class="ant-col ant-col-24"
+                      class="styledComponents__ListDetails-sc-hmshlr-17 ixUqiQ"
                     >
                       <div
-                        class="styledComponents__CloseRowWrapper-sc-hmshlr-12 hJblHN"
-                      >
-                        <span
-                          class="styledComponents__CloseIconContainer-sc-hmshlr-13 hMSoNj"
-                        >
-                          <svg
-                            data-testid="CloseSymbol"
-                          />
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    class="ant-row"
-                  >
-                    <div
-                      class="ant-col ant-col-24"
-                    >
-                      <h3
-                        class="styledComponents__Header-sc-hmshlr-11 iTvmhc"
-                      >
-                        Connection Event Details
-                      </h3>
-                    </div>
-                  </div>
-                  <div
-                    class="ant-row"
-                  >
-                    <div
-                      class="ant-col ant-col-24"
-                    >
-                      <div
-                        class="ant-row"
+                        class="ant-row Grid__GridRow-sc-5irhjd-2"
+                        style="margin: -10px -10px -10px -10px;"
                       >
                         <div
-                          class="ant-col ant-col-12"
+                          class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
                         >
                           <div
-                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
                           >
-                            AP MAC:
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowLabel-sc-hmshlr-19 bWPQqV dtKbuE"
+                            >
+                              AP MAC:
+                            </div>
                           </div>
                         </div>
                         <div
-                          class="ant-col ant-col-12 ant-col-pull-5"
+                          class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
                         >
                           <div
-                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
                           >
-                            94:B3:4F:3D:15:B0
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowValue-sc-hmshlr-20 bWPQqV fGjurO"
+                            >
+                              94:B3:4F:3D:15:B0
+                            </div>
                           </div>
                         </div>
                       </div>
                       <div
-                        class="ant-row"
+                        class="ant-row Grid__GridRow-sc-5irhjd-2"
+                        style="margin: -10px -10px -10px -10px;"
                       >
                         <div
-                          class="ant-col ant-col-12"
+                          class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
                         >
                           <div
-                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
                           >
-                            AP Name:
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowLabel-sc-hmshlr-19 bWPQqV dtKbuE"
+                            >
+                              AP Name:
+                            </div>
                           </div>
                         </div>
                         <div
-                          class="ant-col ant-col-12 ant-col-pull-5"
+                          class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
                         >
                           <div
-                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
                           >
-                            R750-11-112
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowValue-sc-hmshlr-20 bWPQqV fGjurO"
+                            >
+                              R750-11-112
+                            </div>
                           </div>
                         </div>
                       </div>
                       <div
-                        class="ant-row"
+                        class="ant-row Grid__GridRow-sc-5irhjd-2"
+                        style="margin: -10px -10px -10px -10px;"
                       >
                         <div
-                          class="ant-col ant-col-12"
+                          class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
                         >
                           <div
-                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
                           >
-                            SSID:
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowLabel-sc-hmshlr-19 bWPQqV dtKbuE"
+                            >
+                              SSID:
+                            </div>
                           </div>
                         </div>
                         <div
-                          class="ant-col ant-col-12 ant-col-pull-5"
+                          class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
                         >
                           <div
-                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
-                          />
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
+                          >
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowValue-sc-hmshlr-20 bWPQqV fGjurO"
+                            />
+                          </div>
                         </div>
                       </div>
                       <div
-                        class="ant-row"
+                        class="ant-row Grid__GridRow-sc-5irhjd-2"
+                        style="margin: -10px -10px -10px -10px;"
                       >
                         <div
-                          class="ant-col ant-col-12"
+                          class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
                         >
                           <div
-                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
                           >
-                            Radio:
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowLabel-sc-hmshlr-19 bWPQqV dtKbuE"
+                            >
+                              Radio:
+                            </div>
                           </div>
                         </div>
                         <div
-                          class="ant-col ant-col-12 ant-col-pull-5"
+                          class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
                         >
                           <div
-                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
                           >
-                            5 GHz
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowValue-sc-hmshlr-20 bWPQqV fGjurO"
+                            >
+                              5 GHz
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -836,189 +968,227 @@ exports[`ConnectionEvent renders correctly for unknown failure 1`] = `
                 class="ant-popover-inner-content"
               >
                 <div
-                  class="styledComponents__DetailsWrapper-sc-hmshlr-15 gIlkzl"
+                  class="styledComponents__DetailsWrapper-sc-hmshlr-11 bWOSwk"
                 >
+                  <span
+                    class="styledComponents__CloseIconContainer-sc-hmshlr-14 hipsnB"
+                  >
+                    <svg
+                      data-testid="CloseSymbol"
+                    />
+                  </span>
+                  <h3
+                    class="styledComponents__Header-sc-hmshlr-12 fYxfWF"
+                  >
+                    Connection Event Details
+                  </h3>
                   <div
-                    class="ant-row"
+                    class="styledComponents__Body-sc-hmshlr-15 gmSkie"
                   >
                     <div
-                      class="ant-col ant-col-24"
+                      class="styledComponents__ListDetails-sc-hmshlr-17 ixUqiQ"
                     >
                       <div
-                        class="styledComponents__CloseRowWrapper-sc-hmshlr-12 hJblHN"
+                        class="ant-row Grid__GridRow-sc-5irhjd-2"
+                        style="margin: -10px -10px -10px -10px;"
                       >
-                        <span
-                          class="styledComponents__CloseIconContainer-sc-hmshlr-13 hMSoNj"
+                        <div
+                          class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
                         >
-                          <svg
-                            data-testid="CloseSymbol"
-                          />
-                        </span>
+                          <div
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
+                          >
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowLabel-sc-hmshlr-19 bWPQqV dtKbuE"
+                            >
+                              AP MAC:
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
+                        >
+                          <div
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
+                          >
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowValue-sc-hmshlr-20 bWPQqV fGjurO"
+                            >
+                              AA:AA:AA:AA:AA:AA
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row Grid__GridRow-sc-5irhjd-2"
+                        style="margin: -10px -10px -10px -10px;"
+                      >
+                        <div
+                          class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
+                        >
+                          <div
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
+                          >
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowLabel-sc-hmshlr-19 bWPQqV dtKbuE"
+                            >
+                              AP Name:
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
+                        >
+                          <div
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
+                          >
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowValue-sc-hmshlr-20 bWPQqV fGjurO"
+                            >
+                              R750-11-112
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row Grid__GridRow-sc-5irhjd-2"
+                        style="margin: -10px -10px -10px -10px;"
+                      >
+                        <div
+                          class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
+                        >
+                          <div
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
+                          >
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowLabel-sc-hmshlr-19 bWPQqV dtKbuE"
+                            >
+                              SSID:
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
+                        >
+                          <div
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
+                          >
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowValue-sc-hmshlr-20 bWPQqV fGjurO"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row Grid__GridRow-sc-5irhjd-2"
+                        style="margin: -10px -10px -10px -10px;"
+                      >
+                        <div
+                          class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
+                        >
+                          <div
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
+                          >
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowLabel-sc-hmshlr-19 bWPQqV dtKbuE"
+                            >
+                              Radio:
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
+                        >
+                          <div
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
+                          >
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowValue-sc-hmshlr-20 bWPQqV fGjurO"
+                            >
+                              5 GHz
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row Grid__GridRow-sc-5irhjd-2"
+                        style="margin: -10px -10px -10px -10px;"
+                      >
+                        <div
+                          class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
+                        >
+                          <div
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
+                          >
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowLabel-sc-hmshlr-19 bWPQqV dtKbuE"
+                            >
+                              Failure Type:
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
+                        >
+                          <div
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
+                          >
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowValue-sc-hmshlr-20 bWPQqV fGjurO"
+                            >
+                              Unknown
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-row Grid__GridRow-sc-5irhjd-2"
+                        style="margin: -10px -10px -10px -10px;"
+                      >
+                        <div
+                          class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
+                        >
+                          <div
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
+                          >
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowLabel-sc-hmshlr-19 bWPQqV dtKbuE"
+                            >
+                              Reason:
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
+                        >
+                          <div
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
+                          >
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowValue-sc-hmshlr-20 bWPQqV fGjurO"
+                            >
+                              PSK Failure (passphrase mismatch) - Invalid MIC
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div
-                    class="ant-row"
-                  >
                     <div
-                      class="ant-col ant-col-24"
-                    >
-                      <h3
-                        class="styledComponents__Header-sc-hmshlr-11 iTvmhc"
-                      >
-                        Connection Event Details
-                      </h3>
-                    </div>
-                  </div>
-                  <div
-                    class="ant-row"
-                  >
-                    <div
-                      class="ant-col"
-                    >
-                      <div
-                        class="ant-row"
-                      >
-                        <div
-                          class="ant-col ant-col-10"
-                        >
-                          <div
-                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
-                          >
-                            AP MAC:
-                          </div>
-                        </div>
-                        <div
-                          class="ant-col ant-col-10 ant-col-push-1"
-                        >
-                          <div
-                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
-                          >
-                            AA:AA:AA:AA:AA:AA
-                          </div>
-                        </div>
-                      </div>
-                      <div
-                        class="ant-row"
-                      >
-                        <div
-                          class="ant-col ant-col-10"
-                        >
-                          <div
-                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
-                          >
-                            AP Name:
-                          </div>
-                        </div>
-                        <div
-                          class="ant-col ant-col-10 ant-col-push-1"
-                        >
-                          <div
-                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
-                          >
-                            R750-11-112
-                          </div>
-                        </div>
-                      </div>
-                      <div
-                        class="ant-row"
-                      >
-                        <div
-                          class="ant-col ant-col-10"
-                        >
-                          <div
-                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
-                          >
-                            SSID:
-                          </div>
-                        </div>
-                        <div
-                          class="ant-col ant-col-10 ant-col-push-1"
-                        >
-                          <div
-                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
-                          />
-                        </div>
-                      </div>
-                      <div
-                        class="ant-row"
-                      >
-                        <div
-                          class="ant-col ant-col-10"
-                        >
-                          <div
-                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
-                          >
-                            Radio:
-                          </div>
-                        </div>
-                        <div
-                          class="ant-col ant-col-10 ant-col-push-1"
-                        >
-                          <div
-                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
-                          >
-                            5 GHz
-                          </div>
-                        </div>
-                      </div>
-                      <div
-                        class="ant-row"
-                      >
-                        <div
-                          class="ant-col ant-col-10"
-                        >
-                          <div
-                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
-                          >
-                            Failure Type:
-                          </div>
-                        </div>
-                        <div
-                          class="ant-col ant-col-10 ant-col-push-1"
-                        >
-                          <div
-                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
-                          >
-                            Unknown
-                          </div>
-                        </div>
-                      </div>
-                      <div
-                        class="ant-row"
-                      >
-                        <div
-                          class="ant-col ant-col-10"
-                        >
-                          <div
-                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
-                          >
-                            Reason:
-                          </div>
-                        </div>
-                        <div
-                          class="ant-col ant-col-10 ant-col-push-1"
-                        >
-                          <div
-                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
-                          >
-                            PSK Failure (passphrase mismatch) - Invalid MIC
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div
-                      class="ant-col ant-col-2"
-                    >
-                      <div
-                        class="styledComponents__VerticalLine-sc-hmshlr-14 eFmWgZ"
-                      />
-                    </div>
-                    <div
-                      class="ant-col ant-col-4 ant-col-push-1"
-                    >
-                      Failure Sequence Diagram
-                    </div>
+                      class="styledComponents__VerticalLine-sc-hmshlr-16 klcyzP"
+                    />
+                    Failure Sequence Diagram
                   </div>
                 </div>
               </div>
@@ -1067,129 +1237,153 @@ exports[`ConnectionEvent renders correctly for unknown radio 1`] = `
                 class="ant-popover-inner-content"
               >
                 <div
-                  class="styledComponents__DetailsWrapper-sc-hmshlr-15 hnYoBb"
+                  class="styledComponents__DetailsWrapper-sc-hmshlr-11 bWOSwk"
                 >
+                  <span
+                    class="styledComponents__CloseIconContainer-sc-hmshlr-14 hipsnB"
+                  >
+                    <svg
+                      data-testid="CloseSymbol"
+                    />
+                  </span>
+                  <h3
+                    class="styledComponents__Header-sc-hmshlr-12 fYxfWF"
+                  >
+                    Connection Event Details
+                  </h3>
                   <div
-                    class="ant-row"
+                    class="styledComponents__Body-sc-hmshlr-15 gmSkie"
                   >
                     <div
-                      class="ant-col ant-col-24"
+                      class="styledComponents__ListDetails-sc-hmshlr-17 ixUqiQ"
                     >
                       <div
-                        class="styledComponents__CloseRowWrapper-sc-hmshlr-12 hJblHN"
-                      >
-                        <span
-                          class="styledComponents__CloseIconContainer-sc-hmshlr-13 hMSoNj"
-                        >
-                          <svg
-                            data-testid="CloseSymbol"
-                          />
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    class="ant-row"
-                  >
-                    <div
-                      class="ant-col ant-col-24"
-                    >
-                      <h3
-                        class="styledComponents__Header-sc-hmshlr-11 iTvmhc"
-                      >
-                        Connection Event Details
-                      </h3>
-                    </div>
-                  </div>
-                  <div
-                    class="ant-row"
-                  >
-                    <div
-                      class="ant-col ant-col-24"
-                    >
-                      <div
-                        class="ant-row"
+                        class="ant-row Grid__GridRow-sc-5irhjd-2"
+                        style="margin: -10px -10px -10px -10px;"
                       >
                         <div
-                          class="ant-col ant-col-12"
+                          class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
                         >
                           <div
-                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
                           >
-                            AP MAC:
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowLabel-sc-hmshlr-19 bWPQqV dtKbuE"
+                            >
+                              AP MAC:
+                            </div>
                           </div>
                         </div>
                         <div
-                          class="ant-col ant-col-12 ant-col-pull-5"
+                          class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
                         >
                           <div
-                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
                           >
-                            94:B3:4F:3D:15:B0
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowValue-sc-hmshlr-20 bWPQqV fGjurO"
+                            >
+                              94:B3:4F:3D:15:B0
+                            </div>
                           </div>
                         </div>
                       </div>
                       <div
-                        class="ant-row"
+                        class="ant-row Grid__GridRow-sc-5irhjd-2"
+                        style="margin: -10px -10px -10px -10px;"
                       >
                         <div
-                          class="ant-col ant-col-12"
+                          class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
                         >
                           <div
-                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
                           >
-                            AP Name:
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowLabel-sc-hmshlr-19 bWPQqV dtKbuE"
+                            >
+                              AP Name:
+                            </div>
                           </div>
                         </div>
                         <div
-                          class="ant-col ant-col-12 ant-col-pull-5"
+                          class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
                         >
                           <div
-                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
                           >
-                            R750-11-112
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowValue-sc-hmshlr-20 bWPQqV fGjurO"
+                            >
+                              R750-11-112
+                            </div>
                           </div>
                         </div>
                       </div>
                       <div
-                        class="ant-row"
+                        class="ant-row Grid__GridRow-sc-5irhjd-2"
+                        style="margin: -10px -10px -10px -10px;"
                       >
                         <div
-                          class="ant-col ant-col-12"
+                          class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
                         >
                           <div
-                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
                           >
-                            SSID:
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowLabel-sc-hmshlr-19 bWPQqV dtKbuE"
+                            >
+                              SSID:
+                            </div>
                           </div>
                         </div>
                         <div
-                          class="ant-col ant-col-12 ant-col-pull-5"
+                          class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
                         >
                           <div
-                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
-                          />
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
+                          >
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowValue-sc-hmshlr-20 bWPQqV fGjurO"
+                            />
+                          </div>
                         </div>
                       </div>
                       <div
-                        class="ant-row"
+                        class="ant-row Grid__GridRow-sc-5irhjd-2"
+                        style="margin: -10px -10px -10px -10px;"
                       >
                         <div
-                          class="ant-col ant-col-12"
+                          class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
                         >
                           <div
-                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
                           >
-                            Radio:
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowLabel-sc-hmshlr-19 bWPQqV dtKbuE"
+                            >
+                              Radio:
+                            </div>
                           </div>
                         </div>
                         <div
-                          class="ant-col ant-col-12 ant-col-pull-5"
+                          class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
                         >
                           <div
-                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
                           >
-                            Unknown
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowValue-sc-hmshlr-20 bWPQqV fGjurO"
+                            >
+                              Unknown
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -1254,129 +1448,153 @@ exports[`ConnectionEvent renders correctly on popover close 2`] = `
                 class="ant-popover-inner-content"
               >
                 <div
-                  class="styledComponents__DetailsWrapper-sc-hmshlr-15 hnYoBb"
+                  class="styledComponents__DetailsWrapper-sc-hmshlr-11 bWOSwk"
                 >
+                  <span
+                    class="styledComponents__CloseIconContainer-sc-hmshlr-14 hipsnB"
+                  >
+                    <svg
+                      data-testid="CloseSymbol"
+                    />
+                  </span>
+                  <h3
+                    class="styledComponents__Header-sc-hmshlr-12 fYxfWF"
+                  >
+                    Connection Event Details
+                  </h3>
                   <div
-                    class="ant-row"
+                    class="styledComponents__Body-sc-hmshlr-15 gmSkie"
                   >
                     <div
-                      class="ant-col ant-col-24"
+                      class="styledComponents__ListDetails-sc-hmshlr-17 ixUqiQ"
                     >
                       <div
-                        class="styledComponents__CloseRowWrapper-sc-hmshlr-12 hJblHN"
-                      >
-                        <span
-                          class="styledComponents__CloseIconContainer-sc-hmshlr-13 hMSoNj"
-                        >
-                          <svg
-                            data-testid="CloseSymbol"
-                          />
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    class="ant-row"
-                  >
-                    <div
-                      class="ant-col ant-col-24"
-                    >
-                      <h3
-                        class="styledComponents__Header-sc-hmshlr-11 iTvmhc"
-                      >
-                        Connection Event Details
-                      </h3>
-                    </div>
-                  </div>
-                  <div
-                    class="ant-row"
-                  >
-                    <div
-                      class="ant-col ant-col-24"
-                    >
-                      <div
-                        class="ant-row"
+                        class="ant-row Grid__GridRow-sc-5irhjd-2"
+                        style="margin: -10px -10px -10px -10px;"
                       >
                         <div
-                          class="ant-col ant-col-12"
+                          class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
                         >
                           <div
-                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
                           >
-                            AP MAC:
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowLabel-sc-hmshlr-19 bWPQqV dtKbuE"
+                            >
+                              AP MAC:
+                            </div>
                           </div>
                         </div>
                         <div
-                          class="ant-col ant-col-12 ant-col-pull-5"
+                          class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
                         >
                           <div
-                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
                           >
-                            94:B3:4F:3D:15:B0
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowValue-sc-hmshlr-20 bWPQqV fGjurO"
+                            >
+                              94:B3:4F:3D:15:B0
+                            </div>
                           </div>
                         </div>
                       </div>
                       <div
-                        class="ant-row"
+                        class="ant-row Grid__GridRow-sc-5irhjd-2"
+                        style="margin: -10px -10px -10px -10px;"
                       >
                         <div
-                          class="ant-col ant-col-12"
+                          class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
                         >
                           <div
-                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
                           >
-                            AP Name:
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowLabel-sc-hmshlr-19 bWPQqV dtKbuE"
+                            >
+                              AP Name:
+                            </div>
                           </div>
                         </div>
                         <div
-                          class="ant-col ant-col-12 ant-col-pull-5"
+                          class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
                         >
                           <div
-                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
                           >
-                            R750-11-112
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowValue-sc-hmshlr-20 bWPQqV fGjurO"
+                            >
+                              R750-11-112
+                            </div>
                           </div>
                         </div>
                       </div>
                       <div
-                        class="ant-row"
+                        class="ant-row Grid__GridRow-sc-5irhjd-2"
+                        style="margin: -10px -10px -10px -10px;"
                       >
                         <div
-                          class="ant-col ant-col-12"
+                          class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
                         >
                           <div
-                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
                           >
-                            SSID:
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowLabel-sc-hmshlr-19 bWPQqV dtKbuE"
+                            >
+                              SSID:
+                            </div>
                           </div>
                         </div>
                         <div
-                          class="ant-col ant-col-12 ant-col-pull-5"
+                          class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
                         >
                           <div
-                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
-                          />
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
+                          >
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowValue-sc-hmshlr-20 bWPQqV fGjurO"
+                            />
+                          </div>
                         </div>
                       </div>
                       <div
-                        class="ant-row"
+                        class="ant-row Grid__GridRow-sc-5irhjd-2"
+                        style="margin: -10px -10px -10px -10px;"
                       >
                         <div
-                          class="ant-col ant-col-12"
+                          class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
                         >
                           <div
-                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
                           >
-                            Radio:
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowLabel-sc-hmshlr-19 bWPQqV dtKbuE"
+                            >
+                              Radio:
+                            </div>
                           </div>
                         </div>
                         <div
-                          class="ant-col ant-col-12 ant-col-pull-5"
+                          class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
                         >
                           <div
-                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
                           >
-                            5 GHz
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowValue-sc-hmshlr-20 bWPQqV fGjurO"
+                            >
+                              5 GHz
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -1427,129 +1645,153 @@ exports[`ConnectionEvent renders correctly on popover close 3`] = `
                 class="ant-popover-inner-content"
               >
                 <div
-                  class="styledComponents__DetailsWrapper-sc-hmshlr-15 hnYoBb"
+                  class="styledComponents__DetailsWrapper-sc-hmshlr-11 bWOSwk"
                 >
+                  <span
+                    class="styledComponents__CloseIconContainer-sc-hmshlr-14 hipsnB"
+                  >
+                    <svg
+                      data-testid="CloseSymbol"
+                    />
+                  </span>
+                  <h3
+                    class="styledComponents__Header-sc-hmshlr-12 fYxfWF"
+                  >
+                    Connection Event Details
+                  </h3>
                   <div
-                    class="ant-row"
+                    class="styledComponents__Body-sc-hmshlr-15 gmSkie"
                   >
                     <div
-                      class="ant-col ant-col-24"
+                      class="styledComponents__ListDetails-sc-hmshlr-17 ixUqiQ"
                     >
                       <div
-                        class="styledComponents__CloseRowWrapper-sc-hmshlr-12 hJblHN"
-                      >
-                        <span
-                          class="styledComponents__CloseIconContainer-sc-hmshlr-13 hMSoNj"
-                        >
-                          <svg
-                            data-testid="CloseSymbol"
-                          />
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    class="ant-row"
-                  >
-                    <div
-                      class="ant-col ant-col-24"
-                    >
-                      <h3
-                        class="styledComponents__Header-sc-hmshlr-11 iTvmhc"
-                      >
-                        Connection Event Details
-                      </h3>
-                    </div>
-                  </div>
-                  <div
-                    class="ant-row"
-                  >
-                    <div
-                      class="ant-col ant-col-24"
-                    >
-                      <div
-                        class="ant-row"
+                        class="ant-row Grid__GridRow-sc-5irhjd-2"
+                        style="margin: -10px -10px -10px -10px;"
                       >
                         <div
-                          class="ant-col ant-col-12"
+                          class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
                         >
                           <div
-                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
                           >
-                            AP MAC:
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowLabel-sc-hmshlr-19 bWPQqV dtKbuE"
+                            >
+                              AP MAC:
+                            </div>
                           </div>
                         </div>
                         <div
-                          class="ant-col ant-col-12 ant-col-pull-5"
+                          class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
                         >
                           <div
-                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
                           >
-                            94:B3:4F:3D:15:B0
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowValue-sc-hmshlr-20 bWPQqV fGjurO"
+                            >
+                              94:B3:4F:3D:15:B0
+                            </div>
                           </div>
                         </div>
                       </div>
                       <div
-                        class="ant-row"
+                        class="ant-row Grid__GridRow-sc-5irhjd-2"
+                        style="margin: -10px -10px -10px -10px;"
                       >
                         <div
-                          class="ant-col ant-col-12"
+                          class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
                         >
                           <div
-                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
                           >
-                            AP Name:
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowLabel-sc-hmshlr-19 bWPQqV dtKbuE"
+                            >
+                              AP Name:
+                            </div>
                           </div>
                         </div>
                         <div
-                          class="ant-col ant-col-12 ant-col-pull-5"
+                          class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
                         >
                           <div
-                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
                           >
-                            R750-11-112
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowValue-sc-hmshlr-20 bWPQqV fGjurO"
+                            >
+                              R750-11-112
+                            </div>
                           </div>
                         </div>
                       </div>
                       <div
-                        class="ant-row"
+                        class="ant-row Grid__GridRow-sc-5irhjd-2"
+                        style="margin: -10px -10px -10px -10px;"
                       >
                         <div
-                          class="ant-col ant-col-12"
+                          class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
                         >
                           <div
-                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
                           >
-                            SSID:
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowLabel-sc-hmshlr-19 bWPQqV dtKbuE"
+                            >
+                              SSID:
+                            </div>
                           </div>
                         </div>
                         <div
-                          class="ant-col ant-col-12 ant-col-pull-5"
+                          class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
                         >
                           <div
-                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
-                          />
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
+                          >
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowValue-sc-hmshlr-20 bWPQqV fGjurO"
+                            />
+                          </div>
                         </div>
                       </div>
                       <div
-                        class="ant-row"
+                        class="ant-row Grid__GridRow-sc-5irhjd-2"
+                        style="margin: -10px -10px -10px -10px;"
                       >
                         <div
-                          class="ant-col ant-col-12"
+                          class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
                         >
                           <div
-                            class="styledComponents__DetailsRowLabel-sc-hmshlr-16 BGrPH"
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
                           >
-                            Radio:
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowLabel-sc-hmshlr-19 bWPQqV dtKbuE"
+                            >
+                              Radio:
+                            </div>
                           </div>
                         </div>
                         <div
-                          class="ant-col ant-col-12 ant-col-pull-5"
+                          class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                          style="padding: 10px 10px 10px 10px;"
                         >
                           <div
-                            class="styledComponents__DetailsRowValue-sc-hmshlr-17 iJMEuV"
+                            class="Grid__Container-sc-5irhjd-1 zzbxI"
                           >
-                            5 GHz
+                            <div
+                              class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowValue-sc-hmshlr-20 bWPQqV fGjurO"
+                            >
+                              5 GHz
+                            </div>
                           </div>
                         </div>
                       </div>
