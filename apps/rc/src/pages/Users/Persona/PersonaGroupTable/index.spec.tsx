@@ -48,9 +48,7 @@ const mockMacRegistration: MacRegistrationPool =
     expirationEnabled: true,
     priority: 1,
     ssidRegex: 'string',
-    macAddresses: 1,
     policyId: 'string',
-    expirationType: 'string',
     expirationOffset: 1,
     expirationDate: 'string'
   }
@@ -65,9 +63,7 @@ const mockMacRegistrationList = {
     expirationEnabled: true,
     priority: 1,
     ssidRegex: 'string',
-    macAddresses: 1,
     policyId: 'string',
-    expirationType: 'string',
     expirationOffset: 1,
     expirationDate: 'string'
   }]
