@@ -2,7 +2,10 @@ import { ApiInfo } from '../apiService'
 
 const basePersonaUrl = '/api/personaGroups'
 
-export const PersonaUrls: { [key: string]: ApiInfo } = {
+// eslint-disable-next-line max-len
+type PersonaUrlType = 'addPersonaGroup' | 'getPersonaGroupList' | 'searchPersonaGroupList' | 'getPersonaGroupById' | 'updatePersonaGroup' | 'deletePersonaGroup' | 'addPersona' | 'getPersonaList' | 'getPersonaById' | 'listPersonaByGroupId' | 'searchPersonaList' | 'updatePersona' | 'deletePersona' | 'addPersonaDevices' | 'deletePersonaDevices'
+
+export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
   /** Persona Group API endpoints */
   addPersonaGroup: {
     method: 'post',
