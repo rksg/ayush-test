@@ -52,7 +52,6 @@ export const Drawer = (props: DrawerProps) => {
 
 interface FormFooterProps {
   showAddAnother?: boolean
-  showLoadingOnSave?: boolean
   onCancel: () => void
   onSave: (checked: boolean) => Promise<void>
   buttonLabel?: {
@@ -67,7 +66,6 @@ const FormFooter = (props: FormFooterProps) => {
   const [ loading, setLoading ] = useState(false)
   const {
     showAddAnother = false,
-    showLoadingOnSave = false,
     onCancel,
     onSave
   } = props
@@ -96,11 +94,6 @@ const FormFooter = (props: FormFooterProps) => {
         <Button
           loading={loading}
           onClick={() => {
-            if (!showLoadingOnSave) {
-              onSave(checked)
-              return
-            }
-
             setLoading(true)
             onSave(checked).finally(() => setLoading(false))
           }}

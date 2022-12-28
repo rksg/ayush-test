@@ -98,6 +98,8 @@ describe('Drawer', () => {
     it('should render form footer', async () => {
       const mockOnCancel = jest.fn()
       const mockOnSave = jest.fn()
+      mockOnSave.mockReturnValue(Promise.resolve())
+
       const { asFragment } = render(
         <Drawer.FormFooter
           onCancel={mockOnCancel}
@@ -116,7 +118,6 @@ describe('Drawer', () => {
 
       render(
         <Drawer.FormFooter
-          showLoadingOnSave={true}
           onCancel={jest.fn()}
           onSave={async (checked) => {
             mockOnSave(checked)
@@ -136,6 +137,8 @@ describe('Drawer', () => {
     it('should handle add another checkbox events', async () => {
       const mockOnCancel = jest.fn()
       const mockOnSave = jest.fn()
+      mockOnSave.mockReturnValue(Promise.resolve())
+
       render(
         <Drawer.FormFooter
           showAddAnother={true}

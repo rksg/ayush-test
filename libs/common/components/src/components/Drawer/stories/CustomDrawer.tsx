@@ -11,7 +11,6 @@ export function CustomDrawer () {
   const [visible, setVisible] = useState(false)
   const [resetField, setResetField] = useState(false)
   const [showAddAnother, setShowAddAnother] = useState(false)
-  const [showLoadingOnSave, setShowLoadingOnSave] = useState(false)
   const [form] = Form.useForm()
 
   const onClose = () => {
@@ -22,7 +21,6 @@ export function CustomDrawer () {
     setVisible(true)
     setResetField(false)
     setShowAddAnother(false)
-    setShowLoadingOnSave(false)
   }
   const resetFields = () => {
     setResetField(true)
@@ -33,14 +31,6 @@ export function CustomDrawer () {
     setVisible(true)
     setResetField(false)
     setShowAddAnother(true)
-    setShowLoadingOnSave(false)
-  }
-
-  const onOpenWithLoadingState = () => {
-    setVisible(true)
-    setResetField(false)
-    setShowAddAnother(false)
-    setShowLoadingOnSave(true)
   }
 
   const content = <Form layout='vertical' form={form} onFinish={resetFields}>
@@ -61,13 +51,12 @@ export function CustomDrawer () {
   const footerWithAddAnother = (
     <Drawer.FormFooter
       showAddAnother={showAddAnother}
-      showLoadingOnSave={showLoadingOnSave}
       onCancel={resetFields}
       onSave={async () => {
-        if (showLoadingOnSave) {
-          // Sleep 5 seconds to observe the loading indicator
-          await new Promise(r => setTimeout(r, 5000))
-        }
+        await form.validateFields()
+
+        // Sleep 5 seconds to observe the loading indicator
+        await new Promise(r => setTimeout(r, 5000))
 
         form.submit()
       }}
@@ -79,7 +68,6 @@ export function CustomDrawer () {
       <Space>
         <Button onClick={onOpen}>Custom Drawer</Button>
         <Button onClick={onOpenWithAddAnother}>Custom Drawer With Add Another</Button>
-        <Button onClick={onOpenWithLoadingState}>Custom Drawer With Loading state</Button>
       </Space>
       <Drawer
         title={'Custom Drawer'}
