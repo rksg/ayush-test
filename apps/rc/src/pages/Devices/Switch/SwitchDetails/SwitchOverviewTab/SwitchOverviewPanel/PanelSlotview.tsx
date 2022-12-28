@@ -3,6 +3,7 @@ import { getPoeUsage, getSwitchModel, isEmpty, isOperationalSwitch, StackMember,
 import Tooltip from 'antd/es/tooltip'
 import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
+import { FrontView } from './FrontView'
 import * as UI             from './styledComponents'
 
 interface SlotMember {
@@ -10,18 +11,37 @@ interface SlotMember {
   data: StackMember[]
 }
 
-const defaultUnit = {
+interface unitType {
+  switchUnit: number
+  model: string
+  serialNumber: string
+  stackId: string
+  poeUsage: {
+    used: number,
+    total: number,
+    percentage: string
+  }
+  unitStatus:{
+    status: SwitchStatusEnum,
+    isOnline: boolean,
+    needAck: boolean,
+    ackMsg: string,
+    activeStatus: string
+  }
+}
+
+const defaultUnit: unitType = {
   switchUnit: 1,
   model: '',
   serialNumber: '',
   stackId: '',
   poeUsage: {
-    used: '--',
-    total: '--',
+    used: 0,
+    total: 0,
     percentage: '--'
   },
   unitStatus: {
-    status: true,
+    status: SwitchStatusEnum.NEVER_CONTACTED_CLOUD,
     isOnline: true,
     needAck: false,
     ackMsg: '',
@@ -51,14 +71,19 @@ export function PanelSlotview (props:{
   const { $t } = useIntl()
   const [ slotMember, setSlotMember ] = useState(null as unknown as SlotMember)
   const [ isRearView, setIsRearView ] = useState(false)
+  const [ maxSlotsCount, setMaxSlotsCount ] = useState(null as unknown as number)
+  const [ rearSlots, setRearSlots] = useState(null as unknown as number[])
+  const [ unit, setUnit] = useState(defaultUnit)
   const { switchDetail, member, isStack } = props
   const { serialNumber, switchMac } = switchDetail
 
-  // useEffect(() => {
-  //   if (switchDetail) {
-  //     genSlotViewData(switchDetail)
-  //   }
-  // }, [switchDetail])
+  useEffect(() => {
+    if (member) {
+      const unitData = genUnit(member)
+      setUnit(unitData as unitType)
+      caculateIcxModules(unitData)
+    }
+  }, [member])
 
   const genUnit = (switchMember: StackMember) => {
     const defaultStatusEnum = serialNumber === switchMember.serialNumber ?
@@ -95,20 +120,17 @@ export function PanelSlotview (props:{
   }
 
   const caculateIcxModules = (unit: any) => {
-    let maxSlotsCount
-    let rearSlots
     if (Number(icxModulesConst.specialMaxSlots[unit.model]) > 0) {
-      maxSlotsCount = icxModulesConst.specialMaxSlots[unit.model];
+      setMaxSlotsCount(icxModulesConst.specialMaxSlots[unit.model])
     } else if (Number(icxModulesConst.maxSlots[unit.model.replace(/\D+/g, '')]) > 0) {
-      maxSlotsCount = icxModulesConst.maxSlots[unit.model.replace(/\D+/g, '')];
+      setMaxSlotsCount(icxModulesConst.maxSlots[unit.model.replace(/\D+/g, '')])
     }
     if (!isNaN(icxModulesConst.rearSlots[unit.model.replace(/\D+/g, '')] as unknown as number) &&
         (undefined !== icxModulesConst.rearSlots[unit.model.replace(/\D+/g, '')])) {
-      rearSlots = icxModulesConst.rearSlots[unit.model.replace(/\D+/g, '')];
+      setRearSlots(icxModulesConst.rearSlots[unit.model.replace(/\D+/g, '')])
     }
   }
 
-  const unit = genUnit(member)
   const isSwitchOperational = isOperationalSwitch(switchDetail.deviceStatus as SwitchStatusEnum, 
     switchDetail.syncedSwitchConfig)
 
@@ -143,5 +165,9 @@ export function PanelSlotview (props:{
         }
       </UI.TitleBar>
     }
+    <FrontView switchUnit={unit.switchUnit} serialNumber={serialNumber as string} switchMac={switchMac as string} 
+      isRearView={isRearView} isOnline={unit.unitStatus.isOnline} maxSlotsCount={maxSlotsCount}
+      rearSlots={rearSlots} model={unit.model} isStack={isStack} deviceStatus={switchDetail.deviceStatus as SwitchStatusEnum}
+    />
   </div>
 }

@@ -5,7 +5,6 @@ import * as UI             from './styledComponents'
 
 export function FrontView (props:{
   switchUnit: number, 
-  switchId: string,
   serialNumber: string,
   switchMac: string,
   isRearView: boolean,

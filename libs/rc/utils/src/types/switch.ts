@@ -152,7 +152,7 @@ export interface StackMember {
   uptime: string
   order: number
   unitStatus?: STACK_MEMBERSHIP
-  unitId?: string
+  unitId?: number
   model?: string
   deviceStatus?: SwitchStatusEnum
   needAck?: boolean
