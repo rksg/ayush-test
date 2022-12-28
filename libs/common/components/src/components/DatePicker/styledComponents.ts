@@ -135,7 +135,7 @@ export const RangePickerWrapper = styled(Wrapper)<RangePickerWrapperProps>`
 
   > .ant-picker {
     &:not(.ant-picker-focused) {
-      transition: width 100ms ease-in 200ms;
+      transition: width 1ms linear 500ms;
     }
     ${props => props.selectionType !== DateRange.custom && !props.isCalendarOpen
     ? `
