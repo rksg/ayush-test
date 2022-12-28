@@ -137,7 +137,7 @@ export const RangePickerWrapper = styled(Wrapper)<RangePickerWrapperProps>`
     }
     ${({ selectionType, isCalendarOpen }) => selectionType !== DateRange.custom && !isCalendarOpen
     ? `
-        width: 130px;
+        width: 140px;
         .ant-picker-range-separator, .ant-picker-input:nth-child(3) {
           display: none;
         }
