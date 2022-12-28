@@ -20,7 +20,7 @@ import {
   VarCustomer,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { getBasePath, Link, TenantLink } from '@acx-ui/react-router-dom'
 
 
 const transformApUtilization = (row: VarCustomer) => {
@@ -74,9 +74,10 @@ export function VarCustomers () {
       searchable: true,
       sorter: true,
       defaultSortOrder: 'ascend' as SortOrder,
-      render: function (data) {
+      render: function (data, row) {
+        const to = `${getBasePath()}/t/${row.id}`
         return (
-          <TenantLink to={''}>{data}</TenantLink>
+          <Link to={to}>{data}</Link>
         )
       }
     },
