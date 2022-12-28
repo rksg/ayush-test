@@ -18,14 +18,15 @@ import {
 } from 'echarts/types/dist/shared'
 import { useIntl } from 'react-intl'
 
-import { cssStr, cssNumber } from '@acx-ui/components'
+import type { TimeSeriesChartData } from '@acx-ui/analytics/utils'
+import { cssStr, cssNumber }        from '@acx-ui/components'
 import {
   xAxisOptions,
-  useDataZoom,
   ResetButton,
   axisLabelOptions,
   dateAxisFormatter
 } from '@acx-ui/components'
+import type { TimeStampRange } from '@acx-ui/types'
 
 import type { ECharts, EChartsOption, SeriesOption } from 'echarts'
 import type { EChartsReactProps }                    from 'echarts-for-react'
@@ -48,6 +49,14 @@ export interface Event {
   end: number;
   category: string;
   seriesKey: string;
+}
+
+type OnDatazoomEvent = {
+  batch?: {
+    startValue: number, endValue: number
+  }[],
+  start?: number,
+  end?: number
 }
 
 export interface TimelineChartProps
@@ -131,7 +140,45 @@ export const useDotClick = (
     }
   }, [eChartsRef, handler])
 }
+function useDataZoom<TChartData extends TimeSeriesChartData> (
+  eChartsRef: RefObject<ReactECharts>,
+  zoomEnabled: boolean,
+  data: TChartData[],
+  zoom?: TimeStampRange,
+  onDataZoom?: (range: TimeStampRange, isReset: boolean) => void
+): [boolean, () => void] {
 
+  const [canResetZoom, setCanResetZoom] = useState<boolean>(false)
+
+  const onDatazoomCallback = useCallback((e: unknown) => {
+    const event = e as unknown as OnDatazoomEvent
+    const firstBatch = event.batch?.[0]
+    firstBatch && onDataZoom && onDataZoom([firstBatch.startValue, firstBatch.endValue], false)
+    if (event.start === 0 && event.end === 100) {
+      setCanResetZoom(false)
+    } else {
+      setCanResetZoom(true)
+    }
+  }, [onDataZoom])
+  useEffect(() => {
+    if (!eChartsRef?.current || !zoomEnabled) return
+    const echartInstance = eChartsRef.current!.getEchartsInstance() as ECharts
+    echartInstance.dispatchAction({
+      type: 'takeGlobalCursor',
+      key: 'dataZoomSelect',
+      dataZoomSelectActive: true
+    })
+    echartInstance.on('datazoom', onDatazoomCallback)
+  })
+
+  const resetZoomCallback = useCallback(() => {
+    if (!eChartsRef?.current) return
+    const echartInstance = eChartsRef.current!.getEchartsInstance() as ECharts
+    echartInstance.dispatchAction({ type: 'dataZoom', start: 0, end: 100 })
+  }, [eChartsRef])
+
+  return [canResetZoom, resetZoomCallback]
+}
 export const tooltipOptions = () =>
   ({
     textStyle: {
@@ -166,7 +213,7 @@ export function TimelineChart ({
   useImperativeHandle(chartRef, () => eChartsRef.current!)
   const chartPadding = 10
   const rowHeight = 22
-  const placeholderRows = 2 // for tracker
+  const placeholderRows = 2
   const legendWidth = 85
   const xAxisHeight = hasXaxisLabel ? 30 : 0
 
@@ -309,8 +356,7 @@ export function TimelineChart ({
                     category as keyof typeof eventColorByCategory
                   ]
                 )
-              },
-              height: 20
+              }
             }
           } as SeriesOption)
       ) as SeriesOption
