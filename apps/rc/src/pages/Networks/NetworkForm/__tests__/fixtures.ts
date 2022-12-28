@@ -583,7 +583,7 @@ export const externalProviders={
       customExternalProvider: false
     }
   ]
-
+}
 export const dpskListResponse = {
   content: [
     {
