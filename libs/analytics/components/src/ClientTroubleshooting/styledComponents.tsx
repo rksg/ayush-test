@@ -1,9 +1,6 @@
 import { Collapse }    from 'antd'
 import styled, { css } from 'styled-components/macro'
 
-import {
-  ResetWrapper
-} from '@acx-ui/components'
 import {  PlusSquareOutlined, MinusSquareOutlined } from '@acx-ui/icons'
 const eventIconStyle = css`
   display: flex;
@@ -88,11 +85,15 @@ export const TimelineTitle = styled.span`
    line-height: 24px;
    font-weight: var(--acx-body-font-weight-bold);
    font-size: 12px;`
+export const TimelineCount = styled.span`
+   font-weight: var(--acx-body-font-weight-bold);
+   font-size: 12px;`
 
 export const TimelineSubContent = styled.span`
    line-height: 16px;
    font-weight: var(--acx-body-font-weight);
-   font-size: 12px;`
+   font-size: 12px;
+   color: var(--acx-neutrals-70);`
 
 export const CollapseBox = styled(Collapse)`
   .ant-collapse-content {
@@ -107,7 +108,7 @@ export const CollapseBox = styled(Collapse)`
    }`
 
 export const TooltipWrapper = styled.div`
-    color: '#565758';
+    color: var(--acx-neutrals-70);
     font-weight: 400;
     font-size: var(--acx-subtitle-6-font-size);
     overflow: hidden;
@@ -116,20 +117,10 @@ export const TooltipWrapper = styled.div`
     background-color: transparent;
     `
 export const TooltipDate = styled.span`
-    color: '#565758';
+    color: var(--acx-neutrals-70);
     font-weight: 700;
     `
 export const TimelineLoaderWrapper = styled.div`
   height: 100%;
   padding-top: 5px;
-`
-export const Wrapper = styled(ResetWrapper)`
-  svg {
-    // special color code to target path of brush
-    path[stroke="#123456"] {
-      stroke-dasharray: 2;
-      stroke: var(--acx-accents-blue-50);
-      clip-path: inset(0 round 5px);
-    }
-  }
 `

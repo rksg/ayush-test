@@ -30,7 +30,7 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
   return (
     <Row gutter={[16, 16]} style={{ flex: 1 }}>
       <Col span={historyContentToggle ? 18 : 24}>
-        <Row style={{ justifyContent: 'end' }} gutter={[16, 16]}>
+        <Row style={{ justifyContent: 'end' }} gutter={[16, 32]}>
           <Col span={historyContentToggle ? 15 : 11}>
             <Row style={{ justifyContent: 'end' }} gutter={[6, 6]}>
               {ClientTroubleShootingConfig.selection.map((config) => (

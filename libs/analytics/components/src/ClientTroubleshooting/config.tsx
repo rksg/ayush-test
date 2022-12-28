@@ -200,26 +200,29 @@ export const ClientTroubleShootingConfig = {
     {
       title: defineMessage({ defaultMessage: 'Connection Events' }),
       value: TYPES.CONNECTION_EVENTS,
-      chartType: 'scatter',
+      chartMapping: [
+        { key: 'all', label: 'all', chartType: 'scatter' },
+        { key: 'success', label: 'success', chartType: 'scatter' },
+        { key: 'failure', label: 'failure', chartType: 'scatter' },
+        { key: 'slow', label: 'slow', chartType: 'scatter' },
+        { key: 'disconnect', label: 'disconnect', chartType: 'scatter' }
+      ] as { key: string, label: string, chartType: string }[],
+      showResetZoom: true,
       subtitle: [
         {
           title: defineMessage({ defaultMessage: 'Success' }),
-          chartType: 'scatter',
           value: SUCCESS
         },
         {
           title: defineMessage({ defaultMessage: 'Failure' }),
-          chartType: 'scatter',
           value: FAILURE
         },
         {
           title: defineMessage({ defaultMessage: 'Slow' }),
-          chartType: 'scatter',
           value: SLOW
         },
         {
           title: defineMessage({ defaultMessage: 'Disconnect' }),
-          chartType: 'scatter',
           value: DISCONNECT,
           isLast: true
         }
@@ -228,61 +231,71 @@ export const ClientTroubleShootingConfig = {
     {
       title: defineMessage({ defaultMessage: 'Roaming' }),
       value: TYPES.ROAMING,
-      chartType: 'scatter',
+      chartMapping: [
+        { key: 'all', label: 'all', chartType: 'scatter' },
+        { key: 'network1_5GHz', label: 'network1_5GHz', chartType: 'bar' }
+      ] as { key: string, label: string, chartType: string }[],
       subtitle: [
         {
           title: defineMessage({ defaultMessage: 'Network1_5GHz' }),
-          chartType: 'bar',
-          value: 'network1_5GHz'
+          value: 'network1_5GHz',
+          isLast: true
         }
       ]
     },
     {
       title: defineMessage({ defaultMessage: 'Connection Quality' }),
       value: TYPES.CONNECTION_QUALITY,
-      chartType: 'bar',
+      chartMapping: [
+        { key: 'all', label: 'all', chartType: 'bar' },
+        { key: 'rss', label: 'rss', chartType: 'bar' },
+        { key: 'snr', label: 'snr', chartType: 'bar' },
+        { key: 'clientThroughput', label: 'clientThroughput', chartType: 'bar' },
+        { key: 'AvgMCS', label: 'AvgMCS', chartType: 'bar' }
+      ] as { key: string, label: string, chartType: string }[],
       subtitle: [
         {
           title: defineMessage({ defaultMessage: 'RSS' }),
-          chartType: 'bar',
           value: 'RSS'
         },
         {
           title: defineMessage({ defaultMessage: 'SNR' }),
-          chartType: 'bar',
           value: 'SNR'
         },
         {
           title: defineMessage({ defaultMessage: 'Client Throughput' }),
-          chartType: 'bar',
           value: 'clientThroughput'
         },
         {
           title: defineMessage({ defaultMessage: 'Avg. MCS(Downlink)' }),
-          chartType: 'bar',
-          value: 'AvgMCS'
+          value: 'AvgMCS',
+          isLast: true
         }
       ]
     },
     {
       title: defineMessage({ defaultMessage: 'Network Incidents' }),
       value: TYPES.NETWORK_INCIDENTS,
-      chartType: 'bar',
+      hasXaxisLabel: true,
+      chartMapping: [
+        { key: 'all', label: 'all', chartType: 'bar' },
+        { key: 'clientConnection', label: 'clientConnection', chartType: 'bar' },
+        { key: 'performance', label: 'performance', chartType: 'bar' },
+        { key: 'infratructure', label: 'infratructure', chartType: 'bar' }
+      ] as { key: string, label: string, chartType: string }[],
       subtitle: [
         {
           title: defineMessage({ defaultMessage: 'Client Connection' }),
-          chartType: 'bar',
           value: 'clientConnection'
         },
         {
           title: defineMessage({ defaultMessage: 'Performance' }),
-          chartType: 'bar',
           value: 'performance'
         },
         {
           title: defineMessage({ defaultMessage: 'Infratructure' }),
-          chartType: 'bar',
-          value: 'infratructure'
+          value: 'infratructure',
+          isLast: true
         }
       ]
     }

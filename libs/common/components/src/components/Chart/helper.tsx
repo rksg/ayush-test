@@ -197,19 +197,18 @@ export const dateAxisFormatter = () => {
 
 export const tooltipOptions = () => ({
   textStyle: {
-    color: 'black',
+    color: cssStr('--acx-primary-white'),
     fontFamily: cssStr('--acx-neutral-brand-font'),
     fontSize: cssNumber('--acx-body-5-font-size'),
     lineHeight: cssNumber('--acx-body-5-line-height'),
     fontWeight: cssNumber('--acx-body-font-weight')
   },
-  // backgroundColor: cssStr('--acx-primary-black'),
+  backgroundColor: cssStr('--acx-primary-black'),
   borderRadius: 2,
   borderWidth: 0,
   padding: 8,
   confine: true,
-  border: 'none',
-  extraCssText: 'box-shadow: 0px 0px 0px rgba(51, 51, 51, 0.08); z-index: 0;'
+  extraCssText: 'box-shadow: 0px 4px 8px rgba(51, 51, 51, 0.08); z-index: 4;'
 } as TooltipComponentOption)
 
 export const timeSeriesTooltipFormatter = (
