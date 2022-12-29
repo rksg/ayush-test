@@ -5,6 +5,7 @@ import * as UI from '../styledComponents'
 
 import PortalButtonContent from './PortalContent/PortalButtonContent'
 export default function PortalViewTerms (props:{
+  portalLang: { [key:string]:string },
   isPreview?: boolean,
   demoValue: Demo,
   updateBtn?: (value: {
@@ -12,7 +13,7 @@ export default function PortalViewTerms (props:{
     color?: string, text?: string
   }) => void
 }) {
-  const { demoValue, updateBtn, isPreview } = props
+  const { demoValue, updateBtn, isPreview, portalLang } = props
   const terms = 'Terms and Conditions ("Terms")</br>'+
   'Last updated: January 29, 2019</br></br>'+
   'Please read these Terms and Conditions ("Terms", "Terms and Conditions")'+
@@ -65,7 +66,7 @@ export default function PortalViewTerms (props:{
   return (
     <UI.ViewSectionNoBorder>
       <UI.ViewSectionTitle>
-        {'Terms and Conditions'}</UI.ViewSectionTitle>
+        {portalLang.tocTitle}</UI.ViewSectionTitle>
       <UI.ViewTextArea
         dangerouslySetInnerHTML={{ __html: demoValue?.termsCondition || terms }}
       ></UI.ViewTextArea>
@@ -73,7 +74,7 @@ export default function PortalViewTerms (props:{
         demoValue={demoValue}
         isPreview={isPreview}
         updateButton={(data)=>updateBtn?.(data)}
-      >{'Back'}</PortalButtonContent>
+      >{portalLang.back}</PortalButtonContent>
     </UI.ViewSectionNoBorder>
 
   )

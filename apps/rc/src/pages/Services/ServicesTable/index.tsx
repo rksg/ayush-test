@@ -4,7 +4,8 @@ import { Button, PageHeader, Table, TableProps, Loader, showActionModal, showToa
 import {
   useDeleteWifiCallingServiceMutation,
   useDeleteMdnsProxyMutation,
-  useServiceListQuery
+  useServiceListQuery,
+  useDeletePortalMutation
 } from '@acx-ui/rc/services'
 import {
   ServiceType,
@@ -135,7 +136,7 @@ export default function ServicesTable () {
     [ServiceType.DHCP]: [], // TODO: API not ready
     [ServiceType.DPSK]: [], // TODO: API not ready
     [ServiceType.MDNS_PROXY]: useDeleteMdnsProxyMutation(),
-    [ServiceType.PORTAL]: [], // TODO: API not ready
+    [ServiceType.PORTAL]: useDeletePortalMutation(),
     [ServiceType.WIFI_CALLING]: useDeleteWifiCallingServiceMutation(),
     [ServiceType.NETWORK_SEGMENTATION]: [] // TODO: API not ready
   }
