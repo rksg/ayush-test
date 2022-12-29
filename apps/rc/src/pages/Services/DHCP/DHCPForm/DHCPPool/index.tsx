@@ -230,7 +230,7 @@ export default function DHCPPoolTable ({
               else if(dhcpMode===DHCPConfigTypeEnum.HIERARCHICAL){
                 if(countIpSize(form.getFieldValue('startIpAddress'), value) <= 2){
                   // eslint-disable-next-line max-len
-                  return Promise.reject($t({ defaultMessage: 'Needs to reserve 2 IP addresses per pool for DHCP Servers and gateways in the Multiple mode' }))
+                  return Promise.reject($t({ defaultMessage: 'Needs to reserve 2 IP addresses per pool for DHCP Servers and gateways in the Hierarchical mode' }))
                 }
               }
               return Promise.resolve()
