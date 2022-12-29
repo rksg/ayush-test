@@ -67,7 +67,7 @@ export const ApCellularProperties = (props: ApCellularPropertiesProps) => {
     getSimPresent()
   }, [currentAP])
   return (
-    <>
+    <Descriptions labelWidthPercent={50}>
       <Descriptions.Item
         label={$t({ defaultMessage: 'SIM Present' })}
         children={cellularSim.simPresent || $t({ defaultMessage: 'None' })}
@@ -165,16 +165,21 @@ export const ApCellularProperties = (props: ApCellularPropertiesProps) => {
       />
       {
         cellularSim.sim0Present &&
-          <SimPresent title={$t({ defaultMessage: 'SIM 0' })}
-            currentCellularInfo={cellularSim.sim0PresentData} />
+          <Descriptions.Item 
+            children={<SimPresent title={$t({ defaultMessage: 'SIM 0' })}
+            currentCellularInfo={cellularSim.sim0PresentData} />}
+          />
       }
       {
         cellularSim.sim1Present &&
-          <SimPresent title={$t({ defaultMessage: 'SIM 1' })}
+          <Descriptions.Item 
+            children={<SimPresent title={$t({ defaultMessage: 'SIM 1' })}
             style={{ marginTop: '15px' }}
-            currentCellularInfo={cellularSim.sim1PresentData} />
+            currentCellularInfo={cellularSim.sim1PresentData} />}
+          />
+          
       }
-    </>
+    </Descriptions>
   )
 }
 
