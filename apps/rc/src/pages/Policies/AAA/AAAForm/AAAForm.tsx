@@ -91,7 +91,7 @@ const AAAForm = (props: AAAFormProps) => {
             return true
           }}
         >
-          <AAASettingForm edit={edit} formRef={formRef} saveState={saveState}/>
+          <AAASettingForm edit={edit} saveState={saveState}/>
         </StepsForm.StepForm>
       </StepsForm>
     </>

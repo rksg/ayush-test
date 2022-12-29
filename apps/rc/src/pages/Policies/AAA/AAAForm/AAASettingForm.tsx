@@ -1,12 +1,10 @@
-import React, { MutableRefObject, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
-import { ProFormInstance }                                        from '@ant-design/pro-form'
 import { Form, Input, InputNumber, Radio, Select, Space, Switch } from 'antd'
 import { useIntl }                                                from 'react-intl'
 
-import { GridCol, GridRow, StepsForm } from '@acx-ui/components'
-import { useGetAAAPolicyListQuery }    from '@acx-ui/rc/services'
-
+import { GridCol, GridRow, StepsForm }                                          from '@acx-ui/components'
+import { useGetAAAPolicyListQuery }                                             from '@acx-ui/rc/services'
 import {
   AAAPolicyType, AAAPurposeEnum, networkWifiIpRegExp, networkWifiSecretRegExp
 } from '@acx-ui/rc/utils'
@@ -15,13 +13,12 @@ import { useParams } from '@acx-ui/react-router-dom'
 
 type AAASettingFormProps = {
   edit: boolean,
-  saveState: AAAPolicyType,
-  formRef?: MutableRefObject<ProFormInstance<AAAPolicyType> | undefined>
+  saveState: AAAPolicyType
 }
 
 const AAASettingForm = (props: AAASettingFormProps) => {
   const { $t } = useIntl()
-  const { edit, formRef, saveState } = props
+  const { edit, saveState } = props
   const params = useParams()
   const [originalName, setOriginalName] = useState('')
   const { useWatch } = Form

@@ -94,7 +94,7 @@ describe('AAA Detail Page', () => {
     render(<Provider><AAAPolicyDetail /></Provider>, {
       route: { params, path: '/:tenantId/policies/aaa/:policyId/detail' }
     })
-    expect(await screen.findByText('TACACS+')).toBeVisible()
+    expect(await screen.findByText('test')).toBeVisible()
     expect(await screen.findByText((`Instances (${list.data.length})`))).toBeVisible()
     const body = await screen.findByRole('rowgroup', {
       name: (_, element) => element.classList.contains('ant-table-tbody')

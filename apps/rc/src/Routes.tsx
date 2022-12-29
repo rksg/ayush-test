@@ -251,7 +251,7 @@ function PolicyRoutes () {
         element={<AAAPolicyDetail/>}
       />
       <Route
-        // eslint-disable-next-line max-len        
+        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.DETAIL })}
         element={<MacRegistrationListDetails />} />
       <Route
