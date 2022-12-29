@@ -54,7 +54,7 @@ const mockTableResult = {
   }]
 }
 
-describe('Services Table', () => {
+xdescribe('Services Table', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
     mockServer.use(
