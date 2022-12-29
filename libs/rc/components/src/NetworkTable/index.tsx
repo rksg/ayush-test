@@ -16,9 +16,10 @@ function getCols (intl: ReturnType<typeof useIntl>) {
   const columns: TableProps<Network>['columns'] = [
     {
       key: 'name',
-      title: intl.$t({ defaultMessage: 'Network Name' }),
+      title: intl.$t({ defaultMessage: 'Name' }),
       dataIndex: 'name',
       sorter: true,
+      disable: true,
       defaultSortOrder: 'ascend',
       render: function (data, row) {
         if(disabledType.indexOf(row.nwSubType as NetworkTypeEnum) > -1){
