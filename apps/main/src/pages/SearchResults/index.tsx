@@ -106,7 +106,7 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
       </>
       : <>
         <PageHeader title={$t(
-          { defaultMessage: 'Hmmmm... we couldn\'t find any match for "{searchVal}"' },
+          { defaultMessage: 'Hmmmm... we couldn’t find any match for "{searchVal}"' },
           { searchVal }
         )} />
         <NoData />
