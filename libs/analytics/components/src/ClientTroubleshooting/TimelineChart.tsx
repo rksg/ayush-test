@@ -21,11 +21,11 @@ import { useIntl } from 'react-intl'
 import { cssStr, cssNumber } from '@acx-ui/components'
 import {
   xAxisOptions,
-  useDataZoom,
   ResetButton,
   axisLabelOptions,
   dateAxisFormatter
 } from '@acx-ui/components'
+import type { TimeStampRange } from '@acx-ui/types'
 
 import type { ECharts, EChartsOption, SeriesOption } from 'echarts'
 import type { EChartsReactProps }                    from 'echarts-for-react'
@@ -50,6 +50,14 @@ export interface Event {
   seriesKey: string;
 }
 
+type OnDatazoomEvent = {
+  batch?: {
+    startValue: number, endValue: number
+  }[],
+  start?: number,
+  end?: number
+}
+
 export interface TimelineChartProps
   extends Omit<EChartsReactProps, 'option' | 'opts'> {
   data: Event[];
@@ -61,26 +69,6 @@ export interface TimelineChartProps
   tooltipFormatter: TooltipFormatterCallback<TopLevelFormatterParams>;
   mapping: { key: string; label: string; chartType: string }[];
   showResetZoom?: boolean
-}
-
-export const getDragPosition = (
-  boundary: { min: number; max: number },
-  actualAreas: number[][],
-  index: number
-) => {
-  const range =
-    index === 0
-      ? [boundary.min, Math.min(actualAreas[1][0], boundary.max)]
-      : [Math.max(actualAreas[0][1], boundary.min), boundary.max]
-  const width = actualAreas[index][1] - actualAreas[index][0]
-  let newPosition = actualAreas[index].slice()
-  if (newPosition[0] < range[0]) {
-    newPosition = [range[0], range[0] + width]
-  }
-  if (newPosition[1] > range[1]) {
-    newPosition = [range[1] - width, range[1]]
-  }
-  return newPosition
 }
 
 export const getZoomPosition = (
@@ -131,7 +119,43 @@ export const useDotClick = (
     }
   }, [eChartsRef, handler])
 }
+function useDataZoom (
+  eChartsRef: RefObject<ReactECharts>,
+  zoomEnabled: boolean,
+  onDataZoom?: (range: TimeStampRange, isReset: boolean) => void
+): [boolean, () => void] {
 
+  const [canResetZoom, setCanResetZoom] = useState<boolean>(false)
+
+  const onDatazoomCallback = useCallback((e: unknown) => {
+    const event = e as unknown as OnDatazoomEvent
+    const firstBatch = event.batch?.[0]
+    firstBatch && onDataZoom && onDataZoom([firstBatch.startValue, firstBatch.endValue], false)
+    if (event.start === 0 && event.end === 100) {
+      setCanResetZoom(false)
+    } else {
+      setCanResetZoom(true)
+    }
+  }, [onDataZoom])
+  useEffect(() => {
+    if (!eChartsRef?.current || !zoomEnabled) return
+    const echartInstance = eChartsRef.current!.getEchartsInstance() as ECharts
+    echartInstance.dispatchAction({
+      type: 'takeGlobalCursor',
+      key: 'dataZoomSelect',
+      dataZoomSelectActive: true
+    })
+    echartInstance.on('datazoom', onDatazoomCallback)
+  })
+
+  const resetZoomCallback = useCallback(() => {
+    if (!eChartsRef?.current) return
+    const echartInstance = eChartsRef.current!.getEchartsInstance() as ECharts
+    echartInstance.dispatchAction({ type: 'dataZoom', start: 0, end: 100 })
+  }, [eChartsRef])
+
+  return [canResetZoom, resetZoomCallback]
+}
 export const tooltipOptions = () =>
   ({
     textStyle: {
@@ -166,15 +190,16 @@ export function TimelineChart ({
   useImperativeHandle(chartRef, () => eChartsRef.current!)
   const chartPadding = 10
   const rowHeight = 22
-  const placeholderRows = 2 // for tracker
+  const placeholderRows = 2
   const legendWidth = 85
   const xAxisHeight = hasXaxisLabel ? 30 : 0
 
   const eChartsRef = useRef<ReactECharts>(null)
   const [canResetZoom, resetZoomCallback] =
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    useDataZoom<any>(eChartsRef, true, data)
-  const [_, setSelected] = useState<number | undefined>(selectedData)
+    useDataZoom(eChartsRef, true)
+  // use selected event on dot click to show popover
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [selected, setSelected] = useState<number | undefined>(selectedData)
 
   useDotClick(eChartsRef, onDotClick, setSelected)
 
@@ -309,11 +334,10 @@ export function TimelineChart ({
                     category as keyof typeof eventColorByCategory
                   ]
                 )
-              },
-              height: 20
+              }
             }
           } as SeriesOption)
-      ) as SeriesOption
+      )
   }
 
   return (

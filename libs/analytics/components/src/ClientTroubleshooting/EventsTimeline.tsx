@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Fragment, useEffect,useState } from 'react'
+import React, { useEffect,useState } from 'react'
 
 import { Row, Col }                                         from 'antd'
 import { connect, TooltipComponentFormatterCallbackParams } from 'echarts'
@@ -163,7 +162,7 @@ export function TimeLine (props : TimeLineProps){
     connectionQuality: false,
     networkIncidents: false
   })
-  const onExpandToggle = (type: any, toggle : boolean) =>
+  const onExpandToggle = (type: keyof TimelineData, toggle : boolean) =>
     setExpandObj({
       ...expandObj,
       [type]: !toggle
@@ -197,14 +196,14 @@ export function TimeLine (props : TimeLineProps){
       <Col span={6}>
         <Row gutter={[16, 16]} style={{ rowGap: '4px' }}>
           {ClientTroubleShootingConfig.timeLine.map((config, index) => (
-            <Fragment key={index}>
+            <React.Fragment key={index}>
               <Col
                 span={2}>
                 {expandObj[config?.value as keyof TimelineData] ? (
                   <UI.StyledMinusSquareOutlined style={{ cursor: 'pointer' }}
                     onClick={() =>
                       onExpandToggle(
-                        config?.value,
+                        config?.value as keyof TimelineData,
                         expandObj[config?.value as keyof TimelineData]
                       )
                     }/>
@@ -212,7 +211,7 @@ export function TimeLine (props : TimeLineProps){
                   <UI.StyledPlusSquareOutlined style={{ cursor: 'pointer' }}
                     onClick={() =>
                       onExpandToggle(
-                        config?.value,
+                        config?.value as keyof TimelineData,
                         expandObj[config?.value as keyof TimelineData]
                       )
                     }/>
@@ -237,7 +236,7 @@ export function TimeLine (props : TimeLineProps){
               </Col>
               {expandObj[config?.value as keyof TimelineData] &&
                 config?.subtitle?.map((subtitle) => (
-                  <>
+                  <React.Fragment key={index}>
                     <Col span={2} />
                     <Col span={18}>
                       <UI.TimelineSubContent>
@@ -253,9 +252,9 @@ export function TimeLine (props : TimeLineProps){
                         ].length ?? 0}
                       </UI.TimelineCount>
                     </Col>
-                  </>
+                  </React.Fragment>
                 ))}
-            </Fragment>
+            </React.Fragment>
           ))}
         </Row>
       </Col>
@@ -282,10 +281,9 @@ export function TimeLine (props : TimeLineProps){
                 hasXaxisLabel={config?.hasXaxisLabel}
                 chartRef={connectChart}
                 tooltipFormatter={tooltipFormatter}
-                onDotClick={(params) => {
-                  // eslint-disable-next-line no-console
-                  console.log(params)
-                }}
+                // caputuring scatterplot dot click to open popover
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                onDotClick={(params) => {}}
               />
             </Col>
           ))}
