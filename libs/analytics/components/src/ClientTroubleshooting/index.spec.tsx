@@ -4,7 +4,6 @@ import { dataApiURL }                                  from '@acx-ui/analytics/s
 import { Provider, store }                             from '@acx-ui/store'
 import { render, screen, fireEvent, mockGraphqlQuery } from '@acx-ui/test-utils'
 
-
 import { api } from './services'
 
 import { ClientTroubleshooting } from './index'

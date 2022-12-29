@@ -6,6 +6,7 @@ import {
 } from '@ant-design/icons'
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 import {
+  Form,
   Space,
   Typography,
   Upload
@@ -13,6 +14,7 @@ import {
 import { useIntl } from 'react-intl'
 
 import { Button, DrawerProps } from '@acx-ui/components'
+import { GuestErrorRes }       from '@acx-ui/rc/utils'
 import { formatter }           from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
@@ -20,19 +22,20 @@ import * as UI from './styledComponents'
 type importErrorRes = {
   errors: {
     code: number
-    description: string
-  }[]
+    description?: string
+    message?: string
+  }[],
   downloadUrl?: string
   txId: string
-  fileErrorsCount: number
-}
+} | GuestErrorRes
 
 interface ImportCsvDrawerProps extends DrawerProps {
   temlateLink: string
   maxSize: number
   maxEntries: number
+  isLoading?: boolean
   importError?: FetchBaseQueryError
-  importRequest: (file: FormData)=>void
+  importRequest: (formData: FormData, values: object)=>void
   type: 'AP' | 'Switch' | 'GuestPass' | 'DPSK'
 }
 
@@ -43,23 +46,37 @@ export const CsvSize = {
 
 export function ImportCsvDrawer (props: ImportCsvDrawerProps) {
   const { $t } = useIntl()
+  const [form] = Form.useForm()
 
-  const { maxSize, maxEntries, temlateLink, importError, importRequest } = props
+  const { maxSize, maxEntries, isLoading, temlateLink, importError, importRequest } = props
 
   const [fileDescription, setFileDescription] = useState<ReactNode>('')
-  const [confirmLoading, setConfirmLoading] = useState(false)
   const [formData, setFormData] = useState<FormData>()
 
   const bytesFormatter = formatter('bytesFormat')
 
   useEffect(()=>{
+    form.resetFields()
     setFormData(undefined)
     setFileDescription('')
-  }, [props.visible])
+  }, [form, props.visible])
 
   useEffect(()=>{
     if (importError?.data) {
-      const { errors, downloadUrl } = importError?.data as importErrorRes
+      const errorObj = importError?.data as importErrorRes
+      let errors, downloadUrl
+      let description = ''
+
+      if ('errors' in errorObj) {
+        errors = errorObj.errors
+        downloadUrl = errorObj.downloadUrl
+        description = errors[0].description || errors[0].message!
+      }
+      if ('error' in errorObj) { // narrowing to GuestErrorRes
+        errors = errorObj.error.rootCauseErrors
+        description = errors[0].message
+      }
+
       setFormData(undefined)
       setFileDescription(<>
         { errors && <Typography.Text type='danger'><WarningOutlined /> {$t(
@@ -67,8 +84,7 @@ export function ImportCsvDrawer (props: ImportCsvDrawerProps) {
               one {{description}}
               other {{count} errors found.}
           }` },
-          { count: errors.length,
-            description: errors[0].description }
+          { count: errors.length, description }
         )}</Typography.Text>}
         { downloadUrl && <Typography.Link href={downloadUrl}
           onClick={(e)=>{
@@ -77,7 +93,6 @@ export function ImportCsvDrawer (props: ImportCsvDrawerProps) {
           {$t({ defaultMessage: 'See errors' })}
         </Typography.Link>}
       </>)
-      setConfirmLoading(false)
     }
   }, [$t, importError])
 
@@ -112,8 +127,9 @@ export function ImportCsvDrawer (props: ImportCsvDrawerProps) {
   }
 
   const okHandler = () => {
-    setConfirmLoading(true)
-    formData && importRequest(formData)
+    form.validateFields().then(values => {
+      formData && importRequest(formData, values)
+    }).catch(() => {})
   }
 
   return (<UI.ImportFileDrawer {...props}
@@ -123,7 +139,7 @@ export function ImportCsvDrawer (props: ImportCsvDrawerProps) {
     footer={<div>
       <Button
         disabled={!formData}
-        loading={confirmLoading}
+        loading={isLoading}
         onClick={() => okHandler()}
         type={'secondary'}
       >
@@ -159,5 +175,8 @@ export function ImportCsvDrawer (props: ImportCsvDrawerProps) {
         { defaultMessage: 'File size cannot exceed {maxSize}' },
         { maxSize: bytesFormatter(maxSize) })}</li>
     </ul>
+    <Form layout='vertical' form={form} >
+      {props.children}
+    </Form>
   </UI.ImportFileDrawer>)
 }
