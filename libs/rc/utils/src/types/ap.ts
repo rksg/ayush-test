@@ -56,7 +56,7 @@ export interface ApViewModel extends AP {
   channel50?: RadioProperties,
   channelL50?: RadioProperties,
   channelU50?: RadioProperties,
-  channel60?: RadioProperties,
+  channel60?: RadioProperties
 }
 
 export interface APExtended extends AP {
@@ -271,7 +271,9 @@ export interface ApModel {
 	simCardSecondaryRoaming: boolean,
 	supportChannel144: boolean,
 	supportDual5gMode: boolean,
-	supportTriRadio: boolean
+	supportTriRadio: boolean,
+	maxChannelization5G?: number,
+	maxChannelization6G?: number
 }
 
 export interface PingAp {

@@ -3,8 +3,8 @@ import _ from 'lodash'
 
 import { getIntl } from '@acx-ui/utils'
 
-import { DeviceConnectionStatus }      from '../../constants'
-import { SwitchRow, SwitchStatusEnum } from '../../types'
+import { DeviceConnectionStatus }                                         from '../../constants'
+import { STACK_MEMBERSHIP, SwitchRow, SwitchStatusEnum, SwitchViewModel } from '../../types'
 
 export const modelMap: ReadonlyMap<string, string> = new Map([
   ['CRH', 'ICX7750-48F'],
@@ -166,4 +166,35 @@ export const getSwitchStatusString = (row: SwitchRow) => {
 
 export const getSwitchName = (row: SwitchRow) => {
   return row.name || row.switchName || row.serialNumber
+}
+
+export const convertPoeUsage = (rawUsage: number) => {
+  return Math.round(rawUsage / 1000)
+}
+
+export const getPoeUsage = (data: SwitchViewModel) => {
+  const tmpTotal = _.get(data, 'poeUsage.poeTotal', 0) || _.get(data, 'poeTotal', 0)
+  const tmpUsage = _.get(data, 'poeUsage.poeUtilization', 0) || _.get(data, 'poeUtilization', 0)
+  const poeTotal = Math.round(convertPoeUsage(tmpTotal))
+  const poeUsage = Math.round(convertPoeUsage(tmpUsage))
+  const poePercentage = (poeUsage === 0 || poeTotal === 0) ? 0 : Math.round(poeUsage / poeTotal * 100)
+  return {
+    used: poeUsage,
+    total: poeTotal,
+    percentage: poePercentage + '%'
+  }
+}
+
+export const getStackMemberStatus = (unitStatus: string, isDefaultMember?: boolean) => {
+  const { $t } = getIntl()
+  if (unitStatus === STACK_MEMBERSHIP.ACTIVE) {
+    return $t({ defaultMessage: 'Active' })
+  } else if (unitStatus === STACK_MEMBERSHIP.STANDBY) {
+    return $t({ defaultMessage: 'Standby' })
+  } else if (unitStatus === STACK_MEMBERSHIP.MEMBER) {
+    return $t({ defaultMessage: 'Member' })
+  } else if (isDefaultMember) {
+    return $t({ defaultMessage: 'Member' })
+  }
+  return
 }
