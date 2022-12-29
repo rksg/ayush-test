@@ -30,7 +30,9 @@ import {
   params,
   networkVenue_allAps,
   networkVenue_apgroup,
-  vlanPoolList
+  vlanPoolList,
+  events,
+  eventsMeta
 } from './__tests__/fixtures'
 
 import { NetworkVenuesTab } from './index'
@@ -79,6 +81,14 @@ describe('NetworkVenuesTab', () => {
       rest.put(
         WifiUrlsInfo.updateNetworkVenue.url.split('?')[0],
         (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
+        CommonUrlsInfo.getEventList.url,
+        (_, res, ctx) => res(ctx.json(events))
+      ),
+      rest.post(
+        CommonUrlsInfo.getEventListMeta.url,
+        (_, res, ctx) => res(ctx.json(eventsMeta))
       )
     )
   })

@@ -38,7 +38,7 @@ describe('NetworkTabs', () => {
     await screen.findByText('APs (0)')
     await screen.findByText('Venues (0)')
     await screen.findByText('Services (0)')
-    await screen.findByText('Events')
+    await screen.findByText('Timeline')
     await screen.findByText('Incidents')
     await waitFor(() => screen.findByText('APs (1)'))
     await waitFor(() => screen.findByText('Venues (1)'))
