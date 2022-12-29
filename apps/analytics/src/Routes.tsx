@@ -3,7 +3,7 @@ import { useIntl } from 'react-intl'
 import {
   HealthPage,
   IncidentListPage,
-  VideoCallQoePage
+  NetworkHealthPage
 }                                            from '@acx-ui/analytics/components'
 import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                          from '@acx-ui/store'
@@ -25,8 +25,10 @@ export default function AnalyticsRoutes () {
       <Route path='analytics/configChange'
         element={<div>{$t({ defaultMessage: 'Config Change' }) }</div>} />
       <Route path='serviceValidation'
-        element={<TenantNavigate replace to='/serviceValidation/videoCallQoe' />} />
-      <Route path='serviceValidation/videoCallQoe' element={<VideoCallQoePage />} />
+        element={<TenantNavigate replace to='/serviceValidation/networkHealth' />} />
+      <Route path='serviceValidation/networkHealth' element={<NetworkHealthPage />} />
+      <Route path='serviceValidation/networkHealth/tab/:activeTab'
+        element={<NetworkHealthPage />} />
     </Route>
   )
   return (

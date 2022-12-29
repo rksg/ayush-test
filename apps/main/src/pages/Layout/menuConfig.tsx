@@ -1,8 +1,8 @@
 import { useIntl } from 'react-intl'
 import styled      from 'styled-components/macro'
 
-import { LayoutProps, LayoutUI, genPlaceholder } from '@acx-ui/components'
-import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
+import { LayoutProps, LayoutUI, genPlaceholder }    from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   AIOutlined as AIOutlinedBase,
   AISolid as AISolidBase,
@@ -85,10 +85,11 @@ export function useMenuConfig () {
       activeIcon: ServiceValidationSolid,
       routes: [
         {
-          path: '/serviceValidation/videoCallQoe',
-          name: $t({ defaultMessage: 'Video Call QoE' })
+          path: '/serviceValidation/networkHealth',
+          name: $t({ defaultMessage: 'Network Health' })
         }
-      ]
+      ],
+      disabled: useIsTierAllowed('ANLT-ADV')
     },
     {
       path: '/reports',
