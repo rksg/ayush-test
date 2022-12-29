@@ -116,7 +116,7 @@ export default function DpskSettingsForm () {
         </Form.Item>
         <ExpirationDateSelector
           inputName={'expiration'}
-          label={intl.$t({ defaultMessage: 'List Expiration' })}
+          label={intl.$t({ defaultMessage: 'Expiration' })}
         />
       </Col>
     </Row>
