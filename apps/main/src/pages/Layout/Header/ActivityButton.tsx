@@ -6,21 +6,12 @@ import { SorterResult }           from 'antd/lib/table/interface'
 import moment                     from 'moment-timezone'
 import { defineMessage, useIntl } from 'react-intl'
 
-import {
-  LayoutUI,
-  Loader,
-  Badge,
-  StatusIcon
-} from '@acx-ui/components'
-import {
-  TimelineDrawer,
-  ActivityseverityMapping as severityMapping
-} from '@acx-ui/rc/components'
-import { useActivitiesQuery }                                      from '@acx-ui/rc/services'
-import { Activity, CommonUrlsInfo, useTableQuery, getDescription } from '@acx-ui/rc/utils'
-import { useTenantLink, useNavigate }                              from '@acx-ui/react-router-dom'
-import { formatter }                                               from '@acx-ui/utils'
-
+import { LayoutUI, Loader, Badge, StatusIcon }                                      from '@acx-ui/components'
+import { TimelineDrawer }                                                           from '@acx-ui/rc/components'
+import { useActivitiesQuery }                                                       from '@acx-ui/rc/services'
+import { Activity, CommonUrlsInfo, useTableQuery, getDescription, severityMapping } from '@acx-ui/rc/utils'
+import { useTenantLink, useNavigate }                                               from '@acx-ui/react-router-dom'
+import { formatter }                                                                from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -126,7 +117,7 @@ export default function ActivityHeaderButton () {
         renderItem={item => {
           const activity = item as Activity
           return (
-            <UI.ListItem onClick={() => {
+            <UI.ActivityItem onClick={() => {
               setDetailModalOpen(true)
               setDetail(activity)
             }}>
@@ -136,7 +127,7 @@ export default function ActivityHeaderButton () {
                 description={
                   <UI.ListTime>{formatter('calendarFormat')(activity.startDatetime)}</UI.ListTime>}
               />
-            </UI.ListItem>
+            </UI.ActivityItem>
           )}}
       />
     </Loader>
@@ -176,7 +167,7 @@ export default function ActivityHeaderButton () {
     },
     {
       title: defineMessage({ defaultMessage: 'Description' }),
-      value: (() => getDescription(data.descriptionTemplate, data.descriptionData))()
+      value: getDescription(data.descriptionTemplate, data.descriptionData)
     }
   ]
 

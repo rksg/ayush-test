@@ -217,6 +217,9 @@ describe('Header Component', () => {
     })
     const cancelBtn = await screen.findByRole('button',{ name: 'Close' })
     await userEvent.click(cancelBtn)
+    await userEvent.click((await screen.findAllByTitle('All Severities'))[0])
+    await userEvent.click((await screen.findAllByTitle('Major'))[0])
+    await userEvent.click((await screen.findByText('Clear all alarms')))
   })
 
   it('should render Activity component correctly', async () => {

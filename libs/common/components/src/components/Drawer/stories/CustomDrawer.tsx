@@ -52,7 +52,14 @@ export function CustomDrawer () {
     <Drawer.FormFooter
       showAddAnother={showAddAnother}
       onCancel={resetFields}
-      onSave={async () => form.submit()}
+      onSave={async () => {
+        await form.validateFields()
+
+        // Sleep 5 seconds to observe the loading indicator
+        await new Promise(r => setTimeout(r, 5000))
+
+        form.submit()
+      }}
     />
   )
 
