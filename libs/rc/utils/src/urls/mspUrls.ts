@@ -72,5 +72,9 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
   resendEcInvitation: {
     method: 'post',
     url: '/api/mspservice/tenant/:mspEcTenantId/emailinvitation'
+  },
+  getMspEcProfile: {
+    method: 'get',
+    url: '/api/mspservice/tenant/:tenantId'
   }
 }

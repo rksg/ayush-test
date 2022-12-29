@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Drawer, LayoutUI, Loader, SearchBar, Table, TableProps }  from '@acx-ui/components'
-import { ArrowExpand }                                             from '@acx-ui/icons'
-import { useMspCustomerListDropdownQuery, useGetUserProfileQuery } from '@acx-ui/rc/services'
-import { MspEc, TenantIdFromJwt, useTableQuery }                   from '@acx-ui/rc/utils'
-import { getBasePath, Link, useParams  }                           from '@acx-ui/react-router-dom'
+import { Drawer, LayoutUI, Loader, SearchBar, Table, TableProps } from '@acx-ui/components'
+import { ArrowExpand }                                            from '@acx-ui/icons'
+import { useMspCustomerListDropdownQuery, useGetEcProfileQuery }  from '@acx-ui/rc/services'
+import { MspEc, TenantIdFromJwt, useTableQuery }                  from '@acx-ui/rc/utils'
+import { getBasePath, Link, useParams  }                          from '@acx-ui/react-router-dom'
 
 export function MspEcDropdownList () {
   const { $t } = useIntl()
@@ -16,7 +16,7 @@ export function MspEcDropdownList () {
   const [visible, setVisible] = useState(false)
 
   const params = useParams()
-  const { data } = useGetUserProfileQuery({ params })
+  const { data } = useGetEcProfileQuery({ params })
   // const { data } = useGetUserProfileQuery({ params: { tenantId: TenantIdFromJwt() } })
 
   const defaultPayload = {
@@ -37,12 +37,12 @@ export function MspEcDropdownList () {
   })
 
   useEffect(()=>{
-    if (data?.companyName) {
-      setCustomerName(data?.companyName)
+    if (data?.name) {
+      setCustomerName(data?.name)
     }
 
     tableQuery.setPayload({ ...tableQuery.payload, searchString: searchString })
-  }, [tableQuery.data, searchString])
+  }, [data, tableQuery.data, searchString])
 
   const onClose = () => {
     setSearchString('')
@@ -55,11 +55,10 @@ export function MspEcDropdownList () {
       dataIndex: 'name',
       key: 'name',
       defaultSortOrder: 'ascend',
-      onCell: (row) => {
+      onCell: () => {
         return {
           onClick: () => {
             setSearchString('')
-            setCustomerName(row.name)
             setVisible(false)
           }
         }

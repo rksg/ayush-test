@@ -11,7 +11,8 @@ import {
   MspEntitlement,
   MspEntitlementSummary,
   MspEc, EcDeviceInventory,
-  VarCustomer
+  VarCustomer,
+  EcProfile
 } from '@acx-ui/rc/utils'
 
 export const baseMspApi = createApi({
@@ -134,6 +135,17 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    getEcProfile: build.query<EcProfile, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          MspUrlsInfo.getMspEcProfile,
+          params
+        )
+        return {
+          ...req
+        }
+      }
     })
   })
 })
@@ -148,5 +160,6 @@ export const {
   useMspEntitlementListQuery,
   useMspEntitlementSummaryQuery,
   useMspAssignmentSummaryQuery,
-  useResendEcInvitationMutation
+  useResendEcInvitationMutation,
+  useGetEcProfileQuery
 } = mspApi
