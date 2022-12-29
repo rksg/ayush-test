@@ -91,7 +91,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
     }),
     addNetworkVenue: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.addNetworkVenue, params)
+        const req = createHttpRequest(WifiUrlsInfo.addNetworkVenue, params, RKS_NEW_UI)
         return {
           ...req,
           body: payload
@@ -101,7 +101,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
     }),
     updateNetworkVenue: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.updateNetworkVenue, params)
+        const req = createHttpRequest(WifiUrlsInfo.updateNetworkVenue, params, RKS_NEW_UI)
         return {
           ...req,
           body: payload
@@ -111,7 +111,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
     }),
     deleteNetworkVenue: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.deleteNetworkVenue, params)
+        const req = createHttpRequest(WifiUrlsInfo.deleteNetworkVenue, params, RKS_NEW_UI)
         return {
           ...req
         }
@@ -154,6 +154,15 @@ export const networkApi = baseNetworkApi.injectEndpoints({
               api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'DETAIL' }]))
             })
         })
+      }
+    }),
+    getVenueNetworkApGroup: build.query<TableResult<NetworkVenue>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.venueNetworkApGroup, params)
+        return {
+          ...req,
+          body: payload
+        }
       }
     }),
     apNetworkList: build.query<TableResult<Network>, RequestPayload>({
@@ -361,6 +370,8 @@ export const {
   useLazyNetworkListQuery,
   useGetNetworkQuery,
   useLazyGetNetworkQuery,
+  useGetVenueNetworkApGroupQuery,
+  useLazyGetVenueNetworkApGroupQuery,
   useNetworkDetailHeaderQuery,
   useNetworkVenueListQuery,
   useAddNetworkMutation,

@@ -56,28 +56,34 @@ describe('ApPhoto', () => {
       rest.get(
         WifiUrlsInfo.getWifiCapabilities.url,
         (req, res, ctx) => res(ctx.json(wifiCapabilities))
-      )
-      ,rest.all(
-        '/app/sample.png',
+      ),
+      rest.get(
+        '*/app/sample.png',
         (req, res, ctx) => res(ctx.body(apSampleImage))
       ),
-      rest.all(
+      rest.get(
         'blob:http://localhost/6f5a9d30-b9f8-496f-b9a7-1d5e763c4c3c',
         (req, res, ctx) => res(ctx.body(apSampleImage))
       )
     )
   })
   it('should render correctly', async () => {
+
     apViewModel.data[0].model = ''
     render(<Provider><ApPhoto /></Provider>, { route: { params } })
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    const dot1 = screen.getByTestId('dot1')
+    const dot1 = await screen.findByTestId('dot1')
     fireEvent.click(dot1)
-    const image1 = screen.getByTestId('image1')
+    const image1 = await screen.findByTestId('image1')
     fireEvent.doubleClick(image1)
-    const zoomIn = screen.getByTestId('image-zoom-in')
+    const zoomIn = await screen.findByTestId('image-zoom-in')
     fireEvent.click(zoomIn)
-    const applyButton = screen.getByRole('button', { name: 'Apply' })
+    const zoomOut = await screen.findByTestId('image-zoom-out')
+    fireEvent.click(zoomOut)
+    const zoomSlider = await screen.findByRole('slider')
+    zoomSlider.focus()
+    fireEvent.keyPress(zoomSlider, { key: 'Right', code: 39, charCode: 39 })
+    const applyButton = await screen.findByRole('button', { name: 'Apply' })
     expect(applyButton).toBeVisible()
     fireEvent.click(applyButton)
   })
@@ -85,11 +91,11 @@ describe('ApPhoto', () => {
     apViewModel.data[0].model = ''
     render(<Provider><ApPhoto /></Provider>, { route: { params } })
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    const dot1 = screen.getByTestId('dot1')
+    const dot1 = await screen.findByTestId('dot1')
     fireEvent.click(dot1)
-    const image1 = screen.getByTestId('image1')
+    const image1 = await screen.findByTestId('image1')
     fireEvent.doubleClick(image1)
-    const deleteBtn = screen.getByTestId('delete')
+    const deleteBtn = await screen.findByTestId('delete')
     fireEvent.click(deleteBtn)
   })
   it('should render default image correctly', async () => {
@@ -102,7 +108,7 @@ describe('ApPhoto', () => {
     )
     render(<Provider><ApPhoto /></Provider>, { route: { params } })
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    const gallery = screen.getByTestId('gallery')
+    const gallery = await screen.findByTestId('gallery')
     fireEvent.click(gallery)
   })
   it('should upload photo correctly', async () => {

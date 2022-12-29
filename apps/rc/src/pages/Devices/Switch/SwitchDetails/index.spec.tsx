@@ -39,7 +39,7 @@ describe('SwitchDetails', () => {
       route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab' }
     })
 
-    expect(screen.getAllByRole('tab')).toHaveLength(8)
+    expect(screen.getAllByRole('tab')).toHaveLength(13)
   })
 
   it('should navigate to incidents tab correctly', async () => {

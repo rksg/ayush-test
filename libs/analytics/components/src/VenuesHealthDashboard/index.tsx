@@ -77,7 +77,7 @@ export function VenuesHealthDashboard ({
         const [n,d] = row.timeToConnectSLA
         const threshold = row.timeToConnectThreshold ??
           kpiConfig.timeToConnect.histogram.initialThreshold
-        const thresholdText = $t({ defaultMessage: 'Under {threshold}' },
+        const thresholdText = $t({ defaultMessage: '< {threshold}' },
           { threshold: formatter('durationFormat')(threshold) })
         if(row.timeToConnectThreshold === null) return <span>-</span>
         const tooltipText=$t({
@@ -102,7 +102,7 @@ export function VenuesHealthDashboard ({
         const [n,d] = row.clientThroughputSLA
         const threshold = row.clientThroughputThreshold ??
           kpiConfig.clientThroughput.histogram.initialThreshold
-        const thresholdText = $t({ defaultMessage: 'Above {threshold}' },
+        const thresholdText = $t({ defaultMessage: '> {threshold}' },
           { threshold: formatter('networkSpeedFormat')(threshold) })
         if(row.clientThroughputThreshold === null) return <span>-</span>
         const tooltipText = $t({

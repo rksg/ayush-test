@@ -36,6 +36,7 @@ const tags: string[] = []
 const ePDG: EPDG[] = []
 const networkIds: string[] = []
 const networksName: string[] = []
+const epdgs: EPDG[] = []
 
 const initState = {
   serviceName,
@@ -45,7 +46,8 @@ const initState = {
   tags,
   description,
   networkIds,
-  networksName
+  networksName,
+  epdgs
 }
 
 const wrapper = ({ children }: { children: React.ReactElement }) => {
@@ -70,7 +72,7 @@ describe('WifiCallingSettingForm', () => {
         ctx.json(wifiCallingResponse)
       )
     ))
-    const { asFragment } = render(
+    render(
       <WifiCallingFormContext.Provider value={{
         state: initState,
         dispatch: setWifiCallingSetting
@@ -105,7 +107,5 @@ describe('WifiCallingSettingForm', () => {
     fireEvent.select(screen.getByTestId('selectQosPriorityId'), {
       target: { WIFICALLING_PRI_BE }
     })
-
-    expect(asFragment()).toMatchSnapshot()
   })
 })

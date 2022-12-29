@@ -1,17 +1,45 @@
 import { MemoryRouter, BrowserRouter } from 'react-router-dom'
 
-import { Provider }                  from '@acx-ui/store'
-import { render, screen, fireEvent } from '@acx-ui/test-utils'
+import { dataApiURL }                                  from '@acx-ui/analytics/services'
+import { Provider, store }                             from '@acx-ui/store'
+import { render, screen, fireEvent, mockGraphqlQuery } from '@acx-ui/test-utils'
+
+import { api } from './services'
 
 import { ClientTroubleshooting } from './index'
-
 describe('ClientTroubleshootingTab', () => {
+  const params = {
+    tenantId: 'tenant-id',
+    activeTab: 'troubleshooting',
+    clientId: 'mac'
+  }
+  beforeEach(() => {
+    store.dispatch(api.util.resetApiState())
+    mockGraphqlQuery(dataApiURL, 'ClientInfo', {
+      data: {
+        client: {
+          connectionDetailsByAp: [],
+          connectionEvents: [],
+          connectionQualities: [],
+          incidents: []
+        }
+      }
+    })
+  })
+  it('should render loader', () => {
+    render(
+      <Provider><ClientTroubleshooting clientMac='mac' /></Provider>,
+      {
+        route: {
+          params,
+          path: '/:tenantId/users/wifi/clients/:clientId/details/:activeTab'
+        }
+      }
+    )
+    expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
+  })
   it('should render correctly without search params', async () => {
-    const params = {
-      tenantId: 'tenant-id',
-      activeTab: 'troubleshooting',
-      clientId: 'mac'
-    }
+
     const { asFragment } = render(
       <Provider><ClientTroubleshooting clientMac='mac' /></Provider>,
       {
@@ -21,7 +49,7 @@ describe('ClientTroubleshootingTab', () => {
         }
       }
     )
-    expect(await screen.findByTestId('ArrowExpand')).toBeVisible()
+    expect(await screen.findByTestId('history-collapse')).toBeVisible()
     expect(asFragment()).toMatchSnapshot()
   })
   it('should render correctly with search params', async () => {
@@ -31,10 +59,10 @@ describe('ClientTroubleshootingTab', () => {
         // eslint-disable-next-line max-len
         search: '?clientTroubleShootingSelections=%257B%2522category%2522%253A%255B%255B%2522performance%2522%255D%252C%255B%2522Infrastructure%2522%255D%255D%257D'
       }]}>
-        <ClientTroubleshooting clientMac='mac' />
+        <Provider><ClientTroubleshooting clientMac='mac' /></Provider>
       </MemoryRouter>
     )
-    expect(await screen.findByTestId('ArrowExpand')).toBeVisible()
+    expect(await screen.findByTestId('history-collapse')).toBeVisible()
     expect(asFragment()).toMatchSnapshot()
   })
   it('should handle history button toggle', async () => {
@@ -44,13 +72,13 @@ describe('ClientTroubleshootingTab', () => {
         // eslint-disable-next-line max-len
         search: '?clientTroubleShootingSelections=%257B%2522category%2522%253A%255B%255B%2522performance%2522%255D%252C%255B%2522Infrastructure%2522%255D%255D%257D'
       }]}>
-        <ClientTroubleshooting clientMac='mac' />
+        <Provider><ClientTroubleshooting clientMac='mac' /></Provider>
       </MemoryRouter>
     )
-    fireEvent.click(await screen.findByTestId('ArrowExpand'))
+    fireEvent.click(await screen.findByTestId('history-collapse'))
     expect(await screen.findByText('History')).toBeVisible()
     fireEvent.click(await screen.findByText('History'))
-    expect(await screen.findByTestId('ArrowExpand')).toBeVisible()
+    expect(await screen.findByTestId('history-collapse')).toBeVisible()
   })
   it('should set search param on option selection', async () => {
     const location = {
@@ -62,7 +90,7 @@ describe('ClientTroubleshootingTab', () => {
     })
     const { asFragment } = render(
       <BrowserRouter window={window}>
-        <ClientTroubleshooting clientMac='mac' />
+        <Provider><ClientTroubleshooting clientMac='mac' /></Provider>
       </BrowserRouter>
     )
     await screen.findByText('All Categories')
