@@ -10,7 +10,8 @@ import { StepsForm }                                                        from
 import { useGetWifiCallingServiceListQuery, useGetWifiCallingServiceQuery } from '@acx-ui/rc/services'
 import { CreateNetworkFormFields, QosPriorityEnum, WifiCallingActionTypes } from '@acx-ui/rc/utils'
 
-import WifiCallingFormContext from '../WifiCallingFormContext'
+import { wifiCallingQosPriorityLabelMapping } from '../../contentsMap'
+import WifiCallingFormContext                 from '../WifiCallingFormContext'
 
 import EpdgTable from './EpdgTable'
 
@@ -63,16 +64,16 @@ const WifiCallingSettingForm = (props: WifiCallingSettingFormProps) => {
       data-testid='selectQosPriorityId'
       onChange={(options) => handleQosPriority(options.toString() as QosPriorityEnum)}>
       <option value='WIFICALLING_PRI_VOICE'>
-        {$t({ defaultMessage: 'Voice' })}
+        {$t(wifiCallingQosPriorityLabelMapping[QosPriorityEnum.WIFICALLING_PRI_VOICE])}
       </option>
       <option value='WIFICALLING_PRI_VIDEO'>
-        {$t({ defaultMessage: 'Video' })}
+        {$t(wifiCallingQosPriorityLabelMapping[QosPriorityEnum.WIFICALLING_PRI_VIDEO])}
       </option>
       <option value='WIFICALLING_PRI_BE'>
-        {$t({ defaultMessage: 'Best Effort' })}
+        {$t(wifiCallingQosPriorityLabelMapping[QosPriorityEnum.WIFICALLING_PRI_BE])}
       </option>
       <option value='WIFICALLING_PRI_BG'>
-        {$t({ defaultMessage: 'Background' })}
+        {$t(wifiCallingQosPriorityLabelMapping[QosPriorityEnum.WIFICALLING_PRI_BG])}
       </option>
     </Select>
   )

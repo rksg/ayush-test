@@ -48,13 +48,6 @@ export enum WifiCallingActionTypes {
   UPDATE_STATE = 'UPDATE_STATE'
 }
 
-export enum WifiCallingQosPriority {
-  WIFICALLING_PRI_VOICE = 'Voice',
-  WIFICALLING_PRI_VIDEO = 'Video',
-  WIFICALLING_PRI_BE = 'Best Effort',
-  WIFICALLING_PRI_BG = 'Background'
-}
-
 export type WifiCallingActionPayload = {
   type: WifiCallingActionTypes.ADD_EPDG,
   payload: {

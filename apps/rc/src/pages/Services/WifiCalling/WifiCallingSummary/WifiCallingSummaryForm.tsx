@@ -3,10 +3,11 @@ import { useContext } from 'react'
 import { Form, Col, Row, Typography } from 'antd'
 import { useIntl }                    from 'react-intl'
 
-import { StepsForm }              from '@acx-ui/components'
-import { WifiCallingQosPriority } from '@acx-ui/rc/utils'
+import { StepsForm }       from '@acx-ui/components'
+import { QosPriorityEnum } from '@acx-ui/rc/utils'
 
-import WifiCallingFormContext from '../WifiCallingFormContext'
+import { wifiCallingQosPriorityLabelMapping } from '../../contentsMap'
+import WifiCallingFormContext                 from '../WifiCallingFormContext'
 
 const WifiCallingSummaryForm = () => {
   const { Paragraph } = Typography
@@ -52,7 +53,9 @@ const WifiCallingSummaryForm = () => {
           name='qosPriority'
           label={$t({ defaultMessage: 'QoS Priority' })}
         >
-          <Paragraph>{WifiCallingQosPriority[state.qosPriority]}</Paragraph>
+          <Paragraph>{$t(
+            wifiCallingQosPriorityLabelMapping[state.qosPriority as QosPriorityEnum])
+          }</Paragraph>
         </Form.Item>
 
         <Form.Item
