@@ -54,7 +54,7 @@ export default function DpskOverview (props: DpskOverviewProps) {
       </GridCol>
       <GridCol col={{ span: 24 }}>
         <Card>
-          <DpskInstancesTable />
+          <DpskInstancesTable networkIds={data?.networkIds} />
         </Card>
       </GridCol>
     </GridRow>

@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+
 import { useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps, Card }                      from '@acx-ui/components'
@@ -5,15 +7,23 @@ import { useNetworkListQuery }                                  from '@acx-ui/rc
 import { Network, NetworkType, NetworkTypeEnum, useTableQuery } from '@acx-ui/rc/utils'
 import { TenantLink }                                           from '@acx-ui/react-router-dom'
 
-export default function DpskInstancesTable () {
+export default function DpskInstancesTable (props: { networkIds?: string[] }) {
   const { $t } = useIntl()
+  const { networkIds } = props
   const tableQuery = useTableQuery({
     useQuery: useNetworkListQuery,
     defaultPayload: {
-      fields: ['check-all', 'name', 'description', 'nwSubType', 'venues', 'id']
-      // filters: { id: props.networkIds } // TODO: API is not ready
+      fields: ['check-all', 'name', 'description', 'nwSubType', 'venues', 'id'],
+      filters: { id: networkIds ?? [''] }
     }
   })
+
+  useEffect(() => {
+    tableQuery.setPayload({
+      ...tableQuery.payload,
+      filters: { id: networkIds ?? [''] }
+    })
+  }, [networkIds, tableQuery.data?.data])
 
   const columns: TableProps<Network>['columns'] = [
     {
