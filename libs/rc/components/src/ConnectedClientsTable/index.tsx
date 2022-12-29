@@ -1,13 +1,13 @@
 /* eslint-disable max-len */
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { Subtitle, Tooltip }                                           from '@acx-ui/components'
-import { Table, TableProps, Loader }                                   from '@acx-ui/components'
-import { Features, useIsSplitOn }                                      from '@acx-ui/feature-toggle'
-import { useGetClientListQuery }                                       from '@acx-ui/rc/services'
-import { ClientList, getDeviceTypeIcon, getOsTypeIcon, useTableQuery } from '@acx-ui/rc/utils'
-import { TenantLink }                                                  from '@acx-ui/react-router-dom'
-import { formatter }                                                   from '@acx-ui/utils'
+import { Subtitle, Tooltip }                                                  from '@acx-ui/components'
+import { Table, TableProps, Loader }                                          from '@acx-ui/components'
+import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
+import { useGetClientListQuery }                                              from '@acx-ui/rc/services'
+import { ClientList, getDeviceTypeIcon, getOsTypeIcon, usePollingTableQuery } from '@acx-ui/rc/utils'
+import { TenantLink }                                                         from '@acx-ui/react-router-dom'
+import { formatter }                                                          from '@acx-ui/utils'
 
 import { ClientHealthIcon } from '../ClientHealthIcon'
 
@@ -343,7 +343,7 @@ export const ConnectedClientsTable =
   defaultPayload.searchString = searchString
 
   const ConnectedClientsTable = () => {
-    const tableQuery = useTableQuery({
+    const tableQuery = usePollingTableQuery({
       useQuery: useGetClientListQuery,
       defaultPayload
     })

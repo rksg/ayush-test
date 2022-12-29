@@ -54,7 +54,7 @@ const RKS_NEW_UI = {
 export const baseServiceApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'serviceApi',
-  tagTypes: ['Service'],
+  tagTypes: ['Service', 'Dpsk'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })
@@ -411,14 +411,14 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       invalidatesTags: [{ type: 'Service', id: 'LIST' }]
     }),
     createDpsk: build.mutation<DpskSaveData, RequestPayload<DpskSaveData>>({
-      query: ({ params, payload }) => {
-        const createDpskReq = createHttpRequest(DpskUrls.addDpsk, params)
+      query: ({ payload }) => {
+        const createDpskReq = createHttpRequest(DpskUrls.addDpsk)
         return {
           ...createDpskReq,
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }, { type: 'Dpsk', id: 'LIST' }]
     }),
     updateDpsk: build.mutation<DpskSaveData, RequestPayload<DpskSaveData>>({
       query: ({ params, payload }) => {
@@ -428,7 +428,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }, { type: 'Dpsk', id: 'LIST' }]
     }),
     dpskList: build.query<DpskList, RequestPayload>({
       query: () => {
@@ -437,7 +437,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           ...getDpskListReq
         }
       },
-      providesTags: [{ type: 'Service', id: 'LIST' }]
+      providesTags: [{ type: 'Service', id: 'LIST' }, { type: 'Dpsk', id: 'LIST' }]
     }),
     getDpsk: build.query<DpskSaveData, RequestPayload>({
       query: ({ params, payload }) => {
@@ -498,6 +498,7 @@ export const {
   useCreateDpskMutation,
   useUpdateDpskMutation,
   useGetDpskQuery,
+  useDpskListQuery,
   useLazyDpskListQuery,
   useGetPortalQuery,
   useSavePortalMutation,

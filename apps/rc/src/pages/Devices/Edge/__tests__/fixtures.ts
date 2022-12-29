@@ -88,3 +88,8 @@ export const mockEdgeData = {
   edgeName: 'edgeName',
   tags: ['tag1', 'tag2']
 }
+
+export const mockEdgeDnsServersData = {
+  primary: '1.1.1.1',
+  secondary: '2.2.2.2'
+}
