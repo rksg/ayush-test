@@ -84,6 +84,10 @@ const config: LayoutProps['menuConfig'] = [
     activeIcon: ServiceValidationSolid,
     routes: [
       {
+        path: '/serviceValidation/networkHealth',
+        name: 'NetworkHealth'
+      },
+      {
         path: '/serviceValidation/videoCallQoe',
         name: 'Video Call QoE'
       }
