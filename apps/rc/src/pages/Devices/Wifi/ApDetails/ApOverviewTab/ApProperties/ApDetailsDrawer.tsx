@@ -3,7 +3,7 @@ import { Divider, Input } from 'antd'
 import { useIntl }        from 'react-intl'
 
 import { ContentSwitcher, ContentSwitcherProps, Drawer, Descriptions }                          from '@acx-ui/components'
-import { useApLanPortsQuery, useApRadioCustomizationQuery, useGetVenueQuery }                   from '@acx-ui/rc/services'
+import { useApLanPortsQuery, useGetApRadioCustomizationQuery, useGetVenueQuery }                from '@acx-ui/rc/services'
 import { ApDetails, ApLanPort, ApRadio, ApVenueStatusEnum, ApViewModel, DeviceGps, gpsToFixed } from '@acx-ui/rc/utils'
 import { TenantLink, useParams }                                                                from '@acx-ui/react-router-dom'
 
@@ -37,7 +37,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
     skip: currentAP?.deviceStatusSeverity !== ApVenueStatusEnum.OPERATIONAL
   })
 
-  const { data: radioSetting } = useApRadioCustomizationQuery({
+  const { data: radioSetting } = useGetApRadioCustomizationQuery({
     params: { tenantId, serialNumber }
   },
   {
