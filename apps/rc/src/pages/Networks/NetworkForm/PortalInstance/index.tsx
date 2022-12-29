@@ -40,7 +40,7 @@ const PortalInstance = (props:{
     socials.twitterEnabled = socialIdentities.twitter ? true : false
     socials.linkedInEnabled = socialIdentities.linkedin ? true : false
   }
-  const portalServiceID = useWatch(['guestPortal','serviceId'])
+  const portalServiceID = useWatch('portalServiceProfileId')
   const { data } = useGetPortalProfileListQuery({ params })
   const [demoValue, setDemoValue]= useState({} as Demo)
   const portalServices = data?.content?.map(m => ({ label: m.serviceName, value: m.id })) ?? []
@@ -63,6 +63,19 @@ const PortalInstance = (props:{
     if(data){
       setPortalData([...data.content as Portal[]])
       setPortalList(data?.content?.map(m => ({ label: m.serviceName, value: m.id })) ?? [])
+      if(networkData?.portalServiceProfileId){
+        form.setFieldValue('portalServiceProfileId',networkData.portalServiceProfileId)
+        const currentPortal = _.find(data.content,{ id: networkData.portalServiceProfileId })
+        const content = currentPortal?.content as Demo
+        const tempValue={ ...content,
+          poweredImg: content.poweredImg?
+            (prefix+content.poweredImg):Powered,
+          logo: content.logo?(prefix+content.logo):Logo,
+          photo: content.photo?(prefix+content.photo): Photo,
+          bgImage: content.bgImage?(prefix+content.bgImage):'' ,
+          wifi4EUNetworkId: content.wifi4EUNetworkId || '' }
+        setDemoValue(tempValue)
+      }
     }
   },[data])
   const [getPortalLang] = useGetPortalLangMutation()
@@ -91,7 +104,7 @@ const PortalInstance = (props:{
             label={$t({ defaultMessage: 'Define the captive portal web page.' })}
           />
           <Form.Item
-            name={['guestPortal','serviceId']}
+            name='portalServiceProfileId'
             label={$t({ defaultMessage: 'Guest Portal Service' })}
             rules={[
               { required: true }
@@ -112,7 +125,7 @@ const PortalInstance = (props:{
                 label: data.serviceName, value: data.id })
               setPortalList([...portalList])
               setPortalData([...portalData])
-              form.setFieldValue(['guestPortal','serviceId'], data.id)
+              form.setFieldValue('portalServiceProfileId', data.id)
               props.updatePortalData?.(data.content)
               setDemoValue({ ...data.content,
                 poweredImg: data.content.poweredImg?
@@ -124,7 +137,7 @@ const PortalInstance = (props:{
           </Form.Item>
         </GridCol>
       </GridRow>
-      {portalServiceID&&<GridRow>
+      {portalServiceID&&demoValue.componentDisplay&&<GridRow style={{ height: 648, paddingBottom: 40 }}>
         <PortalDemo value={demoValue}
           isPreview={true}
           fromNetwork={true}
