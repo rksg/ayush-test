@@ -1,3 +1,5 @@
+import { TimelineStatus } from '@acx-ui/types'
+
 import {
   ServiceAdminState,
   ServiceStatus,
@@ -147,11 +149,11 @@ export interface Activity {
   requestId: string
   severity: string
   startDatetime: string
-  status: 'PENDING' | 'INPROGRESS' | 'SUCCESS' | 'FAIL' | 'OFFLINE'
+  status: TimelineStatus
   steps: {
     id: string,
     description: string,
-    status: 'PENDING' | 'INPROGRESS' | 'SUCCESS' | 'FAIL' | 'OFFLINE',
+    status: TimelineStatus,
     progressType: string
     startDatetime: string
     endDatetime: string

@@ -10,8 +10,9 @@ import {
   CheckMarkCircleSolid,
   PlusSquareSolid,
   MinusSquareSolid
-}                    from '@acx-ui/icons'
-import { formatter } from '@acx-ui/utils'
+}                         from '@acx-ui/icons'
+import { TimelineStatus } from '@acx-ui/types'
+import { formatter }      from '@acx-ui/utils'
 
 import {
   ItemWrapper,
@@ -21,11 +22,10 @@ import {
   ExpanderWrapper,
   WithExpanderWrapper,
   Wrapper,
-  Status,
   Step
 } from './styledComponents'
 
-interface StatusIconProps { status: Status}
+interface StatusIconProps { status: TimelineStatus}
 
 export const StatusIcon = (props: StatusIconProps) => {
   switch(props.status) {
@@ -58,7 +58,7 @@ const StatusComp = (props: StatusIconProps) => {
 }
 
 export interface TimelineItem {
-  status: 'PENDING' | 'INPROGRESS' | 'SUCCESS' | 'FAIL' | 'OFFLINE',
+  status: TimelineStatus,
   startDatetime: string,
   endDatetime: string,
   description: string,

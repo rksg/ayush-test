@@ -1,8 +1,8 @@
 import styled, { css } from 'styled-components/macro'
 
-export type Status = 'PENDING' | 'INPROGRESS' | 'SUCCESS' | 'FAIL' | 'OFFLINE'
+import { TimelineStatus } from '@acx-ui/types'
 
-const getStatusColor = (status: Status) => {
+const getStatusColor = (status: TimelineStatus) => {
   switch(status){
     case 'SUCCESS':
       return 'var(--acx-semantics-green-50)'
@@ -61,8 +61,9 @@ export const ContentWrapper = styled.div`
   margin: -27px 4px 0px 30px;
 `
 
-export const StatusWrapper = styled.div<{ status: Status }>`
+export const StatusWrapper = styled.div<{ status: TimelineStatus }>`
   display: flex;
+  gap: 10px;
   align-items: center;
   font-size: var(--acx-body-4-font-size);
   line-height: var(--acx-body-4-line-height);
