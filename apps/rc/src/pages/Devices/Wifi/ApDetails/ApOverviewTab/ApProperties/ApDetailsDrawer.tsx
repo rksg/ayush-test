@@ -50,7 +50,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
 
   const PropertiesTab = () => {
     return (<>
-      <Descriptions>
+      <Descriptions labelWidthPercent={50}>
         <Descriptions.Item
           label={$t({ defaultMessage: 'Venue' })}
           children={
@@ -85,7 +85,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
         />
       </Descriptions>
       <Divider/>
-      <Descriptions>
+      <Descriptions labelWidthPercent={50}>
         {
           currentAP.password &&
           <Descriptions.Item
@@ -144,7 +144,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
         currentAP?.isMeshEnable && (
           <>
             <Divider/>
-            <Descriptions>
+            <Descriptions labelWidthPercent={50}>
               <Descriptions.Item
                 label={$t({ defaultMessage: 'Mesh Role' })}
                 children={
@@ -189,7 +189,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
         currentAP.deviceStatusSeverity === ApVenueStatusEnum.OPERATIONAL &&
         <>
           <Divider/>
-          <Descriptions>
+          <Descriptions labelWidthPercent={50}>
             <Descriptions.Item
               label={$t({ defaultMessage: 'Uptime' })}
               children={currentAP?.uptime}
@@ -205,7 +205,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
         currentCellularInfo &&
          <>
            <Divider/>
-           <Descriptions>
+           <Descriptions labelWidthPercent={50}>
              <ApCellularProperties currentCellularInfo={currentCellularInfo} currentAP={currentAP} />
            </Descriptions>
          </>

@@ -22,7 +22,7 @@ export const ApDetailsSettings = (props: ApDetailsSettingsProps) => {
   }
 
   return (<>
-    <Descriptions>
+    <Descriptions labelWidthPercent={50}>
       <Descriptions.Item
         label={
           <Subtitle level={4} style={{ margin: 0 }}>
@@ -47,7 +47,7 @@ export const ApDetailsSettings = (props: ApDetailsSettingsProps) => {
       />
     </Descriptions>
     <Divider/>
-    <Descriptions>
+    <Descriptions labelWidthPercent={50}>
       <Descriptions.Item
         label={
           <Subtitle level={4} style={{ margin: 0 }}>
@@ -71,7 +71,7 @@ export const ApDetailsSettings = (props: ApDetailsSettingsProps) => {
     </Descriptions>
     {/* TODO: Wait Service feature support
     <Divider/>
-    <Descriptions>
+    <Descriptions labelWidthPercent={50}>
       <Descriptions.Item
         label={
           <Subtitle level={4} style={{ margin: 0 }}>
