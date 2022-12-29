@@ -1,4 +1,4 @@
-import { replaceStrings } from './replaceStrings'
+import { replaceStrings } from './getDescription'
 
 describe('replaceStrings', () => {
   it('convert template correctly', () => {
