@@ -59,7 +59,7 @@ describe('AllRoutes', () => {
   test('should navigate to serviceValidation/*', async () => {
     render(<Provider><AllRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/serviceValidation/videoCallQoe',
+        path: '/t/tenantId/serviceValidation/networkHealth',
         wrapRoutes: false
       }
     })

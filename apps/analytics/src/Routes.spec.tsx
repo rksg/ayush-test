@@ -6,7 +6,7 @@ import AnalyticsRoutes from './Routes'
 jest.mock('@acx-ui/analytics/components', () => ({
   HealthPage: () => <div data-testid='healthPage' />,
   IncidentListPage: () => <div data-testid='incidentsListPage' />,
-  VideoCallQoePage: () => <div data-testid='VideoCallQoePage' />
+  NetworkHealthPage: () => <div data-testid='NetworkHealthPage' />
 }))
 
 jest.mock('./pages/IncidentDetails', () => () => {
@@ -22,14 +22,14 @@ test('should redirect analytics to analytics/incidents', async () => {
   })
   expect(screen.getByTestId('incidentsListPage')).toBeVisible()
 })
-test('should redirect service validation to serviceValidation/videoCallQoe', async () => {
+test('should redirect service validation to serviceValidation/networkHealth', async () => {
   render(<Provider><AnalyticsRoutes /></Provider>, {
     route: {
       path: '/t/tenantId/serviceValidation',
       wrapRoutes: false
     }
   })
-  expect(screen.getByTestId('VideoCallQoePage')).toBeVisible()
+  expect(screen.getByTestId('NetworkHealthPage')).toBeVisible()
 })
 test('should navigate to analytics/incidents', async () => {
   render(<Provider><AnalyticsRoutes /></Provider>, {
@@ -40,14 +40,14 @@ test('should navigate to analytics/incidents', async () => {
   })
   expect(screen.getByTestId('incidentsListPage')).toBeVisible()
 })
-test('should navigate to serviceValidation/videoCallQoe', async () => {
+test('should navigate to serviceValidation/networkHealth', async () => {
   render(<Provider><AnalyticsRoutes /></Provider>, {
     route: {
-      path: '/t/tenantId/serviceValidation/videoCallQoe',
+      path: '/t/tenantId/serviceValidation/networkHealth',
       wrapRoutes: false
     }
   })
-  expect(screen.getByTestId('VideoCallQoePage')).toBeVisible()
+  expect(screen.getByTestId('NetworkHealthPage')).toBeVisible()
 })
 test('should navigate to analytics/recommendations', () => {
   render(<Provider><AnalyticsRoutes /></Provider>, {
@@ -102,4 +102,13 @@ test('should navigate to analytics/incidents/tab/overview', async () => {
     }
   })
   expect(screen.getByTestId('incidentsListPage')).toBeVisible()
+})
+test('should navigate to serviceValidation/networkHealth/tab/overview', async () => {
+  render(< Provider><AnalyticsRoutes /></Provider>, {
+    route: {
+      path: '/t/tenantId/serviceValidation/networkHealth/tab/overview',
+      wrapRoutes: false
+    }
+  })
+  expect(screen.getByTestId('NetworkHealthPage')).toBeVisible()
 })

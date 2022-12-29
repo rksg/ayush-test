@@ -89,7 +89,7 @@ export function useMenuConfig () {
           name: $t({ defaultMessage: 'Network Health' })
         }
       ],
-      disabled: useIsTierAllowed('ANLT-ADV')
+      disabled: !useIsTierAllowed('ANLT-ADV')
     },
     {
       path: '/reports',
