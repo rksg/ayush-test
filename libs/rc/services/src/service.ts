@@ -70,7 +70,19 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Service', id: 'LIST' }]
+      providesTags: [{ type: 'Service', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          showActivityMessage(msg, [
+            'Delete WiFi Calling Service Profile',
+            'Delete WiFi Calling Service Profiles'
+          ], () => {
+            api.dispatch(serviceApi.util.invalidateTags([
+              { type: 'Service', id: 'LIST' }
+            ]))
+          })
+        })
+      }
     }),
     cloudpathList: build.query<CloudpathServer[], RequestPayload>({
       query: ({ params }) => {

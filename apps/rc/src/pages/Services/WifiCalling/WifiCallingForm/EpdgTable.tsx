@@ -19,10 +19,13 @@ const EpdgTable = (props: { edit?: boolean }) => {
   const [visibleEdit, setVisibleEdit] = useState(false)
   const [serviceName, setServiceName] = useState('')
   const [serviceIndex, setServiceIndex] = useState<number | undefined>(undefined)
+  const RULE_NUMBER_LIMIT = 5
 
   const { state, dispatch } = useContext(WifiCallingFormContext)
 
   const { data } = useGetWifiCallingServiceQuery({ params: useParams() })
+
+  const [tableData, setTableData] = useState(state.ePDG as EPDG[])
 
   const basicColumns = [
     {
@@ -38,11 +41,17 @@ const EpdgTable = (props: { edit?: boolean }) => {
   ]
 
   useEffect(() => {
-    if (!state.ePDG.length && data && edit) {
+    if (!state.serviceName && !state.ePDG.length && data && edit) {
       dispatch({
         type: WifiCallingActionTypes.UPDATE_ENTIRE_EPDG,
         payload: data.epdgs
       } as WifiCallingActionPayload)
+      setTableData(data.epdgs?.map((epdg) => ({
+        domain: epdg.domain,
+        ip: epdg.ip
+      })) ?? [])
+    } else {
+      setTableData(state.ePDG)
     }
   }, [data, state])
 
@@ -53,6 +62,7 @@ const EpdgTable = (props: { edit?: boolean }) => {
 
   const actions = [{
     label: $t({ defaultMessage: 'Add' }),
+    disabled: state.ePDG.length === RULE_NUMBER_LIMIT,
     onClick: handleAddAction
   }]
 
@@ -109,7 +119,7 @@ const EpdgTable = (props: { edit?: boolean }) => {
 
       <Table
         columns={basicColumns}
-        dataSource={!state.ePDG.length && edit ? data?.epdgs : state.ePDG}
+        dataSource={tableData}
         rowKey='domain'
         actions={actions}
         rowActions={rowActions}
