@@ -6,10 +6,13 @@ import {
   ApTable,
   defaultApPayload,
   NetworkTable,
-  defaultNetworkPayload
+  defaultNetworkPayload,
+  defaultEventsPayload,
+  EventTable
 }           from '@acx-ui/rc/components'
 import {
   useApListQuery,
+  useEventsQuery,
   useNetworkListQuery,
   useVenuesListQuery
 }       from '@acx-ui/rc/services'
@@ -19,7 +22,9 @@ import {
   Network,
   Venue,
   AP,
-  ApExtraParams
+  ApExtraParams,
+  Event,
+  usePollingTableQuery
 } from '@acx-ui/rc/utils'
 
 import { useDefaultVenuePayload, VenueTable } from '../Venues/VenuesTable'
@@ -78,6 +83,27 @@ const searches = [
       result,
       title: $t({ defaultMessage: 'APs' }),
       component: <ApTable tableQuery={result} />
+    }
+  },
+  (searchString: string, $t: IntlShape['$t']) => {
+    const result = usePollingTableQuery<Event>({
+      useQuery: useEventsQuery,
+      defaultPayload: {
+        ...defaultEventsPayload,
+        searchString,
+        searchTargetFields: ['entity_id', 'message', 'apMac', 'clientMac'],
+        detailLevel: 'su'
+      },
+      pagination,
+      sorter: {
+        sortField: 'event_datetime',
+        sortOrder: 'DESC'
+      }
+    })
+    return {
+      result,
+      title: $t({ defaultMessage: 'Events' }),
+      component: <EventTable tableQuery={result} />
     }
   }
 ]

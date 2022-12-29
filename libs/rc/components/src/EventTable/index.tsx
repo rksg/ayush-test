@@ -2,9 +2,9 @@ import { useState } from 'react'
 
 import { defineMessage, useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps, Button } from '@acx-ui/components'
-import { Event, RequestPayload, TableQuery } from '@acx-ui/rc/utils'
-import { formatter }                         from '@acx-ui/utils'
+import { Loader, Table, TableProps, Button }                 from '@acx-ui/components'
+import { CommonUrlsInfo, Event, RequestPayload, TableQuery } from '@acx-ui/rc/utils'
+import { formatter }                                         from '@acx-ui/utils'
 
 import { replaceStrings } from '../ActivityTable/replaceStrings'
 import { TimelineDrawer } from '../TimelineDrawer'
@@ -148,3 +148,42 @@ const EventTable = ({ tableQuery }: EventTableProps) => {
   </Loader>
 }
 export { EventTable }
+
+export const defaultEventsPayload = {
+  url: CommonUrlsInfo.getEventList.url,
+  fields: [
+    'event_datetime',
+    'severity',
+    'entity_type',
+    'product',
+    'entity_id',
+    'message',
+    'dpName',
+    'apMac',
+    'clientMac',
+    'macAddress',
+    'apName',
+    'switchName',
+    'serialNumber',
+    'networkName',
+    'networkId',
+    'ssid',
+    'radio',
+    'raw_event',
+    'sourceType',
+    'adminName',
+    'clientName',
+    'userName',
+    'hostname',
+    'adminEmail',
+    'administratorEmail',
+    'venueName',
+    'venueId',
+    'apGroupId',
+    'apGroupName',
+    'floorPlanName',
+    'recipientName',
+    'transactionId',
+    'name'
+  ]
+}
