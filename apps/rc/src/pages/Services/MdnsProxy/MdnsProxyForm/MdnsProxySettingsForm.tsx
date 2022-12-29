@@ -2,20 +2,25 @@ import { useContext, useEffect } from 'react'
 
 import { Form, Input, Col, Row } from 'antd'
 import { useIntl }               from 'react-intl'
+import { useParams }             from 'react-router-dom'
 
-import { StepsForm }               from '@acx-ui/components'
-import { MdnsProxyForwardingRule } from '@acx-ui/rc/utils'
+import { StepsForm }                                     from '@acx-ui/components'
+import { MdnsProxyForwardingRulesTable }                 from '@acx-ui/rc/components'
+import { useLazyGetMdnsProxyListQuery }                  from '@acx-ui/rc/services'
+import { checkObjectNotExists, MdnsProxyForwardingRule } from '@acx-ui/rc/utils'
 
-import MdnsProxyFormContext              from './MdnsProxyFormContext'
-import { MdnsProxyForwardingRulesTable } from './MdnsProxyForwardingRulesTable'
+import MdnsProxyFormContext from './MdnsProxyFormContext'
 
 
 
 export function MdnsProxySettingsForm () {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
-  const forwardingRules = Form.useWatch('forwardingRules')
+  const rules = Form.useWatch('rules')
   const { currentData } = useContext(MdnsProxyFormContext)
+  const params = useParams()
+  const id = Form.useWatch<string>('id', form)
+  const [ mdnsProxyList ] = useLazyGetMdnsProxyListQuery()
 
   useEffect(() => {
     form.resetFields()
@@ -23,18 +28,24 @@ export function MdnsProxySettingsForm () {
   }, [currentData, form])
 
   const nameValidator = async (value: string) => {
-    // TODO
-    return Promise.resolve(value)
+    const list = (await mdnsProxyList({ params }).unwrap())
+      .filter(mdnsProxy => mdnsProxy.id !== id)
+      .map(mdnsProxy => ({ serviceName: mdnsProxy.name }))
+    // eslint-disable-next-line max-len
+    return checkObjectNotExists(list, { serviceName: value } , $t({ defaultMessage: 'mDNS Proxy service' }))
   }
 
-  const handleSetForwardingRules = (rules: MdnsProxyForwardingRule[]) => {
-    form.setFieldValue('forwardingRules', rules)
+  const handleSetRules = (rules: MdnsProxyForwardingRule[]) => {
+    form.setFieldValue('rules', rules)
   }
 
   return (
     <Row gutter={20}>
       <Col span={10}>
         <StepsForm.Title>{$t({ defaultMessage: 'Settings' })}</StepsForm.Title>
+        <Form.Item name='id' noStyle>
+          <Input type='hidden' />
+        </Form.Item>
         <Form.Item
           name='name'
           label={$t({ defaultMessage: 'Service Name' })}
@@ -49,18 +60,13 @@ export function MdnsProxySettingsForm () {
           children={<Input />}
         />
         <Form.Item
-          name='tags'
-          label={$t({ defaultMessage: 'Tags' })}
-          children={<Input />}
-        />
-        <Form.Item
-          name='forwardingRules'
+          name='rules'
           label={$t({ defaultMessage: 'Forwarding Rules' })}
         >
           <MdnsProxyForwardingRulesTable
             readonly={false}
-            rules={forwardingRules}
-            setRules={handleSetForwardingRules}
+            rules={rules}
+            setRules={handleSetRules}
           />
         </Form.Item>
       </Col>
