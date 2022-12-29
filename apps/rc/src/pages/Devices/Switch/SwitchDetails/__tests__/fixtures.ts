@@ -1,7 +1,4 @@
-import {
-  SwitchViewModel,
-  SwitchStatusEnum
-} from '@acx-ui/rc/utils'
+import { SwitchViewModel, SwitchStatusEnum } from '@acx-ui/rc/utils'
 
 export const switchDetailData: SwitchViewModel = {
   type: 'device',
@@ -33,4 +30,20 @@ export const switchDetailData: SwitchViewModel = {
   ],
   uptime: '7 days, 7:36:21.00',
   formStacking: false
+}
+
+export const venueData = {
+  id: 'eb4ef94ba7014f64b69be926faccbc09',
+  createdDate: '2022-12-12T04:47:50.558+00:00',
+  updatedDate: '2022-12-27T04:08:35.968+00:00',
+  name: 'test',
+  address: {
+    country: 'United States',
+    countryCode: 'US',
+    city: 'Sunnyvale, California',
+    addressLine: '350 W Java Dr, Sunnyvale, CA 94089, USA',
+    latitude: 37.4112751,
+    longitude: -122.0191908,
+    timezone: 'America/Los_Angeles'
+  }
 }

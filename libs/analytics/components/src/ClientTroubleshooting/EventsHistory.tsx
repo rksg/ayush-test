@@ -27,8 +27,9 @@ import {
   eventColorByCategory,
   INCIDENT
 } from './config'
-import { ClientInfoData } from './services'
-import * as UI            from './styledComponents'
+import { ConnectionEventPopover } from './ConnectionEvent'
+import { ClientInfoData }         from './services'
+import * as UI                    from './styledComponents'
 
 import { Filters } from '.'
 
@@ -106,7 +107,9 @@ const transformData = (clientInfo: ClientInfoData, filters: Filters, intl: IntlS
       date: formatter('dateTimeFormatWithSeconds')(event.start),
       description: formatEventDesc(event, intl),
       title: formatEventDesc(event, intl),
-      icon: <UI.EventTypeIcon color={color} />
+      icon: <ConnectionEventPopover event={event}>
+        <UI.EventTypeIcon color={color} />
+      </ConnectionEventPopover>
     }
   }),
   ...incidents

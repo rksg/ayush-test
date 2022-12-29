@@ -1,7 +1,13 @@
+import { useEffect, useState } from 'react'
+
 import { useIntl } from 'react-intl'
 
-import { Card, Tabs }                            from '@acx-ui/components'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { AnalyticsFilter, useAnalyticsFilter }                                   from '@acx-ui/analytics/utils'
+import { GridCol, GridRow, Loader, Tabs }                                        from '@acx-ui/components'
+import { SwitchInfoWidget }                                                      from '@acx-ui/rc/components'
+import { useGetVenueQuery, useStackMemberListQuery, useSwitchDetailHeaderQuery } from '@acx-ui/rc/services'
+import { SwitchViewModel }                                                       from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }                                 from '@acx-ui/react-router-dom'
 
 import { SwitchOverviewACLs }            from './SwitchOverviewACLs'
 import { SwitchOverviewPanel }           from './SwitchOverviewPanel'
@@ -12,11 +18,42 @@ import { SwitchOverviewVLANs }           from './SwitchOverviewVLANs'
 export function SwitchOverviewTab () {
   const { $t } = useIntl()
   const params = useParams()
-  const { activeSubTab } = useParams()
+  const { filters } = useAnalyticsFilter()
+  const [ switchFilter, setSwitchFilter ] = useState(null as unknown as AnalyticsFilter)
+  const [ switchDetail, setSwitchDetail ] = useState(null as unknown as SwitchViewModel)
+  const switchDetailQuery = useSwitchDetailHeaderQuery({ params })
+  const { data: venue } = useGetVenueQuery({
+    params: { tenantId: params.tenantId, venueId: switchDetailQuery.data?.venueId } },
+  { skip: !switchDetailQuery.isSuccess })
+  const { data: stackMember } = useStackMemberListQuery({ params,
+    payload: {
+      fields: ['activeUnitId', 'unitId', 'unitStatus', 'name', 'deviceStatus', 'model',
+        'serialNumber', 'activeSerial', 'switchMac', 'ip', 'venueName', 'uptime'],
+      filters: { activeUnitId: [params.serialNumber] } } },
+  { skip: !switchDetailQuery.isSuccess })
   const navigate = useNavigate()
   const basePath = useTenantLink(
     `/devices/switch/${params.switchId}/${params.serialNumber}/details/overview/`
   )
+
+  useEffect(() => {
+    if(switchDetailQuery.data && venue && stackMember) {
+      setSwitchDetail({
+        ...switchDetailQuery.data,
+        venueDescription: venue.description,
+        unitDetails: stackMember?.data
+      })
+    }
+  }, [switchDetailQuery.data, venue, stackMember])
+
+  useEffect(() => {
+    if(switchDetail) {
+      setSwitchFilter({
+        ...filters,
+        path: [{ type: 'switch', name: switchDetail.switchMac?.toUpperCase() as string }]
+      })
+    }
+  }, [switchDetail, filters])
 
   const onTabChange = (tab: string) => {
     navigate({
@@ -25,13 +62,21 @@ export function SwitchOverviewTab () {
     })
   }
 
+
   return <>
-    <Card type='solid-bg'>
-      {$t({ defaultMessage: 'Overview widget' })}
-    </Card>
+    <GridRow>
+      <GridCol col={{ span: 24 }} style={{ height: '148px' }}>
+        <Loader states={[{ isLoading: !switchFilter || !switchDetail }]}>
+          { switchFilter && switchDetail &&
+          <SwitchInfoWidget
+            switchDetail={switchDetail as SwitchViewModel}
+            filters={switchFilter} /> }
+        </Loader>
+      </GridCol>
+    </GridRow>
 
     <Tabs onChange={onTabChange}
-      activeKey={activeSubTab}
+      activeKey={params.activeSubTab}
       type='card'
       style={{ marginTop: '25px' }}
     >
