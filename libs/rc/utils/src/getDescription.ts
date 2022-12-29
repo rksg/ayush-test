@@ -1,8 +1,7 @@
 import _ from 'lodash'
 
-/**
- * Replaces "@@template" or "%%template" of given template
- */
+import { Activity } from './types'
+
 export function replaceStrings <Data> (
   template: string | undefined,
   data: Data
@@ -16,4 +15,14 @@ export function replaceStrings <Data> (
   }
 
   return template
+}
+
+export const getDescription = (
+  descriptionTemplate: Activity['descriptionTemplate'],
+  descriptionData: Activity['descriptionData']
+) => {
+  const values = descriptionData?.reduce((agg, data) =>
+    ({ ...agg, [data.name]: data.value })
+  , {} as Record<string, string>)
+  return replaceStrings(descriptionTemplate, values)
 }
