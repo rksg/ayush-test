@@ -20,6 +20,7 @@ import { useParams } from '@acx-ui/react-router-dom'
 import { getIntl }   from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
+import { useState } from 'react'
 
 const STACK_PORT_FIELD = 'SwitchPortStackingPortField'
 
@@ -112,6 +113,79 @@ export function SwitchVeTable ({ isVenueLevel } : {
     sorter: true
   }]
 
+  const [deleteButtonTooltip, setDeleteButtonTooltip] = useState('')
+  const [disabledDelete, setDisabledDelete] = useState(false)
+
+  const onSelectChange = (keys: React.Key[], rows: VeViewModel[]) => {
+    setDeleteButtonTooltip('')
+    setDisabledDelete(false)
+  }
+
+
+  const rowActions: TableProps<VeViewModel>['rowActions'] = [
+    {
+      visible: (selectedRows) => selectedRows.length === 1,
+      label: $t({ defaultMessage: 'Edit' }),
+      onClick: (selectedRows) => {
+        // setIsEditMode(true)
+        // setEditData(selectedRows[0])
+        // setVisible(true)
+      }
+    },
+    {
+      label: $t({ defaultMessage: 'Delete' }),
+      disabled: disabledDelete,
+      tooltip: deleteButtonTooltip,
+      onClick: (rows, clearSelection) => {
+        let disableDeleteList:string[] = []
+        // if ((tableQuery.data?.totalCount === rows.length) &&
+        // (type === AAAServerTypeEnum.TACACS || type === AAAServerTypeEnum.RADIUS)) {
+        //   disableDeleteList = checkAAASetting(type)
+        // }
+        if (disableDeleteList.length) {}
+        //   showActionModal({
+        //     type: 'info',
+        //     title: $t({ defaultMessage: '{serverType} Server Required' },
+        //       { serverType: $t(serversTypeDisplayText[type]) }),
+        //     content: (<FormattedMessage
+        //       defaultMessage={`
+        //           {serverType} servers are prioritized for the following: <br></br>
+        //           {disabledList}. <br></br>
+        //           In order to delete {count, plural, one {this} other {these}}
+        //           {serverType} {count, plural, one {server} other {servers}}
+        //           you must define a different method.
+        //         `}
+        //       values={{
+        //         serverType: $t(serversTypeDisplayText[type]),
+        //         disabledList: disableDeleteList.join($t({ defaultMessage: ', ' })),
+        //         count: rows.length,
+        //         br: () => <br />
+        //       }}
+        //     />)
+        //   })
+        // } else {
+        //   showActionModal({
+        //     type: 'confirm',
+        //     customContent: {
+        //       action: 'DELETE',
+        //       entityName: $t(serversDisplayText[type]),
+        //       entityValue: rows.length === 1 ? rows[0].name : undefined,
+        //       numOfEntities: rows.length
+        //     },
+        //     onOk: () => { rows.length === 1 ?
+        //       deleteAAAServer({ params: { tenantId, aaaServerId: rows[0].id } })
+        //         .then(clearSelection) :
+        //       bulkDeleteAAAServer({ params: { tenantId }, payload: rows.map(item => item.id) })
+        //         .then(clearSelection)
+        //     }
+        //   })
+        // }
+
+
+      }
+    }
+  ]
+
 
   return <Loader states={[tableQuery]}>
     <Table
@@ -119,30 +193,16 @@ export function SwitchVeTable ({ isVenueLevel } : {
       dataSource={(tableQuery.data?.data)}
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
-      rowKey='portId'
-      // TODO
-      // rowActions={rowActions}
-      // rowSelection={{
-      //   type: 'checkbox',
-      //   renderCell: (checked, record, index, originNode) => {
-      //     return record?.inactiveRow
-      //       ? <Tooltip title={record?.inactiveTooltip}>{originNode}</Tooltip>
-      //       : originNode
-      //   },
-      //   getCheckboxProps: (record) => {
-      //     return {
-      //       disabled: record?.inactiveRow
-      //     }
-      //   }
-      // }}
-      // actions={!isVenueLevel
-      //   ? [{
-      //     label: $t({ defaultMessage: 'Manage LAG' }),
-      //     onClick: () => {}
-      //   }]
-      //   : []
-      // }
+      rowKey='veId'
+      rowActions={rowActions}
+      rowSelection={{ type: 'checkbox', onChange: onSelectChange }}
+      actions={[{
+        label: $t({ defaultMessage: 'Add VLAN interface (VE)' }),
+        onClick: () => {}
+      }]
+      }
     />
   </Loader>
-}
 
+
+}
