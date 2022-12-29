@@ -562,7 +562,7 @@ function CoordinatesModal (props: {
         title: $t({ defaultMessage: 'Please confirm that...' }),
         content: $t({
           defaultMessage: `Your GPS coordinates are outside the venue:
-            {venueName}. Are you sure you want to place the device in this new position?"`
+            {venueName}. Are you sure you want to place the device in this new position?`
         }, { venueName: selectedVenue.name }),
         okText: $t({ defaultMessage: 'Drop It' }),
         onOk: () => onSaveCoordinates(latLng),
