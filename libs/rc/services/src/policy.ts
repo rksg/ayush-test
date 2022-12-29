@@ -21,7 +21,7 @@ import {
   showActivityMessage,
   CommonResult,
   NewTableResult,
-  transferTableResult
+  transferTableResult,
   AAAPolicyType,
   AaaUrls,
   AAATempType,
