@@ -2,56 +2,54 @@ import styled, { css } from 'styled-components/macro'
 
 import {  PlusSquareOutlined, MinusSquareOutlined } from '@acx-ui/icons'
 
-
-
 const eventIconStyle = css`
-  position: relative;
-  display: inline-block;
-  top: -5px;
+  display: flex;
+  margin-top: 2px;
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  line-height: 16px;
-  margin-right: 3px;
 `
 export const History = styled.div`
   border-radius: 4px;
   border: 1px solid var(--acx-neutrals-25);
-  min-height: 480px;
+  flex:1;
 `
 export const HistoryHeader = styled.div`
-  padding : 12px 0px 12px 16px;
+  padding: 12px 0 12px 16px;
   display : flex
 `
 export const HistoryContent = styled.div`
   .ant-list-item {
     border-bottom: none;
+    padding: 0 0 8px 0;
   }
-  padding : 12px 16px 12px 16px;  
+  padding: 0 16px 0px 16px;
   .ant-list-item-meta-title {
     color: var(--acx-neutrals-70);
-    font-size: 10px;
+    font-size: var(--acx-subtitle-6-font-size);
   }
   .ant-list-item-meta-description {
-    color: var(--acx-primary-black);
-    font-size: 10px;
+    color: var(--acx-neutrals-100);
+    font-size: var(--acx-subtitle-6-font-size);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
   .ant-list-item-meta-avatar {
-    margin-right: 2px;
-}
+    margin-right: 5px;
+  }
+  overflow: auto;
 `
 export const HistoryContentTitle = styled.span`
   font-weight: 600;
-  font-size: 14px;
-  line-height: 20px;
+  font-size: var(--acx-headline-4-font-size);
+  line-height: var(--acx-subtitle-4-line-height);
   color: var(--acx-primary-black);
 `
 export const HistoryIcon = styled.span`
   margin-left : auto;
-  padding-right: 16px;
+  margin-right: 16px;
+  cursor: pointer;
 `
 export const EventTypeIcon = styled.span`
   ${eventIconStyle}
@@ -64,15 +62,15 @@ export const IncidentEvent = styled.span`
   font-size: 8px;
   height: 12px;
   width: 16px;
-  color: var(--acx-primary-white);  
+  color: var(--acx-primary-white);
   font-weight: var(--acx-body-font-weight-bold);
-  margin-left:-5px;
-  line-height: 12px;
+  margin: 1px 0 0 -8px;
   text-align: center;
   vertical-align: top;
+  line-height: 12px;
 `
 export const StyledPlusSquareOutlined = styled(PlusSquareOutlined)`
-   width: 16px; 
+   width: 16px;
    path{
       stroke:var(--acx-accents-blue-50);
     }`
@@ -85,3 +83,60 @@ export const TimelineTitle = styled.span`
    line-height: 24px;
    font-weight: var(--acx-body-font-weight-bold);
    font-size: 12px;`
+
+export const PopoverWrapper = styled.div`
+  cursor: pointer;
+  .ant-popover-inner-content {
+    padding: 0px;
+  }
+`
+export const DetailsWrapper = styled.div`
+  height: 100%;
+  padding-top: 16px;
+  padding-left: var(--acx-content-vertical-space);
+  padding-bottom: 15px;
+`
+export const Header = styled.h3`
+  font-size: 10px;
+  line-height: 16px;
+  font-weight: 700;
+  text-align: left;
+  font-family: var(--acx-neutral-brand-font);
+  color: var(--acx-primary-black);
+  margin-bottom: 2px;
+`
+export const CloseRowWrapper = styled.div`
+  text-align: end;
+`
+export const CloseIconContainer = styled.span`
+  cursor: pointer;
+  position: absolute;
+  right: 11px;
+  top: 11px;
+`
+export const Body = styled.div`
+  display: flex;
+  align-items: stretch;
+`
+export const VerticalLine = styled.div`
+  width: 1px;
+  margin-right: 20px;
+  background: var(--acx-neutrals-30);
+`
+export const ListDetails = styled.div`
+  width: 250px;
+`
+const DetailsRow = styled.div`
+  white-space: nowrap;
+  font-weight: var(--acx-subtitle-6-font-weight);
+  font-size: var(--acx-subtitle-6-line-height);
+  font-family: var(--acx-neutral-brand-font);
+`
+export const DetailsRowLabel = styled(DetailsRow)`
+  color: var(--acx-neutrals-70);
+  font-style: normal;
+  padding-right: 10px;
+`
+export const DetailsRowValue = styled(DetailsRow)`
+  color: var(--acx-primary-black);
+`

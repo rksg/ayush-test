@@ -5,11 +5,11 @@ export class RadioParamsDual5G {
 
   inheritParamsLower5G?: boolean
 
-  radioParamsLower5G: RadioParams50G
+  radioParamsLower5G?: RadioParams50G
 
   inheritParamsUpper5G?: boolean
 
-  radioParamsUpper5G: RadioParams50G
+  radioParamsUpper5G?: RadioParams50G
 
   constructor () {
     this.enabled = true

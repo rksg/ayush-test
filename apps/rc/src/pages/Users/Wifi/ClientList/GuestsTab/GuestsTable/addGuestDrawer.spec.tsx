@@ -101,6 +101,7 @@ describe('Add Guest Drawer', () => {
     await userEvent.click(await screen.findByRole('checkbox', { name: /Print Guest pass/ }))
 
     fireEvent.click(await screen.findByTestId('saveBtn'))
+    fireEvent.click(await screen.findByText('Yes, create guest pass'))
     expect(asFragment()).toMatchSnapshot()
   })
   it('should created guest without expiration period correctly', async () => {

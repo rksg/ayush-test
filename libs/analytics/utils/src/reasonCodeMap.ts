@@ -25,6 +25,11 @@ const failureTitles = {
   ttc: defineMessage({ defaultMessage: 'Time To Connect' })
 }
 
+const failureCodeTextMap = {
+  ...readCodesIntoMap('text')(ccdFailureTypes as MapElement[]),
+  ttc: defineMessage({ defaultMessage: 'Time To Connect' })
+}
+
 const attemptTitles = {
   ...readCodesIntoMap('attemptsText')(ccdFailureTypes as MapElement[])
 }
@@ -58,3 +63,6 @@ export function mapCodeToAttempt (code: string, intl: IntlShape) {
   const reason = attemptTitles[code as keyof typeof attemptTitles] || clientEventDescription(code)
   return (typeof reason === 'string') ? reason : intl.$t(reason)
 }
+
+export const mapCodeToFailureText = (code: string, intl: IntlShape) =>
+  intl.$t(failureCodeTextMap[code as keyof typeof failureCodeTextMap])

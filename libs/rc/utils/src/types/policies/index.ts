@@ -1,3 +1,4 @@
+export * from './macRegistrarionList'
 export * from './rogueApDetectionPolicy'
 export * from './AAAPolicy'
 
@@ -7,7 +8,8 @@ export enum PolicyType {
   ROGUE_AP_DETECTION = 'Rogue AP Detection',
   SYSLOG = 'Syslog',
   AAA = 'AAA',
-  CLIENT_ISOLATION = 'Client Isolation'
+  CLIENT_ISOLATION = 'Client Isolation',
+  MAC_REGISTRATION_LIST = 'MAC Registration List'
 }
 
 export enum PolicyTechnology {
