@@ -39,7 +39,7 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
         key='analytics'
       />
       <Tabs.TabPane
-        disabled
+        disabled={!useIsSplitOn(Features.USERS)}
         tab={<Tooltip title={$t(notAvailableMsg)}>
           {$t({ defaultMessage: 'Clients ({clientsCount})' }, { clientsCount })}
         </Tooltip>}

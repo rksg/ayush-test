@@ -1,11 +1,11 @@
-import { useParams } from '@acx-ui/react-router-dom'
+import { ClientDualTable } from '@acx-ui/rc/components'
+import { useParams }       from '@acx-ui/react-router-dom'
 
-import { ClientsTab } from './ClientsTab'
-import { GuestsTab }  from './GuestsTab'
-import PageHeader     from './PageHeader'
+import { GuestsTab } from './GuestsTab'
+import PageHeader    from './PageHeader'
 
 const tabs = {
-  clients: ClientsTab,
+  clients: ClientDualTable,
   guests: GuestsTab
 }
 

@@ -6,7 +6,7 @@ import { Table, TableProps, Loader }                                          fr
 import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
 import { useGetClientListQuery }                                              from '@acx-ui/rc/services'
 import { ClientList, getDeviceTypeIcon, getOsTypeIcon, usePollingTableQuery } from '@acx-ui/rc/utils'
-import { TenantLink }                                                         from '@acx-ui/react-router-dom'
+import { TenantLink, useParams }                                              from '@acx-ui/react-router-dom'
 import { formatter }                                                          from '@acx-ui/utils'
 
 import { ClientHealthIcon } from '../ClientHealthIcon'
@@ -326,6 +326,7 @@ function getCols (intl: ReturnType<typeof useIntl>, releaseTag: boolean, showAll
 const defaultPayload = {
   searchString: '',
   searchTargetFields: ['clientMac','ipAddress','Username','hostname','ssid','clientVlan','osType'],
+  filters: {},
   fields: [
     'hostname','osType','healthCheckStatus','clientMac','ipAddress','Username','serialNumber','venueId','switchSerialNumber',
     'ssid','wifiCallingClient','sessStartTime','clientAnalytics','clientVlan','deviceTypeStr','modelName','totalTraffic',
@@ -337,10 +338,13 @@ const defaultPayload = {
 export const ConnectedClientsTable =
 (props: { showAllColumns?: boolean, searchString: string, setConnectedClientCount: (connectClientCount: number) => void }) => {
   const { $t } = useIntl()
+  const params = useParams()
   const { showAllColumns, searchString, setConnectedClientCount } = props
   const releaseTag = useIsSplitOn(Features.USERS)
 
   defaultPayload.searchString = searchString
+  defaultPayload.filters = params.venueId ? { venueId: [params.venueId] } :
+    params.serialNumber ? { serialNumber: [params.serialNumber] } : {}
 
   const ConnectedClientsTable = () => {
     const tableQuery = usePollingTableQuery({

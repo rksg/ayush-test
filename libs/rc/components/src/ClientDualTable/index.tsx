@@ -9,7 +9,7 @@ import { ConnectedClientsTable, HistoricalClientsTable } from '@acx-ui/rc/compon
 
 import { ClientLink, ClientSearchBar, SearchBarDiv, SearchCountDiv } from './styledComponents'
 
-export function ClientsTab () {
+export function ClientDualTable () {
   const intl = useIntl()
   const [searchValue, setSearchValue] = useState('')
   const [connectedClientCount, setConnectedClientCount] = useState<number>(0)

@@ -1,13 +1,13 @@
 import { Provider } from '@acx-ui/store'
 import { render }   from '@acx-ui/test-utils'
 
-import { ClientsTab } from './index'
+import { ClientDualTable } from './index'
 
-describe('ClientsTab', () => {
+describe('ClientDualTable', () => {
   it('should render list correctly', async () => {
     render(
       <Provider>
-        <ClientsTab />
+        <ClientDualTable />
       </Provider>)
   })
 })
