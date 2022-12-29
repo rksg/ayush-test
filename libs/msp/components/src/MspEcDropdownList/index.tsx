@@ -8,18 +8,6 @@ import { useMspCustomerListDropdownQuery, useGetUserProfileQuery } from '@acx-ui
 import { MspEc, TenantIdFromJwt, useTableQuery }                   from '@acx-ui/rc/utils'
 import { getBasePath, Link, useParams  }                           from '@acx-ui/react-router-dom'
 
-const defaultPayload = {
-  searchString: '',
-  filters: { tenantType: ['MSP_EC'] },
-  fields: [
-    'id',
-    'name',
-    'tenantType',
-    'status',
-    'streetAddress'
-  ]
-}
-
 export function MspEcDropdownList () {
   const { $t } = useIntl()
 
@@ -31,6 +19,17 @@ export function MspEcDropdownList () {
   const { data } = useGetUserProfileQuery({ params })
   // const { data } = useGetUserProfileQuery({ params: { tenantId: TenantIdFromJwt() } })
 
+  const defaultPayload = {
+    searchString: '',
+    filters: { tenantType: ['MSP_EC'] },
+    fields: [
+      'id',
+      'name',
+      'tenantType',
+      'status',
+      'streetAddress'
+    ]
+  }
   const tableQuery = useTableQuery({
     useQuery: useMspCustomerListDropdownQuery,
     apiParams: { mspTenantId: TenantIdFromJwt() },
@@ -55,12 +54,12 @@ export function MspEcDropdownList () {
       title: $t({ defaultMessage: 'Customers' }),
       dataIndex: 'name',
       key: 'name',
-      sorter: true,
       defaultSortOrder: 'ascend',
-      onCell: () => {
+      onCell: (row) => {
         return {
           onClick: () => {
             setSearchString('')
+            setCustomerName(row.name)
             setVisible(false)
           }
         }
@@ -75,15 +74,13 @@ export function MspEcDropdownList () {
     {
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'status',
-      key: 'status',
-      sorter: true
+      key: 'status'
     },
     {
       title: $t({ defaultMessage: 'Tenant Id' }),
       dataIndex: 'id',
       key: 'id',
-      show: false,
-      sorter: true
+      show: false
     }
   ]
 
@@ -95,22 +92,22 @@ export function MspEcDropdownList () {
       columns={customerColumns}
       dataSource={tableQuery.data?.data}
       pagination={tableQuery.pagination}
+      onChange={tableQuery.handleTableChange}
       rowKey='id'
     />
   </Loader>
 
   return (
     <>
-      <label style={{ fontSize: '16px', color: 'var(--acx-primary-white)' }}>{customerName}</label>
-      <LayoutUI.Icon style={{ marginLeft: '-10px', marginRight: '10px' }}
-        children={<ArrowExpand
-          onClick={()=>{
-            setVisible(true)
-          }}/>}
-      />
+      <div onClick={()=>setVisible(true)}>
+        <label>{customerName}</label>
+        <LayoutUI.Icon style={{ marginLeft: '2px', marginRight: '12px' }}
+          children={<ArrowExpand/>}
+        />
+      </div>
       {visible && <Drawer
-        width={450}
-        title={$t({ defaultMessage: 'Select Customer' })}
+        width={360}
+        title={$t({ defaultMessage: 'Change Customer' })}
         visible={visible}
         onClose={onClose}
         children={content}
