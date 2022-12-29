@@ -56,11 +56,9 @@ describe('AAAForm', () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', type: 'wifi',
       policyId: 'policy-id' }
 
-    const { asFragment } = render(<Provider><AAAForm edit={false}/></Provider>, {
+    render(<Provider><AAAForm edit={false}/></Provider>, {
       route: { params }
     })
-
-    expect(asFragment()).toMatchSnapshot()
 
     //step 1 setting form
     await userEvent.type(await screen.findByLabelText('Profile Name'),
@@ -104,11 +102,10 @@ describe('AAAForm', () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', type: 'wifi',
       policyId: 'policy-id' }
 
-    const { asFragment } = render(<Provider><AAAForm edit={true}/></Provider>, {
+    render(<Provider><AAAForm edit={true}/></Provider>, {
       route: { params }
     })
 
-    expect(asFragment()).toMatchSnapshot()
     await userEvent.type(await screen.findByLabelText('Profile Name'),
       'test1')
     await userEvent.type(await screen.findByLabelText('Shared Secret'),
