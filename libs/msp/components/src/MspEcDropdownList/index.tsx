@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
 
-import { Select } from 'antd'
+import { useIntl } from 'react-intl'
 
-import { useMspCustomerListDropdownQuery }       from '@acx-ui/rc/services'
-import { MspEc, TenantIdFromJwt, useTableQuery } from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink }            from '@acx-ui/react-router-dom'
-
-const defaultArray: MspEc[] = []
+import { Drawer, LayoutUI, Loader, SearchBar, Table, TableProps }  from '@acx-ui/components'
+import { ArrowExpand }                                             from '@acx-ui/icons'
+import { useMspCustomerListDropdownQuery, useGetUserProfileQuery } from '@acx-ui/rc/services'
+import { MspEc, TenantIdFromJwt, useTableQuery }                   from '@acx-ui/rc/utils'
+import { getBasePath, Link, useParams  }                           from '@acx-ui/react-router-dom'
 
 const defaultPayload = {
   searchString: '',
@@ -21,12 +21,15 @@ const defaultPayload = {
 }
 
 export function MspEcDropdownList () {
-  const navigate = useNavigate()
-  const basePath = useTenantLink('/dashboard/')
+  const { $t } = useIntl()
 
-  const [tableData, setTableData] = useState(defaultArray)
-  const [customer, setCustomer] = useState('')
+  const [customerName, setCustomerName] = useState('')
   const [searchString, setSearchString] = useState('')
+  const [visible, setVisible] = useState(false)
+
+  const params = useParams()
+  const { data } = useGetUserProfileQuery({ params })
+  // const { data } = useGetUserProfileQuery({ params: { tenantId: TenantIdFromJwt() } })
 
   const tableQuery = useTableQuery({
     useQuery: useMspCustomerListDropdownQuery,
@@ -35,41 +38,83 @@ export function MspEcDropdownList () {
   })
 
   useEffect(()=>{
-    if (tableQuery.data?.data) {
-      setTableData(tableQuery.data.data)
+    if (data?.companyName) {
+      setCustomerName(data?.companyName)
     }
+
     tableQuery.setPayload({ ...tableQuery.payload, searchString: searchString })
   }, [tableQuery.data, searchString])
 
-  const onChange = (value: string) => {
-    // const tenantId = value
-    setCustomer(value)
-    navigate({
-      ...basePath,
-      pathname: `${basePath.pathname}`
-    })
-  }
-  const onSearch = (value: string) => {
-    // const tenantId = value
-    if (value.length >= 2) {
-      setSearchString( value )
-    }
+  const onClose = () => {
+    setSearchString('')
+    setVisible(false)
   }
 
-  return (
-    <Select style={{ width: '250px' }}
-      showSearch
-      // placeholder='Select a customer'
-      optionFilterProp='children'
-      value={customer}
-      onChange={onChange}
-      onSearch={onSearch}
-      filterOption={(input, option) =>
-        (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+  const customerColumns: TableProps<MspEc>['columns'] = [
+    {
+      title: $t({ defaultMessage: 'Customers' }),
+      dataIndex: 'name',
+      key: 'name',
+      sorter: true,
+      defaultSortOrder: 'ascend',
+      onCell: () => {
+        return {
+          onClick: () => {
+            setSearchString('')
+            setVisible(false)
+          }
+        }
+      },
+      render: function (data, row) {
+        const to = `${getBasePath()}/t/${row.id}`
+        return (
+          <Link to={to}>{data}</Link>
+        )
       }
-      options={tableData.map(( item ) => {
-        return { value: item.name , label: item.name }
-      })}
-    ></Select>
+    },
+    {
+      title: $t({ defaultMessage: 'Status' }),
+      dataIndex: 'status',
+      key: 'status',
+      sorter: true
+    },
+    {
+      title: $t({ defaultMessage: 'Tenant Id' }),
+      dataIndex: 'id',
+      key: 'id',
+      show: false,
+      sorter: true
+    }
+  ]
+
+  const content =
+  <Loader states={[tableQuery]}>
+    <SearchBar onChange={setSearchString}/>
+
+    <Table
+      columns={customerColumns}
+      dataSource={tableQuery.data?.data}
+      pagination={tableQuery.pagination}
+      rowKey='id'
+    />
+  </Loader>
+
+  return (
+    <>
+      <label style={{ fontSize: '16px', color: 'var(--acx-primary-white)' }}>{customerName}</label>
+      <LayoutUI.Icon style={{ marginLeft: '-10px', marginRight: '10px' }}
+        children={<ArrowExpand
+          onClick={()=>{
+            setVisible(true)
+          }}/>}
+      />
+      {visible && <Drawer
+        width={450}
+        title={$t({ defaultMessage: 'Select Customer' })}
+        visible={visible}
+        onClose={onClose}
+        children={content}
+      />}
+    </>
   )
 }
