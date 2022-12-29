@@ -24,10 +24,11 @@ import { EyeSlashSolid as UIEyeSlashSolid,
 }   from '@acx-ui/icons'
 
 export const popoverClassName = 'portal-demo-popover'
+export const modalClassName = 'portal-modal-preview'
 
 export const PopoverStyle = createGlobalStyle`
   .${popoverClassName} {
-    z-index: 0;
+    z-index: 7;
     padding-top: 0px;
     .ant-popover-arrow { display: none; }
     .ant-popover-inner {
@@ -35,6 +36,35 @@ export const PopoverStyle = createGlobalStyle`
         padding: 10px 10px;
       }
     }
+  }
+`
+export const ModalStyle = createGlobalStyle`
+  .ant-modal.ant-modal-confirm.${modalClassName} {
+    top: 0px;
+    height:100%;
+    .ant-modal-confirm-btns{
+      margin-top: 0px;
+    }
+    .ant-modal-content{
+      height:100%;
+      .ant-modal-body{
+        height:100%;
+        .ant-modal-confirm-body-wrapper{
+          height: 100%;
+          .ant-modal-confirm-body{
+            height:100%;
+            .ant-modal-confirm-content{
+              height:100%;
+              margin-top: 0px;
+              .ant-layout{
+                margin-bottom: 0px;
+              }
+            }
+          }
+        }
+      }
+    }
+
   }
 `
 
@@ -78,16 +108,15 @@ const buttonStyle= css`
 `
 export const Button = styled(UIButton)`
   ${buttonStyle}
-  margin-right:10px;
+  padding-top:0px;
 `
 export const PopoverButton = styled(UIButton)`
   ${buttonStyle}
   padding-left:0px;
   background-color: var(--acx-primary-white);
 `
-export const LayoutContent = styled(AntLayout)`
+export const LayoutContent = styled(AntLayout)<{ $isPreview: boolean | undefined }>`
   border: 1px solid var(--acx-neutrals-50);
-  width: 95%;
   background-color: var(--acx-primary-black) !important;
   .ant-layout{
     background-color: var(--acx-primary-black);
@@ -95,8 +124,8 @@ export const LayoutContent = styled(AntLayout)`
   background-position: center;
   background-repeat: no-repeat;
   align-items: center;
-  min-width:900px;
-  height:auto;
+  ${props => props.$isPreview ? css`
+  height:100%;`: css`height: 608px;`}
   margin-bottom:10px;
 `
 export const LayoutView = styled(AntLayout)<{ $type: string | null }>`
@@ -110,10 +139,11 @@ export const LayoutView = styled(AntLayout)<{ $type: string | null }>`
   max-width:600px;
   `}
   align-items:center;
-  background-color: var(--acx-primary-white);
-  background-position: center;
-  background-repeat: no-repeat;
-  height:auto;
+  background-color: var(--acx-primary-white) !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  height:100%;
+  overflow-y:auto;
 `
 export const LayoutViewContent = styled(AntLayout)<{ isbg: string | null }>`
   ${props=>props.isbg === 'true'?css`opacity:0.8;`:css`opacity:1;`}
@@ -124,8 +154,6 @@ export const LayoutViewContent = styled(AntLayout)<{ isbg: string | null }>`
   background-color: var(--acx-primary-white) !important;
   background-position: center;
   background-repeat: no-repeat;
-  height:auto;
-  min-height:250px;
   padding-bottom:10px;
 `
 export const Label = styled.label`
@@ -137,12 +165,10 @@ export const Select = styled(AntSelect)`
 `
 export const LayoutHeader = styled.div`
   background-color: var(--acx-primary-white);
-  width: 95%;
   height: 50px;
   padding: 10px 0 0 10px;
   border: 1px solid var(--acx-neutrals-50);
   border-bottom:0px;
-  min-width:900px;
 `
 
 export const FieldExtraTooltip = styled.div`
@@ -203,7 +229,7 @@ export const FieldInputSmall = styled.input`
 export const PortalButton = styled.button`
   margin-top:20px;
   margin-bottom:10px;
-  width:223px;
+  width:275px;
   height:32px;
   background-color:var(--acx-accents-orange-50);
   color:var(--acx-primary-white);
@@ -256,6 +282,8 @@ export const ViewSectionText = styled.div`
   padding-top: 5px;
   font-size: 11px;
   color:var(--acx-neutrals-60);
+  text-align:left;
+  margin-left:70px;
 `
 export const ViewSectionTitle = styled.div`
   font-size:18px;

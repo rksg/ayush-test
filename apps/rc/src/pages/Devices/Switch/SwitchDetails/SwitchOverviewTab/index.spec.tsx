@@ -1,11 +1,11 @@
 import { rest } from 'msw'
 
 import { switchApi }                             from '@acx-ui/rc/services'
-import { SwitchUrlsInfo }                        from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, SwitchUrlsInfo }        from '@acx-ui/rc/utils'
 import { Provider, store }                       from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
 
-import { switchDetailData } from './__tests__/fixtures'
+import { switchDetailData, venueData } from '../__tests__/fixtures'
 
 import { SwitchOverviewTab } from '.'
 
@@ -15,6 +15,13 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
+jest.mock('@acx-ui/rc/components', () => ({
+  SwitchInfoWidget: () =>
+    <div data-testid={'rc-SwitchInfoWidget'} title='SwitchInfoWidget' />,
+  SwitchPortTable: () =>
+    <div data-testid={'rc-SwitchPortTable'} title='SwitchPortTable' />
+}))
+
 describe('SwitchOverviewTab', () => {
   beforeEach(() => {
     store.dispatch(switchApi.util.resetApiState())
@@ -22,6 +29,14 @@ describe('SwitchOverviewTab', () => {
       rest.get(
         SwitchUrlsInfo.getSwitchDetailHeader.url,
         (_, res, ctx) => res(ctx.json(switchDetailData))
+      ),
+      rest.get(
+        CommonUrlsInfo.getVenue.url,
+        (_, res, ctx) => res(ctx.json(venueData))
+      ),
+      rest.post(
+        SwitchUrlsInfo.getMemberList.url,
+        (_, res, ctx) => res(ctx.json([]))
       )
     )
   })
@@ -39,7 +54,7 @@ describe('SwitchOverviewTab', () => {
         path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab'
       }
     })
-
+    expect(await screen.findByTestId('rc-SwitchInfoWidget')).toBeVisible()
     expect(screen.getAllByRole('tab')).toHaveLength(5)
     fireEvent.click(await screen.findByRole('tab', { name: 'Ports' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({

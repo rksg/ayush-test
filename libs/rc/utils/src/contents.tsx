@@ -4,6 +4,8 @@ import {
   DHCPConfigTypeEnum
 } from './constants'
 
+export const noDataDisplay = '--' as const
+
 export enum PskWlanSecurityEnum {
   WPA2Personal = 'WPA2 (Recommended)',
   WPA3 = 'WPA3',
