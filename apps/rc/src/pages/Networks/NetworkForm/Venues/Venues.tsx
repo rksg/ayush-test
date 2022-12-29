@@ -17,7 +17,7 @@ import {
   transformRadios,
   transformScheduling
 } from '@acx-ui/rc/components'
-import { useNetworkVenueListQuery, useUpdateNetworkVenueMutation } from '@acx-ui/rc/services'
+import { useNetworkVenueListQuery } from '@acx-ui/rc/services'
 import {
   aggregateApGroupPayload,
   NetworkSaveData,
@@ -98,7 +98,6 @@ export function Venues () {
     apiParams: { networkId: getNetworkId() },
     defaultPayload
   })
-  const [updateNetworkVenue] = useUpdateNetworkVenueMutation()
   const networkQuery = useGetNetwork()
 
   const [tableData, setTableData] = useState(defaultArray)
@@ -406,7 +405,7 @@ export function Venues () {
   }
 
   const handleScheduleFormFinish = (name: string, info: FormFinishInfo) => {
-    let data = _.cloneDeep(scheduleModalState.networkVenue)
+    let scheduleData = _.cloneDeep(scheduleModalState.networkVenue)
     // const schdule = info.values.map
 
     let tmpScheduleList: schedule = { type: info.values?.scheduler.type }
@@ -429,15 +428,34 @@ export function Venues () {
       }
     }
 
-    const payload = _.assign(data, { scheduler: tmpScheduleList })
+    const payload = _.assign(scheduleData, { scheduler: tmpScheduleList })
 
-    updateNetworkVenue({ params: {
-      tenantId: params.tenantId,
-      networkVenueId: payload.id
-    }, payload: payload }).then(()=>{
-      setScheduleModalState({
-        visible: false
-      })
+    let selectedVenues = data?.venues?.map((row) => {
+      if(row.venueId ===payload.venueId) {
+        return { ...row, ...payload }
+      } else {return row}
+    })
+
+    if(selectedVenues) {
+      setData && setData({ ...data, venues: selectedVenues })
+      form.setFieldsValue({ venues: selectedVenues })
+    }
+
+    let currentTableData: Venue[] = []
+    const currentIndex = tableData.findIndex(item => item.id === payload.venueId)
+    tableData.forEach((item, index)=>{
+      if (index === currentIndex) {
+        currentTableData.push(
+          { ...item, deepVenue: payload }
+        )
+      } else {
+        currentTableData.push(item)
+      }
+    })
+
+    setTableData(currentTableData)
+    setScheduleModalState({
+      visible: false
     })
   }
 
