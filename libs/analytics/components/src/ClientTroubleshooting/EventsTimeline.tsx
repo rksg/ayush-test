@@ -192,13 +192,13 @@ export function TimeLine (props : TimeLineProps){
   const { startDate, endDate } = useDateFilter()
   const chartBoundary = [moment(startDate).valueOf() , moment(endDate).valueOf() ]
   return (
-    <Row gutter={[16, 16]} style={{ flex: 1 }}>
-      <Col span={6}>
+    <Row gutter={[16, 16]} wrap={false} >
+      <Col flex='200px'>
         <Row gutter={[16, 16]} style={{ rowGap: '4px' }}>
           {ClientTroubleShootingConfig.timeLine.map((config, index) => (
             <React.Fragment key={index}>
               <Col
-                span={2}>
+                span={3}>
                 {expandObj[config?.value as keyof TimelineData] ? (
                   <UI.StyledMinusSquareOutlined style={{ cursor: 'pointer' }}
                     onClick={() =>
@@ -219,7 +219,7 @@ export function TimeLine (props : TimeLineProps){
               </Col>
 
               <Col
-                span={18}
+                span={17}
                 style={
                   expandObj[config?.value as keyof TimelineData]
                     ? {}
@@ -237,8 +237,7 @@ export function TimeLine (props : TimeLineProps){
               {expandObj[config?.value as keyof TimelineData] &&
                 config?.subtitle?.map((subtitle) => (
                   <React.Fragment key={index}>
-                    <Col span={2} />
-                    <Col span={18}>
+                    <Col span={17} offset={3}>
                       <UI.TimelineSubContent>
                         {$t(subtitle.title)}
                       </UI.TimelineSubContent>
@@ -258,7 +257,7 @@ export function TimeLine (props : TimeLineProps){
           ))}
         </Row>
       </Col>
-      <Col span={18}>
+      <Col flex='auto'>
         <Row gutter={[16, 16]} style={{ rowGap: 0 }}>
           {ClientTroubleShootingConfig.timeLine.map((config, index) => (
             <Col span={24} key={index}>
