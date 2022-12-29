@@ -1,7 +1,7 @@
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
 import {
-  MdnsProxyForwardingRuleTypeEnum,
+  MdnsProxyForwardingRuleTypeEnum, QosPriorityEnum,
   ServiceAdminState,
   ServiceStatus,
   ServiceTechnology,
@@ -73,4 +73,12 @@ export const mdnsProxyForwardingRuleTypeLabelMapping: Record<MdnsProxyForwarding
   [MdnsProxyForwardingRuleTypeEnum.WWW_HTTP]: defineMessage({ defaultMessage: 'WWW HTTP' }),
   [MdnsProxyForwardingRuleTypeEnum.WWW_HTTPS]: defineMessage({ defaultMessage: 'WWW HTTPs' }),
   [MdnsProxyForwardingRuleTypeEnum.XGRID]: defineMessage({ defaultMessage: 'Xgrid' })
+}
+
+// eslint-disable-next-line max-len
+export const wifiCallingQosPriorityLabelMapping: Record<QosPriorityEnum, MessageDescriptor> = {
+  [QosPriorityEnum.WIFICALLING_PRI_VOICE]: defineMessage({ defaultMessage: 'Voice' }),
+  [QosPriorityEnum.WIFICALLING_PRI_VIDEO]: defineMessage({ defaultMessage: 'Video' }),
+  [QosPriorityEnum.WIFICALLING_PRI_BE]: defineMessage({ defaultMessage: 'Best Effort' }),
+  [QosPriorityEnum.WIFICALLING_PRI_BG]: defineMessage({ defaultMessage: 'Background' })
 }

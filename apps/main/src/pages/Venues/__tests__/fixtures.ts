@@ -37,6 +37,7 @@ export const venuelist = {
       status: '1_InSetupPhase',
       switchClients: 2,
       switches: 1,
+      edges: 3,
       clients: 1
     }
   ]
