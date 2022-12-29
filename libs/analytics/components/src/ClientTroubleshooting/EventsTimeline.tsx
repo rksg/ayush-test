@@ -7,13 +7,13 @@ import moment                                               from 'moment-timezon
 import { renderToString }                                   from 'react-dom/server'
 import { useIntl }                                          from 'react-intl'
 
-import { useDateFilter } from '@acx-ui/utils'
+import { getIntl, useDateFilter } from '@acx-ui/utils'
 
 
-import { ClientTroubleShootingConfig, SUCCESS, FAILURE, SLOW, DISCONNECT, transformEvents, TYPES, formatEventDesc, DisplayEvent } from './config'
-import { ClientInfoData,ConnectionEvent }                                                                                         from './services'
-import * as UI                                                                                                                    from './styledComponents'
-import { TimelineChart }                                                                                                          from './TimelineChart'
+import { ClientTroubleShootingConfig, SUCCESS, FAILURE, SLOW, DISCONNECT, transformEvents, TYPES, formatEventDesc, DisplayEvent, transformConnectionQualities, LabelledQuality } from './config'
+import { ClientInfoData,ConnectionEvent }                                                                                                                                        from './services'
+import * as UI                                                                                                                                                                   from './styledComponents'
+import { TimelineChart }                                                                                                                                                         from './TimelineChart'
 
 import { Filters } from '.'
 
@@ -99,7 +99,8 @@ const getTimelineData = (events: Event[]) =>
 const getChartData = (
   type: keyof TimelineData,
   events: Event[],
-  isExpanded: boolean
+  isExpanded: boolean,
+  qualities?: LabelledQuality[]
 ) => {
   if (isExpanded) {
     if (type === TYPES.CONNECTION_EVENTS) {
@@ -116,7 +117,7 @@ const getChartData = (
       ] as Event[]
     }
     if (type === TYPES.CONNECTION_QUALITY) {
-      return []
+      return qualities ?? []
     }
     if (type === TYPES.NETWORK_INCIDENTS) {
       return []
@@ -133,7 +134,7 @@ const getChartData = (
       ] as Event[]
     }
     if (type === TYPES.CONNECTION_QUALITY) {
-      return []
+      return qualities ?? []
     }
     if (type === TYPES.NETWORK_INCIDENTS) {
       return []
@@ -147,10 +148,11 @@ const getChartData = (
 
 export function TimeLine (props : TimeLineProps){
   const { $t } = useIntl()
-  const intl = useIntl()
+  const intl = getIntl()
   const { data, filters } = props
   const types = filters ? filters.type ?? [] : []
   const radios = filters ? filters.radio ?? [] : []
+  const qualties = transformConnectionQualities(data?.connectionQualities)
   const events = transformEvents(
     data?.connectionEvents as ConnectionEvent[],
     types,
@@ -228,11 +230,13 @@ export function TimeLine (props : TimeLineProps){
                 <UI.TimelineTitle>{$t(config.title)}</UI.TimelineTitle>
               </Col>
               <Col style={{ lineHeight: '25px' }} span={4}>
-                <UI.TimelineCount>
-                  {TimelineData[config.value as keyof TimelineData]?.[
-                    'allEvents'
-                  ].length ?? 0}
-                </UI.TimelineCount>
+                { (config.showCount)
+                  ? <UI.TimelineCount>
+                    {TimelineData[config.value as keyof TimelineData]?.[
+                      'allEvents'
+                    ].length ?? 0}
+                  </UI.TimelineCount>
+                  : null}
               </Col>
               {expandObj[config?.value as keyof TimelineData] &&
                 config?.subtitle?.map((subtitle, index) => (
@@ -246,11 +250,13 @@ export function TimeLine (props : TimeLineProps){
                     <Col
                       span={4}
                       style={subtitle.isLast ? { marginBottom: 40 } : {}}>
-                      <UI.TimelineCount>
-                        {TimelineData?.[config.value as keyof TimelineData]?.[
+                      {(config.showCount)
+                        ? <UI.TimelineCount>
+                          {TimelineData?.[config.value as keyof TimelineData]?.[
                           subtitle.value as keyof EventCategoryMap
-                        ].length ?? 0}
-                      </UI.TimelineCount>
+                          ].length ?? 0}
+                        </UI.TimelineCount>
+                        : null}
                     </Col>
                   </React.Fragment>
                 ))}
@@ -268,7 +274,8 @@ export function TimeLine (props : TimeLineProps){
                   getChartData(
                     config?.value as keyof TimelineData,
                     events,
-                    expandObj[config?.value as keyof TimelineData]
+                    expandObj[config?.value as keyof TimelineData],
+                    !Array.isArray(qualties) ? qualties.all : []
                   )
                 }
                 showResetZoom={config?.showResetZoom}
@@ -280,7 +287,9 @@ export function TimeLine (props : TimeLineProps){
                 }
                 hasXaxisLabel={config?.hasXaxisLabel}
                 chartRef={connectChart}
-                tooltipFormatter={tooltipFormatter}
+                tooltipFormatter={(config.value !== 'connectionQuality')
+                  ? tooltipFormatter
+                  : () => 'test'}
                 // caputuring scatterplot dot click to open popover
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 onDotClick={(params) => {}}

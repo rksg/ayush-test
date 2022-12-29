@@ -199,6 +199,7 @@ export const ClientTroubleShootingConfig = {
     {
       title: defineMessage({ defaultMessage: 'Connection Events' }),
       value: TYPES.CONNECTION_EVENTS,
+      showCount: true,
       chartMapping: [
         { key: 'all', label: 'all', chartType: 'scatter' },
         { key: 'success', label: 'success', chartType: 'scatter' },
@@ -230,6 +231,7 @@ export const ClientTroubleShootingConfig = {
     {
       title: defineMessage({ defaultMessage: 'Roaming' }),
       value: TYPES.ROAMING,
+      showCount: true,
       chartMapping: [
         { key: 'all', label: 'all', chartType: 'scatter' },
         { key: 'network1_5GHz', label: 'network1_5GHz', chartType: 'bar' }
@@ -245,6 +247,7 @@ export const ClientTroubleShootingConfig = {
     {
       title: defineMessage({ defaultMessage: 'Connection Quality' }),
       value: TYPES.CONNECTION_QUALITY,
+      showCount: false,
       chartMapping: [
         { key: 'all', label: 'all', chartType: 'bar' },
         { key: 'rss', label: 'rss', chartType: 'bar' },
@@ -275,6 +278,7 @@ export const ClientTroubleShootingConfig = {
     {
       title: defineMessage({ defaultMessage: 'Network Incidents' }),
       value: TYPES.NETWORK_INCIDENTS,
+      showCount: true,
       hasXaxisLabel: true,
       chartMapping: [
         { key: 'all', label: 'all', chartType: 'bar' },
@@ -308,6 +312,19 @@ export const connectionQualityLabels = {
   avgTxMCS: { label: 'Avg MCS (Downlink)', formatter: 'networkSpeedFormat' }
 }
 
+type Quality = 'bad' | 'average' | 'good' | null | undefined
+
+export type LabelledQuality = {
+  rss: Quality,
+  snr: Quality,
+  throughput: Quality,
+  avgTxMCS: Quality,
+  all: Quality,
+  seriesKey: 'rss' | 'snr' | 'throughput' | 'avgTxMCS' | 'all',
+  start: string,
+  end: string,
+}
+
 export const transformConnectionQualities = (connectionQualities?: ConnectionQuality[]) => {
   if (typeof connectionQualities === 'undefined') {
     return []
@@ -329,10 +346,14 @@ export const transformConnectionQualities = (connectionQualities?: ConnectionQua
     }})
 
   return {
-    all: mappedQuality,
-    rss: mappedQuality.filter(val => val.rss),
-    snr: mappedQuality.filter(val => val.snr),
-    throughput: mappedQuality.filter(val => val.throughput),
+    all: mappedQuality.map(val => ({ ...val, seriesKey: 'all' })) as LabelledQuality[],
+    rss: mappedQuality.filter(val => val.rss)
+      .map(val => ({ ...val, seriesKey: 'rss' })) as LabelledQuality[],
+    snr: mappedQuality.filter(val => val.snr)
+      .map(val => ({ ...val, seriesKey: 'snr' })) as LabelledQuality[],
+    throughput: mappedQuality.filter(val => val.throughput)
+      .map(val => ({ ...val, seriesKey: 'throughput' }))as LabelledQuality[],
     avgTxMCS: mappedQuality.filter(val => val.avgTxMCS)
+      .map(val => ({ ...val, seriesKey: 'avgTxMCS' })) as LabelledQuality[]
   }
 }

@@ -18,6 +18,7 @@ import {
 } from 'echarts/types/dist/shared'
 import { useIntl } from 'react-intl'
 
+import { getQualityColor }   from '@acx-ui/analytics/utils'
 import { cssStr, cssNumber } from '@acx-ui/components'
 import {
   xAxisOptions,
@@ -26,6 +27,8 @@ import {
   dateAxisFormatter
 } from '@acx-ui/components'
 import type { TimeStampRange } from '@acx-ui/types'
+
+import { LabelledQuality } from './config'
 
 import type { ECharts, EChartsOption, SeriesOption } from 'echarts'
 import type { EChartsReactProps }                    from 'echarts-for-react'
@@ -60,7 +63,7 @@ type OnDatazoomEvent = {
 
 export interface TimelineChartProps
   extends Omit<EChartsReactProps, 'option' | 'opts'> {
-  data: Event[];
+  data: (Event | LabelledQuality)[]; // https://github.com/microsoft/TypeScript/issues/44373
   chartBoundary: number[];
   selectedData?: number; // id
   onDotClick?: (params: unknown) => void;
@@ -324,10 +327,15 @@ export function TimelineChart ({
               )
               .map((record) => [record.start, record.seriesKey, record]),
             itemStyle: {
-              color: function (params: { data: Event[] }) {
+              color: function (params: { data: (Event | LabelledQuality)[] }) {
                 const eventObj = Array.isArray(params.data)
                   ? params.data[2]
                   : ''
+
+                if (typeof eventObj !== 'string' && (eventObj as LabelledQuality).all) {
+                  return cssStr(getQualityColor((eventObj as LabelledQuality).all ?? 'unknown'))
+                }
+
                 const { category } = eventObj as unknown as Event
                 return cssStr(
                   eventColorByCategory[
