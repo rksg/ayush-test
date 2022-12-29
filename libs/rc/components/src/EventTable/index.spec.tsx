@@ -2,9 +2,10 @@ import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
 
+import { useIsSplitOn }                                            from '@acx-ui/feature-toggle'
 import { Event, EventBase, EventMeta, RequestPayload, TableQuery } from '@acx-ui/rc/utils'
 import { Provider }                                                from '@acx-ui/store'
-import { findTBody, render, screen, within }                       from '@acx-ui/test-utils'
+import { findTBody, logRoles, render, screen, within }             from '@acx-ui/test-utils'
 
 import { events, eventsMeta } from './__tests__/fixtures'
 
@@ -28,6 +29,10 @@ describe('EventTable', () => {
     pagination: { current: 1, page: 1, pageSize: 10, total: 0 },
     handleTableChange: jest.fn()
   } as unknown as TableQuery<Event, RequestPayload<unknown>, unknown>
+
+  beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  })
 
   it('should render activity list', async () => {
     render(
@@ -106,5 +111,30 @@ describe('EventTable', () => {
 
     expect(await within(cell).findByText(eventsMeta[0].apName!)).toBeVisible()
     expect(await within(cell).findByTestId('tooltip-content')).toHaveTextContent('Not available')
+  })
+
+  it('render value as-is for entity not enabled', async () => {
+    tableQuery.data!.data = [{
+      ...events[3] as EventBase,
+      ...eventsMeta[3] as EventMeta
+    }]
+
+    const name = eventsMeta[3].switchName
+    const { rerender } = render(
+      <Provider><EventTable tableQuery={tableQuery} /></Provider>,
+      { route: { params } }
+    )
+
+    let elements = await screen.findAllByText(name)
+    expect(elements).toHaveLength(2)
+    elements.forEach(element => expect(element.nodeName).toBe('A'))
+
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+
+    rerender(<Provider><EventTable tableQuery={tableQuery} /></Provider>)
+
+    elements = await screen.findAllByText(name)
+    expect(elements).toHaveLength(1)
+    elements.forEach(element => expect(element.nodeName).not.toBe('A'))
   })
 })

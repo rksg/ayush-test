@@ -4,6 +4,7 @@ import _                                            from 'lodash'
 import { defineMessage, useIntl, FormattedMessage } from 'react-intl'
 
 import { Button, Loader, Table, TableProps, Tooltip }        from '@acx-ui/components'
+import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
 import { Event, RequestPayload, TableQuery, replaceStrings } from '@acx-ui/rc/utils'
 import { TenantLink, generatePath }                          from '@acx-ui/react-router-dom'
 import { formatter }                                         from '@acx-ui/utils'
@@ -23,35 +24,39 @@ interface EventTableProps {
 type EntityType = typeof entityTypes[number]
 type EntityExistsKey = `is${Capitalize<EntityType>}Exists`
 const entityTypes = ['ap', 'client', 'network', 'switch', 'venue'] as const
-const pathSpecs: Record<
-  typeof entityTypes[number],
-  { path: string, params: Array<keyof Event> }
-> = {
-  ap: {
-    path: 'devices/wifi/:serialNumber/details/overview',
-    params: ['serialNumber']
-  },
-  client: {
-    path: 'users/wifi/clients/:clientMac/details/overview',
-    params: ['clientMac']
-  },
-  network: {
-    path: 'networks/:networkId/network-details/aps',
-    params: ['networkId']
-  },
-  switch: {
-    path: 'devices/switch/:switchMac/:serialNumber/details/overview',
-    params: ['switchMac', 'serialNumber']
-  },
-  venue: {
-    path: 'venues/:venueId/venue-details/overview',
-    params: ['venueId']
-  }
-}
 
-function linkEntity (key: keyof Event, data: Event) {
-  const [entity] = _.kebabCase(key).split('-') as [EntityType]
-  const name = String(data[key])
+function EntityLink ({ entityKey, data }: { entityKey: keyof Event, data: Event }) {
+  const pathSpecs: Record<
+    typeof entityTypes[number],
+    { path: string, params: Array<keyof Event>, disabled?: boolean }
+  > = {
+    ap: {
+      path: 'devices/wifi/:serialNumber/details/overview',
+      params: ['serialNumber']
+    },
+    client: {
+      path: 'users/wifi/clients/:clientMac/details/overview',
+      params: ['clientMac']
+    },
+    network: {
+      // TODO:
+      // change to overview when overview page ready
+      path: 'networks/:networkId/network-details/aps',
+      params: ['networkId']
+    },
+    switch: {
+      path: 'devices/switch/:switchMac/:serialNumber/details/overview',
+      params: ['switchMac', 'serialNumber'],
+      disabled: !useIsSplitOn(Features.DEVICES)
+    },
+    venue: {
+      path: 'venues/:venueId/venue-details/overview',
+      params: ['venueId']
+    }
+  }
+
+  const [entity] = _.kebabCase(entityKey).split('-') as [EntityType]
+  const name = <>{String(data[entityKey])}</>
 
   if (!entityTypes.includes(entity)) return name
 
@@ -65,6 +70,8 @@ function linkEntity (key: keyof Event, data: Event) {
 
   const spec = pathSpecs[entity]
   const params = spec.params.map(key => [key, String(data[key])])
+
+  if (spec.disabled) return name
 
   return <TenantLink
     to={generatePath(spec.path, Object.fromEntries(params))}
@@ -80,8 +87,8 @@ const getSource = (data: Event) => {
     VENUE: 'venueName',
     SWITCH: 'switchName'
   } as const
-  const key = sourceMapping[data.entity_type as keyof typeof sourceMapping]
-  return linkEntity(key, data)
+  const entityKey = sourceMapping[data.entity_type as keyof typeof sourceMapping]
+  return <EntityLink {...{ entityKey, data }} />
 }
 
 const getDescription = (data: Event) => {
@@ -94,7 +101,10 @@ const getDescription = (data: Event) => {
     // escape ' by replacing with '' as it is special character of formatjs
     defaultMessage={template.replaceAll("'", "''")}
     values={{
-      entity: (chunks) => linkEntity(String(chunks[0]) as keyof Event, data)
+      entity: (chunks) => <EntityLink
+        entityKey={String(chunks[0]) as keyof Event}
+        data={data}
+      />
     }}
   />
 }
