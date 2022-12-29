@@ -312,7 +312,8 @@ export function ApForm () {
                 </>}
                 initialValue={null}
                 rules={[{
-                  required: true
+                  required: true,
+                  message: $t({ defaultMessage: 'Please select venue' })
                 }, {
                   validator: (_, value) => {
                     const venues = venuesList?.data as unknown as VenueExtended[]
