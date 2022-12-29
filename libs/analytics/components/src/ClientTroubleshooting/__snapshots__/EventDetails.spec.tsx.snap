@@ -1,0 +1,96 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EventDetails renders Details correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__DetailsWrapper-sc-hmshlr-11 bWOSwk"
+  >
+    <span
+      class="styledComponents__CloseIconContainer-sc-hmshlr-14 hipsnB"
+    >
+      <svg
+        data-testid="CloseSymbol"
+      />
+    </span>
+    <h3
+      class="styledComponents__Header-sc-hmshlr-12 fYxfWF"
+    >
+      Connection Event Details
+    </h3>
+    <div
+      class="styledComponents__Body-sc-hmshlr-15 gmSkie"
+    >
+      <div
+        class="styledComponents__ListDetails-sc-hmshlr-17 ixUqiQ"
+      >
+        <div
+          class="ant-row Grid__GridRow-sc-5irhjd-2"
+          style="margin: -10px -10px -10px -10px;"
+        >
+          <div
+            class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+            style="padding: 10px 10px 10px 10px;"
+          >
+            <div
+              class="Grid__Container-sc-5irhjd-1 zzbxI"
+            >
+              <div
+                class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowLabel-sc-hmshlr-19 bWPQqV dtKbuE"
+              >
+                label1
+              </div>
+            </div>
+          </div>
+          <div
+            class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+            style="padding: 10px 10px 10px 10px;"
+          >
+            <div
+              class="Grid__Container-sc-5irhjd-1 zzbxI"
+            >
+              <div
+                class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowValue-sc-hmshlr-20 bWPQqV fGjurO"
+              >
+                value1
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-row Grid__GridRow-sc-5irhjd-2"
+          style="margin: -10px -10px -10px -10px;"
+        >
+          <div
+            class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+            style="padding: 10px 10px 10px 10px;"
+          >
+            <div
+              class="Grid__Container-sc-5irhjd-1 zzbxI"
+            >
+              <div
+                class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowLabel-sc-hmshlr-19 bWPQqV dtKbuE"
+              >
+                label2
+              </div>
+            </div>
+          </div>
+          <div
+            class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+            style="padding: 10px 10px 10px 10px;"
+          >
+            <div
+              class="Grid__Container-sc-5irhjd-1 zzbxI"
+            >
+              <div
+                class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowValue-sc-hmshlr-20 bWPQqV fGjurO"
+              >
+                value2
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
