@@ -33,7 +33,8 @@ import {
   PortalUrlsInfo,
   DpskList,
   onSocketActivityChanged,
-  showActivityMessage
+  showActivityMessage,
+  UploadUrlResponse
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
@@ -308,14 +309,33 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           FetchBaseQueryError,
           FetchBaseQueryMeta
         >)
-        const result = await fetch(createHttpRequest(CommonUrlsInfo.getService, params))
+        const result = await fetch(createHttpRequest(PortalUrlsInfo.getPortal, params))
         return result as QueryReturnValue<Portal,
         FetchBaseQueryError,
         FetchBaseQueryMeta>
       },
       providesTags: [{ type: 'Service', id: 'DETAIL' }]
     }),
-    savePortal: build.mutation<Service, RequestPayload>({
+    deletePortal: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(PortalUrlsInfo.deletePortal, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    updatePortal: build.mutation<Service, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PortalUrlsInfo.updatePortal, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    savePortal: build.mutation<{ response: { [key:string]:string } }, RequestPayload>({
       query: ({ params, payload }) => {
         const createPortalReq = createHttpRequest(
           PortalUrlsInfo.savePortal, params
@@ -452,8 +472,33 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    getPortalProfileList: build.query<{ content: Portal[] }, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(PortalUrlsInfo.getPortalProfileList, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    getPortalLang: build.mutation<{ res : { data : string } }, RequestPayload>({
+      query: ({ params }) => {
+        const portalLang = createHttpRequest(PortalUrlsInfo.getPortalLang, params)
+        return {
+          ...portalLang
+        }
+      }
+    }),
+    uploadURL: build.mutation<UploadUrlResponse, RequestPayload>({
+      query: ({ params, payload }) => {
+        const createUploadReq = createHttpRequest(CommonUrlsInfo.getUploadURL, params, RKS_NEW_UI)
+        return {
+          ...createUploadReq,
+          body: payload
+        }
+      }
     })
-
   })
 })
 
@@ -489,5 +534,11 @@ export const {
   useGetPortalQuery,
   useSavePortalMutation,
   usePortalNetworkInstancesQuery,
-  useGetPortalProfileDetailQuery
+  useGetPortalProfileDetailQuery,
+  useLazyGetPortalProfileListQuery,
+  useGetPortalProfileListQuery,
+  useGetPortalLangMutation,
+  useDeletePortalMutation,
+  useUpdatePortalMutation,
+  useUploadURLMutation
 } = serviceApi
