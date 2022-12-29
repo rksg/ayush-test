@@ -23,8 +23,7 @@ import {
   Venue,
   AP,
   ApExtraParams,
-  Event,
-  usePollingTableQuery
+  Event
 } from '@acx-ui/rc/utils'
 
 import { useDefaultVenuePayload, VenueTable } from '../Venues/VenuesTable'
@@ -86,7 +85,7 @@ const searches = [
     }
   },
   (searchString: string, $t: IntlShape['$t']) => {
-    const result = usePollingTableQuery<Event>({
+    const result = useTableQuery<Event>({
       useQuery: useEventsQuery,
       defaultPayload: {
         ...defaultEventsPayload,
@@ -112,7 +111,7 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
   const { $t } = useIntl()
   const results = searches.map(search => search(searchVal as string, $t))
   const count = results.reduce((count, { result }) => count + (result.data?.totalCount || 0), 0)
-  return <Loader states={results.map(({ result }) => ({ ...result, isFetching: false }))}>
+  return <Loader states={results.map(({ result }) => ({ ...result }))}>
     {count
       ? <>
         <PageHeader title={$t(

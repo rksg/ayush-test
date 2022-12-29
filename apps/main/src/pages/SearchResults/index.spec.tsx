@@ -7,7 +7,9 @@ import { mockRestApiQuery, render, screen, waitForElementToBeRemoved } from '@ac
 import {
   apListData,
   networkListData,
-  venueListData
+  venueListData,
+  eventListData,
+  eventMetaData
 } from './__fixtures__/searchMocks'
 
 import SearchResults from '.'
@@ -19,6 +21,8 @@ describe('Search Results', () => {
     mockRestApiQuery(CommonUrlsInfo.getVenuesList.url, 'post', venueListData)
     mockRestApiQuery(CommonUrlsInfo.getVMNetworksList.url, 'post', networkListData)
     mockRestApiQuery(CommonUrlsInfo.getApsList.url, 'post', apListData)
+    mockRestApiQuery(CommonUrlsInfo.getEventList.url, 'post', eventListData)
+    mockRestApiQuery(CommonUrlsInfo.getEventListMeta.url, 'post', eventMetaData)
   })
 
   it('should decode search string correctly', async () => {
@@ -28,7 +32,7 @@ describe('Search Results', () => {
       </Provider>,
       { route: { params } }
     )
-    expect(await screen.findByText('Search Results for "test?" (5)')).toBeVisible()
+    expect(await screen.findByText('Search Results for "test?" (6)')).toBeVisible()
   })
 
   it('should render tables correctly', async () => {

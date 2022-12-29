@@ -135,7 +135,7 @@ const EventTable = ({ tableQuery }: EventTableProps) => {
     <Table
       rowKey='id'
       columns={columns}
-      dataSource={tableQuery.data?.data}
+      dataSource={tableQuery.data?.data ?? []}
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
     />
