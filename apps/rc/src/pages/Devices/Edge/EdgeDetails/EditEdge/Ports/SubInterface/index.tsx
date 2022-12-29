@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom'
 
 import { Button, ContentSwitcher, ContentSwitcherProps, Loader, showActionModal, Table, TableProps } from '@acx-ui/components'
 import { useDeleteSubInterfacesMutation, useGetSubInterfacesQuery }                                  from '@acx-ui/rc/services'
-import { EdgeSubInterface, useGetTableQuery }                                                        from '@acx-ui/rc/utils'
+import { DEFAULT_PAGINATION, EdgeSubInterface, useTableQuery }                                       from '@acx-ui/rc/utils'
 
 import { PortsContext } from '..'
 import * as UI          from '../styledComponents'
@@ -27,14 +27,16 @@ const SubInterfaceTable = (props: SubInterfaceTableProps) => {
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [currentEditData, setCurrentEditData] = useState<EdgeSubInterface>()
   const [selectedRows, setSelectedRows] = useState<Key[]>([])
-  const tableQuery = useGetTableQuery<EdgeSubInterface>({
+  const tableQuery = useTableQuery<EdgeSubInterface>({
     useQuery: useGetSubInterfacesQuery,
+    defaultPayload: {},
     apiParams: { mac: props.mac }
   })
   const [deleteSubInterfaces] = useDeleteSubInterfacesMutation()
 
   useEffect(() => {
     setSelectedRows([])
+    tableQuery.setPayload(DEFAULT_PAGINATION)
   }, [props.mac])
 
   const columns: TableProps<EdgeSubInterface>['columns'] = [
@@ -129,7 +131,7 @@ const SubInterfaceTable = (props: SubInterfaceTableProps) => {
           <Loader states={[tableQuery]}>
             <Table<EdgeSubInterface>
               toolBarRender={toolBarRender}
-              dataSource={tableQuery?.data?.content}
+              dataSource={tableQuery?.data?.data}
               pagination={tableQuery.pagination}
               onChange={tableQuery.handleTableChange}
               columns={columns}

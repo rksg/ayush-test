@@ -523,5 +523,5 @@ export interface PaginationQueryResult<T> {
   page: number
   pageSize: number
   totalCount: number
-  content: readonly T[] | undefined
+  content: T[]
 }

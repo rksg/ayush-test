@@ -1,7 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 import {
-  PaginationQueryResult,
   CommonResult,
   createHttpRequest,
   EdgeDnsServers,
@@ -9,8 +8,7 @@ import {
   EdgeSaveData,
   EdgeSubInterface,
   EdgeUrlsInfo,
-  EdgeViewModel, QueryArgs,
-  RequestPayload, TableResult
+  EdgeViewModel, PaginationQueryResult, RequestPayload, TableResult
 } from '@acx-ui/rc/utils'
 
 export const baseEdgeApi = createApi({
@@ -126,13 +124,20 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
       }
     }),
     // eslint-disable-next-line max-len
-    getSubInterfaces: build.query<PaginationQueryResult<EdgeSubInterface>, RequestPayload & QueryArgs>({
-      query: ({ params, queryArgs }) => {
-        const { current, pageSize } = queryArgs
+    getSubInterfaces: build.query<TableResult<EdgeSubInterface>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const { page, pageSize } = payload as { page: number, pageSize: number }
         const req = createHttpRequest(EdgeUrlsInfo.getSubInterfaces, params)
         return {
           ...req,
-          params: { page: current, pageSize }
+          params: { page, pageSize }
+        }
+      },
+      transformResponse (response: PaginationQueryResult<EdgeSubInterface>) {
+        return {
+          data: response.content,
+          page: response.page,
+          totalCount: response.totalCount
         }
       },
       providesTags: [{ type: 'Edge', id: 'DETAIL_SUB_INTERFACE' }]
