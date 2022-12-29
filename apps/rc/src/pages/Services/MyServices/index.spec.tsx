@@ -1,10 +1,43 @@
-import { getSelectServiceRoutePath } from '@acx-ui/rc/utils'
+import { rest } from 'msw'
+
+import { CommonUrlsInfo, getSelectServiceRoutePath } from '@acx-ui/rc/utils'
+import { Provider }                                  from '@acx-ui/store'
 import {
+  mockServer,
   render,
   screen
 } from '@acx-ui/test-utils'
 
 import MyServices from '.'
+
+const mockedServiceList = {
+  fields: [
+    'scope',
+    'name',
+    'cog',
+    'id',
+    'check-all',
+    'type'
+  ],
+  totalCount: 2,
+  page: 1,
+  data: [
+    {
+      id: '1b85a320a58d4ae299e2260e926bb6eb',
+      name: 'Jeff-mDNS-for-Jacky',
+      type: 'mDNS Proxy',
+      technology: 'WI-FI',
+      scope: 1
+    },
+    {
+      id: '2411047466e146699a7bb1bff406c180',
+      name: 'Test123',
+      type: 'Wi-Fi Calling',
+      technology: 'WI-FI',
+      scope: 2
+    }
+  ]
+}
 
 describe('MyServices', () => {
   const params = {
@@ -13,9 +46,18 @@ describe('MyServices', () => {
 
   const path = '/t/:tenantId'
 
+  mockServer.use(
+    rest.post(
+      CommonUrlsInfo.getServicesList.url,
+      (req, res, ctx) => res(ctx.json({ ...mockedServiceList }))
+    )
+  )
+
   it('should render my services', async () => {
     render(
-      <MyServices />, {
+      <Provider>
+        <MyServices />
+      </Provider>, {
         route: { params, path }
       }
     )

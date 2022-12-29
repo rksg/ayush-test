@@ -5,7 +5,8 @@ import {
   getServiceDetailsLink,
   getServiceListRoutePath,
   getServiceRoutePath,
-  ServiceOperation
+  ServiceOperation,
+  getServiceCatalogRoutePath
 }    from '@acx-ui/rc/utils'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
@@ -38,6 +39,10 @@ jest.mock('./pages/Networks/NetworkDetails/NetworkDetails', () => () => {
 
 jest.mock('./pages/Services/MyServices', () => () => {
   return <div data-testid='MyServices' />
+})
+
+jest.mock('./pages/Services/ServiceCatalog', () => () => {
+  return <div data-testid='ServiceCatalog' />
 })
 
 jest.mock('./pages/Services/SelectServiceForm', () => () => {
@@ -213,6 +218,16 @@ describe('RcRoutes: Services', () => {
       }
     })
     expect(screen.getByTestId('MyServices')).toBeVisible()
+  })
+
+  test('should navigate to service catalog', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + getServiceCatalogRoutePath(),
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('ServiceCatalog')).toBeVisible()
   })
 
   test('should navigate to select service page', async () => {

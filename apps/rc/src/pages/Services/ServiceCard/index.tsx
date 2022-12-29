@@ -28,7 +28,7 @@ export function ServiceCard (props: ServiceCardProps) {
 
   const formatServiceName = () => {
     const name = $t(serviceTypeLabelMapping[type])
-    if (!count) {
+    if (count === undefined) {
       return name
     }
     return $t({ defaultMessage: '{name} ({count})' }, { name, count })
