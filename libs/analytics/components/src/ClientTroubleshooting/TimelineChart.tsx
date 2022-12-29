@@ -27,28 +27,12 @@ import {
 } from '@acx-ui/components'
 import type { TimeStampRange } from '@acx-ui/types'
 
+import { eventColorByCategory } from './config'
+
+import type { Event }                                from './EventsTimeline'
 import type { ECharts, EChartsOption, SeriesOption } from 'echarts'
 import type { EChartsReactProps }                    from 'echarts-for-react'
-export interface Event {
-  timestamp: string;
-  event: string;
-  ttc: string;
-  mac: string;
-  apName: string;
-  path: [];
-  code: string;
-  state: string;
-  failedMsgId: string;
-  messageIds: string;
-  radio: string;
-  ssid: string;
-  type: string;
-  key: string;
-  start: number;
-  end: number;
-  category: string;
-  seriesKey: string;
-}
+
 
 type OnDatazoomEvent = {
   batch?: {
@@ -62,7 +46,7 @@ export interface TimelineChartProps
   extends Omit<EChartsReactProps, 'option' | 'opts'> {
   data: Event[];
   chartBoundary: number[];
-  selectedData?: number; // id
+  selectedData?: number;
   onDotClick?: (params: unknown) => void;
   chartRef?: RefCallback<ReactECharts>;
   hasXaxisLabel?: boolean;
@@ -70,32 +54,26 @@ export interface TimelineChartProps
   mapping: { key: string; label: string; chartType: string }[];
   showResetZoom?: boolean
 }
+const getSeriesData = (data : Event[], key : string) =>
+  data
+    .filter(
+      (record) =>
+        record.seriesKey === key
+    )
+    .map((record) => [record.start, record.seriesKey, record])
 
-export const getZoomPosition = (
-  boundary: { min: number; max: number },
-  actualArea: number[][],
-  index: number
-) => {
-  const range =
-    index === 0
-      ? [boundary.min, Math.min(actualArea[1][0], boundary.max)]
-      : [Math.max(actualArea[0][1], boundary.min), boundary.max]
-  return [
-    actualArea[index][0] < range[0] ? range[0] : actualArea[index][0],
-    actualArea[index][1] > range[1] ? range[1] : actualArea[index][1]
-  ]
+function getSeriesItemColor (params: { data: Event[] }) {
+  const eventObj = Array.isArray(params.data)
+    ? params.data[2]
+    : ''
+  const { category } = eventObj as unknown as Event
+  return cssStr(
+    eventColorByCategory[
+          category as keyof typeof eventColorByCategory
+    ]
+  )
 }
-export const SUCCESS = 'success'
-export const SLOW = 'slow'
-export const DISCONNECT = 'disconnect'
-export const FAILURE = 'failure'
-export const eventColorByCategory = {
-  [DISCONNECT]: '--acx-neutrals-50',
-  [SUCCESS]: '--acx-semantics-green-50',
-  [FAILURE]: '--acx-semantics-red-50',
-  [SLOW]: '--acx-semantics-yellow-50'
-}
-export const useDotClick = (
+const useDotClick = (
   eChartsRef: RefObject<ReactECharts>,
   onDotClick: ((param: unknown) => void) | undefined,
   setSelected: Dispatch<SetStateAction<number | undefined>>
@@ -109,7 +87,6 @@ export const useDotClick = (
     },
     [setSelected, onDotClick]
   )
-
   useEffect(() => {
     if (!eChartsRef || !eChartsRef.current) return
     const echartInstance = eChartsRef.current?.getEchartsInstance() as ECharts
@@ -119,11 +96,11 @@ export const useDotClick = (
     }
   }, [eChartsRef, handler])
 }
-function useDataZoom (
+const useDataZoom = (
   eChartsRef: RefObject<ReactECharts>,
   zoomEnabled: boolean,
   onDataZoom?: (range: TimeStampRange, isReset: boolean) => void
-): [boolean, () => void] {
+): [boolean, () => void] => {
 
   const [canResetZoom, setCanResetZoom] = useState<boolean>(false)
 
@@ -156,7 +133,7 @@ function useDataZoom (
 
   return [canResetZoom, resetZoomCallback]
 }
-export const tooltipOptions = () =>
+const tooltipOptions = () =>
   ({
     textStyle: {
       color: 'black',
@@ -314,27 +291,12 @@ export function TimelineChart ({
           ({
             type: chartType,
             name: label,
-            symbol: 'circle',
+            symbol: chartType=== 'scatter' ? 'circle' : null,
             symbolSize: 8,
             animation: false,
-            data: data
-              .filter(
-                (record) =>
-                  record.seriesKey === key
-              )
-              .map((record) => [record.start, record.seriesKey, record]),
+            data: getSeriesData(data, key),
             itemStyle: {
-              color: function (params: { data: Event[] }) {
-                const eventObj = Array.isArray(params.data)
-                  ? params.data[2]
-                  : ''
-                const { category } = eventObj as unknown as Event
-                return cssStr(
-                  eventColorByCategory[
-                    category as keyof typeof eventColorByCategory
-                  ]
-                )
-              }
+              color: getSeriesItemColor
             }
           } as SeriesOption)
       )

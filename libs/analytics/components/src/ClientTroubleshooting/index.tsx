@@ -62,7 +62,7 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
             </Row>
           </Col>
           {!historyContentToggle && (
-            <Col span={2}>
+            <Col span={3}>
               <Row style={{ justifyContent: 'end' }}>
                 <Button
                   type='primary'
