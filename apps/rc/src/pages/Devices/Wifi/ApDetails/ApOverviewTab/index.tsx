@@ -61,7 +61,7 @@ export function ApOverviewTab () {
         <ApPhoto />
       </GridCol>
       <GridCol col={{ span: 18 }} style={{ background: '#F7F7F7' }}>
-        {apDetails && <ApFloorplan
+        {apDetails?.position && <ApFloorplan
           activeDevice={currentApDevice}
           venueId={apDetails?.venueId}
           apPosition={apDetails?.position as ApPosition}/>}
