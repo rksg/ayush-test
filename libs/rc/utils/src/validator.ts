@@ -54,7 +54,15 @@ export function URLRegExp (value: string) {
   }
   return Promise.resolve()
 }
-
+export function URLProtocolRegExp (value: string) {
+  const { $t } = getIntl()
+  // eslint-disable-next-line max-len
+  const re = new RegExp('^(http:\\/\\/www\\.|https:\\/\\/www\\.|http:\\/\\/|https:\\/\\/){1}[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$')
+  if (value!=='' && !re.test(value)) {
+    return Promise.reject($t(validationMessages.validateURL))
+  }
+  return Promise.resolve()
+}
 export function domainNameRegExp (value: string) {
   const { $t } = getIntl()
   // eslint-disable-next-line max-len
@@ -64,7 +72,29 @@ export function domainNameRegExp (value: string) {
   }
   return Promise.resolve()
 }
+export function domainsNameRegExp (value: string[], required: boolean) {
+  const { $t } = getIntl()
+  // eslint-disable-next-line max-len
+  const re = new RegExp(/^(\*(\.[0-9A-Za-z]{1,63})+(\.\*)?|([0-9A-Za-z]{1,63}\.)+\*|([0-9A-Za-z]{1,63}(\.[0-9A-Za-z]{1,63})+))$/)
+  const isValid = value?.every(domain => {
+    return !(required && !re.test(domain))
+  })
 
+  return isValid ? Promise.resolve() : Promise.reject($t(validationMessages.invalid))
+}
+
+export function walledGardensRegExp (value:string) {
+  const { $t } = getIntl()
+  if (!value) {
+    return Promise.resolve()
+  }
+  const walledGardens = value.split('\n')
+  const walledGardenRegex = new RegExp(/^(((\*\.){0,1})(([a-zA-Z0-9*]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.){1,})([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9]){1,}(((\/[0-9]{1,2}){0,1}|(\s+(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){2,}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))))$/)
+  const isValid = walledGardens.every(walledGarden=>{
+    return !(walledGarden.trim()&&!walledGardenRegex.test(walledGarden.trim()))
+  })
+  return isValid ? Promise.resolve() : Promise.reject($t(validationMessages.walledGarden))
+}
 export function syslogServerRegExp (value: string) {
   const { $t } = getIntl()
   // eslint-disable-next-line max-len
