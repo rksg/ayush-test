@@ -1,9 +1,15 @@
 import { rest } from 'msw'
 
-import { switchApi }                             from '@acx-ui/rc/services'
-import { CommonUrlsInfo, SwitchUrlsInfo }        from '@acx-ui/rc/utils'
-import { Provider, store }                       from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
+import { switchApi }                      from '@acx-ui/rc/services'
+import { CommonUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                from '@acx-ui/store'
+import {
+  fireEvent,
+  mockServer,
+  render,
+  screen,
+  waitForElementToBeRemoved
+} from '@acx-ui/test-utils'
 
 import { switchDetailData, venueData } from '../__tests__/fixtures'
 
@@ -113,6 +119,8 @@ describe('SwitchOverviewTab', () => {
         path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab'
       }
     })
+
+    await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
     expect(asFragment()).toMatchSnapshot()
   })
 
