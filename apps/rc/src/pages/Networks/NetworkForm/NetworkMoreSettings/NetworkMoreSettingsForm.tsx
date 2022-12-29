@@ -365,7 +365,7 @@ export function MoreSettingsForm (props: {
                 data-testid='mgmtTxRateSelect'
                 disabled={enableOfdmOnly ||
                   (bssMinimumPhyRate !== BssMinRateEnum.VALUE_NONE)}
-                defaultValue={MgmtTxRateEnum.VALUE_1}
+                defaultValue={MgmtTxRateEnum.VALUE_6}
                 style={{ width: '150px' }}>
                 <Option value={MgmtTxRateEnum.VALUE_1}>
                   {$t({ defaultMessage: '1 Mbps' })}

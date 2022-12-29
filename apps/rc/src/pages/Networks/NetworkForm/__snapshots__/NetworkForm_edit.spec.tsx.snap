@@ -1909,9 +1909,9 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                                         </span>
                                         <span
                                           class="ant-select-selection-item"
-                                          title="1 Mbps"
+                                          title="6 Mbps"
                                         >
-                                          1 Mbps
+                                          6 Mbps
                                         </span>
                                       </div>
                                       <span
