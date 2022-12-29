@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 
+import { useIntl } from 'react-intl'
+
 import {
   ConnectedClientsOverTime,
   NetworkHistory,
@@ -9,7 +11,7 @@ import {
   TrafficByVolume
 } from '@acx-ui/analytics/components'
 import { AnalyticsFilter, useAnalyticsFilter }                                  from '@acx-ui/analytics/utils'
-import { GridCol, GridRow }                                                     from '@acx-ui/components'
+import { GridCol, GridRow, NoData }                                             from '@acx-ui/components'
 import { ApInfoWidget }                                                         from '@acx-ui/rc/components'
 import { useApDetailsQuery, useApViewModelQuery }                               from '@acx-ui/rc/services'
 import { ApDetails, ApPosition, ApViewModel, NetworkDevice, NetworkDeviceType } from '@acx-ui/rc/utils'
@@ -19,11 +21,13 @@ import ApFloorplan      from './ApFloorplan'
 import { ApPhoto }      from './ApPhoto'
 import { ApProperties } from './ApProperties'
 
+
 export function ApOverviewTab () {
   const { filters } = useAnalyticsFilter()
   const [ apFilter, setApFilter ] = useState(null as unknown as AnalyticsFilter)
   const [currentApDevice, setCurrentApDevice] = useState<NetworkDevice>({} as NetworkDevice)
   const params = useParams()
+  const { $t } = useIntl()
   const apViewModelPayload = {
     fields: ['name', 'venueName', 'deviceGroupName', 'description', 'lastSeenTime',
       'serialNumber', 'apMac', 'IP', 'extIp', 'model', 'fwVersion',
@@ -61,10 +65,11 @@ export function ApOverviewTab () {
         <ApPhoto />
       </GridCol>
       <GridCol col={{ span: 18 }} style={{ background: '#F7F7F7' }}>
-        {apDetails?.position && <ApFloorplan
+        {apDetails?.position?.floorplanId ? <ApFloorplan
           activeDevice={currentApDevice}
           venueId={apDetails?.venueId}
-          apPosition={apDetails?.position as ApPosition}/>}
+          apPosition={apDetails?.position as ApPosition}/>
+          : <NoData text={$t({ defaultMessage: 'This AP is not placed on any floor plan' })}/>}
       </GridCol>
       <GridCol col={{ span: 6 }}>
         <ApProperties
