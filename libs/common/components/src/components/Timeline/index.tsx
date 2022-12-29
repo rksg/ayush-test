@@ -83,12 +83,12 @@ const Timeline = (props: TimelineProps) => {
       {props.items.map((item, index)=>[
         <AntTimeline.Item
           key={`timeline-start-${index}`}
-          dot={<Step $state={item.startDatetime ? 'current' : 'previous'} />}>
+          dot={<Step $state={item.startDatetime ? 'previous' : 'future'} />}>
           {item.startDatetime ? formatter('dateTimeFormatWithSeconds')(item.startDatetime) : '--'}
         </AntTimeline.Item>,
         <AntTimeline.Item
           key={`timeline-end-${index}`}
-          dot={<Step $state={item.endDatetime ? 'current' : 'previous'} />}>
+          dot={<Step $state={item.endDatetime ? 'previous' : 'future'} />}>
           <ItemWrapper>
             {item.endDatetime ? formatter('dateTimeFormatWithSeconds')(item.endDatetime) : '--'}
             <ContentWrapper>

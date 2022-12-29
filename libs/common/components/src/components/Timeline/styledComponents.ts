@@ -24,7 +24,7 @@ export const Wrapper = styled.div`
   }
   .ant-timeline-item-tail {
     height: 100%;
-    top: 8px;
+    top: 5px;
     color: var(--acx-accents-orange-50);
   }
   .ant-timeline-item-content {
@@ -77,11 +77,15 @@ const stepStyle = {
     height: var(--dot-size);
   `,
   current: css`
-    --dot-size: var(--size);
+    --dot-size: calc(var(--size) - 1px);
     width: var(--dot-size);
     height: var(--dot-size);
   `,
-  future: css``
+  future: css`
+    --dot-size: 0;
+    width: var(--dot-size);
+    height: var(--dot-size);
+  `
 }
 export const Step = styled.div<{ $state: 'previous' | 'current' | 'future' }>`
   --size: 8px;
@@ -102,6 +106,7 @@ export const Step = styled.div<{ $state: 'previous' | 'current' | 'future' }>`
     bottom: 0;
     margin: auto;
     background-color: var(--acx-accents-orange-50);
+    border-radius: 50%;
 
     ${props => stepStyle[props.$state]}
   }
