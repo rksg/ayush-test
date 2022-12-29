@@ -32,9 +32,9 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
       <Col span={historyContentToggle ? 18 : 24}>
         <Row style={{ justifyContent: 'end' }} gutter={[16, 32]}>
           <Col span={historyContentToggle ? 15 : 11}>
-            <Row style={{ justifyContent: 'end' }} gutter={[6, 6]}>
+            <Row style={{ justifyContent: 'end' }} gutter={[6, 6]} wrap={false}>
               {ClientTroubleShootingConfig.selection.map((config) => (
-                <Col span={8} key={config.selectionType}>
+                <Col flex='185px' key={config.selectionType}>
                   <Select
                     entityName={config.entityName}
                     multiple
@@ -62,7 +62,7 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
             </Row>
           </Col>
           {!historyContentToggle && (
-            <Col span={4}>
+            <Col span={2}>
               <Row style={{ justifyContent: 'end' }}>
                 <Button
                   type='primary'
