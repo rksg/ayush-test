@@ -21,7 +21,15 @@ import {
   useGetL3AclPolicyQuery,
   useL3AclPolicyListQuery
 } from '@acx-ui/rc/services'
-import { CommonResult, macAddressRegExp, serverIpAddressRegExp, subnetMaskIpRegExp } from '@acx-ui/rc/utils'
+import {
+  CommonResult,
+  Layer3ProtocolType,
+  macAddressRegExp,
+  serverIpAddressRegExp,
+  subnetMaskIpRegExp
+} from '@acx-ui/rc/utils'
+
+import { layer3ProtocolLabelMapping } from '../../contentsMap'
 
 const { useWatch } = Form
 const { Option } = Select
@@ -77,6 +85,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
   const [layer3RuleList, setLayer3RuleList] = useState([] as Layer3Rule[])
   const [layer3Rule, setLayer3Rule] = useState({} as Layer3Rule)
   const [queryPolicyId, setQueryPolicyId] = useState('')
+  const [queryPolicyName, setQueryPolicyName] = useState('')
   const [requestId, setRequestId] = useState('')
   const [contentForm] = Form.useForm()
   const [drawerForm] = Form.useForm()
@@ -140,6 +149,20 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       }))] as Layer3Rule[])
     }
   }, [layer3PolicyInfo, queryPolicyId])
+
+  // use policyName to find corresponding id before API return profile id
+  useEffect(() => {
+    if (requestId && queryPolicyName) {
+      layer3SelectOptions.map(option => {
+        if (option.props.children === queryPolicyName) {
+          form.setFieldValue('l3AclPolicyId', option.key)
+          setQueryPolicyId(option.key as string)
+          setQueryPolicyName('')
+          setRequestId('')
+        }
+      })
+    }
+  }, [layer3SelectOptions, requestId, policyName])
 
   const basicColumns: TableProps<Layer3Rule>['columns'] = [
     {
@@ -306,11 +329,11 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
             description: null
           }
         }).unwrap()
-        let responseData = l3AclRes.response as {
-          [key: string]: string
-        }
-        form.setFieldValue([...inputName, 'l3AclPolicyId'], responseData.id)
-        setQueryPolicyId(responseData.id)
+        // let responseData = l3AclRes.response as {
+        //   [key: string]: string
+        // }
+        // form.setFieldValue([...inputName, 'l3AclPolicyId'], responseData.id)
+        // setQueryPolicyId(responseData.id)
         setRequestId(l3AclRes.requestId)
       }
     } catch(error) {
@@ -441,32 +464,32 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         })
       }}
     >
-      <Option value='ANYPROTOCOL'>
-        {$t({ defaultMessage: 'Any Protocol' })}
+      <Option value={Layer3ProtocolType.ANYPROTOCOL}>
+        {$t(layer3ProtocolLabelMapping[Layer3ProtocolType.ANYPROTOCOL])}
       </Option>
-      <Option value='TCP'>
-        {$t({ defaultMessage: 'TCP' })}
+      <Option value={Layer3ProtocolType.TCP}>
+        {$t(layer3ProtocolLabelMapping[Layer3ProtocolType.TCP])}
       </Option>
-      <Option value='UDP'>
-        {$t({ defaultMessage: 'UDP' })}
+      <Option value={Layer3ProtocolType.UDP}>
+        {$t(layer3ProtocolLabelMapping[Layer3ProtocolType.UDP])}
       </Option>
-      <Option value='UDPLITE'>
-        {$t({ defaultMessage: 'UDPLITE' })}
+      <Option value={Layer3ProtocolType.UDPLITE}>
+        {$t(layer3ProtocolLabelMapping[Layer3ProtocolType.UDPLITE])}
       </Option>
-      <Option value='ICMP'>
-        {$t({ defaultMessage: 'ICMP(ICMPV4)' })}
+      <Option value={Layer3ProtocolType.ICMP}>
+        {$t(layer3ProtocolLabelMapping[Layer3ProtocolType.ICMP])}
       </Option>
-      <Option value='IGMP'>
-        {$t({ defaultMessage: 'IGMP' })}
+      <Option value={Layer3ProtocolType.IGMP}>
+        {$t(layer3ProtocolLabelMapping[Layer3ProtocolType.IGMP])}
       </Option>
-      <Option value='ESP'>
-        {$t({ defaultMessage: 'ESP' })}
+      <Option value={Layer3ProtocolType.ESP}>
+        {$t(layer3ProtocolLabelMapping[Layer3ProtocolType.ESP])}
       </Option>
-      <Option value='AH'>
-        {$t({ defaultMessage: 'AH' })}
+      <Option value={Layer3ProtocolType.AH}>
+        {$t(layer3ProtocolLabelMapping[Layer3ProtocolType.AH])}
       </Option>
-      <Option value='SCTP'>
-        {$t({ defaultMessage: 'SCTP' })}
+      <Option value={Layer3ProtocolType.SCTP}>
+        {$t(layer3ProtocolLabelMapping[Layer3ProtocolType.SCTP])}
       </Option>
     </Select>
   )

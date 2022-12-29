@@ -19,7 +19,7 @@ import {
   TableResult, onSocketActivityChanged, showActivityMessage, CommonResult,
   NewTableResult, transferTableResult,
   AccessControlUrls,
-  l2AclPolicyInfoType, l3AclPolicyInfoType, AvcApp, AvcCat
+  l2AclPolicyInfoType, l3AclPolicyInfoType, AvcApp, AvcCat, L2AclPolicy, L3AclPolicy
 } from '@acx-ui/rc/utils'
 
 export const basePolicyApi = createApi({
@@ -172,6 +172,56 @@ export const policyApi = basePolicyApi.injectEndpoints({
         })
       }
     }),
+    l2AclPolicyList: build.query<TableResult<L2AclPolicy>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const l2AclPolicyListReq = createHttpRequest(
+          AccessControlUrls.getL2AclPolicyList,
+          params
+        )
+        return {
+          ...l2AclPolicyListReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const params = requestArgs.params as { requestId: string }
+          if (params.requestId) {
+            showActivityMessage(msg, [
+              'Add Layer 2 Policy Profile'
+            ],() => {
+              api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
+            }, params.requestId as string)
+          }
+        })
+      }
+    }),
+    l3AclPolicyList: build.query<TableResult<L3AclPolicy>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const l3AclPolicyListReq = createHttpRequest(
+          AccessControlUrls.getL3AclPolicyList,
+          params
+        )
+        return {
+          ...l3AclPolicyListReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const params = requestArgs.params as { requestId: string }
+          if (params.requestId) {
+            showActivityMessage(msg, [
+              'Add Layer 3 Policy Profile'
+            ],() => {
+              api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
+            }, params.requestId as string)
+          }
+        })
+      }
+    }),
     macRegLists: build.query<TableResult<MacRegistrationPool>, RequestPayload>({
       query: ({ params }) => {
         const poolsReq = createHttpRequest(MacRegListUrlsInfo.getMacRegistrationPools, params)
@@ -309,6 +359,8 @@ export const {
   useGetL2AclPolicyQuery,
   useAddL3AclPolicyMutation,
   useGetL3AclPolicyQuery,
+  useL2AclPolicyListQuery,
+  useL3AclPolicyListQuery,
   useGetRoguePolicyListQuery,
   useUpdateRoguePolicyMutation,
   useRoguePolicyQuery,

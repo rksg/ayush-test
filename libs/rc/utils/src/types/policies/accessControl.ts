@@ -39,3 +39,15 @@ export interface AvcApp {
     appId: number
   }
 }
+
+export enum Layer3ProtocolType {
+  ANYPROTOCOL = 'ANYPROTOCOL',
+  TCP = 'TCP',
+  UDP = 'UDP',
+  UDPLITE = 'UDPLITE',
+  ICMP = 'ICMP',
+  IGMP = 'IGMP',
+  ESP = 'ESP',
+  AH = 'AH',
+  SCTP = 'SCTP'
+}

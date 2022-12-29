@@ -49,6 +49,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
   const [addressTags, setAddressTags] = useState([] as string[])
   const [inputValue, setInputValue] = useState('')
   const [queryPolicyId, setQueryPolicyId] = useState('')
+  const [queryPolicyName, setQueryPolicyName] = useState('')
   const [requestId, setRequestId] = useState('')
   const form = Form.useFormInstance()
   const [contentForm] = Form.useForm()
@@ -108,6 +109,20 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
       })))
     }
   }, [layer2PolicyInfo, queryPolicyId])
+
+  // use policyName to find corresponding id before API return profile id
+  useEffect(() => {
+    if (requestId && queryPolicyName) {
+      layer2SelectOptions.map(option => {
+        if (option.props.children === queryPolicyName) {
+          form.setFieldValue('l2AclPolicyId', option.key)
+          setQueryPolicyId(option.key as string)
+          setQueryPolicyName('')
+          setRequestId('')
+        }
+      })
+    }
+  }, [layer2SelectOptions, requestId, policyName])
 
   const [macAddressList, setMacAddressList] = useState([] as { macAddress: string }[])
 
@@ -244,12 +259,13 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
             description: null
           }
         }).unwrap()
-        let responseData = l2AclRes.response as {
-          [key: string]: string
-        }
-        form.setFieldValue('l2AclPolicyId', responseData.id)
-        setQueryPolicyId(responseData.id)
+        // let responseData = l2AclRes.response as {
+        //   [key: string]: string
+        // }
+        // form.setFieldValue('l2AclPolicyId', responseData.id)
+        // setQueryPolicyId(responseData.id)
         setRequestId(l2AclRes.requestId)
+        setQueryPolicyName(policyName)
       }
     } catch(error) {
       const responseData = error as { status: number, data: { [key: string]: string } }

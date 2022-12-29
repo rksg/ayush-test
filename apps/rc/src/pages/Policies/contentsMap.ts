@@ -1,6 +1,6 @@
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
-import { PolicyTechnology, PolicyType } from '@acx-ui/rc/utils'
+import { Layer3ProtocolType, PolicyTechnology, PolicyType } from '@acx-ui/rc/utils'
 
 export const policyTypeLabelMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.AAA]: defineMessage({ defaultMessage: 'AAA Server' }),
@@ -26,4 +26,16 @@ export const policyTypeDescMapping: Record<PolicyType, MessageDescriptor> = {
 export const policyTechnologyLabelMapping: Record<PolicyTechnology, MessageDescriptor> = {
   [PolicyTechnology.WIFI]: defineMessage({ defaultMessage: 'Wi-Fi' }),
   [PolicyTechnology.SWITCH]: defineMessage({ defaultMessage: 'Switch' })
+}
+
+export const layer3ProtocolLabelMapping: Record<Layer3ProtocolType, MessageDescriptor> = {
+  [Layer3ProtocolType.ANYPROTOCOL]: defineMessage({ defaultMessage: 'Any Protocol' }),
+  [Layer3ProtocolType.TCP]: defineMessage({ defaultMessage: 'TCP' }),
+  [Layer3ProtocolType.UDP]: defineMessage({ defaultMessage: 'UDP' }),
+  [Layer3ProtocolType.UDPLITE]: defineMessage({ defaultMessage: 'UDPLITE' }),
+  [Layer3ProtocolType.ICMP]: defineMessage({ defaultMessage: 'ICMP(ICMPV4)' }),
+  [Layer3ProtocolType.IGMP]: defineMessage({ defaultMessage: 'IGMP' }),
+  [Layer3ProtocolType.ESP]: defineMessage({ defaultMessage: 'ESP' }),
+  [Layer3ProtocolType.AH]: defineMessage({ defaultMessage: 'AH' }),
+  [Layer3ProtocolType.SCTP]: defineMessage({ defaultMessage: 'SCTP' })
 }

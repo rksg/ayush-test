@@ -17,6 +17,14 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/l3-acl-policy/:l3AclPolicyId'
   },
+  getL2AclPolicyList: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/l2-acl-policy/query'
+  },
+  getL3AclPolicyList: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/l3-acl-policy/query'
+  },
   getAvcCat: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/capabilities/avc-cat'
