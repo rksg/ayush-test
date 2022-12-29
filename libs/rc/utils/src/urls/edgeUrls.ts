@@ -28,5 +28,13 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
   sendOtp: {
     method: 'PATCH',
     url: '/api/edges/:serialNumber'
+  },
+  getDnsServers: {
+    method: 'get',
+    url: '/api/edges/:serialNumber/dnsServers'
+  },
+  updateDnsServers: {
+    method: 'PATCH',
+    url: '/api/edges/:serialNumber/dnsServers'
   }
 }

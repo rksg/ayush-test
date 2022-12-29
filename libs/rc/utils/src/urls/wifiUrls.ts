@@ -97,10 +97,6 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/lan-port'
   },
-  getApRadioCustomization: {
-    method: 'get',
-    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/radio'
-  },
   getApValidChannel: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/valid-channel'
@@ -173,15 +169,15 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/picture'
   },
-  getApRadio: {
+  getApRadioCustomization: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/radio'
   },
-  updateApRadio: {
+  updateApRadioCustomization: {
     method: 'put',
     url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/radio'
   },
-  deleteApRadio: {
+  deleteApRadioCustomization: {
     method: 'delete',
     url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/radio'
   },

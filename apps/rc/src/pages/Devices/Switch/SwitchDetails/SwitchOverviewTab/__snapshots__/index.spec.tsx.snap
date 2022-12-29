@@ -3,46 +3,52 @@
 exports[`SwitchOverviewTab should navigate to ACLs tab correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-13w5wfx-4 dnleil"
-    type="solid-bg"
+    class="ant-row Grid__GridRow-sc-5irhjd-2"
+    style="margin: -10px -10px -10px -10px;"
   >
     <div
-      class="ant-card"
+      class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
     >
       <div
-        class="ant-card-head"
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="height: 148px;"
       >
         <div
-          class="ant-card-head-wrapper"
+          class="styledComponents__Wrapper-sc-1352uh8-0 ilNUvb"
         >
           <div
-            class="ant-card-head-title"
+            class="styledComponents__FallbackWrapper-sc-1352uh8-1 doEIjj"
           >
-            <div
-              class="ant-space ant-space-horizontal ant-space-align-center"
+            <span
+              aria-label="loader"
+              role="img"
             >
               <div
-                class="ant-space-item"
+                aria-busy="true"
+                aria-live="polite"
+                class="ant-spin ant-spin-lg ant-spin-spinning"
               >
-                <div
-                  class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
-                />
+                <span
+                  class="ant-spin-dot ant-spin-dot-spin"
+                >
+                  <i
+                    class="ant-spin-dot-item"
+                  />
+                  <i
+                    class="ant-spin-dot-item"
+                  />
+                  <i
+                    class="ant-spin-dot-item"
+                  />
+                  <i
+                    class="ant-spin-dot-item"
+                  />
+                </span>
               </div>
-            </div>
-          </div>
-          <div
-            class="ant-card-extra"
-          >
-            <div
-              class="ant-space ant-space-horizontal ant-space-align-center"
-            />
+            </span>
           </div>
         </div>
-      </div>
-      <div
-        class="ant-card-body"
-      >
-        Overview widget
       </div>
     </div>
   </div>
@@ -233,46 +239,52 @@ exports[`SwitchOverviewTab should navigate to ACLs tab correctly 1`] = `
 exports[`SwitchOverviewTab should navigate to Route Interfaces tab correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-13w5wfx-4 dnleil"
-    type="solid-bg"
+    class="ant-row Grid__GridRow-sc-5irhjd-2"
+    style="margin: -10px -10px -10px -10px;"
   >
     <div
-      class="ant-card"
+      class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
     >
       <div
-        class="ant-card-head"
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="height: 148px;"
       >
         <div
-          class="ant-card-head-wrapper"
+          class="styledComponents__Wrapper-sc-1352uh8-0 ilNUvb"
         >
           <div
-            class="ant-card-head-title"
+            class="styledComponents__FallbackWrapper-sc-1352uh8-1 doEIjj"
           >
-            <div
-              class="ant-space ant-space-horizontal ant-space-align-center"
+            <span
+              aria-label="loader"
+              role="img"
             >
               <div
-                class="ant-space-item"
+                aria-busy="true"
+                aria-live="polite"
+                class="ant-spin ant-spin-lg ant-spin-spinning"
               >
-                <div
-                  class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
-                />
+                <span
+                  class="ant-spin-dot ant-spin-dot-spin"
+                >
+                  <i
+                    class="ant-spin-dot-item"
+                  />
+                  <i
+                    class="ant-spin-dot-item"
+                  />
+                  <i
+                    class="ant-spin-dot-item"
+                  />
+                  <i
+                    class="ant-spin-dot-item"
+                  />
+                </span>
               </div>
-            </div>
-          </div>
-          <div
-            class="ant-card-extra"
-          >
-            <div
-              class="ant-space ant-space-horizontal ant-space-align-center"
-            />
+            </span>
           </div>
         </div>
-      </div>
-      <div
-        class="ant-card-body"
-      >
-        Overview widget
       </div>
     </div>
   </div>
@@ -463,46 +475,52 @@ exports[`SwitchOverviewTab should navigate to Route Interfaces tab correctly 1`]
 exports[`SwitchOverviewTab should navigate to VLANs tab correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-13w5wfx-4 dnleil"
-    type="solid-bg"
+    class="ant-row Grid__GridRow-sc-5irhjd-2"
+    style="margin: -10px -10px -10px -10px;"
   >
     <div
-      class="ant-card"
+      class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
     >
       <div
-        class="ant-card-head"
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="height: 148px;"
       >
         <div
-          class="ant-card-head-wrapper"
+          class="styledComponents__Wrapper-sc-1352uh8-0 ilNUvb"
         >
           <div
-            class="ant-card-head-title"
+            class="styledComponents__FallbackWrapper-sc-1352uh8-1 doEIjj"
           >
-            <div
-              class="ant-space ant-space-horizontal ant-space-align-center"
+            <span
+              aria-label="loader"
+              role="img"
             >
               <div
-                class="ant-space-item"
+                aria-busy="true"
+                aria-live="polite"
+                class="ant-spin ant-spin-lg ant-spin-spinning"
               >
-                <div
-                  class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
-                />
+                <span
+                  class="ant-spin-dot ant-spin-dot-spin"
+                >
+                  <i
+                    class="ant-spin-dot-item"
+                  />
+                  <i
+                    class="ant-spin-dot-item"
+                  />
+                  <i
+                    class="ant-spin-dot-item"
+                  />
+                  <i
+                    class="ant-spin-dot-item"
+                  />
+                </span>
               </div>
-            </div>
-          </div>
-          <div
-            class="ant-card-extra"
-          >
-            <div
-              class="ant-space ant-space-horizontal ant-space-align-center"
-            />
+            </span>
           </div>
         </div>
-      </div>
-      <div
-        class="ant-card-body"
-      >
-        Overview widget
       </div>
     </div>
   </div>
@@ -727,46 +745,52 @@ exports[`SwitchOverviewTab should navigate to VLANs tab correctly 1`] = `
 exports[`SwitchOverviewTab should navigate to ports tab correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-13w5wfx-4 dnleil"
-    type="solid-bg"
+    class="ant-row Grid__GridRow-sc-5irhjd-2"
+    style="margin: -10px -10px -10px -10px;"
   >
     <div
-      class="ant-card"
+      class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
+      style="padding: 10px 10px 10px 10px;"
     >
       <div
-        class="ant-card-head"
+        class="Grid__Container-sc-5irhjd-1 zzbxI"
+        style="height: 148px;"
       >
         <div
-          class="ant-card-head-wrapper"
+          class="styledComponents__Wrapper-sc-1352uh8-0 ilNUvb"
         >
           <div
-            class="ant-card-head-title"
+            class="styledComponents__FallbackWrapper-sc-1352uh8-1 doEIjj"
           >
-            <div
-              class="ant-space ant-space-horizontal ant-space-align-center"
+            <span
+              aria-label="loader"
+              role="img"
             >
               <div
-                class="ant-space-item"
+                aria-busy="true"
+                aria-live="polite"
+                class="ant-spin ant-spin-lg ant-spin-spinning"
               >
-                <div
-                  class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
-                />
+                <span
+                  class="ant-spin-dot ant-spin-dot-spin"
+                >
+                  <i
+                    class="ant-spin-dot-item"
+                  />
+                  <i
+                    class="ant-spin-dot-item"
+                  />
+                  <i
+                    class="ant-spin-dot-item"
+                  />
+                  <i
+                    class="ant-spin-dot-item"
+                  />
+                </span>
               </div>
-            </div>
-          </div>
-          <div
-            class="ant-card-extra"
-          >
-            <div
-              class="ant-space ant-space-horizontal ant-space-align-center"
-            />
+            </span>
           </div>
         </div>
-      </div>
-      <div
-        class="ant-card-body"
-      >
-        Overview widget
       </div>
     </div>
   </div>
@@ -920,40 +944,9 @@ exports[`SwitchOverviewTab should navigate to ports tab correctly 1`] = `
           tabindex="0"
         >
           <div
-            class="styledComponents__Wrapper-sc-1352uh8-0 ilNUvb"
-          >
-            <div
-              class="styledComponents__FallbackWrapper-sc-1352uh8-1 cUVMCE"
-            >
-              <span
-                aria-label="loader"
-                role="img"
-              >
-                <div
-                  aria-busy="true"
-                  aria-live="polite"
-                  class="ant-spin ant-spin-lg ant-spin-spinning"
-                >
-                  <span
-                    class="ant-spin-dot ant-spin-dot-spin"
-                  >
-                    <i
-                      class="ant-spin-dot-item"
-                    />
-                    <i
-                      class="ant-spin-dot-item"
-                    />
-                    <i
-                      class="ant-spin-dot-item"
-                    />
-                    <i
-                      class="ant-spin-dot-item"
-                    />
-                  </span>
-                </div>
-              </span>
-            </div>
-          </div>
+            data-testid="rc-SwitchPortTable"
+            title="SwitchPortTable"
+          />
         </div>
         <div
           aria-hidden="true"

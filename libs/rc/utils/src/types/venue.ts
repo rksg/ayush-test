@@ -347,56 +347,56 @@ export interface TriBandSettings {
 }
 export interface VenueDefaultRegulatoryChannels {
   '2.4GChannels': {
-	[key: string]: string[]
+    [key: string]: string[]
   },
   '5GChannels': {
-	dfs: {
-	  [key: string]: string[]
-	},
-	indoor: {
-	  [key: string]: string[]
-	},
-	outdoor: {
-	  [key: string]: string[]
-	}
+    dfs: {
+      [key: string]: string[]
+    },
+    indoor: {
+      [key: string]: string[]
+    },
+    outdoor: {
+      [key: string]: string[]
+    }
   },
   '5GLowerChannels': {
-	dfs: {
-	  [key: string]: string[]
-	},
-	indoor: {
-	  [key: string]: string[]
-	},
-	outdoor: {
-	  [key: string]: string[]
-	}
+    dfs: {
+      [key: string]: string[]
+    },
+    indoor: {
+      [key: string]: string[]
+    },
+    outdoor: {
+      [key: string]: string[]
+    }
   },
   '5GUpperChannels': {
-	dfs: {
-	  [key: string]: string[]
-	},
-	indoor: {
-	  [key: string]: string[]
-	},
-	outdoor: {
-	  [key: string]: string[]
-	}
+    dfs: {
+      [key: string]: string[]
+    },
+    indoor: {
+      [key: string]: string[]
+		},
+    outdoor: {
+      [key: string]: string[]
+    }
   },
   '6GChannels': {
-	[key: string]: string[]
+    [key: string]: string[]
   }
 }
 
 export interface VenueDefaultRegulatoryChannelsForm {
-  radioParams24G: {
+	radioParams24G: {
 		allowedChannels: string[],
 		channelBandwidth: string,
 		method: string,
 		changeInterval: number,
 		scanInterval: number,
 		txPower: string
-  },
-  radioParams50G: {
+	},
+	radioParams50G: {
 		combineChannels: boolean,
 		allowedIndoorChannels: string[],
 		allowedOutdoorChannels: string[],
@@ -405,11 +405,11 @@ export interface VenueDefaultRegulatoryChannelsForm {
 		changeInterval: number,
 		scanInterval: number,
 		txPower: string
-  },
-  radioParamsDual5G: {
+	},
+	radioParamsDual5G?: {
 		enabled: boolean,
-		inheritParamsLower5G: boolean,
-		radioParamsLower5G: {
+		inheritParamsLower5G?: boolean,
+		radioParamsLower5G?: {
 			combineChannels: boolean,
 			allowedIndoorChannels: string[],
 			allowedOutdoorChannels: string[],
@@ -419,8 +419,8 @@ export interface VenueDefaultRegulatoryChannelsForm {
 			scanInterval: number,
 			txPower: string
 		},
-		inheritParamsUpper5G: boolean,
-		radioParamsUpper5G: {
+		inheritParamsUpper5G?: boolean,
+		radioParamsUpper5G?: {
 			combineChannels: boolean,
 			allowedIndoorChannels: string[],
 			allowedOutdoorChannels: string[],
@@ -430,61 +430,63 @@ export interface VenueDefaultRegulatoryChannelsForm {
 			scanInterval: number,
 			txPower: string
 		}
-  },
-	radioParams6G: {
-	  method: string,
-	  scanInterval: number,
-	  allowedChannels: string[],
-	  channelBandwidth: string,
-	  bssMinRate6G: string,
-	  mgmtTxRate6G: string,
-	  changeInterval: number,
-	  txPower: string
+	},
+	radioParams6G?: {
+		method: string,
+		scanInterval: number,
+		allowedChannels: string[],
+		channelBandwidth: string,
+		bssMinRate6G: string,
+		mgmtTxRate6G: string,
+		changeInterval: number,
+		txPower: string
 	}
 }
 
 export interface ApRadioChannelsForm {
-  apRadioParams24G: {
-	allowedChannels: string[],
-	changeInterval: number,
-	channelBandwidth: string,
-	manualChannel: number,
-	method: string,
-	txPower: string
-  },
-  apRadioParams50G: {
-	allowedChannels: string[],
-	changeInterval: number,
-	channelBandwidth: string,
-	manualChannel: number,
-	method: string,
-	txPower: string
-  },
-  apRadioParams6G: {
-	bssMinRate6G: string,
-	changeInterval: number,
-	channelBandwidth: string,
-	manualChannel: number,
-	method: string,
-	mgmtTxRate6G: string,
-	txPower: string
-  },
-  apRadioParamsDual5G: {
-	enabled: boolean,
-	radioParamsLower5G: {
-	  changeInterval: number,
-	  channelBandwidth: string,
-	  manualChannel: number,
-	  method: string,
-	  txPower: string
+	apRadioParams24G: {
+		allowedChannels: string[],
+		changeInterval: number,
+		channelBandwidth: string,
+		manualChannel: number,
+		method: string,
+		txPower: string
 	},
-	radioParamsUpper5G: {
-	  changeInterval: number,
-	  channelBandwidth: string,
-	  manualChannel: number,
-	  method: string,
-	  txPower: string
-	}
+	apRadioParams50G: {
+		allowedChannels: string[],
+		changeInterval: number,
+		channelBandwidth: string,
+		manualChannel: number,
+		method: string,
+		txPower: string
+	},
+	apRadioParams6G: {
+		bssMinRate6G: string,
+		changeInterval: number,
+		channelBandwidth: string,
+		manualChannel: number,
+		method: string,
+		mgmtTxRate6G: string,
+		txPower: string
+	},
+	apRadioParamsDual5G: {
+		enabled: boolean,
+		lower5gEnabled: boolean,
+		radioParamsLower5G: {
+			changeInterval: number,
+			channelBandwidth: string,
+			manualChannel: number,
+			method: string,
+			txPower: string
+		},
+		radioParamsUpper5G: {
+			changeInterval: number,
+			channelBandwidth: string,
+			manualChannel: number,
+			method: string,
+			txPower: string
+		},
+		upper5gEnabled: boolean
   },
   enable6G: boolean,
   enable24G: boolean,
