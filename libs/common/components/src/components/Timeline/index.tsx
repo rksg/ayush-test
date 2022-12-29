@@ -4,10 +4,6 @@ import { Timeline as AntTimeline, Descriptions } from 'antd'
 import { defineMessage, useIntl }                from 'react-intl'
 
 import {
-  InProgress,
-  Pending,
-  CancelCircleSolid,
-  CheckMarkCircleSolid,
   PlusSquareSolid,
   MinusSquareSolid
 }                         from '@acx-ui/icons'
@@ -22,7 +18,11 @@ import {
   ExpanderWrapper,
   WithExpanderWrapper,
   Wrapper,
-  Step
+  Step,
+  SuccessIcon,
+  FailIcon,
+  PendingsIcon,
+  InProgressIcon
 } from './styledComponents'
 
 interface StatusIconProps { status: TimelineStatus}
@@ -30,15 +30,15 @@ interface StatusIconProps { status: TimelineStatus}
 export const StatusIcon = (props: StatusIconProps) => {
   switch(props.status) {
     case 'SUCCESS':
-      return <CheckMarkCircleSolid />
+      return <SuccessIcon />
     case 'PENDING':
-      return <Pending />
+      return <PendingsIcon />
     case 'INPROGRESS':
-      return <InProgress />
+      return <InProgressIcon />
     case 'FAIL':
-      return <CancelCircleSolid />
+      return <FailIcon />
     case 'OFFLINE': // TODO: need to update icon once we get it
-      return <Pending />
+      return <PendingsIcon />
   }
 }
 
