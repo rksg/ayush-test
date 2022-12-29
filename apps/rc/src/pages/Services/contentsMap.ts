@@ -1,6 +1,7 @@
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
 import {
+  QosPriorityEnum,
   ServiceAdminState,
   ServiceStatus,
   ServiceTechnology,
@@ -37,4 +38,12 @@ export const serviceStatusLabelMapping: Record<ServiceStatus, MessageDescriptor>
 export const serviceAdminStateLabelMapping: Record<ServiceAdminState, MessageDescriptor> = {
   [ServiceAdminState.ENABLED]: defineMessage({ defaultMessage: 'Enabled' }),
   [ServiceAdminState.DISABLED]: defineMessage({ defaultMessage: 'Disabled' })
+}
+
+// eslint-disable-next-line max-len
+export const wifiCallingQosPriorityLabelMapping: Record<QosPriorityEnum, MessageDescriptor> = {
+  [QosPriorityEnum.WIFICALLING_PRI_VOICE]: defineMessage({ defaultMessage: 'Voice' }),
+  [QosPriorityEnum.WIFICALLING_PRI_VIDEO]: defineMessage({ defaultMessage: 'Video' }),
+  [QosPriorityEnum.WIFICALLING_PRI_BE]: defineMessage({ defaultMessage: 'Best Effort' }),
+  [QosPriorityEnum.WIFICALLING_PRI_BG]: defineMessage({ defaultMessage: 'Background' })
 }

@@ -81,7 +81,9 @@ export const serviceApi = baseServiceApi.injectEndpoints({
             'Delete Multicast DNS Proxy Service Profile',
             'Delete Multicast DNS Proxy Service Profiles',
             'Activate Multicast DNS Proxy Service Profiles',
-            'Deactivate Multicast DNS Proxy Service Profiles'
+            'Deactivate Multicast DNS Proxy Service Profiles',
+            'Delete WiFi Calling Service Profile',
+            'Delete WiFi Calling Service Profiles'
           ], () => {
             api.dispatch(serviceApi.util.invalidateTags([
               { type: 'Service', id: 'LIST' }
