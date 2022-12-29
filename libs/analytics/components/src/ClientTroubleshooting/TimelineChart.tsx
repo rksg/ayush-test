@@ -73,6 +73,7 @@ function getSeriesItemColor (params: { data: Event[] }) {
     ]
   )
 }
+
 const useDotClick = (
   eChartsRef: RefObject<ReactECharts>,
   onDotClick: ((param: unknown) => void) | undefined,

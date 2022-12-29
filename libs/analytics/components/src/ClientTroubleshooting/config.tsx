@@ -291,8 +291,8 @@ export const ClientTroubleShootingConfig = {
           value: 'performance'
         },
         {
-          title: defineMessage({ defaultMessage: 'Infratructure' }),
-          value: 'infratructure',
+          title: defineMessage({ defaultMessage: 'Infrastructure' }),
+          value: 'infrastructure',
           isLast: true
         }
       ]
