@@ -7,7 +7,9 @@ import { useParams }       from 'react-router-dom'
 // import { StackedBarChart }                  from '@acx-ui/components'
 import { Card, GridCol, GridRow }        from '@acx-ui/components'
 import { useGetWifiCallingServiceQuery } from '@acx-ui/rc/services'
-import { WifiCallingQosPriority }        from '@acx-ui/rc/utils'
+import { QosPriorityEnum }               from '@acx-ui/rc/utils'
+
+import { wifiCallingQosPriorityLabelMapping } from '../../contentsMap'
 
 const WifiCallingDetailContent = () => {
   const params = useParams()
@@ -60,7 +62,9 @@ const WifiCallingDetailContent = () => {
           <Card.Title>
             {$t({ defaultMessage: 'Qos Priority' })}
           </Card.Title>
-          <Paragraph>{WifiCallingQosPriority[data.qosPriority]}</Paragraph>
+          <Paragraph>{$t(
+            wifiCallingQosPriorityLabelMapping[data.qosPriority as QosPriorityEnum])
+          }</Paragraph>
         </GridCol>
         <GridCol col={{ span: 10 }}>
           <Card.Title style={{ width: 'maxContent' }}>
