@@ -52,7 +52,7 @@ export const spuriousEvents = [
   EVENT_STATES.SPURIOUS_INFO_UPDATED
 ]
 
-export type DisplayEvent = {
+export type DisplayEvent = ConnectionEvent & {
   start: number,
   end: number,
   code: string | null,
@@ -82,7 +82,7 @@ export const categorizeEvent = (name: string, ttc: number | null) => {
 export const transformEvents = (
   events: ConnectionEvent[], selectedEventTypes: string[], selectedRadios: string[]
 ) => events.reduce((acc, data, index) => {
-  const { event, state, timestamp, mac, ttc, radio, code, failedMsgId } = data
+  const { event, state, timestamp, mac, ttc, radio, code, failedMsgId, ssid } = data
   if (code === 'eap' && failedMsgId && EAPOLMessageIds.includes(failedMsgId)) {
     data = { ...data, code: 'eapol' }
   }
@@ -109,6 +109,7 @@ export const transformEvents = (
     key: time + mac + eventType + index,
     start: time,
     end: time,
+    ssid,
     category
   })
   return acc

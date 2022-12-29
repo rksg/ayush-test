@@ -1,8 +1,6 @@
 import {
   GuestNetworkTypeEnum,
   NetworkTypeEnum,
-  PassphraseExpirationEnum,
-  PassphraseFormatEnum,
   WlanSecurityEnum
 } from '../constants'
 import { AAAWlanAdvancedCustomization }   from '../models/AAAWlanAdvancedCustomization'
@@ -110,12 +108,5 @@ export interface NetworkSaveData {
   dpskWlanSecurity?: WlanSecurityEnum;
   authRadius?: Radius;
   accountingRadius?: Radius;
-  passphraseLength?: number;
-  passphraseFormat?: PassphraseFormatEnum;
-  expiration?: PassphraseExpirationEnum;
-  dpskPassphraseGeneration?: {
-    length?: number;
-    format?: PassphraseFormatEnum;
-    expiration?: PassphraseExpirationEnum;
-  }
+  dpskServiceProfileId?: string;
 }
