@@ -235,7 +235,7 @@ export function TimeLine (props : TimeLineProps){
                 </UI.TimelineCount>
               </Col>
               {expandObj[config?.value as keyof TimelineData] &&
-                config?.subtitle?.map((subtitle) => (
+                config?.subtitle?.map((subtitle, index) => (
                   <React.Fragment key={index}>
                     <Col span={2} />
                     <Col span={18}>

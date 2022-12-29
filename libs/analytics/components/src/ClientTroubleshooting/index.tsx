@@ -33,8 +33,8 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
         <Row style={{ justifyContent: 'end' }} gutter={[16, 32]}>
           <Col span={historyContentToggle ? 15 : 11}>
             <Row style={{ justifyContent: 'end' }} gutter={[6, 6]}>
-              {ClientTroubleShootingConfig.selection.map((config) => (
-                <Col span={8} key={config.selectionType}>
+              {ClientTroubleShootingConfig.selection.map((config, index) => (
+                <Col span={8} key={index}>
                   <Select
                     entityName={config.entityName}
                     multiple
