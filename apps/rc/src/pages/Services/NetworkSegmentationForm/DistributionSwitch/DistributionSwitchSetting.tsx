@@ -1,12 +1,21 @@
 import React, { useContext, useState, useEffect } from 'react'
 
-import { Col, Form, Input, ModalProps, Row, Select, Space, Transfer } from 'antd'
-import { useIntl }                                                    from 'react-intl'
+import { Col, Form, Input, InputNumber, ModalProps, Row, Select, Space, Transfer } from 'antd'
+import { useIntl }                                                                 from 'react-intl'
 
-import { Button, Drawer, Loader, Modal, StepsForm, Subtitle, Table, TableProps } from '@acx-ui/components'
-import { useGetAccessSwitchesQuery, useGetDistributionSwitchesQuery }            from '@acx-ui/rc/services'
-import { AccessSwitch, DistributionSwitch, useTableQuery }                       from '@acx-ui/rc/utils'
-import { useParams }                                                             from '@acx-ui/react-router-dom'
+import { Button, Drawer, Modal, StepsForm, Subtitle, Table, TableProps } from '@acx-ui/components'
+import {
+  useGetAccessSwitchesQuery,
+  useGetDistributionSwitchesQuery,
+  useGetAvailableSwitchesQuery
+} from '@acx-ui/rc/services'
+import {
+  AccessSwitch,
+  DistributionSwitch,
+  networkWifiIpRegExp,
+  subnetMaskIpRegExp
+} from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
 
 
 import NetworkSegmentationFormContext from '../NetworkSegmentationFormContext'
@@ -17,8 +26,6 @@ export default function DistributionSwitchSetting () {
 
   const [openDrawer, setOpenDrawer] = useState(false)
   const [selected, setSelected] = useState<DistributionSwitch>()
-
-  const { saveState } = useContext(NetworkSegmentationFormContext)
 
   const rowActions: TableProps<DistributionSwitch>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
@@ -62,18 +69,18 @@ function DistributionSwitchDrawer (props: {
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const [form] = Form.useForm()
+  const { open, editRecord, onClose } = props
+
+  const defaultRecord = { siteKeepAlive: 5, siteRetry: 3 }
+
+  const { saveState } = useContext(NetworkSegmentationFormContext)
+  const venueId = saveState.venueId
 
   const [openModal, setOpenModal] = useState(false)
 
-  const { open, editRecord, onClose } = props
-  const { data: dsListResult } = useGetDistributionSwitchesQuery({
-    params: { tenantId },
-    payload: {
-      fields: [
-        'name', 'id'
-      ]
-    }
-  })
+  const { data: availableSwitches } = useGetAvailableSwitchesQuery({
+    params: { tenantId, venueId }
+  }, { skip: !venueId })
 
   useEffect(()=>{
     form.resetFields()
@@ -85,9 +92,10 @@ function DistributionSwitchDrawer (props: {
         $t({ defaultMessage: 'Edit Distribution Switch' }) :
         $t({ defaultMessage: 'Add Distribution Switch' })}
       visible={open}
+      mask={true}
       onClose={onClose}
       destroyOnClose={true}
-      width={700}
+      width={450}
       footer={<Drawer.FormFooter
         onCancel={onClose}
         onSave={async () => {
@@ -102,51 +110,50 @@ function DistributionSwitchDrawer (props: {
       />} >
       <Form form={form}
         layout='vertical'
-        initialValues={editRecord || { siteKeepAlive: 5, siteRetry: 3 }}>
+        initialValues={editRecord || defaultRecord}>
         <Form.Item name='name'
           label={$t({ defaultMessage: 'Distribution Switch' })}
-          wrapperCol={{ span: 10 }}
           rules={[{ required: true }]} >
-          <Select options={dsListResult?.data}
-            placeholder={$t({ defaultMessage: 'Select ...' })} />
+          <Select placeholder={$t({ defaultMessage: 'Select ...' })}
+            options={availableSwitches?.map(item => ({
+              value: item.id,
+              label: item.name
+            }))
+            } />
         </Form.Item>
         <Form.Item name='vlanList'
           label={$t({ defaultMessage: 'VLAN Range' })}
-          wrapperCol={{ span: 15 }}
           rules={[{ required: true }]}>
           <Input />
         </Form.Item>
         <Form.Item name='loopbackInterfaceId'
           label={$t({ defaultMessage: 'Lookback Interface ID' })}
-          wrapperCol={{ span: 15 }}
-          rules={[{ required: true }]}>
+          rules={[{ required: true }, { type: 'number', max: 64, min: 1, transform: Number }]}>
           <Input />
         </Form.Item>
         <Form.Item name='loopbackInterfaceIpAddress'
           label={$t({ defaultMessage: 'Lookback Interface IP Address' })}
-          wrapperCol={{ span: 15 }}
-          rules={[{ required: true }]}>
+          rules={[{ required: true }, { validator: (_, value) => networkWifiIpRegExp(value) }]}>
           <Input />
         </Form.Item>
         <Form.Item name='loopbackInterfaceSubnetMask'
           label={$t({ defaultMessage: 'Lookback Interface Subnet Mask' })}
-          wrapperCol={{ span: 15 }}
-          rules={[{ required: true }]}>
+          rules={[{ required: true }, { validator: (_, value) => subnetMaskIpRegExp(value) }]}>
           <Input />
         </Form.Item>
-        <Space size={10}>
+        <Space size={10} align='start'>
           <Form.Item name='siteKeepAlive'
             label={$t({ defaultMessage: 'Keep Alive' })}
-            rules={[{ required: true }, { max: 20 }, { min: 1 }]}>
-            <Input />
+            rules={[{ required: true }]}>
+            <InputNumber style={{ width: '200px' }} max={20} min={1} />
           </Form.Item>
           <Form.Item name='siteRetry'
             label={$t({ defaultMessage: 'Retry Times' })}
-            rules={[{ required: true }, { max: 5 }, { min: 1 }]}>
-            <Input />
+            rules={[{ required: true }]}>
+            <InputNumber style={{ width: '200px' }} max={5} min={1} />
           </Form.Item>
         </Space>
-        <Row justify='space-between'>
+        <Row justify='space-between' style={{ padding: '30px 0 10px' }}>
           <Col>
             <Subtitle level={4}>
               { $t({ defaultMessage: 'Select Access Switches' }) }
@@ -194,11 +201,12 @@ function SelectAccessSwitchModal (props: ModalProps) {
   const { $t } = useIntl()
   const { tenantId } = useParams()
 
+  const { saveState } = useContext(NetworkSegmentationFormContext)
+  const venueId = saveState.venueId
+
   const [selectedAsList, setSelectedAsList] = useState([] as string[])
 
-  const venueId = ':venueId'
-
-  const { data } = useGetAccessSwitchesQuery({ params: { tenantId, venueId } })
+  const { data } = useGetAccessSwitchesQuery({ params: { tenantId, venueId } }, { skip: !venueId })
 
   const handleUpdateAsList = () => {}
   const handleChange = (targetKeys: string[]) => {
@@ -219,10 +227,7 @@ function SelectAccessSwitchModal (props: ModalProps) {
         targetKeys={selectedAsList}
         showSearch
         showSelectAll={false}
-        listStyle={{
-          width: 250,
-          height: 300
-        }}
+        listStyle={{ width: 250, height: 300 }}
         titles={[
           $t({ defaultMessage: 'Available Access Switch' }),
           $t({ defaultMessage: 'Applied Profiles' })
@@ -241,17 +246,6 @@ function DistributionSwitchTable (
   }
 ) {
   const { $t } = useIntl()
-  const tableQuery = useTableQuery({
-    useQuery: useGetDistributionSwitchesQuery,
-    defaultPayload: {
-      searchString: '',
-      fields: [
-        'id', 'name', 'siteName', 'siteIpAddress', 'vlanList',
-        'siteKeepAlive', 'siteRetry',
-        'loopbackInterfaceId', 'loopbackInterfaceIpAddress', 'loopbackInterfaceSubnetMask'
-      ]
-    }
-  })
 
   const { rowActions, selectedRowKeys } = props
 
@@ -302,27 +296,25 @@ function DistributionSwitchTable (
     }]
   }, [$t])
   return (<>
-    <Loader states={tableQuery.error ? [] : [tableQuery]}>
-      <Table
-        columns={columns}
-        dataSource={tableQuery.data?.data || [{
-          id: 'xxx',
-          name: 'xxx',
-          siteName: 'xxx',
-          siteIpAddress: 'xxx',
-          vlanList: 'xxx',
-          siteKeepAlive: 'xxx',
-          siteRetry: 'xxx',
-          loopbackInterfaceId: 'xxx',
-          loopbackInterfaceIpAddress: 'xxx',
-          loopbackInterfaceSubnetMask: 'xxx'
-        }]}
-        pagination={tableQuery.pagination}
-        onChange={tableQuery.handleTableChange}
-        rowKey='id'
-        rowActions={rowActions}
-        rowSelection={{ type: 'radio', selectedRowKeys }} />
-    </Loader>
+    <Table
+      columns={columns}
+      dataSource={[{
+        id: 'xxx',
+        name: 'xxx',
+        siteName: 'xxx',
+        siteIpAddress: 'xxx',
+        vlanList: 'xxx',
+        siteKeepAlive: 'xxx',
+        siteRetry: 'xxx',
+        loopbackInterfaceId: 'xxx',
+        loopbackInterfaceIpAddress: 'xxx',
+        loopbackInterfaceSubnetMask: 'xxx'
+      }]}
+      // pagination={tableQuery.pagination}
+      // onChange={tableQuery.handleTableChange}
+      rowKey='id'
+      rowActions={rowActions}
+      rowSelection={{ type: 'radio', selectedRowKeys }} />
     <br />
   </>)
 }

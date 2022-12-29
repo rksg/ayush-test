@@ -34,7 +34,8 @@ import {
   NetworkSegmentationUrls,
   WebAuthTemplate,
   AccessSwitch,
-  DistributionSwitch
+  DistributionSwitch,
+  SwitchLite
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
@@ -501,6 +502,15 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+
+    getAvailableSwitches: build.query<SwitchLite[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest( NetworkSegmentationUrls.getAvailableSwitches, params)
+        return {
+          ...req
+        }
+      }
     })
 
   })
@@ -546,5 +556,6 @@ export const {
   useUpdateWebAuthTemplateMutation,
   useDeleteWebAuthTemplateMutation,
   useGetAccessSwitchesQuery,
-  useGetDistributionSwitchesQuery
+  useGetDistributionSwitchesQuery,
+  useGetAvailableSwitchesQuery
 } = serviceApi

@@ -17,7 +17,6 @@ import { useIntl } from 'react-intl'
 import {
   Button,
   Drawer,
-  Loader,
   StepsForm,
   Subtitle,
   Table,
@@ -26,12 +25,14 @@ import {
 } from '@acx-ui/components'
 import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 import {
-  useGetAccessSwitchesQuery,
+  useGetPortsQuery,
+  useGetSwitchLagsQuery,
+  useGetSwitchVlansQuery,
   useLazyGetWebAuthTemplateQuery,
   useWebAuthTemplateListQuery
 } from '@acx-ui/rc/services'
-import { AccessSwitch, useTableQuery, WebAuthTemplate } from '@acx-ui/rc/utils'
-import { useParams }                                    from '@acx-ui/react-router-dom'
+import { AccessSwitch, WebAuthTemplate } from '@acx-ui/rc/utils'
+import { useParams }                     from '@acx-ui/react-router-dom'
 
 import { defaultTemplateData }        from '../../NetworkSegWebAuth/NetworkSegAuthForm'
 import NetworkSegmentationFormContext from '../NetworkSegmentationFormContext'
@@ -40,8 +41,6 @@ import NetworkSegmentationFormContext from '../NetworkSegmentationFormContext'
 
 export default function AccessSwitchSetting () {
   const { $t } = useIntl()
-
-  const { saveState } = useContext(NetworkSegmentationFormContext)
 
   return (<>
     <StepsForm.Title>{$t({ defaultMessage: 'Access Switch Settings' })}</StepsForm.Title>
@@ -56,19 +55,45 @@ function AccessSwitchDrawer (props: {
   open: boolean,
   editRecords?: AccessSwitch[],
   onClose: ()=>void
+  onSave: (values: Partial<AccessSwitch>)=>void
 }) {
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const [form] = Form.useForm()
 
-  const venueId = ':venueId'
+  const { open, editRecords, onClose, onSave } = props
 
-  const { open, editRecords, onClose } = props
+  const { saveState } = useContext(NetworkSegmentationFormContext)
+  const venueId = saveState.venueId
+
+  const switchId = editRecords && editRecords[0].id
+  const editingWebAuthPageType = editRecords && editRecords[0].webAuthPageType
 
   const [getWebAuthTemplate] = useLazyGetWebAuthTemplateQuery()
-  const { data: vlanList } = useGetAccessSwitchesQuery({ params: { tenantId, venueId } }) // TODO
-  const { data: portList } = useGetAccessSwitchesQuery({ params: { tenantId, venueId } }) // TODO
-  const { data: lagList } = useGetAccessSwitchesQuery({ params: { tenantId, venueId } }) // TODO
+  const { vlanList } = useGetSwitchVlansQuery({ params: { tenantId, switchId }, payload: {
+    page: 1, pageSize: 4096, sortField: 'vlanId', sortOrder: 'ASC'
+  } }, {
+    skip: !switchId,
+    selectFromResult: ({ data }) => ({
+      vlanList: data?.data?.filter(vlan => vlan.vlanName !== 'DEFAULT-VLAN' )
+        .map(vlan => ({ label: vlan.vlanId, value: vlan.vlanId }))
+    })
+  })
+  const { portList } = useGetPortsQuery({ params: { tenantId }, payload: {
+    filters: { switchId: editRecords?.map(rec => rec.id) }, page: 1, pageSize: 1000,
+    sortField: 'portIdentifierFormatted', sortOrder: 'ASC'
+  } }, {
+    skip: !switchId,
+    selectFromResult: ({ data }) => ({
+      portList: data?.data?.map(port => ({ label: port.portIdentifier, value: port.portId }))
+    })
+  })
+  const { lagList } = useGetSwitchLagsQuery({ params: { tenantId, switchId } }, {
+    skip: !switchId,
+    selectFromResult: ({ data }) => ({
+      lagList: data?.map(port => ({ label: port.name, value: port.lagId }))
+    })
+  })
   const { data: templateListResult } = useWebAuthTemplateListQuery({
     params: { tenantId },
     payload: {
@@ -78,11 +103,15 @@ function AccessSwitchDrawer (props: {
   })
   const templateList = templateListResult?.data as WebAuthTemplate[]
 
-  const [isCustomize, setIsCustomize] = useState(false)
+  const [webAuthPageType, setWebAuthPageType] = useState(editingWebAuthPageType)
   const [template, setTemplate] = useState<WebAuthTemplate>()
 
   const templateId = Form.useWatch('templateId', form)
-  const uplinkInfoType = Form.useWatch('uplinkInfoType', form)
+  const uplinkInfoType = Form.useWatch(['uplinkInfo', 'uplinkType'], form)
+
+  useEffect(()=>{
+    form.resetFields()
+  }, [form, open])
 
 
   useEffect(()=>{
@@ -99,7 +128,7 @@ function AccessSwitchDrawer (props: {
 
   const UplinkRadio = (props: {
     value: AccessSwitch['uplinkInfo']['uplinkType'],
-    options?: { id: string, name: string }[]
+    options?: { value: string, label?: string }[]
   }) => {
     const { value: radioValue, options } = props
     const uplinkTypeMap = {
@@ -110,13 +139,17 @@ function AccessSwitchDrawer (props: {
       <Radio value={radioValue}>
         <Space size='middle' style={{ height: '32px' }}>
           { uplinkTypeMap[radioValue] }
-          { uplinkInfoType === radioValue && <Form.Item name='uplinkId' noStyle>
-            <Select options={options?.map(d => ({ value: d.id, label: d.name }))}
+          { uplinkInfoType === radioValue && <Form.Item name={['uplinkInfo', 'uplinkId']} noStyle>
+            <Select options={options}
               placeholder={$t({ defaultMessage: 'Select ...' })}
               style={{ width: '180px' }}/>
           </Form.Item> }
         </Space>
       </Radio>)
+  }
+
+  const uplinkTypeChangeHandler = () => {
+    form.setFieldValue(['uplinkInfo', 'uplinkId'], null)
   }
 
   return (
@@ -126,30 +159,34 @@ function AccessSwitchDrawer (props: {
         { name: editRecords?.map(as=>as.name).join(', ') }
       )}
       visible={open}
+      mask={true}
       onClose={onClose}
       destroyOnClose={true}
-      width={700}
+      width={480}
       footer={<Drawer.FormFooter
         onCancel={onClose}
         onSave={async () => {
           try {
             await form.validateFields()
             form.submit()
-            onClose()
           } catch (error) {
             if (error instanceof Error) throw error
           }
         }}
       />}>
-      <Form layout='vertical' form={form}>
-        <Form.Item name='uplinkInfoType'
-          label={$t({ defaultMessage: 'Uplink Port' })} >
-          <Radio.Group>
-            <Space direction='vertical'>
-              <UplinkRadio value='PORT' options={portList?.data}/>
-              <UplinkRadio value='LAG' options={lagList?.data}/>
-            </Space>
-          </Radio.Group>
+      <Form layout='vertical'
+        form={form}
+        onFinish={onSave}
+        initialValues={editRecords ? editRecords[0] : {}} >
+        <Form.Item label={$t({ defaultMessage: 'Uplink Port' })} >
+          <Form.Item name={['uplinkInfo', 'uplinkType']} noStyle>
+            <Radio.Group onChange={uplinkTypeChangeHandler}>
+              <Space direction='vertical'>
+                <UplinkRadio value='PORT' options={portList}/>
+                <UplinkRadio value='LAG' options={lagList}/>
+              </Space>
+            </Radio.Group>
+          </Form.Item>
         </Form.Item>
         <Form.Item name='vlanId'
           label={<>
@@ -160,7 +197,7 @@ function AccessSwitchDrawer (props: {
             </Tooltip></>}
           wrapperCol={{ span: 10 }}
           rules={[{ required: true }]} >
-          <Select options={vlanList?.data}
+          <Select options={vlanList}
             placeholder={$t({ defaultMessage: 'Select ...' })} />
         </Form.Item>
         <Row justify='space-between'>
@@ -169,18 +206,24 @@ function AccessSwitchDrawer (props: {
               { $t({ defaultMessage: 'Net Seg Auth page' }) }
             </Subtitle>
           </Col>
-          <Col>{ isCustomize ?
+          <Col>{ webAuthPageType === 'USER_DEFINED' ?
             <span>
-              <Button type='link' onClick={()=>{/*TODO*/}}>Save as Template</Button>
+              <Button type='link' onClick={()=>{/*TODO*/}}>
+                {$t({ defaultMessage: 'Save as Template' })}
+              </Button>
               <Divider type='vertical' />
-              <Button type='link' onClick={()=>setIsCustomize(false)}>Select Auth Template</Button>
+              <Button type='link' onClick={()=>setWebAuthPageType('TEMPLATE')}>
+                {$t({ defaultMessage: 'Select Auth Template' })}
+              </Button>
             </span> :
-            <Button type='link' onClick={()=>setIsCustomize(true)}>Customize</Button>
+            <Button type='link' onClick={()=>setWebAuthPageType('USER_DEFINED')}>
+              {$t({ defaultMessage: 'Customize' })}
+            </Button>
           }
           </Col>
         </Row>
 
-        { isCustomize ? (<>
+        { webAuthPageType === 'USER_DEFINED' ? (<>
           <Form.Item name='webAuthCustomTop'
             label={$t({ defaultMessage: 'Header' })} >
             <Input.TextArea autoSize placeholder={defaultTemplateData['webAuthCustomTop']}/>
@@ -240,20 +283,38 @@ function AccessSwitchDrawer (props: {
 
 function AccessSwitchTable () {
   const { $t } = useIntl()
-  const tableQuery = useTableQuery({
-    useQuery: useGetAccessSwitchesQuery,
-    defaultPayload: {
-      searchString: '',
-      fields: [
-        'name', 'model', 'distributionSwitchId', 'uplinkInfo', 'vlanId', 'templateId'
-      ]
-    }
-  })
 
   const [open, setOpen] = useState(false)
   const [selected, setSelected] = useState<AccessSwitch[]>()
+  const [accessSwitchList, setAccessSwitchList ] = useState<AccessSwitch[]>([{
+    id: 'c0:c5:20:aa:24:57',
+    name: 'ICX7150-C12 Router',
+    vlanId: 11,
+    model: 'ICX7150-C12P',
+    webAuthPageType: 'USER_DEFINED',
+    templateId: '0f99786fd7464f5790af824c6352ad1d',
+    distributionSwitchId: '123',
+    uplinkInfo: {
+      uplinkType: 'PORT',
+      uplinkId: '1/2/3'
+    }
+  }])
 
   const onClose = () => {
+    setOpen(false)
+  }
+
+  const onSave = (values: Partial<AccessSwitch>) => {
+    if (!selected || !accessSwitchList) return
+
+    setAccessSwitchList(accessSwitchList.map(as => {
+      const isSelected = selected.map(item => item.id).includes(as.id)
+      if (isSelected) {
+        return { ...as, ...values }
+      }
+      return as
+    }))
+    setSelected(undefined)
     setOpen(false)
   }
 
@@ -302,26 +363,12 @@ function AccessSwitchTable () {
     }]
   }, [$t])
   return (<>
-    <Loader states={tableQuery.error ? [] : [tableQuery]}>
-      <Table
-        columns={columns}
-        dataSource={tableQuery.data?.data || [{
-          id: 'xxx',
-          name: 'xxx',
-          vlanId: 11,
-          model: 'xxxx',
-          distributionSwitchId: '123',
-          uplinkInfo: {
-            uplinkType: 'PORT',
-            uplinkId: '1/2/3'
-          }
-        }]}
-        pagination={tableQuery.pagination}
-        onChange={tableQuery.handleTableChange}
-        rowKey='id'
-        rowActions={rowActions}
-        rowSelection={{ type: 'checkbox' }} />
-    </Loader>
-    <AccessSwitchDrawer open={open} editRecords={selected} onClose={onClose} />
+    <Table
+      columns={columns}
+      dataSource={accessSwitchList}
+      rowKey='id'
+      rowActions={rowActions}
+      rowSelection={{ type: 'checkbox' }} />
+    <AccessSwitchDrawer open={open} editRecords={selected} onClose={onClose} onSave={onSave} />
   </>)
 }

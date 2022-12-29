@@ -108,3 +108,48 @@ export interface SwitchTransactionResp {
   requestId: string;
   response: Switch;
 }
+
+export interface SwitchPortViewModel {
+  cloudPort: boolean
+  name?: string
+  portId: string
+  portIdentifier: string
+  status?: string
+  switchId: string
+  switchUnitId: string
+  switchSerial: string
+  switchName: string
+  switchMac: string
+  stack: boolean
+  deviceStatus: SwitchStatusEnum
+  syncedSwitchConfig: boolean
+  adminStatus?: string
+  portSpeed?: string
+  poeType: string
+  poeEnabled: boolean
+  poeTotal: number
+  poeUsed: number
+  vlanIds?: string
+  unTaggedVlan: string
+  rx?: string
+  tx?: string
+  signalIn?: number
+  signalOut?: number
+  lagName?: string
+  lagId: string
+  neighborName?: string
+  opticsType?: string
+  multicastIn?: string
+  multicastOut?: string
+  broadcastIn?: string
+  broadcastOut?: string
+  inErr?: string
+  outErr?: string
+  crcErr?: string
+  inDiscard?: string
+  acl?: string
+  tag?: string
+  usedInFormingStack: boolean
+  unitStatus: string // stack unit role (Standalone/Member...etc)
+  unitState: SwitchStatusEnum // stack unit status (Online/Offline)
+}

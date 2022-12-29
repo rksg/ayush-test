@@ -22,6 +22,28 @@ export const NetworkSegmentationUrls: { [key: string]: ApiInfo } = {
     url: '/api/switch/tenant/:tenantId/webAuthPageTemplates/:serviceId'
   },
 
+  getAvailableSwitches: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/venues/:venueId/networkSegmentations'
+  },
+  getSwitchesByServiceId: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/venues/:venueId/networkSegmentations/:serviceId'
+  },
+  getAvailableSwitchesByDsId: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/venues/:venueId/networkSegmentations' +
+      '/distributions/:switchId/accessSwitches'
+  },
+  validateDistributionSwitchInfo: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/venue/:venueId/networkSegmentations/distributionSwitchInfo'
+  },
+  validateAccessSwitchInfo: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/venue/:venueId/networkSegmentations/accessSwitchInfo'
+  },
+
   getAccessSwitches: {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/venue/:venueId/networkSegmentations/accessSwitches'

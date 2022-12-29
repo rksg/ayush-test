@@ -47,6 +47,10 @@ export default function NetworkSegmentationForm () {
           <StepsForm.StepForm
             name='generalSettings'
             title={$t({ defaultMessage: 'General Settings' })}
+            onFinish={async (data) => {
+              updateSaveState(data)
+              return true
+            }}
           >
             <GeneralSettings/>
           </StepsForm.StepForm>
@@ -60,7 +64,7 @@ export default function NetworkSegmentationForm () {
 
           <StepsForm.StepForm
             name='distSwitch'
-            title={$t({ defaultMessage: 'Dist Switch' })}>
+            title={$t({ defaultMessage: 'Dist. Switch' })}>
             <DistributionSwitchSetting />
           </StepsForm.StepForm>
 
