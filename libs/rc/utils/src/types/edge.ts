@@ -5,7 +5,7 @@ export interface EdgeGeneralSetting {
   edgeGroupId: string
   name: string
   serialNumber?: string
-  venueId: string
+  venueId?: string
   tags: string // TODO when tags component is ready need to change type to array
 }
 
@@ -57,9 +57,14 @@ export interface EdgeDetails {
   model: string
   updatedDate: string
 }
+export interface EdgeDnsServers {
+  primary: string
+  secondary: string
+}
+
 export interface EdgePort {
   portType: EdgePortTypeEnum.UNSPECIFIED | EdgePortTypeEnum.WAN | EdgePortTypeEnum.LAN
-	portId: string
+  portId: string
   portName:string
   status: string
   adminStatus:string

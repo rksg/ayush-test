@@ -114,3 +114,8 @@ export const edgePortsSetting:EdgePort[] = [{
   duplexSpeed: 100* Math.pow(12, 6),
   ip: '1.1.1.2'
 }]
+
+export const mockEdgeDnsServersData = {
+  primary: '1.1.1.1',
+  secondary: '2.2.2.2'
+}

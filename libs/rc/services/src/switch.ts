@@ -70,6 +70,18 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         })
       }
     }),
+    stackMemberList: build.query<TableResult<StackMember>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.getMemberList,
+          params
+        )
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     deleteSwitches: build.mutation<SwitchRow, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(SwitchUrlsInfo.deleteSwitches, params)
@@ -226,6 +238,7 @@ export const aggregatedSwitchListData = (switches: TableResult<SwitchRow>,
 
 export const {
   useSwitchListQuery,
+  useStackMemberListQuery,
   useDeleteSwitchesMutation,
   useSwitchDetailHeaderQuery,
   useImportSwitchesMutation,
