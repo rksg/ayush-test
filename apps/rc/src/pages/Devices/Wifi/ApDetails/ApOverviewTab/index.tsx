@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react'
 
-import { useIntl } from 'react-intl'
-
 import {
   ConnectedClientsOverTime,
   NetworkHistory,
@@ -22,7 +20,6 @@ import { ApPhoto }      from './ApPhoto'
 import { ApProperties } from './ApProperties'
 
 export function ApOverviewTab () {
-  const { $t } = useIntl()
   const { filters } = useAnalyticsFilter()
   const [ apFilter, setApFilter ] = useState(null as unknown as AnalyticsFilter)
   const [currentApDevice, setCurrentApDevice] = useState<NetworkDevice>({} as NetworkDevice)
