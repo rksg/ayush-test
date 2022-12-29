@@ -3,7 +3,7 @@ export interface EdgeSaveData {
   edgeGroupId: string
   name: string
   serialNumber?: string
-  venueId: string
+  venueId?: string
   tags: string // TODO when tags component is ready need to change type to array
 }
 
@@ -18,6 +18,11 @@ export interface EdgeViewModel {
   venueName: string
   venueId: string
   tags: string[]
+}
+
+export interface EdgeDnsServers {
+  primary: string
+  secondary: string
 }
 
 export enum EdgeStatusEnum {

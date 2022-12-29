@@ -1,5 +1,7 @@
 import { useState } from 'react'
 
+import { RcFile } from 'antd/lib/upload'
+
 import { Demo } from '@acx-ui/rc/utils'
 
 
@@ -11,7 +13,7 @@ import PortalPopover             from '../PortalPopover'
 export default function PortalPhotoContent (props: {
   demoValue: Demo,
   updatePhoto: (value: { url?: string, size?: number, show?: boolean,
-    color?:string, text?:string }) => void
+    color?:string, text?:string, file?: RcFile }) => void
 }) {
   const { demoValue, updatePhoto } = props
   const dashedOutline = 'dashed 1px var(--acx-neutrals-50)'
@@ -21,8 +23,8 @@ export default function PortalPhotoContent (props: {
 
   const photoTools = <PortalImageTools
     url={demoValue.photo}
-    size={demoValue.photoSize}
-    defaultSize={PortalDemoDefaultSize.photoSize}
+    size={demoValue.photoRatio}
+    defaultSize={PortalDemoDefaultSize.photoRatio}
     showText={false}
     showColorPic={false}
     updateDemoImg={(data) => {
@@ -36,9 +38,9 @@ export default function PortalPhotoContent (props: {
       onVisibleChange={(value) => setClicked(value)}
     ><UI.Img src={demoValue.photo}
         alt='Photo png'
-        style={{ cursor: cursor, outline: outline, height: (demoValue.photoSize||
-          PortalDemoDefaultSize.photoSize) ,
-        maxWidth: 425 }}
+        style={{ cursor: cursor, outline: outline, height: (demoValue.photoRatio||
+          PortalDemoDefaultSize.photoRatio) ,
+        maxWidth: 425, marginTop: 10 }}
         onMouseOver={()=>{setCursor('pointer')
           setOutline(dashedOutline)}}
         onMouseLeave={()=>{

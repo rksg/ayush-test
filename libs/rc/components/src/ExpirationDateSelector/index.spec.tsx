@@ -61,13 +61,15 @@ describe('ExpirationDateSelector', () => {
   })
 
   it('should get normalized date after selecting from the Datepicker', async () => {
+    Date.now = jest.fn().mockReturnValue(new Date('2022-11-01T00:00:00.000Z'))
+
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
       return form
     })
 
     const expirationByDate: ExpirationDateEntity = new ExpirationDateEntity()
-    expirationByDate.setToByDate('2022-12-01')
+    expirationByDate.setToByDate('2022-11-02')
 
     render(
       <Form form={formRef.current}>
@@ -81,9 +83,9 @@ describe('ExpirationDateSelector', () => {
     await userEvent.click(selectDateElem)
     await userEvent.click(await screen.findByRole('cell', { name: /25/ }))
 
-    await screen.findByDisplayValue('2022-12-25')
+    await screen.findByDisplayValue('2022-11-25')
     const values = formRef.current.getFieldValue(mockedInputName)
 
-    expect(values.date).toBe('2022-12-25')
+    expect(values.date).toBe('2022-11-25')
   })
 })

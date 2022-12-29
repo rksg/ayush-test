@@ -8,7 +8,8 @@ export const policyTypeLabelMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.CLIENT_ISOLATION]: defineMessage({ defaultMessage: 'Client Isolation' }),
   [PolicyType.ROGUE_AP_DETECTION]: defineMessage({ defaultMessage: 'Rogue AP Detection' }),
   [PolicyType.SYSLOG]: defineMessage({ defaultMessage: 'Syslog Server' }),
-  [PolicyType.VLAN_POOL]: defineMessage({ defaultMessage: 'VLAN Pools' })
+  [PolicyType.VLAN_POOL]: defineMessage({ defaultMessage: 'VLAN Pools' }),
+  [PolicyType.MAC_REGISTRATION_LIST]: defineMessage({ defaultMessage: 'MAC Registration' })
 }
 export const policyTypeDescMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.AAA]: defineMessage({ defaultMessage: 'AAA description (TBD)' }),
@@ -19,7 +20,8 @@ export const policyTypeDescMapping: Record<PolicyType, MessageDescriptor> = {
   // eslint-disable-next-line max-len
   [PolicyType.ROGUE_AP_DETECTION]: defineMessage({ defaultMessage: 'Rogue AP Detection description (TBD)' }),
   [PolicyType.SYSLOG]: defineMessage({ defaultMessage: 'Syslog description (TBD)' }),
-  [PolicyType.VLAN_POOL]: defineMessage({ defaultMessage: 'VLAN Pool description (TBD)' })
+  [PolicyType.VLAN_POOL]: defineMessage({ defaultMessage: 'VLAN Pool description (TBD)' }),
+  [PolicyType.MAC_REGISTRATION_LIST]: defineMessage({ defaultMessage: 'MAC Registration (TBD)' })
 }
 export const policyTechnologyLabelMapping: Record<PolicyTechnology, MessageDescriptor> = {
   [PolicyTechnology.WIFI]: defineMessage({ defaultMessage: 'Wi-Fi' }),

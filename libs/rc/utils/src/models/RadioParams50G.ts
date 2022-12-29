@@ -4,6 +4,8 @@ import { ScanMethodEnum }         from './ScanMethodEnum'
 import { TxPowerEnum }            from './TxPowerEnum'
 
 export class RadioParams50G {
+  combineChannels?: boolean
+
   allowedIndoorChannels?: Channel50Enum[]
 
   allowedOutdoorChannels?: Channel50Enum[]
@@ -19,6 +21,8 @@ export class RadioParams50G {
   txPower: TxPowerEnum
 
   constructor () {
+    this.combineChannels = false
+
     this.allowedIndoorChannels = []
 
     this.allowedOutdoorChannels = []
