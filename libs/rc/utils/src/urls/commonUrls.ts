@@ -306,5 +306,13 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getApNetworkList: {
     method: 'post',
     url: '/api/viewmodel/tenant/:tenantId/ap/:serialNumber/networks'
+  },
+  getExternalProviders: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/network/external-providers'
+  },
+  getGlobalValues: {
+    method: 'get',
+    url: '/api/ui/globalValues'
   }
 }

@@ -37,16 +37,15 @@ import {
   VenueDHCPPoolInst,
   DHCPLeases,
   VenueDefaultRegulatoryChannels,
-  VenueDefaultRegulatoryChannelsForm,
   TriBandSettings,
   AvailableLteBands,
   VenueApModelCellular,
   UploadUrlResponse,
   NetworkDeviceResponse,
   NetworkDevicePayload,
-  RogueOldApResponseType
+  RogueOldApResponseType,
+  VenueRadioCustomization
 } from '@acx-ui/rc/utils'
-
 
 export const baseVenueApi = createApi({
   baseQuery: fetchBaseQuery(),
@@ -524,7 +523,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       }
     }),
-    getDefaultRadioCustomization: build.query<VenueDefaultRegulatoryChannelsForm, RequestPayload>({
+    getDefaultRadioCustomization: build.query<VenueRadioCustomization, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.getDefaultRadioCustomization, params)
         return{
@@ -532,7 +531,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       }
     }),
-    getVenueRadioCustomization: build.query<VenueDefaultRegulatoryChannelsForm, RequestPayload>({
+    getVenueRadioCustomization: build.query<VenueRadioCustomization, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.getVenueRadioCustomization, params)
         return{
@@ -770,6 +769,7 @@ export const {
   useVenueDefaultRegulatoryChannelsQuery,
   useGetDefaultRadioCustomizationQuery,
   useGetVenueRadioCustomizationQuery,
+  useLazyGetVenueRadioCustomizationQuery,
   useUpdateVenueRadioCustomizationMutation,
   useGetVenueTripleBandRadioSettingsQuery,
   useUpdateVenueTripleBandRadioSettingsMutation,
