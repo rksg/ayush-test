@@ -1,6 +1,5 @@
 import styled, { css } from 'styled-components/macro'
 
-import { Collapse }                                 from '@acx-ui/components'
 import {  PlusSquareOutlined, MinusSquareOutlined } from '@acx-ui/icons'
 
 const eventIconStyle = css`
@@ -95,18 +94,6 @@ export const TimelineSubContent = styled.span`
    font-weight: var(--acx-body-font-weight);
    font-size: 12px;
    color: var(--acx-neutrals-70);`
-
-export const CollapseBox = styled(Collapse)`
-  .ant-collapse-content {
-    margin-left : 30px;
-    };
-   .ant-collapse-header {
-    padding-bottom: 0px !important;
-    padding-right: 0px !important;
-   };
-   .ant-collapse-content-box{
-    padding-right: 0px;
-   }`
 
 export const TooltipWrapper = styled.div`
     color: var(--acx-neutrals-70);

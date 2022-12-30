@@ -7,7 +7,7 @@ import moment                                               from 'moment-timezon
 import { renderToString }                                   from 'react-dom/server'
 import { useIntl }                                          from 'react-intl'
 
-import { getIntl, useDateFilter } from '@acx-ui/utils'
+import { useDateFilter, getIntl } from '@acx-ui/utils'
 
 import {
   ClientTroubleShootingConfig,
@@ -28,10 +28,6 @@ import { TimelineChart }                   from './TimelineChart'
 
 import { Filters } from '.'
 
-type TimeLineProps = {
-  data?: ClientInfoData;
-  filters: Filters;
-}
 export interface Event {
   timestamp: string;
   event: string;
@@ -52,6 +48,12 @@ export interface Event {
   category: string;
   seriesKey: string;
 }
+export type TimelineData = {
+  connectionEvents: EventCategoryMap;
+  roaming: EventCategoryMap;
+  connectionQuality: EventCategoryMap;
+  networkIncidents: EventCategoryMap;
+}
 type EventCategoryMap = {
   [SUCCESS]: Event[] | [];
   [FAILURE]: Event[] | [];
@@ -59,11 +61,9 @@ type EventCategoryMap = {
   [SLOW]: Event[] | [];
   allEvents: Event[] | [];
 }
-type TimelineData = {
-  connectionEvents: EventCategoryMap;
-  roaming: EventCategoryMap;
-  connectionQuality: EventCategoryMap;
-  networkIncidents: EventCategoryMap;
+type TimeLineProps = {
+  data?: ClientInfoData;
+  filters: Filters;
 }
 const getTimelineData = (events: Event[]) =>
   events.reduce(
@@ -106,7 +106,7 @@ const getTimelineData = (events: Event[]) =>
       }
     } as TimelineData
   )
-const getChartData = (
+export const getChartData = (
   type: keyof TimelineData,
   events: Event[],
   isExpanded: boolean,
@@ -132,32 +132,56 @@ const getChartData = (
         return []
       case TYPES.ROAMING:
         return []
-      default:
-        return []
-    }
-  } else {
-    switch (type) {
-      case TYPES.CONNECTION_EVENTS:
-        return [
-          ...events.map((event) => {
-            return { ...event, seriesKey: 'all' }
-          })
-        ] as Event[]
-      case TYPES.CONNECTION_QUALITY:
-        return qualities ?? []
-      case TYPES.NETWORK_INCIDENTS:
-        return []
-      case TYPES.ROAMING:
-        return []
-      default:
-        return []
     }
   }
+  switch (type) {
+    case TYPES.CONNECTION_EVENTS:
+      return [
+        ...events.map((event) => {
+          return { ...event, seriesKey: 'all' }
+        })
+      ] as Event[]
+    case TYPES.CONNECTION_QUALITY:
+      return qualities ?? []
+    case TYPES.NETWORK_INCIDENTS:
+      return []
+    case TYPES.ROAMING:
+      return []
+  }
+  return []
 }
 
+export const useTooltipFormatter = (
+  params: TooltipComponentFormatterCallbackParams
+) => {
+  const intl = getIntl()
+  const obj = (Array.isArray(params) && Array.isArray(params[0].data)
+    ? params[0].data[2]
+    : undefined) as unknown as DisplayEvent
+
+  if (typeof obj !== 'undefined' && (obj as unknown as LabelledQuality).all) {
+    return renderToString(
+      <UI.TooltipWrapper>
+        <UI.TooltipDate>
+          {(obj as unknown as LabelledQuality).all}
+        </UI.TooltipDate>
+      </UI.TooltipWrapper>
+    )
+  }
+
+
+  const tooltipText = obj ? formatEventDesc(obj, intl) : null
+  return renderToString(
+    <UI.TooltipWrapper>
+      <UI.TooltipDate>
+        {obj && moment(obj?.start).format('MMM DD HH:mm:ss')}{' '}
+      </UI.TooltipDate>
+      {tooltipText}
+    </UI.TooltipWrapper>
+  )
+}
 export function TimeLine (props: TimeLineProps) {
   const { $t } = useIntl()
-  const intl = getIntl()
   const { data, filters } = props
   const types = filters ? filters.type ?? [] : []
   const radios = filters ? filters.radio ?? [] : []
@@ -198,22 +222,7 @@ export function TimeLine (props: TimeLineProps) {
       instance.group = 'eventTimeSeriesGroup'
     }
   }
-  const tooltipFormatter = (
-    params: TooltipComponentFormatterCallbackParams
-  ) => {
-    const evtObj = (Array.isArray(params) && Array.isArray(params[0].data)
-      ? params[0].data[2]
-      : '') as unknown as DisplayEvent
-    const tooltipText = formatEventDesc(evtObj, intl)
-    return renderToString(
-      <UI.TooltipWrapper>
-        <UI.TooltipDate>
-          {moment(evtObj.start).format('MMM DD HH:mm:ss')}{' '}
-        </UI.TooltipDate>
-        {tooltipText}
-      </UI.TooltipWrapper>
-    )
-  }
+
   useEffect(() => {
     connect('eventTimeSeriesGroup')
   }, [])
@@ -253,8 +262,8 @@ export function TimeLine (props: TimeLineProps) {
                   : null}
               </Col>
               {expandObj[config?.value as keyof TimelineData] &&
-                config?.subtitle?.map((subtitle, index) => (
-                  <React.Fragment key={index}>
+                config?.subtitle?.map((subtitle) => (
+                  <React.Fragment key={subtitle.value}>
                     <Col span={17} offset={3}>
                       <UI.TimelineSubContent>
                         {$t(subtitle.title)}
@@ -279,8 +288,8 @@ export function TimeLine (props: TimeLineProps) {
       </Col>
       <Col flex='auto'>
         <Row gutter={[16, 16]} style={{ rowGap: 0 }}>
-          {ClientTroubleShootingConfig.timeLine.map((config, index) => (
-            <Col span={24} key={index}>
+          {ClientTroubleShootingConfig.timeLine.map((config) => (
+            <Col span={24} key={config.value}>
               <TimelineChart
                 style={{ width: 'auto', marginBottom: 8 }}
                 data={getChartData(
@@ -298,12 +307,10 @@ export function TimeLine (props: TimeLineProps) {
                 }
                 hasXaxisLabel={config?.hasXaxisLabel}
                 chartRef={connectChart}
-                tooltipFormatter={(config.value !== 'connectionQuality')
-                  ? tooltipFormatter
-                  : () => 'test'}
+                tooltipFormatter={useTooltipFormatter}
                 // caputuring scatterplot dot click to open popover
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                onDotClick={(params) => {}}
+                // onDotClick={(params) => {}}
               />
             </Col>
           ))}

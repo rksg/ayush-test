@@ -74,13 +74,14 @@ function getSeriesItemColor (params: { data: (Event | LabelledQuality)[] }) {
 
   const { category } = (obj as Event)
 
-  return cssStr(
+  return obj ? cssStr(
     eventColorByCategory[
-          category as keyof typeof eventColorByCategory
+      category as keyof typeof eventColorByCategory
     ]
-  )
+  ) : cssStr('--acx-neutrals-50')
 }
-const useDotClick = (
+
+export const useDotClick = (
   eChartsRef: RefObject<ReactECharts>,
   onDotClick: ((param: unknown) => void) | undefined,
   setSelected: Dispatch<SetStateAction<number | undefined>>
@@ -101,8 +102,9 @@ const useDotClick = (
     return () => {
       echartInstance.off('click', handler)
     }
-  }, [eChartsRef, handler])}
-const useDataZoom = (
+  }, [eChartsRef, handler])
+}
+export const useDataZoom = (
   eChartsRef: RefObject<ReactECharts>,
   zoomEnabled: boolean,
   onDataZoom?: (range: TimeStampRange, isReset: boolean) => void
@@ -142,7 +144,7 @@ const useDataZoom = (
 const tooltipOptions = () =>
   ({
     textStyle: {
-      color: 'black',
+      color: cssStr('--acx-primary-black'),
       fontFamily: cssStr('--acx-neutral-brand-font'),
       fontSize: cssNumber('--acx-body-5-font-size'),
       lineHeight: cssNumber('--acx-body-5-line-height'),
@@ -210,7 +212,8 @@ export function TimelineChart ({
       },
       formatter: tooltipFormatter,
       ...tooltipOptions(),
-      position: (point) => [point[0] + 10, mapping.length * 30]
+      // Need to address test coverage for the postion
+      position: /* istanbul ignore next */ (point) => [point[0] + 10, mapping.length * 30]
     },
     xAxis: {
       ...xAxisOptions(),
