@@ -79,7 +79,7 @@ export default function PortalInstancesTable (){
   return (
     <Loader states={[tableQuery]}>
       <Card title={$t({ defaultMessage: 'Instances ({count})' },
-        { count: tableQuery.data?.data.length })}>
+        { count: tableQuery.data?.totalCount })}>
         <Table
           columns={columns}
           pagination={tableQuery.pagination}
