@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 export const GuestClient = {
   totalCount: 34,
   page: 1,
