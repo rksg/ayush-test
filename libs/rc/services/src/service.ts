@@ -3,10 +3,10 @@ import {
   createApi,
   fetchBaseQuery,
   FetchBaseQueryError,
-  FetchBaseQueryMeta } from '@reduxjs/toolkit/query/react'
-import _                from 'lodash'
-import { Params }       from 'react-router-dom'
-import { v4 as uuidv4 } from 'uuid'
+  FetchBaseQueryMeta
+} from '@reduxjs/toolkit/query/react'
+import _          from 'lodash'
+import { Params } from 'react-router-dom'
 
 import {
   CommonUrlsInfo,
@@ -23,7 +23,6 @@ import {
   DHCPDetailInstances,
   WifiCallingUrls,
   WifiUrlsInfo,
-  MdnsProxyForwardingRule,
   WifiCallingFormContextType,
   WifiCallingSetting,
   DpskSaveData,
@@ -32,8 +31,12 @@ import {
   Portal,
   PortalUrlsInfo,
   DpskList,
+  convertMdnsProxyFormDataToApiPayload,
+  MdnsProxyGetApiResponse,
+  convertApiPayloadToMdnsProxyFormData,
   onSocketActivityChanged,
   showActivityMessage,
+  MdnsProxyAp,
   UploadUrlResponse
 } from '@acx-ui/rc/utils'
 import {
@@ -55,7 +58,7 @@ const RKS_NEW_UI = {
 export const baseServiceApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'serviceApi',
-  tagTypes: ['Service', 'Dpsk'],
+  tagTypes: ['Service', 'Dpsk','MdnsProxy', 'MdnsProxyAp'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })
@@ -74,6 +77,12 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           showActivityMessage(msg, [
+            'Add Multicast DNS Proxy Service Profile',
+            'Update Multicast DNS Proxy Service Profile',
+            'Delete Multicast DNS Proxy Service Profile',
+            'Delete Multicast DNS Proxy Service Profiles',
+            'Activate Multicast DNS Proxy Service Profiles',
+            'Deactivate Multicast DNS Proxy Service Profiles',
             'Delete WiFi Calling Service Profile',
             'Delete WiFi Calling Service Profiles'
           ], () => {
@@ -238,36 +247,56 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     }),
     getMdnsProxy: build.query<MdnsProxyFormData, RequestPayload>({
       query: ({ params, payload }) => {
-        const mdnsProxyReq = createHttpRequest(MdnsProxyUrls.getMdnsProxy, params)
-        return {
-          ...mdnsProxyReq,
-          body: payload
-        }
-      },
-      transformResponse (result: MdnsProxyFormData) {
-        if (!result.forwardingRules) {
-          return result
-        }
-
-        result.forwardingRules = result.forwardingRules.map((rule: MdnsProxyForwardingRule) => {
-          return {
-            ...rule,
-            id: uuidv4()
-          }
-        })
-        return result
-      },
-      providesTags: [{ type: 'Service', id: 'DETAIL' }]
-    }),
-    updateMdnsProxy: build.mutation<MdnsProxyFormData, RequestPayload<MdnsProxyFormData>>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(MdnsProxyUrls.updateMdnsProxy, params)
+        const req = createHttpRequest(MdnsProxyUrls.getMdnsProxy, params)
         return {
           ...req,
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+      transformResponse (response: MdnsProxyGetApiResponse) {
+        return convertApiPayloadToMdnsProxyFormData(response)
+      },
+      providesTags: [{ type: 'MdnsProxy', id: 'DETAIL' }]
+    }),
+    getMdnsProxyList: build.query<MdnsProxyFormData[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(MdnsProxyUrls.getMdnsProxyList, params)
+        return {
+          ...req
+        }
+      },
+      transformResponse (response: MdnsProxyGetApiResponse[]) {
+        return response.map(result => convertApiPayloadToMdnsProxyFormData(result))
+      },
+      providesTags: [{ type: 'MdnsProxy', id: 'LIST' }, { type: 'Service', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          showActivityMessage(msg, [
+            'Add Multicast DNS Proxy Service Profile',
+            'Update Multicast DNS Proxy Service Profile',
+            'Delete Multicast DNS Proxy Service Profile',
+            'Delete Multicast DNS Proxy Service Profiles',
+            'Activate Multicast DNS Proxy Service Profiles',
+            'Deactivate Multicast DNS Proxy Service Profiles'
+          ], () => {
+            api.dispatch(serviceApi.util.invalidateTags([
+              { type: 'Service', id: 'LIST' },
+              { type: 'MdnsProxy', id: 'LIST' }
+            ]))
+          })
+        })
+      }
+    }),
+    updateMdnsProxy: build.mutation<MdnsProxyFormData, RequestPayload<MdnsProxyFormData>>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MdnsProxyUrls.updateMdnsProxy, params)
+        const convertedPayload = convertMdnsProxyFormDataToApiPayload(payload as MdnsProxyFormData)
+        return {
+          ...req,
+          body: convertedPayload
+        }
+      },
+      invalidatesTags: [{ type: 'MdnsProxy', id: 'LIST' }]
     }),
     deleteMdnsProxy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
@@ -276,7 +305,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           ...req
         }
       },
-      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+      invalidatesTags: [{ type: 'MdnsProxy', id: 'LIST' }]
     }),
     deleteMdnsProxyList: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
@@ -290,17 +319,50 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     addMdnsProxy: build.mutation<MdnsProxyFormData, RequestPayload<MdnsProxyFormData>>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(MdnsProxyUrls.addMdnsProxy, params)
+        const convertedPayload = convertMdnsProxyFormDataToApiPayload(payload as MdnsProxyFormData)
 
-        if (payload?.forwardingRules) {
-          payload.forwardingRules = payload.forwardingRules.map(r => _.omit(r, 'id'))
+        return {
+          ...req,
+          body: convertedPayload
         }
-
+      },
+      invalidatesTags: [{ type: 'MdnsProxy', id: 'LIST' }]
+    }),
+    addMdnsProxyAps: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MdnsProxyUrls.addMdnsProxyAps, params)
         return {
           ...req,
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+      invalidatesTags: [{ type: 'MdnsProxyAp', id: 'LIST' }]
+    }),
+    deleteMdnsProxyAps: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MdnsProxyUrls.deleteMdnsProxyAps, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'MdnsProxyAp', id: 'LIST' }]
+    }),
+    getMdnsProxyAps: build.query<TableResult<MdnsProxyAp>, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(MdnsProxyUrls.getMdnsProxyApsByVenue, params)
+        return {
+          ...req
+        }
+      },
+      transformResponse (response: MdnsProxyAp[]) {
+        return {
+          data: response,
+          page: 0,
+          totalCount: response.length
+        }
+      },
+      providesTags: [{ type: 'MdnsProxyAp', id: 'LIST' }]
     }),
     getPortal: build.query<Portal | null, RequestPayload>({
       async queryFn ({ params }, _queryApi, _extraOptions, fetch) {
@@ -517,10 +579,15 @@ export const {
   useAccessControlProfileListQuery,
   useGetDHCPProfileListQuery,
   useGetMdnsProxyQuery,
+  useLazyGetMdnsProxyListQuery,
+  useGetMdnsProxyListQuery,
   useAddMdnsProxyMutation,
   useUpdateMdnsProxyMutation,
   useDeleteMdnsProxyMutation,
   useDeleteMdnsProxyListMutation,
+  useAddMdnsProxyApsMutation,
+  useDeleteMdnsProxyApsMutation,
+  useGetMdnsProxyApsQuery,
   useDeleteWifiCallingServiceMutation,
   useGetWifiCallingServiceQuery,
   useGetWifiCallingServiceListQuery,
