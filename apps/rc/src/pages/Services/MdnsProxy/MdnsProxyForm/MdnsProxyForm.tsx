@@ -4,10 +4,14 @@ import _                   from 'lodash'
 import { useIntl }         from 'react-intl'
 import { Path, useParams } from 'react-router-dom'
 
-import { PageHeader, showToast, StepsForm }              from '@acx-ui/components'
-import { useAddMdnsProxyMutation, useGetMdnsProxyQuery } from '@acx-ui/rc/services'
-import { MdnsProxyFormData, getServiceListRoutePath }    from '@acx-ui/rc/utils'
-import { useTenantLink, useNavigate }                    from '@acx-ui/react-router-dom'
+import { PageHeader, showToast, StepsForm } from '@acx-ui/components'
+import {
+  useAddMdnsProxyMutation,
+  useGetMdnsProxyQuery,
+  useUpdateMdnsProxyMutation
+} from '@acx-ui/rc/services'
+import { MdnsProxyFormData, getServiceListRoutePath } from '@acx-ui/rc/utils'
+import { useTenantLink, useNavigate }                 from '@acx-ui/react-router-dom'
 
 import { MdnsProxyScope }   from '../MdnsProxyScope/MdnsProxyScope'
 import { MdnsProxySummary } from '../MdnsProxySummary/MdnsProxySummary'
@@ -29,6 +33,7 @@ export default function MdnsProxyForm ({ editMode = false }: MdnsProxyFormProps)
   const [ currentData, setCurrentData ] = useState<MdnsProxyFormData>({} as MdnsProxyFormData)
   const { data: dataFromServer } = useGetMdnsProxyQuery({ params }, { skip: !editMode })
   const [ addMdnsProxy ] = useAddMdnsProxyMutation()
+  const [ updateMdnsProxy ] = useUpdateMdnsProxyMutation()
 
   useEffect(() => {
     if (dataFromServer && editMode) {
@@ -47,8 +52,12 @@ export default function MdnsProxyForm ({ editMode = false }: MdnsProxyFormProps)
 
   const saveData = async (editMode: boolean, data: MdnsProxyFormData) => {
     try {
-      const payload = editMode ? data : _.omit(data, 'id')
-      await addMdnsProxy({ params, payload }).unwrap()
+      if (editMode) {
+        await updateMdnsProxy({ params, payload: _.omit(data, 'id') }).unwrap()
+      } else {
+        await addMdnsProxy({ params, payload: data }).unwrap()
+      }
+
       navigate(servicesTablePath, { replace: true })
     } catch {
       showToast({

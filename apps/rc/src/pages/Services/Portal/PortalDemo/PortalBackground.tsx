@@ -13,7 +13,7 @@ export default function PortalBackground (props:{
   $isDesk: boolean,
   backgroundColor: string,
   updateBackgroundColor: (value: string) => void,
-  updateBackgroundImg: (value: string) => void
+  updateBackgroundImg: (value:{ url: string, file: RcFile }) => void
 }) {
   const { $t } = useIntl()
   const { $isDesk, updateBackgroundColor, updateBackgroundImg, backgroundColor } = props
@@ -29,12 +29,12 @@ export default function PortalBackground (props:{
         disableAlpha={true}
         onChangeComplete={(color)=> updateBackgroundColor(color.hex)}/>
     </div>}
-    <Upload accept='.png,.jpg,.jpeg'
+    <Upload accept='.png,.jpg,.jpeg,.svg,.gif'
       id='bgimageupload'
       showUploadList={false}
       customRequest={async ({ file }) => {
         Utils.getBase64(file as RcFile, url => {
-          updateBackgroundImg(url)
+          updateBackgroundImg({ url, file: file as RcFile })
         })
       }}
     >

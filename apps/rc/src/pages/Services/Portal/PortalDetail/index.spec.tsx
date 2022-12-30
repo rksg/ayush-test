@@ -83,46 +83,88 @@ const list = {
 const detailResult = {
   id: 1,
   serviceName: 'test',
-  demo: {
+  content: {
     welcomeText: 'Welcome to the Guest Access login page',
     welcomeColor: '#333333',
-    backgroundImage: '',
-    backgroundColor: '#FFFFFF',
+    bgImage: '',
+    bgColor: '#FFFFFF',
     welcomeSize: 14,
 
-    photoSize: 170,
+    photoRatio: 170,
 
-    logoSize: 105,
+    logoRatio: 105,
     secondaryText: 'Lorem ipsum dolor sit amet, consectetur adipiscing'+
     ' elit. Aenean euismod bibendum laoreet.',
     secondaryColor: '#333333',
     secondarySize: 14,
     buttonColor: '#EC7100',
-    poweredBackgroundColor: '#FFFFFF',
+    poweredBgColor: '#FFFFFF',
     poweredColor: '#333333',
     poweredSize: 14,
-    poweredImgSize: 50,
-    wifi4EU: '',
+    poweredImgRatio: 50,
+    wifi4EUNetworkId: '',
     termsCondition: '',
     componentDisplay: {
-      Logo: true,
-      WelcomeText: true,
-      Photo: true,
-      SecondaryText: true,
-      TermsConditions: false,
-      PoweredBy: true,
-      WiFi4EU: false
+      logo: true,
+      welcome: true,
+      photo: true,
+      secondaryText: true,
+      termsConditions: false,
+      poweredBy: true,
+      wifi4eu: false
     },
-    displayLang: 'English',
+    displayLangCode: 'en',
 
     alternativeLang:
 
-      { Czech: true, ChineseTraditional: false, Finnish: true,
-        French: true, German: true, Greek: true, Hungarian: true, Italian: false }
+      { cs: true, zh_TW: false, fi: true,
+        fr: true, de: true, el: true, hu: true, it: false }
   }
 }
 
+const detailChangeResult = {
+  id: 1,
+  serviceName: 'test',
+  content: {
+    welcomeText: 'Welcome to the Guest Access login page',
+    welcomeColor: '#333333',
+    bgColor: '#FFFFFF',
+    welcomeSize: 14,
+    logo: 'logo',
+    photo: 'photo',
+    bgImage: 'bgimage',
+    poweredImg: 'poweredimg',
+    photoRatio: 170,
 
+    logoRatio: 105,
+    secondaryText: 'Lorem ipsum dolor sit amet, consectetur adipiscing'+
+    ' elit. Aenean euismod bibendum laoreet.',
+    secondaryColor: '#333333',
+    secondarySize: 14,
+    buttonColor: '#EC7100',
+    poweredBgColor: '#FFFFFF',
+    poweredColor: '#333333',
+    poweredSize: 14,
+    poweredImgRatio: 50,
+    wifi4EUNetworkId: '',
+    termsCondition: '',
+    componentDisplay: {
+      logo: true,
+      welcome: true,
+      photo: true,
+      secondaryText: true,
+      termsConditions: false,
+      poweredBy: true,
+      wifi4eu: true
+    },
+    displayLangCode: 'en',
+
+    alternativeLang:
+
+      { cs: true, zh_TW: false, fi: true,
+        fr: true, de: true, el: true, hu: true, it: false }
+  }
+}
 
 
 describe('Portal Detail Page', () => {
@@ -132,19 +174,24 @@ describe('Portal Detail Page', () => {
       tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1',
       serviceId: '373377b0cb6e46ea8982b1c80aabe1fa'
     }
-    mockServer.use(
-      rest.get(
-        PortalUrlsInfo.getPortalNetworkInstances.url,
-        (req, res, ctx) => res(ctx.json(list))
-      ),
-      rest.get(
-        PortalUrlsInfo.getPortalProfileDetail.url,
-        (req, res, ctx) => res(ctx.json(detailResult))
-      )
-    )
   })
 
   it('should render detail page', async () => {
+    mockServer.use(
+      rest.get(
+        PortalUrlsInfo.getPortalNetworkInstances.url,
+        (_, res, ctx) => res(ctx.json(list))
+      ),
+      rest.get(
+        PortalUrlsInfo.getPortalProfileDetail.url,
+        (_, res, ctx) => res(ctx.json(detailResult))
+      ),
+      rest.get(PortalUrlsInfo.getPortalLang.url,
+        (_, res, ctx) => {
+          return res(ctx.status(404),ctx.json(
+            'acceptTermsMsg = I accept the\nacceptTermsLink= terms & conditions'))
+        })
+    )
     render(<Provider><PortalServiceDetail /></Provider>, {
       route: { params, path: '/:tenantId/services/portal/:serviceId/detail' }
     })
@@ -152,5 +199,27 @@ describe('Portal Detail Page', () => {
     expect(await screen.findByText((`Instances (${list.data.length})`))).toBeVisible()
     const body = await findTBody()
     await waitFor(() => expect(within(body).getAllByRole('row')).toHaveLength(4))
+  })
+  it('should render detail changed page', async () => {
+    mockServer.use(
+      rest.get(
+        PortalUrlsInfo.getPortalNetworkInstances.url,
+        (_, res, ctx) => res(ctx.json(list))
+      ),
+      rest.get(
+        PortalUrlsInfo.getPortalProfileDetail.url,
+        (_, res, ctx) => res(ctx.json(detailChangeResult))
+      ),
+      rest.get(PortalUrlsInfo.getPortalLang.url,
+        (_, res, ctx) => {
+          return res(ctx.status(404),ctx.json(
+            'acceptTermsMsg = I accept the\nacceptTermsLink= terms & conditions'))
+        })
+    )
+    render(<Provider><PortalServiceDetail /></Provider>, {
+      route: { params, path: '/:tenantId/services/portal/:serviceId/detail' }
+    })
+    expect(await screen.findByText('English')).toBeVisible()
+    expect(await screen.findByText((`Instances (${list.data.length})`))).toBeVisible()
   })
 })
