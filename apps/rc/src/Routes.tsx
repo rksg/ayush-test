@@ -15,6 +15,7 @@ import { Provider }                          from '@acx-ui/store'
 
 import Edges                      from './pages/Devices/Edge'
 import AddEdge                    from './pages/Devices/Edge/AddEdge'
+import EdgeDetails                from './pages/Devices/Edge/EdgeDetails'
 import EditEdge                   from './pages/Devices/Edge/EdgeDetails/EditEdge'
 import { StackForm }              from './pages/Devices/Switch/StackForm'
 import SwitchDetails              from './pages/Devices/Switch/SwitchDetails'
@@ -110,6 +111,8 @@ function DeviceRoutes () {
       <Route
         path='devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         element={<EditEdge />} />
+      <Route path='devices/edge/:serialNumber/edge-details/:activeTab'
+        element={<EdgeDetails />} />
       <Route path='devices/switch' element={<SwitchesTable />} />
       <Route path='devices/switch/stack/add' element={<StackForm />} />
       <Route path='devices/edge/list' element={<Edges />} />
@@ -213,7 +216,7 @@ function ServiceRoutes () {
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.EDIT })}
-        element={<PortalForm/>}
+        element={<PortalForm editMode={true}/>}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.DETAIL })}

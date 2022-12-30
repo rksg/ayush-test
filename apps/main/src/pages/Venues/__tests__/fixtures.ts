@@ -37,6 +37,7 @@ export const venuelist = {
       status: '1_InSetupPhase',
       switchClients: 2,
       switches: 1,
+      edges: 3,
       clients: 1
     }
   ]
@@ -1713,8 +1714,8 @@ export const radioCustomizationData = {
   },
   radioParams24G: {
     allowedChannels: ['4', '5', '6', '7', '8', '9', '10', '11'],
-    channelBandwidth: 'AUTO',
-    method: 'BACKGROUND_SCANNING',
+    channelBandwidth: '40MHz',
+    method: 'CHANNELFLY',
     changeInterval: 33,
     scanInterval: 20,
     txPower: 'MAX'
@@ -1765,11 +1766,11 @@ export const radioCustomizationData = {
       '140',
       '144'
     ],
-    channelBandwidth: '40MHz',
+    channelBandwidth: '160MHz',
     method: 'BACKGROUND_SCANNING',
     changeInterval: 33,
     scanInterval: 20,
-    txPower: 'MAX'
+    txPower: 'Auto'
   }
 }
 

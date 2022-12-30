@@ -62,14 +62,12 @@ const WifiCallingNetworksDetail = () => {
     }
   })
 
-  let basicData = tableQuery.data?.data
-
   return (
-    <Card title={`${$t({ defaultMessage: 'Instance' })} (${basicData?.length})`}>
+    <Card title={`${$t({ defaultMessage: 'Instance' })} (${tableQuery.data?.totalCount})`}>
       <div style={{ width: '100%' }}>
         <Table
           columns={basicColumns}
-          dataSource={basicData}
+          dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
