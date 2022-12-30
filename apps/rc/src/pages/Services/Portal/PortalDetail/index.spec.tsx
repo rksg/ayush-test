@@ -22,7 +22,7 @@ const list = {
     'clients',
     'clientsPortal'
   ],
-  totalCount: 10,
+  totalCount: 4,
   page: 1,
   data: [
     {
