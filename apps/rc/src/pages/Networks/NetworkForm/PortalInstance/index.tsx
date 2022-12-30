@@ -137,7 +137,8 @@ const PortalInstance = (props:{
           </Form.Item>
         </GridCol>
       </GridRow>
-      {portalServiceID&&demoValue.componentDisplay&&<GridRow style={{ height: 648, paddingBottom: 40 }}>
+      {portalServiceID&&demoValue.componentDisplay&&
+      <GridRow style={{ height: 648, paddingBottom: 40 }}>
         <PortalDemo value={demoValue}
           isPreview={true}
           fromNetwork={true}
