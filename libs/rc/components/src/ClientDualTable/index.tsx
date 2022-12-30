@@ -18,8 +18,14 @@ export function ClientDualTable () {
   const [historicalClientCount, setHistoricalClientCount] = useState<number>(0)
 
   const getSearchToolTipText = () => {
-    // eslint-disable-next-line max-len
-    return defineMessage({ defaultMessage: '<div>You can search for clients by the following properties*: <ul><li>Client MAC Address</li><li>AP MAC Address</li><li>OS Type</li><li>User Name</li><li>Host Name</li></ul><div>* Search ignores columns that you chose to hide</div></div>' })
+    return defineMessage({ defaultMessage: `
+      <div>You can search for clients by the following properties *:
+        <ul><li>Client MAC Address</li>
+        <li>AP MAC Address</li>
+        <li>OS Type</li>
+        <li>User Name</li>
+        <li>Host Name</li></ul>
+      <div>* Search ignores columns that you chose to hide</div></div>` })
   }
 
   return <>

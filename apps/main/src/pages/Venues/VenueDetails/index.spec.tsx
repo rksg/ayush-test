@@ -2,10 +2,10 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { venueApi }                                              from '@acx-ui/rc/services'
-import { CommonUrlsInfo, DHCPUrls, Dashboard, ClientUrlsInfo }   from '@acx-ui/rc/utils'
-import { Provider, store }                                       from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { venueApi }                            from '@acx-ui/rc/services'
+import { CommonUrlsInfo, DHCPUrls, Dashboard } from '@acx-ui/rc/utils'
+import { Provider, store }                     from '@acx-ui/store'
+import { mockServer, render, screen }          from '@acx-ui/test-utils'
 
 import {
   venueDetailHeaderData,
@@ -82,16 +82,6 @@ describe('VenueDetails', () => {
         CommonUrlsInfo.venueNetworkApGroup.url,
         (req, res, ctx) => res(ctx.json(venueNetworkApGroup))
       ),
-      rest.post(
-        ClientUrlsInfo.getClientList.url,
-        (req, res, ctx) => res(ctx.json({
-          totalCount: 2, page: 1, data: []
-        }))
-      ),
-      rest.post(
-        ClientUrlsInfo.getClientMeta.url,
-        (req, res, ctx) => res(ctx.json({ data: [] }))
-      ),
       rest.get(
         DHCPUrls.getVenueDHCPServiceProfile.url,
         (_,res,ctx) => res(ctx.json(serviceProfile))
@@ -134,9 +124,8 @@ describe('VenueDetails', () => {
       activeTab: 'clients'
     }
     const { asFragment } = render(<Provider><VenueDetails /></Provider>, {
-      route: { params, path: '/:tenantId/venues/:venueId/venue-details/:activeTab' }
+      route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
     })
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     expect(asFragment()).toMatchSnapshot()
   })
