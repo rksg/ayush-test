@@ -2,6 +2,7 @@ export * from './dhcpService'
 export * from './dpskService'
 export * from './wifiCallingService'
 export * from './networkSegmentationService'
+export * from './mdnsProxyService'
 export * from './portalService'
 
 
