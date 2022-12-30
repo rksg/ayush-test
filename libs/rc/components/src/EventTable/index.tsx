@@ -3,11 +3,10 @@ import { useState } from 'react'
 import moment                     from 'moment'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps, Button }                 from '@acx-ui/components'
-import { CommonUrlsInfo, Event, RequestPayload, TableQuery } from '@acx-ui/rc/utils'
-import { formatter, useDateFilter }                          from '@acx-ui/utils'
+import { Loader, Table, TableProps, Button }                                 from '@acx-ui/components'
+import { CommonUrlsInfo, Event, RequestPayload, TableQuery, replaceStrings } from '@acx-ui/rc/utils'
+import { formatter, useDateFilter }                                          from '@acx-ui/utils'
 
-import { replaceStrings } from '../ActivityTable/replaceStrings'
 import { TimelineDrawer } from '../TimelineDrawer'
 
 import { severityMapping, eventTypeMapping, productMapping } from './mapping'

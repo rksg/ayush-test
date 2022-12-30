@@ -102,7 +102,7 @@ exports[`VenueTabs should render correctly 1`] = `
               role="tab"
             >
               <span>
-                Services (0)
+                Services
               </span>
             </div>
           </div>

@@ -202,7 +202,7 @@ exports[`VenueDetails should navigate to analytic tab correctly 1`] = `
                     role="tab"
                   >
                     <span>
-                      Services (0)
+                      Services
                     </span>
                   </div>
                 </div>
@@ -547,7 +547,7 @@ exports[`VenueDetails should navigate to client tab correctly 1`] = `
                     role="tab"
                   >
                     <span>
-                      Services (0)
+                      Services
                     </span>
                   </div>
                 </div>
@@ -889,7 +889,7 @@ exports[`VenueDetails should navigate to device tab correctly 1`] = `
                     role="tab"
                   >
                     <span>
-                      Services (0)
+                      Services
                     </span>
                   </div>
                 </div>
@@ -1505,7 +1505,7 @@ exports[`VenueDetails should navigate to network tab correctly 1`] = `
                     role="tab"
                   >
                     <span>
-                      Services (0)
+                      Services
                     </span>
                   </div>
                 </div>
@@ -1881,7 +1881,7 @@ exports[`VenueDetails should navigate to service tab correctly 1`] = `
                     role="tab"
                   >
                     <span>
-                      Services (0)
+                      Services
                     </span>
                   </div>
                 </div>
@@ -2035,10 +2035,10 @@ exports[`VenueDetails should navigate to service tab correctly 1`] = `
             class="ant-tabs-tab ant-tabs-tab-active"
           >
             <div
-              aria-controls="rc-tabs-test-panel-DHCP"
+              aria-controls="rc-tabs-test-panel-DHCP (Wi-Fi)"
               aria-selected="true"
               class="ant-tabs-tab-btn"
-              id="rc-tabs-test-tab-DHCP"
+              id="rc-tabs-test-tab-DHCP (Wi-Fi)"
               role="tab"
               tabindex="0"
             >
@@ -2049,10 +2049,10 @@ exports[`VenueDetails should navigate to service tab correctly 1`] = `
             class="ant-tabs-tab"
           >
             <div
-              aria-controls="rc-tabs-test-panel-MDNS_PROXY"
+              aria-controls="rc-tabs-test-panel-mDNS Proxy"
               aria-selected="false"
               class="ant-tabs-tab-btn"
-              id="rc-tabs-test-tab-MDNS_PROXY"
+              id="rc-tabs-test-tab-mDNS Proxy"
               role="tab"
               tabindex="0"
             >
@@ -2108,9 +2108,9 @@ exports[`VenueDetails should navigate to service tab correctly 1`] = `
       >
         <div
           aria-hidden="false"
-          aria-labelledby="rc-tabs-test-tab-DHCP"
+          aria-labelledby="rc-tabs-test-tab-DHCP (Wi-Fi)"
           class="ant-tabs-tabpane ant-tabs-tabpane-active"
-          id="rc-tabs-test-panel-DHCP"
+          id="rc-tabs-test-panel-DHCP (Wi-Fi)"
           role="tabpanel"
           tabindex="0"
         >
@@ -2387,9 +2387,9 @@ exports[`VenueDetails should navigate to service tab correctly 1`] = `
         </div>
         <div
           aria-hidden="true"
-          aria-labelledby="rc-tabs-test-tab-MDNS_PROXY"
+          aria-labelledby="rc-tabs-test-tab-mDNS Proxy"
           class="ant-tabs-tabpane"
-          id="rc-tabs-test-panel-MDNS_PROXY"
+          id="rc-tabs-test-panel-mDNS Proxy"
           role="tabpanel"
           style="display: none;"
           tabindex="-1"
@@ -2604,7 +2604,7 @@ exports[`VenueDetails should render correctly 1`] = `
                     role="tab"
                   >
                     <span>
-                      Services (0)
+                      Services
                     </span>
                   </div>
                 </div>
