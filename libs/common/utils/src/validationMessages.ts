@@ -131,6 +131,10 @@ export const validationMessages = {
   phoneNumber: defineMessage({
     defaultMessage: 'Please enter a valid phone number',
     description: 'Validation - phone number checks'
+  }),
+  poeBudget: defineMessage({
+    defaultMessage: 'Poe Budget can only be from 1000 - 30000',
+    description: 'Validation - PoE Budget checks'
   })
 }
 

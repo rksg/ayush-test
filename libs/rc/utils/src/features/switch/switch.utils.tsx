@@ -65,3 +65,16 @@ export const getSwitchModel = (serial: string) => {
   const productCode = serial.slice(0, 3)
   return modelMap.get(productCode)
 }
+
+export const _isEmpty = (params: unknown) => {
+  if (params == null) {
+    return true
+  } else if (params === undefined) {
+    return true
+  } else if (params === 'undefined') {
+    return true
+  } else if (params === '') {
+    return true
+  }
+  return false
+}

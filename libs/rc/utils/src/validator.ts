@@ -356,3 +356,14 @@ export function ValidatePhoneNumber (phoneNumber: string) {
   }
   return true
 }
+
+export function poeBudgetRegExp (value: string) {
+  const { $t } = getIntl()
+  // eslint-disable-next-line max-len
+  const re = new RegExp ('^([1-8][0-9]{3}|9[0-8][0-9]{2}|99[0-8][0-9]|999[0-9]|[12][0-9]{4}|30000)$')
+
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.poeBudget))
+  }
+  return Promise.resolve()
+}

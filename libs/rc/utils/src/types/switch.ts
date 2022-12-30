@@ -1,4 +1,6 @@
 /* eslint-disable max-len */
+import { Acl } from './venue'
+
 import { GridDataRow } from './'
 
 export const SWITCH_SERIAL_PATTERN=/^(FEG|FEM|FEA|FEB|FEH|FEJ|FEC|FED|FEE|FEF|FJN|FJP|FEK|FEL|FMD|FME|FMF|FMG|FMU|FMH|FMJ|EZC|EZD|EZE|FLU|FLV|FLW|FLX|FMK|FML|FMM|FMN|FMP|FMQ|FMR|FMS)([0-9A-Z]{2})(0[1-9]|[1-4][0-9]|5[0-4])([A-HJ-NP-Z])([0-9A-HJ-NPRSTV-Z]{3})$/i
@@ -156,4 +158,155 @@ export interface SwitchPortViewModel extends GridDataRow {
   unitStatus: string; // stack unit role (Standalone/Member...etc)
   unitState: SwitchStatusEnum; // stack unit status (Online/Offline)
   SwitchPortStackingPortField: boolean;
+}
+
+export enum PORT_SPEED {
+  NONE = 'None',
+  AUTO = 'Auto',
+  TEN_M_FULL = '10-FULL',
+  TEN_M_HALF = '10-HALF',
+  ONE_HUNDRED_M_FULL = '100-FULL',
+  ONE_HUNDRED_M_HALF = '100-HALF',
+  ONE_G_FULL = '1000-FULL',
+  ONE_G_FULL_MASTER = '1000-FULL-MASTER',
+  ONE_G_FULL_SLAVE = '1000-FULL-SLAVE',
+  TWO_POINT_FIVE_G_FULL = '2500-FULL',
+  TWO_POINT_FIVE_G_FULL_MASTER = '2500-FULL-MASTER',
+  TWO_POINT_FIVE_G_FULL_SLAVE = '2500-FULL-SLAVE',
+  FIVE_G_FULL = '5G-FULL',
+  FIVE_G_FULL_MASTER = '5G-FULL-MASTER',
+  FIVE_G_FULL_SLAVE = '5G-FULL-SLAVE',
+  TEN_G_FULL = '10G-FULL',
+  TEN_G_FULL_MASTER = '10G-FULL-MASTER',
+  TEN_G_FULL_SLAVE = '10G-FULL-SLAVE',
+  TWENTY_FIVE_G_FULL = '25G-FULL',
+  FORTY_G_FULL = '40G-FULL',
+  ONE_HUNDRED_G_FULL = '100G-FULL',
+  OPTIC = '10G SFP+'
+}
+
+export class SwitchEntityEnum {
+  static switchList = 'switchList'
+  static switchClientList = 'swichClientList'
+  static switchModelList = 'switchModelList'
+  static switchVlanList = 'switchVlanList'
+  static switchPortList = 'switchPortList'
+  static switchRoutedList = 'switchRoutedList'
+  static switchProfileList = 'switchProfileList'
+  static stackMemberlList = 'stackMemberlList'
+}
+
+export interface LldpQos {
+  applicationType: string
+  dscp: number
+  id: string
+  priority: number
+  qosVlanType: string
+}
+
+export interface PortSetting {
+  dhcpSnoopingTrust: boolean
+
+  id: string
+  ipsg: boolean
+  lldpEnable: boolean
+  lldpQos: LldpQos[]
+  poeCapability: boolean
+  poeClass: string
+  poeEnable: boolean
+  poePriority: number
+  port: string
+  poeBudget?: number
+  portEnable: boolean
+  portProtected: boolean
+  portSpeed: string
+  revert: boolean
+  rstpAdminEdgePort: boolean
+  stpBpduGuard: boolean
+  stpRootGuard: boolean
+  switchId: string
+  switchMac: string
+  taggedVlans?: string[]
+  untaggedVlan?: string
+  voiceVlan: number | string
+  egressAcl?: string
+  ingressAcl?: string
+}
+
+export interface PortsSetting {
+  requestId: string,
+  response: PortSetting[]
+}
+export interface VePortRouted {
+  defaultVlan: boolean
+  deviceStatus: string
+  dhcpRelayAgent: string
+  id: string
+  ipAddress: string
+  ipAddressType: string
+  ipSubnetMask: string
+  name: string
+  ospfArea: string
+  portType: string
+  stack: boolean
+  switchId:string
+  switchName: string
+  syncedSwitchConfig: boolean
+  veId: number
+  vlanId: number
+}
+
+export interface SwitchAclUnion {
+  profileAcl: string[]
+  switchAcl: string[]
+}
+
+
+export interface ProfileVlan {
+  defaultVlan: boolean
+  profileLevel: boolean
+  vlanConfigName?: string
+  vlanId: number
+  switchId: string
+}
+
+export interface SwitchDefaultVlan {
+  defaultVlanId: number
+  switchId: string
+}
+
+
+export interface SwitchVlan {
+  defaultVlan: boolean
+  profileLevel: boolean
+  vlanConfigName?: string
+  switchId: string
+  vlanId: number
+}
+
+export interface SwitchVlanUnion {
+  profileVlan: ProfileVlan[]
+  switchDefaultVlan: SwitchVlan[]
+  switchVlan: SwitchVlan[]
+}
+
+export interface SwitchVlans {
+  arpInspection: boolean
+  id: string
+  igmpSnooping: string
+  ipv4DhcpSnooping: boolean
+  multicastVersion: number
+  spanningTreePriority?: number
+  spanningTreeProtocol: string
+  vlanId: number
+  vlanName: string
+}
+
+export interface SwitchProfile {
+  acls: Acl[]
+  id: string
+  name: string
+  profileType: string
+  venues: string[]
+  vlans: SwitchVlans[]
 }
