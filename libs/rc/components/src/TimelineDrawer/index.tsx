@@ -8,7 +8,7 @@ export interface DrawerProps {
   title: MessageDescriptor
   visible: boolean
   onClose: () => void
-  data: { title: MessageDescriptor, value: string }[]
+  data: { title: MessageDescriptor, value: string | JSX.Element }[]
   onBackClick?: () => void
   width?: number
 }
