@@ -26,7 +26,7 @@ export default function DHCPInstancesTable (){
     defaultPayload: {
       fields: ['name', 'id', 'aggregatedApStatus', 'switches'],
       filters: {
-        id: dhcpProfile?.usage.map((usage:DHCPUsage)=>usage.venueId)
+        id: dhcpProfile?.usage?.map((usage:DHCPUsage)=>usage.venueId)||['none']
       },
       sortField: 'name',
       sortOrder: 'ASC'
@@ -34,11 +34,11 @@ export default function DHCPInstancesTable (){
   })
 
   useEffect(()=>{
-    if(dhcpProfile){
+    if(dhcpProfile && dhcpProfile.usage){
       tableQuery.setPayload({
         ...tableQuery.payload,
         filters: {
-          id: dhcpProfile?.usage.map((usage:DHCPUsage)=>usage.venueId)
+          id: dhcpProfile?.usage?.map((usage:DHCPUsage)=>usage.venueId)||['none']
         }
       })
     }
@@ -105,7 +105,7 @@ export default function DHCPInstancesTable (){
   return (
     <Loader states={[{ isLoading: tableQuery.isLoading||tableQuery.isFetching }]}>
       <Card title={$t({ defaultMessage: 'Instances ({count})' },
-        { count: tableQuery.data?.data.length })}>
+        { count: tableQuery.data?.data.length||0 })}>
         <Table
           columns={columns}
           pagination={tableQuery.pagination}
