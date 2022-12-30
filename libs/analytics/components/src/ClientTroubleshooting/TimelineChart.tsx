@@ -54,7 +54,7 @@ export interface TimelineChartProps
   mapping: { key: string; label: string; chartType: string }[];
   showResetZoom?: boolean
 }
-const getSeriesData = (data : Event[], key : string) =>
+export const getSeriesData = (data : Event[], key : string) =>
   data
     .filter(
       (record) =>
@@ -62,19 +62,18 @@ const getSeriesData = (data : Event[], key : string) =>
     )
     .map((record) => [record.start, record.seriesKey, record])
 
-function getSeriesItemColor (params: { data: Event[] }) {
+export function getSeriesItemColor (params: { data: Event[] }) {
   const eventObj = Array.isArray(params.data)
     ? params.data[2]
-    : ''
-  const { category } = eventObj as unknown as Event
-  return cssStr(
+    : null
+  return eventObj ? cssStr(
     eventColorByCategory[
-          category as keyof typeof eventColorByCategory
+      eventObj?.category as keyof typeof eventColorByCategory
     ]
-  )
+  ) : cssStr('--acx-neutrals-50')
 }
 
-const useDotClick = (
+export const useDotClick = (
   eChartsRef: RefObject<ReactECharts>,
   onDotClick: ((param: unknown) => void) | undefined,
   setSelected: Dispatch<SetStateAction<number | undefined>>
@@ -97,7 +96,7 @@ const useDotClick = (
     }
   }, [eChartsRef, handler])
 }
-const useDataZoom = (
+export const useDataZoom = (
   eChartsRef: RefObject<ReactECharts>,
   zoomEnabled: boolean,
   onDataZoom?: (range: TimeStampRange, isReset: boolean) => void
@@ -205,7 +204,8 @@ export function TimelineChart ({
       },
       formatter: tooltipFormatter,
       ...tooltipOptions(),
-      position: (point) => [point[0] + 10, mapping.length * 30]
+      // Need to address test coverage for the postion
+      position: /* istanbul ignore next */ (point) => [point[0] + 10, mapping.length * 30]
     },
     xAxis: {
       ...xAxisOptions(),

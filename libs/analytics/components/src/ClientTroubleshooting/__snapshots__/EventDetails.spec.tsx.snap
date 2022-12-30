@@ -3,25 +3,25 @@
 exports[`EventDetails renders Details correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__DetailsWrapper-sc-hmshlr-11 bWOSwk"
+    class="styledComponents__DetailsWrapper-sc-hmshlr-16 dsiBNj"
   >
     <span
-      class="styledComponents__CloseIconContainer-sc-hmshlr-14 hipsnB"
+      class="styledComponents__CloseIconContainer-sc-hmshlr-19 fmOfEQ"
     >
       <svg
         data-testid="CloseSymbol"
       />
     </span>
     <h3
-      class="styledComponents__Header-sc-hmshlr-12 fYxfWF"
+      class="styledComponents__Header-sc-hmshlr-17 hJwIBo"
     >
       Connection Event Details
     </h3>
     <div
-      class="styledComponents__Body-sc-hmshlr-15 gmSkie"
+      class="styledComponents__Body-sc-hmshlr-20 fUHbVg"
     >
       <div
-        class="styledComponents__ListDetails-sc-hmshlr-17 ixUqiQ"
+        class="styledComponents__ListDetails-sc-hmshlr-22 bdCDPi"
       >
         <div
           class="ant-row Grid__GridRow-sc-5irhjd-2"
@@ -35,7 +35,7 @@ exports[`EventDetails renders Details correctly 1`] = `
               class="Grid__Container-sc-5irhjd-1 zzbxI"
             >
               <div
-                class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowLabel-sc-hmshlr-19 bWPQqV dtKbuE"
+                class="styledComponents__DetailsRow-sc-hmshlr-23 styledComponents__DetailsRowLabel-sc-hmshlr-24 cEHzNR iZMESa"
               >
                 label1
               </div>
@@ -49,7 +49,7 @@ exports[`EventDetails renders Details correctly 1`] = `
               class="Grid__Container-sc-5irhjd-1 zzbxI"
             >
               <div
-                class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowValue-sc-hmshlr-20 bWPQqV fGjurO"
+                class="styledComponents__DetailsRow-sc-hmshlr-23 styledComponents__DetailsRowValue-sc-hmshlr-25 cEHzNR dkEYCP"
               >
                 value1
               </div>
@@ -68,7 +68,7 @@ exports[`EventDetails renders Details correctly 1`] = `
               class="Grid__Container-sc-5irhjd-1 zzbxI"
             >
               <div
-                class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowLabel-sc-hmshlr-19 bWPQqV dtKbuE"
+                class="styledComponents__DetailsRow-sc-hmshlr-23 styledComponents__DetailsRowLabel-sc-hmshlr-24 cEHzNR iZMESa"
               >
                 label2
               </div>
@@ -82,7 +82,7 @@ exports[`EventDetails renders Details correctly 1`] = `
               class="Grid__Container-sc-5irhjd-1 zzbxI"
             >
               <div
-                class="styledComponents__DetailsRow-sc-hmshlr-18 styledComponents__DetailsRowValue-sc-hmshlr-20 bWPQqV fGjurO"
+                class="styledComponents__DetailsRow-sc-hmshlr-23 styledComponents__DetailsRowValue-sc-hmshlr-25 cEHzNR dkEYCP"
               >
                 value2
               </div>

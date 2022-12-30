@@ -245,7 +245,7 @@ export function TimeLine (props: TimeLineProps) {
               </Col>
               {expandObj[config?.value as keyof TimelineData] &&
                 config?.subtitle?.map((subtitle) => (
-                  <React.Fragment key={index}>
+                  <React.Fragment key={subtitle.value}>
                     <Col span={17} offset={3}>
                       <UI.TimelineSubContent>
                         {$t(subtitle.title)}
@@ -268,8 +268,8 @@ export function TimeLine (props: TimeLineProps) {
       </Col>
       <Col flex='auto'>
         <Row gutter={[16, 16]} style={{ rowGap: 0 }}>
-          {ClientTroubleShootingConfig.timeLine.map((config, index) => (
-            <Col span={24} key={index}>
+          {ClientTroubleShootingConfig.timeLine.map((config) => (
+            <Col span={24} key={config.value}>
               <TimelineChart
                 style={{ width: 'auto', marginBottom: 8 }}
                 data={getChartData(
