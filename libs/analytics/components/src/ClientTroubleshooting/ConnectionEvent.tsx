@@ -16,10 +16,10 @@ const useConnectionDetail = (event: DisplayEvent) => {
   const { mac, apName, ssid, radio, code, ttc, state } = event
 
   const eventDetails = [
-    { label: $t({ defaultMessage: 'AP MAC:' }), value: mac },
-    { label: $t({ defaultMessage: 'AP Name:' }), value: apName },
-    { label: $t({ defaultMessage: 'SSID:' }), value: ssid as string },
-    { label: $t({ defaultMessage: 'Radio:' }), value: radio
+    { label: $t({ defaultMessage: 'AP MAC' }), value: mac },
+    { label: $t({ defaultMessage: 'AP Name' }), value: apName },
+    { label: $t({ defaultMessage: 'SSID' }), value: ssid as string },
+    { label: $t({ defaultMessage: 'Radio' }), value: radio
       ? formatter('radioFormat')(radio)
       : $t({ defaultMessage: 'Unknown' })
     }
@@ -31,13 +31,13 @@ const useConnectionDetail = (event: DisplayEvent) => {
         ? mapCodeToFailureText(code, intl)
         : $t({ defaultMessage: 'Unknown' })
       eventDetails.push({
-        label: $t({ defaultMessage: 'Failure Type:' }),
+        label: $t({ defaultMessage: 'Failure Type' }),
         value: failureType
       })
 
       const reason = clientEventDescription(event.event, state)
       eventDetails.push({
-        label: $t({ defaultMessage: 'Reason:' }),
+        label: $t({ defaultMessage: 'Reason' }),
         value: $t(reason)
       })
       break
@@ -45,7 +45,7 @@ const useConnectionDetail = (event: DisplayEvent) => {
 
     case SLOW: {
       eventDetails.push({
-        label: $t({ defaultMessage: 'Time to Connect:' }),
+        label: $t({ defaultMessage: 'Time to Connect' }),
         value: formatter('durationFormat')(ttc)
       })
       break
@@ -54,7 +54,7 @@ const useConnectionDetail = (event: DisplayEvent) => {
     case DISCONNECT: {
       const reason = mapCodeToReason(event.event, intl)
       eventDetails.push({
-        label: $t({ defaultMessage: 'Reason:' }),
+        label: $t({ defaultMessage: 'Reason' }),
         value: reason
       })
       break

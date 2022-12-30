@@ -127,17 +127,3 @@ export const VerticalLine = styled.div`
 export const ListDetails = styled.div`
   width: 250px;
 `
-const DetailsRow = styled.div`
-  white-space: nowrap;
-  font-weight: var(--acx-subtitle-6-font-weight);
-  font-size: var(--acx-subtitle-6-line-height);
-  font-family: var(--acx-neutral-brand-font);
-`
-export const DetailsRowLabel = styled(DetailsRow)`
-  color: var(--acx-neutrals-70);
-  font-style: normal;
-  padding-right: 10px;
-`
-export const DetailsRowValue = styled(DetailsRow)`
-  color: var(--acx-primary-black);
-`

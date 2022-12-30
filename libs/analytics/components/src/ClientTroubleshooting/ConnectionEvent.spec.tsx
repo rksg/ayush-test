@@ -147,7 +147,7 @@ describe('ConnectionEvent', () => {
     render(<ConnectionEventPopover event={disconnectEvent}>test</ConnectionEventPopover>)
     fireEvent.click(await screen.findByText(/test/i))
     expect(screen.getByText(/Client disconnected/i)).toHaveTextContent(/Client disconnected/i)
-    expect(screen.getByText(/Reason:/i)).toHaveTextContent(/Reason:/i)
+    expect(screen.getByText(/Reason/i)).toHaveTextContent(/Reason/i)
   })
 
   it('renders correctly for slow event', () => {
