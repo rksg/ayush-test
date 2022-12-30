@@ -5,7 +5,7 @@ import userEvent from '@testing-library/user-event'
 import { useIsSplitOn }                                            from '@acx-ui/feature-toggle'
 import { Event, EventBase, EventMeta, RequestPayload, TableQuery } from '@acx-ui/rc/utils'
 import { Provider }                                                from '@acx-ui/store'
-import { findTBody, logRoles, render, screen, within }             from '@acx-ui/test-utils'
+import { findTBody, render, screen, within }                       from '@acx-ui/test-utils'
 
 import { events, eventsMeta } from './__tests__/fixtures'
 
