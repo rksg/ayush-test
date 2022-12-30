@@ -14,7 +14,10 @@ import { useCreateDpskMutation, useGetDpskQuery, useUpdateDpskMutation } from '@
 import {
   CreateDpskFormFields,
   PassphraseFormatEnum,
-  getServiceListRoutePath
+  getServiceListRoutePath,
+  ServiceType,
+  getServiceRoutePath,
+  ServiceOperation
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -32,7 +35,8 @@ interface DpskFormProps {
 export default function DpskForm (props: DpskFormProps) {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const linkToServices = useTenantLink(getServiceListRoutePath(true))
+  // eslint-disable-next-line max-len
+  const linkToServices = useTenantLink(getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST }))
   const params = useParams()
   const { editMode = false } = props
 

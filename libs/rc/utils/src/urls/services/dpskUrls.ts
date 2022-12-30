@@ -14,7 +14,7 @@ export const DpskUrls: { [key: string]: ApiInfo } = {
     url: '/api/dpskServices'
   },
   updateDpsk: {
-    method: 'patch',
+    method: 'put',
     url: '/api/dpskServices/:serviceId'
   },
   deleteDpsk: {
