@@ -6,7 +6,6 @@ export interface ApiInfo {
 }
 
 export const TenantIdFromJwt = () => {
-  return '3061bd56e37445a8993ac834c01e2710'
   const jwtToken = getJwtTokenPayload()
   const tenanetIdFromJwt = getTenanetIdFromJwt(jwtToken as string)
 
@@ -14,7 +13,6 @@ export const TenantIdFromJwt = () => {
 }
 
 export const isDelegationMode = () => {
-  return true
   const jwtToken = getJwtTokenPayload()
 
   return (getTenanetIdFromJwt(jwtToken as string) !== getTenantId())
