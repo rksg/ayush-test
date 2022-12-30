@@ -1,8 +1,6 @@
 import {
   GuestNetworkTypeEnum,
   NetworkTypeEnum,
-  PassphraseExpirationEnum,
-  PassphraseFormatEnum,
   WlanSecurityEnum
 } from '../constants'
 import { AAAWlanAdvancedCustomization }   from '../models/AAAWlanAdvancedCustomization'
@@ -86,6 +84,7 @@ export interface NetworkSaveData {
   venues?: NetworkVenue[];
   redirectUrl?: string;
   guestPortal?: GuestPortal;
+  enableDhcp?: boolean;
   wlan?: {
     ssid?: string;
     vlanId?: number;
@@ -110,12 +109,39 @@ export interface NetworkSaveData {
   dpskWlanSecurity?: WlanSecurityEnum;
   authRadius?: Radius;
   accountingRadius?: Radius;
-  passphraseLength?: number;
-  passphraseFormat?: PassphraseFormatEnum;
-  expiration?: PassphraseExpirationEnum;
-  dpskPassphraseGeneration?: {
-    length?: number;
-    format?: PassphraseFormatEnum;
-    expiration?: PassphraseExpirationEnum;
+  dpskServiceProfileId?: string;
+}
+export interface ExternalProviders{
+  providers: Providers[]
+}
+export interface Providers{
+  customExternalProvider: boolean,
+  name: string,
+  regions: Regions[]
+}
+export interface Regions{
+  name: string,
+  showAnalyticsData: boolean,
+  captivePortalUrl: string,
+  redirectUrl: string,
+  authRadius?: {
+    primary: {
+      ip: string;
+      port: string;
+    };
+    secondary: {
+      ip: string;
+      port: string;
+    };
+  },
+  accountingRadius?: {
+    primary: {
+      ip: string;
+      port: string;
+    };
+    secondary: {
+      ip: string;
+      port: string;
+    };
   }
 }

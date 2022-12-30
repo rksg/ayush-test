@@ -1,12 +1,14 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 import {
-  EdgeUrlsInfo,
-  TableResult,
-  EdgeViewModel,
+  CommonResult,
   createHttpRequest,
-  EdgeSaveData,
-  RequestPayload
+  EdgeDnsServers,
+  EdgeGeneralSetting,
+  EdgeUrlsInfo,
+  EdgeStatus,
+  RequestPayload,
+  TableResult
 } from '@acx-ui/rc/utils'
 
 export const baseEdgeApi = createApi({
@@ -19,7 +21,7 @@ export const baseEdgeApi = createApi({
 
 export const edgeApi = baseEdgeApi.injectEndpoints({
   endpoints: (build) => ({
-    addEdge: build.mutation<EdgeSaveData, RequestPayload>({
+    addEdge: build.mutation<EdgeGeneralSetting, RequestPayload>({
       query: ({ payload }) => {
         const req = createHttpRequest(EdgeUrlsInfo.addEdge)
         return {
@@ -29,7 +31,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Edge', id: 'LIST' }]
     }),
-    getEdge: build.query<EdgeSaveData, RequestPayload>({
+    getEdge: build.query<EdgeGeneralSetting, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(EdgeUrlsInfo.getEdge, params)
         return {
@@ -38,7 +40,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
       },
       providesTags: [{ type: 'Edge', id: 'DETAIL' }]
     }),
-    updateEdge: build.mutation<EdgeSaveData, RequestPayload>({
+    updateEdge: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(EdgeUrlsInfo.updateEdge, params)
         return {
@@ -46,9 +48,9 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Edge', id: 'LIST' }]
+      invalidatesTags: [{ type: 'Edge', id: 'LIST' }, { type: 'Edge', id: 'DETAIL' }]
     }),
-    getEdgeList: build.query<TableResult<EdgeViewModel>, RequestPayload>({
+    getEdgeList: build.query<TableResult<EdgeStatus>, RequestPayload>({
       query: ({ payload, params }) => {
         const req = createHttpRequest(EdgeUrlsInfo.getEdgeList, params)
         return {
@@ -58,7 +60,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
       },
       providesTags: [{ type: 'Edge', id: 'LIST' }]
     }),
-    deleteEdge: build.mutation<string, RequestPayload>({
+    deleteEdge: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         if(payload){ //delete multiple rows
           const req = createHttpRequest(EdgeUrlsInfo.deleteEdges)
@@ -75,7 +77,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Edge', id: 'LIST' }]
     }),
-    sendOtp: build.mutation<string, RequestPayload>({
+    sendOtp: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(EdgeUrlsInfo.sendOtp, params)
         return {
@@ -84,6 +86,36 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Edge', id: 'LIST' }]
+    }),
+    edgeBySerialNumber: build.query<EdgeStatus, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getEdgeList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      transformResponse (result: TableResult<EdgeStatus>) {
+        return transformEdgeStatus(result?.data[0])
+      }
+    }),
+    getDnsServers: build.query<EdgeDnsServers, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getDnsServers, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Edge', id: 'DETAIL' }]
+    }),
+    updateDnsServers: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.updateDnsServers, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
     })
   })
 })
@@ -95,5 +127,14 @@ export const {
   useGetEdgeListQuery,
   useLazyGetEdgeListQuery,
   useDeleteEdgeMutation,
-  useSendOtpMutation
+  useSendOtpMutation,
+  useGetDnsServersQuery,
+  useUpdateDnsServersMutation,
+  useEdgeBySerialNumberQuery
 } = edgeApi
+
+const transformEdgeStatus = (result: EdgeStatus) => {
+  const edge = JSON.parse(JSON.stringify(result))
+
+  return edge
+}

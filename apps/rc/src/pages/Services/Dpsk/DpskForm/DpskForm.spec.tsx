@@ -68,18 +68,6 @@ describe('DpskForm', () => {
     )
   })
 
-  it('should render the form', async ()=> {
-    const { asFragment } = render(
-      <Provider>
-        <DpskForm />
-      </Provider>, {
-        route: { params: { tenantId: mockedTenantId }, path: createPath }
-      }
-    )
-
-    expect(asFragment()).toMatchSnapshot()
-  })
-
   it('should create a DPSK service profile', async () => {
     render(
       <Provider>

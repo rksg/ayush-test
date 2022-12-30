@@ -1,3 +1,5 @@
+import { GuestNetworkTypeEnum, SocialIdentitySource, TimeUnitEnum, NetworkSaveData, NetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
+
 export const networksResponse = {
   fields: ['name', 'id'],
   totalCount: 0,
@@ -234,4 +236,396 @@ export const policyListResponse = {
   totalCount: 0,
   totalPages: 0,
   page: 1
+}
+export const dhcpResponse = {
+  id: '6cf550cdb67641d798d804793aaa82db',name: 'My-DHCP',
+  vlanId: 0,subnetAddress: '2.2.2.3',subnetMask: '255.255.255.0',
+  startIpAddress: '10.2.2.2',endIpAddress: '10.2.2.20',primaryDnsIp: '10.1.1.1',
+  secondaryDnsIp: '10.2.3.3',leaseTimeHours: 2, leaseTimeMinutes: 2
+}
+export const hostapprovalData={
+  guestPortal: {
+    redirectUrl: 'dbaidu.com',
+    guestNetworkType: GuestNetworkTypeEnum.HostApproval,
+    hostGuestConfig: {
+      hostDomains: ['aa.com'],
+      hostDurationChoices: [1,4,24,168,730]
+    }
+  }
+}
+
+export const wisprDataNone={
+  guestPortal: {
+    walledGardens: ['aa.com'],
+    guestNetworkType: GuestNetworkTypeEnum.WISPr,
+    wisprPage: {
+      captivePortalUrl: 'http://aa.bb',
+      externalProviderName: 'WifiSocial'
+    }
+  },
+  wlan: {
+    bypassCPUsingMacAddressAuthentication: true,
+	  wlanSecurity: WlanSecurityEnum.None
+  }
+}
+export const wisprDataWep={
+  guestPortal: {
+    walledGardens: ['aa.com'],
+    guestNetworkType: GuestNetworkTypeEnum.WISPr,
+    wisprPage: {
+      captivePortalUrl: 'http://aa.bb',
+      externalProviderName: 'WifiSocial'
+    }
+  },
+  wlan: {
+    bypassCPUsingMacAddressAuthentication: true,
+	  wlanSecurity: WlanSecurityEnum.WEP,
+	  wepHexKey: 'aaaaaaaaaa'
+  }
+}
+export const wisprDataWPA23={
+  guestPortal: {
+    walledGardens: ['aa.com'],
+    guestNetworkType: GuestNetworkTypeEnum.WISPr,
+    wisprPage: {
+      captivePortalUrl: 'http://aa.bb',
+      externalProviderName: 'WifiSocial'
+    }
+  },
+  wlan: {
+    bypassCPUsingMacAddressAuthentication: true,
+	  wlanSecurity: WlanSecurityEnum.WPA23Mixed,
+	  passphrase: 'aaaaaaaaaa',
+    saePassphrase: 'bbbbbbbbb'
+  }
+}
+export const wisprDataWPA2={
+  guestPortal: {
+    redirectUrl: 'dbaidu.com',
+    walledGardens: ['aa.com'],
+    guestNetworkType: GuestNetworkTypeEnum.WISPr,
+    wisprPage: {
+      captivePortalUrl: 'http://aa.bb',
+      externalProviderName: 'Select provider',
+      authRadius: { secondary: {} },
+      accountingRadius: { secondary: {} }
+    }
+  },
+  wlan: {
+    bypassCPUsingMacAddressAuthentication: true,
+	  wlanSecurity: WlanSecurityEnum.WPA2Personal,
+	  passphrase: 'aaaaaaaaaa'
+  }
+}
+export const selfsignData={
+  guestPortal: {
+    redirectUrl: 'dbaidu.com',
+    guestNetworkType: GuestNetworkTypeEnum.SelfSignIn,
+    enableSmsLogin: true,
+    socialIdentities: {
+      facebook: { source: SocialIdentitySource.CUSTOM },
+      google: { source: SocialIdentitySource.CUSTOM },
+      twitter: { source: SocialIdentitySource.CUSTOM },
+      linkedin: { source: SocialIdentitySource.CUSTOM }
+    },
+    socialEmails: true,
+    socialDomains: ['http://123.com'],
+    smsPasswordDuration: {
+      duration: 12,
+      unit: TimeUnitEnum.HOUR
+    }
+  }
+}
+export const guestpassData={
+  enableDhcp: true,
+  guestPortal: {
+    redirectUrl: 'dbaidu.com'
+  }
+}
+export const portalList =[{
+  id: 2,
+  serviceName: 'test2',
+  content: {
+    welcomeText: 'Welcome to the Guest Access login page',
+    welcomeColor: '#333333',
+    bgImage: '',
+    bgColor: '#FFFFFF',
+    welcomeSize: 14,
+
+    photoRatio: 170,
+
+    logoRatio: 105,
+    secondaryText: 'Lorem ipsum dolor sit amet, consectetur adipiscing'+
+    ' elit. Aenean euismod bibendum laoreet.',
+    secondaryColor: '#333333',
+    secondarySize: 14,
+    buttonColor: '#EC7100',
+    poweredBgColor: '#FFFFFF',
+    poweredColor: '#333333',
+    poweredSize: 14,
+    poweredImgRatio: 50,
+    poweredImg: '',
+    wifi4EUNetworkId: '',
+    termsCondition: '',
+    componentDisplay: {
+      logo: true,
+      welcome: true,
+      photo: true,
+      secondaryText: true,
+      termsConditions: false,
+      poweredBy: true,
+      wifi4eu: false
+    },
+    displayLangCode: 'en',
+
+    alternativeLang:
+
+    { cs: false, zh_TW: false, fr: false }
+  }
+}
+]
+export const externalProviders={
+  providers: [
+    {
+      regions: [
+        {
+          name: 'Global',
+          authRadius: {
+            primary: {
+              ip: '158.106.110.94',
+              port: 1812
+            },
+            secondary: {
+              ip: '206.25.74.94',
+              port: 1812
+            }
+          },
+          accountingRadius: {
+            primary: {
+              ip: '158.106.110.94',
+              port: 1813
+            },
+            secondary: {
+              ip: '206.25.74.94',
+              port: 1813
+            }
+          },
+          showAnalyticsData: false
+        },
+        {
+          name: 'Middle East',
+          authRadius: {
+            primary: {
+              ip: '150.129.118.29',
+              port: 1812
+            }
+          },
+          accountingRadius: {
+            primary: {
+              ip: '150.129.118.29',
+              port: 1813
+            }
+          },
+          showAnalyticsData: false
+        }
+      ],
+      name: 'Aislelabs',
+      customExternalProvider: false
+    },
+    {
+      regions: [
+        {
+          name: 'Global',
+          captivePortalUrl: 'http://333.cc.com',
+          redirectUrl: 'baibai.com.cn',
+          authRadius: {
+            primary: {
+              ip: '81.150.39.238',
+              port: 2083
+            }
+          },
+          accountingRadius: {
+            primary: {
+              ip: '81.150.39.238',
+              port: 2083
+            }
+          },
+          showAnalyticsData: false
+        }
+      ],
+      name: 'SkyWifiRadSec',
+      customExternalProvider: false
+    },
+    {
+      regions: [
+        {
+          name: 'Australia & New Zealand',
+          authRadius: {
+            primary: {
+              ip: '52.64.33.144',
+              port: 1812
+            },
+            secondary: {
+              ip: '52.62.73.96',
+              port: 1812
+            }
+          },
+          accountingRadius: {
+            primary: {
+              ip: '52.64.33.144',
+              port: 1813
+            },
+            secondary: {
+              ip: '52.62.73.96',
+              port: 1813
+            }
+          },
+          showAnalyticsData: false
+        },
+        {
+          name: 'Asia',
+          authRadius: {
+            primary: {
+              ip: '52.74.81.42',
+              port: 1812
+            },
+            secondary: {
+              ip: '52.220.47.94',
+              port: 1812
+            }
+          },
+          accountingRadius: {
+            primary: {
+              ip: '52.74.81.42',
+              port: 1813
+            },
+            secondary: {
+              ip: '52.220.47.94',
+              port: 1813
+            }
+          },
+          showAnalyticsData: false
+        },
+        {
+          name: 'Europe',
+          authRadius: {
+            primary: {
+              ip: '52.18.184.156',
+              port: 1812
+            },
+            secondary: {
+              ip: '52.50.161.230',
+              port: 1812
+            }
+          },
+          accountingRadius: {
+            primary: {
+              ip: '52.18.184.156',
+              port: 1813
+            },
+            secondary: {
+              ip: '52.50.161.230',
+              port: 1813
+            }
+          },
+          showAnalyticsData: false
+        },
+        {
+          name: 'North America',
+          authRadius: {
+            primary: {
+              ip: '52.52.68.90',
+              port: 1812
+            },
+            secondary: {
+              ip: '52.8.61.119',
+              port: 1812
+            }
+          },
+          accountingRadius: {
+            primary: {
+              ip: '52.52.68.90',
+              port: 1813
+            },
+            secondary: {
+              ip: '52.8.61.119',
+              port: 1813
+            }
+          },
+          showAnalyticsData: false
+        },
+        {
+          name: 'South America',
+          authRadius: {
+            primary: {
+              ip: '54.94.181.249',
+              port: 1812
+            },
+            secondary: {
+              ip: '52.67.103.30',
+              port: 1812
+            }
+          },
+          accountingRadius: {
+            primary: {
+              ip: '54.94.181.249',
+              port: 1813
+            },
+            secondary: {
+              ip: '52.67.103.30',
+              port: 1813
+            }
+          },
+          showAnalyticsData: false
+        }
+      ],
+      name: 'Skyfii',
+      customExternalProvider: false
+    }
+  ]
+}
+export const dpskListResponse = {
+  content: [
+    {
+      id: '123456789a',
+      name: 'DPSK Service 1',
+      passphraseLength: 18,
+      passphraseFormat: 'MOST_SECURED',
+      expirationType: null
+    },
+    {
+      id: '123456789b',
+      name: 'DPSK Service 2',
+      passphraseLength: 22,
+      passphraseFormat: 'KEYBOARD_FRIENDLY',
+      expirationType: 'SPECIFIED_DATE',
+      expirationDate: '2022-12-07'
+    },
+    {
+      id: '123456789c',
+      name: 'DPSK Service 3',
+      passphraseLength: 24,
+      passphraseFormat: 'KEYBOARD_FRIENDLY',
+      expirationType: 'NUMBERS_ONLY',
+      expirationOffset: 2
+    }
+  ],
+  totalElements: 3,
+  totalPages: 1,
+  page: 0,
+  size: 20,
+  sort: []
+}
+
+export const partialDpskNetworkEntity: NetworkSaveData = {
+  type: NetworkTypeEnum.DPSK,
+  wlan: {
+    wlanSecurity: WlanSecurityEnum.WPA2Personal,
+    vlanId: 1,
+    ssid: 'JackyDPSK'
+  },
+  tenantId: '6de6a5239a1441cfb9c7fde93aa613fe',
+  dpskServiceProfileId: dpskListResponse.content[1].id,
+  name: 'JackyDPSK',
+  id: '1887fef21cdf485cbe2583b8c5ec97f1'
 }

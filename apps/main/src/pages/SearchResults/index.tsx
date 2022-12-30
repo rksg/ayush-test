@@ -22,7 +22,7 @@ import {
   ApExtraParams
 } from '@acx-ui/rc/utils'
 
-import { defaultVenuePayload, VenueTable } from '../Venues/VenuesTable'
+import { useDefaultVenuePayload, VenueTable } from '../Venues/VenuesTable'
 
 import NoData              from './NoData'
 import { Collapse, Panel } from './styledComponents'
@@ -32,10 +32,11 @@ const pagination = { pageSize: 5 }
 
 const searches = [
   (searchString: string, $t: IntlShape['$t']) => {
+    const venuePayload = useDefaultVenuePayload()
     const result = useTableQuery<Venue, RequestPayload<unknown>, unknown>({
       useQuery: useVenuesListQuery,
       defaultPayload: {
-        ...defaultVenuePayload,
+        ...venuePayload,
         searchString,
         searchTargetFields: ['name', 'description']
       },
