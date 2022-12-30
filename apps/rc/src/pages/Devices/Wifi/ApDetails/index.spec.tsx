@@ -2,12 +2,12 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { apApi }                      from '@acx-ui/rc/services'
-import { CommonUrlsInfo }             from '@acx-ui/rc/utils'
-import { Provider, store }            from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { apApi }                                                 from '@acx-ui/rc/services'
+import { CommonUrlsInfo }                                        from '@acx-ui/rc/utils'
+import { Provider, store }                                       from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-import { apDetailData } from './__tests__/fixtures'
+import { apDetailData, events, eventsMeta } from './__tests__/fixtures'
 
 import ApDetails from '.'
 
@@ -45,10 +45,12 @@ describe('ApDetails', () => {
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())
     mockServer.use(
-      rest.get(
-        CommonUrlsInfo.getApDetailHeader.url,
-        (_, res, ctx) => res(ctx.json(apDetailData))
-      )
+      rest.get(CommonUrlsInfo.getApDetailHeader.url,
+        (_, res, ctx) => res(ctx.json(apDetailData))),
+      rest.post(CommonUrlsInfo.getEventList.url,
+        (_, res, ctx) => res(ctx.json(events))),
+      rest.post(CommonUrlsInfo.getEventListMeta.url,
+        (_, res, ctx) => res(ctx.json(eventsMeta)))
     )
   })
 
@@ -147,6 +149,7 @@ describe('ApDetails', () => {
     const { asFragment } = render(<Provider><ApDetails /></Provider>, {
       route: { params, path: '/:tenantId/devices/wifi/:serialNumber/details/:activeTab' }
     })
+    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
     expect(asFragment()).toMatchSnapshot()
   })
 

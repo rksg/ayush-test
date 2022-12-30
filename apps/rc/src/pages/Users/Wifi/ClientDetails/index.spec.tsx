@@ -19,7 +19,9 @@ import {
   clientReportList,
   clientNetworkList,
   eventMetaList,
-  histClientList
+  histClientList,
+  events,
+  eventsMeta
 } from '../__tests__/fixtures'
 
 import ClientDetailPageHeader from './ClientDetailPageHeader'
@@ -39,24 +41,30 @@ jest.mock('@acx-ui/analytics/components', () => ({
 }))
 
 describe('ClientDetails', () => {
-  mockServer.use(
-    rest.get(ClientUrlsInfo.getClientDetails.url,
-      (_, res, ctx) => res(ctx.json(clientList[0]))),
-    rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
-      (_, res, ctx) => res(ctx.json(clientApList[0]))),
-    rest.get(WifiUrlsInfo.getNetwork.url,
-      (_, res, ctx) => res(ctx.json(clientNetworkList[0]))),
-    rest.get(CommonUrlsInfo.getVenue.url,
-      (_, res, ctx) => res(ctx.json(clientVenueList[0]))),
-    rest.post(CommonUrlsInfo.getHistoricalClientList.url,
-      (_, res, ctx) => res(ctx.json(histClientList ))),
-    rest.post(CommonUrlsInfo.getHistoricalStatisticsReportsV2.url,
-      (_, res, ctx) => res(ctx.json(clientReportList[0]))),
-    rest.post(CommonUrlsInfo.getEventListMeta.url,
-      (_, res, ctx) => res(ctx.json(eventMetaList))),
-    rest.get(WifiUrlsInfo.getApCapabilities.url,
-      (_, res, ctx) => res(ctx.json(apCaps)))
-  )
+  beforeEach(() => {
+    mockServer.use(
+      rest.get(ClientUrlsInfo.getClientDetails.url,
+        (_, res, ctx) => res(ctx.json(clientList[0]))),
+      rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
+        (_, res, ctx) => res(ctx.json(clientApList[0]))),
+      rest.get(WifiUrlsInfo.getNetwork.url,
+        (_, res, ctx) => res(ctx.json(clientNetworkList[0]))),
+      rest.get(CommonUrlsInfo.getVenue.url,
+        (_, res, ctx) => res(ctx.json(clientVenueList[0]))),
+      rest.post(CommonUrlsInfo.getHistoricalClientList.url,
+        (_, res, ctx) => res(ctx.json(histClientList ))),
+      rest.post(CommonUrlsInfo.getHistoricalStatisticsReportsV2.url,
+        (_, res, ctx) => res(ctx.json(clientReportList[0]))),
+      rest.post(CommonUrlsInfo.getEventListMeta.url,
+        (_, res, ctx) => res(ctx.json(eventMetaList))),
+      rest.get(WifiUrlsInfo.getApCapabilities.url,
+        (_, res, ctx) => res(ctx.json(apCaps))),
+      rest.post(CommonUrlsInfo.getEventList.url,
+        (_, res, ctx) => res(ctx.json(events))),
+      rest.post(CommonUrlsInfo.getEventListMeta.url,
+        (_, res, ctx) => res(ctx.json(eventsMeta)))
+    )
+  })
 
   it('should render correctly', async () => {
     jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('hostname')
@@ -117,6 +125,7 @@ describe('ClientDetails', () => {
     const { asFragment } = render(<Provider><ClientDetails /></Provider>, {
       route: { params, path: '/:tenantId/users/wifi/:activeTab/:clientId/details/:activeTab' }
     })
+    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
     expect(asFragment()).toMatchSnapshot()
   })
 

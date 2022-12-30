@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`VenueTimelineTab should render 1`] = `
+exports[`SwitchTimelineTab should render 1`] = `
 <DocumentFragment>
   <div
     class="ant-tabs ant-tabs-top ant-tabs-card styledComponents__Tabs-sc-1afcsfc-0 jHmORd"

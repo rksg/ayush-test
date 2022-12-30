@@ -2,12 +2,12 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { apApi }                      from '@acx-ui/rc/services'
-import { SwitchUrlsInfo }             from '@acx-ui/rc/utils'
-import { Provider, store }            from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { apApi }                                                 from '@acx-ui/rc/services'
+import { CommonUrlsInfo, SwitchUrlsInfo }                        from '@acx-ui/rc/utils'
+import { Provider, store }                                       from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-import { switchDetailData } from './__tests__/fixtures'
+import { switchDetailData, events, eventsMeta } from './__tests__/fixtures'
 
 import SwitchDetails from '.'
 
@@ -21,10 +21,12 @@ describe('SwitchDetails', () => {
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())
     mockServer.use(
-      rest.get(
-        SwitchUrlsInfo.getSwitchDetailHeader.url,
-        (_, res, ctx) => res(ctx.json(switchDetailData))
-      )
+      rest.get( SwitchUrlsInfo.getSwitchDetailHeader.url,
+        (_, res, ctx) => res(ctx.json(switchDetailData))),
+      rest.post(CommonUrlsInfo.getEventList.url,
+        (_, res, ctx) => res(ctx.json(events))),
+      rest.post(CommonUrlsInfo.getEventListMeta.url,
+        (_, res, ctx) => res(ctx.json(eventsMeta)))
     )
   })
 
@@ -130,6 +132,7 @@ describe('SwitchDetails', () => {
     const { asFragment } = render(<Provider><SwitchDetails /></Provider>, {
       route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab' }
     })
+    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
     expect(asFragment()).toMatchSnapshot()
   })
 
