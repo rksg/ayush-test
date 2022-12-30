@@ -12,10 +12,10 @@ import {
   venueNetworkList,
   networkDeepList,
   venueNetworkApGroup,
-  serviceProfile,
-  events,
-  eventsMeta
+  serviceProfile
 } from '../__tests__/fixtures'
+
+import { events, eventsMeta } from './VenueTimelineTab/__tests__/fixtures'
 
 import { VenueDetails } from '.'
 
@@ -181,11 +181,11 @@ describe('VenueDetails', () => {
       venueId: '7482d2efe90f48d0a898c96d42d2d0e7',
       activeTab: 'timeline'
     }
-    const { asFragment } = render(<Provider><VenueDetails /></Provider>, {
+    render(<Provider><VenueDetails /></Provider>, {
       route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
     })
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    expect(asFragment()).toMatchSnapshot()
+    await screen.findByText('730-11-60')
   })
 
   it('should not navigate to non-existent tab', async () => {

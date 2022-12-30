@@ -7,7 +7,8 @@ import { CommonUrlsInfo, SwitchUrlsInfo }                        from '@acx-ui/r
 import { Provider, store }                                       from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-import { switchDetailData, events, eventsMeta } from './__tests__/fixtures'
+import { switchDetailData }   from './__tests__/fixtures'
+import { events, eventsMeta } from './SwitchTimelineTab/__tests__/fixtures'
 
 import SwitchDetails from '.'
 
@@ -129,11 +130,11 @@ describe('SwitchDetails', () => {
       serialNumber: 'serialNumber',
       activeTab: 'timeline'
     }
-    const { asFragment } = render(<Provider><SwitchDetails /></Provider>, {
+    render(<Provider><SwitchDetails /></Provider>, {
       route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab' }
     })
-    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
-    expect(asFragment()).toMatchSnapshot()
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await screen.findByText('730-11-60')
   })
 
   it('should not navigate to non-existent tab', async () => {

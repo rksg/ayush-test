@@ -24,14 +24,13 @@ describe('NetworkTimelineTab', ()=>{
       rest.post(CommonUrlsInfo.getEventList.url, (_, res, ctx) => res(ctx.json(events))),
       rest.post(CommonUrlsInfo.getEventListMeta.url, (_, res, ctx) => res(ctx.json(eventsMeta)))
     )
-    const { asFragment } = render(<Provider><NetworkTimelineTab /></Provider>, {
+    render(<Provider><NetworkTimelineTab /></Provider>, {
       route: {
         params: { tenantId: 't1', networkId: 'networkId' },
         path: '/t/:tenantId/networks/:networkId/network-details/timeline/'
-
       }
     })
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    expect(asFragment()).toMatchSnapshot()
+    await screen.findByText('730-11-60')
   })
 })

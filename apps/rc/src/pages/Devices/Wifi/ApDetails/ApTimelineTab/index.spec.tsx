@@ -24,13 +24,13 @@ describe('ApTimelineTab', ()=>{
       rest.post(CommonUrlsInfo.getEventList.url, (_, res, ctx) => res(ctx.json(events))),
       rest.post(CommonUrlsInfo.getEventListMeta.url, (_, res, ctx) => res(ctx.json(eventsMeta)))
     )
-    const { asFragment } = render(<Provider><ApTimelineTab /></Provider>, {
+    render(<Provider><ApTimelineTab /></Provider>, {
       route: {
         params: { tenantId: 't1', serialNumber: 'serialNumber' },
         path: '/t/:tenantId/devices/wifi/:serialNumber/details/timeline/'
       }
     })
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    expect(asFragment()).toMatchSnapshot()
+    await screen.findByText('730-11-60')
   })
 })

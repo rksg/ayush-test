@@ -24,7 +24,7 @@ describe('ClientTimelineTab', ()=>{
       rest.post(CommonUrlsInfo.getEventList.url, (_, res, ctx) => res(ctx.json(events))),
       rest.post(CommonUrlsInfo.getEventListMeta.url, (_, res, ctx) => res(ctx.json(eventsMeta)))
     )
-    const { asFragment } = render(<Provider><ClientTimelineTab /></Provider>, {
+    render(<Provider><ClientTimelineTab /></Provider>, {
       route: {
         params: { tenantId: 't1', clientId: 'clientId' },
         path: '/t/:tenantId/users/wifi/clients/:clientId/details/timeline/'
@@ -32,6 +32,6 @@ describe('ClientTimelineTab', ()=>{
       }
     })
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    expect(asFragment()).toMatchSnapshot()
+    await screen.findByText('730-11-60')
   })
 })

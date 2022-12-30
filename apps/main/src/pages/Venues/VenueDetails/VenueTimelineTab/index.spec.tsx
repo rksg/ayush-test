@@ -15,7 +15,7 @@ jest.mock('react-router-dom', () => ({
   useParams: jest.fn()
 }))
 
-describe('VenueTimelineTab', ()=>{
+describe('VenueTimelineTab', () => {
   it('should render', async () => {
     jest.spyOn(router, 'useParams').mockImplementation(
       () => ({ tenantId: 't1', venueId: 'venueId' })
@@ -24,13 +24,13 @@ describe('VenueTimelineTab', ()=>{
       rest.post(CommonUrlsInfo.getEventList.url, (_, res, ctx) => res(ctx.json(events))),
       rest.post(CommonUrlsInfo.getEventListMeta.url, (_, res, ctx) => res(ctx.json(eventsMeta)))
     )
-    const { asFragment } = render(<Provider><VenueTimelineTab /></Provider>, {
+    render(<Provider><VenueTimelineTab /></Provider>, {
       route: {
         params: { tenantId: 't1', venueId: 'venueId' },
         path: '/t/:tenantId/venues/:venueId/venue-details/timeline/'
       }
     })
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    expect(asFragment()).toMatchSnapshot()
+    await screen.findByText('730-11-60')
   })
 })

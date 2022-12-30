@@ -6,8 +6,14 @@ import { useNavigate, useParams }                    from 'react-router-dom'
 import { Tabs }                                                                     from '@acx-ui/components'
 import { EventTable, eventDefaultPayload, eventDefaultSorter, useEventTableFilter } from '@acx-ui/rc/components'
 import { useEventsQuery }                                                           from '@acx-ui/rc/services'
-import { Event, useTableQuery, RequestPayload, TimelineTypes }                      from '@acx-ui/rc/utils'
-import { useTenantLink }                                                            from '@acx-ui/react-router-dom'
+import {
+  Event,
+  usePollingTableQuery,
+  RequestPayload,
+  TimelineTypes,
+  TABLE_QUERY_LONG_POLLING_INTERVAL
+} from '@acx-ui/rc/utils'
+import { useTenantLink } from '@acx-ui/react-router-dom'
 
 const Events = () => {
   const { serialNumber } = useParams()
@@ -19,13 +25,14 @@ const Events = () => {
     })
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fromTime, toTime, serialNumber])
-  const tableQuery = useTableQuery<Event, RequestPayload<unknown>, unknown>({
+  const tableQuery = usePollingTableQuery<Event, RequestPayload<unknown>, unknown>({
     useQuery: useEventsQuery,
     defaultPayload: {
       ...eventDefaultPayload,
       filters: { ...eventDefaultPayload.filters, serialNumber: [ serialNumber ], fromTime, toTime }
     },
-    sorter: eventDefaultSorter
+    sorter: eventDefaultSorter,
+    option: { pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL }
   })
   return <EventTable tableQuery={tableQuery}/>
 }

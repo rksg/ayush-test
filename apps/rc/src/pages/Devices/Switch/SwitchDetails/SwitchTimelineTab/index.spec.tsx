@@ -15,7 +15,7 @@ jest.mock('react-router-dom', () => ({
   useParams: jest.fn()
 }))
 
-describe('SwitchTimelineTab', ()=>{
+describe('SwitchTimelineTab', () => {
   it('should render', async () => {
     jest.spyOn(router, 'useParams').mockImplementation(
       () => ({ tenantId: 't1', switchId: 'switchId', serialNumber: 'serialNumber' })
@@ -24,7 +24,7 @@ describe('SwitchTimelineTab', ()=>{
       rest.post(CommonUrlsInfo.getEventList.url, (_, res, ctx) => res(ctx.json(events))),
       rest.post(CommonUrlsInfo.getEventListMeta.url, (_, res, ctx) => res(ctx.json(eventsMeta)))
     )
-    const { asFragment } = render(<Provider><SwitchTimelineTab /></Provider>, {
+    render(<Provider><SwitchTimelineTab /></Provider>, {
       route: {
         params: { tenantId: 't1', switchId: 'switchId', serialNumber: 'serialNumber' },
         path: '/t/:tenantId/devices/switch/:switchId/:serialNumber/details/timeline/'
@@ -32,6 +32,6 @@ describe('SwitchTimelineTab', ()=>{
       }
     })
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    expect(asFragment()).toMatchSnapshot()
+    await screen.findByText('730-11-60')
   })
 })

@@ -19,12 +19,11 @@ import {
   clientReportList,
   clientNetworkList,
   eventMetaList,
-  histClientList,
-  events,
-  eventsMeta
+  histClientList
 } from '../__tests__/fixtures'
 
 import ClientDetailPageHeader from './ClientDetailPageHeader'
+import { events, eventsMeta } from './ClientTimelineTab/__tests__/fixtures'
 
 import ClientDetails from '.'
 
@@ -43,6 +42,10 @@ jest.mock('@acx-ui/analytics/components', () => ({
 describe('ClientDetails', () => {
   beforeEach(() => {
     mockServer.use(
+      rest.post(CommonUrlsInfo.getEventList.url,
+        (_, res, ctx) => res(ctx.json(events))),
+      rest.post(CommonUrlsInfo.getEventListMeta.url,
+        (_, res, ctx) => res(ctx.json(eventsMeta))),
       rest.get(ClientUrlsInfo.getClientDetails.url,
         (_, res, ctx) => res(ctx.json(clientList[0]))),
       rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
@@ -58,11 +61,7 @@ describe('ClientDetails', () => {
       rest.post(CommonUrlsInfo.getEventListMeta.url,
         (_, res, ctx) => res(ctx.json(eventMetaList))),
       rest.get(WifiUrlsInfo.getApCapabilities.url,
-        (_, res, ctx) => res(ctx.json(apCaps))),
-      rest.post(CommonUrlsInfo.getEventList.url,
-        (_, res, ctx) => res(ctx.json(events))),
-      rest.post(CommonUrlsInfo.getEventListMeta.url,
-        (_, res, ctx) => res(ctx.json(eventsMeta)))
+        (_, res, ctx) => res(ctx.json(apCaps)))
     )
   })
 
@@ -122,11 +121,11 @@ describe('ClientDetails', () => {
       clientId: 'user-id',
       activeTab: 'timeline'
     }
-    const { asFragment } = render(<Provider><ClientDetails /></Provider>, {
+    render(<Provider><ClientDetails /></Provider>, {
       route: { params, path: '/:tenantId/users/wifi/:activeTab/:clientId/details/:activeTab' }
     })
-    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
-    expect(asFragment()).toMatchSnapshot()
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await screen.findByText('730-11-60')
   })
 
   it('should not navigate to non-existent tab', async () => {
