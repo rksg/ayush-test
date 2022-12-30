@@ -2,10 +2,12 @@ import { useState } from 'react'
 
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
-import { Anchor, Tooltip }                               from '@acx-ui/components'
-import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined }                    from '@acx-ui/icons'
-import { ConnectedClientsTable, HistoricalClientsTable } from '@acx-ui/rc/components'
+import { Anchor, Tooltip }            from '@acx-ui/components'
+import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
+
+import { ConnectedClientsTable }  from '../ConnectedClientsTable'
+import { HistoricalClientsTable } from '../HistoricalClientsTable'
 
 import { ClientLink, ClientSearchBar, SearchBarDiv, SearchCountDiv } from './styledComponents'
 

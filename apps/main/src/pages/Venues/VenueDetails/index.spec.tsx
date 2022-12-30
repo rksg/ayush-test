@@ -2,10 +2,10 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { venueApi }                            from '@acx-ui/rc/services'
-import { CommonUrlsInfo, DHCPUrls, Dashboard } from '@acx-ui/rc/utils'
-import { Provider, store }                     from '@acx-ui/store'
-import { mockServer, render, screen }          from '@acx-ui/test-utils'
+import { venueApi }                                              from '@acx-ui/rc/services'
+import { CommonUrlsInfo, DHCPUrls, Dashboard, ClientUrlsInfo }   from '@acx-ui/rc/utils'
+import { Provider, store }                                       from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import {
   venueDetailHeaderData,
@@ -31,6 +31,7 @@ const data: Dashboard = {
 
 /* eslint-disable max-len */
 jest.mock('@acx-ui/analytics/components', () => ({
+  ...jest.requireActual('@acx-ui/analytics/components'),
   AnalyticsTabs: () => <div data-testid={'analytics-AnalyticsTabs'} title='AnalyticsTabs' />,
   ConnectedClientsOverTime: () => <div data-testid={'analytics-ConnectedClientsOverTime'} title='ConnectedClientsOverTime' />,
   IncidentBySeverity: () => <div data-testid={'analytics-IncidentBySeverity'} title='IncidentBySeverity' />,
@@ -49,6 +50,7 @@ jest.mock('@acx-ui/analytics/components', () => ({
   HealthPage: () => <div data-testid={'analytics-HealthPage'} title='HealthPage' />
 }))
 jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
   TopologyFloorPlanWidget: () => <div data-testid={'rc-TopologyFloorPlanWidget'} title='TopologyFloorPlanWidget' />,
   VenueAlarmWidget: () => <div data-testid={'rc-VenueAlarmWidget'} title='VenueAlarmWidget' />,
   VenueDevicesWidget: () => <div data-testid={'rc-VenueDevicesWidget'} title='VenueDevicesWidget' />
@@ -79,6 +81,16 @@ describe('VenueDetails', () => {
       rest.post(
         CommonUrlsInfo.venueNetworkApGroup.url,
         (req, res, ctx) => res(ctx.json(venueNetworkApGroup))
+      ),
+      rest.post(
+        ClientUrlsInfo.getClientList.url,
+        (req, res, ctx) => res(ctx.json({
+          totalCount: 2, page: 1, data: []
+        }))
+      ),
+      rest.post(
+        ClientUrlsInfo.getClientMeta.url,
+        (req, res, ctx) => res(ctx.json({ data: [] }))
       ),
       rest.get(
         DHCPUrls.getVenueDHCPServiceProfile.url,
@@ -122,8 +134,10 @@ describe('VenueDetails', () => {
       activeTab: 'clients'
     }
     const { asFragment } = render(<Provider><VenueDetails /></Provider>, {
-      route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
+      route: { params, path: '/:tenantId/venues/:venueId/venue-details/:activeTab' }
     })
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
     expect(asFragment()).toMatchSnapshot()
   })
 
