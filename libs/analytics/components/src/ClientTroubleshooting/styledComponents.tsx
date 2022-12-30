@@ -91,11 +91,7 @@ export const PopoverWrapper = styled.div`
   }
 `
 export const DetailsWrapper = styled.div`
-  max-height: 175px;
-  padding-top: 16px;
-  padding-left: var(--acx-content-vertical-space);
-  padding-bottom: 15px;
-  overflow: scroll;
+  padding: 4px 0;
 `
 export const Header = styled.h3`
   font-size: 10px;

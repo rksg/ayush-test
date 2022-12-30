@@ -3,7 +3,7 @@
 exports[`EventDetails renders Details correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__DetailsWrapper-sc-hmshlr-11 bskiva"
+    class="styledComponents__DetailsWrapper-sc-hmshlr-11 jutpDL"
   >
     <span
       class="styledComponents__CloseIconContainer-sc-hmshlr-14 hipsnB"
