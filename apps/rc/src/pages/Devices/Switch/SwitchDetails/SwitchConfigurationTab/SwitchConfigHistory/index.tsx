@@ -1,12 +1,16 @@
 import { Button, Modal } from '@acx-ui/components'
 import { useState } from 'react'
 import { useIntl } from 'react-intl'
-// import CodeMirror from '@uiw/react-codemirror'
+import 'codemirror/addon/merge/merge.css'
+import 'codemirror/addon/merge/merge.js'
+import 'codemirror/addon/selection/active-line.js'
+import 'codemirror/addon/mode/overlay'
+import { CodeMirrorWidget } from '@acx-ui/rc/components'
 
 export function SwitchConfigHistory () {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
-  
+
   const showModal = () => {
     setVisible(true)
   }
@@ -16,16 +20,14 @@ export function SwitchConfigHistory () {
   }
 
   const content = <>
-    {/* <CodeMirror
-      value="console.log('hello world!');"
-      height="200px"
-    /> */}
   </>
 
   return <>
     <Button onClick={showModal}>
       test code mirror
     </Button>
+    <CodeMirrorWidget />
+  
     <Modal
       title={$t({ defaultMessage: 'Configuration Details' })}
       visible={visible}
