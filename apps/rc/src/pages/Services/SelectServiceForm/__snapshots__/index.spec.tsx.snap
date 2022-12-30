@@ -180,7 +180,7 @@ exports[`Select Service Form should render form 1`] = `
                                       <input
                                         class="ant-radio-input"
                                         type="radio"
-                                        value="DHCP"
+                                        value="DHCP (Wi-Fi)"
                                       />
                                       <span
                                         class="ant-radio-inner"
@@ -279,7 +279,7 @@ exports[`Select Service Form should render form 1`] = `
                                       <input
                                         class="ant-radio-input"
                                         type="radio"
-                                        value="MDNS_PROXY"
+                                        value="mDNS Proxy"
                                       />
                                       <span
                                         class="ant-radio-inner"
@@ -342,7 +342,7 @@ exports[`Select Service Form should render form 1`] = `
                                   <input
                                     class="ant-radio-input"
                                     type="radio"
-                                    value="PORTAL"
+                                    value="Portal"
                                   />
                                   <span
                                     class="ant-radio-inner"

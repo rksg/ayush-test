@@ -8,6 +8,8 @@ export interface DrawerProps {
   visible: boolean
   onClose: () => void
   data: { title: MessageDescriptor, value: string }[]
+  onBackClick?: () => void
+  width?: number
 }
 
 export const TimelineDrawer = (props: DrawerProps) => {
@@ -16,6 +18,8 @@ export const TimelineDrawer = (props: DrawerProps) => {
     title={$t(props.title)}
     visible={props.visible}
     onClose={props.onClose}
+    onBackClick={props.onBackClick}
+    width={props.width}
     children={<Descriptions>{
       props.data.map(({ title, value }, i) => <Descriptions.Item
         key={i}
