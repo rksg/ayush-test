@@ -3,15 +3,14 @@ import { useContext } from 'react'
 import { Switch }  from 'antd'
 import { useIntl } from 'react-intl'
 
-import { cssStr, showToast, Table, TableProps } from '@acx-ui/components'
-import { useVenueRoguePolicyQuery }             from '@acx-ui/rc/services'
+import { showToast, Table, TableProps } from '@acx-ui/components'
+import { useVenueRoguePolicyQuery }     from '@acx-ui/rc/services'
 import {
   RogueAPDetectionActionPayload,
   RogueAPDetectionActionTypes,
   useTableQuery,
   VenueRoguePolicyType
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
 
 import RogueAPDetectionContext from '../RogueAPDetectionContext'
 
@@ -39,6 +38,30 @@ const RogueVenueTable = () => {
   const { $t } = useIntl()
   const { state, dispatch } = useContext(RogueAPDetectionContext)
 
+  const activateVenue = (selectRows: VenueRoguePolicyType[]) => {
+    dispatch({
+      type: RogueAPDetectionActionTypes.ADD_VENUES,
+      payload: selectRows.map(row => {
+        return {
+          id: row.id,
+          name: row.name
+        }
+      })
+    } as RogueAPDetectionActionPayload)
+  }
+
+  const deactivateVenue = (selectRows: VenueRoguePolicyType[]) => {
+    dispatch({
+      type: RogueAPDetectionActionTypes.REMOVE_VENUES,
+      payload: selectRows.map(row => {
+        return {
+          id: row.id,
+          name: row.name
+        }
+      })
+    } as RogueAPDetectionActionPayload)
+  }
+
   const basicColumns: TableProps<VenueRoguePolicyType>['columns'] = [
     {
       title: $t({ defaultMessage: 'Venue' }),
@@ -51,21 +74,21 @@ const RogueVenueTable = () => {
       key: 'aggregatedApStatus',
       align: 'center',
       render: (data, row) => {
-        if (row.aggregatedApStatus?.hasOwnProperty('1_01_NeverContactedCloud')) {
-          return <span style={{ color: cssStr('--acx-neutrals-50') }}>
-            {row.aggregatedApStatus['1_01_NeverContactedCloud']}
-          </span>
-        }
-        if (row.aggregatedApStatus?.hasOwnProperty('2_00_Operational')) {
-          return <TenantLink
-            to={`/venues/${row.id}/venue-details/devices`}
-          >
-            <span style={{ color: cssStr('--acx-semantics-green-50') }}>
-              {row.aggregatedApStatus['2_00_Operational']}
-            </span>
-          </TenantLink>
-        }
-        return 0
+        // if (row.aggregatedApStatus?.hasOwnProperty('1_01_NeverContactedCloud')) {
+        //   return <span style={{ color: cssStr('--acx-neutrals-50') }}>
+        //     {row.aggregatedApStatus['1_01_NeverContactedCloud']}
+        //   </span>
+        // }
+        // if (row.aggregatedApStatus?.hasOwnProperty('2_00_Operational')) {
+        //   return <TenantLink
+        //     to={`/venues/${row.id}/venue-details/devices`}
+        //   >
+        //     <span style={{ color: cssStr('--acx-semantics-green-50') }}>
+        //       {row.aggregatedApStatus['2_00_Operational']}
+        //     </span>
+        //   </TenantLink>
+        // }
+        return Object.values(row.aggregatedApStatus ?? {}).reduce((a, b) => a + b, 0)
       }
     },
     {
@@ -100,11 +123,20 @@ const RogueVenueTable = () => {
       key: 'activate',
       align: 'center',
       render: (data, row) => {
-        return <Switch checked={
-          state.venues
-            ? state.venues.findIndex(venueExist => venueExist.id === row.id) !== -1
-            : false
-        }/>
+        return <Switch
+          data-testid={`switchBtn_${row.id}`}
+          checked={
+            state.venues
+              ? state.venues.findIndex(venueExist => venueExist.id === row.id) !== -1
+              : false
+          }
+          onClick={() => {
+            state.venues.findIndex(venueExist => venueExist.id === row.id) !== -1
+              ? deactivateVenue([row])
+              : activateVenue([row])
+          }
+          }
+        />
       }
     }
   ]
@@ -134,47 +166,15 @@ const RogueVenueTable = () => {
           content: 'The max-number of venues in a rogue ap policy profile is 64.'
         })
       } else {
-        dispatch({
-          type: RogueAPDetectionActionTypes.ADD_VENUES,
-          payload: selectRows.map(row => {
-            return {
-              id: row.id,
-              name: row.name
-            }
-          })
-        } as RogueAPDetectionActionPayload)
-
-        showToast({
-          type: 'info',
-          duration: 10,
-          content: $t({
-            defaultMessage: 'Activate {count} {count, plural, one {venue} other {venues}}'
-          }, { count: selectRows.length })
-        })
+        activateVenue(selectRows)
         clearSelection()
       }
     }
   },{
     label: $t({ defaultMessage: 'Deactivate' }),
     onClick: (selectRows: VenueRoguePolicyType[], clearSelection: () => void) => {
-      dispatch({
-        type: RogueAPDetectionActionTypes.REMOVE_VENUES,
-        payload: selectRows.map(row => {
-          return {
-            id: row.id,
-            name: row.name
-          }
-        })
-      } as RogueAPDetectionActionPayload)
+      deactivateVenue(selectRows)
 
-
-      showToast({
-        type: 'info',
-        duration: 10,
-        content: $t({
-          defaultMessage: 'Deactivate {count} {count, plural, one {venue} other {venues}}'
-        }, { count: selectRows.length })
-      })
       clearSelection()
     }
   }] as { label: string, onClick: () => void }[]

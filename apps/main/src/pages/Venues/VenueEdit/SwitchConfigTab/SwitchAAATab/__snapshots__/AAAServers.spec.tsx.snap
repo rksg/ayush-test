@@ -25,7 +25,7 @@ exports[`AAAServers should render RADIUS list correctly and edit row data 1`] = 
             >
               <svg
                 class="ant-collapse-arrow"
-                data-testid="CollapseActive"
+                data-testid="CollapseInactive"
               />
             </div>
             <span
@@ -618,7 +618,7 @@ exports[`AAAServers should render RADIUS list correctly and edit row data 1`] = 
             >
               <svg
                 class="ant-collapse-arrow"
-                data-testid="CollapseActive"
+                data-testid="CollapseInactive"
               />
             </div>
             <span
@@ -953,7 +953,7 @@ exports[`AAAServers should render RADIUS list correctly and edit row data 1`] = 
             >
               <svg
                 class="ant-collapse-arrow"
-                data-testid="CollapseActive"
+                data-testid="CollapseInactive"
               />
             </div>
             <span
@@ -1282,7 +1282,7 @@ exports[`AAAServers should render empty lists and alert message correctly 1`] = 
             >
               <svg
                 class="ant-collapse-arrow"
-                data-testid="CollapseActive"
+                data-testid="CollapseInactive"
               />
             </div>
             <span
@@ -1617,7 +1617,7 @@ exports[`AAAServers should render empty lists and alert message correctly 1`] = 
             >
               <svg
                 class="ant-collapse-arrow"
-                data-testid="CollapseActive"
+                data-testid="CollapseInactive"
               />
             </div>
             <span
@@ -1952,7 +1952,7 @@ exports[`AAAServers should render empty lists and alert message correctly 1`] = 
             >
               <svg
                 class="ant-collapse-arrow"
-                data-testid="CollapseActive"
+                data-testid="CollapseInactive"
               />
             </div>
             <span

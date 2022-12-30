@@ -606,7 +606,7 @@ exports[`ClientTroubleshootingTab should render correctly with search params 1`]
           class="styledComponents__History-sc-hmshlr-0 jYwBlN"
         >
           <div
-            class="styledComponents__HistoryHeader-sc-hmshlr-1 eaAsrm"
+            class="styledComponents__HistoryHeader-sc-hmshlr-1 gsNMaa"
           >
             <span
               class="styledComponents__HistoryContentTitle-sc-hmshlr-3 fiXbsw"
@@ -625,7 +625,7 @@ exports[`ClientTroubleshootingTab should render correctly with search params 1`]
             style="overflow: visible; height: 0px; width: 0px;"
           >
             <div
-              class="styledComponents__HistoryContent-sc-hmshlr-2 nXFBi"
+              class="styledComponents__HistoryContent-sc-hmshlr-2 wYYJy"
               style="height: 756px; width: 1280px;"
             >
               <div
@@ -1279,7 +1279,7 @@ exports[`ClientTroubleshootingTab should render correctly without search params 
           class="styledComponents__History-sc-hmshlr-0 jYwBlN"
         >
           <div
-            class="styledComponents__HistoryHeader-sc-hmshlr-1 eaAsrm"
+            class="styledComponents__HistoryHeader-sc-hmshlr-1 gsNMaa"
           >
             <span
               class="styledComponents__HistoryContentTitle-sc-hmshlr-3 fiXbsw"
@@ -1298,7 +1298,7 @@ exports[`ClientTroubleshootingTab should render correctly without search params 
             style="overflow: visible; height: 0px; width: 0px;"
           >
             <div
-              class="styledComponents__HistoryContent-sc-hmshlr-2 nXFBi"
+              class="styledComponents__HistoryContent-sc-hmshlr-2 wYYJy"
               style="height: 756px; width: 1280px;"
             >
               <div

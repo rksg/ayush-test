@@ -172,7 +172,7 @@ exports[`SwitchAAATab should render correctly 1`] = `
                                 >
                                   <svg
                                     class="ant-collapse-arrow"
-                                    data-testid="CollapseActive"
+                                    data-testid="CollapseInactive"
                                   />
                                 </div>
                                 <span
@@ -666,7 +666,7 @@ exports[`SwitchAAATab should render correctly 1`] = `
                                 >
                                   <svg
                                     class="ant-collapse-arrow"
-                                    data-testid="CollapseActive"
+                                    data-testid="CollapseInactive"
                                   />
                                 </div>
                                 <span
@@ -1001,7 +1001,7 @@ exports[`SwitchAAATab should render correctly 1`] = `
                                 >
                                   <svg
                                     class="ant-collapse-arrow"
-                                    data-testid="CollapseActive"
+                                    data-testid="CollapseInactive"
                                   />
                                 </div>
                                 <span

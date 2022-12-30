@@ -54,7 +54,7 @@ export const spuriousEvents = [
   EVENT_STATES.SPURIOUS_INFO_UPDATED
 ]
 
-export type DisplayEvent = {
+export type DisplayEvent = ConnectionEvent & {
   start: number,
   end: number,
   code: string | null,
@@ -63,8 +63,7 @@ export type DisplayEvent = {
   radio: string,
   state: string,
   event: string,
-  category: string,
-  type: string
+  category: string
 }
 export const eventColorByCategory = {
   [DISCONNECT]: '--acx-neutrals-50',
@@ -85,7 +84,7 @@ export const categorizeEvent = (name: string, ttc: number | null) => {
 export const transformEvents = (
   events: ConnectionEvent[], selectedEventTypes: string[], selectedRadios: string[]
 ) => events.reduce((acc, data, index) => {
-  const { event, state, timestamp, mac, ttc, radio, code, failedMsgId } = data
+  const { event, state, timestamp, mac, ttc, radio, code, failedMsgId, ssid } = data
   if (code === 'eap' && failedMsgId && EAPOLMessageIds.includes(failedMsgId)) {
     data = { ...data, code: 'eapol' }
   }
@@ -112,6 +111,7 @@ export const transformEvents = (
     key: time + mac + eventType + index,
     start: time,
     end: time,
+    ssid,
     category
   })
   return acc
@@ -192,8 +192,7 @@ export const ClientTroubleShootingConfig = {
           label: defineMessage({ defaultMessage: '6 GHz' })
         }
       ]
-    }
-  ],
+    } ],
   timeLine: [
     {
       title: defineMessage({ defaultMessage: 'Connection Events' }),

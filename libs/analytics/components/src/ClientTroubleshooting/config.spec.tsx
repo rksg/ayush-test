@@ -3,14 +3,15 @@ import { getIntl } from '@acx-ui/utils'
 import {
   categorizeEvent,
   transformEvents,
-  formatEventDesc,
   SUCCESS,
   SLOW,
   DISCONNECT,
   FAILURE,
   RADIO5G,
   RADIO2DOT4G,
-  ROAMED
+  ROAMED,
+  formatEventDesc,
+  DisplayEvent
 } from './config'
 import { ConnectionEvent } from './services'
 
@@ -352,10 +353,10 @@ describe('Config utils', () => {
         state: 'normal',
         type: 'connectionEvents'
       },
-      desc: 'EAPOL: PSK Failure (passphrase mismatch) - Invalid MIC @ R750-11-112 5 GHz'
+      desc: 'EAPOL Failure: PSK Failure (passphrase mismatch) - Invalid MIC @ R750-11-112 5 GHz'
     }]
     data.forEach(({ event, desc }) => {
-      expect(formatEventDesc(event, getIntl())).toEqual(desc)
+      expect(formatEventDesc(event as DisplayEvent, getIntl())).toEqual(desc)
     })
   })
 })

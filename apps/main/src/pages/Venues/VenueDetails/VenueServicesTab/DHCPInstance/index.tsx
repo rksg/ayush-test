@@ -17,16 +17,14 @@ const DHCPInstance = () => {
   const { $t } = useIntl()
   const params = useParams()
 
-  const { data: leasesList } = useVenuesLeasesListQuery({
-    params: { venueId: params.venueId }
-  })
+  const { data: leasesList } = useVenuesLeasesListQuery({ params })
 
   const { data: venueDHCPProfile } = useVenueDHCPProfileQuery({
     params
   })
   const { data: dhcpProfile } = useGetDHCPProfileQuery({
     params: { ...params, serviceId: venueDHCPProfile?.serviceProfileId }
-  })
+  }, { skip: !venueDHCPProfile?.serviceProfileId })
 
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
     {
@@ -48,7 +46,7 @@ const DHCPInstance = () => {
       <GridCol col={{ span: 24 }}>
         <BasicInfo/>
       </GridCol>
-      <ContentSwitcher tabDetails={tabDetails} size='large' />
+      {venueDHCPProfile?.enabled && <ContentSwitcher tabDetails={tabDetails} size='large' />}
     </GridRow>
   )
 }

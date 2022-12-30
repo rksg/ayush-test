@@ -1,7 +1,7 @@
 
 import { rest,RestHandler } from 'msw'
 
-import { CommonUrlsInfo } from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, DHCPUrls } from '@acx-ui/rc/utils'
 
 const aps ={
   fields: [
@@ -273,53 +273,52 @@ const aps ={
 const serviceProfile = {
   serviceProfileId: 'serviceProfileId1',
   enabled: true,
+  wanPortSelectionMode: 'Dynamic',
   dhcpServiceAps: [
     { serialNumber: '150000000400', role: 'PrimaryServer' },
     { serialNumber: '150000000401', role: 'BackupServer' },
     { serialNumber: '150000000402', role: 'NatGateway' },
     { serialNumber: '150000000403', role: 'NatGateway' },
-    { serialNumber: '150000000404', role: 'NatGateway' }
+    { serialNumber: '150000000404', role: 'NatGateway' },
+    { serialNumber: '150000000406', role: 'NatGateway' }
   ]
 }
+
+
 const serviceById = {
-  id: 'serviceProfileId1',
-  serviceName: 'service 1',
-  dhcpMode: 'EnableOnEachAPs',
-  dhcpPools: [{
-    id: 'PoolId1',
-    name: 'dhcp pool 1',
-    description: 'dhcp pool 1',
-    vlanId: 3000,
-    subnetAddress: '172.21.232.0',
-    subnetMask: '255.255.252.0',
-    primaryDnsIp: '168.195.1.1',
-    secondaryDnsIp: '8.8.8.8',
-    leaseTimeHours: 22,
-    leaseTimeMinutes: 0
-  },
-  {
-    id: 'PoolId2',
-    name: 'dhcp pool 2',
-    description: 'dhcp pool 2',
-    vlanId: 3000,
-    subnetAddress: '172.21.232.0',
-    subnetMask: '255.255.252.0',
-    primaryDnsIp: '168.195.1.1',
-    secondaryDnsIp: '8.8.8.9',
-    leaseTimeHours: 22,
-    leaseTimeMinutes: 0
-  }],
-  venueIds: ['3b11bcaffd6f4f4f9b2805b6fe24bf8b', 'venueId2']
+  venueIds: [
+    'e16f5cb9aded49f6acd5891eb8897890',
+    '57db532207814948aa61b156e1cf2b9e',
+    '2725fdb455ec4785b1a633039b70b1aa'
+  ],
+  dhcpMode: 'EnableOnMultipleAPs',
+  dhcpPools: [
+    {
+      name: 'DhcpServiceProfile#1',
+      vlanId: 1001,
+      subnetAddress: '192.168.1.0',
+      subnetMask: '255.255.255.0',
+      startIpAddress: '192.168.1.1',
+      endIpAddress: '192.168.1.254',
+      leaseTimeHours: 0,
+      leaseTimeMinutes: 30,
+      id: '14eb1818309c434da928410fa2298ea5',
+      description: 'description1'
+    }
+  ],
+  serviceName: 'DhcpConfigServiceProfile1',
+  id: '78f92fbf80334e8b83cddd3210db4920'
 }
+
 const dhcpProfileList = [{
-  id: 'serviceProfileId1',
-  serviceName: 'service 1',
+  id: '78f92fbf80334e8b83cddd3210db4920',
+  serviceName: 'DhcpConfigServiceProfile1',
   dhcpMode: 'EnableOnEachAPs',
   dhcpPoolIds: ['poolId1', 'poolId2'],
   venueIds: ['venueId1', 'venueId2']
 },
 {
-  id: 'serviceProfileId2',
+  id: '78f92fbf80334e8b83cddd3210db4921',
   serviceName: 'service 2',
   dhcpMode: 'EnableOnEachAPs',
   dhcpPoolIds: ['poolId', 'poolId2'],
@@ -333,9 +332,59 @@ const leaseList = [{
   macAddress: '90:83:93:a1:78:48',
   status: 'Online',
   leaseExpiration: '10:23:00'
+},{
+  hostName: 'alamb2',
+  ipAddress: '66.80.84.216',
+  dhcpPoolId: 'poolId1',
+  dhcpPoolName: 'DHCP-4',
+  macAddress: '90:83:93:a1:78:50',
+  status: 'Offline',
+  leaseExpiration: '10:23:00'
 }]
 
-const pools = ['PoolId1']
+const pools = [
+  {
+    name: 'DhcpPool#1',
+    vlanId: 1001,
+    subnetAddress: '192.168.1.0',
+    subnetMask: '255.255.255.0',
+    startIpAddress: '192.168.1.1',
+    endIpAddress: '192.168.1.254',
+    primaryDnsIp: '168.195.1.1',
+    secondaryDnsIp: '8.8.8.8',
+    leaseTimeHours: 0,
+    leaseTimeMinutes: 30,
+    totalIpCount: 10,
+    usedIpCount: 3,
+    active: true,
+    id: '407f330356924da2a4255212c1f6d54a'
+  },
+  {
+    name: 'DhcpPool#2',
+    vlanId: 1002,
+    subnetAddress: '192.168.2.0',
+    subnetMask: '255.255.255.0',
+    startIpAddress: '192.168.2.1',
+    endIpAddress: '192.168.2.254',
+    leaseTimeHours: 0,
+    leaseTimeMinutes: 30,
+    active: true,
+    id: '214864919d2c492c8ef745754daf45b8'
+  },
+  {
+    name: 'DhcpPool#3',
+    vlanId: 1003,
+    subnetAddress: '192.168.3.0',
+    subnetMask: '255.255.255.0',
+    startIpAddress: '192.168.3.1',
+    endIpAddress: '192.168.3.254',
+    leaseTimeHours: 0,
+    leaseTimeMinutes: 30,
+    active: true,
+    id: 'bdd840d08fcc426dba174e2224d1eaad'
+  }
+]
+
 
 export const successResponse = { requestId: 'request-id' }
 
@@ -343,24 +392,26 @@ const handlers:Array<RestHandler> = [
   rest.post(CommonUrlsInfo.getApsList.url,(_,res,ctx) =>
     res(ctx.json(aps))
   ),
-  rest.get(CommonUrlsInfo.getVenueDHCPServiceProfile.url,(_,res,ctx) =>
+  rest.get(DHCPUrls.getVenueDHCPServiceProfile.url,(_,res,ctx) =>
     res(ctx.json(serviceProfile))
   ),
-  rest.get(CommonUrlsInfo.getDHCPService.url,(_,res,ctx) =>
+  rest.get(DHCPUrls.getDHCProfileDetail.url,(_,res,ctx) =>
     res(ctx.json(serviceById))
   ),
-  rest.get(CommonUrlsInfo.getDHCPProfiles.url,(_,res,ctx) =>
+  rest.get(DHCPUrls.getDHCPProfiles.url,(_,res,ctx) =>
     res(ctx.json(dhcpProfileList))
   ),
-  rest.get(CommonUrlsInfo.getVenueLeases.url,(_,res,ctx) =>
+  rest.get(DHCPUrls.getVenueLeases.url,(_,res,ctx) =>
     res(ctx.json(leaseList))
   ),
-  rest.get(CommonUrlsInfo.getVenueActivePools.url,(_,res,ctx) =>
+  rest.get(DHCPUrls.getVenueActivePools.url,(_,res,ctx) =>
     res(ctx.json(pools))
   ),
-  rest.post(CommonUrlsInfo.activeVenueDHCPPool.url,(_,res,ctx) =>
+  rest.post(DHCPUrls.activeVenueDHCPPool.url,(_,res,ctx) =>
     res(ctx.json(successResponse))
-  )
-]
+  ),
+  rest.post(DHCPUrls.updateVenueDHCPProfile.url,(_,res,ctx) =>
+    res(ctx.json(successResponse))
+  )]
 
 export default handlers

@@ -80,7 +80,10 @@ describe('HistoricalClientsTable', () => {
       tenantId: 'tenant-id'
     }
     const { asFragment } = render(<Provider>
-      <HistoricalClientsTable searchString='24' />
+      <HistoricalClientsTable
+        searchString='24'
+        setHistoricalClientCount={jest.fn()}
+        id={'historicalClient'} />
     </Provider>, {
       route: { params, path: '/:tenantId' }
     })

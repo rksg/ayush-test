@@ -2,6 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 import {
   CommonUrlsInfo,
+  DHCPUrls,
   WifiUrlsInfo,
   SwitchUrlsInfo,
   createHttpRequest,
@@ -33,18 +34,18 @@ import {
   VenueSwitchConfiguration,
   ConfigurationProfile,
   VenueDHCPProfile,
+  VenueDHCPPoolInst,
   DHCPLeases,
   VenueDefaultRegulatoryChannels,
-  VenueDefaultRegulatoryChannelsForm,
   TriBandSettings,
   AvailableLteBands,
   VenueApModelCellular,
   UploadUrlResponse,
   NetworkDeviceResponse,
   NetworkDevicePayload,
-  RogueOldApResponseType
+  RogueOldApResponseType,
+  VenueRadioCustomization
 } from '@acx-ui/rc/utils'
-
 
 export const baseVenueApi = createApi({
   baseQuery: fetchBaseQuery(),
@@ -263,7 +264,48 @@ export const venueApi = baseVenueApi.injectEndpoints({
           ...req,
           body: payload as NetworkDevicePayload
         }
+      },
+      providesTags: [{ type: 'VenueFloorPlan', id: 'DEVICE' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          showActivityMessage(msg, [
+            'Update Switch Position',
+            'UpdateApPosition',
+            'UpdateCloudpathServerPosition'], () => {
+            api.dispatch(venueApi.util.invalidateTags([{ type: 'VenueFloorPlan', id: 'DEVICE' }]))
+          })
+        })
       }
+    }),
+    updateSwitchPosition: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.UpdateSwitchPosition, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'VenueFloorPlan', id: 'DEVICE' }]
+    }),
+    updateApPosition: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.UpdateApPosition, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'VenueFloorPlan', id: 'DEVICE' }]
+    }),
+    updateCloudpathServerPosition: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.UpdateCloudpathServerPosition, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'VenueFloorPlan', id: 'DEVICE' }]
     }),
     getVenueCapabilities: build.query<Capabilities, RequestPayload>({
       query: ({ params }) => {
@@ -470,7 +512,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       }
     }),
-    getDefaultRadioCustomization: build.query<VenueDefaultRegulatoryChannelsForm, RequestPayload>({
+    getDefaultRadioCustomization: build.query<VenueRadioCustomization, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.getDefaultRadioCustomization, params)
         return{
@@ -478,7 +520,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       }
     }),
-    getVenueRadioCustomization: build.query<VenueDefaultRegulatoryChannelsForm, RequestPayload>({
+    getVenueRadioCustomization: build.query<VenueRadioCustomization, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.getVenueRadioCustomization, params)
         return{
@@ -570,6 +612,17 @@ export const venueApi = baseVenueApi.injectEndpoints({
         return{
           ...req
         }
+      },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UpdateVenueRogueAp',
+            'UpdateDenialOfServiceProtection'
+          ]
+          showActivityMessage(msg, activities, () => {
+            api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'LIST' }]))
+          })
+        })
       }
     }),
     getOldVenueRogueAp: build.query<TableResult<RogueOldApResponseType>, RequestPayload>({
@@ -601,24 +654,25 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     venueDHCPProfile: build.query<VenueDHCPProfile, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getVenueDHCPServiceProfile, params)
+        const req = createHttpRequest(DHCPUrls.getVenueDHCPServiceProfile, params)
         return{
           ...req
         }
       },
       providesTags: [{ type: 'Venue', id: 'DHCPProfile' }]
     }),
-    venueActivePools: build.query<string[] | null, RequestPayload>({
+    venueDHCPPools: build.query<VenueDHCPPoolInst[], RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getVenueActivePools, params)
+        const req = createHttpRequest(DHCPUrls.getVenueActivePools, params)
         return{
           ...req
         }
-      }
+      },
+      providesTags: [{ type: 'Venue', id: 'poolList' }]
     }),
     venuesLeasesList: build.query<DHCPLeases[], RequestPayload>({
       query: ({ params }) => {
-        const leasesList = createHttpRequest(CommonUrlsInfo.getVenueLeases, params)
+        const leasesList = createHttpRequest(DHCPUrls.getVenueLeases, params)
         return {
           ...leasesList
         }
@@ -626,13 +680,23 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     activateDHCPPool: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.activeVenueDHCPPool, params)
+        const req = createHttpRequest(DHCPUrls.activeVenueDHCPPool, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    updateVenueDHCPProfile: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(DHCPUrls.updateVenueDHCPProfile, params)
         return {
           ...req,
           body: payload
         }
       }
     })
+
 
   })
 })
@@ -658,6 +722,9 @@ export const {
   useGetUploadURLMutation,
   useUpdateFloorPlanMutation,
   useGetAllDevicesQuery,
+  useUpdateSwitchPositionMutation,
+  useUpdateApPositionMutation,
+  useUpdateCloudpathServerPositionMutation,
   useGetVenueCapabilitiesQuery,
   useGetVenueApModelsQuery,
   useGetVenueLedOnQuery,
@@ -683,12 +750,14 @@ export const {
   useUpdateVenueSwitchSettingMutation,
   useSwitchConfigProfileQuery,
   useVenueDHCPProfileQuery,
-  useVenueActivePoolsQuery,
+  useVenueDHCPPoolsQuery,
   useVenuesLeasesListQuery,
   useActivateDHCPPoolMutation,
+  useUpdateVenueDHCPProfileMutation,
   useVenueDefaultRegulatoryChannelsQuery,
   useGetDefaultRadioCustomizationQuery,
   useGetVenueRadioCustomizationQuery,
+  useLazyGetVenueRadioCustomizationQuery,
   useUpdateVenueRadioCustomizationMutation,
   useGetVenueTripleBandRadioSettingsQuery,
   useUpdateVenueTripleBandRadioSettingsMutation,

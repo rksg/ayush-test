@@ -52,7 +52,7 @@ div.ant-checkbox-group {
 }
 `
 const channelWidth = '26px'
-const channelMarginRight = '4px'
+const channelMarginRight = '6px'
 
 export const CheckboxGroup = styled(Checkbox.Group)`
   .ant-checkbox-wrapper {
@@ -120,6 +120,13 @@ export const CheckboxGroup = styled(Checkbox.Group)`
   &.group-8 .ant-checkbox-wrapper {
     width: calc(${channelWidth}*8 + ${channelMarginRight}*7);
   }
+
+  span .channels {
+    text-align: center;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-around;
+  }
 }
 `
 
@@ -132,7 +139,7 @@ const BarButton = styled(Button)`
   margin: 0 4px 3px 0;
 `
 
-export const Button5G = styled(BarButton)`
+export const BarButton5G = styled(BarButton)`
   border: 1px solid var(--acx-accents-orange-25);
   background: var(--acx-accents-orange-25);
   &[disabled] {
@@ -145,7 +152,7 @@ export const Button5G = styled(BarButton)`
     background: var(--acx-accents-orange-25);
   }
 `
-export const ButtonDFS = styled(BarButton)`
+export const BarButtonDFS = styled(BarButton)`
   border: 1px solid var(--acx-accents-orange-10);
   background: var(--acx-accents-orange-10);
   &[disabled] {

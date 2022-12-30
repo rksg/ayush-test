@@ -1,9 +1,8 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { EdgeUrlsInfo }   from '@acx-ui/rc/utils'
-import { CommonUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }       from '@acx-ui/store'
+import { CommonUrlsInfo, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                     from '@acx-ui/store'
 import {
   fireEvent, mockServer, render,
   screen
@@ -45,6 +44,7 @@ describe('AddEdge', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/add' }
       })
+    await screen.findByRole('combobox', { name: 'Venue' })
     expect(asFragment()).toMatchSnapshot()
   })
 
@@ -56,7 +56,8 @@ describe('AddEdge', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/add' }
       })
-    user.click(screen.getByRole('button', { name: 'Add' }))
+    await screen.findByRole('combobox', { name: 'Venue' })
+    await user.click(screen.getByRole('button', { name: 'Add' }))
     await screen.findByText('Please enter Venue')
     await screen.findByText('Please enter SmartEdge Name')
     await screen.findByText('Please enter Serial Number')
@@ -70,7 +71,7 @@ describe('AddEdge', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/add' }
       })
-    const venueDropdown = screen.getByRole('combobox', { name: 'Venue' })
+    const venueDropdown = await screen.findByRole('combobox', { name: 'Venue' })
     await user.click(venueDropdown)
     await user.click(await screen.findByText('Mock Venue 1'))
     const edgeNameInput = screen.getByRole('textbox', { name: 'SmartEdge Name' })
@@ -78,6 +79,7 @@ describe('AddEdge', () => {
     const serialNumberInput = screen.getByRole('textbox',
       { name: 'Serial Number' })
     fireEvent.change(serialNumberInput, { target: { value: 'serial_number_test' } })
+    fireEvent.change(screen.getByRole('textbox', { name: 'Tags' }), { target: { value: 'a,b' } })
     await user.click(screen.getByRole('button', { name: 'Add' }))
     // AddEdge success should back to /devices/edge/list, use UI to test this case is normal
     // but use jest always fail
@@ -96,7 +98,7 @@ describe('AddEdge', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/add' }
       })
-    await user.click(screen.getByRole('button', { name: 'Cancel' }))
+    await user.click(await screen.findByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: `/t/${params.tenantId}/devices/edge/list`,
       hash: '',
@@ -132,7 +134,7 @@ describe('AddEdge api fail', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/add' }
       })
-    const venueDropdown = screen.getByRole('combobox', { name: 'Venue' })
+    const venueDropdown = await screen.findByRole('combobox', { name: 'Venue' })
     await user.click(venueDropdown)
     await user.click(await screen.findByText('Mock Venue 1'))
     const edgeNameInput = screen.getByRole('textbox', { name: 'SmartEdge Name' })
