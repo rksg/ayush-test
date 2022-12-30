@@ -28,7 +28,7 @@ describe('Switch Overview VLAN', () => {
   beforeEach(()=>{
     mockServer.use(
       rest.post(SwitchUrlsInfo.getVlanListBySwitchLevel.url,
-        (_, res, ctx) => res(ctx.json(vlanList)))
+        (req, res, ctx) => res(ctx.json(vlanList)))
     )
   })
 
