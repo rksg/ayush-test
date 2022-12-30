@@ -1,7 +1,15 @@
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
-import { useDeleteDpskMutation, useGetDpskListQuery }                     from '@acx-ui/rc/services'
+import {
+  Button,
+  PageHeader,
+  Table,
+  TableProps,
+  Loader,
+  showActionModal,
+  showToast
+} from '@acx-ui/components'
+import { useDeleteDpskMutation, useGetDpskListQuery } from '@acx-ui/rc/services'
 import {
   ServiceType,
   useTableQuery,
@@ -36,8 +44,17 @@ export default function DpskTable () {
             entityName: intl.$t({ defaultMessage: 'DPSK Service' }),
             entityValue: name
           },
-          onOk: () => {
-            deleteDpsk({ params: { serviceId: id } }).then(clearSelection)
+          onOk: async () => {
+            try {
+              await deleteDpsk({ params: { serviceId: id } }).unwrap()
+              clearSelection()
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            } catch (error: any) {
+              showToast({
+                type: 'error',
+                content: intl.$t({ defaultMessage: '{message}' }, { message: error.data })
+              })
+            }
           }
         })
       }
