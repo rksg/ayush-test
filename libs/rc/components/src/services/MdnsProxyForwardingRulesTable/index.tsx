@@ -3,12 +3,14 @@ import { useState } from 'react'
 import { useIntl }      from 'react-intl'
 import { v4 as uuidv4 } from 'uuid'
 
-import { showActionModal, Table, TableProps }                       from '@acx-ui/components'
-import { MdnsProxyForwardingRule, MdnsProxyForwardingRuleTypeEnum } from '@acx-ui/rc/utils'
+import { showActionModal, Table, TableProps } from '@acx-ui/components'
+import {
+  MdnsProxyForwardingRule,
+  BridgeServiceEnum,
+  mdnsProxyRuleTypeLabelMapping
+} from '@acx-ui/rc/utils'
 
-import { mdnsProxyForwardingRuleTypeLabelMapping as ruleTypeLabelMapping } from '../../contentsMap'
-
-import { MdnsProxyForwardingRuleDrawer } from './MdnsProxyForwardingRuleDrawer'
+import { MdnsProxyForwardingRuleDrawer } from '../MdnsProxyForwardingRuleDrawer'
 
 interface MdnsProxyForwardingRulesTableProps {
   readonly?: boolean;
@@ -43,14 +45,22 @@ export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTa
     setRules(newRules)
   }
 
+  const getRuleTypeLabel = (rule: MdnsProxyForwardingRule): string => {
+    if (rule.service === BridgeServiceEnum.OTHER) {
+      // eslint-disable-next-line max-len
+      return `_${rule.mdnsName}._${rule.mdnsProtocol?.toLowerCase()} (${$t(mdnsProxyRuleTypeLabelMapping[rule.service])})`
+    }
+    return $t(mdnsProxyRuleTypeLabelMapping[rule.service])
+  }
+
   const columns: TableProps<MdnsProxyForwardingRule>['columns'] = [
     {
       title: $t({ defaultMessage: 'Type' }),
-      dataIndex: 'type',
-      key: 'type',
+      dataIndex: 'service',
+      key: 'service',
       sorter: true,
-      render: (data) => {
-        return $t(ruleTypeLabelMapping[data as MdnsProxyForwardingRuleTypeEnum])
+      render: (data, row) => {
+        return getRuleTypeLabel(row)
       }
     },
     {
@@ -82,7 +92,7 @@ export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTa
         customContent: {
           action: 'DELETE',
           entityName: $t({ defaultMessage: 'Rule' }),
-          entityValue: $t(ruleTypeLabelMapping[selectedRows[0].type])
+          entityValue: getRuleTypeLabel(selectedRows[0])
         },
         onOk: () => {
           const newRules = rules.filter((r: MdnsProxyForwardingRule) => {
@@ -106,14 +116,12 @@ export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTa
           setVisible={setDrawerVisible}
           setRule={handleSetRule}
           isRuleUnique={(comingRule: MdnsProxyForwardingRule) => {
-            // eslint-disable-next-line max-len
             const hasDuplicationRule = rules.some((rule: MdnsProxyForwardingRule) => {
-              return comingRule.type === rule.type
+              return comingRule.service === rule.service
                 && comingRule.fromVlan === rule.fromVlan
                 && comingRule.toVlan === rule.toVlan
                 && comingRule.id !== rule.id
             })
-
             return !hasDuplicationRule
           }} />
       }
