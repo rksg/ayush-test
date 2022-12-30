@@ -328,8 +328,7 @@ describe('Table component', () => {
       rowSelection={{ type: 'radio', onChange }}
     />)
 
-    const tbody = (await screen.findAllByRole('rowgroup'))
-      .find(element => element.classList.contains('ant-table-tbody'))!
+    const tbody = await findTBody()
 
     expect(tbody).toBeVisible()
 
