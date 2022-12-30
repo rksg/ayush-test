@@ -14,16 +14,13 @@ import { TenantLink }                                from '@acx-ui/react-router-
 
 import { ApDetailsDrawer } from './ApDetailsDrawer'
 import * as UI             from './styledComponents'
-import { apDetails as testAD, currentAP as testAP } from '../../__tests__/fixtures'
-// TODO: Please revert the change after fix the layout issue
+
 export function ApProperties (props:{
   currentAP: ApViewModel, apDetails: ApDetails, isLoading: boolean
 }) {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
-  const { isLoading } = props
-  const apDetails = testAD as ApDetails
-  const currentAP = testAP as ApViewModel
+  const { currentAP, apDetails, isLoading } = props
   const onMoreAction = () => {
     setVisible(true)
   }

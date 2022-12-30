@@ -205,7 +205,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
         currentCellularInfo &&
          <>
            <Divider/>
-             <ApCellularProperties currentCellularInfo={currentCellularInfo} currentAP={currentAP} />
+           <ApCellularProperties currentCellularInfo={currentCellularInfo} currentAP={currentAP} />
          </>
       }
     </>)
