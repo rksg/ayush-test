@@ -2,9 +2,9 @@ import { useState } from 'react'
 
 import { defineMessage, useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps, Button }                 from '@acx-ui/components'
-import { CommonUrlsInfo, Event, RequestPayload, TableQuery } from '@acx-ui/rc/utils'
-import { formatter }                                         from '@acx-ui/utils'
+import { Loader, Table, TableProps, Button }                                from '@acx-ui/components'
+import { CommonUrlsInfo, Event, noDataDisplay, RequestPayload, TableQuery } from '@acx-ui/rc/utils'
+import { formatter }                                                        from '@acx-ui/utils'
 
 import { replaceStrings } from '../ActivityTable/replaceStrings'
 import { TimelineDrawer } from '../TimelineDrawer'
@@ -15,24 +15,30 @@ interface EventTableProps {
   tableQuery: TableQuery<Event, RequestPayload<unknown>, unknown>
 }
 
+const getSource = (data: Event) => {
+  const sourceMapping = {
+    AP: 'apName',
+    CLIENT: 'clientName',
+    ADMIN: 'adminName'
+  }
+  const key = sourceMapping[data.entity_type.toUpperCase() as keyof typeof sourceMapping]
+  return key ? data[key as keyof Event] as string : data.entity_type
+}
+
+const getDescription = (data: Event) => {
+  try {
+    const message = data.message && JSON.parse(data.message).message_template
+    return replaceStrings(message, data)
+  } catch {
+    return noDataDisplay
+  }
+}
+
 const EventTable = ({ tableQuery }: EventTableProps) => {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
   const [current, setCurrent] = useState<Event>()
 
-  const getSource = (data: Event) => {
-    const sourceMapping = {
-      AP: 'apName',
-      CLIENT: 'clientName'
-    }
-    const key = sourceMapping[data.entity_type as keyof typeof sourceMapping]
-    return data[key as keyof Event] as string
-  }
-
-  const getDescription = (data: Event) => {
-    let message = data.message && JSON.parse(data.message).message_template
-    return replaceStrings(message, data)
-  }
   const columns: TableProps<Event>['columns'] = [
     {
       key: 'event_datetime',
@@ -58,7 +64,7 @@ const EventTable = ({ tableQuery }: EventTableProps) => {
       sorter: true,
       render: function (_, row) {
         const msg = severityMapping[row.severity as keyof typeof severityMapping]
-        return $t(msg)
+        return msg ? $t(msg) : row.severity
       }
     },
     {
@@ -68,8 +74,8 @@ const EventTable = ({ tableQuery }: EventTableProps) => {
       sorter: true,
       render: function (_, row) {
         const msg = eventTypeMapping[
-          row.entity_type as keyof typeof eventTypeMapping]
-        return $t(msg)
+          row.entity_type as keyof typeof eventTypeMapping] ?? row.entity_type
+        return msg ? $t(msg) : row.entity_type
       }
     },
     {
@@ -79,7 +85,7 @@ const EventTable = ({ tableQuery }: EventTableProps) => {
       sorter: true,
       render: function (_, row) {
         const msg = productMapping[row.product as keyof typeof productMapping]
-        return $t(msg)
+        return (row.product && msg) ? $t(msg) : row.product ?? noDataDisplay
       }
     },
     {
@@ -110,15 +116,15 @@ const EventTable = ({ tableQuery }: EventTableProps) => {
       title: defineMessage({ defaultMessage: 'Severity' }),
       value: (() => {
         const msg = severityMapping[data.severity as keyof typeof severityMapping]
-        return $t(msg)
+        return msg ? $t(msg) : data.severity
       })()
     },
     {
       title: defineMessage({ defaultMessage: 'Event Type' }),
       value: (() => {
         const msg = eventTypeMapping[
-          data.entity_type as keyof typeof eventTypeMapping]
-        return $t(msg)
+          data.entity_type as keyof typeof eventTypeMapping] ?? data.entity_type
+        return msg ? $t(msg) : data.entity_type
       })()
     },
     {

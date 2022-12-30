@@ -36,7 +36,7 @@ describe('Search Results', () => {
   })
 
   it('should render tables correctly', async () => {
-    const { asFragment } = render(
+    render(
       <Provider>
         <SearchResults />
       </Provider>,{
@@ -46,11 +46,10 @@ describe('Search Results', () => {
       }
     )
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-    const fragment = asFragment()
-    // eslint-disable-next-line testing-library/no-node-access
-    fragment.querySelectorAll('div[_echarts_instance_^="ec_"]')
-      .forEach(element => element.removeAttribute('_echarts_instance_'))
-    expect(fragment).toMatchSnapshot()
+    expect(screen.getByText('Venues (1)')).toHaveTextContent('Venues (1)')
+    expect(screen.getByText('Networks (3)')).toHaveTextContent('Networks (3)')
+    expect(screen.getByText('APs (1)')).toHaveTextContent('APs (1)')
+    expect(screen.getByText('Events (1)')).toHaveTextContent('Events (1)')
   })
 
   it('should render empty result correctly', async () => {
@@ -64,6 +63,8 @@ describe('Search Results', () => {
       totalCount: 0
     })
     mockRestApiQuery(CommonUrlsInfo.getApsList.url, 'post', { data: [], totalCount: 0 })
+    mockRestApiQuery(CommonUrlsInfo.getEventList.url, 'post', { data: [], totalCount: 0 })
+    mockRestApiQuery(CommonUrlsInfo.getEventListMeta.url, 'post', { data: [], totalCount: 0 })
     render(
       <Provider>
         <SearchResults />
@@ -74,7 +75,7 @@ describe('Search Results', () => {
       }
     )
     const header =
-      await screen.findByText(/Hmmmm... we couldn't find any match for "bdcPerformanceVenue2"/i)
+      await screen.findByText(/Hmmmm... we couldn’t find any match for "bdcPerformanceVenue2"/i)
     expect(header).toBeInTheDocument()
   })
 })

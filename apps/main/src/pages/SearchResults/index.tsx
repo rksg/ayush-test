@@ -23,7 +23,9 @@ import {
   Venue,
   AP,
   ApExtraParams,
-  Event
+  Event,
+  usePollingTableQuery,
+  TABLE_QUERY_LONG_POLLING_INTERVAL
 } from '@acx-ui/rc/utils'
 
 import { useDefaultVenuePayload, VenueTable } from '../Venues/VenuesTable'
@@ -32,7 +34,7 @@ import NoData              from './NoData'
 import { Collapse, Panel } from './styledComponents'
 
 
-const pagination = { pageSize: 5 }
+const pagination = { pageSize: 5, showSizeChanger: false }
 
 const searches = [
   (searchString: string, $t: IntlShape['$t']) => {
@@ -85,7 +87,7 @@ const searches = [
     }
   },
   (searchString: string, $t: IntlShape['$t']) => {
-    const result = useTableQuery<Event>({
+    const result = usePollingTableQuery<Event>({
       useQuery: useEventsQuery,
       defaultPayload: {
         ...defaultEventsPayload,
@@ -97,7 +99,8 @@ const searches = [
       sorter: {
         sortField: 'event_datetime',
         sortOrder: 'DESC'
-      }
+      },
+      option: { pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL }
     })
     return {
       result,
@@ -111,7 +114,7 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
   const { $t } = useIntl()
   const results = searches.map(search => search(searchVal as string, $t))
   const count = results.reduce((count, { result }) => count + (result.data?.totalCount || 0), 0)
-  return <Loader states={results.map(({ result }) => ({ ...result }))}>
+  return <Loader states={results.map(({ result }) => result)}>
     {count
       ? <>
         <PageHeader title={$t(
