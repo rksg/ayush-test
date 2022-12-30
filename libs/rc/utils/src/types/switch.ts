@@ -102,6 +102,12 @@ export interface VeViewModel {
   portTyp : string //ignore
 }
 
+export interface VlanVePort {
+  usedByVePort: boolean
+  vlanId: string
+  vlanName?: string
+}
+
 export class SwitchViewModel extends Switch {
   type?: string
   configReady = false

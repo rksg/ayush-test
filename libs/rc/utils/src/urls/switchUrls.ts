@@ -72,5 +72,9 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   getVenueRoutedList: {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/vePort/venue/:venueId/query'
+  },
+  getFreeVePortVlans: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/vlanVePort/:venueId/switch/:switchId'
   }
 }

@@ -16,7 +16,8 @@ import {
   showActivityMessage,
   SwitchRow,
   StackMember,
-  VeViewModel
+  VeViewModel,
+  VlanVePort
 } from '@acx-ui/rc/utils'
 
 export const baseSwitchApi = createApi({
@@ -177,6 +178,14 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Switch', id: 'LIST' }]
+    }),
+    getFreeVePortVlans: build.query<VlanVePort[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getFreeVePortVlans, params)
+        return {
+          ...req
+        }
+      }
     })
   })
 })
@@ -257,5 +266,7 @@ export const {
   useGetSwitchListQuery,
   useLazyGetSwitchListQuery,
   useGetVenueRoutedListQuery,
-  useGetSwitchRoutedListQuery
+  useGetSwitchRoutedListQuery,
+  useGetFreeVePortVlansQuery,
+  useLazyGetFreeVePortVlansQuery
 } = switchApi

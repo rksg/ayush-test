@@ -1,12 +1,15 @@
-import { Space }   from 'antd'
-import _           from 'lodash'
-import { useIntl } from 'react-intl'
+import { useState } from 'react'
+
+import { Form, Space } from 'antd'
+import _               from 'lodash'
+import { useIntl }     from 'react-intl'
 
 import {
   Table,
   TableProps,
   Tooltip,
-  Loader
+  Loader,
+  Drawer
 } from '@acx-ui/components'
 import { useGetSwitchRoutedListQuery, useGetVenueRoutedListQuery, useSwitchPortlistQuery } from '@acx-ui/rc/services'
 import {
@@ -19,10 +22,9 @@ import {
 import { useParams } from '@acx-ui/react-router-dom'
 import { getIntl }   from '@acx-ui/utils'
 
-import * as UI from './styledComponents'
-import { useState } from 'react'
+import * as UI          from './styledComponents'
+import { SwitchVeForm } from './switchVeForm'
 
-const STACK_PORT_FIELD = 'SwitchPortStackingPortField'
 
 export function SwitchVeTable ({ isVenueLevel } : {
   isVenueLevel: boolean
@@ -127,6 +129,7 @@ export function SwitchVeTable ({ isVenueLevel } : {
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
+        setDrawerVisible(true)
         // setIsEditMode(true)
         // setEditData(selectedRows[0])
         // setVisible(true)
@@ -185,7 +188,13 @@ export function SwitchVeTable ({ isVenueLevel } : {
       }
     }
   ]
+  const [editMode, setEditMode] = useState(false)
+  const [drawerVisible, setDrawerVisible] = useState(false)
+  const onClose = () => {
+    setDrawerVisible(false)
+  }
 
+  const [form] = Form.useForm()
 
   return <Loader states={[tableQuery]}>
     <Table
@@ -198,9 +207,39 @@ export function SwitchVeTable ({ isVenueLevel } : {
       rowSelection={{ type: 'checkbox', onChange: onSelectChange }}
       actions={[{
         label: $t({ defaultMessage: 'Add VLAN interface (VE)' }),
-        onClick: () => {}
+        onClick: () => {setDrawerVisible(true) }
       }]
       }
+    />
+
+
+    <Drawer
+      title={$t({ defaultMessage: 'View VLAN' })}
+      visible={drawerVisible}
+      onClose={onClose}
+      width={443}
+      footer={
+        <Drawer.FormFooter
+          buttonLabel={({
+            save: editMode ? $t({ defaultMessage: 'Save' }) : $t({ defaultMessage: 'Add' })
+          })}
+          onCancel={onClose}
+          onSave={async () => {
+            try {
+              await form.validateFields()
+              form.submit()
+              onClose()
+            } catch (error) {
+              if (error instanceof Error) throw error
+            }
+          }}
+        />
+      }
+      children={
+        <SwitchVeForm
+          form={form}
+
+        />}
     />
   </Loader>
 
