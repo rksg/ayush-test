@@ -127,7 +127,7 @@ export const getRCCDFlow = ({ messageIds, failedMsgId }:
       RCCDNodeMap[step.destination as unknown as keyof typeof RCCDNodeMap]
     ])
     .reduce((acc, set) => acc.concat(set), [])
-    .filter(Boolean) // remove falsy values if any
+    .filter(Boolean)
     .sort((a, b) => a.order - b.order)
   ))
 

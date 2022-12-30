@@ -23,7 +23,7 @@ export const ConnectionSequenceDiagram = ({ messageIds, failedMsgId, apMac }:
       {layers.map((layer, index) => <UI.Layer
         key={`layer-${index}`}
         style={{ gridColumn: fillOne(index) }}
-        children={<span>{$t(layer, { apMac })}</span>} // find a way for dynamic intl
+        children={<span>{$t(layer, { apMac })}</span>}
       />)}
       <UI.Container layers={layers}>
         {steps.map((step, index) => (
