@@ -2,11 +2,10 @@ import { useState } from 'react'
 
 import { defineMessage, useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps, Button }                                from '@acx-ui/components'
-import { CommonUrlsInfo, Event, noDataDisplay, RequestPayload, TableQuery } from '@acx-ui/rc/utils'
-import { formatter }                                                        from '@acx-ui/utils'
+import { Loader, Table, TableProps, Button }                                                from '@acx-ui/components'
+import { CommonUrlsInfo, Event, noDataDisplay, replaceStrings, RequestPayload, TableQuery } from '@acx-ui/rc/utils'
+import { formatter }                                                                        from '@acx-ui/utils'
 
-import { replaceStrings } from '../ActivityTable/replaceStrings'
 import { TimelineDrawer } from '../TimelineDrawer'
 
 import { severityMapping, eventTypeMapping, productMapping } from './mapping'

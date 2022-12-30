@@ -52,7 +52,7 @@ export default function PortalServiceDetail () {
       <GridRow>
         <GridCol col={{ span: 24 }}>
           <Loader states={[queryResults]}>
-            <PortalOverview demoValue={queryResults.data?.demo as Demo} />
+            <PortalOverview demoValue={queryResults.data?.content as Demo} />
           </Loader>
         </GridCol>
         <GridCol col={{ span: 24 }}>
