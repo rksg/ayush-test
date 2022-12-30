@@ -2,16 +2,17 @@ import { ReactNode, useContext, useEffect, useRef, useState, CSSProperties } fro
 
 import { Form, FormItemProps, InputNumber, Select, Space } from 'antd'
 import _                                                   from 'lodash'
-import { FormattedMessage, useIntl }                       from 'react-intl'
+import {defineMessage, FormattedMessage, useIntl} from 'react-intl'
 
 import { Fieldset, Loader, showToast, StepsForm, StepsFormInstance, Tooltip } from '@acx-ui/components'
+import { QuestionMarkCircleOutlined }                                         from '@acx-ui/icons'
 import {
   useGetDenialOfServiceProtectionQuery,
   useUpdateDenialOfServiceProtectionMutation,
   useGetVenueRogueApQuery,
   useUpdateVenueRogueApMutation, useGetRoguePolicyListQuery
 } from '@acx-ui/rc/services'
-import { getPolicyRoutePath, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
+import {getPolicyRoutePath, PolicyOperation, PolicyType, VenueMessages} from '@acx-ui/rc/utils'
 import { TenantLink, useParams }                           from '@acx-ui/react-router-dom'
 
 import { VenueEditContext } from '../../'
@@ -218,7 +219,17 @@ export function SecurityTab () {
             label={$t({ defaultMessage: 'Rogue AP Detection:' })}
             initialValue={false}
             switchStyle={{}}>
-            <Form.Item label={$t({ defaultMessage: 'Report SNR Threshold:' })}>
+            <Form.Item
+              label={<>
+                {$t({ defaultMessage: 'Report SNR Threshold:' })}
+                <Tooltip
+                  title={$t(VenueMessages.SNR_THRESHOLD_TOOLTIP)}
+                  placement='bottom'
+                >
+                  <QuestionMarkCircleOutlined />
+                </Tooltip>
+              </>}
+            >
               <Space>
                 <Form.Item noStyle
                   name='reportThreshold'
