@@ -111,7 +111,7 @@ export function ApPacketCaptureForm () {
         })
       }
 
-      if (supportTriRadio && supportDual5gMode && apRadioParamsDual5G.enabled) {
+      if (supportTriRadio && supportDual5gMode && apRadioParamsDual5G?.enabled) {
         if (apRadioParamsDual5G.lower5gEnabled) {
           captureInterfaceOptions.push(
             {

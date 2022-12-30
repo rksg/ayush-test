@@ -11,42 +11,41 @@ import Photo                     from '../../../../assets/images/portal-demo/Por
 import Powered                   from '../../../../assets/images/portal-demo/PoweredLogo.svg'
 import Logo                      from '../../../../assets/images/portal-demo/RuckusCloud.svg'
 import { PortalDemoDefaultSize } from '../../commonUtils'
-import PortalFormContext         from '../PortalForm/PortalFormContext'
 
 import PortalDemo from './index'
 
 const mockDemo = {
-  backgroundColor: 'var(--acx-primary-white)',
-  backgroundImage: '',
+  bgColor: 'var(--acx-primary-white)',
+  bgImage: '',
   welcomeText: 'Welcome to the Guest Access login page',
   welcomeColor: 'var(--acx-primary-black)',
   welcomeSize: PortalDemoDefaultSize.welcomeSize,
   photo: Photo,
-  photoSize: PortalDemoDefaultSize.photoSize,
+  photoRatio: PortalDemoDefaultSize.photoRatio,
   logo: Logo,
-  logoSize: PortalDemoDefaultSize.logoSize,
+  logoRatio: PortalDemoDefaultSize.logoRatio,
   secondaryText: 'Lorem ipsum dolor sit amet, '+
   'consectetur adipiscing elit. Aenean euismod bibendum laoreet.',
   secondaryColor: 'var(--acx-primary-black)',
   secondarySize: PortalDemoDefaultSize.secondarySize,
   buttonColor: 'var(--acx-accents-orange-50)',
-  poweredBackgroundColor: 'var(--acx-primary-white)',
+  poweredBgColor: 'var(--acx-primary-white)',
   poweredColor: 'var(--acx-primary-black)',
   poweredSize: PortalDemoDefaultSize.poweredSize,
   poweredImg: Powered,
-  poweredImgSize: PortalDemoDefaultSize.poweredImgSize,
-  wifi4EU: '',
+  poweredImgRatio: PortalDemoDefaultSize.poweredImgRatio,
+  wifi4EUNetworkId: '',
   termsCondition: '',
-  componentDisplay: { ...defaultComDisplay, WiFi4EU: true, TermsConditions: true },
-  displayLang: 'English',
+  componentDisplay: { ...defaultComDisplay, wifi4eu: true, termsConditions: true },
+  displayLangCode: 'en',
   alternativeLang: {
-    Czech: true,
-    ChineseTraditional: false,
-    Finnish: true,
-    French: true,
-    German: true,
-    Hungarian: true,
-    Italian: false
+    cs: true,
+    zh_TW: false,
+    fi: true,
+    fr: true,
+    de: true,
+    hu: true,
+    it: false
   }
 }
 
@@ -55,11 +54,11 @@ describe('PortalDemo', () => {
   it('should render portal demo successfully', async () => {
 
     const { asFragment } = render(
-      <PortalFormContext.Provider value={{ error: true }}>
+      <Provider>
         <Form>
           <PortalDemo value={mockDemo} />
         </Form>
-      </PortalFormContext.Provider>
+      </Provider>
     )
     expect(asFragment()).toMatchSnapshot()
     const file = new File(['logo ruckus'],
@@ -83,7 +82,6 @@ describe('PortalDemo', () => {
     await userEvent.click(await screen.findByTitle('colorpick'))
     await userEvent.click(await screen.findByTitle('eyehide'))
     await userEvent.type(await screen.findByPlaceholderText('welcometext'),'welcome text')
-
     fireEvent.mouseOver(await screen.findByPlaceholderText('buttonsetting'))
     fireEvent.mouseLeave(await screen.findByPlaceholderText('buttonsetting'))
     fireEvent.click(await screen.findByPlaceholderText('buttonsetting'))
@@ -102,7 +100,7 @@ describe('PortalDemo', () => {
     await userEvent.click((await screen.findAllByTitle('colorpick'))[1])
 
     await userEvent.click(await screen.findByTitle('#F5A623'))
-    await userEvent.click(await screen.findByText('Email Message'))
+    await userEvent.click((await screen.findAllByRole('tab'))[1])
     await userEvent.click((await screen.findAllByPlaceholderText('buttonsetting'))[1])
 
     await userEvent.click((await screen.findAllByTitle('colorpick'))[2])
@@ -115,7 +113,7 @@ describe('PortalDemo', () => {
     await userEvent.click(await screen.findByPlaceholderText('buttonsetting'))
     await userEvent.click((await screen.findAllByTitle('colorpick'))[1])
     await userEvent.click(await screen.findByTitle('#F5A623'))
-    await userEvent.click(await screen.findByText('Login'))
+    await userEvent.click((await screen.findAllByRole('tab'))[1])
     await userEvent.click((await screen.findAllByPlaceholderText('buttonsetting'))[1])
     await userEvent.click((await screen.findAllByTitle('colorpick'))[2])
     await userEvent.click(await screen.findByTitle('#F5A623'))
@@ -124,7 +122,7 @@ describe('PortalDemo', () => {
     await userEvent.click(await screen.findByPlaceholderText('buttonsetting'))
     await userEvent.click((await screen.findAllByTitle('colorpick'))[1])
     await userEvent.click(await screen.findByTitle('#F5A623'))
-    await userEvent.click(await screen.findByText('Login'))
+    await userEvent.click((await screen.findAllByRole('tab'))[1])
     await userEvent.click((await screen.findAllByPlaceholderText('buttonsetting'))[1])
     await userEvent.click((await screen.findAllByTitle('colorpick'))[2])
     await userEvent.click(await screen.findByTitle('#F5A623'))
@@ -137,11 +135,8 @@ describe('PortalDemo', () => {
     await userEvent.click((await screen.findAllByTitle('colorpick'))[1])
     await userEvent.click(await screen.findByTitle('#F5A623'))
 
-    await userEvent.click(await screen.findByText('Language Settings'))
-    await userEvent.click((await screen.findAllByTitle('English'))[1])
+    await userEvent.click((await screen.findAllByTitle('English'))[0])
     await userEvent.click((await screen.findAllByTitle('Czech (čeština)'))[0])
-    await userEvent.click((await screen.findAllByRole('combobox'))[2])
-    await userEvent.click((await screen.findAllByText('Finnish (suomi)'))[0])
 
     await userEvent.click(await screen.findByText('Components'))
     const rows = await screen.findAllByRole('switch')
@@ -172,18 +167,20 @@ describe('PortalDemo', () => {
     await userEvent.click(await screen.findByTitle('plusen'))
     await userEvent.click(await screen.findByTitle('minusen'))
 
-    await userEvent.upload(await screen.findByPlaceholderText('contentimageupload'), file)
-    await userEvent.click(await screen.findByTitle('pictureout'))
+    await userEvent.upload((await screen.findAllByPlaceholderText('contentimageupload'))[0], file)
+    await userEvent.click((await screen.findAllByTitle('pictureout'))[0])
     await userEvent.click(await screen.findByRole('img',{ name: 'Logo' }))
     fireEvent.mouseLeave(await screen.findByRole('img',{ name: 'Logo' }))
     await userEvent.click(await screen.findByRole('img',{ name: 'Photo png' }))
     await userEvent.click((await screen.findAllByTitle('plusen'))[1])
+    await userEvent.upload((await screen.findAllByPlaceholderText('contentimageupload'))[1], file)
+    await userEvent.click((await screen.findAllByTitle('pictureout'))[1])
     await userEvent.click(await screen.findByRole('img',{ name: 'Photo png' }))
     fireEvent.mouseLeave(await screen.findByRole('img',{ name: 'Photo png' }))
 
     await userEvent.click(await screen.findByPlaceholderText('sectexthere'))
     await userEvent.click((await screen.findAllByTitle('textplus'))[1])
-    await userEvent.click(await screen.findByPlaceholderText('sectexthere'))
+    await userEvent.type(await screen.findByPlaceholderText('sectexthere'),'sec text')
     fireEvent.mouseLeave(await screen.findByPlaceholderText('sectexthere'))
 
     await userEvent.click(await screen.findByPlaceholderText('poweredtext'))
@@ -193,6 +190,8 @@ describe('PortalDemo', () => {
 
     await userEvent.click(await screen.findByRole('img',{ name: 'poweredimage' }))
     await userEvent.click((await screen.findAllByTitle('plusen'))[2])
+    await userEvent.upload((await screen.findAllByPlaceholderText('contentimageupload'))[2], file)
+    await userEvent.click((await screen.findAllByTitle('pictureout'))[2])
     await userEvent.click(await screen.findByRole('img',{ name: 'poweredimage' }))
     fireEvent.mouseLeave(await screen.findByRole('img',{ name: 'poweredimage' }))
 
@@ -202,6 +201,7 @@ describe('PortalDemo', () => {
     fireEvent.mouseLeave(await screen.findByPlaceholderText('poweredbackground'))
 
     fireEvent.click(await screen.findByText('Reset'))
+    fireEvent.click(await screen.findByText('Preview'))
   })
 
   it('should render portal demo preview successfully', async () => {

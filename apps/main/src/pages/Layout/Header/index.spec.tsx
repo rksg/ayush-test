@@ -12,7 +12,8 @@ import {
 
 
 // import About       from './About'
-import AlarmButton from './AlarmButton'
+import ActivityButton from './ActivityButton'
+import AlarmButton    from './AlarmButton'
 // import Firewall    from './Firewall'
 
 
@@ -204,24 +205,31 @@ describe('Header Component', () => {
   // })
 
   it('should render Alarm component correctly', async () => {
-    const { asFragment } = render(
-      <Provider>
-        <AlarmButton/>
-      </Provider>, {
-        route: { params, path: '/:tenantId/' }
-      })
+    render(<Provider>
+      <AlarmButton/>
+    </Provider>, {
+      route: { params, path: '/:tenantId/' }
+    })
     const alarmBtn = await screen.findByRole('button')
     await userEvent.click(alarmBtn)
     await waitFor(async () => {
       expect(await screen.findByText(('testamy_ap'))).toBeInTheDocument()
     })
-
+    const cancelBtn = await screen.findByRole('button',{ name: 'Close' })
+    await userEvent.click(cancelBtn)
     await userEvent.click((await screen.findAllByTitle('All Severities'))[0])
     await userEvent.click((await screen.findAllByTitle('Major'))[0])
-
     await userEvent.click((await screen.findByText('Clear all alarms')))
+  })
 
-    expect(asFragment()).toMatchSnapshot()
+  it('should render Activity component correctly', async () => {
+    render(<Provider>
+      <ActivityButton/>
+    </Provider>, {
+      route: { params, path: '/:tenantId/' }
+    })
+    const activityBtn = screen.getByRole('button', { name: /clock\-circle/i })
+    await userEvent.click(activityBtn)
     const cancelBtn = await screen.findByRole('button',{ name: 'Close' })
     await userEvent.click(cancelBtn)
   })
