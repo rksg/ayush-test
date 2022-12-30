@@ -136,7 +136,7 @@ export const useDataZoom = (
 const tooltipOptions = () =>
   ({
     textStyle: {
-      color: 'black',
+      color: cssStr('--acx-primary-black'),
       fontFamily: cssStr('--acx-neutral-brand-font'),
       fontSize: cssNumber('--acx-body-5-font-size'),
       lineHeight: cssNumber('--acx-body-5-line-height'),
