@@ -10,7 +10,7 @@ import { TenantLink, useTenantLink }                                         fro
 import { getIntl, notAvailableMsg }                                          from '@acx-ui/utils'
 
 
-const disabledType = [NetworkTypeEnum.DPSK, NetworkTypeEnum.CAPTIVEPORTAL]
+const disabledType = [NetworkTypeEnum.CAPTIVEPORTAL]
 
 function getCols (intl: ReturnType<typeof useIntl>) {
   const columns: TableProps<Network>['columns'] = [
@@ -25,7 +25,12 @@ function getCols (intl: ReturnType<typeof useIntl>) {
           return data
         }else{
           return (
-            <TenantLink to={`/networks/${row.id}/network-details/aps`}>{data}</TenantLink>
+            <TenantLink to={`/networks/${row.id}/network-details/aps`}>
+              {data}
+              {data !== row.ssid &&
+                <> {intl.$t({ defaultMessage: '(SSID: {ssid})' }, { ssid: row.ssid })}</>
+              }
+            </TenantLink>
           )
         }
       }
@@ -85,7 +90,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       key: 'clients',
       title: intl.$t({ defaultMessage: 'Clients' }),
       dataIndex: 'clients',
-      sorter: true,
+      sorter: false,
       align: 'center'
     },
     {

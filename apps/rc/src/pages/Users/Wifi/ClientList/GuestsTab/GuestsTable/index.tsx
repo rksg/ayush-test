@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react'
 
+import {
+  FetchBaseQueryError
+} from '@reduxjs/toolkit/query/react'
 import { Drawer }  from 'antd'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
@@ -11,8 +14,14 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                      from '@acx-ui/feature-toggle'
-import { useGetGuestsListQuery, useNetworkListQuery, useLazyGetGuestNetworkListQuery } from '@acx-ui/rc/services'
+import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
+import { CsvSize, ImportCsvDrawer } from '@acx-ui/rc/components'
+import {
+  useGetGuestsListQuery,
+  useNetworkListQuery,
+  useLazyGetGuestNetworkListQuery,
+  useImportGuestPassMutation
+} from '@acx-ui/rc/services'
 import {
   useTableQuery,
   Guest,
@@ -22,14 +31,22 @@ import {
   Network,
   NetworkTypeEnum,
   GuestNetworkTypeEnum,
-  RequestPayload
+  RequestPayload,
+  GuestErrorRes
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { getIntl }               from '@acx-ui/utils'
 
 import { defaultGuestPayload, GuestsDetail } from '../GuestsDetail'
 
-import { AddGuestDrawer } from './addGuestDrawer'
+import {
+  AddGuestDrawer,
+  GuestFields,
+  GuestResponse,
+  showGuestErrorModal,
+  showNoSendConfirm,
+  useHandleGuestPassResponse
+} from './addGuestDrawer'
 
 const payload = {
   fields: ['name', 'defaultGuestCountry', 'id'],
@@ -101,6 +118,11 @@ export default function GuestsTable () {
     const [currentGuest, setCurrentGuest] = useState({} as Guest)
     const [allowedNetworkList, setAllowedNetworkList] = useState<Network[]>([])
 
+    const [importVisible, setImportVisible] = useState(false)
+    const [importCsv, importResult] = useImportGuestPassMutation()
+
+    const { handleGuestPassResponse } = useHandleGuestPassResponse({ tenantId: params.tenantId! })
+
     const [getNetworkList] = useLazyGetGuestNetworkListQuery()
 
     const getAllowedNetworkList = async () => {
@@ -111,6 +133,32 @@ export default function GuestsTable () {
     useEffect(() => {
       getAllowedNetworkList()
     }, [])
+
+    useEffect(()=>{
+      if (importResult.isSuccess) {
+        setImportVisible(false)
+        handleGuestPassResponse(importResult.data as GuestResponse)
+      }
+      if (importResult.isError && importResult?.error && 'data' in importResult.error) {
+        showGuestErrorModal(importResult?.error.data as GuestErrorRes)
+      }
+    },[importResult])
+
+    const importRequestHandler = (formData: FormData, values: Guest) => {
+      // flat object (2 level)
+      Object.entries(values).forEach(([key, value])=>{
+        if (Array.isArray(value)) {
+          formData.append(key, value.join(','))
+        } else if (typeof value === 'object'){
+          Object.entries(value).forEach(([subKey, subValue])=>{
+            formData.append(`${key}.${subKey}`, subValue as string)
+          })
+        } else {
+          formData.append(key, value as string)
+        }
+      })
+      importCsv({ params, payload: formData })
+    }
 
     const columns: TableProps<Guest>['columns'] = [
       {
@@ -224,8 +272,8 @@ export default function GuestsTable () {
           },
           {
             label: $t({ defaultMessage: 'Import from file' }),
-            onClick: () => { },
-            disabled: true // TODO: Wait for import support
+            onClick: () => setImportVisible(true),
+            disabled: allowedNetworkList.length === 0 ? true : false
           }
           ] : []}
         />
@@ -248,6 +296,27 @@ export default function GuestsTable () {
           visible={drawerVisible}
           setVisible={setDrawerVisible}
         />
+        <ImportCsvDrawer type='GuestPass'
+          title={$t({ defaultMessage: 'Import from file' })}
+          maxSize={CsvSize['5MB']}
+          maxEntries={250}
+          temlateLink='assets/templates/guests_import_template.csv'
+          visible={importVisible}
+          isLoading={importResult.isLoading}
+          importError={importResult.error as FetchBaseQueryError}
+          importRequest={(formData, values)=>{
+            const formValues = values as Guest
+            if(formValues.deliveryMethods.length === 0){
+              showNoSendConfirm(()=>{
+                importRequestHandler(formData, formValues)
+              })
+            } else {
+              importRequestHandler(formData, formValues)
+            }
+          }}
+          onClose={()=>setImportVisible(false)} >
+          <GuestFields withBasicFields={false} />
+        </ImportCsvDrawer>
       </Loader>
     )
   }

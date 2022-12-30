@@ -65,6 +65,35 @@ exports[`SummaryForm should render cloudpath disabled successfully 1`] = `
             >
               <label
                 class=""
+                title="SSID:"
+              >
+                SSID
+              </label>
+            </div>
+            <div
+              class="ant-col ant-form-item-control"
+            >
+              <div
+                class="ant-form-item-control-input"
+              >
+                <div
+                  class="ant-form-item-control-input-content"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-form-item"
+        >
+          <div
+            class="ant-row ant-form-item-row"
+          >
+            <div
+              class="ant-col ant-form-item-label"
+            >
+              <label
+                class=""
                 title="Description:"
               >
                 Description
@@ -187,6 +216,35 @@ exports[`SummaryForm should render cloudpath disabled successfully 1`] = `
             >
               <label
                 class=""
+                title="DPSK Service:"
+              >
+                DPSK Service
+              </label>
+            </div>
+            <div
+              class="ant-col ant-form-item-control"
+            >
+              <div
+                class="ant-form-item-control-input"
+              >
+                <div
+                  class="ant-form-item-control-input-content"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-form-item"
+        >
+          <div
+            class="ant-row ant-form-item-row"
+          >
+            <div
+              class="ant-col ant-form-item-label"
+            >
+              <label
+                class=""
                 title="Passphrase Format:"
               >
                 Passphrase Format
@@ -200,9 +258,7 @@ exports[`SummaryForm should render cloudpath disabled successfully 1`] = `
               >
                 <div
                   class="ant-form-item-control-input-content"
-                >
-                  Most Secured
-                </div>
+                />
               </div>
             </div>
           </div>
@@ -231,9 +287,7 @@ exports[`SummaryForm should render cloudpath disabled successfully 1`] = `
               >
                 <div
                   class="ant-form-item-control-input-content"
-                >
-                  18 Characters
-                </div>
+                />
               </div>
             </div>
           </div>
@@ -263,7 +317,9 @@ exports[`SummaryForm should render cloudpath disabled successfully 1`] = `
                 <div
                   class="ant-form-item-control-input-content"
                 >
-                  Unlimited
+                  <p>
+                    TODO
+                  </p>
                 </div>
               </div>
             </div>
@@ -384,6 +440,35 @@ exports[`SummaryForm should render cloudpath enabled successfully 1`] = `
                 >
                   test
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-form-item"
+        >
+          <div
+            class="ant-row ant-form-item-row"
+          >
+            <div
+              class="ant-col ant-form-item-label"
+            >
+              <label
+                class=""
+                title="SSID:"
+              >
+                SSID
+              </label>
+            </div>
+            <div
+              class="ant-col ant-form-item-control"
+            >
+              <div
+                class="ant-form-item-control-input"
+              >
+                <div
+                  class="ant-form-item-control-input-content"
+                />
               </div>
             </div>
           </div>
