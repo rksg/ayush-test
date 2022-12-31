@@ -128,6 +128,11 @@ export const validationMessages = {
     defaultMessage: 'Please enter a valid email address',
     description: 'Validation - email address checks'
   }),
+  walledGarden: defineMessage({
+    defaultMessage: `Please make sure that all destinations comply to
+      allowed formats. For more information see the help information`,
+    description: 'Validation - walled garden checks'
+  }),
   ipRangeInvalid: defineMessage({
     defaultMessage: 'The End IP address should swap Start IP address',
     description: 'Validation - IP address range'

@@ -32,6 +32,7 @@ const WifiCallingForm = () => {
   const ePDG:EPDG[] = []
   const networkIds:string[] = []
   const networksName:string[] = []
+  const epdgs:EPDG[] = []
 
   const formRef = useRef<StepsFormInstance<CreateNetworkFormFields>>()
   const [state, dispatch] = useReducer(mainReducer, {
@@ -41,7 +42,8 @@ const WifiCallingForm = () => {
     tags,
     description,
     networkIds,
-    networksName
+    networksName,
+    epdgs
   })
 
   const [ createWifiCallingService ] = useCreateWifiCallingServiceMutation()

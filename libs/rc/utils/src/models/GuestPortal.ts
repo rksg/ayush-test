@@ -55,7 +55,6 @@ export class GuestPortal {
   // Allow unauthenticated users to access the listed destinations.<br>Each destination should be configured as a separate string item.<br>Accepted formats:<br>* IPv4 (e.g. 10.11.12.13)<br>* IPv4 range (e.g. 10.11.12.13-10.11.12.15)<br>* IPv4 CIDR (e.g. 10.11.12.100/28)<br>* IPv4 and mask (e.g. 10.11.12.13 255.255.255.0)<br>* Precise web site (e.g. www.ruckus.com)<br>* Web site with wildcard: *.ruckus.com
 
   walledGardens?: string[]
-
   constructor () {
     this.smsPasswordDuration = new GuestSmsPasswordDuration()
 
