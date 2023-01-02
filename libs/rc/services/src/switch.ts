@@ -228,7 +228,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Switch', id: 'VE' }],
+      invalidatesTags: [{ type: 'Switch', id: 'VE' }]
     }),
     getSwitch: build.query<Switch, RequestPayload>({
       query: ({ params }) => {
