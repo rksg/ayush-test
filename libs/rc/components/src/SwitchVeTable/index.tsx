@@ -129,7 +129,7 @@ export function SwitchVeTable ({ isVenueLevel } : {
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
-        setIsEditMode(false)
+        setIsEditMode(true)
         setEditData(selectedRows[0])
         setVisible(true)
       }

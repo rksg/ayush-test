@@ -89,7 +89,7 @@ export interface VeViewModel {
   defaultVlan: boolean
   deviceStatus: SwitchStatusEnum
   id: string
-  ipAddress: string
+  ipAddress?: string
   ipAddressType?: IP_ADDRESS_TYPE
   ipSubnetMask?: string
   ospfArea?: string
@@ -107,9 +107,9 @@ export interface VeForm {
   veId: number
   vlanId: number
   ospfArea: string
-  ipSubnetMask: string
-  ipAddress: string
-  ipAddressType: string
+  ipSubnetMask?: string
+  ipAddressType?: string
+  ipAddress?: string
   egressAcl: string
   ingressAcl: string
   id: string

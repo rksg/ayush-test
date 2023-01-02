@@ -1,21 +1,22 @@
 import { useEffect, useState } from 'react'
 
 import {
-  Form, Input, InputNumber, Select } from 'antd'
+  Form, Input, InputNumber, Radio, RadioChangeEvent, Select, Space } from 'antd'
 import { DefaultOptionType } from 'antd/lib/select'
+import _                     from 'lodash'
 import { useIntl }           from 'react-intl'
-
 
 
 // import * as UI from './styledComponents'
 import { Button, Drawer, showToast } from '@acx-ui/components'
 import { useAddVePortMutation, useGetAclUnionQuery,
+  useGetSwitchQuery,
   useLazyGetFreeVePortVlansQuery,
   useSwitchDetailHeaderQuery,
   useUpdateVePortMutation } from '@acx-ui/rc/services'
-import { VeForm, VeViewModel, VlanVePort } from '@acx-ui/rc/utils'
-import { useParams }                       from '@acx-ui/react-router-dom'
-import { getIntl, validationMessages }     from '@acx-ui/utils'
+import { IP_ADDRESS_TYPE, VeForm, VeViewModel, VlanVePort } from '@acx-ui/rc/utils'
+import { useParams }                                        from '@acx-ui/react-router-dom'
+import { getIntl, validationMessages }                      from '@acx-ui/utils'
 
 interface SwitchVeProps {
   visible: boolean
@@ -32,22 +33,58 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
   const switchDetailHeader = useSwitchDetailHeaderQuery({ params: { tenantId, switchId } })
   const [venueId, setVenueId] = useState('')
   const aclUnionList = useGetAclUnionQuery({ params: { tenantId, switchId } })
+  const getSwitch = useGetSwitchQuery({ params: { tenantId, switchId } })
 
   const [getVePortVlansList] = useLazyGetFreeVePortVlansQuery()
   const [vlanVePortOption, setVlanVePortOption] = useState([] as DefaultOptionType[])
   const [aclOption, setAclOption] = useState([] as DefaultOptionType[])
   const [addVePort] = useAddVePortMutation()
   const [updateVePort] = useUpdateVePortMutation()
+  const [resetField, setResetField] = useState(false)
+
+  //Only for edit mode
+  const [isIncludeIpSetting, setIsIncludeIpSetting] = useState(false)
+  const [enableDhcp, setEnableDhcp] = useState(false)
+  const [dhcpServerEnabled, setDhcpServerEnabled] = useState(false)
+  const [disableIpSetting, setDisableIpSetting] = useState(false)
+  const [ipAddressFromDH, setIpAddressFromDH] = useState('')
+  const [ipSubnetFromDH, setIpSubnetFromDH] = useState('')
+
+  useEffect(()=>{
+    if (isEditMode && editData && visible) {
+      form.setFieldsValue(editData)
+      setIsIncludeIpSetting(!_.isEmpty(editData.ipAddressType))
+      setEnableDhcp(editData.ipAddressType === IP_ADDRESS_TYPE.DYNAMIC)
+      if (disableIpSetting) {
+        if (_.isEmpty(editData.ipAddress) && !_.isEmpty(ipAddressFromDH)) {
+          form.setFieldValue('ipAddress', ipAddressFromDH)
+        }
+
+        if (_.isEmpty(editData.ipSubnetMask) && !_.isEmpty(ipSubnetFromDH)) {
+          form.setFieldValue('ipSubnetMask', ipSubnetFromDH)
+        }
+      }
+      handleVlanVePortOption()
+    }
+  }, [editData, visible, disableIpSetting])
 
 
   useEffect(() => {
     if (switchDetailHeader.data) {
       setVenueId(switchDetailHeader.data.venueId)
+      const ipFullContentParsed = switchDetailHeader.data.ipFullContentParsed
+      setDisableIpSetting( ipFullContentParsed === false)
+      setIpAddressFromDH(switchDetailHeader.data.ipAddress || '')
+      setIpSubnetFromDH(switchDetailHeader.data.subnetMask || '')
     }
-  }, [switchDetailHeader.data])
+
+    if(getSwitch.data){
+      setDhcpServerEnabled(getSwitch.data.dhcpServerEnabled || false)
+    }
+  }, [switchDetailHeader.data, getSwitch.data])
 
   useEffect(() => {
-    if (venueId) {
+    if (venueId && !isEditMode) {
       handleVlanVePortOption()
     }
   }, [venueId])
@@ -79,7 +116,7 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
           label: `VLAN-${item.vlanId}`,
           key: item.vlanId,
           value: item.vlanId,
-          disabled: item.usedByVePort //|| editData?.vlanId === item.vlanId
+          disabled: item.usedByVePort && String(editData?.vlanId) !== item.vlanId
         }))
 
     setVlanVePortOption(option as DefaultOptionType[])
@@ -88,7 +125,12 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
   const onClose = () => {
     setVisible(false)
     form.resetFields()
+    setIsIncludeIpSetting(false)
+    setEnableDhcp(false)
+    setDhcpServerEnabled(false)
+    setDisableIpSetting(false)
   }
+
   const [form] = Form.useForm()
   const [loading, setLoading] = useState<boolean>(false)
 
@@ -106,14 +148,25 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
           payload
         }).unwrap()
       } else {
-        //     const payload = {
-        //       ...editData,
-        //       ...data
-        //     }
-        //     await updateAAAServer({
-        //       params,
-        //       payload
-        //     }).unwrap()
+        let payload = {
+          ...editData,
+          ...data
+        }
+
+        if (!isIncludeIpSetting) {
+          delete payload.ipAddressType
+        }
+
+        if (disableIpSetting) {
+          delete payload.ipAddressType
+          delete payload.ipAddress
+          delete payload.ipSubnetMask
+        }
+
+        await updateVePort({
+          params,
+          payload
+        }).unwrap()
       }
     }
     catch {
@@ -131,11 +184,17 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
     }
   }
 
-  const [resetField, setResetField] = useState(false)
+
   const resetFields = () => {
     setResetField(true)
     onClose()
   }
+
+  const onIpAddressTypeChange = (e: RadioChangeEvent) => {
+    setEnableDhcp(e.target.value === IP_ADDRESS_TYPE.DYNAMIC)
+    // setData && setData({ ...data, type: e.target.value as NetworkTypeEnum })
+  }
+
 
   const footer = [
     <Button loading={loading} key='saveBtn' onClick={() => form.submit()} type={'primary'} >
@@ -187,13 +246,14 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
             rules={[
               { required: true }]}
           >
-            <span style={{
+            {/* <span style={{
               display: 'flex',
               fontSize: 'var(--acx-body-3-font-size)',
               lineHeight: '32px'
             }}>
-          VE-
-              <InputNumber style={{ marginLeft: '5px' }} min={1} max={4095}/></span>
+          VE- */}
+            <InputNumber style={{ marginLeft: '5px' }} min={1} max={4095}/>
+            {/* </span> */}
           </Form.Item>
 
 
@@ -232,6 +292,29 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
             <Input />
           </Form.Item>
 
+
+          {(isIncludeIpSetting && isEditMode) &&
+            <Form.Item
+              label={$t({ defaultMessage: 'IP Assignment' })}
+              name='ipAddressType'
+            >
+              <Radio.Group
+                onChange={onIpAddressTypeChange} >
+                <Space direction='vertical'>
+                  <Radio key='dynamic' value='dynamic'>
+                    {$t({ defaultMessage: 'DHCP' })}
+                  </Radio>
+                  <Radio key='static'
+                    value='static'
+                    disabled={(!enableDhcp && dhcpServerEnabled) || disableIpSetting}>
+                    {$t({ defaultMessage: 'Static/Manual' })}
+                  </Radio>
+                </Space>
+              </Radio.Group>
+            </Form.Item>
+          }
+
+
           <Form.Item
             label={$t({ defaultMessage: 'IP Address' })}
             name='ipAddress'
@@ -241,7 +324,8 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
               { validator: (_, value) => IpAddressRegExp(value) }
             ]}
           >
-            <Input />
+            <Input
+              disabled={enableDhcp || disableIpSetting} />
           </Form.Item>
 
           <Form.Item
@@ -253,7 +337,7 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
               { validator: (_, value) => IpSubnetMaskRegExp(value) }
             ]}
           >
-            <Input />
+            <Input disabled={enableDhcp || disableIpSetting} />
           </Form.Item>
 
           <Form.Item

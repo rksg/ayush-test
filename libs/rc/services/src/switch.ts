@@ -172,7 +172,8 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      providesTags: [{ type: 'Switch', id: 'VE' }]
     }),
     getVenueRoutedList: build.query<TableResult<VeViewModel>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -181,8 +182,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req,
           body: payload
         }
-      },
-      providesTags: [{ type: 'Switch', id: 'VE' }],
+      }
     }),
     saveSwitch: build.mutation<Switch, RequestPayload>({
       query: ({ params, payload }) => {
@@ -228,7 +228,15 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Switch', id: 'VE' }]
+      invalidatesTags: [{ type: 'Switch', id: 'VE' }],
+    }),
+    getSwitch: build.query<Switch, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getSwitch, params)
+        return {
+          ...req
+        }
+      }
     })
   })
 })
@@ -315,5 +323,6 @@ export const {
   useLazyGetFreeVePortVlansQuery,
   useGetAclUnionQuery,
   useAddVePortMutation,
-  useUpdateVePortMutation
+  useUpdateVePortMutation,
+  useGetSwitchQuery
 } = switchApi
