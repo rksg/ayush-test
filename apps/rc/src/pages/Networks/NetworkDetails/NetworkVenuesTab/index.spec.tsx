@@ -13,6 +13,7 @@ import {
 import { Provider, store } from '@acx-ui/store'
 import {
   act,
+  findTBody,
   fireEvent,
   mockServer,
   render,
@@ -225,8 +226,7 @@ describe('NetworkVenuesTab', () => {
       )
     )
 
-    const tbody = (await screen.findAllByRole('rowgroup'))
-      .find(element => element.classList.contains('ant-table-tbody'))!
+    const tbody = await findTBody()
 
     expect(tbody).toBeVisible()
 
@@ -278,8 +278,7 @@ describe('NetworkVenuesTab', () => {
       )
     )
 
-    const tbody = (await screen.findAllByRole('rowgroup'))
-      .find(element => element.classList.contains('ant-table-tbody'))!
+    const tbody = await findTBody()
 
     expect(tbody).toBeVisible()
 
@@ -319,8 +318,7 @@ describe('NetworkVenuesTab', () => {
       )
     )
 
-    const tbody = (await screen.findAllByRole('rowgroup'))
-      .find(element => element.classList.contains('ant-table-tbody'))!
+    const tbody = await findTBody()
 
     expect(tbody).toBeVisible()
 
