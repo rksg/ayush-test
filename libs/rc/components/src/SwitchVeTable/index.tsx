@@ -1,36 +1,31 @@
 import { useState } from 'react'
 
-import { Form, Space } from 'antd'
-import _               from 'lodash'
-import { useIntl }     from 'react-intl'
+import _           from 'lodash'
+import { useIntl } from 'react-intl'
 
 import {
   Table,
   TableProps,
-  Tooltip,
   Loader,
-  Drawer
+  showActionModal
 } from '@acx-ui/components'
-import { useGetSwitchRoutedListQuery, useGetVenueRoutedListQuery, useSwitchPortlistQuery } from '@acx-ui/rc/services'
+import { useDeleteVePortsMutation, useGetSwitchRoutedListQuery } from '@acx-ui/rc/services'
 import {
-  getSwitchModel,
-  isOperationalSwitch,
-  SwitchPortViewModel,
   useTableQuery,
   VeViewModel
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
-import { getIntl }   from '@acx-ui/utils'
 
-import * as UI          from './styledComponents'
 import { SwitchVeDrawer } from './switchVeDrawer'
 
-
-export function SwitchVeTable ({ isVenueLevel } : {
+// TODO: Wait for support venue level
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function SwitchVeTable ( { isVenueLevel } : {
   isVenueLevel: boolean
-}) {
+}
+) {
   const { $t } = useIntl()
-  const { serialNumber } = useParams()
+  const { tenantId } = useParams()
 
 
   const defaultPayload = {
@@ -57,13 +52,15 @@ export function SwitchVeTable ({ isVenueLevel } : {
 
 
   const tableQuery = useTableQuery({
-    useQuery: isVenueLevel ? useGetSwitchRoutedListQuery: useGetSwitchRoutedListQuery,
+    useQuery: useGetSwitchRoutedListQuery, //TODO: support venue level
     defaultPayload,
     sorter: {
       sortField: 'veId',
       sortOrder: 'ASC'
     }
   })
+
+  const [deleteVePorts] = useDeleteVePortsMutation()
 
   const columns: TableProps<VeViewModel>['columns'] = [{
     key: 'veId',
@@ -118,7 +115,7 @@ export function SwitchVeTable ({ isVenueLevel } : {
   const [deleteButtonTooltip, setDeleteButtonTooltip] = useState('')
   const [disabledDelete, setDisabledDelete] = useState(false)
 
-  const onSelectChange = (keys: React.Key[], rows: VeViewModel[]) => {
+  const onSelectChange = () => {
     setDeleteButtonTooltip('')
     setDisabledDelete(false)
   }
@@ -139,10 +136,19 @@ export function SwitchVeTable ({ isVenueLevel } : {
       disabled: disabledDelete,
       tooltip: deleteButtonTooltip,
       onClick: (rows, clearSelection) => {
-        let disableDeleteList:string[] = []
-        if (disableDeleteList.length) {}
-
-
+        showActionModal({
+          type: 'confirm',
+          customContent: {
+            action: 'DELETE',
+            entityName: $t({ defaultMessage: 'Routed Interface' }),
+            entityValue: rows.length === 1 ? rows[0].name : `VE-${rows[0].veId}`,
+            numOfEntities: rows.length
+          },
+          onOk: () => {
+            deleteVePorts({ params: { tenantId }, payload: _.map(rows, 'id') })
+              .then(clearSelection)
+          }
+        })
       }
     }
   ]
@@ -174,10 +180,6 @@ export function SwitchVeTable ({ isVenueLevel } : {
       isEditMode={isEditMode}
       editData={editData}
     />
-
-
-
   </Loader>
-
 
 }

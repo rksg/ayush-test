@@ -92,5 +92,9 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   updateVePort: {
     method: 'put',
     url: '/api/switch/tenant/:tenantId/vePort'
+  },
+  deleteVePorts: {
+    method: 'delete',
+    url: '/api/switch/tenant/:tenantId/vePorts'
   }
 }

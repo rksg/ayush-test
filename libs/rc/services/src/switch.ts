@@ -237,6 +237,17 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req
         }
       }
+    }),
+    deleteVePorts: build.mutation<VeForm, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.deleteVePorts, params)
+        return {
+          ...req,
+          body: payload
+        }
+
+      },
+      invalidatesTags: [{ type: 'Switch', id: 'VE' }]
     })
   })
 })
@@ -324,5 +335,6 @@ export const {
   useGetAclUnionQuery,
   useAddVePortMutation,
   useUpdateVePortMutation,
-  useGetSwitchQuery
+  useGetSwitchQuery,
+  useDeleteVePortsMutation
 } = switchApi
