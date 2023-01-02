@@ -115,9 +115,21 @@ export function SwitchVeTable ( { isVenueLevel } : {
   const [deleteButtonTooltip, setDeleteButtonTooltip] = useState('')
   const [disabledDelete, setDisabledDelete] = useState(false)
 
-  const onSelectChange = () => {
+  const onSelectChange = (keys: React.Key[], rows: VeViewModel[]) => {
     setDeleteButtonTooltip('')
     setDisabledDelete(false)
+
+
+    const defaultVlanVeList = rows.filter(row => row.defaultVlan === true)
+
+    const defaultVlanVe = _.map(defaultVlanVeList, 'veId')
+    const tooltip = defaultVlanVeList.length > 0 ?
+      `VE ${defaultVlanVe} ${$t({
+        defaultMessage: 'is member of default VLAN that cannot be deleted.'
+      })}` : ''
+    setDisabledDelete(defaultVlanVeList.length > 0)
+    setDeleteButtonTooltip(tooltip)
+
   }
 
 
