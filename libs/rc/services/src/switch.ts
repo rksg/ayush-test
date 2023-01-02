@@ -170,6 +170,15 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
+    getVlanListBySwitchLevel: build.query<TableResult<Vlan>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getVlanListBySwitchLevel, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     saveSwitch: build.mutation<Switch, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(SwitchUrlsInfo.addSwitch, params)
@@ -259,5 +268,6 @@ export const {
   useAddStackMemberMutation,
   useGetSwitchListQuery,
   useLazyGetSwitchListQuery,
-  useGetSwitchAclsQuery
+  useGetSwitchAclsQuery,
+  useGetVlanListBySwitchLevelQuery
 } = switchApi

@@ -10,6 +10,7 @@ import { getIntl }                                from '@acx-ui/utils'
 
 import DnsServer       from './DnsServer'
 import GeneralSettings from './GeneralSettings'
+import StaticRoutes    from './StaticRoutes'
 
 const intl = getIntl()
 
@@ -28,7 +29,7 @@ const tabs = {
   },
   'routes': {
     title: intl.$t({ defaultMessage: 'Static Routes' }),
-    content: <>Static Routes</>
+    content: <StaticRoutes />
   }
 }
 
