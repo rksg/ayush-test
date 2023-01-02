@@ -21,7 +21,7 @@ export interface devicePolicyInfoType {
 }
 
 export interface DeviceRule {
-  action: 'ALLOW' | 'BLOCK',
+  action: AccessStatus,
   deviceType: string,
   name: string,
   osVendor: string,
@@ -32,7 +32,7 @@ export interface DeviceRule {
 
 export interface L3Rule {
   id: string
-  access: 'ALLOW' | 'BLOCK',
+  access: AccessStatus,
   description: string,
   destination: {
     enableIpSubnet: boolean,
@@ -56,4 +56,9 @@ export interface AvcApp {
     catId: number,
     appId: number
   }
+}
+
+export enum AccessStatus {
+  ALLOW = 'ALLOW',
+  BLOCK = 'BLOCK'
 }

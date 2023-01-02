@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 
-import { Checkbox, Col, Form, Input, Row, Select, Slider } from 'antd'
-import _                                                   from 'lodash'
-import { useIntl }                                         from 'react-intl'
-import styled, { css }                                     from 'styled-components/macro'
+import { Checkbox, Col, Form, FormItemProps, Input, Row, Select, Slider } from 'antd'
+import _                                                                  from 'lodash'
+import { useIntl }                                                        from 'react-intl'
+import styled, { css }                                                    from 'styled-components/macro'
 
 import {
   ContentSwitcher,
@@ -17,12 +17,10 @@ import {
   useAddDevicePolicyMutation,
   useDevicePolicyListQuery, useGetDevicePolicyQuery
 } from '@acx-ui/rc/services'
-import { CommonResult, DeviceRule } from '@acx-ui/rc/utils'
-import { useParams }                from '@acx-ui/react-router-dom'
+import { AccessStatus, CommonResult, DeviceRule } from '@acx-ui/rc/utils'
+import { useParams }                              from '@acx-ui/react-router-dom'
 
-import { AccessStatus } from './Layer3Drawer'
 const { Option } = Select
-
 
 const { useWatch } = Form
 
@@ -97,6 +95,10 @@ const getDeviceTypeOptions = () => {
   return ['Select...', ...Object.keys(DeviceTypeEnum)]
 }
 
+const deviceTypeOptionList = getDeviceTypeOptions().map((option) =>
+  <Option key={option}>{option}</Option>
+)
+
 const ViewDetailsWrapper = styled.span<{ $policyId: string }>`
   ${props => props.$policyId
     ? css`cursor: pointer;`
@@ -145,6 +147,16 @@ const getOsVendorOptions = (deviceType: DeviceTypeEnum) => {
   return OsVendorArray
 }
 
+const DrawerFormItem = (props: FormItemProps) => {
+  return (
+    <Form.Item
+      labelAlign={'left'}
+      labelCol={{ span: 5 }}
+      style={{ marginBottom: '5px' }}
+      {...props} />
+  )
+}
+
 export interface DeviceOSDrawerProps {
   inputName?: string[]
 }
@@ -163,6 +175,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
   const [osVendor, setOsVendor] = useState(
     $t({ defaultMessage: 'Please select...' }) as OsVendorEnum
   )
+  const [osVendorOptionList, setOsVendorOptionList] = useState([] as JSX.Element[])
   const [deviceOSRule, setDeviceOSRule] = useState({} as DeviceOSRule)
   const [fromClient, setFromClient] = useState(false)
   const [fromClientValue, setFromClientValue] = useState(0)
@@ -236,6 +249,14 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
     }
   }, [devicePolicyInfo, queryPolicyId])
 
+  useEffect(() => {
+    setOsVendorOptionList(
+      getOsVendorOptions(deviceType).map(option =>
+        <Option key={option}>{option}</Option>
+      )
+    )
+  }, [deviceType])
+
   const renderDetailsColumn = (row: DeviceOSRule) => {
     const linkArray = []
     if (row.details.upLink >= 0) {
@@ -301,12 +322,12 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
     {
       label: $t({ defaultMessage: 'Allow Traffic' }),
       children: <EmptyElement access={AccessStatus.ALLOW} />,
-      value: 'ALLOW'
+      value: AccessStatus.ALLOW
     },
     {
       label: $t({ defaultMessage: 'Block Traffic' }),
       children: <EmptyElement access={AccessStatus.BLOCK} />,
-      value: 'BLOCK'
+      value: AccessStatus.BLOCK
     }
   ]
 
@@ -314,13 +335,13 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
     {
       label: $t({ defaultMessage: 'Allow Traffic' }),
       children: <DefaultEmptyElement access={AccessStatus.ALLOW} />,
-      value: 'ALLOW',
+      value: AccessStatus.ALLOW,
       disabled: isViewMode()
     },
     {
       label: $t({ defaultMessage: 'Block Traffic' }),
       children: <DefaultEmptyElement access={AccessStatus.BLOCK} />,
-      value: 'BLOCK',
+      value: AccessStatus.BLOCK,
       disabled: isViewMode()
     }
   ]
@@ -439,7 +460,6 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
         setRequestId(deviceRes.requestId)
       }
     } catch(error) {
-      console.log(error)
       showToast({
         type: 'error',
         duration: 10,
@@ -518,7 +538,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
   </div>
 
   const content = <Form layout='horizontal' form={contentForm}>
-    <Form.Item
+    <DrawerFormItem
       name={'policyName'}
       label={$t({ defaultMessage: 'Policy Name:' })}
       rules={[
@@ -532,11 +552,9 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
             return Promise.resolve()}
         }
       ]}
-      labelCol={{ span: 5 }}
-      labelAlign={'left'}
       children={<Input disabled={isViewMode()}/>}
     />
-    <Form.Item
+    <DrawerFormItem
       name='deviceDefaultAccess'
       label={<div style={{ textAlign: 'left' }}>
         <div>{$t({ defaultMessage: 'Default Access' })}</div>
@@ -544,8 +562,6 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
           {$t({ defaultMessage: 'Applies if no rule is matched' })}
         </span>
       </div>}
-      labelCol={{ span: 5 }}
-      labelAlign={'left'}
       children={<ContentSwitcher tabDetails={defaultTabDetails} size='large' />}
     />
     <Form.Item
@@ -563,17 +579,17 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
   </Form>
 
   const ruleContent = <Form layout='horizontal' form={drawerForm}>
-    <Form.Item
+    <DrawerFormItem
       name='ruleName'
       label={$t({ defaultMessage: 'Rule Name' })}
-      labelAlign={'left'}
-      labelCol={{ span: 5 }}
       initialValue={''}
       validateFirst
       rules={[
         { required: true },
         { validator: (_, value) => {
-          if (deviceOSRuleList.findIndex((rule: DeviceOSRule) => rule.ruleName === value) !== -1) {
+          if (deviceOSRuleList
+            .filter((rule: DeviceOSRule) => ruleDrawerEditMode ? (rule.ruleName !== value) : true)
+            .findIndex((rule: DeviceOSRule) => rule.ruleName === value) !== -1) {
             return Promise.reject('The rule name has already used')
           }
           return Promise.resolve()
@@ -582,19 +598,15 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
       ]}
       children={<Input />}
     />
-    <Form.Item
+    <DrawerFormItem
       name='access'
       label={$t({ defaultMessage: 'Access' })}
-      labelAlign={'left'}
-      labelCol={{ span: 5 }}
       initialValue={AccessStatus.ALLOW}
       children={<ContentSwitcher tabDetails={tabDetails} size='large' />}
     />
-    <Form.Item
+    <DrawerFormItem
       name='deviceType'
       label={$t({ defaultMessage: 'Device Type' })}
-      labelAlign={'left'}
-      labelCol={{ span: 5 }}
       initialValue={$t({ defaultMessage: 'Select...' })}
       rules={[
         { required: true },
@@ -609,14 +621,12 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
       children={<Select
         style={{ width: '100%' }}
         onChange={handleDeviceTypeChange}
-        options={getDeviceTypeOptions().map((option) => ({ label: option, value: option }))}
+        children={deviceTypeOptionList}
       />}
     />
-    <Form.Item
+    <DrawerFormItem
       name='osVendor'
       label={$t({ defaultMessage: 'OS Vender' })}
-      labelAlign={'left'}
-      labelCol={{ span: 5 }}
       initialValue={osVendor}
       rules={[
         { required: true },
@@ -631,27 +641,24 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
       children={<Select
         style={{ width: '100%' }}
         onChange={handleOsVendorChange}
-        options={getOsVendorOptions(deviceType).map(option => ({ label: option, value: option }))}
+        children={osVendorOptionList}
       />}
     />
-    <Form.Item
+    <DrawerFormItem
       name='rateLimit'
       label={$t({ defaultMessage: 'Rate Limit' })}
-      labelAlign={'left'}
-      labelCol={{ span: 5 }}
       initialValue={''}
       children={rateLimitContent}
     />
-    <Form.Item
+    <DrawerFormItem
       name='vlan'
       label={$t({ defaultMessage: 'VLAN' })}
-      labelAlign={'left'}
-      labelCol={{ span: 5 }}
       initialValue={''}
       children={<Input />}
     />
   </Form>
 
+  console.log(deviceList)
 
   return (
     <>
@@ -690,6 +697,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
             onClick={() => {
               setVisible(true)
               setQueryPolicyId('')
+              clearFieldsValue()
             }}>
             {$t({ defaultMessage: 'Add New' })}
           </span>
