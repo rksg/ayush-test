@@ -130,6 +130,15 @@ export class SwitchViewModel extends Switch {
   suspendingDeployTime?: string
   syncDataEndTime?: number
   firmwareVersion?: string
+  portsStatus?: {
+    Down?: number,
+    Up?: number
+  }
+  venueDescription?: string
+  staticOrDynamic?: string
+  dns?: string
+  unitDetails?: StackMember[]
+  firmware?: string
 }
 
 export interface SwitchRow {
@@ -168,6 +177,7 @@ export interface StackMember {
   uptime: string
   order: number
   unitStatus?: STACK_MEMBERSHIP
+  unitId?: string
 }
 
 export enum STACK_MEMBERSHIP {
