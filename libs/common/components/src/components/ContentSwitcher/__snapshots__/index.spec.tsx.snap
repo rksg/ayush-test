@@ -3,7 +3,7 @@
 exports[`ContentSwitcher should render component 1`] = `
 <DocumentFragment>
   <div
-    style="text-align: center; padding: 8px 0px;"
+    style="text-align: center;"
   >
     <div
       class="styledComponents__Wrapper-sc-c4vpsp-0 eBLcPR"
@@ -101,7 +101,7 @@ exports[`ContentSwitcher should render component 1`] = `
 exports[`ContentSwitcher should render component with default selection 1`] = `
 <DocumentFragment>
   <div
-    style="text-align: center; padding: 8px 0px;"
+    style="text-align: center;"
   >
     <div
       class="styledComponents__Wrapper-sc-c4vpsp-0 eBLcPR"
@@ -199,7 +199,7 @@ exports[`ContentSwitcher should render component with default selection 1`] = `
 exports[`ContentSwitcher should render properly with two tabs: chartContent 1`] = `
 <DocumentFragment>
   <div
-    style="text-align: center; padding: 8px 0px;"
+    style="text-align: center;"
   >
     <div
       class="styledComponents__Wrapper-sc-c4vpsp-0 eBLcPR"
@@ -297,7 +297,7 @@ exports[`ContentSwitcher should render properly with two tabs: chartContent 1`] 
 exports[`ContentSwitcher should render properly with two tabs: tableContent 1`] = `
 <DocumentFragment>
   <div
-    style="text-align: center; padding: 8px 0px;"
+    style="text-align: center;"
   >
     <div
       class="styledComponents__Wrapper-sc-c4vpsp-0 eBLcPR"
