@@ -18,7 +18,8 @@ import {
   StackMember,
   VeViewModel,
   VlanVePort,
-  AclUnion
+  AclUnion,
+  VeForm
 } from '@acx-ui/rc/utils'
 
 export const baseSwitchApi = createApi({
@@ -180,7 +181,8 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      providesTags: [{ type: 'Switch', id: 'VE' }],
     }),
     saveSwitch: build.mutation<Switch, RequestPayload>({
       query: ({ params, payload }) => {
@@ -207,6 +209,26 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req
         }
       }
+    }),
+    addVePort: build.mutation<VeForm, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.addVePort, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Switch', id: 'VE' }]
+    }),
+    updateVePort: build.mutation<VeForm, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.updateVePort, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Switch', id: 'VE' }]
     })
   })
 })
@@ -291,5 +313,7 @@ export const {
   useGetSwitchRoutedListQuery,
   useGetFreeVePortVlansQuery,
   useLazyGetFreeVePortVlansQuery,
-  useGetAclUnionQuery
+  useGetAclUnionQuery,
+  useAddVePortMutation,
+  useUpdateVePortMutation
 } = switchApi

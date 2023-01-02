@@ -80,5 +80,13 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   getAclUnion: {
     method: 'get',
     url: '/api/switch/tenant/:tenantId/aclUnion/switch/:switchId'
+  },
+  addVePort: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/vePort/switch/:switchId'
+  },
+  updateVePort: {
+    method: 'put',
+    url: '/api/switch/tenant/:tenantId/vePort'
   }
 }

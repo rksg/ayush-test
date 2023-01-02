@@ -23,7 +23,7 @@ import { useParams } from '@acx-ui/react-router-dom'
 import { getIntl }   from '@acx-ui/utils'
 
 import * as UI          from './styledComponents'
-import { SwitchVeForm } from './switchVeForm'
+import { SwitchVeDrawer } from './switchVeDrawer'
 
 
 export function SwitchVeTable ({ isVenueLevel } : {
@@ -129,10 +129,9 @@ export function SwitchVeTable ({ isVenueLevel } : {
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
-        setDrawerVisible(true)
-        // setIsEditMode(true)
-        // setEditData(selectedRows[0])
-        // setVisible(true)
+        setIsEditMode(false)
+        setEditData(selectedRows[0])
+        setVisible(true)
       }
     },
     {
@@ -141,60 +140,15 @@ export function SwitchVeTable ({ isVenueLevel } : {
       tooltip: deleteButtonTooltip,
       onClick: (rows, clearSelection) => {
         let disableDeleteList:string[] = []
-        // if ((tableQuery.data?.totalCount === rows.length) &&
-        // (type === AAAServerTypeEnum.TACACS || type === AAAServerTypeEnum.RADIUS)) {
-        //   disableDeleteList = checkAAASetting(type)
-        // }
         if (disableDeleteList.length) {}
-        //   showActionModal({
-        //     type: 'info',
-        //     title: $t({ defaultMessage: '{serverType} Server Required' },
-        //       { serverType: $t(serversTypeDisplayText[type]) }),
-        //     content: (<FormattedMessage
-        //       defaultMessage={`
-        //           {serverType} servers are prioritized for the following: <br></br>
-        //           {disabledList}. <br></br>
-        //           In order to delete {count, plural, one {this} other {these}}
-        //           {serverType} {count, plural, one {server} other {servers}}
-        //           you must define a different method.
-        //         `}
-        //       values={{
-        //         serverType: $t(serversTypeDisplayText[type]),
-        //         disabledList: disableDeleteList.join($t({ defaultMessage: ', ' })),
-        //         count: rows.length,
-        //         br: () => <br />
-        //       }}
-        //     />)
-        //   })
-        // } else {
-        //   showActionModal({
-        //     type: 'confirm',
-        //     customContent: {
-        //       action: 'DELETE',
-        //       entityName: $t(serversDisplayText[type]),
-        //       entityValue: rows.length === 1 ? rows[0].name : undefined,
-        //       numOfEntities: rows.length
-        //     },
-        //     onOk: () => { rows.length === 1 ?
-        //       deleteAAAServer({ params: { tenantId, aaaServerId: rows[0].id } })
-        //         .then(clearSelection) :
-        //       bulkDeleteAAAServer({ params: { tenantId }, payload: rows.map(item => item.id) })
-        //         .then(clearSelection)
-        //     }
-        //   })
-        // }
 
 
       }
     }
   ]
-  const [editMode, setEditMode] = useState(false)
-  const [drawerVisible, setDrawerVisible] = useState(false)
-  const onClose = () => {
-    setDrawerVisible(false)
-  }
-
-  const [form] = Form.useForm()
+  const [isEditMode, setIsEditMode] = useState(false)
+  const [visible, setVisible] = useState(false)
+  const [editData, setEditData] = useState({} as VeViewModel)
 
   return <Loader states={[tableQuery]}>
     <Table
@@ -207,40 +161,22 @@ export function SwitchVeTable ({ isVenueLevel } : {
       rowSelection={{ type: 'checkbox', onChange: onSelectChange }}
       actions={[{
         label: $t({ defaultMessage: 'Add VLAN interface (VE)' }),
-        onClick: () => {setDrawerVisible(true) }
+        onClick: () => {
+          setIsEditMode(false)
+          setVisible(true) }
       }]
       }
     />
 
-
-    <Drawer
-      title={$t({ defaultMessage: 'View VLAN' })}
-      visible={drawerVisible}
-      onClose={onClose}
-      width={443}
-      footer={
-        <Drawer.FormFooter
-          buttonLabel={({
-            save: editMode ? $t({ defaultMessage: 'Save' }) : $t({ defaultMessage: 'Add' })
-          })}
-          onCancel={onClose}
-          onSave={async () => {
-            try {
-              await form.validateFields()
-              form.submit()
-              onClose()
-            } catch (error) {
-              if (error instanceof Error) throw error
-            }
-          }}
-        />
-      }
-      children={
-        <SwitchVeForm
-          form={form}
-
-        />}
+    <SwitchVeDrawer
+      visible={visible}
+      setVisible={setVisible}
+      isEditMode={isEditMode}
+      editData={editData}
     />
+
+
+
   </Loader>
 
 
