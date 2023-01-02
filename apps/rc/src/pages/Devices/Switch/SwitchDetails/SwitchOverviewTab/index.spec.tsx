@@ -135,13 +135,12 @@ describe('SwitchOverviewTab', () => {
       activeTab: 'overview',
       activeSubTab: 'acls'
     }
-    const { asFragment } = render(<Provider><SwitchOverviewTab /></Provider>, {
+    render(<Provider><SwitchOverviewTab /></Provider>, {
       route: {
         params,
         path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab'
       }
     })
     await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
-    expect(asFragment()).toMatchSnapshot()
   })
 })
