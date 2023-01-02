@@ -102,10 +102,31 @@ export interface VeViewModel {
   portTyp : string //ignore
 }
 
+export interface VeForm {
+  name: string
+  veId: number
+  vlanId: number
+  ospfArea: string
+  ipSubnetMask: string
+  ipAddress: string
+  ipAddressType: string
+  egressAcl: string
+  ingressAcl: string
+  id: string
+  dhcpRelayAgent: string
+  defaultVlan: boolean
+}
+
+
 export interface VlanVePort {
   usedByVePort: boolean
   vlanId: string
   vlanName?: string
+}
+
+export interface AclUnion {
+  profileAcl: string[]
+  switchAcl: string[]
 }
 
 export class SwitchViewModel extends Switch {

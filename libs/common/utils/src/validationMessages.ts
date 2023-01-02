@@ -10,6 +10,18 @@ export const validationMessages = {
     defaultMessage: 'No leading or trailing spaces allowed',
     description: 'Validation - no leading/trailing whitespace checks'
   }),
+  name: defineMessage({
+    defaultMessage: 'Please enter a valid Name',
+    description: 'Validation - Name checks'
+  }),
+  ospf: defineMessage({
+    defaultMessage: 'Please enter a valid OSPF area',
+    description: 'Validation - OSPF area checks'
+  }),
+  dhcpRelayAgent: defineMessage({
+    defaultMessage: 'Please enter a valid DHCP relay agent',
+    description: 'Validation - DHCP relay agent checks'
+  }),
   ipAddress: defineMessage({
     defaultMessage: 'Please enter a valid IP address',
     description: 'Validation - IP address checks'

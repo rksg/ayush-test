@@ -17,7 +17,8 @@ import {
   SwitchRow,
   StackMember,
   VeViewModel,
-  VlanVePort
+  VlanVePort,
+  AclUnion
 } from '@acx-ui/rc/utils'
 
 export const baseSwitchApi = createApi({
@@ -198,6 +199,14 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req
         }
       }
+    }),
+    getAclUnion: build.query<AclUnion, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getAclUnion, params)
+        return {
+          ...req
+        }
+      }
     })
   })
 })
@@ -281,5 +290,6 @@ export const {
   useGetVenueRoutedListQuery,
   useGetSwitchRoutedListQuery,
   useGetFreeVePortVlansQuery,
-  useLazyGetFreeVePortVlansQuery
+  useLazyGetFreeVePortVlansQuery,
+  useGetAclUnionQuery
 } = switchApi
