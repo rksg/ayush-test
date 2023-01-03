@@ -1982,6 +1982,7 @@ exports[`NetworkForm should configure aps and scheduling successfully 1`] = `
                                       class="ant-checkbox ant-checkbox-checked"
                                     >
                                       <input
+                                        checked=""
                                         class="ant-checkbox-input"
                                         id="moreSettings_enableOfdmOnly"
                                         type="checkbox"
