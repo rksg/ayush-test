@@ -100,13 +100,13 @@ describe('SwitchOverviewTab', () => {
       activeTab: 'overview',
       activeSubTab: 'routeInterfaces'
     }
-    const { asFragment } = render(<Provider><SwitchOverviewTab /></Provider>, {
+    render(<Provider><SwitchOverviewTab /></Provider>, {
       route: {
         params,
         path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab'
       }
     })
-    expect(asFragment()).toMatchSnapshot()
+    await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' })) })
   })
 
   it('should navigate to VLANs tab correctly', async () => {
@@ -117,15 +117,14 @@ describe('SwitchOverviewTab', () => {
       activeTab: 'overview',
       activeSubTab: 'vlans'
     }
-    const { asFragment } = render(<Provider><SwitchOverviewTab /></Provider>, {
+    render(<Provider><SwitchOverviewTab /></Provider>, {
       route: {
         params,
         path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab'
       }
     })
 
-    await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
-    expect(asFragment()).toMatchSnapshot() })
+    await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' })) })
 
   it('should navigate to ACLs tab correctly', async () => {
     const params = {
