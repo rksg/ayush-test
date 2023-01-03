@@ -29,73 +29,89 @@ export const RCCDNodeMap = {
 const contentMap = (
   source: string,
   destination: string,
-  label: string
+  label: MessageDescriptor
 ) => ({ source, destination, label })
 
 /**
 * Reference: https://jira-wiki.ruckuswireless.com/pages/viewpage.action?spaceKey=Team&title=RCCD+Enhancement+Feature%3A+Simplified+Message+Type
 */
 export const RCCDContentMap = {
-  1: contentMap('1', '2', 'Probe Request'),
+  1: contentMap('1', '2', defineMessage({ defaultMessage: 'Probe Request' })),
   // 802.11 Authentication
-  2: contentMap('1', '2', '802.11 Authentication Request'),
-  3: contentMap('2', '1', '802.11 Authentication Response'),
+  2: contentMap('1', '2', defineMessage({ defaultMessage: '802.11 Authentication Request' })),
+  3: contentMap('2', '1', defineMessage({ defaultMessage: '802.11 Authentication Response' })),
   // 802.11 Association
-  4: contentMap('1', '2', '802.11 Association Request'),
-  5: contentMap('2', '1', '802.11 Association Response'),
-  6: contentMap('1', '2', '802.11 Reassociation Request'),
-  7: contentMap('2', '1', '802.11 Reassociation Response'),
-  8: contentMap('2', '1', '802.11 Deauthentication'),
-  9: contentMap('2', '1', '802.11 Disassociation'),
-  10: contentMap('1', '2', '802.11 Deauthentication (Deauthentication_STA)'),
-  11: contentMap('1', '2', '802.11 Disassociation (Disassociation_STA)'),
+  4: contentMap('1', '2', defineMessage({ defaultMessage: '802.11 Association Request' })),
+  5: contentMap('2', '1', defineMessage({ defaultMessage: '802.11 Association Response' })),
+  6: contentMap('1', '2', defineMessage({ defaultMessage: '802.11 Reassociation Request' })),
+  7: contentMap('2', '1', defineMessage({ defaultMessage: '802.11 Reassociation Response' })),
+  8: contentMap('2', '1', defineMessage({ defaultMessage: '802.11 Deauthentication' })),
+  9: contentMap('2', '1', defineMessage({ defaultMessage: '802.11 Disassociation' })),
+  10: contentMap('1', '2', defineMessage({
+    defaultMessage: '802.11 Deauthentication (Deauthentication_STA)'
+  })),
+  11: contentMap('1', '2', defineMessage({
+    defaultMessage: '802.11 Disassociation (Disassociation_STA)'
+  })),
   // EAP 4-Way Handshake
-  21: contentMap('2', '1', '4-Way Handshake - Frame 1'),
-  22: contentMap('1', '2', '4-Way Handshake - Frame 2'),
-  23: contentMap('2', '1', '4-Way Handshake - Frame 3'),
-  24: contentMap('1', '2', '4-Way Handshake - Frame 4'),
+  21: contentMap('2', '1', defineMessage({ defaultMessage: '4-Way Handshake - Frame 1' })),
+  22: contentMap('1', '2', defineMessage({ defaultMessage: '4-Way Handshake - Frame 2' })),
+  23: contentMap('2', '1', defineMessage({ defaultMessage: '4-Way Handshake - Frame 3' })),
+  24: contentMap('1', '2', defineMessage({ defaultMessage: '4-Way Handshake - Frame 4' })),
   // DHCP
-  31: contentMap('1', '99', 'DHCP Discover'),
-  32: contentMap('5', '1', 'DHCP Offer'),
-  33: contentMap('1', '99', 'DHCP Request'),
-  34: contentMap('5', '1', 'DHCP Ack'),
-  35: contentMap('5', '1', 'DHCP NAK'),
-  36: contentMap('2', '1', 'DHCP_DONE'),
-  37: contentMap('1', '4', 'DHCP Discover (DHCP_DISCOVER_IN_TUNN)'),
-  38: contentMap('1', '4', 'DHCP Request (DHCP_REQUEST_IN_TUNN)'),
+  31: contentMap('1', '99', defineMessage({ defaultMessage: 'DHCP Discover' })),
+  32: contentMap('5', '1', defineMessage({ defaultMessage: 'DHCP Offer' })),
+  33: contentMap('1', '99', defineMessage({ defaultMessage: 'DHCP Request' })),
+  34: contentMap('5', '1', defineMessage({ defaultMessage: 'DHCP Ack' })),
+  35: contentMap('5', '1', defineMessage({ defaultMessage: 'DHCP NAK' })),
+  36: contentMap('2', '1', defineMessage({ defaultMessage: 'DHCP_DONE' })),
+  37: contentMap('1', '4', defineMessage({
+    defaultMessage: 'DHCP Discover (DHCP_DISCOVER_IN_TUNN)'
+  })),
+  38: contentMap('1', '4', defineMessage({
+    defaultMessage: 'DHCP Request (DHCP_REQUEST_IN_TUNN)'
+  })),
   // EAP
-  41: contentMap('2', '1', 'EAP Request'),
-  42: contentMap('1', '2', 'EAP Response'),
-  43: contentMap('2', '1', 'EAP Success'),
-  44: contentMap('2', '1', 'EAP Failure'),
+  41: contentMap('2', '1', defineMessage({ defaultMessage: 'EAP Request' })),
+  42: contentMap('1', '2', defineMessage({ defaultMessage: 'EAP Response' })),
+  43: contentMap('2', '1', defineMessage({ defaultMessage: 'EAP Success' })),
+  44: contentMap('2', '1', defineMessage({ defaultMessage: 'EAP Failure' })),
   // RADIUS
-  51: contentMap('2', '6', 'RADIUS Access Request'),
-  52: contentMap('6', '2', 'RADIUS Access Challenge'),
-  53: contentMap('6', '2', 'RADIUS Access Accept'),
-  54: contentMap('6', '2', 'RADIUS Access Reject'),
-  55: contentMap('2', '3', 'RADIUS Access Request (RADIUS_REQ_PROXY)'),
-  56: contentMap('3', '2', 'RADIUS Access Challenge (RADIUS_CHALLENGE_PROXY)'),
-  57: contentMap('3', '2', 'RADIUS Access Accept (RADIUS_ACCEPT_PROXY)'),
-  58: contentMap('3', '2', 'RADIUS Access Reject (RADIUS_REJECT_PROXY)'),
+  51: contentMap('2', '6', defineMessage({ defaultMessage: 'RADIUS Access Request' })),
+  52: contentMap('6', '2', defineMessage({ defaultMessage: 'RADIUS Access Challenge' })),
+  53: contentMap('6', '2', defineMessage({ defaultMessage: 'RADIUS Access Accept' })),
+  54: contentMap('6', '2', defineMessage({ defaultMessage: 'RADIUS Access Reject' })),
+  55: contentMap('2', '3', defineMessage({
+    defaultMessage: 'RADIUS Access Request (RADIUS_REQ_PROXY)'
+  })),
+  56: contentMap('3', '2', defineMessage({
+    defaultMessage: 'RADIUS Access Challenge (RADIUS_CHALLENGE_PROXY)'
+  })),
+  57: contentMap('3', '2', defineMessage({
+    defaultMessage: 'RADIUS Access Accept (RADIUS_ACCEPT_PROXY)'
+  })),
+  58: contentMap('3', '2', defineMessage({
+    defaultMessage: 'RADIUS Access Reject (RADIUS_REJECT_PROXY)'
+  })),
   // User Authentication (webAuth & Guess)
-  61: contentMap('1', '2', 'Authentication Request'),
-  62: contentMap('2', '1', 'Authentication Success'),
-  63: contentMap('2', '1', 'Authentication Failure'),
-  64: contentMap('2', '3', 'IDM_REQ'),
-  65: contentMap('3', '2', 'IDM_ACCEPT'),
-  66: contentMap('3', '2', 'IDM_REJECT'),
+  61: contentMap('1', '2', defineMessage({ defaultMessage: 'Authentication Request' })),
+  62: contentMap('2', '1', defineMessage({ defaultMessage: 'Authentication Success' })),
+  63: contentMap('2', '1', defineMessage({ defaultMessage: 'Authentication Failure' })),
+  64: contentMap('2', '3', defineMessage({ defaultMessage: 'IDM_REQ' })),
+  65: contentMap('3', '2', defineMessage({ defaultMessage: 'IDM_ACCEPT' })),
+  66: contentMap('3', '2', defineMessage({ defaultMessage: 'IDM_REJECT' })),
   // Zero-IT File
   // NOTE: not supported
-  // '71': contentMap(undefined, undefined, 'Zero-IT File Request'),
-  // '72': contentMap(undefined, undefined, 'Zero-IT File Download'),
+  // '71': contentMap(undefined, undefined, defineMessage({ defaultMessage: 'Zero-IT File Request' })),
+  // '72': contentMap(undefined, undefined, defineMessage({ defaultMessage: 'Zero-IT File Download' })),
   // Hotspot2.0
   // NOTE: not supported
-  // '81': contentMap(undefined, undefined, 'PPSMO Request'),
-  // '82': contentMap(undefined, undefined, 'PPSMO Download'),
+  // '81': contentMap(undefined, undefined, defineMessage({ defaultMessage: 'PPSMO Request' })),
+  // '82': contentMap(undefined, undefined, defineMessage({ defaultMessage: 'PPSMO Download' })),
   // WISPr
-  91: contentMap('1', '3', 'Message Redirect'),
+  91: contentMap('1', '3', defineMessage({ defaultMessage: 'Message Redirect' })),
   // Connection Finished
-  254: contentMap('2', '1', 'The connection process is finished')
+  254: contentMap('2', '1', defineMessage({ defaultMessage: 'The connection process is finished' }))
   // Monitor Ended
   // NOTE: not define on AP
   // '255': contentMap(
@@ -115,10 +131,10 @@ export const getRCCDFlow = ({ messageIds, failedMsgId }:
     if (!message) return null
     return { ...message, state: messageId === failedMsgId ? 'failed' : 'normal' }
   }).filter(Boolean) as ({
-    state: string;
-    source: string;
-    destination: string;
-    label: string;
+    state: string
+    source: string
+    destination: string
+    label: MessageDescriptor
 })[]
 
   const layers = Array.from(new Set(steps

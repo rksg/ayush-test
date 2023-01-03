@@ -14,13 +14,13 @@ describe('sequenceMap', () => {
         {
           column: [1, 2],
           direction: 'right',
-          label: 'Probe Request',
+          label: defineMessage({ defaultMessage: 'Probe Request' }),
           state: 'failed'
         },
         {
           column: [1, 2],
           direction: 'right',
-          label: '802.11 Authentication Request',
+          label: defineMessage({ defaultMessage: '802.11 Authentication Request' }),
           state: 'normal'
         }
       ]
@@ -48,7 +48,7 @@ describe('sequenceMap', () => {
         {
           column: [1, 2],
           direction: 'left',
-          label: '4-Way Handshake - Frame 1',
+          label: defineMessage({ defaultMessage: '4-Way Handshake - Frame 1' }),
           state: 'failed'
         }
       ]
