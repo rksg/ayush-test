@@ -1,6 +1,8 @@
 import styled, { css } from 'styled-components/macro'
 
 export const Wrapper = styled.section.attrs((props: { layers: Array<unknown> }) => props)`
+  overflow-y: scroll;
+  max-height: 300px;
   display: grid;
   grid-gap: 5px 15px;
   grid-template-columns:
