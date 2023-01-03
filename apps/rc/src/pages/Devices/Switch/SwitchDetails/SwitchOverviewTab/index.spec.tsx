@@ -25,7 +25,9 @@ jest.mock('@acx-ui/rc/components', () => ({
   SwitchInfoWidget: () =>
     <div data-testid={'rc-SwitchInfoWidget'} title='SwitchInfoWidget' />,
   SwitchPortTable: () =>
-    <div data-testid={'rc-SwitchPortTable'} title='SwitchPortTable' />
+    <div data-testid={'rc-SwitchPortTable'} title='SwitchPortTable' />,
+  SwitchVeTable: () =>
+    <div data-testid={'rc-SwitchVeTable'} title='SwitchVeTable' />
 }))
 
 describe('SwitchOverviewTab', () => {
