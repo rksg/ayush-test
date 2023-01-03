@@ -8,7 +8,7 @@ const maxSize = 2.25
 const minSize = 1
 export default function PortalImageTools (props:{
   updateDemoImg: (value: { url?:string,size?:number,show?:boolean,text?:string
-    color?:string }) => void,
+    color?:string, file?:RcFile }) => void,
   size?:number,
   url?:string,
   showEye?:boolean,
@@ -29,12 +29,12 @@ export default function PortalImageTools (props:{
     <>
       <div style={{ marginTop: -6 }}
         onClick={(e)=>{e.stopPropagation()}}>
-        <Upload accept='.png,.jpg,.jpeg'
+        <Upload accept='.png,.jpg,.jpeg,.svg,.gif'
           id={'contentimageupload'+now}
           showUploadList={false}
           customRequest={async ({ file }) => {
             Utils.getBase64(file as RcFile, url => {
-              updateDemoImg({ url: url, size: size, show: true })
+              updateDemoImg({ url: url, size: size, show: true, file: file as RcFile })
             })
           }}
         >

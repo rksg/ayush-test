@@ -1,7 +1,7 @@
 import { createContext, useState } from 'react'
 
 import { showActionModal, CustomButtonProps } from '@acx-ui/components'
-import { ApRadioChannelsForm }                from '@acx-ui/rc/utils'
+import { ApRadioCustomization }               from '@acx-ui/rc/utils'
 import { useParams }                          from '@acx-ui/react-router-dom'
 import { getIntl }                            from '@acx-ui/utils'
 
@@ -22,8 +22,8 @@ export interface ApEditContextType {
   discardChanges: (data?: unknown) => void | Promise<void>
 }
 export interface RadioContext {
-  radioData?: ApRadioChannelsForm,
-  updateWifiRadio?: ((data: ApRadioChannelsForm) => void)
+  radioData?: ApRadioCustomization,
+  updateWifiRadio?: ((data: ApRadioCustomization) => void)
 }
 
 export const ApEditContext = createContext({} as {
@@ -89,7 +89,7 @@ export function showUnsavedModal (
     handler: async () => {
       editContextData?.updateChanges?.()
       editRadioContextData?.updateWifiRadio?.
-      (editRadioContextData.radioData as ApRadioChannelsForm)
+      (editRadioContextData.radioData as ApRadioCustomization)
       callback?.()
     }
   }]

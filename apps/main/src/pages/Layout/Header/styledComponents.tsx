@@ -7,8 +7,14 @@ import {
 } from 'antd'
 import styled from 'styled-components/macro'
 
-import { LayoutUI, GridRow, GridCol, Drawer as AntdDrawer }                                     from '@acx-ui/components'
-import { WarningCircleSolid, WarningTriangleSolid, CheckMarkCircleSolid, LogOut as AntdLogOut } from '@acx-ui/icons'
+import { LayoutUI, GridRow, GridCol, Drawer as AntdDrawer } from '@acx-ui/components'
+import {
+  WarningCircleSolid,
+  WarningTriangleSolid,
+  CheckMarkCircleSolid,
+  LogOut as AntdLogOut,
+  CancelCircleSolid
+} from '@acx-ui/icons'
 
 
 type CopyableTextProps = {
@@ -200,4 +206,39 @@ export const VersionNameContainer = styled.div`
 export const DisabledButton = styled(LayoutUI.ButtonSolid)`
   color: var(--acx-neutrals-60) !important;
   background-color: var(--acx-neutrals-70);
+`
+
+export const LinkButton = styled(Button)`
+  font-weight: var(--acx-body-font-weight-bold);
+`
+
+export const ActivityItem = styled(List.Item)`
+  border-bottom: 0 !important;
+  .ant-list-item-action {
+    margin-left: 10px;
+  }
+  :hover {
+    cursor: pointer;
+  }
+`
+
+export const ActivityMeta = styled(List.Item.Meta)`
+  .ant-list-item-meta-avatar {
+    margin-right: 0px;
+    flex: 1;
+  }
+  .ant-list-item-meta-content{
+    flex: 10;
+  }
+  .ant-list-item-meta-title,
+  .ant-list-item-meta-description {
+    font-size: var(--acx-body-4-font-size);
+    line-height: var(--acx-body-4-line-height);
+  }
+`
+
+export const RedCancelCircle = styled(CancelCircleSolid)`
+  path:nth-child(1) {
+    fill: var(--acx-semantics-red-50);
+  }
 `

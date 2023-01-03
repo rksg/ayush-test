@@ -4,13 +4,12 @@ import {
   Col,
   Row,
   Select,
-  InputNumber,
-  Tooltip
+  InputNumber
 } from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { StepsForm, Subtitle }        from '@acx-ui/components'
-import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
+import { StepsForm, Subtitle, Tooltip } from '@acx-ui/components'
+import { QuestionMarkCircleOutlined }   from '@acx-ui/icons'
 import {
   ExpirationDateSelector
 } from '@acx-ui/rc/components'
@@ -117,7 +116,7 @@ export default function DpskSettingsForm () {
         </Form.Item>
         <ExpirationDateSelector
           inputName={'expiration'}
-          label={intl.$t({ defaultMessage: 'List Expiration' })}
+          label={intl.$t({ defaultMessage: 'Expiration' })}
         />
       </Col>
     </Row>
