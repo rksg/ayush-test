@@ -106,21 +106,21 @@ export const mockEdgePortConfig = {
       portType: EdgePortTypeEnum.WAN,
       natEnabled: false,
       ipMode: EdgeIpModeEnum.STATIC,
-      ip: '',
-      subnet: '',
-      gateway: ''
+      ip: '1.1.1.1',
+      subnet: '255.255.255.0',
+      gateway: '1.1.1.1'
     },
     {
       id: '20b445af-7270-438d-88a3-a5a2219c377b',
       name: 'local0',
       mac: '00:00:00:00:00:00',
       enabled: true,
-      portType: EdgePortTypeEnum.WAN,
+      portType: EdgePortTypeEnum.LAN,
       natEnabled: false,
-      ipMode: EdgeIpModeEnum.DHCP,
-      ip: '',
-      subnet: '',
-      gateway: ''
+      ipMode: EdgeIpModeEnum.STATIC,
+      ip: '2.2.2.2',
+      subnet: '255.255.255.0',
+      gateway: '2.2.2.2'
     },
     {
       id: 'cdecd42e-81e3-4d60-921c-6b05181a53ae',
@@ -129,34 +129,34 @@ export const mockEdgePortConfig = {
       enabled: true,
       portType: EdgePortTypeEnum.LAN,
       natEnabled: false,
-      ipMode: EdgeIpModeEnum.DHCP,
-      ip: '',
-      subnet: '',
-      gateway: ''
+      ipMode: EdgeIpModeEnum.STATIC,
+      ip: '3.3.3.3',
+      subnet: '255.255.255.0',
+      gateway: '3.3.3.3'
     },
     {
       id: '6fcbcfc2-c207-4e45-b392-1f529cd1d6d4',
       name: 'tap0',
       mac: '02:fe:05:1f:95:85',
       enabled: true,
-      portType: EdgePortTypeEnum.WAN,
+      portType: EdgePortTypeEnum.LAN,
       natEnabled: false,
       ipMode: EdgeIpModeEnum.STATIC,
-      ip: '',
-      subnet: '',
-      gateway: ''
+      ip: '4.4.4.4',
+      subnet: '255.255.255.0',
+      gateway: '4.4.4.4'
     },
     {
       id: '081a71a7-aaad-4a13-967b-1c82166de11a',
       name: 'port2',
       mac: '00:0c:29:b6:ad:18',
       enabled: true,
-      portType: EdgePortTypeEnum.WAN,
+      portType: EdgePortTypeEnum.LAN,
       natEnabled: true,
       ipMode: EdgeIpModeEnum.DHCP,
-      ip: '',
-      subnet: '',
-      gateway: ''
+      ip: '5.5.5.5',
+      subnet: '255.255.255.0',
+      gateway: '5.5.5.5'
     }
   ]
 }

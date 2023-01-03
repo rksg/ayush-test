@@ -1,4 +1,4 @@
-import { Key, useContext, useEffect, useState } from 'react'
+import { Key, useEffect, useState } from 'react'
 
 import { Col, Row }  from 'antd'
 import { useIntl }   from 'react-intl'
@@ -6,13 +6,15 @@ import { useParams } from 'react-router-dom'
 
 import { Button, ContentSwitcher, ContentSwitcherProps, Loader, showActionModal, Table, TableProps } from '@acx-ui/components'
 import { useDeleteSubInterfacesMutation, useGetSubInterfacesQuery }                                  from '@acx-ui/rc/services'
-import { DEFAULT_PAGINATION, EdgeSubInterface, useTableQuery }                                       from '@acx-ui/rc/utils'
+import { DEFAULT_PAGINATION, EdgePort, EdgeSubInterface, useTableQuery }                             from '@acx-ui/rc/utils'
 
-import { PortsContext } from '..'
-import * as UI          from '../styledComponents'
+import * as UI from '../styledComponents'
 
 import SubInterfaceDrawer from './SubInterfaceDrawer'
 
+interface SubInterfaceProps {
+  data: EdgePort[]
+}
 
 interface SubInterfaceTableProps {
   index: number
@@ -153,26 +155,27 @@ const SubInterfaceTable = (props: SubInterfaceTableProps) => {
   )
 }
 
-const SubInterface = () => {
+const SubInterface = (props: SubInterfaceProps) => {
+
+  const { data } = props
   const { $t } = useIntl()
-  const { ports } = useContext(PortsContext)
   const [tabDetails, setTabDetails] = useState<ContentSwitcherProps['tabDetails']>([])
   const [isFetching, setIsFetching] = useState(false)
 
   useEffect(() => {
-    if(ports) {
-      setTabDetails(ports.map((data, index) => {
+    if(data) {
+      setTabDetails(data.map((item, index) => {
         return {
           label: $t({ defaultMessage: 'Port {index}' }, { index: index + 1 }),
           value: 'port_' + (index + 1),
           children: <SubInterfaceTable
             index={index}
-            mac={data.mac}
+            mac={item.mac}
             setIsFetching={setIsFetching} />
         }
       }))
     }
-  }, [ports, $t])
+  }, [data, $t])
 
   return (
     <Loader states={[{

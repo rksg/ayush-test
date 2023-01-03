@@ -1,15 +1,14 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                       from '@acx-ui/store'
+import { EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }     from '@acx-ui/store'
 import {
   fireEvent,
   mockServer, render,
   screen
 } from '@acx-ui/test-utils'
 
-import { PortsContext }       from '..'
 import { mockEdgePortConfig } from '../../../../__tests__/fixtures'
 
 import PortsGeneral from '.'
@@ -30,13 +29,6 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
-
-const setPorts: jest.Mock = jest.fn()
-
-const mockContextValue = {
-  ports: mockEdgePortConfig.ports,
-  setPorts
-}
 
 describe('EditEdge ports - ports general', () => {
   let params: { tenantId: string, serialNumber: string, activeTab?: string, activeSubTab?: string }
@@ -63,9 +55,7 @@ describe('EditEdge ports - ports general', () => {
   it('should active ports general successfully', async () => {
     render(
       <Provider>
-        <PortsContext.Provider value={mockContextValue} >
-          <PortsGeneral />
-        </PortsContext.Provider>
+        <PortsGeneral data={mockEdgePortConfig.ports} />
       </Provider>, {
         route: {
           params,
@@ -83,9 +73,7 @@ describe('EditEdge ports - ports general', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <PortsContext.Provider value={mockContextValue} >
-          <PortsGeneral />
-        </PortsContext.Provider>
+        <PortsGeneral data={mockEdgePortConfig.ports} />
       </Provider>, {
         route: {
           params,
@@ -101,32 +89,57 @@ describe('EditEdge ports - ports general', () => {
     await user.click(await screen.findByRole('button', { name: 'Apply Ports General' }))
   })
 
-  it('should block by validation', async () => {
+  it('should be blocked by validation 1', async () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <PortsContext.Provider value={mockContextValue} >
-          <PortsGeneral />
-        </PortsContext.Provider>
+        <PortsGeneral data={mockEdgePortConfig.ports} />
       </Provider>, {
         route: {
           params,
           path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
+    const ipInput = await screen.findByRole('textbox', { name: 'IP Address' })
+    fireEvent.change(ipInput, { target: { value: '' } })
+    const subnetInput = await screen.findByRole('textbox', { name: 'Subnet Mask' })
+    fireEvent.change(subnetInput, { target: { value: '' } })
+    const gatewayInput = await screen.findByRole('textbox', { name: 'Gateway' })
+    fireEvent.change(gatewayInput, { target: { value: '' } })
     await user.click(await screen.findByRole('button', { name: 'Apply Ports General' }))
     await screen.findByText('Please enter IP Address')
     await screen.findByText('Please enter Subnet Mask')
     await screen.findByText('Please enter Gateway')
   })
 
+  it('should be blocked by validation 2', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <PortsGeneral data={mockEdgePortConfig.ports} />
+      </Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+        }
+      })
+    await user.click(await screen.findByRole('switch', { name: 'Port Enabled' }))
+    await user.click(await screen.findByRole('radio', { name: 'Port 2' }))
+    const ipInput = await screen.findByRole('textbox', { name: 'IP Address' })
+    fireEvent.change(ipInput, { target: { value: '1.2.3' } })
+    const subnetInput = await screen.findByRole('textbox', { name: 'Subnet Mask' })
+    fireEvent.change(subnetInput, { target: { value: '2.2.2' } })
+    await user.click(await screen.findByRole('radio', { name: 'Port 3' }))
+    await user.click(await screen.findByRole('button', { name: 'Apply Ports General' }))
+    await screen.findByText('Please enter a valid IP address')
+    await screen.findByText('Please enter a valid subnet mask')
+  })
+
   it('cancel and go back to edge list', async () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <PortsContext.Provider value={mockContextValue} >
-          <PortsGeneral />
-        </PortsContext.Provider>
+        <PortsGeneral data={mockEdgePortConfig.ports} />
       </Provider>, {
         route: {
           params,
@@ -145,9 +158,7 @@ describe('EditEdge ports - ports general', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <PortsContext.Provider value={mockContextValue} >
-          <PortsGeneral />
-        </PortsContext.Provider>
+        <PortsGeneral data={mockEdgePortConfig.ports} />
       </Provider>, {
         route: {
           params,
@@ -158,18 +169,13 @@ describe('EditEdge ports - ports general', () => {
     const portTypeSelect = await screen.findByRole('combobox', { name: 'Port Type' })
     await user.click(portTypeSelect)
     await user.click(await screen.findByText('Select port type..'))
-    const newData = [...mockContextValue.ports]
-    newData[4] = { ...mockContextValue.ports[4], portType: EdgePortTypeEnum.UNCONFIGURED }
-    expect(setPorts).toBeCalledWith(newData)
   })
 
   it('set port type to LAN', async () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <PortsContext.Provider value={mockContextValue} >
-          <PortsGeneral />
-        </PortsContext.Provider>
+        <PortsGeneral data={mockEdgePortConfig.ports} />
       </Provider>, {
         route: {
           params,
@@ -178,22 +184,13 @@ describe('EditEdge ports - ports general', () => {
       })
     await user.click(await screen.findByRole('combobox', { name: 'Port Type' }))
     await user.click(await screen.findByText('LAN'))
-    const newData = [...mockContextValue.ports]
-    newData[0] = {
-      ...mockContextValue.ports[0],
-      portType: EdgePortTypeEnum.LAN,
-      ipMode: EdgeIpModeEnum.STATIC
-    }
-    expect(setPorts).toBeCalledWith(newData)
   })
 
   it('set port type to WAN with ip mode STATIC', async () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <PortsContext.Provider value={mockContextValue} >
-          <PortsGeneral />
-        </PortsContext.Provider>
+        <PortsGeneral data={mockEdgePortConfig.ports} />
       </Provider>, {
         route: {
           params,
@@ -201,23 +198,18 @@ describe('EditEdge ports - ports general', () => {
         }
       })
     await user.click(await screen.findByRole('radio', { name: 'Port 2' }))
+    const portTypeSelect = await screen.findByRole('combobox', { name: 'Port Type' })
+    await user.click(portTypeSelect)
+    await user.click((await screen.findAllByText('WAN'))[1])
     const ipModeRadio = await screen.findByRole('radio', { name: 'Static/Manual' })
     await user.click(ipModeRadio)
-    const newData = [...mockContextValue.ports]
-    newData[1] = {
-      ...mockContextValue.ports[1],
-      ipMode: EdgeIpModeEnum.STATIC
-    }
-    expect(setPorts).toBeCalledWith(newData)
   })
 
   it('switch port tab', async () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <PortsContext.Provider value={mockContextValue} >
-          <PortsGeneral />
-        </PortsContext.Provider>
+        <PortsGeneral data={mockEdgePortConfig.ports} />
       </Provider>, {
         route: {
           params,
@@ -261,9 +253,7 @@ describe('EditEdge ports - ports general  api fail', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <PortsContext.Provider value={mockContextValue} >
-          <PortsGeneral />
-        </PortsContext.Provider>
+        <PortsGeneral data={mockEdgePortConfig.ports} />
       </Provider>, {
         route: {
           params,

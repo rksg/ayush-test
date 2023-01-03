@@ -1,170 +1,111 @@
-import { Dispatch, SetStateAction, useContext, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
-import { Col, Form, Input, Radio, Row, Select, Space, Switch } from 'antd'
-import { cloneDeep }                                           from 'lodash'
-import { FormChangeInfo }                                      from 'rc-field-form/es/FormContext'
-import { useIntl }                                             from 'react-intl'
+import { Form }             from 'antd'
+import { InternalNamePath } from 'antd/lib/form/interface'
+import { FormChangeInfo }   from 'rc-field-form/es/FormContext'
+import { useIntl }          from 'react-intl'
 
 import { ContentSwitcher, ContentSwitcherProps, Loader, showToast, StepsForm, StepsFormInstance } from '@acx-ui/components'
 import { useUpdatePortConfigMutation }                                                            from '@acx-ui/rc/services'
 import { EdgeIpModeEnum, EdgePort, EdgePortTypeEnum, serverIpAddressRegExp, subnetMaskIpRegExp }  from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink }                                                  from '@acx-ui/react-router-dom'
 
-import { PortsContext } from '..'
-import * as UI          from '../styledComponents'
 
-interface ConfigFormProps {
-  index: number
-  setIsFetching: Dispatch<SetStateAction<boolean>>
+import { PortConfigForm } from './PortConfigForm'
+
+interface PortsGeneralProps {
+  data: EdgePort[]
 }
 
-const PortConfigForm = (props: ConfigFormProps) => {
+interface PortConfigFormType {
+  [key: string]: EdgePort
+}
 
+const PortsGeneral = (props: PortsGeneralProps) => {
+
+  const { data } = props
   const { $t } = useIntl()
-  const navigate = useNavigate()
   const params = useParams()
+  const navigate = useNavigate()
   const linkToEdgeList = useTenantLink('/devices/edge/list')
-  const formRef = useRef<StepsFormInstance<EdgePort>>()
-  const { ports, setPorts } = useContext(PortsContext)
+  const [tabDetails, setTabDetails] = useState<ContentSwitcherProps['tabDetails']>([])
+  const [currentTab, setCurrentTab] = useState<string>('0')
+  const formRef = useRef<StepsFormInstance<PortConfigFormType>>()
   const [updatePortConfig, { isLoading: isPortConfigUpdating }] = useUpdatePortConfigMutation()
 
-  const currentConfig = ports[props.index]
-  const portTypeOptions = [
-    {
-      label: $t({ defaultMessage: 'Select port type..' }),
-      value: EdgePortTypeEnum.UNCONFIGURED
-    },
-    {
-      label: $t({ defaultMessage: 'WAN' }),
-      value: EdgePortTypeEnum.WAN
-    },
-    {
-      label: $t({ defaultMessage: 'LAN' }),
-      value: EdgePortTypeEnum.LAN
+  useEffect(() => {
+    if(data) {
+      let tabData = [] as ContentSwitcherProps['tabDetails']
+      let formData = {} as PortConfigFormType
+      data.forEach((item, index) => {
+        tabData.push({
+          label: $t({ defaultMessage: 'Port {index}' }, { index: index + 1 }),
+          value: `${index}`,
+          children: <Form.List name={`port_${index}`}>
+            {() => ([<PortConfigForm key={index} index={index} />])}
+          </Form.List>
+        })
+        formData[`port_${index}`] = item
+      })
+      setTabDetails(tabData)
+      formRef.current?.setFieldsValue(formData)
     }
-  ]
+  }, [data, $t])
 
-  useEffect(() => {
-    formRef.current?.setFieldsValue({
-      ...currentConfig
-    })
-  }, [currentConfig])
-
-  useEffect(() => {
-    props.setIsFetching(isPortConfigUpdating)
-  }, [isPortConfigUpdating, props])
-
-  const updateContext = (name: string, formInfo: FormChangeInfo) => {
-    const changeField = formInfo.changedFields[0]
-    if(changeField) {
-      const newData = cloneDeep(ports)
-      newData[props.index] = {
-        ...ports[props.index],
-        [changeField.name.toString() as keyof EdgePort]: changeField.value
+  const handleTabChange = (value: string) => {
+    setCurrentTab(value)
+  }
+  const handleFormChange = (name: string, formInfo: FormChangeInfo) => {
+    const changedField = formInfo.changedFields[0]
+    if(changedField) {
+      const changedNamePath = changedField.name as InternalNamePath
+      const changedValue = changedField.value
+      if(changedNamePath.includes('portType') &&
+          changedValue === EdgePortTypeEnum.LAN) {
+        formRef.current?.setFieldValue([changedNamePath[0], 'ipMode'], EdgeIpModeEnum.STATIC)
+        formRef.current?.setFieldValue([changedNamePath[0], 'natEnabled'], false)
       }
-      if(changeField.name.toString() === 'portType'
-          && EdgePortTypeEnum.LAN === changeField.value) {
-        newData[props.index].ipMode = EdgeIpModeEnum.STATIC
-        newData[props.index].natEnabled = false
-      }
-      setPorts(newData)
     }
   }
 
-  const getFieldsByPortType = (portType: EdgePortTypeEnum) => {
-    if(portType === EdgePortTypeEnum.LAN) {
-      return (
-        <>
-          <Form.Item
-            name='ip'
-            label={$t({ defaultMessage: 'IP Address' })}
-            rules={[
-              { required: true },
-              { validator: (_, value) => serverIpAddressRegExp(value) }
-            ]}
-            children={<Input />}
-          />
-          <Form.Item
-            name='subnet'
-            label={$t({ defaultMessage: 'Subnet Mask' })}
-            rules={[
-              { required: true },
-              { validator: (_, value) => subnetMaskIpRegExp(value) }
-            ]}
-            children={<Input />}
-          />
-        </>
-      )
-    } else if(portType === EdgePortTypeEnum.WAN) {
-      return (
-        <>
-          <Form.Item
-            name='ipMode'
-            label={$t({ defaultMessage: 'IP Assignment' })}
-            rules={[{
-              required: true
-            }]}
-            children={
-              <Radio.Group>
-                <Space direction='vertical'>
-                  <Radio value={EdgeIpModeEnum.DHCP}>
-                    {$t({ defaultMessage: 'DHCP' })}
-                  </Radio>
-                  <Radio value={EdgeIpModeEnum.STATIC}>
-                    {$t({ defaultMessage: 'Static/Manual' })}
-                  </Radio>
-                </Space>
-              </Radio.Group>
-            }
-          />
-          {currentConfig.ipMode === EdgeIpModeEnum.STATIC &&
-            <>
-              <Form.Item
-                name='ip'
-                label={$t({ defaultMessage: 'IP Address' })}
-                rules={[
-                  { required: true },
-                  { validator: (_, value) => serverIpAddressRegExp(value) }
-                ]}
-                children={<Input />}
-              />
-              <Form.Item
-                name='subnet'
-                label={$t({ defaultMessage: 'Subnet Mask' })}
-                rules={[
-                  { required: true },
-                  { validator: (_, value) => subnetMaskIpRegExp(value) }
-                ]}
-                children={<Input />}
-              />
-              <Form.Item
-                name='gateway'
-                label={$t({ defaultMessage: 'Gateway' })}
-                rules={[
-                  { required: true },
-                  { validator: (_, value) => serverIpAddressRegExp(value) }
-                ]}
-                children={<Input />}
-              />
-            </>
-          }
-          <StepsForm.FieldLabel width='120px'>
-            {$t({ defaultMessage: 'Use NAT Service' })}
-            <Form.Item
-              name='natEnabled'
-              valuePropName='checked'
-              children={<Switch />}
-            />
-          </StepsForm.FieldLabel>
-        </>
-      )
+  const validateData = async (formData: EdgePort[]) => {
+    for(const [index, item] of formData.entries()) {
+      if(!item.enabled) continue
+      if(item.portType === EdgePortTypeEnum.LAN) {
+        if(!!!item.ip || !!!item.subnet || !await isIpSubnetValid(item.ip, item.subnet)) {
+          return index
+        }
+      }
+      if(item.portType === EdgePortTypeEnum.WAN &&
+          item.ipMode === EdgeIpModeEnum.STATIC) {
+        if(!!!item.ip || !!!item.subnet || !!!item.gateway ||
+          !await isIpSubnetValid(item.ip, item.subnet, item.gateway)) {
+          return index
+        }
+      }
     }
-    return null
+    return -1
+  }
+
+  const isIpSubnetValid = async (ip:string, subnet:string, gateway?: string) => {
+    return await serverIpAddressRegExp(ip).then(() => true)
+      .catch(() => false) &&
+          await subnetMaskIpRegExp(subnet).then(() => true)
+            .catch(() => false) &&
+          await serverIpAddressRegExp(gateway || '').then(() => true)
+            .catch(() => false)
   }
 
   const handleFinish = async () => {
+    const formData = Object.values(formRef.current?.getFieldsValue(true))
+    const errorTab = await validateData(formData as EdgePort[])
+    if(errorTab > -1) {
+      setCurrentTab(`${errorTab}`)
+      return
+    }
+
     try {
-      await updatePortConfig({ params: params, payload: { ports: ports } }).unwrap()
+      await updatePortConfig({ params: params, payload: { ports: formData } }).unwrap()
     } catch {
       // TODO error message not be defined
       showToast({
@@ -175,97 +116,28 @@ const PortConfigForm = (props: ConfigFormProps) => {
   }
 
   return (
-    <>
-      <UI.IpAndMac>
-        {
-
-          $t(
-            { defaultMessage: 'IP Address: {ip}   |   MAC Address: {mac}' },
-            { ip: '', mac: currentConfig?.mac }
-          )
-        }
-      </UI.IpAndMac>
+    <Loader states={[{
+      isLoading: false,
+      isFetching: isPortConfigUpdating
+    }]}>
       <StepsForm
         formRef={formRef}
-        onFormChange={updateContext}
         onFinish={handleFinish}
         onCancel={() => navigate(linkToEdgeList)}
+        onFormChange={handleFormChange}
         buttonLabel={{ submit: $t({ defaultMessage: 'Apply Ports General' }) }}
       >
         <StepsForm.StepForm>
-          <Row gutter={20}>
-            <Col span={5}>
-              <Form.Item
-                name='name'
-                label={$t({ defaultMessage: 'Port Name' })}
-                children={<Input />}
-              />
-              <Form.Item
-                name='portType'
-                label={$t({ defaultMessage: 'Port Type' })}
-                initialValue={EdgePortTypeEnum.UNCONFIGURED}
-                children={
-                  <Select
-                    options={portTypeOptions}
-                  />
-                }
-              />
-              {currentConfig.portType !== EdgePortTypeEnum.UNCONFIGURED &&
-                <>
-                  <StepsForm.FieldLabel width='120px'>
-                    {$t({ defaultMessage: 'Port Enabled' })}
-                    <Form.Item
-                      name='enabled'
-                      valuePropName='checked'
-                      children={<Switch />}
-                    />
-                  </StepsForm.FieldLabel>
-                  {currentConfig.enabled &&
-                    <>
-                      <StepsForm.Title>{$t({ defaultMessage: 'IP Settings' })}</StepsForm.Title>
-                      {getFieldsByPortType(currentConfig.portType)}
-                    </>
-                  }
-                </>
-              }
-            </Col>
-          </Row>
+          <ContentSwitcher
+            tabDetails={tabDetails}
+            defaultValue='0'
+            value={currentTab}
+            onChange={handleTabChange}
+            size='large'
+            align='left'
+          />
         </StepsForm.StepForm>
       </StepsForm>
-    </>
-  )
-}
-
-const PortsGeneral = () => {
-
-  const { $t } = useIntl()
-  const { ports } = useContext(PortsContext)
-  const [tabDetails, setTabDetails] = useState<ContentSwitcherProps['tabDetails']>([])
-  const [isFetching, setIsFetching] = useState(false)
-
-  useEffect(() => {
-    if(ports) {
-      setTabDetails(ports.map((data, index) => {
-        return {
-          label: $t({ defaultMessage: 'Port {index}' }, { index: index + 1 }),
-          value: 'port_' + (index + 1),
-          children: <PortConfigForm index={index} setIsFetching={setIsFetching} />
-        }
-      }))
-    }
-  }, [ports, $t])
-
-  return (
-    <Loader states={[{
-      isLoading: false,
-      isFetching: isFetching
-    }]}>
-      <ContentSwitcher
-        tabDetails={tabDetails}
-        defaultValue={'port_1'}
-        size='large'
-        align='left'
-      />
     </Loader>
   )
 }

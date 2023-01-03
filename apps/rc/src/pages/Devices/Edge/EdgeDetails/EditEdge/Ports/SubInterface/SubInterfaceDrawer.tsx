@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react'
+import { useEffect } from 'react'
 
 import { Form, Input, Select } from 'antd'
 import { useIntl }             from 'react-intl'
@@ -7,8 +7,6 @@ import { useParams }           from 'react-router-dom'
 import { Alert, Drawer, showToast }                                                                      from '@acx-ui/components'
 import { useAddSubInterfacesMutation, useUpdateSubInterfacesMutation }                                   from '@acx-ui/rc/services'
 import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeSubInterface, serverIpAddressRegExp, subnetMaskIpRegExp } from '@acx-ui/rc/utils'
-
-import { PortsContext } from '..'
 
 interface StaticRoutesDrawerProps {
   index: number
@@ -22,11 +20,9 @@ interface StaticRoutesDrawerProps {
 const SubInterfaceDrawer = (props: StaticRoutesDrawerProps) => {
 
   const { $t } = useIntl()
-  const { index, visible, setVisible, data } = props
+  const { visible, setVisible, data } = props
   const params = useParams()
-  const { ports } = useContext(PortsContext)
   const [formRef] = Form.useForm()
-  const currentPortConfig = ports[index]
   const [addSubInterface] = useAddSubInterfacesMutation()
   const [updateSubInterface] = useUpdateSubInterfacesMutation()
 
@@ -75,11 +71,11 @@ const SubInterfaceDrawer = (props: StaticRoutesDrawerProps) => {
   }
 
   const handleFinish = async (formData: EdgeSubInterface) => {
-    formData.name = currentPortConfig.name
-    formData.mac = currentPortConfig.mac
+    formData.name = data?.name || ''
+    formData.mac = data?.mac || ''
     formData.enabled = true
     const requestPayload = {
-      params: { ...params, mac: currentPortConfig.mac, subInterfaceId: data?.id },
+      params: { ...params, mac: data?.mac, subInterfaceId: data?.id },
       payload: formData
     }
     try {

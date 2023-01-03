@@ -5,7 +5,6 @@ import { EdgeUrlsInfo }                                  from '@acx-ui/rc/utils'
 import { Provider }                                      from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, within } from '@acx-ui/test-utils'
 
-import { PortsContext }                              from '..'
 import { mockEdgePortConfig, mockEdgeSubInterfaces } from '../../../../__tests__/fixtures'
 
 import SubInterface from '.'
@@ -20,13 +19,6 @@ jest.mock('@acx-ui/utils', () => {
     getIntl: () => intl
   }
 })
-
-const setPorts: jest.Mock = jest.fn()
-
-const mockContextValue = {
-  ports: mockEdgePortConfig.ports,
-  setPorts
-}
 
 describe('EditEdge ports - sub-interface', () => {
   let params: { tenantId: string, serialNumber: string, activeTab?: string, activeSubTab?: string }
@@ -59,12 +51,9 @@ describe('EditEdge ports - sub-interface', () => {
   })
 
   it('no ports', async () => {
-    const noPorts = { ...mockContextValue, ports: [] }
     render(
       <Provider>
-        <PortsContext.Provider value={noPorts} >
-          <SubInterface />
-        </PortsContext.Provider>
+        <SubInterface data={[]} />
       </Provider>, {
         route: {
           params,
@@ -76,9 +65,7 @@ describe('EditEdge ports - sub-interface', () => {
   it('should create SubInterface successfully', async () => {
     render(
       <Provider>
-        <PortsContext.Provider value={mockContextValue} >
-          <SubInterface />
-        </PortsContext.Provider>
+        <SubInterface data={mockEdgePortConfig.ports} />
       </Provider>, {
         route: {
           params,
@@ -92,9 +79,7 @@ describe('EditEdge ports - sub-interface', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <PortsContext.Provider value={mockContextValue} >
-          <SubInterface />
-        </PortsContext.Provider>
+        <SubInterface data={mockEdgePortConfig.ports} />
       </Provider>, {
         route: {
           params,
@@ -111,9 +96,7 @@ describe('EditEdge ports - sub-interface', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <PortsContext.Provider value={mockContextValue} >
-          <SubInterface />
-        </PortsContext.Provider>
+        <SubInterface data={mockEdgePortConfig.ports} />
       </Provider>, {
         route: {
           params,
@@ -136,9 +119,7 @@ describe('EditEdge ports - sub-interface', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <PortsContext.Provider value={mockContextValue} >
-          <SubInterface />
-        </PortsContext.Provider>
+        <SubInterface data={mockEdgePortConfig.ports} />
       </Provider>, {
         route: {
           params,
@@ -157,9 +138,7 @@ describe('EditEdge ports - sub-interface', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <PortsContext.Provider value={mockContextValue} >
-          <SubInterface />
-        </PortsContext.Provider>
+        <SubInterface data={mockEdgePortConfig.ports} />
       </Provider>, {
         route: {
           params,
