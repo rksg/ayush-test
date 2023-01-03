@@ -64,5 +64,17 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   addStackMember: {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/switch/:stackSerialNumber/member/:newStackMemberSerialNumber'
+  },
+  getSwitchAcls: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/acls/switch/:switchId'
+  },
+  getVlanListBySwitchLevel: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/vlans/switch/:switchId/query'
+  },
+  getVlanByUuid: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/vlan/:vlanUuid'
   }
 }
