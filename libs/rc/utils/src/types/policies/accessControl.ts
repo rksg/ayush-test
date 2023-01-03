@@ -51,3 +51,8 @@ export enum Layer3ProtocolType {
   AH = 'AH',
   SCTP = 'SCTP'
 }
+
+export enum AccessStatus {
+  ALLOW = 'ALLOW',
+  BLOCK = 'BLOCK'
+}

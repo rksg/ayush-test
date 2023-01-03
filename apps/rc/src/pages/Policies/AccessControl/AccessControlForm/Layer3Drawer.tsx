@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 
-import { Col, Form, Input, Radio, RadioChangeEvent, Row, Select } from 'antd'
-import _                                                          from 'lodash'
-import { useIntl }                                                from 'react-intl'
-import { useParams }                                              from 'react-router-dom'
-import styled, { css }                                            from 'styled-components/macro'
+import { Form, FormItemProps, Input, Radio, RadioChangeEvent, Select } from 'antd'
+import _                                                               from 'lodash'
+import { useIntl }                                                     from 'react-intl'
+import { useParams }                                                   from 'react-router-dom'
 
 import {
+  Button,
   ContentSwitcher, ContentSwitcherProps,
   Drawer,
   Fieldset,
@@ -22,6 +22,7 @@ import {
   useL3AclPolicyListQuery
 } from '@acx-ui/rc/services'
 import {
+  AccessStatus,
   CommonResult,
   Layer3ProtocolType,
   macAddressRegExp,
@@ -33,11 +34,6 @@ import { layer3ProtocolLabelMapping } from '../../contentsMap'
 
 const { useWatch } = Form
 const { Option } = Select
-
-export enum AccessStatus {
-  ALLOW = 'ALLOW',
-  BLOCK = 'BLOCK'
-}
 
 export interface Layer3DrawerProps {
   inputName?: string[]
@@ -68,11 +64,23 @@ enum RuleSourceType {
   IP = 'Ip'
 }
 
-const ViewDetailsWrapper = styled.span<{ $policyId: string }>`
-  ${props => props.$policyId
-    ? css`cursor: pointer;`
-    : css`cursor: not-allowed; color: darkgray;`}
-`
+const DrawerFormItem = (props: FormItemProps) => {
+  return (
+    <Form.Item
+      labelAlign={'left'}
+      labelCol={{ span: 5 }}
+      style={{ marginBottom: '5px' }}
+      {...props} />
+  )
+}
+
+const AclGridCol = ({ children }: { children: ReactNode }) => {
+  return (
+    <GridCol col={{ span: 6 }} style={{ marginTop: '6px' }}>
+      {children}
+    </GridCol>
+  )
+}
 
 const Layer3Drawer = (props: Layer3DrawerProps) => {
   const { $t } = useIntl()
@@ -495,7 +503,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
   )
 
   const content = <Form layout='horizontal' form={contentForm}>
-    <Form.Item
+    <DrawerFormItem
       name={'policyName'}
       label={$t({ defaultMessage: 'Policy Name:' })}
       rules={[
@@ -509,11 +517,9 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
             return Promise.resolve()}
         }
       ]}
-      labelCol={{ span: 5 }}
-      labelAlign={'left'}
       children={<Input disabled={isViewMode()}/>}
     />
-    <Form.Item
+    <DrawerFormItem
       name='layer3DefaultAccess'
       label={<div style={{ textAlign: 'left' }}>
         <div>{$t({ defaultMessage: 'Default Access' })}</div>
@@ -521,11 +527,9 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
           {$t({ defaultMessage: 'Applies if no rule is matched' })}
         </span>
       </div>}
-      labelCol={{ span: 5 }}
-      labelAlign={'left'}
       children={<ContentSwitcher tabDetails={defaultTabDetails} size='large' />}
     />
-    <Form.Item
+    <DrawerFormItem
       name='layer3Rule'
       label={$t({ defaultMessage: 'Layer 3 Rules' }) + ` (${layer3RuleList.length})`}
     />
@@ -540,11 +544,9 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
   </Form>
 
   const ruleContent = <Form layout='horizontal' form={drawerForm}>
-    <Form.Item
+    <DrawerFormItem
       name='description'
       label={$t({ defaultMessage: 'Description' })}
-      labelAlign={'left'}
-      labelCol={{ span: 5 }}
       initialValue={''}
       validateFirst
       rules={[
@@ -554,19 +556,15 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         placeholder={$t({ defaultMessage: 'Enter a short description, up to 64 characters' })}
       />}
     />
-    <Form.Item
+    <DrawerFormItem
       name='access'
       label={$t({ defaultMessage: 'Access' })}
-      labelAlign={'left'}
-      labelCol={{ span: 5 }}
       initialValue={AccessStatus.ALLOW}
       children={<ContentSwitcher tabDetails={tabDetails} size='large' />}
     />
-    <Form.Item
+    <DrawerFormItem
       name='protocol'
       label={$t({ defaultMessage: 'Protocol' })}
-      labelAlign={'left'}
-      labelCol={{ span: 5 }}
       initialValue={'ANYPROTOCOL'}
       children={selectProtocol}
     />
@@ -637,11 +635,9 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         </GridRow>
 
       </Radio.Group>
-      <Form.Item
+      <DrawerFormItem
         name='sourcePort'
         label={$t({ defaultMessage: 'Port' })}
-        labelAlign={'left'}
-        labelCol={{ span: 5 }}
         initialValue={''}
         rules={[
           { max: 64 }
@@ -715,11 +711,9 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         </GridRow>
 
       </Radio.Group>
-      <Form.Item
+      <DrawerFormItem
         name='destPort'
         label={$t({ defaultMessage: 'Port' })}
-        labelAlign={'left'}
-        labelCol={{ span: 5 }}
         initialValue={''}
         rules={[
           { max: 64 }
@@ -733,8 +727,8 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
 
   return (
     <>
-      <Row justify={'space-between'} style={{ width: '300px' }}>
-        <Col span={12} style={{ textAlign: 'center' }}>
+      <GridRow style={{ width: '350px' }}>
+        <GridCol col={{ span: 12 }}>
           <Form.Item
             name={[...inputName, 'l3AclPolicyId']}
             rules={[{
@@ -750,29 +744,30 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
               />
             }
           />
-        </Col>
-        <Col span={6} style={{ textAlign: 'center' }}>
-          <ViewDetailsWrapper $policyId={l3AclPolicyId}
+        </GridCol>
+        <AclGridCol>
+          <Button type='link'
+            disabled={!l3AclPolicyId}
             onClick={() => {
               if (l3AclPolicyId) {
                 setVisible(true)
                 setQueryPolicyId(l3AclPolicyId)
               }
-            }}>
+            }
+            }>
             {$t({ defaultMessage: 'View Details' })}
-          </ViewDetailsWrapper>
-        </Col>
-        <Col span={5} style={{ textAlign: 'center' }}>
-          <span
-            style={{ cursor: 'pointer' }}
+          </Button>
+        </AclGridCol>
+        <AclGridCol>
+          <Button type='link'
             onClick={() => {
               setVisible(true)
               setQueryPolicyId('')
             }}>
             {$t({ defaultMessage: 'Add New' })}
-          </span>
-        </Col>
-      </Row>
+          </Button>
+        </AclGridCol>
+      </GridRow>
       <Drawer
         title={$t({ defaultMessage: 'Layer 3 Settings' })}
         visible={visible}
