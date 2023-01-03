@@ -8,7 +8,8 @@ import { useParams }              from 'react-router-dom'
 import { Table, TableProps, showActionModal, Loader } from '@acx-ui/components'
 import {
   useVenueDHCPPoolsQuery,
-  useActivateDHCPPoolMutation } from '@acx-ui/rc/services'
+  useActivateDHCPPoolMutation,
+  useDeactivateDHCPPoolMutation } from '@acx-ui/rc/services'
 import { VenueDHCPPoolInst } from '@acx-ui/rc/utils'
 import { TenantLink }        from '@acx-ui/react-router-dom'
 import { formatter }         from '@acx-ui/utils'
@@ -28,9 +29,16 @@ export default function VenuePoolTable (){
 
 
   const [activateDHCPPool] = useActivateDHCPPoolMutation()
+  const [deactivateDHCPPool] = useDeactivateDHCPPoolMutation()
+
 
   const setActivePool = async (dhcppoolId:string, active:boolean)=>{
-    await activateDHCPPool({ params: { ...params, dhcppoolId } }).unwrap()
+
+    if(active){
+      await activateDHCPPool({ params: { ...params, dhcppoolId } }).unwrap()
+    }else{
+      await deactivateDHCPPool({ params: { ...params, dhcppoolId } }).unwrap()
+    }
     const updateActive = tableData?.map((item)=>{
       if(item.id===dhcppoolId){
         return {
@@ -41,6 +49,7 @@ export default function VenuePoolTable (){
         return item
       }
     })
+
     setTableData(updateActive)
   }
 

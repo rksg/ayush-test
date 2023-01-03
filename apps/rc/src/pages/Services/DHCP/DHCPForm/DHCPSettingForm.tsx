@@ -2,21 +2,20 @@ import { Form, Input, Col, Radio, Row, Space } from 'antd'
 import _                                       from 'lodash'
 import { useIntl }                             from 'react-intl'
 
-import { StepsForm }                  from '@acx-ui/components'
-import { useGetDHCPProfileListQuery } from '@acx-ui/rc/services'
-import { DHCPConfigTypeEnum }         from '@acx-ui/rc/utils'
-import { DHCPPool }                   from '@acx-ui/rc/utils'
-import { useParams }                  from '@acx-ui/react-router-dom'
-import { getIntl }                    from '@acx-ui/utils'
+import { StepsForm }                      from '@acx-ui/components'
+import { useLazyGetDHCPProfileListQuery } from '@acx-ui/rc/services'
+import { DHCPPool }                       from '@acx-ui/rc/utils'
+import { DHCPConfigTypeEnum }             from '@acx-ui/rc/utils'
+import { checkObjectNotExists }           from '@acx-ui/rc/utils'
+import { useParams }                      from '@acx-ui/react-router-dom'
+import { getIntl }                        from '@acx-ui/utils'
 
 import { dhcpTypes, dhcpTypesDesc } from './contentsMap'
 import { DHCPDiagram }              from './DHCPDiagram/DHCPDiagram'
 import DHCPPoolTable                from './DHCPPool'
 import { RadioDescription }         from './styledComponents'
 
-interface DHCPFormProps {
-  editMode?: boolean
-}
+
 
 async function poolValidator (
   type: DHCPConfigTypeEnum,
@@ -36,28 +35,25 @@ async function poolValidator (
   return
 }
 const { useWatch } = Form
-export function SettingForm (props: DHCPFormProps) {
+export function SettingForm () {
   const { $t } = useIntl()
-  const { editMode } = props
+
   const type = useWatch<DHCPConfigTypeEnum>('dhcpMode')
 
   const types = Object.values(DHCPConfigTypeEnum)
   const params = useParams()
-  const { data: dhcpProfileList } = useGetDHCPProfileListQuery({ params })
+  const [ getDHCPProfileList ] = useLazyGetDHCPProfileListQuery()
+  const form = Form.useFormInstance()
+  const id = Form.useWatch<string>('id', form)
 
-
-  const nameValidator = async (_rule: unknown, value: string) => {
-    return new Promise<void>((resolve, reject) => {
-      if (!editMode && value && dhcpProfileList?.length && dhcpProfileList?.findIndex((profile) =>
-        profile.serviceName === value) !== -1
-      ) {
-        return reject(
-          $t({ defaultMessage: 'The DHCP service with that name already exists' })
-        )
-      }
-      return resolve()
-    })
+  const nameValidator = async (value: string) => {
+    const list = (await getDHCPProfileList({ params }).unwrap())
+      .filter(dhcpProfile => dhcpProfile.id !== id)
+      .map(dhcpProfile => ({ serviceName: dhcpProfile.serviceName }))
+    // eslint-disable-next-line max-len
+    return checkObjectNotExists(list, { serviceName: value } , $t({ defaultMessage: 'DHCP service' }))
   }
+
   return (<>
     <Row gutter={20}>
       <Col span={10}>
@@ -73,7 +69,7 @@ export function SettingForm (props: DHCPFormProps) {
             { required: true },
             { min: 2 },
             { max: 32 },
-            { validator: nameValidator }
+            { validator: (_, value) => nameValidator(value) }
           ]}
           validateFirst
           hasFeedback

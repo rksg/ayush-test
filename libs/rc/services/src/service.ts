@@ -189,7 +189,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }]
     }),
-    getDHCPProfileList: build.query<DHCPSaveData[] | null, RequestPayload>({
+    getDHCPProfileList: build.query<DHCPSaveData[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(DHCPUrls.getDHCPProfiles, params)
         return{
@@ -628,6 +628,7 @@ export const {
   useVlanPoolListQuery,
   useAccessControlProfileListQuery,
   useGetDHCPProfileListQuery,
+  useLazyGetDHCPProfileListQuery,
   useGetMdnsProxyQuery,
   useLazyGetMdnsProxyListQuery,
   useGetMdnsProxyListQuery,

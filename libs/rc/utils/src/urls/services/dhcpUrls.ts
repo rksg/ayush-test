@@ -39,6 +39,11 @@ export const DHCPUrls: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/dhcpPool/:dhcppoolId'
   },
+  deactivateVenueDHCPPool: {
+    //set DHCP Pool Deactivate
+    method: 'delete',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/dhcpPool/:dhcppoolId'
+  },
   updateVenueDHCPProfile: {
     //Setup Venue DHCP Service Profile
     method: 'post',
