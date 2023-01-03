@@ -62,6 +62,17 @@ export interface EdgeDnsServers {
   secondary: string
 }
 
+export interface EdgeStaticRoute {
+  id: string
+  destIp: string
+  destSubnet: string
+  nextHop: string
+}
+
+export interface EdgeStaticRouteConfig {
+  routes: EdgeStaticRoute[]
+}
+
 export interface EdgePort {
   portType: EdgePortTypeEnum.UNSPECIFIED | EdgePortTypeEnum.WAN | EdgePortTypeEnum.LAN
   portId: string
