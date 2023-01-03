@@ -177,11 +177,11 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
     }
     setLoading(false)
     onClose()
-    const clearButton = document?.querySelector('button[data-id="table-clear-btn"]')
-    if (clearButton) {
-      // @ts-ignore
-      clearButton.click()
-    }
+    // const clearButton = document?.querySelector('button[data-id="table-clear-btn"]')
+    // if (clearButton) {
+    //   // @ts-ignore
+    //   clearButton.click()
+    // }
   }
 
 

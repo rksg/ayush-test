@@ -182,7 +182,7 @@ export const switchDetailHeader = {
   formStacking: true,
   freeMemory: 155127808,
   id: '58:fb:96:0e:82:8a',
-  ipAddress: '10.206.10.37',
+  ipAddress: '1.1.1.1',
   isIpFullContentParsed: true,
   isStack: true,
   memory: 84,
