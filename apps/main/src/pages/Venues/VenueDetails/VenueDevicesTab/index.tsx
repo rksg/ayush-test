@@ -3,7 +3,6 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { ContentSwitcher, ContentSwitcherProps, Tabs } from '@acx-ui/components'
 import { useIsSplitOn, Features }                      from '@acx-ui/feature-toggle'
-import { SwitchTable }                                 from '@acx-ui/rc/components'
 
 import { VenueMeshApsTable } from './VenueMeshAps'
 import { VenueRogueAps }     from './VenueRogueAps'
@@ -55,7 +54,7 @@ export function VenueDevicesTab () {
         tab={$t({ defaultMessage: 'Switch' })}
         key='switch'
         disabled={!useIsSplitOn(Features.DEVICES)}>
-        <SwitchTable />
+        {$t({ defaultMessage: 'Switch' })}
       </Tabs.TabPane>
     </Tabs>
   )
