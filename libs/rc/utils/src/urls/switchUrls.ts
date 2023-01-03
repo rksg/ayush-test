@@ -96,5 +96,17 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   deleteVePorts: {
     method: 'delete',
     url: '/api/switch/tenant/:tenantId/vePorts'
+  },
+  getSwitchAcls: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/acls/switch/:switchId'
+  },
+  getVlanListBySwitchLevel: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/vlans/switch/:switchId/query'
+  },
+  getVlanByUuid: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/vlan/:vlanUuid'
   }
 }

@@ -7,6 +7,7 @@ import {
   RequestPayload,
   SwitchUrlsInfo,
   SwitchViewModel,
+  Acl,
   Vlan,
   SwitchPortViewModel,
   TableResult,
@@ -184,6 +185,23 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
+    getVlanListBySwitchLevel: build.query<TableResult<Vlan>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getVlanListBySwitchLevel, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    getSwitchAcls: build.query<Acl[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getSwitchAcls, params)
+        return {
+          ...req
+        }
+      }
+    }),
     saveSwitch: build.mutation<Switch, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(SwitchUrlsInfo.addSwitch, params)
@@ -336,5 +354,7 @@ export const {
   useAddVePortMutation,
   useUpdateVePortMutation,
   useGetSwitchQuery,
-  useDeleteVePortsMutation
+  useDeleteVePortsMutation,
+  useGetSwitchAclsQuery,
+  useGetVlanListBySwitchLevelQuery
 } = switchApi
