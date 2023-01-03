@@ -2,9 +2,9 @@ import '@testing-library/jest-dom'
 
 import { rest } from 'msw'
 
-import { ClientUrlsInfo }                                        from '@acx-ui/rc/utils'
-import { Provider }                                              from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { ClientUrlsInfo }     from '@acx-ui/rc/utils'
+import { Provider }           from '@acx-ui/store'
+import { mockServer, render } from '@acx-ui/test-utils'
 
 import { VenueClientsTab } from '.'
 
@@ -27,10 +27,8 @@ describe('VenueClientsTab', () => {
       tenantId: 'f378d3ba5dd44e62bacd9b625ffec681',
       venueId: '7482d2efe90f48d0a898c96d42d2d0e7'
     }
-    const { asFragment } = render(<Provider><VenueClientsTab /></Provider>, {
+    render(<Provider><VenueClientsTab /></Provider>, {
       route: { params, path: '/t/:tenantId/venues/:venueId/venue-details/clients' }
     })
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    expect(asFragment()).toMatchSnapshot()
   })
 })

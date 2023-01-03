@@ -10,7 +10,8 @@ import { ClientDualTable } from './index'
 describe('ClientDualTable', () => {
   jest.mocked(useIsSplitOn).mockReturnValue(true) // mock Features.USERS
   const params = {
-    tenantId: 'f378d3ba5dd44e62bacd9b625ffec681'
+    tenantId: 'f378d3ba5dd44e62bacd9b625ffec681',
+    venueId: '4c778ed630394b76b17bce7fe230cf9f'
   }
 
   beforeEach(() => {
@@ -53,7 +54,7 @@ describe('ClientDualTable', () => {
 
   it('should search correctly', async () => {
     render(<Provider><ClientDualTable /></Provider>, {
-      route: { params, path: '/t/:tenantId/users/wifi/clients' }
+      route: { params, path: '/t/:tenantId/venues/:venueId/venue-details/clients' }
     })
 
     const input =

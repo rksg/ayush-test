@@ -147,19 +147,17 @@ exports[`VenueDetails should navigate to analytic tab correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab ant-tabs-tab-disabled"
+                  class="ant-tabs-tab"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-clients"
-                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-clients"
                     role="tab"
+                    tabindex="0"
                   >
-                    <span>
-                      Clients (0)
-                    </span>
+                    Clients (0)
                   </div>
                 </div>
                 <div
@@ -494,19 +492,17 @@ exports[`VenueDetails should navigate to client tab correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab ant-tabs-tab-active ant-tabs-tab-disabled"
+                  class="ant-tabs-tab ant-tabs-tab-active"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-clients"
-                    aria-disabled="true"
                     aria-selected="true"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-clients"
                     role="tab"
+                    tabindex="0"
                   >
-                    <span>
-                      Clients (0)
-                    </span>
+                    Clients (0)
                   </div>
                 </div>
                 <div
@@ -785,44 +781,9 @@ exports[`VenueDetails should navigate to client tab correctly 1`] = `
           tabindex="0"
         >
           <div
-            class="styledComponents__ClientTableDiv-sc-1swpdn-1 cKhYLc"
-          >
-            <div
-              class="styledComponents__Wrapper-sc-1352uh8-0 ilNUvb"
-            >
-              <div
-                class="styledComponents__FallbackWrapper-sc-1352uh8-1 cUVMCE"
-              >
-                <span
-                  aria-label="loader"
-                  role="img"
-                >
-                  <div
-                    aria-busy="true"
-                    aria-live="polite"
-                    class="ant-spin ant-spin-lg ant-spin-spinning"
-                  >
-                    <span
-                      class="ant-spin-dot ant-spin-dot-spin"
-                    >
-                      <i
-                        class="ant-spin-dot-item"
-                      />
-                      <i
-                        class="ant-spin-dot-item"
-                      />
-                      <i
-                        class="ant-spin-dot-item"
-                      />
-                      <i
-                        class="ant-spin-dot-item"
-                      />
-                    </span>
-                  </div>
-                </span>
-              </div>
-            </div>
-          </div>
+            data-testid="rc-ClientDualTable"
+            title="ClientDualTable"
+          />
         </div>
         <div
           aria-hidden="true"
@@ -986,19 +947,17 @@ exports[`VenueDetails should navigate to device tab correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab ant-tabs-tab-disabled"
+                  class="ant-tabs-tab"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-clients"
-                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-clients"
                     role="tab"
+                    tabindex="0"
                   >
-                    <span>
-                      Clients (0)
-                    </span>
+                    Clients (0)
                   </div>
                 </div>
                 <div
@@ -1604,19 +1563,17 @@ exports[`VenueDetails should navigate to network tab correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab ant-tabs-tab-disabled"
+                  class="ant-tabs-tab"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-clients"
-                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-clients"
                     role="tab"
+                    tabindex="0"
                   >
-                    <span>
-                      Clients (0)
-                    </span>
+                    Clients (0)
                   </div>
                 </div>
                 <div
@@ -1982,19 +1939,17 @@ exports[`VenueDetails should navigate to service tab correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab ant-tabs-tab-disabled"
+                  class="ant-tabs-tab"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-clients"
-                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-clients"
                     role="tab"
+                    tabindex="0"
                   >
-                    <span>
-                      Clients (0)
-                    </span>
+                    Clients (0)
                   </div>
                 </div>
                 <div
@@ -2705,19 +2660,17 @@ exports[`VenueDetails should navigate to timeline tab correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab ant-tabs-tab-disabled"
+                  class="ant-tabs-tab"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-clients"
-                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-clients"
                     role="tab"
+                    tabindex="0"
                   >
-                    <span>
-                      Clients (0)
-                    </span>
+                    Clients (0)
                   </div>
                 </div>
                 <div
@@ -3051,19 +3004,17 @@ exports[`VenueDetails should render correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab ant-tabs-tab-disabled"
+                  class="ant-tabs-tab"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-clients"
-                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-clients"
                     role="tab"
+                    tabindex="0"
                   >
-                    <span>
-                      Clients (2)
-                    </span>
+                    Clients (2)
                   </div>
                 </div>
                 <div
