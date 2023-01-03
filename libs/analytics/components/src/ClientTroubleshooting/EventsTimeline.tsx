@@ -59,7 +59,7 @@ type EventCategoryMap = {
   [FAILURE]: Event[] | [];
   [DISCONNECT]: Event[] | [];
   [SLOW]: Event[] | [];
-  allEvents: Event[] | [];
+  all: Event[] | [];
 }
 type TimeLineProps = {
   data?: ClientInfoData;
@@ -69,8 +69,8 @@ const getTimelineData = (events: Event[]) =>
   events.reduce(
     (acc, event) => {
       if (event.type === TYPES.CONNECTION_EVENTS) {
-        acc[TYPES.CONNECTION_EVENTS as keyof TimelineData]['allEvents'] = [
-          ...acc[TYPES.CONNECTION_EVENTS as keyof TimelineData]['allEvents'],
+        acc[TYPES.CONNECTION_EVENTS as keyof TimelineData]['all'] = [
+          ...acc[TYPES.CONNECTION_EVENTS as keyof TimelineData]['all'],
           event
         ]
         if (event.category === SUCCESS)
@@ -102,7 +102,7 @@ const getTimelineData = (events: Event[]) =>
         [FAILURE]: [],
         [DISCONNECT]: [],
         [SLOW]: [],
-        allEvents: []
+        all: []
       }
     } as TimelineData
   )
@@ -154,31 +154,32 @@ export const getChartData = (
 export const useTooltipFormatter = (
   params: TooltipComponentFormatterCallbackParams
 ) => {
-  const intl = getIntl()
-  const obj = (Array.isArray(params) && Array.isArray(params[0].data)
-    ? params[0].data[2]
-    : undefined) as unknown as DisplayEvent
+  return ''
+  // const intl = getIntl()
+  // const obj = (Array.isArray(params) && Array.isArray(params[0].data)
+  //   ? params[0].data[2]
+  //   : undefined) as unknown as DisplayEvent
 
-  if (typeof obj !== 'undefined' && (obj as unknown as LabelledQuality).all) {
-    return renderToString(
-      <UI.TooltipWrapper>
-        <UI.TooltipDate>
-          {(obj as unknown as LabelledQuality).all}
-        </UI.TooltipDate>
-      </UI.TooltipWrapper>
-    )
-  }
+  // if (typeof obj !== 'undefined' && (obj as unknown as LabelledQuality).all) {
+  //   return renderToString(
+  //     <UI.TooltipWrapper>
+  //       <UI.TooltipDate>
+  //         {(obj as unknown as LabelledQuality).all}
+  //       </UI.TooltipDate>
+  //     </UI.TooltipWrapper>
+  //   )
+  // }
 
 
-  const tooltipText = obj ? formatEventDesc(obj, intl) : null
-  return renderToString(
-    <UI.TooltipWrapper>
-      <UI.TooltipDate>
-        {obj && moment(obj?.start).format('MMM DD HH:mm:ss')}{' '}
-      </UI.TooltipDate>
-      {tooltipText}
-    </UI.TooltipWrapper>
-  )
+  // const tooltipText = obj ? formatEventDesc(obj, intl) : null
+  // return renderToString(
+  //   <UI.TooltipWrapper>
+  //     <UI.TooltipDate>
+  //       {obj && moment(obj?.start).format('MMM DD HH:mm:ss')}{' '}
+  //     </UI.TooltipDate>
+  //     {tooltipText}
+  //   </UI.TooltipWrapper>
+  // )
 }
 export function TimeLine (props: TimeLineProps) {
   const { $t } = useIntl()
@@ -256,7 +257,7 @@ export function TimeLine (props: TimeLineProps) {
                 { (config.showCount)
                   ? <UI.TimelineCount>
                     {TimelineData[config.value as keyof TimelineData]?.[
-                      'allEvents'
+                      'all'
                     ].length ?? 0}
                   </UI.TimelineCount>
                   : null}

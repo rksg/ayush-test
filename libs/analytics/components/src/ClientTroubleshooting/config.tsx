@@ -312,14 +312,14 @@ export const connectionQualityLabels = {
   avgTxMCS: { label: 'Avg MCS (Downlink)', formatter: 'networkSpeedFormat' }
 }
 
-type Quality = 'bad' | 'average' | 'good' | null | undefined
+export type Quality = 'bad' | 'average' | 'good' | null | undefined
 
 export type LabelledQuality = {
-  rss: Quality,
-  snr: Quality,
-  throughput: Quality,
-  avgTxMCS: Quality,
-  all: Quality,
+  rss: { quality : Quality, value : string },
+  snr: { quality : Quality, value : string },
+  throughput: { quality : Quality, value : string },
+  avgTxMCS: { quality : Quality, value : string },
+  all: { quality : Quality, value : string },
   seriesKey: 'rss' | 'snr' | 'throughput' | 'avgTxMCS' | 'all',
   start: string,
   end: string,
@@ -335,7 +335,9 @@ export const transformConnectionQualities = (connectionQualities?: ConnectionQua
     const snr = getConnectionQualityFor('snr', val.snr)
     const throughput = getConnectionQualityFor('throughput', val.throughput)
     const avgTxMCS = getConnectionQualityFor('avgTxMCS', val.avgTxMCS)
-    const worseQuality = takeWorseQuality(...[rss, snr, throughput, avgTxMCS])
+    const worseQuality = takeWorseQuality(
+      ...[rss?.quality, snr?.quality, throughput?.quality, avgTxMCS?.quality]
+    )
     return {
       ...val,
       rss,
@@ -346,14 +348,14 @@ export const transformConnectionQualities = (connectionQualities?: ConnectionQua
     }})
 
   return {
-    all: mappedQuality.map(val => ({ ...val, seriesKey: 'all' })) as LabelledQuality[],
+    all: mappedQuality.map(val => ({ ...val, seriesKey: 'all' })) as unknown as LabelledQuality[],
     rss: mappedQuality.filter(val => val.rss)
-      .map(val => ({ ...val, seriesKey: 'rss' })) as LabelledQuality[],
+      .map(val => ({ ...val, seriesKey: 'rss' })) as unknown as LabelledQuality[],
     snr: mappedQuality.filter(val => val.snr)
-      .map(val => ({ ...val, seriesKey: 'snr' })) as LabelledQuality[],
+      .map(val => ({ ...val, seriesKey: 'snr' })) as unknown as LabelledQuality[],
     throughput: mappedQuality.filter(val => val.throughput)
-      .map(val => ({ ...val, seriesKey: 'throughput' }))as LabelledQuality[],
+      .map(val => ({ ...val, seriesKey: 'throughput' }))as unknown as LabelledQuality[],
     avgTxMCS: mappedQuality.filter(val => val.avgTxMCS)
-      .map(val => ({ ...val, seriesKey: 'avgTxMCS' })) as LabelledQuality[]
+      .map(val => ({ ...val, seriesKey: 'avgTxMCS' })) as unknown as LabelledQuality[]
   }
 }

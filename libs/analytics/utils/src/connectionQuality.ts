@@ -40,15 +40,27 @@ export const getConnectionQualityFor = (
   type: 'rss' | 'snr' | 'throughput' | 'avgTxMCS',
   value: number | null | undefined) => {
   switch (type) {
-    case 'rss':        return getRSSConnectionQuality(value)
-    case 'snr':        return getSNRConnectionQuality(value)
-    case 'throughput': return getThroughputConnectionQuality(value)
-    case 'avgTxMCS':   return getAvgTxMCSConnectionQuality(value)
+    case 'rss':        return { quality: getRSSConnectionQuality(value), value }
+    case 'snr':        return { quality: getSNRConnectionQuality(value), value }
+    case 'throughput': return { quality: getThroughputConnectionQuality(value), value }
+    case 'avgTxMCS':   return { quality: getAvgTxMCSConnectionQuality(value), value }
     default:           return null
   }
 }
+// export const getConnectionQualityFor = (
+//   type: 'rss' | 'snr' | 'throughput' | 'avgTxMCS',
+//   value: number | null | undefined) => {
+//   switch (type) {
+//     case 'rss':        return value
+//     case 'snr':        return value
+//     case 'throughput': return value
+//     case 'avgTxMCS':   return value
+//     default:           return null
+//   }
+// }
 
-export const takeWorseQuality = (...qualities: (string | null)[]) => {
+
+export const takeWorseQuality = (...qualities: (string | null| undefined)[]) => {
   qualities = qualities.filter(q => q !== null)
   if (qualities.length === 0) return null
 
@@ -67,7 +79,8 @@ export const takeWorseQuality = (...qualities: (string | null)[]) => {
   return max && max.quality
 }
 
-export const getQualityColor = (type: string) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const getQualityColor = (type: any) => {
   switch (type) {
     case 'bad': return '--acx-semantics-red-50'
     case 'good': return '--acx-semantics-green-50'

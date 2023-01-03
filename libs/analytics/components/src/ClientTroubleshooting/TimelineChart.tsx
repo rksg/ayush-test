@@ -16,6 +16,7 @@ import {
   TooltipFormatterCallback,
   TopLevelFormatterParams
 } from 'echarts/types/dist/shared'
+import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import { getQualityColor }   from '@acx-ui/analytics/utils'
@@ -28,19 +29,19 @@ import {
 } from '@acx-ui/components'
 import type { TimeStampRange } from '@acx-ui/types'
 
-import { eventColorByCategory, LabelledQuality } from './config'
+import { eventColorByCategory, LabelledQuality, connectionQualityLabels } from './config'
 
-import type { Event }                                from './EventsTimeline'
-import type { ECharts, EChartsOption, SeriesOption } from 'echarts'
-import type { EChartsReactProps }                    from 'echarts-for-react'
-
+import type { Event }                                                                                         from './EventsTimeline'
+import type { ECharts, EChartsOption, SeriesOption, CustomSeriesRenderItemAPI, CustomSeriesRenderItemParams } from 'echarts'
+import type { EChartsReactProps }                                                                             from 'echarts-for-react'
 
 type OnDatazoomEvent = {
   batch?: {
-    startValue: number, endValue: number
-  }[],
-  start?: number,
-  end?: number
+    startValue: number;
+    endValue: number;
+  }[];
+  start?: number;
+  end?: number;
 }
 
 export interface TimelineChartProps
@@ -53,34 +54,39 @@ export interface TimelineChartProps
   hasXaxisLabel?: boolean;
   tooltipFormatter: TooltipFormatterCallback<TopLevelFormatterParams>;
   mapping: { key: string; label: string; chartType: string }[];
-  showResetZoom?: boolean
+  showResetZoom?: boolean;
 }
-const getSeriesData = (data : (Event | LabelledQuality)[], key : string) =>
-  data
-    .filter(
-      (record) =>
-        record.seriesKey === key
-    )
-    .map((record) => [record.start, record.seriesKey, record])
+const getSeriesData = (data: (Event | LabelledQuality)[], key: string, chartType : string) =>
+{
+  if(chartType === 'scatter')
+    return data
+      .filter((record) => record.seriesKey === key)
+      .map((record) => [record.start, record.seriesKey, record])
+  else{
+    return data
+      .map((record) => [record.start, moment(record.end).valueOf(), key , record])
+  }
+}
 
 function getSeriesItemColor (params: { data: (Event | LabelledQuality)[] }) {
-  const obj = Array.isArray(params.data)
-    ? params.data[2]
-    : ''
+  const obj = Array.isArray(params.data) ? params.data[2] : ''
+  const { category } = obj as Event
 
-  if (typeof obj !== 'string' && (obj as LabelledQuality).all) {
-    return cssStr(getQualityColor((obj as LabelledQuality).all ?? 'uknown'))
-  }
-
-  const { category } = (obj as Event)
-
-  return obj ? cssStr(
-    eventColorByCategory[
-      category as keyof typeof eventColorByCategory
-    ]
-  ) : cssStr('--acx-neutrals-50')
+  return obj
+    ? cssStr(
+      eventColorByCategory[category as keyof typeof eventColorByCategory]
+    )
+    : cssStr('--acx-neutrals-50')
 }
-
+// function getBarColor (params: { data: (LabelledQuality)[] }) {
+//   const obj = Array.isArray(params.data) ? params.data[3] : ''
+//   const key = params.data[2] as unknown as string
+//   return cssStr(
+//     getQualityColor(
+//       (obj as LabelledQuality)[key as keyof typeof connectionQualityLabels]?.quality
+//     ) as string
+//   )
+// }
 export const useDotClick = (
   eChartsRef: RefObject<ReactECharts>,
   onDotClick: ((param: unknown) => void) | undefined,
@@ -109,19 +115,23 @@ export const useDataZoom = (
   zoomEnabled: boolean,
   onDataZoom?: (range: TimeStampRange, isReset: boolean) => void
 ): [boolean, () => void] => {
-
   const [canResetZoom, setCanResetZoom] = useState<boolean>(false)
 
-  const onDatazoomCallback = useCallback((e: unknown) => {
-    const event = e as unknown as OnDatazoomEvent
-    const firstBatch = event.batch?.[0]
-    firstBatch && onDataZoom && onDataZoom([firstBatch.startValue, firstBatch.endValue], false)
-    if (event.start === 0 && event.end === 100) {
-      setCanResetZoom(false)
-    } else {
-      setCanResetZoom(true)
-    }
-  }, [onDataZoom])
+  const onDatazoomCallback = useCallback(
+    (e: unknown) => {
+      const event = e as unknown as OnDatazoomEvent
+      const firstBatch = event.batch?.[0]
+      firstBatch &&
+        onDataZoom &&
+        onDataZoom([firstBatch.startValue, firstBatch.endValue], false)
+      if (event.start === 0 && event.end === 100) {
+        setCanResetZoom(false)
+      } else {
+        setCanResetZoom(true)
+      }
+    },
+    [onDataZoom]
+  )
   useEffect(() => {
     if (!eChartsRef?.current || !zoomEnabled) return
     const echartInstance = eChartsRef.current!.getEchartsInstance() as ECharts
@@ -180,8 +190,7 @@ export function TimelineChart ({
   const xAxisHeight = hasXaxisLabel ? 30 : 0
 
   const eChartsRef = useRef<ReactECharts>(null)
-  const [canResetZoom, resetZoomCallback] =
-    useDataZoom(eChartsRef, true)
+  const [canResetZoom, resetZoomCallback] = useDataZoom(eChartsRef, true)
   // use selected event on dot click to show popover
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selected, setSelected] = useState<number | undefined>(selectedData)
@@ -213,7 +222,10 @@ export function TimelineChart ({
       formatter: tooltipFormatter,
       ...tooltipOptions(),
       // Need to address test coverage for the postion
-      position: /* istanbul ignore next */ (point) => [point[0] + 10, mapping.length * 30]
+      position: /* istanbul ignore next */ (point) => [
+        point[0] + 10,
+        mapping.length * 30
+      ]
     },
     xAxis: {
       ...xAxisOptions(),
@@ -227,7 +239,7 @@ export function TimelineChart ({
           axisLine: {
             show: true,
             lineStyle: {
-              color: cssStr('--acx-neutrals-30') ,
+              color: cssStr('--acx-neutrals-30'),
               type: 'solid'
             }
           }
@@ -295,19 +307,46 @@ export function TimelineChart ({
     series: mapping
       .reverse()
       .slice()
-      .map(
-        ({ key, label, chartType }) =>
-          ({
+      .map(({ key, label, chartType }) =>
+        chartType === 'scatter'
+          ? ({
             type: chartType,
             name: label,
-            symbol: chartType=== 'scatter' ? 'circle' : null,
+            symbol: 'circle',
             symbolSize: 8,
             animation: false,
-            data: getSeriesData(data, key),
+            data: getSeriesData(data, key, chartType),
             itemStyle: {
               color: getSeriesItemColor
             }
           } as SeriesOption)
+          : {
+            type: 'custom',
+            renderItem: function (
+              params: CustomSeriesRenderItemParams,
+              api: CustomSeriesRenderItemAPI
+            ) {
+              const yValue = api.value(2)
+              const start = api.coord([api.value(0), yValue])
+              const end = api.coord([api.value(1), yValue])
+              const height =
+                (api?.size as CallableFunction)([0, 1])[1] * 0.8
+              return {
+                type: 'rect',
+                shape: {
+                  x: start[0],
+                  y: start[1] - 9,
+                  width: end[0] - start[0],
+                  height: height
+                },
+                style: api.style()
+              }
+            },
+            itemStyle: {
+              color: 'red'
+            },
+            data: getSeriesData(data, key, chartType)
+          }
       )
   }
 
