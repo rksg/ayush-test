@@ -1,8 +1,8 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { SwitchUrlsInfo }     from '@acx-ui/rc/utils'
-import { Provider }           from '@acx-ui/store'
+import { SwitchUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }       from '@acx-ui/store'
 import {
   render,
   screen,

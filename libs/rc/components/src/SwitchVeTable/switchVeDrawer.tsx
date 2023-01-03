@@ -29,9 +29,11 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
   const { $t } = useIntl()
   const { visible, setVisible, isEditMode, editData } = props
 
+  const [form] = Form.useForm()
+  const [loading, setLoading] = useState<boolean>(false)
   const { switchId, tenantId } = useParams()
-  const switchDetailHeader = useSwitchDetailHeaderQuery({ params: { tenantId, switchId } })
   const [venueId, setVenueId] = useState('')
+  const switchDetailHeader = useSwitchDetailHeaderQuery({ params: { tenantId, switchId } })
   const aclUnionList = useGetAclUnionQuery({ params: { tenantId, switchId } })
   const getSwitch = useGetSwitchQuery({ params: { tenantId, switchId } })
 
@@ -131,9 +133,6 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
     setDisableIpSetting(false)
   }
 
-  const [form] = Form.useForm()
-  const [loading, setLoading] = useState<boolean>(false)
-
   const onSumbit = async (data: VeForm) => {
     const params = { switchId, tenantId }
     setLoading(true)
@@ -177,13 +176,7 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
     }
     setLoading(false)
     onClose()
-    // const clearButton = document?.querySelector('button[data-id="table-clear-btn"]')
-    // if (clearButton) {
-    //   // @ts-ignore
-    //   clearButton.click()
-    // }
   }
-
 
   const resetFields = () => {
     setResetField(true)
@@ -192,9 +185,7 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
 
   const onIpAddressTypeChange = (e: RadioChangeEvent) => {
     setEnableDhcp(e.target.value === IP_ADDRESS_TYPE.DYNAMIC)
-    // setData && setData({ ...data, type: e.target.value as NetworkTypeEnum })
   }
-
 
   const footer = [
     <Button loading={loading} key='saveBtn' onClick={() => form.submit()} type={'primary'} >
@@ -314,7 +305,6 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
             </Form.Item>
           }
 
-
           <Form.Item
             label={$t({ defaultMessage: 'IP Address' })}
             name='ipAddress'
@@ -372,7 +362,6 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
               ]}
             />
           </Form.Item>
-
 
         </Form>}
     />
