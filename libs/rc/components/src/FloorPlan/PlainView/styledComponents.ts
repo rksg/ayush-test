@@ -64,7 +64,7 @@ export const ImageContainerWrapper = styled('div')`
   margin: 30px auto 20px;
   position: relative;
   display: block;
-  overflow: scroll;
+  overflow: auto;
   width: 100%;
   height: 280px;
   max-width: 100%;
