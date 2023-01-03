@@ -159,7 +159,7 @@ exports[`Networks Table should click disabled row 1`] = `
                                   <span
                                     class="ant-table-column-title"
                                   >
-                                    Network Name
+                                    Name
                                   </span>
                                   <span
                                     class="ant-table-column-sorter ant-table-column-sorter-full"
@@ -1916,7 +1916,7 @@ exports[`Networks Table should delete selected row 1`] = `
                                   <span
                                     class="ant-table-column-title"
                                   >
-                                    Network Name
+                                    Name
                                   </span>
                                   <span
                                     class="ant-table-column-sorter ant-table-column-sorter-full"
@@ -3673,7 +3673,7 @@ exports[`Networks Table should render table 1`] = `
                                   <span
                                     class="ant-table-column-title"
                                   >
-                                    Network Name
+                                    Name
                                   </span>
                                   <span
                                     class="ant-table-column-sorter ant-table-column-sorter-full"

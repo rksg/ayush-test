@@ -110,7 +110,7 @@ exports[`NetworkTable should render table 1`] = `
                                   <span
                                     class="ant-table-column-title"
                                   >
-                                    Network Name
+                                    Name
                                   </span>
                                   <span
                                     class="ant-table-column-sorter ant-table-column-sorter-full"
@@ -1812,7 +1812,7 @@ exports[`NetworkTable should render table with selectable=false 1`] = `
                                   <span
                                     class="ant-table-column-title"
                                   >
-                                    Network Name
+                                    Name
                                   </span>
                                   <span
                                     class="ant-table-column-sorter ant-table-column-sorter-full"

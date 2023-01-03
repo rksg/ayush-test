@@ -23,6 +23,7 @@ function getCols (intl: ReturnType<typeof useIntl>, releaseTag: boolean, showAll
       title: intl.$t({ defaultMessage: 'Hostname' }),
       dataIndex: 'hostname',
       sorter: true,
+      disable: true,
       defaultSortOrder: 'ascend',
       render: (data, row) => {
         return releaseTag ?
@@ -71,6 +72,7 @@ function getCols (intl: ReturnType<typeof useIntl>, releaseTag: boolean, showAll
       title: intl.$t({ defaultMessage: 'MAC Address' }),
       dataIndex: 'clientMac',
       sorter: true,
+      disable: true,
       render: (data) => {
         return <Tooltip title={data}>
           {data || '--'}
