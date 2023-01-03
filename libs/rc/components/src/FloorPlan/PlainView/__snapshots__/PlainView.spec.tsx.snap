@@ -75,7 +75,7 @@ exports[`Floor Plan Plain View Should click delete button 1`] = `
     style="margin: 0px;"
   />
   <div
-    class="sc-crXcEl beTSHE"
+    class="sc-crXcEl hhzbyG"
   >
     <div
       class="sc-evZas khzpeU"
@@ -419,7 +419,7 @@ exports[`Floor Plan Plain View Should click edit button 1`] = `
     style="margin: 0px;"
   />
   <div
-    class="sc-crXcEl beTSHE"
+    class="sc-crXcEl hhzbyG"
   >
     <div
       class="sc-evZas khzpeU"
@@ -763,7 +763,7 @@ exports[`Floor Plan Plain View Should load image 1`] = `
     style="margin: 0px;"
   />
   <div
-    class="sc-crXcEl beTSHE"
+    class="sc-crXcEl hhzbyG"
   >
     <div
       class="sc-evZas hnBqnx"
@@ -1105,7 +1105,7 @@ exports[`Floor Plan Plain View should open gallery view 1`] = `
     style="margin: 0px;"
   />
   <div
-    class="sc-crXcEl beTSHE"
+    class="sc-crXcEl hhzbyG"
   >
     <div
       class="sc-evZas khzpeU"
@@ -1450,7 +1450,7 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
     style="margin: 0px;"
   />
   <div
-    class="sc-crXcEl beTSHE"
+    class="sc-crXcEl hhzbyG"
   >
     <div
       class="sc-evZas hnBqnx"
@@ -1792,7 +1792,7 @@ exports[`Floor Plan Plain View should trigger onFloorPlanSelectionHandler 1`] = 
     style="margin: 0px;"
   />
   <div
-    class="sc-crXcEl beTSHE"
+    class="sc-crXcEl hhzbyG"
   >
     <div
       class="sc-evZas khzpeU"
@@ -2136,7 +2136,7 @@ exports[`Floor Plan Plain View test zoom fit button 1`] = `
     style="margin: 0px;"
   />
   <div
-    class="sc-crXcEl beTSHE"
+    class="sc-crXcEl hhzbyG"
   >
     <div
       class="sc-evZas hnBqnx"
@@ -2480,7 +2480,7 @@ exports[`Floor Plan Plain View test zoom original button 1`] = `
     style="margin: 0px;"
   />
   <div
-    class="sc-crXcEl beTSHE"
+    class="sc-crXcEl hhzbyG"
   >
     <div
       class="sc-evZas khzpeU"
@@ -2824,7 +2824,7 @@ exports[`Floor Plan Plain View test zoom-in button 1`] = `
     style="margin: 0px;"
   />
   <div
-    class="sc-crXcEl beTSHE"
+    class="sc-crXcEl hhzbyG"
   >
     <div
       class="sc-evZas bcRkjv"
@@ -3168,7 +3168,7 @@ exports[`Floor Plan Plain View test zoom-out button 1`] = `
     style="margin: 0px;"
   />
   <div
-    class="sc-crXcEl beTSHE"
+    class="sc-crXcEl hhzbyG"
   >
     <div
       class="sc-evZas kaKoCo"
