@@ -1,17 +1,25 @@
-import { MdnsProxyFormData, MdnsProxyForwardingRule, MdnsProxyForwardingRuleTypeEnum, MdnsProxyScopeData } from '@acx-ui/rc/utils'
+import {
+  MdnsProxyFormData,
+  MdnsProxyForwardingRule,
+  BridgeServiceEnum,
+  MdnsProxyGetApiResponse,
+  MdnsProxyScopeData
+} from '@acx-ui/rc/utils'
 
 export const mockedTenantId = '6de6a5239a1441cfb9c7fde93aa613fe'
+
+export const mockedServiceId = 'ef1122345abbwfewf'
 
 export const mockedForwardingRules: MdnsProxyForwardingRule[] = [
   {
     id: '__UUID__rule1',
-    type: MdnsProxyForwardingRuleTypeEnum.AIRPLAY,
+    service: BridgeServiceEnum.AIRPLAY,
     fromVlan: 10,
     toVlan: 20
   },
   {
     id: '__UUID__rule2',
-    type: MdnsProxyForwardingRuleTypeEnum.AIRDISK,
+    service: BridgeServiceEnum.APPLETV,
     fromVlan: 21,
     toVlan: 30
   }
@@ -189,8 +197,92 @@ export const mockedApList = {
   ]
 }
 
+export const mockedEmptyApList = {
+  fields: [
+    'venueName',
+    'clients',
+    'serialNumber',
+    'venueId',
+    'name',
+    'model',
+    'apMac'
+  ],
+  totalCount: 0,
+  page: 1,
+  data: []
+}
+
 export const mockedFormData: MdnsProxyFormData = {
   name: 'mDNS Proxy 123',
-  forwardingRules: mockedForwardingRules,
+  rules: mockedForwardingRules,
   scope: mockedScope
 }
+
+export const mockedGetApiResponse: MdnsProxyGetApiResponse = {
+  id: '12345',
+  serviceName: 'mDNS Proxy 123',
+  rules: mockedForwardingRules,
+  aps: [
+    {
+      serialNumber: '__AP_ID_1__',
+      venueId: '__VENUE_ID_1__'
+    },
+    {
+      serialNumber: '__AP_ID_2__',
+      venueId: '__VENUE_ID_2__'
+    }
+  ]
+}
+
+export const mockedGetApiResponseWithoutAps: MdnsProxyGetApiResponse = {
+  id: '12345',
+  serviceName: 'mDNS Proxy 123',
+  rules: mockedForwardingRules
+}
+
+export const mockedMdnsProxyList = [
+  {
+    rules: [
+      {
+        enabled: true,
+        service: 'AIRDISK',
+        fromVlan: 1,
+        toVlan: 2
+      },
+      {
+        enabled: true,
+        service: 'AIRPLAY',
+        fromVlan: 3,
+        toVlan: 4
+      },
+      {
+        enabled: true,
+        service: 'AIRPORT_MANAGEMENT',
+        fromVlan: 5,
+        toVlan: 6
+      }
+    ],
+    serviceName: 'JackyBonjure2',
+    id: 'cb721ac1e8084f88b6bb5d730b8cf24d'
+  },
+  {
+    aps: [
+      {
+        serialNumber: '987898003011',
+        venueId: '48057f171bc34bfba87ca75c28d30937'
+      }
+    ],
+    rules: [
+      {
+        enabled: true,
+        service: 'OTHER',
+        mdnsName: 'First Rule',
+        mdnsProtocol: 'TCP',
+        fromVlan: 1,
+        toVlan: 2
+      }
+    ],
+    serviceName: 'Jacky-mDNS-12140613',
+    id: '2a4176467b1d4f3f8cc15999a160591d'
+  }
+]

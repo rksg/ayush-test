@@ -56,6 +56,18 @@ exports[`SwitchDetails should navigate to DHCP tab correctly 1`] = `
             >
               ICX7150-C12 Router
             </h1>
+            <span>
+              <span
+                class="ant-badge ant-badge-status ant-badge-not-a-wrapper"
+              >
+                <span
+                  class="ant-badge-status-dot"
+                />
+                <span
+                  class="ant-badge-status-text"
+                />
+              </span>
+            </span>
           </span>
         </div>
         <span
@@ -438,6 +450,18 @@ exports[`SwitchDetails should navigate to clients tab correctly 1`] = `
             >
               ICX7150-C12 Router
             </h1>
+            <span>
+              <span
+                class="ant-badge ant-badge-status ant-badge-not-a-wrapper"
+              >
+                <span
+                  class="ant-badge-status-dot"
+                />
+                <span
+                  class="ant-badge-status-text"
+                />
+              </span>
+            </span>
           </span>
         </div>
         <span
@@ -820,6 +844,18 @@ exports[`SwitchDetails should navigate to configuration tab correctly 1`] = `
             >
               ICX7150-C12 Router
             </h1>
+            <span>
+              <span
+                class="ant-badge ant-badge-status ant-badge-not-a-wrapper"
+              >
+                <span
+                  class="ant-badge-status-dot"
+                />
+                <span
+                  class="ant-badge-status-text"
+                />
+              </span>
+            </span>
           </span>
         </div>
         <span
@@ -1582,6 +1618,18 @@ exports[`SwitchDetails should navigate to reports tab correctly 1`] = `
             >
               ICX7150-C12 Router
             </h1>
+            <span>
+              <span
+                class="ant-badge ant-badge-status ant-badge-not-a-wrapper"
+              >
+                <span
+                  class="ant-badge-status-dot"
+                />
+                <span
+                  class="ant-badge-status-text"
+                />
+              </span>
+            </span>
           </span>
         </div>
         <span
@@ -1964,6 +2012,18 @@ exports[`SwitchDetails should navigate to timeline tab correctly 1`] = `
             >
               ICX7150-C12 Router
             </h1>
+            <span>
+              <span
+                class="ant-badge ant-badge-status ant-badge-not-a-wrapper"
+              >
+                <span
+                  class="ant-badge-status-dot"
+                />
+                <span
+                  class="ant-badge-status-text"
+                />
+              </span>
+            </span>
           </span>
         </div>
         <span
@@ -2346,6 +2406,18 @@ exports[`SwitchDetails should navigate to troubleshooting tab correctly 1`] = `
             >
               ICX7150-C12 Router
             </h1>
+            <span>
+              <span
+                class="ant-badge ant-badge-status ant-badge-not-a-wrapper"
+              >
+                <span
+                  class="ant-badge-status-dot"
+                />
+                <span
+                  class="ant-badge-status-text"
+                />
+              </span>
+            </span>
           </span>
         </div>
         <span

@@ -89,6 +89,9 @@ export default function AlarmsHeaderButton () {
     sorter: {
       sortField: 'startTime',
       sortOrder: 'DESC'
+    },
+    pagination: {
+      pageSize: 25
     }
   })
 

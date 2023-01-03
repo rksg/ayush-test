@@ -22,6 +22,6 @@ export const onApply = (
 ) => {
   showToast({
     type: 'success',
-    content: `Cascader Options Selected: ${helper(selectedOptions)}`
+    content: `Options Selected: ${helper(selectedOptions)}`
   })
 }
