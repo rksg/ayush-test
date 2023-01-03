@@ -7,6 +7,7 @@ import {
   RequestPayload,
   SwitchUrlsInfo,
   SwitchViewModel,
+  Acl,
   Vlan,
   SwitchPortViewModel,
   TableResult,
@@ -15,7 +16,11 @@ import {
   onSocketActivityChanged,
   showActivityMessage,
   SwitchRow,
-  StackMember
+  StackMember,
+  VeViewModel,
+  VlanVePort,
+  AclUnion,
+  VeForm
 } from '@acx-ui/rc/utils'
 
 export const baseSwitchApi = createApi({
@@ -161,6 +166,42 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
+    getSwitchRoutedList: build.query<TableResult<VeViewModel>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getSwitchRoutedList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Switch', id: 'VE' }]
+    }),
+    getVenueRoutedList: build.query<TableResult<VeViewModel>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getVenueRoutedList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    getVlanListBySwitchLevel: build.query<TableResult<Vlan>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getVlanListBySwitchLevel, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    getSwitchAcls: build.query<Acl[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getSwitchAcls, params)
+        return {
+          ...req
+        }
+      }
+    }),
     saveSwitch: build.mutation<Switch, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(SwitchUrlsInfo.addSwitch, params)
@@ -170,6 +211,61 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Switch', id: 'LIST' }]
+    }),
+    getFreeVePortVlans: build.query<VlanVePort[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getFreeVePortVlans, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    getAclUnion: build.query<AclUnion, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getAclUnion, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    addVePort: build.mutation<VeForm, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.addVePort, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Switch', id: 'VE' }]
+    }),
+    updateVePort: build.mutation<VeForm, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.updateVePort, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Switch', id: 'VE' }]
+    }),
+    getSwitch: build.query<Switch, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getSwitch, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    deleteVePorts: build.mutation<VeForm, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.deleteVePorts, params)
+        return {
+          ...req,
+          body: payload
+        }
+
+      },
+      invalidatesTags: [{ type: 'Switch', id: 'VE' }]
     })
   })
 })
@@ -249,5 +345,16 @@ export const {
   useAddSwitchMutation,
   useAddStackMemberMutation,
   useGetSwitchListQuery,
-  useLazyGetSwitchListQuery
+  useLazyGetSwitchListQuery,
+  useGetVenueRoutedListQuery,
+  useGetSwitchRoutedListQuery,
+  useGetFreeVePortVlansQuery,
+  useLazyGetFreeVePortVlansQuery,
+  useGetAclUnionQuery,
+  useAddVePortMutation,
+  useUpdateVePortMutation,
+  useGetSwitchQuery,
+  useDeleteVePortsMutation,
+  useGetSwitchAclsQuery,
+  useGetVlanListBySwitchLevelQuery
 } = switchApi

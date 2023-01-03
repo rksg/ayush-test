@@ -26,7 +26,7 @@ describe('ActivityTable', () => {
       </Provider>,
       { route: { params } }
     )
-    await screen.findByText('Network \'123roam\' was updated')
+    await screen.findByRole('row', { name: /Network ' 123roam ' was updated/ })
   })
 
   it('should open/close activity drawer', async () => {
@@ -36,7 +36,7 @@ describe('ActivityTable', () => {
       </Provider>,
       { route: { params } }
     )
-    await screen.findByText('Network \'123roam\' was updated')
+    await screen.findByRole('row', { name: /Network ' 123roam ' was updated/ })
     await userEvent.click(screen.getByRole('button', { name: /2022/ }))
     screen.getByText('Activity Details')
     await userEvent.click(screen.getByRole('button', { name: 'Close' }))
