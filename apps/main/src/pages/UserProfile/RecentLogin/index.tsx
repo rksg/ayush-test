@@ -1,21 +1,9 @@
-import { SortOrder } from 'antd/lib/table/interface'
-import { useIntl }   from 'react-intl'
+import { useIntl } from 'react-intl'
 
-// import {
-//   // Loader,
-//   Table,
-//   TableProps
-// } from '@acx-ui/components'
-// import {
-//   useEventListQuery
-// } from '@acx-ui/rc/services'
-// import {
-//   useTableQuery
-// } from '@acx-ui/rc/utils'
-import { Loader, Table, TableProps, Button  }      from '@acx-ui/components'
-import { useAdminLogsQuery }                       from '@acx-ui/rc/services'
-import { AdminLog, CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
-import { formatter }                               from '@acx-ui/utils'
+import { Loader, Table, TableProps  }    from '@acx-ui/components'
+import { useAdminLogsQuery }             from '@acx-ui/rc/services'
+import { CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
+import { formatter }                     from '@acx-ui/utils'
 
 export interface EventList {
   adminName: string;
@@ -32,6 +20,9 @@ export function RecentLogin () {
   const { $t } = useIntl()
   const tableQuery = useTableQuery({
     useQuery: useAdminLogsQuery,
+    pagination: {
+      pageSize: 5
+    },
     defaultPayload: {
       url: CommonUrlsInfo.getEventList.url,
       fields: [
@@ -40,33 +31,9 @@ export function RecentLogin () {
         'entity_type',
         'entity_id',
         'message',
-        'apMac',
-        'clientMac',
-        'apName',
-        'switchName',
-        'serialNumber',
-        'networkName',
-        'networkId',
-        'ssid',
-        'radio',
-        'raw_event',
-        'product',
-        'sourceType',
-        'adminName',
-        'clientName',
-        'userName',
-        'hostname',
-        'adminEmail',
-        'administratorEmail',
-        'venueName',
-        'venueId',
-        'apGroupId',
-        'apGroupName',
-        'floorPlanName',
-        'recipientName',
-        'transactionId'
+        'adminName'
       ],
-      searchString: 'logged',
+      searchString: 'logged into',
       filters: {
         entity_type: ['ADMIN', 'NOTIFICATION']
       }
@@ -77,11 +44,6 @@ export function RecentLogin () {
     }
   })
 
-  let dataS
-  if(tableQuery.data && tableQuery.data?.totalCount > 5) {
-    dataS = tableQuery.data?.data.slice(0, 5)
-  }
-  // tableQuery.data?.totalCount > 5 ? tableQuery.data?.data.slice(0, 5) 
   const columnsRecentLogin: TableProps<EventList>['columns'] = [
     {
       title: $t({ defaultMessage: 'Date' }),

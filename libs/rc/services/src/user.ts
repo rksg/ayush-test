@@ -5,6 +5,7 @@ import {
   createHttpRequest,
   MfaAuthApp,
   MfaDetailStatus,
+  MfaOtpMethod,
   ProfileDataToUpdate,
   RequestPayload,
   UserSettings,
@@ -127,7 +128,16 @@ export const userApi = baseUserApi.injectEndpoints({
     //     return userProfile
     //   }
     // }),
-    mfaRegisterPhone: build.mutation<MfaAuthApp, RequestPayload>({
+    mfaRegisterAdmin: build.mutation<MfaOtpMethod, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.mfaRegisterAdmin, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    mfaRegisterPhone: build.query<MfaAuthApp, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(UserUrlsInfo.mfaRegisterPhone, params)
         return {
@@ -147,5 +157,6 @@ export const {
   useGetMfaTenantDetailsQuery,
   useGetMfaAdminDetailsQuery,
   // useGetMfaMasterCodeQuery,
-  useMfaRegisterPhoneMutation
+  useMfaRegisterAdminMutation,
+  useMfaRegisterPhoneQuery
 } = userApi

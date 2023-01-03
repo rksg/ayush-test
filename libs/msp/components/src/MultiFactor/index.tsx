@@ -47,11 +47,11 @@ export const MultiFactor = () => {
   }, [data])
 
   const onChangeSms = (checked: boolean) => {
-    // checked ? setSmsToggle(true) : setSmsToggle(false)
+    checked ? setSmsToggle(true) : setSmsToggle(false)
   }
 
   const onChangeAuthApp = (checked: boolean) => {
-    // setAuthAppToggle(checked)
+    setAuthAppToggle(checked)
   }
 
   const AuthenticationMethod = () => {
@@ -119,7 +119,7 @@ export const MultiFactor = () => {
         <Col span={8}>
           <Subtitle level={5} style={{ marginTop: '16px' }}>
             { $t({ defaultMessage: 'Backup authentication method' }) }</Subtitle>
-          <StepsForm.FieldLabel width='275px'>
+          <UI.FieldLabel width='275px'>
             <OtpLabel>
               {$t({ defaultMessage: 'Recovery Codes' })}
               {'User recovery codes to log in if you can’t receive a verification code via ' +
@@ -135,7 +135,7 @@ export const MultiFactor = () => {
               </UI.FieldTextLink>
               }
             />
-          </StepsForm.FieldLabel>
+          </UI.FieldLabel>
         </Col>
       </Row>
     )

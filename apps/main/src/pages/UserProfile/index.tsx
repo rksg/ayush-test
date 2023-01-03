@@ -202,7 +202,7 @@ export function UserProfile () {
   const SettingsTab = () => {
     return (
       <StepsForm
-        buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
+        buttonLabel={{ submit: $t({ defaultMessage: 'Apply Settings' }) }}
         onFinish={async () => handleUpdate()}
         onCancel={async () => handleCancel()}
       >
@@ -285,7 +285,7 @@ export function UserProfile () {
       />
       <UserData/>
 
-      <Tabs >
+      <Tabs destroyInactiveTabPane>
         {showNotification && <Tabs.TabPane
           tab={<Tooltip title={$t(notAvailableMsg)}>
             {$t({ defaultMessage: 'Notifications' })}

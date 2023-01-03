@@ -7,7 +7,7 @@ import {
   Drawer
 } from '@acx-ui/components'
 import {
-  useMfaRegisterPhoneMutation
+  useMfaRegisterPhoneQuery
 } from '@acx-ui/rc/services'
 
 interface AuthAppProps {
@@ -21,19 +21,21 @@ export const AuthApp = (props: AuthAppProps) => {
 
   const { visible, setVisible, userId } = props
   const [resetField, setResetField] = useState(false)
+  const [key, setKey] = useState('')
+  const [url, setUrl] = useState('')
   const [form] = Form.useForm()
 
-  // const { data } = useMfaRegisterPhoneMutation({ params: { userId: userId } })
+  const { data } = useMfaRegisterPhoneQuery({ params: { userId: userId } })
 
-  const key = 'ASFVZB7MCMYICUNR'
-  const url =
-  'https://chart.googleapis.com/chart?chs=200x200&chld=M%%7C0&cht=qr&chl=otpauth%3A%2F%2Ftotp%2FRUCKUSCloud%3Anull%3Fsecret%3DASFVZB7MCMYICUNR%26issuer%3DRUCKUSCloud'
-  // useEffect(() => {
-  //   if (data) {
-  //     // setMfaStatus(data.enabled)
-  //     // setRecoveryCode(data.recoveryCodes ? data.recoveryCodes : [])
-  //   }
-  // }, [data])
+  // let key = 'ASFVZB7MCMYICUNR'
+  // let url =
+  // 'https://chart.googleapis.com/chart?chs=200x200&chld=M%%7C0&cht=qr&chl=otpauth%3A%2F%2Ftotp%2FRUCKUSCloud%3Anull%3Fsecret%3DASFVZB7MCMYICUNR%26issuer%3DRUCKUSCloud'
+  useEffect(() => {
+    if (data) {
+      setKey(data.key)
+      setUrl(data.url)
+    }
+  }, [data])
 
   const onClose = () => {
     setVisible(false)

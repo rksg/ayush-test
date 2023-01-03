@@ -27,7 +27,7 @@ export const UserUrlsInfo: { [key: string]: ApiInfo } = {
   },
   updateMFAAccount: {
     method: 'put',
-    url: '/mfa/setupTenant/tenant/:tenantId/:enable'
+    url: '/mfa/setupTenant/tenant/:tenantId/enable'
   },
   getMfaMasterCode: {
     method: 'get',
@@ -35,7 +35,7 @@ export const UserUrlsInfo: { [key: string]: ApiInfo } = {
   },
   disableMFAMethod: {
     method: 'put',
-    url: '/mfa/auth-method/:mfaMethod:/disable'
+    url: '/mfa/auth-method/:mfaMethod/disable'
   }
 }
 

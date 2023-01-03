@@ -59,6 +59,11 @@ export interface MfaDetailStatus {
   enabled: boolean;
 }
 
+export interface MfaOtpMethod {
+  contactId: string;
+  method: string;
+}
+
 export interface MfaAuthApp {
   key: string;
   url: string;
