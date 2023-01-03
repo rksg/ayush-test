@@ -10,6 +10,7 @@ import { getIntl } from './intlUtil'
 
 const bytes = [' B', ' KB', ' MB', ' GB', ' TB', ' PB', ' EB', ' ZB', ' YB']
 const watts = [' mW', ' W', ' kW', ' MW', ' GW', ' TW', ' PW']
+const hertz = [' Hz', ' daHz', ' hHz', ' kHz', ' MHz', ' GHz', ' THz']
 
 const networkSpeed = [
   ' Kbps',
@@ -136,6 +137,16 @@ function calendarFormat (number: number, intl: IntlShape) {
   })
 }
 
+function hertzFormat (number:number) {
+  const boundary = Math.pow(10, 3)
+
+  if (number < boundary) {
+    return numberFormat(10, hertz.slice(0, 3), number)
+  } else {
+    return numberFormat(boundary, hertz.slice(3), number / boundary)
+  }
+}
+
 export const formats = {
   durationFormat: (number: number, intl: IntlShape) => durationFormat(number, 'short', intl),
   longDurationFormat: (number: number, intl: IntlShape) => durationFormat(number, 'long', intl),
@@ -146,6 +157,7 @@ export const formats = {
   bytesFormat: (number:number) => numberFormat(1024, bytes, number),
   networkSpeedFormat: (number: number) => numberFormat(1000, networkSpeed, number),
   radioFormat: (value: string|number) => `${value} GHz`,
+  hertzFormat: (number: number) => hertzFormat(number),
   floatFormat: (number: number) => numeral(number).format('0.[000]'),
   enabledFormat: (value: boolean) => (value ? 'Enabled' : 'Disabled'),
   ratioFormat: ([x, y]:[number, number]) => `${x} / ${y}`,

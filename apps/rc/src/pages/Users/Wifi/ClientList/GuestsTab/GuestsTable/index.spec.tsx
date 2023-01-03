@@ -9,12 +9,14 @@ import {
   mockServer,
   render,
   screen,
-  waitForElementToBeRemoved
+  waitFor,
+  waitForElementToBeRemoved,
+  within
 } from '@acx-ui/test-utils'
 
 import {
+  AllowedNetworkList,
   GuestClient,
-  GuestNetworkList,
   RegenerateGuestPassword
 } from '../../../__tests__/fixtures'
 
@@ -25,7 +27,6 @@ jest.mock('socket.io-client')
 
 describe('Guest Table', () => {
   let params: { tenantId: string }
-
   global.URL.createObjectURL = jest.fn()
 
   beforeEach(() => {
@@ -37,7 +38,7 @@ describe('Guest Table', () => {
       ),
       rest.post(
         CommonUrlsInfo.getVMNetworksList.url,
-        (req, res, ctx) => res(ctx.json(GuestNetworkList))
+        (req, res, ctx) => res(ctx.json(AllowedNetworkList))
       ),
       rest.post(
         ClientUrlsInfo.generateGuestPassword.url,
@@ -386,5 +387,53 @@ describe('Guest Table', () => {
     const generateButton = screen.getByRole('button', { name: /generate/i })
     await userEvent.click(generateButton)
     expect(await screen.findByText('An error occurred')).toBeVisible()
+  })
+
+  it('should show "Import from file" correctly', async () => {
+    mockServer.use(
+      rest.post(
+        ClientUrlsInfo.importGuestPass.url,
+        (req, res, ctx) => res(ctx.status(400), ctx.json({
+          requestId: '12b13705-fcf4-4fd2-94b9-2ef93106e396',
+          error: {
+            rootCauseErrors: [ {
+              code: 'GUEST-400002',
+              message: 'File does not contain any entries'
+            } ],
+            request: { },
+            status: 400
+          }
+        }))
+      )
+    )
+    render(
+      <Provider>
+        <GuestsTable />
+      </Provider>, {
+        route: { params, path: '/:tenantId/users/wifi/guests' },
+        wrapper: Provider
+      })
+    const importBtn = await screen.findByRole('button', { name: 'Import from file' })
+    await waitFor(() => expect(importBtn).toBeEnabled())
+
+    fireEvent.click(importBtn)
+    const dialog = await screen.findByRole('dialog')
+    const csvFile = new File([''], 'guests_import_template.csv', { type: 'text/csv' })
+    // eslint-disable-next-line testing-library/no-node-access
+    await userEvent.upload(document.querySelector('input[type=file]')!, csvFile)
+
+    const allowedNetworkCombo =
+      await within(dialog).findByLabelText('Allowed Network', { exact: false })
+    fireEvent.mouseDown(allowedNetworkCombo)
+    const option = await screen.findByText('guest pass wlan1')
+    fireEvent.click(option)
+
+    fireEvent.click(await within(dialog).findByLabelText('Print Guest pass', { exact: false }))
+
+    fireEvent.click(await within(dialog).findByRole('button', { name: 'Import' }))
+
+    fireEvent.click(await screen.findByRole('button', { name: 'Yes, create guest pass' }))
+
+    await waitFor(() => expect(dialog).toHaveTextContent('File does not contain any entries'))
   })
 })

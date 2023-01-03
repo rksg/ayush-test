@@ -73,16 +73,16 @@ export function apStatusTransform (value: ApDeviceStatusEnum | SwitchStatusEnum,
 
     case ApDeviceStatusEnum.APPLYING_FIRMWARE:
       message = apView === APView.AP_LIST ?
-        $t({ defaultMessage: 'Operational - applying firmware' })
-        : $t({ defaultMessage: 'AP operational - applying firmware' })
+        $t({ defaultMessage: 'Applying firmware' })
+        : $t({ defaultMessage: 'AP - applying firmware' })
       icon = 'icon-ok'
       color = 'ap-status-severity-cleared'
       break
 
     case ApDeviceStatusEnum.APPLYING_CONFIGURATION:
       message = apView === APView.AP_LIST ?
-        $t({ defaultMessage: 'Operational - applying configuration' })
-        : $t({ defaultMessage: 'AP operational - applying configuration' })
+        $t({ defaultMessage: 'Applying configuration' })
+        : $t({ defaultMessage: 'AP - applying configuration' })
       icon = 'icon-ok'
       color = 'ap-status-severity-cleared'
       break

@@ -11,9 +11,9 @@ export class ApRadioParamsDual5G {
 
   upper5gEnabled?: boolean
 
-  radioParamsLower5G: ApRadioParams50G
+  radioParamsLower5G?: ApRadioParams50G
 
-  radioParamsUpper5G: ApRadioParams50G
+  radioParamsUpper5G?: ApRadioParams50G
 
   constructor () {
     this.enabled = true

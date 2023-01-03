@@ -58,7 +58,7 @@ export default function DpskForm (props: DpskFormProps) {
       if (editMode) {
         await updateDpsk({ params, payload: _.omit(dpskSaveData, 'id') }).unwrap()
       } else {
-        await createDpsk({ params, payload: dpskSaveData }).unwrap()
+        await createDpsk({ payload: dpskSaveData }).unwrap()
       }
 
       navigate(linkToServices, { replace: true })

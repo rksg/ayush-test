@@ -24,7 +24,7 @@ export default function PortalWelcomeContent (props: {
     size={demoValue.welcomeSize as number}
     defaultSize={PortalDemoDefaultSize.welcomeSize}
     updateDemoImg={(data) => {
-      updateWelcome(data)
+      updateWelcome({ ...data, text: demoValue.welcomeText })
     }}
   />
   return (

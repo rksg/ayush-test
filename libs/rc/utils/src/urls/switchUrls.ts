@@ -29,12 +29,52 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/api/switch/tenant/:tenantId/aaaServer'
   },
+  getSwitchList: {
+    method: 'post',
+    url: '/api/viewmodel/:tenantId/switch/switchlist'
+  },
+  getMemberList: {
+    method: 'post',
+    url: '/api/viewmodel/:tenantId/switch/memberlist'
+  },
+  deleteSwitches: {
+    method: 'delete',
+    url: '/api/switch/tenant/:tenantId/switches'
+  },
   getSwitchDetailHeader: {
     method: 'get',
     url: '/api/viewmodel/:tenantId/switch/:switchId'
   },
+  getSwitchPortlist: {
+    method: 'post',
+    url: '/api/viewmodel/:tenantId/switch/portlist'
+  },
   importSwitches: {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/import'
+  },
+  getVlansByVenue: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/profile/vlans/venue/:venueId'
+  },
+  addSwitch: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/switch'
+  },
+  addStackMember: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/switch/:stackSerialNumber/member/:newStackMemberSerialNumber'
+  },
+  getSwitchAcls: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/acls/switch/:switchId'
+  },
+  getVlanListBySwitchLevel: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/vlans/switch/:switchId/query'
+  },
+  getVlanByUuid: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/vlan/:vlanUuid'
   }
 }
