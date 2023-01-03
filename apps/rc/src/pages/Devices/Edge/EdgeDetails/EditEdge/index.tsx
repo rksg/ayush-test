@@ -29,7 +29,7 @@ const tabs = {
     content: <DnsServer />
   },
   'routes': {
-    title: intl.$t({ defaultMessage: 'Static Routes' }),
+    title: $t({ defaultMessage: 'Static Routes' }),
     content: <StaticRoutes />
   }
 }

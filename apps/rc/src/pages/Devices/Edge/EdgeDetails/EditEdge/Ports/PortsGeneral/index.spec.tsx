@@ -166,9 +166,11 @@ describe('EditEdge ports - ports general', () => {
         }
       })
     await user.click(await screen.findByRole('radio', { name: 'Port 5' }))
+    const portEnabled = await screen.findByRole('switch', { name: 'Port Enabled' })
     const portTypeSelect = await screen.findByRole('combobox', { name: 'Port Type' })
     await user.click(portTypeSelect)
     await user.click(await screen.findByText('Select port type..'))
+    expect(portEnabled).not.toBeVisible()
   })
 
   it('set port type to LAN', async () => {
@@ -184,6 +186,8 @@ describe('EditEdge ports - ports general', () => {
       })
     await user.click(await screen.findByRole('combobox', { name: 'Port Type' }))
     await user.click(await screen.findByText('LAN'))
+    await screen.findByRole('textbox', { name: 'IP Address' })
+    screen.getByRole('textbox', { name: 'Subnet Mask' })
   })
 
   it('set port type to WAN with ip mode STATIC', async () => {
@@ -203,6 +207,9 @@ describe('EditEdge ports - ports general', () => {
     await user.click((await screen.findAllByText('WAN'))[1])
     const ipModeRadio = await screen.findByRole('radio', { name: 'Static/Manual' })
     await user.click(ipModeRadio)
+    await screen.findByRole('textbox', { name: 'IP Address' })
+    screen.getByRole('textbox', { name: 'Subnet Mask' })
+    screen.getByRole('textbox', { name: 'Gateway' })
   })
 
   it('switch port tab', async () => {

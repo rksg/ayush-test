@@ -4,12 +4,15 @@ import {
   CommonResult,
   createHttpRequest,
   EdgeDnsServers,
-  EdgePortConfig,
   EdgeGeneralSetting,
+  EdgePortConfig,
   EdgeStaticRouteConfig,
+  EdgeStatus,
   EdgeSubInterface,
   EdgeUrlsInfo,
-  EdgeStatus, PaginationQueryResult, RequestPayload, TableResult
+  PaginationQueryResult,
+  RequestPayload,
+  TableResult
 } from '@acx-ui/rc/utils'
 
 export const baseEdgeApi = createApi({

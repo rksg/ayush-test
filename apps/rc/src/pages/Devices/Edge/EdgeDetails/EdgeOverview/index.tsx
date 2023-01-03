@@ -8,8 +8,8 @@ import {
   EdgeResourceUtilizationWidget,
   EdgePortsByTrafficWidget
 } from '@acx-ui/rc/components'
-import { useEdgeBySerialNumberQuery }             from '@acx-ui/rc/services'
-import { EdgePort, EdgeStatus, EdgePortTypeEnum } from '@acx-ui/rc/utils'
+import { useEdgeBySerialNumberQuery }                 from '@acx-ui/rc/services'
+import { EdgePortView, EdgeStatus, EdgePortTypeEnum } from '@acx-ui/rc/utils'
 
 import { EdgeUpTimeWidget } from './EdgeUpTimeWidget'
 
@@ -39,7 +39,7 @@ export const EdgeOverview = styled(({ className }:{ className?: string }) => {
 
   // TODO: used fake data to wait for API
   const isPortListLoading = false
-  const edgePortsSetting: EdgePort[] = [{
+  const edgePortsSetting: EdgePortView[] = [{
     portId: '1',
     portName: 'Port 1',
     status: 'Up',
@@ -72,7 +72,7 @@ export const EdgeOverview = styled(({ className }:{ className?: string }) => {
       <GridCol col={{ span: 24 }}>
         <EdgeInfoWidget
           currentEdge={currentEdge as EdgeStatus}
-          edgePortsSetting={edgePortsSetting as EdgePort[]}
+          edgePortsSetting={edgePortsSetting as EdgePortView[]}
           isEdgeStatusLoading={isLoadingEdgeStatus}
           isPortListLoading={isPortListLoading}
         />
@@ -94,7 +94,7 @@ export const EdgeOverview = styled(({ className }:{ className?: string }) => {
       {/* TODO: wait for API*/}
       <GridCol col={{ span: 12 }} className='statistic'>
         <EdgePortsByTrafficWidget
-          edgePortsSetting={edgePortsSetting as EdgePort[]}
+          edgePortsSetting={edgePortsSetting as EdgePortView[]}
           isLoading={isPortListLoading}
         />
       </GridCol>
