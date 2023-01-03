@@ -7,7 +7,7 @@ import {
   Activity,
   RequestPayload,
   TableQuery,
-  getDescription,
+  getActivityDescription,
   productMapping,
   severityMapping,
   statusMapping
@@ -74,7 +74,7 @@ const ActivityTable = ({ tableQuery }: ActivityTableProps) => {
       dataIndex: 'description',
       sorter: true,
       render: function (_, row) {
-        return getDescription(row.descriptionTemplate, row.descriptionData)
+        return getActivityDescription(row.descriptionTemplate, row.descriptionData)
       }
     }
   ]
@@ -113,7 +113,7 @@ const ActivityTable = ({ tableQuery }: ActivityTableProps) => {
     },
     {
       title: defineMessage({ defaultMessage: 'Description' }),
-      value: (() => getDescription(data.descriptionTemplate, data.descriptionData))()
+      value: (() => getActivityDescription(data.descriptionTemplate, data.descriptionData))()
     }
   ]
 
