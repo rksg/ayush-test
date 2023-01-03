@@ -108,7 +108,7 @@ export function AlarmWidget () {
       <Card title={$t({ defaultMessage: 'Alarms' })}>
         <AutoSizer>
           {({ height, width }) => (
-            data && data.length > 0
+            (data && data.length > 0) && (alarmQuery.data?.data && alarmQuery.data?.data.length>0)
               ? <>
                 <DonutChart
                   style={{ width, height: height / 3 }}
