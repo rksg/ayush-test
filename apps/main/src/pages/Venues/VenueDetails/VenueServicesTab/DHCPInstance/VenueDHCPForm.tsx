@@ -30,7 +30,7 @@ import {  } from '@acx-ui/rc/services'
 
 
 const { Option } = AntSelect
-const defaultApPayload = {
+const defaultAPPayload = {
   fields: ['serialNumber', 'name', 'venueId'],
   pageSize: 10000
 }
@@ -46,7 +46,7 @@ const VenueDHCPForm = (props: {
     params
   })
   const { data: dhcpProfileList } = useGetDHCPProfileListQuery({ params })
-  const { data: apList } = useApListQuery({ params, payload: defaultApPayload })
+  const { data: apList } = useApListQuery({ params, payload: defaultAPPayload })
 
 
   const [gateways, setGateways] = useState<DHCPProfileAps[]>()

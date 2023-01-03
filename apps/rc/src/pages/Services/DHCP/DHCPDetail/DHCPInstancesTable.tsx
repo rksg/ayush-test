@@ -105,7 +105,7 @@ export default function DHCPInstancesTable (){
   return (
     <Loader states={[{ isLoading: tableQuery.isLoading||tableQuery.isFetching }]}>
       <Card title={$t({ defaultMessage: 'Instances ({count})' },
-        { count: tableQuery.data?.data.length||0 })}>
+        { count: tableQuery.data?.totalCount||0 })}>
         <Table
           columns={columns}
           pagination={tableQuery.pagination}
