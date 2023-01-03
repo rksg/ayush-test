@@ -22,6 +22,10 @@ export default function DpskPassphraseManagement () {
   const params = useParams()
   const tableQuery = useTableQuery({
     useQuery: useDpskPassphraseListQuery,
+    sorter: {
+      sortField: 'createdDate',
+      sortOrder: 'desc'
+    },
     defaultPayload: {
       fields: ['check-all', 'id', 'passphrase', 'username',
         'vlanId', 'mac', 'numberOfDevices', 'createdDate', 'expirationDate']
@@ -34,7 +38,7 @@ export default function DpskPassphraseManagement () {
       title: $t({ defaultMessage: 'Passphrase Created' }),
       dataIndex: 'createdDate',
       sorter: true,
-      defaultSortOrder: 'ascend',
+      defaultSortOrder: 'descend',
       render: function (data) {
         return formatter('dateTimeFormat')(data)
       }
@@ -128,6 +132,7 @@ export default function DpskPassphraseManagement () {
         columns={columns}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
+        onChange={tableQuery.handleTableChange}
         actions={actions}
         rowActions={rowActions}
         rowSelection={{ type: 'checkbox' }}

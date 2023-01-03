@@ -23,7 +23,7 @@ export const DpskUrls: { [key: string]: ApiInfo } = {
   },
   getPassphraseList: {
     method: 'get',
-    url: '/api/dpskServices/:serviceId/passphrases'
+    url: '/api/dpskServices/:serviceId/passphrases?size=:pageSize&page=:page&sort=:sort'
   },
   addPassphrase: {
     method: 'post',

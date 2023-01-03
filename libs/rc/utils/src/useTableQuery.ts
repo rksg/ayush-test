@@ -176,19 +176,53 @@ export function useTableQuery <
   } as TableQuery<ResultType, Payload, ResultExtra>
 }
 
+export interface NewTablePageable {
+  offset: number
+  pageNumber: number
+  pageSize: number
+  paged: boolean
+  sort: {
+    unsorted: boolean,
+    sorted: boolean,
+    empty: boolean
+  }
+  unpaged: boolean
+}
+
+export interface TableChangePayload {
+  sortField: string
+  sortOrder: keyof typeof SORTER_ABBR
+  page: number
+  pageSize: number
+}
+
 export interface NewTableResult<T> {
-  totalElements: number;
-  totalPages: number;
-  page: number;
-  size: number;
-  sort: string[];
+  totalElements: number
+  totalPages: number
+  sort: {
+    unsorted: boolean,
+    sorted: boolean,
+    empty: boolean
+  }
   content: T[]
+  pageable: NewTablePageable
 }
 
 export function transferTableResult<T> (newResult: NewTableResult<T>): TableResult<T> {
   return {
     data: newResult.content,
-    page: newResult.page,
+    page: newResult.pageable.pageNumber + 1,
     totalCount: newResult.totalElements
+  }
+}
+
+export function transferPaginationParams (payload: TableChangePayload) {
+  const pageSize = payload.pageSize ?? DEFAULT_PAGINATION.pageSize
+  const page = payload.page ?? DEFAULT_PAGINATION.page
+  const sort = payload.sortField + ',' + payload.sortOrder.toLowerCase()
+  return {
+    pageSize: pageSize.toString(),
+    page: (page - 1).toString(),
+    sort
   }
 }

@@ -40,7 +40,9 @@ import {
   onSocketActivityChanged,
   showActivityMessage,
   MdnsProxyAp,
-  UploadUrlResponse
+  UploadUrlResponse,
+  transferPaginationParams,
+  TableChangePayload
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
@@ -546,9 +548,13 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'DpskPassphrase', id: 'LIST' }]
     }),
+    // eslint-disable-next-line max-len
     dpskPassphraseList: build.query<TableResult<NewDpskPassphrase>, RequestPayload>({
-      query: ({ params }) => {
-        const getDpskPassphraseListReq = createHttpRequest(DpskUrls.getPassphraseList, params)
+      query: ({ params, payload }) => {
+        const getDpskPassphraseListReq = createHttpRequest(
+          DpskUrls.getPassphraseList,
+          { ...params, ...transferPaginationParams(payload as TableChangePayload) }
+        )
         return {
           ...getDpskPassphraseListReq
         }
