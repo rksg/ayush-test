@@ -87,7 +87,10 @@ export const serviceApi = baseServiceApi.injectEndpoints({
             'Activate Multicast DNS Proxy Service Profiles',
             'Deactivate Multicast DNS Proxy Service Profiles',
             'Delete WiFi Calling Service Profile',
-            'Delete WiFi Calling Service Profiles'
+            'Delete WiFi Calling Service Profiles',
+            'Update Portal Service Profile',
+            'Delete Portal Service Profile',
+            'Delete Portal Service Profiles'
           ], () => {
             api.dispatch(serviceApi.util.invalidateTags([
               { type: 'Service', id: 'LIST' }
@@ -590,7 +593,19 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Service', id: 'LIST' }]
+      providesTags: [{ type: 'Service', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          showActivityMessage(msg, [
+            'Add Portal Service Profile',
+            'Update Portal Service Profile',
+            'Delete Portal Service Profile',
+            'Delete Portal Service Profiles'
+          ], () => {
+            api.dispatch(serviceApi.util.invalidateTags([{ type: 'Service', id: 'LIST' }]))
+          })
+        })
+      }
     }),
     getPortalLang: build.mutation<{ res : { data : string } }, RequestPayload>({
       query: ({ params }) => {

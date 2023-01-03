@@ -1,11 +1,17 @@
 import { rest } from 'msw'
 
-import { switchApi }                             from '@acx-ui/rc/services'
-import { CommonUrlsInfo, SwitchUrlsInfo }        from '@acx-ui/rc/utils'
-import { Provider, store }                       from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
+import { switchApi }                      from '@acx-ui/rc/services'
+import { CommonUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                from '@acx-ui/store'
+import {
+  fireEvent,
+  mockServer,
+  render,
+  screen,
+  waitForElementToBeRemoved
+} from '@acx-ui/test-utils'
 
-import { switchDetailData, venueData } from '../__tests__/fixtures'
+import { switchDetailData, venueData, vlanList } from '../__tests__/fixtures'
 
 import { SwitchOverviewTab } from '.'
 
@@ -37,7 +43,11 @@ describe('SwitchOverviewTab', () => {
       rest.post(
         SwitchUrlsInfo.getMemberList.url,
         (_, res, ctx) => res(ctx.json([]))
-      )
+      ),
+
+      rest.post(SwitchUrlsInfo.getVlanListBySwitchLevel.url,
+        (_, res, ctx) => res(ctx.json(vlanList)))
+
     )
   })
 
@@ -113,8 +123,9 @@ describe('SwitchOverviewTab', () => {
         path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab'
       }
     })
-    expect(asFragment()).toMatchSnapshot()
-  })
+
+    await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
+    expect(asFragment()).toMatchSnapshot() })
 
   it('should navigate to ACLs tab correctly', async () => {
     const params = {
@@ -124,12 +135,12 @@ describe('SwitchOverviewTab', () => {
       activeTab: 'overview',
       activeSubTab: 'acls'
     }
-    const { asFragment } = render(<Provider><SwitchOverviewTab /></Provider>, {
+    render(<Provider><SwitchOverviewTab /></Provider>, {
       route: {
         params,
         path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab'
       }
     })
-    expect(asFragment()).toMatchSnapshot()
+    await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
   })
 })
