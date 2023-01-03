@@ -6,19 +6,19 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { useDeleteEdgeMutation, useGetEdgeListQuery, useSendOtpMutation }            from '@acx-ui/rc/services'
-import { EdgeStatusEnum, EdgeViewModel, useTableQuery, TABLE_QUERY, RequestPayload } from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useTenantLink }                                    from '@acx-ui/react-router-dom'
+import { useDeleteEdgeMutation, useGetEdgeListQuery, useSendOtpMutation }         from '@acx-ui/rc/services'
+import { EdgeStatusEnum, EdgeStatus, useTableQuery, TABLE_QUERY, RequestPayload } from '@acx-ui/rc/utils'
+import { TenantLink, useNavigate, useTenantLink }                                 from '@acx-ui/react-router-dom'
 
 import { EdgeStatusLight } from './EdgeStatusLight'
 
 export { EdgeStatusLight } from './EdgeStatusLight'
 
-export interface EdgesTableTableQueryProps
-  extends Omit<TABLE_QUERY<EdgeViewModel, RequestPayload<unknown>, unknown>, 'useQuery'>{}
+export interface EdgesTableQueryProps
+  extends Omit<TABLE_QUERY<EdgeStatus, RequestPayload<unknown>, unknown>, 'useQuery'>{}
 
-interface EdgesTableProps extends Omit<TableProps<EdgeViewModel>, 'columns'> {
-  tableQuery?: EdgesTableTableQueryProps
+interface EdgesTableProps extends Omit<TableProps<EdgeStatus>, 'columns'> {
+  tableQuery?: EdgesTableQueryProps
 }
 
 export const defaultEdgeTablePayload = {
@@ -54,7 +54,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
   const [deleteEdge, { isLoading: isDeleteEdgeUpdating }] = useDeleteEdgeMutation()
   const [sendOtp] = useSendOtpMutation()
 
-  const columns: TableProps<EdgeViewModel>['columns'] = [
+  const columns: TableProps<EdgeStatus>['columns'] = [
     {
       title: $t({ defaultMessage: 'SmartEdge' }),
       tooltip: $t({ defaultMessage: 'SmartEdge' }),
@@ -135,7 +135,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
     }
   ]
 
-  const rowActions: TableProps<EdgeViewModel>['rowActions'] = [
+  const rowActions: TableProps<EdgeStatus>['rowActions'] = [
     {
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),

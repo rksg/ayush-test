@@ -9,6 +9,8 @@ export { ConnectedClientsTable } from './ConnectedClientsTable'
 export { DevicesDashboardWidget } from './DevicesDashboardWidget'
 export { DevicesWidget } from './DevicesWidget'
 export { EdgeSettingForm } from './EdgeSettingForm'
+export { EdgesTable, EdgeStatusLight, defaultEdgeTablePayload } from './EdgesTable'
+export type { EdgesTableQueryProps } from './EdgesTable'
 export { SpaceWrapper } from './SpaceWrapper/index'
 export { EdgeInfoWidget }  from './EdgeInfoWidget'
 export { EventTable } from './EventTable'
@@ -36,12 +38,6 @@ export { VenueAlarmWidget } from './VenueAlarmWidget'
 export { VenuesDashboardWidget } from './VenuesDashboardWidget'
 export { WifiSignal } from './WifiSignal'
 export { ApSelector } from './ApSelector'
-export {
-  EdgesTable,
-  EdgeStatusLight,
-  EdgesTableTableQueryProps,
-  defaultEdgeTablePayload
-} from './EdgesTable'
 
 export * from './services'
 export * from './EdgeStatisticWidget'

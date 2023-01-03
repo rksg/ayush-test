@@ -2,9 +2,9 @@ import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 import styled      from 'styled-components/macro'
 
-import { Button }                                 from '@acx-ui/components'
-import { EdgesTable, EdgesTableTableQueryProps  } from '@acx-ui/rc/components'
-import { useParams, TenantLink }                  from '@acx-ui/react-router-dom'
+import { Button }                            from '@acx-ui/components'
+import { EdgesTable, EdgesTableQueryProps  } from '@acx-ui/rc/components'
+import { useParams, TenantLink }             from '@acx-ui/react-router-dom'
 
 const SpaceWrapper = styled(Space)`
   width: 100%;
@@ -16,7 +16,7 @@ export const VenueEdgesTable = () => {
   const { $t } = useIntl()
   const params = useParams()
 
-  const tableQuery: EdgesTableTableQueryProps = {
+  const tableQuery: EdgesTableQueryProps = {
     defaultPayload: {
       fields: [
         'name',
