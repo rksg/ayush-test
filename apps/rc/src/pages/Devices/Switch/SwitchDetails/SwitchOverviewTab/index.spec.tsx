@@ -106,7 +106,7 @@ describe('SwitchOverviewTab', () => {
         path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab'
       }
     })
-    await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' })) })
+    await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
   })
 
   it('should navigate to VLANs tab correctly', async () => {
@@ -124,7 +124,8 @@ describe('SwitchOverviewTab', () => {
       }
     })
 
-    await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' })) })
+    await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
+  })
 
   it('should navigate to ACLs tab correctly', async () => {
     const params = {
@@ -142,4 +143,5 @@ describe('SwitchOverviewTab', () => {
     })
     await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
   })
-})
+}
+)
