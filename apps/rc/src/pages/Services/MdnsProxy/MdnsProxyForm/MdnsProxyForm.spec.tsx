@@ -7,14 +7,27 @@ import {
   ServiceType,
   websocketServerUrl,
   getServiceRoutePath,
-  ServiceOperation
+  ServiceOperation,
+  getServiceListRoutePath
 } from '@acx-ui/rc/utils'
-import { Path, To, useTenantLink }                from '@acx-ui/react-router-dom'
-import { Provider }                               from '@acx-ui/store'
-import { mockServer, render, renderHook, screen } from '@acx-ui/test-utils'
+import { Path, To, useTenantLink } from '@acx-ui/react-router-dom'
+import { Provider }                from '@acx-ui/store'
+import {
+  mockServer,
+  render,
+  renderHook,
+  screen,
+  waitForElementToBeRemoved
+} from '@acx-ui/test-utils'
 
-import { mockedFormData, mockedTenantId, mockedVenueList } from './__tests__/fixtures'
-import MdnsProxyForm                                       from './MdnsProxyForm'
+import {
+  mockedTenantId,
+  mockedVenueList,
+  mockedGetApiResponse,
+  mockedServiceId,
+  mockedMdnsProxyList
+} from './__tests__/fixtures'
+import MdnsProxyForm from './MdnsProxyForm'
 
 
 const mockedUseNavigate = jest.fn()
@@ -46,15 +59,23 @@ describe('MdnsProxyForm', () => {
     mockServer.use(
       rest.post(
         MdnsProxyUrls.addMdnsProxy.url,
-        (req, res, ctx) => res(ctx.json(mockedFormData))
+        (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.get(
+        MdnsProxyUrls.getMdnsProxy.url,
+        (req, res, ctx) => res(ctx.json({ ...mockedGetApiResponse }))
       ),
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
-        (req, res, ctx) => res(ctx.json(mockedVenueList))
+        (req, res, ctx) => res(ctx.json({ ...mockedVenueList }))
       ),
       rest.get(
         websocketServerUrl,
         (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.get(
+        MdnsProxyUrls.getMdnsProxyList.url,
+        (req, res, ctx) => res(ctx.json([...mockedMdnsProxyList]))
       )
     )
   })
@@ -68,8 +89,11 @@ describe('MdnsProxyForm', () => {
       }
     )
 
-    await userEvent.type(await screen.findByRole('textbox', { name: /service name/i }), 'My mDNS')
+    await userEvent.type(await screen.findByRole('textbox', { name: /Service Name/ }), 'My mDNS')
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+
+    const validating = await screen.findByRole('img', { name: 'loading' })
+    await waitForElementToBeRemoved(validating, { timeout: 2000 })
 
     await screen.findByRole('heading', { name: 'Scope', level: 3 })
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
@@ -78,39 +102,11 @@ describe('MdnsProxyForm', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Finish' }))
   })
 
-  it('should show toast when create service profile failed', async () => {
+  it('should show toast when edit service profile failed', async () => {
     mockServer.use(
-      rest.post(
-        MdnsProxyUrls.addMdnsProxy.url,
+      rest.put(
+        MdnsProxyUrls.updateMdnsProxy.url,
         (req, res, ctx) => res(ctx.status(404), ctx.json({}))
-      )
-    )
-
-    render(
-      <Provider>
-        <MdnsProxyForm editMode={false} />
-      </Provider>, {
-        route: { params, path: createPath }
-      }
-    )
-
-    await userEvent.type(await screen.findByRole('textbox', { name: /service name/i }), 'My mDNS')
-    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
-
-    await screen.findByRole('heading', { name: 'Scope', level: 3 })
-    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
-
-    await screen.findByRole('heading', { name: 'Summary', level: 3 })
-    await userEvent.click(screen.getByRole('button', { name: 'Finish' }))
-
-    await screen.findByText('An error occurred')
-  })
-
-  it('should render edit form', async () => {
-    mockServer.use(
-      rest.get(
-        MdnsProxyUrls.getMdnsProxy.url,
-        (req, res, ctx) => res(ctx.json(mockedFormData))
       )
     )
 
@@ -118,16 +114,34 @@ describe('MdnsProxyForm', () => {
       <Provider>
         <MdnsProxyForm editMode={true} />
       </Provider>, {
-        route: { params: { ...params, serviceId: 'mocked_service_id' }, path: editPath }
+        route: { params: { ...params, serviceId: mockedServiceId }, path: editPath }
       }
     )
 
-    await screen.findByDisplayValue(mockedFormData.name)
+    await userEvent.type(await screen.findByRole('textbox', { name: /service name/i }), 'My mDNS')
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+
+    await screen.findByRole('heading', { name: 'Scope', level: 3 })
+    await userEvent.click(screen.getByRole('button', { name: 'Finish' }))
+
+    await screen.findByText('An error occurred')
+  })
+
+  it('should render edit form', async () => {
+    render(
+      <Provider>
+        <MdnsProxyForm editMode={true} />
+      </Provider>, {
+        route: { params: { ...params, serviceId: mockedServiceId }, path: editPath }
+      }
+    )
+
+    await screen.findByDisplayValue(mockedGetApiResponse.serviceName)
   })
 
   it('should navigate to the Select service page when clicking Cancel button', async () => {
     const { result: selectServicePath } = renderHook(() => {
-      return useTenantLink('/services')
+      return useTenantLink(getServiceListRoutePath(true))
     })
 
     render(

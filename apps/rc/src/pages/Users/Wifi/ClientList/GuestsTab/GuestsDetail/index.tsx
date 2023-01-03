@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 
 import { Divider,
   Dropdown,
-  Form,
   Menu,
   MenuProps,
   Space } from 'antd'
@@ -10,11 +9,17 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 
-import { Button, cssStr, Table, TableProps } from '@acx-ui/components'
-import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
-import { ArrowExpand }                       from '@acx-ui/icons'
-import { ClientHealthIcon }                  from '@acx-ui/rc/components'
-import { useGetGuestsListQuery }             from '@acx-ui/rc/services'
+import {
+  Button,
+  cssStr,
+  Table,
+  TableProps,
+  Descriptions
+} from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { ArrowExpand }            from '@acx-ui/icons'
+import { ClientHealthIcon }       from '@acx-ui/rc/components'
+import { useGetGuestsListQuery }  from '@acx-ui/rc/services'
 import {
   getOsTypeIcon,
   Guest,
@@ -243,12 +248,8 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
     />
   )
 
-  return (<Form
-    labelCol={{ span: 10 }}
-    labelAlign='left' >
-    <div style={{
-      textAlign: 'right'
-    }}>
+  return (<>
+    <div style={{ textAlign: 'right' }}>
       {useIsSplitOn(Features.DEVICES) &&
         <Dropdown overlay={menu} key='actions'>
           <Button type='secondary'>
@@ -261,50 +262,56 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
       }
     </div>
 
-    <Form.Item
-      label={$t({ defaultMessage: 'Guest Type:' })}
-      children={renderGuestType(guestDetail.guestType)} />
+    <Descriptions>
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Guest Type' })}
+        children={renderGuestType(guestDetail.guestType)} />
 
-    <Form.Item
-      label={$t({ defaultMessage: 'Guest Name:' })}
-      children={guestDetail.name} />
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Guest Name' })}
+        children={guestDetail.name} />
 
-    <Form.Item
-      label={$t({ defaultMessage: 'Mobile Phone:' })}
-      children={transformDisplayText(guestDetail.mobilePhoneNumber)} />
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Mobile Phone' })}
+        children={transformDisplayText(guestDetail.mobilePhoneNumber)} />
 
-    <Form.Item
-      label={$t({ defaultMessage: 'Email:' })}
-      children={transformDisplayText(guestDetail.emailAddress)} />
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Email' })}
+        children={transformDisplayText(guestDetail.emailAddress)} />
 
-    <Form.Item
-      label={$t({ defaultMessage: 'Notes:' })}
-      children={transformDisplayText(guestDetail.notes)} />
-
-    <Divider />
-
-    <Form.Item
-      label={$t({ defaultMessage: 'Allowed Network:' })}
-      children={renderAllowedNetwork(guestDetail)} />
-
-    {/* TODO: Wait for framework support userprofile-format dateTimeFormats */}
-    <Form.Item
-      label={$t({ defaultMessage: 'Guest Created:' })}
-      children={moment(guestDetail.creationDate).format('DD/MM/YYYY HH:mm')} />
-
-    <Form.Item
-      label={$t({ defaultMessage: 'Access Expires:' })}
-      children={renderExpires(guestDetail)} />
-
-    <Form.Item
-      label={$t({ defaultMessage: 'Max. Number of Clients:' })}
-      children={renderMaxNumberOfClients(guestDetail.maxNumberOfClients)} />
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Notes' })}
+        children={transformDisplayText(guestDetail.notes)} />
+    </Descriptions>
 
     <Divider />
 
-    <Form.Item
-      label={$t({ defaultMessage: 'Status:' })}
-      children={renderStatus(guestDetail)} />
+    <Descriptions>
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Allowed Network' })}
+        children={renderAllowedNetwork(guestDetail)} />
+
+      {/* TODO: Wait for framework support userprofile-format dateTimeFormats */}
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Guest Created' })}
+        children={moment(guestDetail.creationDate).format('DD/MM/YYYY HH:mm')} />
+
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Access Expires' })}
+        children={renderExpires(guestDetail)} />
+
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Max. Number of Clients' })}
+        children={renderMaxNumberOfClients(guestDetail.maxNumberOfClients)} />
+    </Descriptions>
+
+    <Divider />
+
+    <Descriptions>
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Status' })}
+        children={renderStatus(guestDetail)} />
+    </Descriptions>
 
     {guestDetail.clients &&
       <Table
@@ -315,12 +322,6 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
 
     <GenerateNewPasswordModal {...{
       generateModalVisible, setGenerateModalVisible, guestDetail, tenantId
-    }}
-    />
-  </Form>
-  )
+    }} />
+  </>)
 }
-
-
-
-

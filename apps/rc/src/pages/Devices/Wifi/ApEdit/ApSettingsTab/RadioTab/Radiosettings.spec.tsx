@@ -608,6 +608,3 @@ describe('RadioSettingsTab', ()=> {
     })
   })
 })
-
-
-
