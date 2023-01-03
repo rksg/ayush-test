@@ -66,7 +66,7 @@ export const ApCellularProperties = (props: ApCellularPropertiesProps) => {
   useEffect(() => {
     getSimPresent()
   }, [currentAP])
-  return (
+  return (<>
     <Descriptions labelWidthPercent={50}>
       <Descriptions.Item
         label={$t({ defaultMessage: 'SIM Present' })}
@@ -163,24 +163,19 @@ export const ApCellularProperties = (props: ApCellularPropertiesProps) => {
         label={$t({ defaultMessage: 'RSCP' })}
         children={currentCellularInfo.cellularRSCP || $t({ defaultMessage: 'None' })}
       />
-      {
-        cellularSim.sim0Present &&
-          <Descriptions.Item 
-            children={<SimPresent title={$t({ defaultMessage: 'SIM 0' })}
-            currentCellularInfo={cellularSim.sim0PresentData} />}
-          />
-      }
-      {
-        cellularSim.sim1Present &&
-          <Descriptions.Item 
-            children={<SimPresent title={$t({ defaultMessage: 'SIM 1' })}
-            style={{ marginTop: '15px' }}
-            currentCellularInfo={cellularSim.sim1PresentData} />}
-          />
-          
-      }
     </Descriptions>
-  )
+    {
+      cellularSim.sim0Present && <SimPresent
+        title={$t({ defaultMessage: 'SIM 0' })}
+        currentCellularInfo={cellularSim.sim0PresentData}
+      />
+    }
+    {
+      cellularSim.sim1Present && <SimPresent
+        title={$t({ defaultMessage: 'SIM 1' })}
+        style={{ marginTop: '15px' }}
+        currentCellularInfo={cellularSim.sim1PresentData}
+      />
+    }
+  </>)
 }
-
-

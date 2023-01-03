@@ -19,12 +19,35 @@ export interface DpskSaveData {
   expirationType: ExpirationType | null; // null means Never expires
   expirationOffset?: number; // If 'expirationType' is not SPECIFIED_DATE then this field is the offset amount
   expirationDate?: string; // If 'expirationType' is SPECIFIED_DATE then this field is the related date in format YYYY-MM-DD.
+  networkIds?: string[]
 }
-export interface DpskList {
-  totalElements: number;
-  totalPages: number;
-  page: number;
-  size: number;
-  sort: string[];
-  content: DpskSaveData[]
+export interface NewDpskPassphrase {
+  id: string;
+  passphrase: string;
+  username?: string;
+  vlanId?: string;
+  mac?: string;
+  numberOfDevices?: number;
+  createdDate: string;
+  expirationDate: string;
+}
+
+export interface CreateDpskPassphrasesFormFields {
+  numberOfPassphrases: number;
+  passphrase?: string;
+  username?: string;
+  vlanId?: string;
+  mac?: string;
+  numberOfDevices?: number;
+  expiration: Omit<ExpirationDateEntity, 'offset'>
+}
+
+export interface DpskPassphrasesSaveData {
+  numberOfPassphrases: number;
+  passphrase?: string;
+  username?: string;
+  vlanId?: string;
+  mac?: string;
+  numberOfDevices?: number;
+  expiration?: string;
 }
