@@ -7,7 +7,8 @@ import {
   ServiceType,
   getServiceDetailsLink,
   getServiceListRoutePath,
-  ServiceOperation
+  ServiceOperation,
+  MdnsProxyScopeData
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
@@ -18,6 +19,16 @@ export default function MdnsProxyDetail () {
   const { $t } = useIntl()
   const params = useParams()
   const { data } = useGetMdnsProxyQuery({ params })
+
+  const getApList = () => {
+    if (!data || !data.scope?.length) {
+      return null
+    }
+
+    return data.scope.map((s: MdnsProxyScopeData) => {
+      return s.aps.map(ap => ap.serialNumber)
+    }).flat()
+  }
 
   return (
     <>
@@ -47,7 +58,7 @@ export default function MdnsProxyDetail () {
           {data && <MdnsProxyOverview data={data} />}
         </GridCol>
         <GridCol col={{ span: 24 }}>
-          <MdnsProxyInstancesTable />
+          {data && <MdnsProxyInstancesTable apList={getApList()} />}
         </GridCol>
       </GridRow>
     </>

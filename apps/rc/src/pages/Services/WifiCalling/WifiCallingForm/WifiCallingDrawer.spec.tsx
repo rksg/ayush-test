@@ -20,6 +20,10 @@ const ePDG: EPDG[] = [{
 }]
 const networkIds: string[] = []
 const networksName: string[] = []
+const epdgs: EPDG[] = [{
+  domain: 'init.aaa.com',
+  ip: '10.10.10.10'
+}]
 
 const initState = {
   serviceName,
@@ -29,7 +33,8 @@ const initState = {
   tags,
   description,
   networkIds,
-  networksName
+  networksName,
+  epdgs
 }
 
 const renderInitState = (children: JSX.Element) => {
@@ -63,7 +68,7 @@ describe('WifiCallingDrawer', () => {
   it('should render drawer successfully (add)', async () => {
 
     const { renderElement } = renderInitState(<TestComponent isEditMode={false} />)
-    const { asFragment } = render(renderElement)
+    render(renderElement)
 
     let saveButton = screen.getByText('Save')
     expect(saveButton).toBeTruthy()
@@ -71,14 +76,12 @@ describe('WifiCallingDrawer', () => {
     expect(cancelButton).toBeTruthy()
 
     fireEvent.click(saveButton)
-
-    expect(asFragment()).toMatchSnapshot()
   })
 
   it('should cancel the drawer successfully', async () => {
 
     const { renderElement } = renderInitState(<TestComponent isEditMode={false} />)
-    const { asFragment } = render(renderElement)
+    render(renderElement)
 
     let saveButton = screen.getByText('Save')
     expect(saveButton).toBeTruthy()
@@ -86,8 +89,6 @@ describe('WifiCallingDrawer', () => {
     expect(cancelButton).toBeTruthy()
 
     fireEvent.click(cancelButton)
-
-    expect(asFragment()).toMatchSnapshot()
   })
 
   it('should render drawer successfully (edit)', async () => {

@@ -1,3 +1,5 @@
+import { EdgePort, EdgePortTypeEnum } from '@acx-ui/rc/utils'
+
 export const mockVenueData = {
   fields: ['name', 'id'],
   totalCount: 3,
@@ -86,5 +88,51 @@ export const mockEdgeData = {
   edgeGroupId: '',
   description: 'This is description rr',
   edgeName: 'edgeName',
+  name: 'edgeName',
   tags: ['tag1', 'tag2']
+}
+
+export const edgePortsSetting:EdgePort[] = [{
+  portId: '1',
+  portName: 'Port 1',
+  status: 'Up',
+  adminStatus: 'Enabled',
+  portType: EdgePortTypeEnum.WAN,
+  mac: 'AA:BB:CC:DD:EE:FF',
+  speed: 12* Math.pow(12, 6),
+  duplexSpeed: 100* Math.pow(12, 6),
+  ip: '1.1.1.1'
+},
+{
+  portId: '2',
+  portName: 'Port 2',
+  status: 'Down',
+  adminStatus: 'Disabled',
+  portType: EdgePortTypeEnum.LAN,
+  mac: 'AA:BB:CC:DD:EE:FF',
+  speed: 10* Math.pow(12, 6),
+  duplexSpeed: 100* Math.pow(12, 6),
+  ip: '1.1.1.2'
+}]
+
+export const mockEdgeDnsServersData = {
+  primary: '1.1.1.1',
+  secondary: '2.2.2.2'
+}
+
+export const mockStaticRoutes = {
+  routes: [
+    {
+      id: 'row1',
+      destIp: '10.100.120.0',
+      destSubnet: '255.255.255.0',
+      nextHop: '10.100.2.1'
+    },
+    {
+      id: 'row2',
+      destIp: '10.100.2.0',
+      destSubnet: '255.255.255.0',
+      nextHop: '10.100.1.1'
+    }
+  ]
 }

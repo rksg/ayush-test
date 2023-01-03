@@ -658,8 +658,6 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
     />
   </Form>
 
-  console.log(deviceList)
-
   return (
     <>
       <Row justify={'space-between'} style={{ width: '300px' }}>

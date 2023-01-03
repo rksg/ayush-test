@@ -37,6 +37,7 @@ export enum SwitchStatusEnum {
 }
 
 export class Switch {
+  key?: string
   name: string
   id: string
   description?: string
@@ -104,11 +105,68 @@ export class SwitchViewModel extends Switch {
   suspendingDeployTime?: string
   syncDataEndTime?: number
   firmwareVersion?: string
+  portsStatus?: {
+    Down?: number,
+    Up?: number
+  }
+  venueDescription?: string
+  staticOrDynamic?: string
+  dns?: string
+  unitDetails?: StackMember[]
+  firmware?: string
 }
 
-export interface SwitchTransactionResp {
-  requestId: string;
-  response: Switch;
+export interface SwitchRow {
+  id: string
+  model: string
+  serialNumber: string
+  activeSerial: string
+  deviceStatus: SwitchStatusEnum
+  switchMac: string
+  isStack: boolean
+  name: string
+  venueId: string
+  venueName: string
+  configReady: boolean
+  syncDataEndTime: string
+  cliApplied: boolean
+  formStacking: boolean
+  suspendingDeployTime: string
+  uptime?: string
+  syncedSwitchConfig?: boolean
+  children?: StackMember[]
+  isFirstLevel?: boolean
+  unitStatus?: STACK_MEMBERSHIP
+  syncDataId?: string
+  operationalWarning?: boolean
+  switchName?: string
+}
+
+export interface StackMember {
+  venueName: string
+  serialNumber: string
+  operStatusFound: boolean
+  switchMac: string
+  activeSerial: string
+  id: string
+  uptime: string
+  order: number
+  unitStatus?: STACK_MEMBERSHIP
+  unitId?: string
+}
+
+export enum STACK_MEMBERSHIP {
+  ACTIVE = 'Active',
+  STANDBY = 'Standby',
+  MEMBER = 'Member',
+}
+
+export interface SwitchTable {
+  key: string
+  id: string
+  order?: number
+  active?: boolean
+  model: string
 }
 
 export interface SwitchPortViewModel extends GridDataRow {
