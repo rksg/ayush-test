@@ -37,13 +37,11 @@ export const Layer = styled.div`
   writing-mode: vertical-lr;
   display: flex;
   align-items: center;
-
   span {
     color: var(--acx-primary-white);
-    position: relative;
+    position: sticky;
     top: 50%;
     transform: translateY(-50%);
-    padding: 10px 0px;
   }
 `
 
