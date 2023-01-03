@@ -1,18 +1,18 @@
 
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Buffer } from 'buffer'
 
 import { embedDashboard } from '@superset-ui/embedded-sdk'
 
 import { getSupersetRlsClause } from '@acx-ui/analytics/components'
+import { useReportsFilter }     from '@acx-ui/analytics/utils'
 import {
   RadioBand,
   Loader
 } from '@acx-ui/components'
 import { useDateFilter, convertDateTimeToSqlFormat } from '@acx-ui/utils'
 
-import { NetworkFilterWithBandContext }                                    from '../../../Routes'
 import { useGuestTokenMutation, useEmbeddedIdMutation, BASE_RELATIVE_URL } from '../Services'
 
 interface ReportProps {
@@ -25,8 +25,7 @@ function Report (props: ReportProps) {
   const [ embeddedId ] = useEmbeddedIdMutation()
   const { startDate, endDate } = useDateFilter()
   const [dashboardEmbeddedId, setDashboardEmbeddedId] = useState<string | null>(null)
-  const { filterData } = useContext(NetworkFilterWithBandContext)
-  const { paths, bands } = filterData
+  const { filters: { paths, bands } } = useReportsFilter()
   const { networkClause, radioBandClause } = getSupersetRlsClause(paths,bands as RadioBand[])
 
   // Hostname - Backend service where superset is running.
@@ -83,7 +82,7 @@ function Report (props: ReportProps) {
       })
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[startDate, endDate, filterData, dashboardEmbeddedId])
+  },[startDate, endDate, paths, bands, dashboardEmbeddedId])
 
   return (
     <Loader>

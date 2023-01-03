@@ -1,15 +1,13 @@
-import { useContext, useEffect } from 'react'
+import { useEffect } from 'react'
 
 import moment from 'moment'
 
 import { NetworkFilter, FilterMode } from '@acx-ui/analytics/components'
+import { useReportsFilter }          from '@acx-ui/analytics/utils'
 import {
   RangePicker,
-  PageHeader,
-  RadioBand } from '@acx-ui/components'
+  PageHeader } from '@acx-ui/components'
 import { useDateFilter, dateRangeForLast } from '@acx-ui/utils'
-
-import { NetworkFilterWithBandContext } from '../../Routes'
 
 export function ReportHeader (props: {
   name: string,
@@ -28,14 +26,13 @@ export function ReportHeader (props: {
   const shouldQuerySwitch = ['switch','both'].includes(mode)
   const showRadioBand = ['ap','both'].includes(mode)
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
-  const { filterData, setFilterData } = useContext(NetworkFilterWithBandContext)
-  const { value: raw, bands } = filterData
+  const { setNetworkPath: setReportsNetworkPath } = useReportsFilter()
 
   useEffect(()=>{
     // Reset when filter mode changes
-    setFilterData({})
+    setReportsNetworkPath([],[],[])
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mode])
+  },[mode])
 
   return (
     <PageHeader
@@ -52,11 +49,8 @@ export function ReportHeader (props: {
           replaceWithId={true}
           filterMode={mode}
           overrideUrlFilter={true}
-          defaultValue={raw}
-          defaultRadioBand={bands as RadioBand[]}
           isRadioBandDisabled={isRadioBandDisabled}
           radioBandDisabledReason={radioBandDisabledReason}
-          onApplyWithRadioBand={setFilterData}
         />,
         <RangePicker
           key='range-picker'
