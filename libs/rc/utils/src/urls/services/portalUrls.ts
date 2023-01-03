@@ -3,7 +3,7 @@ import { ApiInfo } from '../../apiService'
 export const PortalUrlsInfo: { [key: string]: ApiInfo } = {
   getPortals: {
     method: 'get',
-    url: '/portalServiceProfiles/:serviceId'
+    url: '/api/portalServiceProfiles/:serviceId'
   },
   deletePortals: {
     method: 'delete',
@@ -11,19 +11,19 @@ export const PortalUrlsInfo: { [key: string]: ApiInfo } = {
   },
   deletePortal: {
     method: 'delete',
-    url: '/portalServiceProfiles/:serviceId'
+    url: '/api/portalServiceProfiles/:serviceId'
   },
   updatePortal: {
     method: 'put',
-    url: '/portalServiceProfiles/:serviceId'
+    url: '/api/portalServiceProfiles/:serviceId'
   },
   getPortal: {
     method: 'get',
-    url: '/portalServiceProfiles/:serviceId'
+    url: '/api/portalServiceProfiles/:serviceId'
   },
   savePortal: {
     method: 'post',
-    url: '/portalServiceProfiles'
+    url: '/api/portalServiceProfiles'
   },
   getPortalNetworkInstances: {
     method: 'get',
@@ -31,11 +31,11 @@ export const PortalUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getPortalProfileDetail: {
     method: 'get',
-    url: '/portalServiceProfiles/:serviceId'
+    url: '/api/portalServiceProfiles/:serviceId'
   },
   getPortalProfileList: {
     method: 'get',
-    url: '/portalServiceProfiles'
+    url: '/api/portalServiceProfiles'
   },
   getPortalLang: {
     method: 'get',
