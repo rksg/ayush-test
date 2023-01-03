@@ -322,7 +322,9 @@ export interface Vlan {
 	spanningTreeProtocol: 'rstp' | 'stp' | 'none',
 	switchFamilyModels?: SwitchModel[]
 	vlanId: number,
-	vlanName?: string
+	vlanName?: string,
+  untaggedPorts?: string,
+  taggedPorts?: string
 }
 
 export interface ConfigurationProfile {

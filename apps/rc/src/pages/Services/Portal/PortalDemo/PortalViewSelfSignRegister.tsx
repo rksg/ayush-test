@@ -4,12 +4,13 @@ import * as UI from '../styledComponents'
 
 import PortalButtonContent from './PortalContent/PortalButtonContent'
 export default function PortalViewSelfSignRegister (props:{
+  portalLang: { [key:string]:string },
   demoValue: Demo,
   isPreview?:boolean,
   updateBtn?: (value: { url?: string, size?: number, show?: boolean,
     color?:string, text?:string }) => void
 }) {
-  const { demoValue, updateBtn, isPreview } = props
+  const { demoValue, updateBtn, isPreview, portalLang } = props
   return (
     <UI.ViewSectionNoBorder>
       <UI.ViewSectionTabsBig
@@ -17,45 +18,45 @@ export default function PortalViewSelfSignRegister (props:{
         type='card'
         size={'middle'}
       >
-        <UI.ViewSectionTabsBig.TabPane tab={'Register'} key='register'>
+        <UI.ViewSectionTabsBig.TabPane tab={portalLang.register} key='register'>
           <UI.FieldText style={{ marginLeft: 5 }}>
-            {'Enter your details to receive your password'}
+            {portalLang.registerPageNote}
           </UI.FieldText>
           <UI.ViewSectionSpan>*</UI.ViewSectionSpan><UI.ViewSectionUserOutlined/><UI.FieldInputSmall
-            placeholder={'Your Name'}></UI.FieldInputSmall><br/>
+            placeholder={portalLang.name}></UI.FieldInputSmall><br/>
           <UI.ViewSectionSpan>*</UI.ViewSectionSpan>
           <UI.ViewSectionMobileOutlined/><UI.FieldInputSmall
-            placeholder={'Mobile Phone Number'}></UI.FieldInputSmall>
-          <UI.ViewSectionText style={{ marginLeft: -56 }}>
-            {'Your password will be sent to this number'}
+            placeholder={portalLang.mobilePhone}></UI.FieldInputSmall>
+          <UI.ViewSectionText>
+            {portalLang.selfSignMobilePhoneNote}
           </UI.ViewSectionText>
           <UI.ViewSectionMailOutlined/><UI.FieldInputSmall
-            placeholder={'Your Email'}></UI.FieldInputSmall>
+            placeholder={portalLang.email}></UI.FieldInputSmall>
           <PortalButtonContent
             isPreview={isPreview}
             demoValue={demoValue}
             updateButton={(data)=>updateBtn?.(data)}
-          >{'Register'}</PortalButtonContent>
-          <UI.ViewSectionText style={{ marginLeft: 68, display: 'flex' }}>{
-            'By registering, you are accepting the'
+          >{portalLang.register}</PortalButtonContent>
+          <UI.ViewSectionText style={{ display: 'flex' }}>{
+            portalLang.acceptTermsMsgHostSelfSign?.replace('{0}','')
           }&nbsp;&nbsp;
           <UI.FieldTextLink>
-            {'terms & conditions'}
+            {portalLang.acceptTermsLink}
           </UI.FieldTextLink></UI.ViewSectionText>
         </UI.ViewSectionTabsBig.TabPane>
-        <UI.ViewSectionTabsBig.TabPane tab={'Login'} key='login'>
-          <UI.FieldText>{'Enter your password to connect'}</UI.FieldText>
+        <UI.ViewSectionTabsBig.TabPane tab={portalLang.login} key='login'>
+          <UI.FieldText>{portalLang.loginNote}</UI.FieldText>
           <UI.FieldInput></UI.FieldInput>
           <UI.ViewSectionLink>
-            {'Forgot your password?'}</UI.ViewSectionLink>
+            {portalLang.forgotPswdLink}</UI.ViewSectionLink>
           <PortalButtonContent
             demoValue={demoValue}
             isPreview={isPreview}
             updateButton={(data)=>updateBtn?.(data)}
-          >{'Connect To Wi-Fi'}</PortalButtonContent>
+          >{portalLang.connectToWifi}</PortalButtonContent>
         </UI.ViewSectionTabsBig.TabPane>
       </UI.ViewSectionTabsBig>
-      <UI.FieldTextLink>{'Back'}</UI.FieldTextLink>
+      <UI.FieldTextLink>{portalLang.back}</UI.FieldTextLink>
     </UI.ViewSectionNoBorder>
 
   )
