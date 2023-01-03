@@ -39,6 +39,6 @@ export const PortalUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getPortalLang: {
     method: 'get',
-    url: '/g/ui/tenant/:tenantId/dictionary/:messageName'
+    url: '/g/ui/tenant/:tenantId/locales/:messageName'
   }
 }
