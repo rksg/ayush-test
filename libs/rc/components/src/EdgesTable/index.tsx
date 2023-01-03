@@ -6,16 +6,19 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { useDeleteEdgeMutation, useGetEdgeListQuery, useSendOtpMutation }           from '@acx-ui/rc/services'
-import { EdgeStatusEnum, EdgeViewModel, useTableQuery, TableQuery, RequestPayload } from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useTenantLink }                                   from '@acx-ui/react-router-dom'
+import { useDeleteEdgeMutation, useGetEdgeListQuery, useSendOtpMutation }            from '@acx-ui/rc/services'
+import { EdgeStatusEnum, EdgeViewModel, useTableQuery, TABLE_QUERY, RequestPayload } from '@acx-ui/rc/utils'
+import { TenantLink, useNavigate, useTenantLink }                                    from '@acx-ui/react-router-dom'
 
 import { EdgeStatusLight } from './EdgeStatusLight'
 
 export { EdgeStatusLight } from './EdgeStatusLight'
 
+export interface EdgesTableTableQueryProps
+  extends Omit<TABLE_QUERY<EdgeViewModel, RequestPayload<unknown>, unknown>, 'useQuery'>{}
+
 interface EdgesTableProps extends Omit<TableProps<EdgeViewModel>, 'columns'> {
-  tableQuery?: TableQuery<EdgeViewModel, RequestPayload<unknown>, unknown>
+  tableQuery?: EdgesTableTableQueryProps
 }
 
 export const defaultEdgeTablePayload = {
@@ -42,10 +45,10 @@ export const EdgesTable = (props: EdgesTableProps) => {
   const navigate = useNavigate()
   const basePath = useTenantLink('')
 
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const tableQuery = props.tableQuery ?? useTableQuery({
+  const tableQuery = useTableQuery({
     useQuery: useGetEdgeListQuery,
-    defaultPayload: defaultEdgeTablePayload
+    defaultPayload: defaultEdgeTablePayload,
+    ...props.tableQuery
   })
 
   const [deleteEdge, { isLoading: isDeleteEdgeUpdating }] = useDeleteEdgeMutation()

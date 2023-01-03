@@ -5,7 +5,6 @@ export { ClientsWidget } from './ClientsWidget'
 export { DevicesDashboardWidget } from './DevicesDashboardWidget'
 export { DevicesWidget } from './DevicesWidget'
 export { EdgeSettingForm } from './EdgeSettingForm'
-export { EdgesTable, EdgeStatusLight, defaultEdgeTablePayload } from './EdgesTable'
 export { FloorPlan } from './FloorPlan'
 export { HistoricalClientsTable } from './HistoricalClientsTable'
 export { ImportCsvDrawer, CsvSize } from './ImportCsvDrawer'
@@ -31,6 +30,12 @@ export { ClientHealthIcon } from './ClientHealthIcon'
 export { ActivityTable } from './ActivityTable'
 export { AdminLogTable } from './AdminLogTable'
 export { EventTable } from './EventTable'
+export {
+  EdgesTable,
+  EdgeStatusLight,
+  EdgesTableTableQueryProps,
+  defaultEdgeTablePayload
+} from './EdgesTable'
 
 export * from './pipes/apGroupPipes'
 export * from './ExpirationDateSelector'

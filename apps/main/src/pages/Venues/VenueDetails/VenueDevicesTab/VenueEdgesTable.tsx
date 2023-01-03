@@ -2,27 +2,22 @@ import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 import styled      from 'styled-components/macro'
 
-import { Button }                                       from '@acx-ui/components'
-import { EdgesTable, defaultEdgeTablePayload }          from '@acx-ui/rc/components'
-import { useGetEdgeListQuery }                          from '@acx-ui/rc/services'
-import { EdgeViewModel, useTableQuery, RequestPayload } from '@acx-ui/rc/utils'
-import { useParams, TenantLink }                        from '@acx-ui/react-router-dom'
-
+import { Button }                                 from '@acx-ui/components'
+import { EdgesTable, EdgesTableTableQueryProps  } from '@acx-ui/rc/components'
+import { useParams, TenantLink }                  from '@acx-ui/react-router-dom'
 
 const SpaceWrapper = styled(Space)`
-width: 100%;
-margin: 12px 0px;
-justify-content: flex-end;
+  width: 100%;
+  margin: 12px 0px;
+  justify-content: flex-end;
 `
 
 export const VenueEdgesTable = () => {
   const { $t } = useIntl()
   const params = useParams()
 
-  const tableQuery = useTableQuery<EdgeViewModel, RequestPayload<unknown>, unknown>({
-    useQuery: useGetEdgeListQuery,
+  const tableQuery: EdgesTableTableQueryProps = {
     defaultPayload: {
-      ...defaultEdgeTablePayload,
       fields: [
         'name',
         'deviceStatus',
@@ -35,7 +30,7 @@ export const VenueEdgesTable = () => {
       ],
       filters: { venueId: [params.venueId] }
     }
-  })
+  }
 
   return (<>
     <SpaceWrapper >
