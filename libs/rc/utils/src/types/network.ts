@@ -84,6 +84,7 @@ export interface NetworkSaveData {
   venues?: NetworkVenue[];
   redirectUrl?: string;
   guestPortal?: GuestPortal;
+  portalServiceProfileId?: string;
   enableDhcp?: boolean;
   wlan?: {
     ssid?: string;

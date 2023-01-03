@@ -11,12 +11,12 @@ import {
   Loader,
   Badge
 } from '@acx-ui/components'
-import { CheckMarkCircleSolid, Pending, InProgress }                                from '@acx-ui/icons'
-import { TimelineDrawer }                                                           from '@acx-ui/rc/components'
-import { useActivitiesQuery }                                                       from '@acx-ui/rc/services'
-import { Activity, CommonUrlsInfo, useTableQuery, getDescription, severityMapping } from '@acx-ui/rc/utils'
-import { useTenantLink, useNavigate }                                               from '@acx-ui/react-router-dom'
-import { formatter }                                                                from '@acx-ui/utils'
+import { CheckMarkCircleSolid, Pending, InProgress }                                        from '@acx-ui/icons'
+import { TimelineDrawer }                                                                   from '@acx-ui/rc/components'
+import { useActivitiesQuery }                                                               from '@acx-ui/rc/services'
+import { Activity, CommonUrlsInfo, useTableQuery, getActivityDescription, severityMapping } from '@acx-ui/rc/utils'
+import { useTenantLink, useNavigate }                                                       from '@acx-ui/react-router-dom'
+import { formatter }                                                                        from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -145,7 +145,10 @@ export default function ActivityHeaderButton () {
               setDetail(activity)
             }}>
               <UI.ActivityMeta
-                title={getDescription(activity.descriptionTemplate, activity.descriptionData)}
+                title={getActivityDescription(
+                  activity.descriptionTemplate,
+                  activity.descriptionData
+                )}
                 avatar={getIcon(activity.status)}
                 description={
                   <UI.ListTime>{formatter('calendarFormat')(activity.startDatetime)}</UI.ListTime>}
@@ -190,7 +193,10 @@ export default function ActivityHeaderButton () {
     },
     {
       title: defineMessage({ defaultMessage: 'Description' }),
-      value: getDescription(data.descriptionTemplate, data.descriptionData)
+      value: getActivityDescription(
+        data.descriptionTemplate,
+        data.descriptionData
+      )
     }
   ]
 
