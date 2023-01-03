@@ -73,7 +73,16 @@ export function SwitchPingForm () {
           // hasFeedback
           children={<Input />}
         />
-        <Form.Item wrapperCol={{ offset: 0, span: 16 }}>
+        <Form.Item wrapperCol={{ offset: 0, span: 16 }}
+          style={{ display: 'flex', alignItems: 'center' }}>
+          <Button
+            type='link'
+            style={{ width: '50px' }}
+            disabled={false}
+          // onClick={handlePingAp}
+          >
+            {$t({ defaultMessage: 'Clear' })}
+          </Button>
           <Button
             type='secondary'
             htmlType='submit'

@@ -20,7 +20,8 @@ import {
   VeViewModel,
   VlanVePort,
   AclUnion,
-  VeForm
+  VeForm,
+  TroubleshootingResult
 } from '@acx-ui/rc/utils'
 
 export const baseSwitchApi = createApi({
@@ -266,7 +267,59 @@ export const switchApi = baseSwitchApi.injectEndpoints({
 
       },
       invalidatesTags: [{ type: 'Switch', id: 'VE' }]
+    }),
+
+    getTroubleshooting: build.query<TroubleshootingResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getTroubleshooting, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    getTroubleshootingClean: build.query<{}, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getTroubleshooting, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    ping: build.mutation<TroubleshootingResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.ping, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    traceRoute: build.mutation<TroubleshootingResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.traceRoute, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    ipRoute: build.mutation<TroubleshootingResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.ipRoute, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    macTable: build.query<TroubleshootingResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.macTable, params)
+        return {
+          ...req
+        }
+      }
     })
+
   })
 })
 

@@ -36,6 +36,14 @@ export enum SwitchStatusEnum {
   FIRMWARE_UPD_FAIL = 'FIRMWARE_UPD_FAIL'
 }
 
+export enum TroubleshootingType {
+  PING = 'ping',
+  TRACE_ROUTE = 'trace-route',
+  ROUTE_TABLE = 'route-table',
+  MAC_ADDRESS_TABLE = 'mac-address-table',
+  DHCP_SERVER_LEASE_TABLE = 'dhcp-server-lease-table'
+}
+
 export class Switch {
   key?: string
   name: string
@@ -81,6 +89,30 @@ export class Switch {
     this.initialVlanId = ''
     this.rearModule = 'none'
   }
+}
+
+export interface TroubleshootingResult {
+  requestId: string
+  response: {
+      latestResultResponseTime: string
+      pingIp: string
+      syncing: boolean
+      traceRouteTtl: number
+      troubleshootingType: TroubleshootingType.PING
+  }
+}
+
+export interface PingSwitch {
+  targetHost: string
+}
+
+export interface TraceRouteSwitch {
+  maxTtl: string
+  targetHost: string
+}
+
+export interface TroubleshootingResult {
+  responseId: string
 }
 
 export interface VeViewModel {
