@@ -392,7 +392,7 @@ function IpSubnetMaskRegExp (value: string) {
 function IpAddressRegExp (value: string) {
   const { $t } = getIntl()
   // eslint-disable-next-line max-len
-  const re = new RegExp('^([0-9]|[1-8][0-9]|9[0-9]|1[0-9]{2}|2[01][0-9]|22[0-3])(\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])){3}$')
+  const re = new RegExp(/^([0-9]|[1-8][0-9]|9[0-9]|1[0-9]{2}|2[01][0-9]|22[0-3])(\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])){3}$/)
   if (value && !re.test(value)) {
     return Promise.reject($t(validationMessages.ipAddress))
   }
@@ -402,7 +402,7 @@ function IpAddressRegExp (value: string) {
 function OspfRegExp (value: string) {
   const { $t } = getIntl()
   // eslint-disable-next-line max-len
-  const re = new RegExp('(^([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])(\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])){3}$)|(^[0-9]*$)')
+  const re = new RegExp(/(^([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])(\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])){3}$)|(^[0-9]*$)/)
   if (value && !re.test(value)) {
     return Promise.reject($t(validationMessages.ospf))
   }
@@ -412,7 +412,7 @@ function OspfRegExp (value: string) {
 function DhcpRelayAgentRegExp (value: string) {
   const { $t } = getIntl()
   // eslint-disable-next-line max-len
-  const re = new RegExp('^([1-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])(\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])){2}\.([1-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-4])$')
+  const re = new RegExp(/^([1-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])(\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])){2}\.([1-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-4])$/)
   if (value && !re.test(value)) {
     return Promise.reject($t(validationMessages.dhcpRelayAgent))
   }
