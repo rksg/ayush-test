@@ -16,6 +16,7 @@ import { AvailableLteBands, LteBandRegionEnum, VenueApModelCellular }           
 import { VenueEditContext } from '../../..'
 
 import { CellularRadioSimSettings } from './CellularRadioSimSettings'
+import { LabelOfInput }             from './styledComponents'
 
 export interface ModelOption {
   label: string
@@ -233,22 +234,26 @@ export function CellularOptionsForm () {
             }
           />
 
-
-          <Form.Item
-            name={['editData', 'primaryWanRecoveryTimer']}
-            label={$t({ defaultMessage: 'Primary WAN Recovery Timer:' })}
-            initialValue={60}
-            rules={[{
-              required: true
-            }, {
-              type: 'number', max: 300, min: 10,
-              message: $t({
-                defaultMessage:
-                  'Primary WAN Recovery Timer must be between 10 and 300'
-              })
-            }]}
-            children={<InputNumber style={{ width: '150px' }} />}
-          />
+          <div style={{ display: 'grid', gridTemplateColumns: '0px 1fr' }}>
+            <LabelOfInput>
+              { $t({ defaultMessage: 'Seconds' }) }
+            </LabelOfInput>
+            <Form.Item
+              name={['editData', 'primaryWanRecoveryTimer']}
+              label={$t({ defaultMessage: 'Primary WAN Recovery Timer:' })}
+              initialValue={60}
+              rules={[{
+                required: true
+              }, {
+                type: 'number', max: 300, min: 10,
+                message: $t({
+                  defaultMessage:
+                    'Primary WAN Recovery Timer must be between 10 and 300'
+                })
+              }]}
+              children={<InputNumber style={{ width: '150px' }} />}
+            />
+          </div>
         </StepsForm.StepForm>
       </StepsForm>
     </Loader>
