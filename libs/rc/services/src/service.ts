@@ -30,7 +30,10 @@ import {
   PortalDetailInstances,
   Portal,
   PortalUrlsInfo,
-  DpskList,
+  NewTableResult,
+  NewDpskPassphrase,
+  transferTableResult,
+  DpskPassphrasesSaveData,
   convertMdnsProxyFormDataToApiPayload,
   MdnsProxyGetApiResponse,
   convertApiPayloadToMdnsProxyFormData,
@@ -58,7 +61,7 @@ const RKS_NEW_UI = {
 export const baseServiceApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'serviceApi',
-  tagTypes: ['Service', 'Dpsk','MdnsProxy', 'MdnsProxyAp'],
+  tagTypes: ['Service', 'Dpsk', 'DpskPassphrase', 'MdnsProxy', 'MdnsProxyAp'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })
@@ -84,7 +87,10 @@ export const serviceApi = baseServiceApi.injectEndpoints({
             'Activate Multicast DNS Proxy Service Profiles',
             'Deactivate Multicast DNS Proxy Service Profiles',
             'Delete WiFi Calling Service Profile',
-            'Delete WiFi Calling Service Profiles'
+            'Delete WiFi Calling Service Profiles',
+            'Update Portal Service Profile',
+            'Delete Portal Service Profile',
+            'Delete Portal Service Profiles'
           ], () => {
             api.dispatch(serviceApi.util.invalidateTags([
               { type: 'Service', id: 'LIST' }
@@ -498,7 +504,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }, { type: 'Dpsk', id: 'LIST' }]
     }),
-    dpskList: build.query<DpskList, RequestPayload>({
+    dpskList: build.query<NewTableResult<DpskSaveData>, RequestPayload>({
       query: () => {
         const getDpskListReq = createHttpRequest(DpskUrls.getDpskList)
         return {
@@ -516,6 +522,38 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Service', id: 'DETAIL' }]
+    }),
+    createDpskPassphrases: build.mutation<CommonResult, RequestPayload<DpskPassphrasesSaveData>>({
+      query: ({ params, payload }) => {
+        const createDpskPassphrasesReq = createHttpRequest(DpskUrls.addPassphrase, params)
+        return {
+          ...createDpskPassphrasesReq,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'DpskPassphrase', id: 'LIST' }]
+    }),
+    dpskPassphraseList: build.query<TableResult<NewDpskPassphrase>, RequestPayload>({
+      query: ({ params }) => {
+        const getDpskPassphraseListReq = createHttpRequest(DpskUrls.getPassphraseList, params)
+        return {
+          ...getDpskPassphraseListReq
+        }
+      },
+      transformResponse (result: NewTableResult<NewDpskPassphrase>) {
+        return transferTableResult<NewDpskPassphrase>(result)
+      },
+      providesTags: [{ type: 'DpskPassphrase', id: 'LIST' }]
+    }),
+    deleteDpskPassphraseList: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(DpskUrls.deletePassphrase, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'DpskPassphrase', id: 'LIST' }]
     }),
     portalNetworkInstances: build.query<TableResult<PortalDetailInstances>, RequestPayload>({
       query: ({ params }) => {
@@ -542,7 +580,19 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Service', id: 'LIST' }]
+      providesTags: [{ type: 'Service', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          showActivityMessage(msg, [
+            'Add Portal Service Profile',
+            'Update Portal Service Profile',
+            'Delete Portal Service Profile',
+            'Delete Portal Service Profiles'
+          ], () => {
+            api.dispatch(serviceApi.util.invalidateTags([{ type: 'Service', id: 'LIST' }]))
+          })
+        })
+      }
     }),
     getPortalLang: build.mutation<{ res : { data : string } }, RequestPayload>({
       query: ({ params }) => {
@@ -598,6 +648,9 @@ export const {
   useGetDpskQuery,
   useDpskListQuery,
   useLazyDpskListQuery,
+  useDpskPassphraseListQuery,
+  useCreateDpskPassphrasesMutation,
+  useDeleteDpskPassphraseListMutation,
   useGetPortalQuery,
   useSavePortalMutation,
   usePortalNetworkInstancesQuery,

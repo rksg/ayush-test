@@ -5,17 +5,6 @@ export const Drawer = styled(AntDrawer)`
   .ant-drawer-body {
     display: flex;
     flex-direction: column;
-
-    .ant-form.ant-form-horizontal {
-      .ant-form-item {
-        margin-bottom: 0;
-        .ant-row {
-          align-items: baseline;
-        }
-        font-size: var(--acx-body-4-font-size);
-        line-height: var(--acx-body-4-line-height);
-      }
-    }
   }
 `
 

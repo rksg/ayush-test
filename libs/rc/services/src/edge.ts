@@ -5,6 +5,7 @@ import {
   createHttpRequest,
   EdgeDnsServers,
   EdgeGeneralSetting,
+  EdgeStaticRouteConfig,
   EdgeUrlsInfo,
   EdgeStatus,
   RequestPayload,
@@ -116,6 +117,25 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    getStaticRoutes: build.query<EdgeStaticRouteConfig, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getStaticRoutes, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Edge', id: 'DETAIL_ROUTES' }]
+    }),
+    updateStaticRoutes: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.updateStaticRoutes, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Edge', id: 'DETAIL_ROUTES' }]
     })
   })
 })
@@ -130,6 +150,8 @@ export const {
   useSendOtpMutation,
   useGetDnsServersQuery,
   useUpdateDnsServersMutation,
+  useGetStaticRoutesQuery,
+  useUpdateStaticRoutesMutation,
   useEdgeBySerialNumberQuery
 } = edgeApi
 
