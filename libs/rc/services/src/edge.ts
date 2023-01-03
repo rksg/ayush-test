@@ -5,10 +5,11 @@ import {
   createHttpRequest,
   EdgeDnsServers,
   EdgePortConfig,
-  EdgeSaveData,
+  EdgeGeneralSetting,
+  EdgeStaticRouteConfig,
   EdgeSubInterface,
   EdgeUrlsInfo,
-  EdgeViewModel, PaginationQueryResult, RequestPayload, TableResult
+  EdgeStatus, PaginationQueryResult, RequestPayload, TableResult
 } from '@acx-ui/rc/utils'
 
 export const baseEdgeApi = createApi({
@@ -21,7 +22,7 @@ export const baseEdgeApi = createApi({
 
 export const edgeApi = baseEdgeApi.injectEndpoints({
   endpoints: (build) => ({
-    addEdge: build.mutation<EdgeSaveData, RequestPayload>({
+    addEdge: build.mutation<EdgeGeneralSetting, RequestPayload>({
       query: ({ payload }) => {
         const req = createHttpRequest(EdgeUrlsInfo.addEdge)
         return {
@@ -31,7 +32,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Edge', id: 'LIST' }]
     }),
-    getEdge: build.query<EdgeSaveData, RequestPayload>({
+    getEdge: build.query<EdgeGeneralSetting, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(EdgeUrlsInfo.getEdge, params)
         return {
@@ -50,7 +51,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Edge', id: 'LIST' }, { type: 'Edge', id: 'DETAIL' }]
     }),
-    getEdgeList: build.query<TableResult<EdgeViewModel>, RequestPayload>({
+    getEdgeList: build.query<TableResult<EdgeStatus>, RequestPayload>({
       query: ({ payload, params }) => {
         const req = createHttpRequest(EdgeUrlsInfo.getEdgeList, params)
         return {
@@ -86,6 +87,18 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Edge', id: 'LIST' }]
+    }),
+    edgeBySerialNumber: build.query<EdgeStatus, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getEdgeList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      transformResponse (result: TableResult<EdgeStatus>) {
+        return transformEdgeStatus(result?.data[0])
+      }
     }),
     getDnsServers: build.query<EdgeDnsServers, RequestPayload>({
       query: ({ params }) => {
@@ -170,6 +183,25 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Edge', id: 'DETAIL_SUB_INTERFACE' }]
+    }),
+    getStaticRoutes: build.query<EdgeStaticRouteConfig, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getStaticRoutes, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Edge', id: 'DETAIL_ROUTES' }]
+    }),
+    updateStaticRoutes: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.updateStaticRoutes, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Edge', id: 'DETAIL_ROUTES' }]
     })
   })
 })
@@ -189,5 +221,14 @@ export const {
   useGetSubInterfacesQuery,
   useAddSubInterfacesMutation,
   useUpdateSubInterfacesMutation,
-  useDeleteSubInterfacesMutation
+  useDeleteSubInterfacesMutation,
+  useGetStaticRoutesQuery,
+  useUpdateStaticRoutesMutation,
+  useEdgeBySerialNumberQuery
 } = edgeApi
+
+const transformEdgeStatus = (result: EdgeStatus) => {
+  const edge = JSON.parse(JSON.stringify(result))
+
+  return edge
+}

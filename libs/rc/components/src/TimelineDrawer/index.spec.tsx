@@ -3,7 +3,7 @@ import '@testing-library/jest-dom'
 import { render, screen }              from '@testing-library/react'
 import { IntlProvider, defineMessage } from 'react-intl'
 
-import { TimelineDrawer } from './TimelineDrawer'
+import { TimelineDrawer } from '.'
 
 describe('TimelineDrawer', () => {
   it('should render', () => {

@@ -37,6 +37,9 @@ export const ContentSwitcher: FC<ContentSwitcherProps> = (props) => {
     }
   })
   const [activeContent, setActiveContent] = useState(defaultValue || options[0].value)
+  const padding = size === 'small'
+    ? `${sizeSpaceMap[size!]} 0 calc(${sizeSpaceMap[size!]} * 2)`
+    : `${sizeSpaceMap[size!]} 0`
 
   const handleChange = (e: RadioChangeEvent) => {
     if(onChange) {
@@ -45,9 +48,9 @@ export const ContentSwitcher: FC<ContentSwitcherProps> = (props) => {
     setActiveContent(e.target.value)
   }
 
-  return(
+  return (
     <>
-      <div style={{ textAlign: align, padding: `${sizeSpaceMap[size!]} 0px` }}>
+      <div style={{ textAlign: align, padding }}>
         <SelectionControl options={options}
           defaultValue={defaultValue || options[0].value}
           size={size}

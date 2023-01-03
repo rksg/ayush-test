@@ -11,6 +11,7 @@ import { getIntl }                                from '@acx-ui/utils'
 import DnsServer       from './DnsServer'
 import GeneralSettings from './GeneralSettings'
 import Ports           from './Ports'
+import StaticRoutes    from './StaticRoutes'
 
 const { $t } = getIntl()
 
@@ -28,8 +29,8 @@ const tabs = {
     content: <DnsServer />
   },
   'routes': {
-    title: $t({ defaultMessage: 'Static Routes' }),
-    content: <>Static Routes</>
+    title: intl.$t({ defaultMessage: 'Static Routes' }),
+    content: <StaticRoutes />
   }
 }
 

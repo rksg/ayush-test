@@ -29,7 +29,7 @@ exports[`MdnsProxySummary should render the summary 1`] = `
           </h4>
         </div>
         <div
-          class="ant-col ant-col-8"
+          class="ant-col ant-col-12"
           style="padding: 4px 12px 4px 12px;"
         >
           <div
@@ -65,41 +65,7 @@ exports[`MdnsProxySummary should render the summary 1`] = `
           </div>
         </div>
         <div
-          class="ant-col ant-col-8"
-          style="padding: 4px 12px 4px 12px;"
-        >
-          <div
-            class="ant-form-item"
-          >
-            <div
-              class="ant-row ant-form-item-row"
-            >
-              <div
-                class="ant-col ant-form-item-label"
-              >
-                <label
-                  class=""
-                  title="Tags:"
-                >
-                  Tags
-                </label>
-              </div>
-              <div
-                class="ant-col ant-form-item-control"
-              >
-                <div
-                  class="ant-form-item-control-input"
-                >
-                  <div
-                    class="ant-form-item-control-input-content"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="ant-col ant-col-16"
+          class="ant-col ant-col-20"
           style="padding: 4px 12px 4px 12px;"
         >
           <div
@@ -495,7 +461,7 @@ exports[`MdnsProxySummary should render the summary 1`] = `
                                               <td
                                                 class="ant-table-cell"
                                               >
-                                                AirDisk
+                                                Apple TV
                                               </td>
                                               <td
                                                 class="ant-table-cell"
@@ -628,7 +594,7 @@ exports[`MdnsProxySummary should render the summary 1`] = `
           </h4>
         </div>
         <div
-          class="ant-col ant-col-10"
+          class="ant-col ant-col-14"
         >
           <div>
             <div

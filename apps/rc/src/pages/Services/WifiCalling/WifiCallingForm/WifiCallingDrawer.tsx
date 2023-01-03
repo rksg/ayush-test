@@ -45,7 +45,15 @@ const WifiCallingDrawer = (props: WifiCallingDrawerProps) => {
       label={$t({ defaultMessage: 'Domain Name' })}
       rules={[
         { required: true },
-        { validator: (_, value) => domainNameRegExp(value) }
+        { validator: (_, value) => {
+          if (state.ePDG
+            .filter((epdg) => isEditMode ? (epdg.domain !== value) : true)
+            .findIndex((epdg) => epdg.domain === value) !== -1) {
+            return Promise.reject($t({ defaultMessage: 'The domain name already exists' }))
+          }
+          return domainNameRegExp(value)
+        }
+        }
       ]}
       initialValue={serviceIndex !== undefined ? state.ePDG[serviceIndex].domain : ''}
       children={<Input
@@ -99,7 +107,6 @@ const WifiCallingDrawer = (props: WifiCallingDrawerProps) => {
                   }
                 } as WifiCallingActionPayload)
               }
-
 
               form.submit()
 

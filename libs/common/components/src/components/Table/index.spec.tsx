@@ -3,7 +3,7 @@ import { useState } from 'react'
 
 import userEvent from '@testing-library/user-event'
 
-import { render, fireEvent, screen, within, mockDOMSize } from '@acx-ui/test-utils'
+import { render, fireEvent, screen, within, mockDOMSize, findTBody } from '@acx-ui/test-utils'
 
 import { Table, TableProps } from '.'
 
@@ -158,8 +158,7 @@ describe('Table component', () => {
       rowSelection={{ defaultSelectedRowKeys: ['1', '2'] }}
     />)
 
-    const tbody = (await screen.findAllByRole('rowgroup'))
-      .find(element => element.classList.contains('ant-table-tbody'))!
+    const tbody = await findTBody()
 
     expect(tbody).toBeVisible()
 
@@ -194,8 +193,7 @@ describe('Table component', () => {
       rowSelection={{ selectedRowKeys: ['1', '2'] }}
     />)
 
-    const tbody = (await screen.findAllByRole('rowgroup'))
-      .find(element => element.classList.contains('ant-table-tbody'))!
+    const tbody = await findTBody()
 
     expect(tbody).toBeVisible()
 
@@ -240,8 +238,7 @@ describe('Table component', () => {
       rowSelection={{ type: 'radio', onChange }}
     />)
 
-    const tbody = (await screen.findAllByRole('rowgroup'))
-      .find(element => element.classList.contains('ant-table-tbody'))!
+    const tbody = await findTBody()
 
     expect(tbody).toBeVisible()
 
@@ -266,8 +263,7 @@ describe('Table component', () => {
       }}
     />)
 
-    const tbody = (await screen.findAllByRole('rowgroup'))
-      .find(element => element.classList.contains('ant-table-tbody'))!
+    const tbody = await findTBody()
 
     expect(tbody).toBeVisible()
 
@@ -287,8 +283,7 @@ describe('Table component', () => {
       rowSelection={{ defaultSelectedRowKeys: ['1', '3'], onChange }}
     />)
 
-    const tbody = (await screen.findAllByRole('rowgroup'))
-      .find(element => element.classList.contains('ant-table-tbody'))!
+    const tbody = await findTBody()
 
     expect(tbody).toBeVisible()
 
@@ -333,8 +328,7 @@ describe('Table component', () => {
       rowSelection={{ type: 'radio', onChange }}
     />)
 
-    const tbody = (await screen.findAllByRole('rowgroup'))
-      .find(element => element.classList.contains('ant-table-tbody'))!
+    const tbody = await findTBody()
 
     expect(tbody).toBeVisible()
 
@@ -613,8 +607,7 @@ describe('Table component', () => {
         rowSelection={{ selectedRowKeys: [] }}
       />)
 
-      const tbody = (await screen.findAllByRole('rowgroup'))
-        .find(element => element.classList.contains('ant-table-tbody'))!
+      const tbody = await findTBody()
 
       expect(tbody).toBeVisible()
       const body = within(tbody)

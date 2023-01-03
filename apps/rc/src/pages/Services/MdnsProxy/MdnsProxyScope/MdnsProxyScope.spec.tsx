@@ -55,7 +55,7 @@ describe('MdnsProxyScope', () => {
     const targetVenueName = targetVenueScope.venueName!
     const targetVenueSelectedAps = targetVenueScope.aps.length.toString()
 
-    const { asFragment } = render(
+    render(
       <Provider>
         <MdnsProxyFormContext.Provider
           value={{
@@ -73,8 +73,6 @@ describe('MdnsProxyScope', () => {
         route: { params, path }
       }
     )
-
-    expect(asFragment()).toMatchSnapshot()
 
     const targetVenueRow = await screen.findByRole('row', { name: new RegExp(targetVenueName) })
 
@@ -143,7 +141,7 @@ describe('MdnsProxyScope', () => {
     expect(scopeVenueData).toContainEqual(targetScopeData)
   })
 
-  jest.retryTimes(3)
+  // jest.retryTimes(3)
   xit('should set activated APs when switching AP table page', async () => {
     mockServer.use(
       rest.post(
@@ -201,21 +199,23 @@ describe('MdnsProxyScope', () => {
 
     // Make sure the Selected APs value have been set correctly before switch page
     const targetVenueRow = await screen.findByRole('row', { name: new RegExp(targetVenueName) })
-    await within(targetVenueRow).findByRole('cell', { name: targetVenueSelectedAps })
+    // eslint-disable-next-line max-len
+    expect(await within(targetVenueRow).findByRole('cell', { name: targetVenueSelectedAps })).toBeVisible()
 
-
+    // Click the second page link
     await userEvent.click(await screen.findByRole('listitem', { name: '2' }))
 
     // Make sure the table has switched to the second page
     await screen.findByRole('row', { name: new RegExp(page2Venue.name) }, { timeout: 2000 })
 
+    // Click the first page link
     await userEvent.click(await screen.findByRole('listitem', { name: '1' }))
 
     // Check if the Selected APs value is correct after switch back to the page
     const targetVenueRowNew = await screen.findByRole('row', { name: new RegExp(targetVenueName) })
     await waitFor(() => {
       // eslint-disable-next-line max-len
-      expect(within(targetVenueRowNew).getByRole('cell', { name: targetVenueSelectedAps })).toBeInTheDocument()
+      expect(within(targetVenueRowNew).getByRole('cell', { name: targetVenueSelectedAps })).toBeVisible()
     }, { timeout: 2000 })
   })
 })

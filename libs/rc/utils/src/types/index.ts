@@ -29,7 +29,6 @@ export * from './services'
 export * from './policies'
 export * from './msp'
 export * from './edge'
-export * from './portalService'
 export * from './client'
 export * from './components'
 export * from './switch'
@@ -175,6 +174,8 @@ export interface EventBase {
   serialNumber: string
   severity: string
   venueId: string
+  clientMac?: string
+  clientName?: string
 }
 
 export interface EventMeta {
@@ -182,8 +183,12 @@ export interface EventMeta {
   apGroupId: string
   apName: string
   isApExists: boolean
+  isClientExists: boolean
+  isNetworkExists: boolean
   isSwitchExists: boolean
   isVenueExists: boolean
+  networkName?: string
+  switchMac?: string
   switchName: string
   venueName: string
 }

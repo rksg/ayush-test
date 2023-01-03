@@ -60,5 +60,13 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
   deleteSubInterfaces: {
     method: 'delete',
     url: '/api/edges/:serialNumber/port/:mac/subInterfaces/:subInterfaceId'
+  },
+  getStaticRoutes: {
+    method: 'get',
+    url: '/api/edges/:serialNumber/staticRouteConfig'
+  },
+  updateStaticRoutes: {
+    method: 'PATCH',
+    url: '/api/edges/:serialNumber/staticRouteConfig'
   }
 }
