@@ -395,6 +395,7 @@ export function GuestFields ({ withBasicFields = true }: { withBasicFields?: boo
     <Row>
       <Col span={12}>
         <Form.Item
+          validateFirst
           name={['expiration', 'duration']}
           label={$t({ defaultMessage: 'Pass is Valid for' })}
           rules={[

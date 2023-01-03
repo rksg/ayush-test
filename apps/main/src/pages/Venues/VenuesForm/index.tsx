@@ -271,11 +271,14 @@ export function VenuesForm () {
               <Form.Item
                 name='name'
                 label={intl.$t({ defaultMessage: 'Venue Name' })}
-                rules={[{
-                  required: true
-                },{
-                  validator: (_, value) => nameValidator(value)
-                }]}
+                rules={[
+                  { type: 'string', required: true },
+                  { min: 2 },
+                  { max: 32 },
+                  {
+                    validator: (_, value) => nameValidator(value)
+                  }
+                ]}
                 validateFirst
                 hasFeedback
                 children={<Input />}
