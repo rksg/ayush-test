@@ -177,7 +177,7 @@ export const venueListResponse = {
       name: 'SG office'
     },
     {
-      id: '4c778ed630394b76b17bce7fe230cf9f',
+      id: '6cf550cdb67641d798d804793aaa82db',
       name: 'My-Venue'
     },
     {
@@ -628,4 +628,42 @@ export const partialDpskNetworkEntity: NetworkSaveData = {
   dpskServiceProfileId: dpskListResponse.content[1].id,
   name: 'JackyDPSK',
   id: '1887fef21cdf485cbe2583b8c5ec97f1'
+}
+
+export const apGroupsResponse = {
+  requestId: '04a97b0b-c3ff-4184-812c-3267029e3f08',
+  response: [
+    {
+      venueId: '908c47ee1cd445838c3bf71d4addccdf',
+      tripleBandEnabled: false,
+      networkId: '5d45082c812c45fbb9aab24420f39bf0',
+      apGroups: [
+        {
+          apGroupId: '3243f76d6cb04fa7ab18d0e6d17b6f18',
+          radio: 'Both',
+          radioTypes: ['2.4-GHz', '5-GHz'],
+          isDefault: true,
+          validationErrorReachedMaxConnectedNetworksLimit: false,
+          validationErrorSsidAlreadyActivated: false,
+          validationErrorReachedMaxConnectedCaptiveNetworksLimit: false,
+          validationError: false,
+          id: 'b5275fde5b5f4a119665cd3a8bde30e5'
+        },
+        {
+          apGroupId: '068a4db6f47d418ebbbdbca741253735',
+          radio: 'Both',
+          radioTypes: ['2.4-GHz', '5-GHz'],
+          isDefault: false,
+          apGroupName: 'hhh',
+          validationErrorReachedMaxConnectedNetworksLimit: false,
+          validationErrorSsidAlreadyActivated: false,
+          validationErrorReachedMaxConnectedCaptiveNetworksLimit: false,
+          validationError: false,
+          id: '5aee44348f174c94aeec545e8e7162fb'
+        }
+      ],
+      allApGroupsRadio: 'Both',
+      isAllApGroups: false
+    }
+  ]
 }
