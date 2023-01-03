@@ -8,6 +8,7 @@ export interface Portal{
   tags?: string[]
   network: PortalNetwork[]
   content: Demo,
+  networkIds?: string[],
   logoFile?: RcFile,
   bgFile?: RcFile,
   photoFile?: RcFile,

@@ -13,6 +13,7 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
   const basePath = useTenantLink(`/venues/${params.venueId}/venue-details/`)
   const navigate = useNavigate()
   const enableVenueAnalytics = useIsSplitOn(Features.VENUE_ANALYTICS)
+  const enabledServices = useIsSplitOn(Features.SERVICES)
 
   const onTabChange = (tab: string) =>
     navigate({
@@ -51,10 +52,10 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
         key='networks'
       />
       <Tabs.TabPane
-        disabled
-        tab={<Tooltip title={$t(notAvailableMsg)}>
-          {$t({ defaultMessage: 'Services ({servicesCount})' }, { servicesCount })}
-        </Tooltip>}
+        disabled={!enabledServices}
+        tab={enabledServices
+          ? $t({ defaultMessage: 'Services ({servicesCount})' }, { servicesCount })
+          : <Tooltip title={$t(notAvailableMsg)}>{$t({ defaultMessage: 'Services' })}</Tooltip>}
         key='services'
       />
       <Tabs.TabPane
