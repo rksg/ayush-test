@@ -8,9 +8,11 @@ import { PersonaTable } from '.'
 
 
 const mockPersonaTableResult: NewTableResult<Persona> = {
+  totalPages: 1,
+  sort: [],
+  page: 0,
   totalElements: 3,
   size: 10,
-  number: 0,
   content: [
     {
       id: 'persona-id-1',
@@ -31,9 +33,11 @@ const mockPersonaTableResult: NewTableResult<Persona> = {
 }
 
 const mockPersonaGroupList: NewTableResult<PersonaGroup> = {
+  totalPages: 1,
+  sort: [],
+  page: 0,
   totalElements: 1,
   size: 10,
-  number: 0,
   content: [
     {
       id: 'persona-group-id-1',
