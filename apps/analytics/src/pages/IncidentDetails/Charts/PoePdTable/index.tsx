@@ -21,7 +21,11 @@ export const PoePdTable: React.FC<ChartProps> = (props) => {
       title: $t(defineMessage({ defaultMessage: 'Switch Name' })),
       dataIndex: 'name',
       key: 'name',
-      render: (_, value) => <TenantLink to={'TODO'}>{value.name}</TenantLink>,
+      render: (_, value) => <TenantLink
+        to={`/devices/switch/${value.serial}/${value.serial}/details/overview`}
+      >
+        {value.name}
+      </TenantLink>,
       fixed: 'left',
       sorter: { compare: sortProp('name', defaultSort) },
       defaultSortOrder: 'ascend',
