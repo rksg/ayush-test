@@ -2,10 +2,10 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { apApi }                                                 from '@acx-ui/rc/services'
-import { CommonUrlsInfo, SwitchUrlsInfo }                        from '@acx-ui/rc/utils'
-import { Provider, store }                                       from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { apApi }                          from '@acx-ui/rc/services'
+import { CommonUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                from '@acx-ui/store'
+import { mockServer, render, screen }     from '@acx-ui/test-utils'
 
 import { switchDetailData }   from './__tests__/fixtures'
 import { events, eventsMeta } from './SwitchTimelineTab/__tests__/fixtures'
@@ -17,6 +17,11 @@ jest.mock('@acx-ui/components', () => ({
   ...jest.requireActual('@acx-ui/components'),
   RangePicker: () => <div data-testid={'analytics-RangePicker'} title='RangePicker' />
 }))
+jest.mock('@acx-ui/rc/components', () => {
+  const sets = Object.keys(jest.requireActual('@acx-ui/rc/components'))
+    .map(key => [key, () => <div data-testid={`rc-${key}`} title={key} />])
+  return Object.fromEntries(sets)
+})
 
 describe('SwitchDetails', () => {
   beforeEach(() => {
@@ -133,8 +138,7 @@ describe('SwitchDetails', () => {
     render(<Provider><SwitchDetails /></Provider>, {
       route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab' }
     })
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    await screen.findByText('730-11-60')
+    await screen.findByTestId('rc-EventTable')
   })
 
   it('should not navigate to non-existent tab', async () => {

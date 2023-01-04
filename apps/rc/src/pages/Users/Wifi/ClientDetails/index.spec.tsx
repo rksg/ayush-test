@@ -32,12 +32,16 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
-/* eslint-disable max-len */
-jest.mock('@acx-ui/analytics/components', () => ({
-  TrafficByBand: () => <div data-testid={'analytics-TrafficByBand'} title='TrafficByBand' />,
-  TrafficByUsage: () => <div data-testid={'analytics-TrafficByUsage'} title='TrafficByUsage' />,
-  ClientTroubleshooting: () => <div data-testid={'analytics-ClientTroubleshooting'} title='ClientTroubleshooting' />
-}))
+jest.mock('@acx-ui/analytics/components', () => {
+  const sets = Object.keys(jest.requireActual('@acx-ui/analytics/components'))
+    .map(key => [key, () => <div data-testid={`analytics-${key}`} title={key} />])
+  return Object.fromEntries(sets)
+})
+jest.mock('@acx-ui/rc/components', () => {
+  const sets = Object.keys(jest.requireActual('@acx-ui/rc/components'))
+    .map(key => [key, () => <div data-testid={`rc-${key}`} title={key} />])
+  return Object.fromEntries(sets)
+})
 
 describe('ClientDetails', () => {
   beforeEach(() => {
@@ -124,8 +128,7 @@ describe('ClientDetails', () => {
     render(<Provider><ClientDetails /></Provider>, {
       route: { params, path: '/:tenantId/users/wifi/:activeTab/:clientId/details/:activeTab' }
     })
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    await screen.findByText('730-11-60')
+    await screen.findByTestId('rc-EventTable')
   })
 
   it('should not navigate to non-existent tab', async () => {
