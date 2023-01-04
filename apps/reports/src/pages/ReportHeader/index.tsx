@@ -37,9 +37,6 @@ export function ReportHeader (props: {
   return (
     <PageHeader
       title={name}
-      breadcrumb={[
-        { text: 'Report', link: '/reports' }
-      ]}
       extra={[
         showFilter && <NetworkFilter
           key='reports-network-filter'
