@@ -116,7 +116,7 @@ export default function DHCPForm (props: DHCPFormProps) {
             name='settings'
             title={$t({ defaultMessage: 'DHCP Settings' })}
           >
-            <SettingForm/>
+            <SettingForm editMode={editMode}/>
           </StepsForm.StepForm>
         </StepsForm>
       </Loader>

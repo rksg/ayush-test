@@ -4,6 +4,7 @@ import { useIntl }                             from 'react-intl'
 
 import { StepsForm }                      from '@acx-ui/components'
 import { useLazyGetDHCPProfileListQuery } from '@acx-ui/rc/services'
+import { useGetDHCPProfileQuery }         from '@acx-ui/rc/services'
 import { DHCPPool }                       from '@acx-ui/rc/utils'
 import { DHCPConfigTypeEnum }             from '@acx-ui/rc/utils'
 import { checkObjectNotExists }           from '@acx-ui/rc/utils'
@@ -16,6 +17,9 @@ import DHCPPoolTable                from './DHCPPool'
 import { RadioDescription }         from './styledComponents'
 
 
+interface DHCPFormProps {
+  editMode?: boolean
+}
 
 async function poolValidator (
   type: DHCPConfigTypeEnum,
@@ -35,9 +39,9 @@ async function poolValidator (
   return
 }
 const { useWatch } = Form
-export function SettingForm () {
+export function SettingForm (props: DHCPFormProps) {
   const { $t } = useIntl()
-
+  const { editMode } = props
   const type = useWatch<DHCPConfigTypeEnum>('dhcpMode')
 
   const types = Object.values(DHCPConfigTypeEnum)
@@ -54,6 +58,10 @@ export function SettingForm () {
     return checkObjectNotExists(list, { serviceName: value } , $t({ defaultMessage: 'DHCP service' }))
   }
 
+  const {
+    data
+  } = useGetDHCPProfileQuery({ params }, { skip: !editMode })
+
   return (<>
     <Row gutter={20}>
       <Col span={10}>
@@ -65,6 +73,7 @@ export function SettingForm () {
         <Form.Item
           name='serviceName'
           label={$t({ defaultMessage: 'Service Name' })}
+
           rules={[
             { required: true },
             { min: 2 },
@@ -73,7 +82,7 @@ export function SettingForm () {
           ]}
           validateFirst
           hasFeedback
-          children={<Input />}
+          children={<Input disabled={editMode && data?.serviceName === 'DHCP-Guest'}/>}
         />
 
         <Form.Item

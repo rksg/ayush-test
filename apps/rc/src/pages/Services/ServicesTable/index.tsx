@@ -1,3 +1,4 @@
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal, showToast } from '@acx-ui/components'
@@ -145,6 +146,14 @@ export default function ServicesTable () {
   const rowActions: TableProps<Service>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
+      visible: (selectedRows) => {
+        const dhcpGuest = _.find(selectedRows, { name: 'DHCP-Guest', type: ServiceType.DHCP })
+        if(_.isEmpty(dhcpGuest)){
+          return true
+        }else{
+          return false
+        }
+      },
       onClick: ([{ id, name, type, scope }], clearSelection) => {
         showActionModal({
           type: 'confirm',
