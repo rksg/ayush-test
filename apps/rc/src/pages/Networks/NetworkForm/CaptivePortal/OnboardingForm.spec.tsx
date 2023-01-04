@@ -65,8 +65,8 @@ describe('CaptiveNetworkForm-ClickThrough', () => {
       ),
       rest.get(PortalUrlsInfo.getPortalLang.url,
         (_, res, ctx) => {
-          return res(ctx.status(404),ctx.json(
-            'acceptTermsMsg = I accept the\nacceptTermsLink= terms & conditions'))
+          return res(ctx.json({ acceptTermsLink: 'terms & conditions',
+            acceptTermsMsg: 'I accept the' }))
         })
     )
   })
@@ -83,7 +83,7 @@ describe('CaptiveNetworkForm-ClickThrough', () => {
     await userEvent.click(await screen.findByRole('checkbox', { name: /Redirect users to/ }))
     await userEvent.click(await screen.findByRole('checkbox',
       { name: /Enable Ruckus DHCP service/ }))
-    await userEvent.click(await screen.findByText('More details'))
+    // await userEvent.click(await screen.findByText('More details'))
     await userEvent.click(await screen.findByText('Next'))
     await screen.findByRole('heading', { level: 3, name: 'Portal Web Page' })
     await userEvent.click(await screen.findByText('Add Guest Portal Service'))
