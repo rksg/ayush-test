@@ -15,8 +15,12 @@ import {
   onSocketActivityChanged,
   showActivityMessage,
   SwitchRow,
-  StackMember
+  StackMember,
+  ConfigurationHistory,
+  transformConfigType,
+  transformConfigStatus
 } from '@acx-ui/rc/utils'
+import { formatter } from '@acx-ui/utils'
 
 export const baseSwitchApi = createApi({
   baseQuery: fetchBaseQuery(),
@@ -143,6 +147,28 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
+    getSwitchConfigHistory: build.query<TableResult<ConfigurationHistory>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getSwitchConfigHistory, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      transformResponse: (res: {response:{list:ConfigurationHistory[], totalCount:number}}, meta
+        , arg: {payload:{page:number}}) => {
+       return {
+        data: res.response.list.map(item => ({
+          ...item, 
+          startTime: formatter('dateTimeFormatWithSeconds')(item.startTime),
+          configType: transformConfigType(item.configType),
+          dispatchStatus: transformConfigStatus(item.dispatchStatus)
+        })),
+        totalCount: res.response.totalCount,
+        page: arg.payload.page
+       }
+      }
+    }),
     addStackMember: build.mutation<{}, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(SwitchUrlsInfo.addStackMember, params)
@@ -248,6 +274,7 @@ export const {
   useSaveSwitchMutation,
   useAddSwitchMutation,
   useAddStackMemberMutation,
+  useGetSwitchConfigHistoryQuery,
   useGetSwitchListQuery,
   useLazyGetSwitchListQuery
 } = switchApi
