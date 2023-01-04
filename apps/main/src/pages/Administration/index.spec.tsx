@@ -1,4 +1,5 @@
-import { Provider  } from '@acx-ui/store'
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Provider  }    from '@acx-ui/store'
 import {
   render,
   screen,
@@ -16,6 +17,19 @@ jest.mock('react-router-dom', () => ({
 describe('Administration page', () => {
   let params: { tenantId: string, activeTab: string } =
   { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac', activeTab: 'accountSettings' }
+  jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+  it('should not render when feature flag off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValueOnce(false)
+
+    render(
+      <Provider>
+        <Administration />
+      </Provider>, {
+        route: { params }
+      })
+    await screen.findByText('Administration is not enabled')
+  })
 
   it('should render correctly', async () => {
     render(

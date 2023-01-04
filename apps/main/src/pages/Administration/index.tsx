@@ -2,6 +2,7 @@ import { useIntl } from 'react-intl'
 
 import { PageHeader }                            from '@acx-ui/components'
 import { Tabs }                                  from '@acx-ui/components'
+import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import AccountSettings from './AccountSettings'
@@ -53,6 +54,12 @@ const tabPanes = {
 export default function Administration () {
   const { $t } = useIntl()
   const { activeTab } = useParams()
+  const isEnable = useIsSplitOn(Features.UNRELEASED)
+
+  if (!isEnable) {
+    return <span>{ $t({ defaultMessage: 'Administration is not enabled' }) }</span>
+  }
+
   const ActiveTabPane = tabPanes[activeTab as keyof typeof tabPanes]
 
   return <>
