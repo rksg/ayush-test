@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 
 import {
   Form,
@@ -18,6 +18,7 @@ import {
 } from '@acx-ui/components'
 import {
   useCreateWebAuthTemplateMutation,
+  useGetWebAuthTemplateQuery,
   useUpdateWebAuthTemplateMutation
 } from '@acx-ui/rc/services'
 import {
@@ -39,7 +40,7 @@ export const defaultTemplateData = {
     Copyright 2022 Ruckus Networks`
 }
 
-export default function NetworkSegAuthForm () {
+export default function NetworkSegAuthForm ({ editMode = false }: { editMode?: boolean } ) {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
@@ -47,14 +48,18 @@ export default function NetworkSegAuthForm () {
 
   const [createWebAuthTemplate] = useCreateWebAuthTemplateMutation()
   const [updateWebAuthTemplate] = useUpdateWebAuthTemplateMutation()
-
-  const editMode = params.action === 'edit'
+  const { data } = useGetWebAuthTemplateQuery({ params }, { skip: !editMode })
 
   const formRef = useRef<StepsFormInstance<WebAuthTemplate>>()
 
-  const saveData = async (data: WebAuthTemplate) => {
-    // const saveData = transferFormFieldsToSaveData(data)
+  useEffect(() => {
+    formRef.current?.resetFields()
+    if (data && editMode) {
+      formRef.current?.setFieldsValue(data)
+    }
+  }, [data, editMode])
 
+  const saveData = async (data: WebAuthTemplate) => {
     try {
       if (editMode) {
         await updateWebAuthTemplate({ params, payload: data }).unwrap()
