@@ -1,4 +1,4 @@
-import { EdgeIpModeEnum, EdgePortTypeEnum, EdgePortView } from '@acx-ui/rc/utils'
+import { EdgeIpModeEnum, EdgePortTypeEnum, EdgePortStatus } from '@acx-ui/rc/utils'
 
 export const mockVenueData = {
   fields: ['name', 'id'],
@@ -92,7 +92,7 @@ export const mockEdgeData = {
   tags: ['tag1', 'tag2']
 }
 
-export const edgePortsSetting:EdgePortView[] = [{
+export const edgePortsSetting:EdgePortStatus[] = [{
   portId: '1',
   portName: 'Port 1',
   status: 'Up',

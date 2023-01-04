@@ -94,7 +94,7 @@ export interface EdgeStaticRouteConfig {
   routes: EdgeStaticRoute[]
 }
 
-export interface EdgePortView {
+export interface EdgePortStatus {
   portType: EdgePortTypeEnum.UNCONFIGURED | EdgePortTypeEnum.WAN | EdgePortTypeEnum.LAN
   portId: string
   portName:string

@@ -5,10 +5,10 @@ import type { DonutChartData }                         from '@acx-ui/components'
 import {
   cssStr, DonutChart, HistoricalCard, Loader, NoData
 } from '@acx-ui/components'
-import { EdgePortView } from '@acx-ui/rc/utils'
+import { EdgePortStatus } from '@acx-ui/rc/utils'
 
 type ReduceReturnType = Record<string, number>
-const getChartData = (ports: EdgePortView[]): DonutChartData[] => {
+const getChartData = (ports: EdgePortStatus[]): DonutChartData[] => {
   // TODOs: generate series mapping data dynamically by the responsed data.
 
   //
@@ -43,7 +43,7 @@ const getChartData = (ports: EdgePortView[]): DonutChartData[] => {
 }
 
 export function EdgePortsByTrafficWidget ({ edgePortsSetting, isLoading }:
-   { edgePortsSetting: EdgePortView[], isLoading: boolean }) {
+   { edgePortsSetting: EdgePortStatus[], isLoading: boolean }) {
   const { $t } = useIntl()
 
   // TODO: retrieve by API, use fake data for testing

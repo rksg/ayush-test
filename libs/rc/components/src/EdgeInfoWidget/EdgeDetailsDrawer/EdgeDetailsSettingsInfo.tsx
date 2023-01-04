@@ -3,10 +3,10 @@ import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Subtitle }              from '@acx-ui/components'
-import { EdgeDNS, EdgePortView } from '@acx-ui/rc/utils'
+import { EdgeDNS, EdgePortStatus } from '@acx-ui/rc/utils'
 
 interface EdgeDetailsSettingsInfoProps {
-  edgePortsSetting: EdgePortView[]
+  edgePortsSetting: EdgePortStatus[]
   dnsSetting: EdgeDNS
 }
 

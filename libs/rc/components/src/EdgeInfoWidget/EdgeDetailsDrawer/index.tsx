@@ -3,7 +3,7 @@ import { Divider, Form } from 'antd'
 import { useIntl }       from 'react-intl'
 
 import { ContentSwitcher, ContentSwitcherProps, Drawer }     from '@acx-ui/components'
-import { EdgeDNS, EdgePortView, EdgeStatus, EdgeStatusEnum } from '@acx-ui/rc/utils'
+import { EdgeDNS, EdgePortStatus, EdgeStatus, EdgeStatusEnum } from '@acx-ui/rc/utils'
 import { TenantLink }                                        from '@acx-ui/react-router-dom'
 
 
@@ -13,7 +13,7 @@ interface EdgeDetailsDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
   currentEdge: EdgeStatus,
-  edgePortsSetting: EdgePortView[]
+  edgePortsSetting: EdgePortStatus[]
 }
 
 const EdgeDetailsDrawer = (props: EdgeDetailsDrawerProps) => {
@@ -123,7 +123,7 @@ const EdgeDetailsDrawer = (props: EdgeDetailsDrawerProps) => {
       label: $t({ defaultMessage: 'Settings' }),
       value: 'settings',
       children: <EdgeDetailsSettingsInfo
-        edgePortsSetting={edgePortsSetting as EdgePortView[]}
+        edgePortsSetting={edgePortsSetting as EdgePortStatus[]}
         dnsSetting={dnsSetting as EdgeDNS}
       />
     }

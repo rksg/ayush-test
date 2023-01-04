@@ -4,15 +4,15 @@ import {
   Button, Drawer, Table,
   TableProps
 } from '@acx-ui/components'
-import { EdgePortView }                          from '@acx-ui/rc/utils'
+import { EdgePortStatus }                          from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { formatter }                             from '@acx-ui/utils'
 
 
-const EdgePortsTable = ({ data }: { data: EdgePortView[] }) => {
+const EdgePortsTable = ({ data }: { data: EdgePortStatus[] }) => {
   const { $t } = useIntl()
 
-  const columns: TableProps<EdgePortView>['columns'] = [
+  const columns: TableProps<EdgePortStatus>['columns'] = [
     {
       title: $t({ defaultMessage: '#' }),
       key: 'portId',
@@ -81,7 +81,7 @@ const EdgePortsTable = ({ data }: { data: EdgePortView[] }) => {
 
 const EdgePortsListDrawer = ({ visible, setVisible, edgePortsSetting }:
    { visible: boolean, setVisible: (visible: boolean) => void,
-    edgePortsSetting: EdgePortView[] }) => {
+    edgePortsSetting: EdgePortStatus[] }) => {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
@@ -110,7 +110,7 @@ const EdgePortsListDrawer = ({ visible, setVisible, edgePortsSetting }:
           onClick={handlePortSettingClick}
 
         >{$t({ defaultMessage: 'Configure Port Settings' })}</Button>
-        <EdgePortsTable data={edgePortsSetting as EdgePortView[]}/>
+        <EdgePortsTable data={edgePortsSetting as EdgePortStatus[]}/>
       </>}
     width={'auto'}
     bodyStyle={{ alignItems: 'flex-end' }}
