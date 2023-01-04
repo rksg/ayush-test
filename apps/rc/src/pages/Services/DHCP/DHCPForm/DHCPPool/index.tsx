@@ -158,7 +158,7 @@ export default function DHCPPoolTable ({
           ]}
           validateFirst
           hasFeedback
-          children={<Input />}
+          children={<Input disabled={isEdit() && form.getFieldValue('name') === 'DHCP-Guest'}/>}
         />
         <Form.Item
           name='description'
