@@ -36,5 +36,13 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
   updateDnsServers: {
     method: 'PATCH',
     url: '/api/edges/:serialNumber/dnsServers'
+  },
+  getStaticRoutes: {
+    method: 'get',
+    url: '/api/edges/:serialNumber/staticRouteConfig'
+  },
+  updateStaticRoutes: {
+    method: 'PATCH',
+    url: '/api/edges/:serialNumber/staticRouteConfig'
   }
 }

@@ -413,16 +413,6 @@ export interface Capabilities {
 	version: string
 }
 
-export interface EventMeta {
-  apName: string,
-  id: string,
-  isApExists: boolean,
-  isClientExists: boolean,
-  isVenueExists: boolean,
-  networkId: string,
-  venueName: string,
-}
-
 export interface ClientStatistic {
   applications: number;
   apsConnected: number;

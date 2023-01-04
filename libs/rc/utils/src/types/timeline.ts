@@ -44,17 +44,26 @@ export interface EventBase {
   serialNumber: string
   severity: string
   venueId: string
+  clientMac?: string
+  clientName?: string
 }
+
 export interface EventMeta {
   id: EventBase['id']
   apGroupId: string
   apName: string
   isApExists: boolean
+  isClientExists?: boolean
+  isNetworkExists?: boolean
   isSwitchExists: boolean
   isVenueExists: boolean
+  networkId?: string
+  networkName?: string
+  switchMac?: string
   switchName: string
   venueName: string
 }
+
 export type Event = EventBase & EventMeta
 
 export interface AdminLogBase {
@@ -67,9 +76,11 @@ export interface AdminLogBase {
   raw_event: string
   severity: string
 }
+
 export interface AdminLogMeta {
   id: AdminLogBase['id']
   isApExists: boolean
   isSwitchExists: boolean
 }
+
 export type AdminLog = AdminLogBase & AdminLogMeta
