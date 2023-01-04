@@ -1,16 +1,40 @@
 
+import { useEffect } from 'react'
+
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps, Card } from '@acx-ui/components'
-import { AAADetailInstances }      from '@acx-ui/rc/utils'
-import { TenantLink }              from '@acx-ui/react-router-dom'
+import { Table, TableProps, Card, Loader }                          from '@acx-ui/components'
+import { useAaaNetworkInstancesQuery, useGetAAAProfileDetailQuery } from '@acx-ui/rc/services'
+import { AAADetailInstances, useTableQuery }                        from '@acx-ui/rc/utils'
+import { TenantLink, useParams }                                    from '@acx-ui/react-router-dom'
 
-
-export default function AAAInstancesTable (
-  props:Partial<TableProps<AAADetailInstances>>){
+export default function AAAInstancesTable (){
 
   const { $t } = useIntl()
-  const { dataSource } = props
+  const params = useParams()
+  const { data } = useGetAAAProfileDetailQuery({ params })
+  const tableQuery = useTableQuery({
+    useQuery: useAaaNetworkInstancesQuery,
+    defaultPayload: {
+      fields: ['name', 'id', 'captiveType', 'nwSubType', 'venues', 'clients'],
+      filters: {
+        id: data?.networkIds?.length? data?.networkIds : ['none']
+      },
+      sortField: 'name',
+      sortOrder: 'ASC'
+    }
+  })
+
+  useEffect(()=>{
+    if(data){
+      tableQuery.setPayload({
+        ...tableQuery.payload,
+        filters: {
+          id: data?.networkIds?.length? data?.networkIds : ['none']
+        }
+      })
+    }
+  },[data])
   const columns: TableProps<AAADetailInstances>['columns'] = [
     {
       key: 'NetworkName',
@@ -36,12 +60,17 @@ export default function AAAInstancesTable (
   ]
 
   return (
-    <Card title={$t({ defaultMessage: 'Instances ({count})' }, { count: dataSource?.length })}>
-      <Table
-        columns={columns}
-        dataSource={dataSource}
-        rowKey='id'
-      />
-    </Card>
+    <Loader states={[tableQuery]}>
+      <Card title={$t({ defaultMessage: 'Instances ({count})' },
+        { count: tableQuery.data?.totalCount })}>
+        <Table
+          columns={columns}
+          pagination={tableQuery.pagination}
+          onChange={tableQuery.handleTableChange}
+          dataSource={tableQuery.data?.data}
+          rowKey='id'
+        />
+      </Card>
+    </Loader>
   )
 }

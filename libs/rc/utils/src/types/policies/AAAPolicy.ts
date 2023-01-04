@@ -5,7 +5,8 @@ export interface AAAPolicyType{
   profileName: string,
   tags?: string[],
   radiusServer?: AAARadiusServer,
-  tacacsServer?: AAATacacsServer
+  tacacsServer?: AAATacacsServer,
+  networkIds?: string[]
 }
 export interface AAARadiusServer{
   serverAddress: string,

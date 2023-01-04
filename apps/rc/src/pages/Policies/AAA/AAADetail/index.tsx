@@ -1,36 +1,18 @@
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { PageHeader, Button, GridRow, Loader, GridCol }             from '@acx-ui/components'
-import { useAaaNetworkInstancesQuery, useGetAAAProfileDetailQuery } from '@acx-ui/rc/services'
-import { AAAPolicyType, getPolicyListRoutePath, useTableQuery }     from '@acx-ui/rc/utils'
-import { TenantLink }                                               from '@acx-ui/react-router-dom'
+import { PageHeader, Button, GridRow, Loader, GridCol } from '@acx-ui/components'
+import { useGetAAAProfileDetailQuery }                  from '@acx-ui/rc/services'
+import { AAAPolicyType, getPolicyListRoutePath }        from '@acx-ui/rc/utils'
+import { TenantLink }                                   from '@acx-ui/react-router-dom'
 
 import AAAInstancesTable from './AAAInstancesTable'
 import AAAOverview       from './AAAOverview'
 
-
-
-const defaultPayload = {
-  searchString: '',
-  fields: [
-    'name',
-    'id'
-  ]
-}
-
 export default function AAAPolicyDetail () {
   const { $t } = useIntl()
   const params = useParams()
-
-  const tableQuery = useTableQuery({
-    useQuery: useAaaNetworkInstancesQuery,
-    defaultPayload
-  })
-
   const queryResults = useGetAAAProfileDetailQuery({ params })
-
-
   return (
     <>
       <PageHeader
@@ -52,13 +34,7 @@ export default function AAAPolicyDetail () {
           </Loader>
         </GridCol>
         <GridCol col={{ span: 24 }}>
-          <Loader states={[tableQuery]}>
-            <AAAInstancesTable
-              dataSource={tableQuery.data?.data}
-              pagination={tableQuery.pagination}
-              onChange={tableQuery.handleTableChange}
-            />
-          </Loader>
+          <AAAInstancesTable/>
         </GridCol>
       </GridRow>
     </>
