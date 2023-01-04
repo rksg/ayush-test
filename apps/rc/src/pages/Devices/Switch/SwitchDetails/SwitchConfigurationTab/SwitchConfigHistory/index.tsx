@@ -1,4 +1,4 @@
-import { Button, Loader, Modal, Table, TableProps } from '@acx-ui/components'
+import { Button, Loader, Modal, Table, TableProps, Descriptions } from '@acx-ui/components'
 import { useState } from 'react'
 import { useIntl } from 'react-intl'
 import 'codemirror/addon/merge/merge.css'
@@ -86,7 +86,18 @@ export function SwitchConfigHistory () {
       {
         selectedRow && 
         <>
-         <CodeMirrorWidget data={selectedRow}/>
+          <Descriptions labelWidthPercent={15}>
+            <Descriptions.Item
+              label={$t({ defaultMessage: 'Time' })}
+              children={selectedRow.startTime} />
+            <Descriptions.Item
+              label={$t({ defaultMessage: 'Type' })}
+              children={selectedRow.configType} />
+            <Descriptions.Item
+              label={$t({ defaultMessage: 'Status' })}
+              children={selectedRow.dispatchStatus} />
+          </Descriptions>
+          <CodeMirrorWidget data={selectedRow}/>
         </>
       }
     </Modal>
