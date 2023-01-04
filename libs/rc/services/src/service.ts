@@ -90,7 +90,9 @@ export const serviceApi = baseServiceApi.injectEndpoints({
             'Delete WiFi Calling Service Profiles',
             'Update Portal Service Profile',
             'Delete Portal Service Profile',
-            'Delete Portal Service Profiles'
+            'Delete Portal Service Profiles',
+            'Delete DHCP Config Service Profile',
+            'Delete DHCP Config Service Profiles'
           ], () => {
             api.dispatch(serviceApi.util.invalidateTags([
               { type: 'Service', id: 'LIST' }
@@ -247,6 +249,15 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         return {
           ...dhcpReq,
           body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    deleteDHCPService: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(DHCPUrls.deleteDHCPProfile, params)
+        return {
+          ...req
         }
       },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }]
@@ -624,6 +635,7 @@ export const {
   useServiceListQuery,
   useGetDHCPProfileQuery,
   useSaveOrUpdateDHCPMutation,
+  useDeleteDHCPServiceMutation,
   useDhcpVenueInstancesQuery,
   useVlanPoolListQuery,
   useAccessControlProfileListQuery,

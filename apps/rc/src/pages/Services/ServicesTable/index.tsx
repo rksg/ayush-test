@@ -5,7 +5,8 @@ import {
   useDeleteWifiCallingServiceMutation,
   useDeleteMdnsProxyMutation,
   useServiceListQuery,
-  useDeletePortalMutation
+  useDeletePortalMutation,
+  useDeleteDHCPServiceMutation
 } from '@acx-ui/rc/services'
 import {
   ServiceType,
@@ -133,7 +134,7 @@ export default function ServicesTable () {
     defaultPayload
   })
   const deleteServiceFnMapping = {
-    [ServiceType.DHCP]: [], // TODO: API not ready
+    [ServiceType.DHCP]: useDeleteDHCPServiceMutation(), // TODO: API not ready
     [ServiceType.DPSK]: [], // TODO: API not ready
     [ServiceType.MDNS_PROXY]: useDeleteMdnsProxyMutation(),
     [ServiceType.PORTAL]: useDeletePortalMutation(),

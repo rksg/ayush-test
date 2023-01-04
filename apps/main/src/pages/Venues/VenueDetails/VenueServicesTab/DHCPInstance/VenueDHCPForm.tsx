@@ -65,13 +65,14 @@ const VenueDHCPForm = (props: {
   }
   useEffect(() => {
     setIsSimpleMode(getSelectedDHCPMode() === DHCPConfigTypeEnum.SIMPLE)
-  },[dhcpServiceID])
+  },[dhcpServiceID, dhcpProfileList])
 
   let natGatewayList = _.groupBy(venueDHCPProfile?.dhcpServiceAps, 'role').NatGateway || []
   useEffect(() => {
     const initVal = getInitValue()
     setGateways(initVal.gateways)
     form.setFieldsValue(initVal)
+    setDHCPServiceID(dhcpInfo.id as string)
   }, [venueDHCPProfile, form, dhcpInfo.id, dhcpInfo.primaryDHCP.serialNumber,
     dhcpInfo.secondaryDHCP.serialNumber])
 

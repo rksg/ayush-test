@@ -5,12 +5,18 @@ import _                          from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useLocation, useParams } from 'react-router-dom'
 
-import { Modal, GridRow, GridCol, Card }     from '@acx-ui/components'
-import { useUpdateVenueDHCPProfileMutation } from '@acx-ui/rc/services'
-import { TenantLink }                        from '@acx-ui/react-router-dom'
+import { Modal, GridRow, GridCol, Card } from '@acx-ui/components'
+import {
+  useUpdateVenueDHCPProfileMutation,
+  useGetDHCPProfileListQuery
+} from '@acx-ui/rc/services'
+import { DHCPConfigTypeEnum } from '@acx-ui/rc/utils'
+import { TenantLink }         from '@acx-ui/react-router-dom'
+
 
 import useDHCPInfo   from './hooks/useDHCPInfo'
 import VenueDHCPForm from './VenueDHCPForm'
+
 
 export default function BasicInfo () {
   type LocationState = {
@@ -30,6 +36,14 @@ export default function BasicInfo () {
 
   const [form] = Form.useForm()
 
+  const { data: dhcpProfileList } = useGetDHCPProfileListQuery({ params })
+  const getSelectedDHCPMode = (dhcpServiceID:string)=> {
+    if(dhcpProfileList && dhcpServiceID){
+      return dhcpProfileList[_.findIndex(dhcpProfileList, { id: dhcpServiceID })].dhcpMode
+    }else{
+      return DHCPConfigTypeEnum.SIMPLE
+    }
+  }
 
   const payloadTransverter = (data:{
     enabled: boolean;
@@ -41,20 +55,20 @@ export default function BasicInfo () {
     const payload:{
       enabled:Boolean
       serviceProfileId:string
-      dhcpServiceAps: Array<object>
+      dhcpServiceAps?: Array<object>
     } = {
       enabled: data.enabled,
       serviceProfileId: data.serviceProfileId,
       dhcpServiceAps: []
     }
 
-    if(data.primaryServerSN){
+    if(data.primaryServerSN && payload.dhcpServiceAps){
       payload.dhcpServiceAps.push({
         serialNumber: data.primaryServerSN,
         role: 'PrimaryServer'
       })
     }
-    if(data.backupServerSN){
+    if(data.backupServerSN && payload.dhcpServiceAps){
       payload.dhcpServiceAps.push({
         serialNumber: data.backupServerSN,
         role: 'BackupServer'
@@ -62,13 +76,18 @@ export default function BasicInfo () {
     }
 
     if(data.gateways){
-      const gateways = data.gateways.map((item:{ serialNumber:string }) => {
-        return {
-          serialNumber: item.serialNumber,
-          role: 'NatGateway'
+      let gateways = data.gateways.map((item:{ serialNumber:string }) => {
+        if(item.serialNumber){
+          return {
+            serialNumber: item.serialNumber,
+            role: 'NatGateway'
+          }
+        }else{
+          return {}
         }
       })
-      if(!_.isEmpty(gateways)){
+      gateways = _.filter(gateways, o => !_.isEmpty(o.serialNumber) )
+      if(!_.isEmpty(gateways) && payload.dhcpServiceAps){
         payload.dhcpServiceAps = payload.dhcpServiceAps.concat(gateways)
       }
     }
@@ -153,6 +172,10 @@ export default function BasicInfo () {
           const valid = await form.validateFields()
           if (valid) {
             const payload = payloadTransverter(form.getFieldsValue())
+            const profileMode = getSelectedDHCPMode(payload.serviceProfileId)
+            if(profileMode === DHCPConfigTypeEnum.SIMPLE){
+              delete payload.dhcpServiceAps
+            }
             await updateVenueDHCPProfile({
               params: { ...params }, payload
             }).unwrap()
