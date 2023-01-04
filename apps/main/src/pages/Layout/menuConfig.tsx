@@ -155,8 +155,7 @@ export function useMenuConfig () {
       path: '/administration',
       name: $t({ defaultMessage: 'Administration' }),
       inactiveIcon: AdminOutlined,
-      activeIcon: AdminSolid,
-      disabled: true
+      activeIcon: AdminSolid
     }
   ]
   return config
