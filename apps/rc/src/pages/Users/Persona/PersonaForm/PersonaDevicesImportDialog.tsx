@@ -43,7 +43,7 @@ export function PersonaDevicesImportDialog (props: DevicesImportDialogProps) {
         if (!result.data || !result.data?.macRegistrationPoolId) return
 
         getMacRegistrationById({
-          params: { macRegistrationListId: result.data.macRegistrationPoolId }
+          params: { policyId: result.data.macRegistrationPoolId }
         }).then(result => {
           if (!result.data) return
           setMacRegistrationPool(result.data)

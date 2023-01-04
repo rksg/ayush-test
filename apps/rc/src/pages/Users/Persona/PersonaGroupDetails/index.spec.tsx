@@ -1,8 +1,8 @@
 import { rest } from 'msw'
 
-import { MacRegistrationPool, NewTableResult, Persona, PersonaGroup, PersonaUrls, RadiusUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                                                                from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved, fireEvent, within }                from '@acx-ui/test-utils'
+import { MacRegistrationPool, NewTableResult, Persona, PersonaGroup, PersonaUrls, MacRegListUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                                                    from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved, fireEvent, within }                    from '@acx-ui/test-utils'
 
 import PersonaGroupDetails from '.'
 
@@ -67,9 +67,11 @@ const mockPersonaGroup: PersonaGroup = {
 }
 
 const mockPersonaTableResult: NewTableResult<Persona> = {
+  totalPages: 1,
+  page: 0,
+  sort: [],
   totalElements: 3,
   size: 10,
-  number: 0,
   content: [
     {
       id: 'persona-id-1',
@@ -90,9 +92,11 @@ const mockPersonaTableResult: NewTableResult<Persona> = {
 }
 
 const mockPersonaGroupList: NewTableResult<PersonaGroup> = {
+  totalPages: 1,
+  page: 0,
+  sort: [],
   totalElements: 1,
   size: 10,
-  number: 0,
   content: [
     {
       id: 'persona-group-id-1',
@@ -111,9 +115,7 @@ const mockMacRegistration: MacRegistrationPool =
     expirationEnabled: true,
     priority: 1,
     ssidRegex: 'string',
-    macAddresses: 1,
     policyId: 'string',
-    expirationType: 'string',
     expirationOffset: 1,
     expirationDate: 'string'
   }
@@ -132,7 +134,7 @@ describe('Persona Group Details', () => {
         (req, res, ctx) => res(ctx.json(mockPersonaGroupList))
       ),
       rest.get(
-        RadiusUrlsInfo.getMacRegistrationPool.url,
+        MacRegListUrlsInfo.getMacRegistrationPool.url,
         (req, res, ctx) => res(ctx.json(mockMacRegistration))
       ),
       rest.delete(
@@ -144,7 +146,7 @@ describe('Persona Group Details', () => {
         (req, res, ctx) => res(ctx.json(mockPersonaGroupTableResult))
       ),
       rest.get(
-        RadiusUrlsInfo.getMacRegistrationPools.url,
+        MacRegListUrlsInfo.getMacRegistrationPools.url,
         (req, res, ctx) => res(ctx.json(mockMacRegistrationList))
       ),
       rest.post(

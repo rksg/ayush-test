@@ -1,8 +1,15 @@
 import { rest } from 'msw'
 
-import { MacRegistrationPool, NewTableResult, Persona, PersonaGroup, PersonaUrls, RadiusUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                                                                from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved, fireEvent }                        from '@acx-ui/test-utils'
+import {
+  MacRegistrationPool,
+  NewTableResult,
+  Persona,
+  PersonaGroup,
+  PersonaUrls,
+  MacRegListUrlsInfo
+} from '@acx-ui/rc/utils'
+import { Provider }                                                         from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved, fireEvent } from '@acx-ui/test-utils'
 
 import { PersonaDevicesTable } from './PersonaDevicesTable'
 
@@ -60,8 +67,10 @@ const mockPersona: Persona = {
 
 const mockPersonaGroupList: NewTableResult<PersonaGroup> = {
   totalElements: 1,
+  totalPages: 1,
   size: 10,
-  number: 0,
+  sort: [],
+  page: 0,
   content: [
     {
       id: 'persona-group-id-1',
@@ -80,9 +89,7 @@ const mockMacRegistration: MacRegistrationPool =
     expirationEnabled: true,
     priority: 1,
     ssidRegex: 'string',
-    macAddresses: 1,
     policyId: 'string',
-    expirationType: 'string',
     expirationOffset: 1,
     expirationDate: 'string'
   }
@@ -110,11 +117,11 @@ describe('Persona Details', () => {
         (req, res, ctx) => res(ctx.json(mockPersonaGroupList))
       ),
       rest.get(
-        RadiusUrlsInfo.getMacRegistrationPool.url,
+        MacRegListUrlsInfo.getMacRegistrationPool.url,
         (req, res, ctx) => res(ctx.json(mockMacRegistration))
       ),
       rest.get(
-        RadiusUrlsInfo.getMacRegistrationPools.url,
+        MacRegListUrlsInfo.getMacRegistrationPools.url,
         (req, res, ctx) => res(ctx.json(mockMacRegistrationList))
       )
     )

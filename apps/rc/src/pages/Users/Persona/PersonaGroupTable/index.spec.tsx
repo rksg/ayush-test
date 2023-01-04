@@ -1,6 +1,6 @@
 import { rest } from 'msw'
 
-import { MacRegistrationPool, PersonaUrls, RadiusUrlsInfo }                         from '@acx-ui/rc/utils'
+import { MacRegistrationPool, PersonaUrls, MacRegListUrlsInfo }                     from '@acx-ui/rc/utils'
 import { Provider }                                                                 from '@acx-ui/store'
 import { fireEvent, within, mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -84,11 +84,11 @@ describe('Persona Group Table', () => {
         (req, res, ctx) => res(ctx.json({}))
       ),
       rest.get(
-        RadiusUrlsInfo.getMacRegistrationPool.url,
+        MacRegListUrlsInfo.getMacRegistrationPool.url,
         (req, res, ctx) => res(ctx.json(mockMacRegistration))
       ),
       rest.get(
-        RadiusUrlsInfo.getMacRegistrationPools.url,
+        MacRegListUrlsInfo.getMacRegistrationPools.url,
         (req, res, ctx) => res(ctx.json(mockMacRegistrationList))
       )
     )
