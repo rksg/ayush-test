@@ -41,9 +41,9 @@ import {
   showActivityMessage,
   MdnsProxyAp,
   UploadUrlResponse,
-  transferPaginationParams,
   TableChangePayload,
-  RequestFormData
+  RequestFormData,
+  createNewTableHttpRequest
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
@@ -508,8 +508,13 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       invalidatesTags: [{ type: 'Service', id: 'LIST' }, { type: 'Dpsk', id: 'LIST' }]
     }),
     getDpskList: build.query<TableResult<DpskSaveData>, RequestPayload>({
-      query: () => {
-        const getDpskListReq = createHttpRequest(DpskUrls.getDpskList)
+      query: ({ params, payload }) => {
+        const getDpskListReq = createNewTableHttpRequest({
+          apiInfo: DpskUrls.getDpskList,
+          params,
+          payload: payload as TableChangePayload
+        })
+
         return {
           ...getDpskListReq
         }
@@ -552,10 +557,12 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     // eslint-disable-next-line max-len
     dpskPassphraseList: build.query<TableResult<NewDpskPassphrase>, RequestPayload>({
       query: ({ params, payload }) => {
-        const getDpskPassphraseListReq = createHttpRequest(
-          DpskUrls.getPassphraseList,
-          { ...params, ...transferPaginationParams(payload as TableChangePayload) }
-        )
+        const getDpskPassphraseListReq = createNewTableHttpRequest({
+          apiInfo: DpskUrls.getPassphraseList,
+          params,
+          payload: payload as TableChangePayload
+        })
+
         return {
           ...getDpskPassphraseListReq
         }

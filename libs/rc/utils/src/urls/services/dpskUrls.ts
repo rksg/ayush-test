@@ -4,6 +4,8 @@ export const DpskBaseUrl = '/api/dpskServices'
 
 export const DpskPassphraseBaseUrl = '/api/dpskServices/:serviceId/passphrases'
 
+const paginationParams = '?size=:pageSize&page=:page&sort=:sort'
+
 export const DpskUrls: { [key: string]: ApiInfo } = {
   getDpsk: {
     method: 'get',
@@ -11,11 +13,11 @@ export const DpskUrls: { [key: string]: ApiInfo } = {
   },
   getDpskList: {
     method: 'get',
-    url: DpskBaseUrl + ''
+    url: DpskBaseUrl + paginationParams
   },
   addDpsk: {
     method: 'post',
-    url: DpskBaseUrl + ''
+    url: DpskBaseUrl
   },
   updateDpsk: {
     method: 'put',
@@ -27,7 +29,7 @@ export const DpskUrls: { [key: string]: ApiInfo } = {
   },
   getPassphraseList: {
     method: 'get',
-    url: DpskPassphraseBaseUrl + '?size=:pageSize&page=:page&sort=:sort'
+    url: DpskPassphraseBaseUrl + paginationParams
   },
   addPassphrase: {
     method: 'post',

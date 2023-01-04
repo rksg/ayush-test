@@ -5,6 +5,8 @@ import { TableProps } from 'antd'
 import { useParams, Params }                         from '@acx-ui/react-router-dom'
 import { UseQuery, UseQueryResult, UseQueryOptions } from '@acx-ui/types'
 
+import { ApiInfo, createHttpRequest } from './apiService'
+
 export const TABLE_QUERY_POLLING_INTERVAL = 30_000
 export const TABLE_QUERY_LONG_POLLING_INTERVAL = 300_000
 
@@ -206,6 +208,17 @@ export interface NewTableResult<T> {
   }
   content: T[]
   pageable: NewTablePageable
+}
+
+interface CreateNewTableHttpRequestProps {
+  apiInfo: ApiInfo
+  params: Params<string> | undefined
+  payload: TableChangePayload
+}
+
+export function createNewTableHttpRequest (props: CreateNewTableHttpRequestProps) {
+  const { apiInfo, params, payload } = props
+  return createHttpRequest(apiInfo, { ...params, ...transferPaginationParams(payload) })
 }
 
 export function transferTableResult<T> (newResult: NewTableResult<T>): TableResult<T> {
