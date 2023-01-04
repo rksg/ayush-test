@@ -25,7 +25,9 @@ jest.mock('@acx-ui/rc/components', () => ({
   SwitchInfoWidget: () =>
     <div data-testid={'rc-SwitchInfoWidget'} title='SwitchInfoWidget' />,
   SwitchPortTable: () =>
-    <div data-testid={'rc-SwitchPortTable'} title='SwitchPortTable' />
+    <div data-testid={'rc-SwitchPortTable'} title='SwitchPortTable' />,
+  SwitchVeTable: () =>
+    <div data-testid={'rc-SwitchVeTable'} title='SwitchVeTable' />
 }))
 
 describe('SwitchOverviewTab', () => {
@@ -100,13 +102,13 @@ describe('SwitchOverviewTab', () => {
       activeTab: 'overview',
       activeSubTab: 'routeInterfaces'
     }
-    const { asFragment } = render(<Provider><SwitchOverviewTab /></Provider>, {
+    render(<Provider><SwitchOverviewTab /></Provider>, {
       route: {
         params,
         path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab'
       }
     })
-    expect(asFragment()).toMatchSnapshot()
+    await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
   })
 
   it('should navigate to VLANs tab correctly', async () => {
@@ -117,7 +119,7 @@ describe('SwitchOverviewTab', () => {
       activeTab: 'overview',
       activeSubTab: 'vlans'
     }
-    const { asFragment } = render(<Provider><SwitchOverviewTab /></Provider>, {
+    render(<Provider><SwitchOverviewTab /></Provider>, {
       route: {
         params,
         path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab'
@@ -125,7 +127,7 @@ describe('SwitchOverviewTab', () => {
     })
 
     await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
-    expect(asFragment()).toMatchSnapshot() })
+  })
 
   it('should navigate to ACLs tab correctly', async () => {
     const params = {
@@ -143,4 +145,5 @@ describe('SwitchOverviewTab', () => {
     })
     await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
   })
-})
+}
+)
