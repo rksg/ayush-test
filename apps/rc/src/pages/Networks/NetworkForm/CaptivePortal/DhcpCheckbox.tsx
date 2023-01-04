@@ -10,10 +10,10 @@ import {
 import { useWatch } from 'antd/lib/form/Form'
 import { useIntl }  from 'react-intl'
 
-import { Button }              from '@acx-ui/components'
-import {
-  QuestionMarkCircleOutlined
-} from '@acx-ui/icons'
+// import { Button }              from '@acx-ui/components'
+// import {
+//   QuestionMarkCircleOutlined
+// } from '@acx-ui/icons'
 import { useGetDefaultGuestDhcpServiceProfileQuery, useVenuesListQuery } from '@acx-ui/rc/services'
 import { IpUtilsService, Venue }                                         from '@acx-ui/rc/utils'
 import { useParams }                                                     from '@acx-ui/react-router-dom'
@@ -102,7 +102,7 @@ export function DhcpCheckbox () {
       }
       placement='bottom'
       >
-        <QuestionMarkCircleOutlined style={{ marginLeft: -5, marginBottom: -3 }} />
+        {/* <QuestionMarkCircleOutlined style={{ marginLeft: -5, marginBottom: -3 }} /> */}
       </Tooltip>
       <Popover
         placement='bottom'
@@ -122,9 +122,9 @@ export function DhcpCheckbox () {
         }}
         trigger='click'
       >
-        <Button type='link' style={{ marginLeft: '14px' }}>
+        {/* <Button type='link' style={{ marginLeft: '14px' }}>
           {intl.$t({ defaultMessage: 'More details' })}
-        </Button>
+        </Button> */}
       </Popover></>
     </Form.Item>
   )
