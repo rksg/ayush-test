@@ -4,13 +4,14 @@ import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { showActionModal, Loader, TableProps, Tooltip, Table  }              from '@acx-ui/components'
+import { Features, useIsSplitOn }                                            from '@acx-ui/feature-toggle'
 import { useDeleteNetworkMutation }                                          from '@acx-ui/rc/services'
 import { NetworkTypeEnum, Network, NetworkType, TableQuery, RequestPayload } from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink }                                         from '@acx-ui/react-router-dom'
 import { getIntl, notAvailableMsg }                                          from '@acx-ui/utils'
 
 
-const disabledType = [NetworkTypeEnum.CAPTIVEPORTAL]
+const disabledType: NetworkTypeEnum[] = []
 
 function getCols (intl: ReturnType<typeof useIntl>) {
   const columns: TableProps<Network>['columns'] = [
@@ -171,6 +172,9 @@ interface NetworkTableProps {
 }
 
 export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
+  if(!useIsSplitOn(Features.SERVICES)){
+    disabledType.push(NetworkTypeEnum.CAPTIVEPORTAL)
+  }
   const intl = useIntl()
   const { $t } = intl
   const navigate = useNavigate()
