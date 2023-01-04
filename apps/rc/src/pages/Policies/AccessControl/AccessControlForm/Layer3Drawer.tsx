@@ -312,7 +312,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
 
   }
 
-  const actions = !isViewMode() ?[{
+  const actions = !isViewMode() ? [{
     label: $t({ defaultMessage: 'Add' }),
     onClick: handleAddAction
   }] : []
@@ -343,6 +343,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         // form.setFieldValue([...inputName, 'l3AclPolicyId'], responseData.id)
         // setQueryPolicyId(responseData.id)
         setRequestId(l3AclRes.requestId)
+        setQueryPolicyName(policyName)
       }
     } catch(error) {
       showToast({
@@ -440,12 +441,12 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     {
       label: $t({ defaultMessage: 'Allow Traffic' }),
       children: <EmptyElement access={AccessStatus.ALLOW} />,
-      value: 'ALLOW'
+      value: AccessStatus.ALLOW
     },
     {
       label: $t({ defaultMessage: 'Block Traffic' }),
       children: <EmptyElement access={AccessStatus.BLOCK} />,
-      value: 'BLOCK'
+      value: AccessStatus.BLOCK
     }
   ]
 
@@ -453,12 +454,12 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     {
       label: $t({ defaultMessage: 'Allow Traffic' }),
       children: <DefaultEmptyElement access={AccessStatus.ALLOW} />,
-      value: 'ALLOW'
+      value: AccessStatus.ALLOW
     },
     {
       label: $t({ defaultMessage: 'Block Traffic' }),
       children: <DefaultEmptyElement access={AccessStatus.BLOCK} />,
-      value: 'BLOCK'
+      value: AccessStatus.BLOCK
     }
   ]
 

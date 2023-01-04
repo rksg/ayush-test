@@ -16,10 +16,21 @@ import {
   RogueAPDetectionContextType,
   RogueAPDetectionTempType,
   VenueRoguePolicyType,
-  TableResult, onSocketActivityChanged, showActivityMessage, CommonResult,
-  NewTableResult, transferTableResult,
+  TableResult,
+  onSocketActivityChanged,
+  showActivityMessage,
+  CommonResult,
+  NewTableResult,
+  transferTableResult,
   AccessControlUrls,
-  l2AclPolicyInfoType, l3AclPolicyInfoType, AvcApp, AvcCat, L2AclPolicy, L3AclPolicy
+  l2AclPolicyInfoType,
+  l3AclPolicyInfoType,
+  AvcApp,
+  AvcCat,
+  L2AclPolicy,
+  L3AclPolicy,
+  ApplicationPolicy,
+  appPolicyInfoType
 } from '@acx-ui/rc/utils'
 
 export const basePolicyApi = createApi({
@@ -87,6 +98,25 @@ export const policyApi = basePolicyApi.injectEndpoints({
     getL3AclPolicy: build.query<l3AclPolicyInfoType, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(AccessControlUrls.getL3AclPolicy, params, RKS_NEW_UI)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+    }),
+    addAppPolicy: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AccessControlUrls.addAppPolicy, params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    getAppPolicy: build.query<appPolicyInfoType, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(AccessControlUrls.getAppPolicy, params, RKS_NEW_UI)
         return {
           ...req
         }
@@ -215,6 +245,31 @@ export const policyApi = basePolicyApi.injectEndpoints({
           if (params.requestId) {
             showActivityMessage(msg, [
               'Add Layer 3 Policy Profile'
+            ],() => {
+              api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
+            }, params.requestId as string)
+          }
+        })
+      }
+    }),
+    appPolicyList: build.query<TableResult<ApplicationPolicy>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const appPolicyListReq = createHttpRequest(
+          AccessControlUrls.getAppPolicyList,
+          params
+        )
+        return {
+          ...appPolicyListReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const params = requestArgs.params as { requestId: string }
+          if (params.requestId) {
+            showActivityMessage(msg, [
+              'Add Application Policy Profile'
             ],() => {
               api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
             }, params.requestId as string)
@@ -357,10 +412,13 @@ export const {
   useDelRoguePoliciesMutation,
   useAddL2AclPolicyMutation,
   useGetL2AclPolicyQuery,
+  useAddAppPolicyMutation,
+  useGetAppPolicyQuery,
   useAddL3AclPolicyMutation,
   useGetL3AclPolicyQuery,
   useL2AclPolicyListQuery,
   useL3AclPolicyListQuery,
+  useAppPolicyListQuery,
   useGetRoguePolicyListQuery,
   useUpdateRoguePolicyMutation,
   useRoguePolicyQuery,

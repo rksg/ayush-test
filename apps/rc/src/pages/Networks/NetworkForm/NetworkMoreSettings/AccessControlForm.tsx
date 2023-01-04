@@ -488,7 +488,7 @@ function AccessControlConfigForm () {
 
         {enableApplications && <>
           <Form.Item
-            name={['wlan','advancedCustomization','applicationPolicyId']}
+            name={['wlan','advancedCustomization','enableLayer2']}
             style={{ marginBottom: '10px', lineHeight: '32px' }}
             rules={[{
               required: true,
