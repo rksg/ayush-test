@@ -68,5 +68,49 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
   resendEcInvitation: {
     method: 'post',
     url: '/api/mspservice/tenant/:mspEcTenantId/emailinvitation'
+  },
+  getMspEcAccount: {
+    method: 'get',
+    url: '/api/mspservice/tenant/:mspEcTenantId'
+  },
+  addMspEcAccount: {
+    method: 'post',
+    url: '/api/mspservice/tenant/:tenantId/mspecaccounts'
+  },
+  updateMspEcAccount: {
+    method: 'put',
+    url: '/api/mspservice/tenant/:mspEcTenantId'
+  },
+  getMspEcDelegatedAdmins: {
+    method: 'get',
+    url: '/api/mspservice/tenant/:mspEcTenantId/delegatedmspadmins'
+  },
+  updateMspEcDelegatedAdmins: {
+    method: 'put',
+    url: '/api/mspservice/tenant/:mspEcTenantId/delegatedmspadmins'
+  },
+  enableMspEcSupport: {
+    method: 'post',
+    url: '/api/mspservice/tenant/:mspEcTenantId/delegation/support'
+  },
+  disableMspEcSupport: {
+    method: 'delete',
+    url: '/api/mspservice/tenant/:mspEcTenantId/delegation/support'
+  },
+  assignMspEcToIntegrator: {
+    method: 'post',
+    url: '/api/mspservice/tenant/assign/:mspIntegratorId'
+  },
+  getAssignedMspEcToIntegrator: {
+    method: 'get',
+    url: '/api/mspservice/tenant/assign/:mspIntegratorId?delegationType=:mspIntegratorType'
+  },
+  updateAssignedMspEcDelegatedAdmins: {
+    method: 'put',
+    url: '/api/mspservice/tenant/:mspEcTenantId/delegation/assignedmspadmins'
+  },
+  exportMspEcDeviceInventory: {
+    method: 'post',
+    url: '/api/viewmodel/tenant/:tenantId/ec-inventory/export'
   }
 }

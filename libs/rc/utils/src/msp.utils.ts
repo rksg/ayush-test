@@ -17,6 +17,16 @@ const devicesCountMap = {
 }
 
 export class EntitlementUtil {
+  public static getMspDeviceTypeText (deviceType: EntitlementDeviceType): string {
+    switch (deviceType) {
+      case 'MSP_SWITCH':
+        return 'Switch'
+      case 'MSP_WIFI':
+        return 'Wi-Fi'
+    }
+    return 'Wi-Fi'
+  }
+
   public static deviceSubTypeToText (deviceSubType: EntitlementDeviceSubType): string {
     switch (deviceSubType) {
       case EntitlementDeviceSubType.ICX71L:
@@ -99,6 +109,25 @@ export class EntitlementUtil {
       return displayYears(timeLeft)
     }
     return ''
+  }
+
+  public static getServiceStartDate (startDate?: string) {
+    const today = startDate ? new Date(startDate) : new Date()
+    const dateFormat = 'YYYY-MM-DD HH:mm:ss[Z]'
+    return moment(today.toString()).utc().format(dateFormat)
+    // customer.service_effective_date = DateTimeUtilsService.getUTCDate('YYYY-MM-DD HH:mm:ss[Z]', today.toString());
+    // expiration date should be end of UTC date
+  }
+
+  public static getServiceEndDate (endDate?: string) {
+    // const expiredDate = DateTimeUtilsService.getDateFromMomentByFormat(this.mspEcEndDate.value, this.userDateFormat);
+    // expiredDate.setHours(23);
+    // expiredDate.setMinutes(59);
+    // expiredDate.setSeconds(59);
+    const dateFormat = 'YYYY-MM-DD HH:mm:ss[Z]'
+    return moment(endDate).utc().format(dateFormat)
+    // customer.service_expiration_date = DateTimeUtilsService.getUTCDate('YYYY-MM-DD HH:mm:ss[Z]', expiredDate.toString());
+
   }
 }
 

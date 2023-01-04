@@ -9,7 +9,6 @@ import {
   Loader,
   PageHeader,
   showActionModal,
-  showToast,
   Table,
   TableProps
 } from '@acx-ui/components'
@@ -30,7 +29,7 @@ import {
   MspEc,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink, MspTenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink, MspTenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
 const transformApEntitlement = (row: MspEc) => {
   return row.wifiLicenses ? row.wifiLicenses : 0
@@ -236,6 +235,8 @@ export function MspCustomers () {
   ]
 
   const MspEcTable = () => {
+    const navigate = useNavigate()
+    const basePath = useTenantLink('/dashboard/mspcustomers/edit', 'v')
     const tableQuery = useTableQuery({
       useQuery: useMspCustomerListQuery,
       defaultPayload
@@ -248,11 +249,13 @@ export function MspCustomers () {
     const rowActions: TableProps<MspEc>['rowActions'] = [
       {
         label: $t({ defaultMessage: 'Manage' }),
-        onClick: (selectedRows) =>
-          showToast({
-            type: 'info',
-            content: `Manage ${selectedRows[0].name}`
+        onClick: (selectedRows) => {
+          setTenantId(selectedRows[0].id)
+          navigate({
+            ...basePath,
+            pathname: `${basePath.pathname}/${selectedRows[0].id}`
           })
+        }
       },
       {
         label: $t({ defaultMessage: 'Resend Invitation Email' }),

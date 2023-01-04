@@ -11,6 +11,8 @@ import {
   MspEntitlement,
   MspEntitlementSummary,
   MspEc, EcDeviceInventory,
+  MspEcData,
+  MspEcDelegatedAdmins,
   VarCustomer
 } from '@acx-ui/rc/utils'
 
@@ -123,6 +125,65 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    addCustomer: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.addMspEcAccount, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    updateCustomer: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.updateMspEcAccount, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    updateMspEcDelegatedAdmins: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.updateMspEcDelegatedAdmins, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    getMspEcDelegatedAdmins: build.query<MspEcDelegatedAdmins[], RequestPayload>({
+      query: ({ params }) => {
+        const mspAdminListReq =
+          createHttpRequest(MspUrlsInfo.getMspEcDelegatedAdmins, params)
+        return {
+          ...mspAdminListReq
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    getMspEc: build.query<MspEcData, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(MspUrlsInfo.getMspEcAccount, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    assignMspEcToIntegrator: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.assignMspEcToIntegrator, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
     })
   })
 })
@@ -136,5 +197,11 @@ export const {
   useMspEntitlementListQuery,
   useMspEntitlementSummaryQuery,
   useMspAssignmentSummaryQuery,
-  useResendEcInvitationMutation
+  useResendEcInvitationMutation,
+  useAddCustomerMutation,
+  useUpdateCustomerMutation,
+  useUpdateMspEcDelegatedAdminsMutation,
+  useGetMspEcDelegatedAdminsQuery,
+  useGetMspEcQuery,
+  useAssignMspEcToIntegratorMutation
 } = mspApi

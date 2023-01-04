@@ -1,3 +1,5 @@
+import { defineMessage } from 'react-intl'
+
 export enum DelegationStatus {
   DELEGATION_STATUS_INVITED = 'DELEGATION_STATUS_INVITED',
   DELEGATION_STATUS_ACCEPTED = 'DELEGATION_STATUS_ACCEPTED'
@@ -66,12 +68,33 @@ export interface MspEc {
   status: string;
   mspAdminCount: string;
   mspEcAdminCount: string;
+  integrator?: string,
+  installer?: string,
   expirationDate: string;
   wifiLicenses: string;
   switchLicens: string;
   assignedMspEcList: string;
   creationDate: number;
   entitlements: DelegationEntitlementRecord[];
+}
+
+export interface MspEcData {
+  id: string;
+  name: string;
+  street_address: string;
+  state: string;
+  country: string;
+  postal_code: string;
+  phone_number: string;
+  fax_number: string;
+  city: string;
+  mapping_url: string;
+  service_effective_date: string;
+  service_expiration_date: string;
+  is_active: string;
+  tenant_id: string;
+  tenant_type: string,
+  parent_tenant_id: string;
 }
 
 export interface VarCustomer {
@@ -101,6 +124,33 @@ export enum RolesEnum {
   ADMINISTRATOR = 'ADMIN',
   GUEST_MANAGER = 'OFFICE_ADMIN',
   READ_ONLY = 'READ_ONLY'
+}
+
+export const roleDisplayText = {
+  [RolesEnum.PRIME_ADMIN]: defineMessage({ defaultMessage: 'Prime Admin' }),
+  [RolesEnum.ADMINISTRATOR]: defineMessage({ defaultMessage: 'Administrator' }),
+  [RolesEnum.GUEST_MANAGER]: defineMessage({ defaultMessage: 'Guest Manager' }),
+  [RolesEnum.READ_ONLY]: defineMessage({ defaultMessage: 'Read Only' })
+}
+
+export enum DateSelectionEnum {
+  CUSTOME_DATE = 'CUSTOME_DATE',
+  FIVE_YEARS = 'FIVE_YEARS',
+  THREE_YEARS = 'THREE_YEARS',
+  ONE_YEAR = 'ONE_YEAR',
+  NINETY_DAYS = '90_DAYS',
+  SIXTY_DAYS = '60_DAYS',
+  THIRTY_DAYS = '30_DAYS'
+}
+
+export const dateDisplayText = {
+  [DateSelectionEnum.CUSTOME_DATE]: defineMessage({ defaultMessage: 'Custome date' }),
+  [DateSelectionEnum.FIVE_YEARS]: defineMessage({ defaultMessage: 'Five Years' }),
+  [DateSelectionEnum.THREE_YEARS]: defineMessage({ defaultMessage: 'Three Years' }),
+  [DateSelectionEnum.ONE_YEAR]: defineMessage({ defaultMessage: 'One Year' }),
+  [DateSelectionEnum.NINETY_DAYS]: defineMessage({ defaultMessage: '90 Days' }),
+  [DateSelectionEnum.SIXTY_DAYS]: defineMessage({ defaultMessage: '60 Days' }),
+  [DateSelectionEnum.THIRTY_DAYS]: defineMessage({ defaultMessage: '30 Days' })
 }
 
 export interface MspAdministrator {
@@ -191,7 +241,7 @@ export interface MspEcAdmin {
   last_name: string;
 }
 
-export interface MspEcDeligatedAdmins {
+export interface MspEcDelegatedAdmins {
   msp_admin_id: string;
   msp_admin_role: string;
 }
