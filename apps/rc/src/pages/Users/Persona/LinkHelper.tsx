@@ -1,3 +1,12 @@
+import {
+  getPolicyDetailsLink,
+  getServiceDetailsLink,
+  MacRegistrationDetailsTabKey,
+  PolicyOperation,
+  PolicyType,
+  ServiceOperation,
+  ServiceType
+} from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
 
@@ -29,29 +38,45 @@ export function PersonaDetailsLink (
 export function DpskPoolLink (props: { dpskPoolId?: string, name?: string }) {
   const { dpskPoolId, name } = props
   return (
-    // not be confirmed
-    <TenantLink to={`dpsk/${dpskPoolId}`}>
-      {name ?? dpskPoolId}
-    </TenantLink>
+    dpskPoolId
+      ? <TenantLink to={getServiceDetailsLink({
+        serviceId: dpskPoolId,
+        oper: ServiceOperation.DETAIL,
+        type: ServiceType.DPSK
+      })}>
+        {name ?? dpskPoolId}
+      </TenantLink>
+      : <></>
   )
 }
 
 export function MacRegistrationPoolLink (props: { macRegistrationPoolId?: string, name?: string }) {
   const { macRegistrationPoolId, name } = props
   return (
-    // not be confirmed
-    <TenantLink to={`macRegistrationPool/${macRegistrationPoolId}`}>
-      {name ?? macRegistrationPoolId}
-    </TenantLink>
+    macRegistrationPoolId
+      ? <TenantLink to={getPolicyDetailsLink({
+        policyId: macRegistrationPoolId,
+        oper: PolicyOperation.DETAIL,
+        type: PolicyType.MAC_REGISTRATION_LIST,
+        activeTab: MacRegistrationDetailsTabKey.OVERVIEW
+      })}>
+        {name ?? macRegistrationPoolId}
+      </TenantLink>
+      : <></>
   )
 }
 
 export function NetworkSegmentationLink (props: { nsgId?: string, name?: string }) {
   const { nsgId, name } = props
   return (
-    // not be confirmed
-    <TenantLink to={`nsg/${nsgId}`}>
-      {name ?? nsgId}
-    </TenantLink>
+    nsgId
+      ? <TenantLink to={getServiceDetailsLink({
+        serviceId: nsgId,
+        oper: ServiceOperation.DETAIL,
+        type: ServiceType.NETWORK_SEGMENTATION
+      })}>
+        {name ?? nsgId}
+      </TenantLink>
+      : <></>
   )
 }

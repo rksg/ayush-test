@@ -11,9 +11,9 @@ import {
   useLazyGetMacRegListQuery
 } from '@acx-ui/rc/services'
 
-import { MacRegistrationPoolLink } from '../LinkHelper'
-import { PersonaGroupDrawer }      from '../PersonaGroupDrawer'
-import { BasePersonaTable }        from '../PersonaTable/BasePersonaTable'
+import { DpskPoolLink, MacRegistrationPoolLink, NetworkSegmentationLink } from '../LinkHelper'
+import { PersonaGroupDrawer }                                             from '../PersonaGroupDrawer'
+import { BasePersonaTable }                                               from '../PersonaTable/BasePersonaTable'
 
 
 
@@ -82,7 +82,10 @@ function PersonaGroupDetails () {
     {
       title: $t({ defaultMessage: 'DPSK Pool' }),
       // TODO: Integrate API to fetch dpsk pool name and linked
-      value: detailsQuery.data?.dpskPoolId
+      value:
+      <DpskPoolLink
+        dpskPoolId={detailsQuery.data?.dpskPoolId}
+      />
     },
     {
       title: $t({ defaultMessage: 'MAC Registration' }),
@@ -95,7 +98,10 @@ function PersonaGroupDetails () {
     {
       title: $t({ defaultMessage: 'Network Segmentation' }),
       // TODO: Integrate API to fetch nsg name and linked
-      value: detailsQuery.data?.nsgId
+      value:
+        <NetworkSegmentationLink
+          nsgId={detailsQuery.data?.nsgId}
+        />
     }
   ]
 
