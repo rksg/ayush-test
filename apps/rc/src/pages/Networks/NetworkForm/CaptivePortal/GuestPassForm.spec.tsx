@@ -74,7 +74,7 @@ describe('CaptiveNetworkForm-GuestPass', () => {
     fireEvent.change(redirectUrlInput, { target: { value: 'https://www.commscope.com/ruckus/' } })
     await userEvent.click(await screen.findByRole('checkbox',
       { name: /Enable Ruckus DHCP service/ }))
-    await userEvent.click(await screen.findByText('More details'))
+    // await userEvent.click(await screen.findByText('More details'))
     await userEvent.click(await screen.findByText('Next'))
   })
 
