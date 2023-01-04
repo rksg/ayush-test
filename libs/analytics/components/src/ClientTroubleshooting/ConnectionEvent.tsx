@@ -2,8 +2,8 @@ import React, { ReactNode } from 'react'
 
 import { Popover } from 'antd'
 
-import { clientEventDescription, mapCodeToFailureText, mapCodeToReason } from '@acx-ui/analytics/utils'
-import { formatter, getIntl }                                            from '@acx-ui/utils'
+import { clientEventDescription, mapCodeToFailureText, mapDisconnectCodeToReason } from '@acx-ui/analytics/utils'
+import { formatter, getIntl }                                                      from '@acx-ui/utils'
 
 import { FAILURE, DisplayEvent, SLOW, DISCONNECT } from './config'
 import { ConnectionSequenceDiagram }               from './ConnectionSequenceDiagram'
@@ -52,10 +52,12 @@ const useConnectionDetail = (event: DisplayEvent) => {
     }
 
     case DISCONNECT: {
-      const reason = mapCodeToReason(event.event, intl)
       eventDetails.push({
         label: $t({ defaultMessage: 'Reason' }),
-        value: reason
+        value: $t({ defaultMessage: '{reason} (reason code {id})' }, {
+          reason: $t(mapDisconnectCodeToReason(event.failedMsgId)),
+          id: event.failedMsgId
+        })
       })
       break
     }
