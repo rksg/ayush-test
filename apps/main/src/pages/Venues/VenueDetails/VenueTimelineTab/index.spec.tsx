@@ -31,6 +31,6 @@ describe('VenueTimelineTab', () => {
       }
     })
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    await screen.findByText('730-11-60')
+    expect(await screen.findAllByText('730-11-60')).toHaveLength(2)
   })
 })
