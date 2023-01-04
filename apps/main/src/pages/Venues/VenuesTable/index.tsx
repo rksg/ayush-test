@@ -29,6 +29,7 @@ function useColumns () {
       key: 'name',
       dataIndex: 'name',
       sorter: true,
+      disable: true,
       defaultSortOrder: 'ascend',
       render: function (data, row) {
         return (
