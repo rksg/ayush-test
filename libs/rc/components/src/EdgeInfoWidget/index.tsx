@@ -7,7 +7,7 @@ import styled from 'styled-components'
 
 import type { DonutChartData, DonutChartProps }                                             from '@acx-ui/components'
 import { Button, cssStr, DonutChart, GridCol, GridRow, Loader, NoActiveData, onChartClick } from '@acx-ui/components'
-import { EdgePortAdminStatusEnum, EdgePortStatus, EdgeResourceUtilizationEnum, EdgeStatus }   from '@acx-ui/rc/utils'
+import { EdgePortAdminStatusEnum, EdgePortStatus, EdgeResourceUtilizationEnum, EdgeStatus } from '@acx-ui/rc/utils'
 
 import { SpaceWrapper } from '../SpaceWrapper/index'
 

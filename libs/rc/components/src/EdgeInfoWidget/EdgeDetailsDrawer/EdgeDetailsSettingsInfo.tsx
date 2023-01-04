@@ -2,7 +2,7 @@
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Subtitle }              from '@acx-ui/components'
+import { Subtitle }                from '@acx-ui/components'
 import { EdgeDNS, EdgePortStatus } from '@acx-ui/rc/utils'
 
 interface EdgeDetailsSettingsInfoProps {
