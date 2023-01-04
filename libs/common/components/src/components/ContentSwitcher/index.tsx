@@ -33,9 +33,12 @@ export const ContentSwitcher: FC<ContentSwitcherProps> = (props) => {
     }
   })
   const [activeContent, setActiveContent] = useState(defaultValue || options[0].value)
-  return(
+  const padding = size === 'small'
+    ? `${sizeSpaceMap[size!]} 0 calc(${sizeSpaceMap[size!]} * 2)`
+    : `${sizeSpaceMap[size!]} 0`
+  return (
     <>
-      <div style={{ textAlign: align, padding: `${sizeSpaceMap[size!]} 0px` }}>
+      <div style={{ textAlign: align, padding }}>
         <SelectionControl options={options}
           defaultValue={defaultValue || options[0].value}
           size={size}

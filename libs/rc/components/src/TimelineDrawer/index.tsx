@@ -1,14 +1,15 @@
-import { Form }                       from 'antd'
 import { MessageDescriptor, useIntl } from 'react-intl'
 
-import { noDataSymbol } from '@acx-ui/analytics/utils'
-import { Drawer }       from '@acx-ui/components'
+import { noDataSymbol }         from '@acx-ui/analytics/utils'
+import { Drawer, Descriptions } from '@acx-ui/components'
 
 export interface DrawerProps {
   title: MessageDescriptor
   visible: boolean
   onClose: () => void
-  data: { title: MessageDescriptor, value: string }[]
+  data: { title: MessageDescriptor, value: string | JSX.Element }[]
+  onBackClick?: () => void
+  width?: number
 }
 
 export const TimelineDrawer = (props: DrawerProps) => {
@@ -17,12 +18,14 @@ export const TimelineDrawer = (props: DrawerProps) => {
     title={$t(props.title)}
     visible={props.visible}
     onClose={props.onClose}
-    children={<Form labelCol={{ span: 10 }} labelAlign='left'>{
-      props.data.map(({ title, value }, i) => <Form.Item
+    onBackClick={props.onBackClick}
+    width={props.width}
+    children={<Descriptions>{
+      props.data.map(({ title, value }, i) => <Descriptions.Item
         key={i}
         label={$t(title)}
         children={value || noDataSymbol}
       />)
-    }</Form>}
+    }</Descriptions>}
   />
 }
