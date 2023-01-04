@@ -14,7 +14,7 @@ export default function DpskInstancesTable (props: { networkIds?: string[] }) {
     useQuery: useNetworkListQuery,
     defaultPayload: {
       fields: ['check-all', 'name', 'description', 'nwSubType', 'venues', 'id'],
-      filters: { id: networkIds && networkIds.length > 0 ? networkIds : [''] }
+      filters: { id: networkIds && networkIds?.length > 0 ? networkIds : [''] }
     }
   })
 

@@ -7,7 +7,9 @@ import {
   DpskUrls,
   transformDpskNetwork,
   websocketServerUrl,
-  getServiceListRoutePath
+  getServiceRoutePath,
+  ServiceType,
+  ServiceOperation
 } from '@acx-ui/rc/utils'
 import { Path, To, useTenantLink } from '@acx-ui/react-router-dom'
 import { Provider }                from '@acx-ui/store'
@@ -160,9 +162,10 @@ describe('DpskForm', () => {
     expect(errorMsgElem).toBeInTheDocument()
   })
 
-  it('should navigate to the Select service page when clicking Cancel button', async () => {
+  it('should navigate to the DPSK table when clicking Cancel button', async () => {
     const { result: selectServicePath } = renderHook(() => {
-      return useTenantLink(getServiceListRoutePath(true))
+      // eslint-disable-next-line max-len
+      return useTenantLink(getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST }))
     })
 
     render(

@@ -27,7 +27,9 @@ export const mockedDpskList = {
   ],
   totalElements: 3,
   totalPages: 1,
-  page: 0,
-  size: 20,
+  pageable: {
+    pageNumber: 0,
+    pageSize: 10
+  },
   sort: []
 }
