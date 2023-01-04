@@ -170,7 +170,8 @@ function useColumns () {
     {
       key: 'tags',
       dataIndex: 'tags',
-      title: $t({ defaultMessage: 'Tags' })
+      title: $t({ defaultMessage: 'Tags' }),
+      show: false
     }
   ]
 
