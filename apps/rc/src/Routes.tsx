@@ -10,8 +10,8 @@ import {
   ServiceOperation,
   getServiceRoutePath
 } from '@acx-ui/rc/utils'
-import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
-import { Provider }                          from '@acx-ui/store'
+import { rootRoutes, Route, TenantNavigate, Navigate } from '@acx-ui/react-router-dom'
+import { Provider }                                    from '@acx-ui/store'
 
 import Edges                      from './pages/Devices/Edge'
 import AddEdge                    from './pages/Devices/Edge/AddEdge'
@@ -268,16 +268,10 @@ function UserRoutes () {
       <Route path='users' element={<TenantNavigate replace to='/users/wifi/clients' />} />
       <Route path='users/wifi' element={<TenantNavigate replace to='/users/wifi/clients' />} />
       <Route path='users/wifi/:activeTab' element={<WifiClientList />} />
-      <Route
-        path='users/wifi/:activeTab/:clientId/details/'
-        element={
-          <TenantNavigate replace to='/users/wifi/:activeTab/:clientId/details/overview' />
-        }
-      />
-      <Route
-        path='users/wifi/:activeTab/:clientId/details/:activeTab'
-        element={<WifiClientDetails />}
-      />
+      <Route path='users/wifi/:activeTab/:clientId/details'>
+        <Route path='' element={<Navigate replace to='./overview' />} />
+        <Route path=':activeTab' element={<WifiClientDetails />} />
+      </Route>
       <Route path='users/switch' element={<TenantNavigate replace to='/users/switch/clients' />} />
       <Route path='users/switch/clients' element={<SwitchClientList />} />
     </Route>
