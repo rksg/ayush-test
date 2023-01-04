@@ -122,6 +122,7 @@ describe('Alarm widget', () => {
     fireEvent.click(await screen.findByText('Some_Switch'))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       hash: '',
+      // eslint-disable-next-line max-len
       pathname: '/t/ecc2d7cf9d2342fdb31ae0e24958fcac/devices/switch/58:fb:96:0e:81:b2/FEK3230S0A2/details/overview',
       search: ''
     })
