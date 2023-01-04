@@ -12,7 +12,8 @@ import {
 
 
 // import About       from './About'
-import AlarmButton from './AlarmButton'
+import ActivityButton from './ActivityButton'
+import AlarmButton    from './AlarmButton'
 // import Firewall    from './Firewall'
 
 
@@ -83,7 +84,7 @@ const dashboardOverview = {
 }
 
 const alarmList = {
-  totalCount: 1,
+  totalCount: 2,
   page: 1,
   data: [
     {
@@ -94,6 +95,15 @@ const alarmList = {
       entityId: '272002000493',
       id: '272002000493_ap_status',
       message: '{ "message_template": "AP @@apName disconnected from the cloud controller." }'
+    },
+    {
+      severity: 'Critical',
+      entityId: '212002008925',
+      entityType: 'AP',
+      id: '212002008925_ap_status',
+      message: '{ "message_template": "AP @@apName disconnected from the cloud controller." }',
+      serialNumber: '212002008925',
+      startTime: 1670911389000
     }
   ],
   subsequentQueries: [
@@ -121,6 +131,13 @@ const alarmList = {
 const alarmMeta = {
   data: [
     {
+      venueName: 'test_US',
+      switchName: '212002008925',
+      id: '212002008925_ap_status',
+      isSwitchExists: false,
+      apName: 'UI_SDC_AP'
+    },
+    {
       venueName: 'test_amy',
       switchName: '272002000493',
       id: '272002000493_ap_status',
@@ -128,11 +145,7 @@ const alarmMeta = {
       apName: 'testamy_ap'
     }
   ],
-  fields: [
-    'venueName',
-    'apName',
-    'switchName'
-  ]
+  fields: ['venueName', 'apName', 'switchName']
 }
 
 describe('Header Component', () => {
@@ -192,18 +205,31 @@ describe('Header Component', () => {
   // })
 
   it('should render Alarm component correctly', async () => {
-    const { asFragment } = render(
-      <Provider>
-        <AlarmButton/>
-      </Provider>, {
-        route: { params, path: '/:tenantId/' }
-      })
+    render(<Provider>
+      <AlarmButton/>
+    </Provider>, {
+      route: { params, path: '/:tenantId/' }
+    })
     const alarmBtn = await screen.findByRole('button')
     await userEvent.click(alarmBtn)
     await waitFor(async () => {
       expect(await screen.findByText(('testamy_ap'))).toBeInTheDocument()
     })
-    expect(asFragment()).toMatchSnapshot()
+    const cancelBtn = await screen.findByRole('button',{ name: 'Close' })
+    await userEvent.click(cancelBtn)
+    await userEvent.click((await screen.findAllByTitle('All Severities'))[0])
+    await userEvent.click((await screen.findAllByTitle('Major'))[0])
+    await userEvent.click((await screen.findByText('Clear all alarms')))
+  })
+
+  it('should render Activity component correctly', async () => {
+    render(<Provider>
+      <ActivityButton/>
+    </Provider>, {
+      route: { params, path: '/:tenantId/' }
+    })
+    const activityBtn = screen.getByRole('button', { name: /clock\-circle/i })
+    await userEvent.click(activityBtn)
     const cancelBtn = await screen.findByRole('button',{ name: 'Close' })
     await userEvent.click(cancelBtn)
   })

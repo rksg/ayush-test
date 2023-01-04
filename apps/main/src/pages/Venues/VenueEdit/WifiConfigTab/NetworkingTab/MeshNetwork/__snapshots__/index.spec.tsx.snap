@@ -3,7 +3,7 @@
 exports[`MeshNetwork should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
       class="ant-form-item"
@@ -56,7 +56,7 @@ exports[`MeshNetwork should render correctly 1`] = `
 exports[`MeshNetwork should render disabled switch button correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
       class="ant-form-item"

@@ -11,17 +11,20 @@ import {
   Tooltip,
   Button
 } from '@acx-ui/components'
-import { NotificationSolid } from '@acx-ui/icons'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { NotificationSolid }      from '@acx-ui/icons'
 import {
   useAlarmsListQuery,
   useClearAlarmMutation,
   useClearAllAlarmMutation,
   useGetAlarmCountQuery,
-  eventAlarmApi }  from '@acx-ui/rc/services'
-import { Alarm, CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
-import { useParams }                            from '@acx-ui/react-router-dom'
-import { store }                                from '@acx-ui/store'
-import { formatter }                            from '@acx-ui/utils'
+  eventAlarmApi,
+  networkApi
+}  from '@acx-ui/rc/services'
+import { Alarm, CommonUrlsInfo, useTableQuery, EventSeverityEnum, EventTypeEnum } from '@acx-ui/rc/utils'
+import { useParams, TenantLink }                                                  from '@acx-ui/react-router-dom'
+import { store }                                                                  from '@acx-ui/store'
+import { formatter }                                                              from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -60,6 +63,8 @@ export default function AlarmsHeaderButton () {
 
   const [modalState, setModalOpen] = useState<boolean>()
 
+  const toggleForSwitch = useIsSplitOn(Features.DEVICES)
+
   const getCount = function () {
     if (data?.summary?.alarms?.totalCount) {
       const clearedAlarms = data.summary.alarms.summary?.clear || 0
@@ -86,6 +91,9 @@ export default function AlarmsHeaderButton () {
     sorter: {
       sortField: 'startTime',
       sortOrder: 'DESC'
+    },
+    pagination: {
+      pageSize: 25
     }
   })
 
@@ -103,6 +111,42 @@ export default function AlarmsHeaderButton () {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tableQuery.data, severity, data])
+
+  const getIconBySeverity = (severity: EventSeverityEnum)=>{
+
+    const SeverityIcon = {
+      [EventSeverityEnum.MAJOR]: <UI.WarningTriang />,
+      [EventSeverityEnum.CRITICAL]: <UI.WarningCircle />,
+      [EventSeverityEnum.MINOR]: <></>,
+      [EventSeverityEnum.WARNING]: <></>,
+      [EventSeverityEnum.INFORMATIONAL]: <></>
+    }
+
+    return SeverityIcon[severity]
+  }
+
+  const getDeviceLink = (alarm:Alarm)=>{
+    switch (alarm.entityType) {
+      case EventTypeEnum.AP: {
+        return <TenantLink
+          to={`/devices/wifi/${alarm.entityId}/details/overview`}>{alarm.apName}
+        </TenantLink>
+      }
+      case EventTypeEnum.SWITCH: {
+        if(toggleForSwitch){
+          return <TenantLink
+            to={`/devices/switch/${alarm.entityId}/${alarm.serialNumber}/details/timeline`}>
+            {alarm.switchName}
+          </TenantLink>
+        }else{
+          return <UI.EmptyLink>{alarm.switchName}</UI.EmptyLink>
+        }
+      }
+      default: {
+        return <UI.EmptyLink>{alarm.apName}</UI.EmptyLink>
+      }
+    }
+  }
 
   const alarmList = <>
     <UI.FilterRow>
@@ -134,6 +178,11 @@ export default function AlarmsHeaderButton () {
                 { type: 'Alarms', id: 'LIST' },
                 { type: 'Alarms', id: 'OVERVIEW' }
               ]))
+            store.dispatch(
+              networkApi.util.invalidateTags([
+                { type: 'Network', id: 'Overview' }
+              ]))
+
           }, 1000)
         }}>
         {$t({ defaultMessage: 'Clear all alarms' })}
@@ -171,11 +220,11 @@ export default function AlarmsHeaderButton () {
               </Tooltip>
             ]}>
               <UI.Meta
-                avatar={<UI.WarningCircle />}
+                avatar={getIconBySeverity(alarm.severity as EventSeverityEnum)}
                 title={alarm.message}
                 description={
                   <UI.SpaceBetween>
-                    <UI.DeviceLink>{alarm.apName}</UI.DeviceLink>
+                    {getDeviceLink(alarm)}
                     <UI.ListTime>{formatter('calendarFormat')(alarm.startTime)}</UI.ListTime>
                   </UI.SpaceBetween>
                 }
@@ -208,4 +257,3 @@ export default function AlarmsHeaderButton () {
     />
   </>
 }
-

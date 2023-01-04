@@ -18,17 +18,17 @@ import {
 } from '@acx-ui/rc/services'
 import {
   ApDeviceStatusEnum,
+  APExtended,
   ApExtraParams,
-  AP,
   APMeshRole,
   APView,
   DeviceConnectionStatus,
   transformApStatus,
   transformDisplayNumber,
   transformDisplayText,
-  useTableQuery,
   TableQuery,
-  RequestPayload
+  RequestPayload,
+  usePollingTableQuery
 } from '@acx-ui/rc/utils'
 import { getFilters }                         from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
@@ -44,6 +44,7 @@ export const defaultApPayload = {
     'switchName', 'meshRole', 'clients', 'deviceGroupName',
     'apStatusData.APRadio.band', 'tags', 'serialNumber',
     'venueId', 'apStatusData.APRadio.radioId', 'apStatusData.APRadio.channel',
+    'poePort', 'apStatusData.lanPortStatus.phyLink', 'apStatusData.lanPortStatus.port',
     'fwVersion'
   ]
 }
@@ -90,9 +91,10 @@ export const APStatus = (
   )
 }
 
+
 interface ApTableProps
-  extends Omit<TableProps<AP>, 'columns'> {
-  tableQuery?: TableQuery<AP, RequestPayload<unknown>, ApExtraParams>
+  extends Omit<TableProps<APExtended>, 'columns'> {
+  tableQuery?: TableQuery<APExtended, RequestPayload<unknown>, ApExtraParams>
 }
 
 export function ApTable (props: ApTableProps) {
@@ -100,14 +102,15 @@ export function ApTable (props: ApTableProps) {
   const navigate = useNavigate()
   const params = useParams()
   const filters = getFilters(params)
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const tableQuery = props.tableQuery ?? useTableQuery({
+  const inlineTableQuery = usePollingTableQuery({
     useQuery: useApListQuery,
     defaultPayload: {
       ...defaultApPayload,
       filters
-    }
+    },
+    option: { skip: Boolean(props.tableQuery) }
   })
+  const tableQuery = props.tableQuery || inlineTableQuery
 
   const apAction = useApActions()
   const releaseTag = useIsSplitOn(Features.DEVICES)
@@ -128,6 +131,7 @@ export function ApTable (props: ApTableProps) {
       title: $t({ defaultMessage: 'AP Name' }),
       dataIndex: 'name',
       sorter: true,
+      disable: true,
       render: (data, row) => (
         <TenantLink to={`/devices/wifi/${row.serialNumber}/details/overview`}>{data}</TenantLink>
       )
@@ -136,6 +140,7 @@ export function ApTable (props: ApTableProps) {
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'deviceStatus',
       sorter: true,
+      disable: true,
       render: (status: unknown) => <APStatus status={status as ApDeviceStatusEnum} />
     }, {
       key: 'model',
@@ -234,7 +239,7 @@ export function ApTable (props: ApTableProps) {
           title: <Table.SubTitle children={channelTitleMap[channel as keyof ApExtraParams]} />,
           align: 'center',
           ellipsis: true,
-          render: transformDisplayText
+          render: (data: never, row: { [x: string]: string | undefined }) => transformDisplayText(row[channel])
         } : null)
         .filter(Boolean)
     }, {
@@ -255,12 +260,31 @@ export function ApTable (props: ApTableProps) {
       dataIndex: 'fwVersion',
       show: false,
       sorter: true
-    }] as TableProps<AP>['columns']
+    }, {
+      key: 'poePort',
+      title: $t({ defaultMessage: 'PoE Port' }),
+      dataIndex: 'poePort',
+      show: false,
+      sorter: false,
+      render: (data, row) => {
+        if (!row.hasPoeStatus) {
+          return <span></span>
+        }
+
+        const iconColor = (row.isPoEStatusUp) ? '--acx-semantics-green-50' : '--acx-neutrals-50'
+        return (
+          <span>
+            <Badge color={`var(${iconColor})`}
+              text={transformDisplayText(row.poePortInfo)}
+            />
+          </span>
+        )
+      }
+    }] as TableProps<APExtended>['columns']
   }, [$t, tableQuery.data?.extra])
 
-
   const isActionVisible = (
-    selectedRows: AP[],
+    selectedRows: APExtended[],
     { selectOne, isOperational }: { selectOne?: boolean, isOperational?: boolean }) => {
     let visible = true
     if (isOperational) {
@@ -273,8 +297,7 @@ export function ApTable (props: ApTableProps) {
   }
 
 
-
-  const rowActions: TableProps<AP>['rowActions'] = [{
+  const rowActions: TableProps<APExtended>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
     visible: (rows) => isActionVisible(rows, { selectOne: true }),
     onClick: (rows) => {
@@ -301,7 +324,7 @@ export function ApTable (props: ApTableProps) {
 
   return (
     <Loader states={[tableQuery]}>
-      <Table<AP>
+      <Table<APExtended>
         {...props}
         columns={columns}
         dataSource={tableData}

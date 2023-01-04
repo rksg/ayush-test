@@ -253,6 +253,7 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                     </h3>
                     <div
                       class="ant-form-item"
+                      style="margin-bottom: 5px;"
                     >
                       <div
                         class="ant-row ant-form-item-row"
@@ -298,6 +299,16 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                         </div>
                       </div>
                     </div>
+                    <button
+                      class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 eAazoW"
+                      id="details_differentSSID"
+                      style="font-size: 12px;"
+                      type="button"
+                    >
+                      <span>
+                        Set different SSID
+                      </span>
+                    </button>
                     <div
                       class="ant-form-item"
                     >
@@ -1697,7 +1708,7 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                           </div>
                         </div>
                         <div
-                          class="ant-form-item styledComponents__FormItemNoLabel-sc-lhsic1-1 dLCGVb"
+                          class="ant-form-item styledComponents__FormItemNoLabel-sc-lhsic1-1 dLCGVb ant-form-item-has-success"
                           style="margin-bottom: 15px;"
                         >
                           <div
@@ -1719,6 +1730,7 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                                       class="ant-checkbox"
                                     >
                                       <input
+                                        checked=""
                                         class="ant-checkbox-input"
                                         id="moreSettings_enableOfdmOnly"
                                         type="checkbox"
@@ -1897,9 +1909,9 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                                         </span>
                                         <span
                                           class="ant-select-selection-item"
-                                          title="1 Mbps"
+                                          title="6 Mbps"
                                         >
-                                          1 Mbps
+                                          6 Mbps
                                         </span>
                                       </div>
                                       <span
@@ -2408,7 +2420,7 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                           class="ant-form-item-control-input-content"
                         >
                           <div
-                            class="styledComponents__Wrapper-sc-1352uh8-0 bstzEh"
+                            class="styledComponents__Wrapper-sc-1352uh8-0 ilNUvb"
                           >
                             <div
                               class="styledComponents__FallbackWrapper-sc-1352uh8-1 cUVMCE"

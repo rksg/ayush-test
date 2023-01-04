@@ -79,6 +79,12 @@
     }
   }
 
+  .ant-divider {
+    &.ant-divider-horizontal {
+      margin: var(--acx-descriptions-space) 0;
+    }
+  }
+
   .ant-drawer {
     --acx-drawer-top-space: calc(var(--acx-header-height) + 16px);
     margin-top: var(--acx-drawer-top-space);
@@ -168,6 +174,9 @@
 
   .ant-cascader {
     width: 100%;
+
+    // fixes extra space appearing when clicking on selected items
+    > [aria-live='polite'] { display: none !important; }
 
     &-menu {
       border-right: 1px solid var(--acx-neutrals-20);

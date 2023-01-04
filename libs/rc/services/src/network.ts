@@ -18,7 +18,8 @@ import {
   CommonResult,
   NetworkDetail,
   RadiusValidate,
-  WifiUrlsInfo
+  WifiUrlsInfo,
+  ExternalProviders
 } from '@acx-ui/rc/utils'
 
 const RKS_NEW_UI = {
@@ -91,7 +92,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
     }),
     addNetworkVenue: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.addNetworkVenue, params)
+        const req = createHttpRequest(WifiUrlsInfo.addNetworkVenue, params, RKS_NEW_UI)
         return {
           ...req,
           body: payload
@@ -101,7 +102,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
     }),
     updateNetworkVenue: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.updateNetworkVenue, params)
+        const req = createHttpRequest(WifiUrlsInfo.updateNetworkVenue, params, RKS_NEW_UI)
         return {
           ...req,
           body: payload
@@ -111,7 +112,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
     }),
     deleteNetworkVenue: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.deleteNetworkVenue, params)
+        const req = createHttpRequest(WifiUrlsInfo.deleteNetworkVenue, params, RKS_NEW_UI)
         return {
           ...req
         }
@@ -154,6 +155,15 @@ export const networkApi = baseNetworkApi.injectEndpoints({
               api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'DETAIL' }]))
             })
         })
+      }
+    }),
+    getVenueNetworkApGroup: build.query<TableResult<NetworkVenue>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.venueNetworkApGroup, params)
+        return {
+          ...req,
+          body: payload
+        }
       }
     }),
     apNetworkList: build.query<TableResult<Network>, RequestPayload>({
@@ -258,7 +268,8 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         return {
           ...dashboardOverviewReq
         }
-      }
+      },
+      providesTags: [{ type: 'Network', id: 'Overview' }]
     }),
     validateRadius: build.query<RadiusValidate, RequestPayload>({
       query: ({ params, payload }) => {
@@ -266,6 +277,22 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         return {
           ...validateRadiusReq,
           body: payload
+        }
+      }
+    }),
+    externalProviders: build.query<ExternalProviders, RequestPayload>({
+      query: ({ params }) => {
+        const externalProvidersReq = createHttpRequest(CommonUrlsInfo.getExternalProviders, params)
+        return {
+          ...externalProvidersReq
+        }
+      }
+    }),
+    globalValues: build.query<{ [key:string]:string }, RequestPayload>({
+      query: () => {
+        const globalValuesReq = createHttpRequest(CommonUrlsInfo.getGlobalValues)
+        return {
+          ...globalValuesReq
         }
       }
     })
@@ -361,6 +388,8 @@ export const {
   useLazyNetworkListQuery,
   useGetNetworkQuery,
   useLazyGetNetworkQuery,
+  useGetVenueNetworkApGroupQuery,
+  useLazyGetVenueNetworkApGroupQuery,
   useNetworkDetailHeaderQuery,
   useNetworkVenueListQuery,
   useAddNetworkMutation,
@@ -373,5 +402,7 @@ export const {
   useVenueNetworkListQuery,
   useDashboardOverviewQuery,
   useValidateRadiusQuery,
-  useLazyValidateRadiusQuery
+  useLazyValidateRadiusQuery,
+  useExternalProvidersQuery,
+  useGlobalValuesQuery
 } = networkApi

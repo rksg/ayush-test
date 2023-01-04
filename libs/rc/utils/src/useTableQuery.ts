@@ -2,8 +2,11 @@ import React, { useEffect, useState } from 'react'
 
 import { TableProps } from 'antd'
 
-import { useParams, Params }        from '@acx-ui/react-router-dom'
-import { UseQuery, UseQueryResult } from '@acx-ui/types'
+import { useParams, Params }                         from '@acx-ui/react-router-dom'
+import { UseQuery, UseQueryResult, UseQueryOptions } from '@acx-ui/types'
+
+export const TABLE_QUERY_POLLING_INTERVAL = 30_000
+export const TABLE_QUERY_LONG_POLLING_INTERVAL = 300_000
 
 export interface RequestPayload <Payload = unknown> extends Record<string,unknown> {
   params?: Params<string>
@@ -35,6 +38,7 @@ export interface TABLE_QUERY <
   pagination?: Partial<PAGINATION>
   sorter?: SORTER
   rowKey?: string
+  option?: UseQueryOptions
 }
 export type PAGINATION = {
   current: number,
@@ -78,10 +82,27 @@ export interface TableQuery<ResultType, Payload, ResultExtra>
   setPayload: React.Dispatch<React.SetStateAction<Payload>>,
 }
 
+export function usePollingTableQuery <
+  ResultType,
+  Payload extends RequestPayload<unknown> = RequestPayload<unknown>,
+  ResultExtra = unknown
+> (params:
+  TABLE_QUERY<ResultType, Payload, ResultExtra> &
+  { option?: UseQueryOptions }
+) {
+  return useTableQuery({
+    ...params,
+    option: {
+      pollingInterval: TABLE_QUERY_POLLING_INTERVAL,
+      ...(params.option || {})
+    }
+  })
+}
+
 export function useTableQuery <
   ResultType,
-  Payload extends RequestPayload<unknown>,
-  ResultExtra
+  Payload extends RequestPayload<unknown> = RequestPayload<unknown>,
+  ResultExtra = unknown
 > (option: TABLE_QUERY<ResultType, Payload, ResultExtra>) {
 
   const initialPagination = {
@@ -105,12 +126,10 @@ export function useTableQuery <
   const [payload, setPayload] = useState<Payload>(initialPayload)
 
   const params = useParams()
-  // RTKQuery
-
   const api = option.useQuery({
     params: { ...params, ...option.apiParams },
     payload: payload
-  })
+  }, option.option)
 
   useEffect(() => {
     const handlePagination = (data?: TableResult<ResultType>) => {
@@ -155,4 +174,21 @@ export function useTableQuery <
     setPayload,
     ...api
   } as TableQuery<ResultType, Payload, ResultExtra>
+}
+
+export interface NewTableResult<T> {
+  totalElements: number;
+  totalPages: number;
+  page: number;
+  size: number;
+  sort: string[];
+  content: T[]
+}
+
+export function transferTableResult<T> (newResult: NewTableResult<T>): TableResult<T> {
+  return {
+    data: newResult.content,
+    page: newResult.page,
+    totalCount: newResult.totalElements
+  }
 }

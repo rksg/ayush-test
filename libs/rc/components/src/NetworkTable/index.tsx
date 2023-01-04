@@ -10,15 +10,16 @@ import { TenantLink, useTenantLink }                                         fro
 import { getIntl, notAvailableMsg }                                          from '@acx-ui/utils'
 
 
-const disabledType = [NetworkTypeEnum.DPSK, NetworkTypeEnum.CAPTIVEPORTAL]
+const disabledType = [NetworkTypeEnum.CAPTIVEPORTAL]
 
 function getCols (intl: ReturnType<typeof useIntl>) {
   const columns: TableProps<Network>['columns'] = [
     {
       key: 'name',
-      title: intl.$t({ defaultMessage: 'Network Name' }),
+      title: intl.$t({ defaultMessage: 'Name' }),
       dataIndex: 'name',
       sorter: true,
+      disable: true,
       defaultSortOrder: 'ascend',
       render: function (data, row) {
         if(disabledType.indexOf(row.nwSubType as NetworkTypeEnum) > -1){
@@ -85,7 +86,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       key: 'clients',
       title: intl.$t({ defaultMessage: 'Clients' }),
       dataIndex: 'clients',
-      sorter: true,
+      sorter: false,
       align: 'center'
     },
     {

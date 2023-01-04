@@ -202,7 +202,7 @@ exports[`VenueMeshAps should render correctly 1`] = `
                     role="tab"
                   >
                     <span>
-                      Services (0)
+                      Services
                     </span>
                   </div>
                 </div>
@@ -369,15 +369,15 @@ exports[`VenueMeshAps should render correctly 1`] = `
             </div>
           </div>
           <div
-            class="ant-tabs-tab"
+            class="ant-tabs-tab ant-tabs-tab-disabled"
           >
             <div
               aria-controls="rc-tabs-test-panel-switch"
+              aria-disabled="true"
               aria-selected="false"
               class="ant-tabs-tab-btn"
               id="rc-tabs-test-tab-switch"
               role="tab"
-              tabindex="0"
             >
               Switch
             </div>
@@ -447,7 +447,7 @@ exports[`VenueMeshAps should render correctly 1`] = `
                 style="width: 1280px; height: 800px;"
               >
                 <div
-                  style="text-align: left; padding: 8px 0px;"
+                  style="text-align: left;"
                 >
                   <div
                     class="styledComponents__Wrapper-sc-c4vpsp-0 eBLcPR"
@@ -476,13 +476,14 @@ exports[`VenueMeshAps should render correctly 1`] = `
                         </span>
                       </label>
                       <label
-                        class="ant-radio-button-wrapper"
+                        class="ant-radio-button-wrapper ant-radio-button-wrapper-disabled"
                       >
                         <span
-                          class="ant-radio-button"
+                          class="ant-radio-button ant-radio-button-disabled"
                         >
                           <input
                             class="ant-radio-button-input"
+                            disabled=""
                             type="radio"
                             value="apGroups"
                           />
@@ -495,13 +496,14 @@ exports[`VenueMeshAps should render correctly 1`] = `
                         </span>
                       </label>
                       <label
-                        class="ant-radio-button-wrapper"
+                        class="ant-radio-button-wrapper ant-radio-button-wrapper-disabled"
                       >
                         <span
-                          class="ant-radio-button"
+                          class="ant-radio-button ant-radio-button-disabled"
                         >
                           <input
                             class="ant-radio-button-input"
+                            disabled=""
                             type="radio"
                             value="rogueAps"
                           />
@@ -549,7 +551,7 @@ exports[`VenueMeshAps should render correctly 1`] = `
                   </button>
                 </span>
                 <div
-                  class="styledComponents__Wrapper-sc-1352uh8-0 bstzEh"
+                  class="styledComponents__Wrapper-sc-1352uh8-0 ilNUvb"
                 >
                   <div
                     class="styledComponents__FallbackWrapper-sc-1352uh8-1 cUVMCE"
