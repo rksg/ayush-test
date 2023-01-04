@@ -344,7 +344,7 @@ export const transformConnectionQualities = (connectionQualities?: ConnectionQua
       snr,
       throughput,
       avgTxMCS,
-      all: worseQuality
+      all: { quality: worseQuality }
     }})
 
   return {

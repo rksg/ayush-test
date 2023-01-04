@@ -71,22 +71,21 @@ const getSeriesData = (data: (Event | LabelledQuality)[], key: string, chartType
 function getSeriesItemColor (params: { data: (Event | LabelledQuality)[] }) {
   const obj = Array.isArray(params.data) ? params.data[2] : ''
   const { category } = obj as Event
-
   return obj
     ? cssStr(
       eventColorByCategory[category as keyof typeof eventColorByCategory]
     )
     : cssStr('--acx-neutrals-50')
 }
-// function getBarColor (params: { data: (LabelledQuality)[] }) {
-//   const obj = Array.isArray(params.data) ? params.data[3] : ''
-//   const key = params.data[2] as unknown as string
-//   return cssStr(
-//     getQualityColor(
-//       (obj as LabelledQuality)[key as keyof typeof connectionQualityLabels]?.quality
-//     ) as string
-//   )
-// }
+function getBarColor (params: { data: (LabelledQuality)[] }) {
+  const obj = Array.isArray(params.data) ? params.data[3] : ''
+  const key = params.data[2] as unknown as string
+  return cssStr(
+    getQualityColor(
+      (obj as LabelledQuality)[key as keyof typeof connectionQualityLabels]?.quality
+    ) as string
+  )
+}
 export const useDotClick = (
   eChartsRef: RefObject<ReactECharts>,
   onDotClick: ((param: unknown) => void) | undefined,
@@ -343,7 +342,7 @@ export function TimelineChart ({
               }
             },
             itemStyle: {
-              color: 'red'
+              color: getBarColor as unknown as string
             },
             data: getSeriesData(data, key, chartType)
           }

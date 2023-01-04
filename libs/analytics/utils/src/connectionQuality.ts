@@ -85,6 +85,6 @@ export const getQualityColor = (type: any) => {
     case 'bad': return '--acx-semantics-red-50'
     case 'good': return '--acx-semantics-green-50'
     case 'average': return '--acx-neutrals-50'
-    default: return 'inherit'
+    default: return '--acx-semantics-green-50'
   }
 }

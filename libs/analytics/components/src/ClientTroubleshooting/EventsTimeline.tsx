@@ -7,7 +7,7 @@ import moment                                               from 'moment-timezon
 import { renderToString }                                   from 'react-dom/server'
 import { useIntl }                                          from 'react-intl'
 
-import { useDateFilter, getIntl } from '@acx-ui/utils'
+import { useDateFilter, getIntl, formatter, formats } from '@acx-ui/utils'
 
 import {
   ClientTroubleShootingConfig,
@@ -20,7 +20,8 @@ import {
   formatEventDesc,
   DisplayEvent,
   LabelledQuality,
-  transformConnectionQualities
+  transformConnectionQualities,
+  connectionQualityLabels
 } from './config'
 import { ClientInfoData, ConnectionEvent } from './services'
 import * as UI                             from './styledComponents'
@@ -154,32 +155,61 @@ export const getChartData = (
 export const useTooltipFormatter = (
   params: TooltipComponentFormatterCallbackParams
 ) => {
-  return ''
-  // const intl = getIntl()
-  // const obj = (Array.isArray(params) && Array.isArray(params[0].data)
-  //   ? params[0].data[2]
-  //   : undefined) as unknown as DisplayEvent
+  console.log(params)
+  const intl = getIntl()
+  const obj = (Array.isArray(params) && Array.isArray(params[0].data)
+    ? params[0].data[2]
+    : undefined) as unknown as DisplayEvent
+  const obj2 = (Array.isArray(params) && Array.isArray(params[0].data)
+    ? params[0].data[3]
+    : undefined) as unknown as DisplayEvent
 
-  // if (typeof obj !== 'undefined' && (obj as unknown as LabelledQuality).all) {
-  //   return renderToString(
-  //     <UI.TooltipWrapper>
-  //       <UI.TooltipDate>
-  //         {(obj as unknown as LabelledQuality).all}
-  //       </UI.TooltipDate>
-  //     </UI.TooltipWrapper>
-  //   )
-  // }
+  const tooltipText2 = obj2
+    ? Object.keys(connectionQualityLabels).map(
+      (key, index) =>
+        `${formatter(
+            connectionQualityLabels[key as keyof typeof connectionQualityLabels]
+              .formatter as keyof typeof formats
+        )(
+          (obj2 as unknown as LabelledQuality)[
+              key as keyof typeof connectionQualityLabels
+          ].value
+        )}${
+          index + 1 !== Object.keys(connectionQualityLabels).length
+            ? '/ '
+            : ''
+        }`
+    )
+    : null
 
-
-  // const tooltipText = obj ? formatEventDesc(obj, intl) : null
-  // return renderToString(
-  //   <UI.TooltipWrapper>
-  //     <UI.TooltipDate>
-  //       {obj && moment(obj?.start).format('MMM DD HH:mm:ss')}{' '}
-  //     </UI.TooltipDate>
-  //     {tooltipText}
-  //   </UI.TooltipWrapper>
-  // )
+  if (typeof obj2 !== 'undefined' && (obj2 as unknown as LabelledQuality).all) {
+    return renderToString(
+      <UI.TooltipWrapper>
+        <UI.TooltipDate>
+          {obj2 && moment(obj2?.start).format('MMM DD HH:mm:ss')}{' '}
+          {Object.keys(connectionQualityLabels).map(
+            (key,index) =>
+              `${
+                connectionQualityLabels[
+                  key as keyof typeof connectionQualityLabels
+                ].label
+              }${index+1 !== Object.keys(connectionQualityLabels).length ?'/ ':''}`
+          )}
+          {':'}
+        </UI.TooltipDate>
+        {tooltipText2}
+      </UI.TooltipWrapper>
+    )
+  }
+  const tooltipText = obj ? formatEventDesc(obj, intl) : null
+  return renderToString(
+    <UI.TooltipWrapper>
+      <UI.TooltipDate>
+        {obj && moment(obj?.start).format('MMM DD HH:mm:ss')}{' '}
+      </UI.TooltipDate>
+      {tooltipText}
+    </UI.TooltipWrapper>
+  )
 }
 export function TimeLine (props: TimeLineProps) {
   const { $t } = useIntl()
