@@ -8,15 +8,21 @@ import {
   useDeleteDpskPassphraseListMutation,
   useDpskPassphraseListQuery
 } from '@acx-ui/rc/services'
-import { NewDpskPassphrase, useTableQuery } from '@acx-ui/rc/utils'
-import { useParams }                        from '@acx-ui/react-router-dom'
-import { formatter }                        from '@acx-ui/utils'
+import {
+  ExpirationType,
+  NewDpskPassphrase,
+  transformAdvancedDpskExpirationText,
+  useTableQuery
+} from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
+import { formatter } from '@acx-ui/utils'
 
 import DpskPassphraseDrawer from './DpskPassphraseDrawer'
 
 
 export default function DpskPassphraseManagement () {
-  const { $t } = useIntl()
+  const intl = useIntl()
+  const { $t } = intl
   const [ addPassphrasesDrawerVisible, setAddPassphrasesDrawerVisible ] = useState(false)
   const [ deletePassphrases ] = useDeleteDpskPassphraseListMutation()
   const params = useParams()
@@ -88,7 +94,13 @@ export default function DpskPassphraseManagement () {
       dataIndex: 'expirationDate',
       sorter: true,
       render: function (data) {
-        return formatter('dateTimeFormat')(data)
+        if (data) {
+          return transformAdvancedDpskExpirationText(intl, {
+            expirationType: ExpirationType.SPECIFIED_DATE,
+            expirationDate: data as string
+          })
+        }
+        return transformAdvancedDpskExpirationText(intl, { expirationType: null })
       }
     }
   ]

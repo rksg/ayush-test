@@ -66,24 +66,34 @@ export default function DpskPassphraseDrawer (props: DpskPassphraseDrawerProps) 
     </Space>
   )
 
-  const onManualSettingFormFinish = async () => {
+  const onManualSettingFormSave = async () => {
     await manualSettingForm.validateFields()
     const payload = transferFormFieldsToSaveData(manualSettingForm.getFieldsValue())
     await createPassphrases({ params, payload }).unwrap()
   }
 
+  const onImportSave = async () => {
+    // TODO
+  }
+
+  const saveFnMap: { [key in AddPassphrasesType]: () => Promise<void> } = {
+    [AddPassphrasesType.MANUAL]: onManualSettingFormSave,
+    [AddPassphrasesType.IMPORT]: onImportSave
+  }
+
   const onSave = async () => {
     try {
-      if (addPassphrasesType === AddPassphrasesType.MANUAL) {
-        await onManualSettingFormFinish()
-      }
+      await saveFnMap[addPassphrasesType]()
 
       onClose()
-    } catch (error) {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      if (error.data?.message) {
+        showToast({
+          type: 'error',
+          content: $t({ defaultMessage: '{errorMsg}' }, { errorMsg: error.data.message })
+        })
+      }
     }
   }
 
@@ -111,8 +121,11 @@ export default function DpskPassphraseDrawer (props: DpskPassphraseDrawerProps) 
 
 // eslint-disable-next-line max-len
 function transferFormFieldsToSaveData (fields: CreateDpskPassphrasesFormFields): DpskPassphrasesSaveData {
+  const { expiration, ...rest } = fields
+
   return {
-    ...fields,
-    expiration: fields.expiration.mode === ExpirationMode.NEVER ? undefined : fields.expiration.date
+    ...rest,
+    // eslint-disable-next-line max-len
+    expirationDate: fields.expiration.mode === ExpirationMode.NEVER ? undefined : fields.expiration.date
   }
 }
