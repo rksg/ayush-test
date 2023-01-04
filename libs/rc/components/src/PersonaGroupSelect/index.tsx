@@ -6,7 +6,7 @@ import { useGetPersonaGroupListQuery } from '@acx-ui/rc/services'
 export function PersonaGroupSelect (props: SelectProps) {
 
   const personaGroupList = useGetPersonaGroupListQuery({
-    params: { size: '2147483647', page: '0' }
+    params: { size: '2147483647', page: '0', sort: 'name,ASC' }
   })
 
   return (
