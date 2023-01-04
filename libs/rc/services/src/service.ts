@@ -42,7 +42,8 @@ import {
   MdnsProxyAp,
   UploadUrlResponse,
   transferPaginationParams,
-  TableChangePayload
+  TableChangePayload,
+  RequestFormData
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
@@ -574,6 +575,19 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'DpskPassphrase', id: 'LIST' }]
     }),
+    uploadPassphrases: build.mutation<{}, RequestFormData>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(DpskUrls.uploadPassphrases, params, {
+          'Content-Type': undefined,
+          'Accept': '*/*'
+        })
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'DpskPassphrase', id: 'LIST' }]
+    }),
     portalNetworkInstances: build.query<TableResult<PortalDetailInstances>, RequestPayload>({
       query: ({ params }) => {
         const instancesRes = createHttpRequest(PortalUrlsInfo.getPortalNetworkInstances, params)
@@ -671,6 +685,7 @@ export const {
   useDpskPassphraseListQuery,
   useCreateDpskPassphrasesMutation,
   useDeleteDpskPassphraseListMutation,
+  useUploadPassphrasesMutation,
   useGetPortalQuery,
   useSavePortalMutation,
   usePortalNetworkInstancesQuery,
