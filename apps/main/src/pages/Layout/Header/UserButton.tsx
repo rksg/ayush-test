@@ -1,10 +1,10 @@
-import React from 'react'
+import { useState, useEffect } from 'react'
 
 import { Menu, Dropdown } from 'antd'
 import { useIntl }        from 'react-intl'
 
-import { useGetUserProfileQuery }              from '@acx-ui/rc/services'
-import { useParams, TenantLink, useLocation  } from '@acx-ui/react-router-dom'
+import { useGetUserProfileQuery, useGlobalValuesQuery } from '@acx-ui/rc/services'
+import { useParams, TenantLink, useLocation  }          from '@acx-ui/react-router-dom'
 
 import { UserNameButton, LogOut } from './styledComponents'
 
@@ -15,11 +15,26 @@ const UserButton = () => {
   const { data } = useGetUserProfileQuery({ params })
   const location = useLocation()
 
+  const globalValues = useGlobalValuesQuery({})
+  const [passwordURL, setPasswordURL] = useState('')
+  useEffect(()=>{
+    if(globalValues){
+      setPasswordURL(globalValues?.data?.['CHANGE_PASSWORD']||'')
+    }
+  }, [globalValues])
+
   const menuHeaderDropdown = (
     <Menu selectedKeys={[]}
       onClick={(menuInfo)=>{
         if(menuInfo.key==='logout'){
           window.location.href = '/logout'
+        } else if(menuInfo.key==='settings') {
+          const isRwbigdog = data?.email.indexOf('@rwbigdog.com') !== -1 ||
+                             data?.username.indexOf('@rwbigdog.com') !== -1
+          const changePasswordUrl = isRwbigdog
+            ? 'https://partners.ruckuswireless.com/forgot-password'
+            : passwordURL
+          window.open(changePasswordUrl, '_blank')
         }
       }}>
       <Menu.Item
@@ -30,7 +45,7 @@ const UserButton = () => {
         </TenantLink>
       </Menu.Item>
 
-      <Menu.Item disabled key='settings'>
+      <Menu.Item key='settings'>
         {$t({ defaultMessage: 'Change Password' })}
       </Menu.Item>
 
