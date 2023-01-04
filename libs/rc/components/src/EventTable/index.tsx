@@ -1,13 +1,14 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 import _                                            from 'lodash'
+import moment                                       from 'moment-timezone'
 import { defineMessage, useIntl, FormattedMessage } from 'react-intl'
 
 import { Button, Loader, Table, TableProps, Tooltip }        from '@acx-ui/components'
 import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
 import { Event, RequestPayload, TableQuery, replaceStrings } from '@acx-ui/rc/utils'
 import { TenantLink, generatePath }                          from '@acx-ui/react-router-dom'
-import { formatter }                                         from '@acx-ui/utils'
+import { formatter, useDateFilter }                          from '@acx-ui/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
 
@@ -113,6 +114,19 @@ const EventTable = ({ tableQuery }: EventTableProps) => {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
   const [current, setCurrent] = useState<Event>()
+
+  const { startDate, endDate } = useDateFilter()
+  useEffect(()=>{
+    tableQuery.setPayload({
+      ...tableQuery.payload,
+      filters: {
+        entity_type: ['AP', 'CLIENT', 'SWITCH', 'NETWORK'], // need to set dynamic
+        fromTime: moment(startDate).utc().format(),
+        toTime: moment(endDate).utc().format()
+      }
+    })
+
+  }, [startDate])
 
   const columns: TableProps<Event>['columns'] = [
     {

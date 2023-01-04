@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 import { defineMessage, useIntl } from 'react-intl'
 
@@ -12,7 +12,8 @@ import {
   severityMapping,
   statusMapping
 } from '@acx-ui/rc/utils'
-import { formatter } from '@acx-ui/utils'
+import { formatter }     from '@acx-ui/utils'
+import { useDateFilter } from '@acx-ui/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
 
@@ -24,6 +25,17 @@ const ActivityTable = ({ tableQuery }: ActivityTableProps) => {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
   const [current, setCurrent] = useState<Activity>()
+  const { startDate, endDate } = useDateFilter()
+
+  useEffect(()=>{
+    tableQuery.setPayload({
+      ...tableQuery.payload,
+      filters: {
+        fromTime: startDate,
+        toTime: endDate
+      }
+    })
+  }, [startDate])
 
   const columns: TableProps<Activity>['columns'] = [
     {

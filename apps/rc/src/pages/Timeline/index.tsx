@@ -1,7 +1,9 @@
+import moment                                        from 'moment'
 import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
-import { PageHeader, Tabs }                      from '@acx-ui/components'
+import { PageHeader, Tabs, RangePicker }         from '@acx-ui/components'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { dateRangeForLast, useDateFilter }       from '@acx-ui/utils'
 
 import { Activities } from './Activities'
 import { AdminLogs }  from './AdminLogs'
@@ -33,6 +35,7 @@ const tabs : {
 
 function Timeline () {
   const { $t } = useIntl()
+  const { startDate, endDate, setDateFilter, range } = useDateFilter()
   const { activeTab = tabs[0].key } = useParams()
   const navigate = useNavigate()
   const basePath = useTenantLink('/timeline')
@@ -51,6 +54,16 @@ function Timeline () {
             {tabs.map(({ key, title }) => <Tabs.TabPane tab={$t(title)} key={key} />)}
           </Tabs>
         }
+        extra={[
+          <RangePicker
+            key='date-filter'
+            selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
+            enableDates={dateRangeForLast(3,'months')}
+            onDateApply={setDateFilter as CallableFunction}
+            showTimePicker
+            selectionType={range}
+          />
+        ]}
       />
       {Tab && <Tab/>}
     </>
