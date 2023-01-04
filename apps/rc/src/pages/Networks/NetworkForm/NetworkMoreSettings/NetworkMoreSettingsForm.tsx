@@ -440,19 +440,24 @@ export function MoreSettingsForm (props: {
             />
         }
 
-        <Form.Item
-          name={['wlan','advancedCustomization','clientInactivityTimeout']}
-          label={$t({ defaultMessage: 'Client Inactivity Timeout:' })}
-          initialValue={120}
-          rules={[{
-            type: 'number', max: 86400, min: 60,
-            message: $t({
-              defaultMessage: 'Client Inactivity Timeout must be between 60 and 86400'
-            })
-          }]}
-          style={{ marginBottom: '15px' }}
-          children={<InputNumber style={{ width: '150px' }} />}
-        />
+        <div style={{ display: 'grid', gridTemplateColumns: '0px 1fr' }}>
+          <UI.LabelOfInput style={{ left: '165px' }}>
+            { $t({ defaultMessage: 'Seconds' }) }
+          </UI.LabelOfInput>
+          <Form.Item
+            name={['wlan','advancedCustomization','clientInactivityTimeout']}
+            label={$t({ defaultMessage: 'Client Inactivity Timeout:' })}
+            initialValue={120}
+            rules={[{
+              type: 'number', max: 86400, min: 60,
+              message: $t({
+                defaultMessage: 'Client Inactivity Timeout must be between 60 and 86400'
+              })
+            }]}
+            style={{ marginBottom: '15px' }}
+            children={<InputNumber style={{ width: '150px' }} />}
+          />
+        </div>
 
         <Form.Item
           name={['wlan','advancedCustomization','directedThreshold']}
