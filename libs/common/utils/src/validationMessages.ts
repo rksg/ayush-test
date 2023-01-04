@@ -39,8 +39,8 @@ export const validationMessages = {
     description: 'Validation - invalid checks'
   }),
   invalidHex: defineMessage({
-    defaultMessage: 'Please enter a valid IP address',
-    description: 'Validation - IP address checks'
+    defaultMessage: 'Please enter a valid Hex Key',
+    description: 'Validation - Hex Key checks'
   }),
   duplication: defineMessage({
     defaultMessage: `
