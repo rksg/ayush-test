@@ -134,6 +134,9 @@ export const VenueMessages = {
       <li>Once CLI profiles are applied, the venue can no longer accept regular profiles</li>
       <li>The selected CLI profiles cannot contain overlapping switch models</li>
     </ul>`
+  }),
+  SNR_THRESHOLD_TOOLTIP: defineMessage({
+    defaultMessage: 'SNR threshold above which detected Rogue APs will be reported in Ruckus Cloud. Available range is 0-100.'
   })
 }
 

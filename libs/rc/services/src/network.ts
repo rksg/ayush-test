@@ -268,7 +268,8 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         return {
           ...dashboardOverviewReq
         }
-      }
+      },
+      providesTags: [{ type: 'Network', id: 'Overview' }]
     }),
     validateRadius: build.query<RadiusValidate, RequestPayload>({
       query: ({ params, payload }) => {
