@@ -23,15 +23,15 @@ export function NetworkSegAuthSummary ({ data }: { data?: WebAuthTemplate }) {
     </Col>
     <Col span={6}>
       <Subtitle level={5}>{$t({ defaultMessage: 'Header' })}</Subtitle>
-      <Typography.Paragraph ellipsis={true} children={data?.webAuth_custom_top} />
+      <Typography.Paragraph ellipsis={true} children={data?.webAuthCustomTop} />
     </Col>
     <Col span={6}>
       <Subtitle level={5}>{$t({ defaultMessage: 'Title' })}</Subtitle>
-      <Typography.Paragraph ellipsis={true} children={data?.webAuth_custom_title} />
+      <Typography.Paragraph ellipsis={true} children={data?.webAuthCustomTitle} />
     </Col>
     <Col span={6}>
       <Subtitle level={5}>{$t({ defaultMessage: 'Password Label' })}</Subtitle>
-      <Typography.Paragraph ellipsis={true} children={data?.webAuth_password_label} />
+      <Typography.Paragraph ellipsis={true} children={data?.webAuthPasswordLabel} />
     </Col>
     <Col span={6}>
       <Subtitle level={5}>{$t({ defaultMessage: 'Tags' })}</Subtitle>
@@ -39,11 +39,11 @@ export function NetworkSegAuthSummary ({ data }: { data?: WebAuthTemplate }) {
     </Col>
     <Col span={6}>
       <Subtitle level={5}>{$t({ defaultMessage: 'Button' })}</Subtitle>
-      <Typography.Paragraph ellipsis={true} children={data?.webAuth_custom_login_button} />
+      <Typography.Paragraph ellipsis={true} children={data?.webAuthCustomLoginButton} />
     </Col>
     <Col span={12}>
       <Subtitle level={5}>{$t({ defaultMessage: 'Footer' })}</Subtitle>
-      <Typography.Paragraph ellipsis={true} children={data?.webAuth_custom_bottom} />
+      <Typography.Paragraph ellipsis={true} children={data?.webAuthCustomBottom} />
     </Col>
   </Row>
 }
@@ -99,7 +99,7 @@ export default function NetworkSegAuthDetail () {
       <Card title={$t({ defaultMessage: 'Instances ({count})' }, { count: 0 })}>
         <Table
           columns={columns}
-          dataSource={data?.switches}
+          dataSource={[]} // TODO
           type='form'
           rowKey='id' />
       </Card>

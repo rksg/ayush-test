@@ -30,11 +30,11 @@ import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import * as UI from './styledComponents'
 
 export const defaultTemplateData = {
-  webAuth_password_label: 'DPSK Password',
-  webAuth_custom_title: 'Enter your Password below and press the button',
-  webAuth_custom_top: 'Welcome to Ruckus Networks Web Authentication Homepage',
-  webAuth_custom_login_button: 'Login',
-  webAuth_custom_bottom: `This network is restricted to authorized users only.
+  webAuthPasswordLabel: 'DPSK Password',
+  webAuthCustomTitle: 'Enter your Password below and press the button',
+  webAuthCustomTop: 'Welcome to Ruckus Networks Web Authentication Homepage',
+  webAuthCustomLoginButton: 'Login',
+  webAuthCustomBottom: `This network is restricted to authorized users only.
     Violators may be subjected to legal prosecution.
     Acitvity on this network is monitored and may be used as evidence in a court of law.
     Copyright 2022 Ruckus Networks`
@@ -124,7 +124,7 @@ export default function NetworkSegAuthForm ({ editMode = false }: { editMode?: b
             rules={[{ required: true }]} >
             <Input />
           </Form.Item>
-          <Form.Item name='id' hidden />
+          <Form.Item name='id' hidden><Input type='hidden' /></Form.Item>
           <Form.Item name='tag'
             label={$t({ defaultMessage: 'Tags' })}
             wrapperCol={{ span: 8 }} >
@@ -132,15 +132,15 @@ export default function NetworkSegAuthForm ({ editMode = false }: { editMode?: b
           </Form.Item>
           <Subtitle level={4}>
             {$t({ defaultMessage: 'Auth Page Details' })}</Subtitle>
-          <WebAuthFormItem name='webAuth_custom_top'
+          <WebAuthFormItem name='webAuthCustomTop'
             label={$t({ defaultMessage: 'Header' })} />
-          <WebAuthFormItem name='webAuth_custom_title'
+          <WebAuthFormItem name='webAuthCustomTitle'
             label={$t({ defaultMessage: 'Title' })} />
-          <WebAuthFormItem name='webAuth_password_label'
+          <WebAuthFormItem name='webAuthPasswordLabel'
             label={$t({ defaultMessage: 'Password Label' })} />
-          <WebAuthFormItem name='webAuth_custom_login_button'
+          <WebAuthFormItem name='webAuthCustomLoginButton'
             label={$t({ defaultMessage: 'Button Text' })} />
-          <WebAuthFormItem name='webAuth_custom_bottom'
+          <WebAuthFormItem name='webAuthCustomBottom'
             label={$t({ defaultMessage: 'Footer' })} />
         </StepsForm.StepForm>
       </StepsForm>
