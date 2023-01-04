@@ -214,6 +214,12 @@ export function ServicesForm () {
               <Form.Item
                 name={['wlan','advancedCustomization','arpRequestRateLimit']}
                 initialValue={15}
+                rules={[{
+                  type: 'number', max: 100, min: 15,
+                  message: $t({
+                    defaultMessage: 'ARP request rate limit must be between 15 and 100'
+                  })
+                }]}
                 children={<InputNumber style={{ width: '100%' }} />} />
               <UI.Label>
                 { $t({ defaultMessage: 'ppm' }) }
@@ -234,6 +240,12 @@ export function ServicesForm () {
               <Form.Item
                 name={['wlan','advancedCustomization','dhcpRequestRateLimit']}
                 initialValue={15}
+                rules={[{
+                  type: 'number', max: 100, min: 15,
+                  message: $t({
+                    defaultMessage: 'DHCP request rate limit must be between 15 and 100'
+                  })
+                }]}
                 children={<InputNumber style={{ width: '100%' }} />} />
               <UI.Label>
                 { $t({ defaultMessage: 'ppm' }) }
