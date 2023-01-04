@@ -31,12 +31,6 @@ export const sample = [
     children: <div style={{ border: '1px solid black' }}>
       { new Array(3).fill(0).map((_, i) => <p key={i}>More content</p>) }
     </div>
-  },
-  {
-    status: 'OFFLINE',
-    startDatetime: '2022-12-20T09:55:03Z',
-    endDatetime: '2022-12-20T09:55:04Z',
-    description: 'AddVenue'
   }
 ] as TimelineItem[]
 

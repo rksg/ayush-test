@@ -37,8 +37,6 @@ export const StatusIcon = (props: StatusIconProps) => {
       return <InProgressIcon />
     case 'FAIL':
       return <FailIcon />
-    case 'OFFLINE': // TODO: need to update icon once we get it
-      return <PendingsIcon />
   }
 }
 
@@ -46,8 +44,7 @@ const statusMap = {
   SUCCESS: defineMessage({ defaultMessage: 'Success' }),
   PENDING: defineMessage({ defaultMessage: 'Pending' }),
   INPROGRESS: defineMessage({ defaultMessage: 'In progress' }),
-  FAIL: defineMessage({ defaultMessage: 'Failed' }),
-  OFFLINE: defineMessage({ defaultMessage: 'Offline' })
+  FAIL: defineMessage({ defaultMessage: 'Failed' })
 }
 
 const StatusComp = (props: StatusIconProps) => {

@@ -16,7 +16,6 @@ const getStatusColor = (status: TimelineStatus) => {
       return 'var(--acx-semantics-red-50)'
     case 'PENDING':
     case 'INPROGRESS':
-    case 'OFFLINE':
       return 'var(--acx-neutrals-60)'
   }
 }
