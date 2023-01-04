@@ -74,10 +74,10 @@ export function SwitchPingForm () {
           children={<Input />}
         />
         <Form.Item wrapperCol={{ offset: 0, span: 16 }}
-          style={{ display: 'flex', alignItems: 'center' }}>
+          style={{ alignItems: 'center' }}>
           <Button
             type='link'
-            style={{ width: '50px' }}
+            style={{ width: '50px', height: '32px', marginRight: '10px' }}
             disabled={false}
           // onClick={handlePingAp}
           >
