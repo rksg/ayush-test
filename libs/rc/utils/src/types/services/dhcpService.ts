@@ -56,7 +56,12 @@ export interface CreateDHCPFormFields {
 }
 export interface DHCPSaveData extends CreateDHCPFormFields {
   id?: string;
-  venueIds: string[];
+  usage: DHCPUsage[];
+}
+export interface DHCPUsage {
+  venueId: string;
+  totalIpCount: number;
+  usedIpCount: number;
 }
 
 export interface VenueDHCPProfile {

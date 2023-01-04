@@ -670,7 +670,18 @@ export const venueApi = baseVenueApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Venue', id: 'DHCPProfile' }]
+      providesTags: [{ type: 'Venue', id: 'DHCPProfile' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'Update Venue DHCP Config Service Profile Settings'
+          ]
+          showActivityMessage(msg, activities, () => {
+            api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'DHCPProfile' }]))
+          })
+        })
+      }
+
     }),
     venueDHCPPools: build.query<VenueDHCPPoolInst[], RequestPayload>({
       query: ({ params }) => {
