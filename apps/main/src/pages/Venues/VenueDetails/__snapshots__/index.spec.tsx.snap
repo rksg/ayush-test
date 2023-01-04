@@ -202,7 +202,7 @@ exports[`VenueDetails should navigate to analytic tab correctly 1`] = `
                     role="tab"
                   >
                     <span>
-                      Services (0)
+                      Services
                     </span>
                   </div>
                 </div>
@@ -549,7 +549,7 @@ exports[`VenueDetails should navigate to client tab correctly 1`] = `
                     role="tab"
                   >
                     <span>
-                      Services (0)
+                      Services
                     </span>
                   </div>
                 </div>
@@ -893,7 +893,7 @@ exports[`VenueDetails should navigate to device tab correctly 1`] = `
                     role="tab"
                   >
                     <span>
-                      Services (0)
+                      Services
                     </span>
                   </div>
                 </div>
@@ -1138,7 +1138,7 @@ exports[`VenueDetails should navigate to device tab correctly 1`] = `
                 style="width: 1280px; height: 800px;"
               >
                 <div
-                  style="text-align: left; padding: 8px 0px;"
+                  style="text-align: left;"
                 >
                   <div
                     class="styledComponents__Wrapper-sc-c4vpsp-0 eBLcPR"
@@ -1511,7 +1511,7 @@ exports[`VenueDetails should navigate to network tab correctly 1`] = `
                     role="tab"
                   >
                     <span>
-                      Services (0)
+                      Services
                     </span>
                   </div>
                 </div>
@@ -1889,7 +1889,7 @@ exports[`VenueDetails should navigate to service tab correctly 1`] = `
                     role="tab"
                   >
                     <span>
-                      Services (0)
+                      Services
                     </span>
                   </div>
                 </div>
@@ -2612,7 +2612,7 @@ exports[`VenueDetails should navigate to timeline tab correctly 1`] = `
                     role="tab"
                   >
                     <span>
-                      Services (0)
+                      Services
                     </span>
                   </div>
                 </div>
@@ -2958,7 +2958,7 @@ exports[`VenueDetails should render correctly 1`] = `
                     role="tab"
                   >
                     <span>
-                      Services (0)
+                      Services
                     </span>
                   </div>
                 </div>

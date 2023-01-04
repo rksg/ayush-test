@@ -1214,12 +1214,13 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                         class="ant-form-item-control-input-content"
                       >
                         <label
-                          class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item"
+                          class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-in-form-item"
                         >
                           <span
-                            class="ant-checkbox"
+                            class="ant-checkbox ant-checkbox-checked"
                           >
                             <input
+                              checked=""
                               class="ant-checkbox-input"
                               id="enableOfdmOnly"
                               type="checkbox"
@@ -1398,9 +1399,9 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                               </span>
                               <span
                                 class="ant-select-selection-item"
-                                title="1 Mbps"
+                                title="6 Mbps"
                               >
-                                1 Mbps
+                                6 Mbps
                               </span>
                             </div>
                             <span

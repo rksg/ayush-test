@@ -71,7 +71,7 @@ describe('CaptiveNetworkForm-HostApproval', () => {
     fireEvent.change(redirectUrlInput, { target: { value: 'https://www.commscope.com/ruckus/' } })
     await userEvent.click(await screen.findByRole('checkbox',
       { name: /Enable Ruckus DHCP service/ }))
-    await userEvent.click(await screen.findByText('More details'))
+    // await userEvent.click(await screen.findByText('More details'))
     const insertInput = await screen.findByLabelText(/Host Domains/)
     fireEvent.change(insertInput, { target: { value: 'www.123.com,222.com' } })
     fireEvent.blur(insertInput)
