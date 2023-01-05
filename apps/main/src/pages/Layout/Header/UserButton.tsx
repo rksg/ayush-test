@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react'
 
 import { Menu, Dropdown } from 'antd'
 import { useIntl }        from 'react-intl'
 
-import { useGetUserProfileQuery, useGlobalValuesQuery } from '@acx-ui/rc/services'
-import { useParams, TenantLink, useLocation  }          from '@acx-ui/react-router-dom'
+import { get }                                 from '@acx-ui/config'
+import { useGetUserProfileQuery }              from '@acx-ui/rc/services'
+import { useParams, TenantLink, useLocation  } from '@acx-ui/react-router-dom'
 
 import { UserNameButton, LogOut } from './styledComponents'
 
@@ -15,25 +15,18 @@ const UserButton = () => {
   const { data } = useGetUserProfileQuery({ params })
   const location = useLocation()
 
-  const globalValues = useGlobalValuesQuery({})
-  const [passwordURL, setPasswordURL] = useState('')
-  useEffect(()=>{
-    if(globalValues){
-      setPasswordURL(globalValues?.data?.['CHANGE_PASSWORD']||'')
-    }
-  }, [globalValues])
-
   const menuHeaderDropdown = (
     <Menu selectedKeys={[]}
       onClick={(menuInfo)=>{
         if(menuInfo.key==='logout'){
           window.location.href = '/logout'
         } else if(menuInfo.key==='settings') {
+          const passwordUrl = get('CHANGE_PASSWORD')
           const isRwbigdog = data?.email.indexOf('@rwbigdog.com') !== -1 ||
                              data?.username.indexOf('@rwbigdog.com') !== -1
           const changePasswordUrl = isRwbigdog
             ? 'https://partners.ruckuswireless.com/forgot-password'
-            : passwordURL
+            : passwordUrl
           window.open(changePasswordUrl, '_blank')
         }
       }}>
