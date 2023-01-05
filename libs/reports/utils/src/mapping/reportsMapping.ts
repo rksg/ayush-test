@@ -1,5 +1,6 @@
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { FilterMode } from '@acx-ui/analytics/components'
 
 export enum ReportType {

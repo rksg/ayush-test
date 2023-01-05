@@ -9,7 +9,7 @@ import {
   useEncodedParameter
 } from '@acx-ui/utils'
 
-import { defaultNetworkPath } from './analyticsFilter'
+const defaultNetworkPath: NetworkPath = [{ type: 'network', name: 'Network' }]
 
 export type ReportsFilter = DateFilter & { paths: NetworkPath[], bands: RadioBand[] }
 

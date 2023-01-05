@@ -3,12 +3,13 @@ import { omit, groupBy, pick, find } from 'lodash'
 import { SingleValueType }           from 'rc-cascader/lib/Cascader'
 import { useIntl }                   from 'react-intl'
 
-import { useAnalyticsFilter,
-  useReportsFilter,
+import {
+  useAnalyticsFilter,
   calculateSeverity,
   defaultNetworkPath,
   Incident } from '@acx-ui/analytics/utils'
 import { Select, Option, Loader, RadioBand } from '@acx-ui/components'
+import { useReportsFilter }                  from '@acx-ui/reports/utils'
 import { NetworkPath }                       from '@acx-ui/utils'
 
 import { useIncidentsListQuery } from '../IncidentTable/services'

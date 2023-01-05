@@ -1,6 +1,5 @@
 export { aggregateDataBy } from './aggregateDataBy'
 export * from './analyticsFilter'
-export * from './reportsFilter'
 export * from './barchart'
 export * from './constants'
 export * from './calculateGranularity'

@@ -5,12 +5,12 @@ import { Buffer } from 'buffer'
 import { embedDashboard } from '@superset-ui/embedded-sdk'
 
 import { getSupersetRlsClause } from '@acx-ui/analytics/components'
-import { useReportsFilter }     from '@acx-ui/analytics/utils'
 import {
   RadioBand,
   Loader
 } from '@acx-ui/components'
 import { useGuestTokenMutation, useEmbeddedIdMutation, BASE_RELATIVE_URL } from '@acx-ui/reports/services'
+import { useReportsFilter }                                                from '@acx-ui/reports/utils'
 import { useDateFilter, convertDateTimeToSqlFormat }                       from '@acx-ui/utils'
 
 

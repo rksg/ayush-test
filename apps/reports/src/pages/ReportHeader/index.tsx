@@ -3,10 +3,10 @@ import { useEffect, useState } from 'react'
 import moment from 'moment'
 
 import { NetworkFilter, FilterMode } from '@acx-ui/analytics/components'
-import { useReportsFilter }          from '@acx-ui/analytics/utils'
 import {
   RangePicker,
   PageHeader } from '@acx-ui/components'
+import { useReportsFilter }                from '@acx-ui/reports/utils'
 import { useDateFilter, dateRangeForLast } from '@acx-ui/utils'
 
 export function ReportHeader (props: {
