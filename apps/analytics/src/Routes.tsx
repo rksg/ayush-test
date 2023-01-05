@@ -4,6 +4,7 @@ import {
   HealthPage,
   IncidentListPage,
   NetworkHealthPage,
+  NetworkHealthDetails,
   VideoCallQoePage
 }                                            from '@acx-ui/analytics/components'
 import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
@@ -28,8 +29,9 @@ export default function AnalyticsRoutes () {
       <Route path='serviceValidation'
         element={<TenantNavigate replace to='/serviceValidation/networkHealth' />} />
       <Route path='serviceValidation/networkHealth' element={<NetworkHealthPage />} />
-      <Route path='serviceValidation/networkHealth/tab/:activeTab'
-        element={<NetworkHealthPage />} />
+      <Route path='serviceValidation/networkHealth/:id' element={<NetworkHealthDetails />} />
+      <Route path='serviceValidation/networkHealth/:id/tab/:activeTab'
+        element={<NetworkHealthDetails />} />
       <Route path='serviceValidation/videoCallQoe' element={<VideoCallQoePage />} />
     </Route>
   )

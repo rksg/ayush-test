@@ -5,7 +5,7 @@ import userEvent from '@testing-library/user-event'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
-import { NetworkHealthPage } from '.'
+import { NetworkHealthDetails } from './NetworkHealthDetails'
 
 const params = { tenantId: 'tenant-id' }
 const mockedUsedNavigate = jest.fn()
@@ -19,7 +19,7 @@ describe('Network Health', () => {
   it('should render page correctly', async () => {
     render(
       <Provider>
-        <NetworkHealthPage />
+        <NetworkHealthDetails />
       </Provider>,
       { route: { params } }
     )
@@ -31,7 +31,7 @@ describe('Network Health', () => {
   it('should change to details tab correctly', async () => {
     render(
       <Provider>
-        <NetworkHealthPage />
+        <NetworkHealthDetails />
       </Provider>,
       { route: { params } }
     )
@@ -45,7 +45,7 @@ describe('Network Health', () => {
   it('should change to progress tab correctly', async () => {
     render(
       <Provider>
-        <NetworkHealthPage />
+        <NetworkHealthDetails />
       </Provider>,
       { route: { params } }
     )
