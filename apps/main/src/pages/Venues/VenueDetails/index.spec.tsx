@@ -31,6 +31,7 @@ const data: Dashboard = {
 
 /* eslint-disable max-len */
 jest.mock('@acx-ui/analytics/components', () => ({
+  ...jest.requireActual('@acx-ui/analytics/components'),
   AnalyticsTabs: () => <div data-testid={'analytics-AnalyticsTabs'} title='AnalyticsTabs' />,
   ConnectedClientsOverTime: () => <div data-testid={'analytics-ConnectedClientsOverTime'} title='ConnectedClientsOverTime' />,
   IncidentBySeverity: () => <div data-testid={'analytics-IncidentBySeverity'} title='IncidentBySeverity' />,
@@ -49,6 +50,8 @@ jest.mock('@acx-ui/analytics/components', () => ({
   HealthPage: () => <div data-testid={'analytics-HealthPage'} title='HealthPage' />
 }))
 jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  ClientDualTable: () => <div data-testid={'rc-ClientDualTable'} title='ClientDualTable' />,
   TopologyFloorPlanWidget: () => <div data-testid={'rc-TopologyFloorPlanWidget'} title='TopologyFloorPlanWidget' />,
   VenueAlarmWidget: () => <div data-testid={'rc-VenueAlarmWidget'} title='VenueAlarmWidget' />,
   VenueDevicesWidget: () => <div data-testid={'rc-VenueDevicesWidget'} title='VenueDevicesWidget' />
@@ -124,6 +127,7 @@ describe('VenueDetails', () => {
     const { asFragment } = render(<Provider><VenueDetails /></Provider>, {
       route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
     })
+
     expect(asFragment()).toMatchSnapshot()
   })
 
