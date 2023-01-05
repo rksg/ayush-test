@@ -143,13 +143,14 @@ const RuleTable = (props: RuleTableProps) => {
       customContent: {
         action: 'DELETE',
         entityName: $t({ defaultMessage: 'Rule' }),
+        numOfEntities: rows.length,
         entityValue: rows[0].name
       },
       onOk: () => {
-        rows[0].priority && dispatch({
+        dispatch({
           type: RogueAPDetectionActionTypes.DEL_RULE,
           payload: {
-            name: rows[0].name
+            name: rows.map(row => row.name)
           }
         })
       }
@@ -163,7 +164,6 @@ const RuleTable = (props: RuleTableProps) => {
     onClick: editAction
   },{
     label: $t({ defaultMessage: 'Delete' }),
-    visible: (row: RogueAPRule[]) => row.length <= 1,
     onClick: delAction
   }] as { label: string, visible: () => boolean, onClick: () => void }[]
 

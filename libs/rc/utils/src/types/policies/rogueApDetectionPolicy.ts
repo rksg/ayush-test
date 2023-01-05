@@ -162,7 +162,7 @@ export type RogueAPDetectionActionPayload = {
 } | {
   type: RogueAPDetectionActionTypes.DEL_RULE,
   payload: {
-    name: string
+    name: string[]
   }
 } | {
   type: RogueAPDetectionActionTypes.MOVE_UP,
