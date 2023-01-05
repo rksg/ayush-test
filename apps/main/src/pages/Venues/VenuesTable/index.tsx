@@ -14,10 +14,17 @@ import {
   deviceStatusColors,
   getDeviceConnectionStatusColors
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                  from '@acx-ui/feature-toggle'
-import { useVenuesListQuery, useDeleteVenueMutation }                                              from '@acx-ui/rc/services'
-import { useTableQuery, ApDeviceStatusEnum, Venue, ApVenueStatusEnum, TableQuery, RequestPayload } from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useParams }                                                      from '@acx-ui/react-router-dom'
+import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
+import { useVenuesListQuery, useDeleteVenueMutation } from '@acx-ui/rc/services'
+import {
+  ApDeviceStatusEnum,
+  Venue,
+  ApVenueStatusEnum,
+  TableQuery,
+  RequestPayload,
+  usePollingTableQuery
+} from '@acx-ui/rc/utils'
+import { TenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
 
 function useColumns () {
   const { $t } = useIntl()
@@ -163,7 +170,8 @@ function useColumns () {
     {
       key: 'tags',
       dataIndex: 'tags',
-      title: $t({ defaultMessage: 'Tags' })
+      title: $t({ defaultMessage: 'Tags' }),
+      show: false
     }
   ]
 
@@ -266,7 +274,7 @@ export function VenuesTable () {
   const { $t } = useIntl()
   const venuePayload = useDefaultVenuePayload()
 
-  const tableQuery = useTableQuery<Venue, RequestPayload<unknown>, unknown>({
+  const tableQuery = usePollingTableQuery<Venue>({
     useQuery: useVenuesListQuery,
     defaultPayload: venuePayload
   })
