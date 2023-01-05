@@ -4,7 +4,7 @@ import { Col, Form, Row, Switch } from 'antd'
 import { useIntl }                from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
-import { Loader, showToast }                 from '@acx-ui/components'
+import { Loader, showToast }                from '@acx-ui/components'
 import {
   useGetVenueDirectedMulticastQuery,
   useUpdateVenueDirectedMulticastMutation
