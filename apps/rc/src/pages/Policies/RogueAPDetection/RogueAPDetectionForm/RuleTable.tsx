@@ -4,12 +4,13 @@ import { useIntl }                                                              
 import { useParams }                                                                                        from 'react-router-dom'
 import { SortableContainer, SortableElement, SortableHandle, SortableElementProps, SortableContainerProps } from 'react-sortable-hoc'
 
-import { showActionModal, Table, TableProps }                          from '@acx-ui/components'
-import { Drag }                                                        from '@acx-ui/icons'
-import { useRoguePolicyQuery }                                         from '@acx-ui/rc/services'
-import { RogueAPDetectionActionTypes, RogueAPRule, RogueRuleTypeEnum } from '@acx-ui/rc/utils'
+import { showActionModal, Table, TableProps }                      from '@acx-ui/components'
+import { Drag }                                                    from '@acx-ui/icons'
+import { useRoguePolicyQuery }                                     from '@acx-ui/rc/services'
+import { RogueAPDetectionActionTypes, RogueAPRule, RogueRuleType } from '@acx-ui/rc/utils'
 
-import RogueAPDetectionContext from '../RogueAPDetectionContext'
+import { rogueRuleLabelMapping } from '../../contentsMap'
+import RogueAPDetectionContext   from '../RogueAPDetectionContext'
 
 import RogueAPDetectionDrawer from './RogueAPDetectionDrawer'
 
@@ -31,23 +32,6 @@ const RuleTable = (props: RuleTableProps) => {
   const [visibleAdd, setVisibleAdd] = useState(false)
   const [visibleEdit, setVisibleEdit] = useState(false)
 
-  const renderRuleType = (ruleType: string) => {
-    const ruleTypes = {
-      SameNetworkRule: $t({ defaultMessage: 'Same Network Rule' }),
-      MacSpoofingRule: $t({ defaultMessage: 'Mac Spoofing Rule' }),
-      SsidSpoofingRule: $t({ defaultMessage: 'SSID Spoofing Rule' }),
-      RTSAbuseRule: $t({ defaultMessage: 'RTS Abuse Rule' }),
-      CTSAbuseRule: $t({ defaultMessage: 'CTS Abuse Rule' }),
-      DeauthFloodRule: $t({ defaultMessage: 'Deauth Flood Rule' }),
-      DisassocFloodRule: $t({ defaultMessage: 'Disassoc Flood Rule' }),
-      ExcessivePowerRule: $t({ defaultMessage: 'Excessive Power Rule' }),
-      NullSSIDRule: $t({ defaultMessage: 'Null SSID Rule' }),
-      AdhocRule: $t({ defaultMessage: 'Adhoc' })
-    } as { [key in RogueRuleTypeEnum]: string }
-
-    return ruleTypes[ruleType as RogueRuleTypeEnum]
-  }
-
   const DragHandle = SortableHandle(() =>
     <Drag style={{ cursor: 'grab', color: '#6e6e6e' }} />
   )
@@ -68,7 +52,7 @@ const RuleTable = (props: RuleTableProps) => {
       dataIndex: 'type',
       key: 'type',
       render: (data, row: RogueAPRule) => {
-        return renderRuleType(row.type)
+        return $t(rogueRuleLabelMapping[row.type as RogueRuleType])
       }
     },
     {
