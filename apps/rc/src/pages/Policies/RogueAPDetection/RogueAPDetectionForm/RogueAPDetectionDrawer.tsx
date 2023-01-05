@@ -142,6 +142,7 @@ const RogueAPDetectionDrawer = (props: RogueAPDetectionDrawerProps) => {
       style={{ width: '90%' }}
       rules={[
         { required: true },
+        { max: 32 },
         { validator: (rule, value) => {
           if (!isEditMode && value && state.rules.findIndex(e => e.name === value) !== -1) {
             return Promise.reject(
