@@ -15,18 +15,6 @@ import { useDateFilter } from '@acx-ui/utils'
 const AdminLogs = () => {
   const { startDate, endDate } = useDateFilter()
 
-  useEffect(()=>{
-    const payload = tableQuery.payload as { filters?: Record<string, string[]> }
-    tableQuery.setPayload({
-      ...tableQuery.payload,
-      filters: {
-        ...payload.filters,
-        fromTime: moment(startDate).utc().format(),
-        toTime: moment(endDate).utc().format()
-      }
-    })
-  }, [startDate])
-
   const tableQuery = usePollingTableQuery<AdminLog>({
     useQuery: useAdminLogsQuery,
     defaultPayload: {
@@ -73,6 +61,19 @@ const AdminLogs = () => {
     },
     option: { pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL }
   })
+
+  useEffect(()=>{
+    const payload = tableQuery.payload as { filters?: Record<string, string[]> }
+    tableQuery.setPayload({
+      ...tableQuery.payload,
+      filters: {
+        ...payload.filters,
+        fromTime: moment(startDate).utc().format(),
+        toTime: moment(endDate).utc().format()
+      }
+    })
+  }, [tableQuery.payload, startDate, endDate])
+
   return <AdminLogTable tableQuery={tableQuery}/>
 }
 

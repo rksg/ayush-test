@@ -8,16 +8,6 @@ import { useDateFilter }                           from '@acx-ui/utils'
 const Activities = () => {
   const { startDate, endDate } = useDateFilter()
 
-  useEffect(()=>{
-    tableQuery.setPayload({
-      ...tableQuery.payload,
-      filters: {
-        fromTime: startDate,
-        toTime: endDate
-      }
-    })
-  }, [startDate])
-
   const tableQuery = useTableQuery<Activity>({
     useQuery: useActivitiesQuery,
     defaultPayload: {
@@ -38,6 +28,17 @@ const Activities = () => {
       sortOrder: 'DESC'
     }
   })
+
+  useEffect(()=>{
+    tableQuery.setPayload({
+      ...tableQuery.payload,
+      filters: {
+        fromTime: startDate,
+        toTime: endDate
+      }
+    })
+  }, [tableQuery.payload, startDate, endDate])
+
   return <ActivityTable tableQuery={tableQuery}/>
 }
 
