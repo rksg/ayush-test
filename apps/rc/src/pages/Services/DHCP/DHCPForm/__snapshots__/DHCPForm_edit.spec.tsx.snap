@@ -243,7 +243,7 @@ exports[`DHCPForm should edit open DHCP successfully 1`] = `
                         </div>
                       </div>
                       <div
-                        class="ant-form-item ant-form-item-is-validating"
+                        class="ant-form-item ant-form-item-has-success"
                       >
                         <div
                           class="ant-row ant-form-item-row"
@@ -402,7 +402,7 @@ exports[`DHCPForm should edit open DHCP successfully 1`] = `
                       style="padding-left: 10px; padding-right: 10px;"
                     >
                       <div
-                        class="ant-form-item ant-form-item-is-validating"
+                        class="ant-form-item ant-form-item-has-success"
                       >
                         <div
                           class="ant-row ant-form-item-row"
