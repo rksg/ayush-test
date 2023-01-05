@@ -147,8 +147,13 @@ export function SelfSignInForm () {
       setAllowedSignValue(allowedSignValueTemp)
     }
   }, [data])
+  const globalValues= get('CAPTIVE_PORTAL_DOMAIN_NAME')
   const [redirectURL, setRedirectURL]=useState('')
-  setRedirectURL(get('CAPTIVE_PORTAL_DOMAIN_NAME')||'')
+  useEffect(()=>{
+    if(globalValues){
+      setRedirectURL(globalValues)
+    }
+  }, [globalValues])
   return (
     <GridRow>
       <GridCol col={{ span: 12 }}>
