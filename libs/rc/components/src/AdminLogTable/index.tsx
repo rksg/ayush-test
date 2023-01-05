@@ -1,11 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
-import moment                     from 'moment-timezone'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps, Button  }   from '@acx-ui/components'
 import { AdminLog, RequestPayload, TableQuery } from '@acx-ui/rc/utils'
-import { formatter, useDateFilter }             from '@acx-ui/utils'
+import { formatter }                            from '@acx-ui/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
 
@@ -19,18 +18,7 @@ const AdminLogTable = ({ tableQuery }: AdminLogTableProps) => {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
   const [current, setCurrent] = useState<AdminLog>()
-  const { startDate, endDate } = useDateFilter()
 
-  useEffect(()=>{
-    tableQuery.setPayload({
-      ...tableQuery.payload,
-      filters: {
-        entity_type: ['ADMIN', 'NOTIFICATION'], // need to set dynamic
-        fromTime: moment(startDate).utc().format(),
-        toTime: moment(endDate).utc().format()
-      }
-    })
-  }, [startDate])
   const columns: TableProps<AdminLog>['columns'] = [
     {
       key: 'event_datetime',

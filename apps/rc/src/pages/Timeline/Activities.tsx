@@ -1,8 +1,23 @@
+import { useEffect } from 'react'
+
 import { ActivityTable }                           from '@acx-ui/rc/components'
 import { useActivitiesQuery }                      from '@acx-ui/rc/services'
 import { Activity, CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
+import { useDateFilter }                           from '@acx-ui/utils'
 
 const Activities = () => {
+  const { startDate, endDate } = useDateFilter()
+
+  useEffect(()=>{
+    tableQuery.setPayload({
+      ...tableQuery.payload,
+      filters: {
+        fromTime: startDate,
+        toTime: endDate
+      }
+    })
+  }, [startDate])
+
   const tableQuery = useTableQuery<Activity>({
     useQuery: useActivitiesQuery,
     defaultPayload: {
