@@ -32,7 +32,7 @@ import {
   PortalUrlsInfo,
   NewTableResult,
   NewDpskPassphrase,
-  transferTableResult,
+  transferToTableResult,
   DpskPassphrasesSaveData,
   convertMdnsProxyFormDataToApiPayload,
   MdnsProxyGetApiResponse,
@@ -55,7 +55,12 @@ import {
   AccessControlProfile
 } from '@acx-ui/rc/utils'
 
-
+const defaultNewTablePaginationParams: TableChangePayload = {
+  sortField: 'name',
+  sortOrder: 'ASC',
+  page: 1,
+  pageSize: 10000
+}
 
 const RKS_NEW_UI = {
   'x-rks-new-ui': true
@@ -512,7 +517,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         const getDpskListReq = createNewTableHttpRequest({
           apiInfo: DpskUrls.getDpskList,
           params,
-          payload: payload as TableChangePayload
+          payload: (payload as TableChangePayload) ?? defaultNewTablePaginationParams
         })
 
         return {
@@ -521,7 +526,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       providesTags: [{ type: 'Service', id: 'LIST' }, { type: 'Dpsk', id: 'LIST' }],
       transformResponse (result: NewTableResult<DpskSaveData>) {
-        return transferTableResult<DpskSaveData>(result)
+        return transferToTableResult<DpskSaveData>(result)
       }
     }),
     getDpsk: build.query<DpskSaveData, RequestPayload>({
@@ -568,7 +573,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       },
       transformResponse (result: NewTableResult<NewDpskPassphrase>) {
-        return transferTableResult<NewDpskPassphrase>(result)
+        return transferToTableResult<NewDpskPassphrase>(result)
       },
       providesTags: [{ type: 'DpskPassphrase', id: 'LIST' }]
     }),

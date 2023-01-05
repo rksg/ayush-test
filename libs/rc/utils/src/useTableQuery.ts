@@ -193,7 +193,7 @@ export interface NewTablePageable {
 
 export interface TableChangePayload {
   sortField: string
-  sortOrder: keyof typeof SORTER_ABBR
+  sortOrder: 'ASC' | 'DESC'
   page: number
   pageSize: number
 }
@@ -212,16 +212,16 @@ export interface NewTableResult<T> {
 
 interface CreateNewTableHttpRequestProps {
   apiInfo: ApiInfo
-  params: Params<string> | undefined
-  payload: TableChangePayload
+  params?: Params<string>
+  payload?: TableChangePayload
 }
 
 export function createNewTableHttpRequest (props: CreateNewTableHttpRequestProps) {
-  const { apiInfo, params, payload } = props
-  return createHttpRequest(apiInfo, { ...params, ...transferPaginationParams(payload) })
+  const { apiInfo, params = {}, payload } = props
+  return createHttpRequest(apiInfo, { ...params, ...transferToNewTablePaginationParams(payload) })
 }
 
-export function transferTableResult<T> (newResult: NewTableResult<T>): TableResult<T> {
+export function transferToTableResult<T> (newResult: NewTableResult<T>): TableResult<T> {
   return {
     data: newResult.content,
     page: newResult.pageable.pageNumber + 1,
@@ -229,13 +229,16 @@ export function transferTableResult<T> (newResult: NewTableResult<T>): TableResu
   }
 }
 
-export function transferPaginationParams (payload: TableChangePayload) {
-  const pageSize = payload.pageSize ?? DEFAULT_PAGINATION.pageSize
-  const page = payload.page ?? DEFAULT_PAGINATION.page
-  const sort = payload.sortField + ',' + payload.sortOrder.toLowerCase()
+export function transferToNewTablePaginationParams (payload: TableChangePayload | undefined) {
+  const pagination = {
+    ...DEFAULT_PAGINATION,
+    ...DEFAULT_SORTER,
+    ...(payload ?? {})
+  }
+
   return {
-    pageSize: pageSize.toString(),
-    page: (page - 1).toString(),
-    sort
+    pageSize: pagination.pageSize.toString(),
+    page: (pagination.page - 1).toString(),
+    sort: pagination.sortField + ',' + pagination.sortOrder.toLowerCase()
   }
 }

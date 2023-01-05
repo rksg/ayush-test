@@ -14,7 +14,6 @@ import { useCreateDpskMutation, useGetDpskQuery, useUpdateDpskMutation } from '@
 import {
   CreateDpskFormFields,
   PassphraseFormatEnum,
-  getServiceListRoutePath,
   ServiceType,
   getServiceRoutePath,
   ServiceOperation
@@ -79,7 +78,10 @@ export default function DpskForm (props: DpskFormProps) {
       <PageHeader
         title={$t({ defaultMessage: 'Add DPSK service' })}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Services' }), link: getServiceListRoutePath(true) }
+          {
+            text: $t({ defaultMessage: 'Services' }),
+            link: getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST })
+          }
         ]}
       />
       <StepsForm<CreateDpskFormFields>
