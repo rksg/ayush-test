@@ -1,0 +1,124 @@
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
+
+import {
+  CommonUrlsInfo,
+  DpskUrls,
+  ServiceType,
+  DpskDetailsTabKey,
+  getServiceDetailsLink,
+  getServiceRoutePath,
+  ServiceOperation
+} from '@acx-ui/rc/utils'
+import { To, useTenantLink } from '@acx-ui/react-router-dom'
+import { Provider }          from '@acx-ui/store'
+import {
+  mockServer,
+  render,
+  renderHook,
+  screen
+} from '@acx-ui/test-utils'
+
+import {
+  mockedNetworks,
+  mockedDpsk,
+  mockedDpskPassphraseList,
+  mockedTenantId,
+  mockedServiceId
+} from './__tests__/fixtures'
+import DpskDetails from './DpskDetails'
+
+const mockedUseNavigate = jest.fn()
+
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
+  useNavigate: () => mockedUseNavigate,
+  useTenantLink: (to: To) => to
+}))
+
+describe('DpskDetails', () => {
+  const paramsForOverviewTab = {
+    tenantId: mockedTenantId,
+    serviceId: mockedServiceId,
+    activeTab: DpskDetailsTabKey.OVERVIEW
+  }
+  // eslint-disable-next-line max-len
+  const detailPath = '/:tenantId/' + getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.DETAIL })
+
+  mockServer.use(
+    rest.post(
+      CommonUrlsInfo.getVMNetworksList.url,
+      (req, res, ctx) => res(ctx.json(mockedNetworks))
+    ),
+    rest.get(
+      DpskUrls.getDpsk.url,
+      (req, res, ctx) => res(ctx.json(mockedDpsk))
+    ),
+    rest.get(
+      DpskUrls.getPassphraseList.url,
+      (req, res, ctx) => res(ctx.json(mockedDpskPassphraseList))
+    )
+  )
+
+  it('should render the Passphrase Management tab', async () => {
+    const passphraseTabParams = {
+      ...paramsForOverviewTab,
+      activeTab: DpskDetailsTabKey.PASSPHRASE_MGMT
+    }
+
+    render(
+      <Provider>
+        <DpskDetails />
+      </Provider>, {
+        route: {
+          params: passphraseTabParams,
+          path: detailPath
+        }
+      }
+    )
+
+    const targetTab = await screen.findByRole('tabpanel', { name: /Passphrase Management/ })
+    expect(targetTab).toBeInTheDocument()
+  })
+
+  it('should navigate to the Passphrase Management tab', async () => {
+    const { result: passphraseTabPath } = renderHook(() => {
+      return useTenantLink(getServiceDetailsLink({
+        type: ServiceType.DPSK,
+        oper: ServiceOperation.DETAIL,
+        serviceId: mockedServiceId,
+        activeTab: DpskDetailsTabKey.PASSPHRASE_MGMT
+      }))
+    })
+
+    render(
+      <Provider>
+        <DpskDetails />
+      </Provider>, {
+        route: { params: paramsForOverviewTab, path: detailPath }
+      }
+    )
+
+    await userEvent.click(await screen.findByRole('tab', { name: /Passphrase Management/ }))
+    expect(mockedUseNavigate).toHaveBeenCalledWith(passphraseTabPath.current)
+  })
+
+  it('should navigate to the edit page', async () => {
+    const editLink = `/t/${paramsForOverviewTab.tenantId}/` + getServiceDetailsLink({
+      type: ServiceType.DPSK,
+      oper: ServiceOperation.EDIT,
+      serviceId: paramsForOverviewTab.serviceId
+    })
+
+    render(
+      <Provider>
+        <DpskDetails />
+      </Provider>, {
+        route: { params: paramsForOverviewTab, path: detailPath }
+      }
+    )
+
+    // eslint-disable-next-line max-len
+    expect(await screen.findByRole('link', { name: 'Configure' })).toHaveAttribute('href', editLink)
+  })
+})

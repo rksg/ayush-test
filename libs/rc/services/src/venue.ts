@@ -37,16 +37,15 @@ import {
   VenueDHCPPoolInst,
   DHCPLeases,
   VenueDefaultRegulatoryChannels,
-  VenueDefaultRegulatoryChannelsForm,
   TriBandSettings,
   AvailableLteBands,
   VenueApModelCellular,
   UploadUrlResponse,
   NetworkDeviceResponse,
   NetworkDevicePayload,
-  RogueOldApResponseType
+  RogueOldApResponseType,
+  VenueRadioCustomization
 } from '@acx-ui/rc/utils'
-
 
 export const baseVenueApi = createApi({
   baseQuery: fetchBaseQuery(),
@@ -513,7 +512,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       }
     }),
-    getDefaultRadioCustomization: build.query<VenueDefaultRegulatoryChannelsForm, RequestPayload>({
+    getDefaultRadioCustomization: build.query<VenueRadioCustomization, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.getDefaultRadioCustomization, params)
         return{
@@ -521,7 +520,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       }
     }),
-    getVenueRadioCustomization: build.query<VenueDefaultRegulatoryChannelsForm, RequestPayload>({
+    getVenueRadioCustomization: build.query<VenueRadioCustomization, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.getVenueRadioCustomization, params)
         return{
@@ -660,7 +659,18 @@ export const venueApi = baseVenueApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Venue', id: 'DHCPProfile' }]
+      providesTags: [{ type: 'Venue', id: 'DHCPProfile' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'Update Venue DHCP Config Service Profile Settings'
+          ]
+          showActivityMessage(msg, activities, () => {
+            api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'DHCPProfile' }]))
+          })
+        })
+      }
+
     }),
     venueDHCPPools: build.query<VenueDHCPPoolInst[], RequestPayload>({
       query: ({ params }) => {
@@ -758,6 +768,7 @@ export const {
   useVenueDefaultRegulatoryChannelsQuery,
   useGetDefaultRadioCustomizationQuery,
   useGetVenueRadioCustomizationQuery,
+  useLazyGetVenueRadioCustomizationQuery,
   useUpdateVenueRadioCustomizationMutation,
   useGetVenueTripleBandRadioSettingsQuery,
   useUpdateVenueTripleBandRadioSettingsMutation,

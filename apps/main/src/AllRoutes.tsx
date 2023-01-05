@@ -2,6 +2,7 @@ import React from 'react'
 
 import { Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
 
+import Administration   from './pages/Administration'
 import AnalyticsBase    from './pages/Analytics'
 import Dashboard        from './pages/Dashboard'
 import DevicesBase      from './pages/Devices'
@@ -55,6 +56,7 @@ function AllRoutes () {
           <Route path='*' element={<RcRoutes />} />
         </Route>
         <Route path='venues/*' element={<VenuesRoutes />} />
+        <Route path='administration/*' element={<AdministrationRoutes />} />
       </Route>
       <Route path='v/:tenantId/*' element={<MspRoutes />} />
     </>
@@ -73,6 +75,19 @@ function VenuesRoutes () {
       />
       <Route path=':venueId/:action/:activeTab' element={<VenueEdit />} />
       <Route path=':venueId/edit/:activeTab/:activeSubTab' element={<VenueEdit />} />
+    </Route>
+  )
+}
+
+function AdministrationRoutes () {
+  return rootRoutes(
+    <Route path='t/:tenantId/administration'>
+      <Route
+        index
+        element={<TenantNavigate replace to='/administration/accountSettings' />}
+      />
+      <Route path=':activeTab' element={<Administration />} />
+
     </Route>
   )
 }

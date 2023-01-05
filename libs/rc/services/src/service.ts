@@ -3,10 +3,10 @@ import {
   createApi,
   fetchBaseQuery,
   FetchBaseQueryError,
-  FetchBaseQueryMeta } from '@reduxjs/toolkit/query/react'
-import _                from 'lodash'
-import { Params }       from 'react-router-dom'
-import { v4 as uuidv4 } from 'uuid'
+  FetchBaseQueryMeta
+} from '@reduxjs/toolkit/query/react'
+import _          from 'lodash'
+import { Params } from 'react-router-dom'
 
 import {
   CommonUrlsInfo,
@@ -23,7 +23,6 @@ import {
   DHCPDetailInstances,
   WifiCallingUrls,
   WifiUrlsInfo,
-  MdnsProxyForwardingRule,
   WifiCallingFormContextType,
   WifiCallingSetting,
   DpskSaveData,
@@ -31,9 +30,17 @@ import {
   PortalDetailInstances,
   Portal,
   PortalUrlsInfo,
-  DpskList,
+  NewTableResult,
+  NewDpskPassphrase,
+  transferTableResult,
+  DpskPassphrasesSaveData,
+  convertMdnsProxyFormDataToApiPayload,
+  MdnsProxyGetApiResponse,
+  convertApiPayloadToMdnsProxyFormData,
   onSocketActivityChanged,
-  showActivityMessage
+  showActivityMessage,
+  MdnsProxyAp,
+  UploadUrlResponse
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
@@ -54,7 +61,7 @@ const RKS_NEW_UI = {
 export const baseServiceApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'serviceApi',
-  tagTypes: ['Service', 'Dpsk'],
+  tagTypes: ['Service', 'Dpsk', 'DpskPassphrase', 'MdnsProxy', 'MdnsProxyAp'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })
@@ -69,7 +76,28 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Service', id: 'LIST' }]
+      providesTags: [{ type: 'Service', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          showActivityMessage(msg, [
+            'Add Multicast DNS Proxy Service Profile',
+            'Update Multicast DNS Proxy Service Profile',
+            'Delete Multicast DNS Proxy Service Profile',
+            'Delete Multicast DNS Proxy Service Profiles',
+            'Activate Multicast DNS Proxy Service Profiles',
+            'Deactivate Multicast DNS Proxy Service Profiles',
+            'Delete WiFi Calling Service Profile',
+            'Delete WiFi Calling Service Profiles',
+            'Update Portal Service Profile',
+            'Delete Portal Service Profile',
+            'Delete Portal Service Profiles'
+          ], () => {
+            api.dispatch(serviceApi.util.invalidateTags([
+              { type: 'Service', id: 'LIST' }
+            ]))
+          })
+        })
+      }
     }),
     cloudpathList: build.query<CloudpathServer[], RequestPayload>({
       query: ({ params }) => {
@@ -225,36 +253,56 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     }),
     getMdnsProxy: build.query<MdnsProxyFormData, RequestPayload>({
       query: ({ params, payload }) => {
-        const mdnsProxyReq = createHttpRequest(MdnsProxyUrls.getMdnsProxy, params)
-        return {
-          ...mdnsProxyReq,
-          body: payload
-        }
-      },
-      transformResponse (result: MdnsProxyFormData) {
-        if (!result.forwardingRules) {
-          return result
-        }
-
-        result.forwardingRules = result.forwardingRules.map((rule: MdnsProxyForwardingRule) => {
-          return {
-            ...rule,
-            id: uuidv4()
-          }
-        })
-        return result
-      },
-      providesTags: [{ type: 'Service', id: 'DETAIL' }]
-    }),
-    updateMdnsProxy: build.mutation<MdnsProxyFormData, RequestPayload<MdnsProxyFormData>>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(MdnsProxyUrls.updateMdnsProxy, params)
+        const req = createHttpRequest(MdnsProxyUrls.getMdnsProxy, params)
         return {
           ...req,
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+      transformResponse (response: MdnsProxyGetApiResponse) {
+        return convertApiPayloadToMdnsProxyFormData(response)
+      },
+      providesTags: [{ type: 'MdnsProxy', id: 'DETAIL' }]
+    }),
+    getMdnsProxyList: build.query<MdnsProxyFormData[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(MdnsProxyUrls.getMdnsProxyList, params)
+        return {
+          ...req
+        }
+      },
+      transformResponse (response: MdnsProxyGetApiResponse[]) {
+        return response.map(result => convertApiPayloadToMdnsProxyFormData(result))
+      },
+      providesTags: [{ type: 'MdnsProxy', id: 'LIST' }, { type: 'Service', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          showActivityMessage(msg, [
+            'Add Multicast DNS Proxy Service Profile',
+            'Update Multicast DNS Proxy Service Profile',
+            'Delete Multicast DNS Proxy Service Profile',
+            'Delete Multicast DNS Proxy Service Profiles',
+            'Activate Multicast DNS Proxy Service Profiles',
+            'Deactivate Multicast DNS Proxy Service Profiles'
+          ], () => {
+            api.dispatch(serviceApi.util.invalidateTags([
+              { type: 'Service', id: 'LIST' },
+              { type: 'MdnsProxy', id: 'LIST' }
+            ]))
+          })
+        })
+      }
+    }),
+    updateMdnsProxy: build.mutation<MdnsProxyFormData, RequestPayload<MdnsProxyFormData>>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MdnsProxyUrls.updateMdnsProxy, params)
+        const convertedPayload = convertMdnsProxyFormDataToApiPayload(payload as MdnsProxyFormData)
+        return {
+          ...req,
+          body: convertedPayload
+        }
+      },
+      invalidatesTags: [{ type: 'MdnsProxy', id: 'LIST' }]
     }),
     deleteMdnsProxy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
@@ -263,7 +311,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           ...req
         }
       },
-      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+      invalidatesTags: [{ type: 'MdnsProxy', id: 'LIST' }]
     }),
     deleteMdnsProxyList: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
@@ -277,17 +325,50 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     addMdnsProxy: build.mutation<MdnsProxyFormData, RequestPayload<MdnsProxyFormData>>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(MdnsProxyUrls.addMdnsProxy, params)
+        const convertedPayload = convertMdnsProxyFormDataToApiPayload(payload as MdnsProxyFormData)
 
-        if (payload?.forwardingRules) {
-          payload.forwardingRules = payload.forwardingRules.map(r => _.omit(r, 'id'))
+        return {
+          ...req,
+          body: convertedPayload
         }
-
+      },
+      invalidatesTags: [{ type: 'MdnsProxy', id: 'LIST' }]
+    }),
+    addMdnsProxyAps: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MdnsProxyUrls.addMdnsProxyAps, params)
         return {
           ...req,
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+      invalidatesTags: [{ type: 'MdnsProxyAp', id: 'LIST' }]
+    }),
+    deleteMdnsProxyAps: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MdnsProxyUrls.deleteMdnsProxyAps, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'MdnsProxyAp', id: 'LIST' }]
+    }),
+    getMdnsProxyAps: build.query<TableResult<MdnsProxyAp>, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(MdnsProxyUrls.getMdnsProxyApsByVenue, params)
+        return {
+          ...req
+        }
+      },
+      transformResponse (response: MdnsProxyAp[]) {
+        return {
+          data: response,
+          page: 0,
+          totalCount: response.length
+        }
+      },
+      providesTags: [{ type: 'MdnsProxyAp', id: 'LIST' }]
     }),
     getPortal: build.query<Portal | null, RequestPayload>({
       async queryFn ({ params }, _queryApi, _extraOptions, fetch) {
@@ -296,14 +377,33 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           FetchBaseQueryError,
           FetchBaseQueryMeta
         >)
-        const result = await fetch(createHttpRequest(CommonUrlsInfo.getService, params))
+        const result = await fetch(createHttpRequest(PortalUrlsInfo.getPortal, params))
         return result as QueryReturnValue<Portal,
         FetchBaseQueryError,
         FetchBaseQueryMeta>
       },
       providesTags: [{ type: 'Service', id: 'DETAIL' }]
     }),
-    savePortal: build.mutation<Service, RequestPayload>({
+    deletePortal: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(PortalUrlsInfo.deletePortal, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    updatePortal: build.mutation<Service, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PortalUrlsInfo.updatePortal, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    savePortal: build.mutation<{ response: { [key:string]:string } }, RequestPayload>({
       query: ({ params, payload }) => {
         const createPortalReq = createHttpRequest(
           PortalUrlsInfo.savePortal, params
@@ -404,7 +504,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }, { type: 'Dpsk', id: 'LIST' }]
     }),
-    dpskList: build.query<DpskList, RequestPayload>({
+    dpskList: build.query<NewTableResult<DpskSaveData>, RequestPayload>({
       query: () => {
         const getDpskListReq = createHttpRequest(DpskUrls.getDpskList)
         return {
@@ -423,6 +523,38 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       providesTags: [{ type: 'Service', id: 'DETAIL' }]
     }),
+    createDpskPassphrases: build.mutation<CommonResult, RequestPayload<DpskPassphrasesSaveData>>({
+      query: ({ params, payload }) => {
+        const createDpskPassphrasesReq = createHttpRequest(DpskUrls.addPassphrase, params)
+        return {
+          ...createDpskPassphrasesReq,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'DpskPassphrase', id: 'LIST' }]
+    }),
+    dpskPassphraseList: build.query<TableResult<NewDpskPassphrase>, RequestPayload>({
+      query: ({ params }) => {
+        const getDpskPassphraseListReq = createHttpRequest(DpskUrls.getPassphraseList, params)
+        return {
+          ...getDpskPassphraseListReq
+        }
+      },
+      transformResponse (result: NewTableResult<NewDpskPassphrase>) {
+        return transferTableResult<NewDpskPassphrase>(result)
+      },
+      providesTags: [{ type: 'DpskPassphrase', id: 'LIST' }]
+    }),
+    deleteDpskPassphraseList: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(DpskUrls.deletePassphrase, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'DpskPassphrase', id: 'LIST' }]
+    }),
     portalNetworkInstances: build.query<TableResult<PortalDetailInstances>, RequestPayload>({
       query: ({ params }) => {
         const instancesRes = createHttpRequest(PortalUrlsInfo.getPortalNetworkInstances, params)
@@ -440,8 +572,45 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    getPortalProfileList: build.query<{ content: Portal[] }, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(PortalUrlsInfo.getPortalProfileList, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Service', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          showActivityMessage(msg, [
+            'Add Portal Service Profile',
+            'Update Portal Service Profile',
+            'Delete Portal Service Profile',
+            'Delete Portal Service Profiles'
+          ], () => {
+            api.dispatch(serviceApi.util.invalidateTags([{ type: 'Service', id: 'LIST' }]))
+          })
+        })
+      }
+    }),
+    getPortalLang: build.mutation<{ [key: string]: string }, RequestPayload>({
+      query: ({ params }) => {
+        const portalLang = createHttpRequest(PortalUrlsInfo.getPortalLang, params)
+        return {
+          ...portalLang
+        }
+      }
+    }),
+    uploadURL: build.mutation<UploadUrlResponse, RequestPayload>({
+      query: ({ params, payload }) => {
+        const createUploadReq = createHttpRequest(CommonUrlsInfo.getUploadURL, params, RKS_NEW_UI)
+        return {
+          ...createUploadReq,
+          body: payload
+        }
+      }
     })
-
   })
 })
 
@@ -460,10 +629,15 @@ export const {
   useAccessControlProfileListQuery,
   useGetDHCPProfileListQuery,
   useGetMdnsProxyQuery,
+  useLazyGetMdnsProxyListQuery,
+  useGetMdnsProxyListQuery,
   useAddMdnsProxyMutation,
   useUpdateMdnsProxyMutation,
   useDeleteMdnsProxyMutation,
   useDeleteMdnsProxyListMutation,
+  useAddMdnsProxyApsMutation,
+  useDeleteMdnsProxyApsMutation,
+  useGetMdnsProxyApsQuery,
   useDeleteWifiCallingServiceMutation,
   useGetWifiCallingServiceQuery,
   useGetWifiCallingServiceListQuery,
@@ -474,8 +648,17 @@ export const {
   useGetDpskQuery,
   useDpskListQuery,
   useLazyDpskListQuery,
+  useDpskPassphraseListQuery,
+  useCreateDpskPassphrasesMutation,
+  useDeleteDpskPassphraseListMutation,
   useGetPortalQuery,
   useSavePortalMutation,
   usePortalNetworkInstancesQuery,
-  useGetPortalProfileDetailQuery
+  useGetPortalProfileDetailQuery,
+  useLazyGetPortalProfileListQuery,
+  useGetPortalProfileListQuery,
+  useGetPortalLangMutation,
+  useDeletePortalMutation,
+  useUpdatePortalMutation,
+  useUploadURLMutation
 } = serviceApi
