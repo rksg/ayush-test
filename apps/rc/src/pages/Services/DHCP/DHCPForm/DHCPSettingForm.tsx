@@ -126,7 +126,8 @@ export function SettingForm (props: DHCPFormProps) {
 
           ]}
           label={$t({ defaultMessage: 'Set DHCP Pools' })}
-          children={<DHCPPoolTable dhcpMode={type}/>}
+          children={<DHCPPoolTable dhcpMode={type}
+            isDefaultService={editMode && data?.serviceName === 'DHCP-Guest'}/>}
         />
       </Col>
     </Row>

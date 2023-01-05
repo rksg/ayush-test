@@ -32,7 +32,8 @@ const initPoolData: Partial<DHCPPool> = {
 type DHCPPoolTableProps = {
   value?: DHCPPool[]
   onChange?: (data: DHCPPool[]) => void,
-  dhcpMode: DHCPConfigTypeEnum
+  dhcpMode: DHCPConfigTypeEnum,
+  isDefaultService: boolean | undefined
 }
 
 const { Option } = Select
@@ -98,7 +99,8 @@ async function subnetValidator (
 export default function DHCPPoolTable ({
   value,
   onChange,
-  dhcpMode
+  dhcpMode,
+  isDefaultService
 }: DHCPPoolTableProps) {
   const { $t } = useIntl()
   const [form] = Form.useForm<DHCPPool>()
@@ -158,7 +160,10 @@ export default function DHCPPoolTable ({
           ]}
           validateFirst
           hasFeedback
-          children={<Input disabled={isEdit() && form.getFieldValue('name') === 'DHCP-Guest'}/>}
+          children={<Input disabled={
+            isEdit() &&
+            isDefaultService &&
+            form.getFieldValue('name') === 'DHCP-Guest'}/>}
         />
         <Form.Item
           name='description'
@@ -304,6 +309,7 @@ export default function DHCPPoolTable ({
         onAdd={onAddOrEdit}
         onEdit={onAddOrEdit}
         onDelete={onDelete}
+        isDefaultService={isDefaultService}
       />
       <Drawer
         title={$t({ defaultMessage: 'Add DHCP Pool' })}

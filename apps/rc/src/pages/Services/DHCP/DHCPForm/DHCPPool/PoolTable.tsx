@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import _                                            from 'lodash'
 import { useIntl, defineMessage, FormattedMessage } from 'react-intl'
 
 import {
@@ -10,13 +11,12 @@ import {
 import { DHCPPool, LeaseUnit } from '@acx-ui/rc/utils'
 
 
-
 export function PoolTable (props:{
   data: DHCPPool[]
   onAdd?: () => void
   onEdit?: (data?: DHCPPool) => void
   onDelete?: (data:DHCPPool[]) => void
-  readonly?: Boolean
+  isDefaultService?: Boolean
 }) {
   const { $t } = useIntl()
   const { data } = props
@@ -35,6 +35,18 @@ export function PoolTable (props:{
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
+      visible: (selectedRows) => {
+        if(props.isDefaultService){
+          const dhcpGuest = _.find(selectedRows, { name: 'DHCP-Guest' })
+          if(_.isEmpty(dhcpGuest)){
+            return true
+          }else{
+            return false
+          }
+        }else{
+          return true
+        }
+      },
       onClick: (rows: DHCPPool[], clearSelection) => {
         props.onDelete?.(rows)
         clearSelection()
