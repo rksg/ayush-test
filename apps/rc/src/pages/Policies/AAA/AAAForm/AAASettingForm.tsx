@@ -84,6 +84,7 @@ const AAASettingForm = (props: AAASettingFormProps) => {
           name='useAs'
           label={$t({ defaultMessage: 'Use as' })}
           initialValue={'radius'}
+          hidden
           children={<Radio.Group>
             <Space direction='vertical'>
               <Radio key='radius' value='radius'>

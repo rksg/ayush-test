@@ -17,7 +17,9 @@ import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import AAASettingForm from './AAASettingForm'
 
 type AAAFormProps = {
-  edit: boolean
+  edit: boolean,
+  networkView?: boolean,
+  backToNetwork?: (value?: AAAPolicyType) => void
 }
 
 const AAAForm = (props: AAAFormProps) => {
@@ -25,7 +27,7 @@ const AAAForm = (props: AAAFormProps) => {
   const navigate = useNavigate()
   const linkToPolicies = useTenantLink(getPolicyListRoutePath())
   const params = useParams()
-  const { edit } = props
+  const edit = props.edit && !props.networkView
   const formRef = useRef<StepsFormInstance<AAAPolicyType>>()
   const { data } = useAaaPolicyQuery({ params })
   const [ createAAAPolicy ] = useAddAAAPolicyMutation()
@@ -45,7 +47,7 @@ const AAAForm = (props: AAAFormProps) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data])
-  const handleAAAPolicy = async (edit: boolean) => {
+  const handleAAAPolicy = async (data: AAAPolicyType) => {
     try {
       if (!edit) {
         await createAAAPolicy({
@@ -58,7 +60,7 @@ const AAAForm = (props: AAAFormProps) => {
           payload: saveState
         }).unwrap()
       }
-      navigate(linkToPolicies, { replace: true })
+      props.networkView? props.backToNetwork?.(data) : navigate(linkToPolicies, { replace: true })
     } catch(error) {
       showToast({
         type: 'error',
@@ -79,8 +81,8 @@ const AAAForm = (props: AAAFormProps) => {
       />
       <StepsForm<AAAPolicyType>
         formRef={formRef}
-        onCancel={() => navigate(linkToPolicies)}
-        onFinish={() => handleAAAPolicy(edit)}
+        onCancel={() => props.networkView? props.backToNetwork?.():navigate(linkToPolicies)}
+        onFinish={async (data) => {return handleAAAPolicy(data)}}
       >
         <StepsForm.StepForm
           name='settings'

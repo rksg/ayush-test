@@ -1,0 +1,63 @@
+
+import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
+import { rest }  from 'msw'
+
+import { AaaUrls }  from '@acx-ui/rc/utils'
+import { Provider } from '@acx-ui/store'
+import {
+  mockServer,
+  render,
+  screen
+} from '@acx-ui/test-utils'
+
+import NetworkFormContext from '../NetworkFormContext'
+
+import AAAInstance from '.'
+
+describe('AAA Instance Page', () => {
+  beforeEach(async () => {
+    mockServer.use(
+      rest.get(
+        AaaUrls.getAAAPolicyList.url,
+        (req, res, ctx) => res(ctx.json([{ id: '1', name: 'test1' }]))
+      ),
+      rest.get(
+        AaaUrls.getAAAPolicy.url,
+        (_, res, ctx) => {return res(ctx.json({ requestId: 'request-id', id: '2', name: 'test2' }))}
+      ),
+      rest.put(
+        AaaUrls.updateAAAPolicy.url,
+        (_, res, ctx) => {return res(ctx.json({ requestId: 'request-id', id: '2', name: 'test2' }))}
+      ),
+      rest.post(
+        AaaUrls.addAAAPolicy.url,
+        (req, res, ctx) => res(ctx.json({ requestId: 'request-id', id: '2', name: 'test2' }))
+      )
+    )
+  })
+
+  it('should render instance page', async () => {
+    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', policyId: 'test-id' }
+    render(<Provider><NetworkFormContext.Provider value={{
+      editMode: false, cloneMode: false, data: { guestPortal:
+        { enableSmsLogin: true, socialIdentities: {} } }
+    }}><Form><AAAInstance />
+      </Form></NetworkFormContext.Provider></Provider>,
+    {
+      route: { params }
+    })
+    await userEvent.click(await screen.findByText('Add Server'))
+    await userEvent.click(await screen.findByText('Cancel'))
+    await userEvent.click(await screen.findByText('Add Server'))
+    await userEvent.type(await screen.findByRole(
+      'textbox', { name: 'Profile Name' }),'create test')
+    await userEvent.type(await screen.findByRole('textbox', { name: 'Server Address' }),
+      '8.8.8.8')
+    await userEvent.type(await screen.findByLabelText('Shared Secret'),
+      'test1234')
+    await userEvent.click(await screen.findByText('Finish'))
+    await userEvent.click(await screen.findByRole('combobox'))
+    await userEvent.click(await screen.findByTitle('test1'))
+  })
+})

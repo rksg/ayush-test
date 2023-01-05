@@ -22,7 +22,7 @@ export interface AAATacacsServer{
   purpose: AAAPurposeEnum
 }
 export interface AAATempType {
-  id: string,
+  id?: string,
   name: string
 }
 export enum AAAPurposeEnum{
