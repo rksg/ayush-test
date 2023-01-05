@@ -95,7 +95,10 @@ const networkResponse = {
     id: 'cf932d30cdd7492f8737da38a3e7b7af',
     isAllApGroups: true,
     networkId: '48477700abd34d14ac18746280d071f5',
-    allApGroupsRadio: 'Both'
+    allApGroupsRadio: 'Both',
+    allApGroupsRadioTypes: ['2.4-GHz', '5-GHz'],
+    // eslint-disable-next-line max-len
+    scheduler: { type: 'CUSTOM',sun: '111111111111111111111111111111111111111111111111111111111111111100000000000000000000000000000000', mon: '111111111111111111111111111111111111111111111111111111111111111100000000000000000000000000000000', tue: '111111111111111111111111111111111111111111111111111111111111111100000000000000000000000000000000', wed: '111111111111111111111111111111111111111111111111111111111111111100000000000000000000000000000000', thu: '111111111111111111111111111111111111111111111111111111111111111100000000000000000000000000000000', fri: '111111111111111111111111111111111111111111111111111111111111111100000000000000000000000000000000', sat: '111111111111111111111111111111111111111111111111111111111111111100000000000000000000000000000000' }
   }],
   type: 'open',
   name: 'open network test',
@@ -273,6 +276,25 @@ describe('NetworkForm', () => {
     fireEvent.blur(ssidInput)
     fireEvent.change(ssidInput, { target: { value: '1' } })
     fireEvent.blur(ssidInput)
+  })
+
+  it('should configure aps and scheduling successfully', async () => {
+    const params = { networkId: '5d45082c812c45fbb9aab24420f39bf0'
+      , tenantId: 'tenant-id', action: 'edit' }
+
+    const { asFragment } = render(<Provider><NetworkForm /></Provider>, {
+      route: { params }
+    })
+
+    expect(asFragment()).toMatchSnapshot()
+
+    await fillInBeforeSettings('open network edit test')
+
+    screen.getByText('Settings')
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+    const button = screen.getByRole('button', { name: /venues/i })
+    await button.click()
+    await userEvent.click(screen.getByText('Finish'))
   })
 })
 
