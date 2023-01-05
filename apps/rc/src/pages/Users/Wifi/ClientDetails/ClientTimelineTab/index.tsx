@@ -16,6 +16,7 @@ import {
 import { useTenantLink } from '@acx-ui/react-router-dom'
 
 const Events = () => {
+  const { clientId } = useParams()
   const { fromTime, toTime } = useEventTableFilter()
   useEffect(()=>{
     tableQuery.setPayload({
@@ -28,7 +29,9 @@ const Events = () => {
     useQuery: useEventsQuery,
     defaultPayload: {
       ...eventDefaultPayload,
-      filters: { entity_type: ['CLIENT'], fromTime, toTime }
+      filters: { entity_type: ['CLIENT'], fromTime, toTime },
+      searchTargetFields: ['clientMac'],
+      searchString: clientId
     },
     sorter: eventDefaultSorter,
     option: { pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL }
