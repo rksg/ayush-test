@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { useIsTierAllowed }                  from '@acx-ui/feature-toggle'
 import { Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
 
 import AnalyticsBase    from './pages/Analytics'
@@ -35,9 +36,11 @@ function AllRoutes () {
         <Route path='timeline/*' element={<TimelineBase />}>
           <Route path='*' element={<RcRoutes />} />
         </Route>
-        <Route path='serviceValidation/*' element={<AnalyticsBase />}>
-          <Route path='*' element={<AnalyticsRoutes />} />
-        </Route>
+        {useIsTierAllowed('ANLT-ADV') &&
+          <Route path='serviceValidation/*' element={<AnalyticsBase />}>
+            <Route path='*' element={<AnalyticsRoutes />} />
+          </Route>
+        }
         <Route path='devices/*' element={<DevicesBase />}>
           <Route path='*' element={<RcRoutes />} />
         </Route>

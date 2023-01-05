@@ -26,7 +26,8 @@ interface MenuItem {
   activeIcon?: React.FC
   routes?: Array<MenuItem>
   pro_layout_parentKeys?: string[]
-  disabled?: boolean
+  disabled?: boolean,
+  hidden?: boolean
 }
 
 export interface LayoutProps {
@@ -52,7 +53,8 @@ export function Layout ({
   const location = useLocation()
   const basePath = useTenantLink('/')
   const mspBasePath = useTenantLink('/', 'v')
-  const newRoutes = routes.map((item => {
+  const filteredRoutes = routes.filter(item => !item.hidden)
+  const newRoutes = filteredRoutes.map((item => {
     const base = item.tenantType === 'v' ? mspBasePath : basePath
     return {
       ...item,
