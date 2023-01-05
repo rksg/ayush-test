@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`useAnalyticsFilter changes filter value 1`] = `
+<DocumentFragment>
+  <div>
+    {"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:00+00:00","range":"Last 24 Hours","paths":[[{"type":"network","name":"Network"}]],"bands":["2.4"]}
+  </div>
+</DocumentFragment>
+`;
+
+exports[`useAnalyticsFilter gets initial value from search parameters 1`] = `
+<DocumentFragment>
+  <div>
+    {"filters":{"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:00+00:00","range":"Last 24 Hours","paths":[[{"type":"network","name":"Network"},{"type":"zone","name":"555548721e264115bda45a75043f65d7"}]],"bands":["5","2.4"]},"raw":["[{\\\\\\"type\\\\\\":\\\\\\"network\\\\\\",\\\\\\"name\\\\\\":\\\\\\"Network\\\\\\"},...]"]}
+  </div>
+</DocumentFragment>
+`;
