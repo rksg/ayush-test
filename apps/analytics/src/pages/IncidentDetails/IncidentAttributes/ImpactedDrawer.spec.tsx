@@ -1,7 +1,5 @@
 import '@testing-library/jest-dom'
 
-import React from 'react'
-
 import { dataApiURL }                                from '@acx-ui/analytics/services'
 import { Provider, store }                           from '@acx-ui/store'
 import { render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
@@ -22,8 +20,8 @@ describe('Drawer', () => {
     beforeEach(() => store.dispatch(impactedApi.util.resetApiState()))
     const props = { visible: true, onClose: jest.fn(), id: 'id', impactedCount: 1 }
     const sample = [
-      { name: 'name', mac: 'mac', model: 'model', version: 'version' },
-      { name: 'name 2', mac: 'mac', model: 'model 2', version: 'version 2' }
+      { name: 'name', serial: 's1', mac: 'mac', model: 'model', version: 'version' },
+      { name: 'name 2', serial: 's1', mac: 'mac', model: 'model 2', version: 'version 2' }
     ] as ImpactedAP[]
     it('should render loader', () => {
       mockGraphqlQuery(dataApiURL, 'ImpactedAPs', {
@@ -43,6 +41,10 @@ describe('Drawer', () => {
       screen.getByText(`${sample[0].model} (2)`)
       screen.getByText(`${sample[0].version} (2)`)
       screen.getByText('1 Impacted AP')
+      const links: HTMLAnchorElement[] = screen.getAllByRole('link')
+      expect(links[0].href).toBe(
+        'http://localhost/t/undefined/devices/wifi/s1/details/overview'
+      )
     })
     it('should render error', async () => {
       mockGraphqlQuery(dataApiURL, 'ImpactedAPs', {

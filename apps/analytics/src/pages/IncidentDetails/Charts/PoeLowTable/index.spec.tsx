@@ -15,6 +15,7 @@ export const response = {
       {
         name: 'RuckusAP',
         mac: '84:23:88:2F:ED:60',
+        serial: 's1',
         poeMode: {
           configured: 'RKS_AP_PWR_MODE_AUTO',
           operating: 'RKS_AP_PWR_SRC_AF',
@@ -25,6 +26,7 @@ export const response = {
       {
         name: 'AnotherAP',
         mac: '84:23:88:2F:ED:61',
+        serial: 's2',
         poeMode: {
           configured: 'RKS_AP_PWR_MODE_BT8',
           operating: 'RKS_AP_PWR_SRC_AT_PLUS',
@@ -57,6 +59,10 @@ describe('PoeLowTable', () => {
     const rows = await screen.findAllByRole('row')
     expect(rows[0].textContent).not.toMatch(/AP Group/)
     expect(rows[1].textContent).toMatch(/AnotherAP/)
+    const links: HTMLAnchorElement[] = screen.getAllByRole('link')
+    expect(links[0].href).toBe(
+      'http://localhost/t/undefined/devices/wifi/s2/details/overview'
+    )
   })
   it('should show Ap Group column when sliceType is zone', async () => {
     mockGraphqlQuery(dataApiURL, 'ImpactedEntities', { data: response })
