@@ -7,6 +7,7 @@ import { flatten }                                          from 'lodash'
 import moment                                               from 'moment-timezone'
 import { renderToString }                                   from 'react-dom/server'
 import { useIntl }                                          from 'react-intl'
+import { MessageDescriptor }                                from 'react-intl'
 
 import {
   Incident, categoryCodeMap, IncidentCode
@@ -25,7 +26,9 @@ import {
   DisplayEvent,
   LabelledQuality,
   transformConnectionQualities,
-  connectionQualityLabels
+  connectionQualityLabels,
+  connectionDetailsByAP,
+  connectionDetailsByApChartData
 } from './config'
 import { transformIncidents, Item }        from './EventsHistory'
 import { ClientInfoData, ConnectionEvent } from './services'
@@ -162,7 +165,9 @@ export const getChartData = (
   events: Event[],
   isExpanded: boolean,
   qualities?: LabelledQuality[],
-  incidents?: Item[]
+  incidents?: Item[],
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  roamingEvents? : any
 ) => {
   if (isExpanded) {
     switch (type) {
@@ -183,7 +188,7 @@ export const getChartData = (
       case TYPES.NETWORK_INCIDENTS:
         return incidents ?? []
       case TYPES.ROAMING:
-        return []
+        return roamingEvents ?? []
     }
   }
   switch (type) {
@@ -198,7 +203,7 @@ export const getChartData = (
     case TYPES.NETWORK_INCIDENTS:
       return incidents ?? []
     case TYPES.ROAMING:
-      return []
+      return roamingEvents ?? []
   }
   return []
 }
@@ -285,6 +290,22 @@ export const useTooltipFormatter = (
   }
   return ''
 }
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const getRoamingChartConfig = (data: any) => {
+  return Object.keys(data).map(key => {
+    return{ key: key, label: data[key].apName, chartType: 'bar', series: 'roaming' }
+  })
+}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const getRoamingSubtitleConfig = (data: any) => {
+  return Object.keys(data).map((key,index) => {
+    return {
+      title: `${data[key].apName} on ${data[key].radio}GHz`,
+      value: data[key].apName,
+      isLast: Object.keys(data).length === index + 1 ? true : false
+    }
+  })
+}
 export function TimeLine (props: TimeLineProps) {
   const { $t } = useIntl()
   const intl = useIntl()
@@ -292,7 +313,8 @@ export function TimeLine (props: TimeLineProps) {
   const types: string[] = flatten(filters ? filters.type ?? [[]] : [[]])
   const radios: string[] = flatten(filters ? filters.radio ?? [[]] : [[]])
   const selectedCategories: string[] = flatten(filters ? filters.category ?? [[]] : [[]])
-
+  const roamingEventsAps = connectionDetailsByAP(data?.connectionDetailsByAp)
+  const roamingEventsTimeSeries = connectionDetailsByApChartData(data?.connectionDetailsByAp)
   const qualties = transformConnectionQualities(data?.connectionQualities)
   const events = transformEvents(
     data?.connectionEvents as ConnectionEvent[],
@@ -376,19 +398,23 @@ export function TimeLine (props: TimeLineProps) {
                 ) : null}
               </Col>
               {expandObj[config?.value as keyof TimelineData] &&
-                config?.subtitle?.map((subtitle) => (
+                (config.value === TYPES.ROAMING
+                  ? getRoamingSubtitleConfig(roamingEventsAps)
+                  : config?.subtitle
+                )?.map((subtitle) => (
                   <React.Fragment key={subtitle.value}>
-                    <Col span={17}
+                    <Col
+                      span={17}
                       offset={3}
                       style={subtitle.isLast ? { marginBottom: 40 } : {}}
                     >
                       <UI.TimelineSubContent>
-                        {$t(subtitle.title)}
+                        {config.value === TYPES.ROAMING
+                          ? subtitle.title as string
+                          : $t(subtitle.title as MessageDescriptor) as string}
                       </UI.TimelineSubContent>
                     </Col>
-                    <Col
-                      span={4}
-                    >
+                    <Col span={4}>
                       {config.showCount ? (
                         <UI.TimelineCount>
                           {TimelineData?.[config.value as keyof TimelineData]?.[
@@ -417,13 +443,24 @@ export function TimeLine (props: TimeLineProps) {
                   events,
                   expandObj[config?.value as keyof TimelineData],
                   !Array.isArray(qualties) ? qualties.all : [],
-                  Array.isArray(incidents) ? incidents : []
+                  Array.isArray(incidents) ? incidents : [],
+                  roamingEventsTimeSeries
                 )}
                 showResetZoom={config?.showResetZoom}
                 chartBoundary={chartBoundary}
                 mapping={
                   expandObj[config?.value as keyof TimelineData]
-                    ? config.chartMapping
+                    ? config.value === TYPES.ROAMING
+                      ? [
+                        ...config.chartMapping,
+                        ...(getRoamingChartConfig(roamingEventsAps) as {
+                            key: string;
+                            label: string;
+                            chartType: string;
+                            series: string;
+                          }[])
+                      ]
+                      : config.chartMapping
                     : [config.chartMapping[0]]
                 }
                 hasXaxisLabel={config?.hasXaxisLabel}

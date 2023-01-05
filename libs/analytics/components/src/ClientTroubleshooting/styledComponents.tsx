@@ -92,6 +92,7 @@ export const TimelineCount = styled.span`
 export const TimelineSubContent = styled.span`
    line-height: 16px;
    font-weight: var(--acx-body-font-weight);
+   white-space: nowrap;
    font-size: 12px;
    color: var(--acx-neutrals-70);`
 

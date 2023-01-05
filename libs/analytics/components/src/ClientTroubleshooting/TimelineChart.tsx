@@ -89,6 +89,12 @@ const getSeriesData = (data: (Event | LabelledQuality | Item)[], key: string, se
       ])
 
   }
+  if(series === 'roaming'){
+    // @ts-ignore: Unreachable code error
+    return data[key]?.events
+    // @ts-ignore: Unreachable code error
+      .map((record) => [moment(record.start).valueOf(), key,moment(record.end).valueOf(), record ])
+  }
   return []
 }
 
@@ -116,7 +122,7 @@ function getBarColor (params: { data: (LabelledQuality | Item)[], seriesName: st
     const obj = Array.isArray(params.data) ? params.data[3] : ''
     return cssStr((obj as Item).color as string)
   }
-  return
+  return 'red'
 }
 export const useDotClick = (
   eChartsRef: RefObject<ReactECharts>,

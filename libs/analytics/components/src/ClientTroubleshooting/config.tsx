@@ -234,16 +234,16 @@ export const ClientTroubleShootingConfig = {
       value: TYPES.ROAMING,
       showCount: true,
       chartMapping: [
-        { key: 'all', label: 'all', chartType: 'scatter', series: 'roaming' },
-        { key: 'network1_5GHz', label: 'network1_5GHz', chartType: 'bar', series: 'roaming' }
-      ] as { key: string, label: string, chartType: string,series: string }[],
-      subtitle: [
-        {
-          title: defineMessage({ defaultMessage: 'Network1_5GHz' }),
-          value: 'network1_5GHz',
-          isLast: true
-        }
-      ]
+        { key: 'all', label: 'all', chartType: 'scatter', series: 'roaming' }
+        // { key: 'network1_5GHz', label: 'network1_5GHz', chartType: 'bar', series: 'roaming' }
+      ] as { key: string, label: string, chartType: string,series: string }[]
+      // subtitle: [
+      //   {
+      //     title: defineMessage({ defaultMessage: 'Network1_5GHz' }),
+      //     value: 'network1_5GHz',
+      //     isLast: true
+      //   }
+      // ]
     },
     {
       title: defineMessage({ defaultMessage: 'Connection Quality' }),
@@ -359,4 +359,40 @@ export const transformConnectionQualities = (connectionQualities?: ConnectionQua
     avgTxMCS: mappedQuality.filter(val => val.avgTxMCS)
       .map(val => ({ ...val, seriesKey: 'avgTxMCS' })) as unknown as LabelledQuality[]
   }
+}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const connectionDetailsByAP= (data : any) => {
+  return Object.entries(groupBy(data, ({ apMac, radio }) => `${apMac}-${radio}`))
+    .reduce((agg, [key, values]) => {
+    // @ts-ignore: Unreachable code error
+      agg[key] = {
+        apMac: values[0].apMac,
+        radio: values[0].radio,
+        apName: [...new Set(values.map(({ apName }) => apName))].join(','),
+        apModel: [...new Set(values.map(({ apModel }) => apModel))].join(','),
+        apFirmware: [...new Set(values.map(({ apFirmware }) => apFirmware))].join(',')
+      }
+      return agg
+    }, ({} ))
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const connectionDetailsByApChartData = (data: any) => {
+  return Object.entries(groupBy(data, ({ apMac, radio }) => `${apMac}-${radio}`))
+    .reduce((agg, [key, values]) => {
+      // @ts-ignore: Unreachable code error
+      agg[key] = {
+        events: values.map(value => {
+          return {
+            start: value.start,
+            end: value.end,
+            label: (key),
+            value: formatter('decibelMilliWattsFormat')(value.rss),
+            color: 'red',
+            details: value
+          }
+        })
+      }
+      return agg
+    },({}))
 }
