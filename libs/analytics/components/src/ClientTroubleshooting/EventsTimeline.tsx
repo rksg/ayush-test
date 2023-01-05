@@ -3,10 +3,14 @@ import React, { useEffect, useState } from 'react'
 import { Row, Col }                                         from 'antd'
 import { connect, TooltipComponentFormatterCallbackParams } from 'echarts'
 import ReactECharts                                         from 'echarts-for-react'
+import { flatten }                                          from 'lodash'
 import moment                                               from 'moment-timezone'
 import { renderToString }                                   from 'react-dom/server'
 import { useIntl }                                          from 'react-intl'
 
+import {
+  Incident, categoryCodeMap, IncidentCode
+} from '@acx-ui/analytics/utils'
 import { useDateFilter, getIntl, formatter, formats } from '@acx-ui/utils'
 
 import {
@@ -23,9 +27,12 @@ import {
   transformConnectionQualities,
   connectionQualityLabels
 } from './config'
+import { transformIncidents, Item }        from './EventsHistory'
 import { ClientInfoData, ConnectionEvent } from './services'
 import * as UI                             from './styledComponents'
 import { TimelineChart }                   from './TimelineChart'
+
+
 
 import { Filters } from '.'
 
@@ -50,48 +57,56 @@ export interface Event {
   seriesKey: string;
 }
 export type TimelineData = {
-  connectionEvents: EventCategoryMap;
-  roaming: EventCategoryMap;
-  connectionQuality: EventCategoryMap;
-  networkIncidents: EventCategoryMap;
+  connectionEvents: eventsCategoryMap;
+  roaming: eventsCategoryMap;
+  connectionQuality: eventsCategoryMap;
+  networkIncidents: networkIncidentCategoryMap;
 }
-type EventCategoryMap = {
+type eventsCategoryMap = {
   [SUCCESS]: Event[] | [];
   [FAILURE]: Event[] | [];
   [DISCONNECT]: Event[] | [];
   [SLOW]: Event[] | [];
   all: Event[] | [];
 }
+type networkIncidentCategoryMap = {
+  connection:Item[] |[],
+  performance:Item[] |[],
+  infrastructure:Item[] |[],
+  all: Item[] | [];
+
+}
 type TimeLineProps = {
   data?: ClientInfoData;
   filters: Filters;
 }
-const getTimelineData = (events: Event[]) =>
-  events.reduce(
+const getTimelineData = (events: Event[], incidents: Item[]) =>
+{
+  const categorisedEvents = events.reduce(
     (acc, event) => {
-      if (event.type === TYPES.CONNECTION_EVENTS) {
-        acc[TYPES.CONNECTION_EVENTS as keyof TimelineData]['all'] = [
-          ...acc[TYPES.CONNECTION_EVENTS as keyof TimelineData]['all'],
+      if (event?.type === TYPES.CONNECTION_EVENTS) {
+        acc[TYPES.CONNECTION_EVENTS as 'connectionEvents']['all'] = [
+          ...acc[TYPES.CONNECTION_EVENTS as 'connectionEvents']['all'],
           event
         ]
         if (event.category === SUCCESS)
-          acc[TYPES.CONNECTION_EVENTS as keyof TimelineData][SUCCESS] = [
-            ...acc[TYPES.CONNECTION_EVENTS as keyof TimelineData][SUCCESS],
+          acc[TYPES.CONNECTION_EVENTS as 'connectionEvents'][SUCCESS] = [
+            ...acc[TYPES.CONNECTION_EVENTS as 'connectionEvents'][SUCCESS],
             event
           ]
         if (event.category === FAILURE)
-          acc[TYPES.CONNECTION_EVENTS as keyof TimelineData][FAILURE] = [
-            ...acc[TYPES.CONNECTION_EVENTS as keyof TimelineData][FAILURE],
+          acc[TYPES.CONNECTION_EVENTS as 'connectionEvents'][FAILURE] = [
+            ...acc[TYPES.CONNECTION_EVENTS as 'connectionEvents'][FAILURE],
             event
           ]
         if (event.category === DISCONNECT)
-          acc[TYPES.CONNECTION_EVENTS as keyof TimelineData][DISCONNECT] = [
-            ...acc[TYPES.CONNECTION_EVENTS as keyof TimelineData][DISCONNECT],
+          acc[TYPES.CONNECTION_EVENTS as 'connectionEvents'][DISCONNECT] = [
+            ...acc[TYPES.CONNECTION_EVENTS as 'connectionEvents'][DISCONNECT],
             event
           ]
         if (event.category === SLOW)
-          acc[TYPES.CONNECTION_EVENTS as keyof TimelineData][SLOW] = [
-            ...acc[TYPES.CONNECTION_EVENTS as keyof TimelineData][SLOW],
+          acc[TYPES.CONNECTION_EVENTS as 'connectionEvents'][SLOW] = [
+            ...acc[TYPES.CONNECTION_EVENTS as 'connectionEvents'][SLOW],
             event
           ]
       }
@@ -107,11 +122,47 @@ const getTimelineData = (events: Event[]) =>
       }
     } as TimelineData
   )
+  const categorisedIncidents = incidents.reduce(
+    (acc, incident) => {
+      acc[TYPES.NETWORK_INCIDENTS as 'networkIncidents']['all'] = [
+        ...acc[TYPES.NETWORK_INCIDENTS as 'networkIncidents']['all'],
+        incident
+      ]
+      if (categoryCodeMap['connection']?.codes.includes(incident.code as IncidentCode))
+        acc[TYPES.NETWORK_INCIDENTS as 'networkIncidents']['connection'] = [
+          ...acc[TYPES.NETWORK_INCIDENTS as 'networkIncidents']['connection'],
+          incident
+        ]
+      if (categoryCodeMap['performance']?.codes.includes(incident.code as IncidentCode))
+        acc[TYPES.NETWORK_INCIDENTS as 'networkIncidents']['performance'] = [
+          ...acc[TYPES.NETWORK_INCIDENTS as 'networkIncidents']['performance'],
+          incident
+        ]
+      if (categoryCodeMap['infrastructure']?.codes.includes(incident.code as IncidentCode))
+        acc[TYPES.NETWORK_INCIDENTS as 'networkIncidents']['infrastructure'] = [
+          ...acc[TYPES.NETWORK_INCIDENTS as 'networkIncidents']['infrastructure'],
+          incident
+        ]
+      return acc
+    },
+    {
+      networkIncidents: {
+        connection: [],
+        performance: [],
+        infrastructure: [],
+        all: []
+      }
+    } as TimelineData
+  )
+
+  return { ...categorisedEvents, ...categorisedIncidents }
+}
 export const getChartData = (
   type: keyof TimelineData,
   events: Event[],
   isExpanded: boolean,
-  qualities?: LabelledQuality[]
+  qualities?: LabelledQuality[],
+  incidents?: Item[]
 ) => {
   if (isExpanded) {
     switch (type) {
@@ -130,7 +181,7 @@ export const getChartData = (
       case TYPES.CONNECTION_QUALITY:
         return qualities ?? []
       case TYPES.NETWORK_INCIDENTS:
-        return []
+        return incidents ?? []
       case TYPES.ROAMING:
         return []
     }
@@ -145,7 +196,7 @@ export const getChartData = (
     case TYPES.CONNECTION_QUALITY:
       return qualities ?? []
     case TYPES.NETWORK_INCIDENTS:
-      return []
+      return incidents ?? []
     case TYPES.ROAMING:
       return []
   }
@@ -155,73 +206,105 @@ export const getChartData = (
 export const useTooltipFormatter = (
   params: TooltipComponentFormatterCallbackParams
 ) => {
-  console.log(params)
   const intl = getIntl()
-  const obj = (Array.isArray(params) && Array.isArray(params[0].data)
-    ? params[0].data[2]
-    : undefined) as unknown as DisplayEvent
-  const obj2 = (Array.isArray(params) && Array.isArray(params[0].data)
-    ? params[0].data[3]
-    : undefined) as unknown as DisplayEvent
+  const seriesName = (Array.isArray(params))
+    ? params[0].seriesName
+    : ''
 
-  const tooltipText2 = obj2
-    ? Object.keys(connectionQualityLabels).map(
-      (key, index) =>
-        `${formatter(
+  if(seriesName === 'quality') {
+    const obj2 = (Array.isArray(params) && Array.isArray(params[0].data)
+      ? params[0].data[3]
+      : undefined) as unknown as DisplayEvent
+    const tooltipText2 = obj2
+      ? Object.keys(connectionQualityLabels).map(
+        (key, index) =>
+          `${formatter(
             connectionQualityLabels[key as keyof typeof connectionQualityLabels]
               .formatter as keyof typeof formats
-        )(
-          (obj2 as unknown as LabelledQuality)[
+          )(
+            (obj2 as unknown as LabelledQuality)[
               key as keyof typeof connectionQualityLabels
-          ].value
-        )}${
-          index + 1 !== Object.keys(connectionQualityLabels).length
-            ? '/ '
-            : ''
-        }`
-    )
-    : null
+            ].value
+          )}${
+            index + 1 !== Object.keys(connectionQualityLabels).length
+              ? '/ '
+              : ''
+          }`
+      )
+      : null
 
-  if (typeof obj2 !== 'undefined' && (obj2 as unknown as LabelledQuality).all) {
+    if (typeof obj2 !== 'undefined' && (obj2 as unknown as LabelledQuality).all) {
+      return renderToString(
+        <UI.TooltipWrapper>
+          <UI.TooltipDate>
+            {obj2 && moment(obj2?.start).format('MMM DD HH:mm:ss')}{' '}
+            {Object.keys(connectionQualityLabels).map(
+              (key,index) =>
+                `${
+                  connectionQualityLabels[
+                  key as keyof typeof connectionQualityLabels
+                  ].label
+                }${index+1 !== Object.keys(connectionQualityLabels).length ?'/ ':''}`
+            )}
+            {':'}
+          </UI.TooltipDate>
+          {tooltipText2}
+        </UI.TooltipWrapper>
+      )
+    }
+  }
+  if(seriesName === 'events') {
+    const obj = (Array.isArray(params) && Array.isArray(params[0].data)
+      ? params[0].data[2]
+      : undefined) as unknown as DisplayEvent
+
+
+    const tooltipText = obj ? formatEventDesc(obj, intl) : null
     return renderToString(
       <UI.TooltipWrapper>
         <UI.TooltipDate>
-          {obj2 && moment(obj2?.start).format('MMM DD HH:mm:ss')}{' '}
-          {Object.keys(connectionQualityLabels).map(
-            (key,index) =>
-              `${
-                connectionQualityLabels[
-                  key as keyof typeof connectionQualityLabels
-                ].label
-              }${index+1 !== Object.keys(connectionQualityLabels).length ?'/ ':''}`
-          )}
-          {':'}
+          {obj && moment(obj?.start).format('MMM DD HH:mm:ss')}{' '}
         </UI.TooltipDate>
-        {tooltipText2}
+        {tooltipText}
       </UI.TooltipWrapper>
     )
   }
-  const tooltipText = obj ? formatEventDesc(obj, intl) : null
-  return renderToString(
-    <UI.TooltipWrapper>
-      <UI.TooltipDate>
-        {obj && moment(obj?.start).format('MMM DD HH:mm:ss')}{' '}
-      </UI.TooltipDate>
-      {tooltipText}
-    </UI.TooltipWrapper>
-  )
+  if(seriesName === 'incidents') {
+    const obj = (Array.isArray(params) && Array.isArray(params[0].data)
+      ? params[0].data[3]
+      : undefined) as unknown as Item
+    const tooltipText = obj ? obj.title : null
+    return renderToString(
+      <UI.TooltipWrapper>
+        <UI.TooltipDate>
+          {obj && moment(obj?.start).format('MMM DD HH:mm:ss')}{' '}
+        </UI.TooltipDate>
+        {tooltipText}
+      </UI.TooltipWrapper>
+    )
+  }
+  return ''
 }
 export function TimeLine (props: TimeLineProps) {
   const { $t } = useIntl()
+  const intl = useIntl()
   const { data, filters } = props
-  const types = filters ? filters.type ?? [] : []
-  const radios = filters ? filters.radio ?? [] : []
+  const types: string[] = flatten(filters ? filters.type ?? [[]] : [[]])
+  const radios: string[] = flatten(filters ? filters.radio ?? [[]] : [[]])
+  const selectedCategories: string[] = flatten(filters ? filters.category ?? [[]] : [[]])
+
   const qualties = transformConnectionQualities(data?.connectionQualities)
   const events = transformEvents(
     data?.connectionEvents as ConnectionEvent[],
     types,
     radios
   ) as Event[]
+  const incidents = transformIncidents(
+    data?.incidents as Incident[],
+    selectedCategories,
+    types,
+    intl
+  )
   const [expandObj, setExpandObj] = useState({
     connectionEvents: false,
     roaming: false,
@@ -246,7 +329,7 @@ export function TimeLine (props: TimeLineProps) {
       />
     )
 
-  const TimelineData = getTimelineData(events)
+  const TimelineData = getTimelineData(events, incidents)
   const connectChart = (chart: ReactECharts | null) => {
     if (chart) {
       const instance = chart.getEchartsInstance()
@@ -280,17 +363,17 @@ export function TimeLine (props: TimeLineProps) {
                   expandObj[config?.value as keyof TimelineData]
                     ? {}
                     : { marginBottom: 38 }
-                }>
+                }
+              >
                 <UI.TimelineTitle>{$t(config.title)}</UI.TimelineTitle>
               </Col>
               <Col style={{ lineHeight: '25px' }} span={4}>
-                { (config.showCount)
-                  ? <UI.TimelineCount>
-                    {TimelineData[config.value as keyof TimelineData]?.[
-                      'all'
-                    ].length ?? 0}
+                {config.showCount ? (
+                  <UI.TimelineCount>
+                    {TimelineData[config.value as keyof TimelineData]?.['all']
+                      .length ?? 0}
                   </UI.TimelineCount>
-                  : null}
+                ) : null}
               </Col>
               {expandObj[config?.value as keyof TimelineData] &&
                 config?.subtitle?.map((subtitle) => (
@@ -302,14 +385,18 @@ export function TimeLine (props: TimeLineProps) {
                     </Col>
                     <Col
                       span={4}
-                      style={subtitle.isLast ? { marginBottom: 40 } : {}}>
-                      {(config.showCount)
-                        ? <UI.TimelineCount>
+                      style={subtitle.isLast ? { marginBottom: 40 } : {}}
+                    >
+                      {config.showCount ? (
+                        <UI.TimelineCount>
                           {TimelineData?.[config.value as keyof TimelineData]?.[
-                          subtitle.value as keyof EventCategoryMap
-                          ].length ?? 0}
+                            subtitle.value as keyof (
+                              | eventsCategoryMap
+                              | networkIncidentCategoryMap
+                            )
+                          ]?.length ?? 0}
                         </UI.TimelineCount>
-                        : null}
+                      ) : null}
                     </Col>
                   </React.Fragment>
                 ))}
@@ -327,7 +414,8 @@ export function TimeLine (props: TimeLineProps) {
                   config?.value as keyof TimelineData,
                   events,
                   expandObj[config?.value as keyof TimelineData],
-                  !Array.isArray(qualties) ? qualties.all : []
+                  !Array.isArray(qualties) ? qualties.all : [],
+                  Array.isArray(incidents) ? incidents : []
                 )}
                 showResetZoom={config?.showResetZoom}
                 chartBoundary={chartBoundary}

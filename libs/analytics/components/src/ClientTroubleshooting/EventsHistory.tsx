@@ -40,13 +40,16 @@ type HistoryContentProps = {
   data?: ClientInfoData,
   filters: Filters | null
 }
-type Item = {
+export type Item = {
   id?: string,
   start: number,
   date: string,
   description: string,
   title: string,
-  icon: ReactNode
+  icon: ReactNode,
+  end?:number,
+  code?: string,
+  seriesKey?: string
 }
 // If needed (for incident timeline chart) move this menthod to config
 export const transformIncidents = (
@@ -77,10 +80,12 @@ export const transformIncidents = (
     acc.push({
       id: incident.id,
       start: +new Date(incident.startTime),
+      end: +new Date(incident.endTime),
       date: formatter('dateTimeFormatWithSeconds')(incident.startTime),
       description: `${intl.$t(category)} (${intl.$t(subCategory)})`,
       title,
-      icon: <UI.IncidentEvent color={color}>{severity}</UI.IncidentEvent>
+      icon: <UI.IncidentEvent color={color}>{severity}</UI.IncidentEvent>,
+      code: incident.code
     })
     return acc
   }, [] as Item[])

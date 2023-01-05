@@ -10,7 +10,7 @@ import {
 import { formatter } from '@acx-ui/utils'
 
 
-import { ConnectionEvent, ConnectionQuality } from './services'
+import { ConnectionEvent } from './services'
 
 export const SUCCESS = 'success'
 export const SLOW = 'slow'
@@ -201,12 +201,12 @@ export const ClientTroubleShootingConfig = {
       value: TYPES.CONNECTION_EVENTS,
       showCount: true,
       chartMapping: [
-        { key: 'all', label: 'all', chartType: 'scatter' },
-        { key: 'success', label: 'success', chartType: 'scatter' },
-        { key: 'failure', label: 'failure', chartType: 'scatter' },
-        { key: 'slow', label: 'slow', chartType: 'scatter' },
-        { key: 'disconnect', label: 'disconnect', chartType: 'scatter' }
-      ] as { key: string, label: string, chartType: string }[],
+        { key: 'all', label: 'all', chartType: 'scatter',series: 'events' },
+        { key: 'success', label: 'success', chartType: 'scatter',series: 'events' },
+        { key: 'failure', label: 'failure', chartType: 'scatter',series: 'events' },
+        { key: 'slow', label: 'slow', chartType: 'scatter',series: 'events' },
+        { key: 'disconnect', label: 'disconnect', chartType: 'scatter',series: 'events' }
+      ] as { key: string, label: string, chartType: string,series : string }[],
       showResetZoom: true,
       subtitle: [
         {
@@ -233,9 +233,9 @@ export const ClientTroubleShootingConfig = {
       value: TYPES.ROAMING,
       showCount: true,
       chartMapping: [
-        { key: 'all', label: 'all', chartType: 'scatter' },
-        { key: 'network1_5GHz', label: 'network1_5GHz', chartType: 'bar' }
-      ] as { key: string, label: string, chartType: string }[],
+        { key: 'all', label: 'all', chartType: 'scatter', series: 'roaming' },
+        { key: 'network1_5GHz', label: 'network1_5GHz', chartType: 'bar', series: 'roaming' }
+      ] as { key: string, label: string, chartType: string,series: string }[],
       subtitle: [
         {
           title: defineMessage({ defaultMessage: 'Network1_5GHz' }),
@@ -249,12 +249,12 @@ export const ClientTroubleShootingConfig = {
       value: TYPES.CONNECTION_QUALITY,
       showCount: false,
       chartMapping: [
-        { key: 'all', label: 'all', chartType: 'bar' },
-        { key: 'rss', label: 'rss', chartType: 'bar' },
-        { key: 'snr', label: 'snr', chartType: 'bar' },
-        { key: 'throughput', label: 'throughput', chartType: 'bar' },
+        { key: 'all', label: 'all', chartType: 'bar', series: 'quality' },
+        { key: 'rss', label: 'rss', chartType: 'bar', series: 'quality' },
+        { key: 'snr', label: 'snr', chartType: 'bar', series: 'quality' },
+        { key: 'throughput', label: 'throughput', chartType: 'bar', series: 'quality' },
         { key: 'avgTxMCS', label: 'avgTxMCS', chartType: 'bar' }
-      ] as { key: string, label: string, chartType: string }[],
+      ] as { key: string, label: string, chartType: string, series: string }[],
       subtitle: [
         {
           title: defineMessage({ defaultMessage: 'RSS' }),
@@ -281,15 +281,15 @@ export const ClientTroubleShootingConfig = {
       showCount: true,
       hasXaxisLabel: true,
       chartMapping: [
-        { key: 'all', label: 'all', chartType: 'bar' },
-        { key: 'connection', label: 'clientConnection', chartType: 'bar' },
-        { key: 'performance', label: 'performance', chartType: 'bar' },
-        { key: 'infratructure', label: 'infratructure', chartType: 'bar' }
-      ] as { key: string, label: string, chartType: string }[],
+        { key: 'all', label: 'all', chartType: 'bar', series: 'incidents' },
+        { key: 'connection', label: 'clientConnection', chartType: 'bar', series: 'incidents' },
+        { key: 'performance', label: 'performance', chartType: 'bar', series: 'incidents' },
+        { key: 'infratructure', label: 'infratructure', chartType: 'bar', series: 'incidents' }
+      ] as { key: string, label: string, chartType: string, series: string }[],
       subtitle: [
         {
           title: defineMessage({ defaultMessage: 'Client Connection' }),
-          value: 'clientConnection'
+          value: 'connection'
         },
         {
           title: defineMessage({ defaultMessage: 'Performance' }),

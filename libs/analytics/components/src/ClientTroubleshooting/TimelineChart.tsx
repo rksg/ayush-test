@@ -31,6 +31,7 @@ import type { TimeStampRange } from '@acx-ui/types'
 
 import { eventColorByCategory, LabelledQuality, connectionQualityLabels } from './config'
 
+import type { Item }                                                                                          from './EventsHistory'
 import type { Event }                                                                                         from './EventsTimeline'
 import type { ECharts, EChartsOption, SeriesOption, CustomSeriesRenderItemAPI, CustomSeriesRenderItemParams } from 'echarts'
 import type { EChartsReactProps }                                                                             from 'echarts-for-react'
@@ -46,17 +47,17 @@ type OnDatazoomEvent = {
 
 export interface TimelineChartProps
   extends Omit<EChartsReactProps, 'option' | 'opts'> {
-  data: (Event | LabelledQuality)[]; // https://github.com/microsoft/TypeScript/issues/44373
+  data: (Event | LabelledQuality | Item)[]; // https://github.com/microsoft/TypeScript/issues/44373
   chartBoundary: number[];
   selectedData?: number;
   onDotClick?: (params: unknown) => void;
   chartRef?: RefCallback<ReactECharts>;
   hasXaxisLabel?: boolean;
   tooltipFormatter: TooltipFormatterCallback<TopLevelFormatterParams>;
-  mapping: { key: string; label: string; chartType: string }[];
+  mapping: { key: string; label: string; chartType: string, series : string }[];
   showResetZoom?: boolean;
 }
-const getSeriesData = (data: (Event | LabelledQuality)[], key: string, chartType : string) =>
+const getSeriesData = (data: (Event | LabelledQuality | Item)[], key: string, chartType : string) =>
 {
   if(chartType === 'scatter')
     return data
@@ -64,7 +65,7 @@ const getSeriesData = (data: (Event | LabelledQuality)[], key: string, chartType
       .map((record) => [record.start, record.seriesKey, record])
   else{
     return data
-      .map((record) => [record.start, moment(record.end).valueOf(), key , record])
+      .map((record) => [record.start, moment(record.end).valueOf(), key, { ...record, icon: '' } ])
   }
 }
 
@@ -195,7 +196,6 @@ export function TimelineChart ({
   const [selected, setSelected] = useState<number | undefined>(selectedData)
 
   useDotClick(eChartsRef, onDotClick, setSelected)
-
   const option: EChartsOption = {
     animation: false,
     grid: {
@@ -306,11 +306,11 @@ export function TimelineChart ({
     series: mapping
       .reverse()
       .slice()
-      .map(({ key, label, chartType }) =>
+      .map(({ key, series, chartType }) =>
         chartType === 'scatter'
           ? ({
             type: chartType,
-            name: label,
+            name: series,
             symbol: 'circle',
             symbolSize: 8,
             animation: false,
@@ -321,6 +321,7 @@ export function TimelineChart ({
           } as SeriesOption)
           : {
             type: 'custom',
+            name: series,
             renderItem: function (
               params: CustomSeriesRenderItemParams,
               api: CustomSeriesRenderItemAPI
