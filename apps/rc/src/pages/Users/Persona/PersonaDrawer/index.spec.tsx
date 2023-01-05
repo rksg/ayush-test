@@ -1,4 +1,5 @@
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import { NewTableResult, Persona, PersonaGroup, PersonaUrls } from '@acx-ui/rc/utils'
 import { Provider }                                           from '@acx-ui/store'
@@ -7,9 +8,11 @@ import { mockServer, render, screen, fireEvent, act }         from '@acx-ui/test
 import { PersonaDrawer } from './index'
 
 const mockPersonaGroupList: NewTableResult<PersonaGroup> = {
+  totalPages: 1,
+  sort: [],
+  page: 0,
   totalElements: 1,
   size: 10,
-  number: 0,
   content: [
     {
       id: 'persona-group-id-1',
@@ -42,6 +45,31 @@ const mockPersona: Persona = {
   ]
 }
 
+const mockPersonaTableResult: NewTableResult<Persona> = {
+  totalPages: 1,
+  sort: [],
+  page: 0,
+  totalElements: 3,
+  size: 10,
+  content: [
+    {
+      id: 'persona-id-1',
+      name: 'persona-name-1',
+      groupId: 'persona-group-id-1'
+    },
+    {
+      id: 'persona-id-2',
+      name: 'persona-name-2',
+      groupId: 'persona-group-id-1'
+    },
+    {
+      id: 'persona-id-3',
+      name: 'persona-name-3',
+      groupId: 'persona-group-id-1'
+    }
+  ]
+}
+
 
 describe('Persona Drawer', () => {
 
@@ -50,6 +78,10 @@ describe('Persona Drawer', () => {
       rest.get(
         PersonaUrls.getPersonaGroupList.url,
         (req, res, ctx) => res(ctx.json(mockPersonaGroupList))
+      ),
+      rest.post(
+        PersonaUrls.searchPersonaList.url,
+        (req, res, ctx) => res(ctx.json(mockPersonaTableResult))
       )
       // patch persona
     )
@@ -68,8 +100,8 @@ describe('Persona Drawer', () => {
     // eslint-disable-next-line testing-library/no-unnecessary-act
     await act(async () => {
       await screen.findByText('Create Persona')
-      const nameField = await screen.findByLabelText('Persona Name') as HTMLInputElement
-      fireEvent.change(nameField, { target: { value: 'New Persona Name' } })
+      const nameField = await screen.findByLabelText('Persona Name')
+      await userEvent.type(nameField , 'New Persona Group Name')
 
       const addButton = await screen.findByRole('button', { name: 'Add' })
       fireEvent.click(addButton)
