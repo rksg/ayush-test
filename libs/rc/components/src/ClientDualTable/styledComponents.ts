@@ -20,6 +20,7 @@ export const ClientLink = styled(Link)`
     border: 0;
     border-radius: 0;
     padding: 0;
+    margin-bottom: 0;
   }
 `
 
@@ -33,4 +34,5 @@ export const SearchBarDiv = styled.div`
 export const SearchCountDiv = styled.div`
   padding-bottom: 16px;
   display: flex;
+  align-items: baseline;
 `

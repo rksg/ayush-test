@@ -527,4 +527,48 @@ describe('NetworkVenuesTab', () => {
 
     fireEvent.click(within(dialog).getByRole('button', { name: 'Apply' }))
   })
+
+  it('should trigger NetworkSchedulingDialog', async () => {
+    const newVenues = [
+      {
+        ...network.venues[0],
+        scheduler: {
+          type: 'CUSTOM',
+          sun: '111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111',
+          mon: '111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111',
+          tue: '111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111',
+          wed: '111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111',
+          thu: '111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111',
+          fri: '111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111',
+          sat: '111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111'
+        }
+      }
+    ]
+
+    mockServer.use(
+      rest.get(
+        WifiUrlsInfo.getNetwork.url,
+        (req, res, ctx) => res(ctx.json({ ...network, venues: newVenues }))
+      ),
+      rest.post(
+        CommonUrlsInfo.getNetworkDeepList.url,
+        (req, res, ctx) => res(ctx.json({ response: [{ ...network, venues: newVenues }] }))
+      )
+    )
+
+    render(<Provider><NetworkVenuesTab /></Provider>, {
+      route: { params, path: '/:tenantId/:networkId' }
+    })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    const row = await screen.findByRole('row', { name: /network-venue-1/i })
+
+    fireEvent.click(within(row).getByText(/custom/i))
+
+    const dialog = await waitFor(async () => screen.findByRole('dialog'))
+
+    const applyButton = await within(dialog).findByRole('button', { name: 'Apply' })
+    fireEvent.click(applyButton)
+  })
 })

@@ -2,22 +2,30 @@ import { useState } from 'react'
 
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
-import { Anchor, Tooltip }                               from '@acx-ui/components'
-import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined }                    from '@acx-ui/icons'
-import { ConnectedClientsTable, HistoricalClientsTable } from '@acx-ui/rc/components'
+import { Anchor, Tooltip }            from '@acx-ui/components'
+import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
+
+import { ConnectedClientsTable }  from '../ConnectedClientsTable'
+import { HistoricalClientsTable } from '../HistoricalClientsTable'
 
 import { ClientLink, ClientSearchBar, SearchBarDiv, SearchCountDiv } from './styledComponents'
 
-export function ClientsTab () {
+export function ClientDualTable () {
   const intl = useIntl()
   const [searchValue, setSearchValue] = useState('')
   const [connectedClientCount, setConnectedClientCount] = useState<number>(0)
   const [historicalClientCount, setHistoricalClientCount] = useState<number>(0)
 
   const getSearchToolTipText = () => {
-    // eslint-disable-next-line max-len
-    return defineMessage({ defaultMessage: '<div>You can search for clients by the following properties*: <ul><li>Client MAC Address</li><li>AP MAC Address</li><li>OS Type</li><li>User Name</li><li>Host Name</li></ul><div>* Search ignores columns that you chose to hide</div></div>' })
+    return defineMessage({ defaultMessage: `
+      <div>You can search for clients by the following properties *:
+        <ul><li>Client MAC Address</li>
+        <li>AP MAC Address</li>
+        <li>OS Type</li>
+        <li>User Name</li>
+        <li>Host Name</li></ul>
+      <div>* Search ignores columns that you chose to hide</div></div>` })
   }
 
   return <>
