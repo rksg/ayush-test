@@ -118,6 +118,7 @@ describe('VenueDetails', () => {
     const { asFragment } = render(<Provider><VenueDetails /></Provider>, {
       route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
     })
+
     expect(asFragment()).toMatchSnapshot()
   })
 
