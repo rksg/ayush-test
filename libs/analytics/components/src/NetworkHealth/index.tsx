@@ -5,7 +5,6 @@ import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { Details }  from './Details'
 import { Overview } from './Overview'
-import { Progress } from './Progress'
 
 type NetworkHealthTabs = 'overview' | 'details' | 'progress'
 
@@ -23,11 +22,6 @@ const tabs : {
     key: 'details',
     title: defineMessage({ defaultMessage: 'Details' }),
     component: Details
-  },
-  {
-    key: 'progress',
-    title: defineMessage({ defaultMessage: 'Progress' }),
-    component: Progress
   }
 ]
 
