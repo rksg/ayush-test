@@ -186,8 +186,11 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
 
     if (avcAppList) {
       avcAppList.map(avcApp => {
-        if (avcSelectOptions[avcApp.avcAppAndCatId.catId - 1]) {
-          avcSelectOptions[avcApp.avcAppAndCatId.catId - 1].appNames.push(avcApp.appName)
+        let catId = avcSelectOptions.findIndex(option =>
+          option.catId === avcApp.avcAppAndCatId.catId
+        )
+        if (avcSelectOptions[catId]) {
+          avcSelectOptions[catId].appNames.push(avcApp.appName)
         }
 
         if (!catAppMappingObject.hasOwnProperty(avcApp.appName)) {
@@ -277,7 +280,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
       dataIndex: 'application',
       key: 'application',
       render: (data, row) => {
-        if (row.ruleSettings.ruleType === 'userDefined') {
+        if (row.ruleSettings.ruleType === ApplicationRuleType.USER_DEFINED) {
           return row.ruleSettings.appNameUserDefined
         }
         return row.ruleSettings?.appNameSystemDefined?.replace('_', ' > ')
@@ -376,9 +379,12 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     }
 
     if (ruleDrawerEditMode && applicationsRule.hasOwnProperty('priority')) {
-      const updateId = applicationsRule.priority
+      const updateId = applicationsRuleList.findIndex(
+        rule => rule.priority === applicationsRule.priority
+      )
       applicationsRuleList[updateId] = {
-        ...applicationsRule
+        ...ruleObject,
+        priority: updateId
       }
       setApplicationsRuleList([...applicationsRuleList])
     } else {
@@ -408,7 +414,8 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
               let catAppConfig = {} as {
                 applicationId: number, applicationName: string, category: string, categoryId: number
               }
-              if (rule.ruleSettings.appNameSystemDefined
+              if (rule.ruleType === ApplicationRuleType.SIGNATURE
+                && rule.ruleSettings.appNameSystemDefined
                 && rule.ruleSettings.appCategory
               ) {
                 const [catName, appName] = rule.ruleSettings.appNameSystemDefined.split('_')
@@ -522,7 +529,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
       }}
     >
       {avcSelectOptions.map(avcCat => {
-        return <Option value={avcCat.catName}>
+        return <Option key={`${avcCat.catName}_${avcCat.catId}`} value={avcCat.catName}>
           {avcCat.catName}
         </Option>
       })}
@@ -542,11 +549,13 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
       })
       return <Select
         style={{ width: '100%' }}
-        options={optionsList.map(option => ({
-          label: option.split('_')[1],
-          value: option
-        }))}
-      />
+      >
+        {optionsList.map(option => {
+          return <Option key={option} value={option}>
+            {option.split('_')[1]}
+          </Option>
+        })}
+      </Select>
     }
     const categoryId = avcSelectOptions
       .findIndex(cat => cat.catName === category)
@@ -555,7 +564,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
       style={{ width: '100%' }}
     >
       {avcSelectOptions[categoryId]?.appNames.map((avcApp: string) => {
-        return <Option value={`${category}_${avcApp}`}>
+        return <Option key={`${category}_${avcApp}`} value={`${category}_${avcApp}`}>
           {avcApp}
         </Option>
       })}
@@ -818,7 +827,13 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
       rules={[
         { required: true }
       ]}
-      children={<ContentSwitcher tabDetails={tabDetails} size='small' />}
+      children={
+        <ContentSwitcher
+          tabDetails={tabDetails}
+          defaultValue={drawerForm.getFieldValue('ruleType')}
+          size='small'
+        />
+      }
     />
     {/* systemDefined option */}
     { ruleType === ApplicationRuleType.SIGNATURE && <DrawerFormItem
