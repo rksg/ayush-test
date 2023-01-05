@@ -203,6 +203,7 @@ export default function ActivityHeaderButton () {
       onClose={()=>setDetailModalOpen(false)}
       onBackClick={()=>setDetailModalOpen(false)}
       data={getDrawerData?.(detail!)}
+      timeLine={detail?.steps}
     />}
   </>
 }
