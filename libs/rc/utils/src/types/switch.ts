@@ -211,7 +211,14 @@ export interface ConfigurationHistory {
   clis: string
   numberOfErrors: number
   transactionId: string
-} 
+  dispatchFailedReason?: DispatchFailedReason[]
+}
+
+export interface DispatchFailedReason {
+  lineNumber: string
+  message: string
+}
+
 
 export enum STACK_MEMBERSHIP {
   ACTIVE = 'Active',

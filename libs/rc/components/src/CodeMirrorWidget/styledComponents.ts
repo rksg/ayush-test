@@ -11,13 +11,18 @@ export const Container = styled.div`
 }
 
 .CodeMirror-gutters {
-  background-color: $rw-grey-10;
-  padding-right: 20px;
+  background-color: var(--acx-neutrals-30);
+  padding-right: 5px;
   border: 0;
+  width: 30px;
+}
+
+.CodeMirror-code > div {
+  padding-left: 35px;
 }
 
 .CodeMirror-linenumber {
-  color: $rw-grey-60;
+  color: var(--acx-primary-black);
   text-align: left;
 }
 
@@ -101,7 +106,7 @@ export const Container = styled.div`
   background-color: #e8d7da;
   border-width: 1px;
   border-style: solid;
-  border-color: $rw-red-80;
+  border-color: red;
   border-left: 0px;
   border-right: 0px;
   border-radius: 0px;
