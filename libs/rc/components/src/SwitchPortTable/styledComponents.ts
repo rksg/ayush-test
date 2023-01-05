@@ -51,7 +51,7 @@ export const FormItemLayout = styled(AntdForm.Item)`
   }
 `
 
-export const switchLabel = styled('div')`
+export const SwitchLabel = styled('div')`
   display: inline-flex;
   width: 170px;
   font-size: var(--acx-body-4-font-size)

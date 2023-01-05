@@ -258,14 +258,16 @@ export function SwitchPortTable ({ isVenueLevel }: {
       }
     />
 
-    <EditPortDrawer
+    { drawerVisible && <EditPortDrawer
+      key='edit-port'
       visible={drawerVisible}
       setDrawerVisible={setDrawerVisible}
       isCloudPort={selectedPorts.map(item => item.cloudPort).includes(true)}
       isMultipleEdit={selectedPorts?.length > 1}
       isVenueLevel={false}
       selectedPorts={selectedPorts}
-    />
+    />}
+
   </Loader>
 }
 

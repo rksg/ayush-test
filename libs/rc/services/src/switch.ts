@@ -4,6 +4,7 @@ import {
   createHttpRequest,
   RequestFormData,
   RequestPayload,
+  SaveSwitchProfile,
   SwitchUrlsInfo,
   SwitchViewModel,
   SwitchPortViewModel,
@@ -11,11 +12,11 @@ import {
   SwitchAclUnion,
   SwitchDefaultVlan,
   SwitchProfile,
-  SwitchVlans,
   SwitchVlanUnion,
   PortSetting,
-  PortsSetting
-  // VePortRouted
+  PortsSetting,
+  VePortRoutedResp,
+  Vlan
 } from '@acx-ui/rc/utils'
 
 export const baseSwitchApi = createApi({
@@ -50,7 +51,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       keepUnusedDataFor: 0,
       providesTags: [{ type: 'SwitchPort', id: 'LIST' }]
     }),
-    getSwitchRoutedList: build.query<any, RequestPayload>({ //VePortRouted[]
+    getSwitchRoutedList: build.query<VePortRoutedResp, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(
           SwitchUrlsInfo.getSwitchRoutedList,
@@ -62,7 +63,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
-    getVenueRoutedList: build.query<any, RequestPayload>({
+    getVenueRoutedList: build.query<VePortRoutedResp, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(
           SwitchUrlsInfo.getVenueRoutedList,
@@ -126,7 +127,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
-    getSwitchVlans: build.query<SwitchVlans[], RequestPayload>({
+    getSwitchVlans: build.query<Vlan[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(SwitchUrlsInfo.getSwitchVlans, params)
         return {
@@ -146,7 +147,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
-    getVlansByVenue: build.query<SwitchVlans[], RequestPayload>({
+    getVlansByVenue: build.query<Vlan[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(SwitchUrlsInfo.getVlansByVenue, params)
         return {
@@ -178,7 +179,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
-    savePortsSetting: build.mutation<any, RequestPayload>({
+    savePortsSetting: build.mutation<SaveSwitchProfile[], RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(SwitchUrlsInfo.savePortsSetting, params)
         return {

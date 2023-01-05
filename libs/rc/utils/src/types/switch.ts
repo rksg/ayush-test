@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { Acl } from './venue'
+import { Acl, Vlan } from './venue'
 
 import { GridDataRow } from './'
 
@@ -206,7 +206,6 @@ export interface LldpQos {
 
 export interface PortSetting {
   dhcpSnoopingTrust: boolean
-
   id: string
   ipsg: boolean
   lldpEnable: boolean
@@ -231,6 +230,7 @@ export interface PortSetting {
   voiceVlan: number | string
   egressAcl?: string
   ingressAcl?: string
+  switchSerialNumber: string
 }
 
 export interface PortsSetting {
@@ -254,6 +254,14 @@ export interface VePortRouted {
   syncedSwitchConfig: boolean
   veId: number
   vlanId: number
+  portNumber: string
+}
+
+export interface VePortRoutedResp {
+  data: VePortRouted[],
+  fields: string[],
+  totalCount: number
+  totalPages: number
 }
 
 export interface SwitchAclUnion {
@@ -308,5 +316,10 @@ export interface SwitchProfile {
   name: string
   profileType: string
   venues: string[]
-  vlans: SwitchVlans[]
+  vlans: Vlan[]
+}
+
+export interface SaveSwitchProfile {
+  switchId: string,
+  port: PortSetting[]
 }
