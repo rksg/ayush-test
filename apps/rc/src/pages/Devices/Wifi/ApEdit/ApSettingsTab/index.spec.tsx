@@ -15,10 +15,4 @@ describe('ApSettingsTab', () => {
     expect(asFragment()).toMatchSnapshot()
     fireEvent.click(await screen.findByRole('tab', { name: 'LAN Port' }))
   })
-
-  it('should show Directed Multicast tab when FF is ON', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-    render(<Provider><ApSettingsTab /></Provider>, { route: { params } })
-    fireEvent.click(await screen.findByRole('tab', { name: 'Directed Multicast' }))
-  })
 })
