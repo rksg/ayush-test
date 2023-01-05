@@ -31,7 +31,7 @@ export default function NetworkDevices ({
           // isActive will highlight devices, while in case of false
           // it will blur device. this field is required for floorplan
           // to highlight certain device only on AP device overview page.
-          obj.isActive = true
+          obj = { ...obj, isActive: true }
           return <NetworkDeviceMarker
             key={obj?.id}
             galleryMode={galleryMode}

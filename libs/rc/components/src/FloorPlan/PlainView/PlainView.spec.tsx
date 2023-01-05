@@ -127,11 +127,13 @@ describe('Floor Plan Plain View', () => {
 
     fireEvent.dragStart(src)
     fireEvent.dragEnter(dst[0])
-    setTimeout(() => {
-      fireEvent.drop(dst[0])
-      fireEvent.dragLeave(dst[0])
-      fireEvent.dragEnd(src)
-    }, 100)
+    await new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(fireEvent.drop(dst[0]))
+        resolve(fireEvent.dragLeave(dst[0]))
+        resolve(fireEvent.dragEnd(src))
+      }, 100)
+    })
 
 
     expect(asFragment()).toMatchSnapshot()

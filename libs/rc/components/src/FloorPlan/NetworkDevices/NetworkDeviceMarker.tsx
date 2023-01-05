@@ -31,7 +31,7 @@ export function NetworkDeviceMarker ({
   const deviceContext = useContext(NetworkDeviceContext) as Function
 
   const [{ isDragging }, drag] = useDrag(() => ({
-    canDrag: forbidDrag,
+    canDrag: !forbidDrag,
     type: 'device',
     item: { device, markerRef: markerContainerRef },
     collect: monitor => ({

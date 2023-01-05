@@ -108,7 +108,8 @@ export default function ApFloorplan (props: { activeDevice: NetworkDevice,
             galleryMode={false}
             contextAlbum={false}
             context={FloorplanContext['ap']}
-            device={device}/>)}
+            device={device}
+            forbidDrag={true}/>)}
       </DndProvider> }
       <img
         data-testid='floorPlanImage'
