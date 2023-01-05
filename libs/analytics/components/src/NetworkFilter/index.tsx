@@ -18,7 +18,7 @@ import { LabelWithSeverityCicle }                   from './LabelWithSeverityCir
 import { Child, useNetworkFilterQuery, ApOrSwitch } from './services'
 import * as UI                                      from './styledComponents'
 
-export type FilterMode = 'ap' | 'switch' | 'both'
+export type FilterMode = 'ap' | 'switch' | 'both' | 'none'
 
 export const getSupersetRlsClause = (paths?:NetworkPath[],radioBands?:RadioBand[]) => {
   let radioBandClause = ''
@@ -286,7 +286,7 @@ function ConnectedNetworkFilter (
   { shouldQuerySwitch,
     withIncidents,
     showRadioBand,
-    filterMode='both',
+    filterMode='none',
     overrideUrlFilter=false,
     multiple,
     replaceWithId,

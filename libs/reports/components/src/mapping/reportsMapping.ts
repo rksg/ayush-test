@@ -5,7 +5,6 @@ import { FilterMode } from '@acx-ui/analytics/components'
 
 export enum ReportType {
   OVERVIEW = 'overview',
-  NETWORK = 'network',
   WIRELESS = 'wireless',
   WIRED = 'wired',
   APPLICATION = 'app',
@@ -21,7 +20,6 @@ export enum ReportType {
 
 export const reportTypeLabelMapping: Record<ReportType, MessageDescriptor> = {
   [ReportType.OVERVIEW]: defineMessage({ defaultMessage: 'Overview' }),
-  [ReportType.NETWORK]: defineMessage({ defaultMessage: 'Network' }),
   [ReportType.APPLICATION]: defineMessage({ defaultMessage: 'Applications' }),
   [ReportType.CLIENT]: defineMessage({ defaultMessage: 'Clients' }),
   [ReportType.ACCESS_POINT]: defineMessage({ defaultMessage: 'Access Points' }),
@@ -37,7 +35,6 @@ export const reportTypeLabelMapping: Record<ReportType, MessageDescriptor> = {
 
 export const reportTypeDataStudioMapping: Record<ReportType, string> = {
   [ReportType.OVERVIEW]: 'Overview',
-  [ReportType.NETWORK]: 'Network',
   [ReportType.APPLICATION]: 'Applications',
   [ReportType.CLIENT]: 'Clients',
   [ReportType.ACCESS_POINT]: 'Access Points',
@@ -52,8 +49,7 @@ export const reportTypeDataStudioMapping: Record<ReportType, string> = {
 }
 
 export const reportTypeModeMapping: Record<ReportType, FilterMode> = {
-  [ReportType.OVERVIEW]: 'both',
-  [ReportType.NETWORK]: 'both',
+  [ReportType.OVERVIEW]: 'none',
   [ReportType.APPLICATION]: 'ap',
   [ReportType.CLIENT]: 'ap',
   [ReportType.ACCESS_POINT]: 'ap',

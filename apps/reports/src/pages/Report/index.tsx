@@ -5,7 +5,7 @@ import {
   ReportType,
   reportTypeLabelMapping,
   reportTypeDataStudioMapping,
-  reportTypeModeMapping } from '@acx-ui/reports/utils'
+  reportTypeModeMapping } from '@acx-ui/reports/components'
 
 import { ReportHeader } from '../ReportHeader'
 

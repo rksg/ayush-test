@@ -5,7 +5,7 @@ import { CheckboxValueType } from 'antd/lib/checkbox/Group'
 import { SingleValueType }   from 'rc-cascader/lib/Cascader'
 
 import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
-import { ReportType  }                       from '@acx-ui/reports/utils'
+import { ReportType  }                       from '@acx-ui/reports/components'
 import { Provider }                          from '@acx-ui/store'
 import { NetworkPath }                       from '@acx-ui/utils'
 

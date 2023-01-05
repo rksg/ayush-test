@@ -1,4 +1,4 @@
-import { ReportType }     from '@acx-ui/reports/utils'
+import { ReportType }     from '@acx-ui/reports/components'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
