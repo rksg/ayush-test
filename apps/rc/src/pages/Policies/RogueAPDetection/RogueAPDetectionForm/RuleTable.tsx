@@ -89,7 +89,7 @@ const RuleTable = (props: RuleTableProps) => {
   ]
 
   useEffect(() => {
-    if (!state.rules.length && data && edit) {
+    if (data && edit) {
       dispatch({
         type: RogueAPDetectionActionTypes.UPDATE_ENTIRE_RULE,
         payload: {
@@ -97,7 +97,7 @@ const RuleTable = (props: RuleTableProps) => {
         }
       })
     }
-  }, [data, state])
+  }, [data])
 
   const handleAddAction = () => {
     if (state.rules.length === 32) {
