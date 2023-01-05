@@ -365,3 +365,10 @@ export interface WifiApSetting {
   lanPorts?: LanPort[];
   lan?: LanPort[];
 }
+
+export interface ApDirectedMulticast {
+	useVenueSettings: boolean,
+	wiredEnabled: boolean,
+  wirelessEnabled: boolean,
+  networkEnabled: boolean
+}

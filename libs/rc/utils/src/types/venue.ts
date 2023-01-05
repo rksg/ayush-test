@@ -606,3 +606,9 @@ export interface LocalUser {
   authPort: number,
   purpose: string
 }
+
+export interface VenueDirectedMulticast {
+	wiredEnabled: boolean,
+  wirelessEnabled: boolean,
+  networkEnabled: boolean
+}
