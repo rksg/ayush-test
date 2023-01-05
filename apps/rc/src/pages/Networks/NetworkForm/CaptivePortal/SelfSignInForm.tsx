@@ -13,10 +13,10 @@ import {
 import { useIntl } from 'react-intl'
 
 import { GridCol, GridRow, StepsForm } from '@acx-ui/components'
+import { get }                         from '@acx-ui/config'
 import {
   QuestionMarkCircleOutlined
 } from '@acx-ui/icons'
-import { useGlobalValuesQuery }           from '@acx-ui/rc/services'
 import {
   domainsNameRegExp,
   GuestNetworkTypeEnum, NetworkTypeEnum
@@ -147,13 +147,8 @@ export function SelfSignInForm () {
       setAllowedSignValue(allowedSignValueTemp)
     }
   }, [data])
-  const globalValues= useGlobalValuesQuery({})
   const [redirectURL, setRedirectURL]=useState('')
-  useEffect(()=>{
-    if(globalValues){
-      setRedirectURL(globalValues?.data?.['CAPTIVE_PORTAL_DOMAIN_NAME']||'')
-    }
-  }, [globalValues])
+  setRedirectURL(get('CAPTIVE_PORTAL_DOMAIN_NAME')||'')
   return (
     <GridRow>
       <GridCol col={{ span: 12 }}>
