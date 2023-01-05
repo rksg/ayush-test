@@ -1,10 +1,11 @@
 import { forwardRef, MutableRefObject, useEffect, useImperativeHandle, useState } from 'react'
-import { useIntl } from 'react-intl'
 import './type.d'
 import * as CodeMirror from 'codemirror'
 // import * as DiffMatchPatch from 'diff-match-patch' TODO: Backup feature
 // import * as MergeViewCodeMirror from 'merge-view-codemirror'
 // import { MergeViewConfiguration } from 'codemirror/addon/merge/merge.js' 
+import 'codemirror/addon/selection/active-line.js';
+import 'codemirror/addon/mode/overlay';
 import * as UI from './styledComponents'
 
 interface CodeMirrorWidgetProps {
@@ -17,7 +18,6 @@ interface CodeMirrorWidgetProps {
 }
 
 export const CodeMirrorWidget = forwardRef((props:CodeMirrorWidgetProps, ref) => {
-  const { $t } = useIntl()
   const { type, data, size } = props
   const [readOnlyCodeMirror, setReadOnlyCodeMirror] = useState(null as any)
   const height = size?.height || '450px'
@@ -33,22 +33,18 @@ export const CodeMirrorWidget = forwardRef((props:CodeMirrorWidgetProps, ref) =>
     const target = document.getElementById("codeView") as HTMLTextAreaElement
     const code = htmlDecode(data.clis)
     const configOptions = data.configOptions
-    // if (!readOnlyCodeMirror) {
-      if (target) {
-        target['value'] = code as string
-        const tmpReadOnlyCodeMirror = CodeMirror.fromTextArea(
-          target
-          , configOptions ? configOptions :{
-            readOnly: true,
-            lineNumbers: true,
-            lineWrapping: true
-          }
-        )
-        setReadOnlyCodeMirror(tmpReadOnlyCodeMirror)
-      }
-    // } else {
-    //   readOnlyCodeMirror.setValue(code)
-    // }
+    if (target) {
+      target['value'] = code as string
+      const tmpReadOnlyCodeMirror = CodeMirror.fromTextArea(
+        target
+        , configOptions ? configOptions :{
+          readOnly: true,
+          lineNumbers: true,
+          lineWrapping: true
+        }
+      )
+      setReadOnlyCodeMirror(tmpReadOnlyCodeMirror)
+    }
   }
 
   useImperativeHandle(ref, () => ({
@@ -61,25 +57,11 @@ export const CodeMirrorWidget = forwardRef((props:CodeMirrorWidgetProps, ref) =>
     },
     removeHighlightLine(line:number) {
       if (readOnlyCodeMirror) {
-        readOnlyCodeMirror.setOption("styleActiveLine", true);
-        readOnlyCodeMirror.setCursor(line);
+        readOnlyCodeMirror.setOption("styleActiveLine", false);
       }
     }
 
-  }));
-
-  const highlightLine = (line:number) => {
-    if (readOnlyCodeMirror) {
-      readOnlyCodeMirror.setOption("styleActiveLine", true);
-      readOnlyCodeMirror.setCursor(line);
-    }
-  }
-
-  const removeHighlightLine = () => {
-    if (readOnlyCodeMirror) {
-      readOnlyCodeMirror.setOption("styleActiveLine", false);
-    }
-  }
+  }))
 
   useEffect(() => {
     if (type === 'single' && data.clis) {
@@ -122,7 +104,6 @@ export const CodeMirrorWidget = forwardRef((props:CodeMirrorWidgetProps, ref) =>
   return (
     <UI.Container>
       <div id="codeViewContainer"></div>
-      {/* <div id="codeView"></div> */}
     </UI.Container>
   )
 })

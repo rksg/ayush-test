@@ -32,7 +32,7 @@ margin-top: 15px;
   transform: rotate(90deg);
   width: 194px;
   transform-origin: 13% 42%;
-  padding-left: 148px;
+  padding-left: 139px;
   padding-top: 15px;
   font-weight: var(--acx-body-font-weight-bold);
   font-size: var(--acx-subtitle-6-font-size);

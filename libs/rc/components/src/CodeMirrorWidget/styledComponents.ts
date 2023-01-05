@@ -4,7 +4,6 @@ import 'codemirror/addon/merge/merge.css'
 
 export const Container = styled.div`
 .CodeMirror {
-  border: 6px solid $rw-grey-10;
   font-size: 12px;
   line-height: 16px;
   z-index: 0;
@@ -39,7 +38,7 @@ export const Container = styled.div`
 }
 
 .CodeMirror-merge-2pane .CodeMirror-merge-gap {
-  background-color: $rw-grey-10;
+  background-color: var(--acx-neutrals-30);
   border: 0;
 }
 
@@ -53,45 +52,45 @@ export const Container = styled.div`
 
 .CodeMirror-vscrollbar {
   bottom: 6px !important;
-  border: 6px solid $rw-white;
+  border: 6px solid var(--acx-primary-white);
   border-width: 6px 6px 0 0;
 }
 
 .CodeMirror-vscrollbar::-webkit-scrollbar-track
 {
-	background-color: $rw-grey-10;
+	background-color: var(--acx-neutrals-30);
 }
 
 .CodeMirror-vscrollbar::-webkit-scrollbar
 {
   width: 6px;
-	background-color: $rw-grey-10;
+	background-color: var(--acx-neutrals-30);
 }
 
 .CodeMirror-vscrollbar::-webkit-scrollbar-thumb
 {
-	background-color: $rw-blue-50;
+	background-color: var(--acx-accents-blue-50);
 }
 
 .CodeMirror-hscrollbar {
-  border: 6px solid $rw-white;
+  border: 6px solid var(--acx-primary-white);
   border-width: 0 0 6px 6px;
 }
 
 .CodeMirror-hscrollbar::-webkit-scrollbar-track
 {
-	background-color: $rw-grey-10;
+	background-color: var(--acx-neutrals-30);
 }
 
 .CodeMirror-hscrollbar::-webkit-scrollbar
 {
   height: 6px;
-	background-color: $rw-grey-10;
+	background-color: var(--acx-neutrals-30);
 }
 
 .CodeMirror-hscrollbar::-webkit-scrollbar-thumb
 {
-	background-color: $rw-blue-50;
+	background-color: var(--acx-accents-blue-50);
 }
 
 .CodeMirror-vscrollbar:focus, .CodeMirror-hscrollbar:focus {
@@ -103,12 +102,6 @@ export const Container = styled.div`
 }
 
 .CodeMirror-activeline-background {
-  background-color: #e8d7da;
-  border-width: 1px;
-  border-style: solid;
-  border-color: red;
-  border-left: 0px;
-  border-right: 0px;
-  border-radius: 0px;
+  background-color: rgba(237, 28, 36, 0.2);
 }
 `

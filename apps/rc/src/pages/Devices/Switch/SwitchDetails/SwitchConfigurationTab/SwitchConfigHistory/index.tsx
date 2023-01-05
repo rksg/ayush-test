@@ -1,5 +1,5 @@
 import { Button, Loader, Modal, Table, TableProps, Descriptions } from '@acx-ui/components'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useIntl } from 'react-intl'
 import { CodeMirrorWidget } from '@acx-ui/rc/components'
 import { ConfigurationHistory, DispatchFailedReason, useTableQuery } from '@acx-ui/rc/utils'
@@ -9,7 +9,7 @@ import { ErrorsTable } from './ErrorsTable'
 
 export function SwitchConfigHistory () {
   const { $t } = useIntl()
-  const codeMirrorEl = useRef(null as unknown as {highlightLine: Function});
+  const codeMirrorEl = useRef(null as unknown as {highlightLine: Function, removeHighlightLine: Function});
   const [visible, setVisible] = useState(false)
   const [showError, setShowError] = useState(true)
   const [showClis, setShowClis] = useState(true)
@@ -21,7 +21,8 @@ export function SwitchConfigHistory () {
     setSelectedRow(row)
     setDispatchFailedReason(row.dispatchFailedReason as DispatchFailedReason[] || [])
     setCollapseActive(!row?.dispatchFailedReason?.length)
-    handleHighLightLine(2)
+    setShowClis(!!row?.clis)
+    setShowError(!!row?.clis || !!row?.dispatchFailedReason?.length)
     setVisible(true)
   }
 
@@ -73,16 +74,23 @@ export function SwitchConfigHistory () {
   const handleHighLightLine = (line: number) => {
     if (codeMirrorEl) {
       if (!Number.isNaN(line)) {
-        // eslint-disable-next-line no-never
         codeMirrorEl.current?.highlightLine(line - 1)  
       } else {
-        // this.codeMirror.removeHighlightLine();
+        codeMirrorEl.current?.removeHighlightLine()
       }
     }
   }
 
   const errorsTitle = $t({ defaultMessage: 'Errors ({dispatchFailedReasonCount})'}
   , {dispatchFailedReasonCount: dispatchFailedReason.length})
+
+  useEffect(() => {
+    if (dispatchFailedReason.length && codeMirrorEl.current) {
+      setTimeout(() => {
+        handleHighLightLine(Number(dispatchFailedReason[0].lineNumber))
+      })
+    }
+  }, [dispatchFailedReason, codeMirrorEl])
 
   // TODO: add search string and filter to retrieve data
   // const retrieveData () => {}
@@ -140,14 +148,14 @@ export function SwitchConfigHistory () {
               {
                 !collapseActive ? 
                   <>
-                    <div className="expanded header" onClick={togglePanel}>
+                    <div className="expanded header" >
                       {errorsTitle}
                       {
                         showClis && 
-                        <UI.ArrowCollapsed/>
+                        <UI.ArrowCollapsed onClick={togglePanel}/>
                       }
                     </div>
-                    <ErrorsTable errors={dispatchFailedReason} />
+                    <ErrorsTable errors={dispatchFailedReason} selectionChanged={handleHighLightLine}/>
                   </>
                  : 
                 <div onClick={togglePanel}>

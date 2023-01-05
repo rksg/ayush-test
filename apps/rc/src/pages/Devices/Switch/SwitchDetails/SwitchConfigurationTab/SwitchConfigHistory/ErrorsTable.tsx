@@ -1,22 +1,10 @@
-import { Button, Loader, Modal, Table, TableProps, Descriptions } from '@acx-ui/components'
-import { useState } from 'react'
+import { Table, TableProps } from '@acx-ui/components'
 import { useIntl } from 'react-intl'
-import { CodeMirrorWidget } from '@acx-ui/rc/components'
-import { ConfigurationHistory, useTableQuery } from '@acx-ui/rc/utils'
-import { useGetSwitchConfigHistoryQuery } from '@acx-ui/rc/services'
-import * as UI from './styledComponents'
 
-export function ErrorsTable (props: {errors: any[]}) {
+export function ErrorsTable (props: {errors: any[], selectionChanged: Function}) {
   const { $t } = useIntl()
-  const { errors } = props
-  const [visible, setVisible] = useState(false)
-  const [showError, setShowError] = useState(true)
-  const [showClis, setShowClis] = useState(true)
-  const [collapseActive, setCollapseActive] = useState(false)
-  const [dispatchFailedReason, setDispatchFailedReason] = useState([])
-  const [selectedRow, setSelectedRow] = useState(null as unknown as ConfigurationHistory)
-
-  const tableData = errors ? errors.map((item, index) => {return {...item, index}}): []
+  const { errors, selectionChanged } = props
+  const tableData = errors ? errors.map((item, index) => {return {...item, id:index}}): []
 
   const columns: TableProps<any>['columns'] = [{
     key: 'lineNumber',
@@ -25,17 +13,24 @@ export function ErrorsTable (props: {errors: any[]}) {
   }, {
     key: 'message',
     title: $t({ defaultMessage: 'Error Description' }),
-    dataIndex: 'message',
-    sorter: true
+    dataIndex: 'message'
   }
   ]
 
   return <>
       <Table
-        rowKey='index'
-        rowSelection={{ type: 'radio', defaultSelectedRowKeys: [0]}}
+        type='form'
+        rowKey='id'
+        rowSelection={{ 
+          type: 'radio', 
+          defaultSelectedRowKeys: [0],
+          onChange: (keys, rows) => {
+           selectionChanged(rows[0].lineNumber)
+          }
+        }}
         columns={columns}
         dataSource={tableData}
+        tableAlertRender={false}
       />
   </>
 }
