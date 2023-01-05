@@ -1,4 +1,5 @@
 import {
+  DpskDetailsTabKey,
   getPolicyDetailsLink,
   getServiceDetailsLink,
   MacRegistrationDetailsTabKey,
@@ -42,7 +43,8 @@ export function DpskPoolLink (props: { dpskPoolId?: string, name?: string }) {
       ? <TenantLink to={getServiceDetailsLink({
         serviceId: dpskPoolId,
         oper: ServiceOperation.DETAIL,
-        type: ServiceType.DPSK
+        type: ServiceType.DPSK,
+        activeTab: DpskDetailsTabKey.OVERVIEW
       })}>
         {name ?? dpskPoolId}
       </TenantLink>
