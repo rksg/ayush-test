@@ -19,7 +19,8 @@ import {
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { getQualityColor }   from '@acx-ui/analytics/utils'
+import { getQualityColor,  Incident, categoryCodeMap, IncidentCode
+}   from '@acx-ui/analytics/utils'
 import { cssStr, cssNumber } from '@acx-ui/components'
 import {
   xAxisOptions,
@@ -57,16 +58,38 @@ export interface TimelineChartProps
   mapping: { key: string; label: string; chartType: string, series : string }[];
   showResetZoom?: boolean;
 }
-const getSeriesData = (data: (Event | LabelledQuality | Item)[], key: string, chartType : string) =>
+const getSeriesData = (data: (Event | LabelledQuality | Item)[], key: string, series : string) =>
 {
-  if(chartType === 'scatter')
+  if(series === 'events')
     return data
       .filter((record) => record.seriesKey === key)
       .map((record) => [record.start, record.seriesKey, record])
-  else{
+  if(series === 'quality')
     return data
-      .map((record) => [record.start, moment(record.end).valueOf(), key, { ...record, icon: '' } ])
+      .map((record) => [record.start, key,moment(record.end).valueOf(), { ...record, icon: '' } ])
+  if(series === 'incidents'){
+    if(key === 'all')
+      return data.map((record) => [
+        record.start,
+        key,
+        moment(record.end).valueOf(),
+        { ...record, icon: '' }
+      ])
+    return data
+      .filter((record) =>
+        categoryCodeMap[key as keyof typeof categoryCodeMap]?.codes.includes(
+          (record as Item)?.code as IncidentCode
+        )
+      )
+      .map((record) => [
+        record.start,
+        key,
+        moment(record.end).valueOf(),
+        { ...record, icon: '' }
+      ])
+
   }
+  return []
 }
 
 function getSeriesItemColor (params: { data: (Event | LabelledQuality)[] }) {
@@ -78,14 +101,22 @@ function getSeriesItemColor (params: { data: (Event | LabelledQuality)[] }) {
     )
     : cssStr('--acx-neutrals-50')
 }
-function getBarColor (params: { data: (LabelledQuality)[] }) {
-  const obj = Array.isArray(params.data) ? params.data[3] : ''
-  const key = params.data[2] as unknown as string
-  return cssStr(
+function getBarColor (params: { data: (LabelledQuality | Item)[], seriesName: string }) {
+  const seriesName = params.seriesName
+  if(seriesName === 'quality') {
+    const obj = Array.isArray(params.data) ? params.data[3] : ''
+    const key = params.data[1] as unknown as string
+    return cssStr(
     getQualityColor(
       (obj as LabelledQuality)[key as keyof typeof connectionQualityLabels]?.quality
     ) as string
-  )
+    )
+  }
+  if(seriesName === 'incidents') {
+    const obj = Array.isArray(params.data) ? params.data[3] : ''
+    return cssStr((obj as Item).color as string)
+  }
+  return
 }
 export const useDotClick = (
   eChartsRef: RefObject<ReactECharts>,
@@ -109,6 +140,7 @@ export const useDotClick = (
       echartInstance.off('click', handler)
     }
   }, [eChartsRef, handler])
+
 }
 export const useDataZoom = (
   eChartsRef: RefObject<ReactECharts>,
@@ -223,7 +255,7 @@ export function TimelineChart ({
       // Need to address test coverage for the postion
       position: /* istanbul ignore next */ (point) => [
         point[0] + 10,
-        mapping.length * 30
+        mapping.length * 25
       ]
     },
     xAxis: {
@@ -282,7 +314,7 @@ export function TimelineChart ({
         ...Array(placeholderRows)
           .fill(0)
           .map((_, index) => `placeholder${index}`),
-        ...mapping.map(({ label }) => label)
+        ...mapping.map(({ key }) => key)
       ]
     },
     toolbox: {
@@ -314,7 +346,7 @@ export function TimelineChart ({
             symbol: 'circle',
             symbolSize: 8,
             animation: false,
-            data: getSeriesData(data, key, chartType),
+            data: getSeriesData(data, key, series),
             itemStyle: {
               color: getSeriesItemColor
             }
@@ -326,9 +358,9 @@ export function TimelineChart ({
               params: CustomSeriesRenderItemParams,
               api: CustomSeriesRenderItemAPI
             ) {
-              const yValue = api.value(2)
+              const yValue = api.value(1)
               const start = api.coord([api.value(0), yValue])
-              const end = api.coord([api.value(1), yValue])
+              const end = api.coord([api.value(2), yValue])
               const height =
                 (api?.size as CallableFunction)([0, 1])[1] * 0.8
               return {
@@ -345,11 +377,10 @@ export function TimelineChart ({
             itemStyle: {
               color: getBarColor as unknown as string
             },
-            data: getSeriesData(data, key, chartType)
+            data: getSeriesData(data, key, series)
           }
       )
   }
-
   return (
     <>
       <ReactECharts

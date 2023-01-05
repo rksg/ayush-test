@@ -1,3 +1,4 @@
+import { groupBy }                  from 'lodash'
 import { defineMessage, IntlShape } from 'react-intl'
 
 import {
@@ -10,7 +11,7 @@ import {
 import { formatter } from '@acx-ui/utils'
 
 
-import { ConnectionEvent } from './services'
+import { ConnectionEvent, ConnectionQuality } from './services'
 
 export const SUCCESS = 'success'
 export const SLOW = 'slow'
@@ -253,7 +254,7 @@ export const ClientTroubleShootingConfig = {
         { key: 'rss', label: 'rss', chartType: 'bar', series: 'quality' },
         { key: 'snr', label: 'snr', chartType: 'bar', series: 'quality' },
         { key: 'throughput', label: 'throughput', chartType: 'bar', series: 'quality' },
-        { key: 'avgTxMCS', label: 'avgTxMCS', chartType: 'bar' }
+        { key: 'avgTxMCS', label: 'avgTxMCS', chartType: 'bar', series: 'quality' }
       ] as { key: string, label: string, chartType: string, series: string }[],
       subtitle: [
         {
@@ -282,9 +283,9 @@ export const ClientTroubleShootingConfig = {
       hasXaxisLabel: true,
       chartMapping: [
         { key: 'all', label: 'all', chartType: 'bar', series: 'incidents' },
-        { key: 'connection', label: 'clientConnection', chartType: 'bar', series: 'incidents' },
+        { key: 'connection', label: 'connection', chartType: 'bar', series: 'incidents' },
         { key: 'performance', label: 'performance', chartType: 'bar', series: 'incidents' },
-        { key: 'infratructure', label: 'infratructure', chartType: 'bar', series: 'incidents' }
+        { key: 'infrastructure', label: 'infrastructure', chartType: 'bar', series: 'incidents' }
       ] as { key: string, label: string, chartType: string, series: string }[],
       subtitle: [
         {

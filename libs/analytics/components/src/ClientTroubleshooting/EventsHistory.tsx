@@ -49,7 +49,8 @@ export type Item = {
   icon: ReactNode,
   end?:number,
   code?: string,
-  seriesKey?: string
+  seriesKey?: string,
+  color?: string
 }
 // If needed (for incident timeline chart) move this menthod to config
 export const transformIncidents = (
@@ -85,7 +86,8 @@ export const transformIncidents = (
       description: `${intl.$t(category)} (${intl.$t(subCategory)})`,
       title,
       icon: <UI.IncidentEvent color={color}>{severity}</UI.IncidentEvent>,
-      code: incident.code
+      code: incident.code,
+      color: color
     })
     return acc
   }, [] as Item[])

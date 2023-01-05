@@ -378,14 +378,16 @@ export function TimeLine (props: TimeLineProps) {
               {expandObj[config?.value as keyof TimelineData] &&
                 config?.subtitle?.map((subtitle) => (
                   <React.Fragment key={subtitle.value}>
-                    <Col span={17} offset={3}>
+                    <Col span={17}
+                      offset={3}
+                      style={subtitle.isLast ? { marginBottom: 40 } : {}}
+                    >
                       <UI.TimelineSubContent>
                         {$t(subtitle.title)}
                       </UI.TimelineSubContent>
                     </Col>
                     <Col
                       span={4}
-                      style={subtitle.isLast ? { marginBottom: 40 } : {}}
                     >
                       {config.showCount ? (
                         <UI.TimelineCount>
