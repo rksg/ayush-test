@@ -2,6 +2,7 @@
 import React         from 'react'
 import { useEffect } from 'react'
 
+import _             from 'lodash'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
@@ -9,6 +10,7 @@ import { Table, TableProps, Card, Loader }            from '@acx-ui/components'
 import { useVenuesListQuery, useGetDHCPProfileQuery } from '@acx-ui/rc/services'
 import { Venue }                                      from '@acx-ui/rc/utils'
 import { useTableQuery }                              from '@acx-ui/rc/utils'
+import { DHCPUsage }                                  from '@acx-ui/rc/utils'
 import { TenantLink }                                 from '@acx-ui/react-router-dom'
 
 
@@ -17,14 +19,14 @@ export default function DHCPInstancesTable (){
   const { $t } = useIntl()
 
   const params = useParams()
-  const { data } = useGetDHCPProfileQuery({ params })
+  const { data: dhcpProfile } = useGetDHCPProfileQuery({ params })
 
   const tableQuery = useTableQuery({
     useQuery: useVenuesListQuery,
     defaultPayload: {
       fields: ['name', 'id', 'aggregatedApStatus', 'switches'],
       filters: {
-        id: data?.venueIds
+        id: dhcpProfile?.usage?.map((usage:DHCPUsage)=>usage.venueId)||['none']
       },
       sortField: 'name',
       sortOrder: 'ASC'
@@ -32,15 +34,15 @@ export default function DHCPInstancesTable (){
   })
 
   useEffect(()=>{
-    if(data){
+    if(dhcpProfile && dhcpProfile.usage){
       tableQuery.setPayload({
         ...tableQuery.payload,
         filters: {
-          id: data?.venueIds
+          id: dhcpProfile?.usage?.map((usage:DHCPUsage)=>usage.venueId)||['none']
         }
       })
     }
-  },[data])
+  },[dhcpProfile])
 
 
   const columns: TableProps<Venue>['columns'] = [
@@ -52,7 +54,7 @@ export default function DHCPInstancesTable (){
       render: function (_data, row) {
         return (
           <TenantLink
-            to={`/venues/${row.id}/venue-details/overview`}>{row.id}</TenantLink>
+            to={`/venues/${row.id}/venue-details/overview`}>{row.name}</TenantLink>
         )
       }
     },
@@ -84,13 +86,26 @@ export default function DHCPInstancesTable (){
           />
         )
       }
+    },
+    {
+      title: $t({ defaultMessage: 'Capacity' }),
+      key: 'usage',
+      dataIndex: 'usage',
+      render: function (_data, row) {
+        const venueIDIndex = _.find(dhcpProfile?.usage, dhcp => dhcp.venueId===row.id)
+        if(venueIDIndex) {
+          return (100-((venueIDIndex?.usedIpCount/venueIDIndex?.totalIpCount)*100)).toFixed(2)+'%'
+        }else{
+          return ''
+        }
+      }
     }
   ]
 
   return (
     <Loader states={[{ isLoading: tableQuery.isLoading||tableQuery.isFetching }]}>
       <Card title={$t({ defaultMessage: 'Instances ({count})' },
-        { count: tableQuery.data?.data.length })}>
+        { count: tableQuery.data?.totalCount||0 })}>
         <Table
           columns={columns}
           pagination={tableQuery.pagination}
