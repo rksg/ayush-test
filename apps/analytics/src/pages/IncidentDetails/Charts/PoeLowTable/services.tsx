@@ -47,6 +47,7 @@ export const impactedApi = dataApi.injectEndpoints({
               impactedEntities: getImpactedAPs {
                 name
                 mac
+                serial
                 poeMode {
                   configured
                   operating
