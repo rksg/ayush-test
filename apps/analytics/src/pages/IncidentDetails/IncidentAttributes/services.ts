@@ -5,6 +5,7 @@ import { dataApi } from '@acx-ui/analytics/services'
 export interface ImpactedAP {
   name: string
   mac: string
+  serial: string
   model: string
   version: string
 }
@@ -39,6 +40,7 @@ export const impactedApi = dataApi.injectEndpoints({
               impactedAPs: getImpactedAPs(n: $n, search: $search) {
                 name
                 mac
+                serial
                 model
                 version
               }

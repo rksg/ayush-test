@@ -21,7 +21,8 @@ export const PoeLowTable: React.FC<ChartProps> = (props) => {
       title: $t(defineMessage({ defaultMessage: 'AP Name' })),
       dataIndex: 'name',
       key: 'name',
-      render: (_, value) => <TenantLink to={'TODO'}>{value.name}</TenantLink>,
+      render: (_, { serial, name }) =>
+        <TenantLink to={`devices/wifi/${serial}/details/overview`}>{name}</TenantLink>,
       fixed: 'left',
       sorter: { compare: sortProp('name', defaultSort) },
       defaultSortOrder: 'ascend',

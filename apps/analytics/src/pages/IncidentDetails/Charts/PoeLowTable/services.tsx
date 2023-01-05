@@ -12,6 +12,7 @@ export interface Response {
     impactedEntities: {
       name: string
       mac: string
+      serial: string
       poeMode: {
         configured: string
         operating: string
@@ -25,6 +26,7 @@ export interface Response {
 export interface ImpactedAP {
   name: string
   mac: string
+  serial: string
   configured: string
   operating: string
   eventTime: string
@@ -65,6 +67,7 @@ export const impactedApi = dataApi.injectEndpoints({
           return {
             name: datum.name,
             mac: datum.mac,
+            serial: datum.serial,
             configured: $t(poeApPwrModeEnumMap[configured as keyof typeof poeApPwrModeEnumMap]),
             operating: $t(poeCurPwrSrcEnumMap[operating as keyof typeof poeCurPwrSrcEnumMap]),
             eventTime: (new Date(datum.poeMode.eventTime)).toISOString(),

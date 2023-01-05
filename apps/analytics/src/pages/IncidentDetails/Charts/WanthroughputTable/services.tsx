@@ -8,6 +8,7 @@ export interface Response {
     impactedEntities: {
       name: string
       mac: string
+      serial: string
       ports: {
         interface: string
         capability: string
@@ -22,6 +23,7 @@ export interface Response {
 export interface ImpactedAP {
   name: string
   mac: string
+  serial: string
   interface: string
   capability: string
   link: string
@@ -43,6 +45,7 @@ export const impactedApi = dataApi.injectEndpoints({
               impactedEntities: getImpactedAPs(n: $n, search: $search) {
                 name
                 mac
+                serial
                 ports {
                   interface
                   capability
@@ -61,6 +64,7 @@ export const impactedApi = dataApi.injectEndpoints({
           datum.ports.flatMap((result, index) => ({
             name: datum.name,
             mac: datum.mac,
+            serial: datum.serial,
             interface: result.interface,
             capability: result.capability,
             link: result.link,
