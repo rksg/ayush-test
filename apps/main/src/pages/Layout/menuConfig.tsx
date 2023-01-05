@@ -156,7 +156,7 @@ export function useMenuConfig () {
       name: $t({ defaultMessage: 'Administration' }),
       inactiveIcon: AdminOutlined,
       activeIcon: AdminSolid,
-      disabled: true
+      disabled: !useIsSplitOn(Features.UNRELEASED)
     }
   ]
   return config

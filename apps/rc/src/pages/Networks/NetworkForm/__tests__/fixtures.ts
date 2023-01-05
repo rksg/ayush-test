@@ -1,4 +1,11 @@
-import { GuestNetworkTypeEnum, SocialIdentitySource, TimeUnitEnum, NetworkSaveData, NetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
+import {
+  GuestNetworkTypeEnum,
+  SocialIdentitySource,
+  TimeUnitEnum,
+  NetworkSaveData,
+  NetworkTypeEnum,
+  WlanSecurityEnum
+} from '@acx-ui/rc/utils'
 
 export const networksResponse = {
   fields: ['name', 'id'],
@@ -64,7 +71,246 @@ export const networkDeepResponse = {
   },
   tenantId: '3394d65f20114028996f8301bbde622f',
   name: '',
-  id: '3dc530b525654be1bee143728ba39f8a'
+  id: '3dc530b525654be1bee143728ba39f8a',
+
+  venues: [
+    {
+      venueId: '2658c3431412441197ec33aaa64c5147',
+      dual5gEnabled: true,
+      tripleBandEnabled: false,
+      networkId: '573c1d9efc5e4d9eada3f9b8be199186',
+      apGroups: [
+        {
+          apGroupId: '51aa645a5d4840ea837ac98fc2b91ef0',
+          vlanId: 1,
+          radio: 'Both',
+          radioTypes: ['2.4-GHz', '5-GHz'],
+          isDefault: true,
+          validationErrorReachedMaxConnectedNetworksLimit: false,
+          validationErrorSsidAlreadyActivated: false,
+          validationErrorReachedMaxConnectedCaptiveNetworksLimit: false,
+          validationError: false,
+          id: '654d75c875eb4c29ad6456a866d81b62'
+        }
+      ],
+      allApGroupsRadio: '5-GHz',
+      allApGroupsRadioTypes: ['5-GHz'],
+      scheduler: {
+        type: 'CUSTOM',
+        // eslint-disable-next-line max-len
+        sun: '111111111111111111111111111110000000000000000000011111111111111111111111111111111111111111111111',
+        // eslint-disable-next-line max-len
+        mon: '111111111111111111111110000000000000000000011111111111111111111111111111111111111111111111111111',
+        // eslint-disable-next-line max-len
+        tue: '111111111111111111111111111110000000000000000000011111111111111111111111111111111111111111111111',
+        // eslint-disable-next-line max-len
+        wed: '111111111111111111111111111110000000000000000000011111111111111111111111111111111111111111111111',
+        // eslint-disable-next-line max-len
+        thu: '111111111111111111111111111110000000000000000000011111111111111111111111111111111111111111111111',
+        // eslint-disable-next-line max-len
+        fri: '111111111111111111111111111110000000000000000000011111111111111111111111111111111111111111111111',
+        // eslint-disable-next-line max-len
+        sat: '111111111111111111111111111110000000000000000000011111111111111111111111111111111111111111111111'
+      },
+      isAllApGroups: false,
+      id: 'bdc3edc58764467996b709403ec77a24'
+    },
+    {
+      venueId: '3826fc9ad0e64471a1b9901c3980c169',
+      dual5gEnabled: true,
+      tripleBandEnabled: false,
+      networkId: '573c1d9efc5e4d9eada3f9b8be199186',
+      allApGroupsRadio: 'Both',
+      allApGroupsRadioTypes: ['2.4-GHz', '5-GHz'],
+      scheduler: {
+        type: 'CUSTOM',
+        // eslint-disable-next-line max-len
+        sun: '111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111',
+        // eslint-disable-next-line max-len
+        mon: '111111111100011111111111111111111111111111111111111111111111111111111111111111111111111111111111',
+        // eslint-disable-next-line max-len
+        tue: '111111111100011111111111111111111111111111111111111111111111111111111111111111111111111111111111',
+        // eslint-disable-next-line max-len
+        wed: '111111111100011111111111111111111111111111111111111111111111111111111111111111111111111111111111',
+        // eslint-disable-next-line max-len
+        thu: '111111111100011111111111111111111111111111111111111111111111111111111111111111111111111111111111',
+        // eslint-disable-next-line max-len
+        fri: '111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111',
+        // eslint-disable-next-line max-len
+        sat: '111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111'
+      },
+      isAllApGroups: true,
+      id: '43ea24d0356f4dcbbfcb4933653f70a6'
+    },
+    {
+      venueId: '4c778ed630394b76b17bce7fe230cf9f',
+      tripleBandEnabled: false,
+      networkId: '573c1d9efc5e4d9eada3f9b8be199186',
+      apGroups: [
+        {
+          apGroupId: 'c3b59e5f488c4d85b5044939f6a9449b',
+          vlanId: 1,
+          radio: 'Both',
+          radioTypes: ['5-GHz', '2.4-GHz'],
+          isDefault: false,
+          apGroupName: 'eee',
+          validationErrorReachedMaxConnectedNetworksLimit: false,
+          validationErrorSsidAlreadyActivated: false,
+          validationErrorReachedMaxConnectedCaptiveNetworksLimit: false,
+          validationError: false,
+          id: 'dc4358301fa54d95ad426d2c42f3f344'
+        }
+      ],
+      allApGroupsRadio: 'Both',
+      allApGroupsRadioTypes: ['2.4-GHz', '5-GHz'],
+      isAllApGroups: false,
+      id: '007ca76902784d21a63aef7c623f2e43'
+    },
+    {
+      venueId: '74f058ee8ea141a0b09a89c022a04a10',
+      dual5gEnabled: true,
+      tripleBandEnabled: false,
+      networkId: '573c1d9efc5e4d9eada3f9b8be199186',
+      allApGroupsRadio: 'Both',
+      allApGroupsRadioTypes: ['2.4-GHz', '5-GHz'],
+      scheduler: {
+        type: 'CUSTOM',
+        // eslint-disable-next-line max-len
+        sun: '111111111111111111111111111111111111111111111100000000000000000000000000000000000000000000000000',
+        // eslint-disable-next-line max-len
+        mon: '111111111111111111111111111111111111111111111100000000000000000000000000000000000000000000000000',
+        // eslint-disable-next-line max-len
+        tue: '111111111111111111111111111111111111111111111100000000000000000000000000000000000000000000000000',
+        // eslint-disable-next-line max-len
+        wed: '111111111111111111111111111111111111111111111100000000000000000000000000000000000000000000000000',
+        // eslint-disable-next-line max-len
+        thu: '111111111111111111111111111111111111111111111100000000000000000000000000000000000000000000000000',
+        // eslint-disable-next-line max-len
+        fri: '111111111111111111111111111111111111111111111100000000000000000000000000000000000000000000000000',
+        // eslint-disable-next-line max-len
+        sat: '111111111111111111111111111111111111111111111100000000000000000000000000000000000000000000000000'
+      },
+      isAllApGroups: true,
+      id: '2d88d0321de4436cae886ac72a4df5d7'
+    },
+    {
+      venueId: '908c47ee1cd445838c3bf71d4addccdf',
+      tripleBandEnabled: false,
+      networkId: '573c1d9efc5e4d9eada3f9b8be199186',
+      allApGroupsRadio: 'Both',
+      allApGroupsRadioTypes: ['2.4-GHz', '5-GHz'],
+      scheduler: {
+        type: 'CUSTOM',
+        // eslint-disable-next-line max-len
+        sun: '111111111111111111111111111111111111111111111111111111111111111100000000000000000000000000000000',
+        // eslint-disable-next-line max-len
+        mon: '111111111111111111111111111111111111111111111111111111111111111100000000000000000000000000000000',
+        // eslint-disable-next-line max-len
+        tue: '111111111111111111111111111111111111111111111111111111111111111100000000000000000000000000000000',
+        // eslint-disable-next-line max-len
+        wed: '111111111111111111111111111111111111111111111111111111111111111100000000000000000000000000000000',
+        // eslint-disable-next-line max-len
+        thu: '111111111111111111111111111111111111111111111111111111111111111100000000000000000000000000000000',
+        // eslint-disable-next-line max-len
+        fri: '111111111111111111111111111111111111111111111111111111111111111100000000000000000000000000000000',
+        // eslint-disable-next-line max-len
+        sat: '111111111111111111111111111111111111111111111111111111111111111100000000000000000000000000000000'
+      },
+      isAllApGroups: true,
+      id: 'a5cbc73da9c14a1eb980e01f0a6035ca'
+    },
+    {
+      venueId: 'a4f9622e9c7547ba934fbb5ee55646c2',
+      dual5gEnabled: true,
+      tripleBandEnabled: false,
+      networkId: '573c1d9efc5e4d9eada3f9b8be199186',
+      apGroups: [
+        {
+          apGroupId: '4a027ae858dd440baeef6f3245dcb94b',
+          vlanId: 1,
+          radio: 'Both',
+          radioTypes: ['5-GHz', '2.4-GHz'],
+          isDefault: true,
+          validationErrorReachedMaxConnectedNetworksLimit: false,
+          validationErrorSsidAlreadyActivated: false,
+          validationErrorReachedMaxConnectedCaptiveNetworksLimit: false,
+          validationError: false,
+          id: '417dec1578624431a5c3b0f5528b69d0'
+        }
+      ],
+      allApGroupsRadio: 'Both',
+      allApGroupsRadioTypes: ['2.4-GHz', '5-GHz'],
+      scheduler: {
+        type: 'CUSTOM',
+        // eslint-disable-next-line max-len
+        sun: '111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111',
+        // eslint-disable-next-line max-len
+        mon: '000000000000000000000000000000000000000000000000000000000000000000000000000000000111111111111111',
+        // eslint-disable-next-line max-len
+        tue: '000000000000000000000000000000000000000000000000000000000000000000000000000000000111111111111111',
+        // eslint-disable-next-line max-len
+        wed: '111111111111111111111111111111111111111100001111111111111111111111111111111111111111111111111111',
+        // eslint-disable-next-line max-len
+        thu: '111111111111111111111111111111111111111100001111111111111111111111111111111111111111111111111111',
+        // eslint-disable-next-line max-len
+        fri: '111111111111111111111111111111111111111100001111111111111111111111111111111111111111111111111111',
+        // eslint-disable-next-line max-len
+        sat: '111111111111111111111111111111111111111100001111111111111111111111111111111111111111111111111111'
+      },
+      isAllApGroups: false,
+      id: '5749e62574e34298ba99d39ad7747d0d'
+    },
+    {
+      venueId: 'cd0eca75dabc46f1a7c0921d2b44e647',
+      dual5gEnabled: true,
+      tripleBandEnabled: false,
+      networkId: '573c1d9efc5e4d9eada3f9b8be199186',
+      allApGroupsRadio: 'Both',
+      allApGroupsRadioTypes: ['2.4-GHz', '5-GHz'],
+      isAllApGroups: true,
+      id: '2bd92accb3e8449d84be7d961b0d6dd0'
+    },
+    {
+      venueId: 'f27f33e0475d4f49af57350fed788c7b',
+      tripleBandEnabled: false,
+      networkId: '573c1d9efc5e4d9eada3f9b8be199186',
+      apGroups: [
+        {
+          apGroupId: '270a40a7da33456ea8b866788b28379a',
+          vlanId: 1,
+          radio: 'Both',
+          radioTypes: ['2.4-GHz', '5-GHz'],
+          isDefault: true,
+          validationErrorReachedMaxConnectedNetworksLimit: false,
+          validationErrorSsidAlreadyActivated: false,
+          validationErrorReachedMaxConnectedCaptiveNetworksLimit: false,
+          validationError: false,
+          id: '97e5c17eff014a57a25f9f3c3abae054'
+        }
+      ],
+      allApGroupsRadio: 'Both',
+      allApGroupsRadioTypes: ['2.4-GHz', '5-GHz'],
+      scheduler: {
+        type: 'CUSTOM',
+        // eslint-disable-next-line max-len
+        sun: '111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111',
+        // eslint-disable-next-line max-len
+        mon: '111111111111111000000000011111111111111111111111111111111111111111111111111111111111111111111111',
+        // eslint-disable-next-line max-len
+        tue: '111111111111111000000000011111111111111111111111111111100000111111111111111111111111111111111111',
+        // eslint-disable-next-line max-len
+        wed: '111111111111111000000000011111111111111111111111111111100000111111111111111111111111111111111111',
+        // eslint-disable-next-line max-len
+        thu: '111111111111111000000000011111111111111111111111111111100000111111111111111111111111111111111111',
+        // eslint-disable-next-line max-len
+        fri: '111111111111111111111111111111111111111111111111111111100000111111111111111111111111111111111111',
+        // eslint-disable-next-line max-len
+        sat: '111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111'
+      },
+      isAllApGroups: false,
+      id: 'e2cc096d71954b47b19f822a4a53ad84'
+    }
+  ]
 }
 
 export const wifiCloudpathResponse = [
@@ -132,25 +378,58 @@ export const wifiCloudpathResponse = [
 
 export const venuesResponse = {
   fields: [
-    'country','city','aps','latitude','switches','description',
-    'networks','switchClients','vlan','radios','name','scheduling',
-    'id','aggregatedApStatus','mesh','activated','longitude','status'
+    'country',
+    'city',
+    'aps',
+    'latitude',
+    'switches',
+    'description',
+    'networks',
+    'switchClients',
+    'vlan',
+    'radios',
+    'name',
+    'scheduling',
+    'id',
+    'aggregatedApStatus',
+    'mesh',
+    'activated',
+    'longitude',
+    'status'
   ],
   totalCount: 2,
   page: 1,
   data: [
     {
-      id: '6cf550cdb67641d798d804793aaa82db',name: 'My-Venue',
-      description: 'My-Venue',city: 'New York',country: 'United States',
-      latitude: '40.7690084',longitude: '-73.9431541',switches: 2,
-      status: '1_InSetupPhase',mesh: { enabled: false }
-    },{
-      id: 'c6ae1e4fb6144d27886eb7693ae895c8',name: 'TDC_Venue',
-      description: 'Taipei',city: 'Zhongzheng District, Taipei City',
-      country: 'Taiwan',latitude: '25.0346703',longitude: '121.5218293',
-      networks: { count: 1,names: ['JK-Network'],vlans: [1] },
+      id: '6cf550cdb67641d798d804793aaa82db',
+      name: 'My-Venue',
+      description: 'My-Venue',
+      city: 'New York',
+      country: 'United States',
+      latitude: '40.7690084',
+      longitude: '-73.9431541',
+      switches: 2,
+      status: '1_InSetupPhase',
+      mesh: { enabled: false },
+      networks: {
+        count: 4,
+        names: ['002', '003', 'open network test', '001'],
+        vlans: [1]
+      }
+    },
+    {
+      id: 'c6ae1e4fb6144d27886eb7693ae895c8',
+      name: 'TDC_Venue',
+      description: 'Taipei',
+      city: 'Zhongzheng District, Taipei City',
+      country: 'Taiwan',
+      latitude: '25.0346703',
+      longitude: '121.5218293',
+      networks: { count: 1, names: ['JK-Network'], vlans: [1] },
       aggregatedApStatus: { '2_00_Operational': 1 },
-      switchClients: 1,switches: 1,status: '2_Operational',
+      switchClients: 1,
+      switches: 1,
+      status: '2_Operational',
       mesh: { enabled: false }
     }
   ]
@@ -158,78 +437,223 @@ export const venuesResponse = {
 
 export const venueListResponse = {
   fields: [
+    'country',
+    'city',
+    'aps',
+    'latitude',
+    'switches',
+    'description',
+    'networks',
+    'switchClients',
+    'vlan',
+    'radios',
     'name',
-    'id'
+    'scheduling',
+    'id',
+    'aggregatedApStatus',
+    'mesh',
+    'activated',
+    'longitude',
+    'status'
   ],
-  totalCount: 5,
+  totalCount: 10,
   page: 1,
   data: [
     {
-      id: '01b1fe5d153d4a2a90455795af6ad877',
-      name: 'airport'
+      id: '908c47ee1cd445838c3bf71d4addccdf',
+      name: 'DEMO_VENUE test 5',
+      description: '',
+      city: 'Sunnyvale, California',
+      country: 'United States',
+      latitude: '37.4112751',
+      longitude: '-122.0191908',
+      networks: {
+        count: 4,
+        names: ['002', 'open network test', '003', '001'],
+        vlans: [1]
+      },
+      status: '1_InSetupPhase',
+      mesh: { enabled: false }
     },
     {
-      id: 'b2efc20b6d2b426c836d76110f88941b',
-      name: 'dsfds'
-    },
-    {
-      id: 'f27f33e0475d4f49af57350fed788c7b',
-      name: 'SG office'
+      id: 'cd0eca75dabc46f1a7c0921d2b44e647',
+      name: 'license test',
+      description: '',
+      city: 'Sunnyvale, California',
+      country: 'United States',
+      latitude: '37.4112751',
+      longitude: '-122.0191908',
+      networks: { count: 2, names: ['001 - copy', '001'], vlans: [1] },
+      aggregatedApStatus: { '1_01_NeverContactedCloud': 1 },
+      status: '1_InSetupPhase',
+      mesh: { enabled: false }
     },
     {
       id: '4c778ed630394b76b17bce7fe230cf9f',
-      name: 'My-Venue'
+      name: 'My-Venue',
+      description: 'My-Venuefdf',
+      city: 'New York',
+      country: 'United States',
+      latitude: '40.7690084',
+      longitude: '-73.9431541',
+      networks: {
+        count: 11,
+        names: [
+          'NMS-app6-WLAN',
+          'aaa-45',
+          'su-psk',
+          'dfg',
+          '002',
+          'NMS-app6-JK-acx-hybrid',
+          'su-dpsk',
+          'su-open',
+          'guest pass wlan',
+          'dddd',
+          '001'
+        ],
+        vlans: [1]
+      },
+      aggregatedApStatus: {
+        '1_09_Offline': 1,
+        '3_04_DisconnectedFromCloud': 1,
+        '1_01_NeverContactedCloud': 2
+      },
+      status: '3_RequiresAttention',
+      mesh: { enabled: false }
     },
     {
-      id: 'a678f2e5767746a394a7b10c45235119',
-      name: 'sadas'
+      id: '3826fc9ad0e64471a1b9901c3980c169',
+      name: 'NEW',
+      city: 'Sunnyvale, California',
+      country: 'United States',
+      latitude: '37.4112751',
+      longitude: '-122.0191908',
+      networks: { count: 3, names: ['002', 'NEW', '001'], vlans: [1] },
+      status: '1_InSetupPhase',
+      mesh: { enabled: false }
+    },
+    {
+      id: 'f27f33e0475d4f49af57350fed788c7b',
+      name: 'SG office',
+      description: 'SG office',
+      city: 'Singapore',
+      country: 'Singapore',
+      latitude: '1.3010685',
+      longitude: '103.8626788',
+      networks: { count: 2, names: ['002', '001'], vlans: [1] },
+      status: '1_InSetupPhase',
+      mesh: { enabled: false }
+    },
+    {
+      id: '74f058ee8ea141a0b09a89c022a04a10',
+      name: 'TEST for ap group',
+      city: 'Tampa, Florida',
+      country: 'United States',
+      latitude: '27.950575',
+      longitude: '-82.4571776',
+      networks: { count: 1, names: ['001'], vlans: [1] },
+      aggregatedApStatus: { '1_01_NeverContactedCloud': 2 },
+      switches: 2,
+      status: '1_InSetupPhase',
+      mesh: { enabled: false }
+    },
+    {
+      id: '2658c3431412441197ec33aaa64c5147',
+      name: 'UI team with AP',
+      city: 'Sunnyvale, California',
+      country: 'United States',
+      latitude: '37.4112751',
+      longitude: '-122.0191908',
+      networks: { count: 1, names: ['001'], vlans: [1] },
+      status: '1_InSetupPhase',
+      mesh: { enabled: false }
+    },
+    {
+      id: 'a4f9622e9c7547ba934fbb5ee55646c2',
+      name: 'venue-dhcp',
+      description: '',
+      city: 'Taiping, Perak',
+      country: 'Malaysia',
+      latitude: '4.854995099999999',
+      longitude: '100.751032',
+      networks: { count: 1, names: ['001'], vlans: [1] },
+      status: '1_InSetupPhase',
+      mesh: { enabled: false }
+    },
+    {
+      id: '16b11938ee934928a796534e2ee47661',
+      name: 'venue-dhcp-ui',
+      description: '',
+      city: 'Sunnyvale, California',
+      country: 'United States',
+      latitude: '37.4112751',
+      longitude: '-122.0191908',
+      networks: { count: 1, names: ['001 - copy'], vlans: [] },
+      status: '1_InSetupPhase',
+      mesh: { enabled: false }
+    },
+    {
+      id: '0908ef7cf76441f18c26734cc80e984a',
+      name: 'venue2',
+      description: '',
+      city: 'Sunnyvale, California',
+      country: 'United States',
+      latitude: '37.4112751',
+      longitude: '-122.0191908',
+      networks: { count: 1, names: ['001 - copy'], vlans: [] },
+      switches: 2,
+      status: '1_InSetupPhase',
+      mesh: { enabled: false }
     }
   ]
 }
 
 export const successResponse = { requestId: 'request-id' }
 
-export const cloudpathResponse = [{
-  authRadius: {
-    primary: {
-      ip: '5.54.58.5',
-      port: 56,
-      sharedSecret: '454545'
+export const cloudpathResponse = [
+  {
+    authRadius: {
+      primary: {
+        ip: '5.54.58.5',
+        port: 56,
+        sharedSecret: '454545'
+      },
+      id: 'c615bf8c82dc404ebb98c7e89672ef29'
     },
-    id: 'c615bf8c82dc404ebb98c7e89672ef29'
-  },
-  accountingRadius: {
-    primary: {
-      ip: '5.54.58.6',
-      port: 57,
-      sharedSecret: '454545'
+    accountingRadius: {
+      primary: {
+        ip: '5.54.58.6',
+        port: 57,
+        sharedSecret: '454545'
+      },
+      id: 'c615bf8c82dc404ebb98c7e89672ef29'
     },
-    id: 'c615bf8c82dc404ebb98c7e89672ef29'
+    deploymentType: 'Cloud',
+    id: '6edb22ef74b143f280f2eb3105053840',
+    name: 'cloud_02'
   },
-  deploymentType: 'Cloud',
-  id: '6edb22ef74b143f280f2eb3105053840',
-  name: 'cloud_02'
-}, {
-  authRadius: {
-    primary: {
-      ip: '3.2.34.5',
-      port: 56,
-      sharedSecret: 'GFHFGH'
+  {
+    authRadius: {
+      primary: {
+        ip: '3.2.34.5',
+        port: 56,
+        sharedSecret: 'GFHFGH'
+      },
+      id: '296ee3f68c434aa4bc3b3ba1f7272806'
     },
-    id: '296ee3f68c434aa4bc3b3ba1f7272806'
-  },
-  accountingRadius: {
-    primary: {
-      ip: '3.2.34.6',
-      port: 57,
-      sharedSecret: 'GFHFGH'
+    accountingRadius: {
+      primary: {
+        ip: '3.2.34.6',
+        port: 57,
+        sharedSecret: 'GFHFGH'
+      },
+      id: '296ee3f68c434aa4bc3b3ba1f7272806'
     },
-    id: '296ee3f68c434aa4bc3b3ba1f7272806'
-  },
-  deploymentType: 'Cloud',
-  id: '5cc1d4a21c4d41b8ab1a839a0e03cc8c',
-  name: 'cloud_01'
-}]
+    deploymentType: 'Cloud',
+    id: '5cc1d4a21c4d41b8ab1a839a0e03cc8c',
+    name: 'cloud_01'
+  }
+]
 
 export const policyListResponse = {
   fields: ['name', 'id'],
@@ -238,23 +662,30 @@ export const policyListResponse = {
   page: 1
 }
 export const dhcpResponse = {
-  id: '6cf550cdb67641d798d804793aaa82db',name: 'My-DHCP',
-  vlanId: 0,subnetAddress: '2.2.2.3',subnetMask: '255.255.255.0',
-  startIpAddress: '10.2.2.2',endIpAddress: '10.2.2.20',primaryDnsIp: '10.1.1.1',
-  secondaryDnsIp: '10.2.3.3',leaseTimeHours: 2, leaseTimeMinutes: 2
+  id: '6cf550cdb67641d798d804793aaa82db',
+  name: 'My-DHCP',
+  vlanId: 0,
+  subnetAddress: '2.2.2.3',
+  subnetMask: '255.255.255.0',
+  startIpAddress: '10.2.2.2',
+  endIpAddress: '10.2.2.20',
+  primaryDnsIp: '10.1.1.1',
+  secondaryDnsIp: '10.2.3.3',
+  leaseTimeHours: 2,
+  leaseTimeMinutes: 2
 }
-export const hostapprovalData={
+export const hostapprovalData = {
   guestPortal: {
     redirectUrl: 'dbaidu.com',
     guestNetworkType: GuestNetworkTypeEnum.HostApproval,
     hostGuestConfig: {
       hostDomains: ['aa.com'],
-      hostDurationChoices: [1,4,24,168,730]
+      hostDurationChoices: [1, 4, 24, 168, 730]
     }
   }
 }
 
-export const wisprDataNone={
+export const wisprDataNone = {
   guestPortal: {
     walledGardens: ['aa.com'],
     guestNetworkType: GuestNetworkTypeEnum.WISPr,
@@ -265,10 +696,10 @@ export const wisprDataNone={
   },
   wlan: {
     bypassCPUsingMacAddressAuthentication: true,
-	  wlanSecurity: WlanSecurityEnum.None
+    wlanSecurity: WlanSecurityEnum.None
   }
 }
-export const wisprDataWep={
+export const wisprDataWep = {
   guestPortal: {
     walledGardens: ['aa.com'],
     guestNetworkType: GuestNetworkTypeEnum.WISPr,
@@ -279,11 +710,11 @@ export const wisprDataWep={
   },
   wlan: {
     bypassCPUsingMacAddressAuthentication: true,
-	  wlanSecurity: WlanSecurityEnum.WEP,
-	  wepHexKey: 'aaaaaaaaaa'
+    wlanSecurity: WlanSecurityEnum.WEP,
+    wepHexKey: 'aaaaaaaaaa'
   }
 }
-export const wisprDataWPA23={
+export const wisprDataWPA23 = {
   guestPortal: {
     walledGardens: ['aa.com'],
     guestNetworkType: GuestNetworkTypeEnum.WISPr,
@@ -294,12 +725,12 @@ export const wisprDataWPA23={
   },
   wlan: {
     bypassCPUsingMacAddressAuthentication: true,
-	  wlanSecurity: WlanSecurityEnum.WPA23Mixed,
-	  passphrase: 'aaaaaaaaaa',
+    wlanSecurity: WlanSecurityEnum.WPA23Mixed,
+    passphrase: 'aaaaaaaaaa',
     saePassphrase: 'bbbbbbbbb'
   }
 }
-export const wisprDataWPA2={
+export const wisprDataWPA2 = {
   guestPortal: {
     redirectUrl: 'dbaidu.com',
     walledGardens: ['aa.com'],
@@ -313,11 +744,11 @@ export const wisprDataWPA2={
   },
   wlan: {
     bypassCPUsingMacAddressAuthentication: true,
-	  wlanSecurity: WlanSecurityEnum.WPA2Personal,
-	  passphrase: 'aaaaaaaaaa'
+    wlanSecurity: WlanSecurityEnum.WPA2Personal,
+    passphrase: 'aaaaaaaaaa'
   }
 }
-export const selfsignData={
+export const selfsignData = {
   guestPortal: {
     redirectUrl: 'dbaidu.com',
     guestNetworkType: GuestNetworkTypeEnum.SelfSignIn,
@@ -336,55 +767,55 @@ export const selfsignData={
     }
   }
 }
-export const guestpassData={
+export const guestpassData = {
   enableDhcp: true,
   guestPortal: {
     redirectUrl: 'dbaidu.com'
   }
 }
-export const portalList =[{
-  id: 2,
-  serviceName: 'test2',
-  content: {
-    welcomeText: 'Welcome to the Guest Access login page',
-    welcomeColor: '#333333',
-    bgImage: '',
-    bgColor: '#FFFFFF',
-    welcomeSize: 14,
+export const portalList = [
+  {
+    id: 2,
+    serviceName: 'test2',
+    content: {
+      welcomeText: 'Welcome to the Guest Access login page',
+      welcomeColor: '#333333',
+      bgImage: '',
+      bgColor: '#FFFFFF',
+      welcomeSize: 14,
 
-    photoRatio: 170,
+      photoRatio: 170,
 
-    logoRatio: 105,
-    secondaryText: 'Lorem ipsum dolor sit amet, consectetur adipiscing'+
-    ' elit. Aenean euismod bibendum laoreet.',
-    secondaryColor: '#333333',
-    secondarySize: 14,
-    buttonColor: '#EC7100',
-    poweredBgColor: '#FFFFFF',
-    poweredColor: '#333333',
-    poweredSize: 14,
-    poweredImgRatio: 50,
-    poweredImg: '',
-    wifi4EUNetworkId: '',
-    termsCondition: '',
-    componentDisplay: {
-      logo: true,
-      welcome: true,
-      photo: true,
-      secondaryText: true,
-      termsConditions: false,
-      poweredBy: true,
-      wifi4eu: false
-    },
-    displayLangCode: 'en',
+      logoRatio: 105,
+      secondaryText:
+        'Lorem ipsum dolor sit amet, consectetur adipiscing' +
+        ' elit. Aenean euismod bibendum laoreet.',
+      secondaryColor: '#333333',
+      secondarySize: 14,
+      buttonColor: '#EC7100',
+      poweredBgColor: '#FFFFFF',
+      poweredColor: '#333333',
+      poweredSize: 14,
+      poweredImgRatio: 50,
+      poweredImg: '',
+      wifi4EUNetworkId: '',
+      termsCondition: '',
+      componentDisplay: {
+        logo: true,
+        welcome: true,
+        photo: true,
+        secondaryText: true,
+        termsConditions: false,
+        poweredBy: true,
+        wifi4eu: false
+      },
+      displayLangCode: 'en',
 
-    alternativeLang:
-
-    { cs: false, zh_TW: false, fr: false }
+      alternativeLang: { cs: false, zh_TW: false, fr: false }
+    }
   }
-}
 ]
-export const externalProviders={
+export const externalProviders = {
   providers: [
     {
       regions: [
@@ -628,4 +1059,80 @@ export const partialDpskNetworkEntity: NetworkSaveData = {
   dpskServiceProfileId: dpskListResponse.content[1].id,
   name: 'JackyDPSK',
   id: '1887fef21cdf485cbe2583b8c5ec97f1'
+}
+
+export const networkAPGroupResponse = {
+  requestId: '7dd85164-a1b5-493a-8def-a5214ca01960',
+  response: [
+    {
+      venueId: '908c47ee1cd445838c3bf71d4addccdf',
+      tripleBandEnabled: false,
+      networkId: '573c1d9efc5e4d9eada3f9b8be199186',
+      apGroups: [
+        {
+          apGroupId: '068a4db6f47d418ebbbdbca741253735',
+          radio: 'Both',
+          radioTypes: ['2.4-GHz', '5-GHz'],
+          isDefault: false,
+          apGroupName: 'hhh',
+          validationErrorReachedMaxConnectedNetworksLimit: false,
+          validationErrorSsidAlreadyActivated: false,
+          validationErrorReachedMaxConnectedCaptiveNetworksLimit: false,
+          validationError: false,
+          id: 'b123e0174c57455aac2b5d1d88dec7bd'
+        },
+        {
+          apGroupId: '3243f76d6cb04fa7ab18d0e6d17b6f18',
+          radio: 'Both',
+          radioTypes: ['2.4-GHz', '5-GHz'],
+          isDefault: true,
+          validationErrorReachedMaxConnectedNetworksLimit: false,
+          validationErrorSsidAlreadyActivated: false,
+          validationErrorReachedMaxConnectedCaptiveNetworksLimit: false,
+          validationError: false,
+          id: '338e9bbe113a46059d5446eebad5963f'
+        }
+      ],
+      allApGroupsRadio: 'Both',
+      isAllApGroups: false
+    }
+  ]
+}
+
+export const apGroupsResponse = {
+  requestId: '04a97b0b-c3ff-4184-812c-3267029e3f08',
+  response: [
+    {
+      venueId: '908c47ee1cd445838c3bf71d4addccdf',
+      tripleBandEnabled: false,
+      networkId: '5d45082c812c45fbb9aab24420f39bf0',
+      apGroups: [
+        {
+          apGroupId: '3243f76d6cb04fa7ab18d0e6d17b6f18',
+          radio: 'Both',
+          radioTypes: ['2.4-GHz', '5-GHz'],
+          isDefault: true,
+          validationErrorReachedMaxConnectedNetworksLimit: false,
+          validationErrorSsidAlreadyActivated: false,
+          validationErrorReachedMaxConnectedCaptiveNetworksLimit: false,
+          validationError: false,
+          id: 'b5275fde5b5f4a119665cd3a8bde30e5'
+        },
+        {
+          apGroupId: '068a4db6f47d418ebbbdbca741253735',
+          radio: 'Both',
+          radioTypes: ['2.4-GHz', '5-GHz'],
+          isDefault: false,
+          apGroupName: 'hhh',
+          validationErrorReachedMaxConnectedNetworksLimit: false,
+          validationErrorSsidAlreadyActivated: false,
+          validationErrorReachedMaxConnectedCaptiveNetworksLimit: false,
+          validationError: false,
+          id: '5aee44348f174c94aeec545e8e7162fb'
+        }
+      ],
+      allApGroupsRadio: 'Both',
+      isAllApGroups: false
+    }
+  ]
 }
