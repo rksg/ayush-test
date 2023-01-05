@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react'
 
 import { Buffer } from 'buffer'
@@ -11,15 +10,15 @@ import {
   RadioBand,
   Loader
 } from '@acx-ui/components'
-import { useDateFilter, convertDateTimeToSqlFormat } from '@acx-ui/utils'
+import { useGuestTokenMutation, useEmbeddedIdMutation, BASE_RELATIVE_URL } from '@acx-ui/reports/services'
+import { useDateFilter, convertDateTimeToSqlFormat }                       from '@acx-ui/utils'
 
-import { useGuestTokenMutation, useEmbeddedIdMutation, BASE_RELATIVE_URL } from '../Services'
 
 interface ReportProps {
   embedDashboardName: string
 }
 
-function Report (props: ReportProps) {
+export function EmbeddedReport (props: ReportProps) {
   const { embedDashboardName } = props
   const [ guestToken ] = useGuestTokenMutation()
   const [ embeddedId ] = useEmbeddedIdMutation()
@@ -64,7 +63,7 @@ function Report (props: ReportProps) {
 
   const fetchGuestTokenFromBackend = async () => {
     // eslint-disable-next-line no-console
-    console.log('%c[%s][ACX] -> Refreshing guest token for Embedded Report',
+    console.log('%c[%s][ACX] -> Refreshing guest token for Embedded EmbeddedReport',
       'color: cyan', new Date().toLocaleString())
     return await guestToken({ payload: guestTokenPayload }).unwrap()
   }
@@ -90,5 +89,3 @@ function Report (props: ReportProps) {
     </Loader>
   )
 }
-
-export default Report

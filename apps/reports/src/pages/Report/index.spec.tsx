@@ -1,7 +1,6 @@
+import { ReportType }     from '@acx-ui/reports/utils'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
-
-import { ReportType } from './reportsMapping'
 
 import { Report } from './index'
 

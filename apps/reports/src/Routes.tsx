@@ -1,16 +1,15 @@
 
 import { createContext, useState } from 'react'
 
-
 import { CheckboxValueType } from 'antd/lib/checkbox/Group'
 import { SingleValueType }   from 'rc-cascader/lib/Cascader'
 
 import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
+import { ReportType  }                       from '@acx-ui/reports/utils'
 import { Provider }                          from '@acx-ui/store'
 import { NetworkPath }                       from '@acx-ui/utils'
 
-import { Report }      from './pages/Reports'
-import { ReportType  } from './pages/Reports/reportsMapping'
+import { Report } from './pages/Report'
 
 export interface NetworkFilterWithBand {
   paths?: NetworkPath[],
