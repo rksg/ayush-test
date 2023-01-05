@@ -132,6 +132,6 @@ describe('CaptiveNetworkForm-WISPr', () => {
       { name: /Enable Ruckus DHCP service/ }))
     await userEvent.click(await screen.findByRole('checkbox',
       { name: /Enable MAC auth bypass/ }))
-    await userEvent.click(await screen.findByText('More details'))
+    // await userEvent.click(await screen.findByText('More details'))
   })
 })

@@ -26,10 +26,11 @@ import useDHCPInfo                                               from './hooks/u
 import { AntSelect, IconContainer, AddBtnContainer, StyledForm } from './styledComponents'
 
 
-import {  } from '@acx-ui/rc/services'
-
-
 const { Option } = AntSelect
+const defaultAPPayload = {
+  fields: ['serialNumber', 'name', 'venueId'],
+  pageSize: 10000
+}
 const VenueDHCPForm = (props: {
   form: FormInstance,
 }) => {
@@ -42,7 +43,14 @@ const VenueDHCPForm = (props: {
     params
   })
   const { data: dhcpProfileList } = useGetDHCPProfileListQuery({ params })
-  const { data: apList } = useApListQuery({ params })
+  const { data: apList } = useApListQuery({
+    params,
+    payload: {
+      ...defaultAPPayload,
+      filters: { venueId: params.venueId ? [params.venueId] : [] }
+    }
+  })
+
 
   const [gateways, setGateways] = useState<DHCPProfileAps[]>()
   const [dhcpServiceID, setDHCPServiceID] = useState('')
