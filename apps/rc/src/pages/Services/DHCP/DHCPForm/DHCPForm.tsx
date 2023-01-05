@@ -59,7 +59,16 @@ export default function DHCPForm (props: DHCPFormProps) {
   const handleAddOrUpdateDHCP = async (formData: DHCPSaveData) => {
     try {
       convertLeashTimeforBackend(formData)
-      await saveOrUpdateDHCP({ params, payload: formData }).unwrap()
+      const payload = {
+        ...formData,
+        dhcpPools: formData.dhcpPools.map((pool)=>{
+          return {
+            ...pool,
+            id: pool.id.indexOf('_NEW_')!==-1 ? '' : pool.id
+          }
+        })
+      }
+      await saveOrUpdateDHCP({ params, payload }).unwrap()
     } catch {
       showToast({
         type: 'error',

@@ -31,8 +31,8 @@ describe('Portal Instance Page', () => {
       ),
       rest.get(PortalUrlsInfo.getPortalLang.url,
         (req, res, ctx) => {
-          return res(ctx.status(404),ctx.json(
-            'acceptTermsMsg = I accept the\nacceptTermsLink= terms & conditions'))
+          return res(ctx.json({ acceptTermsLink: 'terms & conditions',
+            acceptTermsMsg: 'I accept the' }))
         })
     )
   })

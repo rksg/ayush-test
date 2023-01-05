@@ -1,10 +1,13 @@
 import { Form, Input, Col, Radio, Row, Space } from 'antd'
+import _                                       from 'lodash'
 import { useIntl }                             from 'react-intl'
 
 import { StepsForm }                  from '@acx-ui/components'
 import { useGetDHCPProfileListQuery } from '@acx-ui/rc/services'
 import { DHCPConfigTypeEnum }         from '@acx-ui/rc/utils'
+import { DHCPPool }                   from '@acx-ui/rc/utils'
 import { useParams }                  from '@acx-ui/react-router-dom'
+import { getIntl }                    from '@acx-ui/utils'
 
 import { dhcpTypes, dhcpTypesDesc } from './contentsMap'
 import { DHCPDiagram }              from './DHCPDiagram/DHCPDiagram'
@@ -15,6 +18,23 @@ interface DHCPFormProps {
   editMode?: boolean
 }
 
+async function poolValidator (
+  type: DHCPConfigTypeEnum,
+  pools: DHCPPool[]
+) {
+  const { $t } = getIntl()
+  if(type === DHCPConfigTypeEnum.HIERARCHICAL){
+    const hasVlan1 = _.findIndex(pools, { vlanId: 1 })
+    if(hasVlan1===-1){
+      return Promise.reject($t({
+        defaultMessage:
+          // eslint-disable-next-line max-len
+          'At least one DHCP pool with VLAN ID equals "1" must be configured for "Hierarchical" type of DHCP.'
+      }))
+    }
+  }
+  return
+}
 const { useWatch } = Form
 export function SettingForm (props: DHCPFormProps) {
   const { $t } = useIntl()
@@ -94,9 +114,14 @@ export function SettingForm (props: DHCPFormProps) {
             {
               required: true,
               message: $t({ defaultMessage: 'Please create DHCP pools' })
-            }]}
+            },
+            {
+              validator: (_rule, value) => poolValidator(type, value)
+            }
+
+          ]}
           label={$t({ defaultMessage: 'Set DHCP Pools' })}
-          children={<DHCPPoolTable />}
+          children={<DHCPPoolTable dhcpMode={type}/>}
         />
       </Col>
     </Row>
