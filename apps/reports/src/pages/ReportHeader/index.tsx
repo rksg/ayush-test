@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import moment from 'moment'
 
@@ -23,16 +23,23 @@ export function ReportHeader (props: {
     radioBandDisabledReason,
     showFilter=true
   } = props
+  const [isLoaded, setIsLoaded] = useState(false)
   const shouldQuerySwitch = ['switch','both'].includes(mode)
   const showRadioBand = ['ap','both'].includes(mode)
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
   const { setNetworkPath: setReportsNetworkPath } = useReportsFilter()
 
   useEffect(()=>{
-    // Reset when filter mode changes
-    setReportsNetworkPath([],[],[])
+    if(isLoaded){
+      // Reset when filter mode changes
+      setReportsNetworkPath([],[],[])
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[mode])
+
+  useEffect(()=>{
+    setIsLoaded(true)
+  },[])
 
   return (
     <PageHeader
