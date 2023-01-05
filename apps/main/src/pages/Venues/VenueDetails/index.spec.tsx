@@ -87,14 +87,11 @@ describe('VenueDetails', () => {
       venueId: '7482d2efe90f48d0a898c96d42d2d0e7',
       activeTab: 'overview'
     }
-    const { asFragment } = render(<Provider><VenueDetails /></Provider>, {
+    render(<Provider><VenueDetails /></Provider>, {
       route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
     })
-
     expect(await screen.findByText('testVenue')).toBeVisible()
     expect(screen.getAllByRole('tab')).toHaveLength(7)
-
-    expect(asFragment()).toMatchSnapshot()
   })
 
   it('should navigate to analytic tab correctly', async () => {
@@ -103,10 +100,11 @@ describe('VenueDetails', () => {
       venueId: '7482d2efe90f48d0a898c96d42d2d0e7',
       activeTab: 'analytics'
     }
-    const { asFragment } = render(<Provider><VenueDetails /></Provider>, {
+    render(<Provider><VenueDetails /></Provider>, {
       route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
     })
-    expect(asFragment()).toMatchSnapshot()
+    expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
+      .toEqual('AI Analytics')
   })
 
   it('should navigate to client tab correctly', async () => {
@@ -115,11 +113,11 @@ describe('VenueDetails', () => {
       venueId: '7482d2efe90f48d0a898c96d42d2d0e7',
       activeTab: 'clients'
     }
-    const { asFragment } = render(<Provider><VenueDetails /></Provider>, {
+    render(<Provider><VenueDetails /></Provider>, {
       route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
     })
-
-    expect(asFragment()).toMatchSnapshot()
+    expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
+      .toEqual('Clients (0)')
   })
 
   it('should navigate to device tab correctly', async () => {
@@ -128,10 +126,11 @@ describe('VenueDetails', () => {
       venueId: '7482d2efe90f48d0a898c96d42d2d0e7',
       activeTab: 'devices'
     }
-    const { asFragment } = render(<Provider><VenueDetails /></Provider>, {
+    render(<Provider><VenueDetails /></Provider>, {
       route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
     })
-    expect(asFragment()).toMatchSnapshot()
+    expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
+      .toEqual('Devices (0)')
   })
 
   it('should navigate to network tab correctly', async () => {
@@ -140,10 +139,11 @@ describe('VenueDetails', () => {
       venueId: '7482d2efe90f48d0a898c96d42d2d0e7',
       activeTab: 'networks'
     }
-    const { asFragment } = render(<Provider><VenueDetails /></Provider>, {
+    render(<Provider><VenueDetails /></Provider>, {
       route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
     })
-    expect(asFragment()).toMatchSnapshot()
+    expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
+      .toEqual('Networks (0)')
   })
 
   it('should navigate to service tab correctly', async () => {
@@ -152,10 +152,11 @@ describe('VenueDetails', () => {
       venueId: '7482d2efe90f48d0a898c96d42d2d0e7',
       activeTab: 'services'
     }
-    const { asFragment } = render(<Provider><VenueDetails /></Provider>, {
+    render(<Provider><VenueDetails /></Provider>, {
       route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
     })
-    expect(asFragment()).toMatchSnapshot()
+    expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
+      .toEqual('Services')
   })
 
   it('should navigate to timeline tab correctly', async () => {
@@ -167,6 +168,8 @@ describe('VenueDetails', () => {
     render(<Provider><VenueDetails /></Provider>, {
       route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
     })
+    expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
+      .toEqual('Timeline')
     await screen.findByTestId('rc-EventTable')
   })
 

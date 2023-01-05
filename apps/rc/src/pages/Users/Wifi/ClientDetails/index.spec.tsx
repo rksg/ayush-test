@@ -85,7 +85,6 @@ describe('ClientDetails', () => {
     const fragment = asFragment()
     // eslint-disable-next-line testing-library/no-node-access
     fragment.querySelector('div[_echarts_instance_^="ec_"]')?.removeAttribute('_echarts_instance_')
-    expect(fragment).toMatchSnapshot()
 
     fireEvent.click(await screen.findByRole('tab', { name: 'Reports' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
@@ -101,10 +100,11 @@ describe('ClientDetails', () => {
       clientId: 'user-id',
       activeTab: 'troubleshooting'
     }
-    const { asFragment } = render(<Provider><ClientDetails /></Provider>, {
+    render(<Provider><ClientDetails /></Provider>, {
       route: { params, path: '/:tenantId/users/wifi/:activeTab/:clientId/details/:activeTab' }
     })
-    expect(asFragment()).toMatchSnapshot()
+    expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
+      .toEqual('Troubleshooting')
   })
 
   it('should navigate to reports tab correctly', async () => {
@@ -113,10 +113,11 @@ describe('ClientDetails', () => {
       clientId: 'user-id',
       activeTab: 'reports'
     }
-    const { asFragment } = render(<Provider><ClientDetails /></Provider>, {
+    render(<Provider><ClientDetails /></Provider>, {
       route: { params, path: '/:tenantId/users/wifi/:activeTab/:clientId/details/:activeTab' }
     })
-    expect(asFragment()).toMatchSnapshot()
+    expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
+      .toEqual('Reports')
   })
 
   it('should navigate to timeline tab correctly', async () => {
@@ -128,6 +129,8 @@ describe('ClientDetails', () => {
     render(<Provider><ClientDetails /></Provider>, {
       route: { params, path: '/:tenantId/users/wifi/:activeTab/:clientId/details/:activeTab' }
     })
+    expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
+      .toEqual('Timeline')
     await screen.findByTestId('rc-EventTable')
   })
 

@@ -60,10 +60,11 @@ describe('ApDetails', () => {
       serialNumber: 'ap-serialNumber',
       activeTab: 'analytics'
     }
-    const { asFragment } = render(<Provider><ApDetails /></Provider>, {
+    render(<Provider><ApDetails /></Provider>, {
       route: { params, path: '/:tenantId/devices/wifi/:serialNumber/details/:activeTab' }
     })
-    expect(asFragment()).toMatchSnapshot()
+    expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
+      .toEqual('AI Analytics')
   })
 
   it('should navigate to troubleshooting tab correctly', async () => {
@@ -72,10 +73,11 @@ describe('ApDetails', () => {
       serialNumber: 'ap-serialNumber',
       activeTab: 'troubleshooting'
     }
-    const { asFragment } = render(<Provider><ApDetails /></Provider>, {
+    render(<Provider><ApDetails /></Provider>, {
       route: { params, path: '/:tenantId/devices/wifi/:serialNumber/details/:activeTab' }
     })
-    expect(asFragment()).toMatchSnapshot()
+    expect((await screen.findAllByRole('tab', { selected: true })).at(0)?.textContent)
+      .toEqual('Ping')
   })
 
   it('should navigate to reports tab correctly', async () => {
@@ -84,10 +86,11 @@ describe('ApDetails', () => {
       serialNumber: 'ap-serialNumber',
       activeTab: 'reports'
     }
-    const { asFragment } = render(<Provider><ApDetails /></Provider>, {
+    render(<Provider><ApDetails /></Provider>, {
       route: { params, path: '/:tenantId/devices/wifi/:serialNumber/details/:activeTab' }
     })
-    expect(asFragment()).toMatchSnapshot()
+    expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
+      .toEqual('Reports')
   })
 
   it('should navigate to networks tab correctly', async () => {
@@ -96,10 +99,11 @@ describe('ApDetails', () => {
       serialNumber: 'ap-serialNumber',
       activeTab: 'networks'
     }
-    const { asFragment } = render(<Provider><ApDetails /></Provider>, {
+    render(<Provider><ApDetails /></Provider>, {
       route: { params, path: '/:tenantId/devices/wifi/:serialNumber/details/:activeTab' }
     })
-    expect(asFragment()).toMatchSnapshot()
+    expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
+      .toEqual('Networks ()')
   })
 
   it('should navigate to clients tab correctly', async () => {
@@ -108,10 +112,11 @@ describe('ApDetails', () => {
       serialNumber: 'ap-serialNumber',
       activeTab: 'clients'
     }
-    const { asFragment } = render(<Provider><ApDetails /></Provider>, {
+    render(<Provider><ApDetails /></Provider>, {
       route: { params, path: '/:tenantId/devices/wifi/:serialNumber/details/:activeTab' }
     })
-    expect(asFragment()).toMatchSnapshot()
+    expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
+      .toEqual('Clients ()')
   })
 
   it('should navigate to services tab correctly', async () => {
@@ -120,10 +125,11 @@ describe('ApDetails', () => {
       serialNumber: 'ap-serialNumber',
       activeTab: 'services'
     }
-    const { asFragment } = render(<Provider><ApDetails /></Provider>, {
+    render(<Provider><ApDetails /></Provider>, {
       route: { params, path: '/:tenantId/devices/wifi/:serialNumber/details/:activeTab' }
     })
-    expect(asFragment()).toMatchSnapshot()
+    expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
+      .toEqual('Services (0)')
   })
 
   it('should navigate to timeline tab correctly', async () => {
@@ -135,6 +141,8 @@ describe('ApDetails', () => {
     render(<Provider><ApDetails /></Provider>, {
       route: { params, path: '/:tenantId/devices/wifi/:serialNumber/details/:activeTab' }
     })
+    expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
+      .toEqual('Timeline')
     await screen.findByTestId('rc-EventTable')
   })
 

@@ -57,10 +57,11 @@ describe('SwitchDetails', () => {
       serialNumber: 'serialNumber',
       activeTab: 'incidents'
     }
-    const { asFragment } = render(<Provider><SwitchDetails /></Provider>, {
+    render(<Provider><SwitchDetails /></Provider>, {
       route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab' }
     })
-    expect(asFragment()).toMatchSnapshot()
+    expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
+      .toEqual('Incidents')
   })
 
   it('should navigate to troubleshooting tab correctly', async () => {
@@ -70,10 +71,11 @@ describe('SwitchDetails', () => {
       serialNumber: 'serialNumber',
       activeTab: 'troubleshooting'
     }
-    const { asFragment } = render(<Provider><SwitchDetails /></Provider>, {
+    render(<Provider><SwitchDetails /></Provider>, {
       route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab' }
     })
-    expect(asFragment()).toMatchSnapshot()
+    expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
+      .toEqual('Troubleshooting')
   })
 
   it('should navigate to reports tab correctly', async () => {
@@ -83,10 +85,11 @@ describe('SwitchDetails', () => {
       serialNumber: 'serialNumber',
       activeTab: 'reports'
     }
-    const { asFragment } = render(<Provider><SwitchDetails /></Provider>, {
+    render(<Provider><SwitchDetails /></Provider>, {
       route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab' }
     })
-    expect(asFragment()).toMatchSnapshot()
+    expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
+      .toEqual('Reports')
   })
 
   it('should navigate to clients tab correctly', async () => {
@@ -96,10 +99,11 @@ describe('SwitchDetails', () => {
       serialNumber: 'serialNumber',
       activeTab: 'clients'
     }
-    const { asFragment } = render(<Provider><SwitchDetails /></Provider>, {
+    render(<Provider><SwitchDetails /></Provider>, {
       route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab' }
     })
-    expect(asFragment()).toMatchSnapshot()
+    expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
+      .toEqual('Clients (1)')
   })
 
   it('should navigate to configuration tab correctly', async () => {
@@ -109,10 +113,11 @@ describe('SwitchDetails', () => {
       serialNumber: 'serialNumber',
       activeTab: 'configuration'
     }
-    const { asFragment } = render(<Provider><SwitchDetails /></Provider>, {
+    render(<Provider><SwitchDetails /></Provider>, {
       route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab' }
     })
-    expect(asFragment()).toMatchSnapshot()
+    expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
+      .toEqual('Configuration')
   })
 
   it('should navigate to DHCP tab correctly', async () => {
@@ -122,10 +127,11 @@ describe('SwitchDetails', () => {
       serialNumber: 'serialNumber',
       activeTab: 'dhcp'
     }
-    const { asFragment } = render(<Provider><SwitchDetails /></Provider>, {
+    render(<Provider><SwitchDetails /></Provider>, {
       route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab' }
     })
-    expect(asFragment()).toMatchSnapshot()
+    expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
+      .toEqual('DHCP')
   })
 
   it('should navigate to timeline tab correctly', async () => {
@@ -138,6 +144,8 @@ describe('SwitchDetails', () => {
     render(<Provider><SwitchDetails /></Provider>, {
       route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab' }
     })
+    expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
+      .toEqual('Timeline')
     await screen.findByTestId('rc-EventTable')
   })
 
