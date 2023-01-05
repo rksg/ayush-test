@@ -55,8 +55,7 @@ function ApTabs (props:{ apDetail: ApDetailHeader }) {
         key='services'
       />
       <Tabs.TabPane
-        disabled={!releaseTag}
-        tab={<Tooltip title={$t(notAvailableMsg)}>{$t({ defaultMessage: 'Timeline' })} </Tooltip>}
+        tab={$t({ defaultMessage: 'Timeline' })}
         key='timeline'
       />
     </Tabs>
