@@ -87,6 +87,10 @@ export function useMenuConfig () {
         {
           path: '/serviceValidation/networkHealth',
           name: $t({ defaultMessage: 'Network Health' })
+        },
+        {
+          path: '/serviceValidation/videoCallQoe',
+          name: 'Video Call QoE'
         }
       ],
       hidden: !useIsTierAllowed('ANLT-ADV')

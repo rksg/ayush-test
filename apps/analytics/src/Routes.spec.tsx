@@ -6,7 +6,8 @@ import AnalyticsRoutes from './Routes'
 jest.mock('@acx-ui/analytics/components', () => ({
   HealthPage: () => <div data-testid='healthPage' />,
   IncidentListPage: () => <div data-testid='incidentsListPage' />,
-  NetworkHealthPage: () => <div data-testid='NetworkHealthPage' />
+  NetworkHealthPage: () => <div data-testid='NetworkHealthPage' />,
+  VideoCallQoePage: () => <div data-testid='VideoCallQoePage' />
 }))
 
 jest.mock('./pages/IncidentDetails', () => () => {
@@ -48,6 +49,15 @@ test('should navigate to serviceValidation/networkHealth', async () => {
     }
   })
   expect(screen.getByTestId('NetworkHealthPage')).toBeVisible()
+})
+test('should navigate to serviceValidation/videoCallQoe', async () => {
+  render(<Provider><AnalyticsRoutes /></Provider>, {
+    route: {
+      path: '/t/tenantId/serviceValidation/videoCallQoe',
+      wrapRoutes: false
+    }
+  })
+  expect(screen.getByTestId('VideoCallQoePage')).toBeVisible()
 })
 test('should navigate to analytics/recommendations', () => {
   render(<Provider><AnalyticsRoutes /></Provider>, {
