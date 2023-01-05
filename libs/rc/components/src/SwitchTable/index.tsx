@@ -16,7 +16,8 @@ import {
   getSwitchName,
   useTableQuery,
   DeviceConnectionStatus,
-  getStackMemberStatus
+  getStackMemberStatus,
+  getFilters
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
@@ -50,6 +51,7 @@ export function SwitchTable ({ showAllColumns } : {
   const tableQuery = useTableQuery({
     useQuery: useSwitchListQuery,
     defaultPayload: {
+      filters: getFilters(params),
       fields: [
         'check-all','name','deviceStatus','model','activeSerial','switchMac','ipAddress','venueName','uptime',
         'clientCount','cog','id','serialNumber','isStack','formStacking','venueId','switchName','configReady',

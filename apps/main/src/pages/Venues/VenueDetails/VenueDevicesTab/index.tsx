@@ -6,6 +6,7 @@ import { useIsSplitOn, Features }                      from '@acx-ui/feature-tog
 
 import { VenueMeshApsTable } from './VenueMeshAps'
 import { VenueRogueAps }     from './VenueRogueAps'
+import { VenueSwitches }     from './VenueSwitches'
 
 export function VenueDevicesTab () {
   const { $t } = useIntl()
@@ -54,7 +55,7 @@ export function VenueDevicesTab () {
         tab={$t({ defaultMessage: 'Switch' })}
         key='switch'
         disabled={!useIsSplitOn(Features.DEVICES)}>
-        {$t({ defaultMessage: 'Switch' })}
+        <VenueSwitches />
       </Tabs.TabPane>
     </Tabs>
   )

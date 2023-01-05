@@ -26,12 +26,13 @@ export function SwitchPortTable ({ isVenueLevel } : {
   isVenueLevel: boolean
 }) {
   const { $t } = useIntl()
-  const { serialNumber } = useParams()
+  const { serialNumber, venueId } = useParams()
 
   const tableQuery = useTableQuery({
     useQuery: useSwitchPortlistQuery,
     defaultPayload: {
-      filters: { switchId: [serialNumber] },
+      filters: venueId ? { venueId: [venueId] } :
+        serialNumber ? { switchId: [serialNumber] } : {},
       fields: ['portIdentifier', 'name', 'status', 'adminStatus', 'portSpeed',
         'poeUsed', 'vlanIds', 'neighborName', 'tag', 'cog', 'cloudPort', 'portId', 'switchId',
         'switchSerial', 'switchMac', 'switchName', 'switchUnitId', 'switchModel',

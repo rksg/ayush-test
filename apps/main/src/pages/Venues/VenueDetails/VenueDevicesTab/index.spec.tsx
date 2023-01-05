@@ -1,9 +1,9 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { CommonUrlsInfo, Dashboard }  from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { CommonUrlsInfo, Dashboard }             from '@acx-ui/rc/utils'
+import { Provider }                              from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
 
 import { VenueDetails } from '../'
 
@@ -270,6 +270,10 @@ describe('VenueMeshAps', () => {
         (req, res, ctx) => res(ctx.json(venueDetailHeaderData))
       ),
       rest.post(
+        CommonUrlsInfo.getApsList.url,
+        (req, res, ctx) => res(ctx.json({ data: [] }))
+      ),
+      rest.post(
         CommonUrlsInfo.getMeshAps.url,
         (req, res, ctx) => res(ctx.json(meshData))
       )
@@ -283,11 +287,13 @@ describe('VenueMeshAps', () => {
   })
 
   it('should render correctly', async () => {
-    const { asFragment } = render(<Provider><VenueDetails /></Provider>, {
+    render(<Provider><VenueDetails /></Provider>, {
       route: { params, path: '/:tenantId/venues/:venueId/venue-details/:activeTab' }
     })
 
-    expect(asFragment()).toMatchSnapshot()
+    fireEvent.click(await screen.findByTestId('LineChartOutline'))
+
+    fireEvent.click(await screen.findByTestId('MeshSolid'))
 
     await screen.findByText('R710')
 
