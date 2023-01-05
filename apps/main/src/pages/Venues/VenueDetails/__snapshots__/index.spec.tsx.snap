@@ -2272,97 +2272,9 @@ exports[`VenueDetails should navigate to service tab correctly 1`] = `
                                     <div
                                       class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
                                     >
-                                      Service Name
-                                    </div>
-                                    <a
-                                      href="/t/f378d3ba5dd44e62bacd9b625ffec681/services/dhcp/undefined/detail"
-                                    />
-                                  </div>
-                                </div>
-                                <div
-                                  class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
-                                  style="padding: 10px 10px 10px 10px;"
-                                >
-                                  <div
-                                    class="Grid__Container-sc-5irhjd-1 zzbxI"
-                                  >
-                                    <div
-                                      class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
-                                    >
                                       Service Status
                                     </div>
                                     OFF
-                                  </div>
-                                </div>
-                                <div
-                                  class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
-                                  style="padding: 10px 10px 10px 10px;"
-                                >
-                                  <div
-                                    class="Grid__Container-sc-5irhjd-1 zzbxI"
-                                  >
-                                    <div
-                                      class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
-                                    >
-                                      DHCP Configuration
-                                    </div>
-                                  </div>
-                                </div>
-                                <div
-                                  class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
-                                  style="padding: 10px 10px 10px 10px;"
-                                >
-                                  <div
-                                    class="Grid__Container-sc-5irhjd-1 zzbxI"
-                                  >
-                                    <div
-                                      class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
-                                    >
-                                      DHCP Pools
-                                    </div>
-                                    0
-                                  </div>
-                                </div>
-                                <div
-                                  class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
-                                  style="padding: 10px 10px 10px 10px;"
-                                >
-                                  <div
-                                    class="Grid__Container-sc-5irhjd-1 zzbxI"
-                                  >
-                                    <div
-                                      class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
-                                    >
-                                      Primary DHCP Server
-                                    </div>
-                                  </div>
-                                </div>
-                                <div
-                                  class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
-                                  style="padding: 10px 10px 10px 10px;"
-                                >
-                                  <div
-                                    class="Grid__Container-sc-5irhjd-1 zzbxI"
-                                  >
-                                    <div
-                                      class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
-                                    >
-                                      Secondary DHCP Server
-                                    </div>
-                                  </div>
-                                </div>
-                                <div
-                                  class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
-                                  style="padding: 10px 10px 10px 10px;"
-                                >
-                                  <div
-                                    class="Grid__Container-sc-5irhjd-1 zzbxI"
-                                  >
-                                    <div
-                                      class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
-                                    >
-                                      Gateway
-                                    </div>
                                   </div>
                                 </div>
                                 <div
