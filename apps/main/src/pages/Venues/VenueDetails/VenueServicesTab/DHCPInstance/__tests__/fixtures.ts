@@ -410,6 +410,9 @@ const handlers:Array<RestHandler> = [
   rest.post(DHCPUrls.activeVenueDHCPPool.url,(_,res,ctx) =>
     res(ctx.json(successResponse))
   ),
+  rest.delete(DHCPUrls.deactivateVenueDHCPPool.url,(_,res,ctx) =>
+    res(ctx.json(successResponse))
+  ),
   rest.post(DHCPUrls.updateVenueDHCPProfile.url,(_,res,ctx) =>
     res(ctx.json(successResponse))
   )]
