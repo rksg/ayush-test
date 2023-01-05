@@ -41,6 +41,7 @@ export function PersonaGroupForm (props: {
   return (
     <Form
       form={form}
+      preserve={false}
       layout={'vertical'}
       name={'personaGroupForm'}
       // FIXME: for demo use case

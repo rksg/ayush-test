@@ -179,9 +179,6 @@ describe('Persona Group Table', () => {
         route: { params, path: '/:tenantId/users/persona-management/persona-group' }
       })
 
-    await screen.findByText('Create Persona Group')
-
-
     const createButton = await screen.findByRole('button', { name: /Add Persona Group/i })
     fireEvent.click(createButton)
 

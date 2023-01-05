@@ -26,13 +26,6 @@ export function PersonaGroupDrawer (props: PersonaGroupDrawerProps) {
   const [addPersonaGroup] = useAddPersonaGroupMutation()
   const [updatePersonaGroup] = useUpdatePersonaGroupMutation()
 
-  useEffect(() => {
-    // make sure that reset the form fields while close the Drawer
-    if (!visible) {
-      form.resetFields()
-    }
-  }, [visible])
-
   const onFinish = async (contextData: PersonaGroup) => {
     try {
       isEdit
@@ -83,7 +76,7 @@ export function PersonaGroupDrawer (props: PersonaGroupDrawerProps) {
 
   return (
     <Drawer
-      forceRender
+      destroyOnClose={true}
       title={
         isEdit
           ? $t({ defaultMessage: 'Edit Persona Group' })
