@@ -21,7 +21,7 @@ export function useReportsFilter () {
 
   return useMemo(() => {
     const getNetworkFilter = () => {
-      let networkFilter = read() || { path: defaultNetworkPath, bands: [], raw: [] }
+      let networkFilter = read() || { paths: [defaultNetworkPath], bands: [], raw: [] }
       const { paths, bands, raw } = networkFilter
       return { networkFilter: { paths, bands }, raw }
     }
