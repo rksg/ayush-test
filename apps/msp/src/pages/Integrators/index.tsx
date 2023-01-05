@@ -27,7 +27,7 @@ import {
   useTableQuery,
   MspEc
 } from '@acx-ui/rc/utils'
-import { TenantLink, MspTenantLink } from '@acx-ui/react-router-dom'
+import { getBasePath, Link, TenantLink, MspTenantLink } from '@acx-ui/react-router-dom'
 
 const transformAssignedCustomerCount = (row: MspEc) => {
   return row.assignedMspEcList.length
@@ -62,9 +62,10 @@ export function Integrators () {
       sorter: true,
       searchable: true,
       defaultSortOrder: 'ascend' as SortOrder,
-      render: function (data) {
+      render: function (data, row) {
+        const to = `${getBasePath()}/t/${row.id}`
         return (
-          <TenantLink to={''}>{data}</TenantLink>
+          <Link to={to}>{data}</Link>
         )
       }
     },

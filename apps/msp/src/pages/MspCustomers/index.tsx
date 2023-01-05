@@ -2,7 +2,6 @@ import { useState } from 'react'
 
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
-import { Link }    from 'react-router-dom'
 
 import {
   Button,
@@ -31,7 +30,7 @@ import {
   MspEc,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { getBasePath, TenantLink, MspTenantLink } from '@acx-ui/react-router-dom'
+import { getBasePath, Link, TenantLink, MspTenantLink } from '@acx-ui/react-router-dom'
 
 const transformApEntitlement = (row: MspEc) => {
   return row.wifiLicenses ? row.wifiLicenses : 0
