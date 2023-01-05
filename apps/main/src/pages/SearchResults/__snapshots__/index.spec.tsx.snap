@@ -3020,7 +3020,7 @@ exports[`Search Results should render tables correctly 1`] = `
           <span
             class="ant-collapse-header-text"
           >
-            APs (1)
+            Switches (1)
           </span>
         </div>
         <div

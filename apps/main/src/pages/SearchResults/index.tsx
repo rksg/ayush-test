@@ -96,7 +96,7 @@ const searches = [
     })
     return {
       result,
-      title: $t({ defaultMessage: 'APs' }),
+      title: $t({ defaultMessage: 'Switches' }),
       component: <SwitchTable tableQuery={result} />
     }
   }
