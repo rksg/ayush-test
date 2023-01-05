@@ -6,20 +6,24 @@ import {
   ApTable,
   defaultApPayload,
   NetworkTable,
-  defaultNetworkPayload
-}           from '@acx-ui/rc/components'
+  defaultNetworkPayload,
+  SwitchTable,
+  defaultSwitchPayload
+} from '@acx-ui/rc/components'
 import {
   useApListQuery,
   useNetworkListQuery,
-  useVenuesListQuery
-}       from '@acx-ui/rc/services'
+  useVenuesListQuery,
+  useSwitchListQuery
+} from '@acx-ui/rc/services'
 import {
   RequestPayload,
   useTableQuery,
   Network,
   Venue,
   AP,
-  ApExtraParams
+  ApExtraParams,
+  SwitchRow
 } from '@acx-ui/rc/utils'
 
 import { useDefaultVenuePayload, VenueTable } from '../Venues/VenuesTable'
@@ -78,6 +82,22 @@ const searches = [
       result,
       title: $t({ defaultMessage: 'APs' }),
       component: <ApTable tableQuery={result} />
+    }
+  },
+  (searchString: string, $t: IntlShape['$t']) => {
+    const result = useTableQuery<SwitchRow, RequestPayload<unknown>, unknown>({
+      useQuery: useSwitchListQuery,
+      defaultPayload: {
+        ...defaultSwitchPayload,
+        searchString,
+        searchTargetFields: ['name', 'model', 'ipAddress', 'switchMac']
+      },
+      pagination
+    })
+    return {
+      result,
+      title: $t({ defaultMessage: 'APs' }),
+      component: <SwitchTable tableQuery={result} />
     }
   }
 ]
