@@ -1,13 +1,17 @@
 import React from 'react'
 
 import { useIsSplitOn }            from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo }          from '@acx-ui/rc/utils'
 import { Provider }                from '@acx-ui/store'
 import { render, screen, cleanup } from '@acx-ui/test-utils'
-import { mockRestApiQuery }        from '@acx-ui/test-utils'
 
 import AllRoutes from './AllRoutes'
 
+jest.mock('./pages/Layout/Header/AlarmButton', () => () => {
+  return <div data-testid='alarm-button' />
+})
+jest.mock('./pages/Layout/Header/UserButton', () => () => {
+  return <div data-testid='user-button' />
+})
 jest.mock('./pages/Dashboard', () => () => {
   return <div data-testid='dashboard' />
 })
@@ -34,9 +38,6 @@ jest.mock('msp/Routes', () => () => {
 }, { virtual: true })
 
 describe('AllRoutes', () => {
-  beforeEach(() => {
-    mockRestApiQuery(CommonUrlsInfo.getDashboardOverview.url, 'get', {})
-  })
   afterEach(cleanup)
   test('should navigate to dashboard', async () => {
     render(<Provider><AllRoutes /></Provider>, {

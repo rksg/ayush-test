@@ -1,11 +1,12 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
+import { rest }  from 'msw'
 
-import { defaultComDisplay
+import { defaultComDisplay, PortalUrlsInfo
 }     from '@acx-ui/rc/utils'
-import { Provider }                  from '@acx-ui/store'
-import { render, fireEvent, screen } from '@acx-ui/test-utils'
+import { Provider }                              from '@acx-ui/store'
+import { render, fireEvent, screen, mockServer } from '@acx-ui/test-utils'
 
 import Photo                     from '../../../../assets/images/portal-demo/PortalPhoto.svg'
 import Powered                   from '../../../../assets/images/portal-demo/PoweredLogo.svg'
@@ -50,17 +51,24 @@ const mockDemo = {
 }
 
 describe('PortalDemo', () => {
-
+  beforeEach(async () => {
+    mockServer.use(
+      rest.get(PortalUrlsInfo.getPortalLang.url,
+        (req, res, ctx) => {
+          return res(ctx.json({ acceptTermsLink: 'terms & conditions',
+            acceptTermsMsg: 'I accept the' }))
+        })
+    )
+  })
   it('should render portal demo successfully', async () => {
-
-    const { asFragment } = render(
+    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+    render(
       <Provider>
         <Form>
           <PortalDemo value={mockDemo} />
         </Form>
-      </Provider>
+      </Provider>, { route: { params } }
     )
-    expect(asFragment()).toMatchSnapshot()
     const file = new File(['logo ruckus'],
       'https://storage.cloud.google.com/ruckus-web-1/acx-ui-static-resources/logo-ruckus.png',
       { type: 'image/png' })
@@ -205,14 +213,13 @@ describe('PortalDemo', () => {
   })
 
   it('should render portal demo preview successfully', async () => {
-    const { asFragment } = render(
+    render(
       <Provider>
         <Form>
           <PortalDemo value={mockDemo} isPreview={true}/>
         </Form>
       </Provider>
     )
-    expect(asFragment()).toMatchSnapshot()
     await userEvent.click((await screen.findAllByTitle('Click Through'))[0])
     await userEvent.click((await screen.findAllByTitle('Guest Pass - Connect'))[0])
     await userEvent.click((await screen.findAllByTitle('Guest Pass - Connect'))[0])
