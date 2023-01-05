@@ -147,8 +147,20 @@ export default function ServicesTable () {
     {
       label: $t({ defaultMessage: 'Delete' }),
       visible: (selectedRows) => {
-        const dhcpGuest = _.find(selectedRows, { name: 'DHCP-Guest', type: ServiceType.DHCP })
-        if(_.isEmpty(dhcpGuest)){
+        const hasBlockObj = _.find(selectedRows,
+          (o)=> {
+            if(o.type === ServiceType.DHCP){
+              if(o.scope!==0){
+                return true
+              }
+              else if(o.name==='DHCP-Guest'){
+                return true
+              }
+            }
+            return false
+          })
+
+        if(_.isEmpty(hasBlockObj)){
           return true
         }else{
           return false
@@ -180,6 +192,15 @@ export default function ServicesTable () {
     },
     {
       label: $t({ defaultMessage: 'Edit' }),
+      visible: (selectedRows) => {
+        const hasScope = _.find(selectedRows,
+          (o)=> {return o.scope!==0 && o.type === ServiceType.DHCP} )
+        if(_.isEmpty(hasScope)){
+          return true
+        }else{
+          return false
+        }
+      },
       onClick: ([{ type, id }]) => {
         navigate({
           ...tenantBasePath,
