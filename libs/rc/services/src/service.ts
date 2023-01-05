@@ -634,7 +634,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         })
       }
     }),
-    getPortalLang: build.mutation<{ res : { data : string } }, RequestPayload>({
+    getPortalLang: build.mutation<{ [key: string]: string }, RequestPayload>({
       query: ({ params }) => {
         const portalLang = createHttpRequest(PortalUrlsInfo.getPortalLang, params)
         return {
