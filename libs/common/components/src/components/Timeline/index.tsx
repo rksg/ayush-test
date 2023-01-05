@@ -22,7 +22,8 @@ import {
   SuccessIcon,
   FailIcon,
   PendingsIcon,
-  InProgressIcon
+  InProgressIcon,
+  Dash
 } from './styledComponents'
 
 interface StatusIconProps { status: TimelineStatus}
@@ -83,6 +84,7 @@ const Timeline = (props: TimelineProps) => {
           dot={<Step $state={item.startDatetime ? 'previous' : 'future'} />}>
           {item.startDatetime ? formatter('dateTimeFormatWithSeconds')(item.startDatetime) : '--'}
         </AntTimeline.Item>,
+        <Dash/>,
         <AntTimeline.Item
           key={`timeline-end-${index}`}
           dot={<Step $state={item.endDatetime ? 'previous' : 'future'} />}>
