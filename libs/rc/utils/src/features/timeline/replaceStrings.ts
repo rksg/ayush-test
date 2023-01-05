@@ -3,7 +3,7 @@ import _ from 'lodash'
 export function replaceStrings <Data> (
   template: string | undefined,
   data: Data,
-  callback?: (key: keyof Data, data: Data) => string
+  callback?: (key: keyof Data, data: Data) => string|undefined
 ) {
   if (template === undefined) return ''
 

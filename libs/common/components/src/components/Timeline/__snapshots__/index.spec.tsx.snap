@@ -3,7 +3,7 @@
 exports[`Timeline should render 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1to6ymf-0 cqsmCa"
+    class="styledComponents__Wrapper-sc-1to6ymf-0 blYXlV"
   >
     <div
       class="ant-descriptions"
@@ -62,6 +62,9 @@ exports[`Timeline should render 1`] = `
           --
         </div>
       </li>
+      <div
+        class="styledComponents__Dash-sc-1to6ymf-12 chVkdq"
+      />
       <li
         class="ant-timeline-item"
       >
@@ -83,7 +86,7 @@ exports[`Timeline should render 1`] = `
           >
             --
             <div
-              class="styledComponents__ContentWrapper-sc-1to6ymf-2 caChNg"
+              class="styledComponents__ContentWrapper-sc-1to6ymf-2 hCoMWG"
             >
               <div
                 class="styledComponents__WithExpanderWrapper-sc-1to6ymf-6 jSjuUQ"
@@ -131,6 +134,9 @@ exports[`Timeline should render 1`] = `
           Dec 20 2022 04:27:30
         </div>
       </li>
+      <div
+        class="styledComponents__Dash-sc-1to6ymf-12 chVkdq"
+      />
       <li
         class="ant-timeline-item"
       >
@@ -152,7 +158,7 @@ exports[`Timeline should render 1`] = `
           >
             --
             <div
-              class="styledComponents__ContentWrapper-sc-1to6ymf-2 caChNg"
+              class="styledComponents__ContentWrapper-sc-1to6ymf-2 hCoMWG"
             >
               <div
                 class="styledComponents__WithExpanderWrapper-sc-1to6ymf-6 jSjuUQ"
@@ -204,6 +210,9 @@ exports[`Timeline should render 1`] = `
           Dec 20 2022 09:55:03
         </div>
       </li>
+      <div
+        class="styledComponents__Dash-sc-1to6ymf-12 chVkdq"
+      />
       <li
         class="ant-timeline-item"
       >
@@ -225,7 +234,7 @@ exports[`Timeline should render 1`] = `
           >
             Dec 20 2022 09:55:04
             <div
-              class="styledComponents__ContentWrapper-sc-1to6ymf-2 caChNg"
+              class="styledComponents__ContentWrapper-sc-1to6ymf-2 hCoMWG"
             >
               <div
                 class="styledComponents__WithExpanderWrapper-sc-1to6ymf-6 jSjuUQ"
@@ -273,6 +282,9 @@ exports[`Timeline should render 1`] = `
           Dec 20 2022 09:55:03
         </div>
       </li>
+      <div
+        class="styledComponents__Dash-sc-1to6ymf-12 chVkdq"
+      />
       <li
         class="ant-timeline-item ant-timeline-item-last"
       >
@@ -294,7 +306,7 @@ exports[`Timeline should render 1`] = `
           >
             Dec 20 2022 09:55:04
             <div
-              class="styledComponents__ContentWrapper-sc-1to6ymf-2 caChNg"
+              class="styledComponents__ContentWrapper-sc-1to6ymf-2 hCoMWG"
             >
               <div
                 class="styledComponents__WithExpanderWrapper-sc-1to6ymf-6 jSjuUQ"

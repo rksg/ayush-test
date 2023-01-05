@@ -125,7 +125,7 @@ const ActivityTable = ({ tableQuery }: ActivityTableProps) => {
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
     />
-    {visible && <TimelineDrawer
+    {current && visible && <TimelineDrawer
       title={defineMessage({ defaultMessage: 'Activity Details' })}
       visible={visible}
       onClose={()=>setVisible(false)}

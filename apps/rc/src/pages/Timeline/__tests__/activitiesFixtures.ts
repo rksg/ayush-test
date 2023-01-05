@@ -89,12 +89,12 @@ export const activities = {
           description: 'UpdateNetworkDeep',
           status: 'SUCCESS',
           progressType: 'REQUEST',
-          startDatetime: '2022-12-07T11:21:21Z',
+          startDatetime: '2022-12-07T11:21:22Z',
           endDatetime: '2022-12-07T11:21:24Z'
         }
       ],
       product: 'WIFI',
-      startDatetime: '2022-12-07T11:21:21Z',
+      startDatetime: '2022-12-07T11:21:22Z',
       endDatetime: '2022-12-07T11:21:24Z',
       descriptionTemplate: 'Network \'@@networkName\' was updated',
       severity: 'Info'
@@ -122,12 +122,12 @@ export const activities = {
           description: 'UpdateNetworkDeep',
           status: 'SUCCESS',
           progressType: 'REQUEST',
-          startDatetime: '2022-12-07T11:21:21Z',
+          startDatetime: '2022-12-07T11:21:23Z',
           endDatetime: '2022-12-07T11:21:24Z'
         }
       ],
       product: 'WIFI',
-      startDatetime: '2022-12-07T11:21:21Z',
+      startDatetime: '2022-12-07T11:21:23Z',
       endDatetime: '2022-12-07T11:21:24Z',
       descriptionTemplate: 'Network \'@@missingValue\' was updated',
       descriptionData: [
