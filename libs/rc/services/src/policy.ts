@@ -17,13 +17,13 @@ import {
   RogueAPDetectionTempType,
   VenueRoguePolicyType,
   TableResult, onSocketActivityChanged, showActivityMessage, CommonResult,
-  NewTableResult, transferTableResult
+  NewTableResult, transferTableResult, ClientIsolationSaveData
 } from '@acx-ui/rc/utils'
 
 export const basePolicyApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'policyApi',
-  tagTypes: ['Policy', 'MacRegistrationPool', 'MacRegistration'],
+  tagTypes: ['Policy', 'MacRegistrationPool', 'MacRegistration', 'ClientIsolation'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })
@@ -224,6 +224,66 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'MacRegistration', id: 'LIST' }]
+    }),
+    addClientIsolation: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(RogueApUrls.addClientIsolation, params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'ClientIsolation', id: 'LIST' }]
+    }),
+    deleteClientIsolation: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(RogueApUrls.deleteClientIsolation, params, RKS_NEW_UI)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'ClientIsolation', id: 'LIST' }]
+    }),
+    getClientIsolationList: build.query<ClientIsolationSaveData[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(RogueApUrls.getClientIsolationList, params, RKS_NEW_UI)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'DETAIL' }, { type: 'ClientIsolation', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          showActivityMessage(msg, [
+            'Add Client Isolation Policy Profile',
+            'Update Client Isolation Policy Profile'
+          ], () => {
+            api.dispatch(policyApi.util.invalidateTags([
+              { type: 'Policy', id: 'LIST' },
+              { type: 'ClientIsolation', id: 'LIST' }
+            ]))
+          })
+        })
+      }
+    }),
+    getClientIsolation: build.query<ClientIsolationSaveData, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(RogueApUrls.getClientIsolation, params, RKS_NEW_UI)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'DETAIL' }, { type: 'ClientIsolation', id: 'LIST' }]
+    }),
+    updateClientIsolation: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(RogueApUrls.updateClientIsolation, params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'ClientIsolation', id: 'LIST' }]
     })
   })
 })
@@ -248,5 +308,10 @@ export const {
   useRoguePolicyQuery,
   useVenueRoguePolicyQuery,
   useLazyMacRegListsQuery,
-  useLazyMacRegistrationsQuery
+  useLazyMacRegistrationsQuery,
+  useAddClientIsolationMutation,
+  useDeleteClientIsolationMutation,
+  useGetClientIsolationListQuery,
+  useGetClientIsolationQuery,
+  useUpdateClientIsolationMutation
 } = policyApi
