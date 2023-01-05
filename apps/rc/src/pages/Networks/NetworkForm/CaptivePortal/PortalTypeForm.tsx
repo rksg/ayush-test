@@ -1,52 +1,70 @@
+import { useContext, useEffect } from 'react'
+
 import {
-  Col,
   Form,
   Radio,
   RadioChangeEvent,
-  Row,
-  Space
+  Space,
+  Tooltip
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { StepsForm }                             from '@acx-ui/components'
+import { GridCol, GridRow, StepsForm }           from '@acx-ui/components'
 import { GuestNetworkTypeEnum, NetworkTypeEnum } from '@acx-ui/rc/utils'
+import { notAvailableMsg }                       from '@acx-ui/utils'
 
 import { GuestNetworkTypeDescription, GuestNetworkTypeLabel } from '../contentsMap'
 import { NetworkDiagram }                                     from '../NetworkDiagram/NetworkDiagram'
+import NetworkFormContext                                     from '../NetworkFormContext'
 import { RadioDescription }                                   from '../styledComponents'
 
 
+
 export function PortalTypeForm () {
+  const portalType = Form.useWatch(['guestPortal', 'guestNetworkType'])
   return (
-    <Row gutter={20}>
-      <Col span={10}>
+    <GridRow>
+      <GridCol col={{ span: 10 }}>
         <TypesForm />
-      </Col>
-      <Col span={14}>
-        <NetworkDiagram type={NetworkTypeEnum.CAPTIVEPORTAL} />
-      </Col>
-    </Row>
+      </GridCol>
+      <GridCol col={{ span: 14 }}>
+        <NetworkDiagram type={NetworkTypeEnum.CAPTIVEPORTAL}
+          networkPortalType={portalType}/>
+      </GridCol>
+    </GridRow>
   )
 }
 
-/* eslint-disable */
-const onChange = (e: RadioChangeEvent) => {
-  // setSettingStepTitle(e.target.value as NetworkTypeEnum)
-}
-/* eslint-enable */
 
 function TypesForm () {
+  const {
+    data,
+    setData,
+    editMode,
+    cloneMode
+  } = useContext(NetworkFormContext)
+  const onChange = (e: RadioChangeEvent) => {
+    setData && setData({ ...data, guestPortal:
+       { ...data?.guestPortal, guestNetworkType: e.target.value as GuestNetworkTypeEnum } })
+  }
   const intl = useIntl()
+  const form = Form.useFormInstance()
+  useEffect(()=>{
+    if((editMode || cloneMode) && data){
+      form.setFieldsValue({ ...data })
+    }
+  }, [data])
   return (
     <>
-      <StepsForm.Title>Portal Type</StepsForm.Title>
+      <StepsForm.Title>{intl.$t({ defaultMessage: 'Portal Type' })}</StepsForm.Title>
       <Form.Item
         name={['guestPortal', 'guestNetworkType']}
+        initialValue={GuestNetworkTypeEnum.ClickThrough}
         label={intl.$t({ defaultMessage:
           'Select the way users gain access to the network through the captive portal' })}
         rules={[{ required: true }]}
       >
-        <Radio.Group onChange={onChange}>
+        <Radio.Group onChange={onChange} disabled={editMode || cloneMode}>
           <Space direction='vertical'>
             <Radio value={GuestNetworkTypeEnum.ClickThrough}>
               {GuestNetworkTypeLabel[GuestNetworkTypeEnum.ClickThrough]}
@@ -62,11 +80,13 @@ function TypesForm () {
               </RadioDescription>
             </Radio>
 
-            <Radio value={GuestNetworkTypeEnum.Cloudpath}>
-              {GuestNetworkTypeLabel[GuestNetworkTypeEnum.Cloudpath]}
-              <RadioDescription>
-                {GuestNetworkTypeDescription[GuestNetworkTypeEnum.Cloudpath]}
-              </RadioDescription>
+            <Radio value={GuestNetworkTypeEnum.Cloudpath} disabled={true}>
+              <Tooltip title={intl.$t(notAvailableMsg)}>
+                {GuestNetworkTypeLabel[GuestNetworkTypeEnum.Cloudpath]}
+                <RadioDescription>
+                  {GuestNetworkTypeDescription[GuestNetworkTypeEnum.Cloudpath]}
+                </RadioDescription>
+              </Tooltip>
             </Radio>
 
             <Radio value={GuestNetworkTypeEnum.HostApproval}>

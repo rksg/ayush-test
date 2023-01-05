@@ -101,7 +101,7 @@ describe('DnsProxyModal', () => {
     fireEvent.change(nameInput, { target: { value: 'test.edit.com' } })
     await (async () => { fireEvent.blur(nameInput) })
     fireEvent.click(screen.getByRole('button', { name: 'Save' }))
-    fireEvent.click(screen.getByRole('button', { name: 'Add' }))
+    fireEvent.click(screen.getByRole('button', { name: 'OK' }))
   })
 })
 

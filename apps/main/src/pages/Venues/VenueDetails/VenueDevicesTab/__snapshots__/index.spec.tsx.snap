@@ -147,19 +147,17 @@ exports[`VenueMeshAps should render correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab ant-tabs-tab-disabled"
+                  class="ant-tabs-tab"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-clients"
-                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-clients"
                     role="tab"
+                    tabindex="0"
                   >
-                    <span>
-                      Clients (0)
-                    </span>
+                    Clients (0)
                   </div>
                 </div>
                 <div
@@ -202,7 +200,7 @@ exports[`VenueMeshAps should render correctly 1`] = `
                     role="tab"
                   >
                     <span>
-                      Services (0)
+                      Services
                     </span>
                   </div>
                 </div>
@@ -447,7 +445,7 @@ exports[`VenueMeshAps should render correctly 1`] = `
                 style="width: 1280px; height: 800px;"
               >
                 <div
-                  style="text-align: left; padding: 8px 0px;"
+                  style="text-align: left;"
                 >
                   <div
                     class="styledComponents__Wrapper-sc-c4vpsp-0 eBLcPR"

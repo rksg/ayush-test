@@ -1708,7 +1708,7 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                           </div>
                         </div>
                         <div
-                          class="ant-form-item styledComponents__FormItemNoLabel-sc-lhsic1-1 dLCGVb"
+                          class="ant-form-item styledComponents__FormItemNoLabel-sc-lhsic1-1 dLCGVb ant-form-item-has-success"
                           style="margin-bottom: 15px;"
                         >
                           <div
@@ -1730,6 +1730,7 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                                       class="ant-checkbox"
                                     >
                                       <input
+                                        checked=""
                                         class="ant-checkbox-input"
                                         id="moreSettings_enableOfdmOnly"
                                         type="checkbox"
@@ -1908,9 +1909,9 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                                         </span>
                                         <span
                                           class="ant-select-selection-item"
-                                          title="1 Mbps"
+                                          title="6 Mbps"
                                         >
-                                          1 Mbps
+                                          6 Mbps
                                         </span>
                                       </div>
                                       <span

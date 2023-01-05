@@ -38,6 +38,11 @@ import * as UI from './styledComponents'
 
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 import type { CheckboxValueType }   from 'antd/es/checkbox/Group'
+export interface SchedulingModalState {
+  visible: boolean,
+  networkVenue?: NetworkVenue,
+  venue?: Venue
+}
 
 interface SchedulingModalProps extends AntdModalProps {
   networkVenue?: NetworkVenue
@@ -171,12 +176,19 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
     }
 
     if(networkVenue?.scheduler){
+      if(networkVenue?.scheduler.type === 'CUSTOM'){
+        setDisabled(false)
+      }else{
+        setDisabled(true)
+      }
+
       form.setFieldValue(['scheduler', 'type'], networkVenue?.scheduler.type)
 
       initialValues(networkVenue?.scheduler)
     }
 
     if(networkVenue?.scheduler === undefined){
+      setDisabled(true)
       for (let daykey in dayIndex) {
         form.setFieldValue(['scheduler', daykey], Array.from({ length: 96 }, (_, i) => `${daykey}_${i}` ))
         arrCheckAll[dayIndex[daykey]] = true

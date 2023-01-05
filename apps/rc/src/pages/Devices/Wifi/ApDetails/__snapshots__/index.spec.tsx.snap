@@ -774,7 +774,10 @@ exports[`ApDetails should navigate to clients tab correctly 1`] = `
   <div
     class="styledComponents__Spacer-sc-xov27h-1 ikA-dJH"
   />
-  Clients
+  <div
+    data-testid="rc-ClientDualTable"
+    title="ClientDualTable"
+  />
 </DocumentFragment>
 `;
 
