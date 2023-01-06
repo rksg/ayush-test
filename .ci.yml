@@ -3,6 +3,7 @@ ci_version: v1
 build:
   - directory: .
     build_type: dockerfile
+    docker_buildkit: true
     images:
       - image: acx-ui
         docker_image_name: gcr.io/kumo-scratch/services/acx-ui
@@ -11,6 +12,7 @@ build:
         sonar:
             sonar_property: sonar-project.properties
             code_report_dir: /app/coverage
-            sonar_scan_based_tag: acx-ui
+            sonar_scan_based_tag: acx-ui-sonar-run
+            sonar_scan_target_tag: acx-ui-target
   - directory: configs
     build_type: ci
