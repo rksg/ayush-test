@@ -3,7 +3,7 @@ import { render, screen } from '@acx-ui/test-utils'
 
 import ReportsRoutes from './Routes'
 
-jest.mock('./pages/Reports', () => ({
+jest.mock('./pages/Report', () => ({
   Report: () => <div data-testid='someReport' />
 }))
 

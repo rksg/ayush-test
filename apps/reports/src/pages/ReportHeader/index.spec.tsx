@@ -3,6 +3,12 @@ import { render, screen } from '@acx-ui/test-utils'
 
 import { ReportHeader } from '.'
 
+
+jest.mock('@acx-ui/analytics/components', () => ({
+  ...jest.requireActual('@acx-ui/analytics/components'),
+  NetworkFilter: () => <div data-testid='network-filter' />
+}))
+
 describe('Report Header', () => {
   const params = { tenantId: 'tenant-id' }
 
