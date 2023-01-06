@@ -1,13 +1,14 @@
 import { useState } from 'react'
 
 import _                                            from 'lodash'
+import moment                                       from 'moment'
 import { defineMessage, useIntl, FormattedMessage } from 'react-intl'
 
-import { Button, Loader, Table, TableProps, Tooltip }        from '@acx-ui/components'
-import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
-import { Event, RequestPayload, TableQuery, replaceStrings } from '@acx-ui/rc/utils'
-import { TenantLink, generatePath }                          from '@acx-ui/react-router-dom'
-import { formatter }                                         from '@acx-ui/utils'
+import { Loader, Table, TableProps, Button, Tooltip }                        from '@acx-ui/components'
+import { Features, useIsSplitOn }                                            from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo, Event, RequestPayload, TableQuery, replaceStrings } from '@acx-ui/rc/utils'
+import { TenantLink, generatePath }                                          from '@acx-ui/react-router-dom'
+import { formatter, useDateFilter }                                          from '@acx-ui/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
 
@@ -16,6 +17,61 @@ import * as UI                                               from './styledCompo
 
 // rename to prevent it being parse by extraction process
 const FormatMessage = FormattedMessage
+
+export const useEventTableFilter = () => {
+  const { startDate, endDate } = useDateFilter()
+  return {
+    fromTime: moment(startDate).utc().format(),
+    toTime: moment(endDate).utc().format()
+  }
+}
+
+export const defaultPayload = {
+  url: CommonUrlsInfo.getEventList.url,
+  fields: [
+    'event_datetime',
+    'severity',
+    'entity_type',
+    'product',
+    'entity_id',
+    'message',
+    'dpName',
+    'apMac',
+    'clientMac',
+    'macAddress',
+    'apName',
+    'switchName',
+    'serialNumber',
+    'networkName',
+    'networkId',
+    'ssid',
+    'radio',
+    'raw_event',
+    'sourceType',
+    'adminName',
+    'clientName',
+    'userName',
+    'hostname',
+    'adminEmail',
+    'administratorEmail',
+    'venueName',
+    'venueId',
+    'apGroupId',
+    'apGroupName',
+    'floorPlanName',
+    'recipientName',
+    'transactionId',
+    'name'
+  ],
+  filters: {
+    entity_type: ['AP', 'CLIENT', 'SWITCH', 'NETWORK']
+  }
+}
+
+export const defaultSorter = {
+  sortField: 'event_datetime',
+  sortOrder: 'DESC'
+}
 
 interface EventTableProps {
   tableQuery: TableQuery<Event, RequestPayload<unknown>, unknown>
@@ -109,7 +165,7 @@ const getDescription = (data: Event) => {
   />
 }
 
-const EventTable = ({ tableQuery }: EventTableProps) => {
+export const EventTable = ({ tableQuery }: EventTableProps) => {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
   const [current, setCurrent] = useState<Event>()
@@ -228,4 +284,4 @@ const EventTable = ({ tableQuery }: EventTableProps) => {
     />}
   </Loader>
 }
-export { EventTable }
+

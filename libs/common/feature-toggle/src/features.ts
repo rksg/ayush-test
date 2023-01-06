@@ -18,5 +18,6 @@ export enum Features {
   EDGES = 'acx-ui-edges-toggle',
   CLIENT_TROUBLESHOOTING = 'acx-ui-client-troubleshooting-toggle',
   TIMELINE = 'acx-ui-timeline-toggle',
-  NETWORK_SEGMENTATION='acx-ui-network-segmentation-toggle'
+  NETWORK_SEGMENTATION='acx-ui-network-segmentation-toggle',
+  UNRELEASED='acx-ui-unreleased'
 }

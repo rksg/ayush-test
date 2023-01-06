@@ -1,8 +1,5 @@
-import { useIntl } from 'react-intl'
+import { SwitchVeTable } from '@acx-ui/rc/components'
 
 export function SwitchOverviewRouteInterfaces () {
-  const { $t } = useIntl()
-  return <>{
-    $t({ defaultMessage: 'SwitchOverviewRouteInterfaces' })
-  }</>
+  return <SwitchVeTable isVenueLevel={false} />
 }

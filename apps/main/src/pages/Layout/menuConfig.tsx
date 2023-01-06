@@ -73,8 +73,7 @@ export function useMenuConfig () {
       path: '/timeline',
       name: $t({ defaultMessage: 'Timeline' }),
       inactiveIcon: CalendarDateOutlined,
-      activeIcon: CalendarDateSolid,
-      disabled: !useIsSplitOn(Features.TIMELINE)
+      activeIcon: CalendarDateSolid
     },
     {
       path: '/reports',
@@ -144,11 +143,10 @@ export function useMenuConfig () {
             name: $t({ defaultMessage: 'Switch' }),
             disabled: !useIsSplitOn(Features.DEVICES)
           },
-          {
+          ...useIsSplitOn(Features.EDGES) ? [{
             path: '/devices/edge/list',
-            name: $t({ defaultMessage: 'Edge' }),
-            disabled: !useIsSplitOn(Features.EDGES)
-          }
+            name: $t({ defaultMessage: 'Edge' })
+          }] : []
         ]
     },
     {
@@ -194,7 +192,7 @@ export function useMenuConfig () {
       name: $t({ defaultMessage: 'Administration' }),
       inactiveIcon: AdminOutlined,
       activeIcon: AdminSolid,
-      disabled: true
+      disabled: !useIsSplitOn(Features.UNRELEASED)
     }
   ]
   return config

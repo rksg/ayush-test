@@ -4,326 +4,194 @@ import { rest,RestHandler } from 'msw'
 import { CommonUrlsInfo, DHCPUrls } from '@acx-ui/rc/utils'
 
 const aps ={
-  fields: [
-    'clients',
-    'serialNumber',
-    'IP',
-    'apMac',
-    'check-all',
-    'apStatusData.APRadio.channel',
-    'deviceStatus',
-    'tags',
-    'meshRole',
-    'venueName',
-    'apStatusData.APRadio.band',
-    'apStatusData.APRadio.radioId',
-    'switchName',
-    'deviceGroupId',
-    'venueId',
-    'name',
-    'deviceGroupName',
-    'model',
-    'fwVersion',
-    'cog'
-  ],
-  totalCount: 516,
+  fields: ['serialNumber', 'venueId', 'name'],
+  totalCount: 1,
   page: 1,
   data: [
-    {
-      serialNumber: '200002007012',
-      name: '200002007012_ap',
-      model: 'R710',
-      fwVersion: '6.2.0.103.416',
-      venueId: '7482d2efe90f48d0a898c96d42d2d0e7',
-      venueName: 'Sonali',
-      deviceStatus: '3_04_DisconnectedFromCloud',
-      IP: '10.174.78.105',
-      apMac: '00:0C:29:1E:9F:E4',
-      apStatusData: {
-        APRadio: [
-          {
-            txPower: null,
-            channel: 12,
-            band: '2.4G',
-            Rssi: null,
-            radioId: 0
-          },
-          {
-            txPower: null,
-            channel: 124,
-            band: '5G',
-            Rssi: null,
-            radioId: 1
-          }
-        ]
-      },
-      meshRole: 'DISABLED',
-      deviceGroupId: 'f5bed05a9c744a5fbbf419ab83ed80fa',
-      tags: '',
-      deviceGroupName: ''
-    },
-    {
-      serialNumber: '200005986474',
-      name: '200005986474',
-      model: 'R710',
-      fwVersion: '6.2.0.103.367',
-      venueId: '7482d2efe90f48d0a898c96d42d2d0e7',
-      venueName: 'Sonali',
-      deviceStatus: '3_04_DisconnectedFromCloud',
-      IP: '10.174.78.75',
-      apMac: '00:0C:29:5B:58:AA',
-      apStatusData: {
-        APRadio: [
-          {
-            txPower: null,
-            channel: 10,
-            band: '2.4G',
-            Rssi: null,
-            radioId: 0
-          },
-          {
-            txPower: null,
-            channel: 124,
-            band: '5G',
-            Rssi: null,
-            radioId: 1
-          }
-        ]
-      },
-      meshRole: 'DISABLED',
-      deviceGroupId: 'f5bed05a9c744a5fbbf419ab83ed80fa',
-      tags: '',
-      deviceGroupName: ''
-    },
-    {
-      serialNumber: '200012192288',
-      name: '200012192288',
-      venueId: '3c2f0b7d57cc4f0581eebd7352680f11',
-      venueName: 'My-Venue',
-      deviceStatus: '1_01_NeverContactedCloud',
-      deviceGroupId: 'd72777c891cf4837aae587bae296c542',
-      tags: '',
-      deviceGroupName: ''
-    },
-    {
-      serialNumber: '150000000400',
-      name: 'Keda-00001',
-      model: 'R710',
-      fwVersion: '6.2.0.103.496',
-      venueId: '3b11bcaffd6f4f4f9b2805b6fe24bf8b',
-      venueName: 'bdcPerformanceVenue',
-      deviceStatus: '2_00_Operational',
-      IP: '11.11.11.111',
-      apMac: '00:01:88:01:34:58',
-      apStatusData: {
-        APRadio: [
-          {
-            txPower: null,
-            channel: 10,
-            band: '2.4G',
-            Rssi: null,
-            radioId: 0
-          },
-          {
-            txPower: null,
-            channel: 64,
-            band: '5G',
-            Rssi: null,
-            radioId: 1
-          }
-        ]
-      },
-      meshRole: 'DISABLED',
-      deviceGroupId: '200448ab2cfc428aa96e7367f9893d6c',
-      clients: 5,
-      tags: ''
-    },
-    {
-      serialNumber: '150000000401',
-      name: 'Keda-00002',
-      model: 'R710',
-      fwVersion: '6.2.0.103.496',
-      venueId: '3b11bcaffd6f4f4f9b2805b6fe24bf8b',
-      venueName: 'bdcPerformanceVenue',
-      deviceStatus: '2_00_Operational',
-      IP: '11.11.11.112',
-      apMac: '00:01:88:01:34:DE',
-      apStatusData: {
-        APRadio: [
-          {
-            txPower: null,
-            channel: 11,
-            band: '2.4G',
-            Rssi: null,
-            radioId: 0
-          },
-          {
-            txPower: null,
-            channel: 48,
-            band: '5G',
-            Rssi: null,
-            radioId: 1
-          }
-        ]
-      },
-      meshRole: 'DISABLED',
-      deviceGroupId: '200448ab2cfc428aa96e7367f9893d6c',
-      tags: ''
-    },
-    {
-      serialNumber: '150000000402',
-      name: 'Keda-00003',
-      model: 'R710',
-      fwVersion: '6.2.0.103.496',
-      venueId: '3b11bcaffd6f4f4f9b2805b6fe24bf8b',
-      venueName: 'bdcPerformanceVenue',
-      deviceStatus: '2_00_Operational',
-      IP: '11.11.11.113',
-      apMac: '00:01:88:01:35:64',
-      apStatusData: {
-        APRadio: [
-          {
-            txPower: null,
-            channel: 11,
-            band: '2.4G',
-            Rssi: null,
-            radioId: 0
-          },
-          {
-            txPower: null,
-            channel: 124,
-            band: '5G',
-            Rssi: null,
-            radioId: 1
-          }
-        ]
-      },
-      meshRole: 'DISABLED',
-      deviceGroupId: '200448ab2cfc428aa96e7367f9893d6c',
-      tags: ''
-    },
-    {
-      serialNumber: '150000000403',
-      name: 'Keda-00004',
-      model: 'R710',
-      fwVersion: '6.2.0.103.496',
-      venueId: '3b11bcaffd6f4f4f9b2805b6fe24bf8b',
-      venueName: 'bdcPerformanceVenue',
-      deviceStatus: '2_00_Operational',
-      IP: '11.11.11.114',
-      apMac: '00:01:88:01:35:EA',
-      apStatusData: {
-        APRadio: [
-          {
-            txPower: null,
-            channel: 11,
-            band: '2.4G',
-            Rssi: null,
-            radioId: 0
-          },
-          {
-            txPower: null,
-            channel: 48,
-            band: '5G',
-            Rssi: null,
-            radioId: 1
-          }
-        ]
-      },
-      meshRole: 'DISABLED',
-      deviceGroupId: '200448ab2cfc428aa96e7367f9893d6c',
-      clients: 6,
-      tags: ''
-    },
-    {
-      serialNumber: '150000000404',
-      name: 'Keda-00005',
-      model: 'R710',
-      fwVersion: '6.2.0.103.496',
-      venueId: '3b11bcaffd6f4f4f9b2805b6fe24bf8b',
-      venueName: 'bdcPerformanceVenue',
-      deviceStatus: '2_00_Operational',
-      IP: '11.11.11.114',
-      apMac: '00:01:88:01:35:EA',
-      apStatusData: {
-        APRadio: [
-          {
-            txPower: null,
-            channel: 11,
-            band: '2.4G',
-            Rssi: null,
-            radioId: 0
-          },
-          {
-            txPower: null,
-            channel: 48,
-            band: '5G',
-            Rssi: null,
-            radioId: 1
-          }
-        ]
-      },
-      meshRole: 'DISABLED',
-      deviceGroupId: '200448ab2cfc428aa96e7367f9893d6c',
-      clients: 6,
-      tags: ''
-    }
-  ]
+    { serialNumber: '922102020872',
+      name: '922102020872',
+      venueId: '07c99ef9e17a401d981043e0ea378c2a'
+    }]
 }
+
 const serviceProfile = {
-  serviceProfileId: 'serviceProfileId1',
+  serviceProfileId: 'c51d9d180de24d6cb3a75ace5ce63c2a',
   enabled: true,
   wanPortSelectionMode: 'Dynamic',
   dhcpServiceAps: [
-    { serialNumber: '150000000400', role: 'PrimaryServer' },
-    { serialNumber: '150000000401', role: 'BackupServer' },
-    { serialNumber: '150000000402', role: 'NatGateway' },
-    { serialNumber: '150000000403', role: 'NatGateway' },
-    { serialNumber: '150000000404', role: 'NatGateway' },
-    { serialNumber: '150000000406', role: 'NatGateway' }
+    { serialNumber: '922102020872', role: 'PrimaryServer' },
+    { serialNumber: '922102020872', role: 'BackupServer' }
   ]
 }
 
 
 const serviceById = {
-  venueIds: [
-    'e16f5cb9aded49f6acd5891eb8897890',
-    '57db532207814948aa61b156e1cf2b9e',
-    '2725fdb455ec4785b1a633039b70b1aa'
-  ],
-  dhcpMode: 'EnableOnMultipleAPs',
   dhcpPools: [
     {
-      name: 'DhcpServiceProfile#1',
-      vlanId: 1001,
-      subnetAddress: '192.168.1.0',
-      subnetMask: '255.255.255.0',
-      startIpAddress: '192.168.1.1',
-      endIpAddress: '192.168.1.254',
+      startIpAddress: '192.168.3.1',
+      endIpAddress: '192.168.3.14',
+      name: 'fff2',
+      vlanId: 301,
+      subnetAddress: '192.168.3.0',
+      subnetMask: '255.255.255.240',
+      primaryDnsIp: '11.22.33.44',
+      secondaryDnsIp: '55.66.77.88',
       leaseTimeHours: 0,
-      leaseTimeMinutes: 30,
-      id: '14eb1818309c434da928410fa2298ea5',
-      description: 'description1'
-    }
-  ],
-  serviceName: 'DhcpConfigServiceProfile1',
-  id: '78f92fbf80334e8b83cddd3210db4920'
+      leaseTimeMinutes: 12,
+      id: 'a0c9b2f2470c40fcbc3a7265d4c2853c'
+    },
+    {
+      startIpAddress: '192.168.2.1',
+      endIpAddress: '192.168.2.30',
+      name: 'fff',
+      vlanId: 300,
+      subnetAddress: '192.168.2.0',
+      subnetMask: '255.255.255.224',
+      leaseTimeHours: 24,
+      leaseTimeMinutes: 0,
+      id: '419d45be6bde40f5bf5067885405178f'
+    }],
+  dhcpMode: 'EnableOnMultipleAPs',
+  usage: [{
+    venueId: '07c99ef9e17a401d981043e0ea378c2a',
+    totalIpCount: 24,
+    usedIpCount: 0
+  }],
+  serviceName: 'abcd',
+  id: 'c51d9d180de24d6cb3a75ace5ce63c2a'
 }
 
+
 const dhcpProfileList = [{
-  id: '78f92fbf80334e8b83cddd3210db4920',
-  serviceName: 'DhcpConfigServiceProfile1',
-  dhcpMode: 'EnableOnEachAPs',
-  dhcpPoolIds: ['poolId1', 'poolId2'],
-  venueIds: ['venueId1', 'venueId2']
+  dhcpMode: 'EnableOnMultipleAPs',
+  serviceName: 'abcd',
+  id: 'c51d9d180de24d6cb3a75ace5ce63c2a',
+  venueIds: ['07c99ef9e17a401d981043e0ea378c2a'],
+  dhcpPools: [
+    {
+      startIpAddress: '192.168.3.1',
+      endIpAddress: '192.168.3.14',
+      name: 'fff2',
+      vlanId: 301,
+      subnetAddress: '192.168.3.0',
+      subnetMask: '255.255.255.240',
+      primaryDnsIp: '11.22.33.44',
+      secondaryDnsIp: '55.66.77.88',
+      leaseTimeHours: 0,
+      leaseTimeMinutes: 12,
+      id: 'a0c9b2f2470c40fcbc3a7265d4c2853c'
+    },
+    {
+      startIpAddress: '192.168.2.1',
+      endIpAddress: '192.168.2.30',
+      name: 'fff',
+      vlanId: 300,
+      subnetAddress: '192.168.2.0',
+      subnetMask: '255.255.255.224',
+      leaseTimeHours: 24,
+      leaseTimeMinutes: 0,
+      id: '419d45be6bde40f5bf5067885405178f'
+    }]
 },
 {
-  id: '78f92fbf80334e8b83cddd3210db4921',
-  serviceName: 'service 2',
+  venueIds: ['7daee06492c44b7b8d256176e83a7457'],
+  dhcpPools: [{
+    startIpAddress: '10.20.30.1',
+    endIpAddress: '10.20.30.10',
+    name: 'test',
+    vlanId: 300,
+    subnetAddress: '10.20.30.0',
+    subnetMask: '255.255.255.0',
+    leaseTimeHours: 24,
+    leaseTimeMinutes: 0,
+    id: 'b06d033de446458b920cc096d6cf7e5b'
+  }],
   dhcpMode: 'EnableOnEachAPs',
-  dhcpPoolIds: ['poolId', 'poolId2'],
-  venueIds: ['venueId1', 'venueId2']
+  serviceName: 'test12',
+  id: '7b8a2a4061754a2a8a56040318180c52'
+},
+{
+  dhcpPools: [{
+    startIpAddress: '172.21.232.2',
+    endIpAddress: '172.21.235.233',
+    name: 'DHCP-Guest',
+    vlanId: 3000,
+    subnetAddress: '172.21.232.0',
+    subnetMask: '255.255.252.0',
+    leaseTimeHours: 12,
+    leaseTimeMinutes: 0,
+    id: '107c53251dca420782b1c2f561403da1' }],
+  dhcpMode: 'EnableOnEachAPs',
+  serviceName: 'DHCP-Guestfdfff',
+  id: '4e9be35be88543b4aafc45e9403f79e5'
+},
+{
+  dhcpPools: [{
+    startIpAddress: '172.21.232.2',
+    endIpAddress: '172.21.235.233',
+    name: 'DHCP-Guest',
+    vlanId: 3000,
+    subnetAddress: '172.21.232.0',
+    subnetMask: '255.255.252.0',
+    leaseTimeHours: 12,
+    leaseTimeMinutes: 0,
+    id: '30d42f883c724abebc66df2527a65d94'
+  }],
+  dhcpMode: 'EnableOnEachAPs',
+  serviceName: 'DHCP-Guest',
+  id: '8e61ebeae97441c3911de3c381ae3551'
+},
+{
+  dhcpPools: [{
+    startIpAddress: '192.168.2.1',
+    endIpAddress: '192.168.2.30',
+    name: 'hier',
+    vlanId: 1,
+    subnetAddress: '192.168.2.0',
+    subnetMask: '255.255.255.224',
+    leaseTimeHours: 24,
+    leaseTimeMinutes: 0,
+    id: 'ccbe6cdc90b444088b6ef0d13495fca3'
+  },
+  {
+    startIpAddress: '192.168.0.1',
+    endIpAddress: '192.168.0.126',
+    name: 'hier2',
+    vlanId: 3,
+    subnetAddress: '192.168.0.0',
+    subnetMask: '255.255.255.128',
+    leaseTimeHours: 24,
+    leaseTimeMinutes: 0,
+    id: '95843b9c67d4404786a32a06a15e7576' },
+  {
+    startIpAddress: '192.168.3.1',
+    endIpAddress: '192.168.3.14',
+    name: 'hier3',
+    vlanId: 301,
+    subnetAddress: '192.168.3.0',
+    subnetMask: '255.255.255.240',
+    primaryDnsIp: '11.22.33.4',
+    secondaryDnsIp: '11.22.33.5',
+    leaseTimeHours: 24,
+    leaseTimeMinutes: 0,
+    id: 'b50fcce633e241c1994efd34c56c1300'
+  },
+  {
+    startIpAddress: '192.168.1.1',
+    endIpAddress: '192.168.1.62',
+    name: 'hier4',
+    vlanId: 300,
+    subnetAddress: '192.168.1.0',
+    subnetMask: '255.255.255.192',
+    leaseTimeHours: 24,
+    leaseTimeMinutes: 0,
+    id: '59b05d9e83c642cd89b79249101da967'
+  }],
+  dhcpMode: 'EnableOnHierarchicalAPs',
+  serviceName: 'hierarchical',
+  id: '8a064a8a7dfb49ffb7b51d1d4822dc6f'
 }]
+
 const leaseList = [{
   hostName: 'alamb1',
   ipAddress: '66.80.84.216',
@@ -408,6 +276,9 @@ const handlers:Array<RestHandler> = [
     res(ctx.json(pools))
   ),
   rest.post(DHCPUrls.activeVenueDHCPPool.url,(_,res,ctx) =>
+    res(ctx.json(successResponse))
+  ),
+  rest.delete(DHCPUrls.deactivateVenueDHCPPool.url,(_,res,ctx) =>
     res(ctx.json(successResponse))
   ),
   rest.post(DHCPUrls.updateVenueDHCPProfile.url,(_,res,ctx) =>

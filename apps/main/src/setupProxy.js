@@ -7,7 +7,6 @@ const { createProxyMiddleware } = require('http-proxy-middleware')
  * See https://create-react-app.dev/docs/proxying-api-requests-in-development/
  */
 const CLOUD_URL = 'https://devalto.ruckuswireless.com'
-const NEW_CLOUD_URL = 'https://api.devalto.ruckuswireless.com'
 const LOCAL_MLISA_URL = 'https://alto.local.mlisa.io'
 module.exports = async function setupProxy (app) {
   const localDataApi = new Promise((resolve) => {
@@ -36,10 +35,6 @@ module.exports = async function setupProxy (app) {
   //   ['/api/v1/security', '/api/v1/dashboard/embedded'],
   //   { target: 'http://localhost:8088', changeOrigin: false }
   // ))
-  app.use(createProxyMiddleware(
-    '/portalServiceProfiles',
-    { target: NEW_CLOUD_URL, changeOrigin: true }
-  ))
   app.use(createProxyMiddleware(
     '/api/websocket/socket.io',
     { target: CLOUD_URL, changeOrigin: true, ws: true }
