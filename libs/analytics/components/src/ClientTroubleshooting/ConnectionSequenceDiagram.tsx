@@ -2,8 +2,8 @@ import React from 'react'
 
 import { useIntl } from 'react-intl'
 
-import * as UI         from './sequenceComponents'
 import { getRCCDFlow } from './sequenceMap'
+import * as UI         from './styledComponents'
 
 const fillOne = (index: number) => `${index + 1} / ${index + 2}`
 
