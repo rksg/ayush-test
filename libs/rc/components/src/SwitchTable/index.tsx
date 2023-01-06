@@ -14,9 +14,9 @@ import {
   SwitchRow,
   transformSwitchStatus,
   getSwitchName,
-  useTableQuery,
   DeviceConnectionStatus,
   getStackMemberStatus,
+  usePollingTableQuery,
   getFilters,
   TableQuery,
   RequestPayload
@@ -59,7 +59,7 @@ export function SwitchTable (props : {
 }) {
   const { $t } = useIntl()
   const params = useParams()
-  const inlineTableQuery = useTableQuery({
+  const inlineTableQuery = usePollingTableQuery({
     useQuery: useSwitchListQuery,
     defaultPayload: {
       filters: getFilters(params),

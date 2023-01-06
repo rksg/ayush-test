@@ -1,11 +1,9 @@
-import React, { useEffect } from 'react'
-
 import { defineMessage, useIntl, MessageDescriptor } from 'react-intl'
 import { useNavigate, useParams }                    from 'react-router-dom'
 
-import { Tabs }                                                                     from '@acx-ui/components'
-import { EventTable, eventDefaultPayload, eventDefaultSorter, useEventTableFilter } from '@acx-ui/rc/components'
-import { useEventsQuery }                                                           from '@acx-ui/rc/services'
+import { Tabs }                                                from '@acx-ui/components'
+import { EventTable, eventDefaultPayload, eventDefaultSorter } from '@acx-ui/rc/components'
+import { useEventsQuery }                                      from '@acx-ui/rc/services'
 import {
   Event,
   usePollingTableQuery,
@@ -16,20 +14,13 @@ import {
 import { useTenantLink } from '@acx-ui/react-router-dom'
 
 const Events = () => {
-  const { serialNumber } = useParams()
-  const { fromTime, toTime } = useEventTableFilter()
-  useEffect(()=>{
-    tableQuery.setPayload({
-      ...tableQuery.payload,
-      filters: { ...eventDefaultPayload.filters, serialNumber: [ serialNumber ], fromTime, toTime }
-    })
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fromTime, toTime, serialNumber])
+  // TODO: add fromTime/toTime to filter when DatePicker is ready
+  const { networkId } = useParams()
   const tableQuery = usePollingTableQuery<Event, RequestPayload<unknown>, unknown>({
     useQuery: useEventsQuery,
     defaultPayload: {
       ...eventDefaultPayload,
-      filters: { ...eventDefaultPayload.filters, serialNumber: [ serialNumber ], fromTime, toTime }
+      filters: { ...eventDefaultPayload.filters, networkId: [ networkId ] }
     },
     sorter: eventDefaultSorter,
     option: { pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL }
@@ -49,11 +40,11 @@ const tabs : {
   }
 ]
 
-export function ApTimelineTab () {
+export function NetworkTimelineTab () {
   const { $t } = useIntl()
-  const { activeSubTab = tabs[0].key, serialNumber } = useParams()
+  const { activeSubTab = tabs[0].key, networkId } = useParams()
   const navigate = useNavigate()
-  const basePath = useTenantLink(`/devices/wifi/${serialNumber}/details/timeline/`)
+  const basePath = useTenantLink(`/networks/${networkId}/network-details/timeline/`)
   // TODO: remove istanbul and add unit test once there are more than 1 tab
   /* istanbul ignore next */
   const onTabChange = (tab: string) => {
@@ -64,14 +55,12 @@ export function ApTimelineTab () {
   }
 
   const Tab = tabs.find(tab => tab.key === activeSubTab)?.component
-  return (
-    <Tabs
-      onChange={onTabChange}
-      activeKey={activeSubTab}
-      type='card'
-    >
-      {tabs.map(({ key, title }) =>
-        <Tabs.TabPane tab={$t(title)} key={key} >{Tab && <Tab/>}</Tabs.TabPane>)}
-    </Tabs>
-  )
+  return <Tabs
+    onChange={onTabChange}
+    activeKey={activeSubTab}
+    type='card'
+  >
+    {tabs.map(({ key, title }) =>
+      <Tabs.TabPane tab={$t(title)} key={key} >{Tab && <Tab/>}</Tabs.TabPane>)}
+  </Tabs>
 }
