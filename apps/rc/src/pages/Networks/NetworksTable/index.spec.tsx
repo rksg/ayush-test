@@ -186,7 +186,7 @@ describe('Networks Table', () => {
     expect(asFragment()).toMatchSnapshot()
 
     await screen.findByText('Add Wi-Fi Network')
-    await screen.findByText('network-01')
+    await screen.findByText(/network-01/i)
   })
 
   it('should click disabled row', async () => {

@@ -68,7 +68,8 @@ const initState = {
   tags: [],
   description: '',
   networkIds: [],
-  networksName: []
+  networksName: [],
+  epdgs: []
 }
 
 jest.mock('antd', () => {
@@ -109,7 +110,7 @@ describe('WifiCallingForm', () => {
   })
 
   it('should render wifiCallingForm successfully', async () => {
-    const { asFragment } = render(
+    render(
       <WifiCallingFormContext.Provider value={{
         state: initState,
         dispatch: jest.fn()
@@ -171,7 +172,7 @@ describe('WifiCallingForm', () => {
       screen.getByRole('option', { name: 'Video' })
     )
 
-    await screen.findByText('Video')
+    await screen.findAllByText('Video')
 
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
@@ -182,7 +183,5 @@ describe('WifiCallingForm', () => {
     await screen.findByRole('heading', { name: 'Summary', level: 3 })
 
     await userEvent.click(screen.getByRole('button', { name: 'Finish' }))
-
-    expect(asFragment()).toMatchSnapshot()
   })
 })

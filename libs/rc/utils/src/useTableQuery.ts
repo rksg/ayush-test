@@ -46,7 +46,7 @@ export type PAGINATION = {
   total: number
 }
 
-const DEFAULT_PAGINATION = {
+export const DEFAULT_PAGINATION = {
   page: 1,
   current: 1,
   pageSize: 10,

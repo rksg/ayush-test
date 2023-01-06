@@ -83,6 +83,52 @@ export class Switch {
   }
 }
 
+export interface VeViewModel {
+  name?: string
+  dhcpRelayAgent?: string
+  defaultVlan: boolean
+  deviceStatus: SwitchStatusEnum
+  id: string
+  ipAddress?: string
+  ipAddressType?: IP_ADDRESS_TYPE
+  ipSubnetMask?: string
+  ospfArea?: string
+  stack: boolean
+  switchId: string
+  switchName?: string
+  syncedSwitchConfig: boolean
+  veId: number
+  vlanId: number
+  portTyp : string //ignore
+}
+
+export interface VeForm {
+  name: string
+  veId: number
+  vlanId: number
+  ospfArea: string
+  ipSubnetMask?: string
+  ipAddressType?: string
+  ipAddress?: string
+  egressAcl: string
+  ingressAcl: string
+  id: string
+  dhcpRelayAgent: string
+  defaultVlan: boolean
+}
+
+
+export interface VlanVePort {
+  usedByVePort: boolean
+  vlanId: string
+  vlanName?: string
+}
+
+export interface AclUnion {
+  profileAcl: string[]
+  switchAcl: string[]
+}
+
 export class SwitchViewModel extends Switch {
   type?: string
   configReady = false
@@ -105,6 +151,15 @@ export class SwitchViewModel extends Switch {
   suspendingDeployTime?: string
   syncDataEndTime?: number
   firmwareVersion?: string
+  portsStatus?: {
+    Down?: number,
+    Up?: number
+  }
+  venueDescription?: string
+  staticOrDynamic?: string
+  dns?: string
+  unitDetails?: StackMember[]
+  firmware?: string
 }
 
 export interface SwitchRow {
@@ -143,6 +198,7 @@ export interface StackMember {
   uptime: string
   order: number
   unitStatus?: STACK_MEMBERSHIP
+  unitId?: string
 }
 
 export enum STACK_MEMBERSHIP {
