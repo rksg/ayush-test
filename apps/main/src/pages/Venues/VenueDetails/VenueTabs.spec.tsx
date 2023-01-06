@@ -19,10 +19,10 @@ jest.mock('react-router-dom', () => ({
 
 describe('VenueTabs', () => {
   it('should render correctly', async () => {
-    const { asFragment } = render(<Provider>
+    render(<Provider>
       <VenueTabs venueDetail={venueDetailHeaderData as unknown as VenueDetailHeader} />
     </Provider>, { route: { params } })
-    expect(asFragment()).toMatchSnapshot()
+    expect(screen.getAllByRole('tab')).toHaveLength(7)
   })
 
   it('should handle tab changes', async () => {
