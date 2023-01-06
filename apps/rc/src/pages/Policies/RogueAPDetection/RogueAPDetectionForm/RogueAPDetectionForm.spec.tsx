@@ -5,10 +5,17 @@ import userEvent          from '@testing-library/user-event'
 import { Form }           from 'antd'
 import { rest }           from 'msw'
 
-import { policyApi }                                                         from '@acx-ui/rc/services'
-import { RogueAPDetectionContextType, RogueApUrls, RogueAPRule, RogueVenue } from '@acx-ui/rc/utils'
-import { Provider, store }                                                   from '@acx-ui/store'
-import { mockServer, render, screen }                                        from '@acx-ui/test-utils'
+import { policyApi } from '@acx-ui/rc/services'
+import {
+  RogueAPDetectionContextType,
+  RogueAPRule,
+  RogueApUrls,
+  RogueCategory,
+  RogueRuleType,
+  RogueVenue
+} from '@acx-ui/rc/utils'
+import { Provider, store }            from '@acx-ui/store'
+import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import RogueAPDetectionContext from '../RogueAPDetectionContext'
 
@@ -52,6 +59,27 @@ const detailContent = {
       type: 'SameNetworkRule',
       classification: 'Malicious',
       priority: 1
+    },
+    {
+      name: 'SameNetworkRuleName2',
+      type: RogueRuleType.CUSTOM_SNR_RULE,
+      moreInfo: 88,
+      classification: 'Malicious',
+      priority: 2
+    },
+    {
+      name: 'SameNetworkRuleName3',
+      type: RogueRuleType.CUSTOM_SSID_RULE,
+      moreInfo: 'ssidInMoreInfo',
+      classification: 'Malicious',
+      priority: 3
+    },
+    {
+      name: 'SameNetworkRuleName4',
+      type: RogueRuleType.CUSTOM_MAC_OUI_RULE,
+      moreInfo: '11:22:33',
+      classification: 'Malicious',
+      priority: 4
     }
   ],
   id: 'policyId1'
@@ -145,6 +173,63 @@ jest.mock('antd', () => {
   return { ...antd, Select }
 })
 
+const addRule = async (ruleName: string, type: RogueRuleType, classification: RogueCategory) => {
+  await userEvent.click(screen.getByRole('button', {
+    name: /add rule/i
+  }))
+
+  await screen.findByText(/add classification rule/i)
+
+  await userEvent.type(screen.getByRole('textbox', { name: /rule name/i }), ruleName)
+
+  fireEvent.change(screen.getByTestId('selectRogueRule'), {
+    target: { value: type }
+  })
+
+  if (type === RogueRuleType.CUSTOM_SNR_RULE) {
+    await screen.findByRole('textbox', {
+      name: /signal threshold/i
+    })
+    await userEvent.type(screen.getByRole('textbox', {
+      name: /signal threshold/i
+    }), '88')
+  }
+
+  if (type === RogueRuleType.CUSTOM_SSID_RULE) {
+    await screen.findByRole('textbox', {
+      name: /ssid/i
+    })
+    await userEvent.type(screen.getByRole('textbox', {
+      name: /ssid/i
+    }), 'ssid123')
+  }
+
+  if (type === RogueRuleType.CUSTOM_MAC_OUI_RULE) {
+    await screen.findByRole('textbox', {
+      name: /mac oui/i
+    })
+    await userEvent.type(screen.getByRole('textbox', {
+      name: /mac oui/i
+    }), '11:22:33')
+  }
+
+  fireEvent.change(screen.getByTestId('selectRogueCategory'), {
+    target: { value: classification }
+  })
+
+  await userEvent.click(screen.getByText('Add'))
+
+  await screen.findByText(ruleName)
+
+  await userEvent.click(screen.getByText(ruleName))
+
+  await userEvent.click(screen.getByRole('button', {
+    name: /edit/i
+  }))
+
+  await userEvent.click(screen.getAllByRole('button', { name: 'Cancel' })[1])
+}
+
 describe('RogueAPDetectionForm', () => {
   beforeEach(() => {
     act(() => {
@@ -200,23 +285,23 @@ describe('RogueAPDetectionForm', () => {
     fireEvent.change(screen.getByRole('textbox', { name: /description/i }),
       { target: { value: 'desc1' } })
 
+    await addRule('rule1', RogueRuleType.CTS_ABUSE_RULE, RogueCategory.MALICIOUS)
+
+    await addRule('rule2', RogueRuleType.CUSTOM_SNR_RULE, RogueCategory.UNCLASSIFIED)
+
+    await addRule('rule3', RogueRuleType.CUSTOM_SSID_RULE, RogueCategory.KNOWN)
+
+    await screen.findByText('rule3')
+
+    await userEvent.click(screen.getByText('rule3'))
+
     await userEvent.click(screen.getByRole('button', {
-      name: /add rule/i
+      name: /edit/i
     }))
 
-    await screen.findByText(/add classification rule/i)
+    await userEvent.click(screen.getAllByRole('button', { name: 'Cancel' })[1])
 
-    await userEvent.type(screen.getByRole('textbox', { name: /rule name/i }), 'rule1')
-
-    fireEvent.change(screen.getByTestId('selectRogueRule'), {
-      target: { value: 'CTSAbuseRule' }
-    })
-
-    fireEvent.change(screen.getByTestId('selectRogueCategory'), {
-      target: { value: 'Unclassified' }
-    })
-
-    await userEvent.click(screen.getByText('Add'))
+    await addRule('rule4', RogueRuleType.CUSTOM_MAC_OUI_RULE, RogueCategory.IGNORED)
 
     await screen.findByText('rule1')
 
@@ -290,7 +375,6 @@ describe('RogueAPDetectionForm', () => {
 
     fireEvent.change(screen.getByRole('textbox', { name: /policy name/i }),
       { target: { value: 'anotherPolicyName' } })
-
 
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
