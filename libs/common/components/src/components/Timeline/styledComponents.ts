@@ -23,7 +23,6 @@ const getStatusColor = (status: TimelineStatus) => {
 export const Wrapper = styled.div`
   .ant-timeline-item {
     padding: 0px;
-    margin-left: -15px;
   }
   .ant-timeline-item:nth-child(3n+3) {
     padding-top: 6px;
@@ -36,6 +35,7 @@ export const Wrapper = styled.div`
     border: solid 1px var(--acx-accents-orange-50);
   }
   .ant-timeline-item-content {
+    margin-left: 0;
     font-size: var(--acx-body-5-font-size);
     line-height: var(--acx-body-5-line-height);
   }
@@ -45,7 +45,7 @@ export const Wrapper = styled.div`
     top: 3px;
   }
   .ant-descriptions-item-container {
-    padding-bottom: 30px;
+    padding-bottom: 15px;
   }
   .ant-descriptions-item-content {
     font-size: var(--acx-body-4-font-size);
@@ -72,7 +72,7 @@ export const ContentWrapper = styled.div`
 
 export const StatusWrapper = styled.div<{ status: TimelineStatus }>`
   display: flex;
-  gap: 10px;
+  gap: 6px;
   align-items: center;
   font-size: var(--acx-body-4-font-size);
   line-height: var(--acx-body-4-line-height);
@@ -125,7 +125,7 @@ export const Step = styled.div<{ $state: 'previous' | 'current' | 'future' }>`
 export const DescriptionWrapper = styled.div`
   font-size: var(--acx-body-4-font-size);
   line-height: var(--acx-body-4-line-height);
-  margin-left: 34px;
+  margin-left: 30px;
 `
 
 export const WithExpanderWrapper = styled.div`
@@ -177,7 +177,7 @@ export const InProgressIcon = styled(InProgress)`
 `
 
 export const Dash = styled.div`
-  margin-left: 60px;
+  margin-left: 50px;
   border-left: 1px solid var(--acx-neutrals-50);
   height: 8px;
 `

@@ -3,7 +3,7 @@
 exports[`Timeline should render 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1to6ymf-0 blYXlV"
+    class="styledComponents__Wrapper-sc-1to6ymf-0 jaxwsf"
   >
     <div
       class="ant-descriptions"
@@ -63,7 +63,7 @@ exports[`Timeline should render 1`] = `
         </div>
       </li>
       <div
-        class="styledComponents__Dash-sc-1to6ymf-12 chVkdq"
+        class="styledComponents__Dash-sc-1to6ymf-12 grKSiV"
       />
       <li
         class="ant-timeline-item"
@@ -93,7 +93,7 @@ exports[`Timeline should render 1`] = `
               >
                 <div>
                   <div
-                    class="styledComponents__StatusWrapper-sc-1to6ymf-3 iPvOmM"
+                    class="styledComponents__StatusWrapper-sc-1to6ymf-3 bOwEFv"
                   >
                     <svg
                       class="styledComponents__PendingsIcon-sc-1to6ymf-10 dMjqBx"
@@ -102,7 +102,7 @@ exports[`Timeline should render 1`] = `
                     Pending
                   </div>
                   <div
-                    class="styledComponents__DescriptionWrapper-sc-1to6ymf-5 kkBDYK"
+                    class="styledComponents__DescriptionWrapper-sc-1to6ymf-5 zACBC"
                   >
                     AddVenue
                   </div>
@@ -135,7 +135,7 @@ exports[`Timeline should render 1`] = `
         </div>
       </li>
       <div
-        class="styledComponents__Dash-sc-1to6ymf-12 chVkdq"
+        class="styledComponents__Dash-sc-1to6ymf-12 grKSiV"
       />
       <li
         class="ant-timeline-item"
@@ -165,7 +165,7 @@ exports[`Timeline should render 1`] = `
               >
                 <div>
                   <div
-                    class="styledComponents__StatusWrapper-sc-1to6ymf-3 iPvOmM"
+                    class="styledComponents__StatusWrapper-sc-1to6ymf-3 bOwEFv"
                   >
                     <svg
                       class="styledComponents__InProgressIcon-sc-1to6ymf-11 kXLEWK"
@@ -174,7 +174,7 @@ exports[`Timeline should render 1`] = `
                     In progress
                   </div>
                   <div
-                    class="styledComponents__DescriptionWrapper-sc-1to6ymf-5 kkBDYK"
+                    class="styledComponents__DescriptionWrapper-sc-1to6ymf-5 zACBC"
                   >
                     UpdateSwitchPosition
                   </div>
@@ -211,7 +211,7 @@ exports[`Timeline should render 1`] = `
         </div>
       </li>
       <div
-        class="styledComponents__Dash-sc-1to6ymf-12 chVkdq"
+        class="styledComponents__Dash-sc-1to6ymf-12 grKSiV"
       />
       <li
         class="ant-timeline-item"
@@ -241,7 +241,7 @@ exports[`Timeline should render 1`] = `
               >
                 <div>
                   <div
-                    class="styledComponents__StatusWrapper-sc-1to6ymf-3 bWFBqS"
+                    class="styledComponents__StatusWrapper-sc-1to6ymf-3 jODqPx"
                   >
                     <svg
                       class="styledComponents__SuccessIcon-sc-1to6ymf-8 dkqLMl"
@@ -250,7 +250,7 @@ exports[`Timeline should render 1`] = `
                     Success
                   </div>
                   <div
-                    class="styledComponents__DescriptionWrapper-sc-1to6ymf-5 kkBDYK"
+                    class="styledComponents__DescriptionWrapper-sc-1to6ymf-5 zACBC"
                   >
                     AddVenue
                   </div>
@@ -283,7 +283,7 @@ exports[`Timeline should render 1`] = `
         </div>
       </li>
       <div
-        class="styledComponents__Dash-sc-1to6ymf-12 chVkdq"
+        class="styledComponents__Dash-sc-1to6ymf-12 grKSiV"
       />
       <li
         class="ant-timeline-item ant-timeline-item-last"
@@ -313,7 +313,7 @@ exports[`Timeline should render 1`] = `
               >
                 <div>
                   <div
-                    class="styledComponents__StatusWrapper-sc-1to6ymf-3 brhtfG"
+                    class="styledComponents__StatusWrapper-sc-1to6ymf-3 bvHcIB"
                   >
                     <svg
                       class="styledComponents__FailIcon-sc-1to6ymf-9 iZmNvE"
@@ -322,7 +322,7 @@ exports[`Timeline should render 1`] = `
                     Failed
                   </div>
                   <div
-                    class="styledComponents__DescriptionWrapper-sc-1to6ymf-5 kkBDYK"
+                    class="styledComponents__DescriptionWrapper-sc-1to6ymf-5 zACBC"
                   >
                     AddVenue
                   </div>
