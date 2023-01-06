@@ -17,7 +17,7 @@ import {
   RogueAPDetectionTempType,
   VenueRoguePolicyType,
   TableResult, onSocketActivityChanged, showActivityMessage, CommonResult,
-  NewTableResult, transferTableResult, ClientIsolationSaveData
+  NewTableResult, transferTableResult, ClientIsolationSaveData, ClientIsolationUrls
 } from '@acx-ui/rc/utils'
 
 export const basePolicyApi = createApi({
@@ -227,7 +227,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     addClientIsolation: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(RogueApUrls.addClientIsolation, params, RKS_NEW_UI)
+        const req = createHttpRequest(ClientIsolationUrls.addClientIsolation, params, RKS_NEW_UI)
         return {
           ...req,
           body: payload
@@ -237,7 +237,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     deleteClientIsolation: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(RogueApUrls.deleteClientIsolation, params, RKS_NEW_UI)
+        const req = createHttpRequest(ClientIsolationUrls.deleteClientIsolation, params, RKS_NEW_UI)
         return {
           ...req
         }
@@ -246,7 +246,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     getClientIsolationList: build.query<ClientIsolationSaveData[], RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(RogueApUrls.getClientIsolationList, params, RKS_NEW_UI)
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(ClientIsolationUrls.getClientIsolationList, params, RKS_NEW_UI)
         return {
           ...req
         }
@@ -268,7 +269,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     getClientIsolation: build.query<ClientIsolationSaveData, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(RogueApUrls.getClientIsolation, params, RKS_NEW_UI)
+        const req = createHttpRequest(ClientIsolationUrls.getClientIsolation, params, RKS_NEW_UI)
         return {
           ...req
         }
@@ -277,7 +278,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     updateClientIsolation: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(RogueApUrls.updateClientIsolation, params, RKS_NEW_UI)
+        const req = createHttpRequest(ClientIsolationUrls.updateClientIsolation, params, RKS_NEW_UI)
         return {
           ...req,
           body: payload
@@ -312,6 +313,7 @@ export const {
   useAddClientIsolationMutation,
   useDeleteClientIsolationMutation,
   useGetClientIsolationListQuery,
+  useLazyGetClientIsolationListQuery,
   useGetClientIsolationQuery,
   useUpdateClientIsolationMutation
 } = policyApi
