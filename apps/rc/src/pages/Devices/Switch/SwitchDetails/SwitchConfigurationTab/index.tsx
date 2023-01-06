@@ -1,8 +1,8 @@
 import { Tabs } from '@acx-ui/components'
+import { SwitchConfigHistoryTable } from '@acx-ui/rc/components'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { useIntl } from 'react-intl'
 import { SwitchConfigBackup } from './SwitchConfigBackup'
-import { SwitchConfigHistory } from './SwitchConfigHistory'
 
 export function SwitchConfigurationTab () {
   const { $t } = useIntl()
@@ -28,7 +28,7 @@ export function SwitchConfigurationTab () {
         <SwitchConfigBackup />
       </Tabs.TabPane>
       <Tabs.TabPane tab={$t({ defaultMessage: 'History' })} key='history'>
-        <SwitchConfigHistory />
+        <SwitchConfigHistoryTable />
       </Tabs.TabPane>
     </Tabs>
   )

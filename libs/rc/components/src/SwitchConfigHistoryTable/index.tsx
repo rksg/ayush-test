@@ -7,7 +7,7 @@ import { useGetSwitchConfigHistoryQuery } from '@acx-ui/rc/services'
 import * as UI from './styledComponents'
 import { ErrorsTable } from './ErrorsTable'
 
-export function SwitchConfigHistory () {
+export function SwitchConfigHistoryTable () {
   const { $t } = useIntl()
   const codeMirrorEl = useRef(null as unknown as {highlightLine: Function, removeHighlightLine: Function});
   const [visible, setVisible] = useState(false)
