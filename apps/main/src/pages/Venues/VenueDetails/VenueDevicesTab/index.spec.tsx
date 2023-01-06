@@ -258,7 +258,6 @@ const meshData = {
   ] }
 
 describe('VenueMeshAps', () => {
-  let params: { tenantId: string, venueId: string, activeTab: string }
   beforeEach(() => {
     mockServer.use(
       rest.get(
@@ -278,17 +277,18 @@ describe('VenueMeshAps', () => {
         (req, res, ctx) => res(ctx.json(meshData))
       )
     )
-
-    params = {
-      tenantId: 'd1ec841a4ff74436b23bca6477f6a631',
-      venueId: '8caa8f5e01494b5499fa156a6c565138',
-      activeTab: 'devices'
-    }
   })
+
+  const params = {
+    tenantId: 'd1ec841a4ff74436b23bca6477f6a631',
+    venueId: '8caa8f5e01494b5499fa156a6c565138',
+    activeTab: 'devices',
+    activeSubTab: 'wifi'
+  }
 
   it('should render correctly', async () => {
     render(<Provider><VenueDetails /></Provider>, {
-      route: { params, path: '/:tenantId/venues/:venueId/venue-details/:activeTab' }
+      route: { params, path: '/:tenantId/venues/:venueId/venue-details/:activeTab/:activeSubTab' }
     })
 
     fireEvent.click(await screen.findByTestId('LineChartOutline'))
