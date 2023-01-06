@@ -62,12 +62,7 @@ const SubInterfaceDrawer = (props: StaticRoutesDrawerProps) => {
   }
 
   const handleSave = async () => {
-    formRef.validateFields().then(() => {
-      formRef.submit()
-      handleClose()
-    }).catch(() => {
-      //do nothing...
-    })
+    formRef.submit()
   }
 
   const handleFinish = async (formData: EdgeSubInterface) => {
@@ -91,6 +86,7 @@ const SubInterfaceDrawer = (props: StaticRoutesDrawerProps) => {
         content: $t({ defaultMessage: 'An error occurred' })
       })
     }
+    handleClose()
   }
 
   const drawerContent = <Form layout='vertical' form={formRef} onFinish={handleFinish}>
