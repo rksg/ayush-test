@@ -1,3 +1,5 @@
+import { TimelineStatus } from '@acx-ui/types'
+
 export type TimelineTypes = 'activities' | 'events' | 'adminLogs'
 
 export interface Activity {
@@ -16,11 +18,11 @@ export interface Activity {
   requestId: string
   severity: string
   startDatetime: string
-  status: string
+  status: TimelineStatus
   steps: {
     id: string,
     description: string,
-    status: string,
+    status: TimelineStatus,
     progressType: string
     startDatetime: string
     endDatetime: string

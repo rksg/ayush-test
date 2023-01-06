@@ -1,18 +1,14 @@
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
+import type { DonutChartData }                         from '@acx-ui/components'
 import {
-  cssStr,
-  Loader,
-  DonutChart,
-  NoData,
-  HistoricalCard
+  cssStr, DonutChart, HistoricalCard, Loader, NoData
 } from '@acx-ui/components'
-import type { DonutChartData } from '@acx-ui/components'
-import { EdgePort }            from '@acx-ui/rc/utils'
+import { EdgePortStatus } from '@acx-ui/rc/utils'
 
 type ReduceReturnType = Record<string, number>
-const getChartData = (ports: EdgePort[]): DonutChartData[] => {
+const getChartData = (ports: EdgePortStatus[]): DonutChartData[] => {
   // TODOs: generate series mapping data dynamically by the responsed data.
 
   //
@@ -47,7 +43,7 @@ const getChartData = (ports: EdgePort[]): DonutChartData[] => {
 }
 
 export function EdgePortsByTrafficWidget ({ edgePortsSetting, isLoading }:
-   { edgePortsSetting: EdgePort[], isLoading: boolean }) {
+   { edgePortsSetting: EdgePortStatus[], isLoading: boolean }) {
   const { $t } = useIntl()
 
   // TODO: retrieve by API, use fake data for testing
