@@ -30,7 +30,7 @@ export function ReportHeader (props: {
   const { setNetworkPath: setReportsNetworkPath } = useReportsFilter()
 
   useEffect(()=>{
-    if(isLoaded){
+    if(isLoaded || mode === 'none'){
       // Reset when filter mode changes
       setReportsNetworkPath([],[],[])
     }
