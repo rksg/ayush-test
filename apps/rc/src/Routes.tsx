@@ -271,6 +271,7 @@ function UserRoutes () {
       <Route path='users/wifi/:activeTab/:clientId/details'>
         <Route path='' element={<Navigate replace to='./overview' />} />
         <Route path=':activeTab' element={<WifiClientDetails />} />
+        <Route path=':activeTab/:activeSubTab' element={<WifiClientDetails />} />
       </Route>
       <Route path='users/switch' element={<TenantNavigate replace to='/users/switch/clients' />} />
       <Route path='users/switch/clients' element={<SwitchClientList />} />
