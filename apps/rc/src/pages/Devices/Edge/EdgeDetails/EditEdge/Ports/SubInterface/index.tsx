@@ -4,9 +4,9 @@ import { Col, Row }  from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Button, ContentSwitcher, ContentSwitcherProps, Loader, showActionModal, Table, TableProps } from '@acx-ui/components'
-import { useDeleteSubInterfacesMutation, useGetSubInterfacesQuery }                                  from '@acx-ui/rc/services'
-import { DEFAULT_PAGINATION, EdgePort, EdgeSubInterface, useTableQuery }                             from '@acx-ui/rc/utils'
+import { ContentSwitcher, ContentSwitcherProps, Loader, showActionModal, Table, TableProps } from '@acx-ui/components'
+import { useDeleteSubInterfacesMutation, useGetSubInterfacesQuery }                          from '@acx-ui/rc/services'
+import { DEFAULT_PAGINATION, EdgePort, EdgeSubInterface, useTableQuery }                     from '@acx-ui/rc/utils'
 
 import * as UI from '../styledComponents'
 
@@ -42,6 +42,15 @@ const SubInterfaceTable = (props: SubInterfaceTableProps) => {
   }, [props.mac])
 
   const columns: TableProps<EdgeSubInterface>['columns'] = [
+    {
+      title: '#',
+      key: '',
+      dataIndex: 'index',
+      render: (dom, entity, index) => {
+        const pagianation = tableQuery.pagination
+        return ++index + (pagianation.current - 1) * pagianation.pageSize
+      }
+    },
     {
       title: $t({ defaultMessage: 'Port Type' }),
       key: 'portType',
@@ -101,16 +110,14 @@ const SubInterfaceTable = (props: SubInterfaceTableProps) => {
     }
   ]
 
+  const actionButtons = [
+    { label: $t({ defaultMessage: 'Add Route' }), onClick: () => openDrawer() }
+  ]
+
   const openDrawer = (data?: EdgeSubInterface) => {
     setCurrentEditData(data)
     setDrawerVisible(true)
   }
-
-  const toolBarRender = () => [
-    <Button type='link' onClick={() => openDrawer()}>
-      {$t({ defaultMessage: 'Add Route' })}
-    </Button>
-  ]
 
   return (
     <>
@@ -123,16 +130,16 @@ const SubInterfaceTable = (props: SubInterfaceTableProps) => {
         }
       </UI.IpAndMac>
       <Row>
-        <Col span={8}>
+        <Col span={9}>
           <SubInterfaceDrawer
-            index={props.index}
+            mac={props.mac}
             visible={drawerVisible}
             setVisible={setDrawerVisible}
             data={currentEditData}
           />
           <Loader states={[tableQuery]}>
             <Table<EdgeSubInterface>
-              toolBarRender={toolBarRender}
+              actions={actionButtons}
               dataSource={tableQuery?.data?.data}
               pagination={tableQuery.pagination}
               onChange={tableQuery.handleTableChange}
@@ -146,7 +153,6 @@ const SubInterfaceTable = (props: SubInterfaceTableProps) => {
                 }
               }}
               rowKey='id'
-              type='form'
             />
           </Loader>
         </Col>

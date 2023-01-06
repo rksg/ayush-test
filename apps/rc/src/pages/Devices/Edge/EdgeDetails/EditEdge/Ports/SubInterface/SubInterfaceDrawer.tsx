@@ -9,7 +9,7 @@ import { useAddSubInterfacesMutation, useUpdateSubInterfacesMutation }          
 import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeSubInterface, serverIpAddressRegExp, subnetMaskIpRegExp } from '@acx-ui/rc/utils'
 
 interface StaticRoutesDrawerProps {
-  index: number
+  mac: string
   visible: boolean
   setVisible: (visible: boolean) => void
   addSubInterface?: (data: EdgeSubInterface) => void
@@ -20,7 +20,7 @@ interface StaticRoutesDrawerProps {
 const SubInterfaceDrawer = (props: StaticRoutesDrawerProps) => {
 
   const { $t } = useIntl()
-  const { visible, setVisible, data } = props
+  const { mac, visible, setVisible, data } = props
   const params = useParams()
   const [formRef] = Form.useForm()
   const [addSubInterface] = useAddSubInterfacesMutation()
@@ -72,10 +72,10 @@ const SubInterfaceDrawer = (props: StaticRoutesDrawerProps) => {
 
   const handleFinish = async (formData: EdgeSubInterface) => {
     formData.name = data?.name || ''
-    formData.mac = data?.mac || ''
+    formData.mac = mac
     formData.enabled = true
     const requestPayload = {
-      params: { ...params, mac: data?.mac, subInterfaceId: data?.id },
+      params: { ...params, mac: mac, subInterfaceId: data?.id },
       payload: formData
     }
     try {
