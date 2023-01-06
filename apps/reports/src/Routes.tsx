@@ -1,31 +1,13 @@
-
-import { createContext, useState } from 'react'
-
-
-import { CheckboxValueType } from 'antd/lib/checkbox/Group'
-import { SingleValueType }   from 'rc-cascader/lib/Cascader'
-
 import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                          from '@acx-ui/store'
-import { NetworkPath }                       from '@acx-ui/utils'
 
-import { Report }        from './pages/Reports'
-import { NetworkReport } from './pages/Reports/Network'
-import { ReportType  }   from './pages/Reports/reportsMapping'
-
-export interface NetworkFilterWithBand {
-  paths?: NetworkPath[],
-  bands?: CheckboxValueType[],
-  value?: SingleValueType | SingleValueType[]
-}
-
-export const NetworkFilterWithBandContext = createContext({} as {
-  filterData: NetworkFilterWithBand,
-  setFilterData: (data:NetworkFilterWithBand) => void
-})
+import { ReportType } from './mapping/reportsMapping'
+import { Report }     from './pages/Report'
 
 const reports = {
   overview: <Report type={ReportType.OVERVIEW} showFilter={false} />,
+  wireless: <Report type={ReportType.WIRELESS} />,
+  wired: <Report type={ReportType.WIRED} />,
   aps: <Report type={ReportType.ACCESS_POINT} />,
   switches: <Report type={ReportType.SWITCH} />,
   clients: <Report type={ReportType.CLIENT} />,
@@ -35,12 +17,12 @@ const reports = {
 }
 
 export default function ReportsRoutes () {
-  const [filterData, setFilterData] = useState<NetworkFilterWithBand>({})
   const routes = rootRoutes(
     <Route path='t/:tenantId'>
-      <Route path='reports'element={<TenantNavigate replace to='/reports/overview' />}/>
+      <Route path='reports' element={<TenantNavigate replace to='/reports/overview' />}/>
       <Route path='reports/overview' element={reports.overview}/>
-      <Route path='reports/network/:activeTab'element={<NetworkReport />} />
+      <Route path='reports/wireless' element={reports.wireless} />
+      <Route path='reports/wired' element={reports.wired} />
       <Route path='reports/aps' element={reports.aps} />
       <Route path='reports/switches' element={reports.switches} />
       <Route path='reports/clients' element={reports.clients}/>
@@ -51,9 +33,7 @@ export default function ReportsRoutes () {
   )
   return (
     <Provider>
-      <NetworkFilterWithBandContext.Provider value={{ filterData, setFilterData }}>
-        {routes}
-      </NetworkFilterWithBandContext.Provider>
+      {routes}
     </Provider>
   )
 }

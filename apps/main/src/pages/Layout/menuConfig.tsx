@@ -88,8 +88,12 @@ export function useMenuConfig () {
           name: $t({ defaultMessage: 'Overview' })
         },
         {
-          path: '/reports/network/wireless',
-          name: $t({ defaultMessage: 'Network' })
+          path: '/reports/wireless',
+          name: $t({ defaultMessage: 'Wireless' })
+        },
+        {
+          path: '/reports/wired',
+          name: $t({ defaultMessage: 'Wired' })
         },
         {
           path: '/reports/aps',

@@ -129,6 +129,25 @@ jest.mock('@acx-ui/analytics/utils', () => ({
   formattedPath: jest.fn(),
   useAnalyticsFilter: () => mockUseAnalyticsFilter
 }))
+
+const mockReportsSetNetworkPath = jest.fn()
+
+const reportsFilters = {
+  paths: [[{ type: 'network', name: 'Network' }]],
+  bands: []
+}
+
+const mockUseReportsFilter = {
+  filters: reportsFilters,
+  setNetworkPath: mockReportsSetNetworkPath,
+  raw: []
+}
+
+jest.mock('@acx-ui/reports/utils', () => ({
+  ...jest.requireActual('@acx-ui/reports/utils'),
+  useReportsFilter: () => mockUseReportsFilter
+}))
+
 describe('Network Filter', () => {
 
   beforeEach(() => {
@@ -182,7 +201,6 @@ describe('Network Filter', () => {
     await userEvent.click(screen.getByRole('combobox'))
   })
   it('should select network node and bands', async () => {
-    const mockFn = jest.fn()
     mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
       data: { network: { hierarchyNode: networkHierarchy } }
     })
@@ -192,7 +210,7 @@ describe('Network Filter', () => {
     const { asFragment } = render(<Provider><NetworkFilter
       shouldQuerySwitch
       showRadioBand={true}
-      onApplyWithRadioBand={mockFn}
+      filterFor='reports'
       replaceWithId={true}
     /></Provider>)
     await screen.findByText('Entire Organization')
@@ -212,30 +230,39 @@ describe('Network Filter', () => {
     await userEvent.click(band2_4GHz)
     expect(asFragment()).toMatchSnapshot()
     await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
-    expect(mockFn).toBeCalledWith({
-      bands: ['6','2.4'],
-      paths: [
-        [{ name: 'Network', type: 'network' }, { name: 'id5', type: 'switchGroup' }],
-        [{ name: 'Network', type: 'network' }, { name: 'id4', type: 'switchGroup' }],
-        [{ name: 'Network', type: 'network' }, { name: 'id1', type: 'zone' }]
-      ],
-      value: [
-        [
-          '[{"type":"network","name":"Network"},{"type":"switchGroup","name":"id5"}]',
-          'switchesswg1'
-        ],
-        [
-          '[{"type":"network","name":"Network"},{"type":"switchGroup","name":"id4"}]'
-        ],
-        [
-          '[{"type":"network","name":"Network"},{"type":"zone","name":"id1"}]'
-        ]
+    expect(mockReportsSetNetworkPath).toBeCalledWith(
+      [
+        [{
+          name: 'Network',
+          type: 'network'
+        }, {
+          name: 'id5',
+          type: 'switchGroup'
+        }],
+        [{
+          name: 'Network',
+          type: 'network'
+        }, {
+          name: 'id4',
+          type: 'switchGroup'
+        }],
+        [{
+          name: 'Network',
+          type: 'network'
+        }, {
+          name: 'id1',
+          type: 'zone'
+        }]
+      ], ['6', '2.4'], [
+        // eslint-disable-next-line max-len
+        ['[{"type":"network","name":"Network"},{"type":"switchGroup","name":"id5"}]', 'switchesswg1'],
+        ['[{"type":"network","name":"Network"},{"type":"switchGroup","name":"id4"}]'],
+        ['[{"type":"network","name":"Network"},{"type":"zone","name":"id1"}]']
       ]
-    })
+    )
   })
 
   it('should list only venues having APs', async () => {
-    const mockFn = jest.fn()
     mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
       data: { network: { hierarchyNode: networkHierarchy } }
     })
@@ -245,7 +272,7 @@ describe('Network Filter', () => {
     const { asFragment } = render(<Provider><NetworkFilter
       shouldQuerySwitch
       showRadioBand={true}
-      onApplyWithRadioBand={mockFn}
+      filterFor='reports'
       replaceWithId={true}
       filterMode={'ap'}
     /></Provider>)
@@ -255,7 +282,6 @@ describe('Network Filter', () => {
   })
 
   it('should list only venues having Switches', async () => {
-    const mockFn = jest.fn()
     mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
       data: { network: { hierarchyNode: networkHierarchy } }
     })
@@ -265,7 +291,7 @@ describe('Network Filter', () => {
     const { asFragment } = render(<Provider><NetworkFilter
       shouldQuerySwitch
       showRadioBand={true}
-      onApplyWithRadioBand={mockFn}
+      filterFor='reports'
       replaceWithId={true}
       filterMode={'switch'}
     /></Provider>)
@@ -283,6 +309,7 @@ describe('Network Filter', () => {
     })
     const { asFragment } = render(<Provider><NetworkFilter
       shouldQuerySwitch
+      filterFor='reports'
       showRadioBand={true}
       replaceWithId={true}
     /></Provider>)

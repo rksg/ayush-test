@@ -1,13 +1,13 @@
 import { useIntl } from 'react-intl'
 
-import { ReportHeader }  from '../ReportHeader'
-import EmbeddedDashboard from '../Reports/EmbeddedDashboard'
+import { EmbeddedReport } from '@acx-ui/reports/components'
 
 import {
   ReportType,
   reportTypeLabelMapping,
   reportTypeDataStudioMapping,
-  reportTypeModeMapping } from './reportsMapping'
+  reportTypeModeMapping } from '../../mapping/reportsMapping'
+import { ReportHeader } from '../ReportHeader'
 
 export function Report (props: {
   type: ReportType
@@ -32,7 +32,7 @@ export function Report (props: {
         radioBandDisabledReason={radioBandDisabledReason}
         showFilter={showFilter}
       /> }
-      <EmbeddedDashboard embedDashboardName={reportTypeDataStudioMapping[type]} />
+      <EmbeddedReport embedDashboardName={reportTypeDataStudioMapping[type]} />
     </>
   )
 }

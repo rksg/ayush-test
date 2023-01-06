@@ -48,7 +48,7 @@ export const reportsApi = reportsBaseApi.injectEndpoints({
           body: payload
         }
       },
-      transformResponse: (response : GuestToken) =>{
+      transformResponse: (response : GuestToken) => {
         return response.token
       }
     }),

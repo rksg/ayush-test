@@ -1,5 +1,4 @@
-
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Buffer } from 'buffer'
 
@@ -10,23 +9,22 @@ import {
   RadioBand,
   Loader
 } from '@acx-ui/components'
-import { useDateFilter, convertDateTimeToSqlFormat } from '@acx-ui/utils'
+import { useGuestTokenMutation, useEmbeddedIdMutation, BASE_RELATIVE_URL } from '@acx-ui/reports/services'
+import { useReportsFilter }                                                from '@acx-ui/reports/utils'
+import { useDateFilter, convertDateTimeToSqlFormat }                       from '@acx-ui/utils'
 
-import { NetworkFilterWithBandContext }                                    from '../../../Routes'
-import { useGuestTokenMutation, useEmbeddedIdMutation, BASE_RELATIVE_URL } from '../Services'
 
 interface ReportProps {
   embedDashboardName: string
 }
 
-function Report (props: ReportProps) {
+export function EmbeddedReport (props: ReportProps) {
   const { embedDashboardName } = props
   const [ guestToken ] = useGuestTokenMutation()
   const [ embeddedId ] = useEmbeddedIdMutation()
   const { startDate, endDate } = useDateFilter()
   const [dashboardEmbeddedId, setDashboardEmbeddedId] = useState<string | null>(null)
-  const { filterData } = useContext(NetworkFilterWithBandContext)
-  const { paths, bands } = filterData
+  const { filters: { paths, bands } } = useReportsFilter()
   const { networkClause, radioBandClause } = getSupersetRlsClause(paths,bands as RadioBand[])
 
   // Hostname - Backend service where superset is running.
@@ -35,7 +33,7 @@ function Report (props: ReportProps) {
   // This step is required, as the iframe requests is not proxied locally
   // TODO: Add local proxy to handle iframe requests
   const HOST_NAME = process.env['NODE_ENV'] === 'development'
-    ? 'https://alto.local.mlisa.io' // Dev
+    ? 'https://devalto.ruckuswireless.com' // Dev
     : window.location.origin // Production
 
   useEffect(() => {
@@ -65,7 +63,7 @@ function Report (props: ReportProps) {
 
   const fetchGuestTokenFromBackend = async () => {
     // eslint-disable-next-line no-console
-    console.log('%c[%s][ACX] -> Refreshing guest token for Embedded Report',
+    console.log('%c[%s][ACX] -> Refreshing guest token for Embedded EmbeddedReport',
       'color: cyan', new Date().toLocaleString())
     return await guestToken({ payload: guestTokenPayload }).unwrap()
   }
@@ -83,7 +81,7 @@ function Report (props: ReportProps) {
       })
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[startDate, endDate, filterData, dashboardEmbeddedId])
+  },[startDate, endDate, paths, bands, dashboardEmbeddedId])
 
   return (
     <Loader>
@@ -91,5 +89,3 @@ function Report (props: ReportProps) {
     </Loader>
   )
 }
-
-export default Report

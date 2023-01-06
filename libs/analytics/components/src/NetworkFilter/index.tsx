@@ -1,12 +1,16 @@
-import { CheckboxValueType }         from 'antd/lib/checkbox/Group'
 import { DefaultOptionType }         from 'antd/lib/select'
 import { omit, groupBy, pick, find } from 'lodash'
 import { SingleValueType }           from 'rc-cascader/lib/Cascader'
 import { useIntl }                   from 'react-intl'
 
-import { useAnalyticsFilter, calculateSeverity, defaultNetworkPath, Incident } from '@acx-ui/analytics/utils'
-import { Select, Option, Loader, RadioBand }                                   from '@acx-ui/components'
-import { NetworkPath }                                                         from '@acx-ui/utils'
+import {
+  useAnalyticsFilter,
+  calculateSeverity,
+  defaultNetworkPath,
+  Incident } from '@acx-ui/analytics/utils'
+import { Select, Option, Loader, RadioBand } from '@acx-ui/components'
+import { useReportsFilter }                  from '@acx-ui/reports/utils'
+import { NetworkPath }                       from '@acx-ui/utils'
 
 import { useIncidentsListQuery } from '../IncidentTable/services'
 
@@ -14,7 +18,7 @@ import { LabelWithSeverityCicle }                   from './LabelWithSeverityCir
 import { Child, useNetworkFilterQuery, ApOrSwitch } from './services'
 import * as UI                                      from './styledComponents'
 
-export type FilterMode = 'ap' | 'switch' | 'both'
+export type FilterMode = 'ap' | 'switch' | 'both' | 'none'
 
 export const getSupersetRlsClause = (paths?:NetworkPath[],radioBands?:RadioBand[]) => {
   let radioBandClause = ''
@@ -87,16 +91,11 @@ type ConnectedNetworkFilterProps = {
     multiple?: boolean,
     replaceWithId?:boolean,
     filterMode?: FilterMode,
-    overrideUrlFilter?: boolean,
+    filterFor?: 'analytics' | 'reports',
     defaultValue?: SingleValueType | SingleValueType[],
     defaultRadioBand?: RadioBand[],
     isRadioBandDisabled?: boolean,
-    radioBandDisabledReason?: string,
-    onApplyWithRadioBand?: ({ paths, bands, value }:{
-      paths:NetworkPath[],
-      bands?:CheckboxValueType[],
-      value?: SingleValueType | SingleValueType[]
-    }) => void
+    radioBandDisabledReason?: string
    }
 const getSeverityFromIncidents = (
   incidentsList: Incident[]
@@ -288,17 +287,19 @@ function ConnectedNetworkFilter (
     withIncidents,
     showRadioBand,
     filterMode='both',
-    overrideUrlFilter=false,
+    filterFor='analytics',
     multiple,
     replaceWithId,
     defaultValue,
     defaultRadioBand,
     isRadioBandDisabled=false,
-    radioBandDisabledReason,
-    onApplyWithRadioBand } : ConnectedNetworkFilterProps
+    radioBandDisabledReason } : ConnectedNetworkFilterProps
 ) {
   const { $t } = useIntl()
   const { setNetworkPath, filters, raw } = useAnalyticsFilter()
+  const { setNetworkPath: setReportsNetworkPath,
+    raw: reportsRaw, filters: reportsFilter } = useReportsFilter()
+  const { bands: selectedBands } = reportsFilter
   /* eslint-disable react-hooks/rules-of-hooks */
   const incidentsList = withIncidents
     ? useIncidentsListQuery(
@@ -322,7 +323,7 @@ function ConnectedNetworkFilter (
       ...rest
     })
   })
-  const rawVal = overrideUrlFilter ? [] : raw
+  const rawVal = filterFor === 'reports' ? reportsRaw : raw
   return (
     <UI.Container>
       <Loader states={[queryResults]}>
@@ -331,7 +332,7 @@ function ConnectedNetworkFilter (
           multiple={multiple}
           showRadioBand={showRadioBand}
           defaultValue={defaultValue || rawVal}
-          defaultRadioBand={defaultRadioBand || []}
+          defaultRadioBand={defaultRadioBand || selectedBands || []}
           isRadioBandDisabled={isRadioBandDisabled}
           radioBandDisabledReason={radioBandDisabledReason}
           value={defaultValue || rawVal}
@@ -358,8 +359,7 @@ function ConnectedNetworkFilter (
               }else{
                 paths.push(defaultNetworkPath)
               }
-              if(onApplyWithRadioBand)
-                onApplyWithRadioBand({ paths, bands, value: value || [] })
+              setReportsNetworkPath(paths, (bands || []) as RadioBand[], value || [])
             }else{
               onApply(value, setNetworkPath)
             }

@@ -1,16 +1,14 @@
 import { rest } from 'msw'
 
-import { Provider }   from '@acx-ui/store'
-import { store }      from '@acx-ui/store'
-import { render }     from '@acx-ui/test-utils'
-import { mockServer } from '@acx-ui/test-utils'
+import {  ReportUrlsInfo, reportsApi }        from '@acx-ui/reports/services'
+import type { GuestToken, DashboardMetadata } from '@acx-ui/reports/services'
+import { Provider }                           from '@acx-ui/store'
+import { store }                              from '@acx-ui/store'
+import { render }                             from '@acx-ui/test-utils'
+import { mockServer }                         from '@acx-ui/test-utils'
 
-import { NetworkFilterWithBandContext } from '../../../Routes'
-import {  ReportUrlsInfo, reportsApi }  from '../Services'
+import { EmbeddedReport } from '.'
 
-import EmbeddedDashboard from '.'
-
-import type { GuestToken, DashboardMetadata } from '../Services'
 
 const mockEmbedDashboard = jest.fn()
 jest.mock('@superset-ui/embedded-sdk', () => ({
@@ -56,9 +54,7 @@ describe('EmbeddedDashboard', () => {
       (req, res, ctx) => res(ctx.json(getEmbeddedReponse))
     )
     render(<Provider>
-      <NetworkFilterWithBandContext.Provider value={{ filterData: {}, setFilterData: () => {} }}>
-        <EmbeddedDashboard embedDashboardName={'some dashboard'} />
-      </NetworkFilterWithBandContext.Provider>
+      <EmbeddedReport embedDashboardName={'some dashboard'} />
     </Provider>, { route: { params } })
     // expect(mockEmbedDashboard).toHaveBeenCalledWith()
     // TODO - Will revisit this
