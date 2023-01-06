@@ -287,14 +287,6 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           ...externalProvidersReq
         }
       }
-    }),
-    globalValues: build.query<{ [key:string]:string }, RequestPayload>({
-      query: () => {
-        const globalValuesReq = createHttpRequest(CommonUrlsInfo.getGlobalValues)
-        return {
-          ...globalValuesReq
-        }
-      }
     })
   })
 })
@@ -403,6 +395,5 @@ export const {
   useDashboardOverviewQuery,
   useValidateRadiusQuery,
   useLazyValidateRadiusQuery,
-  useExternalProvidersQuery,
-  useGlobalValuesQuery
+  useExternalProvidersQuery
 } = networkApi
