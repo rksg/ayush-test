@@ -73,8 +73,7 @@ export function useMenuConfig () {
       path: '/timeline',
       name: $t({ defaultMessage: 'Timeline' }),
       inactiveIcon: CalendarDateOutlined,
-      activeIcon: CalendarDateSolid,
-      disabled: !useIsSplitOn(Features.TIMELINE)
+      activeIcon: CalendarDateSolid
     },
     {
       path: '/reports',
@@ -156,7 +155,7 @@ export function useMenuConfig () {
       name: $t({ defaultMessage: 'Administration' }),
       inactiveIcon: AdminOutlined,
       activeIcon: AdminSolid,
-      disabled: true
+      disabled: !useIsSplitOn(Features.UNRELEASED)
     }
   ]
   return config
