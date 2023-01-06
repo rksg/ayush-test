@@ -108,5 +108,18 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   getVlanByUuid: {
     method: 'get',
     url: '/api/switch/tenant/:tenantId/vlan/:vlanUuid'
+  },
+  getDhcpPools: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/switch/:switchId/dhcpServer/query'
+  },
+  getDhcpLeases: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/switch/:switchId/'+
+      'troubleshootingResult/dhcp-server-lease-table'
+  },
+  updateDhcpServerState: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/switch/:switchId/dhcpServer/state'
   }
 }

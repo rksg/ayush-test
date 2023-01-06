@@ -261,3 +261,28 @@ export interface SwitchPortViewModel extends GridDataRow {
   unitState: SwitchStatusEnum; // stack unit status (Online/Offline)
   SwitchPortStackingPortField: boolean;
 }
+
+export interface SwitchDhcp {
+  id: string
+  poolName: string
+  leaseDays: number
+  leaseHrs: number
+  leaseMins: number
+  excludedEnd?: string
+  excludedStart?: string
+  defaultRouterIp: string
+  subnetMask: string
+  subnetAddress: string
+  dhcpOptions: {
+    seq: number
+    type: string
+    value: string
+  }[]
+}
+
+export interface SwitchDhcpLease {
+  clientId: string
+  clientIp: string
+  leaseExpiration: string
+  leaseType: string
+}

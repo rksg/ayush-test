@@ -20,7 +20,9 @@ import {
   VeViewModel,
   VlanVePort,
   AclUnion,
-  VeForm
+  VeForm,
+  SwitchDhcp,
+  SwitchDhcpLease
 } from '@acx-ui/rc/utils'
 
 export const baseSwitchApi = createApi({
@@ -254,7 +256,8 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         return {
           ...req
         }
-      }
+      },
+      providesTags: [{ type: 'Switch', id: 'DETAIL' }]
     }),
     deleteVePorts: build.mutation<VeForm, RequestPayload>({
       query: ({ params, payload }) => {
@@ -266,6 +269,33 @@ export const switchApi = baseSwitchApi.injectEndpoints({
 
       },
       invalidatesTags: [{ type: 'Switch', id: 'VE' }]
+    }),
+    updateDhcpServerState: build.mutation<{}, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.updateDhcpServerState, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Switch', id: 'DETAIL' }]
+    }),
+    getDhcpPools: build.query<TableResult<SwitchDhcp>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getDhcpPools, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    getDhcpLeases: build.query<TableResult<SwitchDhcpLease>, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getDhcpLeases, params)
+        return {
+          ...req
+        }
+      }
     })
   })
 })
@@ -356,5 +386,8 @@ export const {
   useGetSwitchQuery,
   useDeleteVePortsMutation,
   useGetSwitchAclsQuery,
-  useGetVlanListBySwitchLevelQuery
+  useGetVlanListBySwitchLevelQuery,
+  useUpdateDhcpServerStateMutation,
+  useGetDhcpPoolsQuery,
+  useGetDhcpLeasesQuery
 } = switchApi

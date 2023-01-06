@@ -1,9 +1,179 @@
 import { useIntl } from 'react-intl'
 
+import { Button, Loader, showActionModal, Table, TableProps, Tabs }                                  from '@acx-ui/components'
+import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { Form, Switch } from 'antd'
+import { IP_ADDRESS_TYPE, SwitchDhcp, SwitchDhcpLease, useTableQuery } from '@acx-ui/rc/utils'
+import {
+  useGetDhcpLeasesQuery,
+  useGetDhcpPoolsQuery,
+  useGetSwitchQuery,
+  useUpdateDhcpServerStateMutation
+} from '@acx-ui/rc/services'
+
+
 export function SwitchDhcpTab () {
   const { $t } = useIntl()
+  const navigate = useNavigate()
+  const { activeTab, activeSubTab, serialNumber, switchId, tenantId } = useParams()
+  const basePath = useTenantLink(`/devices/switch/${switchId}/${serialNumber}/details/${activeTab}`)
+
+  const { data: switchData, isLoading } = useGetSwitchQuery({ params: { switchId, tenantId } })
+  const [ updateDhcpServerState ] = useUpdateDhcpServerStateMutation()
+
+  const onTabChange = (tab: string) => {
+    navigate({
+      ...basePath,
+      pathname: `${basePath.pathname}/${tab}`
+    })
+  }
+
+  const onDhcpStatusChange = (checked: boolean) => {
+    if (checked === true && switchData?.dhcpClientEnabled) {
+      showActionModal({
+        type: 'info',
+        content: $t({ defaultMessage: `
+          DHCP server cannot be enabled since this switch is currently acting as a DHCP client.
+          Configure static IP address on the switch and try again.` })
+      })
+      return
+    } else if (checked === true && switchData?.ipAddressType === IP_ADDRESS_TYPE.STATIC) {
+      showActionModal({
+        type: 'confirm',
+        content: $t({ defaultMessage: `
+          This switch can no longer act as a DHCP client once DHCP server is enabled.` }),
+        onOk: () => {
+          updateDhcpServerState({ params: { tenantId, switchId }, payload: { status: checked } })
+        }
+      })
+      return
+    } else {
+      updateDhcpServerState({ params: { tenantId, switchId }, payload: { status: checked } })
+    }
+  }
+
+  const operations =
+    <Form.Item style={{ marginBottom: 0 }}
+      label={$t({ defaultMessage: 'DHCP Service state' })}>
+      <Switch onChange={onDhcpStatusChange}
+        checked={switchData?.dhcpServerEnabled}
+        loading={isLoading} />
+    </Form.Item>
 
   return (
-    <>{ $t({ defaultMessage: 'DHCP' })}</>
+    <Tabs activeKey={activeSubTab}
+      defaultActiveKey='pool'
+      onChange={onTabChange}
+      tabBarExtraContent={operations}
+      type='card'>
+      <Tabs.TabPane tab={$t({ defaultMessage: 'Pools' })} key='pool'>
+        <SwitchDhcpPoolTable />
+      </Tabs.TabPane>
+      <Tabs.TabPane tab={$t({ defaultMessage: 'Leases' })} key='lease'>
+        <SwitchDhcpLeaseTable />
+      </Tabs.TabPane>
+    </Tabs>
+  )
+}
+
+export function SwitchDhcpPoolTable () {
+  const { $t } = useIntl()
+
+  const tableQuery = useTableQuery({
+    useQuery: useGetDhcpPoolsQuery,
+    defaultPayload: {},
+    sorter: {
+      sortField: 'poolName',
+      sortOrder: 'ASC'
+    }
+  })
+
+  const columns: TableProps<SwitchDhcp>['columns'] = [
+    {
+      key: 'poolName',
+      title: $t({ defaultMessage: 'Pool Name' }),
+      dataIndex: 'poolName',
+      sorter: true,
+      defaultSortOrder: 'ascend'
+    }, {
+      key: 'subnetAddress',
+      title: $t({ defaultMessage: 'Address Pool' }),
+      dataIndex: 'subnetAddress',
+      sorter: false
+    }, {
+      key: 'subnetMask',
+      title: $t({ defaultMessage: 'Subnet Mask' }),
+      dataIndex: 'subnetMask',
+      sorter: false
+    }, {
+      key: 'leaseDays',
+      title: $t({ defaultMessage: 'Lease Time' }),
+      dataIndex: 'leaseDays',
+      sorter: false
+    }, {
+      key: 'defaultRouterIp',
+      title: $t({ defaultMessage: 'Default Router IP' }),
+      dataIndex: 'defaultRouterIp',
+      sorter: true
+    }
+  ]
+
+  return (
+    <Loader states={[tableQuery]}>
+      <Table
+        columns={columns}
+        dataSource={tableQuery.data?.data}
+        pagination={tableQuery.pagination}
+        onChange={tableQuery.handleTableChange}
+        actions={[{
+          label: $t({ defaultMessage: 'Add Pool' }),
+          onClick: () => { }
+        }]}
+        rowKey='id' />
+    </Loader>
+  )
+}
+
+export function SwitchDhcpLeaseTable () {
+  const { $t } = useIntl()
+
+  const tableQuery = useTableQuery({
+    useQuery: useGetDhcpLeasesQuery,
+    defaultPayload: {}
+  })
+
+  const columns: TableProps<SwitchDhcpLease>['columns'] = [
+    {
+      key: 'clientId',
+      title: $t({ defaultMessage: 'Client ID' }),
+      dataIndex: 'clientId',
+      sorter: false
+    }, {
+      key: 'clientIp',
+      title: $t({ defaultMessage: 'Client IP' }),
+      dataIndex: 'clientIp',
+      sorter: false
+    }, {
+      key: 'leaseExpiration',
+      title: $t({ defaultMessage: 'Lease Expiration' }),
+      dataIndex: 'leaseExpiration',
+      sorter: false
+    }, {
+      key: 'leaseType',
+      title: $t({ defaultMessage: 'Lease Type' }),
+      dataIndex: 'leaseType',
+      sorter: false
+    }
+  ]
+
+  return (
+    <Loader states={[tableQuery]}>
+      <Table
+        columns={columns}
+        dataSource={tableQuery.data?.data}
+        pagination={tableQuery.pagination}
+        onChange={tableQuery.handleTableChange}
+        rowKey='clientId' />
+    </Loader>
   )
 }
