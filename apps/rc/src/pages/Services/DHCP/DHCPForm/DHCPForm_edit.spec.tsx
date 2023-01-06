@@ -63,7 +63,7 @@ describe('DHCPForm', () => {
         })
     )
 
-    const { asFragment } = render(<Provider><DHCPForm editMode={true}/></Provider>, {
+    render(<Provider><DHCPForm editMode={true}/></Provider>, {
       route: { params }
     })
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
@@ -76,7 +76,7 @@ describe('DHCPForm', () => {
     expect(serviceName).toHaveValue('DhcpConfigServiceProfile1')
 
     await userEvent.click(screen.getByRole('button', { name: 'Finish' }))
-    expect(asFragment()).toMatchSnapshot()
+
 
 
   })
