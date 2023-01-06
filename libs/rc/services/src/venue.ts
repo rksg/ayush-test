@@ -687,7 +687,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
-            'Deactivate Venue DHCP Pool'
+            'DeactivateVenueDhcpPool',
+            'ActivateVenueDhcpPool'
           ]
           showActivityMessage(msg, activities, () => {
             api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'poolList' }]))
