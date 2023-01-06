@@ -1,6 +1,6 @@
-import { Col, Form, Input, Row } from 'antd'
-import { useIntl }               from 'react-intl'
-import { useParams }             from 'react-router-dom'
+import { Col, Form, Input, Row, Space } from 'antd'
+import { useIntl }                      from 'react-intl'
+import { useParams }                    from 'react-router-dom'
 
 import { useLazyGetClientIsolationListQuery } from '@acx-ui/rc/services'
 import {
@@ -8,7 +8,10 @@ import {
   ClientIsolationClient
 } from '@acx-ui/rc/utils'
 
-import { ClientIsolationClientsTable } from './ClientIsolationAllowListTable'
+import { ClientIsolationAllowListTable } from './ClientIsolationAllowListTable'
+import * as UI                           from './styledComponents'
+
+const MAX_CLIENT_COUNT = 64
 
 export default function ClientIsolationSettingsForm () {
   const { $t } = useIntl()
@@ -62,17 +65,27 @@ export default function ClientIsolationSettingsForm () {
       </Row>
       <Row gutter={20}>
         <Col span={10}>
+          <Space direction='vertical' size={2}>
+            <UI.TableLabel>
+              {$t(
+                { defaultMessage: 'Client Entries ({count})' },
+                { count: allowlist ? allowlist.length : 0 }
+              )}
+            </UI.TableLabel>
+            <UI.TableSubLabel>
+              {$t(
+                { defaultMessage: 'Up to {maxClientCount} clients may be added' },
+                { maxClientCount: MAX_CLIENT_COUNT }
+              )}
+            </UI.TableSubLabel>
+          </Space>
           <Form.Item
             name='allowlist'
-            label={$t(
-              { defaultMessage: 'Client Entries ({count})' },
-              { count: allowlist ? allowlist.length : 0 }
-            )}
             rules={[
               { required: true }
             ]}
           >
-            <ClientIsolationClientsTable
+            <ClientIsolationAllowListTable
               allowList={allowlist}
               setAllowList={handleSetAllowList}
             />

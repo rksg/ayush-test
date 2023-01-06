@@ -7,35 +7,49 @@ import {
   ClientIsolationClient
 } from '@acx-ui/rc/utils'
 
-import { AddNewClientDrawer } from './AddNewClientDrawer'
+import { AddNewClientDrawer }                               from './AddNewClientDrawer'
+import { SelectConnectedClientsDrawer, SimpleClientRecord } from './SelectConnectedClientsDrawer'
 
 interface ClientIsolationClientsTableProps {
   allowList?: ClientIsolationClient[];
   setAllowList?: (c: ClientIsolationClient[]) => void;
 }
 
-export function ClientIsolationClientsTable (props: ClientIsolationClientsTableProps) {
+export function ClientIsolationAllowListTable (props: ClientIsolationClientsTableProps) {
   const { allowList = [], setAllowList = () => null } = props
   const { $t } = useIntl()
-  // eslint-disable-next-line max-len
-  const [ drawerFormClientEntries, setDrawerFormClientEntries ] = useState<ClientIsolationClient>()
-  const [ drawerEditMode, setDrawerEditMode ] = useState(false)
-  const [ drawerVisible, setDrawerVisible ] = useState(false)
+  const [ addNewClientDrawerProps, setAddNewClientDrawerProps ] = useState({
+    client: {},
+    editMode: false,
+    visible: false
+  })
+  const [ selectConnectedClientDrawerProps, setSelectConnectedClientDrawerProps ] = useState<{
+    selectedClientsMac: string[],
+    visible: boolean
+  }>({
+    selectedClientsMac: [],
+    visible: false
+  })
 
   const handleSelectConnectedClientAction = () => {
-
+    setSelectConnectedClientDrawerProps({
+      visible: true,
+      selectedClientsMac: allowList.map(c => c.mac)
+    })
   }
 
-  const handleAddNewClientAction = () => {
-    setDrawerEditMode(false)
-    setDrawerVisible(true)
-    setDrawerFormClientEntries({} as ClientIsolationClient)
+  const handleAddNewClientAction = (client?: ClientIsolationClient) => {
+    setAddNewClientDrawerProps({
+      editMode: client ? true : false,
+      visible: true,
+      client: client ?? {}
+    })
   }
 
   const handleSetClient = (data: ClientIsolationClient) => {
     const newAllowList: ClientIsolationClient[] = allowList ? allowList.slice() : []
 
-    if (drawerEditMode) {
+    if (addNewClientDrawerProps.editMode) {
       const targetIdx = newAllowList.findIndex((c: ClientIsolationClient) => c.mac === data.mac)
       newAllowList.splice(targetIdx, 1, data)
     } else {
@@ -69,9 +83,7 @@ export function ClientIsolationClientsTable (props: ClientIsolationClientsTableP
   const rowActions: TableProps<ClientIsolationClient>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
     onClick: (selectedRows) => {
-      setDrawerVisible(true)
-      setDrawerEditMode(true)
-      setDrawerFormClientEntries(selectedRows[0])
+      handleAddNewClientAction(selectedRows[0])
     }
   },{
     label: $t({ defaultMessage: 'Delete' }),
@@ -98,18 +110,37 @@ export function ClientIsolationClientsTable (props: ClientIsolationClientsTableP
   return (
     <>
       <AddNewClientDrawer
-        editMode={drawerEditMode}
-        client={(drawerFormClientEntries)}
-        visible={drawerVisible}
-        setVisible={setDrawerVisible}
+        editMode={addNewClientDrawerProps.editMode}
+        client={addNewClientDrawerProps.client as ClientIsolationClient}
+        visible={addNewClientDrawerProps.visible}
+        setVisible={(visible: boolean) => {
+          setAddNewClientDrawerProps({
+            ...addNewClientDrawerProps,
+            visible
+          })
+        }}
         setClient={handleSetClient}
         isRuleUnique={(comingClient: ClientIsolationClient) => {
           return allowList.every((c: ClientIsolationClient) => comingClient.mac !== c.mac)
-        }} />
+        }}
+      />
+      <SelectConnectedClientsDrawer
+        visible={selectConnectedClientDrawerProps.visible}
+        incomingClientsMac={selectConnectedClientDrawerProps.selectedClientsMac}
+        setVisible={(visible: boolean) => {
+          setSelectConnectedClientDrawerProps({
+            ...selectConnectedClientDrawerProps,
+            visible
+          })
+        }}
+        addClients={(clients: SimpleClientRecord[]) => {
+          setAllowList(clients.map(c => ({ mac: c.clientMac, ipAddress: c.ipAddress })))
+        }}
+      />
       <Table<ClientIsolationClient>
         columns={columns}
         dataSource={allowList}
-        rowKey='id'
+        rowKey='mac'
         actions={[
           {
             label: $t({ defaultMessage: 'Select from Connected Clients' }),
