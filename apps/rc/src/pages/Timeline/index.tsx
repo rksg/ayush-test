@@ -2,6 +2,7 @@ import moment                                        from 'moment'
 import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
 import { PageHeader, Tabs, RangePicker }         from '@acx-ui/components'
+import { TimelineTypes }                         from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { dateRangeForLast, useDateFilter }       from '@acx-ui/utils'
 
@@ -9,10 +10,8 @@ import { Activities } from './Activities'
 import { AdminLogs }  from './AdminLogs'
 import { Events }     from './Events'
 
-type TimelineTabs = 'activities' | 'events' | 'adminLogs'
-
 const tabs : {
-  key: TimelineTabs,
+  key: TimelineTypes,
   title: MessageDescriptor,
   component: () => JSX.Element
 }[] = [
