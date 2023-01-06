@@ -296,6 +296,5 @@ describe('VenueMeshAps', () => {
     fireEvent.click(await screen.findByTestId('MeshSolid'))
 
     await screen.findByText('R710')
-
   })
 })

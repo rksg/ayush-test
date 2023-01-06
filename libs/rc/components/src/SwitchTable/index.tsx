@@ -14,9 +14,9 @@ import {
   SwitchRow,
   transformSwitchStatus,
   getSwitchName,
-  useTableQuery,
   DeviceConnectionStatus,
   getStackMemberStatus,
+  usePollingTableQuery,
   getFilters
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
@@ -48,7 +48,7 @@ export function SwitchTable ({ showAllColumns } : {
 }) {
   const { $t } = useIntl()
   const params = useParams()
-  const tableQuery = useTableQuery({
+  const tableQuery = usePollingTableQuery({
     useQuery: useSwitchListQuery,
     defaultPayload: {
       filters: getFilters(params),
