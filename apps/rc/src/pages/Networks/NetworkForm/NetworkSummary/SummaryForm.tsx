@@ -74,6 +74,9 @@ export function SummaryForm (props: {
             { $t({ defaultMessage: 'Network Info' }) }
           </Subtitle>
           <Form.Item label={$t({ defaultMessage: 'Network Name:' })} children={summaryData.name} />
+          {summaryData.name !== summaryData?.wlan?.ssid &&
+            <Form.Item label={$t({ defaultMessage: 'SSID:' })} children={summaryData?.wlan?.ssid} />
+          }
           <Form.Item
             label={$t({ defaultMessage: 'Description:' })}
             children={transformDisplayText(summaryData.description)}
