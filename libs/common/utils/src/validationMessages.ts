@@ -172,6 +172,26 @@ export const validationMessages = {
   twoRadioChannels: defineMessage({
     defaultMessage: 'Please select at least two channels',
     description: 'Validation - radio channel checks'
+  }),
+  switchIpInvalid: defineMessage({
+    defaultMessage: 'Enter a valid IPv4 address and not broadcast address',
+    description: 'Validation - switch ip checks'
+  }),
+  switchSubnetInvalid: defineMessage({
+    defaultMessage: 'Subnet mask is invalid',
+    description: 'Validation - switch subnet'
+  }),
+  switchDefaultGatewayInvalid: defineMessage({
+    defaultMessage: 'Gateway is invalid',
+    description: 'Validation - switch gateway'
+  }),
+  switchBroadcastAddressInvalid: defineMessage({
+    defaultMessage: 'Can not be a broadcast address',
+    description: 'Validation - switch broadcast address'
+  }),
+  switchSameSubnetInvalid: defineMessage({
+    defaultMessage: 'IP and gateway are not in the same subnet',
+    description: 'Validation - switch same subnet'
   })
 }
 

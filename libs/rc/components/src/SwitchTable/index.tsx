@@ -18,7 +18,7 @@ import {
   DeviceConnectionStatus,
   getStackMemberStatus
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { useSwitchActions } from '../useSwitchActions'
 
@@ -47,6 +47,9 @@ export function SwitchTable ({ showAllColumns } : {
 }) {
   const { $t } = useIntl()
   const params = useParams()
+  const navigate = useNavigate()
+  const linkToEditSwitch = useTenantLink('/devices/switch/')
+
   const tableQuery = useTableQuery({
     useQuery: useSwitchListQuery,
     defaultPayload: {
@@ -154,9 +157,14 @@ export function SwitchTable ({ showAllColumns } : {
   const rowActions: TableProps<SwitchRow>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
     visible: (rows) => isActionVisible(rows, { selectOne: true }),
-    disabled: true,
-    onClick: () => {
-      // TODO:
+    onClick: (selectedRows) => {
+      const switchId = selectedRows[0].id ? selectedRows[0].id : selectedRows[0].serialNumber
+      const isStack = selectedRows[0].isStack || selectedRows[0].formStacking
+      if(isStack){
+        navigate(`${linkToEditSwitch.pathname}/stack/${switchId}/edit`, { replace: false })
+      }else{
+        navigate(`${linkToEditSwitch.pathname}/${switchId}/edit`, { replace: false })
+      }
     }
   }, {
     label: $t({ defaultMessage: 'CLI Session' }),

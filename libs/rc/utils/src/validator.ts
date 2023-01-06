@@ -3,6 +3,7 @@ import { PhoneNumberType, PhoneNumberUtil } from 'google-libphonenumber'
 import { isEqual, includes }                from 'lodash'
 
 import { getIntl, validationMessages } from '@acx-ui/utils'
+import { IpUtilsService } from './ipUtilsService'
 
 
 const Netmask = require('netmask').Netmask
@@ -449,6 +450,43 @@ export function IpInSubnetPool (ipAddress: string, subnetAddress:string, subnetM
 
   if (testIpLong < firstIpLong || testIpLong > lastIpLong) {
     return Promise.reject($t(validationMessages.ipNotInSubnetPool))
+  }
+  return Promise.resolve()
+}
+
+export function validateSwitchIpAddress (ipAddress: string) {
+  const { $t } = getIntl()
+  // eslint-disable-next-line max-len
+  const IP_VALIDATION_PATTERN='(^((22[0-3]|2[0-1][0-9]|1[0-9][0-9]|[1-9][0-9]|[1-9]?)\\.)((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){2}((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))$)|(^(([a-zA-Z]{1})|([a-zA-Z]{1}[a-zA-Z]{1})|([a-zA-Z]{1}[0-9]{1})|([0-9]{1}[a-zA-Z]{1})|([a-zA-Z0-9][a-zA-Z0-9-_]{1,61}[a-zA-Z0-9]))\\.([a-zA-Z]{2,6}|[a-zA-Z0-9-]{2,30}\\.[a-zA-Z]{2,3})$)'
+  const ipRegexp = new RegExp(IP_VALIDATION_PATTERN)
+  if (!ipRegexp.test(ipAddress)) {
+    return Promise.reject($t(validationMessages.switchIpInvalid))
+  }
+  return Promise.resolve()
+}
+
+export function validateSwitchSubnetIpAddress (ipAddress: string, subnetAddress: string) {
+  const { $t } = getIntl()
+  // eslint-disable-next-line max-len
+  const ICX_SUBNET_MASK_PATTERN='^(((255\\.){3}(252|248|240|224|192|128|0+))|((255\\.){2}(255|254|252|248|240|224|192|128|0+)\\.0)|((255\\.)(255|254|252|248|240|224|192|128|0+)(\\.0+){2})|((255|254|252|248|240|224|192|128+)(\\.0+){3}))$'
+  const subnetRegexp = new RegExp(ICX_SUBNET_MASK_PATTERN)
+  if (!subnetRegexp.test(subnetAddress)) {
+    return Promise.reject($t(validationMessages.switchIpInvalid))
+  }else if(IpUtilsService.isBroadcastAddress(ipAddress, subnetAddress)){
+    return Promise.reject($t(validationMessages.switchBroadcastAddressInvalid))
+  }
+  return Promise.resolve()
+}
+
+export function validateSwitchGatewayIpAddress (ipAddress: string, subnetAddress: string, gatewayAddress: string) {
+  const { $t } = getIntl()
+  // eslint-disable-next-line max-len
+  const IP_VALIDATION_PATTERN='(^((22[0-3]|2[0-1][0-9]|1[0-9][0-9]|[1-9][0-9]|[1-9]?)\\.)((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){2}((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))$)|(^(([a-zA-Z]{1})|([a-zA-Z]{1}[a-zA-Z]{1})|([a-zA-Z]{1}[0-9]{1})|([0-9]{1}[a-zA-Z]{1})|([a-zA-Z0-9][a-zA-Z0-9-_]{1,61}[a-zA-Z0-9]))\\.([a-zA-Z]{2,6}|[a-zA-Z0-9-]{2,30}\\.[a-zA-Z]{2,3})$)'
+  const ipRegexp = new RegExp(IP_VALIDATION_PATTERN)
+  if (!ipRegexp.test(gatewayAddress)) {
+    return Promise.reject($t(validationMessages.switchDefaultGatewayInvalid))
+  }else if(!IpUtilsService.isInSameSubnet(ipAddress, subnetAddress, gatewayAddress)){
+    return Promise.reject($t(validationMessages.switchSameSubnetInvalid))
   }
   return Promise.resolve()
 }

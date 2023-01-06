@@ -85,7 +85,6 @@ function DeviceRoutes () {
         element={<ApEdit />}
       />
       <Route path='devices/apgroups/:action' element={<ApGroupForm />} />
-      <Route path='devices/switch/:action' element={<AddSwitchForm />} />
       <Route
         path='devices/wifi/:serialNumber/details/:activeTab'
         element={<ApDetails />} />
@@ -113,7 +112,10 @@ function DeviceRoutes () {
       <Route path='devices/edge/:serialNumber/edge-details/:activeTab'
         element={<EdgeDetails />} />
       <Route path='devices/switch' element={<SwitchesTable />} />
-      <Route path='devices/switch/stack/add' element={<StackForm />} />
+      <Route path='devices/switch/:action' element={<AddSwitchForm />} />
+      <Route path='devices/switch/:switchId/:action' element={<AddSwitchForm />} />
+      <Route path='devices/switch/stack/:action' element={<StackForm />} />
+      <Route path='devices/switch/stack/:switchId/:action' element={<StackForm />} />
       <Route path='devices/edge/list' element={<Edges />} />
     </Route>
   )

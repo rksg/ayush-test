@@ -198,3 +198,22 @@ export const getStackMemberStatus = (unitStatus: string, isDefaultMember?: boole
   }
   return
 }
+
+export const isL3FunctionSupported = (switchType: string | undefined) => {
+  if (!switchType) {
+    return false
+  }
+  return isRouter(switchType)
+}
+
+const isRouter = (switchType: string) => {
+  if (!switchType) {
+    return false
+  }
+  const isSwitch = switchType === 'switch'
+  if (isSwitch) {
+    return false
+  }
+
+  return true
+}
