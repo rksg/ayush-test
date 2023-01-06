@@ -167,6 +167,8 @@ const RuleTable = (props: RuleTableProps) => {
     onClick: delAction
   }] as { label: string, visible: () => boolean, onClick: () => void }[]
 
+  console.log(state)
+
   return (
     <>
       <RogueAPDetectionDrawer
