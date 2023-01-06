@@ -1,26 +1,8 @@
-
-import { createContext, useState } from 'react'
-
-import { CheckboxValueType } from 'antd/lib/checkbox/Group'
-import { SingleValueType }   from 'rc-cascader/lib/Cascader'
-
 import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
-import { ReportType  }                       from '@acx-ui/reports/components'
 import { Provider }                          from '@acx-ui/store'
-import { NetworkPath }                       from '@acx-ui/utils'
 
-import { Report } from './pages/Report'
-
-export interface NetworkFilterWithBand {
-  paths?: NetworkPath[],
-  bands?: CheckboxValueType[],
-  value?: SingleValueType | SingleValueType[]
-}
-
-export const NetworkFilterWithBandContext = createContext({} as {
-  filterData: NetworkFilterWithBand,
-  setFilterData: (data:NetworkFilterWithBand) => void
-})
+import { ReportType } from './mapping/reportsMapping'
+import { Report }     from './pages/Report'
 
 const reports = {
   overview: <Report type={ReportType.OVERVIEW} showFilter={false} />,
@@ -35,7 +17,6 @@ const reports = {
 }
 
 export default function ReportsRoutes () {
-  const [filterData, setFilterData] = useState<NetworkFilterWithBand>({})
   const routes = rootRoutes(
     <Route path='t/:tenantId'>
       <Route path='reports' element={<TenantNavigate replace to='/reports/overview' />}/>
@@ -52,9 +33,7 @@ export default function ReportsRoutes () {
   )
   return (
     <Provider>
-      <NetworkFilterWithBandContext.Provider value={{ filterData, setFilterData }}>
-        {routes}
-      </NetworkFilterWithBandContext.Provider>
+      {routes}
     </Provider>
   )
 }

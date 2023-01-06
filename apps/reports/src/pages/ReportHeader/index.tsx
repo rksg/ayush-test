@@ -52,7 +52,7 @@ export function ReportHeader (props: {
           multiple={true}
           replaceWithId={true}
           filterMode={mode}
-          overrideUrlFilter={true}
+          filterFor={'reports'}
           isRadioBandDisabled={isRadioBandDisabled}
           radioBandDisabledReason={radioBandDisabledReason}
         />,

@@ -91,7 +91,7 @@ type ConnectedNetworkFilterProps = {
     multiple?: boolean,
     replaceWithId?:boolean,
     filterMode?: FilterMode,
-    overrideUrlFilter?: boolean,
+    filterFor?: 'analytics' | 'reports',
     defaultValue?: SingleValueType | SingleValueType[],
     defaultRadioBand?: RadioBand[],
     isRadioBandDisabled?: boolean,
@@ -287,7 +287,7 @@ function ConnectedNetworkFilter (
     withIncidents,
     showRadioBand,
     filterMode='none',
-    overrideUrlFilter=false,
+    filterFor='analytics',
     multiple,
     replaceWithId,
     defaultValue,
@@ -323,7 +323,7 @@ function ConnectedNetworkFilter (
       ...rest
     })
   })
-  const rawVal = overrideUrlFilter ? reportsRaw : raw
+  const rawVal = filterFor === 'reports' ? reportsRaw : raw
   return (
     <UI.Container>
       <Loader states={[queryResults]}>

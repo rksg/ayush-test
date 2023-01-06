@@ -1,6 +1,7 @@
-import { ReportType }     from '@acx-ui/reports/components'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
+
+import { ReportType } from '../../mapping/reportsMapping'
 
 import { Report } from './index'
 
