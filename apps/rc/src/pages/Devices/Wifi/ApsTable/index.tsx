@@ -13,7 +13,6 @@ import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
 import { ApTable, CsvSize, ImportCsvDrawer } from '@acx-ui/rc/components'
 import { useImportApMutation }               from '@acx-ui/rc/services'
 import { TenantLink, useParams }             from '@acx-ui/react-router-dom'
-import { notAvailableMsg }                   from '@acx-ui/utils'
 
 export default function ApsTable () {
   const { $t } = useIntl()
