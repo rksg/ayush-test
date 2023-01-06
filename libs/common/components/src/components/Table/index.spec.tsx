@@ -80,6 +80,19 @@ describe('Table component', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 
+  it('renders no selected bar table', () => {
+    const { asFragment } = render(<Table
+      columns={testColumns}
+      dataSource={testData}
+      rowSelection={{
+        type: 'radio',
+        defaultSelectedRowKeys: ['1']
+      }}
+      tableAlertRender={false}
+    />)
+    expect(asFragment()).toMatchSnapshot()
+  })
+
   it('renders table with ellipsis column', async () => {
     const columns = testColumns.map((column, i) => {
       column = { ...column }
