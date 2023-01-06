@@ -230,26 +230,36 @@ describe('Network Filter', () => {
     await userEvent.click(band2_4GHz)
     expect(asFragment()).toMatchSnapshot()
     await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
-    expect(mockReportsSetNetworkPath).toBeCalledWith({
-      bands: ['6','2.4'],
-      paths: [
-        [{ name: 'Network', type: 'network' }, { name: 'id5', type: 'switchGroup' }],
-        [{ name: 'Network', type: 'network' }, { name: 'id4', type: 'switchGroup' }],
-        [{ name: 'Network', type: 'network' }, { name: 'id1', type: 'zone' }]
-      ],
-      value: [
-        [
-          '[{"type":"network","name":"Network"},{"type":"switchGroup","name":"id5"}]',
-          'switchesswg1'
-        ],
-        [
-          '[{"type":"network","name":"Network"},{"type":"switchGroup","name":"id4"}]'
-        ],
-        [
-          '[{"type":"network","name":"Network"},{"type":"zone","name":"id1"}]'
-        ]
+    expect(mockReportsSetNetworkPath).toBeCalledWith(
+      [
+        [{
+          name: 'Network',
+          type: 'network'
+        }, {
+          name: 'id5',
+          type: 'switchGroup'
+        }],
+        [{
+          name: 'Network',
+          type: 'network'
+        }, {
+          name: 'id4',
+          type: 'switchGroup'
+        }],
+        [{
+          name: 'Network',
+          type: 'network'
+        }, {
+          name: 'id1',
+          type: 'zone'
+        }]
+      ], ['6', '2.4'], [
+        // eslint-disable-next-line max-len
+        ['[{"type":"network","name":"Network"},{"type":"switchGroup","name":"id5"}]', 'switchesswg1'],
+        ['[{"type":"network","name":"Network"},{"type":"switchGroup","name":"id4"}]'],
+        ['[{"type":"network","name":"Network"},{"type":"zone","name":"id1"}]']
       ]
-    })
+    )
   })
 
   it('should list only venues having APs', async () => {

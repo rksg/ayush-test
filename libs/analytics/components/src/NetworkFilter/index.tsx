@@ -286,7 +286,7 @@ function ConnectedNetworkFilter (
   { shouldQuerySwitch,
     withIncidents,
     showRadioBand,
-    filterMode='none',
+    filterMode='both',
     filterFor='analytics',
     multiple,
     replaceWithId,
