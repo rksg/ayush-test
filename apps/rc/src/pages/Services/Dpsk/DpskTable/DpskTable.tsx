@@ -52,7 +52,7 @@ export default function DpskTable () {
             } catch (error: any) {
               showToast({
                 type: 'error',
-                content: intl.$t({ defaultMessage: '{message}' }, { message: error.data })
+                content: error.data
               })
             }
           }

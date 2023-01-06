@@ -88,7 +88,7 @@ export default function DpskPassphraseDrawer (props: DpskPassphraseDrawerProps) 
       if (error.data?.message) {
         showToast({
           type: 'error',
-          content: $t({ defaultMessage: '{errorMsg}' }, { errorMsg: error.data.message })
+          content: error.data.message
         })
       }
     }

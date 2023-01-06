@@ -183,7 +183,7 @@ export default function DpskPassphraseManagement () {
           if (error.data?.message) {
             showToast({
               type: 'error',
-              content: $t({ defaultMessage: '{errorMsg}' }, { errorMsg: error.data.message })
+              content: error.data.message
             })
           }
         }
