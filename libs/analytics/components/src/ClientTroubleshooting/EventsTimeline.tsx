@@ -207,7 +207,30 @@ export const getChartData = (
   }
   return []
 }
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const roamingEventFormatter = (event : any) => {
+  const labels = [
+    { key: 'rss', label: 'RSS', format: formatter('decibelMilliWattsFormat') },
+    { key: 'bssid', label: 'BSSID' },
+    { key: 'channel', label: 'Channel' },
+    { key: 'radioMode', label: 'Radio Mode' },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    { key: 'spatialStream', label: 'Spatial Stream (SS)', format: (v: any) => `${v} SS` },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    { key: 'bandwidth', label: 'Bandwidth', format: (v: any) => `${v} MHz` }
+  ]
+  const details = event['details']
+  const values = labels
+    .filter(({ key }) => details[key] && details[key] !== 'Unknown')
+    .map(({ key, label, format }) => ({
+      label, value: (format && format(details[key])) || details[key]
+    }))
+  if (values.length === 0) return null
+  return [{
+    label: values.map(v => v.label).join(' / '),
+    value: values.map(v => v.value).join(' / ')
+  }]
+}
 export const useTooltipFormatter = (
   params: TooltipComponentFormatterCallbackParams
 ) => {
@@ -215,7 +238,6 @@ export const useTooltipFormatter = (
   const seriesName = (Array.isArray(params))
     ? params[0].seriesName
     : ''
-
   if(seriesName === 'quality') {
     const obj2 = (Array.isArray(params) && Array.isArray(params[0].data)
       ? params[0].data[3]
@@ -285,6 +307,21 @@ export const useTooltipFormatter = (
           {obj && moment(obj?.start).format('MMM DD HH:mm:ss')}{' '}
         </UI.TooltipDate>
         {tooltipText}
+      </UI.TooltipWrapper>
+    )
+  }
+  if(seriesName === 'roaming') {
+    const obj = (Array.isArray(params) && Array.isArray(params[0].data)
+      ? params[0].data[3]
+      : undefined) as unknown as Item
+
+    const tooltipText = roamingEventFormatter(obj)
+    return renderToString(
+      <UI.TooltipWrapper>
+        <UI.TooltipDate>
+          {obj && moment(obj?.start).format('MMM DD HH:mm:ss')}{' '}{tooltipText?.[0].label}{':'}
+        </UI.TooltipDate>
+        {tooltipText?.[0].value}
       </UI.TooltipWrapper>
     )
   }
@@ -422,7 +459,7 @@ export function TimeLine (props: TimeLineProps) {
                               | eventsCategoryMap
                               | networkIncidentCategoryMap
                             )
-                          ]?.length ?? 0}
+                          ]?.length}
                         </UI.TimelineCount>
                       ) : null}
                     </Col>

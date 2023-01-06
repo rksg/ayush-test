@@ -122,7 +122,14 @@ function getBarColor (params: { data: (LabelledQuality | Item)[], seriesName: st
     const obj = Array.isArray(params.data) ? params.data[3] : ''
     return cssStr((obj as Item).color as string)
   }
-  return 'red'
+  if(seriesName === 'roaming') {
+    const obj = Array.isArray(params.data) ? params.data[3] : ''
+    // @ts-ignore: Unreachable code error
+    // console.log((obj))
+    // @ts-ignore: Unreachable code error
+    return (obj)?.color
+  }
+  return ''
 }
 export const useDotClick = (
   eChartsRef: RefObject<ReactECharts>,

@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { groupBy }                  from 'lodash'
+import { maxBy, flatMap }           from 'lodash'
 import { defineMessage, IntlShape } from 'react-intl'
 
 import {
@@ -74,6 +76,8 @@ export const eventColorByCategory = {
   [FAILURE]: '--acx-semantics-red-50',
   [SLOW]: '--acx-semantics-yellow-50'
 }
+
+
 export const categorizeEvent = (name: string, ttc: number | null) => {
   const successEvents = [INFO_UPDATED, JOIN, ROAMED].map(
     key => filterEventMap[key as keyof typeof filterEventMap]
@@ -388,7 +392,7 @@ export const connectionDetailsByApChartData = (data: any) => {
             end: value.end,
             label: (key),
             value: formatter('decibelMilliWattsFormat')(value.rss),
-            color: 'red',
+            color: getRssColor(value.rss),
             details: value
           }
         })
@@ -396,3 +400,120 @@ export const connectionDetailsByApChartData = (data: any) => {
       return agg
     },({}))
 }
+export const rssGroups = {
+  good: { lower: -74 },
+  average: { lower: -85, upper: -75 },
+  bad: { upper: -86 }
+}
+
+export const roamingColorMap = {
+  good: 'rgba(45, 200, 110, 1)',
+  average: 'rgba(253, 197, 43, 1)',
+  bad: 'rgba(243, 21, 24, 1)',
+  missing: 'rgba(213, 221, 228, 0.4)',
+  min: 'rgba(191, 17, 20, 1)',
+  max: 'rgba(45, 200, 140, 1)'
+}
+export const rssMax = -50
+export const rssMin = -90
+export const getRssColor = (rss: number) => {
+  if (rss > rssMax) return /** @type {string} */ (roamingColorMap.max)
+  if (rss < rssMin) return /** @type {string} */ (roamingColorMap.min)
+  return rssGradientColorMap.find(({ valueFrom, valueTo }) =>
+    valueFrom <= Math.round(rss) && valueTo >= Math.round(rss))?.color
+}
+export const rssGradientColorMap = ((density = 5) => {
+  const avg = (a: number, b: number) => Math.round((a + b) / 2)
+  const colorMap = [
+    {
+      valueFrom: avg(rssMax, rssGroups.average.upper),
+      valueTo: rssMax,
+      colorFrom: roamingColorMap.good,
+      colorTo: roamingColorMap.max
+    },
+    {
+      valueFrom: avg(rssGroups.average.upper, rssGroups.average.lower),
+      valueTo: avg(rssMax, rssGroups.average.upper) - 1,
+      colorFrom: roamingColorMap.average,
+      colorTo: roamingColorMap.good
+    },
+    {
+      valueFrom: avg(rssMin, rssGroups.average.lower),
+      valueTo: avg(rssGroups.average.upper, rssGroups.average.lower) - 1,
+      colorFrom: roamingColorMap.bad,
+      colorTo: roamingColorMap.average
+    },
+    {
+      valueFrom: rssMin,
+      valueTo: avg(rssMin, rssGroups.average.lower) - 1,
+      colorFrom: roamingColorMap.min,
+      colorTo: roamingColorMap.bad
+    }
+  ]
+
+  const parseRGBA = (color: {
+    replace: (
+      arg0: RegExp,
+      arg1: string
+    ) => {
+      (): any;
+      new (): any;
+      split: {
+        (arg0: string): {
+          (): any;
+          new (): any;
+          map: {
+            (arg0: (v: any) => number): [any, any, any, any];
+            new (): any;
+          };
+        };
+        new (): any;
+      };
+    };
+  }) => {
+    const [r, g, b, a] = color
+      .replace(/[rgba()]/gi, '')
+      .split(',')
+      .map((v: any) => Number(v))
+    return { r, g, b, a }
+  }
+
+  const getMidColor = (
+    {
+      colorFrom,
+      colorTo,
+      valueFrom,
+      valueTo
+    }: {
+      valueFrom: number;
+      valueTo: number;
+      colorFrom: string;
+      colorTo: string;
+    },
+    rate: number
+  ) => {
+    // @ts-ignore: Unreachable code error
+    const rgbaFrom = parseRGBA(colorFrom )
+    // @ts-ignore: Unreachable code error
+    const rgbaTo = parseRGBA(colorTo)
+    return new Array(rate).fill(0).map((_, index) => {
+      const color = Object.keys(rgbaFrom).reduce((agg, key) => {
+        // @ts-ignore: Unreachable code error
+        const diff = (rgbaTo[key] - rgbaFrom[key]) / (rate - 1)
+        // @ts-ignore: Unreachable code error
+
+        agg[key] = Math.round(rgbaFrom[key] + diff * index)
+        return agg
+      }, {})
+      const diff = (valueTo - valueFrom) / rate
+      return {
+        valueFrom: Math.round(valueFrom + index * diff),
+        valueTo: Math.round(valueFrom + (index + 1) * diff),
+        // @ts-ignore: Unreachable code error
+        color: `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`
+      }
+    })
+  }
+  return flatMap(colorMap, params => getMidColor(params, density))
+    .sort((a, b) => a.valueFrom - b.valueFrom)
+})()
