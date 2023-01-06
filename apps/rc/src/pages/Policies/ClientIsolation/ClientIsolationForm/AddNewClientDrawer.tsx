@@ -33,6 +33,11 @@ export function AddNewClientDrawer (props: AddNewClientDrawerProps) {
     setVisible(false)
   }
 
+  const onSave = () => {
+    setClient(form.getFieldsValue())
+    form.resetFields()
+  }
+
   return (
     <Drawer
       title={editMode
@@ -46,7 +51,6 @@ export function AddNewClientDrawer (props: AddNewClientDrawerProps) {
         <AddNewClientForm
           form={form}
           client={client}
-          setClient={setClient}
           isClientUnique={isRuleUnique}
         />
       }
@@ -60,7 +64,8 @@ export function AddNewClientDrawer (props: AddNewClientDrawerProps) {
           onCancel={onClose}
           onSave={async (addAnotherChecked: boolean) => {
             try {
-              form.submit()
+              await form.validateFields()
+              onSave()
 
               if (!addAnotherChecked) {
                 onClose()
@@ -78,9 +83,8 @@ export function AddNewClientDrawer (props: AddNewClientDrawerProps) {
 
 
 interface AddNewClientFormProps {
-  form: FormInstance<ClientIsolationClient>;
-  client?: ClientIsolationClient;
-  setClient: (r: ClientIsolationClient) => void;
+  form: FormInstance<ClientIsolationClient>
+  client?: ClientIsolationClient
   isClientUnique?: (r: ClientIsolationClient) => boolean
 }
 
@@ -89,7 +93,6 @@ function AddNewClientForm (props: AddNewClientFormProps) {
   const {
     form,
     client = {},
-    setClient,
     isClientUnique = () => true
   } = props
 
@@ -107,10 +110,7 @@ function AddNewClientForm (props: AddNewClientFormProps) {
     <Form layout='vertical'
       form={form}
       preserve={false}
-      onFinish={(data: ClientIsolationClient) => {
-        setClient(data)
-        form.resetFields()
-      }}>
+    >
       <Form.Item
         label={$t({ defaultMessage: 'MAC Address' })}
         name='mac'

@@ -9,6 +9,7 @@ import {
 
 import { AddNewClientDrawer }                               from './AddNewClientDrawer'
 import { SelectConnectedClientsDrawer, SimpleClientRecord } from './SelectConnectedClientsDrawer'
+import { MAX_COUNT_IN_ALLOW_LIST } from './ClientIsolationSettingsForm'
 
 interface ClientIsolationClientsTableProps {
   allowList?: ClientIsolationClient[];
@@ -18,7 +19,11 @@ interface ClientIsolationClientsTableProps {
 export function ClientIsolationAllowListTable (props: ClientIsolationClientsTableProps) {
   const { allowList = [], setAllowList = () => null } = props
   const { $t } = useIntl()
-  const [ addNewClientDrawerProps, setAddNewClientDrawerProps ] = useState({
+  const [ addNewClientDrawerProps, setAddNewClientDrawerProps ] = useState<{
+    client: ClientIsolationClient | {},
+    editMode: boolean,
+    visible: boolean
+  }>({
     client: {},
     editMode: false,
     visible: false
@@ -36,6 +41,8 @@ export function ClientIsolationAllowListTable (props: ClientIsolationClientsTabl
       visible: true,
       selectedClientsMac: allowList.map(c => c.mac)
     })
+
+    setAddNewClientDrawerVisible(false)
   }
 
   const handleAddNewClientAction = (client?: ClientIsolationClient) => {
@@ -44,6 +51,8 @@ export function ClientIsolationAllowListTable (props: ClientIsolationClientsTabl
       visible: true,
       client: client ?? {}
     })
+
+    setSelectConnectedClientDrawerVisible(false)
   }
 
   const handleSetClient = (data: ClientIsolationClient) => {
@@ -57,6 +66,28 @@ export function ClientIsolationAllowListTable (props: ClientIsolationClientsTabl
     }
 
     setAllowList(newAllowList)
+  }
+
+  const handleAddClients = (clients: SimpleClientRecord[]) => {
+    const newClients: ClientIsolationClient[] = clients.map((c: SimpleClientRecord) => {
+      return { mac: c.clientMac, ipAddress: c.ipAddress }
+    })
+
+    setAllowList([ ...allowList, ...newClients ])
+  }
+
+  const setAddNewClientDrawerVisible = (visible: boolean) => {
+    setAddNewClientDrawerProps({
+      ...addNewClientDrawerProps,
+      visible
+    })
+  }
+
+  const setSelectConnectedClientDrawerVisible = (visible: boolean) => {
+    setSelectConnectedClientDrawerProps({
+      ...selectConnectedClientDrawerProps,
+      visible
+    })
   }
 
   const columns: TableProps<ClientIsolationClient>['columns'] = [
@@ -113,12 +144,7 @@ export function ClientIsolationAllowListTable (props: ClientIsolationClientsTabl
         editMode={addNewClientDrawerProps.editMode}
         client={addNewClientDrawerProps.client as ClientIsolationClient}
         visible={addNewClientDrawerProps.visible}
-        setVisible={(visible: boolean) => {
-          setAddNewClientDrawerProps({
-            ...addNewClientDrawerProps,
-            visible
-          })
-        }}
+        setVisible={setAddNewClientDrawerVisible}
         setClient={handleSetClient}
         isRuleUnique={(comingClient: ClientIsolationClient) => {
           return allowList.every((c: ClientIsolationClient) => comingClient.mac !== c.mac)
@@ -127,15 +153,8 @@ export function ClientIsolationAllowListTable (props: ClientIsolationClientsTabl
       <SelectConnectedClientsDrawer
         visible={selectConnectedClientDrawerProps.visible}
         incomingClientsMac={selectConnectedClientDrawerProps.selectedClientsMac}
-        setVisible={(visible: boolean) => {
-          setSelectConnectedClientDrawerProps({
-            ...selectConnectedClientDrawerProps,
-            visible
-          })
-        }}
-        addClients={(clients: SimpleClientRecord[]) => {
-          setAllowList(clients.map(c => ({ mac: c.clientMac, ipAddress: c.ipAddress })))
-        }}
+        setVisible={setSelectConnectedClientDrawerVisible}
+        addClients={handleAddClients}
       />
       <Table<ClientIsolationClient>
         columns={columns}
@@ -144,11 +163,13 @@ export function ClientIsolationAllowListTable (props: ClientIsolationClientsTabl
         actions={[
           {
             label: $t({ defaultMessage: 'Select from Connected Clients' }),
-            onClick: handleSelectConnectedClientAction
+            onClick: () => handleSelectConnectedClientAction(),
+            disabled: allowList.length === MAX_COUNT_IN_ALLOW_LIST
           },
           {
             label: $t({ defaultMessage: 'Add New Client' }),
-            onClick: handleAddNewClientAction
+            onClick: () => handleAddNewClientAction(),
+            disabled: allowList.length === MAX_COUNT_IN_ALLOW_LIST
           }
         ]}
         rowActions={rowActions}

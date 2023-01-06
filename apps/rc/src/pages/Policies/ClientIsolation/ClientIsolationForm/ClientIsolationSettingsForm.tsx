@@ -11,7 +11,7 @@ import {
 import { ClientIsolationAllowListTable } from './ClientIsolationAllowListTable'
 import * as UI                           from './styledComponents'
 
-const MAX_CLIENT_COUNT = 64
+export const MAX_COUNT_IN_ALLOW_LIST = 64
 
 export default function ClientIsolationSettingsForm () {
   const { $t } = useIntl()
@@ -22,21 +22,26 @@ export default function ClientIsolationSettingsForm () {
   const [ clientIsolationList ] = useLazyGetClientIsolationListQuery()
 
   const nameValidator = async (value: string) => {
-    const list = (await clientIsolationList({ params }).unwrap())
+    try {
+      const list = (await clientIsolationList({ params }).unwrap())
       .filter(clientIsolation => clientIsolation.id !== id)
       .map(clientIsolation => ({ name: clientIsolation.name }))
-    // eslint-disable-next-line max-len
-    return checkObjectNotExists(list, { name: value } , $t({ defaultMessage: 'Client Isolation Policy' }))
+
+      // eslint-disable-next-line max-len
+      return checkObjectNotExists(list, { name: value } , $t({ defaultMessage: 'Client Isolation Policy' }))
+    } catch (error) {
+      return Promise.reject($t({ defaultMessage: 'Validation with the system went wrong' }))
+    }
   }
 
-  const handleSetAllowList = (allowlist: ClientIsolationClient[]) => {
-    form.setFieldValue('allowlist', allowlist)
+  const handleSetAllowList = (clients: ClientIsolationClient[]) => {
+    form.setFieldValue('allowlist', clients)
   }
 
   return (
     <>
       <Row gutter={20}>
-        <Col span={8}>
+        <Col span={7}>
           <Form.Item name='id' noStyle>
             <Input type='hidden' />
           </Form.Item>
@@ -75,7 +80,7 @@ export default function ClientIsolationSettingsForm () {
             <UI.TableSubLabel>
               {$t(
                 { defaultMessage: 'Up to {maxClientCount} clients may be added' },
-                { maxClientCount: MAX_CLIENT_COUNT }
+                { maxClientCount: MAX_COUNT_IN_ALLOW_LIST }
               )}
             </UI.TableSubLabel>
           </Space>

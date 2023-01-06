@@ -54,11 +54,18 @@ export function SelectConnectedClientsDrawer (props: SelectConnectedClientsDrawe
     setSelectedClients(selectedRows)
   }
 
+  const getCheckboxProps = (row: ClientList) => {
+    return {
+      disabled: incomingClientsMac?.includes(row.clientMac)
+    }
+  }
+
   const columns: TableProps<ClientList>['columns'] = [
     {
       key: 'osType',
       title: $t({ defaultMessage: 'OS' }),
       dataIndex: 'osType',
+      disable: true,
       sorter: true,
       render: (data) => {
         return <IconContainer>
@@ -120,8 +127,8 @@ export function SelectConnectedClientsDrawer (props: SelectConnectedClientsDrawe
         rowKey='clientMac'
         rowSelection={{
           type: 'checkbox',
-          selectedRowKeys: incomingClientsMac,
-          onChange: onRowChange
+          onChange: onRowChange,
+          getCheckboxProps
         }}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
@@ -146,7 +153,7 @@ export function SelectConnectedClientsDrawer (props: SelectConnectedClientsDrawe
           onSave={onSave}
         />
       }
-      width={'800px'}
+      width={'850px'}
     />
   )
 }
