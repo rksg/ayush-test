@@ -70,6 +70,7 @@ COPY --from=acx-ui-rc-test /app/coverage/* /app/coverage
 # Potentially split tests into sub stages
 #COPY --from=acx-ui-analytics-test /app/coverage/* /app/coverage
 #COPY --from=acx-ui-test-manay /app/coverage/* /app/coverage
+RUN touch tmpfile
 
 ###############################################################
 
@@ -98,6 +99,9 @@ WORKDIR /usr/share/nginx/html
 
 # Remove default nginx static assets
 RUN rm -rf ./*
+
+# Force dependency with tests related stage
+COPY --from=acx-ui-sonar-run /app/tmpfile tmpfile
 
 COPY tools/docker/nginx/conf.d/* /etc/nginx/conf.d/
 COPY tools/docker/nginx/nginx.conf \
