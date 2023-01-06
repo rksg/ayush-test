@@ -667,7 +667,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
-            'Update Venue DHCP Config Service Profile Settings'
+            'UpdateVenueDhcpConfigServiceProfileSetting'
           ]
           showActivityMessage(msg, activities, () => {
             api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'DHCPProfile' }]))
