@@ -54,9 +54,13 @@ ENV NODE_OPTIONS=--max-old-space-size=8192
 
 FROM acx-ui-base-test as acx-ui-lint
 RUN node ./node_modules/.bin/nx run-many --target=lint --all --verbose
+RUN touch lint-done
+
+FROM acx-ui-base-test as acx-ui-tslint
 COPY tools/docker/tscValidator.sh ./tools/docker/tscValidator.sh
 RUN chmod +x tools/docker/tscValidator.sh
 RUN tools/docker/tscValidator.sh
+RUN touch tslint-done
 
 FROM acx-ui-base-test as acx-ui-rc-test
 # Run lint first so it can run parallel with build to leave test with more resources
@@ -70,7 +74,7 @@ COPY --from=acx-ui-rc-test /app/coverage/* /app/coverage
 # Potentially split tests into sub stages
 #COPY --from=acx-ui-analytics-test /app/coverage/* /app/coverage
 #COPY --from=acx-ui-test-manay /app/coverage/* /app/coverage
-RUN touch tmpfile
+RUN touch tests-done
 
 ###############################################################
 
@@ -88,6 +92,12 @@ RUN tools/docker/locales/generate.sh
 ###############################################################
 
 FROM build-base as build
+
+# Force dependency with tests & lint related stages
+COPY --from=acx-ui-sonar-run /app/tests-done tests-done
+COPY --from=acx-ui-lint /app/tests-done lint-done
+COPY --from=acx-ui-tslint /app/tests-done tslint-done
+
 COPY --from=build-locales /app/apps/main/src/locales ./apps/main/src/locales
 RUN node ./node_modules/.bin/nx run-many --target=build --all
 
@@ -99,9 +109,6 @@ WORKDIR /usr/share/nginx/html
 
 # Remove default nginx static assets
 RUN rm -rf ./*
-
-# Force dependency with tests related stage
-COPY --from=acx-ui-sonar-run /app/tmpfile tmpfile
 
 COPY tools/docker/nginx/conf.d/* /etc/nginx/conf.d/
 COPY tools/docker/nginx/nginx.conf \
