@@ -80,7 +80,6 @@ export function Integrators () {
       dataIndex: 'assignedMspEcList',
       key: 'assignedMspEcList',
       sorter: true,
-      align: 'center',
       render: function (data, row) {
         return transformAssignedCustomerCount(row)
       }
@@ -90,7 +89,6 @@ export function Integrators () {
       dataIndex: 'mspAdminCount',
       key: 'mspAdminCount',
       sorter: true,
-      align: 'center',
       render: function (data) {
         return (
           <TenantLink to={''}>{data}</TenantLink>
@@ -101,15 +99,13 @@ export function Integrators () {
       title: $t({ defaultMessage: 'Account Admins' }),
       dataIndex: 'mspEcAdminCount',
       key: 'mspEcAdminCount',
-      sorter: true,
-      align: 'center'
+      sorter: true
     },
     {
       title: $t({ defaultMessage: 'Active Incidents' }),
       dataIndex: 'activeIncidents',
       key: 'activeIncidents',
       sorter: true,
-      align: 'center',
       render: function () {
         return '0'
       }

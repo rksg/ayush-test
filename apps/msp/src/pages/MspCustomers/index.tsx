@@ -156,7 +156,6 @@ export function MspCustomers () {
       dataIndex: 'alarmCount',
       key: 'alarmCount',
       sorter: true,
-      align: 'center',
       render: function () {
         return '0'
       }
@@ -166,7 +165,6 @@ export function MspCustomers () {
       dataIndex: 'activeIncindents',
       key: 'activeIncindents',
       sorter: true,
-      align: 'center',
       render: function () {
         return 0
       }
@@ -175,23 +173,20 @@ export function MspCustomers () {
       title: $t({ defaultMessage: 'MSP Admins' }),
       dataIndex: 'mspAdminCount',
       key: 'mspAdminCount',
-      sorter: true,
-      align: 'center'
+      sorter: true
     },
     {
       title: $t({ defaultMessage: 'Customer Admins' }),
       dataIndex: 'mspEcAdminCount',
       key: 'mspEcAdminCount',
       sorter: true,
-      show: false,
-      align: 'center'
+      show: false
     },
     {
       title: $t({ defaultMessage: 'Wi-Fi Licenses' }),
       dataIndex: 'wifiLicenses',
       key: 'wifiLicenses',
       sorter: true,
-      align: 'center',
       render: function (data, row) {
         return transformApEntitlement(row)
       }
@@ -201,7 +196,6 @@ export function MspCustomers () {
       dataIndex: 'wifiLicensesUtilization',
       key: 'wifiLicensesUtilization',
       sorter: true,
-      align: 'center',
       render: function (data, row) {
         return transformApUtilization(row)
       }
@@ -211,7 +205,6 @@ export function MspCustomers () {
       dataIndex: 'switchLicens',
       key: 'switchLicens',
       sorter: true,
-      align: 'center',
       render: function (data, row) {
         return transformSwitchEntitlement(row)
       }

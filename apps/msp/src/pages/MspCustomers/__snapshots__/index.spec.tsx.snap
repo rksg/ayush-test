@@ -390,7 +390,6 @@ exports[`MspCustomers should render table 1`] = `
                               </th>
                               <th
                                 class="ant-table-cell ant-table-column-has-sorters react-resizable"
-                                style="text-align: center;"
                                 tabindex="0"
                               >
                                 <div
@@ -457,7 +456,6 @@ exports[`MspCustomers should render table 1`] = `
                               </th>
                               <th
                                 class="ant-table-cell ant-table-column-has-sorters react-resizable"
-                                style="text-align: center;"
                                 tabindex="0"
                               >
                                 <div
@@ -524,7 +522,6 @@ exports[`MspCustomers should render table 1`] = `
                               </th>
                               <th
                                 class="ant-table-cell ant-table-column-has-sorters react-resizable"
-                                style="text-align: center;"
                                 tabindex="0"
                               >
                                 <div
@@ -591,7 +588,6 @@ exports[`MspCustomers should render table 1`] = `
                               </th>
                               <th
                                 class="ant-table-cell ant-table-column-has-sorters react-resizable"
-                                style="text-align: center;"
                                 tabindex="0"
                               >
                                 <div
@@ -658,7 +654,6 @@ exports[`MspCustomers should render table 1`] = `
                               </th>
                               <th
                                 class="ant-table-cell ant-table-column-has-sorters react-resizable"
-                                style="text-align: center;"
                                 tabindex="0"
                               >
                                 <div
@@ -725,7 +720,6 @@ exports[`MspCustomers should render table 1`] = `
                               </th>
                               <th
                                 class="ant-table-cell ant-table-column-has-sorters react-resizable"
-                                style="text-align: center;"
                                 tabindex="0"
                               >
                                 <div
@@ -1092,37 +1086,31 @@ exports[`MspCustomers should render table 1`] = `
                               </td>
                               <td
                                 class="ant-table-cell"
-                                style="text-align: center;"
                               >
                                 0
                               </td>
                               <td
                                 class="ant-table-cell"
-                                style="text-align: center;"
                               >
                                 0
                               </td>
                               <td
                                 class="ant-table-cell"
-                                style="text-align: center;"
                               >
                                 1
                               </td>
                               <td
                                 class="ant-table-cell"
-                                style="text-align: center;"
                               >
                                 2
                               </td>
                               <td
                                 class="ant-table-cell"
-                                style="text-align: center;"
                               >
                                 0%
                               </td>
                               <td
                                 class="ant-table-cell"
-                                style="text-align: center;"
                               >
                                 0
                               </td>
@@ -1181,37 +1169,31 @@ exports[`MspCustomers should render table 1`] = `
                               </td>
                               <td
                                 class="ant-table-cell"
-                                style="text-align: center;"
                               >
                                 0
                               </td>
                               <td
                                 class="ant-table-cell"
-                                style="text-align: center;"
                               >
                                 0
                               </td>
                               <td
                                 class="ant-table-cell"
-                                style="text-align: center;"
                               >
                                 1
                               </td>
                               <td
                                 class="ant-table-cell"
-                                style="text-align: center;"
                               >
                                 2
                               </td>
                               <td
                                 class="ant-table-cell"
-                                style="text-align: center;"
                               >
                                 0%
                               </td>
                               <td
                                 class="ant-table-cell"
-                                style="text-align: center;"
                               >
                                 0
                               </td>
@@ -1268,37 +1250,31 @@ exports[`MspCustomers should render table 1`] = `
                               </td>
                               <td
                                 class="ant-table-cell"
-                                style="text-align: center;"
                               >
                                 0
                               </td>
                               <td
                                 class="ant-table-cell"
-                                style="text-align: center;"
                               >
                                 0
                               </td>
                               <td
                                 class="ant-table-cell"
-                                style="text-align: center;"
                               >
                                 1
                               </td>
                               <td
                                 class="ant-table-cell"
-                                style="text-align: center;"
                               >
                                 0
                               </td>
                               <td
                                 class="ant-table-cell"
-                                style="text-align: center;"
                               >
                                 0%
                               </td>
                               <td
                                 class="ant-table-cell"
-                                style="text-align: center;"
                               >
                                 0
                               </td>
