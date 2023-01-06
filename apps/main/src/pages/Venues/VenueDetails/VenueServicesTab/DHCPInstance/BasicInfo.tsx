@@ -84,9 +84,8 @@ export default function BasicInfo () {
             serialNumber: item.serialNumber,
             role: 'NatGateway'
           }
-        }else{
-          return {}
         }
+        return {}
       })
       gateways = _.filter(gateways, o => !_.isEmpty(o.serialNumber) )
       if(!_.isEmpty(gateways) && payload.dhcpServiceAps){

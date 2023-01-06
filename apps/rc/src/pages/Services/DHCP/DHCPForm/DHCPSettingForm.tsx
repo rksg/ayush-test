@@ -13,9 +13,9 @@ import { getIntl }                        from '@acx-ui/utils'
 
 import { dhcpTypes, dhcpTypesDesc } from './contentsMap'
 import { DHCPDiagram }              from './DHCPDiagram/DHCPDiagram'
+import { DEFAULT_GUEST_DHCP_NAME }  from './DHCPForm'
 import DHCPPoolTable                from './DHCPPool'
 import { RadioDescription }         from './styledComponents'
-
 
 interface DHCPFormProps {
   editMode?: boolean
@@ -82,7 +82,7 @@ export function SettingForm (props: DHCPFormProps) {
           ]}
           validateFirst
           hasFeedback
-          children={<Input disabled={editMode && data?.serviceName === 'DHCP-Guest'}/>}
+          children={<Input disabled={editMode && data?.serviceName === DEFAULT_GUEST_DHCP_NAME}/>}
         />
 
         <Form.Item
@@ -127,7 +127,7 @@ export function SettingForm (props: DHCPFormProps) {
           ]}
           label={$t({ defaultMessage: 'Set DHCP Pools' })}
           children={<DHCPPoolTable dhcpMode={type}
-            isDefaultService={editMode && data?.serviceName === 'DHCP-Guest'}/>}
+            isDefaultService={editMode && data?.serviceName === DEFAULT_GUEST_DHCP_NAME}/>}
         />
       </Col>
     </Row>

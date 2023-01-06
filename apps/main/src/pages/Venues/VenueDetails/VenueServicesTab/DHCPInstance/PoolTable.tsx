@@ -110,9 +110,7 @@ export default function VenuePoolTable (){
       render: (id, row) => {
         let hasOtherActive = true
         if(row.active===true){
-          hasOtherActive = !_.isEmpty(_.find(tableData, (o)=>{
-            return o.active===true && o.id!==id
-          }))
+          hasOtherActive = _.some(tableData, o => o.active && o.id !== id)
         }
         if(!hasOtherActive){
           return <Tooltip placement='topLeft'

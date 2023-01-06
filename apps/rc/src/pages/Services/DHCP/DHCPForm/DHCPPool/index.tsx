@@ -17,7 +17,8 @@ import {
 import { DHCPConfigTypeEnum }          from '@acx-ui/rc/utils'
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
-// import { PoolOption } from './poolOptions/PoolOption'
+import { DEFAULT_GUEST_DHCP_NAME } from '../DHCPForm'
+
 import { PoolTable } from './PoolTable'
 
 
@@ -163,7 +164,7 @@ export default function DHCPPoolTable ({
           children={<Input disabled={
             isEdit() &&
             isDefaultService &&
-            form.getFieldValue('name') === 'DHCP-Guest'}/>}
+            form.getFieldValue('name') === DEFAULT_GUEST_DHCP_NAME}/>}
         />
         <Form.Item
           name='description'

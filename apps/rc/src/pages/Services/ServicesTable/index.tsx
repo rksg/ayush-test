@@ -21,7 +21,7 @@ import {
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { serviceTypeLabelMapping, serviceTechnologyLabelMapping } from '../contentsMap'
-
+import { DEFAULT_GUEST_DHCP_NAME }                                from '../DHCP/DHCPForm/DHCPForm'
 
 function useColumns () {
   const { $t } = useIntl()
@@ -135,7 +135,7 @@ export default function ServicesTable () {
     defaultPayload
   })
   const deleteServiceFnMapping = {
-    [ServiceType.DHCP]: useDeleteDHCPServiceMutation(), // TODO: API not ready
+    [ServiceType.DHCP]: useDeleteDHCPServiceMutation(),
     [ServiceType.DPSK]: [], // TODO: API not ready
     [ServiceType.MDNS_PROXY]: useDeleteMdnsProxyMutation(),
     [ServiceType.PORTAL]: useDeletePortalMutation(),
@@ -153,7 +153,7 @@ export default function ServicesTable () {
               if(o.scope!==0){
                 return true
               }
-              else if(o.name==='DHCP-Guest'){
+              else if(o.name===DEFAULT_GUEST_DHCP_NAME){
                 return true
               }
             }

@@ -10,6 +10,7 @@ import {
 } from '@acx-ui/components'
 import { DHCPPool, LeaseUnit } from '@acx-ui/rc/utils'
 
+import { DEFAULT_GUEST_DHCP_NAME } from '../DHCPForm'
 
 export function PoolTable (props:{
   data: DHCPPool[]
@@ -37,7 +38,7 @@ export function PoolTable (props:{
       label: $t({ defaultMessage: 'Delete' }),
       visible: (selectedRows) => {
         if(props.isDefaultService){
-          const dhcpGuest = _.find(selectedRows, { name: 'DHCP-Guest' })
+          const dhcpGuest = _.find(selectedRows, { name: DEFAULT_GUEST_DHCP_NAME })
           if(_.isEmpty(dhcpGuest)){
             return true
           }else{
