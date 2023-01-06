@@ -20,8 +20,8 @@ describe('Drawer', () => {
     beforeEach(() => store.dispatch(impactedApi.util.resetApiState()))
     const props = { visible: true, onClose: jest.fn(), id: 'id', impactedCount: 1 }
     const sample = [
-      { name: 'name', serial: 's1', mac: 'mac', model: 'model', version: 'version' },
-      { name: 'name 2', serial: 's1', mac: 'mac', model: 'model 2', version: 'version 2' }
+      { name: 'name', mac: 'mac', model: 'model', version: 'version' },
+      { name: 'name 2', mac: 'mac', model: 'model 2', version: 'version 2' }
     ] as ImpactedAP[]
     it('should render loader', () => {
       mockGraphqlQuery(dataApiURL, 'ImpactedAPs', {
@@ -43,7 +43,7 @@ describe('Drawer', () => {
       screen.getByText('1 Impacted AP')
       const links: HTMLAnchorElement[] = screen.getAllByRole('link')
       expect(links[0].href).toBe(
-        'http://localhost/t/undefined/devices/wifi/s1/details/overview'
+        'http://localhost/t/undefined/devices/wifi/mac/details/overview'
       )
     })
     it('should render error', async () => {

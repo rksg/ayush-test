@@ -15,7 +15,6 @@ export const response = {
       {
         name: 'E04_Warehouse_R560-Replaced',
         mac: 'C8:84:8C:10:4B:00',
-        serial: 's1',
         ports: [
           {
             interface: 'eth1',
@@ -29,7 +28,6 @@ export const response = {
       {
         name: 'E02_Bugbash_R560_Main',
         mac: 'C8:84:8C:10:4F:E0',
-        serial: 's2',
         ports: [
           {
             interface: 'eth1',
@@ -43,7 +41,6 @@ export const response = {
       {
         name: 'Bugbash_R560_Backup',
         mac: 'C8:84:8C:10:D3:30',
-        serial: 's3',
         ports: [
           {
             interface: 'eth1',
@@ -80,7 +77,7 @@ describe('WanthroughputTable', () => {
     expect(row1.textContent).toMatch(/Bugbash_R560_Backup/)
     const links: HTMLAnchorElement[] = screen.getAllByRole('link')
     expect(links[0].href).toBe(
-      'http://localhost/t/undefined/devices/wifi/s3/details/overview'
+      'http://localhost/t/undefined/devices/wifi/C8:84:8C:10:D3:30/details/overview'
     )
   })
 

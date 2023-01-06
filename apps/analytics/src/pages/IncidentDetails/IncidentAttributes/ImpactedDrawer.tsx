@@ -23,7 +23,6 @@ export interface ImpactedDrawerProps extends Pick<Incident, 'id'> {
 
 export interface AggregatedImpactedAP {
   name: string[]
-  serial: string[]
   mac: string[]
   model: string[]
   version: string[]
@@ -133,8 +132,8 @@ export const ImpactedAPsDrawer: React.FC<ImpactedDrawerProps> = (props) => {
   const columns = useMemo(() => [
     column('name', {
       title: $t({ defaultMessage: 'AP Name' }),
-      render: (_, { name, serial }) =>
-        <TenantLink to={`devices/wifi/${serial}/details/overview`}>{name}</TenantLink>
+      render: (_, { name, mac }) =>
+        <TenantLink to={`devices/wifi/${mac}/details/overview`}>{name}</TenantLink>
     }),
     column('model', { title: $t({ defaultMessage: 'Model' }) }),
     column('mac', { title: $t({ defaultMessage: 'MAC Address' }) }),
