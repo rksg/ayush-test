@@ -105,11 +105,10 @@ export function useMenuConfig () {
             name: $t({ defaultMessage: 'Switch' }),
             disabled: !useIsSplitOn(Features.DEVICES)
           },
-          {
+          ...useIsSplitOn(Features.EDGES) ? [{
             path: '/devices/edge/list',
-            name: $t({ defaultMessage: 'Edge' }),
-            disabled: !useIsSplitOn(Features.EDGES)
-          }
+            name: $t({ defaultMessage: 'Edge' })
+          }] : []
         ]
     },
     {

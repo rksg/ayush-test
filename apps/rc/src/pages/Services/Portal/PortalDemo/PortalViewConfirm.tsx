@@ -5,9 +5,9 @@ export default function PortalViewConfirm (props:{
   return (
     <UI.ViewSection>
       <UI.ViewSectionTitle>
-        {props.portalLang.connected || 'You are now connected to Wi-Fi'}</UI.ViewSectionTitle>
+        {props.portalLang.connected}</UI.ViewSectionTitle>
       <UI.FieldTextMiddle>
-        {props.portalLang.redirected || 'You will be redirected in 5 seconds...'}
+        {props.portalLang.redirected}
       </UI.FieldTextMiddle>
     </UI.ViewSection>
 
