@@ -258,7 +258,9 @@ function Table <RecordType extends Record<string, any>> (
   const WrappedTable = (style: { width?: number }) => <UI.Wrapper
     style={style}
     $type={type}
-    $rowSelectionActive={Boolean(props.rowSelection) && !hasHeader && props.tableAlertRender !== false}
+    $rowSelectionActive={
+      Boolean(props.rowSelection) && !hasHeader && props.tableAlertRender !== false
+    }
   >
     <UI.TableSettingsGlobalOverride />
     {props.actions && <Space

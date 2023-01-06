@@ -1,6 +1,6 @@
 import { getIntl } from '@acx-ui/utils'
 
-import { ConfigStatusEnum, ConfigTypeEnum }                            from '../constants'
+import { ConfigStatusEnum, ConfigTypeEnum } from '../constants'
 
 export function transformConfigType (type: ConfigTypeEnum | string) {
   const { $t } = getIntl()
@@ -23,7 +23,7 @@ export function transformConfigType (type: ConfigTypeEnum | string) {
       break
     case ConfigTypeEnum.OVERWRITE_CONFIGURATION:
       transform = $t({ defaultMessage: 'Overwrite Configuration' })
-    break
+      break
     case ConfigTypeEnum.PORT_CONFIGURATION:
       transform = $t({ defaultMessage: 'Port Configuration' })
       break
@@ -56,13 +56,13 @@ export function transformConfigType (type: ConfigTypeEnum | string) {
       break
     case ConfigTypeEnum.SPECIFIC_SETTING:
       transform = $t({ defaultMessage: 'Specific Setting' })
-    break
+      break
     case 'VLAN':
       transform = $t({ defaultMessage: 'VLAN' })
-    break
+      break
     case 'ACL':
       transform = $t({ defaultMessage: 'ACL' })
-    break
+      break
   }
 
   return transform

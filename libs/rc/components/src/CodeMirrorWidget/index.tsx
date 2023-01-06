@@ -1,16 +1,25 @@
-import { forwardRef, MutableRefObject, useEffect, useImperativeHandle, useState } from 'react'
+/* eslint-disable max-len */
+import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
+
 import './type.d'
 import * as CodeMirror from 'codemirror'
+
+import * as UI from './styledComponents'
 // import * as DiffMatchPatch from 'diff-match-patch' TODO: Backup feature
 // import * as MergeViewCodeMirror from 'merge-view-codemirror'
-// import { MergeViewConfiguration } from 'codemirror/addon/merge/merge.js' 
-import 'codemirror/addon/selection/active-line.js';
-import 'codemirror/addon/mode/overlay';
-import * as UI from './styledComponents'
+// import { MergeViewConfiguration } from 'codemirror/addon/merge/merge.js'
+import 'codemirror/addon/selection/active-line.js'
+import 'codemirror/addon/mode/overlay'
+
+
+interface CodeMirrorData {
+  clis: string,
+  configOptions?: CodeMirror.EditorConfiguration
+}
 
 interface CodeMirrorWidgetProps {
-  data:any
-  type:string 
+  data:CodeMirrorData
+  type:string
   size?: {
     height?:string
     width?:string
@@ -19,18 +28,18 @@ interface CodeMirrorWidgetProps {
 
 export const CodeMirrorWidget = forwardRef((props:CodeMirrorWidgetProps, ref) => {
   const { type, data, size } = props
-  const [readOnlyCodeMirror, setReadOnlyCodeMirror] = useState(null as any)
+  const [readOnlyCodeMirror, setReadOnlyCodeMirror] = useState(null as unknown as CodeMirror.EditorFromTextArea)
   const height = size?.height || '450px'
-  const width = size?.width || '100%' 
-  
-  const htmlDecode = (s:any) => {
-    var div = document.createElement('div');
-    div.innerHTML = s;
-    return div.innerText || div.textContent;
+  const width = size?.width || '100%'
+
+  const htmlDecode = (code: string) => {
+    let div = document.createElement('div')
+    div.innerHTML = code
+    return div.innerText || div.textContent
   }
 
-  const initSingleView = (data: any) => {
-    const target = document.getElementById("codeView") as HTMLTextAreaElement
+  const initSingleView = (data: CodeMirrorData) => {
+    const target = document.getElementById('codeView') as HTMLTextAreaElement
     const code = htmlDecode(data.clis)
     const configOptions = data.configOptions
     if (target) {
@@ -48,29 +57,26 @@ export const CodeMirrorWidget = forwardRef((props:CodeMirrorWidgetProps, ref) =>
   }
 
   useImperativeHandle(ref, () => ({
-
-    highlightLine(line:number) {
+    highlightLine (line:number) {
       if (readOnlyCodeMirror) {
-        readOnlyCodeMirror.setOption("styleActiveLine", true);
-        readOnlyCodeMirror.setCursor(line);
+        readOnlyCodeMirror.setOption('styleActiveLine', true)
+        readOnlyCodeMirror.setCursor(line)
       }
     },
-    removeHighlightLine(line:number) {
+    removeHighlightLine () {
       if (readOnlyCodeMirror) {
-        readOnlyCodeMirror.setOption("styleActiveLine", false);
+        readOnlyCodeMirror.setOption('styleActiveLine', false)
       }
     }
-
   }))
 
   useEffect(() => {
     if (type === 'single' && data.clis) {
-      console.log(data.clis)
-      const container = document.getElementById("codeViewContainer")
+      const container = document.getElementById('codeViewContainer')
       while (container?.firstChild) {
-        container.removeChild(container?.firstChild);
+        container.removeChild(container?.firstChild)
       }
-      const codeNode = document.createElement("div")
+      const codeNode = document.createElement('div')
       codeNode.id = 'codeView'
       container?.appendChild(codeNode)
       initSingleView(data)
@@ -100,10 +106,10 @@ export const CodeMirrorWidget = forwardRef((props:CodeMirrorWidgetProps, ref) =>
   //     } as MergeViewConfiguration)
   //   }
   // }
-  
+
   return (
     <UI.Container>
-      <div id="codeViewContainer"></div>
+      <div id='codeViewContainer'></div>
     </UI.Container>
   )
 })

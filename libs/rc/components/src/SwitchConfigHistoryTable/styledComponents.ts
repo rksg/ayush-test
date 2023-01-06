@@ -1,5 +1,6 @@
+import styled from 'styled-components/macro'
+
 import { ArrowChevronLeft, ArrowChevronRight } from '@acx-ui/icons'
-import styled                  from 'styled-components/macro'
 
 export const ConfigDetail = styled.div`
 display: flex;

@@ -1,7 +1,9 @@
-import { Tabs } from '@acx-ui/components'
-import { SwitchConfigHistoryTable } from '@acx-ui/rc/components'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { useIntl } from 'react-intl'
+
+import { Tabs }                                  from '@acx-ui/components'
+import { SwitchConfigHistoryTable }              from '@acx-ui/rc/components'
+import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+
 import { SwitchConfigBackup } from './SwitchConfigBackup'
 
 export function SwitchConfigurationTab () {
@@ -11,7 +13,7 @@ export function SwitchConfigurationTab () {
   const basePath = useTenantLink(
     `/devices/switch/${params.switchId}/${params.serialNumber}/details/configuration/`
   )
-  
+
   const onTabChange = (tab: string) => {
     navigate({
       ...basePath,

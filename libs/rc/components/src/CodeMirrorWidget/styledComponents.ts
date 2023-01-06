@@ -1,5 +1,5 @@
-import styled                  from 'styled-components/macro'
-import 'codemirror/lib/codemirror.css';
+import styled from 'styled-components/macro'
+import 'codemirror/lib/codemirror.css'
 import 'codemirror/addon/merge/merge.css'
 
 export const Container = styled.div`
@@ -97,7 +97,8 @@ export const Container = styled.div`
   outline: none;
 }
 
-.CodeMirror-merge-r-inserted, .CodeMirror-merge-l-inserted, .CodeMirror-merge-r-deleted, .CodeMirror-merge-l-deleted{
+.CodeMirror-merge-r-inserted, .CodeMirror-merge-l-inserted, 
+.CodeMirror-merge-r-deleted, .CodeMirror-merge-l-deleted {
   background: #ffffe0;
 }
 

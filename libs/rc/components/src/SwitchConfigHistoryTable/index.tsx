@@ -1,15 +1,20 @@
-import { Button, Loader, Modal, Table, TableProps, Descriptions } from '@acx-ui/components'
+/* eslint-disable max-len */
 import { useEffect, useRef, useState } from 'react'
+
 import { useIntl } from 'react-intl'
-import { CodeMirrorWidget } from '@acx-ui/rc/components'
+
+import { Button, Loader, Modal, Table, TableProps, Descriptions }    from '@acx-ui/components'
+import { useGetSwitchConfigHistoryQuery }                            from '@acx-ui/rc/services'
 import { ConfigurationHistory, DispatchFailedReason, useTableQuery } from '@acx-ui/rc/utils'
-import { useGetSwitchConfigHistoryQuery } from '@acx-ui/rc/services'
-import * as UI from './styledComponents'
+
+import { CodeMirrorWidget } from '../CodeMirrorWidget'
+
 import { ErrorsTable } from './ErrorsTable'
+import * as UI         from './styledComponents'
 
 export function SwitchConfigHistoryTable () {
   const { $t } = useIntl()
-  const codeMirrorEl = useRef(null as unknown as {highlightLine: Function, removeHighlightLine: Function});
+  const codeMirrorEl = useRef(null as unknown as { highlightLine: Function, removeHighlightLine: Function })
   const [visible, setVisible] = useState(false)
   const [showError, setShowError] = useState(true)
   const [showClis, setShowClis] = useState(true)
@@ -35,21 +40,21 @@ export function SwitchConfigHistoryTable () {
     useQuery: useGetSwitchConfigHistoryQuery,
     defaultPayload: {
       filterByConfigType: '',
-      sortInfo: {sortColumn: "startTime", dir: "DESC"},
+      sortInfo: { sortColumn: 'startTime', dir: 'DESC' },
       limit: 10
     }
   })
 
   const tableData = tableQuery.data?.data ?? []
 
-  const columns: TableProps<any>['columns'] = [{
+  const columns: TableProps<ConfigurationHistory>['columns'] = [{
     key: 'startTime',
     title: $t({ defaultMessage: 'Time' }),
     dataIndex: 'startTime',
     sorter: true,
     defaultSortOrder: 'ascend',
     disable: true,
-    render: function (data, row) { 
+    render: function (data, row) {
       return <Button type='link' size='small' onClick={() => {showModal(row)}}>
         {data}
       </Button>
@@ -74,15 +79,15 @@ export function SwitchConfigHistoryTable () {
   const handleHighLightLine = (line: number) => {
     if (codeMirrorEl) {
       if (!Number.isNaN(line)) {
-        codeMirrorEl.current?.highlightLine(line - 1)  
+        codeMirrorEl.current?.highlightLine(line - 1)
       } else {
         codeMirrorEl.current?.removeHighlightLine()
       }
     }
   }
 
-  const errorsTitle = $t({ defaultMessage: 'Errors ({dispatchFailedReasonCount})'}
-  , {dispatchFailedReasonCount: dispatchFailedReason.length})
+  const errorsTitle = $t({ defaultMessage: 'Errors ({dispatchFailedReasonCount})' }
+    , { dispatchFailedReasonCount: dispatchFailedReason.length })
 
   useEffect(() => {
     if (dispatchFailedReason.length && codeMirrorEl.current) {
@@ -116,7 +121,7 @@ export function SwitchConfigHistoryTable () {
       }
     >
       {
-        selectedRow && 
+        selectedRow &&
         <>
           <Descriptions labelWidthPercent={15}>
             <Descriptions.Item
@@ -131,40 +136,41 @@ export function SwitchConfigHistoryTable () {
           </Descriptions>
           <UI.ConfigDetail>
             {
-              selectedRow?.clis && 
+              selectedRow?.clis &&
               <div className='code-mirror-container'>
-                <div className="header">
+                <div className='header'>
                   {$t({ defaultMessage: 'Commands Applied' })}
                 </div>
                 <CodeMirrorWidget ref={codeMirrorEl} type='single' data={selectedRow} />
               </div>
             }
             {
-              showError && 
-              <div className='errors-table' style={{ 
-                width: collapseActive ? '30px' : '100%',
-                backgroundColor: collapseActive ? 'var(--acx-neutrals-20)' : 'transparent'
-              }}>
-              {
-                !collapseActive ? 
-                  <>
-                    <div className="expanded header" >
-                      {errorsTitle}
-                      {
-                        showClis && 
+              showError &&
+              <div className='errors-table'
+                style={{
+                  width: collapseActive ? '30px' : '100%',
+                  backgroundColor: collapseActive ? 'var(--acx-neutrals-20)' : 'transparent'
+                }}>
+                {
+                  !collapseActive ?
+                    <>
+                      <div className='expanded header' >
+                        {errorsTitle}
+                        {
+                          showClis &&
                         <UI.ArrowCollapsed onClick={togglePanel}/>
-                      }
+                        }
+                      </div>
+                      <ErrorsTable errors={dispatchFailedReason} selectionChanged={handleHighLightLine}/>
+                    </>
+                    :
+                    <div onClick={togglePanel}>
+                      <div className='header'>
+                        <UI.ArrowExpand/>
+                      </div>
+                      <div className='vertical-text'>{errorsTitle}</div>
                     </div>
-                    <ErrorsTable errors={dispatchFailedReason} selectionChanged={handleHighLightLine}/>
-                  </>
-                 : 
-                <div onClick={togglePanel}>
-                  <div className='header'>
-                    <UI.ArrowExpand/>
-                  </div>
-                  <div className="vertical-text">{errorsTitle}</div>
-                </div>
-              }
+                }
               </div>
             }
           </UI.ConfigDetail>
