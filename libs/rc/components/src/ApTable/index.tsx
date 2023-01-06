@@ -243,12 +243,12 @@ export function ApTable (props: ApTableProps) {
         } : null)
         .filter(Boolean)
     }, {
-      key: 'tags',
-      title: $t({ defaultMessage: 'Tags' }),
-      dataIndex: 'tags',
-      sorter: true
-      //TODO: Click-> Filter by Tag
-    }, {
+    //   key: 'tags', // TODO: Waiting for TAG feature support
+    //   title: $t({ defaultMessage: 'Tags' }),
+    //   dataIndex: 'tags',
+    //   sorter: true
+    //   //TODO: Click-> Filter by Tag
+    // }, {
       key: 'serialNumber',
       title: $t({ defaultMessage: 'Serial Number' }),
       dataIndex: 'serialNumber',

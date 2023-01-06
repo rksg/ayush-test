@@ -72,11 +72,11 @@ function getCols (intl: ReturnType<typeof useIntl>) {
     dataIndex: 'disconnectTime',
     sorter: true,
     render: (data) => dateTimeFormatter((data as number) * 1000)
-  }, {
-    key: 'tags',
-    title: intl.$t({ defaultMessage: 'Tags' }),
-    dataIndex: 'tags',
-    sorter: true
+  // }, { // TODO: Waiting for TAG feature support
+  //   key: 'tags',
+  //   title: intl.$t({ defaultMessage: 'Tags' }),
+  //   dataIndex: 'tags',
+  //   sorter: true
   }]
   return columns
 }
@@ -139,8 +139,8 @@ export function HistoricalClientsTable
             fontSize: '10px',
             color: cssStr('--acx-neutrals-60')
           }}>{
-              $t({ defaultMessage: `* There are more historical clients than can be displayed. 
-        If you don’t see the client you are looking for, 
+              $t({ defaultMessage: `* There are more historical clients than can be displayed.
+        If you don’t see the client you are looking for,
         narrow the list by entering a more specific text in the search box.` })
             }</Typography.Text>}
         </Loader>

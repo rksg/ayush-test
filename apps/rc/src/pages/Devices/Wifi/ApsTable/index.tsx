@@ -46,9 +46,7 @@ export default function ApsTable () {
       label: <TenantLink to='devices/wifi/add'>{$t({ defaultMessage: 'AP' })}</TenantLink>
     }, {
       key: 'import-from-file',
-      label: $t({ defaultMessage: 'Import from file' }),
-      title: $t(notAvailableMsg),
-      disabled: !useIsSplitOn(Features.DEVICES)
+      label: $t({ defaultMessage: 'Import from file' })
     }, {
       key: 'ap-group',
       label: <TenantLink to='devices/apgroups/add'>

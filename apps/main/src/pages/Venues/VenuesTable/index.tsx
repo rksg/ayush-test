@@ -67,19 +67,19 @@ function useColumns () {
       },
       align: 'center'
     },
-    {
-      key: 'health',
-      dataIndex: 'health',
-      title: () => {
-        return (
-          <>
-            { $t({ defaultMessage: 'Health Score' }) }
-            <Table.SubTitle children={$t({ defaultMessage: 'Last 24 hours' })} />
-          </>
-        )
-      },
-      align: 'center'
-    },
+    // { // TODO: Waiting for HEALTH feature support
+    //   key: 'health',
+    //   dataIndex: 'health',
+    //   title: () => {
+    //     return (
+    //       <>
+    //         { $t({ defaultMessage: 'Health Score' }) }
+    //         <Table.SubTitle children={$t({ defaultMessage: 'Last 24 hours' })} />
+    //       </>
+    //     )
+    //   },
+    //   align: 'center'
+    // },
     {
       title: $t({ defaultMessage: 'Services' }),
       key: 'services',
@@ -166,13 +166,13 @@ function useColumns () {
           />
         )
       }
-    },
-    {
-      key: 'tags',
-      dataIndex: 'tags',
-      title: $t({ defaultMessage: 'Tags' }),
-      show: false
     }
+    // { // TODO: Waiting for TAG feature support
+    //   key: 'tags',
+    //   dataIndex: 'tags',
+    //   title: $t({ defaultMessage: 'Tags' }),
+    //   show: false
+    // }
   ]
 
   return columns.filter(({ key }) =>

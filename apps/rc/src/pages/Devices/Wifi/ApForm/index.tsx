@@ -418,8 +418,7 @@ export function ApForm () {
                 initialValue=''
                 children={<Input.TextArea rows={4} maxLength={180} />}
               />
-              {/* TODO: */}
-              {/* <Form.Item
+              {/* <Form.Item // TODO: Waiting for TAG feature support
                 name=''
                 label={$t({ defaultMessage: 'Tags' })}
                 children={<Input />}
