@@ -1,4 +1,4 @@
-import { Provider }                from '@acx-ui/store'
+import { Provider } from '@acx-ui/store'
 import {
   fireEvent,
   render,
@@ -35,5 +35,5 @@ describe('SwitchConfigurationTab', () => {
     expect(screen.getAllByRole('tab')).toHaveLength(2)
     fireEvent.click(await screen.findByRole('tab', { name: 'History' }))
     expect(await screen.findByTestId('rc-SwitchConfigHistoryTable')).toBeVisible()
-  }) 
+  })
 })
