@@ -1,5 +1,6 @@
-import { transformDisplayText, transformDisplayNumber } from './commonPipes'
+/* eslint-disable max-len */
 import { ConfigStatusEnum, ConfigTypeEnum } from '../constants'
+
 import { transformConfigStatus, transformConfigType } from './switchPipes'
 
 describe('Switch Pipes', () => {
