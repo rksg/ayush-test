@@ -1,16 +1,16 @@
 import { useState } from 'react'
 
 import { Form, Input, Radio, RadioChangeEvent, Space } from 'antd'
+import { PhoneNumberUtil }                             from 'google-libphonenumber'
 import { useIntl }                                     from 'react-intl'
 
+import { Drawer } from '@acx-ui/components'
 import {
-  Drawer
-} from '@acx-ui/components'
+  phoneRegExp,
+  emailRegExp
+} from '@acx-ui/rc/utils'
 
-import * as UI      from '../styledComponents'
-import {
-  VerifyCodeModal
-} from '../VerifyCodeModal'
+import { VerifyCodeModal } from '../VerifyCodeModal'
 
 interface OneTimePasswordProps {
   visible: boolean
@@ -25,6 +25,8 @@ export const OneTimePassword = (props: OneTimePasswordProps) => {
   const [modalVisible, setModalVisible] = useState(false)
   const [smsSelected, setSmsSelected] = useState(false)
   const [form] = Form.useForm()
+
+  const examplePhoneNumber = PhoneNumberUtil.getInstance().getExampleNumber('US')
 
   const onClose = () => {
     setVisible(false)
@@ -59,33 +61,37 @@ export const OneTimePassword = (props: OneTimePasswordProps) => {
           <Radio value={true} disabled={false}>
             { $t({ defaultMessage: 'Text Message (SMS)' }) }
           </Radio>
-          {smsSelected && <UI.FieldLabel width='235px'>
-            {<Input
-              placeholder='(+1)408-234-9811'
-              style={{ marginLeft: '16px', marginTop: '5px', width: '207px' }}/>}
-            <Form.Item
-              name='email_format'
-              rules={[{
-                required: false
-              }]}
-            />
-          </UI.FieldLabel>}
-          <Radio style={{ marginTop: '10px' }} value={false} disabled={false}>
+          {smsSelected && <Form.Item
+            name='mobilePhoneNumber'
+            rules={[
+              { validator: (_, value) => phoneRegExp(value) }
+            ]}
+            initialValue={null}
+            children={
+              <Input
+                style={{ marginLeft: '16px', marginTop: '5px', width: '207px' }}
+                // eslint-disable-next-line max-len
+                placeholder={`+${examplePhoneNumber.getCountryCode()} ${examplePhoneNumber.getNationalNumberOrDefault()}`}
+                // onChange={onPhoneNumberChange}
+              />
+            }
+          />}
+          <Radio style={{ marginTop: '5px' }} value={false} disabled={false}>
             { $t({ defaultMessage: 'Email' }) }
           </Radio>
-
-          {!smsSelected && <UI.FieldLabel width='235px'>
-            {<Input
-              placeholder='msp.eleu1658@mail.com'
-              style={{ marginLeft: '16px', marginTop: '5px', width: '207px' }}/>}
-            <Form.Item
-              name='email_format'
-              rules={[{
-                required: false
-              }]}
-            />
-          </UI.FieldLabel>}
-
+          {!smsSelected && <Form.Item
+            name='email'
+            rules={[
+              { validator: (_, value) => emailRegExp(value) }
+            ]}
+            initialValue={''}
+            children={
+              <Input
+                style={{ marginLeft: '16px', marginTop: '5px', width: '207px' }}
+                // onChange={onEmailChange}
+              />
+            }
+          />}
         </Space>
       </Radio.Group>
     </Form.Item>

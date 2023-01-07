@@ -52,6 +52,7 @@ export enum DetailLevel {
 }
 
 export interface MfaDetailStatus {
+  contactId?: string;
   mfaMethods: string[];
   recoveryCodes: string[];
   tenantStatus: string;

@@ -94,7 +94,7 @@ export const userApi = baseUserApi.injectEndpoints({
         return mfaDetail
       }
     }),
-    getMfaAdminDetails: build.query<UserProfile, RequestPayload>({
+    getMfaAdminDetails: build.query<MfaDetailStatus, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(
           UserUrlsInfo.getMfaAdminDetails,
@@ -104,11 +104,9 @@ export const userApi = baseUserApi.injectEndpoints({
           ...req
         }
       },
-      transformResponse (userProfile: UserProfile) {
-        userProfile.initials =
-          userProfile.firstName[0].toUpperCase() + userProfile.lastName[0].toUpperCase()
-        userProfile.fullName = `${userProfile.firstName} ${userProfile.lastName}`
-        return userProfile
+      transformResponse (mfaDetail: MfaDetailStatus) {
+        mfaDetail.enabled = mfaDetail.tenantStatus === 'ENABLED'
+        return mfaDetail
       }
     }),
     // getMfaMasterCode: build.query<UserProfile, RequestPayload>({

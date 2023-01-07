@@ -8,6 +8,7 @@ import {
   Subtitle
 } from '@acx-ui/components'
 import {
+  useGetMfaAdminDetailsQuery,
   useGetMfaTenantDetailsQuery
 } from '@acx-ui/rc/services'
 import {
@@ -20,7 +21,6 @@ import { RecoveryCodes }   from './RecoveryCodes'
 import { OtpLabel }        from './styledComponents'
 import * as UI             from './styledComponents'
 
-
 export const MultiFactor = () => {
   const { $t } = useIntl()
   const { tenantId } = useParams()
@@ -30,13 +30,16 @@ export const MultiFactor = () => {
   const [mfaStatus, setMfaStatus] = useState(false)
   const [mfaRecoveryCode, setRecoveryCode] = useState([] as string[])
   const [mfaUserId, setUserId] = useState('')
-  const [mfaSmsToggle, setSmsToggle] = useState(true)
-  const [mfaAuthAppToggle, setAuthAppToggle] = useState(true)
+  const [mfaSmsToggle, setSmsToggle] = useState(false)
+  const [mfaAuthAppToggle, setAuthAppToggle] = useState(false)
+  const [contactId, setContactId] = useState('')
 
-  const smsSublabel = 'We will send you a code via SMS or Email'
+  let smsSublabel = 'We will send you a code via SMS or Email'
   const authAppSublabel = 'You’ll receive a login code via an authentication app'
 
   const { data } = useGetMfaTenantDetailsQuery({ params: { tenantId } })
+  const { data: details } =
+  useGetMfaAdminDetailsQuery({ params: { userId: mfaUserId } }, { skip: !data })
 
   useEffect(() => {
     if (data) {
@@ -44,10 +47,17 @@ export const MultiFactor = () => {
       setRecoveryCode(data.recoveryCodes ? data.recoveryCodes : [])
       setUserId(data.userId)
     }
-  }, [data])
+    if (details) {
+      setContactId(details?.contactId ? details?.contactId : smsSublabel )
+      const sms = details?.mfaMethods.includes('SMS') || details?.mfaMethods.includes('EMAIL')
+      const mobile = details?.mfaMethods.includes('MOBILEAPP')
+      setSmsToggle(sms)
+      setAuthAppToggle(mobile)
+    }
+  }, [data, details])
 
   const onChangeSms = (checked: boolean) => {
-    checked ? setSmsToggle(true) : setSmsToggle(false)
+    setSmsToggle(checked)
   }
 
   const onChangeAuthApp = (checked: boolean) => {
@@ -63,25 +73,20 @@ export const MultiFactor = () => {
           <UI.FieldLabel2 width='275px'>
             <OtpLabel>
               {$t({ defaultMessage: 'One Time Password (OTP)' })}
-              {smsSublabel}
+              {contactId}
             </OtpLabel>
             <Form.Item
-              name='email_format'
-              rules={[{
-                required: false
-              }]}
-              children={<Switch onChange={onChangeSms}></Switch>}
+              name='otp_toggle'
+              children={<Switch checked={mfaSmsToggle} onChange={onChangeSms}></Switch>}
             />
-            {mfaSmsToggle && <Form.Item
-              name='email_format'
-              rules={[{
-                required: false
-              }]}
+            <Form.Item
+              name='set_otp'
               children={<UI.FieldTextLink onClick={()=>setOtpVisible(true)}>
-                {$t({ defaultMessage: 'Set' })}
+                {mfaSmsToggle
+                  ? $t({ defaultMessage: 'Change' }) : $t({ defaultMessage: 'Set' })}
               </UI.FieldTextLink>
               }
-            />}
+            />
           </UI.FieldLabel2>
 
           <UI.FieldLabel2 width='275px'>
@@ -90,22 +95,17 @@ export const MultiFactor = () => {
               {authAppSublabel}
             </OtpLabel>
             <Form.Item
-              name='email_format'
-              rules={[{
-                required: false
-              }]}
-              children={<Switch onChange={onChangeAuthApp}></Switch>}
+              name='auth_toggle'
+              children={<Switch checked={mfaAuthAppToggle} onChange={onChangeAuthApp}></Switch>}
             />
-            {mfaAuthAppToggle && <Form.Item
-              name='email_format'
-              rules={[{
-                required: false
-              }]}
+            <Form.Item
+              name='set_auth'
               children={<UI.FieldTextLink onClick={()=>setAuthAppVisible(true)}>
-                {$t({ defaultMessage: 'Set' })}
+                {mfaAuthAppToggle
+                  ? $t({ defaultMessage: 'Add App' }) : $t({ defaultMessage: 'Set' })}
               </UI.FieldTextLink>
               }
-            />}
+            />
           </UI.FieldLabel2>
 
         </Col>
