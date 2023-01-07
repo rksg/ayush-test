@@ -36,6 +36,6 @@ export const FieldLabel = styled.div<{ width: string }>`
 export const FieldLabel2 = styled.div<{ width: string }>`
   font-size: var(--acx-body-4-font-size);
   display: grid;
-  grid-template-columns: ${props => props.width} 43px 20px;
+  grid-template-columns: ${props => props.width} 43px 70px;
   align-items: baseline;
 `

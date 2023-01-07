@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
-import { Row, Col, Form, Switch } from 'antd'
-import { useIntl }                from 'react-intl'
+import { Row, Col, Form, Switch, Tooltip } from 'antd'
+import { useIntl }                         from 'react-intl'
 
 import {
   StepsForm,
@@ -33,10 +33,10 @@ export const MultiFactor = () => {
   const [mfaSmsToggle, setSmsToggle] = useState(false)
   const [mfaAuthAppToggle, setAuthAppToggle] = useState(false)
   const [contactId, setContactId] = useState('')
+  const [mfaSmsConfigured, setSmsConfigured] = useState(false)
+  const [mfaAuthAppConfigured, setAuthAppConfigured] = useState(false)
 
-  let smsSublabel = 'We will send you a code via SMS or Email'
-  const authAppSublabel = 'You’ll receive a login code via an authentication app'
-
+  const smsSublabel = $t({ defaultMessage: 'We will send you a code via SMS or Email' })
   const { data } = useGetMfaTenantDetailsQuery({ params: { tenantId } })
   const { data: details } =
   useGetMfaAdminDetailsQuery({ params: { userId: mfaUserId } }, { skip: !data })
@@ -51,17 +51,25 @@ export const MultiFactor = () => {
       setContactId(details?.contactId ? details?.contactId : smsSublabel )
       const sms = details?.mfaMethods.includes('SMS') || details?.mfaMethods.includes('EMAIL')
       const mobile = details?.mfaMethods.includes('MOBILEAPP')
+      setSmsConfigured(sms)
+      setAuthAppConfigured(mobile)
       setSmsToggle(sms)
       setAuthAppToggle(mobile)
     }
   }, [data, details])
 
   const onChangeSms = (checked: boolean) => {
-    setSmsToggle(checked)
+    setSmsToggle(false)
+    setOtpVisible(checked)
   }
 
   const onChangeAuthApp = (checked: boolean) => {
-    setAuthAppToggle(checked)
+    setAuthAppToggle(false)
+    setAuthAppVisible(checked)
+  }
+
+  const warningTooltip = (show: boolean) => {
+    return show ? $t({ defaultMessage: 'You must set at least one authentication methed.' }) : ''
   }
 
   const AuthenticationMethod = () => {
@@ -75,14 +83,20 @@ export const MultiFactor = () => {
               {$t({ defaultMessage: 'One Time Password (OTP)' })}
               {contactId}
             </OtpLabel>
-            <Form.Item
-              name='otp_toggle'
-              children={<Switch checked={mfaSmsToggle} onChange={onChangeSms}></Switch>}
-            />
+            <Tooltip title={warningTooltip(mfaSmsToggle && !mfaAuthAppToggle)}>
+              <Form.Item
+                name='otp_toggle'
+                children={
+                  <Switch
+                    disabled={mfaSmsToggle && !mfaAuthAppToggle}
+                    checked={mfaSmsToggle}
+                    onChange={onChangeSms}></Switch>}
+              />
+            </Tooltip>
             <Form.Item
               name='set_otp'
               children={<UI.FieldTextLink onClick={()=>setOtpVisible(true)}>
-                {mfaSmsToggle
+                {mfaSmsConfigured
                   ? $t({ defaultMessage: 'Change' }) : $t({ defaultMessage: 'Set' })}
               </UI.FieldTextLink>
               }
@@ -92,16 +106,21 @@ export const MultiFactor = () => {
           <UI.FieldLabel2 width='275px'>
             <OtpLabel>
               {$t({ defaultMessage: 'Authentication App' })}
-              {authAppSublabel}
+              {$t({ defaultMessage: 'You’ll receive a login code via an authentication app' })}
             </OtpLabel>
-            <Form.Item
-              name='auth_toggle'
-              children={<Switch checked={mfaAuthAppToggle} onChange={onChangeAuthApp}></Switch>}
-            />
+            <Tooltip title={warningTooltip(mfaAuthAppToggle && !mfaSmsToggle)}>
+              <Form.Item
+                name='auth_toggle'
+                children={<Switch
+                  disabled={mfaAuthAppToggle && !mfaSmsToggle}
+                  checked={mfaAuthAppToggle}
+                  onChange={onChangeAuthApp}></Switch>}
+              />
+            </Tooltip>
             <Form.Item
               name='set_auth'
               children={<UI.FieldTextLink onClick={()=>setAuthAppVisible(true)}>
-                {mfaAuthAppToggle
+                {mfaAuthAppConfigured
                   ? $t({ defaultMessage: 'Add App' }) : $t({ defaultMessage: 'Set' })}
               </UI.FieldTextLink>
               }
@@ -185,6 +204,5 @@ export const MultiFactor = () => {
         setVisible={setOtpVisible}
       />}
     </>
-
   )
 }

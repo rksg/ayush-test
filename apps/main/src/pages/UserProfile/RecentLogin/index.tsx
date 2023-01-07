@@ -55,22 +55,7 @@ export function RecentLogin () {
     }
   ]
 
-  // const eventListPayload = {
-  //   searchString: '',
-  //   fields: ['tenantName', 'tenantEmail'],
-  //   filters: {
-  //     status: ['DELEGATION_STATUS_INVITED'],
-  //     delegationType: ['DELEGATION_TYPE_VAR'],
-  //     isValid: [true]
-  //   }
-  // }
-
   const EventListTable = () => {
-    // const tableQuery = useTableQuery({
-    //   useQuery: useEventListQuery,
-    //   defaultPayload: eventListPayload
-    // })
-
     return (
       <Loader states={[tableQuery]}>
         <Table
