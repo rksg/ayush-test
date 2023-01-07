@@ -4,6 +4,7 @@ import {
   Checkbox,
   Collapse,
   Form,
+  Input,
   InputNumber,
   Select,
   Switch
@@ -426,30 +427,37 @@ export function MoreSettingsForm (props: {
               name={['wlan','advancedCustomization','mobilityDomainId']}
               label={$t({ defaultMessage: 'Mobility Domain ID' })}
               initialValue={1}
-              rules={[{
-                type: 'number', max: 65535, min: 1,
-                message: $t({
-                  defaultMessage: 'Mobility Domain ID must be between 1 and 65535'
-                })
-              }]}
+              rules={[
+                {
+                  type: 'number', max: 65535, min: 1, transform: Number,
+                  message: $t({
+                    defaultMessage: 'Mobility Domain ID must be between 1 and 65535'
+                  })
+                }
+              ]}
               style={{ marginBottom: '15px' }}
-              children={<InputNumber style={{ width: '150px' }} />}
+              children={<Input style={{ width: '150px' }} />}
             />
         }
 
-        <Form.Item
-          name={['wlan','advancedCustomization','clientInactivityTimeout']}
-          label={$t({ defaultMessage: 'Client Inactivity Timeout:' })}
-          initialValue={120}
-          rules={[{
-            type: 'number', max: 86400, min: 60,
-            message: $t({
-              defaultMessage: 'Client Inactivity Timeout must be between 60 and 86400'
-            })
-          }]}
-          style={{ marginBottom: '15px' }}
-          children={<InputNumber style={{ width: '150px' }} />}
-        />
+        <div style={{ display: 'grid', gridTemplateColumns: '0px 1fr' }}>
+          <UI.LabelOfInput style={{ left: '165px' }}>
+            { $t({ defaultMessage: 'Seconds' }) }
+          </UI.LabelOfInput>
+          <Form.Item
+            name={['wlan','advancedCustomization','clientInactivityTimeout']}
+            label={$t({ defaultMessage: 'Client Inactivity Timeout:' })}
+            initialValue={120}
+            rules={[{
+              type: 'number', max: 86400, min: 60,
+              message: $t({
+                defaultMessage: 'Client Inactivity Timeout must be between 60 and 86400'
+              })
+            }]}
+            style={{ marginBottom: '15px' }}
+            children={<InputNumber style={{ width: '150px' }} />}
+          />
+        </div>
 
         <Form.Item
           name={['wlan','advancedCustomization','directedThreshold']}
