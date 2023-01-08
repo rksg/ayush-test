@@ -4,14 +4,14 @@ import { DndProvider }  from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { act }          from 'react-dom/test-utils'
 
-import { ApDeviceStatusEnum, FloorPlanDto, NetworkDevice, NetworkDeviceType, SwitchStatusEnum, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                     from '@acx-ui/store'
-import { render, screen, fireEvent, waitFor }                                                                           from '@acx-ui/test-utils'
+import { ApDeviceStatusEnum, FloorPlanDto, getImageFitPercentage, NetworkDevice, NetworkDeviceType, SwitchStatusEnum, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
+import { Provider }                                                                                                                            from '@acx-ui/store'
+import { render, screen, fireEvent, waitFor }                                                                                                  from '@acx-ui/test-utils'
 
 import { NetworkDeviceContext } from '..'
 
-import PlainView, { setUpdatedLocation, getImageFitPercentage } from './PlainView'
-import Thumbnail                                                from './Thumbnail'
+import PlainView, { setUpdatedLocation } from './PlainView'
+import Thumbnail                         from './Thumbnail'
 
 
 const list: FloorPlanDto[] = [
@@ -127,6 +127,7 @@ describe('Floor Plan Plain View', () => {
 
     fireEvent.dragStart(src)
     fireEvent.dragEnter(dst[0])
+    await new Promise((resolve) => setTimeout(resolve, 100))
     fireEvent.drop(dst[0])
     fireEvent.dragLeave(dst[0])
     fireEvent.dragEnd(src)
