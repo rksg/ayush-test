@@ -370,8 +370,8 @@ export interface WifiApSetting {
 }
 
 export interface ApDirectedMulticast {
-	useVenueSettings: boolean,
-	wiredEnabled: boolean,
+  useVenueSettings: boolean,
+  wiredEnabled: boolean,
   wirelessEnabled: boolean,
   networkEnabled: boolean
 }

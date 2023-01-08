@@ -608,7 +608,7 @@ export interface LocalUser {
 }
 
 export interface VenueDirectedMulticast {
-	wiredEnabled: boolean,
+  wiredEnabled: boolean,
   wirelessEnabled: boolean,
   networkEnabled: boolean
 }
