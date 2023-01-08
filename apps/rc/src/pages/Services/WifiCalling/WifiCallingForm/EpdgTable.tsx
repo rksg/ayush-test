@@ -85,7 +85,7 @@ const EpdgTable = (props: { edit?: boolean }) => {
         type: 'confirm',
         customContent: {
           action: 'DELETE',
-          entityName: $t({ defaultMessage: 'Service' }),
+          entityName: $t({ defaultMessage: 'Rule' }),
           entityValue: domain
         },
         onOk: () => {
