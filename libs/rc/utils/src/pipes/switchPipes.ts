@@ -88,3 +88,36 @@ export function transformConfigStatus (type: ConfigStatusEnum | string) {
 
   return transform
 }
+
+export const BACKUP_IN_PROGRESS_TOOLTIP = 'Backup creation is in progress';
+export const RESTORE_IN_PROGRESS_TOOLTIP = 'Backup restore is in progress';
+
+export const transformConfigBackupStatus = (data:any) => {
+  const { status, restoreStatus, failureReason} = data;
+  let text = '';
+  const restoreMap = {
+    PENDING: RESTORE_IN_PROGRESS_TOOLTIP,
+    STARTED: RESTORE_IN_PROGRESS_TOOLTIP,
+    SUCCESS: 'Backup restored successfully',
+    FAILED: 'Backup restore failed'
+  };
+  const backupMap = {
+    PENDING: BACKUP_IN_PROGRESS_TOOLTIP,
+    STARTED: BACKUP_IN_PROGRESS_TOOLTIP,
+    SUCCESS: 'Backup created successfully',
+    FAILED: 'Backup creation failed'
+  };
+  // if (restoreMap[restoreStatus]) {
+  //   text = restoreMap[restoreStatus];
+  //   if (restoreStatus === 'FAILED') {
+  //     text += ` (${failureReason})`;
+  //   }
+  // } else {
+  //   text = backupMap[status];
+  //   if (status === 'FAILED') {
+  //     text += ` (${failureReason})`;
+  //   }
+  // }
+  // return text;
+  return status
+}
