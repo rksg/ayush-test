@@ -431,3 +431,10 @@ export interface GridDataRow {
   inactiveTooltip?: string;
   [GridInactiveRowDataFlag]?: boolean;
 }
+
+export interface PaginationQueryResult<T> {
+  page: number
+  pageSize: number
+  totalCount: number
+  content: T[]
+}
