@@ -279,7 +279,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     }),
     getTroubleshootingClean: build.query<{}, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getTroubleshooting, params)
+        const req = createHttpRequest(SwitchUrlsInfo.getTroubleshootingClean, params)
         return {
           ...req
         }
@@ -311,11 +311,12 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
-    macTable: build.query<TroubleshootingResult, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.macTable, params)
+    macAddressTable: build.mutation<TroubleshootingResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.macAddressTable, params)
         return {
-          ...req
+          ...req,
+          body: payload
         }
       }
     })
@@ -409,5 +410,12 @@ export const {
   useGetSwitchQuery,
   useDeleteVePortsMutation,
   useGetSwitchAclsQuery,
-  useGetVlanListBySwitchLevelQuery
+  useGetVlanListBySwitchLevelQuery,
+  useGetTroubleshootingQuery,
+  usePingMutation,
+  useTraceRouteMutation,
+  useIpRouteMutation,
+  useMacAddressTableMutation,
+  useGetTroubleshootingCleanQuery,
+  useLazyGetTroubleshootingCleanQuery
 } = switchApi

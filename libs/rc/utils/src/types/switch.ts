@@ -44,6 +44,13 @@ export enum TroubleshootingType {
   DHCP_SERVER_LEASE_TABLE = 'dhcp-server-lease-table'
 }
 
+export enum TroubleshootingMacAddressOptionsEnum {
+  PORT = 'connected_port',
+  NONE = 'none',
+  MAC = 'mac_address',
+  VLAN = 'vlan',
+}
+
 export class Switch {
   key?: string
   name: string
@@ -95,10 +102,16 @@ export interface TroubleshootingResult {
   requestId: string
   response: {
       latestResultResponseTime: string
+      result: string
       pingIp: string
       syncing: boolean
+      traceRouteTarget: string
       traceRouteTtl: number
-      troubleshootingType: TroubleshootingType.PING
+      troubleshootingType: TroubleshootingType
+      macAddressTablePortIdentify: string
+      macAddressTableVlanId: string
+      macAddressTableAddress: string,
+      macAddressTableType: TroubleshootingMacAddressOptionsEnum
   }
 }
 
@@ -111,9 +124,9 @@ export interface TraceRouteSwitch {
   targetHost: string
 }
 
-export interface TroubleshootingResult {
-  responseId: string
-}
+// export interface TroubleshootingResult {
+//   responseId: string
+// }
 
 export interface VeViewModel {
   name?: string

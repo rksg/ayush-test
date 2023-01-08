@@ -1,37 +1,37 @@
 import { useEffect, useState } from 'react'
 
-import { Row, Col, Form, Input } from 'antd'
-import TextArea                  from 'antd/lib/input/TextArea'
-import _                         from 'lodash'
-import { useIntl }               from 'react-intl'
-import { useParams }             from 'react-router-dom'
+import { Row, Col, Form } from 'antd'
+import TextArea           from 'antd/lib/input/TextArea'
+import _                  from 'lodash'
+import { useIntl }        from 'react-intl'
+import { useParams }      from 'react-router-dom'
 
-import { Button, Loader, showToast, Tooltip } from '@acx-ui/components'
-import { QuestionMarkCircleOutlined }         from '@acx-ui/icons'
-import { useGetTroubleshootingQuery,
-  useLazyGetTroubleshootingCleanQuery,
-  usePingMutation }                             from '@acx-ui/rc/services'
-import { targetHostRegExp,
-  TroubleshootingType,
-  WifiTroubleshootingMessages } from '@acx-ui/rc/utils'
+import { Button, Loader, showToast }    from '@acx-ui/components'
+import {
+  useGetTroubleshootingQuery,
+  useIpRouteMutation,
+  useLazyGetTroubleshootingCleanQuery
+} from '@acx-ui/rc/services'
+import {
+  TroubleshootingType
+} from '@acx-ui/rc/utils'
 import { formatter } from '@acx-ui/utils'
 
-export function SwitchPingForm () {
+export function SwitchIpRouteForm () {
   const { $t } = useIntl()
   const { tenantId, switchId } = useParams()
-  const [pingForm] = Form.useForm()
+  const [form] = Form.useForm()
 
-  const [isValid, setIsValid] = useState(false)
   const [lasySyncTime, setLastSyncTime] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
   const troubleshootingParams = {
     tenantId,
     switchId,
-    troubleshootingType: TroubleshootingType.PING
+    troubleshootingType: TroubleshootingType.ROUTE_TABLE
   }
 
-  const [runMutation] = usePingMutation()
+  const [runMutation] = useIpRouteMutation()
   const [getTroubleshootingClean] = useLazyGetTroubleshootingCleanQuery()
   const getTroubleshooting =
     useGetTroubleshootingQuery({
@@ -44,7 +44,6 @@ export function SwitchPingForm () {
     }, 3000)
   }
 
-
   const parseResult = function (response: string) {
     return response === 'EMPTY_RESULT' ? $t({ defaultMessage: 'No data to display.' }) : response
   }
@@ -54,17 +53,12 @@ export function SwitchPingForm () {
       const response = getTroubleshooting.data.response
       setIsLoading(response.syncing)
 
-      if(response.syncing) {
+      if (response.syncing) {
         refetchResult()
       }
 
-      pingForm.setFieldValue('targetHost', response.pingIp)
       setLastSyncTime(response.latestResultResponseTime)
-      pingForm.setFieldValue('result', parseResult(response.result))
-
-      if (response.latestResultResponseTime) {
-        setIsValid(true)
-      }
+      form.setFieldValue('result', parseResult(response.result))
     }
 
   }, [getTroubleshooting.data])
@@ -72,15 +66,11 @@ export function SwitchPingForm () {
   const onSubmit = async () => {
     setIsLoading(true)
     try {
-      const payload = {
-        targetHost: pingForm.getFieldValue('targetHost')
-      }
-      const result = await runMutation({ params: { tenantId, switchId }, payload }).unwrap()
+      const result = await runMutation({ params: { tenantId, switchId } }).unwrap()
       if (result) {
         refetchResult()
       }
     } catch {
-      setIsValid(false)
       showToast({
         type: 'error',
         content: $t({ defaultMessage: 'An error occurred' })
@@ -90,7 +80,6 @@ export function SwitchPingForm () {
 
   const onClear = async () => {
     setIsLoading(true)
-    setIsValid(false)
     await getTroubleshootingClean({
       params: troubleshootingParams
     })
@@ -98,46 +87,16 @@ export function SwitchPingForm () {
   }
 
   const onCopy = async () => {
-    const response = pingForm.getFieldValue('result')
+    const response = form.getFieldValue('result')
     navigator.clipboard.writeText(response)
   }
 
-  const onChangeForm = function () {
-    pingForm.validateFields()
-      .then(() => {
-        setIsValid(true)
-      })
-      .catch(() => {
-        setIsValid(false)
-      })
-  }
-
   return <Form
-    form={pingForm}
+    form={form}
     layout='vertical'
-    onChange={onChangeForm}
   >
     <Row gutter={20}>
       <Col span={8}>
-        <Form.Item
-          name='targetHost'
-          label={<>
-            {$t({ defaultMessage: 'Target host or IP address' })}
-            <Tooltip
-              title={$t(WifiTroubleshootingMessages.Target_Host_IP_TOOLTIP)}
-              placement='bottom'
-            >
-              <QuestionMarkCircleOutlined />
-            </Tooltip>
-          </>}
-          rules={[
-            { required: true },
-            { validator: (_, value) => targetHostRegExp(value) }
-          ]}
-          validateFirst
-          // hasFeedback
-          children={<Input disabled={isLoading}/>}
-        />
         {!_.isEmpty(lasySyncTime) &&
           <Form.Item
             label={$t({ defaultMessage: 'Last synced at' })}
@@ -158,9 +117,9 @@ export function SwitchPingForm () {
           <Button
             type='secondary'
             htmlType='submit'
-            disabled={!isValid || isLoading}
+            disabled={isLoading}
             onClick={onSubmit}>
-            {$t({ defaultMessage: 'Run' })}
+            {$t({ defaultMessage: 'Show Route' })}
           </Button>
         </Form.Item>
       </Col>
@@ -170,6 +129,7 @@ export function SwitchPingForm () {
       isFetching: isLoading
     }]}>
       <Form.Item
+        style={{ marginBottom: '5px' }}
         name='result'>
         <TextArea
           style={{ resize: 'none', height: '300px', fontFamily: 'monospace' }}

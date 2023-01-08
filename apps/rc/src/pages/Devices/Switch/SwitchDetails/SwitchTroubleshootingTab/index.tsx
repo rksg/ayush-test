@@ -4,15 +4,16 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { Tabs }          from '@acx-ui/components'
 import { useTenantLink } from '@acx-ui/react-router-dom'
 
-import { SwitchPacketCaptureForm } from './switchPacketCaptureForm'
-import { SwitchPingForm }          from './switchPingForm'
-import { SwitchTraceRouteForm }    from './switchTraceRouteForm'
+import { SwitchIpRouteForm }    from './switchIpRouteForm'
+import { SwitchMacAddressForm } from './switchMacAddressForm'
+import { SwitchPingForm }       from './switchPingForm'
+import { SwitchTraceRouteForm } from './switchTraceRouteForm'
 
 const { TabPane } = Tabs
 
 export function SwitchTroubleshootingTab () {
   const { $t } = useIntl()
-  const {switchId, serialNumber, activeSubTab } = useParams()
+  const { switchId, serialNumber, activeSubTab } = useParams()
   const navigate = useNavigate()
   // eslint-disable-next-line max-len
   const basePath = useTenantLink(`/devices/switch/${switchId}/${serialNumber}/details/troubleshooting/`)
@@ -26,6 +27,7 @@ export function SwitchTroubleshootingTab () {
 
   return (
     <Tabs
+      destroyInactiveTabPane={true}
       onChange={onTabChange}
       defaultActiveKey='ping'
       activeKey={activeSubTab}
@@ -34,14 +36,14 @@ export function SwitchTroubleshootingTab () {
       <TabPane tab={$t({ defaultMessage: 'Ping' })} key='ping'>
         <SwitchPingForm/>
       </TabPane>
-      <TabPane tab={$t({ defaultMessage: 'Traceroute' })} key='traceroute'>
+      <TabPane tab={$t({ defaultMessage: 'Trace Route' })} key='traceroute'>
         <SwitchTraceRouteForm/>
       </TabPane>
       <TabPane tab={$t({ defaultMessage: 'IP Route' })} key='ipRoute'>
-        <SwitchPacketCaptureForm/>
+        <SwitchIpRouteForm/>
       </TabPane>
       <TabPane tab={$t({ defaultMessage: 'MAC Address Table' })} key='macTable'>
-        <SwitchPacketCaptureForm/>
+        <SwitchMacAddressForm/>
       </TabPane>
     </Tabs>
   )

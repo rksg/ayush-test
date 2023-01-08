@@ -129,8 +129,8 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/switch/:switchId/route-table'
   },
-  macTable: {
-    method: 'get',
-    url: '/api/switch/tenant/:tenantId/switch/:switchId/show-mac'
+  macAddressTable: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/switch/:switchId/mac-address-table'
   }
 }
