@@ -192,7 +192,7 @@ const addRule = async (ruleName: string, type: RogueRuleType, classification: Ro
     })
     await userEvent.type(screen.getByRole('textbox', {
       name: /signal threshold/i
-    }), '88')
+    }), '8')
   }
 
   if (type === RogueRuleType.CUSTOM_SSID_RULE) {
@@ -227,7 +227,40 @@ const addRule = async (ruleName: string, type: RogueRuleType, classification: Ro
     name: /edit/i
   }))
 
-  await userEvent.click(screen.getAllByRole('button', { name: 'Cancel' })[1])
+  if (type === RogueRuleType.CUSTOM_SNR_RULE) {
+    await screen.findByRole('textbox', {
+      name: /signal threshold/i
+    })
+    await userEvent.type(screen.getByRole('textbox', {
+      name: /signal threshold/i
+    }), '8')
+
+    await userEvent.click(screen.getByText('Save'))
+  } else if (type === RogueRuleType.CUSTOM_SSID_RULE) {
+    await screen.findByRole('textbox', {
+      name: /ssid/i
+    })
+    await userEvent.type(screen.getByRole('textbox', {
+      name: /ssid/i
+    }), 'modify')
+
+    await userEvent.click(screen.getByText('Save'))
+  } else if (type === RogueRuleType.CUSTOM_MAC_OUI_RULE) {
+    await screen.findByRole('textbox', {
+      name: /mac oui/i
+    })
+    await userEvent.clear(screen.getByRole('textbox', {
+      name: /mac oui/i
+    }))
+
+    await userEvent.type(screen.getByRole('textbox', {
+      name: /mac oui/i
+    }), '11:22:55')
+
+    await userEvent.click(screen.getByText('Save'))
+  } else {
+    await userEvent.click(screen.getAllByRole('button', { name: 'Cancel' })[1])
+  }
 }
 
 describe('RogueAPDetectionForm', () => {
@@ -287,8 +320,6 @@ describe('RogueAPDetectionForm', () => {
 
     await addRule('rule1', RogueRuleType.CTS_ABUSE_RULE, RogueCategory.MALICIOUS)
 
-    await addRule('rule2', RogueRuleType.CUSTOM_SNR_RULE, RogueCategory.UNCLASSIFIED)
-
     await addRule('rule3', RogueRuleType.CUSTOM_SSID_RULE, RogueCategory.KNOWN)
 
     await screen.findByText('rule3')
@@ -300,8 +331,6 @@ describe('RogueAPDetectionForm', () => {
     }))
 
     await userEvent.click(screen.getAllByRole('button', { name: 'Cancel' })[1])
-
-    await addRule('rule4', RogueRuleType.CUSTOM_MAC_OUI_RULE, RogueCategory.IGNORED)
 
     await screen.findByText('rule1')
 
@@ -316,6 +345,159 @@ describe('RogueAPDetectionForm', () => {
     await screen.findByRole('heading', { name: 'Summary', level: 3 })
 
     await userEvent.click(screen.getByRole('button', { name: 'Finish' }))
+  })
+
+  it('should render RogueAPDetectionForm successfully with mac oui rule', async () => {
+    mockServer.use(rest.post(
+      RogueApUrls.getVenueRoguePolicy.url,
+      (_, res, ctx) => res(
+        ctx.json(venueTable)
+      )
+    ), rest.get(
+      RogueApUrls.getRoguePolicyList.url,
+      (_, res, ctx) => res(
+        ctx.json(policyListContent)
+      )
+    ))
+
+    render(
+      <RogueAPDetectionContext.Provider value={{
+        state: initState,
+        dispatch: setRogueAPConfigure
+      }}>
+        <Form>
+          <RogueAPDetectionForm edit={false}/>
+        </Form>
+      </RogueAPDetectionContext.Provider>
+      , {
+        wrapper: wrapper,
+        route: {
+          params: { tenantId: 'tenantId1' }
+        }
+      }
+    )
+
+    await screen.findByRole('heading', { name: 'Settings', level: 3 })
+
+    fireEvent.change(screen.getByRole('textbox', { name: /policy name/i }),
+      { target: { value: 'test' } })
+
+    fireEvent.change(screen.getByRole('textbox', { name: /policy name/i }),
+      { target: { value: '' } })
+
+    fireEvent.change(screen.getByRole('textbox', { name: /policy name/i }),
+      { target: { value: 'policyTestName-modify' } })
+
+    fireEvent.change(screen.getByRole('textbox', { name: /description/i }),
+      { target: { value: 'desc1' } })
+
+    await addRule('rule1', RogueRuleType.CTS_ABUSE_RULE, RogueCategory.MALICIOUS)
+
+    await addRule('rule4', RogueRuleType.CUSTOM_MAC_OUI_RULE, RogueCategory.IGNORED)
+
+    await screen.findByText('rule1')
+  })
+
+  it('should render RogueAPDetectionForm successfully with ssid rule', async () => {
+    mockServer.use(rest.post(
+      RogueApUrls.getVenueRoguePolicy.url,
+      (_, res, ctx) => res(
+        ctx.json(venueTable)
+      )
+    ), rest.get(
+      RogueApUrls.getRoguePolicyList.url,
+      (_, res, ctx) => res(
+        ctx.json(policyListContent)
+      )
+    ))
+
+    render(
+      <RogueAPDetectionContext.Provider value={{
+        state: initState,
+        dispatch: setRogueAPConfigure
+      }}>
+        <Form>
+          <RogueAPDetectionForm edit={false}/>
+        </Form>
+      </RogueAPDetectionContext.Provider>
+      , {
+        wrapper: wrapper,
+        route: {
+          params: { tenantId: 'tenantId1' }
+        }
+      }
+    )
+
+    await screen.findByRole('heading', { name: 'Settings', level: 3 })
+
+    fireEvent.change(screen.getByRole('textbox', { name: /policy name/i }),
+      { target: { value: 'test' } })
+
+    fireEvent.change(screen.getByRole('textbox', { name: /policy name/i }),
+      { target: { value: '' } })
+
+    fireEvent.change(screen.getByRole('textbox', { name: /policy name/i }),
+      { target: { value: 'policyTestName-modify' } })
+
+    fireEvent.change(screen.getByRole('textbox', { name: /description/i }),
+      { target: { value: 'desc1' } })
+
+    await addRule('rule1', RogueRuleType.CTS_ABUSE_RULE, RogueCategory.MALICIOUS)
+
+    await addRule('rule3', RogueRuleType.CUSTOM_SSID_RULE, RogueCategory.KNOWN)
+
+    await screen.findByText('rule1')
+  })
+
+  it('should render RogueAPDetectionForm successfully with snr rule', async () => {
+    mockServer.use(rest.post(
+      RogueApUrls.getVenueRoguePolicy.url,
+      (_, res, ctx) => res(
+        ctx.json(venueTable)
+      )
+    ), rest.get(
+      RogueApUrls.getRoguePolicyList.url,
+      (_, res, ctx) => res(
+        ctx.json(policyListContent)
+      )
+    ))
+
+    render(
+      <RogueAPDetectionContext.Provider value={{
+        state: initState,
+        dispatch: setRogueAPConfigure
+      }}>
+        <Form>
+          <RogueAPDetectionForm edit={false}/>
+        </Form>
+      </RogueAPDetectionContext.Provider>
+      , {
+        wrapper: wrapper,
+        route: {
+          params: { tenantId: 'tenantId1' }
+        }
+      }
+    )
+
+    await screen.findByRole('heading', { name: 'Settings', level: 3 })
+
+    fireEvent.change(screen.getByRole('textbox', { name: /policy name/i }),
+      { target: { value: 'test' } })
+
+    fireEvent.change(screen.getByRole('textbox', { name: /policy name/i }),
+      { target: { value: '' } })
+
+    fireEvent.change(screen.getByRole('textbox', { name: /policy name/i }),
+      { target: { value: 'policyTestName-modify' } })
+
+    fireEvent.change(screen.getByRole('textbox', { name: /description/i }),
+      { target: { value: 'desc1' } })
+
+    await addRule('rule1', RogueRuleType.CTS_ABUSE_RULE, RogueCategory.MALICIOUS)
+
+    await addRule('rule2', RogueRuleType.CUSTOM_SNR_RULE, RogueCategory.UNCLASSIFIED)
+
+    await screen.findByText('rule1')
   })
 
   it('should render RogueAPDetectionForm with editMode successfully', async () => {
@@ -375,6 +557,8 @@ describe('RogueAPDetectionForm', () => {
 
     fireEvent.change(screen.getByRole('textbox', { name: /policy name/i }),
       { target: { value: 'anotherPolicyName' } })
+
+    await addRule('rule3', RogueRuleType.CUSTOM_SSID_RULE, RogueCategory.KNOWN)
 
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
