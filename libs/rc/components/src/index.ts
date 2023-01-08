@@ -42,6 +42,7 @@ export { VenueDevicesWidget } from './VenueDevicesWidget'
 export { VenueAlarmWidget } from './VenueAlarmWidget'
 export { VenuesDashboardWidget } from './VenuesDashboardWidget'
 export { WifiSignal } from './WifiSignal'
+export { NetworkDeviceMarker } from './FloorPlan/NetworkDevices/NetworkDeviceMarker'
 export { ApSelector } from './ApSelector'
 
 export * from './services'
