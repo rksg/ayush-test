@@ -10,7 +10,7 @@ interface ConfigurationErrors {
 export function ErrorsTable (props: { errors: ConfigurationErrors[], selectionChanged: Function }) {
   const { $t } = useIntl()
   const { errors, selectionChanged } = props
-  const tableData = errors ? errors.map((item, index) => {return { ...item, id: index }}): []
+  const tableData = errors.map((item, index) => {return { ...item, id: index }})
 
   const columns: TableProps<ConfigurationErrors>['columns'] = [{
     key: 'lineNumber',

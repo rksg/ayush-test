@@ -115,7 +115,7 @@ describe('SwitchConfigHistoryTable', () => {
     await userEvent.click(await within(row1).findByRole('button'))
     expect(await screen.findByTestId('CodeMirrorWidget')).toBeVisible()
     expect(await screen.findByText('Errors (2)')).toBeVisible()
-    fireEvent.click(await screen.findByText('12'))
+    fireEvent.click(await screen.findByText('310'))
     const collapsedButton = await screen.findByTestId('ArrowCollapsed')
     await userEvent.click(collapsedButton)
     await userEvent.click(await screen.findByText('Close'))
