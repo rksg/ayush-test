@@ -2,11 +2,12 @@ import React, { useContext } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps }  from '@acx-ui/components'
-import { QosPriorityEnum, WifiCallingSetting } from '@acx-ui/rc/utils';
+import { Table, TableProps }                   from '@acx-ui/components'
+import { QosPriorityEnum, WifiCallingSetting } from '@acx-ui/rc/utils'
+
+import { wifiCallingQosPriorityLabelMapping } from '../../../Services/contentsMap'
 
 import { WifiCallingSettingContext } from './ServicesForm'
-import { wifiCallingQosPriorityLabelMapping } from '../../../Services/contentsMap';
 
 
 const WifiCallingSettingTable = () => {
