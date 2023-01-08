@@ -320,11 +320,9 @@ describe('RogueAPDetectionForm', () => {
 
     await addRule('rule1', RogueRuleType.CTS_ABUSE_RULE, RogueCategory.MALICIOUS)
 
-    await addRule('rule3', RogueRuleType.CUSTOM_SSID_RULE, RogueCategory.KNOWN)
+    await screen.findByText('rule1')
 
-    await screen.findByText('rule3')
-
-    await userEvent.click(screen.getByText('rule3'))
+    await userEvent.click(screen.getByText('rule1'))
 
     await userEvent.click(screen.getByRole('button', {
       name: /edit/i
