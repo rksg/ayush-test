@@ -5,10 +5,10 @@ import { MemoryRouter }       from 'react-router-dom'
 
 import { resetRanges, fixedEncodeURIComponent } from '@acx-ui/utils'
 
-import { useReportsFilter } from './reportsFilter'
+import { useReportsFilter } from './useReportsFilter'
 
 const original = Date.now
-describe('useAnalyticsFilter', () => {
+describe('useReportsFilter', () => {
   beforeEach(() => {
     Date.now = jest.fn(() => new Date('2022-01-01T00:00:00.000Z').getTime())
     resetRanges()
