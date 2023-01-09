@@ -56,6 +56,7 @@ export function LldpQOSTable (props : {
     {
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
+      disabled: !editable,
       onClick: (selectedRows) => {
         setLldpModalvisible(true)
         setEditRowId(selectedRows?.[0]?.id)

@@ -192,11 +192,9 @@ export function EditPortDrawer ({
   const [vlanUsedByVe, setVlanUsedByVe] = useState('')
 
   const [editPortData, setEditPortData] = useState(null as unknown as PortSetting)
-  // const [ignoreFields, setIgnoreFields] = useState([] as string[])
   const [disablePoeCapability, setDisablePoeCapability] = useState(false)
 
   const [lldpQosList, setLldpQosList] = useState([] as LldpQosModel[])
-  // const [isPoeEnable, setIsPoeEnable] = useState(false)
   // const [revertStatus, setRevertStatus] = useState(false)
   const [portEditStatus, setPortEditStatus] = useState('')
   const [hasSwitchProfile, setHasSwitchProfile] = useState(false)
@@ -217,13 +215,12 @@ export function EditPortDrawer ({
   const [selectModalvisible, setSelectModalvisible] = useState(false)
   const [lldpModalvisible, setLldpModalvisible] = useState(false)
   const [hasMultipleValue, setHasMultipleValue] = useState([] as string[])
+  const [disableSaveButton, setDisableSaveButton] = useState(false)
 
-  const [disableSaveButton, setDisableSaveButton] = useState(false) //this.vlanInvaliad || !this.poeBudgetValid;
-
-  const [withNotPureUntaggedVlan, setWithNotPureUntaggedVlan] = useState(false)
+  // const [withNotPureUntaggedVlan, setWithNotPureUntaggedVlan] = useState(false)
   // const [withoutTaggedVlan, setWithoutTaggedVlan] = useState(false)
 
-  const [isDefaultUntaggedVlan, setIsDefaultUntaggedVlan] = useState(false)
+  // const [isDefaultUntaggedVlan, setIsDefaultUntaggedVlan] = useState(false)
   const [initPortVlans, setInitPortVlans] = useState([] as any)
   // const [portsProfileVlans, setPortsProfileVlans] = useState({
   //   tagged: [],
@@ -349,35 +346,31 @@ export function EditPortDrawer ({
 
       if (isMultipleEdit) {
         const portsSetting = await getMultiplePortsSetting()
-
-        // speed
-        // LldpEquals
-
-        // const vlansValue = {
-        //   tagged: [],
-        //   untagged: []
-        // }
-
         const vlansValue = getMultipleVlanValue(
           selectedPorts, vlansByVenue, portsSetting, defaultVlan, switchesDefaultVlan
         )
         const hasMultipleValueFields = allMultipleEditableFields?.filter(field => {
-          const isEqualValues = _.uniq(
-            portsSetting?.response?.map(s => s[field as keyof PortSetting])
-          )?.length === 1
+          const isEqualValues = field === 'lldpQos'
+            ? checkLldpListEqual(portsSetting?.response?.map(s => s[field]))
+            : _.uniq(portsSetting?.response?.map(s => s[field as keyof PortSetting])
+            )?.length === 1
 
-          isEqualValues && form.setFieldValue( ////
-            field, portsSetting?.response?.[0]?.[field as keyof PortSetting]
-          )
+          if (isEqualValues) {
+            field === 'lldpQos'
+              ? setLldpQosList(portsSetting?.response?.[0]?.lldpQos)
+              : form.setFieldValue(
+                field, portsSetting?.response?.[0]?.[field as keyof PortSetting]
+              )
+          }
           return !isEqualValues && field
         })
 
         const poeCapabilityDisabled = getPoeCapabilityDisabled(portsSetting?.response)
 
-
         setDisablePoeCapability(poeCapabilityDisabled)
         setHasMultipleValue(hasMultipleValueFields)
         setInitPortVlans(vlansValue?.initPortVlans)
+        setDisableSaveButton(true)
         form.setFieldValue('taggedVlans', vlansValue.tagged)
         form.setFieldValue('untaggedVlan', vlansValue.untagged || defaultVlan)
         // form.setFieldValue('poeEnable', poeCapabilityDisabled ? false : )
@@ -401,9 +394,7 @@ export function EditPortDrawer ({
           }
         }, true).unwrap()
 
-        // const lldpQos = JSON.parse(JSON.stringify(portSetting.lldpQos || []))
         setEditPortData(portSetting)
-        // setIgnoreFields(portSetting?.poeCapability ? [] : ['poeEnable', 'poeClass', 'poePriority'])
         setDisablePoeCapability(getPoeCapabilityDisabled([portSetting]))
         setLldpQosList(portSetting.lldpQos || [])
         // setIsPoeEnable(portSetting.poeEnable)
@@ -429,20 +420,14 @@ export function EditPortDrawer ({
           portSpeed: portSpeed.find(item => item === portSetting.portSpeed)
             ? portSetting.portSpeed : portSpeed?.[0],
           taggedVlans: (portSetting.taggedVlans ?? '').toString()
-          // lldpQos: lldpQos
         })
-
-        // console.log('taggedVlansByVenue: ', taggedVlansByVenue)
-        // console.log('untaggedVlansByVenue: ', untaggedVlansByVenue)
-        // console.log('portSetting: ', portSetting, portSetting.poeCapability, portSetting.poeEnable)
-        // console.log('defaultVlan: ', defaultVlan)
-        // console.log('UseVenueSettings: ', !portSetting.revert && !!(portSetting?.taggedVlans || portSetting.untaggedVlan))
       }
 
       setVlansOptions(getVlanOptions(switchVlans, defaultVlan, voiceVlan))
       setLoading(false)
     }
 
+    resetFields()
     switchesDefaultVlan && switchDetail && setData()
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -464,31 +449,13 @@ export function EditPortDrawer ({
         return disabledUseVenueSetting ? $t(EditPortMessages.USE_VENUE_SETTINGS_DISABLE) : ''
       case 'voiceVlan':
         return vlansOptions?.length <= 1 ? $t(EditPortMessages.VOICE_VLAN_DISABLE) : ''
-      case 'ipsg': return '' //return getIPSGTooltip()
       case 'ingressAcl': return !hasSwitchProfile ? $t(EditPortMessages.ADD_ACL_DISABLE) : ''
       case 'egressAcl': return !hasSwitchProfile ? $t(EditPortMessages.ADD_ACL_DISABLE) : ''
       default: return ''
     }
   }
 
-  // const getIPSGTooltip = () => {
-  //   if (withNotPureUntaggedVlan) {
-  //     return $t(EditPortMessages.IPSG_WITH_NOT_PURE_UNTAGGED_VLAN)
-  //   }
-  //   if (withoutTaggedVlan) {
-  //     return $t(EditPortMessages.IPSG_WITH_TAGGED_VLANS)
-  //   }
-  //   if (hasMultipleValue.includes('taggedVlans')) {
-  //     return $t(EditPortMessages.IPSG_WITH_MULTI_TAGGED_VLANS)
-  //   }
-  //   return ''
-  // }
-
   const getFieldDisabled = (field: string) => {
-    // console.log('getFieldDisabled: ', field, form?.getFieldError('poeBudget'), poeBudget)
-    // console.log( !!(!form?.getFieldError('poeBudget').length && poeBudget) )
-    // console.log( form?.getFieldError('poeBudget') )
-
     switch (field) {
       case 'portEnable': return isCloudPort || (isMultipleEdit && !portEnableCheckbox)
       case 'poeEnable': return (isMultipleEdit && !poeEnableCheckbox) || disablePoeCapability
@@ -520,15 +487,11 @@ export function EditPortDrawer ({
   }
 
   const transformData = (data: PortSetting) => {
-    // console.log('******* transformData ', form.getFieldsValue() )
     const getInitIgnoreFields = () => {
-      const overrideFields = Object.entries(form.getFieldsValue())
-        .filter(v => v?.[1] && v?.[0].includes('Checkbox')).map(v => v?.[0].split('Checkbox')?.[0])
-
+      const overrideFields = getOverrideFields(form.getFieldsValue())
       if (overrideFields?.includes('portVlans')) {
         overrideFields.push('taggedVlans', 'untaggedVlan')
       }
-
       return !isMultipleEdit
         ? []
         : allMultipleEditableFields.filter(f => !overrideFields.includes(f))
@@ -555,7 +518,10 @@ export function EditPortDrawer ({
       }
     })
 
-    return data
+    return {
+      data,
+      ignoreFields: ignoreFields.filter(f => f)
+    }
   }
 
   const applyForm = async () => {
@@ -564,13 +530,20 @@ export function EditPortDrawer ({
     const values = {
       ...form.getFieldsValue(),
       revert: useVenueSettings, //portEditStatus === 'venue' || revertStatus,
+      ...(lldpQosList && { lldpQos:
+        lldpQosList?.map(lldp => {
+          return lldp.id.includes('lldp')
+            ? _.omit(lldp, ['id'])
+            : lldp
+        })
+      }),
       taggedVlans: (revert || !form.getFieldValue('taggedVlans'))
         ? null : form.getFieldValue('taggedVlans')?.split(','),
       untaggedVlan: revert ? '' : form.getFieldValue('untaggedVlan'),
       voiceVlan: form.getFieldValue('voiceVlan') ?? null /////
     }
 
-    const transformedValues = transformData(values)
+    const { data: transformedValues, ignoreFields } = transformData(values)
 
     try {
       const payload = switches.map(item => {
@@ -588,6 +561,7 @@ export function EditPortDrawer ({
                 ?.filter(v => v.switchId === item)
                 .map(v => v.defaultVlanId)?.[0]
             }),
+            ignoreFields: ignoreFields.toString(),
             port: selectedPorts.map(p => p.portIdentifier)?.[0],
             ports: selectedPorts.map(p => p.portIdentifier)
           }
@@ -607,11 +581,13 @@ export function EditPortDrawer ({
       console.log(err) // eslint-disable-line no-console
       // switchUtilsService.showGeneralError(errors);
     }
-    // form.submit()
   }
 
-  // const resetFields = () => {
-  // }
+  const resetFields = () => {
+    setLoading(true)
+    setLldpQosList([])
+    form.resetFields()
+  }
 
   const onApplyVenueSettings = () => {
     setUseVenueSettings(true)
@@ -633,7 +609,6 @@ export function EditPortDrawer ({
   }
 
   const onValuesChange = async (changedValues: PortSetting) => {
-    // console.log('onValuesChange: ', changedValues)
     const changedField = Object.keys(changedValues)?.[0]
     const changedValue = Object.values(changedValues)?.[0]
 
@@ -642,8 +617,8 @@ export function EditPortDrawer ({
       const isVlansInvalid = isMultipleEdit
         ? portVlansCheckbox && (!untaggedVlan && !taggedVlans) //// enable & !useVenue?
         : (!untaggedVlan && !taggedVlans)
-
-      setDisableSaveButton(isPoeBudgetInvalid || isVlansInvalid)
+      const isNoOverrideFields = isMultipleEdit && !getOverrideFields(form.getFieldsValue())?.length
+      setDisableSaveButton(isPoeBudgetInvalid || isVlansInvalid || isNoOverrideFields)
     }
 
     const updateVlanOptions = () => {
@@ -655,6 +630,8 @@ export function EditPortDrawer ({
         form.setFieldValue('voiceVlan', '')
       }
     }
+
+    setButtonStatus()
 
     switch (changedField) {
       case 'poeClass':
@@ -669,7 +646,6 @@ export function EditPortDrawer ({
         } catch (error) {
           console.log(error) // eslint-disable-line no-console
         }
-        setButtonStatus()
         break
       case 'ipsg':
         changedValue && form.setFieldValue('ingressAcl', '')
@@ -678,22 +654,12 @@ export function EditPortDrawer ({
       case 'untaggedVlan': //
       case 'taggedVlans': //
         updateVlanOptions()
-        setButtonStatus()
         break
       default:
-    }
-
-    setWithNotPureUntaggedVlan( ////
-      vlanUsedByVe?.includes(untaggedVlan)
-      || vlanUsedByVe?.includes(venueUntaggedVlan)
-      // eslint-disable-next-line max-len
-      || (vlanUsedByVe && useVenueSettings && isDefaultUntaggedVlan && (!isMultipleEdit || portVlansCheckbox)) ///
-      || (useVenueSettings && portVlansCheckbox & untaggedVlan && isDefaultUntaggedVlan && !ipsg)
-    )
+    } 
   }
 
   const onClose = () => {
-    // resetFields
     setDrawerVisible(false)
   }
 
@@ -733,20 +699,19 @@ export function EditPortDrawer ({
     footer={footer}
     mask={false}
     children={<Loader states={[{
-      isLoading: loading, ///
+      isLoading: loading,
       isFetching: isPortsSettingUpdating
     }]}>
       <Form
         form={form}
         layout='vertical'
+        // layout={isMultipleEdit ? 'horizontal' : 'vertical'}
+        // labelAlign='left'
+        // labelCol={{ span: 16 }}
         onValuesChange={onValuesChange}
       >
         <Form.Item
-          // noStyle
-          // name='portIdentifier'
           label={$t({ defaultMessage: 'Selected Port' })}
-          // valuePropName='checked'
-          // initialValue={false}
           children={
             <Space>
               {selectedPorts?.map(p => p.portIdentifier)?.join(', ')}
@@ -796,14 +761,8 @@ export function EditPortDrawer ({
           <UI.SwitchLabel>{$t({ defaultMessage: 'PoE Enabled' })}</UI.SwitchLabel>
           <Form.Item
             noStyle
-            children={<Tooltip title={getFieldTooltip('poeEnable')
-              // disablePoeCapability
-              //   ? (isMultipleEdit
-              //     ? $t(MultipleEditPortMessages.POE_CAPABILITY_DISABLE)
-              //     : $t(EditPortMessages.POE_CAPABILITY_DISABLE)
-              //   )
-              //   : ''
-            }>{isMultipleEdit && !poeEnableCheckbox && hasMultipleValue.includes('poeEnable')
+            children={<Tooltip title={getFieldTooltip('poeEnable')}>
+              {isMultipleEdit && !poeEnableCheckbox && hasMultipleValue.includes('poeEnable')
                 ? <MultipleText />
                 : <Form.Item
                   name='poeEnable'
@@ -811,9 +770,7 @@ export function EditPortDrawer ({
                   valuePropName='checked'
                   initialValue={false}
                 >
-                  <Switch disabled={getFieldDisabled('poeEnable')
-                    // (isMultipleEdit && !poeEnableCheckbox) || disablePoeCapability
-                  } />
+                  <Switch disabled={getFieldDisabled('poeEnable')} />
                 </Form.Item>
               }</Tooltip>
             }
@@ -837,13 +794,7 @@ export function EditPortDrawer ({
               ? <MultipleText />
               : <Select
                 options={poeClassOptions?.map(p => ({ label: $t(p.label), value: p.value }))}
-                disabled={getFieldDisabled('poeClass')
-                  // (isMultipleEdit && !poeClassCheckbox)
-                  // || disablePoeCapability
-                  // || !poeEnable
-                  // || !form?.getFieldError('poeBudget')
-                  //// poeBudget not invalid && has value
-                }
+                disabled={getFieldDisabled('poeClass')}
               />}
           />
         </UI.FormItemLayout>
@@ -1014,7 +965,6 @@ export function EditPortDrawer ({
                   initialValue=''
                 >
                   <Select
-                    // options={getVlanOptions(switchVlans, defaultVlan, voiceVlan, untaggedVlan, taggedVlans, initPortVlans)}
                     options={vlansOptions}
                     disabled={getFieldDisabled('voiceVlan')}
                   />
@@ -1201,8 +1151,7 @@ export function EditPortDrawer ({
             noStyle
             children={isMultipleEdit && !ipsgCheckbox && hasMultipleValue.includes('ipsg')
               ? <MultipleText />
-              : <Tooltip title={getFieldTooltip('ipsg')} >
-                <Form.Item
+              : <Form.Item
                   noStyle
                   name='ipsg'
                   valuePropName='checked'
@@ -1212,8 +1161,7 @@ export function EditPortDrawer ({
                     data-testid='ipsg-checkbox'
                     disabled={getFieldDisabled('ipsg')}
                   />
-                </Form.Item>
-              </Tooltip>}
+                </Form.Item>}
           />
         </UI.FormItemLayout>
 
@@ -1247,7 +1195,7 @@ export function EditPortDrawer ({
         </UI.FormItemLayout>
         <Space style={{ position: 'relative', top: '-20px' }}>
           <LldpQOSTable
-            editable={true}
+            editable={!isMultipleEdit || lldpQosCheckbox}
             setLldpModalvisible={setLldpModalvisible}
             lldpModalvisible={lldpModalvisible}
             lldpQosList={lldpQosList}
@@ -1354,10 +1302,7 @@ export function EditPortDrawer ({
         setUseVenueSettings={setUseVenueSettings}
         onValuesChange={onValuesChange}
         defaultVlan={defaultVlan}
-        switchVlans={///////////
-          // ...switchVlans?.profileVlan,
-          (switchVlans?.switchVlan
-            ?? []).concat(switchVlans?.profileVlan ?? [])}
+        switchVlans={getAllSwitchVlans(switchVlans)}
         venueVlans={venueVlans}
         vlanUsedByVe={vlanUsedByVe}
         taggedVlans={taggedVlans}
@@ -1409,8 +1354,9 @@ function getAclOptions (acls?: SwitchAclUnion) {
 
 function getVlanOptions (vlans: SwitchVlanUnion, defaultVlan: string, extra?: number) {
   const { $t } = getIntl()
-  const allvlans = _.pickBy(vlans, (value, key) => key !== 'switchDefaultVlan')  ////
-  const options = Object.values(allvlans).flat()?.map((v) => ({
+  const allVlans = getAllSwitchVlans(vlans)
+  console.log(vlans, allVlans)
+  const options = allVlans?.map((v) => ({
     value: v.vlanId,
     label: $t({ defaultMessage: 'VLAN-{vlan}' }, { vlan: v.vlanId })
   })) ?? []
@@ -1436,6 +1382,11 @@ function getVlanOptions (vlans: SwitchVlanUnion, defaultVlan: string, extra?: nu
   ]
 }
 
+function getAllSwitchVlans (vlans: SwitchVlanUnion) {
+  const allVlans = _.pickBy(vlans, (value, key) => key !== 'switchDefaultVlan')
+  return Object.values(allVlans).flat()
+}
+
 function checkVlanOptions (vlanOptions:DefaultOptionType[], untaggedVlan:string, taggedVlans:string, init:any) {
   if (init?.voice) {
     if (init?.untagged == init?.voice.toString() && untaggedVlan !== init?.voice.toString()) {
@@ -1457,8 +1408,32 @@ function checkVlanOptions (vlanOptions:DefaultOptionType[], untaggedVlan:string,
   return vlanOptions
 }
 
+function checkLldpListEqual (lldpList: LldpQosModel[][]) { // TODO
+  let isEqual = true
+  const sortByFields = ['applicationType', 'qosVlanType', 'vlanId', 'priority', 'dscp']
+  const list = lldpList.map(l =>
+    _.sortBy(l?.map(v => _.omit(v, ['id'])), sortByFields)
+  )
+  // const isArrayEqual = (x:any, y:any) => _(x).xorWith(y, _.isEqual).isEmpty()
+  // const aa =  list.map(l => JSON.stringify(l))
+
+  list.forEach((l, index) => {
+    if (index !== (list.length -1) && !_.isEqual(list[index], list[index+1])) {
+      isEqual = false
+    }
+  })
+
+  return isEqual
+}
+
 function getPoeCapabilityDisabled (portSettings: PortSetting[]) {
   return portSettings?.filter(s => !s.poeCapability)?.length > 1
+}
+
+function getOverrideFields (fieldsValue: PortSetting) {
+  return Object.entries(fieldsValue)
+    .filter(v => v?.[1] && v?.[0].includes('Checkbox'))
+    .map(v => v?.[0].split('Checkbox')?.[0])
 }
 
 function sortOptions (dataList: DefaultOptionType[], sortField = 'value') {
@@ -1546,7 +1521,7 @@ function getMultipleVlanValue ( // TODO: rewrite
     })
   })
 
-  portsSetting.response.forEach((item: PortSetting, index: number) => {
+  portsSetting?.response?.forEach((item: PortSetting, index: number) => {
     const defaultVlan = switchesDefaultVlan?.filter(s => s.switchId === item.switchMac)?.[0]?.defaultVlanId
     initPortVlans.push({
       untagged: result.untagged[index],

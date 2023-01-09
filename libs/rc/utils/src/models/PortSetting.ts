@@ -31,12 +31,12 @@ export class LldpQosModel {
 
   qosVlanType: QOS_VLAN_Type = QOS_VLAN_Type['Priority-tagged']
 
-  vlanId: number = 0
+  vlanId?: number = 0
 
   // @Matches(new RegExp('^([0-7])$'), {
   //   message: 'Enter a valid number between 0 and 7',
   // })
-  priority: number = 0
+  priority?: number = 0
 
   // @IsNotEmpty({
   //   message: ValidationMessagesHelperService.getValidationMessage('required'),

@@ -29,7 +29,7 @@ export function EditLldpModal (props: {
     editRowId,
     lldpModalvisible,
     setLldpModalvisible,
-    lldpQosList,
+    lldpQosList = [],
     setLldpQosList,
     vlansOptions
   } = props
@@ -40,14 +40,14 @@ export function EditLldpModal (props: {
   const [disableButton, setDisableButton] = useState(false)
 
   const editRow = lldpQosList
-    .filter(lldp => lldp.id === editRowId)?.[0]
+    ?.filter(lldp => lldp?.id === editRowId)?.[0]
   const existType = lldpQosList
-    .filter(lldp => !isEditMode || (lldp.id !== editRowId))
-    .map(lldp => lldp?.applicationType)
+    ?.filter(lldp => !isEditMode || (lldp.id !== editRowId))
+    ?.map(lldp => lldp?.applicationType)
 
   const applicationTypeOptions = Object.entries(QOS_APP_Type)
     .map(([label, value]) => ({
-      label, value, disabled: existType.includes(value)
+      label, value, disabled: existType?.includes(value)
     }))
   const qosVlanTypeOptions
     = Object.entries(QOS_VLAN_Type).map(([label, value]) => ({ label, value }))
@@ -62,8 +62,8 @@ export function EditLldpModal (props: {
     ...values,
     id: isEditMode ? editRowId : `lldp-${lldpQosList?.length}`,
     dscp: Number(values?.dscp),
-    priority: Number(values?.priority), //?? 0,
-    vlanId: Number(values?.vlanId) //?? 0
+    ...(values?.priority && { priority: Number(values?.priority) }),
+    ...(values?.vlanId && { vlanId: Number(values?.vlanId) })
   } as LldpQosModel)
 
   const onSave = async () => {
@@ -123,7 +123,7 @@ export function EditLldpModal (props: {
         name='applicationType'
         rules={[
           { validator: (_, value) => {
-            if (existType.includes(value)) {
+            if (existType?.includes(value)) {
               return Promise.reject($t({
                 defaultMessage: 'LLDP QoS Application Type can not duplicate'
               }))
