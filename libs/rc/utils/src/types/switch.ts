@@ -262,6 +262,14 @@ export interface SwitchPortViewModel extends GridDataRow {
   SwitchPortStackingPortField: boolean;
 }
 
+export interface troubleshootingResult {
+  latestResultResponseTime: string
+  result: string
+  syncing: boolean
+  traceRouteTtl: number
+  troubleshootingType: string
+}
+
 export interface SwitchDhcp {
   id: string
   poolName: string

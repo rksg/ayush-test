@@ -1,15 +1,16 @@
-import { useIntl } from 'react-intl'
-
-import { Button, Loader, showActionModal, Table, TableProps, Tabs }                                  from '@acx-ui/components'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { Form, Switch } from 'antd'
-import { IP_ADDRESS_TYPE, SwitchDhcp, SwitchDhcpLease, useTableQuery } from '@acx-ui/rc/utils'
+import { useIntl }      from 'react-intl'
+
+import { Loader, showActionModal, Table, TableProps, Tabs } from '@acx-ui/components'
 import {
   useGetDhcpLeasesQuery,
   useGetDhcpPoolsQuery,
   useGetSwitchQuery,
+  useSwitchDetailHeaderQuery,
   useUpdateDhcpServerStateMutation
 } from '@acx-ui/rc/services'
+import { IP_ADDRESS_TYPE, SwitchDhcp, SwitchDhcpLease, SwitchStatusEnum, useTableQuery } from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }                                         from '@acx-ui/react-router-dom'
 
 
 export function SwitchDhcpTab () {
@@ -19,6 +20,7 @@ export function SwitchDhcpTab () {
   const basePath = useTenantLink(`/devices/switch/${switchId}/${serialNumber}/details/${activeTab}`)
 
   const { data: switchData, isLoading } = useGetSwitchQuery({ params: { switchId, tenantId } })
+  const { data: switchDetail } = useSwitchDetailHeaderQuery({ params: { switchId, tenantId } })
   const [ updateDhcpServerState ] = useUpdateDhcpServerStateMutation()
 
   const onTabChange = (tab: string) => {
@@ -57,7 +59,8 @@ export function SwitchDhcpTab () {
       label={$t({ defaultMessage: 'DHCP Service state' })}>
       <Switch onChange={onDhcpStatusChange}
         checked={switchData?.dhcpServerEnabled}
-        loading={isLoading} />
+        loading={isLoading}
+        disabled={switchDetail?.deviceStatus !== SwitchStatusEnum.OPERATIONAL} />
     </Form.Item>
 
   return (
@@ -129,7 +132,7 @@ export function SwitchDhcpPoolTable () {
           label: $t({ defaultMessage: 'Add Pool' }),
           onClick: () => { }
         }]}
-        rowKey='id' />
+        rowKey='poolName' />
     </Loader>
   )
 }

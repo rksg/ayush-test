@@ -118,6 +118,10 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/api/switch/tenant/:tenantId/switch/:switchId/'+
       'troubleshootingResult/dhcp-server-lease-table'
   },
+  dhcpLeaseTable: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/switch/:switchId/dhcpServer/leaseTable'
+  },
   updateDhcpServerState: {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/switch/:switchId/dhcpServer/state'

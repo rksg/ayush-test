@@ -22,7 +22,8 @@ import {
   AclUnion,
   VeForm,
   SwitchDhcp,
-  SwitchDhcpLease
+  SwitchDhcpLease,
+  troubleshootingResult
 } from '@acx-ui/rc/utils'
 
 export const baseSwitchApi = createApi({
@@ -290,15 +291,41 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       }
     }),
     getDhcpLeases: build.query<TableResult<SwitchDhcpLease>, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getDhcpLeases, params)
-        return {
-          ...req
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const doDhcpServerLeaseTableInfo = {
+          ...createHttpRequest(SwitchUrlsInfo.dhcpLeaseTable, arg.params)
         }
+        const infoResult = await fetchWithBQ(doDhcpServerLeaseTableInfo)
+        if (infoResult.error)
+          return { error: infoResult.error as FetchBaseQueryError }
+
+        const pollingDhcpLease = async () => {
+          const getDhcpLeasesInfo = createHttpRequest(SwitchUrlsInfo.getDhcpLeases, arg.params)
+          let ret = await fetchWithBQ(getDhcpLeasesInfo)
+          let result = ret.data as { response: troubleshootingResult }
+
+          while (result?.response.syncing) {
+            await wait(2000)
+            ret = await fetchWithBQ(getDhcpLeasesInfo)
+            result = ret.data as { response: troubleshootingResult }
+          }
+          return ret
+        }
+
+        const getDhcpLeasesQuery = await pollingDhcpLease()
+        const result = getDhcpLeasesQuery.data as { response: troubleshootingResult }
+
+        return result.response
+          ? { data: JSON.parse(result.response.result) }
+          : { error: getDhcpLeasesQuery.error as FetchBaseQueryError }
       }
     })
   })
 })
+
+function wait (ms: number) { return new Promise(resolve => setTimeout(resolve, ms)) }
+
+
 
 const genStackMemberPayload = (arg:RequestPayload<unknown>, serialNumber:string) => {
   return {
