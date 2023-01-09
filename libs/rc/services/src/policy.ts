@@ -16,10 +16,17 @@ import {
   RogueAPDetectionContextType,
   RogueAPDetectionTempType,
   VenueRoguePolicyType,
-  TableResult, onSocketActivityChanged, showActivityMessage, CommonResult,
-  NewTableResult, transferTableResult,
-  AccessControlUrls,
-  l2AclPolicyInfoType, l3AclPolicyInfoType, AvcApp, AvcCat, L2AclPolicy, L3AclPolicy
+  TableResult,
+  onSocketActivityChanged,
+  showActivityMessage,
+  CommonResult,
+  NewTableResult,
+  transferToTableResult,
+  l3AclPolicyInfoType,
+  l2AclPolicyInfoType,
+  L2AclPolicy,
+  AvcApp,
+  AccessControlUrls, L3AclPolicy, AvcCat
 } from '@acx-ui/rc/utils'
 
 export const basePolicyApi = createApi({
@@ -231,7 +238,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       },
       transformResponse (result: NewTableResult<MacRegistrationPool>) {
-        return transferTableResult<MacRegistrationPool>(result)
+        return transferToTableResult<MacRegistrationPool>(result)
       },
       providesTags: [{ type: 'MacRegistrationPool', id: 'LIST' }]
     }),
@@ -244,7 +251,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       },
       transformResponse (result: NewTableResult<MacRegistration>) {
-        return transferTableResult<MacRegistration>(result)
+        return transferToTableResult<MacRegistration>(result)
       },
       providesTags: [{ type: 'MacRegistration', id: 'LIST' }]
     }),

@@ -258,7 +258,9 @@ function Table <RecordType extends Record<string, any>> (
   const WrappedTable = (style: { width?: number }) => <UI.Wrapper
     style={style}
     $type={type}
-    $rowSelectionActive={Boolean(props.rowSelection) && !hasHeader}
+    $rowSelectionActive={
+      Boolean(props.rowSelection) && !hasHeader && props.tableAlertRender !== false
+    }
   >
     <UI.TableSettingsGlobalOverride />
     {props.actions && <Space
@@ -328,7 +330,7 @@ function Table <RecordType extends Record<string, any>> (
       onRow={onRow}
       showSorterTooltip={false}
       tableAlertOptionRender={false}
-      tableAlertRender={({ onCleanSelected }) => (
+      tableAlertRender={props.tableAlertRender ?? (({ onCleanSelected }) => (
         <Space size={32}>
           <Space size={6}>
             <span>
@@ -362,7 +364,7 @@ function Table <RecordType extends Record<string, any>> (
             })}
           </Space>
         </Space>
-      )}
+      ))}
     />
   </UI.Wrapper>
   if (hasEllipsisColumn) {
