@@ -262,16 +262,13 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
           >
             <div
               aria-controls="rc-tabs-test-panel-multicast"
-              aria-disabled="false"
               aria-selected="false"
               class="ant-tabs-tab-btn"
               id="rc-tabs-test-tab-multicast"
               role="tab"
               tabindex="0"
             >
-              <span>
-                Directed Multicast
-              </span>
+              Directed Multicast
             </div>
           </div>
           <div
