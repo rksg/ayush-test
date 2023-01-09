@@ -2,14 +2,14 @@ import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
 
-import { useIsSplitOn }                                            from '@acx-ui/feature-toggle'
-import { Event, EventBase, EventMeta, RequestPayload, TableQuery } from '@acx-ui/rc/utils'
-import { Provider }                                                from '@acx-ui/store'
-import { findTBody, render, screen, within }                       from '@acx-ui/test-utils'
+import { useIsSplitOn }                                             from '@acx-ui/feature-toggle'
+import {  Event, EventBase, EventMeta, RequestPayload, TableQuery } from '@acx-ui/rc/utils'
+import { Provider }                                                 from '@acx-ui/store'
+import { findTBody, render, renderHook, screen, within }            from '@acx-ui/test-utils'
 
 import { events, eventsMeta } from './__tests__/fixtures'
 
-import { EventTable } from '.'
+import { EventTable, useEventTableFilter } from '.'
 
 jest.mock('@acx-ui/components', () => ({
   ...jest.requireActual('@acx-ui/components'),
@@ -20,6 +20,14 @@ jest.mock('@acx-ui/components', () => ({
 }))
 
 const params = { tenantId: 'tenant-id' }
+
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  useDateFilter: jest.fn(() => ({
+    startDate: '2022-01-01T00:00:00+08:00',
+    endDate: '2022-01-02T00:00:00+08:00'
+  }))
+}))
 
 describe('EventTable', () => {
   const tableQuery = {
@@ -136,5 +144,13 @@ describe('EventTable', () => {
     elements = await screen.findAllByText(name)
     expect(elements).toHaveLength(1)
     elements.forEach(element => expect(element.nodeName).not.toBe('A'))
+  })
+})
+
+describe('useEventTableFilter', () => {
+  it('should return correct value', () => {
+    const { result } = renderHook(() => useEventTableFilter())
+    expect(result.current)
+      .toEqual({ fromTime: '2021-12-31T16:00:00Z', toTime: '2022-01-01T16:00:00Z' })
   })
 })

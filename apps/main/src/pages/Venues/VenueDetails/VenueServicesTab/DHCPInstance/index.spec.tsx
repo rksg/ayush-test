@@ -22,9 +22,11 @@ describe('Venue DHCP Instance', () => {
       route: { params, path: '/:tenantId/venues/:venueId/venue-details/services' }
     })
 
-    await screen.findByText('DhcpConfigServiceProfile1')
+    await screen.findByText('abcd')
     const buttonmanage = screen.getByRole('button', { name: 'Manage Local Service' })
     await userEvent.click(buttonmanage)
+    await new Promise((r)=>{setTimeout(r, 500)})
+    await userEvent.click(screen.getByRole('button', { name: 'Add gateway' }))
 
     await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
     await userEvent.click(screen.getByRole('button', { name: 'Manage Local Service' }))

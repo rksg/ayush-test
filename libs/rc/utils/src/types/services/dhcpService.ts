@@ -77,7 +77,7 @@ export interface DHCPProfileAps {
 }
 
 export interface DHCPLeases {
-  hostName: string,
+  hostname: string,
   ipAddress: string,
   dhcpPoolId: string,
   dhcpPoolName: string,
