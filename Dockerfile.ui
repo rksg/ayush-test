@@ -95,16 +95,16 @@ RUN node ./node_modules/.bin/nx run analytics:test --coverage --maxWorkers=40%
 RUN touch tests-done
 
 FROM tests-base as acx-ui-tests
-COPY --from=acx-ui-rc-test        /app/tests-done tests-done
-COPY --from=acx-ui-analytics-test /app/tests-done tests-done
-# RUN node ./node_modules/.bin/nx run rc:test --coverage --maxWorkers=50%
-# RUN node ./node_modules/.bin/nx run analytics:test --coverage --maxWorkers=50%
+# COPY --from=acx-ui-rc-test        /app/tests-done tests-done
+# COPY --from=acx-ui-analytics-test /app/tests-done tests-done
+RUN node ./node_modules/.bin/nx run rc:test --coverage --maxWorkers=50%
+RUN node ./node_modules/.bin/nx run analytics:test --coverage --maxWorkers=50%
 RUN node ./node_modules/.bin/nx run-many --target=test --all --exclude=rc,analytics --coverage --runInBand --verbose
 
 FROM tests-base as acx-ui-sonar-run
 COPY --from=acx-ui-tests          /app/coverage/* /app/coverage
-COPY --from=acx-ui-rc-test        /app/coverage/apps/* /app/coverage/app/.
-COPY --from=acx-ui-analytics-test /app/coverage/apps/* /app/coverage/app/.
+# COPY --from=acx-ui-rc-test        /app/coverage/apps/* /app/coverage/app/.
+# COPY --from=acx-ui-analytics-test /app/coverage/apps/* /app/coverage/app/.
 
 ###############################################################
 
