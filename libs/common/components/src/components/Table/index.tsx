@@ -53,7 +53,7 @@ export interface TableProps <RecordType>
     }>
     rowActions?: Array<{
       label: string,
-      disabled?: boolean,
+      disabled?: boolean | ((selectedItems: RecordType[]) => boolean),
       tooltip?: string,
       visible?: boolean | ((selectedItems: RecordType[]) => boolean),
       onClick: (selectedItems: RecordType[], clearSelection: () => void) => void
@@ -323,8 +323,8 @@ function Table <RecordType extends Record<string, any>> (
       }}
       scroll={{ x: hasEllipsisColumn || type !== 'tall' ? '100%' : 'max-content' }}
       rowSelection={rowSelection}
-      pagination={(type === 'tall'
-        ? { ...defaultPagination, ...props.pagination || {} } as TablePaginationConfig
+      pagination={(type === 'tall' && props.pagination !== false
+        ?  { ...defaultPagination, ...props.pagination || {} } as TablePaginationConfig
         : false)}
       columnEmptyText={false}
       onRow={onRow}
@@ -355,7 +355,10 @@ function Table <RecordType extends Record<string, any>> (
               if (!visible) return null
               return <UI.ActionButton
                 key={option.label}
-                disabled={option.disabled}
+                disabled={typeof option.disabled === 'function' 
+                  ? option.disabled(rows)
+                  : option.disabled
+                }
                 onClick={() =>
                   option.onClick(getSelectedRows(selectedRowKeys), () => { onCleanSelected() })}
               >

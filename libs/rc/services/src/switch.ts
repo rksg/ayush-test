@@ -24,7 +24,10 @@ import {
   VlanVePort,
   AclUnion,
   VeForm,
-  transformConfigBackupStatus
+  transformConfigBackupStatus,
+  ConfigurationBackup,
+  ConfigurationBackupStatus,
+  transformConfigBackupType
 } from '@acx-ui/rc/utils'
 import { formatter } from '@acx-ui/utils'
 
@@ -153,21 +156,21 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
-    getSwitchConfigBackupList: build.query<TableResult<ConfigurationHistory>, RequestPayload>({
+    getSwitchConfigBackupList: build.query<TableResult<ConfigurationBackup>, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(SwitchUrlsInfo.getSwitchConfigBackupList, params)
         return {
           ...req
         }
       },
-      transformResponse: (res: any[], meta
+      transformResponse: (res: ConfigurationBackup[], meta
         , arg: { payload:{ page:number } }) => {
         return {
           data: res.map(item => ({
             ...item,
             createdDate: formatter('dateTimeFormatWithSeconds')(item.createdDate),
-            backupType: transformConfigType(item.backupType),
-            status: transformConfigBackupStatus(item)
+            backupType: transformConfigBackupType(item.backupType),
+            status: transformConfigBackupStatus(item) as ConfigurationBackupStatus
           })),
           totalCount: res.length,
           page: 1

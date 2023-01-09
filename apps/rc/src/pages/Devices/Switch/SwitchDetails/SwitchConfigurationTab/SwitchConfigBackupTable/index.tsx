@@ -5,7 +5,7 @@ import { useIntl } from 'react-intl'
 
 import { Button, Loader, Modal, Table, TableProps, Descriptions }    from '@acx-ui/components'
 import { useGetSwitchConfigBackupListQuery }                            from '@acx-ui/rc/services'
-import { ConfigurationHistory, DispatchFailedReason, useTableQuery } from '@acx-ui/rc/utils'
+import { ConfigurationBackup, DispatchFailedReason, useTableQuery } from '@acx-ui/rc/utils'
 
 import * as UI         from './styledComponents'
 
@@ -17,14 +17,14 @@ export function SwitchConfigBackupTable () {
   const [showClis, setShowClis] = useState(true)
   const [collapseActive, setCollapseActive] = useState(false)
   const [dispatchFailedReason, setDispatchFailedReason] = useState([] as DispatchFailedReason[])
-  const [selectedRow, setSelectedRow] = useState(null as unknown as ConfigurationHistory)
+  const [selectedRow, setSelectedRow] = useState(null as unknown as ConfigurationBackup)
 
-  const showModal = (row: ConfigurationHistory) => {
+  const showModal = (row: ConfigurationBackup) => {
     setSelectedRow(row)
-    setDispatchFailedReason(row.dispatchFailedReason as DispatchFailedReason[] || [])
-    setCollapseActive(!row?.dispatchFailedReason?.length)
-    setShowClis(!!row?.clis)
-    setShowError(!!row?.clis || !!row?.dispatchFailedReason?.length)
+    // setDispatchFailedReason(row.dispatchFailedReason as DispatchFailedReason[] || [])
+    // setCollapseActive(!row?.dispatchFailedReason?.length)
+    // setShowClis(!!row?.clis)
+    // setShowError(!!row?.clis || !!row?.dispatchFailedReason?.length)
     setVisible(true)
   }
 
@@ -40,7 +40,7 @@ export function SwitchConfigBackupTable () {
 
   const tableData = tableQuery.data?.data ?? []
 
-  const columns: TableProps<ConfigurationHistory>['columns'] = [{
+  const columns: TableProps<ConfigurationBackup>['columns'] = [{
     key: 'name',
     title: $t({ defaultMessage: 'Name' }),
     dataIndex: 'name',
@@ -68,33 +68,30 @@ export function SwitchConfigBackupTable () {
 
   const rowActions: TableProps<any>['rowActions'] = [{
     label: $t({ defaultMessage: 'View' }),
-    // visible: (rows) => isActionVisible(rows, { selectOne: true }),
-    disabled: true,
+    disabled: (rows) => !isActionVisible(rows, { selectOne: true }),
     onClick: () => {
       // TODO:
     }
   }, {
     label: $t({ defaultMessage: 'Compare' }),
-    // visible: (rows) => isActionVisible(rows, { selectOne: true }),
-    disabled: true,
+    disabled: (rows) => isActionVisible(rows, { selectOne: true }),
     onClick: () => {
       // TODO:
     }
   }, {
     label: $t({ defaultMessage: 'Restore' }),
-    disabled: true,
+    disabled: (rows) => !isActionVisible(rows, { selectOne: true }),
     onClick: () => {
       // TODO:
     }
   }, {
     label: $t({ defaultMessage: 'Download' }),
-    disabled: true,
+    disabled: (rows) => !isActionVisible(rows, { selectOne: true }),
     onClick: () => {
       // TODO:
     }
   }, {
     label: $t({ defaultMessage: 'Delete' }),
-    disabled: true,
     onClick: () => {
       // TODO:
     }
@@ -108,7 +105,7 @@ export function SwitchConfigBackupTable () {
         columns={columns}
         dataSource={tableData}
         rowActions={rowActions}
-        // pagination={tableQuery.pagination}
+        pagination={false}
         onChange={tableQuery.handleTableChange}
         rowSelection={{
           type: 'checkbox'
