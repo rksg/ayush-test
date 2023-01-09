@@ -3,6 +3,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import {
   CommonUrlsInfo,
   createHttpRequest,
+  PlmMessageBanner,
   ProfileDataToUpdate,
   RequestPayload,
   UserSettings,
@@ -74,6 +75,17 @@ export const userApi = baseUserApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    getPlmMessageBanner: build.query<PlmMessageBanner, RequestPayload>({
+      query: ({ params }) => {
+        const messageBannerReq = createHttpRequest(
+          CommonUrlsInfo.getCloudMessageBanner,
+          params
+        )
+        return {
+          ...messageBannerReq
+        }
+      }
     })
   })
 })
@@ -82,5 +94,6 @@ export const {
   useGetCloudVersionQuery,
   useGetUserProfileQuery,
   useLazyGetUserProfileQuery,
-  useUpdateUserProfileMutation
+  useUpdateUserProfileMutation,
+  useGetPlmMessageBannerQuery
 } = userApi
