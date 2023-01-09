@@ -23,9 +23,13 @@ export default function ClientIsolationSettingsForm () {
 
   const nameValidator = async (value: string) => {
     try {
-      const list = (await clientIsolationList({ params }).unwrap())
-      .filter(clientIsolation => clientIsolation.id !== id)
-      .map(clientIsolation => ({ name: clientIsolation.name }))
+      const aaa = (await clientIsolationList({ params }).unwrap())
+      const bbb = aaa.filter(clientIsolation => clientIsolation.id !== id)
+      const list = bbb.map(clientIsolation => ({ name: clientIsolation.name }))
+
+      // const list = (await clientIsolationList({ params }).unwrap())
+      //   .filter(clientIsolation => clientIsolation.id !== id)
+      //   .map(clientIsolation => ({ name: clientIsolation.name }))
 
       // eslint-disable-next-line max-len
       return checkObjectNotExists(list, { name: value } , $t({ defaultMessage: 'Client Isolation Policy' }))

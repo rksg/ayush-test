@@ -54,7 +54,7 @@ export default function ClientIsolationForm (props: ClientIsolationFormProps) {
       if (editMode) {
         await updateClientIsolation({ params, payload: _.omit(data, 'id') }).unwrap()
       } else {
-        await addClientIsolation({ payload: data }).unwrap()
+        await addClientIsolation({ params, payload: data }).unwrap()
       }
 
       navigate(linkToPolicies, { replace: true })
