@@ -108,5 +108,13 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   getVlanByUuid: {
     method: 'get',
     url: '/api/switch/tenant/:tenantId/vlan/:vlanUuid'
+  },
+  getStaticRoutes: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/staticRoute/switch/:switchId'
+  },
+  addStaticRoute: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/staticRoute/switch/:switchId'
   }
 }

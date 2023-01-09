@@ -20,7 +20,8 @@ import {
   VeViewModel,
   VlanVePort,
   AclUnion,
-  VeForm
+  VeForm,
+  StaticRoute
 } from '@acx-ui/rc/utils'
 
 export const baseSwitchApi = createApi({
@@ -263,9 +264,25 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req,
           body: payload
         }
-
       },
       invalidatesTags: [{ type: 'Switch', id: 'VE' }]
+    }),
+    getSwitchStaticRoutes: build.query<StaticRoute[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getStaticRoutes, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    updateSwitchStaticRoutes: build.mutation<StaticRoute, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.addStaticRoutes, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
     })
   })
 })
@@ -356,5 +373,7 @@ export const {
   useGetSwitchQuery,
   useDeleteVePortsMutation,
   useGetSwitchAclsQuery,
-  useGetVlanListBySwitchLevelQuery
+  useGetVlanListBySwitchLevelQuery,
+  useGetSwitchStaticRoutesQuery,
+  useUpdateSwitchStaticRoutesMutation
 } = switchApi

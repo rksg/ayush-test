@@ -192,6 +192,18 @@ export const validationMessages = {
   switchSameSubnetInvalid: defineMessage({
     defaultMessage: 'IP and gateway are not in the same subnet',
     description: 'Validation - switch same subnet'
+  }),
+  switchStaticRouteIpInvalid: defineMessage({
+    defaultMessage: 'Enter a valid subnet (e.g. 1.1.1.1/24)',
+    description: 'Validation - switch static route ip'
+  }),
+  switchStaticRouteNextHopInvalid: defineMessage({
+    defaultMessage: 'NextHop IP address is invalid.',
+    description: 'Validation - switch static route ip'
+  }),
+  switchStaticRouteAdminDistanceInvalid: defineMessage({
+    defaultMessage: 'Enter a valid number between 0 and 255',
+    description: 'Validation - switch static route admin distance'
   })
 }
 

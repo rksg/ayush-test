@@ -3,6 +3,7 @@ import { PhoneNumberType, PhoneNumberUtil } from 'google-libphonenumber'
 import { isEqual, includes }                from 'lodash'
 
 import { getIntl, validationMessages } from '@acx-ui/utils'
+
 import { IpUtilsService } from './ipUtilsService'
 
 
@@ -490,3 +491,35 @@ export function validateSwitchGatewayIpAddress (ipAddress: string, subnetAddress
   }
   return Promise.resolve()
 }
+
+// eslint-disable-next-line max-len
+export const IP_SUBNET_VALIDATION_PATTERN='^(\\b([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\b)\\.(\\b([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\b)\\.(\\b([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\b)\\.(\\b([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\b)\\/([1-9]|[12]\\d|3[0-2])$'
+
+export function validateSwitchStaticRouteIp (ipAddress: string) {
+  const { $t } = getIntl()
+  const ipRegexp = new RegExp(IP_SUBNET_VALIDATION_PATTERN)
+  if (!ipRegexp.test(ipAddress)) {
+    return Promise.reject($t(validationMessages.switchStaticRouteIpInvalid))
+  }
+  return Promise.resolve()
+}
+
+export function validateSwitchStaticRouteNextHop (ipAddress: string) {
+  const { $t } = getIntl()
+  // eslint-disable-next-line max-len
+  const ipRegexp = new RegExp(/^((1\.){3}([1-9]|[1-9]\d|[12]\d\d)|(1\.){2}([2-9]|[1-9]\d|[12]\d\d)\.([1-9]?\d|[12]\d\d)|1\.([2-9]|[1-9]\d|[12]\d\d)(\.([1-9]?\d|[12]\d\d)){2}|([2-9]|[1-9]\d|1\d\d|2[01]\d|22[0-3])(\.([1-9]?\d|[12]\d\d)){3})$/)
+  if (!ipRegexp.test(ipAddress)) {
+    return Promise.reject($t(validationMessages.switchStaticRouteNextHopInvalid))
+  }
+  return Promise.resolve()
+}
+
+export function validateSwitchStaticRouteAdminDistance (ipAddress: string) {
+  const { $t } = getIntl()
+  const ipRegexp = new RegExp('^([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])$')
+  if (!ipRegexp.test(ipAddress)) {
+    return Promise.reject($t(validationMessages.switchStaticRouteAdminDistanceInvalid))
+  }
+  return Promise.resolve()
+}
+

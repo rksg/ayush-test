@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 
 import { Form, Select, Tooltip, Radio, Space, RadioChangeEvent, Input, Switch } from 'antd'
-import { DefaultOptionType }                                            from 'antd/lib/select'
-import { useIntl }                                                      from 'react-intl'
+import { DefaultOptionType }                                                    from 'antd/lib/select'
+import { useIntl }                                                              from 'react-intl'
 
 import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 import {
@@ -13,7 +13,28 @@ import {
   validateSwitchSubnetIpAddress,
   validateSwitchGatewayIpAddress
 } from '@acx-ui/rc/utils'
+
 import { JumboModeSpan } from './styledComponents'
+import StaticRoutes from './StaticRoutes'
+
+const spanningTreePriorityItem = [
+  { label: '0 - likely root', value: 0 },
+  { label: '4096', value: 4096 },
+  { label: '8192', value: 8192 },
+  { label: '12288', value: 12288 },
+  { label: '16384', value: 16384 },
+  { label: '20480', value: 20480 },
+  { label: '24576', value: 24576 },
+  { label: '28672', value: 28672 },
+  { label: '32768 - default', value: 32768 },
+  { label: '36864', value: 36864 },
+  { label: '40960', value: 40960 },
+  { label: '45056', value: 45056 },
+  { label: '49152', value: 49152 },
+  { label: '53248', value: 53248 },
+  { label: '57344', value: 57344 },
+  { label: '61440', value: 61440 }
+]
 
 export function SwitchStackSetting (props: { apGroupOption: DefaultOptionType[] }) {
   const { $t } = useIntl()
@@ -185,6 +206,21 @@ export function SwitchStackSetting (props: { apGroupOption: DefaultOptionType[] 
         </Radio.Group>
       </Form.Item>
 
+      <Form.Item
+        label={$t({ defaultMessage: 'Select Profile' })}
+        name={'spanningTreePriority'}
+        children={<Select
+          defaultValue={''}
+          options={[
+            {
+              label: $t({ defaultMessage: 'Select Priority...' }),
+              value: ''
+            },
+            ...spanningTreePriorityItem]}
+        />}
+      />
+
+      <StaticRoutes />
     </>
   )
 }
