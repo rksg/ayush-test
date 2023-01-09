@@ -1,5 +1,6 @@
 import React from 'react'
 
+import moment from 'moment-timezone'
 import {
   defineMessage,
   FormattedMessage,
@@ -23,6 +24,8 @@ export enum DpskNetworkType {
   LENGTH = 'PassphraseLength',
   EXPIRATION = 'PassphraseExpiration'
 }
+
+export const EXPIRATION_DATE_FORMAT = 'YYYY-MM-DD'
 
 const passphraseFormatLabel: Record<PassphraseFormatEnum, MessageDescriptor> = {
   [PassphraseFormatEnum.MOST_SECURED]: defineMessage({ defaultMessage: 'Most Secured' }),
@@ -73,7 +76,9 @@ export function transformAdvancedDpskExpirationText (
     return $t(passphraseExpirationLabel[PassphraseExpirationEnum.UNLIMITED])
   } else if (expirationType === ExpirationType.SPECIFIED_DATE) {
     // eslint-disable-next-line max-len
-    return $t(advancedPassphraseExpirationLabel[ExpirationType.SPECIFIED_DATE], { date: expirationDate })
+    return $t(advancedPassphraseExpirationLabel[ExpirationType.SPECIFIED_DATE], {
+      date: moment(expirationDate).format(EXPIRATION_DATE_FORMAT)
+    })
   } else {
     return $t(advancedPassphraseExpirationLabel[expirationType], { offset: expirationOffset })
   }
