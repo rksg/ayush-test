@@ -87,11 +87,11 @@ FROM pre-tests as tests-base
 ENV NODE_OPTIONS=--max-old-space-size=8192
 
 FROM tests-base as acx-ui-rc-test
-RUN node ./node_modules/.bin/nx run rc:test --coverage --maxWorkers=50%
+RUN node ./node_modules/.bin/nx run rc:test --coverage --maxWorkers=40%
 RUN touch tests-done
 
 FROM tests-base as acx-ui-analytics-test
-RUN node ./node_modules/.bin/nx run analytics:test --coverage --maxWorkers=50%
+RUN node ./node_modules/.bin/nx run analytics:test --coverage --maxWorkers=40%
 RUN touch tests-done
 
 FROM tests-base as acx-ui-tests
