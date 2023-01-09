@@ -7,7 +7,7 @@ import {
   PersonaGroup,
   TableResult,
   RequestPayload,
-  Persona, PersonaDevice, NewTableResult, transferTableResult
+  Persona, PersonaDevice, NewTableResult, transferToTableResult
 } from '@acx-ui/rc/utils'
 
 export const basePersonaApi = createApi({
@@ -40,7 +40,7 @@ export const personaApi = basePersonaApi.injectEndpoints({
         }
       },
       transformResponse (result: NewTableResult<PersonaGroup>) {
-        return transferTableResult<PersonaGroup>(result)
+        return transferToTableResult<PersonaGroup>(result)
       },
       providesTags: [{ type: 'PersonaGroup', id: 'LIST' }]
     }),
@@ -54,7 +54,7 @@ export const personaApi = basePersonaApi.injectEndpoints({
         }
       },
       transformResponse (result: NewTableResult<PersonaGroup>) {
-        return transferTableResult<PersonaGroup>(result)
+        return transferToTableResult<PersonaGroup>(result)
       },
       providesTags: [{ type: 'PersonaGroup', id: 'LIST' }]
     }),
@@ -109,7 +109,7 @@ export const personaApi = basePersonaApi.injectEndpoints({
         }
       },
       transformResponse (result: NewTableResult<Persona>) {
-        return transferTableResult<Persona>(result)
+        return transferToTableResult<Persona>(result)
       },
       providesTags: [{ type: 'Persona', id: 'LIST' }]
     }),
@@ -132,7 +132,7 @@ export const personaApi = basePersonaApi.injectEndpoints({
         }
       },
       transformResponse (result: NewTableResult<Persona>) {
-        return transferTableResult<Persona>(result)
+        return transferToTableResult<Persona>(result)
       },
       providesTags: [
         { type: 'Persona', id: 'LIST' },
@@ -149,7 +149,7 @@ export const personaApi = basePersonaApi.injectEndpoints({
         }
       },
       transformResponse (result: NewTableResult<Persona>) {
-        return transferTableResult<Persona>(result)
+        return transferToTableResult<Persona>(result)
       },
       providesTags: [{ type: 'Persona', id: 'LIST' }]
     }),
