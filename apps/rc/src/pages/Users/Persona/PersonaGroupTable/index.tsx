@@ -6,7 +6,8 @@ import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/c
 import {
   useSearchPersonaGroupListQuery,
   useLazyGetMacRegListQuery,
-  useDeletePersonaGroupMutation
+  useDeletePersonaGroupMutation,
+  useLazyGetDpskQuery
 } from '@acx-ui/rc/services'
 import { PersonaGroup, useTableQuery } from '@acx-ui/rc/utils'
 
@@ -15,7 +16,7 @@ import { PersonaGroupDrawer }                                                   
 
 
 
-function useColumns (macRegistrationPools: Map<string, string>) {
+function useColumns (macRegistrationPools: Map<string, string>, dpskPools: Map<string, string>) {
   const { $t } = useIntl()
 
   const columns: TableProps<PersonaGroup>['columns'] = [
@@ -45,7 +46,7 @@ function useColumns (macRegistrationPools: Map<string, string>) {
       filterable: true,
       render: (_, row) =>
         <DpskPoolLink
-          name={row.dpskPoolId}
+          name={dpskPools.get(row.dpskPoolId ?? '')}
           dpskPoolId={row.dpskPoolId}
         />
     },
@@ -94,12 +95,14 @@ function useColumns (macRegistrationPools: Map<string, string>) {
 export function PersonaGroupTable () {
   const { $t } = useIntl()
   const [macRegistrationPoolMap, setMacRegistrationPoolMap] = useState(new Map())
+  const [dpskPoolMap, setDpskPoolMap] = useState(new Map())
   const [drawerState, setDrawerState] = useState({
     isEdit: false,
     visible: false,
     data: {} as PersonaGroup | undefined
   })
 
+  const [getDpskById] = useLazyGetDpskQuery()
   const [getMacRegistrationById] = useLazyGetMacRegListQuery()
   const [
     deletePersonaGroup,
@@ -115,20 +118,33 @@ export function PersonaGroupTable () {
   useEffect(() => {
     if (tableQuery.isLoading) return
 
-    const macPoolMap = new Map()
+    const macPools = new Map()
+    const dpskPools = new Map()
 
     tableQuery.data?.data.forEach(personaGroup => {
-      const id = personaGroup.macRegistrationPoolId
-      if (!id) return
-      getMacRegistrationById({ params: { policyId: id } })
-        .then(result => {
-          if (result.data) {
-            macPoolMap.set(id, result.data.name)
-          }
-        })
+      const { macRegistrationPoolId, dpskPoolId } = personaGroup
+
+      if (macRegistrationPoolId) {
+        getMacRegistrationById({ params: { policyId: macRegistrationPoolId } })
+          .then(result => {
+            if (result.data) {
+              macPools.set(macRegistrationPoolId, result.data.name)
+            }
+          })
+      }
+
+      if (dpskPoolId) {
+        getDpskById({ params: { serviceId: dpskPoolId } })
+          .then(result => {
+            if (result.data) {
+              dpskPools.set(dpskPoolId, result.data.name)
+            }
+          })
+      }
     })
 
-    setMacRegistrationPoolMap(macPoolMap)
+    setDpskPoolMap(dpskPools)
+    setMacRegistrationPoolMap(macPools)
   }, [tableQuery.data])
 
   const actions: TableProps<PersonaGroup>['actions'] = [
@@ -184,7 +200,7 @@ export function PersonaGroupTable () {
       ]}
     >
       <Table
-        columns={useColumns(macRegistrationPoolMap)}
+        columns={useColumns(macRegistrationPoolMap, dpskPoolMap)}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}

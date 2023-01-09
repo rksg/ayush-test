@@ -646,6 +646,7 @@ export const {
   useCreateDpskMutation,
   useUpdateDpskMutation,
   useGetDpskQuery,
+  useLazyGetDpskQuery,
   useDpskListQuery,
   useLazyDpskListQuery,
   useDpskPassphraseListQuery,

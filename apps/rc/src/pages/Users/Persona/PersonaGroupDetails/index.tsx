@@ -7,9 +7,11 @@ import { useParams }           from 'react-router-dom'
 import { noDataSymbol }                               from '@acx-ui/analytics/utils'
 import { Button, Card, Loader, PageHeader, Subtitle } from '@acx-ui/components'
 import {
+  useLazyGetDpskQuery,
   useGetPersonaGroupByIdQuery,
   useLazyGetMacRegListQuery
 } from '@acx-ui/rc/services'
+import { PersonaGroup } from '@acx-ui/rc/utils'
 
 import { DpskPoolLink, MacRegistrationPoolLink, NetworkSegmentationLink } from '../LinkHelper'
 import { PersonaGroupDrawer }                                             from '../PersonaGroupDrawer'
@@ -49,7 +51,9 @@ function PersonaGroupDetails () {
   const { personaGroupId } = useParams()
   const [editVisible, setEditVisible] = useState(false)
   const [macPoolDisplay, setMacPoolDisplay] = useState<{ id?: string, name?: string }>()
+  const [dpskPoolDisplay, setDpskPoolDisplay] = useState<{ id?: string, name?: string }>()
 
+  const [getDpskPoolById] = useLazyGetDpskQuery()
   const [getMacRegistrationById] = useLazyGetMacRegListQuery()
   const detailsQuery = useGetPersonaGroupByIdQuery({
     params: { groupId: personaGroupId }
@@ -58,13 +62,22 @@ function PersonaGroupDetails () {
   useEffect(() => {
     if (detailsQuery.isLoading) return
 
-    const macPoolId = detailsQuery.data?.macRegistrationPoolId
+    const { macRegistrationPoolId, dpskPoolId } = detailsQuery.data as PersonaGroup
 
-    if (macPoolId) {
-      getMacRegistrationById({ params: { policyId: macPoolId } })
+    if (macRegistrationPoolId) {
+      getMacRegistrationById({ params: { policyId: macRegistrationPoolId } })
         .then(result => {
           if (result.data) {
-            setMacPoolDisplay({ id: macPoolId, name: result.data.name })
+            setMacPoolDisplay({ id: macRegistrationPoolId, name: result.data.name })
+          }
+        })
+    }
+
+    if (dpskPoolId) {
+      getDpskPoolById({ params: { serviceId: dpskPoolId } })
+        .then(result => {
+          if (result.data) {
+            setDpskPoolDisplay({ id: dpskPoolId, name: result.data.name })
           }
         })
     }
@@ -84,6 +97,7 @@ function PersonaGroupDetails () {
       // TODO: Integrate API to fetch dpsk pool name and linked
       value:
       <DpskPoolLink
+        name={dpskPoolDisplay?.name}
         dpskPoolId={detailsQuery.data?.dpskPoolId}
       />
     },

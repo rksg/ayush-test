@@ -4,9 +4,9 @@ import { Col, Form, FormInstance, Input, Row, Select, Space } from 'antd'
 import TextArea                                               from 'antd/lib/input/TextArea'
 import { useIntl }                                            from 'react-intl'
 
-import { Button, Subtitle }                                        from '@acx-ui/components'
-import { useLazySearchPersonaGroupListQuery, useMacRegListsQuery } from '@acx-ui/rc/services'
-import { checkObjectNotExists, PersonaGroup, useTableQuery }       from '@acx-ui/rc/utils'
+import { Button, Subtitle }                                                          from '@acx-ui/components'
+import { useDpskListQuery, useLazySearchPersonaGroupListQuery, useMacRegListsQuery } from '@acx-ui/rc/services'
+import { checkObjectNotExists, PersonaGroup, useTableQuery }                         from '@acx-ui/rc/utils'
 
 export function PersonaGroupForm (props: {
   form: FormInstance,
@@ -15,6 +15,8 @@ export function PersonaGroupForm (props: {
 }) {
   const { $t } = useIntl()
   const { form, defaultValue, onFinish } = props
+
+  const dpskPoolList = useDpskListQuery({ })
 
   const macRegistrationPoolList = useTableQuery({
     useQuery: useMacRegListsQuery,
@@ -84,7 +86,10 @@ export function PersonaGroupForm (props: {
                   <Select
                     disabled={!!defaultValue?.dpskPoolId}
                     placeholder={$t({ defaultMessage: 'Select...' })}
-                    options={[]}
+                    options={
+                      dpskPoolList?.data?.content.map(
+                        pool => ({ value: pool.id, label: pool.name }))
+                    }
                   />
                 }
                 rules={
