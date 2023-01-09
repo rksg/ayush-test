@@ -40,7 +40,7 @@ import { useParams } from '@acx-ui/react-router-dom'
 
 import { useGetNetwork } from '../services'
 
-import { NetworkVenueScheduleDialog } from './NetworkVenueScheduleDialog'
+import { SchedulingModalState, NetworkVenueScheduleDialog } from './NetworkVenueScheduleDialog'
 
 import type { FormFinishInfo } from 'rc-field-form/es/FormContext'
 
@@ -80,12 +80,6 @@ const defaultArray: Venue[] = []
 const notificationMessage = defineMessage({
   defaultMessage: 'No venues activating this network. Use the ON/OFF switches in the list to select the activating venues'
 })
-
-interface SchedulingModalState {
-  visible: boolean,
-  networkVenue?: NetworkVenue,
-  venue?: Venue
-}
 
 interface schedule {
   [key: string]: string
