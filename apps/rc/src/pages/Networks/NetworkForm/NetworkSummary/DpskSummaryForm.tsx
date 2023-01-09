@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { useDpskListQuery } from '@acx-ui/rc/services'
+import { useGetDpskListQuery } from '@acx-ui/rc/services'
 import {
   NetworkSaveData,
   transformNetworkEncryption,
@@ -18,12 +18,12 @@ export function DpskSummaryForm (props: {
   const { summaryData } = props
   const intl = useIntl()
   const $t = intl.$t
-  const { data: dpskList } = useDpskListQuery({})
+  const { data: dpskList } = useGetDpskListQuery({})
   const [ selectedDpsk, setSelectedDpsk ] = useState<DpskSaveData>()
 
   useEffect(() => {
-    if (dpskList?.content) {
-      setSelectedDpsk(dpskList.content.find(dpsk => dpsk.id === summaryData.dpskServiceProfileId))
+    if (dpskList?.data) {
+      setSelectedDpsk(dpskList.data.find(dpsk => dpsk.id === summaryData.dpskServiceProfileId))
     }
   }, [summaryData.dpskServiceProfileId, dpskList])
 
@@ -58,6 +58,7 @@ export function DpskSummaryForm (props: {
           <Form.Item
             label={$t({ defaultMessage: 'Passphrase Expiration:' })}
             children={<p>TODO</p>}
+            // TODO
             // children={
             //   transformAdvancedDpskExpirationText(
             //     intl,
