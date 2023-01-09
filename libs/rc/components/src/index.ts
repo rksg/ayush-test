@@ -37,6 +37,7 @@ export { VenueAlarmWidget } from './VenueAlarmWidget'
 export { VenuesDashboardWidget } from './VenuesDashboardWidget'
 export { WifiSignal } from './WifiSignal'
 export { ApSelector } from './ApSelector'
+export { useUserProfileActions } from './useUserProfileActions'
 
 export * from './services'
 export * from './EdgeStatisticWidget'

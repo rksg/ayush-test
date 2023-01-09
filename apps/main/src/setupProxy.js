@@ -42,5 +42,9 @@ module.exports = async function setupProxy (app) {
     '/g',
     { target: CLOUD_URL, changeOrigin: true }
   ))
+  app.use(createProxyMiddleware(
+    '/mfa',
+    { target: CLOUD_URL, changeOrigin: true }
+  ))
   return app
 }
