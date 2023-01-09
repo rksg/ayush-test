@@ -13,9 +13,9 @@ describe('cloud Message Banner', () => {
   }
   beforeEach(() => {
     mockServer.use(
-      rest.post(
+      rest.get(
         CommonUrlsInfo.getCloudMessageBanner.url,
-        (_, res, ctx) => res(ctx.json({ data:
+        (_, res, ctx) => res(ctx.json(
           {
             createdBy: 'd7fba54cb0e14c6cae48b90baf7e631c',
             createdDate: '2022-12-15T20:18:42.473+0000',
@@ -24,7 +24,7 @@ describe('cloud Message Banner', () => {
             tenantType: 'MSP',
             id: 'MSP'
           }
-        }))
+        ))
       )
     )
   })
@@ -34,5 +34,7 @@ describe('cloud Message Banner', () => {
     // fireEvent.click(buttons[1])
     expect(screen.queryAllByRole('img')).toStrictEqual([])
     expect(screen.queryByTestId('close-button')).toBeNull()
+    // eslint-disable-next-line max-len
+    await screen.findAllByText('we are aware of ongoing problem with User management, RUCKUS engineering is working on a solution')
   })
 })
