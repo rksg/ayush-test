@@ -83,21 +83,30 @@ COPY --from=acx-ui-tslint /app/tslint-done tslint-done
 COPY --from=build /app/dist/apps ./dist/apps
 
 # FROM acx-ui-base-test as acx-ui-rc-test
-FROM pre-tests as acx-ui-rc-test
+FROM pre-tests as tests-base
 ENV NODE_OPTIONS=--max-old-space-size=8192
+
+FROM tests-base as acx-ui-rc-test
 RUN node ./node_modules/.bin/nx run rc:test --coverage --maxWorkers=50%
+RUN touch tests-done
+
+FROM tests-base as acx-ui-analytics-test
 RUN node ./node_modules/.bin/nx run analytics:test --coverage --maxWorkers=50%
+RUN touch tests-done
+
+FROM tests-base as acx-ui-tests
+COPY --from=acx-ui-rc-test        /app/tests-done tests-done
+COPY --from=acx-ui-analytics-test /app/tests-done tests-done
+# RUN node ./node_modules/.bin/nx run rc:test --coverage --maxWorkers=50%
+# RUN node ./node_modules/.bin/nx run analytics:test --coverage --maxWorkers=50%
 RUN node ./node_modules/.bin/nx run-many --target=test --all --exclude=rc,analytics --coverage --runInBand --verbose
 
-# FROM acx-ui-base-test as acx-ui-analytics-test
-# RUN node ./node_modules/.bin/nx run analytics:test --coverage --maxWorkers=50%
-
 FROM build-base as acx-ui-sonar-run
-COPY --from=acx-ui-rc-test /app/coverage/* /app/coverage
+COPY --from=acx-ui-tests /app/coverage/* /app/coverage
+# COPY --from=acx-ui-rc-test /app/coverage/* /app/coverage
 # COPY --from=acx-ui-analytics-test /app/coverage/* /app/coverage
 # Potentially split tests into sub stages
 #COPY --from=acx-ui-test-many /app/coverage/* /app/coverage
-RUN touch tests-done
 
 ###############################################################
 
