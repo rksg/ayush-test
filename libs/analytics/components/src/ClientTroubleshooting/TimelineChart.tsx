@@ -19,7 +19,7 @@ import {
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { getQualityColor,  Incident, categoryCodeMap, IncidentCode
+import { categoryCodeMap, IncidentCode
 }   from '@acx-ui/analytics/utils'
 import { cssStr, cssNumber } from '@acx-ui/components'
 import {
@@ -30,10 +30,9 @@ import {
 } from '@acx-ui/components'
 import type { TimeStampRange } from '@acx-ui/types'
 
-import { eventColorByCategory, LabelledQuality, connectionQualityLabels } from './config'
+import { eventColorByCategory, LabelledQuality, connectionQualityLabels, Item, Event } from './config'
+import { getQualityColor }                                                             from './util'
 
-import type { Item }                                                                                          from './EventsHistory'
-import type { Event }                                                                                         from './EventsTimeline'
 import type { ECharts, EChartsOption, SeriesOption, CustomSeriesRenderItemAPI, CustomSeriesRenderItemParams } from 'echarts'
 import type { EChartsReactProps }                                                                             from 'echarts-for-react'
 
@@ -124,8 +123,6 @@ function getBarColor (params: { data: (LabelledQuality | Item)[], seriesName: st
   }
   if(seriesName === 'roaming') {
     const obj = Array.isArray(params.data) ? params.data[3] : ''
-    // @ts-ignore: Unreachable code error
-    // console.log((obj))
     // @ts-ignore: Unreachable code error
     return (obj)?.color
   }

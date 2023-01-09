@@ -1,4 +1,4 @@
-import { getConnectionQualityFor, takeWorseQuality, getQualityColor } from './connectionQuality'
+import { getConnectionQualityFor, takeWorseQuality, getQualityColor } from './util'
 
 describe('connectionQuality', () => {
   describe('getConnectionQuality', () => {

@@ -74,9 +74,3 @@ export const categoryCodeMap = {
     ] as IncidentCode[]
   }
 }
-
-export const rssGroups = {
-  good: { lower: -74 },
-  average: { lower: -85, upper: -75 },
-  bad: { upper: -86 }
-}

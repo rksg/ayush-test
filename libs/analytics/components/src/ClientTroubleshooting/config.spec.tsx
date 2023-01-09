@@ -1,8 +1,6 @@
 import { getIntl } from '@acx-ui/utils'
 
 import {
-  categorizeEvent,
-  transformEvents,
   SUCCESS,
   SLOW,
   DISCONNECT,
@@ -10,11 +8,15 @@ import {
   RADIO5G,
   RADIO2DOT4G,
   ROAMED,
-  transformConnectionQualities,
-  formatEventDesc,
   DisplayEvent
 } from './config'
 import { ConnectionEvent } from './services'
+import {
+  categorizeEvent,
+  transformEvents,
+  transformConnectionQualities,
+  formatEventDesc
+} from './util'
 
 export const connectionEvents: ConnectionEvent[] = [
   {

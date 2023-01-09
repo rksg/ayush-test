@@ -1,348 +1,70 @@
 import React, { useEffect, useState } from 'react'
 
-import { Row, Col }                                         from 'antd'
-import { connect, TooltipComponentFormatterCallbackParams } from 'echarts'
-import ReactECharts                                         from 'echarts-for-react'
-import { flatten }                                          from 'lodash'
-import moment                                               from 'moment-timezone'
-import { renderToString }                                   from 'react-dom/server'
-import { useIntl }                                          from 'react-intl'
-import { MessageDescriptor }                                from 'react-intl'
+import { Row, Col }          from 'antd'
+import { connect }           from 'echarts'
+import ReactECharts          from 'echarts-for-react'
+import { flatten }           from 'lodash'
+import moment                from 'moment-timezone'
+import { useIntl }           from 'react-intl'
+import { MessageDescriptor } from 'react-intl'
 
 import {
-  Incident, categoryCodeMap, IncidentCode
+  Incident
 } from '@acx-ui/analytics/utils'
-import { useDateFilter, getIntl, formatter, formats } from '@acx-ui/utils'
+import { useDateFilter } from '@acx-ui/utils'
 
 import {
   ClientTroubleShootingConfig,
-  SUCCESS,
-  FAILURE,
-  SLOW,
-  DISCONNECT,
-  transformEvents,
   TYPES,
-  formatEventDesc,
-  DisplayEvent,
-  LabelledQuality,
-  transformConnectionQualities,
-  connectionQualityLabels,
-  connectionDetailsByAP,
-  connectionDetailsByApChartData
+  Event,
+  TimelineData,
+  eventsCategoryMap,
+  networkIncidentCategoryMap
 } from './config'
-import { transformIncidents, Item }        from './EventsHistory'
+import { transformIncidents }              from './EventsHistory'
 import { ClientInfoData, ConnectionEvent } from './services'
 import * as UI                             from './styledComponents'
 import { TimelineChart }                   from './TimelineChart'
-
+import {
+  transformEvents,
+  transformConnectionQualities,
+  connectionDetailsByAP,
+  connectionDetailsByApChartData,
+  getRoamingChartConfig,
+  getRoamingSubtitleConfig,
+  getTimelineData,
+  getChartData,
+  useTooltipFormatter
+} from './util'
 
 
 import { Filters } from '.'
 
-export interface Event {
-  timestamp: string;
-  event: string;
-  ttc: string;
-  mac: string;
-  apName: string;
-  path: [];
-  code: string;
-  state: string;
-  failedMsgId: string;
-  messageIds: string;
-  radio: string;
-  ssid: string;
-  type: string;
-  key: string;
-  start: number;
-  end: number;
-  category: string;
-  seriesKey: string;
-}
-export type TimelineData = {
-  connectionEvents: eventsCategoryMap;
-  roaming: eventsCategoryMap;
-  connectionQuality: eventsCategoryMap;
-  networkIncidents: networkIncidentCategoryMap;
-}
-type eventsCategoryMap = {
-  [SUCCESS]: Event[] | [];
-  [FAILURE]: Event[] | [];
-  [DISCONNECT]: Event[] | [];
-  [SLOW]: Event[] | [];
-  all: Event[] | [];
-}
-type networkIncidentCategoryMap = {
-  connection:Item[] |[],
-  performance:Item[] |[],
-  infrastructure:Item[] |[],
-  all: Item[] | [];
+// export type TimelineData = {
+//   connectionEvents: eventsCategoryMap;
+//   roaming: eventsCategoryMap;
+//   connectionQuality: eventsCategoryMap;
+//   networkIncidents: networkIncidentCategoryMap;
+// }
+// type eventsCategoryMap = {
+//   [SUCCESS]: Event[] | [];
+//   [FAILURE]: Event[] | [];
+//   [DISCONNECT]: Event[] | [];
+//   [SLOW]: Event[] | [];
+//   all: Event[] | [];
+// }
+// type networkIncidentCategoryMap = {
+//   connection:Item[] |[],
+//   performance:Item[] |[],
+//   infrastructure:Item[] |[],
+//   all: Item[] | [];
 
-}
+// }
 type TimeLineProps = {
   data?: ClientInfoData;
   filters: Filters;
 }
-const getTimelineData = (events: Event[], incidents: Item[]) =>
-{
-  const categorisedEvents = events.reduce(
-    (acc, event) => {
-      if (event?.type === TYPES.CONNECTION_EVENTS) {
-        acc[TYPES.CONNECTION_EVENTS as 'connectionEvents']['all'] = [
-          ...acc[TYPES.CONNECTION_EVENTS as 'connectionEvents']['all'],
-          event
-        ]
-        if (event.category === SUCCESS)
-          acc[TYPES.CONNECTION_EVENTS as 'connectionEvents'][SUCCESS] = [
-            ...acc[TYPES.CONNECTION_EVENTS as 'connectionEvents'][SUCCESS],
-            event
-          ]
-        if (event.category === FAILURE)
-          acc[TYPES.CONNECTION_EVENTS as 'connectionEvents'][FAILURE] = [
-            ...acc[TYPES.CONNECTION_EVENTS as 'connectionEvents'][FAILURE],
-            event
-          ]
-        if (event.category === DISCONNECT)
-          acc[TYPES.CONNECTION_EVENTS as 'connectionEvents'][DISCONNECT] = [
-            ...acc[TYPES.CONNECTION_EVENTS as 'connectionEvents'][DISCONNECT],
-            event
-          ]
-        if (event.category === SLOW)
-          acc[TYPES.CONNECTION_EVENTS as 'connectionEvents'][SLOW] = [
-            ...acc[TYPES.CONNECTION_EVENTS as 'connectionEvents'][SLOW],
-            event
-          ]
-      }
-      return acc
-    },
-    {
-      connectionEvents: {
-        [SUCCESS]: [],
-        [FAILURE]: [],
-        [DISCONNECT]: [],
-        [SLOW]: [],
-        all: []
-      }
-    } as TimelineData
-  )
-  const categorisedIncidents = incidents.reduce(
-    (acc, incident) => {
-      acc[TYPES.NETWORK_INCIDENTS as 'networkIncidents']['all'] = [
-        ...acc[TYPES.NETWORK_INCIDENTS as 'networkIncidents']['all'],
-        incident
-      ]
-      if (categoryCodeMap['connection']?.codes.includes(incident.code as IncidentCode))
-        acc[TYPES.NETWORK_INCIDENTS as 'networkIncidents']['connection'] = [
-          ...acc[TYPES.NETWORK_INCIDENTS as 'networkIncidents']['connection'],
-          incident
-        ]
-      if (categoryCodeMap['performance']?.codes.includes(incident.code as IncidentCode))
-        acc[TYPES.NETWORK_INCIDENTS as 'networkIncidents']['performance'] = [
-          ...acc[TYPES.NETWORK_INCIDENTS as 'networkIncidents']['performance'],
-          incident
-        ]
-      if (categoryCodeMap['infrastructure']?.codes.includes(incident.code as IncidentCode))
-        acc[TYPES.NETWORK_INCIDENTS as 'networkIncidents']['infrastructure'] = [
-          ...acc[TYPES.NETWORK_INCIDENTS as 'networkIncidents']['infrastructure'],
-          incident
-        ]
-      return acc
-    },
-    {
-      networkIncidents: {
-        connection: [],
-        performance: [],
-        infrastructure: [],
-        all: []
-      }
-    } as TimelineData
-  )
 
-  return { ...categorisedEvents, ...categorisedIncidents }
-}
-export const getChartData = (
-  type: keyof TimelineData,
-  events: Event[],
-  isExpanded: boolean,
-  qualities?: LabelledQuality[],
-  incidents?: Item[],
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  roamingEvents? : any
-) => {
-  if (isExpanded) {
-    switch (type) {
-      case TYPES.CONNECTION_EVENTS:
-        const modifiedEvents = [
-          ...events.map((event) => {
-            return { ...event, seriesKey: event.category }
-          })
-        ] as Event[]
-        return [
-          ...modifiedEvents.map((event) => {
-            return { ...event, seriesKey: 'all' }
-          }),
-          ...modifiedEvents
-        ] as Event[]
-      case TYPES.CONNECTION_QUALITY:
-        return qualities ?? []
-      case TYPES.NETWORK_INCIDENTS:
-        return incidents ?? []
-      case TYPES.ROAMING:
-        return roamingEvents ?? []
-    }
-  }
-  switch (type) {
-    case TYPES.CONNECTION_EVENTS:
-      return [
-        ...events.map((event) => {
-          return { ...event, seriesKey: 'all' }
-        })
-      ] as Event[]
-    case TYPES.CONNECTION_QUALITY:
-      return qualities ?? []
-    case TYPES.NETWORK_INCIDENTS:
-      return incidents ?? []
-    case TYPES.ROAMING:
-      return roamingEvents ?? []
-  }
-  return []
-}
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const roamingEventFormatter = (event : any) => {
-  const labels = [
-    { key: 'rss', label: 'RSS', format: formatter('decibelMilliWattsFormat') },
-    { key: 'bssid', label: 'BSSID' },
-    { key: 'channel', label: 'Channel' },
-    { key: 'radioMode', label: 'Radio Mode' },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    { key: 'spatialStream', label: 'Spatial Stream (SS)', format: (v: any) => `${v} SS` },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    { key: 'bandwidth', label: 'Bandwidth', format: (v: any) => `${v} MHz` }
-  ]
-  const details = event['details']
-  const values = labels
-    .filter(({ key }) => details[key] && details[key] !== 'Unknown')
-    .map(({ key, label, format }) => ({
-      label, value: (format && format(details[key])) || details[key]
-    }))
-  if (values.length === 0) return null
-  return [{
-    label: values.map(v => v.label).join(' / '),
-    value: values.map(v => v.value).join(' / ')
-  }]
-}
-export const useTooltipFormatter = (
-  params: TooltipComponentFormatterCallbackParams
-) => {
-  const intl = getIntl()
-  const seriesName = (Array.isArray(params))
-    ? params[0].seriesName
-    : ''
-  if(seriesName === 'quality') {
-    const obj2 = (Array.isArray(params) && Array.isArray(params[0].data)
-      ? params[0].data[3]
-      : undefined) as unknown as DisplayEvent
-    const tooltipText2 = obj2
-      ? Object.keys(connectionQualityLabels).map(
-        (key, index) =>
-          `${formatter(
-            connectionQualityLabels[key as keyof typeof connectionQualityLabels]
-              .formatter as keyof typeof formats
-          )(
-            (obj2 as unknown as LabelledQuality)[
-              key as keyof typeof connectionQualityLabels
-            ].value
-          )}${
-            index + 1 !== Object.keys(connectionQualityLabels).length
-              ? '/ '
-              : ''
-          }`
-      )
-      : null
-
-    if (typeof obj2 !== 'undefined' && (obj2 as unknown as LabelledQuality).all) {
-      return renderToString(
-        <UI.TooltipWrapper>
-          <UI.TooltipDate>
-            {obj2 && moment(obj2?.start).format('MMM DD HH:mm:ss')}{' '}
-            {Object.keys(connectionQualityLabels).map(
-              (key,index) =>
-                `${
-                  connectionQualityLabels[
-                  key as keyof typeof connectionQualityLabels
-                  ].label
-                }${index+1 !== Object.keys(connectionQualityLabels).length ?'/ ':''}`
-            )}
-            {':'}
-          </UI.TooltipDate>
-          {tooltipText2}
-        </UI.TooltipWrapper>
-      )
-    }
-  }
-  if(seriesName === 'events') {
-    const obj = (Array.isArray(params) && Array.isArray(params[0].data)
-      ? params[0].data[2]
-      : undefined) as unknown as DisplayEvent
-
-
-    const tooltipText = obj ? formatEventDesc(obj, intl) : null
-    return renderToString(
-      <UI.TooltipWrapper>
-        <UI.TooltipDate>
-          {obj && moment(obj?.start).format('MMM DD HH:mm:ss')}{' '}
-        </UI.TooltipDate>
-        {tooltipText}
-      </UI.TooltipWrapper>
-    )
-  }
-  if(seriesName === 'incidents') {
-    const obj = (Array.isArray(params) && Array.isArray(params[0].data)
-      ? params[0].data[3]
-      : undefined) as unknown as Item
-    const tooltipText = obj ? obj.title : null
-    return renderToString(
-      <UI.TooltipWrapper>
-        <UI.TooltipDate>
-          {obj && moment(obj?.start).format('MMM DD HH:mm:ss')}{' '}
-        </UI.TooltipDate>
-        {tooltipText}
-      </UI.TooltipWrapper>
-    )
-  }
-  if(seriesName === 'roaming') {
-    const obj = (Array.isArray(params) && Array.isArray(params[0].data)
-      ? params[0].data[3]
-      : undefined) as unknown as Item
-
-    const tooltipText = roamingEventFormatter(obj)
-    return renderToString(
-      <UI.TooltipWrapper>
-        <UI.TooltipDate>
-          {obj && moment(obj?.start).format('MMM DD HH:mm:ss')}{' '}{tooltipText?.[0].label}{':'}
-        </UI.TooltipDate>
-        {tooltipText?.[0].value}
-      </UI.TooltipWrapper>
-    )
-  }
-  return ''
-}
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const getRoamingChartConfig = (data: any) => {
-  return Object.keys(data).map(key => {
-    return{ key: key, label: data[key].apName, chartType: 'bar', series: 'roaming' }
-  })
-}
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const getRoamingSubtitleConfig = (data: any) => {
-  return Object.keys(data).map((key,index) => {
-    return {
-      title: `${data[key].apName} on ${data[key].radio}GHz`,
-      value: data[key].apName,
-      isLast: Object.keys(data).length === index + 1 ? true : false
-    }
-  })
-}
 export function TimeLine (props: TimeLineProps) {
   const { $t } = useIntl()
   const intl = useIntl()

@@ -1,5 +1,4 @@
 
-import { ReactNode } from 'react'
 
 import { List }               from 'antd'
 import { flatten }            from 'lodash'
@@ -21,15 +20,15 @@ import { formatter }     from '@acx-ui/utils'
 
 
 import {
-  transformEvents,
   DisplayEvent,
-  formatEventDesc,
   eventColorByCategory,
-  INCIDENT
+  INCIDENT,
+  Item
 } from './config'
-import { ConnectionEventPopover } from './ConnectionEvent'
-import { ClientInfoData }         from './services'
-import * as UI                    from './styledComponents'
+import { ConnectionEventPopover }          from './ConnectionEvent'
+import { ClientInfoData }                  from './services'
+import * as UI                             from './styledComponents'
+import { transformEvents,formatEventDesc } from './util'
 
 import { Filters } from '.'
 
@@ -40,18 +39,7 @@ type HistoryContentProps = {
   data?: ClientInfoData,
   filters: Filters | null
 }
-export type Item = {
-  id?: string,
-  start: number,
-  date: string,
-  description: string,
-  title: string,
-  icon: ReactNode,
-  end?:number,
-  code?: string,
-  seriesKey?: string,
-  color?: string
-}
+
 // If needed (for incident timeline chart) move this menthod to config
 export const transformIncidents = (
   incidents: Incident[],

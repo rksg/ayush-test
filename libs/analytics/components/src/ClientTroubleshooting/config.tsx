@@ -1,20 +1,12 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { groupBy }                  from 'lodash'
-import { maxBy, flatMap }           from 'lodash'
-import { defineMessage, IntlShape } from 'react-intl'
+import { ReactNode } from 'react'
+
+import { defineMessage } from 'react-intl'
 
 import {
-  categoryOptions,
-  mapCodeToFailureText,
-  clientEventDescription,
-  getConnectionQualityFor,
-  takeWorseQuality
+  categoryOptions
 } from '@acx-ui/analytics/utils'
-import { formatter } from '@acx-ui/utils'
 
-
-import { ConnectionEvent, ConnectionQuality } from './services'
-
+import { ConnectionEvent } from './services'
 export const SUCCESS = 'success'
 export const SLOW = 'slow'
 export const DISCONNECT = 'disconnect'
@@ -60,16 +52,27 @@ export const spuriousEvents = [
 ]
 
 export type DisplayEvent = ConnectionEvent & {
-  start: number,
-  end: number,
-  code: string | null,
-  apName: string,
-  mac: string,
-  radio: string,
-  state: string,
-  event: string,
-  category: string
+  start: number;
+  end: number;
+  code: string | null;
+  apName: string;
+  mac: string;
+  radio: string;
+  state: string;
+  event: string;
+  category: string;
 }
+
+export type OnDatazoomEvent = {
+  batch?: {
+    startValue: number, endValue: number
+  }[],
+  start?: number,
+  end?: number
+}
+
+
+
 export const eventColorByCategory = {
   [DISCONNECT]: '--acx-neutrals-50',
   [SUCCESS]: '--acx-semantics-green-50',
@@ -77,63 +80,17 @@ export const eventColorByCategory = {
   [SLOW]: '--acx-semantics-yellow-50'
 }
 
-
-export const categorizeEvent = (name: string, ttc: number | null) => {
-  const successEvents = [INFO_UPDATED, JOIN, ROAMED].map(
-    key => filterEventMap[key as keyof typeof filterEventMap]
-  )
-  if (name === 'EVENT_CLIENT_DISCONNECT') return DISCONNECT
-  if (!successEvents.includes(name)) return FAILURE
-  if (ttc !== null && ttc >= 4000) return SLOW
-  return SUCCESS
-}
 // common utility for history and connection events chart
-export const transformEvents = (
-  events: ConnectionEvent[], selectedEventTypes: string[], selectedRadios: string[]
-) => events.reduce((acc, data, index) => {
-  const { event, state, timestamp, mac, ttc, radio, code, failedMsgId, ssid } = data
-  if (code === 'eap' && failedMsgId && EAPOLMessageIds.includes(failedMsgId)) {
-    data = { ...data, code: 'eapol' }
-  }
 
-  const category = categorizeEvent(event, ttc)
-  const eventType = category === 'failure' ? filterEventMap[FAILURE] : event
-
-  const filterEventTypes = selectedEventTypes.map(
-    e => filterEventMap[e as keyof typeof filterEventMap]
-  )
-  const filterRadios = selectedRadios.map(
-    e => filterEventMap[e as keyof typeof filterEventMap]
-  )
-  const time = +new Date(timestamp)
-  let skip = spuriousEvents.includes(state)
-      || filterEventTypes.length && !filterEventTypes.includes(eventType)
-      || filterRadios.length && !filterRadios.includes(radio)
-
-  if (skip) return acc
-
-  acc.push({
-    ...data,
-    type: event === 'EVENT_CLIENT_ROAMING' ? TYPES.ROAMING : TYPES.CONNECTION_EVENTS,
-    key: time + mac + eventType + index,
-    start: time,
-    end: time,
-    ssid,
-    category
-  })
-  return acc
-}, [] as object[]
-)
-
-export const formatEventDesc = (evtObj: DisplayEvent, intl: IntlShape) : string => {
-  const { code, apName, mac, radio, state, event } = evtObj
-  const ap = [apName, mac ? `(${mac})` : ''].filter(Boolean).join(' ')
-  return [
-    code ? `${mapCodeToFailureText(code, intl)}:` : '',
-    `${intl.$t(clientEventDescription(event,state))} @`,
-    `${ap} ${formatter('radioFormat')(radio)}`
-  ].filter(Boolean).join(' ')
+export const rssGroups = {
+  good: { lower: -74 },
+  average: { lower: -85, upper: -75 },
+  bad: { upper: -86 }
 }
+
+
+
+
 export const ClientTroubleShootingConfig = {
   selection: [
     {
@@ -199,19 +156,20 @@ export const ClientTroubleShootingConfig = {
           label: defineMessage({ defaultMessage: '6 GHz' })
         }
       ]
-    } ],
+    }
+  ],
   timeLine: [
     {
       title: defineMessage({ defaultMessage: 'Connection Events' }),
       value: TYPES.CONNECTION_EVENTS,
       showCount: true,
       chartMapping: [
-        { key: 'all', label: 'all', chartType: 'scatter',series: 'events' },
-        { key: 'success', label: 'success', chartType: 'scatter',series: 'events' },
-        { key: 'failure', label: 'failure', chartType: 'scatter',series: 'events' },
-        { key: 'slow', label: 'slow', chartType: 'scatter',series: 'events' },
-        { key: 'disconnect', label: 'disconnect', chartType: 'scatter',series: 'events' }
-      ] as { key: string, label: string, chartType: string,series : string }[],
+        { key: 'all', label: 'all', chartType: 'scatter', series: 'events' },
+        { key: 'success', label: 'success', chartType: 'scatter', series: 'events' },
+        { key: 'failure', label: 'failure', chartType: 'scatter', series: 'events' },
+        { key: 'slow', label: 'slow', chartType: 'scatter', series: 'events' },
+        { key: 'disconnect', label: 'disconnect', chartType: 'scatter', series: 'events' }
+      ] as { key: string; label: string; chartType: string; series: string }[],
       showResetZoom: true,
       subtitle: [
         {
@@ -239,15 +197,7 @@ export const ClientTroubleShootingConfig = {
       showCount: true,
       chartMapping: [
         { key: 'all', label: 'all', chartType: 'scatter', series: 'roaming' }
-        // { key: 'network1_5GHz', label: 'network1_5GHz', chartType: 'bar', series: 'roaming' }
-      ] as { key: string, label: string, chartType: string,series: string }[]
-      // subtitle: [
-      //   {
-      //     title: defineMessage({ defaultMessage: 'Network1_5GHz' }),
-      //     value: 'network1_5GHz',
-      //     isLast: true
-      //   }
-      // ]
+      ] as { key: string; label: string; chartType: string; series: string }[]
     },
     {
       title: defineMessage({ defaultMessage: 'Connection Quality' }),
@@ -259,7 +209,7 @@ export const ClientTroubleShootingConfig = {
         { key: 'snr', label: 'snr', chartType: 'bar', series: 'quality' },
         { key: 'throughput', label: 'throughput', chartType: 'bar', series: 'quality' },
         { key: 'avgTxMCS', label: 'avgTxMCS', chartType: 'bar', series: 'quality' }
-      ] as { key: string, label: string, chartType: string, series: string }[],
+      ] as { key: string; label: string; chartType: string; series: string }[],
       subtitle: [
         {
           title: defineMessage({ defaultMessage: 'RSS' }),
@@ -290,7 +240,7 @@ export const ClientTroubleShootingConfig = {
         { key: 'connection', label: 'connection', chartType: 'bar', series: 'incidents' },
         { key: 'performance', label: 'performance', chartType: 'bar', series: 'incidents' },
         { key: 'infrastructure', label: 'infrastructure', chartType: 'bar', series: 'incidents' }
-      ] as { key: string, label: string, chartType: string, series: string }[],
+      ] as { key: string; label: string; chartType: string; series: string }[],
       subtitle: [
         {
           title: defineMessage({ defaultMessage: 'Client Connection' }),
@@ -320,200 +270,68 @@ export const connectionQualityLabels = {
 export type Quality = 'bad' | 'average' | 'good' | null | undefined
 
 export type LabelledQuality = {
-  rss: { quality : Quality, value : string },
-  snr: { quality : Quality, value : string },
-  throughput: { quality : Quality, value : string },
-  avgTxMCS: { quality : Quality, value : string },
-  all: { quality : Quality, value : string },
-  seriesKey: 'rss' | 'snr' | 'throughput' | 'avgTxMCS' | 'all',
-  start: string,
-  end: string,
+  rss: { quality: Quality; value: string };
+  snr: { quality: Quality; value: string };
+  throughput: { quality: Quality; value: string };
+  avgTxMCS: { quality: Quality; value: string };
+  all: { quality: Quality; value: string };
+  seriesKey: 'rss' | 'snr' | 'throughput' | 'avgTxMCS' | 'all';
+  start: string;
+  end: string;
 }
-
-export const transformConnectionQualities = (connectionQualities?: ConnectionQuality[]) => {
-  if (typeof connectionQualities === 'undefined') {
-    return []
-  }
-
-  const mappedQuality = connectionQualities.map((val) => {
-    const rss = getConnectionQualityFor('rss', val.rss)
-    const snr = getConnectionQualityFor('snr', val.snr)
-    const throughput = getConnectionQualityFor('throughput', val.throughput)
-    const avgTxMCS = getConnectionQualityFor('avgTxMCS', val.avgTxMCS)
-    const worseQuality = takeWorseQuality(
-      ...[rss?.quality, snr?.quality, throughput?.quality, avgTxMCS?.quality]
-    )
-    return {
-      ...val,
-      rss,
-      snr,
-      throughput,
-      avgTxMCS,
-      all: { quality: worseQuality }
-    }})
-
-  return {
-    all: mappedQuality.map(val => ({ ...val, seriesKey: 'all' })) as unknown as LabelledQuality[],
-    rss: mappedQuality.filter(val => val.rss)
-      .map(val => ({ ...val, seriesKey: 'rss' })) as unknown as LabelledQuality[],
-    snr: mappedQuality.filter(val => val.snr)
-      .map(val => ({ ...val, seriesKey: 'snr' })) as unknown as LabelledQuality[],
-    throughput: mappedQuality.filter(val => val.throughput)
-      .map(val => ({ ...val, seriesKey: 'throughput' }))as unknown as LabelledQuality[],
-    avgTxMCS: mappedQuality.filter(val => val.avgTxMCS)
-      .map(val => ({ ...val, seriesKey: 'avgTxMCS' })) as unknown as LabelledQuality[]
-  }
+export type Item = {
+  id?: string,
+  start: number,
+  date: string,
+  description: string,
+  title: string,
+  icon: ReactNode,
+  end?:number,
+  code?: string,
+  seriesKey?: string,
+  color?: string
 }
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const connectionDetailsByAP= (data : any) => {
-  return Object.entries(groupBy(data, ({ apMac, radio }) => `${apMac}-${radio}`))
-    .reduce((agg, [key, values]) => {
-    // @ts-ignore: Unreachable code error
-      agg[key] = {
-        apMac: values[0].apMac,
-        radio: values[0].radio,
-        apName: [...new Set(values.map(({ apName }) => apName))].join(','),
-        apModel: [...new Set(values.map(({ apModel }) => apModel))].join(','),
-        apFirmware: [...new Set(values.map(({ apFirmware }) => apFirmware))].join(',')
-      }
-      return agg
-    }, ({} ))
+export interface Event {
+  timestamp: string;
+  event: string;
+  ttc: string;
+  mac: string;
+  apName: string;
+  path: [];
+  code: string;
+  state: string;
+  failedMsgId: string;
+  messageIds: string;
+  radio: string;
+  ssid: string;
+  type: string;
+  key: string;
+  start: number;
+  end: number;
+  category: string;
+  seriesKey: string;
 }
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const connectionDetailsByApChartData = (data: any) => {
-  return Object.entries(groupBy(data, ({ apMac, radio }) => `${apMac}-${radio}`))
-    .reduce((agg, [key, values]) => {
-      // @ts-ignore: Unreachable code error
-      agg[key] = {
-        events: values.map(value => {
-          return {
-            start: value.start,
-            end: value.end,
-            label: (key),
-            value: formatter('decibelMilliWattsFormat')(value.rss),
-            color: getRssColor(value.rss),
-            details: value
-          }
-        })
-      }
-      return agg
-    },({}))
+export type TimelineData = {
+  connectionEvents: eventsCategoryMap;
+  roaming: eventsCategoryMap;
+  connectionQuality: eventsCategoryMap;
+  networkIncidents: networkIncidentCategoryMap;
 }
-export const rssGroups = {
-  good: { lower: -74 },
-  average: { lower: -85, upper: -75 },
-  bad: { upper: -86 }
+export type eventsCategoryMap = {
+  [SUCCESS]: Event[] | [];
+  [FAILURE]: Event[] | [];
+  [DISCONNECT]: Event[] | [];
+  [SLOW]: Event[] | [];
+  all: Event[] | [];
 }
+export type networkIncidentCategoryMap = {
+  connection:Item[] |[],
+  performance:Item[] |[],
+  infrastructure:Item[] |[],
+  all: Item[] | [];
 
-export const roamingColorMap = {
-  good: 'rgba(45, 200, 110, 1)',
-  average: 'rgba(253, 197, 43, 1)',
-  bad: 'rgba(243, 21, 24, 1)',
-  missing: 'rgba(213, 221, 228, 0.4)',
-  min: 'rgba(191, 17, 20, 1)',
-  max: 'rgba(45, 200, 140, 1)'
 }
-export const rssMax = -50
-export const rssMin = -90
-export const getRssColor = (rss: number) => {
-  if (rss > rssMax) return /** @type {string} */ (roamingColorMap.max)
-  if (rss < rssMin) return /** @type {string} */ (roamingColorMap.min)
-  return rssGradientColorMap.find(({ valueFrom, valueTo }) =>
-    valueFrom <= Math.round(rss) && valueTo >= Math.round(rss))?.color
-}
-export const rssGradientColorMap = ((density = 5) => {
-  const avg = (a: number, b: number) => Math.round((a + b) / 2)
-  const colorMap = [
-    {
-      valueFrom: avg(rssMax, rssGroups.average.upper),
-      valueTo: rssMax,
-      colorFrom: roamingColorMap.good,
-      colorTo: roamingColorMap.max
-    },
-    {
-      valueFrom: avg(rssGroups.average.upper, rssGroups.average.lower),
-      valueTo: avg(rssMax, rssGroups.average.upper) - 1,
-      colorFrom: roamingColorMap.average,
-      colorTo: roamingColorMap.good
-    },
-    {
-      valueFrom: avg(rssMin, rssGroups.average.lower),
-      valueTo: avg(rssGroups.average.upper, rssGroups.average.lower) - 1,
-      colorFrom: roamingColorMap.bad,
-      colorTo: roamingColorMap.average
-    },
-    {
-      valueFrom: rssMin,
-      valueTo: avg(rssMin, rssGroups.average.lower) - 1,
-      colorFrom: roamingColorMap.min,
-      colorTo: roamingColorMap.bad
-    }
-  ]
-
-  const parseRGBA = (color: {
-    replace: (
-      arg0: RegExp,
-      arg1: string
-    ) => {
-      (): any;
-      new (): any;
-      split: {
-        (arg0: string): {
-          (): any;
-          new (): any;
-          map: {
-            (arg0: (v: any) => number): [any, any, any, any];
-            new (): any;
-          };
-        };
-        new (): any;
-      };
-    };
-  }) => {
-    const [r, g, b, a] = color
-      .replace(/[rgba()]/gi, '')
-      .split(',')
-      .map((v: any) => Number(v))
-    return { r, g, b, a }
-  }
-
-  const getMidColor = (
-    {
-      colorFrom,
-      colorTo,
-      valueFrom,
-      valueTo
-    }: {
-      valueFrom: number;
-      valueTo: number;
-      colorFrom: string;
-      colorTo: string;
-    },
-    rate: number
-  ) => {
-    // @ts-ignore: Unreachable code error
-    const rgbaFrom = parseRGBA(colorFrom )
-    // @ts-ignore: Unreachable code error
-    const rgbaTo = parseRGBA(colorTo)
-    return new Array(rate).fill(0).map((_, index) => {
-      const color = Object.keys(rgbaFrom).reduce((agg, key) => {
-        // @ts-ignore: Unreachable code error
-        const diff = (rgbaTo[key] - rgbaFrom[key]) / (rate - 1)
-        // @ts-ignore: Unreachable code error
-
-        agg[key] = Math.round(rgbaFrom[key] + diff * index)
-        return agg
-      }, {})
-      const diff = (valueTo - valueFrom) / rate
-      return {
-        valueFrom: Math.round(valueFrom + index * diff),
-        valueTo: Math.round(valueFrom + (index + 1) * diff),
-        // @ts-ignore: Unreachable code error
-        color: `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`
-      }
-    })
-  }
-  return flatMap(colorMap, params => getMidColor(params, density))
-    .sort((a, b) => a.valueFrom - b.valueFrom)
-})()
+// type TimeLineProps = {
+//   data?: ClientInfoData;
+//   filters: Filters;
+// }
