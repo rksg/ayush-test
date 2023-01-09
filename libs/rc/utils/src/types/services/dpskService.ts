@@ -49,5 +49,5 @@ export interface DpskPassphrasesSaveData {
   vlanId?: string;
   mac?: string;
   numberOfDevices?: number;
-  expiration?: string;
+  expirationDate?: string;
 }

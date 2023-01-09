@@ -69,6 +69,10 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/switch/:stackSerialNumber/member/:newStackMemberSerialNumber'
   },
+  getSwitchConfigHistory: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/switches/:switchId/configurationHistory/detail/query'
+  },
   getSwitchRoutedList: {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/vePort/switch/:switchId/query'
