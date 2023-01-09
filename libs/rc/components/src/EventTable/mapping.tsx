@@ -14,6 +14,7 @@ export const eventTypeMapping = {
   SWITCH: defineMessage({ defaultMessage: 'Switch' }),
   NETWORK: defineMessage({ defaultMessage: 'Network' }),
   ADMIN: defineMessage({ defaultMessage: 'Admin' }),
+  ADMINACTIVITY: defineMessage({ defaultMessage: 'Adminactivity' }),
   NOTIFICATION: defineMessage({ defaultMessage: 'Notification' })
 }
 

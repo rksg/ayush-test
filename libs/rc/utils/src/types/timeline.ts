@@ -66,7 +66,9 @@ export interface EventMeta {
   venueName: string
 }
 
-export type Event = EventBase & EventMeta
+export type Event = EventBase & EventMeta & {
+  adminName?: string
+}
 
 export interface AdminLogBase {
   adminName: string

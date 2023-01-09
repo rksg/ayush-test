@@ -91,6 +91,7 @@ const searches = [
       useQuery: useEventsQuery,
       defaultPayload: {
         ...eventDefaultPayload,
+        filters: {},
         searchString,
         searchTargetFields: ['entity_id', 'message', 'apMac', 'clientMac'],
         detailLevel: 'su'
