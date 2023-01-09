@@ -31,7 +31,7 @@ const Events = () => {
         toTime: moment(endDate).utc().format()
       }
     })
-  }, [tableQuery.payload, startDate, endDate])
+  }, [startDate, endDate])
 
   return <EventTable tableQuery={tableQuery}/>
 }

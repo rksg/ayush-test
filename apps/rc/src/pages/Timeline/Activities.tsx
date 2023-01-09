@@ -37,7 +37,7 @@ const Activities = () => {
         toTime: endDate
       }
     })
-  }, [tableQuery.payload, startDate, endDate])
+  }, [startDate, endDate])
 
   return <ActivityTable tableQuery={tableQuery}/>
 }

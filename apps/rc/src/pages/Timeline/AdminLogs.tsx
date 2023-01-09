@@ -72,7 +72,7 @@ const AdminLogs = () => {
         toTime: moment(endDate).utc().format()
       }
     })
-  }, [tableQuery.payload, startDate, endDate])
+  }, [startDate, endDate])
 
   return <AdminLogTable tableQuery={tableQuery}/>
 }
