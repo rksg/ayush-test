@@ -17,6 +17,7 @@ export interface SelectionControlProps {
   onChange?: (e: RadioChangeEvent) => void
   /** @default 'small' */
   size?: 'small' | 'large'
+  value?: string
 }
 
 export function SelectionControl (
@@ -31,6 +32,7 @@ export function SelectionControl (
           props.onChange && props.onChange(e)
         }}
         size={props.size || 'small'}
+        value={props.value}
       >
         {props.options.map(({ value, label, icon, disabled }) => (
           <Radio.Button {...{ value, disabled, key: value }}>

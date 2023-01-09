@@ -337,8 +337,7 @@ export function RadioSettings () {
     }
   }
 
-  const handleUpdateRadioSettings =
-  async (formData: VenueRadioCustomization) => {
+  const handleUpdateRadioSettings = async (formData: VenueRadioCustomization) => {
 
     update5gData(formData)
 
@@ -350,12 +349,12 @@ export function RadioSettings () {
       delete formData.radioParams6G
     }
 
-    updateVenueTripleBandRadioSettings({
+    await updateVenueTripleBandRadioSettings({
       params: { tenantId, venueId },
       payload: { enabled: isTriBandRadio }
     })
 
-    updateVenueRadioCustomization({
+    await updateVenueRadioCustomization({
       params: { tenantId, venueId },
       payload: formData
     })
