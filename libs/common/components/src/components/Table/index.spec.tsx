@@ -80,17 +80,21 @@ describe('Table component', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 
-  it('renders no selected bar table', () => {
-    const { asFragment } = render(<Table
-      columns={testColumns}
-      dataSource={testData}
-      rowSelection={{
+  it('renders no selected bar table', async () => {
+    const props: TableProps<TestRow> = {
+      columns: testColumns,
+      dataSource: testData,
+      rowSelection: {
         type: 'radio',
         defaultSelectedRowKeys: ['1']
-      }}
-      tableAlertRender={false}
-    />)
-    expect(asFragment()).toMatchSnapshot()
+      }
+    }
+    const { rerender } = render(<Table {...props} />)
+    const alert = await screen.findByRole('alert')
+
+    expect(alert).toBeVisible()
+    rerender(<Table {...props} tableAlertRender={false} />)
+    expect(alert).not.toBeVisible()
   })
 
   it('renders table with ellipsis column', async () => {

@@ -158,7 +158,7 @@ export function SwitchConfigHistoryTable () {
                         {errorsTitle}
                         {
                           showClis &&
-                        <UI.ArrowCollapsed onClick={togglePanel}/>
+                        <UI.ArrowCollapsed data-testid='ArrowCollapsed' onClick={togglePanel}/>
                         }
                       </div>
                       <ErrorsTable errors={dispatchFailedReason} selectionChanged={handleHighLightLine}/>
@@ -166,7 +166,7 @@ export function SwitchConfigHistoryTable () {
                     :
                     <div onClick={togglePanel}>
                       <div className='header'>
-                        <UI.ArrowExpand/>
+                        <UI.ArrowExpand />
                       </div>
                       <div className='vertical-text'>{errorsTitle}</div>
                     </div>
