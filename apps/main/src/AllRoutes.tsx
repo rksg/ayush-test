@@ -67,6 +67,10 @@ function VenuesRoutes () {
       <Route path='add' element={<VenuesForm />} />
       <Route path=':venueId/venue-details/:activeTab' element={<VenueDetails />} />
       <Route
+        path=':venueId/venue-details/:activeTab/:activeSubTab'
+        element={<VenueDetails />}
+      />
+      <Route
         path=':venueId/venue-details/:activeTab/:activeSubTab/:categoryTab'
         element={<VenueDetails />}
       />

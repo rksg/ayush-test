@@ -6,12 +6,7 @@ import { SorterResult }           from 'antd/lib/table/interface'
 import moment                     from 'moment-timezone'
 import { defineMessage, useIntl } from 'react-intl'
 
-import {
-  LayoutUI,
-  Loader,
-  Badge
-} from '@acx-ui/components'
-import { CheckMarkCircleSolid, Pending, InProgress }                                        from '@acx-ui/icons'
+import { LayoutUI, Loader, Badge, StatusIcon }                                              from '@acx-ui/components'
 import { TimelineDrawer }                                                                   from '@acx-ui/rc/components'
 import { useActivitiesQuery }                                                               from '@acx-ui/rc/services'
 import { Activity, CommonUrlsInfo, useTableQuery, getActivityDescription, severityMapping } from '@acx-ui/rc/utils'
@@ -19,24 +14,6 @@ import { useTenantLink, useNavigate }                                           
 import { formatter }                                                                        from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
-
-const getIcon = (
-  status: Activity['status']
-) => {
-  switch(status) {
-    case 'SUCCESS':
-      return <CheckMarkCircleSolid />
-    case 'PENDING':
-      return <Pending />
-    case 'INPROGRESS':
-      return <InProgress />
-    case 'FAIL':
-      return <UI.RedCancelCircle />
-    case 'OFFLINE':
-      return <div /> // TODO: Add offline icon
-  }
-  return
-}
 
 const defaultPayload: {
   url: string
@@ -149,7 +126,7 @@ export default function ActivityHeaderButton () {
                   activity.descriptionTemplate,
                   activity.descriptionData
                 )}
-                avatar={getIcon(activity.status)}
+                avatar={<StatusIcon status={activity.status as Activity['status']}/>}
                 description={
                   <UI.ListTime>{formatter('calendarFormat')(activity.startDatetime)}</UI.ListTime>}
               />
@@ -226,6 +203,7 @@ export default function ActivityHeaderButton () {
       onClose={()=>setDetailModalOpen(false)}
       onBackClick={()=>setDetailModalOpen(false)}
       data={getDrawerData?.(detail!)}
+      timeLine={detail?.steps}
     />}
   </>
 }
