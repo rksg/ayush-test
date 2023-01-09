@@ -27,7 +27,12 @@ function getCols (intl: ReturnType<typeof useIntl>) {
           return data
         }else{
           return (
-            <TenantLink to={`/networks/${row.id}/network-details/aps`}>{data}</TenantLink>
+            <TenantLink to={`/networks/${row.id}/network-details/aps`}>
+              {data}
+              {data !== row.ssid &&
+                <> {intl.$t({ defaultMessage: '(SSID: {ssid})' }, { ssid: row.ssid })}</>
+              }
+            </TenantLink>
           )
         }
       }

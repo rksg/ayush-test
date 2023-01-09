@@ -2,16 +2,20 @@
 import { useState, useEffect } from 'react'
 
 import { Switch }                 from 'antd'
+import _                          from 'lodash'
 import { useIntl, FormattedList } from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
-import { Table, TableProps, showActionModal, Loader } from '@acx-ui/components'
+import { Table, TableProps, showActionModal, Loader, Tooltip } from '@acx-ui/components'
 import {
   useVenueDHCPPoolsQuery,
-  useActivateDHCPPoolMutation } from '@acx-ui/rc/services'
+  useActivateDHCPPoolMutation,
+  useDeactivateDHCPPoolMutation } from '@acx-ui/rc/services'
 import { VenueDHCPPoolInst } from '@acx-ui/rc/utils'
-import { TenantLink }        from '@acx-ui/react-router-dom'
 import { formatter }         from '@acx-ui/utils'
+
+import { ReadonlySwitch } from './styledComponents'
+
 
 
 
@@ -28,9 +32,16 @@ export default function VenuePoolTable (){
 
 
   const [activateDHCPPool] = useActivateDHCPPoolMutation()
+  const [deactivateDHCPPool] = useDeactivateDHCPPoolMutation()
+
 
   const setActivePool = async (dhcppoolId:string, active:boolean)=>{
-    await activateDHCPPool({ params: { ...params, dhcppoolId } }).unwrap()
+
+    if(active){
+      await activateDHCPPool({ params: { ...params, dhcppoolId } }).unwrap()
+    }else{
+      await deactivateDHCPPool({ params: { ...params, dhcppoolId } }).unwrap()
+    }
     const updateActive = tableData?.map((item)=>{
       if(item.id===dhcppoolId){
         return {
@@ -41,6 +52,7 @@ export default function VenuePoolTable (){
         return item
       }
     })
+
     setTableData(updateActive)
   }
 
@@ -56,13 +68,7 @@ export default function VenuePoolTable (){
       key: 'name',
       title: $t({ defaultMessage: 'Pool Name' }),
       dataIndex: 'name',
-      sorter: true,
-      render: function (_data, row) {
-        return (
-          <TenantLink
-            to={`/venues/${row.id}/venue-details/overview`}>{row.name}</TenantLink>
-        )
-      }
+      sorter: true
     },
     {
       key: 'startIpAddress',
@@ -86,7 +92,7 @@ export default function VenuePoolTable (){
         const MINUTE = 1000 * 60
         const HOUR = MINUTE * 60
         return formatter('longDurationFormat')
-        ((rowData.leaseTimeHours || 0 * HOUR) + (rowData.leaseTimeMinutes || 0 * MINUTE))
+        (((rowData.leaseTimeHours || 0) * HOUR) + ((rowData.leaseTimeMinutes || 0) * MINUTE))
       }
     },
     {
@@ -102,6 +108,16 @@ export default function VenuePoolTable (){
       title: $t({ defaultMessage: 'Active' }),
       dataIndex: 'id',
       render: (id, row) => {
+        let hasOtherActive = true
+        if(row.active===true){
+          hasOtherActive = _.some(tableData, o => o.active && o.id !== id)
+        }
+        if(!hasOtherActive){
+          return <Tooltip placement='topLeft'
+            title={$t({ defaultMessage: 'At least one pool must be active' })}
+            arrowPointAtCenter><ReadonlySwitch checked/></Tooltip>
+        }
+
         const switchRef = <Switch
           checked={row.active}
           onChange={(checked)=>{
