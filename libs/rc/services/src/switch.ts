@@ -163,12 +163,12 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       transformResponse: (res: { response:{ list:ConfigurationHistory[], totalCount:number } }, meta
         , arg: { payload:{ page:number } }) => {
         return {
-          data: res.response.list.map(item => ({
+          data: res.response.list ? res.response.list.map(item => ({
             ...item,
             startTime: formatter('dateTimeFormatWithSeconds')(item.startTime),
             configType: transformConfigType(item.configType),
             dispatchStatus: transformConfigStatus(item.dispatchStatus)
-          })),
+          })) : [],
           totalCount: res.response.totalCount,
           page: arg.payload.page
         }
