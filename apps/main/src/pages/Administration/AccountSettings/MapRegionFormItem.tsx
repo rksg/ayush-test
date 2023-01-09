@@ -3,8 +3,8 @@ import { useState, useEffect } from 'react'
 import { Col, Select, Form, Row, Typography } from 'antd'
 import { useIntl }                            from 'react-intl'
 
-import { cssStr }                                              from '@acx-ui/components'
-import { useIsSplitOn, Features }                              from '@acx-ui/feature-toggle'
+import { cssStr } from '@acx-ui/components'
+// import { useIsSplitOn, Features }                              from '@acx-ui/feature-toggle'
 import { useGetPreferencesQuery, useUpdatePreferenceMutation } from '@acx-ui/rc/services'
 import { COUNTRY_CODE }                                        from '@acx-ui/rc/utils'
 import { useParams }                                           from '@acx-ui/react-router-dom'
@@ -19,10 +19,10 @@ const countryCodes = COUNTRY_CODE.map(item=> ({
 const MapRegionFormItem = () => {
   const { $t } = useIntl()
   const params = useParams()
-  const isMapEnabled = useIsSplitOn(Features.G_MAP)
+  // const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const [currentRegion, setCurrentRegion] = useState('US')
   const preferenceData = useGetPreferencesQuery({ params })
-  const [updatePreferences, { isLoading: isUpdatingPreference }] = useUpdatePreferenceMutation()
+  const [updatePreferences/*, { isLoading: isUpdatingPreference }*/] = useUpdatePreferenceMutation()
 
 
   const handleMapRegionChange = (regionCode:string) => {

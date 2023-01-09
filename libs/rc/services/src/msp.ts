@@ -141,7 +141,7 @@ export const mspApi = baseMspApi.injectEndpoints({
           createHttpRequest(MspUrlsInfo.getMspEcProfile, params)
 
 
-          
+
         return {
           ...req
         }

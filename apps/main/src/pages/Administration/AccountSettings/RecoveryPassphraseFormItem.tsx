@@ -3,16 +3,11 @@ import { useState } from 'react'
 import { Col, List, Form, Row, Typography, Input } from 'antd'
 import _                                           from 'lodash'
 import { useIntl }                                 from 'react-intl'
-import { useParams }                               from 'react-router-dom'
 import styled                                      from 'styled-components/macro'
 
-import { cssStr }       from '@acx-ui/components'
-import { SpaceWrapper } from '@acx-ui/rc/components'
-// import {
-//   useGetRecoveryPassphraseQuery
-// } from '@acx-ui/rc/services'
+import { cssStr }             from '@acx-ui/components'
+import { SpaceWrapper }       from '@acx-ui/rc/components'
 import { RecoveryPassphrase } from '@acx-ui/rc/utils'
-
 
 import { ChangePassphraseDrawer } from './ChangePassphraseDrawer'
 import { MessageMapping }         from './MessageMapping'
@@ -25,9 +20,7 @@ interface RecoveryPassphraseFormItemProps {
 const RecoveryPassphraseFormItem = styled((props:RecoveryPassphraseFormItemProps) => {
   const { $t } = useIntl()
   const { className, recoveryPassphraseData } = props
-  // const params = useParams()
   const [openPassphraseDrawer, setOpenPassphraseDrawer] = useState(false)
-  // const RecoveryPassphraseData = useGetRecoveryPassphraseQuery({ params })
 
   const onClickChangePassphrase = () => {
     setOpenPassphraseDrawer(true)

@@ -5,8 +5,7 @@ import { Col, Form, Row, Typography, Checkbox, Tooltip } from 'antd'
 import moment                                            from 'moment-timezone'
 import { useIntl }                                       from 'react-intl'
 import { useParams }                                     from 'react-router-dom'
-import styled                                            from 'styled-components/macro'
-
+// import styled                                            from 'styled-components/macro'
 
 import { cssStr }               from '@acx-ui/components'
 import { SpaceWrapper }         from '@acx-ui/rc/components'
@@ -38,10 +37,10 @@ const AccessSupportFormItem = (props: AccessSupportFormItemProps) => {
   const [countDown, setCountDown] = useState('')
 
   const [ enableAccessSupport,
-    { data: enableAccessResult, isLoading: isEnableAccessSupportUpdating }]
+    { isLoading: isEnableAccessSupportUpdating }]
     = useEnableAccessSupportMutation()
   const [disableAccessSupport,
-    { data: disableAccessResult, isLoading: isDisableAccessSupportUpdating }]
+    { isLoading: isDisableAccessSupportUpdating }]
     = useDisableAccessSupportMutation()
 
   const showMfa = userProfileData?.tenantId === userProfileData?.varTenantId

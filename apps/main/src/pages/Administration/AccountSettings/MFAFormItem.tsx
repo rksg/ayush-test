@@ -1,18 +1,10 @@
-import { useState, useCallback, useEffect } from 'react'
+import { Col, List, Form, Row, Typography, Checkbox } from 'antd'
+import TextArea                                       from 'antd/lib/input/TextArea'
+import { useIntl }                                    from 'react-intl'
+// import styled                                                  from 'styled-components/macro'
 
-import { Col, List, Form, Row, Typography, Checkbox, Tooltip } from 'antd'
-import TextArea                                                from 'antd/lib/input/TextArea'
-import { useIntl }                                             from 'react-intl'
-import { useParams }                                           from 'react-router-dom'
-import styled                                                  from 'styled-components/macro'
-
-
-import { Card, cssStr } from '@acx-ui/components'
-import { SpaceWrapper } from '@acx-ui/rc/components'
-// import {
-//   useGetEcTenantDelegationQuery,
-//   useGetTenantDelegationQuery
-// } from '@acx-ui/rc/services'
+import { Card, cssStr }          from '@acx-ui/components'
+import { SpaceWrapper }          from '@acx-ui/rc/components'
 import { MFAStatus, MFASession } from '@acx-ui/rc/utils'
 
 import { MessageMapping } from './MessageMapping'
@@ -28,6 +20,7 @@ const MFAFormItem = (props: MFAFormItemProps) => {
   const { mfaTenantDetailsData } = props
   // const params = useParams()
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleEnableMFAChange = (e: CheckboxChangeEvent) => {
     // const isChecked = e.target.checked
   }
