@@ -92,6 +92,11 @@ jest.mock('./pages/Devices/Edge/EdgeDetails/EditEdge', () => () => {
   return <div data-testid='EditEdge' />
 })
 
+jest.mock('./pages/Timeline', () => () => {
+  return <div data-testid='Timeline' />
+})
+
+
 describe('RcRoutes: Devices', () => {
   test('should redirect devices to devices/wifi', async () => {
     render(<Provider><RcRoutes /></Provider>, {
@@ -441,5 +446,45 @@ describe('RcRoutes: User', () => {
       }
     })
     expect(screen.getByTestId('UserClientDetails')).toBeVisible()
+  })
+  test('should redirect details/timeline to details/timeline/events', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/users/wifi/clients/clientId/details/timeline',
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('UserClientDetails')).toBeVisible()
+  })
+  test('should redirect to details/timeline/events correctly', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/users/wifi/clients/clientId/details/timeline/events',
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('UserClientDetails')).toBeVisible()
+  })
+})
+
+describe('RcRoutes: Timeline', () => {
+  test('should redirect timeline to timeline/activities', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/timeline',
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('Timeline')).toBeVisible()
+  })
+
+  test('should navigate to timeline/activities', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/timeline/activities',
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('Timeline')).toBeVisible()
   })
 })
