@@ -11,7 +11,8 @@ import {
   screen,
   waitFor,
   waitForElementToBeRemoved,
-  within
+  within,
+  findTBody
 } from '@acx-ui/test-utils'
 
 import { SwitchTable } from '.'
@@ -161,8 +162,7 @@ describe('SwitchTable', () => {
     const row2 = await screen.findByRole('row', { name: /FMF2249Q0JT/i })
     await userEvent.click(row2) // select ap 2: DisconnectedFromCloud
 
-    const tbody = (await screen.findAllByRole('rowgroup'))
-      .find(element => element.classList.contains('ant-table-tbody'))!
+    const tbody = await findTBody()
     const rows = await within(tbody).findAllByRole('checkbox', { checked: true })
     expect(rows).toHaveLength(1)
 

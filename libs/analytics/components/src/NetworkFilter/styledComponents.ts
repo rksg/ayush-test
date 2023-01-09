@@ -21,7 +21,7 @@ export const NonSelectableItem = styled.div.attrs(
   width: 100%;
 `
 export const Container = styled.div`
-  min-width: 150px;
+  min-width: 165px;
   max-width: 180px;
 `
 export const SeverityContainer = styled.div`

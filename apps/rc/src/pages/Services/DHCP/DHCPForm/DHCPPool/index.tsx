@@ -11,11 +11,14 @@ import {
   LeaseUnit,
   networkWifiIpRegExp,
   subnetMaskIpRegExp,
-  countIpRangeSize,
+  countIpMaxRange,
+  countIpSize,
   IpInSubnetPool } from '@acx-ui/rc/utils'
+import { DHCPConfigTypeEnum }          from '@acx-ui/rc/utils'
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
-// import { PoolOption } from './poolOptions/PoolOption'
+import { DEFAULT_GUEST_DHCP_NAME } from '../DHCPForm'
+
 import { PoolTable } from './PoolTable'
 
 
@@ -29,7 +32,9 @@ const initPoolData: Partial<DHCPPool> = {
 
 type DHCPPoolTableProps = {
   value?: DHCPPool[]
-  onChange?: (data: DHCPPool[]) => void
+  onChange?: (data: DHCPPool[]) => void,
+  dhcpMode: DHCPConfigTypeEnum,
+  isDefaultService: boolean | undefined
 }
 
 const { Option } = Select
@@ -44,13 +49,59 @@ async function nameValidator (
   if (!matched) return
 
   const entityName = $t({ defaultMessage: 'Pool Name' })
-  const key = 'name'
-  return Promise.reject($t(validationMessages.duplication, { entityName, key }))
+  return Promise.reject($t(validationMessages.duplication, {
+    entityName: entityName,
+    key: $t({ defaultMessage: 'name' }),
+    extra: ''
+  }))
 }
+
+async function vlanValidator (
+  vlanID: number,
+  dhcpPools: DHCPPool[],
+  currentId: DHCPPool['id'],
+  wiredClients: boolean,
+  dhcpMode: DHCPConfigTypeEnum
+) {
+  const { $t } = getIntl()
+  const sameVlan = dhcpPools.find((item) => item.vlanId === vlanID && currentId !== item.id)
+  if (sameVlan) return Promise.reject($t({ defaultMessage: 'Same VLAN IDs already exists' }))
+
+  if(!wiredClients && vlanID===1){
+    return Promise.reject($t({
+      defaultMessage: 'VLAN ID can\'t be 1 when NOT allow wired clients' }))
+  }
+
+  if(dhcpMode === DHCPConfigTypeEnum.MULTIPLE && vlanID === 1){
+    return Promise.reject($t({
+      defaultMessage: 'The pool has VLAN ID 1 which is not allowed in \'Multiple AP DHCP\' mode.'
+    }))
+  }
+  return
+}
+
+
+async function subnetValidator (
+  subnetAddress: string,
+  dhcpPools: DHCPPool[],
+  currentId: DHCPPool['id']
+) {
+  const { $t } = getIntl()
+  const sameSubnet = dhcpPools.find(
+    (item) =>
+      item.subnetAddress === subnetAddress && currentId !== item.id)
+  if (sameSubnet)
+    return Promise.reject($t({ defaultMessage: 'Same Subnet Address already exists' }))
+
+  return
+}
+
 
 export default function DHCPPoolTable ({
   value,
-  onChange
+  onChange,
+  dhcpMode,
+  isDefaultService
 }: DHCPPoolTableProps) {
   const { $t } = useIntl()
   const [form] = Form.useForm<DHCPPool>()
@@ -77,7 +128,7 @@ export default function DHCPPoolTable ({
 
   const onSubmit = (data: DHCPPool) => {
     let id = data.id
-    if (id === initPoolData.id) { id = data.id = String(Date.now()) }
+    if (id === initPoolData.id) { id = data.id = '_NEW_'+String(Date.now()) }
     valueMap.current[id] = data
     handleChanged()
     form.resetFields()
@@ -110,7 +161,10 @@ export default function DHCPPoolTable ({
           ]}
           validateFirst
           hasFeedback
-          children={<Input />}
+          children={<Input disabled={
+            isEdit() &&
+            isDefaultService &&
+            form.getFieldValue('name') === DEFAULT_GUEST_DHCP_NAME}/>}
         />
         <Form.Item
           name='description'
@@ -136,7 +190,8 @@ export default function DHCPPoolTable ({
           label={$t({ defaultMessage: 'IP Address' })}
           rules={[
             { required: true },
-            { validator: (_, value) => networkWifiIpRegExp(value) }
+            { validator: (_, value) => networkWifiIpRegExp(value) },
+            { validator: (_, value) => subnetValidator(value, values(), form.getFieldValue('id')) }
           ]}
           children={<Input />}
         />
@@ -168,8 +223,24 @@ export default function DHCPPoolTable ({
           rules={[
             { required: true },
             { validator: (_, value) => networkWifiIpRegExp(value) },
-            { validator: (_, value) => countIpRangeSize(
+            { validator: (_, value) => countIpMaxRange(
               form.getFieldValue('startIpAddress'), value)
+            },
+            { validator: (_, value) => {
+              if(dhcpMode===DHCPConfigTypeEnum.MULTIPLE){
+                if(countIpSize(form.getFieldValue('startIpAddress'), value) <= 10){
+                  // eslint-disable-next-line max-len
+                  return Promise.reject($t({ defaultMessage: 'Needs to reserve 10 IP addresses per pool for DHCP Servers and gateways in the Multiple mode' }))
+                }
+              }
+              else if(dhcpMode===DHCPConfigTypeEnum.HIERARCHICAL){
+                if(countIpSize(form.getFieldValue('startIpAddress'), value) <= 2){
+                  // eslint-disable-next-line max-len
+                  return Promise.reject($t({ defaultMessage: 'Needs to reserve 2 IP addresses per pool for DHCP Servers and gateways in the Hierarchical mode' }))
+                }
+              }
+              return Promise.resolve()
+            }
             }
           ]}
           children={<Input />}
@@ -213,7 +284,12 @@ export default function DHCPPoolTable ({
         <Form.Item
           name='vlanId'
           rules={[
-            { required: true }
+            { required: true },
+            { validator: (_, value) => vlanValidator(
+              value,
+              values(),
+              form.getFieldValue('id'),
+              form.getFieldValue('allowWired'), dhcpMode) }
           ]}
 
           label={$t({ defaultMessage: 'VLAN' })}
@@ -234,6 +310,7 @@ export default function DHCPPoolTable ({
         onAdd={onAddOrEdit}
         onEdit={onAddOrEdit}
         onDelete={onDelete}
+        isDefaultService={isDefaultService}
       />
       <Drawer
         title={$t({ defaultMessage: 'Add DHCP Pool' })}
