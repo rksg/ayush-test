@@ -102,15 +102,13 @@ COPY --from=acx-ui-analytics-test /app/tests-done tests-done
 RUN node ./node_modules/.bin/nx run-many --target=test --all --exclude=rc,analytics --coverage --runInBand --verbose
 
 FROM build-base as acx-ui-sonar-run
-COPY --from=acx-ui-tests /app/coverage/* /app/coverage
-# COPY --from=acx-ui-rc-test /app/coverage/* /app/coverage
-# COPY --from=acx-ui-analytics-test /app/coverage/* /app/coverage
-# Potentially split tests into sub stages
-#COPY --from=acx-ui-test-many /app/coverage/* /app/coverage
+COPY --from=acx-ui-tests          /app/coverage/* /app/coverage
+COPY --from=acx-ui-rc-test        /app/coverage/apps/* /app/coverage/app/.
+COPY --from=acx-ui-analytics-test /app/coverage/apps/* /app/coverage/app/.
 
 ###############################################################
 
-FROM nginx:1.21.6-alpine as acx-ui-server
+FROM nginx:1.21.6-alpine
 
 WORKDIR /usr/share/nginx/html
 
