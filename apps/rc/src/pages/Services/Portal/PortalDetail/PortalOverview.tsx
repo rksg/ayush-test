@@ -29,15 +29,9 @@ export default function PortalOverview (props: { demoValue: Demo }) {
   const [getPortalLang] = useGetPortalLangMutation()
   const [portalLang, setPortalLang]=useState({} as { [key:string]:string })
   useEffect(()=>{
-    getPortalLang({ params: { ...params, messageName: 'messages_'+
-    newDemo.displayLangCode+'.properties' } }).unwrap().then(()=>{
-    }, err=>{
-      const dataArray = err.data?.split('\n')||[]
-      const dataObj= {} as { [key:string]:string }
-      dataArray.forEach( (item: string) => {
-        dataObj[item.split('=')[0]?.trim()] = item.split('=')[1]?.trim()
-      })
-      setPortalLang(dataObj)
+    getPortalLang({ params: { ...params, messageName:
+    newDemo.displayLangCode+'.json' } }).unwrap().then((res)=>{
+      setPortalLang(res)
     })
   }, [])
   return (

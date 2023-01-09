@@ -1,39 +1,171 @@
 import { useState } from 'react'
 
-import { defineMessage, useIntl } from 'react-intl'
+import _                                            from 'lodash'
+import moment                                       from 'moment'
+import { defineMessage, useIntl, FormattedMessage } from 'react-intl'
 
-import { Loader, Table, TableProps, Button }                                                from '@acx-ui/components'
-import { CommonUrlsInfo, Event, noDataDisplay, replaceStrings, RequestPayload, TableQuery } from '@acx-ui/rc/utils'
-import { formatter }                                                                        from '@acx-ui/utils'
+import { Loader, Table, TableProps, Button, Tooltip }                                       from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo, Event, RequestPayload, TableQuery, replaceStrings, noDataDisplay } from '@acx-ui/rc/utils'
+import { TenantLink, generatePath }                                                         from '@acx-ui/react-router-dom'
+import { formatter, useDateFilter }                                                         from '@acx-ui/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
 
 import { severityMapping, eventTypeMapping, productMapping } from './mapping'
+import * as UI                                               from './styledComponents'
+
+// rename to prevent it being parse by extraction process
+const FormatMessage = FormattedMessage
+
+export const useEventTableFilter = () => {
+  const { startDate, endDate } = useDateFilter()
+  return {
+    fromTime: moment(startDate).utc().format(),
+    toTime: moment(endDate).utc().format()
+  }
+}
+
+export const defaultPayload = {
+  url: CommonUrlsInfo.getEventList.url,
+  fields: [
+    'event_datetime',
+    'severity',
+    'entity_type',
+    'product',
+    'entity_id',
+    'message',
+    'dpName',
+    'apMac',
+    'clientMac',
+    'macAddress',
+    'apName',
+    'switchName',
+    'serialNumber',
+    'networkName',
+    'networkId',
+    'ssid',
+    'radio',
+    'raw_event',
+    'sourceType',
+    'adminName',
+    'clientName',
+    'userName',
+    'hostname',
+    'adminEmail',
+    'administratorEmail',
+    'venueName',
+    'venueId',
+    'apGroupId',
+    'apGroupName',
+    'floorPlanName',
+    'recipientName',
+    'transactionId',
+    'name'
+  ],
+  filters: {
+    entity_type: ['AP', 'CLIENT', 'SWITCH', 'NETWORK']
+  }
+}
+
+export const defaultSorter = {
+  sortField: 'event_datetime',
+  sortOrder: 'DESC'
+}
 
 interface EventTableProps {
   tableQuery: TableQuery<Event, RequestPayload<unknown>, unknown>
+}
+
+type EntityType = typeof entityTypes[number]
+type EntityExistsKey = `is${Capitalize<EntityType>}Exists`
+const entityTypes = ['ap', 'client', 'network', 'switch', 'venue'] as const
+
+function EntityLink ({ entityKey, data }: { entityKey: keyof Event, data: Event }) {
+  const pathSpecs: Record<
+    typeof entityTypes[number],
+    { path: string, params: Array<keyof Event>, disabled?: boolean }
+  > = {
+    ap: {
+      path: 'devices/wifi/:serialNumber/details/overview',
+      params: ['serialNumber']
+    },
+    client: {
+      path: 'users/wifi/clients/:clientMac/details/overview',
+      params: ['clientMac']
+    },
+    network: {
+      // TODO:
+      // change to overview when overview page ready
+      path: 'networks/:networkId/network-details/aps',
+      params: ['networkId']
+    },
+    switch: {
+      path: 'devices/switch/:switchMac/:serialNumber/details/overview',
+      params: ['switchMac', 'serialNumber'],
+      disabled: !useIsSplitOn(Features.DEVICES)
+    },
+    venue: {
+      path: 'venues/:venueId/venue-details/overview',
+      params: ['venueId']
+    }
+  }
+
+  const [entity] = _.kebabCase(entityKey).split('-') as [EntityType]
+  const name = <>{String(data[entityKey])}</>
+
+  if (!entityTypes.includes(entity)) return name
+
+  const existKey = `is${_.capitalize(entity)}Exists` as EntityExistsKey
+  const exists = data[existKey]
+
+  if (!exists) return <Tooltip
+    title={<FormattedMessage defaultMessage='Not available' />}
+    children={<UI.Disabled>{name}</UI.Disabled>}
+  />
+
+  const spec = pathSpecs[entity]
+  const params = spec.params.map(key => [key, String(data[key])])
+
+  if (spec.disabled) return name
+
+  return <TenantLink
+    to={generatePath(spec.path, Object.fromEntries(params))}
+    children={name}
+  />
 }
 
 const getSource = (data: Event) => {
   const sourceMapping = {
     AP: 'apName',
     CLIENT: 'clientName',
-    ADMIN: 'adminName'
-  }
-  const key = sourceMapping[data.entity_type.toUpperCase() as keyof typeof sourceMapping]
-  return key ? data[key as keyof Event] as string : data.entity_type
+    NETWORK: 'apName',
+    VENUE: 'venueName',
+    SWITCH: 'switchName'
+  } as const
+  const entityKey = sourceMapping[data.entity_type as keyof typeof sourceMapping]
+  return <EntityLink {...{ entityKey, data }} />
 }
 
 const getDescription = (data: Event) => {
-  try {
-    const message = data.message && JSON.parse(data.message).message_template
-    return replaceStrings(message, data)
-  } catch {
-    return noDataDisplay
-  }
+  let message = data.message && JSON.parse(data.message).message_template
+
+  const template = replaceStrings(message, data, (key) => `<entity>${key}</entity>`)
+
+  return <FormatMessage
+    id='events-description-template'
+    // escape ' by replacing with '' as it is special character of formatjs
+    defaultMessage={template.replaceAll("'", "''")}
+    values={{
+      entity: (chunks) => <EntityLink
+        entityKey={String(chunks[0]) as keyof Event}
+        data={data}
+      />
+    }}
+  />
 }
 
-const EventTable = ({ tableQuery }: EventTableProps) => {
+export const EventTable = ({ tableQuery }: EventTableProps) => {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
   const [current, setCurrent] = useState<Event>()
@@ -151,44 +283,4 @@ const EventTable = ({ tableQuery }: EventTableProps) => {
       data={getDrawerData(current!)}
     />}
   </Loader>
-}
-export { EventTable }
-
-export const defaultEventsPayload = {
-  url: CommonUrlsInfo.getEventList.url,
-  fields: [
-    'event_datetime',
-    'severity',
-    'entity_type',
-    'product',
-    'entity_id',
-    'message',
-    'dpName',
-    'apMac',
-    'clientMac',
-    'macAddress',
-    'apName',
-    'switchName',
-    'serialNumber',
-    'networkName',
-    'networkId',
-    'ssid',
-    'radio',
-    'raw_event',
-    'sourceType',
-    'adminName',
-    'clientName',
-    'userName',
-    'hostname',
-    'adminEmail',
-    'administratorEmail',
-    'venueName',
-    'venueId',
-    'apGroupId',
-    'apGroupName',
-    'floorPlanName',
-    'recipientName',
-    'transactionId',
-    'name'
-  ]
 }

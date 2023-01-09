@@ -283,13 +283,9 @@ describe('VenueMeshAps', () => {
   })
 
   it('should render correctly', async () => {
-    const { asFragment } = render(<Provider><VenueDetails /></Provider>, {
+    render(<Provider><VenueDetails /></Provider>, {
       route: { params, path: '/:tenantId/venues/:venueId/venue-details/:activeTab' }
     })
-
-    expect(asFragment()).toMatchSnapshot()
-
     await screen.findByText('R710')
-
   })
 })

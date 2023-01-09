@@ -122,8 +122,20 @@ export default function NetworkForm () {
   }, [data])
 
   const handlePortalWebPage = async (data: NetworkSaveData) => {
+    if(!data.guestPortal?.socialIdentities?.facebook){
+      delete data.guestPortal?.socialIdentities?.facebook
+    }
+    if(!data.guestPortal?.socialIdentities?.google){
+      delete data.guestPortal?.socialIdentities?.google
+    }
+    if(!data.guestPortal?.socialIdentities?.twitter){
+      delete data.guestPortal?.socialIdentities?.twitter
+    }
+    if(!data.guestPortal?.socialIdentities?.linkedin){
+      delete data.guestPortal?.socialIdentities?.linkedin
+    }
     const tmpGuestPageState = {
-      enableDhcp: data.enableDhcp||saveState.enableDhcp,
+      enableDhcp: _.isUndefined(data.enableDhcp)? saveState.enableDhcp : data.enableDhcp,
       guestPortal: {
         ...saveState?.guestPortal,
         ...data.guestPortal,
@@ -140,7 +152,14 @@ export default function NetworkForm () {
       wlan: {
         ...saveState.wlan,
         ...data.wlan
-      }
+      },
+      portalServiceProfileId: data.portalServiceProfileId
+    }
+    if(!tmpGuestPageState.portalServiceProfileId){
+      delete tmpGuestPageState.portalServiceProfileId
+    }
+    if(!tmpGuestPageState.guestPortal.redirectUrl){
+      delete tmpGuestPageState.guestPortal.redirectUrl
     }
     updateSaveData({ ...saveState, ...tmpGuestPageState } as NetworkSaveData)
     return true

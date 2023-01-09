@@ -7,7 +7,7 @@ import {
   defaultApPayload,
   NetworkTable,
   defaultNetworkPayload,
-  defaultEventsPayload,
+  eventDefaultPayload,
   EventTable
 }           from '@acx-ui/rc/components'
 import {
@@ -90,7 +90,7 @@ const searches = [
     const result = usePollingTableQuery<Event>({
       useQuery: useEventsQuery,
       defaultPayload: {
-        ...defaultEventsPayload,
+        ...eventDefaultPayload,
         searchString,
         searchTargetFields: ['entity_id', 'message', 'apMac', 'clientMac'],
         detailLevel: 'su'
