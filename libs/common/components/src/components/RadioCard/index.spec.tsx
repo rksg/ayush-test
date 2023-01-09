@@ -1,0 +1,83 @@
+import { fireEvent, render, screen } from '@acx-ui/test-utils'
+
+import { RadioCard } from '.'
+
+describe('RadioCard', () => {
+  describe('type = default', () => {
+    it('should render', async () => {
+      render(<RadioCard
+        value='value'
+        title='title'
+        description='description'
+        categories={['WiFi', 'Switch', 'Edge']}
+      />)
+      await screen.findByText('title')
+      await screen.findByText('description')
+      await screen.findByText('WiFi')
+    })
+    it('should handle onClick', async () => {
+      const onClick = jest.fn()
+      render(<RadioCard
+        value='value'
+        title='title'
+        description='description'
+        onClick={onClick}
+      />)
+      fireEvent.click(await screen.findByText('title'))
+      expect(onClick).toBeCalledTimes(1)
+    })
+  })
+  describe('type = radio', () => {
+    it('should render', async () => {
+      render(<RadioCard
+        type='radio'
+        value='value'
+        title='title'
+        description='description'
+        categories={['WiFi', 'Switch', 'Edge']}
+      />)
+      await screen.findByText('title')
+      await screen.findByText('description')
+      await screen.findByText('WiFi')
+      await screen.findByDisplayValue('value')
+    })
+    it('should not call onClick', async () => {
+      const onClick = jest.fn()
+      render(<RadioCard
+        type='radio'
+        value='value'
+        title='title'
+        description='description'
+      />)
+      fireEvent.click(await screen.findByText('title'))
+      expect(onClick).not.toBeCalled()
+    })
+  })
+  describe('type = button', () => {
+    it('should render', async () => {
+      render(<RadioCard
+        type='button'
+        value='value'
+        title='title'
+        description='description'
+        categories={['WiFi', 'Switch', 'Edge']}
+      />)
+      await screen.findByText('title')
+      await screen.findByText('description')
+      await screen.findByText('WiFi')
+      await screen.findByText('Add')
+    })
+    it('should handle button onClick', async () => {
+      const onClick = jest.fn()
+      render(<RadioCard
+        type='button'
+        value='value'
+        title='title'
+        description='description'
+        onClick={onClick}
+      />)
+      fireEvent.click(await screen.findByText('Add'))
+      expect(onClick).toBeCalledTimes(1)
+    })
+  })
+})

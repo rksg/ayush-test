@@ -1,8 +1,8 @@
-import { Form, Radio, Space, Typography } from 'antd'
-import { useIntl }                        from 'react-intl'
+import { Form, Radio, Typography } from 'antd'
+import { useIntl }                 from 'react-intl'
 
-import { PageHeader, StepsForm }  from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { GridCol, GridRow, PageHeader, RadioCard, StepsForm } from '@acx-ui/components'
+import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
 import {
   ServiceType,
   getServiceListRoutePath,
@@ -17,8 +17,6 @@ import {
 } from '../contentsMap'
 
 import * as UI from './styledComponents'
-
-
 
 export default function SelectServiceForm () {
   const { $t } = useIntl()
@@ -59,65 +57,89 @@ export default function SelectServiceForm () {
             name='serviceType'
             rules={[{ required: true }]}
           >
-            <Radio.Group>
+            <Radio.Group style={{ width: '100%' }}>
               <UI.CategoryContainer>
                 <Typography.Title level={3}>
                   { $t({ defaultMessage: 'Connectivity' }) }
                 </Typography.Title>
-                <Space>
-                  <Radio key={ServiceType.DHCP} value={ServiceType.DHCP}>
-                    {$t(serviceTypeLabelMapping[ServiceType.DHCP])}
-                    <UI.RadioDescription>
-                      {$t(serviceTypeDescMapping[ServiceType.DHCP])}
-                    </UI.RadioDescription>
-                  </Radio>
-                  <Radio key={ServiceType.DPSK} value={ServiceType.DPSK}>
-                    {$t(serviceTypeLabelMapping[ServiceType.DPSK])}
-                    <UI.RadioDescription>
-                      {$t(serviceTypeDescMapping[ServiceType.DPSK])}
-                    </UI.RadioDescription>
-                  </Radio>
+                <GridRow>
+                  <GridCol col={{ span: 8 }}>
+                    <RadioCard
+                      type={'radio'}
+                      key={ServiceType.DHCP}
+                      value={ServiceType.DHCP}
+                      title={$t(serviceTypeLabelMapping[ServiceType.DHCP])}
+                      description={$t(serviceTypeDescMapping[ServiceType.DHCP])}
+                      categories={['WiFi']}
+                    />
+                  </GridCol>
+                  <GridCol col={{ span: 8 }}>
+                    <RadioCard
+                      type={'radio'}
+                      key={ServiceType.DPSK}
+                      value={ServiceType.DPSK}
+                      title={$t(serviceTypeLabelMapping[ServiceType.DPSK])}
+                      description={$t(serviceTypeDescMapping[ServiceType.DPSK])}
+                      categories={['WiFi']}
+                    />
+                  </GridCol>
                   {networkSegmentationEnabled &&
-                    <Radio key={ServiceType.NETWORK_SEGMENTATION}
-                      value={ServiceType.NETWORK_SEGMENTATION}>
-                      {$t(serviceTypeLabelMapping[ServiceType.NETWORK_SEGMENTATION])}
-                      <UI.RadioDescription>
-                        {$t(serviceTypeDescMapping[ServiceType.NETWORK_SEGMENTATION])}
-                      </UI.RadioDescription>
-                    </Radio>
+                    <GridCol col={{ span: 8 }}>
+                      <RadioCard
+                        type={'radio'}
+                        key={ServiceType.NETWORK_SEGMENTATION}
+                        value={ServiceType.NETWORK_SEGMENTATION}
+                        title={$t(serviceTypeLabelMapping[ServiceType.NETWORK_SEGMENTATION])}
+                        description={$t(serviceTypeDescMapping[ServiceType.NETWORK_SEGMENTATION])}
+                        categories={['WiFi']}
+                      />
+                    </GridCol>
                   }
-
-                </Space>
+                </GridRow>
               </UI.CategoryContainer>
               <UI.CategoryContainer>
                 <Typography.Title level={3}>
                   { $t({ defaultMessage: 'Application' }) }
                 </Typography.Title>
-                <Space>
-                  <Radio key={ServiceType.MDNS_PROXY} value={ServiceType.MDNS_PROXY}>
-                    {$t(serviceTypeLabelMapping[ServiceType.MDNS_PROXY])}
-                    <UI.RadioDescription>
-                      {$t(serviceTypeDescMapping[ServiceType.MDNS_PROXY])}
-                    </UI.RadioDescription>
-                  </Radio>
-                  <Radio key={ServiceType.WIFI_CALLING} value={ServiceType.WIFI_CALLING}>
-                    {$t(serviceTypeLabelMapping[ServiceType.WIFI_CALLING])}
-                    <UI.RadioDescription>
-                      {$t(serviceTypeDescMapping[ServiceType.WIFI_CALLING])}
-                    </UI.RadioDescription>
-                  </Radio>
-                </Space>
+                <GridRow>
+                  <GridCol col={{ span: 8 }}>
+                    <RadioCard
+                      type={'radio'}
+                      key={ServiceType.MDNS_PROXY}
+                      value={ServiceType.MDNS_PROXY}
+                      title={$t(serviceTypeLabelMapping[ServiceType.MDNS_PROXY])}
+                      description={$t(serviceTypeDescMapping[ServiceType.MDNS_PROXY])}
+                      categories={['WiFi']}
+                    />
+                  </GridCol>
+                  <GridCol col={{ span: 8 }}>
+                    <RadioCard
+                      type={'radio'}
+                      key={ServiceType.WIFI_CALLING}
+                      value={ServiceType.WIFI_CALLING}
+                      title={$t(serviceTypeLabelMapping[ServiceType.WIFI_CALLING])}
+                      description={$t(serviceTypeDescMapping[ServiceType.WIFI_CALLING])}
+                      categories={['WiFi']}
+                    />
+                  </GridCol>
+                </GridRow>
               </UI.CategoryContainer>
               <UI.CategoryContainer>
                 <Typography.Title level={3}>
                   { $t({ defaultMessage: 'More Services' }) }
                 </Typography.Title>
-                <Radio key={ServiceType.PORTAL} value={ServiceType.PORTAL}>
-                  {$t(serviceTypeLabelMapping[ServiceType.PORTAL])}
-                  <UI.RadioDescription>
-                    {$t(serviceTypeDescMapping[ServiceType.PORTAL])}
-                  </UI.RadioDescription>
-                </Radio>
+                <GridRow>
+                  <GridCol col={{ span: 8 }}>
+                    <RadioCard
+                      type={'radio'}
+                      key={ServiceType.PORTAL}
+                      value={ServiceType.PORTAL}
+                      title={$t(serviceTypeLabelMapping[ServiceType.PORTAL])}
+                      description={$t(serviceTypeDescMapping[ServiceType.PORTAL])}
+                      categories={['WiFi']}
+                    />
+                  </GridCol>
+                </GridRow>
               </UI.CategoryContainer>
             </Radio.Group>
           </Form.Item>

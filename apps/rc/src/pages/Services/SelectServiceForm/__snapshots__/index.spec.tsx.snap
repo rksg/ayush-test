@@ -155,6 +155,7 @@ exports[`Select Service Form should render form 1`] = `
                           <div
                             class="ant-radio-group ant-radio-group-outline"
                             id="selectService_serviceType"
+                            style="width: 100%;"
                           >
                             <div
                               class="styledComponents__CategoryContainer-sc-994pwt-0 hbJKTH"
@@ -165,93 +166,170 @@ exports[`Select Service Form should render form 1`] = `
                                 Connectivity
                               </h3>
                               <div
-                                class="ant-space ant-space-horizontal ant-space-align-center"
+                                class="ant-row Grid__GridRow-sc-5irhjd-2"
+                                style="margin: -10px -10px -10px -10px;"
                               >
                                 <div
-                                  class="ant-space-item"
-                                  style="margin-right: 8px;"
+                                  class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                                  style="padding: 10px 10px 10px 10px;"
                                 >
-                                  <label
-                                    class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
+                                  <div
+                                    class="Grid__Container-sc-5irhjd-1 zzbxI"
                                   >
-                                    <span
-                                      class="ant-radio"
+                                    <div
+                                      cardtype="radio"
+                                      class="ant-card ant-card-bordered styledComponents__Card-sc-2p6olq-0 bSuJpZ"
                                     >
-                                      <input
-                                        class="ant-radio-input"
-                                        type="radio"
-                                        value="DHCP (Wi-Fi)"
-                                      />
-                                      <span
-                                        class="ant-radio-inner"
-                                      />
-                                    </span>
-                                    <span>
-                                      DHCP
                                       <div
-                                        class="styledComponents__RadioDescription-sc-994pwt-1 hpLkuH"
+                                        class="ant-card-body"
                                       >
-                                        Provides IP address to end devices
+                                        <div
+                                          class="styledComponents__Title-sc-2p6olq-6 lCnkl"
+                                        >
+                                          DHCP
+                                        </div>
+                                        <div
+                                          class="styledComponents__Description-sc-2p6olq-5 hePGjM"
+                                        >
+                                          Provides IP address to end devices
+                                        </div>
+                                        <div
+                                          class="styledComponents__CatogoryWrapper-sc-2p6olq-3 eWEpZd"
+                                        >
+                                          <div
+                                            class="styledComponents__Catogory-sc-2p6olq-4 DyevW"
+                                            color="--acx-accents-blue-60"
+                                          >
+                                            WiFi
+                                          </div>
+                                        </div>
+                                        <label
+                                          class="ant-radio-wrapper ant-radio-wrapper-in-form-item styledComponents__Radio-sc-2p6olq-2 dZONTz"
+                                        >
+                                          <span
+                                            class="ant-radio"
+                                          >
+                                            <input
+                                              class="ant-radio-input"
+                                              type="radio"
+                                              value="DHCP (Wi-Fi)"
+                                            />
+                                            <span
+                                              class="ant-radio-inner"
+                                            />
+                                          </span>
+                                        </label>
                                       </div>
-                                    </span>
-                                  </label>
+                                    </div>
+                                  </div>
                                 </div>
                                 <div
-                                  class="ant-space-item"
-                                  style="margin-right: 8px;"
+                                  class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                                  style="padding: 10px 10px 10px 10px;"
                                 >
-                                  <label
-                                    class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
+                                  <div
+                                    class="Grid__Container-sc-5irhjd-1 zzbxI"
                                   >
-                                    <span
-                                      class="ant-radio"
+                                    <div
+                                      cardtype="radio"
+                                      class="ant-card ant-card-bordered styledComponents__Card-sc-2p6olq-0 bSuJpZ"
                                     >
-                                      <input
-                                        class="ant-radio-input"
-                                        type="radio"
-                                        value="DPSK"
-                                      />
-                                      <span
-                                        class="ant-radio-inner"
-                                      />
-                                    </span>
-                                    <span>
-                                      DPSK
                                       <div
-                                        class="styledComponents__RadioDescription-sc-994pwt-1 hpLkuH"
+                                        class="ant-card-body"
                                       >
-                                        RUCKUS Dynamic Pre Shared Key Service
+                                        <div
+                                          class="styledComponents__Title-sc-2p6olq-6 lCnkl"
+                                        >
+                                          DPSK
+                                        </div>
+                                        <div
+                                          class="styledComponents__Description-sc-2p6olq-5 hePGjM"
+                                        >
+                                          RUCKUS Dynamic Pre Shared Key Service
+                                        </div>
+                                        <div
+                                          class="styledComponents__CatogoryWrapper-sc-2p6olq-3 eWEpZd"
+                                        >
+                                          <div
+                                            class="styledComponents__Catogory-sc-2p6olq-4 DyevW"
+                                            color="--acx-accents-blue-60"
+                                          >
+                                            WiFi
+                                          </div>
+                                        </div>
+                                        <label
+                                          class="ant-radio-wrapper ant-radio-wrapper-in-form-item styledComponents__Radio-sc-2p6olq-2 dZONTz"
+                                        >
+                                          <span
+                                            class="ant-radio"
+                                          >
+                                            <input
+                                              class="ant-radio-input"
+                                              type="radio"
+                                              value="DPSK"
+                                            />
+                                            <span
+                                              class="ant-radio-inner"
+                                            />
+                                          </span>
+                                        </label>
                                       </div>
-                                    </span>
-                                  </label>
+                                    </div>
+                                  </div>
                                 </div>
                                 <div
-                                  class="ant-space-item"
+                                  class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                                  style="padding: 10px 10px 10px 10px;"
                                 >
-                                  <label
-                                    class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
+                                  <div
+                                    class="Grid__Container-sc-5irhjd-1 zzbxI"
                                   >
-                                    <span
-                                      class="ant-radio"
+                                    <div
+                                      cardtype="radio"
+                                      class="ant-card ant-card-bordered styledComponents__Card-sc-2p6olq-0 bSuJpZ"
                                     >
-                                      <input
-                                        class="ant-radio-input"
-                                        type="radio"
-                                        value="Network Segmentation"
-                                      />
-                                      <span
-                                        class="ant-radio-inner"
-                                      />
-                                    </span>
-                                    <span>
-                                      Network Segmentation
                                       <div
-                                        class="styledComponents__RadioDescription-sc-994pwt-1 hpLkuH"
+                                        class="ant-card-body"
                                       >
-                                        Controls network traffic by different segments
+                                        <div
+                                          class="styledComponents__Title-sc-2p6olq-6 lCnkl"
+                                        >
+                                          Network Segmentation
+                                        </div>
+                                        <div
+                                          class="styledComponents__Description-sc-2p6olq-5 hePGjM"
+                                        >
+                                          Controls network traffic by different segments
+                                        </div>
+                                        <div
+                                          class="styledComponents__CatogoryWrapper-sc-2p6olq-3 eWEpZd"
+                                        >
+                                          <div
+                                            class="styledComponents__Catogory-sc-2p6olq-4 DyevW"
+                                            color="--acx-accents-blue-60"
+                                          >
+                                            WiFi
+                                          </div>
+                                        </div>
+                                        <label
+                                          class="ant-radio-wrapper ant-radio-wrapper-in-form-item styledComponents__Radio-sc-2p6olq-2 dZONTz"
+                                        >
+                                          <span
+                                            class="ant-radio"
+                                          >
+                                            <input
+                                              class="ant-radio-input"
+                                              type="radio"
+                                              value="Network Segmentation"
+                                            />
+                                            <span
+                                              class="ant-radio-inner"
+                                            />
+                                          </span>
+                                        </label>
                                       </div>
-                                    </span>
-                                  </label>
+                                    </div>
+                                  </div>
                                 </div>
                               </div>
                             </div>
@@ -264,64 +342,116 @@ exports[`Select Service Form should render form 1`] = `
                                 Application
                               </h3>
                               <div
-                                class="ant-space ant-space-horizontal ant-space-align-center"
+                                class="ant-row Grid__GridRow-sc-5irhjd-2"
+                                style="margin: -10px -10px -10px -10px;"
                               >
                                 <div
-                                  class="ant-space-item"
-                                  style="margin-right: 8px;"
+                                  class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                                  style="padding: 10px 10px 10px 10px;"
                                 >
-                                  <label
-                                    class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
+                                  <div
+                                    class="Grid__Container-sc-5irhjd-1 zzbxI"
                                   >
-                                    <span
-                                      class="ant-radio"
+                                    <div
+                                      cardtype="radio"
+                                      class="ant-card ant-card-bordered styledComponents__Card-sc-2p6olq-0 bSuJpZ"
                                     >
-                                      <input
-                                        class="ant-radio-input"
-                                        type="radio"
-                                        value="mDNS Proxy"
-                                      />
-                                      <span
-                                        class="ant-radio-inner"
-                                      />
-                                    </span>
-                                    <span>
-                                      mDNS Proxy
                                       <div
-                                        class="styledComponents__RadioDescription-sc-994pwt-1 hpLkuH"
+                                        class="ant-card-body"
                                       >
-                                        Provides mDNS service
+                                        <div
+                                          class="styledComponents__Title-sc-2p6olq-6 lCnkl"
+                                        >
+                                          mDNS Proxy
+                                        </div>
+                                        <div
+                                          class="styledComponents__Description-sc-2p6olq-5 hePGjM"
+                                        >
+                                          Provides mDNS service
+                                        </div>
+                                        <div
+                                          class="styledComponents__CatogoryWrapper-sc-2p6olq-3 eWEpZd"
+                                        >
+                                          <div
+                                            class="styledComponents__Catogory-sc-2p6olq-4 DyevW"
+                                            color="--acx-accents-blue-60"
+                                          >
+                                            WiFi
+                                          </div>
+                                        </div>
+                                        <label
+                                          class="ant-radio-wrapper ant-radio-wrapper-in-form-item styledComponents__Radio-sc-2p6olq-2 dZONTz"
+                                        >
+                                          <span
+                                            class="ant-radio"
+                                          >
+                                            <input
+                                              class="ant-radio-input"
+                                              type="radio"
+                                              value="mDNS Proxy"
+                                            />
+                                            <span
+                                              class="ant-radio-inner"
+                                            />
+                                          </span>
+                                        </label>
                                       </div>
-                                    </span>
-                                  </label>
+                                    </div>
+                                  </div>
                                 </div>
                                 <div
-                                  class="ant-space-item"
+                                  class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                                  style="padding: 10px 10px 10px 10px;"
                                 >
-                                  <label
-                                    class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
+                                  <div
+                                    class="Grid__Container-sc-5irhjd-1 zzbxI"
                                   >
-                                    <span
-                                      class="ant-radio"
+                                    <div
+                                      cardtype="radio"
+                                      class="ant-card ant-card-bordered styledComponents__Card-sc-2p6olq-0 bSuJpZ"
                                     >
-                                      <input
-                                        class="ant-radio-input"
-                                        type="radio"
-                                        value="Wi-Fi Calling"
-                                      />
-                                      <span
-                                        class="ant-radio-inner"
-                                      />
-                                    </span>
-                                    <span>
-                                      Wi-Fi Calling
                                       <div
-                                        class="styledComponents__RadioDescription-sc-994pwt-1 hpLkuH"
+                                        class="ant-card-body"
                                       >
-                                        Provides voice calling service over WiFi
+                                        <div
+                                          class="styledComponents__Title-sc-2p6olq-6 lCnkl"
+                                        >
+                                          Wi-Fi Calling
+                                        </div>
+                                        <div
+                                          class="styledComponents__Description-sc-2p6olq-5 hePGjM"
+                                        >
+                                          Provides voice calling service over WiFi
+                                        </div>
+                                        <div
+                                          class="styledComponents__CatogoryWrapper-sc-2p6olq-3 eWEpZd"
+                                        >
+                                          <div
+                                            class="styledComponents__Catogory-sc-2p6olq-4 DyevW"
+                                            color="--acx-accents-blue-60"
+                                          >
+                                            WiFi
+                                          </div>
+                                        </div>
+                                        <label
+                                          class="ant-radio-wrapper ant-radio-wrapper-in-form-item styledComponents__Radio-sc-2p6olq-2 dZONTz"
+                                        >
+                                          <span
+                                            class="ant-radio"
+                                          >
+                                            <input
+                                              class="ant-radio-input"
+                                              type="radio"
+                                              value="Wi-Fi Calling"
+                                            />
+                                            <span
+                                              class="ant-radio-inner"
+                                            />
+                                          </span>
+                                        </label>
                                       </div>
-                                    </span>
-                                  </label>
+                                    </div>
+                                  </div>
                                 </div>
                               </div>
                             </div>
@@ -333,30 +463,65 @@ exports[`Select Service Form should render form 1`] = `
                               >
                                 More Services
                               </h3>
-                              <label
-                                class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
+                              <div
+                                class="ant-row Grid__GridRow-sc-5irhjd-2"
+                                style="margin: -10px -10px -10px -10px;"
                               >
-                                <span
-                                  class="ant-radio"
+                                <div
+                                  class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                                  style="padding: 10px 10px 10px 10px;"
                                 >
-                                  <input
-                                    class="ant-radio-input"
-                                    type="radio"
-                                    value="Portal"
-                                  />
-                                  <span
-                                    class="ant-radio-inner"
-                                  />
-                                </span>
-                                <span>
-                                  Portal
                                   <div
-                                    class="styledComponents__RadioDescription-sc-994pwt-1 hpLkuH"
+                                    class="Grid__Container-sc-5irhjd-1 zzbxI"
                                   >
-                                    Provides "portal" for guest access. Includes hotspot access (Passpoint, OpenRoaming)
+                                    <div
+                                      cardtype="radio"
+                                      class="ant-card ant-card-bordered styledComponents__Card-sc-2p6olq-0 bSuJpZ"
+                                    >
+                                      <div
+                                        class="ant-card-body"
+                                      >
+                                        <div
+                                          class="styledComponents__Title-sc-2p6olq-6 lCnkl"
+                                        >
+                                          Portal
+                                        </div>
+                                        <div
+                                          class="styledComponents__Description-sc-2p6olq-5 hePGjM"
+                                        >
+                                          Provides "portal" for guest access. Includes hotspot access (Passpoint, OpenRoaming)
+                                        </div>
+                                        <div
+                                          class="styledComponents__CatogoryWrapper-sc-2p6olq-3 eWEpZd"
+                                        >
+                                          <div
+                                            class="styledComponents__Catogory-sc-2p6olq-4 DyevW"
+                                            color="--acx-accents-blue-60"
+                                          >
+                                            WiFi
+                                          </div>
+                                        </div>
+                                        <label
+                                          class="ant-radio-wrapper ant-radio-wrapper-in-form-item styledComponents__Radio-sc-2p6olq-2 dZONTz"
+                                        >
+                                          <span
+                                            class="ant-radio"
+                                          >
+                                            <input
+                                              class="ant-radio-input"
+                                              type="radio"
+                                              value="Portal"
+                                            />
+                                            <span
+                                              class="ant-radio-inner"
+                                            />
+                                          </span>
+                                        </label>
+                                      </div>
+                                    </div>
                                   </div>
-                                </span>
-                              </label>
+                                </div>
+                              </div>
                             </div>
                           </div>
                         </div>
