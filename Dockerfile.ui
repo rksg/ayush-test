@@ -101,14 +101,14 @@ COPY --from=acx-ui-analytics-test /app/tests-done tests-done
 # RUN node ./node_modules/.bin/nx run analytics:test --coverage --maxWorkers=50%
 RUN node ./node_modules/.bin/nx run-many --target=test --all --exclude=rc,analytics --coverage --runInBand --verbose
 
-FROM build-base as acx-ui-sonar-run
+FROM tests-base as acx-ui-sonar-run
 COPY --from=acx-ui-tests          /app/coverage/* /app/coverage
 COPY --from=acx-ui-rc-test        /app/coverage/apps/* /app/coverage/app/.
 COPY --from=acx-ui-analytics-test /app/coverage/apps/* /app/coverage/app/.
 
 ###############################################################
 
-FROM nginx:1.21.6-alpine
+FROM nginx:1.21.6-alpine as acx-ui-target
 
 WORKDIR /usr/share/nginx/html
 
@@ -121,7 +121,7 @@ COPY tools/docker/nginx/nginx.conf \
   tools/docker/nginx/env.json.template \
   /etc/nginx/
 
-COPY --from=acx-ui-tests /app/dist/apps ./
+COPY --from=acx-ui-sonar-run /app/dist/apps ./
 RUN \
   # Move all other apps into main
   ls | grep -v main | xargs mv -t main && \
