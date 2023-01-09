@@ -3,11 +3,15 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import {
   PersonaUrls,
   createHttpRequest,
-  // createLocalHttpRequest as createHttpRequest,
   PersonaGroup,
   TableResult,
   RequestPayload,
-  Persona, PersonaDevice, NewTableResult, transferToTableResult
+  Persona,
+  PersonaDevice,
+  NewTableResult,
+  transferToTableResult,
+  createNewTableHttpRequest,
+  TableChangePayload
 } from '@acx-ui/rc/utils'
 
 export const basePersonaApi = createApi({
@@ -32,11 +36,14 @@ export const personaApi = basePersonaApi.injectEndpoints({
       invalidatesTags: [{ type: 'PersonaGroup', id: 'LIST' }]
     }),
     getPersonaGroupList: build.query<TableResult<PersonaGroup>, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(PersonaUrls.getPersonaGroupList, params)
+      query: ({ params, payload }) => {
+        const req = createNewTableHttpRequest({
+          apiInfo: PersonaUrls.getPersonaGroupList,
+          params,
+          payload: payload as TableChangePayload
+        })
         return {
-          ...req,
-          params
+          ...req
         }
       },
       transformResponse (result: NewTableResult<PersonaGroup>) {
@@ -46,7 +53,11 @@ export const personaApi = basePersonaApi.injectEndpoints({
     }),
     searchPersonaGroupList: build.query<TableResult<PersonaGroup>, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(PersonaUrls.searchPersonaGroupList, params)
+        const req = createNewTableHttpRequest({
+          apiInfo: PersonaUrls.searchPersonaGroupList,
+          params,
+          payload: payload as TableChangePayload
+        })
         return {
           ...req,
           params,

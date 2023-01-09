@@ -1,98 +1,24 @@
 import { rest } from 'msw'
 
 import {
-  MacRegistrationPool,
-  NewTableResult,
-  Persona,
-  PersonaGroup,
   PersonaUrls,
-  MacRegListUrlsInfo
+  MacRegListUrlsInfo,
+  PersonaBaseUrl
 } from '@acx-ui/rc/utils'
 import { Provider }                                                         from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved, fireEvent } from '@acx-ui/test-utils'
 
+import {
+  mockMacRegistration,
+  mockMacRegistrationList,
+  mockPersona,
+  mockPersonaGroup,
+  mockPersonaGroupList
+} from '../__tests__/fixtures'
+
 import { PersonaDevicesTable } from './PersonaDevicesTable'
 
 import PersonaDetails from './index'
-
-const mockPersonaGroup: PersonaGroup = {
-  id: 'persona-group-id-1',
-  name: 'Class A',
-  description: '',
-  macRegistrationPoolId: 'mac-id-1',
-  dpskPoolId: 'dpsk-pool-2',
-  nsgId: 'nsgId-700',
-  propertyId: 'propertyId-100'
-}
-
-const mockMacRegistrationList = {
-  content: [{
-    id: 'mac-id-1',
-    name: 'mac-name-1',
-    autoCleanup: true,
-    description: 'string',
-    enabled: true,
-    expirationEnabled: true,
-    priority: 1,
-    ssidRegex: 'string',
-    macAddresses: 1,
-    policyId: 'string',
-    expirationType: 'string',
-    expirationOffset: 1,
-    expirationDate: 'string'
-  }]
-}
-
-const mockPersona: Persona = {
-  id: 'persona-id-1',
-  name: 'persona-name-1',
-  groupId: 'persona-group-id-1',
-  dpskGuid: 'dpsk-guid-1',
-  dpskPassphrase: 'dpsk-passphrase',
-  devices: [
-    {
-      macAddress: '11:11:11:11:11:11',
-      personaId: 'persona-id-1'
-    },
-    {
-      macAddress: '11:11:11:11:11:12',
-      personaId: 'persona-id-1'
-    },
-    {
-      macAddress: '11:11:11:11:11:13',
-      personaId: 'persona-id-1'
-    }
-  ]
-}
-
-const mockPersonaGroupList: NewTableResult<PersonaGroup> = {
-  totalElements: 1,
-  totalPages: 1,
-  size: 10,
-  sort: [],
-  page: 0,
-  content: [
-    {
-      id: 'persona-group-id-1',
-      name: 'persona-group-name-1'
-    }
-  ]
-}
-
-const mockMacRegistration: MacRegistrationPool =
-  {
-    id: 'mac-id-1',
-    name: 'mac-name-1',
-    autoCleanup: true,
-    description: 'string',
-    enabled: true,
-    expirationEnabled: true,
-    priority: 1,
-    ssidRegex: 'string',
-    policyId: 'string',
-    expirationOffset: 1,
-    expirationDate: 'string'
-  }
 
 
 describe('Persona Details', () => {
@@ -113,7 +39,7 @@ describe('Persona Details', () => {
         (req, res, ctx) => res(ctx.json({}))
       ),
       rest.get(
-        PersonaUrls.getPersonaGroupList.url,
+        PersonaBaseUrl,
         (req, res, ctx) => res(ctx.json(mockPersonaGroupList))
       ),
       rest.get(

@@ -1,82 +1,20 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { NewTableResult, Persona, PersonaGroup, PersonaUrls } from '@acx-ui/rc/utils'
-import { Provider }                                           from '@acx-ui/store'
-import { mockServer, render, screen, fireEvent, act }         from '@acx-ui/test-utils'
+import { PersonaBaseUrl, PersonaUrls }                from '@acx-ui/rc/utils'
+import { Provider }                                   from '@acx-ui/store'
+import { mockServer, render, screen, fireEvent, act } from '@acx-ui/test-utils'
+
+import { mockPersonaTableResult, mockPersonaGroupList, mockPersona } from '../__tests__/fixtures'
 
 import { PersonaDrawer } from './index'
-
-const mockPersonaGroupList: NewTableResult<PersonaGroup> = {
-  totalPages: 1,
-  sort: [],
-  page: 0,
-  totalElements: 1,
-  size: 10,
-  content: [
-    {
-      id: 'persona-group-id-1',
-      name: 'persona-group-name-1'
-    }
-  ]
-}
-
-
-const mockPersona: Persona = {
-  id: 'persona-id-1',
-  name: 'persona-name-1',
-  description: 'description',
-  groupId: 'persona-group-id-1',
-  dpskGuid: 'dpsk-guid-1',
-  dpskPassphrase: 'dpsk-passphrase',
-  devices: [
-    {
-      macAddress: '11:11:11:11:11:11',
-      personaId: 'persona-id-1'
-    },
-    {
-      macAddress: '11:11:11:11:11:12',
-      personaId: 'persona-id-1'
-    },
-    {
-      macAddress: '11:11:11:11:11:13',
-      personaId: 'persona-id-1'
-    }
-  ]
-}
-
-const mockPersonaTableResult: NewTableResult<Persona> = {
-  totalPages: 1,
-  sort: [],
-  page: 0,
-  totalElements: 3,
-  size: 10,
-  content: [
-    {
-      id: 'persona-id-1',
-      name: 'persona-name-1',
-      groupId: 'persona-group-id-1'
-    },
-    {
-      id: 'persona-id-2',
-      name: 'persona-name-2',
-      groupId: 'persona-group-id-1'
-    },
-    {
-      id: 'persona-id-3',
-      name: 'persona-name-3',
-      groupId: 'persona-group-id-1'
-    }
-  ]
-}
-
 
 describe('Persona Drawer', () => {
 
   beforeEach( async () => {
     mockServer.use(
       rest.get(
-        PersonaUrls.getPersonaGroupList.url,
+        PersonaBaseUrl,
         (req, res, ctx) => res(ctx.json(mockPersonaGroupList))
       ),
       rest.post(

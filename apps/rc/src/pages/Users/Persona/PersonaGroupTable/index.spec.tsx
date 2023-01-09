@@ -1,73 +1,17 @@
 import { rest } from 'msw'
 
-import { MacRegistrationPool, PersonaUrls, MacRegListUrlsInfo }                     from '@acx-ui/rc/utils'
+import { PersonaUrls, MacRegListUrlsInfo, DpskUrls }                                from '@acx-ui/rc/utils'
 import { Provider }                                                                 from '@acx-ui/store'
 import { fireEvent, within, mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
+import {
+  mockDpskPool,
+  mockMacRegistration,
+  mockMacRegistrationList,
+  mockPersonaGroupTableResult
+} from '../__tests__/fixtures'
+
 import { PersonaGroupTable } from '.'
-
-const mockPersonaGroupTableResult = {
-  totalCount: 3,
-  page: 1,
-  content: [{
-    id: 'aaaaaaaa',
-    name: 'Class A',
-    description: '',
-    macRegistrationPoolId: 'mac-id-1',
-    dpskPoolId: 'dpsk-pool-2',
-    nsgId: 'nsgId-700',
-    propertyId: 'propertyId-100'
-  },
-  {
-    id: 'cccccccc',
-    name: 'Class B',
-    description: '',
-    macRegistrationPoolId: 'mac-id-1',
-    dpskPoolId: 'dpsk-pool-1',
-    nsgId: 'nsgId-300',
-    propertyId: 'propertyId-400'
-  },
-  {
-    id: 'bbbbbbbb',
-    name: 'Class C',
-    description: '',
-    macRegistrationPoolId: 'mac-id-1',
-    dpskPoolId: 'dpsk-pool-1',
-    nsgId: 'nsgId-100',
-    propertyId: 'propertyId-600'
-  }]
-}
-
-const mockMacRegistration: MacRegistrationPool =
-  {
-    id: 'mac-id-1',
-    name: 'mac-name-1',
-    autoCleanup: true,
-    description: 'string',
-    enabled: true,
-    expirationEnabled: true,
-    priority: 1,
-    ssidRegex: 'string',
-    policyId: 'string',
-    expirationOffset: 1,
-    expirationDate: 'string'
-  }
-
-const mockMacRegistrationList = {
-  content: [{
-    id: 'mac-id-1',
-    name: 'mac-name-1',
-    autoCleanup: true,
-    description: 'string',
-    enabled: true,
-    expirationEnabled: true,
-    priority: 1,
-    ssidRegex: 'string',
-    policyId: 'string',
-    expirationOffset: 1,
-    expirationDate: 'string'
-  }]
-}
 
 
 describe('Persona Group Table', () => {
@@ -90,6 +34,10 @@ describe('Persona Group Table', () => {
       rest.get(
         MacRegListUrlsInfo.getMacRegistrationPools.url,
         (req, res, ctx) => res(ctx.json(mockMacRegistrationList))
+      ),
+      rest.get(
+        DpskUrls.getDpsk.url,
+        (req, res, ctx) => res(ctx.json(mockDpskPool))
       )
     )
     params = {

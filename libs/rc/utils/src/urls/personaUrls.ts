@@ -1,6 +1,8 @@
 import { ApiInfo } from '../apiService'
 
-const basePersonaUrl = '/api/personaGroups'
+export const PersonaBaseUrl = '/api/personaGroups'
+
+const paginationParams = '?size=:pageSize&page=:page&sort=:sort'
 
 // eslint-disable-next-line max-len
 type PersonaUrlType = 'addPersonaGroup' | 'getPersonaGroupList' | 'searchPersonaGroupList' | 'getPersonaGroupById' | 'updatePersonaGroup' | 'deletePersonaGroup' | 'addPersona' | 'getPersonaList' | 'getPersonaById' | 'listPersonaByGroupId' | 'searchPersonaList' | 'updatePersona' | 'deletePersona' | 'addPersonaDevices' | 'deletePersonaDevices'
@@ -9,63 +11,63 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
   /** Persona Group API endpoints */
   addPersonaGroup: {
     method: 'post',
-    url: basePersonaUrl
+    url: PersonaBaseUrl
   },
   getPersonaGroupList: {
     method: 'get',
-    url: basePersonaUrl
+    url: PersonaBaseUrl + paginationParams
   },
   searchPersonaGroupList: {
     method: 'post',
-    url: `${basePersonaUrl}/search`
+    url: `${PersonaBaseUrl}/search`
   },
   getPersonaGroupById: {
     method: 'get',
-    url: `${basePersonaUrl}/:groupId`
+    url: `${PersonaBaseUrl}/:groupId`
   },
   updatePersonaGroup: {
     method: 'PATCH',
-    url: `${basePersonaUrl}/:groupId`
+    url: `${PersonaBaseUrl}/:groupId`
   },
   deletePersonaGroup: {
     method: 'delete',
-    url: `${basePersonaUrl}/:groupId`
+    url: `${PersonaBaseUrl}/:groupId`
   },
   /** Persona API endpoints */
   addPersona: {
     method: 'post',
-    url: `${basePersonaUrl}/:groupId/personas`
+    url: `${PersonaBaseUrl}/:groupId/personas`
   },
   getPersonaList: {
     method: 'get',
-    url: `${basePersonaUrl}/all/personas`
+    url: `${PersonaBaseUrl}/all/personas`
   },
   getPersonaById: {
     method: 'get',
-    url: `${basePersonaUrl}/:groupId/personas/:id`
+    url: `${PersonaBaseUrl}/:groupId/personas/:id`
   },
   listPersonaByGroupId: {
     method: 'get',
-    url: `${basePersonaUrl}/:groupId/personas`
+    url: `${PersonaBaseUrl}/:groupId/personas`
   },
   searchPersonaList: {
     method: 'post',
-    url: `${basePersonaUrl}/all/personas/search`
+    url: `${PersonaBaseUrl}/all/personas/search`
   },
   updatePersona: {
     method: 'PATCH',
-    url: `${basePersonaUrl}/:groupId/personas/:id`
+    url: `${PersonaBaseUrl}/:groupId/personas/:id`
   },
   deletePersona: {
     method: 'delete',
-    url: `${basePersonaUrl}/:groupId/personas/:id`
+    url: `${PersonaBaseUrl}/:groupId/personas/:id`
   },
   addPersonaDevices: {
     method: 'post',
-    url: `${basePersonaUrl}/:groupId/personas/:id/devices`
+    url: `${PersonaBaseUrl}/:groupId/personas/:id/devices`
   },
   deletePersonaDevices: {
     method: 'delete',
-    url: `${basePersonaUrl}/:groupId/personas/:id/devices/:macAddress`
+    url: `${PersonaBaseUrl}/:groupId/personas/:id/devices/:macAddress`
   }
 }

@@ -1,32 +1,11 @@
-import { Persona }                           from '@acx-ui/rc/utils'
 import { Provider }                          from '@acx-ui/store'
 import { render, screen, fireEvent, within } from '@acx-ui/test-utils'
+
+import { mockPersona } from '../__tests__/fixtures'
 
 import { PersonaDevicesForm }         from './PersonaDevicesForm'
 import { PersonaDevicesImportDialog } from './PersonaDevicesImportDialog'
 
-
-const mockPersona: Persona = {
-  id: 'persona-id-1',
-  name: 'persona-name-1',
-  groupId: 'persona-group-id-1',
-  dpskGuid: 'dpsk-guid-1',
-  dpskPassphrase: 'dpsk-passphrase',
-  devices: [
-    {
-      macAddress: '11:11:11:11:11:11',
-      personaId: 'persona-id-1'
-    },
-    {
-      macAddress: '11:11:11:11:11:12',
-      personaId: 'persona-id-1'
-    },
-    {
-      macAddress: '11:11:11:11:11:13',
-      personaId: 'persona-id-1'
-    }
-  ]
-}
 
 
 describe('Persona Form', () => {

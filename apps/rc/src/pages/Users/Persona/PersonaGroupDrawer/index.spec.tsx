@@ -1,64 +1,54 @@
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
-import { rest } from 'msw'
-
-import { PersonaGroup, PersonaUrls }             from '@acx-ui/rc/utils'
+import {
+  DpskBaseUrl,
+  MacRegListUrlsInfo,
+  PersonaBaseUrl,
+  PersonaUrls
+} from '@acx-ui/rc/utils'
 import { Provider }                              from '@acx-ui/store'
-import { render, screen, fireEvent, mockServer } from '@acx-ui/test-utils'
+import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
 
 
+import {
+  mockDpskList,
+  mockMacRegistrationList,
+  mockPersonaGroup, mockPersonaGroupList,
+  mockPersonaGroupTableResult
+} from '../__tests__/fixtures'
 
 import { PersonaGroupDrawer } from './index'
 
-const mockPersonaGroup: PersonaGroup = {
-  id: 'aaaaaaaa',
-  name: 'Class A',
-  description: '',
-  macRegistrationPoolId: 'mac-id-1',
-  dpskPoolId: 'dpsk-pool-2',
-  nsgId: 'nsgId-700',
-  propertyId: 'propertyId-100'
-}
-
-const mockPersonaGroupTableResult = {
-  totalCount: 3,
-  page: 1,
-  content: [{
-    id: 'aaaaaaaa',
-    name: 'Class A',
-    description: '',
-    macRegistrationPoolId: 'mac-id-1',
-    dpskPoolId: 'dpsk-pool-2',
-    nsgId: 'nsgId-700',
-    propertyId: 'propertyId-100'
-  },
-  {
-    id: 'cccccccc',
-    name: 'Class B',
-    description: '',
-    macRegistrationPoolId: 'mac-id-1',
-    dpskPoolId: 'dpsk-pool-1',
-    nsgId: 'nsgId-300',
-    propertyId: 'propertyId-400'
-  },
-  {
-    id: 'bbbbbbbb',
-    name: 'Class C',
-    description: '',
-    macRegistrationPoolId: 'mac-id-1',
-    dpskPoolId: 'dpsk-pool-1',
-    nsgId: 'nsgId-100',
-    propertyId: 'propertyId-600'
-  }]
-}
 
 describe('Persona Group Drawer', () => {
 
   beforeEach(async () => {
     // mock: addPersonaGroup, updatePersonaGroup, getMacRegistrationPoolList
     mockServer.use(
+      rest.get(
+        PersonaBaseUrl,
+        (req, res, ctx) => res(ctx.json(mockPersonaGroupList))
+      ),
       rest.post(
         PersonaUrls.searchPersonaGroupList.url,
         (req, res, ctx) => res(ctx.json(mockPersonaGroupTableResult))
+      ),
+      rest.patch(
+        PersonaUrls.updatePersonaGroup.url,
+        (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
+        PersonaBaseUrl,
+        (req, res, ctx) => res(ctx.json(mockPersonaGroup))
+      ),
+      rest.get(
+        MacRegListUrlsInfo.getMacRegistrationPools.url,
+        (req, res, ctx) => res(ctx.json(mockMacRegistrationList))
+      ),
+      rest.get(
+        DpskBaseUrl,
+        (req, res, ctx) => res(ctx.json(mockDpskList))
       )
     )
   })
@@ -74,8 +64,8 @@ describe('Persona Group Drawer', () => {
       </Provider>
     )
     await screen.findByText('Create Persona Group')
-    const nameField = await screen.findByLabelText('Persona Group Name') as HTMLInputElement
-    fireEvent.change(nameField, { target: { value: 'New Persona Group Name' } })
+    const nameField = await screen.findByLabelText('Persona Group Name')
+    await userEvent.type(nameField, 'New Persona Group Name')
 
     const addButton = await screen.findAllByRole('button', { name: /Add/i })
     fireEvent.click(addButton[addButton.length-1])
@@ -101,6 +91,6 @@ describe('Persona Group Drawer', () => {
     fireEvent.change(descriptionField, { target: { value: 'New description' } })
 
     const applyButton = await screen.findByRole('button', { name: /Apply/i })
-    fireEvent.click(applyButton)
+    await userEvent.click(applyButton)
   })
 })

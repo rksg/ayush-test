@@ -1,124 +1,26 @@
 import { rest } from 'msw'
 
-import { MacRegistrationPool, NewTableResult, Persona, PersonaGroup, PersonaUrls, MacRegListUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                                                                    from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved, fireEvent, within }                    from '@acx-ui/test-utils'
+import {
+  PersonaUrls,
+  MacRegListUrlsInfo,
+  PersonaBaseUrl,
+  DpskUrls
+} from '@acx-ui/rc/utils'
+import { Provider }                                                                 from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved, fireEvent, within } from '@acx-ui/test-utils'
+
+import {
+  mockDpskPool,
+  mockMacRegistration,
+  mockMacRegistrationList,
+  mockPersonaGroup,
+  mockPersonaGroupList,
+  mockPersonaGroupTableResult,
+  mockPersonaTableResult
+} from '../__tests__/fixtures'
 
 import PersonaGroupDetails from '.'
 
-const mockPersonaGroupTableResult = {
-  totalCount: 3,
-  page: 1,
-  content: [{
-    id: 'aaaaaaaa',
-    name: 'Class A',
-    description: '',
-    macRegistrationPoolId: 'mac-id-1',
-    dpskPoolId: 'dpsk-pool-2',
-    nsgId: 'nsgId-700',
-    propertyId: 'propertyId-100'
-  },
-  {
-    id: 'cccccccc',
-    name: 'Class B',
-    description: '',
-    macRegistrationPoolId: 'mac-id-1',
-    dpskPoolId: 'dpsk-pool-1',
-    nsgId: 'nsgId-300',
-    propertyId: 'propertyId-400'
-  },
-  {
-    id: 'bbbbbbbb',
-    name: 'Class C',
-    description: '',
-    macRegistrationPoolId: 'mac-id-1',
-    dpskPoolId: 'dpsk-pool-1',
-    nsgId: 'nsgId-100',
-    propertyId: 'propertyId-600'
-  }]
-}
-
-const mockMacRegistrationList = {
-  content: [{
-    id: 'mac-id-1',
-    name: 'mac-name-1',
-    autoCleanup: true,
-    description: 'string',
-    enabled: true,
-    expirationEnabled: true,
-    priority: 1,
-    ssidRegex: 'string',
-    macAddresses: 1,
-    policyId: 'string',
-    expirationType: 'string',
-    expirationOffset: 1,
-    expirationDate: 'string'
-  }]
-}
-
-const mockPersonaGroup: PersonaGroup = {
-  id: 'aaaaaaaa',
-  name: 'Class A',
-  description: '',
-  macRegistrationPoolId: 'mac-id-1',
-  dpskPoolId: 'dpsk-pool-2',
-  nsgId: 'nsgId-700',
-  propertyId: 'propertyId-100'
-}
-
-const mockPersonaTableResult: NewTableResult<Persona> = {
-  totalPages: 1,
-  page: 0,
-  sort: [],
-  totalElements: 3,
-  size: 10,
-  content: [
-    {
-      id: 'persona-id-1',
-      name: 'persona-name-1',
-      groupId: 'persona-group-id-1'
-    },
-    {
-      id: 'persona-id-2',
-      name: 'persona-name-2',
-      groupId: 'persona-group-id-1'
-    },
-    {
-      id: 'persona-id-3',
-      name: 'persona-name-3',
-      groupId: 'persona-group-id-1'
-    }
-  ]
-}
-
-const mockPersonaGroupList: NewTableResult<PersonaGroup> = {
-  totalPages: 1,
-  page: 0,
-  sort: [],
-  totalElements: 1,
-  size: 10,
-  content: [
-    {
-      id: 'persona-group-id-1',
-      name: 'persona-group-name-1'
-    }
-  ]
-}
-
-const mockMacRegistration: MacRegistrationPool =
-  {
-    id: 'mac-id-1',
-    name: 'mac-name-1',
-    autoCleanup: true,
-    description: 'string',
-    enabled: true,
-    expirationEnabled: true,
-    priority: 1,
-    ssidRegex: 'string',
-    policyId: 'string',
-    expirationOffset: 1,
-    expirationDate: 'string'
-  }
 
 describe('Persona Group Details', () => {
   let params: { tenantId: string, personaGroupId: string }
@@ -130,7 +32,7 @@ describe('Persona Group Details', () => {
         (req, res, ctx) => res(ctx.json(mockPersonaGroup))
       ),
       rest.get(
-        PersonaUrls.getPersonaGroupList.url,
+        PersonaBaseUrl,
         (req, res, ctx) => res(ctx.json(mockPersonaGroupList))
       ),
       rest.get(
@@ -152,6 +54,10 @@ describe('Persona Group Details', () => {
       rest.post(
         PersonaUrls.searchPersonaList.url,
         (req, res, ctx) => res(ctx.json(mockPersonaTableResult))
+      ),
+      rest.get(
+        DpskUrls.getDpsk.url,
+        (req, res, ctx) => res(ctx.json(mockDpskPool))
       )
     )
     params = {
