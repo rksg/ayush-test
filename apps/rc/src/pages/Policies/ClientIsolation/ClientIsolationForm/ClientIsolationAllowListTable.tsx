@@ -8,30 +8,36 @@ import {
 } from '@acx-ui/rc/utils'
 
 import { AddNewClientDrawer }                               from './AddNewClientDrawer'
+import { ALLOW_LIST_MAX_COUNT }                             from './ClientIsolationSettingsForm'
 import { SelectConnectedClientsDrawer, SimpleClientRecord } from './SelectConnectedClientsDrawer'
-import { MAX_COUNT_IN_ALLOW_LIST } from './ClientIsolationSettingsForm'
 
 interface ClientIsolationClientsTableProps {
   allowList?: ClientIsolationClient[];
   setAllowList?: (c: ClientIsolationClient[]) => void;
 }
 
+interface AddNewClientDrawerProps {
+  client: ClientIsolationClient | {}
+  editMode: boolean
+  visible: boolean
+}
+
+interface SelectConnectedClientDrawerProps {
+  selectedClientsMac: string[]
+  visible: boolean
+}
+
 export function ClientIsolationAllowListTable (props: ClientIsolationClientsTableProps) {
   const { allowList = [], setAllowList = () => null } = props
   const { $t } = useIntl()
-  const [ addNewClientDrawerProps, setAddNewClientDrawerProps ] = useState<{
-    client: ClientIsolationClient | {},
-    editMode: boolean,
-    visible: boolean
-  }>({
+  // eslint-disable-next-line max-len
+  const [ addNewClientDrawerProps, setAddNewClientDrawerProps ] = useState<AddNewClientDrawerProps>({
     client: {},
     editMode: false,
     visible: false
   })
-  const [ selectConnectedClientDrawerProps, setSelectConnectedClientDrawerProps ] = useState<{
-    selectedClientsMac: string[],
-    visible: boolean
-  }>({
+  // eslint-disable-next-line max-len
+  const [ selectConnectedClientDrawerProps, setSelectConnectedClientDrawerProps ] = useState<SelectConnectedClientDrawerProps>({
     selectedClientsMac: [],
     visible: false
   })
@@ -164,12 +170,12 @@ export function ClientIsolationAllowListTable (props: ClientIsolationClientsTabl
           {
             label: $t({ defaultMessage: 'Select from Connected Clients' }),
             onClick: () => handleSelectConnectedClientAction(),
-            disabled: allowList.length === MAX_COUNT_IN_ALLOW_LIST
+            disabled: allowList.length === ALLOW_LIST_MAX_COUNT
           },
           {
             label: $t({ defaultMessage: 'Add New Client' }),
             onClick: () => handleAddNewClientAction(),
-            disabled: allowList.length === MAX_COUNT_IN_ALLOW_LIST
+            disabled: allowList.length === ALLOW_LIST_MAX_COUNT
           }
         ]}
         rowActions={rowActions}

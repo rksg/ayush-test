@@ -4,13 +4,16 @@ import { rest }  from 'msw'
 import {
   websocketServerUrl,
   ClientIsolationUrls,
-  ClientUrlsInfo
+  ClientUrlsInfo,
+  getPolicyListRoutePath,
+  ClientIsolationSaveData
 } from '@acx-ui/rc/utils'
-import { Path, To } from '@acx-ui/react-router-dom'
-import { Provider } from '@acx-ui/store'
+import { Path, To, useTenantLink } from '@acx-ui/react-router-dom'
+import { Provider }                from '@acx-ui/store'
 import {
   mockServer,
   render,
+  renderHook,
   screen,
   waitFor,
   within
@@ -20,7 +23,10 @@ import{
   createPath,
   mockedClientIsolationList,
   mockedTenantId,
-  clientList
+  mockedClientList,
+  editPath,
+  mockedPolicyId,
+  mockedClientIsolation
 } from './__tests__/fixtures'
 import ClientIsolationForm from './ClientIsolationForm'
 
@@ -44,21 +50,9 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 describe('ClientIsolationForm', () => {
   beforeEach(async () => {
     mockServer.use(
-      rest.post(
-        ClientIsolationUrls.addClientIsolation.url,
-        (req, res, ctx) => res(ctx.json({ requestId: '123456789' }))
-      ),
-      rest.get(
-        ClientIsolationUrls.getClientIsolation.url,
-        (req, res, ctx) => res(ctx.json({ ...mockedClientIsolationList[0] }))
-      ),
       rest.get(
         ClientIsolationUrls.getClientIsolationList.url,
         (req, res, ctx) => res(ctx.json([ ...mockedClientIsolationList ]))
-      ),
-      rest.post(
-        ClientUrlsInfo.getClientList.url,
-        (_, res, ctx) => res(ctx.json({ data: clientList }))
       ),
       rest.get(
         websocketServerUrl,
@@ -68,8 +62,23 @@ describe('ClientIsolationForm', () => {
   })
 
   it('should create a Client Isolation policy', async () => {
+
+    // Prepare testing data
     const saveFn = jest.fn()
 
+    const entityToCreate: ClientIsolationSaveData = {
+      name: 'Client Isolation testing',
+      description: 'Here is the description',
+      allowlist: [
+        {
+          mac: 'AA:BB:CC:DD:EE:11',
+          description: 'Client 1'
+        }
+      ]
+    }
+    const clientToAdd = entityToCreate.allowlist[0]
+
+    // Mock create policy API
     mockServer.use(
       rest.post(
         ClientIsolationUrls.addClientIsolation.url,
@@ -88,19 +97,6 @@ describe('ClientIsolationForm', () => {
       }
     )
 
-    const entityToCreate = {
-      name: 'Client Isolation testing',
-      description: 'Here is the description',
-      allowlist: [
-        {
-          mac: 'AA:BB:CC:DD:EE:11',
-          description: 'Client 1'
-        }
-      ]
-    }
-
-    const clientToAdd = entityToCreate.allowlist[0]
-
     // Set Policy Name
     await userEvent.type(
       await screen.findByRole('textbox', { name: /Policy Name/ }),
@@ -110,7 +106,7 @@ describe('ClientIsolationForm', () => {
     // Set description
     await userEvent.type(
       await screen.findByRole('textbox', { name: /Description/ }),
-      entityToCreate.description
+      entityToCreate.description!
     )
 
     // Set client by Add New Client
@@ -118,7 +114,7 @@ describe('ClientIsolationForm', () => {
 
     const drawer = await screen.findByRole('dialog')
 
-    // Verify if the drawer is open or not
+    // Verify if the drawer is open correctly
     expect(await within(drawer).findByText('Add Client')).toBeVisible()
 
     // Set client MAC Address
@@ -130,7 +126,7 @@ describe('ClientIsolationForm', () => {
     // Set client Description
     await userEvent.type(
       await within(drawer).findByRole('textbox', { name: /Description/ }),
-      clientToAdd.description
+      clientToAdd.description!
     )
 
     await userEvent.click(await within(drawer).findByRole('button', { name: 'Add' }))
@@ -145,64 +141,162 @@ describe('ClientIsolationForm', () => {
     })
   })
 
-  // it('should render Edit form', async () => {
-  //   render(
-  //     <Provider>
-  //       <DpskForm editMode={true} />
-  //     </Provider>, {
-  //       route: {
-  //         params: { tenantId: mockedTenantId, serviceId: mockedServiceId },
-  //         path: editPath
-  //       }
-  //     }
-  //   )
+  it('should create a Client Isolation policy with connected client', async () => {
 
-  //   // Verify service name
-  //   const nameInput = await screen.findByDisplayValue(mockedEditFormData.name)
-  //   expect(nameInput).toBeInTheDocument()
-  // })
+    // Prepare testing data
+    const saveFn = jest.fn()
 
-  // it('should show toast when edit service profile failed', async () => {
-  //   mockServer.use(
-  //     rest.patch(
-  //       DpskUrls.updateDpsk.url,
-  //       (req, res, ctx) => res(ctx.status(404), ctx.json({}))
-  //     )
-  //   )
+    const clientList = [...mockedClientList]
+    const clientToAdd = clientList[0]
+    const entityToCreate: ClientIsolationSaveData = {
+      name: 'Client Isolation testing',
+      description: 'Here is the description',
+      allowlist: [{
+        mac: clientToAdd.clientMac,
+        ipAddress: clientToAdd.ipAddress
+      }]
+    }
 
-  //   render(
-  //     <Provider>
-  //       <DpskForm editMode={true} />
-  //     </Provider>, {
-  //       route: {
-  //         params: { tenantId: mockedTenantId, serviceId: mockedServiceId },
-  //         path: editPath
-  //       }
-  //     }
-  //   )
+    // Mock create policy & client list APIs
+    mockServer.use(
+      rest.post(
+        ClientIsolationUrls.addClientIsolation.url,
+        (req, res, ctx) => {
+          saveFn(req.body)
+          return res(ctx.json({ requestId: '123456789' }))
+        }
+      ),
+      rest.post(
+        ClientUrlsInfo.getClientList.url,
+        (_, res, ctx) => res(ctx.json({ data: clientList }))
+      )
+    )
 
-  //   await screen.findByDisplayValue(mockedEditFormData.name)
-  //   await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
 
-  //   const errorMsgElem = await screen.findByText('An error occurred')
-  //   expect(errorMsgElem).toBeInTheDocument()
-  // })
+    render(
+      <Provider>
+        <ClientIsolationForm />
+      </Provider>, {
+        route: { params: { tenantId: mockedTenantId }, path: createPath }
+      }
+    )
 
-  // it('should navigate to the Select service page when clicking Cancel button', async () => {
-  //   const { result: selectServicePath } = renderHook(() => {
-  //     return useTenantLink(getServiceListRoutePath(true))
-  //   })
+    // Set Policy Name
+    await userEvent.type(
+      await screen.findByRole('textbox', { name: /Policy Name/ }),
+      entityToCreate.name
+    )
 
-  //   render(
-  //     <Provider>
-  //       <DpskForm />
-  //     </Provider>, {
-  //       route: { params: { tenantId: mockedTenantId }, path: createPath }
-  //     }
-  //   )
+    // Set description
+    await userEvent.type(
+      await screen.findByRole('textbox', { name: /Description/ }),
+      entityToCreate.description!
+    )
 
-  //   await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+    // Set client by Select from Connected Clients
+    // eslint-disable-next-line max-len
+    await userEvent.click(await screen.findByRole('button', { name: 'Select from Connected Clients' }))
 
-  //   expect(mockedUseNavigate).toHaveBeenCalledWith(selectServicePath.current)
-  // })
+    const drawer = await screen.findByRole('dialog')
+
+    // Verify if the drawer is open correctly
+    expect(await within(drawer).findByText('Select Connected Clients')).toBeVisible()
+
+    // Select the client
+    // eslint-disable-next-line max-len
+    const targetRow = await within(drawer).findByRole('row', { name: new RegExp(clientToAdd.clientMac) })
+    await userEvent.click(await within(targetRow).findByRole('checkbox'))
+    await userEvent.click(await within(drawer).findByRole('button', { name: 'Add' }))
+
+    // Verify the client has been added to the allow list
+    // eslint-disable-next-line max-len
+    expect(await screen.findByRole('row', { name: new RegExp(clientToAdd.clientMac) })).toBeVisible()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Finish' }))
+
+    await waitFor(() => {
+      expect(saveFn).toHaveBeenCalledWith(entityToCreate)
+    })
+  })
+
+  it('should render Edit form', async () => {
+    mockServer.use(
+      rest.get(
+        ClientIsolationUrls.getClientIsolation.url,
+        (req, res, ctx) => res(ctx.json({ ...mockedClientIsolation }))
+      )
+    )
+
+    render(
+      <Provider>
+        <ClientIsolationForm editMode={true} />
+      </Provider>, {
+        route: {
+          params: { tenantId: mockedTenantId, policyId: mockedPolicyId },
+          path: editPath
+        }
+      }
+    )
+
+    // Verify Policy Name
+    const nameInput = await screen.findByDisplayValue(mockedClientIsolation.name)
+    expect(nameInput).toBeInTheDocument()
+
+    // Verify clients
+    const targetClient = mockedClientIsolation.allowlist[0]
+    const targetRow = await screen.findByRole('row', { name: new RegExp(targetClient.mac) })
+    expect(targetRow).toBeVisible()
+  })
+
+  it('should show toast when edit policy failed', async () => {
+    mockServer.use(
+      rest.get(
+        ClientIsolationUrls.getClientIsolation.url,
+        (req, res, ctx) => res(ctx.json({ ...mockedClientIsolation }))
+      ),
+      rest.put(
+        ClientIsolationUrls.updateClientIsolation.url,
+        (req, res, ctx) => res(ctx.status(404), ctx.json({}))
+      )
+    )
+
+    render(
+      <Provider>
+        <ClientIsolationForm editMode={true} />
+      </Provider>, {
+        route: {
+          params: { tenantId: mockedTenantId, policyId: mockedPolicyId },
+          path: editPath
+        }
+      }
+    )
+
+    // Verify Policy Name
+    const nameInput = await screen.findByDisplayValue(mockedClientIsolation.name)
+    expect(nameInput).toBeInTheDocument()
+
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+
+    const errorMsgElem = await screen.findByText('An error occurred')
+    expect(errorMsgElem).toBeInTheDocument()
+  })
+
+  it('should navigate to the list page when clicking Cancel button', async () => {
+    const { result: policyListPath } = renderHook(() => {
+      return useTenantLink(getPolicyListRoutePath(true))
+    })
+
+    render(
+      <Provider>
+        <ClientIsolationForm />
+      </Provider>, {
+        route: { params: { tenantId: mockedTenantId }, path: createPath }
+      }
+    )
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+
+    expect(mockedUseNavigate).toHaveBeenCalledWith(policyListPath.current)
+  })
 })

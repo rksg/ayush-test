@@ -11,7 +11,7 @@ import {
 import { ClientIsolationAllowListTable } from './ClientIsolationAllowListTable'
 import * as UI                           from './styledComponents'
 
-export const MAX_COUNT_IN_ALLOW_LIST = 64
+export const ALLOW_LIST_MAX_COUNT = 64
 
 export default function ClientIsolationSettingsForm () {
   const { $t } = useIntl()
@@ -23,13 +23,9 @@ export default function ClientIsolationSettingsForm () {
 
   const nameValidator = async (value: string) => {
     try {
-      const aaa = (await clientIsolationList({ params }).unwrap())
-      const bbb = aaa.filter(clientIsolation => clientIsolation.id !== id)
-      const list = bbb.map(clientIsolation => ({ name: clientIsolation.name }))
-
-      // const list = (await clientIsolationList({ params }).unwrap())
-      //   .filter(clientIsolation => clientIsolation.id !== id)
-      //   .map(clientIsolation => ({ name: clientIsolation.name }))
+      const list = (await clientIsolationList({ params }).unwrap())
+        .filter(clientIsolation => clientIsolation.id !== id)
+        .map(clientIsolation => ({ name: clientIsolation.name }))
 
       // eslint-disable-next-line max-len
       return checkObjectNotExists(list, { name: value } , $t({ defaultMessage: 'Client Isolation Policy' }))
@@ -84,7 +80,7 @@ export default function ClientIsolationSettingsForm () {
             <UI.TableSubLabel>
               {$t(
                 { defaultMessage: 'Up to {maxClientCount} clients may be added' },
-                { maxClientCount: MAX_COUNT_IN_ALLOW_LIST }
+                { maxClientCount: ALLOW_LIST_MAX_COUNT }
               )}
             </UI.TableSubLabel>
           </Space>

@@ -38,7 +38,10 @@ export function SelectConnectedClientsDrawer (props: SelectConnectedClientsDrawe
 
   const tableQuery = useTableQuery({
     useQuery: useGetClientListQuery,
-    defaultPayload
+    defaultPayload,
+    option: {
+      skip: !visible
+    }
   })
 
   const onClose = () => {

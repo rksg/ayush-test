@@ -1,4 +1,4 @@
-import { getPolicyRoutePath, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
+import { ClientIsolationClient, getPolicyRoutePath, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
 
 export const mockedTenantId = '__Tenant_ID__'
 
@@ -63,32 +63,33 @@ export const mockedClientIsolationList = [
   }
 ]
 
-export const clientList = [{
-  apMac: '28:B3:71:28:78:50',
-  apName: 'UI team ONLY',
-  apSerialNumber: '422039000230',
-  bssid: '28:b3:71:a8:78:51',
-  clientMac: '24:41:8c:c3:16:df',
-  framesDropped: 0,
-  healthCheckStatus: 'Good',
-  hostname: 'LP-XXXXX',
-  ipAddress: '10.206.1.93',
-  networkId: '423c3673e74f44e69c0f3b35cd579ecc',
-  networkName: 'NMS-app6-WLAN-QA',
-  networkSsid: 'NMS-app6-WLAN-QA',
-  noiseFloor_dBm: -96,
+export const mockedClientIsolation = mockedClientIsolationList[0]
+
+export const mockedClientList = [{
   osType: 'Windows',
-  receiveSignalStrength_dBm: -32,
-  receivedBytes: 104098725,
-  receivedPackets: 344641,
-  rfChannel: 140,
-  snr_dB: 64,
-  timeConnectedMs: 1669263032,
-  transmittedBytes: 22551474,
-  transmittedPackets: 87872,
-  username: '24418cc316df',
-  venueId: '87c982325ef148a2b7cefe652384d3ca',
+  clientMac: '28:B3:71:28:78:50',
+  ipAddress: '10.206.1.93',
+  Username: '24418cc316df',
+  hostname: 'LP-XXXXX',
   venueName: 'UI-TEST-VENUE',
-  vlan: 1,
-  wifiCallingClient: false
+  apName: 'UI team ONLY'
 }]
+
+
+export const mockedAllowList: ClientIsolationClient[] = [
+  {
+    mac: 'AA:BB:11:22:33:FF',
+    description: 'Client 1',
+    ipAddress: '10.206.1.93'
+  },
+  {
+    mac: 'AA:BB:11:22:33:F2',
+    description: 'Client 2',
+    ipAddress: '10.206.12.93'
+  },
+  {
+    mac: 'AA:BB:11:22:33:F3',
+    description: 'Client 3',
+    ipAddress: '10.206.3.93'
+  }
+]
