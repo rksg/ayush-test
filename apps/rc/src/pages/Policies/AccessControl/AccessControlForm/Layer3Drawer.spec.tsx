@@ -46,7 +46,7 @@ const queryLayer3 = {
     },
     {
       id: '1ae26f6f061d4f8aa86234d100b4d6d1',
-      name: 'l3-showActivityMsg',
+      name: 'layer3',
       rulesCount: 1,
       networksCount: 0
     }
@@ -248,11 +248,11 @@ describe('Layer3Drawer Component', () => {
 
     await userEvent.type(screen.getByRole('textbox', {
       name: /policy name:/i
-    }), 'l3-010')
+    }), 'layer3')
 
     await userEvent.type(screen.getByRole('textbox', {
       name: /policy name:/i
-    }), 'layer3-test')
+    }), '-test')
 
     await anyIpSetting()
     await ipSetting()
@@ -269,19 +269,27 @@ describe('Layer3Drawer Component', () => {
     await userEvent.click(screen.getByText('IP: 11:11:11:11:11:11/255.255.0.0'))
 
     await userEvent.click(screen.getByRole('button', {
-      name: /move up/i
+      name: /edit/i
     }))
 
-    await userEvent.click(screen.getByText('IP: 11:11:11:11:11:11/255.255.0.0'))
+    await screen.findByText(/edit layer 3 rule/i)
 
-    await userEvent.click(screen.getByRole('button', {
-      name: /move down/i
-    }))
+    await userEvent.type(screen.getByRole('textbox', {
+      name: /description/i
+    }), '-ruleDescription')
 
-    await userEvent.click(screen.getByText('IP: 11:11:11:11:11:11/255.255.0.0'))
+    await userEvent.click(screen.getAllByText('Save')[1])
+
+    await userEvent.click(screen.getByText('layer3-test-desc-subnet-ruleDescription'))
 
     await userEvent.click(screen.getByRole('button', {
       name: /delete/i
+    }))
+
+    await screen.findByText(/delete rule/i)
+
+    await userEvent.click(screen.getByRole('button', {
+      name: /delete rule/i
     }))
 
     await userEvent.click(screen.getAllByText('Save')[0])
