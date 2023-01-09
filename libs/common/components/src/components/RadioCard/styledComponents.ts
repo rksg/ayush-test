@@ -75,8 +75,6 @@ export const Radio = styled(AntRadio)`
     margin-left: -2px;
     margin-top: -5px;
   }
-
-
 `
 
 export const CatogoryWrapper = styled.div`
