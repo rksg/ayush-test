@@ -16,7 +16,7 @@ export interface GoogleMapProps {
 }
 
 export interface NavigateProps {
-  venueId: string | undefined,
+  venueId?: string,
   path?: string
 }
 
