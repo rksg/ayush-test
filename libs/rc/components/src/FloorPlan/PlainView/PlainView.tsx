@@ -12,7 +12,7 @@ import {
   SearchFitOutlined,
   SearchFullOutlined
 } from '@acx-ui/icons'
-import { FloorplanContext, FloorPlanDto, FloorPlanFormDto, NetworkDevice, NetworkDeviceType, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
+import { FloorplanContext, FloorPlanDto, FloorPlanFormDto, getImageFitPercentage, NetworkDevice, NetworkDeviceType, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
 
 import AddEditFloorplanModal from '../FloorPlanModal'
 import NetworkDevices        from '../NetworkDevices'
@@ -44,33 +44,6 @@ export function setUpdatedLocation (device: NetworkDevice,
     })
   }
   return device
-}
-
-export function getImageFitPercentage (containerCoordsX: number,
-  containerCoordsY: number, imageCoordsX: number, imageCoordsY: number) {
-  let differencePercentage = 0
-
-  if (containerCoordsX !== imageCoordsX || containerCoordsY !== imageCoordsY) {
-    if (containerCoordsX > imageCoordsX) {
-      differencePercentage = (imageCoordsX / containerCoordsX) * 100
-    }
-    if (imageCoordsX > containerCoordsX) {
-      const temp_differencePercentage = (containerCoordsX / imageCoordsX) * 100
-      differencePercentage = (temp_differencePercentage < differencePercentage)
-        ? temp_differencePercentage : differencePercentage
-    }
-    if (containerCoordsY > imageCoordsY) {
-      const temp_differencePercentage = (imageCoordsY / containerCoordsY) * 100
-      differencePercentage = (temp_differencePercentage < differencePercentage)
-        ? temp_differencePercentage : differencePercentage
-    }
-    if (imageCoordsY > containerCoordsY) {
-      const temp_differencePercentage = (containerCoordsY / imageCoordsY) * 100
-      differencePercentage = (temp_differencePercentage < differencePercentage)
-        ? temp_differencePercentage : differencePercentage
-    }
-  }
-  return differencePercentage
 }
 
 export default function PlainView (props: { floorPlans: FloorPlanDto[],
@@ -304,7 +277,8 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
           <Loader states={[{ isLoading: !imageLoaded }]}></Loader>
         </UI.ImageLoaderContainer> }
       </UI.ImageContainerWrapper>
-      <UI.ImageButtonsContainer>
+      <UI.ImageButtonsContainer
+        alignbottom={floorPlans.length > 1 ? 0 : 1}>
         <Button
           data-testid='image-zoom-in'
           onClick={() => setImageModeHandler(ImageMode.ZOOM_IN)}
