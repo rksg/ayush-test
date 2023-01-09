@@ -1,12 +1,19 @@
-import React, { useEffect, useState } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 
-import { Col, Form, Input, Radio, RadioChangeEvent, Row, Select } from 'antd'
-import _                                                          from 'lodash'
-import { useIntl }                                                from 'react-intl'
-import { useParams }                                              from 'react-router-dom'
-import styled, { css }                                            from 'styled-components/macro'
+import { Form, FormItemProps, Input, Radio, RadioChangeEvent, Select, Space } from 'antd'
+import _                                                                      from 'lodash'
+import { useIntl }                                                            from 'react-intl'
+import { useParams }                                                          from 'react-router-dom'
+import {
+  SortableContainer,
+  SortableContainerProps,
+  SortableElement,
+  SortableElementProps,
+  SortableHandle
+} from 'react-sortable-hoc'
 
 import {
+  Button,
   ContentSwitcher, ContentSwitcherProps,
   Drawer,
   Fieldset,
@@ -16,20 +23,25 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { Drag }             from '@acx-ui/icons'
 import {
   useAddL3AclPolicyMutation,
   useGetL3AclPolicyQuery,
   useL3AclPolicyListQuery
 } from '@acx-ui/rc/services'
-import { CommonResult, macAddressRegExp, serverIpAddressRegExp, subnetMaskIpRegExp } from '@acx-ui/rc/utils'
+import {
+  AccessStatus,
+  CommonResult,
+  Layer3ProtocolType,
+  MacAddressFilterRegExp,
+  serverIpAddressRegExp,
+  subnetMaskIpRegExp
+} from '@acx-ui/rc/utils'
+
+import { layer3ProtocolLabelMapping } from '../../contentsMap'
 
 const { useWatch } = Form
 const { Option } = Select
-
-export enum AccessStatus {
-  ALLOW = 'ALLOW',
-  BLOCK = 'BLOCK'
-}
 
 export interface Layer3DrawerProps {
   inputName?: string[]
@@ -60,11 +72,23 @@ enum RuleSourceType {
   IP = 'Ip'
 }
 
-const ViewDetailsWrapper = styled.span<{ $policyId: string }>`
-  ${props => props.$policyId
-    ? css`cursor: pointer;`
-    : css`cursor: not-allowed; color: darkgray;`}
-`
+const DrawerFormItem = (props: FormItemProps) => {
+  return (
+    <Form.Item
+      labelAlign={'left'}
+      labelCol={{ span: 5 }}
+      style={{ marginBottom: '5px' }}
+      {...props} />
+  )
+}
+
+const AclGridCol = ({ children }: { children: ReactNode }) => {
+  return (
+    <GridCol col={{ span: 6 }} style={{ marginTop: '6px' }}>
+      {children}
+    </GridCol>
+  )
+}
 
 const Layer3Drawer = (props: Layer3DrawerProps) => {
   const { $t } = useIntl()
@@ -77,6 +101,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
   const [layer3RuleList, setLayer3RuleList] = useState([] as Layer3Rule[])
   const [layer3Rule, setLayer3Rule] = useState({} as Layer3Rule)
   const [queryPolicyId, setQueryPolicyId] = useState('')
+  const [queryPolicyName, setQueryPolicyName] = useState('')
   const [requestId, setRequestId] = useState('')
   const [contentForm] = Form.useForm()
   const [drawerForm] = Form.useForm()
@@ -141,6 +166,24 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     }
   }, [layer3PolicyInfo, queryPolicyId])
 
+  // use policyName to find corresponding id before API return profile id
+  useEffect(() => {
+    if (requestId && queryPolicyName) {
+      layer3SelectOptions.map(option => {
+        if (option.props.children === queryPolicyName) {
+          form.setFieldValue('l3AclPolicyId', option.key)
+          setQueryPolicyId(option.key as string)
+          setQueryPolicyName('')
+          setRequestId('')
+        }
+      })
+    }
+  }, [layer3SelectOptions, requestId, policyName])
+
+  const DragHandle = SortableHandle(() =>
+    <Drag style={{ cursor: 'grab', color: '#6e6e6e' }} />
+  )
+
   const basicColumns: TableProps<Layer3Rule>['columns'] = [
     {
       title: $t({ defaultMessage: 'Priority' }),
@@ -155,10 +198,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     {
       title: $t({ defaultMessage: 'Access' }),
       dataIndex: 'access',
-      key: 'access',
-      render: (data, row) => {
-        return row.access
-      }
+      key: 'access'
     },
     {
       title: $t({ defaultMessage: 'Source' }),
@@ -180,6 +220,16 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       title: $t({ defaultMessage: 'Protocol' }),
       dataIndex: 'protocol',
       key: 'protocol'
+    },
+    {
+      dataIndex: 'sort',
+      key: 'sort',
+      width: 60,
+      render: (data, row) => {
+        return <div data-testid={`${row.priority}_Icon`} style={{ textAlign: 'center' }}>
+          <DragHandle/>
+        </div>
+      }
     }
   ]
 
@@ -281,7 +331,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
 
   }
 
-  const actions = !isViewMode() ? [{
+  const actions = !isViewMode() ?[{
     label: $t({ defaultMessage: 'Add' }),
     onClick: handleAddAction
   }] : []
@@ -306,12 +356,13 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
             description: null
           }
         }).unwrap()
-        let responseData = l3AclRes.response as {
-          [key: string]: string
-        }
-        form.setFieldValue([...inputName, 'l3AclPolicyId'], responseData.id)
-        setQueryPolicyId(responseData.id)
+        // let responseData = l3AclRes.response as {
+        //   [key: string]: string
+        // }
+        // form.setFieldValue([...inputName, 'l3AclPolicyId'], responseData.id)
+        // setQueryPolicyId(responseData.id)
         setRequestId(l3AclRes.requestId)
+        setQueryPolicyName(policyName)
       }
     } catch(error) {
       showToast({
@@ -322,25 +373,29 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     }
   }
 
+  const updateDrawerFromValues = (ruleObj: Layer3Rule) => {
+    drawerForm.setFieldValue('description', ruleObj.description)
+    drawerForm.setFieldValue('access', ruleObj.access)
+    drawerForm.setFieldValue('protocol', ruleObj.protocol)
+    drawerForm.setFieldValue('source', ruleObj.source)
+    drawerForm.setFieldValue(['sourceNetworkAddress'], ruleObj.source.subnet)
+    drawerForm.setFieldValue(['sourceMask'], ruleObj.source.mask)
+    drawerForm.setFieldValue(['sourceIp'], ruleObj.source.ip)
+    drawerForm.setFieldValue(['sourcePort'], ruleObj.source.port)
+    drawerForm.setFieldValue('destination', ruleObj.destination)
+    drawerForm.setFieldValue(['destinationNetworkAddress'], ruleObj.destination.subnet)
+    drawerForm.setFieldValue(['destinationMask'], ruleObj.destination.mask)
+    drawerForm.setFieldValue(['destinationIp'], ruleObj.destination.ip)
+    drawerForm.setFieldValue(['destinationPort'], ruleObj.destination.port)
+  }
+
   const rowActions: TableProps<Layer3Rule>['actions'] = isViewMode() ? [] : [{
     label: $t({ defaultMessage: 'Edit' }),
     onClick: ([editRow]: Layer3Rule[], clearSelection: () => void) => {
       setRuleDrawerVisible(true)
       setRuleDrawerEditMode(true)
       setLayer3Rule(editRow)
-      drawerForm.setFieldValue('description', editRow.description)
-      drawerForm.setFieldValue('access', editRow.access)
-      drawerForm.setFieldValue('protocol', editRow.protocol)
-      drawerForm.setFieldValue('source', editRow.source)
-      drawerForm.setFieldValue(['sourceNetworkAddress'], editRow.source.subnet)
-      drawerForm.setFieldValue(['sourceMask'], editRow.source.mask)
-      drawerForm.setFieldValue(['sourceIp'], editRow.source.ip)
-      drawerForm.setFieldValue(['sourcePort'], editRow.source.port)
-      drawerForm.setFieldValue('destination', editRow.destination)
-      drawerForm.setFieldValue(['destinationNetworkAddress'], editRow.destination.subnet)
-      drawerForm.setFieldValue(['destinationMask'], editRow.destination.mask)
-      drawerForm.setFieldValue(['destinationIp'], editRow.destination.ip)
-      drawerForm.setFieldValue(['destinationPort'], editRow.destination.port)
+      updateDrawerFromValues(editRow)
       clearSelection()
     }
   },{
@@ -364,34 +419,6 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
             }))
         }
       })
-    }
-  }, {
-    label: $t({ defaultMessage: 'Move up' }),
-    onClick: ([editRow]: Layer3Rule[], clearSelection: () => void) => {
-      if (editRow.priority === 1) return
-      [layer3RuleList[editRow.priority - 1 - 1], layer3RuleList[editRow.priority - 1]]
-        = [layer3RuleList[editRow.priority - 1], layer3RuleList[editRow.priority - 1 - 1]]
-      setLayer3RuleList(layer3RuleList.map((rule: Layer3Rule, ruleId: number) => {
-        return {
-          ...rule,
-          priority: ruleId + 1
-        }
-      }))
-      clearSelection()
-    }
-  }, {
-    label: $t({ defaultMessage: 'Move down' }),
-    onClick: ([editRow]: Layer3Rule[], clearSelection: () => void) => {
-      if (editRow.priority === layer3RuleList.length) return
-      [layer3RuleList[editRow.priority - 1 + 1], layer3RuleList[editRow.priority - 1]]
-        = [layer3RuleList[editRow.priority - 1], layer3RuleList[editRow.priority - 1 + 1]]
-      setLayer3RuleList(layer3RuleList.map((rule: Layer3Rule, ruleId: number) => {
-        return {
-          ...rule,
-          priority: ruleId + 1
-        }
-      }))
-      clearSelection()
     }
   }] as { label: string, onClick: () => void }[]
 
@@ -441,38 +468,47 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         })
       }}
     >
-      <Option value='ANYPROTOCOL'>
-        {$t({ defaultMessage: 'Any Protocol' })}
-      </Option>
-      <Option value='TCP'>
-        {$t({ defaultMessage: 'TCP' })}
-      </Option>
-      <Option value='UDP'>
-        {$t({ defaultMessage: 'UDP' })}
-      </Option>
-      <Option value='UDPLITE'>
-        {$t({ defaultMessage: 'UDPLITE' })}
-      </Option>
-      <Option value='ICMP'>
-        {$t({ defaultMessage: 'ICMP(ICMPV4)' })}
-      </Option>
-      <Option value='IGMP'>
-        {$t({ defaultMessage: 'IGMP' })}
-      </Option>
-      <Option value='ESP'>
-        {$t({ defaultMessage: 'ESP' })}
-      </Option>
-      <Option value='AH'>
-        {$t({ defaultMessage: 'AH' })}
-      </Option>
-      <Option value='SCTP'>
-        {$t({ defaultMessage: 'SCTP' })}
-      </Option>
+      {Object.keys(Layer3ProtocolType).map((type) => (
+        <Option value={type}>
+          {$t(layer3ProtocolLabelMapping[type as keyof typeof Layer3ProtocolType])}
+        </Option>
+      ))}
     </Select>
   )
 
+  // @ts-ignore
+  const SortableItem = SortableElement((props: SortableElementProps) => <tr {...props} />)
+  // @ts-ignore
+  const SortContainer = SortableContainer((props: SortableContainerProps) => <tbody {...props} />)
+
+  const DraggableContainer = (props: SortableContainerProps) => {
+    return <SortContainer
+      useDragHandle
+      disableAutoscroll
+      onSortEnd={({ oldIndex, newIndex }: { oldIndex: number; newIndex: number }) => {
+        const dragAndDropRules = [...layer3RuleList] as Layer3Rule[]
+        [dragAndDropRules[oldIndex], dragAndDropRules[newIndex]] =
+          [dragAndDropRules[newIndex], dragAndDropRules[oldIndex]]
+        setLayer3RuleList(dragAndDropRules.map((rule, i) => {
+          return {
+            ...rule,
+            priority: i + 1
+          }
+        }))
+      }}
+      {...props}
+    />
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const DraggableBodyRow = (props: any) => {
+    const { className, style, ...restProps } = props
+    const index = layer3RuleList.findIndex((x) => x.priority === restProps['data-row-key'])
+    return <SortableItem index={index} {...restProps} />
+  }
+
   const content = <Form layout='horizontal' form={contentForm}>
-    <Form.Item
+    <DrawerFormItem
       name={'policyName'}
       label={$t({ defaultMessage: 'Policy Name:' })}
       rules={[
@@ -486,11 +522,9 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
             return Promise.resolve()}
         }
       ]}
-      labelCol={{ span: 5 }}
-      labelAlign={'left'}
       children={<Input disabled={isViewMode()}/>}
     />
-    <Form.Item
+    <DrawerFormItem
       name='layer3DefaultAccess'
       label={<div style={{ textAlign: 'left' }}>
         <div>{$t({ defaultMessage: 'Default Access' })}</div>
@@ -498,11 +532,9 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
           {$t({ defaultMessage: 'Applies if no rule is matched' })}
         </span>
       </div>}
-      labelCol={{ span: 5 }}
-      labelAlign={'left'}
       children={<ContentSwitcher tabDetails={defaultTabDetails} size='large' />}
     />
-    <Form.Item
+    <DrawerFormItem
       name='layer3Rule'
       label={$t({ defaultMessage: 'Layer 3 Rules' }) + ` (${layer3RuleList.length})`}
     />
@@ -513,15 +545,19 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       actions={actions}
       rowActions={rowActions}
       rowSelection={{ type: 'radio' }}
+      components={{
+        body: {
+          wrapper: DraggableContainer,
+          row: DraggableBodyRow
+        }
+      }}
     />
   </Form>
 
   const ruleContent = <Form layout='horizontal' form={drawerForm}>
-    <Form.Item
+    <DrawerFormItem
       name='description'
       label={$t({ defaultMessage: 'Description' })}
-      labelAlign={'left'}
-      labelCol={{ span: 5 }}
       initialValue={''}
       validateFirst
       rules={[
@@ -531,20 +567,16 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         placeholder={$t({ defaultMessage: 'Enter a short description, up to 64 characters' })}
       />}
     />
-    <Form.Item
+    <DrawerFormItem
       name='access'
       label={$t({ defaultMessage: 'Access' })}
-      labelAlign={'left'}
-      labelCol={{ span: 5 }}
       initialValue={AccessStatus.ALLOW}
       children={<ContentSwitcher tabDetails={tabDetails} size='large' />}
     />
-    <Form.Item
+    <DrawerFormItem
       name='protocol'
       label={$t({ defaultMessage: 'Protocol' })}
-      labelAlign={'left'}
-      labelCol={{ span: 5 }}
-      initialValue={'ANYPROTOCOL'}
+      initialValue={Layer3ProtocolType.ANYPROTOCOL}
       children={selectProtocol}
     />
     <Fieldset
@@ -571,19 +603,17 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
           </GridCol>
           <GridCol col={{ span: 19 }}>
             {sourceValue === 2
-              ? <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
+              ? <Space size={6}>
                 <Form.Item
-                  style={{ width: '48%' }}
                   name='sourceNetworkAddress'
                   rules={[
                     { required: true },
-                    { validator: (_, value) => macAddressRegExp(value) }
+                    { validator: (_, value) => MacAddressFilterRegExp(value) }
                   ]}
                 >
                   <Input placeholder={$t({ defaultMessage: 'Source Network Address' })}/>
                 </Form.Item>
                 <Form.Item
-                  style={{ width: '48%' }}
                   name='sourceMask'
                   rules={[
                     { required: true },
@@ -592,7 +622,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
                 >
                   <Input placeholder={$t({ defaultMessage: 'Source Mask' })}/>
                 </Form.Item>
-              </div> : null}
+              </Space> : null}
           </GridCol>
 
           <GridCol col={{ span: 5 }}>
@@ -601,7 +631,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
             </Radio>
           </GridCol>
           <GridCol col={{ span: 19 }}>
-            {sourceValue === 3 ? <Form.Item
+            {sourceValue === 3 ? <Space size={6}><Form.Item
               name='sourceIp'
               rules={[
                 { required: true },
@@ -609,16 +639,14 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
               ]}
             >
               <Input placeholder={$t({ defaultMessage: 'Source Ip' })}/>
-            </Form.Item> : null}
+            </Form.Item></Space> : null}
           </GridCol>
         </GridRow>
 
       </Radio.Group>
-      <Form.Item
+      <DrawerFormItem
         name='sourcePort'
         label={$t({ defaultMessage: 'Port' })}
-        labelAlign={'left'}
-        labelCol={{ span: 5 }}
         initialValue={''}
         rules={[
           { max: 64 }
@@ -652,9 +680,8 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
           </GridCol>
           <GridCol col={{ span: 19 }}>
             {destValue === 2
-              ? <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
+              ? <Space size={6}>
                 <Form.Item
-                  style={{ width: '48%' }}
                   name='destNetworkAddress'
                   rules={[
                     { required: true, message: 'You must specify subnet network' }
@@ -663,15 +690,16 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
                   <Input placeholder={$t({ defaultMessage: 'Destination Network Address' })}/>
                 </Form.Item>
                 <Form.Item
-                  style={{ width: '48%' }}
                   name='destMask'
                   rules={[
-                    { required: true, message: 'You must specify mask' }
+                    { required: true, message: $t({
+                      defaultMessage: 'You must specify mask'
+                    }) }
                   ]}
                 >
                   <Input placeholder={$t({ defaultMessage: 'Destination Mask' })}/>
                 </Form.Item>
-              </div> : null}
+              </Space> : null}
           </GridCol>
 
           <GridCol col={{ span: 5 }}>
@@ -680,23 +708,23 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
             </Radio>
           </GridCol>
           <GridCol col={{ span: 19 }}>
-            {destValue === 3 ? <Form.Item
+            {destValue === 3 ? <Space size={6}><Form.Item
               name='destIp'
               rules={[
-                { required: true, message: 'You must specify IP Address' }
+                { required: true, message: $t({
+                  defaultMessage: 'You must specify IP Address'
+                }) }
               ]}
             >
               <Input placeholder={$t({ defaultMessage: 'Destination Ip' })}/>
-            </Form.Item> : null}
+            </Form.Item></Space> : null}
           </GridCol>
         </GridRow>
 
       </Radio.Group>
-      <Form.Item
+      <DrawerFormItem
         name='destPort'
         label={$t({ defaultMessage: 'Port' })}
-        labelAlign={'left'}
-        labelCol={{ span: 5 }}
         initialValue={''}
         rules={[
           { max: 64 }
@@ -710,8 +738,8 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
 
   return (
     <>
-      <Row justify={'space-between'} style={{ width: '300px' }}>
-        <Col span={12} style={{ textAlign: 'center' }}>
+      <GridRow style={{ width: '350px' }}>
+        <GridCol col={{ span: 12 }}>
           <Form.Item
             name={[...inputName, 'l3AclPolicyId']}
             rules={[{
@@ -727,29 +755,30 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
               />
             }
           />
-        </Col>
-        <Col span={6} style={{ textAlign: 'center' }}>
-          <ViewDetailsWrapper $policyId={l3AclPolicyId}
+        </GridCol>
+        <AclGridCol>
+          <Button type='link'
+            disabled={!l3AclPolicyId}
             onClick={() => {
               if (l3AclPolicyId) {
                 setVisible(true)
                 setQueryPolicyId(l3AclPolicyId)
               }
-            }}>
+            }
+            }>
             {$t({ defaultMessage: 'View Details' })}
-          </ViewDetailsWrapper>
-        </Col>
-        <Col span={5} style={{ textAlign: 'center' }}>
-          <span
-            style={{ cursor: 'pointer' }}
+          </Button>
+        </AclGridCol>
+        <AclGridCol>
+          <Button type='link'
             onClick={() => {
               setVisible(true)
               setQueryPolicyId('')
             }}>
             {$t({ defaultMessage: 'Add New' })}
-          </span>
-        </Col>
-      </Row>
+          </Button>
+        </AclGridCol>
+      </GridRow>
       <Drawer
         title={$t({ defaultMessage: 'Layer 3 Settings' })}
         visible={visible}

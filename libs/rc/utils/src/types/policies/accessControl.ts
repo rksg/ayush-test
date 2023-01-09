@@ -32,7 +32,7 @@ export interface DeviceRule {
 
 export interface L3Rule {
   id: string
-  access: AccessStatus,
+  access: 'ALLOW' | 'BLOCK',
   description: string,
   destination: {
     enableIpSubnet: boolean,
@@ -56,6 +56,18 @@ export interface AvcApp {
     catId: number,
     appId: number
   }
+}
+
+export enum Layer3ProtocolType {
+  ANYPROTOCOL = 'ANYPROTOCOL',
+  TCP = 'TCP',
+  UDP = 'UDP',
+  UDPLITE = 'UDPLITE',
+  ICMP = 'ICMP',
+  IGMP = 'IGMP',
+  ESP = 'ESP',
+  AH = 'AH',
+  SCTP = 'SCTP'
 }
 
 export enum AccessStatus {
