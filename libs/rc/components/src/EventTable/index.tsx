@@ -21,8 +21,8 @@ const FormatMessage = FormattedMessage
 export const useEventTableFilter = () => {
   const { startDate, endDate } = useDateFilter()
   return {
-    fromTime: moment(startDate).milliseconds(0).toISOString().replace('.000', ''),
-    toTime: moment(endDate).milliseconds(0).toISOString().replace('.000', '')
+    fromTime: moment(startDate).utc().format(),
+    toTime: moment(endDate).utc().format()
   }
 }
 

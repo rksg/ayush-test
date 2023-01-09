@@ -1,9 +1,9 @@
 import { rest }    from 'msw'
 import * as router from 'react-router-dom'
 
-import { CommonUrlsInfo }             from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { CommonUrlsInfo }                                        from '@acx-ui/rc/utils'
+import { Provider }                                              from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { events, eventsMeta } from './__tests__/fixtures'
 
@@ -31,6 +31,7 @@ describe('SwitchTimelineTab', () => {
 
       }
     })
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect(await screen.findAllByText('730-11-60')).toHaveLength(2)
   })
 })
