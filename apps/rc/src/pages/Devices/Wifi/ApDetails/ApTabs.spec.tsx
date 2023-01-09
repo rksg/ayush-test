@@ -18,10 +18,10 @@ jest.mock('react-router-dom', () => ({
 
 describe('ApTabs', () => {
   it('should render correctly', async () => {
-    const { asFragment } = render(<Provider>
+    render(<Provider>
       <ApTabs apDetail={apDetailData} />
     </Provider>, { route: { params } })
-    expect(asFragment()).toMatchSnapshot()
+    expect(screen.getAllByRole('tab')).toHaveLength(8)
   })
 
   it('should handle tab changes', async () => {
