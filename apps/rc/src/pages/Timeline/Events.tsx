@@ -14,13 +14,6 @@ import { useDateFilter } from '@acx-ui/utils'
 const Events = () => {
   const { startDate, endDate } = useDateFilter()
 
-  const tableQuery = usePollingTableQuery<Event>({
-    useQuery: useEventsQuery,
-    defaultPayload: eventDefaultPayload,
-    sorter: eventDefaultSorter,
-    option: { pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL }
-  })
-
   useEffect(()=>{
     const payload = tableQuery.payload as { filters?: Record<string, string[]> }
     tableQuery.setPayload({
@@ -31,8 +24,14 @@ const Events = () => {
         toTime: moment(endDate).utc().format()
       }
     })
-  }, [tableQuery.payload, startDate, endDate])
+  }, [startDate])
 
+  const tableQuery = usePollingTableQuery<Event>({
+    useQuery: useEventsQuery,
+    defaultPayload: eventDefaultPayload,
+    sorter: eventDefaultSorter,
+    option: { pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL }
+  })
   return <EventTable tableQuery={tableQuery}/>
 }
 export { Events }
