@@ -10,8 +10,8 @@ import {
 import { DefaultOptionType } from 'antd/lib/select'
 import { useIntl }           from 'react-intl'
 
-import { Button, StepsForm } from '@acx-ui/components'
-import { useDpskListQuery }  from '@acx-ui/rc/services'
+import { Button, StepsForm }   from '@acx-ui/components'
+import { useGetDpskListQuery } from '@acx-ui/rc/services'
 import {
   WlanSecurityEnum,
   NetworkSaveData,
@@ -115,16 +115,16 @@ function DpskServiceSelector () {
   const $t = intl.$t
   const [ dpskOptions, setDpskOptions ] = useState<DefaultOptionType[]>([])
   const [ selectedDpsk, setSelectedDpsk ] = useState<DpskSaveData>()
-  const { data: dpskList } = useDpskListQuery({})
+  const { data: dpskList } = useGetDpskListQuery({})
   const dpskServiceProfileId = useWatch('dpskServiceProfileId')
 
   const findService = (serviceId: string) => {
-    return dpskList?.content.find((dpsk: DpskSaveData) => dpsk.id === serviceId)
+    return dpskList?.data.find((dpsk: DpskSaveData) => dpsk.id === serviceId)
   }
 
   useEffect(() => {
-    if (dpskList?.content) {
-      setDpskOptions(dpskList.content.map((dpsk: DpskSaveData) => {
+    if (dpskList?.data) {
+      setDpskOptions(dpskList.data.map((dpsk: DpskSaveData) => {
         return { label: dpsk.name, value: dpsk.id }
       }))
     }
@@ -175,6 +175,7 @@ function DpskServiceSelector () {
           <Form.Item label={$t({ defaultMessage: 'Passphrase Expiration' })}>
             <Typography.Paragraph>
               {
+                // TODO
                 // transformAdvancedDpskExpirationText(intl, {
                 //   expirationType: selectedDpsk.expirationType,
                 //   expirationDate: selectedDpsk.expirationDate,

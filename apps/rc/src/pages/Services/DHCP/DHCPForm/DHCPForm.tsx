@@ -16,6 +16,8 @@ import { useParams, useTenantLink, useNavigate, useLocation }  from '@acx-ui/rea
 
 import { SettingForm } from './DHCPSettingForm'
 
+export const DEFAULT_GUEST_DHCP_NAME = 'DHCP-Guest'
+
 interface DHCPFormProps {
   editMode?: boolean
 }
