@@ -4,19 +4,18 @@ import { ExpirationDateEntity, ExpirationType } from '../components'
 
 export interface MacRegistrationPool {
   id?: string
-  autoCleanup?: boolean
+  autoCleanup: boolean
   description?: string
-  enabled?: boolean
+  enabled: boolean
   expirationEnabled?: boolean
-  name?: string
-  priority?: number
+  name: string
   ssidRegex?: string
-  registrationCount?: number
+  registrationCount: number
   policyId?: string
   expirationType?: ExpirationType
   expirationOffset?: number
   expirationDate?: string
-  defaultAccess ?: boolean
+  defaultAccess : string
 }
 
 export interface MacRegistrationPoolFormFields {

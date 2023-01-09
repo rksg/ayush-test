@@ -7,14 +7,13 @@ import { Loader, PageHeader, showToast, StepsForm, StepsFormInstance } from '@ac
 import {
   useAddMacRegListMutation,
   useGetMacRegListQuery,
-  useMacRegListsQuery,
   useUpdateMacRegListMutation
 } from '@acx-ui/rc/services'
 import {
   MacRegistrationPoolFormFields,
   getPolicyRoutePath,
   PolicyType,
-  PolicyOperation, useTableQuery
+  PolicyOperation
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -41,22 +40,15 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
   const [addMacRegList] = useAddMacRegListMutation()
   const [updateMacRegList, { isLoading: isUpdating }] = useUpdateMacRegListMutation()
 
-  const tableQuery = useTableQuery({
-    useQuery: useMacRegListsQuery,
-    apiParams: { size: '10', page: '0' },
-    defaultPayload: {}
-  })
-
   useEffect(() => {
     if (data && editMode) {
       formRef.current?.setFieldsValue({
         name: data?.name,
         autoCleanup: data.autoCleanup,
-        ...transferDataToExpirationFormFields(data)
-        // defaultAccess
+        ...transferDataToExpirationFormFields(data),
+        defaultAccess: data.defaultAccess
         // policyId
       })
-      // setPoolSaveState({ ...data })
     }
   }, [data, editMode])
 
@@ -65,9 +57,8 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
       const saveData = {
         name: data.name,
         autoCleanup: data.autoCleanup,
-        priority: (editMode ? undefined : tableQuery.data ? tableQuery.data.totalCount + 1 : 0),
         ...transferExpirationFormFieldsToData(data.expiration)
-        // defaultAccess
+        // defaultAccess: data.defaultAccess
         // policyId
       }
       await addMacRegList({ payload: saveData }).unwrap()
@@ -88,7 +79,7 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
         name: data.name,
         ...transferExpirationFormFieldsToData(data.expiration),
         autoCleanup: data.autoCleanup
-        // defaultAccess
+        // defaultAccess: data.defaultAccess
         // policyId
       }
       await updateMacRegList({

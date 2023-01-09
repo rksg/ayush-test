@@ -1,5 +1,5 @@
-import { Form, Input, Col,  Row, Select, Switch } from 'antd'
-import { useIntl }                                from 'react-intl'
+import { Form, Input, Col, Row, Select, Switch, Space } from 'antd'
+import { useIntl }                                      from 'react-intl'
 
 import { Button, SelectionControl } from '@acx-ui/components'
 import { ExpirationDateSelector }   from '@acx-ui/rc/components'
@@ -32,6 +32,10 @@ export function MacRegistrationListSettingForm () {
           hasFeedback
           children={<Input/>}
         />
+        <ExpirationDateSelector
+          inputName={'expiration'}
+          label={$t({ defaultMessage: 'List Expiration' })}
+        />
         <Form.Item name='autoCleanup'
           valuePropName='checked'
           initialValue={true}
@@ -40,34 +44,29 @@ export function MacRegistrationListSettingForm () {
         </Form.Item>
         <Form.Item name='defaultAccess'
           label={$t({ defaultMessage: 'Default Access' })}
-          initialValue={'accept'}>
+          initialValue={'accept'}
+          rules={[{ required: true }]}>
           <SelectionControl
             options={[{ value: 'accept', label: $t({ defaultMessage: 'ACCEPT' }) },
               { value: 'reject', label: $t({ defaultMessage: 'REJECT' }) }]}
           />
         </Form.Item>
-        <ExpirationDateSelector
-          inputName={'expiration'}
-          label={$t({ defaultMessage: 'List Expiration' })}
-        />
       </Col>
       <Col span={24}>
-        <Row align='middle'>
-          <Col span={10}>
-            <Form.Item name='access_policy_set'
-              label={$t({ defaultMessage: 'Access Policy Set' })}
-              rules={[
-                { required: false,
-                  message: $t({ defaultMessage: 'Please choose Access Policy Set' }) }
-              ]}
-              children={<Select placeholder={$t({ defaultMessage: 'Select...' })}/>}/>
-          </Col>
-          <Col offset={1}>
+        <Form.Item name='access_policy_set'
+          label={$t({ defaultMessage: 'Access Policy Set' })}
+          rules={[
+            { required: false,
+              message: $t({ defaultMessage: 'Please choose Access Policy Set' }) }
+          ]}
+        >
+          <Space direction='horizontal'>
+            <Select style={{ width: 200 }} placeholder={$t({ defaultMessage: 'Select...' })}/>
             <Button type='link'>
               {$t({ defaultMessage: 'Add Access Policy Set' })}
             </Button>
-          </Col>
-        </Row>
+          </Space>
+        </Form.Item>
       </Col>
     </Row>
   )
