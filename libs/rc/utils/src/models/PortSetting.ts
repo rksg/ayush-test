@@ -24,6 +24,23 @@
 //   }
 // }
 
+export enum QOS_APP_Type {
+  'Guest-voice' = 'GUEST_VOICE',
+  'Guest-voice-signaling' = 'GUEST_VOICE_SIGNALING',
+  'Softphone-voice' = 'SOFTPHONE_VOICE',
+  'Streaming-video' = 'STREAMING_VIDEO',
+  'Video-conferencing' = 'VIDEO_CONFERENCING',
+  'Video-signaling' = 'VIDEO_SIGNALING',
+  'Voice' = 'VOICE',
+  'Voice-signaling' = 'VOICE_SIGNALING',
+}
+
+export enum QOS_VLAN_Type {
+  'Priority-tagged' = 'PRIORITY_TAGGED',
+  'Tagged' = 'TAGGED',
+  'Untagged' = 'UNTAGGED',
+}
+
 export class LldpQosModel {
   id: string = ''
 
@@ -46,21 +63,4 @@ export class LldpQosModel {
   // })
   dscp: number = 0
 
-}
-
-export enum QOS_APP_Type {
-  'Guest-voice' = 'GUEST_VOICE',
-  'Guest-voice-signaling' = 'GUEST_VOICE_SIGNALING',
-  'Softphone-voice' = 'SOFTPHONE_VOICE',
-  'Streaming-video' = 'STREAMING_VIDEO',
-  'Video-conferencing' = 'VIDEO_CONFERENCING',
-  'Video-signaling' = 'VIDEO_SIGNALING',
-  'Voice' = 'VOICE',
-  'Voice-signaling' = 'VOICE_SIGNALING',
-}
-
-export enum QOS_VLAN_Type {
-  'Priority-tagged' = 'PRIORITY_TAGGED',
-  'Tagged' = 'TAGGED',
-  'Untagged' = 'UNTAGGED',
 }

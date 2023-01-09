@@ -16,16 +16,22 @@ export const TagsSolidIcon = styled(TagsSolid)`
   margin-left: 6px;
 `
 
+export const Form = styled(AntdForm)`
+  &.ant-form.ant-form-horizontal > .ant-form-item {
+    margin-bottom: 20px !important;
+    label {
+      color: var(--acx-primary-black)
+    }
+  }
+`
+
 export const FormItemLayout = styled(AntdForm.Item)`
   &.ant-form-item {
     margin-bottom: 10px;
-    // label {
-    //   font-size: 12px;
-    // }
   }
   
   .ant-form-item-control-input-content {
-    align-items: center;
+    // align-items: center;
     &:first-child {
       display: flex;
       width: 100%;
@@ -34,6 +40,7 @@ export const FormItemLayout = styled(AntdForm.Item)`
 
   .ant-checkbox-wrapper {
     align-items: center;
+    max-height: 32px;
     .ant-checkbox {
       top: 0;
     }
@@ -56,7 +63,7 @@ export const FormItemLayout = styled(AntdForm.Item)`
 
 export const SwitchLabel = styled('div')`
   display: inline-flex;
-  width: 170px;
+  width: 172px;
   font-size: var(--acx-body-4-font-size)
 `
 

@@ -40,7 +40,7 @@ import {
   SwitchPortViewModel,
   SwitchAclUnion,
   SwitchDefaultVlan,
-  SwitchVlans,
+  // SwitchVlans,
   SwitchVlanUnion,
   PortSetting,
   PortsSetting,
@@ -109,15 +109,6 @@ export const EditPortMessages = {
   TAGGED_VLAN_TOOLTIP: defineMessage({
     defaultMessage: 'Cannot set tagged VLANs when IPSG is activated on the port'
   })
-  // IPSG_WITH_NOT_PURE_UNTAGGED_VLAN: defineMessage({
-  //   defaultMessage: 'You can\'t assign IPSG on the port when it has untagged VLAN which relative to a VE'
-  // }),
-  // IPSG_WITH_TAGGED_VLANS: defineMessage({
-  //   defaultMessage: 'You can\'t assign IPSG on the port when it has tagged VLANs'
-  // }),
-  // IPSG_WITH_MULTI_TAGGED_VLANS: defineMessage({
-  //   defaultMessage: 'You can\'t assign IPSG on the port when one or more selected ports have tagged VLANs'
-  // })
 }
 
 export const MultipleEditPortMessages = {
@@ -136,8 +127,8 @@ export function EditPortDrawer ({
   isCloudPort,
   isMultipleEdit,
   isVenueLevel,
-  selectedPorts,
-  switchModel = ''
+  selectedPorts
+  // switchModel = ''
 }: {
   visible: boolean,
   setDrawerVisible: (visible: boolean) => void,
@@ -145,7 +136,7 @@ export function EditPortDrawer ({
   isMultipleEdit: boolean,
   isVenueLevel: boolean,
   selectedPorts: SwitchPortViewModel[],
-  switchModel?: string
+  // switchModel?: string
 }) {
   const { $t } = getIntl()
   const [form] = Form.useForm()
@@ -183,6 +174,7 @@ export function EditPortDrawer ({
   const [loading, setLoading] = useState<boolean>(true)
 
   const defaultVlanName = 'DEFAULT-VLAN'
+  const defaultVlanText = $t({ defaultMessage: 'Default VLAN (Multiple values)' })
   const switches: string[] = _.uniq(selectedPorts.map(p => p.switchMac))
   const disablePortSpeed = handlePortSpeedFor765048F(selectedPorts)
 
@@ -195,8 +187,7 @@ export function EditPortDrawer ({
   const [disablePoeCapability, setDisablePoeCapability] = useState(false)
 
   const [lldpQosList, setLldpQosList] = useState([] as LldpQosModel[])
-  // const [revertStatus, setRevertStatus] = useState(false)
-  const [portEditStatus, setPortEditStatus] = useState('')
+  const [portEditStatus, setPortEditStatus] = useState('') /////
   const [hasSwitchProfile, setHasSwitchProfile] = useState(false)
   const [profileDefaultVlan, setProfileDefaultVlan] = useState(null as unknown as Number)
   const [useVenueSettings, setUseVenueSettings] = useState(true)
@@ -209,19 +200,13 @@ export function EditPortDrawer ({
   const [venueUntaggedVlan, setVenueUntaggedVlan] = useState(null as unknown as string)
 
   // remove var
+  // const [revertStatus, setRevertStatus] = useState(false)
   // const [disableText, setDisableText] = useState('' as unknown as string)
   // const [isDirtyUntaggedVlan, setIsDirtyUntaggedVlan] = useState(true) ///?
   // const [blockTaggedVlanConfig, setBlockTaggedVlanConfig] = useState(false) // X
-  const [selectModalvisible, setSelectModalvisible] = useState(false)
-  const [lldpModalvisible, setLldpModalvisible] = useState(false)
-  const [hasMultipleValue, setHasMultipleValue] = useState([] as string[])
-  const [disableSaveButton, setDisableSaveButton] = useState(false)
-
   // const [withNotPureUntaggedVlan, setWithNotPureUntaggedVlan] = useState(false)
   // const [withoutTaggedVlan, setWithoutTaggedVlan] = useState(false)
-
   // const [isDefaultUntaggedVlan, setIsDefaultUntaggedVlan] = useState(false)
-  const [initPortVlans, setInitPortVlans] = useState([] as any)
   // const [portsProfileVlans, setPortsProfileVlans] = useState({
   //   tagged: [],
   //   untagged: []
@@ -229,6 +214,12 @@ export function EditPortDrawer ({
   // updateAcl updateVlan
   // withNotPureUntaggedVlan = enable untaggedVlan && isDefaultUntaggedVlan && !this.portForm.get('IPSG')
   // withoutTaggedVlan = taggedVlans / taggedVlansByVenue is empty
+
+  const [selectModalvisible, setSelectModalvisible] = useState(false)
+  const [lldpModalvisible, setLldpModalvisible] = useState(false)
+  const [hasMultipleValue, setHasMultipleValue] = useState([] as string[])
+  const [disableSaveButton, setDisableSaveButton] = useState(false)
+  const [initPortVlans, setInitPortVlans] = useState([] as any)
 
   const [getPortSetting] = useLazyGetPortSettingQuery()
   const [getPortsSetting] = useLazyGetPortsSettingQuery()
@@ -248,13 +239,6 @@ export function EditPortDrawer ({
   const { data: aclUnion } = useGetAclUnionQuery({ params: { tenantId, serialNumber } })
   const { data: switchesDefaultVlan }
     = useGetDefaultVlanQuery({ params: { tenantId }, payload: switches }) // ['58:fb:96:0e:82:8a', 'c0:c5:20:aa:32:79']
-
-  // console.log('switchDetail: ', switchDetail)
-  // console.log('switchesDefaultVlan: ', switchesDefaultVlan)
-  // console.log('selectedPorts: ', vlanUsedByVe, selectedPorts, poeClass)
-  // console.log('taggedVlans: ', taggedVlans, ' untaggedVlans:', untaggedVlan)
-  // console.log('*** selectedPorts: ', selectedPorts)
-  // console.log('hasMultipleValue: ', hasMultipleValue)
 
   const getVlans = async () => {
     return switches.length > 1
@@ -433,8 +417,6 @@ export function EditPortDrawer ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedPorts, switchDetail, switchesDefaultVlan, visible]) // []
 
-
-
   const getFieldTooltip = (field: string) => {
     switch (field) {
       case 'portEnable':
@@ -551,12 +533,12 @@ export function EditPortDrawer ({
           switchId: item,
           port: {
             ...transformedValues,
-            ...(transformedValues?.untaggedVlan === 'Default VLAN (Multiple values)' && { //// multi
+            ...(transformedValues?.untaggedVlan === defaultVlanText && { //// multi
               untaggedVlan: switchesDefaultVlan
                 ?.filter(v => v.switchId === item)
                 .map(v => v.defaultVlanId)?.[0]
             }),
-            ...(transformedValues?.voiceVlan === 'Default VLAN (Multiple values)' && {
+            ...(transformedValues?.voiceVlan === defaultVlanText && {
               untaggedVlan: switchesDefaultVlan
                 ?.filter(v => v.switchId === item)
                 .map(v => v.defaultVlanId)?.[0]
@@ -576,7 +558,7 @@ export function EditPortDrawer ({
         ])
       )
       setDrawerVisible(false)
-      // form.resetFields()
+
     } catch (err) {
       console.log(err) // eslint-disable-line no-console
       // switchUtilsService.showGeneralError(errors);
@@ -623,7 +605,8 @@ export function EditPortDrawer ({
 
     const updateVlanOptions = () => {
       const oldOptions = getVlanOptions(switchVlans, defaultVlan, voiceVlan)
-      const options = initPortVlans?.map((p:any) => checkVlanOptions(oldOptions, untaggedVlan, taggedVlans, p))
+      const options = initPortVlans?.map((p:any) =>
+        checkVlanOptions(oldOptions, untaggedVlan, taggedVlans, p))
       const newOptions = _.intersection(...options)
       setVlansOptions(newOptions as DefaultOptionType[])
       if (voiceVlan && (oldOptions.length > newOptions.length)) {
@@ -656,7 +639,7 @@ export function EditPortDrawer ({
         updateVlanOptions()
         break
       default:
-    } 
+    }
   }
 
   const onClose = () => {
@@ -702,23 +685,22 @@ export function EditPortDrawer ({
       isLoading: loading,
       isFetching: isPortsSettingUpdating
     }]}>
-      <Form
-        form={form}
-        layout='vertical'
-        // layout={isMultipleEdit ? 'horizontal' : 'vertical'}
-        // labelAlign='left'
-        // labelCol={{ span: 16 }}
-        onValuesChange={onValuesChange}
-      >
+      <Form layout='vertical'>
         <Form.Item
           label={$t({ defaultMessage: 'Selected Port' })}
           children={
-            <Space>
+            <Space style={{ fontSize: '16px' }}>
               {selectedPorts?.map(p => p.portIdentifier)?.join(', ')}
             </Space>
           }
         />
-
+      </Form>
+      <UI.Form
+        form={form}
+        layout={isMultipleEdit ? 'horizontal' : 'vertical'}
+        labelAlign='left'
+        onValuesChange={onValuesChange}
+      >
         <UI.FormItemLayout>
           {isMultipleEdit && <Form.Item
             noStyle
@@ -787,6 +769,7 @@ export function EditPortDrawer ({
             children={<Checkbox disabled={disablePoeCapability || !poeEnable} />}
           />}
           <Form.Item
+            {...getFormItemLayout(isMultipleEdit)}
             name='poeClass'
             label={$t({ defaultMessage: 'PoE Class' })}
             initialValue='UNSET'
@@ -809,6 +792,7 @@ export function EditPortDrawer ({
             children={<Checkbox disabled={disablePoeCapability || !poeEnable} />}
           />}
           <Form.Item
+            {...getFormItemLayout(isMultipleEdit)}
             name='poePriority'
             label={$t({ defaultMessage: 'PoE Priority' })}
             initialValue={1}
@@ -832,6 +816,7 @@ export function EditPortDrawer ({
             children={<Checkbox disabled={disablePoeCapability || !poeEnable} />}
           />}
           <Form.Item
+            {...getFormItemLayout(isMultipleEdit)}
             name='poeBudget'
             label={$t({ defaultMessage: 'PoE Budget' })}
             rules={[
@@ -848,16 +833,23 @@ export function EditPortDrawer ({
                 />}
           />
           {((isMultipleEdit && poeBudgetCheckbox) || !isMultipleEdit)
-            && <Space style={{ display: 'flex', fontSize: '12px', margin: '12px 0 0 10px' }}>
+            && <Space align='baseline'
+              style={{
+                display: 'flex', fontSize: '12px',
+                margin: isMultipleEdit ? '10px 0px 0px 10px' : '30px 0 0 10px'
+              }}>
               {$t({ defaultMessage: 'mWatts' })}</Space>
           }
         </UI.FormItemLayout>
 
-        <Divider style={{ margin: '4px 0px 20px', background: cssStr('--acx-neutrals-20') }} />
+        <Divider style={{
+          margin: isMultipleEdit ? '28px 0' : '8px 0px 20px',
+          background: cssStr('--acx-neutrals-20') }}
+        />
 
         <UI.FormItemLayout>
           {isMultipleEdit && <Space
-            style={{ height: '185px', alignItems: 'baseline', paddingRight: '10px' }} /// height: '100%'
+            style={{ height: '96px', alignItems: 'baseline', paddingRight: '10px' }} /// height: '100%'
           >
             <Form.Item
               noStyle
@@ -871,11 +863,13 @@ export function EditPortDrawer ({
           <div>
             <Space style={{
               width: '510px', display: 'flex', justifyContent: 'space-between',
-              marginBottom: isMultipleEdit ? '24px' : '18px'
+              marginBottom: isMultipleEdit ? '16px' : '18px'
             }}>
-              <Subtitle level={3} style={{ margin: 0 }}>
+              { !isMultipleEdit ?<Subtitle level={3} style={{ margin: 0 }}>
                 {$t({ defaultMessage: 'Port VLANs' })}
               </Subtitle>
+                : <span>{$t({ defaultMessage: 'Port VLANs' })}</span>
+              }
               {(!isMultipleEdit || portVlansCheckbox) &&
                 <Space size={24}>
                   <Space style={{ fontSize: '12px' }}>{
@@ -919,9 +913,10 @@ export function EditPortDrawer ({
               children={isMultipleEdit &&
                 !portVlansCheckbox && hasMultipleValue.includes('untaggedVlan')
                 ? <MultipleText />
-                : <Space style={{ fontSize: '16px', margin: 0 }}>{untaggedVlan
-                  ? $t({ defaultMessage: 'VLAN-ID: {vlan}' }, { vlan: untaggedVlan })
-                  : '--'
+                : <Space style={{ fontSize: isMultipleEdit ? '14px' : '16px', margin: 0 }}>{
+                  untaggedVlan
+                    ? $t({ defaultMessage: 'VLAN-ID: {vlan}' }, { vlan: untaggedVlan })
+                    : '--'
                 }</Space>
               }
             />
@@ -956,6 +951,7 @@ export function EditPortDrawer ({
             children={<Checkbox disabled={vlansOptions?.length === 1} />}
           />}
           <Form.Item
+            {...getFormItemLayout(isMultipleEdit)}
             label={$t({ defaultMessage: 'Voice VLAN' })}
             children={isMultipleEdit && !voiceVlanCheckbox && hasMultipleValue.includes('voiceVlan')
               ? <MultipleText />
@@ -974,7 +970,10 @@ export function EditPortDrawer ({
           />
         </UI.FormItemLayout>
 
-        <Divider style={{ margin: '4px 0px 20px', background: cssStr('--acx-neutrals-20') }} />
+        <Divider style={{
+          margin: isMultipleEdit ? '28px 0' : '8px 0px 20px',
+          background: cssStr('--acx-neutrals-20') }}
+        />
 
         <UI.FormItemLayout>
           {isMultipleEdit && <Form.Item
@@ -1032,6 +1031,7 @@ export function EditPortDrawer ({
             children={<Checkbox disabled={!portSpeedOptions.length || disablePortSpeed} />}
           />}
           <Form.Item
+            {...getFormItemLayout(isMultipleEdit)}
             name='portSpeed'
             label={$t({ defaultMessage: 'Port Speed' })}
             initialValue='NONE'
@@ -1115,7 +1115,10 @@ export function EditPortDrawer ({
           />
         </UI.FormItemLayout>
 
-        <Divider style={{ margin: '4px 0px 20px', background: cssStr('--acx-neutrals-20') }} />
+        <Divider style={{
+          margin: isMultipleEdit ? '28px 0' : '8px 0px 20px',
+          background: cssStr('--acx-neutrals-20') }}
+        />
 
         <UI.FormItemLayout>
           {isMultipleEdit && <Form.Item
@@ -1152,16 +1155,16 @@ export function EditPortDrawer ({
             children={isMultipleEdit && !ipsgCheckbox && hasMultipleValue.includes('ipsg')
               ? <MultipleText />
               : <Form.Item
-                  noStyle
-                  name='ipsg'
-                  valuePropName='checked'
-                  initialValue={false}
-                >
-                  <Switch
-                    data-testid='ipsg-checkbox'
-                    disabled={getFieldDisabled('ipsg')}
-                  />
-                </Form.Item>}
+                noStyle
+                name='ipsg'
+                valuePropName='checked'
+                initialValue={false}
+              >
+                <Switch
+                  data-testid='ipsg-checkbox'
+                  disabled={getFieldDisabled('ipsg')}
+                />
+              </Form.Item>}
           />
         </UI.FormItemLayout>
 
@@ -1193,6 +1196,7 @@ export function EditPortDrawer ({
             }
           />
         </UI.FormItemLayout>
+
         <Space style={{ position: 'relative', top: '-20px' }}>
           <LldpQOSTable
             editable={!isMultipleEdit || lldpQosCheckbox}
@@ -1213,6 +1217,7 @@ export function EditPortDrawer ({
             children={<Checkbox />}
           />}
           <Form.Item
+            {...getFormItemLayout(isMultipleEdit)}
             name='ingressAcl'
             label={$t({ defaultMessage: 'Ingress ACL' })}
             initialValue=''
@@ -1250,6 +1255,7 @@ export function EditPortDrawer ({
             children={<Checkbox />}
           />}
           <Form.Item
+            {...getFormItemLayout(isMultipleEdit)}
             name='egressAcl'
             label={$t({ defaultMessage: 'Egress ACL' })}
             initialValue=''
@@ -1284,6 +1290,7 @@ export function EditPortDrawer ({
             children={<Checkbox />}
           />}
           <Form.Item
+            {...getFormItemLayout(isMultipleEdit)}
             name='tags'
             label={$t({ defaultMessage: 'Tags' })}
             initialValue=''
@@ -1294,7 +1301,8 @@ export function EditPortDrawer ({
           />
         </UI.FormItemLayout>
 
-      </Form>
+      </UI.Form>
+
       {selectModalvisible && <SelectVlanModal
         form={form}
         selectModalvisible={selectModalvisible}
@@ -1332,6 +1340,14 @@ function MultipleText () {
   </Space>
 }
 
+function getFormItemLayout (isMultipleEdit: boolean) {
+  return isMultipleEdit && {
+    labelCol: { span: 10 },
+    wrapperCol: { span: 16 },
+    style: { width: '75%' }
+  }
+}
+
 function getPortSpeed (selectedPorts: SwitchPortViewModel[]) {
   const portsSpeedOptions = selectedPorts.map((item: SwitchPortViewModel) => {
     return getPortSpeedOptions(item.switchModel, item.portIdentifier)
@@ -1355,7 +1371,6 @@ function getAclOptions (acls?: SwitchAclUnion) {
 function getVlanOptions (vlans: SwitchVlanUnion, defaultVlan: string, extra?: number) {
   const { $t } = getIntl()
   const allVlans = getAllSwitchVlans(vlans)
-  console.log(vlans, allVlans)
   const options = allVlans?.map((v) => ({
     value: v.vlanId,
     label: $t({ defaultMessage: 'VLAN-{vlan}' }, { vlan: v.vlanId })
@@ -1387,20 +1402,25 @@ function getAllSwitchVlans (vlans: SwitchVlanUnion) {
   return Object.values(allVlans).flat()
 }
 
-function checkVlanOptions (vlanOptions:DefaultOptionType[], untaggedVlan:string, taggedVlans:string, init:any) {
+function checkVlanOptions (
+  vlanOptions:DefaultOptionType[],
+  untaggedVlan:string,
+  taggedVlans:string,
+  init:any
+) {
   if (init?.voice) {
-    if (init?.untagged == init?.voice.toString() && untaggedVlan !== init?.voice.toString()) {
-      vlanOptions = vlanOptions.filter((item:any) => item.value !== Number(init?.voice))
+    if (init?.untagged === init?.voice.toString() && untaggedVlan !== init?.voice.toString()) {
+      vlanOptions = vlanOptions.filter(item => item.value !== Number(init?.voice))
       if (init?.isDefaultVlan) {
-        vlanOptions = vlanOptions.filter((item:any) => item.value !== 'Default VLAN (Multiple values)')
+        vlanOptions = vlanOptions.filter(item => item.value !== 'Default VLAN (Multiple values)')
       }
     }
     if (init?.tagged.indexOf(init?.voice) !== -1) {
       const tagArray = taggedVlans?.split(',') ?? []
       if (tagArray.indexOf(init?.voice) === -1) {
-        vlanOptions = vlanOptions.filter((item:any) => item.value !== Number(init?.voice))
+        vlanOptions = vlanOptions.filter(item => item.value !== Number(init?.voice))
         if (init?.isDefaultVlan) {
-          vlanOptions = vlanOptions.filter((item:any) => item.value !== 'Default VLAN (Multiple values)')
+          vlanOptions = vlanOptions.filter(item => item.value !== 'Default VLAN (Multiple values)')
         }
       }
     }
@@ -1522,12 +1542,14 @@ function getMultipleVlanValue ( // TODO: rewrite
   })
 
   portsSetting?.response?.forEach((item: PortSetting, index: number) => {
-    const defaultVlan = switchesDefaultVlan?.filter(s => s.switchId === item.switchMac)?.[0]?.defaultVlanId
-    initPortVlans.push({
+    const defaultVlan = switchesDefaultVlan?.filter(
+      s => s.switchId === item.switchMac)?.[0]?.defaultVlanId
+
+    initPortVlans.push({ ////
       untagged: result.untagged[index],
       tagged: result.tagged[index] || [],
       voice: item.voiceVlan,
-      isDefaultVlan: item.voiceVlan == defaultVlan
+      isDefaultVlan: item.voiceVlan === defaultVlan
     })
   })
 
@@ -1536,9 +1558,9 @@ function getMultipleVlanValue ( // TODO: rewrite
   const voiceVlanEqual = _.uniq(result.voice)?.length <= 1
 
   return {
-    tagged: tagEqual ? result.tagged[0] : null,
-    untagged: untagEqual ? result.untagged[0] : (defaultVlan ?? 'Default VLAN (Multiple values)'),
-    voice: voiceVlanEqual ? result.voice[0] : '',
+    tagged: tagEqual ? result.tagged?.[0] : null,
+    untagged: untagEqual ? result.untagged?.[0] : (defaultVlan ?? 'Default VLAN (Multiple values)'),
+    voice: voiceVlanEqual ? result.voice?.[0] : '',
     initPortVlans: initPortVlans
   }
 }
