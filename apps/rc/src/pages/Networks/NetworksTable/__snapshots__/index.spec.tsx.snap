@@ -55,7 +55,7 @@ exports[`Networks Table should click disabled row 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-13 gzZsiC"
+      class="styledComponents__Wrapper-sc-1abm7iv-13 gGUvnO"
     >
       <div
         class="ant-pro-table"
@@ -1812,7 +1812,7 @@ exports[`Networks Table should delete selected row 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-13 gzZsiC"
+      class="styledComponents__Wrapper-sc-1abm7iv-13 gGUvnO"
     >
       <div
         class="ant-pro-table"
@@ -3569,7 +3569,7 @@ exports[`Networks Table should render table 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-13 gzZsiC"
+      class="styledComponents__Wrapper-sc-1abm7iv-13 gGUvnO"
     >
       <div
         class="ant-pro-table"
