@@ -60,12 +60,54 @@ export function SwitchConfigBackupTable () {
   }
   ]
 
+  const isActionVisible = (
+    selectedRows: any[],
+    { selectOne }: { selectOne?: boolean }) => {
+    return !!selectOne && selectedRows.length === 1
+  }
+
+  const rowActions: TableProps<any>['rowActions'] = [{
+    label: $t({ defaultMessage: 'View' }),
+    // visible: (rows) => isActionVisible(rows, { selectOne: true }),
+    disabled: true,
+    onClick: () => {
+      // TODO:
+    }
+  }, {
+    label: $t({ defaultMessage: 'Compare' }),
+    // visible: (rows) => isActionVisible(rows, { selectOne: true }),
+    disabled: true,
+    onClick: () => {
+      // TODO:
+    }
+  }, {
+    label: $t({ defaultMessage: 'Restore' }),
+    disabled: true,
+    onClick: () => {
+      // TODO:
+    }
+  }, {
+    label: $t({ defaultMessage: 'Download' }),
+    disabled: true,
+    onClick: () => {
+      // TODO:
+    }
+  }, {
+    label: $t({ defaultMessage: 'Delete' }),
+    disabled: true,
+    onClick: () => {
+      // TODO:
+    }
+  }
+ ]
+
   return <>
     <Loader states={[tableQuery]}>
       <Table
         rowKey='id'
         columns={columns}
         dataSource={tableData}
+        rowActions={rowActions}
         // pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         rowSelection={{
