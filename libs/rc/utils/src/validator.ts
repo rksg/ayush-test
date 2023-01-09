@@ -367,3 +367,23 @@ export function poeBudgetRegExp (value: string) {
   }
   return Promise.resolve()
 }
+
+export function dscpRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp('^([0-9]|[1-5][0-9]|6[0-3])$')
+
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.dscp))
+  }
+  return Promise.resolve()
+}
+
+export function priorityRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp('^([0-7])$')
+
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.priority))
+  }
+  return Promise.resolve()
+}

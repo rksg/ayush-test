@@ -135,6 +135,14 @@ export const validationMessages = {
   poeBudget: defineMessage({
     defaultMessage: 'Poe Budget can only be from 1000 - 30000',
     description: 'Validation - PoE Budget checks'
+  }),
+  dscp: defineMessage({
+    defaultMessage: 'Enter a valid number between 0 and 63',
+    description: 'Validation - dscp checks'
+  }),
+  priority: defineMessage({
+    defaultMessage: 'Enter a valid number between 0 and 7',
+    description: 'Validation - priority checks'
   })
 }
 

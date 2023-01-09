@@ -34,6 +34,9 @@ export const FormItemLayout = styled(AntdForm.Item)`
 
   .ant-checkbox-wrapper {
     align-items: center;
+    .ant-checkbox {
+      top: 0;
+    }
   }
 
   .ant-form-item {

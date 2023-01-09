@@ -7,6 +7,7 @@ import _                                                           from 'lodash'
 import { Button, Modal, Tabs, Tooltip } from '@acx-ui/components'
 import {
   SwitchVlan,
+  // PortSetting,
   Vlan
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
@@ -21,6 +22,7 @@ export function SelectVlanModal (props: {
   selectModalvisible: boolean,
   setSelectModalvisible: (visible: boolean) => void,
   setUseVenueSettings: (useVenue: boolean) => void,
+  onValuesChange: (values: any) => void,
   defaultVlan: string,
   switchVlans: SwitchVlan[],
   venueVlans: Vlan[],
@@ -32,7 +34,7 @@ export function SelectVlanModal (props: {
 }) {
   const { $t } = getIntl()
   const { form, selectModalvisible, setSelectModalvisible,
-    setUseVenueSettings, hasSwitchProfile = false,
+    setUseVenueSettings, onValuesChange, hasSwitchProfile = false,
     vlanDisabledTooltip, defaultVlan, switchVlans,
     vlanUsedByVe = [], taggedVlans = '', untaggedVlan
   } = props
@@ -52,6 +54,7 @@ export function SelectVlanModal (props: {
       taggedVlans: selectTaggedVlans.toString(),
       untaggedVlan: selectUntaggedVlans
     })
+    onValuesChange({ untaggedVlan: selectUntaggedVlans }) ////
     setUseVenueSettings(false)
     setSelectModalvisible(false)
   }
@@ -134,7 +137,7 @@ export function SelectVlanModal (props: {
 
   useEffect(() => {
     const taggedVlansChanged
-      = !_.isEqual(taggedVlans.toString().split(','), selectTaggedVlans.toString().split(','))
+      = !_.isEqual(taggedVlans?.toString().split(','), selectTaggedVlans?.toString().split(','))
     const untaggedVlansChanged
       = !_.isEqual(untaggedVlan?.toString(), selectUntaggedVlans?.toString())
     setDisableButton(!(taggedVlansChanged || untaggedVlansChanged))
@@ -233,7 +236,7 @@ export function SelectVlanModal (props: {
         <UI.GroupListLayout>
           <Checkbox.Group
             options={displayTaggedVlan}
-            defaultValue={Array.from(taggedVlans?.split(','))}
+            defaultValue={Array.from(taggedVlans?.split(',') ?? [])}
             onChange={onChangeTaggedVlan}
           />
         </UI.GroupListLayout>

@@ -337,7 +337,7 @@ export const switchVlans = [{
   vlanName: 'vlan name'
 }]
 
-export const portSetting = {
+export const portSetting = [{
   dhcpSnoopingTrust: false,
   id: 'c0:c5:20:aa:32:79/1/1/5',
   ipsg: false,
@@ -360,7 +360,38 @@ export const portSetting = {
   taggedVlans: ['2'],
   untaggedVlan: '1',
   voiceVlan: 0
-}
+}, {
+  dhcpSnoopingTrust: false,
+  id: 'c0:c5:20:aa:32:79/1/1/6',
+  ipsg: true,
+  lldpEnable: false,
+  lldpQos: [{
+    applicationType: 'GUEST_VOICE',
+    dscp: 0,
+    id: '3df095a0926741b5ac2f9f1f09ffccff',
+    priority: 0,
+    qosVlanType: 'PRIORITY_TAGGED'
+  }],
+  poeBudget: 1000,
+  poeCapability: true,
+  poeClass: 'ONE',
+  poeEnable: true,
+  poePriority: 2,
+  port: '1/1/6',
+  portEnable: true,
+  portProtected: true,
+  portSpeed: 'AUTO',
+  ports: ['1/1/4', '1/1/6'],
+  revert: true,
+  rstpAdminEdgePort: true,
+  stpBpduGuard: true,
+  stpRootGuard: true,
+  switchMac: 'c0:c5:20:aa:32:79',
+  untaggedVlan: '2',
+  ingressAcl: 'test-acl',
+  egressAcl: 'test-acl',
+  tags: 'aa,bb'
+}]
 
 export const portsSetting = {
   requestId: '06d3d561-f831-4fd2-b8fb-9c1d0142e4ac',

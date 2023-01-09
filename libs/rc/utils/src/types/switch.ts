@@ -1,4 +1,6 @@
 /* eslint-disable max-len */
+import { LldpQosModel } from '../models/PortSetting'
+
 import { Acl, Vlan } from './venue'
 
 import { GridDataRow } from './'
@@ -196,20 +198,12 @@ export class SwitchEntityEnum {
   static stackMemberlList = 'stackMemberlList'
 }
 
-export interface LldpQos {
-  applicationType: string
-  dscp: number
-  id: string
-  priority: number
-  qosVlanType: string
-}
-
 export interface PortSetting {
   dhcpSnoopingTrust: boolean
   id: string
   ipsg: boolean
   lldpEnable: boolean
-  lldpQos: LldpQos[]
+  lldpQos: LldpQosModel[]
   poeCapability: boolean
   poeClass: string
   poeEnable: boolean
@@ -226,7 +220,7 @@ export interface PortSetting {
   switchId: string
   switchMac: string
   taggedVlans?: string[]
-  untaggedVlan?: string
+  untaggedVlan?: number | string
   voiceVlan: number | string
   egressAcl?: string
   ingressAcl?: string
