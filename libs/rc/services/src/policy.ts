@@ -21,7 +21,7 @@ import {
   showActivityMessage,
   CommonResult,
   NewTableResult,
-  transferTableResult,
+  transferToTableResult,
   l3AclPolicyInfoType,
   l2AclPolicyInfoType,
   AvcApp,
@@ -235,7 +235,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       },
       transformResponse (result: NewTableResult<MacRegistrationPool>) {
-        return transferTableResult<MacRegistrationPool>(result)
+        return transferToTableResult<MacRegistrationPool>(result)
       },
       providesTags: [{ type: 'MacRegistrationPool', id: 'LIST' }]
     }),
@@ -248,7 +248,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       },
       transformResponse (result: NewTableResult<MacRegistration>) {
-        return transferTableResult<MacRegistration>(result)
+        return transferToTableResult<MacRegistration>(result)
       },
       providesTags: [{ type: 'MacRegistration', id: 'LIST' }]
     }),

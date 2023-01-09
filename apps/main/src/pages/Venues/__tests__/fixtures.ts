@@ -1378,6 +1378,12 @@ export const mockAaaSettingWithOrder = {
   acctExecFirstServer: 'RADIUS'
 }
 
+export const mockDirectedMulticast = {
+  wiredEnabled: true,
+  wirelessEnabled: true,
+  networkEnabled: true
+}
+
 export const radiusList = {
   data: [
     {
