@@ -17,7 +17,7 @@ import {
   RogueAPDetectionTempType,
   VenueRoguePolicyType,
   TableResult, onSocketActivityChanged, showActivityMessage, CommonResult,
-  NewTableResult, transferTableResult
+  NewTableResult, transferTableResult, VLANPoolPolicyType, VlanPoolUrls, VLANPoolDetailInstances
 } from '@acx-ui/rc/utils'
 
 export const basePolicyApi = createApi({
@@ -224,6 +224,74 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'MacRegistration', id: 'LIST' }]
+    }),
+    addVLANPoolPolicy: build.mutation<VLANPoolPolicyType, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(VlanPoolUrls.addVLANPoolPolicy, params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    getVLANPoolPolicyList: build.query<VLANPoolPolicyType[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(VlanPoolUrls.getVLANPoolPolicyList, params, RKS_NEW_UI)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'DETAIL' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          showActivityMessage(msg, [
+            'Add VLAN Pool Policy Profile',
+            'Update VLAN Pool Policy Profile'
+          ], () => {
+            api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
+          })
+        })
+      }
+    }),
+    vLANPoolPolicy: build.query<VLANPoolPolicyType, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(VlanPoolUrls.getVLANPoolPolicy, params, RKS_NEW_UI)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+    }),
+    updateVLANPoolPolicy: build.mutation<VLANPoolPolicyType, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(VlanPoolUrls.updateVLANPoolPolicy, params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    vLANPoolNetworkInstances: build.query<TableResult<VLANPoolDetailInstances>, RequestPayload>({
+      query: ({ params }) => {
+        const instancesRes =
+        createHttpRequest(VlanPoolUrls.getVLANPoolNetworkInstances, params, RKS_NEW_UI)
+        return {
+          ...instancesRes
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    getVLANPoolProfileDetail: build.query<VLANPoolPolicyType | undefined, RequestPayload>({
+      query: ({ params }) => {
+        const vlanDetailReq =
+          createHttpRequest(VlanPoolUrls.getVLANPoolProfileDetail, params, RKS_NEW_UI)
+        return {
+          ...vlanDetailReq
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'LIST' }]
     })
   })
 })
@@ -248,5 +316,11 @@ export const {
   useRoguePolicyQuery,
   useVenueRoguePolicyQuery,
   useLazyMacRegListsQuery,
-  useLazyMacRegistrationsQuery
+  useLazyMacRegistrationsQuery,
+  useAddVLANPoolPolicyMutation,
+  useUpdateVLANPoolPolicyMutation,
+  useGetVLANPoolPolicyListQuery,
+  useVLANPoolPolicyQuery,
+  useGetVLANPoolProfileDetailQuery,
+  useVLANPoolNetworkInstancesQuery
 } = policyApi

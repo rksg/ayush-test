@@ -284,7 +284,23 @@ export function checkVlanMember (value: string) {
   }
   return Promise.reject($t(validationMessages.invalid))
 }
+export function checkVlanPoolMember (value: string) {
+  const { $t } = getIntl()
+  const items = value.toString().split(',')
+  const isValid = items.map((item: string) => {
+    const num = item.includes('-') ? item : Number(item)
+    if (item.includes('-')) {
+      const nums = item.split('-').map((x: string) => Number(x))
+      return nums[1] > nums[0] && nums[1] < 4095 && nums[0] > 1
+    }
+    return num > 1 && num < 4095
+  }).filter((x:boolean) => !x).length === 0
 
+  if (isValid) {
+    return Promise.resolve()
+  }
+  return Promise.reject($t(validationMessages.invalid))
+}
 export function checkValues (value: string, checkValue: string, checkEqual?: boolean) {
   const { $t } = getIntl()
   const valid = checkEqual ? isEqual(value, checkValue) : !isEqual(value, checkValue)
