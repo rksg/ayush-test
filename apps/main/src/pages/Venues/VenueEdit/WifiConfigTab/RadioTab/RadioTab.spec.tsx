@@ -63,7 +63,10 @@ describe('RadioTab', () => {
         (_, res, ctx) => res(ctx.json({}))),
       rest.put(
         WifiUrlsInfo.updateVenueRadioCustomization.url,
-        (_, res, ctx) => res(ctx.json({})))
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.post(
+        CommonUrlsInfo.getApsList.url,
+        (_, res, ctx) => res(ctx.json({ data: [] })))
     )
   })
   it('should render External Antenna: E510 correctly', async () => {
@@ -157,6 +160,7 @@ describe('RadioTab', () => {
 
   it('should render Wi-Fi Radio Settings correctly when turn on/off tri-band button', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+
     render(<Provider>
       <VenueEditContext.Provider value={{
         editContextData: {},

@@ -297,6 +297,18 @@ export const apApi = baseApApi.injectEndpoints({
         return {
           ...req
         }
+      },
+      providesTags: [{ type: 'Ap', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UpdateApRadioCustomization',
+            'ResetApRadioCustomization'
+          ]
+          showActivityMessage(msg, activities, () => {
+            api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'LIST' }]))
+          })
+        })
       }
     }),
     updateApRadioCustomization: build.mutation<ApRadioCustomization, RequestPayload>({
