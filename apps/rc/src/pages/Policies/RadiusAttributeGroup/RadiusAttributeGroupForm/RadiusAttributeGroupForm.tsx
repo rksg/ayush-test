@@ -19,9 +19,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-
 import { RadiusAttributeGroupSettingForm } from './RadiusAttributeGroupSetting/RadiusAttributeGroupSettingForm'
-
 
 interface RadiusAttributeGroupFormProps {
   editMode?: boolean
@@ -51,8 +49,6 @@ export default function RadiusAttributeGroupForm (props: RadiusAttributeGroupFor
   }, [data])
 
   const handleEdit = async () => {
-    if(!data)
-      return
     try {
       const submitData = formRef?.current?.getFieldsValue()
       const payload = {
@@ -75,12 +71,11 @@ export default function RadiusAttributeGroupForm (props: RadiusAttributeGroupFor
   }
 
   const handleAdd = async () =>{
-    if(!data)
-      return
     try {
       const submitData = formRef?.current?.getFieldsValue()
       const payload = {
         name: submitData.name,
+        description: submitData.name,
         // eslint-disable-next-line max-len
         attributeAssignments: submitData.attributeAssignments.map((a:AttributeAssignment) => _.omit(a, 'id'))
       }

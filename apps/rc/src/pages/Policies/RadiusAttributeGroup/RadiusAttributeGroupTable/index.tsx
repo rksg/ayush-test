@@ -97,7 +97,7 @@ export default function RadiusAttributeGroupTable () {
           type: 'confirm',
           customContent: {
             action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Lists' }),
+            entityName: $t({ defaultMessage: 'group' }),
             entityValue: rows.length === 1 ? rows[0].name : undefined,
             numOfEntities: rows.length,
             confirmationText: 'Delete'

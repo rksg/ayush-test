@@ -1,7 +1,7 @@
 export interface RadiusAttribute {
   id: string,
   name: string,
-  vendorName?: string,
+  vendorName: string,
   showOnDefault: boolean,
   dataType: string
 }
@@ -9,9 +9,9 @@ export interface RadiusAttribute {
 export interface AttributeAssignment {
   id?: string,
   attributeName: string,
-  operator: string,
+  operator: OperatorType,
   attributeValue: string,
-  dataType: string
+  dataType: DataType
 }
 
 export interface RadiusAttributeGroup {
@@ -19,4 +19,32 @@ export interface RadiusAttributeGroup {
   name: string,
   description?: string,
   attributeAssignments: AttributeAssignment []
+}
+
+export interface treeNode {
+  value: string
+  title: string
+  selectable: boolean
+  children?: treeNode [] | undefined
+}
+
+export enum OperatorType {
+  ADD = 'ADD',
+  ADD_REPLACE = 'ADD_REPLACE',
+  DOES_NOT_EXIST = 'DOES_NOT_EXIST'
+}
+
+export enum DataType {
+  ABINARY = 'ABINARY',
+  BYTE = 'BYTE',
+  COMBO_IP = 'COMBO_IP',
+  ETHER = 'ETHER',
+  IFID = 'IFID',
+  INTEGER = 'INTEGER',
+  IPADDR = 'IPADDR',
+  IPV6ADDR = 'IPV6ADDR',
+  OCTETS = 'OCTETS',
+  OTHER = 'OTHER',
+  STRING = 'STRING',
+  TLV = 'TLV'
 }

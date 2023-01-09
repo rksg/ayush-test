@@ -1,27 +1,31 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
-import { Form, Input, Col, Row } from 'antd'
+import { Col, Form, Input, Row } from 'antd'
 import { useIntl }               from 'react-intl'
+import { v4 as uuidv4 }          from 'uuid'
 
 import { showActionModal, Table, TableProps } from '@acx-ui/components'
 import {
-  useLazyRadiusAttributeGroupListQuery
+  useLazyRadiusAttributeGroupListQuery,
+  useRadiusAttributeListQuery
 } from '@acx-ui/rc/services'
-import {
-  AttributeAssignment,
-  checkObjectNotExists
-} from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { AttributeAssignment, checkObjectNotExists, RadiusAttribute } from '@acx-ui/rc/utils'
+import { useParams }                                                  from '@acx-ui/react-router-dom'
 
+import { RadiusAttributeDrawer } from '../RadiusAttributeDrawer/RadiusAttributeDrawer'
 
 function useColumns () {
   const { $t } = useIntl()
-
   const columns: TableProps<AttributeAssignment>['columns'] = [
     {
       key: 'name',
       title: $t({ defaultMessage: 'RADIUS Attribute' }),
       dataIndex: 'attributeName'
+    },
+    {
+      title: $t({ defaultMessage: 'Condition Value' }),
+      key: 'operator',
+      dataIndex: 'operator'
     },
     {
       title: $t({ defaultMessage: 'Attribute Value' }),
@@ -38,6 +42,29 @@ export function RadiusAttributeGroupSettingForm () {
   const { policyId } = useParams()
   const form = Form.useFormInstance()
   const attributeAssignments = Form.useWatch('attributeAssignments')
+  const [visible, setVisible] = useState(false)
+  const [editMode, setEditMode] = useState(false)
+  const [editAttribute, setEditAttribute] = useState<AttributeAssignment>()
+  const [radiusAttributes, setRadiusAttributes] = useState([] as RadiusAttribute[])
+
+  const payload = {
+    page: 1,
+    pageSize: 1000,
+    filters: {
+      showOnDefault: true
+    }
+  }
+
+  const radiusAttributesQuery = useRadiusAttributeListQuery({
+    payload
+  })
+
+  useEffect(()=>{
+    if(radiusAttributesQuery.data) {
+      // setAttributeTreeData(toTreeData(radiusAttributesQuery.data.data ?? []))
+      setRadiusAttributes(radiusAttributesQuery.data.data ?? [])
+    }
+  }, [radiusAttributesQuery.data])
 
   const handleAttributeAssignments = (attribute: AttributeAssignment[]) => {
     form.setFieldValue('attributeAssignments', attribute)
@@ -50,11 +77,27 @@ export function RadiusAttributeGroupSettingForm () {
     return checkObjectNotExists(list, { name: value }, $t({ defaultMessage: 'RADIUS Attribute Group' }))
   }
 
+  const setAttributeAssignments = (attribute: AttributeAssignment) => {
+    // eslint-disable-next-line max-len
+    const newAttribute: AttributeAssignment[] = attributeAssignments ? attributeAssignments.slice() : []
+    if (editMode) {
+      const targetIdx = newAttribute.findIndex((r: AttributeAssignment) => r.id === attribute.id)
+      newAttribute.splice(targetIdx, 1, attribute)
+    } else {
+      attribute.id = uuidv4()
+      newAttribute.push(attribute)
+    }
+    form.setFieldValue('attributeAssignments', newAttribute)
+  }
+
   const rowActions: TableProps<AttributeAssignment>['rowActions'] = [
     {
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows, clearSelection) => {
+        setEditMode(true)
+        setVisible(true)
+        setEditAttribute(selectedRows[0])
         clearSelection()
       }
     },
@@ -116,14 +159,25 @@ export function RadiusAttributeGroupSettingForm () {
               actions={[{
                 label: $t({ defaultMessage: 'Add' }),
                 onClick: () => {
-                // show drawer
-
-                // setIsEditMode(false)
-                // setVisible(true)
-                // setEditData({} as MacRegistration)
+                  // setEditAttribute(
+                  //   { attributeValue: '',
+                  //     attributeName: '',
+                  //     operator: OperatorType.ADD } as AttributeAssignment
+                  // )
+                  setEditAttribute({} as AttributeAssignment)
+                  setEditMode(false)
+                  setVisible(true)
                 }
               }]}
             />
+            <RadiusAttributeDrawer
+              visible={visible}
+              setVisible={setVisible}
+              isEdit={editMode}
+              editAttribute={editAttribute}
+              // radiusAttributeTreeData={attributeTreeData}
+              radiusAttributes={radiusAttributes}
+              setAttributeAssignments={setAttributeAssignments}/>
           </>
         </Form.Item>
       </Col>
