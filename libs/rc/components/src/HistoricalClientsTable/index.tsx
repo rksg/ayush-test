@@ -56,7 +56,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
     dataIndex: 'serialNumber',
     sorter: true,
     render: (data, row) => row?.isApExists && data
-      ? <TenantLink to={`/aps/${data}/details/overview`}>{row?.apName}</TenantLink>
+      ? <TenantLink to={`/devices/wifi/${data}/details/overview`}>{row?.apName}</TenantLink>
       : row?.apName
   }, {
     key: 'ssid',
@@ -139,8 +139,8 @@ export function HistoricalClientsTable
             fontSize: '10px',
             color: cssStr('--acx-neutrals-60')
           }}>{
-              $t({ defaultMessage: `* There are more historical clients than can be displayed. 
-        If you don’t see the client you are looking for, 
+              $t({ defaultMessage: `* There are more historical clients than can be displayed.
+        If you don’t see the client you are looking for,
         narrow the list by entering a more specific text in the search box.` })
             }</Typography.Text>}
         </Loader>
