@@ -33,10 +33,10 @@ export function NetworkSegAuthSummary ({ data }: { data?: WebAuthTemplate }) {
       <Subtitle level={5}>{$t({ defaultMessage: 'Password Label' })}</Subtitle>
       <Typography.Paragraph ellipsis={true} children={data?.webAuthPasswordLabel} />
     </Col>
-    <Col span={6}>
+    {/* <Col span={6}> // TODO: Waiting for TAG feature support
       <Subtitle level={5}>{$t({ defaultMessage: 'Tags' })}</Subtitle>
       <Typography.Paragraph ellipsis={true} children={data?.tag} />
-    </Col>
+    </Col> */}
     <Col span={6}>
       <Subtitle level={5}>{$t({ defaultMessage: 'Button' })}</Subtitle>
       <Typography.Paragraph ellipsis={true} children={data?.webAuthCustomLoginButton} />

@@ -125,11 +125,11 @@ export default function NetworkSegAuthForm ({ editMode = false }: { editMode?: b
             <Input />
           </Form.Item>
           <Form.Item name='id' hidden><Input type='hidden' /></Form.Item>
-          <Form.Item name='tag'
+          {/* <Form.Item name='tag' // TODO: Waiting for TAG feature support
             label={$t({ defaultMessage: 'Tags' })}
             wrapperCol={{ span: 8 }} >
             <Select mode='tags' size='middle' allowClear />
-          </Form.Item>
+          </Form.Item> */}
           <Subtitle level={4}>
             {$t({ defaultMessage: 'Auth Page Details' })}</Subtitle>
           <WebAuthFormItem name='webAuthCustomTop'
