@@ -154,21 +154,25 @@ const getSource = (data: Event) => {
 }
 
 const getDescription = (data: Event) => {
-  let message = data.message && JSON.parse(data.message).message_template
+  try {
+    let message = data.message && JSON.parse(data.message).message_template
 
-  const template = replaceStrings(message, data, (key) => `<entity>${key}</entity>`)
+    const template = replaceStrings(message, data, (key) => `<entity>${key}</entity>`)
 
-  return <FormatMessage
-    id='events-description-template'
-    // escape ' by replacing with '' as it is special character of formatjs
-    defaultMessage={template.replaceAll("'", "''")}
-    values={{
-      entity: (chunks) => <EntityLink
-        entityKey={String(chunks[0]) as keyof Event}
-        data={data}
-      />
-    }}
-  />
+    return <FormatMessage
+      id='events-description-template'
+      // escape ' by replacing with '' as it is special character of formatjs
+      defaultMessage={template.replaceAll("'", "''")}
+      values={{
+        entity: (chunks) => <EntityLink
+          entityKey={String(chunks[0]) as keyof Event}
+          data={data}
+        />
+      }}
+    />
+  } catch {
+    return data.message
+  }
 }
 
 export const EventTable = ({ tableQuery }: EventTableProps) => {
@@ -201,7 +205,7 @@ export const EventTable = ({ tableQuery }: EventTableProps) => {
       sorter: true,
       render: function (_, row) {
         const msg = severityMapping[row.severity as keyof typeof severityMapping]
-        return msg ? $t(msg) : row.severity
+        return $t(msg)
       }
     },
     {
@@ -212,7 +216,7 @@ export const EventTable = ({ tableQuery }: EventTableProps) => {
       render: function (_, row) {
         const msg = eventTypeMapping[
           row.entity_type as keyof typeof eventTypeMapping] ?? row.entity_type
-        return msg ? $t(msg) : row.entity_type
+        return $t(msg)
       }
     },
     {
@@ -253,7 +257,7 @@ export const EventTable = ({ tableQuery }: EventTableProps) => {
       title: defineMessage({ defaultMessage: 'Severity' }),
       value: (() => {
         const msg = severityMapping[data.severity as keyof typeof severityMapping]
-        return msg ? $t(msg) : data.severity
+        return $t(msg)
       })()
     },
     {
@@ -261,7 +265,7 @@ export const EventTable = ({ tableQuery }: EventTableProps) => {
       value: (() => {
         const msg = eventTypeMapping[
           data.entity_type as keyof typeof eventTypeMapping] ?? data.entity_type
-        return msg ? $t(msg) : data.entity_type
+        return $t(msg)
       })()
     },
     {
