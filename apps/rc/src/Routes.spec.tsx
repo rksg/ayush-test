@@ -68,6 +68,10 @@ jest.mock('./pages/Services/Dpsk/DpskForm/DpskForm', () => () => {
   return <div data-testid='DpskForm' />
 })
 
+jest.mock('./pages/Services/Dpsk/DpskTable/DpskTable', () => () => {
+  return <div data-testid='DpskTable' />
+})
+
 jest.mock('./pages/Services/Portal/PortalDetail', () => () => {
   return <div data-testid='PortalServiceDetail' />
 })
@@ -281,6 +285,16 @@ describe('RcRoutes: Services', () => {
       }
     })
     expect(screen.getByTestId('DpskForm')).toBeVisible()
+  })
+
+  test('should navigate to DPSK table page', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST }),
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('DpskTable')).toBeVisible()
   })
 
   test('should navigate to create WIFI_CALLING page', async () => {
