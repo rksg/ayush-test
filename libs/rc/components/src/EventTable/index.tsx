@@ -118,7 +118,7 @@ function EntityLink ({ entityKey, data }: { entityKey: keyof Event, data: Event 
   if (!entityTypes.includes(entity)) return name
 
   const existKey = `is${_.capitalize(entity)}Exists` as EntityExistsKey
-  const exists = data[existKey as unknown as keyof typeof data]
+  const exists = data[existKey as keyof typeof data]
 
   if (!exists) return <Tooltip
     title={<FormattedMessage defaultMessage='Not available' />}
