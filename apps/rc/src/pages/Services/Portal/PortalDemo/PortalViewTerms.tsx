@@ -14,8 +14,7 @@ export default function PortalViewTerms (props:{
   }) => void
 }) {
   const { demoValue, updateBtn, isPreview, portalLang } = props
-  const terms = 'Terms and Conditions ("Terms")</br>'+
-  'Last updated: January 29, 2019</br></br>'+
+  const terms = 'Last updated: January 29, 2019</br></br>'+
   'Please read these Terms and Conditions ("Terms", "Terms and Conditions")'+
   'carefully before using the www.whereiswaldo.com website (the "Service") '+
   'operated by Who took my bananas ("us", "we", or "our").</br></br>'+

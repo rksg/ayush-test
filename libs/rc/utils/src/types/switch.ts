@@ -246,6 +246,25 @@ export interface StackMember {
   unitId?: string
 }
 
+export interface ConfigurationHistory {
+  switchName: string
+  startTime: string
+  endTime: string
+  serialNumber: string
+  configType: string
+  dispatchStatus: string
+  clis: string
+  numberOfErrors: number
+  transactionId: string
+  dispatchFailedReason?: DispatchFailedReason[]
+}
+
+export interface DispatchFailedReason {
+  lineNumber: string
+  message: string
+}
+
+
 export enum STACK_MEMBERSHIP {
   ACTIVE = 'Active',
   STANDBY = 'Standby',

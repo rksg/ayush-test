@@ -24,6 +24,7 @@ const columns: TableProps<RecordType>['columns'] = [
     title: 'Age',
     dataIndex: 'age',
     key: 'age',
+    align: 'center',
     filterable: true
   },
   {
@@ -52,6 +53,7 @@ const columnsFilterOnly: TableProps<RecordType>['columns'] = [
     title: 'Age',
     dataIndex: 'age',
     key: 'age',
+    align: 'center',
     filterable: true
   },
   {
@@ -77,7 +79,8 @@ const columnsSearchOnly: TableProps<RecordType>['columns'] = [
   {
     title: 'Age',
     dataIndex: 'age',
-    key: 'age'
+    key: 'age',
+    align: 'center'
   },
   {
     title: 'Description',
