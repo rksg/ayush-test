@@ -73,6 +73,10 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/switch/tenant/:tenantId/configBackup/switch/:switchId'
   },
+  deleteBackups: {
+    method: 'delete',
+    url: '/api/switch/tenant/:tenantId/configBackup'
+  },
   getSwitchConfigHistory: {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/switches/:switchId/configurationHistory/detail/query'

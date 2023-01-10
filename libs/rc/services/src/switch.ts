@@ -34,7 +34,7 @@ import { formatter } from '@acx-ui/utils'
 export const baseSwitchApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'switchApi',
-  tagTypes: ['Switch'],
+  tagTypes: ['Switch', 'SwitchBackup'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({})
 })
@@ -175,7 +175,18 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           totalCount: res.length,
           page: 1
         }
-      }
+      },
+      providesTags: [{ type: 'SwitchBackup', id: 'LIST' }],
+    }),
+    deleteConfigBackups: build.mutation<ConfigurationBackup, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.deleteBackups, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchBackup', id: 'LIST' }]
     }),
     getSwitchConfigHistory: build.query<TableResult<ConfigurationHistory>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -396,6 +407,7 @@ export const {
   useAddSwitchMutation,
   useAddStackMemberMutation,
   useGetSwitchConfigBackupListQuery,
+  useDeleteConfigBackupsMutation,
   useGetSwitchConfigHistoryQuery,
   useGetSwitchListQuery,
   useLazyGetSwitchListQuery,

@@ -3,28 +3,25 @@ import { useContext, useEffect, useRef, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, Loader, Modal, Table, TableProps, Descriptions }    from '@acx-ui/components'
-import { useGetSwitchConfigBackupListQuery }                            from '@acx-ui/rc/services'
-import { BACKUP_DISABLE_TOOLTIP, ConfigurationBackup, DispatchFailedReason, useTableQuery } from '@acx-ui/rc/utils'
+import { Loader, Table, TableProps, showActionModal }    from '@acx-ui/components'
+import { useDeleteConfigBackupsMutation, useGetSwitchConfigBackupListQuery }                            from '@acx-ui/rc/services'
+import { BACKUP_DISABLE_TOOLTIP, ConfigurationBackup, useTableQuery } from '@acx-ui/rc/utils'
 
-import * as UI         from './styledComponents'
 import { SwitchDetailsContext } from '../..'
 import { ViewConfigurationModal } from './ViewConfigurationModal'
+import { useParams } from '@acx-ui/react-router-dom'
 
 export function SwitchConfigBackupTable () {
   const { $t } = useIntl()
-  const codeMirrorEl = useRef(null as unknown as { highlightLine: Function, removeHighlightLine: Function })
+  const params = useParams()
   const [viewVisible, setViewVisible] = useState(false)
   const [viewData, setViewData] = useState(null as unknown as ConfigurationBackup)
-  const [showError, setShowError] = useState(true)
-  const [showClis, setShowClis] = useState(true)
-  const [collapseActive, setCollapseActive] = useState(false)
-  const [dispatchFailedReason, setDispatchFailedReason] = useState([] as DispatchFailedReason[])
-  const [selectedRow, setSelectedRow] = useState(null as unknown as ConfigurationBackup)
+
   const {
     switchDetailsContextData
   } = useContext(SwitchDetailsContext)
 
+  const [ deleteConfigBackups ] = useDeleteConfigBackupsMutation()
   const { currentSwitchOperational } = switchDetailsContextData
 
   const showViewModal = (row: ConfigurationBackup[]) => {
@@ -70,6 +67,26 @@ export function SwitchConfigBackupTable () {
     return !!selectOne && selectedRows.length === 1
   }
 
+  const showDeleteModal = async ( rows: ConfigurationBackup[], callBack?: ()=>void ) => {
+    showActionModal({
+      type: 'confirm',
+      customContent: {
+        action: 'DELETE',
+        entityName: rows.length === 1 
+        ? $t({ defaultMessage: 'configuration backup' }) 
+        : $t({ defaultMessage: 'configuration backups' }),
+        entityValue: rows.length === 1 ? rows[0].name : undefined,
+        numOfEntities: rows.length,
+      },
+      okText: 'Delete',
+      onOk: () => {
+        const idList = rows.map(item => item.id)
+        deleteConfigBackups({ params, payload: idList })
+        .then(callBack)
+      }
+    })
+  }
+
   const rowActions: TableProps<any>['rowActions'] = [{
     label: $t({ defaultMessage: 'View' }),
     disabled: (rows) => !isActionVisible(rows, { selectOne: true }),
@@ -96,8 +113,8 @@ export function SwitchConfigBackupTable () {
     }
   }, {
     label: $t({ defaultMessage: 'Delete' }),
-    onClick: () => {
-      // TODO:
+    onClick: (rows, clearSelection) => {
+      showDeleteModal(rows, clearSelection)
     }
   }
  ]
