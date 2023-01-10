@@ -314,5 +314,9 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getGlobalValues: {
     method: 'get',
     url: '/api/ui/globalValues'
+  },
+  getCloudMessageBanner: {
+    method: 'get',
+    url: '/api/upgrade/tenant/:tenantId/banner'
   }
 }
