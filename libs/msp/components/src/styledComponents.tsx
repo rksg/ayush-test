@@ -26,10 +26,28 @@ const linkStyle = css`
 export const FieldTextLink = styled.div`
   ${linkStyle}
 `
+export const FieldLabel2 = styled.div<{ width: string }>`
+  font-size: var(--acx-body-4-font-size);
+  display: grid;
+  grid-template-columns: 150px 150px;
+  align-items: baseline;
+`
 
-export const FieldLabel = styled.div<{ width: string }>`
+export const FieldLabelAdmins = styled.div<{ width: string }>`
   font-size: var(--acx-body-4-font-size);
   display: grid;
   grid-template-columns: 148px 240px 40px;
+  align-items: baseline;
+`
+export const FieldLabelSubs = styled.div<{ width: string }>`
+  font-size: var(--acx-body-4-font-size);
+  display: grid;
+  grid-template-columns: 130px 80px 200px;
+  align-items: baseline;
+`
+export const FieldLabeServiceDate = styled.div<{ width: string }>`
+  font-size: var(--acx-body-4-font-size);
+  display: grid;
+  grid-template-columns: 150px 150px 150px;
   align-items: baseline;
 `
