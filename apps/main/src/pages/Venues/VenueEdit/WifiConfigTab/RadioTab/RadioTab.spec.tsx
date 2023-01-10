@@ -279,12 +279,10 @@ describe('RadioTab', () => {
     const tab5gEl = await section.findByTestId('radio-5g-tab')
     const tab5g = within(tab5gEl)
 
-    //screen.debug(tab5gEl, 100000)
     const channelSelect5g = await tab5g.findByRole('combobox', { name: /Channel selection/i })
     await userEvent.click(channelSelect5g)
     await userEvent.click((await tab5g.findAllByTitle('Background Scanning'))[0])
 
-    //screen.debug(channelSelect5g, 100000)
     const scanIntervalInput5g = await tab5g.findByLabelText('Run background scan every:')
     await userEvent.type(scanIntervalInput5g, '40')
 

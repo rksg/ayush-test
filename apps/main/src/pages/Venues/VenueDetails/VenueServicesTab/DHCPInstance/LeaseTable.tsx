@@ -20,7 +20,7 @@ export default function VenueLeaseTable (){
       key: 'hostName',
       searchable: true,
       title: $t({ defaultMessage: 'Hostname' }),
-      dataIndex: 'hostName',
+      dataIndex: 'hostname',
       sorter: true
     },
     {

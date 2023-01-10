@@ -8,8 +8,8 @@ import {
   ServiceType,
   DpskDetailsTabKey,
   getServiceDetailsLink,
-  getServiceListRoutePath,
-  ServiceOperation
+  ServiceOperation,
+  getServiceRoutePath
 } from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink, useNavigate } from '@acx-ui/react-router-dom'
 
@@ -55,7 +55,10 @@ export default function DpskDetails () {
       <PageHeader
         title={data?.name}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Services' }), link: getServiceListRoutePath(true) }
+          {
+            text: $t({ defaultMessage: 'Services' }),
+            link: getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST })
+          }
         ]}
         extra={[
           <DisabledButton key={'date-filter'} icon={<ClockOutlined />}>

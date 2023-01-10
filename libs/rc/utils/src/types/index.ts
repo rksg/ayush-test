@@ -431,3 +431,21 @@ export interface GridDataRow {
   inactiveTooltip?: string;
   [GridInactiveRowDataFlag]?: boolean;
 }
+
+export interface PaginationQueryResult<T> {
+  page: number
+  pageSize: number
+  totalCount: number
+  content: T[]
+}
+
+export interface PlmMessageBanner {
+  createdBy: string,
+  createdDate: string,
+  description: string,
+  endTime: string,
+  id: string,
+  startTime: string,
+  tenantType: string,
+  updatedDate: string
+}

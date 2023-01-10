@@ -1,11 +1,11 @@
 import { createContext, useEffect, useState } from 'react'
 
-import { Dropdown, Empty, Space } from 'antd'
-import { clone, get, isEmpty }    from 'lodash'
-import { DndProvider }            from 'react-dnd'
-import { HTML5Backend }           from 'react-dnd-html5-backend'
-import { useIntl }                from 'react-intl'
-import { useParams }              from 'react-router-dom'
+import { Dropdown, Empty, Space }           from 'antd'
+import { clone, get, isEmpty }              from 'lodash'
+import { DndProvider }                      from 'react-dnd'
+import { HTML5Backend }                     from 'react-dnd-html5-backend'
+import { useIntl }                          from 'react-intl'
+import { Location, useLocation, useParams } from 'react-router-dom'
 
 import { Button, Loader, showActionModal }                                                                                                                                                                                                       from '@acx-ui/components'
 import { BulbOutlined }                                                                                                                                                                                                                          from '@acx-ui/icons'
@@ -33,6 +33,8 @@ export const NetworkDeviceContext = createContext<Function | null>(null)
 
 export function FloorPlan () {
   const params = useParams()
+  const location: Location = useLocation()
+
   const floorPlanQuery = useFloorPlanListQuery({ params })
   const { $t } = useIntl()
   const [showGalleryView, setShowGalleryView] = useState(false)
@@ -84,7 +86,9 @@ export function FloorPlan () {
       queryData.sort(sortByFloorNumber)
       const _selectedFP = updatedFloorPlanName ?
         queryData.filter((floor) => floor.name === updatedFloorPlanName)[0]
-        : queryData[0]
+        : (location?.state) ? (location.state as {
+            param: { floorplan: FloorPlanDto }
+        }).param?.floorplan : queryData[0]
 
       setTimeout(() => {
         setFloorPlans(queryData)

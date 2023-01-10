@@ -2,11 +2,12 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import {
-  DpskUrls,
   ServiceType,
   DpskDetailsTabKey,
   getServiceRoutePath,
-  ServiceOperation
+  ServiceOperation,
+  DpskPassphraseBaseUrl,
+  DpskUrls
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
@@ -35,8 +36,10 @@ describe('DpskPassphraseManagement', () => {
   beforeEach(() => {
     mockServer.use(
       rest.get(
-        DpskUrls.getPassphraseList.url,
-        (req, res, ctx) => res(ctx.json(mockedDpskPassphraseList))
+        DpskPassphraseBaseUrl,
+        (req, res, ctx) => {
+          return res(ctx.json(mockedDpskPassphraseList))
+        }
       )
     )
   })
@@ -70,8 +73,9 @@ describe('DpskPassphraseManagement', () => {
     )
 
     await userEvent.click(await screen.findByRole('button', { name: /Add Passphrases/ }))
-    const addManuallyRadio = await screen.findByRole('radio', { name: /Add manually/ })
-    expect(addManuallyRadio).toBeInTheDocument()
+    // eslint-disable-next-line max-len
+    const noOfPassphrasesElem = await screen.findByRole('spinbutton', { name: /Number of Passphrases/ })
+    expect(noOfPassphrasesElem).toBeVisible()
   })
 
   it('should delete selected passphrase', async () => {
@@ -93,5 +97,39 @@ describe('DpskPassphraseManagement', () => {
     expect(confirmMsgElem).toBeInTheDocument()
 
     await userEvent.click(await screen.findByRole('button', { name: /Delete Passphrase/i }))
+  })
+
+  it('should show error message when import CSV file failed', async () => {
+    mockServer.use(
+      rest.post(
+        DpskUrls.uploadPassphrases.url,
+        (req, res, ctx) => {
+          return res(ctx.status(400), ctx.json({
+            message: 'An error occurred'
+          }))
+        }
+      )
+    )
+
+    render(
+      <Provider>
+        <DpskPassphraseManagement />
+      </Provider>, {
+        route: { params: paramsForPassphraseTab, path: detailPath }
+      }
+    )
+
+    await userEvent.click(await screen.findByRole('button', { name: /Import From File/ }))
+
+    const dialog = await screen.findByRole('dialog')
+
+    const csvFile = new File([''], 'DPSK_import_template_expiration.csv', { type: 'text/csv' })
+
+    // eslint-disable-next-line testing-library/no-node-access
+    await userEvent.upload(document.querySelector('input[type=file]')!, csvFile)
+
+    await userEvent.click(await within(dialog).findByRole('button', { name: /Import/ }))
+
+    expect(await screen.findByText('An error occurred')).toBeVisible()
   })
 })
