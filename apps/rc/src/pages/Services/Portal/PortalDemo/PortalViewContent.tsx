@@ -147,10 +147,10 @@ export default function PortalViewContent (props:{
         updateBtn={(data)=>{
           updateViewContent({ ...demoValue, buttonColor: data.color })}}/>}
       {componentDisplay.termsConditions &&<UI.FieldText>{
-        props.portalLang.acceptTermsMsg2?.replace('{0}','')}&nbsp;&nbsp;
-      <UI.FieldTextLink>
+        props.portalLang.acceptTermsMsg2?.replace('<1>{{linkText}}</1>','')}&nbsp;
+      <UI.FieldLabelLink>
         {props.portalLang.acceptTermsLink}
-      </UI.FieldTextLink></UI.FieldText>}
+      </UI.FieldLabelLink></UI.FieldText>}
       {componentDisplay.poweredBy &&<PortalPoweredByContent
         portalLang={portalLang}
         demoValue={demoValue}

@@ -44,7 +44,8 @@ import {
   NetworkDeviceResponse,
   NetworkDevicePayload,
   RogueOldApResponseType,
-  VenueRadioCustomization
+  VenueRadioCustomization,
+  VenueDirectedMulticast
 } from '@acx-ui/rc/utils'
 
 const RKS_NEW_UI = {
@@ -741,6 +742,23 @@ export const venueApi = baseVenueApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    getVenueDirectedMulticast: build.query<VenueDirectedMulticast, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getVenueDirectedMulticast, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    updateVenueDirectedMulticast: build.mutation<VenueDirectedMulticast, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.updateVenueDirectedMulticast, params)
+        return{
+          ...req,
+          body: payload
+        }
+      }
     })
 
 
@@ -813,5 +831,8 @@ export const {
   useGetVenueApCapabilitiesQuery,
   useUpdateVenueExternalAntennaMutation,
   useGetAvailableLteBandsQuery,
-  useGetVenueApModelCellularQuery
+  useGetVenueApModelCellularQuery,
+  useGetVenueDirectedMulticastQuery,
+  useLazyGetVenueDirectedMulticastQuery,
+  useUpdateVenueDirectedMulticastMutation
 } = venueApi

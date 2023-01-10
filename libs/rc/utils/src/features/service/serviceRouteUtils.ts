@@ -11,7 +11,8 @@ export enum DpskDetailsTabKey {
 export enum ServiceOperation {
   CREATE,
   EDIT,
-  DETAIL
+  DETAIL,
+  LIST
 }
 
 interface ServiceRoutePathProps {
@@ -22,13 +23,14 @@ interface ServiceRoutePathProps {
 interface ServiceDetailsLinkProps extends ServiceRoutePathProps {
   oper: Exclude<ServiceOperation, ServiceOperation.CREATE>;
   serviceId: string;
-  activeTab?: string;
+  activeTab?: DpskDetailsTabKey; // Union the other services tab keys if needed
 }
 
 const operationPathMapping: Record<ServiceOperation, string> = {
   [ServiceOperation.CREATE]: 'create',
   [ServiceOperation.EDIT]: ':serviceId/edit',
-  [ServiceOperation.DETAIL]: ':serviceId/detail'
+  [ServiceOperation.DETAIL]: ':serviceId/detail',
+  [ServiceOperation.LIST]: 'list'
 }
 
 const typePathMapping: Record<ServiceType, string> = {

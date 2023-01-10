@@ -16,7 +16,9 @@ function VenueHealthWidget ({
   filters: AnalyticsFilter;
 }){
   const { $t } = useIntl()
+  const venueFilter = filters.filter?.networkNodes?.at(0)?.at(0)
   const queryResults= healthApi.useGetKpiThresholdsQuery({ ...filters,
+    path: venueFilter ? [...filters.path, venueFilter] : filters.path,
     kpis: ['timeToConnect','clientThroughput'] })
   const { data } = queryResults
 
