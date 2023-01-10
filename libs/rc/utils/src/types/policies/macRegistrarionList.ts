@@ -36,9 +36,9 @@ export interface MacRegistration {
   email?: string
   expirationDate?: string
   location?: string
-  macAddress?: string
-  revoked?: boolean
+  macAddress: string
+  revoked: boolean
   username?: string
-  createDate?: string
+  createDate: string
   expiration?: ExpirationDateEntity
 }

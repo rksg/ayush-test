@@ -40,14 +40,20 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
   const { policyId } = useParams()
   const [ macReg ] = useLazyMacRegistrationsQuery()
 
-  const macAddressValidator = async (value: string) => {
+  const macAddressValidator = async (macAddress: string) => {
     const list = (await macReg({
-      params: { policyId }
+      params: { policyId },
+      payload: {
+        page: '1',
+        pageSize: '10000',
+        sortField: 'macAddress',
+        sortOrder: 'ASC'
+      }
     }).unwrap()).data
       .filter(n => n.id !== editData?.id)
-      .map(n => ({ name: n.macAddress }))
+      .map(n => ({ name: n.macAddress.replace(/[^a-z0-9]/gi, '').toLowerCase() }))
     // eslint-disable-next-line max-len
-    return checkObjectNotExists(list, { name: value } , intl.$t({ defaultMessage: 'MAC Address' }))
+    return checkObjectNotExists(list, { name: macAddress.replace(/[^a-z0-9]/gi, '').toLowerCase() } , intl.$t({ defaultMessage: 'MAC Address' }))
   }
 
   useEffect(()=>{
