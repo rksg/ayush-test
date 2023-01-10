@@ -31,6 +31,12 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink, MspTenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
+const getStatus = (row: MspEc) => {
+  const isTrial = row.accountType === 'Trial'
+  const value = row.status === 'Active' ? (isTrial ? row.accountType : row.status) : row.status
+  return value
+}
+
 const transformApEntitlement = (row: MspEc) => {
   return row.wifiLicenses ? row.wifiLicenses : 0
 }
@@ -140,7 +146,10 @@ export function MspCustomers () {
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'status',
       key: 'status',
-      sorter: true
+      sorter: true,
+      render: function (data, row) {
+        return getStatus(row)
+      }
     },
     {
       title: $t({ defaultMessage: 'Address' }),

@@ -66,6 +66,7 @@ export interface MspEc {
   tenantType: string;
   streetAddress: string;
   status: string;
+  accountType?: string;
   mspAdminCount: string;
   mspEcAdminCount: string;
   integrator?: string,
