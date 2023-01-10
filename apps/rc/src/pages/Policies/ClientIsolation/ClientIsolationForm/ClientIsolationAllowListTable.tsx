@@ -11,7 +11,7 @@ import { AddNewClientDrawer }                               from './AddNewClient
 import { ALLOW_LIST_MAX_COUNT }                             from './ClientIsolationSettingsForm'
 import { SelectConnectedClientsDrawer, SimpleClientRecord } from './SelectConnectedClientsDrawer'
 
-interface ClientIsolationClientsTableProps {
+interface ClientIsolationAllowListTableProps {
   allowList?: ClientIsolationClient[];
   setAllowList?: (c: ClientIsolationClient[]) => void;
 }
@@ -27,9 +27,10 @@ interface SelectConnectedClientDrawerProps {
   visible: boolean
 }
 
-export function ClientIsolationAllowListTable (props: ClientIsolationClientsTableProps) {
+export function ClientIsolationAllowListTable (props: ClientIsolationAllowListTableProps) {
   const { allowList = [], setAllowList = () => null } = props
   const { $t } = useIntl()
+  const [ selectedClientIndex, setSelectedClientIndex ] = useState(-1)
   // eslint-disable-next-line max-len
   const [ addNewClientDrawerProps, setAddNewClientDrawerProps ] = useState<AddNewClientDrawerProps>({
     client: {},
@@ -52,6 +53,11 @@ export function ClientIsolationAllowListTable (props: ClientIsolationClientsTabl
   }
 
   const handleAddNewClientAction = (client?: ClientIsolationClient) => {
+    if (client) {
+      const idx = allowList.findIndex((c: ClientIsolationClient) => c.mac === client.mac)
+      setSelectedClientIndex(idx)
+    }
+
     setAddNewClientDrawerProps({
       editMode: client ? true : false,
       visible: true,
@@ -65,8 +71,7 @@ export function ClientIsolationAllowListTable (props: ClientIsolationClientsTabl
     const newAllowList: ClientIsolationClient[] = allowList ? allowList.slice() : []
 
     if (addNewClientDrawerProps.editMode) {
-      const targetIdx = newAllowList.findIndex((c: ClientIsolationClient) => c.mac === data.mac)
-      newAllowList.splice(targetIdx, 1, data)
+      newAllowList.splice(selectedClientIndex, 1, data)
     } else {
       newAllowList.push(data)
     }
@@ -153,7 +158,12 @@ export function ClientIsolationAllowListTable (props: ClientIsolationClientsTabl
         setVisible={setAddNewClientDrawerVisible}
         setClient={handleSetClient}
         isRuleUnique={(comingClient: ClientIsolationClient) => {
-          return allowList.every((c: ClientIsolationClient) => comingClient.mac !== c.mac)
+          return allowList.every((client: ClientIsolationClient, index: number) => {
+            if (addNewClientDrawerProps.editMode && index === selectedClientIndex) {
+              return true
+            }
+            return comingClient.mac !== client.mac
+          })
         }}
       />
       <SelectConnectedClientsDrawer

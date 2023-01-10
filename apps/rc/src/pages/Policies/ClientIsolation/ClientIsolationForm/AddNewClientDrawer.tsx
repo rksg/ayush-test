@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 import { Form, FormInstance, Input } from 'antd'
 import { useIntl }                   from 'react-intl'
 
-import { Drawer }                                  from '@acx-ui/components'
+import { Drawer }                                 from '@acx-ui/components'
 import {
   ClientIsolationClient, MacAddressFilterRegExp
 } from '@acx-ui/rc/utils'

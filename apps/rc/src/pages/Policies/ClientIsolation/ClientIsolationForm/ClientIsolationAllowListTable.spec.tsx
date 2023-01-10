@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import userEvent from '@testing-library/user-event'
 
 import { Provider } from '@acx-ui/store'
@@ -19,10 +21,19 @@ describe('ClientIsolationAllowListTable', () => {
     const targetClient = { ...allowList[0] }
     const macToEdit = 'AA:BB:11:CC:DD:22'
 
+    // Wrap the testing component
+    const Component = () => {
+      const [ list, setList ] = useState(allowList)
+
+      return (
+        <Provider>
+          <ClientIsolationAllowListTable allowList={list} setAllowList={setList} />
+        </Provider>
+      )
+    }
+
     render(
-      <Provider>
-        <ClientIsolationAllowListTable allowList={allowList} />
-      </Provider>, {
+      <Component />, {
         route: { params: { tenantId: mockedTenantId }, path: createPath }
       }
     )
@@ -50,6 +61,38 @@ describe('ClientIsolationAllowListTable', () => {
   })
 
   it('should delete a client in the allow list', async () => {
+    // Prepare testing data
+    const allowList = [ ...mockedAllowList ]
+    const targetClient = { ...allowList[0] }
 
+    // Wrap the testing component
+    const Component = () => {
+      const [ list, setList ] = useState(allowList)
+
+      return (
+        <Provider>
+          <ClientIsolationAllowListTable allowList={list} setAllowList={setList} />
+        </Provider>
+      )
+    }
+
+    render(
+      <Component />, {
+        route: { params: { tenantId: mockedTenantId }, path: createPath }
+      }
+    )
+
+    // Select the client
+    const targetRow = await screen.findByRole('row', { name: new RegExp(targetClient.mac) })
+    await userEvent.click(await within(targetRow).findByRole('radio'))
+    await userEvent.click(await screen.findByRole('button', { name: /Delete/ }))
+
+    // Verify the confirmation dialog is visible
+    expect(await screen.findByText('Delete "' + targetClient.mac + '"?')).toBeVisible()
+
+    await userEvent.click(await screen.findByRole('button', { name: /Delete Client/i }))
+
+    // Verify if the client has been deleted
+    expect(screen.queryByRole('row', { name: new RegExp(targetClient.mac) })).toBeNull()
   })
 })
