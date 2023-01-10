@@ -88,13 +88,13 @@ function DeviceRoutes () {
       <Route path='devices/apgroups/:action' element={<ApGroupForm />} />
       <Route path='devices/switch/:action' element={<AddSwitchForm />} />
       <Route
-        path='devices/wifi/:serialNumber/details/:activeTab'
+        path='devices/wifi/:apId/details/:activeTab'
         element={<ApDetails />} />
       <Route
-        path='devices/wifi/:serialNumber/details/:activeTab/:activeSubTab'
+        path='devices/wifi/:apId/details/:activeTab/:activeSubTab'
         element={<ApDetails />} />
       <Route
-        path='devices/wifi/:serialNumber/details/:activeTab/:activeSubTab/:categoryTab'
+        path='devices/wifi/:apId/details/:activeTab/:activeSubTab/:categoryTab'
         element={<ApDetails />} />
       <Route
         path='devices/switch/:switchId/:serialNumber/details/:activeTab'
