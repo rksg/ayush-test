@@ -4,13 +4,14 @@ import { useIntl }      from 'react-intl'
 import { Loader, showActionModal, Table, TableProps, Tabs } from '@acx-ui/components'
 import {
   useGetDhcpLeasesQuery,
-  useGetDhcpPoolsQuery,
   useGetSwitchQuery,
   useSwitchDetailHeaderQuery,
   useUpdateDhcpServerStateMutation
 } from '@acx-ui/rc/services'
-import { IP_ADDRESS_TYPE, SwitchDhcp, SwitchDhcpLease, SwitchStatusEnum, useTableQuery } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }                                         from '@acx-ui/react-router-dom'
+import { IP_ADDRESS_TYPE, SwitchDhcpLease, SwitchStatusEnum, useTableQuery } from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }                             from '@acx-ui/react-router-dom'
+
+import { SwitchDhcpPoolTable } from './SwitchDhcpPoolTable'
 
 
 export function SwitchDhcpTab () {
@@ -79,63 +80,7 @@ export function SwitchDhcpTab () {
   )
 }
 
-export function SwitchDhcpPoolTable () {
-  const { $t } = useIntl()
 
-  const tableQuery = useTableQuery({
-    useQuery: useGetDhcpPoolsQuery,
-    defaultPayload: {},
-    sorter: {
-      sortField: 'poolName',
-      sortOrder: 'ASC'
-    }
-  })
-
-  const columns: TableProps<SwitchDhcp>['columns'] = [
-    {
-      key: 'poolName',
-      title: $t({ defaultMessage: 'Pool Name' }),
-      dataIndex: 'poolName',
-      sorter: true,
-      defaultSortOrder: 'ascend'
-    }, {
-      key: 'subnetAddress',
-      title: $t({ defaultMessage: 'Address Pool' }),
-      dataIndex: 'subnetAddress',
-      sorter: false
-    }, {
-      key: 'subnetMask',
-      title: $t({ defaultMessage: 'Subnet Mask' }),
-      dataIndex: 'subnetMask',
-      sorter: false
-    }, {
-      key: 'leaseDays',
-      title: $t({ defaultMessage: 'Lease Time' }),
-      dataIndex: 'leaseDays',
-      sorter: false
-    }, {
-      key: 'defaultRouterIp',
-      title: $t({ defaultMessage: 'Default Router IP' }),
-      dataIndex: 'defaultRouterIp',
-      sorter: true
-    }
-  ]
-
-  return (
-    <Loader states={[tableQuery]}>
-      <Table
-        columns={columns}
-        dataSource={tableQuery.data?.data}
-        pagination={tableQuery.pagination}
-        onChange={tableQuery.handleTableChange}
-        actions={[{
-          label: $t({ defaultMessage: 'Add Pool' }),
-          onClick: () => { }
-        }]}
-        rowKey='poolName' />
-    </Loader>
-  )
-}
 
 export function SwitchDhcpLeaseTable () {
   const { $t } = useIntl()

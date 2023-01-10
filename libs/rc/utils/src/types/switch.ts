@@ -270,6 +270,20 @@ export interface troubleshootingResult {
   troubleshootingType: string
 }
 
+export enum DHCP_OPTION_TYPE {
+  ASCII = 'ASCII',
+  HEX = 'HEX',
+  IP = 'IP',
+  BOOLEAN = 'BOOLEAN',
+  INTEGER = 'INTEGER'
+}
+
+export interface SwitchDhcpOption {
+  seq: number
+  type: DHCP_OPTION_TYPE
+  value: string
+}
+
 export interface SwitchDhcp {
   id: string
   poolName: string
@@ -281,11 +295,7 @@ export interface SwitchDhcp {
   defaultRouterIp: string
   subnetMask: string
   subnetAddress: string
-  dhcpOptions: {
-    seq: number
-    type: string
-    value: string
-  }[]
+  dhcpOptions: SwitchDhcpOption[]
 }
 
 export interface SwitchDhcpLease {
