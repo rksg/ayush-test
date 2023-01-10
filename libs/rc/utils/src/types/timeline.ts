@@ -33,6 +33,7 @@ useCase: string
 
 export interface EventBase {
   apMac: string
+  adminName?: string
   entity_id: string
   entity_type: string
   event_datetime: string
@@ -66,9 +67,7 @@ export interface EventMeta {
   venueName: string
 }
 
-export type Event = EventBase & EventMeta & {
-  adminName?: string
-}
+export type Event = EventBase & EventMeta
 
 export interface AdminLogBase {
   adminName: string
