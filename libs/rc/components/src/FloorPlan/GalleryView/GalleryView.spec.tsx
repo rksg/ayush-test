@@ -11,7 +11,6 @@ import { NetworkDeviceContext } from '..'
 import GalleryView from './GalleryView'
 
 
-
 const list: FloorPlanDto[] = [
   {
     id: '94bed28abef24175ab58a3800d01e24a',
@@ -145,7 +144,8 @@ describe('Floor Plan Gallery View', () => {
     expect(await screen.findByTestId('SignalUp')).toBeVisible()
 
     const src = await screen.findByTestId('SignalUp')
-    const dst = await screen.findAllByTestId('fpImage')
+
+    const dst = await screen.findAllByTestId('dropContainer')
 
     fireEvent.dragStart(src)
     fireEvent.dragEnter(dst[0])

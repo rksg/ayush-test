@@ -123,7 +123,7 @@ describe('Floor Plan Plain View', () => {
     expect(await screen.findByTestId('SignalUp')).toBeVisible()
 
     const src = await screen.findByTestId('SignalUp')
-    const dst = await screen.findAllByTestId('image-container')
+    const dst = await screen.findAllByTestId('dropContainer')
 
     fireEvent.dragStart(src)
     fireEvent.dragEnter(dst[0])

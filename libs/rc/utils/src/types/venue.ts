@@ -11,8 +11,10 @@ import { VenueSyslog }                                                          
 
 
 import { ApStatusDetails, LanPort } from './ap'
+import { RogueCategory }            from './policies'
 
 import { ApVenueStatusEnum, SwitchStatusEnum } from './index'
+
 
 export interface VenueDetailHeader {
 	activeLteNetworkCount: number,
@@ -128,10 +130,35 @@ export interface NetworkDevice {
 	yPercent?: number;
 	position?: NetworkDevicePosition;
 	isActive?: boolean;
-	rogueCategory?: string;
+	rogueCategory?: Record<RogueCategory, number>;
 	snr?: number;
 	macAddress?: string;
 	rogueCategoryType?: RogueDeviceCategoryType;
+}
+
+export interface RougeApInfo {
+	deviceColor: string;
+    rogueSnrClass?: string;
+    rogueApTooltips?: string;
+	allrougeApTooltipRequired?: boolean;
+	allVenueRougeApTooltipAttr?: AllVenueRougeApTooltipAttr,
+	specificRougeApTooltipAttr?: SpecificRougeApTooltipAttr,
+    drawRogueApItem?: boolean;
+    showRogueTotalNumber?: boolean;
+}
+
+export interface AllVenueRougeApTooltipAttr {
+	totalRogueNumber: number,
+    deviceName: string,
+    categoryNames: string[],
+	categoryNums?: number[];
+}
+
+export interface SpecificRougeApTooltipAttr{
+	activatedBarIndex: number,
+	deviceName: string,
+	macAddress: string,
+	snr: number
 }
 
 export enum RogueDeviceCategoryType {

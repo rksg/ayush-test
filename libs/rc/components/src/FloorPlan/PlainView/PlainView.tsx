@@ -1,14 +1,16 @@
 import { RefObject, useCallback, useEffect, useRef, useState } from 'react'
 
-import { Col, Divider, Row, Space, Typography } from 'antd'
-import { DropTargetMonitor, useDrop, XYCoord }  from 'react-dnd'
-import { useIntl }                              from 'react-intl'
+import { Col, Divider, Row, Space, Tooltip, Typography } from 'antd'
+import { DropTargetMonitor, useDrop, XYCoord }           from 'react-dnd'
+import { useIntl }                                       from 'react-intl'
 
 import { Button, Loader } from '@acx-ui/components'
 import {
+  AccessPointWiFiOutlined,
   ApplicationsSolid,
   MagnifyingGlassMinusOutlined,
   MagnifyingGlassPlusOutlined,
+  QuestionMarkCircleOutlined,
   SearchFitOutlined,
   SearchFullOutlined
 } from '@acx-ui/icons'
@@ -55,7 +57,8 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
     [key: string]: TypeWiseNetworkDevices
   },
   networkDevicesVisibility: NetworkDeviceType[],
-  setCoordinates: Function }) {
+  setCoordinates: Function,
+  showRougeAp?: boolean }) {
   const { floorPlans,
     toggleGalleryView,
     defaultFloorPlan,
@@ -63,7 +66,8 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
     onAddEditFloorPlan,
     networkDevices,
     networkDevicesVisibility,
-    setCoordinates } = props
+    setCoordinates,
+    showRougeAp } = props
   const { $t } = useIntl()
   const imageRef = useRef<HTMLImageElement>(null)
   const imageContainerRef = useRef<HTMLDivElement>(null)
@@ -231,7 +235,7 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
           </Typography.Title>
         </Col>
         <Col>
-          <Space split={<Divider type='vertical' />}>
+          { !showRougeAp && <Space split={<Divider type='vertical' />}>
             <AddEditFloorplanModal
               buttonTitle={$t({ defaultMessage: 'Edit' })}
               onAddEditFloorPlan={onEditFloorPlanHandler}
@@ -241,16 +245,27 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
               {$t({ defaultMessage: 'Delete' })}
             </Button>
           </Space>
+          }
         </Col>
       </Row>
       <Divider style={{ margin: '0' }} />
       <UI.ImageContainerWrapper>
+        { showRougeAp && <UI.RougeAPHelpIcon className='rogue-help-info'>
+          <Tooltip
+            trigger='click'
+            placement='right'
+            title={<RougeAPHelpTooltip/>}>
+            <QuestionMarkCircleOutlined />
+          </Tooltip>
+        </UI.RougeAPHelpIcon> }
         <UI.ImageContainer imageMode={imageMode}
           ref={imageContainerRef}
           currentZoom={currentZoom}
           data-testid='image-container'>
           <div ref={drop}
+            data-testid='dropContainer'
             style={{
+              backgroundColor: showRougeAp ? 'rgba(0, 0, 0, 0.4)' : '',
               position: 'absolute',
               width: '100%',
               height: '100%'
@@ -261,7 +276,8 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
             networkDevices={networkDevices}
             contextAlbum={false}
             context={FloorplanContext['ap']}
-            galleryMode={false}/>
+            galleryMode={false}
+            showRougeAp={showRougeAp}/>
           }
           <img
             data-testid='floorPlanImage'
@@ -330,4 +346,34 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
       }
     </>
   )
+}
+
+export function RougeAPHelpTooltip () {
+  const { $t } = useIntl()
+  return <UI.TooltipContent className='rouge-ap-tooltip-content'>
+    <div className='rogue-help'>
+      <div className='rogue-mark malicious'>
+        <AccessPointWiFiOutlined />
+      </div>
+      <div className='info'>{$t({ defaultMessage: 'Detecting Malicious rogue' })}</div>
+    </div>
+    <div className='rogue-help'>
+      <div className='rogue-mark unclassified'>
+        <AccessPointWiFiOutlined />
+      </div>
+      <div className='info'>{$t({ defaultMessage: 'Detecting Unclassified rogue' })}</div>
+    </div>
+    <div className='rogue-help'>
+      <div className='rogue-mark known'>
+        <AccessPointWiFiOutlined />
+      </div>
+      <div className='info'>{$t({ defaultMessage: 'Detecting Known rogue' })}</div>
+    </div>
+    <div className='rogue-help'>
+      <div className='rogue-mark ignored'>
+        <AccessPointWiFiOutlined />
+      </div>
+      <div className='info'>{$t({ defaultMessage: 'Detecting Ignored rogue/ no rogues' })}</div>
+    </div>
+  </UI.TooltipContent>
 }

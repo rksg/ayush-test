@@ -37,7 +37,8 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
       </span>
     </div>
     <div
-      class="sc-bjUoiL lnemyN"
+      class="sc-fLlhyt edFKlx"
+      style="background-color: rgba(0, 0, 0, 0.4);"
     >
       <div
         class="ant-row"
@@ -90,16 +91,17 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
                 class="ant-card-body"
               >
                 <div
-                  class="sc-gKXOVf LHzlb"
+                  class="sc-jqUVSM dKdNIi"
                 >
                   <div
+                    data-testid="dropContainer"
                     style="position: absolute; width: 100%; height: 100%;"
                   />
                   <div>
                      
                     <div>
                       <div
-                        class="sc-jSMfEi gTKhVy device-container gallery"
+                        class="sc-jSMfEi bfYvgd device-container gallery"
                         draggable="true"
                         style="top: calc(9.839357%); left: calc(65.20548%); opacity: 1;"
                       >
@@ -116,7 +118,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
                     </div>
                     <div>
                       <div
-                        class="sc-jSMfEi gTKhVy device-container gallery"
+                        class="sc-jSMfEi bfYvgd device-container gallery"
                         draggable="true"
                         style="top: calc(7.056452%); left: calc(52.739727%); opacity: 1;"
                       >
@@ -190,9 +192,10 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
                 class="ant-card-body"
               >
                 <div
-                  class="sc-gKXOVf LHzlb"
+                  class="sc-jqUVSM dKdNIi"
                 >
                   <div
+                    data-testid="dropContainer"
                     style="position: absolute; width: 100%; height: 100%;"
                   />
                   <div>
@@ -211,8 +214,24 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
         </div>
       </div>
       <div
-        class="ant-space ant-space-horizontal ant-space-align-center sc-hAZoDl bdSFjv"
+        class="ant-space ant-space-horizontal ant-space-align-center sc-hHLeRK bQHTDj"
       >
+        <div
+          class="ant-space-item"
+          style="margin-right: 24px;"
+        >
+          <button
+            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW sc-kgflAQ sc-ivTmOn hDMeUr fIhEvG"
+            type="button"
+          >
+            <svg
+              data-testid="EyeSlashOutlined"
+            />
+            <span>
+              Hide Rouge APs
+            </span>
+          </button>
+        </div>
         <div
           class="ant-space-item"
           style="margin-right: 24px;"
@@ -245,7 +264,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
             type="button"
           >
             <span>
-              Unplaced Devices (0)
+              Unplaced Devices (1)
             </span>
           </button>
         </div>
@@ -261,7 +280,7 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="sc-bjUoiL lnemyN"
+      class="sc-fLlhyt edFKlx"
     >
       <div
         class="ant-row ant-row-space-between"
@@ -336,13 +355,14 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
         style="margin: 0px;"
       />
       <div
-        class="sc-crXcEl hhzbyG"
+        class="sc-hAZoDl bAUJJB"
       >
         <div
-          class="sc-evZas khzpeU"
+          class="sc-fnykZs gFEddm"
           data-testid="image-container"
         >
           <div
+            data-testid="dropContainer"
             style="position: absolute; width: 100%; height: 100%;"
           />
           <img
@@ -353,7 +373,7 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
           />
         </div>
         <div
-          class="sc-breuTD jPunmx"
+          class="sc-fEOsli nrlvP"
         >
           <div
             class="styledComponents__Wrapper-sc-1352uh8-0 ilNUvb"
@@ -394,7 +414,7 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
       </div>
       <div
         alignbottom="0"
-        class="ant-space ant-space-vertical sc-ksZaOG bLlpPb"
+        class="ant-space ant-space-vertical sc-bjUoiL khVJOP"
       >
         <div
           class="ant-space-item"
@@ -486,13 +506,13 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
         class="ant-row"
       >
         <div
-          class="ant-space ant-space-horizontal ant-space-align-center sc-papXJ kCOujv"
+          class="ant-space ant-space-horizontal ant-space-align-center sc-crXcEl kVxLL"
         >
           <div
             class="ant-space-item"
           >
             <button
-              class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 eAazoW sc-jqUVSM jcChGv"
+              class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 eAazoW sc-evZas hQpdCy"
               data-testid="galleryIcon"
               type="button"
             >
@@ -506,18 +526,18 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
           class="ant-col ant-col-23"
         >
           <div
-            class="ant-space ant-space-horizontal ant-space-align-center sc-iBkjds clKEDl"
+            class="ant-space ant-space-horizontal ant-space-align-center sc-kDDrLX dyDNDl"
           >
             <div
               class="ant-space-item"
               style="margin-right: 4px;"
             >
               <div
-                class="sc-iqcoie gurVXX"
+                class="sc-ksZaOG edtJxk"
               >
                 <div
                   active="1"
-                  class="ant-card-grid sc-ftvSup bdLeFD"
+                  class="ant-card-grid sc-iqcoie hLhYrV"
                   data-testid="thumbnailBg"
                 >
                   <div
@@ -527,7 +547,7 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
                        
                       <div>
                         <div
-                          class="sc-jSMfEi gTKhVy device-container context-Album"
+                          class="sc-jSMfEi bfYvgd device-container context-Album"
                           draggable="true"
                           style="top: calc(9.839357%); left: calc(65.20548%); opacity: 1;"
                         >
@@ -541,7 +561,7 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
                       </div>
                       <div>
                         <div
-                          class="sc-jSMfEi gTKhVy device-container context-Album"
+                          class="sc-jSMfEi bfYvgd device-container context-Album"
                           draggable="true"
                           style="top: calc(7.056452%); left: calc(52.739727%); opacity: 1;"
                         >
@@ -562,7 +582,7 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="sc-kDDrLX kNPqaQ"
+                  class="sc-breuTD QFAjJ"
                 >
                   TEST_2
                 </div>
@@ -572,11 +592,11 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
               class="ant-space-item"
             >
               <div
-                class="sc-iqcoie gurVXX"
+                class="sc-ksZaOG edtJxk"
               >
                 <div
                   active="0"
-                  class="ant-card-grid sc-ftvSup gdnfOS"
+                  class="ant-card-grid sc-iqcoie IvfqM"
                   data-testid="thumbnailBg"
                 >
                   <div
@@ -593,7 +613,7 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="sc-kDDrLX iSVmu"
+                  class="sc-breuTD ckvOwr"
                 >
                   dscx
                 </div>
@@ -603,8 +623,24 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
         </div>
       </div>
       <div
-        class="ant-space ant-space-horizontal ant-space-align-center sc-hAZoDl bdSFjv"
+        class="ant-space ant-space-horizontal ant-space-align-center sc-hHLeRK bQHTDj"
       >
+        <div
+          class="ant-space-item"
+          style="margin-right: 24px;"
+        >
+          <button
+            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW sc-kgflAQ sc-ivTmOn hDMeUr fIhEvG"
+            type="button"
+          >
+            <svg
+              data-testid="EyeOpenOutlined"
+            />
+            <span>
+              View Rouge APs
+            </span>
+          </button>
+        </div>
         <div
           class="ant-space-item"
           style="margin-right: 24px;"
@@ -633,11 +669,10 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
         >
           <button
             class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW ant-dropdown-trigger"
-            disabled=""
             type="button"
           >
             <span>
-              Unplaced Devices (0)
+              Unplaced Devices (1)
             </span>
           </button>
         </div>
