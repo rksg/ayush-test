@@ -847,7 +847,7 @@ exports[`HistoricalClientsTable should render correctly 1`] = `
                                   class="ant-table-cell"
                                 >
                                   <a
-                                    href="/t/tenant-id/aps/302002015736/details/overview"
+                                    href="/t/tenant-id/devices/wifi/302002015736/details/overview"
                                   >
                                     302002015736-0802
                                   </a>
