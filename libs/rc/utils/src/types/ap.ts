@@ -1,11 +1,11 @@
-import { APMeshRole }                       from '../constants'
-import { CapabilitiesApModel, PoeModeEnum } from '../models'
-import { ApDeep }                           from '../models/ApDeep'
-import { ApPacketCaptureStateEnum }         from '../models/ApPacketCaptureEnum'
-import { DeviceGps }                        from '../models/DeviceGps'
-import { DhcpApInfo }                       from '../models/DhcpApInfo'
-import { ExternalAntenna }                  from '../models/ExternalAntenna'
-import { VenueLanPort }                     from '../models/VenueLanPort'
+import { APMeshRole }                                   from '../constants'
+import { ApPosition, CapabilitiesApModel, PoeModeEnum } from '../models'
+import { ApDeep }                                       from '../models/ApDeep'
+import { ApPacketCaptureStateEnum }                     from '../models/ApPacketCaptureEnum'
+import { DeviceGps }                                    from '../models/DeviceGps'
+import { DhcpApInfo }                                   from '../models/DhcpApInfo'
+import { ExternalAntenna }                              from '../models/ExternalAntenna'
+import { VenueLanPort }                                 from '../models/VenueLanPort'
 
 import { ApVenueStatusEnum } from '.'
 
@@ -67,7 +67,9 @@ export interface APExtended extends AP {
   channel60?: string,
   hasPoeStatus?: boolean,
   isPoEStatusUp?: boolean,
-  poePortInfo?: string
+  poePortInfo?: string,
+  xPercent?: number,
+  yPercent?: number
 }
 
 export interface CelluarInfo {
@@ -143,7 +145,8 @@ export interface ApDetails {
   softDeleted: boolean
   model: string
   updatedDate: string
-  deviceGps?: DeviceGps
+  deviceGps?: DeviceGps,
+  position?: ApPosition
 }
 
 export interface ApGroup {
@@ -364,4 +367,11 @@ export interface WifiApSetting {
   poeMode?: string;
   lanPorts?: LanPort[];
   lan?: LanPort[];
+}
+
+export interface ApDirectedMulticast {
+  useVenueSettings: boolean,
+  wiredEnabled: boolean,
+  wirelessEnabled: boolean,
+  networkEnabled: boolean
 }
