@@ -340,8 +340,7 @@ export function RadioSettings () {
     }
   }
 
-  const handleUpdateRadioSettings =
-  async (formData: VenueRadioCustomization) => {
+  const handleUpdateRadioSettings = async (formData: VenueRadioCustomization) => {
 
     update5gData(formData)
 

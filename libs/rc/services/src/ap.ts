@@ -34,7 +34,8 @@ import {
   ApRadioCustomization,
   VenueDefaultRegulatoryChannels,
   APExtended,
-  LanPortStatusProperties
+  LanPortStatusProperties,
+  ApDirectedMulticast
 } from '@acx-ui/rc/utils'
 import { formatter } from '@acx-ui/utils'
 
@@ -441,7 +442,34 @@ export const apApi = baseApApi.injectEndpoints({
           ...req
         }
       }
+    }),
+    getApDirectedMulticast: build.query<ApDirectedMulticast, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getApDirectedMulticast, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    updateApDirectedMulticast: build.mutation<ApDirectedMulticast, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.updateApDirectedMulticast, params)
+        return{
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    resetApDirectedMulticast: build.mutation<ApDirectedMulticast, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.resetApDirectedMulticast, params)
+        return{
+          ...req
+        }
+      }
     })
+
+
   })
 })
 
@@ -489,7 +517,10 @@ export const {
   useLazyGetApCapabilitiesQuery,
   useUpdateApCustomizationMutation,
   useResetApCustomizationMutation,
-  useGetApValidChannelQuery
+  useGetApValidChannelQuery,
+  useGetApDirectedMulticastQuery,
+  useUpdateApDirectedMulticastMutation,
+  useResetApDirectedMulticastMutation
 } = apApi
 
 

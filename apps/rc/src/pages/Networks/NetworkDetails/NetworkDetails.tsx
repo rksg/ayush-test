@@ -1,11 +1,11 @@
 import { ApTable }   from '@acx-ui/rc/components'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { NetworkEventsTab }    from './NetworkEventsTab'
 import { NetworkIncidentsTab } from './NetworkIncidentsTab'
 import { NetworkOverviewTab }  from './NetworkOverviewTab'
 import NetworkPageHeader       from './NetworkPageHeader'
 import { NetworkServicesTab }  from './NetworkServicesTab'
+import { NetworkTimelineTab }  from './NetworkTimelineTab'
 import { NetworkVenuesTab }    from './NetworkVenuesTab'
 
 const tabs = {
@@ -13,7 +13,7 @@ const tabs = {
   aps: ApTable,
   venues: NetworkVenuesTab,
   services: NetworkServicesTab,
-  events: NetworkEventsTab,
+  timeline: NetworkTimelineTab,
   incidents: NetworkIncidentsTab
 }
 
