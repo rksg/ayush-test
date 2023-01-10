@@ -38,21 +38,17 @@ RUN export $(cat ${ENV_FILE}) \
   && echo NX_GIT_DATE=\'$(date -R "@$((DRONE_BUILD_CREATED))")\' >> .env
 
 ###############################################################
-FROM build-base as acx-ui-base-test
-ENV NODE_OPTIONS=--max-old-space-size=8192
-
-FROM acx-ui-base-test as acx-ui-lint
+FROM build-base as acx-ui-lint
 RUN node ./node_modules/.bin/nx run-many --target=lint --all --verbose
 RUN touch lint-done
 
-FROM acx-ui-base-test as acx-ui-tslint
+FROM build-base as acx-ui-tslint
 COPY tools/docker/tscValidator.sh ./tools/docker/tscValidator.sh
 RUN chmod +x tools/docker/tscValidator.sh
 RUN tools/docker/tscValidator.sh
 RUN touch tslint-done
 
 ###############################################################
-
 FROM node:14.21.1-alpine as build-locales
 
 WORKDIR /app
@@ -61,10 +57,9 @@ WORKDIR /app
 # copy only necessary folders to extract & generate local files
 COPY --from=build-base /app /app
 COPY tools/docker/locales ./tools/docker/locales
+
 RUN chmod +x tools/docker/locales/generate.sh
 RUN tools/docker/locales/generate.sh
-
-###############################################################
 
 FROM build-base as build
 
@@ -73,42 +68,20 @@ RUN node ./node_modules/.bin/nx run-many --target=build --all
 RUN touch build-done
 
 ###############################################################
-
-FROM build-base as pre-tests
-
-# Force dependency with lint related stages
-COPY --from=acx-ui-lint   /app/lint-done   lint-done
-COPY --from=acx-ui-tslint /app/tslint-done tslint-done
-
-COPY --from=build /app/dist/apps ./dist/apps
-
-# FROM acx-ui-base-test as acx-ui-rc-test
-FROM pre-tests as tests-base
+FROM build-base as acx-ui-tests
 ENV NODE_OPTIONS=--max-old-space-size=8192
 
-FROM tests-base as acx-ui-rc-test
-RUN node ./node_modules/.bin/nx run rc:test --coverage --maxWorkers=40%
-RUN touch tests-done
+# Force dependency with lint & build stages
+COPY --from=acx-ui-lint   /app/lint-done   ./lint-done
+COPY --from=acx-ui-tslint /app/tslint-done ./tslint-done
+COPY --from=build         /app/dist/apps   ./dist/apps
 
-FROM tests-base as acx-ui-analytics-test
-RUN node ./node_modules/.bin/nx run analytics:test --coverage --maxWorkers=40%
-RUN touch tests-done
-
-FROM tests-base as acx-ui-tests
-# COPY --from=acx-ui-rc-test        /app/tests-done tests-done
-# COPY --from=acx-ui-analytics-test /app/tests-done tests-done
 RUN node ./node_modules/.bin/nx run rc:test --coverage --maxWorkers=50%
 RUN node ./node_modules/.bin/nx run analytics:test --coverage --maxWorkers=50%
 RUN node ./node_modules/.bin/nx run-many --target=test --all --exclude=rc,analytics --coverage --runInBand --verbose
 
-FROM tests-base as acx-ui-sonar-run
-COPY --from=acx-ui-tests          /app/coverage/* /app/coverage
-# COPY --from=acx-ui-rc-test        /app/coverage/apps/* /app/coverage/app/.
-# COPY --from=acx-ui-analytics-test /app/coverage/apps/* /app/coverage/app/.
-
 ###############################################################
-
-FROM nginx:1.21.6-alpine as acx-ui-target
+FROM nginx:1.21.6-alpine
 
 WORKDIR /usr/share/nginx/html
 
@@ -121,7 +94,7 @@ COPY tools/docker/nginx/nginx.conf \
   tools/docker/nginx/env.json.template \
   /etc/nginx/
 
-COPY --from=acx-ui-sonar-run /app/dist/apps ./
+COPY --from=acx-ui-tests /app/dist/apps ./
 RUN \
   # Move all other apps into main
   ls | grep -v main | xargs mv -t main && \

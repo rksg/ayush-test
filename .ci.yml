@@ -12,7 +12,6 @@ build:
         sonar:
             sonar_property: sonar-project.properties
             code_report_dir: /app/coverage
-            sonar_scan_based_tag: acx-ui-sonar-run
-            # sonar_scan_target_tag: acx-ui-target
+            sonar_scan_based_tag: acx-ui-tests
   - directory: configs
     build_type: ci
