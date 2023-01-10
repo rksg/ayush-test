@@ -165,9 +165,9 @@ describe('WifiCallingNetworkTable', () => {
 
     fireEvent.click(deactivateButton[0])
 
-    await userEvent.click(screen.getByTestId('1b34da3ca1784ab48ad97d609b02f61c_switch'))
+    await userEvent.click(screen.getAllByRole('switch')[0])
 
-    await userEvent.click(screen.getByTestId('62b18f6cd1ae455cbbf1e2c547d8d422_switch'))
+    await userEvent.click(screen.getAllByRole('switch')[1])
 
   }, 20000)
 })

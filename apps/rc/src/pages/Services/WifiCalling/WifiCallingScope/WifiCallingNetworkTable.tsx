@@ -58,7 +58,6 @@ const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
       key: 'activate',
       render: (data, row) => {
         return <Switch
-          data-testid={`${row.id}_switch`}
           checked={state.networkIds.includes(row.id)}
           onClick={() => {
             state.networkIds.includes(row.id)
