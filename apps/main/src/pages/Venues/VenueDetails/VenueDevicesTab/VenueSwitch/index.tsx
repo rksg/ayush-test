@@ -5,9 +5,9 @@ import { Radio } from 'antd'
 import { LineChartOutline, ListSolid, PortSolid } from '@acx-ui/icons'
 import { SwitchPortTable, SwitchTable }           from '@acx-ui/rc/components'
 
-import { IconRadioGroup } from '../VenueMeshAps/styledComponents'
+import { IconRadioGroup } from '../VenueWifi/styledComponents'
 
-export function VenueSwitches () {
+export function VenueSwitch () {
   const [ showIdx, setShowInx ] = useState(1)
   return (<>
     <IconRadioGroup value={showIdx}
@@ -18,7 +18,7 @@ export function VenueSwitches () {
       <Radio.Button value={1}><ListSolid /></Radio.Button>
       <Radio.Button value={2}><PortSolid /></Radio.Button>
     </IconRadioGroup>
-    { showIdx === 0 && <div></div>}
+    { showIdx === 0 && <div></div>} {/* TODO: Venue Device Switch Report */}
     { showIdx === 1 && <SwitchTable />}
     { showIdx === 2 && <SwitchPortTable isVenueLevel={true} />}
   </>)

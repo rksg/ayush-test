@@ -4,9 +4,9 @@ import { SwitchUrlsInfo }                        from '@acx-ui/rc/utils'
 import { Provider }                              from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
 
-import { VenueSwitches } from '.'
+import { VenueSwitch } from '.'
 
-describe('VenueSwitches', () => {
+describe('VenueSwitch', () => {
   const params = {
     tenantId: 'd1ec841a4ff74436b23bca6477f6a631',
     venueId: '8caa8f5e01494b5499fa156a6c565138',
@@ -27,7 +27,7 @@ describe('VenueSwitches', () => {
   })
 
   it('should render correctly', async () => {
-    render(<Provider><VenueSwitches /></Provider>, {
+    render(<Provider><VenueSwitch /></Provider>, {
       route: { params, path: '/:tenantId/venues/:venueId/venue-details/:activeTab' }
     })
 

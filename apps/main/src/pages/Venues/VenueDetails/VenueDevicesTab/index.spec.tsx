@@ -257,7 +257,7 @@ const meshData = {
     }
   ] }
 
-describe('VenueMeshAps', () => {
+describe('VenueWifi', () => {
   beforeEach(() => {
     mockServer.use(
       rest.get(

@@ -258,7 +258,7 @@ export function VenueMeshApsTable () {
         <Radio.Button value={1}><ListSolid /></Radio.Button>
         <Radio.Button value={2}><MeshSolid /></Radio.Button>
       </IconRadioGroup>
-      { showIdx === 0 && <div></div> }
+      { showIdx === 0 && <div></div> } {/* TODO: Venue Device WiFi Report */}
       { showIdx === 1 && <ApTable /> }
       { showIdx === 2 && <VenueMeshApsTable /> }
     </>
