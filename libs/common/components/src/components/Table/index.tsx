@@ -51,7 +51,7 @@ export interface TableProps <RecordType>
       label: string,
       disabled?: boolean,
       onClick?: () => void,
-      items?: MenuProps['items']
+      dropdownMenu?: Omit<MenuProps, 'placement'>
     }>
     rowActions?: Array<{
       label: string,
@@ -275,13 +275,12 @@ function Table <RecordType extends Record<string, any>> (
           type='link'
           size='small'
           disabled={action.disabled}
-          onClick={action.items ? undefined : action.onClick}
+          onClick={action.dropdownMenu ? undefined : action.onClick}
           children={action.label}
         />
-        return action.items
+        return action.dropdownMenu
           ? <Dropdown
-            overlay={<Menu items={action.items} />}
-            placement='bottomRight'
+            overlay={<Menu {...action.dropdownMenu} />}
             disabled={action.disabled}>
             {() => content }
           </Dropdown>

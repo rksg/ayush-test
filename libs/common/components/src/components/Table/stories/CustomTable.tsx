@@ -81,25 +81,26 @@ export function CustomTable () {
       }, {
         label: 'Open Dropdown',
         onClick: () => showToast({ type: 'info', content: 'This Toast Should Not Show Up' }),
-        items: [
-          { key: 'item1', label: 'Item 1' },
-          { key: 'item2', label: 'Item 2', disabled: true },
-          { type: 'divider' },
-          {
-            key: 'item3',
-            label: 'Item 3',
-            onClick: () => showToast({ type: 'info', content: 'Dropdown Item Clicked' })
-          }
-        ]
+        dropdownMenu: {
+          onClick: () => showToast({ type: 'info', content: 'Dropdown Item Clicked' }),
+          items: [
+            { key: 'item1', label: 'Item 1' },
+            { key: 'item2', label: 'Item 2', disabled: true },
+            { type: 'divider' },
+            { key: 'item3', label: 'Item 3' }
+          ]
+        }
       },
       {
         label: 'Open other Dropdown',
         disabled: true,
-        items: [
-          { key: 'item1', label: 'Item 1' },
-          { key: 'item2', label: 'Item 2' },
-          { key: 'item3 ', label: 'Item 3' }
-        ]
+        dropdownMenu: {
+          items: [
+            { key: 'item1', label: 'Item 1' },
+            { key: 'item2', label: 'Item 2' },
+            { key: 'item3 ', label: 'Item 3' }
+          ]
+        }
       }]}
     />
   </>)
