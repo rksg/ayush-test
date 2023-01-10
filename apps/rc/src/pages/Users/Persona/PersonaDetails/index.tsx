@@ -4,19 +4,19 @@ import { Col, Input, Row, Space, Typography } from 'antd'
 import { useIntl }                            from 'react-intl'
 import {  useParams }                         from 'react-router-dom'
 
-import { noDataSymbol }                                 from '@acx-ui/analytics/utils'
-import { Button, cssStr, Loader, PageHeader, Subtitle } from '@acx-ui/components'
-import { CopyOutlined }                                 from '@acx-ui/icons'
+import { noDataSymbol }                                                          from '@acx-ui/analytics/utils'
+import { Button, cssStr, Loader, PageHeader, Subtitle }                          from '@acx-ui/components'
+import { CopyOutlined }                                                          from '@acx-ui/icons'
 import {
   useLazyGetDpskQuery,
   useGetPersonaByIdQuery,
   useLazyGetMacRegListQuery,
-  useLazyGetPersonaGroupByIdQuery
+  useLazyGetPersonaGroupByIdQuery, useLazyGetNetworkSegmentationGroupByIdQuery
 } from '@acx-ui/rc/services'
 import { PersonaGroup } from '@acx-ui/rc/utils'
 
-import { DpskPoolLink, MacRegistrationPoolLink, PersonaGroupLink } from '../LinkHelper'
-import { PersonaDrawer }                                           from '../PersonaDrawer'
+import { DpskPoolLink, MacRegistrationPoolLink, NetworkSegmentationLink, PersonaGroupLink } from '../LinkHelper'
+import { PersonaDrawer }                                                                    from '../PersonaDrawer'
 
 import { PersonaDevicesTable } from './PersonaDevicesTable'
 
@@ -27,12 +27,14 @@ function PersonaDetails () {
   const [personaGroupData, setPersonaGroupData] = useState<PersonaGroup>()
   const [macPoolData, setMacPoolData] = useState({} as { id?: string, name?: string } | undefined)
   const [dpskPoolData, setDpskPoolData] = useState({} as { id?: string, name?: string } | undefined)
+  const [nsgData, setNsgData] = useState({} as { id?: string, name?: string } | undefined)
   const [editDrawerVisible, setEditDrawerVisible] = useState(false)
 
   // TODO: isLoading state?
   const [getPersonaGroupById] = useLazyGetPersonaGroupByIdQuery()
   const [getMacRegistrationById] = useLazyGetMacRegListQuery()
   const [getDpskPoolById] = useLazyGetDpskQuery()
+  const [getNsgById] = useLazyGetNetworkSegmentationGroupByIdQuery()
   const personaDetailsQuery = useGetPersonaByIdQuery({
     params: { groupId: personaGroupId, id: personaId }
   })
@@ -69,27 +71,34 @@ function PersonaDetails () {
         .then(result => name = result.data?.name)
         .finally(() => setDpskPoolData({ id: personaGroupData.dpskPoolId, name }))
     }
+
+    if (personaGroupData.nsgId) {
+      let name: string | undefined
+      getNsgById({ params: { serviceId: personaGroupData.nsgId } })
+        .then(result => name = result.data?.name)
+        .finally(() => setNsgData({ id: personaGroupData.nsgId, name }))
+    }
   }, [personaGroupData])
 
   const details = [
-    { label: 'Email', value: personaDetailsQuery.data?.email },
-    { label: 'Description', value: personaDetailsQuery.data?.description },
-    { label: 'Persona Group',
+    { label: $t({ defaultMessage: 'Email' }), value: personaDetailsQuery.data?.email },
+    { label: $t({ defaultMessage: 'Description' }), value: personaDetailsQuery.data?.description },
+    { label: $t({ defaultMessage: 'Persona Group' }),
       value:
       <PersonaGroupLink
         name={personaGroupData?.name}
         personaGroupId={personaGroupData?.id}
       />
     },
-    { label: 'VLAN', value: personaDetailsQuery.data?.vlan },
-    { label: 'DPSK Pool',
+    { label: $t({ defaultMessage: 'VLAN' }), value: personaDetailsQuery.data?.vlan },
+    { label: $t({ defaultMessage: 'DPSK Pool' }),
       value:
         <DpskPoolLink
           name={dpskPoolData?.name}
           dpskPoolId={dpskPoolData?.id}
         />
     },
-    { label: 'DPSK Passphrase',
+    { label: $t({ defaultMessage: 'DPSK Passphrase' }),
       value:
         <>
           <Input.Password
@@ -99,13 +108,15 @@ function PersonaDetails () {
           />
           <Button
             ghost
+            data-testid={'copy'}
             icon={<CopyOutlined />}
             onClick={() =>
               navigator.clipboard.writeText(personaDetailsQuery.data?.dpskPassphrase ?? '')
             }
           />
-        </> },
-    { label: 'MAC Registration List',
+        </>
+    },
+    { label: $t({ defaultMessage: 'MAC Registration List' }),
       value:
       <MacRegistrationPoolLink
         name={macPoolData?.name}
@@ -114,12 +125,30 @@ function PersonaDetails () {
     }
   ]
 
-  // TODO: API Integration - integrate with NetworkSegmentation API
   const netSeg = [
-    { label: 'Assigned VNI', value: '3000' },
-    { label: 'Network Segmentation', value: 'Net seg-1' },
-    { label: 'Assigned AP', value: 'AP 1' },
-    { label: 'Ethernet Ports Assigned', value: 'LAN 1' }
+    { label: $t({ defaultMessage: 'Assigned VNI' }),
+      value: personaDetailsQuery.data?.vni
+    },
+    { label: $t({ defaultMessage: 'Network Segmentation' }),
+      value:
+      personaGroupData?.nsgId
+        && <NetworkSegmentationLink
+          name={nsgData?.name}
+          nsgId={personaGroupData?.nsgId}
+        />
+    },
+    // TODO: API Integration - Fetch AP
+    { label: $t({ defaultMessage: 'Assigned AP' }),
+      value: 'AP 1'
+    },
+    { label: $t({ defaultMessage: 'Ethernet Ports Assigned' }),
+      value:
+        personaDetailsQuery.data?.ethernetPorts?.length !== 0
+          ? personaDetailsQuery.data?.ethernetPorts?.map(port => {
+            return `LAN ${port.portIndex}`
+          }).join(', ')
+          : undefined
+    }
   ]
 
   return (

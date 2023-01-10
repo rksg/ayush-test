@@ -40,6 +40,14 @@ export const mockPersona: Persona = {
       macAddress: '11:11:11:11:11:13',
       personaId: 'persona-id-1'
     }
+  ],
+  ethernetPorts: [
+    {
+      portIndex: 1,
+      macAddress: '11:11:11:11:11:11',
+      personaId: 'persona-id-1',
+      name: 'port-name-1'
+    }
   ]
 }
 

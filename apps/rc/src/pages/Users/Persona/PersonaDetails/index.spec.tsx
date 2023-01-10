@@ -1,4 +1,6 @@
-import { rest } from 'msw'
+import { within } from '@testing-library/react'
+import userEvent  from '@testing-library/user-event'
+import { rest }   from 'msw'
 
 import {
   DpskUrls,
@@ -22,11 +24,18 @@ import { PersonaDevicesTable } from './PersonaDevicesTable'
 
 import PersonaDetails from './index'
 
+Object.assign(navigator, {
+  clipboard: {
+    writeText: () => { }
+  }
+})
 
 describe('Persona Details', () => {
   let params: { tenantId: string, personaGroupId: string, personaId: string }
 
   beforeEach( async () => {
+    jest.spyOn(navigator.clipboard, 'writeText')
+
     mockServer.use(
       rest.get(
         PersonaUrls.getPersonaGroupById.url,
@@ -35,6 +44,10 @@ describe('Persona Details', () => {
       rest.get(
         PersonaUrls.getPersonaById.url,
         (req, res, ctx) => res(ctx.json(mockPersona))
+      ),
+      rest.post(
+        PersonaUrls.addPersonaDevices.url,
+        (req, res, ctx) => res(ctx.json({}))
       ),
       rest.delete(
         PersonaUrls.deletePersonaDevices.url,
@@ -96,7 +109,17 @@ describe('Persona Details', () => {
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     const addButton = await screen.findByRole('button', { name: /Add Device/i })
-    fireEvent.click(addButton)
+    await userEvent.click(addButton)
+
+    const dialog = await screen.findByRole('dialog', { name: /Add Devices/i })
+    const addBtn = await within(dialog).findByRole('button', { name: /add/i })
+    await userEvent.click(addBtn)
+
+    await userEvent.click(addButton)
+    const cancelBtn = await within(dialog).findByRole('button', { name: /cancel/i })
+    await userEvent.click(cancelBtn)
+
+    expect(screen.queryByRole('dialog', { name: /Add Devices/i })).toBeNull()
   })
 
   it('should config persona details', async () => {
@@ -112,6 +135,12 @@ describe('Persona Details', () => {
 
     const configButton = await screen.findByRole('button', { name: /Configure/i })
     fireEvent.click(configButton)
+
+    // check copy to clipboard function
+    const copyBtn = screen.getByTestId('copy')
+
+    await userEvent.click(copyBtn)
+    expect(navigator.clipboard.writeText).toHaveBeenCalledWith(mockPersona.dpskPassphrase)
 
     const personaName = screen.getByLabelText(/Persona Name/i) as HTMLInputElement
     expect(personaName.value).toBe(mockPersona.name)
@@ -143,11 +172,10 @@ describe('Persona Details', () => {
     fireEvent.click(row)
 
     const deleteButton = screen.getByRole('button', { name: /delete/i })
-    fireEvent.click(deleteButton)
+    await userEvent.click(deleteButton)
 
-    const deleteDeviceButton = await screen.findAllByRole('button', { name: /Delete/i })
-    deleteDeviceButton.forEach(item => {
-      fireEvent.click(item)
-    })
+    const confirmDialog = await screen.findByRole('dialog')
+    const confirmBtn = await within(confirmDialog).findByRole('button', { name: /Delete/i })
+    await userEvent.click(confirmBtn)
   })
 })

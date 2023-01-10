@@ -9,7 +9,8 @@ import { Button, Card, Loader, PageHeader, Subtitle } from '@acx-ui/components'
 import {
   useLazyGetDpskQuery,
   useGetPersonaGroupByIdQuery,
-  useLazyGetMacRegListQuery
+  useLazyGetMacRegListQuery,
+  useLazyGetNetworkSegmentationGroupByIdQuery
 } from '@acx-ui/rc/services'
 import { PersonaGroup } from '@acx-ui/rc/utils'
 
@@ -52,9 +53,11 @@ function PersonaGroupDetails () {
   const [editVisible, setEditVisible] = useState(false)
   const [macPoolDisplay, setMacPoolDisplay] = useState<{ id?: string, name?: string }>()
   const [dpskPoolDisplay, setDpskPoolDisplay] = useState<{ id?: string, name?: string }>()
+  const [nsgDisplay, setNsgDisplay] = useState<{ id?: string, name?: string }>()
 
   const [getDpskPoolById] = useLazyGetDpskQuery()
   const [getMacRegistrationById] = useLazyGetMacRegListQuery()
+  const [getNsgById] = useLazyGetNetworkSegmentationGroupByIdQuery()
   const detailsQuery = useGetPersonaGroupByIdQuery({
     params: { groupId: personaGroupId }
   })
@@ -62,7 +65,7 @@ function PersonaGroupDetails () {
   useEffect(() => {
     if (detailsQuery.isLoading) return
 
-    const { macRegistrationPoolId, dpskPoolId } = detailsQuery.data as PersonaGroup
+    const { macRegistrationPoolId, dpskPoolId, nsgId } = detailsQuery.data as PersonaGroup
 
     if (macRegistrationPoolId) {
       getMacRegistrationById({ params: { policyId: macRegistrationPoolId } })
@@ -81,6 +84,13 @@ function PersonaGroupDetails () {
           }
         })
     }
+
+    if (nsgId) {
+      let name: string | undefined
+      getNsgById({ params: { serviceId: nsgId } })
+        .then(result => name = result.data?.name)
+        .finally(() => setNsgDisplay({ id: nsgId, name }))
+    }
   }, [detailsQuery.data])
 
   const basicInfo = [
@@ -94,7 +104,6 @@ function PersonaGroupDetails () {
     },
     {
       title: $t({ defaultMessage: 'DPSK Pool' }),
-      // TODO: Integrate API to fetch dpsk pool name and linked
       value:
       <DpskPoolLink
         name={dpskPoolDisplay?.name}
@@ -111,9 +120,9 @@ function PersonaGroupDetails () {
     },
     {
       title: $t({ defaultMessage: 'Network Segmentation' }),
-      // TODO: Integrate API to fetch nsg name and linked
       value:
         <NetworkSegmentationLink
+          name={nsgDisplay?.name}
           nsgId={detailsQuery.data?.nsgId}
         />
     }
