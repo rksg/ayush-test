@@ -77,8 +77,7 @@ export function useMenuConfig () {
       path: '/timeline',
       name: $t({ defaultMessage: 'Timeline' }),
       inactiveIcon: CalendarDateOutlined,
-      activeIcon: CalendarDateSolid,
-      disabled: !useIsSplitOn(Features.TIMELINE)
+      activeIcon: CalendarDateSolid
     },
     ...(useIsTierAllowed('ANLT-ADV') ? [{
       path: '/serviceValidation',
@@ -98,7 +97,45 @@ export function useMenuConfig () {
       name: $t({ defaultMessage: 'Reports' }),
       inactiveIcon: ReportsOutlined,
       activeIcon: ReportsSolid,
-      disabled: true
+      disabled: false,
+      routes: [
+        {
+          path: '/reports/overview',
+          name: $t({ defaultMessage: 'Overview' })
+        },
+        {
+          path: '/reports/wireless',
+          name: $t({ defaultMessage: 'Wireless' })
+        },
+        {
+          path: '/reports/wired',
+          name: $t({ defaultMessage: 'Wired' })
+        },
+        {
+          path: '/reports/aps',
+          name: $t({ defaultMessage: 'APs' })
+        },
+        {
+          path: '/reports/switches',
+          name: $t({ defaultMessage: 'Switches' })
+        },
+        {
+          path: '/reports/wlans',
+          name: $t({ defaultMessage: 'WLANs' })
+        },
+        {
+          path: '/reports/clients',
+          name: $t({ defaultMessage: 'Wireless Clients' })
+        },
+        {
+          path: '/reports/applications',
+          name: $t({ defaultMessage: 'Applications' })
+        },
+        {
+          path: '/reports/airtime',
+          name: $t({ defaultMessage: 'Airtime Utilization' })
+        }
+      ]
     },
     genPlaceholder(),
     {
@@ -123,11 +160,10 @@ export function useMenuConfig () {
             name: $t({ defaultMessage: 'Switch' }),
             disabled: !useIsSplitOn(Features.DEVICES)
           },
-          {
+          ...useIsSplitOn(Features.EDGES) ? [{
             path: '/devices/edge/list',
-            name: $t({ defaultMessage: 'Edge' }),
-            disabled: !useIsSplitOn(Features.EDGES)
-          }
+            name: $t({ defaultMessage: 'Edge' })
+          }] : []
         ]
     },
     {

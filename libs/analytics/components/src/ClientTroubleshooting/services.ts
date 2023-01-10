@@ -16,6 +16,7 @@ export type ConnectionEvent = {
   apName: string,
   path: NetworkPath,
   ssid?: string | null,
+  messageIds?: Array<string>
 }
 export type ClientInfoData = {
   connectionDetailsByAp: object[]

@@ -1,4 +1,4 @@
-import { EdgePortTypeEnum, EdgeStatusEnum, ApVenueStatusEnum, EdgeStatus, EdgePort } from '@acx-ui/rc/utils'
+import { ApVenueStatusEnum, EdgePortStatus, EdgePortTypeEnum, EdgeStatus, EdgeStatusEnum } from '@acx-ui/rc/utils'
 
 export const tenantID = 'ecc2d7cf9d2342fdb31ae0e24958fcac'
 export const currentEdge:EdgeStatus = {
@@ -21,7 +21,7 @@ export const currentEdge:EdgeStatus = {
   diskUsed: 162 * Math.pow(1024, 3)
 }
 
-export const edgePortsSetting:EdgePort[] = [{
+export const edgePortsSetting:EdgePortStatus[] = [{
   portId: '1',
   portName: 'Port 1',
   status: 'Up',

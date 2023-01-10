@@ -42,6 +42,7 @@ import DHCPDetail               from './pages/Services/DHCP/DHCPDetail'
 import DHCPForm                 from './pages/Services/DHCP/DHCPForm/DHCPForm'
 import DpskDetails              from './pages/Services/Dpsk/DpskDetail/DpskDetails'
 import DpskForm                 from './pages/Services/Dpsk/DpskForm/DpskForm'
+import DpskTable                from './pages/Services/Dpsk/DpskTable/DpskTable'
 import MdnsProxyDetail          from './pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail'
 import MdnsProxyForm            from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
 import NetworkSegmentationForm  from './pages/Services/NetworkSegmentationForm/NetworkSegmentationForm'
@@ -184,6 +185,10 @@ function ServiceRoutes () {
         element={<DHCPDetail/>}
       />
       <Route
+        path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST })}
+        element={<DpskTable />}
+      />
+      <Route
         path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.CREATE })}
         element={<DpskForm />}
       />
@@ -276,6 +281,10 @@ function UserRoutes () {
       />
       <Route
         path='users/wifi/:activeTab/:clientId/details/:activeTab'
+        element={<WifiClientDetails />}
+      />
+      <Route
+        path='users/wifi/:activeTab/:clientId/details/:activeTab/:activeSubTab'
         element={<WifiClientDetails />}
       />
       <Route path='users/switch' element={<TenantNavigate replace to='/users/switch/clients' />} />
