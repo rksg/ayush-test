@@ -173,6 +173,12 @@ jest.mock('antd', () => {
   return { ...antd, Select }
 })
 
+const rogueRuleActionMap = {
+  [RogueRuleType.CUSTOM_SNR_RULE]: { name: /signal threshold/i, value: '8' },
+  [RogueRuleType.CUSTOM_SSID_RULE]: { name: /ssid/i, value: 'ssid123' },
+  [RogueRuleType.CUSTOM_MAC_OUI_RULE]: { name: /mac oui/i, value: '11:22:33' }
+}
+
 const addRule = async (ruleName: string, type: RogueRuleType, classification: RogueCategory) => {
   await userEvent.click(screen.getByRole('button', {
     name: /add rule/i
@@ -186,31 +192,15 @@ const addRule = async (ruleName: string, type: RogueRuleType, classification: Ro
     target: { value: type }
   })
 
-  if (type === RogueRuleType.CUSTOM_SNR_RULE) {
+  if (type === RogueRuleType.CUSTOM_SNR_RULE
+    || type === RogueRuleType.CUSTOM_SSID_RULE
+    || type === RogueRuleType.CUSTOM_MAC_OUI_RULE) {
     await screen.findByRole('textbox', {
-      name: /signal threshold/i
+      name: new RegExp(rogueRuleActionMap[type].name)
     })
     await userEvent.type(screen.getByRole('textbox', {
-      name: /signal threshold/i
-    }), '8')
-  }
-
-  if (type === RogueRuleType.CUSTOM_SSID_RULE) {
-    await screen.findByRole('textbox', {
-      name: /ssid/i
-    })
-    await userEvent.type(screen.getByRole('textbox', {
-      name: /ssid/i
-    }), 'ssid123')
-  }
-
-  if (type === RogueRuleType.CUSTOM_MAC_OUI_RULE) {
-    await screen.findByRole('textbox', {
-      name: /mac oui/i
-    })
-    await userEvent.type(screen.getByRole('textbox', {
-      name: /mac oui/i
-    }), '11:22:33')
+      name: new RegExp(rogueRuleActionMap[type].name)
+    }), rogueRuleActionMap[type].value)
   }
 
   fireEvent.change(screen.getByTestId('selectRogueCategory'), {
@@ -227,34 +217,35 @@ const addRule = async (ruleName: string, type: RogueRuleType, classification: Ro
     name: /edit/i
   }))
 
+  // edit the rule and modify the specific field value in CUSTOM_SNR_RULE, CUSTOM_SSID_RULE and CUSTOM_MAC_OUI_RULE
   if (type === RogueRuleType.CUSTOM_SNR_RULE) {
     await screen.findByRole('textbox', {
-      name: /signal threshold/i
+      name: new RegExp(rogueRuleActionMap[type].name)
     })
     await userEvent.type(screen.getByRole('textbox', {
-      name: /signal threshold/i
+      name: new RegExp(rogueRuleActionMap[type].name)
     }), '8')
 
     await userEvent.click(screen.getByText('Save'))
   } else if (type === RogueRuleType.CUSTOM_SSID_RULE) {
     await screen.findByRole('textbox', {
-      name: /ssid/i
+      name: new RegExp(rogueRuleActionMap[type].name)
     })
     await userEvent.type(screen.getByRole('textbox', {
-      name: /ssid/i
+      name: new RegExp(rogueRuleActionMap[type].name)
     }), 'modify')
 
     await userEvent.click(screen.getByText('Save'))
   } else if (type === RogueRuleType.CUSTOM_MAC_OUI_RULE) {
     await screen.findByRole('textbox', {
-      name: /mac oui/i
+      name: new RegExp(rogueRuleActionMap[type].name)
     })
     await userEvent.clear(screen.getByRole('textbox', {
-      name: /mac oui/i
+      name: new RegExp(rogueRuleActionMap[type].name)
     }))
 
     await userEvent.type(screen.getByRole('textbox', {
-      name: /mac oui/i
+      name: new RegExp(rogueRuleActionMap[type].name)
     }), '11:22:55')
 
     await userEvent.click(screen.getByText('Save'))
