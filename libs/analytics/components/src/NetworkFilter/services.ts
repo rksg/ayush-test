@@ -4,7 +4,7 @@ import { dataApi }                             from '@acx-ui/analytics/services'
 import { AnalyticsFilter, defaultNetworkPath } from '@acx-ui/analytics/utils'
 import { NetworkPath, PathNode }               from '@acx-ui/utils'
 
-type NetworkData = PathNode & { path: NetworkPath }
+type NetworkData = PathNode & { id:string, path: NetworkPath }
 type NetworkHierarchyFilter = AnalyticsFilter & { shouldQuerySwitch? : Boolean }
 
 export type ApOrSwitch = {
@@ -39,6 +39,7 @@ export const api = dataApi.injectEndpoints({
                   name
                 }
                 children {
+                  id
                   type
                   name
                   path {
