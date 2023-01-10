@@ -149,6 +149,7 @@ describe('Floor Plan Gallery View', () => {
 
     fireEvent.dragStart(src)
     fireEvent.dragEnter(dst[0])
+    await new Promise((resolve) => setTimeout(resolve, 100))
     fireEvent.drop(dst[0])
     fireEvent.dragLeave(dst[0])
     fireEvent.dragEnd(src)

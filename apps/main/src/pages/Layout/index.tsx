@@ -15,6 +15,9 @@ import { isDelegationMode }          from '@acx-ui/rc/utils'
 import { TenantIdFromJwt }           from '@acx-ui/rc/utils'
 import { getBasePath, Link, Outlet } from '@acx-ui/react-router-dom'
 import { notAvailableMsg }           from '@acx-ui/utils'
+import {
+  CloudMessageBanner
+} from '@acx-ui/rc/components'
 
 import ActivityButton from './Header/ActivityButton'
 import AlarmButton    from './Header/AlarmButton'
@@ -30,7 +33,12 @@ function Layout () {
   return (
     <LayoutComponent
       menuConfig={useMenuConfig()}
-      content={<Outlet />}
+      content={
+        <>
+          <CloudMessageBanner />
+          <Outlet />
+        </>
+      }
       // leftHeaderContent={
       //   <div style={{ width: '40%', display: 'flex', alignItems: 'center' }}>
       //     {/* <RegionButton/>

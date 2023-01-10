@@ -44,7 +44,8 @@ import {
   NetworkDeviceResponse,
   NetworkDevicePayload,
   RogueOldApResponseType,
-  VenueRadioCustomization
+  VenueRadioCustomization,
+  VenueDirectedMulticast
 } from '@acx-ui/rc/utils'
 
 const RKS_NEW_UI = {
@@ -199,6 +200,17 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       transformResponse: (result: CommonResult) => {
         return result.response as NetworkVenue[]
+      }
+    }),
+    getFloorPlan: build.query<FloorPlanDto, RequestPayload>({
+      query: ({ params }) => {
+        const floorPlansReq = createHttpRequest(CommonUrlsInfo.getFloorplan, params)
+        return {
+          ...floorPlansReq
+        }
+      },
+      transformResponse (result: FloorPlanDto) {
+        return result
       }
     }),
     floorPlanList: build.query<FloorPlanDto[], RequestPayload>({
@@ -730,6 +742,23 @@ export const venueApi = baseVenueApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    getVenueDirectedMulticast: build.query<VenueDirectedMulticast, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getVenueDirectedMulticast, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    updateVenueDirectedMulticast: build.mutation<VenueDirectedMulticast, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.updateVenueDirectedMulticast, params)
+        return{
+          ...req,
+          body: payload
+        }
+      }
     })
 
 
@@ -751,6 +780,7 @@ export const {
   useMeshApsQuery,
   useDeleteVenueMutation,
   useGetNetworkApGroupsQuery,
+  useGetFloorPlanQuery,
   useFloorPlanListQuery,
   useDeleteFloorPlanMutation,
   useAddFloorPlanMutation,
@@ -801,5 +831,8 @@ export const {
   useGetVenueApCapabilitiesQuery,
   useUpdateVenueExternalAntennaMutation,
   useGetAvailableLteBandsQuery,
-  useGetVenueApModelCellularQuery
+  useGetVenueApModelCellularQuery,
+  useGetVenueDirectedMulticastQuery,
+  useLazyGetVenueDirectedMulticastQuery,
+  useUpdateVenueDirectedMulticastMutation
 } = venueApi
