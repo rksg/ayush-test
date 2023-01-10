@@ -9,8 +9,9 @@ import { notAvailableMsg }                       from '@acx-ui/utils'
 
 import { ApEditContext } from '../index'
 
-import { LanPorts }      from './LanPorts'
-import { RadioSettings } from './RadioTab/RadioSettings'
+import { DirectedMulticast } from './DirectedMulticast'
+import { LanPorts }          from './LanPorts'
+import { RadioSettings }     from './RadioTab/RadioSettings'
 
 const { TabPane } = Tabs
 
@@ -21,6 +22,7 @@ export function ApSettingsTab () {
   const basePath = useTenantLink(`/devices/wifi/${params.serialNumber}/edit/settings/`)
   const { editContextData, setEditContextData } = useContext(ApEditContext)
   const releaseTag = useIsSplitOn(Features.DEVICES)
+  const supportDirectedMulticast = useIsSplitOn(Features.DIRECTED_MULTICAST)
 
   const onTabChange = (tab: string) => {
     setEditContextData && setEditContextData({
@@ -69,12 +71,11 @@ export function ApSettingsTab () {
         key='proxy'>
         {$t({ defaultMessage: 'mDNS Proxy' })}
       </TabPane>
-      <TabPane disabled={!releaseTag}
-        tab={<Tooltip title={$t(notAvailableMsg)}>
-          {tabTitleMap('multicast')}</Tooltip>}
-        key='multicast'>
-        {$t({ defaultMessage: 'Directed Multicast' })}
-      </TabPane>
+      {supportDirectedMulticast &&
+        <TabPane tab={tabTitleMap('multicast')} key='multicast'>
+          <DirectedMulticast />
+        </TabPane>
+      }
     </Tabs>
   )
 }

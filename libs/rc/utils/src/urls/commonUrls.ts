@@ -139,6 +139,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/service/:serviceId'
   },
+  getFloorplan: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/venue/:venueId/floor-plan/:floorPlanId'
+  },
   getVenueFloorplans: {
     method: 'get',
     url: '/api/tenant/:tenantId/venue/:venueId/floor-plan'
@@ -310,5 +314,9 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getGlobalValues: {
     method: 'get',
     url: '/api/ui/globalValues'
+  },
+  getCloudMessageBanner: {
+    method: 'get',
+    url: '/api/upgrade/tenant/:tenantId/banner'
   }
 }
