@@ -51,14 +51,15 @@ export const mockedDpskPassphraseList = {
       vlanId: 'VLAN-3',
       mac: null,
       numberOfDevices: 2,
-      createdDate: '2022-12-22T14:20:00',
-      expirationDate: '2022-12-26T11:00:00'
+      createdDate: '2022-12-22T14:20:00'
     }
   ],
   totalElements: 3,
   totalPages: 1,
-  page: 0,
-  size: 20,
+  pageable: {
+    pageNumber: 0,
+    pageSize: 10
+  },
   sort: []
 }
 
