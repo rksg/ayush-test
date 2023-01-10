@@ -3,7 +3,6 @@ import { useState } from 'react'
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
 import { Anchor, Tooltip }            from '@acx-ui/components'
-import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 
 import { ConnectedClientsTable }  from '../ConnectedClientsTable'
@@ -29,37 +28,35 @@ export function ClientDualTable () {
   }
 
   return <>
-    {useIsSplitOn(Features.USERS) &&
-    <>
-      <SearchBarDiv>
-        <ClientSearchBar
-          placeHolder={
-            intl.$t({ defaultMessage: 'Search for connected and historical clients...' })}
-          onChange={async (value)=>{
-            if(value.length === 0 || value.length >= 2){
-              setSearchValue(value)
-            }
-          }}
-        />
-        <Tooltip
-          title={<FormattedMessage {...getSearchToolTipText()}
-            values={{
-              div: (contents) => <div>{contents}</div>,
-              ul: (contents) => <ul>{contents}</ul>,
-              li: (contents) => <li>{contents}</li>
-            }}/>}
-          placement='bottom'
-          style={{ gap: '10px' }}
-        >
-          <QuestionMarkCircleOutlined />
-        </Tooltip>
-      </SearchBarDiv>
-      <SearchCountDiv>
-        {searchValue.length >= 2 &&
+    <SearchBarDiv>
+      <ClientSearchBar
+        placeHolder={
+          intl.$t({ defaultMessage: 'Search for connected and historical clients...' })}
+        onChange={async (value)=>{
+          if(value.length === 0 || value.length >= 2){
+            setSearchValue(value)
+          }
+        }}
+      />
+      <Tooltip
+        title={<FormattedMessage {...getSearchToolTipText()}
+          values={{
+            div: (contents) => <div>{contents}</div>,
+            ul: (contents) => <ul>{contents}</ul>,
+            li: (contents) => <li>{contents}</li>
+          }}/>}
+        placement='bottom'
+        style={{ gap: '10px' }}
+      >
+        <QuestionMarkCircleOutlined />
+      </Tooltip>
+    </SearchBarDiv>
+    <SearchCountDiv>
+      {searchValue.length >= 2 &&
           intl.$t({ defaultMessage: 'Search Results: {connectedClientCount} Connected clients | ' },
             { connectedClientCount })
-        }
-        {searchValue.length >= 2 &&
+      }
+      {searchValue.length >= 2 &&
           <Anchor onClick={(e) => e.preventDefault()}>
             <ClientLink
               data-testid='historicalLink'
@@ -67,9 +64,7 @@ export function ClientDualTable () {
               title={intl.$t({ defaultMessage: '{historicalClientCount} Historical clients' },
                 { historicalClientCount })} />
           </Anchor>}
-      </SearchCountDiv>
-    </>
-    }
+    </SearchCountDiv>
     <ConnectedClientsTable
       searchString={searchValue}
       setConnectedClientCount={setConnectedClientCount} />
