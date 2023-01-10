@@ -94,13 +94,6 @@ export default function MacRegistrationListsTable () {
   const MacRegistrationListsTable = () => {
     const tableQuery = useTableQuery({
       useQuery: useMacRegListsQuery,
-      sorter: {
-        sortField: 'name',
-        sortOrder: 'asc'
-      },
-      apiParams: {
-        sort: 'name,asc'
-      },
       defaultPayload: {}
     })
 

@@ -22,7 +22,11 @@ export function MacRegistrationsTab () {
 
   const tableQuery = useTableQuery({
     useQuery: useMacRegistrationsQuery,
-    defaultPayload: {}
+    defaultPayload: {},
+    sorter: {
+      sortField: 'macAddress',
+      sortOrder: 'asc'
+    }
   })
 
   const [

@@ -140,8 +140,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           payload: payload as TableChangePayload
         })
         return {
-          ...poolsReq,
-          params
+          ...poolsReq
         }
       },
       transformResponse (result: NewTableResult<MacRegistrationPool>) {
@@ -150,11 +149,14 @@ export const policyApi = basePolicyApi.injectEndpoints({
       providesTags: [{ type: 'MacRegistrationPool', id: 'LIST' }]
     }),
     macRegistrations: build.query<TableResult<MacRegistration>, RequestPayload>({
-      query: ({ params }) => {
-        const poolsReq = createHttpRequest(MacRegListUrlsInfo.getMacRegistrations, params)
+      query: ({ params, payload }) => {
+        const poolsReq = createNewTableHttpRequest({
+          apiInfo: MacRegListUrlsInfo.getMacRegistrations,
+          params,
+          payload: payload as TableChangePayload
+        })
         return {
-          ...poolsReq,
-          params
+          ...poolsReq
         }
       },
       transformResponse (result: NewTableResult<MacRegistration>) {
@@ -201,15 +203,10 @@ export const policyApi = basePolicyApi.injectEndpoints({
       invalidatesTags: [{ type: 'MacRegistration', id: 'LIST' }]
     }),
     getMacRegList: build.query<MacRegistrationPool, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createNewTableHttpRequest({
-          apiInfo: MacRegListUrlsInfo.getMacRegistrationPool,
-          params,
-          payload: payload as TableChangePayload
-        })
+      query: ({ params }) => {
+        const req = createHttpRequest(MacRegListUrlsInfo.getMacRegistrationPool, params)
         return{
-          ...req,
-          params
+          ...req
         }
       },
       providesTags: [{ type: 'MacRegistrationPool', id: 'DETAIL' }]
