@@ -81,9 +81,9 @@ export const Wrapper = styled.div`
   }
 `
 export const Container = styled.div`
-  flexDirection: 'row',
-  display: 'flex',
-  justifyContent: 'right',
-  marginTop: '-20px',
-  marginRight: '6px'
+  flex-direction: row;
+  display: flex;
+  justify-content: right;
+  margin-top: -20px;
+  margin-right: 6px;
 `
