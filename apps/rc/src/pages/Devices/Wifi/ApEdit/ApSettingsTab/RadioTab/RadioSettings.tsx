@@ -2,9 +2,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useContext, useEffect, useRef, useState } from 'react'
 
-import { Col, Form, Radio, RadioChangeEvent, Row, Switch, Tooltip } from 'antd'
-import { cloneDeep, includes }                                      from 'lodash'
-import { FormattedMessage, useIntl }                                from 'react-intl'
+import { Col, Form, Radio, RadioChangeEvent, Row, Space, Switch, Tooltip } from 'antd'
+import { cloneDeep, includes }                                             from 'lodash'
+import { FormattedMessage, useIntl }                                       from 'react-intl'
 
 import { Button, Loader, StepsForm, StepsFormInstance, Tabs } from '@acx-ui/components'
 import { QuestionMarkCircleOutlined }                         from '@acx-ui/icons'
@@ -284,9 +284,7 @@ export function RadioSettings () {
     }
   }
 
-  const handleUpdateRadioSettings =
-  async (formData: ApRadioCustomization) => {
-
+  const handleUpdateRadioSettings = async (formData: ApRadioCustomization) => {
     const updateRadioParams = (radioParams: any, supportCh: any) => {
       if (!radioParams) {
         return
@@ -303,7 +301,7 @@ export function RadioSettings () {
     }
 
     if (isUseVenueSettings) {
-      deleteApRadio({ params: { tenantId, serialNumber } })
+      await deleteApRadio({ params: { tenantId, serialNumber } })
     } else {
       formData.useVenueSettings = false
       const {
@@ -347,7 +345,7 @@ export function RadioSettings () {
         delete formData.apRadioParamsDual5G
       }
 
-      updateApRadio({
+      await updateApRadio({
         params: { tenantId, serialNumber },
         payload: formData
       })
@@ -445,7 +443,7 @@ export function RadioSettings () {
     })
   }
 
-  const handleChange = () => {
+  const handleChange = async () => {
     setEditContextData({
       ...editContextData,
       tabTitle: $t({ defaultMessage: 'Radio' }),
@@ -460,14 +458,15 @@ export function RadioSettings () {
 
   return (
     <Loader states={[
-      { isLoading: isLoadingApRadioData, isFetching: isUpdatingApRadio || isDeletingApRadio }]}>
+      { isLoading: isLoadingApRadioData,
+        isFetching: isUpdatingApRadio || isDeletingApRadio }]}>
       <StepsForm
         formRef={formRef}
         onFormChange={handleChange}
         onFinish={handleUpdateRadioSettings}
         onCancel={() => navigate({
           ...basePath,
-          pathname: `${basePath.pathname}/wifi`
+          pathname: `${basePath.pathname}/wifi/${serialNumber}/details/overview`
         })}
         buttonLabel={{
           submit: $t({ defaultMessage: 'Apply Radio' })
@@ -476,22 +475,27 @@ export function RadioSettings () {
         <StepsForm.StepForm data-testid='radio-settings'>
           <Row gutter={20}>
             <Col span={12}>
-              { isUseVenueSettings ?
-                <FormattedMessage
-                  defaultMessage={`<p>
-                  Currently using radio settings of the venue (<venuelink></venuelink>)
-                </p>`}
-                  values={{
-                    venuelink: () =>
-                      <TenantLink
-                        to={`venues/${venue.id}/venue-details/overview`}>{venue?.name}
-                      </TenantLink>,
-                    p: (contents) => <p>{contents}</p>
-                  }}
-                />
-                :
-                <span>{$t({ defaultMessage: 'Custom radio settings' })}</span>
-              }
+              <Space style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                fontSize: '14px',
+                paddingBottom: '20px' }}
+              >
+                { isUseVenueSettings ?
+                  <FormattedMessage
+                    defaultMessage={`
+                    Currently using radio settings of the venue (<venuelink></venuelink>)
+                   `}
+                    values={{
+                      venuelink: () =>
+                        <TenantLink
+                          to={`venues/${venue.id}/venue-details/overview`}>{venue?.name}
+                        </TenantLink>
+                    }}
+                  />
+                  :$t({ defaultMessage: 'Custom radio settings' })
+                }
+              </Space>
             </Col>
             <Col span={8}>
               <Button type='link' onClick={handleVenueSetting}>

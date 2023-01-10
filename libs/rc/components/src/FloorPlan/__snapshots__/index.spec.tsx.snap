@@ -336,7 +336,7 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
         style="margin: 0px;"
       />
       <div
-        class="sc-crXcEl iISlpP"
+        class="sc-crXcEl hhzbyG"
       >
         <div
           class="sc-evZas khzpeU"
@@ -393,7 +393,8 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
         </div>
       </div>
       <div
-        class="ant-space ant-space-vertical sc-ksZaOG hjKBLQ"
+        alignbottom="0"
+        class="ant-space ant-space-vertical sc-ksZaOG bLlpPb"
       >
         <div
           class="ant-space-item"

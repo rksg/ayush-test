@@ -453,8 +453,8 @@ export function ApForm () {
       children={selectedVenue?.id
         ? <Space style={{ display: 'flex', justifyContent: 'space-between' }}>
           {$t({ defaultMessage: '{latitude}, {longitude} {status}' }, {
-            latitude: gpsToFixed(deviceGps?.latitude || selectedVenue?.latitude),
-            longitude: gpsToFixed(deviceGps?.longitude || selectedVenue?.longitude),
+            latitude: deviceGps?.latitude || selectedVenue?.latitude,
+            longitude: deviceGps?.longitude || selectedVenue?.longitude,
             status: sameAsVenue ? '(As venue)' : ''
           })}
           <Space size={0} split={<UI.Divider />} >
@@ -653,7 +653,12 @@ function CoordinatesModal (props: {
 }
 
 function getVenueById (venuesList: VenueExtended[], venueId: string) {
-  return venuesList?.filter(item => item.id === venueId)[0] ?? {}
+  const selectVenue = venuesList?.filter(item => item.id === venueId)[0] ?? {}
+
+  return { ...selectVenue,
+    latitude: gpsToFixed(selectVenue?.latitude),
+    longitude: gpsToFixed(selectVenue?.longitude)
+  }
 }
 
 function checkDhcpRoleDisabled (dhcpAp: DhcpApInfo) {
