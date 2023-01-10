@@ -6,9 +6,9 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { AccessControlUrls, CommonUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                          from '@acx-ui/store'
-import { mockServer, render, screen }        from '@acx-ui/test-utils'
+import { AccessControlUrls }          from '@acx-ui/rc/utils'
+import { Provider }                   from '@acx-ui/store'
+import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import Layer3Drawer from './Layer3Drawer'
 
@@ -46,7 +46,7 @@ const queryLayer3 = {
     },
     {
       id: '1ae26f6f061d4f8aa86234d100b4d6d1',
-      name: 'l3-showActivityMsg',
+      name: 'layer3',
       rulesCount: 1,
       networksCount: 0
     }
@@ -58,6 +58,20 @@ const queryLayer3 = {
   totalCount: 6,
   totalPages: 1,
   page: 1
+}
+
+const queryLayer3Update = {
+  ...queryLayer3,
+  data: [
+    ...queryLayer3.data,
+    {
+      id: '6ab1a781711e492eb05a70f9f9ba253a',
+      name: 'layer3-test',
+      rulesCount: 1,
+      networksCount: 0
+    }
+  ],
+  totalCount: 7
 }
 
 const layer3Detail = {
@@ -80,26 +94,7 @@ const layer3Detail = {
 }
 
 const layer3Response = {
-  requestId: '508c529a-0bde-49e4-8179-19366f69f31f',
-  response: {
-    name: 'layer3-n',
-    defaultAccess: 'ALLOW',
-    l3Rules: [
-      {
-        priority: 1,
-        description: 'des',
-        access: 'ALLOW',
-        source: {
-          enableIpSubnet: false
-        },
-        destination: {
-          enableIpSubnet: false
-        },
-        id: '3b19f1117e93499abc97bf3836ae11a8'
-      }
-    ],
-    id: 'e3ad02f52d9e43ee9c4a2b3bb55ea9af'
-  }
+  requestId: '508c529a-0bde-49e4-8179-19366f69f31f'
 }
 
 jest.mock('antd', () => {
@@ -123,7 +118,7 @@ jest.mock('antd', () => {
 
 const anyIpSetting = async () => {
   await userEvent.click(screen.getByRole('button', {
-    name: /add/i
+    name: 'Add'
   }))
 
   await screen.findByText(/add layer 3 rule/i)
@@ -139,7 +134,7 @@ const anyIpSetting = async () => {
 
 const ipSetting = async () => {
   await userEvent.click(screen.getByRole('button', {
-    name: /add/i
+    name: 'Add'
   }))
 
   await screen.findByText(/add layer 3 rule/i)
@@ -184,7 +179,7 @@ const ipSetting = async () => {
 
 const subnetSetting = async () => {
   await userEvent.click(screen.getByRole('button', {
-    name: /add/i
+    name: 'Add'
   }))
 
   await screen.findByText(/add layer 3 rule/i)
@@ -220,7 +215,7 @@ const subnetSetting = async () => {
 describe('Layer3Drawer Component', () => {
   it('Render Layer3Drawer component successfully', async () => {
     mockServer.use(rest.post(
-      CommonUrlsInfo.getL3AclPolicyList.url,
+      AccessControlUrls.getL3AclPolicyList.url,
       (_, res, ctx) => res(
         ctx.json(queryLayer3)
       )
@@ -234,10 +229,7 @@ describe('Layer3Drawer Component', () => {
     render(
       <Provider>
         <Form>
-          <div data-testid={'sssss'}>
-            <Layer3Drawer />
-          </div>
-          {/*<Layer3Drawer />*/}
+          <Layer3Drawer />
         </Form>
       </Provider>, {
         route: {
@@ -246,7 +238,9 @@ describe('Layer3Drawer Component', () => {
       }
     )
 
-    await userEvent.click(screen.getByText(/add new/i))
+    await screen.findByRole('option', { name: 'l3-010' })
+
+    await userEvent.click(screen.getByText('Add New'))
 
     await screen.findByText(/layer 3 settings/i)
 
@@ -254,11 +248,11 @@ describe('Layer3Drawer Component', () => {
 
     await userEvent.type(screen.getByRole('textbox', {
       name: /policy name:/i
-    }), 'l3-010')
+    }), 'layer3')
 
     await userEvent.type(screen.getByRole('textbox', {
       name: /policy name:/i
-    }), 'layer3-test')
+    }), '-test')
 
     await anyIpSetting()
     await ipSetting()
@@ -275,28 +269,45 @@ describe('Layer3Drawer Component', () => {
     await userEvent.click(screen.getByText('IP: 11:11:11:11:11:11/255.255.0.0'))
 
     await userEvent.click(screen.getByRole('button', {
-      name: /move up/i
+      name: /edit/i
     }))
 
-    await userEvent.click(screen.getByText('IP: 11:11:11:11:11:11/255.255.0.0'))
+    await screen.findByText(/edit layer 3 rule/i)
 
-    await userEvent.click(screen.getByRole('button', {
-      name: /move down/i
-    }))
+    await userEvent.type(screen.getByRole('textbox', {
+      name: /description/i
+    }), '-ruleDescription')
 
-    await userEvent.click(screen.getByText('IP: 11:11:11:11:11:11/255.255.0.0'))
+    await userEvent.click(screen.getAllByText('Save')[1])
+
+    await userEvent.click(screen.getByText('layer3-test-desc-subnet-ruleDescription'))
 
     await userEvent.click(screen.getByRole('button', {
       name: /delete/i
     }))
 
+    await screen.findByText(/delete rule/i)
+
+    await userEvent.click(screen.getByRole('button', {
+      name: /delete rule/i
+    }))
+
     await userEvent.click(screen.getAllByText('Save')[0])
+
+    mockServer.use(rest.post(
+      AccessControlUrls.getL3AclPolicyList.url,
+      (_, res, ctx) => res(
+        ctx.json(queryLayer3Update)
+      )
+    ))
+
+    await screen.findByRole('option', { name: 'layer3-test' })
 
   })
 
   it('Render Layer3Drawer component in viewMode successfully', async () => {
     mockServer.use(rest.post(
-      CommonUrlsInfo.getL3AclPolicyList.url,
+      AccessControlUrls.getL3AclPolicyList.url,
       (_, res, ctx) => res(
         ctx.json(queryLayer3)
       )

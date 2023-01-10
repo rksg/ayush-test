@@ -240,9 +240,7 @@ describe('DeviceOSDrawer Component', () => {
 
     await userEvent.click(screen.getAllByText('Save')[1])
 
-    await userEvent.click(screen.getByRole('cell', {
-      name: /rule1/i
-    }))
+    await userEvent.click(screen.getByText(/rule1/i))
 
     await userEvent.click(screen.getByRole('button', {
       name: /edit/i

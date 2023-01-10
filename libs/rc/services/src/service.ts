@@ -120,56 +120,6 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       }
     }),
-    l2AclPolicyList: build.query<TableResult<L2AclPolicy>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const l2AclPolicyListReq = createHttpRequest(
-          CommonUrlsInfo.getL2AclPolicyList,
-          params
-        )
-        return {
-          ...l2AclPolicyListReq,
-          body: payload
-        }
-      },
-      providesTags: [{ type: 'Service', id: 'LIST' }],
-      async onCacheEntryAdded (requestArgs, api) {
-        await onSocketActivityChanged(requestArgs, api, (msg) => {
-          const params = requestArgs.params as { requestId: string }
-          if (params.requestId) {
-            showActivityMessage(msg, [
-              'AddL2AclPolicy'
-            ],() => {
-              api.dispatch(serviceApi.util.invalidateTags([{ type: 'Service', id: 'LIST' }]))
-            }, params.requestId as string)
-          }
-        })
-      }
-    }),
-    l3AclPolicyList: build.query<TableResult<L3AclPolicy>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const l3AclPolicyListReq = createHttpRequest(
-          CommonUrlsInfo.getL3AclPolicyList,
-          params
-        )
-        return {
-          ...l3AclPolicyListReq,
-          body: payload
-        }
-      },
-      providesTags: [{ type: 'Service', id: 'LIST' }],
-      async onCacheEntryAdded (requestArgs, api) {
-        await onSocketActivityChanged(requestArgs, api, (msg) => {
-          const params = requestArgs.params as { requestId: string }
-          if (params.requestId) {
-            showActivityMessage(msg, [
-              'AddL3AclPolicy'
-            ],() => {
-              api.dispatch(serviceApi.util.invalidateTags([{ type: 'Service', id: 'LIST' }]))
-            }, params.requestId as string)
-          }
-        })
-      }
-    }),
     devicePolicyList: build.query<TableResult<DevicePolicy>, RequestPayload>({
       query: ({ params, payload }) => {
         const devicePolicyListReq = createHttpRequest(
@@ -699,8 +649,6 @@ export const serviceApi = baseServiceApi.injectEndpoints({
 
 export const {
   useCloudpathListQuery,
-  useL2AclPolicyListQuery,
-  useL3AclPolicyListQuery,
   useApplicationPolicyListQuery,
   useServiceListQuery,
   useGetDHCPProfileQuery,
