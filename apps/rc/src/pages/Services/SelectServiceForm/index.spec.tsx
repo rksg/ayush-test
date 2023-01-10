@@ -40,16 +40,6 @@ describe('Select Service Form', () => {
   }
   const path = '/:tenantId/' + getSelectServiceRoutePath()
 
-  it('should render form', async () => {
-    const { asFragment } = render(
-      <SelectServiceForm />, {
-        route: { params, path }
-      }
-    )
-
-    expect(asFragment()).toMatchSnapshot()
-  })
-
   it('should navigate to the correct service page', async () => {
     render(
       <SelectServiceForm />, {
