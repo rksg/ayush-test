@@ -7,7 +7,7 @@ import _                                                           from 'lodash'
 import { Button, Modal, Tabs, Tooltip } from '@acx-ui/components'
 import {
   SwitchVlan,
-  // PortSetting,
+  PortSetting,
   Vlan
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
@@ -22,7 +22,7 @@ export function SelectVlanModal (props: {
   selectModalvisible: boolean,
   setSelectModalvisible: (visible: boolean) => void,
   setUseVenueSettings: (useVenue: boolean) => void,
-  onValuesChange: (values: any) => void,
+  onValuesChange: (values: Partial<PortSetting>) => void,
   defaultVlan: string,
   switchVlans: SwitchVlan[],
   venueVlans: Vlan[],
@@ -48,13 +48,13 @@ export function SelectVlanModal (props: {
   const [displayTaggedVlan, setDisplayTaggedVlan] = useState([] as CheckboxOptionType[])
   const [displayUntaggedVlan, setDisplayUntaggedVlan] = useState([] as CheckboxOptionType[])
 
-  const onOk = () => {
+  const onOk = async () => {
     form.setFieldsValue({
       ...form.getFieldsValue(),
       taggedVlans: selectTaggedVlans.toString(),
       untaggedVlan: selectUntaggedVlans
     })
-    onValuesChange({ untaggedVlan: selectUntaggedVlans }) ////
+    await onValuesChange({ untaggedVlan: Number(selectUntaggedVlans) })
     setUseVenueSettings(false)
     setSelectModalvisible(false)
   }
@@ -74,7 +74,7 @@ export function SelectVlanModal (props: {
       return {
         label: $t({ defaultMessage: 'VLAN-ID-{vlan} {extra}' }, { vlan: v.vlanId, extra }),
         value: v.vlanId.toString(),
-        disabled: isUntagged ///
+        disabled: isUntagged
       }
     })
 

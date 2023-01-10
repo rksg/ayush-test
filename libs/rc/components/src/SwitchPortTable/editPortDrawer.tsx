@@ -33,24 +33,37 @@ import {
   useSavePortsSettingMutation
 } from '@acx-ui/rc/services'
 import {
-  getPortSpeedOptions,
   LldpQosModel,
   poeBudgetRegExp,
   PORT_SPEED,
   SwitchPortViewModel,
-  SwitchAclUnion,
-  SwitchDefaultVlan,
-  // SwitchVlans,
   SwitchVlanUnion,
   PortSetting,
-  PortsSetting,
   Vlan
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 import { store }     from '@acx-ui/store'
 import { getIntl }   from '@acx-ui/utils'
 
-import { EditLldpModal }   from './editLldpModal'
+import { EditLldpModal } from './editLldpModal'
+import {
+  checkVlanOptions,
+  checkLldpListEqual,
+  handlePortSpeedFor765048F,
+  getAclOptions,
+  getAllSwitchVlans,
+  getFormItemLayout,
+  getInitPortVlans,
+  getMultipleVlanValue,
+  getOverrideFields,
+  getPoeCapabilityDisabled,
+  getPortEditStatus,
+  getPortSpeed,
+  getVlanOptions,
+  sortOptions, ///
+  PortVlan,
+  MultipleText
+} from './editPortDrawer.utils'
 import { LldpQOSTable }    from './lldpQOSTable'
 import { SelectVlanModal } from './selectVlanModal'
 import * as UI             from './styledComponents'
@@ -219,7 +232,7 @@ export function EditPortDrawer ({
   const [lldpModalvisible, setLldpModalvisible] = useState(false)
   const [hasMultipleValue, setHasMultipleValue] = useState([] as string[])
   const [disableSaveButton, setDisableSaveButton] = useState(false)
-  const [initPortVlans, setInitPortVlans] = useState([] as any)
+  const [initPortVlans, setInitPortVlans] = useState([] as PortVlan[])
 
   const [getPortSetting] = useLazyGetPortSettingQuery()
   const [getPortsSetting] = useLazyGetPortsSettingQuery()
@@ -323,91 +336,15 @@ export function EditPortDrawer ({
       setSwitchVlans(switchVlans)
       setVenueVlans(vlansByVenue)
       setAclsOptions(getAclOptions(aclUnion))
-
       setHasSwitchProfile(!!switchProfile?.length) // move utils
       setProfileDefaultVlan(profileDefaultVlan)
       setDisabledUseVenueSetting(await getUseVenueSettingDisabled(profileDefaultVlan))
-
-      if (isMultipleEdit) {
-        const portsSetting = await getMultiplePortsSetting()
-        const vlansValue = getMultipleVlanValue(
-          selectedPorts, vlansByVenue, portsSetting, defaultVlan, switchesDefaultVlan
-        )
-        const hasMultipleValueFields = allMultipleEditableFields?.filter(field => {
-          const isEqualValues = field === 'lldpQos'
-            ? checkLldpListEqual(portsSetting?.response?.map(s => s[field]))
-            : _.uniq(portsSetting?.response?.map(s => s[field as keyof PortSetting])
-            )?.length === 1
-
-          if (isEqualValues) {
-            field === 'lldpQos'
-              ? setLldpQosList(portsSetting?.response?.[0]?.lldpQos)
-              : form.setFieldValue(
-                field, portsSetting?.response?.[0]?.[field as keyof PortSetting]
-              )
-          }
-          return !isEqualValues && field
-        })
-
-        const poeCapabilityDisabled = getPoeCapabilityDisabled(portsSetting?.response)
-
-        setDisablePoeCapability(poeCapabilityDisabled)
-        setHasMultipleValue(hasMultipleValueFields)
-        setInitPortVlans(vlansValue?.initPortVlans)
-        setDisableSaveButton(true)
-        form.setFieldValue('taggedVlans', vlansValue.tagged)
-        form.setFieldValue('untaggedVlan', vlansValue.untagged || defaultVlan)
-        // form.setFieldValue('poeEnable', poeCapabilityDisabled ? false : )
-        // poeCapabilityDisabled ? form.setFieldValue('poeEnable', false) : null ///???
-
-      } else {
-        const portSetting = await getPortSetting({
-          params: { tenantId, serialNumber, portIdentifier: selectedPorts?.[0]?.portIdentifier }
-        }, true).unwrap()
-        const requestPort = selectedPorts?.[0]?.portIdentifier?.split('/').slice(1, 3).join('/') ////
-        const taggedVlansByVenue = await getTaggedVlansByVenue({
-          params: {
-            tenantId, venueId: switchDetail?.venueId,
-            model: selectedPorts?.[0]?.switchModel, port: `1/${requestPort}`
-          }
-        }, true).unwrap()
-        const untaggedVlansByVenue = await getUntaggedVlansByVenue({
-          params: {
-            tenantId, venueId: switchDetail?.venueId,
-            model: selectedPorts?.[0]?.switchModel, port: `1/${requestPort}`
-          }
-        }, true).unwrap()
-
-        setEditPortData(portSetting)
-        setDisablePoeCapability(getPoeCapabilityDisabled([portSetting]))
-        setLldpQosList(portSetting.lldpQos || [])
-        // setIsPoeEnable(portSetting.poeEnable)
-        // setRevertStatus(portSetting.revert)
-        setPortEditStatus(portSetting.revert ? 'venue' : 'port')
-        setUseVenueSettings(
-          portSetting.revert && !(portSetting?.taggedVlans && portSetting.untaggedVlan)
-        )
-        setVenueTaggedVlans(taggedVlansByVenue)
-        setVenueUntaggedVlan(untaggedVlansByVenue)
-
-        setInitPortVlans([{ //////
-          tagged: (portSetting.taggedVlans ?? '').toString(),
-          untagged: (portSetting.untaggedVlan ?? '').toString(),
-          voice: portSetting?.voiceVlan,
-          isDefaultVlan: false ////
-        }])
-
-        form.setFieldsValue({
-          ...portSetting,
-          poeEnable: portSetting.poeCapability ? portSetting.poeEnable : false,
-          poeBudget: portSetting.poeBudget === 0 ? '' : portSetting.poeBudget,
-          portSpeed: portSpeed.find(item => item === portSetting.portSpeed)
-            ? portSetting.portSpeed : portSpeed?.[0],
-          taggedVlans: (portSetting.taggedVlans ?? '').toString()
-        })
-      }
-
       setVlansOptions(getVlanOptions(switchVlans, defaultVlan, voiceVlan))
+
+      isMultipleEdit
+        ? await getMultiplePortsValue(vlansByVenue)
+        : await getSinglePortValue(portSpeed)
+
       setLoading(false)
     }
 
@@ -416,6 +353,80 @@ export function EditPortDrawer ({
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedPorts, switchDetail, switchesDefaultVlan, visible]) // []
+
+  const getSinglePortValue = async (portSpeed: string[]) => {
+    const portSetting = await getPortSetting({
+      params: { tenantId, serialNumber, portIdentifier: selectedPorts?.[0]?.portIdentifier }
+    }, true).unwrap()
+    const requestPort = selectedPorts?.[0]?.portIdentifier?.split('/').slice(1, 3).join('/') ////
+    const taggedVlansByVenue = await getTaggedVlansByVenue({
+      params: {
+        tenantId, venueId: switchDetail?.venueId,
+        model: selectedPorts?.[0]?.switchModel, port: `1/${requestPort}`
+      }
+    }, true).unwrap()
+    const untaggedVlansByVenue = await getUntaggedVlansByVenue({
+      params: {
+        tenantId, venueId: switchDetail?.venueId,
+        model: selectedPorts?.[0]?.switchModel, port: `1/${requestPort}`
+      }
+    }, true).unwrap()
+
+    setEditPortData(portSetting)
+    setDisablePoeCapability(getPoeCapabilityDisabled([portSetting]))
+    setLldpQosList(portSetting.lldpQos || [])
+    // setIsPoeEnable(portSetting.poeEnable)
+    // setRevertStatus(portSetting.revert)
+    setPortEditStatus(portSetting.revert ? 'default' : 'port')
+    setUseVenueSettings(
+      portSetting.revert && !(portSetting?.taggedVlans && portSetting.untaggedVlan)
+    )
+    setVenueTaggedVlans(taggedVlansByVenue)
+    setVenueUntaggedVlan(untaggedVlansByVenue)
+    setInitPortVlans(getInitPortVlans( [portSetting], defaultVlan ))
+
+    form.setFieldsValue({
+      ...portSetting,
+      poeEnable: portSetting.poeCapability ? portSetting.poeEnable : false,
+      poeBudget: portSetting.poeBudget === 0 ? '' : portSetting.poeBudget,
+      portSpeed: portSpeed.find(item => item === portSetting.portSpeed)
+        ? portSetting.portSpeed : portSpeed?.[0],
+      taggedVlans: (portSetting.taggedVlans ?? '').toString()
+    })
+  }
+
+  const getMultiplePortsValue = async (vlansByVenue: Vlan[]) => {
+    const portsSetting = await getMultiplePortsSetting()
+    const vlansValue = getMultipleVlanValue(
+      selectedPorts, vlansByVenue, portsSetting, defaultVlan, switchesDefaultVlan
+    )
+    const poeCapabilityDisabled = getPoeCapabilityDisabled(portsSetting?.response)
+    const hasMultipleValueFields = allMultipleEditableFields?.filter(field => {
+      const isEqualValues = field === 'lldpQos'
+        ? checkLldpListEqual(portsSetting?.response?.map(s => s[field]))
+        : _.uniq(portsSetting?.response?.map(s => s[field as keyof PortSetting])
+        )?.length === 1
+
+      if (isEqualValues) {
+        field === 'lldpQos'
+          ? setLldpQosList(portsSetting?.response?.[0]?.lldpQos)
+          : form.setFieldValue(
+            field, portsSetting?.response?.[0]?.[field as keyof PortSetting]
+          )
+      }
+      return !isEqualValues && field
+    })
+
+    setDisablePoeCapability(poeCapabilityDisabled)
+    setHasMultipleValue(hasMultipleValueFields)
+    setInitPortVlans(vlansValue?.initPortVlans)
+    setPortEditStatus('port')
+    setDisableSaveButton(true)
+    form.setFieldValue('taggedVlans', vlansValue.tagged)
+    form.setFieldValue('untaggedVlan', vlansValue.untagged || defaultVlan)
+    // form.setFieldValue('poeEnable', poeCapabilityDisabled ? false : )
+    // poeCapabilityDisabled ? form.setFieldValue('poeEnable', false) : null ///???
+  }
 
   const getFieldTooltip = (field: string) => {
     switch (field) {
@@ -575,22 +586,35 @@ export function EditPortDrawer ({
     setUseVenueSettings(true)
     setPortEditStatus('venue')
 
+    // console.log('onApplyVenueSettings: ', portVlansCheckbox, taggedVlans, untaggedVlan )
     // if (this.portVlanCheck) {
     //   this.checkPortsVlan();
+    // } else {
+    // const defaultVlan = this.profileDefaultVlan;
+    // const untaggedVlan = this.untaggedVlanByVenue || defaultVlan;
+    // if (untaggedVlan === defaultVlan && !this.taggedVlansByVenue) { ///
+    //   // Venue no setting, revert to default
+    //   this.setLabelStatus('default', true);
     // }
+    // this.setVlans(untaggedVlan, this.taggedVlansByVenue);
+    // }
+    if (portVlansCheckbox) {
+      // this.checkPortsVlan();
+    } else {
+      const untaggedVlan = venueUntaggedVlan || defaultVlan
+      setPortEditStatus(
+        (untaggedVlan === defaultVlan) && !venueTaggedVlans ? 'default' : 'venue'
+      )
+    }
 
     form.setFieldsValue({
       ...form.getFieldsValue(),
       taggedVlans: venueTaggedVlans.toString(),
       untaggedVlan: venueUntaggedVlan?.toString() || profileDefaultVlan
     })
-    // if (untaggedVlan === defaultVlan && !this.taggedVlansByVenue) {
-    //   // Venue no setting, revert to default
-    //   this.setLabelStatus('default', true);
-    // }
   }
 
-  const onValuesChange = async (changedValues: PortSetting) => {
+  const onValuesChange = async (changedValues: Partial<PortSetting>) => {
     const changedField = Object.keys(changedValues)?.[0]
     const changedValue = Object.values(changedValues)?.[0]
 
@@ -605,9 +629,10 @@ export function EditPortDrawer ({
 
     const updateVlanOptions = () => {
       const oldOptions = getVlanOptions(switchVlans, defaultVlan, voiceVlan)
-      const options = initPortVlans?.map((p:any) =>
+      const options = initPortVlans?.map(p =>
         checkVlanOptions(oldOptions, untaggedVlan, taggedVlans, p))
       const newOptions = _.intersection(...options)
+
       setVlansOptions(newOptions as DefaultOptionType[])
       if (voiceVlan && (oldOptions.length > newOptions.length)) {
         form.setFieldValue('voiceVlan', '')
@@ -636,6 +661,8 @@ export function EditPortDrawer ({
       // case 'portVlansCheckbox':
       case 'untaggedVlan': //
       case 'taggedVlans': //
+        const tagged = form.getFieldValue('taggedVlans')
+        setPortEditStatus(tagged ? 'port' : (!!venueTaggedVlans.length ? 'venue' : 'default'))
         updateVlanOptions()
         break
       default:
@@ -872,16 +899,7 @@ export function EditPortDrawer ({
               }
               {(!isMultipleEdit || portVlansCheckbox) &&
                 <Space size={24}>
-                  <Space style={{ fontSize: '12px' }}>{
-                    // isMultipleEdit
-                    //   ? ()
-                    //   : !useVenueSettings ?
-                    //     ? $t({ defaultMessage: 'Default' })
-                    //     : $t({ defaultMessage: 'Port level override' })
-                    useVenueSettings ////// $t({ defaultMessage: 'Applied at venue' })
-                      ? $t({ defaultMessage: 'Default' })
-                      : $t({ defaultMessage: 'Port level override' })
-                  }</Space>
+                  <Space style={{ fontSize: '12px' }}>{getPortEditStatus(portEditStatus)}</Space>
                   <Space size={0} split={<UI.Divider />}>
                     <Button type='link'
                       key='edit'
@@ -1330,243 +1348,4 @@ export function EditPortDrawer ({
     </Loader>}
     width={'590px'}
   />
-}
-
-function MultipleText () {
-  const { $t } = getIntl()
-  // TODO: check style
-  return <Space style={{ fontSize: '12px', color: cssStr('--acx-accents-orange-50') }}>
-    {$t({ defaultMessage: 'Multiple values' })}
-  </Space>
-}
-
-function getFormItemLayout (isMultipleEdit: boolean) {
-  return isMultipleEdit && {
-    labelCol: { span: 10 },
-    wrapperCol: { span: 16 },
-    style: { width: '75%' }
-  }
-}
-
-function getPortSpeed (selectedPorts: SwitchPortViewModel[]) {
-  const portsSpeedOptions = selectedPorts.map((item: SwitchPortViewModel) => {
-    return getPortSpeedOptions(item.switchModel, item.portIdentifier)
-  })
-
-  return _.intersection(...portsSpeedOptions) as string[]
-}
-
-function getAclOptions (acls?: SwitchAclUnion) {
-  const { $t } = getIntl()
-  const options = Object.values(acls ?? {}).flat()?.map((acl: string) => ({
-    label: acl, value: acl, disabled: false
-  }))
-
-  return [
-    { label: $t({ defaultMessage: 'None' }), value: '', disabled: false },
-    ...sortOptions(options)
-  ] as DefaultOptionType[]
-}
-
-function getVlanOptions (vlans: SwitchVlanUnion, defaultVlan: string, extra?: number) {
-  const { $t } = getIntl()
-  const allVlans = getAllSwitchVlans(vlans)
-  const options = allVlans?.map((v) => ({
-    value: v.vlanId,
-    label: $t({ defaultMessage: 'VLAN-{vlan}' }, { vlan: v.vlanId })
-  })) ?? []
-
-  const defaultOption = defaultVlan ? {
-    value: defaultVlan,
-    label: $t({ defaultMessage: 'VLAN-{vlan}  (Default VLAN)' }, { vlan: defaultVlan })
-  } : {
-    value: $t({ defaultMessage: 'Default VLAN (Multiple values)' }),
-    label: $t({ defaultMessage: 'Default VLAN (Multiple values)' })
-  }
-
-  // handle voice VLAN doesn't exist in switch VLANs
-  const isVoiceVlanExist = !!(options.filter(item => item.value === extra).length)
-  const extraVlanOption = extra && (extra !== Number(defaultVlan)) && !isVoiceVlanExist
-    ? [{ value: extra, label: `VLAN-${extra}`, disabled: true }] : []
-
-  return [
-    { label: $t({ defaultMessage: 'Select VLAN...' }), value: '' },
-    defaultOption,
-    ...sortOptions(options),
-    ...extraVlanOption
-  ]
-}
-
-function getAllSwitchVlans (vlans: SwitchVlanUnion) {
-  const allVlans = _.pickBy(vlans, (value, key) => key !== 'switchDefaultVlan')
-  return Object.values(allVlans).flat()
-}
-
-function checkVlanOptions (
-  vlanOptions:DefaultOptionType[],
-  untaggedVlan:string,
-  taggedVlans:string,
-  init:any
-) {
-  if (init?.voice) {
-    if (init?.untagged === init?.voice.toString() && untaggedVlan !== init?.voice.toString()) {
-      vlanOptions = vlanOptions.filter(item => item.value !== Number(init?.voice))
-      if (init?.isDefaultVlan) {
-        vlanOptions = vlanOptions.filter(item => item.value !== 'Default VLAN (Multiple values)')
-      }
-    }
-    if (init?.tagged.indexOf(init?.voice) !== -1) {
-      const tagArray = taggedVlans?.split(',') ?? []
-      if (tagArray.indexOf(init?.voice) === -1) {
-        vlanOptions = vlanOptions.filter(item => item.value !== Number(init?.voice))
-        if (init?.isDefaultVlan) {
-          vlanOptions = vlanOptions.filter(item => item.value !== 'Default VLAN (Multiple values)')
-        }
-      }
-    }
-  }
-  return vlanOptions
-}
-
-function checkLldpListEqual (lldpList: LldpQosModel[][]) { // TODO
-  let isEqual = true
-  const sortByFields = ['applicationType', 'qosVlanType', 'vlanId', 'priority', 'dscp']
-  const list = lldpList.map(l =>
-    _.sortBy(l?.map(v => _.omit(v, ['id'])), sortByFields)
-  )
-  // const isArrayEqual = (x:any, y:any) => _(x).xorWith(y, _.isEqual).isEmpty()
-  // const aa =  list.map(l => JSON.stringify(l))
-
-  list.forEach((l, index) => {
-    if (index !== (list.length -1) && !_.isEqual(list[index], list[index+1])) {
-      isEqual = false
-    }
-  })
-
-  return isEqual
-}
-
-function getPoeCapabilityDisabled (portSettings: PortSetting[]) {
-  return portSettings?.filter(s => !s.poeCapability)?.length > 1
-}
-
-function getOverrideFields (fieldsValue: PortSetting) {
-  return Object.entries(fieldsValue)
-    .filter(v => v?.[1] && v?.[0].includes('Checkbox'))
-    .map(v => v?.[0].split('Checkbox')?.[0])
-}
-
-function sortOptions (dataList: DefaultOptionType[], sortField = 'value') {
-  return dataList?.[0]?.[sortField]
-    ? _.sortBy(dataList, [sortField])
-    : _.sortBy(dataList)
-}
-
-function isPortOverride (portSetting: PortSetting) {
-  if (portSetting.revert === false) {
-    if (portSetting.hasOwnProperty('taggedVlans') || portSetting.hasOwnProperty('untaggedVlan')) {
-      return true
-    }
-  }
-  return false
-}
-
-function getMultipleVlanValue ( // TODO: rewrite
-  selectedPorts: SwitchPortViewModel[],
-  vlans: Vlan[],
-  portsSetting: PortsSetting,
-  defaultVlan: string,
-  switchesDefaultVlan?: SwitchDefaultVlan[]
-) {
-  const ports = selectedPorts?.map((p) => p.portIdentifier)
-  const initPortVlans = [] as {
-    tagged: string[]
-    untagged: string[]
-    voice: string | number
-    isDefaultVlan: boolean
-  }[]
-  const result = {
-    tagged: new Array(ports.length).fill(undefined),
-    untagged: new Array(ports.length).fill(undefined),
-    voice: portsSetting?.response.map(p => p.voiceVlan)
-  }
-
-  const portsProfileVlans = {
-    tagged: new Array(ports.length).fill(undefined),
-    untagged: new Array(ports.length).fill(undefined)
-  }
-
-  // Check Vlan
-  vlans.filter(v => v.switchFamilyModels)
-    .forEach((item: Vlan) => {
-      selectedPorts.forEach((p, index: number) => {
-        const requestPort = '1' + p.portIdentifier.slice(1)
-        const model = item?.switchFamilyModels?.find(i => i.model === p.switchModel) ?? false
-        if (model) {
-          if (model.taggedPorts && model.taggedPorts.split(',').includes(requestPort)) { //check here
-            const vlanId = item.vlanId.toString()
-            if (!result.tagged[index]) {
-              result.tagged[index] = [vlanId]
-              portsProfileVlans.tagged[index] = [vlanId]
-            } else {
-              result.tagged[index].push(vlanId)
-              portsProfileVlans.tagged[index].push(vlanId)
-            }
-          }
-          if (model.untaggedPorts && model.untaggedPorts.split(',').includes(requestPort)) {
-            result.untagged[index] = item.vlanId
-            portsProfileVlans.untagged[index] = item.vlanId
-          }
-        }
-      })
-    })
-  // Check port
-  portsSetting?.response?.forEach((item: PortSetting) => {
-    selectedPorts.forEach((p: SwitchPortViewModel, index: number) => {
-      if (item.port === p.portIdentifier && item.switchMac === p.switchSerial) {
-        if (isPortOverride(item)) {
-          result.tagged[index] = item.taggedVlans
-          result.untagged[index] = item.untaggedVlan
-        } else {
-          // default
-          if (!result.tagged[index]) {
-            result.tagged[index] = ''
-          }
-          if (!result.untagged[index]) {
-            result.untagged[index]
-              = switchesDefaultVlan?.filter(s => s.switchId === item.switchMac)?.[0]?.defaultVlanId
-          }
-        }
-      }
-    })
-  })
-
-  portsSetting?.response?.forEach((item: PortSetting, index: number) => {
-    const defaultVlan = switchesDefaultVlan?.filter(
-      s => s.switchId === item.switchMac)?.[0]?.defaultVlanId
-
-    initPortVlans.push({ ////
-      untagged: result.untagged[index],
-      tagged: result.tagged[index] || [],
-      voice: item.voiceVlan,
-      isDefaultVlan: item.voiceVlan === defaultVlan
-    })
-  })
-
-  const untagEqual = _.uniq(result.untagged)?.length <= 1
-  const tagEqual = _.uniq(result.tagged)?.length <= 1
-  const voiceVlanEqual = _.uniq(result.voice)?.length <= 1
-
-  return {
-    tagged: tagEqual ? result.tagged?.[0] : null,
-    untagged: untagEqual ? result.untagged?.[0] : (defaultVlan ?? 'Default VLAN (Multiple values)'),
-    voice: voiceVlanEqual ? result.voice?.[0] : '',
-    initPortVlans: initPortVlans
-  }
-}
-
-function handlePortSpeedFor765048F (selectedPorts: SwitchPortViewModel[]) {
-  return selectedPorts
-    .filter(p => p.switchModel === 'ICX7650-48F')
-    .map(p => Number(p?.portIdentifier?.split('/')?.pop()) < 25)?.length > 0
 }

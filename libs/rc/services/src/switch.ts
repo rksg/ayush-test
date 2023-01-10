@@ -155,7 +155,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
-    getTaggedVlansByVenue: build.query<any, RequestPayload>({
+    getTaggedVlansByVenue: build.query<string[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(SwitchUrlsInfo.getTaggedVlansByVenue, params)
         return {
@@ -163,7 +163,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
-    getUntaggedVlansByVenue: build.query<any, RequestPayload>({
+    getUntaggedVlansByVenue: build.query<string, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(SwitchUrlsInfo.getUntaggedVlansByVenue, params)
         return {
