@@ -18,7 +18,7 @@ export default function PortalInstancesTable (){
     defaultPayload: {
       fields: ['name', 'id', 'captiveType', 'nwSubType', 'venues', 'clients'],
       filters: {
-        id: data?.networkIds
+        id: data?.networkIds?.length? data?.networkIds : ['none']
       },
       sortField: 'name',
       sortOrder: 'ASC'
@@ -30,7 +30,7 @@ export default function PortalInstancesTable (){
       tableQuery.setPayload({
         ...tableQuery.payload,
         filters: {
-          id: data?.networkIds
+          id: data?.networkIds?.length? data?.networkIds : ['none']
         }
       })
     }

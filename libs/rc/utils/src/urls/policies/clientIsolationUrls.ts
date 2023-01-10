@@ -5,20 +5,20 @@ export const ClientIsolationUrls: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/clientIsolationPolicyProfiles'
   },
+  getClientIsolation: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/clientIsolationPolicyProfiles/:policyId'
+  },
   updateClientIsolation: {
     method: 'put',
     url: '/api/tenant/:tenantId/wifi/clientIsolationPolicyProfiles/:policyId'
   },
-  getClientIsolation: {
-    method: 'get',
+  deleteClientIsolation: {
+    method: 'delete',
     url: '/api/tenant/:tenantId/wifi/clientIsolationPolicyProfiles/:policyId'
   },
   getClientIsolationList: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/clientIsolationPolicyProfiles'
-  },
-  deleteClientIsolation: {
-    method: 'delete',
-    url: '/api/tenant/:tenantId/wifi/clientIsolationPolicyProfiles/:policyId'
   }
 }

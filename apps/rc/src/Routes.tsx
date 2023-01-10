@@ -29,6 +29,7 @@ import ApsTable                   from './pages/Devices/Wifi/ApsTable'
 import NetworkDetails             from './pages/Networks/NetworkDetails/NetworkDetails'
 import NetworkForm                from './pages/Networks/NetworkForm/NetworkForm'
 import NetworksTable              from './pages/Networks/NetworksTable'
+import ClientIsolationForm        from './pages/Policies/ClientIsolation/ClientIsolationForm/ClientIsolationForm'
 import MacRegistrationListDetails
   from './pages/Policies/MacRegistrationList/MacRegistrarionListDetails/MacRegistrarionListDetails'
 import MacRegistrationListsTable  from './pages/Policies/MacRegistrationList/MacRegistrarionListTable'
@@ -42,6 +43,7 @@ import DHCPDetail               from './pages/Services/DHCP/DHCPDetail'
 import DHCPForm                 from './pages/Services/DHCP/DHCPForm/DHCPForm'
 import DpskDetails              from './pages/Services/Dpsk/DpskDetail/DpskDetails'
 import DpskForm                 from './pages/Services/Dpsk/DpskForm/DpskForm'
+import DpskTable                from './pages/Services/Dpsk/DpskTable/DpskTable'
 import MdnsProxyDetail          from './pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail'
 import MdnsProxyForm            from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
 import NetworkSegmentationForm  from './pages/Services/NetworkSegmentationForm/NetworkSegmentationForm'
@@ -184,6 +186,10 @@ function ServiceRoutes () {
         element={<DHCPDetail/>}
       />
       <Route
+        path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST })}
+        element={<DpskTable />}
+      />
+      <Route
         path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.CREATE })}
         element={<DpskForm />}
       />
@@ -258,6 +264,16 @@ function PolicyRoutes () {
         path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.EDIT })}
         element={<MacRegistrationListForm editMode={true} />}
       />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.CREATE })}
+        element={<ClientIsolationForm editMode={false}/>}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.EDIT })}
+        element={<ClientIsolationForm editMode={true}/>}
+      />
     </Route>
   )
 }
@@ -276,6 +292,10 @@ function UserRoutes () {
       />
       <Route
         path='users/wifi/:activeTab/:clientId/details/:activeTab'
+        element={<WifiClientDetails />}
+      />
+      <Route
+        path='users/wifi/:activeTab/:clientId/details/:activeTab/:activeSubTab'
         element={<WifiClientDetails />}
       />
       <Route path='users/switch' element={<TenantNavigate replace to='/users/switch/clients' />} />

@@ -13,7 +13,7 @@ export default function PortalViewGuestConnect (props:{
   const { demoValue, updateBtn, isPreview, portalLang } = props
   return (
     <UI.ViewSection>
-      <UI.FieldText>{portalLang.loginNote}</UI.FieldText>
+      <UI.FieldTextBig>{portalLang.loginNote}</UI.FieldTextBig>
       <UI.FieldInput></UI.FieldInput>
       <UI.ViewSectionLink>
         {portalLang.forgotPswdLink}</UI.ViewSectionLink>

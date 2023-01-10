@@ -83,6 +83,52 @@ export class Switch {
   }
 }
 
+export interface VeViewModel {
+  name?: string
+  dhcpRelayAgent?: string
+  defaultVlan: boolean
+  deviceStatus: SwitchStatusEnum
+  id: string
+  ipAddress?: string
+  ipAddressType?: IP_ADDRESS_TYPE
+  ipSubnetMask?: string
+  ospfArea?: string
+  stack: boolean
+  switchId: string
+  switchName?: string
+  syncedSwitchConfig: boolean
+  veId: number
+  vlanId: number
+  portTyp : string //ignore
+}
+
+export interface VeForm {
+  name: string
+  veId: number
+  vlanId: number
+  ospfArea: string
+  ipSubnetMask?: string
+  ipAddressType?: string
+  ipAddress?: string
+  egressAcl: string
+  ingressAcl: string
+  id: string
+  dhcpRelayAgent: string
+  defaultVlan: boolean
+}
+
+
+export interface VlanVePort {
+  usedByVePort: boolean
+  vlanId: string
+  vlanName?: string
+}
+
+export interface AclUnion {
+  profileAcl: string[]
+  switchAcl: string[]
+}
+
 export class SwitchViewModel extends Switch {
   type?: string
   configReady = false
@@ -154,6 +200,25 @@ export interface StackMember {
   unitStatus?: STACK_MEMBERSHIP
   unitId?: string
 }
+
+export interface ConfigurationHistory {
+  switchName: string
+  startTime: string
+  endTime: string
+  serialNumber: string
+  configType: string
+  dispatchStatus: string
+  clis: string
+  numberOfErrors: number
+  transactionId: string
+  dispatchFailedReason?: DispatchFailedReason[]
+}
+
+export interface DispatchFailedReason {
+  lineNumber: string
+  message: string
+}
+
 
 export enum STACK_MEMBERSHIP {
   ACTIVE = 'Active',
