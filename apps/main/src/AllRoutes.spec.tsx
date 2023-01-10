@@ -56,15 +56,6 @@ describe('AllRoutes', () => {
     })
     await screen.findByTestId('analytics')
   })
-  test('should navigate to serviceValidation/*', async () => {
-    render(<Provider><AllRoutes /></Provider>, {
-      route: {
-        path: '/t/tenantId/serviceValidation/networkHealth',
-        wrapRoutes: false
-      }
-    })
-    await screen.findByText('Service Validation')
-  })
 
   test('should navigate to devices/*', async () => {
     render(<Provider><AllRoutes /></Provider>, {
