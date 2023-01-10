@@ -52,7 +52,7 @@ const mockDemo = {
 
 describe('PortalDemo', () => {
 
-  it.skip('should render portal demo successfully', async () => {
+  it('should render portal demo successfully', async () => {
 
     const { asFragment } = render(
       <PortalFormContext.Provider value={{ error: true }}>
@@ -204,7 +204,7 @@ describe('PortalDemo', () => {
     fireEvent.click(await screen.findByText('Reset'))
   })
 
-  it.skip('should render portal demo preview successfully', async () => {
+  it('should render portal demo preview successfully', async () => {
     const { asFragment } = render(
       <Provider>
         <Form>
