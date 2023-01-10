@@ -3,7 +3,6 @@ import { FormattedMessage, useIntl } from 'react-intl'
 
 import { Subtitle, Tooltip }                                                  from '@acx-ui/components'
 import { Table, TableProps, Loader }                                          from '@acx-ui/components'
-import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
 import { useGetClientListQuery }                                              from '@acx-ui/rc/services'
 import { ClientList, getDeviceTypeIcon, getOsTypeIcon, usePollingTableQuery } from '@acx-ui/rc/utils'
 import { TenantLink, useParams }                                              from '@acx-ui/react-router-dom'
@@ -16,7 +15,7 @@ import * as UI from './styledComponents'
 // TODO: userProfileService.userHasRole(user, 'OFFICE_ADMIN')
 const hasGuestManagerRole = false
 
-function getCols (intl: ReturnType<typeof useIntl>, releaseTag: boolean, showAllColumns?: boolean) {
+function getCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
   const columns: TableProps<ClientList>['columns'] = [
     {
       key: 'hostname',
@@ -26,9 +25,7 @@ function getCols (intl: ReturnType<typeof useIntl>, releaseTag: boolean, showAll
       disable: true,
       defaultSortOrder: 'ascend',
       render: (data, row) => {
-        return releaseTag ?
-          <TenantLink to={`users/wifi/clients/${row.clientMac}/details/overview?hostname=${data}`}>{data || '--'}</TenantLink>
-          : <> {data || '--'} </>
+        return <TenantLink to={`users/wifi/clients/${row.clientMac}/details/overview?hostname=${data}`}>{data || '--'}</TenantLink>
       }
     },
     {
@@ -342,7 +339,6 @@ export const ConnectedClientsTable =
   const { $t } = useIntl()
   const params = useParams()
   const { showAllColumns, searchString, setConnectedClientCount } = props
-  const releaseTag = useIsSplitOn(Features.USERS)
 
   defaultPayload.searchString = searchString
   defaultPayload.filters = params.venueId ? { venueId: [params.venueId] } :
@@ -367,7 +363,7 @@ export const ConnectedClientsTable =
             {$t({ defaultMessage: 'Connected Clients' })}
           </Subtitle>
           <Table
-            columns={getCols(useIntl(), releaseTag, showAllColumns)}
+            columns={getCols(useIntl(), showAllColumns)}
             dataSource={tableQuery.data?.data}
             pagination={tableQuery.pagination}
             onChange={tableQuery.handleTableChange}

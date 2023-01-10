@@ -28,6 +28,7 @@ import {
 import { ClientOverviewWidget } from './ClientOverviewWidget'
 import { ClientProperties }     from './ClientProperties'
 import * as UI                  from './styledComponents'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 const clientPayload = {
   searchString: '',
@@ -155,9 +156,10 @@ export function ClientOverviewTab () {
             />
           </UI.CardWrapper>
         </GridCol>
-        <GridCol col={{ span: 24 }} style={{ height: '292px', background: '#F7F7F7' }}>
-          {$t({ defaultMessage: 'TODO: Top 10 Applications by traffic volume' })}
-        </GridCol>
+        {useIsSplitOn(Features.UNRELEASED) &&
+          <GridCol col={{ span: 24 }} style={{ height: '292px', background: '#F7F7F7' }}>
+            {$t({ defaultMessage: 'TODO: Top 10 Applications by traffic volume' })}
+          </GridCol>}
         <GridCol col={{ span: 24 }} style={{ height: '292px' }}>
           <TrafficByUsage filters={{ ...filters, mac: clientId?.toUpperCase() }} />
         </GridCol>

@@ -54,19 +54,19 @@ function useColumns () {
         return `${row.country}, ${row.city}`
       }
     },
-    {
-      key: 'incidents',
-      dataIndex: 'incidents',
-      title: () => {
-        return (
-          <>
-            { $t({ defaultMessage: 'Incidents' }) }
-            <Table.SubTitle children={$t({ defaultMessage: 'Last 24 hours' })} />
-          </>
-        )
-      },
-      align: 'center'
-    },
+    // { // TODO: Waiting for HEALTH feature support
+    //   key: 'incidents',
+    //   dataIndex: 'incidents',
+    //   title: () => {
+    //     return (
+    //       <>
+    //         { $t({ defaultMessage: 'Incidents' }) }
+    //         <Table.SubTitle children={$t({ defaultMessage: 'Last 24 hours' })} />
+    //       </>
+    //     )
+    //   },
+    //   align: 'center'
+    // },
     // { // TODO: Waiting for HEALTH feature support
     //   key: 'health',
     //   dataIndex: 'health',
@@ -80,12 +80,12 @@ function useColumns () {
     //   },
     //   align: 'center'
     // },
-    {
-      title: $t({ defaultMessage: 'Services' }),
-      key: 'services',
-      dataIndex: 'services',
-      align: 'center'
-    },
+    // { // TODO: Waiting for HEALTH feature support
+    //   title: $t({ defaultMessage: 'Services' }),
+    //   key: 'services',
+    //   dataIndex: 'services',
+    //   align: 'center'
+    // },
     {
       title: $t({ defaultMessage: 'Wi-Fi APs' }),
       align: 'left',

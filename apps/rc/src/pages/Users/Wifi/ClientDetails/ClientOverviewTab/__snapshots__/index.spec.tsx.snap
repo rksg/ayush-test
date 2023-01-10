@@ -425,17 +425,6 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render corr
           >
             <div
               class="Grid__Container-sc-5irhjd-1 zzbxI"
-              style="height: 292px; background: rgb(247, 247, 247);"
-            >
-              TODO: Top 10 Applications by traffic volume
-            </div>
-          </div>
-          <div
-            class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
-            style="padding: 10px 10px 10px 10px;"
-          >
-            <div
-              class="Grid__Container-sc-5irhjd-1 zzbxI"
               style="height: 292px;"
             >
               <div
@@ -1455,17 +1444,6 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-          <div
-            class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
-            style="padding: 10px 10px 10px 10px;"
-          >
-            <div
-              class="Grid__Container-sc-5irhjd-1 zzbxI"
-              style="height: 292px; background: rgb(247, 247, 247);"
-            >
-              TODO: Top 10 Applications by traffic volume
             </div>
           </div>
           <div
@@ -2666,17 +2644,6 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-          <div
-            class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
-            style="padding: 10px 10px 10px 10px;"
-          >
-            <div
-              class="Grid__Container-sc-5irhjd-1 zzbxI"
-              style="height: 292px; background: rgb(247, 247, 247);"
-            >
-              TODO: Top 10 Applications by traffic volume
             </div>
           </div>
           <div
@@ -3931,17 +3898,6 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
           >
             <div
               class="Grid__Container-sc-5irhjd-1 zzbxI"
-              style="height: 292px; background: rgb(247, 247, 247);"
-            >
-              TODO: Top 10 Applications by traffic volume
-            </div>
-          </div>
-          <div
-            class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
-            style="padding: 10px 10px 10px 10px;"
-          >
-            <div
-              class="Grid__Container-sc-5irhjd-1 zzbxI"
               style="height: 292px;"
             >
               <div
@@ -4969,17 +4925,6 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
           >
             <div
               class="Grid__Container-sc-5irhjd-1 zzbxI"
-              style="height: 292px; background: rgb(247, 247, 247);"
-            >
-              TODO: Top 10 Applications by traffic volume
-            </div>
-          </div>
-          <div
-            class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
-            style="padding: 10px 10px 10px 10px;"
-          >
-            <div
-              class="Grid__Container-sc-5irhjd-1 zzbxI"
               style="height: 292px;"
             >
               <div
@@ -5987,17 +5932,6 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client c
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-          <div
-            class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
-            style="padding: 10px 10px 10px 10px;"
-          >
-            <div
-              class="Grid__Container-sc-5irhjd-1 zzbxI"
-              style="height: 292px; background: rgb(247, 247, 247);"
-            >
-              TODO: Top 10 Applications by traffic volume
             </div>
           </div>
           <div
@@ -7323,17 +7257,6 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client w
           >
             <div
               class="Grid__Container-sc-5irhjd-1 zzbxI"
-              style="height: 292px; background: rgb(247, 247, 247);"
-            >
-              TODO: Top 10 Applications by traffic volume
-            </div>
-          </div>
-          <div
-            class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
-            style="padding: 10px 10px 10px 10px;"
-          >
-            <div
-              class="Grid__Container-sc-5irhjd-1 zzbxI"
               style="height: 292px;"
             >
               <div
@@ -8625,17 +8548,6 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render dpsk cli
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-          <div
-            class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
-            style="padding: 10px 10px 10px 10px;"
-          >
-            <div
-              class="Grid__Container-sc-5irhjd-1 zzbxI"
-              style="height: 292px; background: rgb(247, 247, 247);"
-            >
-              TODO: Top 10 Applications by traffic volume
             </div>
           </div>
           <div
@@ -10125,17 +10037,6 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-          <div
-            class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
-            style="padding: 10px 10px 10px 10px;"
-          >
-            <div
-              class="Grid__Container-sc-5irhjd-1 zzbxI"
-              style="height: 292px; background: rgb(247, 247, 247);"
-            >
-              TODO: Top 10 Applications by traffic volume
             </div>
           </div>
           <div
@@ -11680,17 +11581,6 @@ exports[`ClientOverviewTab OverviewWidget should render client info correctly 1`
           >
             <div
               class="Grid__Container-sc-5irhjd-1 zzbxI"
-              style="height: 292px; background: rgb(247, 247, 247);"
-            >
-              TODO: Top 10 Applications by traffic volume
-            </div>
-          </div>
-          <div
-            class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
-            style="padding: 10px 10px 10px 10px;"
-          >
-            <div
-              class="Grid__Container-sc-5irhjd-1 zzbxI"
               style="height: 292px;"
             >
               <div
@@ -13008,17 +12898,6 @@ exports[`ClientOverviewTab OverviewWidget should render correctly when search pa
           >
             <div
               class="Grid__Container-sc-5irhjd-1 zzbxI"
-              style="height: 292px; background: rgb(247, 247, 247);"
-            >
-              TODO: Top 10 Applications by traffic volume
-            </div>
-          </div>
-          <div
-            class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
-            style="padding: 10px 10px 10px 10px;"
-          >
-            <div
-              class="Grid__Container-sc-5irhjd-1 zzbxI"
               style="height: 292px;"
             >
               <div
@@ -14038,17 +13917,6 @@ exports[`ClientOverviewTab OverviewWidget should render historical client info c
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-          <div
-            class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
-            style="padding: 10px 10px 10px 10px;"
-          >
-            <div
-              class="Grid__Container-sc-5irhjd-1 zzbxI"
-              style="height: 292px; background: rgb(247, 247, 247);"
-            >
-              TODO: Top 10 Applications by traffic volume
             </div>
           </div>
           <div

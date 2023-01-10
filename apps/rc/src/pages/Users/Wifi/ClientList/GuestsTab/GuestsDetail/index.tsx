@@ -16,7 +16,6 @@ import {
   TableProps,
   Descriptions
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { ArrowExpand }            from '@acx-ui/icons'
 import { ClientHealthIcon }       from '@acx-ui/rc/components'
 import { useGetGuestsListQuery }  from '@acx-ui/rc/services'
@@ -250,16 +249,14 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
 
   return (<>
     <div style={{ textAlign: 'right' }}>
-      {useIsSplitOn(Features.DEVICES) &&
-        <Dropdown overlay={menu} key='actions'>
-          <Button type='secondary'>
-            <Space>
-              {$t({ defaultMessage: 'Actions' })}
-              <ArrowExpand />
-            </Space>
-          </Button>
-        </Dropdown>
-      }
+      <Dropdown overlay={menu} key='actions'>
+        <Button type='secondary'>
+          <Space>
+            {$t({ defaultMessage: 'Actions' })}
+            <ArrowExpand />
+          </Space>
+        </Button>
+      </Dropdown>
     </div>
 
     <Descriptions>
