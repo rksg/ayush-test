@@ -113,6 +113,22 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/switch/:switchId/dhcpServer/query'
   },
+  addDhcpServer: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/switch/:switchId/dhcpServer'
+  },
+  getDhcpServer: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/dhcpServer/:dhcpServerId'
+  },
+  updateDhcpServer: {
+    method: 'put',
+    url: '/api/switch/tenant/:tenantId/switch/:switchId/dhcpServer'
+  },
+  deleteDhcpServers: {
+    method: 'delete',
+    url: '/api/switch/tenant/:tenantId/switch/:switchId/dhcpServers'
+  },
   getDhcpLeases: {
     method: 'get',
     url: '/api/switch/tenant/:tenantId/switch/:switchId/'+

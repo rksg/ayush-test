@@ -23,7 +23,8 @@ import {
   VeForm,
   SwitchDhcp,
   SwitchDhcpLease,
-  troubleshootingResult
+  troubleshootingResult,
+  CommonResult
 } from '@acx-ui/rc/utils'
 
 export const baseSwitchApi = createApi({
@@ -290,6 +291,41 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
+    getDhcpServer: build.query<SwitchDhcp, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getDhcpServer, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    addDhcpServer: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.addDhcpServer, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    updateDhcpServer: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.updateDhcpServer, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    deleteDhcpServers: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.deleteDhcpServers, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     getDhcpLeases: build.query<TableResult<SwitchDhcpLease>, RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
         const doDhcpServerLeaseTableInfo = {
@@ -416,5 +452,9 @@ export const {
   useGetVlanListBySwitchLevelQuery,
   useUpdateDhcpServerStateMutation,
   useGetDhcpPoolsQuery,
+  useGetDhcpServerQuery,
+  useAddDhcpServerMutation,
+  useUpdateDhcpServerMutation,
+  useDeleteDhcpServersMutation,
   useGetDhcpLeasesQuery
 } = switchApi
