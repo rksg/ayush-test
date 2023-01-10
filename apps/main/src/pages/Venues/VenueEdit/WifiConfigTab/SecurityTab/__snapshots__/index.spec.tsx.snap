@@ -3,7 +3,7 @@
 exports[`SecurityTab should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <section
       class="styledComponents__Wrapper-sc-1ibvcih-2 kZHgWB"
@@ -108,6 +108,7 @@ exports[`SecurityTab should render correctly 1`] = `
                                     aria-checked="false"
                                     class="ant-switch"
                                     role="switch"
+                                    style="margin-left: 78.5px;"
                                     type="button"
                                   >
                                     <div

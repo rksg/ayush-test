@@ -23,6 +23,12 @@ import {
 
 import { ClientOverviewTab } from '.'
 
+/* eslint-disable max-len */
+jest.mock('@acx-ui/analytics/components', () => ({
+  TrafficByBand: () => <div data-testid={'analytics-TrafficByBand'} title='TrafficByBand' />,
+  TrafficByUsage: () => <div data-testid={'analytics-TrafficByUsage'} title='TrafficByUsage' />
+}))
+
 const params = {
   tenantId: 'tenant-id',
   clientId: 'client-id'

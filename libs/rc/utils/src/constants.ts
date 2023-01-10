@@ -107,10 +107,10 @@ export enum QosPriorityEnum {
 }
 
 export enum ServiceType {
-  PORTAL = 'PORTAL',
-  DHCP = 'DHCP',
+  PORTAL = 'Portal',
+  DHCP = 'DHCP (Wi-Fi)',
   WIFI_CALLING = 'Wi-Fi Calling',
-  MDNS_PROXY = 'MDNS_PROXY',
+  MDNS_PROXY = 'mDNS Proxy',
   DPSK = 'DPSK',
   NETWORK_SEGMENTATION = 'Network Segmentation'
 }
@@ -201,6 +201,33 @@ export enum CellularNetworkSelectionEnum {
   AUTO = 'AUTO',
   LTE = 'LTE',
   ThreeG = 'ThreeG',
+}
+
+export enum ConfigTypeEnum {
+  AAA_SERVER = 'AAA_SERVER',
+  AAA_SETTING = 'AAA_SETTING',
+  DNS_SERVER = 'DNS_SERVER',
+  LAG_SETTINGS = 'LAG_SETTINGS',
+  MODEL ='MODEL',
+  OVERWRITE_CONFIGURATION = 'OVERWRITE_CONFIGURATION',
+  PORT_CONFIGURATION = 'PORT_CONFIGURATION',
+  PROVISIONING = 'PROVISIONING',
+  STACK = 'STACK',
+  SWITCH_SETTINGS = 'SWITCH_SETTINGS',
+  LOCAL_SYNC = 'LOCAL_SYNC',
+  SYSLOG_SERVER = 'SYSLOG_SERVER',
+  VE_PORTS = 'VE_PORTS',
+  CLI_PROVISIONING = 'CLI_PROVISIONING',
+  CLI_UPDATE = 'CLI_UPDATE',
+  IP_CONFIG = 'IP_CONFIG',
+  SPECIFIC_SETTING = 'SPECIFIC_SETTING'
+}
+
+export enum ConfigStatusEnum {
+  SUCCESS = 'SUCCESS',
+  FAILED = 'FAILED',
+  NO_CONFIG_CHANGE = 'NO_CONFIG_CHANGE',
+  FAILED_NO_RESPONSE= 'FAILED_NO_RESPONSE'
 }
 
 export const CountryIsoDisctionary = {
@@ -448,6 +475,13 @@ export const CountryIsoDisctionary = {
   'Zimbabwe': 'zw',
   'Åland Islands': 'ax'
 }
+export enum CaptivePassphraseExpirationEnum {
+  ONE_HOUR = '1',
+  FOUR_HOURS = '4',
+  ONE_DAY = '24',
+  ONE_WEEK = '168',
+  ONE_MONTH = '730'
+}
 export enum PortalViewEnum{
   ClickThrough = 'ClickThrough',
   GuestPassConnect = 'GuestPassConnect',
@@ -459,35 +493,35 @@ export enum PortalViewEnum{
   TermCondition = 'TermCondition'
 }
 export enum PortalLanguageEnum{
-  ChineseTraditional = 'zh-hant',
-  Czech = 'ces',
-  English = 'en',
-  Finnish = 'fin',
-  French = 'fr',
-  German = 'de',
-  Greek = 'gre',
-  Hungarian = 'hun',
-  Italian = 'it',
-  Japanese = 'ja',
-  Norwegian = 'nor',
-  Polish = 'pol',
-  PortuguesePortugal = 'pt',
-  PortugueseBrazil = 'pt-BR',
-  Romanian = 'ro',
-  Slovak = 'sk',
-  Spanish = 'es',
-  Swedish = 'swe',
-  Turkish = 'tr'
+  zh_TW = 'zh-hant',
+  cs = 'ces',
+  en = 'en',
+  fi = 'fin',
+  fr = 'fr',
+  de = 'de',
+  el = 'gre',
+  hu = 'hun',
+  it = 'it',
+  ja = 'ja',
+  no = 'nor',
+  pl = 'pol',
+  pt_PT = 'pt',
+  pt_BR = 'pt-BR',
+  ro = 'ro',
+  sk = 'sk',
+  es = 'es',
+  sv = 'swe',
+  tr = 'tr'
 }
 
 export enum PortalComponentsEnum{
-  Logo = 'Logo',
-  WelcomeText = 'WelcomeText',
-  Photo = 'Photo',
-  SecondaryText = 'SecondaryText',
-  TermsConditions = 'TermsConditions',
-  PoweredBy = 'PoweredBy',
-  WiFi4EU = 'WiFi4EU'
+  Logo = 'logo',
+  Welcome = 'welcome',
+  Photo = 'photo',
+  SecondaryText = 'secondaryText',
+  TermsConditions = 'termsConditions',
+  PoweredBy = 'poweredBy',
+  Wifi4eu = 'wifi4eu'
 }
 
 export type LangCode = 'zh_TW' | 'cs' | 'sk' | 'hu' | 'en' | 'da' | 'fi' |'fr' | 'nl' |

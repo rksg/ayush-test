@@ -10,7 +10,23 @@ export const validationMessages = {
     defaultMessage: 'No leading or trailing spaces allowed',
     description: 'Validation - no leading/trailing whitespace checks'
   }),
+  name: defineMessage({
+    defaultMessage: 'Please enter a valid Name',
+    description: 'Validation - Name checks'
+  }),
+  ospf: defineMessage({
+    defaultMessage: 'Please enter a valid OSPF area',
+    description: 'Validation - OSPF area checks'
+  }),
+  dhcpRelayAgent: defineMessage({
+    defaultMessage: 'Please enter a valid DHCP relay agent',
+    description: 'Validation - DHCP relay agent checks'
+  }),
   ipAddress: defineMessage({
+    defaultMessage: 'Please enter a valid IP address',
+    description: 'Validation - IP address checks'
+  }),
+  ipSubnetMask: defineMessage({
     defaultMessage: 'Please enter a valid IP address',
     description: 'Validation - IP address checks'
   }),
@@ -23,8 +39,8 @@ export const validationMessages = {
     description: 'Validation - invalid checks'
   }),
   invalidHex: defineMessage({
-    defaultMessage: 'Please enter a valid IP address',
-    description: 'Validation - IP address checks'
+    defaultMessage: 'Please enter a valid Hex Key',
+    description: 'Validation - Hex Key checks'
   }),
   duplication: defineMessage({
     defaultMessage: `
@@ -128,6 +144,23 @@ export const validationMessages = {
     defaultMessage: 'Please enter a valid email address',
     description: 'Validation - email address checks'
   }),
+  walledGarden: defineMessage({
+    defaultMessage: `Please make sure that all destinations comply to
+      allowed formats. For more information see the help information`,
+    description: 'Validation - walled garden checks'
+  }),
+  ipRangeInvalid: defineMessage({
+    defaultMessage: 'The End IP address should swap Start IP address',
+    description: 'Validation - IP address range'
+  }),
+  ipRangeExceed: defineMessage({
+    defaultMessage: 'The DHCP pool size should not exceed {range}',
+    description: 'Validation - Cellular IP pool size'
+  }),
+  ipNotInSubnetPool: defineMessage({
+    defaultMessage: 'IP address is not in the subnet pool',
+    description: 'Validation - Cellular IP pool size'
+  }),
   phoneNumber: defineMessage({
     defaultMessage: 'Please enter a valid phone number',
     description: 'Validation - phone number checks'
@@ -143,6 +176,14 @@ export const validationMessages = {
   priority: defineMessage({
     defaultMessage: 'Enter a valid number between 0 and 7',
     description: 'Validation - priority checks'
+  }),
+  oneRadioChannel: defineMessage({
+    defaultMessage: 'Please select one channel',
+    description: 'Validation - radio channel checks'
+  }),
+  twoRadioChannels: defineMessage({
+    defaultMessage: 'Please select at least two channels',
+    description: 'Validation - radio channel checks'
   })
 }
 

@@ -1,8 +1,8 @@
-import React from 'react'
 
 import { Menu, Dropdown } from 'antd'
 import { useIntl }        from 'react-intl'
 
+import { get }                                 from '@acx-ui/config'
 import { useGetUserProfileQuery }              from '@acx-ui/rc/services'
 import { useParams, TenantLink, useLocation  } from '@acx-ui/react-router-dom'
 
@@ -20,6 +20,14 @@ const UserButton = () => {
       onClick={(menuInfo)=>{
         if(menuInfo.key==='logout'){
           window.location.href = '/logout'
+        } else if(menuInfo.key==='settings') {
+          const passwordUrl = get('CHANGE_PASSWORD')
+          const isRwbigdog = data?.email.indexOf('@rwbigdog.com') !== -1 ||
+                             data?.username.indexOf('@rwbigdog.com') !== -1
+          const changePasswordUrl = isRwbigdog
+            ? 'https://partners.ruckuswireless.com/forgot-password'
+            : passwordUrl
+          window.open(changePasswordUrl, '_blank')
         }
       }}>
       <Menu.Item
@@ -30,7 +38,7 @@ const UserButton = () => {
         </TenantLink>
       </Menu.Item>
 
-      <Menu.Item disabled key='settings'>
+      <Menu.Item key='settings'>
         {$t({ defaultMessage: 'Change Password' })}
       </Menu.Item>
 

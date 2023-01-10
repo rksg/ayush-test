@@ -1,15 +1,31 @@
 import React from 'react'
 
-import { defineMessage, FormattedMessage, IntlShape, MessageDescriptor, useIntl } from 'react-intl'
+import moment from 'moment-timezone'
+import {
+  defineMessage,
+  FormattedMessage,
+  IntlShape,
+  MessageDescriptor,
+  useIntl
+} from 'react-intl'
 
-import { GuestNetworkTypeEnum, NetworkTypeEnum, PassphraseExpirationEnum, PassphraseFormatEnum, WlanSecurityEnum } from '../constants'
-import { Network }                                                                                                 from '../types/network'
+import {
+  GuestNetworkTypeEnum,
+  NetworkTypeEnum,
+  PassphraseExpirationEnum,
+  PassphraseFormatEnum,
+  WlanSecurityEnum
+} from '../constants'
+import { ExpirationType } from '../types'
+import { Network }        from '../types/network'
 
 export enum DpskNetworkType {
   FORMAT = 'PassphraseFormat',
   LENGTH = 'PassphraseLength',
   EXPIRATION = 'PassphraseExpiration'
 }
+
+export const EXPIRATION_DATE_FORMAT = 'YYYY-MM-DD'
 
 const passphraseFormatLabel: Record<PassphraseFormatEnum, MessageDescriptor> = {
   [PassphraseFormatEnum.MOST_SECURED]: defineMessage({ defaultMessage: 'Most Secured' }),
@@ -29,24 +45,63 @@ const passphraseExpirationLabel: Record<PassphraseExpirationEnum, MessageDescrip
   [PassphraseExpirationEnum.TWO_YEARS]: defineMessage({ defaultMessage: '2 years' })
 }
 
+const advancedPassphraseExpirationLabel: Record<ExpirationType, MessageDescriptor> = {
+  [ExpirationType.SPECIFIED_DATE]: defineMessage({ defaultMessage: '{date}' }),
+  // eslint-disable-next-line max-len
+  [ExpirationType.MINUTES_AFTER_TIME]: defineMessage({ defaultMessage: '{offset} {offset, plural, one {minute} other {minutes}}' }),
+  // eslint-disable-next-line max-len
+  [ExpirationType.HOURS_AFTER_TIME]: defineMessage({ defaultMessage: '{offset} {offset, plural, one {hour} other {hours}}' }),
+  // eslint-disable-next-line max-len
+  [ExpirationType.DAYS_AFTER_TIME]: defineMessage({ defaultMessage: '{offset} {offset, plural, one {day} other {days}}' }),
+  // eslint-disable-next-line max-len
+  [ExpirationType.WEEKS_AFTER_TIME]: defineMessage({ defaultMessage: '{offset} {offset, plural, one {week} other {weeks}}' }),
+  // eslint-disable-next-line max-len
+  [ExpirationType.MONTHS_AFTER_TIME]: defineMessage({ defaultMessage: '{offset} {offset, plural, one {month} other {months}}' }),
+  // eslint-disable-next-line max-len
+  [ExpirationType.YEARS_AFTER_TIME]: defineMessage({ defaultMessage: '{offset} {offset, plural, one {year} other {years}}' })
+}
+
+interface AdvancedPassphraseExpirationProps {
+  expirationType: ExpirationType | null;
+  expirationOffset?: number;
+  expirationDate?: string;
+}
+
+export function transformAdvancedDpskExpirationText (
+  { $t }: IntlShape,
+  props: AdvancedPassphraseExpirationProps
+) {
+  const { expirationType, expirationOffset, expirationDate } = props
+  if (!expirationType) {
+    return $t(passphraseExpirationLabel[PassphraseExpirationEnum.UNLIMITED])
+  } else if (expirationType === ExpirationType.SPECIFIED_DATE) {
+    // eslint-disable-next-line max-len
+    return $t(advancedPassphraseExpirationLabel[ExpirationType.SPECIFIED_DATE], {
+      date: moment(expirationDate).format(EXPIRATION_DATE_FORMAT)
+    })
+  } else {
+    return $t(advancedPassphraseExpirationLabel[expirationType], { offset: expirationOffset })
+  }
+}
+
 export function transformDpskNetwork (
   { $t }: IntlShape,
   type: DpskNetworkType,
-  value?: string | number
+  value?: string | number | AdvancedPassphraseExpirationProps
 ) {
   let displayValue = ''
   if (type === DpskNetworkType.FORMAT) {
+    if (!value) {
+      return $t({ defaultMessage: 'Error: Can not detect passphrase format value' })
+    }
     displayValue = $t(passphraseFormatLabel[value as PassphraseFormatEnum])
-    if (!displayValue) {
-      displayValue = $t({ defaultMessage: 'Error: Can not detect passphrase format value' })
+  } else if (type === DpskNetworkType.LENGTH) {
+    displayValue = $t({ defaultMessage: '{count} Characters' }, { count: value as number })
+  } else if (type === DpskNetworkType.EXPIRATION) {
+    if (!value) {
+      return $t({ defaultMessage: 'Error: Can not detect passphrase expiration value' })
     }
-  } else if (type === 'PassphraseLength') {
-    displayValue = $t({ defaultMessage: '{count} Characters' }, { count: value })
-  } else if (type === 'PassphraseExpiration') {
     displayValue = $t(passphraseExpirationLabel[value as PassphraseExpirationEnum])
-    if (!displayValue) {
-      displayValue = $t({ defaultMessage: 'Error: Can not detect passphrase expiration value' })
-    }
   }
 
   return displayValue

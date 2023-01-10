@@ -1,8 +1,11 @@
-import { defineMessage } from 'react-intl'
+import { defineMessage, MessageDescriptor } from 'react-intl'
 
 import {
   DHCPConfigTypeEnum
 } from './constants'
+import { BridgeServiceEnum } from './models'
+
+export const noDataDisplay = '--' as const
 
 export enum PskWlanSecurityEnum {
   WPA2Personal = 'WPA2 (Recommended)',
@@ -55,6 +58,21 @@ export enum macAuthMacFormatOptions {
   Lower = 'aabbccddeeff',
 }
 
+/* eslint-disable max-len */
+export const SwitchMessages = {
+  FIRMWARE_TYPE_TOOLTIP: defineMessage({
+    defaultMessage: 'Firmware type will only be applied to factory default switches. Switches with pre-existing configuration will not be affected by this setting to prevent connectivity loss.'
+  }),
+  DHCP_CLIENT_TOOLTIP: defineMessage({
+    defaultMessage: 'DHCP Client interface will only be applied to factory default switches. Switches with pre-existing configuration will not get this change to prevent connectivity loss.'
+  }),
+  ADD_AS_MEMBER_TOOLTIP: defineMessage({
+    defaultMessage: 'Based on the switch serial number you entered, compatible stacks of the same model are listed here.'
+  }),
+  MEMBER_NOT_SUPPORT_STACKING_TOOLTIP: defineMessage({
+    defaultMessage: 'ICX7150-C08P/C08PT does not support stacking'
+  })
+}
 
 /* eslint-disable max-len */
 export const WifiNetworkMessages = {
@@ -116,6 +134,9 @@ export const VenueMessages = {
       <li>Once CLI profiles are applied, the venue can no longer accept regular profiles</li>
       <li>The selected CLI profiles cannot contain overlapping switch models</li>
     </ul>`
+  }),
+  SNR_THRESHOLD_TOOLTIP: defineMessage({
+    defaultMessage: 'SNR threshold above which detected Rogue APs will be reported in Ruckus Cloud. Available range is 0-100.'
   })
 }
 
@@ -212,4 +233,39 @@ export const DHCPConfigTypeMessages = {
   [DHCPConfigTypeEnum.MULTIPLE]: defineMessage({ defaultMessage: 'Multiple APs' }),
   [DHCPConfigTypeEnum.SIMPLE]: defineMessage({ defaultMessage: 'Each APs' }),
   [DHCPConfigTypeEnum.HIERARCHICAL]: defineMessage({ defaultMessage: 'Hierarchical APs' })
+}
+
+// eslint-disable-next-line max-len
+export const mdnsProxyRuleTypeLabelMapping: Record<BridgeServiceEnum, MessageDescriptor> = {
+  [BridgeServiceEnum.AIRDISK]: defineMessage({ defaultMessage: 'AirDisk' }),
+  [BridgeServiceEnum.AIRPLAY]: defineMessage({ defaultMessage: 'AirPlay' }),
+  // eslint-disable-next-line max-len
+  [BridgeServiceEnum.AIRPORT_MANAGEMENT]: defineMessage({ defaultMessage: 'Airport Management' }),
+  [BridgeServiceEnum.AIRPRINT]: defineMessage({ defaultMessage: 'AirPrint' }),
+  [BridgeServiceEnum.AIRTUNES]: defineMessage({ defaultMessage: 'AirTunes' }),
+  [BridgeServiceEnum.APPLETV]: defineMessage({ defaultMessage: 'Apple TV' }),
+  // eslint-disable-next-line max-len
+  [BridgeServiceEnum.APPLE_FILE_SHARING]: defineMessage({ defaultMessage: 'Apple File Sharing' }),
+  // eslint-disable-next-line max-len
+  [BridgeServiceEnum.APPLE_MOBILE_DEVICES]: defineMessage({ defaultMessage: 'Apple Mobile Devices' }),
+  // eslint-disable-next-line max-len
+  [BridgeServiceEnum.GOOGLE_CHROMECAST]: defineMessage({ defaultMessage: 'Google Chromecast' }),
+  [BridgeServiceEnum.ICLOUD_SYNC]: defineMessage({ defaultMessage: 'iCloud Sync' }),
+  // eslint-disable-next-line max-len
+  [BridgeServiceEnum.ITUNES_REMOTE]: defineMessage({ defaultMessage: 'iTunes Remote' }),
+  // eslint-disable-next-line max-len
+  [BridgeServiceEnum.ITUNES_SHARING]: defineMessage({ defaultMessage: 'iTunes Sharing' }),
+  // eslint-disable-next-line max-len
+  [BridgeServiceEnum.OPEN_DIRECTORY_MASTER]: defineMessage({ defaultMessage: 'Open Directory Master' }),
+  // eslint-disable-next-line max-len
+  [BridgeServiceEnum.OPTICAL_DISK_SHARING]: defineMessage({ defaultMessage: 'Optical Disk Sharing' }),
+  [BridgeServiceEnum.OTHER]: defineMessage({ defaultMessage: 'Other' }),
+  // eslint-disable-next-line max-len
+  [BridgeServiceEnum.SCREEN_SHARING]: defineMessage({ defaultMessage: 'Screen Sharing' }),
+  // eslint-disable-next-line max-len
+  [BridgeServiceEnum.SECURE_FILE_SHARING]: defineMessage({ defaultMessage: 'Secure File Sharing' }),
+  [BridgeServiceEnum.SECURE_SHELL]: defineMessage({ defaultMessage: 'Secure Shell' }),
+  [BridgeServiceEnum.WWW_HTTP]: defineMessage({ defaultMessage: 'WWW HTTP' }),
+  [BridgeServiceEnum.WWW_HTTPS]: defineMessage({ defaultMessage: 'WWW HTTPs' }),
+  [BridgeServiceEnum.XGRID]: defineMessage({ defaultMessage: 'Xgrid' })
 }

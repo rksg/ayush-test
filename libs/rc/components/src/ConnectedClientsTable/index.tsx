@@ -1,13 +1,13 @@
 /* eslint-disable max-len */
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { Subtitle, Tooltip }                                           from '@acx-ui/components'
-import { Table, TableProps, Loader }                                   from '@acx-ui/components'
-import { Features, useIsSplitOn }                                      from '@acx-ui/feature-toggle'
-import { useGetClientListQuery }                                       from '@acx-ui/rc/services'
-import { ClientList, getDeviceTypeIcon, getOsTypeIcon, useTableQuery } from '@acx-ui/rc/utils'
-import { TenantLink }                                                  from '@acx-ui/react-router-dom'
-import { formatter }                                                   from '@acx-ui/utils'
+import { Subtitle, Tooltip }                                                  from '@acx-ui/components'
+import { Table, TableProps, Loader }                                          from '@acx-ui/components'
+import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
+import { useGetClientListQuery }                                              from '@acx-ui/rc/services'
+import { ClientList, getDeviceTypeIcon, getOsTypeIcon, usePollingTableQuery } from '@acx-ui/rc/utils'
+import { TenantLink, useParams }                                              from '@acx-ui/react-router-dom'
+import { formatter }                                                          from '@acx-ui/utils'
 
 import { ClientHealthIcon } from '../ClientHealthIcon'
 
@@ -23,6 +23,7 @@ function getCols (intl: ReturnType<typeof useIntl>, releaseTag: boolean, showAll
       title: intl.$t({ defaultMessage: 'Hostname' }),
       dataIndex: 'hostname',
       sorter: true,
+      disable: true,
       defaultSortOrder: 'ascend',
       render: (data, row) => {
         return releaseTag ?
@@ -71,6 +72,7 @@ function getCols (intl: ReturnType<typeof useIntl>, releaseTag: boolean, showAll
       title: intl.$t({ defaultMessage: 'MAC Address' }),
       dataIndex: 'clientMac',
       sorter: true,
+      disable: true,
       render: (data) => {
         return <Tooltip title={data}>
           {data || '--'}
@@ -326,6 +328,7 @@ function getCols (intl: ReturnType<typeof useIntl>, releaseTag: boolean, showAll
 const defaultPayload = {
   searchString: '',
   searchTargetFields: ['clientMac','ipAddress','Username','hostname','ssid','clientVlan','osType'],
+  filters: {},
   fields: [
     'hostname','osType','healthCheckStatus','clientMac','ipAddress','Username','serialNumber','venueId','switchSerialNumber',
     'ssid','wifiCallingClient','sessStartTime','clientAnalytics','clientVlan','deviceTypeStr','modelName','totalTraffic',
@@ -334,30 +337,44 @@ const defaultPayload = {
     'apName','clientVlan','networkId','switchName','healthStatusReason','lastUpdateTime']
 }
 
-export const ConnectedClientsTable = (props:{ showAllColumns?: boolean }) => {
+export const ConnectedClientsTable =
+(props: { showAllColumns?: boolean, searchString: string, setConnectedClientCount: (connectClientCount: number) => void }) => {
   const { $t } = useIntl()
-  const { showAllColumns } = props
+  const params = useParams()
+  const { showAllColumns, searchString, setConnectedClientCount } = props
   const releaseTag = useIsSplitOn(Features.USERS)
+
+  defaultPayload.searchString = searchString
+  defaultPayload.filters = params.venueId ? { venueId: [params.venueId] } :
+    params.serialNumber ? { serialNumber: [params.serialNumber] } : {}
+
   const ConnectedClientsTable = () => {
-    const tableQuery = useTableQuery({
+    const tableQuery = usePollingTableQuery({
       useQuery: useGetClientListQuery,
       defaultPayload
     })
+
+    if(tableQuery.data?.data){
+      setConnectedClientCount(tableQuery.data?.totalCount)
+    }
+
     return (
-      <Loader states={[
-        tableQuery
-      ]}>
-        <Subtitle level={4}>
-          {$t({ defaultMessage: 'Connected Clients' })}
-        </Subtitle>
-        <Table
-          columns={getCols(useIntl(), releaseTag, showAllColumns)}
-          dataSource={tableQuery.data?.data}
-          pagination={tableQuery.pagination}
-          onChange={tableQuery.handleTableChange}
-          rowKey='clientMac'
-        />
-      </Loader>
+      <UI.ClientTableDiv>
+        <Loader states={[
+          tableQuery
+        ]}>
+          <Subtitle level={4}>
+            {$t({ defaultMessage: 'Connected Clients' })}
+          </Subtitle>
+          <Table
+            columns={getCols(useIntl(), releaseTag, showAllColumns)}
+            dataSource={tableQuery.data?.data}
+            pagination={tableQuery.pagination}
+            onChange={tableQuery.handleTableChange}
+            rowKey='clientMac'
+          />
+        </Loader>
+      </UI.ClientTableDiv>
     )
   }
 

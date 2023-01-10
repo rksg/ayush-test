@@ -15,7 +15,7 @@ exports[`ApPacketCaptureForm should render correctly 1`] = `
         style="padding-left: 10px; padding-right: 10px;"
       >
         <div
-          class="styledComponents__Wrapper-sc-1352uh8-0 bqUuIH"
+          class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
         >
           <div
             class="ant-form-item"
@@ -153,7 +153,7 @@ exports[`ApPacketCaptureForm should render correctly 1`] = `
                 class="ant-col ant-form-item-label"
               >
                 <label
-                  class=""
+                  class="ant-form-item-required"
                   for="frameTypeFilter"
                   title="Frame Type Filter:"
                 >

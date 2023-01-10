@@ -2,12 +2,14 @@ import React from 'react'
 
 import { Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
 
+import Administration   from './pages/Administration'
 import AnalyticsBase    from './pages/Analytics'
 import Dashboard        from './pages/Dashboard'
 import DevicesBase      from './pages/Devices'
 import Layout           from './pages/Layout'
 import NetworksBase     from './pages/Networks'
 import PoliciesBase     from './pages/Policies'
+import ReportsBase      from './pages/Reports'
 import SearchResults    from './pages/SearchResults'
 import ServicesBase     from './pages/Services'
 import TimelineBase     from './pages/Timeline'
@@ -20,6 +22,7 @@ import { VenuesTable }  from './pages/Venues/VenuesTable'
 
 const RcRoutes = React.lazy(() => import('rc/Routes'))
 const AnalyticsRoutes = React.lazy(() => import('analytics/Routes'))
+const ReportsRoutes = React.lazy(() => import('reports/Routes'))
 const MspRoutes = React.lazy(() => import('msp/Routes'))
 
 function AllRoutes () {
@@ -34,6 +37,9 @@ function AllRoutes () {
         </Route>
         <Route path='timeline/*' element={<TimelineBase />}>
           <Route path='*' element={<RcRoutes />} />
+        </Route>
+        <Route path='reports/*' element={<ReportsBase />}>
+          <Route path='*' element={<ReportsRoutes />} />
         </Route>
         <Route path='devices/*' element={<DevicesBase />}>
           <Route path='*' element={<RcRoutes />} />
@@ -52,6 +58,7 @@ function AllRoutes () {
           <Route path='*' element={<RcRoutes />} />
         </Route>
         <Route path='venues/*' element={<VenuesRoutes />} />
+        <Route path='administration/*' element={<AdministrationRoutes />} />
       </Route>
       <Route path='v/:tenantId/*' element={<MspRoutes />} />
     </>
@@ -65,11 +72,28 @@ function VenuesRoutes () {
       <Route path='add' element={<VenuesForm />} />
       <Route path=':venueId/venue-details/:activeTab' element={<VenueDetails />} />
       <Route
+        path=':venueId/venue-details/:activeTab/:activeSubTab'
+        element={<VenueDetails />}
+      />
+      <Route
         path=':venueId/venue-details/:activeTab/:activeSubTab/:categoryTab'
         element={<VenueDetails />}
       />
       <Route path=':venueId/:action/:activeTab' element={<VenueEdit />} />
       <Route path=':venueId/edit/:activeTab/:activeSubTab' element={<VenueEdit />} />
+    </Route>
+  )
+}
+
+function AdministrationRoutes () {
+  return rootRoutes(
+    <Route path='t/:tenantId/administration'>
+      <Route
+        index
+        element={<TenantNavigate replace to='/administration/accountSettings' />}
+      />
+      <Route path=':activeTab' element={<Administration />} />
+
     </Route>
   )
 }

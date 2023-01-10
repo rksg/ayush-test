@@ -14,18 +14,29 @@ import {
   deviceStatusColors,
   getDeviceConnectionStatusColors
 } from '@acx-ui/components'
-import { useVenuesListQuery, useDeleteVenueMutation }                                              from '@acx-ui/rc/services'
-import { useTableQuery, ApDeviceStatusEnum, Venue, ApVenueStatusEnum, TableQuery, RequestPayload } from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useParams }                                                      from '@acx-ui/react-router-dom'
+import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
+import { useVenuesListQuery, useDeleteVenueMutation } from '@acx-ui/rc/services'
+import {
+  ApDeviceStatusEnum,
+  Venue,
+  ApVenueStatusEnum,
+  TableQuery,
+  RequestPayload,
+  usePollingTableQuery
+} from '@acx-ui/rc/utils'
+import { TenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
 
 function useColumns () {
   const { $t } = useIntl()
+  const isEdgeEnabled = useIsSplitOn(Features.EDGES)
+
   const columns: TableProps<Venue>['columns'] = [
     {
       title: $t({ defaultMessage: 'Venue' }),
       key: 'name',
       dataIndex: 'name',
       sorter: true,
+      disable: true,
       defaultSortOrder: 'ascend',
       render: function (data, row) {
         return (
@@ -80,6 +91,7 @@ function useColumns () {
       align: 'left',
       key: 'aggregatedApStatus',
       dataIndex: 'aggregatedApStatus',
+      sorter: true,
       render: function (data, row) {
         const count = row.aggregatedApStatus
           ? Object.values(row.aggregatedApStatus)
@@ -100,6 +112,7 @@ function useColumns () {
       title: $t({ defaultMessage: 'Wi-Fi Clients' }),
       key: 'clients',
       dataIndex: 'clients',
+      sorter: true,
       align: 'center',
       render: function (data, row) {
         return (
@@ -114,6 +127,7 @@ function useColumns () {
       title: $t({ defaultMessage: 'Switches' }),
       key: 'switches',
       dataIndex: 'switches',
+      sorter: true,
       align: 'center',
       render: function (data, row) {
         return (
@@ -128,6 +142,7 @@ function useColumns () {
       title: $t({ defaultMessage: 'Switch Clients' }),
       key: 'switchClients',
       dataIndex: 'switchClients',
+      sorter: true,
       align: 'center',
       render: function (data, row) {
         return (
@@ -139,36 +154,57 @@ function useColumns () {
       }
     },
     {
+      title: $t({ defaultMessage: 'SmartEdges' }),
+      key: 'edges',
+      dataIndex: 'edges',
+      align: 'center',
+      render: function (data, row) {
+        return (
+          <TenantLink
+            to={`/venues/${row.id}/venue-details/devices`}
+            children={data ? data : 0}
+          />
+        )
+      }
+    },
+    {
       key: 'tags',
       dataIndex: 'tags',
-      title: $t({ defaultMessage: 'Tags' })
+      title: $t({ defaultMessage: 'Tags' }),
+      show: false
     }
   ]
 
-  return columns
+  return columns.filter(({ key }) =>
+    (key !== 'edges' || (key === 'edges' && isEdgeEnabled)))
 }
 
-export const defaultVenuePayload = {
-  fields: [
-    'check-all',
-    'name',
-    'description',
-    'city',
-    'country',
-    'networks',
-    'aggregatedApStatus',
-    'switches',
-    'switchClients',
-    'clients',
-    'cog',
-    'latitude',
-    'longitude',
-    'status',
-    'id'
-  ],
-  filters: {},
-  sortField: 'name',
-  sortOrder: 'ASC'
+export const useDefaultVenuePayload = (): RequestPayload => {
+  const isEdgeEnabled = useIsSplitOn(Features.EDGES)
+
+  return {
+    fields: [
+      'check-all',
+      'name',
+      'description',
+      'city',
+      'country',
+      'networks',
+      'aggregatedApStatus',
+      'switches',
+      'switchClients',
+      'clients',
+      ...(isEdgeEnabled ? ['edges'] : []),
+      'cog',
+      'latitude',
+      'longitude',
+      'status',
+      'id'
+    ],
+    filters: {},
+    sortField: 'name',
+    sortOrder: 'ASC'
+  }
 }
 
 type VenueTableProps = {
@@ -236,10 +272,11 @@ export const VenueTable = ({ tableQuery, rowSelection }: VenueTableProps) => {
 
 export function VenuesTable () {
   const { $t } = useIntl()
+  const venuePayload = useDefaultVenuePayload()
 
-  const tableQuery = useTableQuery<Venue, RequestPayload<unknown>, unknown>({
+  const tableQuery = usePollingTableQuery<Venue>({
     useQuery: useVenuesListQuery,
-    defaultPayload: defaultVenuePayload
+    defaultPayload: venuePayload
   })
 
   return (

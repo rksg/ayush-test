@@ -4,28 +4,35 @@ import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { showActionModal, Loader, TableProps, Tooltip, Table  }              from '@acx-ui/components'
+import { Features, useIsSplitOn }                                            from '@acx-ui/feature-toggle'
 import { useDeleteNetworkMutation }                                          from '@acx-ui/rc/services'
 import { NetworkTypeEnum, Network, NetworkType, TableQuery, RequestPayload } from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink }                                         from '@acx-ui/react-router-dom'
 import { getIntl, notAvailableMsg }                                          from '@acx-ui/utils'
 
 
-const disabledType = [NetworkTypeEnum.DPSK, NetworkTypeEnum.CAPTIVEPORTAL]
+const disabledType: NetworkTypeEnum[] = []
 
 function getCols (intl: ReturnType<typeof useIntl>) {
   const columns: TableProps<Network>['columns'] = [
     {
       key: 'name',
-      title: intl.$t({ defaultMessage: 'Network Name' }),
+      title: intl.$t({ defaultMessage: 'Name' }),
       dataIndex: 'name',
       sorter: true,
+      disable: true,
       defaultSortOrder: 'ascend',
       render: function (data, row) {
         if(disabledType.indexOf(row.nwSubType as NetworkTypeEnum) > -1){
           return data
         }else{
           return (
-            <TenantLink to={`/networks/${row.id}/network-details/aps`}>{data}</TenantLink>
+            <TenantLink to={`/networks/${row.id}/network-details/aps`}>
+              {data}
+              {data !== row.ssid &&
+                <> {intl.$t({ defaultMessage: '(SSID: {ssid})' }, { ssid: row.ssid })}</>
+              }
+            </TenantLink>
           )
         }
       }
@@ -85,7 +92,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       key: 'clients',
       title: intl.$t({ defaultMessage: 'Clients' }),
       dataIndex: 'clients',
-      sorter: true,
+      sorter: false,
       align: 'center'
     },
     {
@@ -171,6 +178,9 @@ interface NetworkTableProps {
 }
 
 export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
+  if(!useIsSplitOn(Features.SERVICES)){
+    disabledType.push(NetworkTypeEnum.CAPTIVEPORTAL)
+  }
   const intl = useIntl()
   const { $t } = intl
   const navigate = useNavigate()

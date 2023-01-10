@@ -1,4 +1,10 @@
-import { SwitchStatusEnum } from '../../types'
+/* eslint-disable max-len */
+import _ from 'lodash'
+
+import { getIntl } from '@acx-ui/utils'
+
+import { DeviceConnectionStatus }                                         from '../../constants'
+import { STACK_MEMBERSHIP, SwitchRow, SwitchStatusEnum, SwitchViewModel } from '../../types'
 
 export const modelMap: ReadonlyMap<string, string> = new Map([
   ['CRH', 'ICX7750-48F'],
@@ -57,6 +63,10 @@ export const isOperationalSwitch = (status: SwitchStatusEnum, syncedSwitchConfig
   return status === SwitchStatusEnum.OPERATIONAL && syncedSwitchConfig
 }
 
+export const isStrictOperationalSwitch = (status: SwitchStatusEnum, configReady:boolean, syncedSwitchConfig: boolean) => {
+  return status === SwitchStatusEnum.OPERATIONAL && syncedSwitchConfig && configReady
+}
+
 export const getSwitchModel = (serial: string) => {
   if (!serial || serial.length < 3) {
     return 'Unknown'
@@ -77,4 +87,127 @@ export const _isEmpty = (params: unknown) => {
     return true
   }
   return false
+}
+
+export const transformSwitchStatus = (switchStatusEnum: SwitchStatusEnum, configReady = true,
+  syncedSwitchConfig = true, suspendingDeployTime = '') => {
+  const { $t } = getIntl()
+  let message = ''
+  let deviceStatus = DeviceConnectionStatus.INITIAL
+  let isOperational = false
+  switch (switchStatusEnum) {
+    case SwitchStatusEnum.NEVER_CONTACTED_CLOUD:
+      message = $t({ defaultMessage: 'Never contacted cloud' })
+      deviceStatus = DeviceConnectionStatus.INITIAL
+      break
+    case SwitchStatusEnum.INITIALIZING:
+      message = $t({ defaultMessage: 'Initializing' })
+      deviceStatus = DeviceConnectionStatus.INITIAL
+      break
+    case SwitchStatusEnum.FIRMWARE_UPD_START:
+      message = $t({ defaultMessage: 'Firmware Updating' })
+      deviceStatus = DeviceConnectionStatus.CONNECTED
+      break
+    case SwitchStatusEnum.FIRMWARE_UPD_VALIDATING_PARAMETERS:
+      message = $t({ defaultMessage: 'Firmware Update - Validating Parameters' })
+      deviceStatus = DeviceConnectionStatus.CONNECTED
+      break
+    case SwitchStatusEnum.FIRMWARE_UPD_DOWNLOADING:
+      message = $t({ defaultMessage: 'Firmware Update - Downloading' })
+      deviceStatus = DeviceConnectionStatus.CONNECTED
+      break
+    case SwitchStatusEnum.FIRMWARE_UPD_VALIDATING_IMAGE:
+      message = $t({ defaultMessage: 'Firmware Update - Validating Image' })
+      deviceStatus = DeviceConnectionStatus.CONNECTED
+      break
+    case SwitchStatusEnum.FIRMWARE_UPD_SYNCING_TO_REMOTE:
+      message = $t({ defaultMessage: 'Firmware Update - Syncing To Remote' })
+      deviceStatus = DeviceConnectionStatus.CONNECTED
+      break
+    case SwitchStatusEnum.FIRMWARE_UPD_WRITING_TO_FLASH:
+      message = $t({ defaultMessage: 'Firmware Update - Writing To Flash' })
+      deviceStatus = DeviceConnectionStatus.CONNECTED
+      break
+    case SwitchStatusEnum.FIRMWARE_UPD_FAIL:
+      message = $t({ defaultMessage: 'Firmware Update - Failed' })
+      deviceStatus = DeviceConnectionStatus.DISCONNECTED
+      break
+    case SwitchStatusEnum.APPLYING_FIRMWARE:
+      message = $t({ defaultMessage: 'Firmware updating' })
+      deviceStatus = DeviceConnectionStatus.CONNECTED
+      break
+    case SwitchStatusEnum.OPERATIONAL:
+      if (configReady && syncedSwitchConfig) {
+        if (suspendingDeployTime && suspendingDeployTime.length > 0) {
+          message = $t({ defaultMessage: 'Operational - applying configuration' })
+        } else {
+          message = $t({ defaultMessage: 'Operational' })
+          isOperational = true
+        }
+      } else if (!syncedSwitchConfig) {
+        message = $t({ defaultMessage: 'Synchronizing data' })
+      } else {
+        message = $t({ defaultMessage: 'Operational - Synchronizing' })
+      }
+      deviceStatus = DeviceConnectionStatus.CONNECTED
+      break
+    case SwitchStatusEnum.DISCONNECTED:
+      message = $t({ defaultMessage: 'Disconnected from cloud' })
+      deviceStatus = DeviceConnectionStatus.DISCONNECTED
+      break
+    case SwitchStatusEnum.STACK_MEMBER_NEVER_CONTACTED:
+      message = $t({ defaultMessage: 'Never contacted Active Switch' })
+      deviceStatus = DeviceConnectionStatus.INITIAL
+      break
+    default:
+      message = $t({ defaultMessage: 'Never contacted cloud' })
+      deviceStatus = DeviceConnectionStatus.INITIAL
+  }
+  return { message, deviceStatus, isOperational }
+}
+
+export const getSwitchStatusString = (row: SwitchRow) => {
+  const { $t } = getIntl()
+  const status = transformSwitchStatus(row.deviceStatus, row.configReady, row.syncedSwitchConfig, row.suspendingDeployTime)
+  const isSync = !_.isEmpty(row.syncDataId) && status.isOperational
+  const isStrictOperational = isStrictOperationalSwitch(row.deviceStatus, row.configReady, !!row.syncedSwitchConfig)
+  let switchStatus = ( isStrictOperational && row.operationalWarning === true) ?
+    $t({ defaultMessage: '{statusMessage} - Warning' }, { statusMessage: status.message }) : status.message
+
+  return isSync ? $t({ defaultMessage: '{switchStatus} - Syncing' }, { switchStatus }) : switchStatus
+}
+
+export const getSwitchName = (row: SwitchRow) => {
+  return row.name || row.switchName || row.serialNumber
+}
+
+export const convertPoeUsage = (rawUsage: number) => {
+  return Math.round(rawUsage / 1000)
+}
+
+export const getPoeUsage = (data: SwitchViewModel) => {
+  const tmpTotal = _.get(data, 'poeUsage.poeTotal', 0) || _.get(data, 'poeTotal', 0)
+  const tmpUsage = _.get(data, 'poeUsage.poeUtilization', 0) || _.get(data, 'poeUtilization', 0)
+  const poeTotal = Math.round(convertPoeUsage(tmpTotal))
+  const poeUsage = Math.round(convertPoeUsage(tmpUsage))
+  const poePercentage = (poeUsage === 0 || poeTotal === 0) ? 0 : Math.round(poeUsage / poeTotal * 100)
+  return {
+    used: poeUsage,
+    total: poeTotal,
+    percentage: poePercentage + '%'
+  }
+}
+
+export const getStackMemberStatus = (unitStatus: string, isDefaultMember?: boolean) => {
+  const { $t } = getIntl()
+  if (unitStatus === STACK_MEMBERSHIP.ACTIVE) {
+    return $t({ defaultMessage: 'Active' })
+  } else if (unitStatus === STACK_MEMBERSHIP.STANDBY) {
+    return $t({ defaultMessage: 'Standby' })
+  } else if (unitStatus === STACK_MEMBERSHIP.MEMBER) {
+    return $t({ defaultMessage: 'Member' })
+  } else if (isDefaultMember) {
+    return $t({ defaultMessage: 'Member' })
+  }
+  return
 }

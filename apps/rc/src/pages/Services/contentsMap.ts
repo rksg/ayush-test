@@ -1,7 +1,7 @@
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
 import {
-  MdnsProxyForwardingRuleTypeEnum,
+  QosPriorityEnum,
   ServiceAdminState,
   ServiceStatus,
   ServiceTechnology,
@@ -41,36 +41,9 @@ export const serviceAdminStateLabelMapping: Record<ServiceAdminState, MessageDes
 }
 
 // eslint-disable-next-line max-len
-export const mdnsProxyForwardingRuleTypeLabelMapping: Record<MdnsProxyForwardingRuleTypeEnum, MessageDescriptor> = {
-  [MdnsProxyForwardingRuleTypeEnum.AIRDISK]: defineMessage({ defaultMessage: 'AirDisk' }),
-  [MdnsProxyForwardingRuleTypeEnum.AIRPLAY]: defineMessage({ defaultMessage: 'AirPlay' }),
-  // eslint-disable-next-line max-len
-  [MdnsProxyForwardingRuleTypeEnum.AIRPORT_MANAGEMENT]: defineMessage({ defaultMessage: 'Airport Management' }),
-  [MdnsProxyForwardingRuleTypeEnum.AIRPRINT]: defineMessage({ defaultMessage: 'AirPrint' }),
-  [MdnsProxyForwardingRuleTypeEnum.AIRTUNES]: defineMessage({ defaultMessage: 'AirTunes' }),
-  [MdnsProxyForwardingRuleTypeEnum.APPLETV]: defineMessage({ defaultMessage: 'Apple TV' }),
-  // eslint-disable-next-line max-len
-  [MdnsProxyForwardingRuleTypeEnum.APPLE_FILE_SHARING]: defineMessage({ defaultMessage: 'Apple File Sharing' }),
-  // eslint-disable-next-line max-len
-  [MdnsProxyForwardingRuleTypeEnum.APPLE_MOBILE_DEVICES]: defineMessage({ defaultMessage: 'Apple Mobile Devices' }),
-  // eslint-disable-next-line max-len
-  [MdnsProxyForwardingRuleTypeEnum.GOOGLE_CHROMECAST]: defineMessage({ defaultMessage: 'Google Chromecast' }),
-  [MdnsProxyForwardingRuleTypeEnum.ICLOUD_SYNC]: defineMessage({ defaultMessage: 'iCloud Sync' }),
-  // eslint-disable-next-line max-len
-  [MdnsProxyForwardingRuleTypeEnum.ITUNES_REMOTE]: defineMessage({ defaultMessage: 'iTunes Remote' }),
-  // eslint-disable-next-line max-len
-  [MdnsProxyForwardingRuleTypeEnum.ITUNES_SHARING]: defineMessage({ defaultMessage: 'iTunes Sharing' }),
-  // eslint-disable-next-line max-len
-  [MdnsProxyForwardingRuleTypeEnum.OPEN_DIRECTORY_MASTER]: defineMessage({ defaultMessage: 'Open Directory Master' }),
-  // eslint-disable-next-line max-len
-  [MdnsProxyForwardingRuleTypeEnum.OPTICAL_DISK_SHARING]: defineMessage({ defaultMessage: 'Optical Disk Sharing' }),
-  [MdnsProxyForwardingRuleTypeEnum.OTHER]: defineMessage({ defaultMessage: 'Other' }),
-  // eslint-disable-next-line max-len
-  [MdnsProxyForwardingRuleTypeEnum.SCREEN_SHARING]: defineMessage({ defaultMessage: 'Screen Sharing' }),
-  // eslint-disable-next-line max-len
-  [MdnsProxyForwardingRuleTypeEnum.SECURE_FILE_SHARING]: defineMessage({ defaultMessage: 'Secure File Sharing' }),
-  [MdnsProxyForwardingRuleTypeEnum.SECURE_SHELL]: defineMessage({ defaultMessage: 'Secure Shell' }),
-  [MdnsProxyForwardingRuleTypeEnum.WWW_HTTP]: defineMessage({ defaultMessage: 'WWW HTTP' }),
-  [MdnsProxyForwardingRuleTypeEnum.WWW_HTTPS]: defineMessage({ defaultMessage: 'WWW HTTPs' }),
-  [MdnsProxyForwardingRuleTypeEnum.XGRID]: defineMessage({ defaultMessage: 'Xgrid' })
+export const wifiCallingQosPriorityLabelMapping: Record<QosPriorityEnum, MessageDescriptor> = {
+  [QosPriorityEnum.WIFICALLING_PRI_VOICE]: defineMessage({ defaultMessage: 'Voice' }),
+  [QosPriorityEnum.WIFICALLING_PRI_VIDEO]: defineMessage({ defaultMessage: 'Video' }),
+  [QosPriorityEnum.WIFICALLING_PRI_BE]: defineMessage({ defaultMessage: 'Best Effort' }),
+  [QosPriorityEnum.WIFICALLING_PRI_BG]: defineMessage({ defaultMessage: 'Background' })
 }

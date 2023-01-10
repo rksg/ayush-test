@@ -6,6 +6,7 @@ import { rest }  from 'msw'
 import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                     from '@acx-ui/store'
 import {
+  findTBody,
   mockServer,
   render,
   screen,
@@ -46,12 +47,23 @@ const list = {
             Rssi: null,
             radioId: 1
           }
+        ],
+        lanPortStatus: [
+          {
+            phyLink: 'Down ',
+            port: '0'
+          },
+          {
+            phyLink: 'Up 1000Mbps full',
+            port: '1'
+          }
         ]
       },
       meshRole: 'DISABLED',
       deviceGroupId: '4fe4e02d7ef440c4affd28c620f93073',
       tags: '',
-      deviceGroupName: ''
+      deviceGroupName: '',
+      poePort: '1'
     }, {
       serialNumber: '000000000002',
       name: 'mock-ap-2',
@@ -328,8 +340,7 @@ describe('Aps', () => {
     const row2 = await screen.findByRole('row', { name: /mock-ap-2/i })
     await userEvent.click(row2) // select ap 2: DisconnectedFromCloud
 
-    const tbody = (await screen.findAllByRole('rowgroup'))
-      .find(element => element.classList.contains('ant-table-tbody'))!
+    const tbody = await findTBody()
     const rows = await within(tbody).findAllByRole('checkbox', { checked: true })
     expect(rows).toHaveLength(1)
 

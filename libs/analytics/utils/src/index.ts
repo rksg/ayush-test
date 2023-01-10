@@ -12,8 +12,10 @@ export { default as incidentSeverities } from './incidentSeverities.json'
 export { getRootCauseAndRecommendations, codeToFailureTypeMap } from './rootCauseRecommendation'
 export {
   clientEventDescription,
+  mapDisconnectCodeToReason,
   mapCodeToReason,
-  mapCodeToAttempt
+  mapCodeToAttempt,
+  mapCodeToFailureText
 } from './reasonCodeMap'
 export * from './timeseries'
 export * from './sorters'

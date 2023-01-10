@@ -26,13 +26,13 @@ export * from './network'
 export * from './any-network'
 export * from './user'
 export * from './services'
+export * from './policies'
 export * from './msp'
 export * from './edge'
-export * from './policies'
-export * from './portalService'
 export * from './client'
 export * from './components'
 export * from './switch'
+export * from './timeline'
 
 export interface CommonResult {
   requestId: string
@@ -102,7 +102,8 @@ export interface Venue {
   // radios ??
   // scheduling ??
   activated: { isActivated: boolean, isDisabled?: boolean }
-  deepVenue?: NetworkVenue
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  deepVenue?: any
   disabledActivation: boolean
   networkId? : string
   vlanPoolId?: string
@@ -130,84 +131,6 @@ export interface AlarmMeta {
 }
 
 export type Alarm = AlarmBase & AlarmMeta
-
-export interface Activity {
-  admin: {
-    name: string
-    email: string
-    ip: string
-    id: string
-    interface: string
-  }
-  descriptionData: { name: string, value:string }[]
-  descriptionTemplate: string
-  endDatetime: string
-  notification: { enabled: boolean, type: string }
-  product: string
-  requestId: string
-  severity: string
-  startDatetime: string
-  status: string
-  steps: {
-    id: string,
-    description: string,
-    status: string,
-    progressType: string
-    startDatetime: string
-    endDatetime: string
-  }[]
-tenantId: string
-useCase: string
-}
-
-export interface EventBase {
-  apMac: string
-  entity_id: string
-  entity_type: string
-  event_datetime: string
-  id: string
-  macAddress: string
-  message: string
-  name: string
-  product: string
-  radio: string
-  raw_event: string
-  serialNumber: string
-  severity: string
-  venueId: string
-}
-
-export interface EventMeta {
-  id: EventBase['id']
-  apGroupId: string
-  apName: string
-  isApExists: boolean
-  isSwitchExists: boolean
-  isVenueExists: boolean
-  switchName: string
-  venueName: string
-}
-
-export type Event = EventBase & EventMeta
-
-export interface AdminLogBase {
-  adminName: string
-  entity_id: string
-  entity_type: string
-  event_datetime: string
-  id: string
-  message: string
-  raw_event: string
-  severity: string
-}
-
-export interface AdminLogMeta {
-  id: AdminLogBase['id']
-  isApExists: boolean
-  isSwitchExists: boolean
-}
-
-export type AdminLog = AdminLogBase & AdminLogMeta
 
 export enum EventSeverityEnum {
   CRITICAL = 'Critical',
@@ -491,16 +414,6 @@ export interface Capabilities {
 	version: string
 }
 
-export interface EventMeta {
-  apName: string,
-  id: string,
-  isApExists: boolean,
-  isClientExists: boolean,
-  isVenueExists: boolean,
-  networkId: string,
-  venueName: string,
-}
-
 export interface ClientStatistic {
   applications: number;
   apsConnected: number;
@@ -517,4 +430,22 @@ export const GridInactiveRowDataFlag = 'inactiveRow'
 export interface GridDataRow {
   inactiveTooltip?: string;
   [GridInactiveRowDataFlag]?: boolean;
+}
+
+export interface PaginationQueryResult<T> {
+  page: number
+  pageSize: number
+  totalCount: number
+  content: T[]
+}
+
+export interface PlmMessageBanner {
+  createdBy: string,
+  createdDate: string,
+  description: string,
+  endTime: string,
+  id: string,
+  startTime: string,
+  tenantType: string,
+  updatedDate: string
 }

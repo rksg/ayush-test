@@ -249,7 +249,7 @@ export function EditPortDrawer ({
 
   const { data: switchDetail }
     = useSwitchDetailHeaderQuery({ params: { tenantId, switchId, serialNumber } })
-  const { data: aclUnion } = useGetAclUnionQuery({ params: { tenantId, serialNumber } })
+  const { data: aclUnion } = useGetAclUnionQuery({ params: { tenantId, switchId } })
   const { data: switchesDefaultVlan }
     = useGetDefaultVlanQuery({ params: { tenantId }, payload: switches }) // ['58:fb:96:0e:82:8a', 'c0:c5:20:aa:32:79']
 
@@ -257,7 +257,7 @@ export function EditPortDrawer ({
     return switches.length > 1
       // eslint-disable-next-line max-len
       ? await getSwitchesVlan({ params: { tenantId, serialNumber }, payload: switches }, true).unwrap()
-      : await getSwitchVlan({ params: { tenantId, serialNumber } }, true).unwrap()
+      : await getSwitchVlan({ params: { tenantId, switchId } }, true).unwrap()
   }
 
   const getMultiplePortsSetting = async () => {

@@ -1,4 +1,5 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { createApi, fetchBaseQuery, FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
+import _                                                  from 'lodash'
 
 import {
   createHttpRequest,
@@ -7,17 +8,30 @@ import {
   SaveSwitchProfile,
   SwitchUrlsInfo,
   SwitchViewModel,
+  Acl,
+  Vlan,
   SwitchPortViewModel,
   TableResult,
-  SwitchAclUnion,
   SwitchDefaultVlan,
   SwitchProfile,
   SwitchVlanUnion,
   PortSetting,
   PortsSetting,
-  VePortRoutedResp,
-  Vlan
+  Switch,
+  STACK_MEMBERSHIP,
+  onSocketActivityChanged,
+  showActivityMessage,
+  SwitchRow,
+  StackMember,
+  ConfigurationHistory,
+  transformConfigType,
+  transformConfigStatus,
+  VeViewModel,
+  VlanVePort,
+  AclUnion,
+  VeForm
 } from '@acx-ui/rc/utils'
+import { formatter } from '@acx-ui/utils'
 
 export const baseSwitchApi = createApi({
   baseQuery: fetchBaseQuery(),
@@ -29,6 +43,70 @@ export const baseSwitchApi = createApi({
 
 export const switchApi = baseSwitchApi.injectEndpoints({
   endpoints: (build) => ({
+    switchList: build.query<TableResult<SwitchRow>, RequestPayload>({
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const listInfo = {
+          ...createHttpRequest(SwitchUrlsInfo.getSwitchList, arg.params),
+          body: arg.payload
+        }
+        const listQuery = await fetchWithBQ(listInfo)
+        const list = listQuery.data as TableResult<SwitchRow>
+        const stackMembers:{ [index:string]: StackMember[] } = {}
+        const stacks: string[] = []
+        list.data.forEach(async (item:SwitchRow) => {
+          if(item.isStack || item.formStacking){
+            stacks.push(item.serialNumber)
+          }
+        })
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const allStacksMember:any = await Promise.all(stacks.map(id =>
+          fetchWithBQ(genStackMemberPayload(arg, id))
+        ))
+        stacks.forEach((id:string, index:number) => {
+          stackMembers[id] = allStacksMember[index]?.data.data
+        })
+
+        const aggregatedList = aggregatedSwitchListData(list, stackMembers)
+
+        return listQuery.data
+          ? { data: aggregatedList }
+          : { error: listQuery.error as FetchBaseQueryError }
+      },
+      keepUnusedDataFor: 0,
+      providesTags: [{ type: 'Switch', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'Delete Switch'
+          ]
+          showActivityMessage(msg, activities, () => {
+            api.dispatch(switchApi.util.invalidateTags([{ type: 'Switch', id: 'LIST' }]))
+          })
+        })
+      }
+    }),
+    stackMemberList: build.query<TableResult<StackMember>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.getMemberList,
+          params
+        )
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    deleteSwitches: build.mutation<SwitchRow, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.deleteSwitches, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Switch', id: 'LIST' }]
+    }),
     switchDetailHeader: build.query<SwitchViewModel, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(SwitchUrlsInfo.getSwitchDetailHeader, params)
@@ -51,24 +129,9 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       keepUnusedDataFor: 0,
       providesTags: [{ type: 'SwitchPort', id: 'LIST' }]
     }),
-    getSwitchRoutedList: build.query<VePortRoutedResp, RequestPayload>({
+    addSwitch: build.mutation<Switch, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(
-          SwitchUrlsInfo.getSwitchRoutedList,
-          params
-        )
-        return {
-          ...req,
-          body: payload
-        }
-      }
-    }),
-    getVenueRoutedList: build.query<VePortRoutedResp, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(
-          SwitchUrlsInfo.getVenueRoutedList,
-          params
-        )
+        const req = createHttpRequest(SwitchUrlsInfo.addSwitch, params)
         return {
           ...req,
           body: payload
@@ -98,14 +161,6 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       },
       keepUnusedDataFor: 0,
       providesTags: [{ type: 'SwitchPort', id: 'Setting' }]
-    }),
-    getAclUnion: build.query<SwitchAclUnion, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getAclUnion, params)
-        return {
-          ...req
-        }
-      }
     }),
     getDefaultVlan: build.query<SwitchDefaultVlan[], RequestPayload>({
       query: ({ params, payload }) => {
@@ -144,14 +199,6 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         return {
           ...req,
           body: payload
-        }
-      }
-    }),
-    getVlansByVenue: build.query<Vlan[], RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getVlansByVenue, params)
-        return {
-          ...req
         }
       }
     }),
@@ -201,21 +248,237 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Switch', id: 'LIST' }]
+    }),
+    getSwitchList: build.query<TableResult<SwitchViewModel>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const switchListReq = createHttpRequest(SwitchUrlsInfo.getSwitchList, params)
+        return {
+          ...switchListReq,
+          body: payload
+        }
+      }
+    }),
+    getSwitchConfigHistory: build.query<TableResult<ConfigurationHistory>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getSwitchConfigHistory, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      transformResponse: (res: { response:{ list:ConfigurationHistory[], totalCount:number } }, meta
+        , arg: { payload:{ page:number } }) => {
+        return {
+          data: res.response.list ? res.response.list.map(item => ({
+            ...item,
+            startTime: formatter('dateTimeFormatWithSeconds')(item.startTime),
+            configType: transformConfigType(item.configType),
+            dispatchStatus: transformConfigStatus(item.dispatchStatus)
+          })) : [],
+          totalCount: res.response.totalCount,
+          page: arg.payload.page
+        }
+      }
+    }),
+    addStackMember: build.mutation<{}, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.addStackMember, params)
+        return {
+          ...req
+          // body:
+        }
+      },
+      invalidatesTags: [{ type: 'Switch', id: 'LIST' }]
+    }),
+    getVlansByVenue: build.query<Vlan[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getVlansByVenue, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    getSwitchRoutedList: build.query<TableResult<VeViewModel>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getSwitchRoutedList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Switch', id: 'VE' }]
+    }),
+    getVenueRoutedList: build.query<TableResult<VeViewModel>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getVenueRoutedList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    getVlanListBySwitchLevel: build.query<TableResult<Vlan>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getVlanListBySwitchLevel, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    getSwitchAcls: build.query<Acl[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getSwitchAcls, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    saveSwitch: build.mutation<Switch, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.addSwitch, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Switch', id: 'LIST' }]
+    }),
+    getFreeVePortVlans: build.query<VlanVePort[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getFreeVePortVlans, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    getAclUnion: build.query<AclUnion, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getAclUnion, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    addVePort: build.mutation<VeForm, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.addVePort, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Switch', id: 'VE' }]
+    }),
+    updateVePort: build.mutation<VeForm, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.updateVePort, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Switch', id: 'VE' }]
+    }),
+    getSwitch: build.query<Switch, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getSwitch, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    deleteVePorts: build.mutation<VeForm, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.deleteVePorts, params)
+        return {
+          ...req,
+          body: payload
+        }
+
+      },
+      invalidatesTags: [{ type: 'Switch', id: 'VE' }]
     })
   })
 })
+
+const genStackMemberPayload = (arg:RequestPayload<unknown>, serialNumber:string) => {
+  return {
+    ...createHttpRequest(SwitchUrlsInfo.getMemberList, arg.params),
+    body: {
+      fields: [
+        'activeUnitId',
+        'unitId',
+        'unitStatus',
+        'check-all',
+        'name',
+        'deviceStatus',
+        'model',
+        'activeSerial',
+        'switchMac',
+        'ipAddress',
+        'venueName',
+        'uptime',
+        'cog',
+        'id',
+        'serialNumber',
+        'venueId',
+        'switchName',
+        'configReady',
+        'syncedSwitchConfig',
+        'syncDataId',
+        'operationalWarning',
+        'cliApplied',
+        'suspendingDeployTime'
+      ],
+      filters: {
+        activeUnitId: [serialNumber]
+      }
+    }
+  }
+}
+
+export const aggregatedSwitchListData = (switches: TableResult<SwitchRow>,
+  stackMembers:{ [index:string]: StackMember[] }) => {
+  const data:SwitchRow[] = []
+  switches.data.forEach(item => {
+    const tmp = {
+      ...item,
+      isFirstLevel: true
+    }
+    if (stackMembers[item.serialNumber]) {
+      const tmpMember = _.cloneDeep(stackMembers[item.serialNumber])
+      tmpMember.forEach((member: StackMember, index: number) => {
+        if (member.serialNumber === tmp.serialNumber) {
+          tmpMember[index].unitStatus = STACK_MEMBERSHIP.ACTIVE
+        }
+      })
+      tmp.children = tmpMember
+    }
+    data.push(tmp)
+  })
+
+  return {
+    ...switches,
+    data
+  }
+}
+
 export const {
+  useSwitchListQuery,
+  useStackMemberListQuery,
+  useDeleteSwitchesMutation,
   useSwitchDetailHeaderQuery,
+  useImportSwitchesMutation,
+  useGetVlansByVenueQuery,
+  useLazyGetVlansByVenueQuery,
   useSwitchPortlistQuery,
   useGetPortSettingQuery,
   useLazyGetPortSettingQuery,
   useGetPortsSettingQuery,
   useLazyGetPortsSettingQuery,
-  useGetSwitchRoutedListQuery,
   useLazyGetSwitchRoutedListQuery,
-  useGetVenueRoutedListQuery,
   useLazyGetVenueRoutedListQuery,
-  useGetAclUnionQuery,
   useGetDefaultVlanQuery,
   useGetSwitchVlanQuery,
   useLazyGetSwitchVlanQuery,
@@ -223,8 +486,6 @@ export const {
   useLazyGetSwitchVlansQuery,
   useGetSwitchesVlanQuery,
   useLazyGetSwitchesVlanQuery,
-  useGetVlansByVenueQuery,
-  useLazyGetVlansByVenueQuery,
   useGetTaggedVlansByVenueQuery,
   useLazyGetTaggedVlansByVenueQuery,
   useGetUntaggedVlansByVenueQuery,
@@ -232,5 +493,21 @@ export const {
   useGetSwitchConfigurationProfileByVenueQuery,
   useLazyGetSwitchConfigurationProfileByVenueQuery,
   useSavePortsSettingMutation,
-  useImportSwitchesMutation
+  useSaveSwitchMutation,
+  useAddSwitchMutation,
+  useAddStackMemberMutation,
+  useGetSwitchConfigHistoryQuery,
+  useGetSwitchListQuery,
+  useLazyGetSwitchListQuery,
+  useGetVenueRoutedListQuery,
+  useGetSwitchRoutedListQuery,
+  useGetFreeVePortVlansQuery,
+  useLazyGetFreeVePortVlansQuery,
+  useGetAclUnionQuery,
+  useAddVePortMutation,
+  useUpdateVePortMutation,
+  useGetSwitchQuery,
+  useDeleteVePortsMutation,
+  useGetSwitchAclsQuery,
+  useGetVlanListBySwitchLevelQuery
 } = switchApi

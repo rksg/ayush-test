@@ -6,10 +6,10 @@ import {
   cssStr
 } from '@acx-ui/components'
 import {
+  AclUnion,
   getPortSpeedOptions,
   LldpQosModel,
   SwitchPortViewModel,
-  SwitchAclUnion,
   SwitchDefaultVlan,
   // SwitchVlans,
   SwitchVlanUnion,
@@ -53,7 +53,7 @@ export const getPortSpeed = (selectedPorts: SwitchPortViewModel[]) => {
   return _.intersection(...portsSpeedOptions) as string[]
 }
 
-export const getAclOptions = (acls?: SwitchAclUnion) => {
+export const getAclOptions = (acls?: AclUnion) => {
   const { $t } = getIntl()
   const options = Object.values(acls ?? {}).flat()?.map((acl: string) => ({
     label: acl, value: acl, disabled: false

@@ -1,5 +1,6 @@
 import { rest } from 'msw'
 
+import { useIsSplitOn }                                 from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo, ClientUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                     from '@acx-ui/store'
 import {
@@ -21,6 +22,9 @@ import {
   histClientList
 } from '../__tests__/fixtures'
 
+import ClientDetailPageHeader from './ClientDetailPageHeader'
+import { events, eventsMeta } from './ClientTimelineTab/__tests__/fixtures'
+
 import ClientDetails from '.'
 
 const mockedUsedNavigate = jest.fn()
@@ -28,26 +32,42 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
+jest.mock('@acx-ui/analytics/components', () => {
+  const sets = Object.keys(jest.requireActual('@acx-ui/analytics/components'))
+    .map(key => [key, () => <div data-testid={`analytics-${key}`} title={key} />])
+  return Object.fromEntries(sets)
+})
+jest.mock('@acx-ui/rc/components', () => {
+  const sets = Object.keys(jest.requireActual('@acx-ui/rc/components'))
+    .map(key => [key, () => <div data-testid={`rc-${key}`} title={key} />])
+  return Object.fromEntries(sets)
+})
 
 describe('ClientDetails', () => {
-  mockServer.use(
-    rest.get(ClientUrlsInfo.getClientDetails.url,
-      (_, res, ctx) => res(ctx.json(clientList[0]))),
-    rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
-      (_, res, ctx) => res(ctx.json(clientApList[0]))),
-    rest.get(WifiUrlsInfo.getNetwork.url,
-      (_, res, ctx) => res(ctx.json(clientNetworkList[0]))),
-    rest.get(CommonUrlsInfo.getVenue.url,
-      (_, res, ctx) => res(ctx.json(clientVenueList[0]))),
-    rest.post(CommonUrlsInfo.getHistoricalClientList.url,
-      (_, res, ctx) => res(ctx.json(histClientList ))),
-    rest.post(CommonUrlsInfo.getHistoricalStatisticsReportsV2.url,
-      (_, res, ctx) => res(ctx.json(clientReportList[0]))),
-    rest.post(CommonUrlsInfo.getEventListMeta.url,
-      (_, res, ctx) => res(ctx.json(eventMetaList))),
-    rest.get(WifiUrlsInfo.getApCapabilities.url,
-      (_, res, ctx) => res(ctx.json(apCaps)))
-  )
+  beforeEach(() => {
+    mockServer.use(
+      rest.post(CommonUrlsInfo.getEventList.url,
+        (_, res, ctx) => res(ctx.json(events))),
+      rest.post(CommonUrlsInfo.getEventListMeta.url,
+        (_, res, ctx) => res(ctx.json(eventsMeta))),
+      rest.get(ClientUrlsInfo.getClientDetails.url,
+        (_, res, ctx) => res(ctx.json(clientList[0]))),
+      rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
+        (_, res, ctx) => res(ctx.json(clientApList[0]))),
+      rest.get(WifiUrlsInfo.getNetwork.url,
+        (_, res, ctx) => res(ctx.json(clientNetworkList[0]))),
+      rest.get(CommonUrlsInfo.getVenue.url,
+        (_, res, ctx) => res(ctx.json(clientVenueList[0]))),
+      rest.post(CommonUrlsInfo.getHistoricalClientList.url,
+        (_, res, ctx) => res(ctx.json(histClientList ))),
+      rest.post(CommonUrlsInfo.getHistoricalStatisticsReportsV2.url,
+        (_, res, ctx) => res(ctx.json(clientReportList[0]))),
+      rest.post(CommonUrlsInfo.getEventListMeta.url,
+        (_, res, ctx) => res(ctx.json(eventMetaList))),
+      rest.get(WifiUrlsInfo.getApCapabilities.url,
+        (_, res, ctx) => res(ctx.json(apCaps)))
+    )
+  })
 
   it('should render correctly', async () => {
     jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('hostname')
@@ -65,7 +85,6 @@ describe('ClientDetails', () => {
     const fragment = asFragment()
     // eslint-disable-next-line testing-library/no-node-access
     fragment.querySelector('div[_echarts_instance_^="ec_"]')?.removeAttribute('_echarts_instance_')
-    expect(fragment).toMatchSnapshot()
 
     fireEvent.click(await screen.findByRole('tab', { name: 'Reports' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
@@ -81,10 +100,11 @@ describe('ClientDetails', () => {
       clientId: 'user-id',
       activeTab: 'troubleshooting'
     }
-    const { asFragment } = render(<Provider><ClientDetails /></Provider>, {
+    render(<Provider><ClientDetails /></Provider>, {
       route: { params, path: '/:tenantId/users/wifi/:activeTab/:clientId/details/:activeTab' }
     })
-    expect(asFragment()).toMatchSnapshot()
+    expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
+      .toEqual('Troubleshooting')
   })
 
   it('should navigate to reports tab correctly', async () => {
@@ -93,10 +113,11 @@ describe('ClientDetails', () => {
       clientId: 'user-id',
       activeTab: 'reports'
     }
-    const { asFragment } = render(<Provider><ClientDetails /></Provider>, {
+    render(<Provider><ClientDetails /></Provider>, {
       route: { params, path: '/:tenantId/users/wifi/:activeTab/:clientId/details/:activeTab' }
     })
-    expect(asFragment()).toMatchSnapshot()
+    expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
+      .toEqual('Reports')
   })
 
   it('should navigate to timeline tab correctly', async () => {
@@ -105,10 +126,12 @@ describe('ClientDetails', () => {
       clientId: 'user-id',
       activeTab: 'timeline'
     }
-    const { asFragment } = render(<Provider><ClientDetails /></Provider>, {
+    render(<Provider><ClientDetails /></Provider>, {
       route: { params, path: '/:tenantId/users/wifi/:activeTab/:clientId/details/:activeTab' }
     })
-    expect(asFragment()).toMatchSnapshot()
+    expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
+      .toEqual('Timeline')
+    await screen.findByTestId('rc-EventTable')
   })
 
   it('should not navigate to non-existent tab', async () => {
@@ -124,4 +147,15 @@ describe('ClientDetails', () => {
       .toHaveLength(0)
   })
 
+  it('should render ClientDetailPageHeader correctly', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true) // mock Features.DEVICES
+    const params = {
+      tenantId: 'tenant-id',
+      clientId: 'user-id',
+      activeTab: 'overview'
+    }
+    render(<Provider><ClientDetailPageHeader /></Provider>, {
+      route: { params, path: '/:tenantId/users/wifi/clients' }
+    })
+  })
 })

@@ -7,9 +7,9 @@ import { useGetHistoricalClientListQuery } from '@acx-ui/rc/services'
 import {
   Client,
   useTableQuery
-}                                                            from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
-import { formatter }  from '@acx-ui/utils'
+} from '@acx-ui/rc/utils'
+import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { formatter }             from '@acx-ui/utils'
 
 function getCols (intl: ReturnType<typeof useIntl>) {
   const dateTimeFormatter = formatter('dateTimeFormat')
@@ -81,47 +81,74 @@ function getCols (intl: ReturnType<typeof useIntl>) {
   return columns
 }
 
-export function HistoricalClientsTable ({ searchString } : { searchString: string }) {
-  const { $t } = useIntl()
-  const defaultPayload = {
-    searchString: searchString,
-    fields: ['clientMac', 'clientIP', 'userName', 'hostname', 'venueId',
-      'serialNumber', 'ssid', 'disconnectTime', 'cog', 'ssid', 'venueName', 'apName',
-      'event_datetime', 'eventId', 'networkId'],
-    sortField: 'event_datetime',
-    searchTargetFields: ['clientMac', 'userName', 'hostname'],
-    filters: {
-      entity_type: ['CLIENT'],
-      eventId: ['204', '205', '208', '218']
-    }
-  }
-  const tableQuery = useTableQuery({
-    useQuery: useGetHistoricalClientListQuery,
-    defaultPayload
-  })
+const defaultPayload = {
+  searchString: '',
+  fields: ['clientMac', 'clientIP', 'userName', 'hostname', 'venueId',
+    'serialNumber', 'ssid', 'disconnectTime', 'cog', 'ssid', 'venueName', 'apName',
+    'event_datetime', 'eventId', 'networkId'],
+  sortField: 'event_datetime',
+  searchTargetFields: ['clientMac', 'userName', 'hostname'],
+  filters: {}
+}
 
-  return (
-    <Loader states={[
-      tableQuery
-    ]}>
-      <Subtitle level={4}>
-        {$t({ defaultMessage: 'Historical Clients' })}
-      </Subtitle>
-      <Table
-        columns={getCols(useIntl())}
-        dataSource={tableQuery.data?.data}
-        pagination={false}
-        onChange={tableQuery.handleTableChange}
-        rowKey='clientMac'
-      />
-      {!!tableQuery.data?.data?.length && <Typography.Text style={{
-        fontSize: '10px',
-        color: cssStr('--acx-neutrals-60')
-      }}>{
-          $t({ defaultMessage: `* There are more historical clients than can be displayed. 
+const defaultFilters = {
+  entity_type: ['CLIENT'],
+  eventId: ['204', '205', '208', '218']
+}
+
+export function HistoricalClientsTable
+({ searchString, setHistoricalClientCount, id } :
+  { searchString: string, setHistoricalClientCount: (historicalClientCount: number) => void,
+    id: string
+  }) {
+  const { $t } = useIntl()
+  const params = useParams()
+
+  defaultPayload.searchString = searchString
+  defaultPayload.filters =
+    params.venueId ? { ...defaultFilters, venueId: [params.venueId] } :
+      params.serialNumber ? { ...defaultFilters, serialNumber: [params.serialNumber] } :
+        defaultFilters
+
+  const HistoricalClientsTable = () => {
+    const tableQuery = useTableQuery({
+      useQuery: useGetHistoricalClientListQuery,
+      defaultPayload
+    })
+
+    if(tableQuery.data?.data){
+      setHistoricalClientCount(tableQuery.data?.totalCount)
+    }
+
+    return (
+      <div id={id}>
+        <Loader states={[
+          tableQuery
+        ]}>
+          <Subtitle level={4}>
+            {$t({ defaultMessage: 'Historical Clients' })}
+          </Subtitle>
+          <Table
+            columns={getCols(useIntl())}
+            dataSource={tableQuery.data?.data}
+            pagination={false}
+            onChange={tableQuery.handleTableChange}
+            rowKey='clientMac'
+          />
+          {!!tableQuery.data?.data?.length && <Typography.Text style={{
+            fontSize: '10px',
+            color: cssStr('--acx-neutrals-60')
+          }}>{
+              $t({ defaultMessage: `* There are more historical clients than can be displayed. 
         If you don’t see the client you are looking for, 
         narrow the list by entering a more specific text in the search box.` })
-        }</Typography.Text>}
-    </Loader>
+            }</Typography.Text>}
+        </Loader>
+      </div>
+    )
+  }
+
+  return (
+    <HistoricalClientsTable />
   )
 }

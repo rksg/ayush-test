@@ -41,6 +41,7 @@ export enum SwitchStatusEnum {
 }
 
 export class Switch {
+  key?: string
   name: string
   id: string
   description?: string
@@ -86,6 +87,53 @@ export class Switch {
   }
 }
 
+export interface VeViewModel {
+  name?: string
+  dhcpRelayAgent?: string
+  defaultVlan: boolean
+  deviceStatus: SwitchStatusEnum
+  id: string
+  ipAddress?: string
+  ipAddressType?: IP_ADDRESS_TYPE
+  ipSubnetMask?: string
+  ospfArea?: string
+  stack: boolean
+  switchId: string
+  switchName?: string
+  syncedSwitchConfig: boolean
+  veId: number
+  vlanId: number
+  portTyp : string //ignore
+  portNumber: string
+}
+
+export interface VeForm {
+  name: string
+  veId: number
+  vlanId: number
+  ospfArea: string
+  ipSubnetMask?: string
+  ipAddressType?: string
+  ipAddress?: string
+  egressAcl: string
+  ingressAcl: string
+  id: string
+  dhcpRelayAgent: string
+  defaultVlan: boolean
+}
+
+
+export interface VlanVePort {
+  usedByVePort: boolean
+  vlanId: string
+  vlanName?: string
+}
+
+export interface AclUnion {
+  profileAcl: string[]
+  switchAcl: string[]
+}
+
 export class SwitchViewModel extends Switch {
   type?: string
   configReady = false
@@ -108,11 +156,87 @@ export class SwitchViewModel extends Switch {
   suspendingDeployTime?: string
   syncDataEndTime?: number
   firmwareVersion?: string
+  portsStatus?: {
+    Down?: number,
+    Up?: number
+  }
+  venueDescription?: string
+  staticOrDynamic?: string
+  dns?: string
+  unitDetails?: StackMember[]
+  firmware?: string
 }
 
-export interface SwitchTransactionResp {
-  requestId: string;
-  response: Switch;
+export interface SwitchRow {
+  id: string
+  model: string
+  serialNumber: string
+  activeSerial: string
+  deviceStatus: SwitchStatusEnum
+  switchMac: string
+  isStack: boolean
+  name: string
+  venueId: string
+  venueName: string
+  configReady: boolean
+  syncDataEndTime: string
+  cliApplied: boolean
+  formStacking: boolean
+  suspendingDeployTime: string
+  uptime?: string
+  syncedSwitchConfig?: boolean
+  children?: StackMember[]
+  isFirstLevel?: boolean
+  unitStatus?: STACK_MEMBERSHIP
+  syncDataId?: string
+  operationalWarning?: boolean
+  switchName?: string
+}
+
+export interface StackMember {
+  venueName: string
+  serialNumber: string
+  operStatusFound: boolean
+  switchMac: string
+  activeSerial: string
+  id: string
+  uptime: string
+  order: number
+  unitStatus?: STACK_MEMBERSHIP
+  unitId?: string
+}
+
+export interface ConfigurationHistory {
+  switchName: string
+  startTime: string
+  endTime: string
+  serialNumber: string
+  configType: string
+  dispatchStatus: string
+  clis: string
+  numberOfErrors: number
+  transactionId: string
+  dispatchFailedReason?: DispatchFailedReason[]
+}
+
+export interface DispatchFailedReason {
+  lineNumber: string
+  message: string
+}
+
+
+export enum STACK_MEMBERSHIP {
+  ACTIVE = 'Active',
+  STANDBY = 'Standby',
+  MEMBER = 'Member',
+}
+
+export interface SwitchTable {
+  key: string
+  id: string
+  order?: number
+  active?: boolean
+  model: string
 }
 
 export interface SwitchPortViewModel extends GridDataRow {
@@ -250,19 +374,6 @@ export interface VePortRouted {
   vlanId: number
   portNumber: string
 }
-
-export interface VePortRoutedResp {
-  data: VePortRouted[],
-  fields: string[],
-  totalCount: number
-  totalPages: number
-}
-
-export interface SwitchAclUnion {
-  profileAcl: string[]
-  switchAcl: string[]
-}
-
 
 export interface ProfileVlan {
   defaultVlan: boolean
