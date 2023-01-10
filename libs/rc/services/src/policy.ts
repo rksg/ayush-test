@@ -27,7 +27,7 @@ export const basePolicyApi = createApi({
   // eslint-disable-next-line max-len
   tagTypes: ['Policy', 'MacRegistrationPool', 'MacRegistration', 'RadiusAttributeGroup', 'RadiusAttribute'],
   refetchOnMountOrArgChange: true,
-  endpoints: () => ({})
+  endpoints: () => ({ })
 })
 
 const RKS_NEW_UI = {
@@ -143,7 +143,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       },
       transformResponse (result: NewTableResult<MacRegistrationPool>) {
-        return transferTableResult<MacRegistrationPool>(result)
+        return transferToTableResult<MacRegistrationPool>(result)
       },
       providesTags: [{ type: 'MacRegistrationPool', id: 'LIST' }]
     }),
@@ -156,7 +156,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       },
       transformResponse (result: NewTableResult<MacRegistration>) {
-        return transferTableResult<MacRegistration>(result)
+        return transferToTableResult<MacRegistration>(result)
       },
       providesTags: [{ type: 'MacRegistration', id: 'LIST' }]
     }),
@@ -201,7 +201,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     getMacRegList: build.query<MacRegistrationPool, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(MacRegListUrlsInfo.getMacRegistrationPool, params)
-        return {
+        return{
           ...req
         }
       },

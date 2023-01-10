@@ -157,7 +157,8 @@ export function ApGroupForm () {
                 </>}
                 initialValue={null}
                 rules={[{
-                  required: true
+                  required: true,
+                  message: $t({ defaultMessage: 'Please select venue' })
                 }]}
                 children={<Select
                   options={[

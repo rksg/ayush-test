@@ -134,7 +134,7 @@ export function StackForm () {
         id: formRef.current?.getFieldValue(`serialNumber${activeRow}`),
         description: values.description,
         venueId: values.venueId,
-        stackMembers: tableData.map((item) => ({ id: item.id })),
+        stackMembers: tableData.filter((item) => item.id !== '').map((item) => ({ id: item.id })),
         enableStack: true,
         jumboMode: false,
         igmpSnooping: 'none',

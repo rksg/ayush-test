@@ -1,13 +1,19 @@
 import { Form, Input, Col, Radio, Row, Space } from 'antd'
+import _                                       from 'lodash'
 import { useIntl }                             from 'react-intl'
 
-import { StepsForm }                  from '@acx-ui/components'
-import { useGetDHCPProfileListQuery } from '@acx-ui/rc/services'
-import { DHCPConfigTypeEnum }         from '@acx-ui/rc/utils'
-import { useParams }                  from '@acx-ui/react-router-dom'
+import { StepsForm }                      from '@acx-ui/components'
+import { useLazyGetDHCPProfileListQuery } from '@acx-ui/rc/services'
+import { useGetDHCPProfileQuery }         from '@acx-ui/rc/services'
+import { DHCPPool }                       from '@acx-ui/rc/utils'
+import { DHCPConfigTypeEnum }             from '@acx-ui/rc/utils'
+import { checkObjectNotExists }           from '@acx-ui/rc/utils'
+import { useParams }                      from '@acx-ui/react-router-dom'
+import { getIntl }                        from '@acx-ui/utils'
 
 import { dhcpTypes, dhcpTypesDesc } from './contentsMap'
 import { DHCPDiagram }              from './DHCPDiagram/DHCPDiagram'
+import { DEFAULT_GUEST_DHCP_NAME }  from './DHCPForm'
 import DHCPPoolTable                from './DHCPPool'
 import { RadioDescription }         from './styledComponents'
 
@@ -15,6 +21,23 @@ interface DHCPFormProps {
   editMode?: boolean
 }
 
+async function poolValidator (
+  type: DHCPConfigTypeEnum,
+  pools: DHCPPool[]
+) {
+  const { $t } = getIntl()
+  if(type === DHCPConfigTypeEnum.HIERARCHICAL){
+    const hasVlan1 = _.findIndex(pools, { vlanId: 1 })
+    if(hasVlan1===-1){
+      return Promise.reject($t({
+        defaultMessage:
+          // eslint-disable-next-line max-len
+          'At least one DHCP pool with VLAN ID equals "1" must be configured for "Hierarchical" type of DHCP.'
+      }))
+    }
+  }
+  return
+}
 const { useWatch } = Form
 export function SettingForm (props: DHCPFormProps) {
   const { $t } = useIntl()
@@ -23,21 +46,22 @@ export function SettingForm (props: DHCPFormProps) {
 
   const types = Object.values(DHCPConfigTypeEnum)
   const params = useParams()
-  const { data: dhcpProfileList } = useGetDHCPProfileListQuery({ params })
+  const [ getDHCPProfileList ] = useLazyGetDHCPProfileListQuery()
+  const form = Form.useFormInstance()
+  const id = Form.useWatch<string>('id', form)
 
-
-  const nameValidator = async (_rule: unknown, value: string) => {
-    return new Promise<void>((resolve, reject) => {
-      if (!editMode && value && dhcpProfileList?.length && dhcpProfileList?.findIndex((profile) =>
-        profile.serviceName === value) !== -1
-      ) {
-        return reject(
-          $t({ defaultMessage: 'The DHCP service with that name already exists' })
-        )
-      }
-      return resolve()
-    })
+  const nameValidator = async (value: string) => {
+    const list = (await getDHCPProfileList({ params }).unwrap())
+      .filter(dhcpProfile => dhcpProfile.id !== id)
+      .map(dhcpProfile => ({ serviceName: dhcpProfile.serviceName }))
+    // eslint-disable-next-line max-len
+    return checkObjectNotExists(list, { serviceName: value } , $t({ defaultMessage: 'DHCP service' }))
   }
+
+  const {
+    data
+  } = useGetDHCPProfileQuery({ params }, { skip: !editMode })
+
   return (<>
     <Row gutter={20}>
       <Col span={10}>
@@ -49,15 +73,16 @@ export function SettingForm (props: DHCPFormProps) {
         <Form.Item
           name='serviceName'
           label={$t({ defaultMessage: 'Service Name' })}
+
           rules={[
             { required: true },
             { min: 2 },
             { max: 32 },
-            { validator: nameValidator }
+            { validator: (_, value) => nameValidator(value) }
           ]}
           validateFirst
           hasFeedback
-          children={<Input />}
+          children={<Input disabled={editMode && data?.serviceName === DEFAULT_GUEST_DHCP_NAME}/>}
         />
 
         <Form.Item
@@ -94,9 +119,15 @@ export function SettingForm (props: DHCPFormProps) {
             {
               required: true,
               message: $t({ defaultMessage: 'Please create DHCP pools' })
-            }]}
+            },
+            {
+              validator: (_rule, value) => poolValidator(type, value)
+            }
+
+          ]}
           label={$t({ defaultMessage: 'Set DHCP Pools' })}
-          children={<DHCPPoolTable />}
+          children={<DHCPPoolTable dhcpMode={type}
+            isDefaultService={editMode && data?.serviceName === DEFAULT_GUEST_DHCP_NAME}/>}
         />
       </Col>
     </Row>
