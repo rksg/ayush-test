@@ -1,8 +1,19 @@
 import React, { useState, useRef, ChangeEventHandler, useEffect } from 'react'
 
-import { Row, Col, DatePicker, Form, Input, Radio, RadioChangeEvent, Select, Space, Typography } from 'antd'
-import _                                                                                         from 'lodash'
-import { useIntl }                                                                               from 'react-intl'
+import {
+  Col,
+  DatePicker,
+  Form,
+  Input,
+  Radio,
+  RadioChangeEvent,
+  Row,
+  Select,
+  Space,
+  Typography
+} from 'antd'
+import _           from 'lodash'
+import { useIntl } from 'react-intl'
 
 import {
   GoogleMap,
@@ -18,7 +29,6 @@ import { get } from '@acx-ui/config'
 import { SearchOutlined } from '@acx-ui/icons'
 import {
   useAddCustomerMutation,
-  useUpdateCustomerMutation,
   useGetMspEcQuery
 } from '@acx-ui/rc/services'
 import {
@@ -150,18 +160,15 @@ export function AddMspCustomer () {
   const intl = useIntl()
   const isMapEnabled = true//useIsSplitOn(Features.G_MAP)
   const navigate = useNavigate()
-  const [drawer2Visible, setDrawer2Visible] = useState(false)
+  // const [drawer2Visible, setDrawer2Visible] = useState(false)
   const formRef = useRef<StepsFormInstance<MspEcData>>()
   const { Option } = Select
-  const params = useParams()
-  const [isTrial, setTrialMode] = useState(false)
+  // const params = useParams()
+  const [trialSelected, setTrialMode] = useState(true)
 
   const linkToCustomers = useTenantLink('/dashboard/mspcustomers', 'v')
 
-  // const [addVenue] = useAddVenueMutation()
-  // const [updateVenue] = useUpdateVenueMutation()
   const [addCustomerr] = useAddCustomerMutation()
-  const [updateIntegrator] = useUpdateCustomerMutation()
 
   const [zoom, setZoom] = useState(1)
   const [center, setCenter] = useState<google.maps.LatLngLiteral>({
@@ -172,7 +179,6 @@ export function AddMspCustomer () {
   const [address, updateAddress] = useState<Address>(isMapEnabled? {} : defaultAddress)
 
   const { action, tenantId, mspEcTenantId } = useParams()
-  // const { data } = useGetVenueQuery({ params: { tenantId, venueId } })
   const { data } = useGetMspEcQuery({ params: { mspEcTenantId } })
 
   useEffect(() => {
@@ -432,8 +438,9 @@ export function AddMspCustomer () {
   //           name='admin_role'
   //           label={intl.$t({ defaultMessage: 'Role' })}
   //           rules={[{ required: true }]}
+  //           initialValue={RolesEnum.PRIME_ADMIN}
   //           children={
-  //             <Select defaultValue={RolesEnum.PRIME_ADMIN}>
+  //             <Select>
   //               {
   //                 Object.entries(RolesEnum).map(([label, value]) => (
   //                   <Option
@@ -451,31 +458,33 @@ export function AddMspCustomer () {
   // }
   const onChange = (e: RadioChangeEvent) => {
     setTrialMode(e.target.value)
-    // setTrialSelected(e.target.value)
   }
 
   const AddCustomerSubscriptionForm = () => {
     return <>
       <h4>{intl.$t({ defaultMessage: 'Start service in' })}</h4>
-      <Radio.Group onChange={onChange}>
-        <Space direction='vertical'>
-          <Radio
-            value={true}
-            checked={isTrial}
-            disabled={false}>
-            { intl.$t({ defaultMessage: 'Trial Mod)' }) }
-          </Radio>
-          <Radio
-            style={{ marginTop: '2px', marginBottom: '50px' }}
-            checked={!isTrial}
-            value={false}
-            disabled={false}>
-            { intl.$t({ defaultMessage: 'Paid Subscription' }) }
-          </Radio>
-        </Space>
-      </Radio.Group>
+      <Form.Item
+        name='otpSelection'
+        initialValue={true}
+      >
+        <Radio.Group onChange={onChange}>
+          <Space direction='vertical'>
+            <Radio
+              value={true}
+              disabled={false}>
+              { intl.$t({ defaultMessage: 'Trial Mode' }) }
+            </Radio>
+            <Radio
+              style={{ marginTop: '2px', marginBottom: '50px' }}
+              value={false}
+              disabled={false}>
+              { intl.$t({ defaultMessage: 'Paid Subscription' }) }
+            </Radio>
+          </Space>
+        </Radio.Group>
+      </Form.Item>
 
-      {isTrial && <Row gutter={20}>
+      {trialSelected && <Row gutter={20}>
         <Col span={8}>
           <Subtitle level={4}>
             { intl.$t({ defaultMessage: 'Trial Mode' }) }</Subtitle>
@@ -499,7 +508,7 @@ export function AddMspCustomer () {
         </Col>
       </Row>}
 
-      {!isTrial &&
+      {!trialSelected &&
         <Row gutter={20}>
           <Col span={8}>
             <Subtitle level={4}>
@@ -539,8 +548,9 @@ export function AddMspCustomer () {
                 name='expirationDate1'
                 label=''
                 rules={[{ required: true } ]}
+                initialValue={DateSelectionEnum.CUSTOME_DATE}
                 children={
-                  <Select defaultValue={DateSelectionEnum.CUSTOME_DATE}>
+                  <Select>
                     {
                       Object.entries(DateSelectionEnum).map(([label, value]) => (
                         <Option key={label} value={value}>{intl.$t(dateDisplayText[value])}</Option>
@@ -719,7 +729,7 @@ export function AddMspCustomer () {
           </Row>
           <Row gutter={10}>
             <Col span={10}>
-              <UI.FieldLabelAdmins width='275px'>
+              <UI.FieldLabelAdmins width='275px' style={{ marginTop: '15px' }}>
                 <label>{intl.$t({ defaultMessage: 'MSP Administrators' })}</label>
                 <Form.Item
                   children={
@@ -790,8 +800,9 @@ export function AddMspCustomer () {
                 name='admin_role'
                 label={intl.$t({ defaultMessage: 'Role' })}
                 rules={[{ required: true }]}
+                initialValue={RolesEnum.PRIME_ADMIN}
                 children={
-                  <Select defaultValue={RolesEnum.PRIME_ADMIN}>
+                  <Select>
                     {
                       Object.entries(RolesEnum).map(([label, value]) => (
                         <Option
@@ -899,8 +910,9 @@ export function AddMspCustomer () {
                 rules={[
                   { required: true }
                 ]}
+                initialValue={DateSelectionEnum.CUSTOME_DATE}
                 children={
-                  <Select defaultValue={DateSelectionEnum.CUSTOME_DATE}>
+                  <Select>
                     {
                       Object.entries(DateSelectionEnum).map(([label, value]) => (
                         <Option key={label} value={value}>{intl.$t(dateDisplayText[value])}</Option>
