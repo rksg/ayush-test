@@ -67,7 +67,7 @@ export function SwitchPingForm () {
       }
     }
 
-  }, [getTroubleshooting.data])
+  }, [getTroubleshooting, getTroubleshooting.data])
 
   const onSubmit = async () => {
     setIsLoading(true)

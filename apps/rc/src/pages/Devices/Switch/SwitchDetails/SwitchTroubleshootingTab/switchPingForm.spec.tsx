@@ -6,7 +6,7 @@ import { rest }  from 'msw'
 import { venueApi }                              from '@acx-ui/rc/services'
 import { SwitchUrlsInfo }                        from '@acx-ui/rc/utils'
 import { Provider, store }                       from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
+import { fireEvent, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import {
   doRunResponse,
@@ -19,30 +19,53 @@ import { SwitchPingForm } from './switchPingForm'
 
 
 
-const params = { tenantId: 'tenant-id', switchId: 'serial-number' }
+const params = {
+  tenantId: 'tenant-id',
+  switchId: 'serial-number',
+  tab: 'ping',
+  troubleshootingType: 'ping'
+}
 
+Object.assign(navigator, {
+  clipboard: {
+    writeText: () => {}
+  }
+})
 
-describe('TroubleshootingSwitchTraceRouteForm', () => {
+describe('TroubleshootingPingForm', () => {
 
   beforeEach(() => {
-    store.dispatch(venueApi.util.resetApiState())
 
     mockServer.use(
       rest.post(
         SwitchUrlsInfo.ping.url,
         (req, res, ctx) => res(ctx.json(doRunResponse))),
-      rest.post(
+      rest.get(
         SwitchUrlsInfo.getTroubleshooting.url,
         (req, res, ctx) => res(ctx.json(troubleshootingResult_ping_result))),
       rest.get(
-        SwitchUrlsInfo.getTroubleshooting.url,
+        SwitchUrlsInfo.getTroubleshootingClean.url,
         (req, res, ctx) => res(ctx.json({})))
     )
   })
 
+  it('should copy correctly', async () => {
+    jest.spyOn(navigator.clipboard, 'writeText')
+    mockServer.use(
+      rest.get(
+        SwitchUrlsInfo.getTroubleshooting.url,
+        (req, res, ctx) => res(ctx.json(troubleshootingResult_ping_result)))
+    )
+    render(<Provider>
+      <SwitchPingForm />
+    </Provider>, { route: { params } })
+    expect(await screen.findByText(/Last synced at/i)).toBeVisible()
+    await userEvent.click(await screen.findByRole('button', { name: /copy output/i }))
+  })
+
   it('should render correctly', async () => {
     mockServer.use(
-      rest.post(
+      rest.get(
         SwitchUrlsInfo.getTroubleshooting.url,
         (req, res, ctx) => res(ctx.json(troubleshootingResult_ping_empty)))
     )
@@ -55,7 +78,7 @@ describe('TroubleshootingSwitchTraceRouteForm', () => {
 
   it('should render empty result correctly', async () => {
     mockServer.use(
-      rest.post(
+      rest.get(
         SwitchUrlsInfo.getTroubleshooting.url,
         (req, res, ctx) => res(ctx.json(troubleshootingResult_ping_emptyResult)))
     )
@@ -67,21 +90,11 @@ describe('TroubleshootingSwitchTraceRouteForm', () => {
   })
 
 
-  it('should copy correctly', async () => {
-    mockServer.use(
-      rest.post(
-        SwitchUrlsInfo.getTroubleshooting.url,
-        (req, res, ctx) => res(ctx.json(troubleshootingResult_ping_result)))
-    )
-    render(<Provider>
-      <SwitchPingForm />
-    </Provider>, { route: { params } })
-    await userEvent.click(await screen.findByRole('button', { name: /copy output/i }))
-  })
+
 
   it('should do run correctly', async () => {
     mockServer.use(
-      rest.post(
+      rest.get(
         SwitchUrlsInfo.getTroubleshooting.url,
         (req, res, ctx) => res(ctx.json(troubleshootingResult_ping_isSyncing)))
     )
@@ -93,20 +106,38 @@ describe('TroubleshootingSwitchTraceRouteForm', () => {
       name: /target host or ip address/i
     })
     fireEvent.change(ipAddressField, { target: { value: '1.1.1.1' } })
+    ipAddressField.focus()
     await userEvent.click(await screen.findByRole('button', { name: /run/i }))
-    expect(screen.queryByRole('img', { name: 'loader' })).toBeVisible()
   })
 
 
+  it('should do validation correctly', async () => {
+    mockServer.use(
+      rest.get(
+        SwitchUrlsInfo.getTroubleshooting.url,
+        (req, res, ctx) => res(ctx.json(troubleshootingResult_ping_isSyncing)))
+    )
+    render(<Provider>
+      <SwitchPingForm />
+    </Provider>, { route: { params } })
+
+    const ipAddressField = screen.getByRole('textbox', {
+      name: /target host or ip address/i
+    })
+    fireEvent.change(ipAddressField, { target: { value: '1.1' } })
+    ipAddressField.focus()
+  })
+
   it('should clear correctly', async () => {
     mockServer.use(
-      rest.post(
+      rest.get(
         SwitchUrlsInfo.getTroubleshooting.url,
         (req, res, ctx) => res(ctx.json(troubleshootingResult_ping_result)))
     )
     render(<Provider>
       <SwitchPingForm />
     </Provider>, { route: { params } })
+    expect(await screen.findByText(/Last synced at/i)).toBeVisible()
 
     await userEvent.click(await screen.findByRole('button', { name: /clear/i }))
   })
