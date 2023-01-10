@@ -171,7 +171,7 @@ const getDescription = (data: Event) => {
       }}
     />
   } catch {
-    return data.message
+    return noDataDisplay
   }
 }
 
