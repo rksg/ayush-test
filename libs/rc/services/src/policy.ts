@@ -17,7 +17,7 @@ import {
   RogueAPDetectionTempType,
   VenueRoguePolicyType,
   TableResult, onSocketActivityChanged, showActivityMessage, CommonResult,
-  NewTableResult, transferToTableResult
+  NewTableResult, transferToTableResult, createNewTableHttpRequest, TableChangePayload
 } from '@acx-ui/rc/utils'
 
 export const basePolicyApi = createApi({
@@ -133,8 +133,12 @@ export const policyApi = basePolicyApi.injectEndpoints({
       }
     }),
     macRegLists: build.query<TableResult<MacRegistrationPool>, RequestPayload>({
-      query: ({ params }) => {
-        const poolsReq = createHttpRequest(MacRegListUrlsInfo.getMacRegistrationPools, params)
+      query: ({ params, payload }) => {
+        const poolsReq = createNewTableHttpRequest({
+          apiInfo: MacRegListUrlsInfo.getMacRegistrationPools,
+          params,
+          payload: payload as TableChangePayload
+        })
         return {
           ...poolsReq,
           params
@@ -197,10 +201,15 @@ export const policyApi = basePolicyApi.injectEndpoints({
       invalidatesTags: [{ type: 'MacRegistration', id: 'LIST' }]
     }),
     getMacRegList: build.query<MacRegistrationPool, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(MacRegListUrlsInfo.getMacRegistrationPool, params)
+      query: ({ params, payload }) => {
+        const req = createNewTableHttpRequest({
+          apiInfo: MacRegListUrlsInfo.getMacRegistrationPool,
+          params,
+          payload: payload as TableChangePayload
+        })
         return{
-          ...req
+          ...req,
+          params
         }
       },
       providesTags: [{ type: 'MacRegistrationPool', id: 'DETAIL' }]

@@ -94,6 +94,13 @@ export default function MacRegistrationListsTable () {
   const MacRegistrationListsTable = () => {
     const tableQuery = useTableQuery({
       useQuery: useMacRegListsQuery,
+      sorter: {
+        sortField: 'name',
+        sortOrder: 'asc'
+      },
+      apiParams: {
+        sort: 'name,asc'
+      },
       defaultPayload: {}
     })
 
@@ -123,7 +130,7 @@ export default function MacRegistrationListsTable () {
           type: 'confirm',
           customContent: {
             action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Lists' }),
+            entityName: $t({ defaultMessage: 'List' }),
             entityValue: rows.length === 1 ? rows[0].name : undefined,
             numOfEntities: rows.length,
             confirmationText: 'Delete'
