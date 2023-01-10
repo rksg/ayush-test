@@ -1,13 +1,13 @@
 import { Badge } from 'antd'
 
-import { Table }     from '..'
-import { showToast } from '../../Toast'
+import { Table, TableProps } from '..'
+import { showToast }         from '../../Toast'
 
 function CustomColumn (color: string, text: string | number) {
   return <Badge color={color} text={text} />
 }
 
-const customColumns = [
+const customColumns: TableProps<typeof customData[0]>['columns'] = [
   {
     title: 'Name',
     dataIndex: 'name',
