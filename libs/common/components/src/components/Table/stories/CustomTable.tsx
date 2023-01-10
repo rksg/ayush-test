@@ -18,7 +18,8 @@ const customColumns = [
     tooltip: 'This is a tooltip',
     dataIndex: 'age',
     key: 'age',
-    width: 150
+    width: 150,
+    align: 'center'
   },
   {
     title: <>

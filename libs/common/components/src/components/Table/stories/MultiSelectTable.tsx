@@ -10,7 +10,8 @@ const basicColumns = [
   {
     title: 'Age',
     dataIndex: 'age',
-    key: 'age'
+    key: 'age',
+    align: 'center'
   },
   {
     title: 'Address',
