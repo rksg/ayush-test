@@ -47,9 +47,7 @@ import {
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
-  L2AclPolicy,
   DevicePolicy,
-  L3AclPolicy,
   ApplicationPolicy,
   VlanPool,
   AccessControlProfile
