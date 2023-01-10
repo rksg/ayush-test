@@ -144,19 +144,19 @@ export const TooltipContent = styled('div')`
     }
 
     &.malicious {
-      background-color: ${deviceCategoryColors.Malicious};
+      background-color: var(${deviceCategoryColors.Malicious});
     }
 
     &.ignored {
-      background-color: ${deviceCategoryColors.Ignored};
+      background-color: var(${deviceCategoryColors.Ignored});
     }
 
     &.unclassified {
-      background-color: ${deviceCategoryColors.Unclassified};
+      background-color: var(${deviceCategoryColors.Unclassified});
     }
 
     &.known {
-      background-color: ${deviceCategoryColors.Known};
+      background-color: var(${deviceCategoryColors.Known});
     }
   }
 

@@ -14,7 +14,7 @@ function getRougeTypeCss () {
   let str = ''
   Object.keys(rougeTypeColors).forEach((rougeType) => {
     str += `&.${rougeType} {
-      background-color: ${rougeTypeColors[rougeType as keyof typeof rougeTypeColors]};
+      background-color: var(${rougeTypeColors[rougeType as keyof typeof rougeTypeColors]});
     }
     `
   })
@@ -25,7 +25,7 @@ function getRougeTypeBorderCss () {
   let str = ''
   Object.keys(rougeTypeColors).forEach((rougeType) => {
     str += `&.${rougeType} {
-      border-color: ${rougeTypeColors[rougeType as keyof typeof rougeTypeColors]};
+      border-color: var(${rougeTypeColors[rougeType as keyof typeof rougeTypeColors]});
     }
     `
   })
@@ -36,7 +36,7 @@ function getRougeApMarkerCss () {
   let str = ''
   Object.keys(rougeTypeColors).forEach((rougeType) => {
     str += `&.ap-rogue-type-${rougeType} {
-      background-color: ${rougeTypeColors[rougeType as keyof typeof rougeTypeColors]};
+      background-color: var(${rougeTypeColors[rougeType as keyof typeof rougeTypeColors]});
     }
     `
   })
