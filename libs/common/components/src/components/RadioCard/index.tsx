@@ -12,7 +12,7 @@ import {
   RadioCardType
 } from './styledComponents'
 
-interface RadioCardProps {
+export type RadioCardProps = RadioProps & {
   type?: RadioCardType
   title: string
   description: string
@@ -38,7 +38,7 @@ const catogoryMapping = {
 
 function RadioCard ({
   type = 'default', title, description, value, categories = [], onClick, ...rest
-}: RadioCardProps & RadioProps){
+}: RadioCardProps){
   const { $t } = useIntl()
   return <Card cardtype={type} onClick={type === 'default' ? onClick : undefined}>
     <Title>{title}</Title>
