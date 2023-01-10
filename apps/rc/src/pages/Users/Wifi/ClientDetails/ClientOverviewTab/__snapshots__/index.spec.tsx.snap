@@ -6246,7 +6246,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client c
                                     class="ant-descriptions-item-content"
                                   >
                                     <a
-                                      href="/t/tenant-id/devices/aps/422039000230/details/overview"
+                                      href="/t/tenant-id/devices/wifi/422039000230/details/overview"
                                     >
                                       UI team ONLY
                                     </a>
@@ -8862,7 +8862,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render dpsk cli
                                     class="ant-descriptions-item-content"
                                   >
                                     <a
-                                      href="/t/tenant-id/devices/aps/422039000230/details/overview"
+                                      href="/t/tenant-id/devices/wifi/422039000230/details/overview"
                                     >
                                       UI team ONLY
                                     </a>
@@ -10351,7 +10351,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                                     class="ant-descriptions-item-content"
                                   >
                                     <a
-                                      href="/t/tenant-id/devices/aps/422039000230/details/overview"
+                                      href="/t/tenant-id/devices/wifi/422039000230/details/overview"
                                     >
                                       --
                                     </a>
@@ -11887,7 +11887,7 @@ exports[`ClientOverviewTab OverviewWidget should render client info correctly 1`
                                     class="ant-descriptions-item-content"
                                   >
                                     <a
-                                      href="/t/tenant-id/devices/aps/422039000230/details/overview"
+                                      href="/t/tenant-id/devices/wifi/422039000230/details/overview"
                                     >
                                       UI team ONLY
                                     </a>

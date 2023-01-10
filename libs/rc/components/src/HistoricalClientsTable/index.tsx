@@ -56,7 +56,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
     dataIndex: 'serialNumber',
     sorter: true,
     render: (data, row) => row?.isApExists && data
-      ? <TenantLink to={`/aps/${data}/details/overview`}>{row?.apName}</TenantLink>
+      ? <TenantLink to={`/devices/wifi/${data}/details/overview`}>{row?.apName}</TenantLink>
       : row?.apName
   }, {
     key: 'ssid',
