@@ -194,7 +194,7 @@ export function SingleRadioSettings (props:{
 
       } else {
         const { indoor, outdoor, dfs } = supportChannels
-        const availableDfsChannels = dfs[bandwidth] || []
+        const availableDfsChannels = (dfs && dfs[bandwidth]) || []
 
         const availableIndoorChannels = indoor[bandwidth]
         const selectedIndoorChannels = setSelectedChannels(availableIndoorChannels)

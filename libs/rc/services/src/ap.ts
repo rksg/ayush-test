@@ -299,7 +299,7 @@ export const apApi = baseApApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Ap', id: 'LIST' }],
+      providesTags: [{ type: 'Ap', id: 'Radio' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
@@ -307,7 +307,7 @@ export const apApi = baseApApi.injectEndpoints({
             'ResetApRadioCustomization'
           ]
           showActivityMessage(msg, activities, () => {
-            api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'LIST' }]))
+            api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'Radio' }]))
           })
         })
       }
@@ -319,7 +319,8 @@ export const apApi = baseApApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'Radio' }]
     }),
     deleteApRadioCustomization: build.mutation<ApRadioCustomization, RequestPayload>({
       query: ({ params }) => {
@@ -327,7 +328,8 @@ export const apApi = baseApApi.injectEndpoints({
         return {
           ...req
         }
-      }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'Radio' }]
     }),
     getApCapabilities: build.query<Capabilities, RequestPayload>({
       query: ({ params }) => {
