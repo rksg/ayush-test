@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Features, useIsTierAllowed }        from '@acx-ui/feature-toggle'
+import { useIsTierAllowed }                  from '@acx-ui/feature-toggle'
 import { Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
 
 import Administration   from './pages/Administration'
