@@ -54,7 +54,7 @@ function useColumns () {
         return `${row.country}, ${row.city}`
       }
     },
-    {
+    { // TODO: Waiting for backend support
       key: 'incidents',
       dataIndex: 'incidents',
       title: () => {
@@ -67,25 +67,25 @@ function useColumns () {
       },
       align: 'center'
     },
-    {
-      key: 'health',
-      dataIndex: 'health',
-      title: () => {
-        return (
-          <>
-            { $t({ defaultMessage: 'Health Score' }) }
-            <Table.SubTitle children={$t({ defaultMessage: 'Last 24 hours' })} />
-          </>
-        )
-      },
-      align: 'center'
-    },
-    {
-      title: $t({ defaultMessage: 'Services' }),
-      key: 'services',
-      dataIndex: 'services',
-      align: 'center'
-    },
+    // { // TODO: Waiting for HEALTH feature support
+    //   key: 'health',
+    //   dataIndex: 'health',
+    //   title: () => {
+    //     return (
+    //       <>
+    //         { $t({ defaultMessage: 'Health Score' }) }
+    //         <Table.SubTitle children={$t({ defaultMessage: 'Last 24 hours' })} />
+    //       </>
+    //     )
+    //   },
+    //   align: 'center'
+    // },
+    // { // TODO: Waiting for HEALTH feature support
+    //   title: $t({ defaultMessage: 'Services' }),
+    //   key: 'services',
+    //   dataIndex: 'services',
+    //   align: 'center'
+    // },
     {
       title: $t({ defaultMessage: 'Wi-Fi APs' }),
       align: 'left',
@@ -166,13 +166,13 @@ function useColumns () {
           />
         )
       }
-    },
-    {
-      key: 'tags',
-      dataIndex: 'tags',
-      title: $t({ defaultMessage: 'Tags' }),
-      show: false
     }
+    // { // TODO: Waiting for TAG feature support
+    //   key: 'tags',
+    //   dataIndex: 'tags',
+    //   title: $t({ defaultMessage: 'Tags' }),
+    //   show: false
+    // }
   ]
 
   return columns.filter(({ key }) =>

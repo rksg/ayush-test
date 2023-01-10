@@ -72,11 +72,11 @@ function getCols (intl: ReturnType<typeof useIntl>) {
     dataIndex: 'disconnectTime',
     sorter: true,
     render: (data) => dateTimeFormatter((data as number) * 1000)
-  }, {
-    key: 'tags',
-    title: intl.$t({ defaultMessage: 'Tags' }),
-    dataIndex: 'tags',
-    sorter: true
+  // }, { // TODO: Waiting for TAG feature support
+  //   key: 'tags',
+  //   title: intl.$t({ defaultMessage: 'Tags' }),
+  //   dataIndex: 'tags',
+  //   sorter: true
   }]
   return columns
 }
