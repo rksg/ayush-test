@@ -39,7 +39,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   // },
   updateMFAAccount: {
     method: 'put',
-    url: '/mfa/setupTenant/tenant/{tenantId}/{enable}'
+    url: '/mfa/setupTenant/tenant/:tenantId/:enable'
   },
   getMfaTenantDetails: {
     method: 'get',
@@ -67,7 +67,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getDelegations: {
     method: 'get',
-    url: '/api/tenant/{tenantId}/delegation?type=VAR'
+    url: '/api/tenant/:tenantId/delegation?type=VAR'
   },
   getTenantDelegation: {
     method: 'get',

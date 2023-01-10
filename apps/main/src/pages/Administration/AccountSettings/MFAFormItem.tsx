@@ -3,9 +3,11 @@ import TextArea                                       from 'antd/lib/input/TextA
 import { useIntl }                                    from 'react-intl'
 // import styled                                                  from 'styled-components/macro'
 
-import { Card, cssStr }          from '@acx-ui/components'
-import { SpaceWrapper }          from '@acx-ui/rc/components'
-import { MFAStatus, MFASession } from '@acx-ui/rc/utils'
+import { Card, showActionModal, cssStr } from '@acx-ui/components'
+import { SpaceWrapper }                  from '@acx-ui/rc/components'
+import { useUpdateMFAAccountMutation }   from '@acx-ui/rc/services'
+import { MFAStatus, MFASession }         from '@acx-ui/rc/utils'
+import { useParams }                     from '@acx-ui/react-router-dom'
 
 import { MessageMapping } from './MessageMapping'
 
@@ -18,15 +20,42 @@ interface MFAFormItemProps {
 const MFAFormItem = (props: MFAFormItemProps) => {
   const { $t } = useIntl()
   const { mfaTenantDetailsData } = props
-  // const params = useParams()
+  const params = useParams()
+  const [updateMFAAccount, { isLoading: isUpdating }] = useUpdateMFAAccountMutation()
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleEnableMFAChange = (e: CheckboxChangeEvent) => {
-    // const isChecked = e.target.checked
+    const isChecked = e.target.checked
+
+    showActionModal({
+      type: 'confirm',
+      width: 450,
+      title: isChecked
+        ? $t({ defaultMessage: 'Enable Multi-Factor Authentication?' })
+        : $t({ defaultMessage: 'Disable Multi-Factor Authentication?' }),
+      content: isChecked
+        // eslint-disable-next-line max-len
+        ? $t({ defaultMessage: 'By enabling this option, you will require all users of this account to set and use MFA.' })
+        // eslint-disable-next-line max-len
+        : $t({ defaultMessage: 'Disabling this option will allow all users of this account to log-in using only their email and password, no extra authentication will be required.' }),
+      okText: isChecked
+        ? $t({ defaultMessage: 'Enable MFA' })
+        : $t({ defaultMessage: 'Disable MFA' }),
+      onOk: () => {
+        updateMFAAccount({
+          params: {
+            tenantId: params.tenantId,
+            enable: isChecked + ''
+          }
+        })
+      }
+    })
   }
 
   const handleClickCopyCodes = () => {
+    const recoveryCodes = mfaTenantDetailsData?.recoveryCodes
+    if (!recoveryCodes) return
 
+    navigator.clipboard.writeText(recoveryCodes?.join('\n'))
   }
 
   const isMfaEnabled = mfaTenantDetailsData?.tenantStatus === MFAStatus.ENABLED
@@ -41,19 +70,21 @@ const MFAFormItem = (props: MFAFormItemProps) => {
         >
           <Checkbox
             onChange={handleEnableMFAChange}
-            checked={false}
-            value={false}
+            checked={isMfaEnabled}
+            value={isMfaEnabled}
             style={{ paddingRight: '5px' }}
+            disabled={isUpdating}
           >
             {$t({ defaultMessage: 'Enable Multi-Factor Authentication (MFA)' })}
           </Checkbox>
         </Form.Item>
+
         <SpaceWrapper
           style={{
             marginLeft: 24,
             flexWrap: 'wrap',
-            alignContent: 'flex-start' }}>
-
+            alignContent: 'flex-start' }}
+        >
           <List
             split={false}
             size='small'

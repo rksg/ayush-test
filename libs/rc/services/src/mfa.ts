@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 import {
+  CommonResult,
   MFASession,
   createHttpRequest,
   RequestPayload,
@@ -25,10 +26,20 @@ export const mfaApi = baseMfaApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'mfa', id: 'DETAIL' }]
+    }),
+    updateMFAAccount: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.updateMFAAccount, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'mfa', id: 'DETAIL' }]
     })
   })
 })
 
 export const {
-  useGetMfaTenantDetailsQuery
+  useGetMfaTenantDetailsQuery,
+  useUpdateMFAAccountMutation
 } = mfaApi
