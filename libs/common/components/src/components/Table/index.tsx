@@ -9,7 +9,7 @@ import AutoSizer                                       from 'react-virtualized-a
 
 import { SettingsOutlined } from '@acx-ui/icons'
 
-import { Button }  from '../Button'
+import { Button, DisabledButton }  from '../Button'
 import { Tooltip } from '../Tooltip'
 
 import { FilterValue, getFilteredData, renderFilter, renderSearch } from './filters'
@@ -49,6 +49,7 @@ export interface TableProps <RecordType>
     actions?: Array<{
       label: string,
       disabled?: boolean,
+      tooltip?: string,
       onClick: () => void
     }>
     rowActions?: Array<{
@@ -267,14 +268,25 @@ function Table <RecordType extends Record<string, any>> (
       size={0}
       split={<UI.Divider type='vertical' />}
       style={{ display: 'flex', justifyContent: 'flex-end', margin: '3px 0' }}>
-      {props.actions?.map((action, index) => <Button
-        key={index}
-        type='link'
-        size='small'
-        disabled={action.disabled}
-        onClick={action.onClick}
-        children={action.label}
-      />)}
+      {props.actions?.map((action, index) => {
+        return !action.disabled 
+        ? <Button
+          key={index}
+          type='link'
+          size='small'
+          onClick={action.onClick}
+          children={action.label}
+        /> 
+        : <DisabledButton
+          key={index}
+          type='link'
+          size='small'
+          title={action.tooltip}
+          onClick={action.onClick}
+          children={action.label}
+        />
+      })}
+      
     </Space>}
     {hasHeader && (
       <UI.Header>

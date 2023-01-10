@@ -1,36 +1,40 @@
 /* eslint-disable max-len */
-import { useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
 import { Button, Loader, Modal, Table, TableProps, Descriptions }    from '@acx-ui/components'
 import { useGetSwitchConfigBackupListQuery }                            from '@acx-ui/rc/services'
-import { ConfigurationBackup, DispatchFailedReason, useTableQuery } from '@acx-ui/rc/utils'
+import { BACKUP_DISABLE_TOOLTIP, ConfigurationBackup, DispatchFailedReason, useTableQuery } from '@acx-ui/rc/utils'
 
 import * as UI         from './styledComponents'
+import { SwitchDetailsContext } from '../..'
+import { ViewConfigurationModal } from './ViewConfigurationModal'
 
 export function SwitchConfigBackupTable () {
   const { $t } = useIntl()
   const codeMirrorEl = useRef(null as unknown as { highlightLine: Function, removeHighlightLine: Function })
-  const [visible, setVisible] = useState(false)
+  const [viewVisible, setViewVisible] = useState(false)
+  const [viewData, setViewData] = useState(null as unknown as ConfigurationBackup)
   const [showError, setShowError] = useState(true)
   const [showClis, setShowClis] = useState(true)
   const [collapseActive, setCollapseActive] = useState(false)
   const [dispatchFailedReason, setDispatchFailedReason] = useState([] as DispatchFailedReason[])
   const [selectedRow, setSelectedRow] = useState(null as unknown as ConfigurationBackup)
+  const {
+    switchDetailsContextData
+  } = useContext(SwitchDetailsContext)
 
-  const showModal = (row: ConfigurationBackup) => {
-    setSelectedRow(row)
-    // setDispatchFailedReason(row.dispatchFailedReason as DispatchFailedReason[] || [])
-    // setCollapseActive(!row?.dispatchFailedReason?.length)
-    // setShowClis(!!row?.clis)
-    // setShowError(!!row?.clis || !!row?.dispatchFailedReason?.length)
-    setVisible(true)
+  const { currentSwitchOperational } = switchDetailsContextData
+
+  const showViewModal = (row: ConfigurationBackup[]) => {
+    setViewData(row[0])
+    setViewVisible(true)
   }
 
-  const handleCancel = () => {
-    setDispatchFailedReason([])
-    setVisible(false)
+  const handleCancelViewModal = () => {
+    setViewData(null as unknown as ConfigurationBackup)
+    setViewVisible(false)
   }
 
   const tableQuery = useTableQuery({
@@ -69,8 +73,8 @@ export function SwitchConfigBackupTable () {
   const rowActions: TableProps<any>['rowActions'] = [{
     label: $t({ defaultMessage: 'View' }),
     disabled: (rows) => !isActionVisible(rows, { selectOne: true }),
-    onClick: () => {
-      // TODO:
+    onClick: (rows) => {
+      showViewModal(rows)
     }
   }, {
     label: $t({ defaultMessage: 'Compare' }),
@@ -98,6 +102,15 @@ export function SwitchConfigBackupTable () {
   }
  ]
 
+ const rightActions = [{
+    label: $t({ defaultMessage: 'Backup Now' }),
+    disabled: !currentSwitchOperational,
+    tooltip: $t(BACKUP_DISABLE_TOOLTIP),
+    onClick: () => {
+      // TODO:
+    }
+ }]
+
   return <>
     <Loader states={[tableQuery]}>
       <Table
@@ -105,6 +118,7 @@ export function SwitchConfigBackupTable () {
         columns={columns}
         dataSource={tableData}
         rowActions={rowActions}
+        actions={rightActions}
         pagination={false}
         onChange={tableQuery.handleTableChange}
         rowSelection={{
@@ -112,5 +126,10 @@ export function SwitchConfigBackupTable () {
         }}
       />
     </Loader>
+    <ViewConfigurationModal 
+      data={viewData}
+      visible={viewVisible}
+      handleCancel={handleCancelViewModal}
+    />
   </>
 }
