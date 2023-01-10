@@ -8,6 +8,7 @@ import {
   useAnalyticsFilter
 } from '@acx-ui/analytics/utils'
 import { GridCol, GridRow, showToast }         from '@acx-ui/components'
+import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
 import {
   useLazyGetApCapabilitiesQuery,
   useLazyGetApQuery,
@@ -28,7 +29,6 @@ import {
 import { ClientOverviewWidget } from './ClientOverviewWidget'
 import { ClientProperties }     from './ClientProperties'
 import * as UI                  from './styledComponents'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 const clientPayload = {
   searchString: '',

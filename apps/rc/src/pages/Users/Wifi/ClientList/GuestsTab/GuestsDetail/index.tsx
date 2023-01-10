@@ -16,9 +16,9 @@ import {
   TableProps,
   Descriptions
 } from '@acx-ui/components'
-import { ArrowExpand }            from '@acx-ui/icons'
-import { ClientHealthIcon }       from '@acx-ui/rc/components'
-import { useGetGuestsListQuery }  from '@acx-ui/rc/services'
+import { ArrowExpand }           from '@acx-ui/icons'
+import { ClientHealthIcon }      from '@acx-ui/rc/components'
+import { useGetGuestsListQuery } from '@acx-ui/rc/services'
 import {
   getOsTypeIcon,
   Guest,
