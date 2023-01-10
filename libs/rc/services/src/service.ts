@@ -43,7 +43,9 @@ import {
   UploadUrlResponse,
   TableChangePayload,
   RequestFormData,
-  createNewTableHttpRequest
+  createNewTableHttpRequest,
+  NetworkSegmentationUrls,
+  NetworkSegmentationGroup
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
@@ -666,6 +668,15 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    getNetworkSegmentationGroupById: build.query<NetworkSegmentationGroup, RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(NetworkSegmentationUrls.getNetworkSegmentationGroupById, params)
+        return {
+          ...req
+        }
+      }
     })
   })
 })
@@ -721,5 +732,6 @@ export const {
   useGetPortalLangMutation,
   useDeletePortalMutation,
   useUpdatePortalMutation,
-  useUploadURLMutation
+  useUploadURLMutation,
+  useLazyGetNetworkSegmentationGroupByIdQuery
 } = serviceApi
