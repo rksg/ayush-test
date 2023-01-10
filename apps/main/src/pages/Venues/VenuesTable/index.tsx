@@ -54,19 +54,19 @@ function useColumns () {
         return `${row.country}, ${row.city}`
       }
     },
-    // { // TODO: Waiting for HEALTH feature support
-    //   key: 'incidents',
-    //   dataIndex: 'incidents',
-    //   title: () => {
-    //     return (
-    //       <>
-    //         { $t({ defaultMessage: 'Incidents' }) }
-    //         <Table.SubTitle children={$t({ defaultMessage: 'Last 24 hours' })} />
-    //       </>
-    //     )
-    //   },
-    //   align: 'center'
-    // },
+    { // TODO: Waiting for backend support
+      key: 'incidents',
+      dataIndex: 'incidents',
+      title: () => {
+        return (
+          <>
+            { $t({ defaultMessage: 'Incidents' }) }
+            <Table.SubTitle children={$t({ defaultMessage: 'Last 24 hours' })} />
+          </>
+        )
+      },
+      align: 'center'
+    },
     // { // TODO: Waiting for HEALTH feature support
     //   key: 'health',
     //   dataIndex: 'health',
