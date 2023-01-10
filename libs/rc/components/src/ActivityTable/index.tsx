@@ -2,15 +2,19 @@ import { useState } from 'react'
 
 import { defineMessage, useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps, Button }    from '@acx-ui/components'
-import { Activity, RequestPayload, TableQuery } from '@acx-ui/rc/utils'
-import { formatter }                            from '@acx-ui/utils'
+import { Loader, Table, TableProps, Button } from '@acx-ui/components'
+import {
+  Activity,
+  RequestPayload,
+  TableQuery,
+  getActivityDescription,
+  productMapping,
+  severityMapping,
+  statusMapping
+} from '@acx-ui/rc/utils'
+import { formatter } from '@acx-ui/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
-
-import { productMapping, severityMapping, statusMapping } from './mapping'
-import { replaceStrings }                                 from './replaceStrings'
-
 
 interface ActivityTableProps {
   tableQuery: TableQuery<Activity, RequestPayload<unknown>, unknown>
@@ -19,17 +23,7 @@ interface ActivityTableProps {
 const ActivityTable = ({ tableQuery }: ActivityTableProps) => {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
-  const [current, setCurrent] = useState<Activity>()
-
-  const getDescription = (
-    descriptionTemplate: Activity['descriptionTemplate'],
-    descriptionData: Activity['descriptionData']
-  ) => {
-    const values = descriptionData?.reduce((agg, data) =>
-      ({ ...agg, [data.name]: data.value })
-    , {} as Record<string, string>)
-    return replaceStrings(descriptionTemplate, values)
-  }
+  const [current, setCurrent] = useState<string>()
 
   const columns: TableProps<Activity>['columns'] = [
     {
@@ -44,7 +38,7 @@ const ActivityTable = ({ tableQuery }: ActivityTableProps) => {
           size='small'
           onClick={()=>{
             setVisible(true)
-            setCurrent(row as Activity)
+            setCurrent(row.requestId)
           }}
         >{formatter('dateTimeFormatWithSeconds')(row.startDatetime)}</Button>
       }
@@ -80,7 +74,7 @@ const ActivityTable = ({ tableQuery }: ActivityTableProps) => {
       dataIndex: 'description',
       sorter: true,
       render: function (_, row) {
-        return getDescription(row.descriptionTemplate, row.descriptionData)
+        return getActivityDescription(row.descriptionTemplate, row.descriptionData)
       }
     }
   ]
@@ -119,7 +113,7 @@ const ActivityTable = ({ tableQuery }: ActivityTableProps) => {
     },
     {
       title: defineMessage({ defaultMessage: 'Description' }),
-      value: (() => getDescription(data.descriptionTemplate, data.descriptionData))()
+      value: (() => getActivityDescription(data.descriptionTemplate, data.descriptionData))()
     }
   ]
 
@@ -131,11 +125,14 @@ const ActivityTable = ({ tableQuery }: ActivityTableProps) => {
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
     />
-    {visible && <TimelineDrawer
+    {current && visible && <TimelineDrawer
       title={defineMessage({ defaultMessage: 'Activity Details' })}
       visible={visible}
       onClose={()=>setVisible(false)}
-      data={getDrawerData(current!)}
+      data={getDrawerData(tableQuery.data?.data
+        .find(row => current && row.requestId === current)!)}
+      timeLine={tableQuery.data?.data
+        .find(row => current && row.requestId === current)?.steps}
     /> }
   </Loader>
 }

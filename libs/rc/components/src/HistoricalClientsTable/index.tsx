@@ -7,9 +7,9 @@ import { useGetHistoricalClientListQuery } from '@acx-ui/rc/services'
 import {
   Client,
   useTableQuery
-}                                                            from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
-import { formatter }  from '@acx-ui/utils'
+} from '@acx-ui/rc/utils'
+import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { formatter }             from '@acx-ui/utils'
 
 function getCols (intl: ReturnType<typeof useIntl>) {
   const dateTimeFormatter = formatter('dateTimeFormat')
@@ -56,7 +56,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
     dataIndex: 'serialNumber',
     sorter: true,
     render: (data, row) => row?.isApExists && data
-      ? <TenantLink to={`/aps/${data}/details/overview`}>{row?.apName}</TenantLink>
+      ? <TenantLink to={`/devices/wifi/${data}/details/overview`}>{row?.apName}</TenantLink>
       : row?.apName
   }, {
     key: 'ssid',
@@ -88,10 +88,12 @@ const defaultPayload = {
     'event_datetime', 'eventId', 'networkId'],
   sortField: 'event_datetime',
   searchTargetFields: ['clientMac', 'userName', 'hostname'],
-  filters: {
-    entity_type: ['CLIENT'],
-    eventId: ['204', '205', '208', '218']
-  }
+  filters: {}
+}
+
+const defaultFilters = {
+  entity_type: ['CLIENT'],
+  eventId: ['204', '205', '208', '218']
 }
 
 export function HistoricalClientsTable
@@ -100,8 +102,13 @@ export function HistoricalClientsTable
     id: string
   }) {
   const { $t } = useIntl()
+  const params = useParams()
 
   defaultPayload.searchString = searchString
+  defaultPayload.filters =
+    params.venueId ? { ...defaultFilters, venueId: [params.venueId] } :
+      params.serialNumber ? { ...defaultFilters, serialNumber: [params.serialNumber] } :
+        defaultFilters
 
   const HistoricalClientsTable = () => {
     const tableQuery = useTableQuery({
@@ -132,8 +139,8 @@ export function HistoricalClientsTable
             fontSize: '10px',
             color: cssStr('--acx-neutrals-60')
           }}>{
-              $t({ defaultMessage: `* There are more historical clients than can be displayed. 
-        If you don’t see the client you are looking for, 
+              $t({ defaultMessage: `* There are more historical clients than can be displayed.
+        If you don’t see the client you are looking for,
         narrow the list by entering a more specific text in the search box.` })
             }</Typography.Text>}
         </Loader>

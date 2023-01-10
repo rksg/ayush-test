@@ -4,17 +4,16 @@ import {
   Col,
   Row,
   Select,
-  InputNumber,
-  Tooltip
+  InputNumber
 } from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { StepsForm, Subtitle }        from '@acx-ui/components'
-import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
+import { StepsForm, Subtitle, Tooltip } from '@acx-ui/components'
+import { QuestionMarkCircleOutlined }   from '@acx-ui/icons'
 import {
   ExpirationDateSelector
 } from '@acx-ui/rc/components'
-import { useLazyDpskListQuery } from '@acx-ui/rc/services'
+import { useLazyGetDpskListQuery } from '@acx-ui/rc/services'
 import {
   PassphraseFormatEnum,
   transformDpskNetwork,
@@ -33,10 +32,10 @@ export default function DpskSettingsForm () {
   const passphraseFormat = Form.useWatch<PassphraseFormatEnum>('passphraseFormat', form)
   const id = Form.useWatch<string>('id', form)
   const { Option } = Select
-  const [ dpskList ] = useLazyDpskListQuery()
+  const [ dpskList ] = useLazyGetDpskListQuery()
 
   const nameValidator = async (value: string) => {
-    const list = (await dpskList({}).unwrap()).content
+    const list = (await dpskList({}).unwrap()).data
       .filter(n => n.id !== id)
       .map(n => ({ name: n.name }))
     return checkObjectNotExists(list, { name: value } , intl.$t({ defaultMessage: 'DPSK service' }))

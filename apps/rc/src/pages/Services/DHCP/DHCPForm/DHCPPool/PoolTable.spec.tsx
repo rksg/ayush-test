@@ -2,10 +2,10 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 
-import { networkApi }      from '@acx-ui/rc/services'
-import { LeaseUnit }       from '@acx-ui/rc/utils'
-import { Provider, store } from '@acx-ui/store'
-import { render, screen }  from '@acx-ui/test-utils'
+import { networkApi }                from '@acx-ui/rc/services'
+import { LeaseUnit }                 from '@acx-ui/rc/utils'
+import { Provider, store }           from '@acx-ui/store'
+import { findTBody, render, screen } from '@acx-ui/test-utils'
 
 import { PoolTable } from './PoolTable'
 
@@ -62,8 +62,7 @@ describe('Create DHCP: Pool table', () => {
   it('Table action bar edit pool', async () => {
     render(<PoolTable data={list.data} />, { wrapper })
 
-    const tbody = (await screen.findAllByRole('rowgroup'))
-      .find(element => element.classList.contains('ant-table-tbody'))!
+    const tbody = await findTBody()
 
     expect(tbody).toBeVisible()
     const addButton = screen.getByRole('button', { name: 'Add DHCP Pool' })

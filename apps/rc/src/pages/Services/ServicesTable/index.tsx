@@ -1,7 +1,14 @@
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal, showToast } from '@acx-ui/components'
-import { useDeleteWifiCallingServiceMutation, useServiceListQuery }                  from '@acx-ui/rc/services'
+import {
+  useDeleteWifiCallingServiceMutation,
+  useDeleteMdnsProxyMutation,
+  useServiceListQuery,
+  useDeletePortalMutation,
+  useDeleteDHCPServiceMutation
+} from '@acx-ui/rc/services'
 import {
   ServiceType,
   useTableQuery,
@@ -14,7 +21,7 @@ import {
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { serviceTypeLabelMapping, serviceTechnologyLabelMapping } from '../contentsMap'
-
+import { DEFAULT_GUEST_DHCP_NAME }                                from '../DHCP/DHCPForm/DHCPForm'
 
 function useColumns () {
   const { $t } = useIntl()
@@ -128,10 +135,10 @@ export default function ServicesTable () {
     defaultPayload
   })
   const deleteServiceFnMapping = {
-    [ServiceType.DHCP]: [], // TODO: API not ready
+    [ServiceType.DHCP]: useDeleteDHCPServiceMutation(),
     [ServiceType.DPSK]: [], // TODO: API not ready
-    [ServiceType.MDNS_PROXY]: [], // TODO: API not ready
-    [ServiceType.PORTAL]: [], // TODO: API not ready
+    [ServiceType.MDNS_PROXY]: useDeleteMdnsProxyMutation(),
+    [ServiceType.PORTAL]: useDeletePortalMutation(),
     [ServiceType.WIFI_CALLING]: useDeleteWifiCallingServiceMutation(),
     [ServiceType.NETWORK_SEGMENTATION]: [] // TODO: API not ready
   }
@@ -139,6 +146,26 @@ export default function ServicesTable () {
   const rowActions: TableProps<Service>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
+      visible: (selectedRows) => {
+        const hasBlockObj = _.find(selectedRows,
+          (o)=> {
+            if(o.type === ServiceType.DHCP){
+              if(o.scope!==0){
+                return true
+              }
+              else if(o.name===DEFAULT_GUEST_DHCP_NAME){
+                return true
+              }
+            }
+            return false
+          })
+
+        if(_.isEmpty(hasBlockObj)){
+          return true
+        }else{
+          return false
+        }
+      },
       onClick: ([{ id, name, type, scope }], clearSelection) => {
         showActionModal({
           type: 'confirm',
@@ -165,6 +192,15 @@ export default function ServicesTable () {
     },
     {
       label: $t({ defaultMessage: 'Edit' }),
+      visible: (selectedRows) => {
+        const hasScope = _.find(selectedRows,
+          (o)=> {return o.scope!==0 && o.type === ServiceType.DHCP} )
+        if(_.isEmpty(hasScope)){
+          return true
+        }else{
+          return false
+        }
+      },
       onClick: ([{ type, id }]) => {
         navigate({
           ...tenantBasePath,

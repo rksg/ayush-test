@@ -1,18 +1,19 @@
-import { ReactNode, useContext, useEffect, useRef, useState } from 'react'
+import { ReactNode, useContext, useEffect, useRef, useState, CSSProperties } from 'react'
 
 import { Form, FormItemProps, InputNumber, Select, Space } from 'antd'
 import _                                                   from 'lodash'
 import { FormattedMessage, useIntl }                       from 'react-intl'
 
 import { Fieldset, Loader, showToast, StepsForm, StepsFormInstance, Tooltip } from '@acx-ui/components'
+import { QuestionMarkCircleOutlined }                                         from '@acx-ui/icons'
 import {
   useGetDenialOfServiceProtectionQuery,
   useUpdateDenialOfServiceProtectionMutation,
   useGetVenueRogueApQuery,
   useUpdateVenueRogueApMutation, useGetRoguePolicyListQuery
 } from '@acx-ui/rc/services'
-import { getPolicyRoutePath, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                           from '@acx-ui/react-router-dom'
+import { getPolicyRoutePath, PolicyOperation, PolicyType, VenueMessages } from '@acx-ui/rc/utils'
+import { TenantLink, useParams }                                          from '@acx-ui/react-router-dom'
 
 import { VenueEditContext } from '../../'
 
@@ -157,7 +158,8 @@ export function SecurityTab () {
           <FieldsetItem
             name='dosProtectionEnabled'
             label={$t({ defaultMessage: 'DoS Protection:' })}
-            initialValue={false}>
+            initialValue={false}
+            switchStyle={{ marginLeft: '78.5px' }}>
             <FormattedMessage
               defaultMessage={`
               Block a client for <blockingPeriod></blockingPeriod> seconds
@@ -215,8 +217,19 @@ export function SecurityTab () {
           <FieldsetItem
             name='rogueApEnabled'
             label={$t({ defaultMessage: 'Rogue AP Detection:' })}
-            initialValue={false}>
-            <Form.Item label={$t({ defaultMessage: 'Report SNR Threshold:' })}>
+            initialValue={false}
+            switchStyle={{}}>
+            <Form.Item
+              label={<>
+                {$t({ defaultMessage: 'Report SNR Threshold:' })}
+                <Tooltip
+                  title={$t(VenueMessages.SNR_THRESHOLD_TOOLTIP)}
+                  placement='bottom'
+                >
+                  <QuestionMarkCircleOutlined />
+                </Tooltip>
+              </>}
+            >
               <Space>
                 <Form.Item noStyle
                   name='reportThreshold'
@@ -260,10 +273,11 @@ export function SecurityTab () {
 const FieldsetItem = ({
   children,
   label,
+  switchStyle,
   ...props
-}: FormItemProps & { label: string, children: ReactNode }) => <Form.Item
+}: FormItemProps & { label: string, children: ReactNode, switchStyle: CSSProperties }) => <Form.Item
   {...props}
   valuePropName='checked'
 >
-  <Fieldset {...{ label, children }} />
+  <Fieldset {...{ label, children }} switchStyle={switchStyle}/>
 </Form.Item>

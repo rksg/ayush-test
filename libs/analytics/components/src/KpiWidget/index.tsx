@@ -77,8 +77,10 @@ export function KpiWidget ({
   type?: 'no-chart-style' | 'with-chart-style'
 }){
   const sparklineChartStyle = { height: 50, width: 130, display: 'inline' }
+  const venueFilter = filters.filter?.networkNodes?.at(0)?.at(0)
   const queryResults= useKpiTimeseriesQuery({
     ...filters,
+    path: venueFilter ? [...filters.path, venueFilter] : filters.path,
     kpi: name,
     threshold: (threshold ?? '') as string,
     granularity: getSparklineGranularity(filters.startDate,filters.endDate)

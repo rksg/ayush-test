@@ -12,7 +12,7 @@ import {
 } from '@acx-ui/rc/services'
 import { getIntl } from '@acx-ui/utils'
 
-import PlaceHolder from '../../../../../../assets/images/ap-models-images/placeholder.jpg'
+import PlaceHolder from '../../../../../../assets/images/ap-models-images/placeholder.svg'
 
 import { ApPhotoDrawer }                                                          from './ApPhotoDrawer'
 import { StyledSpace, RoundIconDiv, PhotoDiv, ArrowsOutIcon, PhotoIcon, DotsDiv } from './styledComponents'
