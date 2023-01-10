@@ -38,6 +38,8 @@ const PoliciesSolid = styled(PoliciesSolidBase)`${LayoutUI.iconSolidOverride}`
 
 export function useMenuConfig () {
   const { $t } = useIntl()
+  const showSV = useIsSplitOn(Features.SERVICE_VALIDATION)
+
   const config: LayoutProps['menuConfig'] = [
     {
       path: '/dashboard',
@@ -78,7 +80,7 @@ export function useMenuConfig () {
       activeIcon: CalendarDateSolid,
       disabled: !useIsSplitOn(Features.TIMELINE)
     },
-    {
+    ...(useIsTierAllowed('ANLT-ADV') ? [{
       path: '/serviceValidation',
       name: $t({ defaultMessage: 'Service Validation' }),
       inactiveIcon: ServiceValidationOutlined,
@@ -87,14 +89,10 @@ export function useMenuConfig () {
         {
           path: '/serviceValidation/networkHealth',
           name: $t({ defaultMessage: 'Network Health' })
-        },
-        {
-          path: '/serviceValidation/videoCallQoe',
-          name: 'Video Call QoE'
         }
       ],
-      hidden: !useIsTierAllowed('ANLT-ADV')
-    },
+      disabled: !showSV
+    }] : []),
     {
       path: '/reports',
       name: $t({ defaultMessage: 'Reports' }),

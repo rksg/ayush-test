@@ -29,7 +29,7 @@ function NetworkHealthDetails () {
   const { $t } = useIntl()
   const { activeTab = tabs[0].key } = useParams()
   const navigate = useNavigate()
-  const basePath = useTenantLink('/serviceValidation/networkHealth/:id/tab') // replace 1 with test id
+  const basePath = useTenantLink('/serviceValidation/networkHealth/:id/tab') // replace :id with test id
   const onTabChange = (tab: string) =>
     navigate({
       ...basePath,
@@ -39,7 +39,7 @@ function NetworkHealthDetails () {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Network Health' })}
+        title={$t({ defaultMessage: 'Test' })}
         breadcrumb={[
           {
             text: $t({ defaultMessage: 'Service Validation' }),

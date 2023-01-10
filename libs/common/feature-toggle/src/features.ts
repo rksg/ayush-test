@@ -20,5 +20,5 @@ export enum Features {
   TIMELINE = 'acx-ui-timeline-toggle',
   NETWORK_SEGMENTATION='acx-ui-network-segmentation-toggle',
   UNRELEASED='acx-ui-unreleased',
-  SERVICE_VALIDATION = 'acx-ui-service-validation'
+  SERVICE_VALIDATION = 'acx-ui-service-validation-toggle'
 }
