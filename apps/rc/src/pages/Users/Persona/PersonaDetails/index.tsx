@@ -8,14 +8,15 @@ import { noDataSymbol }                                 from '@acx-ui/analytics/
 import { Button, cssStr, Loader, PageHeader, Subtitle } from '@acx-ui/components'
 import { CopyOutlined }                                 from '@acx-ui/icons'
 import {
+  useLazyGetDpskQuery,
   useGetPersonaByIdQuery,
   useLazyGetMacRegListQuery,
   useLazyGetPersonaGroupByIdQuery
 } from '@acx-ui/rc/services'
 import { PersonaGroup } from '@acx-ui/rc/utils'
 
-import { MacRegistrationPoolLink, PersonaGroupLink } from '../LinkHelper'
-import { PersonaDrawer }                             from '../PersonaDrawer'
+import { DpskPoolLink, MacRegistrationPoolLink, PersonaGroupLink } from '../LinkHelper'
+import { PersonaDrawer }                                           from '../PersonaDrawer'
 
 import { PersonaDevicesTable } from './PersonaDevicesTable'
 
@@ -25,11 +26,13 @@ function PersonaDetails () {
   const { personaGroupId, personaId } = useParams()
   const [personaGroupData, setPersonaGroupData] = useState<PersonaGroup>()
   const [macPoolData, setMacPoolData] = useState({} as { id?: string, name?: string } | undefined)
+  const [dpskPoolData, setDpskPoolData] = useState({} as { id?: string, name?: string } | undefined)
   const [editDrawerVisible, setEditDrawerVisible] = useState(false)
 
   // TODO: isLoading state?
   const [getPersonaGroupById] = useLazyGetPersonaGroupByIdQuery()
   const [getMacRegistrationById] = useLazyGetMacRegListQuery()
+  const [getDpskPoolById] = useLazyGetDpskQuery()
   const personaDetailsQuery = useGetPersonaByIdQuery({
     params: { groupId: personaGroupId, id: personaId }
   })
@@ -42,21 +45,30 @@ function PersonaDetails () {
     getPersonaGroupById({ params: { groupId: personaDetailsQuery.data?.groupId } })
       .then(result => {
         if (!result.data) return
-        setPersonaGroupData(result.data )
+        setPersonaGroupData(result.data)
       })
   }, [personaDetailsQuery.data])
 
   useEffect(() => {
-    if (!personaGroupData || !personaGroupData.macRegistrationPoolId) return
+    if (!personaGroupData) return
 
-    getMacRegistrationById({
-      params: { policyId: personaGroupData.macRegistrationPoolId }
-    })
-      .then(result => {
-        if (!result.data) return
-        const { id, name } = result.data
-        setMacPoolData({ id, name })
+    if (personaGroupData.macRegistrationPoolId) {
+      let name: string | undefined
+      getMacRegistrationById({
+        params: { policyId: personaGroupData.macRegistrationPoolId }
       })
+        .then(result => name = result.data?.name)
+        .finally(() => setMacPoolData({ id: personaGroupData.macRegistrationPoolId, name }))
+    }
+
+    if (personaGroupData.dpskPoolId) {
+      let name: string | undefined
+      getDpskPoolById({
+        params: { serviceId: personaGroupData.dpskPoolId }
+      })
+        .then(result => name = result.data?.name)
+        .finally(() => setDpskPoolData({ id: personaGroupData.dpskPoolId, name }))
+    }
   }, [personaGroupData])
 
   const details = [
@@ -71,7 +83,12 @@ function PersonaDetails () {
     },
     { label: 'VLAN', value: personaDetailsQuery.data?.vlan },
     { label: 'DPSK Pool',
-      value: personaDetailsQuery.data?.dpskGuid },
+      value:
+        <DpskPoolLink
+          name={dpskPoolData?.name}
+          dpskPoolId={dpskPoolData?.id}
+        />
+    },
     { label: 'DPSK Passphrase',
       value:
         <>

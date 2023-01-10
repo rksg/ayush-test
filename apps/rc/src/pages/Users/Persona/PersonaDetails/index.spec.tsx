@@ -1,6 +1,7 @@
 import { rest } from 'msw'
 
 import {
+  DpskUrls,
   PersonaUrls,
   MacRegListUrlsInfo,
   PersonaBaseUrl
@@ -9,6 +10,7 @@ import { Provider }                                                         from
 import { mockServer, render, screen, waitForElementToBeRemoved, fireEvent } from '@acx-ui/test-utils'
 
 import {
+  mockDpskPool,
   mockMacRegistration,
   mockMacRegistrationList,
   mockPersona,
@@ -49,6 +51,10 @@ describe('Persona Details', () => {
       rest.get(
         MacRegListUrlsInfo.getMacRegistrationPools.url,
         (req, res, ctx) => res(ctx.json(mockMacRegistrationList))
+      ),
+      rest.get(
+        DpskUrls.getDpsk.url,
+        (req, res, ctx) => res(ctx.json(mockDpskPool))
       )
     )
     params = {
