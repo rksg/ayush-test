@@ -418,12 +418,11 @@ export function ApForm () {
                 initialValue=''
                 children={<Input.TextArea rows={4} maxLength={180} />}
               />
-              {/* TODO: */}
-              {/* <Form.Item
-                name=''
+              <Form.Item
+                name='tags'
                 label={$t({ defaultMessage: 'Tags' })}
-                children={<Input />}
-              /> */}
+                children={<Select mode='tags' />}
+              />
               {isApGpsFeatureEnabled && <GpsCoordinatesFormItem />}
             </Loader>
           </Col>
