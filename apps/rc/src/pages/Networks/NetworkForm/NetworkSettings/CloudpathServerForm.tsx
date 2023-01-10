@@ -1,5 +1,3 @@
-import React, { useContext } from 'react'
-
 import {
   Form,
   Input,
@@ -8,22 +6,22 @@ import {
 import { useIntl } from 'react-intl'
 
 
-import { Button, Subtitle }      from '@acx-ui/components'
+import { Subtitle }              from '@acx-ui/components'
 import { useCloudpathListQuery } from '@acx-ui/rc/services'
 import { useParams }             from '@acx-ui/react-router-dom'
 
-import NetworkFormContext from '../NetworkFormContext'
+import AAAInstance from '../AAAInstance'
+
 
 const { Option } = Select
 
 const { useWatch } = Form
 
 export function CloudpathServerForm () {
-  const { data, setData } = useContext(NetworkFormContext)
   const { $t } = useIntl()
 
   const selectedId = useWatch('cloudpathServerId')
-  const { selectOptions, selected } = useCloudpathListQuery({ params: useParams() }, {
+  const { selected } = useCloudpathListQuery({ params: useParams() }, {
     selectFromResult ({ data }) {
       return {
         selectOptions: data?.map(item => <Option key={item.id}>{item.name}</Option>) ?? [],
@@ -31,26 +29,9 @@ export function CloudpathServerForm () {
       }
     }
   })
-
-  const onSelect = (selectedId: string) => {
-    setData && setData({ ...data, cloudpathServerId: selectedId })
-  }
   return (
     <>
-      <Form.Item
-        name='cloudpathServerId'
-        label={$t({ defaultMessage: 'Cloudpath Server' })}
-        initialValue={data?.cloudpathServerId}
-        rules={[{ required: true }]}>
-        <Select placeholder={$t({ defaultMessage: 'Select...' })}
-          onSelect={onSelect}
-          children={selectOptions} />
-      </Form.Item>
-
-      <Button type='link' style={{ marginBottom: '16px' }}>
-        { $t({ defaultMessage: 'Add Server' }) }
-      </Button>
-
+      <AAAInstance serverLabel={$t({ defaultMessage: 'Cloudpath Server' })}/>
       {selected && (<>
         <Form.Item
           label={$t({ defaultMessage: 'Deployment Type' })}

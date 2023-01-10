@@ -42,7 +42,7 @@ describe('AAA Instance Page', () => {
     render(<Provider><NetworkFormContext.Provider value={{
       editMode: false, cloneMode: false, data: { guestPortal:
         { enableSmsLogin: true, socialIdentities: {} } }
-    }}><Form><AAAInstance />
+    }}><Form><AAAInstance serverLabel=''/>
       </Form></NetworkFormContext.Provider></Provider>,
     {
       route: { params }

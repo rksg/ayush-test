@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react'
 
 import { Form, Select } from 'antd'
-import { useIntl }      from 'react-intl'
 import { useParams }    from 'react-router-dom'
 
 import { useGetAAAPolicyListQuery } from '@acx-ui/rc/services'
 
 import AAAPolicyModal from './AAAPolicyModal'
 
-const AAAInstance = () => {
-  const { $t } = useIntl()
+const AAAInstance = (props:{
+  serverLabel: string
+}) => {
   const params = useParams()
   const form = Form.useFormInstance()
   const { data } = useGetAAAPolicyListQuery({ params })
@@ -21,10 +21,10 @@ const AAAInstance = () => {
     }
   },[data])
   return (
-    <div>
+    <div style={{ display: 'grid', gridTemplateColumns: '210px auto' }}>
       <Form.Item
         name='aaaPolicyProfileId'
-        label={$t({ defaultMessage: 'AAA Server' })}
+        label={props.serverLabel}
         rules={[
           { required: true }
         ]}
@@ -34,14 +34,12 @@ const AAAInstance = () => {
           ]}
         />}
       />
-      <Form.Item>
-        <AAAPolicyModal updateInstance={(data)=>{
-          aaaList.push({
-            label: data.profileName, value: data.id })
-          setAaaList([...aaaList])
-          form.setFieldValue('aaaPolicyProfileId', data.id)
-        }}/>
-      </Form.Item>
+      <AAAPolicyModal updateInstance={(data)=>{
+        aaaList.push({
+          label: data.profileName, value: data.id })
+        setAaaList([...aaaList])
+        form.setFieldValue('aaaPolicyProfileId', data.id)
+      }}/>
     </div>
   )
 }

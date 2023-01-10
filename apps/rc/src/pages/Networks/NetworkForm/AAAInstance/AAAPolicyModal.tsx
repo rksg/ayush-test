@@ -26,7 +26,7 @@ export default function AAAPolicyModal (props:{
     }}/>
 
   return (
-    <>
+    <div style={{ marginTop: 28, marginLeft: 10 }}>
       <Button type='link' onClick={()=>setVisible(true)}>
         {$t({ defaultMessage: 'Add Server' })}
       </Button>
@@ -39,6 +39,6 @@ export default function AAAPolicyModal (props:{
         destroyOnClose={true}
         width={'calc( 100% - var(--acx-sider-width))'}
       />
-    </>
+    </div>
   )
 }

@@ -5,11 +5,10 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Subtitle }                              from '@acx-ui/components'
-import { ToggleButton }                          from '@acx-ui/rc/components'
-import { AaaServerOrderEnum, AaaServerTypeEnum } from '@acx-ui/rc/utils'
+import { Subtitle }     from '@acx-ui/components'
+import { ToggleButton } from '@acx-ui/rc/components'
 
-import { IpPortSecretForm } from './IpPortSecretForm'
+import AAAInstance from '../AAAInstance'
 export function AuthAccServerSetting () {
   const intl = useIntl()
   const { useWatch } = Form
@@ -26,10 +25,7 @@ export function AuthAccServerSetting () {
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
       <div>
         <Subtitle level={3}>{intl.$t({ defaultMessage: 'Authentication Service' })}</Subtitle>
-        <IpPortSecretForm
-          serverType={AaaServerTypeEnum.AUTHENTICATION}
-          order={AaaServerOrderEnum.PRIMARY}
-        />
+        <AAAInstance serverLabel={intl.$t({ defaultMessage: 'Primary Server' })}/>
         <Form.Item noStyle name='enableSecondaryAuthServer'>
           <ToggleButton
             enableText={intl.$t({ defaultMessage: 'Remove Secondary Server' })}
@@ -38,10 +34,7 @@ export function AuthAccServerSetting () {
         </Form.Item>
 
         {enableSecondaryAuthServer &&
-          <IpPortSecretForm
-            serverType={AaaServerTypeEnum.AUTHENTICATION}
-            order={AaaServerOrderEnum.SECONDARY}
-          />
+          <AAAInstance serverLabel={intl.$t({ defaultMessage: 'Secondary Server' })}/>
         }
       </div>
       <div>
@@ -51,10 +44,7 @@ export function AuthAccServerSetting () {
         </Form.Item>
 
         {enableAccountingService && (<>
-          <IpPortSecretForm
-            serverType={AaaServerTypeEnum.ACCOUNTING}
-            order={AaaServerOrderEnum.PRIMARY}
-          />
+          <AAAInstance serverLabel={intl.$t({ defaultMessage: 'Primary Server' })}/>
 
           <Form.Item noStyle name='enableSecondaryAcctServer'>
             <ToggleButton
@@ -64,10 +54,7 @@ export function AuthAccServerSetting () {
           </Form.Item>
 
           {enableSecondaryAcctServer &&
-            <IpPortSecretForm
-              serverType={AaaServerTypeEnum.ACCOUNTING}
-              order={AaaServerOrderEnum.SECONDARY}
-            />
+            <AAAInstance serverLabel={intl.$t({ defaultMessage: 'Secondary Server' })}/>
           }
         </>)}
       </div>

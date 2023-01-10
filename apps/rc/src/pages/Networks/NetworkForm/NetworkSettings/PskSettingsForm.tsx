@@ -18,7 +18,7 @@ import {
   Tooltip
 } from '@acx-ui/components'
 import { InformationSolid, QuestionMarkCircleOutlined } from '@acx-ui/icons'
-import { ToggleButton, IpPortSecretForm }               from '@acx-ui/rc/components'
+import { ToggleButton }                                 from '@acx-ui/rc/components'
 import {
   ManagementFrameProtectionEnum,
   PskWlanSecurityEnum,
@@ -26,8 +26,6 @@ import {
   SecurityOptionsPassphraseLabel,
   MacAuthMacFormatEnum,
   macAuthMacFormatOptions,
-  AaaServerTypeEnum,
-  AaaServerOrderEnum,
   trailingNorLeadingSpaces,
   WlanSecurityEnum,
   WifiNetworkMessages,
@@ -37,6 +35,7 @@ import {
   generateHexKey
 } from '@acx-ui/rc/utils'
 
+import AAAInstance                 from '../AAAInstance'
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
@@ -306,10 +305,7 @@ function MACAuthService () {
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
       <div>
         <Subtitle level={3}>{intl.$t({ defaultMessage: 'Authentication Service' })}</Subtitle>
-        <IpPortSecretForm
-          serverType={AaaServerTypeEnum.AUTHENTICATION}
-          order={AaaServerOrderEnum.PRIMARY}
-        />
+        <AAAInstance serverLabel={intl.$t({ defaultMessage: 'Primary Server' })}/>
 
         <Form.Item noStyle name='enableSecondaryAuthServer'>
           <ToggleButton
@@ -319,10 +315,7 @@ function MACAuthService () {
         </Form.Item>
 
         {enableSecondaryAuthServer &&
-          <IpPortSecretForm
-            serverType={AaaServerTypeEnum.AUTHENTICATION}
-            order={AaaServerOrderEnum.SECONDARY}
-          />
+          <AAAInstance serverLabel={intl.$t({ defaultMessage: 'Secondary Server' })}/>
         }
       </div>
       <div>
@@ -332,10 +325,7 @@ function MACAuthService () {
         </Form.Item>
 
         {enableAccountingService && (<>
-          <IpPortSecretForm
-            serverType={AaaServerTypeEnum.ACCOUNTING}
-            order={AaaServerOrderEnum.PRIMARY}
-          />
+          <AAAInstance serverLabel={intl.$t({ defaultMessage: 'Primary Server' })}/>
 
           <Form.Item noStyle name='enableSecondaryAcctServer'>
             <ToggleButton
@@ -345,10 +335,7 @@ function MACAuthService () {
           </Form.Item>
 
           {enableSecondaryAcctServer &&
-            <IpPortSecretForm
-              serverType={AaaServerTypeEnum.ACCOUNTING}
-              order={AaaServerOrderEnum.SECONDARY}
-            />
+            <AAAInstance serverLabel={intl.$t({ defaultMessage: 'Secondary Server' })}/>
           }
         </>)}
       </div>

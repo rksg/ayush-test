@@ -17,14 +17,13 @@ import {
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import { InformationSolid, QuestionMarkCircleOutlined } from '@acx-ui/icons'
-import { ToggleButton, IpPortSecretForm }               from '@acx-ui/rc/components'
+import { ToggleButton }                                 from '@acx-ui/rc/components'
 import {
   WlanSecurityEnum,
-  AaaServerTypeEnum,
-  AaaServerOrderEnum,
   NetworkSaveData
 } from '@acx-ui/rc/utils'
 
+import AAAInstance        from '../AAAInstance'
 import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext from '../NetworkFormContext'
 
@@ -180,11 +179,7 @@ function SettingsForm () {
       <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
         <div>
           <Subtitle level={3}>{ $t({ defaultMessage: 'Authentication Service' }) }</Subtitle>
-          <IpPortSecretForm
-            serverType={AaaServerTypeEnum.AUTHENTICATION}
-            order={AaaServerOrderEnum.PRIMARY}
-          />
-
+          <AAAInstance serverLabel={$t({ defaultMessage: 'Primary Server' })}/>
           <Form.Item noStyle name='enableSecondaryAuthServer'>
             <ToggleButton
               enableText={$t({ defaultMessage: 'Remove Secondary Server' })}
@@ -193,10 +188,7 @@ function SettingsForm () {
           </Form.Item>
 
           {enableSecondaryAuthServer &&
-            <IpPortSecretForm
-              serverType={AaaServerTypeEnum.AUTHENTICATION}
-              order={AaaServerOrderEnum.SECONDARY}
-            />
+            <AAAInstance serverLabel={$t({ defaultMessage: 'Secondary Server' })}/>
           }
 
           <Form.Item>
@@ -226,10 +218,7 @@ function SettingsForm () {
           </Form.Item>
           {enableAccountingService && (
             <>
-              <IpPortSecretForm
-                serverType={AaaServerTypeEnum.ACCOUNTING}
-                order={AaaServerOrderEnum.PRIMARY}
-              />
+              <AAAInstance serverLabel={$t({ defaultMessage: 'Primary Server' })}/>
 
               <Form.Item noStyle name='enableSecondaryAcctServer'>
                 <ToggleButton
@@ -239,10 +228,7 @@ function SettingsForm () {
               </Form.Item>
 
               {enableSecondaryAcctServer &&
-                <IpPortSecretForm
-                  serverType={AaaServerTypeEnum.ACCOUNTING}
-                  order={AaaServerOrderEnum.SECONDARY}
-                />
+                <AAAInstance serverLabel={$t({ defaultMessage: 'Secondary Server' })}/>
               }
 
               <Form.Item>
