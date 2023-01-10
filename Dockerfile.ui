@@ -86,7 +86,8 @@ COPY --from=acx-ui-tslint /app/tslint-done ./tslint-done
 COPY --from=build         /app/dist/apps   ./dist/apps
 
 RUN node ./node_modules/.bin/nx run rc:test --coverage --maxWorkers=50%
-RUN node ./node_modules/.bin/nx run-many --target=test --all --exclude=rc --coverage --runInBand --verbose
+RUN node ./node_modules/.bin/nx run analytics:test --coverage --maxWorkers=50%
+RUN node ./node_modules/.bin/nx run-many --target=test --all --exclude=rc,analytics --coverage --runInBand --verbose
 
 ###############################################################
 FROM nginx:1.21.6-alpine
