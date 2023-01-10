@@ -27,6 +27,7 @@ const tabs = {
 export interface SwitchDetailsContext {
   switchDetailHeader: SwitchViewModel
   currentSwitchOperational: boolean
+  switchName: string
 }
 
 export const SwitchDetailsContext = createContext({} as {
@@ -42,6 +43,7 @@ export default function SwitchDetails () {
   useEffect(() => {
     setSwitchDetailsContextData({
       switchDetailHeader: switchDetailHeader as SwitchViewModel,
+      switchName: switchDetailHeader?.name || switchDetailHeader?.switchName || switchDetailHeader?.serialNumber || '',
       currentSwitchOperational: isStrictOperationalSwitch(
         switchDetailHeader?.deviceStatus as SwitchStatusEnum, !!switchDetailHeader?.configReady
         , !!switchDetailHeader?.syncedSwitchConfig) && !switchDetailHeader?.suspendingDeployTime

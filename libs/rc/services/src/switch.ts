@@ -27,7 +27,8 @@ import {
   transformConfigBackupStatus,
   ConfigurationBackup,
   ConfigurationBackupStatus,
-  transformConfigBackupType
+  transformConfigBackupType,
+  downloadFile
 } from '@acx-ui/rc/utils'
 import { formatter } from '@acx-ui/utils'
 
@@ -177,6 +178,22 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'SwitchBackup', id: 'LIST' }],
+    }),
+    downloadConfigBackup: build.mutation<{ data: BlobPart }, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.downloadSwitchConfig, params)
+        return {
+          ...req,
+          responseHandler: async (res) => {
+            console.log(res)
+            downloadFile(res, params?.fileName as string)
+          },
+          headers: {
+            'Content-Type': 'application/json',
+            'accept': 'application/json,text/plain,*/*'
+          }
+        }
+      }
     }),
     deleteConfigBackups: build.mutation<ConfigurationBackup, RequestPayload>({
       query: ({ params, payload }) => {
@@ -407,6 +424,7 @@ export const {
   useAddSwitchMutation,
   useAddStackMemberMutation,
   useGetSwitchConfigBackupListQuery,
+  useDownloadConfigBackupMutation,
   useDeleteConfigBackupsMutation,
   useGetSwitchConfigHistoryQuery,
   useGetSwitchListQuery,

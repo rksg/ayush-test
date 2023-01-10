@@ -3,13 +3,14 @@ import { useContext, useEffect, useRef, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps, showActionModal }    from '@acx-ui/components'
-import { useDeleteConfigBackupsMutation, useGetSwitchConfigBackupListQuery }                            from '@acx-ui/rc/services'
+import { Loader, Table, TableProps, showActionModal, showToast }    from '@acx-ui/components'
+import { useDeleteConfigBackupsMutation, useDownloadConfigBackupMutation, useGetSwitchConfigBackupListQuery }                            from '@acx-ui/rc/services'
 import { BACKUP_DISABLE_TOOLTIP, ConfigurationBackup, useTableQuery } from '@acx-ui/rc/utils'
 
 import { SwitchDetailsContext } from '../..'
 import { ViewConfigurationModal } from './ViewConfigurationModal'
 import { useParams } from '@acx-ui/react-router-dom'
+import moment from 'moment-timezone'
 
 export function SwitchConfigBackupTable () {
   const { $t } = useIntl()
@@ -22,7 +23,8 @@ export function SwitchConfigBackupTable () {
   } = useContext(SwitchDetailsContext)
 
   const [ deleteConfigBackups ] = useDeleteConfigBackupsMutation()
-  const { currentSwitchOperational } = switchDetailsContextData
+  const [ downloadConfigBackup ] = useDownloadConfigBackupMutation()
+  const { currentSwitchOperational, switchName } = switchDetailsContextData
 
   const showViewModal = (row: ConfigurationBackup[]) => {
     setViewData(row[0])
@@ -108,8 +110,21 @@ export function SwitchConfigBackupTable () {
   }, {
     label: $t({ defaultMessage: 'Download' }),
     disabled: (rows) => !isActionVisible(rows, { selectOne: true }),
-    onClick: () => {
+    onClick: (rows) => {
       // TODO:
+      const fileName = 'switch_configuration_' + switchName + '_' + moment().format('YYYYMMDDHHmmss') + '.txt';
+      downloadConfigBackup({
+        params: {
+          ...params, 
+          fileName,
+          configId: rows[0].id
+        }})
+      .catch(() => {
+        showToast({
+          type: 'error',
+          content: $t({ defaultMessage: 'Failed to download Information.' })
+        })
+      })
     }
   }, {
     label: $t({ defaultMessage: 'Delete' }),
