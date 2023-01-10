@@ -58,6 +58,9 @@ export function transformConfigType (type: ConfigTypeEnum | string) {
     case ConfigTypeEnum.SPECIFIC_SETTING:
       transform = $t({ defaultMessage: 'Specific Setting' })
       break
+    case ConfigTypeEnum.STATIC_ROUTE:
+      transform = $t({ defaultMessage: 'Static Route' })
+      break
     case 'VLAN':
       transform = $t({ defaultMessage: 'VLAN' })
       break
@@ -84,6 +87,9 @@ export function transformConfigStatus (type: ConfigStatusEnum | string) {
       break
     case ConfigStatusEnum.FAILED_NO_RESPONSE:
       transform = $t({ defaultMessage: 'Failed No Response' })
+      break
+    case ConfigStatusEnum.PENDING:
+      transform = $t({ defaultMessage: 'Pending' })
       break
   }
 
@@ -124,6 +130,7 @@ export const transformConfigBackupType = (type:string) => {
   const { $t } = getIntl()
   if (type === 'SCHEDULED') {
     return  $t({defaultMessage: 'Automatic'})
+  } else {
+    return  $t({defaultMessage: 'Manual'})
   }
-  return type;
 }
