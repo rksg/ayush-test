@@ -7,11 +7,14 @@ import {
   defaultApPayload,
   NetworkTable,
   defaultNetworkPayload,
+  EventTable,
+  eventDefaultPayload,
   SwitchTable,
   defaultSwitchPayload
 } from '@acx-ui/rc/components'
 import {
   useApListQuery,
+  useEventsQuery,
   useNetworkListQuery,
   useVenuesListQuery,
   useSwitchListQuery
@@ -23,6 +26,9 @@ import {
   Venue,
   AP,
   ApExtraParams,
+  Event,
+  usePollingTableQuery,
+  TABLE_QUERY_LONG_POLLING_INTERVAL,
   SwitchRow
 } from '@acx-ui/rc/utils'
 
@@ -32,7 +38,7 @@ import NoData              from './NoData'
 import { Collapse, Panel } from './styledComponents'
 
 
-const pagination = { pageSize: 5 }
+const pagination = { pageSize: 5, showSizeChanger: false }
 
 const searches = [
   (searchString: string, $t: IntlShape['$t']) => {
@@ -85,6 +91,29 @@ const searches = [
     }
   },
   (searchString: string, $t: IntlShape['$t']) => {
+    const result = usePollingTableQuery<Event>({
+      useQuery: useEventsQuery,
+      defaultPayload: {
+        ...eventDefaultPayload,
+        filters: {},
+        searchString,
+        searchTargetFields: ['entity_id', 'message', 'apMac', 'clientMac'],
+        detailLevel: 'su'
+      },
+      pagination,
+      sorter: {
+        sortField: 'event_datetime',
+        sortOrder: 'DESC'
+      },
+      option: { pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL }
+    })
+    return {
+      result,
+      title: $t({ defaultMessage: 'Events' }),
+      component: <EventTable tableQuery={result} />
+    }
+  },
+  (searchString: string, $t: IntlShape['$t']) => {
     const result = useTableQuery<SwitchRow, RequestPayload<unknown>, unknown>({
       useQuery: useSwitchListQuery,
       defaultPayload: {
@@ -126,7 +155,7 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
       </>
       : <>
         <PageHeader title={$t(
-          { defaultMessage: 'Hmmmm... we couldn\'t find any match for "{searchVal}"' },
+          { defaultMessage: 'Hmmmm... we couldn’t find any match for "{searchVal}"' },
           { searchVal }
         )} />
         <NoData />
