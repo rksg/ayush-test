@@ -92,8 +92,7 @@ const searches = [
         ...eventDefaultPayload,
         filters: {},
         searchString,
-        searchTargetFields: ['entity_id', 'message', 'apMac', 'clientMac'],
-        detailLevel: 'su'
+        searchTargetFields: ['entity_id', 'message', 'apMac', 'clientMac']
       },
       pagination,
       sorter: {
