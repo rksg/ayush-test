@@ -43,6 +43,7 @@ export function SwitchMacAddressForm () {
   }
   const vlanPayload = {
     sortField: 'vlanId',
+    fields: ['vlanId'],
     sortOrder: 'ASC',
     page: 1,
     pageSize: 10000
@@ -172,7 +173,7 @@ export function SwitchMacAddressForm () {
           break
         case TroubleshootingMacAddressOptionsEnum.VLAN:
           const vlanId = form.getFieldValue('vlanId')
-          if (!_.isEmpty(vlanId) || _.isNumber(vlanId)) {
+          if (!_.isEmpty(vlanId) || Number(vlanId) > 0) {
             payload = {
               vlanId,
               macAddressTableType
@@ -276,6 +277,7 @@ export function SwitchMacAddressForm () {
           {refineOption === TroubleshootingMacAddressOptionsEnum.MAC &&
               <Form.Item
                 label={' '}
+                data-testid='inputMacAddress'
                 name='macAddress'
                 initialValue={''}
                 rules={[
@@ -305,6 +307,7 @@ export function SwitchMacAddressForm () {
                 initialValue={''}
               >
                 <Select
+                  data-testid='selectPort'
                   disabled={isLoading}
                   options={[
                     { label: $t({ defaultMessage: 'Select Port...' }), value: '' },
@@ -320,6 +323,7 @@ export function SwitchMacAddressForm () {
                 initialValue={''}
               >
                 <Select
+                  data-testid='selectVlan'
                   disabled={isLoading}
                   options={[
                     { label: $t({ defaultMessage: 'Select VLAN...' }), value: '' },
