@@ -68,18 +68,20 @@ export function ApNetworksTab () {
           $t({ defaultMessage: 'VLAN Pool: {poolName}' }, { poolName: row.vlanPool?.name ?? '' }) :
           $t({ defaultMessage: 'VLAN-{id}' }, { id: row.vlan })
       }
-    }, {
-      key: 'health',
-      title: $t({ defaultMessage: 'Health' }),
-      dataIndex: 'health',
-      sorter: true
-    },
-    {
-      key: 'tags',
-      title: $t({ defaultMessage: 'Tags' }),
-      dataIndex: 'tags',
-      sorter: true
-    }]
+    }
+    // { // TODO: Waiting for HEALTH feature support
+    //   key: 'health',
+    //   title: $t({ defaultMessage: 'Health' }),
+    //   dataIndex: 'health',
+    //   sorter: true
+    // },
+    // { // TODO: Waiting for TAG feature support
+    //   key: 'tags',
+    //   title: $t({ defaultMessage: 'Tags' }),
+    //   dataIndex: 'tags',
+    //   sorter: true
+    // }
+    ]
   }, [$t])
 
   return (

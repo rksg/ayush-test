@@ -42,10 +42,7 @@ function ApTabs (props:{ apDetail: ApDetailHeader }) {
         key='networks'
       />
       <Tabs.TabPane
-        disabled={!releaseTag}
-        tab={<Tooltip title={$t(notAvailableMsg)}>
-          {$t({ defaultMessage: 'Clients ({clientsCount})' }, { clientsCount: apDetail?.headers?.clients })}
-        </Tooltip>}
+        tab={$t({ defaultMessage: 'Clients ({clientsCount})' }, { clientsCount: apDetail?.headers?.clients })}
         key='clients'
       />
       <Tabs.TabPane
