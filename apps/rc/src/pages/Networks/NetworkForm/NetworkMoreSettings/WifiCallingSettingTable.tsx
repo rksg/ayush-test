@@ -2,8 +2,10 @@ import React, { useContext } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps }  from '@acx-ui/components'
-import { WifiCallingSetting } from '@acx-ui/rc/utils'
+import { Table, TableProps }                   from '@acx-ui/components'
+import { QosPriorityEnum, WifiCallingSetting } from '@acx-ui/rc/utils'
+
+import { wifiCallingQosPriorityLabelMapping } from '../../../Services/contentsMap'
 
 import { WifiCallingSettingContext } from './ServicesForm'
 
@@ -26,7 +28,10 @@ const WifiCallingSettingTable = () => {
     {
       title: $t({ defaultMessage: 'QosPriority' }),
       dataIndex: 'qosPriority',
-      key: 'qosPriority'
+      key: 'qosPriority',
+      render: (_, value) => {
+        return $t(wifiCallingQosPriorityLabelMapping[value.qosPriority as QosPriorityEnum])
+      }
     }
   ]
 
