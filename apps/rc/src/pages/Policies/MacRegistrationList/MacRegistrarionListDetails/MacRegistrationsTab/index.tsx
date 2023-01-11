@@ -124,11 +124,21 @@ export function MacRegistrationsTab () {
       dataIndex: 'email'
     },
     {
+      title: $t({ defaultMessage: 'Device Name' }),
+      key: 'deviceName',
+      dataIndex: 'deviceName'
+    },
+    {
+      title: $t({ defaultMessage: 'Location' }),
+      key: 'location',
+      dataIndex: 'location'
+    },
+    {
       title: $t({ defaultMessage: 'Registration Date' }),
       key: 'registrationDate',
       dataIndex: 'registrationDate',
       render: function (data, row) {
-        return toTimeString(row.createDate)
+        return toTimeString(row.createdDate)
       }
     },
     {

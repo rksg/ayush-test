@@ -86,6 +86,8 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
         const payload = {
           username: data.username?.length === 0 ? null : data.username,
           email: data.email?.length === 0 ? null : data.email,
+          location: data.location,
+          deviceName: data.deviceName,
           expirationDate: data.expiration?.mode === ExpirationMode.NEVER ? null :
             moment.utc(data.expiration?.date).format('YYYY-MM-DDT23:59:59[Z]')
         }
@@ -99,6 +101,8 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
           macAddress: data.macAddress,
           username: data.username?.length === 0 ? null : data.username,
           email: data.email?.length === 0 ? null : data.email,
+          location: data.location,
+          deviceName: data.deviceName,
           expirationDate: data.expiration?.mode === ExpirationMode.NEVER ? null :
             moment(data.expiration?.date).format('YYYY-MM-DDT23:59:59[Z]')
         }
@@ -139,6 +143,12 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
           { type: 'email', message: intl.$t({ defaultMessage: 'E-mail is not a valid email' }) }
         ]}
         label={intl.$t({ defaultMessage: 'E-mail' })}>
+        <Input/>
+      </Form.Item>
+      <Form.Item name='deviceName' label={intl.$t({ defaultMessage: 'Device Name' })}>
+        <Input/>
+      </Form.Item>
+      <Form.Item name='location' label={intl.$t({ defaultMessage: 'Location' })}>
         <Input/>
       </Form.Item>
       <ExpirationDateSelector
