@@ -88,14 +88,11 @@ describe('TroubleshootingPingForm', () => {
     expect(await screen.findByText(/Target host or IP address/i)).toBeVisible()
   })
 
-
-
-
   it('should do run correctly', async () => {
     mockServer.use(
       rest.get(
         SwitchUrlsInfo.getTroubleshooting.url,
-        (req, res, ctx) => res(ctx.json(troubleshootingResult_ping_isSyncing)))
+        (req, res, ctx) => res(ctx.json(troubleshootingResult_ping_result)))
     )
     render(<Provider>
       <SwitchPingForm />
@@ -139,5 +136,27 @@ describe('TroubleshootingPingForm', () => {
     expect(await screen.findByText(/Last synced at/i)).toBeVisible()
 
     await userEvent.click(await screen.findByRole('button', { name: /clear/i }))
+  })
+
+  it('should handle error correctly', async () => {
+    mockServer.use(
+      rest.get(
+        SwitchUrlsInfo.getTroubleshooting.url,
+        (req, res, ctx) => res(ctx.json(troubleshootingResult_ping_result))),
+      rest.post(
+        SwitchUrlsInfo.ping.url,
+        (_, res, ctx) => res(ctx.status(404), ctx.json({})))
+    )
+    render(<Provider>
+      <SwitchPingForm />
+    </Provider>, { route: { params } })
+
+    const ipAddressField = screen.getByRole('textbox', {
+      name: /target host or ip address/i
+    })
+    fireEvent.change(ipAddressField, { target: { value: '1.1.1.1' } })
+    ipAddressField.focus()
+    await userEvent.click(await screen.findByRole('button', { name: /run/i }))
+    expect(await screen.findByText('An error occurred')).toBeVisible()
   })
 })

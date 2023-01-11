@@ -3,9 +3,9 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { SwitchUrlsInfo }             from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { SwitchUrlsInfo }                                from '@acx-ui/rc/utils'
+import { Provider }                                      from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, within } from '@acx-ui/test-utils'
 
 import {
   doRunResponse,
@@ -157,6 +157,41 @@ describe('SwitchMacAddressForm', () => {
     await userEvent.click(await screen.findByRole('button', { name: /show table/i }))
   })
 
+
+  it('should manuelly query mac correctly', async () => {
+    mockServer.use(
+      rest.get(
+        SwitchUrlsInfo.getTroubleshooting.url,
+        (req, res, ctx) => res(ctx.json(troubleshootingResult_macaddress_mac)))
+    )
+    render(<Provider>
+      <SwitchMacAddressForm />
+    </Provider>, { route: { params } })
+
+    expect(await screen.findByText(/Last synced at/i)).toBeVisible()
+    const view = screen.getByTestId('inputMacAddress')
+    fireEvent.change( within(view).getByRole('textbox'), { target: { value: 'aa:aa:aa:aa:aa:aa' } })
+    within(view).getByRole('textbox').focus()
+    await userEvent.click(await screen.findByRole('button', { name: /show table/i }))
+  })
+
+  it('should check mac validation correctly', async () => {
+    mockServer.use(
+      rest.get(
+        SwitchUrlsInfo.getTroubleshooting.url,
+        (req, res, ctx) => res(ctx.json(troubleshootingResult_macaddress_mac)))
+    )
+    render(<Provider>
+      <SwitchMacAddressForm />
+    </Provider>, { route: { params } })
+
+    expect(await screen.findByText(/Last synced at/i)).toBeVisible()
+    const view = screen.getByTestId('inputMacAddress')
+    fireEvent.change( within(view).getByRole('textbox'), { target: { value: 'aa:aa:aa' } })
+    within(view).getByRole('textbox').focus()
+    await userEvent.click(await screen.findByRole('button', { name: /show table/i }))
+  })
+
   it('should clear correctly', async () => {
     mockServer.use(
       rest.get(
@@ -170,4 +205,23 @@ describe('SwitchMacAddressForm', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: /clear/i }))
   })
+
+  it('should handle error correctly', async () => {
+    mockServer.use(
+      rest.get(
+        SwitchUrlsInfo.getTroubleshooting.url,
+        (req, res, ctx) => res(ctx.json(troubleshootingResult_macaddress_port))),
+      rest.post(
+        SwitchUrlsInfo.macAddressTable.url,
+        (_, res, ctx) => res(ctx.status(404), ctx.json({})))
+    )
+    render(<Provider>
+      <SwitchMacAddressForm />
+    </Provider>, { route: { params } })
+
+    expect(await screen.findByText(/Last synced at/i)).toBeVisible()
+    await userEvent.click(await screen.findByRole('button', { name: /show table/i }))
+    expect(await screen.findByText('An error occurred')).toBeVisible()
+  })
+
 })

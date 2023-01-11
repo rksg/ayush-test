@@ -130,4 +130,24 @@ describe('TroubleshootingIpRouteForm', () => {
     expect(await screen.findByText(/Last synced at/i)).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: /copy output/i }))
   })
+
+
+  it('should handle error correctly', async () => {
+    mockServer.use(
+      rest.post(
+        SwitchUrlsInfo.ipRoute.url,
+        (_, res, ctx) => res(ctx.status(404), ctx.json({}))),
+      rest.get(
+        SwitchUrlsInfo.getTroubleshooting.url,
+        (req, res, ctx) => res(ctx.json(troubleshootingResult_route_result)))
+    )
+    render(<Provider>
+      <SwitchIpRouteForm />
+    </Provider>, { route: { params } })
+
+    await userEvent.click(await screen.findByRole('button', { name: /show route/i }))
+    expect(await screen.findByText(/Last synced at/i)).toBeVisible()
+    expect(await screen.findByText('An error occurred')).toBeVisible()
+  })
+
 })

@@ -142,6 +142,12 @@ describe('SwitchTraceRouteForm', () => {
     })
     fireEvent.change(ipAddressField, { target: { value: '1.1' } })
     ipAddressField.focus()
+    const maximumField = screen.getByRole('textbox', {
+      name: /maximum ttl \(hops\)/i
+    })
+    fireEvent.change(maximumField, { target: { value: '255' } })
+    maximumField.focus()
+    await userEvent.click(await screen.findByRole('button', { name: /run/i }))
   })
 
   it('should clear correctly', async () => {
@@ -157,4 +163,29 @@ describe('SwitchTraceRouteForm', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: /clear/i }))
   })
+
+
+  it('should handle error occurred', async () => {
+    mockServer.use(
+      rest.post(
+        SwitchUrlsInfo.traceRoute.url,
+        (_, res, ctx) => res(ctx.status(404), ctx.json({})))
+    )
+    render(<Provider>
+      <SwitchTraceRouteForm />
+    </Provider>, { route: { params } })
+
+    const ipAddressField = screen.getByRole('textbox', {
+      name: /target host or ip address/i
+    })
+    fireEvent.change(ipAddressField, { target: { value: '1.1.1.1' } })
+    const maximumField = screen.getByRole('textbox', {
+      name: /maximum ttl \(hops\)/i
+    })
+    fireEvent.change(maximumField, { target: { value: '255' } })
+    maximumField.focus()
+    await userEvent.click(await screen.findByRole('button', { name: /run/i }))
+    expect(await screen.findByText('An error occurred')).toBeVisible()
+  })
+
 })
