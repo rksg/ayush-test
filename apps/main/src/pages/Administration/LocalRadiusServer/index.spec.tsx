@@ -7,7 +7,8 @@ import { RadiusClientConfigUrlsInfo }                                 from '@acx
 import { Provider }                                                   from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved, act } from '@acx-ui/test-utils'
 
-import { RadiusServerTab } from './index'
+import LocalRadiusServer from './index'
+
 
 describe('RadiusServerTab', () => {
 
@@ -27,7 +28,7 @@ describe('RadiusServerTab', () => {
   })
 
   it('should render radius config correctly', async () => {
-    render(<Provider><RadiusServerTab /></Provider>, {
+    render(<Provider><LocalRadiusServer /></Provider>, {
       route: { params: {
         tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
       }, path: '/:tenantId' }
@@ -46,7 +47,7 @@ describe('RadiusServerTab', () => {
 
   it('should change secret correctly', async () => {
 
-    render(<Provider><RadiusServerTab /></Provider>, {
+    render(<Provider><LocalRadiusServer /></Provider>, {
       route: { params: {
         tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
       }, path: '/:tenantId' }
@@ -78,7 +79,7 @@ describe('RadiusServerTab', () => {
   })
 
   it('should show drawer correctly', async () => {
-    render(<Provider><RadiusServerTab /></Provider>, {
+    render(<Provider><LocalRadiusServer /></Provider>, {
       route: { params: {
         tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
       }, path: '/:tenantId' }
@@ -105,7 +106,7 @@ describe('RadiusServerTab', () => {
   })
 
   it('should delete ip address correctly', async () => {
-    render(<Provider><RadiusServerTab /></Provider>, {
+    render(<Provider><LocalRadiusServer /></Provider>, {
       route: { params: {
         tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
       }, path: '/:tenantId' }
