@@ -353,39 +353,6 @@ exports[`NetworkApGroupDialog should render correctly 1`] = `
                           </div>
                           <div
                             class="ant-space-item"
-                            style="margin-bottom: 16px;"
-                          />
-                          <div
-                            class="ant-space-item"
-                            style="margin-bottom: 16px;"
-                          >
-                            <label
-                              class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
-                            >
-                              <span
-                                class="ant-radio"
-                              >
-                                <input
-                                  class="ant-radio-input"
-                                  type="radio"
-                                  value="2"
-                                />
-                                <span
-                                  class="ant-radio-inner"
-                                />
-                              </span>
-                              <span>
-                                Select APs by tag
-                                <div
-                                  class="styledComponents__RadioDescription-sc-1ygdeo6-1 eMIDKH"
-                                >
-                                  This network will be only applied to APs with the tags.
-                                </div>
-                              </span>
-                            </label>
-                          </div>
-                          <div
-                            class="ant-space-item"
                           />
                         </div>
                       </div>
