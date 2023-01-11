@@ -70,6 +70,7 @@ describe('ClientDetails', () => {
   })
 
   it('should render correctly', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('hostname')
     const params = {
       tenantId: 'tenant-id',

@@ -79,7 +79,7 @@ const WifiCallingDrawer = (props: WifiCallingDrawerProps) => {
       children={content}
       footer={
         <Drawer.FormFooter
-          showAddAnother={!isEditMode}
+          showAddAnother={!isEditMode && state.ePDG.length < 4}
           buttonLabel={({
             addAnother: $t({ defaultMessage: 'Add another ePDG' }),
             save: $t({ defaultMessage: 'Save' })

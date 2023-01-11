@@ -3,7 +3,7 @@
 exports[`Table component renders compact table 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-13 hSrKcM"
+    class="styledComponents__Wrapper-sc-1abm7iv-13 fEFRdc"
   >
     <div
       class="ant-pro-table"
@@ -184,7 +184,7 @@ exports[`Table component renders compact table 1`] = `
 exports[`Table component renders form table 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-13 gwcANN"
+    class="styledComponents__Wrapper-sc-1abm7iv-13 dCbkWt"
   >
     <div
       class="ant-pro-table"
@@ -365,7 +365,7 @@ exports[`Table component renders form table 1`] = `
 exports[`Table component should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-13 crtNbp"
+    class="styledComponents__Wrapper-sc-1abm7iv-13 bRIKQR"
   >
     <div
       class="ant-pro-table"
@@ -706,7 +706,7 @@ exports[`Table component should render correctly 1`] = `
 exports[`Table component should render multi select table and render action buttons correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-13 gzZsiC"
+    class="styledComponents__Wrapper-sc-1abm7iv-13 gGUvnO"
   >
     <div
       class="ant-pro-table"
@@ -1147,7 +1147,7 @@ exports[`Table component should render multi select table and render action butt
 exports[`Table component should render multi select table and render action buttons correctly 2`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-13 gzZsiC"
+    class="styledComponents__Wrapper-sc-1abm7iv-13 gGUvnO"
   >
     <div
       class="ant-pro-table"
@@ -1688,7 +1688,7 @@ exports[`Table component should render multi select table and render action butt
 exports[`Table component should render multi select table and render action buttons correctly 3`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-13 gzZsiC"
+    class="styledComponents__Wrapper-sc-1abm7iv-13 gGUvnO"
   >
     <div
       class="ant-pro-table"
