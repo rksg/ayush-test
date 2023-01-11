@@ -1,18 +1,32 @@
-import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
+import { waitFor } from '@testing-library/react'
+import userEvent   from '@testing-library/user-event'
+import { rest }    from 'msw'
 
-import { PersonaBaseUrl, PersonaUrls }                from '@acx-ui/rc/utils'
-import { Provider }                                   from '@acx-ui/store'
-import { mockServer, render, screen, fireEvent, act } from '@acx-ui/test-utils'
+import { MacRegListUrlsInfo, PersonaBaseUrl, PersonaUrls } from '@acx-ui/rc/utils'
+import { Provider }                                        from '@acx-ui/store'
+import { mockServer, render, screen }                      from '@acx-ui/test-utils'
 
-import { mockPersonaTableResult, mockPersonaGroupList, mockPersona } from '../__tests__/fixtures'
+import {
+  mockPersonaTableResult,
+  mockPersonaGroupList,
+  mockPersona,
+  mockPersonaGroup,
+  mockMacRegistration
+} from '../__tests__/fixtures'
 
 import { PersonaDrawer } from './index'
 
-describe('Persona Drawer', () => {
+const closeFn = jest.fn()
 
+describe('Persona Drawer', () => {
   beforeEach( async () => {
+    closeFn.mockClear()
+
     mockServer.use(
+      rest.get(
+        PersonaUrls.getPersonaGroupById.url,
+        (req, res, ctx) => res(ctx.json(mockPersonaGroup))
+      ),
       rest.get(
         PersonaBaseUrl,
         (req, res, ctx) => res(ctx.json(mockPersonaGroupList))
@@ -20,8 +34,23 @@ describe('Persona Drawer', () => {
       rest.post(
         PersonaUrls.searchPersonaList.url,
         (req, res, ctx) => res(ctx.json(mockPersonaTableResult))
+      ),
+      // rest.put(
+      //   PersonaUrls.updatePersona.url,
+      //   (req, res, ctx) => res(ctx.json({}))
+      // ),
+      rest.post(
+        PersonaUrls.addPersona.url,
+        (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.get(
+        MacRegListUrlsInfo.getMacRegistrationPool.url,
+        (req, res, ctx) => res(ctx.json(mockMacRegistration))
+      ),
+      rest.patch(
+        PersonaUrls.updatePersona.url,
+        (req, res, ctx) => res(ctx.json({}))
       )
-      // patch persona
     )
   })
 
@@ -31,19 +60,26 @@ describe('Persona Drawer', () => {
         <PersonaDrawer
           visible
           isEdit={false}
-          onClose={jest.fn}
+          onClose={closeFn}
         />
       </Provider>
     )
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(async () => {
-      await screen.findByText('Create Persona')
-      const nameField = await screen.findByLabelText('Persona Name')
-      await userEvent.type(nameField , 'New Persona Group Name')
 
-      const addButton = await screen.findByRole('button', { name: 'Add' })
-      fireEvent.click(addButton)
-    })
+    // Type Persona Group Name field
+    const nameField = await screen.findByLabelText('Persona Name')
+    await userEvent.type(nameField , 'New Persona Group Name')
+
+    const groupSelector = await screen.findByRole('combobox', { name: /persona group/i })
+
+    // Expend PersonaGroupSelector and select one option
+    await userEvent.click(groupSelector)
+    await userEvent.click(await screen.findByText(mockPersonaGroupList.content[0].name))
+
+    const addButton = await screen.findByRole('button', { name: 'Add' })
+
+    // Trigger create and wait for api completed to make sure close function be called.
+    await userEvent.click(addButton)
+    await waitFor(() => expect(closeFn).toHaveBeenCalled())
   })
 
   it('should edit a persona', async () => {
@@ -53,22 +89,24 @@ describe('Persona Drawer', () => {
           isEdit
           visible
           data={mockPersona}
-          onClose={jest.fn}
+          onClose={closeFn}
         />
       </Provider>
     )
 
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(async () => {
-      await screen.findByText('Edit Persona')
-      const groupField = await screen.findByLabelText('Persona Name') as HTMLInputElement
-      expect(groupField.value).toBe(mockPersona.name)
+    // Check title is edit mode
+    await screen.findByText('Edit Persona')
+    const groupField = await screen.findByLabelText('Persona Name') as HTMLInputElement
+    expect(groupField.value).toBe(mockPersona.name)
 
-      const descriptionField = await screen.findByLabelText('Description') as HTMLTextAreaElement
-      fireEvent.change(descriptionField, { target: { value: 'New description' } })
+    // Change description field
+    const descriptionField = await screen.findByLabelText('Description') as HTMLTextAreaElement
+    await userEvent.type(descriptionField, 'New description')
 
-      const applyButton = await screen.findByRole('button', { name: /Apply/i })
-      fireEvent.click(applyButton)
-    })
+    const applyButton = await screen.findByRole('button', { name: /Apply/i })
+
+    // Trigger update and wait for api completed to make sure close function be called.
+    await userEvent.click(applyButton)
+    await waitFor(() => expect(closeFn).toHaveBeenCalled())
   })
 })
