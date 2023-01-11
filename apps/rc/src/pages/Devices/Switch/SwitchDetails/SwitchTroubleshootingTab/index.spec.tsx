@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom'
 
-import { Provider }        from '@acx-ui/store'
-import {  fireEvent, render, screen } from '@acx-ui/test-utils'
+import { Provider }                            from '@acx-ui/store'
+import {  fireEvent, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import { SwitchTroubleshootingTab } from '.'
 
@@ -99,6 +99,24 @@ describe('SwitchTroubleshootingTab', () => {
       }
     })
     expect(await screen.findByText('Target host or IP address')).toBeVisible()
+  })
+
+  it('should handle tab changes correctly', async () => {
+    const params = {
+      tenantId: 'tenant-id',
+      switchId: 'switchId',
+      serialNumber: 'serialNumber',
+      activeSubTab: 'ping'
+    }
+    render(<Provider><SwitchTroubleshootingTab /></Provider>, {
+      route: {
+        params,
+        // eslint-disable-next-line max-len
+        path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/troubleshooting/:activeSubTab'
+      }
+    })
+    await waitFor(() => screen.findByText(/Trace Route/))
+    fireEvent.click(await screen.findByText(/Trace Route/))
   })
 })
 

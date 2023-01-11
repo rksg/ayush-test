@@ -2,7 +2,7 @@
 import { useIntl } from 'react-intl'
 
 import { Tabs }                                  from '@acx-ui/components'
-import { SwitchViewModel, isOperationalSwitch }                       from '@acx-ui/rc/utils'
+import { SwitchViewModel, isOperationalSwitch }  from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 
