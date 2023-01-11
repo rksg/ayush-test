@@ -9,6 +9,7 @@ import {
   EdgeStaticRouteConfig,
   EdgeStatus,
   EdgeSubInterface,
+  EdgePortStatus,
   EdgeUrlsInfo,
   PaginationQueryResult,
   RequestPayload,
@@ -137,7 +138,8 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      invalidatesTags: [{ type: 'Edge', id: 'DETAIL_PORTS' }]
     }),
     // eslint-disable-next-line max-len
     getSubInterfaces: build.query<TableResult<EdgeSubInterface>, RequestPayload>({
@@ -205,6 +207,19 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Edge', id: 'DETAIL_ROUTES' }]
+    }),
+    getEdgePortsStatusList: build.query<EdgePortStatus[], RequestPayload>({
+      query: ({ payload, params }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getEdgePortStatusList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      transformResponse (result: TableResult<EdgePortStatus>) {
+        return transformEdgePortStatus(result?.data)
+      },
+      providesTags: [{ type: 'Edge', id: 'DETAIL_PORTS' }]
     })
   })
 })
@@ -227,11 +242,16 @@ export const {
   useDeleteSubInterfacesMutation,
   useGetStaticRoutesQuery,
   useUpdateStaticRoutesMutation,
-  useEdgeBySerialNumberQuery
+  useEdgeBySerialNumberQuery,
+  useGetEdgePortsStatusListQuery
 } = edgeApi
 
 const transformEdgeStatus = (result: EdgeStatus) => {
   const edge = JSON.parse(JSON.stringify(result))
 
   return edge
+}
+
+const transformEdgePortStatus = (result: EdgePortStatus[]) => {
+  return result.map((value) => JSON.parse(JSON.stringify(value)))
 }
