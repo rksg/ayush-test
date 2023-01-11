@@ -110,19 +110,19 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       render: function (data, row) {
         return transformVLAN(row)
       }
-    },
-    {
-      key: 'health',
-      title: intl.$t({ defaultMessage: 'Health' }),
-      dataIndex: 'health',
-      sorter: true
-    },
-    {
-      key: 'tags',
-      title: intl.$t({ defaultMessage: 'Tags' }),
-      dataIndex: 'tags',
-      sorter: true
     }
+    // { // TODO: Waiting for HEALTH feature support
+    //   key: 'health',
+    //   title: intl.$t({ defaultMessage: 'Health' }),
+    //   dataIndex: 'health',
+    //   sorter: true
+    // },
+    // { // TODO: Waiting for TAG feature support
+    //   key: 'tags',
+    //   title: intl.$t({ defaultMessage: 'Tags' }),
+    //   dataIndex: 'tags',
+    //   sorter: true
+    // }
   ]
   return columns
 }

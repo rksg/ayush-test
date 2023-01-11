@@ -138,7 +138,7 @@ export function SwitchTable ({ showAllColumns } : {
       <TenantLink to={`/devices/switch/${row.id}/${row.serialNumber}/details/clients`}>{data || 0}</TenantLink>
     )
   }
-  // { TODO: tags
+  // { // TODO: Waiting for TAG feature support
   //   key: 'tags',
   //   title: $t({ defaultMessage: 'Tags' }),
   //   dataIndex: 'tags'
