@@ -1,4 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+// // @ts-nocheck
+// /* eslint-disable */
 import {  TooltipComponentFormatterCallbackParams } from 'echarts'
 import { maxBy, groupBy, flatMap }                  from 'lodash'
 import moment                                       from 'moment-timezone'
@@ -33,21 +34,22 @@ import {
   SLOW,
   SUCCESS,
   LabelledQuality,
-  Item,
+  IncidentDetails,
   INCIDENT,
   connectionQualityLabels,
   TimelineData,
-  Event
+  Event,
+  RoamingByAP,
+  RoamingTimeSeriesData,
+  RoamingConfigParam,
+  Quality
 } from './config'
 import { ConnectionEvent, ConnectionQuality } from './services'
 import * as UI                                from './styledComponents'
 
-
-/**
- * reference from: https://jira-wiki.ruckuswireless.com/pages/viewpage.action?spaceKey=Team&title=MLISA+Client+Troubleshooting
- */
- type connectionEventsKey = 'connectionEvents'
- type networkIncidentsKey = 'networkIncidents'
+ type ConnectionEventsKey = 'connectionEvents'
+ type NetworkIncidentsKey = 'networkIncidents'
+ type RBGA = { r: number,b: number,g: number,a: number }
 const connection = 'connection'
 const performance = 'performance'
 const infrastructure = 'infrastructure'
@@ -114,13 +116,12 @@ export const takeWorseQuality = (...qualities: (string | null| undefined)[]) => 
   return max && max.quality
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const getQualityColor = (type: any) => {
+export const getQualityColor = (type: Quality) => {
   switch (type) {
     case 'bad': return '--acx-semantics-red-50'
     case 'good': return '--acx-semantics-green-50'
-    case 'average': return '--acx-neutrals-50'
-    default: return '--acx-neutrals-30'
+    case 'average': return '--acx-semantics-yellow-50'
+    default: return '--acx-neutrals-50'
   }
 }
 
@@ -227,14 +228,11 @@ export const transformConnectionQualities = (connectionQualities?: ConnectionQua
   }
 }
 
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const connectionDetailsByAP = (data: any) => {
+export const connectionDetailsByAP = (data : RoamingByAP[]) => {
   return Object.entries(groupBy(data, ({ apMac, radio }) => `${apMac}-${radio}`)).reduce(
     (agg, [key, values]) => {
-      // @ts-ignore: Unreachable code error
       agg[key] = {
-        apMac: values[0].apMac,
+        apMac: values[0]?.apMac,
         radio: values[0].radio,
         apName: [...new Set(values.map(({ apName }) => apName))].join(','),
         apModel: [...new Set(values.map(({ apModel }) => apModel))].join(','),
@@ -242,15 +240,13 @@ export const connectionDetailsByAP = (data: any) => {
       }
       return agg
     },
-    {}
+    {} as { [key: string] : object }
   )
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const connectionDetailsByApChartData = (data: any) => {
+export const connectionDetailsByApChartData = (data: RoamingByAP[]) => {
   return Object.entries(groupBy(data, ({ apMac, radio }) => `${apMac}-${radio}`)).reduce(
     (agg, [key, values]) => {
-      // @ts-ignore: Unreachable code error
       agg[key] = {
         events: values.map((value) => {
           return {
@@ -265,13 +261,13 @@ export const connectionDetailsByApChartData = (data: any) => {
       }
       return agg
     },
-    {}
+    {} as { [key: string] : object }
   )
 }
 
 export const roamingColorMap = {
   good: 'rgba(35, 171, 54, 1)',
-  average: 'rgba(172, 174, 176, 1)',
+  average: 'rgba(247, 180, 30, 1)',
   bad: 'rgba(237, 28, 36, 1)',
   missing: 'rgba(235, 237, 238, 1)',
   min: 'rgba(237, 28, 36, 1)',
@@ -315,30 +311,8 @@ export const rssGradientColorMap = ((density = 5) => {
     }
   ]
 
-  const parseRGBA = (color: {
-      replace: (
-        arg0: RegExp,
-        arg1: string
-      ) => {
-        (): any;
-        new (): any;
-        split: {
-          (arg0: string): {
-            (): any;
-            new (): any;
-            map: {
-              (arg0: (v: any) => number): [any, any, any, any];
-              new (): any;
-            };
-          };
-          new (): any;
-        };
-      };
-    }) => {
-    const [r, g, b, a] = color
-      .replace(/[rgba()]/gi, '')
-      .split(',')
-      .map((v: any) => Number(v))
+  const parseRGBA = (color : string) => {
+    const [r, g, b, a] = color.replace(/[rgba()]/ig, '').split(',').map(v => Number(v))
     return { r, g, b, a }
   }
 
@@ -356,24 +330,19 @@ export const rssGradientColorMap = ((density = 5) => {
       },
     rate: number
   ) => {
-    // @ts-ignore: Unreachable code error
     const rgbaFrom = parseRGBA(colorFrom)
-    // @ts-ignore: Unreachable code error
     const rgbaTo = parseRGBA(colorTo)
     return new Array(rate).fill(0).map((_, index) => {
       const color = Object.keys(rgbaFrom).reduce((agg, key) => {
-        // @ts-ignore: Unreachable code error
-        const diff = (rgbaTo[key] - rgbaFrom[key]) / (rate - 1)
-        // @ts-ignore: Unreachable code error
+        const diff = (rgbaTo[key as keyof RBGA] - rgbaFrom[key as keyof RBGA]) / (rate - 1)
 
-        agg[key] = Math.round(rgbaFrom[key] + diff * index)
+        agg[key] = Math.round(rgbaFrom[key as keyof RBGA] + diff * index)
         return agg
-      }, {})
+      }, {} as { [key: string] : number })
       const diff = (valueTo - valueFrom) / rate
       return {
         valueFrom: Math.round(valueFrom + index * diff),
         valueTo: Math.round(valueFrom + (index + 1) * diff),
-        // @ts-ignore: Unreachable code error
         color: `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`
       }
     })
@@ -384,23 +353,26 @@ export const rssGradientColorMap = ((density = 5) => {
 })()
 
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const roamingEventFormatter = (event : any) => {
+export const roamingEventFormatter = (event : RoamingTimeSeriesData) => {
   const labels = [
     { key: 'rss', label: 'RSS', format: formatter('decibelMilliWattsFormat') },
     { key: 'bssid', label: 'BSSID' },
     { key: 'channel', label: 'Channel' },
     { key: 'radioMode', label: 'Radio Mode' },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    { key: 'spatialStream', label: 'Spatial Stream (SS)', format: (v: any) => `${v} SS` },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    { key: 'bandwidth', label: 'Bandwidth', format: (v: any) => `${v} MHz` }
+    { key: 'spatialStream', label: 'Spatial Stream (SS)', format: (v: string) => `${v} SS` },
+    { key: 'bandwidth', label: 'Bandwidth', format: (v: string) => `${v} MHz` }
   ]
   const details = event['details']
   const values = labels
-    .filter(({ key }) => details[key] && details[key] !== 'Unknown')
+    .filter(
+      ({ key }) =>
+        details[key as keyof RoamingByAP] && details[key as keyof RoamingByAP] !== 'Unknown'
+    )
     .map(({ key, label, format }) => ({
-      label, value: (format && format(details[key])) || details[key]
+      label,
+      value:
+        (format && (format(details[key as keyof RoamingByAP] as string))) ||
+        details[key as keyof RoamingByAP]
     }))
   if (values.length === 0) return null
   return [{
@@ -408,15 +380,22 @@ export const roamingEventFormatter = (event : any) => {
     value: values.map(v => v.value).join(' / ')
   }]
 }
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const getRoamingChartConfig = (data: any) => {
-  return Object.keys(data).map(key => {
-    return{ key: key, label: data[key].apName, chartType: 'bar', series: 'roaming' }
+export const getRoamingChartConfig = (
+  data: RoamingConfigParam
+) => {
+  return Object.keys(data).map((key) => {
+    return {
+      key: key,
+      label: data[key].apName,
+      chartType: 'bar',
+      series: 'roaming'
+    }
   })
 }
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const getRoamingSubtitleConfig = (data: any) => {
-  return Object.keys(data).map((key,index) => {
+export const getRoamingSubtitleConfig = (
+  data:RoamingConfigParam
+) => {
+  return Object.keys(data).map((key, index) => {
     return {
       title: `${data[key].apName} on ${data[key].radio}GHz`,
       value: data[key].apName,
@@ -461,35 +440,35 @@ export const transformIncidents = (
       color: color
     })
     return acc
-  }, [] as Item[])
+  }, [] as IncidentDetails[])
 
-export const getTimelineData = (events: Event[], incidents: Item[]) =>
+export const getTimelineData = (events: Event[], incidents: IncidentDetails[]) =>
 {
   const categorisedEvents = events.reduce(
     (acc, event) => {
       if (event?.type === TYPES.CONNECTION_EVENTS) {
-        acc[TYPES.CONNECTION_EVENTS as connectionEventsKey][all] = [
-          ...acc[TYPES.CONNECTION_EVENTS as connectionEventsKey][all],
+        acc[TYPES.CONNECTION_EVENTS as ConnectionEventsKey][all] = [
+          ...acc[TYPES.CONNECTION_EVENTS as ConnectionEventsKey][all],
           event
         ]
         if (event.category === SUCCESS)
-          acc[TYPES.CONNECTION_EVENTS as connectionEventsKey][SUCCESS] = [
-            ...acc[TYPES.CONNECTION_EVENTS as connectionEventsKey][SUCCESS],
+          acc[TYPES.CONNECTION_EVENTS as ConnectionEventsKey][SUCCESS] = [
+            ...acc[TYPES.CONNECTION_EVENTS as ConnectionEventsKey][SUCCESS],
             event
           ]
         if (event.category === FAILURE)
-          acc[TYPES.CONNECTION_EVENTS as connectionEventsKey][FAILURE] = [
-            ...acc[TYPES.CONNECTION_EVENTS as connectionEventsKey][FAILURE],
+          acc[TYPES.CONNECTION_EVENTS as ConnectionEventsKey][FAILURE] = [
+            ...acc[TYPES.CONNECTION_EVENTS as ConnectionEventsKey][FAILURE],
             event
           ]
         if (event.category === DISCONNECT)
-          acc[TYPES.CONNECTION_EVENTS as connectionEventsKey][DISCONNECT] = [
-            ...acc[TYPES.CONNECTION_EVENTS as connectionEventsKey][DISCONNECT],
+          acc[TYPES.CONNECTION_EVENTS as ConnectionEventsKey][DISCONNECT] = [
+            ...acc[TYPES.CONNECTION_EVENTS as ConnectionEventsKey][DISCONNECT],
             event
           ]
         if (event.category === SLOW)
-          acc[TYPES.CONNECTION_EVENTS as connectionEventsKey][SLOW] = [
-            ...acc[TYPES.CONNECTION_EVENTS as connectionEventsKey][SLOW],
+          acc[TYPES.CONNECTION_EVENTS as ConnectionEventsKey][SLOW] = [
+            ...acc[TYPES.CONNECTION_EVENTS as ConnectionEventsKey][SLOW],
             event
           ]
       }
@@ -507,23 +486,23 @@ export const getTimelineData = (events: Event[], incidents: Item[]) =>
   )
   const categorisedIncidents = incidents.reduce(
     (acc, incident) => {
-      acc[TYPES.NETWORK_INCIDENTS as networkIncidentsKey][all] = [
-        ...acc[TYPES.NETWORK_INCIDENTS as networkIncidentsKey][all],
+      acc[TYPES.NETWORK_INCIDENTS as NetworkIncidentsKey][all] = [
+        ...acc[TYPES.NETWORK_INCIDENTS as NetworkIncidentsKey][all],
         incident
       ]
       if (categoryCodeMap[connection]?.codes.includes(incident.code as IncidentCode))
-        acc[TYPES.NETWORK_INCIDENTS as networkIncidentsKey][connection] = [
-          ...acc[TYPES.NETWORK_INCIDENTS as networkIncidentsKey][connection],
+        acc[TYPES.NETWORK_INCIDENTS as NetworkIncidentsKey][connection] = [
+          ...acc[TYPES.NETWORK_INCIDENTS as NetworkIncidentsKey][connection],
           incident
         ]
       if (categoryCodeMap[performance]?.codes.includes(incident.code as IncidentCode))
-        acc[TYPES.NETWORK_INCIDENTS as networkIncidentsKey][performance] = [
-          ...acc[TYPES.NETWORK_INCIDENTS as networkIncidentsKey][performance],
+        acc[TYPES.NETWORK_INCIDENTS as NetworkIncidentsKey][performance] = [
+          ...acc[TYPES.NETWORK_INCIDENTS as NetworkIncidentsKey][performance],
           incident
         ]
       if (categoryCodeMap[infrastructure]?.codes.includes(incident.code as IncidentCode))
-        acc[TYPES.NETWORK_INCIDENTS as networkIncidentsKey][infrastructure] = [
-          ...acc[TYPES.NETWORK_INCIDENTS as networkIncidentsKey][infrastructure],
+        acc[TYPES.NETWORK_INCIDENTS as NetworkIncidentsKey][infrastructure] = [
+          ...acc[TYPES.NETWORK_INCIDENTS as NetworkIncidentsKey][infrastructure],
           incident
         ]
       return acc
@@ -545,9 +524,8 @@ export const getChartData = (
   events: Event[],
   isExpanded: boolean,
   qualities?: LabelledQuality[],
-  incidents?: Item[],
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  roamingEvents? : any
+  incidents?: IncidentDetails[],
+  roamingEvents? : RoamingTimeSeriesData[]
 ) => {
   if (isExpanded) {
     switch (type) {
@@ -656,7 +634,7 @@ export const useTooltipFormatter = (
   if(seriesName === 'incidents') {
     const obj = (Array.isArray(params) && Array.isArray(params[0].data)
       ? params[0].data[3]
-      : undefined) as unknown as Item
+      : undefined) as unknown as IncidentDetails
     const tooltipText = obj ? obj.title : null
     return renderToString(
       <UI.TooltipWrapper>
@@ -670,9 +648,9 @@ export const useTooltipFormatter = (
   if(seriesName === 'roaming') {
     const obj = (Array.isArray(params) && Array.isArray(params[0].data)
       ? params[0].data[3]
-      : undefined) as unknown as Item
+      : undefined) as unknown as RoamingTimeSeriesData
 
-    const tooltipText = roamingEventFormatter(obj)
+    const tooltipText = roamingEventFormatter(obj )
     return renderToString(
       <UI.TooltipWrapper>
         <UI.TooltipDate>

@@ -71,8 +71,6 @@ export type OnDatazoomEvent = {
   end?: number
 }
 
-
-
 export const eventColorByCategory = {
   [DISCONNECT]: '--acx-neutrals-50',
   [SUCCESS]: '--acx-semantics-green-50',
@@ -87,10 +85,6 @@ export const rssGroups = {
   average: { lower: -85, upper: -75 },
   bad: { upper: -86 }
 }
-
-
-
-
 export const ClientTroubleShootingConfig = {
   selection: [
     {
@@ -279,7 +273,7 @@ export type LabelledQuality = {
   start: string;
   end: string;
 }
-export type Item = {
+export type IncidentDetails = {
   id?: string,
   start: number,
   date: string,
@@ -290,6 +284,22 @@ export type Item = {
   code?: string,
   seriesKey?: string,
   color?: string
+}
+export type RoamingByAP = {
+  start: string,
+  end: string,
+  apMac: string,
+  apName: string,
+  apModel: string,
+  apFirmware: string,
+  channel: string,
+  radio:string,
+  radioMode: string,
+  ssid: string,
+  spatialStream: string,
+  bandwidth: string,
+  rss: number,
+  bssid: string
 }
 export interface Event {
   timestamp: string;
@@ -325,13 +335,26 @@ export type eventsCategoryMap = {
   all: Event[] | [];
 }
 export type networkIncidentCategoryMap = {
-  connection:Item[] |[],
-  performance:Item[] |[],
-  infrastructure:Item[] |[],
-  all: Item[] | [];
+  connection:IncidentDetails[] |[],
+  performance:IncidentDetails[] |[],
+  infrastructure:IncidentDetails[] |[],
+  all: IncidentDetails[] | [];
 
 }
-// type TimeLineProps = {
-//   data?: ClientInfoData;
-//   filters: Filters;
-// }
+export type RoamingTimeSeriesData = {
+  start: string
+  end: string
+  label: string
+  value: string
+  color: string
+  details: RoamingByAP
+  seriesKey?: string
+}
+export type RoamingConfigParam = { [key : string]: {
+  apMac: string
+  radio: string
+  apName: string
+  apModel:string
+  apFirmware: string
+}
+}

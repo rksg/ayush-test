@@ -23,7 +23,7 @@ import {
   DisplayEvent,
   eventColorByCategory,
   INCIDENT,
-  Item
+  IncidentDetails
 } from './config'
 import { ConnectionEventPopover }          from './ConnectionEvent'
 import { ClientInfoData }                  from './services'
@@ -78,7 +78,7 @@ export const transformIncidents = (
       color: color
     })
     return acc
-  }, [] as Item[])
+  }, [] as IncidentDetails[])
 
 const transformData = (clientInfo: ClientInfoData, filters: Filters, intl: IntlShape) => {
   const types: string[] = flatten(filters ? filters.type ?? [[]] : [[]])
@@ -112,7 +112,7 @@ const transformData = (clientInfo: ClientInfoData, filters: Filters, intl: IntlS
 }
 
 
-const renderItem = (item: Item) => {
+const renderItem = (item: IncidentDetails) => {
   const Item = <List.Item title={item.title}>
     <List.Item.Meta
       avatar={item.icon}

@@ -10,31 +10,35 @@ import {
   useImperativeHandle
 } from 'react'
 
-import { TooltipComponentOption } from 'echarts'
-import ReactECharts               from 'echarts-for-react'
+import { TooltipComponentOption }                            from 'echarts'
+import ReactECharts                                          from 'echarts-for-react'
+import { TooltipFormatterCallback, TopLevelFormatterParams } from 'echarts/types/dist/shared'
+import moment                                                from 'moment-timezone'
+import { useIntl }                                           from 'react-intl'
+
+import { categoryCodeMap, IncidentCode }                                  from '@acx-ui/analytics/utils'
+import { cssStr, cssNumber }                                              from '@acx-ui/components'
+import { xAxisOptions, ResetButton, axisLabelOptions, dateAxisFormatter } from '@acx-ui/components'
+import type { TimeStampRange }                                            from '@acx-ui/types'
+
 import {
-  TooltipFormatterCallback,
-  TopLevelFormatterParams
-} from 'echarts/types/dist/shared'
-import moment      from 'moment-timezone'
-import { useIntl } from 'react-intl'
+  eventColorByCategory,
+  LabelledQuality,
+  connectionQualityLabels,
+  IncidentDetails,
+  Event,
+  RoamingTimeSeriesData
+} from './config'
+import { getQualityColor } from './util'
 
-import { categoryCodeMap, IncidentCode
-}   from '@acx-ui/analytics/utils'
-import { cssStr, cssNumber } from '@acx-ui/components'
-import {
-  xAxisOptions,
-  ResetButton,
-  axisLabelOptions,
-  dateAxisFormatter
-} from '@acx-ui/components'
-import type { TimeStampRange } from '@acx-ui/types'
-
-import { eventColorByCategory, LabelledQuality, connectionQualityLabels, Item, Event } from './config'
-import { getQualityColor }                                                             from './util'
-
-import type { ECharts, EChartsOption, SeriesOption, CustomSeriesRenderItemAPI, CustomSeriesRenderItemParams } from 'echarts'
-import type { EChartsReactProps }                                                                             from 'echarts-for-react'
+import type {
+  ECharts,
+  EChartsOption,
+  SeriesOption,
+  CustomSeriesRenderItemAPI,
+  CustomSeriesRenderItemParams
+} from 'echarts'
+import type { EChartsReactProps } from 'echarts-for-react'
 
 type OnDatazoomEvent = {
   batch?: {
@@ -45,29 +49,35 @@ type OnDatazoomEvent = {
   end?: number;
 }
 
-export interface TimelineChartProps
-  extends Omit<EChartsReactProps, 'option' | 'opts'> {
-  data: (Event | LabelledQuality | Item)[]; // https://github.com/microsoft/TypeScript/issues/44373
+export interface TimelineChartProps extends Omit<EChartsReactProps, 'option' | 'opts'> {
+  data: (Event | LabelledQuality | IncidentDetails | RoamingTimeSeriesData)[]; // https://github.com/microsoft/TypeScript/issues/44373
   chartBoundary: number[];
   selectedData?: number;
   onDotClick?: (params: unknown) => void;
   chartRef?: RefCallback<ReactECharts>;
   hasXaxisLabel?: boolean;
   tooltipFormatter: TooltipFormatterCallback<TopLevelFormatterParams>;
-  mapping: { key: string; label: string; chartType: string, series : string }[];
+  mapping: { key: string; label: string; chartType: string; series: string }[];
   showResetZoom?: boolean;
 }
-const getSeriesData = (data: (Event | LabelledQuality | Item)[], key: string, series : string) =>
-{
-  if(series === 'events')
+const getSeriesData = (
+  data: (Event | LabelledQuality | IncidentDetails | RoamingTimeSeriesData)[],
+  key: string,
+  series: string
+) => {
+  if (series === 'events')
     return data
       .filter((record) => record.seriesKey === key)
       .map((record) => [record.start, record.seriesKey, record])
-  if(series === 'quality')
-    return data
-      .map((record) => [record.start, key,moment(record.end).valueOf(), { ...record, icon: '' } ])
-  if(series === 'incidents'){
-    if(key === 'all')
+  if (series === 'quality')
+    return data.map((record) => [
+      record.start,
+      key,
+      moment(record.end).valueOf(),
+      { ...record, icon: '' }
+    ])
+  if (series === 'incidents') {
+    if (key === 'all')
       return data.map((record) => [
         record.start,
         key,
@@ -77,22 +87,18 @@ const getSeriesData = (data: (Event | LabelledQuality | Item)[], key: string, se
     return data
       .filter((record) =>
         categoryCodeMap[key as keyof typeof categoryCodeMap]?.codes.includes(
-          (record as Item)?.code as IncidentCode
+          (record as IncidentDetails)?.code as IncidentCode
         )
       )
-      .map((record) => [
-        record.start,
-        key,
-        moment(record.end).valueOf(),
-        { ...record, icon: '' }
-      ])
-
+      .map((record) => [record.start, key, moment(record.end).valueOf(), { ...record, icon: '' }])
   }
-  if(series === 'roaming'){
-    // @ts-ignore: Unreachable code error
-    return data[key]?.events
-    // @ts-ignore: Unreachable code error
-      .map((record) => [moment(record.start).valueOf(), key,moment(record.end).valueOf(), record ])
+  if (series === 'roaming') {
+    return data[key]?.events.map((record: RoamingTimeSeriesData) => [
+      moment(record.start).valueOf(),
+      key,
+      moment(record.end).valueOf(),
+      record
+    ])
   }
   return []
 }
@@ -101,30 +107,30 @@ function getSeriesItemColor (params: { data: (Event | LabelledQuality)[] }) {
   const obj = Array.isArray(params.data) ? params.data[2] : ''
   const { category } = obj as Event
   return obj
-    ? cssStr(
-      eventColorByCategory[category as keyof typeof eventColorByCategory]
-    )
+    ? cssStr(eventColorByCategory[category as keyof typeof eventColorByCategory])
     : cssStr('--acx-neutrals-50')
 }
-function getBarColor (params: { data: (LabelledQuality | Item)[], seriesName: string }) {
+function getBarColor (params: {
+  data: (LabelledQuality | IncidentDetails | RoamingTimeSeriesData)[];
+  seriesName: string;
+}) {
   const seriesName = params.seriesName
-  if(seriesName === 'quality') {
+  if (seriesName === 'quality') {
     const obj = Array.isArray(params.data) ? params.data[3] : ''
     const key = params.data[1] as unknown as string
     return cssStr(
-    getQualityColor(
-      (obj as LabelledQuality)[key as keyof typeof connectionQualityLabels]?.quality
-    ) as string
+      getQualityColor(
+        (obj as LabelledQuality)[key as keyof typeof connectionQualityLabels]?.quality
+      ) as string
     )
   }
-  if(seriesName === 'incidents') {
+  if (seriesName === 'incidents') {
     const obj = Array.isArray(params.data) ? params.data[3] : ''
-    return cssStr((obj as Item).color as string)
+    return cssStr((obj as IncidentDetails).color as string)
   }
-  if(seriesName === 'roaming') {
+  if (seriesName === 'roaming') {
     const obj = Array.isArray(params.data) ? params.data[3] : ''
-    // @ts-ignore: Unreachable code error
-    return (obj)?.color
+    return (obj as RoamingTimeSeriesData)?.color
   }
   return ''
 }
@@ -150,7 +156,6 @@ export const useDotClick = (
       echartInstance.off('click', handler)
     }
   }, [eChartsRef, handler])
-
 }
 export const useDataZoom = (
   eChartsRef: RefObject<ReactECharts>,
@@ -163,9 +168,7 @@ export const useDataZoom = (
     (e: unknown) => {
       const event = e as unknown as OnDatazoomEvent
       const firstBatch = event.batch?.[0]
-      firstBatch &&
-        onDataZoom &&
-        onDataZoom([firstBatch.startValue, firstBatch.endValue], false)
+      firstBatch && onDataZoom && onDataZoom([firstBatch.startValue, firstBatch.endValue], false)
       if (event.start === 0 && event.end === 100) {
         setCanResetZoom(false)
       } else {
@@ -263,10 +266,7 @@ export function TimelineChart ({
       formatter: tooltipFormatter,
       ...tooltipOptions(),
       // Need to address test coverage for the postion
-      position: /* istanbul ignore next */ (point) => [
-        point[0] + 10,
-        mapping.length * 25
-      ]
+      position: /* istanbul ignore next */ (point) => [point[0] + 10, mapping.length * 25]
     },
     xAxis: {
       ...xAxisOptions(),
@@ -371,8 +371,7 @@ export function TimelineChart ({
               const yValue = api.value(1)
               const start = api.coord([api.value(0), yValue])
               const end = api.coord([api.value(2), yValue])
-              const height =
-                (api?.size as CallableFunction)([0, 1])[1] * 0.8
+              const height = (api?.size as CallableFunction)([0, 1])[1] * 0.8
               return {
                 type: 'rect',
                 shape: {
@@ -401,8 +400,7 @@ export function TimelineChart ({
             WebkitUserSelect: 'none',
             marginBottom: 0,
             width: (props.style?.width as number) + legendWidth,
-            height:
-              (mapping.length + placeholderRows) * rowHeight + xAxisHeight
+            height: (mapping.length + placeholderRows) * rowHeight + xAxisHeight
           }
         }}
         ref={eChartsRef}

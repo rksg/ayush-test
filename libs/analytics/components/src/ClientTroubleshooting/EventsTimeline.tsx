@@ -19,7 +19,10 @@ import {
   Event,
   TimelineData,
   eventsCategoryMap,
-  networkIncidentCategoryMap
+  networkIncidentCategoryMap,
+  RoamingByAP,
+  RoamingTimeSeriesData,
+  RoamingConfigParam
 } from './config'
 import { transformIncidents }              from './EventsHistory'
 import { ClientInfoData, ConnectionEvent } from './services'
@@ -40,26 +43,6 @@ import {
 
 import { Filters } from '.'
 
-// export type TimelineData = {
-//   connectionEvents: eventsCategoryMap;
-//   roaming: eventsCategoryMap;
-//   connectionQuality: eventsCategoryMap;
-//   networkIncidents: networkIncidentCategoryMap;
-// }
-// type eventsCategoryMap = {
-//   [SUCCESS]: Event[] | [];
-//   [FAILURE]: Event[] | [];
-//   [DISCONNECT]: Event[] | [];
-//   [SLOW]: Event[] | [];
-//   all: Event[] | [];
-// }
-// type networkIncidentCategoryMap = {
-//   connection:Item[] |[],
-//   performance:Item[] |[],
-//   infrastructure:Item[] |[],
-//   all: Item[] | [];
-
-// }
 type TimeLineProps = {
   data?: ClientInfoData;
   filters: Filters;
@@ -72,8 +55,10 @@ export function TimeLine (props: TimeLineProps) {
   const types: string[] = flatten(filters ? filters.type ?? [[]] : [[]])
   const radios: string[] = flatten(filters ? filters.radio ?? [[]] : [[]])
   const selectedCategories: string[] = flatten(filters ? filters.category ?? [[]] : [[]])
-  const roamingEventsAps = connectionDetailsByAP(data?.connectionDetailsByAp)
-  const roamingEventsTimeSeries = connectionDetailsByApChartData(data?.connectionDetailsByAp)
+  const roamingEventsAps = connectionDetailsByAP(data?.connectionDetailsByAp as RoamingByAP[])
+  const roamingEventsTimeSeries = connectionDetailsByApChartData(
+    data?.connectionDetailsByAp as RoamingByAP[]
+  )
   const qualties = transformConnectionQualities(data?.connectionQualities)
   const events = transformEvents(
     data?.connectionEvents as ConnectionEvent[],
@@ -109,7 +94,6 @@ export function TimeLine (props: TimeLineProps) {
         onClick={() => onExpandToggle(type, expandObj[type])}
       />
     )
-
   const TimelineData = getTimelineData(events, incidents)
   const connectChart = (chart: ReactECharts | null) => {
     if (chart) {
@@ -203,7 +187,7 @@ export function TimeLine (props: TimeLineProps) {
                   expandObj[config?.value as keyof TimelineData],
                   !Array.isArray(qualties) ? qualties.all : [],
                   Array.isArray(incidents) ? incidents : [],
-                  roamingEventsTimeSeries
+                  roamingEventsTimeSeries as RoamingTimeSeriesData[]
                 )}
                 showResetZoom={config?.showResetZoom}
                 chartBoundary={chartBoundary}
@@ -212,7 +196,7 @@ export function TimeLine (props: TimeLineProps) {
                     ? config.value === TYPES.ROAMING
                       ? [
                         ...config.chartMapping,
-                        ...(getRoamingChartConfig(roamingEventsAps) as {
+                        ...(getRoamingChartConfig(roamingEventsAps as RoamingConfigParam) as {
                             key: string;
                             label: string;
                             chartType: string;
