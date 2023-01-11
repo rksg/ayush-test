@@ -8,6 +8,7 @@ import {
   SaveSwitchProfile,
   SwitchUrlsInfo,
   SwitchViewModel,
+  SwitchVlans,
   Acl,
   Vlan,
   SwitchPortViewModel,
@@ -202,7 +203,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
-    getTaggedVlansByVenue: build.query<string[], RequestPayload>({
+    getTaggedVlansByVenue: build.query<SwitchVlans[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(SwitchUrlsInfo.getTaggedVlansByVenue, params)
         return {
@@ -210,7 +211,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
-    getUntaggedVlansByVenue: build.query<string, RequestPayload>({
+    getUntaggedVlansByVenue: build.query<SwitchVlans[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(SwitchUrlsInfo.getUntaggedVlansByVenue, params)
         return {

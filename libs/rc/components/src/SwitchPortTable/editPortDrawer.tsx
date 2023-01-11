@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 
-import { Checkbox, Divider, Form, Input, Select, Space, Switch } from 'antd'
-import { DefaultOptionType }                                     from 'antd/lib/select'
-import _                                                         from 'lodash'
-import { defineMessage }                                         from 'react-intl'
+import { Checkbox, Form, Input, Select, Space, Switch } from 'antd'
+import { DefaultOptionType }                            from 'antd/lib/select'
+import _                                                from 'lodash'
+import { defineMessage }                                from 'react-intl'
 
 import {
   Button,
@@ -33,9 +33,12 @@ import {
   useSavePortsSettingMutation
 } from '@acx-ui/rc/services'
 import {
+  EditPortMessages,
   LldpQosModel,
+  MultipleEditPortMessages,
   poeBudgetRegExp,
   PORT_SPEED,
+  showGeneralError,
   SwitchPortViewModel,
   SwitchVlanUnion,
   PortSetting,
@@ -49,6 +52,9 @@ import { EditLldpModal } from './editLldpModal'
 import {
   checkVlanOptions,
   checkLldpListEqual,
+  checkAclIgnore,
+  checkPortEditStatus,
+  checkVlanIgnore,
   handlePortSpeedFor765048F,
   getAclOptions,
   getAllSwitchVlans,
@@ -59,19 +65,15 @@ import {
   getPoeCapabilityDisabled,
   getPortEditStatus,
   getPortSpeed,
+  getToggleClassName,
   getVlanOptions,
-  sortOptions, ///
+  sortOptions,
   PortVlan,
   MultipleText
 } from './editPortDrawer.utils'
 import { LldpQOSTable }    from './lldpQOSTable'
 import { SelectVlanModal } from './selectVlanModal'
 import * as UI             from './styledComponents'
-
-// enum CurrentAclEdition {
-//   INGRESS = 'INGRESS',
-//   EGRESS = 'EGRESS'
-// }
 
 const poeClassOptions = [
   { label: defineMessage({ defaultMessage: 'Negotiate' }), value: 'UNSET' },
@@ -95,44 +97,10 @@ const allMultipleEditableFields = [
   'lldpQos', 'tags', 'untaggedVlan', 'poeBudget', 'portProtected'
 ]
 
-// TODO: move
-/* eslint-disable max-len */
-export const EditPortMessages = {
-  UNSELECT_VLANS: defineMessage({
-    defaultMessage: 'The port must be a member of at least one VLAN'
-  }),
-  ADD_VLAN_DISABLE: defineMessage({
-    defaultMessage: 'Create and apply a configuration profile to this switch\'s venue to add/edit VLANs'
-  }),
-  ADD_ACL_DISABLE: defineMessage({
-    defaultMessage: 'Create and apply a configuration profile to this switch\'s venue to add/edit ACL'
-  }),
-  ADD_LLDP_DISABLE: defineMessage({
-    defaultMessage: 'Create and apply a configuration profile to this switch\'s venue to add/edit LLDP QoS'
-  }),
-  VOICE_VLAN_DISABLE: defineMessage({
-    defaultMessage: 'No profile VLAN or VLAN option'
-  }),
-  USE_VENUE_SETTINGS_DISABLE: defineMessage({
-    defaultMessage: 'Venue settings default VLAN ID is the same as one of switch VLANs'
-  }),
-  POE_CAPABILITY_DISABLE: defineMessage({
-    defaultMessage: 'Can not configure PoE configurations(PoE Enable, PoE Class, and PoE Priority) since this port doesn\'t have PoE capability.'
-  }),
-  TAGGED_VLAN_TOOLTIP: defineMessage({
-    defaultMessage: 'Cannot set tagged VLANs when IPSG is activated on the port'
-  })
+interface ProfileVlans {
+  tagged: string[],
+  untagged: string
 }
-
-export const MultipleEditPortMessages = {
-  UNSELECT_VLANS: defineMessage({
-    defaultMessage: 'Each port must be a member of at least one VLAN'
-  }),
-  POE_CAPABILITY_DISABLE: defineMessage({
-    defaultMessage: 'Can not configure PoE configurations(PoE Enable, PoE Class, and PoE Priority) since one or more ports don\'t have PoE capability.'
-  })
-}
-/* eslint-enable */
 
 export function EditPortDrawer ({
   visible,
@@ -141,15 +109,13 @@ export function EditPortDrawer ({
   isMultipleEdit,
   isVenueLevel,
   selectedPorts
-  // switchModel = ''
 }: {
   visible: boolean,
   setDrawerVisible: (visible: boolean) => void,
   isCloudPort: boolean,
   isMultipleEdit: boolean,
   isVenueLevel: boolean,
-  selectedPorts: SwitchPortViewModel[],
-  // switchModel?: string
+  selectedPorts: SwitchPortViewModel[]
 }) {
   const { $t } = getIntl()
   const [form] = Form.useForm()
@@ -200,7 +166,7 @@ export function EditPortDrawer ({
   const [disablePoeCapability, setDisablePoeCapability] = useState(false)
 
   const [lldpQosList, setLldpQosList] = useState([] as LldpQosModel[])
-  const [portEditStatus, setPortEditStatus] = useState('') /////
+  const [portEditStatus, setPortEditStatus] = useState('')
   const [hasSwitchProfile, setHasSwitchProfile] = useState(false)
   const [profileDefaultVlan, setProfileDefaultVlan] = useState(null as unknown as Number)
   const [useVenueSettings, setUseVenueSettings] = useState(true)
@@ -209,30 +175,15 @@ export function EditPortDrawer ({
   const [switchVlans, setSwitchVlans] = useState({} as SwitchVlanUnion)
 
   const [venueVlans, setVenueVlans] = useState([] as Vlan[])
-  const [venueTaggedVlans, setVenueTaggedVlans] = useState([] as string[])
-  const [venueUntaggedVlan, setVenueUntaggedVlan] = useState(null as unknown as string)
-
-  // remove var
-  // const [revertStatus, setRevertStatus] = useState(false)
-  // const [disableText, setDisableText] = useState('' as unknown as string)
-  // const [isDirtyUntaggedVlan, setIsDirtyUntaggedVlan] = useState(true) ///?
-  // const [blockTaggedVlanConfig, setBlockTaggedVlanConfig] = useState(false) // X
-  // const [withNotPureUntaggedVlan, setWithNotPureUntaggedVlan] = useState(false)
-  // const [withoutTaggedVlan, setWithoutTaggedVlan] = useState(false)
-  // const [isDefaultUntaggedVlan, setIsDefaultUntaggedVlan] = useState(false)
-  // const [portsProfileVlans, setPortsProfileVlans] = useState({
-  //   tagged: [],
-  //   untagged: []
-  // })
-  // updateAcl updateVlan
-  // withNotPureUntaggedVlan = enable untaggedVlan && isDefaultUntaggedVlan && !this.portForm.get('IPSG')
-  // withoutTaggedVlan = taggedVlans / taggedVlansByVenue is empty
+  const [venueTaggedVlans, setVenueTaggedVlans] = useState('' as string)
+  const [venueUntaggedVlan, setVenueUntaggedVlan] = useState('' as string)
 
   const [selectModalvisible, setSelectModalvisible] = useState(false)
   const [lldpModalvisible, setLldpModalvisible] = useState(false)
   const [hasMultipleValue, setHasMultipleValue] = useState([] as string[])
   const [disableSaveButton, setDisableSaveButton] = useState(false)
   const [initPortVlans, setInitPortVlans] = useState([] as PortVlan[])
+  const [portsProfileVlans, setPortsProfileVlans] = useState({} as ProfileVlans)
 
   const [getPortSetting] = useLazyGetPortSettingQuery()
   const [getPortsSetting] = useLazyGetPortsSettingQuery()
@@ -291,7 +242,7 @@ export function EditPortDrawer ({
 
   const getEachSwitchVlans = async () => {
     // const ss = ['58:fb:96:0e:82:8a', 'c0:c5:20:aa:32:79']
-    const switchVlans = switches?.map(async (switchId) => { //switches
+    const switchVlans = switches?.map(async (switchId) => {
       return await getSwitchVlans({
         params: { tenantId, serialNumber: switchId }
       }, true).unwrap()
@@ -331,18 +282,18 @@ export function EditPortDrawer ({
         ?.find((item) => item.vlanName === 'DEFAULT-VLAN')?.vlanId ?? 1
 
       setPortSpeedOptions(portSpeed)
+      setAclsOptions(getAclOptions(aclUnion))
       setVlanUsedByVe(vlanUsedByVe)
       setDefaultVlan(defaultVlan)
       setSwitchVlans(switchVlans)
       setVenueVlans(vlansByVenue)
-      setAclsOptions(getAclOptions(aclUnion))
-      setHasSwitchProfile(!!switchProfile?.length) // move utils
+      setHasSwitchProfile(!!switchProfile?.length)
       setProfileDefaultVlan(profileDefaultVlan)
       setDisabledUseVenueSetting(await getUseVenueSettingDisabled(profileDefaultVlan))
       setVlansOptions(getVlanOptions(switchVlans, defaultVlan, voiceVlan))
 
       isMultipleEdit
-        ? await getMultiplePortsValue(vlansByVenue)
+        ? await getMultiplePortsValue(vlansByVenue, defaultVlan)
         : await getSinglePortValue(portSpeed)
 
       setLoading(false)
@@ -356,7 +307,7 @@ export function EditPortDrawer ({
 
   const getSinglePortValue = async (portSpeed: string[]) => {
     const portSetting = await getPortSetting({
-      params: { tenantId, serialNumber, portIdentifier: selectedPorts?.[0]?.portIdentifier }
+      params: { tenantId, switchId, portIdentifier: selectedPorts?.[0]?.portIdentifier }
     }, true).unwrap()
     const requestPort = selectedPorts?.[0]?.portIdentifier?.split('/').slice(1, 3).join('/') ////
     const taggedVlansByVenue = await getTaggedVlansByVenue({
@@ -372,21 +323,23 @@ export function EditPortDrawer ({
       }
     }, true).unwrap()
 
-    setEditPortData(portSetting)
+    const tagged = taggedVlansByVenue.map(taggedVlans => taggedVlans.vlanId).toString()
+    const untagged = untaggedVlansByVenue.map(untaggedVlan => untaggedVlan.vlanId).toString()
+
+    setEditPortData(portSetting) ///?
     setDisablePoeCapability(getPoeCapabilityDisabled([portSetting]))
     setLldpQosList(portSetting.lldpQos || [])
-    // setIsPoeEnable(portSetting.poeEnable)
-    // setRevertStatus(portSetting.revert)
-    setPortEditStatus(portSetting.revert ? 'default' : 'port')
     setUseVenueSettings(
       portSetting.revert && !(portSetting?.taggedVlans && portSetting.untaggedVlan)
     )
-    setVenueTaggedVlans(taggedVlansByVenue)
-    setVenueUntaggedVlan(untaggedVlansByVenue)
+    setVenueTaggedVlans(taggedVlansByVenue.map(taggedVlans => taggedVlans.vlanId).toString())
+    setVenueUntaggedVlan(untaggedVlansByVenue.map(untaggedVlan => untaggedVlan.vlanId).toString())
     setInitPortVlans(getInitPortVlans( [portSetting], defaultVlan ))
+    setPortEditStatus(checkPortEditStatus(form, portSetting, portSetting?.revert, tagged, untagged))
 
     form.setFieldsValue({
       ...portSetting,
+      voiceVlan: portSetting?.voiceVlan === 0 ? '' : portSetting?.voiceVlan,
       poeEnable: portSetting.poeCapability ? portSetting.poeEnable : false,
       poeBudget: portSetting.poeBudget === 0 ? '' : portSetting.poeBudget,
       portSpeed: portSpeed.find(item => item === portSetting.portSpeed)
@@ -395,37 +348,38 @@ export function EditPortDrawer ({
     })
   }
 
-  const getMultiplePortsValue = async (vlansByVenue: Vlan[]) => {
+  const getMultiplePortsValue = async (vlansByVenue: Vlan[], defaultVlan: string) => {
     const portsSetting = await getMultiplePortsSetting()
     const vlansValue = getMultipleVlanValue(
       selectedPorts, vlansByVenue, portsSetting, defaultVlan, switchesDefaultVlan
     )
     const poeCapabilityDisabled = getPoeCapabilityDisabled(portsSetting?.response)
     const hasMultipleValueFields = allMultipleEditableFields?.filter(field => {
-      const isEqualValues = field === 'lldpQos'
+      const isEqual = field === 'lldpQos'
         ? checkLldpListEqual(portsSetting?.response?.map(s => s[field]))
-        : _.uniq(portsSetting?.response?.map(s => s[field as keyof PortSetting])
+        : _.uniq(portsSetting?.response?.map(s =>
+          s[field as keyof PortSetting]?.toString())
         )?.length === 1
 
-      if (isEqualValues) {
-        field === 'lldpQos'
-          ? setLldpQosList(portsSetting?.response?.[0]?.lldpQos)
-          : form.setFieldValue(
-            field, portsSetting?.response?.[0]?.[field as keyof PortSetting]
-          )
-      }
-      return !isEqualValues && field
+      return !isEqual && field
     })
+
+    const hasEqualValueFields = _.xor(allMultipleEditableFields, hasMultipleValueFields)
+    const portSetting = _.pick(portsSetting?.response?.[0], hasEqualValueFields)
 
     setDisablePoeCapability(poeCapabilityDisabled)
     setHasMultipleValue(hasMultipleValueFields)
     setInitPortVlans(vlansValue?.initPortVlans)
-    setPortEditStatus('port')
+    setPortsProfileVlans(vlansValue?.portsProfileVlans as unknown as ProfileVlans)
     setDisableSaveButton(true)
-    form.setFieldValue('taggedVlans', vlansValue.tagged)
-    form.setFieldValue('untaggedVlan', vlansValue.untagged || defaultVlan)
-    // form.setFieldValue('poeEnable', poeCapabilityDisabled ? false : )
-    // poeCapabilityDisabled ? form.setFieldValue('poeEnable', false) : null ///???
+    setLldpQosList(portSetting?.lldpQos ?? [])
+    form.setFieldsValue({
+      ...portSetting,
+      poeEnable: poeCapabilityDisabled ? false : portSetting?.poeEnable,
+      voiceVlan: portSetting?.voiceVlan === 0 ? '' : portSetting?.voiceVlan,
+      taggedVlans: (portSetting?.taggedVlans || vlansValue.tagged)?.toString(),
+      untaggedVlan: portSetting?.untaggedVlan || vlansValue.untagged || defaultVlan
+    })
   }
 
   const getFieldTooltip = (field: string) => {
@@ -455,7 +409,7 @@ export function EditPortDrawer ({
       case 'poeClass': return (isMultipleEdit && !poeClassCheckbox)
         || disablePoeCapability
         || !poeEnable
-        || !!(!form?.getFieldError('poeBudget').length && poeBudget) //////////
+        || !!(!form?.getFieldError('poeBudget').length && poeBudget) // TODO: bug
       case 'poePriority':
         return (isMultipleEdit && !poePriorityCheckbox) || disablePoeCapability || !poeEnable
       case 'poeBudget': return (isMultipleEdit && !poeBudgetCheckbox)
@@ -479,6 +433,38 @@ export function EditPortDrawer ({
     }
   }
 
+  const getOverrideDisabled = (field: string) => {
+    switch (field) {
+      case 'portEnable': return disablePoeCapability
+      case 'poeClass': return disablePoeCapability || !poeEnable
+      case 'poePriority': return disablePoeCapability || !poeEnable
+      case 'poeBudget': return disablePoeCapability || !poeEnable
+      case 'voiceVlan': return vlansOptions?.length === 1
+      case 'portSpeed': return !portSpeedOptions.length || disablePortSpeed
+      default: return false
+    }
+  }
+
+  const getFieldTemplate = (
+    content: React.ReactNode,
+    field: string,
+    labelName: string,
+    extraLabel?: boolean
+  ) => {
+    return <UI.FormItem>
+      {isMultipleEdit && <Form.Item
+        noStyle
+        label={false}
+        name={`${field}Checkbox`}
+        valuePropName='checked'
+        initialValue={false}
+        children={<Checkbox disabled={getOverrideDisabled(field)} />}
+      />}
+      { extraLabel && <UI.ExtraLabel>{ labelName }</UI.ExtraLabel> }
+      { content }
+    </UI.FormItem>
+  }
+
   const transformData = (data: PortSetting) => {
     const getInitIgnoreFields = () => {
       const overrideFields = getOverrideFields(form.getFieldsValue())
@@ -495,14 +481,12 @@ export function EditPortDrawer ({
     const ignoreFields = [
       ...getInitIgnoreFields(),
       isMultipleEdit && !portVlansCheckbox && 'revert',
-      !data?.revert && !isMultipleEdit
-      && ((useVenueSettings && !untaggedVlan) || !isDirtyUntaggedVlan) && 'untaggedVlan',
-      !data?.revert && !isMultipleEdit
-      && ((useVenueSettings && !taggedVlans) || !isDirtyUntaggedVlan) && 'taggedVlans',
-      data?.egressAcl &&
-      !aclsOptions.find(item => item.value === data.egressAcl && !item.disabled) && 'egressAcl',
-      data?.ingressAcl &&
-      !aclsOptions.find(item => item.value === data.ingressAcl && !item.disabled) && 'ingressAcl'
+      checkVlanIgnore(
+        'untaggedVlan', untaggedVlan, isMultipleEdit, useVenueSettings, isDirtyUntaggedVlan),
+      checkVlanIgnore(
+        'taggedVlans', taggedVlans, isMultipleEdit, useVenueSettings, isDirtyUntaggedVlan),
+      checkAclIgnore('egressAcl', data?.egressAcl, aclsOptions),
+      checkAclIgnore('ingressAcl', data?.ingressAcl, aclsOptions)
     ]
 
     Object.keys(data).forEach(key => {
@@ -512,31 +496,27 @@ export function EditPortDrawer ({
     })
 
     return {
-      data,
+      transformedValues: data,
       ignoreFields: ignoreFields.filter(f => f)
     }
   }
 
   const applyForm = async () => {
-    // console.log('save', form.getFieldsValue())
-    const revert = useVenueSettings //portEditStatus === 'venue' || revertStatus
     const values = {
       ...form.getFieldsValue(),
-      revert: useVenueSettings, //portEditStatus === 'venue' || revertStatus,
+      revert: useVenueSettings,
       ...(lldpQosList && { lldpQos:
         lldpQosList?.map(lldp => {
-          return lldp.id.includes('lldp')
-            ? _.omit(lldp, ['id'])
-            : lldp
+          return lldp.id.includes('lldp') ? _.omit(lldp, ['id']) : lldp
         })
       }),
-      taggedVlans: (revert || !form.getFieldValue('taggedVlans'))
+      taggedVlans: (useVenueSettings || !form.getFieldValue('taggedVlans'))
         ? null : form.getFieldValue('taggedVlans')?.split(','),
-      untaggedVlan: revert ? '' : form.getFieldValue('untaggedVlan'),
-      voiceVlan: form.getFieldValue('voiceVlan') ?? null /////
+      untaggedVlan: useVenueSettings ? '' : form.getFieldValue('untaggedVlan'),
+      voiceVlan: form.getFieldValue('voiceVlan') ?? null
     }
 
-    const { data: transformedValues, ignoreFields } = transformData(values)
+    const { transformedValues, ignoreFields } = transformData(values)
 
     try {
       const payload = switches.map(item => {
@@ -572,7 +552,7 @@ export function EditPortDrawer ({
 
     } catch (err) {
       console.log(err) // eslint-disable-line no-console
-      // switchUtilsService.showGeneralError(errors);
+      showGeneralError(err)
     }
   }
 
@@ -586,20 +566,17 @@ export function EditPortDrawer ({
     setUseVenueSettings(true)
     setPortEditStatus('venue')
 
-    // console.log('onApplyVenueSettings: ', portVlansCheckbox, taggedVlans, untaggedVlan )
-    // if (this.portVlanCheck) {
-    //   this.checkPortsVlan();
-    // } else {
-    // const defaultVlan = this.profileDefaultVlan;
-    // const untaggedVlan = this.untaggedVlanByVenue || defaultVlan;
-    // if (untaggedVlan === defaultVlan && !this.taggedVlansByVenue) { ///
-    //   // Venue no setting, revert to default
-    //   this.setLabelStatus('default', true);
-    // }
-    // this.setVlans(untaggedVlan, this.taggedVlansByVenue);
-    // }
-    if (portVlansCheckbox) {
-      // this.checkPortsVlan();
+    let untagged, tagged
+    const tagEqual = _.uniq(portsProfileVlans?.tagged).length === 1
+    const untagEqual = _.uniq(portsProfileVlans?.untagged).length === 1
+
+    if (portVlansCheckbox && tagEqual && untagEqual) {
+      if (!portsProfileVlans.untagged?.[0] && !portsProfileVlans.tagged?.[0]) {
+        setPortEditStatus('default')
+      }
+      untagged = portsProfileVlans.untagged?.[0]
+      tagged = portsProfileVlans.tagged?.[0]
+      setVenueUntaggedVlan(portsProfileVlans.untagged?.[0]) // ??
     } else {
       const untaggedVlan = venueUntaggedVlan || defaultVlan
       setPortEditStatus(
@@ -609,21 +586,27 @@ export function EditPortDrawer ({
 
     form.setFieldsValue({
       ...form.getFieldsValue(),
-      taggedVlans: venueTaggedVlans.toString(),
-      untaggedVlan: venueUntaggedVlan?.toString() || profileDefaultVlan
+      taggedVlans: tagged || venueTaggedVlans.toString(),
+      untaggedVlan: untagged || venueUntaggedVlan?.toString() || profileDefaultVlan
+    })
+    onValuesChange({
+      untaggedVlan: venueUntaggedVlan?.toString() || profileDefaultVlan,
+      revert: true
     })
   }
 
   const onValuesChange = async (changedValues: Partial<PortSetting>) => {
     const changedField = Object.keys(changedValues)?.[0]
     const changedValue = Object.values(changedValues)?.[0]
+    const taggedVlans = form?.getFieldValue('taggedVlans')
+    const untaggedVlan = form?.getFieldValue('untaggedVlan')
 
     const setButtonStatus = () => {
       const isPoeBudgetInvalid = form?.getFieldError('poeBudget').length > 0
-      const isVlansInvalid = isMultipleEdit
-        ? portVlansCheckbox && (!untaggedVlan && !taggedVlans) //// enable & !useVenue?
-        : (!untaggedVlan && !taggedVlans)
+      const isVlansInvalid
+        = (!isMultipleEdit || !!portVlansCheckbox) && (!untaggedVlan && !taggedVlans)
       const isNoOverrideFields = isMultipleEdit && !getOverrideFields(form.getFieldsValue())?.length
+
       setDisableSaveButton(isPoeBudgetInvalid || isVlansInvalid || isNoOverrideFields)
     }
 
@@ -639,34 +622,35 @@ export function EditPortDrawer ({
       }
     }
 
-    setButtonStatus()
-
-    switch (changedField) {
-      case 'poeClass':
+    const updateRelatedField = async () => {
+      if (changedField === 'poeClass') {
         const poeBudgetDisabled = changedValue !== 'ZERO' && changedValue !== 'UNSET'
         if (poeBudgetDisabled && (isMultipleEdit || !disablePoeCapability)) {
           form?.resetFields(['poeBudget'])
         }
-        break
-      case 'poeBudget':
+      } else if (changedField === 'poeBudget') {
         try {
           await form.validateFields(['poeBudget'])
         } catch (error) {
           console.log(error) // eslint-disable-line no-console
         }
-        break
-      case 'ipsg':
+        getFieldDisabled('poeClass')
+
+      } else if (changedField === 'ipsg') {
         changedValue && form.setFieldValue('ingressAcl', '')
-        break
-      // case 'portVlansCheckbox':
-      case 'untaggedVlan': //
-      case 'taggedVlans': //
-        const tagged = form.getFieldValue('taggedVlans')
-        setPortEditStatus(tagged ? 'port' : (!!venueTaggedVlans.length ? 'venue' : 'default'))
+      } else if (changedField === 'untaggedVlan' || changedField === 'taggedVlans') {
+        const revert = changedValues?.revert ?? useVenueSettings
+        setPortEditStatus(
+          checkPortEditStatus(form, form.getFieldsValue(), revert,
+            venueTaggedVlans, venueUntaggedVlan
+          )
+        )
         updateVlanOptions()
-        break
-      default:
+      }
     }
+
+    await updateRelatedField()
+    setButtonStatus()
   }
 
   const onClose = () => {
@@ -722,22 +706,14 @@ export function EditPortDrawer ({
           }
         />
       </Form>
+
       <UI.Form
         form={form}
         layout={isMultipleEdit ? 'horizontal' : 'vertical'}
         labelAlign='left'
         onValuesChange={onValuesChange}
       >
-        <UI.FormItemLayout>
-          {isMultipleEdit && <Form.Item
-            noStyle
-            label={false}
-            name='portEnableCheckbox'
-            valuePropName='checked'
-            initialValue={false}
-            children={<Checkbox />}
-          />}
-          <UI.SwitchLabel>{$t({ defaultMessage: 'Port Enabled' })}</UI.SwitchLabel>
+        { getFieldTemplate(
           <Form.Item
             noStyle
             label={false}
@@ -751,23 +727,18 @@ export function EditPortDrawer ({
                     valuePropName='checked'
                     initialValue={false}
                   >
-                    <Switch disabled={getFieldDisabled('portEnable')} />
+                    <Switch
+                      disabled={getFieldDisabled('portEnable')}
+                      className={getToggleClassName('portEnable', isMultipleEdit, hasMultipleValue)}
+                    />
                   </Form.Item>
                 </Tooltip>
             }
-          />
-        </UI.FormItemLayout>
+          />,
+          'portEnable', $t({ defaultMessage: 'Port Enabled' }), true
+        )}
 
-        <UI.FormItemLayout>
-          {isMultipleEdit && <Form.Item
-            noStyle
-            label={false}
-            name='poeEnableCheckbox'
-            valuePropName='checked'
-            initialValue={false}
-            children={<Checkbox disabled={disablePoeCapability} />}
-          />}
-          <UI.SwitchLabel>{$t({ defaultMessage: 'PoE Enabled' })}</UI.SwitchLabel>
+        { getFieldTemplate(
           <Form.Item
             noStyle
             children={<Tooltip title={getFieldTooltip('poeEnable')}>
@@ -779,22 +750,18 @@ export function EditPortDrawer ({
                   valuePropName='checked'
                   initialValue={false}
                 >
-                  <Switch disabled={getFieldDisabled('poeEnable')} />
+                  <Switch
+                    disabled={getFieldDisabled('poeEnable')}
+                    className={getToggleClassName('poeEnable', isMultipleEdit, hasMultipleValue)}
+                  />
                 </Form.Item>
               }</Tooltip>
             }
-          />
-        </UI.FormItemLayout>
+          />,
+          'poeEnable', $t({ defaultMessage: 'PoE Enabled' }), true
+        )}
 
-        <UI.FormItemLayout>
-          {isMultipleEdit && <Form.Item
-            noStyle
-            label={false}
-            name='poeClassCheckbox'
-            valuePropName='checked'
-            initialValue={false}
-            children={<Checkbox disabled={disablePoeCapability || !poeEnable} />}
-          />}
+        { getFieldTemplate(
           <Form.Item
             {...getFormItemLayout(isMultipleEdit)}
             name='poeClass'
@@ -806,18 +773,11 @@ export function EditPortDrawer ({
                 options={poeClassOptions?.map(p => ({ label: $t(p.label), value: p.value }))}
                 disabled={getFieldDisabled('poeClass')}
               />}
-          />
-        </UI.FormItemLayout>
+          />,
+          'poeClass', $t({ defaultMessage: 'PoE Class' })
+        )}
 
-        <UI.FormItemLayout>
-          {isMultipleEdit && <Form.Item
-            noStyle
-            label={false}
-            name='poePriorityCheckbox'
-            valuePropName='checked'
-            initialValue={false}
-            children={<Checkbox disabled={disablePoeCapability || !poeEnable} />}
-          />}
+        { getFieldTemplate(
           <Form.Item
             {...getFormItemLayout(isMultipleEdit)}
             name='poePriority'
@@ -830,53 +790,47 @@ export function EditPortDrawer ({
                   options={poePriorityOptions}
                   disabled={getFieldDisabled('poePriority')}
                 />}
-          />
-        </UI.FormItemLayout>
+          />,
+          'poePriority', $t({ defaultMessage: 'PoE Priority' })
+        )}
 
-        <UI.FormItemLayout>
-          {isMultipleEdit && <Form.Item
-            noStyle
-            label={false}
-            name='poeBudgetCheckbox'
-            valuePropName='checked'
-            initialValue={false}
-            children={<Checkbox disabled={disablePoeCapability || !poeEnable} />}
-          />}
-          <Form.Item
-            {...getFormItemLayout(isMultipleEdit)}
-            name='poeBudget'
-            label={$t({ defaultMessage: 'PoE Budget' })}
-            rules={[
-              { validator: (_, value) => poeBudgetRegExp(value) }
-            ]}
-            initialValue=''
-            children={
-              isMultipleEdit && !poeBudgetCheckbox && hasMultipleValue.includes('poeBudget')
-                ? <MultipleText />
-                : <Input
-                  data-testid='poe-budget-input'
-                  placeholder={$t({ defaultMessage: 'Enter value between 1000 to 30000 mWatts' })}
-                  disabled={getFieldDisabled('poeBudget')}
-                />}
-          />
-          {((isMultipleEdit && poeBudgetCheckbox) || !isMultipleEdit)
+        { getFieldTemplate(
+          <>
+            <Form.Item
+              {...getFormItemLayout(isMultipleEdit)}
+              name='poeBudget'
+              label={$t({ defaultMessage: 'PoE Budget' })}
+              rules={[
+                { validator: (_, value) => poeBudgetRegExp(value) }
+              ]}
+              initialValue=''
+              children={
+                isMultipleEdit && !poeBudgetCheckbox && hasMultipleValue.includes('poeBudget')
+                  ? <MultipleText />
+                  : <Input
+                    data-testid='poe-budget-input'
+                    placeholder={$t({ defaultMessage: 'Enter value between 1000 to 30000 mWatts' })}
+                    disabled={getFieldDisabled('poeBudget')}
+                  />}
+            />
+            {((isMultipleEdit && poeBudgetCheckbox) || !isMultipleEdit)
             && <Space align='baseline'
               style={{
                 display: 'flex', fontSize: '12px',
                 margin: isMultipleEdit ? '10px 0px 0px 10px' : '30px 0 0 10px'
               }}>
               {$t({ defaultMessage: 'mWatts' })}</Space>
-          }
-        </UI.FormItemLayout>
+            }
+          </>,
+          'poeBudget', $t({ defaultMessage: 'PoE Budget' })
+        )}
 
-        <Divider style={{
-          margin: isMultipleEdit ? '28px 0' : '8px 0px 20px',
-          background: cssStr('--acx-neutrals-20') }}
-        />
+        <UI.ContentDivider />
 
-        <UI.FormItemLayout>
+        {/* Port VLAN */}
+        <UI.FormItem>
           {isMultipleEdit && <Space
-            style={{ height: '96px', alignItems: 'baseline', paddingRight: '10px' }} /// height: '100%'
+            style={{ height: '96px', alignItems: 'baseline', paddingRight: '10px' }} ///
           >
             <Form.Item
               noStyle
@@ -905,20 +859,22 @@ export function EditPortDrawer ({
                       key='edit'
                       size='small'
                       onClick={() => setSelectModalvisible(true)}
-                    >{useVenueSettings
+                    >{(useVenueSettings && portEditStatus !== 'port')
                         ? $t({ defaultMessage: 'Customize' })
                         : $t({ defaultMessage: 'Edit' })
                       }</Button>
-                    {!useVenueSettings &&
+                    {(!useVenueSettings || !portEditStatus) &&
                       <Tooltip title={getFieldTooltip('useVenuesettings')} >
-                        <Button type='link'
-                          key='use-venue-settings'
-                          size='small'
-                          disabled={getFieldDisabled('useVenuesettings')}
-                          onClick={onApplyVenueSettings}
-                        >
-                          {$t({ defaultMessage: 'Use Venue settings' })}
-                        </Button>
+                        <Space>
+                          <Button type='link'
+                            key='use-venue-settings'
+                            size='small'
+                            disabled={getFieldDisabled('useVenuesettings')}
+                            onClick={onApplyVenueSettings}
+                          >
+                            {$t({ defaultMessage: 'Use Venue settings' })}
+                          </Button>
+                        </Space>
                       </Tooltip>
                     }
                   </Space>
@@ -927,27 +883,41 @@ export function EditPortDrawer ({
             </Space>
             <Form.Item
               label={$t({ defaultMessage: 'Untagged VLAN' })}
+              labelCol={{ span: 8 }}
+              wrapperCol={{ span: 24 }}
+              style={{ width: '95%' }}
               name='untaggedVlan'
-              children={isMultipleEdit &&
-                !portVlansCheckbox && hasMultipleValue.includes('untaggedVlan')
+              children={isMultipleEdit && useVenueSettings
+                && hasMultipleValue.includes('untaggedVlan')
                 ? <MultipleText />
                 : <Space style={{ fontSize: isMultipleEdit ? '14px' : '16px', margin: 0 }}>{
                   untaggedVlan
-                    ? $t({ defaultMessage: 'VLAN-ID: {vlan}' }, { vlan: untaggedVlan })
+                    ? $t({ defaultMessage: 'VLAN-ID: {vlan} {extra}' }, {
+                      vlan: untaggedVlan,
+                      extra: !isMultipleEdit && (Number(defaultVlan) === Number(untaggedVlan))
+                        ? $t({ defaultMessage: '(Default VLAN)' })
+                        : ''
+                    })
                     : '--'
                 }</Space>
               }
             />
             <Form.Item
               label={$t({ defaultMessage: 'Tagged VLAN' })}
+              labelCol={{ span: 8 }}
+              wrapperCol={{ span: 24 }}
+              style={{ width: '95%' }}
               name='taggedVlans'
-              children={isMultipleEdit &&
-                !portVlansCheckbox && hasMultipleValue.includes('taggedVlans')
+              children={isMultipleEdit && useVenueSettings
+                && hasMultipleValue.includes('taggedVlans')
                 ? <MultipleText />
-                : <Space style={{ fontSize: '16px' }}>{taggedVlans?.length
-                  ? $t({ defaultMessage: 'VLAN-ID: {vlan}' },
-                    { vlan: sortOptions(taggedVlans.split(',')).join(', ') })
-                  : '--'
+                : <Space style={{ fontSize: isMultipleEdit ? '14px' : '16px', margin: 0 }}>{
+                  taggedVlans?.length
+                    ? $t(
+                      { defaultMessage: 'VLAN-ID: {vlan}' },
+                      { vlan: sortOptions(taggedVlans?.toString().split(','), 'number').join(', ') }
+                    )
+                    : '--'
                 }</Space>}
             />
             {!untaggedVlan && !taggedVlans &&
@@ -957,17 +927,9 @@ export function EditPortDrawer ({
                   : $t(EditPortMessages.UNSELECT_VLANS)
               }</Space>}
           </div>
-        </UI.FormItemLayout>
+        </UI.FormItem>
 
-        <UI.FormItemLayout>
-          {isMultipleEdit && <Form.Item
-            noStyle
-            label={false}
-            name='voiceVlanCheckbox'
-            valuePropName='checked'
-            initialValue={false}
-            children={<Checkbox disabled={vlansOptions?.length === 1} />}
-          />}
+        { getFieldTemplate(
           <Form.Item
             {...getFormItemLayout(isMultipleEdit)}
             label={$t({ defaultMessage: 'Voice VLAN' })}
@@ -985,24 +947,13 @@ export function EditPortDrawer ({
                 </Form.Item>
               </Tooltip>
             }
-          />
-        </UI.FormItemLayout>
+          />,
+          'voiceVlan', $t({ defaultMessage: 'Voice VLAN' })
+        )}
 
-        <Divider style={{
-          margin: isMultipleEdit ? '28px 0' : '8px 0px 20px',
-          background: cssStr('--acx-neutrals-20') }}
-        />
+        <UI.ContentDivider />
 
-        <UI.FormItemLayout>
-          {isMultipleEdit && <Form.Item
-            noStyle
-            label={false}
-            name='portProtectedCheckbox'
-            valuePropName='checked'
-            initialValue={false}
-            children={<Checkbox />}
-          />}
-          <UI.SwitchLabel>{$t({ defaultMessage: 'Protected Port' })}</UI.SwitchLabel>
+        { getFieldTemplate(
           <Form.Item
             noStyle
             label={false}
@@ -1012,20 +963,15 @@ export function EditPortDrawer ({
             children={isMultipleEdit &&
               !portProtectedCheckbox && hasMultipleValue.includes('portProtected')
               ? <MultipleText />
-              : <Switch disabled={getFieldDisabled('portProtected')} />}
-          />
-        </UI.FormItemLayout>
+              : <Switch
+                disabled={getFieldDisabled('portProtected')}
+                className={getToggleClassName('portProtected', isMultipleEdit, hasMultipleValue)}
+              />}
+          />,
+          'portProtected', $t({ defaultMessage: 'Protected Port' }), true
+        )}
 
-        <UI.FormItemLayout>
-          {isMultipleEdit && <Form.Item
-            noStyle
-            label={false}
-            name='lldpEnableCheckbox'
-            valuePropName='checked'
-            initialValue={false}
-            children={<Checkbox />}
-          />}
-          <UI.SwitchLabel>{$t({ defaultMessage: 'LLDP Enabled' })}</UI.SwitchLabel>
+        { getFieldTemplate(
           <Form.Item
             noStyle
             label={false}
@@ -1035,19 +981,15 @@ export function EditPortDrawer ({
             children={isMultipleEdit &&
               !lldpEnableCheckbox && hasMultipleValue.includes('lldpEnable')
               ? <MultipleText />
-              : <Switch disabled={getFieldDisabled('lldpEnable')} />}
-          />
-        </UI.FormItemLayout>
+              : <Switch
+                disabled={getFieldDisabled('lldpEnable')}
+                className={getToggleClassName('lldpEnable', isMultipleEdit, hasMultipleValue)}
+              />}
+          />,
+          'lldpEnable', $t({ defaultMessage: 'LLDP Enabled' }), true
+        )}
 
-        <UI.FormItemLayout>
-          {isMultipleEdit && <Form.Item
-            noStyle
-            label={false}
-            name='portSpeedCheckbox'
-            valuePropName='checked'
-            initialValue={false}
-            children={<Checkbox disabled={!portSpeedOptions.length || disablePortSpeed} />}
-          />}
+        { getFieldTemplate(
           <Form.Item
             {...getFormItemLayout(isMultipleEdit)}
             name='portSpeed'
@@ -1060,20 +1002,13 @@ export function EditPortDrawer ({
                   label: PORT_SPEED[p as keyof typeof PORT_SPEED], value: p
                 }))}
                 disabled={getFieldDisabled('portSpeed')}
+                className={getToggleClassName('portSpeed', isMultipleEdit, hasMultipleValue)}
               />}
-          />
-        </UI.FormItemLayout>
+          />,
+          'portSpeed', $t({ defaultMessage: 'Port Speed' })
+        )}
 
-        <UI.FormItemLayout>
-          {isMultipleEdit && <Form.Item
-            noStyle
-            label={false}
-            name='rstpAdminEdgePortCheckbox'
-            valuePropName='checked'
-            initialValue={false}
-            children={<Checkbox />}
-          />}
-          <UI.SwitchLabel>{$t({ defaultMessage: 'RSTP Admin Edge Port' })}</UI.SwitchLabel>
+        { getFieldTemplate(
           <Form.Item
             noStyle
             name='rstpAdminEdgePort'
@@ -1082,20 +1017,16 @@ export function EditPortDrawer ({
             children={isMultipleEdit &&
               !rstpAdminEdgePortCheckbox && hasMultipleValue.includes('rstpAdminEdgePort')
               ? <MultipleText />
-              : <Switch disabled={getFieldDisabled('rstpAdminEdgePort')} />}
-          />
-        </UI.FormItemLayout>
+              : <Switch
+                disabled={getFieldDisabled('rstpAdminEdgePort')}
+                className={
+                  getToggleClassName('rstpAdminEdgePort', isMultipleEdit, hasMultipleValue)
+                }/>}
+          />,
+          'rstpAdminEdgePort', $t({ defaultMessage: 'RSTP Admin Edge Port' }), true
+        )}
 
-        <UI.FormItemLayout>
-          {isMultipleEdit && <Form.Item
-            noStyle
-            label={false}
-            name='stpBpduGuardCheckbox'
-            valuePropName='checked'
-            initialValue={false}
-            children={<Checkbox />}
-          />}
-          <UI.SwitchLabel>{$t({ defaultMessage: 'STP BPDU Guard' })}</UI.SwitchLabel>
+        { getFieldTemplate(
           <Form.Item
             noStyle
             label={false}
@@ -1105,20 +1036,15 @@ export function EditPortDrawer ({
             children={
               isMultipleEdit && !stpBpduGuardCheckbox && hasMultipleValue.includes('stpBpduGuard')
                 ? <MultipleText />
-                : <Switch disabled={getFieldDisabled('stpBpduGuard')} />}
-          />
-        </UI.FormItemLayout>
+                : <Switch
+                  disabled={getFieldDisabled('stpBpduGuard')}
+                  className={getToggleClassName('stpBpduGuard', isMultipleEdit, hasMultipleValue)}
+                />}
+          />,
+          'stpBpduGuard', $t({ defaultMessage: 'STP BPDU Guard' }), true
+        )}
 
-        <UI.FormItemLayout>
-          {isMultipleEdit && <Form.Item
-            noStyle
-            label={false}
-            name='stpRootGuardCheckbox'
-            valuePropName='checked'
-            initialValue={false}
-            children={<Checkbox />}
-          />}
-          <UI.SwitchLabel>{$t({ defaultMessage: 'STP Root Guard' })}</UI.SwitchLabel>
+        { getFieldTemplate(
           <Form.Item
             noStyle
             label={false}
@@ -1128,46 +1054,33 @@ export function EditPortDrawer ({
             children={
               isMultipleEdit && !stpRootGuardCheckbox && hasMultipleValue.includes('stpRootGuard')
                 ? <MultipleText />
-                : <Switch disabled={getFieldDisabled('stpRootGuard')} />
+                : <Switch
+                  disabled={getFieldDisabled('stpRootGuard')}
+                  className={getToggleClassName('stpRootGuard', isMultipleEdit, hasMultipleValue)}
+                />
             }
-          />
-        </UI.FormItemLayout>
+          />,
+          'stpRootGuard', $t({ defaultMessage: 'STP Root Guard' }), true
+        )}
 
-        <Divider style={{
-          margin: isMultipleEdit ? '28px 0' : '8px 0px 20px',
-          background: cssStr('--acx-neutrals-20') }}
-        />
+        <UI.ContentDivider />
 
-        <UI.FormItemLayout>
-          {isMultipleEdit && <Form.Item
-            noStyle
-            label={false}
-            name='dhcpSnoopingTrustCheckbox'
-            valuePropName='checked'
-            initialValue={false}
-            children={<Checkbox />}
-          />}
-          <UI.SwitchLabel>{$t({ defaultMessage: 'DHCP Snooping Trust' })}</UI.SwitchLabel>
+        { getFieldTemplate(
           <Form.Item
             noStyle
             label={false}
             name='dhcpSnoopingTrust'
             valuePropName='checked'
             initialValue={false}
-            children={<Switch disabled={getFieldDisabled('dhcpSnoopingTrust')} />}
-          />
-        </UI.FormItemLayout>
+            children={<Switch
+              disabled={getFieldDisabled('dhcpSnoopingTrust')}
+              className={getToggleClassName('dhcpSnoopingTrust', isMultipleEdit, hasMultipleValue)}
+            />}
+          />,
+          'dhcpSnoopingTrust', $t({ defaultMessage: 'DHCP Snooping Trust' }), true
+        )}
 
-        <UI.FormItemLayout>
-          {isMultipleEdit && <Form.Item
-            noStyle
-            label={false}
-            name='ipsgCheckbox'
-            valuePropName='checked'
-            initialValue={false}
-            children={<Checkbox />}
-          />}
-          <UI.SwitchLabel>{$t({ defaultMessage: 'IPSG' })}</UI.SwitchLabel>
+        { getFieldTemplate(
           <Form.Item
             noStyle
             children={isMultipleEdit && !ipsgCheckbox && hasMultipleValue.includes('ipsg')
@@ -1181,20 +1094,14 @@ export function EditPortDrawer ({
                 <Switch
                   data-testid='ipsg-checkbox'
                   disabled={getFieldDisabled('ipsg')}
+                  className={getToggleClassName('ipsg', isMultipleEdit, hasMultipleValue)}
                 />
               </Form.Item>}
-          />
-        </UI.FormItemLayout>
+          />,
+          'ipsg', $t({ defaultMessage: 'IPSG' }), true
+        )}
 
-        <UI.FormItemLayout>
-          {isMultipleEdit && <Form.Item
-            noStyle
-            name='lldpQosCheckbox'
-            valuePropName='checked'
-            initialValue={false}
-            children={<Checkbox />}
-          />}
-          <UI.SwitchLabel>{$t({ defaultMessage: 'LLDP QoS' })}</UI.SwitchLabel>
+        { getFieldTemplate(
           <Form.Item
             noStyle
             name='lldpQos'
@@ -1212,8 +1119,9 @@ export function EditPortDrawer ({
                 {$t({ defaultMessage: 'Create' })}
               </Button>
             }
-          />
-        </UI.FormItemLayout>
+          />,
+          'lldpQos', $t({ defaultMessage: 'LLDP QoS' }), true
+        )}
 
         <Space style={{ position: 'relative', top: '-20px' }}>
           <LldpQOSTable
@@ -1226,29 +1134,23 @@ export function EditPortDrawer ({
           />
         </Space>
 
-        <UI.FormItemLayout>
-          {isMultipleEdit && <Form.Item
-            noStyle
-            name='ingressAclCheckbox'
-            valuePropName='checked'
-            initialValue={false}
-            children={<Checkbox />}
-          />}
-          <Form.Item
-            {...getFormItemLayout(isMultipleEdit)}
-            name='ingressAcl'
-            label={$t({ defaultMessage: 'Ingress ACL' })}
-            initialValue=''
-            children={
-              isMultipleEdit && !ingressAclCheckbox && hasMultipleValue.includes('ingressAcl')
-                ? <MultipleText />
-                : <Select
-                  options={aclsOptions}
-                  disabled={getFieldDisabled('ingressAcl')}
-                />
-            }
-          />
-          {((isMultipleEdit && ingressAclCheckbox) || !isMultipleEdit) &&
+        { getFieldTemplate(
+          <>
+            <Form.Item
+              {...getFormItemLayout(isMultipleEdit)}
+              name='ingressAcl'
+              label={$t({ defaultMessage: 'Ingress ACL' })}
+              initialValue=''
+              children={
+                isMultipleEdit && !ingressAclCheckbox && hasMultipleValue.includes('ingressAcl')
+                  ? <MultipleText />
+                  : <Select
+                    options={aclsOptions}
+                    disabled={getFieldDisabled('ingressAcl')}
+                  />
+              }
+            />
+            {((isMultipleEdit && ingressAclCheckbox) || !isMultipleEdit) &&
             <Tooltip title={getFieldTooltip('ingressAcl')}>
               <Space style={{ marginLeft: '8px' }}>
                 <Button type='link'
@@ -1261,30 +1163,27 @@ export function EditPortDrawer ({
                 </Button>
               </Space>
             </Tooltip>}
-        </UI.FormItemLayout>
+          </>,
+          'ingressAcl', $t({ defaultMessage: 'Ingress ACL' })
+        )}
 
-        <UI.FormItemLayout>
-          {isMultipleEdit && <Form.Item
-            noStyle
-            label={false}
-            name='egressAclCheckbox'
-            valuePropName='checked'
-            initialValue={false}
-            children={<Checkbox />}
-          />}
-          <Form.Item
-            {...getFormItemLayout(isMultipleEdit)}
-            name='egressAcl'
-            label={$t({ defaultMessage: 'Egress ACL' })}
-            initialValue=''
-            children={isMultipleEdit && !egressAclCheckbox && hasMultipleValue.includes('egressAcl')
-              ? <MultipleText />
-              : <Select
-                options={aclsOptions}
-                disabled={getFieldDisabled('egressAcl')}
-              />}
-          />
-          {((isMultipleEdit && egressAclCheckbox) || !isMultipleEdit) &&
+        { getFieldTemplate(
+          <>
+            <Form.Item
+              {...getFormItemLayout(isMultipleEdit)}
+              name='egressAcl'
+              label={$t({ defaultMessage: 'Egress ACL' })}
+              initialValue=''
+              children={
+                isMultipleEdit && !egressAclCheckbox && hasMultipleValue.includes('egressAcl')
+                  ? <MultipleText />
+                  : <Select
+                    options={aclsOptions}
+                    disabled={getFieldDisabled('egressAcl')}
+                  />
+              }
+            />
+            {((isMultipleEdit && egressAclCheckbox) || !isMultipleEdit) &&
             <Tooltip title={getFieldTooltip('egressAcl')}>
               <Space style={{ marginLeft: '8px' }}>
                 <Button type='link'
@@ -1296,17 +1195,11 @@ export function EditPortDrawer ({
                 </Button>
               </Space>
             </Tooltip>}
-        </UI.FormItemLayout>
+          </>,
+          'egressAcl', $t({ defaultMessage: 'Egress ACL' })
+        )}
 
-        <UI.FormItemLayout>
-          {isMultipleEdit && <Form.Item
-            noStyle
-            label={false}
-            name='tagsCheckbox'
-            valuePropName='checked'
-            initialValue={false}
-            children={<Checkbox />}
-          />}
+        { getFieldTemplate(
           <Form.Item
             {...getFormItemLayout(isMultipleEdit)}
             name='tags'
@@ -1316,8 +1209,9 @@ export function EditPortDrawer ({
               ? <MultipleText />
               : <Input disabled={getFieldDisabled('tags')} />
             }
-          />
-        </UI.FormItemLayout>
+          />,
+          'tags', $t({ defaultMessage: 'Tags' })
+        )}
 
       </UI.Form>
 
@@ -1335,16 +1229,16 @@ export function EditPortDrawer ({
         untaggedVlan={untaggedVlan}
         vlanDisabledTooltip={$t(EditPortMessages.ADD_VLAN_DISABLE)}
       />}
-      {
-        lldpModalvisible && <EditLldpModal
-          isEditMode={false}
-          setLldpModalvisible={setLldpModalvisible}
-          lldpModalvisible={lldpModalvisible}
-          lldpQosList={lldpQosList}
-          setLldpQosList={setLldpQosList}
-          vlansOptions={vlansOptions}
-        />
-      }
+
+      {lldpModalvisible && <EditLldpModal
+        isEditMode={false}
+        setLldpModalvisible={setLldpModalvisible}
+        lldpModalvisible={lldpModalvisible}
+        lldpQosList={lldpQosList}
+        setLldpQosList={setLldpQosList}
+        vlansOptions={vlansOptions}
+      />}
+
     </Loader>}
     width={'590px'}
   />

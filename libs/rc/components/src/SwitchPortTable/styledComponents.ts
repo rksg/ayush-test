@@ -20,18 +20,20 @@ export const Form = styled(AntdForm)`
   &.ant-form.ant-form-horizontal > .ant-form-item {
     margin-bottom: 20px !important;
     label {
-      color: var(--acx-primary-black)
+      color: var(--acx-primary-black);
+      &::after {
+        display: none;
+      }
     }
   }
 `
 
-export const FormItemLayout = styled(AntdForm.Item)`
+export const FormItem = styled(AntdForm.Item)`
   &.ant-form-item {
     margin-bottom: 10px;
   }
   
   .ant-form-item-control-input-content {
-    // align-items: center;
     &:first-child {
       display: flex;
       width: 100%;
@@ -56,12 +58,20 @@ export const FormItemLayout = styled(AntdForm.Item)`
 
   label + .ant-form-item,
   label + div {
-    // width: 248px;
     padding-left: 10px;
+  }
+
+  .ant-switch-checked.ant-switch-disabled.switch-checked-fade {
+      opacity: 50%;
+      border-color: var(--acx-accents-blue-50);
+      .ant-switch-handle::before {
+        background: var(--acx-accents-blue-50);
+      }
+    }
   }
 `
 
-export const SwitchLabel = styled('div')`
+export const ExtraLabel = styled('div')`
   display: inline-flex;
   width: 172px;
   font-size: var(--acx-body-4-font-size)
@@ -85,4 +95,9 @@ export const Divider = styled(AntDivider).attrs({ type: 'vertical' })`
   background: var(--acx-neutrals-50);
   width: 1px;
   height: 14px;
+`
+
+export const ContentDivider = styled(AntDivider).attrs({ type: 'horizontal' })`
+  background: var(--acx-neutrals-20);
+  margin: 16px 0px 28px !important
 `

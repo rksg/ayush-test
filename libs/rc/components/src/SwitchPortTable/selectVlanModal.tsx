@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 
 import { Checkbox, FormInstance, Input, Radio, Space, Typography } from 'antd'
-import { DefaultOptionType }                                       from 'antd/lib/select'
 import _                                                           from 'lodash'
 
 import { Button, Modal, Tabs, Tooltip } from '@acx-ui/components'
@@ -12,7 +11,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
-import * as UI from './styledComponents'
+import { sortOptions } from './editPortDrawer.utils'
+import * as UI         from './styledComponents'
 
 import type { RadioChangeEvent }                      from 'antd'
 import type { CheckboxValueType, CheckboxOptionType } from 'antd/es/checkbox/Group'
@@ -54,7 +54,7 @@ export function SelectVlanModal (props: {
       taggedVlans: selectTaggedVlans.toString(),
       untaggedVlan: selectUntaggedVlans
     })
-    await onValuesChange({ untaggedVlan: Number(selectUntaggedVlans) })
+    await onValuesChange({ untaggedVlan: Number(selectUntaggedVlans), revert: false })
     setUseVenueSettings(false)
     setSelectModalvisible(false)
   }
@@ -63,25 +63,24 @@ export function SelectVlanModal (props: {
     setSelectModalvisible(false)
   }
 
-  function getTaggedVlanOptions (selectedUntaggedVlan: number) {
+  const getTaggedVlanOptions = (selectedUntaggedVlan: number) => {
     const vlanOptions = switchVlans.map((v: SwitchVlan) => {
-      // const isUntagged = parseInt(v.vlanId, 10) === parseInt(selectedUntaggedVlan, 10)
-      const isUntagged = v.vlanId === selectedUntaggedVlan
-      const extra = isUntagged
+      const isSelectedUntagged = v.vlanId === selectedUntaggedVlan
+      const extra = isSelectedUntagged
         ? $t({ defaultMessage: '(Set as untagged VLAN)' })
         : (v?.vlanConfigName ? `(${v?.vlanConfigName})` : '')
 
       return {
         label: $t({ defaultMessage: 'VLAN-ID-{vlan} {extra}' }, { vlan: v.vlanId, extra }),
         value: v.vlanId.toString(),
-        disabled: isUntagged
+        disabled: isSelectedUntagged
       }
     })
 
-    return sortArray(vlanOptions, 'number') as CheckboxOptionType[]
+    return sortOptions(vlanOptions, 'number') as CheckboxOptionType[]
   }
 
-  function getUntaggedVlanOptions (selectedTaggedVlans: string | CheckboxValueType[]) {
+  const getUntaggedVlanOptions = (selectedTaggedVlans: string | CheckboxValueType[]) => {
     const vlanOptions = switchVlans.map((vlan: SwitchVlan) => {
       const tagged = selectedTaggedVlans?.toString()?.split(',')
       const isTagged = tagged?.some((v: string) => Number(v) === Number(vlan?.vlanId))
@@ -96,13 +95,13 @@ export function SelectVlanModal (props: {
 
       return {
         label: $t({ defaultMessage: 'VLAN-ID-{vlan} {extra}' }, { vlan: vlan.vlanId, extra }),
-        value: Number(vlan.vlanId), //.toString(),
+        value: Number(vlan.vlanId),
         disabled: isTagged
       }
     })
 
     const untaggedVlanOption
-      = (sortArray(vlanOptions, 'number') ?? []) as CheckboxOptionType[]
+      = (sortOptions(vlanOptions, 'number') ?? []) as CheckboxOptionType[]
     // const noneVlanOption = !untaggedVlanOption?.length ? [{
     //   label: $t({ defaultMessage: 'None' }), value: ''
     // }] : []
@@ -110,7 +109,7 @@ export function SelectVlanModal (props: {
     // ParticularVlanOptionType
     const defaultVlanOption = defaultVlan ? {
       label: $t({ defaultMessage: 'VLAN-ID-{vlan} (Default VLAN)' }, { vlan: defaultVlan }),
-      value: defaultVlan
+      value: Number(defaultVlan)
     } : {
       label: $t({ defaultMessage: 'Default VLAN (Multiple values)' }),
       value: $t({ defaultMessage: 'Default VLAN (Multiple values)' })
@@ -127,7 +126,7 @@ export function SelectVlanModal (props: {
   useEffect(() => {
     const untaggedVlanOptions = getUntaggedVlanOptions(taggedVlans)
     const taggedVlanOptions = getTaggedVlanOptions(untaggedVlan)
-    setSelectUntaggedVlans(untaggedVlan)
+    setSelectUntaggedVlans(Number(untaggedVlan))
     setSelectTaggedVlans(taggedVlans)
     setTaggedVlanOptions(taggedVlanOptions)
     setDisplayTaggedVlan(taggedVlanOptions)
@@ -186,8 +185,7 @@ export function SelectVlanModal (props: {
             <Button key='add-vlan'
               type='link'
               size='small'
-              // TODO
-              disabled={true}
+              disabled={true} // TODO
               // disabled={!hasSwitchProfile}
               // onClick={() => { }}
             >
@@ -263,22 +261,11 @@ export function SelectVlanModal (props: {
         <UI.GroupListLayout>
           <Radio.Group
             onChange={onChangeUntaggedVlan}
-            defaultValue={untaggedVlan}
+            defaultValue={Number(untaggedVlan)}
             options={displayUntaggedVlan}
           />
         </UI.GroupListLayout>
       </Tabs.TabPane>
     </Tabs>
   </Modal>)
-}
-
-//// utils
-function sortArray (dataList: DefaultOptionType[], valueType = 'string', sortField = 'value') {
-  return dataList?.[0]?.[sortField]
-    ? _.sortBy(dataList, [sortField], function (o) {
-      return valueType === 'number'
-        ? parseInt(o[sortField], 10) //Number(o[sortField])
-        : o[sortField]
-    })
-    : _.sortBy(dataList)
 }

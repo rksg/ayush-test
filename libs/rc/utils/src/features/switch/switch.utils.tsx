@@ -1,7 +1,9 @@
 /* eslint-disable max-len */
 import _ from 'lodash'
 
-import { getIntl } from '@acx-ui/utils'
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+import { showActionModal } from '@acx-ui/components'
+import { getIntl }         from '@acx-ui/utils'
 
 import { DeviceConnectionStatus }                                         from '../../constants'
 import { STACK_MEMBERSHIP, SwitchRow, SwitchStatusEnum, SwitchViewModel } from '../../types'
@@ -210,4 +212,22 @@ export const getStackMemberStatus = (unitStatus: string, isDefaultMember?: boole
     return $t({ defaultMessage: 'Member' })
   }
   return
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const showGeneralError = (error: any) => {
+  const { $t } = getIntl()
+
+  let error_message = ''
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  error?.errors?.forEach((err: any) => {
+    error_message += (err?.message + '. ')
+  })
+
+  showActionModal({
+    type: 'error',
+    title: $t({ defaultMessage: 'Error' }),
+    content: error_message
+  })
 }

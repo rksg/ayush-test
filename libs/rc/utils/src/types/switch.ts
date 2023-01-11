@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import { LldpQosModel } from '../models/PortSetting'
 
-import { Acl, Vlan } from './venue'
+import { Acl, Vlan, SwitchModel } from './venue'
 
 import { GridDataRow } from './'
 
@@ -344,7 +344,7 @@ export interface PortSetting {
   switchId: string
   switchMac: string
   taggedVlans?: string[]
-  untaggedVlan?: number | string
+  untaggedVlan?: Number | string
   voiceVlan: number | string
   egressAcl?: string
   ingressAcl?: string
@@ -411,6 +411,7 @@ export interface SwitchVlans {
   multicastVersion: number
   spanningTreePriority?: number
   spanningTreeProtocol: string
+  switchFamilyModels: SwitchModel[]
   vlanId: number
   vlanName: string
 }

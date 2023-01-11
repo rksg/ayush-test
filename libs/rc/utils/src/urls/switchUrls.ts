@@ -59,7 +59,7 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getPortSetting: {
     method: 'get',
-    url: '/api/switch/tenant/:tenantId/port/switch/:serialNumber/portId/:portIdentifier'
+    url: '/api/switch/tenant/:tenantId/port/switch/:switchId/portId/:portIdentifier'
   },
   getPortsSetting: {
     method: 'post',

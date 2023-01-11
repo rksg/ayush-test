@@ -1,6 +1,6 @@
-import { Space }             from 'antd'
-import { DefaultOptionType } from 'antd/lib/select'
-import _                     from 'lodash'
+import { FormInstance, Space } from 'antd'
+import { DefaultOptionType }   from 'antd/lib/select'
+import _                       from 'lodash'
 
 import {
   cssStr
@@ -43,6 +43,14 @@ export const getFormItemLayout = (isMultipleEdit: boolean) => {
     wrapperCol: { span: 16 },
     style: { width: '75%' }
   }
+}
+
+export const getToggleClassName = (
+  field: string,
+  isMultipleEdit: boolean,
+  hasMultipleValue?: string[]
+) => {
+  return isMultipleEdit && !hasMultipleValue?.includes(field) ? 'switch-checked-fade' : ''
 }
 
 export const getPortSpeed = (selectedPorts: SwitchPortViewModel[]) => {
@@ -135,13 +143,49 @@ export const checkLldpListEqual = (lldpList: LldpQosModel[][]) => { // TODO
   // const isArrayEqual = (x:any, y:any) => _(x).xorWith(y, _.isEqual).isEmpty()
   // const aa =  list.map(l => JSON.stringify(l))
 
-  list.forEach((l, index) => {
+  list?.forEach((l, index) => {
     if (index !== (list.length -1) && !_.isEqual(list[index], list[index+1])) {
       isEqual = false
     }
   })
 
   return isEqual
+}
+
+export const checkAclIgnore = (
+  field: keyof PortSetting,
+  value?: string,
+  aclsOptions?: DefaultOptionType[]
+) => {
+  return value && !aclsOptions?.find(item => item.value === value && !item.disabled) && field
+}
+
+export const checkVlanIgnore = (
+  field: keyof PortSetting,
+  value: string[] | Number,
+  isMultipleEdit: boolean,
+  useVenueSettings: boolean,
+  isDirtyUntaggedVlan: boolean) => {
+  return !isMultipleEdit && ((useVenueSettings && !value) || !isDirtyUntaggedVlan) && field
+}
+
+export const checkPortEditStatus = (
+  form: FormInstance,
+  portSetting: PortSetting,
+  revert: boolean,
+  taggedByVenue: string,
+  untaggedByVenue: string
+) => {
+  const taggedVlans = form?.getFieldValue('taggedVlans') || portSetting?.taggedVlans
+  const untaggedVlan = form?.getFieldValue('untaggedVlan') || portSetting?.untaggedVlan
+
+  if (!revert && (taggedVlans || untaggedVlan)) {
+    return 'port'
+  } else if (taggedByVenue || untaggedByVenue) {
+    return 'venue'
+  } else {
+    return 'default'
+  }
 }
 
 export const getPortEditStatus = (status: string) => {
@@ -151,8 +195,10 @@ export const getPortEditStatus = (status: string) => {
       return $t({ defaultMessage: 'Port level override' })
     case 'venue':
       return $t({ defaultMessage: 'Applied at venue' })
-    default:
+    case 'default':
       return $t({ defaultMessage: 'Default' })
+    default:
+      return '' //$t({ defaultMessage: 'Default' })
   }
 }
 
@@ -166,10 +212,22 @@ export const getOverrideFields = (fieldsValue: PortSetting) => {
     .map(v => v?.[0].split('Checkbox')?.[0])
 }
 
-export const sortOptions = (dataList: DefaultOptionType[], sortField = 'value') => {
+export const sortOptions = (
+  dataList: DefaultOptionType[],
+  valueType = 'string',
+  sortField = 'value'
+) => {
   return dataList?.[0]?.[sortField]
-    ? _.sortBy(dataList, [sortField])
+    ? _.sortBy(dataList, (obj) =>
+      valueType === 'number' ? parseInt(obj[sortField], 10) : obj[sortField]
+    )
     : _.sortBy(dataList)
+}
+
+export const handlePortSpeedFor765048F = (selectedPorts: SwitchPortViewModel[]) => {
+  return selectedPorts
+    .filter(p => p.switchModel === 'ICX7650-48F')
+    .map(p => Number(p?.portIdentifier?.split('/')?.pop()) < 25)?.length > 0
 }
 
 export const isPortOverride = (portSetting: PortSetting) => {
@@ -202,7 +260,7 @@ export const getMultipleVlanValue = ( // TODO: rewrite
   const result = {
     tagged: new Array(ports.length).fill(undefined),
     untagged: new Array(ports.length).fill(undefined),
-    voice: portsSetting?.response.map(p => p.voiceVlan)
+    voice: portsSetting?.response?.map(p => p.voiceVlan)
   }
 
   const portsProfileVlans = {
@@ -211,7 +269,7 @@ export const getMultipleVlanValue = ( // TODO: rewrite
   }
 
   // Check Vlan
-  vlans.filter(v => v.switchFamilyModels)
+  vlans?.filter(v => v.switchFamilyModels)
     .forEach((item: Vlan) => {
       selectedPorts.forEach((p, index: number) => {
         const requestPort = '1' + p.portIdentifier.slice(1)
@@ -275,12 +333,7 @@ export const getMultipleVlanValue = ( // TODO: rewrite
     tagged: tagEqual ? result.tagged?.[0] : null,
     untagged: untagEqual ? result.untagged?.[0] : (defaultVlan ?? 'Default VLAN (Multiple values)'),
     voice: voiceVlanEqual ? result.voice?.[0] : '',
-    initPortVlans: initPortVlans
+    initPortVlans: initPortVlans,
+    portsProfileVlans: portsProfileVlans
   }
-}
-
-export const handlePortSpeedFor765048F = (selectedPorts: SwitchPortViewModel[]) => {
-  return selectedPorts
-    .filter(p => p.switchModel === 'ICX7650-48F')
-    .map(p => Number(p?.portIdentifier?.split('/')?.pop()) < 25)?.length > 0
 }

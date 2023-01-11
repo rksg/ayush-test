@@ -5,7 +5,7 @@ interface MODELS_PORTSPEED {
 }
 
 /* eslint-disable max-len */
-const ICX_MODELS_PORTSPEED: any = {
+const ICX_MODELS_PORTSPEED: Record<string, MODELS_PORTSPEED | MODELS_PORTSPEED[]> = {
   'DEFAULT': {
     capacity: ['NONE', 'AUTO', 'TEN_M_FULL', 'TEN_M_HALF', 'ONE_HUNDRED_M_FULL',
       'ONE_HUNDRED_M_HALF', 'ONE_G_FULL', 'ONE_G_FULL_MASTER', 'ONE_G_FULL_SLAVE', 'TWO_POINT_FIVE_G_FULL',
@@ -521,7 +521,7 @@ export const getPortSpeedOptions = (model: string, port: string) => {
 }
 
 export const getDefaultPortSpeedOption = () => {
-  return ICX_MODELS_PORTSPEED['DEFAULT'].capacity
+  return (ICX_MODELS_PORTSPEED['DEFAULT'] as MODELS_PORTSPEED).capacity
 }
 
 export const _isAmongPortRange = (port: string, startPort: string, endPort: string) => {

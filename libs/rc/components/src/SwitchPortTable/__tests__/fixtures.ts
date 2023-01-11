@@ -253,6 +253,16 @@ export const vlansByVenue = [{
   ipv4DhcpSnooping: false,
   spanningTreePriority: 32768,
   spanningTreeProtocol: 'none',
+  switchFamilyModels: [{
+    id: 'e5d57359201a4fa0b0058c425412596f',
+    model: 'ICX7150-C12P',
+    slots: [
+      { slotNumber: 3, enable: true, option: '4X1/10G' },
+      { slotNumber: 2, enable: true, option: '2X1G' },
+      { slotNumber: 1, enable: true }],
+    taggedPorts: '1/1/6,1/1/9,1/1/11',
+    untaggedPorts: '1/1/4'
+  }],
   vlanId: 2
 }, {
   arpInspection: false,
@@ -261,6 +271,16 @@ export const vlansByVenue = [{
   ipv4DhcpSnooping: false,
   spanningTreePriority: 32768,
   spanningTreeProtocol: 'none',
+  switchFamilyModels: [{
+    id: 'e5d57359201a4fa0b0058c425412596f',
+    model: 'ICX7150-C12P',
+    slots: [
+      { slotNumber: 3, enable: true, option: '4X1/10G' },
+      { slotNumber: 2, enable: true, option: '2X1G' },
+      { slotNumber: 1, enable: true }],
+    taggedPorts: '1/1/9,1/1/11',
+    untaggedPorts: '1/1/6,1/1/8,1/1/10'
+  }],
   vlanId: 3
 }, {
   arpInspection: false,
@@ -493,3 +513,45 @@ export const switchesVlan = {
     vlanId: 1
   }]
 }
+
+export const untaggedVlansByVenue = [{
+  arpInspection: true,
+  id: 'aa476019019f4557a4d278a7d4cf0121',
+  igmpSnooping: 'none',
+  ipv4DhcpSnooping: false,
+  spanningTreePriority: 32768,
+  spanningTreeProtocol: 'none',
+  switchFamilyModels: [{
+    id: 'cc1ada66a21940b0ad01f3b3879b05a4',
+    model: 'ICX7150-C12P',
+    slots: [
+      { slotNumber: 2, enable: true, option: '2X1G' },
+      { slotNumber: 3, enable: true, option: '2X1/10G' },
+      { slotNumber: 1, enable: true }
+    ],
+    taggedPorts: '1/1/9,1/1/11',
+    untaggedPorts: '1/1/6,1/1/8,1/1/10'
+  }],
+  vlanId: 6,
+  vlanName: '6'
+}]
+
+export const taggedVlansByVenue = [{
+  arpInspection: false,
+  id: '2c988859002040428830955e7b2b161b',
+  igmpSnooping: 'none',
+  ipv4DhcpSnooping: false,
+  spanningTreePriority: 32768,
+  spanningTreeProtocol: 'none',
+  switchFamilyModels: [{
+    id: '234f27465ea3445492b1ae7c63605342',
+    model: 'ICX7150-C12P',
+    slots: [
+      { slotNumber: 2, enable: true, option: '2X1G' },
+      { slotNumber: 3, enable: true, option: '2X1/10G' },
+      { slotNumber: 1, enable: true }],
+    taggedPorts: '1/1/7,1/1/9,1/1/11',
+    untaggedPorts: '1/1/5'
+  }],
+  vlanId: 7
+}]
