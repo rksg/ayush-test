@@ -1,6 +1,7 @@
 import { createContext, useContext, ReactNode } from 'react'
 
-import { pick } from 'lodash'
+import { pick }    from 'lodash'
+import { useIntl } from 'react-intl'
 
 import { Loader }         from '@acx-ui/components'
 import { useApListQuery } from '@acx-ui/rc/services'
@@ -15,6 +16,7 @@ export function useApContext () {
 
 export function ApContextProvider (props: { children: ReactNode }) {
   const params = useParams()
+  const { $t } = useIntl()
   const results = useApListQuery({
     params,
     payload: {
@@ -37,7 +39,7 @@ export function ApContextProvider (props: { children: ReactNode }) {
     <Loader states={[results]}>{
       data && data.length
         ? props.children
-        : `Could not find AP ${params.apId}`
+        : $t({ defaultMessage: 'Could not find AP {apId}' }, params)
     }</Loader>
   </ApContext.Provider>
 }
