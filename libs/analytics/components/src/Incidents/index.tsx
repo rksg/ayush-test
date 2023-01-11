@@ -27,20 +27,9 @@ export const IncidentTabContent = (props: {
   const incidentsPageFilters = widgetFilters ? widgetFilters : filters
   const incidentCodesBasedOnCategory: IncidentCode[] | undefined
     = categoryCodeMap[tabSelection as CategoryOption]?.codes as IncidentCode[]
-
-  if (disableGraphs) {
-    return (
-      <GridRow>
-        <GridCol col={{ span: 24 }} style={{ minHeight: '180px' }}>
-          <IncidentTable
-            filters={{ ...incidentsPageFilters, code: incidentCodesBasedOnCategory }}
-          />
-        </GridCol>
-      </GridRow>
-    )
-  } else {
-    return (
-      <GridRow>
+  return (
+    <GridRow>
+      {disableGraphs ? null : <>
         <GridCol col={{ span: 4 }} style={{ height: '210px' }}>
           <IncidentBySeverity
             type='bar'
@@ -54,14 +43,15 @@ export const IncidentTabContent = (props: {
             type='no-border'
           />
         </GridCol>
-        <GridCol col={{ span: 24 }} style={{ minHeight: '180px' }}>
-          <IncidentTable
-            filters={{ ...incidentsPageFilters, code: incidentCodesBasedOnCategory }}
-          />
-        </GridCol>
-      </GridRow>
-    )
-  }
+      </>
+      }
+      <GridCol col={{ span: 24 }} style={{ minHeight: '180px' }}>
+        <IncidentTable
+          filters={{ ...incidentsPageFilters, code: incidentCodesBasedOnCategory }}
+        />
+      </GridCol>
+    </GridRow>
+  )
 }
 
 function IncidentListPage () {
