@@ -9,11 +9,6 @@ import { ClientConfig }                                                       fr
 
 import { IpAddressDrawer } from './IpAddressDrawer'
 
-interface clientConfig {
-  secret ?: string
-  ipAddress ?: string[]
-}
-
 export function RadiusServerForm () {
   const { $t } = useIntl()
   const { Paragraph } = Typography
@@ -44,7 +39,7 @@ export function RadiusServerForm () {
     return password
   }
 
-  const onSubmit = async (data: clientConfig) => {
+  const onSubmit = async (data: ClientConfig) => {
     try {
       const payload = {
         secret: data.secret
@@ -95,13 +90,13 @@ export function RadiusServerForm () {
         <Col span={10}>
           <Form layout='vertical' onFinish={onSubmit} form={form}>
             <Form.Item label={$t({ defaultMessage: 'RADIUS Host' })}>
-              <Paragraph>radius.yourdomain.com (202.202.13.4)</Paragraph>
+              <Paragraph>''</Paragraph>
             </Form.Item>
             <Form.Item label={$t({ defaultMessage: 'Authentication Port' })}>
-              <Paragraph>11948</Paragraph>
+              <Paragraph>''</Paragraph>
             </Form.Item>
             <Form.Item label={$t({ defaultMessage: 'Accounting Port' })}>
-              <Paragraph>11949</Paragraph>
+              <Paragraph>''</Paragraph>
             </Form.Item>
             <Form.Item label={$t({ defaultMessage: 'Shared Secret' })}>
               <Space>

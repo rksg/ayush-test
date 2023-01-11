@@ -75,7 +75,7 @@ describe('Administration page', () => {
       })
 
     const tabs = screen.getAllByRole('tab')
-    expect(tabs.length).toBe(5)
+    expect(tabs.length).toBe(6 )
   })
 
   it('should handle tab changes', async () => {
