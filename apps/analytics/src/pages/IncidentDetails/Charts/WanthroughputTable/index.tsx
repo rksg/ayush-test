@@ -21,8 +21,8 @@ export const WanthroughputTable: React.FC<ChartProps> = (props) => {
       title: $t(defineMessage({ defaultMessage: 'AP Name' })),
       dataIndex: 'name',
       key: 'name',
-      render: (_, value) =>
-        <TenantLink to={'TODO'}>{value.name}</TenantLink>,
+      render: (_, { name, mac }) =>
+        <TenantLink to={`devices/wifi/${mac}/details/overview`}>{name}</TenantLink>,
       fixed: 'left',
       sorter: { compare: sortProp('name', defaultSort) },
       defaultSortOrder: 'ascend',
