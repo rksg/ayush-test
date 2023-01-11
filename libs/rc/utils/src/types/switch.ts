@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 import { ConfigurationBackupStatus } from '../constants'
+
 import { GridDataRow } from './'
 
 export const SWITCH_SERIAL_PATTERN=/^(FEG|FEM|FEA|FEB|FEH|FEJ|FEC|FED|FEE|FEF|FJN|FJP|FEK|FEL|FMD|FME|FMF|FMG|FMU|FMH|FMJ|EZC|EZD|EZE|FLU|FLV|FLW|FLX|FMK|FML|FMM|FMN|FMP|FMQ|FMR|FMS)([0-9A-Z]{2})(0[1-9]|[1-4][0-9]|5[0-4])([A-HJ-NP-Z])([0-9A-HJ-NPRSTV-Z]{3})$/i
@@ -216,14 +217,14 @@ export interface ConfigurationHistory {
 }
 
 export interface ConfigurationBackup {
-  "id": string
-"createdDate": string
-"name": string
-"backupType": string
-"backupName": string
-"status": ConfigurationBackupStatus
-"config": string
-"switchId": string
+  'id': string
+'createdDate': string
+'name': string
+'backupType': string
+'backupName': string
+'status': ConfigurationBackupStatus
+'config': string
+'switchId': string
 restoreStatus: ConfigurationBackupStatus
 failureReason: string
 }

@@ -27,8 +27,7 @@ import {
   transformConfigBackupStatus,
   ConfigurationBackup,
   ConfigurationBackupStatus,
-  transformConfigBackupType,
-  downloadFile
+  transformConfigBackupType
 } from '@acx-ui/rc/utils'
 import { formatter } from '@acx-ui/utils'
 
@@ -169,16 +168,16 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           data: res
             .sort((a, b) => b.createdDate.localeCompare(a.createdDate))
             .map(item => ({
-            ...item,
-            createdDate: formatter('dateTimeFormatWithSeconds')(item.createdDate),
-            backupType: transformConfigBackupType(item.backupType),
-            status: transformConfigBackupStatus(item) as ConfigurationBackupStatus
-          })),
+              ...item,
+              createdDate: formatter('dateTimeFormatWithSeconds')(item.createdDate),
+              backupType: transformConfigBackupType(item.backupType),
+              status: transformConfigBackupStatus(item) as ConfigurationBackupStatus
+            })),
           totalCount: res.length,
           page: 1
         }
       },
-      providesTags: [{ type: 'SwitchBackup', id: 'LIST' }],
+      providesTags: [{ type: 'SwitchBackup', id: 'LIST' }]
     }),
     addConfigBackup: build.mutation<ConfigurationBackup, RequestPayload>({
       query: ({ params, payload }) => {

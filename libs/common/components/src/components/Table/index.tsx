@@ -9,9 +9,9 @@ import AutoSizer                                       from 'react-virtualized-a
 
 import { SettingsOutlined } from '@acx-ui/icons'
 
-import { Button, DisabledButton }  from '../Button'
-import { Dropdown } from '../Dropdown'
-import { Tooltip }  from '../Tooltip'
+import { Button, DisabledButton } from '../Button'
+import { Dropdown }               from '../Dropdown'
+import { Tooltip }                from '../Tooltip'
 
 import { FilterValue, getFilteredData, renderFilter, renderSearch } from './filters'
 import { ResizableColumn }                                          from './ResizableColumn'
@@ -271,21 +271,21 @@ function Table <RecordType extends Record<string, any>> (
       split={<UI.Divider type='vertical' />}
       style={{ display: 'flex', justifyContent: 'flex-end', margin: '3px 0' }}>
       {props.actions?.map((action, index) => {
-        const content = !action.disabled 
-        ? <Button
-          key={index}
-          type='link'
-          size='small'
-          onClick={action.dropdownMenu ? undefined : action.onClick}
-          children={action.label}
-        /> 
-        : <DisabledButton
-          key={index}
-          type='link'
-          size='small'
-          title={action.tooltip}
-          children={action.label}
-        />
+        const content = !action.disabled
+          ? <Button
+            key={index}
+            type='link'
+            size='small'
+            onClick={action.dropdownMenu ? undefined : action.onClick}
+            children={action.label}
+          />
+          : <DisabledButton
+            key={index}
+            type='link'
+            size='small'
+            title={action.tooltip}
+            children={action.label}
+          />
         return action.dropdownMenu
           ? <Dropdown
             overlay={<Menu {...action.dropdownMenu} />}
@@ -343,7 +343,7 @@ function Table <RecordType extends Record<string, any>> (
       scroll={{ x: hasEllipsisColumn || type !== 'tall' ? '100%' : 'max-content' }}
       rowSelection={rowSelection}
       pagination={(type === 'tall' && props.pagination !== false
-        ?  { ...defaultPagination, ...props.pagination || {} } as TablePaginationConfig
+        ? { ...defaultPagination, ...props.pagination || {} } as TablePaginationConfig
         : false)}
       columnEmptyText={false}
       onRow={onRow}
@@ -374,7 +374,7 @@ function Table <RecordType extends Record<string, any>> (
               if (!visible) return null
               return <UI.ActionButton
                 key={option.label}
-                disabled={typeof option.disabled === 'function' 
+                disabled={typeof option.disabled === 'function'
                   ? option.disabled(rows)
                   : option.disabled
                 }

@@ -1,4 +1,4 @@
-import { defineMessage } from "react-intl"
+import { defineMessage } from 'react-intl'
 
 export enum NetworkTypeEnum {
   PSK = 'psk',
@@ -762,6 +762,7 @@ export const base64Images = {
 }
 
 export const BACKUP_DISABLE_TOOLTIP = defineMessage({
+  // eslint-disable-next-line max-len
   defaultMessage: 'The switch status must be "Operational" before you can create the backup configuration file.'
 })
 

@@ -1,12 +1,14 @@
+/* eslint-disable max-len */
+import { useContext } from 'react'
+
 import { Dropdown, Menu, Space } from 'antd'
 import moment                    from 'moment-timezone'
 import { useIntl }               from 'react-intl'
 
-import { Button, PageHeader, RangePicker }                                         from '@acx-ui/components'
-import { ArrowExpand }                                                             from '@acx-ui/icons'
-import { SwitchStatus }                                                            from '@acx-ui/rc/components'
-import { useSwitchDetailHeaderQuery }                                              from '@acx-ui/rc/services'
-import { isStrictOperationalSwitch, SwitchRow, SwitchStatusEnum, SwitchViewModel } from '@acx-ui/rc/utils'
+import { Button, PageHeader, RangePicker } from '@acx-ui/components'
+import { ArrowExpand }                     from '@acx-ui/icons'
+import { SwitchStatus }                    from '@acx-ui/rc/components'
+import { SwitchRow, SwitchViewModel }      from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useTenantLink,
@@ -15,12 +17,12 @@ import {
 import { dateRangeForLast, useDateFilter } from '@acx-ui/utils'
 
 import SwitchTabs from './SwitchTabs'
-import { useContext } from 'react'
+
 import { SwitchDetailsContext } from '.'
 
 function SwitchPageHeader () {
   const { $t } = useIntl()
-  const { tenantId, switchId, serialNumber } = useParams()
+  const { switchId, serialNumber } = useParams()
   const {
     switchDetailsContextData
   } = useContext(SwitchDetailsContext)

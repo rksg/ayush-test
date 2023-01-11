@@ -6,7 +6,7 @@ export const downloadFile = (response: { blob: () => Promise<BlobPart> }, fileNa
 }
 
 export const handleBlobDownloadFile = (fileFlob: Blob, fileName:string) => {
-  const link = document.createElement('a');
+  const link = document.createElement('a')
   if (link.download !== undefined) {
     const url = URL.createObjectURL(fileFlob)
     link.setAttribute('href', url)

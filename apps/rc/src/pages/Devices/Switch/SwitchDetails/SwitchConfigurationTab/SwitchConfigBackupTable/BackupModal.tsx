@@ -1,10 +1,11 @@
 import { Form, Input } from 'antd'
-import { Modal }                             from '@acx-ui/components'
-import { getIntl }                                      from '@acx-ui/utils'
-import { excludeQuoteRegExp } from '@acx-ui/rc/utils'
-import moment from 'moment-timezone'
+import moment          from 'moment-timezone'
+
+import { Modal }                      from '@acx-ui/components'
 import { useAddConfigBackupMutation } from '@acx-ui/rc/services'
-import { useParams } from '@acx-ui/react-router-dom'
+import { excludeQuoteRegExp }         from '@acx-ui/rc/utils'
+import { useParams }                  from '@acx-ui/react-router-dom'
+import { getIntl }                    from '@acx-ui/utils'
 
 export function BackupModal (props:{
   visible: boolean,
@@ -20,7 +21,7 @@ export function BackupModal (props:{
     form.submit()
   }
 
-  const onFinish = async(value: {name:string}) => {
+  const onFinish = async (value: { name:string }) => {
     await addConfigBackup({ params, payload: value }).unwrap()
     handleCancel()
   }
@@ -45,12 +46,12 @@ export function BackupModal (props:{
           { required: true },
           { min: 1 },
           { max: 64 },
-          { validator: (_, value) => excludeQuoteRegExp(value) },
+          { validator: (_, value) => excludeQuoteRegExp(value) }
         ]}
         initialValue={'Manual_' + moment().format('YYYYMMDDHHmmss')}
         validateFirst
         children={<Input />}
       />
-      </Form>
+    </Form>
   </Modal>
 }

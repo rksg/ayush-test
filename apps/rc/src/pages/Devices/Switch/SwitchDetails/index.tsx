@@ -1,7 +1,10 @@
-import { useSwitchDetailHeaderQuery } from '@acx-ui/rc/services'
-import { isStrictOperationalSwitch, SwitchStatusEnum, SwitchViewModel } from '@acx-ui/rc/utils'
+/* eslint-disable max-len */
 import { createContext, useEffect, useState } from 'react'
+
 import { useParams } from 'react-router-dom'
+
+import { useSwitchDetailHeaderQuery }                                   from '@acx-ui/rc/services'
+import { isStrictOperationalSwitch, SwitchStatusEnum, SwitchViewModel } from '@acx-ui/rc/utils'
 
 import { SwitchClientsTab }         from './SwitchClientsTab'
 import { SwitchConfigurationTab }   from './SwitchConfigurationTab'
@@ -24,20 +27,20 @@ const tabs = {
   timeline: SwitchTimelineTab
 }
 
-export interface SwitchDetailsContext {
+export interface SwitchDetails {
   switchDetailHeader: SwitchViewModel
   currentSwitchOperational: boolean
   switchName: string
 }
 
 export const SwitchDetailsContext = createContext({} as {
-  switchDetailsContextData: SwitchDetailsContext,
-  setSwitchDetailsContextData: (data: SwitchDetailsContext) => void
+  switchDetailsContextData: SwitchDetails,
+  setSwitchDetailsContextData: (data: SwitchDetails) => void
 })
 
 export default function SwitchDetails () {
   const { tenantId, switchId, serialNumber, activeTab } = useParams()
-  const [ switchDetailsContextData, setSwitchDetailsContextData ] = useState({} as SwitchDetailsContext)
+  const [ switchDetailsContextData, setSwitchDetailsContextData ] = useState({} as SwitchDetails)
   const { data: switchDetailHeader } = useSwitchDetailHeaderQuery({ params: { tenantId, switchId, serialNumber } })
 
   useEffect(() => {
@@ -51,15 +54,12 @@ export default function SwitchDetails () {
   }, [switchDetailHeader])
 
   const Tab = tabs[activeTab as keyof typeof tabs]
-  
-  return <>
-   <SwitchDetailsContext.Provider value={{
-      switchDetailsContextData,
-      setSwitchDetailsContextData
-    }}>
+
+  return <SwitchDetailsContext.Provider value={{
+    switchDetailsContextData,
+    setSwitchDetailsContextData
+  }}>
     <SwitchPageHeader />
     { Tab && <Tab /> }
-    </SwitchDetailsContext.Provider>
-    
-  </>
+  </SwitchDetailsContext.Provider>
 }
