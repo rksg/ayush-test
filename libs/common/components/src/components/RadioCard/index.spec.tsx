@@ -2,7 +2,7 @@ import { defineMessage } from 'react-intl'
 
 import { fireEvent, render, screen } from '@acx-ui/test-utils'
 
-import { RadioCard } from '.'
+import { RadioCard, RadioCardCategory as Category } from '.'
 
 describe('RadioCard', () => {
   describe('type = default', () => {
@@ -11,7 +11,7 @@ describe('RadioCard', () => {
         value='value'
         title='title'
         description='description'
-        categories={['WiFi', 'Switch', 'Edge']}
+        categories={[Category.WIFI, Category.SWITCH, Category.EDGE]}
       />)
       await screen.findByText('title')
       await screen.findByText('description')
@@ -36,7 +36,7 @@ describe('RadioCard', () => {
         value='value'
         title='title'
         description='description'
-        categories={['WiFi', 'Switch', 'Edge']}
+        categories={[Category.WIFI, Category.SWITCH, Category.EDGE]}
       />)
       await screen.findByText('title')
       await screen.findByText('description')
@@ -62,7 +62,7 @@ describe('RadioCard', () => {
         value='value'
         title='title'
         description='description'
-        categories={['WiFi', 'Switch', 'Edge']}
+        categories={[Category.WIFI, Category.SWITCH, Category.EDGE]}
         buttonText={defineMessage({ defaultMessage: 'Add' })}
       />)
       await screen.findByText('title')

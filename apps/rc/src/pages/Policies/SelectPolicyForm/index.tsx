@@ -1,7 +1,14 @@
 import { Form, Radio } from 'antd'
 import { useIntl }     from 'react-intl'
 
-import { GridCol, GridRow, PageHeader, RadioCard, StepsForm } from '@acx-ui/components'
+import {
+  GridCol,
+  GridRow,
+  PageHeader,
+  RadioCard ,
+  StepsForm,
+  RadioCardCategory
+} from '@acx-ui/components'
 import {
   PolicyType,
   getPolicyListRoutePath,
@@ -30,15 +37,13 @@ export default function SelectPolicyForm () {
     })
   }
 
-  const category = { wifi: 'WiFi' } as const
-
   const sets = [
-    { type: PolicyType.ACCESS_CONTROL, categories: [category.wifi] },
-    { type: PolicyType.VLAN_POOL, categories: [category.wifi] },
-    { type: PolicyType.ROGUE_AP_DETECTION, categories: [category.wifi] },
-    { type: PolicyType.AAA, categories: [category.wifi] },
-    { type: PolicyType.SYSLOG, categories: [category.wifi] },
-    { type: PolicyType.CLIENT_ISOLATION, categories: [category.wifi] }
+    { type: PolicyType.ACCESS_CONTROL, categories: [RadioCardCategory.WIFI] },
+    { type: PolicyType.VLAN_POOL, categories: [RadioCardCategory.WIFI] },
+    { type: PolicyType.ROGUE_AP_DETECTION, categories: [RadioCardCategory.WIFI] },
+    { type: PolicyType.AAA, categories: [RadioCardCategory.WIFI] },
+    { type: PolicyType.SYSLOG, categories: [RadioCardCategory.WIFI] },
+    { type: PolicyType.CLIENT_ISOLATION, categories: [RadioCardCategory.WIFI] }
   ]
 
   return (
@@ -64,7 +69,7 @@ export default function SelectPolicyForm () {
           >
             <Radio.Group style={{ width: '100%' }}>
               <GridRow>
-                {sets.map(set => <GridCol col={{ span: 8 }} key={set.type}>
+                {sets.map(set => <GridCol col={{ span: 6 }} key={set.type}>
                   <RadioCard
                     type='radio'
                     key={set.type}
