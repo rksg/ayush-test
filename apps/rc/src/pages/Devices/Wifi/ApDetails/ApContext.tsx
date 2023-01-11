@@ -18,7 +18,7 @@ export function ApContextProvider (props: { children: ReactNode }) {
   const params = useParams()
   const { $t } = useIntl()
   const results = useApListQuery({
-    params,
+    params: { tenantId: params.tenantId },
     payload: {
       fields: ['serialNumber', 'venueName', 'apMac'],
       searchTargetFields: ['apMac', 'serialNumber'],
