@@ -191,7 +191,7 @@ exports[`SwitchAAATab should render correctly 1`] = `
                                     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
                                   >
                                     <div
-                                      class="styledComponents__Wrapper-sc-1abm7iv-13 gzZsiC"
+                                      class="styledComponents__Wrapper-sc-1abm7iv-13 gGUvnO"
                                     >
                                       <div
                                         class="ant-space ant-space-horizontal ant-space-align-center"
@@ -685,7 +685,7 @@ exports[`SwitchAAATab should render correctly 1`] = `
                                     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
                                   >
                                     <div
-                                      class="styledComponents__Wrapper-sc-1abm7iv-13 gzZsiC"
+                                      class="styledComponents__Wrapper-sc-1abm7iv-13 gGUvnO"
                                     >
                                       <div
                                         class="ant-space ant-space-horizontal ant-space-align-center"
@@ -1020,7 +1020,7 @@ exports[`SwitchAAATab should render correctly 1`] = `
                                     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
                                   >
                                     <div
-                                      class="styledComponents__Wrapper-sc-1abm7iv-13 gzZsiC"
+                                      class="styledComponents__Wrapper-sc-1abm7iv-13 gGUvnO"
                                     >
                                       <div
                                         class="ant-space ant-space-horizontal ant-space-align-center"
