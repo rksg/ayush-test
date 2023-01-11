@@ -9,7 +9,7 @@ import AutoSizer                                       from 'react-virtualized-a
 
 import { SettingsOutlined } from '@acx-ui/icons'
 
-import { Button }   from '../Button'
+import { Button, DisabledButton }  from '../Button'
 import { Dropdown } from '../Dropdown'
 import { Tooltip }  from '../Tooltip'
 
@@ -50,12 +50,13 @@ export interface TableProps <RecordType>
     actions?: Array<{
       label: string,
       disabled?: boolean,
+      tooltip?: string,
       onClick?: () => void,
       dropdownMenu?: Omit<MenuProps, 'placement'>
     }>
     rowActions?: Array<{
       label: string,
-      disabled?: boolean,
+      disabled?: boolean | ((selectedItems: RecordType[]) => boolean),
       tooltip?: string,
       visible?: boolean | ((selectedItems: RecordType[]) => boolean),
       onClick: (selectedItems: RecordType[], clearSelection: () => void) => void
@@ -270,12 +271,19 @@ function Table <RecordType extends Record<string, any>> (
       split={<UI.Divider type='vertical' />}
       style={{ display: 'flex', justifyContent: 'flex-end', margin: '3px 0' }}>
       {props.actions?.map((action, index) => {
-        const content = <Button
+        const content = !action.disabled 
+        ? <Button
           key={index}
           type='link'
           size='small'
-          disabled={action.disabled}
           onClick={action.dropdownMenu ? undefined : action.onClick}
+          children={action.label}
+        /> 
+        : <DisabledButton
+          key={index}
+          type='link'
+          size='small'
+          title={action.tooltip}
           children={action.label}
         />
         return action.dropdownMenu
@@ -334,8 +342,8 @@ function Table <RecordType extends Record<string, any>> (
       }}
       scroll={{ x: hasEllipsisColumn || type !== 'tall' ? '100%' : 'max-content' }}
       rowSelection={rowSelection}
-      pagination={(type === 'tall'
-        ? { ...defaultPagination, ...props.pagination || {} } as TablePaginationConfig
+      pagination={(type === 'tall' && props.pagination !== false
+        ?  { ...defaultPagination, ...props.pagination || {} } as TablePaginationConfig
         : false)}
       columnEmptyText={false}
       onRow={onRow}
@@ -366,7 +374,10 @@ function Table <RecordType extends Record<string, any>> (
               if (!visible) return null
               return <UI.ActionButton
                 key={option.label}
-                disabled={option.disabled}
+                disabled={typeof option.disabled === 'function' 
+                  ? option.disabled(rows)
+                  : option.disabled
+                }
                 onClick={() =>
                   option.onClick(getSelectedRows(selectedRowKeys), () => { onCleanSelected() })}
               >

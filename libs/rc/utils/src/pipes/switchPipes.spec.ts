@@ -22,6 +22,7 @@ describe('Switch Pipes', () => {
     expect(transformConfigType(ConfigTypeEnum.CLI_UPDATE)).toBe('CLI Update')
     expect(transformConfigType(ConfigTypeEnum.IP_CONFIG)).toBe('IP Config')
     expect(transformConfigType(ConfigTypeEnum.SPECIFIC_SETTING)).toBe('Specific Setting')
+    expect(transformConfigType(ConfigTypeEnum.STATIC_ROUTE)).toBe('Static Route')
     expect(transformConfigType('VLAN')).toBe('VLAN')
     expect(transformConfigType('ACL')).toBe('ACL')
   })
@@ -31,6 +32,7 @@ describe('Switch Pipes', () => {
     expect(transformConfigStatus(ConfigStatusEnum.FAILED)).toBe('Failed')
     expect(transformConfigStatus(ConfigStatusEnum.NO_CONFIG_CHANGE)).toBe('No Config Change')
     expect(transformConfigStatus(ConfigStatusEnum.FAILED_NO_RESPONSE)).toBe('Failed No Response')
+    expect(transformConfigStatus(ConfigStatusEnum.PENDING)).toBe('Pending')
   })
 
 })

@@ -23,14 +23,19 @@ import {
   VeViewModel,
   VlanVePort,
   AclUnion,
-  VeForm
+  VeForm,
+  transformConfigBackupStatus,
+  ConfigurationBackup,
+  ConfigurationBackupStatus,
+  transformConfigBackupType,
+  downloadFile
 } from '@acx-ui/rc/utils'
 import { formatter } from '@acx-ui/utils'
 
 export const baseSwitchApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'switchApi',
-  tagTypes: ['Switch'],
+  tagTypes: ['Switch', 'SwitchBackup'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({})
 })
@@ -151,6 +156,66 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    getSwitchConfigBackupList: build.query<TableResult<ConfigurationBackup>, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getSwitchConfigBackupList, params)
+        return {
+          ...req
+        }
+      },
+      transformResponse: (res: ConfigurationBackup[]) => {
+        return {
+          data: res
+            .sort((a, b) => b.createdDate.localeCompare(a.createdDate))
+            .map(item => ({
+            ...item,
+            createdDate: formatter('dateTimeFormatWithSeconds')(item.createdDate),
+            backupType: transformConfigBackupType(item.backupType),
+            status: transformConfigBackupStatus(item) as ConfigurationBackupStatus
+          })),
+          totalCount: res.length,
+          page: 1
+        }
+      },
+      providesTags: [{ type: 'SwitchBackup', id: 'LIST' }],
+    }),
+    addConfigBackup: build.mutation<ConfigurationBackup, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.addBackup, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchBackup', id: 'LIST' }]
+    }),
+    restoreConfigBackup: build.mutation<ConfigurationBackup, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.restoreBackup, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchBackup', id: 'LIST' }]
+    }),
+    downloadConfigBackup: build.mutation<{ response: string }, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.downloadSwitchConfig, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    deleteConfigBackups: build.mutation<ConfigurationBackup, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.deleteBackups, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchBackup', id: 'LIST' }]
     }),
     getSwitchConfigHistory: build.query<TableResult<ConfigurationHistory>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -370,6 +435,11 @@ export const {
   useSaveSwitchMutation,
   useAddSwitchMutation,
   useAddStackMemberMutation,
+  useGetSwitchConfigBackupListQuery,
+  useAddConfigBackupMutation,
+  useRestoreConfigBackupMutation,
+  useDownloadConfigBackupMutation,
+  useDeleteConfigBackupsMutation,
   useGetSwitchConfigHistoryQuery,
   useGetSwitchListQuery,
   useLazyGetSwitchListQuery,
