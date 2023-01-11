@@ -24,7 +24,6 @@ import {
   AP,
   ApExtraParams,
   Event,
-  usePollingTableQuery,
   TABLE_QUERY_LONG_POLLING_INTERVAL
 } from '@acx-ui/rc/utils'
 
@@ -87,7 +86,7 @@ const searches = [
     }
   },
   (searchString: string, $t: IntlShape['$t']) => {
-    const result = usePollingTableQuery<Event>({
+    const result = useTableQuery<Event>({
       useQuery: useEventsQuery,
       defaultPayload: {
         ...eventDefaultPayload,
@@ -100,8 +99,7 @@ const searches = [
       sorter: {
         sortField: 'event_datetime',
         sortOrder: 'DESC'
-      },
-      option: { pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL }
+      }
     })
     return {
       result,
