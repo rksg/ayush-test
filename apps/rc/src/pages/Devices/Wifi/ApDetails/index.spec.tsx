@@ -26,6 +26,10 @@ jest.mock('@acx-ui/rc/components', () => {
     .map(key => [key, () => <div data-testid={`rc-${key}`} title={key} />])
   return Object.fromEntries(sets)
 })
+jest.mock('@acx-ui/reports/components', () => ({
+  ...jest.requireActual('@acx-ui/reports/components'),
+  EmbeddedReport: () => <div data-testid={'some-report-id'} id='acx-report' />
+}))
 
 const list = {
   totalCount: 1,

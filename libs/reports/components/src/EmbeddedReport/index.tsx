@@ -16,10 +16,11 @@ import { useDateFilter, convertDateTimeToSqlFormat }                       from 
 
 interface ReportProps {
   embedDashboardName: string
+  rlsClause?: string
 }
 
 export function EmbeddedReport (props: ReportProps) {
-  const { embedDashboardName } = props
+  const { embedDashboardName, rlsClause } = props
   const [ guestToken ] = useGuestTokenMutation()
   const [ embeddedId ] = useEmbeddedIdMutation()
   const { startDate, endDate } = useDateFilter()
@@ -57,6 +58,7 @@ export function EmbeddedReport (props: ReportProps) {
         "__time" < '${convertDateTimeToSqlFormat(endDate)}'
         ${networkClause}
         ${radioBandClause}
+        ${rlsClause? ' AND ' + rlsClause: ''}
       `
     }]
   }
