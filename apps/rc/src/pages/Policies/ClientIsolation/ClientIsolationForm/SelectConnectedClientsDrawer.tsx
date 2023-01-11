@@ -49,8 +49,9 @@ export function SelectConnectedClientsDrawer (props: SelectConnectedClientsDrawe
   }
 
   const onSave = async () => {
-    setVisible(false)
     addClients(selectedClients.map(c => ({ clientMac: c.clientMac, ipAddress: c.ipAddress })))
+
+    onClose()
   }
 
   const onRowChange = (_: Key[], selectedRows: ClientList[]) => {

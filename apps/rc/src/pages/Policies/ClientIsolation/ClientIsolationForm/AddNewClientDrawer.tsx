@@ -71,7 +71,8 @@ export function AddNewClientDrawer (props: AddNewClientDrawerProps) {
                 onClose()
               }
             } catch (error) {
-              if (error instanceof Error) throw error
+              // eslint-disable-next-line no-console
+              console.log(error)
             }
           }}
         />
