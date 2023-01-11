@@ -10,9 +10,10 @@ import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
 
 import { ApPingForm } from './apPingForm'
 
-
-
 const params = { tenantId: 'tenant-id', serialNumber: 'serial-number' }
+jest.mock('../ApContext', () => ({
+  useApContext: () => params
+}))
 
 const pingResponse = {
   requestId: '2261f786-45b4-48c1-887d-7b13f3a4fb9f',
@@ -28,7 +29,7 @@ describe('ApPingForm', () => {
     mockServer.use(
       rest.post(
         WifiUrlsInfo.pingAp.url,
-        (req, res, ctx) => res(ctx.json(pingResponse)))
+        (_, res, ctx) => res(ctx.json(pingResponse)))
     )
   })
 
