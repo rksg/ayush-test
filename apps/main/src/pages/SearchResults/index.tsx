@@ -23,8 +23,7 @@ import {
   Venue,
   AP,
   ApExtraParams,
-  Event,
-  TABLE_QUERY_LONG_POLLING_INTERVAL
+  Event
 } from '@acx-ui/rc/utils'
 
 import { useDefaultVenuePayload, VenueTable } from '../Venues/VenuesTable'
