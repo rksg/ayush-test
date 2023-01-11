@@ -8,7 +8,6 @@ import { useDeleteConfigBackupsMutation, useDownloadConfigBackupMutation, useGet
 import { BACKUP_DISABLE_TOOLTIP, BACKUP_IN_PROGRESS_TOOLTIP, ConfigurationBackup, handleBlobDownloadFile, RESTORE_IN_PROGRESS_TOOLTIP, useTableQuery } from '@acx-ui/rc/utils'
 
 import { SwitchDetailsContext } from '../..'
-import { ViewConfigurationModal } from './ViewConfigurationModal'
 import { useParams } from '@acx-ui/react-router-dom'
 import moment from 'moment-timezone'
 import { BackupModal } from './BackupModal'
@@ -16,11 +15,12 @@ import { BackupModal } from './BackupModal'
 export function SwitchConfigBackupTable () {
   const { $t } = useIntl()
   const params = useParams()
-  const [viewVisible, setViewVisible] = useState(false)
+  // const [viewVisible, setViewVisible] = useState(false) TODO:
+  // const [viewData, setViewData] = useState(null as unknown as ConfigurationBackup)
   const [backupModalVisible, setBackupModalVisible] = useState(false)
   const [backupButtonnStatus, setBackupButtonnStatus] = useState({ disabled: false, tooltip: ''})
   const [enabledRowButton, setEnabledRowButton] = useState([] as string[])
-  const [viewData, setViewData] = useState(null as unknown as ConfigurationBackup)
+
 
   const {
     switchDetailsContextData
@@ -31,15 +31,15 @@ export function SwitchConfigBackupTable () {
   const [ deleteConfigBackups ] = useDeleteConfigBackupsMutation()
   const { currentSwitchOperational, switchName } = switchDetailsContextData
 
-  const showViewModal = (row: ConfigurationBackup[]) => {
-    setViewData(row[0])
-    setViewVisible(true)
-  }
+  // const showViewModal = (row: ConfigurationBackup[]) => {
+  //   setViewData(row[0]) TODO:
+  //   setViewVisible(true)
+  // }
 
-  const handleCancelViewModal = () => {
-    setViewData(null as unknown as ConfigurationBackup)
-    setViewVisible(false)
-  }
+  // const handleCancelViewModal = () => {
+  //   setViewData(null as unknown as ConfigurationBackup)
+  //   setViewVisible(false) TODO:
+  // }
 
   const tableQuery = useTableQuery({
     useQuery: useGetSwitchConfigBackupListQuery,
@@ -159,7 +159,8 @@ export function SwitchConfigBackupTable () {
     // disabled: () => !enabledRowButton.find(item => item === 'View'),
     disabled: true,
     onClick: (rows) => {
-      showViewModal(rows)
+      // TODO:
+      // showViewModal(rows)
     }
   }, {
     label: $t({ defaultMessage: 'Compare' }),
@@ -252,10 +253,10 @@ export function SwitchConfigBackupTable () {
       visible={backupModalVisible}
       handleCancel={() => setBackupModalVisible(false)}
     />
-    <ViewConfigurationModal 
+    {/* <ViewConfigurationModal TODO:
       data={viewData}
       visible={viewVisible}
       handleCancel={handleCancelViewModal}
-    />
+    /> */}
   </>
 }
