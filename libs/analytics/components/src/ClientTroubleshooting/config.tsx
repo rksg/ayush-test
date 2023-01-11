@@ -51,6 +51,14 @@ export const spuriousEvents = [
   EVENT_STATES.SPURIOUS_INFO_UPDATED
 ]
 
+export type OnDatazoomEvent = {
+  batch?: {
+    startValue: number, endValue: number
+  }[],
+  start?: number,
+  end?: number
+}
+
 export type DisplayEvent = ConnectionEvent & {
   start: number;
   end: number;
@@ -62,14 +70,7 @@ export type DisplayEvent = ConnectionEvent & {
   event: string;
   category: string;
 }
-
-export type OnDatazoomEvent = {
-  batch?: {
-    startValue: number, endValue: number
-  }[],
-  start?: number,
-  end?: number
-}
+export type ChartMapping = { key: string; label: string; chartType: string; series: string }
 
 export const eventColorByCategory = {
   [DISCONNECT]: '--acx-neutrals-50',
@@ -77,8 +78,6 @@ export const eventColorByCategory = {
   [FAILURE]: '--acx-semantics-red-50',
   [SLOW]: '--acx-semantics-yellow-50'
 }
-
-// common utility for history and connection events chart
 
 export const rssGroups = {
   good: { lower: -74 },
@@ -163,7 +162,7 @@ export const ClientTroubleShootingConfig = {
         { key: 'failure', label: 'failure', chartType: 'scatter', series: 'events' },
         { key: 'slow', label: 'slow', chartType: 'scatter', series: 'events' },
         { key: 'disconnect', label: 'disconnect', chartType: 'scatter', series: 'events' }
-      ] as { key: string; label: string; chartType: string; series: string }[],
+      ] as ChartMapping[],
       showResetZoom: true,
       subtitle: [
         {
@@ -191,7 +190,7 @@ export const ClientTroubleShootingConfig = {
       showCount: true,
       chartMapping: [
         { key: 'all', label: 'all', chartType: 'scatter', series: 'roaming' }
-      ] as { key: string; label: string; chartType: string; series: string }[]
+      ] as ChartMapping[]
     },
     {
       title: defineMessage({ defaultMessage: 'Connection Quality' }),
@@ -203,7 +202,7 @@ export const ClientTroubleShootingConfig = {
         { key: 'snr', label: 'snr', chartType: 'bar', series: 'quality' },
         { key: 'throughput', label: 'throughput', chartType: 'bar', series: 'quality' },
         { key: 'avgTxMCS', label: 'avgTxMCS', chartType: 'bar', series: 'quality' }
-      ] as { key: string; label: string; chartType: string; series: string }[],
+      ] as ChartMapping[],
       subtitle: [
         {
           title: defineMessage({ defaultMessage: 'RSS' }),
@@ -234,7 +233,7 @@ export const ClientTroubleShootingConfig = {
         { key: 'connection', label: 'connection', chartType: 'bar', series: 'incidents' },
         { key: 'performance', label: 'performance', chartType: 'bar', series: 'incidents' },
         { key: 'infrastructure', label: 'infrastructure', chartType: 'bar', series: 'incidents' }
-      ] as { key: string; label: string; chartType: string; series: string }[],
+      ] as ChartMapping[],
       subtitle: [
         {
           title: defineMessage({ defaultMessage: 'Client Connection' }),
@@ -322,19 +321,19 @@ export interface Event {
   seriesKey: string;
 }
 export type TimelineData = {
-  connectionEvents: eventsCategoryMap;
-  roaming: eventsCategoryMap;
-  connectionQuality: eventsCategoryMap;
-  networkIncidents: networkIncidentCategoryMap;
+  connectionEvents: EventsCategoryMap;
+  roaming: EventsCategoryMap;
+  connectionQuality: EventsCategoryMap;
+  networkIncidents: NetworkIncidentCategoryMap;
 }
-export type eventsCategoryMap = {
+export type EventsCategoryMap = {
   [SUCCESS]: Event[] | [];
   [FAILURE]: Event[] | [];
   [DISCONNECT]: Event[] | [];
   [SLOW]: Event[] | [];
   all: Event[] | [];
 }
-export type networkIncidentCategoryMap = {
+export type NetworkIncidentCategoryMap = {
   connection:IncidentDetails[] |[],
   performance:IncidentDetails[] |[],
   infrastructure:IncidentDetails[] |[],

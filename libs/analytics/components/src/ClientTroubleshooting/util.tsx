@@ -58,6 +58,8 @@ const QUALITY = 'quality'
 const ROAMING = 'roaming'
 const INCIDENTS = 'incidents'
 const dateFormat = 'MMM DD HH:mm:ss'
+const EAP = 'eap'
+const EAPOL = 'eapol'
 
 // Utils for Connection Event data starts
 export const transformEvents = (
@@ -67,12 +69,12 @@ export const transformEvents = (
 ) =>
   events.reduce((acc, data, index) => {
     const { event, state, timestamp, mac, ttc, radio, code, failedMsgId, ssid } = data
-    if (code === 'eap' && failedMsgId && EAPOLMessageIds.includes(failedMsgId)) {
-      data = { ...data, code: 'eapol' }
+    if (code === EAP && failedMsgId && EAPOLMessageIds.includes(failedMsgId)) {
+      data = { ...data, code: EAPOL }
     }
 
     const category = categorizeEvent(event, ttc)
-    const eventType = category === 'failure' ? filterEventMap[FAILURE] : event
+    const eventType = category === FAILURE ? filterEventMap[FAILURE] : event
 
     const filterEventTypes = selectedEventTypes.map(
       (e) => filterEventMap[e as keyof typeof filterEventMap]

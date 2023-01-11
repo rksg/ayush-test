@@ -3,9 +3,11 @@ import { TooltipFormatterParams }   from '@acx-ui/components'
 import { Provider }                 from '@acx-ui/store'
 import { render, screen,fireEvent } from '@acx-ui/test-utils'
 
-import { connectionEvents }                                           from './config.spec'
-import  { TimeLine, getChartData, TimelineData, useTooltipFormatter } from './EventsTimeline'
-import { ConnectionEvent }                                            from './services'
+import { TimelineData }                      from './config'
+import  { TimeLine }                         from './EventsTimeline'
+import { ConnectionEvent }                   from './services'
+import { getChartData, useTooltipFormatter } from './util'
+import { connectionEvents }                  from './util.spec'
 
 import { Filters } from '.'
 

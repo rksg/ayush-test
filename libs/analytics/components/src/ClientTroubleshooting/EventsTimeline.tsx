@@ -18,13 +18,12 @@ import {
   TYPES,
   Event,
   TimelineData,
-  eventsCategoryMap,
-  networkIncidentCategoryMap,
+  EventsCategoryMap,
+  NetworkIncidentCategoryMap,
   RoamingByAP,
   RoamingConfigParam,
   RoamingTimeSeriesData
 } from './config'
-import { transformIncidents }              from './EventsHistory'
 import { ClientInfoData, ConnectionEvent } from './services'
 import * as UI                             from './styledComponents'
 import { TimelineChart }                   from './TimelineChart'
@@ -37,7 +36,8 @@ import {
   getRoamingSubtitleConfig,
   getTimelineData,
   getChartData,
-  useTooltipFormatter
+  useTooltipFormatter,
+  transformIncidents
 } from './util'
 
 
@@ -162,8 +162,8 @@ export function TimeLine (props: TimeLineProps) {
                         <UI.TimelineCount>
                           {TimelineData?.[config.value as keyof TimelineData]?.[
                             subtitle.value as keyof (
-                              | eventsCategoryMap
-                              | networkIncidentCategoryMap
+                              | EventsCategoryMap
+                              | NetworkIncidentCategoryMap
                             )
                           ]?.length}
                         </UI.TimelineCount>
