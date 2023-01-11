@@ -9,7 +9,7 @@ import {
   AccountCircleOutlined,
   AccountCircleSolid,
   AdminOutlined,
-  AdminSolid as AdminSolidBase,
+  AdminSolid,
   CalendarDateOutlined,
   CalendarDateSolid,
   DevicesOutlined,
@@ -30,7 +30,6 @@ import {
 
 const AIOutlined = styled(AIOutlinedBase)`${LayoutUI.iconOutlinedOverride}`
 const AISolid = styled(AISolidBase)`${LayoutUI.iconOutlinedOverride}`
-const AdminSolid = styled(AdminSolidBase)`${LayoutUI.iconSolidOverride}`
 const ServicesSolid = styled(ServicesSolidBase)`${LayoutUI.iconSolidOverride}`
 const PoliciesSolid = styled(PoliciesSolidBase)`${LayoutUI.iconSolidOverride}`
 

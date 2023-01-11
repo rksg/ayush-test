@@ -6,10 +6,13 @@ import {
   ApTable,
   defaultApPayload,
   NetworkTable,
-  defaultNetworkPayload
+  defaultNetworkPayload,
+  eventDefaultPayload,
+  EventTable
 }           from '@acx-ui/rc/components'
 import {
   useApListQuery,
+  useEventsQuery,
   useNetworkListQuery,
   useVenuesListQuery
 }       from '@acx-ui/rc/services'
@@ -19,7 +22,8 @@ import {
   Network,
   Venue,
   AP,
-  ApExtraParams
+  ApExtraParams,
+  Event
 } from '@acx-ui/rc/utils'
 
 import { useDefaultVenuePayload, VenueTable } from '../Venues/VenuesTable'
@@ -28,7 +32,7 @@ import NoData              from './NoData'
 import { Collapse, Panel } from './styledComponents'
 
 
-const pagination = { pageSize: 5 }
+const pagination = { pageSize: 5, showSizeChanger: false }
 
 const searches = [
   (searchString: string, $t: IntlShape['$t']) => {
@@ -79,6 +83,27 @@ const searches = [
       title: $t({ defaultMessage: 'APs' }),
       component: <ApTable tableQuery={result} />
     }
+  },
+  (searchString: string, $t: IntlShape['$t']) => {
+    const result = useTableQuery<Event>({
+      useQuery: useEventsQuery,
+      defaultPayload: {
+        ...eventDefaultPayload,
+        filters: {},
+        searchString,
+        searchTargetFields: ['entity_id', 'message', 'apMac', 'clientMac']
+      },
+      pagination,
+      sorter: {
+        sortField: 'event_datetime',
+        sortOrder: 'DESC'
+      }
+    })
+    return {
+      result,
+      title: $t({ defaultMessage: 'Events' }),
+      component: <EventTable tableQuery={result} />
+    }
   }
 ]
 
@@ -106,7 +131,7 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
       </>
       : <>
         <PageHeader title={$t(
-          { defaultMessage: 'Hmmmm... we couldn\'t find any match for "{searchVal}"' },
+          { defaultMessage: 'Hmmmm... we couldn’t find any match for "{searchVal}"' },
           { searchVal }
         )} />
         <NoData />
