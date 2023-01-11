@@ -45,7 +45,8 @@ import {
   hasGraveAccentAndDollarSign,
   serialNumberRegExp,
   VenueExtended,
-  WifiNetworkMessages
+  WifiNetworkMessages,
+  gpsToFixed
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -311,7 +312,8 @@ export function ApForm () {
                 </>}
                 initialValue={null}
                 rules={[{
-                  required: true
+                  required: true,
+                  message: $t({ defaultMessage: 'Please select venue' })
                 }, {
                   validator: (_, value) => {
                     const venues = venuesList?.data as unknown as VenueExtended[]
@@ -416,12 +418,11 @@ export function ApForm () {
                 initialValue=''
                 children={<Input.TextArea rows={4} maxLength={180} />}
               />
-              {/* TODO: */}
-              {/* <Form.Item
-                name=''
+              <Form.Item
+                name='tags'
                 label={$t({ defaultMessage: 'Tags' })}
-                children={<Input />}
-              /> */}
+                children={<Select mode='tags' />}
+              />
               {isApGpsFeatureEnabled && <GpsCoordinatesFormItem />}
             </Loader>
           </Col>
@@ -560,7 +561,7 @@ function CoordinatesModal (props: {
         title: $t({ defaultMessage: 'Please confirm that...' }),
         content: $t({
           defaultMessage: `Your GPS coordinates are outside the venue:
-            {venueName}. Are you sure you want to place the device in this new position?"`
+            {venueName}. Are you sure you want to place the device in this new position?`
         }, { venueName: selectedVenue.name }),
         okText: $t({ defaultMessage: 'Drop It' }),
         onOk: () => onSaveCoordinates(latLng),
@@ -651,7 +652,12 @@ function CoordinatesModal (props: {
 }
 
 function getVenueById (venuesList: VenueExtended[], venueId: string) {
-  return venuesList?.filter(item => item.id === venueId)[0] ?? {}
+  const selectVenue = venuesList?.filter(item => item.id === venueId)[0] ?? {}
+
+  return { ...selectVenue,
+    latitude: gpsToFixed(selectVenue?.latitude),
+    longitude: gpsToFixed(selectVenue?.longitude)
+  }
 }
 
 function checkDhcpRoleDisabled (dhcpAp: DhcpApInfo) {

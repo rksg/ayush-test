@@ -1,9 +1,14 @@
-import { ActivityTable }                                           from '@acx-ui/rc/components'
-import { useActivitiesQuery }                                      from '@acx-ui/rc/services'
-import { Activity, CommonUrlsInfo, RequestPayload, useTableQuery } from '@acx-ui/rc/utils'
+import { useEffect } from 'react'
+
+import { ActivityTable }                           from '@acx-ui/rc/components'
+import { useActivitiesQuery }                      from '@acx-ui/rc/services'
+import { Activity, CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
+import { useDateFilter }                           from '@acx-ui/utils'
 
 const Activities = () => {
-  const tableQuery = useTableQuery<Activity, RequestPayload<unknown>, unknown>({
+  const { startDate, endDate } = useDateFilter()
+
+  const tableQuery = useTableQuery<Activity>({
     useQuery: useActivitiesQuery,
     defaultPayload: {
       url: CommonUrlsInfo.getActivityList.url,
@@ -23,6 +28,17 @@ const Activities = () => {
       sortOrder: 'DESC'
     }
   })
+
+  useEffect(()=>{
+    tableQuery.setPayload({
+      ...tableQuery.payload,
+      filters: {
+        fromTime: startDate,
+        toTime: endDate
+      }
+    })
+  }, [startDate, endDate])
+
   return <ActivityTable tableQuery={tableQuery}/>
 }
 

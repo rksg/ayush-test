@@ -117,7 +117,7 @@ export function DnsProxyModal () {
         title={$t({ defaultMessage: 'DNS Proxy' })}
         visible={modalState.dnsModalvisible}
         centered
-        okText={$t({ defaultMessage: 'Add' })}
+        okText={$t({ defaultMessage: 'OK' })}
         onCancel={handleCancel}
         onOk={handleUpdate}
       >
@@ -266,7 +266,7 @@ export function DnsProxyModalRuleModal (props: {
       setModalState({
         ...modalState,
         disabledSaveBtn: !(name && !hasNameErrors && modalState.ipList.length > 0),
-        disabledAddBtn: !(name && ip && !hasErrors && !hasIpExisted)
+        disabledAddBtn: !(name && ip && !hasErrors && !hasIpExisted && modalState.ipList.length < 8)
       })
     }}
   >

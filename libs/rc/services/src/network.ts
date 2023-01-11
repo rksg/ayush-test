@@ -18,7 +18,8 @@ import {
   CommonResult,
   NetworkDetail,
   RadiusValidate,
-  WifiUrlsInfo
+  WifiUrlsInfo,
+  ExternalProviders
 } from '@acx-ui/rc/utils'
 
 const RKS_NEW_UI = {
@@ -267,7 +268,8 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         return {
           ...dashboardOverviewReq
         }
-      }
+      },
+      providesTags: [{ type: 'Network', id: 'Overview' }]
     }),
     validateRadius: build.query<RadiusValidate, RequestPayload>({
       query: ({ params, payload }) => {
@@ -275,6 +277,14 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         return {
           ...validateRadiusReq,
           body: payload
+        }
+      }
+    }),
+    externalProviders: build.query<ExternalProviders, RequestPayload>({
+      query: ({ params }) => {
+        const externalProvidersReq = createHttpRequest(CommonUrlsInfo.getExternalProviders, params)
+        return {
+          ...externalProvidersReq
         }
       }
     })
@@ -384,5 +394,6 @@ export const {
   useVenueNetworkListQuery,
   useDashboardOverviewQuery,
   useValidateRadiusQuery,
-  useLazyValidateRadiusQuery
+  useLazyValidateRadiusQuery,
+  useExternalProvidersQuery
 } = networkApi

@@ -11,12 +11,12 @@ import {
 import { useSwitchListQuery } from '@acx-ui/rc/services'
 import {
   getSwitchStatusString,
-  STACK_MEMBERSHIP,
   SwitchRow,
   transformSwitchStatus,
   getSwitchName,
-  useTableQuery,
-  DeviceConnectionStatus
+  DeviceConnectionStatus,
+  getStackMemberStatus,
+  usePollingTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
@@ -25,14 +25,17 @@ import { useSwitchActions } from '../useSwitchActions'
 export const SwitchStatus = (
   { row, showText = true }: { row: SwitchRow, showText?: boolean }
 ) => {
-  const switchStatus = transformSwitchStatus(row.deviceStatus, row.configReady, row.syncedSwitchConfig, row.suspendingDeployTime)
-  return (
-    <span>
-      <Badge color={handleStatusColor(switchStatus.deviceStatus)}
-        text={showText ? getSwitchStatusString(row) : ''}
-      />
-    </span>
-  )
+  if(row){
+    const switchStatus = transformSwitchStatus(row.deviceStatus, row.configReady, row.syncedSwitchConfig, row.suspendingDeployTime)
+    return (
+      <span>
+        <Badge color={handleStatusColor(switchStatus.deviceStatus)}
+          text={showText ? getSwitchStatusString(row) : ''}
+        />
+      </span>
+    )
+  }
+  return null
 }
 
 const handleStatusColor = (status: DeviceConnectionStatus) => {
@@ -44,7 +47,7 @@ export function SwitchTable ({ showAllColumns } : {
 }) {
   const { $t } = useIntl()
   const params = useParams()
-  const tableQuery = useTableQuery({
+  const tableQuery = usePollingTableQuery({
     useQuery: useSwitchListQuery,
     defaultPayload: {
       fields: [
@@ -57,16 +60,6 @@ export function SwitchTable ({ showAllColumns } : {
 
   const switchAction = useSwitchActions()
   const tableData = tableQuery.data?.data ?? []
-
-  const getStackMemberStatus = (unitStatus: string) => {
-    if (unitStatus === STACK_MEMBERSHIP.ACTIVE) {
-      return $t({ defaultMessage: '(Active)' })
-    } else if (unitStatus === STACK_MEMBERSHIP.STANDBY) {
-      return $t({ defaultMessage: '(Standby)' })
-    } else {
-      return $t({ defaultMessage: '(Member)' })
-    }
-  }
 
   const columns: TableProps<SwitchRow>['columns'] = [{
     key: 'name',
@@ -84,7 +77,7 @@ export function SwitchTable ({ showAllColumns } : {
             </TenantLink> :
             <Space>
               <>{getSwitchName(row)}</>
-              {getStackMemberStatus(row.unitStatus || '')}
+              <span>({getStackMemberStatus(row.unitStatus || '', true)})</span>
             </Space>
         }
       </>
@@ -145,7 +138,7 @@ export function SwitchTable ({ showAllColumns } : {
       <TenantLink to={`/devices/switch/${row.id}/${row.serialNumber}/details/clients`}>{data || 0}</TenantLink>
     )
   }
-  // { TODO: tags
+  // { // TODO: Waiting for TAG feature support
   //   key: 'tags',
   //   title: $t({ defaultMessage: 'Tags' }),
   //   dataIndex: 'tags'

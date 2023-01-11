@@ -8,6 +8,6 @@
 "# Longitude - between -180 and 180, and contains a maximum of 6-digit decimal",,,,,,,
 ,,,,,,,
 AP Name,Description,Venue,Serial Number,AP Group,Tags
-A,,Venue-1,1.23457E+11,group-1,tag1
-AP-2,,Venue-1,1.23457E+11,group-1,tag1
-AP-3,,Venue-1,1.23457E+11,,tag1
+A,,Venue-1,123456700000,group-1,tag1
+AP-2,,Venue-1,123456700000,group-1,tag1
+AP-3,,Venue-1,123456700000,,tag1
