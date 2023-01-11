@@ -105,7 +105,7 @@ export const mockPersonaGroupTableResult: NewTableResult<PersonaGroup> = {
   totalElements: 3,
   totalPages: 1,
   content: [{
-    id: 'aaaaaaaa',
+    id: 'persona-group-id-1',
     name: 'Class A',
     description: '',
     macRegistrationPoolId: 'mac-id-1',

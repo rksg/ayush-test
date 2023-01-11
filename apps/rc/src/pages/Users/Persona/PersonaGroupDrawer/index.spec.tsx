@@ -1,5 +1,6 @@
-import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
+import { waitFor } from '@testing-library/react'
+import userEvent   from '@testing-library/user-event'
+import { rest }    from 'msw'
 
 import {
   DpskBaseUrl,
@@ -7,8 +8,8 @@ import {
   PersonaBaseUrl,
   PersonaUrls
 } from '@acx-ui/rc/utils'
-import { Provider }                              from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
+import { Provider }                   from '@acx-ui/store'
+import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 
 import {
@@ -20,10 +21,13 @@ import {
 
 import { PersonaGroupDrawer } from './index'
 
+const closeFn = jest.fn()
 
 describe('Persona Group Drawer', () => {
 
   beforeEach(async () => {
+    closeFn.mockClear()
+
     // mock: addPersonaGroup, updatePersonaGroup, getMacRegistrationPoolList
     mockServer.use(
       rest.get(
@@ -59,7 +63,7 @@ describe('Persona Group Drawer', () => {
         <PersonaGroupDrawer
           visible
           isEdit={false}
-          onClose={jest.fn}
+          onClose={closeFn}
         />
       </Provider>
     )
@@ -68,7 +72,9 @@ describe('Persona Group Drawer', () => {
     await userEvent.type(nameField, 'New Persona Group Name')
 
     const addButton = await screen.findAllByRole('button', { name: /Add/i })
-    fireEvent.click(addButton[addButton.length-1])
+
+    await userEvent.click(addButton[addButton.length-1])
+    await waitFor(() => expect(closeFn).toHaveBeenCalled())
   })
 
   it('should edit a persona group', async () => {
@@ -78,7 +84,7 @@ describe('Persona Group Drawer', () => {
           isEdit
           visible
           data={mockPersonaGroup}
-          onClose={jest.fn}
+          onClose={closeFn}
         />
       </Provider>
     )
@@ -87,10 +93,11 @@ describe('Persona Group Drawer', () => {
     const groupField = await screen.findByLabelText('Persona Group Name') as HTMLInputElement
     expect(groupField.value).toBe(mockPersonaGroup.name)
 
-    const descriptionField = await screen.findByLabelText('Description') as HTMLTextAreaElement
-    fireEvent.change(descriptionField, { target: { value: 'New description' } })
+    const descriptionField = await screen.findByLabelText('Description')
+    await userEvent.type(descriptionField,'New description')
 
     const applyButton = await screen.findByRole('button', { name: /Apply/i })
     await userEvent.click(applyButton)
+    await waitFor(() => expect(closeFn).toHaveBeenCalled())
   })
 })
