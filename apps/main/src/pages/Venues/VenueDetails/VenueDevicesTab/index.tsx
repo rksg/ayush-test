@@ -5,9 +5,9 @@ import { ContentSwitcher, ContentSwitcherProps, Tabs } from '@acx-ui/components'
 import { useIsSplitOn, Features }                      from '@acx-ui/feature-toggle'
 import { useNavigate, useParams, useTenantLink }       from '@acx-ui/react-router-dom'
 
-import { VenueRogueAps }     from './VenueRogueAps'
-import { VenueSwitch }       from './VenueSwitch'
-import { VenueMeshApsTable } from './VenueWifi'
+import { VenueRogueAps } from './VenueRogueAps'
+import { VenueSwitch }   from './VenueSwitch'
+import { VenueWifi }     from './VenueWifi'
 
 export function VenueDevicesTab () {
   const { $t } = useIntl()
@@ -26,7 +26,7 @@ export function VenueDevicesTab () {
     {
       label: $t({ defaultMessage: 'APs List' }),
       value: 'apsList',
-      children: <VenueMeshApsTable />
+      children: <VenueWifi />
     },
     {
       label: $t({ defaultMessage: 'AP Groups' }),

@@ -224,7 +224,7 @@ function transformData (data: APMesh[]) {
   })
 }
 
-export function VenueMeshApsTable () {
+export function VenueWifi () {
   const [ showIdx, setShowInx ] = useState(1)
 
   const VenueMeshApsTable = () => {
@@ -259,7 +259,7 @@ export function VenueMeshApsTable () {
         <Radio.Button value={2}><MeshSolid /></Radio.Button>
       </IconRadioGroup>
       { showIdx === 0 && <div></div> } {/* TODO: Venue Device WiFi Report */}
-      { showIdx === 1 && <ApTable /> }
+      { showIdx === 1 && <ApTable rowSelection={{ type: 'checkbox' }} /> }
       { showIdx === 2 && <VenueMeshApsTable /> }
     </>
   )
