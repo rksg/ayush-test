@@ -177,7 +177,7 @@ function getUserClientHealth () {
     return '{rich|' + parsedValue + '}'
   }
 
-  const labelRichCallback = () => ({
+  const labelRichStyle = {
     rich: {
       color: cssStr('--acx-primary-black'),
       fontFamily: cssStr('--acx-neutral-brand-font'),
@@ -185,7 +185,7 @@ function getUserClientHealth () {
       lineHeight: cssNumber('--acx-subtitle-5-line-height'),
       fontWeight: cssNumber('--acx-subtitle-5-font-weight')
     }
-  })
+  }
 
   return <BarChart
     style={{ height: 160 }}
@@ -203,6 +203,6 @@ function getUserClientHealth () {
     }}
     barColors={barColors}
     labelFormatter={labelFormatter}
-    labelRichStyle={labelRichCallback()}
+    labelRichStyle={labelRichStyle}
   />
 }
