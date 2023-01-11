@@ -45,6 +45,10 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/viewmodel/:tenantId/switch/:switchId'
   },
+  getSwitch: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/switch/:switchId'
+  },
   getSwitchPortlist: {
     method: 'post',
     url: '/api/viewmodel/:tenantId/switch/portlist'
@@ -64,6 +68,38 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   addStackMember: {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/switch/:stackSerialNumber/member/:newStackMemberSerialNumber'
+  },
+  getSwitchConfigHistory: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/switches/:switchId/configurationHistory/detail/query'
+  },
+  getSwitchRoutedList: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/vePort/switch/:switchId/query'
+  },
+  getVenueRoutedList: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/vePort/venue/:venueId/query'
+  },
+  getFreeVePortVlans: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/vlanVePort/:venueId/switch/:switchId'
+  },
+  getAclUnion: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/aclUnion/switch/:switchId'
+  },
+  addVePort: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/vePort/switch/:switchId'
+  },
+  updateVePort: {
+    method: 'put',
+    url: '/api/switch/tenant/:tenantId/vePort'
+  },
+  deleteVePorts: {
+    method: 'delete',
+    url: '/api/switch/tenant/:tenantId/vePorts'
   },
   getSwitchAcls: {
     method: 'get',

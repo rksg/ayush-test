@@ -14,9 +14,9 @@ import {
   SwitchRow,
   transformSwitchStatus,
   getSwitchName,
-  useTableQuery,
   DeviceConnectionStatus,
-  getStackMemberStatus
+  getStackMemberStatus,
+  usePollingTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
@@ -47,7 +47,7 @@ export function SwitchTable ({ showAllColumns } : {
 }) {
   const { $t } = useIntl()
   const params = useParams()
-  const tableQuery = useTableQuery({
+  const tableQuery = usePollingTableQuery({
     useQuery: useSwitchListQuery,
     defaultPayload: {
       fields: [
@@ -138,7 +138,7 @@ export function SwitchTable ({ showAllColumns } : {
       <TenantLink to={`/devices/switch/${row.id}/${row.serialNumber}/details/clients`}>{data || 0}</TenantLink>
     )
   }
-  // { TODO: tags
+  // { // TODO: Waiting for TAG feature support
   //   key: 'tags',
   //   title: $t({ defaultMessage: 'Tags' }),
   //   dataIndex: 'tags'
