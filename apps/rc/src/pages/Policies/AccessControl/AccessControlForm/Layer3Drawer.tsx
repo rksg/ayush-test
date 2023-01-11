@@ -1,9 +1,9 @@
 import React, { ReactNode, useEffect, useState } from 'react'
 
-import { Form, FormItemProps, Input, Radio, RadioChangeEvent, Select, Space } from 'antd'
-import _                                                                      from 'lodash'
-import { useIntl }                                                            from 'react-intl'
-import { useParams }                                                          from 'react-router-dom'
+import { Form, FormItemProps, Input, Radio, RadioChangeEvent, Select } from 'antd'
+import _                                                               from 'lodash'
+import { useIntl }                                                     from 'react-intl'
+import { useParams }                                                   from 'react-router-dom'
 import {
   SortableContainer,
   SortableContainerProps,
@@ -11,6 +11,7 @@ import {
   SortableElementProps,
   SortableHandle
 } from 'react-sortable-hoc'
+import styled from 'styled-components/macro'
 
 import {
   Button,
@@ -71,6 +72,14 @@ enum RuleSourceType {
   SUBNET = 'Subnet',
   IP = 'Ip'
 }
+
+const FormItemsWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  > * {
+    width: 48%
+  }
+`
 
 const DrawerFormItem = (props: FormItemProps) => {
   return (
@@ -171,7 +180,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     if (requestId && queryPolicyName) {
       layer3SelectOptions.map(option => {
         if (option.props.children === queryPolicyName) {
-          form.setFieldValue('l3AclPolicyId', option.key)
+          form.setFieldValue([...inputName, 'l3AclPolicyId'], option.key)
           setQueryPolicyId(option.key as string)
           setQueryPolicyName('')
           setRequestId('')
@@ -436,12 +445,12 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     {
       label: $t({ defaultMessage: 'Allow Traffic' }),
       children: <EmptyElement access={AccessStatus.ALLOW} />,
-      value: 'ALLOW'
+      value: AccessStatus.ALLOW
     },
     {
       label: $t({ defaultMessage: 'Block Traffic' }),
       children: <EmptyElement access={AccessStatus.BLOCK} />,
-      value: 'BLOCK'
+      value: AccessStatus.BLOCK
     }
   ]
 
@@ -449,12 +458,12 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     {
       label: $t({ defaultMessage: 'Allow Traffic' }),
       children: <DefaultEmptyElement access={AccessStatus.ALLOW} />,
-      value: 'ALLOW'
+      value: AccessStatus.ALLOW
     },
     {
       label: $t({ defaultMessage: 'Block Traffic' }),
       children: <DefaultEmptyElement access={AccessStatus.BLOCK} />,
-      value: 'BLOCK'
+      value: AccessStatus.BLOCK
     }
   ]
 
@@ -603,7 +612,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
           </GridCol>
           <GridCol col={{ span: 19 }}>
             {sourceValue === 2
-              ? <Space size={6}>
+              ? <FormItemsWrapper>
                 <Form.Item
                   name='sourceNetworkAddress'
                   rules={[
@@ -622,7 +631,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
                 >
                   <Input placeholder={$t({ defaultMessage: 'Source Mask' })}/>
                 </Form.Item>
-              </Space> : null}
+              </FormItemsWrapper> : null}
           </GridCol>
 
           <GridCol col={{ span: 5 }}>
@@ -631,7 +640,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
             </Radio>
           </GridCol>
           <GridCol col={{ span: 19 }}>
-            {sourceValue === 3 ? <Space size={6}><Form.Item
+            {sourceValue === 3 ? <Form.Item
               name='sourceIp'
               rules={[
                 { required: true },
@@ -639,7 +648,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
               ]}
             >
               <Input placeholder={$t({ defaultMessage: 'Source Ip' })}/>
-            </Form.Item></Space> : null}
+            </Form.Item> : null}
           </GridCol>
         </GridRow>
 
@@ -680,11 +689,14 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
           </GridCol>
           <GridCol col={{ span: 19 }}>
             {destValue === 2
-              ? <Space size={6}>
+              ? <FormItemsWrapper>
                 <Form.Item
                   name='destNetworkAddress'
                   rules={[
-                    { required: true, message: 'You must specify subnet network' }
+                    {
+                      required: true,
+                      message: $t({ defaultMessage: 'You must specify subnet network' })
+                    }
                   ]}
                 >
                   <Input placeholder={$t({ defaultMessage: 'Destination Network Address' })}/>
@@ -692,14 +704,15 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
                 <Form.Item
                   name='destMask'
                   rules={[
-                    { required: true, message: $t({
-                      defaultMessage: 'You must specify mask'
-                    }) }
+                    {
+                      required: true,
+                      message: $t({ defaultMessage: 'You must specify mask' })
+                    }
                   ]}
                 >
                   <Input placeholder={$t({ defaultMessage: 'Destination Mask' })}/>
                 </Form.Item>
-              </Space> : null}
+              </FormItemsWrapper> : null}
           </GridCol>
 
           <GridCol col={{ span: 5 }}>
@@ -708,7 +721,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
             </Radio>
           </GridCol>
           <GridCol col={{ span: 19 }}>
-            {destValue === 3 ? <Space size={6}><Form.Item
+            {destValue === 3 ? <Form.Item
               name='destIp'
               rules={[
                 { required: true, message: $t({
@@ -717,7 +730,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
               ]}
             >
               <Input placeholder={$t({ defaultMessage: 'Destination Ip' })}/>
-            </Form.Item></Space> : null}
+            </Form.Item> : null}
           </GridCol>
         </GridRow>
 
