@@ -5,15 +5,19 @@ import { Button as DefaultButton } from '../Button'
 
 export type RadioCardType = 'default' | 'radio' | 'button'
 
-export const Card = styled(AntCard)<{ cardtype: RadioCardType }>`
+export const Card = styled(AntCard)<{ $cardType: RadioCardType }>`
   position: relative;
-  box-shadow: 1px 1px 2px rgba(51, 51, 51, 0.12);
+  border: solid 1px var(--acx-neutrals-30);
+  box-shadow: 0px 2px 4px rgba(51, 51, 51, 0.08);
 
-  ${props => props.cardtype !== 'button'
+  ${props => props.$cardType !== 'button'
     ?`:hover {
     border-radius: 4px;
     border: 1px solid var(--acx-accents-orange-50);
   }`:''}
+
+  ${props => props.$cardType === 'default'
+    ?'cursor: pointer;':''}
 
   :has(.ant-radio-checked) {
     border-radius: 4px;
@@ -77,19 +81,19 @@ export const Radio = styled(AntRadio)`
   }
 `
 
-export const CatogoryWrapper = styled.div`
+export const CategoryWrapper = styled.div`
   display: flex;
   gap: 4px;
 `
 
-export const Catogory = styled.div<{ color: string }>`
+export const Category = styled.div<{ color: string }>`
   background: var(${props => props.color});
   border-radius: 2px;
   padding: 0px 4px;
   color: var(--acx-primary-white);
   font-weight: var(--acx-subtitle-5-font-weight-semi-bold);
   line-height: var(--acx-subtitle-5-line-height);
-  font-size: 8px;
+  font-size: var(--acx-body-6-font-size);
 `
 
 export const Description = styled.div`
@@ -100,7 +104,8 @@ export const Description = styled.div`
 `
 
 export const Title = styled.div`
-  font-size: var(--acx-headline-3-font-size);
-  line-height: var(--acx-headline-3-line-height);
-  font-weight: var(--acx-headline-3-font-weight);
+  padding-bottom: 3px;
+  font-size: var(--acx-subtitle-4-font-size);
+  line-height: var(--acx-subtitle-4-line-height);
+  font-weight: var(--acx-subtitle-4-font-weight);
 `

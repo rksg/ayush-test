@@ -1,7 +1,7 @@
 import { Form, Radio } from 'antd'
 import { useIntl }     from 'react-intl'
 
-import { GridCol, GridRow, PageHeader, RadioCard, RadioCardProps, StepsForm } from '@acx-ui/components'
+import { GridCol, GridRow, PageHeader, RadioCard, StepsForm } from '@acx-ui/components'
 import {
   PolicyType,
   getPolicyListRoutePath,
@@ -36,8 +36,8 @@ export default function SelectPolicyForm () {
     { type: PolicyType.ACCESS_CONTROL, categories: [category.wifi] },
     { type: PolicyType.VLAN_POOL, categories: [category.switch] },
     { type: PolicyType.ROGUE_AP_DETECTION, categories: [category.wifi] },
-    { type: PolicyType.AAA, categories: [category.wifi, category.switch] },
-    { type: PolicyType.SYSLOG, categories: [category.wifi, category.switch] },
+    { type: PolicyType.AAA, categories: [category.wifi] },
+    { type: PolicyType.SYSLOG, categories: [category.wifi] },
     { type: PolicyType.CLIENT_ISOLATION, categories: [category.wifi] }
   ]
 

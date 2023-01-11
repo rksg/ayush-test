@@ -2,6 +2,7 @@ import React from 'react'
 
 import { storiesOf }               from '@storybook/react'
 import { Radio, RadioChangeEvent } from 'antd'
+import { defineMessage }           from 'react-intl'
 
 import { RadioCard } from '.'
 
@@ -65,6 +66,7 @@ storiesOf('RadioCard', module)
         'Fas pysuhet såväl som sedora. Val tingar mer. Ock whataboutism. Tiktigt syss rena.'
       }
       categories={['WiFi', 'Switch', 'Edge']}
+      buttonText={defineMessage({ defaultMessage: 'Add' })}
       // eslint-disable-next-line no-console
       onClick={()=>console.log('Button clicked!')}
     />

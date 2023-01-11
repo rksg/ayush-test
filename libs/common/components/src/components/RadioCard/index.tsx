@@ -1,5 +1,5 @@
-import { RadioProps }             from 'antd'
-import { defineMessage, useIntl } from 'react-intl'
+import { RadioProps }                                from 'antd'
+import { MessageDescriptor, defineMessage, useIntl } from 'react-intl'
 
 import {
   Button,
@@ -7,8 +7,8 @@ import {
   Card,
   Title,
   Description,
-  Catogory,
-  CatogoryWrapper,
+  Category,
+  CategoryWrapper,
   RadioCardType
 } from './styledComponents'
 
@@ -18,12 +18,13 @@ export type RadioCardProps = RadioProps & {
   description: string
   value: string
   categories?: ('WiFi'|'Switch'|'Edge')[]
+  buttonText?: MessageDescriptor,
   onClick?: () => void
 }
 
-const catogoryMapping = {
+const categoryMapping = {
   WiFi: {
-    text: defineMessage({ defaultMessage: 'WiFi' }),
+    text: defineMessage({ defaultMessage: 'Wi-Fi' }),
     color: '--acx-accents-blue-60'
   },
   Switch: {
@@ -37,22 +38,20 @@ const catogoryMapping = {
 }
 
 function RadioCard ({
-  type = 'default', title, description, value, categories = [], onClick, ...rest
+  type = 'default', title, description, value, categories = [], buttonText, onClick, ...rest
 }: RadioCardProps){
   const { $t } = useIntl()
-  return <Card cardtype={type} onClick={type === 'default' ? onClick : undefined}>
+  return <Card $cardType={type} onClick={type === 'default' ? onClick : undefined}>
     <Title>{title}</Title>
     <Description>{description}</Description>
     { categories.length > 0 &&
-      <CatogoryWrapper>{categories.map(category=> {
-        const set = catogoryMapping[category]
-        return set && <Catogory key={category} color={set.color}>{$t(set.text)}</Catogory>
+      <CategoryWrapper>{categories.map(category=> {
+        const set = categoryMapping[category]
+        return set && <Category key={category} color={set.color}>{$t(set.text)}</Category>
       })}
-      </CatogoryWrapper>}
-    {type === 'button' &&
-      <Button onClick={onClick} size='small' type='secondary'>
-        {$t({ defaultMessage: 'Add' })}
-      </Button>}
+      </CategoryWrapper>}
+    {(type === 'button' && buttonText) &&
+      <Button onClick={onClick} size='small' type='secondary'>{$t(buttonText)}</Button>}
     {type === 'radio' && <Radio value={value} {...rest}/>}
   </Card>
 }
