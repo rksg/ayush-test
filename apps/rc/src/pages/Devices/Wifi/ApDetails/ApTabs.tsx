@@ -32,9 +32,7 @@ function ApTabs (props:{ apDetail: ApDetailHeader }) {
       {currentApOperational &&
         <Tabs.TabPane tab={$t({ defaultMessage: 'Troubleshooting' })}
           key='troubleshooting' />}
-      <Tabs.TabPane
-        disabled={!releaseTag}
-        tab={<Tooltip title={$t(notAvailableMsg)}>{$t({ defaultMessage: 'Reports' })}</Tooltip>}
+      <Tabs.TabPane tab={$t({ defaultMessage: 'Reports' })}
         key='reports'
       />
       <Tabs.TabPane
