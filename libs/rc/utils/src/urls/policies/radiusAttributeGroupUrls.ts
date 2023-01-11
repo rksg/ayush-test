@@ -3,10 +3,12 @@ import { ApiInfo } from '../../apiService'
 const attributeGroupsBaseUrl = '/radiusAttributeGroups'
 const attributeBaseUrl = '/radiusAttributes'
 
+const paginationParams = '?size=:pageSize&page=:page&sort=:sort'
+
 export const RadiusAttributeGroupUrlsInfo: { [key: string]: ApiInfo } = {
   getAttributes: {
     method: 'get',
-    url: attributeBaseUrl
+    url: attributeBaseUrl + '?size=:pageSize&page=:page'
   },
   getAttributesWithQuery: {
     method: 'post',
@@ -14,7 +16,7 @@ export const RadiusAttributeGroupUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getAttributeGroups: {
     method: 'get',
-    url: attributeGroupsBaseUrl
+    url: attributeGroupsBaseUrl + paginationParams
   },
   getAttributeGroupsWithQuery: {
     method: 'post',

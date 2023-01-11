@@ -16,9 +16,17 @@ import {
   RogueAPDetectionContextType,
   RogueAPDetectionTempType,
   VenueRoguePolicyType,
-  TableResult, onSocketActivityChanged, showActivityMessage, CommonResult,
-  NewTableResult, transferTableResult,
-  RadiusAttributeGroupUrlsInfo, RadiusAttributeGroup, RadiusAttribute
+  TableResult,
+  onSocketActivityChanged,
+  showActivityMessage,
+  CommonResult,
+  NewTableResult,
+  RadiusAttributeGroupUrlsInfo,
+  RadiusAttributeGroup,
+  RadiusAttribute,
+  transferToTableResult,
+  createNewTableHttpRequest,
+  TableChangePayload
 } from '@acx-ui/rc/utils'
 
 export const basePolicyApi = createApi({
@@ -227,19 +235,39 @@ export const policyApi = basePolicyApi.injectEndpoints({
       invalidatesTags: [{ type: 'MacRegistration', id: 'LIST' }]
     }),
     radiusAttributeGroupList: build.query<TableResult<RadiusAttributeGroup>, RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, payload }) => {
         // eslint-disable-next-line max-len
-        const groupReq = createHttpRequest(RadiusAttributeGroupUrlsInfo.getAttributeGroups, params, RKS_NEW_UI)
+        const groupReq = createNewTableHttpRequest({
+          apiInfo: RadiusAttributeGroupUrlsInfo.getAttributeGroups,
+          params,
+          payload: payload as TableChangePayload
+        })
         return {
           ...groupReq
         }
       },
       transformResponse (result: NewTableResult<RadiusAttributeGroup>) {
-        return transferTableResult<RadiusAttributeGroup>(result)
+        return transferToTableResult<RadiusAttributeGroup>(result)
       },
       providesTags: [{ type: 'RadiusAttributeGroup', id: 'LIST' }]
     }),
     radiusAttributeList: build.query<TableResult<RadiusAttribute>, RequestPayload>({
+      query: ({ params }) => {
+        // eslint-disable-next-line max-len
+        const groupReq = createHttpRequest(
+          RadiusAttributeGroupUrlsInfo.getAttributes,
+          params
+        )
+        return {
+          ...groupReq
+        }
+      },
+      transformResponse (result: NewTableResult<RadiusAttribute>) {
+        return transferToTableResult<RadiusAttribute>(result)
+      },
+      providesTags: [{ type: 'RadiusAttribute', id: 'LIST' }]
+    }),
+    radiusAttributeListWithQuery: build.query<TableResult<RadiusAttribute>, RequestPayload>({
       query: ({ params, payload }) => {
         // eslint-disable-next-line max-len
         const groupReq = createHttpRequest(RadiusAttributeGroupUrlsInfo.getAttributesWithQuery, params, RKS_NEW_UI)
@@ -315,7 +343,8 @@ export const {
   useRadiusAttributeGroupListQuery,
   useGetRadiusAttributeGroupQuery,
   useRadiusAttributeListQuery,
-  useLazyRadiusAttributeListQuery,
+  useRadiusAttributeListWithQueryQuery,
+  // useLazyRadiusAttributeListQuery,
   useDeleteRadiusAttributeGroupMutation,
   useLazyRadiusAttributeGroupListQuery,
   useUpdateRadiusAttributeGroupMutation,

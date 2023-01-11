@@ -47,21 +47,15 @@ export function RadiusAttributeGroupSettingForm () {
   const [editAttribute, setEditAttribute] = useState<AttributeAssignment>()
   const [radiusAttributes, setRadiusAttributes] = useState([] as RadiusAttribute[])
 
-  const payload = {
-    page: 1,
-    pageSize: 1000,
-    filters: {
-      showOnDefault: true
-    }
-  }
-
   const radiusAttributesQuery = useRadiusAttributeListQuery({
-    payload
+    params: {
+      page: '1',
+      pageSize: '500'
+    }
   })
 
   useEffect(()=>{
     if(radiusAttributesQuery.data) {
-      // setAttributeTreeData(toTreeData(radiusAttributesQuery.data.data ?? []))
       setRadiusAttributes(radiusAttributesQuery.data.data ?? [])
     }
   }, [radiusAttributesQuery.data])
@@ -71,7 +65,12 @@ export function RadiusAttributeGroupSettingForm () {
   }
 
   const nameValidator = async (value: string) => {
-    const list = (await attributeGroup({}).unwrap()).data.filter(n => n.id !== policyId)
+    const list = (await attributeGroup({
+      payload: {
+        page: '1',
+        pageSize: '10000'
+      }
+    }).unwrap()).data.filter(n => n.id !== policyId)
       .map(n => ({ name: n.name }))
     // eslint-disable-next-line max-len
     return checkObjectNotExists(list, { name: value }, $t({ defaultMessage: 'RADIUS Attribute Group' }))

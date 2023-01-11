@@ -41,27 +41,42 @@ export function RadiusAttributeDrawer (props: RadiusAttributeDrawerProps) {
     setAttributeTreeData(transferToTreeData(radiusAttributes))
   }, [radiusAttributes])
 
+  // eslint-disable-next-line max-len
+  const toTreeNode = (value: string, children?: treeNode []) : treeNode => {
+    return {
+      value: value,
+      title: value,
+      selectable: !children,
+      children: children ?? undefined
+    }
+  }
+
   const transferToTreeData = (attributes: RadiusAttribute []) => {
+    const commonAttributeKey = 'Common Attributes'
+
     const groupedAttributes = attributes.reduce(function (r, a) {
+      if(a.showOnDefault) {
+        r[commonAttributeKey] = r[commonAttributeKey] || []
+        r[commonAttributeKey].push(a)
+      }
       r[a.vendorName] = r[a.vendorName] || []
       r[a.vendorName].push(a)
       return r
     }, Object.create(null))
 
-    // eslint-disable-next-line max-len
-    const toTreeNode = (value: string, children?: treeNode [], selectable?: boolean) : treeNode => {
-      return {
-        value: value,
-        title: value,
-        selectable: selectable ?? true,
-        children: children ?? undefined
-      }
+    const treeData = Object.keys(groupedAttributes).sort().map(key => {
+      const children = groupedAttributes[key].map((v: RadiusAttribute) => toTreeNode(v.name))
+      return toTreeNode(key, children)
+    })
+
+    const index = treeData.findIndex(a => a.value === commonAttributeKey)
+    const common = []
+    if(index !== -1) {
+      common.push(toTreeNode(commonAttributeKey, treeData[index].children))
+      delete treeData[index]
     }
 
-    return Object.keys(groupedAttributes).map(key => {
-      const children = groupedAttributes[key].map((v: RadiusAttribute) => toTreeNode(v.name))
-      return toTreeNode(key, children, false)
-    })
+    return common.concat(treeData)
   }
 
   const onClose = () => {
