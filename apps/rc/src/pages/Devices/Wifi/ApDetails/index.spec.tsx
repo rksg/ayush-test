@@ -80,19 +80,6 @@ describe('ApDetails', () => {
       .toEqual('Ping')
   })
 
-  it('should navigate to reports tab correctly', async () => {
-    const params = {
-      tenantId: 'tenant-id',
-      serialNumber: 'ap-serialNumber',
-      activeTab: 'reports'
-    }
-    render(<Provider><ApDetails /></Provider>, {
-      route: { params, path: '/:tenantId/devices/wifi/:serialNumber/details/:activeTab' }
-    })
-    expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
-      .toEqual('Reports')
-  })
-
   it('should navigate to networks tab correctly', async () => {
     const params = {
       tenantId: 'tenant-id',
@@ -170,5 +157,18 @@ describe('ApDetails', () => {
     })
 
     await userEvent.click(await screen.findByRole('button', { name: 'Configure' }))
+  })
+
+  it('should navigate to reports tab correctly', async () => {
+    const params = {
+      tenantId: 'tenant-id',
+      serialNumber: 'ap-serialNumber',
+      activeTab: 'reports'
+    }
+    render(<Provider><ApDetails /></Provider>, {
+      route: { params, path: '/:tenantId/devices/wifi/:serialNumber/details/:activeTab' }
+    })
+    expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
+      .toEqual('Reports')
   })
 })
