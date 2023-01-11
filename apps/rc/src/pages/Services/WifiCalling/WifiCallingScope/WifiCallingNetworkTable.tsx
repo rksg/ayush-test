@@ -10,8 +10,7 @@ import {
   Network,
   useTableQuery,
   WifiCallingActionPayload,
-  WifiCallingActionTypes,
-  WifiCallingScope
+  WifiCallingActionTypes
 } from '@acx-ui/rc/utils'
 
 import WifiCallingFormContext from '../WifiCallingFormContext'
@@ -113,7 +112,7 @@ const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
   }
 
 
-  const rowActions: TableProps<WifiCallingScope>['actions'] = [{
+  const rowActions: TableProps<Network>['rowActions'] = [{
     label: $t({ defaultMessage: 'Activate' }),
     onClick: (selectRows: Network[], clearSelection: () => void) => {
       activateNetwork(selectRows)
