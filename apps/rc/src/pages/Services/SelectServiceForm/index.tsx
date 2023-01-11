@@ -1,5 +1,5 @@
 import { Form, Radio, Typography } from 'antd'
-import { useIntl }                 from 'react-intl'
+import { defineMessage, useIntl }  from 'react-intl'
 
 import { GridCol, GridRow, PageHeader, RadioCard, StepsForm } from '@acx-ui/components'
 import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
@@ -37,6 +37,36 @@ export default function SelectServiceForm () {
     })
   }
 
+  const category = { wifi: 'WiFi' } as const
+
+  const sets = [
+    {
+      title: defineMessage({ defaultMessage: 'Connectivity' }),
+      items: [
+        { type: ServiceType.DHCP, categories: [category.wifi] },
+        { type: ServiceType.DPSK, categories: [category.wifi] },
+        {
+          type: ServiceType.NETWORK_SEGMENTATION,
+          categories: [category.wifi],
+          disabled: !networkSegmentationEnabled
+        }
+      ]
+    },
+    {
+      title: defineMessage({ defaultMessage: 'Application' }),
+      items: [
+        { type: ServiceType.MDNS_PROXY, categories: [category.wifi] },
+        { type: ServiceType.WIFI_CALLING, categories: [category.wifi] }
+      ]
+    },
+    {
+      title: defineMessage({ defaultMessage: 'More Services' }),
+      items: [
+        { type: ServiceType.PORTAL, categories: [category.wifi] }
+      ]
+    }
+  ]
+
   return (
     <>
       <PageHeader
@@ -58,89 +88,27 @@ export default function SelectServiceForm () {
             rules={[{ required: true }]}
           >
             <Radio.Group style={{ width: '100%' }}>
-              <UI.CategoryContainer>
-                <Typography.Title level={3}>
-                  { $t({ defaultMessage: 'Connectivity' }) }
-                </Typography.Title>
-                <GridRow>
-                  <GridCol col={{ span: 8 }}>
-                    <RadioCard
-                      type={'radio'}
-                      key={ServiceType.DHCP}
-                      value={ServiceType.DHCP}
-                      title={$t(serviceTypeLabelMapping[ServiceType.DHCP])}
-                      description={$t(serviceTypeDescMapping[ServiceType.DHCP])}
-                      categories={['WiFi']}
-                    />
-                  </GridCol>
-                  <GridCol col={{ span: 8 }}>
-                    <RadioCard
-                      type={'radio'}
-                      key={ServiceType.DPSK}
-                      value={ServiceType.DPSK}
-                      title={$t(serviceTypeLabelMapping[ServiceType.DPSK])}
-                      description={$t(serviceTypeDescMapping[ServiceType.DPSK])}
-                      categories={['WiFi']}
-                    />
-                  </GridCol>
-                  {networkSegmentationEnabled &&
-                    <GridCol col={{ span: 8 }}>
-                      <RadioCard
-                        type={'radio'}
-                        key={ServiceType.NETWORK_SEGMENTATION}
-                        value={ServiceType.NETWORK_SEGMENTATION}
-                        title={$t(serviceTypeLabelMapping[ServiceType.NETWORK_SEGMENTATION])}
-                        description={$t(serviceTypeDescMapping[ServiceType.NETWORK_SEGMENTATION])}
-                        categories={['WiFi']}
-                      />
-                    </GridCol>
-                  }
-                </GridRow>
-              </UI.CategoryContainer>
-              <UI.CategoryContainer>
-                <Typography.Title level={3}>
-                  { $t({ defaultMessage: 'Application' }) }
-                </Typography.Title>
-                <GridRow>
-                  <GridCol col={{ span: 8 }}>
-                    <RadioCard
-                      type={'radio'}
-                      key={ServiceType.MDNS_PROXY}
-                      value={ServiceType.MDNS_PROXY}
-                      title={$t(serviceTypeLabelMapping[ServiceType.MDNS_PROXY])}
-                      description={$t(serviceTypeDescMapping[ServiceType.MDNS_PROXY])}
-                      categories={['WiFi']}
-                    />
-                  </GridCol>
-                  <GridCol col={{ span: 8 }}>
-                    <RadioCard
-                      type={'radio'}
-                      key={ServiceType.WIFI_CALLING}
-                      value={ServiceType.WIFI_CALLING}
-                      title={$t(serviceTypeLabelMapping[ServiceType.WIFI_CALLING])}
-                      description={$t(serviceTypeDescMapping[ServiceType.WIFI_CALLING])}
-                      categories={['WiFi']}
-                    />
-                  </GridCol>
-                </GridRow>
-              </UI.CategoryContainer>
-              <UI.CategoryContainer>
-                <Typography.Title level={3}>
-                  { $t({ defaultMessage: 'More Services' }) }
-                </Typography.Title>
-                <GridRow>
-                  <GridCol col={{ span: 8 }}>
-                    <RadioCard
-                      type={'radio'}
-                      key={ServiceType.PORTAL}
-                      value={ServiceType.PORTAL}
-                      title={$t(serviceTypeLabelMapping[ServiceType.PORTAL])}
-                      description={$t(serviceTypeDescMapping[ServiceType.PORTAL])}
-                      categories={['WiFi']}
-                    />
-                  </GridCol>
-                </GridRow>
-              </UI.CategoryContainer>
+              {sets.map(set =>
+                <UI.CategoryContainer>
+                  <Typography.Title level={3}>
+                    { $t(set.title) }
+                  </Typography.Title>
+                  <GridRow>
+                    {set.items.map(item => item.disabled
+                      ? null
+                      : <GridCol col={{ span: 8 }}>
+                        <RadioCard
+                          type={'radio'}
+                          key={item.type}
+                          value={item.type}
+                          title={$t(serviceTypeLabelMapping[item.type])}
+                          description={$t(serviceTypeDescMapping[item.type])}
+                          categories={item.categories}
+                        />
+                      </GridCol>)}
+                  </GridRow>
+                </UI.CategoryContainer>
+              )}
             </Radio.Group>
           </Form.Item>
         </StepsForm.StepForm>
