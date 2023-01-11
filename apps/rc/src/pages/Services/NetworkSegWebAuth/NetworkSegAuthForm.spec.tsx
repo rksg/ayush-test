@@ -36,7 +36,7 @@ describe( 'NetworkSegAuthForm', () => {
     )
   })
 
-  it( 'should rnder and submit successfully', async () => {
+  it( 'should render and submit successfully', async () => {
     render(
       <Provider>
         <NetworkSegAuthForm />
@@ -63,8 +63,9 @@ describe( 'NetworkSegAuthForm', () => {
     expect(await screen.findByRole('heading', { level: 1 }))
       .toHaveTextContent('Edit Network Segmentation Auth page for Switch')
 
-    await waitFor(() => expect(screen.getByLabelText('Title'))
-      .toHaveValue('Enter your Password below and press the button'))
+    await waitFor(() =>
+      expect(screen.getByDisplayValue(
+        'Enter your Password below and press the button')).toBeVisible())
 
     fireEvent.click(screen.getByRole('button', { name: 'Finish' }))
   })

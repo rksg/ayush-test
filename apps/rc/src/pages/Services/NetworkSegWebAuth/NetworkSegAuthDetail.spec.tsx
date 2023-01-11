@@ -11,11 +11,11 @@ import {
   waitFor
 } from '@acx-ui/test-utils'
 
-import NetworkSegAuthDetail    from './NetworkSegAuthDetail'
-import { defaultTemplateData } from './NetworkSegAuthForm'
+import NetworkSegAuthDetail from './NetworkSegAuthDetail'
 
 const data = {
-  ...defaultTemplateData,
+  webAuthPasswordLabel: 'DPSK Password',
+  webAuthCustomTitle: 'Enter your Password below and press the button',
   id: 'zxzz',
   name: 'Mock Template name'
 }

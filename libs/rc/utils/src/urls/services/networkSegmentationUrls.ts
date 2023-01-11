@@ -21,12 +21,10 @@ export const NetworkSegmentationUrls: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/api/switch/tenant/:tenantId/webAuthPageTemplates/:serviceId'
   },
-
   getAccessSwitches: {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/venue/:venueId/networkSegmentations/accessSwitches'
   },
-
   getDistributionSwitches: {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/venue/:venueId/networkSegmentations/distributionSwitches'
