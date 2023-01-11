@@ -1,6 +1,10 @@
 import moment from 'moment-timezone'
 
-import { formatter, formats, convertEpochToRelativeTime } from './formatter'
+import {
+  formatter,
+  formats,
+  convertEpochToRelativeTime,
+  convertDateTimeToSqlFormat } from './formatter'
 
 function testFormat (
   format: keyof typeof formats,
@@ -337,6 +341,11 @@ describe('formatter', () => {
           .toBe('string')
       })
     })
+    describe('convertDateTimeToSqlFormat', () => {
+      it('should convert date to sqlDateTimeFormat', () => {
+        expect(convertDateTimeToSqlFormat('2022-12-16T08:05:00+05:30'))
+          .toEqual('2022-12-16 02:35:00')
+      })
+    })
   })
 })
-
