@@ -1,5 +1,7 @@
 import { createContext, useContext, ReactNode } from 'react'
 
+import { pick } from 'lodash'
+
 import { Loader }         from '@acx-ui/components'
 import { useApListQuery } from '@acx-ui/rc/services'
 import { useParams }      from '@acx-ui/react-router-dom'
@@ -26,9 +28,16 @@ export function ApContextProvider (props: { children: ReactNode }) {
       ...rest
     })
   })
-  const [{ venueName, apMac, serialNumber }] = results.data ?? [{}]
-  const values: Params<string> = { ...params, venueName, apMac, serialNumber }
+  const { data } = results
+  const values: Params<string> = {
+    ...params,
+    ...pick(data?.[0], ['venueName', 'apMac', 'serialNumber']) as Params<string>
+  }
   return <ApContext.Provider value={values}>
-    <Loader states={[results]}>{serialNumber ? props.children : null}</Loader>
+    <Loader states={[results]}>{
+      data && data.length
+        ? props.children
+        : `Could not find AP ${params.apId}`
+    }</Loader>
   </ApContext.Provider>
 }
