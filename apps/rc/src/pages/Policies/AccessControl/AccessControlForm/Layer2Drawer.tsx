@@ -118,7 +118,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
     if (requestId && queryPolicyName) {
       layer2SelectOptions.map(option => {
         if (option.props.children === queryPolicyName) {
-          form.setFieldValue('l2AclPolicyId', option.key)
+          form.setFieldValue([...inputName, 'l2AclPolicyId'], option.key)
           setQueryPolicyId(option.key as string)
           setQueryPolicyName('')
           setRequestId('')

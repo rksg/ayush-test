@@ -26,6 +26,7 @@ import {
 import { transformDisplayText } from '@acx-ui/rc/utils'
 import { useParams }            from '@acx-ui/react-router-dom'
 
+import Layer2Drawer       from '../../../Policies/AccessControl/AccessControlForm/Layer2Drawer'
 import NetworkFormContext from '../NetworkFormContext'
 
 import * as UI from './styledComponents'
@@ -330,18 +331,6 @@ function AccessControlConfigForm () {
     useWatch<boolean>('enableClientRateLimit')
   ]
 
-  const { layer2SelectOptions } = useL2AclPolicyListQuery({
-    params: useParams(),
-    payload: listPayload
-  }, {
-    selectFromResult ({ data }) {
-      return {
-        layer2SelectOptions: data?.data?.map(
-          item => <Option key={item.id}>{item.name}</Option>) ?? []
-      }
-    }
-  })
-
   const { layer3SelectOptions } = useL3AclPolicyListQuery({
     params: useParams(),
     payload: listPayload
@@ -390,22 +379,9 @@ function AccessControlConfigForm () {
           children={<Switch />}
         />
 
-        {enableLayer2 && <>
-          <Form.Item
-            name={['wlan','advancedCustomization','l2AclPolicyId']}
-            style={{ marginBottom: '10px', lineHeight: '32px' }}
-            rules={[{
-              required: true,
-              message: $t({ defaultMessage: 'Please select Layer 2 profile' })
-            }]}
-            children={
-              <Select placeholder={$t({ defaultMessage: 'Select profile...' })}
-                style={{ width: '180px' }}
-                children={layer2SelectOptions} />
-            }
-          />
-          {$t({ defaultMessage: 'Add' })}
-        </>}
+        {enableLayer2 && <Layer2Drawer
+          inputName={['wlan', 'advancedCustomization']}
+        />}
       </div>
     </UI.FieldLabel>
 

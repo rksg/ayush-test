@@ -12,6 +12,33 @@ export interface l3AclPolicyInfoType {
   defaultAccess: string
 }
 
+export interface AccessControlInfoType {
+  id: string,
+  name: string,
+  description?: string,
+  devicePolicy?: {
+    id: string,
+    enabled: boolean
+  },
+  l2AclPolicy?: {
+    id: string,
+    enabled: boolean
+  },
+  l3AclPolicy?: {
+    id: string,
+    enabled: boolean
+  },
+  applicationPolicy?: {
+    id: string,
+    enabled: boolean
+  },
+  rateLimiting?: {
+    uplinkLimit: number,
+    downlinkLimit: number,
+    enabled: boolean
+  }
+}
+
 export interface L3Rule {
   id: string
   access: 'ALLOW' | 'BLOCK',
@@ -55,4 +82,9 @@ export enum Layer3ProtocolType {
 export enum AccessStatus {
   ALLOW = 'ALLOW',
   BLOCK = 'BLOCK'
+}
+
+export enum EnabledStatus {
+  ON = 'ON',
+  OFF = 'OFF'
 }

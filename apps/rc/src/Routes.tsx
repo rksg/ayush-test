@@ -29,6 +29,7 @@ import ApsTable                   from './pages/Devices/Wifi/ApsTable'
 import NetworkDetails             from './pages/Networks/NetworkDetails/NetworkDetails'
 import NetworkForm                from './pages/Networks/NetworkForm/NetworkForm'
 import NetworksTable              from './pages/Networks/NetworksTable'
+import AccessControlDetail        from './pages/Policies/AccessControl/AccessControlDetail'
 import AccessControlForm          from './pages/Policies/AccessControl/AccessControlForm/AccessControlForm'
 import MacRegistrationListDetails
   from './pages/Policies/MacRegistrationList/MacRegistrarionListDetails/MacRegistrarionListDetails'
@@ -267,7 +268,17 @@ function PolicyRoutes () {
       <Route
         // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE })}
-        element={<AccessControlForm edit={false}/>}
+        element={<AccessControlForm editMode={false}/>}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.EDIT })}
+        element={<AccessControlForm editMode={true}/>}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.DETAIL })}
+        element={<AccessControlDetail />}
       />
     </Route>
   )

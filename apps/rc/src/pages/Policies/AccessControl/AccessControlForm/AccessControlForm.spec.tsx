@@ -10,7 +10,7 @@ describe('AccessControlForm Component', () => {
     render(
       <Provider>
         <Form>
-          <AccessControlForm edit={false}/>
+          <AccessControlForm editMode={false}/>
         </Form>
       </Provider>, {
         route: {

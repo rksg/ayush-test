@@ -26,7 +26,7 @@ import {
   l2AclPolicyInfoType,
   L2AclPolicy,
   AvcApp,
-  AccessControlUrls, L3AclPolicy, AvcCat
+  AccessControlUrls, L3AclPolicy, AvcCat, AccessControlInfoType
 } from '@acx-ui/rc/utils'
 
 export const basePolicyApi = createApi({
@@ -91,6 +91,36 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
     }),
+    addAccessControlProfile: build.mutation<AccessControlInfoType, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AccessControlUrls.addAccessControlProfile, params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    updateAccessControlProfile: build.mutation<AccessControlInfoType, RequestPayload>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(AccessControlUrls.updateAccessControlProfile, params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    getAccessControlProfile: build.query<AccessControlInfoType, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(AccessControlUrls.getAccessControlProfile, params, RKS_NEW_UI)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+    }),
     getL3AclPolicy: build.query<l3AclPolicyInfoType, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(AccessControlUrls.getL3AclPolicy, params, RKS_NEW_UI)
@@ -118,6 +148,16 @@ export const policyApi = basePolicyApi.injectEndpoints({
           })
         })
       }
+    }),
+    getAccessControlProfileList: build.query<AccessControlInfoType[], RequestPayload>({
+      query: ({ params }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(AccessControlUrls.getAccessControlProfileList, params, RKS_NEW_UI)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
     }),
     delRoguePolicies: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -366,9 +406,13 @@ export const {
   useGetL2AclPolicyQuery,
   useAddL3AclPolicyMutation,
   useGetL3AclPolicyQuery,
+  useAddAccessControlProfileMutation,
+  useUpdateAccessControlProfileMutation,
+  useGetAccessControlProfileQuery,
   useL2AclPolicyListQuery,
   useL3AclPolicyListQuery,
   useGetRoguePolicyListQuery,
+  useGetAccessControlProfileListQuery,
   useUpdateRoguePolicyMutation,
   useRoguePolicyQuery,
   useVenueRoguePolicyQuery,
