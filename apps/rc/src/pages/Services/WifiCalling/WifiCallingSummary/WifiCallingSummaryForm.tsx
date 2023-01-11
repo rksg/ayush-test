@@ -31,14 +31,14 @@ const WifiCallingSummaryForm = () => {
               <Paragraph>{state.serviceName.toString()}</Paragraph>
             </Form.Item>
           </Col>
-          <Col span={6}>
-            <Form.Item
-              name='tags'
-              label={$t({ defaultMessage: 'Tags' })}
-            >
-              <Paragraph>{state.tags?.join(', ')}</Paragraph>
-            </Form.Item>
-          </Col>
+          {/*<Col span={6}>*/}
+          {/*  <Form.Item*/}
+          {/*    name='tags'*/}
+          {/*    label={$t({ defaultMessage: 'Tags' })}*/}
+          {/*  >*/}
+          {/*    <Paragraph>{state.tags?.join(', ')}</Paragraph>*/}
+          {/*  </Form.Item>*/}
+          {/*</Col>*/}
           <Col span={6}>
             <Form.Item
               name='description'

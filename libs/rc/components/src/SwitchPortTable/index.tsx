@@ -202,12 +202,14 @@ export function SwitchPortTable ({ isVenueLevel } : {
     dataIndex: 'egressAclName',
     sorter: true,
     show: false
-  }, {
-    key: 'tags', // TODO
+  },
+  {
+    key: 'tags',
     title: $t({ defaultMessage: 'Tags' }),
     dataIndex: 'tags',
     sorter: true
-  }]
+  }
+  ]
 
   const getColumns = () => columns.filter(
     item => !isVenueLevel
