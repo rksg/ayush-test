@@ -66,7 +66,7 @@ const EpdgTable = (props: { edit?: boolean }) => {
     onClick: handleAddAction
   }]
 
-  const rowActions: TableProps<EPDG>['actions'] = [{
+  const rowActions: TableProps<EPDG>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
     onClick: ([{ domain }]: EPDG[]) => {
       setVisibleEdit(true)
