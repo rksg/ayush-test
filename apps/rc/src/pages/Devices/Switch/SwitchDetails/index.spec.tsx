@@ -23,6 +23,11 @@ jest.mock('@acx-ui/rc/components', () => {
   return Object.fromEntries(sets)
 })
 
+jest.mock('@acx-ui/reports/components', () => ({
+  ...jest.requireActual('@acx-ui/reports/components'),
+  EmbeddedReport: () => <div data-testid={'some-report-id'} id='acx-report' />
+}))
+
 describe('SwitchDetails', () => {
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())
@@ -76,6 +81,20 @@ describe('SwitchDetails', () => {
     })
     expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
       .toEqual('Troubleshooting')
+  })
+
+  it('should navigate to reports tab correctly', async () => {
+    const params = {
+      tenantId: 'tenant-id',
+      switchId: 'switchId',
+      serialNumber: 'serialNumber',
+      activeTab: 'reports'
+    }
+    render(<Provider><SwitchDetails /></Provider>, {
+      route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab' }
+    })
+    expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
+      .toEqual('Reports')
   })
 
   it('should navigate to clients tab correctly', async () => {
@@ -161,19 +180,5 @@ describe('SwitchDetails', () => {
     })
 
     await userEvent.click(await screen.findByRole('button', { name: 'Configure' }))
-  })
-
-  it('should navigate to reports tab correctly', async () => {
-    const params = {
-      tenantId: 'tenant-id',
-      switchId: 'switchId',
-      serialNumber: 'serialNumber',
-      activeTab: 'reports'
-    }
-    render(<Provider><SwitchDetails /></Provider>, {
-      route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab' }
-    })
-    expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
-      .toEqual('Reports')
   })
 })
