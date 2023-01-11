@@ -1,3 +1,5 @@
+import { defineMessage } from 'react-intl'
+
 import { fireEvent, render, screen } from '@acx-ui/test-utils'
 
 import { RadioCard } from '.'
@@ -13,7 +15,7 @@ describe('RadioCard', () => {
       />)
       await screen.findByText('title')
       await screen.findByText('description')
-      await screen.findByText('WiFi')
+      await screen.findByText('Wi-Fi')
     })
     it('should handle onClick', async () => {
       const onClick = jest.fn()
@@ -38,7 +40,7 @@ describe('RadioCard', () => {
       />)
       await screen.findByText('title')
       await screen.findByText('description')
-      await screen.findByText('WiFi')
+      await screen.findByText('Wi-Fi')
       await screen.findByDisplayValue('value')
     })
     it('should not call onClick', async () => {
@@ -61,10 +63,11 @@ describe('RadioCard', () => {
         title='title'
         description='description'
         categories={['WiFi', 'Switch', 'Edge']}
+        buttonText={defineMessage({ defaultMessage: 'Add' })}
       />)
       await screen.findByText('title')
       await screen.findByText('description')
-      await screen.findByText('WiFi')
+      await screen.findByText('Wi-Fi')
       await screen.findByText('Add')
     })
     it('should handle button onClick', async () => {
@@ -74,6 +77,7 @@ describe('RadioCard', () => {
         value='value'
         title='title'
         description='description'
+        buttonText={defineMessage({ defaultMessage: 'Add' })}
         onClick={onClick}
       />)
       fireEvent.click(await screen.findByText('Add'))
