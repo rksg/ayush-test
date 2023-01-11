@@ -115,7 +115,7 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
   const { $t } = useIntl()
   const results = searches.map(search => search(searchVal as string, $t))
   const count = results.reduce((count, { result }) => count + (result.data?.totalCount || 0), 0)
-  return <Loader states={results.map(({ result }) => result)}>
+  return <Loader states={results.map(({ result }) => ({ ...result, isFetching: false }))}>
     {count
       ? <>
         <PageHeader title={$t(
