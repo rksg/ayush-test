@@ -65,9 +65,11 @@ export default function Dashboard () {
         tabDetails={tabDetails}
         size='large'
         extra={
-          <TenantLink to={'/reports'}>
-            {$t({ defaultMessage: 'See more reports' })} <UI.ArrowChevronRightIcons />
-          </TenantLink>
+          <UI.Wrapper>
+            <TenantLink to={'/reports'}>
+              {$t({ defaultMessage: 'See more reports' })} <UI.ArrowChevronRightIcons />
+            </TenantLink>
+          </UI.Wrapper>
         }
       />
     </>
