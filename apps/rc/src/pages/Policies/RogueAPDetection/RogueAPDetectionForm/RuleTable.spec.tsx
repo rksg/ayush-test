@@ -206,8 +206,8 @@ describe('RuleTable', () => {
       name: /delete/i
     }))
 
-    await screen.findByText(/delete rule/i)
+    await screen.findByText(/delete \"samenetworkrulename1\"?/i)
 
-    fireEvent.click(screen.getByText(/delete rule/i))
+    fireEvent.click(screen.getByText(/delete \"samenetworkrulename1\"?/i))
   })
 })
