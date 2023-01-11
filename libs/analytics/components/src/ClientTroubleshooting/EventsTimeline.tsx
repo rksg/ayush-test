@@ -21,8 +21,8 @@ import {
   eventsCategoryMap,
   networkIncidentCategoryMap,
   RoamingByAP,
-  RoamingTimeSeriesData,
-  RoamingConfigParam
+  RoamingConfigParam,
+  RoamingTimeSeriesData
 } from './config'
 import { transformIncidents }              from './EventsHistory'
 import { ClientInfoData, ConnectionEvent } from './services'
@@ -58,7 +58,7 @@ export function TimeLine (props: TimeLineProps) {
   const roamingEventsAps = connectionDetailsByAP(data?.connectionDetailsByAp as RoamingByAP[])
   const roamingEventsTimeSeries = connectionDetailsByApChartData(
     data?.connectionDetailsByAp as RoamingByAP[]
-  )
+  ) as unknown as RoamingTimeSeriesData[]
   const qualties = transformConnectionQualities(data?.connectionQualities)
   const events = transformEvents(
     data?.connectionEvents as ConnectionEvent[],
@@ -142,7 +142,7 @@ export function TimeLine (props: TimeLineProps) {
               </Col>
               {expandObj[config?.value as keyof TimelineData] &&
                 (config.value === TYPES.ROAMING
-                  ? getRoamingSubtitleConfig(roamingEventsAps)
+                  ? getRoamingSubtitleConfig(roamingEventsAps as RoamingConfigParam)
                   : config?.subtitle
                 )?.map((subtitle) => (
                   <React.Fragment key={subtitle.value}>
@@ -187,7 +187,7 @@ export function TimeLine (props: TimeLineProps) {
                   expandObj[config?.value as keyof TimelineData],
                   !Array.isArray(qualties) ? qualties.all : [],
                   Array.isArray(incidents) ? incidents : [],
-                  roamingEventsTimeSeries as RoamingTimeSeriesData[]
+                  roamingEventsTimeSeries
                 )}
                 showResetZoom={config?.showResetZoom}
                 chartBoundary={chartBoundary}

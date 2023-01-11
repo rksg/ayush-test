@@ -93,7 +93,9 @@ const getSeriesData = (
       .map((record) => [record.start, key, moment(record.end).valueOf(), { ...record, icon: '' }])
   }
   if (series === 'roaming') {
-    return data[key]?.events.map((record: RoamingTimeSeriesData) => [
+    return (
+      data as unknown as { [key: string]: { events: RoamingTimeSeriesData[] } }
+    )[key]?.events.map((record: RoamingTimeSeriesData) => [
       moment(record.start).valueOf(),
       key,
       moment(record.end).valueOf(),

@@ -1,10 +1,8 @@
-// // @ts-nocheck
-// /* eslint-disable */
-import {  TooltipComponentFormatterCallbackParams } from 'echarts'
-import { maxBy, groupBy, flatMap }                  from 'lodash'
-import moment                                       from 'moment-timezone'
-import { renderToString }                           from 'react-dom/server'
-import { IntlShape }                                from 'react-intl'
+import { TooltipComponentFormatterCallbackParams } from 'echarts'
+import { maxBy, groupBy, flatMap }                 from 'lodash'
+import moment                                      from 'moment-timezone'
+import { renderToString }                          from 'react-dom/server'
+import { IntlShape }                               from 'react-intl'
 
 import {
   mapCodeToFailureText,
@@ -15,7 +13,8 @@ import {
   incidentSeverities,
   categoryOptions,
   shortDescription,
-  categoryCodeMap, IncidentCode
+  categoryCodeMap,
+  IncidentCode
 } from '@acx-ui/analytics/utils'
 import { formatter, getIntl, formats } from '@acx-ui/utils'
 
@@ -47,85 +46,20 @@ import {
 import { ConnectionEvent, ConnectionQuality } from './services'
 import * as UI                                from './styledComponents'
 
- type ConnectionEventsKey = 'connectionEvents'
- type NetworkIncidentsKey = 'networkIncidents'
- type RBGA = { r: number,b: number,g: number,a: number }
+type ConnectionEventsKey = 'connectionEvents'
+type NetworkIncidentsKey = 'networkIncidents'
+type RBGA = { r: number; b: number; g: number; a: number }
 const connection = 'connection'
 const performance = 'performance'
 const infrastructure = 'infrastructure'
 const all = 'all'
+const EVENTS = 'events'
+const QUALITY = 'quality'
+const ROAMING = 'roaming'
+const INCIDENTS = 'incidents'
+const dateFormat = 'MMM DD HH:mm:ss'
 
-const getRSSConnectionQuality = (value: number | null | undefined) => {
-  if (value === null || value === undefined) return null
-  if (value >= rssGroups.good.lower) return 'good'
-  if (value >= rssGroups.average.lower) return 'average'
-  return 'bad'
-}
-
-const getSNRConnectionQuality = (value: number | null | undefined) => {
-  if (value === null || value === undefined) return null
-  if (value >= 15) return 'good'
-  if (value > 5) return 'average'
-  return 'bad'
-}
-
-const getThroughputConnectionQuality = (value: number | null | undefined) => {
-  if (value === null || value === undefined) return null
-  value = value / 1024
-  if (value > 2) return 'good'
-  if (value >= 1) return 'average'
-  return 'bad'
-}
-
-const getAvgTxMCSConnectionQuality = (value: number | null | undefined) => {
-  if (value === null || value === undefined) return null
-  value = value / 1024
-  if (value >= 36) return 'good'
-  if (value > 11) return 'average'
-  return 'bad'
-}
-
-export const getConnectionQualityFor = (
-  type: 'rss' | 'snr' | 'throughput' | 'avgTxMCS',
-  value: number | null | undefined) => {
-  switch (type) {
-    case 'rss':        return { quality: getRSSConnectionQuality(value), value }
-    case 'snr':        return { quality: getSNRConnectionQuality(value), value }
-    case 'throughput': return { quality: getThroughputConnectionQuality(value), value }
-    case 'avgTxMCS':   return { quality: getAvgTxMCSConnectionQuality(value), value }
-    default:           return null
-  }
-}
-
-export const takeWorseQuality = (...qualities: (string | null| undefined)[]) => {
-  qualities = qualities.filter(q => q !== null)
-  if (qualities.length === 0) return null
-
-  const types = ['bad', 'average', 'good']
-  const others = (qualities as string[]).filter(q => !types.includes(q))
-  let type
-  while ((type = types.shift())) {
-    if (qualities.includes(type)) return type
-  }
-
-  const sets = Array.from(new Set(qualities))
-    .map(quality => ({ quality, count: others.filter(q => q === quality).length }))
-
-  const max = maxBy(sets, 'count')
-
-  return max && max.quality
-}
-
-export const getQualityColor = (type: Quality) => {
-  switch (type) {
-    case 'bad': return '--acx-semantics-red-50'
-    case 'good': return '--acx-semantics-green-50'
-    case 'average': return '--acx-semantics-yellow-50'
-    default: return '--acx-neutrals-50'
-  }
-}
-
-
+// Utils for Connection Event data starts
 export const transformEvents = (
   events: ConnectionEvent[],
   selectedEventTypes: string[],
@@ -148,9 +82,9 @@ export const transformEvents = (
     )
     const time = +new Date(timestamp)
     let skip =
-        spuriousEvents.includes(state) ||
-        (filterEventTypes.length && !filterEventTypes.includes(eventType)) ||
-        (filterRadios.length && !filterRadios.includes(radio))
+      spuriousEvents.includes(state) ||
+      (filterEventTypes.length && !filterEventTypes.includes(eventType)) ||
+      (filterRadios.length && !filterRadios.includes(radio))
 
     if (skip) return acc
 
@@ -187,48 +121,10 @@ export const categorizeEvent = (name: string, ttc: number | null) => {
   if (ttc !== null && ttc >= 4000) return SLOW
   return SUCCESS
 }
+// Utils for Connection Event data ends
 
-export const transformConnectionQualities = (connectionQualities?: ConnectionQuality[]) => {
-  if (typeof connectionQualities === 'undefined') {
-    return []
-  }
-
-  const mappedQuality = connectionQualities.map((val) => {
-    const rss = getConnectionQualityFor('rss', val.rss)
-    const snr = getConnectionQualityFor('snr', val.snr)
-    const throughput = getConnectionQualityFor('throughput', val.throughput)
-    const avgTxMCS = getConnectionQualityFor('avgTxMCS', val.avgTxMCS)
-    const worseQuality = takeWorseQuality(
-      ...[rss?.quality, snr?.quality, throughput?.quality, avgTxMCS?.quality]
-    )
-    return {
-      ...val,
-      rss,
-      snr,
-      throughput,
-      avgTxMCS,
-      all: { quality: worseQuality }
-    }
-  })
-
-  return {
-    all: mappedQuality.map((val) => ({ ...val, seriesKey: 'all' })) as unknown as LabelledQuality[],
-    rss: mappedQuality
-      .filter((val) => val.rss)
-      .map((val) => ({ ...val, seriesKey: 'rss' })) as unknown as LabelledQuality[],
-    snr: mappedQuality
-      .filter((val) => val.snr)
-      .map((val) => ({ ...val, seriesKey: 'snr' })) as unknown as LabelledQuality[],
-    throughput: mappedQuality
-      .filter((val) => val.throughput)
-      .map((val) => ({ ...val, seriesKey: 'throughput' })) as unknown as LabelledQuality[],
-    avgTxMCS: mappedQuality
-      .filter((val) => val.avgTxMCS)
-      .map((val) => ({ ...val, seriesKey: 'avgTxMCS' })) as unknown as LabelledQuality[]
-  }
-}
-
-export const connectionDetailsByAP = (data : RoamingByAP[]) => {
+// Utils for Roaming Util starts
+export const connectionDetailsByAP = (data: RoamingByAP[]) => {
   return Object.entries(groupBy(data, ({ apMac, radio }) => `${apMac}-${radio}`)).reduce(
     (agg, [key, values]) => {
       agg[key] = {
@@ -240,7 +136,7 @@ export const connectionDetailsByAP = (data : RoamingByAP[]) => {
       }
       return agg
     },
-    {} as { [key: string] : object }
+    {} as { [key: string]: object }
   )
 }
 
@@ -261,7 +157,7 @@ export const connectionDetailsByApChartData = (data: RoamingByAP[]) => {
       }
       return agg
     },
-    {} as { [key: string] : object }
+    {} as { [key: string]: object }
   )
 }
 
@@ -311,8 +207,11 @@ export const rssGradientColorMap = ((density = 5) => {
     }
   ]
 
-  const parseRGBA = (color : string) => {
-    const [r, g, b, a] = color.replace(/[rgba()]/ig, '').split(',').map(v => Number(v))
+  const parseRGBA = (color: string) => {
+    const [r, g, b, a] = color
+      .replace(/[rgba()]/gi, '')
+      .split(',')
+      .map((v) => Number(v))
     return { r, g, b, a }
   }
 
@@ -323,11 +222,11 @@ export const rssGradientColorMap = ((density = 5) => {
       valueFrom,
       valueTo
     }: {
-        valueFrom: number;
-        valueTo: number;
-        colorFrom: string;
-        colorTo: string;
-      },
+      valueFrom: number;
+      valueTo: number;
+      colorFrom: string;
+      colorTo: string;
+    },
     rate: number
   ) => {
     const rgbaFrom = parseRGBA(colorFrom)
@@ -338,7 +237,7 @@ export const rssGradientColorMap = ((density = 5) => {
 
         agg[key] = Math.round(rgbaFrom[key as keyof RBGA] + diff * index)
         return agg
-      }, {} as { [key: string] : number })
+      }, {} as { [key: string]: number })
       const diff = (valueTo - valueFrom) / rate
       return {
         valueFrom: Math.round(valueFrom + index * diff),
@@ -352,8 +251,7 @@ export const rssGradientColorMap = ((density = 5) => {
   )
 })()
 
-
-export const roamingEventFormatter = (event : RoamingTimeSeriesData) => {
+export const roamingEventFormatter = (event: RoamingTimeSeriesData) => {
   const labels = [
     { key: 'rss', label: 'RSS', format: formatter('decibelMilliWattsFormat') },
     { key: 'bssid', label: 'BSSID' },
@@ -371,30 +269,28 @@ export const roamingEventFormatter = (event : RoamingTimeSeriesData) => {
     .map(({ key, label, format }) => ({
       label,
       value:
-        (format && (format(details[key as keyof RoamingByAP] as string))) ||
+        (format && format(details[key as keyof RoamingByAP] as string)) ||
         details[key as keyof RoamingByAP]
     }))
   if (values.length === 0) return null
-  return [{
-    label: values.map(v => v.label).join(' / '),
-    value: values.map(v => v.value).join(' / ')
-  }]
+  return [
+    {
+      label: values.map((v) => v.label).join(' / '),
+      value: values.map((v) => v.value).join(' / ')
+    }
+  ]
 }
-export const getRoamingChartConfig = (
-  data: RoamingConfigParam
-) => {
+export const getRoamingChartConfig = (data: RoamingConfigParam) => {
   return Object.keys(data).map((key) => {
     return {
       key: key,
       label: data[key].apName,
       chartType: 'bar',
-      series: 'roaming'
+      series: ROAMING
     }
   })
 }
-export const getRoamingSubtitleConfig = (
-  data:RoamingConfigParam
-) => {
+export const getRoamingSubtitleConfig = (data: RoamingConfigParam) => {
   return Object.keys(data).map((key, index) => {
     return {
       title: `${data[key].apName} on ${data[key].radio}GHz`,
@@ -403,28 +299,148 @@ export const getRoamingSubtitleConfig = (
     }
   })
 }
+// Utils for Roaming Util ends
+
+// Utils for Connection Quality starts
+const getRSSConnectionQuality = (value: number | null | undefined) => {
+  if (value === null || value === undefined) return null
+  if (value >= rssGroups.good.lower) return 'good'
+  if (value >= rssGroups.average.lower) return 'average'
+  return 'bad'
+}
+
+const getSNRConnectionQuality = (value: number | null | undefined) => {
+  if (value === null || value === undefined) return null
+  if (value >= 15) return 'good'
+  if (value > 5) return 'average'
+  return 'bad'
+}
+
+const getThroughputConnectionQuality = (value: number | null | undefined) => {
+  if (value === null || value === undefined) return null
+  value = value / 1024
+  if (value > 2) return 'good'
+  if (value >= 1) return 'average'
+  return 'bad'
+}
+
+const getAvgTxMCSConnectionQuality = (value: number | null | undefined) => {
+  if (value === null || value === undefined) return null
+  value = value / 1024
+  if (value >= 36) return 'good'
+  if (value > 11) return 'average'
+  return 'bad'
+}
+
+export const getConnectionQualityFor = (
+  type: 'rss' | 'snr' | 'throughput' | 'avgTxMCS',
+  value: number | null | undefined
+) => {
+  switch (type) {
+    case 'rss':
+      return { quality: getRSSConnectionQuality(value), value }
+    case 'snr':
+      return { quality: getSNRConnectionQuality(value), value }
+    case 'throughput':
+      return { quality: getThroughputConnectionQuality(value), value }
+    case 'avgTxMCS':
+      return { quality: getAvgTxMCSConnectionQuality(value), value }
+    default:
+      return null
+  }
+}
+
+export const takeWorseQuality = (...qualities: (string | null | undefined)[]) => {
+  qualities = qualities.filter((q) => q !== null)
+  if (qualities.length === 0) return null
+
+  const types = ['bad', 'average', 'good']
+  const others = (qualities as string[]).filter((q) => !types.includes(q))
+  let type
+  while ((type = types.shift())) {
+    if (qualities.includes(type)) return type
+  }
+
+  const sets = Array.from(new Set(qualities)).map((quality) => ({
+    quality,
+    count: others.filter((q) => q === quality).length
+  }))
+
+  const max = maxBy(sets, 'count')
+
+  return max && max.quality
+}
+
+export const getQualityColor = (type: Quality) => {
+  switch (type) {
+    case 'bad':
+      return '--acx-semantics-red-50'
+    case 'good':
+      return '--acx-semantics-green-50'
+    case 'average':
+      return '--acx-semantics-yellow-50'
+    default:
+      return '--acx-neutrals-50'
+  }
+}
+
+export const transformConnectionQualities = (connectionQualities?: ConnectionQuality[]) => {
+  if (typeof connectionQualities === 'undefined') {
+    return []
+  }
+
+  const mappedQuality = connectionQualities.map((val) => {
+    const rss = getConnectionQualityFor('rss', val.rss)
+    const snr = getConnectionQualityFor('snr', val.snr)
+    const throughput = getConnectionQualityFor('throughput', val.throughput)
+    const avgTxMCS = getConnectionQualityFor('avgTxMCS', val.avgTxMCS)
+    const worseQuality = takeWorseQuality(
+      ...[rss?.quality, snr?.quality, throughput?.quality, avgTxMCS?.quality]
+    )
+    return {
+      ...val,
+      rss,
+      snr,
+      throughput,
+      avgTxMCS,
+      all: { quality: worseQuality }
+    }
+  })
+
+  return {
+    all: mappedQuality.map((val) => ({ ...val, seriesKey: all })) as unknown as LabelledQuality[],
+    rss: mappedQuality
+      .filter((val) => val.rss)
+      .map((val) => ({ ...val, seriesKey: 'rss' })) as unknown as LabelledQuality[],
+    snr: mappedQuality
+      .filter((val) => val.snr)
+      .map((val) => ({ ...val, seriesKey: 'snr' })) as unknown as LabelledQuality[],
+    throughput: mappedQuality
+      .filter((val) => val.throughput)
+      .map((val) => ({ ...val, seriesKey: 'throughput' })) as unknown as LabelledQuality[],
+    avgTxMCS: mappedQuality
+      .filter((val) => val.avgTxMCS)
+      .map((val) => ({ ...val, seriesKey: 'avgTxMCS' })) as unknown as LabelledQuality[]
+  }
+}
+// Utils for Connection Quality ends
+
+// Utils for Network Incidents starts
 export const transformIncidents = (
   incidents: Incident[],
-  selectedCategories: string [],
-  selectedTypes: string [],
+  selectedCategories: string[],
+  selectedTypes: string[],
   intl: IntlShape
 ) =>
   incidents.reduce((acc, incident: Incident) => {
-    const {
-      category,
-      subCategory,
-      shortDescription: desc
-    } = incidentInformation[incident.code]
+    const { category, subCategory, shortDescription: desc } = incidentInformation[incident.code]
     const severity = calculateSeverity(incident.severity)
     const color = incidentSeverities[severity].color
     const title = shortDescription({ ...incident, shortDescription: desc })
-    const cat = categoryOptions.find(
-      ({ label }) => intl.$t(label) === intl.$t(category)
-    )
-    if ((selectedCategories.length &&
-        cat &&
-        !selectedCategories.includes(cat.value)) ||
-        (selectedTypes.length && !selectedTypes.includes(INCIDENT))
+    const cat = categoryOptions.find(({ label }) => intl.$t(label) === intl.$t(category))
+    if (
+      (selectedCategories.length && cat && !selectedCategories.includes(cat.value)) ||
+      (selectedTypes.length && !selectedTypes.includes(INCIDENT))
     ) {
       return acc
     }
@@ -441,9 +457,11 @@ export const transformIncidents = (
     })
     return acc
   }, [] as IncidentDetails[])
+// Utils for Network Incidents ends
 
-export const getTimelineData = (events: Event[], incidents: IncidentDetails[]) =>
-{
+// General Util for the chart's data, tooltip formatter
+
+export const getTimelineData = (events: Event[], incidents: IncidentDetails[]) => {
   const categorisedEvents = events.reduce(
     (acc, event) => {
       if (event?.type === TYPES.CONNECTION_EVENTS) {
@@ -525,7 +543,7 @@ export const getChartData = (
   isExpanded: boolean,
   qualities?: LabelledQuality[],
   incidents?: IncidentDetails[],
-  roamingEvents? : RoamingTimeSeriesData[]
+  roamingEvents?: RoamingTimeSeriesData[]
 ) => {
   if (isExpanded) {
     switch (type) {
@@ -537,7 +555,7 @@ export const getChartData = (
         ] as Event[]
         return [
           ...modifiedEvents.map((event) => {
-            return { ...event, seriesKey: 'all' }
+            return { ...event, seriesKey: all }
           }),
           ...modifiedEvents
         ] as Event[]
@@ -553,7 +571,7 @@ export const getChartData = (
     case TYPES.CONNECTION_EVENTS:
       return [
         ...events.map((event) => {
-          return { ...event, seriesKey: 'all' }
+          return { ...event, seriesKey: all }
         })
       ] as Event[]
     case TYPES.CONNECTION_QUALITY:
@@ -566,14 +584,10 @@ export const getChartData = (
   return []
 }
 
-export const useTooltipFormatter = (
-  params: TooltipComponentFormatterCallbackParams
-) => {
+export const useTooltipFormatter = (params: TooltipComponentFormatterCallbackParams) => {
   const intl = getIntl()
-  const seriesName = (Array.isArray(params))
-    ? params[0].seriesName
-    : ''
-  if(seriesName === 'quality') {
+  const seriesName = Array.isArray(params) ? params[0].seriesName : ''
+  if (seriesName === QUALITY) {
     const obj2 = (Array.isArray(params) && Array.isArray(params[0].data)
       ? params[0].data[3]
       : undefined) as unknown as DisplayEvent
@@ -581,17 +595,12 @@ export const useTooltipFormatter = (
       ? Object.keys(connectionQualityLabels).map(
         (key, index) =>
           `${formatter(
-            connectionQualityLabels[key as keyof typeof connectionQualityLabels]
-              .formatter as keyof typeof formats
+              connectionQualityLabels[key as keyof typeof connectionQualityLabels]
+                .formatter as keyof typeof formats
           )(
-            (obj2 as unknown as LabelledQuality)[
-              key as keyof typeof connectionQualityLabels
-            ].value
-          )}${
-            index + 1 !== Object.keys(connectionQualityLabels).length
-              ? '/ '
-              : ''
-          }`
+            (obj2 as unknown as LabelledQuality)[key as keyof typeof connectionQualityLabels]
+              .value
+          )}${index + 1 !== Object.keys(connectionQualityLabels).length ? '/ ' : ''}`
       )
       : null
 
@@ -599,14 +608,12 @@ export const useTooltipFormatter = (
       return renderToString(
         <UI.TooltipWrapper>
           <UI.TooltipDate>
-            {obj2 && moment(obj2?.start).format('MMM DD HH:mm:ss')}{' '}
+            {obj2 && moment(obj2?.start).format(dateFormat)}{' '}
             {Object.keys(connectionQualityLabels).map(
-              (key,index) =>
-                `${
-                  connectionQualityLabels[
-                  key as keyof typeof connectionQualityLabels
-                  ].label
-                }${index+1 !== Object.keys(connectionQualityLabels).length ?'/ ':''}`
+              (key, index) =>
+                `${connectionQualityLabels[key as keyof typeof connectionQualityLabels].label}${
+                  index + 1 !== Object.keys(connectionQualityLabels).length ? '/ ' : ''
+                }`
             )}
             {':'}
           </UI.TooltipDate>
@@ -615,46 +622,42 @@ export const useTooltipFormatter = (
       )
     }
   }
-  if(seriesName === 'events') {
+  if (seriesName === EVENTS) {
     const obj = (Array.isArray(params) && Array.isArray(params[0].data)
       ? params[0].data[2]
       : undefined) as unknown as DisplayEvent
 
-
     const tooltipText = obj ? formatEventDesc(obj, intl) : null
     return renderToString(
       <UI.TooltipWrapper>
-        <UI.TooltipDate>
-          {obj && moment(obj?.start).format('MMM DD HH:mm:ss')}{' '}
-        </UI.TooltipDate>
+        <UI.TooltipDate>{obj && moment(obj?.start).format(dateFormat)} </UI.TooltipDate>
         {tooltipText}
       </UI.TooltipWrapper>
     )
   }
-  if(seriesName === 'incidents') {
+  if (seriesName === INCIDENTS) {
     const obj = (Array.isArray(params) && Array.isArray(params[0].data)
       ? params[0].data[3]
       : undefined) as unknown as IncidentDetails
     const tooltipText = obj ? obj.title : null
     return renderToString(
       <UI.TooltipWrapper>
-        <UI.TooltipDate>
-          {obj && moment(obj?.start).format('MMM DD HH:mm:ss')}{' '}
-        </UI.TooltipDate>
+        <UI.TooltipDate>{obj && moment(obj?.start).format(dateFormat)} </UI.TooltipDate>
         {tooltipText}
       </UI.TooltipWrapper>
     )
   }
-  if(seriesName === 'roaming') {
+  if (seriesName === ROAMING) {
     const obj = (Array.isArray(params) && Array.isArray(params[0].data)
       ? params[0].data[3]
       : undefined) as unknown as RoamingTimeSeriesData
 
-    const tooltipText = roamingEventFormatter(obj )
+    const tooltipText = roamingEventFormatter(obj)
     return renderToString(
       <UI.TooltipWrapper>
         <UI.TooltipDate>
-          {obj && moment(obj?.start).format('MMM DD HH:mm:ss')}{' '}{tooltipText?.[0].label}{':'}
+          {obj && moment(obj?.start).format(dateFormat)} {tooltipText?.[0].label}
+          {':'}
         </UI.TooltipDate>
         {tooltipText?.[0].value}
       </UI.TooltipWrapper>
