@@ -15,7 +15,7 @@ export interface Ipv4Format {
 }
 
 export class IpCalculatorUtilsService {
-  Ipv4Address (addressDotQuad: string, netmaskBits: string) {
+  Ipv4Address (addressDotQuad: string, netmaskBits: number) {
     const ip: Ipv4Format = {
       addressDotQuad: '',
       netmaskBits: 0,
@@ -36,6 +36,7 @@ export class IpCalculatorUtilsService {
     let byte2 = Math.max(0, Math.min(255, parseInt(split[1], 10)))
     let byte3 = Math.max(0, Math.min(255, parseInt(split[2], 10)))
     let byte4 = Math.max(0, Math.min(255, parseInt(split[3], 10)))
+    console.log(byte1, byte2, byte3, byte4)
     if (isNaN(byte1)) {
       byte1 = 0
     } /* fix NaN situations */
@@ -50,7 +51,7 @@ export class IpCalculatorUtilsService {
     }
     addressDotQuad = (byte1 + '.' + byte2 + '.' + byte3 + '.' + byte4)
     ip.addressDotQuad = addressDotQuad.toString()
-    ip.netmaskBits = Math.max(0, Math.min(32, parseInt(netmaskBits, 10))) /* sanity check: valid values: = 0-32 */
+    ip.netmaskBits = Math.max(0, Math.min(32, netmaskBits)) /* sanity check: valid values: = 0-32 */
     ip.addressInteger = this.Ipv4DotquadAToIntA(ip.addressDotQuad)
     ip.addressBinStr = this.Ipv4IntAToBinstrA(ip.addressInteger)
     ip.netmaskBinStr = this.Ipv4BitsNMToBinstrNM(ip.netmaskBits)

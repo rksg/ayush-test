@@ -20,7 +20,7 @@ import EditEdge                   from './pages/Devices/Edge/EdgeDetails/EditEdg
 import { StackForm }              from './pages/Devices/Switch/StackForm'
 import SwitchDetails              from './pages/Devices/Switch/SwitchDetails'
 import SwitchesTable              from './pages/Devices/Switch/SwitchesTable'
-import { AddSwitchForm }          from './pages/Devices/Switch/SwitchForm/AddSwitchForm'
+import { SwitchForm }             from './pages/Devices/Switch/SwitchForm'
 import ApDetails                  from './pages/Devices/Wifi/ApDetails'
 import { ApEdit }                 from './pages/Devices/Wifi/ApEdit'
 import { ApForm }                 from './pages/Devices/Wifi/ApForm'
@@ -112,8 +112,8 @@ function DeviceRoutes () {
       <Route path='devices/edge/:serialNumber/edge-details/:activeTab'
         element={<EdgeDetails />} />
       <Route path='devices/switch' element={<SwitchesTable />} />
-      <Route path='devices/switch/:action' element={<AddSwitchForm />} />
-      <Route path='devices/switch/:switchId/:action' element={<AddSwitchForm />} />
+      <Route path='devices/switch/:action' element={<SwitchForm />} />
+      <Route path='devices/switch/:switchId/:action' element={<SwitchForm />} />
       <Route path='devices/switch/stack/:action' element={<StackForm />} />
       <Route path='devices/switch/stack/:switchId/:action' element={<StackForm />} />
       <Route path='devices/edge/list' element={<Edges />} />

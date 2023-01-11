@@ -14,8 +14,8 @@ import {
   validateSwitchGatewayIpAddress
 } from '@acx-ui/rc/utils'
 
+import StaticRoutes      from './StaticRoutes'
 import { JumboModeSpan } from './styledComponents'
-import StaticRoutes from './StaticRoutes'
 
 const spanningTreePriorityItem = [
   { label: '0 - likely root', value: 0 },
@@ -36,10 +36,11 @@ const spanningTreePriorityItem = [
   { label: '61440', value: 61440 }
 ]
 
-export function SwitchStackSetting (props: { apGroupOption: DefaultOptionType[] }) {
+export function SwitchStackSetting
+(props: { apGroupOption: DefaultOptionType[], readOnly: boolean }) {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
-  const { apGroupOption } = props
+  const { apGroupOption, readOnly } = props
   const [enableDhcp, setEnableDhcp] = useState(false)
   const [isL3ConfigAllowed, setIsL3ConfigAllowed] = useState(false)
   const [ipAddressInterfaceType, setIpAddressInterfaceType] = useState('VE')
@@ -94,7 +95,7 @@ export function SwitchStackSetting (props: { apGroupOption: DefaultOptionType[] 
         initialValue={null}
         children={
           <Select
-            disabled={apGroupOption?.length === 0}
+            disabled={readOnly || apGroupOption?.length === 0}
             options={[
               {
                 label: $t({ defaultMessage: 'Select VLAN...' }),
@@ -113,7 +114,7 @@ export function SwitchStackSetting (props: { apGroupOption: DefaultOptionType[] 
           { required: true }
         ]}
       >
-        <Radio.Group onChange={onIpAddressTypeChange}>
+        <Radio.Group disabled={readOnly} onChange={onIpAddressTypeChange}>
           <Space direction='vertical'>
             <Radio key='dynamic' value='dynamic'>
               {$t({ defaultMessage: 'DHCP' })}
@@ -149,7 +150,7 @@ export function SwitchStackSetting (props: { apGroupOption: DefaultOptionType[] 
         ]}
       >
         <Input
-          disabled={enableDhcp}/>
+          disabled={readOnly || enableDhcp}/>
       </Form.Item>
 
       <Form.Item
@@ -161,7 +162,7 @@ export function SwitchStackSetting (props: { apGroupOption: DefaultOptionType[] 
             validateSwitchSubnetIpAddress(form.getFieldValue('ipAddress'), value) }
         ]}
       >
-        <Input disabled={enableDhcp} />
+        <Input disabled={readOnly || enableDhcp} />
       </Form.Item>
 
       <Form.Item
@@ -174,13 +175,13 @@ export function SwitchStackSetting (props: { apGroupOption: DefaultOptionType[] 
               form.getFieldValue('ipAddress'), form.getFieldValue('subnetMask'), value) }
         ]}
       >
-        <Input disabled={enableDhcp} />
+        <Input disabled={readOnly || enableDhcp} />
       </Form.Item>
 
       <Form.Item>
         <JumboModeSpan>{$t({ defaultMessage: 'Jumbo Mode' })}</JumboModeSpan>
         <Form.Item noStyle name='jumboMode' valuePropName='checked'>
-          <Switch />
+          <Switch disabled={readOnly} />
         </Form.Item>
       </Form.Item>
 
@@ -191,7 +192,7 @@ export function SwitchStackSetting (props: { apGroupOption: DefaultOptionType[] 
           { required: true }
         ]}
       >
-        <Radio.Group>
+        <Radio.Group disabled={readOnly}>
           <Space direction='vertical'>
             <Radio key={IGMP_SNOOPING_TYPE.ACTIVE} value={IGMP_SNOOPING_TYPE.ACTIVE}>
               {$t({ defaultMessage: 'Active' })}
@@ -217,10 +218,11 @@ export function SwitchStackSetting (props: { apGroupOption: DefaultOptionType[] 
               value: ''
             },
             ...spanningTreePriorityItem]}
+          disabled={readOnly}
         />}
       />
 
-      <StaticRoutes />
+      { isL3ConfigAllowed && <StaticRoutes readOnly={readOnly} /> }
     </>
   )
 }

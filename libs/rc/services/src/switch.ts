@@ -273,16 +273,38 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         return {
           ...req
         }
-      }
+      },
+      providesTags: [{ type: 'Switch', id: 'ROUTES' }]
     }),
-    updateSwitchStaticRoutes: build.mutation<StaticRoute, RequestPayload>({
+    addSwitchStaticRoute: build.mutation<StaticRoute, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.addStaticRoutes, params)
+        const req = createHttpRequest(SwitchUrlsInfo.addStaticRoute, params)
         return {
           ...req,
           body: payload
         }
-      }
+      },
+      invalidatesTags: [{ type: 'Switch', id: 'ROUTES' }]
+    }),
+    updateSwitchStaticRoute: build.mutation<StaticRoute, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.updateStaticRoute, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Switch', id: 'ROUTES' }]
+    }),
+    deleteSwitchStaticRoutes: build.mutation<StaticRoute, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.deleteStaticRoutes, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Switch', id: 'ROUTES' }]
     })
   })
 })
@@ -375,5 +397,7 @@ export const {
   useGetSwitchAclsQuery,
   useGetVlanListBySwitchLevelQuery,
   useGetSwitchStaticRoutesQuery,
-  useUpdateSwitchStaticRoutesMutation
+  useAddSwitchStaticRouteMutation,
+  useUpdateSwitchStaticRouteMutation,
+  useDeleteSwitchStaticRoutesMutation
 } = switchApi

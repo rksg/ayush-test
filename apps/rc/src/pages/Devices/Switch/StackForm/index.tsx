@@ -30,7 +30,8 @@ import {
   TableProps,
   Table,
   showToast,
-  Tabs
+  Tabs,
+  Alert
 } from '@acx-ui/components'
 import { DeleteOutlinedIcon, QuestionMarkCircleOutlined, Drag } from '@acx-ui/icons'
 import {
@@ -46,8 +47,7 @@ import {
   SWITCH_SERIAL_PATTERN,
   SwitchTable,
   SwitchStatusEnum,
-  isOperationalSwitch,
-  isL3FunctionSupported
+  isOperationalSwitch
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -86,11 +86,11 @@ export function StackForm () {
 
   const { data: venuesList, isLoading: isVenuesListLoading } =
     useVenuesListQuery({ params: { tenantId }, payload: defaultPayload })
-
   const [getVlansByVenue] = useLazyGetVlansByVenueQuery()
-  const { data: switchData } = useGetSwitchQuery({ params: { tenantId, switchId } })
+  const { data: switchData } =
+    useGetSwitchQuery({ params: { tenantId, switchId } }, { skip: action === 'add' })
   const { data: switchDetail } =
-    useSwitchDetailHeaderQuery({ params: { tenantId, switchId } })
+    useSwitchDetailHeaderQuery({ params: { tenantId, switchId } }, { skip: action === 'add' })
 
   const [venueOption, setVenueOption] = useState([] as DefaultOptionType[])
   const [apGroupOption, setApGroupOption] = useState([] as DefaultOptionType[])
@@ -98,6 +98,8 @@ export function StackForm () {
   const [validateModel, setValidateModel] = useState([] as string[])
   const [visibleNotification, setVisibleNotification] = useState(false)
   const [deviceOnline, setDeviceOnline] = useState(false)
+  const [isIcx7650, setIsIcx7650] = useState(false)
+  const [readOnly, setReadOnly] = useState(false)
 
   const [activeRow, setActiveRow] = useState('1')
   const [rowKey, setRowKey] = useState(3)
@@ -120,8 +122,10 @@ export function StackForm () {
     if(switchData && switchDetail){
       formRef?.current?.resetFields()
       formRef?.current?.setFieldsValue({ ...switchData, ...switchDetail })
-      console.log({ ...switchData, ...switchDetail })
 
+      console.log(!!switchDetail.model?.includes('ICX7650'))
+      setIsIcx7650(!!switchDetail.model?.includes('ICX7650'))
+      setReadOnly(!!switchDetail.cliApplied)
       setDeviceOnline(
         isOperationalSwitch(
           switchDetail.deviceStatus as SwitchStatusEnum, switchDetail.syncedSwitchConfig)
@@ -437,15 +441,15 @@ export function StackForm () {
           $t({ defaultMessage: 'Apply' }) : $t({ defaultMessage: 'Add' }) }}
       >
         <StepsForm.StepForm>
-          <Row gutter={20}>
-            <Col span={8}>
-              <Loader
-                states={[
-                  {
-                    isLoading: isVenuesListLoading
-                  }
-                ]}
-              >
+          <Loader
+            states={[
+              {
+                isLoading: isVenuesListLoading
+              }
+            ]}
+          >
+            <Row gutter={20}>
+              <Col span={8}>
                 <Tabs onChange={onTabChange}
                   activeKey={currentTab}
                   type='line'
@@ -455,6 +459,9 @@ export function StackForm () {
                   <Tabs.TabPane tab={$t({ defaultMessage: 'Settings' })} key='settings' />
                 </Tabs>
                 <div style={{ display: currentTab === 'details' ? 'block' : 'none' }}>
+                  {readOnly &&
+                  // eslint-disable-next-line max-len
+                  <Alert type='info' message={$t({ defaultMessage: 'These settings cannot be changed, since a CLI profile is applied on the venue' })} />}
                   <Form.Item
                     name='venueId'
                     label={$t({ defaultMessage: 'Venue' })}
@@ -570,15 +577,17 @@ export function StackForm () {
                     validateModel={validateModel}
                   />
                 </div>
+
                 {editMode && <div style={{ display: currentTab === 'settings' ? 'block' : 'none' }}>
                   <SwitchStackSetting
                     apGroupOption={apGroupOption}
+                    readOnly={readOnly}
                   />
                 </div>
                 }
-              </Loader>
-            </Col>
-          </Row>
+              </Col>
+            </Row>
+          </Loader>
         </StepsForm.StepForm>
       </StepsForm>
     </>

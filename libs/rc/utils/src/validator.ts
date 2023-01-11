@@ -507,8 +507,8 @@ export function validateSwitchStaticRouteIp (ipAddress: string) {
 export function validateSwitchStaticRouteNextHop (ipAddress: string) {
   const { $t } = getIntl()
   // eslint-disable-next-line max-len
-  const ipRegexp = new RegExp(/^((1\.){3}([1-9]|[1-9]\d|[12]\d\d)|(1\.){2}([2-9]|[1-9]\d|[12]\d\d)\.([1-9]?\d|[12]\d\d)|1\.([2-9]|[1-9]\d|[12]\d\d)(\.([1-9]?\d|[12]\d\d)){2}|([2-9]|[1-9]\d|1\d\d|2[01]\d|22[0-3])(\.([1-9]?\d|[12]\d\d)){3})$/)
-  if (!ipRegexp.test(ipAddress)) {
+  const nextHopRegexp = new RegExp(/^((1\.){3}([1-9]|[1-9]\d|[12]\d\d)|(1\.){2}([2-9]|[1-9]\d|[12]\d\d)\.([1-9]?\d|[12]\d\d)|1\.([2-9]|[1-9]\d|[12]\d\d)(\.([1-9]?\d|[12]\d\d)){2}|([2-9]|[1-9]\d|1\d\d|2[01]\d|22[0-3])(\.([1-9]?\d|[12]\d\d)){3})$/)
+  if (!nextHopRegexp.test(ipAddress)) {
     return Promise.reject($t(validationMessages.switchStaticRouteNextHopInvalid))
   }
   return Promise.resolve()
@@ -516,8 +516,8 @@ export function validateSwitchStaticRouteNextHop (ipAddress: string) {
 
 export function validateSwitchStaticRouteAdminDistance (ipAddress: string) {
   const { $t } = getIntl()
-  const ipRegexp = new RegExp('^([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])$')
-  if (!ipRegexp.test(ipAddress)) {
+  const adRegexp = new RegExp('^([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])$')
+  if (!adRegexp.test(ipAddress)) {
     return Promise.reject($t(validationMessages.switchStaticRouteAdminDistanceInvalid))
   }
   return Promise.resolve()

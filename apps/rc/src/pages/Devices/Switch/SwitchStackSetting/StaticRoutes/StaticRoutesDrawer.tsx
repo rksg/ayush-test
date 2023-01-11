@@ -3,14 +3,21 @@ import { useEffect } from 'react'
 
 import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
+import { useParams }   from 'react-router-dom'
 
-import { Drawer }                          from '@acx-ui/components'
+import { Drawer, showToast }           from '@acx-ui/components'
+import {
+  useAddSwitchStaticRouteMutation,
+  useUpdateSwitchStaticRouteMutation
+} from '@acx-ui/rc/services'
 import {
   StaticRoute,
   validateSwitchStaticRouteIp,
   IP_SUBNET_VALIDATION_PATTERN,
   validateSwitchStaticRouteNextHop,
-  validateSwitchStaticRouteAdminDistance
+  validateSwitchStaticRouteAdminDistance,
+  IpCalculatorUtilsService,
+  Ipv4Format
 } from '@acx-ui/rc/utils'
 
 interface StaticRoutesDrawerProps {
@@ -22,8 +29,11 @@ interface StaticRoutesDrawerProps {
 const StaticRoutesDrawer = (props: StaticRoutesDrawerProps) => {
 
   const { $t } = useIntl()
+  const params = useParams()
   const { visible, setVisible, data } = props
   const [formRef] = Form.useForm()
+  const [addSwitchStaticRoute] = useAddSwitchStaticRouteMutation()
+  const [updateSwitchStaticRoute] = useUpdateSwitchStaticRouteMutation()
 
   useEffect(() => {
     if(visible) {
@@ -38,18 +48,19 @@ const StaticRoutesDrawer = (props: StaticRoutesDrawerProps) => {
         $t({ defaultMessage: 'Add' }) })
   }
 
-  // const updateIp() {
-  //   const destinationIp = formRef.getFieldValue('destinationIp');
-  //   if(RegExp(IP_SUBNET_VALIDATION_PATTERN).test(destinationIp)) {
-  //     const ipAddress = destinationIp.split('/')[0];
-  //     const mask = parseInt(destinationIp.split('/')[1]);
-  //     const ipCalculated: Ipv4Format = IpCalculatorUtilsService.Ipv4Address(ipAddress, mask);
-  //     const ipAddressCalculated = ipCalculated.netaddressDotQuad + '/' + mask;
-  //     if(ipAddressCalculated !== destinationIp){
-  //       this.staticRouteForm.patchValue({'destinationIp': ipAddressCalculated});
-  //     }
-  //   }
-  // }
+  const updateIp = () => {
+    const destinationIp = formRef.getFieldValue('destinationIp')
+    if(!RegExp(IP_SUBNET_VALIDATION_PATTERN).test(destinationIp)) {
+      const ipAddress = destinationIp.split('/')[0]
+      const mask = parseInt(destinationIp.split('/')[1], 10)
+      const ipCalcService = new IpCalculatorUtilsService()
+      const ipCalculated: Ipv4Format = ipCalcService.Ipv4Address(ipAddress, mask)
+      const ipAddressCalculated = ipCalculated.netaddressDotQuad + '/' + mask
+      if(ipAddressCalculated !== formRef.getFieldValue('destinationIp')){
+        formRef.setFieldValue('destinationIp', ipAddressCalculated)
+      }
+    }
+  }
 
   const handleClose = () => {
     setVisible(false)
@@ -65,14 +76,23 @@ const StaticRoutesDrawer = (props: StaticRoutesDrawerProps) => {
   }
 
   const handleFinish = (formData: StaticRoute) => {
+    const payload = formData
     if(data) {
-
-      // editRoute({ ...formData, id: data.id })
+      updateSwitchStaticRoute({ params, payload }).unwrap()
+        .catch((error) => {
+          showToast({
+            type: 'error',
+            content: error.data.errors[0].message
+          })
+        })
     } else {
-      // addRoute({
-      //   ...formData,
-      //   id: formData.destinationIp + formData.nextHop
-      // })
+      addSwitchStaticRoute({ params, payload }).unwrap()
+        .catch((error) => {
+          showToast({
+            type: 'error',
+            content: error.data.errors[0].message
+          })
+        })
     }
     formRef.resetFields()
   }
@@ -85,7 +105,7 @@ const StaticRoutesDrawer = (props: StaticRoutesDrawerProps) => {
         { required: true },
         { validator: (_, value) => validateSwitchStaticRouteIp(value) }
       ]}
-      children={<Input />}
+      children={<Input onBlur={updateIp}/>}
       validateFirst
     />
     <Form.Item
@@ -106,6 +126,11 @@ const StaticRoutesDrawer = (props: StaticRoutesDrawerProps) => {
       ]}
       children={<Input />}
       validateFirst
+    />
+    <Form.Item
+      name='id'
+      initialValue={''}
+      hidden={true}
     />
   </Form>
 

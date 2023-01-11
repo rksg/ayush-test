@@ -1,34 +1,23 @@
 import { useEffect, useState } from 'react'
 
-import {
-  Col, Row
-} from 'antd'
-import { cloneDeep }              from 'lodash'
-import { useIntl }                from 'react-intl'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
-import { Loader, StepsForm, Table, TableProps, Button, showToast }      from '@acx-ui/components'
-import { useGetSwitchStaticRoutesQuery, useUpdateSwitchStaticRoutesMutation } from '@acx-ui/rc/services'
-import { EdgeStaticRoute, StaticRoute }                                 from '@acx-ui/rc/utils'
-import { useTenantLink }                                                from '@acx-ui/react-router-dom'
+import { Loader, Table, TableProps, Button }                                  from '@acx-ui/components'
+import { useGetSwitchStaticRoutesQuery, useDeleteSwitchStaticRoutesMutation } from '@acx-ui/rc/services'
+import { StaticRoute }                                                        from '@acx-ui/rc/utils'
 
 import StaticRoutesDrawer from './StaticRoutesDrawer'
 
-
-const StaticRoutes = () => {
+const StaticRoutes = (props: { readOnly: boolean }) => {
 
   const { $t } = useIntl()
   const params = useParams()
-  const navigate = useNavigate()
-  const linkToEdgeList = useTenantLink('/devices/edge/list')
+  const { readOnly } = props
   const [drawerVisible, setDrawerVisible] = useState(false)
-  const [routesData, setRoutesData] = useState<StaticRoute[]>([])
   const [currentEditData, setCurrentEditData] = useState<StaticRoute>()
   const { data, isFetching: isDataFetching }= useGetSwitchStaticRoutesQuery({ params: params })
-  const [
-    updateStaticRoutes,
-    { isLoading: isStaticRoutesUpdating }
-  ] = useUpdateSwitchStaticRoutesMutation()
+  const [deleteSwitchStaticRoutes] = useDeleteSwitchStaticRoutesMutation()
 
   useEffect(() => {
   }, [data])
@@ -67,14 +56,7 @@ const StaticRoutes = () => {
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedRows, clearSelection) => {
-        setRoutesData(routesData.filter(item => {
-          for(let deletedItem of selectedRows) {
-            if(deletedItem.id === item.id) {
-              return false
-            }
-          }
-          return true
-        }))
+        deleteSwitchStaticRoutes({ params, payload: selectedRows.map(item => item.id) })
         clearSelection()
       }
     }
@@ -87,40 +69,15 @@ const StaticRoutes = () => {
 
   const toolBarRender = () => [
     <Button type='link' onClick={() => openDrawer()}>
-      {$t({ defaultMessage: 'Add Route' })}
+      {$t({ defaultMessage: 'Add Rule' })}
     </Button>
   ]
-
-  const addRoute = (data: StaticRoute) => {
-    setRoutesData([...routesData, data])
-  }
-
-  const editRoute = (data: StaticRoute) => {
-    const editIndex = routesData.findIndex(item => item.id === data.id)
-    const newRoutesData = cloneDeep(routesData)
-    newRoutesData[editIndex] = data
-    setRoutesData([...newRoutesData])
-  }
-
-  const handleFinish = async () => {
-    try {
-      const payload = {
-        routes: routesData
-      }
-      await updateStaticRoutes({ params: params, payload: payload }).unwrap()
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
-    }
-  }
 
   return (
     <Loader states={[
       {
         isLoading: false,
-        isFetching: isDataFetching || isStaticRoutesUpdating
+        isFetching: isDataFetching
       }
     ]}>
       <StaticRoutesDrawer
@@ -130,11 +87,11 @@ const StaticRoutes = () => {
       />
       <Table<StaticRoute>
         headerTitle={$t({ defaultMessage: 'Static Routes' })}
-        toolBarRender={toolBarRender}
+        toolBarRender={readOnly ? undefined : toolBarRender}
         columns={columns}
-        rowActions={rowActions}
+        rowActions={readOnly ? undefined : rowActions}
         dataSource={data}
-        rowSelection={{ type: 'checkbox' }}
+        rowSelection={readOnly ? undefined : { type: 'checkbox' }}
         rowKey='id'
         type='form'
       />

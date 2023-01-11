@@ -13,9 +13,9 @@ import {
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
-import { swtichListResponse, venueListResponse, vlansByVenueListResponse } from '../__tests__/fixtures'
+import { swtichListResponse, venueListResponse, vlansByVenueListResponse } from './__tests__/fixtures'
 
-import { AddSwitchForm } from '.'
+import { SwitchForm } from '.'
 
 //switchListEmptyResponse
 //vlansByVenueListEmptyResponse
@@ -46,7 +46,7 @@ describe('Add switch form', () => {
   })
 
   it('should render correctly', async () => {
-    render(<Provider><AddSwitchForm /></Provider>, {
+    render(<Provider><SwitchForm /></Provider>, {
       route: { params, path: '/:tenantId/devices/switch/:action' }
     })
     expect(await screen.findByText(/add switch/i)).toBeVisible()
@@ -54,7 +54,7 @@ describe('Add switch form', () => {
 
 
   it('should add standalone switch correctly', async () => {
-    render(<Provider><AddSwitchForm /></Provider>, {
+    render(<Provider><SwitchForm /></Provider>, {
       route: { params, path: '/:tenantId/devices/switch/:action' }
     })
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
@@ -70,7 +70,7 @@ describe('Add switch form', () => {
   })
 
   it('should add stack member correctly', async () => {
-    render(<Provider><AddSwitchForm /></Provider>, {
+    render(<Provider><SwitchForm /></Provider>, {
       route: { params, path: '/:tenantId/devices/switch/:action' }
     })
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
@@ -89,7 +89,7 @@ describe('Add switch form', () => {
   })
 
   it('should cancel chanage correctly', async () => {
-    render(<Provider><AddSwitchForm /></Provider>, {
+    render(<Provider><SwitchForm /></Provider>, {
       route: { params, path: '/:tenantId/devices/switch/:action' }
     })
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
@@ -111,7 +111,7 @@ describe('Add switch form', () => {
           return res(ctx.status(400))
         })
     )
-    render(<Provider><AddSwitchForm /></Provider>, {
+    render(<Provider><SwitchForm /></Provider>, {
       route: { params, path: '/:tenantId/devices/switch/:action' }
     })
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
@@ -134,7 +134,7 @@ describe('Add switch form', () => {
           return res(ctx.status(400))
         })
     )
-    render(<Provider><AddSwitchForm /></Provider>, {
+    render(<Provider><SwitchForm /></Provider>, {
       route: { params, path: '/:tenantId/devices/switch/:action' }
     })
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))

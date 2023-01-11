@@ -116,5 +116,13 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   addStaticRoute: {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/staticRoute/switch/:switchId'
+  },
+  updateStaticRoute: {
+    method: 'put',
+    url: '/api/switch/tenant/:tenantId/staticRoute'
+  },
+  deleteStaticRoutes: {
+    method: 'delete',
+    url: '/api/switch/tenant/:tenantId/staticRoutes'
   }
 }
