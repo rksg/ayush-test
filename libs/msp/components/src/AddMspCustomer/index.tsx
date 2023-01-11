@@ -17,14 +17,14 @@ import { useIntl } from 'react-intl'
 
 import {
   GoogleMap,
-  GoogleMapMarker,
+  // GoogleMapMarker,
   PageHeader,
   showToast,
   StepsForm,
   StepsFormInstance,
   Subtitle
 } from '@acx-ui/components'
-import { get } from '@acx-ui/config'
+// import { get } from '@acx-ui/config'
 // import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { SearchOutlined } from '@acx-ui/icons'
 import {
@@ -112,21 +112,21 @@ export const retrieveCityState = (addressComponents: Array<AddressComponent>, co
 
 export const addressParser = async (place: google.maps.places.PlaceResult) => {
   const address: Address = {}
-  const lat = place.geometry?.location?.lat()
-  const lng = place.geometry?.location?.lng()
-  address.latitude = lat
-  address.longitude = lng
+  // const lat = place.geometry?.location?.lat()
+  // const lng = place.geometry?.location?.lng()
+  // address.latitude = lat
+  // address.longitude = lng
 
   // eslint-disable-next-line max-len
-  const timezone = await fetch(`https://maps.googleapis.com/maps/api/timezone/json?location=${lat},${lng}&timestamp=${Math.floor(Date.now() / 1000)}&key=${get('GOOGLE_MAPS_KEY')}`)
-    .then(res => res.json())
-  address.timezone = timezone.timeZoneId
+  // const timezone = await fetch(`https://maps.googleapis.com/maps/api/timezone/json?location=${lat},${lng}&timestamp=${Math.floor(Date.now() / 1000)}&key=${get('GOOGLE_MAPS_KEY')}`)
+  //   .then(res => res.json())
+  // address.timezone = timezone.timeZoneId
   address.addressLine = place.formatted_address
 
-  const latlng = new google.maps.LatLng({
-    lat: Number(lat),
-    lng: Number(lng)
-  })
+  // const latlng = new google.maps.LatLng({
+  //   lat: Number(lat),
+  //   lng: Number(lng)
+  // })
 
   const countryObj = place?.address_components?.find(
     el => el.types.includes('country')
@@ -144,7 +144,7 @@ export const addressParser = async (place: google.maps.places.PlaceResult) => {
         ? `${cityObj.city}, ${cityObj.state}` : cityObj.city
     }
   }
-  return { latlng, address }
+  return { address }
 }
 
 const defaultAddress: Address = {
@@ -160,7 +160,6 @@ export function AddMspCustomer () {
   const intl = useIntl()
   const isMapEnabled = true//useIsSplitOn(Features.G_MAP)
   const navigate = useNavigate()
-  // const [drawer2Visible, setDrawer2Visible] = useState(false)
   const formRef = useRef<StepsFormInstance<MspEcData>>()
   const { Option } = Select
   // const params = useParams()
@@ -170,12 +169,12 @@ export function AddMspCustomer () {
 
   const [addCustomerr] = useAddCustomerMutation()
 
-  const [zoom, setZoom] = useState(1)
-  const [center, setCenter] = useState<google.maps.LatLngLiteral>({
-    lat: 0,
-    lng: 0
-  })
-  const [marker, setMarker] = React.useState<google.maps.LatLng>()
+  // const [zoom, setZoom] = useState(1)
+  // const [center, setCenter] = useState<google.maps.LatLngLiteral>({
+  //   lat: 0,
+  //   lng: 0
+  // })
+  // const [marker, setMarker] = React.useState<google.maps.LatLng>()
   const [address, updateAddress] = useState<Address>(isMapEnabled? {} : defaultAddress)
 
   const { action, tenantId, mspEcTenantId } = useParams()
@@ -206,21 +205,7 @@ export function AddMspCustomer () {
     }
   }, [data, isMapEnabled, window.google])
 
-  // const venuesListPayload = {
-  //   searchString: '',
-  //   fields: ['name', 'id'],
-  //   searchTargetFields: ['name'],
-  //   filters: {},
-  //   pageSize: 10000
-  // }
-  // const [venuesList] = useLazyVenuesListQuery()
   const [sameCountry, setSameCountry] = useState(true)
-  // const nameValidator = async (value: string) => {
-  //   const payload = { ...venuesListPayload, searchString: value }
-  //   const list = (await venuesList({ params, payload }, true)
-  //     .unwrap()).data.filter(n => n.id !== data?.id).map(n => ({ name: n.name }))
-  //   return checkObjectNotExists(list, { name: value } , intl.$t({ defaultMessage: 'Venue' }))
-  // }
   const addressValidator = async (value: string) => {
     const isEdit = action === 'edit'
     const isSameValue = value ===
@@ -239,7 +224,7 @@ export function AddMspCustomer () {
     const autocomplete = new google.maps.places.Autocomplete(event.target)
     autocomplete.addListener('place_changed', async () => {
       const place = autocomplete.getPlace()
-      const { latlng, address } = await addressParser(place)
+      const { address } = await addressParser(place)
       const isSameCountry = true//(data && (data?.address.country === address.country)) || false
       setSameCountry(isSameCountry)
       let errorList = []
@@ -255,10 +240,10 @@ export function AddMspCustomer () {
         errors: errorList
       }])
 
-      setMarker(latlng)
-      setCenter(latlng.toJSON())
+      // setMarker(latlng)
+      // setCenter(latlng.toJSON())
       updateAddress(address)
-      setZoom(16)
+      // setZoom(16)
     })
   }
 
@@ -684,47 +669,31 @@ export function AddMspCustomer () {
                 hasFeedback
                 children={<Input />}
               />
-              <GoogleMap.FormItem
+              <Form.Item
+                // noStyle
                 label={intl.$t({ defaultMessage: 'Address' })}
-                required
-              >
-                <Form.Item
-                  noStyle
-                  label={intl.$t({ defaultMessage: 'Address' })}
-                  name={['address', 'addressLine']}
-                  rules={[{
-                    required: isMapEnabled ? true : false
-                  }, {
-                    validator: (_, value) => addressValidator(value),
-                    validateTrigger: 'onBlur'
-                  }
-                  ]}
-                >
-                  <Input
-                    allowClear
-                    placeholder={intl.$t({ defaultMessage: 'Set address here' })}
-                    prefix={<SearchOutlined />}
-                    onChange={addressOnChange}
-                    data-testid='address-input'
-                    disabled={!isMapEnabled}
-                    value={address.addressLine}
-                  />
-                </Form.Item>
-                {isMapEnabled ?
-                  <GoogleMap
-                    libraries={['places']}
-                    mapTypeControl={false}
-                    streetViewControl={false}
-                    fullscreenControl={false}
-                    zoom={zoom}
-                    center={center}
-                  >
-                    {marker && <GoogleMapMarker position={marker} />}
-                  </GoogleMap>
-                  :
-                  <GoogleMap.NotEnabled />
+                name={['address', 'addressLine']}
+                rules={[{
+                  required: isMapEnabled ? true : false
+                }, {
+                  validator: (_, value) => addressValidator(value),
+                  validateTrigger: 'onBlur'
                 }
-              </GoogleMap.FormItem>
+                ]}
+              >
+                <Input
+                  allowClear
+                  placeholder={intl.$t({ defaultMessage: 'Set address here' })}
+                  prefix={<SearchOutlined />}
+                  onChange={addressOnChange}
+                  data-testid='address-input'
+                  disabled={!isMapEnabled}
+                  value={address.addressLine}
+                />
+              </Form.Item >
+              <Form.Item hidden>
+                <GoogleMap libraries={['places']} />
+              </Form.Item>
             </Col>
           </Row>
           <Row gutter={10}>
@@ -821,117 +790,6 @@ export function AddMspCustomer () {
         <StepsForm.StepForm name='subscriptions'
           title={intl.$t({ defaultMessage: 'Subscriptions' })}>
           <AddCustomerSubscriptionForm></AddCustomerSubscriptionForm>
-          {/* <Row gutter={20}>
-            <Col span={8}>
-              <Subtitle level={3}>
-                { intl.$t({ defaultMessage: 'Subscriptions' }) }</Subtitle>
-              <Subtitle level={4}>
-                { intl.$t({ defaultMessage: 'Assigned Wi-Fi Subscriptions' }) }</Subtitle>
-              <Form.Item
-                name='wifiLabel'
-                label={intl.$t({ defaultMessage: 'Paid Subscriptions' })}
-                rules={[{
-                  required: false
-                }]}
-                style={{ display: 'inline-block', width: 'calc(40%)',
-                  paddingTop: '6px', paddingRight: '10px' }}
-              />
-              <Form.Item
-                name='wifiLicense'
-                label=''
-                initialValue={0}
-                children={<Input readOnly/>}
-                style={{ display: 'inline-block', width: 'calc(20%)', paddingRight: '20px' }}
-              />
-              <Form.Item
-                name='wifiAvailable'
-                label='out of 100 available'
-                style={{ display: 'inline-block', width: 'calc(40%)', paddingTop: '6px' }}
-              />
-
-              <Subtitle level={4}>
-                { intl.$t({ defaultMessage: 'Assigned Switch Subscriptions' }) }</Subtitle>
-              <Form.Item
-                name='ICX7150Label'
-                label='ICX-7150'
-                rules={[{
-                  required: false
-                }]}
-                style={{ display: 'inline-block', width: 'calc(40%)',
-                  paddingTop: '6px', paddingRight: '20px' }}
-              />
-              <Form.Item
-                name='switchLicense'
-                label=''
-                initialValue={0}
-                children={<Input readOnly/>}
-                style={{ display: 'inline-block', width: 'calc(20%)', paddingRight: '20px' }}
-              />
-              <Form.Item
-                name='ICX7150Available'
-                label='out of 4 available'
-                style={{ display: 'inline-block', width: 'calc(40%)', paddingTop: '6px' }}
-              />
-
-              <Form.Item
-                name='ICX7550Label'
-                label='ICX-7550'
-                rules={[{
-                  required: false
-                }]}
-                style={{ display: 'inline-block', width: 'calc(40%)',
-                  paddingTop: '6px', paddingRight: '20px', marginTop: '-20px' }}
-              />
-              <Form.Item
-                name='switch7550License'
-                label=''
-                initialValue={0}
-                children={<Input readOnly/>}
-                style={{ display: 'inline-block', width: 'calc(20%)',
-                  paddingRight: '20px', marginTop: '-20px' }}
-              />
-              <Form.Item
-                name='ICX7550Available'
-                label='out of 54 available'
-                style={{ display: 'inline-block', width: 'calc(40%)',
-                  paddingTop: '6px', marginTop: '-20px' }}
-              />
-
-              <Form.Item
-                name='service_effective_date'
-                label={intl.$t({ defaultMessage: 'Service Start Date' })}
-                initialValue={'10/22/2022'}
-                children={<Input readOnly/>}
-              />
-
-              <Form.Item
-                name='expirationDate1'
-                label={intl.$t({ defaultMessage: 'Service Expiration Date' })}
-                rules={[
-                  { required: true }
-                ]}
-                initialValue={DateSelectionEnum.CUSTOME_DATE}
-                children={
-                  <Select>
-                    {
-                      Object.entries(DateSelectionEnum).map(([label, value]) => (
-                        <Option key={label} value={value}>{intl.$t(dateDisplayText[value])}</Option>
-                      ))
-                    }
-                  </Select>
-                }
-              />
-              <Form.Item
-                name='service_expiration_date'
-                label=''
-                children={
-                  <DatePicker
-                    style={{ width: '100%', marginTop: '-20px' }}
-                  />
-                }
-              />
-            </Col>
-          </Row> */}
         </StepsForm.StepForm>
 
         {(action !== 'edit') && <StepsForm.StepForm name='summary'
