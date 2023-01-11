@@ -161,6 +161,7 @@ exports[`Search Results should render tables correctly 1`] = `
                                       <col />
                                       <col />
                                       <col />
+                                      <col />
                                       <col
                                         style="width: 32px;"
                                       />
@@ -295,6 +296,17 @@ exports[`Search Results should render tables correctly 1`] = `
                                           style="text-align: center;"
                                         >
                                           Incidents
+                                          <span
+                                            class="styledComponents__SubTitle-sc-1abm7iv-2 jtkiiq"
+                                          >
+                                            Last 24 hours
+                                          </span>
+                                        </th>
+                                        <th
+                                          class="ant-table-cell"
+                                          style="text-align: center;"
+                                        >
+                                          Health Score
                                           <span
                                             class="styledComponents__SubTitle-sc-1abm7iv-2 jtkiiq"
                                           >
@@ -631,6 +643,15 @@ exports[`Search Results should render tables correctly 1`] = `
                                              
                                           </div>
                                         </td>
+                                        <td
+                                          style="padding: 0px; border: 0px; height: 0px;"
+                                        >
+                                          <div
+                                            style="height: 0px; overflow: hidden;"
+                                          >
+                                             
+                                          </div>
+                                        </td>
                                       </tr>
                                       <tr
                                         class="ant-table-row ant-table-row-level-0"
@@ -650,6 +671,10 @@ exports[`Search Results should render tables correctly 1`] = `
                                         >
                                           United States, Sunnyvale, California
                                         </td>
+                                        <td
+                                          class="ant-table-cell"
+                                          style="text-align: center;"
+                                        />
                                         <td
                                           class="ant-table-cell"
                                           style="text-align: center;"
