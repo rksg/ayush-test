@@ -404,6 +404,40 @@ describe('Table component', () => {
     expect(actions[0].onClick).toBeCalled()
   })
 
+  it('renders action dropdown', async () => {
+    const actions = [
+      { label: 'Action 1', onClick: jest.fn() },
+      { label: 'Action 2', onClick: jest.fn() },
+      {
+        label: 'Action 3',
+        onClick: jest.fn(),
+        dropdownMenu: {
+          onClick: jest.fn(),
+          items: [{ key: 'item1', label: 'Item 1', onClick: jest.fn() }]
+        }
+      }
+    ]
+
+    render(<Table
+      actions={actions}
+      columns={testColumns}
+      dataSource={testData}
+    />)
+
+    const dropdown = await screen.findByRole('button', { name: actions[2].label })
+    expect(dropdown).toBeVisible()
+    expect(actions[2].onClick).not.toBeCalled()
+    fireEvent.click(dropdown)
+    expect(actions[2].onClick).not.toBeCalled()
+
+    const dropdownItem = await screen.findByText('Item 1')
+    expect(actions[2].dropdownMenu?.onClick).not.toBeCalled()
+    expect(actions[2].dropdownMenu?.items[0].onClick).not.toBeCalled()
+    fireEvent.click(dropdownItem)
+    expect(actions[2].dropdownMenu?.onClick).toBeCalled()
+    expect(actions[2].dropdownMenu?.items[0].onClick).toBeCalled()
+  })
+
   it('renders disabled action items', async () => {
     const actions = [
       { label: 'Action 1', disabled: true, onClick: jest.fn() },
