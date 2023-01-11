@@ -13,7 +13,7 @@ import { CodeMirrorWidget } from '@acx-ui/rc/components'
 export function ViewConfigurationModal (props:{
   data: ConfigurationBackup,
   visible: boolean,
-  handleCancel: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void
+  handleCancel: () => void
 }) {
   const { $t } = useIntl()
   const codeMirrorEl = useRef(null as unknown as { highlightLine: Function, removeHighlightLine: Function })

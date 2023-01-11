@@ -164,10 +164,11 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req
         }
       },
-      transformResponse: (res: ConfigurationBackup[], meta
-        , arg: { payload:{ page:number } }) => {
+      transformResponse: (res: ConfigurationBackup[]) => {
         return {
-          data: res.map(item => ({
+          data: res
+            .sort((a, b) => b.createdDate.localeCompare(a.createdDate))
+            .map(item => ({
             ...item,
             createdDate: formatter('dateTimeFormatWithSeconds')(item.createdDate),
             backupType: transformConfigBackupType(item.backupType),
@@ -178,6 +179,16 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'SwitchBackup', id: 'LIST' }],
+    }),
+    addConfigBackup: build.mutation<ConfigurationBackup, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.addBackup, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchBackup', id: 'LIST' }]
     }),
     restoreConfigBackup: build.mutation<ConfigurationBackup, RequestPayload>({
       query: ({ params }) => {
@@ -425,6 +436,7 @@ export const {
   useAddSwitchMutation,
   useAddStackMemberMutation,
   useGetSwitchConfigBackupListQuery,
+  useAddConfigBackupMutation,
   useRestoreConfigBackupMutation,
   useDownloadConfigBackupMutation,
   useDeleteConfigBackupsMutation,

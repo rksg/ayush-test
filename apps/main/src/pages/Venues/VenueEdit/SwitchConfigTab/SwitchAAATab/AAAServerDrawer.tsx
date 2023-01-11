@@ -222,6 +222,7 @@ export const AAAServerDrawer = (props: AAAServerDrawerProps) => {
         { min: 2 },
         { max: 48 },
         { validator: (_, value) => excludeQuoteRegExp(value) },
+        { validator: (_, value) => excludeSpaceRegExp(value) },
         { validator: (_, value) => validateUsername(value) }
       ]}
       children={<Input />}

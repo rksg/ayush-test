@@ -11,11 +11,13 @@ import { SwitchDetailsContext } from '../..'
 import { ViewConfigurationModal } from './ViewConfigurationModal'
 import { useParams } from '@acx-ui/react-router-dom'
 import moment from 'moment-timezone'
+import { BackupModal } from './BackupModal'
 
 export function SwitchConfigBackupTable () {
   const { $t } = useIntl()
   const params = useParams()
   const [viewVisible, setViewVisible] = useState(false)
+  const [backupModalVisible, setBackupModalVisible] = useState(false)
   const [backupButtonnStatus, setBackupButtonnStatus] = useState({ disabled: false, tooltip: ''})
   const [enabledRowButton, setEnabledRowButton] = useState([] as string[])
   const [viewData, setViewData] = useState(null as unknown as ConfigurationBackup)
@@ -192,7 +194,7 @@ export function SwitchConfigBackupTable () {
     disabled: backupButtonnStatus.disabled,
     tooltip: backupButtonnStatus.tooltip,
     onClick: () => {
-      // TODO:
+      setBackupModalVisible(true)
     }
  }]
 
@@ -246,6 +248,10 @@ export function SwitchConfigBackupTable () {
         }}
       />
     </Loader>
+    <BackupModal 
+      visible={backupModalVisible}
+      handleCancel={() => setBackupModalVisible(false)}
+    />
     <ViewConfigurationModal 
       data={viewData}
       visible={viewVisible}
