@@ -17,10 +17,11 @@ export function useApContext () {
 export function ApContextProvider (props: { children: ReactNode }) {
   const params = useParams()
   const { $t } = useIntl()
+  const fields = ['serialNumber', 'venueName', 'apMac']
   const results = useApListQuery({
     params: { tenantId: params.tenantId },
     payload: {
-      fields: ['serialNumber', 'venueName', 'apMac'],
+      fields,
       searchTargetFields: ['apMac', 'serialNumber'],
       searchString: params.apId
     }
@@ -31,10 +32,7 @@ export function ApContextProvider (props: { children: ReactNode }) {
     })
   })
   const { data } = results
-  const values: Params<string> = {
-    ...params,
-    ...pick(data?.[0], ['venueName', 'apMac', 'serialNumber']) as Params<string>
-  }
+  const values: Params<string> = { ...params, ...pick(data?.[0], fields) as Params<string> }
   return <ApContext.Provider value={values}>
     <Loader states={[results]}>{
       data && data.length
