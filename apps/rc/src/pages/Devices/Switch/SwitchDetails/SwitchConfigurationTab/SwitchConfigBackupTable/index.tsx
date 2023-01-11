@@ -5,7 +5,7 @@ import { useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps, showActionModal, showToast }    from '@acx-ui/components'
 import { useDeleteConfigBackupsMutation, useDownloadConfigBackupMutation, useGetSwitchConfigBackupListQuery }                            from '@acx-ui/rc/services'
-import { BACKUP_DISABLE_TOOLTIP, ConfigurationBackup, useTableQuery } from '@acx-ui/rc/utils'
+import { BACKUP_DISABLE_TOOLTIP, ConfigurationBackup, handleBlobDownloadFile, useTableQuery } from '@acx-ui/rc/utils'
 
 import { SwitchDetailsContext } from '../..'
 import { ViewConfigurationModal } from './ViewConfigurationModal'
@@ -89,6 +89,19 @@ export function SwitchConfigBackupTable () {
     })
   }
 
+  const downloadBackup = (id: string) => {
+    downloadConfigBackup({
+      params: {
+        ...params,
+        configId: id
+      }})
+    .unwrap().then((res)=>{
+      const downloadFileName = 'switch_configuration_' + switchName + '_' + moment().format('YYYYMMDDHHmmss') + '.txt'
+      const blob = new Blob([res.response], { type: 'text/plain;charset=utf-8' });
+      handleBlobDownloadFile(blob, downloadFileName);
+    })
+  }
+
   const rowActions: TableProps<any>['rowActions'] = [{
     label: $t({ defaultMessage: 'View' }),
     disabled: (rows) => !isActionVisible(rows, { selectOne: true }),
@@ -111,20 +124,7 @@ export function SwitchConfigBackupTable () {
     label: $t({ defaultMessage: 'Download' }),
     disabled: (rows) => !isActionVisible(rows, { selectOne: true }),
     onClick: (rows) => {
-      // TODO:
-      const fileName = 'switch_configuration_' + switchName + '_' + moment().format('YYYYMMDDHHmmss') + '.txt';
-      downloadConfigBackup({
-        params: {
-          ...params, 
-          fileName,
-          configId: rows[0].id
-        }})
-      .catch(() => {
-        showToast({
-          type: 'error',
-          content: $t({ defaultMessage: 'Failed to download Information.' })
-        })
-      })
+      downloadBackup(rows[0].id)
     }
   }, {
     label: $t({ defaultMessage: 'Delete' }),

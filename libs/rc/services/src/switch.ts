@@ -179,19 +179,11 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       },
       providesTags: [{ type: 'SwitchBackup', id: 'LIST' }],
     }),
-    downloadConfigBackup: build.mutation<{ data: BlobPart }, RequestPayload>({
+    downloadConfigBackup: build.mutation<{ response: string }, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(SwitchUrlsInfo.downloadSwitchConfig, params)
         return {
-          ...req,
-          responseHandler: async (res) => {
-            console.log(res)
-            downloadFile(res, params?.fileName as string)
-          },
-          headers: {
-            'Content-Type': 'application/json',
-            'accept': 'application/json,text/plain,*/*'
-          }
+          ...req
         }
       }
     }),
