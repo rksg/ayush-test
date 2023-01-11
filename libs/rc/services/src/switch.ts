@@ -179,6 +179,15 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       },
       providesTags: [{ type: 'SwitchBackup', id: 'LIST' }],
     }),
+    restoreConfigBackup: build.mutation<ConfigurationBackup, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.restoreBackup, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchBackup', id: 'LIST' }]
+    }),
     downloadConfigBackup: build.mutation<{ response: string }, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(SwitchUrlsInfo.downloadSwitchConfig, params)
@@ -416,6 +425,7 @@ export const {
   useAddSwitchMutation,
   useAddStackMemberMutation,
   useGetSwitchConfigBackupListQuery,
+  useRestoreConfigBackupMutation,
   useDownloadConfigBackupMutation,
   useDeleteConfigBackupsMutation,
   useGetSwitchConfigHistoryQuery,

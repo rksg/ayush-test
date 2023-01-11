@@ -1,11 +1,11 @@
 /* eslint-disable max-len */
-import { useContext, useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps, showActionModal, showToast }    from '@acx-ui/components'
-import { useDeleteConfigBackupsMutation, useDownloadConfigBackupMutation, useGetSwitchConfigBackupListQuery }                            from '@acx-ui/rc/services'
-import { BACKUP_DISABLE_TOOLTIP, ConfigurationBackup, handleBlobDownloadFile, useTableQuery } from '@acx-ui/rc/utils'
+import { useDeleteConfigBackupsMutation, useDownloadConfigBackupMutation, useGetSwitchConfigBackupListQuery, useRestoreConfigBackupMutation }                            from '@acx-ui/rc/services'
+import { BACKUP_DISABLE_TOOLTIP, BACKUP_IN_PROGRESS_TOOLTIP, ConfigurationBackup, handleBlobDownloadFile, RESTORE_IN_PROGRESS_TOOLTIP, useTableQuery } from '@acx-ui/rc/utils'
 
 import { SwitchDetailsContext } from '../..'
 import { ViewConfigurationModal } from './ViewConfigurationModal'
@@ -16,14 +16,17 @@ export function SwitchConfigBackupTable () {
   const { $t } = useIntl()
   const params = useParams()
   const [viewVisible, setViewVisible] = useState(false)
+  const [backupButtonnStatus, setBackupButtonnStatus] = useState({ disabled: false, tooltip: ''})
+  const [enabledRowButton, setEnabledRowButton] = useState([] as string[])
   const [viewData, setViewData] = useState(null as unknown as ConfigurationBackup)
 
   const {
     switchDetailsContextData
   } = useContext(SwitchDetailsContext)
 
-  const [ deleteConfigBackups ] = useDeleteConfigBackupsMutation()
+  const [ restoreConfigBackup ] = useRestoreConfigBackupMutation()
   const [ downloadConfigBackup ] = useDownloadConfigBackupMutation()
+  const [ deleteConfigBackups ] = useDeleteConfigBackupsMutation()
   const { currentSwitchOperational, switchName } = switchDetailsContextData
 
   const showViewModal = (row: ConfigurationBackup[]) => {
@@ -42,6 +45,31 @@ export function SwitchConfigBackupTable () {
   })
 
   const tableData = tableQuery.data?.data ?? []
+
+  const setBackupButton = () => {
+    const listInRestoreProgress = tableData.find(item => item.restoreStatus === 'STARTED' || item.restoreStatus === 'PENDING');
+    const listInBackupProgress = tableData.find(item => item.status === 'STARTED' || item.status === 'PENDING');
+    const disableBackup = !currentSwitchOperational || listInBackupProgress || listInRestoreProgress;
+    let tooltip = '';
+    if (!currentSwitchOperational) {
+      tooltip = $t(BACKUP_DISABLE_TOOLTIP)
+    } else if (listInBackupProgress) {
+      tooltip = $t(BACKUP_IN_PROGRESS_TOOLTIP)
+    } else if (listInRestoreProgress) {
+      tooltip = $t(RESTORE_IN_PROGRESS_TOOLTIP)
+    }
+    setBackupButtonnStatus({ 
+      disabled: !!disableBackup, 
+      tooltip
+    })
+  }
+
+  useEffect(() => { 
+    if(tableData) {
+      setBackupButton()
+    }
+  }, [tableData])
+
 
   const columns: TableProps<ConfigurationBackup>['columns'] = [{
     key: 'name',
@@ -69,7 +97,7 @@ export function SwitchConfigBackupTable () {
     return !!selectOne && selectedRows.length === 1
   }
 
-  const showDeleteModal = async ( rows: ConfigurationBackup[], callBack?: ()=>void ) => {
+  const showDeleteModal = async ( rows: ConfigurationBackup[], clearSelection: ()=>void ) => {
     showActionModal({
       type: 'confirm',
       customContent: {
@@ -80,11 +108,33 @@ export function SwitchConfigBackupTable () {
         entityValue: rows.length === 1 ? rows[0].name : undefined,
         numOfEntities: rows.length,
       },
-      okText: 'Delete',
+      okText: $t({ defaultMessage: 'Delete' }),
       onOk: () => {
         const idList = rows.map(item => item.id)
         deleteConfigBackups({ params, payload: idList })
-        .then(callBack)
+        .then(clearSelection)
+      }
+    })
+  }
+
+  const showRestoreModal = async ( rows: ConfigurationBackup[], clearSelection: ()=>void ) => {
+    showActionModal({
+      type: 'confirm',
+      title: $t({ defaultMessage: 'Restore configuration from backup?' }),
+      content: $t({ 
+        defaultMessage: 'Restoring this file is going to replace the existing configuration on the switch with selected backup.' +
+        'This operation will trigger the switch/stack reload and traffic may be affected. Are you sure you want to proceed?' 
+      }),
+      okText: $t({ defaultMessage: 'Restore' }),
+      onOk: () => {
+        restoreConfigBackup({ params:{ ...params, configId: rows[0].id} })
+        .then(() => {
+          showToast({
+            type: 'success',
+            content: $t({ defaultMessage: 'Backup {name} was restored' }, { name: rows[0].name })
+          })
+          clearSelection()
+        })
       }
     })
   }
@@ -104,30 +154,33 @@ export function SwitchConfigBackupTable () {
 
   const rowActions: TableProps<any>['rowActions'] = [{
     label: $t({ defaultMessage: 'View' }),
-    disabled: (rows) => !isActionVisible(rows, { selectOne: true }),
+    // disabled: () => !enabledRowButton.find(item => item === 'View'),
+    disabled: true,
     onClick: (rows) => {
       showViewModal(rows)
     }
   }, {
     label: $t({ defaultMessage: 'Compare' }),
-    disabled: (rows) => isActionVisible(rows, { selectOne: true }),
+    // disabled: () => !enabledRowButton.find(item => item === 'Compare'),
+    disabled: true,
     onClick: () => {
       // TODO:
     }
   }, {
     label: $t({ defaultMessage: 'Restore' }),
-    disabled: (rows) => !isActionVisible(rows, { selectOne: true }),
-    onClick: () => {
-      // TODO:
+    disabled: () => !enabledRowButton.find(item => item === 'Restore'),
+    onClick: (rows, clearSelection) => {
+      showRestoreModal(rows, clearSelection)
     }
   }, {
     label: $t({ defaultMessage: 'Download' }),
-    disabled: (rows) => !isActionVisible(rows, { selectOne: true }),
+    disabled: () => !enabledRowButton.find(item => item === 'Download'),
     onClick: (rows) => {
       downloadBackup(rows[0].id)
     }
   }, {
     label: $t({ defaultMessage: 'Delete' }),
+    disabled: () => !enabledRowButton.find(item => item === 'Delete'),
     onClick: (rows, clearSelection) => {
       showDeleteModal(rows, clearSelection)
     }
@@ -136,8 +189,8 @@ export function SwitchConfigBackupTable () {
 
  const rightActions = [{
     label: $t({ defaultMessage: 'Backup Now' }),
-    disabled: !currentSwitchOperational,
-    tooltip: $t(BACKUP_DISABLE_TOOLTIP),
+    disabled: backupButtonnStatus.disabled,
+    tooltip: backupButtonnStatus.tooltip,
     onClick: () => {
       // TODO:
     }
@@ -154,7 +207,42 @@ export function SwitchConfigBackupTable () {
         pagination={false}
         onChange={tableQuery.handleTableChange}
         rowSelection={{
-          type: 'checkbox'
+          type: 'checkbox',
+          onChange: (selectedRowKeys, selectedData) => {
+            const selectedRows = selectedRowKeys.length
+            const hasFailed = selectedData.find(item => item.status === 'FAILED');
+            const inBackupProgress = selectedData.find(item => item.status === 'STARTED' || item.status === 'PENDING');
+            const inRestoreProgress = selectedData.find(item => item.restoreStatus === 'STARTED' || item.restoreStatus === 'PENDING');
+            const listInRestoreProgress = tableData.find(item => item.restoreStatus === 'STARTED' || item.restoreStatus === 'PENDING');
+            const listInBackupProgress = tableData.find(item => item.status === 'STARTED' || item.status === 'PENDING');
+            let enabledButton:string[] = []
+            if (selectedRows === 0 || hasFailed || inBackupProgress) {
+              enabledButton = []
+            } else if (selectedRows === 1) {
+              if (inRestoreProgress) {
+                enabledButton = ['View', 'Download'];
+              } else {
+                enabledButton = (listInRestoreProgress || listInBackupProgress) ? ['View', 'Download', 'Delete']
+                  : ['View', 'Restore', 'Download', 'Delete']
+              }
+            } else if (selectedRows == 2) {
+              if (inRestoreProgress) {
+                enabledButton = ['Compare'];
+              } else {
+                enabledButton = ['Compare', 'Delete'];
+              }
+            } else if (selectedRows > 2) {
+              if (inRestoreProgress) {
+                enabledButton = [];
+              } else {
+                enabledButton = ['Delete']
+              }
+            }
+            if (!currentSwitchOperational && enabledButton.length > 0) {
+              enabledButton = enabledButton.filter(item => item !== 'Restore' && item !== 'Delete');
+            }
+            setEnabledRowButton(enabledButton)
+          }
         }}
       />
     </Loader>
