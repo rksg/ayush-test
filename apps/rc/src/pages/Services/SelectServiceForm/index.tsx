@@ -1,8 +1,15 @@
 import { Form, Radio, Typography } from 'antd'
 import { defineMessage, useIntl }  from 'react-intl'
 
-import { GridCol, GridRow, PageHeader, RadioCard, StepsForm } from '@acx-ui/components'
-import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
+import {
+  GridCol,
+  GridRow,
+  PageHeader,
+  RadioCard,
+  RadioCardCategory,
+  StepsForm
+} from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   ServiceType,
   getServiceListRoutePath,
@@ -37,17 +44,15 @@ export default function SelectServiceForm () {
     })
   }
 
-  const category = { wifi: 'WiFi' } as const
-
   const sets = [
     {
       title: defineMessage({ defaultMessage: 'Connectivity' }),
       items: [
-        { type: ServiceType.DHCP, categories: [category.wifi] },
-        { type: ServiceType.DPSK, categories: [category.wifi] },
+        { type: ServiceType.DHCP, categories: [RadioCardCategory.WIFI] },
+        { type: ServiceType.DPSK, categories: [RadioCardCategory.WIFI] },
         {
           type: ServiceType.NETWORK_SEGMENTATION,
-          categories: [category.wifi],
+          categories: [RadioCardCategory.WIFI],
           disabled: !networkSegmentationEnabled
         }
       ]
@@ -55,14 +60,14 @@ export default function SelectServiceForm () {
     {
       title: defineMessage({ defaultMessage: 'Application' }),
       items: [
-        { type: ServiceType.MDNS_PROXY, categories: [category.wifi] },
-        { type: ServiceType.WIFI_CALLING, categories: [category.wifi] }
+        { type: ServiceType.MDNS_PROXY, categories: [RadioCardCategory.WIFI] },
+        { type: ServiceType.WIFI_CALLING, categories: [RadioCardCategory.WIFI] }
       ]
     },
     {
       title: defineMessage({ defaultMessage: 'More Services' }),
       items: [
-        { type: ServiceType.PORTAL, categories: [category.wifi] }
+        { type: ServiceType.PORTAL, categories: [RadioCardCategory.WIFI] }
       ]
     }
   ]
@@ -96,7 +101,7 @@ export default function SelectServiceForm () {
                   <GridRow>
                     {set.items.map(item => item.disabled
                       ? null
-                      : <GridCol col={{ span: 8 }}>
+                      : <GridCol col={{ span: 6 }}>
                         <RadioCard
                           type={'radio'}
                           key={item.type}

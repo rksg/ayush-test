@@ -4,7 +4,7 @@ import { storiesOf }               from '@storybook/react'
 import { Radio, RadioChangeEvent } from 'antd'
 import { defineMessage }           from 'react-intl'
 
-import { RadioCard } from '.'
+import { RadioCard, RadioCardCategory as Category } from '.'
 
 storiesOf('RadioCard', module)
   .add('default', () => <div style={{ width: '238px', display: 'inline-block' }}>
@@ -14,7 +14,7 @@ storiesOf('RadioCard', module)
       description={
         'Fas pysuhet såväl som sedora. Val tingar mer. Ock whataboutism. Tiktigt syss rena.'
       }
-      categories={['WiFi', 'Switch', 'Edge']}
+      categories={[Category.WIFI, Category.SWITCH, Category.EDGE]}
       // eslint-disable-next-line no-console
       onClick={()=>console.log('Button clicked!')}
     />
@@ -31,7 +31,7 @@ storiesOf('RadioCard', module)
           title='Service1'
           // eslint-disable-next-line max-len
           description='Fas pysuhet såväl som sedora. Val tingar mer. Ock whataboutism. Tiktigt syss rena.'
-          categories={['WiFi', 'Switch', 'Edge']}
+          categories={[Category.WIFI, Category.SWITCH, Category.EDGE]}
         />
       </div>
       <div style={{ width: '238px', display: 'inline-block', padding: '10px' }}>
@@ -41,7 +41,7 @@ storiesOf('RadioCard', module)
           title='Service2'
           // eslint-disable-next-line max-len
           description='Fas pysuhet såväl som sedora. Val tingar mer. Ock whataboutism. Tiktigt syss rena.'
-          categories={['WiFi', 'Switch', 'Edge']}
+          categories={[Category.WIFI, Category.SWITCH, Category.EDGE]}
         />
       </div>
       <div style={{ width: '238px', display: 'inline-block', padding: '10px' }}>
@@ -51,7 +51,7 @@ storiesOf('RadioCard', module)
           title='Service3'
           // eslint-disable-next-line max-len
           description='Fas pysuhet såväl som sedora. Val tingar mer. Ock whataboutism. Tiktigt syss rena.'
-          categories={['WiFi', 'Switch', 'Edge']}
+          categories={[Category.WIFI, Category.SWITCH, Category.EDGE]}
           disabled
         />
       </div>
@@ -65,7 +65,7 @@ storiesOf('RadioCard', module)
       description={
         'Fas pysuhet såväl som sedora. Val tingar mer. Ock whataboutism. Tiktigt syss rena.'
       }
-      categories={['WiFi', 'Switch', 'Edge']}
+      categories={[Category.WIFI, Category.SWITCH, Category.EDGE]}
       buttonText={defineMessage({ defaultMessage: 'Add' })}
       // eslint-disable-next-line no-console
       onClick={()=>console.log('Button clicked!')}

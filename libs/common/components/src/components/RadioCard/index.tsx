@@ -12,32 +12,38 @@ import {
   RadioCardType
 } from './styledComponents'
 
+export enum RadioCardCategory {
+  WIFI = 'wifi',
+  SWITCH = 'switch',
+  EDGE = 'edge',
+}
+
 export type RadioCardProps = RadioProps & {
   type?: RadioCardType
   title: string
   description: string
   value: string
-  categories?: ('WiFi'|'Switch'|'Edge')[]
+  categories?: RadioCardCategory[]
   buttonText?: MessageDescriptor,
   onClick?: () => void
 }
 
 const categoryMapping = {
-  WiFi: {
+  wifi: {
     text: defineMessage({ defaultMessage: 'Wi-Fi' }),
     color: '--acx-accents-blue-60'
   },
-  Switch: {
+  switch: {
     text: defineMessage({ defaultMessage: 'Switch' }),
     color: '--acx-semantics-green-60'
   },
-  Edge: {
+  edge: {
     text: defineMessage({ defaultMessage: 'Edge' }),
     color: '--acx-semantics-yellow-60'
   }
 }
 
-function RadioCard ({
+export function RadioCard ({
   type = 'default', title, description, value, categories = [], buttonText, onClick, ...rest
 }: RadioCardProps){
   const { $t } = useIntl()
@@ -55,5 +61,3 @@ function RadioCard ({
     {type === 'radio' && <Radio value={value} {...rest}/>}
   </Card>
 }
-
-export { RadioCard }
