@@ -27,8 +27,6 @@ import {
   AP,
   ApExtraParams,
   Event,
-  usePollingTableQuery,
-  TABLE_QUERY_LONG_POLLING_INTERVAL,
   SwitchRow
 } from '@acx-ui/rc/utils'
 
@@ -91,21 +89,19 @@ const searches = [
     }
   },
   (searchString: string, $t: IntlShape['$t']) => {
-    const result = usePollingTableQuery<Event>({
+    const result = useTableQuery<Event>({
       useQuery: useEventsQuery,
       defaultPayload: {
         ...eventDefaultPayload,
         filters: {},
         searchString,
-        searchTargetFields: ['entity_id', 'message', 'apMac', 'clientMac'],
-        detailLevel: 'su'
+        searchTargetFields: ['entity_id', 'message', 'apMac', 'clientMac']
       },
       pagination,
       sorter: {
         sortField: 'event_datetime',
         sortOrder: 'DESC'
-      },
-      option: { pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL }
+      }
     })
     return {
       result,

@@ -1,8 +1,9 @@
 import { Dropdown, Menu, Space } from 'antd'
+import moment                    from 'moment-timezone'
 import { useIntl }               from 'react-intl'
 
-import { Button, PageHeader }                                                      from '@acx-ui/components'
-import { ClockOutlined, ArrowExpand }                                              from '@acx-ui/icons'
+import { Button, PageHeader, RangePicker }                                         from '@acx-ui/components'
+import { ArrowExpand }                                                             from '@acx-ui/icons'
 import { SwitchStatus }                                                            from '@acx-ui/rc/components'
 import { useSwitchDetailHeaderQuery }                                              from '@acx-ui/rc/services'
 import { isStrictOperationalSwitch, SwitchRow, SwitchStatusEnum, SwitchViewModel } from '@acx-ui/rc/utils'
@@ -11,6 +12,7 @@ import {
   useTenantLink,
   useParams
 }                  from '@acx-ui/react-router-dom'
+import { dateRangeForLast, useDateFilter } from '@acx-ui/utils'
 
 import SwitchTabs from './SwitchTabs'
 
@@ -58,6 +60,9 @@ function SwitchPageHeader () {
       ]}
     />
   )
+
+  const { startDate, endDate, setDateFilter, range } = useDateFilter()
+
   return (
     <PageHeader
       title={data?.name || data?.switchName || data?.serialNumber || ''}
@@ -67,9 +72,14 @@ function SwitchPageHeader () {
         { text: $t({ defaultMessage: 'Switches' }), link: '/devices/switch' }
       ]}
       extra={[
-        <Button key='date-filter' icon={<ClockOutlined />}>
-          {$t({ defaultMessage: 'Last 24 Hours' })}
-        </Button>,
+        <RangePicker
+          key='range-picker'
+          selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
+          enableDates={dateRangeForLast(3, 'months')}
+          onDateApply={setDateFilter as CallableFunction}
+          showTimePicker
+          selectionType={range}
+        />,
         <Dropdown overlay={menu} key='actionMenu'>
           <Button>
             <Space>

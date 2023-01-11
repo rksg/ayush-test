@@ -85,7 +85,8 @@ export const ImpactedClientsDrawer: React.FC<ImpactedDrawerProps> = (props) => {
     column('hostname', {
       title: $t({ defaultMessage: 'Hostname' }),
       tooltip: tooltips.hostname,
-      render: (_, row) => <TenantLink to={'TODO'}>{row.hostname}</TenantLink>
+      render: (_, { mac, hostname }) =>
+        <TenantLink to={`/users/wifi/clients/${mac}/details/overview`}>{hostname}</TenantLink>
     }),
     column('mac', { title: $t({ defaultMessage: 'MAC Address' }) }),
     column('username', {
@@ -131,7 +132,8 @@ export const ImpactedAPsDrawer: React.FC<ImpactedDrawerProps> = (props) => {
   const columns = useMemo(() => [
     column('name', {
       title: $t({ defaultMessage: 'AP Name' }),
-      render: (_, row) => <TenantLink to={'TODO'}>{row.name}</TenantLink>
+      render: (_, { name, mac }) =>
+        <TenantLink to={`devices/wifi/${mac}/details/overview`}>{name}</TenantLink>
     }),
     column('model', { title: $t({ defaultMessage: 'Model' }) }),
     column('mac', { title: $t({ defaultMessage: 'MAC Address' }) }),

@@ -1,15 +1,17 @@
 /* eslint-disable max-len */
 import { useIntl } from 'react-intl'
 
-import { Tabs, Tooltip }                         from '@acx-ui/components'
-import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
-import { ApDetailHeader, ApDeviceStatusEnum }    from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { notAvailableMsg }                       from '@acx-ui/utils'
+import { Tabs, Tooltip }                      from '@acx-ui/components'
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
+import { ApDetailHeader, ApDeviceStatusEnum } from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink }         from '@acx-ui/react-router-dom'
+import { notAvailableMsg }                    from '@acx-ui/utils'
+
+import { useApContext } from './ApContext'
 
 function ApTabs (props:{ apDetail: ApDetailHeader }) {
   const { $t } = useIntl()
-  const params = useParams()
+  const params = useApContext()
   const basePath = useTenantLink(`/devices/wifi/${params.serialNumber}/details/`)
   const navigate = useNavigate()
   const releaseTag = useIsSplitOn(Features.DEVICES)
