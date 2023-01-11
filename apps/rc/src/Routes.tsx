@@ -13,7 +13,6 @@ import {
 import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                          from '@acx-ui/store'
 
-import { RadiusServerTab }        from './pages/Administration/RadiusServerTab'
 import Edges                      from './pages/Devices/Edge'
 import AddEdge                    from './pages/Devices/Edge/AddEdge'
 import EdgeDetails                from './pages/Devices/Edge/EdgeDetails'
@@ -68,7 +67,6 @@ export default function RcRoutes () {
       <Route path='policies/*' element={<PolicyRoutes />} />
       <Route path='users/*' element={<UserRoutes />} />
       <Route path='timeline/*' element={<TimelineRoutes />} />
-      <Route path='administration/*' element={<AdministrationRoutes />} />
     </Route>
   )
   return (
@@ -300,14 +298,6 @@ function TimelineRoutes () {
     <Route path='t/:tenantId'>
       <Route path='timeline' element={<TenantNavigate replace to='/timeline/activities' />} />
       <Route path='timeline/:activeTab' element={<Timeline />} />
-    </Route>
-  )
-}
-
-function AdministrationRoutes () {
-  return rootRoutes(
-    <Route path='t/:tenantId'>
-      <Route path='administration' element={<RadiusServerTab/>} />
     </Route>
   )
 }

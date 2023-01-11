@@ -5,11 +5,12 @@ import { Tabs }                                  from '@acx-ui/components'
 import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import AccountSettings from './AccountSettings'
-import Administrators  from './Administrators'
-import FWVersionMgmt   from './FWVersionMgmt'
-import Notifications   from './Notifications'
-import Subscriptions   from './Subscriptions'
+import AccountSettings   from './AccountSettings'
+import Administrators    from './Administrators'
+import FWVersionMgmt     from './FWVersionMgmt'
+import LocalRadiusServer from './LocalRadiusServer'
+import Notifications     from './Notifications'
+import Subscriptions     from './Subscriptions'
 
 
 const AdministrationTabs = () => {
@@ -39,6 +40,7 @@ const AdministrationTabs = () => {
         tab={$t({ defaultMessage: 'Firmware Version Management' })}
         key='fwVersionMgmt'
       />
+      <Tabs.TabPane tab={$t({ defaultMessage: 'Local RADIUS Server' })} key='localRadiusServer' />
     </Tabs>
   )
 }
@@ -48,7 +50,8 @@ const tabPanes = {
   administrators: Administrators,
   notifications: Notifications,
   subscriptions: Subscriptions,
-  fwVersionMgmt: FWVersionMgmt
+  fwVersionMgmt: FWVersionMgmt,
+  localRadiusServer: LocalRadiusServer
 }
 
 export default function Administration () {

@@ -130,4 +130,19 @@ describe('Administration page', () => {
     const tab = screen.getByRole('tab', { name: 'Firmware Version Management' })
     expect(tab.getAttribute('aria-selected')).toBeTruthy()
   })
+
+  it('should render local radius server tab correctly', async () => {
+    let params: { tenantId: string, activeTab: string } =
+      { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac', activeTab: 'localRadiusServer' }
+
+    render(
+      <Provider>
+        <Administration />
+      </Provider>, {
+        route: { params }
+      })
+
+    const tab = screen.getByRole('tab', { name: 'Local RADIUS Server' })
+    expect(tab.getAttribute('aria-selected')).toBeTruthy()
+  })
 })
