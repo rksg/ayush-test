@@ -267,7 +267,7 @@ exports[`Floor Plan Plain View Should click delete button 1`] = `
                    
                   <div>
                     <div
-                      class="sc-jSMfEi bfYvgd device-container context-Album"
+                      class="sc-jSMfEi dSrpFV device-container context-Album"
                       draggable="true"
                       style="top: calc(9.839357%); left: calc(65.20548%); opacity: 1;"
                     >
@@ -281,7 +281,7 @@ exports[`Floor Plan Plain View Should click delete button 1`] = `
                   </div>
                   <div>
                     <div
-                      class="sc-jSMfEi bfYvgd device-container context-Album"
+                      class="sc-jSMfEi dSrpFV device-container context-Album"
                       draggable="true"
                       style="top: calc(undefined%); left: calc(undefined%); opacity: 1;"
                     >
@@ -612,7 +612,7 @@ exports[`Floor Plan Plain View Should click edit button 1`] = `
                    
                   <div>
                     <div
-                      class="sc-jSMfEi bfYvgd device-container context-Album"
+                      class="sc-jSMfEi dSrpFV device-container context-Album"
                       draggable="true"
                       style="top: calc(9.839357%); left: calc(65.20548%); opacity: 1;"
                     >
@@ -626,7 +626,7 @@ exports[`Floor Plan Plain View Should click edit button 1`] = `
                   </div>
                   <div>
                     <div
-                      class="sc-jSMfEi bfYvgd device-container context-Album"
+                      class="sc-jSMfEi dSrpFV device-container context-Album"
                       draggable="true"
                       style="top: calc(undefined%); left: calc(undefined%); opacity: 1;"
                     >
@@ -779,7 +779,7 @@ exports[`Floor Plan Plain View Should load image 1`] = `
          
         <div>
           <div
-            class="sc-jSMfEi bfYvgd device-container context-Ap"
+            class="sc-jSMfEi dSrpFV device-container context-Ap"
             draggable="true"
             style="top: calc(9.839357%); left: calc(65.20548%); opacity: 1;"
           >
@@ -796,7 +796,7 @@ exports[`Floor Plan Plain View Should load image 1`] = `
         </div>
         <div>
           <div
-            class="sc-jSMfEi bfYvgd device-container context-Ap"
+            class="sc-jSMfEi dSrpFV device-container context-Ap"
             draggable="true"
             style="top: calc(undefined%); left: calc(undefined%); opacity: 1;"
           >
@@ -955,7 +955,7 @@ exports[`Floor Plan Plain View Should load image 1`] = `
                    
                   <div>
                     <div
-                      class="sc-jSMfEi bfYvgd device-container context-Album"
+                      class="sc-jSMfEi dSrpFV device-container context-Album"
                       draggable="true"
                       style="top: calc(9.839357%); left: calc(65.20548%); opacity: 1;"
                     >
@@ -969,7 +969,7 @@ exports[`Floor Plan Plain View Should load image 1`] = `
                   </div>
                   <div>
                     <div
-                      class="sc-jSMfEi bfYvgd device-container context-Album"
+                      class="sc-jSMfEi dSrpFV device-container context-Album"
                       draggable="true"
                       style="top: calc(undefined%); left: calc(undefined%); opacity: 1;"
                     >
@@ -1301,7 +1301,7 @@ exports[`Floor Plan Plain View should open gallery view 1`] = `
                    
                   <div>
                     <div
-                      class="sc-jSMfEi bfYvgd device-container context-Album"
+                      class="sc-jSMfEi dSrpFV device-container context-Album"
                       draggable="true"
                       style="top: calc(9.839357%); left: calc(65.20548%); opacity: 1;"
                     >
@@ -1315,7 +1315,7 @@ exports[`Floor Plan Plain View should open gallery view 1`] = `
                   </div>
                   <div>
                     <div
-                      class="sc-jSMfEi bfYvgd device-container context-Album"
+                      class="sc-jSMfEi dSrpFV device-container context-Album"
                       draggable="true"
                       style="top: calc(undefined%); left: calc(undefined%); opacity: 1;"
                     >
@@ -1468,7 +1468,7 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
          
         <div>
           <div
-            class="sc-jSMfEi bfYvgd device-container context-Ap"
+            class="sc-jSMfEi dSrpFV device-container context-Ap"
             draggable="true"
             style="top: calc(9.839357%); left: calc(65.20548%); opacity: 1;"
           >
@@ -1485,7 +1485,7 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
         </div>
         <div>
           <div
-            class="sc-jSMfEi bfYvgd device-container context-Ap"
+            class="sc-jSMfEi dSrpFV device-container context-Ap"
             draggable="true"
             style="top: calc(undefined%); left: calc(undefined%); opacity: 1;"
           >
@@ -1644,7 +1644,7 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
                    
                   <div>
                     <div
-                      class="sc-jSMfEi bfYvgd device-container context-Album"
+                      class="sc-jSMfEi dSrpFV device-container context-Album"
                       draggable="true"
                       style="top: calc(9.839357%); left: calc(65.20548%); opacity: 1;"
                     >
@@ -1658,7 +1658,7 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
                   </div>
                   <div>
                     <div
-                      class="sc-jSMfEi bfYvgd device-container context-Album"
+                      class="sc-jSMfEi dSrpFV device-container context-Album"
                       draggable="true"
                       style="top: calc(undefined%); left: calc(undefined%); opacity: 1;"
                     >
@@ -1989,7 +1989,7 @@ exports[`Floor Plan Plain View should trigger onFloorPlanSelectionHandler 1`] = 
                    
                   <div>
                     <div
-                      class="sc-jSMfEi bfYvgd device-container context-Album"
+                      class="sc-jSMfEi dSrpFV device-container context-Album"
                       draggable="true"
                       style="top: calc(9.839357%); left: calc(65.20548%); opacity: 1;"
                     >
@@ -2003,7 +2003,7 @@ exports[`Floor Plan Plain View should trigger onFloorPlanSelectionHandler 1`] = 
                   </div>
                   <div>
                     <div
-                      class="sc-jSMfEi bfYvgd device-container context-Album"
+                      class="sc-jSMfEi dSrpFV device-container context-Album"
                       draggable="true"
                       style="top: calc(undefined%); left: calc(undefined%); opacity: 1;"
                     >
@@ -2334,7 +2334,7 @@ exports[`Floor Plan Plain View test zoom fit button 1`] = `
                    
                   <div>
                     <div
-                      class="sc-jSMfEi bfYvgd device-container context-Album"
+                      class="sc-jSMfEi dSrpFV device-container context-Album"
                       draggable="true"
                       style="top: calc(9.839357%); left: calc(65.20548%); opacity: 1;"
                     >
@@ -2348,7 +2348,7 @@ exports[`Floor Plan Plain View test zoom fit button 1`] = `
                   </div>
                   <div>
                     <div
-                      class="sc-jSMfEi bfYvgd device-container context-Album"
+                      class="sc-jSMfEi dSrpFV device-container context-Album"
                       draggable="true"
                       style="top: calc(undefined%); left: calc(undefined%); opacity: 1;"
                     >
@@ -2679,7 +2679,7 @@ exports[`Floor Plan Plain View test zoom original button 1`] = `
                    
                   <div>
                     <div
-                      class="sc-jSMfEi bfYvgd device-container context-Album"
+                      class="sc-jSMfEi dSrpFV device-container context-Album"
                       draggable="true"
                       style="top: calc(9.839357%); left: calc(65.20548%); opacity: 1;"
                     >
@@ -2693,7 +2693,7 @@ exports[`Floor Plan Plain View test zoom original button 1`] = `
                   </div>
                   <div>
                     <div
-                      class="sc-jSMfEi bfYvgd device-container context-Album"
+                      class="sc-jSMfEi dSrpFV device-container context-Album"
                       draggable="true"
                       style="top: calc(undefined%); left: calc(undefined%); opacity: 1;"
                     >
@@ -3024,7 +3024,7 @@ exports[`Floor Plan Plain View test zoom-in button 1`] = `
                    
                   <div>
                     <div
-                      class="sc-jSMfEi bfYvgd device-container context-Album"
+                      class="sc-jSMfEi dSrpFV device-container context-Album"
                       draggable="true"
                       style="top: calc(9.839357%); left: calc(65.20548%); opacity: 1;"
                     >
@@ -3038,7 +3038,7 @@ exports[`Floor Plan Plain View test zoom-in button 1`] = `
                   </div>
                   <div>
                     <div
-                      class="sc-jSMfEi bfYvgd device-container context-Album"
+                      class="sc-jSMfEi dSrpFV device-container context-Album"
                       draggable="true"
                       style="top: calc(undefined%); left: calc(undefined%); opacity: 1;"
                     >
@@ -3369,7 +3369,7 @@ exports[`Floor Plan Plain View test zoom-out button 1`] = `
                    
                   <div>
                     <div
-                      class="sc-jSMfEi bfYvgd device-container context-Album"
+                      class="sc-jSMfEi dSrpFV device-container context-Album"
                       draggable="true"
                       style="top: calc(9.839357%); left: calc(65.20548%); opacity: 1;"
                     >
@@ -3383,7 +3383,7 @@ exports[`Floor Plan Plain View test zoom-out button 1`] = `
                   </div>
                   <div>
                     <div
-                      class="sc-jSMfEi bfYvgd device-container context-Album"
+                      class="sc-jSMfEi dSrpFV device-container context-Album"
                       draggable="true"
                       style="top: calc(undefined%); left: calc(undefined%); opacity: 1;"
                     >

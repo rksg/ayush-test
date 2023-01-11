@@ -179,15 +179,18 @@ function calculateAllVenueRogueApInfo (device: NetworkDevice): RougeApInfo {
 }
 
 export function calculateSpecificRogueApInfo (device: NetworkDevice): RougeApInfo {
+  const { $t } = getIntl()
   const snrInfo = getSnrDisplayInfo(device?.snr as number)
   const rogueType = device.rogueCategoryType?.toLowerCase()
   const deviceColor = `ap-rogue-type-${rogueType}`
   const rogueSnrClass = ' ' + snrInfo.cssClass
 
   const snrIconHtml = getSnrIconHtml(snrInfo.activatedBarIndex)
-  const rogueApTooltips = `<div class="specific-rogue-tooltip-style"><div>Detecting AP:
-   ${device.name}</div><div>MAC Address:
-   ${device.macAddress}</div><div>SNR: ${device.snr} dB ${snrIconHtml}</div></div>`
+  const rogueApTooltips = `<div class="specific-rogue-tooltip-style"><div>
+  ${$t({ defaultMessage: 'Detecting AP: ' })}
+   ${device.name}</div><div>${$t({ defaultMessage: 'MAC Address: ' })}
+   ${device.macAddress}</div><div>${$t({ defaultMessage: 'SNR: ' })}
+   ${device.snr} ${$t({ defaultMessage: 'dB' })} ${snrIconHtml}</div></div>`
 
   return {
     deviceColor,
