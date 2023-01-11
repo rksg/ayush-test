@@ -70,7 +70,8 @@ export interface RogueAPRule {
   name: string,
   priority?: number,
   type: RogueRuleType,
-  classification: RogueCategory
+  classification: RogueCategory,
+  moreInfo?: number | string
 }
 
 export interface RogueVenue {
@@ -98,7 +99,10 @@ export enum RogueRuleType {
   RTS_ABUSE_RULE = 'RTSAbuseRule',
   SAME_NETWORK_RULE = 'SameNetworkRule',
   SSID_RULE = 'SsidRule',
-  SSID_SPOOFING_RULE = 'SsidSpoofingRule'
+  SSID_SPOOFING_RULE = 'SsidSpoofingRule',
+  CUSTOM_SNR_RULE = 'CustomSnrRule',
+  CUSTOM_SSID_RULE = 'CustomSsidRule',
+  CUSTOM_MAC_OUI_RULE = 'CustomMacOuiRule'
 }
 
 export enum RogueAPDetectionActionTypes {
@@ -162,7 +166,7 @@ export type RogueAPDetectionActionPayload = {
 } | {
   type: RogueAPDetectionActionTypes.DEL_RULE,
   payload: {
-    name: string
+    name: string[]
   }
 } | {
   type: RogueAPDetectionActionTypes.MOVE_UP,
