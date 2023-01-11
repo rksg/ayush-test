@@ -135,7 +135,7 @@ export default function NetworkForm () {
       delete data.guestPortal?.socialIdentities?.linkedin
     }
     const tmpGuestPageState = {
-      enableDhcp: data.enableDhcp||saveState.enableDhcp,
+      enableDhcp: _.isUndefined(data.enableDhcp)? saveState.enableDhcp : data.enableDhcp,
       guestPortal: {
         ...saveState?.guestPortal,
         ...data.guestPortal,

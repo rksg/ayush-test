@@ -28,5 +28,6 @@ export const FloorPlanContainer = styled('div')`
 export const EpmtyFloorplanContainer = styled('div')`
   display: inline-flex;
   align-items: center;
-  flex-direction: column
+  flex-direction: column;
+  justify-content: center;
 `

@@ -11,12 +11,14 @@ const basicColumns: TableProps<(typeof basicData)[0]>['columns'] = [
     title: 'Age',
     dataIndex: 'age',
     key: 'age',
+    align: 'center',
     fixed: 'left'
   },
   {
     title: 'Distance',
     dataIndex: 'distance',
     key: 'distance',
+    align: 'center',
     show: false
   },
   {
