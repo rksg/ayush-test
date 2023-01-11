@@ -7,6 +7,8 @@ import { store }                              from '@acx-ui/store'
 import { render }                             from '@acx-ui/test-utils'
 import { mockServer }                         from '@acx-ui/test-utils'
 
+import { ReportType, reportTypeDataStudioMapping } from '../mapping/reportsMapping'
+
 import { EmbeddedReport } from '.'
 
 
@@ -54,7 +56,8 @@ describe('EmbeddedDashboard', () => {
       (req, res, ctx) => res(ctx.json(getEmbeddedReponse))
     )
     render(<Provider>
-      <EmbeddedReport embedDashboardName={'some dashboard'} />
+      <EmbeddedReport
+        embedDashboardName={reportTypeDataStudioMapping[ReportType.AP_DETAIL]} />
     </Provider>, { route: { params } })
     // expect(mockEmbedDashboard).toHaveBeenCalledWith()
     // TODO - Will revisit this
