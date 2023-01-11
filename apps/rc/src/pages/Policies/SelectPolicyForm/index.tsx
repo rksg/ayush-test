@@ -30,11 +30,11 @@ export default function SelectPolicyForm () {
     })
   }
 
-  const category = { wifi: 'WiFi', switch: 'Switch' } as const
+  const category = { wifi: 'WiFi' } as const
 
   const sets = [
     { type: PolicyType.ACCESS_CONTROL, categories: [category.wifi] },
-    { type: PolicyType.VLAN_POOL, categories: [category.switch] },
+    { type: PolicyType.VLAN_POOL, categories: [category.wifi] },
     { type: PolicyType.ROGUE_AP_DETECTION, categories: [category.wifi] },
     { type: PolicyType.AAA, categories: [category.wifi] },
     { type: PolicyType.SYSLOG, categories: [category.wifi] },
