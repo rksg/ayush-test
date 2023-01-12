@@ -44,6 +44,12 @@ export const TYPES = {
   CONNECTION_QUALITY: 'connectionQuality',
   NETWORK_INCIDENTS: 'networkIncidents'
 }
+export const EVENTS = 'events'
+export const QUALITY = 'quality'
+export const ROAMING = 'roaming'
+export const INCIDENTS = 'incidents'
+export const ALL = 'all'
+
 // In RA these events are hidden
 export const spuriousEvents = [
   EVENT_STATES.JOIN,

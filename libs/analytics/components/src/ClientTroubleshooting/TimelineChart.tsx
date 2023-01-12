@@ -27,7 +27,12 @@ import {
   connectionQualityLabels,
   IncidentDetails,
   Event,
-  RoamingTimeSeriesData
+  RoamingTimeSeriesData,
+  EVENTS,
+  QUALITY,
+  ROAMING,
+  INCIDENTS,
+  ALL
 } from './config'
 import { getQualityColor } from './util'
 
@@ -65,19 +70,19 @@ export const getSeriesData = (
   key: string,
   series: string
 ) => {
-  if (series === 'events')
+  if (series === EVENTS)
     return data
       .filter((record) => record.seriesKey === key)
       .map((record) => [record.start, record.seriesKey, record])
-  if (series === 'quality')
+  if (series === QUALITY)
     return data.map((record) => [
       record.start,
       key,
       moment(record.end).valueOf(),
       { ...record, icon: '' }
     ])
-  if (series === 'incidents') {
-    if (key === 'all')
+  if (series === INCIDENTS) {
+    if (key === ALL)
       return data.map((record) => [
         record.start,
         key,
@@ -92,7 +97,7 @@ export const getSeriesData = (
       )
       .map((record) => [record.start, key, moment(record.end).valueOf(), { ...record, icon: '' }])
   }
-  if (series === 'roaming') {
+  if (series === ROAMING) {
     return (
       data as unknown as { [key: string]: { events: RoamingTimeSeriesData[] } }
     )[key]?.events.map((record: RoamingTimeSeriesData) => [
@@ -117,7 +122,7 @@ export function getBarColor (params: {
   seriesName: string;
 }) {
   const seriesName = params.seriesName
-  if (seriesName === 'quality') {
+  if (seriesName === QUALITY) {
     const obj = Array.isArray(params.data) ? params.data[3] : ''
     const key = params?.data?.[1] as unknown as string
     return cssStr(
@@ -126,11 +131,11 @@ export function getBarColor (params: {
       ) as string
     )
   }
-  if (seriesName === 'incidents') {
+  if (seriesName === INCIDENTS) {
     const obj = Array.isArray(params.data) ? params.data[3] : ''
     return cssStr((obj as IncidentDetails).color as string)
   }
-  if (seriesName === 'roaming') {
+  if (seriesName === ROAMING) {
     const obj = Array.isArray(params.data) ? params.data[3] : ''
     return (obj as RoamingTimeSeriesData)?.color
   }

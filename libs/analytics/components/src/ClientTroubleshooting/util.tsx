@@ -41,7 +41,12 @@ import {
   RoamingByAP,
   RoamingTimeSeriesData,
   RoamingConfigParam,
-  Quality
+  Quality,
+  EVENTS,
+  QUALITY,
+  ROAMING,
+  INCIDENTS,
+  ALL
 } from './config'
 import { ConnectionEvent, ConnectionQuality } from './services'
 import * as UI                                from './styledComponents'
@@ -52,11 +57,6 @@ type RBGA = { r: number; b: number; g: number; a: number }
 const connection = 'connection'
 const performance = 'performance'
 const infrastructure = 'infrastructure'
-const all = 'all'
-const EVENTS = 'events'
-const QUALITY = 'quality'
-const ROAMING = 'roaming'
-const INCIDENTS = 'incidents'
 const dateFormat = 'MMM DD HH:mm:ss'
 const EAP = 'eap'
 const EAPOL = 'eapol'
@@ -125,7 +125,7 @@ export const categorizeEvent = (name: string, ttc: number | null) => {
 }
 // Utils for Connection Event data ends
 
-// Utils for Roaming Util starts
+// Utils for Roaming starts
 export const connectionDetailsByAP = (data: RoamingByAP[]) => {
   return Object.entries(groupBy(data, ({ apMac, radio }) => `${apMac}-${radio}`)).reduce(
     (agg, [key, values]) => {
@@ -299,7 +299,7 @@ export const getRoamingSubtitleConfig = (data: RoamingConfigParam) => {
     }
   })
 }
-// Utils for Roaming Util ends
+// Utils for Roaming ends
 
 // Utils for Connection Quality starts
 const getRSSConnectionQuality = (value: number | null | undefined) => {
@@ -406,7 +406,7 @@ export const transformConnectionQualities = (connectionQualities?: ConnectionQua
   })
 
   return {
-    all: mappedQuality.map((val) => ({ ...val, seriesKey: all })) as unknown as LabelledQuality[],
+    all: mappedQuality.map((val) => ({ ...val, seriesKey: ALL })) as unknown as LabelledQuality[],
     rss: mappedQuality
       .filter((val) => val.rss)
       .map((val) => ({ ...val, seriesKey: 'rss' })) as unknown as LabelledQuality[],
@@ -463,8 +463,8 @@ export const getTimelineData = (events: Event[], incidents: IncidentDetails[]) =
   const categorisedEvents = events.reduce(
     (acc, event) => {
       if (event?.type === TYPES.CONNECTION_EVENTS) {
-        acc[TYPES.CONNECTION_EVENTS as ConnectionEventsKey][all] = [
-          ...acc[TYPES.CONNECTION_EVENTS as ConnectionEventsKey][all],
+        acc[TYPES.CONNECTION_EVENTS as ConnectionEventsKey][ALL] = [
+          ...acc[TYPES.CONNECTION_EVENTS as ConnectionEventsKey][ALL],
           event
         ]
         if (event.category === SUCCESS)
@@ -502,8 +502,8 @@ export const getTimelineData = (events: Event[], incidents: IncidentDetails[]) =
   )
   const categorisedIncidents = incidents.reduce(
     (acc, incident) => {
-      acc[TYPES.NETWORK_INCIDENTS as NetworkIncidentsKey][all] = [
-        ...acc[TYPES.NETWORK_INCIDENTS as NetworkIncidentsKey][all],
+      acc[TYPES.NETWORK_INCIDENTS as NetworkIncidentsKey][ALL] = [
+        ...acc[TYPES.NETWORK_INCIDENTS as NetworkIncidentsKey][ALL],
         incident
       ]
       if (categoryCodeMap[connection]?.codes.includes(incident.code as IncidentCode))
@@ -552,11 +552,11 @@ export const getChartData = (
       ] as Event[]
       return isExpanded ? [
         ...modifiedEvents.map((event) => {
-          return { ...event, seriesKey: all }
+          return { ...event, seriesKey: ALL }
         }),
         ...modifiedEvents
       ] as Event[] : [ ...events.map((event) => {
-        return { ...event, seriesKey: all }
+        return { ...event, seriesKey: ALL }
       })
       ] as Event[]
     case TYPES.CONNECTION_QUALITY:
