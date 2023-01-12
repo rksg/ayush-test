@@ -2,6 +2,7 @@ import { useParams } from '@acx-ui/react-router-dom'
 
 import { ApAnalyticsTab }       from './ApAnalyticsTab'
 import { ApClientsTab }         from './ApClientsTab'
+import { ApContextProvider }    from './ApContext'
 import { ApNetworksTab }        from './ApNetworksTab'
 import { ApOverviewTab }        from './ApOverviewTab'
 import ApPageHeader             from './ApPageHeader'
@@ -24,8 +25,8 @@ const tabs = {
 export default function ApDetails () {
   const { activeTab } = useParams()
   const Tab = tabs[activeTab as keyof typeof tabs]
-  return <>
+  return <ApContextProvider>
     <ApPageHeader />
     { Tab && <Tab /> }
-  </>
+  </ApContextProvider>
 }
