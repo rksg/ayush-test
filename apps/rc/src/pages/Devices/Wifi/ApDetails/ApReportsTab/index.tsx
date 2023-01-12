@@ -12,7 +12,7 @@ export function ApReportsTab () {
   const params = useParams()
   const apViewModelPayload = {
     fields: ['apMac'],
-    filters: { serialNumber: [params.serialNumber] }
+    filters: { serialNumber: [params.apId] }
   }
   const { data: currentAP }= useApViewModelQuery({
     params, payload: apViewModelPayload
