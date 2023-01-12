@@ -13,7 +13,8 @@ import {
   rssGroups,
   TimelineData,
   TYPES,
-  Event
+  Event,
+  Quality
 } from './config'
 import { ConnectionEvent } from './services'
 import {
@@ -374,7 +375,7 @@ export const qualityDataObj = [
     icon: ''
   }
 ]
-export const incidentDataObj =[
+export const incidentDataObj = [
   1671726600000,
   'all',
   1671729300000,
@@ -418,10 +419,7 @@ export const roamingDataObj = [
     }
   }
 ]
-export const eventDataObj = [
-  1668403161155,
-  'all',
-  { ...event }]
+export const eventDataObj = [1668403161155, 'all', { ...event }]
 describe('Connection quality utils', () => {
   describe('getConnectionQualityFor', () => {
     it('returns correct values for rss', () => {
@@ -521,7 +519,7 @@ describe('Connection quality utils', () => {
       const average = getQualityColor('average')
       expect(average).toMatch('--acx-semantics-yellow-50')
 
-      const unknown = getQualityColor('unknown')
+      const unknown = getQualityColor('unknown' as Quality)
       expect(unknown).toMatch('--acx-neutrals-50')
     })
   })
@@ -937,12 +935,13 @@ describe('Roaming utils', () => {
 describe('Incidents utils', () => {})
 
 describe('chart utils', () => {
-  const useTooltipParameters = (type : string, obj: object) => [
-    {
-      data: obj,
-      seriesName: type
-    }
-  ] as TooltipFormatterParams[]
+  const useTooltipParameters = (type: string, obj: object) =>
+    [
+      {
+        data: obj,
+        seriesName: type
+      }
+    ] as TooltipFormatterParams[]
   it('getChartData should return empty array for no match', async () => {
     expect(getChartData(null as unknown as keyof TimelineData, [], false)).toEqual([])
   })
@@ -1009,20 +1008,22 @@ describe('chart utils', () => {
   })
 
   it('tooltipFormatter should return correct Html string for events', async () => {
-    expect(useTooltipFormatter(useTooltipParameters('events',eventDataObj))).toMatchSnapshot()
+    expect(useTooltipFormatter(useTooltipParameters('events', eventDataObj))).toMatchSnapshot()
     expect(
       useTooltipFormatter([{ seriesName: 'events' }] as TooltipFormatterParams[])
     ).toMatchSnapshot()
   })
 
   it('tooltipFormatter should return correct Html string for connectionQuality', async () => {
-    expect(useTooltipFormatter(useTooltipParameters('quality', qualityDataObj) )).toMatchSnapshot()
+    expect(useTooltipFormatter(useTooltipParameters('quality', qualityDataObj))).toMatchSnapshot()
     expect(
       useTooltipFormatter([{ seriesName: 'quality' }] as TooltipFormatterParams[])
     ).toMatchSnapshot()
   })
   it('tooltipFormatter should return correct Html string for incidents', async () => {
-    expect(useTooltipFormatter(useTooltipParameters('incidents', incidentDataObj))).toMatchSnapshot()
+    expect(
+      useTooltipFormatter(useTooltipParameters('incidents', incidentDataObj))
+    ).toMatchSnapshot()
     expect(
       useTooltipFormatter([{ seriesName: 'incidents' }] as TooltipFormatterParams[])
     ).toMatchSnapshot()
@@ -1034,12 +1035,7 @@ describe('chart utils', () => {
     ).toMatchSnapshot()
   })
   it('tooltipFormatter should empty Html string for invalid value', async () => {
-    expect(
-      useTooltipFormatter([{}] as TooltipFormatterParams[])
-    ).toEqual('')
-    expect(
-      useTooltipFormatter({} as TooltipFormatterParams[])
-    ).toEqual('')
+    expect(useTooltipFormatter([{}] as TooltipFormatterParams[])).toEqual('')
+    expect(useTooltipFormatter({} as TooltipFormatterParams[])).toEqual('')
   })
-
 })
