@@ -101,7 +101,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         }
       },
       transformResponse (result: TableResult<EdgeStatus>) {
-        return transformEdgeStatus(result?.data[0])
+        return result?.data[0]
       }
     }),
     getDnsServers: build.query<EdgeDnsServers, RequestPayload>({
@@ -217,7 +217,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         }
       },
       transformResponse (result: TableResult<EdgePortStatus>) {
-        return transformEdgePortStatus(result?.data)
+        return result?.data
       },
       providesTags: [{ type: 'Edge', id: 'DETAIL_PORTS' }]
     })
@@ -245,13 +245,3 @@ export const {
   useEdgeBySerialNumberQuery,
   useGetEdgePortsStatusListQuery
 } = edgeApi
-
-const transformEdgeStatus = (result: EdgeStatus) => {
-  const edge = JSON.parse(JSON.stringify(result))
-
-  return edge
-}
-
-const transformEdgePortStatus = (result: EdgePortStatus[]) => {
-  return result.map((value) => JSON.parse(JSON.stringify(value)))
-}
