@@ -27,12 +27,12 @@ export const Wrapper = styled.div`
               a {
                 min-height: unset;
               }
-              padding: 0;
+              padding: 0 0 0  var(--acx-sidebar-left-space);
               width: var(--acx-sider-width);
               height: var(--acx-header-height);
               margin-bottom: 13px;
               align-items: center;
-              justify-content: center;
+              justify-content: left;
             }
             .ant-menu-submenu-arrow {
               display: none;
