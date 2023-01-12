@@ -2,7 +2,7 @@ import { useIntl } from 'react-intl'
 
 import { PageHeader } from '@acx-ui/components'
 
-function NetworkHealthPage () {
+function NetworkHealthList () {
   const { $t } = useIntl()
   return (
     <PageHeader
@@ -17,4 +17,4 @@ function NetworkHealthPage () {
   )
 }
 
-export { NetworkHealthPage }
+export default NetworkHealthList

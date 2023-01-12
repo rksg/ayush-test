@@ -16,4 +16,4 @@ function VideoCallQoePage () {
     />
   )
 }
-export { VideoCallQoePage }
+export default VideoCallQoePage

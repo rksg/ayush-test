@@ -3,7 +3,7 @@ import '@testing-library/jest-dom'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
-import { NetworkHealthPage } from '.'
+import { NetworkHealthList } from '.'
 
 const params = { tenantId: 'tenant-id' }
 const mockedUsedNavigate = jest.fn()
@@ -17,7 +17,7 @@ describe('Network Health', () => {
   it('should render page correctly', async () => {
     render(
       <Provider>
-        <NetworkHealthPage />
+        <NetworkHealthList />
       </Provider>,
       { route: { params } }
     )

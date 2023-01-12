@@ -57,4 +57,4 @@ function NetworkHealthDetails () {
   )
 }
 
-export { NetworkHealthDetails }
+export default NetworkHealthDetails
