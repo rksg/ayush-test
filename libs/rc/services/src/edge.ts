@@ -100,7 +100,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         }
       },
       transformResponse (result: TableResult<EdgeStatus>) {
-        return transformEdgeStatus(result?.data[0])
+        return result.data[0]
       }
     }),
     getDnsServers: build.query<EdgeDnsServers, RequestPayload>({
@@ -229,9 +229,3 @@ export const {
   useUpdateStaticRoutesMutation,
   useEdgeBySerialNumberQuery
 } = edgeApi
-
-const transformEdgeStatus = (result: EdgeStatus) => {
-  const edge = JSON.parse(JSON.stringify(result))
-
-  return edge
-}

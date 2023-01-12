@@ -1,15 +1,15 @@
 import { useParams } from 'react-router-dom'
 import styled        from 'styled-components/macro'
 
-import { GridCol, GridRow }  from '@acx-ui/components'
+import { GridCol, GridRow }   from '@acx-ui/components'
 import {
   EdgeInfoWidget,
-  EdgeTrafficByVolumeWidget,
+  EdgePortsByTrafficWidget,
   EdgeResourceUtilizationWidget,
-  EdgePortsByTrafficWidget
+  EdgeTrafficByVolumeWidget
 } from '@acx-ui/rc/components'
-import { useEdgeBySerialNumberQuery }                   from '@acx-ui/rc/services'
-import { EdgePortStatus, EdgeStatus, EdgePortTypeEnum } from '@acx-ui/rc/utils'
+import { useEdgeBySerialNumberQuery, useGetDnsServersQuery } from '@acx-ui/rc/services'
+import { EdgePortStatus, EdgePortTypeEnum }                  from '@acx-ui/rc/utils'
 
 import { EdgeUpTimeWidget } from './EdgeUpTimeWidget'
 
@@ -36,6 +36,8 @@ export const EdgeOverview = styled(({ className }:{ className?: string }) => {
   const { data: currentEdge, isLoading: isLoadingEdgeStatus } = useEdgeBySerialNumberQuery({
     params, payload: edgeStatusPayload
   })
+
+  const { data: dnsServers } = useGetDnsServersQuery({ params })
 
   // TODO: used fake data to wait for API
   const isPortListLoading = false
@@ -71,8 +73,9 @@ export const EdgeOverview = styled(({ className }:{ className?: string }) => {
     <GridRow className={className}>
       <GridCol col={{ span: 24 }}>
         <EdgeInfoWidget
-          currentEdge={currentEdge as EdgeStatus}
-          edgePortsSetting={edgePortsSetting as EdgePortStatus[]}
+          currentEdge={currentEdge}
+          edgePortsSetting={edgePortsSetting}
+          dnsServers={dnsServers}
           isEdgeStatusLoading={isLoadingEdgeStatus}
           isPortListLoading={isPortListLoading}
         />

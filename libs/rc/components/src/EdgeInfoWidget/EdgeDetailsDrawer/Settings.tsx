@@ -2,15 +2,15 @@
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Subtitle }                from '@acx-ui/components'
-import { EdgeDNS, EdgePortStatus } from '@acx-ui/rc/utils'
+import { Subtitle }                       from '@acx-ui/components'
+import { EdgeDnsServers, EdgePortStatus } from '@acx-ui/rc/utils'
 
-interface EdgeDetailsSettingsInfoProps {
+interface SettingsProps {
   edgePortsSetting: EdgePortStatus[]
-  dnsSetting: EdgeDNS
+  dnsSetting: EdgeDnsServers | undefined
 }
 
-export const EdgeDetailsSettingsInfo = (props: EdgeDetailsSettingsInfoProps) => {
+export const Settings = (props: SettingsProps) => {
   const { $t } = useIntl()
   const { edgePortsSetting, dnsSetting } = props
 
@@ -58,7 +58,14 @@ export const EdgeDetailsSettingsInfo = (props: EdgeDetailsSettingsInfoProps) => 
       <Form.Item
         label={$t({ defaultMessage: 'DNS Server' })}
         children={
-          dnsSetting || '--'
+          dnsSetting?.primary || '--'
+        }
+      />
+
+      <Form.Item
+        label={$t({ defaultMessage: 'Secondary DNS Server' })}
+        children={
+          dnsSetting?.secondary || '--'
         }
       />
 

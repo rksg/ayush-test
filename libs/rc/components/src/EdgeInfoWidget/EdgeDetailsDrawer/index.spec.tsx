@@ -1,9 +1,9 @@
-import '@testing-library/jest-dom'
+import userEvent from '@testing-library/user-event'
 
 import { Provider  }                 from '@acx-ui/store'
 import { fireEvent, render, screen } from '@acx-ui/test-utils'
 
-import { tenantID, currentEdge, edgePortsSetting } from '../__tests__/fixtures'
+import { tenantID, currentEdge, edgePortsSetting, edgeDnsServers } from '../__tests__/fixtures'
 
 import EdgeDetailsDrawer from '.'
 
@@ -17,6 +17,7 @@ describe('Edge Detail Drawer', () => {
         visible={true}
         setVisible={() => {}}
         currentEdge={currentEdge}
+        dnsServers={edgeDnsServers}
         edgePortsSetting={edgePortsSetting}
       />
     </Provider>, { route: { params } })
@@ -37,6 +38,7 @@ describe('Edge Detail Drawer', () => {
         visible={true}
         setVisible={() => {}}
         currentEdge={edgeWithoutModel}
+        dnsServers={edgeDnsServers}
         edgePortsSetting={edgePortsSetting}
       />
     </Provider>, { route: { params } })
@@ -51,6 +53,7 @@ describe('Edge Detail Drawer', () => {
         visible={true}
         setVisible={() => {}}
         currentEdge={currentEdge}
+        dnsServers={edgeDnsServers}
         edgePortsSetting={edgePortsSetting}
       />
     </Provider>, { route: { params } })
@@ -59,5 +62,23 @@ describe('Edge Detail Drawer', () => {
     expect(target.tagName).toBe('A')
     expect(target.getAttribute('href'))
       .toBe(`/t/${params.tenantId}/venues/${currentEdge.venueId}/venue-details/overview`)
+  })
+
+  it('should render -- if dnsServers is not setting', async () => {
+    const user = userEvent.setup()
+    render(<Provider>
+      <EdgeDetailsDrawer
+        visible={true}
+        setVisible={() => {}}
+        currentEdge={currentEdge}
+        dnsServers={{ primary: '', secondary: '' }}
+        edgePortsSetting={edgePortsSetting}
+      />
+    </Provider>, { route: { params } })
+
+    await user.click(screen.getByRole('radio', { name: 'Settings' }))
+    await screen.findAllByText('DNS Server')
+    const emptyLabel = await screen.findAllByText('--')
+    expect(emptyLabel.length).toBe(2)
   })
 })

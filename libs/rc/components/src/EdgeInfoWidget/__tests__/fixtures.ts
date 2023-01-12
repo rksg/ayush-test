@@ -1,4 +1,4 @@
-import { ApVenueStatusEnum, EdgePortStatus, EdgePortTypeEnum, EdgeStatus, EdgeStatusEnum } from '@acx-ui/rc/utils'
+import { ApVenueStatusEnum, EdgeDnsServers, EdgePortStatus, EdgePortTypeEnum, EdgeStatus, EdgeStatusEnum } from '@acx-ui/rc/utils'
 
 export const tenantID = 'ecc2d7cf9d2342fdb31ae0e24958fcac'
 export const currentEdge:EdgeStatus = {
@@ -43,3 +43,8 @@ export const edgePortsSetting:EdgePortStatus[] = [{
   duplexSpeed: 100* Math.pow(12, 6),
   ip: '1.1.1.2'
 }]
+
+export const edgeDnsServers: EdgeDnsServers = {
+  primary: '1.1.1.1',
+  secondary: '2.2.2.2'
+}

@@ -5,9 +5,9 @@ import { useIntl } from 'react-intl'
 // import AutoSizer   from 'react-virtualized-auto-sizer'
 import styled from 'styled-components'
 
-import type { DonutChartData, DonutChartProps }                                             from '@acx-ui/components'
-import { Button, cssStr, DonutChart, GridCol, GridRow, Loader, NoActiveData, onChartClick } from '@acx-ui/components'
-import { EdgePortAdminStatusEnum, EdgePortStatus, EdgeResourceUtilizationEnum, EdgeStatus } from '@acx-ui/rc/utils'
+import type { DonutChartData, DonutChartProps }                                                             from '@acx-ui/components'
+import { Button, cssStr, DonutChart, GridCol, GridRow, Loader, NoActiveData, onChartClick }                 from '@acx-ui/components'
+import { EdgeDnsServers, EdgePortAdminStatusEnum, EdgePortStatus, EdgeResourceUtilizationEnum, EdgeStatus } from '@acx-ui/rc/utils'
 
 import { SpaceWrapper } from '../SpaceWrapper/index'
 
@@ -15,6 +15,14 @@ import EdgeDetailsDrawer      from './EdgeDetailsDrawer'
 import EdgePortsListDrawer    from './EdgePortsListDrawer'
 import { EdgeSysResourceBox } from './EdgeSysResourceBox'
 
+interface EdgeInfoWidgetProps {
+  className?: string
+  currentEdge: EdgeStatus | undefined
+  edgePortsSetting: EdgePortStatus[]
+  dnsServers: EdgeDnsServers | undefined
+  isEdgeStatusLoading: boolean
+  isPortListLoading: boolean
+}
 
 function EdgeOverviewDonutWidget ({ title, data, isLoading, chartDataTransformer, onClick }:
    { title:string, data: Array<DonutChartData>,
@@ -105,8 +113,13 @@ const EdgePortsWidget = ({ isLoading, edgePortsSetting }:
   </>)
 }
 
-export const EdgeInfoWidget = styled(({ className, currentEdge, edgePortsSetting, isEdgeStatusLoading, isPortListLoading }:
-   { className?: string, currentEdge: EdgeStatus, edgePortsSetting: EdgePortStatus[], isEdgeStatusLoading: boolean, isPortListLoading: boolean }) => {
+export const EdgeInfoWidget = styled(({
+  className,
+  currentEdge,
+  edgePortsSetting,
+  dnsServers,
+  isEdgeStatusLoading,
+  isPortListLoading }: EdgeInfoWidgetProps) => {
   const { $t } = useIntl()
   const [visible, setVisible] = React.useState(false)
   const moreDetailsHandler = () => {
@@ -157,8 +170,9 @@ export const EdgeInfoWidget = styled(({ className, currentEdge, edgePortsSetting
       <EdgeDetailsDrawer
         visible={visible}
         setVisible={setVisible}
-        currentEdge={currentEdge as EdgeStatus}
-        edgePortsSetting={edgePortsSetting as EdgePortStatus[]}
+        currentEdge={currentEdge}
+        edgePortsSetting={edgePortsSetting}
+        dnsServers={dnsServers}
       />
     </GridRow>
   )
