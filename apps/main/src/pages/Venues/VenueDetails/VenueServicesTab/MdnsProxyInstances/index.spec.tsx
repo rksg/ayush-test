@@ -139,7 +139,7 @@ describe('MdnsProxyInstances', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Change' }))
 
     await userEvent.click(await screen.findByRole('combobox', { name: /mDNS Proxy Service/i }))
-    await userEvent.click(screen.getByText(targetMdnsProxyService.serviceName))
+    await userEvent.click(await screen.findByText(targetMdnsProxyService.serviceName))
 
     await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
 

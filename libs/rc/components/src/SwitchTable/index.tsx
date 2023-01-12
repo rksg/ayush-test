@@ -17,7 +17,9 @@ import {
   DeviceConnectionStatus,
   getStackMemberStatus,
   usePollingTableQuery,
-  getFilters
+  getFilters,
+  TableQuery,
+  RequestPayload
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
@@ -43,22 +45,30 @@ const handleStatusColor = (status: DeviceConnectionStatus) => {
   return `var(${deviceStatusColors[status]})`
 }
 
-export function SwitchTable ({ showAllColumns } : {
-  showAllColumns?: boolean
+export const defaultSwitchPayload = {
+  fields: [
+    'check-all','name','deviceStatus','model','activeSerial','switchMac','ipAddress','venueName','uptime',
+    'clientCount','cog','id','serialNumber','isStack','formStacking','venueId','switchName','configReady',
+    'syncedSwitchConfig','syncDataId','operationalWarning','cliApplied','suspendingDeployTime'
+  ]
+}
+
+export function SwitchTable (props : {
+  showAllColumns?: boolean,
+  tableQuery?: TableQuery<SwitchRow, RequestPayload<unknown>, unknown>
 }) {
   const { $t } = useIntl()
   const params = useParams()
-  const tableQuery = usePollingTableQuery({
+  const inlineTableQuery = usePollingTableQuery({
     useQuery: useSwitchListQuery,
     defaultPayload: {
       filters: getFilters(params),
-      fields: [
-        'check-all','name','deviceStatus','model','activeSerial','switchMac','ipAddress','venueName','uptime',
-        'clientCount','cog','id','serialNumber','isStack','formStacking','venueId','switchName','configReady',
-        'syncedSwitchConfig','syncDataId','operationalWarning','cliApplied','suspendingDeployTime'
-      ]
-    }
+      ...defaultSwitchPayload
+    },
+    option: { skip: Boolean(props.tableQuery) }
   })
+  const tableQuery = props.tableQuery || inlineTableQuery
+  const { showAllColumns } = props
 
   const switchAction = useSwitchActions()
   const tableData = tableQuery.data?.data ?? []
@@ -71,18 +81,14 @@ export function SwitchTable ({ showAllColumns } : {
     defaultSortOrder: 'ascend',
     disable: true,
     render: (data, row) => {
-      return <>
-        {
-          row.isFirstLevel ?
-            <TenantLink to={`/devices/switch/${row.id}/${row.serialNumber}/details/overview`}>
-              {getSwitchName(row)}
-            </TenantLink> :
-            <Space>
-              <>{getSwitchName(row)}</>
-              <span>({getStackMemberStatus(row.unitStatus || '', true)})</span>
-            </Space>
-        }
-      </>
+      return row.isFirstLevel ?
+        <TenantLink to={`/devices/switch/${row.id}/${row.serialNumber}/details/overview`}>
+          {getSwitchName(row)}
+        </TenantLink> :
+        <Space>
+          <>{getSwitchName(row)}</>
+          <span>({getStackMemberStatus(row.unitStatus || '', true)})</span>
+        </Space>
     }
   }, {
     key: 'deviceStatus',
@@ -140,7 +146,7 @@ export function SwitchTable ({ showAllColumns } : {
       <TenantLink to={`/devices/switch/${row.id}/${row.serialNumber}/details/clients`}>{data || 0}</TenantLink>
     )
   }
-  // { TODO: tags
+  // { // TODO: Waiting for TAG feature support
   //   key: 'tags',
   //   title: $t({ defaultMessage: 'Tags' }),
   //   dataIndex: 'tags'

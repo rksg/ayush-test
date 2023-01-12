@@ -10,9 +10,9 @@ import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
 
 import { ApTraceRouteForm } from './apTraceRouteForm'
 
-
-
-const params = { tenantId: 'tenant-id', serialNumber: 'serial-number' }
+jest.mock('../ApContext', () => ({
+  useApContext: () => ({ tenantId: 'tenant-id', serialNumber: 'serial-number' })
+}))
 
 const pingResponse = {
   requestId: '2261f786-45b4-48c1-887d-7b13f3a4fb9f',
@@ -28,12 +28,12 @@ describe('ApTraceRouteForm', () => {
     mockServer.use(
       rest.post(
         WifiUrlsInfo.traceRouteAp.url,
-        (req, res, ctx) => res(ctx.json(pingResponse)))
+        (_, res, ctx) => res(ctx.json(pingResponse)))
     )
   })
 
   it('should render correctly', async () => {
-    const { asFragment } = render(<Provider><ApTraceRouteForm /></Provider>, { route: { params } })
+    const { asFragment } = render(<Provider><ApTraceRouteForm /></Provider>)
     expect(asFragment()).toMatchSnapshot()
   })
 
@@ -41,7 +41,7 @@ describe('ApTraceRouteForm', () => {
     render(
       <Provider>
         <ApTraceRouteForm />
-      </Provider>, { route: { params } })
+      </Provider>)
 
     const ipAddressField = screen.getByRole('textbox', {
       name: /target host or ip address/i
@@ -54,7 +54,7 @@ describe('ApTraceRouteForm', () => {
     render(
       <Provider>
         <ApTraceRouteForm />
-      </Provider>, { route: { params } })
+      </Provider>)
 
     const ipAddressField = screen.getByRole('textbox', {
       name: /target host or ip address/i

@@ -443,6 +443,18 @@ export const Wrapper = styled.div<StyledTable>`
             }
           }
         }
+
+        &[style*="text-align: center"] {
+          .ant-table-column-sorters {
+            justify-content: center;
+          }
+        }
+
+        &[style*="text-align: right"] {
+          .ant-table-column-sorters {
+            justify-content: right;
+          }
+        }
       }
 
       &-tbody > tr > td {
