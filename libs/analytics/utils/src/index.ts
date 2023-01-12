@@ -20,3 +20,4 @@ export {
 export * from './timeseries'
 export * from './sorters'
 export * from './types/incidents'
+export * from './types/timeseries'
