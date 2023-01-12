@@ -458,7 +458,7 @@ exports[`ClientTroubleshootingTab should render correctly with search params 1`]
                       style="padding: 8px 8px 8px 8px;"
                     >
                       <div
-                        _echarts_instance_="ec_1673496412906"
+                        _echarts_instance_="ec_1673497025412"
                         class="echarts-for-react "
                         size-sensor-id="5"
                         style="height: 66px; margin-bottom: 0px; webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); position: relative;"
@@ -490,7 +490,7 @@ exports[`ClientTroubleshootingTab should render correctly with search params 1`]
                       style="padding: 8px 8px 8px 8px;"
                     >
                       <div
-                        _echarts_instance_="ec_1673496412907"
+                        _echarts_instance_="ec_1673497025413"
                         class="echarts-for-react "
                         size-sensor-id="6"
                         style="height: 66px; margin-bottom: 0px; webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); position: relative;"
@@ -522,7 +522,7 @@ exports[`ClientTroubleshootingTab should render correctly with search params 1`]
                       style="padding: 8px 8px 8px 8px;"
                     >
                       <div
-                        _echarts_instance_="ec_1673496412908"
+                        _echarts_instance_="ec_1673497025414"
                         class="echarts-for-react "
                         size-sensor-id="7"
                         style="height: 66px; margin-bottom: 0px; webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); position: relative;"
@@ -554,7 +554,7 @@ exports[`ClientTroubleshootingTab should render correctly with search params 1`]
                       style="padding: 8px 8px 8px 8px;"
                     >
                       <div
-                        _echarts_instance_="ec_1673496412909"
+                        _echarts_instance_="ec_1673497025415"
                         class="echarts-for-react "
                         size-sensor-id="8"
                         style="height: 96px; margin-bottom: 0px; webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); position: relative;"
@@ -1125,7 +1125,7 @@ exports[`ClientTroubleshootingTab should render correctly without search params 
                       style="padding: 8px 8px 8px 8px;"
                     >
                       <div
-                        _echarts_instance_="ec_1673496412902"
+                        _echarts_instance_="ec_1673497025408"
                         class="echarts-for-react "
                         size-sensor-id="1"
                         style="height: 66px; margin-bottom: 0px; webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); position: relative;"
@@ -1157,7 +1157,7 @@ exports[`ClientTroubleshootingTab should render correctly without search params 
                       style="padding: 8px 8px 8px 8px;"
                     >
                       <div
-                        _echarts_instance_="ec_1673496412903"
+                        _echarts_instance_="ec_1673497025409"
                         class="echarts-for-react "
                         size-sensor-id="2"
                         style="height: 66px; margin-bottom: 0px; webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); position: relative;"
@@ -1189,7 +1189,7 @@ exports[`ClientTroubleshootingTab should render correctly without search params 
                       style="padding: 8px 8px 8px 8px;"
                     >
                       <div
-                        _echarts_instance_="ec_1673496412904"
+                        _echarts_instance_="ec_1673497025410"
                         class="echarts-for-react "
                         size-sensor-id="3"
                         style="height: 66px; margin-bottom: 0px; webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); position: relative;"
@@ -1221,7 +1221,7 @@ exports[`ClientTroubleshootingTab should render correctly without search params 
                       style="padding: 8px 8px 8px 8px;"
                     >
                       <div
-                        _echarts_instance_="ec_1673496412905"
+                        _echarts_instance_="ec_1673497025411"
                         class="echarts-for-react "
                         size-sensor-id="4"
                         style="height: 96px; margin-bottom: 0px; webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); position: relative;"
