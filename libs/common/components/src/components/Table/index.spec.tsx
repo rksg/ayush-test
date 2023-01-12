@@ -62,17 +62,38 @@ describe('Table component', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 
-  it('should render pagination correctly', async () => {
+  it('should only render pagination when total items exceeds default page size', async () => {
     const props: TableProps<TestRow> = {
       columns: testColumns,
-      dataSource: testData
+      dataSource: testData,
+      pagination: { total: 11 }
     }
     const { rerender } = render(<Table {...props} />)
     const pagination = await screen.findByRole('listitem', { name: /1/i })
-
     expect(pagination).toBeVisible()
-    rerender(<Table {...props} pagination={false} />)
-    expect(pagination).not.toBeVisible()
+
+    rerender(<Table {...props} pagination={{ total: 9 }} />)
+    expect(screen.queryByRole('listitem', { name: /1/i })).toBeNull()
+  })
+
+  it('should only render pagination when dataSource length exceeds default page size', async () => {
+    const props: TableProps<TestRow> = {
+      columns: testColumns,
+      dataSource: testData,
+      pagination: { defaultPageSize: 2 }
+    }
+    const { rerender } = render(<Table {...props} />)
+    const pagination = await screen.findByRole('listitem', { name: /1/i })
+    expect(pagination).toBeVisible()
+
+    rerender(<Table {...props} pagination={{ defaultPageSize: 10 }} />)
+    expect(screen.queryByRole('listitem', { name: /1/i })).toBeNull()
+  })
+
+  it('should not render pagination when dataSource is undefined', async () => {
+    const props: TableProps<TestRow> = { columns: testColumns }
+    render(<Table {...props} />)
+    expect(screen.queryByRole('listitem', { name: /1/i })).toBeNull()
   })
 
   it('renders compact table', () => {
@@ -670,7 +691,7 @@ describe('Table component', () => {
       expect(await screen.findAllByText('Jordan Doe')).toHaveLength(1)
 
       const buttons = await screen.findAllByRole('button')
-      expect(buttons).toHaveLength(5)
+      expect(buttons).toHaveLength(3)
       fireEvent.click(buttons[1])
 
       expect(await screen.findAllByRole('checkbox')).toHaveLength(4)

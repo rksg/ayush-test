@@ -76,7 +76,8 @@ const defaultPagination = {
   defaultPageSize: 10,
   pageSizeOptions: [5, 10, 20, 25, 50, 100],
   position: ['bottomCenter'],
-  showTotal: false
+  showTotal: false,
+  showSizeChanger: true
 }
 
 function useSelectedRowKeys <RecordType> (
@@ -160,16 +161,13 @@ function Table <RecordType extends Record<string, any>> (
   } : false
 
   const rowKey = (props.rowKey ?? 'key')
-
   const [selectedRowKeys, setSelectedRowKeys] = useSelectedRowKeys(props.rowSelection)
-
   const getSelectedRows = useCallback((selectedRowKeys: Key[]) => {
     return props.dataSource?.filter(item => {
       return selectedRowKeys.includes(typeof rowKey === 'function' ?
         rowKey(item) : item[rowKey] as unknown as Key)
     }) ?? []
   }, [props.dataSource, rowKey])
-
   const onRowClick = (record: RecordType) => {
     if (!props.rowSelection) return
     if (rowSelection?.getCheckboxProps?.(record)?.disabled) return
@@ -218,6 +216,7 @@ function Table <RecordType extends Record<string, any>> (
     const filteredValue = filterValues[key as keyof FilterValue]
     return filteredValue
   })
+
   const hasRowSelected = Boolean(selectedRowKeys.length)
   const hasHeader = !hasRowSelected && (Boolean(filterables.length) || Boolean(searchables.length))
   const rowSelection: TableProps<RecordType>['rowSelection'] = props.rowSelection ? {
@@ -229,11 +228,22 @@ function Table <RecordType extends Record<string, any>> (
       props.rowSelection?.onChange?.(keys, rows, info)
     }
   } : undefined
+
+  let pagination: false | TablePaginationConfig = false
+  if (type === 'tall') {
+    pagination = { ...defaultPagination, ...props.pagination || {} } as TablePaginationConfig
+    if ((pagination.total || dataSource?.length || 0) < pagination.defaultPageSize!) {
+      pagination = false
+    }
+  }
+
   const hasEllipsisColumn = columns.some(column => column.ellipsis)
+
   const components = _.merge({},
     props.components || {},
     type === 'tall' ? { header: { cell: ResizableColumn } } : {}
   ) as TableProps<RecordType>['components']
+
   const onRow: TableProps<RecordType>['onRow'] = function (record) {
     const defaultOnRow = props.onRow?.(record)
     return {
@@ -288,6 +298,7 @@ function Table <RecordType extends Record<string, any>> (
           />
         return action.dropdownMenu
           ? <Dropdown
+            key={`dropdown-${index}`}
             overlay={<Menu {...action.dropdownMenu} />}
             disabled={action.disabled}>
             {() => content }
@@ -342,9 +353,7 @@ function Table <RecordType extends Record<string, any>> (
       }}
       scroll={{ x: hasEllipsisColumn || type !== 'tall' ? '100%' : 'max-content' }}
       rowSelection={rowSelection}
-      pagination={(type === 'tall' && props.pagination !== false
-        ? { ...defaultPagination, ...props.pagination || {} } as TablePaginationConfig
-        : false)}
+      pagination={pagination as false | TablePaginationConfig}
       columnEmptyText={false}
       onRow={onRow}
       showSorterTooltip={false}
