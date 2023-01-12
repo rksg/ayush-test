@@ -10,11 +10,11 @@ import {
   useImperativeHandle
 } from 'react'
 
-import { TooltipComponentOption }                            from 'echarts'
-import ReactECharts                                          from 'echarts-for-react'
-import { TooltipFormatterCallback, TopLevelFormatterParams } from 'echarts/types/dist/shared'
-import moment                                                from 'moment-timezone'
-import { useIntl }                                           from 'react-intl'
+import { TooltipComponentOption }                                                    from 'echarts'
+import ReactECharts                                                                  from 'echarts-for-react'
+import { TooltipFormatterCallback, TopLevelFormatterParams, CustomSeriesRenderItem } from 'echarts/types/dist/shared'
+import moment                                                                        from 'moment-timezone'
+import { useIntl }                                                                   from 'react-intl'
 
 import { categoryCodeMap, IncidentCode }                                  from '@acx-ui/analytics/utils'
 import { cssStr, cssNumber }                                              from '@acx-ui/components'
@@ -60,7 +60,7 @@ export interface TimelineChartProps extends Omit<EChartsReactProps, 'option' | '
   mapping: { key: string; label: string; chartType: string; series: string }[];
   showResetZoom?: boolean;
 }
-const getSeriesData = (
+export const getSeriesData = (
   data: (Event | LabelledQuality | IncidentDetails | RoamingTimeSeriesData)[],
   key: string,
   series: string
@@ -112,14 +112,14 @@ export function getSeriesItemColor (params: { data: (Event | LabelledQuality)[] 
     ? cssStr(eventColorByCategory[category as keyof typeof eventColorByCategory])
     : cssStr('--acx-neutrals-50')
 }
-function getBarColor (params: {
+export function getBarColor (params: {
   data: (LabelledQuality | IncidentDetails | RoamingTimeSeriesData)[];
   seriesName: string;
 }) {
   const seriesName = params.seriesName
   if (seriesName === 'quality') {
     const obj = Array.isArray(params.data) ? params.data[3] : ''
-    const key = params.data[1] as unknown as string
+    const key = params?.data?.[1] as unknown as string
     return cssStr(
       getQualityColor(
         (obj as LabelledQuality)[key as keyof typeof connectionQualityLabels]?.quality
@@ -158,6 +158,25 @@ export const useDotClick = (
       echartInstance.off('click', handler)
     }
   }, [eChartsRef, handler])
+}
+export const renderCustomItem = (
+  params: CustomSeriesRenderItemParams,
+  api: CustomSeriesRenderItemAPI
+) => {
+  const yValue = api?.value?.(1)
+  const start = api?.coord?.([api?.value?.(0), yValue])
+  const end = api?.coord?.([api?.value?.(2), yValue])
+  const height = (api?.size as CallableFunction)?.([0, 1])?.[1] * 0.8
+  return {
+    type: 'rect',
+    shape: {
+      x: start?.[0],
+      y: start?.[1] - 9,
+      width: end?.[0] - start?.[0],
+      height: height
+    },
+    style: api?.style?.()
+  }
 }
 export const useDataZoom = (
   eChartsRef: RefObject<ReactECharts>,
@@ -366,31 +385,13 @@ export function TimelineChart ({
           : {
             type: 'custom',
             name: series,
-            renderItem: function (
-              params: CustomSeriesRenderItemParams,
-              api: CustomSeriesRenderItemAPI
-            ) {
-              const yValue = api.value(1)
-              const start = api.coord([api.value(0), yValue])
-              const end = api.coord([api.value(2), yValue])
-              const height = (api?.size as CallableFunction)([0, 1])[1] * 0.8
-              return {
-                type: 'rect',
-                shape: {
-                  x: start[0],
-                  y: start[1] - 9,
-                  width: end[0] - start[0],
-                  height: height
-                },
-                style: api.style()
-              }
-            },
+            renderItem: renderCustomItem as unknown as CustomSeriesRenderItem,
             itemStyle: {
               color: getBarColor as unknown as string
             },
             data: getSeriesData(data, key, series)
           }
-      )
+      ) as SeriesOption[]
   }
   return (
     <>

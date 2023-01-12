@@ -573,27 +573,27 @@ export const useTooltipFormatter = (params: TooltipComponentFormatterCallbackPar
   const intl = getIntl()
   const seriesName = Array.isArray(params) ? params[0].seriesName : ''
   if (seriesName === QUALITY) {
-    const obj2 = (Array.isArray(params) && Array.isArray(params[0].data)
+    const obj = (Array.isArray(params) && Array.isArray(params[0].data)
       ? params[0].data[3]
       : undefined) as unknown as DisplayEvent
-    const tooltipText2 = obj2
+    const tooltipText = obj
       ? Object.keys(connectionQualityLabels).map(
         (key, index) =>
           `${formatter(
               connectionQualityLabels[key as keyof typeof connectionQualityLabels]
                 .formatter as keyof typeof formats
           )(
-            (obj2 as unknown as LabelledQuality)[key as keyof typeof connectionQualityLabels]
+            (obj as unknown as LabelledQuality)[key as keyof typeof connectionQualityLabels]
               .value
           )}${index + 1 !== Object.keys(connectionQualityLabels).length ? '/ ' : ''}`
       )
       : null
 
-    if (typeof obj2 !== 'undefined' && (obj2 as unknown as LabelledQuality).all) {
+    if (typeof obj !== 'undefined' && (obj as unknown as LabelledQuality).all) {
       return renderToString(
         <UI.TooltipWrapper>
           <UI.TooltipDate>
-            {obj2 && moment(obj2?.start).format(dateFormat)}{' '}
+            {obj && moment(obj?.start).format(dateFormat)}{' '}
             {Object.keys(connectionQualityLabels).map(
               (key, index) =>
                 `${connectionQualityLabels[key as keyof typeof connectionQualityLabels].label}${
@@ -602,12 +602,13 @@ export const useTooltipFormatter = (params: TooltipComponentFormatterCallbackPar
             )}
             {':'}
           </UI.TooltipDate>
-          {tooltipText2}
+          {tooltipText}
         </UI.TooltipWrapper>
       )
     }
   }
   if (seriesName === EVENTS) {
+
     const obj = (Array.isArray(params) && Array.isArray(params[0].data)
       ? params[0].data[2]
       : undefined) as unknown as DisplayEvent
@@ -637,7 +638,7 @@ export const useTooltipFormatter = (params: TooltipComponentFormatterCallbackPar
       ? params[0].data[3]
       : undefined) as unknown as RoamingTimeSeriesData
 
-    const tooltipText = roamingEventFormatter(obj.details)
+    const tooltipText = obj ? roamingEventFormatter(obj.details) : null
     return renderToString(
       <UI.TooltipWrapper>
         <UI.TooltipDate>

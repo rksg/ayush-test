@@ -13,8 +13,7 @@ import {
   rssGroups,
   TimelineData,
   TYPES,
-  Event,
-  ConnectionQuality
+  Event
 } from './config'
 import { ConnectionEvent } from './services'
 import {
@@ -312,6 +311,117 @@ export const connectionQualities = [
     all: 'good'
   }
 ]
+const event = {
+  timestamp: '2022-11-14T05:19:21.155Z',
+  event: 'EVENT_CLIENT_INFO_UPDATED',
+  ttc: null,
+  mac: '94:B3:4F:3D:15:B0',
+  apName: 'R750-11-112',
+  path: [
+    {
+      type: 'zone',
+      name: 'cliexp4'
+    },
+    {
+      type: 'apGroup',
+      name: 'No group (inherit from Venue)'
+    },
+    {
+      type: 'ap',
+      name: '94:B3:4F:3D:15:B0'
+    }
+  ],
+  code: null,
+  state: 'normal',
+  failedMsgId: null,
+  messageIds: null,
+  radio: '5',
+  ssid: 'cliexp4',
+  type: 'connectionEvents',
+  key: '166840316115594:B3:4F:3D:15:B0EVENT_CLIENT_INFO_UPDATED384',
+  start: 1668403161155,
+  end: 1668403161155,
+  category: 'success',
+  seriesKey: 'all'
+}
+export const qualityDataObj = [
+  '2022-11-11T07:58:09.311Z',
+  'all',
+  1668153505931,
+  {
+    start: '2022-11-11T07:58:09.311Z',
+    end: '2022-11-11T07:58:25.931Z',
+    rss: {
+      quality: null,
+      value: null
+    },
+    snr: {
+      quality: null,
+      value: null
+    },
+    throughput: {
+      quality: null,
+      value: null
+    },
+    avgTxMCS: {
+      quality: null,
+      value: null
+    },
+    all: {
+      quality: null
+    },
+    seriesKey: 'all',
+    icon: ''
+  }
+]
+export const incidentDataObj =[
+  1671726600000,
+  'all',
+  1671729300000,
+  {
+    id: '84ae70f3-92d9-4a10-b575-71809cf55e4e',
+    start: 1671726600000,
+    end: 1671729300000,
+    date: 'Dec 23 2022 00:30:00',
+    description: 'Infrastructure (Service Availability)',
+    title: 'AP service is affected due to high number of AP reboots',
+    icon: '',
+    code: 'i-apserv-continuous-reboots',
+    color: '--acx-semantics-yellow-50'
+  }
+]
+export const roamingDataObj = [
+  1669110882891,
+  '18:4B:0D:1C:A2:40-5',
+  1669111020000,
+  {
+    start: '2022-11-22T09:54:42.891Z',
+    end: '2022-11-22T09:57:00.000Z',
+    label: '18:4B:0D:1C:A2:40-5',
+    value: '-73 dBm',
+    color: 'rgba(194, 178, 36, 1)',
+    details: {
+      start: '2022-11-22T09:54:42.891Z',
+      end: '2022-11-22T09:57:00.000Z',
+      apMac: '18:4B:0D:1C:A2:40',
+      apName: 'RSSI-AC_AP',
+      apModel: 'R710',
+      apFirmware: '6.2.0.103.513',
+      channel: '144',
+      radio: '5',
+      radioMode: '11ac',
+      ssid: 'CIOT_WPA2',
+      spatialStream: '2',
+      bandwidth: '80',
+      rss: -73,
+      bssid: '18:4B:0D:5C:A2:4C'
+    }
+  }
+]
+export const eventDataObj = [
+  1668403161155,
+  'all',
+  { ...event }]
 describe('Connection quality utils', () => {
   describe('getConnectionQualityFor', () => {
     it('returns correct values for rss', () => {
@@ -393,6 +503,10 @@ describe('Connection quality utils', () => {
     it('returns null on empty quality', () => {
       const emptyQuality = takeWorseQuality(...[])
       expect(emptyQuality).toBeNull()
+    })
+    it('returns quality', () => {
+      const emptyQuality = takeWorseQuality('unknown')
+      expect(emptyQuality).toMatch('unknown')
     })
   })
 
@@ -823,6 +937,12 @@ describe('Roaming utils', () => {
 describe('Incidents utils', () => {})
 
 describe('chart utils', () => {
+  const useTooltipParameters = (type : string, obj: object) => [
+    {
+      data: obj,
+      seriesName: type
+    }
+  ] as TooltipFormatterParams[]
   it('getChartData should return empty array for no match', async () => {
     expect(getChartData(null as unknown as keyof TimelineData, [], false)).toEqual([])
   })
@@ -868,14 +988,6 @@ describe('chart utils', () => {
         true
       )
     ).toEqual([])
-    // expect(
-    //   getChartData(
-    //     TYPES.CONNECTION_QUALITY as unknown as keyof TimelineData,
-    //     [] as unknown as Event[],
-    //     true,
-    //     connectionQualities as unknown as ConnectionQuality[]
-    //   )
-    // ).toEqual([])
   })
 
   it('getChartData should return empty array for NETWORK_INCIDENTS', async () => {
@@ -895,51 +1007,39 @@ describe('chart utils', () => {
       getChartData(TYPES.ROAMING as unknown as keyof TimelineData, [] as unknown as Event[], true)
     ).toEqual([])
   })
-  const parameters = [
-    {
-      data: [
-        1668403161155,
-        'all',
-        {
-          timestamp: '2022-11-14T05:19:21.155Z',
-          event: 'EVENT_CLIENT_INFO_UPDATED',
-          ttc: null,
-          mac: '94:B3:4F:3D:15:B0',
-          apName: 'R750-11-112',
-          path: [
-            {
-              type: 'zone',
-              name: 'cliexp4'
-            },
-            {
-              type: 'apGroup',
-              name: 'No group (inherit from Venue)'
-            },
-            {
-              type: 'ap',
-              name: '94:B3:4F:3D:15:B0'
-            }
-          ],
-          code: null,
-          state: 'normal',
-          failedMsgId: null,
-          messageIds: null,
-          radio: '5',
-          ssid: 'cliexp4',
-          type: 'connectionEvents',
-          key: '166840316115594:B3:4F:3D:15:B0EVENT_CLIENT_INFO_UPDATED384',
-          start: 1668403161155,
-          end: 1668403161155,
-          category: 'success',
-          seriesKey: 'all'
-        }
-      ]
-    }
-  ] as TooltipFormatterParams[]
-  it('tooltipFormatter should return correct Html string for single value', async () => {
-    expect(useTooltipFormatter(parameters)).toMatchSnapshot()
+
+  it('tooltipFormatter should return correct Html string for events', async () => {
+    expect(useTooltipFormatter(useTooltipParameters('events',eventDataObj))).toMatchSnapshot()
+    expect(
+      useTooltipFormatter([{ seriesName: 'events' }] as TooltipFormatterParams[])
+    ).toMatchSnapshot()
+  })
+
+  it('tooltipFormatter should return correct Html string for connectionQuality', async () => {
+    expect(useTooltipFormatter(useTooltipParameters('quality', qualityDataObj) )).toMatchSnapshot()
+    expect(
+      useTooltipFormatter([{ seriesName: 'quality' }] as TooltipFormatterParams[])
+    ).toMatchSnapshot()
+  })
+  it('tooltipFormatter should return correct Html string for incidents', async () => {
+    expect(useTooltipFormatter(useTooltipParameters('incidents', incidentDataObj))).toMatchSnapshot()
+    expect(
+      useTooltipFormatter([{ seriesName: 'incidents' }] as TooltipFormatterParams[])
+    ).toMatchSnapshot()
+  })
+  it('tooltipFormatter should return correct Html string for roaming', async () => {
+    expect(useTooltipFormatter(useTooltipParameters('roaming', roamingDataObj))).toMatchSnapshot()
+    expect(
+      useTooltipFormatter([{ seriesName: 'roaming' }] as TooltipFormatterParams[])
+    ).toMatchSnapshot()
   })
   it('tooltipFormatter should empty Html string for invalid value', async () => {
-    expect(useTooltipFormatter([{}] as TooltipFormatterParams[])).toMatchSnapshot()
+    expect(
+      useTooltipFormatter([{}] as TooltipFormatterParams[])
+    ).toEqual('')
+    expect(
+      useTooltipFormatter({} as TooltipFormatterParams[])
+    ).toEqual('')
   })
+
 })
