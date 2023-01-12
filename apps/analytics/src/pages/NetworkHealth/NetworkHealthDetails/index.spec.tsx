@@ -5,7 +5,7 @@ import userEvent from '@testing-library/user-event'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
-import { NetworkHealthDetails } from '.'
+import NetworkHealthDetails from '.'
 
 const params = { tenantId: 'tenant-id' }
 const mockedUsedNavigate = jest.fn()

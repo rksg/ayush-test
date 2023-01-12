@@ -3,7 +3,7 @@ import '@testing-library/jest-dom'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
-import { NetworkHealthList } from '.'
+import NetworkHealthList from '.'
 
 const params = { tenantId: 'tenant-id' }
 const mockedUsedNavigate = jest.fn()
