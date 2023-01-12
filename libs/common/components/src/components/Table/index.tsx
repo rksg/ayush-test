@@ -353,7 +353,7 @@ function Table <RecordType extends Record<string, any>> (
       }}
       scroll={{ x: hasEllipsisColumn || type !== 'tall' ? '100%' : 'max-content' }}
       rowSelection={rowSelection}
-      pagination={pagination as false | TablePaginationConfig}
+      pagination={pagination}
       columnEmptyText={false}
       onRow={onRow}
       showSorterTooltip={false}
