@@ -2,23 +2,30 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps } from '@acx-ui/components'
+import { Loader, showToast, Table, TableProps } from '@acx-ui/components'
 import {
   useSwitchDetailHeaderQuery,
   useGetDhcpPoolsQuery,
-  useDeleteDhcpServersMutation
+  useDeleteDhcpServersMutation,
+  useUpdateDhcpServerMutation,
+  useCreateDhcpServerMutation
 } from '@acx-ui/rc/services'
-import { useTableQuery, SwitchDhcp, SwitchStatusEnum } from '@acx-ui/rc/utils'
-import { useParams }                                   from '@acx-ui/react-router-dom'
-
+import {
+  useTableQuery,
+  SwitchDhcp,
+  SwitchStatusEnum,
+  catchErrorResponse
+} from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import { AddPoolDrawer } from './AddPoolDrawer'
-
 
 export function SwitchDhcpPoolTable () {
   const { $t } = useIntl()
   const params = useParams()
   const { data: switchDetail } = useSwitchDetailHeaderQuery({ params })
+  const [ createDhcpServer, { isLoading: isCreating } ] = useCreateDhcpServerMutation()
+  const [ updateDhcpServer, { isLoading: isUpdating } ] = useUpdateDhcpServerMutation()
   const [ deleteDhcpServers ] = useDeleteDhcpServersMutation()
 
   const tableQuery = useTableQuery({
@@ -32,6 +39,22 @@ export function SwitchDhcpPoolTable () {
 
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [selected, setSelected] = useState<SwitchDhcp>()
+
+  const handleSavePool = async (values: SwitchDhcp) => {
+    try {
+      if (selected) { // Edit
+        await updateDhcpServer({ params, payload: values }).unwrap()
+      } else { // Add
+        await createDhcpServer({ params, payload: values }).unwrap()
+      }
+      setDrawerVisible(false)
+    } catch (error) {
+      showToast({
+        type: 'error',
+        content: (error as catchErrorResponse).data.errors[0].message
+      })
+    }
+  }
 
   const columns: TableProps<SwitchDhcp>['columns'] = [
     {
@@ -54,7 +77,18 @@ export function SwitchDhcpPoolTable () {
       key: 'leaseDays',
       title: $t({ defaultMessage: 'Lease Time' }),
       dataIndex: 'leaseDays',
-      sorter: false
+      sorter: false,
+      render: (data, row) => {
+        return $t({ defaultMessage: `
+          { leaseDays, plural, =0 {} one {{leaseDays} day} other {{leaseDays} days}}
+          { leaseHrs, plural, =0 {} one {{leaseHrs} hr} other {{leaseHrs} hrs}}
+          { leaseMins, plural, =0 {} one {{leaseMins} min} other {{leaseMins} mins}}
+        ` }, {
+          leaseDays: row.leaseDays,
+          leaseHrs: row.leaseHrs,
+          leaseMins: row.leaseMins
+        })
+      }
     }, {
       key: 'defaultRouterIp',
       title: $t({ defaultMessage: 'Default Router IP' }),
@@ -63,26 +97,23 @@ export function SwitchDhcpPoolTable () {
     }
   ]
 
-  const rowActions: TableProps<SwitchDhcp>['rowActions'] = [
-    {
-      label: $t({ defaultMessage: 'Edit' }),
-      onClick: (selectedRows) => {
-        setSelected(selectedRows[0])
-        setDrawerVisible(true)
-      }
-    }, {
-      label: $t({ defaultMessage: 'Delete' }),
-      onClick: (selectedRows) => {
-        deleteDhcpServers({ params, payload: selectedRows.map(r=>r.id) })
-        setSelected(undefined)
-      }
+  const rowActions: TableProps<SwitchDhcp>['rowActions'] = [{
+    label: $t({ defaultMessage: 'Edit' }),
+    onClick: (selectedRows) => {
+      setSelected(selectedRows[0])
+      setDrawerVisible(true)
     }
-  ]
+  }, {
+    label: $t({ defaultMessage: 'Delete' }),
+    onClick: (selectedRows) => {
+      deleteDhcpServers({ params, payload: selectedRows.map(r=>r.id) })
+      setSelected(undefined)
+    }
+  }]
 
   return (
     <Loader states={[tableQuery]}>
-      <Table
-        columns={columns}
+      <Table columns={columns}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
@@ -96,8 +127,9 @@ export function SwitchDhcpPoolTable () {
         rowSelection={{ type: 'radio' }} />
       <AddPoolDrawer
         visible={drawerVisible}
+        isLoading={isCreating || isUpdating}
         editPool={selected}
-        onSavePool={()=>{}}
+        onSavePool={handleSavePool}
         onClose={()=>setDrawerVisible(false)}
       />
     </Loader>

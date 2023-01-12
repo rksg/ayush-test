@@ -1,10 +1,18 @@
 import { useEffect, useState } from 'react'
 
-import { Col, Divider, Form, Input, Row, Space } from 'antd'
-import { useIntl }                               from 'react-intl'
+import { Col, Divider, Form, Input, InputNumber, Row, Space } from 'antd'
+import { useIntl }                                            from 'react-intl'
 
-import { Button, Drawer, Subtitle, Table, TableProps }     from '@acx-ui/components'
-import { getDhcpOptionList, SwitchDhcp, SwitchDhcpOption } from '@acx-ui/rc/utils'
+import { Button, Drawer, Subtitle, Table, TableProps } from '@acx-ui/components'
+import { useGetDhcpServerQuery }                       from '@acx-ui/rc/services'
+import {
+  getDhcpOptionList,
+  serverIpAddressRegExp,
+  subnetMaskIpRegExp,
+  SwitchDhcp,
+  SwitchDhcpOption
+} from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import { DhcpOptionModal } from './DhcpOptionModal'
 
@@ -12,20 +20,37 @@ const DHCP_OPTIONS = getDhcpOptionList()
 
 export function AddPoolDrawer (props: {
   visible: boolean,
+  isLoading?: boolean,
   editPool?: SwitchDhcp,
   onSavePool?: (values: SwitchDhcp)=>void,
   onClose?: ()=>void
 }) {
   const { $t } = useIntl()
   const [form] = Form.useForm()
-
+  const params = useParams()
   const [openModal, setOpenModal] = useState(false)
   const [selected, setSelected] = useState<SwitchDhcpOption>()
   const [dhcpOptionList, setDhcpOptionList] = useState<SwitchDhcpOption[]>()
 
+  const { data } = useGetDhcpServerQuery({
+    params: {
+      tenantId: params.tenantId,
+      dhcpServerId: props.editPool?.id
+    }
+  }, { skip: !props.editPool })
+
   useEffect(()=>{
     form.resetFields()
+    setSelected(undefined)
+    setDhcpOptionList([])
   }, [form, props.visible])
+
+  useEffect(()=>{
+    if (data && props.editPool) {
+      form.setFieldsValue(data)
+      setDhcpOptionList(data.dhcpOptions)
+    }
+  }, [form, data, props.editPool])
 
   const onSave = (values: SwitchDhcpOption) => {
     const newList = dhcpOptionList || []
@@ -42,6 +67,10 @@ export function AddPoolDrawer (props: {
     }
     setSelected(undefined)
     setOpenModal(false)
+  }
+
+  const handleFormFinish = (values: SwitchDhcp) => {
+    props.onSavePool && props.onSavePool({ ...values, dhcpOptions: dhcpOptionList })
   }
 
   const rowActions: TableProps<SwitchDhcpOption>['rowActions'] = [
@@ -88,12 +117,14 @@ export function AddPoolDrawer (props: {
       title={props.editPool?
         $t({ defaultMessage: 'Edit DHCP Pool' }):
         $t({ defaultMessage: 'Add DHCP Pool' })}
+      visible={props.visible}
+      onClose={props.onClose}
       closable={true}
       maskClosable={false}
       width={460}
       footer={<div>
         <Button
-          // loading={isLoading}
+          loading={props.isLoading}
           onClick={() => form.submit()}
           type={'secondary'} >
           {$t({ defaultMessage: 'Add' })}
@@ -103,69 +134,80 @@ export function AddPoolDrawer (props: {
         </Button>
       </div>}
     >
-      <Form layout='vertical' form={form} onFinish={props.onSavePool}>
+      <Form layout='vertical' form={form} onFinish={handleFormFinish}>
+        <Form.Item name={'id'} hidden children={<input type='hidden' />} />
         <Form.Item
           name='poolName'
           label={$t({ defaultMessage: 'Pool Name' })}
-          rules={[{ required: true }]}
+          rules={[{ required: true }, { type: 'string', min: 1, max: 127 }]}
           children={<Input />}
         />
         <Form.Item
           name='subnetAddress'
           label={$t({ defaultMessage: 'Subnet Address' })}
-          rules={[{ required: true }]}
+          rules={[{ required: true }, { validator: (_, value) => serverIpAddressRegExp(value) }]}
           children={<Input />}
         />
         <Form.Item
           name='subnetMask'
           label={$t({ defaultMessage: 'Subnet Mask' })}
-          rules={[{ required: true }]}
+          rules={[{ required: true }, { validator: (_, value) => subnetMaskIpRegExp(value) }]}
           children={<Input />}
         />
-        <Form.Item label={$t({ defaultMessage: 'Excluded Range' })}>
+        <Form.Item label={$t({ defaultMessage: 'Excluded Range' })} style={{ marginBottom: 0 }}>
           <Space align='start'>
             <Form.Item
               name='excludedStart'
-              rules={[{ required: true }]}
+              rules={[{ validator: (_, value) => serverIpAddressRegExp(value) }]}
               children={<Input />}
             />
-            -
+            <Divider style={{ width: '5px' }}/>
             <Form.Item
               name='excludedEnd'
-              rules={[{ required: true }]}
+              rules={[{ validator: (_, value) => serverIpAddressRegExp(value) }]}
               children={<Input />}
             />
           </Space>
         </Form.Item>
-        <Form.Item label={$t({ defaultMessage: 'Lease Time' })}>
+        <Form.Item label={$t({ defaultMessage: 'Lease Time' })}
+          style={{ marginBottom: 0 }}
+          required >
           <Space align='start'>
             <Form.Item
               name='leaseDays'
+              label={$t({ defaultMessage: 'Days' })}
               rules={[{ required: true }]}
-              children={<Input />}
+              required={false}
+              initialValue={1}
+              children={<InputNumber min={0} max={365} />}
             />
-            {$t({ defaultMessage: 'Day' })}
+            {/* {$t({ defaultMessage: 'Day' })} */}
             <Form.Item
               name='leaseHrs'
+              label={$t({ defaultMessage: 'Hours' })}
               rules={[{ required: true }]}
-              children={<Input />}
+              required={false}
+              initialValue={0}
+              children={<InputNumber min={0} />}
             />
-            {$t({ defaultMessage: 'Hours' })}
+            {/* {$t({ defaultMessage: 'Hours' })} */}
             <Form.Item
               name='leaseMins'
+              label={$t({ defaultMessage: 'Minutes' })}
               rules={[{ required: true }]}
-              children={<Input />}
+              required={false}
+              initialValue={0}
+              children={<InputNumber min={0} max={65535} />}
             />
-            {$t({ defaultMessage: 'Minutes' })}
+            {/* {$t({ defaultMessage: 'Minutes' })} */}
           </Space>
         </Form.Item>
         <Form.Item
           name='defaultRouterIp'
           label={$t({ defaultMessage: 'Default Router IP' })}
-          rules={[{ required: true }]}
+          rules={[{ validator: (_, value) => serverIpAddressRegExp(value) }]}
           children={<Input />}
         />
-        <Divider />
         <Row justify='space-between' style={{ margin: '25px 0 10px' }}>
           <Col>
             <Subtitle level={4}>

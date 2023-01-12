@@ -325,7 +325,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
-    addDhcpServer: build.mutation<CommonResult, RequestPayload>({
+    createDhcpServer: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(SwitchUrlsInfo.addDhcpServer, params)
         return {
@@ -480,7 +480,7 @@ export const {
   useUpdateDhcpServerStateMutation,
   useGetDhcpPoolsQuery,
   useGetDhcpServerQuery,
-  useAddDhcpServerMutation,
+  useCreateDhcpServerMutation,
   useUpdateDhcpServerMutation,
   useDeleteDhcpServersMutation,
   useGetDhcpLeasesQuery

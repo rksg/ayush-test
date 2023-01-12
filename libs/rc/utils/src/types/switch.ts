@@ -311,10 +311,10 @@ export interface SwitchDhcp {
   leaseMins: number
   excludedEnd?: string
   excludedStart?: string
-  defaultRouterIp: string
+  defaultRouterIp?: string
   subnetMask: string
   subnetAddress: string
-  dhcpOptions: SwitchDhcpOption[]
+  dhcpOptions?: SwitchDhcpOption[]
 }
 
 export interface SwitchDhcpLease {
