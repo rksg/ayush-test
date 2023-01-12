@@ -3,7 +3,7 @@
 exports[`EventDetails renders Details correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__DetailsWrapper-sc-hmshlr-16 dsiBNj"
+    class="styledComponents__DetailsWrapper-sc-hmshlr-16 dVUvSE"
   >
     <span
       class="styledComponents__CloseIconContainer-sc-hmshlr-19 fmOfEQ"
@@ -29,62 +29,56 @@ exports[`EventDetails renders Details correctly 1`] = `
           <div
             class="ant-descriptions-view"
           >
-            <div
-              class="Grid__Container-sc-5irhjd-1 zzbxI"
-            >
-              <div
-                class="styledComponents__DetailsRow-sc-hmshlr-23 styledComponents__DetailsRowLabel-sc-hmshlr-24 cEHzNR iZMESa"
-              >
-                label1
-              </div>
-            </div>
-          </div>
-          <div
-            class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
-            style="padding: 10px 10px 10px 10px;"
-          >
-            <div
-              class="Grid__Container-sc-5irhjd-1 zzbxI"
-            >
-              <div
-                class="styledComponents__DetailsRow-sc-hmshlr-23 styledComponents__DetailsRowValue-sc-hmshlr-25 cEHzNR dkEYCP"
-              >
-                value1
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="ant-row Grid__GridRow-sc-5irhjd-2"
-          style="margin: -10px -10px -10px -10px;"
-        >
-          <div
-            class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
-            style="padding: 10px 10px 10px 10px;"
-          >
-            <div
-              class="Grid__Container-sc-5irhjd-1 zzbxI"
-            >
-              <div
-                class="styledComponents__DetailsRow-sc-hmshlr-23 styledComponents__DetailsRowLabel-sc-hmshlr-24 cEHzNR iZMESa"
-              >
-                label2
-              </div>
-            </div>
-          </div>
-          <div
-            class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
-            style="padding: 10px 10px 10px 10px;"
-          >
-            <div
-              class="Grid__Container-sc-5irhjd-1 zzbxI"
-            >
-              <div
-                class="styledComponents__DetailsRow-sc-hmshlr-23 styledComponents__DetailsRowValue-sc-hmshlr-25 cEHzNR dkEYCP"
-              >
-                value2
-              </div>
-            </div>
+            <table>
+              <tbody>
+                <tr
+                  class="ant-descriptions-row"
+                >
+                  <td
+                    class="ant-descriptions-item"
+                    colspan="1"
+                  >
+                    <div
+                      class="ant-descriptions-item-container"
+                    >
+                      <span
+                        class="ant-descriptions-item-label"
+                      >
+                        label1
+                      </span>
+                      <span
+                        class="ant-descriptions-item-content"
+                      >
+                        value1
+                      </span>
+                    </div>
+                  </td>
+                </tr>
+                <tr
+                  class="ant-descriptions-row"
+                >
+                  <td
+                    class="ant-descriptions-item"
+                    colspan="1"
+                  >
+                    <div
+                      class="ant-descriptions-item-container"
+                    >
+                      <span
+                        class="ant-descriptions-item-label"
+                      >
+                        label2
+                      </span>
+                      <span
+                        class="ant-descriptions-item-content"
+                      >
+                        value2
+                      </span>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
