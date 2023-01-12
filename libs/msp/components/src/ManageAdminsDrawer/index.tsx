@@ -25,7 +25,7 @@ import { useParams } from '@acx-ui/react-router-dom'
 interface ManageAdminsDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
-  tenantId: string
+  tenantId?: string
 }
 
 export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {

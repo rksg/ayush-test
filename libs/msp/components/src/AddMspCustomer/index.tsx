@@ -1,4 +1,4 @@
-import React, { useState, useRef, ChangeEventHandler, useEffect } from 'react'
+import { useState, useRef, ChangeEventHandler, useEffect } from 'react'
 
 import {
   Col,
@@ -9,23 +9,19 @@ import {
   RadioChangeEvent,
   Row,
   Select,
-  Space,
-  Typography
+  Space
 } from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import {
   GoogleMap,
-  // GoogleMapMarker,
   PageHeader,
   showToast,
   StepsForm,
   StepsFormInstance,
   Subtitle
 } from '@acx-ui/components'
-// import { get } from '@acx-ui/config'
-// import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { SearchOutlined } from '@acx-ui/icons'
 import {
   useAddCustomerMutation,
@@ -47,7 +43,13 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
+import { ManageAdminsDrawer } from '../ManageAdminsDrawer'
+// eslint-disable-next-line import/order
+import { SelectIntegratorDrawer } from '../SelectIntegratorDrawer'
+
 import * as UI from '../styledComponents'
+
+import { CustomerSummary } from './CustomerSummary'
 
 interface AddressComponent {
   long_name?: string;
@@ -98,7 +100,6 @@ export const retrieveCityState = (addressComponents: Array<AddressComponent>, co
   const stateComponent = addressComponents
     .find(el => el.types?.includes('administrative_area_level_1'))
 
-
   // Address in some country doesn't have city and state component, we will use the country as the default value of the city.
   if (!cityComponent && !stateComponent) {
     cityComponent = { long_name: country }
@@ -112,22 +113,7 @@ export const retrieveCityState = (addressComponents: Array<AddressComponent>, co
 
 export const addressParser = async (place: google.maps.places.PlaceResult) => {
   const address: Address = {}
-  // const lat = place.geometry?.location?.lat()
-  // const lng = place.geometry?.location?.lng()
-  // address.latitude = lat
-  // address.longitude = lng
-
-  // eslint-disable-next-line max-len
-  // const timezone = await fetch(`https://maps.googleapis.com/maps/api/timezone/json?location=${lat},${lng}&timestamp=${Math.floor(Date.now() / 1000)}&key=${get('GOOGLE_MAPS_KEY')}`)
-  //   .then(res => res.json())
-  // address.timezone = timezone.timeZoneId
   address.addressLine = place.formatted_address
-
-  // const latlng = new google.maps.LatLng({
-  //   lat: Number(lat),
-  //   lng: Number(lng)
-  // })
-
   const countryObj = place?.address_components?.find(
     el => el.types.includes('country')
   )
@@ -162,19 +148,19 @@ export function AddMspCustomer () {
   const navigate = useNavigate()
   const formRef = useRef<StepsFormInstance<MspEcData>>()
   const { Option } = Select
-  // const params = useParams()
   const [trialSelected, setTrialMode] = useState(true)
+  const [mspAdmins, setAdministrator] = useState('--')
+  const [mspIntegrator, setIntegrator] = useState('--')
+  const [mspInstaller, setInstaller] = useState('--')
+  const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
+  const [drawerIntegratorVisible, setDrawerIntegratorVisible] = useState(false)
+  const [drawerInstallerVisible, setDrawerInstallerVisible] = useState(false)
+  // const [tenantId, setTenantId] = useState('')
 
   const linkToCustomers = useTenantLink('/dashboard/mspcustomers', 'v')
 
   const [addCustomerr] = useAddCustomerMutation()
 
-  // const [zoom, setZoom] = useState(1)
-  // const [center, setCenter] = useState<google.maps.LatLngLiteral>({
-  //   lat: 0,
-  //   lng: 0
-  // })
-  // const [marker, setMarker] = React.useState<google.maps.LatLng>()
   const [address, updateAddress] = useState<Address>(isMapEnabled? {} : defaultAddress)
 
   const { action, tenantId, mspEcTenantId } = useParams()
@@ -187,23 +173,16 @@ export function AddMspCustomer () {
         // address: data?.address
       })
       // updateAddress(data?.address as Address)
-
-      // if (isMapEnabled && window.google) {
-      //   const latlng = new google.maps.LatLng({
-      //     lat: Number(data?.address?.latitude),
-      //     lng: Number(data?.address?.longitude)
-      //   })
-      //   setMarker(latlng)
-      //   setCenter(latlng.toJSON())
-      //   setZoom(16)
-      // }
+      setAdministrator('--')
+      setIntegrator('')
+      setInstaller('')
     }
 
     if ( action !== 'edit') { // Add mode
       const initialAddress = isMapEnabled ? '' : defaultAddress.addressLine
       formRef.current?.setFieldValue(['address', 'addressLine'], initialAddress)
     }
-  }, [data, isMapEnabled, window.google])
+  }, [data, isMapEnabled])
 
   const [sameCountry, setSameCountry] = useState(true)
   const addressValidator = async (value: string) => {
@@ -240,10 +219,7 @@ export function AddMspCustomer () {
         errors: errorList
       }])
 
-      // setMarker(latlng)
-      // setCenter(latlng.toJSON())
       updateAddress(address)
-      // setZoom(16)
     })
   }
 
@@ -293,154 +269,13 @@ export function AddMspCustomer () {
     // }
   }
 
-  // const AddCustomerDetailForm = () => {
-  //   return <>
-  //     <Row gutter={20}>
-  //       <Col span={8}>
-  //         <Subtitle level={3}>
-  //           { intl.$t({ defaultMessage: 'Account Details' }) }</Subtitle>
-  //         <Form.Item
-  //           name='name'
-  //           label={intl.$t({ defaultMessage: 'Customer Name' })}
-  //           rules={[{ required: true }]}
-  //           validateFirst
-  //           hasFeedback
-  //           children={<Input />}
-  //         />
-  //         <GoogleMap.FormItem
-  //           label={intl.$t({ defaultMessage: 'Address' })}
-  //           required
-  //         >
-  //           <Form.Item
-  //             noStyle
-  //             label={intl.$t({ defaultMessage: 'Address' })}
-  //             name={['address', 'addressLine']}
-  //             rules={[{
-  //               required: isMapEnabled ? true : false
-  //             }, {
-  //               validator: (_, value) => addressValidator(value),
-  //               validateTrigger: 'onBlur'
-  //             }
-  //             ]}
-  //           >
-  //             <Input
-  //               allowClear
-  //               placeholder={intl.$t({ defaultMessage: 'Set address here' })}
-  //               prefix={<SearchOutlined />}
-  //               onChange={addressOnChange}
-  //               data-testid='address-input'
-  //               disabled={!isMapEnabled}
-  //               value={address.addressLine}
-  //             />
-  //           </Form.Item>
-  //           {isMapEnabled ?
-  //             <GoogleMap
-  //               libraries={['places']}
-  //               mapTypeControl={false}
-  //               streetViewControl={false}
-  //               fullscreenControl={false}
-  //               zoom={zoom}
-  //               center={center}
-  //             >
-  //               {marker && <GoogleMapMarker position={marker} />}
-  //             </GoogleMap>
-  //             :
-  //             <GoogleMap.NotEnabled />
-  //           }
-  //         </GoogleMap.FormItem>
-  //       </Col>
-  //     </Row>
-  //     <Row gutter={10}>
-  //       <Col span={10}>
-  //         <UI.FieldLabelAdmins width='275px'>
-  //           <label>{intl.$t({ defaultMessage: 'MSP Administrators' })}</label>
-  //           <Form.Item
-  //             children={
-  //               <><div>{'eleu168@yahoo.com'}</div>
-  //                 <div>{'gssjssjhs@yahoo.com'}</div></>
-  //             }
-  //           />
-  //           <Form.Item
-  //             children={<UI.FieldTextLink >
-  //               {intl.$t({ defaultMessage: 'Manage' })}
-  //             </UI.FieldTextLink>
-  //             }
-  //           />
-  //         </UI.FieldLabelAdmins>
-  //         <UI.FieldLabelAdmins width='275px' style={{ marginTop: '-12px' }}>
-  //           <label>{intl.$t({ defaultMessage: 'Integrator' })}</label>
-  //           <Form.Item
-  //             children={'eleu168@yahoo.com'}
-  //           />
-  //           <Form.Item
-  //             children={<UI.FieldTextLink >
-  //               {intl.$t({ defaultMessage: 'Manage' })}
-  //             </UI.FieldTextLink>}
-  //           />
-  //         </UI.FieldLabelAdmins>
-  //         <UI.FieldLabelAdmins width='275px' style={{ marginTop: '-16px' }}>
-  //           <label>{intl.$t({ defaultMessage: 'Installer' })}</label>
-  //           <Form.Item
-  //             children={'hssasjjsks@yahoo.com'}
-  //           />
-  //           <Form.Item
-  //             children={<UI.FieldTextLink >
-  //               {intl.$t({ defaultMessage: 'Manage' })}
-  //             </UI.FieldTextLink>}
-  //           />
-  //         </UI.FieldLabelAdmins>
-  //       </Col>
-  //     </Row>
-  //     <Row gutter={20}>
-  //       <Col span={8}>
-  //         <Subtitle level={3}>
-  //           { intl.$t({ defaultMessage: 'Customer Administrator' }) }</Subtitle>
-  //         <Form.Item
-  //           name='admin_email'
-  //           label={intl.$t({ defaultMessage: 'Email' })}
-  //           rules={[
-  //             { required: true },
-  //             { validator: (_, value) => emailRegExp(value) },
-  //             { message: intl.$t({ defaultMessage: 'Please enter a valid email address!' }) }
-  //           ]}
-  //           children={<Input />}
-  //         />
-  //         <Form.Item
-  //           name='admin_firstname'
-  //           label={intl.$t({ defaultMessage: 'First Name' })}
-  //           rules={[{ required: true }]}
-  //           children={<Input />}
-  //           style={{ display: 'inline-block', width: 'calc(50%)' , paddingRight: '20px' }}
-  //         />
-  //         <Form.Item
-  //           name='admin_lastname'
-  //           label={intl.$t({ defaultMessage: 'Last Name' })}
-  //           rules={[ { required: true } ]}
-  //           children={<Input />}
-  //           style={{ display: 'inline-block', width: 'calc(50%)' }}
-  //         />
-  //         <Form.Item
-  //           name='admin_role'
-  //           label={intl.$t({ defaultMessage: 'Role' })}
-  //           rules={[{ required: true }]}
-  //           initialValue={RolesEnum.PRIME_ADMIN}
-  //           children={
-  //             <Select>
-  //               {
-  //                 Object.entries(RolesEnum).map(([label, value]) => (
-  //                   <Option
-  //                     key={label}
-  //                     value={value}>{intl.$t(roleDisplayText[value])}
-  //                   </Option>
-  //                 ))
-  //               }
-  //             </Select>
-  //           }
-  //         />
-  //       </Col>
-  //     </Row>
-  //   </>
-  // }
+  const manageMspAdmins = () => {
+    setDrawerAdminVisible(true)
+  }
+  const manageIntegrator = (type: string) => {
+    type === 'MSP_INSTALLER' ? setDrawerInstallerVisible(true) : setDrawerIntegratorVisible(true)
+  }
+
   const onChange = (e: RadioChangeEvent) => {
     setTrialMode(e.target.value)
   }
@@ -559,76 +394,6 @@ export function AddMspCustomer () {
     </>
   }
 
-  const AddCustomerSummaryForm = () => {
-    const { Paragraph } = Typography
-    return (
-      <Row gutter={20}>
-        <Col span={18}>
-          <StepsForm.Title>{intl.$t({ defaultMessage: 'Summary' })}</StepsForm.Title>
-
-          <Form.Item
-            label={intl.$t({ defaultMessage: 'Customer Name' })}
-          >
-            <Paragraph>{'my test ec 168'}</Paragraph>
-          </Form.Item>
-          <Form.Item style={{ marginTop: '-22px' }}
-            label={intl.$t({ defaultMessage: 'Address' })}
-          >
-            <Paragraph>{'350 W Java Dr, Sunnyvale, CA 94089, USA'}</Paragraph>
-          </Form.Item>
-
-          <Form.Item
-            label={intl.$t({ defaultMessage: 'MSP Administrators' })}
-          >
-            <Paragraph>{'demo.msp@email.com'}</Paragraph>
-          </Form.Item>
-          <Form.Item style={{ marginTop: '-22px' }}
-            label={intl.$t({ defaultMessage: 'Integrator' })}
-          >
-            <Paragraph>{'demo.msp@email.com'}</Paragraph>
-          </Form.Item>
-          <Form.Item style={{ marginTop: '-22px' }}
-            label={intl.$t({ defaultMessage: 'Installer' })}
-          >
-            <Paragraph>{'demo.msp@email.com'}</Paragraph>
-          </Form.Item>
-
-          <Form.Item
-            label={intl.$t({ defaultMessage: 'Customer Administrator Name' })}
-          >
-            <Paragraph>{'Eric Leu'}</Paragraph>
-          </Form.Item>
-          <Form.Item style={{ marginTop: '-22px' }}
-            label={intl.$t({ defaultMessage: 'Email' })}
-          >
-            <Paragraph>{'eleu1658@yahoo.com'}</Paragraph>
-          </Form.Item>
-          <Form.Item style={{ marginTop: '-22px' }}
-            label={intl.$t({ defaultMessage: 'Role' })}
-          >
-            <Paragraph>{'Prime Administrator'}</Paragraph>
-          </Form.Item>
-
-          <Form.Item
-            label={intl.$t({ defaultMessage: 'Wi-Fi Subscriptions' })}
-          >
-            <Paragraph>{'40'}</Paragraph>
-          </Form.Item>
-          <Form.Item style={{ marginTop: '-22px' }}
-            label={intl.$t({ defaultMessage: 'Switch Subscriptions' })}
-          >
-            <Paragraph>{'25'}</Paragraph>
-          </Form.Item>
-          <Form.Item style={{ marginTop: '-22px' }}
-            label={intl.$t({ defaultMessage: 'Service Expiration Date' })}
-          >
-            <Paragraph>{'12/22/2023'}</Paragraph>
-          </Form.Item>
-        </Col>
-      </Row>
-    )
-  }
-
   return (
     <>
       <PageHeader
@@ -669,8 +434,8 @@ export function AddMspCustomer () {
                 hasFeedback
                 children={<Input />}
               />
+              {/* <GoogleAddress /> */}
               <Form.Item
-                // noStyle
                 label={intl.$t({ defaultMessage: 'Address' })}
                 name={['address', 'addressLine']}
                 rules={[{
@@ -700,40 +465,48 @@ export function AddMspCustomer () {
             <Col span={10}>
               <UI.FieldLabelAdmins width='275px' style={{ marginTop: '15px' }}>
                 <label>{intl.$t({ defaultMessage: 'MSP Administrators' })}</label>
+                <Form.Item children={<div>{mspAdmins}</div>} />
                 <Form.Item
-                  children={
-                    <><div>{'eleu168@yahoo.com'}</div>
-                      <div>{'gssjssjhs@yahoo.com'}</div></>
-                  }
-                />
-                <Form.Item
-                  children={<UI.FieldTextLink >
+                  children={<UI.FieldTextLink onClick={() => manageMspAdmins()}>
                     {intl.$t({ defaultMessage: 'Manage' })}
                   </UI.FieldTextLink>
                   }
                 />
+                {drawerAdminVisible && <ManageAdminsDrawer
+                  visible={drawerAdminVisible}
+                  setVisible={setDrawerAdminVisible}
+                  tenantId={''}
+                />}
               </UI.FieldLabelAdmins>
               <UI.FieldLabelAdmins width='275px' style={{ marginTop: '-12px' }}>
                 <label>{intl.$t({ defaultMessage: 'Integrator' })}</label>
+                <Form.Item children={mspIntegrator} />
                 <Form.Item
-                  children={'eleu168@yahoo.com'}
-                />
-                <Form.Item
-                  children={<UI.FieldTextLink >
+                  children={<UI.FieldTextLink onClick={() => manageIntegrator('MSP_INTEGRATOR')}>
                     {intl.$t({ defaultMessage: 'Manage' })}
                   </UI.FieldTextLink>}
                 />
+                {drawerIntegratorVisible && <SelectIntegratorDrawer
+                  visible={drawerIntegratorVisible}
+                  setVisible={setDrawerIntegratorVisible}
+                  tenantId={'tenantId'}
+                  tenantType='MSP_INTEGRATOR'
+                />}
               </UI.FieldLabelAdmins>
               <UI.FieldLabelAdmins width='275px' style={{ marginTop: '-16px' }}>
                 <label>{intl.$t({ defaultMessage: 'Installer' })}</label>
+                <Form.Item children={mspInstaller} />
                 <Form.Item
-                  children={'hssasjjsks@yahoo.com'}
-                />
-                <Form.Item
-                  children={<UI.FieldTextLink >
+                  children={<UI.FieldTextLink onClick={() => manageIntegrator('MSP_INSTALLER')}>
                     {intl.$t({ defaultMessage: 'Manage' })}
                   </UI.FieldTextLink>}
                 />
+                {drawerInstallerVisible && <SelectIntegratorDrawer
+                  visible={drawerInstallerVisible}
+                  setVisible={setDrawerInstallerVisible}
+                  tenantId={tenantId}
+                  tenantType='MSP_INSTALLER'
+                />}
               </UI.FieldLabelAdmins>
             </Col>
           </Row>
@@ -794,7 +567,7 @@ export function AddMspCustomer () {
 
         {(action !== 'edit') && <StepsForm.StepForm name='summary'
           title={intl.$t({ defaultMessage: 'Summary' })}>
-          <AddCustomerSummaryForm />
+          <CustomerSummary />
         </StepsForm.StepForm>}
 
       </StepsForm>

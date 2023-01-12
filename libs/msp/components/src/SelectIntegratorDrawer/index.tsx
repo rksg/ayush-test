@@ -18,18 +18,18 @@ import {
   MspEc,
   useTableQuery
 } from '@acx-ui/rc/utils'
-// import { useParams } from '@acx-ui/react-router-dom'
 
 interface IntegratorDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
-  tenantId: string
+  tenantId?: string
+  tenantType?: string
 }
 
 export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
   const { $t } = useIntl()
 
-  const { visible, setVisible, tenantId } = props
+  const { visible, setVisible, tenantId, tenantType } = props
   const [resetField, setResetField] = useState(false)
   const [form] = Form.useForm()
 
@@ -47,7 +47,7 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
 
   const handleSave = () => {
     let payload = {
-      delegation_type: 'MSP_INTEGRATOR',
+      delegation_type: tenantType ? tenantType : 'MSP_INTEGRATOR',
       number_of_days: '',
       mspec_list: [] as string[]
     }
@@ -88,7 +88,9 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
 
   const defaultPayload = {
     searchString: '',
-    filters: { tenantType: ['MSP_INTEGRATOR'] },
+    filters: {
+      tenantType: tenantType === 'MSP_INTEGRATOR'? ['MSP_INTEGRATOR'] : ['MSP_INSTALLER']
+    },
     fields: [
       'id',
       'name',
@@ -138,7 +140,7 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
 
   return (
     <Drawer
-      title={'Manage Integrator'}
+      title={tenantType === 'MSP_INTEGRATOR' ? 'Manage Integrator' : 'Manage Integrator'}
       onBackClick={onClose}
       visible={visible}
       onClose={onClose}
