@@ -111,7 +111,6 @@ export function DirectedMulticast () {
       </Col>
       <Col span={4}>
         <Form.Item
-          name='wiredEnabled'
           valuePropName='checked'
           initialValue={isWiredEnabled}
           style={{ marginTop: '-5px' }}
@@ -131,7 +130,6 @@ export function DirectedMulticast () {
       </Col>
       <Col span={4}>
         <Form.Item
-          name='wirelessEnabled'
           valuePropName='checked'
           initialValue={isWirelessEnabled}
           style={{ marginTop: '-5px' }}
@@ -151,7 +149,6 @@ export function DirectedMulticast () {
       </Col>
       <Col span={4}>
         <Form.Item
-          name='networkEnabled'
           valuePropName='checked'
           initialValue={isNetworkEnabled}
           style={{ marginTop: '-5px' }}

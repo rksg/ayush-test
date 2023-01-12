@@ -195,11 +195,11 @@ export function VenueNetworksTab () {
         row={row}
       />
     },
-    {
-      key: 'health',
-      title: $t({ defaultMessage: 'Health' }),
-      dataIndex: 'health'
-    },
+    // { // TODO: Waiting for HEALTH feature support
+    //   key: 'health',
+    //   title: $t({ defaultMessage: 'Health' }),
+    //   dataIndex: 'health'
+    // },
     {
       key: 'activated',
       title: $t({ defaultMessage: 'Activated' }),

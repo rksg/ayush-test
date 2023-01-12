@@ -91,6 +91,9 @@ export const getFilters = (params: Params) => {
   if (params.networkId) {
     filters.networkId = [params.networkId]
   }
+  if (params.venueId) {
+    filters.venueId = [params.venueId]
+  }
 
   return filters
 }
