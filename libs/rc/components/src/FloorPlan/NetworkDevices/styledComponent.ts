@@ -203,17 +203,6 @@ export const RogueApContainer = styled('div')`
 
 `
 
-export const RogueApIcon = styled('span')`
-  position: relative;
-  display: inline-block;
-  top: 0px;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-
-  ${getRogueTypeCss()}
-`
-
 export const SpecificRogueAp = styled('div')`
 .wifi-signal-snr {
   margin-left: 2px;
