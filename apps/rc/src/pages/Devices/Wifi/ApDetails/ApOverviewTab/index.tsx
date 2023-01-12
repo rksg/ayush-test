@@ -15,7 +15,8 @@ import { GridCol, GridRow, NoData }                                             
 import { ApInfoWidget }                                                         from '@acx-ui/rc/components'
 import { useApDetailsQuery, useApViewModelQuery }                               from '@acx-ui/rc/services'
 import { ApDetails, ApPosition, ApViewModel, NetworkDevice, NetworkDeviceType } from '@acx-ui/rc/utils'
-import { useParams }                                                            from '@acx-ui/react-router-dom'
+
+import { useApContext } from '../ApContext'
 
 import ApFloorplan      from './ApFloorplan'
 import { ApPhoto }      from './ApPhoto'
@@ -26,8 +27,8 @@ export function ApOverviewTab () {
   const { filters } = useAnalyticsFilter()
   const [ apFilter, setApFilter ] = useState(null as unknown as AnalyticsFilter)
   const [currentApDevice, setCurrentApDevice] = useState<NetworkDevice>({} as NetworkDevice)
-  const params = useParams()
   const { $t } = useIntl()
+  const params = useApContext()
   const apViewModelPayload = {
     fields: ['name', 'venueName', 'deviceGroupName', 'description', 'lastSeenTime',
       'serialNumber', 'apMac', 'IP', 'extIp', 'model', 'fwVersion',

@@ -36,7 +36,7 @@ describe('ClientTroubleshootingTab', () => {
         }
       }
     )
-    expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
+    expect(screen.getAllByRole('img', { name: 'loader' })[0]).toBeVisible()
   })
   it('should render correctly without search params', async () => {
 
