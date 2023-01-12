@@ -530,7 +530,8 @@ describe('Table component', () => {
     const rowActions: TableProps<TestRow>['rowActions'] = [
       { label: 'Edit', onClick: onEdit },
       { label: 'Delete', onClick: onDelete, disabled: true, tooltip: 'can not delete' },
-      { label: 'Backup', onClick: onBackup, disabled:(rows) => rows.length !== 1, tooltip: 'can not backup' }
+      { label: 'Backup', onClick: onBackup,
+        disabled: (rows) => rows.length !== 1, tooltip: 'can not backup' }
     ]
 
     render(<Table

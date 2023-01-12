@@ -70,7 +70,7 @@ const rowActions: TableProps<(typeof customData)[0]>['rowActions'] = [{
   label: 'Delete',
   disabled: (rows) => rows.length > 1,
   onClick: () => {}
-}] 
+}]
 
 export function CustomTable () {
   return (<>

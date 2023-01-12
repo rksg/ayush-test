@@ -30,6 +30,7 @@ export function BackupModal (props:{
     title={$t({ defaultMessage: 'Create Backup' })}
     visible={visible}
     destroyOnClose={true}
+    okText={$t({ defaultMessage: 'Create' })}
     onOk={onOk}
     onCancel={handleCancel}
   >
