@@ -68,10 +68,10 @@ export function SwitchConfigBackupTable () {
   }
 
   useEffect(() => {
-    if(tableData) {
+    if(tableQuery.data) {
       setBackupButton()
     }
-  }, [tableData])
+  }, [tableQuery.data])
 
 
   const columns: TableProps<ConfigurationBackup>['columns'] = [{
@@ -99,9 +99,10 @@ export function SwitchConfigBackupTable () {
       type: 'confirm',
       customContent: {
         action: 'DELETE',
-        entityName: rows.length === 1
-          ? $t({ defaultMessage: 'configuration backup' })
-          : $t({ defaultMessage: 'configuration backups' }),
+        entityName: $t(
+          { defaultMessage: '{count, plural, one {configuration backup} other {configuration backups}}' },
+          { count: rows.length }
+        ),
         entityValue: rows.length === 1 ? rows[0].name : undefined,
         numOfEntities: rows.length
       },
