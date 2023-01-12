@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+
 import { Typography } from 'antd'
 import { useIntl }    from 'react-intl'
 
@@ -10,7 +12,6 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { formatter }             from '@acx-ui/utils'
-import {useEffect} from "react";
 
 function getCols (intl: ReturnType<typeof useIntl>) {
   const dateTimeFormatter = formatter('dateTimeFormat')
