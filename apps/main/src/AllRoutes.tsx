@@ -3,23 +3,24 @@ import React from 'react'
 import { useIsTierAllowed }                  from '@acx-ui/feature-toggle'
 import { Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
 
-import Administration   from './pages/Administration'
-import AnalyticsBase    from './pages/Analytics'
-import Dashboard        from './pages/Dashboard'
-import DevicesBase      from './pages/Devices'
-import Layout           from './pages/Layout'
-import NetworksBase     from './pages/Networks'
-import PoliciesBase     from './pages/Policies'
-import ReportsBase      from './pages/Reports'
-import SearchResults    from './pages/SearchResults'
-import ServicesBase     from './pages/Services'
-import TimelineBase     from './pages/Timeline'
-import { UserProfile }  from './pages/UserProfile'
-import UsersBase        from './pages/Users'
-import { VenueDetails } from './pages/Venues/VenueDetails'
-import { VenueEdit }    from './pages/Venues/VenueEdit'
-import { VenuesForm }   from './pages/Venues/VenuesForm'
-import { VenuesTable }  from './pages/Venues/VenuesTable'
+import Administration    from './pages/Administration'
+import AnalyticsBase     from './pages/Analytics'
+import Dashboard         from './pages/Dashboard'
+import DevicesBase       from './pages/Devices'
+import Layout            from './pages/Layout'
+import NetworksBase      from './pages/Networks'
+import PoliciesBase      from './pages/Policies'
+import ReportsBase       from './pages/Reports'
+import SearchResults     from './pages/SearchResults'
+import ServicesBase      from './pages/Services'
+import ServiceValidation from './pages/ServiceValidation'
+import TimelineBase      from './pages/Timeline'
+import { UserProfile }   from './pages/UserProfile'
+import UsersBase         from './pages/Users'
+import { VenueDetails }  from './pages/Venues/VenueDetails'
+import { VenueEdit }     from './pages/Venues/VenueEdit'
+import { VenuesForm }    from './pages/Venues/VenuesForm'
+import { VenuesTable }   from './pages/Venues/VenuesTable'
 
 const RcRoutes = React.lazy(() => import('rc/Routes'))
 const AnalyticsRoutes = React.lazy(() => import('analytics/Routes'))
@@ -40,7 +41,7 @@ function AllRoutes () {
           <Route path='*' element={<RcRoutes />} />
         </Route>
         {useIsTierAllowed('ANLT-ADV') &&
-          <Route path='serviceValidation/*' element={<AnalyticsBase />}>
+          <Route path='serviceValidation/*' element={<ServiceValidation />}>
             <Route path='*' element={<AnalyticsRoutes />} />
           </Route>
         }
