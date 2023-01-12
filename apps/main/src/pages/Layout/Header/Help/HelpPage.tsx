@@ -54,7 +54,7 @@ export default function HelpPage (props: {
     getMapping().then((dest) => {
       dest && getDesc(dest)
     })
-  }, [])
+  }, [location])
 
   return <Drawer
     title={$t({ defaultMessage: 'Help For This Page' })}
