@@ -5,7 +5,7 @@ import { GridRow, GridCol, Drawer } from '@acx-ui/components'
 
 import {
   Description,
-  CopyableText } from './styledComponents'
+  CopyableText } from '../styledComponents'
 
 export default function Firewall (props: {
   modalState: boolean,
@@ -24,7 +24,7 @@ export default function Firewall (props: {
           <Description>
             {
               // eslint-disable-next-line max-len
-              $t({ defaultMessage: 'To allow RUCKUS ACX to function properly, please configure your firewall to allow for outbound connectivity according to the following guidelines:' })
+              $t({ defaultMessage: 'To allow RUCKUS One to function properly, please configure your firewall to allow for outbound connectivity according to the following guidelines:' })
             }
           </Description>
         </GridCol>

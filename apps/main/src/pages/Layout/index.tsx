@@ -11,7 +11,7 @@ import { notAvailableMsg } from '@acx-ui/utils'
 
 import ActivityButton from './Header/ActivityButton'
 import AlarmButton    from './Header/AlarmButton'
-import HelpButton     from './Header/HelpButton'
+import HelpButton     from './Header/Help'
 // import LicenseBar        from './Header/LicenseBar'
 // import RegionButton      from './Header/RegionButton'
 import UserButton        from './Header/UserButton'

@@ -1,35 +1,43 @@
-// import { useState } from 'react'
+import { useState } from 'react'
 
 import { Menu, Dropdown } from 'antd'
 import { useIntl }        from 'react-intl'
 
 import { Tooltip }                 from '@acx-ui/components'
+import { LayoutUI }                from '@acx-ui/components'
+import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleSolid } from '@acx-ui/icons'
 import { notAvailableMsg }         from '@acx-ui/utils'
 
 // import About    from './About'
-// import Firewall from './Firewall'
+import { DisabledButton } from '../styledComponents'
 
-import { DisabledButton } from './styledComponents'
+import Firewall from './Firewall'
+import HelpPage from './HelpPage'
+
+
 
 const UserButton = () => {
   const { $t } = useIntl()
   // const [aboutModalState, setAboutModalOpen] = useState(false)
-  // const [firewallModalState, setFirewallModalOpen] = useState(false)
+  const [firewallModalState, setFirewallModalOpen] = useState(false)
+  const [helpPageModalState, setHelpPageModalOpen] = useState(false)
+
+  const isHelpEnabled = useIsSplitOn(Features.HELP_SUPPORT)
 
   const menuHeaderDropdown = (
     <Menu selectedKeys={[]}
-      // onClick={(menuInfo)=>{
-      //   switch(menuInfo.key)
-      //   {
-      //     case 'about':
-      //       setAboutModalOpen(true)
-      //       break
-      //     case 'firewallACL':
-      //       setFirewallModalOpen(true)
-      //       break
-      //   }
-      // }}
+      onClick={(menuInfo)=>{
+        switch(menuInfo.key)
+        {
+          case 'help':
+            setHelpPageModalOpen(true)
+            break
+          case 'firewallACL':
+            setFirewallModalOpen(true)
+            break
+        }
+      }}
     >
       <Menu.Item disabled key='documentation'>
         {$t({ defaultMessage: 'Documentation Center' })}
@@ -39,7 +47,7 @@ const UserButton = () => {
         {$t({ defaultMessage: 'How-To Videos' })}
       </Menu.Item>
 
-      <Menu.Item disabled key='help'>
+      <Menu.Item key='help'>
         {$t({ defaultMessage: 'Help for this page' })}
       </Menu.Item>
 
@@ -47,9 +55,9 @@ const UserButton = () => {
         {$t({ defaultMessage: 'Supported Device Models' })}
       </Menu.Item>
 
-      {/* <Menu.Item key='firewallACL'>
+      <Menu.Item key='firewallACL'>
         {$t({ defaultMessage: 'Firewall ACL Inputs' })}
-      </Menu.Item> */}
+      </Menu.Item>
 
       <Menu.Divider />
 
@@ -70,13 +78,19 @@ const UserButton = () => {
   )
 
   return (<>
-    <Dropdown disabled overlay={menuHeaderDropdown} trigger={['click']} placement='bottomLeft'>
-      <Tooltip title={useIntl().$t(notAvailableMsg)}>
-        <DisabledButton disabled icon={<QuestionMarkCircleSolid />} />
+    <Dropdown disabled={!isHelpEnabled}
+      overlay={menuHeaderDropdown}
+      trigger={['click']}
+      placement='bottomLeft'>
+
+      <Tooltip title={isHelpEnabled ? '' : $t(notAvailableMsg)}>
+        {isHelpEnabled ? <LayoutUI.ButtonSolid icon={<QuestionMarkCircleSolid />} /> :
+          <DisabledButton disabled icon={<QuestionMarkCircleSolid />} />}
       </Tooltip>
     </Dropdown>
     {/* <About modalState={aboutModalState} setIsModalOpen={setAboutModalOpen}/> */}
-    {/* <Firewall modalState={firewallModalState} setIsModalOpen={setFirewallModalOpen}/> */}
+    <Firewall modalState={firewallModalState} setIsModalOpen={setFirewallModalOpen}/>
+    <HelpPage modalState={helpPageModalState} setIsModalOpen={setHelpPageModalOpen}/>
   </>
   )
 }

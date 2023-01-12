@@ -20,5 +20,6 @@ export enum Features {
   TIMELINE = 'acx-ui-timeline-toggle',
   NETWORK_SEGMENTATION='acx-ui-network-segmentation-toggle',
   DIRECTED_MULTICAST='wifi-consumer-directed-multicast-toggle',
+  HELP_SUPPORT='acx-ui-help-support',
   UNRELEASED='acx-ui-unreleased'
 }

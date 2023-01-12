@@ -14,7 +14,7 @@ import {
 // import About       from './About'
 import ActivityButton from './ActivityButton'
 import AlarmButton    from './AlarmButton'
-// import Firewall    from './Firewall'
+import Firewall       from './Help/Firewall'
 
 
 const aboutJSON = {
@@ -189,20 +189,18 @@ describe('Header Component', () => {
   //   await userEvent.click(cancelBtn)
   // })
 
-  // it('should render <Firewall/> component correctly', async () => {
-  //   render(
-  //     <Provider>
-  //       <Firewall modalState={true} setIsModalOpen={() => {}}/>
-  //     </Provider>, {
-  //       route: { params }
-  //     })
-  //   expect(await screen.findByText(('https://ruckus.cloud'))).toBeInTheDocument()
-  //   expect(await screen.findByText(('device.ruckus.cloud'))).toBeInTheDocument()
-  //   const modalComponent = screen.getByTestId('drawer-firewall-id')
-  //   expect(modalComponent).toMatchSnapshot()
-  //   const cancelBtn = await screen.findByRole('button',{ name: 'Close' })
-  //   await userEvent.click(cancelBtn)
-  // })
+  it('should render <Firewall/> component correctly', async () => {
+    render(
+      <Provider>
+        <Firewall modalState={true} setIsModalOpen={() => {}}/>
+      </Provider>, {
+        route: { params }
+      })
+    expect(await screen.findByText(('https://ruckus.cloud'))).toBeInTheDocument()
+    expect(await screen.findByText(('device.ruckus.cloud'))).toBeInTheDocument()
+    const cancelBtn = await screen.findByRole('button',{ name: 'Close' })
+    await userEvent.click(cancelBtn)
+  })
 
   it('should render Alarm component correctly', async () => {
     render(<Provider>
