@@ -550,15 +550,18 @@ export const getChartData = (
           return { ...event, seriesKey: event.category }
         })
       ] as Event[]
-      return isExpanded ? [
-        ...modifiedEvents.map((event) => {
-          return { ...event, seriesKey: ALL }
-        }),
-        ...modifiedEvents
-      ] as Event[] : [ ...events.map((event) => {
-        return { ...event, seriesKey: ALL }
-      })
-      ] as Event[]
+      return isExpanded
+        ? ([
+          ...modifiedEvents.map((event) => {
+            return { ...event, seriesKey: ALL }
+          }),
+          ...modifiedEvents
+        ] as Event[])
+        : ([
+          ...events.map((event) => {
+            return { ...event, seriesKey: ALL }
+          })
+        ] as Event[])
     case TYPES.CONNECTION_QUALITY:
       return qualities ?? []
     case TYPES.NETWORK_INCIDENTS:
@@ -583,8 +586,7 @@ export const useTooltipFormatter = (params: TooltipComponentFormatterCallbackPar
               connectionQualityLabels[key as keyof typeof connectionQualityLabels]
                 .formatter as keyof typeof formats
           )(
-            (obj as unknown as LabelledQuality)[key as keyof typeof connectionQualityLabels]
-              .value
+            (obj as unknown as LabelledQuality)[key as keyof typeof connectionQualityLabels].value
           )}${index + 1 !== Object.keys(connectionQualityLabels).length ? '/ ' : ''}`
       )
       : null
@@ -608,7 +610,6 @@ export const useTooltipFormatter = (params: TooltipComponentFormatterCallbackPar
     }
   }
   if (seriesName === EVENTS) {
-
     const obj = (Array.isArray(params) && Array.isArray(params[0].data)
       ? params[0].data[2]
       : undefined) as unknown as DisplayEvent

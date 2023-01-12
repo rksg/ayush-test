@@ -1,16 +1,13 @@
 import React, { useEffect, useState } from 'react'
 
-import { Row, Col }          from 'antd'
-import { connect }           from 'echarts'
-import ReactECharts          from 'echarts-for-react'
-import { flatten }           from 'lodash'
-import moment                from 'moment-timezone'
-import { useIntl }           from 'react-intl'
-import { MessageDescriptor } from 'react-intl'
+import { Row, Col }                   from 'antd'
+import { connect }                    from 'echarts'
+import ReactECharts                   from 'echarts-for-react'
+import { flatten }                    from 'lodash'
+import moment                         from 'moment-timezone'
+import { useIntl, MessageDescriptor } from 'react-intl'
 
-import {
-  Incident
-} from '@acx-ui/analytics/utils'
+import { Incident }      from '@acx-ui/analytics/utils'
 import { useDateFilter } from '@acx-ui/utils'
 
 import {
@@ -39,7 +36,6 @@ import {
   useTooltipFormatter,
   transformIncidents
 } from './util'
-
 
 import { Filters } from '.'
 
@@ -106,10 +102,7 @@ export function TimeLine (props: TimeLineProps) {
     connect('eventTimeSeriesGroup')
   }, [])
   const { startDate, endDate } = useDateFilter()
-  const chartBoundary = [
-    moment(startDate).valueOf(),
-    moment(endDate).valueOf()
-  ]
+  const chartBoundary = [moment(startDate).valueOf(), moment(endDate).valueOf()]
   return (
     <Row gutter={[16, 16]} wrap={false}>
       <Col flex='200px'>
@@ -124,19 +117,13 @@ export function TimeLine (props: TimeLineProps) {
               </Col>
               <Col
                 span={17}
-                style={
-                  expandObj[config?.value as keyof TimelineData]
-                    ? {}
-                    : { marginBottom: 38 }
-                }
-              >
+                style={expandObj[config?.value as keyof TimelineData] ? {} : { marginBottom: 38 }}>
                 <UI.TimelineTitle>{$t(config.title)}</UI.TimelineTitle>
               </Col>
               <Col style={{ lineHeight: '25px' }} span={4}>
                 {config.showCount ? (
                   <UI.TimelineCount>
-                    {TimelineData[config.value as keyof TimelineData]?.['all']
-                      .length ?? 0}
+                    {TimelineData[config.value as keyof TimelineData]?.['all'].length ?? 0}
                   </UI.TimelineCount>
                 ) : null}
               </Col>
@@ -146,26 +133,24 @@ export function TimeLine (props: TimeLineProps) {
                   : config?.subtitle
                 )?.map((subtitle) => (
                   <React.Fragment key={subtitle.value}>
-                    <Col
-                      span={17}
-                      offset={3}
-                      style={subtitle.isLast ? { marginBottom: 40 } : {}}
-                    >
+                    <Col span={17} offset={3} style={subtitle.isLast ? { marginBottom: 40 } : {}}>
                       <UI.TimelineSubContent>
                         {config.value === TYPES.ROAMING
-                          ? subtitle.title as string
-                          : $t(subtitle.title as MessageDescriptor) as string}
+                          ? (subtitle.title as string)
+                          : ($t(subtitle.title as MessageDescriptor) as string)}
                       </UI.TimelineSubContent>
                     </Col>
                     <Col span={4}>
                       {config.showCount ? (
                         <UI.TimelineCount>
-                          {TimelineData?.[config.value as keyof TimelineData]?.[
-                            subtitle.value as keyof (
-                              | EventsCategoryMap
-                              | NetworkIncidentCategoryMap
-                            )
-                          ]?.length}
+                          {
+                            TimelineData?.[config.value as keyof TimelineData]?.[
+                              subtitle.value as keyof (
+                                | EventsCategoryMap
+                                | NetworkIncidentCategoryMap
+                              )
+                            ]?.length
+                          }
                         </UI.TimelineCount>
                       ) : null}
                     </Col>

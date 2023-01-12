@@ -10,16 +10,25 @@ import {
   useImperativeHandle
 } from 'react'
 
-import { TooltipComponentOption }                                                    from 'echarts'
-import ReactECharts                                                                  from 'echarts-for-react'
-import { TooltipFormatterCallback, TopLevelFormatterParams, CustomSeriesRenderItem } from 'echarts/types/dist/shared'
-import moment                                                                        from 'moment-timezone'
-import { useIntl }                                                                   from 'react-intl'
+import ReactECharts        from 'echarts-for-react'
+import {
+  TooltipFormatterCallback,
+  TopLevelFormatterParams,
+  CustomSeriesRenderItem
+} from 'echarts/types/dist/shared'
+import moment      from 'moment-timezone'
+import { useIntl } from 'react-intl'
 
-import { categoryCodeMap, IncidentCode }                                  from '@acx-ui/analytics/utils'
-import { cssStr, cssNumber }                                              from '@acx-ui/components'
-import { xAxisOptions, ResetButton, axisLabelOptions, dateAxisFormatter } from '@acx-ui/components'
-import type { TimeStampRange }                                            from '@acx-ui/types'
+import { categoryCodeMap, IncidentCode } from '@acx-ui/analytics/utils'
+import {
+  xAxisOptions,
+  ResetButton,
+  axisLabelOptions,
+  dateAxisFormatter,
+  cssStr,
+  cssNumber
+} from '@acx-ui/components'
+import type { TimeStampRange } from '@acx-ui/types'
 
 import {
   eventColorByCategory,
@@ -41,7 +50,8 @@ import type {
   EChartsOption,
   SeriesOption,
   CustomSeriesRenderItemAPI,
-  CustomSeriesRenderItemParams
+  CustomSeriesRenderItemParams,
+  TooltipComponentOption
 } from 'echarts'
 import type { EChartsReactProps } from 'echarts-for-react'
 
@@ -98,9 +108,9 @@ export const getSeriesData = (
       .map((record) => [record.start, key, moment(record.end).valueOf(), { ...record, icon: '' }])
   }
   if (series === ROAMING) {
-    return (
-      data as unknown as { [key: string]: { events: RoamingTimeSeriesData[] } }
-    )[key]?.events.map((record: RoamingTimeSeriesData) => [
+    return (data as unknown as { [key: string]: { events: RoamingTimeSeriesData[] } })[
+      key
+    ]?.events.map((record: RoamingTimeSeriesData) => [
       moment(record.start).valueOf(),
       key,
       moment(record.end).valueOf(),
