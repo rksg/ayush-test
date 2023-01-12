@@ -32,7 +32,7 @@ export const EpmtyFloorplanContainer = styled('div')`
   justify-content: center;
 `
 
-export const RougeApButton = styled(Button)`
+export const RogueApButton = styled(Button)`
  &:hover, &:visited {
   svg path {
     stroke: var(--acx-accents-orange-50) !important

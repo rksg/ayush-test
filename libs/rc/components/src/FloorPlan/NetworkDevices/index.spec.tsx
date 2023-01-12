@@ -86,7 +86,7 @@ describe('Floor Plans Nework Devices', () => {
     expect(devices[0]).toBeVisible()
   })
 
-  it('should render rouge Ap correctly', async () => {
+  it('should render rogue Ap correctly', async () => {
 
     await render(<DndProvider backend={HTML5Backend}><NetworkDevices
       networkDevicesVisibility={networkDeviceType}
@@ -95,10 +95,10 @@ describe('Floor Plans Nework Devices', () => {
       galleryMode={false}
       contextAlbum={false}
       context={FloorplanContext.ap}
-      showRougeAp={true}/></DndProvider>)
+      showRogueAp={true}/></DndProvider>)
 
     const devices = await screen.findAllByTestId('SignalUp')
-    const devicesCount = await screen.findByTestId('rougeApBadge')
+    const devicesCount = await screen.findByTestId('rogueApBadge')
 
     expect(devices[0]).toBeVisible()
     expect(devicesCount.innerHTML).toBe('10')

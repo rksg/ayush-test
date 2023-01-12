@@ -58,7 +58,7 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
   },
   networkDevicesVisibility: NetworkDeviceType[],
   setCoordinates: Function,
-  showRougeAp?: boolean }) {
+  showRogueAp?: boolean }) {
   const { floorPlans,
     toggleGalleryView,
     defaultFloorPlan,
@@ -67,7 +67,7 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
     networkDevices,
     networkDevicesVisibility,
     setCoordinates,
-    showRougeAp } = props
+    showRogueAp } = props
   const { $t } = useIntl()
   const imageRef = useRef<HTMLImageElement>(null)
   const imageContainerRef = useRef<HTMLDivElement>(null)
@@ -235,7 +235,7 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
           </Typography.Title>
         </Col>
         <Col>
-          { !showRougeAp && <Space split={<Divider type='vertical' />}>
+          { !showRogueAp && <Space split={<Divider type='vertical' />}>
             <AddEditFloorplanModal
               buttonTitle={$t({ defaultMessage: 'Edit' })}
               onAddEditFloorPlan={onEditFloorPlanHandler}
@@ -250,14 +250,14 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
       </Row>
       <Divider style={{ margin: '0' }} />
       <UI.ImageContainerWrapper>
-        { showRougeAp && <UI.RougeAPHelpIcon className='rogue-help-info'>
+        { showRogueAp && <UI.RogueAPHelpIcon className='rogue-help-info'>
           <Tooltip
             trigger='click'
             placement='right'
-            title={<RougeAPHelpTooltip/>}>
+            title={<RogueAPHelpTooltip/>}>
             <QuestionMarkCircleOutlined />
           </Tooltip>
-        </UI.RougeAPHelpIcon> }
+        </UI.RogueAPHelpIcon> }
         <UI.ImageContainer imageMode={imageMode}
           ref={imageContainerRef}
           currentZoom={currentZoom}
@@ -265,7 +265,7 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
           <div ref={drop}
             data-testid='dropContainer'
             style={{
-              backgroundColor: showRougeAp ? 'rgba(0, 0, 0, 0.4)' : '',
+              backgroundColor: showRogueAp ? 'rgba(0, 0, 0, 0.4)' : '',
               position: 'absolute',
               width: '100%',
               height: '100%'
@@ -277,7 +277,7 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
             contextAlbum={false}
             context={FloorplanContext['ap']}
             galleryMode={false}
-            showRougeAp={showRougeAp}/>
+            showRogueAp={showRogueAp}/>
           }
           <img
             data-testid='floorPlanImage'
@@ -348,9 +348,9 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
   )
 }
 
-export function RougeAPHelpTooltip () {
+export function RogueAPHelpTooltip () {
   const { $t } = useIntl()
-  return <UI.TooltipContent className='rouge-ap-tooltip-content'>
+  return <UI.TooltipContent className='rogue-ap-tooltip-content'>
     <div className='rogue-help'>
       <div className='rogue-mark malicious'>
         <AccessPointWiFiOutlined />

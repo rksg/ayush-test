@@ -9,7 +9,7 @@ export default function NetworkDevices ({
   galleryMode,
   contextAlbum,
   context,
-  showRougeAp
+  showRogueAp
 } : {
     networkDevicesVisibility: NetworkDeviceType[],
     selectedFloorPlan: FloorPlanDto,
@@ -17,7 +17,7 @@ export default function NetworkDevices ({
     galleryMode: boolean,
     contextAlbum: boolean,
     context?: FloorplanContext,
-    showRougeAp?: boolean
+    showRogueAp?: boolean
     }) {
 
   const networkDeviceTypeArray = Object.values(NetworkDeviceType)
@@ -38,7 +38,7 @@ export default function NetworkDevices ({
             contextAlbum={contextAlbum}
             context={context as FloorplanContext}
             device={obj}
-            showRougeAp={showRougeAp}/>
+            showRogueAp={showRogueAp}/>
         }))
     })
   }</div>

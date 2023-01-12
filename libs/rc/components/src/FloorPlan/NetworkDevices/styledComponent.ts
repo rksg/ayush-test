@@ -3,40 +3,40 @@ import styled from 'styled-components'
 
 import { deviceCategoryColors } from '@acx-ui/components'
 
-const rougeTypeColors = {
+const rogueTypeColors = {
   malicious: deviceCategoryColors.Malicious,
   ignored: deviceCategoryColors.Ignored,
   unclassified: deviceCategoryColors.Unclassified,
   known: deviceCategoryColors.Known
 }
 
-function getRougeTypeCss () {
+function getRogueTypeCss () {
   let str = ''
-  Object.keys(rougeTypeColors).forEach((rougeType) => {
-    str += `&.${rougeType} {
-      background-color: var(${rougeTypeColors[rougeType as keyof typeof rougeTypeColors]});
+  Object.keys(rogueTypeColors).forEach((rogueType) => {
+    str += `&.${rogueType} {
+      background-color: var(${rogueTypeColors[rogueType as keyof typeof rogueTypeColors]});
     }
     `
   })
   return str
 }
 
-function getRougeTypeBorderCss () {
+function getRogueTypeBorderCss () {
   let str = ''
-  Object.keys(rougeTypeColors).forEach((rougeType) => {
-    str += `&.${rougeType} {
-      border-color: var(${rougeTypeColors[rougeType as keyof typeof rougeTypeColors]});
+  Object.keys(rogueTypeColors).forEach((rogueType) => {
+    str += `&.${rogueType} {
+      border-color: var(${rogueTypeColors[rogueType as keyof typeof rogueTypeColors]});
     }
     `
   })
   return str
 }
 
-function getRougeApMarkerCss () {
+function getRogueApMarkerCss () {
   let str = ''
-  Object.keys(rougeTypeColors).forEach((rougeType) => {
-    str += `&.ap-rogue-type-${rougeType} {
-      background-color: var(${rougeTypeColors[rougeType as keyof typeof rougeTypeColors]});
+  Object.keys(rogueTypeColors).forEach((rogueType) => {
+    str += `&.ap-rogue-type-${rogueType} {
+      background-color: var(${rogueTypeColors[rogueType as keyof typeof rogueTypeColors]});
     }
     `
   })
@@ -118,7 +118,7 @@ export const DeviceContainer = styled('div')`
       background-color: var(--acx-semantics-green-50) !important;
     }
 
-    ${getRougeApMarkerCss()}
+    ${getRogueApMarkerCss()}
 
     &:after {
       position: relative;
@@ -169,7 +169,7 @@ export const DeviceContainer = styled('div')`
   }
 }
 `
-export const RougeApContainer = styled('div')`
+export const RogueApContainer = styled('div')`
 &.rogue-snr {
   z-index: 2;
   width: 168px;
@@ -182,7 +182,7 @@ export const RougeApContainer = styled('div')`
     margin: -84px 0 0 -84px;
   }
 
-  ${getRougeTypeCss()}
+  ${getRogueTypeCss()}
 
   &.ap-rogue-snr-over-40-db {
     opacity: .4;
@@ -203,7 +203,7 @@ export const RougeApContainer = styled('div')`
 
 `
 
-export const RougeApIcon = styled('span')`
+export const RogueApIcon = styled('span')`
   position: relative;
   display: inline-block;
   top: 0px;
@@ -211,10 +211,10 @@ export const RougeApIcon = styled('span')`
   height: 8px;
   border-radius: 50%;
 
-  ${getRougeTypeCss()}
+  ${getRogueTypeCss()}
 `
 
-export const SpecificRougeAp = styled('div')`
+export const SpecificRogueAp = styled('div')`
 .wifi-signal-snr {
   margin-left: 2px;
   display: inline-block;
@@ -263,7 +263,7 @@ export const SpecificRougeAp = styled('div')`
 }
 `
 
-export const RougeApCountBadge = styled('div')`
+export const RogueApCountBadge = styled('div')`
 &.mark-number-rogue {
   border: 3px solid;
   background-color: var(--acx-primary-white);
@@ -278,6 +278,6 @@ export const RougeApCountBadge = styled('div')`
   line-height: 200%;
   font-size: 8px;
 
-  ${getRougeTypeBorderCss()}
+  ${getRogueTypeBorderCss()}
 }
 `

@@ -118,7 +118,7 @@ const _networkDevicesVisibility: NetworkDeviceType[] = []
 
 for (let deviceType in NetworkDeviceType) {
   if (deviceType === NetworkDeviceType.rogue_ap) {
-    continue // rouge ap is not controlled(placed) by user
+    continue // rogue ap is not controlled(placed) by user
   }
   const _deviceType = deviceType as keyof typeof NetworkDeviceType
   const networkDevicetype = NetworkDeviceType[_deviceType] as NetworkDeviceType

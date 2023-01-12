@@ -1,4 +1,4 @@
-import { ApDeviceStatusEnum, APView, FloorplanContext, NetworkDevice, NetworkDeviceType, RougeApInfo, SwitchStatusEnum } from '@acx-ui/rc/utils'
+import { ApDeviceStatusEnum, APView, FloorplanContext, NetworkDevice, NetworkDeviceType, RogueApInfo, SwitchStatusEnum } from '@acx-ui/rc/utils'
 import { getIntl }                                                                                                       from '@acx-ui/utils'
 
 export function calculateDeviceColor (device: NetworkDevice,
@@ -131,10 +131,10 @@ export function apStatusTransform (value: ApDeviceStatusEnum | SwitchStatusEnum,
 
 export function calculateApColor (deviceStatus: ApDeviceStatusEnum | SwitchStatusEnum,
   showRogueApMode: boolean,
-  context: FloorplanContext, device: NetworkDevice): RougeApInfo {
+  context: FloorplanContext, device: NetworkDevice): RogueApInfo {
   const status = apStatusTransform(deviceStatus)
   const deviceIcon = status.icon
-  // TODO: Rouge AP need to handle later [needs discussion]
+  // TODO: Rogue AP need to handle later [needs discussion]
   if (showRogueApMode) {
     if (deviceIcon === 'icon-ok') {
       if (context === FloorplanContext.rogue_ap) {
@@ -145,16 +145,16 @@ export function calculateApColor (deviceStatus: ApDeviceStatusEnum | SwitchStatu
     } else {
       return {
         deviceColor: status.color + ' ap-rogue-type-offline'
-      } as RougeApInfo
+      } as RogueApInfo
     }
   } else {
     return {
       deviceColor: status.color
-    } as RougeApInfo
+    } as RogueApInfo
   }
 }
 
-function calculateAllVenueRogueApInfo (device: NetworkDevice): RougeApInfo {
+function calculateAllVenueRogueApInfo (device: NetworkDevice): RogueApInfo {
   const rogueCategory = device.rogueCategory
   const categoryNames: string[] = rogueCategory? Object.keys(rogueCategory) : []
   const categoryNums: number[] = rogueCategory? Object.values(rogueCategory) : [0]
@@ -166,8 +166,8 @@ function calculateAllVenueRogueApInfo (device: NetworkDevice): RougeApInfo {
 
   return {
     deviceColor,
-    allrougeApTooltipRequired: true,
-    allVenueRougeApTooltipAttr: {
+    allrogueApTooltipRequired: true,
+    allVenueRogueApTooltipAttr: {
       totalRogueNumber,
       deviceName: device.name,
       categoryNames,
@@ -178,7 +178,7 @@ function calculateAllVenueRogueApInfo (device: NetworkDevice): RougeApInfo {
   }
 }
 
-export function calculateSpecificRogueApInfo (device: NetworkDevice): RougeApInfo {
+export function calculateSpecificRogueApInfo (device: NetworkDevice): RogueApInfo {
   const { $t } = getIntl()
   const snrInfo = getSnrDisplayInfo(device?.snr as number)
   const rogueType = device.rogueCategoryType?.toLowerCase()
@@ -196,8 +196,8 @@ export function calculateSpecificRogueApInfo (device: NetworkDevice): RougeApInf
     deviceColor,
     rogueSnrClass,
     rogueApTooltips,
-    allrougeApTooltipRequired: false,
-    specificRougeApTooltipAttr: {
+    allrogueApTooltipRequired: false,
+    specificRogueApTooltipAttr: {
       activatedBarIndex: snrInfo.activatedBarIndex,
       deviceName: device.name,
       macAddress: device.macAddress as string,

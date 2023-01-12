@@ -51,7 +51,7 @@ export function FloorPlan () {
   const [unplacedDevicesState, setUnplacedDevicesState]
   = useState<TypeWiseNetworkDevices>({} as TypeWiseNetworkDevices)
   const [closeOverlay, setCloseOverlay] = useState<boolean>(false)
-  const [showRougeAp, setShowRougeAp] = useState<boolean>(false)
+  const [showRogueAp, setShowRogueAp] = useState<boolean>(false)
 
   const defaultDevices = {
     ap: [],
@@ -103,7 +103,7 @@ export function FloorPlan () {
       const _networkDevicesVisibility: NetworkDeviceType[] = [...networkDevicesVisibility]
       for (let deviceType in NetworkDeviceType) {
         if (deviceType === NetworkDeviceType.rogue_ap) {
-          continue // rouge ap is not controlled(placed) by user
+          continue // rogue ap is not controlled(placed) by user
         }
         const _deviceType = deviceType as keyof typeof NetworkDeviceType
         const networkDevicetype = NetworkDeviceType[_deviceType] as NetworkDeviceType
@@ -322,8 +322,8 @@ export function FloorPlan () {
     setCloseOverlay(flag)
   }
 
-  function showRougeAps () {
-    setShowRougeAp(!showRougeAp)
+  function showRogueAps () {
+    setShowRogueAp(!showRogueAp)
   }
 
   return (
@@ -339,7 +339,7 @@ export function FloorPlan () {
         <NetworkDeviceContext.Provider value={clearDevice}>
           <DndProvider backend={HTML5Backend}>
             <UI.FloorPlanContainer style={{
-              backgroundColor: showRougeAp ? 'rgba(0, 0, 0, 0.4)' : ''
+              backgroundColor: showRogueAp ? 'rgba(0, 0, 0, 0.4)' : ''
             }}>
               { showGalleryView ?
                 <GalleryView
@@ -357,17 +357,17 @@ export function FloorPlan () {
                   onAddEditFloorPlan={onAddEditFloorPlan}
                   networkDevices={devicesByFlooplanId}
                   networkDevicesVisibility={networkDevicesVisibility}
-                  showRougeAp={showRougeAp}/>
+                  showRogueAp={showRogueAp}/>
               }
               <UI.StyledSpace size={24}>
-                { venueRogueApData?.enabled && <UI.RougeApButton key='rougeApBtn'
+                { venueRogueApData?.enabled && <UI.RogueApButton key='rogueApBtn'
                   size='small'
                   type='link'
-                  icon={showRougeAp ? <EyeSlashOutlined/> : <EyeOpenOutlined/>}
-                  onClick={showRougeAps} >
-                  {showRougeAp ? $t({ defaultMessage: 'Hide Rouge APs' })
-                    : $t({ defaultMessage: 'View Rouge APs' })}
-                </UI.RougeApButton> }
+                  icon={showRogueAp ? <EyeSlashOutlined/> : <EyeOpenOutlined/>}
+                  onClick={showRogueAps} >
+                  {showRogueAp ? $t({ defaultMessage: 'Hide Rogue APs' })
+                    : $t({ defaultMessage: 'View Rogue APs' })}
+                </UI.RogueApButton> }
                 <AddEditFloorplanModal
                   buttonTitle={$t({ defaultMessage: '+ Add Floor Plan' })}
                   onAddEditFloorPlan={onAddEditFloorPlan}
@@ -376,7 +376,7 @@ export function FloorPlan () {
                   onVisibleChange={onVisibleChange}
                   visible={closeOverlay}
                   disabled={
-                    (!showGalleryView && unplacedDevicesCount && !showRougeAp) ? false : true}
+                    (!showGalleryView && unplacedDevicesCount && !showRogueAp) ? false : true}
                   overlay={
                     <UnplacedDevices {..._props} closeDropdown={closeDropdown}/>}>
                   <Button

@@ -136,25 +136,25 @@ export interface NetworkDevice {
 	rogueCategoryType?: RogueDeviceCategoryType;
 }
 
-export interface RougeApInfo {
+export interface RogueApInfo {
 	deviceColor: string;
     rogueSnrClass?: string;
     rogueApTooltips?: string;
-	allrougeApTooltipRequired?: boolean;
-	allVenueRougeApTooltipAttr?: AllVenueRougeApTooltipAttr,
-	specificRougeApTooltipAttr?: SpecificRougeApTooltipAttr,
+	allrogueApTooltipRequired?: boolean;
+	allVenueRogueApTooltipAttr?: AllVenueRogueApTooltipAttr,
+	specificRogueApTooltipAttr?: SpecificRogueApTooltipAttr,
     drawRogueApItem?: boolean;
     showRogueTotalNumber?: boolean;
 }
 
-export interface AllVenueRougeApTooltipAttr {
+export interface AllVenueRogueApTooltipAttr {
 	totalRogueNumber: number,
     deviceName: string,
     categoryNames: string[],
 	categoryNums?: number[];
 }
 
-export interface SpecificRougeApTooltipAttr{
+export interface SpecificRogueApTooltipAttr{
 	activatedBarIndex: number,
 	deviceName: string,
 	macAddress: string,

@@ -4,7 +4,7 @@ import { ApDeviceStatusEnum, FloorplanContext, NetworkDeviceResponse, NetworkDev
 
 import { apStatusTransform, calculateDeviceColor } from './utils'
 
-const rougeCategory: Record<RogueCategory, number> = {
+const rogueCategory: Record<RogueCategory, number> = {
   Malicious: 10,
   Ignored: 0,
   Unclassified: 0,
@@ -143,7 +143,7 @@ const deviceData: NetworkDeviceResponse = {
         deviceStatus: ApDeviceStatusEnum.OPERATIONAL,
         floorplanId: '94bed28abef24175ab58a3800d01e24a',
         id: '3020020157412',
-        name: 'rouge_ap',
+        name: 'rogue_ap',
         serialNumber: '3020020157412',
         xPercent: 65.20548,
         yPercent: 9.839357,
@@ -155,14 +155,14 @@ const deviceData: NetworkDeviceResponse = {
         deviceStatus: ApDeviceStatusEnum.OPERATIONAL,
         floorplanId: '94bed28abef24175ab58a3800d01e24a',
         id: '3020020157412',
-        name: 'rouge_ap1',
+        name: 'rogue_ap1',
         serialNumber: '3020020157412',
         xPercent: 65.20548,
         yPercent: 9.839357,
         snr: 24,
         macAddress: 'ff:ff:12:34:22:33',
         networkDeviceType: NetworkDeviceType.ap,
-        rogueCategory: rougeCategory,
+        rogueCategory: rogueCategory,
         rogueCategoryType: RogueDeviceCategoryType.malicious
       }],
       switches: [{

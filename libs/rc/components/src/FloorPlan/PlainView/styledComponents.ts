@@ -104,7 +104,7 @@ export const ImageButtonsContainer = styled(Space).attrs({
   border: 1px solid var(--acx-neutrals-30);
   border-radius: 4px;
 `
-export const RougeAPHelpIcon = styled('div')`
+export const RogueAPHelpIcon = styled('div')`
 &.rogue-help-info {
   position: absolute;
   bottom: 30px;

@@ -228,7 +228,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
               data-testid="EyeSlashOutlined"
             />
             <span>
-              Hide Rouge APs
+              Hide Rogue APs
             </span>
           </button>
         </div>
@@ -637,7 +637,7 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
               data-testid="EyeOpenOutlined"
             />
             <span>
-              View Rouge APs
+              View Rogue APs
             </span>
           </button>
         </div>
