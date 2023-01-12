@@ -1,20 +1,14 @@
 import { Network } from '..'
-
+import { Radius }  from '../../models/Radius'
 export interface AAAPolicyType{
   id?: string,
   profileName: string,
   tags?: string[],
-  radiusServer?: AAARadiusServer,
-  tacacsServer?: AAATacacsServer,
+  radius?: Radius,
+  profileType?: string,
   networkIds?: string[]
 }
-export interface AAARadiusServer{
-  serverAddress: string,
-  authPort: number,
-  acctPort: number,
-  sharedSecret: string,
-  isCloudpath: boolean
-}
+
 export interface AAATacacsServer{
   serverAddress: string,
   tacacsPort: number,

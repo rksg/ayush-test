@@ -1,14 +1,17 @@
 
-import { Typography } from 'antd'
-import { useIntl }    from 'react-intl'
+import { Typography }                                from 'antd'
+import { defineMessage, useIntl, MessageDescriptor } from 'react-intl'
 
 import { Card, GridCol, GridRow } from '@acx-ui/components'
 import { AAAPolicyType }          from '@acx-ui/rc/utils'
 
+const typeDescription: Record<string, MessageDescriptor> = {
+  accounting: defineMessage({ defaultMessage: 'Accounting' }),
+  authentication: defineMessage({ defaultMessage: 'Authentication' })
+}
 export default function AAAOverview (props: { aaaProfile: AAAPolicyType }) {
   const { $t } = useIntl()
   const { aaaProfile } = props
-
   return (
     <Card>
       <GridRow>
@@ -20,50 +23,35 @@ export default function AAAOverview (props: { aaaProfile: AAAPolicyType }) {
         </GridCol>
         <GridCol col={{ span: 4 }}>
           <Card.Title>
-            {$t({ defaultMessage: 'Type' })}
+            {$t({ defaultMessage: 'Profile Type' })}
           </Card.Title>
-          <Typography.Text>{aaaProfile.radiusServer? 'RADIUS':'TACACS+'}</Typography.Text>
+          <Typography.Text>{$t(typeDescription[aaaProfile.profileType as string])}</Typography.Text>
         </GridCol>
         <GridCol col={{ span: 4 }}>
           <Card.Title>
-            {$t({ defaultMessage: 'Server Address' })}
+            {$t({ defaultMessage: 'Primary Server Address' })}
           </Card.Title>
-          <Typography.Text>{aaaProfile.radiusServer?.serverAddress||
-            aaaProfile.tacacsServer?.serverAddress}</Typography.Text>
+          <Typography.Text>{aaaProfile.radius?.primary?.ip}</Typography.Text>
         </GridCol>
-        {aaaProfile.tacacsServer&&<GridCol col={{ span: 4 }}>
+        <GridCol col={{ span: 4 }}>
           <Card.Title>
-            {$t({ defaultMessage: 'TACACS+ Port' })}
+            {$t({ defaultMessage: 'Primary Port' })}
           </Card.Title>
-          <Typography.Text>{aaaProfile.tacacsServer.tacacsPort}</Typography.Text>
-        </GridCol>}
-        {aaaProfile.radiusServer&&<GridCol col={{ span: 4 }}>
+          <Typography.Text>{aaaProfile.radius?.primary?.port}</Typography.Text>
+        </GridCol>
+        <GridCol col={{ span: 4 }}>
           <Card.Title>
-            {$t({ defaultMessage: 'Authentication Port' })}
+            {$t({ defaultMessage: 'Secondary Server Address' })}
           </Card.Title>
-          <Typography.Text>{aaaProfile.radiusServer.authPort}</Typography.Text>
-        </GridCol>}
-        {aaaProfile.radiusServer&&<GridCol col={{ span: 4 }}>
+          <Typography.Text>{aaaProfile.radius?.secondary?.ip}</Typography.Text>
+        </GridCol>
+        <GridCol col={{ span: 4 }}>
           <Card.Title>
-            {$t({ defaultMessage: 'Accounting Port' })}
+            {$t({ defaultMessage: 'Secondary Port' })}
           </Card.Title>
-          <Typography.Text>{aaaProfile.radiusServer.acctPort}</Typography.Text>
-        </GridCol>}
-        {aaaProfile.radiusServer&&<GridCol col={{ span: 4 }}>
-          <Card.Title>
-            {$t({ defaultMessage: 'Cloudpath' })}
-          </Card.Title>
-          <Typography.Text>{aaaProfile.radiusServer.isCloudpath?$t({ defaultMessage: 'Yes' }):
-            $t({ defaultMessage: 'No' })}</Typography.Text>
-        </GridCol>}
-        {aaaProfile.tacacsServer&&<GridCol col={{ span: 4 }}>
-          <Card.Title>
-            {$t({ defaultMessage: 'Purpose' })}
-          </Card.Title>
-          <Typography.Text>{aaaProfile.tacacsServer.purpose}</Typography.Text>
-        </GridCol>}
+          <Typography.Text>{aaaProfile.radius?.secondary?.port}</Typography.Text>
+        </GridCol>
       </GridRow>
-
     </Card>
   )
 }

@@ -35,10 +35,11 @@ const AAAInstance = (props:{
         />}
       />
       <AAAPolicyModal updateInstance={(data)=>{
+        const tempID = Date.now() + ''
         aaaList.push({
-          label: data.profileName, value: data.id })
+          label: data.profileName, value: tempID })
         setAaaList([...aaaList])
-        form.setFieldValue('aaaPolicyProfileId', data.id)
+        form.setFieldValue('aaaPolicyProfileId', tempID)
       }}/>
     </div>
   )

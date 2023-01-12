@@ -1138,3 +1138,12 @@ export const apGroupsResponse = {
     }
   ]
 }
+export const aaalList = [
+  {
+    id: 2,
+    name: 'test2'
+  },{
+    id: 1,
+    name: 'test1'
+  }
+]

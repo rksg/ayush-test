@@ -57,17 +57,18 @@ const list = {
 const detailResult = {
   id: 1,
   profileName: 'test',
-  tacacsServer: {
-    purpose: 'ACCOUNTING',
-    serverAddress: '5.5.5.5',
-    sharedSecret: 'xxxxxxxxxx',
-    tacacsPort: 345
-  },
-  radiusServer: {
-    serverAddress: '6.6.6.6',
-    authPort: 123,
-    acctPort: 456,
-    isCloudpath: true
+  profileType: 'authentication',
+  radius: {
+    primary: {
+      ip: '2.2.2.2',
+      port: 101,
+      sharedSecret: 'xxxxxxxx'
+    },
+    secondary: {
+      ip: '2.2.2.2',
+      port: 102,
+      sharedSecret: 'xxxxxxxx'
+    }
   },
   tags: ['123','345']
 }

@@ -17,7 +17,6 @@ import {
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import { InformationSolid, QuestionMarkCircleOutlined } from '@acx-ui/icons'
-import { ToggleButton }                                 from '@acx-ui/rc/components'
 import {
   WlanSecurityEnum,
   NetworkSaveData
@@ -46,8 +45,6 @@ export function AaaSettingsForm (props: {
         enableAuthProxy: data.enableAuthProxy,
         enableAccountingProxy: data.enableAccountingProxy,
         enableAccountingService: data.accountingRadius,
-        enableSecondaryAuthServer: data.authRadius?.secondary !== undefined,
-        enableSecondaryAcctServer: data.accountingRadius?.secondary !== undefined,
         authRadius: data.authRadius,
         accountingRadius: data.accountingRadius,
         wlanSecurity: data?.wlan?.wlanSecurity
@@ -75,15 +72,11 @@ function SettingsForm () {
   const [
     isCloudpathEnabled,
     wlanSecurity,
-    enableSecondaryAuthServer,
-    enableAccountingService,
-    enableSecondaryAcctServer
+    enableAccountingService
   ] = [
     useWatch('isCloudpathEnabled'),
     useWatch('wlanSecurity'),
-    useWatch('enableSecondaryAuthServer'),
-    useWatch('enableAccountingService'),
-    useWatch('enableSecondaryAcctServer')
+    useWatch('enableAccountingService')
   ]
 
   const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
@@ -179,18 +172,7 @@ function SettingsForm () {
       <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
         <div>
           <Subtitle level={3}>{ $t({ defaultMessage: 'Authentication Service' }) }</Subtitle>
-          <AAAInstance serverLabel={$t({ defaultMessage: 'Primary Server' })}/>
-          <Form.Item noStyle name='enableSecondaryAuthServer'>
-            <ToggleButton
-              enableText={$t({ defaultMessage: 'Remove Secondary Server' })}
-              disableText={$t({ defaultMessage: 'Add Secondary Server' })}
-            />
-          </Form.Item>
-
-          {enableSecondaryAuthServer &&
-            <AAAInstance serverLabel={$t({ defaultMessage: 'Secondary Server' })}/>
-          }
-
+          <AAAInstance serverLabel={$t({ defaultMessage: 'Authentication Server' })}/>
           <Form.Item>
             <Form.Item
               noStyle
@@ -218,18 +200,7 @@ function SettingsForm () {
           </Form.Item>
           {enableAccountingService && (
             <>
-              <AAAInstance serverLabel={$t({ defaultMessage: 'Primary Server' })}/>
-
-              <Form.Item noStyle name='enableSecondaryAcctServer'>
-                <ToggleButton
-                  enableText={$t({ defaultMessage: 'Remove Secondary Server' })}
-                  disableText={$t({ defaultMessage: 'Add Secondary Server' })}
-                />
-              </Form.Item>
-
-              {enableSecondaryAcctServer &&
-                <AAAInstance serverLabel={$t({ defaultMessage: 'Secondary Server' })}/>
-              }
+              <AAAInstance serverLabel={$t({ defaultMessage: 'Accounting Server' })}/>
 
               <Form.Item>
                 <Form.Item

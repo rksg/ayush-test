@@ -2,9 +2,9 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo, AaaUrls, AAAPurposeEnum } from '@acx-ui/rc/utils'
-import { Provider }                                from '@acx-ui/store'
-import { mockServer, render, screen }              from '@acx-ui/test-utils'
+import { CommonUrlsInfo, AaaUrls }               from '@acx-ui/rc/utils'
+import { Provider }                              from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
 
 
 import AAAForm from './AAAForm'
@@ -13,11 +13,18 @@ import AAAForm from './AAAForm'
 const successResponse = { requestId: 'request-id' }
 const aaaData={
   profileName: 'test',
-  tacacsServer: {
-    purpose: AAAPurposeEnum.ACCOUNTING,
-    serverAddress: '1.1.1.1',
-    sharedSecret: '2222222222',
-    tacacsPort: 888
+  profileType: 'authentication',
+  radius: {
+    primary: {
+      ip: '2.3.3.4',
+      port: 101,
+      sharedSecret: 'xxxxxxxx'
+    },
+    secondary: {
+      ip: '2.3.3.4',
+      port: 101,
+      sharedSecret: 'xxxxxxxx'
+    }
   },
   tags: ['xxdd']
 }
@@ -61,19 +68,23 @@ describe('AAAForm', () => {
     })
 
     //step 1 setting form
-    await userEvent.type(await screen.findByLabelText('Profile Name'),
-      'test1')
-    await userEvent.type(await screen.findByRole('textbox', { name: 'Server Address' }),
-      '8.8.8.8')
-    await userEvent.type(await screen.findByLabelText('Shared Secret'),
+
+    await userEvent.type((await screen.findAllByLabelText('Server Address'))[0],
+      '2.3.3.4')
+    fireEvent.change((await screen.findAllByLabelText('Server Address'))[0],
+      { target: { value: '2.3.3.4' } })
+    await userEvent.type((await screen.findAllByLabelText('Shared Secret'))[0],
       'test1234')
-    await userEvent.click(await screen.findByRole('radio', { name: /TACACS/ }))
-    await userEvent.type(await screen.findByLabelText('Profile Name'),
-      'create AAA test')
-    await userEvent.type(await screen.findByRole('textbox', { name: 'Server Address' }),
-      '8.8.8.9')
-    await userEvent.type(await screen.findByLabelText('Shared Secret'),
-      'test12345')
+    await userEvent.click(await screen.findByRole('radio', { name: /Authentication/ }))
+    await userEvent.click(await screen.findByRole('radio', { name: /Accounting/ }))
+    const inputProfile = await screen.findByLabelText(/Profile Name/)
+    fireEvent.change(inputProfile, { target: { value: 'test1' } })
+    fireEvent.blur(inputProfile)
+    fireEvent.change(inputProfile, { target: { value: 'create aaa test' } })
+    await userEvent.type((await screen.findAllByLabelText('Server Address'))[1],
+      '2.3.3.4')
+    await userEvent.type((await screen.findAllByLabelText('Shared Secret'))[1],
+      'test1234')
     await userEvent.click(await screen.findByText('Finish'))
   })
   it('should edit AAA successfully', async () => {
@@ -105,19 +116,21 @@ describe('AAAForm', () => {
     render(<Provider><AAAForm edit={true}/></Provider>, {
       route: { params }
     })
-
-    await userEvent.type(await screen.findByLabelText('Profile Name'),
-      'test1')
-    await userEvent.type(await screen.findByLabelText('Shared Secret'),
-      'test12345')
-    await userEvent.click(await screen.findByRole('radio', { name: /RADIUS/ }))
-    await userEvent.type(await screen.findByLabelText('Profile Name'),
-      'edit AAA test')
-    await userEvent.type(await screen.findByRole('textbox', { name: 'Server Address' }),
-      '8.8.8.8')
-    await userEvent.type(await screen.findByLabelText('Shared Secret'),
+    const inputProfile = await screen.findByLabelText('Profile Name')
+    fireEvent.change(inputProfile, { target: { value: 'test1' } })
+    fireEvent.blur(inputProfile)
+    fireEvent.change((await screen.findAllByLabelText('Server Address'))[0],
+      { target: { value: '2.3.3.4' } })
+    await userEvent.type((await screen.findAllByLabelText('Shared Secret'))[0],
       'test1234')
-
+    fireEvent.change(inputProfile, { target: { value: 'edit aaa test1' } })
+    const port2 = (await screen.findAllByRole('spinbutton', { name: 'Port' }))[1]
+    fireEvent.change((await screen.findAllByLabelText('Server Address'))[1],
+      { target: { value: '2.3.3.4' } })
+    await userEvent.type((await screen.findAllByLabelText('Shared Secret'))[1],
+      'test1234')
+    await userEvent.click(await screen.findByText('Finish'))
+    await userEvent.type(port2, '1812')
     await userEvent.click(await screen.findByText('Finish'))
   })
 })

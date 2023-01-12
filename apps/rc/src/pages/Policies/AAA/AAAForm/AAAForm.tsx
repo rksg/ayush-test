@@ -29,7 +29,7 @@ const AAAForm = (props: AAAFormProps) => {
   const params = useParams()
   const edit = props.edit && !props.networkView
   const formRef = useRef<StepsFormInstance<AAAPolicyType>>()
-  const { data } = useAaaPolicyQuery({ params })
+  const { data } = useAaaPolicyQuery({ params }, { skip: !props.edit })
   const [ createAAAPolicy ] = useAddAAAPolicyMutation()
 
   const [ updateAAAPolicy ] = useUpdateAAAPolicyMutation()
@@ -62,6 +62,7 @@ const AAAForm = (props: AAAFormProps) => {
       }
       props.networkView? props.backToNetwork?.(data) : navigate(linkToPolicies, { replace: true })
     } catch(error) {
+      props.backToNetwork?.(data)
       showToast({
         type: 'error',
         duration: 10,
@@ -87,11 +88,6 @@ const AAAForm = (props: AAAFormProps) => {
         <StepsForm.StepForm
           name='settings'
           title={$t({ defaultMessage: 'Settings' })}
-          onFinish={async (data) => {
-            delete data.useAs
-            updateSaveData(data)
-            return true
-          }}
         >
           <AAASettingForm edit={edit} saveState={saveState}/>
         </StepsForm.StepForm>

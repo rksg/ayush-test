@@ -52,9 +52,13 @@ describe('AAA Instance Page', () => {
     await userEvent.click(await screen.findByText('Add Server'))
     await userEvent.type(await screen.findByRole(
       'textbox', { name: 'Profile Name' }),'create test')
-    await userEvent.type(await screen.findByRole('textbox', { name: 'Server Address' }),
+    await userEvent.type((await screen.findAllByRole('textbox', { name: 'Server Address' }))[0],
       '8.8.8.8')
-    await userEvent.type(await screen.findByLabelText('Shared Secret'),
+    await userEvent.type((await screen.findAllByLabelText('Shared Secret'))[0],
+      'test1234')
+    await userEvent.type((await screen.findAllByRole('textbox', { name: 'Server Address' }))[1],
+      '8.8.8.8')
+    await userEvent.type((await screen.findAllByLabelText('Shared Secret'))[1],
       'test1234')
     await userEvent.click(await screen.findByText('Finish'))
     await userEvent.click(await screen.findByRole('combobox'))
