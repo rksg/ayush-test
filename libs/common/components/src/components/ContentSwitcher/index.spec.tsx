@@ -50,4 +50,11 @@ describe('ContentSwitcher',()=>{
     await user.click(await screen.findByText('Table'))
     expect(mockOnChangeFn).toBeCalledTimes(1)
   })
+
+  it('should render component with extra components', () => {
+    const { asFragment } = render(<ContentSwitcher tabDetails={tabDetails}
+      defaultValue={'table'}
+      extra={'Some text'} />)
+    expect(asFragment()).toMatchSnapshot()
+  })
 })
