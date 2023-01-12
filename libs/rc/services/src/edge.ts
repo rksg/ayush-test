@@ -138,8 +138,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           ...req,
           body: payload
         }
-      },
-      invalidatesTags: [{ type: 'Edge', id: 'DETAIL_PORTS' }]
+      }
     }),
     // eslint-disable-next-line max-len
     getSubInterfaces: build.query<TableResult<EdgeSubInterface>, RequestPayload>({
@@ -218,8 +217,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
       },
       transformResponse (result: TableResult<EdgePortStatus>) {
         return result?.data
-      },
-      providesTags: [{ type: 'Edge', id: 'DETAIL_PORTS' }]
+      }
     })
   })
 })
