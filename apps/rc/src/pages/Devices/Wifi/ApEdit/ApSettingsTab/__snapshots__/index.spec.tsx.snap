@@ -45,15 +45,16 @@ exports[`ApSettingsTab should render correctly 1`] = `
             </div>
           </div>
           <div
-            class="ant-tabs-tab ant-tabs-tab-disabled"
+            class="ant-tabs-tab"
           >
             <div
               aria-controls="rc-tabs-test-panel-proxy"
-              aria-disabled="true"
+              aria-disabled="false"
               aria-selected="false"
               class="ant-tabs-tab-btn"
               id="rc-tabs-test-tab-proxy"
               role="tab"
+              tabindex="0"
             >
               <span>
                 mDNS Proxy
@@ -61,19 +62,17 @@ exports[`ApSettingsTab should render correctly 1`] = `
             </div>
           </div>
           <div
-            class="ant-tabs-tab ant-tabs-tab-disabled"
+            class="ant-tabs-tab"
           >
             <div
               aria-controls="rc-tabs-test-panel-multicast"
-              aria-disabled="true"
               aria-selected="false"
               class="ant-tabs-tab-btn"
               id="rc-tabs-test-tab-multicast"
               role="tab"
+              tabindex="0"
             >
-              <span>
-                Directed Multicast
-              </span>
+              Directed Multicast
             </div>
           </div>
           <div

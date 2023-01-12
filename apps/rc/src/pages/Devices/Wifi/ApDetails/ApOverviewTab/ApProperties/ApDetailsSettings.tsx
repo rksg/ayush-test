@@ -1,8 +1,8 @@
-import { Divider, Form } from 'antd'
-import { useIntl }       from 'react-intl'
+import { Divider } from 'antd'
+import { useIntl } from 'react-intl'
 
-import { Subtitle }           from '@acx-ui/components'
-import { ApLanPort, ApRadio } from '@acx-ui/rc/utils'
+import { Descriptions, Subtitle } from '@acx-ui/components'
+import { ApLanPort, ApRadio }     from '@acx-ui/rc/utils'
 
 interface ApDetailsSettingsProps {
   lanPortsSetting: ApLanPort
@@ -21,13 +21,9 @@ export const ApDetailsSettings = (props: ApDetailsSettingsProps) => {
     return data ? $t({ defaultMessage: 'ON' }) : $t({ defaultMessage: 'OFF' })
   }
 
-  return (
-    <Form
-      labelCol={{ span: 10 }}
-      labelAlign='left'
-      style={{ marginTop: '25px' }}
-    >
-      <Form.Item
+  return (<>
+    <Descriptions labelWidthPercent={50}>
+      <Descriptions.Item
         label={
           <Subtitle level={4} style={{ margin: 0 }}>
             {$t({ defaultMessage: 'Wireless Radio' })}
@@ -37,20 +33,22 @@ export const ApDetailsSettings = (props: ApDetailsSettingsProps) => {
           displaySetting(radioSetting?.useVenueSettings)
         }
       />
-      <Form.Item
+      <Descriptions.Item
         label={'2.4 GHz'}
         children={
           displayEnabled(radioSetting?.enable24G)
         }
       />
-      <Form.Item
+      <Descriptions.Item
         label={'5 GHz'}
         children={
           displayEnabled(radioSetting?.enable50G)
         }
       />
-      <Divider/>
-      <Form.Item
+    </Descriptions>
+    <Divider/>
+    <Descriptions labelWidthPercent={50}>
+      <Descriptions.Item
         label={
           <Subtitle level={4} style={{ margin: 0 }}>
             {$t({ defaultMessage: 'LAN Port' })}
@@ -62,7 +60,7 @@ export const ApDetailsSettings = (props: ApDetailsSettingsProps) => {
       />
       { lanPortsSetting?.lanPorts && lanPortsSetting.lanPorts.map(
         item =>
-          <Form.Item
+          <Descriptions.Item
             label={$t({ defaultMessage: 'Port {id}' }, { id: item.portId })}
             children={
               displayEnabled(!!item.enabled)
@@ -70,20 +68,23 @@ export const ApDetailsSettings = (props: ApDetailsSettingsProps) => {
           />
       )
       }
-      {/* TODO: Wait Service feature support
-      <Divider/>
-      <Form.Item
+    </Descriptions>
+    {/* TODO: Wait Service feature support
+    <Divider/>
+    <Descriptions labelWidthPercent={50}>
+      <Descriptions.Item
         label={
           <Subtitle level={4} style={{ margin: 0 }}>
             {$t({ defaultMessage: 'mDNS Proxy' })}
           </Subtitle>
         }
       />
-      <Form.Item
+      <Descriptions.Item
         label={$t({ defaultMessage: 'Service Name' })}
-      /> */}
-    </Form>
-  )
+      />
+    </Descriptions>
+    */}
+  </>)
 }
 
 

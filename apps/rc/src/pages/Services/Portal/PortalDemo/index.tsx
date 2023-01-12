@@ -83,15 +83,9 @@ export default function PortalDemo ({
   const [portalLang, setPortalLang]=useState(viewPortalLang || {} as { [key:string]:string })
   useEffect(()=>{
     if(!isPreview && demoValue.displayLangCode){
-      getPortalLang({ params: { ...params, messageName: 'messages_'+
-      demoValue.displayLangCode+'.properties' } }).unwrap().then(()=>{
-      }, err=>{
-        const dataArray = err.data?.split('\n') || []
-        const dataObj= {} as { [key:string]:string }
-        dataArray.forEach( (item: string) => {
-          dataObj[item.split('=')[0]?.trim()] = item.split('=')[1]?.trim()
-        })
-        setPortalLang(dataObj)
+      getPortalLang({ params: { ...params, messageName:
+      demoValue.displayLangCode+'.json' } }).unwrap().then((res)=>{
+        setPortalLang(res)
       })
     }
   }, [demoValue.displayLangCode])

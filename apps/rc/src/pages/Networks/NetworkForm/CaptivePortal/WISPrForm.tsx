@@ -238,7 +238,7 @@ export function WISPrForm () {
             </Tooltip>
           </>}
           extra={
-            <div style={{ marginLeft: 210, marginTop: -37 }}>
+            <div style={{ marginLeft: 210, marginTop: -30 }}>
               <Button onClick={() => {
                 inputKey?.current?.focus()
                 inputKey?.current?.select()

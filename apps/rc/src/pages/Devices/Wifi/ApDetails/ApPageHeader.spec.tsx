@@ -20,6 +20,11 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate
 }))
 
+const params = { tenantId: 't1', serialNumber: 'v1' }
+jest.mock('./ApContext', () => ({
+  useApContext: () => params
+}))
+
 describe('ApPageHeader', () => {
   beforeEach(() => store.dispatch(apApi.util.resetApiState()))
 
@@ -31,7 +36,6 @@ describe('ApPageHeader', () => {
         (_, res, ctx) => res(ctx.json(apDetailData))
       )
     )
-    const params = { tenantId: 't1', serialNumber: 'v1' }
     render(<ApPageHeader />, { route: { params }, wrapper: Provider })
 
     fireEvent.click(await screen.findByRole('button', { name: 'Configure' }))
@@ -48,7 +52,6 @@ describe('ApPageHeader', () => {
         (_, res, ctx) => res(ctx.json(apDetailData))
       )
     )
-    const params = { tenantId: 't1', serialNumber: 'v1' }
     render(<ApPageHeader />, { route: { params }, wrapper: Provider })
 
     await userEvent.click(await screen.findByText('More Actions'))

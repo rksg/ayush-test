@@ -3,7 +3,7 @@ import { useState } from 'react'
 
 import userEvent from '@testing-library/user-event'
 
-import { render, fireEvent, screen, within, mockDOMSize } from '@acx-ui/test-utils'
+import { render, fireEvent, screen, within, mockDOMSize, findTBody } from '@acx-ui/test-utils'
 
 import { Table, TableProps } from '.'
 
@@ -78,6 +78,23 @@ describe('Table component', () => {
       dataSource={testData}
     />)
     expect(asFragment()).toMatchSnapshot()
+  })
+
+  it('renders no selected bar table', async () => {
+    const props: TableProps<TestRow> = {
+      columns: testColumns,
+      dataSource: testData,
+      rowSelection: {
+        type: 'radio',
+        defaultSelectedRowKeys: ['1']
+      }
+    }
+    const { rerender } = render(<Table {...props} />)
+    const alert = await screen.findByRole('alert')
+
+    expect(alert).toBeVisible()
+    rerender(<Table {...props} tableAlertRender={false} />)
+    expect(alert).not.toBeVisible()
   })
 
   it('renders table with ellipsis column', async () => {
@@ -158,8 +175,7 @@ describe('Table component', () => {
       rowSelection={{ defaultSelectedRowKeys: ['1', '2'] }}
     />)
 
-    const tbody = (await screen.findAllByRole('rowgroup'))
-      .find(element => element.classList.contains('ant-table-tbody'))!
+    const tbody = await findTBody()
 
     expect(tbody).toBeVisible()
 
@@ -194,8 +210,7 @@ describe('Table component', () => {
       rowSelection={{ selectedRowKeys: ['1', '2'] }}
     />)
 
-    const tbody = (await screen.findAllByRole('rowgroup'))
-      .find(element => element.classList.contains('ant-table-tbody'))!
+    const tbody = await findTBody()
 
     expect(tbody).toBeVisible()
 
@@ -240,8 +255,7 @@ describe('Table component', () => {
       rowSelection={{ type: 'radio', onChange }}
     />)
 
-    const tbody = (await screen.findAllByRole('rowgroup'))
-      .find(element => element.classList.contains('ant-table-tbody'))!
+    const tbody = await findTBody()
 
     expect(tbody).toBeVisible()
 
@@ -266,8 +280,7 @@ describe('Table component', () => {
       }}
     />)
 
-    const tbody = (await screen.findAllByRole('rowgroup'))
-      .find(element => element.classList.contains('ant-table-tbody'))!
+    const tbody = await findTBody()
 
     expect(tbody).toBeVisible()
 
@@ -287,8 +300,7 @@ describe('Table component', () => {
       rowSelection={{ defaultSelectedRowKeys: ['1', '3'], onChange }}
     />)
 
-    const tbody = (await screen.findAllByRole('rowgroup'))
-      .find(element => element.classList.contains('ant-table-tbody'))!
+    const tbody = await findTBody()
 
     expect(tbody).toBeVisible()
 
@@ -333,8 +345,7 @@ describe('Table component', () => {
       rowSelection={{ type: 'radio', onChange }}
     />)
 
-    const tbody = (await screen.findAllByRole('rowgroup'))
-      .find(element => element.classList.contains('ant-table-tbody'))!
+    const tbody = await findTBody()
 
     expect(tbody).toBeVisible()
 
@@ -391,6 +402,40 @@ describe('Table component', () => {
     expect(actions[0].onClick).not.toBeCalled()
     fireEvent.click(action1)
     expect(actions[0].onClick).toBeCalled()
+  })
+
+  it('renders action dropdown', async () => {
+    const actions = [
+      { label: 'Action 1', onClick: jest.fn() },
+      { label: 'Action 2', onClick: jest.fn() },
+      {
+        label: 'Action 3',
+        onClick: jest.fn(),
+        dropdownMenu: {
+          onClick: jest.fn(),
+          items: [{ key: 'item1', label: 'Item 1', onClick: jest.fn() }]
+        }
+      }
+    ]
+
+    render(<Table
+      actions={actions}
+      columns={testColumns}
+      dataSource={testData}
+    />)
+
+    const dropdown = await screen.findByRole('button', { name: actions[2].label })
+    expect(dropdown).toBeVisible()
+    expect(actions[2].onClick).not.toBeCalled()
+    fireEvent.click(dropdown)
+    expect(actions[2].onClick).not.toBeCalled()
+
+    const dropdownItem = await screen.findByText('Item 1')
+    expect(actions[2].dropdownMenu?.onClick).not.toBeCalled()
+    expect(actions[2].dropdownMenu?.items[0].onClick).not.toBeCalled()
+    fireEvent.click(dropdownItem)
+    expect(actions[2].dropdownMenu?.onClick).toBeCalled()
+    expect(actions[2].dropdownMenu?.items[0].onClick).toBeCalled()
   })
 
   it('renders disabled action items', async () => {
@@ -613,8 +658,7 @@ describe('Table component', () => {
         rowSelection={{ selectedRowKeys: [] }}
       />)
 
-      const tbody = (await screen.findAllByRole('rowgroup'))
-        .find(element => element.classList.contains('ant-table-tbody'))!
+      const tbody = await findTBody()
 
       expect(tbody).toBeVisible()
       const body = within(tbody)

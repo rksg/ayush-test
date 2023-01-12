@@ -184,4 +184,31 @@ describe('WifiCallingForm', () => {
 
     await userEvent.click(screen.getByRole('button', { name: 'Finish' }))
   })
+
+  it('should render wifiCallingForm and cancel the step successfully', async () => {
+    render(
+      <WifiCallingFormContext.Provider value={{
+        state: initState,
+        dispatch: jest.fn()
+      }}>
+        <Provider>
+          <WifiCallingForm />
+        </Provider>
+      </WifiCallingFormContext.Provider>
+      , {
+        route: {
+          path: '/services/wifiCalling/create',
+          params: { tenantId: 'tenantId1' }
+        }
+      }
+    )
+
+    expect(screen.getAllByText('Settings')).toBeTruthy()
+    expect(screen.getAllByText('Scope')).toBeTruthy()
+    expect(screen.getAllByText('Summary')).toBeTruthy()
+
+    await screen.findByRole('heading', { name: 'Settings', level: 3 })
+
+    await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
+  })
 })

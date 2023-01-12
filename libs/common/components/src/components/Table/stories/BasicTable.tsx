@@ -1,6 +1,6 @@
-import { Table } from '..'
+import { Table, TableProps } from '..'
 
-const basicColumns = [
+const basicColumns: TableProps<typeof basicData[0]>['columns'] = [
   {
     title: 'Name',
     dataIndex: 'name',
@@ -10,7 +10,8 @@ const basicColumns = [
     title: 'Age',
     dataIndex: 'age',
     key: 'age',
-    width: 150
+    width: 150,
+    align: 'center'
   },
   {
     title: 'Address',

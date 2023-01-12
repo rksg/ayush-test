@@ -322,7 +322,9 @@ export interface Vlan {
 	spanningTreeProtocol: 'rstp' | 'stp' | 'none',
 	switchFamilyModels?: SwitchModel[]
 	vlanId: number,
-	vlanName?: string
+	vlanName?: string,
+  untaggedPorts?: string,
+  taggedPorts?: string
 }
 
 export interface ConfigurationProfile {
@@ -603,4 +605,10 @@ export interface LocalUser {
   password: string,
   authPort: number,
   purpose: string
+}
+
+export interface VenueDirectedMulticast {
+  wiredEnabled: boolean,
+  wirelessEnabled: boolean,
+  networkEnabled: boolean
 }

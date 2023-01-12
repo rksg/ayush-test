@@ -1,7 +1,7 @@
 import React, { useMemo, useState, Key, useCallback, useEffect } from 'react'
 
 import ProTable, { ProTableProps as ProAntTableProps } from '@ant-design/pro-table'
-import { Space }                                       from 'antd'
+import { Menu, MenuProps, Space }                      from 'antd'
 import _                                               from 'lodash'
 import Highlighter                                     from 'react-highlight-words'
 import { useIntl }                                     from 'react-intl'
@@ -9,8 +9,9 @@ import AutoSizer                                       from 'react-virtualized-a
 
 import { SettingsOutlined } from '@acx-ui/icons'
 
-import { Button }  from '../Button'
-import { Tooltip } from '../Tooltip'
+import { Button }   from '../Button'
+import { Dropdown } from '../Dropdown'
+import { Tooltip }  from '../Tooltip'
 
 import { FilterValue, getFilteredData, renderFilter, renderSearch } from './filters'
 import { ResizableColumn }                                          from './ResizableColumn'
@@ -49,7 +50,8 @@ export interface TableProps <RecordType>
     actions?: Array<{
       label: string,
       disabled?: boolean,
-      onClick: () => void
+      onClick?: () => void,
+      dropdownMenu?: Omit<MenuProps, 'placement'>
     }>
     rowActions?: Array<{
       label: string,
@@ -258,21 +260,32 @@ function Table <RecordType extends Record<string, any>> (
   const WrappedTable = (style: { width?: number }) => <UI.Wrapper
     style={style}
     $type={type}
-    $rowSelectionActive={Boolean(props.rowSelection) && !hasHeader}
+    $rowSelectionActive={
+      Boolean(props.rowSelection) && !hasHeader && props.tableAlertRender !== false
+    }
   >
     <UI.TableSettingsGlobalOverride />
     {props.actions && <Space
       size={0}
       split={<UI.Divider type='vertical' />}
       style={{ display: 'flex', justifyContent: 'flex-end', margin: '3px 0' }}>
-      {props.actions?.map((action, index) => <Button
-        key={index}
-        type='link'
-        size='small'
-        disabled={action.disabled}
-        onClick={action.onClick}
-        children={action.label}
-      />)}
+      {props.actions?.map((action, index) => {
+        const content = <Button
+          key={index}
+          type='link'
+          size='small'
+          disabled={action.disabled}
+          onClick={action.dropdownMenu ? undefined : action.onClick}
+          children={action.label}
+        />
+        return action.dropdownMenu
+          ? <Dropdown
+            overlay={<Menu {...action.dropdownMenu} />}
+            disabled={action.disabled}>
+            {() => content }
+          </Dropdown>
+          : content
+      })}
     </Space>}
     {hasHeader && (
       <UI.Header>
@@ -328,7 +341,7 @@ function Table <RecordType extends Record<string, any>> (
       onRow={onRow}
       showSorterTooltip={false}
       tableAlertOptionRender={false}
-      tableAlertRender={({ onCleanSelected }) => (
+      tableAlertRender={props.tableAlertRender ?? (({ onCleanSelected }) => (
         <Space size={32}>
           <Space size={6}>
             <span>
@@ -362,7 +375,7 @@ function Table <RecordType extends Record<string, any>> (
             })}
           </Space>
         </Space>
-      )}
+      ))}
     />
   </UI.Wrapper>
   if (hasEllipsisColumn) {
