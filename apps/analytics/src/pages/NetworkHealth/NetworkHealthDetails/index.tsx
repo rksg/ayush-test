@@ -40,12 +40,13 @@ function NetworkHealthDetails () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Test' })}
-        breadcrumb={[
-          {
-            text: $t({ defaultMessage: 'Service Validation' }),
-            link: '/serviceValidation'
-          }
-        ]}
+        breadcrumb={[{
+          text: $t({ defaultMessage: 'Service Validation' }),
+          link: '/serviceValidation'
+        }, {
+          text: $t({ defaultMessage: 'Network Health' }),
+          link: '/serviceValidation/networkHealth'
+        }]}
         footer={
           <Tabs activeKey={activeTab} onChange={onTabChange}>
             {tabs.map(({ key, title }) => <Tabs.TabPane tab={$t(title)} key={key} />)}
