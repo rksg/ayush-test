@@ -10,6 +10,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { formatter }             from '@acx-ui/utils'
+import {useEffect} from "react";
 
 function getCols (intl: ReturnType<typeof useIntl>) {
   const dateTimeFormatter = formatter('dateTimeFormat')
@@ -116,9 +117,11 @@ export function HistoricalClientsTable
       defaultPayload
     })
 
-    if(tableQuery.data?.data){
-      setHistoricalClientCount(tableQuery.data?.totalCount)
-    }
+    useEffect(() => {
+      if (tableQuery.data?.data) {
+        setHistoricalClientCount(tableQuery.data?.totalCount)
+      }
+    }, [])
 
     return (
       <div id={id}>

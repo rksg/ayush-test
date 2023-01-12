@@ -1,4 +1,6 @@
 /* eslint-disable max-len */
+import { useEffect } from 'react'
+
 import { FormattedMessage, useIntl } from 'react-intl'
 
 import { Subtitle, Tooltip }                                                  from '@acx-ui/components'
@@ -354,9 +356,11 @@ export const ConnectedClientsTable =
       defaultPayload
     })
 
-    if(tableQuery.data?.data){
-      setConnectedClientCount(tableQuery.data?.totalCount)
-    }
+    useEffect(() => {
+      if (tableQuery.data?.data) {
+        setConnectedClientCount(tableQuery.data?.totalCount)
+      }
+    }, [])
 
     return (
       <UI.ClientTableDiv>
