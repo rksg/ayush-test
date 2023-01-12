@@ -418,7 +418,7 @@ export function EditMspCustomer () {
 
           <UI.FieldLabel2 width='275px' style={{ marginTop: '20px' }}>
             <label>{intl.$t({ defaultMessage: 'Trial Start Date' })}</label>
-            <label>{intl.$t({ defaultMessage: '10/22/2022' })}</label>
+            <label>{EntitlementUtil.getServiceStartDate()}</label>
           </UI.FieldLabel2>
           <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
             <label>{intl.$t({ defaultMessage: '30 Day Trial Ends on' })}</label>

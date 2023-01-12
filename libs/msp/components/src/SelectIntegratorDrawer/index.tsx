@@ -24,12 +24,13 @@ interface IntegratorDrawerProps {
   setVisible: (visible: boolean) => void
   tenantId?: string
   tenantType?: string
+  setSelected: (tenantType: string, selected: MspEc[]) => void
 }
 
 export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
   const { $t } = useIntl()
 
-  const { visible, setVisible, tenantId, tenantType } = props
+  const { visible, setVisible, tenantId, tenantType, setSelected } = props
   const [resetField, setResetField] = useState(false)
   const [form] = Form.useForm()
 
@@ -46,23 +47,26 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
   const [ assignMspCustomers ] = useAssignMspEcToIntegratorMutation()
 
   const handleSave = () => {
-    let payload = {
-      delegation_type: tenantType ? tenantType : 'MSP_INTEGRATOR',
-      number_of_days: '',
-      mspec_list: [] as string[]
+    const selectedRows = form.getFieldsValue(['integrator'])
+    if (tenantId) {
+      let payload = {
+        delegation_type: tenantType ? tenantType : 'MSP_INTEGRATOR',
+        number_of_days: '',
+        mspec_list: [] as string[]
+      }
+      if (selectedRows && selectedRows.integrator) {
+        selectedRows.ecCustomers.forEach((element: MspEc) => {
+          payload.mspec_list.push (element.id)
+        })
+      }
+      assignMspCustomers({ payload, params: { mspIntegratorId: tenantId } })
+        .then(() => {
+          setVisible(false)
+          resetFields()
+        })
+    } else {
+      setSelected(tenantType as string, selectedRows.integrator)
     }
-    const selectedRows = form.getFieldsValue(['integrators'])
-    if (selectedRows && selectedRows.integrators) {
-      selectedRows.ecCustomers.forEach((element: MspEc) => {
-        payload.mspec_list.push (element.id)
-      })
-    }
-
-    assignMspCustomers({ payload, params: { mspIntegratorId: tenantId } })
-      .then(() => {
-        setVisible(false)
-        resetFields()
-      })
     setVisible(false)
   }
 

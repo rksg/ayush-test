@@ -26,12 +26,13 @@ interface ManageAdminsDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
   tenantId?: string
+  selected: (selected?: MspAdministrator[]) => void
 }
 
 export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
   const { $t } = useIntl()
 
-  const { visible, setVisible, tenantId } = props
+  const { visible, setVisible, tenantId, selected } = props
   const [resetField, setResetField] = useState(false)
   const [form] = Form.useForm()
 
@@ -63,13 +64,17 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
         )})
     }
 
-    saveMspAdmins({ payload, params: { mspEcTenantId: tenantId } })
-      .then(() => {
-        setTimeout(() => {
-          setVisible(false)
-          resetFields()
-        }, 5000)
-      })
+    if (tenantId) {
+      saveMspAdmins({ payload, params: { mspEcTenantId: tenantId } })
+        .then(() => {
+          setTimeout(() => {
+            setVisible(false)
+            resetFields()
+          }, 5000)
+        })
+    } else {
+      selected(selectedRows.mspAdmins)
+    }
     setVisible(false)
   }
 

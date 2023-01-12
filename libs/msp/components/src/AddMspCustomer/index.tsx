@@ -32,6 +32,8 @@ import {
   dateDisplayText,
   DateSelectionEnum,
   emailRegExp,
+  MspAdministrator,
+  MspEc,
   MspEcData,
   roleDisplayText,
   RolesEnum,
@@ -276,6 +278,23 @@ export function AddMspCustomer () {
     type === 'MSP_INSTALLER' ? setDrawerInstallerVisible(true) : setDrawerIntegratorVisible(true)
   }
 
+  const mspAdminSelected = (selected?: MspAdministrator[]) => {
+    if (selected && selected.length > 0) {
+      setAdministrator(selected[0].email)
+    } else {
+      setAdministrator('--')
+    }
+  }
+
+  const integratorSelected = (tenantType: string, selected: MspEc[] ) => {
+    if (selected && selected.length > 0) {
+      (tenantType === 'MSP_INTEGRATOR')
+        ? setIntegrator(selected[0].name) : setInstaller(selected[0].name)
+    } else {
+      (tenantType === 'MSP_INTEGRATOR') ? setIntegrator('--') : setInstaller('--')
+    }
+  }
+
   const onChange = (e: RadioChangeEvent) => {
     setTrialMode(e.target.value)
   }
@@ -319,7 +338,7 @@ export function AddMspCustomer () {
 
           <UI.FieldLabel2 width='275px' style={{ marginTop: '20px' }}>
             <label>{intl.$t({ defaultMessage: 'Trial Start Date' })}</label>
-            <label>{intl.$t({ defaultMessage: '10/22/2022' })}</label>
+            <label>{EntitlementUtil.getServiceStartDate()}</label>
           </UI.FieldLabel2>
           <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
             <label>{intl.$t({ defaultMessage: '30 Day Trial Ends on' })}</label>
@@ -359,7 +378,7 @@ export function AddMspCustomer () {
 
             <UI.FieldLabel2 width='275px' style={{ marginTop: '18px' }}>
               <label>{intl.$t({ defaultMessage: 'Service Start Date' })}</label>
-              <label>{intl.$t({ defaultMessage: '10/22/2022' })}</label>
+              <label>{EntitlementUtil.getServiceStartDate()}</label>
             </UI.FieldLabel2>
 
             <UI.FieldLabeServiceDate width='275px' style={{ marginTop: '10px' }}>
@@ -476,6 +495,7 @@ export function AddMspCustomer () {
                   visible={drawerAdminVisible}
                   setVisible={setDrawerAdminVisible}
                   tenantId={''}
+                  selected={mspAdminSelected}
                 />}
               </UI.FieldLabelAdmins>
               <UI.FieldLabelAdmins width='275px' style={{ marginTop: '-12px' }}>
@@ -489,8 +509,9 @@ export function AddMspCustomer () {
                 {drawerIntegratorVisible && <SelectIntegratorDrawer
                   visible={drawerIntegratorVisible}
                   setVisible={setDrawerIntegratorVisible}
-                  tenantId={'tenantId'}
+                  // tenantId={'tenantId'}
                   tenantType='MSP_INTEGRATOR'
+                  setSelected={integratorSelected}
                 />}
               </UI.FieldLabelAdmins>
               <UI.FieldLabelAdmins width='275px' style={{ marginTop: '-16px' }}>
@@ -504,8 +525,9 @@ export function AddMspCustomer () {
                 {drawerInstallerVisible && <SelectIntegratorDrawer
                   visible={drawerInstallerVisible}
                   setVisible={setDrawerInstallerVisible}
-                  tenantId={tenantId}
+                  // tenantId={tenantId}
                   tenantType='MSP_INSTALLER'
+                  setSelected={integratorSelected}
                 />}
               </UI.FieldLabelAdmins>
             </Col>
