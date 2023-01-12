@@ -339,7 +339,7 @@ export function FloorPlan () {
         <NetworkDeviceContext.Provider value={clearDevice}>
           <DndProvider backend={HTML5Backend}>
             <UI.FloorPlanContainer style={{
-              backgroundColor: showRogueAp ? 'rgba(0, 0, 0, 0.4)' : ''
+              backgroundColor: (!showGalleryView && showRogueAp) ? 'rgba(0, 0, 0, 0.4)' : ''
             }}>
               { showGalleryView ?
                 <GalleryView
