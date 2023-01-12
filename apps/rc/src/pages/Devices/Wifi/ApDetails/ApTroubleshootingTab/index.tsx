@@ -1,8 +1,10 @@
-import { useIntl }                from 'react-intl'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useIntl }     from 'react-intl'
+import { useNavigate } from 'react-router-dom'
 
 import { Tabs }          from '@acx-ui/components'
 import { useTenantLink } from '@acx-ui/react-router-dom'
+
+import { useApContext } from '../ApContext'
 
 import { ApPacketCaptureForm } from './apPacketCaptureForm'
 import { ApPingForm }          from './apPingForm'
@@ -12,7 +14,7 @@ const { TabPane } = Tabs
 
 export function ApTroubleshootingTab () {
   const { $t } = useIntl()
-  const params = useParams()
+  const params = useApContext()
   const navigate = useNavigate()
   const basePath = useTenantLink(`/devices/wifi/${params.serialNumber}/details/troubleshooting/`)
 
