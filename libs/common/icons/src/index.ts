@@ -203,6 +203,8 @@ export { ReactComponent as PlusSquareOutlined } from './icons/PlusSquareOutlined
 export { ReactComponent as PlusSquareSolid } from './icons/PlusSquareSolid.svg'
 export { ReactComponent as PoeUsage } from './icons/PoeUsage.svg'
 export { ReactComponent as PoliciesOutlined } from './icons/PoliciesOutlined.svg'
+export { ReactComponent as PortOutlined } from './icons/PortOutlined.svg'
+export { ReactComponent as PortSolid } from './icons/PortSolid.svg'
 export { ReactComponent as PrinterSolid } from './icons/PrinterSolid.svg'
 export { ReactComponent as PrinterOutlined } from './icons/PrinterOutlined.svg'
 export { ReactComponent as PoliciesSolid } from './icons/PoliciesSolid.svg'
