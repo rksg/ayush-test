@@ -9,10 +9,11 @@ import { Provider }                                                             
 import { render, screen, fireEvent, waitFor }                                                                                                  from '@acx-ui/test-utils'
 
 import { NetworkDeviceContext } from '..'
+import UnplacedDevice           from '../UnplacedDevices/UnplacedDevice'
 
 import PlainView, { setUpdatedLocation } from './PlainView'
 import Thumbnail                         from './Thumbnail'
-import UnplacedDevice from '../UnplacedDevices/UnplacedDevice'
+
 
 
 const list: FloorPlanDto[] = [
