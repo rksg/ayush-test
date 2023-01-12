@@ -73,7 +73,7 @@ const WifiCallingForm = () => {
       />
       <StepsForm<CreateNetworkFormFields>
         formRef={formRef}
-        onCancel={() => navigate(linkToServices)}
+        onCancel={() => navigate(linkToServices, { replace: true })}
         onFinish={handleAddWifiCallingService}
       >
         <StepsForm.StepForm<CreateNetworkFormFields>

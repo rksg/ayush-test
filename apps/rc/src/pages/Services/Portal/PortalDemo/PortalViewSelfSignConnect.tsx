@@ -6,7 +6,7 @@ export default function PortalViewSelfSignConnect (props:{
   const { networkSocial, portalLang } = props
   return (
     <UI.ViewSection>
-      <UI.FieldText>{portalLang.connectWith || 'Connect With:'}</UI.FieldText>
+      <UI.FieldTextBig>{portalLang.connectWith}</UI.FieldTextBig>
       {(!networkSocial || networkSocial.smsEnabled) &&
       <UI.ViewSectionSocial $type='sms'>
         <UI.ViewSectionSocialIcon>

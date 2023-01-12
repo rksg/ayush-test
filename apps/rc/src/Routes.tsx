@@ -10,8 +10,8 @@ import {
   ServiceOperation,
   getServiceRoutePath
 } from '@acx-ui/rc/utils'
-import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
-import { Provider }                          from '@acx-ui/store'
+import { rootRoutes, Route, TenantNavigate, Navigate } from '@acx-ui/react-router-dom'
+import { Provider }                                    from '@acx-ui/store'
 
 import Edges                      from './pages/Devices/Edge'
 import AddEdge                    from './pages/Devices/Edge/AddEdge'
@@ -42,6 +42,7 @@ import DHCPDetail               from './pages/Services/DHCP/DHCPDetail'
 import DHCPForm                 from './pages/Services/DHCP/DHCPForm/DHCPForm'
 import DpskDetails              from './pages/Services/Dpsk/DpskDetail/DpskDetails'
 import DpskForm                 from './pages/Services/Dpsk/DpskForm/DpskForm'
+import DpskTable                from './pages/Services/Dpsk/DpskTable/DpskTable'
 import MdnsProxyDetail          from './pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail'
 import MdnsProxyForm            from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
 import NetworkSegmentationForm  from './pages/Services/NetworkSegmentationForm/NetworkSegmentationForm'
@@ -87,13 +88,13 @@ function DeviceRoutes () {
       <Route path='devices/apgroups/:action' element={<ApGroupForm />} />
       <Route path='devices/switch/:action' element={<AddSwitchForm />} />
       <Route
-        path='devices/wifi/:serialNumber/details/:activeTab'
+        path='devices/wifi/:apId/details/:activeTab'
         element={<ApDetails />} />
       <Route
-        path='devices/wifi/:serialNumber/details/:activeTab/:activeSubTab'
+        path='devices/wifi/:apId/details/:activeTab/:activeSubTab'
         element={<ApDetails />} />
       <Route
-        path='devices/wifi/:serialNumber/details/:activeTab/:activeSubTab/:categoryTab'
+        path='devices/wifi/:apId/details/:activeTab/:activeSubTab/:categoryTab'
         element={<ApDetails />} />
       <Route
         path='devices/switch/:switchId/:serialNumber/details/:activeTab'
@@ -184,6 +185,10 @@ function ServiceRoutes () {
         element={<DHCPDetail/>}
       />
       <Route
+        path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST })}
+        element={<DpskTable />}
+      />
+      <Route
         path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.CREATE })}
         element={<DpskForm />}
       />
@@ -268,16 +273,11 @@ function UserRoutes () {
       <Route path='users' element={<TenantNavigate replace to='/users/wifi/clients' />} />
       <Route path='users/wifi' element={<TenantNavigate replace to='/users/wifi/clients' />} />
       <Route path='users/wifi/:activeTab' element={<WifiClientList />} />
-      <Route
-        path='users/wifi/:activeTab/:clientId/details/'
-        element={
-          <TenantNavigate replace to='/users/wifi/:activeTab/:clientId/details/overview' />
-        }
-      />
-      <Route
-        path='users/wifi/:activeTab/:clientId/details/:activeTab'
-        element={<WifiClientDetails />}
-      />
+      <Route path='users/wifi/:activeTab/:clientId/details'>
+        <Route path='' element={<Navigate replace to='./overview' />} />
+        <Route path=':activeTab' element={<WifiClientDetails />} />
+        <Route path=':activeTab/:activeSubTab' element={<WifiClientDetails />} />
+      </Route>
       <Route path='users/switch' element={<TenantNavigate replace to='/users/switch/clients' />} />
       <Route path='users/switch/clients' element={<SwitchClientList />} />
     </Route>

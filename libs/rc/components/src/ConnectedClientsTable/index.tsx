@@ -3,10 +3,9 @@ import { FormattedMessage, useIntl } from 'react-intl'
 
 import { Subtitle, Tooltip }                                                  from '@acx-ui/components'
 import { Table, TableProps, Loader }                                          from '@acx-ui/components'
-import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
 import { useGetClientListQuery }                                              from '@acx-ui/rc/services'
 import { ClientList, getDeviceTypeIcon, getOsTypeIcon, usePollingTableQuery } from '@acx-ui/rc/utils'
-import { TenantLink }                                                         from '@acx-ui/react-router-dom'
+import { TenantLink, useParams }                                              from '@acx-ui/react-router-dom'
 import { formatter }                                                          from '@acx-ui/utils'
 
 import { ClientHealthIcon } from '../ClientHealthIcon'
@@ -16,7 +15,7 @@ import * as UI from './styledComponents'
 // TODO: userProfileService.userHasRole(user, 'OFFICE_ADMIN')
 const hasGuestManagerRole = false
 
-function getCols (intl: ReturnType<typeof useIntl>, releaseTag: boolean, showAllColumns?: boolean) {
+function getCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
   const columns: TableProps<ClientList>['columns'] = [
     {
       key: 'hostname',
@@ -26,9 +25,7 @@ function getCols (intl: ReturnType<typeof useIntl>, releaseTag: boolean, showAll
       disable: true,
       defaultSortOrder: 'ascend',
       render: (data, row) => {
-        return releaseTag ?
-          <TenantLink to={`users/wifi/clients/${row.clientMac}/details/overview?hostname=${data}`}>{data || '--'}</TenantLink>
-          : <> {data || '--'} </>
+        return <TenantLink to={`users/wifi/clients/${row.clientMac}/details/overview?hostname=${data}`}>{data || '--'}</TenantLink>
       }
     },
     {
@@ -314,12 +311,12 @@ function getCols (intl: ReturnType<typeof useIntl>, releaseTag: boolean, showAll
       sorter: true,
       show: !!showAllColumns,
       render: (data) => data || '--'
-    },
-    {
-      key: 'tags',
-      title: intl.$t({ defaultMessage: 'Tags' }),
-      dataIndex: 'tags'
     }
+    // { // TODO: Waiting for TAG feature support
+    //   key: 'tags',
+    //   title: intl.$t({ defaultMessage: 'Tags' }),
+    //   dataIndex: 'tags'
+    // }
   ]
   return columns
 }
@@ -328,6 +325,7 @@ function getCols (intl: ReturnType<typeof useIntl>, releaseTag: boolean, showAll
 const defaultPayload = {
   searchString: '',
   searchTargetFields: ['clientMac','ipAddress','Username','hostname','ssid','clientVlan','osType'],
+  filters: {},
   fields: [
     'hostname','osType','healthCheckStatus','clientMac','ipAddress','Username','serialNumber','venueId','switchSerialNumber',
     'ssid','wifiCallingClient','sessStartTime','clientAnalytics','clientVlan','deviceTypeStr','modelName','totalTraffic',
@@ -339,10 +337,12 @@ const defaultPayload = {
 export const ConnectedClientsTable =
 (props: { showAllColumns?: boolean, searchString: string, setConnectedClientCount: (connectClientCount: number) => void }) => {
   const { $t } = useIntl()
+  const params = useParams()
   const { showAllColumns, searchString, setConnectedClientCount } = props
-  const releaseTag = useIsSplitOn(Features.USERS)
 
   defaultPayload.searchString = searchString
+  defaultPayload.filters = params.venueId ? { venueId: [params.venueId] } :
+    params.serialNumber ? { serialNumber: [params.serialNumber] } : {}
 
   const ConnectedClientsTable = () => {
     const tableQuery = usePollingTableQuery({
@@ -363,7 +363,7 @@ export const ConnectedClientsTable =
             {$t({ defaultMessage: 'Connected Clients' })}
           </Subtitle>
           <Table
-            columns={getCols(useIntl(), releaseTag, showAllColumns)}
+            columns={getCols(useIntl(), showAllColumns)}
             dataSource={tableQuery.data?.data}
             pagination={tableQuery.pagination}
             onChange={tableQuery.handleTableChange}

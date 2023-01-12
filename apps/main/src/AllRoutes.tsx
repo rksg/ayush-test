@@ -9,6 +9,7 @@ import DevicesBase      from './pages/Devices'
 import Layout           from './pages/Layout'
 import NetworksBase     from './pages/Networks'
 import PoliciesBase     from './pages/Policies'
+import ReportsBase      from './pages/Reports'
 import SearchResults    from './pages/SearchResults'
 import ServicesBase     from './pages/Services'
 import TimelineBase     from './pages/Timeline'
@@ -21,6 +22,7 @@ import { VenuesTable }  from './pages/Venues/VenuesTable'
 
 const RcRoutes = React.lazy(() => import('rc/Routes'))
 const AnalyticsRoutes = React.lazy(() => import('analytics/Routes'))
+const ReportsRoutes = React.lazy(() => import('reports/Routes'))
 const MspRoutes = React.lazy(() => import('msp/Routes'))
 
 function AllRoutes () {
@@ -35,6 +37,9 @@ function AllRoutes () {
         </Route>
         <Route path='timeline/*' element={<TimelineBase />}>
           <Route path='*' element={<RcRoutes />} />
+        </Route>
+        <Route path='reports/*' element={<ReportsBase />}>
+          <Route path='*' element={<ReportsRoutes />} />
         </Route>
         <Route path='devices/*' element={<DevicesBase />}>
           <Route path='*' element={<RcRoutes />} />
@@ -66,6 +71,10 @@ function VenuesRoutes () {
       <Route index element={<VenuesTable />} />
       <Route path='add' element={<VenuesForm />} />
       <Route path=':venueId/venue-details/:activeTab' element={<VenueDetails />} />
+      <Route
+        path=':venueId/venue-details/:activeTab/:activeSubTab'
+        element={<VenueDetails />}
+      />
       <Route
         path=':venueId/venue-details/:activeTab/:activeSubTab/:categoryTab'
         element={<VenueDetails />}
