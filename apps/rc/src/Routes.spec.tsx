@@ -5,7 +5,10 @@ import {
   getServiceDetailsLink,
   getServiceListRoutePath,
   getServiceRoutePath,
-  ServiceOperation
+  ServiceOperation,
+  PolicyType,
+  PolicyOperation,
+  getPolicyDetailsLink
 }    from '@acx-ui/rc/utils'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
@@ -96,6 +99,9 @@ jest.mock('./pages/Timeline', () => () => {
   return <div data-testid='Timeline' />
 })
 
+jest.mock('./pages/Policies/ClientIsolation/ClientIsolationDetail/ClientIsolationDetail', () => () => {
+  return <div data-testid='ClientIsolationDetail' />
+})
 
 describe('RcRoutes: Devices', () => {
   test('should redirect devices to devices/wifi', async () => {
@@ -308,8 +314,7 @@ describe('RcRoutes: Services', () => {
   })
 
   test('should navigate to edit WIFI_CALLING page', async () => {
-    let path = getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.EDIT })
-    path = path.replace(':serviceId', 'serviceId')
+    const path = getServiceDetailsLink({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.EDIT, serviceId: 'SERVICE_ID' })
     render(<Provider><RcRoutes /></Provider>, {
       route: {
         path: '/t/tenantId/' + path,
@@ -320,8 +325,7 @@ describe('RcRoutes: Services', () => {
   })
 
   test('should navigate to WIFI_CALLING details page', async () => {
-    let path = getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.DETAIL })
-    path = path.replace(':serviceId', 'serviceId')
+    const path = getServiceDetailsLink({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.DETAIL, serviceId: 'SERVICE_ID' })
     render(<Provider><RcRoutes /></Provider>, {
       route: {
         path: '/t/tenantId/' + path,
@@ -342,8 +346,7 @@ describe('RcRoutes: Services', () => {
   })
 
   test('should navigate to edit DHCP page', async () => {
-    let path = getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.EDIT })
-    path = path.replace(':serviceId', 'serviceId')
+    const path = getServiceDetailsLink({ type: ServiceType.DHCP, oper: ServiceOperation.EDIT, serviceId: 'SERVICE_ID' })
     render(<Provider><RcRoutes /></Provider>, {
       route: {
         path: '/t/tenantId/' + path,
@@ -354,8 +357,7 @@ describe('RcRoutes: Services', () => {
   })
 
   test('should navigate to DHCP details page', async () => {
-    let path = getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.DETAIL })
-    path = path.replace(':serviceId', 'serviceId')
+    const path = getServiceDetailsLink({ type: ServiceType.DHCP, oper: ServiceOperation.DETAIL, serviceId: 'SERVICE_ID' })
     render(<Provider><RcRoutes /></Provider>, {
       route: {
         path: '/t/tenantId/' + path,
@@ -376,8 +378,7 @@ describe('RcRoutes: Services', () => {
   })
 
   test('should navigate to edit Portal page', async () => {
-    let path = getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.EDIT })
-    path = path.replace(':serviceId', 'serviceId')
+    const path = getServiceDetailsLink({ type: ServiceType.PORTAL, oper: ServiceOperation.EDIT, serviceId: 'SERVICE_ID' })
     render(<Provider><RcRoutes /></Provider>, {
       route: {
         path: '/t/tenantId/' + path,
@@ -388,8 +389,7 @@ describe('RcRoutes: Services', () => {
   })
 
   test('should navigate to Portal details page', async () => {
-    let path = getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.DETAIL })
-    path = path.replace(':serviceId', 'serviceId')
+    const path = getServiceDetailsLink({ type: ServiceType.PORTAL, oper: ServiceOperation.DETAIL, serviceId: 'SERVICE_ID' })
     render(<Provider><RcRoutes /></Provider>, {
       route: {
         path: '/t/tenantId/' + path,
@@ -486,5 +486,19 @@ describe('RcRoutes: Timeline', () => {
       }
     })
     expect(screen.getByTestId('Timeline')).toBeVisible()
+  })
+})
+
+describe('RcRoutes: Policies', () => {
+  test('should navigate to Client Isolation details page', async () => {
+    const path = getPolicyDetailsLink({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.DETAIL, policyId: 'POLICY_ID' })
+
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path,
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('ClientIsolationDetail')).toBeVisible()
   })
 })
