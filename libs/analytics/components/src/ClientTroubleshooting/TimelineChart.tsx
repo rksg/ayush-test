@@ -105,7 +105,7 @@ const getSeriesData = (
   return []
 }
 
-function getSeriesItemColor (params: { data: (Event | LabelledQuality)[] }) {
+export function getSeriesItemColor (params: { data: (Event | LabelledQuality)[] }) {
   const obj = Array.isArray(params.data) ? params.data[2] : ''
   const { category } = obj as Event
   return obj

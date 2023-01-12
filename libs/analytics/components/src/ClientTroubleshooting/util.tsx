@@ -253,7 +253,7 @@ export const rssGradientColorMap = ((density = 5) => {
   )
 })()
 
-export const roamingEventFormatter = (event: RoamingTimeSeriesData) => {
+export const roamingEventFormatter = (details: RoamingByAP) => {
   const labels = [
     { key: 'rss', label: 'RSS', format: formatter('decibelMilliWattsFormat') },
     { key: 'bssid', label: 'BSSID' },
@@ -262,7 +262,6 @@ export const roamingEventFormatter = (event: RoamingTimeSeriesData) => {
     { key: 'spatialStream', label: 'Spatial Stream (SS)', format: (v: string) => `${v} SS` },
     { key: 'bandwidth', label: 'Bandwidth', format: (v: string) => `${v} MHz` }
   ]
-  const details = event['details']
   const values = labels
     .filter(
       ({ key }) =>
@@ -274,7 +273,6 @@ export const roamingEventFormatter = (event: RoamingTimeSeriesData) => {
         (format && format(details[key as keyof RoamingByAP] as string)) ||
         details[key as keyof RoamingByAP]
     }))
-  if (values.length === 0) return null
   return [
     {
       label: values.map((v) => v.label).join(' / '),
@@ -347,8 +345,6 @@ export const getConnectionQualityFor = (
       return { quality: getThroughputConnectionQuality(value), value }
     case 'avgTxMCS':
       return { quality: getAvgTxMCSConnectionQuality(value), value }
-    default:
-      return null
   }
 }
 
@@ -547,34 +543,21 @@ export const getChartData = (
   incidents?: IncidentDetails[],
   roamingEvents?: RoamingTimeSeriesData[]
 ) => {
-  if (isExpanded) {
-    switch (type) {
-      case TYPES.CONNECTION_EVENTS:
-        const modifiedEvents = [
-          ...events.map((event) => {
-            return { ...event, seriesKey: event.category }
-          })
-        ] as Event[]
-        return [
-          ...modifiedEvents.map((event) => {
-            return { ...event, seriesKey: all }
-          }),
-          ...modifiedEvents
-        ] as Event[]
-      case TYPES.CONNECTION_QUALITY:
-        return qualities ?? []
-      case TYPES.NETWORK_INCIDENTS:
-        return incidents ?? []
-      case TYPES.ROAMING:
-        return roamingEvents ?? []
-    }
-  }
   switch (type) {
     case TYPES.CONNECTION_EVENTS:
-      return [
+      const modifiedEvents = [
         ...events.map((event) => {
-          return { ...event, seriesKey: all }
+          return { ...event, seriesKey: event.category }
         })
+      ] as Event[]
+      return isExpanded ? [
+        ...modifiedEvents.map((event) => {
+          return { ...event, seriesKey: all }
+        }),
+        ...modifiedEvents
+      ] as Event[] : [ ...events.map((event) => {
+        return { ...event, seriesKey: all }
+      })
       ] as Event[]
     case TYPES.CONNECTION_QUALITY:
       return qualities ?? []
@@ -654,7 +637,7 @@ export const useTooltipFormatter = (params: TooltipComponentFormatterCallbackPar
       ? params[0].data[3]
       : undefined) as unknown as RoamingTimeSeriesData
 
-    const tooltipText = roamingEventFormatter(obj)
+    const tooltipText = roamingEventFormatter(obj.details)
     return renderToString(
       <UI.TooltipWrapper>
         <UI.TooltipDate>

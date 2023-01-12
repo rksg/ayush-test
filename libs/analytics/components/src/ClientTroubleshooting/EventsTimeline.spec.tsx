@@ -1,13 +1,10 @@
 import { Incident }                 from '@acx-ui/analytics/utils'
-import { TooltipFormatterParams }   from '@acx-ui/components'
 import { Provider }                 from '@acx-ui/store'
 import { render, screen,fireEvent } from '@acx-ui/test-utils'
 
-import { TimelineData }                      from './config'
-import  { TimeLine }                         from './EventsTimeline'
-import { ConnectionEvent }                   from './services'
-import { getChartData, useTooltipFormatter } from './util'
-import { connectionEvents }                  from './util.spec'
+import  { TimeLine }                                                    from './EventsTimeline'
+import { ConnectionEvent, ConnectionQuality }                           from './services'
+import { connectionEvents, connectionDetailsByAp, connectionQualities } from './util.spec'
 
 import { Filters } from '.'
 
@@ -25,7 +22,38 @@ const incidents = [{
   endTime: '2022-11-14T06:42:00.000Z',
   code: 'ttc',
   slaThreshold: 2000
-}] as Incident[]
+},
+{
+  id: '9cf271f8-fe98-4725-9ee3-baf89119164a',
+  path: [{
+    type: 'zone',
+    name: 'cliexp4'
+  }
+  ],
+  severity: 0.179645778294647,
+  startTime: '2022-11-14T06:36:00.000Z',
+  sliceType: 'zone',
+  sliceValue: 'cliexp4',
+  endTime: '2022-11-14T06:42:00.000Z',
+  code: 'p-cov-clientrssi-low',
+  slaThreshold: 2000
+},
+{
+  id: '9cf271f8-fe98-4725-9ee3-baf89119164a',
+  path: [{
+    type: 'zone',
+    name: 'cliexp4'
+  }
+  ],
+  severity: 0.179645778294647,
+  startTime: '2022-11-14T06:36:00.000Z',
+  sliceType: 'zone',
+  sliceValue: 'cliexp4',
+  endTime: '2022-11-14T06:42:00.000Z',
+  code: 'i-net-time-future',
+  slaThreshold: 2000
+}
+] as Incident[]
 
 const connectionEventsArray: ConnectionEvent[] = [ ...connectionEvents,{
   timestamp: '2022-11-14T06:33:31.646Z',
@@ -87,8 +115,8 @@ describe('EventsTimeLine', () => {
     const data = {
       connectionEvents,
       incidents,
-      connectionDetailsByAp: [],
-      connectionQualities: []
+      connectionDetailsByAp: connectionDetailsByAp,
+      connectionQualities: connectionQualities as unknown as ConnectionQuality[]
     }
     render(
       <Provider>
@@ -119,8 +147,8 @@ describe('EventsTimeLine', () => {
     const data = {
       connectionEvents: connectionEventsArray,
       incidents,
-      connectionDetailsByAp: [],
-      connectionQualities: []
+      connectionDetailsByAp: connectionDetailsByAp,
+      connectionQualities: connectionQualities as unknown as ConnectionQuality[]
     }
     render(
       <Provider>
@@ -151,8 +179,8 @@ describe('EventsTimeLine', () => {
     const data = {
       connectionEvents: connectionEventsArray,
       incidents,
-      connectionDetailsByAp: [],
-      connectionQualities: []
+      connectionDetailsByAp: connectionDetailsByAp,
+      connectionQualities: connectionQualities as unknown as ConnectionQuality[]
     }
     render(
       <Provider>
@@ -182,8 +210,8 @@ describe('EventsTimeLine', () => {
     const data = {
       connectionEvents: connectionEventsArray,
       incidents,
-      connectionDetailsByAp: [],
-      connectionQualities: []
+      connectionDetailsByAp: connectionDetailsByAp,
+      connectionQualities: connectionQualities as unknown as ConnectionQuality[]
     }
     render(
       <Provider>
@@ -201,7 +229,7 @@ describe('EventsTimeLine', () => {
     fireEvent.click((await screen.findAllByTestId('PlusSquareOutlined'))[0] as HTMLElement)
     expect(await screen.findByText('Success')).toBeVisible()
     fireEvent.click((await screen.findAllByTestId('PlusSquareOutlined'))[0] as HTMLElement)
-    expect(await screen.findByText('Network1_5GHz')).toBeVisible()
+    expect(await screen.findByText('SinghAP-R610-MAP on 5GHz')).toBeVisible()
     fireEvent.click((await screen.findAllByTestId('PlusSquareOutlined'))[0] as HTMLElement)
     expect(await screen.findByText('RSS')).toBeVisible()
     fireEvent.click((await screen.findAllByTestId('PlusSquareOutlined'))[0] as HTMLElement)
@@ -220,8 +248,8 @@ describe('EventsTimeLine', () => {
     const data = {
       connectionEvents: connectionEventsArray,
       incidents,
-      connectionDetailsByAp: [],
-      connectionQualities: []
+      connectionDetailsByAp: connectionDetailsByAp,
+      connectionQualities: connectionQualities as unknown as ConnectionQuality[]
     }
     render(
       <Provider>
@@ -253,8 +281,8 @@ describe('EventsTimeLine', () => {
     const data = {
       connectionEvents: [],
       incidents,
-      connectionDetailsByAp: [],
-      connectionQualities: []
+      connectionDetailsByAp: connectionDetailsByAp,
+      connectionQualities: connectionQualities as unknown as ConnectionQuality[]
     }
     render(
       <Provider>
@@ -270,53 +298,5 @@ describe('EventsTimeLine', () => {
       }
     )
     expect((await screen.findAllByText('0'))[0]).toBeVisible()
-  })
-})
-describe('EventsTimeLine helper functions', () => {
-  it('getChartData should return empty array for no match', async () => {
-    expect(getChartData(null as unknown as keyof TimelineData,[],false)).toEqual([])
-  })
-  const parameters = [{ data: [
-    1668403161155,
-    'all',
-    {
-      timestamp: '2022-11-14T05:19:21.155Z',
-      event: 'EVENT_CLIENT_INFO_UPDATED',
-      ttc: null,
-      mac: '94:B3:4F:3D:15:B0',
-      apName: 'R750-11-112',
-      path: [
-        {
-          type: 'zone',
-          name: 'cliexp4'
-        },
-        {
-          type: 'apGroup',
-          name: 'No group (inherit from Venue)'
-        },
-        {
-          type: 'ap',
-          name: '94:B3:4F:3D:15:B0'
-        }
-      ],
-      code: null,
-      state: 'normal',
-      failedMsgId: null,
-      messageIds: null,
-      radio: '5',
-      ssid: 'cliexp4',
-      type: 'connectionEvents',
-      key: '166840316115594:B3:4F:3D:15:B0EVENT_CLIENT_INFO_UPDATED384',
-      start: 1668403161155,
-      end: 1668403161155,
-      category: 'success',
-      seriesKey: 'all'
-    }
-  ] }] as TooltipFormatterParams[]
-  it('tooltipFormatter should return correct Html string for single value', async () => {
-    expect(useTooltipFormatter(parameters)).toMatchSnapshot()
-  })
-  it('tooltipFormatter should empty Html string for invalid value', async () => {
-    expect(useTooltipFormatter([{}] as TooltipFormatterParams[])).toMatchSnapshot()
   })
 })

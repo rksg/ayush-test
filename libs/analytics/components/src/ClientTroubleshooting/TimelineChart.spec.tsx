@@ -5,9 +5,8 @@ import { renderHook, act } from '@testing-library/react'
 import { ECharts }         from 'echarts'
 import ReactECharts        from 'echarts-for-react'
 
-import {  Event }                                       from './EventsTimeline'
+import {  Event }                                       from './config'
 import { useDotClick, useDataZoom, getSeriesItemColor } from './TimelineChart'
-
 const testEvent = {
   timestamp: '2022-11-17T06:19:34.520Z',
   event: 'EVENT_CLIENT_DISCONNECT',
