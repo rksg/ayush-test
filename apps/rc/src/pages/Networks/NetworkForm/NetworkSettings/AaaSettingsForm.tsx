@@ -172,7 +172,8 @@ function SettingsForm () {
       <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
         <div>
           <Subtitle level={3}>{ $t({ defaultMessage: 'Authentication Service' }) }</Subtitle>
-          <AAAInstance serverLabel={$t({ defaultMessage: 'Authentication Server' })}/>
+          <AAAInstance serverLabel={$t({ defaultMessage: 'Authentication Server' })}
+            type='authentication'/>
           <Form.Item>
             <Form.Item
               noStyle
@@ -200,8 +201,8 @@ function SettingsForm () {
           </Form.Item>
           {enableAccountingService && (
             <>
-              <AAAInstance serverLabel={$t({ defaultMessage: 'Accounting Server' })}/>
-
+              <AAAInstance serverLabel={$t({ defaultMessage: 'Accounting Server' })}
+                type='accounting'/>
               <Form.Item>
                 <Form.Item
                   noStyle

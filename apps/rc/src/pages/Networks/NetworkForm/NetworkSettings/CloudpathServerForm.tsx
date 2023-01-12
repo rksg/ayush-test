@@ -31,7 +31,8 @@ export function CloudpathServerForm () {
   })
   return (
     <>
-      <AAAInstance serverLabel={$t({ defaultMessage: 'Cloudpath Server' })}/>
+      <AAAInstance serverLabel={$t({ defaultMessage: 'Cloudpath Server' })}
+        type='authentication'/>
       {selected && (<>
         <Form.Item
           label={$t({ defaultMessage: 'Deployment Type' })}

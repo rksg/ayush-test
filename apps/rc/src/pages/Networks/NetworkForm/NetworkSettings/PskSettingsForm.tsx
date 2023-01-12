@@ -300,7 +300,8 @@ function MACAuthService () {
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
       <div>
         <Subtitle level={3}>{intl.$t({ defaultMessage: 'Authentication Service' })}</Subtitle>
-        <AAAInstance serverLabel={intl.$t({ defaultMessage: 'Authentication Server' })}/>
+        <AAAInstance serverLabel={intl.$t({ defaultMessage: 'Authentication Server' })}
+          type='authentication'/>
       </div>
       <div>
         <Subtitle level={3}>{intl.$t({ defaultMessage: 'Accounting Service' })}</Subtitle>
@@ -308,7 +309,8 @@ function MACAuthService () {
           <Switch />
         </Form.Item>
         {enableAccountingService &&
-          <AAAInstance serverLabel={intl.$t({ defaultMessage: 'Accounting Server' })}/>
+          <AAAInstance serverLabel={intl.$t({ defaultMessage: 'Accounting Server' })}
+            type='accounting'/>
         }
       </div>
     </Space>

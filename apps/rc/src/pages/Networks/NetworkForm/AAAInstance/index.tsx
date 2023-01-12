@@ -8,7 +8,8 @@ import { useGetAAAPolicyListQuery } from '@acx-ui/rc/services'
 import AAAPolicyModal from './AAAPolicyModal'
 
 const AAAInstance = (props:{
-  serverLabel: string
+  serverLabel: string,
+  type: string
 }) => {
   const params = useParams()
   const form = Form.useFormInstance()
@@ -23,7 +24,7 @@ const AAAInstance = (props:{
   return (
     <div style={{ display: 'grid', gridTemplateColumns: '210px auto' }}>
       <Form.Item
-        name='aaaPolicyProfileId'
+        name={props.type+'PolicyProfileId'}
         label={props.serverLabel}
         rules={[
           { required: true }
@@ -39,7 +40,7 @@ const AAAInstance = (props:{
         aaaList.push({
           label: data.profileName, value: tempID })
         setAaaList([...aaaList])
-        form.setFieldValue('aaaPolicyProfileId', tempID)
+        form.setFieldValue(props.type+'PolicyProfileId', tempID)
       }}/>
     </div>
   )
