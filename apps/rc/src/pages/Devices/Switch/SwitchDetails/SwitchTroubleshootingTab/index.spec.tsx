@@ -1,12 +1,29 @@
 import '@testing-library/jest-dom'
 
-import { Provider }                            from '@acx-ui/store'
-import {  fireEvent, render, screen, waitFor } from '@acx-ui/test-utils'
+import {  SWITCH_TYPE }                       from '@acx-ui/rc/utils'
+import { Provider }                           from '@acx-ui/store'
+import { fireEvent, render, screen, waitFor } from '@acx-ui/test-utils'
+
+import { SwitchDetailsContext } from '..'
 
 import { SwitchTroubleshootingTab } from '.'
 
 
 const mockedUsedNavigate = jest.fn()
+
+const switchDetailsContextData = {
+  switchName: '',
+  currentSwitchOperational: true,
+  switchDetailHeader: {
+    configReady: true,
+    name: 'test',
+    id: 'id',
+    venueId: 'venue-id',
+    stackMembers: [],
+    syncedSwitchConfig: true,
+    switchType: SWITCH_TYPE.ROUTER
+  }
+}
 
 
 jest.mock('react-router-dom', () => ({
@@ -23,7 +40,14 @@ describe('SwitchTroubleshootingTab', () => {
       serialNumber: 'serialNumber',
       activeSubTab: 'ping'
     }
-    render(<Provider><SwitchTroubleshootingTab /></Provider>, {
+    render(<Provider>
+      <SwitchDetailsContext.Provider value={{
+        switchDetailsContextData,
+        setSwitchDetailsContextData: jest.fn()
+      }}>
+        <SwitchTroubleshootingTab />
+      </SwitchDetailsContext.Provider>
+    </Provider>, {
       route: {
         params,
         // eslint-disable-next-line max-len
@@ -40,7 +64,14 @@ describe('SwitchTroubleshootingTab', () => {
       serialNumber: 'serialNumber',
       activeSubTab: 'traceroute'
     }
-    render(<Provider><SwitchTroubleshootingTab /></Provider>, {
+    render(<Provider>
+      <SwitchDetailsContext.Provider value={{
+        switchDetailsContextData,
+        setSwitchDetailsContextData: jest.fn()
+      }}>
+        <SwitchTroubleshootingTab />
+      </SwitchDetailsContext.Provider>
+    </Provider>, {
       route: {
         params,
         // eslint-disable-next-line max-len
@@ -57,7 +88,15 @@ describe('SwitchTroubleshootingTab', () => {
       serialNumber: 'serialNumber',
       activeSubTab: 'ipRoute'
     }
-    render(<Provider><SwitchTroubleshootingTab /></Provider>, {
+    render(<Provider>
+      <SwitchDetailsContext.Provider value={{
+        switchDetailsContextData,
+        setSwitchDetailsContextData: jest.fn()
+      }}>
+        <SwitchTroubleshootingTab />
+      </SwitchDetailsContext.Provider>
+
+    </Provider>, {
       route: {
         params,
         // eslint-disable-next-line max-len
@@ -74,7 +113,14 @@ describe('SwitchTroubleshootingTab', () => {
       serialNumber: 'serialNumber',
       activeSubTab: 'macTable'
     }
-    render(<Provider><SwitchTroubleshootingTab /></Provider>, {
+    render(<Provider>
+      <SwitchDetailsContext.Provider value={{
+        switchDetailsContextData,
+        setSwitchDetailsContextData: jest.fn()
+      }}>
+        <SwitchTroubleshootingTab />
+      </SwitchDetailsContext.Provider>
+    </Provider>, {
       route: {
         params,
         // eslint-disable-next-line max-len
@@ -84,20 +130,28 @@ describe('SwitchTroubleshootingTab', () => {
     expect(await screen.findByText('Show Table')).toBeVisible()
   })
 
-  it('should navigate to navigate correctly', async () => {
+  it('should navigate to IP route correctly', async () => {
     const params = {
       tenantId: 'tenant-id',
       switchId: 'switchId',
       serialNumber: 'serialNumber',
       activeSubTab: 'ping'
     }
-    render(<Provider><SwitchTroubleshootingTab /></Provider>, {
-      route: {
-        params,
-        // eslint-disable-next-line max-len
-        path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/troubleshooting/:activeSubTab'
-      }
-    })
+    render(
+      <Provider>
+        <SwitchDetailsContext.Provider value={{
+          switchDetailsContextData,
+          setSwitchDetailsContextData: jest.fn()
+        }}>
+          <SwitchTroubleshootingTab />
+        </SwitchDetailsContext.Provider>
+      </Provider>, {
+        route: {
+          params,
+          // eslint-disable-next-line max-len
+          path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/troubleshooting/:activeSubTab'
+        }
+      })
     expect(await screen.findByText('Target host or IP address')).toBeVisible()
   })
 
@@ -108,7 +162,14 @@ describe('SwitchTroubleshootingTab', () => {
       serialNumber: 'serialNumber',
       activeSubTab: 'ping'
     }
-    render(<Provider><SwitchTroubleshootingTab /></Provider>, {
+    render(<Provider>
+      <SwitchDetailsContext.Provider value={{
+        switchDetailsContextData,
+        setSwitchDetailsContextData: jest.fn()
+      }}>
+        <SwitchTroubleshootingTab />
+      </SwitchDetailsContext.Provider>
+    </Provider>, {
       route: {
         params,
         // eslint-disable-next-line max-len

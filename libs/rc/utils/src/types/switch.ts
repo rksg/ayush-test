@@ -20,6 +20,11 @@ export enum CUSTOMIZE_FLAG {
   ALL = 'AL'
 }
 
+export enum SWITCH_TYPE {
+  SWITCH = 'switch',
+  ROUTER ='router'
+}
+
 export enum SwitchStatusEnum {
   NEVER_CONTACTED_CLOUD = 'PREPROVISIONED',
   INITIALIZING = 'INITIALIZING',
@@ -183,7 +188,7 @@ export class SwitchViewModel extends Switch {
   deviceStatus?: SwitchStatusEnum
   model?: string
   venueName?: string
-  switchType?: string
+  switchType?: SWITCH_TYPE
   clientCount?: number
   switchMac?: string
   uptime?: string
