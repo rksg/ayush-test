@@ -1,6 +1,7 @@
 import { CallbackDataParams } from 'echarts/types/dist/shared'
 import { groupBy }            from 'lodash'
 import moment                 from 'moment-timezone'
+import { useIntl }            from 'react-intl'
 
 import { AnalyticsFilter }           from '@acx-ui/analytics/utils'
 import { cssStr, cssNumber, Loader } from '@acx-ui/components'
@@ -13,7 +14,7 @@ import { ClientInfoData, ConnectionQuality, useClientInfoQuery } from './service
 import { transformConnectionQualities }                          from './util'
 
 const durations = (items: ConnectionQuality[] | LabelledQuality[]) => items
-  .map(item => moment(item.end).diff(item.start, 'milliseconds'))
+  .map(item => moment(item.end).diff(item.start, 'milliseconds', true))
   .reduce((a, b) => a + b, 0)
 
 const calculateHealthSummary = (data: ClientInfoData | undefined) => {
@@ -33,13 +34,13 @@ const calculateHealthSummary = (data: ClientInfoData | undefined) => {
 
   const total = durations(parsedQualities.all)
 
-  const { good = [], avg = [], bad = [] } =
+  const { good = [], average = [], bad = [] } =
     groupBy(parsedQualities.all, item => item.all.quality)
 
   return {
     totalConnectedTime: total,
     goodConnectionPercent: durations(good) / total,
-    avgConnectionPercent: durations(avg) / total,
+    avgConnectionPercent: durations(average) / total,
     badConnectionPercent: durations(bad) / total
   }
 }
@@ -47,8 +48,10 @@ const calculateHealthSummary = (data: ClientInfoData | undefined) => {
 export function ClientHealth (
   { filter, clientMac }: { filter: AnalyticsFilter, clientMac: string })
 {
+  const { $t } = useIntl()
+  const { startDate, endDate, range } = filter
   const data = useClientInfoQuery(
-    { ...filter, clientMac: clientMac.toUpperCase() },
+    { startDate, endDate, range, clientMac: clientMac.toUpperCase() },
     { skip: !clientMac }
   )
 
@@ -82,9 +85,9 @@ export function ClientHealth (
       data={{
         dimensions: ['HealthQuality', 'Value'],
         source: [
-          ['Poor', parsedData.badConnectionPercent],
-          ['Avg.', parsedData.avgConnectionPercent],
-          ['Good', parsedData.goodConnectionPercent]
+          [$t({ defaultMessage: 'Poor' }), parsedData.badConnectionPercent],
+          [$t({ defaultMessage: 'Avg.' }), parsedData.avgConnectionPercent],
+          [$t({ defaultMessage: 'Good' }), parsedData.goodConnectionPercent]
         ],
         seriesEncode: [{
           x: 'Value',
