@@ -13,8 +13,6 @@ import {
 } from '@acx-ui/rc/utils'
 
 
-const DHCP_OPTIONS = getDhcpOptionList()
-
 const validatorMap: { [key in DHCP_OPTION_TYPE]: Rule[] } = {
   ASCII: [
     { required: true },
@@ -50,6 +48,8 @@ export function DhcpOptionModal (props: {
   const [form] = Form.useForm()
   const [optionState, setOptionState] = useState<DHCP_OPTION_TYPE[]>()
   const [valueValidator, setValueValidator] = useState<Rule[]>()
+
+  const DHCP_OPTIONS = useMemo(() => getDhcpOptionList(), [])
 
   const seqOptions = useMemo(() => {
     const currrentSeqs = props.currrentRecords?.map(r=>r.seq) || []

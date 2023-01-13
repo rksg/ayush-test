@@ -8,8 +8,13 @@ import {
   useSwitchDetailHeaderQuery,
   useUpdateDhcpServerStateMutation
 } from '@acx-ui/rc/services'
-import { IP_ADDRESS_TYPE, SwitchDhcpLease, SwitchStatusEnum, useTableQuery } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }                             from '@acx-ui/react-router-dom'
+import {
+  IP_ADDRESS_TYPE,
+  isOperationalSwitch,
+  SwitchDhcpLease,
+  useTableQuery
+} from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { SwitchDhcpPoolTable } from './SwitchDhcpPoolTable'
 
@@ -23,6 +28,9 @@ export function SwitchDhcpTab () {
   const { data: switchData, isLoading } = useGetSwitchQuery({ params: { switchId, tenantId } })
   const { data: switchDetail } = useSwitchDetailHeaderQuery({ params: { switchId, tenantId } })
   const [ updateDhcpServerState ] = useUpdateDhcpServerStateMutation()
+
+  const isOperational = switchDetail?.deviceStatus ?
+    isOperationalSwitch(switchDetail?.deviceStatus, switchDetail.syncedSwitchConfig) : false
 
   const onTabChange = (tab: string) => {
     navigate({
@@ -61,7 +69,7 @@ export function SwitchDhcpTab () {
       <Switch onChange={onDhcpStatusChange}
         checked={switchData?.dhcpServerEnabled}
         loading={isLoading}
-        disabled={switchDetail?.deviceStatus !== SwitchStatusEnum.OPERATIONAL} />
+        disabled={!isOperational} />
     </Form.Item>
 
   return (

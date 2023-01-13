@@ -13,8 +13,8 @@ import {
 import {
   useTableQuery,
   SwitchDhcp,
-  SwitchStatusEnum,
-  catchErrorResponse
+  catchErrorResponse,
+  isOperationalSwitch
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -40,6 +40,9 @@ export function SwitchDhcpPoolTable () {
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [selected, setSelected] = useState<SwitchDhcp>()
 
+  const isOperational = switchDetail?.deviceStatus ?
+    isOperationalSwitch(switchDetail?.deviceStatus, switchDetail.syncedSwitchConfig) : false
+
   const handleSavePool = async (values: SwitchDhcp) => {
     try {
       if (selected) { // Edit
@@ -49,9 +52,12 @@ export function SwitchDhcpPoolTable () {
       }
       setDrawerVisible(false)
     } catch (error) {
+      const errorResponse = error as catchErrorResponse | { error: string }
+      const message = ('error' in errorResponse) ? errorResponse.error:
+        errorResponse.data.errors.map(error => error.message).join('<br />')
       showToast({
         type: 'error',
-        content: (error as catchErrorResponse).data.errors[0].message
+        content: message
       })
     }
   }
@@ -119,7 +125,7 @@ export function SwitchDhcpPoolTable () {
         onChange={tableQuery.handleTableChange}
         actions={[{
           label: $t({ defaultMessage: 'Add Pool' }),
-          disabled: switchDetail?.deviceStatus !== SwitchStatusEnum.OPERATIONAL,
+          disabled: !isOperational,
           onClick: () => setDrawerVisible(true)
         }]}
         rowKey='poolName'

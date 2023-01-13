@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { Col, Divider, Form, Input, InputNumber, Row, Space } from 'antd'
 import { useIntl }                                            from 'react-intl'
@@ -16,8 +16,6 @@ import { useParams } from '@acx-ui/react-router-dom'
 
 import { DhcpOptionModal } from './DhcpOptionModal'
 
-const DHCP_OPTIONS = getDhcpOptionList()
-
 export function AddPoolDrawer (props: {
   visible: boolean,
   isLoading?: boolean,
@@ -31,6 +29,8 @@ export function AddPoolDrawer (props: {
   const [openModal, setOpenModal] = useState(false)
   const [selected, setSelected] = useState<SwitchDhcpOption>()
   const [dhcpOptionList, setDhcpOptionList] = useState<SwitchDhcpOption[]>()
+
+  const DHCP_OPTIONS = useMemo(() => getDhcpOptionList(), [])
 
   const { data } = useGetDhcpServerQuery({
     params: {
@@ -46,13 +46,14 @@ export function AddPoolDrawer (props: {
   }, [form, props.visible])
 
   useEffect(()=>{
-    if (data && props.editPool) {
-      form.setFieldsValue(data)
-      setDhcpOptionList(data.dhcpOptions)
+    if (data || props.editPool) {
+      const values = { ...props.editPool, ...data }
+      form.setFieldsValue(values)
+      setDhcpOptionList(values.dhcpOptions)
     }
   }, [form, data, props.editPool])
 
-  const onSave = (values: SwitchDhcpOption) => {
+  const onSaveOption = (values: SwitchDhcpOption) => {
     const newList = dhcpOptionList || []
     if (!selected) { // Add
       setDhcpOptionList(newList.concat(values))
@@ -127,7 +128,7 @@ export function AddPoolDrawer (props: {
           loading={props.isLoading}
           onClick={() => form.submit()}
           type={'secondary'} >
-          {$t({ defaultMessage: 'Add' })}
+          {$t({ defaultMessage: 'Save' })}
         </Button>
         <Button onClick={props?.onClose}>
           {$t({ defaultMessage: 'Cancel' })}
@@ -237,6 +238,6 @@ export function AddPoolDrawer (props: {
       editRecord={selected}
       currrentRecords={dhcpOptionList}
       onCancel={()=>setOpenModal(false)}
-      onSave={onSave} />
+      onSave={onSaveOption} />
   </>)
 }
