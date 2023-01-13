@@ -20,6 +20,11 @@ import { SwitchDetailsContext } from '../..'
 
 import { SwitchConfigBackupTable } from '.'
 
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  handleBlobDownloadFile: jest.fn()
+}))
+
 const list = [
   {
     id: '93999bfb05d34a438ff5ff40b8648967',
@@ -50,18 +55,36 @@ describe('SwitchConfigBackupTable', () => {
 
   beforeEach(() => {
     mockServer.use(
-      rest.get(
-        SwitchUrlsInfo.getSwitchConfigBackupList.url,
-        (req, res, ctx) => res(ctx.json(list))
-      ),
+      // rest.get(
+      //   SwitchUrlsInfo.getSwitchConfigBackupList.url,
+      //   (req, res, ctx) => res(ctx.json(list))
+      // ),
       rest.get(
         SwitchUrlsInfo.downloadSwitchConfig.url,
         (req, res, ctx) => res(ctx.json({}))
-      )
+      ),
+      rest.post(
+        SwitchUrlsInfo.addBackup.url,
+        (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.put(
+        SwitchUrlsInfo.restoreBackup.url,
+        (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.delete(
+        SwitchUrlsInfo.deleteBackups.url,
+        (req, res, ctx) => res(ctx.json({}))
+      ) 
     )
   })
 
   it('should render correctly', async () => {
+    mockServer.use(
+      rest.get(
+        SwitchUrlsInfo.getSwitchConfigBackupList.url,
+        (req, res, ctx) => res(ctx.json(list))
+      )
+    )
     const params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
       switchId: 'switchId',
@@ -93,24 +116,89 @@ describe('SwitchConfigBackupTable', () => {
     expect(rows).toHaveLength(list.length)
 
     await userEvent.click(await screen.findByText(/Backup Now/i))
-    // const backupDialog = await screen.findByRole('dialog')
-    // await userEvent.click(await within(backupDialog).findByRole('button', { name: 'Create' }))
-    // await waitFor(async () => expect(backupDialog).not.toBeVisible())
+    const backupDialog = await screen.findByRole('dialog')
+    await userEvent.click(await within(backupDialog).findByRole('button', { name: 'Create' }))
+    await waitFor(async () => expect(backupDialog).not.toBeVisible())
 
     const row1 = await screen.findByRole('row', { name: /Manual_20230111181247/i })
     await userEvent.click(row1)
 
+    await userEvent.click(await screen.findByRole('button', { name: 'Download' }))
+
     await userEvent.click(await screen.findByRole('button', { name: 'Restore' }))
     const restoreDialog = await screen.findByRole('dialog')
-    await userEvent.click(await within(restoreDialog).findByRole('button', { name: 'Cancel' }))
+    await userEvent.click(await within(restoreDialog).findByRole('button', { name: 'Restore' }))
     await waitFor(async () => expect(restoreDialog).not.toBeVisible())
+
+    const row2 = await screen.findByRole('row', { name: /c0:c5:20:aa:32:79-SCHEDULED-20230110/i })
+    await userEvent.click(row1)
+    await userEvent.click(row2)
 
     await userEvent.click(await screen.findByRole('button', { name: 'Delete' }))
     const deleteDialog = await screen.findByRole('dialog')
-    await userEvent.click(await within(deleteDialog).findByRole('button', { name: 'Cancel' }))
+    await userEvent.click(await within(deleteDialog).findByRole('button', { name: 'Delete' }))
     await waitFor(async () => expect(deleteDialog).not.toBeVisible())
+  })
 
-    await userEvent.click(await screen.findByRole('button', { name: 'Download' }))
+  it('should render inRestoreProgress correctly', async () => {
+    const inRestoreProgressList = JSON.parse(JSON.stringify(list))
+    inRestoreProgressList.push({
+      id: 'f89fee4468d2405cbfc7fb012d0632c8',
+      createdDate: '2023-01-10T05:00:00.408+00:00',
+      name: 'testBackup',
+      backupType: 'SCHEDULED',
+      backupName: 'c0:c5:20:aa:32:79-1673326800403',
+      status: 'SUCCESS',
+      restoreStatus: 'SUCCESS',
+      config: 'ver 09.0.10eT213\n!\nstack unit 2',
+      switchId: 'c0:c5:20:aa:32:79'
+    })
+    inRestoreProgressList[0].restoreStatus = 'STARTED'
+    mockServer.use(
+      rest.get(
+        SwitchUrlsInfo.getSwitchConfigBackupList.url,
+        (req, res, ctx) => res(ctx.json(inRestoreProgressList))
+      )
+    )
+    const params = {
+      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+      switchId: 'switchId',
+      serialNumber: 'serialNumber',
+      activeTab: 'configuration',
+      activeSubTab: 'backup'
+    }
+
+    render(<Provider>
+      <SwitchDetailsContext.Provider value={{
+        switchDetailsContextData: {
+          currentSwitchOperational: false,
+          switchName: 'FEK3224R0AG'
+        },
+        setSwitchDetailsContextData: jest.fn()
+      }}>
+        <SwitchConfigBackupTable />
+      </SwitchDetailsContext.Provider>
+    </Provider>, {
+      route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab' }
+    })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    // eslint-disable-next-line testing-library/no-node-access
+    const tbody = (await screen.findByRole('table')).querySelector('tbody')!
+    expect(tbody).toBeVisible()
+    const rows = await within(tbody).findAllByRole('row')
+    expect(rows).toHaveLength(inRestoreProgressList.length)
+
+    const row1 = await screen.findByRole('row', { name: /Manual_20230111181247/i })
+    await userEvent.click(within(row1).getByRole('checkbox'))
+
+    const row2 = await screen.findByRole('row', { name: /c0:c5:20:aa:32:79-SCHEDULED-20230110/i })
+    await userEvent.click(within(row2).getByRole('checkbox'))
+
+    const row3 = await screen.findByRole('row', { name: /testBackup/i })
+    await userEvent.click(within(row3).getByRole('checkbox'))
+
   })
 
 })
