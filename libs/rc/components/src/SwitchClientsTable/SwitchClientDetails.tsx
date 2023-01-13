@@ -71,76 +71,68 @@ export function SwitchClientDetails () {
 
   const clientData: Client[] = [
     {
-      title: <Typography.Title level={5}>
-        {$t({ defaultMessage: 'Mac Address' })}
-      </Typography.Title>,
+      title: $t({ defaultMessage: 'Mac Address' }),
       value: data?.clientMac && data?.isRuckusAP && isManaged ?
-        <Typography.Title level={5}>
-          <TenantLink
-            to={`/devices/switch/${data?.switchId}/${data?.switchSerialNumber}/details/overview`}
-          >
-            {data?.switchName}
-          </TenantLink>
-        </Typography.Title> : <Typography.Title level={5}>{data?.clientMac}</Typography.Title>
+        <TenantLink
+          to={`/devices/switch/${data?.switchId}/${data?.switchSerialNumber}/details/overview`}
+        >{data?.switchName}</TenantLink> : <span>{data?.clientMac}</span>
     },
     {
-      title: <Typography.Title level={5}>
-        {$t({ defaultMessage: 'Device Type' })}
-      </Typography.Title>,
+      title: $t({ defaultMessage: 'Device Type' }),
       value: data?.clientType === SWITCH_CLIENT_TYPE.AP ?
         (data?.isRuckusAP ?
-          <Typography.Title level={5}>{$t({ defaultMessage: 'Ruckus AP' })}</Typography.Title> :
-          <Typography.Title level={5}>{$t({ defaultMessage: 'AP' })}</Typography.Title>) :
+          $t({ defaultMessage: 'Ruckus AP' }) :
+          $t({ defaultMessage: 'AP' })) :
         (data?.clientType === SWITCH_CLIENT_TYPE.ROUTER ?
-          <Typography.Title level={5}>{$t({ defaultMessage: 'Router' })}</Typography.Title> :
-          <Typography.Title level={5}>{data?.clientType || '--'}</Typography.Title>)
+          <span>{$t({ defaultMessage: 'Router' })}</span> :
+          <span>{data?.clientType || '--'}</span>)
     },
     {
-      title: <Typography.Title level={5}>
+      title: <span>
         {$t({ defaultMessage: 'Hostname' })}
-      </Typography.Title>,
-      value: <Typography.Title level={5}>{data?.clientName || '--'}</Typography.Title>
+      </span>,
+      value: <span>{data?.clientName || '--'}</span>
     },
     {
-      title: <Typography.Title level={5}>
+      title: <span>
         {$t({ defaultMessage: 'Description' })}
-      </Typography.Title>,
-      value: <Typography.Title level={5}>{data?.clientDesc || 'N/A'}</Typography.Title>
+      </span>,
+      value: <span>{data?.clientDesc || 'N/A'}</span>
     }
   ]
 
   const clientConnection: Client[] = [
     {
-      title: <Typography.Title level={5}>
+      title: <span>
         {$t({ defaultMessage: 'Switch' })}
-      </Typography.Title>,
-      value: <Typography.Title level={5}><TenantLink
+      </span>,
+      value: <span><TenantLink
         to={`/devices/switch/${data?.switchId}/${data?.switchSerialNumber}/details/overview`}
       >
         {data?.switchName}
       </TenantLink>
-      </Typography.Title>
+      </span>
     },
     {
-      title: <Typography.Title level={5}>
+      title: <span>
         {$t({ defaultMessage: 'Port' })}
-      </Typography.Title>,
-      value: <Typography.Title level={5}>{data?.switchPort}</Typography.Title>
+      </span>,
+      value: <span>{data?.switchPort}</span>
     },
     {
-      title: <Typography.Title level={5}>
+      title: <span>
         {$t({ defaultMessage: 'Venue' })}
-      </Typography.Title>,
+      </span>,
       value: <TenantLink to={`/venues/${data?.venueId}/venue-details/overview`}>
         {data?.venueName}</TenantLink>
     },
     {
-      title: <Typography.Title level={5}>
+      title: <span>
         {$t({ defaultMessage: 'VLAN' })}
-      </Typography.Title>,
-      value: <Typography.Title level={5}>{data?.vlanName}
+      </span>,
+      value: <span>{data?.vlanName}
         {data?.clientVlan && ` (VLAN-ID: ${data?.clientVlan})` }
-      </Typography.Title>
+      </span>
     }
   ]
 
@@ -163,8 +155,8 @@ export function SwitchClientDetails () {
             <Descriptions.Item
               label={<Subtitle level={4}>
                 {$t({ defaultMessage: 'Status' })}</Subtitle>}
-              children={<Typography.Title level={5}>
-                {$t({ defaultMessage: 'Connected' })}</Typography.Title>} />
+              children={<span>
+                {$t({ defaultMessage: 'Connected' })}</span>} />
           </Descriptions>
 
           <Subtitle level={4} style={{ fontWeight: 600, marginTop: '1em' }}>
