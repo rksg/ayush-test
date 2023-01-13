@@ -21,6 +21,9 @@ import RogueAPDetectionContext from '../RogueAPDetectionContext'
 
 import RogueAPDetectionForm from './RogueAPDetectionForm'
 
+const policyResponse = {
+  requestId: '360cf6c7-b2c6-4973-b4c0-a6be63adaac0'
+}
 
 const policyListContent = [
   {
@@ -209,9 +212,13 @@ const addRule = async (ruleName: string, type: RogueRuleType, classification: Ro
 
   await userEvent.click(screen.getByText('Add'))
 
-  await screen.findByText(ruleName)
+  await screen.findByRole('cell', {
+    name: `${ruleName}`
+  })
 
-  await userEvent.click(screen.getByText(ruleName))
+  await userEvent.click(screen.getByRole('cell', {
+    name: `${ruleName}`
+  }))
 
   await userEvent.click(screen.getByRole('button', {
     name: /edit/i
@@ -271,6 +278,11 @@ describe('RogueAPDetectionForm', () => {
       RogueApUrls.getRoguePolicyList.url,
       (_, res, ctx) => res(
         ctx.json(policyListContent)
+      )
+    ), rest.post(
+      RogueApUrls.addRoguePolicy.url,
+      (_, res, ctx) => res(
+        ctx.json(policyResponse)
       )
     ))
 
@@ -504,6 +516,11 @@ describe('RogueAPDetectionForm', () => {
       RogueApUrls.getRoguePolicyList.url,
       (_, res, ctx) => res(
         ctx.json(policyListContent)
+      )
+    ), rest.put(
+      RogueApUrls.updateRoguePolicy.url,
+      (_, res, ctx) => res(
+        ctx.json(policyResponse)
       )
     ))
 
