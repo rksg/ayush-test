@@ -75,6 +75,7 @@ export function EditLldpModal (props: {
           : setLldpQosList(lldpQosList.map(lldp => {
             return lldp.id !== editRowId ? lldp : transformData(form.getFieldsValue())
           }))
+
         setLldpModalvisible(false)
       }
     } catch (error) {

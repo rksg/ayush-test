@@ -27,6 +27,7 @@ import {
 import { EditPortDrawer } from './editPortDrawer'
 
 const params = {
+  venueId: 'venue-id',
   tenantId: 'tenant-id',
   switchId: 'switch-id',
   serialNumber: 'serial-number'
@@ -81,7 +82,7 @@ describe('EditPortDrawer', () => {
         (_, res, ctx) => res(ctx.json(switchRoutedList))
       ),
       rest.post(SwitchUrlsInfo.getVenueRoutedList.url,
-        (_, res, ctx) => res(ctx.json({})) //
+        (_, res, ctx) => res(ctx.json({}))
       ),
       rest.get(SwitchUrlsInfo.getSwitchVlans.url,
         (_, res, ctx) => res(ctx.json(switchVlans))
@@ -245,7 +246,7 @@ describe('EditPortDrawer', () => {
       </Provider>, {
         route: {
           params,
-          path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/overview/ports'
+          path: '/:tenantId/venues/:venueId/venue-details/devices/switch'
         }
       })
 
@@ -435,6 +436,7 @@ describe('EditPortDrawer', () => {
         fireEvent.click(await within(dialog[1]).findByRole('button', { name: 'OK' }))
       })
 
+      fireEvent.click(await screen.findByRole('button', { name: 'Use Venue settings' }))
       fireEvent.click(await screen.findByRole('button', { name: 'Apply' }))
     })
   })
@@ -618,7 +620,7 @@ describe('EditPortDrawer', () => {
       await screen.findByText(/Edit LLDP QoS/)
       dialog = await screen.findAllByRole('dialog')
       expect(await within(dialog[1]).findByRole('button', { name: 'Save' })).toBeDisabled()
-      
+
       await user.click(await screen.findByRole('combobox', { name: 'QoS VLAN Type' }))
       await user.click(await screen.findByText('Untagged'))
       await user.click(await screen.findByRole('combobox', { name: 'QoS VLAN Type' }))

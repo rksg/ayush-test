@@ -208,9 +208,9 @@ export const sortOptions = (
 ) => {
   return dataList?.[0]?.[sortField]
     ? _.sortBy(dataList, (obj) =>
-      valueType === 'number' ? parseInt(obj[sortField], 10) : obj[sortField]
-    )
-    : _.sortBy(dataList)
+      valueType === 'number' ? parseInt(obj[sortField], 10) : obj[sortField])
+    : _.sortBy(dataList, (data) =>
+      valueType === 'number' ? parseInt(data.toString(), 10) : data)
 }
 
 export const handlePortSpeedFor765048F = (selectedPorts: SwitchPortViewModel[]) => {

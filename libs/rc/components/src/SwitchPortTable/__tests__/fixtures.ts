@@ -25,7 +25,7 @@ export const selectedPorts = [{
   poeType: 'n/a',
   poeUsed: 0,
   portId: 'c0-c5-20-aa-32-7d_1-1-5',
-  portIdentifier: '5', ////////
+  portIdentifier: '5',
   portSpeed: 'link down or no traffic',
   signalIn: 0,
   signalOut: 0,
