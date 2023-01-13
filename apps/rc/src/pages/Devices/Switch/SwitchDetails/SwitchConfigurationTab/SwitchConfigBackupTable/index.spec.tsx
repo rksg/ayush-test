@@ -55,10 +55,6 @@ describe('SwitchConfigBackupTable', () => {
 
   beforeEach(() => {
     mockServer.use(
-      // rest.get(
-      //   SwitchUrlsInfo.getSwitchConfigBackupList.url,
-      //   (req, res, ctx) => res(ctx.json(list))
-      // ),
       rest.get(
         SwitchUrlsInfo.downloadSwitchConfig.url,
         (req, res, ctx) => res(ctx.json({}))
@@ -74,7 +70,7 @@ describe('SwitchConfigBackupTable', () => {
       rest.delete(
         SwitchUrlsInfo.deleteBackups.url,
         (req, res, ctx) => res(ctx.json({}))
-      ) 
+      )
     )
   })
 

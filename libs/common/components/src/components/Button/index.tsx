@@ -42,11 +42,11 @@ export function DisabledButton (
   const button = <span style={{ cursor: 'not-allowed' }}>
     <Button {...buttonProps} disabled style={{ ...props.style, pointerEvents: 'none' }}/>
   </span>
-  return props.title !== '' 
-  ? <Tooltip
+  return props.title !== ''
+    ? <Tooltip
       placement={tooltipPlacement || 'top'}
       title={props.title || notAvailMsg}>
       {button}
-    </Tooltip> 
-  : button
+    </Tooltip>
+    : button
 }
