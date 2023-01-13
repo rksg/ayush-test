@@ -17,7 +17,8 @@ import {
   RogueAPDetectionTempType,
   VenueRoguePolicyType,
   TableResult, onSocketActivityChanged, showActivityMessage, CommonResult,
-  NewTableResult, transferToTableResult, createNewTableHttpRequest, TableChangePayload
+  // eslint-disable-next-line max-len
+  NewTableResult, transferToTableResult, createNewTableHttpRequest, TableChangePayload, RequestFormData
 } from '@acx-ui/rc/utils'
 
 export const basePolicyApi = createApi({
@@ -230,6 +231,19 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'MacRegistration', id: 'LIST' }]
+    }),
+    uploadMacRegistration: build.mutation<{}, RequestFormData>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MacRegListUrlsInfo.uploadMacRegistration, params, {
+          'Content-Type': undefined,
+          'Accept': '*/*'
+        })
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'MacRegistration', id: 'LIST' }]
     })
   })
 })
@@ -254,5 +268,6 @@ export const {
   useRoguePolicyQuery,
   useVenueRoguePolicyQuery,
   useLazyMacRegListsQuery,
-  useLazyMacRegistrationsQuery
+  useLazyMacRegistrationsQuery,
+  useUploadMacRegistrationMutation
 } = policyApi

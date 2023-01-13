@@ -17,13 +17,13 @@ export function macAddressRegExp (value: string) {
   const HYPHEN_3_GROUPS = new RegExp(/^([0-9A-Fa-f]{4}[-]){2}([0-9A-Fa-f]{4})$/)
   const NO_DELIMITER = new RegExp(/^[0-9A-Fa-f]{12}$/)
   if (value && !
-  ( HYPHEN_2_GROUPS.test(value) ||
-    COLON_2_GROUPS.test(value) ||
-    COLON_6_GROUPS.test(value) ||
-    HYPHEN_6_GROUPS.test(value) ||
-    DOTS_3_GROUPS.test(value) ||
-    HYPHEN_3_GROUPS.test(value) ||
-    NO_DELIMITER.test(value))
+  (HYPHEN_2_GROUPS.test(value) ||
+      COLON_2_GROUPS.test(value) ||
+      COLON_6_GROUPS.test(value) ||
+      HYPHEN_6_GROUPS.test(value) ||
+      DOTS_3_GROUPS.test(value) ||
+      HYPHEN_3_GROUPS.test(value) ||
+      NO_DELIMITER.test(value))
   ) {
     return Promise.reject($t({ defaultMessage: 'Invalid MAC address format' }))
   }
@@ -31,7 +31,7 @@ export function macAddressRegExp (value: string) {
 }
 
 export const expirationTimeUnits: Record<string, string> = {
-  HOURS_AFTER_TIME: 'Hours' ,
+  HOURS_AFTER_TIME: 'Hours',
   DAYS_AFTER_TIME: 'Days',
   WEEKS_AFTER_TIME: 'Weeks',
   MONTHS_AFTER_TIME: 'Months',
@@ -44,14 +44,17 @@ export const toTimeString = (value?: string) => {
 
 export const returnExpirationString = (data: Partial<MacRegistrationPool>) => {
   const { $t } = getIntl()
-  if(!data.expirationEnabled){
+  if (!data.expirationEnabled) {
     return $t({ defaultMessage: 'Never expires' })
   } else {
-    if(data.expirationType === ExpirationType.SPECIFIED_DATE) {
+    if (data.expirationType === ExpirationType.SPECIFIED_DATE) {
       return toTimeString(data?.expirationDate)
     } else {
       // eslint-disable-next-line max-len
-      return $t({ defaultMessage: 'After {offset} {unit}' }, { offset: data.expirationOffset, unit: expirationTimeUnits[data.expirationType ?? ''] })
+      return $t({ defaultMessage: 'After {offset} {unit}' }, {
+        offset: data.expirationOffset,
+        unit: expirationTimeUnits[data.expirationType ?? '']
+      })
     }
   }
 }

@@ -1,11 +1,15 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
-import { useIntl } from 'react-intl'
+import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query/react'
+import { useIntl }             from 'react-intl'
 
-import { Loader, showActionModal, Table, TableProps }          from '@acx-ui/components'
+import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
+import { CsvSize, ImportCsvDrawer }                              from '@acx-ui/rc/components'
 import {
   useDeleteMacRegistrationMutation,
-  useMacRegistrationsQuery, useUpdateMacRegistrationMutation
+  useMacRegistrationsQuery,
+  useUpdateMacRegistrationMutation,
+  useUploadMacRegistrationMutation
 } from '@acx-ui/rc/services'
 import { MacRegistration, useTableQuery } from '@acx-ui/rc/utils'
 import { useParams }                      from '@acx-ui/react-router-dom'
@@ -19,6 +23,14 @@ export function MacRegistrationsTab () {
   const [visible, setVisible] = useState(false)
   const [isEditMode, setIsEditMode] = useState(false)
   const [editData, setEditData] = useState({ } as MacRegistration)
+  const [ uploadCsvDrawerVisible, setUploadCsvDrawerVisible ] = useState(false)
+  const [ uploadCsv, uploadCsvResult ] = useUploadMacRegistrationMutation()
+
+  useEffect(()=>{
+    if (uploadCsvResult.isSuccess) {
+      setUploadCsvDrawerVisible(false)
+    }
+  },[uploadCsvResult])
 
   const tableQuery = useTableQuery({
     useQuery: useMacRegistrationsQuery,
@@ -54,7 +66,7 @@ export function MacRegistrationsTab () {
         type: 'confirm',
         customContent: {
           action: 'DELETE',
-          entityName: $t({ defaultMessage: 'MAC Addresses' }),
+          entityName: $t({ defaultMessage: 'MAC Address' }),
           entityValue: rows.length === 1 ? rows[0].macAddress : undefined,
           numOfEntities: rows.length
         },
@@ -164,6 +176,29 @@ export function MacRegistrationsTab () {
         isEdit={isEditMode}
         editData={isEditMode ? editData : undefined}
       />
+      <ImportCsvDrawer type='DPSK'
+        title={$t({ defaultMessage: 'Import from file' })}
+        maxSize={CsvSize['5MB']}
+        maxEntries={512}
+        temlateLink='assets/templates/mac_registration_import_template.csv'
+        visible={uploadCsvDrawerVisible}
+        isLoading={uploadCsvResult.isLoading}
+        importError={uploadCsvResult.error as FetchBaseQueryError}
+        importRequest={async (formData) => {
+          try {
+            await uploadCsv({ params: { policyId }, payload: formData }).unwrap()
+            setUploadCsvDrawerVisible(false)
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          } catch (error: any) {
+            if (error.data?.message) {
+              showToast({
+                type: 'error',
+                content: error.data.message
+              })
+            }
+          }
+        }}
+        onClose={() => setUploadCsvDrawerVisible(false)} />
       <Table
         columns={columns}
         dataSource={tableQuery.data?.data}
@@ -179,6 +214,10 @@ export function MacRegistrationsTab () {
             setVisible(true)
             setEditData({} as MacRegistration)
           }
+        },
+        {
+          label: $t({ defaultMessage: 'Import From File' }),
+          onClick: () => setUploadCsvDrawerVisible(true)
         }]}
       />
     </Loader>

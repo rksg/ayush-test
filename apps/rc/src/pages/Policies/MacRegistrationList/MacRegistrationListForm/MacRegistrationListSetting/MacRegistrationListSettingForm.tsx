@@ -49,7 +49,8 @@ export function MacRegistrationListSettingForm () {
         <Form.Item name='defaultAccess'
           label={$t({ defaultMessage: 'Default Access' })}
           initialValue={'accept'}
-          rules={[{ required: true }]}>
+          // rules={[{ required: true }]}
+        >
           <SelectionControl
             options={[{ value: 'accept', label: $t({ defaultMessage: 'ACCEPT' }) },
               { value: 'reject', label: $t({ defaultMessage: 'REJECT' }) }]}
