@@ -1,16 +1,19 @@
 import { CallbackDataParams } from 'echarts/types/dist/shared'
 import { useIntl }            from 'react-intl'
 
+import { ClientHealth }                                                 from '@acx-ui/analytics/components'
+import { AnalyticsFilter }                                              from '@acx-ui/analytics/utils'
 import { BarChart, cssStr, cssNumber, Loader, Card, GridRow, Subtitle } from '@acx-ui/components'
 import { Client, ClientStatistic }                                      from '@acx-ui/rc/utils'
 import { convertEpochToRelativeTime, formatter }                        from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
-export function ClientOverviewWidget ({ clientStatistic, clientStatus, clientDetails }: {
+export function ClientOverviewWidget ({ clientStatistic, clientStatus, clientDetails, filters }: {
   clientStatistic: ClientStatistic | undefined,
   clientStatus: string,
-  clientDetails: Client
+  clientDetails: Client,
+  filters: AnalyticsFilter
 }) {
   const { $t } = useIntl()
 
@@ -100,7 +103,7 @@ export function ClientOverviewWidget ({ clientStatistic, clientStatus, clientDet
           {getUserTrafficChart(clientStatistic as ClientStatistic)}
         </UI.GridCol>
         <UI.GridCol col={{ span: 4, push: 1 }}>
-          {getUserClientHealth()}
+          <ClientHealth filter={filters} clientMac={clientDetails.clientMac}/>
         </UI.GridCol>
       </GridRow>
     </Loader>
@@ -157,52 +160,5 @@ function getUserTrafficChart (data: ClientStatistic) {
     labelFormatter={getLabelFormatter}
     labelRichStyle={getLabelRichStyle()}
     barColors={getBarColors}
-  />
-}
-
-function getUserClientHealth () {
-  const dummyTraffic = formatter('percentFormatRound')(100)
-  const unit = dummyTraffic.slice(-1)
-
-  const barColors = [
-    cssStr('--acx-semantics-red-50'),
-    cssStr('--acx-semantics-yellow-50'),
-    cssStr('--acx-semantics-green-50')
-  ]
-
-  const labelFormatter = (params: CallbackDataParams) => {
-    const value = (params.data as string[])?.[1]
-    const unit = (params.data as string[])?.[2]
-    const parsedValue = value ? value + '' + (unit) : '--'
-    return '{rich|' + parsedValue + '}'
-  }
-
-  const labelRichStyle = {
-    rich: {
-      color: cssStr('--acx-primary-black'),
-      fontFamily: cssStr('--acx-neutral-brand-font'),
-      fontSize: cssNumber('--acx-subtitle-5-font-size'),
-      lineHeight: cssNumber('--acx-subtitle-5-line-height'),
-      fontWeight: cssNumber('--acx-subtitle-5-font-weight')
-    }
-  }
-
-  return <BarChart
-    style={{ height: 160 }}
-    data={{
-      dimensions: ['HealthQuality', 'Value', 'Unit'],
-      source: [
-        ['Poor', 10, unit],
-        ['Avg.', 50, unit],
-        ['Good', 100, unit]
-      ],
-      seriesEncode: [{
-        x: 'Value',
-        y: 'HealthQuality'
-      }]
-    }}
-    barColors={barColors}
-    labelFormatter={labelFormatter}
-    labelRichStyle={labelRichStyle}
   />
 }
