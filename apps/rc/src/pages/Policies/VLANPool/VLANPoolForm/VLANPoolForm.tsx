@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from 'react'
+import { useRef, useEffect } from 'react'
 
 import { useIntl } from 'react-intl'
 
@@ -29,39 +29,35 @@ const VLANPoolForm = (props: VLANPoolFormProps) => {
   const params = useParams()
   const edit = props.edit && !props.networkView
   const formRef = useRef<StepsFormInstance<VLANPoolPolicyType>>()
-  const { data } = useVLANPoolPolicyQuery({ params })
+  const { data } = useVLANPoolPolicyQuery({ params }, { skip: !edit })
   const [ createVLANPoolPolicy ] = useAddVLANPoolPolicyMutation()
 
   const [ updateVLANPoolPolicy ] = useUpdateVLANPoolPolicyMutation()
-  const [saveState, updateSaveState] = useState<VLANPoolPolicyType>({
-    policyName: '',
-    vlans: ''
-  })
-  const updateSaveData = (saveData: Partial<VLANPoolPolicyType>) => {
-    updateSaveState({ ...saveState, ...saveData })
-  }
+
   useEffect(() => {
     if (data) {
       formRef?.current?.resetFields()
       formRef?.current?.setFieldsValue(data)
-      updateSaveData(data)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data])
-  const handleVLANPoolPolicy = async () => {
+  const handleVLANPoolPolicy = async (formData: VLANPoolPolicyType) => {
     try {
       if (!edit) {
         await createVLANPoolPolicy({
           params,
-          payload: saveState
-        }).unwrap()
+          payload: formData
+        }).unwrap().then((res)=>{
+          formData.id = res.response?.id
+        })
       } else {
         await updateVLANPoolPolicy({
           params,
-          payload: saveState
+          payload: formData
         }).unwrap()
       }
-      props.networkView? props.backToNetwork?.(data) : navigate(linkToPolicies, { replace: true })
+      props.networkView ? props.backToNetwork?.(formData)
+        : navigate(linkToPolicies, { replace: true })
     } catch(error) {
       showToast({
         type: 'error',
@@ -83,17 +79,15 @@ const VLANPoolForm = (props: VLANPoolFormProps) => {
       <StepsForm<VLANPoolPolicyType>
         formRef={formRef}
         onCancel={() => props.networkView? props.backToNetwork?.():navigate(linkToPolicies)}
-        onFinish={async () => {return handleVLANPoolPolicy()}}
+        onFinish={async (data) => {
+          return handleVLANPoolPolicy(data)
+        }}
       >
         <StepsForm.StepForm
           name='settings'
           title={$t({ defaultMessage: 'Settings' })}
-          onFinish={async (data) => {
-            updateSaveData(data)
-            return true
-          }}
         >
-          <VLANPoolSettingForm edit={edit} saveState={saveState}/>
+          <VLANPoolSettingForm edit={edit}/>
         </StepsForm.StepForm>
       </StepsForm>
     </>

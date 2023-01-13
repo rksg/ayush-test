@@ -85,6 +85,7 @@ export interface NetworkSaveData {
   redirectUrl?: string;
   guestPortal?: GuestPortal;
   portalServiceProfileId?: string;
+  vlanPoolPolicyProfileId?:string;
   enableDhcp?: boolean;
   wlan?: {
     ssid?: string;

@@ -26,7 +26,7 @@ export default function VLANPoolModal (props:{
     }}/>
 
   return (
-    <>
+    <UI.ButtonContainer>
       <Button type='link' onClick={()=>setVisible(true)}>
         {$t({ defaultMessage: 'Add Pool' })}
       </Button>
@@ -39,6 +39,6 @@ export default function VLANPoolModal (props:{
         destroyOnClose={true}
         width={'calc( 100% - var(--acx-sider-width))'}
       />
-    </>
+    </UI.ButtonContainer>
   )
 }

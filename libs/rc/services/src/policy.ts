@@ -2,7 +2,7 @@ import {
   createApi,
   fetchBaseQuery
 } from '@reduxjs/toolkit/query/react'
-
+import { Params } from 'react-router-dom'
 
 import {
   createHttpRequest,
@@ -19,6 +19,7 @@ import {
   TableResult, onSocketActivityChanged, showActivityMessage, CommonResult,
   NewTableResult, transferTableResult, VLANPoolPolicyType, VlanPoolUrls, VLANPoolDetailInstances
 } from '@acx-ui/rc/utils'
+
 
 export const basePolicyApi = createApi({
   baseQuery: fetchBaseQuery(),
@@ -225,12 +226,16 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'MacRegistration', id: 'LIST' }]
     }),
-    addVLANPoolPolicy: build.mutation<VLANPoolPolicyType, RequestPayload>({
-      query: ({ params, payload }) => {
+    addVLANPoolPolicy: build.mutation<{ response: { [key:string]:string } }, RequestPayload>({
+      query: ({ params, payload }:{ params:Params<string>, payload:VLANPoolPolicyType }) => {
         const req = createHttpRequest(VlanPoolUrls.addVLANPoolPolicy, params, RKS_NEW_UI)
+
         return {
           ...req,
-          body: payload
+          body: {
+            ...payload,
+            vlanMembers: payload.vlanMembers.split(',')
+          }
         }
       },
       invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
@@ -246,8 +251,9 @@ export const policyApi = basePolicyApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           showActivityMessage(msg, [
-            'Add VLAN Pool Policy Profile',
-            'Update VLAN Pool Policy Profile'
+            'AddVlanPool',
+            'UpdateVlanPool',
+            'DeleteVlanPool'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
           })

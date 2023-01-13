@@ -3,60 +3,54 @@ import React, { useEffect, useState } from 'react'
 import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
 
-import { GridCol, GridRow, StepsForm }   from '@acx-ui/components'
-import { useGetVLANPoolPolicyListQuery } from '@acx-ui/rc/services'
+import { GridCol, GridRow, StepsForm } from '@acx-ui/components'
+import { useVlanPoolListQuery }        from '@acx-ui/rc/services'
 import {
-  checkVlanPoolMember,
-  VLANPoolPolicyType
+  checkVlanPoolMembers
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
 
 type VLANPoolSettingFormProps = {
-  edit: boolean,
-  saveState: VLANPoolPolicyType
+  edit: boolean
 }
 
 const VLANPoolSettingForm = (props: VLANPoolSettingFormProps) => {
   const { $t } = useIntl()
   const { edit } = props
   const params = useParams()
-  const [originalName, setOriginalName] = useState('')
-  const { data } = useGetVLANPoolPolicyListQuery({ params: params })
-
-  useEffect(() => {
-    if (edit && data) {
-      let policyData = data.filter(d => d.id === params.policyId)[0]
-      setOriginalName(policyData?.policyName)
+  const { data } = useVlanPoolListQuery({
+    params,
+    payload: {
+      fields: ['name', 'id'], sortField: 'name',
+      sortOrder: 'ASC', page: 1, pageSize: 10000
     }
-  }, [data])
+  })
+
+  const nameValidator = async (_rule: unknown, value: string) => {
+    return new Promise<void>((resolve, reject) => {
+      if (!edit && value && data?.length && data?.findIndex((vlanPool) =>
+        vlanPool.name === value) !== -1
+      ) {
+        return reject(
+          $t({ defaultMessage: 'The DHCP service with that name already exists' })
+        )
+      }
+      return resolve()
+    })
+  }
   return (
     <GridRow>
       <GridCol col={{ span: 10 }}>
         <StepsForm.Title>{$t({ defaultMessage: 'Settings' })}</StepsForm.Title>
         <Form.Item
-          name='policyName'
+          name='name'
           label={$t({ defaultMessage: 'Policy Name' })}
           rules={[
             { required: true },
             { min: 2 },
             { max: 32 },
-            { validator: (rule, value) => {
-              if (!edit && value
-                  && data && data?.findIndex((policy) => policy.policyName === value) !== -1) {
-                return Promise.reject(
-                  $t({ defaultMessage: 'The vlan pool policy with that name already exists' })
-                )
-              }
-              if (edit && value && value !== originalName && data
-                  && data?.filter((policy) => policy.policyName !== originalName)
-                    .findIndex((policy) => policy.policyName === value) !== -1) {
-                return Promise.reject(
-                  $t({ defaultMessage: 'The vlan pool policy with that name already exists' })
-                )
-              }
-              return Promise.resolve()
-            } }
+            { validator: nameValidator }
           ]}
           validateFirst
           hasFeedback
@@ -64,18 +58,18 @@ const VLANPoolSettingForm = (props: VLANPoolSettingFormProps) => {
           children={<Input/>}
         />
         <Form.Item
-          name='tags'
-          label={$t({ defaultMessage: 'Tags' })}
+          name='description'
+          label={$t({ defaultMessage: 'Description' })}
           initialValue={''}
           children={<Input/>}
         />
         <Form.Item
-          name='vlans'
+          name='vlanMembers'
           label={$t({ defaultMessage: 'VLANs' })}
           initialValue={''}
           rules={[
             { required: true },
-            { validator: (_, value) => checkVlanPoolMember(value) }
+            { validator: (_, value) => checkVlanPoolMembers(value) }
           ]}
           children={<Input/>}
         />

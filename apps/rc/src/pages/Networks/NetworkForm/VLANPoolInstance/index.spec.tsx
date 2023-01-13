@@ -2,8 +2,8 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { VlanPoolUrls } from '@acx-ui/rc/utils'
-import { Provider }     from '@acx-ui/store'
+import { VlanPoolUrls, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                   from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -18,22 +18,22 @@ describe('VLAN Pool Instance Page', () => {
   beforeEach(async () => {
     mockServer.use(
       rest.get(
-        VlanPoolUrls.getVLANPoolPolicyList.url,
-        (req, res, ctx) => res(ctx.json([{ id: '1', policyName: 'test1' }]))
+        WifiUrlsInfo.getVlanPools.url,
+        (req, res, ctx) => res(ctx.json([{ id: '1', name: 'test1' }]))
       ),
       rest.get(
         VlanPoolUrls.getVLANPoolPolicy.url,
         (_, res, ctx) => {return res(
-          ctx.json({ requestId: 'request-id', id: '2', policyName: 'test2' }))}
+          ctx.json({ requestId: 'request-id', id: '2', name: 'test2' }))}
       ),
       rest.put(
         VlanPoolUrls.updateVLANPoolPolicy.url,
         (_, res, ctx) => {return res(
-          ctx.json({ requestId: 'request-id', id: '2', policyName: 'test2' }))}
+          ctx.json({ requestId: 'request-id', id: '2', name: 'test2' }))}
       ),
       rest.post(
         VlanPoolUrls.addVLANPoolPolicy.url,
-        (req, res, ctx) => res(ctx.json({ requestId: 'request-id', id: '2', policyName: 'test2' }))
+        (req, res, ctx) => res(ctx.json({ requestId: 'request-id', id: '2', name: 'test2' }))
       )
     )
   })

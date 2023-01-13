@@ -4,6 +4,7 @@ import { isEqual, includes }                from 'lodash'
 
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
+import _ from 'lodash'
 
 const Netmask = require('netmask').Netmask
 
@@ -284,22 +285,73 @@ export function checkVlanMember (value: string) {
   }
   return Promise.reject($t(validationMessages.invalid))
 }
-export function checkVlanPoolMember (value: string) {
-  const { $t } = getIntl()
-  const items = value.toString().split(',')
-  const isValid = items.map((item: string) => {
-    const num = item.includes('-') ? item : Number(item)
-    if (item.includes('-')) {
-      const nums = item.split('-').map((x: string) => Number(x))
-      return nums[1] > nums[0] && nums[1] < 4095 && nums[0] > 1
-    }
-    return num > 1 && num < 4095
-  }).filter((x:boolean) => !x).length === 0
 
-  if (isValid) {
+export function checkVlanPoolMembers (value: string) {
+  const { $t } = getIntl()
+  if (value.length === 0) {
     return Promise.resolve()
   }
-  return Promise.reject($t(validationMessages.invalid))
+
+  const vlanMembers = _.split(value, ',')
+  _.remove(vlanMembers, v => v.trim() === '')
+  vlanMembers.sort((f: string, s: string) => {
+    const ff = _.split(f, '-')
+    const ss = _.split(s, '-')
+    return (+ff[0] > +ss[0]) ? 1 : -1
+  })
+
+  if (vlanMembers.length === 0) {
+    return Promise.resolve()
+  }
+
+  // vlan mumbers size should not exceed 16
+  const vlanMembersMaxSize = 16
+  if (vlanMembers.length > vlanMembersMaxSize) {
+    return Promise.reject($t(validationMessages.vlanMembersMaxSize))
+  }
+
+  const vlanMembersMaxNumber = 64
+  const vlanMemberRegex = /^(?:[2-9]|[1-8][0-9]|9[0-9]|[1-8][0-9]{2}|9[0-8][0-9]|99[0-9]|[1-3][0-9]{3}|40[0-8][0-9]|409[0-4])(?: *- *(?:[1-9]|[1-8][0-9]|9[0-9]|[1-8][0-9]{2}|9[0-8][0-9]|99[0-9]|[1-3][0-9]{3}|40[0-8][0-9]|409[0-4]))?(?: *, *(?:[1-9]|[1-8][0-9]|9[0-9]|[1-8][0-9]{2}|9[0-8][0-9]|99[0-9]|[1-3][0-9]{3}|40[0-8][0-9]|409[0-4])(?: *- *(?:[1-9]|[1-8][0-9]|9[0-9]|[1-8][0-9]{2}|9[0-8][0-9]|99[0-9]|[1-3][0-9]{3}|40[0-8][0-9]|409[0-4]))?)*$/;
+  let nextMember
+  let previousMember = 0
+  let totalNumberOfVlanMembers = 0
+  for (let vlanMember of vlanMembers) {
+    vlanMember = vlanMember.trim()
+
+    // verify the validity of VLAN member based on regex
+    if (!vlanMemberRegex.test(vlanMember)) {
+      return Promise.reject($t(validationMessages.invalidVlanMember))
+    }
+
+    /** verify the validity of VLAN members based on vlan mumbers rules:
+     * vlan mumbers range -> start value must be less than the end value
+     * Overlapping between the vlan members is not allowed
+     * vlan mumbers number should not exceed 64
+     */
+    const membersRange = _.split(vlanMember, '-')
+    nextMember = +membersRange[0]
+    totalNumberOfVlanMembers++
+    if (previousMember >= nextMember) {
+      return Promise.reject($t(validationMessages.vlanMembersOverlapping))
+    }
+
+    if (membersRange.length === 2) {
+      previousMember = nextMember
+      nextMember = +membersRange[1]
+
+      if (previousMember >= nextMember) {
+        return Promise.reject($t(validationMessages.invalidVlanMemberRange))
+      }
+      totalNumberOfVlanMembers += nextMember - previousMember
+    }
+    previousMember = nextMember
+
+    if (totalNumberOfVlanMembers > vlanMembersMaxNumber) {
+      return Promise.reject($t(validationMessages.vlanMembersMaxLength))
+    }
+  }
+
+  return Promise.resolve()
 }
 export function checkValues (value: string, checkValue: string, checkEqual?: boolean) {
   const { $t } = getIntl()

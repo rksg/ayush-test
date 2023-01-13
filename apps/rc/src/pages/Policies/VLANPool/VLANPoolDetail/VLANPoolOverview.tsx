@@ -13,15 +13,15 @@ export default function VLANPoolOverview (props: { vlanPoolProfile: VLANPoolPoli
       <GridRow>
         <GridCol col={{ span: 4 }}>
           <Card.Title>
-            {$t({ defaultMessage: 'Tags' })}
+            {$t({ defaultMessage: 'Description' })}
           </Card.Title>
-          <Typography.Text>{vlanPoolProfile.tags?.toString()}</Typography.Text>
+          <Typography.Text>{vlanPoolProfile.description?.toString()}</Typography.Text>
         </GridCol>
         <GridCol col={{ span: 4 }}>
           <Card.Title>
             {$t({ defaultMessage: 'VLANs' })}
           </Card.Title>
-          <Typography.Text>{vlanPoolProfile.vlans}</Typography.Text>
+          <Typography.Text>{vlanPoolProfile.vlanMembers}</Typography.Text>
         </GridCol>
       </GridRow>
     </Card>

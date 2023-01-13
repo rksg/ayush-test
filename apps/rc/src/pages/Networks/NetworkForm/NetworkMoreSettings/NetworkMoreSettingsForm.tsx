@@ -27,6 +27,7 @@ import { AccessControlForm } from './AccessControlForm'
 import { LoadControlForm }   from './LoadControlForm'
 import { ServicesForm }      from './ServicesForm'
 import * as UI               from './styledComponents'
+import VLANPoolInstance from '../VLANPoolInstance'
 
 const { Panel } = Collapse
 
@@ -248,22 +249,7 @@ export function MoreSettingsForm (props: {
           </div>}
           {enableVlanPooling &&
         <div style={{ display: 'grid', gridTemplateColumns: '190px auto' }}>
-          <Form.Item
-            label={$t({ defaultMessage: 'VLAN Pool:' })}
-            name={['wlan', 'advancedCustomization', 'vlanPool']}
-            style={{ marginBottom: '15px' }}
-            rules={[{
-              required: true,
-              message: $t({ defaultMessage: 'Please select VLAN Pool profile' })
-            }]}
-            children={
-              <Select placeholder={$t({ defaultMessage: 'Select profile...' })}
-                style={{ width: '180px' }}
-                children={vlanPoolSelectOptions} />
-            }
-          />
-          <span style={{ marginTop: '30px' }}>{ $t({ defaultMessage: 'Add' }) }</span>
-
+          <VLANPoolInstance/>
         </div>
           }
 

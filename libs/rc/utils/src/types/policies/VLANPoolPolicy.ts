@@ -1,8 +1,8 @@
 export interface VLANPoolPolicyType{
   id?: string,
-  policyName: string,
-  tags?: string[],
-  vlans: string,
+  name: string,
+  description?: string[],
+  vlanMembers: string,
   networkIds?: string[]
 }
 export interface VLANPoolDetailInstances{

@@ -16,7 +16,7 @@ export default function VLANPoolDetail () {
   return (
     <>
       <PageHeader
-        title={queryResults.data?.policyName}
+        title={queryResults.data?.name}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Policies' }), link: getPolicyListRoutePath() }
         ]}
