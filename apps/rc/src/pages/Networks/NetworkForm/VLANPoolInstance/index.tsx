@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 
-import { Form, Select } from 'antd'
-import { useIntl }      from 'react-intl'
-import { useParams }    from 'react-router-dom'
+import { Form, Select, Input } from 'antd'
+import { useIntl }             from 'react-intl'
+import { useParams }           from 'react-router-dom'
 
 import { useVlanPoolListQuery } from '@acx-ui/rc/services'
 
@@ -33,7 +33,7 @@ const VLANPoolInstance = () => {
   return (
     <div style={{ display: 'grid', gridTemplateColumns: '210px auto' }}>
       <Form.Item
-        name='vlanPoolPolicyProfileId'
+        name={['wlan', 'advancedCustomization','vlanPool','id']}
         label={$t({ defaultMessage: 'Select VLAN Pool' })}
         rules={[
           { required: true }
@@ -44,11 +44,24 @@ const VLANPoolInstance = () => {
           ]}
         />}
       />
+      <Form.Item name={['wlan', 'advancedCustomization','vlanPool','name']} noStyle>
+        <Input type='hidden' />
+      </Form.Item>
+      <Form.Item name={['wlan', 'advancedCustomization','vlanPool','vlanMembers']} noStyle>
+        <Input type='hidden' />
+      </Form.Item>
       <VLANPoolModal updateInstance={(data)=>{
         vlanPoolList.push({
           label: data.name, value: data.id })
         setVlanPoolList([...vlanPoolList])
-        form.setFieldValue('vlanPoolPolicyProfileId', data.id)
+        form.setFieldValue(['wlan', 'advancedCustomization','vlanPool','id'], data.id)
+        form.setFieldValue(['wlan', 'advancedCustomization','vlanPool','name'], data.name)
+        form.setFieldValue([
+          'wlan',
+          'advancedCustomization',
+          'vlanPool',
+          'vlanMembers'
+        ], data.vlanMembers.split(','))
       }}/>
 
     </div>

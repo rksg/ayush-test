@@ -2,7 +2,11 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Button, Loader, PageHeader, showActionModal, Table, TableProps } from '@acx-ui/components'
-import { useDelRoguePolicyMutation, usePolicyListQuery }                  from '@acx-ui/rc/services'
+import {
+  useDelRoguePolicyMutation,
+  usePolicyListQuery,
+  useDelVLANPoolPolicyMutation
+} from '@acx-ui/rc/services'
 import {
   getPolicyDetailsLink,
   getSelectPolicyRoutePath,
@@ -92,6 +96,7 @@ export default function PoliciesTable () {
   const tenantBasePath: Path = useTenantLink('')
 
   const [ delRoguePolicy ] = useDelRoguePolicyMutation()
+  const [ delVLANPoolPolicy ] = useDelVLANPoolPolicyMutation()
 
   const tableQuery = useTableQuery({
     useQuery: usePolicyListQuery,
@@ -113,6 +118,13 @@ export default function PoliciesTable () {
           onOk: async () => {
             if (type === PolicyType.ROGUE_AP_DETECTION) {
               await delRoguePolicy({
+                params: {
+                  ...params, policyId: id
+                }
+              }).unwrap()
+            }
+            if (type === PolicyType.VLAN_POOL) {
+              await delVLANPoolPolicy({
                 params: {
                   ...params, policyId: id
                 }

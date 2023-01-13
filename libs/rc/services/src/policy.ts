@@ -126,7 +126,12 @@ export const policyApi = basePolicyApi.injectEndpoints({
           showActivityMessage(msg, [
             'Add Rogue AP Policy Profile',
             'Update Rogue AP Policy Profile',
-            'Delete Rogue AP Policy Profile'
+            'Delete Rogue AP Policy Profile',
+            'AddVlanPool',
+            'UpdateVlanPool',
+            'DeleteVlanPool',
+            'PatchVlanPool',
+            'DeleteVlanPools'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
           })
@@ -240,6 +245,15 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
     }),
+    delVLANPoolPolicy: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(VlanPoolUrls.deleteVLANPoolPolicy, params, RKS_NEW_UI)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
     getVLANPoolPolicyList: build.query<VLANPoolPolicyType[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(VlanPoolUrls.getVLANPoolPolicyList, params, RKS_NEW_UI)
@@ -247,18 +261,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Policy', id: 'DETAIL' }],
-      async onCacheEntryAdded (requestArgs, api) {
-        await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg, [
-            'AddVlanPool',
-            'UpdateVlanPool',
-            'DeleteVlanPool'
-          ], () => {
-            api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
-          })
-        })
-      }
+      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
     }),
     vLANPoolPolicy: build.query<VLANPoolPolicyType, RequestPayload>({
       query: ({ params }) => {
@@ -324,6 +327,7 @@ export const {
   useLazyMacRegListsQuery,
   useLazyMacRegistrationsQuery,
   useAddVLANPoolPolicyMutation,
+  useDelVLANPoolPolicyMutation,
   useUpdateVLANPoolPolicyMutation,
   useGetVLANPoolPolicyListQuery,
   useVLANPoolPolicyQuery,

@@ -179,20 +179,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           ...vlanPoolListReq
         }
       },
-      providesTags: [{ type: 'Service', id: 'VLANPool' }],
-      async onCacheEntryAdded (requestArgs, api) {
-        await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg, [
-            'AddVlanPool',
-            'UpdateVlanPool',
-            'DeleteVlanPool'
-          ], () => {
-            api.dispatch(serviceApi.util.invalidateTags([
-              { type: 'Service', id: 'VLANPool' }
-            ]))
-          })
-        })
-      }
+      providesTags: [{ type: 'Service', id: 'VLANPool' }]
 
     }),
     deleteWifiCallingService: build.mutation<CommonResult, RequestPayload>({

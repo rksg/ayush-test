@@ -13,21 +13,18 @@ import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 import { get }                 from 'lodash'
 import { useIntl }             from 'react-intl'
 
-import { Button }        from '@acx-ui/components'
-import {
-  useVlanPoolListQuery
-} from '@acx-ui/rc/services'
+import { Button }                                             from '@acx-ui/components'
 import { NetworkSaveData, NetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
-import { useParams }                                          from '@acx-ui/react-router-dom'
 import { validationMessages }                                 from '@acx-ui/utils'
 
 import NetworkFormContext from '../NetworkFormContext'
+import VLANPoolInstance   from '../VLANPoolInstance'
 
 import { AccessControlForm } from './AccessControlForm'
 import { LoadControlForm }   from './LoadControlForm'
 import { ServicesForm }      from './ServicesForm'
 import * as UI               from './styledComponents'
-import VLANPoolInstance from '../VLANPoolInstance'
+
 
 const { Panel } = Collapse
 
@@ -53,11 +50,6 @@ enum MgmtTxRateEnum {
   VALUE_12 = '12',
   VALUE_18 = '18',
   VALUE_24 = '24'
-}
-
-const listPayload = {
-  fields: ['name', 'id'], sortField: 'name',
-  sortOrder: 'ASC', page: 1, pageSize: 10000
 }
 
 export function NetworkMoreSettingsForm (props: {
@@ -159,18 +151,6 @@ export function MoreSettingsForm (props: {
   // this.showMaxDevices = networkType === NetworkTypeEnum.CAPTIVEPORTAL &&
   // (guestPortal.guestNetworkType === GuestNetworkTypeEnum.SelfSignIn ||
   //   guestPortal.guestNetworkType === GuestNetworkTypeEnum.HostApproval);
-
-  const { vlanPoolSelectOptions } = useVlanPoolListQuery({
-    params: useParams(),
-    payload: listPayload
-  }, {
-    selectFromResult ({ data }) {
-      return {
-        vlanPoolSelectOptions: data?.map(
-          item => <Option key={item.id} value={JSON.stringify(item)}>{item.name}</Option>) ?? []
-      }
-    }
-  })
 
   const onBbsMinRateChange = function (value: BssMinRateEnum) {
     if (value === BssMinRateEnum.VALUE_NONE) {
