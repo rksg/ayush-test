@@ -15,6 +15,9 @@ describe('ClientTroubleshootingTab', () => {
       route: { params, path: '/:tenantId/users/wifi/:clientId/details/:activeTab' }
     })
     expect(await screen.findByText('All Categories')).toBeVisible()
-    expect(asFragment()).toMatchSnapshot()
+    const fragment = asFragment()
+    fragment.querySelectorAll('div[_echarts_instance_^="ec_"]')
+      .forEach((node:Element) => node.setAttribute('_echarts_instance_', 'ec_mock'))
+    expect(fragment).toMatchSnapshot()
   })
 })
