@@ -12,12 +12,13 @@ import { useParams }                                                            
 import { SwitchDetailsContext } from '../..'
 
 import { BackupModal } from './BackupModal'
+import { ViewConfigurationModal } from './ViewConfigurationModal'
 
 export function SwitchConfigBackupTable () {
   const { $t } = useIntl()
   const params = useParams()
-  // const [viewVisible, setViewVisible] = useState(false) TODO:
-  // const [viewData, setViewData] = useState(null as unknown as ConfigurationBackup)
+  const [viewVisible, setViewVisible] = useState(false)
+  const [viewData, setViewData] = useState(null as unknown as ConfigurationBackup)
   const [backupModalVisible, setBackupModalVisible] = useState(false)
   const [backupButtonnStatus, setBackupButtonnStatus] = useState({ disabled: false, tooltip: '' })
   const [enabledRowButton, setEnabledRowButton] = useState([] as string[])
@@ -32,15 +33,15 @@ export function SwitchConfigBackupTable () {
   const [ deleteConfigBackups ] = useDeleteConfigBackupsMutation()
   const { currentSwitchOperational, switchName } = switchDetailsContextData
 
-  // const showViewModal = (row: ConfigurationBackup[]) => {
-  //   setViewData(row[0]) TODO:
-  //   setViewVisible(true)
-  // }
+  const showViewModal = (row: ConfigurationBackup[]) => {
+    setViewData(row[0])
+    setViewVisible(true)
+  }
 
-  // const handleCancelViewModal = () => {
-  //   setViewData(null as unknown as ConfigurationBackup)
-  //   setViewVisible(false) TODO:
-  // }
+  const handleCancelViewModal = () => {
+    setViewData(null as unknown as ConfigurationBackup)
+    setViewVisible(false)
+  }
 
   const tableQuery = useTableQuery({
     useQuery: useGetSwitchConfigBackupListQuery,
@@ -152,16 +153,13 @@ export function SwitchConfigBackupTable () {
 
   const rowActions: TableProps<ConfigurationBackup>['rowActions'] = [{
     label: $t({ defaultMessage: 'View' }),
-    // disabled: () => !enabledRowButton.find(item => item === 'View'),
-    disabled: true,
-    onClick: () => {
-      // TODO:
-      // showViewModal(rows)
+    disabled: () => !enabledRowButton.find(item => item === 'View'),
+    onClick: (rows) => {
+      showViewModal(rows)
     }
   }, {
     label: $t({ defaultMessage: 'Compare' }),
-    // disabled: () => !enabledRowButton.find(item => item === 'Compare'),
-    disabled: true,
+    disabled: () => !enabledRowButton.find(item => item === 'Compare'),
     onClick: () => {
       // TODO:
     }
@@ -248,10 +246,10 @@ export function SwitchConfigBackupTable () {
       visible={backupModalVisible}
       handleCancel={() => setBackupModalVisible(false)}
     />
-    {/* <ViewConfigurationModal TODO:
+    <ViewConfigurationModal
       data={viewData}
       visible={viewVisible}
       handleCancel={handleCancelViewModal}
-    /> */}
+    />
   </>
 }
