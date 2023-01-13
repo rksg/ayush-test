@@ -121,7 +121,7 @@ export function MacRegistrationsTab () {
           // eslint-disable-next-line max-len
           return row.expirationDate < new Date().toISOString() ? $t({ defaultMessage: 'Expired' }) : $t({ defaultMessage: 'Active' })
         }
-        return 'Unknown'
+        return $t({ defaultMessage: 'Active' })
       }
     },
     {
