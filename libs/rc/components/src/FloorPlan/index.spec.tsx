@@ -56,6 +56,16 @@ const deviceData = {
         xPercent: 65.20548,
         yPercent: 9.839357,
         networkDeviceType: NetworkDeviceType.ap
+      },
+      {
+        deviceStatus: ApDeviceStatusEnum.NEVER_CONTACTED_CLOUD,
+        floorplanId: '',
+        id: '302002015732',
+        name: '3 02002015736',
+        serialNumber: '302002015732',
+        xPercent: 65.20548,
+        yPercent: 9.839357,
+        networkDeviceType: NetworkDeviceType.rogue_ap
       }],
       switches: [{
         deviceStatus: SwitchStatusEnum.NEVER_CONTACTED_CLOUD,
@@ -74,6 +84,13 @@ const deviceData = {
     }
   ]
 }
+
+const venueRogueAp = {
+  enabled: true,
+  reportThreshold: 0,
+  roguePolicyId: '9700ca95e4be4a22857f0e4b621a685f'
+}
+
 describe('Floor Plans', () => {
   let params: { tenantId: string, venueId: string }
   beforeEach(() => {
@@ -93,6 +110,10 @@ describe('Floor Plans', () => {
       rest.post(
         CommonUrlsInfo.getAllDevices.url,
         (req, res, ctx) => res(ctx.json(deviceData))
+      ),
+      rest.get(
+        CommonUrlsInfo.getVenueRogueAp.url,
+        (req, res, ctx) => res(ctx.json(venueRogueAp))
       )
     )
     params = {
@@ -134,6 +155,9 @@ describe('Floor Plans', () => {
     expect(plainViewImage[0]).not.toBeInTheDocument()
     expect(thumbnailImages[0]).not.toBeInTheDocument()
 
+    expect(await screen.findByTestId('EyeOpenOutlined')).toBeInTheDocument()
+    fireEvent.click(await screen.findByTestId('EyeOpenOutlined'))
+
     expect(asFragment()).toMatchSnapshot()
   })
 
@@ -160,6 +184,7 @@ describe('Floor Plans', () => {
 
     fireEvent.click(await fpImage[0])
     expect(fpImage[0]).not.toBeVisible()
+    fireEvent.click(await fpImage[1])
 
     expect(asFragment()).toMatchSnapshot()
   })
