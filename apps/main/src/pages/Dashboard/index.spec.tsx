@@ -72,4 +72,8 @@ describe('Dashboard', () => {
     expect(await screen.findAllByTestId(/^analytics/)).toHaveLength(7)
     expect(await screen.findAllByTestId(/^rc/)).toHaveLength(5)
   })
+  it('should show report link correctly', async () => {
+    render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
+    expect(screen.getByText('See more reports')).toBeVisible()
+  })
 })

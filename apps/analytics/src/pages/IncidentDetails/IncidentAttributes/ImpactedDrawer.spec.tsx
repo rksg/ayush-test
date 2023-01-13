@@ -1,7 +1,5 @@
 import '@testing-library/jest-dom'
 
-import React from 'react'
-
 import { dataApiURL }                                from '@acx-ui/analytics/services'
 import { Provider, store }                           from '@acx-ui/store'
 import { render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
@@ -43,6 +41,10 @@ describe('Drawer', () => {
       screen.getByText(`${sample[0].model} (2)`)
       screen.getByText(`${sample[0].version} (2)`)
       screen.getByText('1 Impacted AP')
+      const links: HTMLAnchorElement[] = screen.getAllByRole('link')
+      expect(links[0].href).toBe(
+        'http://localhost/t/undefined/devices/wifi/mac/details/overview'
+      )
     })
     it('should render error', async () => {
       mockGraphqlQuery(dataApiURL, 'ImpactedAPs', {
