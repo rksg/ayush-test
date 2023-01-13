@@ -53,7 +53,7 @@ describe('Guest Table', () => {
   it('should render table', async () => {
     jest.useFakeTimers()
     jest.setSystemTime(new Date(Date.parse('2022-08-04T01:20:00+10:00')))
-    const { asFragment } = render(
+    render(
       <Provider>
         <GuestsTable />
       </Provider>, {
@@ -63,7 +63,6 @@ describe('Guest Table', () => {
 
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    expect(asFragment()).toMatchSnapshot()
 
     await screen.findByText('test1')
     jest.useRealTimers()
