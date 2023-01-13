@@ -112,7 +112,8 @@ export enum ServiceType {
   WIFI_CALLING = 'Wi-Fi Calling',
   MDNS_PROXY = 'mDNS Proxy',
   DPSK = 'DPSK',
-  NETWORK_SEGMENTATION = 'Network Segmentation'
+  NETWORK_SEGMENTATION = 'Network Segmentation',
+  WEBAUTH_SWITCH = 'Web Auth'
 }
 export enum ServiceTechnology {
   WIFI = 'WI-FI',
