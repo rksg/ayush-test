@@ -293,7 +293,7 @@ function Table <RecordType extends Record<string, any>> (
             key={index}
             type='link'
             size='small'
-            title={action.tooltip}
+            title={action.tooltip || ''}
             children={action.label}
           />
         return action.dropdownMenu
