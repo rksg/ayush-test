@@ -1,3 +1,10 @@
+import { ReactNode } from 'react'
+
+import {
+  ProSchema,
+  ProCoreActionType,
+  ProSchemaComponentTypes
+}                    from '@ant-design/pro-utils/'
 import { DataIndex } from 'rc-table/lib/interface'
 
 import type {
@@ -5,7 +12,7 @@ import type {
   ColumnsState as AntColumnsState
 } from '@ant-design/pro-table'
 
-type AdditionalColumnType = {
+type AdditionalColumnType <RecordType, ValueType> = {
   // mandatory column for mapping columns
   key: string
   // mandatory column to (1) render correct data (2) use ellipsis
@@ -40,11 +47,30 @@ type AdditionalColumnType = {
    * @default false
    */
   filterable?: boolean
+  /**
+   * Taken the original type for antd and add highlightFn for handling highlight
+   * @default undefined
+   */
+  render?: (
+     dom: ReactNode,
+      entity: RecordType,
+      index: number,
+      highlightFn: (value: string) => ReactNode,
+      action: ProCoreActionType | undefined,
+      schema: ProSchema<RecordType, unknown, ProSchemaComponentTypes, ValueType> & {
+        isEditable?: boolean;
+        type: ProSchemaComponentTypes;
+      }
+    ) => ReactNode | {
+      children: ReactNode
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      props: any
+    }
 }
 
 type ProColumnTypeSubset <RecordType, ValueType> = Omit<
   ProColumnType<RecordType, ValueType>,
-  'fixed' | 'hideInTable' | 'hideInform' | 'hideInSetting' | 'hideInSearch'
+  'fixed' | 'hideInTable' | 'hideInform' | 'hideInSetting' | 'hideInSearch' | 'render'
 >
 
 export type ColumnGroupType<RecordType, ValueType>
@@ -53,7 +79,7 @@ export type ColumnGroupType<RecordType, ValueType>
 
 export type ColumnType <RecordType = unknown, ValueType = 'text'>
   = ProColumnTypeSubset<RecordType, ValueType>
-  & AdditionalColumnType
+  & AdditionalColumnType<RecordType, ValueType>
 
 export type TableColumn<RecordType = unknown, ValueType = 'text'>
   = ColumnGroupType<RecordType, ValueType>

@@ -1,11 +1,11 @@
 import React, { useMemo, useState, Key, useCallback, useEffect } from 'react'
 
-import ProTable, { ProTableProps as ProAntTableProps } from '@ant-design/pro-table'
-import { Menu, MenuProps, Space }                      from 'antd'
-import _                                               from 'lodash'
-import Highlighter                                     from 'react-highlight-words'
-import { useIntl }                                     from 'react-intl'
-import AutoSizer                                       from 'react-virtualized-auto-sizer'
+import ProTable, { ProTableProps as ProAntTableProps, ProColumnType } from '@ant-design/pro-table'
+import { Menu, MenuProps, Space }                                     from 'antd'
+import _                                                              from 'lodash'
+import Highlighter                                                    from 'react-highlight-words'
+import { useIntl }                                                    from 'react-intl'
+import AutoSizer                                                      from 'react-virtualized-auto-sizer'
 
 import { SettingsOutlined } from '@acx-ui/icons'
 
@@ -195,18 +195,6 @@ function Table <RecordType extends Record<string, any>> (
     setSelectedRowKeys(newKeys)
     props.rowSelection?.onChange?.(newKeys, getSelectedRows(newKeys), { type })
   }
-  columns = columns.map(column => column.searchable && searchValue
-    ? {
-      ...column,
-      render: (_, value) => <Highlighter
-        highlightStyle={{ fontWeight: 'bold', background: 'none', padding: 0 }}
-        searchWords={[searchValue]}
-        textToHighlight={value[column.dataIndex as keyof RecordType] as unknown as string}
-        autoEscape
-      />
-    }
-    : column
-  )
 
   const filterables = columns.filter(column => {
     return column.filterable
@@ -244,18 +232,45 @@ function Table <RecordType extends Record<string, any>> (
     }
   }
 
-  const getResizeProps = (col: ColumnType<RecordType> | ColumnGroupType<RecordType, 'text'>) => ({
+  const columnResize = (col: ColumnType<RecordType> | ColumnGroupType<RecordType, 'text'>) =>
+    (type === 'tall')
+      ? ({
+        ...col,
+        width: (col.key === settingsKey)
+          ? col.width
+          : colWidth[col.key as keyof typeof colWidth] || col.width,
+        onHeaderCell: (column: TableColumn<RecordType, 'text'>) => ({
+          onResize: (width: number) => setColWidth({ ...colWidth, [column.key]: width }),
+          hasEllipsisColumn,
+          width: colWidth[column.key],
+          definedWidth: col.width
+        })
+      })
+      : col
+
+  const columnRender = (col: ColumnType<RecordType> | ColumnGroupType<RecordType, 'text'>) => ({
     ...col,
-    width: (col.key === settingsKey)
-      ? col.width
-      : colWidth[col.key as keyof typeof colWidth] || col.width,
-    onHeaderCell: (column: TableColumn<RecordType, 'text'>) => ({
-      onResize: (width: number) => setColWidth({ ...colWidth, [column.key]: width }),
-      hasEllipsisColumn,
-      width: colWidth[column.key],
-      definedWidth: col.width
-    })
+    render: ((dom, entity, index, action, schema) => {
+      const highlightFn = (textToHighlight: string) => (col.searchable && searchValue)
+        ? <Highlighter
+          highlightStyle={{ fontWeight: 'bold', background: 'none', padding: 0 }}
+          searchWords={[searchValue]}
+          textToHighlight={textToHighlight}
+          autoEscape
+        />
+        : textToHighlight
+      return col.render
+        ? col.render(dom, entity, index, highlightFn, action, schema)
+        : highlightFn(entity[col.dataIndex as keyof RecordType] as unknown as string)
+    }) as ProColumnType<RecordType, 'text'>['render']
   })
+
+  const finalColumns = columns.map(column => ({
+    ..._.flow([columnResize, columnRender])(column),
+    ...(column.children && {
+      children: column.children.map(child => _.flow([columnRender, columnResize])(child))
+    })
+  }))
 
   const WrappedTable = (style: { width?: number }) => <UI.Wrapper
     style={style}
@@ -319,10 +334,7 @@ function Table <RecordType extends Record<string, any>> (
       sortDirections={['ascend', 'descend', 'ascend']}
       bordered={false}
       search={false}
-      columns={(type === 'tall' ? columns.map(col=>({
-        ...getResizeProps(col),
-        children: col.children?.map(getResizeProps)
-      })): columns) as typeof columns}
+      columns={finalColumns}
       components={_.isEmpty(components) ? undefined : components}
       options={{ setting, reload: false, density: false }}
       columnsState={{

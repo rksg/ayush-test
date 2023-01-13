@@ -131,9 +131,9 @@ export function MspCustomers () {
       searchable: true,
       sorter: true,
       defaultSortOrder: 'ascend',
-      render: function (data) {
+      render: function (data, _, __, highlightFn) {
         return (
-          <TenantLink to={''}>{data}</TenantLink>
+          <TenantLink to={''}>{highlightFn(data as string)}</TenantLink>
         )
       }
     },

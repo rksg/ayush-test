@@ -74,9 +74,9 @@ export function VarCustomers () {
       searchable: true,
       sorter: true,
       defaultSortOrder: 'ascend' as SortOrder,
-      render: function (data) {
+      render: function (data, _, __, highlightFn) {
         return (
-          <TenantLink to={''}>{data}</TenantLink>
+          <TenantLink to={''}>{highlightFn(data as string)}</TenantLink>
         )
       }
     },

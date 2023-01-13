@@ -31,7 +31,7 @@ const columns: TableProps<RecordType>['columns'] = [
     title: 'Description',
     dataIndex: 'description',
     key: 'description',
-    render: text => <u>{text}</u>,
+    render: (text, _, __, highlightFn) => <u>{highlightFn(text as string)}</u>,
     searchable: true
   },
   {
@@ -86,7 +86,7 @@ const columnsSearchOnly: TableProps<RecordType>['columns'] = [
     title: 'Description',
     dataIndex: 'description',
     key: 'description',
-    render: text => <u>{text}</u>,
+    render: (text, _, __, highlightFn) => <u>{highlightFn(text as string)}</u>,
     searchable: true
   },
   {
