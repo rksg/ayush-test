@@ -38,7 +38,7 @@ export async function onSocketActivityChanged <
   const { cacheDataLoaded, cacheEntryRemoved } = api
 
   const token = getJwtTokenPayload()
-  const url = token ? `/activity?token=${token}?tenantId=${payload.params?.tenantId}`
+  const url = token ? `/activity?token=${token}&tenantId=${payload.params?.tenantId}`
     : `/activity?tenantId=${payload.params?.tenantId}`
 
   const socket = initialSocket(url)
