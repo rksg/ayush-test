@@ -19,7 +19,7 @@ import * as UI from '../styledComponents'
 
 type PillData = { success: number, total: number }
 
-const transformTSResponse = (
+export const transformTSResponse = (
   { data, time }: KPITimeseriesResponse,
   window: { startDate: string, endDate: string }
 ) : PillData => {
@@ -36,7 +36,7 @@ const transformTSResponse = (
   return { success, total }
 }
 
-const tranformHistResponse = (
+export const tranformHistResponse = (
   { data, kpi, threshold }: KPIHistogramResponse & { kpi: string, threshold : number }
 ) : PillData => {
   const { histogram } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
