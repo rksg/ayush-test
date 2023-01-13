@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 
 import { defineMessage, useIntl, MessageDescriptor } from 'react-intl'
-import { useNavigate, useParams }                    from 'react-router-dom'
+import { useNavigate }                               from 'react-router-dom'
 
 import { Tabs }                                                                     from '@acx-ui/components'
 import { EventTable, eventDefaultPayload, eventDefaultSorter, useEventTableFilter } from '@acx-ui/rc/components'
@@ -15,8 +15,10 @@ import {
 } from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
 
+import { useApContext } from '../ApContext'
+
 const Events = () => {
-  const { serialNumber } = useParams()
+  const { serialNumber } = useApContext()
   const { fromTime, toTime } = useEventTableFilter()
   useEffect(()=>{
     tableQuery.setPayload({
@@ -51,7 +53,7 @@ const tabs : {
 
 export function ApTimelineTab () {
   const { $t } = useIntl()
-  const { activeSubTab = tabs[0].key, serialNumber } = useParams()
+  const { activeSubTab = tabs[0].key, serialNumber } = useApContext()
   const navigate = useNavigate()
   const basePath = useTenantLink(`/devices/wifi/${serialNumber}/details/timeline/`)
   // TODO: remove istanbul and add unit test once there are more than 1 tab

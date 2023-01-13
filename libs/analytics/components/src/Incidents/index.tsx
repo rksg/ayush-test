@@ -19,29 +19,32 @@ import { NetworkHistory }     from '../NetworkHistory'
 
 export const IncidentTabContent = (props: {
   tabSelection?: CategoryTab,
-  filters? : AnalyticsFilter
+  filters?: AnalyticsFilter,
+  disableGraphs?: boolean
 }) => {
-  const { tabSelection,filters: widgetFilters } = props
+  const { tabSelection, filters: widgetFilters, disableGraphs } = props
   const { filters } = useAnalyticsFilter()
   const incidentsPageFilters = widgetFilters ? widgetFilters : filters
   const incidentCodesBasedOnCategory: IncidentCode[] | undefined
     = categoryCodeMap[tabSelection as CategoryOption]?.codes as IncidentCode[]
-
   return (
     <GridRow>
-      <GridCol col={{ span: 4 }} style={{ height: '210px' }}>
-        <IncidentBySeverity
-          type='bar'
-          filters={{ ...incidentsPageFilters, code: incidentCodesBasedOnCategory }}
-        />
-      </GridCol>
-      <GridCol col={{ span: 20 }} style={{ height: '210px' }}>
-        <NetworkHistory
-          hideTitle
-          filters={{ ...incidentsPageFilters, code: incidentCodesBasedOnCategory }}
-          type='no-border'
-        />
-      </GridCol>
+      {disableGraphs ? null : <>
+        <GridCol col={{ span: 4 }} style={{ height: '210px' }}>
+          <IncidentBySeverity
+            type='bar'
+            filters={{ ...incidentsPageFilters, code: incidentCodesBasedOnCategory }}
+          />
+        </GridCol>
+        <GridCol col={{ span: 20 }} style={{ height: '210px' }}>
+          <NetworkHistory
+            hideTitle
+            filters={{ ...incidentsPageFilters, code: incidentCodesBasedOnCategory }}
+            type='no-border'
+          />
+        </GridCol>
+      </>
+      }
       <GridCol col={{ span: 24 }} style={{ minHeight: '180px' }}>
         <IncidentTable filters={{ ...incidentsPageFilters, code: incidentCodesBasedOnCategory }} />
       </GridCol>

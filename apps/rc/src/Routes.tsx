@@ -10,8 +10,8 @@ import {
   ServiceOperation,
   getServiceRoutePath
 } from '@acx-ui/rc/utils'
-import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
-import { Provider }                          from '@acx-ui/store'
+import { rootRoutes, Route, TenantNavigate, Navigate } from '@acx-ui/react-router-dom'
+import { Provider }                                    from '@acx-ui/store'
 
 import Edges                      from './pages/Devices/Edge'
 import AddEdge                    from './pages/Devices/Edge/AddEdge'
@@ -90,13 +90,13 @@ function DeviceRoutes () {
       <Route path='devices/apgroups/:action' element={<ApGroupForm />} />
       <Route path='devices/switch/:action' element={<AddSwitchForm />} />
       <Route
-        path='devices/wifi/:serialNumber/details/:activeTab'
+        path='devices/wifi/:apId/details/:activeTab'
         element={<ApDetails />} />
       <Route
-        path='devices/wifi/:serialNumber/details/:activeTab/:activeSubTab'
+        path='devices/wifi/:apId/details/:activeTab/:activeSubTab'
         element={<ApDetails />} />
       <Route
-        path='devices/wifi/:serialNumber/details/:activeTab/:activeSubTab/:categoryTab'
+        path='devices/wifi/:apId/details/:activeTab/:activeSubTab/:categoryTab'
         element={<ApDetails />} />
       <Route
         path='devices/switch/:switchId/:serialNumber/details/:activeTab'
@@ -290,20 +290,11 @@ function UserRoutes () {
       <Route path='users' element={<TenantNavigate replace to='/users/wifi/clients' />} />
       <Route path='users/wifi' element={<TenantNavigate replace to='/users/wifi/clients' />} />
       <Route path='users/wifi/:activeTab' element={<WifiClientList />} />
-      <Route
-        path='users/wifi/:activeTab/:clientId/details/'
-        element={
-          <TenantNavigate replace to='/users/wifi/:activeTab/:clientId/details/overview' />
-        }
-      />
-      <Route
-        path='users/wifi/:activeTab/:clientId/details/:activeTab'
-        element={<WifiClientDetails />}
-      />
-      <Route
-        path='users/wifi/:activeTab/:clientId/details/:activeTab/:activeSubTab'
-        element={<WifiClientDetails />}
-      />
+      <Route path='users/wifi/:activeTab/:clientId/details'>
+        <Route path='' element={<Navigate replace to='./overview' />} />
+        <Route path=':activeTab' element={<WifiClientDetails />} />
+        <Route path=':activeTab/:activeSubTab' element={<WifiClientDetails />} />
+      </Route>
       <Route path='users/switch' element={<TenantNavigate replace to='/users/switch/clients' />} />
       <Route path='users/switch/clients' element={<SwitchClientList />} />
     </Route>
