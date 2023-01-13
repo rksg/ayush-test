@@ -12,6 +12,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
+import { useApContext } from '../ApContext'
+
 const defaultPayload = {
   searchString: '',
   fields: [
@@ -22,9 +24,11 @@ const defaultPayload = {
 
 export function ApNetworksTab () {
   const { $t } = useIntl()
+  const apiParams = useApContext() as Record<string, string>
   const tableQuery = useTableQuery({
     useQuery: useApNetworkListQuery,
-    defaultPayload
+    defaultPayload,
+    apiParams
   })
 
   const columns: TableProps<Network>['columns'] = React.useMemo(() => {

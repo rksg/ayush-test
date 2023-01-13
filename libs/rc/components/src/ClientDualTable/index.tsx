@@ -20,10 +20,11 @@ export function ClientDualTable () {
     return defineMessage({ defaultMessage: `
       <div>You can search for clients by the following properties *:
         <ul><li>Client MAC Address</li>
-        <li>AP MAC Address</li>
-        <li>OS Type</li>
         <li>User Name</li>
-        <li>Host Name</li></ul>
+        <li>Host Name</li>
+        <li>OS Type (Connected Clients Only)</li>
+        <li>IP Address (Connected Clients Only)</li>
+        <li>VLAN ID (Connected Clients Only)</li></ul>
       <div>* Search ignores columns that you chose to hide</div></div>` })
   }
 

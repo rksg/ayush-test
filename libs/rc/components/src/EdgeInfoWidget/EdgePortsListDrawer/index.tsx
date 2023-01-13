@@ -15,58 +15,50 @@ const EdgePortsTable = ({ data }: { data: EdgePortStatus[] }) => {
   const columns: TableProps<EdgePortStatus>['columns'] = [
     {
       title: $t({ defaultMessage: '#' }),
-      key: 'portId',
-      dataIndex: 'portId',
-      sorter: true,
-      defaultSortOrder: 'ascend'
+      key: 'sortIdx',
+      dataIndex: 'sortIdx',
+      defaultSortOrder: 'ascend',
+      render: (id, record, index) => {
+        return index + 1
+      }
     },
     {
       title: $t({ defaultMessage: 'Port' }),
-      key: 'portName',
-      dataIndex: 'portName',
-      sorter: true
+      key: 'name',
+      dataIndex: 'name'
     },
     {
       title: $t({ defaultMessage: 'Status' }),
       key: 'status',
-      dataIndex: 'status',
-      sorter: true
+      dataIndex: 'status'
     },
     {
       title: $t({ defaultMessage: 'Admin Status' }),
       key: 'adminStatus',
-      dataIndex: 'adminStatus',
-      sorter: true
+      dataIndex: 'adminStatus'
     },
     {
       title: $t({ defaultMessage: 'Port Type' }),
-      key: 'portType',
-      dataIndex: 'portType',
-      sorter: true
+      key: 'type',
+      dataIndex: 'type'
     },
     {
       title: $t({ defaultMessage: 'Connected Device' }),
       key: 'mac',
-      dataIndex: 'mac',
-      sorter: true
+      dataIndex: 'mac'
     },
     {
       title: $t({ defaultMessage: 'Speed' }),
-      key: 'speed',
-      dataIndex: 'speed',
-      sorter: true,
+      key: 'speedKbps',
+      dataIndex: 'speedKbps',
       render: (data, row) => {
-        return formatter('networkSpeedFormat')(row.speed)
+        return formatter('networkSpeedFormat')(row.speedKbps)
       }
     },
     {
       title: $t({ defaultMessage: 'Duplex Speed' }),
-      key: 'duplexSpeed',
-      dataIndex: 'duplexSpeed',
-      sorter: true,
-      render: (data, row) => {
-        return formatter('networkSpeedFormat')(row.duplexSpeed)
-      }
+      key: 'duplex',
+      dataIndex: 'duplex'
     }
   ]
 

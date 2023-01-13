@@ -1,8 +1,18 @@
-import { useIntl } from 'react-intl'
+import { EmbeddedReport }       from '@acx-ui/reports/components'
+import {
+  ReportType,
+  reportTypeDataStudioMapping
+} from '@acx-ui/reports/components'
+
+import { useApContext } from '../ApContext'
 
 export function ApReportsTab () {
-  const { $t } = useIntl()
+  const { apMac } = useApContext()
+
   return (
-    <>{$t({ defaultMessage: 'Reports' })}</>
+    <EmbeddedReport
+      embedDashboardName={reportTypeDataStudioMapping[ReportType.AP_DETAIL]}
+      rlsClause={`"apMac" in ('${apMac}')`}
+    />
   )
 }
