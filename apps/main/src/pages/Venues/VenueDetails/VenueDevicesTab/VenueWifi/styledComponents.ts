@@ -1,11 +1,8 @@
-import { Button } from 'antd'
-import styled     from 'styled-components/macro'
+import { Radio } from 'antd'
+import styled    from 'styled-components/macro'
 
 import {
   ArrowCorner,
-  ListSolid,
-  LineChartOutline,
-  MeshSolid,
   SignalDown,
   SignalLeft,
   SignalUp,
@@ -14,38 +11,6 @@ import {
 
 export const SpanStyle = styled.span`
 color: var(--acx-primary-white);
-`
-
-export const ListIcon = styled(ListSolid)`
-path {
-  stroke: var(--acx-primary-white);
-}
-`
-export const ListSolidIcon = styled(ListSolid)`
-margin-top: 2px;
-path {
-  stroke: var(--acx-primary-black);
-}
-`
-export const LineChartIcon = styled(LineChartOutline)`
-path {
-  stroke: var(--acx-primary-white);
-}
-`
-export const LineChartSolidIcon = styled(LineChartOutline)`
-margin-top: 2px;
-path {
-  stroke: var(--acx-primary-black);
-}
-`
-export const MeshIcon = styled(MeshSolid)`
-height: 100%;
-`
-export const MeshSolidIcon = styled(MeshSolid)`
-margin-top: 2px;
-path {
-  stroke: var(--acx-primary-black);
-}
 `
 
 export const ArrowCornerIcon = styled(ArrowCorner)`
@@ -93,9 +58,27 @@ export const WiredIcon = styled(Wired)`
   }
 `
 
-export const WhiteButton = styled(Button)`
-  margin-top: 0;
-  svg path{
-    stroke: var(--acx-primary-white);
+export const IconRadioGroup = styled(Radio.Group)`
+  & > .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
+    background: var(--acx-accents-orange-50);
+    border-color: var(--acx-accents-orange-50);
+    &::before {
+      background-color: var(--acx-accents-orange-50);
+    }
+
+    svg {
+      path[stroke] {
+        stroke: currentColor;
+      }
+      path[fill] {
+        fill: currentColor;
+      }
+    }
+  }
+  & > .ant-radio-button-wrapper{
+    svg {
+      width: 22px;
+      height: 22px;
+    }
   }
 `

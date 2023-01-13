@@ -19,6 +19,9 @@ import {
 import { ApPacketCaptureForm } from './apPacketCaptureForm'
 
 const params = { tenantId: 'tenant-id', serialNumber: 'serial-number' }
+jest.mock('../ApContext', () => ({
+  useApContext: () => params
+}))
 
 const packetCaptureReadyResponse = {
   sessionId: '1280ff76-cf09-469b-bb09-c6834102e598',

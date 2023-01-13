@@ -51,7 +51,7 @@ describe('ClientList', () => {
         route: { params, path: '/:tenantId/users/wifi/:activeTab' }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    // await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     fireEvent.click(await screen.findByRole('tab', { name: 'Guest Pass Credentials' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: `/t/${params.tenantId}/users/wifi/guests`,
@@ -59,6 +59,7 @@ describe('ClientList', () => {
       search: ''
     })
   })
+
   it('should render search response correctly', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(

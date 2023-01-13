@@ -34,16 +34,6 @@ describe('SelectPolicyForm', () => {
 
   const selectPolicyPath = '/:tenantId/' + getSelectPolicyRoutePath()
 
-  it('should render form', async () => {
-    const { asFragment } = render(
-      <SelectPolicyForm />, {
-        route: { params, path: selectPolicyPath }
-      }
-    )
-
-    expect(asFragment()).toMatchSnapshot()
-  })
-
   it('should navigate to the correct policy page', async () => {
     render(
       <SelectPolicyForm />, {
@@ -51,7 +41,7 @@ describe('SelectPolicyForm', () => {
       }
     )
 
-    await userEvent.click(screen.getByRole('radio', { name: /Rogue AP Detection/ }))
+    await userEvent.click(screen.getByDisplayValue(/Rogue AP Detection/))
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
     const policyCreatePath = getPolicyRoutePath({

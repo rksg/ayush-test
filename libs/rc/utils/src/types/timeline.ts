@@ -33,6 +33,7 @@ useCase: string
 
 export interface EventBase {
   apMac: string
+  adminName?: string
   entity_id: string
   entity_type: string
   event_datetime: string

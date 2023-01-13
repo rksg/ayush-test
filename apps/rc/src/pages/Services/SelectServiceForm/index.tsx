@@ -1,7 +1,14 @@
-import { Form, Radio, Space, Typography } from 'antd'
-import { useIntl }                        from 'react-intl'
+import { Form, Radio, Typography } from 'antd'
+import { defineMessage, useIntl }  from 'react-intl'
 
-import { PageHeader, StepsForm }  from '@acx-ui/components'
+import {
+  GridCol,
+  GridRow,
+  PageHeader,
+  RadioCard,
+  RadioCardCategory,
+  StepsForm
+} from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   ServiceType,
@@ -17,8 +24,6 @@ import {
 } from '../contentsMap'
 
 import * as UI from './styledComponents'
-
-
 
 export default function SelectServiceForm () {
   const { $t } = useIntl()
@@ -38,6 +43,34 @@ export default function SelectServiceForm () {
       pathname: `${tenantBasePath.pathname}/${serviceCreatePath}`
     })
   }
+
+  const sets = [
+    {
+      title: defineMessage({ defaultMessage: 'Connectivity' }),
+      items: [
+        { type: ServiceType.DHCP, categories: [RadioCardCategory.WIFI] },
+        { type: ServiceType.DPSK, categories: [RadioCardCategory.WIFI] },
+        {
+          type: ServiceType.NETWORK_SEGMENTATION,
+          categories: [RadioCardCategory.WIFI],
+          disabled: !networkSegmentationEnabled
+        }
+      ]
+    },
+    {
+      title: defineMessage({ defaultMessage: 'Application' }),
+      items: [
+        { type: ServiceType.MDNS_PROXY, categories: [RadioCardCategory.WIFI] },
+        { type: ServiceType.WIFI_CALLING, categories: [RadioCardCategory.WIFI] }
+      ]
+    },
+    {
+      title: defineMessage({ defaultMessage: 'More Services' }),
+      items: [
+        { type: ServiceType.PORTAL, categories: [RadioCardCategory.WIFI] }
+      ]
+    }
+  ]
 
   return (
     <>
@@ -59,66 +92,28 @@ export default function SelectServiceForm () {
             name='serviceType'
             rules={[{ required: true }]}
           >
-            <Radio.Group>
-              <UI.CategoryContainer>
-                <Typography.Title level={3}>
-                  { $t({ defaultMessage: 'Connectivity' }) }
-                </Typography.Title>
-                <Space>
-                  <Radio key={ServiceType.DHCP} value={ServiceType.DHCP}>
-                    {$t(serviceTypeLabelMapping[ServiceType.DHCP])}
-                    <UI.RadioDescription>
-                      {$t(serviceTypeDescMapping[ServiceType.DHCP])}
-                    </UI.RadioDescription>
-                  </Radio>
-                  <Radio key={ServiceType.DPSK} value={ServiceType.DPSK}>
-                    {$t(serviceTypeLabelMapping[ServiceType.DPSK])}
-                    <UI.RadioDescription>
-                      {$t(serviceTypeDescMapping[ServiceType.DPSK])}
-                    </UI.RadioDescription>
-                  </Radio>
-                  {networkSegmentationEnabled &&
-                    <Radio key={ServiceType.NETWORK_SEGMENTATION}
-                      value={ServiceType.NETWORK_SEGMENTATION}>
-                      {$t(serviceTypeLabelMapping[ServiceType.NETWORK_SEGMENTATION])}
-                      <UI.RadioDescription>
-                        {$t(serviceTypeDescMapping[ServiceType.NETWORK_SEGMENTATION])}
-                      </UI.RadioDescription>
-                    </Radio>
-                  }
-
-                </Space>
-              </UI.CategoryContainer>
-              <UI.CategoryContainer>
-                <Typography.Title level={3}>
-                  { $t({ defaultMessage: 'Application' }) }
-                </Typography.Title>
-                <Space>
-                  <Radio key={ServiceType.MDNS_PROXY} value={ServiceType.MDNS_PROXY}>
-                    {$t(serviceTypeLabelMapping[ServiceType.MDNS_PROXY])}
-                    <UI.RadioDescription>
-                      {$t(serviceTypeDescMapping[ServiceType.MDNS_PROXY])}
-                    </UI.RadioDescription>
-                  </Radio>
-                  <Radio key={ServiceType.WIFI_CALLING} value={ServiceType.WIFI_CALLING}>
-                    {$t(serviceTypeLabelMapping[ServiceType.WIFI_CALLING])}
-                    <UI.RadioDescription>
-                      {$t(serviceTypeDescMapping[ServiceType.WIFI_CALLING])}
-                    </UI.RadioDescription>
-                  </Radio>
-                </Space>
-              </UI.CategoryContainer>
-              <UI.CategoryContainer>
-                <Typography.Title level={3}>
-                  { $t({ defaultMessage: 'More Services' }) }
-                </Typography.Title>
-                <Radio key={ServiceType.PORTAL} value={ServiceType.PORTAL}>
-                  {$t(serviceTypeLabelMapping[ServiceType.PORTAL])}
-                  <UI.RadioDescription>
-                    {$t(serviceTypeDescMapping[ServiceType.PORTAL])}
-                  </UI.RadioDescription>
-                </Radio>
-              </UI.CategoryContainer>
+            <Radio.Group style={{ width: '100%' }}>
+              {sets.map(set =>
+                <UI.CategoryContainer>
+                  <Typography.Title level={3}>
+                    { $t(set.title) }
+                  </Typography.Title>
+                  <GridRow>
+                    {set.items.map(item => item.disabled
+                      ? null
+                      : <GridCol col={{ span: 6 }}>
+                        <RadioCard
+                          type={'radio'}
+                          key={item.type}
+                          value={item.type}
+                          title={$t(serviceTypeLabelMapping[item.type])}
+                          description={$t(serviceTypeDescMapping[item.type])}
+                          categories={item.categories}
+                        />
+                      </GridCol>)}
+                  </GridRow>
+                </UI.CategoryContainer>
+              )}
             </Radio.Group>
           </Form.Item>
         </StepsForm.StepForm>
