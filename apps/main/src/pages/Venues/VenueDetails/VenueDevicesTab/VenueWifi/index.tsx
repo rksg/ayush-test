@@ -1,8 +1,12 @@
-import { List }    from 'antd'
-import { useIntl } from 'react-intl'
+import { useState } from 'react'
 
-import { Button, Table, TableProps, Loader, Tooltip } from '@acx-ui/components'
-import { useMeshApsQuery }                            from '@acx-ui/rc/services'
+import { List, Radio } from 'antd'
+import { useIntl }     from 'react-intl'
+
+import { Table, TableProps, Loader, Tooltip }     from '@acx-ui/components'
+import { LineChartOutline, ListSolid, MeshSolid } from '@acx-ui/icons'
+import { ApTable }                                from '@acx-ui/rc/components'
+import { useMeshApsQuery }                        from '@acx-ui/rc/services'
 import {
   useTableQuery,
   APMesh,
@@ -11,16 +15,13 @@ import {
 import { TenantLink } from '@acx-ui/react-router-dom'
 
 import {
-  ListIcon,
-  LineChartIcon,
-  MeshIcon,
-  WhiteButton,
   ArrowCornerIcon,
   ApSingleIcon,
   SignalDownIcon,
   SignalUpIcon,
   WiredIcon,
-  SpanStyle
+  SpanStyle,
+  IconRadioGroup
 } from './styledComponents'
 
 function venueNameColTpl (
@@ -223,7 +224,9 @@ function transformData (data: APMesh[]) {
   })
 }
 
-export function VenueMeshApsTable () {
+export function VenueWifi () {
+  const [ showIdx, setShowInx ] = useState(1)
+
   const VenueMeshApsTable = () => {
     const tableQuery = useTableQuery({
       useQuery: useMeshApsQuery,
@@ -247,17 +250,17 @@ export function VenueMeshApsTable () {
 
   return (
     <>
-      <span className='ant-input-group ant-input-group-compact'>
-        <Button icon={<LineChartIcon />}
-          size='small' />
-        <Button icon={<ListIcon />}
-          size='small' />
-        <WhiteButton type='primary'
-          icon={<MeshIcon />}
-          size='small'
-          style={{ borderRadius: '0 4px 4px 0' }}/>
-      </span>
-      <VenueMeshApsTable />
+      <IconRadioGroup value={showIdx}
+        buttonStyle='solid'
+        size='small'
+        onChange={e => setShowInx(e.target.value)}>
+        <Radio.Button value={0}><LineChartOutline /></Radio.Button>
+        <Radio.Button value={1}><ListSolid /></Radio.Button>
+        <Radio.Button value={2}><MeshSolid /></Radio.Button>
+      </IconRadioGroup>
+      { showIdx === 0 && <div></div> } {/* TODO: Venue Device WiFi Report */}
+      { showIdx === 1 && <ApTable rowSelection={{ type: 'checkbox' }} /> }
+      { showIdx === 2 && <VenueMeshApsTable /> }
     </>
   )
 }
