@@ -23,14 +23,15 @@ import {
   VeViewModel,
   VlanVePort,
   AclUnion,
-  VeForm
+  VeForm,
+  SwitchClient
 } from '@acx-ui/rc/utils'
 import { formatter } from '@acx-ui/utils'
 
 export const baseSwitchApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'switchApi',
-  tagTypes: ['Switch'],
+  tagTypes: ['Switch', 'SwitchClient'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({})
 })
@@ -292,6 +293,24 @@ export const switchApi = baseSwitchApi.injectEndpoints({
 
       },
       invalidatesTags: [{ type: 'Switch', id: 'VE' }]
+    }),
+    getSwitchClientList: build.query<TableResult<SwitchClient>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const clientListReq = createHttpRequest(SwitchUrlsInfo.getSwitchClientList, params)
+        return {
+          ...clientListReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'SwitchClient', id: 'LIST' }]
+    }),
+    getSwitchClientDetails: build.query<SwitchClient, RequestPayload>({
+      query: ({ params }) => {
+        const clientListReq = createHttpRequest(SwitchUrlsInfo.getSwitchClientDetail, params)
+        return {
+          ...clientListReq
+        }
+      }
     })
   })
 })
@@ -383,5 +402,7 @@ export const {
   useGetSwitchQuery,
   useDeleteVePortsMutation,
   useGetSwitchAclsQuery,
-  useGetVlanListBySwitchLevelQuery
+  useGetVlanListBySwitchLevelQuery,
+  useGetSwitchClientListQuery,
+  useGetSwitchClientDetailsQuery
 } = switchApi
