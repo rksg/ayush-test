@@ -21,16 +21,16 @@ import {
 
 interface IntegratorDrawerProps {
   visible: boolean
-  setVisible: (visible: boolean) => void
   tenantId?: string
   tenantType?: string
+  setVisible: (visible: boolean) => void
   setSelected: (tenantType: string, selected: MspEc[]) => void
 }
 
 export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
   const { $t } = useIntl()
 
-  const { visible, setVisible, tenantId, tenantType, setSelected } = props
+  const { visible, tenantId, tenantType, setVisible, setSelected } = props
   const [resetField, setResetField] = useState(false)
   const [form] = Form.useForm()
 

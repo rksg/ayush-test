@@ -9,7 +9,8 @@ import {
   RadioChangeEvent,
   Row,
   Select,
-  Space
+  Space,
+  Typography
 } from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
@@ -22,10 +23,11 @@ import {
   StepsFormInstance,
   Subtitle
 } from '@acx-ui/components'
-import { SearchOutlined } from '@acx-ui/icons'
+import { SearchOutlined }        from '@acx-ui/icons'
 import {
   useAddCustomerMutation,
-  useGetMspEcQuery
+  useGetMspEcQuery,
+  useMspAssignmentSummaryQuery
 } from '@acx-ui/rc/services'
 import {
   Address,
@@ -37,7 +39,10 @@ import {
   MspEcData,
   roleDisplayText,
   RolesEnum,
-  EntitlementUtil
+  EntitlementUtil,
+  excludeExclamationRegExp,
+  EntitlementDeviceSubType,
+  MspAssignmentSummary
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -51,7 +56,7 @@ import { SelectIntegratorDrawer } from '../SelectIntegratorDrawer'
 
 import * as UI from '../styledComponents'
 
-import { CustomerSummary } from './CustomerSummary'
+// import { CustomerSummary } from './CustomerSummary'
 
 interface AddressComponent {
   long_name?: string;
@@ -147,44 +152,56 @@ const defaultAddress: Address = {
 export function AddMspCustomer () {
   const intl = useIntl()
   const isMapEnabled = true//useIsSplitOn(Features.G_MAP)
+
   const navigate = useNavigate()
+  const linkToCustomers = useTenantLink('/dashboard/mspcustomers', 'v')
   const formRef = useRef<StepsFormInstance<MspEcData>>()
-  const { Option } = Select
+
+  const { action, tenantId, mspEcTenantId } = useParams()
+
   const [trialSelected, setTrialMode] = useState(true)
-  const [mspAdmins, setAdministrator] = useState('--')
-  const [mspIntegrator, setIntegrator] = useState('--')
-  const [mspInstaller, setInstaller] = useState('--')
+  const [mspAdmins, setAdministrator] = useState([] as MspAdministrator[])
+  const [mspIntegrator, setIntegrator] = useState([] as MspEc[])
+  const [mspInstaller, setInstaller] = useState([] as MspEc[])
+  const [availableLicense, setAvailableLicense] = useState([] as MspAssignmentSummary[])
   const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
   const [drawerIntegratorVisible, setDrawerIntegratorVisible] = useState(false)
   const [drawerInstallerVisible, setDrawerInstallerVisible] = useState(false)
-  // const [tenantId, setTenantId] = useState('')
-
-  const linkToCustomers = useTenantLink('/dashboard/mspcustomers', 'v')
-
-  const [addCustomerr] = useAddCustomerMutation()
-
   const [address, updateAddress] = useState<Address>(isMapEnabled? {} : defaultAddress)
 
-  const { action, tenantId, mspEcTenantId } = useParams()
+  const { Option } = Select
+
+  const [addCustomerr] = useAddCustomerMutation()
   const { data } = useGetMspEcQuery({ params: { mspEcTenantId } })
+  const{ data: queryResults } = useMspAssignmentSummaryQuery({
+    params: useParams()
+  },{
+    selectFromResult: ({ data, ...rest }) => ({
+      data,
+      ...rest
+    })
+  })
 
   useEffect(() => {
+    if (queryResults) {
+      checkAvailableLicense(queryResults)
+    }
     if (data) {
       formRef.current?.setFieldsValue({
         name: data?.name
         // address: data?.address
       })
       // updateAddress(data?.address as Address)
-      setAdministrator('--')
-      setIntegrator('')
-      setInstaller('')
+      setAdministrator([])
+      setIntegrator([])
+      setInstaller([])
     }
 
     if ( action !== 'edit') { // Add mode
       const initialAddress = isMapEnabled ? '' : defaultAddress.addressLine
       formRef.current?.setFieldValue(['address', 'addressLine'], initialAddress)
     }
-  }, [data, isMapEnabled])
+  }, [data, queryResults, isMapEnabled])
 
   const [sameCountry, setSameCountry] = useState(true)
   const addressValidator = async (value: string) => {
@@ -257,18 +274,6 @@ export function AddMspCustomer () {
         content: intl.$t({ defaultMessage: 'An error occurred' })
       })
     }
-
-    // try {
-    //   const formData = { ...values }
-    //   formData.address = address
-    //   await addVenue({ params, payload: formData }).unwrap()
-    //   navigate(linkToCustomers, { replace: true })
-    // } catch {
-    //   showToast({
-    //     type: 'error',
-    //     content: intl.$t({ defaultMessage: 'An error occurred' })
-    //   })
-    // }
   }
 
   const manageMspAdmins = () => {
@@ -278,32 +283,111 @@ export function AddMspCustomer () {
     type === 'MSP_INSTALLER' ? setDrawerInstallerVisible(true) : setDrawerIntegratorVisible(true)
   }
 
-  const mspAdminSelected = (selected?: MspAdministrator[]) => {
-    if (selected && selected.length > 0) {
-      setAdministrator(selected[0].email)
-    } else {
-      setAdministrator('--')
-    }
+  const selectedMspAdmins = (selected: MspAdministrator[]) => {
+    setAdministrator(selected)
   }
 
-  const integratorSelected = (tenantType: string, selected: MspEc[] ) => {
-    if (selected && selected.length > 0) {
-      (tenantType === 'MSP_INTEGRATOR')
-        ? setIntegrator(selected[0].name) : setInstaller(selected[0].name)
-    } else {
-      (tenantType === 'MSP_INTEGRATOR') ? setIntegrator('--') : setInstaller('--')
-    }
+  const selectedIntegrators = (tenantType: string, selected: MspEc[] ) => {
+    (tenantType === 'MSP_INTEGRATOR') ? setIntegrator(selected) : setInstaller(selected)
+  }
+
+  const displayMspAdmins = () => {
+    if (!mspAdmins || mspAdmins.length === 0)
+      return '--'
+    return <>
+      {mspAdmins.map(admin =>
+        <div style={{
+          paddingRight: '5px',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
+          overflow: 'hidden' }}>
+          {admin.email} ({intl.$t(roleDisplayText[admin.role])})
+        </div> )}
+    </>
+  }
+
+  const displayIntegrator = () => {
+    const value = !mspIntegrator || mspIntegrator.length === 0 ? '--' : mspIntegrator[0].name
+    return value
+  }
+
+  const displayInstaller = () => {
+    const value = !mspInstaller || mspInstaller.length === 0 ? '--' : mspInstaller[0].name
+    return value
   }
 
   const onChange = (e: RadioChangeEvent) => {
     setTrialMode(e.target.value)
   }
 
-  const AddCustomerSubscriptionForm = () => {
+  const checkAvailableLicense = (entitlements: MspAssignmentSummary[]) => {
+    const availableLicense = entitlements.filter(p => p.remainingDevices > 0)
+    setAvailableLicense(availableLicense)
+  }
+
+  const WifiSubscription = () => {
+    const wifiLicenses = availableLicense.filter(p => p.deviceType === 'MSP_WIFI')
+
+    return <>
+      {wifiLicenses.map(license =>
+        <div >
+          <UI.FieldLabelSubs width='275px'>
+            <label>{intl.$t({ defaultMessage: 'WiFi Subscription' })}</label>
+            <Form.Item
+              name='wifiLicense'
+              label=''
+              initialValue={0}
+              rules={[
+                { required: true },
+                { min: 0 },
+                { max: license.remainingDevices },
+                { validator: (_, value) => excludeExclamationRegExp(value) }
+              ]}
+              children={<Input/>}
+              style={{ paddingRight: '20px' }}
+            />
+            <label>devices out of {license.remainingDevices} available</label>
+          </UI.FieldLabelSubs>
+        </div> )}
+    </>
+  }
+
+  const SwitchSubscription = () => {
+    const switchLicenses = availableLicense.filter(p => p.deviceType === 'MSP_SWITCH')
+    return <>
+      {switchLicenses.map(license =>
+        <div >
+          <UI.FieldLabelSubs width='275px'>
+            <label>
+              {EntitlementUtil.deviceSubTypeToText(
+                license.deviceSubType as EntitlementDeviceSubType)}
+            </label>
+            <Form.Item
+              name={license.deviceSubType}
+              label=''
+              initialValue={0}
+              rules={[
+                { required: true },
+                { min: 0 },
+                { max: license.remainingDevices },
+                { validator: (_, value) => excludeExclamationRegExp(value) }
+              ]}
+              children={<Input/>}
+              style={{ paddingRight: '20px' }}
+            />
+            <label>devices out of {license.remainingDevices} available</label>
+          </UI.FieldLabelSubs>
+        </div> )}
+    </>
+  }
+
+  const CustomerSubscription = () => {
+    const today = EntitlementUtil.getServiceStartDate()
+
     return <>
       <h4>{intl.$t({ defaultMessage: 'Start service in' })}</h4>
       <Form.Item
-        name='otpSelection'
+        name='trialMode'
         initialValue={true}
       >
         <Radio.Group onChange={onChange}>
@@ -338,7 +422,7 @@ export function AddMspCustomer () {
 
           <UI.FieldLabel2 width='275px' style={{ marginTop: '20px' }}>
             <label>{intl.$t({ defaultMessage: 'Trial Start Date' })}</label>
-            <label>{EntitlementUtil.getServiceStartDate()}</label>
+            <label>{today}</label>
           </UI.FieldLabel2>
           <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
             <label>{intl.$t({ defaultMessage: '30 Day Trial Ends on' })}</label>
@@ -352,7 +436,8 @@ export function AddMspCustomer () {
           <Col span={8}>
             <Subtitle level={4}>
               { intl.$t({ defaultMessage: 'Paid Subscriptions' }) }</Subtitle>
-            <UI.FieldLabelSubs width='275px'>
+            <WifiSubscription />
+            {/* <UI.FieldLabelSubs width='275px'>
               <label>{intl.$t({ defaultMessage: 'WiFi Subscription' })}</label>
               <Form.Item
                 name='wifiLicense'
@@ -362,9 +447,10 @@ export function AddMspCustomer () {
                 style={{ paddingRight: '20px' }}
               />
               <label>{intl.$t({ defaultMessage: 'devices out of 100 available' })}</label>
-            </UI.FieldLabelSubs>
+            </UI.FieldLabelSubs> */}
 
-            <UI.FieldLabelSubs width='275px'>
+            <SwitchSubscription />
+            {/* <UI.FieldLabelSubs width='275px'>
               <label>{intl.$t({ defaultMessage: 'Switch Subscription' })}</label>
               <Form.Item
                 name='SwitchLicense'
@@ -374,11 +460,11 @@ export function AddMspCustomer () {
                 style={{ paddingRight: '20px' }}
               />
               <label>{intl.$t({ defaultMessage: 'devices out of 4 available' })}</label>
-            </UI.FieldLabelSubs>
+            </UI.FieldLabelSubs> */}
 
             <UI.FieldLabel2 width='275px' style={{ marginTop: '18px' }}>
               <label>{intl.$t({ defaultMessage: 'Service Start Date' })}</label>
-              <label>{EntitlementUtil.getServiceStartDate()}</label>
+              <label>{today}</label>
             </UI.FieldLabel2>
 
             <UI.FieldLabeServiceDate width='275px' style={{ marginTop: '10px' }}>
@@ -413,6 +499,76 @@ export function AddMspCustomer () {
     </>
   }
 
+  const CustomerSummary = () => {
+    const intl = useIntl()
+    const { Paragraph } = Typography
+    return (
+      <Row gutter={20}>
+        <Col span={18}>
+          <Subtitle level={3}>{intl.$t({ defaultMessage: 'Summary' })}</Subtitle>
+          <Form.Item
+            label={intl.$t({ defaultMessage: 'Customer Name' })}
+          >
+            <Paragraph>{'test ec'}</Paragraph>
+          </Form.Item>
+          <Form.Item style={{ marginTop: '-22px' }}
+            label={intl.$t({ defaultMessage: 'Address' })}
+          >
+            <Paragraph>{address.addressLine}</Paragraph>
+          </Form.Item>
+
+          <Form.Item
+            label={intl.$t({ defaultMessage: 'MSP Administrators' })}
+          >
+            <Paragraph>{displayMspAdmins()}</Paragraph>
+          </Form.Item>
+          <Form.Item style={{ marginTop: '-22px' }}
+            label={intl.$t({ defaultMessage: 'Integrator' })}
+          >
+            <Paragraph>{displayIntegrator()}</Paragraph>
+          </Form.Item>
+          <Form.Item style={{ marginTop: '-22px' }}
+            label={intl.$t({ defaultMessage: 'Installer' })}
+          >
+            <Paragraph>{displayInstaller()}</Paragraph>
+          </Form.Item>
+
+          <Form.Item
+            label={intl.$t({ defaultMessage: 'Customer Administrator Name' })}
+          >
+            <Paragraph>{'Eric Leu'}</Paragraph>
+          </Form.Item>
+          <Form.Item style={{ marginTop: '-22px' }}
+            label={intl.$t({ defaultMessage: 'Email' })}
+          >
+            <Paragraph>{'eleu1658@yahoo.com'}</Paragraph>
+          </Form.Item>
+          <Form.Item style={{ marginTop: '-22px' }}
+            label={intl.$t({ defaultMessage: 'Role' })}
+          >
+            <Paragraph>{'Prime Administrator'}</Paragraph>
+          </Form.Item>
+
+          <Form.Item
+            label={intl.$t({ defaultMessage: 'Wi-Fi Subscriptions' })}
+          >
+            <Paragraph>{'40'}</Paragraph>
+          </Form.Item>
+          <Form.Item style={{ marginTop: '-22px' }}
+            label={intl.$t({ defaultMessage: 'Switch Subscriptions' })}
+          >
+            <Paragraph>{'25'}</Paragraph>
+          </Form.Item>
+          <Form.Item style={{ marginTop: '-22px' }}
+            label={intl.$t({ defaultMessage: 'Service Expiration Date' })}
+          >
+            <Paragraph>{'12/22/2023'}</Paragraph>
+          </Form.Item>
+        </Col>
+      </Row>
+    )
+  }
+
   return (
     <>
       <PageHeader
@@ -433,14 +589,9 @@ export function AddMspCustomer () {
         onCancel={() => navigate(linkToCustomers)}
         buttonLabel={{ submit: intl.$t({ defaultMessage: 'Add Customer' }) }}
       >
-
-        {/* <StepsForm.StepForm name='accountDetail'
-          title={intl.$t({ defaultMessage: 'Account Details' })}>
-          <AddCustomerDetailForm />
-        </StepsForm.StepForm> */}
-
         <StepsForm.StepForm name='accountDetail'
           title={intl.$t({ defaultMessage: 'Account Details' })}>
+          {/* <CustomerDetail /> */}
           <Row gutter={20}>
             <Col span={8}>
               <Subtitle level={3}>
@@ -453,7 +604,6 @@ export function AddMspCustomer () {
                 hasFeedback
                 children={<Input />}
               />
-              {/* <GoogleAddress /> */}
               <Form.Item
                 label={intl.$t({ defaultMessage: 'Address' })}
                 name={['address', 'addressLine']}
@@ -484,7 +634,7 @@ export function AddMspCustomer () {
             <Col span={10}>
               <UI.FieldLabelAdmins width='275px' style={{ marginTop: '15px' }}>
                 <label>{intl.$t({ defaultMessage: 'MSP Administrators' })}</label>
-                <Form.Item children={<div>{mspAdmins}</div>} />
+                <Form.Item children={<div>{displayMspAdmins()}</div>} />
                 <Form.Item
                   children={<UI.FieldTextLink onClick={() => manageMspAdmins()}>
                     {intl.$t({ defaultMessage: 'Manage' })}
@@ -494,13 +644,12 @@ export function AddMspCustomer () {
                 {drawerAdminVisible && <ManageAdminsDrawer
                   visible={drawerAdminVisible}
                   setVisible={setDrawerAdminVisible}
-                  tenantId={''}
-                  selected={mspAdminSelected}
+                  setSelected={selectedMspAdmins}
                 />}
               </UI.FieldLabelAdmins>
               <UI.FieldLabelAdmins width='275px' style={{ marginTop: '-12px' }}>
                 <label>{intl.$t({ defaultMessage: 'Integrator' })}</label>
-                <Form.Item children={mspIntegrator} />
+                <Form.Item children={displayIntegrator()} />
                 <Form.Item
                   children={<UI.FieldTextLink onClick={() => manageIntegrator('MSP_INTEGRATOR')}>
                     {intl.$t({ defaultMessage: 'Manage' })}
@@ -508,15 +657,14 @@ export function AddMspCustomer () {
                 />
                 {drawerIntegratorVisible && <SelectIntegratorDrawer
                   visible={drawerIntegratorVisible}
-                  setVisible={setDrawerIntegratorVisible}
-                  // tenantId={'tenantId'}
                   tenantType='MSP_INTEGRATOR'
-                  setSelected={integratorSelected}
+                  setVisible={setDrawerIntegratorVisible}
+                  setSelected={selectedIntegrators}
                 />}
               </UI.FieldLabelAdmins>
               <UI.FieldLabelAdmins width='275px' style={{ marginTop: '-16px' }}>
                 <label>{intl.$t({ defaultMessage: 'Installer' })}</label>
-                <Form.Item children={mspInstaller} />
+                <Form.Item children={displayInstaller()} />
                 <Form.Item
                   children={<UI.FieldTextLink onClick={() => manageIntegrator('MSP_INSTALLER')}>
                     {intl.$t({ defaultMessage: 'Manage' })}
@@ -524,10 +672,9 @@ export function AddMspCustomer () {
                 />
                 {drawerInstallerVisible && <SelectIntegratorDrawer
                   visible={drawerInstallerVisible}
-                  setVisible={setDrawerInstallerVisible}
-                  // tenantId={tenantId}
                   tenantType='MSP_INSTALLER'
-                  setSelected={integratorSelected}
+                  setVisible={setDrawerInstallerVisible}
+                  setSelected={selectedIntegrators}
                 />}
               </UI.FieldLabelAdmins>
             </Col>
@@ -580,11 +727,12 @@ export function AddMspCustomer () {
               />
             </Col>
           </Row>
+
         </StepsForm.StepForm>
 
         <StepsForm.StepForm name='subscriptions'
           title={intl.$t({ defaultMessage: 'Subscriptions' })}>
-          <AddCustomerSubscriptionForm></AddCustomerSubscriptionForm>
+          <CustomerSubscription />
         </StepsForm.StepForm>
 
         {(action !== 'edit') && <StepsForm.StepForm name='summary'

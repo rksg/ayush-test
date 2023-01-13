@@ -18,21 +18,22 @@ import {
 import {
   MspAdministrator,
   MspEcDelegatedAdmins,
+  roleDisplayText,
   RolesEnum
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
 interface ManageAdminsDrawerProps {
   visible: boolean
-  setVisible: (visible: boolean) => void
   tenantId?: string
-  selected: (selected?: MspAdministrator[]) => void
+  setVisible: (visible: boolean) => void
+  setSelected: (selected: MspAdministrator[]) => void
 }
 
 export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
   const { $t } = useIntl()
 
-  const { visible, setVisible, tenantId, selected } = props
+  const { visible, tenantId, setVisible, setSelected } = props
   const [resetField, setResetField] = useState(false)
   const [form] = Form.useForm()
 
@@ -73,7 +74,7 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
           }, 5000)
         })
     } else {
-      selected(selectedRows.mspAdmins)
+      setSelected(selectedRows.mspAdmins)
     }
     setVisible(false)
   }
@@ -115,11 +116,17 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
 
   const transformAdminRole = (value: RolesEnum) => {
     return <Select defaultValue={value} style={{ width: '200px' }}>
-      <Option value={'PRIME_ADMIN'}>{$t({ defaultMessage: 'Prime Admin' })}</Option>
-      <Option value={'ADMIN'}>{$t({ defaultMessage: 'Administrator' })}</Option>
-      <Option value={'OFFICE_ADMIN'}>{$t({ defaultMessage: 'Guest Manager' })}</Option>
-      <Option value={'READ_ONLY'}>{$t({ defaultMessage: 'Read Only' })}</Option>
+      {
+        Object.entries(RolesEnum).map(([label, value]) => (
+          <Option
+            key={label}
+            value={value}>{$t(roleDisplayText[value])}
+          </Option>
+        ))
+      }
     </Select>
+
+
   }
 
   const MspAdminTable = () => {
