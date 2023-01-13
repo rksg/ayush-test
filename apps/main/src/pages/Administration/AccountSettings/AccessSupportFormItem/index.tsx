@@ -1,6 +1,5 @@
 import { useState, useCallback, useEffect } from 'react'
 
-
 import { Col, Form, Row, Typography, Checkbox, Tooltip } from 'antd'
 import moment                                            from 'moment-timezone'
 import { useIntl }                                       from 'react-intl'
@@ -15,10 +14,10 @@ import {
   useGetEcTenantDelegationQuery,
   useGetTenantDelegationQuery
 } from '@acx-ui/rc/services'
-import { UserProfile /*trailingNorLeadingSpaces, passphraseRegExp*/ } from '@acx-ui/rc/utils'
-import { formatter }                                                  from '@acx-ui/utils'
+import { UserProfile } from '@acx-ui/rc/utils'
+import { formatter }   from '@acx-ui/utils'
 
-import { MessageMapping } from './MessageMapping'
+import { MessageMapping } from '../MessageMapping'
 
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 
@@ -47,19 +46,26 @@ const AccessSupportFormItem = (props: AccessSupportFormItemProps) => {
 
   let isMspDelegateEC = false
   if (userProfileData?.varTenantId && !showMfa) {
-    isMspDelegateEC = isMspEc ? true : false
+    isMspDelegateEC = isMspEc
   }
 
-  const { data: ecTenantDelegationData }
-    = useGetEcTenantDelegationQuery({ params }, { skip: !isMspDelegateEC })
-  const { data: tenantDelegationData }
-    = useGetTenantDelegationQuery({ params }, { skip: isMspDelegateEC })
+  const {
+    data: ecTenantDelegationData,
+    isLoading: isLoadingEcTenantDelegation,
+    isFetching: isFetchingEcTenantDelegation
+  } = useGetEcTenantDelegationQuery({ params }, { skip: !isMspDelegateEC })
+  const {
+    data: tenantDelegationData,
+    isLoading: isLoadingTenantDelegation,
+    isFetching: isFetchingTenantDelegation
+  }= useGetTenantDelegationQuery({ params }, { skip: isMspDelegateEC })
 
-
-  const updateExpirationDate = useCallback((responseExpiryDate: Date | undefined) => {
+  const updateExpirationDate = useCallback((responseExpiryDate: string | undefined) => {
     if (responseExpiryDate) {
-      setExpiryDate(formatter('dateTimeFormat')(responseExpiryDate))
-      const endDate = moment(expiryDate)
+      const newExpiryDate = formatter('dateTimeFormat')(responseExpiryDate)
+      setExpiryDate(newExpiryDate)
+
+      const endDate = moment(responseExpiryDate)
       const firstDay = moment()
       const dayDifference = Math.round(endDate.diff(firstDay, 'days', true))
       const hourDifference = Math.round(endDate.diff(firstDay, 'hours', true))
@@ -67,16 +73,17 @@ const AccessSupportFormItem = (props: AccessSupportFormItemProps) => {
 
       if (dayDifference > 1 || hourDifference >= 24) {
         setCountDown(dayDifference + (dayDifference === 1 ? ' day' : ' days'))
-      } else if (hourDifference > 1 || minutesDifference >= 60) { // less than a day
+      } else if (hourDifference > 1 || minutesDifference >= 60) {
+        // less than a day
         setCountDown(hourDifference + (hourDifference === 1 ? ' hour' : ' hours'))
-      } else if (minutesDifference > 0) { // less than an hour
+      } else if (minutesDifference > 0) {
+        // less than an hour
         setCountDown('less than 1 hour')
       } else {
-        // revoke support
-        // this.revokeSupport()
+        disableAccessSupport({ params: { tenantId: params.tenantId } })
       }
     }
-  }, [expiryDate])
+  }, [disableAccessSupport, params])
 
   const handleAccessSupportChange = (e: CheckboxChangeEvent) => {
     const isChecked = e.target.checked
@@ -87,36 +94,39 @@ const AccessSupportFormItem = (props: AccessSupportFormItemProps) => {
 
   useEffect(() => {
     updateExpirationDate(ecTenantDelegationData?.expiryDate || tenantDelegationData?.expiryDate)
-    // eslint-disable-next-line max-len
-    setIsSupportAccessEnabled(Boolean(ecTenantDelegationData?.isAccessSupported || tenantDelegationData?.isAccessSupported))
+    setIsSupportAccessEnabled(
+      Boolean(ecTenantDelegationData?.isAccessSupported || tenantDelegationData?.isAccessSupported)
+    )
   }, [ecTenantDelegationData, tenantDelegationData, updateExpirationDate])
 
   const isSupportUser = Boolean(userProfileData?.support)
-  const isUpdating = isEnableAccessSupportUpdating || isDisableAccessSupportUpdating
+  const isUpdating = isLoadingEcTenantDelegation
+  || isLoadingTenantDelegation
+  || isFetchingEcTenantDelegation
+  || isFetchingTenantDelegation
+  || isEnableAccessSupportUpdating
+  || isDisableAccessSupportUpdating
   const isDisabled = isSupportUser || isUpdating
 
-  // TODO: add tooltip on Checkbox
   return (
     <Row gutter={24}>
       <Col span={10}>
-        <Form.Item
-          valuePropName='checked'
-          tooltip={
-            <Tooltip
-              title={isUpdating ?
-                $t({ defaultMessage: 'Updating, please wait' }) :
-                isDisabled ? $t({ defaultMessage: 'You are not allowed to change this' }) : ''}
-            />}
-        >
-          <Checkbox
-            onChange={handleAccessSupportChange}
-            checked={isSupportAccessEnabled}
-            value={isSupportAccessEnabled}
-            style={{ paddingRight: '5px' }}
-            disabled={isDisabled}
+        <Form.Item>
+          <Tooltip
+            title={isUpdating ?
+              $t({ defaultMessage: 'Updating, please wait' }) :
+              isDisabled ? $t({ defaultMessage: 'You are not allowed to change this' }) : ''}
           >
-            {$t({ defaultMessage: 'Enable access to Ruckus support' })}
-          </Checkbox>
+            <Checkbox
+              onChange={handleAccessSupportChange}
+              checked={isSupportAccessEnabled}
+              value={isSupportAccessEnabled}
+              style={{ paddingRight: '5px' }}
+              disabled={isDisabled}
+            >
+              {$t({ defaultMessage: 'Enable access to Ruckus support' })}
+            </Checkbox>
+          </Tooltip>
         </Form.Item>
 
         <SpaceWrapper style={{

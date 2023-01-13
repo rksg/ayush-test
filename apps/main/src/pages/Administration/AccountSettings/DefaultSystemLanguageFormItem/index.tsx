@@ -4,15 +4,15 @@ import { useIntl }                            from 'react-intl'
 
 import { cssStr } from '@acx-ui/components'
 
-import { MessageMapping } from './MessageMapping'
+import { MessageMapping } from '../MessageMapping'
 
 
 const supportedLangs = [{ label: 'English', value: 'en' }]
 
 const DefaultSystemLanguageFormItem = () => {
   const { $t } = useIntl()
-  const handleDefaultLanguageChange = () => {}
 
+  // TODO: wait for UX design on this feature, currently only support "en"
   return (
     <Row gutter={24}>
       <Col span={10}>
@@ -20,9 +20,8 @@ const DefaultSystemLanguageFormItem = () => {
           label={$t({ defaultMessage: 'Default System Language' })}
         >
           <Select
-            value='en'
+            value={supportedLangs[0].value}
             options={supportedLangs}
-            onChange={handleDefaultLanguageChange}
             style={{ width: '200px' }}
           />
         </Form.Item>

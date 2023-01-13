@@ -9,7 +9,7 @@ import { useUpdateMFAAccountMutation }   from '@acx-ui/rc/services'
 import { MFAStatus, MFASession }         from '@acx-ui/rc/utils'
 import { useParams }                     from '@acx-ui/react-router-dom'
 
-import { MessageMapping } from './MessageMapping'
+import { MessageMapping } from '../MessageMapping'
 
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 
@@ -52,10 +52,8 @@ const MFAFormItem = (props: MFAFormItemProps) => {
   }
 
   const handleClickCopyCodes = () => {
-    const recoveryCodes = mfaTenantDetailsData?.recoveryCodes
-    if (!recoveryCodes) return
-
-    navigator.clipboard.writeText(recoveryCodes?.join('\n'))
+    const codes = mfaTenantDetailsData?.recoveryCodes ?? []
+    navigator.clipboard.writeText(codes?.join('\n'))
   }
 
   const isMfaEnabled = mfaTenantDetailsData?.tenantStatus === MFAStatus.ENABLED
@@ -64,10 +62,7 @@ const MFAFormItem = (props: MFAFormItemProps) => {
   return (
     <Row gutter={24}>
       <Col span={10}>
-        <Form.Item
-          initialValue={false}
-          valuePropName='checked'
-        >
+        <Form.Item>
           <Checkbox
             onChange={handleEnableMFAChange}
             checked={isMfaEnabled}
@@ -117,7 +112,7 @@ const MFAFormItem = (props: MFAFormItemProps) => {
               <TextArea
                 rows={5}
                 maxLength={64}
-                value={recoveryCodes?.join('\n') || ''}
+                value={recoveryCodes?.join('\n')}
               />
               <SpaceWrapper justifycontent='flex-end'>
                 <Typography.Link onClick={handleClickCopyCodes}>

@@ -9,8 +9,9 @@ import { cssStr }             from '@acx-ui/components'
 import { SpaceWrapper }       from '@acx-ui/rc/components'
 import { RecoveryPassphrase } from '@acx-ui/rc/utils'
 
+import { MessageMapping } from '../MessageMapping'
+
 import { ChangePassphraseDrawer } from './ChangePassphraseDrawer'
-import { MessageMapping }         from './MessageMapping'
 
 interface RecoveryPassphraseFormItemProps {
   className?:string;

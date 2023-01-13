@@ -11,7 +11,7 @@ import {
   useUpdateRecoveryPassphraseMutation
 } from '@acx-ui/rc/services'
 
-import { MessageMapping } from './MessageMapping'
+import { MessageMapping } from '../MessageMapping'
 
 interface ChangePassphraseDrawerProps {
   className?: string,
@@ -68,7 +68,7 @@ export const ChangePassphraseDrawer = styled((props: ChangePassphraseDrawerProps
     setPassphrase(data)
   }, [data])
 
-  const PassphraseIcon = passphraseVisible? EyeInvisibleOutlined : EyeOutlined
+  const PassphraseIcon = passphraseVisible ? EyeOutlined : EyeInvisibleOutlined
   const passphraseData = passphrase.split(' ')
 
   return (
@@ -107,7 +107,7 @@ export const ChangePassphraseDrawer = styled((props: ChangePassphraseDrawerProps
               return (
                 <Form.Item
                   key={`recovery_pass_${idx}`}
-                  name={idx}
+                  name={`recovery_pass_${idx}`}
                   noStyle
                   hasFeedback
                   rules={[

@@ -11,7 +11,7 @@ import { useGetPreferencesQuery, useUpdatePreferenceMutation } from '@acx-ui/rc/
 import { COUNTRY_CODE }                                        from '@acx-ui/rc/utils'
 import { useParams }                                           from '@acx-ui/react-router-dom'
 
-import { MessageMapping } from './MessageMapping'
+import { MessageMapping } from '../MessageMapping'
 
 const countryCodes = COUNTRY_CODE.map(item=> ({
   label: item.name,
@@ -29,16 +29,18 @@ const MapRegionFormItem = () => {
   const [updatePreferences, { isLoading: isUpdatingPreference }] = useUpdatePreferenceMutation()
 
   const handleMapRegionChange = (regionCode:string) => {
-    setCurrentRegion(regionCode)
-    saveMapRegion(regionCode)
-  }
+    if (!regionCode) return
+    // setCurrentRegion(regionCode)
 
-  const saveMapRegion = (regionCode: string) => {
     const payload = {
       global: { ...preferenceData?.global, mapRegion: regionCode }
     }
 
     updatePreferences({ params, payload })
+  }
+
+  const handleMapRegionClear = () => {
+    setCurrentRegion(preferenceData?.global.mapRegion)
   }
 
   const updateMapRegion = (regionCode: string) => {
@@ -97,6 +99,7 @@ const MapRegionFormItem = () => {
               value={currentRegion}
               options={countryCodes}
               onChange={handleMapRegionChange}
+              onClear={handleMapRegionClear}
               showSearch
               allowClear
               optionFilterProp='label'
