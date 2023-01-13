@@ -16,7 +16,7 @@ import {
   SwitchDefaultVlan,
   SwitchProfile,
   SwitchVlanUnion,
-  PortSetting,
+  PortSettingModel,
   PortsSetting,
   Switch,
   STACK_MEMBERSHIP,
@@ -139,7 +139,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
-    getPortSetting: build.query<PortSetting, RequestPayload>({
+    getPortSetting: build.query<PortSettingModel, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(SwitchUrlsInfo.getPortSetting, params)
         return {

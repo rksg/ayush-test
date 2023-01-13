@@ -1,28 +1,60 @@
-// export class PortSettingModel {
+export class PortSettingModel {
+  dhcpSnoopingTrust: boolean
+  id: string
+  ipsg: boolean
+  lldpEnable: boolean
+  lldpQos: LldpQosModel[]
+  poeCapability: boolean
+  poeClass: string
+  poeEnable: boolean
+  poePriority: number
+  port: string
+  poeBudget?: number
+  portEnable: boolean
+  portProtected: boolean
+  portSpeed: string
+  revert: boolean
+  rstpAdminEdgePort: boolean
+  stpBpduGuard: boolean
+  stpRootGuard: boolean
+  switchId: string
+  switchMac: string
+  taggedVlans?: string[]
+  untaggedVlan?: Number | string
+  voiceVlan: number | string
+  egressAcl?: string
+  ingressAcl?: string
+  switchSerialNumber: string
 
-//   // TODO: complete whole model attributes
-//   id: string;
-//   port: string;
-//   name: string;
-//   portEnable: boolean;
-//   poeEnable: boolean;
-//   poeClass: string;
-//   poePriority;
-//   portProtected: boolean;
-
-//   // @Matches(new RegExp('^([1-8][0-9]{3}|9[0-8][0-9]{2}|99[0-8][0-9]|999[0-9]|[12][0-9]{4}|30000)$'), {
-//   //   message: 'Poe Budget can only be from 1000 - 30000',
-//   // })
-//   poeBudget: string;
-
-//   constructor() {
-//     this.id = '';
-//     this.port = '';
-//     this.poeClass = '';
-//     this.poeBudget = '';
-//     this.portProtected = false;
-//   }
-// }
+  constructor () {
+    this.dhcpSnoopingTrust = false
+    this.id = ''
+    this.ipsg = false
+    this.lldpEnable = false
+    this.lldpQos = []
+    this.poeCapability = false
+    this.poeClass = ''
+    this.poeEnable = false
+    this.poePriority = 0
+    this.port = ''
+    this.poeBudget = 0
+    this.portEnable = false
+    this.portProtected = false
+    this.portSpeed = ''
+    this.revert = false
+    this.rstpAdminEdgePort = false
+    this.stpBpduGuard = false
+    this.stpRootGuard = false
+    this.switchId = ''
+    this.switchMac = ''
+    this.taggedVlans = []
+    this.untaggedVlan = ''
+    this.voiceVlan = ''
+    this.egressAcl = ''
+    this.ingressAcl = ''
+    this.switchSerialNumber = ''
+  }
+}
 
 export enum QOS_APP_Type {
   'Guest-voice' = 'GUEST_VOICE',
@@ -43,24 +75,9 @@ export enum QOS_VLAN_Type {
 
 export class LldpQosModel {
   id: string = ''
-
   applicationType: QOS_APP_Type = QOS_APP_Type['Guest-voice']
-
   qosVlanType: QOS_VLAN_Type = QOS_VLAN_Type['Priority-tagged']
-
   vlanId?: number = 0
-
-  // @Matches(new RegExp('^([0-7])$'), {
-  //   message: 'Enter a valid number between 0 and 7',
-  // })
   priority?: number = 0
-
-  // @IsNotEmpty({
-  //   message: ValidationMessagesHelperService.getValidationMessage('required'),
-  // })
-  // @Matches(new RegExp('^([0-9]|[1-5][0-9]|6[0-3])$'), {
-  //   message: 'Enter a valid number between 0 and 63',
-  // })
   dscp: number = 0
-
 }

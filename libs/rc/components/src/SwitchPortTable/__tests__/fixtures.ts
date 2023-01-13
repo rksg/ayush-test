@@ -459,7 +459,7 @@ export const portsSetting = {
     portProtected: true,
     portSpeed: 'AUTO',
     ports: ['1/1/4', '1/1/6'],
-    revert: true,
+    revert: false,
     rstpAdminEdgePort: true,
     stpBpduGuard: true,
     stpRootGuard: true,

@@ -78,19 +78,6 @@ export const getSwitchModel = (serial: string) => {
   return modelMap.get(productCode)
 }
 
-export const _isEmpty = (params: unknown) => {
-  if (params == null) {
-    return true
-  } else if (params === undefined) {
-    return true
-  } else if (params === 'undefined') {
-    return true
-  } else if (params === '') {
-    return true
-  }
-  return false
-}
-
 export const transformSwitchStatus = (switchStatusEnum: SwitchStatusEnum, configReady = true,
   syncedSwitchConfig = true, suspendingDeployTime = '') => {
   const { $t } = getIntl()
@@ -215,19 +202,18 @@ export const getStackMemberStatus = (unitStatus: string, isDefaultMember?: boole
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const showGeneralError = (error: any) => {
+export const showGeneralError = (error: any) => { // TODO: check res format
   const { $t } = getIntl()
-
-  let error_message = ''
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  error?.errors?.forEach((err: any) => {
-    error_message += (err?.message + '. ')
-  })
 
   showActionModal({
     type: 'error',
-    title: $t({ defaultMessage: 'Error' }),
-    content: error_message
+    title: $t({ defaultMessage: 'Server Error' }),
+    content: $t({
+      defaultMessage: 'An internal error has occurred. Please contact support.'
+    }),
+    customContent: {
+      action: 'SHOW_ERRORS',
+      errorDetails: error?.data
+    }
   })
 }

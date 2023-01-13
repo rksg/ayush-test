@@ -234,7 +234,6 @@ export function SwitchPortTable ({ isVenueLevel }: {
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
       rowKey='portId'
-      // TODO
       rowActions={rowActions}
       rowSelection={{
         type: 'checkbox',
@@ -252,7 +251,7 @@ export function SwitchPortTable ({ isVenueLevel }: {
       actions={!isVenueLevel
         ? [{
           label: $t({ defaultMessage: 'Manage LAG' }),
-          onClick: () => { }
+          onClick: () => { } // TODO
         }]
         : []
       }

@@ -3,8 +3,8 @@ import { useState } from 'react'
 import { DefaultOptionType } from 'antd/lib/select'
 import { useIntl }           from 'react-intl'
 
-import { Table, TableProps } from '@acx-ui/components'
-import { LldpQosModel }      from '@acx-ui/rc/utils'
+import { Table, TableProps }                         from '@acx-ui/components'
+import { LldpQosModel, QOS_APP_Type, QOS_VLAN_Type } from '@acx-ui/rc/utils'
 
 import { EditLldpModal } from './editLldpModal'
 
@@ -27,17 +27,31 @@ export function LldpQOSTable (props : {
   const [lldpModalvisible, setLldpModalvisible] = useState(false)
   const [editRowId, setEditRowId] = useState('')
 
+  const applicationTypeMap: { [key: string]: string }
+  = Object.entries(QOS_APP_Type)
+    .reduce((result, [value, key]: [string, string]) => {
+      return { ...result, [key]: value }
+    }, {})
+
+  const qosVlanTypeMap: { [key: string]: string }
+  = Object.entries(QOS_VLAN_Type)
+    .reduce((result, [value, key]: [string, string]) => {
+      return { ...result, [key]: value }
+    }, {})
+
   const columns: TableProps<LldpQosModel>['columns'] = [{
     key: 'applicationType',
     title: $t({ defaultMessage: 'Application Type' }),
     width: 150,
     dataIndex: 'applicationType',
-    defaultSortOrder: 'ascend'
+    defaultSortOrder: 'ascend',
+    render: (data) => applicationTypeMap[data as keyof typeof applicationTypeMap]
   }, {
     key: 'qosVlanType',
     title: $t({ defaultMessage: 'QoS VLAN Type' }),
     width: 125,
-    dataIndex: 'qosVlanType'
+    dataIndex: 'qosVlanType',
+    render: (data) => qosVlanTypeMap[data as keyof typeof qosVlanTypeMap]
   }, {
     key: 'vlanId',
     title: $t({ defaultMessage: 'VLAN ID' }),

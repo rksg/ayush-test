@@ -29,7 +29,7 @@ export function EditLldpModal (props: {
     editRowId,
     lldpModalvisible,
     setLldpModalvisible,
-    lldpQosList = [],
+    lldpQosList,
     setLldpQosList,
     vlansOptions
   } = props

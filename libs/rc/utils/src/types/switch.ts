@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { LldpQosModel } from '../models/PortSetting'
+import { PortSettingModel } from '../models/PortSetting'
 
 import { Acl, Vlan, SwitchModel } from './venue'
 
@@ -322,38 +322,9 @@ export class SwitchEntityEnum {
   static stackMemberlList = 'stackMemberlList'
 }
 
-export interface PortSetting {
-  dhcpSnoopingTrust: boolean
-  id: string
-  ipsg: boolean
-  lldpEnable: boolean
-  lldpQos: LldpQosModel[]
-  poeCapability: boolean
-  poeClass: string
-  poeEnable: boolean
-  poePriority: number
-  port: string
-  poeBudget?: number
-  portEnable: boolean
-  portProtected: boolean
-  portSpeed: string
-  revert: boolean
-  rstpAdminEdgePort: boolean
-  stpBpduGuard: boolean
-  stpRootGuard: boolean
-  switchId: string
-  switchMac: string
-  taggedVlans?: string[]
-  untaggedVlan?: Number | string
-  voiceVlan: number | string
-  egressAcl?: string
-  ingressAcl?: string
-  switchSerialNumber: string
-}
-
 export interface PortsSetting {
   requestId: string,
-  response: PortSetting[]
+  response: PortSettingModel[]
 }
 export interface VePortRouted {
   defaultVlan: boolean
@@ -375,13 +346,13 @@ export interface VePortRouted {
   portNumber: string
 }
 
-export interface ProfileVlan {
-  defaultVlan: boolean
-  profileLevel: boolean
-  vlanConfigName?: string
-  vlanId: number
-  switchId: string
-}
+// export interface ProfileVlan {
+//   defaultVlan: boolean
+//   profileLevel: boolean
+//   vlanConfigName?: string
+//   vlanId: number
+//   switchId: string
+// }
 
 export interface SwitchDefaultVlan {
   defaultVlanId: number
@@ -398,7 +369,7 @@ export interface SwitchVlan {
 }
 
 export interface SwitchVlanUnion {
-  profileVlan: ProfileVlan[]
+  profileVlan: SwitchVlan[]
   switchDefaultVlan: SwitchVlan[]
   switchVlan: SwitchVlan[]
 }
@@ -427,5 +398,5 @@ export interface SwitchProfile {
 
 export interface SaveSwitchProfile {
   switchId: string,
-  port: PortSetting[]
+  port: PortSettingModel[]
 }

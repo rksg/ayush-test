@@ -1,3 +1,5 @@
+import _ from 'lodash'
+
 interface MODELS_PORTSPEED {
   start?: string,
   end?: string,
@@ -510,7 +512,7 @@ const ICX_MODELS_PORTSPEED: Record<string, MODELS_PORTSPEED | MODELS_PORTSPEED[]
 export const getPortSpeedOptions = (model: string, port: string) => {
   const switchCapacityList = ICX_MODELS_PORTSPEED[model] as MODELS_PORTSPEED[]
   let portSpeedOptions = getDefaultPortSpeedOption()
-  if (!_isEmpty(switchCapacityList)) {
+  if (!_.isEmpty(switchCapacityList)) {
     switchCapacityList.forEach((switchCapacity: MODELS_PORTSPEED) => {
       if (_isAmongPortRange(port, switchCapacity?.start || '', switchCapacity?.end || '')) {
         portSpeedOptions = switchCapacity.capacity
@@ -536,15 +538,4 @@ function convertPortToNumber (port: string) {
   const portArray = port.split('/')
   const unitId = 1 //The UnitID should be ignored to get the port speed options.
   return (unitId * 10000) + Number(portArray[1]) * 100 + Number(portArray[2])
-}
-
-function _isEmpty (params: unknown) {
-  if (params == null) {
-    return true
-  } else if (params === undefined) {
-    return true
-  } else if (params === '') {
-    return true
-  }
-  return false
 }

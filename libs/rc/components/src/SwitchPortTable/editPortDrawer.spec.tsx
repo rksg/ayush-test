@@ -42,7 +42,7 @@ const editPortVlans = async (inputTagged, inputUntagged) => {
     const taggedInput = await within(taggedTabPanel).findByTestId('tagged-input')
     fireEvent.change(taggedInput, { target: { value: inputTagged } })
     expect(within(taggedTabPanel).queryByText(/VLAN-ID-55/)).not.toBeInTheDocument()
-    fireEvent.click(await within(dialog[1]).findByText(inputTagged, { exact: false }))
+    fireEvent.click(await within(taggedTabPanel).findByText(inputTagged, { exact: true }))
   }
 
   if (inputUntagged) {
@@ -52,7 +52,10 @@ const editPortVlans = async (inputTagged, inputUntagged) => {
     fireEvent.change(untaggedInput, { target: { value: inputUntagged } })
     fireEvent.click(await within(untaggedTabPanel).findByText(/VLAN-ID-22/))
   }
-  fireEvent.click(await within(dialog[1]).findByRole('button', { name: 'OK' }))
+  // eslint-disable-next-line testing-library/no-unnecessary-act
+  await act(async () => {
+    fireEvent.click(await within(dialog[1]).findByRole('button', { name: 'OK' }))
+  })
 }
 
 describe('EditPortDrawer', () => {
@@ -137,7 +140,7 @@ describe('EditPortDrawer', () => {
       const budgetInput = await screen.findByTestId('poe-budget-input')
       expect(budgetInput).not.toBeDisabled()
       // eslint-disable-next-line testing-library/no-unnecessary-act
-      act(() => {
+      await act(() => {
         fireEvent.change(budgetInput, { target: { value: '1000' } })
       })
       expect(await screen.findByRole('combobox', { name: /PoE Class/ })).toBeDisabled()
@@ -181,7 +184,7 @@ describe('EditPortDrawer', () => {
       await user.click(await screen.findByRole('combobox', { name: /PoE Class/ }))
       await user.click(await screen.findByText('2 (802.3af 7.0 W)'))
       expect(await screen.findByTestId('poe-budget-input')).toBeDisabled()
-      editPortVlans('VLAN-ID-66', 'VLAN-ID-')
+      await editPortVlans('VLAN-ID-66', 'VLAN-ID-')
 
       fireEvent.click(await screen.findByRole('button', { name: 'Apply' }))
     })
@@ -251,13 +254,16 @@ describe('EditPortDrawer', () => {
       await screen.findByText('Selected Port')
       // expect(await screen.findByTestId('voice-vlan-select')).toHaveValue(1)
 
-      editPortVlans('VLAN-ID-66', 'VLAN-ID-')
+      await editPortVlans('VLAN-ID-66', 'VLAN-ID-')
       // expect(await screen.findByTestId('voice-vlan-select')).toHaveValue('')
       // let options = getAllByTestId('select-option')
       // expect(options[0].selected).toBeFalsy();
       // expect(await screen.findByRole('option', {name: 'Select VLAN...'}).selected).toBe(true)
 
-      fireEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+      // eslint-disable-next-line testing-library/no-unnecessary-act
+      await act(async () => {
+        fireEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+      })
       await screen.findByText('Modify Uplink Port?')
       fireEvent.click(await screen.findByRole('button', { name: 'Apply Changes' }))
     })
@@ -268,7 +274,7 @@ describe('EditPortDrawer', () => {
           (_, res, ctx) => res(ctx.json({
             ...portSetting[0],
             voiceVlan: 2,
-            taggedVlan: ['2'],
+            taggedVlan: ['1', '2'],
             revert: true
           }))
         ),
@@ -296,8 +302,9 @@ describe('EditPortDrawer', () => {
       await screen.findByText('Edit Port')
       await screen.findByText('Selected Port')
       await screen.findByText('Applied at venue')
-      // editPortVlans('VLAN-ID-77', 'VLAN-ID-')
-      // fireEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+      await editPortVlans('VLAN-ID-66', '')
+      fireEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+      // await screen.findByText('Server Error')
     })
 
     it('should handle untagged vlans by venue correctly', async () => {
@@ -332,6 +339,7 @@ describe('EditPortDrawer', () => {
       await screen.findByText('Edit Port')
       await screen.findByText('Selected Port')
       await screen.findByText('Applied at venue')
+      fireEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     })
   })
 
@@ -340,8 +348,11 @@ describe('EditPortDrawer', () => {
       mockServer.use(
         rest.post(SwitchUrlsInfo.getPortsSetting.url,
           (_, res, ctx) => res(ctx.json({
-            ...portsSetting[1],
-            ...portsSetting[1]
+            ...portsSetting,
+            response: [
+              portsSetting?.response[1],
+              portsSetting?.response[1]
+            ]
           }))
         )
       )
@@ -408,8 +419,8 @@ describe('EditPortDrawer', () => {
         fireEvent.click(checkboxs[5]) // Port VLANs
       })
 
-      // Customize VLAN
-      fireEvent.click(await screen.findByRole('button', { name: 'Customize' }))
+      // Edit Port VLANs
+      fireEvent.click(await screen.findByRole('button', { name: 'Edit' }))
       let dialog = await screen.findAllByRole('dialog')
       await screen.findByText('Select Port VLANs')
       const taggedTabPanel = screen.getByRole('tabpanel', { hidden: false })
@@ -418,7 +429,11 @@ describe('EditPortDrawer', () => {
       fireEvent.click(await screen.findByRole('tab', { name: 'Untagged VLANs' }))
       const untaggedTabPanel = screen.getByRole('tabpanel', { hidden: false })
       fireEvent.click(await within(untaggedTabPanel).findByText(/VLAN-ID-2/))
-      fireEvent.click(await within(dialog[1]).findByRole('button', { name: 'OK' }))
+
+      // eslint-disable-next-line testing-library/no-unnecessary-act
+      await act(async () => {
+        fireEvent.click(await within(dialog[1]).findByRole('button', { name: 'OK' }))
+      })
 
       fireEvent.click(await screen.findByRole('button', { name: 'Apply' }))
     })
@@ -491,16 +506,64 @@ describe('EditPortDrawer', () => {
       await screen.findByText('Edit Port')
       await screen.findByText('Selected Port')
 
-      const row = await screen.findByRole('row', { name: /GUEST_VOICE/ }) ////
+      const row = await screen.findByRole('row', { name: /Guest-voice/ })
       fireEvent.click(await within(row).findByRole('radio'))
       // eslint-disable-next-line testing-library/no-unnecessary-act
       await act(async () => {
         fireEvent.click(await screen.findByRole('button', { name: 'Delete' }) )
       })
-      expect(screen.queryByRole('row', { name: /GUEST_VOICE/ })).not.toBeInTheDocument()
+      expect(screen.queryByRole('row', { name: /Guest-voice/ })).not.toBeInTheDocument()
     })
 
-    it('should apply Edit LLDP correctly', async () => {
+    it('should create LLDP correctly', async () => {
+      const user = userEvent.setup()
+      mockServer.use(
+        rest.get(SwitchUrlsInfo.getPortSetting.url,
+          (_, res, ctx) => res(ctx.json({
+            ...portSetting[1],
+            lldpQos: null
+          }))
+        )
+      )
+      render(<Provider>
+        <EditPortDrawer
+          visible={true}
+          setDrawerVisible={jest.fn()}
+          isCloudPort={false}
+          isMultipleEdit={selectedPorts?.slice(0, 1)?.length > 1}
+          isVenueLevel={false}
+          selectedPorts={selectedPorts?.slice(0, 1)}
+        />
+      </Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/overview/ports'
+        }
+      })
+
+      await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
+      await screen.findByText('Edit Port')
+      await screen.findByText('Selected Port')
+
+      fireEvent.click(await screen.findByRole('button', { name: 'Create' }))
+      const dialog = await screen.findAllByRole('dialog')
+      await screen.findByText('Add LLDP QoS')
+
+      await user.click(await screen.findByRole('combobox', { name: 'QoS VLAN Type' }))
+      await user.click(await screen.findByText('Tagged'))
+      await user.click(await screen.findByRole('combobox', { name: 'VLAN ID' }))
+      await user.click(await screen.findByText('VLAN-2'))
+      const priorityInput = await within(dialog[1]).findByLabelText('Priority')
+      fireEvent.change(priorityInput, { target: { value: '1' } })
+      const dscpInput = await within(dialog[1]).findByLabelText(/DSCP/)
+      fireEvent.change(dscpInput, { target: { value: '2' } })
+
+      user.click(await within(dialog[1]).findByRole('button', { name: 'Save' }))
+      expect(await screen.findAllByRole('row')).toHaveLength(2)
+      user.click(await screen.findByRole('button', { name: 'Apply' }))
+    })
+
+    it('should create and edit LLDP correctly', async () => {
       const user = userEvent.setup()
       mockServer.use(
         rest.get(SwitchUrlsInfo.getPortSetting.url,
@@ -527,7 +590,7 @@ describe('EditPortDrawer', () => {
       await screen.findByText('Edit Port')
       await screen.findByText('Selected Port')
 
-      // create
+      // create first
       fireEvent.click(await screen.findByRole('button', { name: 'Create' }))
       let dialog = await screen.findAllByRole('dialog')
       await screen.findByText('Add LLDP QoS')
@@ -548,18 +611,20 @@ describe('EditPortDrawer', () => {
       expect(await screen.findAllByRole('row')).toHaveLength(3)
 
       // edit lldp
-      const row = await screen.findByRole('row', { name: /GUEST_VOICE/ }) ////
+      const row = await screen.findByRole('row', { name: /Guest-voice/ })
       fireEvent.click(await within(row).findByRole('radio'))
       fireEvent.click(await screen.findByRole('button', { name: 'Edit' }) )
 
       await screen.findByText(/Edit LLDP QoS/)
       dialog = await screen.findAllByRole('dialog')
       expect(await within(dialog[1]).findByRole('button', { name: 'Save' })).toBeDisabled()
-
+      
       await user.click(await screen.findByRole('combobox', { name: 'QoS VLAN Type' }))
       await user.click(await screen.findByText('Untagged'))
       await user.click(await screen.findByRole('combobox', { name: 'QoS VLAN Type' }))
-      await user.click(await screen.findByText('Priority-tagged'))
+      const priorityTagged = await screen.findAllByText('Priority-tagged')
+      await user.click(priorityTagged[2])
+
       priorityInput = await within(dialog[1]).findByLabelText('Priority')
       // eslint-disable-next-line testing-library/no-unnecessary-act
       await act(async () => {
@@ -575,4 +640,5 @@ describe('EditPortDrawer', () => {
       fireEvent.click(await screen.findByRole('button', { name: 'Apply' }))
     })
   })
+
 })
