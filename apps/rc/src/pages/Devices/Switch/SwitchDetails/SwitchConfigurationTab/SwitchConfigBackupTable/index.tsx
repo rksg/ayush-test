@@ -203,7 +203,6 @@ export function SwitchConfigBackupTable () {
         dataSource={tableData}
         rowActions={rowActions}
         actions={rightActions}
-        pagination={false}
         onChange={tableQuery.handleTableChange}
         rowSelection={{
           type: 'checkbox',

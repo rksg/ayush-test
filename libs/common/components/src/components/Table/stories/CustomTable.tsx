@@ -82,7 +82,6 @@ export function CustomTable () {
       rowSelection={{
         type: 'checkbox'
       }}
-      pagination={false}
       actions={[{
         label: 'Add Item',
         onClick: () => showToast({ type: 'info', content: 'Add Item Clicked' })

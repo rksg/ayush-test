@@ -180,7 +180,6 @@ export function VenuesHealthDashboard ({
       <Table
         columns={columns}
         dataSource={healthData}
-        pagination={false}
         type={'compactBordered'}
         rowKey='zoneName'
       />
