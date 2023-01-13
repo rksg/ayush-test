@@ -253,13 +253,10 @@ describe('EditPortDrawer', () => {
       await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
       await screen.findByText('Edit Port')
       await screen.findByText('Selected Port')
-      // expect(await screen.findByTestId('voice-vlan-select')).toHaveValue(1)
 
       await editPortVlans('VLAN-ID-66', 'VLAN-ID-')
+      // TODO: check voice vlan value
       // expect(await screen.findByTestId('voice-vlan-select')).toHaveValue('')
-      // let options = getAllByTestId('select-option')
-      // expect(options[0].selected).toBeFalsy();
-      // expect(await screen.findByRole('option', {name: 'Select VLAN...'}).selected).toBe(true)
 
       // eslint-disable-next-line testing-library/no-unnecessary-act
       await act(async () => {
