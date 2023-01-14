@@ -64,7 +64,7 @@ export function NetworkMoreSettingsForm (props: {
           ...data.wlan,
           advancedCustomization: {
             ...data?.wlan?.advancedCustomization,
-            vlanPool: JSON.stringify(get(data, 'wlan.advancedCustomization.vlanPool'))
+            vlanPool: get(data, 'wlan.advancedCustomization.vlanPool')
           }
         },
         enableUploadLimit: data.wlan?.advancedCustomization?.userUplinkRateLimiting &&

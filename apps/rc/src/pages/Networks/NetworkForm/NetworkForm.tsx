@@ -53,7 +53,8 @@ import { SummaryForm }             from './NetworkSummary/SummaryForm'
 import {
   transferDetailToSave,
   tranferSettingsToSave,
-  transferMoreSettingsToSave
+  transferMoreSettingsToSave,
+  transferVenuesToSave
 } from './parser'
 import PortalInstance from './PortalInstance'
 import { Venues }     from './Venues/Venues'
@@ -403,7 +404,8 @@ export default function NetworkForm () {
             name='venues'
             title={intl.$t({ defaultMessage: 'Venues' })}
             onFinish={async (data) => {
-              updateSaveData(data)
+              const settingSaveData = transferVenuesToSave(data, saveState)
+              updateSaveData(settingSaveData)
               return true
             }}
           >

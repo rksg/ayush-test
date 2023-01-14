@@ -7,6 +7,8 @@ import { useParams }           from 'react-router-dom'
 import { useVlanPoolListQuery } from '@acx-ui/rc/services'
 
 import VLANPoolModal from './VLANPoolModal'
+import { VlanPool } from '@acx-ui/rc/utils'
+import _ from 'lodash'
 
 const listPayload = {
   fields: ['name', 'id'], sortField: 'name',
@@ -39,6 +41,16 @@ const VLANPoolInstance = () => {
           { required: true }
         ]}
         children={<Select
+          onChange={(value)=>{
+            const record = _.find(data, { id: value })
+            form.setFieldValue(['wlan', 'advancedCustomization','vlanPool','name'], record?.name)
+            form.setFieldValue([
+              'wlan',
+              'advancedCustomization',
+              'vlanPool',
+              'vlanMembers'
+            ], record?.vlanMembers)
+          }}
           options={[
             ...vlanPoolList
           ]}

@@ -383,3 +383,25 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
 
   return saveData
 }
+
+export function transferVenuesToSave (data: NetworkSaveData, originalData: NetworkSaveData) {
+  let venues = data.venues
+  if (venues) {
+    venues = venues.map(item=>{
+      return {
+        ...item,
+        vlanPoolId: originalData.wlan?.advancedCustomization?.vlanPool?.id
+      }
+    })
+  }
+
+  let saveData:NetworkSaveData = {
+    ...originalData,
+    venues
+  }
+
+  return saveData
+
+}
+
+
