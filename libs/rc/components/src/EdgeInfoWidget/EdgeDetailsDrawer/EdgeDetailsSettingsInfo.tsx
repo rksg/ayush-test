@@ -16,7 +16,7 @@ export const EdgeDetailsSettingsInfo = (props: EdgeDetailsSettingsInfoProps) => 
 
   const displayEnabled = (data: string, type: string) => {
     return data === 'Enabled' ?
-      $t({ defaultMessage: '{data}({type})' }, { data, type }) :
+      $t({ defaultMessage: '{data} ({type})' }, { data, type }) :
       $t({ defaultMessage: '{data}' }, { data })
   }
 
@@ -35,12 +35,12 @@ export const EdgeDetailsSettingsInfo = (props: EdgeDetailsSettingsInfoProps) => 
         }
       />
       { edgePortsSetting && edgePortsSetting.map(
-        item =>
+        (item, index) =>
           <Form.Item
             key={`port-${item.portId}`}
-            label={$t({ defaultMessage: 'Port {id}' }, { id: item.portId })}
+            label={$t({ defaultMessage: 'Port {id}' }, { id: index + 1 })}
             children={
-              displayEnabled(item.adminStatus, item.portType)
+              displayEnabled(item.adminStatus, item.type)
             }
           />
       )
