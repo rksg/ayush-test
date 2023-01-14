@@ -48,10 +48,11 @@ const list = {
 }
 const detailResult = {
   id: 1,
-  policyName: 'test',
-  vlans: 40,
-  tags: ['123','345']
+  name: 'test',
+  vlanMembers: '40',
+  description: 'desc'
 }
+
 describe('VLAN Pool Detail Page', () => {
   let params: { tenantId: string, policyId: string }
   beforeEach(async () => {
@@ -65,7 +66,7 @@ describe('VLAN Pool Detail Page', () => {
         (req, res, ctx) => res(ctx.json(list))
       ),
       rest.get(
-        VlanPoolUrls.getVLANPoolProfileDetail.url,
+        VlanPoolUrls.getVLANPoolPolicy.url,
         (req, res, ctx) => res(ctx.json(detailResult))
       )
     )

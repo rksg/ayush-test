@@ -24,9 +24,5 @@ export const VlanPoolUrls: { [key: string]: ApiInfo } = {
   getVLANPoolNetworkInstances: {
     method: 'get',
     url: '/api/tenant/:tenantId/vlanpool-policy-profile/instances/:policyId'
-  },
-  getVLANPoolProfileDetail: {
-    method: 'get',
-    url: '/api/tenant/:tenantId/vlanpool-policy-profile/:policyId'
   }
 }

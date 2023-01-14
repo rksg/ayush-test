@@ -2,16 +2,16 @@ import { useEffect } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps, Card, Loader }                                    from '@acx-ui/components'
-import { useVLANPoolNetworkInstancesQuery, useGetVLANPoolProfileDetailQuery } from '@acx-ui/rc/services'
-import { VLANPoolDetailInstances, useTableQuery }                             from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                                              from '@acx-ui/react-router-dom'
+import { Table, TableProps, Card, Loader }                                   from '@acx-ui/components'
+import { useVLANPoolNetworkInstancesQuery, useGetVLANPoolPolicyDetailQuery } from '@acx-ui/rc/services'
+import { VLANPoolDetailInstances, useTableQuery }                            from '@acx-ui/rc/utils'
+import { TenantLink, useParams }                                             from '@acx-ui/react-router-dom'
 
 export default function VLANPoolInstancesTable (){
 
   const { $t } = useIntl()
   const params = useParams()
-  const { data } = useGetVLANPoolProfileDetailQuery({ params })
+  const { data } = useGetVLANPoolPolicyDetailQuery({ params })
   const tableQuery = useTableQuery({
     useQuery: useVLANPoolNetworkInstancesQuery,
     defaultPayload: {

@@ -263,7 +263,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       providesTags: [{ type: 'Policy', id: 'DETAIL' }]
     }),
-    vLANPoolPolicy: build.query<VLANPoolPolicyType, RequestPayload>({
+    getVLANPoolPolicyDetail: build.query<VLANPoolPolicyType, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(VlanPoolUrls.getVLANPoolPolicy, params, RKS_NEW_UI)
         return {
@@ -288,16 +288,6 @@ export const policyApi = basePolicyApi.injectEndpoints({
         createHttpRequest(VlanPoolUrls.getVLANPoolNetworkInstances, params, RKS_NEW_UI)
         return {
           ...instancesRes
-        }
-      },
-      providesTags: [{ type: 'Policy', id: 'LIST' }]
-    }),
-    getVLANPoolProfileDetail: build.query<VLANPoolPolicyType | undefined, RequestPayload>({
-      query: ({ params }) => {
-        const vlanDetailReq =
-          createHttpRequest(VlanPoolUrls.getVLANPoolProfileDetail, params, RKS_NEW_UI)
-        return {
-          ...vlanDetailReq
         }
       },
       providesTags: [{ type: 'Policy', id: 'LIST' }]
@@ -330,7 +320,6 @@ export const {
   useDelVLANPoolPolicyMutation,
   useUpdateVLANPoolPolicyMutation,
   useGetVLANPoolPolicyListQuery,
-  useVLANPoolPolicyQuery,
-  useGetVLANPoolProfileDetailQuery,
+  useGetVLANPoolPolicyDetailQuery,
   useVLANPoolNetworkInstancesQuery
 } = policyApi
