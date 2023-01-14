@@ -86,6 +86,16 @@ export const mspApi = baseMspApi.injectEndpoints({
       },
       providesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
+    mspEcAdminList: build.query<MspAdministrator[], RequestPayload>({
+      query: ({ params }) => {
+        const mspEcAdminListReq =
+          createHttpRequest(MspUrlsInfo.getMspEcAdminList, params)
+        return {
+          ...mspEcAdminListReq
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
     mspEntitlementList: build.query<MspEntitlement[], RequestPayload>({
       query: ({ params }) => {
         const mspEntitlementListReq =
@@ -194,6 +204,7 @@ export const {
   useInviteCustomerListQuery,
   useDeviceInventoryListQuery,
   useMspAdminListQuery,
+  useMspEcAdminListQuery,
   useMspEntitlementListQuery,
   useMspEntitlementSummaryQuery,
   useMspAssignmentSummaryQuery,

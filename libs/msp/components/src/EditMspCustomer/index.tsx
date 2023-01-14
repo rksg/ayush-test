@@ -1,47 +1,57 @@
-import React, { useState, useRef, ChangeEventHandler, useEffect } from 'react'
+import { useState, useRef, ChangeEventHandler, useEffect } from 'react'
 
 
 import {
-  Col,
   DatePicker,
   Form,
   Input,
-  Row,
   Select,
+  Switch,
   Typography
 } from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import {
+  Button,
   GoogleMap,
-  GoogleMapMarker,
   PageHeader,
   showToast,
   StepsForm,
   StepsFormInstance,
   Subtitle
 } from '@acx-ui/components'
-import { get } from '@acx-ui/config'
-// import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { SearchOutlined } from '@acx-ui/icons'
+import { SearchOutlined }        from '@acx-ui/icons'
 import {
   useAddCustomerMutation,
+  useMspEcAdminListQuery,
   useUpdateCustomerMutation,
-  useGetMspEcQuery
+  useGetMspEcQuery,
+  // useGetMspEcDelegatedAdminsQuery,
+  useMspAssignmentSummaryQuery
 } from '@acx-ui/rc/services'
 import {
   Address,
   dateDisplayText,
   DateSelectionEnum,
+  MspAdministrator,
+  MspEc,
+  MspEcData,
+  roleDisplayText,
   EntitlementUtil,
-  MspEcData
+  excludeExclamationRegExp,
+  EntitlementDeviceSubType,
+  MspAssignmentSummary
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
+
+import { ManageAdminsDrawer } from '../ManageAdminsDrawer'
+// eslint-disable-next-line import/order
+import { SelectIntegratorDrawer } from '../SelectIntegratorDrawer'
 
 import * as UI from '../styledComponents'
 
@@ -90,21 +100,7 @@ export const retrieveCityState = (addressComponents: Array<AddressComponent>, co
 
 export const addressParser = async (place: google.maps.places.PlaceResult) => {
   const address: Address = {}
-  const lat = place.geometry?.location?.lat()
-  const lng = place.geometry?.location?.lng()
-  address.latitude = lat
-  address.longitude = lng
-
-  // eslint-disable-next-line max-len
-  const timezone = await fetch(`https://maps.googleapis.com/maps/api/timezone/json?location=${lat},${lng}&timestamp=${Math.floor(Date.now() / 1000)}&key=${get('GOOGLE_MAPS_KEY')}`)
-    .then(res => res.json())
-  address.timezone = timezone.timeZoneId
   address.addressLine = place.formatted_address
-
-  const latlng = new google.maps.LatLng({
-    lat: Number(lat),
-    lng: Number(lng)
-  })
 
   const countryObj = place?.address_components?.find(
     el => el.types.includes('country')
@@ -122,7 +118,7 @@ export const addressParser = async (place: google.maps.places.PlaceResult) => {
         ? `${cityObj.city}, ${cityObj.state}` : cityObj.city
     }
   }
-  return { latlng, address }
+  return { address }
 }
 
 const defaultAddress: Address = {
@@ -155,29 +151,46 @@ export interface EcExtended {
 export function EditMspCustomer () {
   const intl = useIntl()
   const isMapEnabled = true//useIsSplitOn(Features.G_MAP)
+
   const navigate = useNavigate()
-  const formRef = useRef<StepsFormInstance<MspEcData>>()
-  const { Option } = Select
-  // const params = useParams()
-  const { Paragraph } = Typography
-
   const linkToCustomers = useTenantLink('/dashboard/mspcustomers', 'v')
-
-  const [addCustomer] = useAddCustomerMutation()
-
-  const [updateCustomer] = useUpdateCustomerMutation()
-  const [zoom, setZoom] = useState(1)
-  const [center, setCenter] = useState<google.maps.LatLngLiteral>({
-    lat: 0,
-    lng: 0
-  })
-  const [marker, setMarker] = React.useState<google.maps.LatLng>()
-  const [address, updateAddress] = useState<Address>(isMapEnabled? {} : defaultAddress)
+  const formRef = useRef<StepsFormInstance<MspEcData>>()
 
   const { action, tenantId, mspEcTenantId } = useParams()
+
+  const [isTrialMode, setTrialMode] = useState(true)
+  const [isTrialActive, setTrialActive] = useState(true)
+  const [mspAdmins, setAdministrator] = useState([] as MspAdministrator[])
+  const [mspIntegrator, setIntegrator] = useState([] as MspEc[])
+  const [mspInstaller, setInstaller] = useState([] as MspEc[])
+  const [mspEcAdmins, setMspEcAdmins] = useState([] as MspAdministrator[])
+  const [availableLicense, setAvailableLicense] = useState([] as MspAssignmentSummary[])
+  const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
+  const [drawerIntegratorVisible, setDrawerIntegratorVisible] = useState(false)
+  const [drawerInstallerVisible, setDrawerInstallerVisible] = useState(false)
+  const [address, updateAddress] = useState<Address>(isMapEnabled? {} : defaultAddress)
+
+  const [addCustomer] = useAddCustomerMutation()
+  const [updateCustomer] = useUpdateCustomerMutation()
+
+  const { Option } = Select
+  const { Paragraph } = Typography
+
   const { data } = useGetMspEcQuery({ params: { mspEcTenantId } })
+  // const { data: delegatedAdmins } = useGetMspEcDelegatedAdminsQuery({ params: { mspEcTenantId } })
+  const { data: ecAdministrators } = useMspEcAdminListQuery({ params: { mspEcTenantId } })
+  const { data: licenseSummary } = useMspAssignmentSummaryQuery({ params: useParams() })
 
   useEffect(() => {
+    if (licenseSummary) {
+      checkAvailableLicense(licenseSummary)
+    }
+    // if (delegatedAdmins) {
+    //   setDelegateAdmins(delegatedAdmins)
+    // }
+    if (ecAdministrators) {
+      setMspEcAdmins(ecAdministrators)
+    }
     if (data) {
 
       // form.setFieldsValue({
@@ -193,41 +206,19 @@ export function EditMspCustomer () {
         // service_expiration_date: data?.service_expiration_date
       })
       formRef.current?.setFieldValue(['address', 'addressLine'], data?.street_address)
-
+      data?.is_active === 'true' ? setTrialActive(true) : setTrialActive(false)
+      setTrialMode(false)
       // updateAddress(data?.street_address as Address)
 
-      // if (isMapEnabled && window.google) {
-      //   // const latlng = new google.maps.LatLng({
-      //   //   lat: Number(data?.address?.latitude),
-      //   //   lng: Number(data?.address?.longitude)
-      //   // })
-      //   // setMarker(latlng)
-      //   // setCenter(latlng.toJSON())
-      //   // setZoom(16)
-      // }
     }
 
     if ( action !== 'edit') { // Add mode
       const initialAddress = isMapEnabled ? '' : defaultAddress.addressLine
       formRef.current?.setFieldValue(['address', 'addressLine'], initialAddress)
     }
-  }, [data, isMapEnabled, window.google])
+  }, [data, licenseSummary, ecAdministrators, isMapEnabled])
 
-  // const venuesListPayload = {
-  //   searchString: '',
-  //   fields: ['name', 'id'],
-  //   searchTargetFields: ['name'],
-  //   filters: {},
-  //   pageSize: 10000
-  // }
-  // const [venuesList] = useLazyVenuesListQuery()
   const [sameCountry, setSameCountry] = useState(true)
-  // const nameValidator = async (value: string) => {
-  //   const payload = { ...venuesListPayload, searchString: value }
-  //   const list = (await venuesList({ params, payload }, true)
-  //     .unwrap()).data.filter(n => n.id !== data?.id).map(n => ({ name: n.name }))
-  //   return checkObjectNotExists(list, { name: value } , intl.$t({ defaultMessage: 'Venue' }))
-  // }
   const addressValidator = async (value: string) => {
     const isEdit = action === 'edit'
     const isSameValue = value ===
@@ -246,7 +237,7 @@ export function EditMspCustomer () {
     const autocomplete = new google.maps.places.Autocomplete(event.target)
     autocomplete.addListener('place_changed', async () => {
       const place = autocomplete.getPlace()
-      const { latlng, address } = await addressParser(place)
+      const { address } = await addressParser(place)
       const isSameCountry = true//data && (data?.address.country === address.country) || false
       setSameCountry(isSameCountry)
       let errorList = []
@@ -262,10 +253,7 @@ export function EditMspCustomer () {
         errors: errorList
       }])
 
-      setMarker(latlng)
-      setCenter(latlng.toJSON())
       updateAddress(address)
-      setZoom(16)
     })
   }
 
@@ -328,168 +316,292 @@ export function EditMspCustomer () {
     }
   }
 
-  const EditCustomerMspAdminsForm = () => {
+  const manageMspAdmins = () => {
+    setDrawerAdminVisible(true)
+  }
+  const manageIntegrator = (type: string) => {
+    type === 'MSP_INSTALLER' ? setDrawerInstallerVisible(true) : setDrawerIntegratorVisible(true)
+  }
+
+  const selectedMspAdmins = (selected: MspAdministrator[]) => {
+    setAdministrator(selected)
+  }
+
+  const selectedIntegrators = (tenantType: string, selected: MspEc[] ) => {
+    (tenantType === 'MSP_INTEGRATOR') ? setIntegrator(selected) : setInstaller(selected)
+  }
+
+  const displayMspAdmins = () => {
+    if (!mspAdmins || mspAdmins.length === 0)
+      return '--'
     return <>
-      <Row gutter={10}>
-        <Col span={10}>
-          <UI.FieldLabelAdmins width='275px' style={{ marginTop: '15px' }}>
-            <label>{intl.$t({ defaultMessage: 'MSP Administrators' })}</label>
-            <Form.Item
-              children={
-                <><div>{'eleu168@yahoo.com'}</div>
-                  <div>{'gssjssjhs@yahoo.com'}</div></>
-              }
-            />
-            <Form.Item
-              children={<UI.FieldTextLink >
-                {intl.$t({ defaultMessage: 'Manage' })}
-              </UI.FieldTextLink>
-              }
-            />
-          </UI.FieldLabelAdmins>
-          <UI.FieldLabelAdmins width='275px' style={{ marginTop: '-12px' }}>
-            <label>{intl.$t({ defaultMessage: 'Integrator' })}</label>
-            <Form.Item
-              children={'eleu168@yahoo.com'}
-            />
-            <Form.Item
-              children={<UI.FieldTextLink >
-                {intl.$t({ defaultMessage: 'Manage' })}
-              </UI.FieldTextLink>}
-            />
-          </UI.FieldLabelAdmins>
-          <UI.FieldLabelAdmins width='275px' style={{ marginTop: '-16px' }}>
-            <label>{intl.$t({ defaultMessage: 'Installer' })}</label>
-            <Form.Item
-              children={'hssasjjsks@yahoo.com'}
-            />
-            <Form.Item
-              children={<UI.FieldTextLink >
-                {intl.$t({ defaultMessage: 'Manage' })}
-              </UI.FieldTextLink>}
-            />
-          </UI.FieldLabelAdmins>
-        </Col>
-      </Row>
-      <Row gutter={20}>
-        <Col span={8}>
-          <Subtitle level={3}>
-            { intl.$t({ defaultMessage: 'Customer Administrator' }) }</Subtitle>
-          <Form.Item
-            label={intl.$t({ defaultMessage: 'Name' })}
-          >
-            <Paragraph>{'Eric Leu'}</Paragraph>
-          </Form.Item>
-          <Form.Item style={{ marginTop: '-22px' }}
-            label={intl.$t({ defaultMessage: 'Email' })}
-          >
-            <Paragraph>{'eleu1658@yahoo.com'}</Paragraph>
-          </Form.Item>
-          <Form.Item style={{ marginTop: '-22px' }}
-            label={intl.$t({ defaultMessage: 'Role' })}
-          >
-            <Paragraph>{'Prime Administrator'}</Paragraph>
-          </Form.Item>
-        </Col>
-      </Row>
+      {mspAdmins.map(admin =>
+        <div style={{
+          paddingRight: '5px',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
+          overflow: 'hidden' }}>
+          {admin.email} ({intl.$t(roleDisplayText[admin.role])})
+        </div> )}
     </>
   }
 
-  const EditCustomerSubscriptionForm = () => {
-    const isTrial = true
-    const isActive = true
+  const displayIntegrator = () => {
+    const value = !mspIntegrator || mspIntegrator.length === 0 ? '--' : mspIntegrator[0].name
+    return value
+  }
+
+  const displayInstaller = () => {
+    const value = !mspInstaller || mspInstaller.length === 0 ? '--' : mspInstaller[0].name
+    return value
+  }
+
+  const displayCustomerAdmins = () => {
+    if (mspEcAdmins.length === 1) {
+      return <>
+        <Form.Item
+          label={intl.$t({ defaultMessage: 'Name' })}
+        >
+          <Paragraph>{mspEcAdmins[0].name}</Paragraph>
+        </Form.Item>
+        <Form.Item style={{ marginTop: '-22px' }}
+          label={intl.$t({ defaultMessage: 'Email' })}
+        >
+          <Paragraph>{mspEcAdmins[0].email}</Paragraph>
+        </Form.Item>
+        <Form.Item style={{ marginTop: '-22px' }}
+          label={intl.$t({ defaultMessage: 'Role' })}
+        >
+          <Paragraph>{intl.$t(roleDisplayText[mspEcAdmins[0].role])}</Paragraph>
+        </Form.Item>
+      </>
+    }
+
+    return <div style={{ marginTop: '5px', marginBottom: '30px' }}>
+      {mspAdmins.map(admin =>
+        <div style={{
+          paddingRight: '5px',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
+          overflow: 'hidden' }}>
+          {admin.email} ({intl.$t(roleDisplayText[admin.role])})
+        </div> )}
+    </div>
+  }
+
+  const checkAvailableLicense = (entitlements: MspAssignmentSummary[]) => {
+    const availableLicense = entitlements.filter(p => p.remainingDevices > 0)
+    setAvailableLicense(availableLicense)
+  }
+
+  const WifiSubscription = () => {
+    const wifiLicenses = availableLicense.filter(p => p.deviceType === 'MSP_WIFI')
+
     return <>
-      {isTrial && <Row gutter={20}>
-        <Col span={8}>
-          {isActive && <Subtitle level={3}>
-            { intl.$t({ defaultMessage: 'Subscriptions (Trial Mode)' }) }</Subtitle>}
-          {!isActive && <Subtitle level={3}>
-            { intl.$t({ defaultMessage: 'Inactive Subscriptions' }) }</Subtitle>}
-          <UI.FieldLabel2 width='275px' style={{ marginTop: '20px' }}>
+      {wifiLicenses.map(license =>
+        <div >
+          <UI.FieldLabelSubs width='275px'>
             <label>{intl.$t({ defaultMessage: 'WiFi Subscription' })}</label>
-            {isActive && <label>{intl.$t({ defaultMessage: '25 devices' })}</label>}
-            {!isActive && <label>{intl.$t({ defaultMessage: '0 devices' })}</label>}
-          </UI.FieldLabel2>
-          <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
-            <label>{intl.$t({ defaultMessage: 'Switch Subscription' })}</label>
-            {isActive && <label>{intl.$t({ defaultMessage: '25 devices' })}</label>}
-            {!isActive && <label>{intl.$t({ defaultMessage: '0 devices' })}</label>}
-          </UI.FieldLabel2>
+            <Form.Item
+              name='wifiLicense'
+              label=''
+              initialValue={0}
+              rules={[
+                { required: true },
+                { min: 0 },
+                { max: license.remainingDevices },
+                { validator: (_, value) => excludeExclamationRegExp(value) }
+              ]}
+              children={<Input/>}
+              style={{ paddingRight: '20px' }}
+            />
+            <label>devices out of {license.remainingDevices} available</label>
+          </UI.FieldLabelSubs>
+        </div> )}
+    </>
+  }
 
-          <UI.FieldLabel2 width='275px' style={{ marginTop: '20px' }}>
-            <label>{intl.$t({ defaultMessage: 'Trial Start Date' })}</label>
-            <label>{EntitlementUtil.getServiceStartDate()}</label>
-          </UI.FieldLabel2>
-          <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
-            <label>{intl.$t({ defaultMessage: '30 Day Trial Ends on' })}</label>
-            <label>{intl.$t({ defaultMessage: '11/22/2022' })}</label>
-          </UI.FieldLabel2>
-        </Col>
-      </Row>}
+  const SwitchSubscription = () => {
+    const switchLicenses = availableLicense.filter(p => p.deviceType === 'MSP_SWITCH')
+    return <>
+      {switchLicenses.map(license =>
+        <div >
+          <UI.FieldLabelSubs width='275px'>
+            <label>
+              {EntitlementUtil.deviceSubTypeToText(
+                license.deviceSubType as EntitlementDeviceSubType)}
+            </label>
+            <Form.Item
+              name={license.deviceSubType}
+              label=''
+              initialValue={0}
+              rules={[
+                { required: true },
+                { min: 0 },
+                { max: license.remainingDevices },
+                { validator: (_, value) => excludeExclamationRegExp(value) }
+              ]}
+              children={<Input/>}
+              style={{ paddingRight: '20px' }}
+            />
+            <label>devices out of {license.remainingDevices} available</label>
+          </UI.FieldLabelSubs>
+        </div> )}
+    </>
+  }
 
-      {!isTrial &&
-        <Row gutter={20}>
-          <Col span={8}>
-            <Subtitle level={3}>
-              { intl.$t({ defaultMessage: 'Paid Subscriptions' }) }</Subtitle>
-            <UI.FieldLabelSubs width='275px'>
-              <label>{intl.$t({ defaultMessage: 'WiFi Subscription' })}</label>
-              <Form.Item
-                name='wifiLicense'
-                label=''
-                initialValue={0}
-                children={<Input/>}
-                style={{ paddingRight: '20px' }}
-              />
-              <label>{intl.$t({ defaultMessage: 'devices out of 100 available' })}</label>
-            </UI.FieldLabelSubs>
+  const EditCustomerMspAdminsForm = () => {
+    return <>
+      <UI.FieldLabelAdmins width='275px' style={{ marginTop: '15px' }}>
+        <label>{intl.$t({ defaultMessage: 'MSP Administrators' })}</label>
+        <Form.Item children={<div>{displayMspAdmins()}</div>} />
+        <Form.Item
+          children={<UI.FieldTextLink onClick={() => manageMspAdmins()}>
+            {intl.$t({ defaultMessage: 'Manage' })}
+          </UI.FieldTextLink>
+          }
+        />
+        {drawerAdminVisible && <ManageAdminsDrawer
+          visible={drawerAdminVisible}
+          setVisible={setDrawerAdminVisible}
+          setSelected={selectedMspAdmins}
+        />}
+      </UI.FieldLabelAdmins>
+      <UI.FieldLabelAdmins width='275px' style={{ marginTop: '-12px' }}>
+        <label>{intl.$t({ defaultMessage: 'Integrator' })}</label>
+        <Form.Item children={displayIntegrator()} />
+        <Form.Item
+          children={<UI.FieldTextLink onClick={() => manageIntegrator('MSP_INTEGRATOR')}>
+            {intl.$t({ defaultMessage: 'Manage' })}
+          </UI.FieldTextLink>}
+        />
+        {drawerIntegratorVisible && <SelectIntegratorDrawer
+          visible={drawerIntegratorVisible}
+          tenantType='MSP_INTEGRATOR'
+          setVisible={setDrawerIntegratorVisible}
+          setSelected={selectedIntegrators}
+        />}
+      </UI.FieldLabelAdmins>
+      <UI.FieldLabelAdmins width='275px' style={{ marginTop: '-16px' }}>
+        <label>{intl.$t({ defaultMessage: 'Installer' })}</label>
+        <Form.Item children={displayInstaller()} />
+        <Form.Item
+          children={<UI.FieldTextLink onClick={() => manageIntegrator('MSP_INSTALLER')}>
+            {intl.$t({ defaultMessage: 'Manage' })}
+          </UI.FieldTextLink>}
+        />
+        {drawerInstallerVisible && <SelectIntegratorDrawer
+          visible={drawerInstallerVisible}
+          tenantType='MSP_INSTALLER'
+          setVisible={setDrawerInstallerVisible}
+          setSelected={selectedIntegrators}
+        />}
+      </UI.FieldLabelAdmins>
+      <Subtitle level={3}>
+        { intl.$t({ defaultMessage: 'Customer Administrator' }) }</Subtitle>
+      <Form.Item children={displayCustomerAdmins()} />
+      {/* {displayCustomerAdmins()} */}
+      {/* <Form.Item
+        label={intl.$t({ defaultMessage: 'Name' })}
+      >
+        <Paragraph>{'Eric Leu'}</Paragraph>
+      </Form.Item>
+      <Form.Item style={{ marginTop: '-22px' }}
+        label={intl.$t({ defaultMessage: 'Email' })}
+      >
+        <Paragraph>{'eleu1658@yahoo.com'}</Paragraph>
+      </Form.Item>
+      <Form.Item style={{ marginTop: '-22px' }}
+        label={intl.$t({ defaultMessage: 'Role' })}
+      >
+        <Paragraph>{'Prime Administrator'}</Paragraph>
+      </Form.Item> */}
+    </>
+  }
 
-            <UI.FieldLabelSubs width='275px'>
-              <label>{intl.$t({ defaultMessage: 'Switch Subscription' })}</label>
-              <Form.Item
-                name='SwitchLicense'
-                label=''
-                initialValue={0}
-                children={<Input/>}
-                style={{ paddingRight: '20px' }}
-              />
-              <label>{intl.$t({ defaultMessage: 'devices out of 4 available' })}</label>
-            </UI.FieldLabelSubs>
+  const getTrialSubscriptionSubtitle = () => {
+    if (isTrialActive)
+      return intl.$t({ defaultMessage: 'Subscriptions (Trial Mode)' })
+    else
+      return intl.$t({ defaultMessage: 'Inactive Subscriptions' })
+  }
 
-            <UI.FieldLabel2 width='275px' style={{ marginTop: '18px' }}>
-              <label>{intl.$t({ defaultMessage: 'Service Start Date' })}</label>
-              <label>{intl.$t({ defaultMessage: '10/22/2022' })}</label>
-            </UI.FieldLabel2>
+  const getTrailSubscriptionDevice = () => {
+    if (isTrialActive)
+      return intl.$t({ defaultMessage: '25 devices' })
+    else
+      return intl.$t({ defaultMessage: '0 devices' })
+  }
 
-            <UI.FieldLabeServiceDate width='275px' style={{ marginTop: '10px' }}>
-              <label>{intl.$t({ defaultMessage: 'Service Expiration Date' })}</label>
-              <Form.Item
-                name='expirationDate1'
-                label=''
-                rules={[{ required: true } ]}
-                initialValue={DateSelectionEnum.CUSTOME_DATE}
-                children={
-                  <Select>
-                    {
-                      Object.entries(DateSelectionEnum).map(([label, value]) => (
-                        <Option key={label} value={value}>{intl.$t(dateDisplayText[value])}</Option>
-                      ))
-                    }
-                  </Select>
+
+  const EditCustomerSubscriptionForm = () => {
+    return <>
+      {isTrialMode && <div>
+        <Subtitle level={3} style={{ display: 'inline-block' }}>
+          { getTrialSubscriptionSubtitle() }</Subtitle>
+        <Button
+          type='primary'
+          style={{ display: 'inline-block', marginLeft: '80px' }}
+        >{intl.$t({ defaultMessage: 'Start Subscription' })}
+        </Button>
+        <UI.FieldLabel2 width='275px' style={{ marginTop: '20px' }}>
+          <label>{intl.$t({ defaultMessage: 'WiFi Subscription' })}</label>
+          <label>{getTrailSubscriptionDevice()}</label>
+        </UI.FieldLabel2>
+        <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
+          <label>{intl.$t({ defaultMessage: 'Switch Subscription' })}</label>
+          <label>{getTrailSubscriptionDevice()}</label>
+        </UI.FieldLabel2>
+
+        <UI.FieldLabel2 width='275px' style={{ marginTop: '20px' }}>
+          <label>{intl.$t({ defaultMessage: 'Trial Start Date' })}</label>
+          <label>{EntitlementUtil.getServiceStartDate()}</label>
+        </UI.FieldLabel2>
+        <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
+          <label>{intl.$t({ defaultMessage: '30 Day Trial Ends on' })}</label>
+          <label>{intl.$t({ defaultMessage: '11/22/2022' })}</label>
+        </UI.FieldLabel2></div>
+      }
+
+      {!isTrialMode && <div>
+        <Subtitle level={3}>
+          { intl.$t({ defaultMessage: 'Paid Subscriptions' }) }</Subtitle>
+        <WifiSubscription />
+        <SwitchSubscription />
+
+        <UI.FieldLabel2 width='275px' style={{ marginTop: '18px' }}>
+          <label>{intl.$t({ defaultMessage: 'Service Start Date' })}</label>
+          <label>{intl.$t({ defaultMessage: '10/22/2022' })}</label>
+        </UI.FieldLabel2>
+
+        <UI.FieldLabeServiceDate width='275px' style={{ marginTop: '10px' }}>
+          <label>{intl.$t({ defaultMessage: 'Service Expiration Date' })}</label>
+          <Form.Item
+            name='expirationDate1'
+            label=''
+            rules={[{ required: true } ]}
+            initialValue={DateSelectionEnum.CUSTOME_DATE}
+            children={
+              <Select>
+                {
+                  Object.entries(DateSelectionEnum).map(([label, value]) => (
+                    <Option key={label} value={value}>{intl.$t(dateDisplayText[value])}</Option>
+                  ))
                 }
+              </Select>
+            }
+          />
+          <Form.Item
+            name='service_expiration_date'
+            label=''
+            children={
+              <DatePicker
+                style={{ marginLeft: '4px' }}
               />
-              <Form.Item
-                name='service_expiration_date'
-                label=''
-                children={
-                  <DatePicker
-                    style={{ marginLeft: '4px' }}
-                  />
-                }
-              />
-            </UI.FieldLabeServiceDate>
-          </Col>
-        </Row>}
+            }
+          />
+        </UI.FieldLabeServiceDate>
+      </div>}
     </>
   }
 
@@ -515,68 +627,55 @@ export function EditMspCustomer () {
           intl.$t({ defaultMessage: 'Add' }) }}
       >
         <StepsForm.StepForm>
-          <Row gutter={20}>
-            <Col span={8}>
-              <Subtitle level={3}>
-                { intl.$t({ defaultMessage: 'Account Details' }) }</Subtitle>
-              <Form.Item
-                name='name'
-                label={intl.$t({ defaultMessage: 'Customer Name' })}
-                rules={[{ required: true }]}
-                validateFirst
-                hasFeedback
-                children={<Input />}
-              />
-              <GoogleMap.FormItem
-                label={intl.$t({ defaultMessage: 'Address' })}
-                required
-                extra={intl.$t({
-                  defaultMessage: 'Make sure to include a city and country in the address'
-                })}
-              >
-                <Form.Item
-                  noStyle
-                  label={intl.$t({ defaultMessage: 'Address' })}
-                  name={['address', 'addressLine']}
-                  rules={[{
-                    required: isMapEnabled ? true : false
-                  }, {
-                    validator: (_, value) => addressValidator(value),
-                    validateTrigger: 'onBlur'
-                  }
-                  ]}
-                >
-                  <Input
-                    allowClear
-                    placeholder={intl.$t({ defaultMessage: 'Set address here' })}
-                    prefix={<SearchOutlined />}
-                    onChange={addressOnChange}
-                    data-testid='address-input'
-                    disabled={!isMapEnabled}
-                    value={address.addressLine}
-                  />
-                </Form.Item>
-                {isMapEnabled ?
-                  <GoogleMap
-                    libraries={['places']}
-                    mapTypeControl={false}
-                    streetViewControl={false}
-                    fullscreenControl={false}
-                    zoom={zoom}
-                    center={center}
-                  >
-                    {marker && <GoogleMapMarker position={marker} />}
-                  </GoogleMap>
-                  :
-                  <GoogleMap.NotEnabled />
-                }
-              </GoogleMap.FormItem>
-            </Col>
-          </Row>
+          <Subtitle level={3}>
+            { intl.$t({ defaultMessage: 'Account Details' }) }</Subtitle>
+          <Form.Item
+            name='name'
+            label={intl.$t({ defaultMessage: 'Customer Name' })}
+            style={{ width: '300px' }}
+            rules={[{ required: true }]}
+            validateFirst
+            hasFeedback
+            children={<Input />}
+          />
+          <Form.Item
+            label={intl.$t({ defaultMessage: 'Address' })}
+            name={['address', 'addressLine']}
+            style={{ width: '300px' }}
+            rules={[{
+              required: isMapEnabled ? true : false
+            }, {
+              validator: (_, value) => addressValidator(value),
+              validateTrigger: 'onBlur'
+            }
+            ]}
+          >
+            <Input
+              allowClear
+              placeholder={intl.$t({ defaultMessage: 'Set address here' })}
+              prefix={<SearchOutlined />}
+              onChange={addressOnChange}
+              data-testid='address-input'
+              disabled={!isMapEnabled}
+              value={address.addressLine}
+            />
+          </Form.Item >
+          <Form.Item hidden>
+            <GoogleMap libraries={['places']} />
+          </Form.Item>
 
           <EditCustomerMspAdminsForm></EditCustomerMspAdminsForm>
           <EditCustomerSubscriptionForm></EditCustomerSubscriptionForm>
-
+          <div>
+            <h4 style={{ display: 'inline-block', marginTop: '38px', marginRight: '25px' }}>
+              {intl.$t({ defaultMessage: 'Enable access to RUCKUS One support' })}</h4>
+            <Switch /></div>
+          <div><label>
+            {intl.$t({ defaultMessage: 'If checked, Ruckus support team is granted a temporary' +
+            ' administrator-level access for 21 days.' })}</label>
+          </div>
+          <label>
+            {intl.$t({ defaultMessage: 'Enable when requested by Ruckus support team.' })}</label>
         </StepsForm.StepForm>
       </StepsForm>
     </>

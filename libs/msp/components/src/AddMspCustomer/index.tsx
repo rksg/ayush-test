@@ -1,13 +1,11 @@
 import { useState, useRef, ChangeEventHandler, useEffect } from 'react'
 
 import {
-  Col,
   DatePicker,
   Form,
   Input,
   Radio,
   RadioChangeEvent,
-  Row,
   Select,
   Space,
   Typography
@@ -55,8 +53,6 @@ import { ManageAdminsDrawer } from '../ManageAdminsDrawer'
 import { SelectIntegratorDrawer } from '../SelectIntegratorDrawer'
 
 import * as UI from '../styledComponents'
-
-// import { CustomerSummary } from './CustomerSummary'
 
 interface AddressComponent {
   long_name?: string;
@@ -173,18 +169,11 @@ export function AddMspCustomer () {
 
   const [addCustomerr] = useAddCustomerMutation()
   const { data } = useGetMspEcQuery({ params: { mspEcTenantId } })
-  const{ data: queryResults } = useMspAssignmentSummaryQuery({
-    params: useParams()
-  },{
-    selectFromResult: ({ data, ...rest }) => ({
-      data,
-      ...rest
-    })
-  })
+  const { data: licenseSummary } = useMspAssignmentSummaryQuery({ params: useParams() })
 
   useEffect(() => {
-    if (queryResults) {
-      checkAvailableLicense(queryResults)
+    if (licenseSummary) {
+      checkAvailableLicense(licenseSummary)
     }
     if (data) {
       formRef.current?.setFieldsValue({
@@ -201,7 +190,7 @@ export function AddMspCustomer () {
       const initialAddress = isMapEnabled ? '' : defaultAddress.addressLine
       formRef.current?.setFieldValue(['address', 'addressLine'], initialAddress)
     }
-  }, [data, queryResults, isMapEnabled])
+  }, [data, licenseSummary, isMapEnabled])
 
   const [sameCountry, setSameCountry] = useState(true)
   const addressValidator = async (value: string) => {
@@ -407,95 +396,65 @@ export function AddMspCustomer () {
         </Radio.Group>
       </Form.Item>
 
-      {trialSelected && <Row gutter={20}>
-        <Col span={8}>
-          <Subtitle level={4}>
-            { intl.$t({ defaultMessage: 'Trial Mode' }) }</Subtitle>
-          <UI.FieldLabel2 width='275px' style={{ marginTop: '20px' }}>
-            <label>{intl.$t({ defaultMessage: 'WiFi Subscription' })}</label>
-            <label>{intl.$t({ defaultMessage: '25 devices' })}</label>
-          </UI.FieldLabel2>
-          <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
-            <label>{intl.$t({ defaultMessage: 'Switch Subscription' })}</label>
-            <label>{intl.$t({ defaultMessage: '25 devices' })}</label>
-          </UI.FieldLabel2>
+      {trialSelected && <div>
+        <Subtitle level={4}>
+          { intl.$t({ defaultMessage: 'Trial Mode' }) }</Subtitle>
+        <UI.FieldLabel2 width='275px' style={{ marginTop: '20px' }}>
+          <label>{intl.$t({ defaultMessage: 'WiFi Subscription' })}</label>
+          <label>{intl.$t({ defaultMessage: '25 devices' })}</label>
+        </UI.FieldLabel2>
+        <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
+          <label>{intl.$t({ defaultMessage: 'Switch Subscription' })}</label>
+          <label>{intl.$t({ defaultMessage: '25 devices' })}</label>
+        </UI.FieldLabel2>
 
-          <UI.FieldLabel2 width='275px' style={{ marginTop: '20px' }}>
-            <label>{intl.$t({ defaultMessage: 'Trial Start Date' })}</label>
-            <label>{today}</label>
-          </UI.FieldLabel2>
-          <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
-            <label>{intl.$t({ defaultMessage: '30 Day Trial Ends on' })}</label>
-            <label>{intl.$t({ defaultMessage: '11/22/2022' })}</label>
-          </UI.FieldLabel2>
-        </Col>
-      </Row>}
+        <UI.FieldLabel2 width='275px' style={{ marginTop: '20px' }}>
+          <label>{intl.$t({ defaultMessage: 'Trial Start Date' })}</label>
+          <label>{today}</label>
+        </UI.FieldLabel2>
+        <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
+          <label>{intl.$t({ defaultMessage: '30 Day Trial Ends on' })}</label>
+          <label>{intl.$t({ defaultMessage: '11/22/2022' })}</label>
+        </UI.FieldLabel2></div>
+      }
 
-      {!trialSelected &&
-        <Row gutter={20}>
-          <Col span={8}>
-            <Subtitle level={4}>
-              { intl.$t({ defaultMessage: 'Paid Subscriptions' }) }</Subtitle>
-            <WifiSubscription />
-            {/* <UI.FieldLabelSubs width='275px'>
-              <label>{intl.$t({ defaultMessage: 'WiFi Subscription' })}</label>
-              <Form.Item
-                name='wifiLicense'
-                label=''
-                initialValue={0}
-                children={<Input/>}
-                style={{ paddingRight: '20px' }}
-              />
-              <label>{intl.$t({ defaultMessage: 'devices out of 100 available' })}</label>
-            </UI.FieldLabelSubs> */}
+      {!trialSelected && <div>
+        <Subtitle level={4}>
+          { intl.$t({ defaultMessage: 'Paid Subscriptions' }) }</Subtitle>
+        <WifiSubscription />
+        <SwitchSubscription />
+        <UI.FieldLabel2 width='275px' style={{ marginTop: '18px' }}>
+          <label>{intl.$t({ defaultMessage: 'Service Start Date' })}</label>
+          <label>{today}</label>
+        </UI.FieldLabel2>
 
-            <SwitchSubscription />
-            {/* <UI.FieldLabelSubs width='275px'>
-              <label>{intl.$t({ defaultMessage: 'Switch Subscription' })}</label>
-              <Form.Item
-                name='SwitchLicense'
-                label=''
-                initialValue={0}
-                children={<Input/>}
-                style={{ paddingRight: '20px' }}
-              />
-              <label>{intl.$t({ defaultMessage: 'devices out of 4 available' })}</label>
-            </UI.FieldLabelSubs> */}
-
-            <UI.FieldLabel2 width='275px' style={{ marginTop: '18px' }}>
-              <label>{intl.$t({ defaultMessage: 'Service Start Date' })}</label>
-              <label>{today}</label>
-            </UI.FieldLabel2>
-
-            <UI.FieldLabeServiceDate width='275px' style={{ marginTop: '10px' }}>
-              <label>{intl.$t({ defaultMessage: 'Service Expiration Date' })}</label>
-              <Form.Item
-                name='expirationDate1'
-                label=''
-                rules={[{ required: true } ]}
-                initialValue={DateSelectionEnum.CUSTOME_DATE}
-                children={
-                  <Select>
-                    {
-                      Object.entries(DateSelectionEnum).map(([label, value]) => (
-                        <Option key={label} value={value}>{intl.$t(dateDisplayText[value])}</Option>
-                      ))
-                    }
-                  </Select>
+        <UI.FieldLabeServiceDate width='275px' style={{ marginTop: '10px' }}>
+          <label>{intl.$t({ defaultMessage: 'Service Expiration Date' })}</label>
+          <Form.Item
+            name='expirationDate1'
+            label=''
+            rules={[{ required: true } ]}
+            initialValue={DateSelectionEnum.CUSTOME_DATE}
+            children={
+              <Select>
+                {
+                  Object.entries(DateSelectionEnum).map(([label, value]) => (
+                    <Option key={label} value={value}>{intl.$t(dateDisplayText[value])}</Option>
+                  ))
                 }
+              </Select>
+            }
+          />
+          <Form.Item
+            name='service_expiration_date'
+            label=''
+            children={
+              <DatePicker
+                style={{ marginLeft: '4px' }}
               />
-              <Form.Item
-                name='service_expiration_date'
-                label=''
-                children={
-                  <DatePicker
-                    style={{ marginLeft: '4px' }}
-                  />
-                }
-              />
-            </UI.FieldLabeServiceDate>
-          </Col>
-        </Row>}
+            }
+          />
+        </UI.FieldLabeServiceDate></div>}
     </>
   }
 
@@ -503,69 +462,66 @@ export function AddMspCustomer () {
     const intl = useIntl()
     const { Paragraph } = Typography
     return (
-      <Row gutter={20}>
-        <Col span={18}>
-          <Subtitle level={3}>{intl.$t({ defaultMessage: 'Summary' })}</Subtitle>
-          <Form.Item
-            label={intl.$t({ defaultMessage: 'Customer Name' })}
-          >
-            <Paragraph>{'test ec'}</Paragraph>
-          </Form.Item>
-          <Form.Item style={{ marginTop: '-22px' }}
-            label={intl.$t({ defaultMessage: 'Address' })}
-          >
-            <Paragraph>{address.addressLine}</Paragraph>
-          </Form.Item>
+      <>
+        <Subtitle level={3}>{intl.$t({ defaultMessage: 'Summary' })}</Subtitle>
+        <Form.Item
+          label={intl.$t({ defaultMessage: 'Customer Name' })}
+        >
+          <Paragraph>{'test ec'}</Paragraph>
+        </Form.Item>
+        <Form.Item style={{ marginTop: '-22px' }}
+          label={intl.$t({ defaultMessage: 'Address' })}
+        >
+          <Paragraph>{address.addressLine}</Paragraph>
+        </Form.Item>
 
-          <Form.Item
-            label={intl.$t({ defaultMessage: 'MSP Administrators' })}
-          >
-            <Paragraph>{displayMspAdmins()}</Paragraph>
-          </Form.Item>
-          <Form.Item style={{ marginTop: '-22px' }}
-            label={intl.$t({ defaultMessage: 'Integrator' })}
-          >
-            <Paragraph>{displayIntegrator()}</Paragraph>
-          </Form.Item>
-          <Form.Item style={{ marginTop: '-22px' }}
-            label={intl.$t({ defaultMessage: 'Installer' })}
-          >
-            <Paragraph>{displayInstaller()}</Paragraph>
-          </Form.Item>
+        <Form.Item
+          label={intl.$t({ defaultMessage: 'MSP Administrators' })}
+        >
+          <Paragraph>{displayMspAdmins()}</Paragraph>
+        </Form.Item>
+        <Form.Item style={{ marginTop: '-22px' }}
+          label={intl.$t({ defaultMessage: 'Integrator' })}
+        >
+          <Paragraph>{displayIntegrator()}</Paragraph>
+        </Form.Item>
+        <Form.Item style={{ marginTop: '-22px' }}
+          label={intl.$t({ defaultMessage: 'Installer' })}
+        >
+          <Paragraph>{displayInstaller()}</Paragraph>
+        </Form.Item>
 
-          <Form.Item
-            label={intl.$t({ defaultMessage: 'Customer Administrator Name' })}
-          >
-            <Paragraph>{'Eric Leu'}</Paragraph>
-          </Form.Item>
-          <Form.Item style={{ marginTop: '-22px' }}
-            label={intl.$t({ defaultMessage: 'Email' })}
-          >
-            <Paragraph>{'eleu1658@yahoo.com'}</Paragraph>
-          </Form.Item>
-          <Form.Item style={{ marginTop: '-22px' }}
-            label={intl.$t({ defaultMessage: 'Role' })}
-          >
-            <Paragraph>{'Prime Administrator'}</Paragraph>
-          </Form.Item>
+        <Form.Item
+          label={intl.$t({ defaultMessage: 'Customer Administrator Name' })}
+        >
+          <Paragraph>{'Eric Leu'}</Paragraph>
+        </Form.Item>
+        <Form.Item style={{ marginTop: '-22px' }}
+          label={intl.$t({ defaultMessage: 'Email' })}
+        >
+          <Paragraph>{'eleu1658@yahoo.com'}</Paragraph>
+        </Form.Item>
+        <Form.Item style={{ marginTop: '-22px' }}
+          label={intl.$t({ defaultMessage: 'Role' })}
+        >
+          <Paragraph>{'Prime Administrator'}</Paragraph>
+        </Form.Item>
 
-          <Form.Item
-            label={intl.$t({ defaultMessage: 'Wi-Fi Subscriptions' })}
-          >
-            <Paragraph>{'40'}</Paragraph>
-          </Form.Item>
-          <Form.Item style={{ marginTop: '-22px' }}
-            label={intl.$t({ defaultMessage: 'Switch Subscriptions' })}
-          >
-            <Paragraph>{'25'}</Paragraph>
-          </Form.Item>
-          <Form.Item style={{ marginTop: '-22px' }}
-            label={intl.$t({ defaultMessage: 'Service Expiration Date' })}
-          >
-            <Paragraph>{'12/22/2023'}</Paragraph>
-          </Form.Item>
-        </Col>
-      </Row>
+        <Form.Item
+          label={intl.$t({ defaultMessage: 'Wi-Fi Subscriptions' })}
+        >
+          <Paragraph>{'40'}</Paragraph>
+        </Form.Item>
+        <Form.Item style={{ marginTop: '-22px' }}
+          label={intl.$t({ defaultMessage: 'Switch Subscriptions' })}
+        >
+          <Paragraph>{'25'}</Paragraph>
+        </Form.Item>
+        <Form.Item style={{ marginTop: '-22px' }}
+          label={intl.$t({ defaultMessage: 'Service Expiration Date' })}
+        >
+          <Paragraph>{'12/22/2023'}</Paragraph>
+        </Form.Item></>
     )
   }
 
@@ -591,143 +547,133 @@ export function AddMspCustomer () {
       >
         <StepsForm.StepForm name='accountDetail'
           title={intl.$t({ defaultMessage: 'Account Details' })}>
-          {/* <CustomerDetail /> */}
-          <Row gutter={20}>
-            <Col span={8}>
-              <Subtitle level={3}>
-                { intl.$t({ defaultMessage: 'Account Details' }) }</Subtitle>
-              <Form.Item
-                name='name'
-                label={intl.$t({ defaultMessage: 'Customer Name' })}
-                rules={[{ required: true }]}
-                validateFirst
-                hasFeedback
-                children={<Input />}
-              />
-              <Form.Item
-                label={intl.$t({ defaultMessage: 'Address' })}
-                name={['address', 'addressLine']}
-                rules={[{
-                  required: isMapEnabled ? true : false
-                }, {
-                  validator: (_, value) => addressValidator(value),
-                  validateTrigger: 'onBlur'
+          <Subtitle level={3}>
+            { intl.$t({ defaultMessage: 'Account Details' }) }</Subtitle>
+          <Form.Item
+            name='name'
+            label={intl.$t({ defaultMessage: 'Customer Name' })}
+            style={{ width: '300px' }}
+            rules={[{ required: true }]}
+            validateFirst
+            hasFeedback
+            children={<Input />}
+          />
+          <Form.Item
+            label={intl.$t({ defaultMessage: 'Address' })}
+            name={['address', 'addressLine']}
+            style={{ width: '300px' }}
+            rules={[{
+              required: isMapEnabled ? true : false
+            }, {
+              validator: (_, value) => addressValidator(value),
+              validateTrigger: 'onBlur'
+            }
+            ]}
+          >
+            <Input
+              allowClear
+              placeholder={intl.$t({ defaultMessage: 'Set address here' })}
+              prefix={<SearchOutlined />}
+              onChange={addressOnChange}
+              data-testid='address-input'
+              disabled={!isMapEnabled}
+              value={address.addressLine}
+            />
+          </Form.Item >
+          <Form.Item hidden>
+            <GoogleMap libraries={['places']} />
+          </Form.Item>
+          <UI.FieldLabelAdmins width='275px' style={{ marginTop: '15px' }}>
+            <label>{intl.$t({ defaultMessage: 'MSP Administrators' })}</label>
+            <Form.Item children={<div>{displayMspAdmins()}</div>} />
+            <Form.Item
+              children={<UI.FieldTextLink onClick={() => manageMspAdmins()}>
+                {intl.$t({ defaultMessage: 'Manage' })}
+              </UI.FieldTextLink>
+              }
+            />
+            {drawerAdminVisible && <ManageAdminsDrawer
+              visible={drawerAdminVisible}
+              setVisible={setDrawerAdminVisible}
+              setSelected={selectedMspAdmins}
+            />}
+          </UI.FieldLabelAdmins>
+          <UI.FieldLabelAdmins width='275px' style={{ marginTop: '-12px' }}>
+            <label>{intl.$t({ defaultMessage: 'Integrator' })}</label>
+            <Form.Item children={displayIntegrator()} />
+            <Form.Item
+              children={<UI.FieldTextLink onClick={() => manageIntegrator('MSP_INTEGRATOR')}>
+                {intl.$t({ defaultMessage: 'Manage' })}
+              </UI.FieldTextLink>}
+            />
+            {drawerIntegratorVisible && <SelectIntegratorDrawer
+              visible={drawerIntegratorVisible}
+              tenantType='MSP_INTEGRATOR'
+              setVisible={setDrawerIntegratorVisible}
+              setSelected={selectedIntegrators}
+            />}
+          </UI.FieldLabelAdmins>
+          <UI.FieldLabelAdmins width='275px' style={{ marginTop: '-16px' }}>
+            <label>{intl.$t({ defaultMessage: 'Installer' })}</label>
+            <Form.Item children={displayInstaller()} />
+            <Form.Item
+              children={<UI.FieldTextLink onClick={() => manageIntegrator('MSP_INSTALLER')}>
+                {intl.$t({ defaultMessage: 'Manage' })}
+              </UI.FieldTextLink>}
+            />
+            {drawerInstallerVisible && <SelectIntegratorDrawer
+              visible={drawerInstallerVisible}
+              tenantType='MSP_INSTALLER'
+              setVisible={setDrawerInstallerVisible}
+              setSelected={selectedIntegrators}
+            />}
+          </UI.FieldLabelAdmins>
+          <Subtitle level={3}>
+            { intl.$t({ defaultMessage: 'Customer Administrator' }) }</Subtitle>
+          <Form.Item
+            name='admin_email'
+            label={intl.$t({ defaultMessage: 'Email' })}
+            style={{ width: '300px' }}
+            rules={[
+              { required: true },
+              { validator: (_, value) => emailRegExp(value) },
+              { message: intl.$t({ defaultMessage: 'Please enter a valid email address!' }) }
+            ]}
+            children={<Input />}
+          />
+          <Form.Item
+            name='admin_firstname'
+            label={intl.$t({ defaultMessage: 'First Name' })}
+            rules={[{ required: true }]}
+            children={<Input />}
+            style={{ display: 'inline-block', width: '150px' ,paddingRight: '10px' }}
+          />
+          <Form.Item
+            name='admin_lastname'
+            label={intl.$t({ defaultMessage: 'Last Name' })}
+            rules={[ { required: true } ]}
+            children={<Input />}
+            style={{ display: 'inline-block', width: '150px',paddingLeft: '10px' }}
+          />
+          <Form.Item
+            name='admin_role'
+            label={intl.$t({ defaultMessage: 'Role' })}
+            style={{ width: '300px' }}
+            rules={[{ required: true }]}
+            initialValue={RolesEnum.PRIME_ADMIN}
+            children={
+              <Select>
+                {
+                  Object.entries(RolesEnum).map(([label, value]) => (
+                    <Option
+                      key={label}
+                      value={value}>{intl.$t(roleDisplayText[value])}
+                    </Option>
+                  ))
                 }
-                ]}
-              >
-                <Input
-                  allowClear
-                  placeholder={intl.$t({ defaultMessage: 'Set address here' })}
-                  prefix={<SearchOutlined />}
-                  onChange={addressOnChange}
-                  data-testid='address-input'
-                  disabled={!isMapEnabled}
-                  value={address.addressLine}
-                />
-              </Form.Item >
-              <Form.Item hidden>
-                <GoogleMap libraries={['places']} />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row gutter={10}>
-            <Col span={10}>
-              <UI.FieldLabelAdmins width='275px' style={{ marginTop: '15px' }}>
-                <label>{intl.$t({ defaultMessage: 'MSP Administrators' })}</label>
-                <Form.Item children={<div>{displayMspAdmins()}</div>} />
-                <Form.Item
-                  children={<UI.FieldTextLink onClick={() => manageMspAdmins()}>
-                    {intl.$t({ defaultMessage: 'Manage' })}
-                  </UI.FieldTextLink>
-                  }
-                />
-                {drawerAdminVisible && <ManageAdminsDrawer
-                  visible={drawerAdminVisible}
-                  setVisible={setDrawerAdminVisible}
-                  setSelected={selectedMspAdmins}
-                />}
-              </UI.FieldLabelAdmins>
-              <UI.FieldLabelAdmins width='275px' style={{ marginTop: '-12px' }}>
-                <label>{intl.$t({ defaultMessage: 'Integrator' })}</label>
-                <Form.Item children={displayIntegrator()} />
-                <Form.Item
-                  children={<UI.FieldTextLink onClick={() => manageIntegrator('MSP_INTEGRATOR')}>
-                    {intl.$t({ defaultMessage: 'Manage' })}
-                  </UI.FieldTextLink>}
-                />
-                {drawerIntegratorVisible && <SelectIntegratorDrawer
-                  visible={drawerIntegratorVisible}
-                  tenantType='MSP_INTEGRATOR'
-                  setVisible={setDrawerIntegratorVisible}
-                  setSelected={selectedIntegrators}
-                />}
-              </UI.FieldLabelAdmins>
-              <UI.FieldLabelAdmins width='275px' style={{ marginTop: '-16px' }}>
-                <label>{intl.$t({ defaultMessage: 'Installer' })}</label>
-                <Form.Item children={displayInstaller()} />
-                <Form.Item
-                  children={<UI.FieldTextLink onClick={() => manageIntegrator('MSP_INSTALLER')}>
-                    {intl.$t({ defaultMessage: 'Manage' })}
-                  </UI.FieldTextLink>}
-                />
-                {drawerInstallerVisible && <SelectIntegratorDrawer
-                  visible={drawerInstallerVisible}
-                  tenantType='MSP_INSTALLER'
-                  setVisible={setDrawerInstallerVisible}
-                  setSelected={selectedIntegrators}
-                />}
-              </UI.FieldLabelAdmins>
-            </Col>
-          </Row>
-          <Row gutter={20}>
-            <Col span={8}>
-              <Subtitle level={3}>
-                { intl.$t({ defaultMessage: 'Customer Administrator' }) }</Subtitle>
-              <Form.Item
-                name='admin_email'
-                label={intl.$t({ defaultMessage: 'Email' })}
-                rules={[
-                  { required: true },
-                  { validator: (_, value) => emailRegExp(value) },
-                  { message: intl.$t({ defaultMessage: 'Please enter a valid email address!' }) }
-                ]}
-                children={<Input />}
-              />
-              <Form.Item
-                name='admin_firstname'
-                label={intl.$t({ defaultMessage: 'First Name' })}
-                rules={[{ required: true }]}
-                children={<Input />}
-                style={{ display: 'inline-block', width: 'calc(50%)' , paddingRight: '20px' }}
-              />
-              <Form.Item
-                name='admin_lastname'
-                label={intl.$t({ defaultMessage: 'Last Name' })}
-                rules={[ { required: true } ]}
-                children={<Input />}
-                style={{ display: 'inline-block', width: 'calc(50%)' }}
-              />
-              <Form.Item
-                name='admin_role'
-                label={intl.$t({ defaultMessage: 'Role' })}
-                rules={[{ required: true }]}
-                initialValue={RolesEnum.PRIME_ADMIN}
-                children={
-                  <Select>
-                    {
-                      Object.entries(RolesEnum).map(([label, value]) => (
-                        <Option
-                          key={label}
-                          value={value}>{intl.$t(roleDisplayText[value])}
-                        </Option>
-                      ))
-                    }
-                  </Select>
-                }
-              />
-            </Col>
-          </Row>
-
+              </Select>
+            }
+          />
         </StepsForm.StepForm>
 
         <StepsForm.StepForm name='subscriptions'
