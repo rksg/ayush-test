@@ -198,10 +198,7 @@ const addRule = async (ruleName: string, type: RogueRuleType, classification: Ro
   if (type === RogueRuleType.CUSTOM_SNR_RULE
     || type === RogueRuleType.CUSTOM_SSID_RULE
     || type === RogueRuleType.CUSTOM_MAC_OUI_RULE) {
-    await screen.findByRole('textbox', {
-      name: new RegExp(rogueRuleActionMap[type].name)
-    })
-    await userEvent.type(screen.getByRole('textbox', {
+    await userEvent.type(await screen.findByRole('textbox', {
       name: new RegExp(rogueRuleActionMap[type].name)
     }), rogueRuleActionMap[type].value)
   }
@@ -212,11 +209,7 @@ const addRule = async (ruleName: string, type: RogueRuleType, classification: Ro
 
   await userEvent.click(screen.getByText('Add'))
 
-  await screen.findByRole('cell', {
-    name: `${ruleName}`
-  })
-
-  await userEvent.click(screen.getByRole('cell', {
+  await userEvent.click(await screen.findByRole('cell', {
     name: `${ruleName}`
   }))
 
@@ -226,28 +219,19 @@ const addRule = async (ruleName: string, type: RogueRuleType, classification: Ro
 
   // edit the rule and modify the specific field value in CUSTOM_SNR_RULE, CUSTOM_SSID_RULE and CUSTOM_MAC_OUI_RULE
   if (type === RogueRuleType.CUSTOM_SNR_RULE) {
-    await screen.findByRole('textbox', {
-      name: new RegExp(rogueRuleActionMap[type].name)
-    })
-    await userEvent.type(screen.getByRole('textbox', {
+    await userEvent.type(await screen.findByRole('textbox', {
       name: new RegExp(rogueRuleActionMap[type].name)
     }), '8')
 
     await userEvent.click(screen.getByText('Save'))
   } else if (type === RogueRuleType.CUSTOM_SSID_RULE) {
-    await screen.findByRole('textbox', {
-      name: new RegExp(rogueRuleActionMap[type].name)
-    })
-    await userEvent.type(screen.getByRole('textbox', {
+    await userEvent.type(await screen.findByRole('textbox', {
       name: new RegExp(rogueRuleActionMap[type].name)
     }), 'modify')
 
     await userEvent.click(screen.getByText('Save'))
   } else if (type === RogueRuleType.CUSTOM_MAC_OUI_RULE) {
-    await screen.findByRole('textbox', {
-      name: new RegExp(rogueRuleActionMap[type].name)
-    })
-    await userEvent.clear(screen.getByRole('textbox', {
+    await userEvent.clear(await screen.findByRole('textbox', {
       name: new RegExp(rogueRuleActionMap[type].name)
     }))
 
