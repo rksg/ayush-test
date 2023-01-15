@@ -26,13 +26,15 @@ export interface PortVlan {
   isDefaultVlan: boolean
 }
 
-export const MultipleText = () => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const MultipleText = (props: any) => {
   const { $t } = getIntl()
-  return <Space style={{
-    fontSize: '12px',
-    fontStyle: 'italic',
-    color: cssStr('--acx-accents-orange-50')
-  }}>
+  return <Space data-testid={props?.['data-testid']}
+    style={{
+      fontSize: '12px',
+      fontStyle: 'italic',
+      color: cssStr('--acx-accents-orange-50')
+    }}>
     {$t({ defaultMessage: 'Multiple values' })}
   </Space>
 }
@@ -177,14 +179,17 @@ export const checkPortEditStatus = (
   portSetting: PortSettingModel,
   revert: boolean,
   taggedByVenue: string,
-  untaggedByVenue: string
+  untaggedByVenue: string,
+  forceStatus?: string
 ) => {
   const taggedVlans = form?.getFieldValue('taggedVlans') || portSetting?.taggedVlans
   const untaggedVlan = form?.getFieldValue('untaggedVlan') || portSetting?.untaggedVlan
 
-  if (!revert && (taggedVlans || untaggedVlan)) {
+  if (forceStatus) {
+    return forceStatus.toString()
+  } else if (!revert && (taggedVlans || untaggedVlan)) {
     return 'port'
-  } else if (revert || (taggedByVenue || untaggedByVenue)) {
+  } else if (revert && (taggedByVenue || untaggedByVenue)) {
     return 'venue'
   } else {
     return 'default'
@@ -315,7 +320,7 @@ export const getMultipleVlanValue = ( // TODO: rewrite
   })
 
   const untagEqual = _.uniq(result.untagged)?.length <= 1
-  const tagEqual = _.uniq(result.tagged)?.length <= 1
+  const tagEqual = _.uniq(result.tagged.map(t => (t || '')?.toString()))?.length <= 1
   const voiceVlanEqual = _.uniq(result.voice)?.length <= 1
 
   return {
@@ -323,6 +328,8 @@ export const getMultipleVlanValue = ( // TODO: rewrite
     untagged: untagEqual ? result.untagged?.[0] : (defaultVlan ?? 'Default VLAN (Multiple values)'),
     voice: voiceVlanEqual ? result.voice?.[0] : '',
     initPortVlans: initPortVlans,
+    isTagEqual: tagEqual,
+    isUntagEqual: untagEqual,
     portsProfileVlans: portsProfileVlans
   }
 }

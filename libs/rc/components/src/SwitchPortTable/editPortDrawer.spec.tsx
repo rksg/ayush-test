@@ -33,8 +33,10 @@ const params = {
   serialNumber: 'serial-number'
 }
 
-const editPortVlans = async (inputTagged, inputUntagged) => {
-  fireEvent.click(await screen.findByRole('button', { name: 'Edit' }))
+const editPortVlans = async (inputTagged, inputUntagged, currentStatus?) => {
+  fireEvent.click(await screen.findByRole('button', {
+    name: currentStatus !== 'port' ? 'Customize' : 'Edit'
+  }))
   const dialog = await screen.findAllByRole('dialog')
   await screen.findByText('Select Port VLANs')
 
@@ -181,11 +183,12 @@ describe('EditPortDrawer', () => {
       await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
       await screen.findByText('Edit Port')
       await screen.findByText('Selected Port')
+      await screen.findByText('Port level override')
 
       await user.click(await screen.findByRole('combobox', { name: /PoE Class/ }))
       await user.click(await screen.findByText('2 (802.3af 7.0 W)'))
       expect(await screen.findByTestId('poe-budget-input')).toBeDisabled()
-      await editPortVlans('VLAN-ID-66', 'VLAN-ID-')
+      await editPortVlans('VLAN-ID-66', 'VLAN-ID-', 'port')
 
       fireEvent.click(await screen.findByRole('button', { name: 'Apply' }))
     })
@@ -300,7 +303,7 @@ describe('EditPortDrawer', () => {
       await screen.findByText('Edit Port')
       await screen.findByText('Selected Port')
       await screen.findByText('Applied at venue')
-      await editPortVlans('VLAN-ID-66', '')
+      await editPortVlans('VLAN-ID-66', '', 'venue')
       fireEvent.click(await screen.findByRole('button', { name: 'Apply' }))
       // await screen.findByText('Server Error')
     })
@@ -380,7 +383,7 @@ describe('EditPortDrawer', () => {
         fireEvent.click(checkboxs[0]) // Port Enable
       })
 
-      fireEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+      fireEvent.click(await screen.findByRole('button', { name: 'Close' }))
     })
 
     it('should apply edit data correctly', async () => {
@@ -638,6 +641,115 @@ describe('EditPortDrawer', () => {
 
       fireEvent.click(await screen.findByRole('button', { name: 'Apply' }))
     })
+  })
+
+  describe('Port VLANs', () => {
+    it('should render status and vlans correctly (revert=false)', async () => {
+      render(<Provider>
+        <EditPortDrawer
+          visible={true}
+          setDrawerVisible={jest.fn()}
+          isCloudPort={false}
+          isMultipleEdit={selectedPorts?.slice(0, 1)?.length > 1}
+          isVenueLevel={false}
+          selectedPorts={selectedPorts?.slice(0, 1)}
+        />
+      </Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/overview/ports'
+        }
+      })
+
+      await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
+      await screen.findByText('Edit Port')
+      await screen.findByText('Port VLANs')
+      await screen.findByText('Port level override')
+      fireEvent.click(await screen.findByRole('button', { name: 'Use Venue settings' }))
+      await screen.findByText('VLAN-ID: 1 (Default VLAN)')
+    })
+
+    it('should render status and vlans correctly (revert=true)', async () => {
+      mockServer.use(
+        rest.get(SwitchUrlsInfo.getPortSetting.url,
+          (_, res, ctx) => res(ctx.json({
+            ...portSetting[0],
+            revert: true
+          }))
+        )
+      )
+      render(<Provider>
+        <EditPortDrawer
+          visible={true}
+          setDrawerVisible={jest.fn()}
+          isCloudPort={false}
+          isMultipleEdit={selectedPorts?.slice(0, 1)?.length > 1}
+          isVenueLevel={false}
+          selectedPorts={selectedPorts?.slice(0, 1)}
+        />
+      </Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/overview/ports'
+        }
+      })
+
+      await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
+      await screen.findByText('Edit Port')
+      await screen.findByText('Port VLANs')
+      await screen.findByText('Default')
+      fireEvent.click(await screen.findByRole('button', { name: 'Customize' }))
+      await editPortVlans('VLAN-ID-66', '', 'default')
+      await screen.findByText('VLAN-ID: 1 (Default VLAN)')
+      await screen.findByText('VLAN-ID: 66')
+    })
+
+    it('should render status and vlans correctly (multiple edit)', async () => {
+      mockServer.use(
+        rest.post(SwitchUrlsInfo.getPortsSetting.url,
+          (_, res, ctx) => res(ctx.json({
+            ...portsSetting,
+            response: [
+              portsSetting?.response[0],
+              portsSetting?.response[1]
+            ]
+          }))
+        )
+
+      )
+      render(<Provider>
+        <EditPortDrawer
+          visible={true}
+          setDrawerVisible={jest.fn()}
+          isCloudPort={false}
+          isMultipleEdit={selectedPorts.length > 1}
+          isVenueLevel={false}
+          selectedPorts={selectedPorts}
+        />
+      </Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/overview/ports'
+        }
+      })
+
+      await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
+      await screen.findByText('Edit Port')
+      await screen.findByText('Port VLANs')
+      expect(screen.queryByText('Edit')).not.toBeInTheDocument()
+      expect(await screen.findByTestId('untagged-multi-text')).toBeVisible()
+
+      const checkboxs = await screen.findAllByRole('checkbox')
+      // eslint-disable-next-line testing-library/no-unnecessary-act
+      act(() => {
+        fireEvent.click(checkboxs[5]) // Port VLANs
+      })
+
+      expect(await screen.findByText('Edit')).toBeVisible()
+      fireEvent.click(await screen.findByRole('button', { name: 'Use Venue settings' }))
+      // TODO: check edit port status and VLANs
+    })
+    // TODO: check other status
   })
 
 })

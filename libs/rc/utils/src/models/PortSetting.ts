@@ -25,6 +25,7 @@ export class PortSettingModel {
   egressAcl?: string
   ingressAcl?: string
   switchSerialNumber: string
+  status?: string // ignore
 
   constructor () {
     this.dhcpSnoopingTrust = false
