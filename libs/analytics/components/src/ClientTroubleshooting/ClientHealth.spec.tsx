@@ -1,0 +1,89 @@
+import { dataApiURL }                                                  from '@acx-ui/analytics/services'
+import { AnalyticsFilter }                                             from '@acx-ui/analytics/utils'
+import { Provider }                                                    from '@acx-ui/store'
+import { mockGraphqlQuery, render, waitForElementToBeRemoved, screen } from '@acx-ui/test-utils'
+import { DateRange }                                                   from '@acx-ui/utils'
+
+import { ClientHealth } from './ClientHealth'
+
+
+const filters = {
+  startDate: '2022-12-01T00:00:00+08:00',
+  endDate: '2022-12-31T00:00:00+08:00',
+  range: DateRange.last24Hours
+} as AnalyticsFilter
+
+const testMac = 'AA:AA:AA:AA:AA:AA'
+
+const connectionQualities = [
+  {
+    start: '2022-12-21T10:18:00.000Z',
+    end: '2022-12-22T10:18:00.000Z',
+    rss: -60,
+    snr: 20,
+    throughput: 1024 * 3,
+    avgTxMCS: 1024 * 37
+  },
+  {
+    start: '2022-12-23T18:00:00.000Z',
+    end: '2022-12-24T18:00:00.000Z',
+    rss: -80,
+    snr: 10,
+    throughput: 1024 * 1,
+    avgTxMCS: 1024 * 15
+  },
+  {
+    start: '2022-12-24T10:18:00.000Z',
+    end: '2022-12-25T10:18:00.000Z',
+    rss: -90,
+    snr: 1,
+    throughput: 1,
+    avgTxMCS: 1,
+    all: 'bad'
+  }
+]
+
+const testData = {
+  client: {
+    connectionDetailsByAp: [],
+    connectionEvents: [],
+    connectionQualities,
+    incidents: []
+  }
+}
+
+describe('ClientHealth', () => {
+
+  it('should render correctly for valid data', async () => {
+    mockGraphqlQuery(dataApiURL, 'ClientInfo', { data: testData })
+
+    const { asFragment } = render(<Provider>
+      <ClientHealth filter={filters} clientMac={testMac}/>
+    </Provider>)
+
+    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
+    const fragment = asFragment()
+    fragment.querySelectorAll('div[_echarts_instance_^="ec_"]')
+      .forEach((node:Element) => node.setAttribute('_echarts_instance_', 'ec_mock'))
+    expect(fragment).toMatchSnapshot()
+  })
+
+  it('should render correctly for undefined data', async () => {
+    mockGraphqlQuery(dataApiURL, 'ClientInfo', { data: {
+      client: {
+        ...testData.client,
+        connectionQualities: undefined
+      }
+    } })
+
+    const { asFragment } = render(<Provider>
+      <ClientHealth filter={filters} clientMac={testMac}/>
+    </Provider>)
+
+    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
+    const fragment = asFragment()
+    fragment.querySelectorAll('div[_echarts_instance_^="ec_"]')
+      .forEach((node:Element) => node.setAttribute('_echarts_instance_', 'ec_mock'))
+    expect(fragment).toMatchSnapshot()
+  })
+})

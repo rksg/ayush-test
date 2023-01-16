@@ -26,7 +26,8 @@ import { ClientOverviewTab } from '.'
 /* eslint-disable max-len */
 jest.mock('@acx-ui/analytics/components', () => ({
   TrafficByBand: () => <div data-testid={'analytics-TrafficByBand'} title='TrafficByBand' />,
-  TrafficByUsage: () => <div data-testid={'analytics-TrafficByUsage'} title='TrafficByUsage' />
+  TrafficByUsage: () => <div data-testid={'analytics-TrafficByUsage'} title='TrafficByUsage' />,
+  ClientHealth: () => <div data-testid='anayltics-ClientHealth' title='ClientHealth' />
 }))
 
 const params = {
@@ -34,7 +35,7 @@ const params = {
   clientId: 'client-id'
 }
 
-async function checkFragment (asFragment) {
+async function checkFragment (asFragment: () => DocumentFragment) {
   const fragment = asFragment()
   // eslint-disable-next-line testing-library/no-node-access
   fragment.querySelector('div[_echarts_instance_^="ec_"]')?.removeAttribute('_echarts_instance_')

@@ -1,0 +1,341 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ClientHealth should render correctly for undefined data 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+  >
+    <div
+      _echarts_instance_="ec_mock"
+      class="echarts-for-react "
+      size-sensor-id="4"
+      style="height: 160px; position: relative;"
+    >
+      <div
+        style="position: relative; overflow: hidden; width: 1280px; height: 800px;"
+      >
+        <svg
+          baseProfile="full"
+          height="800"
+          style="position:absolute;left:0;top:0;user-select:none"
+          version="1.1"
+          width="1280"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+        >
+          <rect
+            fill="none"
+            fill-opacity="1"
+            height="800"
+            id="0"
+            width="1280"
+            x="0"
+            y="0"
+          />
+          <g>
+            <path
+              d="M-4 -8l4 0l0 16l-4 0Z"
+              fill="none"
+              transform="translate(4 686.6667)"
+            />
+            <text
+              dominant-baseline="central"
+              fill="#333333"
+              style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+              text-anchor="end"
+              transform="translate(4 686.6667)"
+            >
+              Poor
+            </text>
+            <path
+              d="M-4 -8l4 0l0 16l-4 0Z"
+              fill="none"
+              transform="translate(4 460)"
+            />
+            <text
+              dominant-baseline="central"
+              fill="#333333"
+              style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+              text-anchor="end"
+              transform="translate(4 460)"
+            >
+              Avg.
+            </text>
+            <path
+              d="M-4 -8l4 0l0 16l-4 0Z"
+              fill="none"
+              transform="translate(4 233.3333)"
+            />
+            <text
+              dominant-baseline="central"
+              fill="#333333"
+              style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+              text-anchor="end"
+              transform="translate(4 233.3333)"
+            >
+              Good
+            </text>
+            <path
+              d="M12 680.6667L12 692.6667L12 680.6667"
+              fill="#ED1C24"
+            />
+            <path
+              d="M12 454L12 466L12 454"
+              fill="#F7B41E"
+            />
+            <path
+              d="M12 227.3333L12 239.3333L12 227.3333"
+              fill="#23AB36"
+            />
+            <path
+              d="M0 -8l2 0l0 16l-2 0Z"
+              fill="none"
+              transform="translate(17 686.6667)"
+            />
+            <path
+              d="M0 -0.5l2 0l0 1l-2 0Z"
+              fill="none"
+              transform="translate(17 686.6667)"
+            />
+            <text
+              dominant-baseline="central"
+              fill="#333333"
+              style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
+              text-anchor="start"
+              transform="translate(17 686.6667)"
+            >
+              --
+            </text>
+            <path
+              d="M0 -8l2 0l0 16l-2 0Z"
+              fill="none"
+              transform="translate(17 460)"
+            />
+            <path
+              d="M0 -0.5l2 0l0 1l-2 0Z"
+              fill="none"
+              transform="translate(17 460)"
+            />
+            <text
+              dominant-baseline="central"
+              fill="#333333"
+              style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
+              text-anchor="start"
+              transform="translate(17 460)"
+            >
+              --
+            </text>
+            <path
+              d="M0 -8l2 0l0 16l-2 0Z"
+              fill="none"
+              transform="translate(17 233.3333)"
+            />
+            <path
+              d="M0 -0.5l2 0l0 1l-2 0Z"
+              fill="none"
+              transform="translate(17 233.3333)"
+            />
+            <text
+              dominant-baseline="central"
+              fill="#333333"
+              style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
+              text-anchor="start"
+              transform="translate(17 233.3333)"
+            >
+              --
+            </text>
+            <path
+              d="M-5 -5l10 0l0 10l-10 0Z"
+              fill="rgb(0,0,0)"
+              fill-opacity="0"
+              stroke="#ccc"
+              stroke-width="0"
+              transform="translate(1260 5)"
+            />
+          </g>
+        </svg>
+      </div>
+      <div
+        class=""
+      />
+      <object
+        class="size-sensor-object"
+        data="about:blank"
+        style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+        tabindex="-1"
+        type="text/html"
+      />
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`ClientHealth should render correctly for valid data 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+  >
+    <div
+      _echarts_instance_="ec_mock"
+      class="echarts-for-react "
+      size-sensor-id="1"
+      style="height: 160px; position: relative;"
+    >
+      <div
+        style="position: relative; overflow: hidden; width: 1280px; height: 800px;"
+      >
+        <svg
+          baseProfile="full"
+          height="800"
+          style="position:absolute;left:0;top:0;user-select:none"
+          version="1.1"
+          width="1280"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+        >
+          <rect
+            fill="none"
+            fill-opacity="1"
+            height="800"
+            id="0"
+            width="1280"
+            x="0"
+            y="0"
+          />
+          <g>
+            <path
+              d="M-4 -8l4 0l0 16l-4 0Z"
+              fill="none"
+              transform="translate(4 686.6667)"
+            />
+            <text
+              dominant-baseline="central"
+              fill="#333333"
+              style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+              text-anchor="end"
+              transform="translate(4 686.6667)"
+            >
+              Poor
+            </text>
+            <path
+              d="M-4 -8l4 0l0 16l-4 0Z"
+              fill="none"
+              transform="translate(4 460)"
+            />
+            <text
+              dominant-baseline="central"
+              fill="#333333"
+              style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+              text-anchor="end"
+              transform="translate(4 460)"
+            >
+              Avg.
+            </text>
+            <path
+              d="M-4 -8l4 0l0 16l-4 0Z"
+              fill="none"
+              transform="translate(4 233.3333)"
+            />
+            <text
+              dominant-baseline="central"
+              fill="#333333"
+              style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;"
+              text-anchor="end"
+              transform="translate(4 233.3333)"
+            >
+              Good
+            </text>
+            <path
+              d="M12 680.6667L1215.619 680.6667A4 4 0 0 1 1219.619 684.6667L1219.619 688.6667A4 4 0 0 1 1215.619 692.6667L12 692.6667L12 680.6667"
+              fill="#ED1C24"
+            />
+            <path
+              d="M12 454L1215.619 454A4 4 0 0 1 1219.619 458L1219.619 462A4 4 0 0 1 1215.619 466L12 466L12 454"
+              fill="#F7B41E"
+            />
+            <path
+              d="M12 227.3333L1215.619 227.3333A4 4 0 0 1 1219.619 231.3333L1219.619 235.3333A4 4 0 0 1 1215.619 239.3333L12 239.3333L12 227.3333"
+              fill="#23AB36"
+            />
+            <path
+              d="M0 -8l6 0l0 16l-6 0Z"
+              fill="none"
+              transform="translate(1224.619 686.6667)"
+            />
+            <path
+              d="M0 -0.5l6 0l0 1l-6 0Z"
+              fill="none"
+              transform="translate(1224.619 686.6667)"
+            />
+            <text
+              dominant-baseline="central"
+              fill="#333333"
+              style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
+              text-anchor="start"
+              transform="translate(1224.619 686.6667)"
+            >
+              33.33%
+            </text>
+            <path
+              d="M0 -8l6 0l0 16l-6 0Z"
+              fill="none"
+              transform="translate(1224.619 460)"
+            />
+            <path
+              d="M0 -0.5l6 0l0 1l-6 0Z"
+              fill="none"
+              transform="translate(1224.619 460)"
+            />
+            <text
+              dominant-baseline="central"
+              fill="#333333"
+              style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
+              text-anchor="start"
+              transform="translate(1224.619 460)"
+            >
+              33.33%
+            </text>
+            <path
+              d="M0 -8l6 0l0 16l-6 0Z"
+              fill="none"
+              transform="translate(1224.619 233.3333)"
+            />
+            <path
+              d="M0 -0.5l6 0l0 1l-6 0Z"
+              fill="none"
+              transform="translate(1224.619 233.3333)"
+            />
+            <text
+              dominant-baseline="central"
+              fill="#333333"
+              style="font-size:12px;font-family:'Open Sans', sans-serif;font-weight:700;"
+              text-anchor="start"
+              transform="translate(1224.619 233.3333)"
+            >
+              33.33%
+            </text>
+            <path
+              d="M-5 -5l10 0l0 10l-10 0Z"
+              fill="rgb(0,0,0)"
+              fill-opacity="0"
+              stroke="#ccc"
+              stroke-width="0"
+              transform="translate(1260 5)"
+            />
+          </g>
+        </svg>
+      </div>
+      <div
+        class=""
+      />
+      <object
+        class="size-sensor-object"
+        data="about:blank"
+        style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+        tabindex="-1"
+        type="text/html"
+      />
+    </div>
+  </div>
+</DocumentFragment>
+`;
