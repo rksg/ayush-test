@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
-import { Row, Col, Form, Select, Switch, Typography } from 'antd'
-import { useIntl }                                    from 'react-intl'
+import { Row, Col, Form, Select, Typography } from 'antd'
+import { useIntl }                            from 'react-intl'
 
 import {
   PageHeader,
@@ -29,7 +29,7 @@ import { notAvailableMsg } from '@acx-ui/utils'
 import {
   RecentLogin
 } from './RecentLogin'
-import { EnvelopClosedSolidIcon, UserCircle, UserEmailLabel } from './styledComponents'
+import { EnvelopClosedSolidIcon, UserCircle } from './styledComponents'
 
 interface fromLoc {
   from: string
@@ -123,69 +123,6 @@ export function UserProfile () {
     )
   }
 
-  const NotificationTab = () => {
-    return (
-      <StepsForm
-        buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
-        onFinish={async () => handleCancel()}
-        onCancel={async () => handleCancel()}
-      >
-        <StepsForm.StepForm
-          layout='horizontal'
-          labelAlign='left'
-          labelCol={{ span: 12 }}
-          wrapperCol={{ span: 24 }}>
-          <label>{$t({ defaultMessage: 'Receive notifications through:' })}</label>
-          <Row gutter={20}>
-            <Col span={8}>
-              <StepsForm.FieldLabel width='190px'>
-                <UserEmailLabel>
-                  {$t({ defaultMessage: 'Email' })}
-                  {userEmail}
-                </UserEmailLabel>
-                <Form.Item
-                  name='email_format'
-                  rules={[{
-                    required: false
-                  }]}
-                  children={<Switch></Switch>}
-                />
-              </StepsForm.FieldLabel>
-              <StepsForm.FieldLabel width='190px'>
-                {$t({ defaultMessage: 'SMS' })}
-                <Form.Item
-                  name='phone_format'
-                  rules={[{
-                    required: false
-                  }]}
-                  children={<Switch></Switch>}
-                />
-              </StepsForm.FieldLabel>
-            </Col>
-          </Row>
-
-          {/* <label>{$t({ defaultMessage: 'Select the notifications you wish to receive::' })}
-              </label>
-              <Subtitle level={4} style={{ marginTop: '17px' }}>
-                { $t({ defaultMessage: 'Incidents' }) }</Subtitle>
-
-              <div style={{ marginBottom: '5px' }}>
-                <Checkbox>{$t({ defaultMessage: 'P1 Incidents' })}</Checkbox>
-              </div>
-              <div style={{ marginBottom: '5px' }}>
-                <Checkbox>{$t({ defaultMessage: 'P2 Incidents' })}</Checkbox>
-              </div>
-              <div style={{ marginBottom: '5px' }}>
-                <Checkbox>{$t({ defaultMessage: 'P3 Incidents' })}</Checkbox>
-              </div>
-              <div>
-                <Checkbox>{$t({ defaultMessage: 'P4 Incidents' })}</Checkbox>
-              </div> */}
-        </StepsForm.StepForm>
-      </StepsForm>
-    )
-  }
-
   const onEventDetailChange = function (value: string) {
     setDetailLevel(value)
   }
@@ -197,7 +134,7 @@ export function UserProfile () {
   const SettingsTab = () => {
     return (
       <StepsForm
-        buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
+        buttonLabel={{ submit: $t({ defaultMessage: 'Apply Settings' }) }}
         onFinish={async () => handleUpdate()}
         onCancel={async () => handleCancel()}
       >
@@ -309,16 +246,7 @@ export function UserProfile () {
       />
       <UserData/>
 
-      <Tabs activeKey={'Settings'}>
-        <Tabs.TabPane
-          tab={<Tooltip title={$t(notAvailableMsg)}>
-            {$t({ defaultMessage: 'Notifications' })}
-          </Tooltip>}
-          disabled={true}
-          key='Notfications'>
-          <NotificationTab />
-        </Tabs.TabPane>
-
+      <Tabs defaultActiveKey={'Settings'}>
         <Tabs.TabPane
           tab={$t({ defaultMessage: 'Settings' })}
           key='Settings'>
@@ -335,12 +263,11 @@ export function UserProfile () {
         </Tabs.TabPane>
 
         <Tabs.TabPane
-          tab={<Tooltip title={$t(notAvailableMsg)}>
-            {$t({ defaultMessage: 'Recent Logins' })}
-          </Tooltip>}
-          disabled={true}
+          tab={$t({ defaultMessage: 'Recent Logins' })}
           key='RecentLogins'>
-          <RecentLogin />
+          <RecentLogin
+            userEmail={userEmail}
+          />
         </Tabs.TabPane>
       </Tabs>
     </>
