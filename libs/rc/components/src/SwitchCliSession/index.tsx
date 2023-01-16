@@ -8,7 +8,7 @@ import { UIResizableBox, UIDraggable, UIModal } from './styledComponents'
 import type { DraggableData, DraggableEvent } from 'react-draggable'
 import type { ResizeCallbackData }            from 'react-resizable'
 
-function SwitchCliSession (props: {
+export function SwitchCliSession (props: {
   modalState: boolean,
   setIsModalOpen: (isModalOpen: boolean) => void,
   jwtToken: string,
@@ -130,8 +130,6 @@ function SwitchCliSession (props: {
     </UIModal>
   )
 }
-
-export default SwitchCliSession
 
 
 

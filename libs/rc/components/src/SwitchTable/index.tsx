@@ -206,5 +206,12 @@ export function SwitchTable (props : {
         }
       }}
     />
+    {/* <SwitchCliSession
+      modalState={cliModalState}
+      setIsModalOpen={setCliModalOpen}
+      serialNumber={serialNumber || ''}
+      jwtToken={jwtToken.data?.access_token || ''}
+      switchName={switchDetailHeader?.name || switchDetailHeader?.switchName || switchDetailHeader?.serialNumber || ''}
+    /> */}
   </Loader>
 }

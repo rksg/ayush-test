@@ -97,9 +97,12 @@ export function useSwitchActions () {
     })
   }
 
-  const doSyncData= async (switchId: string, tenantId: string) => {
+  const doSyncData= async (switchId: string, tenantId: string, callBack?: ()=>void ) => {
     try {
       await syncData({ params: { tenantId: tenantId, switchId }, payload: { isManual: true } }).unwrap()
+      setTimeout(() => {
+        callBack && callBack()
+      }, 3000)
     } catch {
       showToast({
         type: 'error',

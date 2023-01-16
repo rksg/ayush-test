@@ -47,6 +47,7 @@ export { WifiSignal } from './WifiSignal'
 export { NetworkDeviceMarker } from './FloorPlan/NetworkDevices/NetworkDeviceMarker'
 export { ApSelector } from './ApSelector'
 export { CloudMessageBanner } from './CloudMessageBanner'
+export { SwitchCliSession } from './SwitchCliSession'
 
 export * from './services'
 export * from './EdgeStatisticWidget'

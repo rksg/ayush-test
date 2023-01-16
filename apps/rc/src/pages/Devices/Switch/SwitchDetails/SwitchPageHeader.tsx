@@ -8,7 +8,7 @@ import { useIntl }                          from 'react-intl'
 
 import { Button, PageHeader, RangePicker, Tooltip }       from '@acx-ui/components'
 import { ArrowExpand }                                    from '@acx-ui/icons'
-import { SwitchStatus, useSwitchActions }                 from '@acx-ui/rc/components'
+import { SwitchCliSession, SwitchStatus, useSwitchActions }                 from '@acx-ui/rc/components'
 import { useGetJwtTokenQuery, useLazyGetSwitchListQuery } from '@acx-ui/rc/services'
 import { SwitchRow, SwitchStatusEnum, SwitchViewModel }   from '@acx-ui/rc/utils'
 import {
@@ -18,7 +18,6 @@ import {
 }                  from '@acx-ui/react-router-dom'
 import { dateRangeForLast, formatter, useDateFilter } from '@acx-ui/utils'
 
-import SwitchCliSession from './SwitchCliSession'
 import SwitchTabs       from './SwitchTabs'
 
 import { SwitchDetailsContext } from '.'
@@ -60,7 +59,7 @@ function SwitchPageHeader () {
 
     switch(e.key) {
       case MoreActions.CLI_SESSION:
-        setFirewallModalOpen(true)
+        setCliModalOpen(true)
         break
       case MoreActions.REBOOT:
         switchAction.showRebootSwitch(switchId, tenantId || '', isStack)
@@ -69,8 +68,8 @@ function SwitchPageHeader () {
         switchAction.showDeleteSwitch(switchDetailHeader, tenantId, () => navigate(linkToSwitch))
         break
       case MoreActions.SYNC_DATA:
-        switchAction.doSyncData(switchId, tenantId || '')
-        handleSyncData()
+        switchAction.doSyncData(switchId, tenantId || '', handleSyncData)
+        setIsSyncing(true)
         break
     }
   }
@@ -152,7 +151,7 @@ function SwitchPageHeader () {
     </Menu>
   )
 
-  const [firewallModalState, setFirewallModalOpen] = useState(false)
+  const [cliModalState, setCliModalOpen] = useState(false)
 
 
   return (
@@ -195,8 +194,8 @@ function SwitchPageHeader () {
         footer={<SwitchTabs switchDetail={switchDetailHeader as SwitchViewModel} />}
       />
       <SwitchCliSession
-        modalState={firewallModalState}
-        setIsModalOpen={setFirewallModalOpen}
+        modalState={cliModalState}
+        setIsModalOpen={setCliModalOpen}
         serialNumber={serialNumber || ''}
         jwtToken={jwtToken.data?.access_token || ''}
         switchName={switchDetailHeader?.name || switchDetailHeader?.switchName || switchDetailHeader?.serialNumber || ''}
