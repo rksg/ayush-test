@@ -8,7 +8,8 @@ import {
 import {
   getSwitchName,
   SwitchRow,
-  SwitchStatusEnum
+  SwitchStatusEnum,
+  SwitchViewModel
 } from '@acx-ui/rc/utils'
 
 export function useSwitchActions () {
@@ -40,7 +41,26 @@ export function useSwitchActions () {
     })
   }
 
+
+  const showDeleteSwitch = async ( data: SwitchViewModel, tenantId?: string, callBack?: ()=>void ) => {
+    showActionModal({
+      type: 'confirm',
+      customContent: {
+        action: 'DELETE',
+        entityName: $t({ defaultMessage: 'Switch' }),
+        entityValue: data.name || data.serialNumber,
+        numOfEntities: 1
+      },
+      onOk: () => {
+        const switchIdList = [data.serialNumber]
+        deleteSwitches({ params: { tenantId }, payload: switchIdList })
+          .then(callBack)
+      }
+    })
+  }
+
   return {
-    showDeleteSwitches
+    showDeleteSwitches,
+    showDeleteSwitch
   }
 }
