@@ -12,7 +12,9 @@ export class PskWlanAdvancedCustomization {
 
   applicationPolicyId?: string
 
-  accessControlProfileId?: string
+  accessControlProfileId?: string | null
+
+  urlFilteringPolicyId?: null
 
   userUplinkRateLimiting?: number
 

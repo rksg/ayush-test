@@ -27,6 +27,7 @@ import { transformDisplayText } from '@acx-ui/rc/utils'
 import { useParams }            from '@acx-ui/react-router-dom'
 
 import Layer2Drawer       from '../../../Policies/AccessControl/AccessControlForm/Layer2Drawer'
+import Layer3Drawer       from '../../../Policies/AccessControl/AccessControlForm/Layer3Drawer'
 import NetworkFormContext from '../NetworkFormContext'
 
 import * as UI from './styledComponents'
@@ -96,7 +97,8 @@ export function AccessControlForm () {
 
 
       {enabledProfile ?
-        <SelectAccessProfileProfile /> :
+        // eslint-disable-next-line max-len
+        <SelectAccessProfileProfile accessControlProfileId={get(data, 'wlan.advancedCustomization.accessControlProfileId')}/> :
         <AccessControlConfigForm />}
     </div>)
 }
@@ -130,17 +132,11 @@ function getAccessControlProfile <
   return transformDisplayText(name)
 }
 
-function SelectAccessProfileProfile () {
+function SelectAccessProfileProfile (props: { accessControlProfileId: string }) {
   const { $t } = useIntl()
+  const { accessControlProfileId } = props
+  const form = Form.useFormInstance()
   const { data } = useContext(NetworkFormContext)
-
-  useEffect(() => {
-    if (data) {
-      if (!_.isEmpty(get(data, 'wlan.advancedCustomization.accessControlProfileId'))) {
-        onAccessPolicyChange(get(data, 'wlan.advancedCustomization.accessControlProfileId'))
-      }
-    }
-  }, [data])
 
   const [state, updateState] = useState({
     selectedAccessControlProfile: undefined as AccessControlProfile | undefined
@@ -220,11 +216,31 @@ function SelectAccessProfileProfile () {
       }
     })
 
+  useEffect(() => {
+    if (data && accessControlList) {
+      if (!_.isEmpty(get(data, 'wlan.advancedCustomization.accessControlProfileId'))) {
+        onAccessPolicyChange(get(data, 'wlan.advancedCustomization.accessControlProfileId'))
+      }
+      if (accessControlProfileId) {
+        onAccessPolicyChange(accessControlProfileId)
+      }
+    }
+  }, [data, accessControlProfileId, accessControlList])
+
+  const resetProfiles = () => {
+    form.setFieldValue(['wlan','advancedCustomization','l2AclEnable'], false)
+    form.setFieldValue(['wlan','advancedCustomization','l3AclEnable'], false)
+    form.setFieldValue('enableDeviceOs', false)
+    form.setFieldValue(['wlan','advancedCustomization','applicationPolicyEnable'], false)
+    form.setFieldValue('enableClientRateLimit', false)
+  }
+
   const onAccessPolicyChange = function (id: string) {
     const data = id ? accessControlList?.find(profile => profile.id === id) : undefined
     updateState({
       selectedAccessControlProfile: data
     })
+    resetProfiles()
   }
 
   const getLinkLimitByAccessControlPorfile =
@@ -239,6 +255,7 @@ function SelectAccessProfileProfile () {
 
   const [enableAccessControlProfile] = [
     useWatch('accessControlProfileEnable')]
+
   return (<>
     <UI.FieldLabel width='175px'>
       {$t({ defaultMessage: 'Access Control' })}
@@ -331,18 +348,6 @@ function AccessControlConfigForm () {
     useWatch<boolean>('enableClientRateLimit')
   ]
 
-  const { layer3SelectOptions } = useL3AclPolicyListQuery({
-    params: useParams(),
-    payload: listPayload
-  }, {
-    selectFromResult ({ data }) {
-      return {
-        layer3SelectOptions: data?.data?.map(
-          item => <Option key={item.id}>{item.name}</Option>) ?? []
-      }
-    }
-  })
-
   const { devicePolicySelectOptions } = useDevicePolicyListQuery({
     params: useParams(),
     payload: listPayload
@@ -396,22 +401,9 @@ function AccessControlConfigForm () {
           children={<Switch />}
         />
 
-        {enableLayer3 && <>
-          <Form.Item
-            name={['wlan','advancedCustomization','l3AclPolicyId']}
-            style={{ marginBottom: '10px', lineHeight: '32px' }}
-            rules={[{
-              required: true,
-              message: $t({ defaultMessage: 'Please select Layer 3 profile' })
-            }]}
-            children={
-              <Select placeholder={$t({ defaultMessage: 'Select profile...' })}
-                style={{ width: '180px' }}
-                children={layer3SelectOptions} />
-            }
-          />
-          {$t({ defaultMessage: 'Add' })}
-        </>}
+        {enableLayer3 && <Layer3Drawer
+          inputName={['wlan', 'advancedCustomization']}
+        />}
       </div>
     </UI.FieldLabel>
 

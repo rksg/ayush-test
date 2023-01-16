@@ -363,6 +363,17 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
     advancedCustomization.devicePolicyId = null
   }
 
+  if (get(data, 'wlan.advancedCustomization.accessControlProfileId')) {
+    advancedCustomization.l2AclEnable = false
+    advancedCustomization.l3AclEnable = false
+  }
+
+  if (!get(data, 'wlan.advancedCustomization.applicationPolicyEnable')) {
+    advancedCustomization.applicationPolicyId = null
+  }
+
+  advancedCustomization.urlFilteringPolicyId = null
+
   if (get(data, 'wlan.advancedCustomization.vlanPool')) {
     advancedCustomization.vlanPool = JSON.parse(get(data, 'wlan.advancedCustomization.vlanPool'))
   }

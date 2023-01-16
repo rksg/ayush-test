@@ -14,9 +14,11 @@ export class OpenWlanAdvancedCustomization {
 
   l3AclPolicyId?: string
 
-  applicationPolicyId?: string
+  applicationPolicyId?: string | null
 
-  accessControlProfileId?: string
+  accessControlProfileId?: string | null
+
+  urlFilteringPolicyId?: null
 
   userUplinkRateLimiting?: number
 
