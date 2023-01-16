@@ -46,6 +46,7 @@ export function PersonaContextForm (props: {
   return (
     <Form
       form={form}
+      preserve={false}
       name={'personaForm'}
       layout={'vertical'}
       initialValues={defaultValue}
