@@ -86,7 +86,8 @@ exports[`NetworkMoreSettingsForm should render More settings form successfully 1
                         >
                           <button
                             aria-checked="false"
-                            class="ant-switch"
+                            class="ant-switch ant-switch-disabled"
+                            disabled=""
                             id="enableVlanPooling"
                             role="switch"
                             type="button"

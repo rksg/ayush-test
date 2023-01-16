@@ -83,11 +83,12 @@ describe('NetworkMoreSettingsForm', () => {
       { route: { params } })
 
     const view = screen.getByText(/vlan pooling:/i)
-    await userEvent.click(within(view).getByRole('switch'))
-    await userEvent.click(screen.getByRole('combobox', {
-      name: /vlan pool:/i
-    }))
-    expect(screen.getByText('No Data')).toBeInTheDocument()
+    expect(within(view).getByRole('switch')).toBeDisabled()
+    // await userEvent.click(within(view).getByRole('switch'))
+    // await userEvent.click(screen.getByRole('combobox', {
+    //   name: /vlan pool:/i
+    // }))
+    // expect(screen.getByText('No Data')).toBeInTheDocument()
   })
 
   it('after click Client Isolation', async () => {
