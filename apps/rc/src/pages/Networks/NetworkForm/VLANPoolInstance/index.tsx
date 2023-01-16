@@ -29,7 +29,7 @@ const VLANPoolInstance = () => {
   const [vlanPoolList, setVlanPoolList]= useState(vlanPoolServices)
   useEffect(()=>{
     if(data){
-      setVlanPoolList(data?.map(m => ({ label: m.name, value: m.id })) ?? [])
+      setVlanPoolList(data.map(m => ({ label: m.name, value: m.id })))
     }
   },[data])
   return (
@@ -63,9 +63,7 @@ const VLANPoolInstance = () => {
         <Input type='hidden' />
       </Form.Item>
       <VLANPoolModal updateInstance={(data)=>{
-        vlanPoolList.push({
-          label: data.name, value: data.id })
-        setVlanPoolList([...vlanPoolList])
+        setVlanPoolList([...vlanPoolList, { label: data.name, value: data.id }])
         form.setFieldValue(['wlan', 'advancedCustomization','vlanPool','id'], data.id)
         form.setFieldValue(['wlan', 'advancedCustomization','vlanPool','name'], data.name)
         form.setFieldValue([
