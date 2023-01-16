@@ -37,7 +37,8 @@ export function RecentLogin (props: { userEmail: string }) {
         'entity_type',
         'entity_id',
         'message',
-        'adminName'
+        'adminName',
+        'id'
       ],
       searchString: 'logged',
       filters: {
