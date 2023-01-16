@@ -97,12 +97,14 @@ export function PersonaDevicesTable (props: {
 
         showActionModal({
           type: 'confirm',
-          title: `Delete ${selectedItems.length} devices`,
+          customContent: {
+            action: 'DELETE',
+            entityName: 'device',
+            numOfEntities: selectedItems.length
+          },
           // FIXME: Need to add mac registration list id into this dialog
           // eslint-disable-next-line max-len
-          content: 'It will remove these devices from the MAC Registration list associated with this persona. Are you sure you want to delete them?',
-          okType: 'primary',
-          okText: $t({ defaultMessage: 'Delete' }),
+          content: $t({ defaultMessage: 'It will remove these devices from the MAC Registration list associated with this persona. Are you sure you want to delete them?' }),
           onOk: () => {
             deleteDevices(selectedItems)
             clearSelection()

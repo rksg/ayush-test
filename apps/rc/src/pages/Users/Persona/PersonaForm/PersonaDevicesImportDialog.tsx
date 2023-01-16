@@ -93,10 +93,10 @@ export function PersonaDevicesImportDialog (props: DevicesImportDialogProps) {
           <Radio.Group onChange={onImportModeChange}>
             <Space direction={'horizontal'}>
               <Radio value={DevicesImportMode.FromClientDevices}>
-                Select from connected devices
+                {$t({ defaultMessage: 'Select from connected devices' })}
               </Radio>
               <Radio value={DevicesImportMode.Manually}>
-                Add manually
+                {$t({ defaultMessage: 'Add manually' })}
               </Radio>
             </Space>
           </Radio.Group>
@@ -104,7 +104,7 @@ export function PersonaDevicesImportDialog (props: DevicesImportDialogProps) {
       </Form>
 
       {importMode === DevicesImportMode.FromClientDevices
-        ? <div>Import from client table</div>
+        ? <div>{$t({ defaultMessage: 'Import from client table' })}</div>
         : <ImportManuallyForm form={form}/>
       }
     </Modal>
