@@ -211,19 +211,24 @@ export function ApForm () {
 
   const getApGroupOptions = async (venueId: string) => {
     const list = venueId
-      ? (await apGroupList({ params: { tenantId, venueId } }, true)).data
+      ? (await apGroupList({ params: { tenantId, venueId } }, true))
+        .data?.filter((item) => !item.isDefault)
+        .map((item) => ({
+          label: item.name,
+          value: item.id
+        }))
+        .sort((a, b) => (a.label > b.label) ? 1 : -1)
       : []
 
-    return venueId && list?.length
-      ? list?.map((item) => ({
-        label: !item.isDefault
-          ? item.name
-          : $t({ defaultMessage: 'No group (inherit from Venue)' }),
-        value: item.isDefault && !isEditMode ? null : item.id
-      })).sort((a, b) => (a.label > b.label) ? 1 : -1) : [{
-        label: $t({ defaultMessage: 'No group (inherit from Venue)' }),
-        value: null
-      }]
+    const result = []
+    result.push({
+      label: $t({ defaultMessage: 'No group (inherit from Venue)' }),
+      value: null
+    })
+    if (venueId && list?.length) {
+      result.push(...list)
+    }
+    return result
   }
 
   const handleVenueChange = async (value: string) => {
