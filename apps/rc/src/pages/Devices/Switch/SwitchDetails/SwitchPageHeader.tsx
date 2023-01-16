@@ -1,12 +1,14 @@
+/* eslint-disable max-len */
+import { useContext } from 'react'
+
 import { Dropdown, Menu, Space } from 'antd'
 import moment                    from 'moment-timezone'
 import { useIntl }               from 'react-intl'
 
-import { Button, PageHeader, RangePicker }                                         from '@acx-ui/components'
-import { ArrowExpand }                                                             from '@acx-ui/icons'
-import { SwitchStatus }                                                            from '@acx-ui/rc/components'
-import { useSwitchDetailHeaderQuery }                                              from '@acx-ui/rc/services'
-import { isStrictOperationalSwitch, SwitchRow, SwitchStatusEnum, SwitchViewModel } from '@acx-ui/rc/utils'
+import { Button, PageHeader, RangePicker } from '@acx-ui/components'
+import { ArrowExpand }                     from '@acx-ui/icons'
+import { SwitchStatus }                    from '@acx-ui/rc/components'
+import { SwitchRow, SwitchViewModel }      from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useTenantLink,
@@ -16,16 +18,19 @@ import { dateRangeForLast, useDateFilter } from '@acx-ui/utils'
 
 import SwitchTabs from './SwitchTabs'
 
+import { SwitchDetailsContext } from '.'
+
 function SwitchPageHeader () {
   const { $t } = useIntl()
-  const { tenantId, switchId, serialNumber } = useParams()
-  const { data } = useSwitchDetailHeaderQuery({ params: { tenantId, switchId, serialNumber } })
+  const { switchId, serialNumber } = useParams()
+  const {
+    switchDetailsContextData
+  } = useContext(SwitchDetailsContext)
+  const { switchDetailHeader, currentSwitchOperational } = switchDetailsContextData
 
   const navigate = useNavigate()
   const basePath = useTenantLink(`/devices/switch/${switchId}/${serialNumber}`)
-  const currentSwitchOperational = isStrictOperationalSwitch(
-    data?.deviceStatus as SwitchStatusEnum, !!data?.configReady, !!data?.syncedSwitchConfig)
-    && !data?.suspendingDeployTime
+
 
   // const handleMenuClick: MenuProps['onClick'] = (e) => { TODO:
   //   // console.log('click', e)
@@ -65,9 +70,9 @@ function SwitchPageHeader () {
 
   return (
     <PageHeader
-      title={data?.name || data?.switchName || data?.serialNumber || ''}
+      title={switchDetailHeader?.name || switchDetailHeader?.switchName || switchDetailHeader?.serialNumber || ''}
       titleExtra={
-        <SwitchStatus row={data as unknown as SwitchRow} showText={!currentSwitchOperational} />}
+        <SwitchStatus row={switchDetailHeader as unknown as SwitchRow} showText={!currentSwitchOperational} />}
       breadcrumb={[
         { text: $t({ defaultMessage: 'Switches' }), link: '/devices/switch' }
       ]}
@@ -99,7 +104,7 @@ function SwitchPageHeader () {
           }
         >{$t({ defaultMessage: 'Configure' })}</Button>
       ]}
-      footer={<SwitchTabs switchDetail={data as SwitchViewModel} />}
+      footer={<SwitchTabs switchDetail={switchDetailHeader as SwitchViewModel} />}
     />
   )
 }

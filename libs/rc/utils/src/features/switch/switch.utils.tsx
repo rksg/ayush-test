@@ -5,8 +5,12 @@ import _ from 'lodash'
 import { showActionModal } from '@acx-ui/components'
 import { getIntl }         from '@acx-ui/utils'
 
-import { DeviceConnectionStatus }                                         from '../../constants'
-import { STACK_MEMBERSHIP, SwitchRow, SwitchStatusEnum, SwitchViewModel } from '../../types'
+import { DeviceConnectionStatus } from '../../constants'
+import { STACK_MEMBERSHIP,
+  SwitchRow,
+  SwitchStatusEnum,
+  SwitchViewModel,
+  SWITCH_TYPE } from '../../types'
 
 export const modelMap: ReadonlyMap<string, string> = new Map([
   ['CRH', 'ICX7750-48F'],
@@ -76,6 +80,10 @@ export const getSwitchModel = (serial: string) => {
 
   const productCode = serial.slice(0, 3)
   return modelMap.get(productCode)
+}
+
+export const isRouter = (switchType: SWITCH_TYPE) => {
+  return switchType === SWITCH_TYPE.ROUTER
 }
 
 export const transformSwitchStatus = (switchStatusEnum: SwitchStatusEnum, configReady = true,

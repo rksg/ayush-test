@@ -2,6 +2,7 @@
 import { PortSettingModel } from '../models/PortSetting'
 
 import { Acl, Vlan, SwitchModel } from './venue'
+import { ConfigurationBackupStatus } from '../constants'
 
 import { GridDataRow } from './'
 
@@ -24,6 +25,11 @@ export enum CUSTOMIZE_FLAG {
   ALL = 'AL'
 }
 
+export enum SWITCH_TYPE {
+  SWITCH = 'switch',
+  ROUTER ='router'
+}
+
 export enum SwitchStatusEnum {
   NEVER_CONTACTED_CLOUD = 'PREPROVISIONED',
   INITIALIZING = 'INITIALIZING',
@@ -38,6 +44,21 @@ export enum SwitchStatusEnum {
   FIRMWARE_UPD_SYNCING_TO_REMOTE = 'FIRMWARE_UPD_SYNCING_TO_REMOTE',
   FIRMWARE_UPD_WRITING_TO_FLASH = 'FIRMWARE_UPD_WRITING_TO_FLASH',
   FIRMWARE_UPD_FAIL = 'FIRMWARE_UPD_FAIL'
+}
+
+export enum TroubleshootingType {
+  PING = 'ping',
+  TRACE_ROUTE = 'trace-route',
+  ROUTE_TABLE = 'route-table',
+  MAC_ADDRESS_TABLE = 'mac-address-table',
+  DHCP_SERVER_LEASE_TABLE = 'dhcp-server-lease-table'
+}
+
+export enum TroubleshootingMacAddressOptionsEnum {
+  PORT = 'connected_port',
+  NONE = 'none',
+  MAC = 'mac_address',
+  VLAN = 'vlan',
 }
 
 export class Switch {
@@ -86,6 +107,36 @@ export class Switch {
     this.rearModule = 'none'
   }
 }
+
+export interface TroubleshootingResult {
+  requestId: string
+  response: {
+      latestResultResponseTime: string
+      result: string
+      pingIp: string
+      syncing: boolean
+      traceRouteTarget: string
+      traceRouteTtl: number
+      troubleshootingType: TroubleshootingType
+      macAddressTablePortIdentify: string
+      macAddressTableVlanId: string
+      macAddressTableAddress: string,
+      macAddressTableType: TroubleshootingMacAddressOptionsEnum
+  }
+}
+
+export interface PingSwitch {
+  targetHost: string
+}
+
+export interface TraceRouteSwitch {
+  maxTtl: string
+  targetHost: string
+}
+
+// export interface TroubleshootingResult {
+//   responseId: string
+// }
 
 export interface VeViewModel {
   name?: string
@@ -143,7 +194,7 @@ export class SwitchViewModel extends Switch {
   deviceStatus?: SwitchStatusEnum
   model?: string
   venueName?: string
-  switchType?: string
+  switchType?: SWITCH_TYPE
   clientCount?: number
   switchMac?: string
   uptime?: string
@@ -217,6 +268,19 @@ export interface ConfigurationHistory {
   numberOfErrors: number
   transactionId: string
   dispatchFailedReason?: DispatchFailedReason[]
+}
+
+export interface ConfigurationBackup {
+  'id': string
+'createdDate': string
+'name': string
+'backupType': string
+'backupName': string
+'status': ConfigurationBackupStatus
+'config': string
+'switchId': string
+restoreStatus: ConfigurationBackupStatus
+failureReason: string
 }
 
 export interface DispatchFailedReason {
