@@ -46,7 +46,7 @@ describe('PortalTable', () => {
   beforeEach(async () => {
     mockServer.use(
       rest.get(
-        PortalUrlsInfo.getPortalList.url,
+        PortalUrlsInfo.getPortalProfileList.url,
         (req, res, ctx) => res(ctx.json({ ...mockedPortalList }))
       )
     )
