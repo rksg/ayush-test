@@ -4,6 +4,7 @@ import { useIntl } from 'react-intl'
 
 import { Tabs }                                  from '@acx-ui/components'
 import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
+import { SwitchConfigHistoryTable }              from '@acx-ui/rc/components'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { VenueEditContext, EditContext } from '../index'
@@ -71,7 +72,7 @@ export function SwitchConfigTab () {
         tab={tabTitleMap('history')}
         key='history'
       >
-        {$t({ defaultMessage: 'Configuration History' })}
+        <SwitchConfigHistoryTable isVenueLevel={true} />
       </TabPane>
       <TabPane
         disabled={!releaseTag}

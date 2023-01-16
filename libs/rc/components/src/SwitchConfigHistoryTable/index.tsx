@@ -3,28 +3,62 @@ import { useEffect, useRef, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, Loader, Modal, Table, TableProps, Descriptions }    from '@acx-ui/components'
-import { useGetSwitchConfigHistoryQuery }                            from '@acx-ui/rc/services'
+import { Button, cssStr, Loader, Modal, Table, TableProps, Descriptions, StackedBarChart } from '@acx-ui/components'
+import {
+  useGetSwitchConfigHistoryQuery,
+  useGetVenueConfigHistoryQuery,
+  useLazyGetVenueConfigHistoryDetailQuery
+} from '@acx-ui/rc/services'
 import { ConfigurationHistory, DispatchFailedReason, useTableQuery } from '@acx-ui/rc/utils'
+import { useParams }                                                 from '@acx-ui/react-router-dom'
+import { getIntl }                                                   from '@acx-ui/utils'
 
 import { CodeMirrorWidget } from '../CodeMirrorWidget'
 
-import { ErrorsTable } from './ErrorsTable'
-import * as UI         from './styledComponents'
+import { ErrorsTable }              from './ErrorsTable'
+import * as UI                      from './styledComponents'
+import { SwitchConfigDetailsTable } from './SwitchConfigDetailsTable'
 
-export function SwitchConfigHistoryTable () {
+import type { RadioChangeEvent } from 'antd'
+
+export function SwitchConfigHistoryTable (props: {
+  isVenueLevel?: boolean
+}) {
   const { $t } = useIntl()
+  const { isVenueLevel } = props
   const codeMirrorEl = useRef(null as unknown as { highlightLine: Function, removeHighlightLine: Function })
+  const { tenantId, venueId } = useParams()
   const [visible, setVisible] = useState(false)
   const [showError, setShowError] = useState(true)
   const [showClis, setShowClis] = useState(true)
   const [collapseActive, setCollapseActive] = useState(false)
   const [dispatchFailedReason, setDispatchFailedReason] = useState([] as DispatchFailedReason[])
   const [selectedRow, setSelectedRow] = useState(null as unknown as ConfigurationHistory)
+  const [selectedConfigRow, setSelectedConfigRow] = useState(null as unknown as ConfigurationHistory)
 
-  const showModal = (row: ConfigurationHistory) => {
-    setSelectedRow(row)
-    setDispatchFailedReason(row.dispatchFailedReason as DispatchFailedReason[] || [])
+  const [getVenueConfigHistoryDetail] = useLazyGetVenueConfigHistoryDetailQuery()
+  const [configDetails, setConfigDetails] = useState([] as unknown as ConfigurationHistory[])
+
+  const getConfigHistoryDetail = async (transactionId: string, filterByStatus: string) => {
+    const payload = {
+      filterByStatus: filterByStatus,
+      sortInfo: { sortColumn: 'startTime', dir: 'DESC' },
+      limit: 10
+    }
+    return (await getVenueConfigHistoryDetail({
+      params: { tenantId, venueId, transactionId: transactionId }, payload }, true)
+    )?.data?.response?.list?.map((config, index: number) => ({ ...config, id: `${index}` })) ?? []
+  }
+
+  const showModal = async (selectedRow: ConfigurationHistory) => {
+    const configHistoryDetail = isVenueLevel
+      ? await getConfigHistoryDetail(selectedRow.transactionId, 'ALL') : null
+    const row = (isVenueLevel ? configHistoryDetail?.[0] : selectedRow) as ConfigurationHistory
+
+    setConfigDetails(configHistoryDetail as ConfigurationHistory[])
+    setSelectedRow(selectedRow)
+    setSelectedConfigRow(row)
+    setDispatchFailedReason(row?.dispatchFailedReason as DispatchFailedReason[] || [])
     setCollapseActive(!row?.dispatchFailedReason?.length)
     setShowClis(!!row?.clis)
     setShowError(!!row?.clis || !!row?.dispatchFailedReason?.length)
@@ -37,7 +71,7 @@ export function SwitchConfigHistoryTable () {
   }
 
   const tableQuery = useTableQuery({
-    useQuery: useGetSwitchConfigHistoryQuery,
+    useQuery: isVenueLevel ? useGetVenueConfigHistoryQuery : useGetSwitchConfigHistoryQuery,
     defaultPayload: {
       filterByConfigType: '',
       sortInfo: { sortColumn: 'startTime', dir: 'DESC' },
@@ -47,30 +81,60 @@ export function SwitchConfigHistoryTable () {
 
   const tableData = tableQuery.data?.data ?? []
 
-  const columns: TableProps<ConfigurationHistory>['columns'] = [{
-    key: 'startTime',
-    title: $t({ defaultMessage: 'Time' }),
-    dataIndex: 'startTime',
-    sorter: true,
-    defaultSortOrder: 'ascend',
-    disable: true,
-    render: function (data, row) {
-      return <Button type='link' size='small' onClick={() => {showModal(row)}}>
-        {data}
-      </Button>
-    }
-  }, {
-    key: 'configType',
-    title: $t({ defaultMessage: 'Type' }),
-    dataIndex: 'configType',
-    sorter: true
-  }, {
-    key: 'dispatchStatus',
-    title: $t({ defaultMessage: 'Status' }),
-    dataIndex: 'dispatchStatus',
-    sorter: true
+  const getCols = () => {
+    const columns: TableProps<ConfigurationHistory>['columns'] = [{
+      key: 'startTime',
+      title: $t({ defaultMessage: 'Time' }),
+      dataIndex: 'startTime',
+      sorter: true,
+      defaultSortOrder: 'descend',
+      disable: true,
+      render: function (data, row) {
+        return <Button type='link' size='small' onClick={() => {showModal(row)}}>
+          {data}
+        </Button>
+      }
+    }, {
+      key: 'configType',
+      title: $t({ defaultMessage: 'Type' }),
+      dataIndex: 'configType',
+      sorter: true
+    }, {
+      key: 'numberOfSwitches',
+      title: $t({ defaultMessage: '# of Switches' }),
+      dataIndex: 'numberOfSwitches',
+      sorter: true
+    }, {
+      key: 'dispatchStatus',
+      title: $t({ defaultMessage: 'Status' }),
+      dataIndex: 'dispatchStatus',
+      sorter: true,
+      render: (data, row) => isVenueLevel ? getStatusBar(row) : data
+    }]
+
+    return columns.filter(c => isVenueLevel || !c.key.includes('numberOfSwitches'))
   }
-  ]
+
+  const onSelectConfingChange = (row: ConfigurationHistory) => {
+    setSelectedConfigRow(row)
+    setDispatchFailedReason(row.dispatchFailedReason as DispatchFailedReason[] || [])
+    setCollapseActive(!row?.dispatchFailedReason?.length)
+    setShowClis(!!row?.clis)
+    setShowError(!!row?.clis || !!row?.dispatchFailedReason?.length)
+  }
+
+  const onFilterConfigDetails = async (e: RadioChangeEvent) => {
+    const filterType = e.target.value
+    const configHistoryDetail = await getConfigHistoryDetail(selectedRow.transactionId, filterType)
+    const row = configHistoryDetail?.[0]
+
+    setConfigDetails(configHistoryDetail)
+    setSelectedConfigRow(row)
+    setDispatchFailedReason(row?.dispatchFailedReason as DispatchFailedReason[] || [])
+    setCollapseActive(!row?.dispatchFailedReason?.length)
+    setShowClis(!!row?.clis)
+    setShowError(!!row?.clis || !!row?.dispatchFailedReason?.length)
+  }
 
   const togglePanel = () => {
     setCollapseActive(!collapseActive)
@@ -103,8 +167,8 @@ export function SwitchConfigHistoryTable () {
   return <>
     <Loader states={[tableQuery]}>
       <Table
-        rowKey='startTime'
-        columns={columns}
+        rowKey='transactionId'
+        columns={getCols()}
         dataSource={tableData}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
@@ -114,6 +178,7 @@ export function SwitchConfigHistoryTable () {
       title={$t({ defaultMessage: 'Configuration Details' })}
       visible={visible}
       onCancel={handleCancel}
+      destroyOnClose={true}
       width={1000}
       footer={<Button key='back' type='secondary' onClick={handleCancel}>
         {$t({ defaultMessage: 'Close' })}
@@ -132,16 +197,23 @@ export function SwitchConfigHistoryTable () {
               children={selectedRow.configType} />
             <Descriptions.Item
               label={$t({ defaultMessage: 'Status' })}
-              children={selectedRow.dispatchStatus} />
+              children={isVenueLevel ? getStatusBar(selectedRow) : selectedRow.dispatchStatus} />
           </Descriptions>
+          {
+            isVenueLevel && configDetails && <SwitchConfigDetailsTable
+              configDetails={configDetails}
+              onSelectConfingChange={onSelectConfingChange}
+              onFilterConfigDetails={onFilterConfigDetails}
+            />
+          }
           <UI.ConfigDetail>
             {
-              selectedRow?.clis &&
+              selectedConfigRow?.clis &&
               <div className='code-mirror-container'>
                 <div className='header'>
                   {$t({ defaultMessage: 'Commands Applied' })}
                 </div>
-                <CodeMirrorWidget ref={codeMirrorEl} type='single' data={selectedRow} />
+                <CodeMirrorWidget ref={codeMirrorEl} type='single' data={selectedConfigRow} />
               </div>
             }
             {
@@ -178,4 +250,43 @@ export function SwitchConfigHistoryTable () {
       }
     </Modal>
   </>
+}
+
+function getStatusBar (data: ConfigurationHistory) {
+  const { $t } = getIntl()
+  const numberOfFailed = Number(data?.numberOfFailed ?? 0)
+  const numberOfNotifySuccess = Number(data?.numberOfNotifySuccess ?? 0)
+  const numberOfSuccess = Number(data?.numberOfSuccess ?? 0)
+
+  const totalCount = numberOfFailed + numberOfNotifySuccess + numberOfSuccess
+  const successPercent = (Math.round((numberOfSuccess / totalCount) * 100 * 10) / 10) ?? 0
+  const failedPercent = (Math.round((numberOfFailed / totalCount) * 100 * 10) / 10) ?? 0
+  const notifySuccessPercent = (Math.round((numberOfNotifySuccess / totalCount) * 100 * 10) / 10) ?? 0
+
+  return totalCount ? <StackedBarChart
+    style={{ height: 10, width: 200 }}
+    data={[{
+      category: 'dispatchStatus',
+      series: [{
+        name: $t({ defaultMessage: 'Failed ({count} / {percent}%)' },
+          { count: numberOfFailed, percent: failedPercent }),
+        value: numberOfFailed
+      }, {
+        name: $t({ defaultMessage: 'NotifySuccess ({count} / {percent}%)' },
+          { count: numberOfNotifySuccess, percent: notifySuccessPercent }),
+        value: numberOfNotifySuccess
+      }, {
+        name: $t({ defaultMessage: 'Success ({count} / {percent}%)' },
+          { count: numberOfSuccess, percent: successPercent }),
+        value: numberOfSuccess
+      }]
+    }]}
+    showLabels={false}
+    showTotal={false}
+    barColors={[
+      cssStr('--acx-semantics-green-50'),
+      cssStr('--acx-semantics-green-50'),
+      cssStr('--acx-semantics-red-50')
+    ]}
+  /> : $t({ defaultMessage: 'Not applied yet' })
 }

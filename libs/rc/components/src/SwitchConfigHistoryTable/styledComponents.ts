@@ -58,3 +58,14 @@ export const ArrowExpand = styled(ArrowChevronLeft)`
   height: 16px;
   padding-right: 7px;
 `
+
+export const SwitchConfigHeader = styled('div')`
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  align-items: center;
+
+  .ant-radio-group { // TODO: check style
+
+  }
+`
