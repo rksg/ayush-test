@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 
 import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'

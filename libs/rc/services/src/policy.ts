@@ -273,11 +273,14 @@ export const policyApi = basePolicyApi.injectEndpoints({
       providesTags: [{ type: 'Policy', id: 'DETAIL' }]
     }),
     updateVLANPoolPolicy: build.mutation<VLANPoolPolicyType, RequestPayload>({
-      query: ({ params, payload }) => {
+      query: ({ params, payload }:{ params:Params<string>, payload:VLANPoolPolicyType }) => {
         const req = createHttpRequest(VlanPoolUrls.updateVLANPoolPolicy, params, RKS_NEW_UI)
         return {
           ...req,
-          body: payload
+          body: {
+            ...payload,
+            vlanMembers: payload.vlanMembers.split(',')
+          }
         }
       },
       invalidatesTags: [{ type: 'Policy', id: 'LIST' }]

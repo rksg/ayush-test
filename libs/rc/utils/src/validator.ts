@@ -1,10 +1,14 @@
 /* eslint-disable max-len */
 import { PhoneNumberType, PhoneNumberUtil } from 'google-libphonenumber'
-import { isEqual, includes }                from 'lodash'
+import {
+  isEqual,
+  includes,
+  remove,
+  split
+}                from 'lodash'
 
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
-import _ from 'lodash'
 
 const Netmask = require('netmask').Netmask
 
@@ -292,11 +296,11 @@ export function checkVlanPoolMembers (value: string) {
     return Promise.resolve()
   }
 
-  const vlanMembers = _.split(value, ',')
-  _.remove(vlanMembers, v => v.trim() === '')
+  const vlanMembers = split(value, ',')
+  remove(vlanMembers, v => v.trim() === '')
   vlanMembers.sort((f: string, s: string) => {
-    const ff = _.split(f, '-')
-    const ss = _.split(s, '-')
+    const ff = split(f, '-')
+    const ss = split(s, '-')
     return (+ff[0] > +ss[0]) ? 1 : -1
   })
 
@@ -311,7 +315,7 @@ export function checkVlanPoolMembers (value: string) {
   }
 
   const vlanMembersMaxNumber = 64
-  const vlanMemberRegex = /^(?:[2-9]|[1-8][0-9]|9[0-9]|[1-8][0-9]{2}|9[0-8][0-9]|99[0-9]|[1-3][0-9]{3}|40[0-8][0-9]|409[0-4])(?: *- *(?:[1-9]|[1-8][0-9]|9[0-9]|[1-8][0-9]{2}|9[0-8][0-9]|99[0-9]|[1-3][0-9]{3}|40[0-8][0-9]|409[0-4]))?(?: *, *(?:[1-9]|[1-8][0-9]|9[0-9]|[1-8][0-9]{2}|9[0-8][0-9]|99[0-9]|[1-3][0-9]{3}|40[0-8][0-9]|409[0-4])(?: *- *(?:[1-9]|[1-8][0-9]|9[0-9]|[1-8][0-9]{2}|9[0-8][0-9]|99[0-9]|[1-3][0-9]{3}|40[0-8][0-9]|409[0-4]))?)*$/;
+  const vlanMemberRegex = /^(?:[2-9]|[1-8][0-9]|9[0-9]|[1-8][0-9]{2}|9[0-8][0-9]|99[0-9]|[1-3][0-9]{3}|40[0-8][0-9]|409[0-4])(?: *- *(?:[1-9]|[1-8][0-9]|9[0-9]|[1-8][0-9]{2}|9[0-8][0-9]|99[0-9]|[1-3][0-9]{3}|40[0-8][0-9]|409[0-4]))?(?: *, *(?:[1-9]|[1-8][0-9]|9[0-9]|[1-8][0-9]{2}|9[0-8][0-9]|99[0-9]|[1-3][0-9]{3}|40[0-8][0-9]|409[0-4])(?: *- *(?:[1-9]|[1-8][0-9]|9[0-9]|[1-8][0-9]{2}|9[0-8][0-9]|99[0-9]|[1-3][0-9]{3}|40[0-8][0-9]|409[0-4]))?)*$/
   let nextMember
   let previousMember = 0
   let totalNumberOfVlanMembers = 0
@@ -328,7 +332,7 @@ export function checkVlanPoolMembers (value: string) {
      * Overlapping between the vlan members is not allowed
      * vlan mumbers number should not exceed 64
      */
-    const membersRange = _.split(vlanMember, '-')
+    const membersRange = split(vlanMember, '-')
     nextMember = +membersRange[0]
     totalNumberOfVlanMembers++
     if (previousMember >= nextMember) {

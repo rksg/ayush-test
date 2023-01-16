@@ -7,7 +7,7 @@ import {
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
-import { useVLANPoolPolicyQuery, useAddVLANPoolPolicyMutation, useUpdateVLANPoolPolicyMutation } from '@acx-ui/rc/services'
+import { useGetVLANPoolPolicyDetailQuery, useAddVLANPoolPolicyMutation, useUpdateVLANPoolPolicyMutation } from '@acx-ui/rc/services'
 import {
   VLANPoolPolicyType,
   getPolicyListRoutePath
@@ -29,7 +29,7 @@ const VLANPoolForm = (props: VLANPoolFormProps) => {
   const params = useParams()
   const edit = props.edit && !props.networkView
   const formRef = useRef<StepsFormInstance<VLANPoolPolicyType>>()
-  const { data } = useVLANPoolPolicyQuery({ params }, { skip: !edit })
+  const { data } = useGetVLANPoolPolicyDetailQuery({ params }, { skip: !edit })
   const [ createVLANPoolPolicy ] = useAddVLANPoolPolicyMutation()
 
   const [ updateVLANPoolPolicy ] = useUpdateVLANPoolPolicyMutation()

@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react'
 
 import { Form, Select, Input } from 'antd'
+import _                       from 'lodash'
 import { useIntl }             from 'react-intl'
 import { useParams }           from 'react-router-dom'
 
 import { useVlanPoolListQuery } from '@acx-ui/rc/services'
 
 import VLANPoolModal from './VLANPoolModal'
-import { VlanPool } from '@acx-ui/rc/utils'
-import _ from 'lodash'
+
 
 const listPayload = {
   fields: ['name', 'id'], sortField: 'name',

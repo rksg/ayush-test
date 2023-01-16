@@ -14,6 +14,7 @@ import { get }                 from 'lodash'
 import { useIntl }             from 'react-intl'
 
 import { Button }                                             from '@acx-ui/components'
+import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
 import { NetworkSaveData, NetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
 import { validationMessages }                                 from '@acx-ui/utils'
 
@@ -57,6 +58,7 @@ export function NetworkMoreSettingsForm (props: {
 }) {
   const { editMode, cloneMode, data } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
+
   useEffect(() => {
     if ((editMode || cloneMode) && data) {
       form.setFieldsValue({
@@ -194,7 +196,7 @@ export function MoreSettingsForm (props: {
               style={{ marginBottom: '10px' }}
               valuePropName='checked'
               initialValue={false}
-              children={<Switch />}
+              children={<Switch disabled={!useIsSplitOn(Features.POLICIES)}/>}
             />
           </UI.FieldLabel>
 
