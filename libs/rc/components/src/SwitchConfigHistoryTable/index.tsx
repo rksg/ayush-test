@@ -110,72 +110,75 @@ export function SwitchConfigHistoryTable () {
         onChange={tableQuery.handleTableChange}
       />
     </Loader>
-    <Modal
-      title={$t({ defaultMessage: 'Configuration Details' })}
-      visible={visible}
-      onCancel={handleCancel}
-      width={1000}
-      footer={<Button key='back' type='secondary' onClick={handleCancel}>
-        {$t({ defaultMessage: 'Close' })}
-      </Button>
-      }
-    >
-      {
-        selectedRow &&
-        <>
-          <Descriptions labelWidthPercent={15}>
-            <Descriptions.Item
-              label={$t({ defaultMessage: 'Time' })}
-              children={selectedRow.startTime} />
-            <Descriptions.Item
-              label={$t({ defaultMessage: 'Type' })}
-              children={selectedRow.configType} />
-            <Descriptions.Item
-              label={$t({ defaultMessage: 'Status' })}
-              children={selectedRow.dispatchStatus} />
-          </Descriptions>
-          <UI.ConfigDetail>
-            {
-              selectedRow?.clis &&
-              <div className='code-mirror-container'>
-                <div className='header'>
-                  {$t({ defaultMessage: 'Commands Applied' })}
+    {
+      visible && 
+      <Modal
+        title={$t({ defaultMessage: 'Configuration Details' })}
+        visible={visible}
+        onCancel={handleCancel}
+        width={1000}
+        footer={<Button key='back' type='secondary' onClick={handleCancel}>
+          {$t({ defaultMessage: 'Close' })}
+        </Button>
+        }
+      >
+        {
+          selectedRow &&
+          <>
+            <Descriptions labelWidthPercent={15}>
+              <Descriptions.Item
+                label={$t({ defaultMessage: 'Time' })}
+                children={selectedRow.startTime} />
+              <Descriptions.Item
+                label={$t({ defaultMessage: 'Type' })}
+                children={selectedRow.configType} />
+              <Descriptions.Item
+                label={$t({ defaultMessage: 'Status' })}
+                children={selectedRow.dispatchStatus} />
+            </Descriptions>
+            <UI.ConfigDetail>
+              {
+                selectedRow?.clis &&
+                <div className='code-mirror-container'>
+                  <div className='header'>
+                    {$t({ defaultMessage: 'Commands Applied' })}
+                  </div>
+                  <CodeMirrorWidget ref={codeMirrorEl} type='single' data={selectedRow} />
                 </div>
-                <CodeMirrorWidget ref={codeMirrorEl} type='single' data={selectedRow} />
-              </div>
-            }
-            {
-              showError &&
-              <div className='errors-table'
-                style={{
-                  width: collapseActive ? '30px' : '100%',
-                  backgroundColor: collapseActive ? 'var(--acx-neutrals-20)' : 'transparent'
-                }}>
-                {
-                  !collapseActive ?
-                    <>
-                      <div className='expanded header' >
-                        {errorsTitle}
-                        {
-                          showClis &&
-                        <UI.ArrowCollapsed data-testid='ArrowCollapsed' onClick={togglePanel}/>
-                        }
+              }
+              {
+                showError &&
+                <div className='errors-table'
+                  style={{
+                    width: collapseActive ? '30px' : '100%',
+                    backgroundColor: collapseActive ? 'var(--acx-neutrals-20)' : 'transparent'
+                  }}>
+                  {
+                    !collapseActive ?
+                      <>
+                        <div className='expanded header' >
+                          {errorsTitle}
+                          {
+                            showClis &&
+                          <UI.ArrowCollapsed data-testid='ArrowCollapsed' onClick={togglePanel}/>
+                          }
+                        </div>
+                        <ErrorsTable errors={dispatchFailedReason} selectionChanged={handleHighLightLine}/>
+                      </>
+                      :
+                      <div onClick={togglePanel}>
+                        <div className='header'>
+                          <UI.ArrowExpand />
+                        </div>
+                        <div className='vertical-text'>{errorsTitle}</div>
                       </div>
-                      <ErrorsTable errors={dispatchFailedReason} selectionChanged={handleHighLightLine}/>
-                    </>
-                    :
-                    <div onClick={togglePanel}>
-                      <div className='header'>
-                        <UI.ArrowExpand />
-                      </div>
-                      <div className='vertical-text'>{errorsTitle}</div>
-                    </div>
-                }
-              </div>
-            }
-          </UI.ConfigDetail>
-        </>
-      }
-    </Modal>
+                  }
+                </div>
+              }
+            </UI.ConfigDetail>
+          </>
+        }
+      </Modal>
+    }
   </>
 }

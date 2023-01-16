@@ -246,10 +246,13 @@ export function SwitchConfigBackupTable () {
       visible={backupModalVisible}
       handleCancel={() => setBackupModalVisible(false)}
     />
-    <ViewConfigurationModal
-      data={viewData}
-      visible={viewVisible}
-      handleCancel={handleCancelViewModal}
-    />
+    {
+      viewVisible && 
+      <ViewConfigurationModal
+        data={viewData}
+        visible={viewVisible}
+        handleCancel={handleCancelViewModal}
+      />
+    }
   </>
 }
