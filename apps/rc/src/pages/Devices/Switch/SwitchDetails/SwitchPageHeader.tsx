@@ -1,11 +1,10 @@
 /* eslint-disable max-len */
 import { useContext, useEffect, useState } from 'react'
 
-import { Dropdown, Menu, MenuProps, Space } from 'antd'
-import { ItemType }                         from 'antd/lib/menu/hooks/useItems'
-import _                                    from 'lodash'
-import moment                               from 'moment-timezone'
-import { useIntl }                          from 'react-intl'
+import { Dropdown, Menu, MenuProps, Modal, Space } from 'antd'
+import _, { pick }                                 from 'lodash'
+import moment                                      from 'moment-timezone'
+import { useIntl }                                 from 'react-intl'
 
 import { Button, PageHeader, RangePicker, Tooltip }     from '@acx-ui/components'
 import { ArrowExpand }                                  from '@acx-ui/icons'
@@ -59,6 +58,7 @@ function SwitchPageHeader () {
 
     switch(e.key) {
       case MoreActions.CLI_SESSION:
+        switchAction.showCliSession(switchId, tenantId || '')
         break
       case MoreActions.REBOOT:
         switchAction.showRebootSwitch(switchId, tenantId || '', isStack)
@@ -135,7 +135,7 @@ function SwitchPageHeader () {
           </Menu.Item>
           <Menu.Item
             key={MoreActions.CLI_SESSION}>
-            {$t({defaultMessage: 'CLI Session' })}
+            {$t({ defaultMessage: 'CLI Session' })}
           </Menu.Item>
           <Menu.Divider />
         </>

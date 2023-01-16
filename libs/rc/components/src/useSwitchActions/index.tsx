@@ -14,6 +14,8 @@ import {
   SwitchStatusEnum,
   SwitchViewModel
 } from '@acx-ui/rc/utils'
+import { pick } from 'lodash'
+import { Modal } from 'antd'
 
 export function useSwitchActions () {
   const { $t } = useIntl()
@@ -106,13 +108,24 @@ export function useSwitchActions () {
         content: $t({ defaultMessage: 'An error occurred' })
       })
     }
+  }
 
+  const showCliSession = (switchId: string, tenantId: string) => {
+    const modal = Modal['info']({
+      content: (
+        <div>
+          <iframe src='https://www.youtube.com/embed/uXWycyeTeCs'>some messages...some messages...</iframe>
+        </div>
+      )
+    })
+    pick(modal, 'destroy')
   }
 
   return {
     showDeleteSwitches,
     showDeleteSwitch,
     showRebootSwitch,
-    doSyncData
+    doSyncData,
+    showCliSession
   }
 }
