@@ -232,7 +232,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render corr
                             </div>
                           </div>
                           <div
-                            class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                            class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
                             style="padding: 10px 10px 10px 10px;"
                           >
                             <div
@@ -404,12 +404,17 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render corr
                             </div>
                           </div>
                           <div
-                            class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                            class="ant-col ant-col-4 ant-col-push-1 Grid__ColInner-sc-5irhjd-0 XtIJT"
                             style="padding: 10px 10px 10px 10px;"
                           >
                             <div
                               class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-75u9lp-1 gpuLvB"
-                            />
+                            >
+                              <div
+                                data-testid="anayltics-ClientHealth"
+                                title="ClientHealth"
+                              />
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -1259,7 +1264,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                             </div>
                           </div>
                           <div
-                            class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                            class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
                             style="padding: 10px 10px 10px 10px;"
                           >
                             <div
@@ -1431,12 +1436,17 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                             </div>
                           </div>
                           <div
-                            class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                            class="ant-col ant-col-4 ant-col-push-1 Grid__ColInner-sc-5irhjd-0 XtIJT"
                             style="padding: 10px 10px 10px 10px;"
                           >
                             <div
                               class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-75u9lp-1 gpuLvB"
-                            />
+                            >
+                              <div
+                                data-testid="anayltics-ClientHealth"
+                                title="ClientHealth"
+                              />
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -2459,7 +2469,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                             </div>
                           </div>
                           <div
-                            class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                            class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
                             style="padding: 10px 10px 10px 10px;"
                           >
                             <div
@@ -2631,12 +2641,17 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                             </div>
                           </div>
                           <div
-                            class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                            class="ant-col ant-col-4 ant-col-push-1 Grid__ColInner-sc-5irhjd-0 XtIJT"
                             style="padding: 10px 10px 10px 10px;"
                           >
                             <div
                               class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-75u9lp-1 gpuLvB"
-                            />
+                            >
+                              <div
+                                data-testid="anayltics-ClientHealth"
+                                title="ClientHealth"
+                              />
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -3705,7 +3720,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                             </div>
                           </div>
                           <div
-                            class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                            class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
                             style="padding: 10px 10px 10px 10px;"
                           >
                             <div
@@ -3877,12 +3892,17 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                             </div>
                           </div>
                           <div
-                            class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                            class="ant-col ant-col-4 ant-col-push-1 Grid__ColInner-sc-5irhjd-0 XtIJT"
                             style="padding: 10px 10px 10px 10px;"
                           >
                             <div
                               class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-75u9lp-1 gpuLvB"
-                            />
+                            >
+                              <div
+                                data-testid="anayltics-ClientHealth"
+                                title="ClientHealth"
+                              />
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -4732,7 +4752,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                             </div>
                           </div>
                           <div
-                            class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                            class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
                             style="padding: 10px 10px 10px 10px;"
                           >
                             <div
@@ -4904,12 +4924,17 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                             </div>
                           </div>
                           <div
-                            class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                            class="ant-col ant-col-4 ant-col-push-1 Grid__ColInner-sc-5irhjd-0 XtIJT"
                             style="padding: 10px 10px 10px 10px;"
                           >
                             <div
                               class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-75u9lp-1 gpuLvB"
-                            />
+                            >
+                              <div
+                                data-testid="anayltics-ClientHealth"
+                                title="ClientHealth"
+                              />
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -5747,7 +5772,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client c
                             </div>
                           </div>
                           <div
-                            class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                            class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
                             style="padding: 10px 10px 10px 10px;"
                           >
                             <div
@@ -5919,12 +5944,17 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client c
                             </div>
                           </div>
                           <div
-                            class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                            class="ant-col ant-col-4 ant-col-push-1 Grid__ColInner-sc-5irhjd-0 XtIJT"
                             style="padding: 10px 10px 10px 10px;"
                           >
                             <div
                               class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-75u9lp-1 gpuLvB"
-                            />
+                            >
+                              <div
+                                data-testid="anayltics-ClientHealth"
+                                title="ClientHealth"
+                              />
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -7064,7 +7094,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client w
                             </div>
                           </div>
                           <div
-                            class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                            class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
                             style="padding: 10px 10px 10px 10px;"
                           >
                             <div
@@ -7236,12 +7266,17 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client w
                             </div>
                           </div>
                           <div
-                            class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                            class="ant-col ant-col-4 ant-col-push-1 Grid__ColInner-sc-5irhjd-0 XtIJT"
                             style="padding: 10px 10px 10px 10px;"
                           >
                             <div
                               class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-75u9lp-1 gpuLvB"
-                            />
+                            >
+                              <div
+                                data-testid="anayltics-ClientHealth"
+                                title="ClientHealth"
+                              />
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -8363,7 +8398,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render dpsk cli
                             </div>
                           </div>
                           <div
-                            class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                            class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
                             style="padding: 10px 10px 10px 10px;"
                           >
                             <div
@@ -8535,12 +8570,17 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render dpsk cli
                             </div>
                           </div>
                           <div
-                            class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                            class="ant-col ant-col-4 ant-col-push-1 Grid__ColInner-sc-5irhjd-0 XtIJT"
                             style="padding: 10px 10px 10px 10px;"
                           >
                             <div
                               class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-75u9lp-1 gpuLvB"
-                            />
+                            >
+                              <div
+                                data-testid="anayltics-ClientHealth"
+                                title="ClientHealth"
+                              />
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -9852,7 +9892,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                             </div>
                           </div>
                           <div
-                            class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                            class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
                             style="padding: 10px 10px 10px 10px;"
                           >
                             <div
@@ -10024,12 +10064,17 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                             </div>
                           </div>
                           <div
-                            class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                            class="ant-col ant-col-4 ant-col-push-1 Grid__ColInner-sc-5irhjd-0 XtIJT"
                             style="padding: 10px 10px 10px 10px;"
                           >
                             <div
                               class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-75u9lp-1 gpuLvB"
-                            />
+                            >
+                              <div
+                                data-testid="anayltics-ClientHealth"
+                                title="ClientHealth"
+                              />
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -11388,7 +11433,7 @@ exports[`ClientOverviewTab OverviewWidget should render client info correctly 1`
                             </div>
                           </div>
                           <div
-                            class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                            class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
                             style="padding: 10px 10px 10px 10px;"
                           >
                             <div
@@ -11560,12 +11605,17 @@ exports[`ClientOverviewTab OverviewWidget should render client info correctly 1`
                             </div>
                           </div>
                           <div
-                            class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                            class="ant-col ant-col-4 ant-col-push-1 Grid__ColInner-sc-5irhjd-0 XtIJT"
                             style="padding: 10px 10px 10px 10px;"
                           >
                             <div
                               class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-75u9lp-1 gpuLvB"
-                            />
+                            >
+                              <div
+                                data-testid="anayltics-ClientHealth"
+                                title="ClientHealth"
+                              />
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -12705,7 +12755,7 @@ exports[`ClientOverviewTab OverviewWidget should render correctly when search pa
                             </div>
                           </div>
                           <div
-                            class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                            class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
                             style="padding: 10px 10px 10px 10px;"
                           >
                             <div
@@ -12877,12 +12927,17 @@ exports[`ClientOverviewTab OverviewWidget should render correctly when search pa
                             </div>
                           </div>
                           <div
-                            class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                            class="ant-col ant-col-4 ant-col-push-1 Grid__ColInner-sc-5irhjd-0 XtIJT"
                             style="padding: 10px 10px 10px 10px;"
                           >
                             <div
                               class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-75u9lp-1 gpuLvB"
-                            />
+                            >
+                              <div
+                                data-testid="anayltics-ClientHealth"
+                                title="ClientHealth"
+                              />
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -13732,7 +13787,7 @@ exports[`ClientOverviewTab OverviewWidget should render historical client info c
                             </div>
                           </div>
                           <div
-                            class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                            class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
                             style="padding: 10px 10px 10px 10px;"
                           >
                             <div
@@ -13904,12 +13959,17 @@ exports[`ClientOverviewTab OverviewWidget should render historical client info c
                             </div>
                           </div>
                           <div
-                            class="ant-col ant-col-5 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                            class="ant-col ant-col-4 ant-col-push-1 Grid__ColInner-sc-5irhjd-0 XtIJT"
                             style="padding: 10px 10px 10px 10px;"
                           >
                             <div
                               class="Grid__Container-sc-5irhjd-1 zzbxI styledComponents__GridCol-sc-75u9lp-1 gpuLvB"
-                            />
+                            >
+                              <div
+                                data-testid="anayltics-ClientHealth"
+                                title="ClientHealth"
+                              />
+                            </div>
                           </div>
                         </div>
                       </div>
