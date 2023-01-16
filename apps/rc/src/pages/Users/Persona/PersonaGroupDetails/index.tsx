@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 
-import { Descriptions, Space } from 'antd'
-import { useIntl }             from 'react-intl'
-import { useParams }           from 'react-router-dom'
+import { Descriptions } from 'antd'
+import { useIntl }      from 'react-intl'
+import { useParams }    from 'react-router-dom'
 
-import { noDataSymbol }                               from '@acx-ui/analytics/utils'
-import { Button, Card, Loader, PageHeader, Subtitle } from '@acx-ui/components'
+import { noDataSymbol }                                                 from '@acx-ui/analytics/utils'
+import { Button, Card, Loader, PageHeader, Subtitle, GridRow, GridCol } from '@acx-ui/components'
 import {
   useLazyGetDpskQuery,
   useGetPersonaGroupByIdQuery,
@@ -134,43 +134,46 @@ function PersonaGroupDetails () {
         title={detailsQuery.data?.name ?? personaGroupId}
         onClick={() => setEditVisible(true)}
       />
-      <Space direction={'vertical'} size={24}>
-        <Loader states={[detailsQuery]}>
-          <Card type={'solid-bg'}>
-            <Descriptions
-              layout={'vertical'}
-              column={7}
-              size={'small'}
-              colon={false}
-              style={{ padding: '8px 14px' }}
-            >
-              {
-                basicInfo.map(info =>
-                  <Descriptions.Item
-                    key={info.title}
-                    label={info.title}
-                  >
-                    {info.value ?? noDataSymbol}
-                  </Descriptions.Item>
-                )
-              }
-            </Descriptions>
-          </Card>
-        </Loader>
+      <GridRow>
+        <GridCol col={{ span: 24 }}>
+          <Loader states={[detailsQuery]}>
+            <Card type={'solid-bg'}>
+              <Descriptions
+                layout={'vertical'}
+                column={7}
+                size={'small'}
+                colon={false}
+                style={{ padding: '8px 14px' }}
+              >
+                {
+                  basicInfo.map(info =>
+                    <Descriptions.Item
+                      key={info.title}
+                      label={info.title}
+                    >
+                      {info.value ?? noDataSymbol}
+                    </Descriptions.Item>
+                  )
+                }
+              </Descriptions>
+            </Card>
+          </Loader>
+        </GridCol>
+        <GridCol col={{ span: 24 }}>
+          <div>
+            <Subtitle level={4}>
+              {/* eslint-disable-next-line max-len */}
+              {$t({ defaultMessage: 'Personas' })} ({detailsQuery.data?.personas?.length ?? noDataSymbol})
+            </Subtitle>
 
-        <div>
-          <Subtitle level={4}>
-            {/* eslint-disable-next-line max-len */}
-            {$t({ defaultMessage: 'Personas' })} ({detailsQuery.data?.personas?.length ?? noDataSymbol})
-          </Subtitle>
-
-          <BasePersonaTable
-            colProps={{
-              name: { searchable: true },
-              groupId: { show: false }
-            }}/>
-        </div>
-      </Space>
+            <BasePersonaTable
+              colProps={{
+                name: { searchable: true },
+                groupId: { show: false }
+              }}/>
+          </div>
+        </GridCol>
+      </GridRow>
 
       {detailsQuery.data &&
         <PersonaGroupDrawer
