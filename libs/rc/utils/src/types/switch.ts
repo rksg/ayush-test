@@ -131,10 +131,6 @@ export interface TraceRouteSwitch {
   targetHost: string
 }
 
-// export interface TroubleshootingResult {
-//   responseId: string
-// }
-
 export interface VeViewModel {
   name?: string
   dhcpRelayAgent?: string
@@ -344,14 +340,6 @@ export interface SwitchPortViewModel extends GridDataRow {
   unitStatus: string; // stack unit role (Standalone/Member...etc)
   unitState: SwitchStatusEnum; // stack unit status (Online/Offline)
   SwitchPortStackingPortField: boolean;
-}
-
-export interface troubleshootingResult {
-  latestResultResponseTime: string
-  result: string
-  syncing: boolean
-  traceRouteTtl: number
-  troubleshootingType: string
 }
 
 export enum DHCP_OPTION_TYPE {

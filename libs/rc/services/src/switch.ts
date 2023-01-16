@@ -480,18 +480,18 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         const pollingDhcpLease = async () => {
           const getDhcpLeasesInfo = createHttpRequest(SwitchUrlsInfo.getDhcpLeases, arg.params)
           let ret = await fetchWithBQ(getDhcpLeasesInfo)
-          let result = ret.data as { response: troubleshootingResult }
+          let result = ret.data as TroubleshootingResult
 
           while (result?.response.syncing) {
             await wait(2000)
             ret = await fetchWithBQ(getDhcpLeasesInfo)
-            result = ret.data as { response: troubleshootingResult }
+            result = ret.data as TroubleshootingResult
           }
           return ret
         }
 
         const getDhcpLeasesQuery = await pollingDhcpLease()
-        const result = getDhcpLeasesQuery.data as { response: troubleshootingResult }
+        const result = getDhcpLeasesQuery.data as TroubleshootingResult
 
         return result.response
           ? { data: JSON.parse(result.response.result) }
