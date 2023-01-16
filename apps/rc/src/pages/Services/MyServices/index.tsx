@@ -1,14 +1,18 @@
 import { useIntl } from 'react-intl'
 
 import { Button, GridCol, PageHeader, RadioCardCategory } from '@acx-ui/components'
-import { useServiceListQuery }                            from '@acx-ui/rc/services'
+import {
+  useGetDpskListQuery,
+  useGetPortalProfileListQuery,
+  useServiceListQuery
+} from '@acx-ui/rc/services'
 import {
   getSelectServiceRoutePath,
   ServiceType
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
-import { ServiceCard, ServiceCardMode } from '../ServiceCard'
+import { ServiceCard } from '../ServiceCard'
 
 import * as UI from './styledComponents'
 
@@ -27,24 +31,39 @@ export default function MyServices () {
   const { $t } = useIntl()
   const params = useParams()
 
-  // TODO should invoke self List API here when API is ready, ex: useGetMdnsProxyListQuery, useGetDpskListQuery....
-  const serviceListQueryMap = {
-    [ServiceType.MDNS_PROXY]: useServiceListQuery({
-      params, payload: { ...defaultPayload, filters: { type: [ServiceType.MDNS_PROXY] } }
-    }),
-    [ServiceType.DHCP]: useServiceListQuery({
-      params, payload: { ...defaultPayload, filters: { type: [ServiceType.DHCP] } }
-    }),
-    [ServiceType.DPSK]: useServiceListQuery({
-      params, payload: { ...defaultPayload, filters: { type: [ServiceType.DPSK] } }
-    }),
-    [ServiceType.WIFI_CALLING]: useServiceListQuery({
-      params, payload: { ...defaultPayload, filters: { type: [ServiceType.WIFI_CALLING] } }
-    }),
-    [ServiceType.PORTAL]: useServiceListQuery({
-      params, payload: { ...defaultPayload, filters: { type: [ServiceType.PORTAL] } }
-    })
-  }
+  const services = [
+    {
+      type: ServiceType.MDNS_PROXY,
+      category: RadioCardCategory.WIFI,
+      tableQuery: useServiceListQuery({ // TODO should invoke self List API here when API is ready
+        params, payload: { ...defaultPayload, filters: { type: [ServiceType.MDNS_PROXY] } }
+      })
+    },
+    {
+      type: ServiceType.DHCP,
+      category: RadioCardCategory.WIFI,
+      tableQuery: useServiceListQuery({ // TODO should invoke self List API here when API is ready
+        params, payload: { ...defaultPayload, filters: { type: [ServiceType.DHCP] } }
+      })
+    },
+    {
+      type: ServiceType.DPSK,
+      category: RadioCardCategory.WIFI,
+      tableQuery: useGetDpskListQuery({})
+    },
+    {
+      type: ServiceType.WIFI_CALLING,
+      category: RadioCardCategory.WIFI,
+      tableQuery: useServiceListQuery({ // TODO should invoke self List API here when API is ready
+        params, payload: { ...defaultPayload, filters: { type: [ServiceType.WIFI_CALLING] } }
+      })
+    },
+    {
+      type: ServiceType.PORTAL,
+      category: RadioCardCategory.WIFI,
+      tableQuery: useGetPortalProfileListQuery({ params })
+    }
+  ]
 
 
   return (
@@ -58,53 +77,20 @@ export default function MyServices () {
         ]}
       />
       <UI.CardsRow>
-        <ServiceCardCol>
-          <ServiceCard
-            type={ServiceType.DHCP}
-            categories={[RadioCardCategory.WIFI]}
-            count={serviceListQueryMap[ServiceType.DHCP].data?.totalCount}
-            action={ServiceCardMode.LIST}
-          />
-        </ServiceCardCol>
-        <ServiceCardCol>
-          <ServiceCard
-            type={ServiceType.DPSK}
-            categories={[RadioCardCategory.WIFI]}
-            count={serviceListQueryMap[ServiceType.DPSK].data?.totalCount}
-            action={ServiceCardMode.LIST}
-          />
-        </ServiceCardCol>
-        <ServiceCardCol>
-          <ServiceCard
-            type={ServiceType.WIFI_CALLING}
-            categories={[RadioCardCategory.WIFI]}
-            count={serviceListQueryMap[ServiceType.WIFI_CALLING].data?.totalCount}
-            action={ServiceCardMode.LIST}
-          />
-        </ServiceCardCol>
-        <ServiceCardCol>
-          <ServiceCard
-            type={ServiceType.PORTAL}
-            categories={[RadioCardCategory.WIFI]}
-            count={serviceListQueryMap[ServiceType.PORTAL].data?.totalCount}
-            action={ServiceCardMode.LIST}
-          />
-        </ServiceCardCol>
-        <ServiceCardCol>
-          <ServiceCard
-            type={ServiceType.MDNS_PROXY}
-            categories={[RadioCardCategory.WIFI]}
-            count={serviceListQueryMap[ServiceType.MDNS_PROXY].data?.totalCount}
-            action={ServiceCardMode.LIST}
-          />
-        </ServiceCardCol>
+        {services.map(service => {
+          return (
+            <GridCol col={{ span: 6 }}>
+              <ServiceCard
+                key={service.type}
+                serviceType={service.type}
+                categories={[service.category]}
+                count={service.tableQuery.data?.totalCount}
+                type={'default'}
+              />
+            </GridCol>
+          )
+        })}
       </UI.CardsRow>
     </>
-  )
-}
-
-function ServiceCardCol (props: React.HTMLAttributes<HTMLDivElement>) {
-  return (
-    <GridCol col={{ span: 6 }} {...props}/>
   )
 }

@@ -13,7 +13,7 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { ServiceCard, ServiceCardMode } from '.'
+import { ServiceCard } from '.'
 
 const mockedUseNavigate = jest.fn()
 
@@ -40,9 +40,9 @@ describe('ServiceCard', () => {
 
     render(
       <ServiceCard
-        type={ServiceType.MDNS_PROXY}
+        serviceType={ServiceType.MDNS_PROXY}
         categories={[RadioCardCategory.WIFI]}
-        action={ServiceCardMode.LIST}
+        type={'default'}
       />, {
         route: { params, path }
       }
@@ -63,9 +63,9 @@ describe('ServiceCard', () => {
 
     render(
       <ServiceCard
-        type={ServiceType.MDNS_PROXY}
+        serviceType={ServiceType.MDNS_PROXY}
         categories={[RadioCardCategory.WIFI]}
-        action={ServiceCardMode.ADD}
+        type={'button'}
       />, {
         route: { params, path }
       }
@@ -79,9 +79,9 @@ describe('ServiceCard', () => {
   it('should render service card with the count number', async () => {
     render(
       <ServiceCard
-        type={ServiceType.MDNS_PROXY}
+        serviceType={ServiceType.MDNS_PROXY}
         categories={[RadioCardCategory.WIFI]}
-        action={ServiceCardMode.LIST}
+        type={'default'}
         count={5}
       />, {
         route: { params, path }

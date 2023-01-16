@@ -8,7 +8,7 @@ import {
   ServiceType
 } from '@acx-ui/rc/utils'
 
-import { ServiceCard, ServiceCardMode } from '../ServiceCard'
+import { ServiceCard } from '../ServiceCard'
 
 
 import * as UI from './styledComponents'
@@ -39,7 +39,7 @@ export default function ServiceCatalog () {
       ]
     },
     {
-      title: defineMessage({ defaultMessage: 'More Services' }),
+      title: defineMessage({ defaultMessage: 'Guests & Residents' }),
       items: [
         { type: ServiceType.PORTAL, categories: [RadioCardCategory.WIFI] },
         {
@@ -64,9 +64,10 @@ export default function ServiceCatalog () {
               ? null
               : <GridCol col={{ span: 6 }}>
                 <ServiceCard
-                  type={item.type}
-                  categories={[RadioCardCategory.WIFI]}
-                  action={ServiceCardMode.ADD}
+                  key={item.type}
+                  serviceType={item.type}
+                  categories={item.categories}
+                  type={'button'}
                 />
               </GridCol>)}
           </GridRow>

@@ -1,32 +1,27 @@
 import { defineMessage, useIntl } from 'react-intl'
 
-import { RadioCard, RadioCardCategory }                       from '@acx-ui/components'
+import { RadioCard, RadioCardProps }                          from '@acx-ui/components'
 import { getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink }                         from '@acx-ui/react-router-dom'
 
 import { serviceTypeDescMapping, serviceTypeLabelMapping } from '../contentsMap'
 
-export enum ServiceCardMode {
-  ADD,
-  LIST
-}
-
-export interface ServiceCardProps {
-  type: ServiceType
-  categories?: RadioCardCategory[]
+export type ServiceCardProps = Pick<RadioCardProps, 'type' | 'categories'> & {
+  serviceType: ServiceType
   count?: number
-  action: ServiceCardMode
 }
 
 export function ServiceCard (props: ServiceCardProps) {
   const { $t } = useIntl()
-  const { type, categories, count, action } = props
-  const linkToCreate = useTenantLink(getServiceRoutePath({ type, oper: ServiceOperation.CREATE }))
-  const linkToList = useTenantLink(getServiceRoutePath({ type, oper: ServiceOperation.LIST }))
+  const { serviceType, type: cardType, categories, count } = props
+  // eslint-disable-next-line max-len
+  const linkToCreate = useTenantLink(getServiceRoutePath({ type: serviceType, oper: ServiceOperation.CREATE }))
+  // eslint-disable-next-line max-len
+  const linkToList = useTenantLink(getServiceRoutePath({ type: serviceType, oper: ServiceOperation.LIST }))
   const navigate = useNavigate()
 
   const formatServiceName = () => {
-    const name = $t(serviceTypeLabelMapping[type])
+    const name = $t(serviceTypeLabelMapping[serviceType])
     if (count === undefined) {
       return name
     }
@@ -34,30 +29,21 @@ export function ServiceCard (props: ServiceCardProps) {
   }
 
   return (
-    <>
-      {action === ServiceCardMode.ADD &&
-        <RadioCard
-          type={'button'}
-          buttonText={defineMessage({ defaultMessage: 'Add' })}
-          key={type}
-          value={type}
-          title={formatServiceName()}
-          description={$t(serviceTypeDescMapping[type])}
-          categories={categories}
-          onClick={() => navigate(linkToCreate)}
-        />
-      }
-      {action === ServiceCardMode.LIST &&
-        <RadioCard
-          type={'default'}
-          key={type}
-          value={type}
-          title={formatServiceName()}
-          description={$t(serviceTypeDescMapping[type])}
-          categories={categories}
-          onClick={() => navigate(linkToList)}
-        />
-      }
-    </>
+    <RadioCard
+      type={cardType}
+      buttonText={cardType === 'button' ? defineMessage({ defaultMessage: 'Add' }) : undefined}
+      key={serviceType}
+      value={serviceType}
+      title={formatServiceName()}
+      description={$t(serviceTypeDescMapping[serviceType])}
+      categories={categories}
+      onClick={() => {
+        if (cardType === 'button') {
+          navigate(linkToCreate)
+        } else if (cardType === 'default') {
+          navigate(linkToList)
+        }
+      }}
+    />
   )
 }
