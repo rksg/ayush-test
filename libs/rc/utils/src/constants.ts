@@ -116,10 +116,7 @@ export enum ServiceType {
   NETWORK_SEGMENTATION = 'Network Segmentation',
   WEBAUTH_SWITCH = 'Web Auth'
 }
-export enum ServiceTechnology {
-  WIFI = 'WI-FI',
-  SWITCH = 'SWITCH'
-}
+
 export enum ServiceStatus {
   UP = 'UP',
   DOWN = 'DOWN'

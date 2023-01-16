@@ -1,7 +1,7 @@
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
 import {
-  DHCPConfigTypeEnum, ServiceTechnology
+  DHCPConfigTypeEnum
 } from './constants'
 import { BridgeServiceEnum } from './models'
 
@@ -233,11 +233,6 @@ export const DHCPConfigTypeMessages = {
   [DHCPConfigTypeEnum.MULTIPLE]: defineMessage({ defaultMessage: 'Multiple APs' }),
   [DHCPConfigTypeEnum.SIMPLE]: defineMessage({ defaultMessage: 'Each APs' }),
   [DHCPConfigTypeEnum.HIERARCHICAL]: defineMessage({ defaultMessage: 'Hierarchical APs' })
-}
-
-export const serviceTechnologyLabelMapping: Record<ServiceTechnology, MessageDescriptor> = {
-  [ServiceTechnology.WIFI]: defineMessage({ defaultMessage: 'Wi-Fi' }),
-  [ServiceTechnology.SWITCH]: defineMessage({ defaultMessage: 'Switch' })
 }
 
 // eslint-disable-next-line max-len
