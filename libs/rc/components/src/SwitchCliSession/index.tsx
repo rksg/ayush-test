@@ -31,8 +31,8 @@ export function SwitchCliSession (props: {
     right: 0
   })
   const [disabled, setDisabled] = useState(false)
-  const [height, setHeight] = useState(300)
-  const [width, setWidth] = useState(800)
+  const [height, setHeight] = useState(450)
+  const [width, setWidth] = useState(750)
 
   const draggleRef = useRef<HTMLDivElement>(null)
 
@@ -98,7 +98,7 @@ export function SwitchCliSession (props: {
       <UIResizableBox
         width={width}
         height={height}
-        minConstraints={[200, 200]}
+        minConstraints={[550, 200]}
         onResize={onResize}
       >
         <div

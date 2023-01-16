@@ -31,7 +31,6 @@ export const UIResizableBox = styled(ResizableBox)`
 
 .dialog-wrapper {
   padding: 0px;
-  overflow: auto;
 }
 
 .react-resizable-handle {
