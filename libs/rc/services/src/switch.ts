@@ -27,7 +27,8 @@ import {
   transformConfigBackupStatus,
   ConfigurationBackup,
   ConfigurationBackupStatus,
-  transformConfigBackupType
+  transformConfigBackupType,
+  JwtToken
 } from '@acx-ui/rc/utils'
 import { formatter } from '@acx-ui/utils'
 
@@ -310,6 +311,14 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
+    getJwtToken: build.query<JwtToken, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getJwtToken, params)
+        return {
+          ...req
+        }
+      }
+    }),
     saveSwitch: build.mutation<Switch, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(SwitchUrlsInfo.addSwitch, params)
@@ -472,5 +481,6 @@ export const {
   useGetSwitchAclsQuery,
   useGetVlanListBySwitchLevelQuery,
   useRebootSwitchMutation,
-  useSyncDataMutation
+  useSyncDataMutation,
+  useGetJwtTokenQuery
 } = switchApi

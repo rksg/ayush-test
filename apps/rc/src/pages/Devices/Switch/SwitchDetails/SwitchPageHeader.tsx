@@ -1,16 +1,16 @@
 /* eslint-disable max-len */
 import { useContext, useEffect, useState } from 'react'
 
-import { Dropdown, Menu, MenuProps, Modal, Space } from 'antd'
-import _, { pick }                                 from 'lodash'
-import moment                                      from 'moment-timezone'
-import { useIntl }                                 from 'react-intl'
+import { Dropdown, Menu, MenuProps, Space } from 'antd'
+import _                                    from 'lodash'
+import moment                               from 'moment-timezone'
+import { useIntl }                          from 'react-intl'
 
-import { Button, PageHeader, RangePicker, Tooltip }     from '@acx-ui/components'
-import { ArrowExpand }                                  from '@acx-ui/icons'
-import { SwitchStatus, useSwitchActions }               from '@acx-ui/rc/components'
-import { useLazyGetSwitchListQuery }                    from '@acx-ui/rc/services'
-import { SwitchRow, SwitchStatusEnum, SwitchViewModel } from '@acx-ui/rc/utils'
+import { Button, PageHeader, RangePicker, Tooltip }       from '@acx-ui/components'
+import { ArrowExpand }                                    from '@acx-ui/icons'
+import { SwitchStatus, useSwitchActions }                 from '@acx-ui/rc/components'
+import { useGetJwtTokenQuery, useLazyGetSwitchListQuery } from '@acx-ui/rc/services'
+import { SwitchRow, SwitchStatusEnum, SwitchViewModel }   from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useTenantLink,
@@ -18,7 +18,8 @@ import {
 }                  from '@acx-ui/react-router-dom'
 import { dateRangeForLast, formatter, useDateFilter } from '@acx-ui/utils'
 
-import SwitchTabs from './SwitchTabs'
+import SwitchCliSession from './SwitchCliSession'
+import SwitchTabs       from './SwitchTabs'
 
 import { SwitchDetailsContext } from '.'
 
@@ -44,6 +45,7 @@ function SwitchPageHeader () {
   const linkToSwitch = useTenantLink('/devices/switch/')
 
   const [getSwitchList] = useLazyGetSwitchListQuery()
+  const jwtToken = useGetJwtTokenQuery({ params: { tenantId, serialNumber } })
   const [isSyncing, setIsSyncing] = useState(false)
   const [syncDataEndTime, setSyncDataEndTime] = useState('')
   const isOperational = switchDetailHeader?.deviceStatus === SwitchStatusEnum.OPERATIONAL
@@ -58,7 +60,7 @@ function SwitchPageHeader () {
 
     switch(e.key) {
       case MoreActions.CLI_SESSION:
-        switchAction.showCliSession(switchId, tenantId || '')
+        setFirewallModalOpen(true)
         break
       case MoreActions.REBOOT:
         switchAction.showRebootSwitch(switchId, tenantId || '', isStack)
@@ -150,46 +152,56 @@ function SwitchPageHeader () {
     </Menu>
   )
 
+  const [firewallModalState, setFirewallModalOpen] = useState(false)
 
 
   return (
-    <PageHeader
-      title={switchDetailHeader?.name || switchDetailHeader?.switchName || switchDetailHeader?.serialNumber || ''}
-      titleExtra={
-        <SwitchStatus row={switchDetailHeader as unknown as SwitchRow} showText={!currentSwitchOperational} />}
-      breadcrumb={[
-        { text: $t({ defaultMessage: 'Switches' }), link: '/devices/switch' }
-      ]}
-      extra={[
-        <RangePicker
-          key='range-picker'
-          selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
-          enableDates={dateRangeForLast(3, 'months')}
-          onDateApply={setDateFilter as CallableFunction}
-          showTimePicker
-          selectionType={range}
-        />,
-        <Dropdown overlay={menu} key='actionMenu'>
-          <Button>
-            <Space>
-              {$t({ defaultMessage: 'More Actions' })}
-              <ArrowExpand />
-            </Space>
-          </Button>
-        </Dropdown>,
-        <Button
-          key='configure'
-          type='primary'
-          onClick={() =>
-            navigate({
-              ...basePath,
-              pathname: `${basePath.pathname}/edit`
-            })
-          }
-        >{$t({ defaultMessage: 'Configure' })}</Button>
-      ]}
-      footer={<SwitchTabs switchDetail={switchDetailHeader as SwitchViewModel} />}
-    />
+    <>
+      <PageHeader
+        title={switchDetailHeader?.name || switchDetailHeader?.switchName || switchDetailHeader?.serialNumber || ''}
+        titleExtra={
+          <SwitchStatus row={switchDetailHeader as unknown as SwitchRow} showText={!currentSwitchOperational} />}
+        breadcrumb={[
+          { text: $t({ defaultMessage: 'Switches' }), link: '/devices/switch' }
+        ]}
+        extra={[
+          <RangePicker
+            key='range-picker'
+            selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
+            enableDates={dateRangeForLast(3, 'months')}
+            onDateApply={setDateFilter as CallableFunction}
+            showTimePicker
+            selectionType={range}
+          />,
+          <Dropdown overlay={menu} key='actionMenu'>
+            <Button>
+              <Space>
+                {$t({ defaultMessage: 'More Actions' })}
+                <ArrowExpand />
+              </Space>
+            </Button>
+          </Dropdown>,
+          <Button
+            key='configure'
+            type='primary'
+            onClick={() =>
+              navigate({
+                ...basePath,
+                pathname: `${basePath.pathname}/edit`
+              })
+            }
+          >{$t({ defaultMessage: 'Configure' })}</Button>
+        ]}
+        footer={<SwitchTabs switchDetail={switchDetailHeader as SwitchViewModel} />}
+      />
+      <SwitchCliSession
+        modalState={firewallModalState}
+        setIsModalOpen={setFirewallModalOpen}
+        serialNumber={serialNumber || ''}
+        jwtToken={jwtToken.data?.access_token || ''}
+        switchName={switchDetailHeader?.name || switchDetailHeader?.switchName || switchDetailHeader?.serialNumber || ''}
+      />
+    </>
   )
 }
 

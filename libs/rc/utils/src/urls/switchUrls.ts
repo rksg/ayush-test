@@ -140,5 +140,9 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   syncData: {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/switch/:switchId/sync'
+  },
+  getJwtToken: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/switch/:serialNumber/jwt-token'
   }
 }
