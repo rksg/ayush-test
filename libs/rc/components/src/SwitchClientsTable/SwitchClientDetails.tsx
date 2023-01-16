@@ -150,7 +150,7 @@ export function SwitchClientDetails () {
 
       <GridRow>
         <GridCol col={{ span: 24 }}>
-          <Descriptions labelWidthPercent={10}>
+          <Descriptions labelWidthPercent={7}>
             <Descriptions.Item
               label={<Subtitle level={4}>
                 {$t({ defaultMessage: 'Status' })}</Subtitle>}
@@ -162,7 +162,7 @@ export function SwitchClientDetails () {
             {$t({ defaultMessage: 'Client Details' })}</Subtitle>
 
 
-          <Descriptions labelWidthPercent={10}>{
+          <Descriptions labelWidthPercent={7}>{
             clientData.map(({ title, value }, i) => <Descriptions.Item
               key={i}
               label={title}
@@ -176,7 +176,7 @@ export function SwitchClientDetails () {
         <GridCol col={{ span: 24 }}>
           <Subtitle level={4} style={{ fontWeight: 600, marginTop: '2em' }}>
             {$t({ defaultMessage: 'Connection' })}</Subtitle>
-          <Descriptions labelWidthPercent={10}>{
+          <Descriptions labelWidthPercent={7}>{
             clientConnection.map(({ title, value }, i) => <Descriptions.Item
               key={i}
               label={title}
