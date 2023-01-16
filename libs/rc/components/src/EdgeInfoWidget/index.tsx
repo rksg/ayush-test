@@ -18,10 +18,15 @@ import { EdgeSysResourceBox } from './EdgeSysResourceBox'
 interface EdgeInfoWidgetProps {
   className?: string
   currentEdge: EdgeStatus | undefined
-  edgePortsSetting: EdgePortStatus[]
+  edgePortsSetting: EdgePortStatus[] | undefined
   dnsServers: EdgeDnsServers | undefined
   isEdgeStatusLoading: boolean
   isPortListLoading: boolean
+}
+
+interface EdgePortsWidgetProps {
+  isLoading: boolean
+  edgePortsSetting: EdgePortStatus[] | undefined
 }
 
 function EdgeOverviewDonutWidget ({ title, data, isLoading, chartDataTransformer, onClick }:
@@ -61,7 +66,7 @@ const EdgeAlarmWidget = () => {
 
 type ReduceReturnType = Record<string, number>
 
-export const getPortsAdminStatusChartData = (ports: EdgePortStatus[]): DonutChartData[] => {
+export const getPortsAdminStatusChartData = (ports: EdgePortStatus[] | undefined): DonutChartData[] => {
   const seriesMapping = [
     { key: EdgePortAdminStatusEnum.Enabled,
       name: EdgePortAdminStatusEnum.Enabled,
@@ -93,8 +98,7 @@ export const getPortsAdminStatusChartData = (ports: EdgePortStatus[]): DonutChar
   return chartData
 }
 
-const EdgePortsWidget = ({ isLoading, edgePortsSetting }:
-  { isLoading: boolean, edgePortsSetting: EdgePortStatus[] }) => {
+const EdgePortsWidget = ({ isLoading, edgePortsSetting }: EdgePortsWidgetProps) => {
   const { $t } = useIntl()
   const [visible, setVisible] = React.useState(false)
   const handleDonutClick = () => {

@@ -314,7 +314,6 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
       <Table
         columns={columns}
         dataSource={guestDetail.clients}
-        pagination={false}
       />}
 
     <GenerateNewPasswordModal {...{

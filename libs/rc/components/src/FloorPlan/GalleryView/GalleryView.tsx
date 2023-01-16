@@ -10,9 +10,6 @@ import NetworkDevices from '../NetworkDevices'
 
 import * as UI from './styledComponents'
 
-
-
-
 export default function GalleryView (props: {
   setCoordinates: Function,
   floorPlans: FloorPlanDto[],
@@ -138,6 +135,7 @@ function GalleryCard (props: {
     <UI.StyledImageWrapper
       onClick={() => onFloorplanImageClick(floorPlan)}>
       <div ref={drop}
+        data-testid='dropContainer'
         style={{
           position: 'absolute',
           width: '100%',
@@ -148,8 +146,7 @@ function GalleryCard (props: {
         selectedFloorPlan={floorPlan}
         networkDevices={networkDevices}
         contextAlbum={false}
-        galleryMode={true}
-        context=''/>
+        galleryMode={true}/>
       <img alt='img'
         ref={imageRef}
         data-testid='fpImage'

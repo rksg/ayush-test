@@ -12,7 +12,7 @@ interface EdgeDetailsDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
   currentEdge: EdgeStatus | undefined,
-  edgePortsSetting: EdgePortStatus[]
+  edgePortsSetting: EdgePortStatus[] | undefined
   dnsServers: EdgeDnsServers | undefined
 }
 

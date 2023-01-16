@@ -25,11 +25,11 @@ const useLinkData = () => {
   if (devicesToggle) {
     linkData.push({
       title: 'APs',
-      to: '/devices/aps'
+      to: '/devices/wifi'
     })
     linkData.push({
       title: 'Switches',
-      to: '/devices/switches'
+      to: '/devices/switch'
     })
   }
 
@@ -41,7 +41,7 @@ const useLinkData = () => {
     })
     linkData.push({
       title: 'Switch Clients',
-      to: '/users/switches/clients'
+      to: '/users/switch/clients'
     })
   }
 

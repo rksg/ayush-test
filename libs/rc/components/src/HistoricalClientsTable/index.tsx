@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+
 import { Typography } from 'antd'
 import { useIntl }    from 'react-intl'
 
@@ -116,9 +118,11 @@ export function HistoricalClientsTable
       defaultPayload
     })
 
-    if(tableQuery.data?.data){
-      setHistoricalClientCount(tableQuery.data?.totalCount)
-    }
+    useEffect(() => {
+      if (tableQuery.data?.data) {
+        setHistoricalClientCount(tableQuery.data?.totalCount)
+      }
+    }, [])
 
     return (
       <div id={id}>
@@ -131,7 +135,6 @@ export function HistoricalClientsTable
           <Table
             columns={getCols(useIntl())}
             dataSource={tableQuery.data?.data}
-            pagination={false}
             onChange={tableQuery.handleTableChange}
             rowKey='clientMac'
           />

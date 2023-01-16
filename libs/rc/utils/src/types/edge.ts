@@ -93,14 +93,14 @@ export interface EdgeStaticRouteConfig {
 }
 
 export interface EdgePortStatus {
-  portType: EdgePortTypeEnum.UNCONFIGURED | EdgePortTypeEnum.WAN | EdgePortTypeEnum.LAN
+  type: EdgePortTypeEnum.UNCONFIGURED | EdgePortTypeEnum.WAN | EdgePortTypeEnum.LAN
   portId: string
-  portName:string
+  name:string
   status: string
   adminStatus:string
   mac:string
-  speed:number    // kbps/s
-  duplexSpeed:number
+  speedKbps:number
+  duplex:string
   ip: string
-  portIndex?: number
+  sortIdx: number
 }
