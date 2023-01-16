@@ -135,7 +135,6 @@ export function HistoricalClientsTable
           <Table
             columns={getCols(useIntl())}
             dataSource={tableQuery.data?.data}
-            pagination={false}
             onChange={tableQuery.handleTableChange}
             rowKey='clientMac'
           />
