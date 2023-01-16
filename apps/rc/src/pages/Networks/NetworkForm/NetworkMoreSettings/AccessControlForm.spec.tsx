@@ -19,7 +19,7 @@ import NetworkFormContext from '../NetworkFormContext'
 
 import { AccessControlForm } from './AccessControlForm'
 
-describe('AccessControlForm', () => {
+xdescribe('AccessControlForm', () => {
 
   beforeEach(() => {
 

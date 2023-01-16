@@ -20,9 +20,9 @@ storiesOf('Table', module)
   .add('Multi Select', MultiSelectTable)
   .add('Single Select', SingleSelectTable)
   .add('Column Sort & Show/Hide', ColumnSortAndShowHideTable)
+  .add('No Selected Bar Table', NoSelectedBarTable)
   .add('Compact', CompactTable)
   .add('Compact Table With Borders in Rows', CompactTableWithBorders)
   .add('Form Table', FormTable)
-  .add('No Selected Bar Table', NoSelectedBarTable)
 
 export {}

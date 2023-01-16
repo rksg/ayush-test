@@ -9,7 +9,7 @@ import {
   AccountCircleOutlined,
   AccountCircleSolid,
   AdminOutlined,
-  AdminSolid as AdminSolidBase,
+  AdminSolid,
   CalendarDateOutlined,
   CalendarDateSolid,
   DevicesOutlined,
@@ -30,7 +30,6 @@ import {
 
 const AIOutlined = styled(AIOutlinedBase)`${LayoutUI.iconOutlinedOverride}`
 const AISolid = styled(AISolidBase)`${LayoutUI.iconOutlinedOverride}`
-const AdminSolid = styled(AdminSolidBase)`${LayoutUI.iconSolidOverride}`
 const ServicesSolid = styled(ServicesSolidBase)`${LayoutUI.iconSolidOverride}`
 const PoliciesSolid = styled(PoliciesSolidBase)`${LayoutUI.iconSolidOverride}`
 
@@ -80,7 +79,45 @@ export function useMenuConfig () {
       name: $t({ defaultMessage: 'Reports' }),
       inactiveIcon: ReportsOutlined,
       activeIcon: ReportsSolid,
-      disabled: true
+      disabled: false,
+      routes: [
+        {
+          path: '/reports/overview',
+          name: $t({ defaultMessage: 'Overview' })
+        },
+        {
+          path: '/reports/wireless',
+          name: $t({ defaultMessage: 'Wireless' })
+        },
+        {
+          path: '/reports/wired',
+          name: $t({ defaultMessage: 'Wired' })
+        },
+        {
+          path: '/reports/aps',
+          name: $t({ defaultMessage: 'APs' })
+        },
+        {
+          path: '/reports/switches',
+          name: $t({ defaultMessage: 'Switches' })
+        },
+        {
+          path: '/reports/wlans',
+          name: $t({ defaultMessage: 'WLANs' })
+        },
+        {
+          path: '/reports/clients',
+          name: $t({ defaultMessage: 'Wireless Clients' })
+        },
+        {
+          path: '/reports/applications',
+          name: $t({ defaultMessage: 'Applications' })
+        },
+        {
+          path: '/reports/airtime',
+          name: $t({ defaultMessage: 'Airtime Utilization' })
+        }
+      ]
     },
     genPlaceholder(),
     {
