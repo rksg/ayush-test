@@ -1,7 +1,8 @@
 /* eslint-disable max-len */
-import { ConfigStatusEnum, ConfigTypeEnum } from '../constants'
+import { ConfigStatusEnum, ConfigTypeEnum, ConfigurationBackupStatus } from '../constants'
+import { ConfigurationBackup }                                         from '../types'
 
-import { transformConfigStatus, transformConfigType } from './switchPipes'
+import { transformConfigBackupStatus, transformConfigBackupType, transformConfigStatus, transformConfigType } from './switchPipes'
 
 describe('Switch Pipes', () => {
   it('Test transformConfigType function', async () => {
@@ -22,6 +23,7 @@ describe('Switch Pipes', () => {
     expect(transformConfigType(ConfigTypeEnum.CLI_UPDATE)).toBe('CLI Update')
     expect(transformConfigType(ConfigTypeEnum.IP_CONFIG)).toBe('IP Config')
     expect(transformConfigType(ConfigTypeEnum.SPECIFIC_SETTING)).toBe('Specific Setting')
+    expect(transformConfigType(ConfigTypeEnum.STATIC_ROUTE)).toBe('Static Route')
     expect(transformConfigType('VLAN')).toBe('VLAN')
     expect(transformConfigType('ACL')).toBe('ACL')
   })
@@ -31,6 +33,24 @@ describe('Switch Pipes', () => {
     expect(transformConfigStatus(ConfigStatusEnum.FAILED)).toBe('Failed')
     expect(transformConfigStatus(ConfigStatusEnum.NO_CONFIG_CHANGE)).toBe('No Config Change')
     expect(transformConfigStatus(ConfigStatusEnum.FAILED_NO_RESPONSE)).toBe('Failed No Response')
+    expect(transformConfigStatus(ConfigStatusEnum.PENDING)).toBe('Pending')
+  })
+
+  it('Test transformConfigBackupStatus function', async () => {
+    expect(transformConfigBackupStatus({
+      status: ConfigurationBackupStatus.SUCCESS,
+      restoreStatus: ConfigurationBackupStatus.FAILED,
+      failureReason: 'something error'
+    } as ConfigurationBackup)).toBe('Backup restore failed (something error)')
+    expect(transformConfigBackupStatus({
+      status: ConfigurationBackupStatus.FAILED,
+      failureReason: 'something error'
+    } as ConfigurationBackup)).toBe('Backup creation failed (something error)')
+  })
+
+  it('Test transformConfigBackupType function', async () => {
+    expect(transformConfigBackupType('SCHEDULED')).toBe('Automatic')
+    expect(transformConfigBackupType('MANUAL')).toBe('Manual')
   })
 
 })

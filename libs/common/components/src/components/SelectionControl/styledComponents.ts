@@ -80,3 +80,10 @@ export const Wrapper = styled.div`
     }
   }
 `
+export const Container = styled.div`
+  flex-direction: row;
+  display: flex;
+  justify-content: right;
+  margin-top: -20px;
+  margin-right: 6px;
+`

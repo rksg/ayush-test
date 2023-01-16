@@ -1,8 +1,6 @@
-import { FloorPlanDto, NetworkDeviceType, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
+import { FloorplanContext, FloorPlanDto, NetworkDeviceType, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
 
 import { NetworkDeviceMarker } from './NetworkDeviceMarker'
-
-
 
 export default function NetworkDevices ({
   networkDevicesVisibility,
@@ -10,14 +8,16 @@ export default function NetworkDevices ({
   networkDevices,
   galleryMode,
   contextAlbum,
-  context
+  context,
+  showRogueAp
 } : {
     networkDevicesVisibility: NetworkDeviceType[],
     selectedFloorPlan: FloorPlanDto,
     networkDevices: { [key: string]: TypeWiseNetworkDevices },
     galleryMode: boolean,
     contextAlbum: boolean,
-    context: string
+    context?: FloorplanContext,
+    showRogueAp?: boolean
     }) {
 
   const networkDeviceTypeArray = Object.values(NetworkDeviceType)
@@ -36,8 +36,9 @@ export default function NetworkDevices ({
             key={obj?.id}
             galleryMode={galleryMode}
             contextAlbum={contextAlbum}
-            context={context}
-            device={obj}/>
+            context={context as FloorplanContext}
+            device={obj}
+            showRogueAp={showRogueAp}/>
         }))
     })
   }</div>
