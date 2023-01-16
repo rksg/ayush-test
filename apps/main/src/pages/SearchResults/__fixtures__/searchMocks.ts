@@ -184,3 +184,39 @@ export const eventMetaData = {
     'recipientName'
   ]
 }
+
+export const switchListData = {
+  fields: [
+    'suspendingDeployTime', 'serialNumber', 'syncedSwitchConfig', 'ipAddress',
+    'check-all', 'configReady', 'cliApplied', 'isStack', 'syncDataStartTime',
+    'deviceStatus', 'uptime', 'venueName', 'switchMac', 'formStacking', 'switchName',
+    'operationalWarning', 'venueId', 'syncDataId', 'name', 'model', 'activeSerial',
+    'cog', 'id', 'clientCount'
+  ],
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      id: 'c0:c5:20:aa:24:57',
+      model: 'ICX7150-C12P',
+      uptime: '20 days, 22 hours',
+      switchName: 'ICX7150-C12 Router',
+      serialNumber: 'FEK3224R08H',
+      activeSerial: 'FEK3224R08H',
+      ipAddress: '10.206.10.40',
+      deviceStatus: 'ONLINE',
+      switchMac: 'c0:c5:20:aa:24:57',
+      isStack: false,
+      name: 'ICX7150-C12 Router',
+      venueId: '977d4caed36b40b5adbed075f2d57a23',
+      venueName: 'My-Venue',
+      clientCount: 1,
+      configReady: true,
+      syncedSwitchConfig: true,
+      syncDataEndTime: '',
+      cliApplied: false,
+      formStacking: false,
+      suspendingDeployTime: ''
+    }
+  ]
+}

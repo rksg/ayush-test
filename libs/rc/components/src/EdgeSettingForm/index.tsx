@@ -21,7 +21,8 @@ const venueOptionsDefaultPayload = {
     'id'
   ],
   sortField: 'name',
-  sortOrder: 'ASC'
+  sortOrder: 'ASC',
+  pageSize: 10000
 }
 
 export const EdgeSettingForm = (props: EdgeSettingFormProps) => {

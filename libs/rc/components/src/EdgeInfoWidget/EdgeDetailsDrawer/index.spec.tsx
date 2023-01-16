@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom'
 
+import { EdgeStatus }                from '@acx-ui/rc/utils'
 import { Provider  }                 from '@acx-ui/store'
 import { fireEvent, render, screen } from '@acx-ui/test-utils'
 
@@ -43,6 +44,22 @@ describe('Edge Detail Drawer', () => {
 
     const emptyLabel = await screen.findAllByText('--')
     expect(emptyLabel.length).toBe(2)
+  })
+
+  it('should render -- if edge is undefined', async () => {
+    const undefinedEdge = {} as EdgeStatus
+
+    render(<Provider>
+      <EdgeDetailsDrawer
+        visible={true}
+        setVisible={() => {}}
+        currentEdge={undefinedEdge}
+        edgePortsSetting={edgePortsSetting}
+      />
+    </Provider>, { route: { params } })
+
+    const emptyLabel = await screen.findAllByText('--')
+    expect(emptyLabel.length).toBe(8)
   })
 
   it('should have correct link to venue detail page', async () => {
