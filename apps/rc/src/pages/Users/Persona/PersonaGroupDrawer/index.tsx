@@ -63,6 +63,18 @@ export function PersonaGroupDrawer (props: PersonaGroupDrawerProps) {
     return updatePersonaGroup({ params: { groupId: data?.id }, payload: patchData }).unwrap()
   }
 
+  const onSave = async () => {
+    try {
+      await form.validateFields()
+      await onFinish(form.getFieldsValue())
+    } catch (e) {
+      showToast({
+        type: 'error',
+        content: e
+      })
+    }
+  }
+
   const footer = (
     <Drawer.FormFooter
       buttonLabel={{
@@ -70,7 +82,7 @@ export function PersonaGroupDrawer (props: PersonaGroupDrawerProps) {
           ? $t({ defaultMessage: 'Apply' })
           : $t({ defaultMessage: 'Add' })
       }}
-      onSave={async () => form.submit()}
+      onSave={onSave}
       onCancel={onClose}
     />)
 
@@ -89,7 +101,6 @@ export function PersonaGroupDrawer (props: PersonaGroupDrawerProps) {
         <PersonaGroupForm
           form={form}
           defaultValue={data}
-          onFinish={onFinish}
         />
       }
       footer={footer}

@@ -10,11 +10,10 @@ import { checkObjectNotExists, PersonaGroup, useTableQuery }                    
 
 export function PersonaGroupForm (props: {
   form: FormInstance,
-  defaultValue?: PersonaGroup,
-  onFinish: (values: PersonaGroup) => void
+  defaultValue?: PersonaGroup
 }) {
   const { $t } = useIntl()
-  const { form, defaultValue, onFinish } = props
+  const { form, defaultValue } = props
 
   const dpskPoolList = useGetDpskListQuery({ })
 
@@ -27,11 +26,15 @@ export function PersonaGroupForm (props: {
   const [searchPersonaGroupList] = useLazySearchPersonaGroupListQuery()
 
   const nameValidator = async (name: string) => {
-    const list = (await searchPersonaGroupList({
-      params: { size: '2147483647', page: '0' },
-      payload: { keyword: name }
-    }, true).unwrap()).data.filter(g => g.id !== defaultValue?.id).map(g => ({ name: g.name }))
-    return checkObjectNotExists(list, { name } , $t({ defaultMessage: 'Persona Group' }))
+    try {
+      const list = (await searchPersonaGroupList({
+        params: { size: '2147483647', page: '0' },
+        payload: { keyword: name }
+      }, true).unwrap()).data.filter(g => g.id !== defaultValue?.id).map(g => ({ name: g.name }))
+      return checkObjectNotExists(list, { name } , $t({ defaultMessage: 'Persona Group' }))
+    } catch (e) {
+      return Promise.resolve()
+    }
   }
 
   useEffect(() => {
@@ -48,7 +51,6 @@ export function PersonaGroupForm (props: {
       name={'personaGroupForm'}
       // FIXME: for demo use case
       initialValues={{ ...defaultValue, dpskPoolId: 'demo-dpsk-pool-id' }}
-      onFinish={onFinish}
     >
       <Space direction={'vertical'} size={16} style={{ display: 'flex' }}>
         <Row>

@@ -1,9 +1,7 @@
 import React, { useEffect } from 'react'
 
-import { Form }           from 'antd'
-import { FormProvider }   from 'antd/lib/form/context'
-import { FormFinishInfo } from 'rc-field-form/es/FormContext'
-import { useIntl }        from 'react-intl'
+import { Form }    from 'antd'
+import { useIntl } from 'react-intl'
 
 
 import { Drawer, showToast }                               from '@acx-ui/components'
@@ -36,9 +34,7 @@ export function PersonaDrawer (props: PersonaDrawerProps) {
     }
   }, [visible])
 
-  const onFormFinish = async (name: string, info: FormFinishInfo) => {
-    const contextData: Persona = info.values as Persona
-
+  const onFinish = async (contextData: Persona) => {
     try {
       isEdit
         ? await handleEditPersona(contextData)
@@ -81,6 +77,18 @@ export function PersonaDrawer (props: PersonaDrawerProps) {
     }).unwrap()
   }
 
+  const onSave = async () => {
+    try {
+      await form.validateFields()
+      await onFinish(form.getFieldsValue())
+    } catch (e) {
+      showToast({
+        type: 'error',
+        content: e
+      })
+    }
+  }
+
   const footer = (
     <Drawer.FormFooter
       buttonLabel={{
@@ -88,7 +96,7 @@ export function PersonaDrawer (props: PersonaDrawerProps) {
           ? $t({ defaultMessage: 'Apply' })
           : $t({ defaultMessage: 'Add' })
       }}
-      onSave={async () => form.submit()}
+      onSave={onSave}
       onCancel={onClose}
     />
   )
@@ -105,12 +113,10 @@ export function PersonaDrawer (props: PersonaDrawerProps) {
       visible={visible}
       onClose={onClose}
       children={
-        <FormProvider onFormFinish={onFormFinish}>
-          <PersonaForm
-            form={form}
-            defaultValue={data}
-          />
-        </FormProvider>
+        <PersonaForm
+          form={form}
+          defaultValue={data}
+        />
       }
       footer={footer}
     />

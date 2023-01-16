@@ -26,11 +26,15 @@ export function PersonaContextForm (props: {
   const [searchPersonaList] = useLazySearchPersonaListQuery()
 
   const nameValidator = async (name: string) => {
-    const list = (await searchPersonaList({
-      params: { size: '2147483647', page: '0' },
-      payload: { keyword: name }
-    }, true).unwrap()).data.filter(p => p.id !== defaultValue?.id).map(p => ({ name: p.name }))
-    return checkObjectNotExists(list, { name } , $t({ defaultMessage: 'Persona' }))
+    try {
+      const list = (await searchPersonaList({
+        params: { size: '2147483647', page: '0' },
+        payload: { keyword: name }
+      }, true).unwrap()).data.filter(p => p.id !== defaultValue?.id).map(p => ({ name: p.name }))
+      return checkObjectNotExists(list, { name } , $t({ defaultMessage: 'Persona' }))
+    } catch (e) {
+      return Promise.resolve()
+    }
   }
 
   useEffect(() => {
