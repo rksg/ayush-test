@@ -4,7 +4,11 @@ import {
   GuestNetworkTypeEnum,
   RadioEnum,
   RadioTypeEnum,
-  WlanSecurityEnum
+  WlanSecurityEnum,
+  FacilityEnum,
+  FlowLevelEnum,
+  PriorityEnum,
+  ProtocolEnum
 } from '@acx-ui/rc/utils'
 
 export const successResponse = {
@@ -2615,3 +2619,41 @@ export const validChannelsData = {
     ]
   }
 }
+
+export const venueSyslog = {
+  serviceProfileId: '31846cfe930b49b4802b302f35029589',
+  enabled: true
+}
+
+export const syslogServerProfiles = [{
+  name: 'SyslogProfile1',
+  id: '31846cfe930b49b4802b302f35029589',
+  server: '1.1.1.1',
+  port: 514,
+  facility: 'KEEP_ORIGINAL' as FacilityEnum,
+  priority: 'INFO' as PriorityEnum,
+  protocol: 'UDP' as ProtocolEnum,
+  flowLevel: 'CLIENT_FLOW' as FlowLevelEnum,
+  secondaryServer: '2.2.2.2',
+  secondaryPort: 514,
+  secondaryProtocol: 'TCP' as ProtocolEnum,
+  venueIds: [
+    'bc20590f588948f1822dd20aa8a1914c'
+  ]
+},
+{
+  name: 'SyslogProfile2',
+  id: '78f92fbf80334e8b83cddd3210db4920',
+  server: '1.1.1.1',
+  port: 514,
+  facility: 'KEEP_ORIGINAL' as FacilityEnum,
+  priority: 'INFO' as PriorityEnum,
+  protocol: 'UDP' as ProtocolEnum,
+  flowLevel: 'CLIENT_FLOW' as FlowLevelEnum,
+  secondaryServer: '2.2.2.2',
+  secondaryPort: 514,
+  secondaryProtocol: 'TCP' as ProtocolEnum,
+  venueIds: [
+    'bc20590f588948f1822dd20aa8a1914c'
+  ]
+}]

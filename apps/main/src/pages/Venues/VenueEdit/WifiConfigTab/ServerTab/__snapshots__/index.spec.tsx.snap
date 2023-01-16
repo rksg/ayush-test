@@ -1,0 +1,246 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ServerTab should render correctly 1`] = `
+<DocumentFragment>
+  <section
+    class="styledComponents__Wrapper-sc-1ibvcih-2 kZHgWB"
+  >
+    <div
+      class="ant-pro-steps-form"
+    >
+      <div
+        class="ant-row"
+        style="margin-left: -12px; margin-right: -12px;"
+      >
+        <div
+          class="ant-col ant-col-24"
+          style="padding-left: 12px; padding-right: 12px;"
+        >
+          <div
+            class="styledComponents__StepsContainer-sc-1ibvcih-0 fzFjZo"
+          >
+            <div
+              class="ant-steps ant-steps-vertical ant-steps-dot"
+            >
+              <div
+                class="ant-steps-item ant-steps-item-process ant-steps-item-active"
+              >
+                <div
+                  class="ant-steps-item-container"
+                >
+                  <div
+                    class="ant-steps-item-tail"
+                  />
+                  <div
+                    class="ant-steps-item-icon"
+                  >
+                    <span
+                      class="ant-steps-icon"
+                    >
+                      <span
+                        class="ant-steps-icon-dot"
+                      />
+                    </span>
+                  </div>
+                  <div
+                    class="ant-steps-item-content"
+                  >
+                    <div
+                      class="ant-steps-item-title"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-row"
+        style="margin-left: -12px; margin-right: -12px;"
+      >
+        <div
+          class="ant-col ant-col-24"
+          style="padding-left: 12px; padding-right: 12px;"
+        >
+          <div
+            class="ant-pro-steps-form-container"
+          >
+            <div
+              class="ant-pro-steps-form-step ant-pro-steps-form-step-active"
+            >
+              <form
+                autocomplete="off"
+                class="ant-form ant-form-vertical"
+                id="0"
+              >
+                <input
+                  style="display: none;"
+                  type="text"
+                />
+                <div
+                  class="ant-tabs ant-tabs-top styledComponents__Tabs-sc-1afcsfc-0 gYbduO"
+                >
+                  <div
+                    class="ant-tabs-nav"
+                    role="tablist"
+                  >
+                    <div
+                      class="ant-tabs-nav-wrap"
+                    >
+                      <div
+                        class="ant-tabs-nav-list"
+                        style="transform: translate(0px, 0px);"
+                      >
+                        <div
+                          class="ant-tabs-tab ant-tabs-tab-active"
+                        >
+                          <div
+                            aria-controls="rc-tabs-test-panel-Syslog"
+                            aria-selected="true"
+                            class="ant-tabs-tab-btn"
+                            id="rc-tabs-test-tab-Syslog"
+                            role="tab"
+                            tabindex="0"
+                          >
+                            Syslog
+                          </div>
+                        </div>
+                        <div
+                          class="ant-tabs-ink-bar ant-tabs-ink-bar-animated"
+                          style="left: 0px; width: 0px;"
+                        />
+                      </div>
+                    </div>
+                    <div
+                      class="ant-tabs-nav-operations ant-tabs-nav-operations-hidden"
+                    >
+                      <button
+                        aria-controls="rc-tabs-test-more-popup"
+                        aria-expanded="false"
+                        aria-haspopup="listbox"
+                        aria-hidden="true"
+                        class="ant-tabs-nav-more"
+                        id="rc-tabs-test-more"
+                        style="visibility: hidden; order: 1;"
+                        tabindex="-1"
+                        type="button"
+                      >
+                        <span
+                          aria-label="ellipsis"
+                          class="anticon anticon-ellipsis"
+                          role="img"
+                        >
+                          <svg
+                            aria-hidden="true"
+                            data-icon="ellipsis"
+                            fill="currentColor"
+                            focusable="false"
+                            height="1em"
+                            viewBox="64 64 896 896"
+                            width="1em"
+                          >
+                            <path
+                              d="M176 511a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0z"
+                            />
+                          </svg>
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-tabs-content-holder"
+                  >
+                    <div
+                      class="ant-tabs-content ant-tabs-content-top"
+                    >
+                      <div
+                        aria-hidden="false"
+                        aria-labelledby="rc-tabs-test-tab-Syslog"
+                        class="ant-tabs-tabpane ant-tabs-tabpane-active"
+                        id="rc-tabs-test-panel-Syslog"
+                        role="tabpanel"
+                        tabindex="0"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div
+                  style="display: block;"
+                >
+                  <div
+                    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+                  >
+                    <div
+                      class="ant-space ant-space-horizontal ant-space-align-center"
+                    >
+                      <div
+                        class="ant-space-item"
+                      >
+                        <label
+                          class="styledComponents__FieldLabel-sc-1ibvcih-5 llDqhm"
+                          width="max-content"
+                        >
+                          Enable Server
+                          <button
+                            aria-checked="false"
+                            class="ant-switch"
+                            data-testid="syslog-switch"
+                            role="switch"
+                            style="margin-left: 20px;"
+                            type="button"
+                          >
+                            <div
+                              class="ant-switch-handle"
+                            />
+                            <span
+                              class="ant-switch-inner"
+                            />
+                          </button>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="styledComponents__ActionsContainer-sc-1ibvcih-1 dVvdlc"
+      >
+        <div
+          class="ant-space ant-space-horizontal ant-space-align-center"
+        >
+          <div
+            class="ant-space-item"
+            style="margin-right: 12px;"
+          >
+            <button
+              class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 bxQmA-d"
+              type="button"
+            >
+              <span>
+                Save
+              </span>
+            </button>
+          </div>
+          <div
+            class="ant-space-item"
+          >
+            <button
+              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
+              type="button"
+            >
+              <span>
+                Cancel
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</DocumentFragment>
+`;

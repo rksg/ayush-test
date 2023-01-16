@@ -24,6 +24,7 @@ import {
   VenueDosProtection,
   VenueRogueAp,
   RogueClassificationPolicy,
+  VenueSyslog,
   RadiusServer,
   TacacsServer,
   LocalUser,
@@ -668,6 +669,35 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       }
     }),
+    getVenueSyslogAp: build.query<VenueSyslog, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getVenueSyslogAp, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Venue', id: 'syslog' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UpdateVenueSyslog'
+          ]
+          showActivityMessage(msg, activities, () => {
+            api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'syslog' }]))
+          })
+        })
+      }
+    }),
+    updateVenueSyslogAp: build.mutation<VenueSyslog, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.updateVenueSyslogAp, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Venue', id: 'syslog' }]
+    }),
     venueDHCPProfile: build.query<VenueDHCPProfile, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(DHCPUrls.getVenueDHCPServiceProfile, params)
@@ -810,6 +840,8 @@ export const {
   useGetOldVenueRogueApQuery,
   useUpdateVenueRogueApMutation,
   useGetRoguePoliciesQuery,
+  useGetVenueSyslogApQuery,
+  useUpdateVenueSyslogApMutation,
   useConfigProfilesQuery,
   useVenueSwitchSettingQuery,
   useUpdateVenueSwitchSettingMutation,

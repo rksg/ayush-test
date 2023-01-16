@@ -247,6 +247,14 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/rogue-policy'
   },
+  getVenueSyslogAp: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/syslogServerProfileSettings'
+  },
+  updateVenueSyslogAp: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/syslogServerProfileSettings'
+  },
   getConfigProfiles: {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/profiles/query'
