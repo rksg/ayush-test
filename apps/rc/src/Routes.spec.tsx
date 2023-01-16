@@ -96,6 +96,17 @@ jest.mock('./pages/Timeline', () => () => {
   return <div data-testid='Timeline' />
 })
 
+jest.mock('./pages/Users/Persona', () => () => {
+  return <div data-testid='PersonaPortal' />
+})
+
+jest.mock('./pages/Users/Persona/PersonaDetails', () => () => {
+  return <div data-testid='PersonaDetails' />
+})
+
+jest.mock('./pages/Users/Persona/PersonaGroupDetails', () => () => {
+  return <div data-testid='PersonaGroupDetails' />
+})
 
 describe('RcRoutes: Devices', () => {
   test('should redirect devices to devices/wifi', async () => {
@@ -464,6 +475,33 @@ describe('RcRoutes: User', () => {
       }
     })
     expect(screen.getByTestId('UserClientDetails')).toBeVisible()
+  })
+  test('should redirect to Persona Portal', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/users/persona-management',
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('PersonaPortal')).toBeVisible()
+  })
+  test('should redirect to Persona detail', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/users/persona-management/persona-group/personGroupId/persona/personaId',
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('PersonaDetails')).toBeVisible()
+  })
+  test('should redirect to Persona Group detail', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/users/persona-management/persona-group/personGroupId',
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('PersonaGroupDetails')).toBeVisible()
   })
 })
 
