@@ -193,7 +193,7 @@ export function excludeExclamationRegExp (value: string) {
 
 export function excludeQuoteRegExp (value: string) {
   const { $t } = getIntl()
-  const re = new RegExp(/^(?:(?!")(?!\s).)*$/)
+  const re = new RegExp(/^(?:(?!").)*$/)
   if (value!=='' && !re.test(value)) {
     return Promise.reject($t(validationMessages.excludeQuoteRegExp))
   }

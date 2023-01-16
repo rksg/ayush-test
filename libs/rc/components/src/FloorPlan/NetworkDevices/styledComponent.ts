@@ -1,6 +1,48 @@
 /* eslint-disable max-len */
 import styled from 'styled-components'
 
+import { deviceCategoryColors } from '@acx-ui/components'
+
+const rogueTypeColors = {
+  malicious: deviceCategoryColors.Malicious,
+  ignored: deviceCategoryColors.Ignored,
+  unclassified: deviceCategoryColors.Unclassified,
+  known: deviceCategoryColors.Known
+}
+
+function getRogueTypeCss () {
+  let str = ''
+  Object.keys(rogueTypeColors).forEach((rogueType) => {
+    str += `&.${rogueType} {
+      background-color: var(${rogueTypeColors[rogueType as keyof typeof rogueTypeColors]});
+    }
+    `
+  })
+  return str
+}
+
+function getRogueTypeBorderCss () {
+  let str = ''
+  Object.keys(rogueTypeColors).forEach((rogueType) => {
+    str += `&.${rogueType} {
+      border-color: var(${rogueTypeColors[rogueType as keyof typeof rogueTypeColors]});
+    }
+    `
+  })
+  return str
+}
+
+function getRogueApMarkerCss () {
+  let str = ''
+  Object.keys(rogueTypeColors).forEach((rogueType) => {
+    str += `&.ap-rogue-type-${rogueType} {
+      background-color: var(${rogueTypeColors[rogueType as keyof typeof rogueTypeColors]});
+    }
+    `
+  })
+  return str
+}
+
 export const DeviceContainer = styled('div')`
 &.device-container {
   z-index: 3;
@@ -58,6 +100,10 @@ export const DeviceContainer = styled('div')`
       background-color: var(--acx-semantics-yellow-50) !important;
     }
 
+    &.ap-rogue-type-offline {
+      opacity: .3;
+    }
+
     &.switch-status-never-contacted-cloud {
       background-color: var(--acx-neutrals-50) !important;
     }
@@ -71,6 +117,8 @@ export const DeviceContainer = styled('div')`
     &.cloudpath-server {
       background-color: var(--acx-semantics-green-50) !important;
     }
+
+    ${getRogueApMarkerCss()}
 
     &:after {
       position: relative;
@@ -119,5 +167,106 @@ export const DeviceContainer = styled('div')`
       }
     }
   }
+}
+`
+export const RogueApContainer = styled('div')`
+&.rogue-snr {
+  z-index: 2;
+  width: 168px;
+  height: 168px;
+  position: absolute;
+  border-radius: 50%;
+  opacity: .2;
+
+  &:not(.context-Unplaced) {
+    margin: -84px 0 0 -84px;
+  }
+
+  ${getRogueTypeCss()}
+
+  &.ap-rogue-snr-over-40-db {
+    opacity: .4;
+  }
+
+  &.ap-rogue-snr-26-40-db {
+    opacity: .3;
+  }
+
+  &.ap-rogue-snr-16-25-db {
+    opacity: .2;
+  }
+
+  &.ap-rogue-snr-0-15-db {
+    opacity: .1;
+  }
+}
+
+`
+
+export const SpecificRogueAp = styled('div')`
+.wifi-signal-snr {
+  margin-left: 2px;
+  display: inline-block;
+  font-size: 0;
+
+  position: relative;
+  width: 16px;
+  height: 16px;
+  top: 2px;
+
+  .bar {
+    position: absolute;
+    background: #7f7f7f;
+    border-top-right-radius: 100%;
+    border-right: 1px solid rgba(51, 51, 51, .9);
+    border-top: 1px solid rgba(51, 51, 51, .9);
+
+    &.activated {
+      background-color: var(--acx-primary-white);
+    }
+  }
+
+  .bar1 {
+    width: 80%;
+    height: 80%;
+    top: 20%;
+  }
+
+  .bar2 {
+    width: 60%;
+    height: 60%;
+    top: 40%;
+  }
+
+  .bar3 {
+    width: 40%;
+    height: 40%;
+    top: 60%;
+  }
+
+  .bar4 {
+    width: 20%;
+    height: 20%;
+    top: 80%;
+  }
+}
+`
+
+export const RogueApCountBadge = styled('div')`
+&.mark-number-rogue {
+  border: 3px solid;
+  background-color: var(--acx-primary-white);
+  color: black;
+  z-index: 2;
+  width: 60%;
+  height: 60%;
+  border-radius: 50%;
+  position: absolute;
+  transform: translate(100%, -30%);
+  text-align: center;
+  line-height: 200%;
+  font-size: 8px;
+
+  ${getRogueTypeBorderCss()}
 }
 `
