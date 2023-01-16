@@ -95,7 +95,6 @@ export function BasePersonaTable (props: PersonaTableProps) {
   const { $t } = useIntl()
   const { colProps } = props
   const { personaGroupId } = useParams()
-  const hasGroupId = () => personaGroupId !== undefined
   const columns = useColumns(colProps)
   const [drawerState, setDrawerState] = useState({
     isEdit: false,
@@ -107,13 +106,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
   const personaListQuery = useTableQuery({
     useQuery: useSearchPersonaListQuery,
     apiParams: { sort: 'name,ASC' },
-    defaultPayload: { }
-  })
-
-  const personaListByGroupIdQuery = useTableQuery({
-    useQuery: useSearchPersonaListQuery,
-    apiParams: { sort: 'name,ASC' },
-    defaultPayload: { groupId: personaGroupId }
+    defaultPayload: personaGroupId ? { groupId: personaGroupId } : { }
   })
 
   const actions: TableProps<PersonaGroup>['actions'] = [
@@ -166,27 +159,14 @@ export function BasePersonaTable (props: PersonaTableProps) {
     <Loader
       states={[
         personaListQuery,
-        personaListByGroupIdQuery,
         { isLoading: false, isFetching: isDeletePersonaUpdating }
       ]}
     >
       <Table
         columns={columns}
-        dataSource={
-          hasGroupId()
-            ? personaListByGroupIdQuery.data?.data
-            : personaListQuery.data?.data
-        }
-        pagination={
-          hasGroupId()
-            ? personaListByGroupIdQuery.pagination
-            : personaListQuery.pagination
-        }
-        onChange={
-          hasGroupId()
-            ? personaListByGroupIdQuery.handleTableChange
-            : personaListQuery.handleTableChange
-        }
+        dataSource={personaListQuery.data?.data}
+        pagination={personaListQuery.pagination}
+        onChange={personaListQuery.handleTableChange}
         rowKey='id'
         actions={actions}
         rowActions={rowActions}
