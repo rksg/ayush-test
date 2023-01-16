@@ -3,11 +3,19 @@ import { render, screen } from '@acx-ui/test-utils'
 
 import AnalyticsRoutes from './Routes'
 
+jest.mock('./pages/NetworkHealth/NetworkHealthDetails',() => ({
+  default: () => <div data-testid='NetworkHealthDetails'/>,
+  __esModule: true
+}))
+
+jest.mock('./pages/NetworkHealth/NetworkHealthList', () => ({
+  default: () => <div data-testid='NetworkHealthPage' />,
+  __esModule: true
+}))
+
 jest.mock('@acx-ui/analytics/components', () => ({
   HealthPage: () => <div data-testid='healthPage' />,
-  IncidentListPage: () => <div data-testid='incidentsListPage' />,
-  NetworkHealthPage: () => <div data-testid='NetworkHealthPage' />,
-  NetworkHealthDetails: () => <div data-testid='NetworkHealthDetails'/>
+  IncidentListPage: () => <div data-testid='incidentsListPage' />
 }))
 
 jest.mock('./pages/IncidentDetails', () => () => {
