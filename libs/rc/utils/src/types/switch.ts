@@ -1,8 +1,8 @@
 /* eslint-disable max-len */
-import { PortSettingModel } from '../models/PortSetting'
+import { ConfigurationBackupStatus } from '../constants'
+import { PortSettingModel }          from '../models/PortSetting'
 
 import { Acl, Vlan, SwitchModel } from './venue'
-import { ConfigurationBackupStatus } from '../constants'
 
 import { GridDataRow } from './'
 
