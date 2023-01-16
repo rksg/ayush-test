@@ -1,10 +1,9 @@
 import { useIntl } from 'react-intl'
 
-import { Button, GridCol, PageHeader } from '@acx-ui/components'
-import { useServiceListQuery }         from '@acx-ui/rc/services'
+import { Button, GridCol, PageHeader, RadioCardCategory } from '@acx-ui/components'
+import { useServiceListQuery }                            from '@acx-ui/rc/services'
 import {
   getSelectServiceRoutePath,
-  ServiceTechnology,
   ServiceType
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
@@ -59,49 +58,53 @@ export default function MyServices () {
         ]}
       />
       <UI.CardsRow>
-        <GridCol col={{ span: 8 }}>
+        <ServiceCardCol>
           <ServiceCard
             type={ServiceType.DHCP}
-            technology={ServiceTechnology.WIFI}
+            categories={[RadioCardCategory.WIFI]}
             count={serviceListQueryMap[ServiceType.DHCP].data?.totalCount}
             action={ServiceCardMode.LIST}
           />
-        </GridCol>
-        <GridCol col={{ span: 8 }}>
+        </ServiceCardCol>
+        <ServiceCardCol>
           <ServiceCard
             type={ServiceType.DPSK}
-            technology={ServiceTechnology.WIFI}
+            categories={[RadioCardCategory.WIFI]}
             count={serviceListQueryMap[ServiceType.DPSK].data?.totalCount}
             action={ServiceCardMode.LIST}
           />
-        </GridCol>
-        <GridCol col={{ span: 8 }}>
+        </ServiceCardCol>
+        <ServiceCardCol>
           <ServiceCard
             type={ServiceType.WIFI_CALLING}
-            technology={ServiceTechnology.WIFI}
+            categories={[RadioCardCategory.WIFI]}
             count={serviceListQueryMap[ServiceType.WIFI_CALLING].data?.totalCount}
             action={ServiceCardMode.LIST}
           />
-        </GridCol>
-      </UI.CardsRow>
-      <UI.CardsRow>
-        <GridCol col={{ span: 8 }}>
+        </ServiceCardCol>
+        <ServiceCardCol>
           <ServiceCard
             type={ServiceType.PORTAL}
-            technology={ServiceTechnology.WIFI}
+            categories={[RadioCardCategory.WIFI]}
             count={serviceListQueryMap[ServiceType.PORTAL].data?.totalCount}
             action={ServiceCardMode.LIST}
           />
-        </GridCol>
-        <GridCol col={{ span: 8 }}>
+        </ServiceCardCol>
+        <ServiceCardCol>
           <ServiceCard
             type={ServiceType.MDNS_PROXY}
-            technology={ServiceTechnology.WIFI}
+            categories={[RadioCardCategory.WIFI]}
             count={serviceListQueryMap[ServiceType.MDNS_PROXY].data?.totalCount}
             action={ServiceCardMode.LIST}
           />
-        </GridCol>
+        </ServiceCardCol>
       </UI.CardsRow>
     </>
+  )
+}
+
+function ServiceCardCol (props: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <GridCol col={{ span: 6 }} {...props}/>
   )
 }

@@ -1,15 +1,27 @@
+import userEvent from '@testing-library/user-event'
+
+import { RadioCardCategory } from '@acx-ui/components'
 import {
   ServiceType,
-  ServiceTechnology,
   getServiceRoutePath,
   ServiceOperation
 } from '@acx-ui/rc/utils'
+import { To, useTenantLink } from '@acx-ui/react-router-dom'
 import {
   render,
+  renderHook,
   screen
 } from '@acx-ui/test-utils'
 
 import { ServiceCard, ServiceCardMode } from '.'
+
+const mockedUseNavigate = jest.fn()
+
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
+  useNavigate: () => mockedUseNavigate,
+  useTenantLink: (to: To) => to
+}))
 
 describe('ServiceCard', () => {
   const params = {
@@ -19,50 +31,56 @@ describe('ServiceCard', () => {
   const path = '/t/:tenantId'
 
   it('should render LIST service card', async () => {
+    const { result: listPath } = renderHook(() => {
+      return useTenantLink(getServiceRoutePath({
+        type: ServiceType.MDNS_PROXY,
+        oper: ServiceOperation.LIST
+      }))
+    })
+
     render(
       <ServiceCard
         type={ServiceType.MDNS_PROXY}
-        technology={ServiceTechnology.WIFI}
+        categories={[RadioCardCategory.WIFI]}
         action={ServiceCardMode.LIST}
       />, {
         route: { params, path }
       }
     )
 
-    const tableLink = `/t/${params.tenantId}/` + getServiceRoutePath({
-      type: ServiceType.MDNS_PROXY,
-      oper: ServiceOperation.LIST
-    })
+    await userEvent.click(await screen.findByText('mDNS Proxy'))
 
-    // eslint-disable-next-line max-len
-    expect(await screen.findByRole('link', { name: 'To List' })).toHaveAttribute('href', tableLink)
+    expect(mockedUseNavigate).toHaveBeenCalledWith(listPath.current)
   })
 
   it('should render ADD service card', async () => {
+    const { result: createPath } = renderHook(() => {
+      return useTenantLink(getServiceRoutePath({
+        type: ServiceType.MDNS_PROXY,
+        oper: ServiceOperation.CREATE
+      }))
+    })
+
     render(
       <ServiceCard
         type={ServiceType.MDNS_PROXY}
-        technology={ServiceTechnology.WIFI}
+        categories={[RadioCardCategory.WIFI]}
         action={ServiceCardMode.ADD}
       />, {
         route: { params, path }
       }
     )
 
-    const createPageLink = `/t/${params.tenantId}/` + getServiceRoutePath({
-      type: ServiceType.MDNS_PROXY,
-      oper: ServiceOperation.CREATE
-    })
+    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
 
-    // eslint-disable-next-line max-len
-    expect(await screen.findByRole('link', { name: 'Add' })).toHaveAttribute('href', createPageLink)
+    expect(mockedUseNavigate).toHaveBeenCalledWith(createPath.current)
   })
 
   it('should render service card with the count number', async () => {
     render(
       <ServiceCard
         type={ServiceType.MDNS_PROXY}
-        technology={ServiceTechnology.WIFI}
+        categories={[RadioCardCategory.WIFI]}
         action={ServiceCardMode.LIST}
         count={5}
       />, {

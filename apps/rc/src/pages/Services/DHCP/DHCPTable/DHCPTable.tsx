@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
-import { useServiceListQuery }                           from '@acx-ui/rc/services'
+import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
+import { useDeleteDHCPServiceMutation, useServiceListQuery }              from '@acx-ui/rc/services'
 import {
   ServiceType,
   useTableQuery,
@@ -11,7 +11,7 @@ import {
   getServiceListRoutePath,
   getServiceRoutePath
 } from '@acx-ui/rc/utils'
-import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 const defaultPayload = {
   searchString: '',
@@ -29,11 +29,10 @@ const defaultPayload = {
 
 export default function DHCPTable () {
   const { $t } = useIntl()
-  // const { tenantId } = useParams()
+  const { tenantId } = useParams()
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
-  // TODO
-  // const [ deleteFn ] =
+  const [ deleteFn ] = useDeleteDHCPServiceMutation()
 
   const tableQuery = useTableQuery({
     useQuery: useServiceListQuery,
@@ -41,23 +40,22 @@ export default function DHCPTable () {
   })
 
   const rowActions: TableProps<Service>['rowActions'] = [
-    // TODO
-    // {
-    //   label: $t({ defaultMessage: 'Delete' }),
-    //   onClick: ([{ id, name }], clearSelection) => {
-    //     showActionModal({
-    //       type: 'confirm',
-    //       customContent: {
-    //         action: 'DELETE',
-    //         entityName: $t({ defaultMessage: 'Service' }),
-    //         entityValue: name
-    //       },
-    //       onOk: () => {
-    //         deleteFn({ params: { tenantId, serviceId: id } }).then(clearSelection)
-    //       }
-    //     })
-    //   }
-    // },
+    {
+      label: $t({ defaultMessage: 'Delete' }),
+      onClick: ([{ id, name }], clearSelection) => {
+        showActionModal({
+          type: 'confirm',
+          customContent: {
+            action: 'DELETE',
+            entityName: $t({ defaultMessage: 'Service' }),
+            entityValue: name
+          },
+          onOk: () => {
+            deleteFn({ params: { tenantId, serviceId: id } }).then(clearSelection)
+          }
+        })
+      }
+    },
     {
       label: $t({ defaultMessage: 'Edit' }),
       onClick: ([{ id }]) => {

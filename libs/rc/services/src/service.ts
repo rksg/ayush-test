@@ -634,14 +634,17 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       providesTags: [{ type: 'Service', id: 'LIST' }]
     }),
-    getPortalProfileList: build.query<{ content: Portal[] }, RequestPayload>({
+    getPortalProfileList: build.query<TableResult<Portal>, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(PortalUrlsInfo.getPortalProfileList, params)
         return{
           ...req
         }
       },
-      providesTags: [{ type: 'Service', id: 'LIST' }],
+      providesTags: [{ type: 'Portal', id: 'LIST' }],
+      transformResponse (result: NewTableResult<Portal>) {
+        return transferToTableResult<Portal>(result)
+      },
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           showActivityMessage(msg, [
@@ -650,7 +653,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
             'Delete Portal Service Profile',
             'Delete Portal Service Profiles'
           ], () => {
-            api.dispatch(serviceApi.util.invalidateTags([{ type: 'Service', id: 'LIST' }]))
+            api.dispatch(serviceApi.util.invalidateTags([{ type: 'Portal', id: 'LIST' }]))
           })
         })
       }

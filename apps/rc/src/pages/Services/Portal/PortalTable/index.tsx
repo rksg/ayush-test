@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
-import { useDeletePortalMutation, useGetPortalListQuery }                 from '@acx-ui/rc/services'
+import { useDeletePortalMutation, useGetPortalProfileListQuery }          from '@acx-ui/rc/services'
 import {
   ServiceType,
   useTableQuery,
@@ -19,7 +19,10 @@ export default function PortalTable () {
   const tenantBasePath: Path = useTenantLink('')
   const [ deletePortal ] = useDeletePortalMutation()
 
-  const tableQuery = useTableQuery({ useQuery: useGetPortalListQuery, defaultPayload: {} })
+  const tableQuery = useTableQuery({
+    useQuery: useGetPortalProfileListQuery,
+    defaultPayload: {}
+  })
 
   const rowActions: TableProps<Portal>['rowActions'] = [
     {
