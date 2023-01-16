@@ -220,7 +220,7 @@ export function ApForm () {
           ? item.name
           : $t({ defaultMessage: 'No group (inherit from Venue)' }),
         value: item.isDefault && !isEditMode ? null : item.id
-      })) : [{
+      })).sort((a, b) => (a.label > b.label) ? 1 : -1) : [{
         label: $t({ defaultMessage: 'No group (inherit from Venue)' }),
         value: null
       }]
@@ -418,12 +418,11 @@ export function ApForm () {
                 initialValue=''
                 children={<Input.TextArea rows={4} maxLength={180} />}
               />
-              {/* TODO: */}
-              {/* <Form.Item
-                name=''
+              <Form.Item
+                name='tags'
                 label={$t({ defaultMessage: 'Tags' })}
-                children={<Input />}
-              /> */}
+                children={<Select mode='tags' />}
+              />
               {isApGpsFeatureEnabled && <GpsCoordinatesFormItem />}
             </Loader>
           </Col>

@@ -34,7 +34,8 @@ import {
   ApRadioCustomization,
   VenueDefaultRegulatoryChannels,
   APExtended,
-  LanPortStatusProperties
+  LanPortStatusProperties,
+  ApDirectedMulticast
 } from '@acx-ui/rc/utils'
 import { formatter } from '@acx-ui/utils'
 
@@ -297,6 +298,18 @@ export const apApi = baseApApi.injectEndpoints({
         return {
           ...req
         }
+      },
+      providesTags: [{ type: 'Ap', id: 'RADIO' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UpdateApRadioCustomization',
+            'ResetApRadioCustomization'
+          ]
+          showActivityMessage(msg, activities, () => {
+            api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'RADIO' }]))
+          })
+        })
       }
     }),
     updateApRadioCustomization: build.mutation<ApRadioCustomization, RequestPayload>({
@@ -306,7 +319,8 @@ export const apApi = baseApApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'RADIO' }]
     }),
     deleteApRadioCustomization: build.mutation<ApRadioCustomization, RequestPayload>({
       query: ({ params }) => {
@@ -314,7 +328,8 @@ export const apApi = baseApApi.injectEndpoints({
         return {
           ...req
         }
-      }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'RADIO' }]
     }),
     getApCapabilities: build.query<Capabilities, RequestPayload>({
       query: ({ params }) => {
@@ -429,7 +444,48 @@ export const apApi = baseApApi.injectEndpoints({
           ...req
         }
       }
+    }),
+    getApDirectedMulticast: build.query<ApDirectedMulticast, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getApDirectedMulticast, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'DIRECTEDMULTICAST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UpdateApDirectedMulticast',
+            'ResetApDirectedMulticast'
+          ]
+          showActivityMessage(msg, activities, () => {
+            api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'DIRECTEDMULTICAST' }]))
+          })
+        })
+      }
+    }),
+    updateApDirectedMulticast: build.mutation<ApDirectedMulticast, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.updateApDirectedMulticast, params)
+        return{
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'DIRECTEDMULTICAST' }]
+    }),
+    resetApDirectedMulticast: build.mutation<ApDirectedMulticast, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.resetApDirectedMulticast, params)
+        return{
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'DIRECTEDMULTICAST' }]
     })
+
+
   })
 })
 
@@ -477,7 +533,10 @@ export const {
   useLazyGetApCapabilitiesQuery,
   useUpdateApCustomizationMutation,
   useResetApCustomizationMutation,
-  useGetApValidChannelQuery
+  useGetApValidChannelQuery,
+  useGetApDirectedMulticastQuery,
+  useUpdateApDirectedMulticastMutation,
+  useResetApDirectedMulticastMutation
 } = apApi
 
 

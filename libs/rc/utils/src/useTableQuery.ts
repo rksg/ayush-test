@@ -5,6 +5,8 @@ import { TableProps } from 'antd'
 import { useParams, Params }                         from '@acx-ui/react-router-dom'
 import { UseQuery, UseQueryResult, UseQueryOptions } from '@acx-ui/types'
 
+import { ApiInfo, createHttpRequest } from './apiService'
+
 export const TABLE_QUERY_POLLING_INTERVAL = 30_000
 export const TABLE_QUERY_LONG_POLLING_INTERVAL = 300_000
 
@@ -46,7 +48,7 @@ export type PAGINATION = {
   total: number
 }
 
-const DEFAULT_PAGINATION = {
+export const DEFAULT_PAGINATION = {
   page: 1,
   current: 1,
   pageSize: 10,
@@ -176,19 +178,67 @@ export function useTableQuery <
   } as TableQuery<ResultType, Payload, ResultExtra>
 }
 
-export interface NewTableResult<T> {
-  totalElements: number;
-  totalPages: number;
-  page: number;
-  size: number;
-  sort: string[];
-  content: T[]
+export interface NewTablePageable {
+  offset: number
+  pageNumber: number
+  pageSize: number
+  paged: boolean
+  sort: {
+    unsorted: boolean,
+    sorted: boolean,
+    empty: boolean
+  }
+  unpaged: boolean
 }
 
-export function transferTableResult<T> (newResult: NewTableResult<T>): TableResult<T> {
+export interface TableChangePayload {
+  sortField: string
+  sortOrder: 'ASC' | 'DESC'
+  page: number
+  pageSize: number
+}
+
+export interface NewTableResult<T> {
+  totalElements: number
+  totalPages: number
+  sort: {
+    unsorted: boolean,
+    sorted: boolean,
+    empty: boolean
+  }
+  content: T[]
+  pageable: NewTablePageable
+}
+
+interface CreateNewTableHttpRequestProps {
+  apiInfo: ApiInfo
+  params?: Params<string>
+  payload?: TableChangePayload
+}
+
+export function createNewTableHttpRequest (props: CreateNewTableHttpRequestProps) {
+  const { apiInfo, params = {}, payload } = props
+  return createHttpRequest(apiInfo, { ...params, ...transferToNewTablePaginationParams(payload) })
+}
+
+export function transferToTableResult<T> (newResult: NewTableResult<T>): TableResult<T> {
   return {
     data: newResult.content,
-    page: newResult.page,
+    page: newResult.pageable.pageNumber + 1,
     totalCount: newResult.totalElements
+  }
+}
+
+export function transferToNewTablePaginationParams (payload: TableChangePayload | undefined) {
+  const pagination = {
+    ...DEFAULT_PAGINATION,
+    ...DEFAULT_SORTER,
+    ...(payload ?? {})
+  }
+
+  return {
+    pageSize: pagination.pageSize.toString(),
+    page: (pagination.page - 1).toString(),
+    sort: pagination.sortField + ',' + pagination.sortOrder.toLowerCase()
   }
 }

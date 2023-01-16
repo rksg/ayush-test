@@ -2,8 +2,10 @@
 import { useIntl } from 'react-intl'
 
 import { Tabs }                                  from '@acx-ui/components'
-import { SwitchViewModel }                       from '@acx-ui/rc/utils'
+import { SwitchViewModel, isOperationalSwitch }  from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+
+
 
 function SwitchTabs (props:{ switchDetail: SwitchViewModel }) {
   const { $t } = useIntl()
@@ -17,12 +19,15 @@ function SwitchTabs (props:{ switchDetail: SwitchViewModel }) {
     })
 
   const { switchDetail } = props
+  const isOperational = switchDetail?.deviceStatus ?
+    isOperationalSwitch(switchDetail?.deviceStatus, switchDetail.syncedSwitchConfig) : false
 
   return (
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>
       <Tabs.TabPane tab={$t({ defaultMessage: 'Overview' })} key='overview' />
       <Tabs.TabPane tab={$t({ defaultMessage: 'Incidents' })} key='incidents' />
-      <Tabs.TabPane tab={$t({ defaultMessage: 'Troubleshooting' })} key='troubleshooting' />
+      {isOperational &&
+        <Tabs.TabPane tab={$t({ defaultMessage: 'Troubleshooting' })} key='troubleshooting' />}
       <Tabs.TabPane tab={$t({ defaultMessage: 'Reports' })} key='reports' />
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'Clients ({clientsCount})' }, { clientsCount: switchDetail?.clientCount || 0 })}

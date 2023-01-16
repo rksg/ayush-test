@@ -62,7 +62,7 @@ export const rogueAPDetectionReducer = (
       }
     case RogueAPDetectionActionTypes.DEL_RULE:
       const nRules = state.rules.filter((rule) =>
-        rule.name !== action.payload.name
+        action.payload.name.findIndex(delName => delName === rule.name) === -1
       ).map((rule, i) => {
         return {
           ...rule,

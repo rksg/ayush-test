@@ -211,7 +211,7 @@ function Connection ({ client }: { client: ClientExtended }) {
         }
         children={
           client?.enableLinkToAp
-            ? <TenantLink to={`devices/aps/${client.apSerialNumber}/details/overview`}>
+            ? <TenantLink to={`devices/wifi/${client.apSerialNumber}/details/overview`}>
               {client?.apName || '--'}
             </TenantLink>
             : client?.apName || '--'

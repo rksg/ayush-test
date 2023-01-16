@@ -1,4 +1,4 @@
-import { EdgePortTypeEnum } from '../models/EdgeEnum'
+import { EdgeIpModeEnum, EdgePortTypeEnum } from '../models/EdgeEnum'
 
 export interface EdgeGeneralSetting {
   description: string
@@ -57,6 +57,27 @@ export interface EdgeDetails {
   model: string
   updatedDate: string
 }
+
+export interface EdgePort {
+  id: string
+  portType: EdgePortTypeEnum.WAN | EdgePortTypeEnum.LAN | EdgePortTypeEnum.UNCONFIGURED
+  name: string
+  mac: string
+  enabled: boolean
+  ipMode: EdgeIpModeEnum.DHCP | EdgeIpModeEnum.STATIC
+  ip: string
+  subnet: string
+  gateway: string
+  natEnabled: boolean
+}
+
+export interface EdgePortConfig {
+  ports: EdgePort[]
+}
+
+export interface EdgeSubInterface extends EdgePort {
+  vlan: number
+}
 export interface EdgeDnsServers {
   primary: string
   secondary: string
@@ -73,17 +94,17 @@ export interface EdgeStaticRouteConfig {
   routes: EdgeStaticRoute[]
 }
 
-export interface EdgePort {
-  portType: EdgePortTypeEnum.UNSPECIFIED | EdgePortTypeEnum.WAN | EdgePortTypeEnum.LAN
+export interface EdgePortStatus {
+  type: EdgePortTypeEnum.UNCONFIGURED | EdgePortTypeEnum.WAN | EdgePortTypeEnum.LAN
   portId: string
-  portName:string
+  name:string
   status: string
   adminStatus:string
   mac:string
-  speed:number    // kbps/s
-  duplexSpeed:number
+  speedKbps:number
+  duplex:string
   ip: string
-  portIndex?: number
+  sortIdx: number
 }
 
 export type EdgeDNS = string

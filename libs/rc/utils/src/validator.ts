@@ -80,8 +80,11 @@ export function domainNameRegExp (value: string) {
 export function domainsNameRegExp (value: string[], required: boolean) {
   const { $t } = getIntl()
   // eslint-disable-next-line max-len
+  if(!required) {
+    return Promise.resolve()
+  }
   const re = new RegExp(/^(\*(\.[0-9A-Za-z]{1,63})+(\.\*)?|([0-9A-Za-z]{1,63}\.)+\*|([0-9A-Za-z]{1,63}(\.[0-9A-Za-z]{1,63})+))$/)
-  const isValid = value?.every(domain => {
+  const isValid = value?.every?.(domain => {
     return !(required && !re.test(domain))
   })
 
@@ -195,7 +198,7 @@ export function excludeExclamationRegExp (value: string) {
 
 export function excludeQuoteRegExp (value: string) {
   const { $t } = getIntl()
-  const re = new RegExp(/^(?:(?!")(?!\s).)*$/)
+  const re = new RegExp(/^(?:(?!").)*$/)
   if (value!=='' && !re.test(value)) {
     return Promise.reject($t(validationMessages.excludeQuoteRegExp))
   }

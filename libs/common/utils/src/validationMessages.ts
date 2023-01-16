@@ -84,8 +84,8 @@ export const validationMessages = {
     description: 'Validation - Cannot contain Exclamation mark(!), double quotes and space'
   }),
   excludeQuoteRegExp: defineMessage({
-    defaultMessage: 'Cannot contain double quote and space',
-    description: 'Validation - Cannot contain double quote and space'
+    defaultMessage: 'Cannot contain double quote',
+    description: 'Validation - Cannot contain double quote'
   }),
   excludeSpaceRegExp: defineMessage({
     defaultMessage: 'Cannot contain space',

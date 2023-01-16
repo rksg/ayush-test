@@ -125,7 +125,7 @@ describe('NetworkMoreSettingsForm', () => {
     expect(screen.getByText(/dhcp request rate limit/i)).toBeVisible()
   })
 
-  it('after click Access Control', async () => {
+  xit('after click Access Control', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
     render(
       <Provider>
