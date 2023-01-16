@@ -199,7 +199,7 @@ exports[`SelectPolicyForm should render form 1`] = `
                                     <input
                                       class="ant-radio-input"
                                       type="radio"
-                                      value="VLAN Pool"
+                                      value="VLAN Pools"
                                     />
                                     <span
                                       class="ant-radio-inner"
