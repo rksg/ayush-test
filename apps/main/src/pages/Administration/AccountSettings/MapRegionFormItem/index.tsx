@@ -30,17 +30,13 @@ const MapRegionFormItem = () => {
 
   const handleMapRegionChange = (regionCode:string) => {
     if (!regionCode) return
-    // setCurrentRegion(regionCode)
+    setCurrentRegion(regionCode)
 
     const payload = {
       global: { ...preferenceData?.global, mapRegion: regionCode }
     }
 
     updatePreferences({ params, payload })
-  }
-
-  const handleMapRegionClear = () => {
-    setCurrentRegion(preferenceData?.global.mapRegion)
   }
 
   const updateMapRegion = (regionCode: string) => {
@@ -56,6 +52,7 @@ const MapRegionFormItem = () => {
 
       const script = document.createElement('script')
       script.id = DEFAULT_ID
+      script.defer = true
       script.onerror = () => {
         // eslint-disable-next-line no-console
         console.log('Failed to load google maps key from env')
@@ -68,12 +65,7 @@ const MapRegionFormItem = () => {
 
       // eslint-disable-next-line max-len
       script.src = `https://maps.googleapis.com/maps/api/js?key=${gKey}&region=${regionCode}&libraries=places&language=en`
-
-      if (document.currentScript) {
-        document.currentScript.parentNode?.insertBefore(script, document.currentScript)
-      } else {
-        (document.head || document.getElementsByTagName('head')[0]).appendChild(script)
-      }
+      document.head.appendChild(script)
     }
   }
 
@@ -99,7 +91,6 @@ const MapRegionFormItem = () => {
               value={currentRegion}
               options={countryCodes}
               onChange={handleMapRegionChange}
-              onClear={handleMapRegionClear}
               showSearch
               allowClear
               optionFilterProp='label'

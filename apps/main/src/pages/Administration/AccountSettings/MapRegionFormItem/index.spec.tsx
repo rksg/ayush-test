@@ -27,9 +27,7 @@ import { fakePreference } from '../__tests__/fixtures'
 import  { MapRegionFormItem } from './'
 
 const params: { tenantId: string } = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
-const mockedUpdatePreference = jest.fn().mockImplementation(() => {
-  console.log('mockedUpdatePreference')
-})
+const mockedUpdatePreference = jest.fn()
 
 describe('Map Region Selector', () => {
   beforeEach(() => {
@@ -52,11 +50,6 @@ describe('Map Region Selector', () => {
         }
       )
     )
-
-    jest.mock('@acx-ui/config', () => ({
-      get: jest.fn().mockReturnValue('some-key')
-    }))
-
   })
 
   it('should correctly render', async () => {
@@ -91,9 +84,13 @@ describe('Map Region Selector', () => {
     // eslint-disable-next-line testing-library/no-unnecessary-act
     act(() => {
       userEvent.click(clearIcon)
+      fireEvent.change(selector, { target: { value: undefined } })
+      expect(mockedUpdatePreference).toBeCalledTimes(0)
     })
 
     expect(await screen.findByRole('combobox')).toHaveAttribute('value', '')
+    expect((await screen.findByTitle('Taiwan')).tagName).toBe('SPAN')
+    expect(mockedUpdatePreference).toBeCalledTimes(0)
   })
 
   it('should be auto-searchable', async () => {
@@ -104,11 +101,15 @@ describe('Map Region Selector', () => {
         route: { params }
       })
 
+    await screen.findByText('Taiwan')
+    const selector = await screen.findByRole('combobox')
+    await userEvent.click(selector)
 
-    await userEvent.click(await screen.findByText('Taiwan'))
     // eslint-disable-next-line testing-library/no-unnecessary-act
     await act(async () => {
-      userEvent.type(screen.getByRole('combobox'), 'kin')
+      await userEvent.type(selector, 'k')
+      await userEvent.type(selector, 'i')
+      await userEvent.type(selector, 'n')
       await screen.findByText('United Kingdom')
       fireEvent.click(screen.getByText('United Kingdom'))
       expect(await screen.findByTitle('United Kingdom')).toBeDefined()
@@ -131,51 +132,59 @@ describe('Map Region Selector', () => {
   })
 })
 
+describe('Map Script', () => {
+  beforeEach(() => {
+    mockServer.use(
+      rest.get(
+        AdministrationUrlsInfo.getPreferences.url,
+        (_req, res, ctx) => res(ctx.json(fakePreference))
+      ),
+      rest.put(
+        AdministrationUrlsInfo.updatePreferences.url,
+        (_req, res, ctx) => {
+          return res(ctx.status(200))
+        }
+      )
+    )
 
-// describe('Map Script', () => {
-//   beforeEach(() => {
-//     mockServer.use(
-//       rest.get(
-//         AdministrationUrlsInfo.getPreferences.url,
-//         (_req, res, ctx) => res(ctx.json(fakePreference))
-//       )
-//     )
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  })
 
-//     jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should update google map script correctly', async () => {
+    let params: { tenantId: string } =
+    { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
 
-//     jest.mock('@acx-ui/config', () => ({
-//       get: jest.fn().mockReturnValue('some-key')
-//     }))
-//   })
+    render(
+      <Provider>
+        <MapRegionFormItem />
+      </Provider>, {
+        route: { params }
+      })
 
-//   it('should update google map script correctly', async () => {
-//     let params: { tenantId: string } =
-//     { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
+    await screen.findByText('Taiwan')
+    await userEvent.click(await screen.findByRole('combobox'))
+    const combobox = screen.getByRole('combobox')
+    await userEvent.type(combobox, 'k')
+    await userEvent.type(combobox, 'i')
+    await userEvent.type(combobox, 'n')
 
-//     render(
-//       <Provider>
-//         <MapRegionFormItem />
-//       </Provider>, {
-//         route: { params }
-//       })
+    await screen.findAllByRole('option')
+    fireEvent.mouseOver(await screen.findByTitle('United Kingdom'))
 
-//     await userEvent.click(await screen.findByText('Taiwan'))
-//     const selector = await screen.findByRole('combobox')
-//     // expect(selector).toHaveAttribute('aria-expanded', 'true')
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    await act(async () => {
+      fireEvent.click(await screen.findByTitle('United Kingdom'))
+      fireEvent.blur(screen.getByRole('combobox'))
+    })
 
-//     userEvent.type(selector, 'kin')
-//     userEvent.click(await screen.findByRole('option', { name: 'United Kingdom' }))
-//     // userEvent.click(await screen.findByText('United Kingdom'))
+    expect((await screen.findAllByTitle('United Kingdom')).length).toBe(2)
 
-//     // eslint-disable-next-line testing-library/no-node-access
-//     const script = document.getElementsByTagName('script')
-//     for(let i = 0; i<script.length; i++) {
-//       console.log(script[i].src)
-//     }
+    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
+    const scripts = document.getElementsByTagName('script')
 
-//     expect(script[0].src).toEqual(
-//       'https://maps.googleapis.com/maps/api/js' +
-//     '?key=some-key&region=GB&libraries=places&language=en')
-//   })
+    expect(scripts[0].src).toContain('&region=GB')
 
-// })
+    fireEvent.load(scripts[0])
+    fireEvent.error(scripts[0])
+  })
+})
