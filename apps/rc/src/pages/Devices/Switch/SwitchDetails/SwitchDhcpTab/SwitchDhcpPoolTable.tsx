@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Loader, showToast, Table, TableProps } from '@acx-ui/components'
+import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
 import {
   useSwitchDetailHeaderQuery,
   useGetDhcpPoolsQuery,
@@ -33,12 +33,12 @@ export function SwitchDhcpPoolTable () {
     defaultPayload: {},
     sorter: {
       sortField: 'poolName',
-      sortOrder: 'ASC'
+      sortOrder: 'DESC'
     }
   })
 
   const [drawerVisible, setDrawerVisible] = useState(false)
-  const [selected, setSelected] = useState<SwitchDhcp>()
+  const [selected, setSelected] = useState<SwitchDhcp['id']>()
 
   const isOperational = switchDetail?.deviceStatus ?
     isOperationalSwitch(switchDetail?.deviceStatus, switchDetail.syncedSwitchConfig) : false
@@ -50,6 +50,7 @@ export function SwitchDhcpPoolTable () {
       } else { // Add
         await createDhcpServer({ params, payload: values }).unwrap()
       }
+      setSelected(undefined)
       setDrawerVisible(false)
     } catch (error) {
       const errorResponse = error as catchErrorResponse | { error: string }
@@ -106,14 +107,25 @@ export function SwitchDhcpPoolTable () {
   const rowActions: TableProps<SwitchDhcp>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
     onClick: (selectedRows) => {
-      setSelected(selectedRows[0])
+      setSelected(selectedRows[0].id)
       setDrawerVisible(true)
     }
   }, {
     label: $t({ defaultMessage: 'Delete' }),
-    onClick: (selectedRows) => {
-      deleteDhcpServers({ params, payload: selectedRows.map(r=>r.id) })
-      setSelected(undefined)
+    onClick: (selectedRows, clearSelection) => {
+      showActionModal({
+        type: 'confirm',
+        customContent: {
+          action: 'DELETE',
+          entityName: $t({ defaultMessage: 'Pool' }),
+          entityValue: selectedRows[0].poolName,
+          numOfEntities: selectedRows.length
+        },
+        onOk: () => {
+          deleteDhcpServers({ params, payload: selectedRows.map(r => r.id) })
+          clearSelection()
+        }
+      })
     }
   }]
 
@@ -125,16 +137,25 @@ export function SwitchDhcpPoolTable () {
         onChange={tableQuery.handleTableChange}
         actions={[{
           label: $t({ defaultMessage: 'Add Pool' }),
-          disabled: !isOperational,
-          onClick: () => setDrawerVisible(true)
+          disabled: !isOperational || !!switchDetail?.cliApplied,
+          onClick: () => {
+            setSelected(undefined)
+            setDrawerVisible(true)
+          }
         }]}
-        rowKey='poolName'
+        rowKey='id'
         rowActions={rowActions}
-        rowSelection={{ type: 'radio' }} />
+        rowSelection={{
+          type: 'radio',
+          selectedRowKeys: selected ? [selected]:[],
+          onChange: (keys: React.Key[]) => {
+            setSelected(keys[0] as string)
+          }
+        }} />
       <AddPoolDrawer
         visible={drawerVisible}
         isLoading={isCreating || isUpdating}
-        editPool={selected}
+        editPoolId={selected}
         onSavePool={handleSavePool}
         onClose={()=>setDrawerVisible(false)}
       />

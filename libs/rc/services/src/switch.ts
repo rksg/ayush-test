@@ -431,7 +431,8 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      providesTags: [{ type: 'Switch', id: 'DHCP' }]
     }),
     getDhcpServer: build.query<SwitchDhcp, RequestPayload>({
       query: ({ params }) => {
@@ -448,7 +449,8 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      invalidatesTags: [{ type: 'Switch', id: 'DHCP' }]
     }),
     updateDhcpServer: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -457,7 +459,8 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      invalidatesTags: [{ type: 'Switch', id: 'DHCP' }]
     }),
     deleteDhcpServers: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -466,7 +469,8 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      invalidatesTags: [{ type: 'Switch', id: 'DHCP' }]
     }),
     getDhcpLeases: build.query<TableResult<SwitchDhcpLease>, RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
@@ -609,6 +613,7 @@ export const {
   useUpdateDhcpServerStateMutation,
   useGetDhcpPoolsQuery,
   useGetDhcpServerQuery,
+  useLazyGetDhcpServerQuery,
   useCreateDhcpServerMutation,
   useUpdateDhcpServerMutation,
   useDeleteDhcpServersMutation,

@@ -1,7 +1,9 @@
 import '@testing-library/jest-dom'
+import { rest } from 'msw'
 
-import { Provider }                          from '@acx-ui/store'
-import { fireEvent, render, screen, within } from '@acx-ui/test-utils'
+import { SwitchUrlsInfo }                                from '@acx-ui/rc/utils'
+import { Provider }                                      from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, within } from '@acx-ui/test-utils'
 
 import { poolData } from '../__tests__/fixtures'
 
@@ -16,6 +18,12 @@ describe('AddPoolDrawer', () => {
     activeTab: 'dhcp',
     activeSubTab: 'pool'
   }
+  beforeEach(() => {
+    mockServer.use(
+      rest.get( SwitchUrlsInfo.getDhcpServer.url,
+        (_, res, ctx) => res(ctx.json(poolData)))
+    )
+  })
 
   it('should render correctly', async () => {
     render(<Provider><AddPoolDrawer visible={true} /></Provider>, {
@@ -32,7 +40,7 @@ describe('AddPoolDrawer', () => {
   })
 
   it('should render edit form correctly', async () => {
-    render(<Provider><AddPoolDrawer visible={true} editPool={poolData} /></Provider>, {
+    render(<Provider><AddPoolDrawer visible={true} editPoolId={poolData.id} /></Provider>, {
       route: { params,
         path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab'
       }

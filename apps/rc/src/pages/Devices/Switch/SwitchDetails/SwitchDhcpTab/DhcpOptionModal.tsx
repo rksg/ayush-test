@@ -48,6 +48,7 @@ export function DhcpOptionModal (props: {
   const [form] = Form.useForm()
   const [optionState, setOptionState] = useState<DHCP_OPTION_TYPE[]>()
   const [valueValidator, setValueValidator] = useState<Rule[]>()
+  const [isDirty, setDirty] = useState(false)
 
   const DHCP_OPTIONS = useMemo(() => getDhcpOptionList(), [])
 
@@ -66,14 +67,13 @@ export function DhcpOptionModal (props: {
     form.resetFields()
     setOptionState(undefined)
     setValueValidator(undefined)
-  }, [form, props.open])
-
-  useEffect(()=>{
-    if (valueValidator) {
-      // form.setFieldsValue({ value: '' })
-      // form.resetFields(['value'])
+    setDirty(false)
+    if (props.open && props.editRecord) {
+      form.setFieldsValue(props.editRecord)
+      const option = DHCP_OPTIONS[props.editRecord.seq as keyof typeof DHCP_OPTIONS]
+      setOptionState(option.type)
     }
-  }, [form, valueValidator])
+  }, [form, props.open, props.editRecord])
 
   useEffect(()=>{
     if (optionState) {
@@ -84,17 +84,18 @@ export function DhcpOptionModal (props: {
   }, [form, optionState])
 
   useEffect(()=>{
-    if (props.editRecord) {
-      form.setFieldsValue(props.editRecord)
-      setOptionState([props.editRecord.type])
+    if (valueValidator && isDirty) {
+      form.resetFields(['value'])
     }
-  }, [form, props.editRecord])
+  }, [form, valueValidator, isDirty])
 
   const onSeqChange = (value: number) => {
+    setDirty(true)
     const option = DHCP_OPTIONS[value as keyof typeof DHCP_OPTIONS]
     setOptionState(option.type)
   }
   const onTypeChange = (e: RadioChangeEvent) => {
+    setDirty(true)
     setValueValidator(validatorMap[e.target.value as DHCP_OPTION_TYPE])
   }
 
@@ -111,7 +112,6 @@ export function DhcpOptionModal (props: {
       <Form layout='horizontal'
         labelCol={{ span: 6 }}
         form={form}
-        initialValues={props.editRecord}
         onFinish={props.onSave}>
         <Form.Item name='seq'
           label={$t({ defaultMessage: 'DHCP Option' })}

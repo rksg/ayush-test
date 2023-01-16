@@ -119,7 +119,7 @@ export const poolData: SwitchDhcp = {
   excludedEnd: '',
   excludedStart: '',
   defaultRouterIp: '10.1.3.2',
-  subnetAddress: '10.1.2.3',
+  subnetAddress: '10.1.2.0',
   subnetMask: '255.255.255.0',
   dhcpOptions: [{
     seq: 4,

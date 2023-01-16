@@ -4,9 +4,10 @@ import { Col, Divider, Form, Input, InputNumber, Row, Space } from 'antd'
 import { useIntl }                                            from 'react-intl'
 
 import { Button, Drawer, Subtitle, Table, TableProps } from '@acx-ui/components'
-import { useGetDhcpServerQuery }                       from '@acx-ui/rc/services'
+import { useLazyGetDhcpServerQuery }                   from '@acx-ui/rc/services'
 import {
   getDhcpOptionList,
+  networkWifiIpRegExp,
   serverIpAddressRegExp,
   subnetMaskIpRegExp,
   SwitchDhcp,
@@ -19,7 +20,7 @@ import { DhcpOptionModal } from './DhcpOptionModal'
 export function AddPoolDrawer (props: {
   visible: boolean,
   isLoading?: boolean,
-  editPool?: SwitchDhcp,
+  editPoolId?: SwitchDhcp['id'],
   onSavePool?: (values: SwitchDhcp)=>void,
   onClose?: ()=>void
 }) {
@@ -32,26 +33,24 @@ export function AddPoolDrawer (props: {
 
   const DHCP_OPTIONS = useMemo(() => getDhcpOptionList(), [])
 
-  const { data } = useGetDhcpServerQuery({
-    params: {
-      tenantId: params.tenantId,
-      dhcpServerId: props.editPool?.id
-    }
-  }, { skip: !props.editPool })
+  const [ getDhcpServer ] = useLazyGetDhcpServerQuery()
 
   useEffect(()=>{
     form.resetFields()
     setSelected(undefined)
     setDhcpOptionList([])
-  }, [form, props.visible])
-
-  useEffect(()=>{
-    if (data || props.editPool) {
-      const values = { ...props.editPool, ...data }
-      form.setFieldsValue(values)
-      setDhcpOptionList(values.dhcpOptions)
+    if(props.visible && props.editPoolId) {
+      getDhcpServer({
+        params: {
+          tenantId: params.tenantId,
+          dhcpServerId: props.editPoolId
+        }
+      }).unwrap().then(value => {
+        form.setFieldsValue(value)
+        setDhcpOptionList(value.dhcpOptions)
+      })
     }
-  }, [form, data, props.editPool])
+  }, [form, props.visible, props.editPoolId, params.tenantId])
 
   const onSaveOption = (values: SwitchDhcpOption) => {
     const newList = dhcpOptionList || []
@@ -115,7 +114,7 @@ export function AddPoolDrawer (props: {
 
   return (<>
     <Drawer
-      title={props.editPool?
+      title={props.editPoolId?
         $t({ defaultMessage: 'Edit DHCP Pool' }):
         $t({ defaultMessage: 'Add DHCP Pool' })}
       visible={props.visible}
@@ -146,7 +145,7 @@ export function AddPoolDrawer (props: {
         <Form.Item
           name='subnetAddress'
           label={$t({ defaultMessage: 'Subnet Address' })}
-          rules={[{ required: true }, { validator: (_, value) => serverIpAddressRegExp(value) }]}
+          rules={[{ required: true }, { validator: (_, value) => networkWifiIpRegExp(value) }]}
           children={<Input />}
         />
         <Form.Item
@@ -228,7 +227,13 @@ export function AddPoolDrawer (props: {
         <Table type='form'
           rowKey='seq'
           rowActions={rowActions}
-          rowSelection={{ type: 'radio', selectedRowKeys: selected ? [selected.seq]:[] }}
+          rowSelection={{
+            type: 'radio',
+            selectedRowKeys: selected ? [selected.seq]:[],
+            onChange: (keys: React.Key[]) => {
+              setSelected(dhcpOptionList?.find(i => i.seq === keys[0]))
+            }
+          }}
           columns={columns}
           dataSource={dhcpOptionList}
         />

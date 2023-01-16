@@ -1,10 +1,10 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { switchApi }                             from '@acx-ui/rc/services'
-import { SwitchUrlsInfo }                        from '@acx-ui/rc/utils'
-import { Provider, store }                       from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
+import { switchApi }                                     from '@acx-ui/rc/services'
+import { SwitchUrlsInfo }                                from '@acx-ui/rc/utils'
+import { Provider, store }                               from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, within } from '@acx-ui/test-utils'
 
 import { poolData, switchDetailData } from '../__tests__/fixtures'
 
@@ -61,6 +61,9 @@ describe('SwitchDhcpPoolTable', () => {
     fireEvent.click(row)
     const deleteButton = screen.getByRole('button', { name: 'Delete' })
     fireEvent.click(deleteButton)
+
+    const deleteDialog = await screen.findByRole('dialog')
+    fireEvent.click(within(deleteDialog).getByRole('button', { name: /Delete Pool/i }))
   })
 
   it('should do adding by Add button', async () => {
@@ -73,6 +76,8 @@ describe('SwitchDhcpPoolTable', () => {
     const addButton = await screen.findByRole('button', { name: 'Add Pool' })
     fireEvent.click(addButton)
 
-    fireEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+    const poolDialog = await screen.findByRole('dialog')
+
+    fireEvent.click(within(poolDialog).getByRole('button', { name: 'Cancel' }))
   })
 })
