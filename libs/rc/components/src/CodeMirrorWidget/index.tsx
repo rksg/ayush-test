@@ -5,20 +5,26 @@ import './type.d'
 import * as CodeMirror from 'codemirror'
 
 import * as UI from './styledComponents'
-// import * as DiffMatchPatch from 'diff-match-patch' TODO: Backup feature
-// import * as MergeViewCodeMirror from 'merge-view-codemirror'
-// import { MergeViewConfiguration } from 'codemirror/addon/merge/merge.js'
+import * as DiffMatchPatch from 'diff-match-patch'
+import * as MergeViewCodeMirror from 'merge-view-codemirror'
+import { MergeView, MergeViewConfiguration } from 'codemirror/addon/merge/merge.js'
 import 'codemirror/addon/selection/active-line.js'
 import 'codemirror/addon/mode/overlay'
+import _ from 'lodash'
 
 
 interface CodeMirrorData {
-  clis: string,
+  clis: string
   configOptions?: CodeMirror.EditorConfiguration
 }
 
+interface MergeData {
+  left: string
+  right: string
+}
+
 interface CodeMirrorWidgetProps {
-  data:CodeMirrorData
+  data:CodeMirrorData | MergeData
   type:string
   size?: {
     height?:string
@@ -29,6 +35,7 @@ interface CodeMirrorWidgetProps {
 export const CodeMirrorWidget = forwardRef((props:CodeMirrorWidgetProps, ref) => {
   const { type, data, size } = props
   const [readOnlyCodeMirror, setReadOnlyCodeMirror] = useState(null as unknown as CodeMirror.EditorFromTextArea)
+  const [mergeView, setMergeView] = useState(null as unknown as MergeView)
   const height = size?.height || '450px'
   const width = size?.width || '100%'
 
@@ -70,16 +77,23 @@ export const CodeMirrorWidget = forwardRef((props:CodeMirrorWidgetProps, ref) =>
     }
   }))
 
+  const initNode = () => {
+    const container = document.getElementById('codeViewContainer')
+    while (container?.firstChild) {
+      container.removeChild(container?.firstChild)
+    }
+    const codeNode = document.createElement('div')
+    codeNode.id = 'codeView'
+    container?.appendChild(codeNode)
+  }
+
   useEffect(() => {
-    if (type === 'single' && data.clis) {
-      const container = document.getElementById('codeViewContainer')
-      while (container?.firstChild) {
-        container.removeChild(container?.firstChild)
-      }
-      const codeNode = document.createElement('div')
-      codeNode.id = 'codeView'
-      container?.appendChild(codeNode)
-      initSingleView(data)
+    if (type === 'single' && _.get(data, 'clis')) {
+      initNode()
+      initSingleView(data as CodeMirrorData)
+    } else if (type === 'merge') {
+      initNode()
+      initMergeView(data as MergeData)
     }
   }, [data])
 
@@ -89,23 +103,41 @@ export const CodeMirrorWidget = forwardRef((props:CodeMirrorWidgetProps, ref) =>
     }
   }, [readOnlyCodeMirror])
 
-  // const initMergeView = () => { TODO: Backup feature
-  //   MergeViewCodeMirror.init(CodeMirror, DiffMatchPatch)
-  //   const target = document.getElementById("codeView") as HTMLElement
-  //   if (target) {
-  //     CodeMirror.MergeView(target, {
-  //       readOnly: true,
-  //       lineNumbers: true,
-  //       value: htmlDecode('newContent') as string, // left
-  //       orig: htmlDecode('right') as string,// right
-  //       mode: "text/html",
-  //       highlightDifferences: true,
-  //       connect: 'align',
-  //       collapseIdentical: false,
-  //       revertButtons: false,
-  //     } as MergeViewConfiguration)
+  // useEffect(() => {
+  //   if (mergeView) {
+  //     resizeMergeViewHeight(mergeView)
   //   }
-  // }
+  // }, [mergeView])
+
+  const initMergeView = (data: MergeData) => { 
+    MergeViewCodeMirror.init(CodeMirror, DiffMatchPatch)
+    const target = document.getElementById("codeView") as HTMLElement
+    if (target) {
+      const view = CodeMirror.MergeView(target, {
+        readOnly: true,
+        lineNumbers: true,
+        value: htmlDecode(data.left) as string,
+        orig: htmlDecode(data.right) as string,
+        mode: "text/html",
+        highlightDifferences: true,
+        connect: 'align',
+        collapseIdentical: false,
+        revertButtons: false,
+      } as MergeViewConfiguration)
+      setMergeView(view)
+      // resizeMergeViewHeight(view)
+    } 
+  }
+  const resizeMergeViewHeight = (mergeView:any) => {
+    if (mergeView.leftOriginal()) {
+      mergeView.leftOriginal()?.setSize(null, height);
+    }
+    if (mergeView.rightOriginal()) {
+      mergeView.rightOriginal()?.setSize(null, height);
+    }
+    mergeView.editor().setSize(null, height);
+    mergeView.wrap.style.height = height + "px";
+  }
 
   return (
     <UI.Container>

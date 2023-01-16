@@ -13,12 +13,18 @@ import { SwitchDetailsContext } from '../..'
 
 import { BackupModal } from './BackupModal'
 import { ViewConfigurationModal } from './ViewConfigurationModal'
+import { CompareConfigurationModal } from './CompareConfigurationModal'
 
 export function SwitchConfigBackupTable () {
   const { $t } = useIntl()
   const params = useParams()
   const [viewVisible, setViewVisible] = useState(false)
+  const [compareVisible, setCompareVisible] = useState(false)
   const [viewData, setViewData] = useState(null as unknown as ConfigurationBackup)
+  const [compareData, setCompareData] = useState({
+    left: null as unknown as ConfigurationBackup,
+    right: null as unknown as ConfigurationBackup
+  })
   const [backupModalVisible, setBackupModalVisible] = useState(false)
   const [backupButtonnStatus, setBackupButtonnStatus] = useState({ disabled: false, tooltip: '' })
   const [enabledRowButton, setEnabledRowButton] = useState([] as string[])
@@ -33,14 +39,26 @@ export function SwitchConfigBackupTable () {
   const [ deleteConfigBackups ] = useDeleteConfigBackupsMutation()
   const { currentSwitchOperational, switchName } = switchDetailsContextData
 
-  const showViewModal = (row: ConfigurationBackup[]) => {
-    setViewData(row[0])
+  const showViewModal = (rows: ConfigurationBackup[]) => {
+    setViewData(rows[0])
     setViewVisible(true)
   }
 
   const handleCancelViewModal = () => {
     setViewData(null as unknown as ConfigurationBackup)
     setViewVisible(false)
+  }
+
+  const showCompareModal = (rows: ConfigurationBackup[]) => {
+    setCompareData({
+      left: rows[0],
+      right: rows[1] || rows[0]
+    })
+    setCompareVisible(true)
+  }
+
+  const handleCancelCompareModal = () => {
+    setCompareVisible(false)
   }
 
   const tableQuery = useTableQuery({
@@ -160,8 +178,8 @@ export function SwitchConfigBackupTable () {
   }, {
     label: $t({ defaultMessage: 'Compare' }),
     disabled: () => !enabledRowButton.find(item => item === 'Compare'),
-    onClick: () => {
-      // TODO:
+    onClick: (rows) => {
+      showCompareModal(rows)
     }
   }, {
     label: $t({ defaultMessage: 'Restore' }),
@@ -252,6 +270,15 @@ export function SwitchConfigBackupTable () {
         data={viewData}
         visible={viewVisible}
         handleCancel={handleCancelViewModal}
+      />
+    }
+    {
+      compareVisible && 
+      <CompareConfigurationModal
+        visible={compareVisible}
+        configList={tableData}
+        compareData={compareData}
+        handleCancel={handleCancelCompareModal}
       />
     }
   </>
