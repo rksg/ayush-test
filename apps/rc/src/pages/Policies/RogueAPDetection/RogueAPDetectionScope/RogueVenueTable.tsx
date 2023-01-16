@@ -156,7 +156,7 @@ const RogueVenueTable = () => {
     }
   })
 
-  const rowActions: TableProps<VenueRoguePolicyType>['actions'] = [{
+  const rowActions: TableProps<VenueRoguePolicyType>['rowActions'] = [{
     label: $t({ defaultMessage: 'Activate' }),
     onClick: (selectRows: VenueRoguePolicyType[], clearSelection: () => void) => {
       if (state.venues.length + selectRows.length >= 64) {

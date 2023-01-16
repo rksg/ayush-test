@@ -20,7 +20,8 @@ import {
   TableResult,
   downloadFile,
   transformByte,
-  WifiUrlsInfo
+  WifiUrlsInfo,
+  RequestFormData
 } from '@acx-ui/rc/utils'
 import { convertEpochToRelativeTime, formatter } from '@acx-ui/utils'
 
@@ -48,7 +49,7 @@ export const clientApi = baseClientApi.injectEndpoints({
           body: {
             fields: ['switchSerialNumber', 'venueName', 'apName', 'switchName'],
             filters: {
-              id: clientList.data.map(item => item.clientMac)
+              id: clientList?.data.map(item => item.clientMac)
             }
           }
         }
@@ -226,6 +227,19 @@ export const clientApi = baseClientApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Guest', id: 'LIST' }]
+    }),
+    importGuestPass: build.mutation<{}, RequestFormData>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(ClientUrlsInfo.importGuestPass, params, {
+          'Content-Type': undefined,
+          'Accept': '*/*'
+        })
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Guest', id: 'LIST' }]
     })
   })
 })
@@ -233,7 +247,7 @@ export const clientApi = baseClientApi.injectEndpoints({
 export const aggregatedClientListData = (clientList: TableResult<ClientList>,
   metaList:TableResult<ClientListMeta>) => {
   const data:ClientList[] = []
-  clientList.data.forEach(client => {
+  clientList?.data.forEach(client => {
     const meta = metaList?.data?.find(
       i => i.clientMac === client.clientMac
     )
@@ -276,5 +290,6 @@ export const {
   useDisableGuestsMutation,
   useGenerateGuestPasswordMutation,
   useGetHistoricalStatisticsReportsQuery,
-  useLazyGetHistoricalStatisticsReportsQuery
+  useLazyGetHistoricalStatisticsReportsQuery,
+  useImportGuestPassMutation
 } = clientApi

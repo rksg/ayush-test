@@ -2,6 +2,12 @@ import { generatePath } from '@acx-ui/react-router-dom'
 
 import { ServiceType } from '../../constants'
 
+export enum DpskDetailsTabKey {
+  OVERVIEW = 'overview',
+  PASSPHRASE_MGMT = 'passphraseMgmt'
+}
+
+
 export enum ServiceOperation {
   CREATE,
   EDIT,
@@ -17,6 +23,7 @@ interface ServiceRoutePathProps {
 interface ServiceDetailsLinkProps extends ServiceRoutePathProps {
   oper: Exclude<ServiceOperation, ServiceOperation.CREATE>;
   serviceId: string;
+  activeTab?: DpskDetailsTabKey; // Union the other services tab keys if needed
 }
 
 const operationPathMapping: Record<ServiceOperation, string> = {
@@ -32,14 +39,38 @@ const typePathMapping: Record<ServiceType, string> = {
   [ServiceType.WIFI_CALLING]: 'wifiCalling',
   [ServiceType.MDNS_PROXY]: 'mdnsProxy',
   [ServiceType.DPSK]: 'dpsk',
-  [ServiceType.NETWORK_SEGMENTATION]: 'networkSegmentation'
+  [ServiceType.NETWORK_SEGMENTATION]: 'networkSegmentation',
+  [ServiceType.WEBAUTH_SWITCH]: 'webAuth'
 }
 
-export function getServiceRoutePath ({ type, oper }: ServiceRoutePathProps): string {
-  return 'services/' + typePathMapping[type] + '/' + operationPathMapping[oper]
+function hasTab ({ type, oper }: ServiceRoutePathProps): boolean {
+  if (type === ServiceType.DPSK && oper === ServiceOperation.DETAIL) {
+    return true
+  }
+  return false
 }
 
-export function getServiceDetailsLink ({ type, oper, serviceId }: ServiceDetailsLinkProps): string {
+// Ex: services/{type}/:serviceId/detail/:activeTab
+export function getServiceRoutePath (props: ServiceRoutePathProps): string {
+  const { type, oper } = props
+  const paths = ['services']
+
+  paths.push(typePathMapping[type])
+  paths.push(operationPathMapping[oper])
+  if (hasTab(props)) {
+    paths.push(':activeTab')
+  }
+
+  return paths.join('/')
+}
+
+export function getServiceDetailsLink (props: ServiceDetailsLinkProps): string {
+  const { type, oper, serviceId, activeTab } = props
+
+  if (hasTab({ type, oper })) {
+    return generatePath(getServiceRoutePath({ type, oper }), { serviceId, activeTab })
+  }
+
   return generatePath(getServiceRoutePath({ type, oper }), { serviceId })
 }
 

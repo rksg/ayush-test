@@ -2,6 +2,8 @@ export enum Features {
   DATA_PLANE = 'dataPlane',
   AP_GPS = 'ap-gps-toggle',
   TRI_RADIO = 'tri-band-radio-toggle',
+  RADIO6G_RATE_CONTROL = 'radio6g-rate-control-toggle',
+  ALLOW_INDOOR_CHANNEL_TOGGLE = 'wifi-consumer-allow-indoor-channel-toggle',
   G_MAP = 'acx-ui-maps-api-toggle',
   SERVICES = 'acx-ui-services',
   PLM_FF = 'ACX-PLM-FF',
@@ -16,5 +18,7 @@ export enum Features {
   EDGES = 'acx-ui-edges-toggle',
   CLIENT_TROUBLESHOOTING = 'acx-ui-client-troubleshooting-toggle',
   TIMELINE = 'acx-ui-timeline-toggle',
-  NETWORK_SEGMENTATION='acx-ui-network-segmentation-toggle'
+  NETWORK_SEGMENTATION='acx-ui-network-segmentation-toggle',
+  DIRECTED_MULTICAST='wifi-consumer-directed-multicast-toggle',
+  UNRELEASED='acx-ui-unreleased'
 }

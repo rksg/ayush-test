@@ -1,9 +1,21 @@
-import { AdminLogTable }                                           from '@acx-ui/rc/components'
-import { useAdminLogsQuery }                                       from '@acx-ui/rc/services'
-import { AdminLog, CommonUrlsInfo, RequestPayload, useTableQuery } from '@acx-ui/rc/utils'
+import { useEffect } from 'react'
+
+import moment from 'moment-timezone'
+
+import { AdminLogTable }     from '@acx-ui/rc/components'
+import { useAdminLogsQuery } from '@acx-ui/rc/services'
+import {
+  TABLE_QUERY_LONG_POLLING_INTERVAL,
+  AdminLog,
+  CommonUrlsInfo,
+  usePollingTableQuery
+} from '@acx-ui/rc/utils'
+import { useDateFilter } from '@acx-ui/utils'
 
 const AdminLogs = () => {
-  const tableQuery = useTableQuery<AdminLog, RequestPayload<unknown>, unknown>({
+  const { startDate, endDate } = useDateFilter()
+
+  const tableQuery = usePollingTableQuery<AdminLog>({
     useQuery: useAdminLogsQuery,
     defaultPayload: {
       url: CommonUrlsInfo.getEventList.url,
@@ -46,8 +58,22 @@ const AdminLogs = () => {
     sorter: {
       sortField: 'event_datetime',
       sortOrder: 'DESC'
-    }
+    },
+    option: { pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL }
   })
+
+  useEffect(()=>{
+    const payload = tableQuery.payload as { filters?: Record<string, string[]> }
+    tableQuery.setPayload({
+      ...tableQuery.payload,
+      filters: {
+        ...payload.filters,
+        fromTime: moment(startDate).utc().format(),
+        toTime: moment(endDate).utc().format()
+      }
+    })
+  }, [startDate, endDate])
+
   return <AdminLogTable tableQuery={tableQuery}/>
 }
 

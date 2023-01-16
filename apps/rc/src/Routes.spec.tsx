@@ -73,6 +73,10 @@ jest.mock('./pages/Services/Dpsk/DpskForm/DpskForm', () => () => {
   return <div data-testid='DpskForm' />
 })
 
+jest.mock('./pages/Services/Dpsk/DpskTable/DpskTable', () => () => {
+  return <div data-testid='DpskTable' />
+})
+
 jest.mock('./pages/Services/Portal/PortalDetail', () => () => {
   return <div data-testid='PortalServiceDetail' />
 })
@@ -92,6 +96,11 @@ jest.mock('./pages/Devices/Edge/AddEdge', () => () => {
 jest.mock('./pages/Devices/Edge/EdgeDetails/EditEdge', () => () => {
   return <div data-testid='EditEdge' />
 })
+
+jest.mock('./pages/Timeline', () => () => {
+  return <div data-testid='Timeline' />
+})
+
 
 describe('RcRoutes: Devices', () => {
   test('should redirect devices to devices/wifi', async () => {
@@ -293,6 +302,16 @@ describe('RcRoutes: Services', () => {
     expect(screen.getByTestId('DpskForm')).toBeVisible()
   })
 
+  test('should navigate to DPSK table page', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST }),
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('DpskTable')).toBeVisible()
+  })
+
   test('should navigate to create WIFI_CALLING page', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
@@ -442,5 +461,45 @@ describe('RcRoutes: User', () => {
       }
     })
     expect(screen.getByTestId('UserClientDetails')).toBeVisible()
+  })
+  test('should redirect details/timeline to details/timeline/events', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/users/wifi/clients/clientId/details/timeline',
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('UserClientDetails')).toBeVisible()
+  })
+  test('should redirect to details/timeline/events correctly', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/users/wifi/clients/clientId/details/timeline/events',
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('UserClientDetails')).toBeVisible()
+  })
+})
+
+describe('RcRoutes: Timeline', () => {
+  test('should redirect timeline to timeline/activities', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/timeline',
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('Timeline')).toBeVisible()
+  })
+
+  test('should navigate to timeline/activities', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/timeline/activities',
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('Timeline')).toBeVisible()
   })
 })

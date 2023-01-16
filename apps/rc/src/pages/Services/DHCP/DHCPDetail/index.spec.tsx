@@ -23,11 +23,12 @@ const list = {
 }
 
 const detailResult = {
-  venueIds: [
-    'e16f5cb9aded49f6acd5891eb8897890',
-    '57db532207814948aa61b156e1cf2b9e',
-    '2725fdb455ec4785b1a633039b70b1aa'
-  ],
+  usage: [
+    {
+      venueId: 'e16f5cb9aded49f6acd5891eb8897890',
+      totalIpCount: 24,
+      usedIpCount: 3
+    }],
   dhcpMode: 'EnableOnMultipleAPs',
   dhcpPools: [
     {

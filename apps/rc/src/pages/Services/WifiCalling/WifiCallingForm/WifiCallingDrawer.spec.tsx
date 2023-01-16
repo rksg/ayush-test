@@ -1,5 +1,6 @@
 import { useReducer, useState } from 'react'
 
+import { userEvent }             from '@storybook/testing-library'
 import { fireEvent, renderHook } from '@testing-library/react'
 
 import { EPDG, QosPriorityEnum } from '@acx-ui/rc/utils'
@@ -20,6 +21,10 @@ const ePDG: EPDG[] = [{
 }]
 const networkIds: string[] = []
 const networksName: string[] = []
+const epdgs: EPDG[] = [{
+  domain: 'init.aaa.com',
+  ip: '10.10.10.10'
+}]
 
 const initState = {
   serviceName,
@@ -29,7 +34,8 @@ const initState = {
   tags,
   description,
   networkIds,
-  networksName
+  networksName,
+  epdgs
 }
 
 const renderInitState = (children: JSX.Element) => {
@@ -46,8 +52,8 @@ const renderInitState = (children: JSX.Element) => {
   }
 }
 
-const TestComponent = (props: { isEditMode: boolean }) => {
-  const { isEditMode } = props
+const TestComponent = (props: { isEditMode: boolean, serviceIndex: number | undefined }) => {
+  const { isEditMode, serviceIndex } = props
   const [visibleAdd, setVisibleAdd] = useState(true)
 
   return <WifiCallingDrawer
@@ -55,15 +61,23 @@ const TestComponent = (props: { isEditMode: boolean }) => {
     setVisible={setVisibleAdd}
     isEditMode={isEditMode}
     serviceName={'serviceNameId1'}
-    serviceIndex={undefined}
+    serviceIndex={serviceIndex}
   />
 }
 
 describe('WifiCallingDrawer', () => {
   it('should render drawer successfully (add)', async () => {
 
-    const { renderElement } = renderInitState(<TestComponent isEditMode={false} />)
-    const { asFragment } = render(renderElement)
+    const { renderElement } = renderInitState(
+      <TestComponent isEditMode={false} serviceIndex={undefined} />
+    )
+    render(renderElement)
+
+    await screen.findByText('Add ePDG')
+
+    await userEvent.type(screen.getByRole('textbox', {
+      name: /domain name/i
+    }), 'a.b.com.tw')
 
     let saveButton = screen.getByText('Save')
     expect(saveButton).toBeTruthy()
@@ -71,14 +85,14 @@ describe('WifiCallingDrawer', () => {
     expect(cancelButton).toBeTruthy()
 
     fireEvent.click(saveButton)
-
-    expect(asFragment()).toMatchSnapshot()
   })
 
   it('should cancel the drawer successfully', async () => {
 
-    const { renderElement } = renderInitState(<TestComponent isEditMode={false} />)
-    const { asFragment } = render(renderElement)
+    const { renderElement } = renderInitState(
+      <TestComponent isEditMode={false} serviceIndex={undefined} />
+    )
+    render(renderElement)
 
     let saveButton = screen.getByText('Save')
     expect(saveButton).toBeTruthy()
@@ -86,14 +100,19 @@ describe('WifiCallingDrawer', () => {
     expect(cancelButton).toBeTruthy()
 
     fireEvent.click(cancelButton)
-
-    expect(asFragment()).toMatchSnapshot()
   })
 
   it('should render drawer successfully (edit)', async () => {
 
-    const { renderElement } = renderInitState(<TestComponent isEditMode={true} />)
+    const { renderElement } = renderInitState(<TestComponent isEditMode={true} serviceIndex={0}/>)
     render(renderElement)
+
+    await screen.findByText('Edit ePDG')
+    await screen.findByDisplayValue('init.aaa.com')
+
+    await userEvent.type(screen.getByRole('textbox', {
+      name: /domain name/i
+    }), '.tw')
 
     let saveButton = screen.getByText('Save')
     expect(saveButton).toBeTruthy()

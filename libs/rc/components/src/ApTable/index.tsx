@@ -26,9 +26,9 @@ import {
   transformApStatus,
   transformDisplayNumber,
   transformDisplayText,
-  useTableQuery,
   TableQuery,
-  RequestPayload
+  RequestPayload,
+  usePollingTableQuery
 } from '@acx-ui/rc/utils'
 import { getFilters }                         from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
@@ -102,15 +102,15 @@ export function ApTable (props: ApTableProps) {
   const navigate = useNavigate()
   const params = useParams()
   const filters = getFilters(params)
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const tableQuery = props.tableQuery ?? useTableQuery({
+  const inlineTableQuery = usePollingTableQuery({
     useQuery: useApListQuery,
     defaultPayload: {
       ...defaultApPayload,
       filters
     },
-    pollingInterval: 30000 //TODO: Wait for confirm the interval with PLM
+    option: { skip: Boolean(props.tableQuery) }
   })
+  const tableQuery = props.tableQuery || inlineTableQuery
 
   const apAction = useApActions()
   const releaseTag = useIsSplitOn(Features.DEVICES)
@@ -131,6 +131,7 @@ export function ApTable (props: ApTableProps) {
       title: $t({ defaultMessage: 'AP Name' }),
       dataIndex: 'name',
       sorter: true,
+      disable: true,
       render: (data, row) => (
         <TenantLink to={`/devices/wifi/${row.serialNumber}/details/overview`}>{data}</TenantLink>
       )
@@ -139,6 +140,7 @@ export function ApTable (props: ApTableProps) {
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'deviceStatus',
       sorter: true,
+      disable: true,
       render: (status: unknown) => <APStatus status={status as ApDeviceStatusEnum} />
     }, {
       key: 'model',
@@ -148,7 +150,8 @@ export function ApTable (props: ApTableProps) {
     }, {
       key: 'ip',
       title: $t({ defaultMessage: 'IP Address' }),
-      dataIndex: 'IP'
+      dataIndex: 'IP',
+      sorter: true
     }, {
       key: 'apMac',
       title: $t({ defaultMessage: 'MAC Address' }),

@@ -31,7 +31,7 @@ const mockTableResult = {
   {
     id: 'aa080e33-26a7-4d34-870f-b7f312fcfccb',
     name: 'Service 2',
-    type: 'MDNS_PROXY',
+    type: 'mDNS Proxy',
     category: 'APPLICATION',
     status: 'UP',
     adminState: 'ENABLED',
@@ -43,7 +43,7 @@ const mockTableResult = {
   {
     id: 'bb080e33-26a7-4d34-870f-b7f312fcfccb',
     name: 'Service 3',
-    type: 'DHCP',
+    type: 'DHCP (Wi-Fi)',
     category: 'CONNECTIVITY',
     status: 'DOWN',
     adminState: 'DISABLED',
@@ -73,19 +73,19 @@ xdescribe('Services Table', () => {
   })
 
   it('should render table', async () => {
-    const { asFragment } = render(
+    render(
       <Provider>
         <ServicesTable />
       </Provider>, {
         route: { params, path: '/:tenantId/services' }
-      })
+      }
+    )
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    expect(asFragment()).toMatchSnapshot()
 
     const targetServiceName = mockTableResult.data[0].name
-    await screen.findByRole('button', { name: /Add Service/i })
-    await screen.findByRole('row', { name: new RegExp(targetServiceName) })
+    expect(await screen.findByRole('button', { name: /Add Service/i })).toBeVisible()
+    expect(await screen.findByRole('row', { name: new RegExp(targetServiceName) })).toBeVisible()
   })
 
   it('should delete selected row', async () => {

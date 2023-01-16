@@ -21,6 +21,7 @@ describe('Activities', () => {
       </Provider>,
       { route: { params } }
     )
-    await screen.findByText('Network \'123roam\' was updated')
+    await screen.findByRole('row', { name: /Network ' 123roam ' was updated/ })
+    expect((await screen.findAllByText('-')).length).toBe(2)
   })
 })

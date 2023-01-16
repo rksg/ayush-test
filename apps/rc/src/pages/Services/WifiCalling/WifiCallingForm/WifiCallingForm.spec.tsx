@@ -68,7 +68,8 @@ const initState = {
   tags: [],
   description: '',
   networkIds: [],
-  networksName: []
+  networksName: [],
+  epdgs: []
 }
 
 jest.mock('antd', () => {
@@ -109,7 +110,7 @@ describe('WifiCallingForm', () => {
   })
 
   it('should render wifiCallingForm successfully', async () => {
-    const { asFragment } = render(
+    render(
       <WifiCallingFormContext.Provider value={{
         state: initState,
         dispatch: jest.fn()
@@ -171,7 +172,7 @@ describe('WifiCallingForm', () => {
       screen.getByRole('option', { name: 'Video' })
     )
 
-    await screen.findByText('Video')
+    await screen.findAllByText('Video')
 
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
@@ -182,7 +183,32 @@ describe('WifiCallingForm', () => {
     await screen.findByRole('heading', { name: 'Summary', level: 3 })
 
     await userEvent.click(screen.getByRole('button', { name: 'Finish' }))
+  })
 
-    expect(asFragment()).toMatchSnapshot()
+  it('should render wifiCallingForm and cancel the step successfully', async () => {
+    render(
+      <WifiCallingFormContext.Provider value={{
+        state: initState,
+        dispatch: jest.fn()
+      }}>
+        <Provider>
+          <WifiCallingForm />
+        </Provider>
+      </WifiCallingFormContext.Provider>
+      , {
+        route: {
+          path: '/services/wifiCalling/create',
+          params: { tenantId: 'tenantId1' }
+        }
+      }
+    )
+
+    expect(screen.getAllByText('Settings')).toBeTruthy()
+    expect(screen.getAllByText('Scope')).toBeTruthy()
+    expect(screen.getAllByText('Summary')).toBeTruthy()
+
+    await screen.findByRole('heading', { name: 'Settings', level: 3 })
+
+    await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
   })
 })
