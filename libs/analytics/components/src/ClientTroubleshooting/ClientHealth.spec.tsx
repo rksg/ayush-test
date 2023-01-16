@@ -1,5 +1,6 @@
 import { dataApiURL }                                                  from '@acx-ui/analytics/services'
 import { AnalyticsFilter }                                             from '@acx-ui/analytics/utils'
+import { noDataDisplay }                                               from '@acx-ui/rc/utils'
 import { Provider }                                                    from '@acx-ui/store'
 import { mockGraphqlQuery, render, waitForElementToBeRemoved, screen } from '@acx-ui/test-utils'
 import { DateRange }                                                   from '@acx-ui/utils'
@@ -57,15 +58,12 @@ describe('ClientHealth', () => {
   it('should render correctly for valid data', async () => {
     mockGraphqlQuery(dataApiURL, 'ClientInfo', { data: testData })
 
-    const { asFragment } = render(<Provider>
+    render(<Provider>
       <ClientHealth filter={filters} clientMac={testMac}/>
     </Provider>)
 
     await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
-    const fragment = asFragment()
-    fragment.querySelectorAll('div[_echarts_instance_^="ec_"]')
-      .forEach((node:Element) => node.setAttribute('_echarts_instance_', 'ec_mock'))
-    expect(fragment).toMatchSnapshot()
+    expect(await screen.findAllByText('33.33%')).toHaveLength(3)
   })
 
   it('should render correctly for undefined data', async () => {
@@ -76,14 +74,11 @@ describe('ClientHealth', () => {
       }
     } })
 
-    const { asFragment } = render(<Provider>
+    render(<Provider>
       <ClientHealth filter={filters} clientMac={testMac}/>
     </Provider>)
 
     await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
-    const fragment = asFragment()
-    fragment.querySelectorAll('div[_echarts_instance_^="ec_"]')
-      .forEach((node:Element) => node.setAttribute('_echarts_instance_', 'ec_mock'))
-    expect(fragment).toMatchSnapshot()
+    expect(await screen.findAllByText(noDataDisplay)).toHaveLength(3)
   })
 })
