@@ -389,7 +389,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     drawerForm.setFieldValue(['destinationPort'], ruleObj.destination.port)
   }
 
-  const rowActions: TableProps<Layer3Rule>['actions'] = isViewMode() ? [] : [{
+  const rowActions: TableProps<Layer3Rule>['rowActions'] = isViewMode() ? [] : [{
     label: $t({ defaultMessage: 'Edit' }),
     onClick: ([editRow]: Layer3Rule[], clearSelection: () => void) => {
       setRuleDrawerVisible(true)
