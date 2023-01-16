@@ -8,7 +8,7 @@ import { noDataSymbol }                                               from '@acx
 import { Button, Modal }                                              from '@acx-ui/components'
 import { DeleteOutlinedIcon }                                         from '@acx-ui/icons'
 import { useLazyGetMacRegListQuery, useLazyGetPersonaGroupByIdQuery } from '@acx-ui/rc/services'
-import { MacRegistrationPool }                                        from '@acx-ui/rc/utils'
+import { MacAddressFilterRegExp, MacRegistrationPool }                from '@acx-ui/rc/utils'
 
 import { PersonaDeviceItem } from './PersonaDevicesForm'
 
@@ -115,17 +115,6 @@ const ImportManuallyForm = (props: { form: FormInstance }) => {
   const { $t } = useIntl()
   const { form } = props
 
-  const macAddressRegExp = (value: string) => {
-    // TODO: extract Mac address validation to utils
-    const reg = new RegExp('^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$')
-
-    if (value && value.trim() && reg.test(value)) {
-      return Promise.resolve()
-    } else {
-      return Promise.reject('Please enter a valid Mac address')
-    }
-  }
-
   return (
     <Form
       form={form}
@@ -144,7 +133,7 @@ const ImportManuallyForm = (props: { form: FormInstance }) => {
                 rules={[
                   {
                     required: true,
-                    validator: (_, value) => macAddressRegExp(value)
+                    validator: (_, value) => MacAddressFilterRegExp(value)
                   }
                 ]}
               >
