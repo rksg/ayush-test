@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { Typography } from 'antd'
-import { useIntl }    from 'react-intl'
+import { useIntl } from 'react-intl'
 
 import { PageHeader, GridRow, GridCol, Descriptions, Loader, Subtitle, Button } from '@acx-ui/components'
 import { useGetSwitchClientDetailsQuery, useLazyApListQuery }                   from '@acx-ui/rc/services'
@@ -150,8 +149,8 @@ export function SwitchClientDetails () {
       />
 
       <GridRow>
-        <GridCol col={{ span: 5 }}>
-          <Descriptions>
+        <GridCol col={{ span: 24 }}>
+          <Descriptions labelWidthPercent={10}>
             <Descriptions.Item
               label={<Subtitle level={4}>
                 {$t({ defaultMessage: 'Status' })}</Subtitle>}
@@ -163,7 +162,7 @@ export function SwitchClientDetails () {
             {$t({ defaultMessage: 'Client Details' })}</Subtitle>
 
 
-          <Descriptions>{
+          <Descriptions labelWidthPercent={10}>{
             clientData.map(({ title, value }, i) => <Descriptions.Item
               key={i}
               label={title}
@@ -174,10 +173,10 @@ export function SwitchClientDetails () {
       </GridRow>
 
       <GridRow>
-        <GridCol col={{ span: 5 }}>
+        <GridCol col={{ span: 24 }}>
           <Subtitle level={4} style={{ fontWeight: 600, marginTop: '2em' }}>
             {$t({ defaultMessage: 'Connection' })}</Subtitle>
-          <Descriptions>{
+          <Descriptions labelWidthPercent={10}>{
             clientConnection.map(({ title, value }, i) => <Descriptions.Item
               key={i}
               label={title}
