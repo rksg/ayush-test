@@ -47,7 +47,8 @@ import {
   NetworkSegmentationUrls,
   WebAuthTemplate,
   AccessSwitch,
-  DistributionSwitch
+  DistributionSwitch,
+  downloadFile
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
@@ -615,6 +616,34 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'DpskPassphrase', id: 'LIST' }]
     }),
+    downloadPassphrases: build.mutation<
+      { data: BlobPart },
+      RequestPayload<{ timezone: string, dateFormat: string }>
+    >({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(DpskUrls.exportPassphrases, {
+          ...params,
+          timezone: payload?.timezone ?? 'UTC',
+          dateFormat: payload?.dateFormat ?? 'dd/MM/yyyy HH:mm'
+        })
+
+        return {
+          ...req,
+          responseHandler: async (response) => {
+            const headerContent = response.headers.get('content-disposition')
+            const fileName = headerContent
+              ? JSON.parse(headerContent.split('filename=')[1])
+              : 'DPSK_Passphrases.csv'
+            downloadFile(response, fileName)
+          },
+          body: payload,
+          headers: {
+            'Content-Type': 'application/json',
+            'accept': 'application/json,text/plain,*/*'
+          }
+        }
+      }
+    }),
     portalNetworkInstances: build.query<TableResult<PortalDetailInstances>, RequestPayload>({
       query: ({ params }) => {
         const instancesRes = createHttpRequest(PortalUrlsInfo.getPortalNetworkInstances, params)
@@ -781,6 +810,7 @@ export const {
   useCreateDpskPassphrasesMutation,
   useDeleteDpskPassphraseListMutation,
   useUploadPassphrasesMutation,
+  useDownloadPassphrasesMutation,
   useGetPortalQuery,
   useSavePortalMutation,
   usePortalNetworkInstancesQuery,

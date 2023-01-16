@@ -15,6 +15,7 @@ import { CopyOutlined }             from '@acx-ui/icons'
 import { CsvSize, ImportCsvDrawer } from '@acx-ui/rc/components'
 import {
   useDeleteDpskPassphraseListMutation,
+  useDownloadPassphrasesMutation,
   useDpskPassphraseListQuery,
   useUploadPassphrasesMutation
 } from '@acx-ui/rc/services'
@@ -41,6 +42,7 @@ export default function DpskPassphraseManagement () {
   const [ addPassphrasesDrawerVisible, setAddPassphrasesDrawerVisible ] = useState(false)
   const [ deletePassphrases ] = useDeleteDpskPassphraseListMutation()
   const [ uploadCsv, uploadCsvResult ] = useUploadPassphrasesMutation()
+  const [ downloadCsv ] = useDownloadPassphrasesMutation()
   const [ uploadCsvDrawerVisible, setUploadCsvDrawerVisible ] = useState(false)
   const params = useParams()
   const tableQuery = useTableQuery({
@@ -54,6 +56,15 @@ export default function DpskPassphraseManagement () {
         'vlanId', 'mac', 'numberOfDevices', 'createdDate', 'expirationDate']
     }
   })
+
+  const downloadPassphrases = () => {
+    downloadCsv({ params }).catch(() => {
+      showToast({
+        type: 'error',
+        content: $t({ defaultMessage: 'Failed to export passphrases.' })
+      })
+    })
+  }
 
   const columns: TableProps<NewDpskPassphrase>['columns'] = [
     {
@@ -157,6 +168,10 @@ export default function DpskPassphraseManagement () {
     {
       label: $t({ defaultMessage: 'Import From File' }),
       onClick: () => setUploadCsvDrawerVisible(true)
+    },
+    {
+      label: $t({ defaultMessage: 'Export To File' }),
+      onClick: () => downloadPassphrases()
     }
   ]
 

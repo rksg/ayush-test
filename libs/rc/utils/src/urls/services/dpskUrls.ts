@@ -42,5 +42,9 @@ export const DpskUrls: { [key: string]: ApiInfo } = {
   deletePassphrase: {
     method: 'delete',
     url: DpskPassphraseBaseUrl
+  },
+  exportPassphrases: {
+    method: 'get',
+    url: DpskPassphraseBaseUrl + '/export?timezone=:timezone&date-format=:dateFormat'
   }
 }
