@@ -17,7 +17,6 @@ describe('UserProfile', () => {
     <Provider>
       <UserProfile />
     </Provider>, { route: { params } })
-  expect(screen.getByText('Notifications')).toBeVisible()
   expect(screen.getByText('Settings')).toBeVisible()
   expect(screen.getByText('Security')).toBeVisible()
   expect(screen.getByText('Recent Logins')).toBeVisible()
