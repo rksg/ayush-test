@@ -1,9 +1,12 @@
 /* eslint-disable max-len */
 import { useIntl } from 'react-intl'
 
-import { showActionModal }    from '@acx-ui/components'
+import { showActionModal,
+  showToast }  from '@acx-ui/components'
 import {
-  useDeleteSwitchesMutation
+  useDeleteSwitchesMutation,
+  useRebootSwitchMutation,
+  useSyncDataMutation
 } from '@acx-ui/rc/services'
 import {
   getSwitchName,
@@ -15,6 +18,8 @@ import {
 export function useSwitchActions () {
   const { $t } = useIntl()
   const [ deleteSwitches ] = useDeleteSwitchesMutation()
+  const [ rebootSwitch ] = useRebootSwitchMutation()
+  const [ syncData ] = useSyncDataMutation()
 
   function shouldHideConfirmation (selectedRows: SwitchRow[]) {
     const noVerificationStatus = [SwitchStatusEnum.NEVER_CONTACTED_CLOUD, SwitchStatusEnum.DISCONNECTED]
@@ -59,8 +64,55 @@ export function useSwitchActions () {
     })
   }
 
+  const showRebootSwitch = (switchId: string, tenantId: string, isStack: boolean ) => {
+
+    const deviceType = isStack ? $t({ defaultMessage: 'Stack' }) : $t({ defaultMessage: 'Switch' })
+    showActionModal({
+      type: 'confirm',
+      customContent: {
+        action: 'CUSTOM_BUTTONS',
+        buttons: [{
+          text: $t({ defaultMessage: 'Cancel' }),
+          type: 'default',
+          key: 'cancel'
+        }, {
+          text: $t({ defaultMessage: 'Reboot' }),
+          type: 'primary',
+          key: 'ok',
+          closeAfterAction: true,
+          handler: async () => {
+            try {
+              await rebootSwitch({ params: { tenantId: tenantId, switchId } }).unwrap()
+            } catch {
+              showToast({
+                type: 'error',
+                content: $t({ defaultMessage: 'An error occurred' })
+              })
+            }
+          }
+        }]
+      },
+      title: $t({ defaultMessage: 'Reboot {deviceType}?' }, { deviceType }),
+      content: $t({ defaultMessage: 'Rebooting the {deviceType} will disconnect all connected clients. Are you sure you want to reboot?' }, { deviceType })
+    })
+  }
+
+  const doSyncData= async (switchId: string, tenantId: string) => {
+    try {
+      await syncData({ params: { tenantId: tenantId, switchId }, payload: { isManual: true } }).unwrap()
+    } catch {
+      showToast({
+        type: 'error',
+        content: $t({ defaultMessage: 'An error occurred' })
+      })
+    }
+
+  }
+
   return {
     showDeleteSwitches,
-    showDeleteSwitch
+    showDeleteSwitch,
+    showRebootSwitch,
+    doSyncData
   }
 }

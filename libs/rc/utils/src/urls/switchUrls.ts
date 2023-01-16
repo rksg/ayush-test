@@ -132,5 +132,13 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   getVlanByUuid: {
     method: 'get',
     url: '/api/switch/tenant/:tenantId/vlan/:vlanUuid'
+  },
+  reboot: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/switch/:switchId/reboot'
+  },
+  syncData: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/switch/:switchId/sync'
   }
 }

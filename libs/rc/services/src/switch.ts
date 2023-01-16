@@ -105,6 +105,24 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Switch', id: 'LIST' }]
     }),
+    rebootSwitch: build.mutation<SwitchRow, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.reboot, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    syncData: build.mutation<SwitchRow, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.syncData, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     switchDetailHeader: build.query<SwitchViewModel, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(SwitchUrlsInfo.getSwitchDetailHeader, params)
@@ -452,5 +470,7 @@ export const {
   useGetSwitchQuery,
   useDeleteVePortsMutation,
   useGetSwitchAclsQuery,
-  useGetVlanListBySwitchLevelQuery
+  useGetVlanListBySwitchLevelQuery,
+  useRebootSwitchMutation,
+  useSyncDataMutation
 } = switchApi

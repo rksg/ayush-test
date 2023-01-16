@@ -8,7 +8,7 @@ export const switchDetailData: SwitchViewModel = {
   switchName: 'ICX7150-C12 Router',
   model: 'ICX7150-C12P',
   id: 'c0:c5:20:98:b9:67',
-  syncDataEndTime: 1670314840296,
+  syncDataEndTime: '2023-01-16T06:07:09Z',
   firmwareVersion: 'SPR09010e',
   clientCount: 1,
   serialNumber: 'FEK3216Q05B',
