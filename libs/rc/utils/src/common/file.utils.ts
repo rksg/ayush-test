@@ -1,13 +1,21 @@
 export const downloadFile = (response: { blob: () => Promise<BlobPart> }, fileName: string) => {
   response.blob().then(myBlob => {
-    const file = new File([myBlob], fileName)
+    const fileFlob = new File([myBlob], fileName)
+    handleBlobDownloadFile(fileFlob, fileName)
+  })
+}
 
-    const link = document.createElement('a')
-    link.href = URL.createObjectURL(file)
+export const handleBlobDownloadFile = (fileFlob: Blob, fileName:string) => {
+  const link = document.createElement('a')
+  if (link.download !== undefined) {
+    const url = URL.createObjectURL(fileFlob)
+    link.setAttribute('href', url)
     link.setAttribute('download', fileName)
+    link.style.visibility = 'hidden'
     document.body.appendChild(link)
     link.click()
-  })
+    document.body.removeChild(link)
+  }
 }
 
 export const exportCSV =

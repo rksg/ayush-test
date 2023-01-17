@@ -67,7 +67,12 @@ export default function SelectServiceForm () {
     {
       title: defineMessage({ defaultMessage: 'More Services' }),
       items: [
-        { type: ServiceType.PORTAL, categories: [RadioCardCategory.WIFI] }
+        { type: ServiceType.PORTAL, categories: [RadioCardCategory.WIFI] },
+        {
+          type: ServiceType.WEBAUTH_SWITCH,
+          categories: [RadioCardCategory.SWITCH],
+          disabled: !networkSegmentationEnabled
+        }
       ]
     }
   ]

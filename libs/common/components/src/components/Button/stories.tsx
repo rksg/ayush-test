@@ -25,6 +25,7 @@ storiesOf('Button', module)
           <Button size='small' disabled>Default</Button>
           <Button size='small' disabled icon={<DownloadOutlined />}>With Icon</Button>
           <Button size='small' disabled icon={<DownloadOutlined />} />
+          <Button size='small' disabled type='link'>Link</Button>
         </Space>
       </p>
     </>
@@ -48,6 +49,7 @@ storiesOf('Button', module)
           <Button disabled>Default</Button>
           <Button disabled icon={<DownloadOutlined />}>With Icon</Button>
           <Button disabled icon={<DownloadOutlined />} />
+          <Button disabled type='link'>Link</Button>
         </Space>
       </p>
     </>
@@ -71,6 +73,7 @@ storiesOf('Button', module)
           <Button size='large' disabled>Default</Button>
           <Button size='large' disabled icon={<DownloadOutlined />}>With Icon</Button>
           <Button size='large' disabled icon={<DownloadOutlined />} />
+          <Button size='large' disabled type='link'>Link</Button>
         </Space>
       </p>
     </>
