@@ -158,7 +158,7 @@ describe('Persona Details', () => {
   it('should delete selected devices', async () => {
     render(
       <Provider>
-        <PersonaDevicesTable persona={mockPersona} title={'Devices'}/>
+        <PersonaDevicesTable hasMacPool persona={mockPersona} title={'Devices'}/>
       </Provider>, {
         // eslint-disable-next-line max-len
         route: { params, path: '/:tenantId/users/persona-management/persona-group/:personaGroupId/persona/:personaId' }
