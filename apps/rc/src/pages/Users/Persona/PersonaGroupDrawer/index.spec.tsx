@@ -71,6 +71,12 @@ describe('Persona Group Drawer', () => {
     const nameField = await screen.findByLabelText('Persona Group Name')
     await userEvent.type(nameField, 'New Persona Group Name')
 
+    // Select a DPSK pool
+    const selector = await screen.findAllByRole('combobox')
+    const dpskPoolSelector = selector[0]
+    await userEvent.click(dpskPoolSelector)
+    await userEvent.click(await screen.findByText('DPSK Service 1'))
+
     const addButton = await screen.findAllByRole('button', { name: /Add/i })
 
     await userEvent.click(addButton[addButton.length-1])
