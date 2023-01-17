@@ -92,11 +92,6 @@ export function EmbeddedReport (props: ReportProps) {
     }
     return () => {
       if(timer) clearTimeout(timer)
-      if(embeddedObj) embeddedObj.then(embObj =>{
-        // eslint-disable-next-line no-console
-        console.log('%c[ACX] -> Unmounting %s EmbeddedReport', 'color: cyan', embedDashboardName)
-        embObj.unmount()
-      })
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[startDate, endDate, paths, bands, dashboardEmbeddedId])
