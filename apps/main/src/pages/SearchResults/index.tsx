@@ -7,15 +7,18 @@ import {
   defaultApPayload,
   NetworkTable,
   defaultNetworkPayload,
+  EventTable,
   eventDefaultPayload,
-  EventTable
-}           from '@acx-ui/rc/components'
+  SwitchTable,
+  defaultSwitchPayload
+} from '@acx-ui/rc/components'
 import {
   useApListQuery,
   useEventsQuery,
   useNetworkListQuery,
-  useVenuesListQuery
-}       from '@acx-ui/rc/services'
+  useVenuesListQuery,
+  useSwitchListQuery
+} from '@acx-ui/rc/services'
 import {
   RequestPayload,
   useTableQuery,
@@ -24,8 +27,7 @@ import {
   AP,
   ApExtraParams,
   Event,
-  usePollingTableQuery,
-  TABLE_QUERY_LONG_POLLING_INTERVAL
+  SwitchRow
 } from '@acx-ui/rc/utils'
 
 import { useDefaultVenuePayload, VenueTable } from '../Venues/VenuesTable'
@@ -87,26 +89,40 @@ const searches = [
     }
   },
   (searchString: string, $t: IntlShape['$t']) => {
-    const result = usePollingTableQuery<Event>({
+    const result = useTableQuery<Event>({
       useQuery: useEventsQuery,
       defaultPayload: {
         ...eventDefaultPayload,
         filters: {},
         searchString,
-        searchTargetFields: ['entity_id', 'message', 'apMac', 'clientMac'],
-        detailLevel: 'su'
+        searchTargetFields: ['entity_id', 'message', 'apMac', 'clientMac']
       },
       pagination,
       sorter: {
         sortField: 'event_datetime',
         sortOrder: 'DESC'
-      },
-      option: { pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL }
+      }
     })
     return {
       result,
       title: $t({ defaultMessage: 'Events' }),
       component: <EventTable tableQuery={result} />
+    }
+  },
+  (searchString: string, $t: IntlShape['$t']) => {
+    const result = useTableQuery<SwitchRow, RequestPayload<unknown>, unknown>({
+      useQuery: useSwitchListQuery,
+      defaultPayload: {
+        ...defaultSwitchPayload,
+        searchString,
+        searchTargetFields: ['name', 'model', 'ipAddress', 'switchMac']
+      },
+      pagination
+    })
+    return {
+      result,
+      title: $t({ defaultMessage: 'Switches' }),
+      component: <SwitchTable tableQuery={result} />
     }
   }
 ]

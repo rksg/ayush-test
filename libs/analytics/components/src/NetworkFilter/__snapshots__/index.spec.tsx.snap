@@ -336,7 +336,7 @@ exports[`Network Filter should list only venues having APs 1`] = `
                   class="styledComponents__ButtonDiv-sc-9z6ynb-1 kNCyfI"
                 >
                   <button
-                    class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
+                    class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
                     type="button"
                   >
                     <span>
@@ -344,7 +344,7 @@ exports[`Network Filter should list only venues having APs 1`] = `
                     </span>
                   </button>
                   <button
-                    class="ant-btn ant-btn-primary ant-btn-sm styledComponents__Button-sc-zk1lj8-0 bxQmA-d"
+                    class="ant-btn ant-btn-primary ant-btn-sm styledComponents__Button-sc-zk1lj8-0 glXBEv"
                     type="button"
                   >
                     <span>
@@ -698,7 +698,7 @@ exports[`Network Filter should list only venues having Switches 1`] = `
                   class="styledComponents__ButtonDiv-sc-9z6ynb-1 kNCyfI"
                 >
                   <button
-                    class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
+                    class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
                     type="button"
                   >
                     <span>
@@ -706,7 +706,7 @@ exports[`Network Filter should list only venues having Switches 1`] = `
                     </span>
                   </button>
                   <button
-                    class="ant-btn ant-btn-primary ant-btn-sm styledComponents__Button-sc-zk1lj8-0 bxQmA-d"
+                    class="ant-btn ant-btn-primary ant-btn-sm styledComponents__Button-sc-zk1lj8-0 glXBEv"
                     type="button"
                   >
                     <span>
@@ -1249,7 +1249,7 @@ exports[`Network Filter should select network node and bands 1`] = `
                   class="styledComponents__ButtonDiv-sc-9z6ynb-1 kNCyfI"
                 >
                   <button
-                    class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
+                    class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
                     type="button"
                   >
                     <span>
@@ -1257,7 +1257,7 @@ exports[`Network Filter should select network node and bands 1`] = `
                     </span>
                   </button>
                   <button
-                    class="ant-btn ant-btn-primary ant-btn-sm styledComponents__Button-sc-zk1lj8-0 bxQmA-d"
+                    class="ant-btn ant-btn-primary ant-btn-sm styledComponents__Button-sc-zk1lj8-0 glXBEv"
                     type="button"
                   >
                     <span>
@@ -1691,7 +1691,7 @@ exports[`Network Filter should select network node and bands with onApplyFn 1`] 
                   class="styledComponents__ButtonDiv-sc-9z6ynb-1 kNCyfI"
                 >
                   <button
-                    class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
+                    class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
                     type="button"
                   >
                     <span>
@@ -1699,7 +1699,7 @@ exports[`Network Filter should select network node and bands with onApplyFn 1`] 
                     </span>
                   </button>
                   <button
-                    class="ant-btn ant-btn-primary ant-btn-sm styledComponents__Button-sc-zk1lj8-0 bxQmA-d"
+                    class="ant-btn ant-btn-primary ant-btn-sm styledComponents__Button-sc-zk1lj8-0 glXBEv"
                     type="button"
                   >
                     <span>
