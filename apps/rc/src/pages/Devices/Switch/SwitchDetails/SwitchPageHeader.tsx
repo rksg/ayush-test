@@ -45,32 +45,30 @@ function SwitchPageHeader () {
 
   const [getSwitchList] = useLazyGetSwitchListQuery()
   const jwtToken = useGetJwtTokenQuery({ params: { tenantId, serialNumber } })
+
   const [isSyncing, setIsSyncing] = useState(false)
   const [syncDataEndTime, setSyncDataEndTime] = useState('')
+  const [cliModalState, setCliModalOpen] = useState(false)
+
   const isOperational = switchDetailHeader?.deviceStatus === SwitchStatusEnum.OPERATIONAL
-  const isStack = switchDetailHeader?.isStack
+  const isStack = switchDetailHeader?.isStack || false
   const isSyncedSwitchConfig = switchDetailHeader?.syncedSwitchConfig
 
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
 
-  const [cliModalState, setCliModalOpen] = useState(false)
-
   const handleMenuClick: MenuProps['onClick'] = (e) => {
-    const switchId = switchDetailHeader.switchMac || switchDetailHeader.serialNumber || ''
-    const isStack = switchDetailHeader.isStack || false
-
     switch(e.key) {
       case MoreActions.CLI_SESSION:
         setCliModalOpen(true)
         break
       case MoreActions.REBOOT:
-        switchAction.showRebootSwitch(switchId, tenantId || '', isStack)
+        switchAction.showRebootSwitch(switchId || '', tenantId || '', isStack)
         break
       case MoreActions.DELETE:
         switchAction.showDeleteSwitch(switchDetailHeader, tenantId, () => navigate(linkToSwitch))
         break
       case MoreActions.SYNC_DATA:
-        switchAction.doSyncData(switchId, tenantId || '', handleSyncData)
+        switchAction.doSyncData(switchId || '', tenantId || '', handleSyncData)
         setIsSyncing(true)
         break
     }
@@ -152,7 +150,6 @@ function SwitchPageHeader () {
       </Menu.Item>
     </Menu>
   )
-
 
   return (
     <>

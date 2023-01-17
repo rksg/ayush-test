@@ -65,7 +65,6 @@ export function useSwitchActions () {
   }
 
   const showRebootSwitch = (switchId: string, tenantId: string, isStack: boolean ) => {
-
     const deviceType = isStack ? $t({ defaultMessage: 'Stack' }) : $t({ defaultMessage: 'Switch' })
     showActionModal({
       type: 'confirm',

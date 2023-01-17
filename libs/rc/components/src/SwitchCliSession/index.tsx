@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import { useRef, useState } from 'react'
 
 import { useIntl } from 'react-intl'
@@ -17,10 +16,12 @@ export function SwitchCliSession (props: {
 }) {
   const { $t } = useIntl()
   const token = props.jwtToken
+  // eslint-disable-next-line max-len
   const url = 'api/rpv2/rtty/switch/' + props.serialNumber + '?rid=ce142e2b-d716-4de2-8a9b-048a8162cdf9&token=' + token
-  // const url = 'http://localhost:3000/t/f2e4a77d49914dc7b1bcb0dfc21b9a74/devices/switch/58:fb:96:0e:bc:f8/FEK3230S0C5/details/overview'
+  // const url = 'http://localhost:3000/t/f2e4a77d49914dc7b1bcb0dfc21b9a74/devices/switch/58:fb:96:0e:bc:f8/FEK3230S0C5/details/overview' //For TEST
   const { setIsModalOpen, modalState, switchName } = props
 
+  // eslint-disable-next-line max-len
   const bannerMsg = $t({ defaultMessage: 'Telnet inside encrypted NATS session. Configuration changes made via CLI session may take up to 5 minutes to get updated on Ruckus Cloud interface.' })
   const title = $t({ defaultMessage: 'CLI Session - {switchName}' }, { switchName })
 
