@@ -60,6 +60,13 @@ function useColumns (props: PersonaTableColProps) {
       ...props.deviceCount
     },
     {
+      key: 'unit',
+      dataIndex: 'unit',
+      title: $t({ defaultMessage: 'Unit' })
+      // TODO: integrate with Property API to get Unit name
+      // ...props.unit
+    },
+    {
       key: 'groupId',
       dataIndex: 'groupId',
       title: $t({ defaultMessage: 'Persona Group' }),
@@ -75,6 +82,30 @@ function useColumns (props: PersonaTableColProps) {
       dataIndex: 'vlan',
       title: $t({ defaultMessage: 'VLAN' }),
       ...props.vlan
+    },
+    {
+      key: 'assignedAp',
+      dataIndex: 'assignedAp',
+      title: $t({ defaultMessage: 'Assigned AP' }),
+      // render: (_, row) => {
+      // TODO: fetch AP info by MacAddress?
+      // },
+      ...props.ethernetPorts
+    },
+    {
+      key: 'ethernetPorts',
+      dataIndex: 'ethernetPorts',
+      title: $t({ defaultMessage: 'Assigned Port' }),
+      render: (_, row) => {
+        return row.ethernetPorts?.map(port => `LAN ${port.portIndex}`).join(', ')
+      },
+      ...props.ethernetPorts
+    },
+    {
+      key: 'vni',
+      dataIndex: 'vni',
+      title: $t({ defaultMessage: 'VNI' }),
+      ...props.vni
     }
   ]
 
