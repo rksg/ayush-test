@@ -1,7 +1,7 @@
 import { ApiInfo } from '../../apiService'
 
 
-export const NetworkSegmentationUrls: { [key in string]: ApiInfo } = {
+export const NetworkSegmentationUrls: { [key: string]: ApiInfo } = {
   getNetworkSegmentationGroupById: {
     method: 'get',
     url: '/networkSegmentationGroups/:serviceId'
