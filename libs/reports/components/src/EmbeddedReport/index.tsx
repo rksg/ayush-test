@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { Buffer } from 'buffer'
-
-import { embedDashboard } from '@superset-ui/embedded-sdk'
+import { embedDashboard, EmbeddedDashboard } from '@superset-ui/embedded-sdk'
 
 import { getSupersetRlsClause } from '@acx-ui/analytics/components'
 import {
@@ -65,21 +63,39 @@ export function EmbeddedReport (props: ReportProps) {
 
   const fetchGuestTokenFromBackend = async () => {
     // eslint-disable-next-line no-console
-    console.log('%c[%s][ACX] -> Refreshing guest token for Embedded EmbeddedReport',
-      'color: cyan', new Date().toLocaleString())
+    console.log('%c[%s][ACX] -> Refreshing guest token for %s EmbeddedReport',
+      'color: cyan', new Date().toLocaleString(), embedDashboardName)
     return await guestToken({ payload: guestTokenPayload }).unwrap()
   }
 
   useEffect(()=> {
-    window.Buffer = Buffer
+    let timer: ReturnType<typeof setInterval> | null = null
+    let embeddedObj :Promise<EmbeddedDashboard> | null = null
     if (dashboardEmbeddedId && dashboardEmbeddedId.length > 0) {
-      embedDashboard({
+      embeddedObj = embedDashboard({
         id: dashboardEmbeddedId,
         supersetDomain: `${HOST_NAME}${BASE_RELATIVE_URL}`,
         mountPoint: document.getElementById('acx-report')!,
         fetchGuestToken: () => fetchGuestTokenFromBackend(),
         dashboardUiConfig: { hideChartControls: true, hideTitle: true }
         // debug: true
+      })
+      embeddedObj.then( async embObj =>{
+        timer = setInterval(async () => {
+          const { height } = await embObj.getScrollSize()
+          const iframeElement = document.querySelector('iframe')
+          if(iframeElement){
+            iframeElement.setAttribute('style', `height: ${height}px !important`)
+          }
+        }, 1000)
+      })
+    }
+    return () => {
+      if(timer) clearTimeout(timer)
+      if(embeddedObj) embeddedObj.then(embObj =>{
+        // eslint-disable-next-line no-console
+        console.log('%c[ACX] -> Unmounting %s EmbeddedReport', 'color: cyan', embedDashboardName)
+        embObj.unmount()
       })
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
