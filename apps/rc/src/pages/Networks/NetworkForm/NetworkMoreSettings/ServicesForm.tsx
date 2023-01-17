@@ -15,8 +15,7 @@ import {
   DnsProxyRule,
   DnsProxyContextType,
   WifiCallingSettingContextType,
-  WifiCallingSetting,
-  syslogServerRegExp
+  WifiCallingSetting
 } from '@acx-ui/rc/utils'
 import { notAvailableMsg } from '@acx-ui/utils'
 
