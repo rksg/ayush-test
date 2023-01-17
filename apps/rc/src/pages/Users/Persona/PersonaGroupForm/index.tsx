@@ -49,8 +49,7 @@ export function PersonaGroupForm (props: {
       preserve={false}
       layout={'vertical'}
       name={'personaGroupForm'}
-      // FIXME: for demo use case
-      initialValues={{ ...defaultValue, dpskPoolId: 'demo-dpsk-pool-id' }}
+      initialValues={defaultValue}
     >
       <Space direction={'vertical'} size={16} style={{ display: 'flex' }}>
         <Row>
@@ -81,7 +80,7 @@ export function PersonaGroupForm (props: {
             <Subtitle level={4}>{$t({ defaultMessage: 'Services' })}</Subtitle>
           </Col>
           <Col span={21}>
-            <Form.Item label={'DPSK Pool'}>
+            <Form.Item label={'DPSK Pool'} required>
               <Form.Item
                 name='dpskPoolId'
                 children={
@@ -95,9 +94,8 @@ export function PersonaGroupForm (props: {
                   />
                 }
                 rules={
-                  // TODO: required=true if DPSK pool supported.
                   [{
-                    required: false,
+                    required: true,
                     message: $t({ defaultMessage: 'Please select a DPSK pool' })
                   }]
                 }

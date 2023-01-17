@@ -73,7 +73,6 @@ export function PersonaDevicesImportDialog (props: DevicesImportDialogProps) {
 
   return (
     <Modal
-      forceRender
       title={$t({ defaultMessage: 'Add Devices' })}
       subTitle={subTitle}
       visible={visible}

@@ -203,6 +203,7 @@ function PersonaDetails () {
         <PersonaDevicesTable
           title={$t({ defaultMessage: 'Devices ({deviceCount})' }, { deviceCount })}
           persona={personaDetailsQuery.data}
+          hasMacPool={!!personaGroupData?.macRegistrationPoolId}
         />
       </Space>
 

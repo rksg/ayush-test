@@ -75,10 +75,13 @@ export function PersonaDrawer (props: PersonaDrawerProps) {
       await form.validateFields()
       await onFinish(form.getFieldsValue())
     } catch (e) {
-      showToast({
-        type: 'error',
-        content: e
-      })
+      if (e instanceof Error) {
+        showToast({
+          type: 'error',
+          content: $t({ defaultMessage: 'An error occurred' }),
+          link: { onClick: () => alert(JSON.stringify(e)) }
+        })
+      }
     }
   }
 

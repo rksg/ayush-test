@@ -14,11 +14,12 @@ import { PersonaDevicesImportDialog } from '../PersonaForm/PersonaDevicesImportD
 
 
 export function PersonaDevicesTable (props: {
+  hasMacPool: boolean
   persona?: Persona,
   title?: string
 }) {
   const { $t } = useIntl()
-  const { persona, title } = props
+  const { persona, title, hasMacPool } = props
   const [modelVisible, setModelVisible] = useState(false)
 
   const [
@@ -78,9 +79,7 @@ export function PersonaDevicesTable (props: {
     },
     {
       key: 'lastSeenAt',
-      // FIXME: [before commit] - need to change to field 'lastSeenAt'
-      // dataIndex: 'lastSeenAt',
-      dataIndex: 'updatedAt',
+      dataIndex: 'lastSeenAt',
       title: $t({ defaultMessage: 'Last Seen Time' }),
       render: (data) => {
         return data
@@ -99,7 +98,8 @@ export function PersonaDevicesTable (props: {
           type: 'confirm',
           customContent: {
             action: 'DELETE',
-            entityName: 'device',
+            entityName: selectedItems.length > 1 ? 'devices' : '',
+            entityValue: selectedItems.length === 1 ? selectedItems[0].macAddress : undefined,
             numOfEntities: selectedItems.length
           },
           // FIXME: Need to add mac registration list id into this dialog
@@ -117,7 +117,8 @@ export function PersonaDevicesTable (props: {
   const actions: TableProps<PersonaDevice>['actions'] = [
     {
       label: $t({ defaultMessage: 'Add Device' }),
-      onClick: () => {setModelVisible(true)}
+      onClick: () => {setModelVisible(true)},
+      disabled: !hasMacPool
     }
   ]
 
