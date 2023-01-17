@@ -8,6 +8,7 @@ import { Features, useIsSplitOn }                      from '@acx-ui/feature-tog
 import { QuestionMarkCircleOutlined }                  from '@acx-ui/icons'
 import { VenueApModelCellular }                        from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink }       from '@acx-ui/react-router-dom'
+import { directedMulticastInfo }                       from '@acx-ui/utils'
 
 import { VenueEditContext } from '../../index'
 
@@ -35,8 +36,6 @@ export function NetworkingTab () {
   const basePath = useTenantLink('/venues/')
 
   const supportDirectedMulticast = useIsSplitOn(Features.DIRECTED_MULTICAST)
-  // eslint-disable-next-line max-len
-  const directedMulticastInfo = 'When Directed Multicast is enabled, the AP inspects multicast traffic and monitors client IGMP/MLD subscriptions to determine packet handling. For multicast data subscribed to by the AP’s wireless clients, the AP will convert packets to unicast. When no client is subscribed, the AP will drop the packets. Some well-known traffic types (Bonjour, uPnP, etc) will bypass this logic altogether, and multicast-to-unicast conversion will be determined by the “Directed Threshold” in the WLAN advanced settings.'
 
   const {
     editContextData,
@@ -81,7 +80,7 @@ export function NetworkingTab () {
           {<>
             { $t({ defaultMessage: 'Directed Multicast' }) }
             <Tooltip
-              title={$t({ defaultMessage: directedMulticastInfo })}
+              title={$t( directedMulticastInfo )}
               placement='right'>
               <Button type='text'
                 icon={<QuestionMarkCircleOutlined/>}
