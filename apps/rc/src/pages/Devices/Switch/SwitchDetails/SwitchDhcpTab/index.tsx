@@ -81,9 +81,11 @@ export function SwitchDhcpTab () {
       <Tabs.TabPane tab={$t({ defaultMessage: 'Pools' })} key='pool'>
         <SwitchDhcpPoolTable />
       </Tabs.TabPane>
-      <Tabs.TabPane tab={$t({ defaultMessage: 'Leases' })} key='lease'>
+      {isOperational && <Tabs.TabPane
+        tab={$t({ defaultMessage: 'Leases' })}
+        key='lease'>
         <SwitchDhcpLeaseTable />
-      </Tabs.TabPane>
+      </Tabs.TabPane>}
     </Tabs>
   )
 }

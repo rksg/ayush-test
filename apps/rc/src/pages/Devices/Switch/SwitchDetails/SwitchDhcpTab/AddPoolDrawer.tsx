@@ -181,7 +181,6 @@ export function AddPoolDrawer (props: {
               initialValue={1}
               children={<InputNumber min={0} max={365} />}
             />
-            {/* {$t({ defaultMessage: 'Day' })} */}
             <Form.Item
               name='leaseHrs'
               label={$t({ defaultMessage: 'Hours' })}
@@ -190,7 +189,6 @@ export function AddPoolDrawer (props: {
               initialValue={0}
               children={<InputNumber min={0} />}
             />
-            {/* {$t({ defaultMessage: 'Hours' })} */}
             <Form.Item
               name='leaseMins'
               label={$t({ defaultMessage: 'Minutes' })}
@@ -199,7 +197,6 @@ export function AddPoolDrawer (props: {
               initialValue={0}
               children={<InputNumber min={0} max={65535} />}
             />
-            {/* {$t({ defaultMessage: 'Minutes' })} */}
           </Space>
         </Form.Item>
         <Form.Item
@@ -224,7 +221,7 @@ export function AddPoolDrawer (props: {
             </Button>
           </Col>
         </Row>
-        <Table type='form'
+        <Table
           rowKey='seq'
           rowActions={rowActions}
           rowSelection={{
