@@ -1,11 +1,40 @@
-import { Form } from 'antd'
+import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
+import { rest }  from 'msw'
 
-import { Provider }       from '@acx-ui/store'
-import { render, screen } from '@acx-ui/test-utils'
+import { AccessControlUrls }          from '@acx-ui/rc/utils'
+import { Provider }                   from '@acx-ui/store'
+import { mockServer, render, screen } from '@acx-ui/test-utils'
+
+import {
+  aclDetail,
+  aclList,
+  layer2PolicyListResponse,
+  layer2Response,
+  layer3PolicyListResponse,
+  layer3Response
+} from '../__tests__/fixtures'
 
 import AccessControlForm from './AccessControlForm'
 
 describe('AccessControlForm Component', () => {
+  beforeEach(async () => {
+    mockServer.use(
+      rest.get(AccessControlUrls.getAccessControlProfile.url,
+        (_, res, ctx) => res(ctx.json(aclDetail))),
+      rest.get(AccessControlUrls.getAccessControlProfileList.url,
+        (_, res, ctx) => res(ctx.json(aclList))),
+      rest.post(AccessControlUrls.getL2AclPolicyList.url,
+        (_, res, ctx) => res(ctx.json(layer2PolicyListResponse))),
+      rest.post(AccessControlUrls.getL3AclPolicyList.url,
+        (_, res, ctx) => res(ctx.json(layer3PolicyListResponse))),
+      rest.get(AccessControlUrls.getL3AclPolicy.url,
+        (_, res, ctx) => res(ctx.json(layer3Response))),
+      rest.get(AccessControlUrls.getL2AclPolicy.url,
+        (_, res, ctx) => res(ctx.json(layer2Response)))
+    )
+  })
+
   it('Render AccessControlForm component successfully', async () => {
     render(
       <Provider>
@@ -24,5 +53,43 @@ describe('AccessControlForm Component', () => {
     })
 
     expect(header).toBeInTheDocument()
+  })
+
+  it('Render AccessControlForm component with editMode successfully', async () => {
+    render(
+      <Provider>
+        <Form>
+          <AccessControlForm editMode={true}/>
+        </Form>
+      </Provider>, {
+        route: {
+          params: { tenantId: 'tenantId1', policyId: 'c9c0667abfe74ab7803999a793fd2bbe' }
+        }
+      }
+    )
+
+    const header = screen.getByRole('heading', {
+      name: /edit access control policy/i
+    })
+
+    expect(header).toBeInTheDocument()
+
+    await screen.findByDisplayValue('acl-test')
+
+    await userEvent.clear(screen.getByRole('textbox', {
+      name: /policy name/i
+    }))
+
+    await userEvent.type(screen.getByRole('textbox', {
+      name: /policy name/i
+    }), 'acl-test-modify')
+
+    await screen.findByText('layer3policy1')
+
+    await screen.findByText('layer2policy1')
+
+    await userEvent.click(screen.getByRole('button', {
+      name: 'Finish'
+    }))
   })
 })

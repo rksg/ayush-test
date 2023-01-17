@@ -248,11 +248,7 @@ describe('Layer3Drawer Component', () => {
 
     await userEvent.type(screen.getByRole('textbox', {
       name: /policy name:/i
-    }), 'layer3')
-
-    await userEvent.type(screen.getByRole('textbox', {
-      name: /policy name:/i
-    }), '-test')
+    }), 'layer3-test')
 
     await anyIpSetting()
     await ipSetting()
