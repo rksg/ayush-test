@@ -20,8 +20,8 @@ import {
   TopLevelFormatterParams,
   CustomSeriesRenderItem,
   ElementEvent,
+  LabelFormatterCallback
 } from 'echarts/types/dist/shared';
-import moment from 'moment-timezone';
 import { useIntl } from 'react-intl';
 
 import {
@@ -54,6 +54,7 @@ type OnDatazoomEvent = {
   start?: number;
   end?: number;
 };
+
 export interface MultiBarTimeSeriesChart extends Omit<EChartsReactProps, 'option' | 'opts'> {
   data: (TimeSeriesChartData & { color: string })[]; // https://github.com/microsoft/TypeScript/issues/44373
   chartBoundary: number[];
@@ -64,6 +65,7 @@ export interface MultiBarTimeSeriesChart extends Omit<EChartsReactProps, 'option
   dataFormatter?: ChartFormatterFn;
   tooltipFormatter?: TooltipFormatterCallback<TopLevelFormatterParams>;
   seriesFormatters?: Record<string, ChartFormatterFn>;
+  LabelFormatter?: LabelFormatterCallback<any>
 }
 export const mapping = [{ key: 'SwitchStatus', series: 'Switch', color: 'green' }] as {
   key: string;
@@ -174,6 +176,7 @@ export function MultiBarTimeSeriesChart({
   zoomEnabled = false,
   dataFormatter = formatter('countFormat'),
   seriesFormatters,
+  LabelFormatter,
   ...props
 }: MultiBarTimeSeriesChart) {
   const { $t } = useIntl();
@@ -262,9 +265,10 @@ export function MultiBarTimeSeriesChart({
         snap: false,
         triggerTooltip: false,
         label: {
+          ...tooltipOptions() as Object,
           show: true,
-          formatter: function (params) {
-            return format.formatTime('yyyy-MM-dd', params.value);
+          formatter: LabelFormatter ? LabelFormatter :  function (params) {
+            return  formatter('dateTimeFormat')(params.value)
           },
         },
       },
