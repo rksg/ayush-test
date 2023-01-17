@@ -37,7 +37,7 @@ exports[`VarCustomers should render correctly 1`] = `
                 href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/dashboard"
               >
                 <button
-                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
+                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ibsWZY"
                   type="button"
                 >
                   <span>
@@ -55,10 +55,10 @@ exports[`VarCustomers should render correctly 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-13 bRIKQR"
+      class="styledComponents__Wrapper-sc-1abm7iv-12 jjcNqJ"
     >
       <div
-        class="styledComponents__Header-sc-1abm7iv-11 lWiiO"
+        class="styledComponents__Header-sc-1abm7iv-10 jhzeUr"
       >
         <div>
           <div
@@ -118,7 +118,7 @@ exports[`VarCustomers should render correctly 1`] = `
           </div>
         </div>
         <div
-          class="styledComponents__HeaderRight-sc-1abm7iv-12 bHNaiJ"
+          class="styledComponents__HeaderRight-sc-1abm7iv-11 hLRWq"
         />
       </div>
       <div

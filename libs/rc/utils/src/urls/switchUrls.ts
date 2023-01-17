@@ -132,5 +132,29 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   getVlanByUuid: {
     method: 'get',
     url: '/api/switch/tenant/:tenantId/vlan/:vlanUuid'
+  },
+  getTroubleshooting: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/switch/:switchId/troubleshootingResult/:troubleshootingType'
+  },
+  getTroubleshootingClean: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/switch/:switchId/troubleshootingClean/:troubleshootingType'
+  },
+  ping: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/switch/:switchId/ping'
+  },
+  traceRoute: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/switch/:switchId/trace-route'
+  },
+  ipRoute: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/switch/:switchId/route-table'
+  },
+  macAddressTable: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/switch/:switchId/mac-address-table'
   }
 }
