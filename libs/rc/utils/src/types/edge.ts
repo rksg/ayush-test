@@ -107,4 +107,23 @@ export interface EdgePortStatus {
   sortIdx: number
 }
 
+export interface EdgeDhcpPool {
+  name: string
+  subnetAddress: string
+  subnetMask: string
+  range: string
+  gateway: string
+  utilization: number
+  activate: boolean
+}
+
+export interface EdgeDhcpLease {
+  name: string
+  ip: string
+  dhcpPool: string
+  mac: string
+  status: string
+  expires: string
+}
+
 export type EdgeDNS = string
