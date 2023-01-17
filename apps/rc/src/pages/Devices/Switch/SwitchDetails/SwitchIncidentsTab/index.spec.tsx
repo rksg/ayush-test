@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom'
 
 import { dataApiURL }                                         from '@acx-ui/analytics/services'
+import { AnalyticsFilter }                                    from '@acx-ui/analytics/utils'
 import { SwitchUrlsInfo }                                     from '@acx-ui/rc/utils'
 import { Provider }                                           from '@acx-ui/store'
 import { render, screen, mockRestApiQuery, mockGraphqlQuery } from '@acx-ui/test-utils'
@@ -11,6 +12,9 @@ import {
 
 import { SwitchIncidentsTab } from '.'
 
+jest.mock('@acx-ui/analytics/components', () => ({
+  IncidentTabContent: (props: { filters: AnalyticsFilter }) => JSON.stringify(props.filters)
+}))
 
 const params = {
   tenantId: 'tenantId',
@@ -39,7 +43,7 @@ jest.mock('react-router-dom', () => ({
 
 describe('SwitchIncidentsTab', () => {
   beforeEach(() => {
-    mockRestApiQuery(SwitchUrlsInfo.getSwitchDetailHeader.url, 'get', { data: switchDetailData })
+    mockRestApiQuery(SwitchUrlsInfo.getSwitchDetailHeader.url, 'get', switchDetailData)
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: [] } } }
     })
@@ -47,6 +51,6 @@ describe('SwitchIncidentsTab', () => {
 
   it('should render mocked Incident tab in devices', async () => {
     render(<Provider><SwitchIncidentsTab /></Provider>, { route: { params } })
-    expect(await screen.findByPlaceholderText('Search Description, Scope')).toBeInTheDocument()
+    expect(await screen.findByText(/C0:C5:20:98:B9:67/)).toBeInTheDocument()
   })
 })
