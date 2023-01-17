@@ -4,8 +4,8 @@ import { Incident }                  from '@acx-ui/analytics/utils'
 import { Provider }                  from '@acx-ui/store'
 import { render, screen, fireEvent } from '@acx-ui/test-utils'
 
-import { connectionEvents } from './config.spec'
 import { History }          from './EventsHistory'
+import { connectionEvents } from './util.spec'
 
 import { Filters } from '.'
 
