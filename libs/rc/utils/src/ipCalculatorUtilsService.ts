@@ -36,7 +36,7 @@ export class IpCalculatorUtilsService {
     let byte2 = Math.max(0, Math.min(255, parseInt(split[1], 10)))
     let byte3 = Math.max(0, Math.min(255, parseInt(split[2], 10)))
     let byte4 = Math.max(0, Math.min(255, parseInt(split[3], 10)))
-    console.log(byte1, byte2, byte3, byte4)
+
     if (isNaN(byte1)) {
       byte1 = 0
     } /* fix NaN situations */

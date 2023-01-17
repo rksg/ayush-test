@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react'
 
 import { Form, Select, Tooltip, Radio, Space, RadioChangeEvent, Input, Switch } from 'antd'
 import { DefaultOptionType }                                                    from 'antd/lib/select'
-import { useIntl }                                                              from 'react-intl'
+import { FormattedMessage, useIntl }                                            from 'react-intl'
 
+import { showActionModal }            from '@acx-ui/components'
 import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 import {
   IP_ADDRESS_TYPE,
@@ -37,10 +38,11 @@ const spanningTreePriorityItem = [
 ]
 
 export function SwitchStackSetting
-(props: { apGroupOption: DefaultOptionType[], readOnly: boolean }) {
+(props: { apGroupOption: DefaultOptionType[], readOnly: boolean, isIcx7650?: boolean }) {
   const { $t } = useIntl()
+  const { apGroupOption, readOnly, isIcx7650 } = props
   const form = Form.useFormInstance()
-  const { apGroupOption, readOnly } = props
+
   const [enableDhcp, setEnableDhcp] = useState(false)
   const [isL3ConfigAllowed, setIsL3ConfigAllowed] = useState(false)
   const [ipAddressInterfaceType, setIpAddressInterfaceType] = useState('VE')
@@ -72,6 +74,24 @@ export function SwitchStackSetting
     form.getFieldValue('ipAddressInterfaceType'),
     form.getFieldValue('ipAddressInterface')
   ])
+
+  const onEditJumboMode = (checked: boolean) => {
+    showActionModal({
+      type: 'info',
+      title: $t({ defaultMessage: 'Switch Reboot is Required' }),
+      content: (<FormattedMessage
+        defaultMessage={`
+            {status} the jumbo mode option will 
+            cause the switch to reboot once the settings are applied`
+        }
+        values={{
+          status: checked ?
+            $t({ defaultMessage: 'Enabling' }) :
+            $t({ defaultMessage: 'Disabling' })
+        }}
+      />)
+    })
+  }
 
   return (
     <>
@@ -110,6 +130,7 @@ export function SwitchStackSetting
       <Form.Item
         label={$t({ defaultMessage: 'IP Assignment' })}
         name='ipAddressType'
+        initialValue={'dynamic'}
         rules={[
           { required: true }
         ]}
@@ -144,9 +165,15 @@ export function SwitchStackSetting
         }
         name='ipAddress'
         rules={[
-          { required: true },
-          { validator: (_, value) =>
-            validateSwitchIpAddress(value) }
+          { required: form.getFieldValue('ipAddressType') === 'static' ? true : false },
+          { validator: (_, value) =>{
+            if(form.getFieldValue('ipAddressType') === 'static') {
+              return validateSwitchIpAddress(value)
+            } else {
+              return Promise.resolve()
+            }
+          }
+          }
         ]}
       >
         <Input
@@ -157,9 +184,15 @@ export function SwitchStackSetting
         label={$t({ defaultMessage: 'Subnet Mask' })}
         name='subnetMask'
         rules={[
-          { required: true },
-          { validator: (_, value) =>
-            validateSwitchSubnetIpAddress(form.getFieldValue('ipAddress'), value) }
+          { required: form.getFieldValue('ipAddressType') === 'static' ? true : false },
+          { validator: (_, value) => {
+            if(form.getFieldValue('ipAddressType') === 'static') {
+              return validateSwitchSubnetIpAddress(form.getFieldValue('ipAddress'), value)
+            } else {
+              return Promise.resolve()
+            }
+          }
+          }
         ]}
       >
         <Input disabled={readOnly || enableDhcp} />
@@ -169,10 +202,16 @@ export function SwitchStackSetting
         label={$t({ defaultMessage: 'Default Gateway' })}
         name='defaultGateway'
         rules={[
-          { required: true },
-          { validator: (_, value) =>
-            validateSwitchGatewayIpAddress(
-              form.getFieldValue('ipAddress'), form.getFieldValue('subnetMask'), value) }
+          { required: form.getFieldValue('ipAddressType') === 'static' ? true : false },
+          { validator: (_, value) => {
+            if(form.getFieldValue('ipAddressType') === 'static') {
+              return validateSwitchGatewayIpAddress(
+                form.getFieldValue('ipAddress'), form.getFieldValue('subnetMask'), value)
+            } else {
+              return Promise.resolve()
+            }
+          }
+          }
         ]}
       >
         <Input disabled={readOnly || enableDhcp} />
@@ -181,7 +220,7 @@ export function SwitchStackSetting
       <Form.Item>
         <JumboModeSpan>{$t({ defaultMessage: 'Jumbo Mode' })}</JumboModeSpan>
         <Form.Item noStyle name='jumboMode' valuePropName='checked'>
-          <Switch disabled={readOnly} />
+          <Switch disabled={readOnly} onClick={onEditJumboMode} />
         </Form.Item>
       </Form.Item>
 
@@ -210,6 +249,7 @@ export function SwitchStackSetting
       <Form.Item
         label={$t({ defaultMessage: 'Select Profile' })}
         name={'spanningTreePriority'}
+        initialValue={''}
         children={<Select
           defaultValue={''}
           options={[
@@ -221,7 +261,14 @@ export function SwitchStackSetting
           disabled={readOnly}
         />}
       />
-
+      { isIcx7650 &&
+      <Form.Item>
+        <JumboModeSpan>{$t({ defaultMessage: 'Stack with 40G ports on module 3:' })}</JumboModeSpan>
+        <Form.Item noStyle name='rearModuleOption' valuePropName='checked'>
+          <Switch disabled={readOnly} />
+        </Form.Item>
+      </Form.Item>
+      }
       { isL3ConfigAllowed && <StaticRoutes readOnly={readOnly} /> }
     </>
   )

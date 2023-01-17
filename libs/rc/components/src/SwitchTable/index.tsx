@@ -16,7 +16,8 @@ import {
   getSwitchName,
   useTableQuery,
   DeviceConnectionStatus,
-  getStackMemberStatus
+  getStackMemberStatus,
+  SwitchStatusEnum
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -165,7 +166,8 @@ export function SwitchTable ({ showAllColumns } : {
       }else{
         navigate(`${linkToEditSwitch.pathname}/${switchId}/edit`, { replace: false })
       }
-    }
+    },
+    disabled: (rows) => rows[0].deviceStatus === SwitchStatusEnum.DISCONNECTED
   }, {
     label: $t({ defaultMessage: 'CLI Session' }),
     visible: (rows) => isActionVisible(rows, { selectOne: true }),

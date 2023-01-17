@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 
 import { Col, Form, Input, Row, Select, Radio, RadioChangeEvent } from 'antd'
@@ -18,13 +18,14 @@ import {
 } from '@acx-ui/components'
 import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 import {
-  useVenuesListQuery,
-  useLazyGetSwitchListQuery,
-  useLazyGetVlansByVenueQuery,
-  useAddSwitchMutation,
-  useAddStackMemberMutation,
   useGetSwitchQuery,
-  useSwitchDetailHeaderQuery
+  useVenuesListQuery,
+  useAddSwitchMutation,
+  useUpdateSwitchMutation,
+  useAddStackMemberMutation,
+  useLazyGetSwitchListQuery,
+  useSwitchDetailHeaderQuery,
+  useLazyGetVlansByVenueQuery
 } from '@acx-ui/rc/services'
 import {
   ApDeep,
@@ -34,7 +35,9 @@ import {
   getSwitchModel,
   SwitchViewModel,
   IGMP_SNOOPING_TYPE,
-  Vlan
+  Vlan,
+  SwitchStatusEnum,
+  isOperationalSwitch
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -75,12 +78,13 @@ export function SwitchForm () {
   const formRef = useRef<StepsFormInstance<ApDeep>>()
   const basePath = useTenantLink('/devices/')
   const venuesList = useVenuesListQuery({ params: { tenantId: tenantId }, payload: defaultPayload })
-  const { data: switchData } =
+  const { data: switchData, isLoading: isSwitchDataLoading } =
     useGetSwitchQuery({ params: { tenantId, switchId } }, { skip: action === 'add' })
-  const { data: switchDetail } =
+  const { data: switchDetail, isLoading: isSwitchDetailLoading } =
     useSwitchDetailHeaderQuery({ params: { tenantId, switchId } }, { skip: action === 'add' })
 
   const [addSwitch] = useAddSwitchMutation()
+  const [updateSwitch] = useUpdateSwitchMutation()
   const [addStackMember] = useAddStackMemberMutation()
   const [venueOption, setVenueOption] = useState([] as DefaultOptionType[])
   const [dhcpClientOption, setDhcpClientOption] = useState([] as DefaultOptionType[])
@@ -90,6 +94,7 @@ export function SwitchForm () {
   const [switchOptions, setSwitchOptions] = useState([] as DefaultOptionType[])
   const [venueId, setVenueId] = useState('')
   const [switchModel, setSwitchModel] = useState('')
+  const [deviceOnline, setDeviceOnline] = useState(false)
   const [isSupportStack, setIsSupportStack] = useState(true)
   const [isOnlyFirmware, setIsOnlyFirmware] = useState(false)
   const [serialNumber, setSerialNumber] = useState('')
@@ -108,8 +113,12 @@ export function SwitchForm () {
       handleSwitchList()
     }if(switchData && switchDetail){
       formRef?.current?.resetFields()
-      formRef?.current?.setFieldsValue({ ...switchData, ...switchDetail })
+      formRef?.current?.setFieldsValue({ ...switchDetail, ...switchData })
       setReadOnly(!!switchDetail.cliApplied)
+      setDeviceOnline(
+        isOperationalSwitch(
+          switchDetail.deviceStatus as SwitchStatusEnum, switchDetail.syncedSwitchConfig)
+      )
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [venueId, switchModel, switchRole, serialNumber, switchData, switchDetail])
@@ -212,6 +221,40 @@ export function SwitchForm () {
         ...basePath,
         pathname: `${basePath.pathname}/switch`
       })
+      return
+    }
+
+    try {
+      let payload = {
+        ...values,
+        stackMembers: [],
+        trustPorts: []
+      }
+
+      if(values.ipAddressType === 'dynamic'){
+        delete payload.ipAddress
+        delete payload.subnetMask
+        delete payload.defaultGateway
+        delete payload.ipAddressType
+      }
+
+      delete payload.specifiedType
+      delete payload.serialNumber
+
+      payload.rearModule = _.get(payload, 'rearModuleOption') === true ? 'stack-40g' : 'none'
+
+      await updateSwitch({ params: { tenantId } , payload }).unwrap()
+
+      navigate({
+        ...basePath,
+        pathname: `${basePath.pathname}/switch`
+      })
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (e: any) {
+      showToast({
+        type: 'error',
+        content: $t({ defaultMessage: '{message}' }, { message: e.data.errors[0].message })
+      })
     }
   }
 
@@ -245,7 +288,8 @@ export function SwitchForm () {
   return <>
     <PageHeader
       title={editMode ?
-        $t({ defaultMessage: '{name}' }, { name: switchDetail?.name }):
+        $t({ defaultMessage: '{name}' }, {
+          name: switchDetail?.name || switchDetail?.switchName || switchDetail?.serialNumber }):
         $t({ defaultMessage: 'Add Switch' })}
       breadcrumb={[
         { text: $t({ defaultMessage: 'Switches' }), link: '/devices/switch' }
@@ -267,7 +311,7 @@ export function SwitchForm () {
     >
       <StepsForm.StepForm>
         <Loader states={[{
-          isLoading: venuesList.isLoading
+          isLoading: venuesList.isLoading || isSwitchDataLoading || isSwitchDetailLoading
         }]}>
           <Row gutter={20}>
             <Col span={8}>
@@ -277,7 +321,9 @@ export function SwitchForm () {
                 hidden={!editMode}
               >
                 <Tabs.TabPane tab={$t({ defaultMessage: 'Switch Details' })} key='details' />
-                <Tabs.TabPane tab={$t({ defaultMessage: 'Settings' })} key='settings' />
+                {deviceOnline &&
+                  <Tabs.TabPane tab={$t({ defaultMessage: 'Settings' })} key='settings' />
+                }
               </Tabs>
               <div style={{ display: currentTab === 'details' ? 'block' : 'none' }}>
                 {readOnly &&
@@ -299,29 +345,31 @@ export function SwitchForm () {
                       ...venueOption
                     ]}
                     onChange={async (value) => await handleVenueChange(value)}
-                    disabled={readOnly}
+                    disabled={readOnly || editMode}
                   />}
                 />
 
                 <Form.Item
-                  name='id'
+                  name={editMode ? 'serialNumber' : 'id'}
                   label={$t({ defaultMessage: 'Serial Number' })}
                   rules={[
                     { required: true },
                     { validator: (_, value) => serialNumberRegExp(value) }
                   ]}
                   validateFirst
-                  children={<Input disabled={readOnly} />}
+                  children={<Input disabled={readOnly || editMode} />}
                 />
 
-                <SwitchUpgradeNotification
-                  isDisplay={!_.isEmpty(switchModel)}
-                  isDisplayHeader={true}
-                  type={switchRole === MEMEBER_TYPE.STANDALONE ?
-                    SWITCH_UPGRADE_NOTIFICATION_TYPE.SWITCH :
-                    SWITCH_UPGRADE_NOTIFICATION_TYPE.STACK}
-                  validateModel={[switchModel]}
-                />
+                {!editMode &&
+                  <SwitchUpgradeNotification
+                    isDisplay={!_.isEmpty(switchModel)}
+                    isDisplayHeader={true}
+                    type={switchRole === MEMEBER_TYPE.STANDALONE ?
+                      SWITCH_UPGRADE_NOTIFICATION_TYPE.SWITCH :
+                      SWITCH_UPGRADE_NOTIFICATION_TYPE.STACK}
+                    validateModel={[switchModel]}
+                  />
+                }
 
                 <Form.Item
                   label={<>
@@ -398,11 +446,15 @@ export function SwitchForm () {
                   <Form.Item
                     name='description'
                     label={$t({ defaultMessage: 'Description' })}
+                    initialValue={''}
                     rules={[
                       { min: 1, transform: (value) => value.trim() },
                       { max: 255, transform: (value) => value.trim() }
                     ]}
-                    children={<Input.TextArea rows={4} maxLength={180} disabled={readOnly} />}
+                    children={<Input.TextArea
+                      rows={4}
+                      maxLength={180}
+                      disabled={readOnly}/>}
                   />
 
                   <Form.Item
@@ -455,13 +507,24 @@ export function SwitchForm () {
                   }
                 />}
               </div>
-
-              {editMode && <div style={{ display: currentTab === 'settings' ? 'block' : 'none' }}>
-                <SwitchStackSetting
-                  apGroupOption={dhcpClientOption}
-                  readOnly={readOnly}
-                />
-              </div>
+              {editMode &&
+                  <>
+                    <Form.Item name='id' hidden={true} />
+                    <Form.Item name='firmwareVersion' hidden={true} />
+                    <Form.Item name='isPrimaryDeleted' hidden={true} />
+                    <Form.Item name='sendedHostname' hidden={true} />
+                    <Form.Item name='softDeleted' hidden={true} />
+                    <Form.Item name='trustPorts' hidden={true} />
+                  </>
+              }
+              <Form.Item name='enableStack' initialValue={false} hidden={true} />
+              {editMode &&
+                <div style={{ display: currentTab === 'settings' ? 'block' : 'none' }}>
+                  <SwitchStackSetting
+                    apGroupOption={dhcpClientOption}
+                    readOnly={readOnly}
+                  />
+                </div>
               }
             </Col>
           </Row>

@@ -53,7 +53,7 @@ export interface TableProps <RecordType>
     }>
     rowActions?: Array<{
       label: string,
-      disabled?: boolean,
+      disabled?: boolean | ((selectedItems: RecordType[]) => boolean),
       tooltip?: string,
       visible?: boolean | ((selectedItems: RecordType[]) => boolean),
       onClick: (selectedItems: RecordType[], clearSelection: () => void) => void
@@ -353,7 +353,10 @@ function Table <RecordType extends Record<string, any>> (
               if (!visible) return null
               return <UI.ActionButton
                 key={option.label}
-                disabled={option.disabled}
+                disabled={typeof option.disabled === 'function'
+                  ? option.disabled(rows)
+                  : option.disabled ?? true
+                }
                 onClick={() =>
                   option.onClick(getSelectedRows(selectedRowKeys), () => { onCleanSelected() })}
               >

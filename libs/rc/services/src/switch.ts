@@ -21,7 +21,8 @@ import {
   VlanVePort,
   AclUnion,
   VeForm,
-  StaticRoute
+  StaticRoute,
+  StackMemberList
 } from '@acx-ui/rc/utils'
 
 export const baseSwitchApi = createApi({
@@ -213,6 +214,16 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Switch', id: 'LIST' }]
     }),
+    updateSwitch: build.mutation<Switch, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.updateSwitch, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Switch', id: 'LIST' }]
+    }),
     getFreeVePortVlans: build.query<VlanVePort[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(SwitchUrlsInfo.getFreeVePortVlans, params)
@@ -305,6 +316,15 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Switch', id: 'ROUTES' }]
+    }),
+    getStackMemberList: build.query<StackMemberList, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getMemberList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
     })
   })
 })
@@ -382,6 +402,7 @@ export const {
   useSwitchPortlistQuery,
   useSaveSwitchMutation,
   useAddSwitchMutation,
+  useUpdateSwitchMutation,
   useAddStackMemberMutation,
   useGetSwitchListQuery,
   useLazyGetSwitchListQuery,
@@ -399,5 +420,6 @@ export const {
   useGetSwitchStaticRoutesQuery,
   useAddSwitchStaticRouteMutation,
   useUpdateSwitchStaticRouteMutation,
-  useDeleteSwitchStaticRoutesMutation
+  useDeleteSwitchStaticRoutesMutation,
+  useLazyGetStackMemberListQuery
 } = switchApi
