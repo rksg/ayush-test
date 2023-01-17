@@ -1,13 +1,12 @@
 import { useIntl } from 'react-intl'
 
-import { Loader, showActionModal, Table, TableProps } from '@acx-ui/components'
+import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
 import {
   useDeleteRadiusAttributeGroupMutation,
   useRadiusAttributeGroupListQuery
 } from '@acx-ui/rc/services'
 import {
   getPolicyDetailsLink, getPolicyRoutePath,
-  MacRegistrationPool,
   PolicyOperation,
   PolicyType, RadiusAttributeGroup,
   useTableQuery
@@ -76,7 +75,7 @@ export default function RadiusAttributeGroupTable () {
       { isLoading: isDeleteMacGroupUpdating }
     ] = useDeleteRadiusAttributeGroupMutation()
 
-    const rowActions: TableProps<MacRegistrationPool>['rowActions'] = [{
+    const rowActions: TableProps<RadiusAttributeGroup>['rowActions'] = [{
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
@@ -102,9 +101,17 @@ export default function RadiusAttributeGroupTable () {
             numOfEntities: rows.length,
             confirmationText: 'Delete'
           },
-          onOk: () => {
-            deleteGroup({ params: { policyId: rows[0].id } })
-              .then(clearSelection)
+          onOk: async () => {
+            try {
+              await deleteGroup({ params: { policyId: rows[0].id } }).unwrap()
+              clearSelection()
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            } catch (error: any) {
+              showToast({
+                type: 'error',
+                content: error.data
+              })
+            }
           }
         })
       }
