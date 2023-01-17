@@ -1,6 +1,4 @@
 /* eslint-disable max-len */
-import React from 'react'
-
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 import { act }   from 'react-dom/test-utils'
@@ -13,16 +11,11 @@ import {
   mockServer,
   render,
   screen,
-  waitFor,
   within,
-  fireEvent,
-  logRoles,
-  cleanup,
-  waitForElementToBeRemoved
+  fireEvent
 } from '@acx-ui/test-utils'
 
 import { fakePreference } from '../__tests__/fixtures'
-
 
 import  { MapRegionFormItem } from './'
 

@@ -1,11 +1,7 @@
 import { Col, Select, Form, Row, Typography } from 'antd'
 import { useIntl }                            from 'react-intl'
-// import styled                                 from 'styled-components/macro'
-
-import { cssStr } from '@acx-ui/components'
 
 import { MessageMapping } from '../MessageMapping'
-
 
 const supportedLangs = [{ label: 'English', value: 'en' }]
 
@@ -22,10 +18,9 @@ const DefaultSystemLanguageFormItem = () => {
           <Select
             value={supportedLangs[0].value}
             options={supportedLangs}
-            style={{ width: '200px' }}
           />
         </Form.Item>
-        <Typography.Paragraph style={{ color: cssStr('--acx-neutrals-50') }}>
+        <Typography.Paragraph className='greyText'>
           {
             $t(MessageMapping.default_system_language_description)
           }

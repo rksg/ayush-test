@@ -4,7 +4,6 @@ import { DEFAULT_ID }                         from '@googlemaps/js-api-loader'
 import { Col, Select, Form, Row, Typography } from 'antd'
 import { useIntl }                            from 'react-intl'
 
-import { cssStr }                                              from '@acx-ui/components'
 import { get }                                                 from '@acx-ui/config'
 import { useIsSplitOn, Features }                              from '@acx-ui/feature-toggle'
 import { useGetPreferencesQuery, useUpdatePreferenceMutation } from '@acx-ui/rc/services'
@@ -94,14 +93,13 @@ const MapRegionFormItem = () => {
               showSearch
               allowClear
               optionFilterProp='label'
-              style={{ width: '200px' }}
               disabled={isUpdatingPreference || isLoadingPreference || isFetchingPreference}
             />
           ) :
             $t(MessageMapping.map_region_not_enabled_message)
           }
         </Form.Item>
-        <Typography.Paragraph style={{ color: cssStr('--acx-neutrals-50') }}>
+        <Typography.Paragraph className='greyText'>
           {$t(MessageMapping.map_region_description)}
         </Typography.Paragraph>
       </Col>

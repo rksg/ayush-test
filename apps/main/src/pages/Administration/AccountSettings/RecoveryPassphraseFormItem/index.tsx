@@ -5,7 +5,6 @@ import _                                           from 'lodash'
 import { useIntl }                                 from 'react-intl'
 import styled                                      from 'styled-components/macro'
 
-import { cssStr }             from '@acx-ui/components'
 import { SpaceWrapper }       from '@acx-ui/rc/components'
 import { RecoveryPassphrase } from '@acx-ui/rc/utils'
 
@@ -34,7 +33,9 @@ const RecoveryPassphraseFormItem = styled((props:RecoveryPassphraseFormItemProps
     <>
       <Row gutter={24} className={className}>
         <Col span={12}>
-          <Form.Item label={$t({ defaultMessage: 'Recovery Network Passphrase' })}>
+          <Form.Item
+            label={$t({ defaultMessage: 'Recovery Network Passphrase' })}
+          >
             {hasAp ? (
               <SpaceWrapper justifycontent='flex-start'>
                 <Form.Item
@@ -64,7 +65,7 @@ const RecoveryPassphraseFormItem = styled((props:RecoveryPassphraseFormItemProps
               ]}
               renderItem={(item) => (
                 <List.Item>
-                  <Typography.Text style={{ color: cssStr('--acx-neutrals-50') }}>
+                  <Typography.Text className='greyText'>
                     {item}
                   </Typography.Text>
                 </List.Item>

@@ -6,7 +6,7 @@ import { useIntl }                                                    from 'reac
 import { useParams }                                                  from 'react-router-dom'
 import styled                                                         from 'styled-components/macro'
 
-import { Drawer, Button, showToast, cssStr } from '@acx-ui/components'
+import { Drawer, Button, showToast }    from '@acx-ui/components'
 import {
   useUpdateRecoveryPassphraseMutation
 } from '@acx-ui/rc/services'
@@ -26,7 +26,9 @@ export const ChangePassphraseDrawer = styled((props: ChangePassphraseDrawerProps
   const { tenantId } = useParams()
   const [ passphraseVisible, setPassphraseVisible ] = useState(false)
   const [ isChanged, setIsChanged ] = useState(false)
+  const [ isValid, setIsValid ] = useState(false)
   const [ passphrase, setPassphrase ] = useState('')
+  const [ form ] = Form.useForm()
 
   const [updateRecoveryPassphrase, { isLoading: isUpdatingRecoveryPassphrase }]
     = useUpdateRecoveryPassphraseMutation()
@@ -42,19 +44,19 @@ export const ChangePassphraseDrawer = styled((props: ChangePassphraseDrawerProps
   const onSubmitChange = async () => {
     if (!passphrase) return
 
-    try{
-      await updateRecoveryPassphrase({
-        params: { tenantId },
-        payload: { psk: passphrase.split(' ').join('') }
-      })
 
+    updateRecoveryPassphrase({
+      params: { tenantId },
+      payload: { psk: passphrase.split(' ').join('') }
+    }).then(() => {
       setVisible(false)
-    }catch{
+    }).catch(() => {
       showToast({
         type: 'error',
         content: $t({ defaultMessage: 'An error occurred' })
       })
-    }
+    })
+
   }
 
   const handleChange = (idx: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -62,6 +64,12 @@ export const ChangePassphraseDrawer = styled((props: ChangePassphraseDrawerProps
     const newData = passphrase.split(' ').fill(newVal, idx, idx+1).join(' ')
     setPassphrase(newData)
     setIsChanged(true)
+
+    form.validateFields().then(() => {
+      setIsValid(true)
+    }).catch(() => {
+      setIsValid(false)
+    })
   }
 
   React.useEffect(() => {
@@ -82,7 +90,7 @@ export const ChangePassphraseDrawer = styled((props: ChangePassphraseDrawerProps
       footer={
         <div>
           <Button
-            disabled={!isChanged}
+            disabled={!isChanged || !isValid}
             loading={isUpdatingRecoveryPassphrase}
             onClick={onSubmitChange}
             type={'secondary'}
@@ -96,37 +104,41 @@ export const ChangePassphraseDrawer = styled((props: ChangePassphraseDrawerProps
       }
     >
       <Form
+        form={form}
         labelAlign='left'
-        fields={passphraseData.map((item, idx) => ({ name: idx, value: item }))}
+        fields={
+          passphraseData.map(
+            (item, idx) => ({ name: `recovery_pass_${idx}`, value: item })
+          )}
       >
         <Form.Item
           label={$t({ defaultMessage: 'Recovery Network Passphrase' })}
         >
-          <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
-            {passphraseData.map((item:string, idx: number) => {
-              return (
-                <Form.Item
-                  key={`recovery_pass_${idx}`}
-                  name={`recovery_pass_${idx}`}
-                  noStyle
-                  hasFeedback
-                  rules={[
-                    { required: true, message: $t({ defaultMessage: 'This field is required' }) },
-                    { len: 4,
+          <div className='inputsWrapper'>
+            {passphraseData.map(
+              (item:string, idx: number) => {
+                return (
+                  <Form.Item
+                    key={`recovery_pass_${idx}`}
+                    name={`recovery_pass_${idx}`}
+                    noStyle
+                    hasFeedback
+                    rules={[
+                      { required: true, message: $t({ defaultMessage: 'This field is required' }) },
+                      { len: 4,
                       // eslint-disable-next-line max-len
-                      message: $t({ defaultMessage: 'Passphrase part must be exactly 4 digits long' }) }
-                  ]}
-                  validateFirst
-                >
-                  <Input
-                    type={passphraseVisible?'text': 'password'}
-                    value={item}
-                    onChange={handleChange(idx)}
-                    style={{ width: '55px' }}
-                  />
-                </Form.Item>)
-            })}
-
+                        message: $t({ defaultMessage: 'Passphrase part must be exactly 4 digits long' }) }
+                    ]}
+                    validateFirst
+                  >
+                    <Input
+                      data-testid={`recovery_pass_${idx}`}
+                      type={passphraseVisible ? 'text' : 'password'}
+                      onChange={handleChange(idx)}
+                    />
+                  </Form.Item>)
+              }
+            )}
             <PassphraseIcon onClick={handlePassphraseVisible} />
             <Tooltip placement='topRight' title={$t({ defaultMessage: 'Must be 16 digits long' })}>
               <QuestionCircleOutlined />
@@ -134,7 +146,7 @@ export const ChangePassphraseDrawer = styled((props: ChangePassphraseDrawerProps
           </div>
         </Form.Item>
 
-        <Typography.Paragraph style={{ color: cssStr('--acx-neutrals-50') }}>
+        <Typography.Paragraph className='greyText'>
           {$t(MessageMapping.change_recovery_passphrase_description)}
         </Typography.Paragraph>
       </Form>
@@ -155,5 +167,19 @@ export const ChangePassphraseDrawer = styled((props: ChangePassphraseDrawerProps
 
   .ant-drawer-body .ant-form-item-control .ant-form-item-explain-error:not(:first-child) {
     display: none;
+  }
+
+  .inputsWrapper {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+
+    & input {
+      width: 55px;
+    }
+  }
+
+  .greyText {
+    color: var(--acx-neutrals-50);
   }
 `

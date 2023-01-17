@@ -4,9 +4,8 @@ import { Col, Form, Row, Typography, Checkbox, Tooltip } from 'antd'
 import moment                                            from 'moment-timezone'
 import { useIntl }                                       from 'react-intl'
 import { useParams }                                     from 'react-router-dom'
-// import styled                                            from 'styled-components/macro'
+import styled                                            from 'styled-components/macro'
 
-import { cssStr }               from '@acx-ui/components'
 import { SpaceWrapper }         from '@acx-ui/rc/components'
 import {
   useEnableAccessSupportMutation,
@@ -23,14 +22,15 @@ import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 
 
  interface AccessSupportFormItemProps {
+  className?: string;
   userProfileData: UserProfile | undefined;
   isMspEc: boolean;
 }
 
-const AccessSupportFormItem = (props: AccessSupportFormItemProps) => {
+const AccessSupportFormItem = styled((props: AccessSupportFormItemProps) => {
   const { $t } = useIntl()
   const params = useParams()
-  const { userProfileData, isMspEc } = props
+  const { className, userProfileData, isMspEc } = props
   const [isSupportAccessEnabled, setIsSupportAccessEnabled] = useState(false)
   const [expiryDate, setExpiryDate] = useState('')
   const [countDown, setCountDown] = useState('')
@@ -109,7 +109,7 @@ const AccessSupportFormItem = (props: AccessSupportFormItemProps) => {
   const isDisabled = isSupportUser || isUpdating
 
   return (
-    <Row gutter={24}>
+    <Row gutter={24} className={className}>
       <Col span={10}>
         <Form.Item>
           <Tooltip
@@ -121,7 +121,6 @@ const AccessSupportFormItem = (props: AccessSupportFormItemProps) => {
               onChange={handleAccessSupportChange}
               checked={isSupportAccessEnabled}
               value={isSupportAccessEnabled}
-              style={{ paddingRight: '5px' }}
               disabled={isDisabled}
             >
               {$t({ defaultMessage: 'Enable access to Ruckus support' })}
@@ -129,15 +128,10 @@ const AccessSupportFormItem = (props: AccessSupportFormItemProps) => {
           </Tooltip>
         </Form.Item>
 
-        <SpaceWrapper style={{
-          marginLeft: 24,
-          flexDirection: 'column',
-          justifyContent: 'flex-start',
-          alignItems: 'flex-start'
-        }}>
+        <SpaceWrapper className='descriptionsWrapper'>
           { isSupportAccessEnabled && (
             <Tooltip placement='bottom' title={expiryDate}>
-              <Typography.Paragraph style={{ margin: 0, color: cssStr('--acx-neutrals-50') }}>
+              <Typography.Paragraph className='greyText'>
                 {
                 // eslint-disable-next-line max-len
                   $t({ defaultMessage: 'Access permission will be revoked in {countDown}' }, { countDown })
@@ -146,13 +140,17 @@ const AccessSupportFormItem = (props: AccessSupportFormItemProps) => {
             </Tooltip>
           )}
 
-          <Typography.Paragraph style={{ margin: 0, color: cssStr('--acx-neutrals-50') }}>
+          <Typography.Paragraph className='greyText'>
             {$t(MessageMapping.enable_access_support_description)}
           </Typography.Paragraph>
         </SpaceWrapper>
       </Col>
     </Row>
   )
-}
+})`
+  input[type=checkbox] {
+    padding-right: 5px;
+  }
+`
 
 export { AccessSupportFormItem }

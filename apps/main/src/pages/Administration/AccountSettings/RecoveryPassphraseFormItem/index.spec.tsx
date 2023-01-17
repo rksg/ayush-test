@@ -1,12 +1,9 @@
 /* eslint-disable max-len */
-import React from 'react'
-
 import { Provider  } from '@acx-ui/store'
 import {
   render,
   screen,
-  fireEvent,
-  logRoles
+  fireEvent
 } from '@acx-ui/test-utils'
 
 import { fakeRecoveryPassphrase } from '../__tests__/fixtures'
@@ -26,7 +23,6 @@ describe('Recovery Network Passphrase', () => {
       })
 
     await screen.findByTitle('Recovery Network Passphrase')
-
     const toggleVisible = await screen.findByRole('img', { name: 'eye-invisible' })
     fireEvent.click(toggleVisible)
 
@@ -45,6 +41,23 @@ describe('Recovery Network Passphrase', () => {
       })
 
     await screen.findByText('This feature will become available once you add APs')
+  })
+
+  it('should display change passphrase form', async () => {
+    render(
+      <Provider>
+        <RecoveryPassphraseFormItem
+          recoveryPassphraseData={fakeRecoveryPassphrase}
+        />
+      </Provider>, {
+        route: { params }
+      })
+
+    await screen.findByTitle('Recovery Network Passphrase')
+    await screen.findByRole('img', { name: 'eye-invisible' })
+    const changeBtn = await screen.findByText('Change')
+    fireEvent.click(changeBtn)
+    expect(await screen.findByRole('dialog')).toBeVisible()
   })
 })
 

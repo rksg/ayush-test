@@ -2,8 +2,8 @@ import { Form, Divider } from 'antd'
 import { useParams }     from 'react-router-dom'
 import styled            from 'styled-components/macro'
 
-import { Loader }                 from '@acx-ui/components'
-import {  useUserProfileActions } from '@acx-ui/rc/components'
+import { Loader }                from '@acx-ui/components'
+import { useUserProfileActions } from '@acx-ui/rc/components'
 import {
   useGetRecoveryPassphraseQuery,
   useGetMfaTenantDetailsQuery,
@@ -84,6 +84,20 @@ const AccountSettings = (props: { className?: string }) => {
 export default styled(AccountSettings)`
   & .ant-list-item {
     padding: 0;
+  }
+
+  & .ant-select.ant-select-in-form-item {
+    width: 200px;
+  }
+
+  & .greyText {
+    color: var(--acx-neutrals-50)
+  }
+
+  & .descriptionsWrapper {
+    margin-left: 24px;
+    flex-wrap: wrap;
+    align-content: flex-start;
   }
 
   .ant-divider {

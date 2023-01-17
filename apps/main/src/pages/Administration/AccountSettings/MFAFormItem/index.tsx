@@ -1,25 +1,26 @@
 import { Col, List, Form, Row, Typography, Checkbox } from 'antd'
 import TextArea                                       from 'antd/lib/input/TextArea'
 import { useIntl }                                    from 'react-intl'
-// import styled                                                  from 'styled-components/macro'
+import styled                                         from 'styled-components/macro'
 
-import { Card, showActionModal, cssStr } from '@acx-ui/components'
-import { SpaceWrapper }                  from '@acx-ui/rc/components'
-import { useUpdateMFAAccountMutation }   from '@acx-ui/rc/services'
-import { MFAStatus, MFASession }         from '@acx-ui/rc/utils'
-import { useParams }                     from '@acx-ui/react-router-dom'
+import { Card, showActionModal }       from '@acx-ui/components'
+import { SpaceWrapper }                from '@acx-ui/rc/components'
+import { useUpdateMFAAccountMutation } from '@acx-ui/rc/services'
+import { MFAStatus, MFASession }       from '@acx-ui/rc/utils'
+import { useParams }                   from '@acx-ui/react-router-dom'
 
 import { MessageMapping } from '../MessageMapping'
 
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 
 interface MFAFormItemProps {
+  className?: string,
   mfaTenantDetailsData?: MFASession
 }
 
-const MFAFormItem = (props: MFAFormItemProps) => {
+const MFAFormItem = styled((props: MFAFormItemProps) => {
   const { $t } = useIntl()
-  const { mfaTenantDetailsData } = props
+  const { className, mfaTenantDetailsData } = props
   const params = useParams()
   const [updateMFAAccount, { isLoading: isUpdating }] = useUpdateMFAAccountMutation()
 
@@ -60,26 +61,20 @@ const MFAFormItem = (props: MFAFormItemProps) => {
   const recoveryCodes = mfaTenantDetailsData?.recoveryCodes
 
   return (
-    <Row gutter={24}>
+    <Row gutter={24} className={className}>
       <Col span={10}>
         <Form.Item>
           <Checkbox
             onChange={handleEnableMFAChange}
             checked={isMfaEnabled}
             value={isMfaEnabled}
-            style={{ paddingRight: '5px' }}
             disabled={isUpdating}
           >
             {$t({ defaultMessage: 'Enable Multi-Factor Authentication (MFA)' })}
           </Checkbox>
         </Form.Item>
 
-        <SpaceWrapper
-          style={{
-            marginLeft: 24,
-            flexWrap: 'wrap',
-            alignContent: 'flex-start' }}
-        >
+        <SpaceWrapper className='descriptionsWrapper'>
           <List
             split={false}
             size='small'
@@ -91,7 +86,7 @@ const MFAFormItem = (props: MFAFormItemProps) => {
             ]}
             renderItem={(item) => (
               <List.Item>
-                <Typography.Text style={{ color: cssStr('--acx-neutrals-50') }}>
+                <Typography.Text className='greyText'>
                   {item}
                 </Typography.Text>
               </List.Item>
@@ -103,10 +98,10 @@ const MFAFormItem = (props: MFAFormItemProps) => {
               title={$t({ defaultMessage: 'Recovery Codes' })}
               type='no-border'
             >
-              <Typography.Text style={{ color: cssStr('--acx-neutrals-50') }}>
+              <Typography.Text className='greyText'>
                 {$t(MessageMapping.enable_mfa_copy_codes_help_1)}
               </Typography.Text>
-              <Typography.Text style={{ color: cssStr('--acx-neutrals-50') }}>
+              <Typography.Text className='greyText'>
                 {$t(MessageMapping.enable_mfa_copy_codes_help_2)}
               </Typography.Text>
               <TextArea
@@ -125,6 +120,10 @@ const MFAFormItem = (props: MFAFormItemProps) => {
       </Col>
     </Row>
   )
-}
+})`
+  input[type=checkbox] {
+    padding-right: 5px;
+  }
+`
 
 export { MFAFormItem }
