@@ -202,7 +202,8 @@ export function useMenuConfig () {
         },
         {
           path: '/users/persona-management',
-          name: $t({ defaultMessage: 'Persona Management' })
+          name: $t({ defaultMessage: 'Persona Management' }),
+          disabled: !useIsSplitOn(Features.SERVICES)
         }
       ]
     },

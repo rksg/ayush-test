@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
@@ -26,6 +26,13 @@ export function PersonaDrawer (props: PersonaDrawerProps) {
   // FIXME: Add loading status on creating and updating
   const [addPersona] = useAddPersonaMutation()
   const [updatePersona] = useUpdatePersonaMutation()
+
+  useEffect(()=> {
+    // make sure that reset the form fields while close the Drawer
+    if (!visible) {
+      form.resetFields()
+    }
+  }, [visible])
 
   const onFinish = async (contextData: Persona) => {
     try {

@@ -1,3 +1,4 @@
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   PolicyType,
   ServiceType,
@@ -304,19 +305,17 @@ function UserRoutes () {
       </Route>
       <Route path='users/switch' element={<TenantNavigate replace to='/users/switch/clients' />} />
       <Route path='users/switch/clients' element={<SwitchClientList />} />
-      <Route
-        path='users/persona-management'
-        element={<TenantNavigate replace to='/users/persona-management/persona-group' />}
-      />
-      <Route path='users/persona-management/:activeTab' element={<PersonaPortal />} />
-      <Route
-        path='users/persona-management/persona-group/:personaGroupId'
-        element={<PersonaGroupDetails />}
-      />
-      <Route
-        path='users/persona-management/persona-group/:personaGroupId/persona/:personaId'
-        element={<PersonaDetails />}
-      />
+      {useIsSplitOn(Features.SERVICES)
+        ? <><Route
+          path='users/persona-management'
+          element={<TenantNavigate replace to='/users/persona-management/persona-group'/>}/><Route
+          path='users/persona-management/:activeTab'
+          element={<PersonaPortal/>}/><Route
+          path='users/persona-management/persona-group/:personaGroupId'
+          element={<PersonaGroupDetails/>}/><Route
+          path='users/persona-management/persona-group/:personaGroupId/persona/:personaId'
+          element={<PersonaDetails/>}/></>
+        : <></>}
     </Route>
   )
 }
