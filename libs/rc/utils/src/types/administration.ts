@@ -22,12 +22,14 @@ export interface TenantDelegation {
   status: TenantDelegationStatus
   delegatedBy: string
   expiryDate: string
+  createdDate: string
   delegatedToName: string
 }
 
 export interface TenantDelegationResponse {
   isAccessSupported: boolean
   expiryDate: string
+  createdDate: string
 }
 
 export interface RecoveryPassphrase {

@@ -90,8 +90,16 @@ export default styled(AccountSettings)`
     width: 200px;
   }
 
+  & .ant-checkbox-wrapper-in-form-item {
+    color: var(--acx-neutrals-60)
+  }
+
   & .greyText {
     color: var(--acx-neutrals-50)
+  }
+
+  & .description {
+    font-size: var(--acx-body-4-font-size);
   }
 
   & .descriptionsWrapper {

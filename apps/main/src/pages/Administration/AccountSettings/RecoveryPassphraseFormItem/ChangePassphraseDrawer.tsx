@@ -139,7 +139,7 @@ export const ChangePassphraseDrawer = styled((props: ChangePassphraseDrawerProps
                   </Form.Item>)
               }
             )}
-            <PassphraseIcon onClick={handlePassphraseVisible} />
+            <PassphraseIcon className='ant-input-password-icon' onClick={handlePassphraseVisible} />
             <Tooltip placement='topRight' title={$t({ defaultMessage: 'Must be 16 digits long' })}>
               <QuestionCircleOutlined />
             </Tooltip>
@@ -181,5 +181,9 @@ export const ChangePassphraseDrawer = styled((props: ChangePassphraseDrawerProps
 
   .greyText {
     color: var(--acx-neutrals-50);
+  }
+
+  & span[role="img"].anticon {
+    color: var(--acx-accents-blue-50);
   }
 `

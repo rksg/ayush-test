@@ -4,6 +4,7 @@ import { DEFAULT_ID }                         from '@googlemaps/js-api-loader'
 import { Col, Select, Form, Row, Typography } from 'antd'
 import { useIntl }                            from 'react-intl'
 
+import { showToast }                                           from '@acx-ui/components'
 import { get }                                                 from '@acx-ui/config'
 import { useIsSplitOn, Features }                              from '@acx-ui/feature-toggle'
 import { useGetPreferencesQuery, useUpdatePreferenceMutation } from '@acx-ui/rc/services'
@@ -27,15 +28,23 @@ const MapRegionFormItem = () => {
     = useGetPreferencesQuery({ params })
   const [updatePreferences, { isLoading: isUpdatingPreference }] = useUpdatePreferenceMutation()
 
-  const handleMapRegionChange = (regionCode:string) => {
+  const handleMapRegionChange = async (regionCode:string) => {
     if (!regionCode) return
-    setCurrentRegion(regionCode)
 
     const payload = {
       global: { ...preferenceData?.global, mapRegion: regionCode }
     }
 
-    updatePreferences({ params, payload })
+    try {
+      await updatePreferences({ params, payload })
+
+      setCurrentRegion(regionCode)
+    } catch {
+      showToast({
+        type: 'error',
+        content: $t({ defaultMessage: 'An error occurred' })
+      })
+    }
   }
 
   const updateMapRegion = (regionCode: string) => {
@@ -99,7 +108,7 @@ const MapRegionFormItem = () => {
             $t(MessageMapping.map_region_not_enabled_message)
           }
         </Form.Item>
-        <Typography.Paragraph className='greyText'>
+        <Typography.Paragraph className='description greyText'>
           {$t(MessageMapping.map_region_description)}
         </Typography.Paragraph>
       </Col>

@@ -1,11 +1,12 @@
 import { useState, useCallback, useEffect } from 'react'
 
 import { Col, Form, Row, Typography, Checkbox, Tooltip } from 'antd'
-import moment                                            from 'moment-timezone'
-import { useIntl }                                       from 'react-intl'
-import { useParams }                                     from 'react-router-dom'
-import styled                                            from 'styled-components/macro'
+// import moment                                            from 'moment-timezone'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
+import styled        from 'styled-components/macro'
 
+import { showToast }            from '@acx-ui/components'
 import { SpaceWrapper }         from '@acx-ui/rc/components'
 import {
   useEnableAccessSupportMutation,
@@ -32,8 +33,9 @@ const AccessSupportFormItem = styled((props: AccessSupportFormItemProps) => {
   const params = useParams()
   const { className, userProfileData, isMspEc } = props
   const [isSupportAccessEnabled, setIsSupportAccessEnabled] = useState(false)
-  const [expiryDate, setExpiryDate] = useState('')
-  const [countDown, setCountDown] = useState('')
+  // const [expiryDate, setExpiryDate] = useState('')
+  const [createdDate, setCreatedDate] = useState('')
+  // const [countDown, setCountDown] = useState('')
 
   const [ enableAccessSupport,
     { isLoading: isEnableAccessSupportUpdating }]
@@ -60,44 +62,66 @@ const AccessSupportFormItem = styled((props: AccessSupportFormItemProps) => {
     isFetching: isFetchingTenantDelegation
   }= useGetTenantDelegationQuery({ params }, { skip: isMspDelegateEC })
 
-  const updateExpirationDate = useCallback((responseExpiryDate: string | undefined) => {
-    if (responseExpiryDate) {
-      const newExpiryDate = formatter('dateTimeFormat')(responseExpiryDate)
-      setExpiryDate(newExpiryDate)
+  // const updateExpirationDate = useCallback((responseExpiryDate: string | undefined) => {
+  //   if (responseExpiryDate) {
+  //     const newExpiryDate = formatter('dateTimeFormat')(responseExpiryDate)
+  //     setExpiryDate(newExpiryDate)
 
-      const endDate = moment(responseExpiryDate)
-      const firstDay = moment()
-      const dayDifference = Math.round(endDate.diff(firstDay, 'days', true))
-      const hourDifference = Math.round(endDate.diff(firstDay, 'hours', true))
-      const minutesDifference = Math.round(endDate.diff(firstDay, 'minutes', true))
+  //     const endDate = moment(responseExpiryDate)
+  //     const firstDay = moment()
+  //     const dayDifference = Math.round(endDate.diff(firstDay, 'days', true))
+  //     const hourDifference = Math.round(endDate.diff(firstDay, 'hours', true))
+  //     const minutesDifference = Math.round(endDate.diff(firstDay, 'minutes', true))
 
-      if (dayDifference > 1 || hourDifference >= 24) {
-        setCountDown(dayDifference + (dayDifference === 1 ? ' day' : ' days'))
-      } else if (hourDifference > 1 || minutesDifference >= 60) {
-        // less than a day
-        setCountDown(hourDifference + (hourDifference === 1 ? ' hour' : ' hours'))
-      } else if (minutesDifference > 0) {
-        // less than an hour
-        setCountDown('less than 1 hour')
-      } else {
-        disableAccessSupport({ params: { tenantId: params.tenantId } })
-      }
+  //     if (dayDifference > 1 || hourDifference >= 24) {
+  //       setCountDown(dayDifference + (dayDifference === 1 ? ' day' : ' days'))
+  //     } else if (hourDifference > 1 || minutesDifference >= 60) {
+  //       // less than a day
+  //       setCountDown(hourDifference + (hourDifference === 1 ? ' hour' : ' hours'))
+  //     } else if (minutesDifference > 0) {
+  //       // less than an hour
+  //       setCountDown('less than 1 hour')
+  //     } else {
+  //       try {
+  //         disableAccessSupport({ params: { tenantId: params.tenantId } })
+  //       } catch {
+  //         showToast({
+  //           type: 'error',
+  //           content: $t({ defaultMessage: 'An error occurred' })
+  //         })
+  //       }
+  //     }
+  //   }
+  // }, [$t, disableAccessSupport, params])
+
+  const updateCreatedDate = useCallback((responseCreatedDate: string | undefined) => {
+    if (responseCreatedDate) {
+      const newCreatedDate = formatter('dateTimeFormat')(responseCreatedDate)
+      setCreatedDate(newCreatedDate)
     }
-  }, [disableAccessSupport, params])
+  }, [])
 
-  const handleAccessSupportChange = (e: CheckboxChangeEvent) => {
+  const handleAccessSupportChange = async (e: CheckboxChangeEvent) => {
     const isChecked = e.target.checked
-    isChecked ?
-      enableAccessSupport({ params: { tenantId: params.tenantId } }) :
-      disableAccessSupport({ params: { tenantId: params.tenantId } })
+    try {
+      isChecked ?
+        await enableAccessSupport({ params: { tenantId: params.tenantId } }) :
+        await disableAccessSupport({ params: { tenantId: params.tenantId } })
+    } catch {
+      showToast({
+        type: 'error',
+        content: $t({ defaultMessage: 'An error occurred' })
+      })
+    }
   }
 
   useEffect(() => {
-    updateExpirationDate(ecTenantDelegationData?.expiryDate || tenantDelegationData?.expiryDate)
+    // updateExpirationDate(ecTenantDelegationData?.expiryDate || tenantDelegationData?.expiryDate)
+    updateCreatedDate(ecTenantDelegationData?.createdDate || tenantDelegationData?.createdDate)
     setIsSupportAccessEnabled(
       Boolean(ecTenantDelegationData?.isAccessSupported || tenantDelegationData?.isAccessSupported)
     )
-  }, [ecTenantDelegationData, tenantDelegationData, updateExpirationDate])
+  }, [ecTenantDelegationData, tenantDelegationData, updateCreatedDate])
 
   const isSupportUser = Boolean(userProfileData?.support)
   const isUpdating = isLoadingEcTenantDelegation
@@ -112,35 +136,35 @@ const AccessSupportFormItem = styled((props: AccessSupportFormItemProps) => {
     <Row gutter={24} className={className}>
       <Col span={10}>
         <Form.Item>
-          <Tooltip
-            title={isUpdating ?
-              $t({ defaultMessage: 'Updating, please wait' }) :
-              isDisabled ? $t({ defaultMessage: 'You are not allowed to change this' }) : ''}
-          >
-            <Checkbox
-              onChange={handleAccessSupportChange}
-              checked={isSupportAccessEnabled}
-              value={isSupportAccessEnabled}
-              disabled={isDisabled}
+          <SpaceWrapper justifycontent='flex-start'>
+            <Tooltip
+              title={isUpdating ?
+                $t({ defaultMessage: 'Updating, please wait' }) :
+                isDisabled ? $t({ defaultMessage: 'You are not allowed to change this' }) : ''}
             >
-              {$t({ defaultMessage: 'Enable access to Ruckus support' })}
-            </Checkbox>
-          </Tooltip>
+              <Checkbox
+                onChange={handleAccessSupportChange}
+                checked={isSupportAccessEnabled}
+                value={isSupportAccessEnabled}
+                disabled={isDisabled}
+              >
+                {$t({ defaultMessage: 'Enable access to Ruckus support' })}
+              </Checkbox>
+            </Tooltip>
+
+            { isSupportAccessEnabled && (
+              <Typography.Paragraph className='grantedOnText'>
+                {
+                // eslint-disable-next-line max-len
+                  $t({ defaultMessage: '- Administrator-level access is granted on {createdDate}' }, { createdDate })
+                }
+              </Typography.Paragraph>
+            )}
+          </SpaceWrapper>
         </Form.Item>
 
         <SpaceWrapper className='descriptionsWrapper'>
-          { isSupportAccessEnabled && (
-            <Tooltip placement='bottom' title={expiryDate}>
-              <Typography.Paragraph className='greyText'>
-                {
-                // eslint-disable-next-line max-len
-                  $t({ defaultMessage: 'Access permission will be revoked in {countDown}' }, { countDown })
-                }
-              </Typography.Paragraph>
-            </Tooltip>
-          )}
-
-          <Typography.Paragraph className='greyText'>
+          <Typography.Paragraph className='description greyText'>
             {$t(MessageMapping.enable_access_support_description)}
           </Typography.Paragraph>
         </SpaceWrapper>
@@ -150,6 +174,13 @@ const AccessSupportFormItem = styled((props: AccessSupportFormItemProps) => {
 })`
   input[type=checkbox] {
     padding-right: 5px;
+  }
+
+  .grantedOnText {
+    color: var(--acx-neutrals-70);
+    font-weight: bold;
+    font-size: var(--acx-body-4-font-size);
+    margin: 0;
   }
 `
 

@@ -59,7 +59,8 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
       transformResponse: (response: TenantDelegation[]) => {
         return {
           isAccessSupported: response.length > 0,
-          expiryDate: response[0] && response[0].expiryDate
+          expiryDate: response[0] && response[0].expiryDate,
+          createdDate: response[0] && response[0].createdDate
         }
       },
       providesTags: [{ type: 'administration', id: 'ACCESS_SUPPORT' }]
@@ -74,7 +75,8 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
       transformResponse: (response: TenantDelegation[]) => {
         return {
           isAccessSupported: response.length > 0,
-          expiryDate: response[0] && response[0].expiryDate
+          expiryDate: response[0] && response[0].expiryDate,
+          createdDate: response[0] && response[0].createdDate
         }
       },
       providesTags: [{ type: 'administration', id: 'ACCESS_SUPPORT' }]
@@ -90,7 +92,8 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
       transformResponse: (response: CommonResult) => {
         return {
           isAccessSupported: true,
-          expiryDate: (response.response as TenantDelegation).expiryDate
+          expiryDate: (response.response as TenantDelegation).expiryDate,
+          createdDate: (response.response as TenantDelegation).createdDate
         }
       },
       invalidatesTags: [{ type: 'administration', id: 'ACCESS_SUPPORT' }]

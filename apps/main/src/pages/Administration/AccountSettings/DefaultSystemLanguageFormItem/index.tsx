@@ -20,7 +20,7 @@ const DefaultSystemLanguageFormItem = () => {
             options={supportedLangs}
           />
         </Form.Item>
-        <Typography.Paragraph className='greyText'>
+        <Typography.Paragraph className='description greyText'>
           {
             $t(MessageMapping.default_system_language_description)
           }

@@ -22,6 +22,7 @@ const fakeData = '3577 5764 1724 9799'
 
 describe('Recovery Network Passphrase Drawer', () => {
   const mockedSetVisible = jest.fn()
+
   beforeEach(() => {
     store.dispatch(administrationApi.util.resetApiState())
   })

@@ -35,11 +35,11 @@ const RecoveryPassphraseFormItem = styled((props:RecoveryPassphraseFormItemProps
         <Col span={12}>
           <Form.Item
             label={$t({ defaultMessage: 'Recovery Network Passphrase' })}
+            tooltip={$t(MessageMapping.recovery_passphrase_tooltip)}
           >
             {hasAp ? (
               <SpaceWrapper justifycontent='flex-start'>
                 <Form.Item
-                  tooltip={$t(MessageMapping.recovery_passphrase_tooltip)}
                   noStyle
                 >
                   <Input.Password
@@ -65,7 +65,7 @@ const RecoveryPassphraseFormItem = styled((props:RecoveryPassphraseFormItemProps
               ]}
               renderItem={(item) => (
                 <List.Item>
-                  <Typography.Text className='greyText'>
+                  <Typography.Text className='description greyText'>
                     {item}
                   </Typography.Text>
                 </List.Item>
@@ -88,6 +88,10 @@ const RecoveryPassphraseFormItem = styled((props:RecoveryPassphraseFormItemProps
     & > input {
       text-align: center;
     }
+  }
+
+  & span[role="img"].anticon {
+    color: var(--acx-accents-blue-50);
   }
 `
 

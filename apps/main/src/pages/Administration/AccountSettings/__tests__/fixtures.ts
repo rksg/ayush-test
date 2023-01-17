@@ -37,6 +37,7 @@ export const fakeTenantDelegation = [
     status: 'ACCEPTED',
     delegatedBy: 'dog1551@email.com',
     expiryDate: '2023-01-30T11:26:48.101+00:00',
+    createdDate: '2023-01-10T11:26:48.101+00:00',
     delegatedToName: 'Ruckus Support'
   }
 ]

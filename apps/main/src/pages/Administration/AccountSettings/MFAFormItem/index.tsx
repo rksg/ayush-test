@@ -3,11 +3,11 @@ import TextArea                                       from 'antd/lib/input/TextA
 import { useIntl }                                    from 'react-intl'
 import styled                                         from 'styled-components/macro'
 
-import { Card, showActionModal }       from '@acx-ui/components'
-import { SpaceWrapper }                from '@acx-ui/rc/components'
-import { useUpdateMFAAccountMutation } from '@acx-ui/rc/services'
-import { MFAStatus, MFASession }       from '@acx-ui/rc/utils'
-import { useParams }                   from '@acx-ui/react-router-dom'
+import { Card, showActionModal, showToast } from '@acx-ui/components'
+import { SpaceWrapper }                     from '@acx-ui/rc/components'
+import { useUpdateMFAAccountMutation }      from '@acx-ui/rc/services'
+import { MFAStatus, MFASession }            from '@acx-ui/rc/utils'
+import { useParams }                        from '@acx-ui/react-router-dom'
 
 import { MessageMapping } from '../MessageMapping'
 
@@ -41,13 +41,20 @@ const MFAFormItem = styled((props: MFAFormItemProps) => {
       okText: isChecked
         ? $t({ defaultMessage: 'Enable MFA' })
         : $t({ defaultMessage: 'Disable MFA' }),
-      onOk: () => {
-        updateMFAAccount({
-          params: {
-            tenantId: params.tenantId,
-            enable: isChecked + ''
-          }
-        })
+      onOk: async () => {
+        try {
+          await updateMFAAccount({
+            params: {
+              tenantId: params.tenantId,
+              enable: isChecked + ''
+            }
+          })
+        } catch {
+          showToast({
+            type: 'error',
+            content: $t({ defaultMessage: 'An error occurred' })
+          })
+        }
       }
     })
   }
@@ -86,7 +93,7 @@ const MFAFormItem = styled((props: MFAFormItemProps) => {
             ]}
             renderItem={(item) => (
               <List.Item>
-                <Typography.Text className='greyText'>
+                <Typography.Text className='description greyText'>
                   {item}
                 </Typography.Text>
               </List.Item>
@@ -98,10 +105,11 @@ const MFAFormItem = styled((props: MFAFormItemProps) => {
               title={$t({ defaultMessage: 'Recovery Codes' })}
               type='no-border'
             >
-              <Typography.Text className='greyText'>
+
+              <Typography.Text className='description recoveryCodeDescription'>
                 {$t(MessageMapping.enable_mfa_copy_codes_help_1)}
               </Typography.Text>
-              <Typography.Text className='greyText'>
+              <Typography.Text className='description recoveryCodeDescription'>
                 {$t(MessageMapping.enable_mfa_copy_codes_help_2)}
               </Typography.Text>
               <TextArea
@@ -121,8 +129,17 @@ const MFAFormItem = styled((props: MFAFormItemProps) => {
     </Row>
   )
 })`
-  input[type=checkbox] {
+  & input[type=checkbox] {
     padding-right: 5px;
+  }
+
+  & .recoveryCodeDescription {
+    color: var(--acx-neutrals-70);
+  }
+
+  & textarea {
+    background-color: var(--acx-neutrals-20);
+    margin-top: 15px;
   }
 `
 

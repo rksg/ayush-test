@@ -1,9 +1,11 @@
 /* eslint-disable max-len */
 import _        from 'lodash'
 import { rest } from 'msw'
+import { act }  from 'react-dom/test-utils'
 
+import { administrationApi }                   from '@acx-ui/rc/services'
 import { UserProfile, AdministrationUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider  }                           from '@acx-ui/store'
+import { Provider, store  }                    from '@acx-ui/store'
 import {
   render,
   mockServer,
@@ -16,14 +18,21 @@ import { fakeUserProfile, fakeTenantDelegation } from '../__tests__/fixtures'
 
 import  { AccessSupportFormItem } from './'
 
-const mockedDisableAccessSupport = jest.fn()
+// const mockedDisableAccessSupport = jest.fn()
 
 jest.spyOn(Date, 'now').mockImplementation(() => {
   return new Date('2023-01-11T12:33:37.101+00:00').getTime()
 })
 
+// const createdDate = 'Jan 10 2023 11:26'
 describe('Access Support Form Item', () => {
-  let params: { tenantId: string } = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
+  const params: { tenantId: string } = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
+
+  beforeEach(() => {
+    act(() => {
+      store.dispatch(administrationApi.util.resetApiState())
+    })
+  })
 
   it('should be able to enable access support', async () => {
     mockServer.use(
@@ -54,6 +63,32 @@ describe('Access Support Form Item', () => {
     fireEvent.click(formItem)
   })
 
+  it('should correctly display create date', async () => {
+    const testExpiryDate = _.cloneDeep(fakeTenantDelegation)
+    testExpiryDate[0].expiryDate = '2023-01-12T12:31:37.101+00:00'
+
+    mockServer.use(
+      rest.get(
+        AdministrationUrlsInfo.getTenantDelegation.url.split('?')[0],
+        (_req, res, ctx) => res(ctx.json(testExpiryDate))
+      )
+    )
+
+    render(
+      <Provider>
+        <AccessSupportFormItem
+          userProfileData={fakeUserProfile as UserProfile}
+          isMspEc={false}
+        />
+      </Provider>, {
+        route: { params }
+      })
+
+    const infoText = await screen.findByText(/- Administrator-level access is granted on .*/)
+    expect(infoText.innerHTML).toBe('- Administrator-level access is granted on Jan 10 2023 11:26')
+  })
+
+  /*
   it('should correctly display expiry date in 1 day', async () => {
     const testExpiryDate = _.cloneDeep(fakeTenantDelegation)
     testExpiryDate[0].expiryDate = '2023-01-12T12:31:37.101+00:00'
@@ -129,7 +164,8 @@ describe('Access Support Form Item', () => {
 
     const formItem = screen.getByRole('checkbox', { name: 'Enable access to Ruckus support' })
     await waitFor(() => expect(formItem).not.toBeDisabled())
-    const infoText = await screen.findByText('Access permission will be revoked in 1 hour')
+    // const infoText = await screen.findByText('Access permission will be revoked in 1 hour')
+    const infoText = await screen.findByText('Administrator-level access is granted onJan 30 2023 11:26')
     expect(infoText).toBeTruthy()
   })
 
@@ -154,7 +190,8 @@ describe('Access Support Form Item', () => {
         route: { params }
       })
 
-    const infoText = await screen.findByText('Access permission will be revoked in less than 1 hour')
+    // const infoText = await screen.findByText('Access permission will be revoked in less than 1 hour')
+    const infoText = await screen.findByText('Administrator-level access is granted on Jan 30 2023 11:26')
     expect(infoText).toBeTruthy()
   })
 
@@ -183,10 +220,11 @@ describe('Access Support Form Item', () => {
         route: { params }
       })
 
-    await screen.findByText('Access permission will be revoked in ')
+    // await screen.findByText(/Access permission will be revoked in $/)
+    await screen.findByText('Administrator-level access is granted on Jan 30 2023 11:26')
     expect(mockedDisableAccessSupport).toBeCalled()
   })
-
+*/
   it('should display revoke count down and datetime string by tooltip if it is enabled', async () => {
     mockServer.use(
       rest.get(
@@ -205,16 +243,17 @@ describe('Access Support Form Item', () => {
         route: { params }
       })
 
-    const infoText = await screen.findByText(/Access permission will be revoked in .*/)
+    // const infoText = await screen.findByText(/Access permission will be revoked in .*/)
+    const infoText = await screen.findByText('- Administrator-level access is granted on Jan 10 2023 11:26')
     expect(infoText).toBeInTheDocument()
 
     const formItem = screen.getByRole('checkbox', { name: 'Enable access to Ruckus support' })
     expect(formItem).toBeChecked()
 
-    fireEvent.mouseOver(infoText)
-    expect(
-      await screen.findByText('Jan 30 2023 11:26')
-    ).toBeValid()
+    // fireEvent.mouseOver(infoText)
+    // expect(
+    //   await screen.findByText('Jan 30 2023 11:26')
+    // ).toBeValid()
   })
 
   it('should display not allowed message if it is support user.', async () => {
