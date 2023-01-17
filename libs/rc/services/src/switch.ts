@@ -472,7 +472,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Switch', id: 'DHCP' }]
     }),
-    getDhcpLeases: build.query<TableResult<SwitchDhcpLease>, RequestPayload>({
+    getDhcpLeases: build.query<SwitchDhcpLease[], RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
         const doDhcpServerLeaseTableInfo = {
           ...createHttpRequest(SwitchUrlsInfo.dhcpLeaseTable, arg.params)
@@ -495,10 +495,10 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
 
         const getDhcpLeasesQuery = await pollingDhcpLease()
-        const result = getDhcpLeasesQuery.data as TroubleshootingResult
+        const leaseResult = getDhcpLeasesQuery.data as TroubleshootingResult
 
-        return result.response
-          ? { data: JSON.parse(result.response.result) }
+        return leaseResult?.response?.dhcpServerLeaseList
+          ? { data: leaseResult.response.dhcpServerLeaseList }
           : { error: getDhcpLeasesQuery.error as FetchBaseQueryError }
       }
     })

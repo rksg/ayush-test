@@ -118,7 +118,8 @@ export interface TroubleshootingResult {
       macAddressTablePortIdentify: string
       macAddressTableVlanId: string
       macAddressTableAddress: string,
-      macAddressTableType: TroubleshootingMacAddressOptionsEnum
+      macAddressTableType: TroubleshootingMacAddressOptionsEnum,
+      dhcpServerLeaseList?: SwitchDhcpLease[]
   }
 }
 

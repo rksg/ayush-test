@@ -11,8 +11,7 @@ import {
 import {
   IP_ADDRESS_TYPE,
   isOperationalSwitch,
-  SwitchDhcpLease,
-  useTableQuery
+  SwitchDhcpLease
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -94,11 +93,9 @@ export function SwitchDhcpTab () {
 
 export function SwitchDhcpLeaseTable () {
   const { $t } = useIntl()
+  const { switchId, tenantId } = useParams()
 
-  const tableQuery = useTableQuery({
-    useQuery: useGetDhcpLeasesQuery,
-    defaultPayload: {}
-  })
+  const { data: leaseData, isLoading } = useGetDhcpLeasesQuery({ params: { switchId, tenantId } })
 
   const columns: TableProps<SwitchDhcpLease>['columns'] = [
     {
@@ -125,12 +122,10 @@ export function SwitchDhcpLeaseTable () {
   ]
 
   return (
-    <Loader states={[tableQuery]}>
+    <Loader states={[{ isLoading }]}>
       <Table
         columns={columns}
-        dataSource={tableQuery.data?.data}
-        pagination={tableQuery.pagination}
-        onChange={tableQuery.handleTableChange}
+        dataSource={leaseData}
         rowKey='clientId' />
     </Loader>
   )
