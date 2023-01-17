@@ -142,7 +142,7 @@ export function ServicesForm () {
 
   const [wifiCallingSettingList, setWifiCallingSettingList] = useState([] as WifiCallingSetting[])
 
-  const validatorWifiCallingSetting = () => {
+  const validateWifiCallingSetting = () => {
     if (enableWifiCalling && wifiCallingSettingList.length === 0) {
       return Promise.reject($t({
         defaultMessage: 'Could not enable wifi-calling with no profiles selected'
@@ -194,7 +194,7 @@ export function ServicesForm () {
               name={['wlan', 'advancedCustomization', 'wifiCallingIds']}
               initialValue={wifiCallingSettingList}
               rules={[
-                { validator: () => validatorWifiCallingSetting() }
+                { validator: () => validateWifiCallingSetting() }
               ]}
             >
               {enableWifiCalling && <WifiCallingSettingModal />}
