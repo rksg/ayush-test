@@ -110,7 +110,7 @@ const WifiCallingDrawer = (props: WifiCallingDrawerProps) => {
 
               form.submit()
 
-              if (!addAnotherRuleChecked) {
+              if (!addAnotherRuleChecked || state.ePDG.length === 4) {
                 onClose()
               }
             } catch (error) {
