@@ -94,7 +94,11 @@ export function KpiWidget ({
   let numerator=0, denominator=0
   if(histogram){
     const histQueryResults = healthApi.useKpiHistogramQuery(
-      { ...filters, startDate, endDate, kpi: name })
+      { ...filters,
+        path: venueFilter ? [...filters.path, venueFilter] : filters.path,
+        startDate,
+        endDate,
+        kpi: name })
     const { success, total } = histQueryResults.data ?
       tranformHistResponse({ ...histQueryResults.data!,
         kpi: name, threshold: threshold as number }) : { success: 0, total: 0 }
