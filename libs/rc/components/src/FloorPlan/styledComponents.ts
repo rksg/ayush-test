@@ -31,3 +31,14 @@ export const EpmtyFloorplanContainer = styled('div')`
   flex-direction: column;
   justify-content: center;
 `
+
+export const RogueApButton = styled(Button)`
+ &:hover, &:visited {
+  svg path {
+    stroke: var(--acx-accents-orange-50) !important
+  }
+}
+svg path {
+  stroke: var(--acx-accents-blue-50) !important
+}
+`

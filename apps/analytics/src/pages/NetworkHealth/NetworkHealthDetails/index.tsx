@@ -43,7 +43,7 @@ function NetworkHealthDetails () {
         breadcrumb={[
           {
             text: $t({ defaultMessage: 'Service Validation' }),
-            link: '/serviceValidation/networkHealth'
+            link: '/serviceValidation'
           }
         ]}
         footer={
@@ -57,4 +57,4 @@ function NetworkHealthDetails () {
   )
 }
 
-export { NetworkHealthDetails }
+export default NetworkHealthDetails

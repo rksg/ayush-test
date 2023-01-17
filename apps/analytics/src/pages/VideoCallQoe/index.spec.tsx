@@ -1,7 +1,7 @@
 import { Provider }       from '@acx-ui/store'
 import { screen, render } from '@acx-ui/test-utils'
 
-import { VideoCallQoePage } from '.'
+import VideoCallQoePage from '.'
 
 describe('VideoCallQoePage', () => {
   const params = {

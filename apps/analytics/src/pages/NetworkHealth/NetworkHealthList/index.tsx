@@ -3,7 +3,7 @@ import { useIntl } from 'react-intl'
 import { PageHeader } from '@acx-ui/components'
 import { NetworkHealthTable } from './NetworkHealthTable'
 
-function NetworkHealthPage () {
+function NetworkHealthList () {
   const { $t } = useIntl()
   return (
     <>
@@ -21,4 +21,4 @@ function NetworkHealthPage () {
   )
 }
 
-export { NetworkHealthPage }
+export default NetworkHealthList

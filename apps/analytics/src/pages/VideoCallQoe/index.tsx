@@ -10,10 +10,10 @@ function VideoCallQoePage () {
       breadcrumb={[
         {
           text: $t({ defaultMessage: 'Service Validation' }),
-          link: '/serviceValidation/videoCallQoe'
+          link: '/serviceValidation'
         }
       ]}
     />
   )
 }
-export { VideoCallQoePage }
+export default VideoCallQoePage
