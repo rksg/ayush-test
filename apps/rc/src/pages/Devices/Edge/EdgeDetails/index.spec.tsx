@@ -21,15 +21,15 @@ jest.mock('react-router-dom', () => ({
 
 describe('EdgeDetails', () => {
   const currentEdge = mockEdgeList.data[0]
-  let params: { tenantId: string, serialNumber: string, activeTab: string } =
-  {
-    tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-    serialNumber: currentEdge.serialNumber,
-    activeTab: 'overview'
-  }
-
+  let params: { tenantId: string, serialNumber: string, activeTab: string }
 
   beforeEach(() => {
+    params = {
+      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+      serialNumber: currentEdge.serialNumber,
+      activeTab: 'overview'
+    }
+
     mockServer.use(
       rest.post(
         EdgeUrlsInfo.getEdgeList.url,
@@ -104,7 +104,6 @@ describe('EdgeDetails', () => {
   })
 
   it('test switch tab', async () => {
-    params['activeTab'] = 'overview'
     const user = userEvent.setup()
     render(<Provider>
       <EdgeDetails />
