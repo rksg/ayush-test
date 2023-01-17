@@ -22,7 +22,9 @@ export function PoePdTable (props: ChartProps) {
       dataIndex: 'name',
       key: 'name',
       render: (_, { mac, serial, name }) => isSwitchEnabled
-        ? <TenantLink to={`devices/switch/${mac}/${serial}/details/overview`}>{name}</TenantLink>
+        ? <TenantLink to={`devices/switch/${mac.toLowerCase()}/${serial}/details/overview`}>
+          {name}
+        </TenantLink>
         : <Tooltip title={$t(notAvailableMsg)}>{name}</Tooltip>,
       fixed: 'left',
       sorter: { compare: sortProp('name', defaultSort) },
