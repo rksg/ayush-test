@@ -18,8 +18,7 @@ export const getData = () => {
   return data as [TimeStamp, number][]
 }
 const seriesNames = [
-  ['New Clients', 'Impacted Clients', 'Connected Clients'],
-  ['Total Failures', 'EAP Failures', 'EAP Attempts']
+  ['New Clients', 'Impacted Clients', 'Connected Clients']
 ]
 export const getSeriesData = (index = 0) => {
   const series = []
@@ -34,8 +33,6 @@ export const getSeriesData = (index = 0) => {
 }
 
 storiesOf('MultiBarTimeSeriesChart', module)
-  .addDecorator(withKnobs)
-
   .add('Chart View', () => (
     <MultiBarTimeSeriesChart
       style={{ width: 504, height: 300 }}
@@ -51,3 +48,38 @@ storiesOf('MultiBarTimeSeriesChart', module)
       hasXaxisLabel
     />
   ))
+  .add('Zoom enabled', () => (
+    <MultiBarTimeSeriesChart
+      style={{ width: 504, height: 300 }}
+      data={[
+        {
+          key: 'SwitchStatus',
+          name: 'switch',
+          color: 'green',
+          data: [[1673841150, 'SwitchStatus', 1673841160]]
+        }
+      ]}
+      chartBoundary={[1673841000, 1673841190]}
+      hasXaxisLabel
+      zoomEnabled
+    />
+  ))
+  .add('With custom tooltip', () => (
+    <MultiBarTimeSeriesChart
+      style={{ width: 504, height: 300 }}
+      data={[
+        {
+          key: 'SwitchStatus',
+          name: 'switch',
+          color: 'green',
+          data: [[1673841150, 'SwitchStatus', 1673841160]]
+        }
+      ]}
+      chartBoundary={[1673841000, 1673841190]}
+      hasXaxisLabel
+      zoomEnabled
+    />
+  ))
+
+
+
