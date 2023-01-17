@@ -65,13 +65,14 @@ export function WifiCallingSettingModal () {
     setVisible(true)
   }
 
-  const handleOk = () => {
+  const handleOk = async () => {
     data && setWifiCallingSettingList(data.filter(data => targetKeys.indexOf(data.id) !== -1))
     setVisible(false)
     form.setFieldValue(
       ['wlan', 'advancedCustomization', 'wifiCallingIds'],
       targetKeys
     )
+    await form.validateFields()
   }
 
   const handleCancel = () => {
