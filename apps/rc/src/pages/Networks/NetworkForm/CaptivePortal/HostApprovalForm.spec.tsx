@@ -2,9 +2,10 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo, WifiUrlsInfo }                                              from '@acx-ui/rc/utils'
-import { Provider }                                                                  from '@acx-ui/store'
-import { mockServer, render, screen, fireEvent, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { StepsForm }                             from '@acx-ui/components'
+import { CommonUrlsInfo, WifiUrlsInfo }          from '@acx-ui/rc/utils'
+import { Provider }                              from '@acx-ui/store'
+import { mockServer, render, screen, fireEvent } from '@acx-ui/test-utils'
 
 import {
   venuesResponse,
@@ -15,21 +16,9 @@ import {
   dhcpResponse,
   hostapprovalData
 } from '../__tests__/fixtures'
-import NetworkForm from '../NetworkForm'
+import NetworkFormContext from '../NetworkFormContext'
 
-async function fillInBeforeSettings (networkName: string) {
-  const insertInput = await screen.findByLabelText(/Network Name/)
-  fireEvent.change(insertInput, { target: { value: networkName } })
-  fireEvent.blur(insertInput)
-  const validating = await screen.findByRole('img', { name: 'loading' })
-  await waitForElementToBeRemoved(validating)
-  await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
-
-  await waitFor(async () => {
-    expect(await screen.findByRole('heading', { level: 3, name: 'Portal Type' })).toBeVisible()
-  })
-  await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
-}
+import { HostApprovalForm } from './HostApprovalForm'
 
 describe('CaptiveNetworkForm-HostApproval', () => {
   beforeEach(() => {
@@ -63,12 +52,17 @@ describe('CaptiveNetworkForm-HostApproval', () => {
   const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', action: 'edit' }
 
   it('should test Host approval network successfully', async () => {
-    render(<Provider><NetworkForm /></Provider>, { route: { params } })
-    await fillInBeforeSettings('Host approval network test')
-
+    render(<Provider><NetworkFormContext.Provider
+      value={{
+        editMode: true, cloneMode: true, data: hostapprovalData
+      }}
+    ><StepsForm><StepsForm.StepForm><HostApprovalForm /></StepsForm.StepForm>
+      </StepsForm></NetworkFormContext.Provider></Provider>, { route: { params } })
+    await userEvent.click(await screen.findByRole('checkbox', { name: /Redirect users to/ }))
     await userEvent.click(await screen.findByRole('checkbox', { name: /Redirect users to/ }))
     const redirectUrlInput = await screen.findByPlaceholderText('e.g. http://www.example.com')
     fireEvent.change(redirectUrlInput, { target: { value: 'https://www.commscope.com/ruckus/' } })
+    fireEvent.blur(redirectUrlInput)
     await userEvent.click(await screen.findByRole('checkbox',
       { name: /Enable Ruckus DHCP service/ }))
     // await userEvent.click(await screen.findByText('More details'))
@@ -83,7 +77,6 @@ describe('CaptiveNetworkForm-HostApproval', () => {
       { name: /1 Hour/ }))
     await userEvent.click(await screen.findByRole('checkbox',
       { name: /1 Day/ }))
-    await userEvent.click(await screen.findByText('Next'))
   })
 
 })

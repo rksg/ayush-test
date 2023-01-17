@@ -1,20 +1,20 @@
 import { useState } from 'react'
-import React        from 'react'
 
 import { Row, Col, Form, Input } from 'antd'
 import TextArea                  from 'antd/lib/input/TextArea'
 import _                         from 'lodash'
 import { useIntl }               from 'react-intl'
-import { useParams }             from 'react-router-dom'
 
 import { Button, Loader, showToast, Tooltip }            from '@acx-ui/components'
 import { QuestionMarkCircleOutlined }                    from '@acx-ui/icons'
 import { useTraceRouteApMutation }                       from '@acx-ui/rc/services'
 import { targetHostRegExp, WifiTroubleshootingMessages } from '@acx-ui/rc/utils'
 
+import { useApContext } from '../ApContext'
+
 export function ApTraceRouteForm () {
   const { $t } = useIntl()
-  const { tenantId, serialNumber } = useParams()
+  const { tenantId, serialNumber } = useApContext()
   const [form] = Form.useForm()
   const [isValid, setIsValid] = useState(false)
   const [traceRouteAp, { isLoading: isTraceRouteAp }] = useTraceRouteApMutation()

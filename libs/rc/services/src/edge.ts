@@ -9,6 +9,7 @@ import {
   EdgeStaticRouteConfig,
   EdgeStatus,
   EdgeSubInterface,
+  EdgePortStatus,
   EdgeUrlsInfo,
   PaginationQueryResult,
   RequestPayload,
@@ -100,7 +101,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         }
       },
       transformResponse (result: TableResult<EdgeStatus>) {
-        return transformEdgeStatus(result?.data[0])
+        return result?.data[0]
       }
     }),
     getDnsServers: build.query<EdgeDnsServers, RequestPayload>({
@@ -205,6 +206,18 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Edge', id: 'DETAIL_ROUTES' }]
+    }),
+    getEdgePortsStatusList: build.query<EdgePortStatus[], RequestPayload>({
+      query: ({ payload, params }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getEdgePortStatusList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      transformResponse (result: TableResult<EdgePortStatus>) {
+        return result?.data
+      }
     })
   })
 })
@@ -227,11 +240,6 @@ export const {
   useDeleteSubInterfacesMutation,
   useGetStaticRoutesQuery,
   useUpdateStaticRoutesMutation,
-  useEdgeBySerialNumberQuery
+  useEdgeBySerialNumberQuery,
+  useGetEdgePortsStatusListQuery
 } = edgeApi
-
-const transformEdgeStatus = (result: EdgeStatus) => {
-  const edge = JSON.parse(JSON.stringify(result))
-
-  return edge
-}

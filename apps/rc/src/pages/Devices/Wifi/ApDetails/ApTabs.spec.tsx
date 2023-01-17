@@ -8,7 +8,14 @@ import {
 } from './__tests__/fixtures'
 import ApTabs from './ApTabs'
 
-const params = { serialNumber: 'ap-id', tenantId: 'tenant-id' }
+const params = {
+  tenantId: 'tenant-id',
+  serialNumber: 'ap-id'
+}
+jest.mock('./ApContext', () => ({
+  useApContext: () => params
+}))
+
 const mockedUsedNavigate = jest.fn()
 
 jest.mock('react-router-dom', () => ({

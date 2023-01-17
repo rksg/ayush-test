@@ -439,3 +439,14 @@ export interface PaginationQueryResult<T> {
   totalCount: number
   content: T[]
 }
+
+export interface PlmMessageBanner {
+  createdBy: string,
+  createdDate: string,
+  description: string,
+  endTime: string,
+  id: string,
+  startTime: string,
+  tenantType: string,
+  updatedDate: string
+}

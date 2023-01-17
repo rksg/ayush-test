@@ -64,8 +64,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           showActivityMessage(msg, [
-            'Add Rogue AP Policy Profile',
-            'Update Rogue AP Policy Profile'
+            'UpdateRogueApPolicyProfile'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
           })
@@ -123,9 +122,9 @@ export const policyApi = basePolicyApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           showActivityMessage(msg, [
-            'Add Rogue AP Policy Profile',
-            'Update Rogue AP Policy Profile',
-            'Delete Rogue AP Policy Profile'
+            'AddRogueApPolicyProfile',
+            'UpdateRogueApPolicyProfile',
+            'DeleteRogueApPolicyProfile'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
           })

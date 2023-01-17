@@ -1,7 +1,7 @@
 import React, { useMemo, useState, Key, useCallback, useEffect } from 'react'
 
 import ProTable, { ProTableProps as ProAntTableProps } from '@ant-design/pro-table'
-import { Space }                                       from 'antd'
+import { Menu, MenuProps, Space }                      from 'antd'
 import _                                               from 'lodash'
 import Highlighter                                     from 'react-highlight-words'
 import { useIntl }                                     from 'react-intl'
@@ -9,8 +9,9 @@ import AutoSizer                                       from 'react-virtualized-a
 
 import { SettingsOutlined } from '@acx-ui/icons'
 
-import { Button }  from '../Button'
-import { Tooltip } from '../Tooltip'
+import { Button, DisabledButton } from '../Button'
+import { Dropdown }               from '../Dropdown'
+import { Tooltip }                from '../Tooltip'
 
 import { FilterValue, getFilteredData, renderFilter, renderSearch } from './filters'
 import { ResizableColumn }                                          from './ResizableColumn'
@@ -49,11 +50,13 @@ export interface TableProps <RecordType>
     actions?: Array<{
       label: string,
       disabled?: boolean,
-      onClick: () => void
+      tooltip?: string,
+      onClick?: () => void,
+      dropdownMenu?: Omit<MenuProps, 'placement'>
     }>
     rowActions?: Array<{
       label: string,
-      disabled?: boolean,
+      disabled?: boolean | ((selectedItems: RecordType[]) => boolean),
       tooltip?: string,
       visible?: boolean | ((selectedItems: RecordType[]) => boolean),
       onClick: (selectedItems: RecordType[], clearSelection: () => void) => void
@@ -73,7 +76,8 @@ const defaultPagination = {
   defaultPageSize: 10,
   pageSizeOptions: [5, 10, 20, 25, 50, 100],
   position: ['bottomCenter'],
-  showTotal: false
+  showTotal: false,
+  showSizeChanger: true
 }
 
 function useSelectedRowKeys <RecordType> (
@@ -157,16 +161,13 @@ function Table <RecordType extends Record<string, any>> (
   } : false
 
   const rowKey = (props.rowKey ?? 'key')
-
   const [selectedRowKeys, setSelectedRowKeys] = useSelectedRowKeys(props.rowSelection)
-
   const getSelectedRows = useCallback((selectedRowKeys: Key[]) => {
     return props.dataSource?.filter(item => {
       return selectedRowKeys.includes(typeof rowKey === 'function' ?
         rowKey(item) : item[rowKey] as unknown as Key)
     }) ?? []
   }, [props.dataSource, rowKey])
-
   const onRowClick = (record: RecordType) => {
     if (!props.rowSelection) return
     if (rowSelection?.getCheckboxProps?.(record)?.disabled) return
@@ -215,6 +216,7 @@ function Table <RecordType extends Record<string, any>> (
     const filteredValue = filterValues[key as keyof FilterValue]
     return filteredValue
   })
+
   const hasRowSelected = Boolean(selectedRowKeys.length)
   const hasHeader = !hasRowSelected && (Boolean(filterables.length) || Boolean(searchables.length))
   const rowSelection: TableProps<RecordType>['rowSelection'] = props.rowSelection ? {
@@ -226,11 +228,22 @@ function Table <RecordType extends Record<string, any>> (
       props.rowSelection?.onChange?.(keys, rows, info)
     }
   } : undefined
+
+  let pagination: false | TablePaginationConfig = false
+  if (type === 'tall') {
+    pagination = { ...defaultPagination, ...props.pagination || {} } as TablePaginationConfig
+    if ((pagination.total || dataSource?.length || 0) < pagination.defaultPageSize!) {
+      pagination = false
+    }
+  }
+
   const hasEllipsisColumn = columns.some(column => column.ellipsis)
+
   const components = _.merge({},
     props.components || {},
     type === 'tall' ? { header: { cell: ResizableColumn } } : {}
   ) as TableProps<RecordType>['components']
+
   const onRow: TableProps<RecordType>['onRow'] = function (record) {
     const defaultOnRow = props.onRow?.(record)
     return {
@@ -258,21 +271,40 @@ function Table <RecordType extends Record<string, any>> (
   const WrappedTable = (style: { width?: number }) => <UI.Wrapper
     style={style}
     $type={type}
-    $rowSelectionActive={Boolean(props.rowSelection) && !hasHeader}
+    $rowSelectionActive={
+      Boolean(props.rowSelection) && !hasHeader && props.tableAlertRender !== false
+    }
   >
     <UI.TableSettingsGlobalOverride />
     {props.actions && <Space
       size={0}
       split={<UI.Divider type='vertical' />}
       style={{ display: 'flex', justifyContent: 'flex-end', margin: '3px 0' }}>
-      {props.actions?.map((action, index) => <Button
-        key={index}
-        type='link'
-        size='small'
-        disabled={action.disabled}
-        onClick={action.onClick}
-        children={action.label}
-      />)}
+      {props.actions?.map((action, index) => {
+        const content = !action.disabled
+          ? <Button
+            key={index}
+            type='link'
+            size='small'
+            onClick={action.dropdownMenu ? undefined : action.onClick}
+            children={action.label}
+          />
+          : <DisabledButton
+            key={index}
+            type='link'
+            size='small'
+            title={action.tooltip || ''}
+            children={action.label}
+          />
+        return action.dropdownMenu
+          ? <Dropdown
+            key={`dropdown-${index}`}
+            overlay={<Menu {...action.dropdownMenu} />}
+            disabled={action.disabled}>
+            {() => content }
+          </Dropdown>
+          : content
+      })}
     </Space>}
     {hasHeader && (
       <UI.Header>
@@ -321,14 +353,12 @@ function Table <RecordType extends Record<string, any>> (
       }}
       scroll={{ x: hasEllipsisColumn || type !== 'tall' ? '100%' : 'max-content' }}
       rowSelection={rowSelection}
-      pagination={(type === 'tall'
-        ? { ...defaultPagination, ...props.pagination || {} } as TablePaginationConfig
-        : false)}
+      pagination={pagination}
       columnEmptyText={false}
       onRow={onRow}
       showSorterTooltip={false}
       tableAlertOptionRender={false}
-      tableAlertRender={({ onCleanSelected }) => (
+      tableAlertRender={props.tableAlertRender ?? (({ onCleanSelected }) => (
         <Space size={32}>
           <Space size={6}>
             <span>
@@ -351,18 +381,23 @@ function Table <RecordType extends Record<string, any>> (
                 : option.visible ?? true
 
               if (!visible) return null
-              return <UI.ActionButton
+              return <Button
+                type='link'
+                size='small'
                 key={option.label}
-                disabled={option.disabled}
+                disabled={typeof option.disabled === 'function'
+                  ? option.disabled(rows)
+                  : option.disabled
+                }
                 onClick={() =>
                   option.onClick(getSelectedRows(selectedRowKeys), () => { onCleanSelected() })}
               >
                 {label}
-              </UI.ActionButton>
+              </Button>
             })}
           </Space>
         </Space>
-      )}
+      ))}
     />
   </UI.Wrapper>
   if (hasEllipsisColumn) {
