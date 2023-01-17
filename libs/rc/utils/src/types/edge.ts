@@ -45,8 +45,6 @@ export interface EdgeStatus extends EdgeResourceUtilization {
   ip: string
   ports: string
   fwVersion?: string
-  dns1?: string
-  dns2?: string
 }
 export interface EdgeDetails {
   serialNumber: string
@@ -106,5 +104,3 @@ export interface EdgePortStatus {
   ip: string
   sortIdx: number
 }
-
-export type EdgeDNS = string
