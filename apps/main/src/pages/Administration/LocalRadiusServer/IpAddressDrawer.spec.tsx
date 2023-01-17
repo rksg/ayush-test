@@ -116,6 +116,29 @@ describe('IpAddressDrawer', () => {
     let cancelButton = screen.getByText('Cancel')
     expect(cancelButton).toBeTruthy()
 
-    fireEvent.click(cancelButton)
+  })
+
+  it('Add show unknown error toast correctly', async () => {
+    mockServer.use(
+      rest.patch(
+        RadiusClientConfigUrlsInfo.updateRadiusClient.url,
+        (req, res, ctx) => res(ctx.status(500), ctx.json({}))
+      )
+    )
+
+    render(
+      <Provider>
+        <IpAddressDrawer
+          visible={true}
+          setVisible={jest.fn()}
+          clientConfig={{}}
+        />
+      </Provider>
+    )
+    // eslint-disable-next-line max-len
+    await userEvent.type(await screen.findByRole('textbox', { name: 'IP Address' }), '192.168.1.1')
+    await userEvent.click(await screen.findByText('Apply'))
+
+    await screen.findByText('An error occurred')
   })
 })
