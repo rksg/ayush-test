@@ -11,9 +11,9 @@ import { useParams }                                                            
 
 import { SwitchDetailsContext } from '../..'
 
-import { BackupModal } from './BackupModal'
-import { ViewConfigurationModal } from './ViewConfigurationModal'
+import { BackupModal }               from './BackupModal'
 import { CompareConfigurationModal } from './CompareConfigurationModal'
+import { ViewConfigurationModal }    from './ViewConfigurationModal'
 
 interface clearTableSelection {
   clearSelection: () => void
@@ -279,7 +279,7 @@ export function SwitchConfigBackupTable () {
       handleCancel={() => setBackupModalVisible(false)}
     />
     {
-      viewVisible && 
+      viewVisible &&
       <ViewConfigurationModal
         data={viewData}
         visible={viewVisible}
@@ -290,7 +290,7 @@ export function SwitchConfigBackupTable () {
       />
     }
     {
-      compareVisible && 
+      compareVisible &&
       <CompareConfigurationModal
         visible={compareVisible}
         configList={tableData}

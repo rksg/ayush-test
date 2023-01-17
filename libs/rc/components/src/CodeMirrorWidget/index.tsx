@@ -1,16 +1,17 @@
 /* eslint-disable max-len */
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 
-import './type.d'
-import * as CodeMirror from 'codemirror'
 
-import * as UI from './styledComponents'
-import * as DiffMatchPatch from 'diff-match-patch'
-import * as MergeViewCodeMirror from 'merge-view-codemirror'
-import { MergeView, MergeViewConfiguration } from 'codemirror/addon/merge/merge.js'
+import './type.d'
+import * as CodeMirror            from 'codemirror'
+import { MergeViewConfiguration } from 'codemirror/addon/merge/merge.js'
+import * as DiffMatchPatch        from 'diff-match-patch'
+import _                          from 'lodash'
+import * as MergeViewCodeMirror   from 'merge-view-codemirror'
 import 'codemirror/addon/selection/active-line.js'
 import 'codemirror/addon/mode/overlay'
-import _ from 'lodash'
+
+import * as UI from './styledComponents'
 
 
 interface CodeMirrorData {
@@ -35,7 +36,6 @@ interface CodeMirrorWidgetProps {
 export const CodeMirrorWidget = forwardRef((props:CodeMirrorWidgetProps, ref) => {
   const { type, data, size } = props
   const [readOnlyCodeMirror, setReadOnlyCodeMirror] = useState(null as unknown as CodeMirror.EditorFromTextArea)
-  const [mergeView, setMergeView] = useState(null as unknown as MergeView)
   const height = size?.height || '450px'
   const width = size?.width || '100%'
 
@@ -103,40 +103,23 @@ export const CodeMirrorWidget = forwardRef((props:CodeMirrorWidgetProps, ref) =>
     }
   }, [readOnlyCodeMirror])
 
-  // useEffect(() => {
-  //   if (mergeView) {
-  //     resizeMergeViewHeight(mergeView)
-  //   }
-  // }, [mergeView])
 
-  const initMergeView = (data: MergeData) => { 
+  const initMergeView = (data: MergeData) => {
     MergeViewCodeMirror.init(CodeMirror, DiffMatchPatch)
-    const target = document.getElementById("codeView") as HTMLElement
+    const target = document.getElementById('codeView') as HTMLElement
     if (target) {
-      const view = CodeMirror.MergeView(target, {
+      CodeMirror.MergeView(target, {
         readOnly: true,
         lineNumbers: true,
         value: htmlDecode(data.left) as string,
         orig: htmlDecode(data.right) as string,
-        mode: "text/html",
+        mode: 'text/html',
         highlightDifferences: true,
         connect: 'align',
         collapseIdentical: false,
-        revertButtons: false,
+        revertButtons: false
       } as MergeViewConfiguration)
-      setMergeView(view)
-      // resizeMergeViewHeight(view)
-    } 
-  }
-  const resizeMergeViewHeight = (mergeView:any) => {
-    if (mergeView.leftOriginal()) {
-      mergeView.leftOriginal()?.setSize(null, height);
     }
-    if (mergeView.rightOriginal()) {
-      mergeView.rightOriginal()?.setSize(null, height);
-    }
-    mergeView.editor().setSize(null, height);
-    mergeView.wrap.style.height = height + "px";
   }
 
   return (

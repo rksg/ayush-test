@@ -1,4 +1,5 @@
 import styled from 'styled-components/macro'
+
 import { Modal } from '@acx-ui/components'
 
 export const ViewModal = styled(Modal)`

@@ -1,17 +1,18 @@
 /* eslint-disable max-len */
 import { useEffect, useState } from 'react'
-import { useIntl } from 'react-intl'
+
 import { Space, Switch, Form, Select } from 'antd'
+import { useIntl }                     from 'react-intl'
 
-import { Button, Descriptions }    from '@acx-ui/components'
-import { CodeMirrorWidget } from '@acx-ui/rc/components'
-import { ConfigurationBackup } from '@acx-ui/rc/utils'
+import { Button, Descriptions } from '@acx-ui/components'
+import { CodeMirrorWidget }     from '@acx-ui/rc/components'
+import { ConfigurationBackup }  from '@acx-ui/rc/utils'
 
-import * as UI         from './styledComponents'
+import * as UI from './styledComponents'
 
 export function CompareConfigurationModal (props:{
   configList: ConfigurationBackup[]
-  compareData: {left:ConfigurationBackup, right:ConfigurationBackup},
+  compareData: { left:ConfigurationBackup, right:ConfigurationBackup },
   visible: boolean,
   handleCancel: () => void
 }) {
@@ -20,7 +21,7 @@ export function CompareConfigurationModal (props:{
   const { compareData, configList, visible, handleCancel } = props
   const [leftData, setLeftData] = useState('')
   const [rightData, setRightData] = useState('')
-  
+
   useEffect(() => {
     if(compareData) {
       setLeftData(compareData.left.config)
@@ -44,86 +45,84 @@ export function CompareConfigurationModal (props:{
     let rightConfig
     configList.every(item => {
       if (item.id === data.leftConfig) {
-        leftConfig = item;
+        leftConfig = item
         setLeftData(leftConfig?.config)
-        findFlag++;
+        findFlag++
       }
       if (item.id === data.rightConfig) {
         rightConfig = item
         setRightData(rightConfig?.config)
-        findFlag++;
+        findFlag++
       }
-      return findFlag < 2 ? true : false;
+      return findFlag < 2 ? true : false
     })
   }
 
-  return <>
-    <UI.CompareModal
-      title={$t({ defaultMessage: 'Compare Configurations' })}
-      visible={visible}
-      onCancel={handleCancel}
-      width={1150}
-      footer={<Button key='back' type='secondary' onClick={handleCancel}>
-        {$t({ defaultMessage: 'Close' })}
-      </Button>
-      }
-    >
-     
-     <Form layout='vertical' wrapperCol={{ span: 14 }} form={form}>
-          <div style={{display: 'flex', position: 'relative'}}>
-            <div>
-              <Form.Item
-                name='leftConfig'
-                label={$t({ defaultMessage: 'Configuration Name' })}
-                children={<Select
-                  options={configList?.map(i => ({ label: i.name, value: i.id }))}
-                  onChange={onConfigChange}
-                />}
-              />
-              <Descriptions labelWidthPercent={25}>
-                <Descriptions.Item
-                  label={$t({ defaultMessage: 'Created' })}
-                  children={compareData.left.createdDate} />
-                <Descriptions.Item
-                  label={$t({ defaultMessage: 'Type' })}
-                  children={compareData.left.backupType} />
-              </Descriptions>
-            </div>
- 
-          <div>
-            <Form.Item
-              name='rightConfig'
-              label={$t({ defaultMessage: 'Configuration Name' })}
-              children={<Select
-                options={configList?.map(i => ({ label: i.name, value: i.id }))}
-                onChange={onConfigChange}
-              />}
-            />
-            <Descriptions labelWidthPercent={25}>
-              <Descriptions.Item
-                label={$t({ defaultMessage: 'Created' })}
-                children={compareData.right.createdDate} />
-              <Descriptions.Item
-                label={$t({ defaultMessage: 'Type' })}
-                children={compareData.right.backupType} />
-            </Descriptions>
-          </div>
-           
-            <Space className="merge-scroll-lock">
-              <label>Synchronised scrolling</label>
-              <Switch
-                defaultChecked={true}
-                onChange={onScrollSyncClick} 
-              />
-            </Space>
-          </div>
-          {
-            leftData && rightData &&
+  return <UI.CompareModal
+    title={$t({ defaultMessage: 'Compare Configurations' })}
+    visible={visible}
+    onCancel={handleCancel}
+    width={1150}
+    footer={<Button key='back' type='secondary' onClick={handleCancel}>
+      {$t({ defaultMessage: 'Close' })}
+    </Button>
+    }
+  >
+
+    <Form layout='vertical' wrapperCol={{ span: 14 }} form={form}>
+      <div style={{ display: 'flex', position: 'relative' }}>
+        <div>
+          <Form.Item
+            name='leftConfig'
+            label={$t({ defaultMessage: 'Configuration Name' })}
+            children={<Select
+              options={configList?.map(i => ({ label: i.name, value: i.id }))}
+              onChange={onConfigChange}
+            />}
+          />
+          <Descriptions labelWidthPercent={25}>
+            <Descriptions.Item
+              label={$t({ defaultMessage: 'Created' })}
+              children={compareData.left.createdDate} />
+            <Descriptions.Item
+              label={$t({ defaultMessage: 'Type' })}
+              children={compareData.left.backupType} />
+          </Descriptions>
+        </div>
+
+        <div>
+          <Form.Item
+            name='rightConfig'
+            label={$t({ defaultMessage: 'Configuration Name' })}
+            children={<Select
+              options={configList?.map(i => ({ label: i.name, value: i.id }))}
+              onChange={onConfigChange}
+            />}
+          />
+          <Descriptions labelWidthPercent={25}>
+            <Descriptions.Item
+              label={$t({ defaultMessage: 'Created' })}
+              children={compareData.right.createdDate} />
+            <Descriptions.Item
+              label={$t({ defaultMessage: 'Type' })}
+              children={compareData.right.backupType} />
+          </Descriptions>
+        </div>
+
+        <Space className='merge-scroll-lock'>
+          <label>Synchronised scrolling</label>
+          <Switch
+            defaultChecked={true}
+            onChange={onScrollSyncClick}
+          />
+        </Space>
+      </div>
+      {
+        leftData && rightData &&
             <div className='code-mirror-container'>
-              <CodeMirrorWidget type='merge' data={{left:leftData, right: rightData}} />
+              <CodeMirrorWidget type='merge' data={{ left: leftData, right: rightData }} />
             </div>
-          }
-         </Form>
-    </UI.CompareModal>
-  </>
+      }
+    </Form>
+  </UI.CompareModal>
 }

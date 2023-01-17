@@ -111,7 +111,7 @@ export function SwitchConfigHistoryTable () {
       />
     </Loader>
     {
-      visible && 
+      visible &&
       <Modal
         title={$t({ defaultMessage: 'Configuration Details' })}
         visible={visible}

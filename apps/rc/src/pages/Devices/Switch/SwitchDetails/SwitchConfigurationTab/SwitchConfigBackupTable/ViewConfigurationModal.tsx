@@ -1,13 +1,13 @@
 /* eslint-disable max-len */
-import { useIntl } from 'react-intl'
+import { Dropdown, Menu, MenuProps, Space } from 'antd'
+import { useIntl }                          from 'react-intl'
 
-import { Button, Descriptions }    from '@acx-ui/components'
-import { ConfigurationBackup } from '@acx-ui/rc/utils'
+import { Button, Descriptions } from '@acx-ui/components'
+import { ArrowExpand }          from '@acx-ui/icons'
+import { CodeMirrorWidget }     from '@acx-ui/rc/components'
+import { ConfigurationBackup }  from '@acx-ui/rc/utils'
 
-import * as UI         from './styledComponents'
-import { CodeMirrorWidget } from '@acx-ui/rc/components'
-import { Dropdown, Menu, MenuProps, Row, Space } from 'antd'
-import { ArrowExpand } from '@acx-ui/icons'
+import * as UI from './styledComponents'
 
 export function ViewConfigurationModal (props:{
   data: ConfigurationBackup
@@ -24,7 +24,7 @@ export function ViewConfigurationModal (props:{
 }) {
   const { $t } = useIntl()
   const { data, visible, handleCancel, actions, tableClearSelection, enabledButton } = props
-  
+
   const handleMenuClick: MenuProps['onClick'] = (e) => {
     switch(e.key) {
       case 'Compare':
@@ -46,58 +46,57 @@ export function ViewConfigurationModal (props:{
     }
   }
 
-  return <>
-    <UI.ViewModal
-      title={$t({ defaultMessage: 'View Configuration' })}
-      visible={visible}
-      onCancel={handleCancel}
-      width={650}
-      footer={<Button key='back' type='secondary' onClick={handleCancel}>
-        {$t({ defaultMessage: 'Close' })}
-      </Button>
-      }
-    >
-      {
-        data &&
+  return <UI.ViewModal
+    title={$t({ defaultMessage: 'View Configuration' })}
+    visible={visible}
+    onCancel={handleCancel}
+    width={650}
+    footer={<Button key='back' type='secondary' onClick={handleCancel}>
+      {$t({ defaultMessage: 'Close' })}
+    </Button>
+    }
+  >
+    {
+      data &&
         <>
           <div className='description-container'>
-          <Descriptions labelWidthPercent={30}>
-            <Descriptions.Item
-              label={$t({ defaultMessage: 'Configuration Name' })}
-              children={data.name} />
-            <Descriptions.Item
-              label={$t({ defaultMessage: 'Created' })}
-              children={data.createdDate} />
-            <Descriptions.Item
-              label={$t({ defaultMessage: 'Type' })}
-              children={data.backupType} />
-          </Descriptions>
-            <Dropdown 
+            <Descriptions labelWidthPercent={30}>
+              <Descriptions.Item
+                label={$t({ defaultMessage: 'Configuration Name' })}
+                children={data.name} />
+              <Descriptions.Item
+                label={$t({ defaultMessage: 'Created' })}
+                children={data.createdDate} />
+              <Descriptions.Item
+                label={$t({ defaultMessage: 'Type' })}
+                children={data.backupType} />
+            </Descriptions>
+            <Dropdown
               overlay={
-              <Menu
-                onClick={handleMenuClick}
-                items={[
-                  {
-                    label: $t({ defaultMessage: 'Compare' }),
-                    key: 'Compare'
-                  },              
-                  {
-                    label: $t({ defaultMessage: 'Restore' }),
-                    key: 'Restore',
-                    disabled: !enabledButton.find(item => item === 'Restore')
-                  },
-                  {
-                    label: $t({ defaultMessage: 'Download' }),
-                    key: 'Download'
-                  },
-                  {
-                    label: $t({ defaultMessage: 'Delete' }),
-                    key: 'Delete',
-                    disabled: !enabledButton.find(item => item === 'Delete')
-                  }
-                ]}
-              />
-              } 
+                <Menu
+                  onClick={handleMenuClick}
+                  items={[
+                    {
+                      label: $t({ defaultMessage: 'Compare' }),
+                      key: 'Compare'
+                    },
+                    {
+                      label: $t({ defaultMessage: 'Restore' }),
+                      key: 'Restore',
+                      disabled: !enabledButton.find(item => item === 'Restore')
+                    },
+                    {
+                      label: $t({ defaultMessage: 'Download' }),
+                      key: 'Download'
+                    },
+                    {
+                      label: $t({ defaultMessage: 'Delete' }),
+                      key: 'Delete',
+                      disabled: !enabledButton.find(item => item === 'Delete')
+                    }
+                  ]}
+                />
+              }
               key='viewCliMenu'
             >
               <Button>
@@ -109,10 +108,9 @@ export function ViewConfigurationModal (props:{
             </Dropdown>
           </div>
           <div className='code-mirror-container'>
-            <CodeMirrorWidget type='single' data={{...data, clis: data.config}} />
+            <CodeMirrorWidget type='single' data={{ ...data, clis: data.config }} />
           </div>
         </>
-      }
-    </UI.ViewModal>
-  </>
+    }
+  </UI.ViewModal>
 }
