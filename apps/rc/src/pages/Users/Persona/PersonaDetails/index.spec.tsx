@@ -100,14 +100,12 @@ describe('Persona Details', () => {
   it('should add devices', async () => {
     render(
       <Provider>
-        <PersonaDetails />
+        <PersonaDevicesTable hasMacPool persona={mockPersona} title={'Devices'} />
       </Provider>, {
         // eslint-disable-next-line max-len
         route: { params, path: '/:tenantId/users/persona-management/persona-group/:personaGroupId/persona/:personaId' }
       }
     )
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-
     const addButton = await screen.findByRole('button', { name: /Add Device/i })
     await userEvent.click(addButton)
 
