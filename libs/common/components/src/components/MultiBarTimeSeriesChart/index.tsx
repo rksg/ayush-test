@@ -9,7 +9,7 @@ import {
   RefCallback,
   useImperativeHandle,
 } from 'react';
-import * as UI from './styledComponents'
+import * as UI from './styledComponents';
 
 import ReactECharts from 'echarts-for-react';
 import type { TimeSeriesChartData } from '@acx-ui/analytics/utils';
@@ -32,7 +32,6 @@ import {
   cssStr,
   cssNumber,
   ChartFormatterFn,
-  tooltipOptions,
   timeSeriesTooltipFormatter,
 } from '@acx-ui/components';
 import type { TimeStampRange } from '@acx-ui/types';
@@ -42,9 +41,9 @@ import type {
   SeriesOption,
   CustomSeriesRenderItemAPI,
   CustomSeriesRenderItemParams,
-  TooltipComponentOption
+  TooltipComponentOption,
 } from 'echarts';
-import {  format } from 'echarts';
+import { format } from 'echarts';
 import type { EChartsReactProps } from 'echarts-for-react';
 
 type OnDatazoomEvent = {
@@ -72,6 +71,21 @@ export const mapping = [{ key: 'SwitchStatus', series: 'Switch', color: 'green' 
   color: string;
 }[];
 
+export const tooltipOptions = () => ({
+  textStyle: {
+    color: cssStr('--acx-primary-white'),
+    fontFamily: cssStr('--acx-neutral-brand-font'),
+    fontSize: cssNumber('--acx-body-5-font-size'),
+    lineHeight: cssNumber('--acx-body-5-line-height'),
+    fontWeight: cssNumber('--acx-body-font-weight')
+  },
+  backgroundColor: cssStr('--acx-primary-black'),
+  borderRadius: 2,
+  borderWidth: 0,
+  padding: 8,
+  confine: false,
+  extraCssText: 'box-shadow: 0px 4px 8px rgba(51, 51, 51, 0.08); z-index: 4;'
+} as TooltipComponentOption)
 export const renderCustomItem = (
   params: CustomSeriesRenderItemParams,
   api: CustomSeriesRenderItemAPI
@@ -93,31 +107,23 @@ export const renderCustomItem = (
 };
 export const onDataClick = (
   eChartsRef: RefObject<ReactECharts>,
-  onDotClick: ((param: unknown) => void) | undefined,
-  setShowTooltip: Dispatch<SetStateAction<boolean>>
-
+  setShowToolTip: Dispatch<SetStateAction<boolean>>
 ) => {
   const handler = useCallback(
     function (params: { dataIndex?: number; seriesIndex?: number }) {
-      const echartInstance = eChartsRef.current!.getEchartsInstance() as ECharts;
-      echartInstance.dispatchAction({
-        type: 'showTip',
-        seriesIndex: params.seriesIndex,
-        dataIndex: params.dataIndex
-    });
-      setShowTooltip(true)
+      setShowToolTip(true);
     },
-    [setShowTooltip]
-  )
+    [setShowToolTip]
+  );
   useEffect(() => {
-    if (!eChartsRef || !eChartsRef.current) return
-    const echartInstance = eChartsRef.current?.getEchartsInstance() as ECharts    
-    echartInstance.on('click', handler)
+    if (!eChartsRef || !eChartsRef.current) return;
+    const echartInstance = eChartsRef.current?.getEchartsInstance() as ECharts;
+    echartInstance.on('click', handler);
     return () => {
-      echartInstance.off('click', handler)
-    }
-  }, [eChartsRef, handler])
-}
+      echartInstance.off('click', handler);
+    };
+  }, [eChartsRef, handler]);
+};
 export const useDataZoom = (
   eChartsRef: RefObject<ReactECharts>,
   zoomEnabled: boolean,
@@ -175,13 +181,38 @@ export function MultiBarTimeSeriesChart({
   const chartPadding = 10;
   const rowHeight = 12;
   const xAxisHeight = hasXaxisLabel ? 30 : 0;
-  const [showToolTip, setShowToolTip] = useState<boolean>(false)
+  const [showToolTip, setShowToolTip] = useState<boolean>(false);
 
   const eChartsRef = useRef<ReactECharts>(null);
+  const chartWrapperRef = useRef(null);
+
   const [canResetZoom, resetZoomCallback] = useDataZoom(eChartsRef, zoomEnabled);
-  onDataClick(eChartsRef, (params)=>{console.log(params)}, setShowToolTip)
+  onDataClick(eChartsRef, setShowToolTip);
 
+  useEffect(() => {
+    document.addEventListener('click', handleClick);
 
+    return () => {
+      document.removeEventListener('click', handleClick);
+    };
+  }, []);
+
+  function handleClick(event: any) {
+    // @ts-ignore: Unreachable code error
+    if (!chartWrapperRef.current?.contains(event.target)) {
+      console.log('outside');
+      setShowToolTip(false);
+      const echartInstance = eChartsRef.current?.getEchartsInstance() as ECharts;
+      //   echartInstance.dispatchAction({
+      //     type: 'showTip',
+      //     seriesIndex: params.seriesIndex,
+      //     dataIndex: params.dataIndex
+      // });
+      echartInstance.dispatchAction({
+        type: 'hideTip',
+      });
+    }
+  }
   const option: EChartsOption = {
     animation: false,
     grid: {
@@ -196,10 +227,10 @@ export function MultiBarTimeSeriesChart({
       show: showToolTip,
       alwaysShowContent: showToolTip,
       ...tooltipOptions(),
-      formatter: tooltipFormatter ? tooltipFormatter : timeSeriesTooltipFormatter(
-        data,
-        { ...seriesFormatters, default: dataFormatter }
-      )
+      formatter: tooltipFormatter
+        ? tooltipFormatter
+        : timeSeriesTooltipFormatter(data, { ...seriesFormatters, default: dataFormatter }),
+        position: 'top'
     },
 
     xAxis: {
@@ -227,16 +258,16 @@ export function MultiBarTimeSeriesChart({
         lineStyle: { color: cssStr('--acx-neutrals-20') },
       },
       axisPointer: {
-        show : true,
+        show: true,
         snap: false,
         triggerTooltip: false,
         label: {
           show: true,
-          formatter: function(params) {
+          formatter: function (params) {
             return format.formatTime('yyyy-MM-dd', params.value);
-          }
+          },
         },
-      },  
+      },
     },
     yAxis: {
       type: 'category',
@@ -256,9 +287,7 @@ export function MultiBarTimeSeriesChart({
           width: 4,
         },
       },
-      data: [
-        ...mapping.map(({ key }) => key),
-      ],
+      data: [...mapping.map(({ key }) => key)],
     },
     ...(zoomEnabled
       ? {
@@ -295,12 +324,11 @@ export function MultiBarTimeSeriesChart({
             color: color,
           },
           data: data,
-
         };
       }) as SeriesOption,
   };
   return (
-    <UI.Wrapper>
+    <UI.Wrapper ref={chartWrapperRef}>
       <ReactECharts
         {...{
           ...props,
@@ -308,7 +336,7 @@ export function MultiBarTimeSeriesChart({
             ...props.style,
             WebkitUserSelect: 'none',
             marginBottom: 0,
-            width: (props.style?.width as number),
+            width: props.style?.width as number,
             height: rowHeight + xAxisHeight,
           },
         }}

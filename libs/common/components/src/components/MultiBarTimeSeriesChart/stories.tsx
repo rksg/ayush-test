@@ -34,51 +34,57 @@ export const getSeriesData = (index = 0) => {
 
 storiesOf('MultiBarTimeSeriesChart', module)
   .add('Chart View', () => (
-    <MultiBarTimeSeriesChart
-      style={{ width: 504, height: 300 }}
-      data={[
-        {
-          key: 'SwitchStatus',
-          name: 'switch',
-          color: 'green',
-          data: [[1673841150, 'SwitchStatus', 1673841160]]
-        }
-      ]}
-      chartBoundary={[1673841000, 1673841190]}
-      hasXaxisLabel
-    />
+    <div style={{ width: 480, height: 250, padding: 100 }}>
+      <MultiBarTimeSeriesChart
+        style={{ width: 504, height: 300 }}
+        data={[
+          {
+            key: 'SwitchStatus',
+            name: 'switch',
+            color: 'green',
+            data: [[1673841150, 'SwitchStatus', 1673841160]]
+          }
+        ]}
+        chartBoundary={[1673841000, 1673841190]}
+        hasXaxisLabel
+      />
+    </div>
   ))
   .add('Zoom enabled', () => (
-    <MultiBarTimeSeriesChart
-      style={{ width: 504, height: 300 }}
-      data={[
-        {
-          key: 'SwitchStatus',
-          name: 'switch',
-          color: 'green',
-          data: [[1673841150, 'SwitchStatus', 1673841160]]
-        }
-      ]}
-      chartBoundary={[1673841000, 1673841190]}
-      hasXaxisLabel
-      zoomEnabled
-    />
+    <div style={{ width: 480, height: 250, padding: 100 }}>
+      <MultiBarTimeSeriesChart
+        style={{ width: 504, height: 300 }}
+        data={[
+          {
+            key: 'SwitchStatus',
+            name: 'switch',
+            color: 'green',
+            data: [[1673841150, 'SwitchStatus', 1673841160]]
+          }
+        ]}
+        chartBoundary={[1673841000, 1673841190]}
+        hasXaxisLabel
+        zoomEnabled
+      />
+    </div>
   ))
   .add('With custom tooltip', () => (
-    <MultiBarTimeSeriesChart
-      style={{ width: 504, height: 300 }}
-      data={[
-        {
-          key: 'SwitchStatus',
-          name: 'switch',
-          color: 'green',
-          data: [[1673841150, 'SwitchStatus', 1673841160]]
-        }
-      ]}
-      chartBoundary={[1673841000, 1673841190]}
-      hasXaxisLabel
-      zoomEnabled
-    />
+    <div style={{ width: 480, height: 250, padding: 100 }}>
+      <MultiBarTimeSeriesChart
+        style={{ width: 504, height: 300 }}
+        data={[
+          {
+            key: 'SwitchStatus',
+            name: 'switch',
+            color: 'green',
+            data: [[1673841150, 'SwitchStatus', 1673841160]]
+          }
+        ]}
+        chartBoundary={[1673841000, 1673841190]}
+        hasXaxisLabel
+        zoomEnabled
+      />
+    </div>
   ))
 
 
