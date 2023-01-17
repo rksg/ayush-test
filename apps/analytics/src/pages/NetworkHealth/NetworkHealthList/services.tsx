@@ -1,6 +1,6 @@
 import { gql } from 'graphql-request'
 
-import { serviceValidationApi }         from '@acx-ui/analytics/services'
+import { networkHealthApi }         from '@acx-ui/analytics/services'
 import { RequestPayload}               from '@acx-ui/rc/utils'
 
 export type ServiceGuardSpec = {
@@ -30,7 +30,7 @@ interface Response {
   allServiceGuardSpecs: ServiceGuardSpec[]
 }
 
-export const api = serviceValidationApi.injectEndpoints({
+export const api = networkHealthApi.injectEndpoints({
   endpoints: (build) => ({
     networkHealth: build.query<
       ServiceGuardSpec[], RequestPayload
