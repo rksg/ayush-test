@@ -8,5 +8,9 @@ export const RadiusClientConfigUrlsInfo: { [key: string]: ApiInfo } = {
   updateRadiusClient: {
     method: 'PATCH',
     url: '/api/radiusClient'
+  },
+  getRadiusServerSetting: {
+    method: 'get',
+    url: '/api/radiusServer'
   }
 }

@@ -3,9 +3,13 @@ import { useEffect, useState } from 'react'
 import { Button, Col, Form, Input, Row, Space, Typography } from 'antd'
 import { useIntl }                                          from 'react-intl'
 
-import { Loader, showActionModal, showToast, Table, TableProps }              from '@acx-ui/components'
-import { useGetRadiusClientConfigQuery, useUpdateRadiusClientConfigMutation } from '@acx-ui/rc/services'
-import { ClientConfig }                                                       from '@acx-ui/rc/utils'
+import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
+import {
+  useGetRadiusClientConfigQuery,
+  useGetRadiusServerSettingQuery,
+  useUpdateRadiusClientConfigMutation
+} from '@acx-ui/rc/services'
+import { ClientConfig } from '@acx-ui/rc/utils'
 
 import { IpAddressDrawer } from './IpAddressDrawer'
 
@@ -19,15 +23,17 @@ export function RadiusServerForm () {
 
   const [form] = Form.useForm()
 
-  const queryResult = useGetRadiusClientConfigQuery({})
-  const data = queryResult.data
+  // eslint-disable-next-line max-len
+  const { data: queryResultData, isLoading: queryResultDataLoading } = useGetRadiusClientConfigQuery({})
+  // eslint-disable-next-line max-len
+  const { data: serverSettingData, isLoading: queryServerSettingDataLoading } = useGetRadiusServerSettingQuery({})
   const [updateConfig, updateConfigState] = useUpdateRadiusClientConfigMutation()
 
   useEffect(() => {
-    if(data) {
-      form.setFieldValue('secret', data?.secret)
+    if(queryResultData) {
+      form.setFieldValue('secret', queryResultData?.secret)
     }
-  }, [data, form])
+  }, [queryResultData, form])
 
   const generatePassword = () => {
     const chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
@@ -76,7 +82,7 @@ export function RadiusServerForm () {
         },
         onOk: () => {
           const payload = {
-            ipAddress: [...data?.ipAddress ?? []].filter((e) => e !== rows[0].ipAddress)
+            ipAddress: [...queryResultData?.ipAddress ?? []].filter((e) => e !== rows[0].ipAddress)
           }
           updateConfig({ payload }).then(clearSelection)
         }
@@ -85,18 +91,20 @@ export function RadiusServerForm () {
   }]
 
   return(
-    <Loader states={[queryResult]}>
+    <Loader states={[{
+      isLoading: queryResultDataLoading || queryServerSettingDataLoading
+    }]}>
       <Row>
         <Col span={10}>
           <Form layout='vertical' onFinish={onSubmit} form={form}>
             <Form.Item label={$t({ defaultMessage: 'RADIUS Host' })}>
-              <Paragraph>''</Paragraph>
+              <Paragraph>{serverSettingData?.host}</Paragraph>
             </Form.Item>
             <Form.Item label={$t({ defaultMessage: 'Authentication Port' })}>
-              <Paragraph>''</Paragraph>
+              <Paragraph>{serverSettingData?.authenticationPort.toString()}</Paragraph>
             </Form.Item>
             <Form.Item label={$t({ defaultMessage: 'Accounting Port' })}>
-              <Paragraph>''</Paragraph>
+              <Paragraph>{serverSettingData?.accountingPort.toString()}</Paragraph>
             </Form.Item>
             <Form.Item label={$t({ defaultMessage: 'Shared Secret' })}>
               <Space>
@@ -129,7 +137,7 @@ export function RadiusServerForm () {
                     <Button type='link'
                       loading={updateConfigState.isLoading}
                       onClick={() => {
-                        form.setFieldValue('secret', data?.secret)
+                        form.setFieldValue('secret', queryResultData?.secret)
                         setChangePassword(false)
                       }}>
                       {$t({ defaultMessage: 'Cancel' })}</Button>
@@ -148,7 +156,8 @@ export function RadiusServerForm () {
                         key: 'ipAddress'
                       }
                     ]}
-                    dataSource={data?.ipAddress?.map( e => { return { key: e, ipAddress: e }})}
+                    // eslint-disable-next-line max-len
+                    dataSource={queryResultData?.ipAddress?.map( e => { return { key: e, ipAddress: e }})}
                     showHeader={false}
                     rowSelection={{ type: 'radio' }}
                     rowActions={ipTableRowActions}
@@ -170,7 +179,7 @@ export function RadiusServerForm () {
           visible={visible}
           setVisible={setVisible}
           editMode={isEditMode}
-          clientConfig={data?? {} as ClientConfig}
+          clientConfig={queryResultData?? {} as ClientConfig}
           editIpAddress={isEditMode ? editIpaddress : ''}
         />
       </Row>

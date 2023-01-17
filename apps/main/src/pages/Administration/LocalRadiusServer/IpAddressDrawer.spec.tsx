@@ -38,11 +38,9 @@ describe('IpAddressDrawer', () => {
 
     fireEvent.click(screen.getByRole('checkbox', { name: 'Add Another IP Address' }))
     // eslint-disable-next-line max-len
-    await userEvent.type(await screen.findByRole('textbox', { name: 'IP Address' }), '192.168.1.1')
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(async () => {
-      fireEvent.click(saveButton)
-    })
+    await userEvent.type(await screen.findByRole('textbox', { name: 'IP Address' }), '192.168.11.11')
+
+    await userEvent.click(saveButton)
 
     const validating = await screen.findByRole('img', { name: 'loading' })
     await waitForElementToBeRemoved(validating)
