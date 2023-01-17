@@ -6,11 +6,11 @@ import _                                    from 'lodash'
 import moment                               from 'moment-timezone'
 import { useIntl }                          from 'react-intl'
 
-import { Button, PageHeader, RangePicker, Tooltip }       from '@acx-ui/components'
-import { ArrowExpand }                                    from '@acx-ui/icons'
-import { SwitchCliSession, SwitchStatus, useSwitchActions }                 from '@acx-ui/rc/components'
-import { useGetJwtTokenQuery, useLazyGetSwitchListQuery } from '@acx-ui/rc/services'
-import { SwitchRow, SwitchStatusEnum, SwitchViewModel }   from '@acx-ui/rc/utils'
+import { Button, PageHeader, RangePicker, Tooltip }         from '@acx-ui/components'
+import { ArrowExpand }                                      from '@acx-ui/icons'
+import { SwitchCliSession, SwitchStatus, useSwitchActions } from '@acx-ui/rc/components'
+import { useGetJwtTokenQuery, useLazyGetSwitchListQuery }   from '@acx-ui/rc/services'
+import { SwitchRow, SwitchStatusEnum, SwitchViewModel }     from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useTenantLink,
@@ -18,7 +18,7 @@ import {
 }                  from '@acx-ui/react-router-dom'
 import { dateRangeForLast, formatter, useDateFilter } from '@acx-ui/utils'
 
-import SwitchTabs       from './SwitchTabs'
+import SwitchTabs from './SwitchTabs'
 
 import { SwitchDetailsContext } from '.'
 
@@ -52,6 +52,8 @@ function SwitchPageHeader () {
   const isSyncedSwitchConfig = switchDetailHeader?.syncedSwitchConfig
 
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
+
+  const [cliModalState, setCliModalOpen] = useState(false)
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
     const switchId = switchDetailHeader.switchMac || switchDetailHeader.serialNumber || ''
@@ -150,8 +152,6 @@ function SwitchPageHeader () {
       </Menu.Item>
     </Menu>
   )
-
-  const [cliModalState, setCliModalOpen] = useState(false)
 
 
   return (

@@ -482,5 +482,6 @@ export const {
   useGetVlanListBySwitchLevelQuery,
   useRebootSwitchMutation,
   useSyncDataMutation,
+  useLazyGetJwtTokenQuery,
   useGetJwtTokenQuery
 } = switchApi
