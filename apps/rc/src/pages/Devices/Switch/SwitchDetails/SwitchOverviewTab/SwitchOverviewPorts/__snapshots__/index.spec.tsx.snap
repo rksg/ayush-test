@@ -6,7 +6,7 @@ exports[`SwitchOverviewPorts should render correctly 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-13 gGUvnO"
+      class="styledComponents__Wrapper-sc-1abm7iv-12 iqWyRG"
     >
       <div
         class="ant-space ant-space-horizontal ant-space-align-center"
@@ -16,7 +16,7 @@ exports[`SwitchOverviewPorts should render correctly 1`] = `
           class="ant-space-item"
         >
           <button
-            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
+            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
             type="button"
           >
             <span>

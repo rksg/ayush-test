@@ -1,8 +1,8 @@
 import { useIntl } from 'react-intl'
 import styled      from 'styled-components/macro'
 
-import { LayoutProps, LayoutUI, genPlaceholder } from '@acx-ui/components'
-import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
+import { LayoutProps, LayoutUI, genPlaceholder }    from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   AIOutlined as AIOutlinedBase,
   AISolid as AISolidBase,
@@ -25,7 +25,9 @@ import {
   ServicesOutlined,
   ServicesSolid as ServicesSolidBase,
   SpeedIndicatorOutlined,
-  SpeedIndicatorSolid
+  SpeedIndicatorSolid,
+  ServiceValidationSolid,
+  ServiceValidationOutlined
 } from '@acx-ui/icons'
 import { getServiceCatalogRoutePath, getServiceListRoutePath } from '@acx-ui/rc/utils'
 
@@ -36,6 +38,8 @@ const PoliciesSolid = styled(PoliciesSolidBase)`${LayoutUI.iconSolidOverride}`
 
 export function useMenuConfig () {
   const { $t } = useIntl()
+  const showSV = useIsSplitOn(Features.SERVICE_VALIDATION)
+
   const config: LayoutProps['menuConfig'] = [
     {
       path: '/dashboard',
@@ -75,6 +79,19 @@ export function useMenuConfig () {
       inactiveIcon: CalendarDateOutlined,
       activeIcon: CalendarDateSolid
     },
+    ...(useIsTierAllowed('ANLT-ADV') ? [{
+      path: '/serviceValidation',
+      name: $t({ defaultMessage: 'Service Validation' }),
+      inactiveIcon: ServiceValidationOutlined,
+      activeIcon: ServiceValidationSolid,
+      routes: [
+        {
+          path: '/serviceValidation/networkHealth',
+          name: $t({ defaultMessage: 'Network Health' })
+        }
+      ],
+      disabled: !showSV
+    }] : []),
     {
       path: '/reports',
       name: $t({ defaultMessage: 'Reports' }),
