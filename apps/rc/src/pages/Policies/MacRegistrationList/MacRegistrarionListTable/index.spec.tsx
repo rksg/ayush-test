@@ -112,7 +112,7 @@ describe('MacRegistrationListsTable', () => {
     fireEvent.change(screen.getByRole('textbox', { name: /type the word "delete" to confirm:/i }),
       { target: { value: 'Delete' } })
 
-    const deleteListsButton = await screen.findByText('Delete Lists')
+    const deleteListsButton = await screen.findByText('Delete List')
     expect(deleteListsButton).toBeInTheDocument()
     fireEvent.click(deleteListsButton)
   })

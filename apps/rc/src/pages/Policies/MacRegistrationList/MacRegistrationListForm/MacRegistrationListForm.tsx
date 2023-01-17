@@ -34,7 +34,6 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
   const linkToList = useTenantLink('/' + getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.LIST }))
   const navigate = useNavigate()
   const formRef = useRef<StepsFormInstance<MacRegistrationPoolFormFields>>()
-  // const [poolSaveState, setPoolSaveState] = useState<MacRegistrationPool>({})
 
   const { data, isLoading } = useGetMacRegListQuery({ params: { policyId } }, { skip: !editMode })
   const [addMacRegList] = useAddMacRegListMutation()
@@ -43,10 +42,11 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
   useEffect(() => {
     if (data && editMode) {
       formRef.current?.setFieldsValue({
-        name: data?.name,
+        name: data.name,
         autoCleanup: data.autoCleanup,
         ...transferDataToExpirationFormFields(data),
-        defaultAccess: data.defaultAccess
+        defaultAccess: data.defaultAccess,
+        ssidRegex: data?.ssidRegex
         // policyId
       })
     }
@@ -57,7 +57,8 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
       const saveData = {
         name: data.name,
         autoCleanup: data.autoCleanup,
-        ...transferExpirationFormFieldsToData(data.expiration)
+        ...transferExpirationFormFieldsToData(data.expiration),
+        ssidRegex: data?.ssidRegex ?? '*'
         // defaultAccess: data.defaultAccess
         // policyId
       }
