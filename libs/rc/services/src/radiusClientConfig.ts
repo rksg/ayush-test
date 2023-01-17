@@ -4,7 +4,7 @@ import {
 
 import {
   RequestPayload,
-  createHttpRequest, RadiusClientConfigUrlsInfo
+  createHttpRequest, RadiusClientConfigUrlsInfo, RadiusServerSetting
 } from '@acx-ui/rc/utils'
 import { ClientConfig } from '@acx-ui/rc/utils'
 
@@ -36,11 +36,20 @@ export const radiusClientConfigApi = baseRadiusClientConfigApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'RadiusClientConfig', id: 'DETAIL' }]
+    }),
+    getRadiusServerSetting: build.query<RadiusServerSetting, RequestPayload>({
+      query: () => {
+        const req = createHttpRequest(RadiusClientConfigUrlsInfo.getRadiusServerSetting)
+        return{
+          ...req
+        }
+      }
     })
   })
 })
 
 export const {
   useGetRadiusClientConfigQuery,
-  useUpdateRadiusClientConfigMutation
+  useUpdateRadiusClientConfigMutation,
+  useGetRadiusServerSettingQuery
 } = radiusClientConfigApi
