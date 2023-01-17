@@ -318,7 +318,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                       </div>
                     </div>
                     <button
-                      class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 eAazoW"
+                      class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 ibsWZY"
                       id="details_differentSSID"
                       style="font-size: 12px;"
                       type="button"
@@ -994,7 +994,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                     </div>
                     <div>
                       <button
-                        class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 eAazoW"
+                        class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 ibsWZY"
                         type="button"
                       >
                         <span>
@@ -1097,7 +1097,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                               </span>
                             </div>
                             <div
-                              class="styledComponents__Wrapper-sc-1abm7iv-13 gGUvnO"
+                              class="styledComponents__Wrapper-sc-1abm7iv-12 iqWyRG"
                             >
                               <div
                                 class="ant-pro-table"
@@ -1194,7 +1194,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                                                         class="ant-table-cell ant-table-selection-column react-resizable"
                                                       >
                                                         <div
-                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                                         />
                                                         <div
                                                           class="ant-table-selection"
@@ -1217,7 +1217,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                                                           </label>
                                                         </div>
                                                         <div
-                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                                         />
                                                       </th>
                                                       <th
@@ -1225,7 +1225,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                                                         tabindex="0"
                                                       >
                                                         <div
-                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                                         />
                                                         <div
                                                           class="ant-table-column-sorters"
@@ -1283,7 +1283,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                                                           </span>
                                                         </div>
                                                         <div
-                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                                         />
                                                       </th>
                                                       <th
@@ -1291,7 +1291,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                                                         tabindex="0"
                                                       >
                                                         <div
-                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                                         />
                                                         <div
                                                           class="ant-table-column-sorters"
@@ -1349,7 +1349,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                                                           </span>
                                                         </div>
                                                         <div
-                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                                         />
                                                       </th>
                                                       <th
@@ -1357,7 +1357,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                                                         tabindex="0"
                                                       >
                                                         <div
-                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                                         />
                                                         <div
                                                           class="ant-table-column-sorters"
@@ -1415,73 +1415,73 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                                                           </span>
                                                         </div>
                                                         <div
-                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                                         />
                                                       </th>
                                                       <th
                                                         class="ant-table-cell react-resizable"
                                                       >
                                                         <div
-                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                                         />
                                                         Networks
                                                         <div
-                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                                         />
                                                       </th>
                                                       <th
                                                         class="ant-table-cell react-resizable"
                                                       >
                                                         <div
-                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                                         />
                                                         Wi-Fi APs
                                                         <div
-                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                                         />
                                                       </th>
                                                       <th
                                                         class="ant-table-cell react-resizable"
                                                       >
                                                         <div
-                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                                         />
                                                         Activated
                                                         <div
-                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                                         />
                                                       </th>
                                                       <th
                                                         class="ant-table-cell react-resizable"
                                                       >
                                                         <div
-                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                                         />
                                                         APs
                                                         <div
-                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                                         />
                                                       </th>
                                                       <th
                                                         class="ant-table-cell react-resizable"
                                                       >
                                                         <div
-                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                                         />
                                                         Radios
                                                         <div
-                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                                         />
                                                       </th>
                                                       <th
                                                         class="ant-table-cell react-resizable"
                                                       >
                                                         <div
-                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                                         />
                                                         Scheduling
                                                         <div
-                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                                         />
                                                       </th>
                                                       <th
@@ -1489,10 +1489,10 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                                                         style="position: sticky; right: 0px;"
                                                       >
                                                         <div
-                                                          class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                          class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                                         />
                                                         <div
-                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                          class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                                         />
                                                       </th>
                                                     </tr>
@@ -2242,7 +2242,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
             style="margin-right: 12px;"
           >
             <button
-              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
+              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ibsWZY"
               type="button"
             >
               <span>
@@ -2261,7 +2261,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                 style="margin-right: 12px;"
               >
                 <button
-                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
+                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ibsWZY"
                   disabled=""
                   type="button"
                 >
@@ -2274,7 +2274,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                 class="ant-space-item"
               >
                 <button
-                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 bxQmA-d"
+                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 glXBEv"
                   type="button"
                 >
                   <span>
@@ -2585,7 +2585,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                       </div>
                     </div>
                     <button
-                      class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 eAazoW"
+                      class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 ibsWZY"
                       id="details_differentSSID"
                       style="font-size: 12px;"
                       type="button"
@@ -2933,7 +2933,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                     </div>
                     <div>
                       <button
-                        class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 eAazoW"
+                        class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 ibsWZY"
                         type="button"
                       >
                         <span>
@@ -3278,7 +3278,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
             style="margin-right: 12px;"
           >
             <button
-              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
+              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ibsWZY"
               type="button"
             >
               <span>
@@ -3297,7 +3297,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                 style="margin-right: 12px;"
               >
                 <button
-                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
+                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ibsWZY"
                   disabled=""
                   type="button"
                 >
@@ -3310,7 +3310,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                 class="ant-space-item"
               >
                 <button
-                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 bxQmA-d"
+                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 glXBEv"
                   type="button"
                 >
                   <span>
