@@ -151,7 +151,9 @@ export interface VeViewModel {
   syncedSwitchConfig: boolean
   veId: number
   vlanId: number
-  portTyp : string //ignore
+  portTyp: string //ignore
+  inactiveRow?: boolean //ignore
+  inactiveTooltip?: string //ignore
 }
 
 export interface VeForm {
