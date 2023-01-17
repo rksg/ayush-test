@@ -15,10 +15,6 @@ interface IpAddressDrawerProps {
   clientConfig: ClientConfig
 }
 
-interface ipAddressForm {
-  singleIpAddress : string
-}
-
 interface httpErrorResponse {
   status: number
 }
@@ -29,11 +25,9 @@ export function IpAddressDrawer (props: IpAddressDrawerProps) {
   const [form] = Form.useForm()
   const [resetField, setResetField] = useState(false)
   const [updateConfig] = useUpdateRadiusClientConfigMutation()
-  const [checked, setChecked] = useState(false)
 
   const resetFields = () => {
     setResetField(true)
-    setChecked(false)
     onClose()
   }
 
@@ -48,41 +42,6 @@ export function IpAddressDrawer (props: IpAddressDrawerProps) {
     form.resetFields()
   }
 
-  const onSubmit = async (data: ipAddressForm) => {
-    try {
-      let payload
-      if(editMode) {
-        payload = {
-          // eslint-disable-next-line max-len
-          ipAddress: clientConfig.ipAddress?.filter((e) => e !== editIpAddress).concat(data.singleIpAddress)
-        }
-      }else {
-        payload = {
-          // eslint-disable-next-line max-len
-          ipAddress: clientConfig.ipAddress ? clientConfig.ipAddress?.concat(data.singleIpAddress) : data.singleIpAddress
-        }
-      }
-      await updateConfig({ payload }).unwrap()
-      form.resetFields()
-      if (!checked) {
-        onClose()
-      }
-    } catch(error) {
-      const errorResponse = error as httpErrorResponse
-      let message
-      if(errorResponse.status === 409) {
-        message = $t({ defaultMessage: 'IP Address already exists' })
-      }
-      else{
-        message = $t({ defaultMessage: 'An error occurred' })
-      }
-      showToast({
-        type: 'error',
-        content: message
-      })
-    }
-  }
-
   const ipAddressRegExp = (value: string) =>{
     // eslint-disable-next-line max-len
     const REG = new RegExp(/((^\s*((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))\s*$)|(^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$))/)
@@ -92,12 +51,12 @@ export function IpAddressDrawer (props: IpAddressDrawerProps) {
     return Promise.resolve()
   }
 
-  const content = <Form layout='vertical' form={form} onFinish={onSubmit}>
+  const content = <Form layout='vertical' form={form}>
     <Row>
       <Col span={12}>
         <Form.Item
           name='singleIpAddress'
-          label='IP Address'
+          label={$t({ defaultMessage: 'IP Address' })}
           rules={[
             { required: true },
             { validator: (_, value) => ipAddressRegExp(value) }
@@ -124,8 +83,45 @@ export function IpAddressDrawer (props: IpAddressDrawerProps) {
             addAnother: $t({ defaultMessage: 'Add Another IP Address' })
           })}
           onCancel={resetFields}
-          onSave={async () => {
-            form.submit()
+          onSave={async (addAnotherRuleChecked: boolean) => {
+            try {
+              await form.validateFields()
+              const ipAddress = form.getFieldValue('singleIpAddress')
+              if(editMode) {
+                await updateConfig({ payload: {
+                  // eslint-disable-next-line max-len
+                  ipAddress: clientConfig.ipAddress?.filter((e) => e !== editIpAddress).concat(ipAddress)
+                } }).unwrap()
+              }else {
+                await updateConfig({ payload: {
+                  // eslint-disable-next-line max-len
+                  ipAddress: clientConfig.ipAddress ? clientConfig.ipAddress?.concat(ipAddress) : ipAddress
+                } }).unwrap()
+              }
+              if (!addAnotherRuleChecked) {
+                onClose()
+              } else {
+                form.resetFields()
+              }
+            } catch(error) {
+              if (error instanceof Error){
+                throw error
+              }
+              const errorResponse = error as httpErrorResponse
+              if(errorResponse.status) {
+                if (errorResponse.status === 409) {
+                  showToast({
+                    type: 'error',
+                    content: $t({ defaultMessage: 'IP Address already exists' })
+                  })
+                } else {
+                  showToast({
+                    type: 'error',
+                    content: $t({ defaultMessage: 'An error occurred' })
+                  })
+                }
+              }
+            }
           }}
         />
       }

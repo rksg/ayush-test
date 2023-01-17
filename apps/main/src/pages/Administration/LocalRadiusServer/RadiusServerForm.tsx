@@ -163,7 +163,7 @@ export function RadiusServerForm () {
                     rowActions={ipTableRowActions}
                     type={'form'}
                     actions={[{
-                      label: 'Add IP Address',
+                      label: $t({ defaultMessage: 'Add IP Address' }),
                       onClick: () => {
                         setVisible(true)
                         setIsEditMode(false)
