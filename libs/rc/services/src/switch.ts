@@ -28,7 +28,8 @@ import {
   ConfigurationBackup,
   ConfigurationBackupStatus,
   transformConfigBackupType,
-  JwtToken
+  JwtToken,
+  TroubleshootingResult
 } from '@acx-ui/rc/utils'
 import { formatter } from '@acx-ui/utils'
 
@@ -383,7 +384,60 @@ export const switchApi = baseSwitchApi.injectEndpoints({
 
       },
       invalidatesTags: [{ type: 'Switch', id: 'VE' }]
+    }),
+
+    getTroubleshooting: build.query<TroubleshootingResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getTroubleshooting, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    getTroubleshootingClean: build.query<{}, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getTroubleshootingClean, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    ping: build.mutation<TroubleshootingResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.ping, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    traceRoute: build.mutation<TroubleshootingResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.traceRoute, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    ipRoute: build.mutation<TroubleshootingResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.ipRoute, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    macAddressTable: build.mutation<TroubleshootingResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.macAddressTable, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
     })
+
   })
 })
 
@@ -483,5 +537,12 @@ export const {
   useRebootSwitchMutation,
   useSyncDataMutation,
   useLazyGetJwtTokenQuery,
-  useGetJwtTokenQuery
+  useGetJwtTokenQuery,
+  useGetTroubleshootingQuery,
+  usePingMutation,
+  useTraceRouteMutation,
+  useIpRouteMutation,
+  useMacAddressTableMutation,
+  useGetTroubleshootingCleanQuery,
+  useLazyGetTroubleshootingCleanQuery
 } = switchApi

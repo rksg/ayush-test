@@ -1,4 +1,4 @@
-import { SwitchViewModel, SwitchStatusEnum } from '@acx-ui/rc/utils'
+import { SwitchViewModel, SwitchStatusEnum, SWITCH_TYPE } from '@acx-ui/rc/utils'
 
 export const switchDetailData: SwitchViewModel = {
   type: 'device',
@@ -18,7 +18,7 @@ export const switchDetailData: SwitchViewModel = {
   venueName: 'My-Venue',
   name: 'ICX7150-C12 Router',
   suspendingDeployTime: '',
-  switchType: 'router',
+  switchType: SWITCH_TYPE.ROUTER,
   configReady: true,
   deviceStatus: SwitchStatusEnum.OPERATIONAL,
   venueId: 'c675aa2d39b74c22b93b96d5dc297d5c',

@@ -106,6 +106,10 @@ function DeviceRoutes () {
         path='devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab'
         element={<SwitchDetails />}
       />
+      <Route
+        path='devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab/:categoryTab'
+        element={<SwitchDetails />}
+      />
       <Route path='devices/edge/add' element={<AddEdge />} />
       <Route
         path='devices/edge/:serialNumber/edit/:activeTab'
