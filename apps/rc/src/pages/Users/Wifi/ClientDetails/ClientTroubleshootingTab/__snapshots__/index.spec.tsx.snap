@@ -418,7 +418,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                       style="padding: 8px 8px 8px 8px;"
                     >
                       <div
-                        _echarts_instance_="ec_1673915757141"
+                        _echarts_instance_="ec_mock"
                         class="echarts-for-react "
                         size-sensor-id="1"
                         style="height: 66px; margin-bottom: 0px; webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); position: relative;"
@@ -450,7 +450,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                       style="padding: 8px 8px 8px 8px;"
                     >
                       <div
-                        _echarts_instance_="ec_1673915757142"
+                        _echarts_instance_="ec_mock"
                         class="echarts-for-react "
                         size-sensor-id="2"
                         style="height: 66px; margin-bottom: 0px; webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); position: relative;"
@@ -482,7 +482,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                       style="padding: 8px 8px 8px 8px;"
                     >
                       <div
-                        _echarts_instance_="ec_1673915757143"
+                        _echarts_instance_="ec_mock"
                         class="echarts-for-react "
                         size-sensor-id="3"
                         style="height: 66px; margin-bottom: 0px; webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); position: relative;"
@@ -514,7 +514,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                       style="padding: 8px 8px 8px 8px;"
                     >
                       <div
-                        _echarts_instance_="ec_1673915757144"
+                        _echarts_instance_="ec_mock"
                         class="echarts-for-react "
                         size-sensor-id="4"
                         style="height: 96px; margin-bottom: 0px; webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); position: relative;"
