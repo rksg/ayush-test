@@ -2,21 +2,21 @@
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Subtitle }                from '@acx-ui/components'
-import { EdgeDNS, EdgePortStatus } from '@acx-ui/rc/utils'
+import { Subtitle }                       from '@acx-ui/components'
+import { EdgeDnsServers, EdgePortStatus } from '@acx-ui/rc/utils'
 
-interface EdgeDetailsSettingsInfoProps {
-  edgePortsSetting: EdgePortStatus[]
-  dnsSetting: EdgeDNS
+interface SettingsProps {
+  edgePortsSetting: EdgePortStatus[] | undefined
+  dnsSetting: EdgeDnsServers | undefined
 }
 
-export const EdgeDetailsSettingsInfo = (props: EdgeDetailsSettingsInfoProps) => {
+export const Settings = (props: SettingsProps) => {
   const { $t } = useIntl()
   const { edgePortsSetting, dnsSetting } = props
 
   const displayEnabled = (data: string, type: string) => {
     return data === 'Enabled' ?
-      $t({ defaultMessage: '{data}({type})' }, { data, type }) :
+      $t({ defaultMessage: '{data} ({type})' }, { data, type }) :
       $t({ defaultMessage: '{data}' }, { data })
   }
 
@@ -35,12 +35,12 @@ export const EdgeDetailsSettingsInfo = (props: EdgeDetailsSettingsInfoProps) => 
         }
       />
       { edgePortsSetting && edgePortsSetting.map(
-        item =>
+        (item, index) =>
           <Form.Item
             key={`port-${item.portId}`}
-            label={$t({ defaultMessage: 'Port {id}' }, { id: item.portId })}
+            label={$t({ defaultMessage: 'Port {id}' }, { id: index + 1 })}
             children={
-              displayEnabled(item.adminStatus, item.portType)
+              displayEnabled(item.adminStatus, item.type)
             }
           />
       )
@@ -49,7 +49,7 @@ export const EdgeDetailsSettingsInfo = (props: EdgeDetailsSettingsInfoProps) => 
 
       <Form.Item
         label={
-          <Subtitle level={4} style={{ margin: 0, marginTop: '20px' }}>
+          <Subtitle level={4} style={{ margin: 0 }}>
             {$t({ defaultMessage: 'DNS Server' })}
           </Subtitle>
         }
@@ -58,7 +58,14 @@ export const EdgeDetailsSettingsInfo = (props: EdgeDetailsSettingsInfoProps) => 
       <Form.Item
         label={$t({ defaultMessage: 'DNS Server' })}
         children={
-          dnsSetting || '--'
+          dnsSetting?.primary || '--'
+        }
+      />
+
+      <Form.Item
+        label={$t({ defaultMessage: 'Secondary DNS Server' })}
+        children={
+          dnsSetting?.secondary || '--'
         }
       />
 

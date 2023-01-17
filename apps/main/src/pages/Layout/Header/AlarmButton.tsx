@@ -214,6 +214,10 @@ export default function AlarmsHeaderButton () {
                           { type: 'Alarms', id: 'LIST' },
                           { type: 'Alarms', id: 'OVERVIEW' }
                         ]))
+                      store.dispatch(
+                        networkApi.util.invalidateTags([
+                          { type: 'Network', id: 'Overview' }
+                        ]))
                     }, 1000)
                   }}
                 />
