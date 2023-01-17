@@ -19,6 +19,7 @@ export enum Features {
   CLIENT_TROUBLESHOOTING = 'acx-ui-client-troubleshooting-toggle',
   TIMELINE = 'acx-ui-timeline-toggle',
   NETWORK_SEGMENTATION='acx-ui-network-segmentation-toggle',
-  DIRECTED_MULTICAST='wifi-consumer-directed-multicast-toggle',
-  UNRELEASED='acx-ui-unreleased'
+  UNRELEASED='acx-ui-unreleased',
+  SERVICE_VALIDATION = 'acx-ui-service-validation-toggle',
+  DIRECTED_MULTICAST='wifi-consumer-directed-multicast-toggle'
 }
