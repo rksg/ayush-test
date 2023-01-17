@@ -6,6 +6,10 @@ export const ViewModal = styled(Modal)`
   border: 6px solid var(--acx-neutrals-30);
 }
 
+.description-container {
+  display: flex;
+}
+
 .code-mirror-container {
   margin-top: 10px;
 }

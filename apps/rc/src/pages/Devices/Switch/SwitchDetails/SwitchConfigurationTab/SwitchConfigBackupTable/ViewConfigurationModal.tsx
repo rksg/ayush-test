@@ -1,36 +1,57 @@
 /* eslint-disable max-len */
-import { useEffect, useRef, useState } from 'react'
-
 import { useIntl } from 'react-intl'
 
-import { Button, Loader, Modal, Table, TableProps, Descriptions }    from '@acx-ui/components'
-import { useGetSwitchConfigHistoryQuery }                            from '@acx-ui/rc/services'
-import { ConfigurationBackup, ConfigurationHistory, DispatchFailedReason, useTableQuery } from '@acx-ui/rc/utils'
+import { Button, Descriptions }    from '@acx-ui/components'
+import { ConfigurationBackup } from '@acx-ui/rc/utils'
 
 import * as UI         from './styledComponents'
 import { CodeMirrorWidget } from '@acx-ui/rc/components'
+import { Dropdown, Menu, MenuProps, Row, Space } from 'antd'
+import { ArrowExpand } from '@acx-ui/icons'
 
 export function ViewConfigurationModal (props:{
-  data: ConfigurationBackup,
-  visible: boolean,
+  data: ConfigurationBackup
+  visible: boolean
   handleCancel: () => void
+  tableClearSelection: () => void
+  enabledButton: string[],
+  actions: {
+    compare: Function,
+    restore: Function,
+    download: Function,
+    delete: Function
+  }
 }) {
   const { $t } = useIntl()
-  const codeMirrorEl = useRef(null as unknown as { highlightLine: Function, removeHighlightLine: Function })
-  const { data, visible, handleCancel } = props
-  const [showError, setShowError] = useState(true)
-  const [showClis, setShowClis] = useState(true)
-  const [collapseActive, setCollapseActive] = useState(false)
-  const [dispatchFailedReason, setDispatchFailedReason] = useState([] as DispatchFailedReason[])
-  const [selectedRow, setSelectedRow] = useState(null as unknown as ConfigurationHistory)
-
+  const { data, visible, handleCancel, actions, tableClearSelection, enabledButton } = props
+  
+  const handleMenuClick: MenuProps['onClick'] = (e) => {
+    switch(e.key) {
+      case 'Compare':
+        handleCancel()
+        actions.compare([data, data])
+        tableClearSelection()
+        break
+      case 'Restore':
+        handleCancel()
+        actions.restore(data, tableClearSelection)
+        break
+      case 'Download':
+        actions.download(data.id)
+        break
+      case 'Delete':
+        handleCancel()
+        actions.delete([data], tableClearSelection)
+        break
+    }
+  }
 
   return <>
     <UI.ViewModal
       title={$t({ defaultMessage: 'View Configuration' })}
       visible={visible}
       onCancel={handleCancel}
-      width={600}
+      width={650}
       footer={<Button key='back' type='secondary' onClick={handleCancel}>
         {$t({ defaultMessage: 'Close' })}
       </Button>
@@ -39,6 +60,7 @@ export function ViewConfigurationModal (props:{
       {
         data &&
         <>
+          <div className='description-container'>
           <Descriptions labelWidthPercent={30}>
             <Descriptions.Item
               label={$t({ defaultMessage: 'Configuration Name' })}
@@ -50,6 +72,42 @@ export function ViewConfigurationModal (props:{
               label={$t({ defaultMessage: 'Type' })}
               children={data.backupType} />
           </Descriptions>
+            <Dropdown 
+              overlay={
+              <Menu
+                onClick={handleMenuClick}
+                items={[
+                  {
+                    label: $t({ defaultMessage: 'Compare' }),
+                    key: 'Compare'
+                  },              
+                  {
+                    label: $t({ defaultMessage: 'Restore' }),
+                    key: 'Restore',
+                    disabled: !enabledButton.find(item => item === 'Restore')
+                  },
+                  {
+                    label: $t({ defaultMessage: 'Download' }),
+                    key: 'Download'
+                  },
+                  {
+                    label: $t({ defaultMessage: 'Delete' }),
+                    key: 'Delete',
+                    disabled: !enabledButton.find(item => item === 'Delete')
+                  }
+                ]}
+              />
+              } 
+              key='viewCliMenu'
+            >
+              <Button>
+                <Space>
+                  {$t({ defaultMessage: 'Actions' })}
+                  <ArrowExpand />
+                </Space>
+              </Button>
+            </Dropdown>
+          </div>
           <div className='code-mirror-container'>
             <CodeMirrorWidget type='single' data={{...data, clis: data.config}} />
           </div>
