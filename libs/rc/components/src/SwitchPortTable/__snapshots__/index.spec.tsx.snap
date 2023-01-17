@@ -1236,10 +1236,12 @@ exports[`SwitchPortTable should render ports of switch ICX7650 correctly 1`] = `
                                 class="ant-space-item"
                               >
                                 <button
-                                  class="styledComponents__ActionButton-sc-1abm7iv-6 fNiKLL"
+                                  class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
                                   type="button"
                                 >
-                                  Edit
+                                  <span>
+                                    Edit
+                                  </span>
                                 </button>
                               </div>
                             </div>
@@ -1298,7 +1300,7 @@ exports[`SwitchPortTable should render ports of switch ICX7650 correctly 1`] = `
                                 class="ant-table-cell ant-table-selection-column react-resizable"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                 />
                                 <div
                                   class="ant-table-selection"
@@ -1322,7 +1324,7 @@ exports[`SwitchPortTable should render ports of switch ICX7650 correctly 1`] = `
                                   </label>
                                 </div>
                                 <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                 />
                               </th>
                               <th
@@ -1331,7 +1333,7 @@ exports[`SwitchPortTable should render ports of switch ICX7650 correctly 1`] = `
                                 tabindex="0"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                 />
                                 <div
                                   class="ant-table-column-sorters"
@@ -1389,7 +1391,7 @@ exports[`SwitchPortTable should render ports of switch ICX7650 correctly 1`] = `
                                   </span>
                                 </div>
                                 <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                 />
                               </th>
                               <th
@@ -1397,7 +1399,7 @@ exports[`SwitchPortTable should render ports of switch ICX7650 correctly 1`] = `
                                 tabindex="0"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                 />
                                 <div
                                   class="ant-table-column-sorters"
@@ -1455,7 +1457,7 @@ exports[`SwitchPortTable should render ports of switch ICX7650 correctly 1`] = `
                                   </span>
                                 </div>
                                 <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                 />
                               </th>
                               <th
@@ -1463,7 +1465,7 @@ exports[`SwitchPortTable should render ports of switch ICX7650 correctly 1`] = `
                                 tabindex="0"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                 />
                                 <div
                                   class="ant-table-column-sorters"
@@ -1521,7 +1523,7 @@ exports[`SwitchPortTable should render ports of switch ICX7650 correctly 1`] = `
                                   </span>
                                 </div>
                                 <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                 />
                               </th>
                               <th
@@ -1529,7 +1531,7 @@ exports[`SwitchPortTable should render ports of switch ICX7650 correctly 1`] = `
                                 tabindex="0"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                 />
                                 <div
                                   class="ant-table-column-sorters"
@@ -1587,7 +1589,7 @@ exports[`SwitchPortTable should render ports of switch ICX7650 correctly 1`] = `
                                   </span>
                                 </div>
                                 <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                 />
                               </th>
                               <th
@@ -1595,7 +1597,7 @@ exports[`SwitchPortTable should render ports of switch ICX7650 correctly 1`] = `
                                 tabindex="0"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                 />
                                 <div
                                   class="ant-table-column-sorters"
@@ -1653,7 +1655,7 @@ exports[`SwitchPortTable should render ports of switch ICX7650 correctly 1`] = `
                                   </span>
                                 </div>
                                 <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                 />
                               </th>
                               <th
@@ -1661,7 +1663,7 @@ exports[`SwitchPortTable should render ports of switch ICX7650 correctly 1`] = `
                                 tabindex="0"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                 />
                                 <div
                                   class="ant-table-column-sorters"
@@ -1719,7 +1721,7 @@ exports[`SwitchPortTable should render ports of switch ICX7650 correctly 1`] = `
                                   </span>
                                 </div>
                                 <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                 />
                               </th>
                               <th
@@ -1727,7 +1729,7 @@ exports[`SwitchPortTable should render ports of switch ICX7650 correctly 1`] = `
                                 tabindex="0"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                 />
                                 <div
                                   class="ant-table-column-sorters"
@@ -1785,7 +1787,7 @@ exports[`SwitchPortTable should render ports of switch ICX7650 correctly 1`] = `
                                   </span>
                                 </div>
                                 <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                 />
                               </th>
                               <th
@@ -1793,7 +1795,7 @@ exports[`SwitchPortTable should render ports of switch ICX7650 correctly 1`] = `
                                 tabindex="0"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                 />
                                 <div
                                   class="ant-table-column-sorters"
@@ -1851,7 +1853,7 @@ exports[`SwitchPortTable should render ports of switch ICX7650 correctly 1`] = `
                                   </span>
                                 </div>
                                 <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                 />
                               </th>
                               <th
@@ -1859,7 +1861,7 @@ exports[`SwitchPortTable should render ports of switch ICX7650 correctly 1`] = `
                                 tabindex="0"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                 />
                                 <div
                                   class="ant-table-column-sorters"
@@ -1917,7 +1919,7 @@ exports[`SwitchPortTable should render ports of switch ICX7650 correctly 1`] = `
                                   </span>
                                 </div>
                                 <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                 />
                               </th>
                               <th
@@ -1925,10 +1927,10 @@ exports[`SwitchPortTable should render ports of switch ICX7650 correctly 1`] = `
                                 style="position: sticky; right: 0px;"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                 />
                                 <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                 />
                               </th>
                             </tr>
