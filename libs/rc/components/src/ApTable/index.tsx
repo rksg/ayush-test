@@ -150,7 +150,8 @@ export function ApTable (props: ApTableProps) {
     }, {
       key: 'ip',
       title: $t({ defaultMessage: 'IP Address' }),
-      dataIndex: 'IP'
+      dataIndex: 'IP',
+      sorter: true
     }, {
       key: 'apMac',
       title: $t({ defaultMessage: 'MAC Address' }),

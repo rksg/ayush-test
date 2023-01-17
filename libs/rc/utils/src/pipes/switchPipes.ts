@@ -1,6 +1,7 @@
 import { getIntl } from '@acx-ui/utils'
 
-import { ConfigStatusEnum, ConfigTypeEnum } from '../constants'
+import { BACKUP_IN_PROGRESS_TOOLTIP, ConfigStatusEnum, ConfigTypeEnum, ConfigurationBackupStatus, RESTORE_IN_PROGRESS_TOOLTIP } from '../constants'
+import { ConfigurationBackup }                                                                                                  from '../types'
 
 export function transformConfigType (type: ConfigTypeEnum | string) {
   const { $t } = getIntl()
@@ -57,6 +58,9 @@ export function transformConfigType (type: ConfigTypeEnum | string) {
     case ConfigTypeEnum.SPECIFIC_SETTING:
       transform = $t({ defaultMessage: 'Specific Setting' })
       break
+    case ConfigTypeEnum.STATIC_ROUTE:
+      transform = $t({ defaultMessage: 'Static Route' })
+      break
     case 'VLAN':
       transform = $t({ defaultMessage: 'VLAN' })
       break
@@ -84,7 +88,49 @@ export function transformConfigStatus (type: ConfigStatusEnum | string) {
     case ConfigStatusEnum.FAILED_NO_RESPONSE:
       transform = $t({ defaultMessage: 'Failed No Response' })
       break
+    case ConfigStatusEnum.PENDING:
+      transform = $t({ defaultMessage: 'Pending' })
+      break
   }
 
   return transform
+}
+
+export const transformConfigBackupStatus = (data: ConfigurationBackup) => {
+  const { $t } = getIntl()
+  const { status, restoreStatus, failureReason } = data
+  let text = ''
+  const restoreMap = {
+    PENDING: $t(RESTORE_IN_PROGRESS_TOOLTIP),
+    STARTED: $t(RESTORE_IN_PROGRESS_TOOLTIP),
+    SUCCESS: $t({ defaultMessage: 'Backup restored successfully' }),
+    FAILED: $t({ defaultMessage: 'Backup restore failed' })
+  }
+  const backupMap = {
+    PENDING: $t(BACKUP_IN_PROGRESS_TOOLTIP),
+    STARTED: $t(BACKUP_IN_PROGRESS_TOOLTIP),
+    SUCCESS: $t({ defaultMessage: 'Backup created successfully' }),
+    FAILED: $t({ defaultMessage: 'Backup creation failed' })
+  }
+  if (restoreMap[restoreStatus]) {
+    text = restoreMap[restoreStatus]
+    if (restoreStatus === ConfigurationBackupStatus.FAILED) {
+      text += ` (${failureReason})`
+    }
+  } else {
+    text = backupMap[status]
+    if (status === ConfigurationBackupStatus.FAILED) {
+      text += ` (${failureReason})`
+    }
+  }
+  return text
+}
+
+export const transformConfigBackupType = (type:string) => {
+  const { $t } = getIntl()
+  if (type === 'SCHEDULED') {
+    return $t({ defaultMessage: 'Automatic' })
+  } else {
+    return $t({ defaultMessage: 'Manual' })
+  }
 }
