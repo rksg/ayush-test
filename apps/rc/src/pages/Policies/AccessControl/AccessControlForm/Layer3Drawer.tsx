@@ -115,6 +115,8 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
   const [contentForm] = Form.useForm()
   const [drawerForm] = Form.useForm()
 
+  const AnyText = $t({ defaultMessage: 'Any' })
+
   const [
     accessStatus,
     policyName,
@@ -214,7 +216,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       dataIndex: 'source',
       key: 'source',
       render: (data, row) => {
-        return renderNetworkColumn(row.source)
+        return <NetworkColumnComponent network={row.source} />
       }
     },
     {
@@ -222,7 +224,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       dataIndex: 'destination',
       key: 'destination',
       render: (data, row) => {
-        return renderNetworkColumn(row.destination)
+        return <NetworkColumnComponent network={row.destination} />
       }
     },
     {
@@ -247,23 +249,20 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
 
   const RuleSource =[RuleSourceType.ANY, RuleSourceType.SUBNET, RuleSourceType.IP]
 
-  const renderNetworkColumn = (network: Layer3NetworkCol) => {
-    if (network && network.type === 'Subnet') {
-      return <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <span>{$t({ defaultMessage: 'IP:' })} {`${network.subnet}/${network.mask}`}</span>
-        <span>{$t({ defaultMessage: 'Port:' })} {network.port === '' ? 'Any' : network.port }</span>
-      </div>
+  const NetworkColumnComponent = (props: { network: Layer3NetworkCol }) => {
+    const { network } = props
+
+    let ipString = network.type ?? RuleSourceType.ANY
+    if (network && network.type === RuleSourceType.SUBNET) {
+      ipString = `${network.subnet}/${network.mask}`
     }
-    if (network && network.type === 'Ip') {
-      return <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <span>{$t({ defaultMessage: 'IP:' })} {`${network.ip}`}</span>
-        <span>{$t({ defaultMessage: 'Port:' })} {network.port === '' ? 'Any' : network.port }</span>
-      </div>
+    if (network && network.type === RuleSourceType.IP) {
+      ipString = `${network.ip}`
     }
 
     return <div style={{ display: 'flex', flexDirection: 'column' }}>
-      <span>{$t({ defaultMessage: 'IP:' })} {network.type ?? 'Any'}</span>
-      <span>{$t({ defaultMessage: 'Port:' })} {network.port === '' ? 'Any' : network.port }</span>
+      <span>{$t({ defaultMessage: 'IP:' })} {ipString}</span>
+      <span>{$t({ defaultMessage: 'Port:' })} {network.port === '' ? AnyText : network.port }</span>
     </div>
   }
 
@@ -308,14 +307,14 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       access: drawerForm.getFieldValue('access'),
       protocol: drawerForm.getFieldValue('protocol'),
       source: {
-        type: drawerForm.getFieldValue('sourceType') ?? 'Any',
+        type: drawerForm.getFieldValue('sourceType') ?? AnyText,
         subnet: drawerForm.getFieldValue('sourceNetworkAddress') ?? '',
         mask: drawerForm.getFieldValue('sourceMask') ?? '',
         ip: drawerForm.getFieldValue('sourceIp') ?? '',
         port: drawerForm.getFieldValue('sourcePort') ?? ''
       },
       destination: {
-        type: drawerForm.getFieldValue('destType') ?? 'Any',
+        type: drawerForm.getFieldValue('destType') ?? AnyText,
         subnet: drawerForm.getFieldValue('destNetworkAddress') ?? '',
         mask: drawerForm.getFieldValue('destMask') ?? '',
         ip: drawerForm.getFieldValue('destIp') ?? '',
