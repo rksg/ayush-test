@@ -101,7 +101,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         }
       },
       transformResponse (result: TableResult<EdgeStatus>) {
-        return result?.data[0]
+        return result.data[0]
       }
     }),
     getDnsServers: build.query<EdgeDnsServers, RequestPayload>({

@@ -45,7 +45,8 @@ import {
   NetworkDevicePayload,
   RogueOldApResponseType,
   VenueRadioCustomization,
-  VenueDirectedMulticast
+  VenueDirectedMulticast,
+  VenueLoadBalancing
 } from '@acx-ui/rc/utils'
 
 const RKS_NEW_UI = {
@@ -750,14 +751,15 @@ export const venueApi = baseVenueApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Venue', id: 'DIRECTEDMULTICAST' }],
+      providesTags: [{ type: 'Venue', id: 'DIRECTED_MULTICAST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
             'UpdateVenueDirectedMulticast'
           ]
           showActivityMessage(msg, activities, () => {
-            api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'DIRECTEDMULTICAST' }]))
+            const invalidateTagsFunc = venueApi.util.invalidateTags
+            api.dispatch(invalidateTagsFunc([{ type: 'Venue', id: 'DIRECTED_MULTICAST' }]))
           })
         })
       }
@@ -770,7 +772,36 @@ export const venueApi = baseVenueApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Venue', id: 'DIRECTEDMULTICAST' }]
+      invalidatesTags: [{ type: 'Venue', id: 'DIRECTED_MULTICAST' }]
+    }),
+    getVenueLoadBalancing: build.query<VenueLoadBalancing, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getVenueLoadBalancing, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Venue', id: 'LOAD_BALANCING' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UpdateVenueLoadBalancing'
+          ]
+          showActivityMessage(msg, activities, () => {
+            api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'LOAD_BALANCING' }]))
+          })
+        })
+      }
+    }),
+    updateVenueLoadBalancing: build.mutation<VenueLoadBalancing, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.updateVenueLoadBalancing, params)
+        return{
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Venue', id: 'LOAD_BALANCING' }]
     })
 
 
@@ -846,5 +877,7 @@ export const {
   useGetVenueApModelCellularQuery,
   useGetVenueDirectedMulticastQuery,
   useLazyGetVenueDirectedMulticastQuery,
-  useUpdateVenueDirectedMulticastMutation
+  useUpdateVenueDirectedMulticastMutation,
+  useGetVenueLoadBalancingQuery,
+  useUpdateVenueLoadBalancingMutation
 } = venueApi
