@@ -285,13 +285,10 @@ export function AddMspCustomer () {
       return '--'
     return <>
       {mspAdmins.map(admin =>
-        <div style={{
-          paddingRight: '5px',
-          textOverflow: 'ellipsis',
-          whiteSpace: 'nowrap',
-          overflow: 'hidden' }}>
-          {admin.email} ({intl.$t(roleDisplayText[admin.role])})
-        </div> )}
+        <UI.AdminList>
+          {admin.email} ({intl.$t(roleDisplayText[admin.role])}
+        </UI.AdminList>
+      )}
     </>
   }
 
@@ -592,11 +589,6 @@ export function AddMspCustomer () {
               </UI.FieldTextLink>
               }
             />
-            {drawerAdminVisible && <ManageAdminsDrawer
-              visible={drawerAdminVisible}
-              setVisible={setDrawerAdminVisible}
-              setSelected={selectedMspAdmins}
-            />}
           </UI.FieldLabelAdmins>
           <UI.FieldLabelAdmins width='275px' style={{ marginTop: '-12px' }}>
             <label>{intl.$t({ defaultMessage: 'Integrator' })}</label>
@@ -606,12 +598,6 @@ export function AddMspCustomer () {
                 {intl.$t({ defaultMessage: 'Manage' })}
               </UI.FieldTextLink>}
             />
-            {drawerIntegratorVisible && <SelectIntegratorDrawer
-              visible={drawerIntegratorVisible}
-              tenantType='MSP_INTEGRATOR'
-              setVisible={setDrawerIntegratorVisible}
-              setSelected={selectedIntegrators}
-            />}
           </UI.FieldLabelAdmins>
           <UI.FieldLabelAdmins width='275px' style={{ marginTop: '-16px' }}>
             <label>{intl.$t({ defaultMessage: 'Installer' })}</label>
@@ -621,12 +607,6 @@ export function AddMspCustomer () {
                 {intl.$t({ defaultMessage: 'Manage' })}
               </UI.FieldTextLink>}
             />
-            {drawerInstallerVisible && <SelectIntegratorDrawer
-              visible={drawerInstallerVisible}
-              tenantType='MSP_INSTALLER'
-              setVisible={setDrawerInstallerVisible}
-              setSelected={selectedIntegrators}
-            />}
           </UI.FieldLabelAdmins>
           <Subtitle level={3}>
             { intl.$t({ defaultMessage: 'Customer Administrator' }) }</Subtitle>
@@ -685,8 +665,27 @@ export function AddMspCustomer () {
           title={intl.$t({ defaultMessage: 'Summary' })}>
           <CustomerSummary />
         </StepsForm.StepForm>}
-
       </StepsForm>
+
+      {drawerAdminVisible && <ManageAdminsDrawer
+        visible={drawerAdminVisible}
+        setVisible={setDrawerAdminVisible}
+        setSelected={selectedMspAdmins}
+      />}
+
+      {drawerIntegratorVisible && <SelectIntegratorDrawer
+        visible={drawerIntegratorVisible}
+        tenantType='MSP_INTEGRATOR'
+        setVisible={setDrawerIntegratorVisible}
+        setSelected={selectedIntegrators}
+      />}
+
+      {drawerInstallerVisible && <SelectIntegratorDrawer
+        visible={drawerInstallerVisible}
+        tenantType='MSP_INSTALLER'
+        setVisible={setDrawerInstallerVisible}
+        setSelected={selectedIntegrators}
+      />}
     </>
   )
 }

@@ -10,6 +10,7 @@ import {
   Typography
 } from 'antd'
 import _           from 'lodash'
+import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import {
@@ -52,8 +53,8 @@ import {
 import { ManageAdminsDrawer } from '../ManageAdminsDrawer'
 // eslint-disable-next-line import/order
 import { SelectIntegratorDrawer } from '../SelectIntegratorDrawer'
-
-import * as UI from '../styledComponents'
+import { StartSubscriptionModal } from '../StartSubscriptionModal'
+import * as UI                    from '../styledComponents'
 
 interface AddressComponent {
   long_name?: string;
@@ -156,7 +157,7 @@ export function EditMspCustomer () {
   const linkToCustomers = useTenantLink('/dashboard/mspcustomers', 'v')
   const formRef = useRef<StepsFormInstance<MspEcData>>()
 
-  const { action, tenantId, mspEcTenantId } = useParams()
+  const { action, status, tenantId, mspEcTenantId } = useParams()
 
   const [isTrialMode, setTrialMode] = useState(true)
   const [isTrialActive, setTrialActive] = useState(true)
@@ -168,6 +169,8 @@ export function EditMspCustomer () {
   const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
   const [drawerIntegratorVisible, setDrawerIntegratorVisible] = useState(false)
   const [drawerInstallerVisible, setDrawerInstallerVisible] = useState(false)
+  const [startSubscriptionVisible, setStartSubscriptionVisible] = useState(false)
+  const [subscriptionStartDate, setStartSubscriptionDate] = useState('')
   const [address, updateAddress] = useState<Address>(isMapEnabled? {} : defaultAddress)
 
   const [addCustomer] = useAddCustomerMutation()
@@ -207,9 +210,8 @@ export function EditMspCustomer () {
       })
       formRef.current?.setFieldValue(['address', 'addressLine'], data?.street_address)
       data?.is_active === 'true' ? setTrialActive(true) : setTrialActive(false)
-      setTrialMode(false)
+      status === 'active' ? setTrialMode(false) : setTrialMode(true)
       // updateAddress(data?.street_address as Address)
-
     }
 
     if ( action !== 'edit') { // Add mode
@@ -319,8 +321,22 @@ export function EditMspCustomer () {
   const manageMspAdmins = () => {
     setDrawerAdminVisible(true)
   }
+
   const manageIntegrator = (type: string) => {
     type === 'MSP_INSTALLER' ? setDrawerInstallerVisible(true) : setDrawerIntegratorVisible(true)
+  }
+
+  const onClickStartSubscription = () => {
+    setStartSubscriptionVisible(true)
+  }
+
+  const startSubscription = (startDate: Date) => {
+    if (startDate) {
+      const dateString = moment(startDate).format('MM/DD/YYYY')
+      setStartSubscriptionDate(dateString)
+      setTrialMode(false)
+    }
+
   }
 
   const selectedMspAdmins = (selected: MspAdministrator[]) => {
@@ -336,13 +352,10 @@ export function EditMspCustomer () {
       return '--'
     return <>
       {mspAdmins.map(admin =>
-        <div style={{
-          paddingRight: '5px',
-          textOverflow: 'ellipsis',
-          whiteSpace: 'nowrap',
-          overflow: 'hidden' }}>
+        <UI.AdminList>
           {admin.email} ({intl.$t(roleDisplayText[admin.role])})
-        </div> )}
+        </UI.AdminList>
+      )}
     </>
   }
 
@@ -378,14 +391,11 @@ export function EditMspCustomer () {
     }
 
     return <div style={{ marginTop: '5px', marginBottom: '30px' }}>
-      {mspAdmins.map(admin =>
-        <div style={{
-          paddingRight: '5px',
-          textOverflow: 'ellipsis',
-          whiteSpace: 'nowrap',
-          overflow: 'hidden' }}>
-          {admin.email} ({intl.$t(roleDisplayText[admin.role])})
-        </div> )}
+      {mspEcAdmins.map(admin =>
+        <UI.AdminList>
+          {admin.email} ({intl.$t(roleDisplayText[admin.role])}
+        </UI.AdminList>
+      )}
     </div>
   }
 
@@ -461,11 +471,6 @@ export function EditMspCustomer () {
           </UI.FieldTextLink>
           }
         />
-        {drawerAdminVisible && <ManageAdminsDrawer
-          visible={drawerAdminVisible}
-          setVisible={setDrawerAdminVisible}
-          setSelected={selectedMspAdmins}
-        />}
       </UI.FieldLabelAdmins>
       <UI.FieldLabelAdmins width='275px' style={{ marginTop: '-12px' }}>
         <label>{intl.$t({ defaultMessage: 'Integrator' })}</label>
@@ -475,12 +480,6 @@ export function EditMspCustomer () {
             {intl.$t({ defaultMessage: 'Manage' })}
           </UI.FieldTextLink>}
         />
-        {drawerIntegratorVisible && <SelectIntegratorDrawer
-          visible={drawerIntegratorVisible}
-          tenantType='MSP_INTEGRATOR'
-          setVisible={setDrawerIntegratorVisible}
-          setSelected={selectedIntegrators}
-        />}
       </UI.FieldLabelAdmins>
       <UI.FieldLabelAdmins width='275px' style={{ marginTop: '-16px' }}>
         <label>{intl.$t({ defaultMessage: 'Installer' })}</label>
@@ -490,32 +489,10 @@ export function EditMspCustomer () {
             {intl.$t({ defaultMessage: 'Manage' })}
           </UI.FieldTextLink>}
         />
-        {drawerInstallerVisible && <SelectIntegratorDrawer
-          visible={drawerInstallerVisible}
-          tenantType='MSP_INSTALLER'
-          setVisible={setDrawerInstallerVisible}
-          setSelected={selectedIntegrators}
-        />}
       </UI.FieldLabelAdmins>
       <Subtitle level={3}>
         { intl.$t({ defaultMessage: 'Customer Administrator' }) }</Subtitle>
       <Form.Item children={displayCustomerAdmins()} />
-      {/* {displayCustomerAdmins()} */}
-      {/* <Form.Item
-        label={intl.$t({ defaultMessage: 'Name' })}
-      >
-        <Paragraph>{'Eric Leu'}</Paragraph>
-      </Form.Item>
-      <Form.Item style={{ marginTop: '-22px' }}
-        label={intl.$t({ defaultMessage: 'Email' })}
-      >
-        <Paragraph>{'eleu1658@yahoo.com'}</Paragraph>
-      </Form.Item>
-      <Form.Item style={{ marginTop: '-22px' }}
-        label={intl.$t({ defaultMessage: 'Role' })}
-      >
-        <Paragraph>{'Prime Administrator'}</Paragraph>
-      </Form.Item> */}
     </>
   }
 
@@ -542,6 +519,7 @@ export function EditMspCustomer () {
         <Button
           type='primary'
           style={{ display: 'inline-block', marginLeft: '80px' }}
+          onClick={() => onClickStartSubscription()}
         >{intl.$t({ defaultMessage: 'Start Subscription' })}
         </Button>
         <UI.FieldLabel2 width='275px' style={{ marginTop: '20px' }}>
@@ -571,7 +549,7 @@ export function EditMspCustomer () {
 
         <UI.FieldLabel2 width='275px' style={{ marginTop: '18px' }}>
           <label>{intl.$t({ defaultMessage: 'Service Start Date' })}</label>
-          <label>{intl.$t({ defaultMessage: '10/22/2022' })}</label>
+          <label>{subscriptionStartDate}</label>
         </UI.FieldLabel2>
 
         <UI.FieldLabeServiceDate width='275px' style={{ marginTop: '10px' }}>
@@ -596,6 +574,7 @@ export function EditMspCustomer () {
             label=''
             children={
               <DatePicker
+                format='MM/DD/YYYY'
                 style={{ marginLeft: '4px' }}
               />
             }
@@ -678,6 +657,29 @@ export function EditMspCustomer () {
             {intl.$t({ defaultMessage: 'Enable when requested by Ruckus support team.' })}</label>
         </StepsForm.StepForm>
       </StepsForm>
+
+      {drawerAdminVisible && <ManageAdminsDrawer
+        visible={drawerAdminVisible}
+        setVisible={setDrawerAdminVisible}
+        setSelected={selectedMspAdmins}
+      />}
+      {drawerIntegratorVisible && <SelectIntegratorDrawer
+        visible={drawerIntegratorVisible}
+        tenantType='MSP_INTEGRATOR'
+        setVisible={setDrawerIntegratorVisible}
+        setSelected={selectedIntegrators}
+      />}
+      {drawerInstallerVisible && <SelectIntegratorDrawer
+        visible={drawerInstallerVisible}
+        tenantType='MSP_INSTALLER'
+        setVisible={setDrawerInstallerVisible}
+        setSelected={selectedIntegrators}
+      />}
+      {startSubscriptionVisible && <StartSubscriptionModal
+        visible={startSubscriptionVisible}
+        setVisible={setStartSubscriptionVisible}
+        setStartDate={startSubscription}
+      />}
     </>
   )
 }

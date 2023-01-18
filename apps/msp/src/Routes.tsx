@@ -45,7 +45,7 @@ function CustomersRoutes () {
       <Route path='v/:tenantId/dashboard/mspCustomers'>
         <Route index element={<MspCustomers />} />
         <Route path='create' element={<AddMspCustomer />} />
-        <Route path=':action/:mspEcTenantId' element={<EditMspCustomer />} />
+        <Route path=':action/:status/:mspEcTenantId' element={<EditMspCustomer />} />
       </Route>
       <Route path='v/:tenantId/integrators'>
         <Route index element={<Integrators />} />

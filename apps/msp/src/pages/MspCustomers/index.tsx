@@ -260,9 +260,10 @@ export function MspCustomers () {
         label: $t({ defaultMessage: 'Manage' }),
         onClick: (selectedRows) => {
           setTenantId(selectedRows[0].id)
+          const status = selectedRows[0].status === 'Active' ? 'active' : 'notActive'
           navigate({
             ...basePath,
-            pathname: `${basePath.pathname}/${selectedRows[0].id}`
+            pathname: `${basePath.pathname}/${status}/${selectedRows[0].id}`
           })
         }
       },
