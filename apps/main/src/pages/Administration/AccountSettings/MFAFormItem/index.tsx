@@ -48,7 +48,7 @@ const MFAFormItem = styled((props: MFAFormItemProps) => {
               tenantId: params.tenantId,
               enable: isChecked + ''
             }
-          })
+          }).unwrap()
         } catch {
           showToast({
             type: 'error',

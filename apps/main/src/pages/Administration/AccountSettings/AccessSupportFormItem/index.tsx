@@ -1,10 +1,9 @@
 import { useState, useCallback, useEffect } from 'react'
 
 import { Col, Form, Row, Typography, Checkbox, Tooltip } from 'antd'
-// import moment                                            from 'moment-timezone'
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
-import styled        from 'styled-components/macro'
+import { useIntl }                                       from 'react-intl'
+import { useParams }                                     from 'react-router-dom'
+import styled                                            from 'styled-components/macro'
 
 import { showToast }            from '@acx-ui/components'
 import { SpaceWrapper }         from '@acx-ui/rc/components'
@@ -33,9 +32,7 @@ const AccessSupportFormItem = styled((props: AccessSupportFormItemProps) => {
   const params = useParams()
   const { className, userProfileData, isMspEc } = props
   const [isSupportAccessEnabled, setIsSupportAccessEnabled] = useState(false)
-  // const [expiryDate, setExpiryDate] = useState('')
   const [createdDate, setCreatedDate] = useState('')
-  // const [countDown, setCountDown] = useState('')
 
   const [ enableAccessSupport,
     { isLoading: isEnableAccessSupportUpdating }]
@@ -62,51 +59,21 @@ const AccessSupportFormItem = styled((props: AccessSupportFormItemProps) => {
     isFetching: isFetchingTenantDelegation
   }= useGetTenantDelegationQuery({ params }, { skip: isMspDelegateEC })
 
-  // const updateExpirationDate = useCallback((responseExpiryDate: string | undefined) => {
-  //   if (responseExpiryDate) {
-  //     const newExpiryDate = formatter('dateTimeFormat')(responseExpiryDate)
-  //     setExpiryDate(newExpiryDate)
-
-  //     const endDate = moment(responseExpiryDate)
-  //     const firstDay = moment()
-  //     const dayDifference = Math.round(endDate.diff(firstDay, 'days', true))
-  //     const hourDifference = Math.round(endDate.diff(firstDay, 'hours', true))
-  //     const minutesDifference = Math.round(endDate.diff(firstDay, 'minutes', true))
-
-  //     if (dayDifference > 1 || hourDifference >= 24) {
-  //       setCountDown(dayDifference + (dayDifference === 1 ? ' day' : ' days'))
-  //     } else if (hourDifference > 1 || minutesDifference >= 60) {
-  //       // less than a day
-  //       setCountDown(hourDifference + (hourDifference === 1 ? ' hour' : ' hours'))
-  //     } else if (minutesDifference > 0) {
-  //       // less than an hour
-  //       setCountDown('less than 1 hour')
-  //     } else {
-  //       try {
-  //         disableAccessSupport({ params: { tenantId: params.tenantId } })
-  //       } catch {
-  //         showToast({
-  //           type: 'error',
-  //           content: $t({ defaultMessage: 'An error occurred' })
-  //         })
-  //       }
-  //     }
-  //   }
-  // }, [$t, disableAccessSupport, params])
-
   const updateCreatedDate = useCallback((responseCreatedDate: string | undefined) => {
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+
     if (responseCreatedDate) {
-      const newCreatedDate = formatter('dateTimeFormat')(responseCreatedDate)
-      setCreatedDate(newCreatedDate)
+      const newCreatedDate = formatter('dateTimeFormatWithTimezone')(responseCreatedDate, timezone)
+      setCreatedDate(newCreatedDate.replace(/\+\d\d:\d\d/, '').replace('UTC UTC', 'UTC'))
     }
   }, [])
 
   const handleAccessSupportChange = async (e: CheckboxChangeEvent) => {
     const isChecked = e.target.checked
+    const triggerAction = isChecked ? enableAccessSupport : disableAccessSupport
+
     try {
-      isChecked ?
-        await enableAccessSupport({ params: { tenantId: params.tenantId } }) :
-        await disableAccessSupport({ params: { tenantId: params.tenantId } })
+      await triggerAction({ params }).unwrap()
     } catch {
       showToast({
         type: 'error',
@@ -116,7 +83,6 @@ const AccessSupportFormItem = styled((props: AccessSupportFormItemProps) => {
   }
 
   useEffect(() => {
-    // updateExpirationDate(ecTenantDelegationData?.expiryDate || tenantDelegationData?.expiryDate)
     updateCreatedDate(ecTenantDelegationData?.createdDate || tenantDelegationData?.createdDate)
     setIsSupportAccessEnabled(
       Boolean(ecTenantDelegationData?.isAccessSupported || tenantDelegationData?.isAccessSupported)

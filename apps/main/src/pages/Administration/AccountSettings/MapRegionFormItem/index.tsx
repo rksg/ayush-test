@@ -30,13 +30,12 @@ const MapRegionFormItem = () => {
 
   const handleMapRegionChange = async (regionCode:string) => {
     if (!regionCode) return
-
     const payload = {
       global: { ...preferenceData?.global, mapRegion: regionCode }
     }
 
     try {
-      await updatePreferences({ params, payload })
+      await updatePreferences({ params, payload }).unwrap()
 
       setCurrentRegion(regionCode)
     } catch {
@@ -60,7 +59,6 @@ const MapRegionFormItem = () => {
 
       const script = document.createElement('script')
       script.id = DEFAULT_ID
-      script.defer = true
       script.onerror = () => {
         // eslint-disable-next-line no-console
         console.log('Failed to load google maps key from env')

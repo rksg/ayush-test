@@ -133,30 +133,30 @@ describe('Recovery Network Passphrase Drawer', () => {
     await waitFor(() => expect(mockedSetVisible).toHaveBeenCalledWith(false))
   })
 
-  // it('should display toast notification when submit failed', async () => {
-  //   mockServer.use(
-  //     rest.put(
-  //       AdministrationUrlsInfo.updateRecoveryPassphrase.url,
-  //       (req, res, ctx) => res(ctx.status(500), ctx.json(null))
-  //     )
-  //   )
+  it('should display toast notification when submit failed', async () => {
+    mockServer.use(
+      rest.put(
+        AdministrationUrlsInfo.updateRecoveryPassphrase.url,
+        (req, res, ctx) => res(ctx.status(500), ctx.json(null))
+      )
+    )
 
-  //   render(
-  //     <Provider>
-  //       <ChangePassphraseDrawer
-  //         data={fakeData}
-  //         visible={true}
-  //         setVisible={mockedSetVisible}
-  //       />
-  //     </Provider>, {
-  //       route: { params }
-  //     })
+    render(
+      <Provider>
+        <ChangePassphraseDrawer
+          data={fakeData}
+          visible={true}
+          setVisible={mockedSetVisible}
+        />
+      </Provider>, {
+        route: { params }
+      })
 
-  //   await screen.findByRole('dialog')
-  //   const inputElem = await screen.findByTestId('recovery_pass_0')
-  //   await userEvent.clear(inputElem)
-  //   await userEvent.type(inputElem, '1236')
-  //   fireEvent.click(await screen.findByRole('button', { name: 'Change' }))
-  //   expect(await screen.findByText('An error occurred')).toBeVisible()
-  // })
+    await screen.findByRole('dialog')
+    const inputElem = await screen.findByTestId('recovery_pass_0')
+    await userEvent.clear(inputElem)
+    await userEvent.type(inputElem, '1236')
+    fireEvent.click(await screen.findByRole('button', { name: 'Change' }))
+    expect(await screen.findByText('An error occurred')).toBeVisible()
+  })
 })

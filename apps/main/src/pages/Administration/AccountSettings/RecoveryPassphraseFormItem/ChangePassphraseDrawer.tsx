@@ -44,19 +44,19 @@ export const ChangePassphraseDrawer = styled((props: ChangePassphraseDrawerProps
   const onSubmitChange = async () => {
     if (!passphrase) return
 
+    try {
+      await updateRecoveryPassphrase({
+        params: { tenantId },
+        payload: { psk: passphrase.split(' ').join('') }
+      }).unwrap()
 
-    updateRecoveryPassphrase({
-      params: { tenantId },
-      payload: { psk: passphrase.split(' ').join('') }
-    }).then(() => {
       setVisible(false)
-    }).catch(() => {
+    } catch {
       showToast({
         type: 'error',
         content: $t({ defaultMessage: 'An error occurred' })
       })
-    })
-
+    }
   }
 
   const handleChange = (idx: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
