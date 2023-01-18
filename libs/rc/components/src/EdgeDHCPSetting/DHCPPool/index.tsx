@@ -87,7 +87,7 @@ export default function DHCPPoolTable ({
     <Row>
       <Col span={12}>
         <Form.Item
-          name='name'
+          name='poolName'
           label={$t({ defaultMessage: 'Pool Name' })}
           rules={[
             { required: true },
@@ -109,7 +109,7 @@ export default function DHCPPoolTable ({
           children={<Input />}
         />
         <Form.Item
-          name='startIpAddress'
+          name='poolStartIp'
           label={$t({ defaultMessage: 'Start IP Address' })}
           rules={[
             { required: true },
@@ -119,13 +119,13 @@ export default function DHCPPoolTable ({
           children={<Input />}
         />
         <Form.Item
-          name='endIpAddress'
+          name='poolEndIp'
           label={$t({ defaultMessage: 'End IP Address' })}
           rules={[
             { required: true },
             { validator: (_, value) => networkWifiIpRegExp(value) },
             { validator: (_, value) => countIpMaxRange(
-              form.getFieldValue('startIpAddress'), value)
+              form.getFieldValue('poolStartIp'), value)
             }
           ]}
           children={<Input />}

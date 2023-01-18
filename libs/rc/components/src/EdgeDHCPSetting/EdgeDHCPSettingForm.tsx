@@ -1,21 +1,32 @@
-import { Form, Input, Switch, Row, Col } from 'antd'
+import { Form, Input, Switch, Row, Col, InputNumber, Space, Select } from 'antd'
 import { useIntl }                       from 'react-intl'
 
 import { Subtitle, Alert, StepsForm } from '@acx-ui/components'
+import { ToggleButton }                          from '@acx-ui/rc/components'
 
 import DHCPHostTable from './DHCPHost'
 import DHCPPoolTable from './DHCPPool'
+import {
+  EdgeDhcpSetting,
+  LeaseTimeUnit } from '@acx-ui/rc/utils'
 
 const { useWatch } = Form
+const { Option } = Select
 
 export const EdgeDHCPSettingForm = () => {
 
   const { $t } = useIntl()
   const [
-    enableDhcpRelay
+    dhcpRelay,
+    enableSecondaryDNSServer
   ] = [
-    useWatch<boolean>('enableDhcpRelay')
+    useWatch<boolean>('dhcpRelay'),
+    useWatch<boolean>('enableSecondaryDNSServer')
   ]
+  const initDhcpData: Partial<EdgeDhcpSetting> = {
+    leaseTime: 24,
+    leaseTimeUnit: LeaseTimeUnit.HOURS,
+  }
 
   return (
     <>
@@ -25,7 +36,7 @@ export const EdgeDHCPSettingForm = () => {
             { $t({ defaultMessage: 'Settings' }) }
           </Subtitle>
           <Form.Item
-            name='name'
+            name='serviceName'
             label={$t({ defaultMessage: 'Service Name' })}
             rules={[{
               required: true
@@ -35,16 +46,16 @@ export const EdgeDHCPSettingForm = () => {
           <StepsForm.FieldLabel width='100px'>
             {$t({ defaultMessage: 'DHCP Relay:' })}
             <Form.Item
-              name='enableDhcpRelay'
+              name='dhcpRelay'
               valuePropName='checked'
               initialValue={false}
               children={<Switch />}
             />
           </StepsForm.FieldLabel>
-          {enableDhcpRelay &&
+          {dhcpRelay &&
             <>
               <Form.Item
-                name='externalDhcpAddress'
+                name='externalDhcpServerFqdnIp'
                 label={$t({ defaultMessage: 'FQDN Name or IP Address' })}
                 rules={[{
                   required: true
@@ -59,6 +70,53 @@ export const EdgeDHCPSettingForm = () => {
               showIcon />
             </>
           }
+          <Form.Item
+            name='domainName'
+            label={$t({ defaultMessage: 'Domain Name' })}
+            children={<Input />}
+          />
+          <Form.Item
+            name='primaryDnsServer'
+            label={$t({ defaultMessage: 'Primary DNS Server' })}
+            children={<Input />}
+          />
+          <Form.Item noStyle name='enableSecondaryDNSServer'>
+            <ToggleButton
+              enableText={$t({ defaultMessage: 'Remove Secondary DNS Server' })}
+              disableText={$t({ defaultMessage: 'Add Secondary DNS Server' })}
+            />
+          </Form.Item>
+          {enableSecondaryDNSServer &&
+              <Form.Item
+                  name='secondaryDnsServer'
+                  label={$t({ defaultMessage: 'Secondary DNS Server' })}
+                  children={<Input />}
+                />
+            }
+            <Form.Item label={$t({ defaultMessage: 'Lease Time' })}>
+              <Space align='start'>
+                <Form.Item
+                  noStyle
+                  name='leaseTime'
+                  label={$t({ defaultMessage: 'Lease Time' })}
+                  rules={[
+                    { required: true }
+                  ]}
+                  initialValue= {initDhcpData.leaseTime}
+                >
+                <InputNumber data-testid='leaseTime' min={1} max={1440} style={{ width: '100%' }} />
+                </Form.Item>
+                <Form.Item noStyle name='leaseTimeUnit'>
+                  <Select 
+                    defaultValue = {initDhcpData.leaseTimeUnit}
+                    >
+                    <Option value={'DAYS'}>{$t({ defaultMessage: 'Days' })}</Option>
+                    <Option value={'HOURS'}>{$t({ defaultMessage: 'Hours' })}</Option>
+                    <Option value={'MINUTES'}>{$t({ defaultMessage: 'Minutes' })}</Option>
+                  </Select>
+                </Form.Item>
+              </Space>
+            </Form.Item>
         </Col>
       </Row>
 

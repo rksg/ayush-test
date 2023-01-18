@@ -21,7 +21,7 @@ export const edgeDhcpApi = baseEdgeDhcpApi.injectEndpoints({
   endpoints: (build) => ({
     addEdgeDhcpService: build.mutation<EdgeDhcpSetting, RequestPayload>({
       query: ({ payload }) => {
-        const req = createHttpRequest(EdgeDhcpUrls.addDHCPService)
+        const req = createHttpRequest(EdgeDhcpUrls.addDhcpService)
         return {
           ...req,
           body: payload
@@ -31,7 +31,7 @@ export const edgeDhcpApi = baseEdgeDhcpApi.injectEndpoints({
     }),
     updateEdgeDhcp: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(EdgeDhcpUrls.updateDHCPService, params)
+        const req = createHttpRequest(EdgeDhcpUrls.updateDhcpService, params)
         return {
           ...req,
           body: payload
