@@ -154,7 +154,7 @@ export function Syslog () {
             })}
             style={{ width: '200px' }}
           />
-          {!unreleased &&
+          {unreleased &&
           <TenantLink
             to={getPolicyRoutePath({
               type: PolicyType.SYSLOG,
