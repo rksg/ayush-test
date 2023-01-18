@@ -102,9 +102,13 @@ export function StackForm () {
   const [deviceOnline, setDeviceOnline] = useState(false)
   const [isIcx7650, setIsIcx7650] = useState(false)
   const [readOnly, setReadOnly] = useState(false)
+  const [disableIpSetting, setDisableIpSetting] = useState(false)
 
   const [activeRow, setActiveRow] = useState('1')
   const [rowKey, setRowKey] = useState(3)
+
+  const dataFetchedRef = useRef(false)
+
   const defaultArray: SwitchTable[] = [
     { key: '1', id: '', model: '', active: true, disabled: false },
     { key: '2', id: '', model: '', disabled: false },
@@ -122,6 +126,8 @@ export function StackForm () {
       )
     }
     if(switchData && switchDetail){
+      if(dataFetchedRef.current) return
+      dataFetchedRef.current = true
       formRef?.current?.resetFields()
       formRef?.current?.setFieldsValue({ ...switchDetail, ...switchData })
 
@@ -135,6 +141,10 @@ export function StackForm () {
       if(!!switchDetail.model?.includes('ICX7650')){
         formRef?.current?.setFieldValue('rearModule',
           formRef.current?.getFieldValue('rearModule') === 'stack-40g')
+      }
+
+      if (switchDetail.ipFullContentParsed === false) {
+        setDisableIpSetting(true)
       }
 
       const getStackMembersList = async () => {
@@ -288,7 +298,7 @@ export function StackForm () {
         trustPorts: formRef.current?.getFieldValue('trustPorts')
       }
 
-      if(values.ipAddressType === 'dynamic'){
+      if(disableIpSetting){
         delete payload.ipAddress
         delete payload.subnetMask
         delete payload.defaultGateway
@@ -302,6 +312,8 @@ export function StackForm () {
       }
 
       await updateSwitch({ params: { tenantId } , payload }).unwrap()
+
+      dataFetchedRef.current = false
 
       navigate({
         ...basePath,
@@ -704,6 +716,7 @@ export function StackForm () {
                       apGroupOption={apGroupOption}
                       readOnly={readOnly}
                       isIcx7650={isIcx7650}
+                      disableIpSetting={disableIpSetting}
                     />
                   </div>
                 }

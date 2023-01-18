@@ -38,9 +38,10 @@ const spanningTreePriorityItem = [
 ]
 
 export function SwitchStackSetting
-(props: { apGroupOption: DefaultOptionType[], readOnly: boolean, isIcx7650?: boolean }) {
+(props: { apGroupOption: DefaultOptionType[], readOnly: boolean,
+  isIcx7650?: boolean, disableIpSetting: boolean }) {
   const { $t } = useIntl()
-  const { apGroupOption, readOnly, isIcx7650 } = props
+  const { apGroupOption, readOnly, isIcx7650, disableIpSetting } = props
   const form = Form.useFormInstance()
 
   const [enableDhcp, setEnableDhcp] = useState(false)
@@ -135,7 +136,7 @@ export function SwitchStackSetting
           { required: true }
         ]}
       >
-        <Radio.Group disabled={readOnly} onChange={onIpAddressTypeChange}>
+        <Radio.Group disabled={readOnly || disableIpSetting} onChange={onIpAddressTypeChange}>
           <Space direction='vertical'>
             <Radio key='dynamic' value='dynamic'>
               {$t({ defaultMessage: 'DHCP' })}

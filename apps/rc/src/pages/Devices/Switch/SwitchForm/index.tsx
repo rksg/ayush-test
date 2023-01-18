@@ -75,7 +75,7 @@ export function SwitchForm () {
   const { tenantId, switchId, action } = useParams()
   const editMode = action === 'edit'
   const navigate = useNavigate()
-  const formRef = useRef<StepsFormInstance<ApDeep>>()
+  const formRef = useRef<StepsFormInstance<Switch>>()
   const basePath = useTenantLink('/devices/')
   const venuesList = useVenuesListQuery({ params: { tenantId: tenantId }, payload: defaultPayload })
   const { data: switchData, isLoading: isSwitchDataLoading } =
@@ -99,6 +99,8 @@ export function SwitchForm () {
   const [isOnlyFirmware, setIsOnlyFirmware] = useState(false)
   const [serialNumber, setSerialNumber] = useState('')
   const [readOnly, setReadOnly] = useState(false)
+  const [disableIpSetting, setDisableIpSetting] = useState(false)
+  const dataFetchedRef = useRef(false)
 
   const switchListPayload = {
     searchString: '',
@@ -111,7 +113,11 @@ export function SwitchForm () {
   useEffect(() => {
     if (venueId && switchModel && switchRole === MEMEBER_TYPE.MEMBER) {
       handleSwitchList()
-    }if(switchData && switchDetail){
+    }
+
+    if(switchData && switchDetail){
+      if(dataFetchedRef.current) return
+      dataFetchedRef.current = true
       formRef?.current?.resetFields()
       formRef?.current?.setFieldsValue({ ...switchDetail, ...switchData })
       setReadOnly(!!switchDetail.cliApplied)
@@ -119,9 +125,13 @@ export function SwitchForm () {
         isOperationalSwitch(
           switchDetail.deviceStatus as SwitchStatusEnum, switchDetail.syncedSwitchConfig)
       )
+
+      if (switchDetail.ipFullContentParsed === false) {
+        setDisableIpSetting(true)
+      }
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [venueId, switchModel, switchRole, serialNumber, switchData, switchDetail])
+  }, [venueId, switchModel, switchRole, switchData, switchDetail])
 
   const handleSwitchList = async () => {
     const payload = {
@@ -231,7 +241,7 @@ export function SwitchForm () {
         trustPorts: []
       }
 
-      if(values.ipAddressType === 'dynamic'){
+      if(values?.ipAddressType === 'dynamic'){
         delete payload.ipAddress
         delete payload.subnetMask
         delete payload.defaultGateway
@@ -244,6 +254,8 @@ export function SwitchForm () {
       payload.rearModule = _.get(payload, 'rearModuleOption') === true ? 'stack-40g' : 'none'
 
       await updateSwitch({ params: { tenantId } , payload }).unwrap()
+
+      dataFetchedRef.current = false
 
       navigate({
         ...basePath,
@@ -388,9 +400,9 @@ export function SwitchForm () {
                     </Tooltip>}
                   </>}
                   hidden={editMode}
+                  initialValue={MEMEBER_TYPE.STANDALONE}
                 >
                   <Radio.Group
-                    defaultValue={MEMEBER_TYPE.STANDALONE}
                     onChange={(e: RadioChangeEvent) => {
                       return setSwitchRole(e.target.value)
                     }}
@@ -523,6 +535,7 @@ export function SwitchForm () {
                   <SwitchStackSetting
                     apGroupOption={dhcpClientOption}
                     readOnly={readOnly}
+                    disableIpSetting={disableIpSetting}
                   />
                 </div>
               }

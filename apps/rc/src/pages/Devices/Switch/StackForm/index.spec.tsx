@@ -17,8 +17,11 @@ import {
 import {
   venuelist,
   apGrouplist,
-  successResponse
-} from '../../__tests__/fixtures'
+  successResponse,
+  editStackData,
+  editStackDetail,
+  editStackMembers
+} from '../__tests__/fixtures'
 
 import { StackForm } from '.'
 
@@ -169,5 +172,41 @@ describe('Switch Stack Form - Add', () => {
     )
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+  })
+})
+
+
+
+describe('Switch Stack Form - Edit', () => {
+  const params = { tenantId: 'tenant-id', switchId: 'FEK4124R28X', action: 'edit' }
+  beforeEach(() => {
+    store.dispatch(apApi.util.resetApiState())
+    store.dispatch(venueApi.util.resetApiState())
+    initialize()
+    mockServer.use(
+      rest.get(CommonUrlsInfo.getApGroupList.url,
+        (_, res, ctx) => res(ctx.json(apGrouplist))),
+      rest.get(SwitchUrlsInfo.getSwitch.url,
+        (_, res, ctx) => res(ctx.json(editStackData))),
+      rest.get(SwitchUrlsInfo.getSwitchDetailHeader.url,
+        (_, res, ctx) => res(ctx.json(editStackDetail))),
+      rest.post(CommonUrlsInfo.getVenuesList.url,
+        (_, res, ctx) => res(ctx.json(venuelist))),
+      rest.post(SwitchUrlsInfo.addSwitch.url,
+        (_, res, ctx) => res(ctx.json(successResponse))),
+      rest.post(SwitchUrlsInfo.getMemberList.url,
+        (_, res, ctx) => res(ctx.json(editStackMembers)))
+    )
+  })
+  afterEach(() => {
+    Modal.destroyAll()
+  })
+  it('should render edit stack form correctly', async () => {
+    render(<Provider><StackForm /></Provider>, {
+      route: { params, path: '/:tenantId/devices/switch/stack/:switchId/:action' }
+    })
+
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    expect(await screen.findByRole('heading', { level: 1, name: 'FEK4124R28X' })).toBeVisible()
   })
 })

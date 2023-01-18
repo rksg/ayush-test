@@ -79,6 +79,8 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
+            'AddSwitch',
+            'UpdateSwitch',
             'Delete Switch'
           ]
           showActivityMessage(msg, activities, () => {

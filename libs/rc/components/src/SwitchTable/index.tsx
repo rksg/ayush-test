@@ -168,11 +168,12 @@ export function SwitchTable (props : {
     visible: (rows) => isActionVisible(rows, { selectOne: true }),
     onClick: (selectedRows) => {
       const switchId = selectedRows[0].id ? selectedRows[0].id : selectedRows[0].serialNumber
+      const serialNumber = selectedRows[0].serialNumber
       const isStack = selectedRows[0].isStack || selectedRows[0].formStacking
       if(isStack){
-        navigate(`${linkToEditSwitch.pathname}/stack/${switchId}/edit`, { replace: false })
+        navigate(`${linkToEditSwitch.pathname}/${switchId}/${serialNumber}/stack/edit`, { replace: false })
       }else{
-        navigate(`${linkToEditSwitch.pathname}/${switchId}/edit`, { replace: false })
+        navigate(`${linkToEditSwitch.pathname}/${switchId}/${serialNumber}/edit`, { replace: false })
       }
     },
     disabled: (rows) => rows[0].deviceStatus === SwitchStatusEnum.DISCONNECTED
