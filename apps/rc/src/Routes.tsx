@@ -14,22 +14,24 @@ import {
 import { rootRoutes, Route, TenantNavigate, Navigate } from '@acx-ui/react-router-dom'
 import { Provider }                                    from '@acx-ui/store'
 
-import Edges                      from './pages/Devices/Edge'
-import AddEdge                    from './pages/Devices/Edge/AddEdge'
-import EdgeDetails                from './pages/Devices/Edge/EdgeDetails'
-import EditEdge                   from './pages/Devices/Edge/EdgeDetails/EditEdge'
-import { StackForm }              from './pages/Devices/Switch/StackForm'
-import SwitchDetails              from './pages/Devices/Switch/SwitchDetails'
-import SwitchesTable              from './pages/Devices/Switch/SwitchesTable'
-import { AddSwitchForm }          from './pages/Devices/Switch/SwitchForm/AddSwitchForm'
-import ApDetails                  from './pages/Devices/Wifi/ApDetails'
-import { ApEdit }                 from './pages/Devices/Wifi/ApEdit'
-import { ApForm }                 from './pages/Devices/Wifi/ApForm'
-import { ApGroupForm }            from './pages/Devices/Wifi/ApGroupForm'
-import ApsTable                   from './pages/Devices/Wifi/ApsTable'
-import NetworkDetails             from './pages/Networks/NetworkDetails/NetworkDetails'
-import NetworkForm                from './pages/Networks/NetworkForm/NetworkForm'
-import NetworksTable              from './pages/Networks/NetworksTable'
+import Edges                       from './pages/Devices/Edge'
+import AddEdge                     from './pages/Devices/Edge/AddEdge'
+import EdgeDetails                 from './pages/Devices/Edge/EdgeDetails'
+import EditEdge                    from './pages/Devices/Edge/EdgeDetails/EditEdge'
+import { StackForm }               from './pages/Devices/Switch/StackForm'
+import SwitchDetails               from './pages/Devices/Switch/SwitchDetails'
+import { SwitchClientDetailsPage } from './pages/Devices/Switch/SwitchDetails/SwitchClientsTab/SwitchClientDetailsPage'
+import SwitchesTable               from './pages/Devices/Switch/SwitchesTable'
+import { AddSwitchForm }           from './pages/Devices/Switch/SwitchForm/AddSwitchForm'
+import ApDetails                   from './pages/Devices/Wifi/ApDetails'
+import { ApEdit }                  from './pages/Devices/Wifi/ApEdit'
+import { ApForm }                  from './pages/Devices/Wifi/ApForm'
+import { ApGroupForm }             from './pages/Devices/Wifi/ApGroupForm'
+import ApsTable                    from './pages/Devices/Wifi/ApsTable'
+import NetworkDetails              from './pages/Networks/NetworkDetails/NetworkDetails'
+import NetworkForm                 from './pages/Networks/NetworkForm/NetworkForm'
+import NetworksTable               from './pages/Networks/NetworksTable'
+import AccessControlForm           from './pages/Policies/AccessControl/AccessControlForm/AccessControlForm'
 import MacRegistrationListDetails
   from './pages/Policies/MacRegistrationList/MacRegistrarionListDetails/MacRegistrarionListDetails'
 import MacRegistrationListsTable  from './pages/Policies/MacRegistrationList/MacRegistrarionListTable'
@@ -111,6 +113,10 @@ function DeviceRoutes () {
         element={<SwitchDetails />}
       />
       <Route
+        path='devices/switch/:switchId/:serialNumber/clientDetails/:clientId'
+        element={<SwitchClientDetailsPage />}
+      />
+      <Route
         path='devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab/:categoryTab'
         element={<SwitchDetails />}
       />
@@ -122,6 +128,8 @@ function DeviceRoutes () {
         path='devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         element={<EditEdge />} />
       <Route path='devices/edge/:serialNumber/edge-details/:activeTab'
+        element={<EdgeDetails />} />
+      <Route path='devices/edge/:serialNumber/edge-details/:activeTab/:activeSubTab'
         element={<EdgeDetails />} />
       <Route path='devices/switch' element={<SwitchesTable />} />
       <Route path='devices/switch/stack/add' element={<StackForm />} />
@@ -287,6 +295,11 @@ function PolicyRoutes () {
         // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.EDIT })}
         element={<MacRegistrationListForm editMode={true} />}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE })}
+        element={<AccessControlForm edit={false}/>}
       />
     </Route>
   )

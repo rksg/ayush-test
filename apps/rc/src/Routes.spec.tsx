@@ -6,8 +6,12 @@ import {
   getServiceDetailsLink,
   getServiceListRoutePath,
   getServiceRoutePath,
-  ServiceOperation
-}    from '@acx-ui/rc/utils'
+  ServiceOperation,
+  getPolicyListRoutePath,
+  PolicyType,
+  getPolicyRoutePath,
+  PolicyOperation
+} from '@acx-ui/rc/utils'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
@@ -35,6 +39,10 @@ jest.mock('./pages/Networks/NetworkForm/NetworkForm', () => () => {
 
 jest.mock('./pages/Networks/NetworkDetails/NetworkDetails', () => () => {
   return <div data-testid='NetworkDetails' />
+})
+
+jest.mock('./pages/Policies/PoliciesTable', () => () => {
+  return <div data-testid='PoliciesTable' />
 })
 
 jest.mock('./pages/Services/ServicesTable', () => () => {
@@ -409,6 +417,73 @@ describe('RcRoutes: Services', () => {
       }
     })
     expect(screen.getByTestId('PortalServiceDetail')).toBeVisible()
+  })
+
+})
+
+describe('RcRoutes: Policies', () => {
+  test('should navigate to policy list', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + getPolicyListRoutePath(),
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('PoliciesTable')).toBeVisible()
+  })
+
+  test('should navigate to create ROGUE_AP_DETECTION page', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.CREATE }),
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByText(/add rogue ap detection policy/i)).toBeVisible()
+  })
+
+  test('should navigate to edit ROGUE_AP_DETECTION page', async () => {
+    let path = getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.EDIT })
+    path = path.replace(':policyId', 'policyId')
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + path,
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByText(/edit rogue ap detection policy/i)).toBeVisible()
+  })
+
+  test('should navigate to create MAC_REGISTRATION_LIST page', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.CREATE }),
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByText(/add mac registration list/i)).toBeVisible()
+  })
+
+  test('should navigate to edit MAC_REGISTRATION_LIST page', async () => {
+    let path = getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.EDIT })
+    path = path.replace(':policyId', 'policyId')
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + path,
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByText(/configure/i)).toBeVisible()
+  })
+
+  test('should navigate to create ACCESS_CONTROL page', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE }),
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByText(/add access control policy/i)).toBeVisible()
   })
 
 })

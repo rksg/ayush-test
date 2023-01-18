@@ -450,3 +450,27 @@ export interface PlmMessageBanner {
   tenantType: string,
   updatedDate: string
 }
+
+export enum SWITCH_CLIENT_TYPE {
+  AP = 'WLAN_AP',
+  ROUTER = 'ROUTER'
+}
+
+export interface SwitchClient {
+  id: string
+  clientMac: string
+  clientIpv4Addr: string
+  clientIpv6Addr: string
+  clientName: string
+  clientDesc: string
+  clientType: SWITCH_CLIENT_TYPE
+  switchId: string
+  switchName: string
+  switchPort: string
+  switchSerialNumber: string
+  clientVlan: string
+  vlanName: string
+  venueId: string
+  venueName: string
+  isRuckusAP: boolean
+}

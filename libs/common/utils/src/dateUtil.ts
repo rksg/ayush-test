@@ -74,3 +74,7 @@ export const dateRangeMap : Record<DateRange, MessageDescriptor> = {
     defaultMessage: 'Custom'
   })
 }
+
+export function getCurrentDate (format: string) {
+  return moment().format(format)
+}
