@@ -1,6 +1,6 @@
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
-import { Layer3ProtocolType, PolicyTechnology, PolicyType, RogueRuleType } from '@acx-ui/rc/utils'
+import { PolicyTechnology, PolicyType, RogueRuleType, Layer3ProtocolType } from '@acx-ui/rc/utils'
 
 export const policyTypeLabelMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.AAA]: defineMessage({ defaultMessage: 'AAA Server' }),

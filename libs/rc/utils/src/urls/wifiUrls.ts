@@ -248,5 +248,13 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   resetApDirectedMulticast: {
     method: 'delete',
     url: '/api/venues/aps/:serialNumber/directedMulticastSettings'
+  },
+  getVenueLoadBalancing: {
+    method: 'get',
+    url: '/api/venues/:venueId/loadBalancingSettings'
+  },
+  updateVenueLoadBalancing: {
+    method: 'put',
+    url: '/api/venues/:venueId/loadBalancingSettings'
   }
 }
