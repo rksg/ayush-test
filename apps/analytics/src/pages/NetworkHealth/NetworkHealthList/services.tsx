@@ -1,13 +1,13 @@
 import { gql } from 'graphql-request'
 
-import { networkHealthApi }         from '@acx-ui/analytics/services'
-import { RequestPayload}               from '@acx-ui/rc/utils'
+import { networkHealthApi } from '@acx-ui/analytics/services'
+import { RequestPayload }   from '@acx-ui/rc/utils'
 
 export type ServiceGuardSpec = {
   id: string,
   name: string,
   type: 'on-demand' | 'scheduled',
-  apsCount: string
+  apsCount: number
   userId: string,
   clientType: 'virtual-client' | 'virtual-wireless-client',
   schedule: {
@@ -35,7 +35,7 @@ export const api = networkHealthApi.injectEndpoints({
     networkHealth: build.query<
       ServiceGuardSpec[], RequestPayload
     >({
-      query: payload => ({
+      query: () => ({
         document: gql`
           query ServiceGuardSpecs {
             allServiceGuardSpecs {
@@ -62,13 +62,11 @@ export const api = networkHealthApi.injectEndpoints({
             }
           }
         `,
-      providesTags: [
-        { type: 'Monitoring', id: 'SERVICE_VALIDATION' }
-      ],
-      transformResponse: (response: Response) => {
-        return response.allServiceGuardSpecs
-      }
-      })
+        providesTags: [
+          { type: 'Monitoring', id: 'SERVICE_VALIDATION' }
+        ]
+      }),
+      transformResponse: (response: Response) => response.allServiceGuardSpecs
     })
   })
 })
