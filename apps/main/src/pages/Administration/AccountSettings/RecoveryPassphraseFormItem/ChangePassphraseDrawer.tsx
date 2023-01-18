@@ -6,10 +6,12 @@ import { useIntl }                                                    from 'reac
 import { useParams }                                                  from 'react-router-dom'
 import styled                                                         from 'styled-components/macro'
 
+
 import { Drawer, Button, showToast }    from '@acx-ui/components'
 import {
   useUpdateRecoveryPassphraseMutation
 } from '@acx-ui/rc/services'
+import { validateRecoveryPassphrasePart } from '@acx-ui/rc/utils'
 
 import { MessageMapping } from '../MessageMapping'
 
@@ -27,7 +29,7 @@ export const ChangePassphraseDrawer = styled((props: ChangePassphraseDrawerProps
   const [ passphraseVisible, setPassphraseVisible ] = useState(false)
   const [ isChanged, setIsChanged ] = useState(false)
   const [ isValid, setIsValid ] = useState(false)
-  const [ passphrase, setPassphrase ] = useState('')
+  const [ passphrase, setPassphrase ] = useState<string[]>([])
   const [ form ] = Form.useForm()
 
   const [updateRecoveryPassphrase, { isLoading: isUpdatingRecoveryPassphrase }]
@@ -47,7 +49,7 @@ export const ChangePassphraseDrawer = styled((props: ChangePassphraseDrawerProps
     try {
       await updateRecoveryPassphrase({
         params: { tenantId },
-        payload: { psk: passphrase.split(' ').join('') }
+        payload: { psk: passphrase.join('') }
       }).unwrap()
 
       setVisible(false)
@@ -61,23 +63,24 @@ export const ChangePassphraseDrawer = styled((props: ChangePassphraseDrawerProps
 
   const handleChange = (idx: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
     const newVal = e.target?.value.trim()
-    const newData = passphrase.split(' ').fill(newVal, idx, idx+1).join(' ')
+    const newData:string[] = [...passphrase]
+    newData[idx] = newVal
     setPassphrase(newData)
-    setIsChanged(true)
 
     form.validateFields().then(() => {
       setIsValid(true)
+      setIsChanged(true)
     }).catch(() => {
       setIsValid(false)
     })
   }
 
   React.useEffect(() => {
-    setPassphrase(data)
-  }, [data])
+    if (visible)
+      setPassphrase(data.split(' '))
+  }, [data, visible])
 
   const PassphraseIcon = passphraseVisible ? EyeOutlined : EyeInvisibleOutlined
-  const passphraseData = passphrase.split(' ')
 
   return (
     <Drawer
@@ -107,7 +110,7 @@ export const ChangePassphraseDrawer = styled((props: ChangePassphraseDrawerProps
         form={form}
         labelAlign='left'
         fields={
-          passphraseData.map(
+          passphrase.map(
             (item, idx) => ({ name: `recovery_pass_${idx}`, value: item })
           )}
       >
@@ -115,7 +118,7 @@ export const ChangePassphraseDrawer = styled((props: ChangePassphraseDrawerProps
           label={$t({ defaultMessage: 'Recovery Network Passphrase' })}
         >
           <div className='inputsWrapper'>
-            {passphraseData.map(
+            {passphrase.map(
               (item:string, idx: number) => {
                 return (
                   <Form.Item
@@ -123,13 +126,12 @@ export const ChangePassphraseDrawer = styled((props: ChangePassphraseDrawerProps
                     name={`recovery_pass_${idx}`}
                     noStyle
                     hasFeedback
-                    rules={[
-                      { required: true, message: $t({ defaultMessage: 'This field is required' }) },
-                      { len: 4,
-                      // eslint-disable-next-line max-len
-                        message: $t({ defaultMessage: 'Passphrase part must be exactly 4 digits long' }) }
-                    ]}
                     validateFirst
+                    rules={[
+                      {
+                        validator: (_, value) => validateRecoveryPassphrasePart(value)
+                      }
+                    ]}
                   >
                     <Input
                       data-testid={`recovery_pass_${idx}`}

@@ -461,3 +461,23 @@ export function IpInSubnetPool (ipAddress: string, subnetAddress:string, subnetM
   }
   return Promise.resolve()
 }
+
+export function validateRecoveryPassphrasePart (value: string) {
+  const { $t } = getIntl()
+
+  if (!value) {
+    return Promise.reject($t(validationMessages.invalid))
+  }
+
+  const spaceRegex = new RegExp(/.*\s+.*/)
+  if (spaceRegex.test(value)) {
+    return Promise.reject($t(validationMessages.recoveryPassphrasePartSpace))
+  }
+
+  const re = new RegExp(/^([0-9]{4})$/)
+  if (!re.test(value)) {
+    return Promise.reject($t(validationMessages.recoveryPassphrasePart))
+  }
+
+  return Promise.resolve()
+}

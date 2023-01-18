@@ -78,6 +78,13 @@ describe('Recovery Network Passphrase Drawer', () => {
     expect(changeBtn).toBeDisabled()
 
     await userEvent.clear(inputElem)
+    await userEvent.type(inputElem, '1 23 ')
+    const spaceErrorMessage = await screen.findByRole('alert')
+    expect(spaceErrorMessage.textContent).toBe('Passphrase cannot have space')
+    expect(spaceErrorMessage).toBeVisible()
+    expect(changeBtn).toBeDisabled()
+
+    await userEvent.clear(inputElem)
     await userEvent.type(inputElem, '1236')
 
     await waitForElementToBeRemoved(() => screen.queryByRole('alert'))
