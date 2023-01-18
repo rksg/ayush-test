@@ -26,6 +26,7 @@ describe('Search Results', () => {
     mockRestApiQuery(CommonUrlsInfo.getEventListMeta.url, 'post', eventMetaData)
     mockRestApiQuery(SwitchUrlsInfo.getSwitchList.url, 'post', switchListData)
     mockRestApiQuery(ClientUrlsInfo.getClientList.url, 'post', { data: [], totalCount: 0 })
+    mockRestApiQuery(SwitchUrlsInfo.getSwitchClientList.url, 'post', { data: [], totalCount: 0 })
   })
 
   it('should decode search string correctly', async () => {

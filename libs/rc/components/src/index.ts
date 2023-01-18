@@ -48,6 +48,7 @@ export { NetworkDeviceMarker } from './FloorPlan/NetworkDevices/NetworkDeviceMar
 export { ApSelector } from './ApSelector'
 export { CloudMessageBanner } from './CloudMessageBanner'
 export { SwitchClientsTable } from './SwitchClientsTable'
+export { ClientsTable, defaultSwitchClientPayload } from './SwitchClientsTable/ClientsTable'
 export { SwitchClientDetails } from './SwitchClientsTable/SwitchClientDetails'
 
 export * from './services'
