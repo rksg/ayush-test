@@ -3,16 +3,17 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { venueApi }                     from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }              from '@acx-ui/store'
+import { venueApi }           from '@acx-ui/rc/services'
+import { WifiUrlsInfo }       from '@acx-ui/rc/utils'
+import { Provider, store }    from '@acx-ui/store'
 import { mockServer,
   render,
   screen,
   waitFor,
   waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-import { mockDirectedMulticast, venueData } from '../../../../__tests__/fixtures'
+import { VenueEditContext }      from '../../..'
+import { mockDirectedMulticast } from '../../../../__tests__/fixtures'
 
 import { DirectedMulticast } from '.'
 
@@ -28,14 +29,8 @@ describe('Venue Directed Multicast', () => {
     store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
       rest.get(
-        CommonUrlsInfo.getVenue.url,
-        (_, res, ctx) => res(ctx.json(venueData))),
-      rest.get(
         WifiUrlsInfo.getVenueDirectedMulticast.url,
-        (_, res, ctx) => res(ctx.json(mockDirectedMulticast))),
-      rest.get(
-        CommonUrlsInfo.getVenueSettings.url,
-        (_, res, ctx) => res(ctx.json({})))
+        (_, res, ctx) => res(ctx.json(mockDirectedMulticast)))
     )
   })
 
@@ -59,9 +54,15 @@ describe('Venue Directed Multicast', () => {
   it('should handle turn On/Off switch buttons changed', async () => {
     render(
       <Provider>
-        <Form>
-          <DirectedMulticast />
-        </Form>
+        <VenueEditContext.Provider value={{
+          editContextData: {},
+          setEditContextData: jest.fn(),
+          setEditNetworkingContextData: jest.fn()
+        }}>
+          <Form>
+            <DirectedMulticast />
+          </Form>
+        </VenueEditContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
       })
