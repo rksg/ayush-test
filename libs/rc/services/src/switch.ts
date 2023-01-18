@@ -24,6 +24,7 @@ import {
   VlanVePort,
   AclUnion,
   VeForm,
+  SwitchClient,
   transformConfigBackupStatus,
   ConfigurationBackup,
   ConfigurationBackupStatus,
@@ -35,7 +36,7 @@ import { formatter } from '@acx-ui/utils'
 export const baseSwitchApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'switchApi',
-  tagTypes: ['Switch', 'SwitchBackup'],
+  tagTypes: ['Switch', 'SwitchClient', 'SwitchBackup'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({})
 })
@@ -359,7 +360,24 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Switch', id: 'VE' }]
     }),
-
+    getSwitchClientList: build.query<TableResult<SwitchClient>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const clientListReq = createHttpRequest(SwitchUrlsInfo.getSwitchClientList, params)
+        return {
+          ...clientListReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'SwitchClient', id: 'LIST' }]
+    }),
+    getSwitchClientDetails: build.query<SwitchClient, RequestPayload>({
+      query: ({ params }) => {
+        const clientListReq = createHttpRequest(SwitchUrlsInfo.getSwitchClientDetail, params)
+        return {
+          ...clientListReq
+        }
+      }
+    }),
     getTroubleshooting: build.query<TroubleshootingResult, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(SwitchUrlsInfo.getTroubleshooting, params)
@@ -511,6 +529,8 @@ export const {
   useDeleteVePortsMutation,
   useGetSwitchAclsQuery,
   useGetVlanListBySwitchLevelQuery,
+  useGetSwitchClientListQuery,
+  useGetSwitchClientDetailsQuery,
   useGetTroubleshootingQuery,
   usePingMutation,
   useTraceRouteMutation,
