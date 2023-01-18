@@ -1,6 +1,6 @@
 import { configureStore, isRejectedWithValue }            from '@reduxjs/toolkit'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
-// import { generatePath }                                   from 'react-router-dom'
+import { generatePath }                                   from 'react-router-dom'
 
 import { dataApi }             from '@acx-ui/analytics/services'
 import {
@@ -45,8 +45,7 @@ const errorMiddleware: Middleware = () => (next) => (action: ErrorAction) => {
       (status === 400 && error === 'API-KEY not present') ||
       status === 401 || status === 403
     ) {
-      console.log(`${status}: ${error}`) // eslint-disable-line
-      // window.location.href = generatePath('/logout')
+      window.location.href = generatePath('/logout')
     }
   }
   return next(action)

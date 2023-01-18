@@ -5,10 +5,6 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/viewmodel/tenant/:tenantId/mspeclist'
   },
-  getMspCustomersListDropdown: {
-    method: 'post',
-    url: '/api/viewmodel/tenant/:mspTenantId/mspeclist'
-  },
   getMspDeviceInventory: {
     method: 'post',
     url: '/api/viewmodel/tenant/:tenantId/ec-inventory'
@@ -72,9 +68,5 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
   resendEcInvitation: {
     method: 'post',
     url: '/api/mspservice/tenant/:mspEcTenantId/emailinvitation'
-  },
-  getMspEcProfile: {
-    method: 'get',
-    url: '/api/mspservice/tenant/:tenantId'
   }
 }

@@ -200,18 +200,3 @@ export interface EcInvitation {
   admin_email: string;
   resend: boolean;
 }
-
-export interface EcProfile {
-  name: string;
-  msp_label: string;
-  is_active: string;
-  service_effective_date: string;
-  service_expiration_date: string;
-  street_address?: string;
-  city?: string;
-  country?: string;
-  state?: string;
-  tenant_id?: string;
-  parent_tenant_id?: string;
-  tenant_type?: string;
-}
