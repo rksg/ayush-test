@@ -25,11 +25,18 @@ export const Container = styled.div`
   text-align: left;
 }
 
+.CodeMirror-merge, .CodeMirror-merge .CodeMirror {
+  height: 450px;
+}
+
 .CodeMirror-merge {
   border: 0;
   margin-top: 15px;
   .CodeMirror {
     border-top-width: 40px;
+  }
+  .CodeMirror-gutters {
+    background-color: var(--acx-neutrals-25);
   }
 }
   
@@ -38,7 +45,7 @@ export const Container = styled.div`
 }
 
 .CodeMirror-merge-2pane .CodeMirror-merge-gap {
-  background-color: var(--acx-neutrals-30);
+  background-color: var(--acx-neutrals-25);
   border: 0;
 }
 
