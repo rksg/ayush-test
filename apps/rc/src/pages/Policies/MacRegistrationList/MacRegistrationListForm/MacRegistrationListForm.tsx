@@ -58,8 +58,8 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
         name: data.name,
         autoCleanup: data.autoCleanup,
         ...transferExpirationFormFieldsToData(data.expiration),
-        ssidRegex: data?.ssidRegex ?? '*'
-        // defaultAccess: data.defaultAccess
+        ssidRegex: data?.ssidRegex ?? '*',
+        defaultAccess: data.defaultAccess
         // policyId
       }
       await addMacRegList({ payload: saveData }).unwrap()
@@ -67,9 +67,7 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
     } catch (error) {
       showToast({
         type: 'error',
-        content: intl.$t({ defaultMessage: 'An error occurred' }),
-        // FIXME: Correct the error message
-        link: { onClick: () => alert(JSON.stringify(error)) }
+        content: intl.$t({ defaultMessage: 'An error occurred' })
       })
     }
   }
@@ -79,8 +77,9 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
       const saveData = {
         name: data.name,
         ...transferExpirationFormFieldsToData(data.expiration),
-        autoCleanup: data.autoCleanup
-        // defaultAccess: data.defaultAccess
+        autoCleanup: data.autoCleanup,
+        ssidRegex: data?.ssidRegex ?? '*',
+        defaultAccess: data.defaultAccess
         // policyId
       }
       await updateMacRegList({
@@ -91,9 +90,7 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
     } catch (error) {
       showToast({
         type: 'error',
-        content: intl.$t({ defaultMessage: 'An error occurred' }),
-        // FIXME: Correct the error message
-        link: { onClick: () => alert(JSON.stringify(error)) }
+        content: intl.$t({ defaultMessage: 'An error occurred' })
       })
     }
   }

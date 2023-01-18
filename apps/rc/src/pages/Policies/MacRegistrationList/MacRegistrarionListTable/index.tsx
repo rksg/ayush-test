@@ -61,11 +61,7 @@ function useColumns () {
       title: $t({ defaultMessage: 'Default Access' }),
       key: 'defaultAccess',
       dataIndex: 'defaultAccess',
-      align: 'center',
-      render: function (data, row) {
-        return row.defaultAccess ? $t({ defaultMessage: 'Accept' }) :
-          $t({ defaultMessage: 'Reject' })
-      }
+      align: 'center'
     },
     {
       title: $t({ defaultMessage: 'Access Policy Set' }),

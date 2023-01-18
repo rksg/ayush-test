@@ -36,6 +36,13 @@ export function MacRegistrationListOverviewTab () {
               </Col>
               <Col span={6}>
                 <Form.Item
+                  label={$t({ defaultMessage: 'SSID Regex' })}
+                >
+                  <Paragraph>{data?.ssidRegex}</Paragraph>
+                </Form.Item>
+              </Col>
+              <Col span={6}>
+                <Form.Item
                   label={$t({ defaultMessage: 'List Expiration' })}
                 >
                   <Paragraph>{returnExpirationString(data ?? {}) ?? ''}</Paragraph>
@@ -61,7 +68,7 @@ export function MacRegistrationListOverviewTab () {
                 <Form.Item
                   label={$t({ defaultMessage: 'Default Access' })}
                 >
-                  <Paragraph>{$t({ defaultMessage: 'Access' })}</Paragraph>
+                  <Paragraph>{data?.defaultAccess ?? ''}</Paragraph>
                 </Form.Item>
               </Col>
               <Col span={6}>

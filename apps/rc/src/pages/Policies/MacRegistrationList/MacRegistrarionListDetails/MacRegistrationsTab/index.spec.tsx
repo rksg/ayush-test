@@ -16,7 +16,8 @@ const list = {
       macAddress: '11-22-33-44-55-66',
       username: 'testUser',
       email: 'testUser@commscope.com',
-      location: 'ipsum eiusmod sunt veniam'
+      location: 'ipsum eiusmod sunt veniam',
+      createdDate: '2021-12-08T18:40:01Z'
     },
     {
       id: '7d3a416c-6e73-4dde-8242-299649a16a9c',
@@ -24,7 +25,9 @@ const list = {
       macAddress: '3A-B8-A9-29-35-D5',
       username: 'ex proident',
       email: 'dolore pariatur adipisicing esse Excepteur',
-      location: 'ipsum eiusmod sunt veniam'
+      location: 'ipsum eiusmod sunt veniam',
+      createdDate: '2021-12-08T18:40:01Z',
+      expirationDate: '2065-12-08T18:40:01Z'
     }
   ],
   pageable: {
@@ -76,11 +79,14 @@ describe('MacRegistrationsTab', () => {
     expect(row1).toHaveTextContent('testUser')
     expect(row1).toHaveTextContent('testUser@commscope.com')
     expect(row1).toHaveTextContent('12/08/2065')
+    expect(row1).toHaveTextContent('12/08/2021')
 
     const row2 = await screen.findByRole('row', { name: /3A-B8-A9-29-35-D5/ })
     expect(row2).toHaveTextContent('Revoked')
     expect(row2).toHaveTextContent('ex proident')
     expect(row2).toHaveTextContent('dolore pariatur adipisicing esse Excepteur')
+    expect(row2).toHaveTextContent('12/08/2065')
+    expect(row2).toHaveTextContent('12/08/2021')
 
     fireEvent.click(within(row1).getByRole('radio'))
     await userEvent.click(await screen.findByRole('button', { name: /delete/i }))

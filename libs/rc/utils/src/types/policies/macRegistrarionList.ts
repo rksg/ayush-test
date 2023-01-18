@@ -29,7 +29,7 @@ export interface MacRegistrationPoolFormFields {
   expireTimeUnit: string
   defaultAccess: string
   expiration: ExpirationDateEntity;
-  ssidRegex: string
+  ssidRegex?: string
 }
 
 export interface MacRegistration {

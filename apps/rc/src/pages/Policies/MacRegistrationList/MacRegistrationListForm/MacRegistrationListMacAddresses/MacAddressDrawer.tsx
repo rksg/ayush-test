@@ -115,9 +115,7 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
     } catch (error) {
       showToast({
         type: 'error',
-        content: intl.$t({ defaultMessage: 'An error occurred' }),
-        // FIXME: Correct the error message
-        link: { onClick: () => alert(JSON.stringify(error)) }
+        content: intl.$t({ defaultMessage: 'An error occurred' })
       })
     }
   }
