@@ -107,7 +107,6 @@ export interface EdgePortStatus {
 
 export interface EdgeDhcpPool {
   name: string
-  subnetAddress: string
   subnetMask: string
   range: string
   gateway: string
