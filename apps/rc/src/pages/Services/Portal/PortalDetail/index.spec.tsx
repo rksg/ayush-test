@@ -188,8 +188,8 @@ describe('Portal Detail Page', () => {
       ),
       rest.get(PortalUrlsInfo.getPortalLang.url,
         (_, res, ctx) => {
-          return res(ctx.status(404),ctx.json(
-            'acceptTermsMsg = I accept the\nacceptTermsLink= terms & conditions'))
+          return res(ctx.json({ acceptTermsLink: 'terms & conditions',
+            acceptTermsMsg: 'I accept the' }))
         })
     )
     render(<Provider><PortalServiceDetail /></Provider>, {
@@ -212,8 +212,8 @@ describe('Portal Detail Page', () => {
       ),
       rest.get(PortalUrlsInfo.getPortalLang.url,
         (_, res, ctx) => {
-          return res(ctx.status(404),ctx.json(
-            'acceptTermsMsg = I accept the\nacceptTermsLink= terms & conditions'))
+          return res(ctx.json({ acceptTermsLink: 'terms & conditions',
+            acceptTermsMsg: 'I accept the' }))
         })
     )
     render(<Provider><PortalServiceDetail /></Provider>, {

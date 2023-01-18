@@ -6,7 +6,7 @@ exports[`SwitchLicense should render correctly 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-13 crtNbp"
+      class="styledComponents__Wrapper-sc-1abm7iv-12 jjcNqJ"
     >
       <div
         class="ant-space ant-space-horizontal ant-space-align-center"
@@ -17,7 +17,7 @@ exports[`SwitchLicense should render correctly 1`] = `
           style="margin-right: 0px;"
         >
           <button
-            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
+            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
             type="button"
           >
             <span>
@@ -30,7 +30,7 @@ exports[`SwitchLicense should render correctly 1`] = `
           style="margin-right: 0px;"
         >
           <div
-            class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1abm7iv-14 jcXayc"
+            class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1abm7iv-13 fsVtFP"
             role="separator"
           />
         </span>
@@ -38,7 +38,7 @@ exports[`SwitchLicense should render correctly 1`] = `
           class="ant-space-item"
         >
           <button
-            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
+            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
             type="button"
           >
             <span>

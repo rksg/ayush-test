@@ -14,12 +14,15 @@ interface EdgeSettingFormProps {
   isFetching?: boolean
 }
 
-const defaultPayload = {
+const venueOptionsDefaultPayload = {
   searchString: '',
   fields: [
     'name',
     'id'
-  ]
+  ],
+  sortField: 'name',
+  sortOrder: 'ASC',
+  pageSize: 10000
 }
 
 export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
@@ -28,7 +31,7 @@ export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
   const params = useParams()
   const [showOtpMessage, setShowOtpMessage] = useState(false)
   const { venueOptions, isLoading: isVenuesListLoading } = useVenuesListQuery({ params:
-    { tenantId: params.tenantId }, payload: defaultPayload }, {
+    { tenantId: params.tenantId }, payload: venueOptionsDefaultPayload }, {
     selectFromResult: ({ data, isLoading }) => {
       return {
         venueOptions: data?.data.map(item => ({ label: item.name, value: item.id })),

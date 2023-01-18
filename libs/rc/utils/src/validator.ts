@@ -77,8 +77,11 @@ export function domainNameRegExp (value: string) {
 export function domainsNameRegExp (value: string[], required: boolean) {
   const { $t } = getIntl()
   // eslint-disable-next-line max-len
+  if(!required) {
+    return Promise.resolve()
+  }
   const re = new RegExp(/^(\*(\.[0-9A-Za-z]{1,63})+(\.\*)?|([0-9A-Za-z]{1,63}\.)+\*|([0-9A-Za-z]{1,63}(\.[0-9A-Za-z]{1,63})+))$/)
-  const isValid = value?.every(domain => {
+  const isValid = value?.every?.(domain => {
     return !(required && !re.test(domain))
   })
 
@@ -192,7 +195,7 @@ export function excludeExclamationRegExp (value: string) {
 
 export function excludeQuoteRegExp (value: string) {
   const { $t } = getIntl()
-  const re = new RegExp(/^(?:(?!")(?!\s).)*$/)
+  const re = new RegExp(/^(?:(?!").)*$/)
   if (value!=='' && !re.test(value)) {
     return Promise.reject($t(validationMessages.excludeQuoteRegExp))
   }
@@ -421,7 +424,13 @@ export const convertIpToLong = (ipAddress: string): number => {
   return ipArray[0] * 16777216 + ipArray[1] * 65536 + ipArray[2] * 256 + ipArray[3]
 }
 
-export function countIpRangeSize (startIpAddress: string, endIpAddress: string) {
+export const countIpSize = (startIpAddress: string, endIpAddress: string) => {
+  const startLong = convertIpToLong(startIpAddress)
+  const endLong = convertIpToLong(endIpAddress)
+  return endLong - startLong + 1
+}
+
+export function countIpMaxRange (startIpAddress: string, endIpAddress: string) {
   const { $t } = getIntl()
   const maxRange = 1000
 

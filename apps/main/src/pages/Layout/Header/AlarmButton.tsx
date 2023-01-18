@@ -18,7 +18,9 @@ import {
   useClearAlarmMutation,
   useClearAllAlarmMutation,
   useGetAlarmCountQuery,
-  eventAlarmApi }  from '@acx-ui/rc/services'
+  eventAlarmApi,
+  networkApi
+}  from '@acx-ui/rc/services'
 import { Alarm, CommonUrlsInfo, useTableQuery, EventSeverityEnum, EventTypeEnum } from '@acx-ui/rc/utils'
 import { useParams, TenantLink }                                                  from '@acx-ui/react-router-dom'
 import { store }                                                                  from '@acx-ui/store'
@@ -176,6 +178,11 @@ export default function AlarmsHeaderButton () {
                 { type: 'Alarms', id: 'LIST' },
                 { type: 'Alarms', id: 'OVERVIEW' }
               ]))
+            store.dispatch(
+              networkApi.util.invalidateTags([
+                { type: 'Network', id: 'Overview' }
+              ]))
+
           }, 1000)
         }}>
         {$t({ defaultMessage: 'Clear all alarms' })}
@@ -206,6 +213,10 @@ export default function AlarmsHeaderButton () {
                         eventAlarmApi.util.invalidateTags([
                           { type: 'Alarms', id: 'LIST' },
                           { type: 'Alarms', id: 'OVERVIEW' }
+                        ]))
+                      store.dispatch(
+                        networkApi.util.invalidateTags([
+                          { type: 'Network', id: 'Overview' }
                         ]))
                     }, 1000)
                   }}

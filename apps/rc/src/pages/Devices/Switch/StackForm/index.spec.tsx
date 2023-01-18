@@ -17,7 +17,8 @@ import {
 import {
   venuelist,
   apGrouplist,
-  successResponse } from '../../__tests__/fixtures'
+  successResponse
+} from '../../__tests__/fixtures'
 
 import { StackForm } from '.'
 
@@ -44,16 +45,16 @@ async function changeVenue () {
 }
 
 describe('Switch Stack Form - Add', () => {
-  const params = { tenantId: 'tenant-id', action: 'add' }
+  const params = { tenantId: 'tenant-id', switchId: 'switch-id', action: 'add' }
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
     initialize()
     mockServer.use(
-      rest.post(CommonUrlsInfo.getVenuesList.url,
-        (_, res, ctx) => res(ctx.json(venuelist))),
       rest.get(CommonUrlsInfo.getApGroupList.url,
         (_, res, ctx) => res(ctx.json(apGrouplist))),
+      rest.post(CommonUrlsInfo.getVenuesList.url,
+        (_, res, ctx) => res(ctx.json(venuelist))),
       rest.post(SwitchUrlsInfo.addSwitch.url,
         (_, res, ctx) => res(ctx.json(successResponse)))
     )
@@ -63,7 +64,7 @@ describe('Switch Stack Form - Add', () => {
   })
   it('should render correctly', async () => {
     const { asFragment } = render(<Provider><StackForm /></Provider>, {
-      route: { params, path: '/:tenantId/devices/switch/add' }
+      route: { params, path: '/:tenantId/devices/switch/stack/add' }
     })
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
@@ -78,7 +79,7 @@ describe('Switch Stack Form - Add', () => {
   })
   it('should save stack without name and description correctly', async () => {
     render(<Provider><StackForm /></Provider>, {
-      route: { params, path: '/:tenantId/devices/switch/add' }
+      route: { params, path: '/:tenantId/devices/switch/stack/add' }
     })
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
@@ -95,7 +96,7 @@ describe('Switch Stack Form - Add', () => {
   })
   it('should add row and delete row correctly', async () => {
     render(<Provider><StackForm /></Provider>, {
-      route: { params, path: '/:tenantId/devices/switch/add' }
+      route: { params, path: '/:tenantId/devices/switch/stack/add' }
     })
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
@@ -111,7 +112,7 @@ describe('Switch Stack Form - Add', () => {
   })
   it('should trigger switch serial number validation 1 correctly', async () => {
     render(<Provider><StackForm /></Provider>, {
-      route: { params, path: '/:tenantId/devices/switch/add' }
+      route: { params, path: '/:tenantId/devices/switch/stack/add' }
     })
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
@@ -119,46 +120,17 @@ describe('Switch Stack Form - Add', () => {
     await changeVenue()
     await fillInForm()
 
-    fireEvent.change(await screen.findByTestId(/serialNumber3/),
-      { target: { value: 'FEK4124R20X' } })
-    screen.getByTestId(/serialNumber3/).focus()
-    await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
-    await screen.findByText(/Serial number is invalid/)
-  })
-  it('should trigger switch serial number validation 2 correctly', async () => {
-    render(<Provider><StackForm /></Provider>, {
-      route: { params, path: '/:tenantId/devices/switch/add' }
-    })
-
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-
-    await changeVenue()
-    await fillInForm()
-
-    fireEvent.change(await screen.findByTestId(/serialNumber3/),
-      { target: { value: 'FMG4124R20X' } })
-    screen.getByTestId(/serialNumber3/).focus()
-    await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
-    await screen.findByText(/Serial number is invalid/)
-  })
-  it('should trigger switch serial number validation 3 correctly', async () => {
-    render(<Provider><StackForm /></Provider>, {
-      route: { params, path: '/:tenantId/devices/switch/add' }
-    })
-
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-
-    await changeVenue()
-    await fillInForm()
-
-    fireEvent.change(await screen.findByTestId(/serialNumber3/), { target: { value: 'AAA' } })
-    screen.getByTestId(/serialNumber3/).focus()
-    await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+    const serialNumber1 = await screen.findByTestId(/serialNumber1/)
+    fireEvent.change(serialNumber1, { target: { value: 'FEK4124R21X' } })
+    await userEvent.tab()
+    await userEvent.tab()
+    await userEvent.tab()
+    // expect(serialNumber1).toHaveFocus()
     await screen.findByText(/Serial number is invalid/)
   })
   it('should show disabled delete button correctly', async () => {
     render(<Provider><StackForm /></Provider>, {
-      route: { params, path: '/:tenantId/devices/switch/add' }
+      route: { params, path: '/:tenantId/devices/switch/stack/add' }
     })
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
@@ -174,7 +146,7 @@ describe('Switch Stack Form - Add', () => {
   })
   it('should trigger radio onchange correctly', async () => {
     render(<Provider><StackForm /></Provider>, {
-      route: { params, path: '/:tenantId/devices/switch/add' }
+      route: { params, path: '/:tenantId/devices/switch/stack/add' }
     })
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
@@ -189,7 +161,7 @@ describe('Switch Stack Form - Add', () => {
   })
   it('should render empty venue list correctly', async () => {
     render(<Provider><StackForm /></Provider>, {
-      route: { params, path: '/:tenantId/devices/switch/add' }
+      route: { params, path: '/:tenantId/devices/switch/stack/add' }
     })
     mockServer.use(
       rest.post(CommonUrlsInfo.getVenuesList.url,

@@ -232,8 +232,9 @@ export function StackForm () {
         name: values.name || '',
         id: formRef.current?.getFieldValue(`serialNumber${activeRow}`),
         description: values.description,
-        venueId: values?.venueId,
-        stackMembers: tableData.map((item) => ({ id: item.id })),
+        venueId: values.venueId,
+        stackMembers: tableData.filter((item) => item.id !== '').map((item) => ({ id: item.id })),
+        enableStack: true,
         jumboMode: false,
         igmpSnooping: 'none',
         spanningTreePriority: '',
@@ -388,6 +389,7 @@ export function StackForm () {
         return (
           <Form.Item
             name={`serialNumber${row.key}`}
+            validateTrigger={['onKeyUp', 'onFocus', 'onBlur']}
             rules={[
               {
                 required: activeRow === row.key ? true : false,
@@ -399,7 +401,7 @@ export function StackForm () {
           >
             <Input
               data-testid={`serialNumber${row.key}`}
-              onChange={() => handleChange(row, index)}
+              onChange={async () => await handleChange(row, index)}
               style={{ textTransform: 'uppercase' }}
               disabled={row.disabled}
             />
@@ -579,7 +581,7 @@ export function StackForm () {
                         message: $t({ defaultMessage: 'This field is required' })
                       }
                     ]}
-                    initialValue={switchDetail?.venueId}
+                    initialValue={null}
                     children={
                       <Select
                         options={[

@@ -3,6 +3,16 @@ import { render, screen } from '@acx-ui/test-utils'
 
 import AnalyticsRoutes from './Routes'
 
+jest.mock('./pages/NetworkHealth/NetworkHealthDetails',() => ({
+  default: () => <div data-testid='NetworkHealthDetails'/>,
+  __esModule: true
+}))
+
+jest.mock('./pages/NetworkHealth/NetworkHealthList', () => ({
+  default: () => <div data-testid='NetworkHealthPage' />,
+  __esModule: true
+}))
+
 jest.mock('@acx-ui/analytics/components', () => ({
   HealthPage: () => <div data-testid='healthPage' />,
   IncidentListPage: () => <div data-testid='incidentsListPage' />
@@ -21,6 +31,15 @@ test('should redirect analytics to analytics/incidents', async () => {
   })
   expect(screen.getByTestId('incidentsListPage')).toBeVisible()
 })
+test('should redirect service validation to serviceValidation/networkHealth', async () => {
+  render(<Provider><AnalyticsRoutes /></Provider>, {
+    route: {
+      path: '/t/tenantId/serviceValidation',
+      wrapRoutes: false
+    }
+  })
+  expect(screen.getByTestId('NetworkHealthPage')).toBeVisible()
+})
 test('should navigate to analytics/incidents', async () => {
   render(<Provider><AnalyticsRoutes /></Provider>, {
     route: {
@@ -29,6 +48,15 @@ test('should navigate to analytics/incidents', async () => {
     }
   })
   expect(screen.getByTestId('incidentsListPage')).toBeVisible()
+})
+test('should navigate to serviceValidation/networkHealth', async () => {
+  render(<Provider><AnalyticsRoutes /></Provider>, {
+    route: {
+      path: '/t/tenantId/serviceValidation/networkHealth',
+      wrapRoutes: false
+    }
+  })
+  expect(screen.getByTestId('NetworkHealthPage')).toBeVisible()
 })
 test('should navigate to analytics/recommendations', () => {
   render(<Provider><AnalyticsRoutes /></Provider>, {
@@ -83,4 +111,13 @@ test('should navigate to analytics/incidents/tab/overview', async () => {
     }
   })
   expect(screen.getByTestId('incidentsListPage')).toBeVisible()
+})
+test('should navigate to serviceValidation/networkHealth/tab/overview', async () => {
+  render(< Provider><AnalyticsRoutes /></Provider>, {
+    route: {
+      path: '/t/tenantId/serviceValidation/networkHealth/1/tab/overview',
+      wrapRoutes: false
+    }
+  })
+  expect(screen.getByTestId('NetworkHealthDetails')).toBeVisible()
 })

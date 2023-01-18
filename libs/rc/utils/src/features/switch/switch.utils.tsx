@@ -3,8 +3,12 @@ import _ from 'lodash'
 
 import { getIntl } from '@acx-ui/utils'
 
-import { DeviceConnectionStatus }                                         from '../../constants'
-import { STACK_MEMBERSHIP, SwitchRow, SwitchStatusEnum, SwitchViewModel } from '../../types'
+import { DeviceConnectionStatus } from '../../constants'
+import { STACK_MEMBERSHIP,
+  SwitchRow,
+  SwitchStatusEnum,
+  SwitchViewModel,
+  SWITCH_TYPE } from '../../types'
 
 export const modelMap: ReadonlyMap<string, string> = new Map([
   ['CRH', 'ICX7750-48F'],
@@ -74,6 +78,10 @@ export const getSwitchModel = (serial: string) => {
 
   const productCode = serial.slice(0, 3)
   return modelMap.get(productCode)
+}
+
+export const isRouter = (switchType: SWITCH_TYPE) => {
+  return switchType === SWITCH_TYPE.ROUTER
 }
 
 export const transformSwitchStatus = (switchStatusEnum: SwitchStatusEnum, configReady = true,
@@ -203,17 +211,5 @@ export const isL3FunctionSupported = (switchType: string | undefined) => {
   if (!switchType) {
     return false
   }
-  return isRouter(switchType)
-}
-
-const isRouter = (switchType: string) => {
-  if (!switchType) {
-    return false
-  }
-  const isSwitch = switchType === 'switch'
-  if (isSwitch) {
-    return false
-  }
-
-  return true
+  return isRouter(switchType as SWITCH_TYPE)
 }
