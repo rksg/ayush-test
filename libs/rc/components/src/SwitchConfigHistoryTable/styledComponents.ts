@@ -62,10 +62,7 @@ export const ArrowExpand = styled(ArrowChevronLeft)`
 export const SwitchConfigHeader = styled('div')`
   display: flex;
   justify-content: space-between;
-  font-size: 12px;
+  font-size: var(--acx-body-4-font-size);
   align-items: center;
-
-  .ant-radio-group { // TODO: check style
-
-  }
+  padding: 8px 0;
 `

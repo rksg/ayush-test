@@ -38,6 +38,7 @@ export function SwitchConfigHistoryTable (props: {
 
   const [getVenueConfigHistoryDetail] = useLazyGetVenueConfigHistoryDetailQuery()
   const [configDetails, setConfigDetails] = useState([] as unknown as ConfigurationHistory[])
+  const [filterType, setFilterType] = useState('ALL')
 
   const getConfigHistoryDetail = async (transactionId: string, filterByStatus: string) => {
     const payload = {
@@ -129,6 +130,7 @@ export function SwitchConfigHistoryTable (props: {
     const configHistoryDetail = await getConfigHistoryDetail(selectedRow.transactionId, filterType)
     const row = configHistoryDetail?.[0]
 
+    setFilterType(filterType)
     setConfigDetails(configHistoryDetail)
     setSelectedConfigRow(row)
     setDispatchFailedReason(row?.dispatchFailedReason as DispatchFailedReason[] || [])
@@ -203,6 +205,7 @@ export function SwitchConfigHistoryTable (props: {
           {
             isVenueLevel && configDetails && <SwitchConfigDetailsTable
               configDetails={configDetails}
+              filterType={filterType}
               onSelectConfingChange={onSelectConfingChange}
               onFilterConfigDetails={onFilterConfigDetails}
             />

@@ -1,10 +1,9 @@
 /* eslint-disable max-len */
 import { useEffect, useState } from 'react'
 
-import { Radio }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps }                                                from '@acx-ui/components'
+import { SelectionControl, Table, TableProps }                              from '@acx-ui/components'
 import { ConfigurationHistory, transformConfigType, transformConfigStatus } from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
@@ -12,12 +11,13 @@ import * as UI from './styledComponents'
 import type { RadioChangeEvent } from 'antd'
 
 export function SwitchConfigDetailsTable (props: {
-  configDetails?: ConfigurationHistory[]
+  configDetails?: ConfigurationHistory[],
+  filterType: string,
   onSelectConfingChange: (data: ConfigurationHistory) => void,
   onFilterConfigDetails: (e: RadioChangeEvent) => void
 }) {
   const { $t } = useIntl()
-  const { configDetails, onSelectConfingChange, onFilterConfigDetails } = props
+  const { configDetails, onSelectConfingChange, filterType, onFilterConfigDetails } = props
 
   const [selectedRowKeys, setSelectedRowKeys] = useState([''] as string[])
 
@@ -57,12 +57,18 @@ export function SwitchConfigDetailsTable (props: {
   return <>
     <UI.SwitchConfigHeader>
       {$t({ defaultMessage: 'Switches ({count})' }, { count: configDetails?.length })}
-      <Radio.Group onChange={onFilterConfigDetails} defaultValue='All'>
-        <Radio.Button value='ALL'>{ $t({ defaultMessage: 'All' }) }</Radio.Button>
-        <Radio.Button value='FAILED'>{ $t({ defaultMessage: 'Failed' }) }</Radio.Button>
-        <Radio.Button value='SUCCESS'>{ $t({ defaultMessage: 'Success' }) }</Radio.Button>
-        <Radio.Button value='NOTIFY_SUCCESS'>{ $t({ defaultMessage: 'Notify Success' }) }</Radio.Button>
-      </Radio.Group>
+      <SelectionControl
+        size='small'
+        defaultValue='ALL'
+        onChange={onFilterConfigDetails}
+        value={filterType}
+        options={[
+          { value: 'ALL', label: 'All' },
+          { value: 'FAILED', label: 'Failed' },
+          { value: 'SUCCESS', label: 'Success' },
+          { value: 'NOTIFY_SUCCESS', label: 'Notify Success' }
+        ]}
+      />
     </UI.SwitchConfigHeader>
     <Table
       type='form'
