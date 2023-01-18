@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react'
 
-import { Popover } from 'antd'
+import { Popover, PopoverProps } from 'antd'
 
 import { clientEventDescription, mapCodeToFailureText, mapDisconnectCodeToReason } from '@acx-ui/analytics/utils'
 import { formatter, getIntl }                                                      from '@acx-ui/utils'
@@ -66,10 +66,17 @@ const useConnectionDetail = (event: DisplayEvent) => {
   return eventDetails
 }
 
-export function ConnectionEventPopover ({ children, event }:
-  { children?: React.ReactNode, event: DisplayEvent }) {
-  const [open, setOpen] = React.useState(false)
-  const hide = () => { setOpen(false) }
+type ConnectionEventPopoverProps = PopoverProps & {
+  children?: React.ReactNode,
+  event: DisplayEvent
+}
+
+export function ConnectionEventPopover ({ children, event, ...rest }: ConnectionEventPopoverProps) {
+  const [open, setOpen] = React.useState(rest.visible ?? false)
+  const hide = () => {
+    setOpen(false)
+    rest.onVisibleChange && rest.onVisibleChange(false)
+  }
   const rowData = useConnectionDetail(event)
   const failureExtra: ReactNode = (event.category === FAILURE)
     ? <ConnectionSequenceDiagram
@@ -78,16 +85,18 @@ export function ConnectionEventPopover ({ children, event }:
       apMac={event.mac}
     />
     : null
+  const visibleHandle = (val: boolean) => {
+    rest.onVisibleChange && rest.onVisibleChange(val)
+    setOpen(val)
+  }
   return (
     <UI.PopoverWrapper>
       <Popover
+        {...rest}
         content={<Details fields={rowData} openHandler={hide} extra={failureExtra}/>}
         trigger='click'
-        placement='bottom'
-        // getPopupContainer={(triggerNode) => triggerNode.parentElement as HTMLElement}
         visible={open}
-        onVisibleChange={setOpen}
-        arrowPointAtCenter
+        onVisibleChange={visibleHandle}
       >
         {children}
       </Popover>

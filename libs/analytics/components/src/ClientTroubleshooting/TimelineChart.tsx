@@ -1,13 +1,12 @@
 import {
-  Dispatch,
   RefObject,
-  SetStateAction,
   useCallback,
   useEffect,
   useRef,
   useState,
   RefCallback,
-  useImperativeHandle
+  useImperativeHandle,
+  useMemo
 } from 'react'
 
 import ReactECharts        from 'echarts-for-react'
@@ -74,6 +73,7 @@ export interface TimelineChartProps extends Omit<EChartsReactProps, 'option' | '
   tooltipFormatter: TooltipFormatterCallback<TopLevelFormatterParams>;
   mapping: { key: string; label: string; chartType: string; series: string }[];
   showResetZoom?: boolean;
+  onClick: Function
 }
 export const getSeriesData = (
   data: (Event | LabelledQuality | IncidentDetails | RoamingTimeSeriesData)[],
@@ -154,14 +154,21 @@ export function getBarColor (params: {
 export const useDotClick = (
   eChartsRef: RefObject<ReactECharts>,
   onDotClick: ((param: unknown) => void) | undefined,
-  setSelected: Dispatch<SetStateAction<number | undefined>>
+  setSelected?: Function
 ) => {
   const handler = useCallback(
     function (params: { componentSubType: string; data: unknown }) {
       if (params.componentSubType !== 'scatter') return
       const data = params.data as [number, string, Event]
-      setSelected(data[2] as unknown as number)
-      onDotClick && onDotClick(data[2])
+      setSelected && setSelected(data[2] as unknown as number)
+      const { clientX, clientY, currentTarget } = (params as unknown as
+        { event: { event: PointerEvent } }).event.event
+      const { top, left } = (currentTarget as HTMLElement).getBoundingClientRect()
+      onDotClick && onDotClick(({
+        ...data[2],
+        x: clientX - left,
+        y: clientY - top
+      }))
     },
     [setSelected, onDotClick]
   )
@@ -222,6 +229,9 @@ export const useDataZoom = (
       dataZoomSelectActive: true
     })
     echartInstance.on('datazoom', onDatazoomCallback)
+    return () => {
+      echartInstance.off('datazoom', onDatazoomCallback)
+    }
   })
 
   const resetZoomCallback = useCallback(() => {
@@ -260,24 +270,26 @@ export function TimelineChart ({
   mapping,
   hasXaxisLabel,
   showResetZoom,
+  onClick,
   ...props
 }: TimelineChartProps) {
   const { $t } = useIntl()
+  const eChartsRef = useRef<ReactECharts>(null)
   useImperativeHandle(chartRef, () => eChartsRef.current!)
+
   const chartPadding = 10
   const rowHeight = 22
   const placeholderRows = 2
   const legendWidth = 85
   const xAxisHeight = hasXaxisLabel ? 30 : 0
 
-  const eChartsRef = useRef<ReactECharts>(null)
   const [canResetZoom, resetZoomCallback] = useDataZoom(eChartsRef, true)
   // use selected event on dot click to show popover
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selected, setSelected] = useState<number | undefined>(selectedData)
 
   useDotClick(eChartsRef, onDotClick, setSelected)
-  const option: EChartsOption = {
+  const option: EChartsOption = useMemo(() => ({
     animation: false,
     grid: {
       top: 0,
@@ -302,7 +314,8 @@ export function TimelineChart ({
       formatter: tooltipFormatter,
       ...tooltipOptions(),
       // Need to address test coverage for the postion
-      position: /* istanbul ignore next */ (point) => [point[0] + 10, mapping.length * 25]
+      position: /* istanbul ignore next */ (point: [number, number]) =>
+        [point[0] + 10, mapping.length * 25]
     },
     xAxis: {
       ...xAxisOptions(),
@@ -391,6 +404,7 @@ export function TimelineChart ({
             name: series,
             symbol: 'circle',
             symbolSize: 8,
+            symbolOffset: [0, 1],
             animation: false,
             data: getSeriesData(data, key, series),
             itemStyle: {
@@ -407,7 +421,8 @@ export function TimelineChart ({
             data: getSeriesData(data, key, series)
           }
       ) as SeriesOption[]
-  }
+  }), [chartBoundary, data, hasXaxisLabel, mapping, props.style?.width, tooltipFormatter])
+
   return (
     <>
       <ReactECharts
@@ -423,6 +438,9 @@ export function TimelineChart ({
         }}
         ref={eChartsRef}
         option={option}
+        onEvents={{
+          click: onClick
+        }}
       />
       {canResetZoom && showResetZoom && (
         <ResetButton

@@ -19,8 +19,10 @@ import {
   NetworkIncidentCategoryMap,
   RoamingByAP,
   RoamingConfigParam,
-  RoamingTimeSeriesData
+  RoamingTimeSeriesData,
+  DisplayEvent
 } from './config'
+import { ConnectionEventPopover }          from './ConnectionEvent'
 import { ClientInfoData, ConnectionEvent } from './services'
 import * as UI                             from './styledComponents'
 import { TimelineChart }                   from './TimelineChart'
@@ -42,6 +44,11 @@ import { Filters } from '.'
 type TimeLineProps = {
   data?: ClientInfoData;
   filters: Filters;
+}
+
+type CoordDisplayEvent = DisplayEvent & {
+  x: number,
+  y: number
 }
 
 export function TimeLine (props: TimeLineProps) {
@@ -103,6 +110,11 @@ export function TimeLine (props: TimeLineProps) {
   }, [])
   const { startDate, endDate } = useDateFilter()
   const chartBoundary = [moment(startDate).valueOf(), moment(endDate).valueOf()]
+
+  // Event Popover Controls
+  const [ eventState, setEventState ] = useState({} as CoordDisplayEvent)
+  const [ visible, setVisible ] = useState(false)
+
   return (
     <Row gutter={[16, 16]} wrap={false}>
       <Col flex='200px'>
@@ -164,40 +176,58 @@ export function TimeLine (props: TimeLineProps) {
         <Row gutter={[16, 16]} style={{ rowGap: 0 }}>
           {ClientTroubleShootingConfig.timeLine.map((config) => (
             <Col span={24} key={config.value}>
-              <TimelineChart
-                style={{ width: 'auto', marginBottom: 8 }}
-                data={getChartData(
+              <ConnectionEventPopover
+                arrowPointAtCenter
+                destroyTooltipOnHide
+                event={eventState}
+                visible={visible}
+                onVisibleChange={setVisible}
+                trigger='click'
+                align={{
+                  points: ['tc', 'bc']
+                }}
+              >
+                <TimelineChart
+                  style={{ width: 'auto', marginBottom: 8 }}
+                  data={getChartData(
                   config?.value as keyof TimelineData,
                   events,
                   expandObj[config?.value as keyof TimelineData],
                   !Array.isArray(qualties) ? qualties.all : [],
                   Array.isArray(incidents) ? incidents : [],
                   roamingEventsTimeSeries
-                )}
-                showResetZoom={config?.showResetZoom}
-                chartBoundary={chartBoundary}
-                mapping={
-                  expandObj[config?.value as keyof TimelineData]
-                    ? config.value === TYPES.ROAMING
-                      ? [
-                        ...config.chartMapping,
-                        ...(getRoamingChartConfig(roamingEventsAps as RoamingConfigParam) as {
+                  )}
+                  showResetZoom={config?.showResetZoom}
+                  chartBoundary={chartBoundary}
+                  mapping={
+                    expandObj[config?.value as keyof TimelineData]
+                      ? config.value === TYPES.ROAMING
+                        ? [
+                          ...config.chartMapping,
+                          ...(getRoamingChartConfig(roamingEventsAps as RoamingConfigParam) as {
                             key: string;
                             label: string;
                             chartType: string;
                             series: string;
                           }[])
-                      ]
-                      : config.chartMapping
-                    : [config.chartMapping[0]]
-                }
-                hasXaxisLabel={config?.hasXaxisLabel}
-                chartRef={connectChart}
-                tooltipFormatter={useTooltipFormatter}
-                // caputuring scatterplot dot click to open popover
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                // onDotClick={(params) => {}}
-              />
+                        ]
+                        : config.chartMapping
+                      : [config.chartMapping[0]]
+                  }
+                  hasXaxisLabel={config?.hasXaxisLabel}
+                  chartRef={connectChart}
+                  tooltipFormatter={useTooltipFormatter}
+                  onDotClick={(params) => {
+                    setEventState(params as CoordDisplayEvent)
+                    setVisible(true)
+                  }}
+                  onClick={() => {
+                    if (config.value === TYPES.CONNECTION_EVENTS) {
+                      setVisible(prev => !prev)
+                    }
+                  }}
+                />
+              </ConnectionEventPopover>
             </Col>
           ))}
         </Row>
