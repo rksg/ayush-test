@@ -4,9 +4,9 @@ import { Col, Row }  from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { ContentSwitcher, ContentSwitcherProps, Loader, showActionModal, Table, TableProps } from '@acx-ui/components'
-import { useDeleteSubInterfacesMutation, useGetSubInterfacesQuery }                          from '@acx-ui/rc/services'
-import { DEFAULT_PAGINATION, EdgePort, EdgeSubInterface, useTableQuery }                     from '@acx-ui/rc/utils'
+import { ContentSwitcher, ContentSwitcherProps, Loader, NoData, showActionModal, Table, TableProps } from '@acx-ui/components'
+import { useDeleteSubInterfacesMutation, useGetSubInterfacesQuery }                                  from '@acx-ui/rc/services'
+import { DEFAULT_PAGINATION, EdgePort, EdgeSubInterface, useTableQuery }                             from '@acx-ui/rc/utils'
 
 import * as UI from '../styledComponents'
 
@@ -111,7 +111,7 @@ const SubInterfaceTable = (props: SubInterfaceTableProps) => {
   ]
 
   const actionButtons = [
-    { label: $t({ defaultMessage: 'Add Route' }), onClick: () => openDrawer() }
+    { label: $t({ defaultMessage: 'Add Sub-interface' }), onClick: () => openDrawer() }
   ]
 
   const openDrawer = (data?: EdgeSubInterface) => {
@@ -184,17 +184,19 @@ const SubInterface = (props: SubInterfaceProps) => {
   }, [data, $t])
 
   return (
-    <Loader states={[{
-      isLoading: false,
-      isFetching: isFetching
-    }]}>
-      <ContentSwitcher
-        tabDetails={tabDetails}
-        defaultValue={'port_1'}
-        size='large'
-        align='left'
-      />
-    </Loader>
+    data && data.length > 0 ?
+      <Loader states={[{
+        isLoading: false,
+        isFetching: isFetching
+      }]}>
+        <ContentSwitcher
+          tabDetails={tabDetails}
+          defaultValue={'port_1'}
+          size='large'
+          align='left'
+        />
+      </Loader>
+      : <NoData />
   )
 }
 
