@@ -269,6 +269,10 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
               tabindex="0"
             >
               Directed Multicast
+              <svg
+                data-testid="QuestionMarkCircleOutlined"
+                style="margin-left: 8px; height: 16px;"
+              />
             </div>
           </div>
           <div
