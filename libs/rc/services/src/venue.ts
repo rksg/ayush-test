@@ -184,7 +184,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
           }
         } else { //delete single row
           let req = createHttpRequest(CommonUrlsInfo.deleteVenue, params)
-          req.url = 'https://api.devalto.ruckuswireless.com/venues/' + (params?.tenantId)
+          req.url = 'https://api.intalto.ruckuswireless.com/venues/' + (params?.tenantId)
           return {
             ...req
           }
