@@ -116,7 +116,7 @@ const PortsGeneral = (props: PortsGeneralProps) => {
   }
 
   return (
-    data && data.length > 0 ?
+    data.length > 0 ?
       <Loader states={[{
         isLoading: false,
         isFetching: isPortConfigUpdating

@@ -184,7 +184,7 @@ const SubInterface = (props: SubInterfaceProps) => {
   }, [data, $t])
 
   return (
-    data && data.length > 0 ?
+    data.length > 0 ?
       <Loader states={[{
         isLoading: false,
         isFetching: isFetching
