@@ -177,6 +177,7 @@ export function SwitchConfigHistoryTable (props: {
         onChange={tableQuery.handleTableChange}
       />
     </Loader>
+    { visible &&
     <Modal
       title={$t({ defaultMessage: 'Configuration Details' })}
       visible={visible}
@@ -253,6 +254,7 @@ export function SwitchConfigHistoryTable (props: {
         </>
       }
     </Modal>
+    }
   </>
 }
 
