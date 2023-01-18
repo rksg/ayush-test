@@ -368,7 +368,7 @@ describe('Layer3Drawer Component', () => {
 
     await userEvent.click(screen.getAllByText('Save')[1])
 
-    await userEvent.click(screen.getByText('layer3-test-desc-subnet-ruleDescription'))
+    await userEvent.click(await screen.findByText('layer3-test-desc-subnet-ruleDescription'))
 
     await userEvent.click(screen.getByRole('button', {
       name: /delete/i
