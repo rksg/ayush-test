@@ -616,10 +616,8 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'DpskPassphrase', id: 'LIST' }]
     }),
-    downloadPassphrases: build.mutation<
-      { data: BlobPart },
-      RequestPayload<{ timezone: string, dateFormat: string }>
-    >({
+    // eslint-disable-next-line max-len
+    downloadPassphrases: build.mutation<Blob, RequestPayload<{ timezone: string, dateFormat: string }>>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(DpskUrls.exportPassphrases, {
           ...params,
@@ -632,13 +630,12 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           responseHandler: async (response) => {
             const headerContent = response.headers.get('content-disposition')
             const fileName = headerContent
-              ? JSON.parse(headerContent.split('filename=')[1])
-              : 'DPSK_Passphrases.csv'
+              ? headerContent.split('filename=')[1]
+              : 'DPSK_Passphrase.csv'
             downloadFile(response, fileName)
           },
-          body: payload,
           headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'text/csv',
             'accept': 'application/json,text/plain,*/*'
           }
         }

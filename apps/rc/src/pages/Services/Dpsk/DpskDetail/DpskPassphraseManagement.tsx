@@ -58,7 +58,7 @@ export default function DpskPassphraseManagement () {
   })
 
   const downloadPassphrases = () => {
-    downloadCsv({ params }).catch(() => {
+    downloadCsv({ params }).unwrap().catch(() => {
       showToast({
         type: 'error',
         content: $t({ defaultMessage: 'Failed to export passphrases.' })
