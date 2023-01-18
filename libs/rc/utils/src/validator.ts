@@ -343,6 +343,29 @@ export function MacAddressFilterRegExp (value: string){
   return Promise.resolve()
 }
 
+export function MacRegistrationFilterRegExp (value: string){
+  const { $t } = getIntl()
+  const HYPHEN_2_GROUPS = new RegExp(/^([0-9A-Fa-f]{6})-([0-9A-Fa-f]{6})$/)
+  const COLON_2_GROUPS = new RegExp(/^([0-9A-Fa-f]{6}):([0-9A-Fa-f]{6})$/)
+  const COLON_6_GROUPS = new RegExp(/^([0-9A-Fa-f]{2}:){5}([0-9A-Fa-f]{2})$/)
+  const HYPHEN_6_GROUPS = new RegExp(/^([0-9A-Fa-f]{2}-){5}([0-9A-Fa-f]{2})$/)
+  const DOTS_3_GROUPS = new RegExp(/^([0-9A-Fa-f]{4}[.]){2}([0-9A-Fa-f]{4})$/)
+  const HYPHEN_3_GROUPS = new RegExp(/^([0-9A-Fa-f]{4}[-]){2}([0-9A-Fa-f]{4})$/)
+  const NO_DELIMITER = new RegExp(/^[0-9A-Fa-f]{12}$/)
+  if (value && !
+  (HYPHEN_2_GROUPS.test(value) ||
+      COLON_2_GROUPS.test(value) ||
+      COLON_6_GROUPS.test(value) ||
+      HYPHEN_6_GROUPS.test(value) ||
+      DOTS_3_GROUPS.test(value) ||
+      HYPHEN_3_GROUPS.test(value) ||
+      NO_DELIMITER.test(value))
+  ) {
+    return Promise.reject($t(validationMessages.invalid))
+  }
+  return Promise.resolve()
+}
+
 export function emailRegExp (value: string) {
   const { $t } = getIntl()
   // eslint-disable-next-line max-len

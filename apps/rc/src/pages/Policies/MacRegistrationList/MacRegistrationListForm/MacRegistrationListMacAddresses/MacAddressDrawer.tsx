@@ -15,11 +15,9 @@ import {
   checkObjectNotExists,
   ExpirationDateEntity,
   ExpirationMode,
-  MacRegistration
+  MacRegistration, MacRegistrationFilterRegExp
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
-
-import { macAddressRegExp } from '../../MacRegistrationListUtils'
 
 interface MacAddressDrawerProps {
   visible: boolean
@@ -126,7 +124,7 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
         label={intl.$t({ defaultMessage: 'MAC Address' })}
         rules={[
           { required: true },
-          { validator: (_, value) => macAddressRegExp(value) },
+          { validator: (_, value) => MacRegistrationFilterRegExp(value) },
           { validator: (_, value) => macAddressValidator(value) }
         ]}
         validateFirst
