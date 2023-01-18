@@ -10,14 +10,17 @@ import {
   EventTable,
   eventDefaultPayload,
   SwitchTable,
-  defaultSwitchPayload
+  defaultSwitchPayload,
+  defaultClientPayload,
+  ConnectedClientsTable
 } from '@acx-ui/rc/components'
 import {
   useApListQuery,
   useEventsQuery,
   useNetworkListQuery,
   useVenuesListQuery,
-  useSwitchListQuery
+  useSwitchListQuery,
+  useGetClientListQuery
 } from '@acx-ui/rc/services'
 import {
   RequestPayload,
@@ -27,7 +30,8 @@ import {
   AP,
   ApExtraParams,
   Event,
-  SwitchRow
+  SwitchRow,
+  ClientList
 } from '@acx-ui/rc/utils'
 
 import { useDefaultVenuePayload, VenueTable } from '../Venues/VenuesTable'
@@ -123,6 +127,21 @@ const searches = [
       result,
       title: $t({ defaultMessage: 'Switches' }),
       component: <SwitchTable tableQuery={result} />
+    }
+  },
+  (searchString: string, $t: IntlShape['$t']) => {
+    const result = useTableQuery<ClientList, RequestPayload<unknown>, unknown>({
+      useQuery: useGetClientListQuery,
+      defaultPayload: {
+        ...defaultClientPayload,
+        searchString
+      },
+      pagination
+    })
+    return {
+      result,
+      title: $t({ defaultMessage: 'Clients' }),
+      component: <ConnectedClientsTable tableQuery={result} searchString={searchString} />
     }
   }
 ]

@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom'
 
-import { CommonUrlsInfo, SwitchUrlsInfo }                              from '@acx-ui/rc/utils'
+import { ClientUrlsInfo, CommonUrlsInfo, SwitchUrlsInfo }              from '@acx-ui/rc/utils'
 import { Provider }                                                    from '@acx-ui/store'
 import { mockRestApiQuery, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -25,6 +25,7 @@ describe('Search Results', () => {
     mockRestApiQuery(CommonUrlsInfo.getEventList.url, 'post', eventListData)
     mockRestApiQuery(CommonUrlsInfo.getEventListMeta.url, 'post', eventMetaData)
     mockRestApiQuery(SwitchUrlsInfo.getSwitchList.url, 'post', switchListData)
+    mockRestApiQuery(ClientUrlsInfo.getClientList.url, 'post', { data: [], totalCount: 0 })
   })
 
   it('should decode search string correctly', async () => {
@@ -68,6 +69,7 @@ describe('Search Results', () => {
     mockRestApiQuery(CommonUrlsInfo.getEventList.url, 'post', { data: [], totalCount: 0 })
     mockRestApiQuery(CommonUrlsInfo.getEventListMeta.url, 'post', { data: [], totalCount: 0 })
     mockRestApiQuery(SwitchUrlsInfo.getSwitchList.url, 'post', { data: [], totalCount: 0 })
+    mockRestApiQuery(ClientUrlsInfo.getClientList.url, 'post', { data: [], totalCount: 0 })
     render(
       <Provider>
         <SearchResults />
