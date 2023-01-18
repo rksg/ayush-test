@@ -176,14 +176,15 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     deleteVenue: build.mutation<Venue, RequestPayload>({
       query: ({ params, payload }) => {
-        if(payload){ //delete multiple rows
-          const req = createHttpRequest(CommonUrlsInfo.deleteVenues, params)
+        if (payload) { //delete multiple rows
+          let req = createHttpRequest(CommonUrlsInfo.deleteVenues, params)
           return {
             ...req,
             body: payload
           }
-        }else{ //delete single row
-          const req = createHttpRequest(CommonUrlsInfo.deleteVenue, params)
+        } else { //delete single row
+          let req = createHttpRequest(CommonUrlsInfo.deleteVenue, params)
+          req.url = 'https://api.devalto.ruckuswireless.com/venues/' + (params?.tenantId)
           return {
             ...req
           }
