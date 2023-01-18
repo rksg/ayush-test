@@ -427,7 +427,7 @@ exports[`Switch Stack Form - Add should render correctly 1`] = `
                         class="styledComponents__TableContainer-sc-wgbcob-0 dcEoDV"
                       >
                         <div
-                          class="styledComponents__Wrapper-sc-1abm7iv-13 dCbkWt"
+                          class="styledComponents__Wrapper-sc-1abm7iv-12 iyKqRw"
                         >
                           <div
                             class="ant-pro-table"
@@ -650,7 +650,7 @@ exports[`Switch Stack Form - Add should render correctly 1`] = `
                                                     class="ant-table-cell"
                                                   >
                                                     <button
-                                                      class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 eAazoW"
+                                                      class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 ibsWZY"
                                                       data-testid="deleteBtn1"
                                                       role="deleteBtn"
                                                       type="button"
@@ -759,7 +759,7 @@ exports[`Switch Stack Form - Add should render correctly 1`] = `
                                                     class="ant-table-cell"
                                                   >
                                                     <button
-                                                      class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 eAazoW"
+                                                      class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 ibsWZY"
                                                       data-testid="deleteBtn2"
                                                       role="deleteBtn"
                                                       type="button"
@@ -868,7 +868,7 @@ exports[`Switch Stack Form - Add should render correctly 1`] = `
                                                     class="ant-table-cell"
                                                   >
                                                     <button
-                                                      class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 eAazoW"
+                                                      class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 ibsWZY"
                                                       data-testid="deleteBtn3"
                                                       role="deleteBtn"
                                                       type="button"
@@ -892,7 +892,7 @@ exports[`Switch Stack Form - Add should render correctly 1`] = `
                           </div>
                         </div>
                         <button
-                          class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
+                          class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
                           type="button"
                         >
                           <span>
@@ -919,7 +919,7 @@ exports[`Switch Stack Form - Add should render correctly 1`] = `
             style="margin-right: 12px;"
           >
             <button
-              class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 bxQmA-d"
+              class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 glXBEv"
               type="button"
             >
               <span>
@@ -931,7 +931,7 @@ exports[`Switch Stack Form - Add should render correctly 1`] = `
             class="ant-space-item"
           >
             <button
-              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
+              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ibsWZY"
               type="button"
             >
               <span>

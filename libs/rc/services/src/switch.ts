@@ -24,17 +24,19 @@ import {
   VlanVePort,
   AclUnion,
   VeForm,
+  SwitchClient,
   transformConfigBackupStatus,
   ConfigurationBackup,
   ConfigurationBackupStatus,
-  transformConfigBackupType
+  transformConfigBackupType,
+  TroubleshootingResult
 } from '@acx-ui/rc/utils'
 import { formatter } from '@acx-ui/utils'
 
 export const baseSwitchApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'switchApi',
-  tagTypes: ['Switch', 'SwitchBackup'],
+  tagTypes: ['Switch', 'SwitchClient', 'SwitchBackup'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({})
 })
@@ -273,7 +275,8 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      providesTags: [{ type: 'Switch', id: 'VE' }]
     }),
     getVlanListBySwitchLevel: build.query<TableResult<Vlan>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -356,7 +359,77 @@ export const switchApi = baseSwitchApi.injectEndpoints({
 
       },
       invalidatesTags: [{ type: 'Switch', id: 'VE' }]
+    }),
+    getSwitchClientList: build.query<TableResult<SwitchClient>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const clientListReq = createHttpRequest(SwitchUrlsInfo.getSwitchClientList, params)
+        return {
+          ...clientListReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'SwitchClient', id: 'LIST' }]
+    }),
+    getSwitchClientDetails: build.query<SwitchClient, RequestPayload>({
+      query: ({ params }) => {
+        const clientListReq = createHttpRequest(SwitchUrlsInfo.getSwitchClientDetail, params)
+        return {
+          ...clientListReq
+        }
+      }
+    }),
+    getTroubleshooting: build.query<TroubleshootingResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getTroubleshooting, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    getTroubleshootingClean: build.query<{}, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getTroubleshootingClean, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    ping: build.mutation<TroubleshootingResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.ping, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    traceRoute: build.mutation<TroubleshootingResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.traceRoute, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    ipRoute: build.mutation<TroubleshootingResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.ipRoute, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    macAddressTable: build.mutation<TroubleshootingResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.macAddressTable, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
     })
+
   })
 })
 
@@ -427,6 +500,7 @@ export const {
   useStackMemberListQuery,
   useDeleteSwitchesMutation,
   useSwitchDetailHeaderQuery,
+  useLazySwitchDetailHeaderQuery,
   useImportSwitchesMutation,
   useGetVlansByVenueQuery,
   useLazyGetVlansByVenueQuery,
@@ -447,10 +521,21 @@ export const {
   useGetFreeVePortVlansQuery,
   useLazyGetFreeVePortVlansQuery,
   useGetAclUnionQuery,
+  useLazyGetAclUnionQuery,
   useAddVePortMutation,
   useUpdateVePortMutation,
   useGetSwitchQuery,
+  useLazyGetSwitchQuery,
   useDeleteVePortsMutation,
   useGetSwitchAclsQuery,
-  useGetVlanListBySwitchLevelQuery
+  useGetVlanListBySwitchLevelQuery,
+  useGetSwitchClientListQuery,
+  useGetSwitchClientDetailsQuery,
+  useGetTroubleshootingQuery,
+  usePingMutation,
+  useTraceRouteMutation,
+  useIpRouteMutation,
+  useMacAddressTableMutation,
+  useGetTroubleshootingCleanQuery,
+  useLazyGetTroubleshootingCleanQuery
 } = switchApi

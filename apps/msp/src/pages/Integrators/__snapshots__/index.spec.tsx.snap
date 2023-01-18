@@ -38,7 +38,7 @@ exports[`Integrators should render table 1`] = `
                 href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/dashboard"
               >
                 <button
-                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
+                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ibsWZY"
                   type="button"
                 >
                   <span>
@@ -55,7 +55,7 @@ exports[`Integrators should render table 1`] = `
                 href="/v/ecc2d7cf9d2342fdb31ae0e24958fcac/integrators/create"
               >
                 <button
-                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 eAazoW"
+                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 ibsWZY"
                   type="button"
                 >
                   <span>
@@ -71,7 +71,7 @@ exports[`Integrators should render table 1`] = `
                 style="cursor: not-allowed;"
               >
                 <button
-                  class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 eAazoW"
+                  class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 ibsWZY"
                   disabled=""
                   style="pointer-events: none;"
                   type="button"
@@ -91,10 +91,10 @@ exports[`Integrators should render table 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-13 bRIKQR"
+      class="styledComponents__Wrapper-sc-1abm7iv-12 jjcNqJ"
     >
       <div
-        class="styledComponents__Header-sc-1abm7iv-11 lWiiO"
+        class="styledComponents__Header-sc-1abm7iv-10 jhzeUr"
       >
         <div>
           <div
@@ -154,7 +154,7 @@ exports[`Integrators should render table 1`] = `
           </div>
         </div>
         <div
-          class="styledComponents__HeaderRight-sc-1abm7iv-12 bHNaiJ"
+          class="styledComponents__HeaderRight-sc-1abm7iv-11 hLRWq"
         />
       </div>
       <div
@@ -246,10 +246,10 @@ exports[`Integrators should render table 1`] = `
                                 class="ant-table-cell ant-table-selection-column react-resizable"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                 />
                                 <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                 />
                               </th>
                               <th
@@ -258,7 +258,7 @@ exports[`Integrators should render table 1`] = `
                                 tabindex="0"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                 />
                                 <div
                                   class="ant-table-column-sorters"
@@ -316,7 +316,7 @@ exports[`Integrators should render table 1`] = `
                                   </span>
                                 </div>
                                 <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                 />
                               </th>
                               <th
@@ -324,7 +324,7 @@ exports[`Integrators should render table 1`] = `
                                 tabindex="0"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                 />
                                 <div
                                   class="ant-table-column-sorters"
@@ -382,7 +382,7 @@ exports[`Integrators should render table 1`] = `
                                   </span>
                                 </div>
                                 <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                 />
                               </th>
                               <th
@@ -390,7 +390,7 @@ exports[`Integrators should render table 1`] = `
                                 tabindex="0"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                 />
                                 <div
                                   class="ant-table-column-sorters"
@@ -448,7 +448,7 @@ exports[`Integrators should render table 1`] = `
                                   </span>
                                 </div>
                                 <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                 />
                               </th>
                               <th
@@ -456,7 +456,7 @@ exports[`Integrators should render table 1`] = `
                                 tabindex="0"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                 />
                                 <div
                                   class="ant-table-column-sorters"
@@ -514,7 +514,7 @@ exports[`Integrators should render table 1`] = `
                                   </span>
                                 </div>
                                 <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                 />
                               </th>
                               <th
@@ -522,7 +522,7 @@ exports[`Integrators should render table 1`] = `
                                 tabindex="0"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                 />
                                 <div
                                   class="ant-table-column-sorters"
@@ -580,7 +580,7 @@ exports[`Integrators should render table 1`] = `
                                   </span>
                                 </div>
                                 <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                 />
                               </th>
                               <th
@@ -588,7 +588,7 @@ exports[`Integrators should render table 1`] = `
                                 tabindex="0"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                 />
                                 <div
                                   class="ant-table-column-sorters"
@@ -646,7 +646,7 @@ exports[`Integrators should render table 1`] = `
                                   </span>
                                 </div>
                                 <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                 />
                               </th>
                               <th
@@ -654,7 +654,7 @@ exports[`Integrators should render table 1`] = `
                                 tabindex="0"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                 />
                                 <div
                                   class="ant-table-column-sorters"
@@ -712,7 +712,7 @@ exports[`Integrators should render table 1`] = `
                                   </span>
                                 </div>
                                 <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                 />
                               </th>
                               <th
@@ -720,10 +720,10 @@ exports[`Integrators should render table 1`] = `
                                 style="position: sticky; right: 0px;"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                 />
                                 <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                 />
                               </th>
                             </tr>
