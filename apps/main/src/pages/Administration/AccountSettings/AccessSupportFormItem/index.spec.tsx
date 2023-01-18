@@ -1,11 +1,9 @@
 /* eslint-disable max-len */
 import _        from 'lodash'
 import { rest } from 'msw'
-import { act }  from 'react-dom/test-utils'
 
-import { administrationApi }                   from '@acx-ui/rc/services'
 import { UserProfile, AdministrationUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store  }                    from '@acx-ui/store'
+import { Provider  }                           from '@acx-ui/store'
 import {
   render,
   mockServer,
