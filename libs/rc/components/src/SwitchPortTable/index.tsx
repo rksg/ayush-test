@@ -43,7 +43,7 @@ export function SwitchPortTable ({ isVenueLevel }: {
         'crcErr', 'inDiscard', 'usedInFormingStack'
       ]
     },
-    sorter: {      
+    sorter: {
       sortField: 'portIdentifierFormatted',
       sortOrder: 'ASC'
     }
