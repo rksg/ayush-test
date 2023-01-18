@@ -1,15 +1,14 @@
 import { useState, useEffect } from 'react'
 
-
+import { Divider } from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { GridRow, GridCol, Drawer } from '@acx-ui/components'
-import { useLocation }              from '@acx-ui/react-router-dom'
+import {  Drawer }     from '@acx-ui/components'
+import { useLocation } from '@acx-ui/react-router-dom'
 
-import { Description } from '../styledComponents'
-
-import mappingTable from './mappingTable'
+import mapping         from './mapping'
+import { Description } from './styledComponents'
 
 export default function HelpPage (props: {
   modalState: boolean,
@@ -31,15 +30,14 @@ export default function HelpPage (props: {
         }
       })).json()
 
-      const mapKey = _.find(_.keys(mappingTable), item => location.pathname.indexOf(item) !== -1)
-      const key = mappingTable[mapKey as keyof typeof mappingTable]
+      const mapKey = Object.keys(mapping).find(item => location.pathname.indexOf(item) !== -1)
+      const key = mapping[mapKey as keyof typeof mapping]
       if (!_.isEmpty(mapKey)) return re[key as typeof re]
     }catch (e) {
       setHelpDesc($t({ defaultMessage: 'The content is not available.' }))
     }
   }
-
-  const getDesc = async (destFile: string) => {
+  const updateDesc = async (destFile: string) => {
     try {
     // eslint-disable-next-line max-len
       const re = await (await fetch('https://docs.cloud.ruckuswireless.com/alto/latest/' + destFile)).text()
@@ -51,24 +49,24 @@ export default function HelpPage (props: {
   }
 
   useEffect(() => {
-    getMapping().then((dest) => {
-      dest && getDesc(dest)
-    })
+    (async ()=> {
+      const mapping = await getMapping()
+      mapping && updateDesc(mapping)
+    })()
   }, [location])
 
   return <Drawer
-    title={$t({ defaultMessage: 'Help For This Page' })}
+    title={$t({ defaultMessage: 'Help for this page' })}
     visible={props.modalState}
     onClose={() => props.setIsModalOpen(false)}
     mask={true}
-    children={<div data-testid={'drawer-firewall-id'}>
-      <GridRow style={{ paddingBottom: 5 }}>
-        <GridCol col={{ span: 24 }}>
-          <Description>
-            {helpDesc}
-          </Description>
-        </GridCol>
-      </GridRow>
+    children={<div>
+      <p>
+        <Description>
+          {helpDesc}
+        </Description>
+        <Divider />
+      </p>
     </div>
     }
     destroyOnClose={true}

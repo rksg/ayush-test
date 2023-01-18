@@ -14,7 +14,6 @@ import {
 // import About       from './About'
 import ActivityButton from './ActivityButton'
 import AlarmButton    from './AlarmButton'
-import Firewall       from './Help/Firewall'
 
 
 const aboutJSON = {
@@ -173,33 +172,6 @@ describe('Header Component', () => {
         (req, res, ctx) => res(ctx.json(alarmMeta))
       )
     )
-  })
-
-  // it('should render <About/> component correctly', async () => {
-  //   render(
-  //     <Provider>
-  //       <About modalState={true} setIsModalOpen={() => {}}/>
-  //     </Provider>, {
-  //       route: { params }
-  //     })
-  //   expect(await screen.findByText(('acx-hybrid'))).toBeInTheDocument()
-  //   const modalComponent = screen.getByTestId('modal-about-id')
-  //   expect(modalComponent).toMatchSnapshot()
-  //   const cancelBtn = await screen.findByRole('button')
-  //   await userEvent.click(cancelBtn)
-  // })
-
-  it('should render <Firewall/> component correctly', async () => {
-    render(
-      <Provider>
-        <Firewall modalState={true} setIsModalOpen={() => {}}/>
-      </Provider>, {
-        route: { params }
-      })
-    expect(await screen.findByText(('https://ruckus.cloud'))).toBeInTheDocument()
-    expect(await screen.findByText(('device.ruckus.cloud'))).toBeInTheDocument()
-    const cancelBtn = await screen.findByRole('button',{ name: 'Close' })
-    await userEvent.click(cancelBtn)
   })
 
   it('should render Alarm component correctly', async () => {
