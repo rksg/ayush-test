@@ -1,4 +1,5 @@
 /* eslint-disable max-len */
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   ServiceType,
   getSelectServiceRoutePath,
@@ -477,6 +478,8 @@ describe('RcRoutes: User', () => {
     expect(screen.getByTestId('UserClientDetails')).toBeVisible()
   })
   test('should redirect to Persona Portal', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
     render(<Provider><RcRoutes /></Provider>, {
       route: {
         path: '/t/tenantId/users/persona-management',
@@ -486,6 +489,8 @@ describe('RcRoutes: User', () => {
     expect(screen.getByTestId('PersonaPortal')).toBeVisible()
   })
   test('should redirect to Persona detail', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
     render(<Provider><RcRoutes /></Provider>, {
       route: {
         path: '/t/tenantId/users/persona-management/persona-group/personGroupId/persona/personaId',
@@ -495,6 +500,8 @@ describe('RcRoutes: User', () => {
     expect(screen.getByTestId('PersonaDetails')).toBeVisible()
   })
   test('should redirect to Persona Group detail', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
     render(<Provider><RcRoutes /></Provider>, {
       route: {
         path: '/t/tenantId/users/persona-management/persona-group/personGroupId',
