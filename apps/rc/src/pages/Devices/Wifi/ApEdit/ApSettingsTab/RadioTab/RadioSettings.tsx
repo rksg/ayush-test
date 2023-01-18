@@ -462,9 +462,10 @@ export function RadioSettings () {
   }
 
   return (
-    <Loader states={[
-      { isLoading: formInitializing,
-        isFetching: isUpdatingApRadio || isDeletingApRadio }]}>
+    <Loader states={[{
+      isLoading: formInitializing,
+      isFetching: isUpdatingApRadio || isDeletingApRadio
+    }]}>
       <StepsForm
         formRef={formRef}
         onFormChange={handleChange}

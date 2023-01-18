@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { Col, Row, Form, Switch } from 'antd'
 import { isEmpty }                from 'lodash'
@@ -60,12 +60,19 @@ export function SingleRadioSettings (props:{
     context = 'venue',
     isUseVenueSettings = false,
     testId } = props
+
   const {
     radioType,
     supportChannels,
     bandwidthOptions,
     editContext,
     supportDfsChannels } = props
+
+  const {
+    editContextData,
+    setEditContextData
+  } = useContext(editContext)
+
   const isSupportRadio = bandwidthOptions?.length > 0
   const displayRadioBarSettings = ['5G', 'DFS']
   const radioDataKey = (context === 'venue') ?
@@ -265,6 +272,12 @@ export function SingleRadioSettings (props:{
     setIndoorChannelErrMsg(indoorErrMsg)
     setOutdoorChannelErrMsg(outdoorErrMsg)
 
+    // have error messages
+    const hasErrors = !isEmpty(errMsg + indoorErrMsg + outdoorErrMsg)
+    setEditContextData({
+      ...editContextData,
+      hasError: hasErrors
+    })
   }, [allowedChannels, allowedIndoorChannels, allowedOutdoorChannels])
 
   const resetToDefaule = () => {
