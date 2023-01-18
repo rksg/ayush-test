@@ -43,18 +43,19 @@ export function SwitchPortTable ({ isVenueLevel }: {
         'crcErr', 'inDiscard', 'usedInFormingStack'
       ]
     },
-    sorter: {
+    sorter: {      
       sortField: 'portIdentifierFormatted',
       sortOrder: 'ASC'
     }
   })
 
   const columns: TableProps<SwitchPortViewModel>['columns'] = [{
-    key: 'portIdentifier',
+    key: 'portIdentifierFormatted',
     title: $t({ defaultMessage: 'Port Number' }),
-    dataIndex: 'portIdentifier',
+    dataIndex: 'portIdentifierFormatted',
     sorter: true,
-    defaultSortOrder: 'ascend'
+    defaultSortOrder: 'ascend',
+    render: (data, row) => row['portIdentifier']
   }, {
     key: 'name',
     title: $t({ defaultMessage: 'Port Name' }),
