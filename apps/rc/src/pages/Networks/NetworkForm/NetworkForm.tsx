@@ -42,18 +42,19 @@ import {
   multipleConflictMessage,
   radiusErrorMessage
 } from './contentsMap'
-import { NetworkDetailForm }       from './NetworkDetail/NetworkDetailForm'
-import NetworkFormContext          from './NetworkFormContext'
-import { NetworkMoreSettingsForm } from './NetworkMoreSettings/NetworkMoreSettingsForm'
-import { AaaSettingsForm }         from './NetworkSettings/AaaSettingsForm'
-import { DpskSettingsForm }        from './NetworkSettings/DpskSettingsForm'
-import { OpenSettingsForm }        from './NetworkSettings/OpenSettingsForm'
-import { PskSettingsForm }         from './NetworkSettings/PskSettingsForm'
-import { SummaryForm }             from './NetworkSummary/SummaryForm'
+import { NetworkDetailForm }         from './NetworkDetail/NetworkDetailForm'
+import NetworkFormContext            from './NetworkFormContext'
+import { NetworkMoreSettingsForm }   from './NetworkMoreSettings/NetworkMoreSettingsForm'
+import { AaaSettingsForm }           from './NetworkSettings/AaaSettingsForm'
+import { DpskSettingsForm }          from './NetworkSettings/DpskSettingsForm'
+import { OpenSettingsForm }          from './NetworkSettings/OpenSettingsForm'
+import { PskSettingsForm }           from './NetworkSettings/PskSettingsForm'
+import { SummaryForm }               from './NetworkSummary/SummaryForm'
 import {
   transferDetailToSave,
   tranferSettingsToSave,
-  transferMoreSettingsToSave
+  transferMoreSettingsToSave,
+  updateClientIsolationAllowlistId
 } from './parser'
 import PortalInstance from './PortalInstance'
 import { Venues }     from './Venues/Venues'
@@ -180,7 +181,10 @@ export default function NetworkForm () {
 
   const handleEditNetwork = async (data: NetworkSaveData) => {
     try {
-      await updateNetwork({ params, payload: { ...saveState, venues: data.venues } }).unwrap()
+      // eslint-disable-next-line max-len
+      const venuesWithClientIsolation = updateClientIsolationAllowlistId(data.venues, saveState.venues)
+      // eslint-disable-next-line max-len
+      await updateNetwork({ params, payload: { ...saveState, venues: venuesWithClientIsolation } }).unwrap()
       navigate(linkToNetworks, { replace: true })
     } catch {
       showToast({
@@ -403,7 +407,12 @@ export default function NetworkForm () {
             name='venues'
             title={intl.$t({ defaultMessage: 'Venues' })}
             onFinish={async (data) => {
-              updateSaveData(data)
+              const updatedVenues = updateClientIsolationAllowlistId(data.venues, saveState.venues)
+
+              updateSaveData({
+                ...data,
+                venues: updatedVenues
+              })
               return true
             }}
           >

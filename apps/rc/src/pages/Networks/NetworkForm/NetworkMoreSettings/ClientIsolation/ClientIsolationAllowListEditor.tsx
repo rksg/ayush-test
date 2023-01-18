@@ -1,5 +1,3 @@
-import { useContext } from 'react'
-
 import { Select }    from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
@@ -7,8 +5,6 @@ import { useParams } from 'react-router-dom'
 import { Table, TableProps }                                        from '@acx-ui/components'
 import { useGetClientIsolationListQuery, useNetworkVenueListQuery } from '@acx-ui/rc/services'
 import { NetworkVenue }                                             from '@acx-ui/rc/utils'
-
-import NetworkFormContext from '../../NetworkFormContext'
 
 const defaultNetworkVenueListPayload = {
   fields: [
@@ -19,16 +15,21 @@ const defaultNetworkVenueListPayload = {
   pageSize: 10000
 }
 
+interface ClientIsolationAllowListEditorProps {
+  networkVenues?: NetworkVenue[]
+  setAllowList: (venueId: string, policyId: string) => void
+}
+
 // eslint-disable-next-line max-len
-export default function ClientIsolationAllowListEditor () {
+export default function ClientIsolationAllowListEditor (props: ClientIsolationAllowListEditorProps) {
   const { $t } = useIntl()
-  const { data, setData } = useContext(NetworkFormContext)
   const params = useParams()
+  const { networkVenues, setAllowList } = props
   // eslint-disable-next-line max-len
-  const networkVenueList = useNetworkVenueListQuery({
+  const venueListForNameMap = useNetworkVenueListQuery({
     params,
     payload: defaultNetworkVenueListPayload
-  }, { skip: !data?.venues })
+  })
 
   const { policyOptions } = useGetClientIsolationListQuery({ params },{
     selectFromResult ({ data }) {
@@ -38,22 +39,6 @@ export default function ClientIsolationAllowListEditor () {
     }
   })
 
-  const onPolicyChange = (venueId: string, policyId: string) => {
-    if (!data?.venues) {
-      return
-    }
-
-    const targetVenue = data.venues.find(v => v.id === venueId)
-
-    if (!targetVenue) {
-      return
-    }
-
-    targetVenue.clientIsolationAllowlistId = policyId
-
-    setData && setData({ ...data, venues: data.venues })
-  }
-
   const columns: TableProps<NetworkVenue>['columns'] = [
     {
       title: $t({ defaultMessage: 'Venue' }),
@@ -61,11 +46,11 @@ export default function ClientIsolationAllowListEditor () {
       dataIndex: 'name',
       defaultSortOrder: 'ascend',
       render: function (data, row) {
-        if (!networkVenueList.data) {
+        if (!venueListForNameMap.data) {
           return '--'
         }
 
-        const target = networkVenueList.data.data.find(venue => venue.id === row.venueId)
+        const target = venueListForNameMap.data.data.find(venue => venue.id === row.venueId)
         return target?.name
       }
     },
@@ -77,7 +62,7 @@ export default function ClientIsolationAllowListEditor () {
         return (
           <Select
             style={{ width: '100%' }}
-            onChange={(value: string) => onPolicyChange(row.venueId!, value)}
+            onChange={(value: string) => setAllowList(row.venueId!, value)}
             options={[
               { label: $t({ defaultMessage: 'Not active...' }), value: '' },
               ...policyOptions
@@ -93,7 +78,7 @@ export default function ClientIsolationAllowListEditor () {
     <Table<NetworkVenue>
       type='form'
       columns={columns}
-      dataSource={data?.venues}
+      dataSource={networkVenues}
       pagination={false}
       rowKey='venueId'
     />

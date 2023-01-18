@@ -10,7 +10,8 @@ import {
   GuestWlanAdvancedCustomization,
   WlanSecurityEnum,
   RfBandUsageEnum,
-  PhyTypeConstraintEnum
+  PhyTypeConstraintEnum,
+  NetworkVenue
 } from '@acx-ui/rc/utils'
 
 const parseAaaSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => {
@@ -384,4 +385,32 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
   }
 
   return saveData
+}
+
+function isEmptyVenues (venues: ClientIsolationVenue[] | undefined): boolean {
+  return !venues || venues.length === 0
+}
+
+export type ClientIsolationVenue = Pick<NetworkVenue, 'venueId' | 'clientIsolationAllowlistId'>
+
+// eslint-disable-next-line max-len
+export function updateClientIsolationAllowlistId (
+  venues: NetworkVenue[] | undefined,
+  clientIsolationVenues: ClientIsolationVenue[] | undefined
+): NetworkVenue[] | undefined {
+  if (isEmptyVenues(venues) || isEmptyVenues(clientIsolationVenues)) {
+    return venues
+  }
+
+  const incomingVenues = [...venues!]
+  let originalTargetVenue
+
+  incomingVenues.forEach((v: NetworkVenue) => {
+    originalTargetVenue = clientIsolationVenues!.find(cv => cv.venueId === v.venueId)
+    if (originalTargetVenue) {
+      v.clientIsolationAllowlistId = originalTargetVenue.clientIsolationAllowlistId
+    }
+  })
+
+  return incomingVenues
 }
