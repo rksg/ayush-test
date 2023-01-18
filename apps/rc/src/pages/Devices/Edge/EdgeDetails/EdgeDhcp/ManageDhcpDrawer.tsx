@@ -24,11 +24,6 @@ const ManageDhcpDrawer = (props: ManageDhcpDrawerProps) => {
       dataIndex: 'name'
     },
     {
-      title: $t({ defaultMessage: 'Subnet Address' }),
-      key: 'subnetAddress',
-      dataIndex: 'subnetAddress'
-    },
-    {
       title: $t({ defaultMessage: 'Pool Range' }),
       key: 'range',
       dataIndex: 'range'

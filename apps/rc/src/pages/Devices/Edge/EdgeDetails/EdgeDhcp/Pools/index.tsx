@@ -14,7 +14,6 @@ export const useMockData = () => {
     setData([
       {
         name: 'Pool1',
-        subnetAddress: '1.1.1.1',
         subnetMask: '255.255.255.0',
         range: '1.1.1.1 - 1.1.1.99',
         gateway: '1.1.1.1',
@@ -23,7 +22,6 @@ export const useMockData = () => {
       },
       {
         name: 'Pool2',
-        subnetAddress: '2.2.2.2',
         subnetMask: '255.255.255.0',
         range: '2.2.2.1 - 2.2.2.99',
         gateway: '2.2.2.2',
@@ -49,11 +47,6 @@ const Pools = () => {
       dataIndex: 'name',
       sorter: true,
       defaultSortOrder: 'ascend'
-    },
-    {
-      title: $t({ defaultMessage: 'Subnet Address' }),
-      key: 'subnetAddress',
-      dataIndex: 'subnetAddress'
     },
     {
       title: $t({ defaultMessage: 'Subnet Mask' }),
