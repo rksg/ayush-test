@@ -39,9 +39,10 @@ export function SwitchConfigHistoryTable () {
   const tableQuery = useTableQuery({
     useQuery: useGetSwitchConfigHistoryQuery,
     defaultPayload: {
-      filterByConfigType: '',
-      sortInfo: { sortColumn: 'startTime', dir: 'DESC' },
-      limit: 10
+    },
+    sorter: {
+      sortField: 'startTime',
+      sortOrder: 'DESC'
     }
   })
 
