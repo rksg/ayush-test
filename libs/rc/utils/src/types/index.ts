@@ -33,6 +33,7 @@ export * from './client'
 export * from './components'
 export * from './switch'
 export * from './timeline'
+export * from './persona'
 
 export interface CommonResult {
   requestId: string
