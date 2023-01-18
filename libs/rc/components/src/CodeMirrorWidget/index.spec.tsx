@@ -10,12 +10,15 @@ const mockFromTextArea = jest.fn().mockReturnValue({
   setOption: jest.fn(),
   setCursor: jest.fn()
 })
+const mockCodeMirrorMergeViewInit = jest.fn()
 jest.mock('codemirror', () => ({
   ...jest.requireActual('codemirror'),
-  fromTextArea: () => mockFromTextArea
+  fromTextArea: () => mockFromTextArea,
+  MergeView: () => mockCodeMirrorMergeViewInit
 }))
+
 describe('CodeMirror Widget', () => {
-  it('should render correctly', async () => {
+  it('should render single type correctly', async () => {
     const params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
@@ -38,7 +41,7 @@ describe('CodeMirror Widget', () => {
     expect(removeHighlightLine).toBeCalled()
   })
 
-  it('should render custom configOptions correctly', async () => {
+  it('should render single type custom configOptions correctly', async () => {
     const params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
@@ -54,6 +57,20 @@ describe('CodeMirror Widget', () => {
     </Provider>,
     { route: { params } })
     expect(mockFromTextArea).toBeCalled()
+  })
+
+  it('should render merge type correctly', async () => {
+    const params = {
+      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
+    }
+    const data = {
+      left: 'cli_1',
+      right: 'cli_2'
+    }
+    render(<Provider>
+      <CodeMirrorWidget type='merge' data={data} />
+    </Provider>,
+    { route: { params } })
   })
 })
 

@@ -73,6 +73,10 @@ jest.mock('libs/common/components/src/theme/helper', () => ({
   cssNumber: jest.fn(property => parseInt(mockLightTheme[property], 10))
 }))
 
+jest.mock('merge-view-codemirror', () => ({
+  init: () => jest.fn()
+}))
+
 jest.mock('@acx-ui/feature-toggle', () => ({
   SplitProvider: ({ children }) =>
     require('react').createElement('div', null, children),
