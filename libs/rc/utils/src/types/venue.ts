@@ -12,6 +12,7 @@ import { VenueSyslog }                                                          
 
 import { ApStatusDetails, LanPort } from './ap'
 import { RogueCategory }            from './policies'
+import { ConfigurationHistory }     from './switch'
 
 import { ApVenueStatusEnum, SwitchStatusEnum } from './index'
 
@@ -638,6 +639,12 @@ export interface VenueDirectedMulticast {
   wiredEnabled: boolean,
   wirelessEnabled: boolean,
   networkEnabled: boolean
+}
+
+export interface VenueConfigHistoryDetailResp {
+	response: {
+		list: ConfigurationHistory[]
+	}
 }
 
 export enum LoadBalancingMethodEnum {
