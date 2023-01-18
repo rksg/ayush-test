@@ -96,6 +96,7 @@ export const renderCustomItem = (
   const start = api?.coord?.([api?.value?.(0), yValue]);
   const end = api?.coord?.([api?.value?.(2), yValue]);
   const height = (api?.size as CallableFunction)?.([0, 1])?.[1];
+
   return {
     type: 'rect',
     shape: {
@@ -203,7 +204,6 @@ export function MultiBarTimeSeriesChart({
   function handleClick(event: any) {
     // @ts-ignore: Unreachable code error
     if (!chartWrapperRef.current?.contains(event.target)) {
-      console.log('outside');
       setShowToolTip(false);
       const echartInstance = eChartsRef.current?.getEchartsInstance() as ECharts;
       //   echartInstance.dispatchAction({
@@ -271,6 +271,11 @@ export function MultiBarTimeSeriesChart({
             return  formatter('dateTimeFormat')(params.value)
           },
         },
+        lineStyle: {
+          color: cssStr('--acx-neutrals-70'),
+          type: 'solid',
+          width: 1
+        }
       },
     },
     yAxis: {
