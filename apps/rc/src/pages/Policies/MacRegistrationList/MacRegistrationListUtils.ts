@@ -30,7 +30,7 @@ export const returnExpirationString = (data: Partial<MacRegistrationPool>) => {
       // eslint-disable-next-line max-len
       return $t({ defaultMessage: 'After {offset} {unit}' }, {
         offset: data.expirationOffset,
-        unit: expirationTimeUnits[data.expirationType ?? '']
+        unit: data.expirationType ? expirationTimeUnits[data.expirationType] : ''
       })
     }
   }

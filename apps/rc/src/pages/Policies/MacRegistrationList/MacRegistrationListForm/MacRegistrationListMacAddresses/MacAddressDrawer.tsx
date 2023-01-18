@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 
-import { Col, Form, Input, Row } from 'antd'
-import moment                    from 'moment-timezone'
-import { useIntl }               from 'react-intl'
+import { Form, Input } from 'antd'
+import moment          from 'moment-timezone'
+import { useIntl }     from 'react-intl'
 
 import { Drawer, showToast }         from '@acx-ui/components'
 import { ExpirationDateSelector }    from '@acx-ui/rc/components'
@@ -122,47 +122,43 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
 
   const addManuallyContent =
     <Form layout='vertical' form={form}>
-      <Row>
-        <Col span={16}>
-          <Form.Item name='macAddress'
-            label={intl.$t({ defaultMessage: 'MAC Address' })}
-            rules={[
-              { required: true },
-              { validator: (_, value) => MacRegistrationFilterRegExp(value) },
-              { validator: (_, value) => macAddressValidator(value) }
-            ]}
-            validateFirst
-            hasFeedback>
-            <Input disabled={isEdit}/>
-          </Form.Item>
-          <Form.Item name='username' label={intl.$t({ defaultMessage: 'Username' })}>
-            <Input/>
-          </Form.Item>
-          <Form.Item name='email'
-            rules={[
-              { type: 'email', message: intl.$t({ defaultMessage: 'E-mail is not a valid email' }) }
-            ]}
-            label={intl.$t({ defaultMessage: 'E-mail' })}>
-            <Input/>
-          </Form.Item>
-          <Form.Item name='deviceName' label={intl.$t({ defaultMessage: 'Device Name' })}>
-            <Input/>
-          </Form.Item>
-          <Form.Item name='location' label={intl.$t({ defaultMessage: 'Location' })}>
-            <Input/>
-          </Form.Item>
-          <ExpirationDateSelector
-            inputName={'expiration'}
-            label={intl.$t({ defaultMessage: 'MAC Address Expiration' })}
-            modeLabel={{
-              [ExpirationMode.NEVER]: intl.$t({ defaultMessage: 'Never expires (Same as list)' })
-            }}
-            modeAvailability={{
-              [ExpirationMode.AFTER_TIME]: false
-            }}
-          />
-        </Col>
-      </Row>
+      <Form.Item name='macAddress'
+        label={intl.$t({ defaultMessage: 'MAC Address' })}
+        rules={[
+          { required: true },
+          { validator: (_, value) => MacRegistrationFilterRegExp(value) },
+          { validator: (_, value) => macAddressValidator(value) }
+        ]}
+        validateFirst
+        hasFeedback>
+        <Input disabled={isEdit}/>
+      </Form.Item>
+      <Form.Item name='username' label={intl.$t({ defaultMessage: 'Username' })}>
+        <Input/>
+      </Form.Item>
+      <Form.Item name='email'
+        rules={[
+          { type: 'email', message: intl.$t({ defaultMessage: 'E-mail is not a valid email' }) }
+        ]}
+        label={intl.$t({ defaultMessage: 'E-mail' })}>
+        <Input/>
+      </Form.Item>
+      <Form.Item name='deviceName' label={intl.$t({ defaultMessage: 'Device Name' })}>
+        <Input/>
+      </Form.Item>
+      <Form.Item name='location' label={intl.$t({ defaultMessage: 'Location' })}>
+        <Input/>
+      </Form.Item>
+      <ExpirationDateSelector
+        inputName={'expiration'}
+        label={intl.$t({ defaultMessage: 'MAC Address Expiration' })}
+        modeLabel={{
+          [ExpirationMode.NEVER]: intl.$t({ defaultMessage: 'Never expires (Same as list)' })
+        }}
+        modeAvailability={{
+          [ExpirationMode.AFTER_TIME]: false
+        }}
+      />
     </Form>
 
   const footer = (
@@ -183,7 +179,7 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
       children={addManuallyContent}
       footer={footer}
       destroyOnClose={resetField}
-      width={600}
+      width={440}
     />
   )
 }

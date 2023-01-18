@@ -24,7 +24,6 @@ function useColumns () {
       key: 'name',
       title: $t({ defaultMessage: 'Network Name' }),
       dataIndex: 'name',
-      sorter: true,
       defaultSortOrder: 'ascend',
       render: function (data, row) {
         if (disabledType.indexOf(row.nwSubType as NetworkTypeEnum) > -1) {
@@ -40,7 +39,6 @@ function useColumns () {
       title: $t({ defaultMessage: 'Type' }),
       key: 'nwSubType',
       dataIndex: 'nwSubType',
-      sorter: true,
       render: (data: unknown, row) => <NetworkType
         networkType={data as NetworkTypeEnum}
         row={row}
@@ -50,7 +48,6 @@ function useColumns () {
       key: 'venues',
       title: $t({ defaultMessage: 'Venues' }),
       dataIndex: ['venues', 'count'],
-      sorter: true,
       align: 'left',
       render: function (count) {
         return count
@@ -69,6 +66,7 @@ const defaultPayload = {
 }
 
 export function NetworkTable () {
+  const { $t } = useIntl()
   const networkTableQuery = useTableQuery({
     useQuery: useNetworkListQuery,
     defaultPayload
@@ -78,14 +76,13 @@ export function NetworkTable () {
       networkTableQuery,
       { isLoading: false }
     ]}>
-      <Card title={networkTableQuery.data ? 'Instance (' +
-        (networkTableQuery.data?.data.length) + ')' : ''}>
+      <Card title={$t({ defaultMessage: 'Instance ({size})' },
+        { size: networkTableQuery.data?.data.length })}>
         <div style={{ width: '100%' }}>
           <Table
             rowKey='id'
             columns={useColumns()}
             dataSource={networkTableQuery.data?.data}
-            type={'compact'}
           />
         </div>
       </Card>
