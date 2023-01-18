@@ -44,7 +44,7 @@ const list = [
   {
     id: 'f89fee4468d2405cbfc7fb012d0632c8',
     createdDate: '2023-01-10T05:00:00.408+00:00',
-    name: 'c0:c5:20:aa:32:79-SCHEDULED-20230110',
+    name: 'SCHEDULED_1',
     backupType: 'SCHEDULED',
     backupName: 'c0:c5:20:aa:32:79-1673326800403',
     status: 'SUCCESS',
@@ -130,7 +130,7 @@ describe('SwitchConfigBackupTable', () => {
     await userEvent.click(await within(restoreDialog).findByRole('button', { name: 'Restore' }))
     await waitFor(async () => expect(restoreDialog).not.toBeVisible())
 
-    const row2 = await screen.findByRole('row', { name: /c0:c5:20:aa:32:79-SCHEDULED-20230110/i })
+    const row2 = await screen.findByRole('row', { name: /SCHEDULED_1/i })
     await userEvent.click(row1)
     await userEvent.click(row2)
 
@@ -235,6 +235,9 @@ describe('SwitchConfigBackupTable', () => {
     await userEvent.click(await screen.findByText('Actions'))
     await userEvent.click(await screen.findByRole('menuitem', { name: 'Compare' }))
     expect(screen.getByText('Compare Configurations')).toBeVisible()
+    const configSelect = await screen.findAllByRole('combobox', { name: /Configuration Name/i })
+    await userEvent.click(configSelect[0])
+    await userEvent.click((await screen.findByTitle(/SCHEDULED_1/i)))
 
   })
 
@@ -388,7 +391,7 @@ describe('SwitchConfigBackupTable', () => {
     const row1 = await screen.findByRole('row', { name: /Manual_20230111181247/i })
     await userEvent.click(within(row1).getByRole('checkbox'))
 
-    const row2 = await screen.findByRole('row', { name: /c0:c5:20:aa:32:79-SCHEDULED-20230110/i })
+    const row2 = await screen.findByRole('row', { name: /SCHEDULED_1/i })
     await userEvent.click(within(row2).getByRole('checkbox'))
 
     const row3 = await screen.findByRole('row', { name: /testBackup/i })
