@@ -6,20 +6,28 @@ import {
   ApTable,
   defaultApPayload,
   NetworkTable,
-  defaultNetworkPayload
-}           from '@acx-ui/rc/components'
+  defaultNetworkPayload,
+  EventTable,
+  eventDefaultPayload,
+  SwitchTable,
+  defaultSwitchPayload
+} from '@acx-ui/rc/components'
 import {
   useApListQuery,
+  useEventsQuery,
   useNetworkListQuery,
-  useVenuesListQuery
-}       from '@acx-ui/rc/services'
+  useVenuesListQuery,
+  useSwitchListQuery
+} from '@acx-ui/rc/services'
 import {
   RequestPayload,
   useTableQuery,
   Network,
   Venue,
   AP,
-  ApExtraParams
+  ApExtraParams,
+  Event,
+  SwitchRow
 } from '@acx-ui/rc/utils'
 
 import { useDefaultVenuePayload, VenueTable } from '../Venues/VenuesTable'
@@ -28,7 +36,7 @@ import NoData              from './NoData'
 import { Collapse, Panel } from './styledComponents'
 
 
-const pagination = { pageSize: 5 }
+const pagination = { pageSize: 5, showSizeChanger: false }
 
 const searches = [
   (searchString: string, $t: IntlShape['$t']) => {
@@ -79,6 +87,43 @@ const searches = [
       title: $t({ defaultMessage: 'APs' }),
       component: <ApTable tableQuery={result} />
     }
+  },
+  (searchString: string, $t: IntlShape['$t']) => {
+    const result = useTableQuery<Event>({
+      useQuery: useEventsQuery,
+      defaultPayload: {
+        ...eventDefaultPayload,
+        filters: {},
+        searchString,
+        searchTargetFields: ['entity_id', 'message', 'apMac', 'clientMac']
+      },
+      pagination,
+      sorter: {
+        sortField: 'event_datetime',
+        sortOrder: 'DESC'
+      }
+    })
+    return {
+      result,
+      title: $t({ defaultMessage: 'Events' }),
+      component: <EventTable tableQuery={result} />
+    }
+  },
+  (searchString: string, $t: IntlShape['$t']) => {
+    const result = useTableQuery<SwitchRow, RequestPayload<unknown>, unknown>({
+      useQuery: useSwitchListQuery,
+      defaultPayload: {
+        ...defaultSwitchPayload,
+        searchString,
+        searchTargetFields: ['name', 'model', 'ipAddress', 'switchMac']
+      },
+      pagination
+    })
+    return {
+      result,
+      title: $t({ defaultMessage: 'Switches' }),
+      component: <SwitchTable tableQuery={result} />
+    }
   }
 ]
 
@@ -106,7 +151,7 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
       </>
       : <>
         <PageHeader title={$t(
-          { defaultMessage: 'Hmmmm... we couldn\'t find any match for "{searchVal}"' },
+          { defaultMessage: 'Hmmmm... we couldn’t find any match for "{searchVal}"' },
           { searchVal }
         )} />
         <NoData />

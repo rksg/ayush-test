@@ -116,7 +116,7 @@ start the [MLISA dev environment](https://github.com/rksg/rsa-mlisa-helm/tree/de
 before executing the command.
 
 ```sh
-npx nx run main:serve --devRemotes=rc,analytics,msp
+npx nx run main:serve --devRemotes=rc,analytics,msp,reports
 ```
 
 If you are not working on a particular app, you can choose to remove it from `--devRemotes`.

@@ -11,8 +11,10 @@ import { VenueSyslog }                                                          
 
 
 import { ApStatusDetails, LanPort } from './ap'
+import { RogueCategory }            from './policies'
 
 import { ApVenueStatusEnum, SwitchStatusEnum } from './index'
+
 
 export interface VenueDetailHeader {
 	activeLteNetworkCount: number,
@@ -128,10 +130,35 @@ export interface NetworkDevice {
 	yPercent?: number;
 	position?: NetworkDevicePosition;
 	isActive?: boolean;
-	rogueCategory?: string;
+	rogueCategory?: Record<RogueCategory, number>;
 	snr?: number;
 	macAddress?: string;
 	rogueCategoryType?: RogueDeviceCategoryType;
+}
+
+export interface RogueApInfo {
+	deviceColor: string;
+    rogueSnrClass?: string;
+    rogueApTooltips?: string;
+	allrogueApTooltipRequired?: boolean;
+	allVenueRogueApTooltipAttr?: AllVenueRogueApTooltipAttr,
+	specificRogueApTooltipAttr?: SpecificRogueApTooltipAttr,
+    drawRogueApItem?: boolean;
+    showRogueTotalNumber?: boolean;
+}
+
+export interface AllVenueRogueApTooltipAttr {
+	totalRogueNumber: number,
+    deviceName: string,
+    categoryNames: string[],
+	categoryNums?: number[];
+}
+
+export interface SpecificRogueApTooltipAttr{
+	activatedBarIndex: number,
+	deviceName: string,
+	macAddress: string,
+	snr: number
 }
 
 export enum RogueDeviceCategoryType {
@@ -611,4 +638,23 @@ export interface VenueDirectedMulticast {
   wiredEnabled: boolean,
   wirelessEnabled: boolean,
   networkEnabled: boolean
+}
+
+export enum LoadBalancingMethodEnum {
+  CLIENT_COUNT = 'BASED_ON_CLIENT_COUNT',
+  CAPCITY = 'BASED_ON_CAPACITY'
+}
+
+export enum SteeringModeEnum {
+  BASIC = 'BASIC',
+  PROACTIVE = 'PROACTIVE',
+  STRICT = 'STRICT'
+}
+
+export interface VenueLoadBalancing {
+  enabled: boolean,
+  loadBalancingMethod: LoadBalancingMethodEnum,
+  bandBalancingEnabled: true,
+  bandBalancingClientPercent24G: number,
+  steeringMode: SteeringModeEnum
 }

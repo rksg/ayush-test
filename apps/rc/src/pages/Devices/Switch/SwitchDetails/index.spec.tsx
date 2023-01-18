@@ -23,6 +23,11 @@ jest.mock('@acx-ui/rc/components', () => {
   return Object.fromEntries(sets)
 })
 
+jest.mock('@acx-ui/reports/components', () => ({
+  ...jest.requireActual('@acx-ui/reports/components'),
+  EmbeddedReport: () => <div data-testid={'some-report-id'} id='acx-report' />
+}))
+
 describe('SwitchDetails', () => {
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())
@@ -47,7 +52,7 @@ describe('SwitchDetails', () => {
       route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab' }
     })
 
-    expect(screen.getAllByRole('tab')).toHaveLength(13)
+    expect(screen.getAllByRole('tab')).toHaveLength(12)
   })
 
   it('should navigate to incidents tab correctly', async () => {

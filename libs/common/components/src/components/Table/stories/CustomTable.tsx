@@ -1,13 +1,13 @@
 import { Badge } from 'antd'
 
-import { Table }     from '..'
-import { showToast } from '../../Toast'
+import { Table, TableProps } from '..'
+import { showToast }         from '../../Toast'
 
 function CustomColumn (color: string, text: string | number) {
   return <Badge color={color} text={text} />
 }
 
-const customColumns = [
+const customColumns: TableProps<typeof customData[0]>['columns'] = [
   {
     title: 'Name',
     dataIndex: 'name',
@@ -18,7 +18,8 @@ const customColumns = [
     tooltip: 'This is a tooltip',
     dataIndex: 'age',
     key: 'age',
-    width: 150
+    width: 150,
+    align: 'center'
   },
   {
     title: <>
@@ -65,19 +66,53 @@ const customData = [
   }
 ]
 
+const rowActions: TableProps<(typeof customData)[0]>['rowActions'] = [{
+  label: 'Delete',
+  disabled: (rows) => rows.length > 1,
+  onClick: () => {}
+}]
+
 export function CustomTable () {
   return (<>
     Customizations
     <Table
       columns={customColumns}
       dataSource={customData}
+      rowActions={rowActions}
+      rowSelection={{
+        type: 'checkbox'
+      }}
       actions={[{
         label: 'Add Item',
         onClick: () => showToast({ type: 'info', content: 'Add Item Clicked' })
       }, {
         label: 'Add Other Item',
         disabled: true,
+        tooltip: 'test tooltip',
         onClick: () => showToast({ type: 'info', content: 'Add Other Item Clicked' })
+      }, {
+        label: 'Open Dropdown',
+        onClick: () => showToast({ type: 'info', content: 'This Toast Should Not Show Up' }),
+        dropdownMenu: {
+          onClick: () => showToast({ type: 'info', content: 'Dropdown Item Clicked' }),
+          items: [
+            { key: 'item1', label: 'Item 1' },
+            { key: 'item2', label: 'Item 2', disabled: true },
+            { type: 'divider' },
+            { key: 'item3', label: 'Item 3' }
+          ]
+        }
+      },
+      {
+        label: 'Open other Dropdown',
+        disabled: true,
+        dropdownMenu: {
+          items: [
+            { key: 'item1', label: 'Item 1' },
+            { key: 'item2', label: 'Item 2' },
+            { key: 'item3 ', label: 'Item 3' }
+          ]
+        }
       }]}
     />
   </>)

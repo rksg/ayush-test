@@ -298,6 +298,18 @@ export const apApi = baseApApi.injectEndpoints({
         return {
           ...req
         }
+      },
+      providesTags: [{ type: 'Ap', id: 'RADIO' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UpdateApRadioCustomization',
+            'ResetApRadioCustomization'
+          ]
+          showActivityMessage(msg, activities, () => {
+            api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'RADIO' }]))
+          })
+        })
       }
     }),
     updateApRadioCustomization: build.mutation<ApRadioCustomization, RequestPayload>({
@@ -307,7 +319,8 @@ export const apApi = baseApApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'RADIO' }]
     }),
     deleteApRadioCustomization: build.mutation<ApRadioCustomization, RequestPayload>({
       query: ({ params }) => {
@@ -315,7 +328,8 @@ export const apApi = baseApApi.injectEndpoints({
         return {
           ...req
         }
-      }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'RADIO' }]
     }),
     getApCapabilities: build.query<Capabilities, RequestPayload>({
       query: ({ params }) => {
@@ -437,6 +451,18 @@ export const apApi = baseApApi.injectEndpoints({
         return{
           ...req
         }
+      },
+      providesTags: [{ type: 'Ap', id: 'DIRECTED_MULTICAST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UpdateApDirectedMulticast',
+            'ResetApDirectedMulticast'
+          ]
+          showActivityMessage(msg, activities, () => {
+            api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'DIRECTED_MULTICAST' }]))
+          })
+        })
       }
     }),
     updateApDirectedMulticast: build.mutation<ApDirectedMulticast, RequestPayload>({
@@ -446,7 +472,8 @@ export const apApi = baseApApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'DIRECTED_MULTICAST' }]
     }),
     resetApDirectedMulticast: build.mutation<ApDirectedMulticast, RequestPayload>({
       query: ({ params }) => {
@@ -454,7 +481,8 @@ export const apApi = baseApApi.injectEndpoints({
         return{
           ...req
         }
-      }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'DIRECTED_MULTICAST' }]
     })
 
 

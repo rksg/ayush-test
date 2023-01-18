@@ -78,7 +78,6 @@ function TopSwitchesByErrorWidget ({
       columns={columns}
       dataSource={getDataSource(data.topNSwitchesByErrors)}
       type='compact'
-      pagination={false}
       rowKey='mac'
     />
   </CustomTable> : <NoData/>
