@@ -153,6 +153,14 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/api/switch/tenant/:tenantId/staticRoutes'
   },
+  getSwitchClientList: {
+    method: 'post',
+    url: '/api/viewmodel/:tenantId/switch/client/clientlist'
+  },
+  getSwitchClientDetail: {
+    method: 'get',
+    url: '/api/viewmodel/:tenantId/switch/client/:clientId'
+  },
   getTroubleshooting: {
     method: 'get',
     url: '/api/switch/tenant/:tenantId/switch/:switchId/troubleshootingResult/:troubleshootingType'
