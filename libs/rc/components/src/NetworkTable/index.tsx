@@ -27,7 +27,12 @@ function getCols (intl: ReturnType<typeof useIntl>) {
           return data
         }else{
           return (
-            <TenantLink to={`/networks/${row.id}/network-details/aps`}>{data}</TenantLink>
+            <TenantLink to={`/networks/${row.id}/network-details/aps`}>
+              {data}
+              {data !== row.ssid &&
+                <> {intl.$t({ defaultMessage: '(SSID: {ssid})' }, { ssid: row.ssid })}</>
+              }
+            </TenantLink>
           )
         }
       }
@@ -105,19 +110,19 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       render: function (data, row) {
         return transformVLAN(row)
       }
-    },
-    {
-      key: 'health',
-      title: intl.$t({ defaultMessage: 'Health' }),
-      dataIndex: 'health',
-      sorter: true
-    },
-    {
-      key: 'tags',
-      title: intl.$t({ defaultMessage: 'Tags' }),
-      dataIndex: 'tags',
-      sorter: true
     }
+    // { // TODO: Waiting for HEALTH feature support
+    //   key: 'health',
+    //   title: intl.$t({ defaultMessage: 'Health' }),
+    //   dataIndex: 'health',
+    //   sorter: true
+    // },
+    // { // TODO: Waiting for TAG feature support
+    //   key: 'tags',
+    //   title: intl.$t({ defaultMessage: 'Tags' }),
+    //   dataIndex: 'tags',
+    //   sorter: true
+    // }
   ]
   return columns
 }

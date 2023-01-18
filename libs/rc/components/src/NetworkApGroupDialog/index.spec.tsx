@@ -80,9 +80,10 @@ describe('NetworkApGroupDialog', () => {
     expect(within(dialog).getByLabelText('All APs', { exact: false, selector: 'input' })).toBeChecked()
     expect(dialog).toHaveTextContent('VLAN-1 (Default)')
 
+    // TODO: Waiting for TAG feature support
     // Switch to 'Select APs by tag' radio
-    fireEvent.click(within(dialog).getByLabelText('Select APs by tag', { exact: false }))
-    expect(within(dialog).getByLabelText('Tags')).toBeVisible()
+    // fireEvent.click(within(dialog).getByLabelText('Select APs by tag', { exact: false }))
+    // expect(within(dialog).getByLabelText('Tags')).toBeVisible()
 
     // update the props "visible"
     rerender(<Provider><NetworkApGroupDialog {...props} visible={false}/></Provider>)

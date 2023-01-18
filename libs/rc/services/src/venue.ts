@@ -44,8 +44,14 @@ import {
   NetworkDeviceResponse,
   NetworkDevicePayload,
   RogueOldApResponseType,
-  VenueRadioCustomization
+  VenueRadioCustomization,
+  VenueDirectedMulticast,
+  VenueLoadBalancing
 } from '@acx-ui/rc/utils'
+
+const RKS_NEW_UI = {
+  'x-rks-new-ui': true
+}
 
 export const baseVenueApi = createApi({
   baseQuery: fetchBaseQuery(),
@@ -195,6 +201,17 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       transformResponse: (result: CommonResult) => {
         return result.response as NetworkVenue[]
+      }
+    }),
+    getFloorPlan: build.query<FloorPlanDto, RequestPayload>({
+      query: ({ params }) => {
+        const floorPlansReq = createHttpRequest(CommonUrlsInfo.getFloorplan, params)
+        return {
+          ...floorPlansReq
+        }
+      },
+      transformResponse (result: FloorPlanDto) {
+        return result
       }
     }),
     floorPlanList: build.query<FloorPlanDto[], RequestPayload>({
@@ -663,7 +680,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
-            'Update Venue DHCP Config Service Profile Settings'
+            'UpdateVenueDhcpConfigServiceProfileSetting'
           ]
           showActivityMessage(msg, activities, () => {
             api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'DHCPProfile' }]))
@@ -674,16 +691,27 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     venueDHCPPools: build.query<VenueDHCPPoolInst[], RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(DHCPUrls.getVenueActivePools, params)
+        const req = createHttpRequest(DHCPUrls.getVenueActivePools, params, RKS_NEW_UI)
         return{
           ...req
         }
       },
-      providesTags: [{ type: 'Venue', id: 'poolList' }]
+      providesTags: [{ type: 'Venue', id: 'poolList' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'DeactivateVenueDhcpPool',
+            'ActivateVenueDhcpPool'
+          ]
+          showActivityMessage(msg, activities, () => {
+            api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'poolList' }]))
+          })
+        })
+      }
     }),
     venuesLeasesList: build.query<DHCPLeases[], RequestPayload>({
       query: ({ params }) => {
-        const leasesList = createHttpRequest(DHCPUrls.getVenueLeases, params)
+        const leasesList = createHttpRequest(DHCPUrls.getVenueLeases, params, RKS_NEW_UI)
         return {
           ...leasesList
         }
@@ -691,7 +719,16 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     activateDHCPPool: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(DHCPUrls.activeVenueDHCPPool, params)
+        const req = createHttpRequest(DHCPUrls.activeVenueDHCPPool, params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    deactivateDHCPPool: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(DHCPUrls.deactivateVenueDHCPPool, params, RKS_NEW_UI)
         return {
           ...req,
           body: payload
@@ -706,6 +743,65 @@ export const venueApi = baseVenueApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    getVenueDirectedMulticast: build.query<VenueDirectedMulticast, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getVenueDirectedMulticast, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Venue', id: 'DIRECTED_MULTICAST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UpdateVenueDirectedMulticast'
+          ]
+          showActivityMessage(msg, activities, () => {
+            const invalidateTagsFunc = venueApi.util.invalidateTags
+            api.dispatch(invalidateTagsFunc([{ type: 'Venue', id: 'DIRECTED_MULTICAST' }]))
+          })
+        })
+      }
+    }),
+    updateVenueDirectedMulticast: build.mutation<VenueDirectedMulticast, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.updateVenueDirectedMulticast, params)
+        return{
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Venue', id: 'DIRECTED_MULTICAST' }]
+    }),
+    getVenueLoadBalancing: build.query<VenueLoadBalancing, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getVenueLoadBalancing, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Venue', id: 'LOAD_BALANCING' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UpdateVenueLoadBalancing'
+          ]
+          showActivityMessage(msg, activities, () => {
+            api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'LOAD_BALANCING' }]))
+          })
+        })
+      }
+    }),
+    updateVenueLoadBalancing: build.mutation<VenueLoadBalancing, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.updateVenueLoadBalancing, params)
+        return{
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Venue', id: 'LOAD_BALANCING' }]
     })
 
 
@@ -727,6 +823,7 @@ export const {
   useMeshApsQuery,
   useDeleteVenueMutation,
   useGetNetworkApGroupsQuery,
+  useGetFloorPlanQuery,
   useFloorPlanListQuery,
   useDeleteFloorPlanMutation,
   useAddFloorPlanMutation,
@@ -764,6 +861,7 @@ export const {
   useVenueDHCPPoolsQuery,
   useVenuesLeasesListQuery,
   useActivateDHCPPoolMutation,
+  useDeactivateDHCPPoolMutation,
   useUpdateVenueDHCPProfileMutation,
   useVenueDefaultRegulatoryChannelsQuery,
   useGetDefaultRadioCustomizationQuery,
@@ -776,5 +874,10 @@ export const {
   useGetVenueApCapabilitiesQuery,
   useUpdateVenueExternalAntennaMutation,
   useGetAvailableLteBandsQuery,
-  useGetVenueApModelCellularQuery
+  useGetVenueApModelCellularQuery,
+  useGetVenueDirectedMulticastQuery,
+  useLazyGetVenueDirectedMulticastQuery,
+  useUpdateVenueDirectedMulticastMutation,
+  useGetVenueLoadBalancingQuery,
+  useUpdateVenueLoadBalancingMutation
 } = venueApi

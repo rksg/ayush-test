@@ -1,8 +1,6 @@
-import { FloorPlanDto, NetworkDeviceType, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
+import { FloorplanContext, FloorPlanDto, NetworkDeviceType, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
 
-import NetworkDeviceMarker from './NetworkDeviceMarker'
-
-
+import { NetworkDeviceMarker } from './NetworkDeviceMarker'
 
 export default function NetworkDevices ({
   networkDevicesVisibility,
@@ -10,14 +8,16 @@ export default function NetworkDevices ({
   networkDevices,
   galleryMode,
   contextAlbum,
-  context
+  context,
+  showRogueAp
 } : {
     networkDevicesVisibility: NetworkDeviceType[],
     selectedFloorPlan: FloorPlanDto,
     networkDevices: { [key: string]: TypeWiseNetworkDevices },
     galleryMode: boolean,
     contextAlbum: boolean,
-    context: string
+    context?: FloorplanContext,
+    showRogueAp?: boolean
     }) {
 
   const networkDeviceTypeArray = Object.values(NetworkDeviceType)
@@ -28,12 +28,17 @@ export default function NetworkDevices ({
         (networkDevicesVisibility.indexOf(device) !== -1)
             && networkDevices[selectedFloorPlan.id]
         && networkDevices[selectedFloorPlan.id][device].map(obj => {
+          // isActive will highlight devices, while in case of false
+          // it will blur device. this field is required for floorplan
+          // to highlight certain device only on AP device overview page.
+          obj = { ...obj, isActive: true }
           return <NetworkDeviceMarker
             key={obj?.id}
             galleryMode={galleryMode}
             contextAlbum={contextAlbum}
-            context={context}
-            device={obj}/>
+            context={context as FloorplanContext}
+            device={obj}
+            showRogueAp={showRogueAp}/>
         }))
     })
   }</div>

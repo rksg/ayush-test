@@ -1,74 +1,64 @@
 import { useIntl } from 'react-intl'
 
 import {
-  Button,
-  Table,
-  TableProps,
-  Drawer
+  Button, Drawer, Table,
+  TableProps
 } from '@acx-ui/components'
-import { EdgePort }                              from '@acx-ui/rc/utils'
+import { EdgePortStatus }                        from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { formatter }                             from '@acx-ui/utils'
 
 
-const EdgePortsTable = ({ data }: { data: EdgePort[] }) => {
+const EdgePortsTable = ({ data }: { data: EdgePortStatus[] }) => {
   const { $t } = useIntl()
 
-  const columns: TableProps<EdgePort>['columns'] = [
+  const columns: TableProps<EdgePortStatus>['columns'] = [
     {
       title: $t({ defaultMessage: '#' }),
-      key: 'portId',
-      dataIndex: 'portId',
-      sorter: true,
-      defaultSortOrder: 'ascend'
+      key: 'sortIdx',
+      dataIndex: 'sortIdx',
+      defaultSortOrder: 'ascend',
+      render: (id, record, index) => {
+        return index + 1
+      }
     },
     {
       title: $t({ defaultMessage: 'Port' }),
-      key: 'portName',
-      dataIndex: 'portName',
-      sorter: true
+      key: 'name',
+      dataIndex: 'name'
     },
     {
       title: $t({ defaultMessage: 'Status' }),
       key: 'status',
-      dataIndex: 'status',
-      sorter: true
+      dataIndex: 'status'
     },
     {
       title: $t({ defaultMessage: 'Admin Status' }),
       key: 'adminStatus',
-      dataIndex: 'adminStatus',
-      sorter: true
+      dataIndex: 'adminStatus'
     },
     {
       title: $t({ defaultMessage: 'Port Type' }),
-      key: 'portType',
-      dataIndex: 'portType',
-      sorter: true
+      key: 'type',
+      dataIndex: 'type'
     },
     {
       title: $t({ defaultMessage: 'Connected Device' }),
       key: 'mac',
-      dataIndex: 'mac',
-      sorter: true
+      dataIndex: 'mac'
     },
     {
       title: $t({ defaultMessage: 'Speed' }),
-      key: 'speed',
-      dataIndex: 'speed',
-      sorter: true,
+      key: 'speedKbps',
+      dataIndex: 'speedKbps',
       render: (data, row) => {
-        return formatter('networkSpeedFormat')(row.speed)
+        return formatter('networkSpeedFormat')(row.speedKbps)
       }
     },
     {
       title: $t({ defaultMessage: 'Duplex Speed' }),
-      key: 'duplexSpeed',
-      dataIndex: 'duplexSpeed',
-      sorter: true,
-      render: (data, row) => {
-        return formatter('networkSpeedFormat')(row.duplexSpeed)
-      }
+      key: 'duplex',
+      dataIndex: 'duplex'
     }
   ]
 
@@ -83,7 +73,7 @@ const EdgePortsTable = ({ data }: { data: EdgePort[] }) => {
 
 const EdgePortsListDrawer = ({ visible, setVisible, edgePortsSetting }:
    { visible: boolean, setVisible: (visible: boolean) => void,
-    edgePortsSetting: EdgePort[] }) => {
+    edgePortsSetting: EdgePortStatus[] }) => {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
@@ -112,7 +102,7 @@ const EdgePortsListDrawer = ({ visible, setVisible, edgePortsSetting }:
           onClick={handlePortSettingClick}
 
         >{$t({ defaultMessage: 'Configure Port Settings' })}</Button>
-        <EdgePortsTable data={edgePortsSetting as EdgePort[]}/>
+        <EdgePortsTable data={edgePortsSetting as EdgePortStatus[]}/>
       </>}
     width={'auto'}
     bodyStyle={{ alignItems: 'flex-end' }}

@@ -20,6 +20,8 @@
     "http://*.ruckuswireless.com/",
     "https://ruckus.cloud/",
     "http://ruckus.cloud/",
+    "https://*.ruckus.cloud/",
+    "http://*.ruckus.cloud/",
     "http://127.0.0.1/",
     "http://localhost/"
   ],

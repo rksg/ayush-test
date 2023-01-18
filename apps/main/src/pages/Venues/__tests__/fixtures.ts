@@ -1378,6 +1378,20 @@ export const mockAaaSettingWithOrder = {
   acctExecFirstServer: 'RADIUS'
 }
 
+export const mockDirectedMulticast = {
+  wiredEnabled: true,
+  wirelessEnabled: true,
+  networkEnabled: true
+}
+
+export const mockLoadBalabcing = {
+  enabled: true,
+  loadBalancingMethod: 'BASED_ON_CLIENT_COUNT',
+  bandBalancingEnabled: true,
+  bandBalancingClientPercent24G: 25,
+  steeringMode: 'BASIC'
+}
+
 export const radiusList = {
   data: [
     {

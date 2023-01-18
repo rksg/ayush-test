@@ -7,6 +7,9 @@ import { ApTroubleshootingTab } from '.'
 
 
 const params = { serialNumber: 'ap-id', tenantId: 'tenant-id' }
+jest.mock('../ApContext', () => ({
+  useApContext: () => params
+}))
 const mockedUsedNavigate = jest.fn()
 
 jest.mock('react-router-dom', () => ({

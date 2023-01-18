@@ -4,14 +4,16 @@ import { DndProvider }  from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { act }          from 'react-dom/test-utils'
 
-import { ApDeviceStatusEnum, FloorPlanDto, NetworkDevice, NetworkDeviceType, SwitchStatusEnum, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                     from '@acx-ui/store'
-import { render, screen, fireEvent, waitFor }                                                                           from '@acx-ui/test-utils'
+import { ApDeviceStatusEnum, FloorPlanDto, getImageFitPercentage, NetworkDevice, NetworkDeviceType, SwitchStatusEnum, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
+import { Provider }                                                                                                                            from '@acx-ui/store'
+import { render, screen, fireEvent, waitFor }                                                                                                  from '@acx-ui/test-utils'
 
 import { NetworkDeviceContext } from '..'
+import UnplacedDevice           from '../UnplacedDevices/UnplacedDevice'
 
-import PlainView, { setUpdatedLocation, getImageFitPercentage } from './PlainView'
-import Thumbnail                                                from './Thumbnail'
+import PlainView, { setUpdatedLocation } from './PlainView'
+import Thumbnail                         from './Thumbnail'
+
 
 
 const list: FloorPlanDto[] = [
@@ -82,7 +84,7 @@ const networkDeviceType: NetworkDeviceType[] = []
 
 for (let deviceType in NetworkDeviceType) {
   if (deviceType === NetworkDeviceType.rogue_ap) {
-    continue // rouge ap is not controlled(placed) by user
+    continue // rogue ap is not controlled(placed) by user
   }
   const _deviceType = deviceType as keyof typeof NetworkDeviceType
   const networkDevicetype = NetworkDeviceType[_deviceType] as NetworkDeviceType
@@ -123,10 +125,11 @@ describe('Floor Plan Plain View', () => {
     expect(await screen.findByTestId('SignalUp')).toBeVisible()
 
     const src = await screen.findByTestId('SignalUp')
-    const dst = await screen.findAllByTestId('image-container')
+    const dst = await screen.findAllByTestId('dropContainer')
 
     fireEvent.dragStart(src)
     fireEvent.dragEnter(dst[0])
+    await new Promise((resolve) => setTimeout(resolve, 100))
     fireEvent.drop(dst[0])
     fireEvent.dragLeave(dst[0])
     fireEvent.dragEnd(src)
@@ -370,6 +373,61 @@ describe('Floor Plan Plain View', () => {
       { x: 122, y: 122 }, { x: 400, y: 240 })
 
     expect(positionedDevice.position?.x).toBe(122)
+  })
+
+  it('show single floorplan', async () => {
+
+    const { asFragment } = render(<Provider><DndProvider backend={HTML5Backend}>
+      <PlainView floorPlans={[list[0]]}
+        toggleGalleryView={jest.fn()}
+        defaultFloorPlan={list[0]}
+        deleteFloorPlan={jest.fn()}
+        onAddEditFloorPlan={jest.fn()}
+        networkDevices={networkDevices}
+        networkDevicesVisibility={networkDeviceType}
+        setCoordinates={jest.fn()}
+        showRogueAp={true}/></DndProvider></Provider>)
+
+    const rogueHelpIcon = await screen.findByTestId('QuestionMarkCircleOutlined')
+    expect(rogueHelpIcon).toBeVisible()
+    fireEvent.click(rogueHelpIcon)
+
+    expect(asFragment()).toMatchSnapshot()
+  })
+
+  it('drag new AP', async () => {
+
+    const { asFragment } = await render(<Provider><DndProvider backend={HTML5Backend}>
+      <PlainView floorPlans={list}
+        toggleGalleryView={() => {}}
+        defaultFloorPlan={list[0]}
+        deleteFloorPlan={jest.fn()}
+        onAddEditFloorPlan={jest.fn()}
+        networkDevices={networkDevices}
+        networkDevicesVisibility={networkDeviceType}
+        setCoordinates={jest.fn()}/></DndProvider></Provider>)
+
+    const component = screen.getByRole('img', { name: 'TEST_2' })
+    const onImageLoad = jest.fn()
+    component.onload = onImageLoad
+    await fireEvent.load(component)
+    await expect(onImageLoad).toBeCalledTimes(1)
+
+    expect(await screen.findByTestId('SignalUp')).toBeVisible()
+
+    const dst = await screen.findAllByTestId('dropContainer')
+    await render(<DndProvider backend={HTML5Backend}><UnplacedDevice
+      device={networkDevices['94bed28abef24175ab58a3800d01e24a'].ap[0]}/></DndProvider>)
+    const src = await screen.findAllByTestId('SignalUp')
+
+    fireEvent.dragStart(src[1])
+    fireEvent.dragEnter(dst[0])
+    await new Promise((resolve) => setTimeout(resolve, 100))
+    fireEvent.drop(dst[0])
+    fireEvent.dragLeave(dst[0])
+    fireEvent.dragEnd(src[1])
+
+    expect(asFragment()).toMatchSnapshot()
   })
 
 })
