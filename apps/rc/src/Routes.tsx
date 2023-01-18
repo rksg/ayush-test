@@ -40,6 +40,7 @@ import RogueAPDetectionForm     from './pages/Policies/RogueAPDetection/RogueAPD
 import SelectPolicyForm         from './pages/Policies/SelectPolicyForm'
 import DHCPDetail               from './pages/Services/DHCP/DHCPDetail'
 import DHCPForm                 from './pages/Services/DHCP/DHCPForm/DHCPForm'
+import AddDHCP                  from './pages/Services/DHCP/Edge/AddDHCP'
 import DpskDetails              from './pages/Services/Dpsk/DpskDetail/DpskDetails'
 import DpskForm                 from './pages/Services/Dpsk/DpskForm/DpskForm'
 import DpskTable                from './pages/Services/Dpsk/DpskTable/DpskTable'
@@ -172,9 +173,13 @@ function ServiceRoutes () {
         path={getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.DETAIL })}
         element={<WifiCallingDetailView />}
       />
-      <Route
+      {/* <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE })}
         element={<DHCPForm/>}
+      /> */}
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE })}
+        element={<AddDHCP/>}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.EDIT })}
