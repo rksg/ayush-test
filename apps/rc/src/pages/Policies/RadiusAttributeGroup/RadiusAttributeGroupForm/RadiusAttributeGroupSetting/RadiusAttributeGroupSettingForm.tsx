@@ -4,10 +4,10 @@ import { Col, Form, Input, Row } from 'antd'
 import { useIntl }               from 'react-intl'
 import { v4 as uuidv4 }          from 'uuid'
 
-import { showActionModal, Table, TableProps } from '@acx-ui/components'
+import { showActionModal, Table, TableProps }                      from '@acx-ui/components'
 import {
   useLazyRadiusAttributeGroupListQuery,
-  useRadiusAttributeListQuery
+  useRadiusAttributeListQuery, useRadiusAttributeVendorListQuery
 } from '@acx-ui/rc/services'
 import { AttributeAssignment, checkObjectNotExists, RadiusAttribute } from '@acx-ui/rc/utils'
 import { useParams }                                                  from '@acx-ui/react-router-dom'
@@ -23,14 +23,12 @@ function useColumns () {
       dataIndex: 'attributeName'
     },
     {
-      title: $t({ defaultMessage: 'Condition Value' }),
-      key: 'operator',
-      dataIndex: 'operator'
-    },
-    {
       title: $t({ defaultMessage: 'Attribute Value' }),
       key: 'attributeValue',
-      dataIndex: 'attributeValue'
+      dataIndex: 'attributeValue',
+      render: function (data, row) {
+        return `${row.operator} '${row.attributeValue}'`
+      }
     }
   ]
   return columns
@@ -46,6 +44,7 @@ export function RadiusAttributeGroupSettingForm () {
   const [editMode, setEditMode] = useState(false)
   const [editAttribute, setEditAttribute] = useState<AttributeAssignment>()
   const [radiusAttributes, setRadiusAttributes] = useState([] as RadiusAttribute[])
+  const [radiusVendors, setRadiusVendors] = useState([] as string [])
 
   const radiusAttributesQuery = useRadiusAttributeListQuery({
     params: {
@@ -54,11 +53,19 @@ export function RadiusAttributeGroupSettingForm () {
     }
   })
 
+  const radiusAttributeVendorListQuery = useRadiusAttributeVendorListQuery({ params: {} })
+
   useEffect(()=>{
     if(radiusAttributesQuery.data) {
       setRadiusAttributes(radiusAttributesQuery.data.data ?? [])
     }
   }, [radiusAttributesQuery.data])
+
+  useEffect(()=>{
+    if(radiusAttributeVendorListQuery.data) {
+      setRadiusVendors(radiusAttributeVendorListQuery.data.supportedVendors ?? [])
+    }
+  }, [radiusAttributeVendorListQuery.data])
 
   const handleAttributeAssignments = (attribute: AttributeAssignment[]) => {
     form.setFieldValue('attributeAssignments', attribute)
@@ -158,11 +165,6 @@ export function RadiusAttributeGroupSettingForm () {
               actions={[{
                 label: $t({ defaultMessage: 'Add' }),
                 onClick: () => {
-                  // setEditAttribute(
-                  //   { attributeValue: '',
-                  //     attributeName: '',
-                  //     operator: OperatorType.ADD } as AttributeAssignment
-                  // )
                   setEditAttribute({} as AttributeAssignment)
                   setEditMode(false)
                   setVisible(true)
@@ -176,6 +178,7 @@ export function RadiusAttributeGroupSettingForm () {
               editAttribute={editAttribute}
               // radiusAttributeTreeData={attributeTreeData}
               radiusAttributes={radiusAttributes}
+              vendorList={radiusVendors}
               setAttributeAssignments={setAttributeAssignments}/>
           </>
         </Form.Item>

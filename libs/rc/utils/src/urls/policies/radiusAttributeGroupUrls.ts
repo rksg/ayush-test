@@ -37,5 +37,9 @@ export const RadiusAttributeGroupUrlsInfo: { [key: string]: ApiInfo } = {
   updateAttributeGroup: {
     method: 'PATCH',
     url: attributeGroupsBaseUrl + '/:policyId'
+  },
+  getAttributeVendors: {
+    method: 'get',
+    url: attributeBaseUrl + '/vendors'
   }
 }

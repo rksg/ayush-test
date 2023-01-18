@@ -26,7 +26,7 @@ import {
   RadiusAttribute,
   transferToTableResult,
   createNewTableHttpRequest,
-  TableChangePayload
+  TableChangePayload, RadiusAttributeVendor
 } from '@acx-ui/rc/utils'
 
 export const basePolicyApi = createApi({
@@ -267,6 +267,17 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       providesTags: [{ type: 'RadiusAttribute', id: 'LIST' }]
     }),
+    radiusAttributeVendorList: build.query<RadiusAttributeVendor, RequestPayload>({
+      query: ({ params }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(
+          RadiusAttributeGroupUrlsInfo.getAttributeVendors, params
+        )
+        return {
+          ...req
+        }
+      }
+    }),
     radiusAttributeListWithQuery: build.query<TableResult<RadiusAttribute>, RequestPayload>({
       query: ({ params, payload }) => {
         // eslint-disable-next-line max-len
@@ -343,6 +354,7 @@ export const {
   useRadiusAttributeGroupListQuery,
   useGetRadiusAttributeGroupQuery,
   useRadiusAttributeListQuery,
+  useRadiusAttributeVendorListQuery,
   useRadiusAttributeListWithQueryQuery,
   // useLazyRadiusAttributeListQuery,
   useDeleteRadiusAttributeGroupMutation,

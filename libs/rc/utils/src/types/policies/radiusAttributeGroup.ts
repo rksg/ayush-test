@@ -21,6 +21,10 @@ export interface RadiusAttributeGroup {
   attributeAssignments: AttributeAssignment []
 }
 
+export interface RadiusAttributeVendor{
+  supportedVendors: string []
+}
+
 export interface treeNode {
   value: string
   title: string

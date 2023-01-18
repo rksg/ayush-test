@@ -13,7 +13,8 @@ interface RadiusAttributeDrawerProps {
   editAttribute?: AttributeAssignment,
   setAttributeAssignments: (attribute: AttributeAssignment) => void
   // radiusAttributeTreeData?: treeNode []
-  radiusAttributes: RadiusAttribute []
+  radiusAttributes: RadiusAttribute [],
+  vendorList: string []
 }
 
 const OperationTypeOption = [
