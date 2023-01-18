@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react'
 
-import { Col, Form, Input, Row, Space } from 'antd'
-import { Radio }                        from 'antd'
-import moment                           from 'moment-timezone'
-import { useIntl }                      from 'react-intl'
+import { Col, Form, Input, Row } from 'antd'
+import moment                    from 'moment-timezone'
+import { useIntl }               from 'react-intl'
 
 import { Drawer, showToast }         from '@acx-ui/components'
 import { ExpirationDateSelector }    from '@acx-ui/rc/components'
@@ -31,8 +30,6 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
   const { visible, setVisible, isEdit, editData } = props
   const [resetField, setResetField] = useState(false)
   const [form] = Form.useForm()
-  const [ addType ] = [ Form.useWatch('listExpiration', form),
-    Form.useWatch('importAction', form)]
   const [addMacRegistration] = useAddMacRegistrationMutation()
   const [editMacRegistration] = useUpdateMacRegistrationMutation()
   const { policyId } = useParams()
@@ -78,8 +75,10 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
     form.resetFields()
   }
 
-  const onSubmit = async (data: MacRegistration) => {
+  const onSubmit = async () => {
     try {
+      await form.validateFields()
+      const data = form.getFieldsValue()
       if (isEdit) {
         const payload = {
           username: data.username?.length === 0 ? null : data.username,
@@ -110,77 +109,68 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
         }).unwrap()
       }
       onClose()
-    } catch (error) {
-      showToast({
-        type: 'error',
-        content: intl.$t({ defaultMessage: 'An error occurred' })
-      })
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      if (error.data?.message) {
+        showToast({
+          type: 'error',
+          content: intl.$t({ defaultMessage: 'An error occurred' })
+        })
+      }
     }
   }
 
-  const addManuallyContent = <Row>
-    <Col span={16}>
-      <Form.Item name='macAddress'
-        label={intl.$t({ defaultMessage: 'MAC Address' })}
-        rules={[
-          { required: true },
-          { validator: (_, value) => MacRegistrationFilterRegExp(value) },
-          { validator: (_, value) => macAddressValidator(value) }
-        ]}
-        validateFirst
-        hasFeedback>
-        <Input disabled={isEdit}/>
-      </Form.Item>
-      <Form.Item name='username' label={intl.$t({ defaultMessage: 'Username' })}>
-        <Input/>
-      </Form.Item>
-      <Form.Item name='email'
-        rules={[
-          { type: 'email', message: intl.$t({ defaultMessage: 'E-mail is not a valid email' }) }
-        ]}
-        label={intl.$t({ defaultMessage: 'E-mail' })}>
-        <Input/>
-      </Form.Item>
-      <Form.Item name='deviceName' label={intl.$t({ defaultMessage: 'Device Name' })}>
-        <Input/>
-      </Form.Item>
-      <Form.Item name='location' label={intl.$t({ defaultMessage: 'Location' })}>
-        <Input/>
-      </Form.Item>
-      <ExpirationDateSelector
-        inputName={'expiration'}
-        label={intl.$t({ defaultMessage: 'MAC Address Expiration' })}
-        modeLabel={{
-          [ExpirationMode.NEVER]: intl.$t({ defaultMessage: 'Never expires (Same as list)' })
-        }}
-        modeAvailability={{
-          [ExpirationMode.AFTER_TIME]: false
-        }}
-      />
-    </Col>
-  </Row>
-
-  const content = <Form layout='vertical' form={form} onFinish={onSubmit}>
-    {isEdit ? addManuallyContent :
-      <>
-        <Form.Item name='importAction' initialValue={2}>
-          <Radio.Group>
-            <Space direction='vertical'>
-              <Radio value={2}>{intl.$t({ defaultMessage: 'Add manually' })}</Radio>
-            </Space>
-          </Radio.Group>
-        </Form.Item>
-        {addType !== 1 && addManuallyContent}
-      </>
-    }
-  </Form>
+  const addManuallyContent =
+    <Form layout='vertical' form={form}>
+      <Row>
+        <Col span={16}>
+          <Form.Item name='macAddress'
+            label={intl.$t({ defaultMessage: 'MAC Address' })}
+            rules={[
+              { required: true },
+              { validator: (_, value) => MacRegistrationFilterRegExp(value) },
+              { validator: (_, value) => macAddressValidator(value) }
+            ]}
+            validateFirst
+            hasFeedback>
+            <Input disabled={isEdit}/>
+          </Form.Item>
+          <Form.Item name='username' label={intl.$t({ defaultMessage: 'Username' })}>
+            <Input/>
+          </Form.Item>
+          <Form.Item name='email'
+            rules={[
+              { type: 'email', message: intl.$t({ defaultMessage: 'E-mail is not a valid email' }) }
+            ]}
+            label={intl.$t({ defaultMessage: 'E-mail' })}>
+            <Input/>
+          </Form.Item>
+          <Form.Item name='deviceName' label={intl.$t({ defaultMessage: 'Device Name' })}>
+            <Input/>
+          </Form.Item>
+          <Form.Item name='location' label={intl.$t({ defaultMessage: 'Location' })}>
+            <Input/>
+          </Form.Item>
+          <ExpirationDateSelector
+            inputName={'expiration'}
+            label={intl.$t({ defaultMessage: 'MAC Address Expiration' })}
+            modeLabel={{
+              [ExpirationMode.NEVER]: intl.$t({ defaultMessage: 'Never expires (Same as list)' })
+            }}
+            modeAvailability={{
+              [ExpirationMode.AFTER_TIME]: false
+            }}
+          />
+        </Col>
+      </Row>
+    </Form>
 
   const footer = (
     <Drawer.FormFooter
       onCancel={resetFields}
-      buttonLabel={{ save: (addType === 1 ? intl.$t({ defaultMessage: 'Import List' }):
-        (isEdit ? intl.$t({ defaultMessage: 'Done' }) : intl.$t({ defaultMessage: 'Add' }))) }}
-      onSave={async () => { form.submit() }}
+      // eslint-disable-next-line max-len
+      buttonLabel={{ save: (isEdit ? intl.$t({ defaultMessage: 'Done' }) : intl.$t({ defaultMessage: 'Add' })) }}
+      onSave={onSubmit}
     />
   )
 
@@ -190,7 +180,7 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
       title={isEdit ? intl.$t({ defaultMessage: 'Edit MAC Address' }) : intl.$t({ defaultMessage: 'Add MAC Address' })}
       visible={visible}
       onClose={onClose}
-      children={content}
+      children={addManuallyContent}
       footer={footer}
       destroyOnClose={resetField}
       width={600}
