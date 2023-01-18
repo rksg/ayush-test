@@ -676,14 +676,14 @@ export const venueApi = baseVenueApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Venue', id: 'syslog' }],
+      providesTags: [{ type: 'Venue', id: 'Syslog' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
             'UpdateVenueSyslog'
           ]
           showActivityMessage(msg, activities, () => {
-            api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'syslog' }]))
+            api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'Syslog' }]))
           })
         })
       }
@@ -696,7 +696,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Venue', id: 'syslog' }]
+      invalidatesTags: [{ type: 'Venue', id: 'Syslog' }]
     }),
     venueDHCPProfile: build.query<VenueDHCPProfile, RequestPayload>({
       query: ({ params }) => {

@@ -70,7 +70,6 @@ describe('ServerTab', () => {
         route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
       })
 
-    fireEvent.click(await screen.findByRole('tab', { name: 'Syslog' }))
     await waitFor(() => screen.findByText('Enable Server'))
 
     await fireEvent.click(await screen.findByTestId('syslog-switch'))

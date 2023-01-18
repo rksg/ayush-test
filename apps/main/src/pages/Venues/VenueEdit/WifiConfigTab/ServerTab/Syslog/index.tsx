@@ -5,6 +5,7 @@ import { isEqual }                     from 'lodash'
 import { useIntl }                     from 'react-intl'
 
 import { Loader, showToast, StepsForm } from '@acx-ui/components'
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import {
   useGetSyslogPolicyListQuery,
   useGetVenueSyslogApQuery,
@@ -31,6 +32,8 @@ export interface VenueSettings {
 export function Syslog () {
   const { $t } = useIntl()
   const { tenantId, venueId } = useParams()
+
+  const unreleased = useIsSplitOn(Features.UNRELEASED)
 
   const {
     editContextData,
@@ -123,8 +126,11 @@ export function Syslog () {
       isFetching: isUpdatingVenueSyslog
     }]}>
       <Space>
-        <StepsForm.FieldLabel width='max-content'>
-          {$t({ defaultMessage: 'Enable Server' })}
+        <StepsForm.FieldLabel
+          width='max-content'
+          style={{ height: '48px', display: 'flex', alignItems: 'center' }}
+        >
+          <span>{$t({ defaultMessage: 'Enable Server' })}</span>
           <Switch
             data-testid='syslog-switch'
             checked={enableServerRadio}
@@ -135,14 +141,12 @@ export function Syslog () {
           />
         </StepsForm.FieldLabel>
         {enableServerRadio &&
-        <Form.Item
-          style={{ marginBottom: 0 }}
-        >
+        <Form.Item style={{ margin: '0' }}>
           <Select
             data-testid='syslog-select'
             defaultValue={defaultSyslogValue}
             options={[
-              { label: $t({ defaultMessage: 'Select server profile' }), value: '' },
+              { label: $t({ defaultMessage: 'Select Service...' }), value: '' },
               ...apSyslogOptions
             ]}
             onChange={(value => {
@@ -150,6 +154,7 @@ export function Syslog () {
             })}
             style={{ width: '200px' }}
           />
+          {!unreleased &&
           <TenantLink
             to={getPolicyRoutePath({
               type: PolicyType.SYSLOG,
@@ -159,6 +164,7 @@ export function Syslog () {
           >
             {$t({ defaultMessage: 'Add Server Profile' })}
           </TenantLink>
+          }
         </Form.Item>
         }
       </Space>

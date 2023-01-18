@@ -2,7 +2,7 @@ import { useContext, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { showToast, StepsForm, Tabs }            from '@acx-ui/components'
+import { AnchorLayout, showToast, StepsForm }    from '@acx-ui/components'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { VenueEditContext } from '../../'
@@ -28,15 +28,19 @@ export function ServerTab () {
     editServerContextData
   } = useContext(VenueEditContext)
 
-  const [currentTab, setCurrentTab] = useState('Syslog')
-
-  const onTabChange = (tab: string) => {
-    setCurrentTab(tab)
-  }
+  const items = [{
+    title: $t({ defaultMessage: 'Syslog Server' }),
+    content: <>
+      <StepsForm.SectionTitle id='syslog-server'>
+        { $t({ defaultMessage: 'Syslog Server' }) }
+      </StepsForm.SectionTitle>
+      <Syslog />
+    </>
+  }]
 
   const handleUpdateSetting = async () => {
     try {
-      editServerContextData?.updateSyslog?.()
+      await editServerContextData?.updateSyslog?.()
       setEditContextData({
         ...editContextData,
         isDirty: false
@@ -59,14 +63,7 @@ export function ServerTab () {
       buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
     >
       <StepsForm.StepForm>
-        <Tabs onChange={onTabChange}
-          activeKey={currentTab}
-          type='third'>
-          <Tabs.TabPane tab={$t({ defaultMessage: 'Syslog' })} key='Syslog' />
-        </Tabs>
-        <div style={{ display: currentTab === 'Syslog' ? 'block' : 'none' }}>
-          <Syslog />
-        </div>
+        <AnchorLayout items={items} offsetTop={275} />
       </StepsForm.StepForm>
     </StepsForm>
   )
