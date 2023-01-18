@@ -19,13 +19,13 @@ export function CompareConfigurationModal (props:{
   const { $t } = useIntl()
   const [form] = Form.useForm()
   const { compareData, configList, visible, handleCancel } = props
-  const [leftData, setLeftData] = useState('')
-  const [rightData, setRightData] = useState('')
+  const [leftData, setLeftData] = useState(null as unknown as ConfigurationBackup)
+  const [rightData, setRightData] = useState(null as unknown as ConfigurationBackup)
 
   useEffect(() => {
     if(compareData) {
-      setLeftData(compareData.left.config)
-      setRightData(compareData.right.config)
+      setLeftData(compareData.left)
+      setRightData(compareData.right)
       form.setFieldsValue({
         leftConfig: compareData.left.id,
         rightConfig: compareData.right.id
@@ -41,17 +41,13 @@ export function CompareConfigurationModal (props:{
   const onConfigChange = () => {
     const data = form.getFieldsValue()
     let findFlag = 0
-    let leftConfig: ConfigurationBackup
-    let rightConfig
     configList.every(item => {
       if (item.id === data.leftConfig) {
-        leftConfig = item
-        setLeftData(leftConfig?.config)
+        setLeftData(item)
         findFlag++
       }
       if (item.id === data.rightConfig) {
-        rightConfig = item
-        setRightData(rightConfig?.config)
+        setRightData(item)
         findFlag++
       }
       return findFlag < 2 ? true : false
@@ -83,10 +79,10 @@ export function CompareConfigurationModal (props:{
           <Descriptions labelWidthPercent={25}>
             <Descriptions.Item
               label={$t({ defaultMessage: 'Created' })}
-              children={compareData.left.createdDate} />
+              children={leftData?.createdDate} />
             <Descriptions.Item
               label={$t({ defaultMessage: 'Type' })}
-              children={compareData.left.backupType} />
+              children={leftData?.backupType} />
           </Descriptions>
         </div>
 
@@ -102,10 +98,10 @@ export function CompareConfigurationModal (props:{
           <Descriptions labelWidthPercent={25}>
             <Descriptions.Item
               label={$t({ defaultMessage: 'Created' })}
-              children={compareData.right.createdDate} />
+              children={rightData?.createdDate} />
             <Descriptions.Item
               label={$t({ defaultMessage: 'Type' })}
-              children={compareData.right.backupType} />
+              children={rightData?.backupType} />
           </Descriptions>
         </div>
 
@@ -120,7 +116,7 @@ export function CompareConfigurationModal (props:{
       {
         leftData && rightData &&
             <div className='code-mirror-container'>
-              <CodeMirrorWidget type='merge' data={{ left: leftData, right: rightData }} />
+              <CodeMirrorWidget type='merge' data={{ left: leftData.config, right: rightData.config }} />
             </div>
       }
     </Form>
