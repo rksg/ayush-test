@@ -1,6 +1,6 @@
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
-import { PolicyTechnology, PolicyType, RogueRuleType } from '@acx-ui/rc/utils'
+import { PolicyTechnology, PolicyType, RogueRuleType, Layer3ProtocolType } from '@acx-ui/rc/utils'
 
 export const policyTypeLabelMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.AAA]: defineMessage({ defaultMessage: 'AAA Server' }),
@@ -44,4 +44,16 @@ export const rogueRuleLabelMapping: Record<RogueRuleType, MessageDescriptor> = {
   [RogueRuleType.SSID_RULE]: defineMessage({ defaultMessage: 'SSID' }),
   [RogueRuleType.CUSTOM_SSID_RULE]: defineMessage({ defaultMessage: 'SSID' }),
   [RogueRuleType.SSID_SPOOFING_RULE]: defineMessage({ defaultMessage: 'SSID Spoofing' })
+}
+
+export const layer3ProtocolLabelMapping: Record<Layer3ProtocolType, MessageDescriptor> = {
+  [Layer3ProtocolType.ANYPROTOCOL]: defineMessage({ defaultMessage: 'Any Protocol' }),
+  [Layer3ProtocolType.TCP]: defineMessage({ defaultMessage: 'TCP' }),
+  [Layer3ProtocolType.UDP]: defineMessage({ defaultMessage: 'UDP' }),
+  [Layer3ProtocolType.UDPLITE]: defineMessage({ defaultMessage: 'UDPLITE' }),
+  [Layer3ProtocolType.ICMP]: defineMessage({ defaultMessage: 'ICMP(ICMPV4)' }),
+  [Layer3ProtocolType.IGMP]: defineMessage({ defaultMessage: 'IGMP' }),
+  [Layer3ProtocolType.ESP]: defineMessage({ defaultMessage: 'ESP' }),
+  [Layer3ProtocolType.AH]: defineMessage({ defaultMessage: 'AH' }),
+  [Layer3ProtocolType.SCTP]: defineMessage({ defaultMessage: 'SCTP' })
 }
