@@ -77,7 +77,7 @@ export function NetworkTable () {
       { isLoading: false }
     ]}>
       <Card title={$t({ defaultMessage: 'Instance ({size})' },
-        { size: networkTableQuery.data?.data.length })}>
+        { size: networkTableQuery.data?.totalCount })}>
         <div style={{ width: '100%' }}>
           <Table
             rowKey='id'
