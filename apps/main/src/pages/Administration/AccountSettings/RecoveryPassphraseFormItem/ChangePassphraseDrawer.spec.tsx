@@ -106,7 +106,7 @@ describe('Recovery Network Passphrase Drawer', () => {
     await screen.findByRole('dialog')
     expect(await screen.findAllByTestId(/recovery_pass_[0-3]/)).toHaveLength(4)
 
-    const toggleVisible = await screen.findByRole('img', { name: 'eye-invisible' })
+    const toggleVisible = await screen.findByRole('img', { name: 'eye' })
     fireEvent.click(toggleVisible)
     expect(await screen.findByTestId('recovery_pass_1')).toHaveDisplayValue('5764')
   })
