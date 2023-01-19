@@ -1,4 +1,4 @@
-import { EdgeIpModeEnum, EdgePortTypeEnum } from '../models/EdgeEnum'
+import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeStatusSeverityEnum } from '../models/EdgeEnum'
 
 export interface EdgeGeneralSetting {
   description: string
@@ -103,6 +103,13 @@ export interface EdgePortStatus {
   duplex:string
   ip: string
   sortIdx: number
+}
+
+export interface EdgeStatusSeverityStatistic {
+  summary: {
+    [key in EdgeStatusSeverityEnum]?: number
+  },
+  totalCount: number
 }
 
 export interface EdgeDhcpPool {

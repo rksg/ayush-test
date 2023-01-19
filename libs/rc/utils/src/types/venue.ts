@@ -14,7 +14,8 @@ import { ApStatusDetails, LanPort } from './ap'
 import { RogueCategory }            from './policies'
 import { ConfigurationHistory }     from './switch'
 
-import { ApVenueStatusEnum, SwitchStatusEnum } from './index'
+import { ApVenueStatusEnum, EdgeStatusSeverityStatistic, SwitchStatusEnum } from './index'
+
 
 
 export interface VenueDetailHeader {
@@ -47,6 +48,7 @@ export interface VenueDetailHeader {
 		},
 		totalCount: number
 	},
+	edges: EdgeStatusSeverityStatistic,
 	totalClientCount: string
 	venue: VenueDetail
 }
