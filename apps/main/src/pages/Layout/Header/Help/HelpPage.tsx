@@ -27,34 +27,37 @@ export default function HelpPage (props: {
 
 
   const getMapping = async () => {
-    try {
-      // eslint-disable-next-line max-len
-      const re = await (await fetch(MAPPING_URL, {
-        method: 'GET',
-        headers: {
-          Accept: 'application/json'
-        }
-      })).json()
 
-      const mapKey = Object.keys(mapping).find(item => location.pathname.indexOf(item) !== -1)
-      if (_.isEmpty(mapKey)) {
-        showError()
-        return
+    let result = await fetch(MAPPING_URL, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json'
       }
-      return re[mapping[mapKey as keyof typeof mapping] as typeof re]
-    }catch (e) {
+    })
+    if(!result.ok){
       showError()
+      return
     }
+    const mapKey = Object.keys(mapping).find(item => location.pathname.indexOf(item) !== -1)
+    if (_.isEmpty(mapKey)) {
+      showError()
+      return
+    }
+    result = await result.json()
+
+    const key = mapping[mapKey as keyof typeof mapping]
+    return result[key as keyof typeof result]
   }
   const updateDesc = async (destFile: string) => {
-    try {
-      const re = await (await fetch(DOCS_URL + destFile)).text()
-      setHelpDesc(new DOMParser().parseFromString(re, 'text/html')
-        .querySelector('.shortdesc')?.innerHTML.trim().replace(/\<.*?\>|\n/g, '') || '')
-      setHelpUrl(DOCS_URL + destFile)
-    } catch (e) {
+    const result = await fetch(DOCS_URL + destFile)
+    if(!result.ok){
       showError()
+      return
     }
+    const htmlResult = await result.text()
+    setHelpDesc(new DOMParser().parseFromString(htmlResult, 'text/html')
+      .querySelector('.shortdesc')?.innerHTML.trim().replace(/\<.*?\>|\n/g, '') || '')
+    setHelpUrl(DOCS_URL + destFile)
   }
 
   const showError = ()=>{
@@ -65,7 +68,7 @@ export default function HelpPage (props: {
   useEffect(() => {
     (async ()=> {
       const mapping = await getMapping()
-      mapping && updateDesc(mapping)
+      mapping && updateDesc(mapping as string)
     })()
   }, [location])
 
