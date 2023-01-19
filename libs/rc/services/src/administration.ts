@@ -9,7 +9,9 @@ import {
   TenantDelegation,
   TenantDelegationResponse,
   RecoveryPassphrase,
-  TenantPreferenceSettings
+  TenantPreferenceSettings,
+  showActivityMessage,
+  onSocketActivityChanged
 } from '@acx-ui/rc/utils'
 
 export const baseAdministrationApi = createApi({
@@ -63,7 +65,19 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           createdDate: response[0] && response[0].createdDate
         }
       },
-      providesTags: [{ type: 'administration', id: 'ACCESS_SUPPORT' }]
+      providesTags: [{ type: 'administration', id: 'ACCESS_SUPPORT' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          showActivityMessage(msg, [
+            'DeleteSupportDelegation',
+            'InviteSupport'
+          ], () => {
+            api.dispatch(administrationApi.util.invalidateTags([
+              { type: 'administration', id: 'ACCESS_SUPPORT' }
+            ]))
+          })
+        })
+      }
     }),
     getTenantDelegation: build.query<TenantDelegationResponse, RequestPayload>({
       query: ({ params }) => {
@@ -79,7 +93,19 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           createdDate: response[0] && response[0].createdDate
         }
       },
-      providesTags: [{ type: 'administration', id: 'ACCESS_SUPPORT' }]
+      providesTags: [{ type: 'administration', id: 'ACCESS_SUPPORT' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          showActivityMessage(msg, [
+            'DeleteSupportDelegation',
+            'InviteSupport'
+          ], () => {
+            api.dispatch(administrationApi.util.invalidateTags([
+              { type: 'administration', id: 'ACCESS_SUPPORT' }
+            ]))
+          })
+        })
+      }
     }),
     enableAccessSupport: build.mutation<TenantDelegationResponse, RequestPayload>({
       query: ({ params, payload }) => {

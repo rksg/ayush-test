@@ -80,7 +80,7 @@ export const ChangePassphraseDrawer = styled((props: ChangePassphraseDrawerProps
       setPassphrase(data.split(' '))
   }, [data, visible])
 
-  const PassphraseIcon = passphraseVisible ? EyeOutlined : EyeInvisibleOutlined
+  const PassphraseIcon = passphraseVisible ? EyeInvisibleOutlined: EyeOutlined
 
   return (
     <Drawer

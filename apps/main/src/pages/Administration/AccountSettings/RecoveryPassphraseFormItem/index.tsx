@@ -1,9 +1,11 @@
 import { useState } from 'react'
 
+import {  EyeOutlined, EyeInvisibleOutlined }      from '@ant-design/icons'
 import { Col, List, Form, Row, Typography, Input } from 'antd'
 import _                                           from 'lodash'
 import { useIntl }                                 from 'react-intl'
 import styled                                      from 'styled-components/macro'
+
 
 import { SpaceWrapper }       from '@acx-ui/rc/components'
 import { RecoveryPassphrase } from '@acx-ui/rc/utils'
@@ -26,6 +28,10 @@ const RecoveryPassphraseFormItem = styled((props:RecoveryPassphraseFormItemProps
     setOpenPassphraseDrawer(true)
   }
 
+  const passwordIconRender = (visible: boolean) => {
+    return visible ? <EyeInvisibleOutlined/> : <EyeOutlined/>
+  }
+
   const hasAp = !_.isEmpty(recoveryPassphraseData)
   const passphraseData = recoveryPassphraseData?.psk.match(/.{1,4}/g)?.join(' ') ?? ''
 
@@ -45,8 +51,10 @@ const RecoveryPassphraseFormItem = styled((props:RecoveryPassphraseFormItemProps
                   <Input.Password
                     bordered={false}
                     value={passphraseData}
+                    iconRender={passwordIconRender}
                   />
                 </Form.Item>
+                {/* TODO: hide change button if !rbacService.isRoleAllowed('ChangeRecoveryPasspharseButton') */}
                 <Typography.Link onClick={onClickChangePassphrase}>
                   {$t({ defaultMessage: 'Change' })}
                 </Typography.Link>
