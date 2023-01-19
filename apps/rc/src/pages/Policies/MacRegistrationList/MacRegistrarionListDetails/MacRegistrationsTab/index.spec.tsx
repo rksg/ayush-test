@@ -16,7 +16,6 @@ const list = {
       macAddress: '11-22-33-44-55-66',
       username: 'testUser',
       email: 'testUser@commscope.com',
-      location: 'ipsum eiusmod sunt veniam',
       createdDate: '2021-12-08T18:40:01Z'
     },
     {
@@ -25,7 +24,6 @@ const list = {
       macAddress: '3A-B8-A9-29-35-D5',
       username: 'ex proident',
       email: 'dolore pariatur adipisicing esse Excepteur',
-      location: 'ipsum eiusmod sunt veniam',
       createdDate: '2021-12-08T18:40:01Z',
       expirationDate: '2065-12-08T18:40:01Z'
     }

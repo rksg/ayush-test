@@ -36,10 +36,6 @@ export function MacRegistrationListSettingForm () {
           hasFeedback
           children={<Input/>}
         />
-        <Form.Item name='ssidRegex'
-          label={$t({ defaultMessage: 'SSID Regex' })}
-          children={<Input/>}
-        />
         <ExpirationDateSelector
           inputName={'expiration'}
           label={$t({ defaultMessage: 'List Expiration' })}

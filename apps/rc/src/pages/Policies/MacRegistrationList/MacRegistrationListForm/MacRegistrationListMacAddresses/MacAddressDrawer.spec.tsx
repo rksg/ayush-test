@@ -14,8 +14,6 @@ const macAddress = {
   macAddress: '3A-B8-A9-29-35-D5',
   username: 'ex proident',
   email: 'test@commscope.com',
-  location: 'ipsum eiusmod sunt veniam',
-  deviceName: 'test',
   createdDate: '2065-12-08T18:40:01Z'
 }
 
@@ -28,7 +26,6 @@ const list = {
       macAddress: '11-22-33-44-55-66',
       username: 'testUser',
       email: 'testUser@commscope.com',
-      location: 'ipsum eiusmod sunt veniam',
       createdDate: '2065-12-08T18:40:01Z'
     },
     {
@@ -37,7 +34,6 @@ const list = {
       macAddress: '3A-B8-A9-29-35-D5',
       username: 'ex proident',
       email: 'dolore pariatur adipisicing esse Excepteur',
-      location: 'ipsum eiusmod sunt veniam',
       createdDate: '2065-12-08T18:40:01Z'
     }
   ],
@@ -160,12 +156,6 @@ describe('MacAddressDrawer', () => {
 
     const emailInput = await screen.findByRole('textbox', { name: 'E-mail' })
     expect(emailInput).toHaveValue(macAddress.email)
-
-    const locationInput = await screen.findByRole('textbox', { name: 'Location' })
-    expect(locationInput).toHaveValue(macAddress.location)
-
-    const deviceNameInput = await screen.findByRole('textbox', { name: 'Device Name' })
-    expect(deviceNameInput).toHaveValue(macAddress.deviceName)
 
     await userEvent.click(saveButton)
 

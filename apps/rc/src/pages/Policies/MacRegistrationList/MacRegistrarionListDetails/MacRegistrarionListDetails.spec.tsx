@@ -13,8 +13,6 @@ const macRegList = {
   enabled: true,
   expirationEnabled: false,
   name: 'Registration pool',
-  priority: 1,
-  ssidRegex: 'mac-auth',
   defaultAccess: 'ACCEPT'
 }
 

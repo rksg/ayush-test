@@ -45,8 +45,7 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
         name: data.name,
         autoCleanup: data.autoCleanup,
         ...transferDataToExpirationFormFields(data),
-        defaultAccess: data.defaultAccess,
-        ssidRegex: data?.ssidRegex
+        defaultAccess: data.defaultAccess
         // policyId
       })
     }
@@ -58,7 +57,6 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
         name: data.name,
         autoCleanup: data.autoCleanup,
         ...transferExpirationFormFieldsToData(data.expiration),
-        ssidRegex: data?.ssidRegex ?? '*',
         defaultAccess: data.defaultAccess
         // policyId
       }
@@ -78,7 +76,6 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
         name: data.name,
         ...transferExpirationFormFieldsToData(data.expiration),
         autoCleanup: data.autoCleanup,
-        ssidRegex: data?.ssidRegex ?? '*',
         defaultAccess: data.defaultAccess
         // policyId
       }
