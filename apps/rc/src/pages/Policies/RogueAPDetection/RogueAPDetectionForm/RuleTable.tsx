@@ -196,6 +196,7 @@ const RuleTable = (props: RuleTableProps) => {
             row: DraggableBodyRow
           }
         }}
+        hiddenColumnState={true}
       />
     </>
   )

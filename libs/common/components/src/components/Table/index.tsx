@@ -69,6 +69,7 @@ export interface TableProps <RecordType>
     })
     extraSettings?: React.ReactNode[]
     onResetState?: CallableFunction
+    hiddenColumnState?: boolean
   }
 
 const defaultPagination = {
@@ -98,7 +99,7 @@ function useSelectedRowKeys <RecordType> (
 // following the same typing from antd
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function Table <RecordType extends Record<string, any>> (
-  { type = 'tall', columnState, ...props }: TableProps<RecordType>
+  { type = 'tall', columnState, hiddenColumnState, ...props }: TableProps<RecordType>
 ) {
   const intl = useIntl()
   const { $t } = intl
@@ -135,7 +136,7 @@ function Table <RecordType extends Record<string, any>> (
 
   const columnsState = useColumnsState({ columns, columnState })
 
-  const setting: SettingOptionType | false = type === 'tall' ? {
+  const setting: SettingOptionType | false = type === 'tall' && !hiddenColumnState ? {
     draggable: true,
     checkable: true,
     checkedReset: false,
