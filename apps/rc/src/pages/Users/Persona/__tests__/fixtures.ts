@@ -139,14 +139,13 @@ export const mockMacRegistration: MacRegistrationPool =
     id: 'mac-id-1',
     name: 'mac-name-1',
     autoCleanup: true,
-    description: 'string',
     enabled: true,
     expirationEnabled: true,
-    priority: 1,
-    ssidRegex: 'string',
     policyId: 'string',
     expirationOffset: 1,
-    expirationDate: 'string'
+    expirationDate: 'string',
+    defaultAccess: 'string',
+    registrationCount: 0
   }
 
 export const mockMacRegistrationList: NewTableResult<MacRegistrationPool> = {
@@ -158,14 +157,13 @@ export const mockMacRegistrationList: NewTableResult<MacRegistrationPool> = {
     id: 'mac-id-1',
     name: 'mac-name-1',
     autoCleanup: true,
-    description: 'string',
     enabled: true,
     expirationEnabled: true,
-    priority: 1,
-    ssidRegex: 'string',
     policyId: 'string',
     expirationOffset: 1,
-    expirationDate: 'string'
+    expirationDate: 'string',
+    defaultAccess: 'string',
+    registrationCount: 0
   }]
 }
 
