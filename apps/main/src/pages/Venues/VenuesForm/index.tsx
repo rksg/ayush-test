@@ -288,7 +288,7 @@ export function VenuesForm () {
                 label={intl.$t({ defaultMessage: 'Description' })}
                 children={<Input.TextArea rows={2} maxLength={180} />}
               />
-              {/*
+              {/* // TODO: Waiting for TAG feature support
               <Form.Item
               name='tags'
               label='Tags:'

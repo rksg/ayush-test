@@ -7,7 +7,6 @@ import {
   Tooltip
 } from 'antd'
 import { CheckboxChangeEvent } from 'antd/lib/checkbox'
-import { useWatch }            from 'antd/lib/form/Form'
 import { useIntl }             from 'react-intl'
 
 import {
@@ -22,6 +21,7 @@ export function RedirectUrlInput () {
     intl.$t({ defaultMessage: 'If unchecked, users will reach the page they originally requested' })
 
   const form = Form.useFormInstance()
+  const { useWatch } = Form
   const [
     redirectCheckbox,
     redirectUrl

@@ -33,6 +33,7 @@ export * from './client'
 export * from './components'
 export * from './switch'
 export * from './timeline'
+export * from './persona'
 
 export interface CommonResult {
   requestId: string
@@ -437,4 +438,39 @@ export interface PaginationQueryResult<T> {
   pageSize: number
   totalCount: number
   content: T[]
+}
+
+export interface PlmMessageBanner {
+  createdBy: string,
+  createdDate: string,
+  description: string,
+  endTime: string,
+  id: string,
+  startTime: string,
+  tenantType: string,
+  updatedDate: string
+}
+
+export enum SWITCH_CLIENT_TYPE {
+  AP = 'WLAN_AP',
+  ROUTER = 'ROUTER'
+}
+
+export interface SwitchClient {
+  id: string
+  clientMac: string
+  clientIpv4Addr: string
+  clientIpv6Addr: string
+  clientName: string
+  clientDesc: string
+  clientType: SWITCH_CLIENT_TYPE
+  switchId: string
+  switchName: string
+  switchPort: string
+  switchSerialNumber: string
+  clientVlan: string
+  vlanName: string
+  venueId: string
+  venueName: string
+  isRuckusAP: boolean
 }

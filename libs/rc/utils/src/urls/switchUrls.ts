@@ -69,6 +69,30 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/switch/:stackSerialNumber/member/:newStackMemberSerialNumber'
   },
+  getSwitchConfigBackupList: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/configBackup/switch/:switchId'
+  },
+  addBackup: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/configBackup/switch/:switchId'
+  },
+  restoreBackup: {
+    method: 'put',
+    url: '/api/switch/tenant/:tenantId/configBackup/restore/:configId'
+  },
+  downloadSwitchConfig: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/configBackup/download/:configId'
+  },
+  deleteBackups: {
+    method: 'delete',
+    url: '/api/switch/tenant/:tenantId/configBackup'
+  },
+  getSwitchConfigHistory: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/switches/:switchId/configurationHistory/detail/query'
+  },
   getSwitchRoutedList: {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/vePort/switch/:switchId/query'
@@ -108,5 +132,37 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   getVlanByUuid: {
     method: 'get',
     url: '/api/switch/tenant/:tenantId/vlan/:vlanUuid'
+  },
+  getSwitchClientList: {
+    method: 'post',
+    url: '/api/viewmodel/:tenantId/switch/client/clientlist'
+  },
+  getSwitchClientDetail: {
+    method: 'get',
+    url: '/api/viewmodel/:tenantId/switch/client/:clientId'
+  },
+  getTroubleshooting: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/switch/:switchId/troubleshootingResult/:troubleshootingType'
+  },
+  getTroubleshootingClean: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/switch/:switchId/troubleshootingClean/:troubleshootingType'
+  },
+  ping: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/switch/:switchId/ping'
+  },
+  traceRoute: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/switch/:switchId/trace-route'
+  },
+  ipRoute: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/switch/:switchId/route-table'
+  },
+  macAddressTable: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/switch/:switchId/mac-address-table'
   }
 }

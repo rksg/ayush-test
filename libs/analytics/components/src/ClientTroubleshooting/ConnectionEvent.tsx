@@ -1,12 +1,12 @@
 import React, { ReactNode } from 'react'
 
 import { Popover } from 'antd'
-import { useIntl } from 'react-intl'
 
-import { clientEventDescription, mapCodeToFailureText, mapCodeToReason } from '@acx-ui/analytics/utils'
-import { formatter, getIntl }                                            from '@acx-ui/utils'
+import { clientEventDescription, mapCodeToFailureText, mapDisconnectCodeToReason } from '@acx-ui/analytics/utils'
+import { formatter, getIntl }                                                      from '@acx-ui/utils'
 
 import { FAILURE, DisplayEvent, SLOW, DISCONNECT } from './config'
+import { ConnectionSequenceDiagram }               from './ConnectionSequenceDiagram'
 import { Details }                                 from './EventDetails'
 import * as UI                                     from './styledComponents'
 
@@ -16,10 +16,10 @@ const useConnectionDetail = (event: DisplayEvent) => {
   const { mac, apName, ssid, radio, code, ttc, state } = event
 
   const eventDetails = [
-    { label: $t({ defaultMessage: 'AP MAC:' }), value: mac },
-    { label: $t({ defaultMessage: 'AP Name:' }), value: apName },
-    { label: $t({ defaultMessage: 'SSID:' }), value: ssid as string },
-    { label: $t({ defaultMessage: 'Radio:' }), value: radio
+    { label: $t({ defaultMessage: 'AP MAC' }), value: mac },
+    { label: $t({ defaultMessage: 'AP Name' }), value: apName },
+    { label: $t({ defaultMessage: 'SSID' }), value: ssid as string },
+    { label: $t({ defaultMessage: 'Radio' }), value: radio
       ? formatter('radioFormat')(radio)
       : $t({ defaultMessage: 'Unknown' })
     }
@@ -31,13 +31,13 @@ const useConnectionDetail = (event: DisplayEvent) => {
         ? mapCodeToFailureText(code, intl)
         : $t({ defaultMessage: 'Unknown' })
       eventDetails.push({
-        label: $t({ defaultMessage: 'Failure Type:' }),
+        label: $t({ defaultMessage: 'Failure Type' }),
         value: failureType
       })
 
       const reason = clientEventDescription(event.event, state)
       eventDetails.push({
-        label: $t({ defaultMessage: 'Reason:' }),
+        label: $t({ defaultMessage: 'Reason' }),
         value: $t(reason)
       })
       break
@@ -45,17 +45,19 @@ const useConnectionDetail = (event: DisplayEvent) => {
 
     case SLOW: {
       eventDetails.push({
-        label: $t({ defaultMessage: 'Time to Connect:' }),
+        label: $t({ defaultMessage: 'Time to Connect' }),
         value: formatter('durationFormat')(ttc)
       })
       break
     }
 
     case DISCONNECT: {
-      const reason = mapCodeToReason(event.event, intl)
       eventDetails.push({
-        label: $t({ defaultMessage: 'Reason:' }),
-        value: reason
+        label: $t({ defaultMessage: 'Reason' }),
+        value: $t({ defaultMessage: '{reason} (reason code {id})' }, {
+          reason: $t(mapDisconnectCodeToReason(event.failedMsgId)),
+          id: event.failedMsgId
+        })
       })
       break
     }
@@ -66,12 +68,15 @@ const useConnectionDetail = (event: DisplayEvent) => {
 
 export function ConnectionEventPopover ({ children, event }:
   { children?: React.ReactNode, event: DisplayEvent }) {
-  const { $t } = useIntl()
   const [open, setOpen] = React.useState(false)
   const hide = () => { setOpen(false) }
   const rowData = useConnectionDetail(event)
   const failureExtra: ReactNode = (event.category === FAILURE)
-    ? $t({ defaultMessage: 'Failure Sequence Diagram' })
+    ? <ConnectionSequenceDiagram
+      failedMsgId={event.failedMsgId ?? ''}
+      messageIds={event.messageIds ?? []}
+      apMac={event.mac}
+    />
     : null
   return (
     <UI.PopoverWrapper>
@@ -79,7 +84,7 @@ export function ConnectionEventPopover ({ children, event }:
         content={<Details fields={rowData} openHandler={hide} extra={failureExtra}/>}
         trigger='click'
         placement='bottom'
-        getPopupContainer={(triggerNode) => triggerNode.parentElement as HTMLElement}
+        // getPopupContainer={(triggerNode) => triggerNode.parentElement as HTMLElement}
         visible={open}
         onVisibleChange={setOpen}
         arrowPointAtCenter

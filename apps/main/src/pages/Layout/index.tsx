@@ -5,7 +5,10 @@ import {
   Layout as LayoutComponent,
   LayoutUI
 }                        from '@acx-ui/components'
-import { SplitProvider }   from '@acx-ui/feature-toggle'
+import { SplitProvider } from '@acx-ui/feature-toggle'
+import {
+  CloudMessageBanner
+} from '@acx-ui/rc/components'
 import { Outlet }          from '@acx-ui/react-router-dom'
 import { notAvailableMsg } from '@acx-ui/utils'
 
@@ -23,7 +26,12 @@ function Layout () {
   return (
     <LayoutComponent
       menuConfig={useMenuConfig()}
-      content={<Outlet />}
+      content={
+        <>
+          <CloudMessageBanner />
+          <Outlet />
+        </>
+      }
       // leftHeaderContent={
       //   <div style={{ width: '40%', display: 'flex', alignItems: 'center' }}>
       //     {/* <RegionButton/>
