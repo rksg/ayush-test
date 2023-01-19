@@ -40,7 +40,7 @@ describe('EdgeDetails', () => {
     })
 
     const tab = await screen.findByText('Overview')
-    expect(tab.getAttribute('aria-selected')).toBeTruthy()
+    expect(tab).toHaveAttribute('aria-selected', 'true')
   })
 
   it('should display troubleshooting tab correctly', async () => {

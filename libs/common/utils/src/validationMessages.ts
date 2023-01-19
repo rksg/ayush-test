@@ -172,6 +172,14 @@ export const validationMessages = {
   twoRadioChannels: defineMessage({
     defaultMessage: 'Please select at least two channels',
     description: 'Validation - radio channel checks'
+  }),
+  recoveryPassphrasePart: defineMessage({
+    defaultMessage: 'Passphrase part must be exactly 4 digits long',
+    description: 'Validation - recovery passphrase part'
+  }),
+  recoveryPassphrasePartSpace: defineMessage({
+    defaultMessage: 'Passphrase cannot have space',
+    description: 'Validation - recovery passphrase part cannot have space'
   })
 }
 

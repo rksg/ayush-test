@@ -2,7 +2,7 @@ import { configureStore, isRejectedWithValue }            from '@reduxjs/toolkit
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 import { generatePath }                                   from 'react-router-dom'
 
-import { dataApi }             from '@acx-ui/analytics/services'
+import { dataApi }                             from '@acx-ui/analytics/services'
 import {
   baseNetworkApi as networkApi,
   baseVenueApi as venueApi,
@@ -16,7 +16,9 @@ import {
   baseEdgeApi as edgeApi,
   basePolicyApi as policyApi,
   baseClientApi as clientApi,
-  baseSwitchApi as switchApi
+  baseSwitchApi as switchApi,
+  baseMfaApi as mfaApi,
+  baseAdministrationApi as administrationApi
 } from '@acx-ui/rc/services'
 
 import type { Middleware } from '@reduxjs/toolkit'
@@ -70,7 +72,9 @@ export const store = configureStore({
     [edgeApi.reducerPath]: edgeApi.reducer,
     [policyApi.reducerPath]: policyApi.reducer,
     [clientApi.reducerPath]: clientApi.reducer,
-    [switchApi.reducerPath]: switchApi.reducer
+    [switchApi.reducerPath]: switchApi.reducer,
+    [mfaApi.reducerPath]: mfaApi.reducer,
+    [administrationApi.reducerPath]: administrationApi.reducer
   },
 
   middleware: (getDefaultMiddleware) => {
@@ -93,7 +97,9 @@ export const store = configureStore({
       edgeApi.middleware,
       policyApi.middleware,
       clientApi.middleware,
-      switchApi.middleware
+      switchApi.middleware,
+      mfaApi.middleware,
+      administrationApi.middleware
     ])
   },
 
