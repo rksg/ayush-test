@@ -36,7 +36,10 @@ import {
   ConfigurationBackup,
   ConfigurationBackupStatus,
   transformConfigBackupType,
-  TroubleshootingResult
+  TroubleshootingResult,
+  SwitchDhcp,
+  SwitchDhcpLease,
+  CommonResult
 } from '@acx-ui/rc/utils'
 import { formatter } from '@acx-ui/utils'
 
@@ -454,7 +457,8 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         return {
           ...req
         }
-      }
+      },
+      providesTags: [{ type: 'Switch', id: 'DETAIL' }]
     }),
     deleteVePorts: build.mutation<VeForm, RequestPayload>({
       query: ({ params, payload }) => {
@@ -535,10 +539,102 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    updateDhcpServerState: build.mutation<{}, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.updateDhcpServerState, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Switch', id: 'DETAIL' }]
+    }),
+    getDhcpPools: build.query<TableResult<SwitchDhcp>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getDhcpPools, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Switch', id: 'DHCP' }]
+    }),
+    getDhcpServer: build.query<SwitchDhcp, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getDhcpServer, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    createDhcpServer: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.addDhcpServer, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Switch', id: 'DHCP' }]
+    }),
+    updateDhcpServer: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.updateDhcpServer, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Switch', id: 'DHCP' }]
+    }),
+    deleteDhcpServers: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.deleteDhcpServers, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Switch', id: 'DHCP' }]
+    }),
+    getDhcpLeases: build.query<SwitchDhcpLease[], RequestPayload>({
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const doDhcpServerLeaseTableInfo = {
+          ...createHttpRequest(SwitchUrlsInfo.dhcpLeaseTable, arg.params)
+        }
+        const infoResult = await fetchWithBQ(doDhcpServerLeaseTableInfo)
+        if (infoResult.error)
+          return { error: infoResult.error as FetchBaseQueryError }
+
+        const pollingDhcpLease = async () => {
+          const getDhcpLeasesInfo = createHttpRequest(SwitchUrlsInfo.getDhcpLeases, arg.params)
+          let ret = await fetchWithBQ(getDhcpLeasesInfo)
+          let result = ret.data as TroubleshootingResult
+
+          while (result?.response.syncing) {
+            await wait(2000)
+            ret = await fetchWithBQ(getDhcpLeasesInfo)
+            result = ret.data as TroubleshootingResult
+          }
+          return ret
+        }
+
+        const getDhcpLeasesQuery = await pollingDhcpLease()
+        const leaseResult = getDhcpLeasesQuery.data as TroubleshootingResult
+
+        return leaseResult?.response?.dhcpServerLeaseList
+          ? { data: leaseResult.response.dhcpServerLeaseList }
+          : { error: getDhcpLeasesQuery.error as FetchBaseQueryError }
+      }
     })
 
   })
 })
+
+function wait (ms: number) { return new Promise(resolve => setTimeout(resolve, ms)) }
+
+
 
 const genStackMemberPayload = (arg:RequestPayload<unknown>, serialNumber:string) => {
   return {
@@ -664,5 +760,13 @@ export const {
   useIpRouteMutation,
   useMacAddressTableMutation,
   useGetTroubleshootingCleanQuery,
-  useLazyGetTroubleshootingCleanQuery
+  useLazyGetTroubleshootingCleanQuery,
+  useUpdateDhcpServerStateMutation,
+  useGetDhcpPoolsQuery,
+  useGetDhcpServerQuery,
+  useLazyGetDhcpServerQuery,
+  useCreateDhcpServerMutation,
+  useUpdateDhcpServerMutation,
+  useDeleteDhcpServersMutation,
+  useGetDhcpLeasesQuery
 } = switchApi
