@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 
 import { Typography } from 'antd'
+import moment         from 'moment'
 import { useIntl }    from 'react-intl'
 
 import { cssStr, Subtitle }                from '@acx-ui/components'
@@ -10,9 +11,8 @@ import {
   Client,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { fixedEncodeURIComponent, formatter }             from '@acx-ui/utils'
-import moment from 'moment'
+import { TenantLink, useParams }              from '@acx-ui/react-router-dom'
+import { fixedEncodeURIComponent, formatter } from '@acx-ui/utils'
 
 function getCols (intl: ReturnType<typeof useIntl>) {
   const dateTimeFormatter = formatter('dateTimeFormat')
@@ -29,11 +29,13 @@ function getCols (intl: ReturnType<typeof useIntl>) {
         range: 'Custom'
       }
       const period = fixedEncodeURIComponent(JSON.stringify(dateObj))
+      /* eslint-disable max-len */
       return <TenantLink
         to={`/users/wifi/clients/${clientMac}/details/overview?clientStatus=historical&period=${period}`}
       >
         {data ? data : '--'}
       </TenantLink>
+      /* eslint-enable max-len */
     }
   }, {
     key: 'clientMac',
