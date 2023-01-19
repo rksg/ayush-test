@@ -7,15 +7,15 @@ export interface ApiInfo {
 
 export const TenantIdFromJwt = () => {
   const jwtToken = getJwtTokenPayload()
-  const tenanetIdFromJwt = getTenanetIdFromJwt(jwtToken as string)
+  const tenantIdFromJwt = getTenantIdFromJwt(jwtToken as string)
 
-  return tenanetIdFromJwt
+  return tenantIdFromJwt
 }
 
 export const isDelegationMode = () => {
   const jwtToken = getJwtTokenPayload()
 
-  return (getTenanetIdFromJwt(jwtToken as string) !== getTenantId())
+  return (getTenantIdFromJwt(jwtToken as string) !== getTenantId())
 }
 
 export const getJwtTokenPayload = () => {
@@ -28,7 +28,7 @@ export const getJwtTokenPayload = () => {
   }
 }
 
-const getTenanetIdFromJwt = (jwt: string) => {
+const getTenantIdFromJwt = (jwt: string) => {
   if (jwt) {
     let tokens = jwt.split('.')
 
@@ -58,12 +58,12 @@ export const createHttpRequest = (
   const jwtToken = getJwtTokenPayload()
   const tenantId = getTenantId()
   if (jwtToken !== null) {
-    const tenanetIdFromJwt = getTenanetIdFromJwt(jwtToken as string)
+    const tenantIdFromJwt = getTenantIdFromJwt(jwtToken as string)
     const extraHeader = {
       'x-rks-tenantid': tenantId
     }
     tokenHeader.Authorization = `Bearer ${jwtToken}`
-    defaultHeaders = (ignoreHeader || tenanetIdFromJwt === tenantId)
+    defaultHeaders = (ignoreHeader || tenantIdFromJwt === tenantId)
       ? { ...tokenHeader, ...defaultHeaders }
       : { ...tokenHeader, ...defaultHeaders, ...extraHeader }
   }
