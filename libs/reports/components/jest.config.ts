@@ -8,10 +8,10 @@ module.exports = {
   coverageDirectory: '../../../coverage/libs/reports/components',
   coverageThreshold: {
     global: {
-      statements: 61.53,
+      statements: 65.71,
       branches: 41.66,
-      functions: 40,
-      lines: 66.66
+      functions: 44.44,
+      lines: 69.69
     }
   }
 }
