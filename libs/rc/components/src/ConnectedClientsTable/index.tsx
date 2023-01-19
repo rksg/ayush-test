@@ -356,7 +356,7 @@ export const ConnectedClientsTable =
       if (tableQuery.data?.data) {
         setConnectedClientCount(tableQuery.data?.totalCount)
       }
-    }, [])
+    }, [tableQuery.data?.data, tableQuery.data?.totalCount])
 
     return (
       <UI.ClientTableDiv>
