@@ -13,7 +13,6 @@ import {
   render,
   screen,
   waitFor,
-  waitForElementToBeRemoved,
   within
 } from '@acx-ui/test-utils'
 
@@ -63,13 +62,13 @@ describe('VenueNetworksTab', () => {
   })
 
   it('should render correctly', async () => {
-    const { asFragment } = render(<Provider><VenueNetworksTab /></Provider>, {
+    render(<Provider><VenueNetworksTab /></Provider>, {
       route: { params, path: '/:tenantId/venues/:venueId/venue-details/networks' }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    await screen.findByText('test_1')
-    expect(asFragment()).toMatchSnapshot()
+    const row = await screen.findByRole('row', { name: /test_1/i })
+    expect(row).toHaveTextContent('Pre-Shared Key (PSK) - WPA2')
+    expect(row).toHaveTextContent('VLAN-1 (Default)')
   })
 
   it('activate Network', async () => {
@@ -78,9 +77,9 @@ describe('VenueNetworksTab', () => {
     render(<Provider><VenueNetworksTab /></Provider>, {
       route: { params, path: '/:tenantId/venues/:venueId/venue-details/networks' }
     })
+    const row = await screen.findByRole('row', { name: /test_2/i })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
+    const requestSpy = jest.fn()
     const newApGroup = JSON.parse(JSON.stringify(venueNetworkApGroup))
     newApGroup.response[1].apGroups[0].id = 'test2'
     mockServer.use(
@@ -90,14 +89,17 @@ describe('VenueNetworksTab', () => {
       ),
       rest.post(
         WifiUrlsInfo.addNetworkVenue.url,
-        (req, res, ctx) => res(ctx.json({ requestId: '123' }))
+        (req, res, ctx) => {
+          requestSpy()
+          return res(ctx.json({ requestId: '123' }))
+        }
       )
     )
 
-    const toogleButton = await screen.findByRole('switch', { checked: false })
+    const toogleButton = await within(row).findByRole('switch', { checked: false })
     fireEvent.click(toogleButton)
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitFor(() => expect(requestSpy).toHaveBeenCalledTimes(1))
 
     const rows = await screen.findAllByRole('switch')
     expect(rows).toHaveLength(2)
@@ -108,11 +110,9 @@ describe('VenueNetworksTab', () => {
     render(<Provider><VenueNetworksTab /></Provider>, {
       route: { params, path: '/:tenantId/venues/:venueId/venue-details/networks' }
     })
-
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    const row = await screen.findByRole('row', { name: /test_1/i })
 
     const requestSpy = jest.fn()
-
     const newApGroup = JSON.parse(JSON.stringify(venueNetworkApGroup))
     newApGroup.response[0].apGroups[0].id = ''
     mockServer.use(
@@ -129,24 +129,20 @@ describe('VenueNetworksTab', () => {
       )
     )
 
-    const toogleButton = await screen.findByRole('switch', { checked: true })
+    const toogleButton = await within(row).findByRole('switch', { checked: true })
     fireEvent.click(toogleButton)
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitFor(() => expect(requestSpy).toHaveBeenCalledTimes(1))
 
     const rows = await screen.findAllByRole('switch')
     expect(rows).toHaveLength(2)
     await waitFor(() => rows.forEach(row => expect(row).not.toBeChecked()))
-
-    await waitFor(() => expect(requestSpy).toHaveBeenCalledTimes(1))
   })
 
   it('click VLAN, APs, Radios', async () => {
     render(<Provider><VenueNetworksTab /></Provider>, {
       route: { params, path: '/:tenantId/venues/:venueId/venue-details/networks' }
     })
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     const row = await screen.findByRole('row', { name: /test_1/i })
 

@@ -452,7 +452,7 @@ export const apApi = baseApApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Ap', id: 'DIRECTEDMULTICAST' }],
+      providesTags: [{ type: 'Ap', id: 'DIRECTED_MULTICAST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
@@ -460,7 +460,7 @@ export const apApi = baseApApi.injectEndpoints({
             'ResetApDirectedMulticast'
           ]
           showActivityMessage(msg, activities, () => {
-            api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'DIRECTEDMULTICAST' }]))
+            api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'DIRECTED_MULTICAST' }]))
           })
         })
       }
@@ -473,7 +473,7 @@ export const apApi = baseApApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Ap', id: 'DIRECTEDMULTICAST' }]
+      invalidatesTags: [{ type: 'Ap', id: 'DIRECTED_MULTICAST' }]
     }),
     resetApDirectedMulticast: build.mutation<ApDirectedMulticast, RequestPayload>({
       query: ({ params }) => {
@@ -482,7 +482,7 @@ export const apApi = baseApApi.injectEndpoints({
           ...req
         }
       },
-      invalidatesTags: [{ type: 'Ap', id: 'DIRECTEDMULTICAST' }]
+      invalidatesTags: [{ type: 'Ap', id: 'DIRECTED_MULTICAST' }]
     })
 
 

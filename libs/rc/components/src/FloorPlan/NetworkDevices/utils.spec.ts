@@ -1,8 +1,15 @@
 import '@testing-library/jest-dom'
 
-import { ApDeviceStatusEnum, NetworkDeviceResponse, NetworkDeviceType, SwitchStatusEnum } from '@acx-ui/rc/utils'
+import { ApDeviceStatusEnum, FloorplanContext, NetworkDeviceResponse, NetworkDeviceType, RogueCategory, RogueDeviceCategoryType, SwitchStatusEnum } from '@acx-ui/rc/utils'
 
 import { apStatusTransform, calculateDeviceColor } from './utils'
+
+const rogueCategory: Record<RogueCategory, number> = {
+  Malicious: 10,
+  Ignored: 0,
+  Unclassified: 0,
+  Known: 0
+}
 
 const deviceData: NetworkDeviceResponse = {
   fields: [
@@ -131,6 +138,32 @@ const deviceData: NetworkDeviceResponse = {
         xPercent: 65.20548,
         yPercent: 9.839357,
         networkDeviceType: NetworkDeviceType.ap
+      },
+      {
+        deviceStatus: ApDeviceStatusEnum.OPERATIONAL,
+        floorplanId: '94bed28abef24175ab58a3800d01e24a',
+        id: '3020020157412',
+        name: 'rogue_ap',
+        serialNumber: '3020020157412',
+        xPercent: 65.20548,
+        yPercent: 9.839357,
+        snr: 24,
+        macAddress: 'ff:ff:12:34:22:33',
+        networkDeviceType: NetworkDeviceType.ap
+      },
+      {
+        deviceStatus: ApDeviceStatusEnum.OPERATIONAL,
+        floorplanId: '94bed28abef24175ab58a3800d01e24a',
+        id: '3020020157412',
+        name: 'rogue_ap1',
+        serialNumber: '3020020157412',
+        xPercent: 65.20548,
+        yPercent: 9.839357,
+        snr: 24,
+        macAddress: 'ff:ff:12:34:22:33',
+        networkDeviceType: NetworkDeviceType.ap,
+        rogueCategory: rogueCategory,
+        rogueCategoryType: RogueDeviceCategoryType.malicious
       }],
       switches: [{
         deviceStatus: SwitchStatusEnum.NEVER_CONTACTED_CLOUD,
@@ -190,6 +223,8 @@ const deviceData: NetworkDeviceResponse = {
         serialNumber: '3020020157412',
         xPercent: 65.20548,
         yPercent: 9.839357,
+        snr: 24,
+        macAddress: 'ff:ff:12:34:22:33',
         networkDeviceType: NetworkDeviceType.rogue_ap
       }],
       cloudpath: [{
@@ -208,24 +243,48 @@ const deviceData: NetworkDeviceResponse = {
 }
 describe('Floor Plans', () => {
   it('test calculateDeviceColor function', async () => {
-    expect(calculateDeviceColor(deviceData.data[0].ap[0])).toBe('ap-status-severity-attention')
-    expect(calculateDeviceColor(deviceData.data[0].ap[1])).toBe('ap-status-severity-attention')
-    expect(calculateDeviceColor(deviceData.data[0].ap[2])).toBe('ap-status-severity-attention')
-    expect(calculateDeviceColor(deviceData.data[0].ap[3])).toBe('ap-status-severity-cleared')
-    expect(calculateDeviceColor(deviceData.data[0].ap[4])).toBe('ap-status-severity-cleared')
-    expect(calculateDeviceColor(deviceData.data[0].ap[5])).toBe('ap-status-severity-cleared')
-    expect(calculateDeviceColor(deviceData.data[0].ap[6])).toBe('ap-status-severity-critical')
-    expect(calculateDeviceColor(deviceData.data[0].ap[7])).toBe('ap-status-severity-critical')
-    expect(calculateDeviceColor(deviceData.data[0].ap[8])).toBe('ap-status-severity-critical')
-    expect(calculateDeviceColor(deviceData.data[0].ap[9])).toBe('ap-status-severity-minor')
-    expect(calculateDeviceColor(deviceData.data[0].ap[10])).toBe('ap-status-severity-minor')
-    expect(calculateDeviceColor(deviceData.data[0].ap[11])).toBe('ap-status-severity-attention')
-    expect(calculateDeviceColor(deviceData.data[0].LTEAP[0])).toBe('ap-status-severity-minor')
-    expect(calculateDeviceColor(deviceData.data[0].RogueAP[0])).toBe('ap-rogue-type-undefined')
-    expect(calculateDeviceColor(deviceData.data[0].cloudpath[0])).toBe('cloudpath-server')
-    expect(calculateDeviceColor(deviceData.data[0].switches[1])).toBe('switch-status-operational')
-    expect(calculateDeviceColor(deviceData.data[0].switches[2])).toBe('switch-status-disconnected')
-    expect(calculateDeviceColor(deviceData.data[0].switches[3])).toBe('')
+    expect(calculateDeviceColor(deviceData.data[0].ap[0], FloorplanContext.ap, false))
+      .toBe('ap-status-severity-attention')
+    expect(calculateDeviceColor(deviceData.data[0].ap[1], FloorplanContext.ap, false))
+      .toBe('ap-status-severity-attention')
+    expect(calculateDeviceColor(deviceData.data[0].ap[2], FloorplanContext.ap, false))
+      .toBe('ap-status-severity-attention')
+    expect(calculateDeviceColor(deviceData.data[0].ap[3], FloorplanContext.ap, false))
+      .toBe('ap-status-severity-cleared')
+    expect(calculateDeviceColor(deviceData.data[0].ap[4], FloorplanContext.ap, false))
+      .toBe('ap-status-severity-cleared')
+    expect(calculateDeviceColor(deviceData.data[0].ap[5], FloorplanContext.ap, true ))
+      .toBe('ap-rogue-type-ignored')
+    expect(calculateDeviceColor(deviceData.data[0].ap[6], FloorplanContext.ap, false))
+      .toBe('ap-status-severity-critical')
+    expect(calculateDeviceColor(deviceData.data[0].ap[7], FloorplanContext.ap, false))
+      .toBe('ap-status-severity-critical')
+    expect(calculateDeviceColor(deviceData.data[0].ap[8], FloorplanContext.ap, false))
+      .toBe('ap-status-severity-critical')
+    expect(calculateDeviceColor(deviceData.data[0].ap[9], FloorplanContext.ap, false))
+      .toBe('ap-status-severity-minor')
+    expect(calculateDeviceColor(deviceData.data[0].ap[10], FloorplanContext.ap, false))
+      .toBe('ap-status-severity-minor')
+    expect(calculateDeviceColor(deviceData.data[0].ap[11], FloorplanContext.ap, false))
+      .toBe('ap-status-severity-attention')
+    expect(calculateDeviceColor(deviceData.data[0].ap[12], FloorplanContext.rogue_ap, true))
+      .toBe('ap-rogue-type-undefined')
+    expect(calculateDeviceColor(deviceData.data[0].ap[13], FloorplanContext.ap, true).toLowerCase())
+      .toBe('ap-rogue-type-malicious')
+    expect(calculateDeviceColor(deviceData.data[0].LTEAP[0], FloorplanContext.ap, false))
+      .toBe('ap-status-severity-minor')
+    expect(calculateDeviceColor(deviceData.data[0].RogueAP[0], FloorplanContext.ap, false))
+      .toBe('ap-rogue-type-undefined')
+    expect(calculateDeviceColor(deviceData.data[0].RogueAP[0], FloorplanContext.ap, true))
+      .toBe('ap-rogue-type-undefined')
+    expect(calculateDeviceColor(deviceData.data[0].cloudpath[0], FloorplanContext.ap, false))
+      .toBe('cloudpath-server')
+    expect(calculateDeviceColor(deviceData.data[0].switches[1], FloorplanContext.ap, false))
+      .toBe('switch-status-operational')
+    expect(calculateDeviceColor(deviceData.data[0].switches[2], FloorplanContext.ap, false))
+      .toBe('switch-status-disconnected')
+    expect(calculateDeviceColor(deviceData.data[0].switches[3], FloorplanContext.ap, false))
+      .toBe('')
   })
 
   it('should test apStatusTransform with APVIEW', () => {

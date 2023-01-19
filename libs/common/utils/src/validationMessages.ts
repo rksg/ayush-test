@@ -84,8 +84,8 @@ export const validationMessages = {
     description: 'Validation - Cannot contain Exclamation mark(!), double quotes and space'
   }),
   excludeQuoteRegExp: defineMessage({
-    defaultMessage: 'Cannot contain double quote and space',
-    description: 'Validation - Cannot contain double quote and space'
+    defaultMessage: 'Cannot contain double quote',
+    description: 'Validation - Cannot contain double quote'
   }),
   excludeSpaceRegExp: defineMessage({
     defaultMessage: 'Cannot contain space',
@@ -164,6 +164,18 @@ export const validationMessages = {
   phoneNumber: defineMessage({
     defaultMessage: 'Please enter a valid phone number',
     description: 'Validation - phone number checks'
+  }),
+  poeBudget: defineMessage({
+    defaultMessage: 'Poe Budget can only be from 1000 - 30000',
+    description: 'Validation - PoE Budget checks'
+  }),
+  dscp: defineMessage({
+    defaultMessage: 'Enter a valid number between 0 and 63',
+    description: 'Validation - dscp checks'
+  }),
+  priority: defineMessage({
+    defaultMessage: 'Enter a valid number between 0 and 7',
+    description: 'Validation - priority checks'
   }),
   oneRadioChannel: defineMessage({
     defaultMessage: 'Please select one channel',
