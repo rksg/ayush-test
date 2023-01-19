@@ -393,5 +393,6 @@ export const {
   useVenueRoguePolicyQuery,
   useLazyMacRegListsQuery,
   useLazyMacRegistrationsQuery,
+  useLazyGetMacRegListQuery,
   useUploadMacRegistrationMutation
 } = policyApi
