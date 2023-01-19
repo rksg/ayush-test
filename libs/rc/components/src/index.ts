@@ -50,6 +50,7 @@ export { CloudMessageBanner } from './CloudMessageBanner'
 export { SwitchClientsTable } from './SwitchClientsTable'
 export { ClientsTable, defaultSwitchClientPayload } from './SwitchClientsTable/ClientsTable'
 export { SwitchClientDetails } from './SwitchClientsTable/SwitchClientDetails'
+export { PersonaGroupSelect } from './PersonaGroupSelect'
 
 export * from './services'
 export * from './EdgeStatisticWidget'
