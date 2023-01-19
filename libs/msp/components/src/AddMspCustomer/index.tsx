@@ -11,6 +11,7 @@ import {
   Typography
 } from 'antd'
 import _           from 'lodash'
+import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import {
@@ -39,7 +40,6 @@ import {
   RolesEnum,
   EntitlementUtil,
   excludeExclamationRegExp,
-  EntitlementDeviceSubType,
   MspAssignmentSummary
 } from '@acx-ui/rc/utils'
 import {
@@ -60,13 +60,26 @@ interface AddressComponent {
   types?: Array<string>;
 }
 
+interface EcFormData {
+  name: string,
+  address: Address,
+  service_effective_date: string,
+  service_expiration_date: string,
+  admin_email: string,
+  admin_firstname: string,
+  admin_lastname: string,
+  admin_role: string,
+  wifiLicense: number,
+  switchLicense: number
+}
+
 interface EcExtended {
-  id: string;
+  id?: string;
   name: string,
   tenant_type: string,
-  address: Address,
+  address?: Address,
   street_address: string;
-  state: string,
+  state?: string,
   country: string,
   postal_code: string,
   city: string,
@@ -75,7 +88,10 @@ interface EcExtended {
   admin_email: string,
   admin_firstname: string,
   admin_lastname: string,
-  admin_role: string
+  admin_role: string,
+  license: {},
+  ec_delegations?: [],
+  admin_delegations?: []
 }
 
 export const retrieveCityState = (addressComponents: Array<AddressComponent>, country: string) => {
@@ -231,28 +247,69 @@ export function AddMspCustomer () {
     })
   }
 
-  const handleAddCustomer = async (values: EcExtended) => {
+  const handleAddCustomer = async (values: EcFormData) => {
     try {
-      let formData = { ...values }
-      const customer = {
-        name: formData.name,
+      const ecFormData = { ...values }
+      const today = EntitlementUtil.getServiceStartDate()
+      const expirationDate = EntitlementUtil.getServiceEndDate(ecFormData.service_expiration_date)
+      const assignLicense = trialSelected
+        ? {
+          trialAction: 'ACTIVATE',
+          assignmentStartDate: today,
+          assignmentEndDate: expirationDate
+        } :
+        {
+          assignmentStartDate: today,
+          assignmentEndDate: expirationDate,
+          assignments: [{
+            quantity: ecFormData.wifiLicense,
+            action: 'ADD',
+            deviceType: 'MSP_WIFI'
+          },
+          {
+            quantity: ecFormData.switchLicense,
+            action: 'ADD',
+            deviceType: 'MSP_SWITCH'
+          }
+          ]
+        }
+
+      const customer: EcExtended = {
         tenant_type: 'MSP_EC',
-        street_address: address.addressLine,
-        city: address.city,
+        name: ecFormData.name,
+        street_address: ecFormData.address.addressLine as string,
+        city: ecFormData.address.city as string,
         postal_code: '',
-        country: address.country,
-        service_effective_date:
-          EntitlementUtil.getServiceStartDate(),
-        service_expiration_date:
-          EntitlementUtil.getServiceEndDate(formData.service_expiration_date),
-        admin_email: formData.admin_email,
-        admin_firstname: formData.admin_firstname,
-        admin_lastname: formData.admin_lastname,
-        admin_role: formData.admin_role
+        country: ecFormData.address.country as string,
+        service_effective_date: today,
+        service_expiration_date: expirationDate,
+        admin_email: ecFormData.admin_email,
+        admin_firstname: ecFormData.admin_firstname,
+        admin_lastname: ecFormData.admin_lastname,
+        admin_role: ecFormData.admin_role,
+        license: assignLicense
       }
+      // if (mspAdmins.length > 0) {
+      //   customer.admin_delegations = [
+      //     {
+      //       msp_admin_id: mspAdmins[0].id,
+      //       msp_admin_role: 'PRIME_ADMIN'
+      //     }
+      //   ]
+      // }
+      // if (mspIntegrator.length > 0) {
+      //   customer.ec_delegations?.push(
+      //     {
+      //       delegation_type: 'MSP_INTEGRATOR',
+      //       delegation_id: '78b7fb27069c498d8e7bb4f526f4356'
+      //     })
+      // }
+      // if (mspInstaller.length > 0) {
+
+      // }
 
       const result =
-        await addCustomerr({ params: { tenantId: tenantId }, payload: customer }).unwrap()
+      await addCustomerr({ params: { tenantId: tenantId }, payload: customer }).unwrap()
       if (result) {
       // const ecTenantId = result.tenant_id
       }
@@ -313,58 +370,77 @@ export function AddMspCustomer () {
 
   const WifiSubscription = () => {
     const wifiLicenses = availableLicense.filter(p => p.deviceType === 'MSP_WIFI')
-
-    return <>
-      {wifiLicenses.map(license =>
-        <div >
-          <UI.FieldLabelSubs width='275px'>
-            <label>{intl.$t({ defaultMessage: 'WiFi Subscription' })}</label>
-            <Form.Item
-              name='wifiLicense'
-              label=''
-              initialValue={0}
-              rules={[
-                { required: true },
-                { min: 0 },
-                { max: license.remainingDevices },
-                { validator: (_, value) => excludeExclamationRegExp(value) }
-              ]}
-              children={<Input/>}
-              style={{ paddingRight: '20px' }}
-            />
-            <label>devices out of {license.remainingDevices} available</label>
-          </UI.FieldLabelSubs>
-        </div> )}
-    </>
+    let remainingDevices = 0
+    wifiLicenses.forEach( (lic: MspAssignmentSummary) => {
+      remainingDevices += lic.remainingDevices
+    })
+    return <div >
+      <UI.FieldLabelSubs width='275px'>
+        <label>{intl.$t({ defaultMessage: 'WiFi Subscription' })}</label>
+        <Form.Item
+          name='wifiLicense'
+          label=''
+          initialValue={0}
+          rules={[
+            { required: true },
+            { validator: (_, value) => excludeExclamationRegExp(value) }
+          ]}
+          children={<Input/>}
+          style={{ paddingRight: '20px' }}
+        />
+        <label>devices out of {remainingDevices} available</label>
+      </UI.FieldLabelSubs>
+    </div>
   }
 
   const SwitchSubscription = () => {
     const switchLicenses = availableLicense.filter(p => p.deviceType === 'MSP_SWITCH')
-    return <>
-      {switchLicenses.map(license =>
-        <div >
-          <UI.FieldLabelSubs width='275px'>
-            <label>
-              {EntitlementUtil.deviceSubTypeToText(
-                license.deviceSubType as EntitlementDeviceSubType)}
-            </label>
-            <Form.Item
-              name={license.deviceSubType}
-              label=''
-              initialValue={0}
-              rules={[
-                { required: true },
-                { min: 0 },
-                { max: license.remainingDevices },
-                { validator: (_, value) => excludeExclamationRegExp(value) }
-              ]}
-              children={<Input/>}
-              style={{ paddingRight: '20px' }}
-            />
-            <label>devices out of {license.remainingDevices} available</label>
-          </UI.FieldLabelSubs>
-        </div> )}
-    </>
+    let remainingDevices = 0
+    switchLicenses.forEach( (lic: MspAssignmentSummary) => {
+      remainingDevices += lic.remainingDevices
+    })
+    return <div >
+      <UI.FieldLabelSubs width='275px'>
+        <label>{intl.$t({ defaultMessage: 'Switch Subscription' })}</label>
+        <Form.Item
+          name='switchLicense'
+          label=''
+          initialValue={0}
+          rules={[
+            { required: true },
+            { validator: (_, value) => excludeExclamationRegExp(value) }
+          ]}
+          children={<Input/>}
+          style={{ paddingRight: '20px' }}
+        />
+        <label>devices out of {remainingDevices} available</label>
+      </UI.FieldLabelSubs>
+    </div>
+    // return <>
+    //   {switchLicenses.map(license =>
+    //     <div >
+    //       <UI.FieldLabelSubs width='275px'>
+    //         <label>
+    //           {EntitlementUtil.deviceSubTypeToText(
+    //             license.deviceSubType as EntitlementDeviceSubType)}
+    //         </label>
+    //         <Form.Item
+    //           name={license.deviceSubType}
+    //           label=''
+    //           initialValue={0}
+    //           rules={[
+    //             { required: true },
+    //             { min: 0 },
+    //             { max: license.remainingDevices },
+    //             { validator: (_, value) => excludeExclamationRegExp(value) }
+    //           ]}
+    //           children={<Input/>}
+    //           style={{ paddingRight: '20px' }}
+    //         />
+    //         <label>devices out of {license.remainingDevices} available</label>
+    //       </UI.FieldLabelSubs>
+    //     </div> )}
+    // </>
   }
 
   const CustomerSubscription = () => {
@@ -428,7 +504,7 @@ export function AddMspCustomer () {
         <UI.FieldLabeServiceDate width='275px' style={{ marginTop: '10px' }}>
           <label>{intl.$t({ defaultMessage: 'Service Expiration Date' })}</label>
           <Form.Item
-            name='expirationDate1'
+            name='expirationDateSelection'
             label=''
             rules={[{ required: true } ]}
             initialValue={DateSelectionEnum.CUSTOME_DATE}
@@ -447,6 +523,10 @@ export function AddMspCustomer () {
             label=''
             children={
               <DatePicker
+                format='MM/DD/YYYY'
+                disabledDate={(current) => {
+                  return moment().add(-1, 'days') >= current
+                }}
                 style={{ marginLeft: '4px' }}
               />
             }
@@ -464,7 +544,7 @@ export function AddMspCustomer () {
         <Form.Item
           label={intl.$t({ defaultMessage: 'Customer Name' })}
         >
-          <Paragraph>{'test ec'}</Paragraph>
+          <Paragraph>{'name'}</Paragraph>
         </Form.Item>
         <Form.Item style={{ marginTop: '-22px' }}
           label={intl.$t({ defaultMessage: 'Address' })}
@@ -491,23 +571,23 @@ export function AddMspCustomer () {
         <Form.Item
           label={intl.$t({ defaultMessage: 'Customer Administrator Name' })}
         >
-          <Paragraph>{'Eric Leu'}</Paragraph>
+          <Paragraph>{'adminFirstname'} {'adminLastname'}</Paragraph>
         </Form.Item>
         <Form.Item style={{ marginTop: '-22px' }}
           label={intl.$t({ defaultMessage: 'Email' })}
         >
-          <Paragraph>{'eleu1658@yahoo.com'}</Paragraph>
+          <Paragraph>{'adminEmail'}</Paragraph>
         </Form.Item>
         <Form.Item style={{ marginTop: '-22px' }}
           label={intl.$t({ defaultMessage: 'Role' })}
         >
-          <Paragraph>{'Prime Administrator'}</Paragraph>
+          <Paragraph>{'adminRole'}</Paragraph>
         </Form.Item>
 
         <Form.Item
           label={intl.$t({ defaultMessage: 'Wi-Fi Subscriptions' })}
         >
-          <Paragraph>{'40'}</Paragraph>
+          <Paragraph>{'wifiLicense'}</Paragraph>
         </Form.Item>
         <Form.Item style={{ marginTop: '-22px' }}
           label={intl.$t({ defaultMessage: 'Switch Subscriptions' })}

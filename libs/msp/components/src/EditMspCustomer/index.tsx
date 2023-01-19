@@ -41,7 +41,6 @@ import {
   roleDisplayText,
   EntitlementUtil,
   excludeExclamationRegExp,
-  EntitlementDeviceSubType,
   MspAssignmentSummary
 } from '@acx-ui/rc/utils'
 import {
@@ -406,58 +405,52 @@ export function EditMspCustomer () {
 
   const WifiSubscription = () => {
     const wifiLicenses = availableLicense.filter(p => p.deviceType === 'MSP_WIFI')
-
-    return <>
-      {wifiLicenses.map(license =>
-        <div >
-          <UI.FieldLabelSubs width='275px'>
-            <label>{intl.$t({ defaultMessage: 'WiFi Subscription' })}</label>
-            <Form.Item
-              name='wifiLicense'
-              label=''
-              initialValue={0}
-              rules={[
-                { required: true },
-                { min: 0 },
-                { max: license.remainingDevices },
-                { validator: (_, value) => excludeExclamationRegExp(value) }
-              ]}
-              children={<Input/>}
-              style={{ paddingRight: '20px' }}
-            />
-            <label>devices out of {license.remainingDevices} available</label>
-          </UI.FieldLabelSubs>
-        </div> )}
-    </>
+    let remainingDevices = 0
+    wifiLicenses.forEach( (lic: MspAssignmentSummary) => {
+      remainingDevices += lic.remainingDevices
+    })
+    return <div >
+      <UI.FieldLabelSubs width='275px'>
+        <label>{intl.$t({ defaultMessage: 'WiFi Subscription' })}</label>
+        <Form.Item
+          name='wifiLicense'
+          label=''
+          initialValue={0}
+          rules={[
+            { required: true },
+            { validator: (_, value) => excludeExclamationRegExp(value) }
+          ]}
+          children={<Input/>}
+          style={{ paddingRight: '20px' }}
+        />
+        <label>devices out of {remainingDevices} available</label>
+      </UI.FieldLabelSubs>
+    </div>
   }
 
   const SwitchSubscription = () => {
     const switchLicenses = availableLicense.filter(p => p.deviceType === 'MSP_SWITCH')
-    return <>
-      {switchLicenses.map(license =>
-        <div >
-          <UI.FieldLabelSubs width='275px'>
-            <label>
-              {EntitlementUtil.deviceSubTypeToText(
-                license.deviceSubType as EntitlementDeviceSubType)}
-            </label>
-            <Form.Item
-              name={license.deviceSubType}
-              label=''
-              initialValue={0}
-              rules={[
-                { required: true },
-                { min: 0 },
-                { max: license.remainingDevices },
-                { validator: (_, value) => excludeExclamationRegExp(value) }
-              ]}
-              children={<Input/>}
-              style={{ paddingRight: '20px' }}
-            />
-            <label>devices out of {license.remainingDevices} available</label>
-          </UI.FieldLabelSubs>
-        </div> )}
-    </>
+    let remainingDevices = 0
+    switchLicenses.forEach( (lic: MspAssignmentSummary) => {
+      remainingDevices += lic.remainingDevices
+    })
+    return <div >
+      <UI.FieldLabelSubs width='275px'>
+        <label>{intl.$t({ defaultMessage: 'Switch Subscription' })}</label>
+        <Form.Item
+          name='switchLicense'
+          label=''
+          initialValue={0}
+          rules={[
+            { required: true },
+            { validator: (_, value) => excludeExclamationRegExp(value) }
+          ]}
+          children={<Input/>}
+          style={{ paddingRight: '20px' }}
+        />
+        <label>devices out of {remainingDevices} available</label>
+      </UI.FieldLabelSubs>
+    </div>
   }
 
   const EditCustomerMspAdminsForm = () => {

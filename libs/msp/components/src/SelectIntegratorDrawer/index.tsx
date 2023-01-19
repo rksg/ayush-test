@@ -93,7 +93,7 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
   const defaultPayload = {
     searchString: '',
     filters: {
-      tenantType: tenantType === 'MSP_INTEGRATOR'? ['MSP_INTEGRATOR'] : ['MSP_INSTALLER']
+      tenantType: tenantType === 'MSP_INTEGRATOR' ? ['MSP_INTEGRATOR'] : ['MSP_INSTALLER']
     },
     fields: [
       'id',
@@ -122,7 +122,6 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
               form.setFieldValue('integrator', selectedRows)
             }
           }}
-
         />
       </Loader>
     )
