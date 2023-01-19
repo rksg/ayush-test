@@ -2,7 +2,7 @@ import { useIntl } from 'react-intl'
 
 import { Drawer, Subtitle } from '@acx-ui/components'
 
-import { CopyableText } from '../styledComponents'
+import { CopyableText, HelpSubtitle } from './styledComponents'
 
 export default function Firewall (props: {
   modalState: boolean,
@@ -22,9 +22,11 @@ export default function Firewall (props: {
         }
       </p>
       <p>
-        <Subtitle level={5} style={{ fontWeight: 'var(--acx-subtitle-5-font-weight-semi-bold)' }}>
+        <HelpSubtitle
+          level={5}
+          style={{ fontWeight: 'var(--acx-subtitle-5-font-weight-semi-bold)' }}>
           {$t({ defaultMessage: 'Outbound HTTPS (TCP 443) from APs and Switches to:' })}
-        </Subtitle>
+        </HelpSubtitle>
       </p>
       <p>
         <CopyableText>https://ap-registrar.ruckuswireless.com</CopyableText>
@@ -40,9 +42,11 @@ export default function Firewall (props: {
         <CopyableText>https://storage.googleapis.com</CopyableText>
       </p>
       <p>
-        <Subtitle level={5} style={{ fontWeight: 'var(--acx-subtitle-5-font-weight-semi-bold)' }}>
+        <HelpSubtitle
+          level={5}
+          style={{ fontWeight: 'var(--acx-subtitle-5-font-weight-semi-bold)' }}>
           {$t({ defaultMessage: 'Outbound SSH (TCP 22) from APs and Switches to:' })}
-        </Subtitle>
+        </HelpSubtitle>
       </p>
       <p>
         <CopyableText color={'var(--acx-primary-black)'}>device.ruckus.cloud</CopyableText>
