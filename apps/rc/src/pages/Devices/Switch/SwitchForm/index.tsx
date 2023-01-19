@@ -241,7 +241,7 @@ export function SwitchForm () {
         trustPorts: []
       }
 
-      if(values?.ipAddressType === 'dynamic'){
+      if(disableIpSetting){
         delete payload.ipAddress
         delete payload.subnetMask
         delete payload.defaultGateway
