@@ -126,7 +126,10 @@ export const policyApi = basePolicyApi.injectEndpoints({
           showActivityMessage(msg, [
             'Add Rogue AP Policy Profile',
             'Update Rogue AP Policy Profile',
-            'Delete Rogue AP Policy Profile'
+            'Delete Rogue AP Policy Profile',
+            'AddClientIsolationAllowlist',
+            'UpdateClientIsolationAllowlist',
+            'DeleteClientIsolationAllowlist'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
           })

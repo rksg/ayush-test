@@ -11,7 +11,7 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 
-export type SimpleClientRecord = Pick<ClientList, 'clientMac' | 'ipAddress'>
+export type SimpleClientRecord = Pick<ClientList, 'clientMac'>
 
 export interface SelectConnectedClientsDrawerProps {
   incomingClientsMac?: string[];
@@ -49,7 +49,7 @@ export function SelectConnectedClientsDrawer (props: SelectConnectedClientsDrawe
   }
 
   const onSave = async () => {
-    addClients(selectedClients.map(c => ({ clientMac: c.clientMac, ipAddress: c.ipAddress })))
+    addClients(selectedClients.map(c => ({ clientMac: c.clientMac })))
 
     onClose()
   }

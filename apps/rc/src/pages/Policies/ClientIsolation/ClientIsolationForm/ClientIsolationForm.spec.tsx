@@ -152,8 +152,7 @@ describe('ClientIsolationForm', () => {
       name: 'Client Isolation testing',
       description: 'Here is the description',
       allowlist: [{
-        mac: clientToAdd.clientMac,
-        ipAddress: clientToAdd.ipAddress
+        mac: clientToAdd.clientMac
       }]
     }
 
