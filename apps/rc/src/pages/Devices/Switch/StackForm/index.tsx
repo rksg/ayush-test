@@ -413,7 +413,7 @@ export function StackForm () {
           >
             <Input
               data-testid={`serialNumber${row.key}`}
-              onChange={async () => await handleChange(row, index)}
+              onBlur={() => handleChange(row, index)}
               style={{ textTransform: 'uppercase' }}
               disabled={row.disabled}
             />
