@@ -11,9 +11,8 @@ import { Tooltip }                from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { notAvailableMsg }        from '@acx-ui/utils'
 
-import NetworkFormContext       from '../../NetworkFormContext'
-import { ClientIsolationVenue } from '../../parser'
-import * as UI                  from '../styledComponents'
+import NetworkFormContext from '../../NetworkFormContext'
+import * as UI            from '../styledComponents'
 
 import ClientIsolationAllowListEditor from './ClientIsolationAllowListEditor'
 
@@ -30,37 +29,12 @@ export default function ClientIsolationForm () {
   const isPoliciesEnabled = useIsSplitOn(Features.POLICIES)
   const { data } = useContext(NetworkFormContext)
   const { $t } = useIntl()
-  const form = Form.useFormInstance()
   // eslint-disable-next-line max-len
   const clientIsolationEnabled = useWatch<boolean>(['wlan','advancedCustomization','clientIsolation'])
   // eslint-disable-next-line max-len
-  const clientIsolationAllowlistEnabled = useWatch<boolean>('clientIsolationAllowlistEnabled')
+  const clientIsolationAllowlistEnabled = useWatch<boolean>(['wlan','advancedCustomization', 'clientIsolationAllowlistEnabled'])
   // eslint-disable-next-line max-len
   const clientIsolationAllowlistEnabledInitValue = data?.venues?.some(v => v.clientIsolationAllowlistId)
-
-  const clientIsolationVenues = useWatch<ClientIsolationVenue[]>('clientIsolationVenues')
-
-  const setAllowList = (venueId: string, policyId: string) => {
-    const clientIsolationVenue: ClientIsolationVenue = {
-      venueId,
-      clientIsolationAllowlistId: policyId
-    }
-
-    if (!clientIsolationVenues || clientIsolationVenues.length === 0) {
-      form.setFieldValue('clientIsolationVenues', [clientIsolationVenue])
-      return
-    }
-
-    const targetIndex = clientIsolationVenues.findIndex(v => v.venueId === venueId)
-
-    if (targetIndex === -1) {
-      clientIsolationVenues.push(clientIsolationVenue)
-    } else {
-      clientIsolationVenues.splice(targetIndex, 1, clientIsolationVenue)
-    }
-
-    form.setFieldValue('clientIsolationVenues', clientIsolationVenues)
-  }
 
   return (<>
     <UI.FieldLabel width='125px'>
@@ -108,7 +82,7 @@ export default function ClientIsolationForm () {
         <UI.FieldLabel width='230px'>
           {$t({ defaultMessage: 'Client Isolation Allowlist by Venue:' })}
           <Form.Item
-            name='clientIsolationAllowlistEnabled'
+            name={['wlan','advancedCustomization', 'clientIsolationAllowlistEnabled']}
             style={{ marginBottom: '10px' }}
             valuePropName='checked'
             initialValue={clientIsolationAllowlistEnabledInitValue}
@@ -116,14 +90,7 @@ export default function ClientIsolationForm () {
         </UI.FieldLabel>
       </Tooltip>
       {clientIsolationAllowlistEnabled && isPoliciesEnabled &&
-        <Form.Item
-          name={['clientIsolationVenues']}
-        >
-          <ClientIsolationAllowListEditor
-            networkVenues={data?.venues}
-            setAllowList={setAllowList}
-          />
-        </Form.Item>
+        <ClientIsolationAllowListEditor networkVenues={data?.venues}/>
       }
     </>
     }

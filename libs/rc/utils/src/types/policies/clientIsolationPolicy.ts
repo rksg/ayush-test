@@ -8,4 +8,6 @@ export interface ClientIsolationSaveData {
   name: string
   description?: string
   allowlist: ClientIsolationClient[]
+  tenantId?: string
+  venueId?: string
 }

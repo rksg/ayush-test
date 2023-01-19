@@ -54,7 +54,7 @@ import {
   transferDetailToSave,
   tranferSettingsToSave,
   transferMoreSettingsToSave,
-  updateClientIsolationAllowlistId
+  updateClientIsolationAllowlist
 } from './parser'
 import PortalInstance from './PortalInstance'
 import { Venues }     from './Venues/Venues'
@@ -168,8 +168,8 @@ export default function NetworkForm () {
 
   const handleAddNetwork = async () => {
     try {
-      const payload = _.omit(saveState, 'id') // omit id to handle clone
-      await addNetwork({ params: { tenantId: params.tenantId }, payload: payload }).unwrap()
+      const payload = updateClientIsolationAllowlist(_.omit(saveState, 'id')) // omit id to handle clone
+      await addNetwork({ params, payload }).unwrap()
       navigate(linkToNetworks, { replace: true })
     } catch {
       showToast({
@@ -181,10 +181,8 @@ export default function NetworkForm () {
 
   const handleEditNetwork = async (data: NetworkSaveData) => {
     try {
-      // eslint-disable-next-line max-len
-      const venuesWithClientIsolation = updateClientIsolationAllowlistId(data.venues, saveState.venues)
-      // eslint-disable-next-line max-len
-      await updateNetwork({ params, payload: { ...saveState, venues: venuesWithClientIsolation } }).unwrap()
+      const payload = updateClientIsolationAllowlist({ ...saveState, venues: data.venues })
+      await updateNetwork({ params, payload }).unwrap()
       navigate(linkToNetworks, { replace: true })
     } catch {
       showToast({
@@ -407,12 +405,7 @@ export default function NetworkForm () {
             name='venues'
             title={intl.$t({ defaultMessage: 'Venues' })}
             onFinish={async (data) => {
-              const updatedVenues = updateClientIsolationAllowlistId(data.venues, saveState.venues)
-
-              updateSaveData({
-                ...data,
-                venues: updatedVenues
-              })
+              updateSaveData(data)
               return true
             }}
           >
