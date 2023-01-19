@@ -8,7 +8,7 @@ import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import {
   aclDetail,
-  aclList,
+  aclList, aclResponse,
   layer2PolicyListResponse,
   layer2Response,
   layer3PolicyListResponse,
@@ -20,6 +20,8 @@ import AccessControlForm from './AccessControlForm'
 describe('AccessControlForm Component', () => {
   beforeEach(async () => {
     mockServer.use(
+      rest.post(AccessControlUrls.addAccessControlProfile.url,
+        (_, res, ctx) => res(ctx.json(aclResponse))),
       rest.get(AccessControlUrls.getAccessControlProfile.url,
         (_, res, ctx) => res(ctx.json(aclDetail))),
       rest.get(AccessControlUrls.getAccessControlProfileList.url,
@@ -53,6 +55,44 @@ describe('AccessControlForm Component', () => {
     })
 
     expect(header).toBeInTheDocument()
+
+    await userEvent.click(screen.getByRole('button', {
+      name: 'Cancel'
+    }))
+  })
+
+  it('Render AccessControlForm component successfully (create)', async () => {
+    render(
+      <Provider>
+        <Form>
+          <AccessControlForm editMode={false}/>
+        </Form>
+      </Provider>, {
+        route: {
+          params: { tenantId: 'tenantId1' }
+        }
+      }
+    )
+
+    const header = screen.getByRole('heading', {
+      name: /add access control policy/i
+    })
+
+    expect(header).toBeInTheDocument()
+
+    await userEvent.click((await screen.findAllByRole('switch'))[0])
+
+    await userEvent.click(screen.getByRole('button', {
+      name: 'Finish'
+    }))
+
+    await userEvent.click((await screen.findAllByRole('switch'))[0])
+
+    await userEvent.click((await screen.findAllByRole('switch'))[1])
+
+    await userEvent.click(screen.getByRole('button', {
+      name: 'Finish'
+    }))
   })
 
   it('Render AccessControlForm component with editMode successfully', async () => {

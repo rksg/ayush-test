@@ -13,6 +13,10 @@ export const aclDetail = {
 
 export const aclList = [aclDetail]
 
+export const aclResponse = {
+  requestId: '7305b668-b40b-439f-ba25-05ba6d587333'
+}
+
 export const layer2PolicyListResponse = {
   data: [
     {
