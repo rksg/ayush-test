@@ -88,7 +88,7 @@ function useColumns () {
     // },
     {
       title: $t({ defaultMessage: 'Wi-Fi APs' }),
-      align: 'left',
+      align: 'center',
       key: 'aggregatedApStatus',
       dataIndex: 'aggregatedApStatus',
       sorter: true,
@@ -97,15 +97,12 @@ function useColumns () {
           ? Object.values(row.aggregatedApStatus)
             .reduce((a, b) => a + b, 0)
           : 0
-        return (<Space direction='horizontal' size={4}>
-          { row.aggregatedApStatus
-            ? getApStatusChart(row.aggregatedApStatus)
-            : getEmptyStatusChart() }
+        return (
           <TenantLink
             to={`/venues/${row.id}/venue-details/devices`}
             children={count ? count : 0}
           />
-        </Space>)
+        )
       }
     },
     {
