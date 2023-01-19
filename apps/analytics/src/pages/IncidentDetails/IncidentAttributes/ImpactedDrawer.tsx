@@ -89,7 +89,7 @@ export const ImpactedClientsDrawer: React.FC<ImpactedClientsDrawerProps> = (prop
     startDate: startTime,
     endDate: endTime,
     range: 'Custom'
-  } 
+  }
   const period = fixedEncodeURIComponent(JSON.stringify(dateObj))
   const columns = useMemo(() => [
     column('hostname', {
