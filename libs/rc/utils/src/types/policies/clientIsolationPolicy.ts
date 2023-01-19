@@ -1,7 +1,6 @@
 export interface ClientIsolationClient {
   mac: string
   description?: string
-  ipAddress?: string
 }
 
 export interface ClientIsolationSaveData {
@@ -9,4 +8,6 @@ export interface ClientIsolationSaveData {
   name: string
   description?: string
   allowlist: ClientIsolationClient[]
+  tenantId?: string
+  venueId?: string
 }

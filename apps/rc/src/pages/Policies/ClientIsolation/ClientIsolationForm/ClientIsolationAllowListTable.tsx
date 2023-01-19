@@ -81,7 +81,7 @@ export function ClientIsolationAllowListTable (props: ClientIsolationAllowListTa
 
   const handleAddClients = (clients: SimpleClientRecord[]) => {
     const newClients: ClientIsolationClient[] = clients.map((c: SimpleClientRecord) => {
-      return { mac: c.clientMac, ipAddress: c.ipAddress }
+      return { mac: c.clientMac }
     })
 
     setAllowList([ ...allowList, ...newClients ])
@@ -110,8 +110,8 @@ export function ClientIsolationAllowListTable (props: ClientIsolationAllowListTa
     },
     {
       title: $t({ defaultMessage: 'IP Address' }),
-      dataIndex: 'ipAddress',
-      key: 'ipAddress',
+      dataIndex: 'ip',
+      key: 'ip',
       sorter: true
     },
     {

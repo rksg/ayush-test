@@ -16,6 +16,7 @@ export interface ContentSwitcherProps {
   tabDetails: Array<TabDetail>
   size?: 'small' | 'large'
   align?: 'left' | 'right' | 'center'
+  extra?: React.ReactNode;
   value?: string
   onChange?: (value: string) => void
 }
@@ -26,7 +27,7 @@ const sizeSpaceMap = {
 }
 
 export const ContentSwitcher: FC<ContentSwitcherProps> = (props) => {
-  const { tabDetails, defaultValue, size, align, value, onChange } = props
+  const { tabDetails, defaultValue, size, align, value, onChange, extra } = props
 
   const options: SelectionControlOptionProps[] = tabDetails.map(tabDetail=>{
     return {
@@ -55,7 +56,9 @@ export const ContentSwitcher: FC<ContentSwitcherProps> = (props) => {
           defaultValue={defaultValue || options[0].value}
           size={size}
           value={value || activeContent}
-          onChange={handleChange} />
+          onChange={handleChange}
+          extra={extra}
+        />
       </div>
       {
         tabDetails.find((tabDetail) => tabDetail.value === (value || activeContent))?.children

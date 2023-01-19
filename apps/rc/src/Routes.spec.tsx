@@ -1,4 +1,5 @@
 /* eslint-disable max-len */
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   ServiceType,
   getSelectServiceRoutePath,
@@ -6,10 +7,12 @@ import {
   getServiceListRoutePath,
   getServiceRoutePath,
   ServiceOperation,
+  getPolicyListRoutePath,
   PolicyType,
+  getPolicyRoutePath,
   PolicyOperation,
   getPolicyDetailsLink
-}    from '@acx-ui/rc/utils'
+} from '@acx-ui/rc/utils'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
@@ -37,6 +40,10 @@ jest.mock('./pages/Networks/NetworkForm/NetworkForm', () => () => {
 
 jest.mock('./pages/Networks/NetworkDetails/NetworkDetails', () => () => {
   return <div data-testid='NetworkDetails' />
+})
+
+jest.mock('./pages/Policies/PoliciesTable', () => () => {
+  return <div data-testid='PoliciesTable' />
 })
 
 jest.mock('./pages/Services/ServicesTable', () => () => {
@@ -101,6 +108,18 @@ jest.mock('./pages/Timeline', () => () => {
 
 jest.mock('./pages/Policies/ClientIsolation/ClientIsolationDetail/ClientIsolationDetail', () => () => {
   return <div data-testid='ClientIsolationDetail' />
+})
+
+jest.mock('./pages/Users/Persona', () => () => {
+  return <div data-testid='PersonaPortal' />
+})
+
+jest.mock('./pages/Users/Persona/PersonaDetails', () => () => {
+  return <div data-testid='PersonaDetails' />
+})
+
+jest.mock('./pages/Users/Persona/PersonaGroupDetails', () => () => {
+  return <div data-testid='PersonaGroupDetails' />
 })
 
 describe('RcRoutes: Devices', () => {
@@ -401,6 +420,84 @@ describe('RcRoutes: Services', () => {
 
 })
 
+describe('RcRoutes: Policies', () => {
+  test('should navigate to policy list', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + getPolicyListRoutePath(),
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('PoliciesTable')).toBeVisible()
+  })
+
+  test('should navigate to create ROGUE_AP_DETECTION page', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.CREATE }),
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByText(/add rogue ap detection policy/i)).toBeVisible()
+  })
+
+  test('should navigate to edit ROGUE_AP_DETECTION page', async () => {
+    let path = getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.EDIT })
+    path = path.replace(':policyId', 'policyId')
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + path,
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByText(/edit rogue ap detection policy/i)).toBeVisible()
+  })
+
+  test('should navigate to create MAC_REGISTRATION_LIST page', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.CREATE }),
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByText(/add mac registration list/i)).toBeVisible()
+  })
+
+  test('should navigate to edit MAC_REGISTRATION_LIST page', async () => {
+    let path = getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.EDIT })
+    path = path.replace(':policyId', 'policyId')
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + path,
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByText(/configure/i)).toBeVisible()
+  })
+
+  test('should navigate to create ACCESS_CONTROL page', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE }),
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByText(/add access control policy/i)).toBeVisible()
+  })
+
+  test('should navigate to Client Isolation details page', async () => {
+    const path = getPolicyDetailsLink({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.DETAIL, policyId: 'POLICY_ID' })
+
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path,
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('ClientIsolationDetail')).toBeVisible()
+  })
+})
+
 describe('RcRoutes: User', () => {
   test('should redirect user to user/wifi/clients', async () => {
     render(<Provider><RcRoutes /></Provider>, {
@@ -465,6 +562,39 @@ describe('RcRoutes: User', () => {
     })
     expect(screen.getByTestId('UserClientDetails')).toBeVisible()
   })
+  test('should redirect to Persona Portal', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/users/persona-management',
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('PersonaPortal')).toBeVisible()
+  })
+  test('should redirect to Persona detail', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/users/persona-management/persona-group/personGroupId/persona/personaId',
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('PersonaDetails')).toBeVisible()
+  })
+  test('should redirect to Persona Group detail', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/users/persona-management/persona-group/personGroupId',
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('PersonaGroupDetails')).toBeVisible()
+  })
 })
 
 describe('RcRoutes: Timeline', () => {
@@ -486,19 +616,5 @@ describe('RcRoutes: Timeline', () => {
       }
     })
     expect(screen.getByTestId('Timeline')).toBeVisible()
-  })
-})
-
-describe('RcRoutes: Policies', () => {
-  test('should navigate to Client Isolation details page', async () => {
-    const path = getPolicyDetailsLink({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.DETAIL, policyId: 'POLICY_ID' })
-
-    render(<Provider><RcRoutes /></Provider>, {
-      route: {
-        path,
-        wrapRoutes: false
-      }
-    })
-    expect(screen.getByTestId('ClientIsolationDetail')).toBeVisible()
   })
 })

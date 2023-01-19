@@ -17,18 +17,15 @@ export const mockedClientIsolationList = [
     allowlist: [
       {
         mac: 'AA:BB:CC:DD:EE:11',
-        description: 'Client 1',
-        ipAddress: '10.206.1.1'
+        description: 'Client 1'
       },
       {
         mac: 'AA:BB:CC:DD:EE:22',
-        description: 'Client 2',
-        ipAddress: '10.206.200.1'
+        description: 'Client 2'
       },
       {
         mac: 'AA:BB:CC:DD:EE:33',
-        description: 'Client 3',
-        ipAddress: '10.206.103.33'
+        description: 'Client 3'
       }
     ]
   },
@@ -39,13 +36,11 @@ export const mockedClientIsolationList = [
     allowlist: [
       {
         mac: '22:BB:CC:DD:EE:11',
-        description: 'Client 2-1',
-        ipAddress: '10.206.1.12'
+        description: 'Client 2-1'
       },
       {
         mac: '22:BB:CC:DD:EE:22',
-        description: 'Client 2-2',
-        ipAddress: '10.206.200.13'
+        description: 'Client 2-2'
       }
     ]
   },
@@ -56,8 +51,7 @@ export const mockedClientIsolationList = [
     allowlist: [
       {
         mac: 'AA:BB:CC:DD:EE:11',
-        description: 'Client 3-1',
-        ipAddress: '10.206.1.1'
+        description: 'Client 3-1'
       }
     ]
   }
@@ -79,17 +73,14 @@ export const mockedClientList = [{
 export const mockedAllowList: ClientIsolationClient[] = [
   {
     mac: 'AA:BB:11:22:33:FF',
-    description: 'Client 1',
-    ipAddress: '10.206.1.93'
+    description: 'Client 1'
   },
   {
     mac: 'AA:BB:11:22:33:F2',
-    description: 'Client 2',
-    ipAddress: '10.206.12.93'
+    description: 'Client 2'
   },
   {
     mac: 'AA:BB:11:22:33:F3',
-    description: 'Client 3',
-    ipAddress: '10.206.3.93'
+    description: 'Client 3'
   }
 ]
