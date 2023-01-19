@@ -121,7 +121,8 @@ export interface TroubleshootingResult {
       macAddressTablePortIdentify: string
       macAddressTableVlanId: string
       macAddressTableAddress: string,
-      macAddressTableType: TroubleshootingMacAddressOptionsEnum
+      macAddressTableType: TroubleshootingMacAddressOptionsEnum,
+      dhcpServerLeaseList?: SwitchDhcpLease[]
   }
 }
 
@@ -133,10 +134,6 @@ export interface TraceRouteSwitch {
   maxTtl: string
   targetHost: string
 }
-
-// export interface TroubleshootingResult {
-//   responseId: string
-// }
 
 export interface VeViewModel {
   name?: string
@@ -468,4 +465,39 @@ export interface SwitchProfile {
 export interface SaveSwitchProfile {
   switchId: string,
   port: PortSettingModel[]
+}
+
+export enum DHCP_OPTION_TYPE {
+  ASCII = 'ASCII',
+  HEX = 'HEX',
+  IP = 'IP',
+  BOOLEAN = 'BOOLEAN',
+  INTEGER = 'INTEGER'
+}
+
+export interface SwitchDhcpOption {
+  seq: number
+  type: DHCP_OPTION_TYPE
+  value: string
+}
+
+export interface SwitchDhcp {
+  id: string
+  poolName: string
+  leaseDays: number
+  leaseHrs: number
+  leaseMins: number
+  excludedEnd?: string
+  excludedStart?: string
+  defaultRouterIp?: string
+  subnetMask: string
+  subnetAddress: string
+  dhcpOptions?: SwitchDhcpOption[]
+}
+
+export interface SwitchDhcpLease {
+  clientId: string
+  clientIp: string
+  leaseExpiration: string
+  leaseType: string
 }

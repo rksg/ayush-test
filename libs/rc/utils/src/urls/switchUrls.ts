@@ -208,5 +208,38 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   macAddressTable: {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/switch/:switchId/mac-address-table'
+  },
+  getDhcpPools: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/switch/:switchId/dhcpServer/query'
+  },
+  addDhcpServer: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/switch/:switchId/dhcpServer'
+  },
+  getDhcpServer: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/dhcpServer/:dhcpServerId'
+  },
+  updateDhcpServer: {
+    method: 'put',
+    url: '/api/switch/tenant/:tenantId/switch/:switchId/dhcpServer'
+  },
+  deleteDhcpServers: {
+    method: 'delete',
+    url: '/api/switch/tenant/:tenantId/switch/:switchId/dhcpServers'
+  },
+  getDhcpLeases: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/switch/:switchId/'+
+      'troubleshootingResult/dhcp-server-lease-table'
+  },
+  dhcpLeaseTable: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/switch/:switchId/dhcpServer/leaseTable'
+  },
+  updateDhcpServerState: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/switch/:switchId/dhcpServer/state'
   }
 }
