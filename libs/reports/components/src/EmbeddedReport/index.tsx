@@ -11,7 +11,6 @@ import { useGuestTokenMutation, useEmbeddedIdMutation, BASE_RELATIVE_URL } from 
 import { useReportsFilter }                                                from '@acx-ui/reports/utils'
 import { useDateFilter, convertDateTimeToSqlFormat }                       from '@acx-ui/utils'
 
-
 interface ReportProps {
   embedDashboardName: string
   rlsClause?: string
@@ -26,11 +25,12 @@ export function EmbeddedReport (props: ReportProps) {
   const { filters: { paths, bands } } = useReportsFilter()
   const { networkClause, radioBandClause } = getSupersetRlsClause(paths,bands as RadioBand[])
 
-  // Hostname - Backend service where superset is running.
-  // For developement use https://devalto.ruckuswireless.com', for devalto.
-  // If using devalto, ensure the Cookie value is passed using modheader.
-  // This step is required, as the iframe requests is not proxied locally
-  // TODO: Add local proxy to handle iframe requests
+  /**
+  * Hostname - Backend service where superset is running.
+  * For developement,
+  * Use https://devalto.ruckuswireless.com', for devalto.
+  * Use https://local.alto.mlisa.io', for minikube.
+  **/
   const HOST_NAME = process.env['NODE_ENV'] === 'development'
     ? 'https://devalto.ruckuswireless.com' // Dev
     : window.location.origin // Production
@@ -63,7 +63,7 @@ export function EmbeddedReport (props: ReportProps) {
 
   const fetchGuestTokenFromBackend = async () => {
     // eslint-disable-next-line no-console
-    console.log('%c[%s][ACX] -> Refreshing guest token for %s EmbeddedReport',
+    console.log('%c[%s][EmbeddedReport] -> Refreshing guest token for [%s]',
       'color: cyan', new Date().toLocaleString(), embedDashboardName)
     return await guestToken({ payload: guestTokenPayload }).unwrap()
   }
