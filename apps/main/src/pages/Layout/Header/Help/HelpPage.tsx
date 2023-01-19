@@ -34,17 +34,14 @@ export default function HelpPage (props: {
         Accept: 'application/json'
       }
     })
-    if(!result.ok){
-      showError()
-      return
-    }
     const mapKey = Object.keys(mapping).find(item => location.pathname.indexOf(item) !== -1)
-    if (_.isEmpty(mapKey)) {
+
+    if(!result.ok || _.isEmpty(mapKey)){
       showError()
       return
     }
-    result = await result.json()
 
+    result = await result.json()
     const key = mapping[mapKey as keyof typeof mapping]
     return result[key as keyof typeof result]
   }
