@@ -7,8 +7,13 @@ import { useIntl } from 'react-intl'
 import {  Drawer }     from '@acx-ui/components'
 import { useLocation } from '@acx-ui/react-router-dom'
 
-import mapping         from './mapping'
-import { Description } from './styledComponents'
+import mapping                                            from './mapping'
+import { Description, DocLink, Paragraph, TextContainer } from './styledComponents'
+
+const MAPPING_URL = '/docs/r1/mapfile/doc-mapper.json'
+const DOCS_URL = '/docs/alto/latest/'
+const DOCS_HOME_URL = 'https://docs.cloud.ruckuswireless.com'
+
 
 export default function HelpPage (props: {
   modalState: boolean,
@@ -16,6 +21,7 @@ export default function HelpPage (props: {
 }) {
   const { $t } = useIntl()
   const [helpDesc, setHelpDesc] = useState<string>()
+  const [helpUrl, setHelpUrl] = useState<string|null>()
 
   const location = useLocation()
 
@@ -23,7 +29,7 @@ export default function HelpPage (props: {
   const getMapping = async () => {
     try {
       // eslint-disable-next-line max-len
-      const re = await (await fetch('https://docs.cloud.ruckuswireless.com/r1/mapfile/doc-mapper.json', {
+      const re = await (await fetch(MAPPING_URL, {
         method: 'GET',
         headers: {
           Accept: 'application/json'
@@ -31,21 +37,29 @@ export default function HelpPage (props: {
       })).json()
 
       const mapKey = Object.keys(mapping).find(item => location.pathname.indexOf(item) !== -1)
-      const key = mapping[mapKey as keyof typeof mapping]
-      if (!_.isEmpty(mapKey)) return re[key as typeof re]
+      if (_.isEmpty(mapKey)) {
+        showError()
+        return
+      }
+      return re[mapping[mapKey as keyof typeof mapping] as typeof re]
     }catch (e) {
-      setHelpDesc($t({ defaultMessage: 'The content is not available.' }))
+      showError()
     }
   }
   const updateDesc = async (destFile: string) => {
     try {
-    // eslint-disable-next-line max-len
-      const re = await (await fetch('https://docs.cloud.ruckuswireless.com/alto/latest/' + destFile)).text()
+      const re = await (await fetch(DOCS_URL + destFile)).text()
       setHelpDesc(new DOMParser().parseFromString(re, 'text/html')
         .querySelector('.shortdesc')?.innerHTML.trim().replace(/\<.*?\>|\n/g, '') || '')
+      setHelpUrl(DOCS_URL + destFile)
     } catch (e) {
-      setHelpDesc($t({ defaultMessage: 'The content is not available.' }))
+      showError()
     }
+  }
+
+  const showError = ()=>{
+    setHelpDesc($t({ defaultMessage: 'The content is not available.' }))
+    setHelpUrl(null)
   }
 
   useEffect(() => {
@@ -61,12 +75,36 @@ export default function HelpPage (props: {
     onClose={() => props.setIsModalOpen(false)}
     mask={true}
     children={<div>
-      <p>
+      <Paragraph>
         <Description>
           {helpDesc}
         </Description>
-        <Divider />
-      </p>
+      </Paragraph>
+      {!helpUrl && <Paragraph>
+        <TextContainer>
+        More details:
+        </TextContainer>
+        <DocLink
+          onClick={()=>{
+            window.open(DOCS_HOME_URL+'/alto/latest/index.html', '_blank')
+          }}
+          type='link'
+          block>
+          {$t({ defaultMessage: 'Ruckus ONE User Guide' })}
+        </DocLink>
+      </Paragraph>}
+
+      {helpUrl && <p>
+        <DocLink
+          onClick={()=>{
+            window.open(helpUrl, '_blank')
+          }}
+          type='link'
+          block>
+          {$t({ defaultMessage: 'Continue Reading' })}
+        </DocLink>
+      </p>}
+      <Divider />
     </div>
     }
     destroyOnClose={true}

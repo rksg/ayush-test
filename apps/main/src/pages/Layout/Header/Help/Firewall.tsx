@@ -1,6 +1,6 @@
 import { useIntl } from 'react-intl'
 
-import { Drawer, Subtitle } from '@acx-ui/components'
+import { Drawer } from '@acx-ui/components'
 
 import { CopyableText, HelpSubtitle } from './styledComponents'
 
