@@ -1,7 +1,9 @@
 /* eslint-disable max-len */
 import _ from 'lodash'
 
-import { getIntl } from '@acx-ui/utils'
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+import { showActionModal } from '@acx-ui/components'
+import { getIntl }         from '@acx-ui/utils'
 
 import { DeviceConnectionStatus } from '../../constants'
 import { STACK_MEMBERSHIP,
@@ -205,4 +207,21 @@ export const getStackMemberStatus = (unitStatus: string, isDefaultMember?: boole
     return $t({ defaultMessage: 'Member' })
   }
   return
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const showGeneralError = (error: any) => { // TODO: check res format
+  const { $t } = getIntl()
+
+  showActionModal({
+    type: 'error',
+    title: $t({ defaultMessage: 'Server Error' }),
+    content: $t({
+      defaultMessage: 'An internal error has occurred. Please contact support.'
+    }),
+    customContent: {
+      action: 'SHOW_ERRORS',
+      errorDetails: error?.data
+    }
+  })
 }
