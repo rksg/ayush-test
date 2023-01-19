@@ -65,6 +65,7 @@ export type TableColumn<RecordType = unknown, ValueType = 'text'>
  */
 export type ColumnState = { [columnKey: string]: boolean }
 export type ColumnStateOption = {
+  hidden?: boolean
   defaultValue?: ColumnState
   // value?: ColumnState
   onChange?: (state: ColumnState) => void
