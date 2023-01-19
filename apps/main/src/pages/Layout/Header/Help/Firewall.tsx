@@ -22,9 +22,7 @@ export default function Firewall (props: {
         }
       </p>
       <p>
-        <HelpSubtitle
-          level={5}
-          style={{ fontWeight: 'var(--acx-subtitle-5-font-weight-semi-bold)' }}>
+        <HelpSubtitle>
           {$t({ defaultMessage: 'Outbound HTTPS (TCP 443) from APs and Switches to:' })}
         </HelpSubtitle>
       </p>
@@ -42,9 +40,7 @@ export default function Firewall (props: {
         <CopyableText>https://storage.googleapis.com</CopyableText>
       </p>
       <p>
-        <HelpSubtitle
-          level={5}
-          style={{ fontWeight: 'var(--acx-subtitle-5-font-weight-semi-bold)' }}>
+        <HelpSubtitle>
           {$t({ defaultMessage: 'Outbound SSH (TCP 22) from APs and Switches to:' })}
         </HelpSubtitle>
       </p>
