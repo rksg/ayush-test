@@ -2,7 +2,7 @@ import { useIntl } from 'react-intl'
 
 import { Drawer } from '@acx-ui/components'
 
-import { CopyableText, HelpSubtitle } from './styledComponents'
+import { CopyableText, HelpSubtitle, FirewallWrapper } from './styledComponents'
 
 export default function Firewall (props: {
   modalState: boolean,
@@ -14,7 +14,7 @@ export default function Firewall (props: {
     title={$t({ defaultMessage: 'Firewall ACL Inputs' })}
     visible={props.modalState}
     onClose={() => props.setIsModalOpen(false)}
-    children={<div>
+    children={<FirewallWrapper>
       <p>
         {
           // eslint-disable-next-line max-len
@@ -49,7 +49,7 @@ export default function Firewall (props: {
         <CopyableText color={'var(--acx-primary-black)'}>device.eu.ruckus.cloud</CopyableText>
         <CopyableText color={'var(--acx-primary-black)'}>device.asia.ruckus.cloud</CopyableText>
       </p>
-    </div>
+    </FirewallWrapper>
     }
     destroyOnClose={true}
     width={420}

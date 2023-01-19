@@ -11,7 +11,8 @@ export const Description = styled.div`
 `
 
 export const HelpSubtitle = styled(Subtitle).attrs({ level: 5 })`
-  font-weight: var('--acx-subtitle-5-font-weight-semi-bold');
+  font-weight: var(--acx-subtitle-5-font-weight-semi-bold)!important;
+  margin-top: 15px;
 `
 
 type CopyableTextProps = {
@@ -34,4 +35,9 @@ export const Paragraph = styled.p`
 `
 export const TextContainer = styled(Typography.Paragraph)`
   margin-right: 5px;
+`
+export const FirewallWrapper = styled.div`
+  p {
+    margin-bottom: 0px;
+  }
 `
