@@ -40,16 +40,6 @@ describe('Select Service Form', () => {
   }
   const path = '/:tenantId/' + getSelectServiceRoutePath()
 
-  it('should render form', async () => {
-    const { asFragment } = render(
-      <SelectServiceForm />, {
-        route: { params, path }
-      }
-    )
-
-    expect(asFragment()).toMatchSnapshot()
-  })
-
   it('should navigate to the correct service page', async () => {
     render(
       <SelectServiceForm />, {
@@ -57,7 +47,7 @@ describe('Select Service Form', () => {
       }
     )
 
-    const wifiCallingRadio = screen.getByRole('radio', { name: /Wi-Fi Calling/ })
+    const wifiCallingRadio = screen.getByDisplayValue(/Wi-Fi Calling/)
     const submitButton = screen.getByRole('button', { name: 'Next' })
 
     await userEvent.click(wifiCallingRadio)

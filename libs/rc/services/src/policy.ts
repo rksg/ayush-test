@@ -16,8 +16,17 @@ import {
   RogueAPDetectionContextType,
   RogueAPDetectionTempType,
   VenueRoguePolicyType,
-  TableResult, onSocketActivityChanged, showActivityMessage, CommonResult,
-  NewTableResult, transferToTableResult,
+  TableResult,
+  onSocketActivityChanged,
+  showActivityMessage,
+  CommonResult,
+  NewTableResult,
+  transferToTableResult,
+  l3AclPolicyInfoType,
+  l2AclPolicyInfoType,
+  L2AclPolicy,
+  AvcApp,
+  AccessControlUrls, L3AclPolicy, AvcCat,
   ClientIsolationSaveData, ClientIsolationUrls
 } from '@acx-ui/rc/utils'
 
@@ -54,6 +63,44 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
     }),
+    addL2AclPolicy: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AccessControlUrls.addL2AclPolicy, params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    getL2AclPolicy: build.query<l2AclPolicyInfoType, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(AccessControlUrls.getL2AclPolicy, params, RKS_NEW_UI)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+    }),
+    addL3AclPolicy: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AccessControlUrls.addL3AclPolicy, params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    getL3AclPolicy: build.query<l3AclPolicyInfoType, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(AccessControlUrls.getL3AclPolicy, params, RKS_NEW_UI)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+    }),
     getRoguePolicyList: build.query<RogueAPDetectionTempType[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(RogueApUrls.getRoguePolicyList, params, RKS_NEW_UI)
@@ -65,8 +112,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           showActivityMessage(msg, [
-            'Add Rogue AP Policy Profile',
-            'Update Rogue AP Policy Profile'
+            'UpdateRogueApPolicyProfile'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
           })
@@ -124,15 +170,65 @@ export const policyApi = basePolicyApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           showActivityMessage(msg, [
-            'Add Rogue AP Policy Profile',
-            'Update Rogue AP Policy Profile',
-            'Delete Rogue AP Policy Profile',
+            'AddRogueApPolicyProfile',
+            'UpdateRogueApPolicyProfile',
+            'DeleteRogueApPolicyProfile',
             'AddClientIsolationAllowlist',
             'UpdateClientIsolationAllowlist',
             'DeleteClientIsolationAllowlist'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
           })
+        })
+      }
+    }),
+    l2AclPolicyList: build.query<TableResult<L2AclPolicy>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const l2AclPolicyListReq = createHttpRequest(
+          AccessControlUrls.getL2AclPolicyList,
+          params
+        )
+        return {
+          ...l2AclPolicyListReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const params = requestArgs.params as { requestId: string }
+          if (params.requestId) {
+            showActivityMessage(msg, [
+              'Add Layer 2 Policy Profile'
+            ],() => {
+              api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
+            }, params.requestId as string)
+          }
+        })
+      }
+    }),
+    l3AclPolicyList: build.query<TableResult<L3AclPolicy>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const l3AclPolicyListReq = createHttpRequest(
+          AccessControlUrls.getL3AclPolicyList,
+          params
+        )
+        return {
+          ...l3AclPolicyListReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const params = requestArgs.params as { requestId: string }
+          if (params.requestId) {
+            showActivityMessage(msg, [
+              'Add Layer 3 Policy Profile'
+            ],() => {
+              api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
+            }, params.requestId as string)
+          }
         })
       }
     }),
@@ -289,6 +385,26 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'ClientIsolation', id: 'LIST' }]
+    }),
+    avcCatList: build.query<AvcCat[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const avcCatListReq = createHttpRequest(AccessControlUrls.getAvcCat, params)
+        return {
+          ...avcCatListReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    avcAppList: build.query<AvcApp[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const avcAppListReq = createHttpRequest(AccessControlUrls.getAvcApp, params)
+        return {
+          ...avcAppListReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'LIST' }]
     })
   })
 })
@@ -305,9 +421,17 @@ export const {
   useUpdateMacRegistrationMutation,
   useAddMacRegListMutation,
   useUpdateMacRegListMutation,
+  useAvcCatListQuery,
+  useAvcAppListQuery,
   useAddRoguePolicyMutation,
   useDelRoguePolicyMutation,
   useDelRoguePoliciesMutation,
+  useAddL2AclPolicyMutation,
+  useGetL2AclPolicyQuery,
+  useAddL3AclPolicyMutation,
+  useGetL3AclPolicyQuery,
+  useL2AclPolicyListQuery,
+  useL3AclPolicyListQuery,
   useGetRoguePolicyListQuery,
   useUpdateRoguePolicyMutation,
   useRoguePolicyQuery,
@@ -319,5 +443,6 @@ export const {
   useGetClientIsolationListQuery,
   useLazyGetClientIsolationListQuery,
   useGetClientIsolationQuery,
-  useUpdateClientIsolationMutation
+  useUpdateClientIsolationMutation,
+  useLazyGetMacRegListQuery
 } = policyApi

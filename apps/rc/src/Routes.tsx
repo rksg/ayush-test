@@ -1,3 +1,4 @@
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   PolicyType,
   ServiceType,
@@ -10,26 +11,28 @@ import {
   ServiceOperation,
   getServiceRoutePath
 } from '@acx-ui/rc/utils'
-import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
-import { Provider }                          from '@acx-ui/store'
+import { rootRoutes, Route, TenantNavigate, Navigate } from '@acx-ui/react-router-dom'
+import { Provider }                                    from '@acx-ui/store'
 
-import Edges                      from './pages/Devices/Edge'
-import AddEdge                    from './pages/Devices/Edge/AddEdge'
-import EdgeDetails                from './pages/Devices/Edge/EdgeDetails'
-import EditEdge                   from './pages/Devices/Edge/EdgeDetails/EditEdge'
-import { StackForm }              from './pages/Devices/Switch/StackForm'
-import SwitchDetails              from './pages/Devices/Switch/SwitchDetails'
-import SwitchesTable              from './pages/Devices/Switch/SwitchesTable'
-import { AddSwitchForm }          from './pages/Devices/Switch/SwitchForm/AddSwitchForm'
-import ApDetails                  from './pages/Devices/Wifi/ApDetails'
-import { ApEdit }                 from './pages/Devices/Wifi/ApEdit'
-import { ApForm }                 from './pages/Devices/Wifi/ApForm'
-import { ApGroupForm }            from './pages/Devices/Wifi/ApGroupForm'
-import ApsTable                   from './pages/Devices/Wifi/ApsTable'
-import NetworkDetails             from './pages/Networks/NetworkDetails/NetworkDetails'
-import NetworkForm                from './pages/Networks/NetworkForm/NetworkForm'
-import NetworksTable              from './pages/Networks/NetworksTable'
-import ClientIsolationForm        from './pages/Policies/ClientIsolation/ClientIsolationForm/ClientIsolationForm'
+import Edges                       from './pages/Devices/Edge'
+import AddEdge                     from './pages/Devices/Edge/AddEdge'
+import EdgeDetails                 from './pages/Devices/Edge/EdgeDetails'
+import EditEdge                    from './pages/Devices/Edge/EdgeDetails/EditEdge'
+import { StackForm }               from './pages/Devices/Switch/StackForm'
+import SwitchDetails               from './pages/Devices/Switch/SwitchDetails'
+import { SwitchClientDetailsPage } from './pages/Devices/Switch/SwitchDetails/SwitchClientsTab/SwitchClientDetailsPage'
+import SwitchesTable               from './pages/Devices/Switch/SwitchesTable'
+import { AddSwitchForm }           from './pages/Devices/Switch/SwitchForm/AddSwitchForm'
+import ApDetails                   from './pages/Devices/Wifi/ApDetails'
+import { ApEdit }                  from './pages/Devices/Wifi/ApEdit'
+import { ApForm }                  from './pages/Devices/Wifi/ApForm'
+import { ApGroupForm }             from './pages/Devices/Wifi/ApGroupForm'
+import ApsTable                    from './pages/Devices/Wifi/ApsTable'
+import NetworkDetails              from './pages/Networks/NetworkDetails/NetworkDetails'
+import NetworkForm                 from './pages/Networks/NetworkForm/NetworkForm'
+import NetworksTable               from './pages/Networks/NetworksTable'
+import AccessControlForm           from './pages/Policies/AccessControl/AccessControlForm/AccessControlForm'
+import ClientIsolationForm         from './pages/Policies/ClientIsolation/ClientIsolationForm/ClientIsolationForm'
 import MacRegistrationListDetails
   from './pages/Policies/MacRegistrationList/MacRegistrarionListDetails/MacRegistrarionListDetails'
 import MacRegistrationListsTable  from './pages/Policies/MacRegistrationList/MacRegistrarionListTable'
@@ -47,6 +50,8 @@ import DpskTable                from './pages/Services/Dpsk/DpskTable/DpskTable'
 import MdnsProxyDetail          from './pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail'
 import MdnsProxyForm            from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
 import NetworkSegmentationForm  from './pages/Services/NetworkSegmentationForm/NetworkSegmentationForm'
+import NetworkSegAuthDetail     from './pages/Services/NetworkSegWebAuth/NetworkSegAuthDetail'
+import NetworkSegAuthForm       from './pages/Services/NetworkSegWebAuth/NetworkSegAuthForm'
 import PortalServiceDetail      from './pages/Services/Portal/PortalDetail'
 import PortalForm               from './pages/Services/Portal/PortalForm/PortalForm'
 import SelectServiceForm        from './pages/Services/SelectServiceForm'
@@ -55,6 +60,9 @@ import WifiCallingDetailView    from './pages/Services/WifiCalling/WifiCallingDe
 import WifiCallingConfigureForm from './pages/Services/WifiCalling/WifiCallingForm/WifiCallingConfigureForm'
 import WifiCallingForm          from './pages/Services/WifiCalling/WifiCallingForm/WifiCallingForm'
 import Timeline                 from './pages/Timeline'
+import PersonaPortal            from './pages/Users/Persona'
+import PersonaDetails           from './pages/Users/Persona/PersonaDetails'
+import PersonaGroupDetails      from './pages/Users/Persona/PersonaGroupDetails'
 import SwitchClientList         from './pages/Users/Switch/ClientList'
 import WifiClientDetails        from './pages/Users/Wifi/ClientDetails'
 import WifiClientList           from './pages/Users/Wifi/ClientList'
@@ -89,13 +97,13 @@ function DeviceRoutes () {
       <Route path='devices/apgroups/:action' element={<ApGroupForm />} />
       <Route path='devices/switch/:action' element={<AddSwitchForm />} />
       <Route
-        path='devices/wifi/:serialNumber/details/:activeTab'
+        path='devices/wifi/:apId/details/:activeTab'
         element={<ApDetails />} />
       <Route
-        path='devices/wifi/:serialNumber/details/:activeTab/:activeSubTab'
+        path='devices/wifi/:apId/details/:activeTab/:activeSubTab'
         element={<ApDetails />} />
       <Route
-        path='devices/wifi/:serialNumber/details/:activeTab/:activeSubTab/:categoryTab'
+        path='devices/wifi/:apId/details/:activeTab/:activeSubTab/:categoryTab'
         element={<ApDetails />} />
       <Route
         path='devices/switch/:switchId/:serialNumber/details/:activeTab'
@@ -103,6 +111,14 @@ function DeviceRoutes () {
       />
       <Route
         path='devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab'
+        element={<SwitchDetails />}
+      />
+      <Route
+        path='devices/switch/:switchId/:serialNumber/clientDetails/:clientId'
+        element={<SwitchClientDetailsPage />}
+      />
+      <Route
+        path='devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab/:categoryTab'
         element={<SwitchDetails />}
       />
       <Route path='devices/edge/add' element={<AddEdge />} />
@@ -113,6 +129,8 @@ function DeviceRoutes () {
         path='devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         element={<EditEdge />} />
       <Route path='devices/edge/:serialNumber/edge-details/:activeTab'
+        element={<EdgeDetails />} />
+      <Route path='devices/edge/:serialNumber/edge-details/:activeTab/:activeSubTab'
         element={<EdgeDetails />} />
       <Route path='devices/switch' element={<SwitchesTable />} />
       <Route path='devices/switch/stack/add' element={<StackForm />} />
@@ -212,6 +230,21 @@ function ServiceRoutes () {
         element={<NetworkSegmentationForm/>}
       />
       <Route
+        path={getServiceRoutePath({ type: ServiceType.WEBAUTH_SWITCH,
+          oper: ServiceOperation.CREATE })}
+        element={<NetworkSegAuthForm />}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.WEBAUTH_SWITCH,
+          oper: ServiceOperation.EDIT })}
+        element={<NetworkSegAuthForm editMode={true} />}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.WEBAUTH_SWITCH,
+          oper: ServiceOperation.DETAIL })}
+        element={<NetworkSegAuthDetail/>}
+      />
+      <Route
         path={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.CREATE })}
         element={<PortalForm/>}
       />
@@ -265,6 +298,10 @@ function PolicyRoutes () {
         element={<MacRegistrationListForm editMode={true} />}
       />
       <Route
+        path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE })}
+        element={<AccessControlForm edit={false}/>}
+      />
+      <Route
         // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.CREATE })}
         element={<ClientIsolationForm editMode={false}/>}
@@ -284,22 +321,24 @@ function UserRoutes () {
       <Route path='users' element={<TenantNavigate replace to='/users/wifi/clients' />} />
       <Route path='users/wifi' element={<TenantNavigate replace to='/users/wifi/clients' />} />
       <Route path='users/wifi/:activeTab' element={<WifiClientList />} />
-      <Route
-        path='users/wifi/:activeTab/:clientId/details/'
-        element={
-          <TenantNavigate replace to='/users/wifi/:activeTab/:clientId/details/overview' />
-        }
-      />
-      <Route
-        path='users/wifi/:activeTab/:clientId/details/:activeTab'
-        element={<WifiClientDetails />}
-      />
-      <Route
-        path='users/wifi/:activeTab/:clientId/details/:activeTab/:activeSubTab'
-        element={<WifiClientDetails />}
-      />
+      <Route path='users/wifi/:activeTab/:clientId/details'>
+        <Route path='' element={<Navigate replace to='./overview' />} />
+        <Route path=':activeTab' element={<WifiClientDetails />} />
+        <Route path=':activeTab/:activeSubTab' element={<WifiClientDetails />} />
+      </Route>
       <Route path='users/switch' element={<TenantNavigate replace to='/users/switch/clients' />} />
       <Route path='users/switch/clients' element={<SwitchClientList />} />
+      {useIsSplitOn(Features.SERVICES)
+        ? <><Route
+          path='users/persona-management'
+          element={<TenantNavigate replace to='/users/persona-management/persona-group'/>}/><Route
+          path='users/persona-management/:activeTab'
+          element={<PersonaPortal/>}/><Route
+          path='users/persona-management/persona-group/:personaGroupId'
+          element={<PersonaGroupDetails/>}/><Route
+          path='users/persona-management/persona-group/:personaGroupId/persona/:personaId'
+          element={<PersonaDetails/>}/></>
+        : <></>}
     </Route>
   )
 }
