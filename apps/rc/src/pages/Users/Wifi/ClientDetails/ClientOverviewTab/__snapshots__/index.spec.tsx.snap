@@ -160,7 +160,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render corr
                               <div
                                 class="styledComponents__Title-sc-75u9lp-2 kWZKtZ"
                               >
-                                Total Connected Time
+                                Last Session Duration
                               </div>
                               <h2
                                 class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
@@ -240,7 +240,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render corr
                             >
                               <div
                                 class="echarts-for-react "
-                                size-sensor-id="12"
+                                size-sensor-id="5"
                                 style="height: 160px; position: relative;"
                               >
                                 <div
@@ -1192,7 +1192,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                               <div
                                 class="styledComponents__Title-sc-75u9lp-2 kWZKtZ"
                               >
-                                Total Connected Time
+                                Last Session Duration
                               </div>
                               <h2
                                 class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
@@ -1272,7 +1272,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                             >
                               <div
                                 class="echarts-for-react "
-                                size-sensor-id="11"
+                                size-sensor-id="4"
                                 style="height: 160px; position: relative;"
                               >
                                 <div
@@ -2397,7 +2397,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                               <div
                                 class="styledComponents__Title-sc-75u9lp-2 kWZKtZ"
                               >
-                                Total Connected Time
+                                Last Session Duration
                               </div>
                               <h2
                                 class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
@@ -2477,7 +2477,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                             >
                               <div
                                 class="echarts-for-react "
-                                size-sensor-id="10"
+                                size-sensor-id="3"
                                 style="height: 160px; position: relative;"
                               >
                                 <div
@@ -3648,7 +3648,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                               <div
                                 class="styledComponents__Title-sc-75u9lp-2 kWZKtZ"
                               >
-                                Total Connected Time
+                                Last Session Duration
                               </div>
                               <h2
                                 class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
@@ -3728,7 +3728,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                             >
                               <div
                                 class="echarts-for-react "
-                                size-sensor-id="8"
+                                size-sensor-id="1"
                                 style="height: 160px; position: relative;"
                               >
                                 <div
@@ -4680,7 +4680,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                               <div
                                 class="styledComponents__Title-sc-75u9lp-2 kWZKtZ"
                               >
-                                Total Connected Time
+                                Last Session Duration
                               </div>
                               <h2
                                 class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
@@ -4760,7 +4760,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                             >
                               <div
                                 class="echarts-for-react "
-                                size-sensor-id="9"
+                                size-sensor-id="2"
                                 style="height: 160px; position: relative;"
                               >
                                 <div
@@ -5700,7 +5700,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client c
                               <div
                                 class="styledComponents__Title-sc-75u9lp-2 kWZKtZ"
                               >
-                                Total Connected Time
+                                Last Session Duration
                               </div>
                               <h2
                                 class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
@@ -5780,7 +5780,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client c
                             >
                               <div
                                 class="echarts-for-react "
-                                size-sensor-id="4"
+                                size-sensor-id="1"
                                 style="height: 160px; position: relative;"
                               >
                                 <div
@@ -7022,7 +7022,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client w
                               <div
                                 class="styledComponents__Title-sc-75u9lp-2 kWZKtZ"
                               >
-                                Total Connected Time
+                                Last Session Duration
                               </div>
                               <h2
                                 class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
@@ -7102,7 +7102,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client w
                             >
                               <div
                                 class="echarts-for-react "
-                                size-sensor-id="5"
+                                size-sensor-id="2"
                                 style="height: 160px; position: relative;"
                               >
                                 <div
@@ -8326,7 +8326,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render dpsk cli
                               <div
                                 class="styledComponents__Title-sc-75u9lp-2 kWZKtZ"
                               >
-                                Total Connected Time
+                                Last Session Duration
                               </div>
                               <h2
                                 class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
@@ -8406,7 +8406,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render dpsk cli
                             >
                               <div
                                 class="echarts-for-react "
-                                size-sensor-id="7"
+                                size-sensor-id="4"
                                 style="height: 160px; position: relative;"
                               >
                                 <div
@@ -9820,7 +9820,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                               <div
                                 class="styledComponents__Title-sc-75u9lp-2 kWZKtZ"
                               >
-                                Total Connected Time
+                                Last Session Duration
                               </div>
                               <h2
                                 class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
@@ -9900,7 +9900,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                             >
                               <div
                                 class="echarts-for-react "
-                                size-sensor-id="6"
+                                size-sensor-id="3"
                                 style="height: 160px; position: relative;"
                               >
                                 <div
@@ -11361,7 +11361,7 @@ exports[`ClientOverviewTab OverviewWidget should render client info correctly 1`
                               <div
                                 class="styledComponents__Title-sc-75u9lp-2 kWZKtZ"
                               >
-                                Total Connected Time
+                                Last Session Duration
                               </div>
                               <h2
                                 class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
@@ -12683,7 +12683,7 @@ exports[`ClientOverviewTab OverviewWidget should render correctly when search pa
                               <div
                                 class="styledComponents__Title-sc-75u9lp-2 kWZKtZ"
                               >
-                                Total Connected Time
+                                Last Session Duration
                               </div>
                               <h2
                                 class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
@@ -13715,7 +13715,7 @@ exports[`ClientOverviewTab OverviewWidget should render historical client info c
                               <div
                                 class="styledComponents__Title-sc-75u9lp-2 kWZKtZ"
                               >
-                                Total Connected Time
+                                Last Session Duration
                               </div>
                               <h2
                                 class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"

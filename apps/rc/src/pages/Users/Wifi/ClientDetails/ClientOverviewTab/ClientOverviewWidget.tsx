@@ -60,7 +60,7 @@ export function ClientOverviewWidget ({ clientStatistic, clientStatus, clientDet
         </UI.GridCol>
         <UI.GridCol col={{ span: 5 }}>
           <UI.Title>{
-            $t({ defaultMessage: 'Total Connected Time' })
+            $t({ defaultMessage: 'Last Session Duration' })
           }</UI.Title>
           <Subtitle level={2}>{
             formatter('durationFormat')(
