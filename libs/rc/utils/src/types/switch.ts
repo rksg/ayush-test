@@ -148,7 +148,9 @@ export interface VeViewModel {
   syncedSwitchConfig: boolean
   veId: number
   vlanId: number
-  portTyp : string //ignore
+  portTyp: string //ignore
+  inactiveRow?: boolean //ignore
+  inactiveTooltip?: string //ignore
 }
 
 export interface VeForm {
@@ -261,19 +263,22 @@ export interface ConfigurationHistory {
   numberOfErrors: number
   transactionId: string
   dispatchFailedReason?: DispatchFailedReason[]
+  numberOfFailed?: number
+  numberOfNotifySuccess?: number
+  numberOfSuccess?: number
 }
 
 export interface ConfigurationBackup {
-  'id': string
-'createdDate': string
-'name': string
-'backupType': string
-'backupName': string
-'status': ConfigurationBackupStatus
-'config': string
-'switchId': string
-restoreStatus: ConfigurationBackupStatus
-failureReason: string
+  id: string
+  createdDate: string
+  name: string
+  backupType: string
+  backupName: string
+  status: ConfigurationBackupStatus
+  config: string
+  switchId: string
+  restoreStatus: ConfigurationBackupStatus
+  failureReason: string
 }
 
 export interface DispatchFailedReason {

@@ -278,7 +278,8 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      providesTags: [{ type: 'Switch', id: 'VE' }]
     }),
     getVlanListBySwitchLevel: build.query<TableResult<Vlan>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -595,6 +596,7 @@ export const {
   useStackMemberListQuery,
   useDeleteSwitchesMutation,
   useSwitchDetailHeaderQuery,
+  useLazySwitchDetailHeaderQuery,
   useImportSwitchesMutation,
   useGetVlansByVenueQuery,
   useLazyGetVlansByVenueQuery,
@@ -615,9 +617,11 @@ export const {
   useGetFreeVePortVlansQuery,
   useLazyGetFreeVePortVlansQuery,
   useGetAclUnionQuery,
+  useLazyGetAclUnionQuery,
   useAddVePortMutation,
   useUpdateVePortMutation,
   useGetSwitchQuery,
+  useLazyGetSwitchQuery,
   useDeleteVePortsMutation,
   useGetSwitchAclsQuery,
   useGetVlanListBySwitchLevelQuery,

@@ -11,17 +11,28 @@ import { useParams }                                                            
 
 import { SwitchDetailsContext } from '../..'
 
-import { BackupModal } from './BackupModal'
+import { BackupModal }               from './BackupModal'
+import { CompareConfigurationModal } from './CompareConfigurationModal'
+import { ViewConfigurationModal }    from './ViewConfigurationModal'
+
+interface clearTableSelection {
+  clearSelection: () => void
+}
 
 export function SwitchConfigBackupTable () {
   const { $t } = useIntl()
   const params = useParams()
-  // const [viewVisible, setViewVisible] = useState(false) TODO:
-  // const [viewData, setViewData] = useState(null as unknown as ConfigurationBackup)
+  const [viewVisible, setViewVisible] = useState(false)
+  const [compareVisible, setCompareVisible] = useState(false)
+  const [viewData, setViewData] = useState(null as unknown as ConfigurationBackup)
+  const [compareData, setCompareData] = useState({
+    left: null as unknown as ConfigurationBackup,
+    right: null as unknown as ConfigurationBackup
+  })
   const [backupModalVisible, setBackupModalVisible] = useState(false)
   const [backupButtonnStatus, setBackupButtonnStatus] = useState({ disabled: false, tooltip: '' })
   const [enabledRowButton, setEnabledRowButton] = useState([] as string[])
-
+  const [tableClearSelection, setTableClearSelection] = useState(null as unknown as clearTableSelection)
 
   const {
     switchDetailsContextData
@@ -32,15 +43,30 @@ export function SwitchConfigBackupTable () {
   const [ deleteConfigBackups ] = useDeleteConfigBackupsMutation()
   const { currentSwitchOperational, switchName } = switchDetailsContextData
 
-  // const showViewModal = (row: ConfigurationBackup[]) => {
-  //   setViewData(row[0]) TODO:
-  //   setViewVisible(true)
-  // }
+  const showViewModal = (rows: ConfigurationBackup[], clearSelection: ()=>void) => {
+    setViewData(rows[0])
+    setViewVisible(true)
+    setTableClearSelection({
+      clearSelection
+    })
+  }
 
-  // const handleCancelViewModal = () => {
-  //   setViewData(null as unknown as ConfigurationBackup)
-  //   setViewVisible(false) TODO:
-  // }
+  const handleCancelViewModal = () => {
+    setViewData(null as unknown as ConfigurationBackup)
+    setViewVisible(false)
+  }
+
+  const showCompareModal = (rows: ConfigurationBackup[]) => {
+    setCompareData({
+      left: rows[0],
+      right: rows[1] || rows[0]
+    })
+    setCompareVisible(true)
+  }
+
+  const handleCancelCompareModal = () => {
+    setCompareVisible(false)
+  }
 
   const tableQuery = useTableQuery({
     useQuery: useGetSwitchConfigBackupListQuery,
@@ -115,7 +141,7 @@ export function SwitchConfigBackupTable () {
     })
   }
 
-  const showRestoreModal = async ( rows: ConfigurationBackup[], clearSelection: ()=>void ) => {
+  const showRestoreModal = async ( row: ConfigurationBackup, clearSelection: ()=>void ) => {
     showActionModal({
       type: 'confirm',
       title: $t({ defaultMessage: 'Restore configuration from backup?' }),
@@ -125,11 +151,11 @@ export function SwitchConfigBackupTable () {
       }),
       okText: $t({ defaultMessage: 'Restore' }),
       onOk: () => {
-        restoreConfigBackup({ params: { ...params, configId: rows[0].id } })
+        restoreConfigBackup({ params: { ...params, configId: row.id } })
           .then(() => {
             showToast({
               type: 'success',
-              content: $t({ defaultMessage: 'Backup {name} was restored' }, { name: rows[0].name })
+              content: $t({ defaultMessage: 'Backup {name} was restored' }, { name: row.name })
             })
             clearSelection()
           })
@@ -152,24 +178,21 @@ export function SwitchConfigBackupTable () {
 
   const rowActions: TableProps<ConfigurationBackup>['rowActions'] = [{
     label: $t({ defaultMessage: 'View' }),
-    // disabled: () => !enabledRowButton.find(item => item === 'View'),
-    disabled: true,
-    onClick: () => {
-      // TODO:
-      // showViewModal(rows)
+    disabled: () => !enabledRowButton.find(item => item === 'View'),
+    onClick: (rows, clearSelection) => {
+      showViewModal(rows, clearSelection)
     }
   }, {
     label: $t({ defaultMessage: 'Compare' }),
-    // disabled: () => !enabledRowButton.find(item => item === 'Compare'),
-    disabled: true,
-    onClick: () => {
-      // TODO:
+    disabled: () => !enabledRowButton.find(item => item === 'Compare'),
+    onClick: (rows) => {
+      showCompareModal(rows)
     }
   }, {
     label: $t({ defaultMessage: 'Restore' }),
     disabled: () => !enabledRowButton.find(item => item === 'Restore'),
     onClick: (rows, clearSelection) => {
-      showRestoreModal(rows, clearSelection)
+      showRestoreModal(rows[0], clearSelection)
     }
   }, {
     label: $t({ defaultMessage: 'Download' }),
@@ -185,6 +208,13 @@ export function SwitchConfigBackupTable () {
     }
   }
   ]
+
+  const viewModalActions = {
+    compare:　showCompareModal,
+    restore: showRestoreModal,
+    download: downloadBackup,
+    delete: showDeleteModal
+  }
 
   const rightActions = [{
     label: $t({ defaultMessage: 'Backup Now' }),
@@ -248,10 +278,25 @@ export function SwitchConfigBackupTable () {
       visible={backupModalVisible}
       handleCancel={() => setBackupModalVisible(false)}
     />
-    {/* <ViewConfigurationModal TODO:
-      data={viewData}
-      visible={viewVisible}
-      handleCancel={handleCancelViewModal}
-    /> */}
+    {
+      viewVisible &&
+      <ViewConfigurationModal
+        data={viewData}
+        visible={viewVisible}
+        handleCancel={handleCancelViewModal}
+        actions={viewModalActions}
+        enabledButton={enabledRowButton}
+        tableClearSelection={tableClearSelection.clearSelection}
+      />
+    }
+    {
+      compareVisible &&
+      <CompareConfigurationModal
+        visible={compareVisible}
+        configList={tableData}
+        compareData={compareData}
+        handleCancel={handleCancelCompareModal}
+      />
+    }
   </>
 }
