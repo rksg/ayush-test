@@ -4,10 +4,8 @@ import styled         from 'styled-components/macro'
 import { Subtitle, Button } from '@acx-ui/components'
 
 
-export const Description = styled.div`
-  color: var(--acx-neutrals-70);
-  margin-top: 4px;
-  font-size: var(--acx-subtitle-5-font-size);
+export const EmptyDescription = styled.div`
+  color: var(--acx-neutrals-40);
 `
 
 export const HelpSubtitle = styled(Subtitle).attrs({ level: 5 })`

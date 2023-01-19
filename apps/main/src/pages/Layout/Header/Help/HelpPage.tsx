@@ -7,8 +7,8 @@ import { useIntl } from 'react-intl'
 import {  Drawer }     from '@acx-ui/components'
 import { useLocation } from '@acx-ui/react-router-dom'
 
-import mapping                                            from './mapping'
-import { Description, DocLink, Paragraph, TextContainer } from './styledComponents'
+import mapping                                                 from './mapping'
+import { EmptyDescription, DocLink, Paragraph, TextContainer } from './styledComponents'
 
 const MAPPING_URL = '/docs/r1/mapfile/doc-mapper.json'
 const DOCS_URL = '/docs/alto/latest/'
@@ -76,9 +76,10 @@ export default function HelpPage (props: {
     mask={true}
     children={<div>
       <Paragraph>
-        <Description>
-          {helpDesc}
-        </Description>
+        {helpUrl ? helpDesc :
+          <EmptyDescription>
+            {helpDesc}
+          </EmptyDescription>}
       </Paragraph>
       {!helpUrl && <Paragraph>
         <TextContainer>
