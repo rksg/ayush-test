@@ -69,8 +69,8 @@ export function EmbeddedReport (props: ReportProps) {
   }
 
   useEffect(()=> {
-    let timer: ReturnType<typeof setInterval> | null = null
-    let embeddedObj :Promise<EmbeddedDashboard> | null = null
+    let timer: ReturnType<typeof setInterval>
+    let embeddedObj :Promise<EmbeddedDashboard>
     if (dashboardEmbeddedId && dashboardEmbeddedId.length > 0) {
       embeddedObj = embedDashboard({
         id: dashboardEmbeddedId,
