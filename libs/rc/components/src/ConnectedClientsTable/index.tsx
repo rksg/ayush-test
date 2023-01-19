@@ -358,7 +358,7 @@ export const ConnectedClientsTable = (props: {
     if (tableQuery.data?.data && setConnectedClientCount) {
       setConnectedClientCount(tableQuery.data?.totalCount)
     }
-  }, [])
+  }, [tableQuery.data?.data, tableQuery.data?.totalCount])
 
   useEffect(() => {
     if (searchString !== undefined && tableQuery.payload.searchString !== searchString) {
