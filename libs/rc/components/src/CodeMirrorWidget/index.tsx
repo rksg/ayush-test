@@ -1,24 +1,31 @@
 /* eslint-disable max-len */
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 
-import './type.d'
-import * as CodeMirror from 'codemirror'
 
-import * as UI from './styledComponents'
-// import * as DiffMatchPatch from 'diff-match-patch' TODO: Backup feature
-// import * as MergeViewCodeMirror from 'merge-view-codemirror'
-// import { MergeViewConfiguration } from 'codemirror/addon/merge/merge.js'
+import './type.d'
+import * as CodeMirror            from 'codemirror'
+import { MergeViewConfiguration } from 'codemirror/addon/merge/merge.js'
+import * as DiffMatchPatch        from 'diff-match-patch'
+import _                          from 'lodash'
+import * as MergeViewCodeMirror   from 'merge-view-codemirror'
 import 'codemirror/addon/selection/active-line.js'
 import 'codemirror/addon/mode/overlay'
 
+import * as UI from './styledComponents'
+
 
 interface CodeMirrorData {
-  clis: string,
+  clis: string
   configOptions?: CodeMirror.EditorConfiguration
 }
 
+interface MergeData {
+  left: string
+  right: string
+}
+
 interface CodeMirrorWidgetProps {
-  data:CodeMirrorData
+  data:CodeMirrorData | MergeData
   type:string
   size?: {
     height?:string
@@ -70,16 +77,23 @@ export const CodeMirrorWidget = forwardRef((props:CodeMirrorWidgetProps, ref) =>
     }
   }))
 
+  const initNode = () => {
+    const container = document.getElementById('codeViewContainer')
+    while (container?.firstChild) {
+      container.removeChild(container?.firstChild)
+    }
+    const codeNode = document.createElement('div')
+    codeNode.id = 'codeView'
+    container?.appendChild(codeNode)
+  }
+
   useEffect(() => {
-    if (type === 'single' && data.clis) {
-      const container = document.getElementById('codeViewContainer')
-      while (container?.firstChild) {
-        container.removeChild(container?.firstChild)
-      }
-      const codeNode = document.createElement('div')
-      codeNode.id = 'codeView'
-      container?.appendChild(codeNode)
-      initSingleView(data)
+    if (type === 'single' && _.get(data, 'clis')) {
+      initNode()
+      initSingleView(data as CodeMirrorData)
+    } else if (type === 'merge') {
+      initNode()
+      initMergeView(data as MergeData)
     }
   }, [data])
 
@@ -89,23 +103,24 @@ export const CodeMirrorWidget = forwardRef((props:CodeMirrorWidgetProps, ref) =>
     }
   }, [readOnlyCodeMirror])
 
-  // const initMergeView = () => { TODO: Backup feature
-  //   MergeViewCodeMirror.init(CodeMirror, DiffMatchPatch)
-  //   const target = document.getElementById("codeView") as HTMLElement
-  //   if (target) {
-  //     CodeMirror.MergeView(target, {
-  //       readOnly: true,
-  //       lineNumbers: true,
-  //       value: htmlDecode('newContent') as string, // left
-  //       orig: htmlDecode('right') as string,// right
-  //       mode: "text/html",
-  //       highlightDifferences: true,
-  //       connect: 'align',
-  //       collapseIdentical: false,
-  //       revertButtons: false,
-  //     } as MergeViewConfiguration)
-  //   }
-  // }
+
+  const initMergeView = (data: MergeData) => {
+    MergeViewCodeMirror.init(CodeMirror, DiffMatchPatch)
+    const target = document.getElementById('codeView') as HTMLElement
+    if (target) {
+      CodeMirror.MergeView(target, {
+        readOnly: true,
+        lineNumbers: true,
+        value: htmlDecode(data.left) as string,
+        orig: htmlDecode(data.right) as string,
+        mode: 'text/html',
+        highlightDifferences: true,
+        connect: 'align',
+        collapseIdentical: false,
+        revertButtons: false
+      } as MergeViewConfiguration)
+    }
+  }
 
   return (
     <UI.Container>
