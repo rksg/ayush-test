@@ -75,7 +75,7 @@ exports[`ApSettingsTab should render correctly 1`] = `
               Directed Multicast
               <svg
                 data-testid="QuestionMarkCircleOutlined"
-                style="margin-left: 8px; height: 16px;"
+                style="margin-left: 8px; margin-bottom: -3px; height: 16px; width: 16px;"
               />
             </div>
           </div>

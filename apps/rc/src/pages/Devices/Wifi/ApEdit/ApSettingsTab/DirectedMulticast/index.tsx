@@ -1,9 +1,9 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 
-import { Col, Form, Row, Space, Switch } from 'antd'
-import { isEmpty }                       from 'lodash'
-import { FormattedMessage, useIntl }     from 'react-intl'
-import { useNavigate, useParams }        from 'react-router-dom'
+import { Col, Form, Row, Space, Switch }            from 'antd'
+import { isEmpty }                                  from 'lodash'
+import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
+import { useNavigate, useParams }                   from 'react-router-dom'
 
 import { Button, Loader, showToast, StepsForm, StepsFormInstance } from '@acx-ui/components'
 import {
@@ -18,6 +18,7 @@ import { ApDirectedMulticast, VenueDirectedMulticast, VenueExtended } from '@acx
 import { TenantLink, useTenantLink }                                  from '@acx-ui/react-router-dom'
 
 import { ApEditContext } from '../../../ApEdit/index'
+import { FieldLabel }    from '../styledComponents'
 
 export function DirectedMulticast () {
   const { $t } = useIntl()
@@ -46,6 +47,24 @@ export function DirectedMulticast () {
   const [isUseVenueSettings, setIsUseVenueSettings] = useState(true)
 
   const [formInitializing, setFormInitializing] = useState(true)
+
+  const directedMulticastSettings = [
+    {
+      key: 'wired',
+      label: defineMessage({ defaultMessage: 'Wired Client' }),
+      fieldName: 'wiredEnabled'
+    },
+    {
+      key: 'wireless',
+      label: defineMessage({ defaultMessage: 'Wireless Client' }),
+      fieldName: 'wirelessEnabled'
+    },
+    {
+      key: 'network',
+      label: defineMessage({ defaultMessage: 'Network' }),
+      fieldName: 'networkEnabled'
+    }
+  ]
 
 
   useEffect(() => {
@@ -201,60 +220,22 @@ export function DirectedMulticast () {
             {$t({ defaultMessage: 'Multicast Traffic from:' })}
           </Col>
         </Row>
-        <Row gutter={0}>
-          <Col span={4}>
-            {$t({ defaultMessage: 'Wired Client' })}
-          </Col>
-          <Col span={4}>
+        { directedMulticastSettings.map(({ key, fieldName, label }) => (
+          <FieldLabel width='180px'>
+            {$t(label)}
             <Form.Item
-              name='wiredEnabled'
+              name={fieldName}
               valuePropName='checked'
               style={{ marginTop: '-5px' }}
               children={
                 <Switch
-                  data-testid='wired-switch'
+                  data-testid={key+'-switch'}
                   disabled={isUseVenueSettings}
                 />
               }
             />
-          </Col>
-        </Row>
-        <Row gutter={0}>
-          <Col span={4}>
-            {$t({ defaultMessage: 'Wireless Client' })}
-          </Col>
-          <Col span={4}>
-            <Form.Item
-              name='wirelessEnabled'
-              valuePropName='checked'
-              style={{ marginTop: '-5px' }}
-              children={
-                <Switch
-                  data-testid='wireless-switch'
-                  disabled={isUseVenueSettings}
-                />
-              }
-            />
-          </Col>
-        </Row>
-        <Row gutter={0}>
-          <Col span={4}>
-            {$t({ defaultMessage: 'Network' })}
-          </Col>
-          <Col span={4}>
-            <Form.Item
-              name='networkEnabled'
-              valuePropName='checked'
-              style={{ marginTop: '-5px' }}
-              children={
-                <Switch
-                  data-testid='network-switch'
-                  disabled={isUseVenueSettings}
-                />
-              }
-            />
-          </Col>
-        </Row>
+          </FieldLabel>
+        ))}
       </StepsForm.StepForm>
     </StepsForm>
   </Loader>
