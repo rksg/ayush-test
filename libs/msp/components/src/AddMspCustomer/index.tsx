@@ -416,31 +416,6 @@ export function AddMspCustomer () {
         <label>devices out of {remainingDevices} available</label>
       </UI.FieldLabelSubs>
     </div>
-    // return <>
-    //   {switchLicenses.map(license =>
-    //     <div >
-    //       <UI.FieldLabelSubs width='275px'>
-    //         <label>
-    //           {EntitlementUtil.deviceSubTypeToText(
-    //             license.deviceSubType as EntitlementDeviceSubType)}
-    //         </label>
-    //         <Form.Item
-    //           name={license.deviceSubType}
-    //           label=''
-    //           initialValue={0}
-    //           rules={[
-    //             { required: true },
-    //             { min: 0 },
-    //             { max: license.remainingDevices },
-    //             { validator: (_, value) => excludeExclamationRegExp(value) }
-    //           ]}
-    //           children={<Input/>}
-    //           style={{ paddingRight: '20px' }}
-    //         />
-    //         <label>devices out of {license.remainingDevices} available</label>
-    //       </UI.FieldLabelSubs>
-    //     </div> )}
-    // </>
   }
 
   const CustomerSubscription = () => {
