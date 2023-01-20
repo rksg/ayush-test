@@ -35,7 +35,7 @@ import {
   getRoamingChartConfig,
   getRoamingSubtitleConfig,
   getChartData,
-  useTooltipFormatter
+  useLabelFormatter
 } from './util'
 
 export const connectionDetailsByAp = [
@@ -935,13 +935,17 @@ describe('util', () => {
     })
   })
   describe('chart utils', () => {
-    const useTooltipParameters = (type: string, obj: object) =>
-      [
-        {
-          data: obj,
-          seriesName: type
-        }
-      ] as TooltipFormatterParams[]
+    const useTooltipParameters = (type: string, obj: object) => {
+      return {
+        value: 1668403161155,
+        seriesData: [
+          {
+            data: obj,
+            seriesName: type
+          }
+        ]
+      }
+    }
     it('getChartData should return empty array for no match', async () => {
       expect(getChartData(null as unknown as keyof TimelineData, [], false)).toEqual([])
     })
@@ -1012,41 +1016,41 @@ describe('util', () => {
     })
 
     it('tooltipFormatter should return correct Html string for events', async () => {
-      expect(useTooltipFormatter(useTooltipParameters('events', eventDataObj))).toContain(
+      expect(useLabelFormatter(useTooltipParameters('events', eventDataObj))).toContain(
         'Client associated (802.11)'
       )
       expect(
-        useTooltipFormatter([{ seriesName: 'events' }] as TooltipFormatterParams[])
+        useLabelFormatter([{ seriesName: 'events' }] as TooltipFormatterParams[])
       ).toContain(' ')
     })
 
     it('tooltipFormatter should return correct Html string for connectionQuality', async () => {
       expect(
-        useTooltipFormatter(useTooltipParameters('quality', qualityDataObj))
+        useLabelFormatter(useTooltipParameters('quality', qualityDataObj))
       ).toContain('Avg MCS (Downlink)')
       expect(
-        useTooltipFormatter([{ seriesName: 'quality' }] as TooltipFormatterParams[])
+        useLabelFormatter([{ seriesName: 'quality' }] as TooltipFormatterParams[])
       ).toContain('')
     })
     it('tooltipFormatter should return correct Html string for incidents', async () => {
       expect(
-        useTooltipFormatter(useTooltipParameters('incidents', incidentDataObj))
+        useLabelFormatter(useTooltipParameters('incidents', incidentDataObj))
       ).toContain('AP service is affected due to high number of AP reboots')
       expect(
-        useTooltipFormatter([{ seriesName: 'incidents' }] as TooltipFormatterParams[])
+        useLabelFormatter([{ seriesName: 'incidents' }] as TooltipFormatterParams[])
       ).toContain(' ')
     })
     it('tooltipFormatter should return correct Html string for roaming', async () => {
       expect(
-        useTooltipFormatter(useTooltipParameters('roaming', roamingDataObj))
+        useLabelFormatter(useTooltipParameters('roaming', roamingDataObj))
       ).toContain('-73 dBm / 18:4B:0D:5C:A2:4C / 144 / 11ac / 2 SS / 80 MHz')
       expect(
-        useTooltipFormatter([{ seriesName: 'roaming' }] as TooltipFormatterParams[])
+        useLabelFormatter([{ seriesName: 'roaming' }] as TooltipFormatterParams[])
       ).toContain(':')
     })
     it('tooltipFormatter should empty Html string for invalid value', async () => {
-      expect(useTooltipFormatter([{}] as TooltipFormatterParams[])).toEqual('')
-      expect(useTooltipFormatter({} as TooltipFormatterParams[])).toEqual('')
+      expect(useLabelFormatter([{}] as TooltipFormatterParams[])).toEqual('')
+      expect(useLabelFormatter({} as TooltipFormatterParams[])).toEqual('')
     })
   })
 })

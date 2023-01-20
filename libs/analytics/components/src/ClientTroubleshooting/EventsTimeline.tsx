@@ -19,7 +19,8 @@ import {
   NetworkIncidentCategoryMap,
   RoamingByAP,
   RoamingConfigParam,
-  RoamingTimeSeriesData
+  RoamingTimeSeriesData,
+  ALL
 } from './config'
 import { ClientInfoData, ConnectionEvent } from './services'
 import * as UI                             from './styledComponents'
@@ -33,7 +34,7 @@ import {
   getRoamingSubtitleConfig,
   getTimelineData,
   getChartData,
-  useTooltipFormatter,
+  useLabelFormatter,
   transformIncidents
 } from './util'
 
@@ -51,10 +52,6 @@ export function TimeLine (props: TimeLineProps) {
   const types: string[] = flatten(filters ? filters.type ?? [[]] : [[]])
   const radios: string[] = flatten(filters ? filters.radio ?? [[]] : [[]])
   const selectedCategories: string[] = flatten(filters ? filters.category ?? [[]] : [[]])
-  const roamingEventsAps = connectionDetailsByAP(data?.connectionDetailsByAp as RoamingByAP[])
-  const roamingEventsTimeSeries = connectionDetailsByApChartData(
-    data?.connectionDetailsByAp as RoamingByAP[]
-  ) as unknown as RoamingTimeSeriesData[]
   const qualties = transformConnectionQualities(data?.connectionQualities)
   const events = transformEvents(
     data?.connectionEvents as ConnectionEvent[],
@@ -91,6 +88,10 @@ export function TimeLine (props: TimeLineProps) {
       />
     )
   const TimelineData = getTimelineData(events, incidents)
+  const roamingEventsAps = connectionDetailsByAP(data?.connectionDetailsByAp as RoamingByAP[])
+  const roamingEventsTimeSeries = connectionDetailsByApChartData(
+    data?.connectionDetailsByAp as RoamingByAP[]
+  ) as unknown as RoamingTimeSeriesData[]
   const connectChart = (chart: ReactECharts | null) => {
     if (chart) {
       const instance = chart.getEchartsInstance()
@@ -172,7 +173,8 @@ export function TimeLine (props: TimeLineProps) {
                   expandObj[config?.value as keyof TimelineData],
                   !Array.isArray(qualties) ? qualties.all : [],
                   Array.isArray(incidents) ? incidents : [],
-                  roamingEventsTimeSeries
+                  { ...roamingEventsTimeSeries, [ALL]: TimelineData.roaming
+                    .all } as RoamingTimeSeriesData[]
                 )}
                 showResetZoom={config?.showResetZoom}
                 chartBoundary={chartBoundary}
@@ -193,7 +195,7 @@ export function TimeLine (props: TimeLineProps) {
                 }
                 hasXaxisLabel={config?.hasXaxisLabel}
                 chartRef={connectChart}
-                tooltipFormatter={useTooltipFormatter}
+                tooltipFormatter={useLabelFormatter}
                 // caputuring scatterplot dot click to open popover
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 // onDotClick={(params) => {}}

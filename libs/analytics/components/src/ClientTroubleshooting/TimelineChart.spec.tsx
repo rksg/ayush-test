@@ -133,6 +133,16 @@ describe('TimelineChartComponent', () => {
           icon: ''
         }
       ]
+      const roamingEvent = {
+        code: 'ttc',
+        color: '--acx-semantics-yellow-30',
+        details: 'Connection (Time To Connect)',
+        end: 1668166380000,
+        start: 1668165660000,
+        seriesKey: 'all',
+        label: 'test',
+        value: 'test'
+      }
       expect(getSeriesData(incidentsData, 'connection', 'incidents')).toEqual([
         [
           1668165660000,
@@ -152,6 +162,28 @@ describe('TimelineChartComponent', () => {
         ]
       ])
       expect(getSeriesData(incidentsData, 'connection', 'unknown')).toEqual([])
+      expect(
+        getSeriesData(
+          { all: [roamingEvent] } as unknown as RoamingTimeSeriesData[],
+          'all',
+          'roaming'
+        )
+      ).toEqual([
+        [
+          1668165660000,
+          'all',
+          {
+            code: 'ttc',
+            color: '--acx-semantics-yellow-30',
+            details: 'Connection (Time To Connect)',
+            end: 1668166380000,
+            label: 'test',
+            seriesKey: 'all',
+            start: 1668165660000,
+            value: 'test'
+          }
+        ]
+      ])
     })
   })
   describe('renderCustomItem', () => {

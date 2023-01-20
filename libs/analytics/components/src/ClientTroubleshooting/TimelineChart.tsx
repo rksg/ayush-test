@@ -10,10 +10,9 @@ import {
   useImperativeHandle
 } from 'react'
 
+
 import ReactECharts        from 'echarts-for-react'
 import {
-  TooltipFormatterCallback,
-  TopLevelFormatterParams,
   CustomSeriesRenderItem
 } from 'echarts/types/dist/shared'
 import moment      from 'moment-timezone'
@@ -43,7 +42,7 @@ import {
   INCIDENTS,
   ALL
 } from './config'
-import { getQualityColor } from './util'
+import { getQualityColor, useLabelFormatter } from './util'
 
 import type {
   ECharts,
@@ -71,7 +70,7 @@ export interface TimelineChartProps extends Omit<EChartsReactProps, 'option' | '
   onDotClick?: (params: unknown) => void;
   chartRef?: RefCallback<ReactECharts>;
   hasXaxisLabel?: boolean;
-  tooltipFormatter: TooltipFormatterCallback<TopLevelFormatterParams>;
+  tooltipFormatter: CallableFunction;
   mapping: { key: string; label: string; chartType: string; series: string }[];
   showResetZoom?: boolean;
 }
@@ -108,6 +107,11 @@ export const getSeriesData = (
       .map((record) => [record.start, key, moment(record.end).valueOf(), { ...record, icon: '' }])
   }
   if (series === ROAMING) {
+    if(key === ALL){
+      return (data as unknown as { [key: string]: RoamingTimeSeriesData[] })[key]
+        .filter((record) => record.seriesKey === key)
+        .map((record) => [record.start, record.seriesKey, record])
+    }
     return (data as unknown as { [key: string]: { events: RoamingTimeSeriesData[] } })[
       key
     ]?.events.map((record: RoamingTimeSeriesData) => [
@@ -289,9 +293,11 @@ export function TimelineChart ({
     },
     tooltip: {
       trigger: 'axis',
+      triggerOn: 'mousemove',
       axisPointer: {
         axis: 'x',
         status: 'show',
+        snap: false,
         animation: false,
         lineStyle: {
           color: cssStr('--acx-neutrals-70'),
@@ -299,7 +305,8 @@ export function TimelineChart ({
           width: 1
         }
       },
-      formatter: tooltipFormatter,
+      // use this formatter to add popover content
+      formatter: /* istanbul ignore next */ () => '',
       ...tooltipOptions(),
       // Need to address test coverage for the postion
       position: /* istanbul ignore next */ (point) => [point[0] + 10, mapping.length * 25]
@@ -331,6 +338,23 @@ export function TimelineChart ({
       splitLine: {
         show: false,
         lineStyle: { color: cssStr('--acx-neutrals-20') }
+      },
+      axisPointer: {
+        show: true,
+        snap: false,
+        triggerTooltip: false,
+        label: {
+          ...tooltipOptions() as Object,
+          show: true,
+          formatter: useLabelFormatter as unknown as string,
+          margin: -35
+        },
+        type: 'line',
+        lineStyle: {
+          type: 'solid',
+          width: 1,
+          color: cssStr('--acx-primary-black')
+        }
       }
     },
     yAxis: {
