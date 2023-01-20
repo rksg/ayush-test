@@ -11,6 +11,7 @@ const EdgeDetailsTabs = (props:{ currentEdge: EdgeStatus }) => {
   const basePath = useTenantLink(`/devices/edge/${params.serialNumber}/edge-details`)
   const navigate = useNavigate()
   const onTabChange = (tab: string) => {
+    if(tab === 'dhcp') tab = tab + '/pools'
     navigate({
       ...basePath,
       pathname: `${basePath.pathname}/${tab}`
@@ -30,6 +31,7 @@ const EdgeDetailsTabs = (props:{ currentEdge: EdgeStatus }) => {
         tab={$t({ defaultMessage: 'Services ({servicesCount})' }, { servicesCount: 0 })} // TODO: API support
         key='services'
       />
+      <Tabs.TabPane tab={$t({ defaultMessage: 'DHCP' })} key='dhcp' />
       <Tabs.TabPane tab={$t({ defaultMessage: 'Timeline' })} key='timeline' />
     </Tabs>
   )

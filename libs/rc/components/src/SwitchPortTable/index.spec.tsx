@@ -1,10 +1,10 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { switchApi }                                             from '@acx-ui/rc/services'
-import { SwitchUrlsInfo }                                        from '@acx-ui/rc/utils'
-import { Provider, store }                                       from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { switchApi }                                                                from '@acx-ui/rc/services'
+import { SwitchUrlsInfo }                                                           from '@acx-ui/rc/utils'
+import { Provider, store }                                                          from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
 import { SwitchPortTable } from '.'
 
@@ -265,6 +265,10 @@ const portlistData_7150 = {
   totalCount: 2
 }
 
+jest.mock('./editPortDrawer', () => ({
+  EditPortDrawer: () => <div data-testid='editPortDrawer' />
+}))
+
 describe('SwitchPortTable', () => {
   beforeEach(() => {
     store.dispatch(switchApi.util.resetApiState())
@@ -286,6 +290,11 @@ describe('SwitchPortTable', () => {
     await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
     await screen.findAllByText('1/1/1')
     await screen.findByRole('button', { name: 'Manage LAG' })
+
+    const row = await screen.findAllByRole('row')
+    fireEvent.click(await within(row[1]).findByRole('checkbox'))
+    fireEvent.click(await screen.findByRole('button', { name: 'Edit' }))
+    expect(await screen.findByTestId('editPortDrawer')).toBeVisible()
     expect(asFragment()).toMatchSnapshot()
   })
 
