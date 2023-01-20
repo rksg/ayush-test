@@ -19,9 +19,9 @@ import {
   ResendInviteModal
 } from '@acx-ui/msp/components'
 import {
-  // useDeactivateMspEcMutation,
+  useDeactivateMspEcMutation,
   useDeleteMspEcMutation,
-  // useReactivateMspEcMutation,
+  useReactivateMspEcMutation,
   useMspCustomerListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -258,13 +258,13 @@ export function MspCustomers () {
       { isLoading: isDeleteEcUpdating }
     ] = useDeleteMspEcMutation()
 
-    // const [
-    //   deactivateMspEc
-    // ] = useDeactivateMspEcMutation()
+    const [
+      deactivateMspEc
+    ] = useDeactivateMspEcMutation()
 
-    // const [
-    //   reactivateMspEc
-    // ] = useReactivateMspEcMutation()
+    const [
+      reactivateMspEc
+    ] = useReactivateMspEcMutation()
 
     const rowActions: TableProps<MspEc>['rowActions'] = [
       {
@@ -308,7 +308,7 @@ export function MspCustomers () {
               are you sure you want to proceed?`
             }, { formattedName: name }),
             okText: $t({ defaultMessage: 'Deactivate' }),
-            onOk: () => deleteMspEc({ params: { mspEcTenantId: id } })
+            onOk: () => deactivateMspEc({ params: { mspEcTenantId: id } })
               .then(clearSelection)
           })
         }
@@ -336,7 +336,7 @@ export function MspCustomers () {
               "{formattedName}"?`
             }, { formattedName: name }),
             okText: $t({ defaultMessage: 'Reactivate' }),
-            onOk: () => deleteMspEc({ params: { mspEcTenantId: id } })
+            onOk: () => reactivateMspEc({ params: { mspEcTenantId: id } })
               .then(clearSelection)
           })
         }
@@ -350,7 +350,7 @@ export function MspCustomers () {
               action: 'DELETE',
               entityName: $t({ defaultMessage: 'EC' }),
               entityValue: name,
-              confirmationText: $t({ defaultMessage: 'Reactivate' })
+              confirmationText: $t({ defaultMessage: 'Delete' })
             },
             onOk: () => deleteMspEc({ params: { mspEcTenantId: id } })
               .then(clearSelection)

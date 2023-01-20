@@ -857,7 +857,11 @@ export function ManageCustomer () {
           defaultMessage: `
             {title}`
         }, { title })}
-        {intl.$t({ defaultMessage: 'Start Subscription' })}
+        <Button type='link'
+          style={{ fontSize: 'var(--acx-body-4-font-size)',
+            color: 'var(--acx-accents-orange-30)', float: 'left' }}
+          onClick={() => setStartSubscriptionVisible(true)}
+        >{intl.$t({ defaultMessage: 'Start Subscription' })}</Button>
       </UI.OtpLabel>
       : <h4>
       </h4>)

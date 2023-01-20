@@ -118,11 +118,11 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/api/viewmodel/tenant/:tenantId/ec-inventory/export'
   },
   deactivateMspEcAccount: {
-    method: 'delete',
+    method: 'post',
     url: '/api/mspservice/tenant/:mspEcTenantId/deactivation'
   },
   reactivateMspEcAccount: {
-    method: 'delete',
+    method: 'post',
     url: '/api/mspservice/tenant/:mspEcTenantId/reactivation'
   }
 }
