@@ -101,69 +101,69 @@ export function ClientOverviewWidget ({ clientStatistic, clientStatus, clientDet
   const CurrentStatus = () =>
     <>
       <UI.Title>{$t({ defaultMessage: 'Current Status' })}</UI.Title>
-      <UI.StyledSubtitle level={2}>
+      <UI.Subtitle level={2}>
         {clientStatus.toLowerCase() === 'connected'
           ? $t({ defaultMessage: 'Connected' })
           : $t({ defaultMessage: 'Disconnected' })}
-      </UI.StyledSubtitle>
+      </UI.Subtitle>
     </>
 
   const ApsConnected = () =>
     <>
       <UI.Title>{$t({ defaultMessage: 'APs Connected' })}</UI.Title>
-      <UI.StyledSubtitle level={2}>{clientStatistic?.apsConnected}</UI.StyledSubtitle>
+      <UI.Subtitle level={2}>{clientStatistic?.apsConnected}</UI.Subtitle>
     </>
 
   const AvgRate = () =>
     <>
       <UI.Title>{$t({ defaultMessage: 'Avg. Rate' })}</UI.Title>
-      <UI.StyledSubtitle level={2}>
+      <UI.Subtitle level={2}>
         {formatter('bytesFormat')(clientStatistic?.avgRateBPS)}
-      </UI.StyledSubtitle>
+      </UI.Subtitle>
     </>
 
   const UserTrafficWidget = () =>
     <>
       <UI.Title>{$t({ defaultMessage: 'User Traffic' })}</UI.Title>
-      <UI.StyledSubtitle level={2}>
+      <UI.Subtitle level={2}>
         {formatter('bytesFormat')(clientStatistic?.userTrafficBytes)}
-      </UI.StyledSubtitle >
+      </UI.Subtitle >
     </>
 
   const LastSessionDuration = () =>
     <>
       <UI.Title>{$t({ defaultMessage: 'Last Session Duration' })}</UI.Title>
-      <UI.StyledSubtitle level={2}>
+      <UI.Subtitle level={2}>
         {formatter('durationFormat')(clientDetails?.timeConnectedMs
           ? convertEpochToRelativeTime(clientDetails?.timeConnectedMs)
           : (clientDetails?.sessionDuration
             ? clientDetails?.sessionDuration * 1000
             : 0))}
-      </UI.StyledSubtitle>
+      </UI.Subtitle>
     </>
 
   const Applications = () =>
     <>
       <UI.Title>{$t({ defaultMessage: 'Applications' })}</UI.Title>
-      <UI.StyledSubtitle level={2}>
+      <UI.Subtitle level={2}>
         {Math.floor(clientStatistic?.applications ?? 0)}
-      </UI.StyledSubtitle>
+      </UI.Subtitle>
     </>
 
   const AvgSessionLength = () =>
     <>
       <UI.Title>{$t({ defaultMessage: 'Avg. Session Length' })}</UI.Title>
-      <UI.StyledSubtitle level={2}>
+      <UI.Subtitle level={2}>
         {formatter('durationFormat')(clientStatistic?.avgSessionLengthSeconds)}
-      </UI.StyledSubtitle>
+      </UI.Subtitle>
     </>
 
   const Sessions = () =>
     <>
       <UI.Title>{$t({ defaultMessage: 'Sessions' })}</UI.Title>
-      <UI.StyledSubtitle level={2}>
+      <UI.Subtitle level={2}>
         {Math.floor(clientStatistic?.sessions ?? 0)}
-      </UI.StyledSubtitle>
+      </UI.Subtitle>
     </>
 
   const UserTrafficChart = () => <UserTraffic data={clientStatistic} />
