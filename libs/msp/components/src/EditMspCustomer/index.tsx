@@ -669,6 +669,7 @@ export function EditMspCustomer () {
         setSelected={selectedIntegrators}
       />}
       {startSubscriptionVisible && <StartSubscriptionModal
+        isActive={isTrialActive}
         visible={startSubscriptionVisible}
         setVisible={setStartSubscriptionVisible}
         setStartDate={startSubscription}
