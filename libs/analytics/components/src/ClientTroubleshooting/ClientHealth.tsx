@@ -1,3 +1,6 @@
+import { useRef, useEffect } from 'react'
+
+import EChartsReact           from 'echarts-for-react'
 import { CallbackDataParams } from 'echarts/types/dist/shared'
 import { groupBy }            from 'lodash'
 import moment                 from 'moment-timezone'
@@ -79,9 +82,28 @@ export function ClientHealth (
     }
   }
 
-  return <Loader states={[data]}>
+  const divRef = useRef<HTMLDivElement>(null)
+  const chartRef = useRef<EChartsReact>(null)
+
+  useEffect(() => {
+    const observer = new ResizeObserver(() => {
+      if (divRef.current && chartRef.current) {
+        const chart = chartRef.current.getEchartsInstance()
+        chart.resize({ width: 80, height: 80 })
+      }
+    })
+
+    if (divRef.current) {
+      observer.observe(divRef.current)
+    }
+
+    return () => observer.disconnect()
+  })
+
+  return <Loader states={[data]} divRef={divRef}>
     <BarChart
-      style={{ height: 160 }}
+      chartRef={chartRef}
+      style={{ height: 100, width: 100 }}
       data={{
         dimensions: ['HealthQuality', 'Value'],
         source: [

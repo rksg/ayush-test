@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { MutableRefObject, RefObject } from 'react'
 
 import { SerializedError }     from '@reduxjs/toolkit'
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
@@ -20,6 +20,7 @@ export type LoaderProps = React.PropsWithChildren<{
   states?: QueryState[];
   fallback?: React.ReactNode;
   errorFallback?: React.ReactNode;
+  divRef?: MutableRefObject<HTMLDivElement> | RefObject<HTMLDivElement>
 }>
 
 export function Loader (props: LoaderProps) {
@@ -35,7 +36,7 @@ export function Loader (props: LoaderProps) {
     : undefined
 
   return (
-    <UI.Wrapper $isLoading={isLoading}>
+    <UI.Wrapper $isLoading={isLoading} ref={props.divRef}>
       <ErrorBoundary fallback={errorFallback}>
         <ErrorContainer states={props.states} />
         <SuspenseBoundary fallback={fallback}>
