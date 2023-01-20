@@ -160,6 +160,42 @@ export const ApErrorHandlingMessages = {
     defaultMessage: 'Error occurred while {action} AP'
   })
 }
+
+export const EditPortMessages = {
+  UNSELECT_VLANS: defineMessage({
+    defaultMessage: 'The port must be a member of at least one VLAN'
+  }),
+  ADD_VLAN_DISABLE: defineMessage({
+    defaultMessage: 'Create and apply a configuration profile to this switch\'s venue to add/edit VLANs'
+  }),
+  ADD_ACL_DISABLE: defineMessage({
+    defaultMessage: 'Create and apply a configuration profile to this switch\'s venue to add/edit ACL'
+  }),
+  ADD_LLDP_DISABLE: defineMessage({
+    defaultMessage: 'Create and apply a configuration profile to this switch\'s venue to add/edit LLDP QoS'
+  }),
+  VOICE_VLAN_DISABLE: defineMessage({
+    defaultMessage: 'No profile VLAN or VLAN option'
+  }),
+  USE_VENUE_SETTINGS_DISABLE: defineMessage({
+    defaultMessage: 'Venue settings default VLAN ID is the same as one of switch VLANs'
+  }),
+  POE_CAPABILITY_DISABLE: defineMessage({
+    defaultMessage: 'Can not configure PoE configurations(PoE Enable, PoE Class, and PoE Priority) since this port doesn\'t have PoE capability.'
+  }),
+  TAGGED_VLAN_TOOLTIP: defineMessage({
+    defaultMessage: 'Cannot set tagged VLANs when IPSG is activated on the port'
+  })
+}
+
+export const MultipleEditPortMessages = {
+  UNSELECT_VLANS: defineMessage({
+    defaultMessage: 'Each port must be a member of at least one VLAN'
+  }),
+  POE_CAPABILITY_DISABLE: defineMessage({
+    defaultMessage: 'Can not configure PoE configurations(PoE Enable, PoE Class, and PoE Priority) since one or more ports don\'t have PoE capability.'
+  })
+}
 /* eslint-enable */
 
 export enum IsolatePacketsTypeEnum {

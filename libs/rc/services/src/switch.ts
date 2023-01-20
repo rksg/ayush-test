@@ -5,12 +5,19 @@ import {
   createHttpRequest,
   RequestFormData,
   RequestPayload,
+  SaveSwitchProfile,
   SwitchUrlsInfo,
   SwitchViewModel,
+  SwitchVlans,
   Acl,
   Vlan,
   SwitchPortViewModel,
   TableResult,
+  SwitchDefaultVlan,
+  SwitchProfile,
+  SwitchVlanUnion,
+  PortSettingModel,
+  PortsSetting,
   Switch,
   STACK_MEMBERSHIP,
   onSocketActivityChanged,
@@ -24,6 +31,7 @@ import {
   VlanVePort,
   AclUnion,
   VeForm,
+  SwitchClient,
   transformConfigBackupStatus,
   ConfigurationBackup,
   ConfigurationBackupStatus,
@@ -35,7 +43,7 @@ import { formatter } from '@acx-ui/utils'
 export const baseSwitchApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'switchApi',
-  tagTypes: ['Switch', 'SwitchBackup'],
+  tagTypes: ['Switch', 'SwitchBackup', 'SwitchClient', 'SwitchPort'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({})
 })
@@ -124,7 +132,9 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      keepUnusedDataFor: 0,
+      providesTags: [{ type: 'SwitchPort', id: 'LIST' }]
     }),
     addSwitch: build.mutation<Switch, RequestPayload>({
       query: ({ params, payload }) => {
@@ -134,6 +144,104 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    getPortSetting: build.query<PortSettingModel, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getPortSetting, params)
+        return {
+          ...req
+        }
+      },
+      keepUnusedDataFor: 0,
+      providesTags: [{ type: 'SwitchPort', id: 'Setting' }]
+    }),
+    getPortsSetting: build.query<PortsSetting, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.getPortsSetting,
+          params
+        )
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      keepUnusedDataFor: 0,
+      providesTags: [{ type: 'SwitchPort', id: 'Setting' }]
+    }),
+    getDefaultVlan: build.query<SwitchDefaultVlan[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.getDefaultVlan,
+          params
+        )
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    getSwitchVlan: build.query<SwitchVlanUnion, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getSwitchVlanUnion, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    getSwitchVlans: build.query<Vlan[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getSwitchVlans, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    getSwitchesVlan: build.query<SwitchVlanUnion, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.getSwitchesVlan,
+          params
+        )
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    getTaggedVlansByVenue: build.query<SwitchVlans[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getTaggedVlansByVenue, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    getUntaggedVlansByVenue: build.query<SwitchVlans[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getUntaggedVlansByVenue, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    getSwitchConfigurationProfileByVenue: build.query<SwitchProfile[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getSwitchConfigurationProfileByVenue, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    savePortsSetting: build.mutation<SaveSwitchProfile[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.savePortsSetting, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchPort', id: 'LIST' }]
     }),
     importSwitches: build.mutation<{}, RequestFormData>({
       query: ({ params, payload }) => {
@@ -274,7 +382,8 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      providesTags: [{ type: 'Switch', id: 'VE' }]
     }),
     getVlanListBySwitchLevel: build.query<TableResult<Vlan>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -358,7 +467,24 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Switch', id: 'VE' }]
     }),
-
+    getSwitchClientList: build.query<TableResult<SwitchClient>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const clientListReq = createHttpRequest(SwitchUrlsInfo.getSwitchClientList, params)
+        return {
+          ...clientListReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'SwitchClient', id: 'LIST' }]
+    }),
+    getSwitchClientDetails: build.query<SwitchClient, RequestPayload>({
+      query: ({ params }) => {
+        const clientListReq = createHttpRequest(SwitchUrlsInfo.getSwitchClientDetail, params)
+        return {
+          ...clientListReq
+        }
+      }
+    }),
     getTroubleshooting: build.query<TroubleshootingResult, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(SwitchUrlsInfo.getTroubleshooting, params)
@@ -481,10 +607,31 @@ export const {
   useStackMemberListQuery,
   useDeleteSwitchesMutation,
   useSwitchDetailHeaderQuery,
+  useLazySwitchDetailHeaderQuery,
   useImportSwitchesMutation,
   useGetVlansByVenueQuery,
   useLazyGetVlansByVenueQuery,
   useSwitchPortlistQuery,
+  useGetPortSettingQuery,
+  useLazyGetPortSettingQuery,
+  useGetPortsSettingQuery,
+  useLazyGetPortsSettingQuery,
+  useLazyGetSwitchRoutedListQuery,
+  useLazyGetVenueRoutedListQuery,
+  useGetDefaultVlanQuery,
+  useGetSwitchVlanQuery,
+  useLazyGetSwitchVlanQuery,
+  useGetSwitchVlansQuery,
+  useLazyGetSwitchVlansQuery,
+  useGetSwitchesVlanQuery,
+  useLazyGetSwitchesVlanQuery,
+  useGetTaggedVlansByVenueQuery,
+  useLazyGetTaggedVlansByVenueQuery,
+  useGetUntaggedVlansByVenueQuery,
+  useLazyGetUntaggedVlansByVenueQuery,
+  useGetSwitchConfigurationProfileByVenueQuery,
+  useLazyGetSwitchConfigurationProfileByVenueQuery,
+  useSavePortsSettingMutation,
   useSaveSwitchMutation,
   useAddSwitchMutation,
   useAddStackMemberMutation,
@@ -501,12 +648,16 @@ export const {
   useGetFreeVePortVlansQuery,
   useLazyGetFreeVePortVlansQuery,
   useGetAclUnionQuery,
+  useLazyGetAclUnionQuery,
   useAddVePortMutation,
   useUpdateVePortMutation,
   useGetSwitchQuery,
+  useLazyGetSwitchQuery,
   useDeleteVePortsMutation,
   useGetSwitchAclsQuery,
   useGetVlanListBySwitchLevelQuery,
+  useGetSwitchClientListQuery,
+  useGetSwitchClientDetailsQuery,
   useGetTroubleshootingQuery,
   usePingMutation,
   useTraceRouteMutation,

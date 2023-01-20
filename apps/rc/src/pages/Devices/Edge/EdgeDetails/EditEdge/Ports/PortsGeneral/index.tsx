@@ -5,10 +5,10 @@ import { InternalNamePath } from 'antd/lib/form/interface'
 import { FormChangeInfo }   from 'rc-field-form/es/FormContext'
 import { useIntl }          from 'react-intl'
 
-import { ContentSwitcher, ContentSwitcherProps, Loader, showToast, StepsForm, StepsFormInstance } from '@acx-ui/components'
-import { useUpdatePortConfigMutation }                                                            from '@acx-ui/rc/services'
-import { EdgeIpModeEnum, EdgePort, EdgePortTypeEnum, serverIpAddressRegExp, subnetMaskIpRegExp }  from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }                                                  from '@acx-ui/react-router-dom'
+import { ContentSwitcher, ContentSwitcherProps, Loader, NoData, showToast, StepsForm, StepsFormInstance } from '@acx-ui/components'
+import { useUpdatePortConfigMutation }                                                                    from '@acx-ui/rc/services'
+import { EdgeIpModeEnum, EdgePort, EdgePortTypeEnum, serverIpAddressRegExp, subnetMaskIpRegExp }          from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }                                                          from '@acx-ui/react-router-dom'
 
 
 import { PortConfigForm } from './PortConfigForm'
@@ -116,29 +116,31 @@ const PortsGeneral = (props: PortsGeneralProps) => {
   }
 
   return (
-    <Loader states={[{
-      isLoading: false,
-      isFetching: isPortConfigUpdating
-    }]}>
-      <StepsForm
-        formRef={formRef}
-        onFinish={handleFinish}
-        onCancel={() => navigate(linkToEdgeList)}
-        onFormChange={handleFormChange}
-        buttonLabel={{ submit: $t({ defaultMessage: 'Apply Ports General' }) }}
-      >
-        <StepsForm.StepForm>
-          <ContentSwitcher
-            tabDetails={tabDetails}
-            defaultValue='0'
-            value={currentTab}
-            onChange={handleTabChange}
-            size='large'
-            align='left'
-          />
-        </StepsForm.StepForm>
-      </StepsForm>
-    </Loader>
+    data.length > 0 ?
+      <Loader states={[{
+        isLoading: false,
+        isFetching: isPortConfigUpdating
+      }]}>
+        <StepsForm
+          formRef={formRef}
+          onFinish={handleFinish}
+          onCancel={() => navigate(linkToEdgeList)}
+          onFormChange={handleFormChange}
+          buttonLabel={{ submit: $t({ defaultMessage: 'Apply Ports General' }) }}
+        >
+          <StepsForm.StepForm>
+            <ContentSwitcher
+              tabDetails={tabDetails}
+              defaultValue='0'
+              value={currentTab}
+              onChange={handleTabChange}
+              size='large'
+              align='left'
+            />
+          </StepsForm.StepForm>
+        </StepsForm>
+      </Loader>
+      : <NoData />
   )
 }
 
