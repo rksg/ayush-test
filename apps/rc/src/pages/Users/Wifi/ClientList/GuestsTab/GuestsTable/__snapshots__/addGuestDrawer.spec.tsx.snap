@@ -12,6 +12,8 @@ exports[`Add Guest Drawer should created guest without expiration and unit day p
 
 exports[`Add Guest Drawer should created guest without expiration period correctly 1`] = `<DocumentFragment />`;
 
+exports[`Add Guest Drawer should created guest without expiration period correctly 2`] = `<DocumentFragment />`;
+
 exports[`Add Guest Drawer should handle error 400 correctly 1`] = `<DocumentFragment />`;
 
 exports[`Add Guest Drawer should handle error 409 correctly 1`] = `<DocumentFragment />`;

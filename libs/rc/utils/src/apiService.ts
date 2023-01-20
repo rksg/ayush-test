@@ -1,31 +1,23 @@
 import { generatePath, Params } from 'react-router-dom'
 
+import { getJwtToken, getTenantId } from '@acx-ui/utils'
+
 export interface ApiInfo {
   url: string;
   method: string;
 }
 
 export const TenantIdFromJwt = () => {
-  const jwtToken = getJwtTokenPayload()
+  const jwtToken = getJwtToken()
   const tenantIdFromJwt = getTenantIdFromJwt(jwtToken as string)
 
   return tenantIdFromJwt
 }
 
 export const isDelegationMode = () => {
-  const jwtToken = getJwtTokenPayload()
+  const jwtToken = getJwtToken()
 
   return (getTenantIdFromJwt(jwtToken as string) !== getTenantId())
-}
-
-export const getJwtTokenPayload = () => {
-  if (sessionStorage.getItem('jwt')) {
-    return sessionStorage.getItem('jwt') as String
-  } else {
-    // eslint-disable-next-line no-console
-    console.warn('JWT TOKEN NOT FOUND!!!!!')
-    return null
-  }
 }
 
 const getTenantIdFromJwt = (jwt: string) => {
@@ -55,7 +47,7 @@ export const createHttpRequest = (
   const tokenHeader = {
     Authorization: ''
   }
-  const jwtToken = getJwtTokenPayload()
+  const jwtToken = getJwtToken()
   const tenantId = getTenantId()
   if (jwtToken !== null) {
     const tenantIdFromJwt = getTenantIdFromJwt(jwtToken as string)
@@ -95,12 +87,4 @@ export const getFilters = (params: Params) => {
   }
 
   return filters
-}
-
-function getTenantId () {
-  const chunks = window.location.pathname.split('/')
-  for (const c in chunks) {
-    if (['v', 't'].includes(chunks[c])) { return chunks[Number(c) + 1] }
-  }
-  return
 }
