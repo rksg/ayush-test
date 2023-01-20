@@ -52,15 +52,21 @@ export function EmbeddedReport (props: ReportProps) {
       type: 'dashboard',
       id: dashboardEmbeddedId
     }],
-    rls: [{
-      clause: `
+    rls: [
+      {
+        clause: `
         "__time" >= '${convertDateTimeToSqlFormat(startDate)}' AND
         "__time" < '${convertDateTimeToSqlFormat(endDate)}'
+      `
+      },
+      ...((networkClause || radioBandClause || rlsClause) ? [{
+        clause: `
         ${networkClause}
-        ${radioBandClause}
+        ${networkClause && radioBandClause ? ' AND ' + radioBandClause : radioBandClause}
         ${rlsClause? ' AND ' + rlsClause: ''}
       `
-    }]
+      }] : [])
+    ]
   }
 
   const fetchGuestTokenFromBackend = async () => {
@@ -78,7 +84,7 @@ export function EmbeddedReport (props: ReportProps) {
         supersetDomain: `${HOST_NAME}${BASE_RELATIVE_URL}`,
         mountPoint: document.getElementById('acx-report')!,
         fetchGuestToken: () => fetchGuestTokenFromBackend(),
-        dashboardUiConfig: { hideChartControls: true, hideTitle: true }
+        dashboardUiConfig: { hideChartControls: true, hideTitle: false }
         // debug: true
       })
     }
@@ -91,3 +97,4 @@ export function EmbeddedReport (props: ReportProps) {
     </Loader>
   )
 }
+
