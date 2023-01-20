@@ -1,4 +1,3 @@
-import { withKnobs } from '@storybook/addon-knobs'
 import { storiesOf } from '@storybook/react'
 
 import { TimeStamp } from '@acx-ui/types'
@@ -10,15 +9,13 @@ export const getData = () => {
   const oneDay = 24 * 3600 * 1000
   const data = [[base, 'SwitchStatus', base + Math.round(Math.random()) * 100000000]]
   for (let i = 1; i < 37; i++) {
-    // const value = Math.round((Math.random() - 0.5) * 250 + data[i - 1][1])
-    // const displayValue = Math.random() > 0.2 ? value : null
     data.push([
       base + oneDay * i,
       'SwitchStatus',
       base + oneDay * i + Math.round(Math.random()) * 100000000
     ])
   }
-  return data as [TimeStamp, String, TimeStamp][]
+  return data as [TimeStamp, string, TimeStamp][]
 }
 const seriesNames = [['New Clients', 'Impacted Clients', 'Connected Clients']]
 export const getSeriesData = (index = 0) => {

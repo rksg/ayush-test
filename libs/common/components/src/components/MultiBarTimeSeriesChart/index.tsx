@@ -12,15 +12,13 @@ import {
 import * as UI from './styledComponents';
 
 import ReactECharts from 'echarts-for-react';
-import type { TimeSeriesChartData } from '@acx-ui/analytics/utils';
 import { formatter } from '@acx-ui/utils';
 
 import {
   TooltipFormatterCallback,
   TopLevelFormatterParams,
   CustomSeriesRenderItem,
-  ElementEvent,
-  LabelFormatterCallback
+  LabelFormatterCallback,
 } from 'echarts/types/dist/shared';
 import { useIntl } from 'react-intl';
 
@@ -32,9 +30,9 @@ import {
   cssStr,
   cssNumber,
   ChartFormatterFn,
-  timeSeriesTooltipFormatter,
 } from '@acx-ui/components';
-import type { TimeStampRange } from '@acx-ui/types';
+import type { TimeStampRange, TimeStamp } from '@acx-ui/types';
+
 import type {
   ECharts,
   EChartsOption,
@@ -43,7 +41,6 @@ import type {
   CustomSeriesRenderItemParams,
   TooltipComponentOption,
 } from 'echarts';
-import { format } from 'echarts';
 import type { EChartsReactProps } from 'echarts-for-react';
 
 type OnDatazoomEvent = {
@@ -56,7 +53,13 @@ type OnDatazoomEvent = {
 };
 
 export interface MultiBarTimeSeriesChart extends Omit<EChartsReactProps, 'option' | 'opts'> {
-  data: (TimeSeriesChartData & { color: string })[]; // https://github.com/microsoft/TypeScript/issues/44373
+  data: {
+    color: string;
+    key: string;
+    name: string;
+    show?: boolean;
+    data: [TimeStamp, string, TimeStamp][];
+  }[]; // https://github.com/microsoft/TypeScript/issues/44373
   chartBoundary: number[];
   zoomEnabled?: boolean;
   selectedData?: number;
@@ -65,7 +68,7 @@ export interface MultiBarTimeSeriesChart extends Omit<EChartsReactProps, 'option
   dataFormatter?: ChartFormatterFn;
   tooltipFormatter?: TooltipFormatterCallback<TopLevelFormatterParams>;
   seriesFormatters?: Record<string, ChartFormatterFn>;
-  LabelFormatter?: LabelFormatterCallback<any>
+  LabelFormatter?: LabelFormatterCallback<any>;
 }
 export const mapping = [{ key: 'SwitchStatus', series: 'Switch', color: 'green' }] as {
   key: string;
@@ -73,21 +76,22 @@ export const mapping = [{ key: 'SwitchStatus', series: 'Switch', color: 'green' 
   color: string;
 }[];
 
-export const tooltipOptions = () => ({
-  textStyle: {
-    color: cssStr('--acx-primary-white'),
-    fontFamily: cssStr('--acx-neutral-brand-font'),
-    fontSize: cssNumber('--acx-body-5-font-size'),
-    lineHeight: cssNumber('--acx-body-5-line-height'),
-    fontWeight: cssNumber('--acx-body-font-weight')
-  },
-  backgroundColor: cssStr('--acx-primary-black'),
-  borderRadius: 2,
-  borderWidth: 0,
-  padding: 8,
-  confine: false,
-  extraCssText: 'box-shadow: 0px 4px 8px rgba(51, 51, 51, 0.08); z-index: 4;'
-} as TooltipComponentOption)
+export const tooltipOptions = () =>
+  ({
+    textStyle: {
+      color: cssStr('--acx-primary-white'),
+      fontFamily: cssStr('--acx-neutral-brand-font'),
+      fontSize: cssNumber('--acx-body-5-font-size'),
+      lineHeight: cssNumber('--acx-body-5-line-height'),
+      fontWeight: cssNumber('--acx-body-font-weight'),
+    },
+    backgroundColor: cssStr('--acx-primary-black'),
+    borderRadius: 2,
+    borderWidth: 0,
+    padding: 8,
+    confine: false,
+    extraCssText: 'box-shadow: 0px 4px 8px rgba(51, 51, 51, 0.08); z-index: 4;',
+  } as TooltipComponentOption);
 export const renderCustomItem = (
   params: CustomSeriesRenderItemParams,
   api: CustomSeriesRenderItemAPI
@@ -202,15 +206,9 @@ export function MultiBarTimeSeriesChart({
   }, []);
 
   function handleClick(event: any) {
-    // @ts-ignore: Unreachable code error
-    if (!chartWrapperRef.current?.contains(event.target)) {
+    if (!(chartWrapperRef.current as unknown as HTMLElement)?.contains(event.target)) {
       setShowToolTip(false);
       const echartInstance = eChartsRef.current?.getEchartsInstance() as ECharts;
-      //   echartInstance.dispatchAction({
-      //     type: 'showTip',
-      //     seriesIndex: params.seriesIndex,
-      //     dataIndex: params.dataIndex
-      // });
       echartInstance.dispatchAction({
         type: 'hideTip',
       });
@@ -232,8 +230,10 @@ export function MultiBarTimeSeriesChart({
       ...tooltipOptions(),
       formatter: tooltipFormatter
         ? tooltipFormatter
-        : timeSeriesTooltipFormatter(data, { ...seriesFormatters, default: dataFormatter }),
-        position: 'top'
+        : function (params) {
+          return formatter('dateTimeFormat')(params);
+        },
+      position: 'top',
     },
 
     xAxis: {
@@ -265,17 +265,19 @@ export function MultiBarTimeSeriesChart({
         snap: false,
         triggerTooltip: false,
         label: {
-          ...tooltipOptions() as Object,
+          ...(tooltipOptions() as Object),
           show: true,
-          formatter: LabelFormatter ? LabelFormatter :  function (params) {
-            return  formatter('dateTimeFormat')(params.value)
-          },
+          formatter: LabelFormatter
+            ? LabelFormatter
+            : function (params) {
+                return formatter('dateTimeFormat')(params.value);
+              },
         },
         lineStyle: {
           color: cssStr('--acx-neutrals-70'),
           type: 'solid',
-          width: 1
-        }
+          width: 1,
+        },
       },
     },
     yAxis: {
@@ -321,20 +323,17 @@ export function MultiBarTimeSeriesChart({
         }
       : { toolbox: { show: false } }),
 
-    series: data
-      .reverse()
-      .slice()
-      .map(({ key, color, data }) => {
-        return {
-          type: 'custom',
-          name: key,
-          renderItem: renderCustomItem as unknown as CustomSeriesRenderItem,
-          itemStyle: {
-            color: color,
-          },
-          data: data,
-        };
-      }) as SeriesOption,
+    series: data.map(({ key, color, data }) => {
+      return {
+        type: 'custom',
+        name: key,
+        renderItem: renderCustomItem as unknown as CustomSeriesRenderItem,
+        itemStyle: {
+          color: color,
+        },
+        data: data,
+      };
+    }) as SeriesOption,
   };
   return (
     <UI.Wrapper ref={chartWrapperRef}>
