@@ -5,11 +5,11 @@ import EChartsReact           from 'echarts-for-react'
 import { CallbackDataParams } from 'echarts/types/dist/shared'
 import { useIntl }            from 'react-intl'
 
-import { ClientHealth }                                        from '@acx-ui/analytics/components'
-import { AnalyticsFilter }                                     from '@acx-ui/analytics/utils'
-import { BarChart, cssStr, cssNumber, Loader, Card, Subtitle } from '@acx-ui/components'
-import { Client, ClientStatistic }                             from '@acx-ui/rc/utils'
-import { convertEpochToRelativeTime, formatter }               from '@acx-ui/utils'
+import { ClientHealth }                              from '@acx-ui/analytics/components'
+import { AnalyticsFilter }                           from '@acx-ui/analytics/utils'
+import { BarChart, cssStr, cssNumber, Loader, Card } from '@acx-ui/components'
+import { Client, ClientStatistic }                   from '@acx-ui/rc/utils'
+import { convertEpochToRelativeTime, formatter }     from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -69,7 +69,7 @@ const UserTraffic = ({ data }: { data: ClientStatistic | undefined }) => {
 
   return <Loader states={[{ isLoading: typeof data === 'undefined' }]} divRef={divRef}>
     <BarChart
-      style={{ height: 100, width: 100 }}
+      style={{ height: 100, width: 100, paddingTop: 20 }}
       chartRef={chartRef}
       data={{
         dimensions: ['ChannelType', 'UserTraffic', 'Unit'],
@@ -101,23 +101,25 @@ export function ClientOverviewWidget ({ clientStatistic, clientStatus, clientDet
   const CurrentStatus = () =>
     <>
       <UI.Title>{$t({ defaultMessage: 'Current Status' })}</UI.Title>
-      <Subtitle level={2}>
+      <UI.StyledSubtitle level={2}>
         {clientStatus.toLowerCase() === 'connected'
           ? $t({ defaultMessage: 'Connected' })
           : $t({ defaultMessage: 'Disconnected' })}
-      </Subtitle>
+      </UI.StyledSubtitle>
     </>
 
   const ApsConnected = () =>
     <>
       <UI.Title>{$t({ defaultMessage: 'APs Connected' })}</UI.Title>
-      <Subtitle level={2}>{clientStatistic?.apsConnected}</Subtitle>
+      <UI.StyledSubtitle level={2}>{clientStatistic?.apsConnected}</UI.StyledSubtitle>
     </>
 
   const AvgRate = () =>
     <>
       <UI.Title>{$t({ defaultMessage: 'Avg. Rate' })}</UI.Title>
-      <Subtitle level={2}>{formatter('bytesFormat')(clientStatistic?.avgRateBPS)}</Subtitle>
+      <UI.StyledSubtitle level={2}>
+        {formatter('bytesFormat')(clientStatistic?.avgRateBPS)}
+      </UI.StyledSubtitle>
     </>
 
   const UserTrafficWidget = () =>
@@ -131,39 +133,47 @@ export function ClientOverviewWidget ({ clientStatistic, clientStatus, clientDet
   const LastSessionDuration = () =>
     <>
       <UI.Title>{$t({ defaultMessage: 'Last Session Duration' })}</UI.Title>
-      <Subtitle level={2}>
+      <UI.StyledSubtitle level={2}>
         {formatter('durationFormat')(clientDetails?.timeConnectedMs
           ? convertEpochToRelativeTime(clientDetails?.timeConnectedMs)
           : (clientDetails?.sessionDuration
             ? clientDetails?.sessionDuration * 1000
             : 0))}
-      </Subtitle>
+      </UI.StyledSubtitle>
     </>
 
   const Applications = () =>
     <>
       <UI.Title>{$t({ defaultMessage: 'Applications' })}</UI.Title>
-      <Subtitle level={2}>{Math.floor(clientStatistic?.applications ?? 0)}</Subtitle>
+      <UI.StyledSubtitle level={2}>
+        {Math.floor(clientStatistic?.applications ?? 0)}
+      </UI.StyledSubtitle>
     </>
 
   const AvgSessionLength = () =>
     <>
       <UI.Title>{$t({ defaultMessage: 'Avg. Session Length' })}</UI.Title>
-      <Subtitle level={2}>
+      <UI.StyledSubtitle level={2}>
         {formatter('durationFormat')(clientStatistic?.avgSessionLengthSeconds)}
-      </Subtitle>
+      </UI.StyledSubtitle>
     </>
 
   const Sessions = () =>
     <>
       <UI.Title>{$t({ defaultMessage: 'Sessions' })}</UI.Title>
-      <Subtitle level={2}>{Math.floor(clientStatistic?.sessions ?? 0)}</Subtitle>
+      <UI.StyledSubtitle level={2}>
+        {Math.floor(clientStatistic?.sessions ?? 0)}
+      </UI.StyledSubtitle>
     </>
 
   const UserTrafficChart = () => <UserTraffic data={clientStatistic} />
 
   const ClientHealthChart = () =>
-    <ClientHealth filter={filters} clientMac={clientDetails.clientMac}/>
+    <ClientHealth
+      filter={filters}
+      clientMac={clientDetails.clientMac}
+      loaderStyle={{ paddingTop: 50 }}
+    />
 
   return <Card type='solid-bg'>
     <Loader states={[{
@@ -171,32 +181,32 @@ export function ClientOverviewWidget ({ clientStatistic, clientStatus, clientDet
         || !Object.keys(clientStatus).length
         || !Object.keys(clientDetails).length
     }]}>
-      <Row justify='space-between' align='middle'>
+      <Row justify='space-around' align='middle'>
         <Col span={4}>
           <Row style={{ flexDirection: 'column' }}>
             <Col><CurrentStatus /></Col>
             <Col><Applications /></Col>
           </Row>
         </Col>
-        <Col span={3}>
+        <Col span={4}>
           <Row style={{ flexDirection: 'column' }}>
             <Col><ApsConnected /></Col>
             <Col><AvgSessionLength /></Col>
           </Row>
         </Col>
-        <Col span={3}>
+        <Col span={4}>
           <Row style={{ flexDirection: 'column' }}>
             <Col><AvgRate /></Col>
             <Col><Sessions /></Col>
           </Row>
         </Col>
-        <Col span={5}>
+        <Col span={4}>
           <Row style={{ flexDirection: 'column' }}>
             <Col span={12}><UserTrafficWidget /></Col>
             <Col span={12}><UserTrafficChart /></Col>
           </Row>
         </Col>
-        <Col span={5}>
+        <Col span={4}>
           <Row style={{ flexDirection: 'column' }}>
             <Col span={12}><LastSessionDuration /></Col>
             <Col span={12}><ClientHealthChart /></Col>

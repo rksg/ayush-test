@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, CSSProperties } from 'react'
 
 import EChartsReact           from 'echarts-for-react'
 import { CallbackDataParams } from 'echarts/types/dist/shared'
@@ -49,7 +49,11 @@ const calculateHealthSummary = (data: ClientInfoData | undefined) => {
 }
 
 export function ClientHealth (
-  { filter, clientMac }: { filter: AnalyticsFilter, clientMac: string })
+  { filter, clientMac, loaderStyle }: {
+    filter: AnalyticsFilter,
+    clientMac: string,
+    loaderStyle?: CSSProperties
+  })
 {
   const { $t } = useIntl()
   const { startDate, endDate, range } = filter
@@ -100,10 +104,16 @@ export function ClientHealth (
     return () => observer.disconnect()
   })
 
-  return <Loader states={[data]} divRef={divRef}>
+  return <Loader states={[data]}
+    divRef={divRef}
+    style={
+      (!data || !data.data)
+        ? loaderStyle
+        : undefined
+    }>
     <BarChart
       chartRef={chartRef}
-      style={{ height: 100, width: 100 }}
+      style={{ height: 100, width: 100, paddingTop: 20 }}
       data={{
         dimensions: ['HealthQuality', 'Value'],
         source: [
