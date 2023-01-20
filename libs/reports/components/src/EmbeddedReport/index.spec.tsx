@@ -62,4 +62,15 @@ describe('EmbeddedDashboard', () => {
     // expect(mockEmbedDashboard).toHaveBeenCalledWith()
     // TODO - Will revisit this
   })
+  it('should render the dashboard rls clause', async () => {
+    rest.post(
+      ReportUrlsInfo.getEmbeddedDashboardMeta.url,
+      (req, res, ctx) => res(ctx.json(getEmbeddedReponse))
+    )
+    render(<Provider>
+      <EmbeddedReport
+        embedDashboardName={reportTypeDataStudioMapping[ReportType.AP_DETAIL]}
+        rlsClause='venue filter'/>
+    </Provider>, { route: { params } })
+  })
 })
