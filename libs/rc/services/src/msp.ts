@@ -194,6 +194,24 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    deactivateMspEc: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(MspUrlsInfo.deactivateMspEcAccount, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    reactivateMspEc: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(MspUrlsInfo.reactivateMspEcAccount, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
     })
   })
 })
@@ -214,5 +232,7 @@ export const {
   useUpdateMspEcDelegatedAdminsMutation,
   useGetMspEcDelegatedAdminsQuery,
   useGetMspEcQuery,
-  useAssignMspEcToIntegratorMutation
+  useAssignMspEcToIntegratorMutation,
+  useDeactivateMspEcMutation,
+  useReactivateMspEcMutation
 } = mspApi

@@ -1,11 +1,9 @@
 
-import { useState } from 'react'
-
-import { DatePicker, Form, Modal } from 'antd'
-import moment                      from 'moment-timezone'
-import { useIntl }                 from 'react-intl'
+import { Modal }   from 'antd'
+import { useIntl } from 'react-intl'
 
 interface StartSubscriptionModalProps {
+  isActive: boolean
   visible: boolean
   setVisible: (visible: boolean) => void
   setStartDate: (startDate: Date) => void
@@ -13,51 +11,41 @@ interface StartSubscriptionModalProps {
 
 export const StartSubscriptionModal = (props: StartSubscriptionModalProps) =>{
   const { $t } = useIntl()
-  const { visible, setVisible, setStartDate } = props
-  const [disabledButton, disableButton] = useState(true)
+  const { isActive, visible, setVisible, setStartDate } = props
 
-  const [form] = Form.useForm()
-  const formContent = <Form
-    form={form}
-    onFieldsChange={() => {
-      const { startDate } = form.getFieldsValue()
-      !startDate ? disableButton(true) : disableButton(false)
-    }}
-    onFinish={() => {
-      setVisible(false)}
+  const Content = () => {
+    if (isActive) {
+      return <>
+        <div style={{ marginBottom: '15px' }}>
+          <label>
+            {$t({ defaultMessage: 'This will stop the Trial Mode and start utilizing paid' })}
+          </label><br/>
+          <label>{$t({ defaultMessage: 'Subscription.' })}</label><br/>
+        </div>
+        <div style={{ marginBottom: '35px' }}><label>
+          {$t({ defaultMessage: 'Are you sure you want to start using Subscription?' })}
+        </label></div>
+      </>
+    } else {
+      return <div style={{ marginBottom: '35px' }}>
+        <label>
+          {$t({ defaultMessage: 'This will start utilizing paid Subscription.' })}
+        </label><br/>
+        <label>
+          {$t({ defaultMessage: 'Are you sure you want to start using Subscription?.' })}
+        </label>
+      </div>
     }
-  >
-    <Form.Item labelAlign='left'
-      label={<>
-        {$t({ defaultMessage: 'This will start utilizing paid Subscription.' })}<br/>
-        {$t({ defaultMessage: 'Are you sure you want to start using Subscription?' })}
-      </>}
-    >
-    </Form.Item>
-
-    <Form.Item
-      name='startDate'
-      label='Start Paid Subscription on'
-      style={{ marginTop: '50px' }}
-      children={<DatePicker
-        format='MM/DD/YYYY'
-        disabledDate={(current) => {
-          return moment().add(-1, 'days') >= current
-        }}
-        style={{ marginLeft: '4px', width: '150px' }}
-      />}
-    />
-  </Form>
+  }
 
   const handleOk = () => {
-    const { startDate } = form.getFieldsValue()
-    setStartDate(startDate)
+    const today = new Date()
+    setStartDate(today)
     setVisible(false)
   }
 
   const handleCancel = () => {
     setVisible(false)
-    form.resetFields()
   }
 
   return (
@@ -69,11 +57,8 @@ export const StartSubscriptionModal = (props: StartSubscriptionModalProps) =>{
       onOk={handleOk}
       onCancel={handleCancel}
       maskClosable={false}
-      okButtonProps={{
-        disabled: disabledButton
-      }}
     >
-      {formContent}
+      {<Content/>}
     </Modal>
   )
 }

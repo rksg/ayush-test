@@ -179,8 +179,9 @@ export function ManageCustomer () {
 
   const { action, status, tenantId, mspEcTenantId } = useParams()
 
-  const [isTrialMode, setTrialMode] = useState(true)
-  const [isTrialActive, setTrialActive] = useState(true)
+  const [isTrialMode, setTrialMode] = useState(false)
+  const [isTrialActive, setTrialActive] = useState(false)
+  const [trialSelected, setTrialSelected] = useState(true)
   const [mspAdmins, setAdministrator] = useState([] as MspAdministrator[])
   const [mspIntegrator, setIntegrator] = useState([] as MspEc[])
   const [mspInstaller, setInstaller] = useState([] as MspEc[])
@@ -276,7 +277,7 @@ export function ManageCustomer () {
       const ecFormData = { ...values }
       const today = EntitlementUtil.getServiceStartDate()
       const expirationDate = EntitlementUtil.getServiceEndDate(ecFormData.service_expiration_date)
-      const assignLicense = isTrialMode
+      const assignLicense = trialSelected
         ? {
           trialAction: 'ACTIVATE',
           assignmentStartDate: today,
@@ -693,7 +694,7 @@ export function ManageCustomer () {
         name='trialMode'
         initialValue={true}
       >
-        <Radio.Group onChange={(e: RadioChangeEvent) => {setTrialMode(e.target.value)}}>
+        <Radio.Group onChange={(e: RadioChangeEvent) => {setTrialSelected(e.target.value)}}>
           <Space direction='vertical'>
             <Radio
               value={true}
@@ -710,7 +711,7 @@ export function ManageCustomer () {
         </Radio.Group>
       </Form.Item>
 
-      {isTrialMode && <div>
+      {trialSelected && <div>
         <Subtitle level={4}>
           { intl.$t({ defaultMessage: 'Trial Mode' }) }</Subtitle>
         <UI.FieldLabel2 width='275px' style={{ marginTop: '20px' }}>
@@ -732,7 +733,7 @@ export function ManageCustomer () {
         </UI.FieldLabel2></div>
       }
 
-      {!isTrialMode && <div>
+      {!trialSelected && <div>
         <Subtitle level={4}>
           { intl.$t({ defaultMessage: 'Paid Subscriptions' }) }</Subtitle>
         <WifiSubscription />
@@ -842,6 +843,25 @@ export function ManageCustomer () {
         </Form.Item></>
     )
   }
+  const TrialBanner = () => {
+    const title = isTrialActive ? 'The account is in Trial Mode'
+      : 'This account is in an Inactive State.'
+    return (isTrialMode ?
+      <UI.OtpLabel
+        style={{
+          fontSize: 'var(--acx-body-4-font-size)',
+          color: 'var(--acx-primary-white)',
+          backgroundColor: 'var(--acx-primary-black)'
+        }}>
+        {intl.$t({
+          defaultMessage: `
+            {title}`
+        }, { title })}
+        {intl.$t({ defaultMessage: 'Start Subscription' })}
+      </UI.OtpLabel>
+      : <h4>
+      </h4>)
+  }
 
   return (
     <>
@@ -850,12 +870,12 @@ export function ManageCustomer () {
           intl.$t({ defaultMessage: 'Add Customer Account' }) :
           intl.$t({ defaultMessage: 'Customer Account' })
         }
+        titleExtra={<TrialBanner></TrialBanner>}
         breadcrumb={[
-          { text: intl.$t({ defaultMessage: 'MSP Customers' }),
+          { text: intl.$t({ defaultMessage: ' Customers' }),
             link: '/dashboard/mspcustomers', tenantType: 'v' }
         ]}
       />
-
       <StepsForm
         formRef={formRef}
         onFinish={isEditMode ? handleEditCustomer : handleAddCustomer}
@@ -983,6 +1003,7 @@ export function ManageCustomer () {
         setSelected={selectedIntegrators}
       />}
       {startSubscriptionVisible && <StartSubscriptionModal
+        isActive={isTrialActive}
         visible={startSubscriptionVisible}
         setVisible={setStartSubscriptionVisible}
         setStartDate={startSubscription}

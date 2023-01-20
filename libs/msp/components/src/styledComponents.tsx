@@ -10,9 +10,16 @@ export const EnvelopClosedSolidIcon = styled(EnvelopClosedSolid)`
 `
 export const OtpLabel = styled(Space).attrs({ direction: 'vertical', size: 0 })`
   margin-bottom: 16px;
+  width: 420px;
+  height: 42px;
+  line-height: 16px;
+  padding-top: 4px;
+  padding-left: 22px;
+  margin-left: 85px;
+  font-size: var(--acx-body-4-font-size);
   .ant-space-item:last-of-type {
-    color: var(--acx-neutrals-60);
-    font-size: var(--acx-body-5-font-size);
+    color: var(--acx-accents-orange-30);
+    font-size: var(--acx-body-4-font-size);
   }
 `
 const linkStyle = css`
@@ -41,7 +48,7 @@ export const FieldLabel2 = styled.div<{ width: string }>`
 export const FieldLabelAdmins = styled.div<{ width: string }>`
   font-size: var(--acx-body-4-font-size);
   display: grid;
-  grid-template-columns: 135px 240px 40px;
+  grid-template-columns: 135px 280px 40px;
   align-items: baseline;
 `
 export const FieldLabelSubs = styled.div<{ width: string }>`

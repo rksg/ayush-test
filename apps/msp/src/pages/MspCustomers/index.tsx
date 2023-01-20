@@ -19,7 +19,9 @@ import {
   ResendInviteModal
 } from '@acx-ui/msp/components'
 import {
+  // useDeactivateMspEcMutation,
   useDeleteMspEcMutation,
+  // useReactivateMspEcMutation,
   useMspCustomerListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -163,7 +165,7 @@ export function MspCustomers () {
       dataIndex: 'alarmCount',
       key: 'alarmCount',
       sorter: true,
-      align: 'center',
+      // align: 'center',
       render: function () {
         return '0'
       }
@@ -173,52 +175,53 @@ export function MspCustomers () {
       dataIndex: 'activeIncindents',
       key: 'activeIncindents',
       sorter: true,
-      align: 'center',
+      // align: 'center',
       render: function () {
         return 0
       }
     },
     {
-      title: $t({ defaultMessage: 'MSP Admins' }),
+      title: $t({ defaultMessage: 'MSP Admins Count' }),
       dataIndex: 'mspAdminCount',
       key: 'mspAdminCount',
-      sorter: true,
-      align: 'center'
+      sorter: true
+      // align: 'center'
     },
     {
-      title: $t({ defaultMessage: 'Customer Admins' }),
+      title: $t({ defaultMessage: 'Customer Admins Count' }),
       dataIndex: 'mspEcAdminCount',
       key: 'mspEcAdminCount',
       sorter: true,
-      show: false,
-      align: 'center'
+      show: false
+      // align: 'center'
     },
     {
-      title: $t({ defaultMessage: 'Wi-Fi Licenses' }),
+      title: $t({ defaultMessage: 'Wi-Fi Subscriptions' }),
       dataIndex: 'wifiLicenses',
       key: 'wifiLicenses',
       sorter: true,
-      align: 'center',
+      // align: 'center',
       render: function (data, row) {
         return transformApEntitlement(row)
       }
     },
     {
-      title: $t({ defaultMessage: 'Wi-Fi License Utilization' }),
+      title: $t({ defaultMessage: 'Wi-Fi Subscriptions Utilization' }),
       dataIndex: 'wifiLicensesUtilization',
       key: 'wifiLicensesUtilization',
       sorter: true,
-      align: 'center',
+      // align: 'center',
+      show: false,
       render: function (data, row) {
         return transformApUtilization(row)
       }
     },
     {
-      title: $t({ defaultMessage: 'Switch Licenses' }),
+      title: $t({ defaultMessage: 'Switch Subscriptions' }),
       dataIndex: 'switchLicens',
       key: 'switchLicens',
       sorter: true,
-      align: 'center',
+      // align: 'center',
       render: function (data, row) {
         return transformSwitchEntitlement(row)
       }
@@ -255,9 +258,17 @@ export function MspCustomers () {
       { isLoading: isDeleteEcUpdating }
     ] = useDeleteMspEcMutation()
 
+    // const [
+    //   deactivateMspEc
+    // ] = useDeactivateMspEcMutation()
+
+    // const [
+    //   reactivateMspEc
+    // ] = useReactivateMspEcMutation()
+
     const rowActions: TableProps<MspEc>['rowActions'] = [
       {
-        label: $t({ defaultMessage: 'Manage' }),
+        label: $t({ defaultMessage: 'Edit' }),
         onClick: (selectedRows) => {
           setTenantId(selectedRows[0].id)
           const status = selectedRows[0].status === 'Active' ? 'active' : 'notActive'
@@ -275,6 +286,62 @@ export function MspCustomers () {
         }
       },
       {
+        label: $t({ defaultMessage: 'Deactivate' }),
+        visible: (selectedRows) => {
+          if(selectedRows[0] &&
+            (selectedRows[0].status === 'Active' && selectedRows[0].accountType !== 'Trial' )) {
+            return true
+          }
+          return false
+        },
+        onClick: ([{ name, id }], clearSelection) => {
+          const title = $t({
+            defaultMessage: `Deactivate Customer 
+           "{formattedName}"?`
+          }, { formattedName: name })
+
+          showActionModal({
+            type: 'confirm',
+            title: title,
+            content: $t({
+              defaultMessage: `Deactivate "{formattedName}" will suspend all its services, 
+              are you sure you want to proceed?`
+            }, { formattedName: name }),
+            okText: $t({ defaultMessage: 'Deactivate' }),
+            onOk: () => deleteMspEc({ params: { mspEcTenantId: id } })
+              .then(clearSelection)
+          })
+        }
+      },
+      {
+        label: $t({ defaultMessage: 'Reactivate' }),
+        visible: (selectedRows) => {
+          if(selectedRows[0] &&
+            (selectedRows[0].status === 'Active' || selectedRows[0].accountType === 'Trial')) {
+            return false
+          }
+          return true
+        },
+        onClick: ([{ name, id }], clearSelection) => {
+          const title = $t({
+            defaultMessage: `Reactivate Customer 
+           "{formattedName}"?`
+          }, { formattedName: name })
+
+          showActionModal({
+            type: 'confirm',
+            title: title,
+            content: $t({
+              defaultMessage: `Reactivate this customer 
+              "{formattedName}"?`
+            }, { formattedName: name }),
+            okText: $t({ defaultMessage: 'Reactivate' }),
+            onOk: () => deleteMspEc({ params: { mspEcTenantId: id } })
+              .then(clearSelection)
+          })
+        }
+      },
+      {
         label: $t({ defaultMessage: 'Delete' }),
         onClick: ([{ name, id }], clearSelection) => {
           showActionModal({
@@ -283,7 +350,7 @@ export function MspCustomers () {
               action: 'DELETE',
               entityName: $t({ defaultMessage: 'EC' }),
               entityValue: name,
-              confirmationText: $t({ defaultMessage: 'Delete' })
+              confirmationText: $t({ defaultMessage: 'Reactivate' })
             },
             onOk: () => deleteMspEc({ params: { mspEcTenantId: id } })
               .then(clearSelection)
