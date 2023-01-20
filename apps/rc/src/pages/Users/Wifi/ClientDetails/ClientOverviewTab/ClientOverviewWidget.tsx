@@ -1,7 +1,4 @@
-import { useEffect, useRef } from 'react'
-
 import { Col, Row }           from 'antd'
-import EChartsReact           from 'echarts-for-react'
 import { CallbackDataParams } from 'echarts/types/dist/shared'
 import { useIntl }            from 'react-intl'
 
@@ -48,29 +45,10 @@ const UserTraffic = ({ data }: { data: ClientStatistic | undefined }) => {
     cssStr('--acx-accents-blue-60')
   ]
 
-  const divRef = useRef<HTMLDivElement>(null)
-  const chartRef = useRef<EChartsReact>(null)
 
-  useEffect(() => {
-    const observer = new ResizeObserver(() => {
-      if (divRef.current && chartRef.current) {
-        const chart = chartRef.current.getEchartsInstance()
-        chart.resize({ width: 80, height: 80 })
-      }
-    })
-
-    if (divRef.current) {
-      observer.observe(divRef.current)
-    }
-
-    return () => observer.disconnect()
-  })
-
-
-  return <Loader states={[{ isLoading: typeof data === 'undefined' }]} divRef={divRef}>
+  return <Loader states={[{ isLoading: typeof data === 'undefined' }]}>
     <BarChart
-      style={{ height: 100, width: 100, paddingTop: 20 }}
-      chartRef={chartRef}
+      style={{ height: 90, width: 90, paddingTop: 20 }}
       data={{
         dimensions: ['ChannelType', 'UserTraffic', 'Unit'],
         source: [
@@ -172,7 +150,6 @@ export function ClientOverviewWidget ({ clientStatistic, clientStatus, clientDet
     <ClientHealth
       filter={filters}
       clientMac={clientDetails.clientMac}
-      loaderStyle={{ paddingTop: 50 }}
     />
 
   return <Card type='solid-bg'>

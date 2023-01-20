@@ -1,6 +1,3 @@
-import { useRef, useEffect, CSSProperties } from 'react'
-
-import EChartsReact           from 'echarts-for-react'
 import { CallbackDataParams } from 'echarts/types/dist/shared'
 import { groupBy }            from 'lodash'
 import moment                 from 'moment-timezone'
@@ -37,7 +34,7 @@ const calculateHealthSummary = (data: ClientInfoData | undefined) => {
 
   const total = durations(parsedQualities.all)
 
-  const { good = [], average = [], bad = [] } =
+  const { good, average, bad } =
     groupBy(parsedQualities.all, item => item.all.quality)
 
   return {
@@ -49,10 +46,9 @@ const calculateHealthSummary = (data: ClientInfoData | undefined) => {
 }
 
 export function ClientHealth (
-  { filter, clientMac, loaderStyle }: {
+  { filter, clientMac }: {
     filter: AnalyticsFilter,
-    clientMac: string,
-    loaderStyle?: CSSProperties
+    clientMac: string
   })
 {
   const { $t } = useIntl()
@@ -86,34 +82,9 @@ export function ClientHealth (
     }
   }
 
-  const divRef = useRef<HTMLDivElement>(null)
-  const chartRef = useRef<EChartsReact>(null)
-
-  useEffect(() => {
-    const observer = new ResizeObserver(() => {
-      if (divRef.current && chartRef.current) {
-        const chart = chartRef.current.getEchartsInstance()
-        chart.resize({ width: 80, height: 80 })
-      }
-    })
-
-    if (divRef.current) {
-      observer.observe(divRef.current)
-    }
-
-    return () => observer.disconnect()
-  })
-
-  return <Loader states={[data]}
-    divRef={divRef}
-    style={
-      (!data || !data.data)
-        ? loaderStyle
-        : undefined
-    }>
+  return <Loader states={[data]}>
     <BarChart
-      chartRef={chartRef}
-      style={{ height: 100, width: 100, paddingTop: 20 }}
+      style={{ height: 90, width: 90, paddingTop: 20 }}
       data={{
         dimensions: ['HealthQuality', 'Value'],
         source: [

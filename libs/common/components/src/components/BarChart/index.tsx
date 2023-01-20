@@ -1,9 +1,8 @@
-import { RefObject, useImperativeHandle, useRef } from 'react'
+import { useRef } from 'react'
 
 import { LabelFormatterCallback, RegisteredSeriesOption }           from 'echarts'
 import { TooltipComponentFormatterCallbackParams }                  from 'echarts'
 import ReactECharts                                                 from 'echarts-for-react'
-import EChartsReact                                                 from 'echarts-for-react'
 import { CallbackDataParams, GridOption, TooltipFormatterCallback } from 'echarts/types/dist/shared'
 
 import type { BarChartData } from '@acx-ui/analytics/utils'
@@ -33,8 +32,7 @@ export interface BarChartProps
   labelFormatter?: string | LabelFormatterCallback<CallbackDataParams>
   tooltipFormatter?: string | TooltipFormatterCallback<TooltipComponentFormatterCallbackParams>
   labelRichStyle?: object,
-  onClick?: (params: EventParams) => void,
-  chartRef?: RefObject<EChartsReact>
+  onClick?: (params: EventParams) => void
 }
 
 const getSeries = (
@@ -77,11 +75,9 @@ export function BarChart<TChartData extends BarChartData>
   barColors = qualitativeColorSet(),
   barWidth,
   onClick,
-  chartRef,
   ...props
 }: BarChartProps<TChartData>) {
   const eChartsRef = useRef<ReactECharts>(null)
-  useImperativeHandle(chartRef, () => eChartsRef.current!)
   useLegendSelectChanged(eChartsRef)
 
   const option: EChartsOption = {
