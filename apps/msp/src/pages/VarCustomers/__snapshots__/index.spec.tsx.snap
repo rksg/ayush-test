@@ -327,6 +327,7 @@ exports[`VarCustomers should render correctly 1`] = `
                               </th>
                               <th
                                 class="ant-table-cell ant-table-column-has-sorters"
+                                style="text-align: center;"
                                 tabindex="0"
                               >
                                 <div
@@ -387,6 +388,7 @@ exports[`VarCustomers should render correctly 1`] = `
                               </th>
                               <th
                                 class="ant-table-cell ant-table-column-has-sorters"
+                                style="text-align: center;"
                                 tabindex="0"
                               >
                                 <div
@@ -447,6 +449,7 @@ exports[`VarCustomers should render correctly 1`] = `
                               </th>
                               <th
                                 class="ant-table-cell ant-table-column-has-sorters"
+                                style="text-align: center;"
                                 tabindex="0"
                               >
                                 <div
@@ -507,6 +510,7 @@ exports[`VarCustomers should render correctly 1`] = `
                               </th>
                               <th
                                 class="ant-table-cell ant-table-column-has-sorters"
+                                style="text-align: center;"
                                 tabindex="0"
                               >
                                 <div
@@ -567,6 +571,7 @@ exports[`VarCustomers should render correctly 1`] = `
                               </th>
                               <th
                                 class="ant-table-cell ant-table-column-has-sorters"
+                                style="text-align: center;"
                                 tabindex="0"
                               >
                                 <div
@@ -627,6 +632,7 @@ exports[`VarCustomers should render correctly 1`] = `
                               </th>
                               <th
                                 class="ant-table-cell ant-table-column-has-sorters"
+                                style="text-align: center;"
                                 tabindex="0"
                               >
                                 <div
@@ -789,7 +795,7 @@ exports[`VarCustomers should render correctly 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <a
-                                  href="/t/2ea8eaabc07840caa5fed7a80913a83a"
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac"
                                 >
                                   Dog Company 151
                                 </a>
@@ -801,6 +807,7 @@ exports[`VarCustomers should render correctly 1`] = `
                               </td>
                               <td
                                 class="ant-table-cell"
+                                style="text-align: center;"
                               >
                                 <a
                                   href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac"
@@ -810,26 +817,31 @@ exports[`VarCustomers should render correctly 1`] = `
                               </td>
                               <td
                                 class="ant-table-cell"
+                                style="text-align: center;"
                               >
                                 0
                               </td>
                               <td
                                 class="ant-table-cell"
+                                style="text-align: center;"
                               >
                                 1040
                               </td>
                               <td
                                 class="ant-table-cell"
+                                style="text-align: center;"
                               >
                                 0%
                               </td>
                               <td
                                 class="ant-table-cell"
+                                style="text-align: center;"
                               >
                                 80
                               </td>
                               <td
                                 class="ant-table-cell"
+                                style="text-align: center;"
                               >
                                 10/09/2023 (0 APs)
                               </td>
@@ -846,7 +858,7 @@ exports[`VarCustomers should render correctly 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <a
-                                  href="/t/2ea8eaabc07840caa5fed7a80913a83b"
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac"
                                 >
                                   Dog Company 151
                                 </a>
@@ -858,6 +870,7 @@ exports[`VarCustomers should render correctly 1`] = `
                               </td>
                               <td
                                 class="ant-table-cell"
+                                style="text-align: center;"
                               >
                                 <a
                                   href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac"
@@ -867,26 +880,31 @@ exports[`VarCustomers should render correctly 1`] = `
                               </td>
                               <td
                                 class="ant-table-cell"
+                                style="text-align: center;"
                               >
                                 0
                               </td>
                               <td
                                 class="ant-table-cell"
+                                style="text-align: center;"
                               >
                                 100
                               </td>
                               <td
                                 class="ant-table-cell"
+                                style="text-align: center;"
                               >
                                 0%
                               </td>
                               <td
                                 class="ant-table-cell"
+                                style="text-align: center;"
                               >
                                 20
                               </td>
                               <td
                                 class="ant-table-cell"
+                                style="text-align: center;"
                               >
                                 09/09/2023 (0 APs)
                               </td>
@@ -903,7 +921,7 @@ exports[`VarCustomers should render correctly 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <a
-                                  href="/t/2ea8eaabc07840caa5fed7a80913a83c"
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac"
                                 >
                                   Dog Company 151
                                 </a>
@@ -915,6 +933,7 @@ exports[`VarCustomers should render correctly 1`] = `
                               </td>
                               <td
                                 class="ant-table-cell"
+                                style="text-align: center;"
                               >
                                 <a
                                   href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac"
@@ -924,26 +943,31 @@ exports[`VarCustomers should render correctly 1`] = `
                               </td>
                               <td
                                 class="ant-table-cell"
+                                style="text-align: center;"
                               >
                                 0
                               </td>
                               <td
                                 class="ant-table-cell"
+                                style="text-align: center;"
                               >
                                 0
                               </td>
                               <td
                                 class="ant-table-cell"
+                                style="text-align: center;"
                               >
                                 0%
                               </td>
                               <td
                                 class="ant-table-cell"
+                                style="text-align: center;"
                               >
                                 80
                               </td>
                               <td
                                 class="ant-table-cell"
+                                style="text-align: center;"
                               >
                                 09/09/2023 (0 APs)
                               </td>
@@ -960,7 +984,7 @@ exports[`VarCustomers should render correctly 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <a
-                                  href="/t/2ea8eaabc07840caa5fed7a80913a83d"
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac"
                                 >
                                   Dog Company 151
                                 </a>
@@ -972,6 +996,7 @@ exports[`VarCustomers should render correctly 1`] = `
                               </td>
                               <td
                                 class="ant-table-cell"
+                                style="text-align: center;"
                               >
                                 <a
                                   href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac"
@@ -981,26 +1006,31 @@ exports[`VarCustomers should render correctly 1`] = `
                               </td>
                               <td
                                 class="ant-table-cell"
+                                style="text-align: center;"
                               >
                                 0
                               </td>
                               <td
                                 class="ant-table-cell"
+                                style="text-align: center;"
                               >
                                 0
                               </td>
                               <td
                                 class="ant-table-cell"
+                                style="text-align: center;"
                               >
                                 0%
                               </td>
                               <td
                                 class="ant-table-cell"
+                                style="text-align: center;"
                               >
                                 0
                               </td>
                               <td
                                 class="ant-table-cell"
+                                style="text-align: center;"
                               >
                                 -- ()
                               </td>

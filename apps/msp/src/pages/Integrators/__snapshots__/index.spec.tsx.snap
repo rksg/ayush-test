@@ -387,6 +387,7 @@ exports[`Integrators should render table 1`] = `
                               </th>
                               <th
                                 class="ant-table-cell ant-table-column-has-sorters react-resizable"
+                                style="text-align: center;"
                                 tabindex="0"
                               >
                                 <div
@@ -453,6 +454,7 @@ exports[`Integrators should render table 1`] = `
                               </th>
                               <th
                                 class="ant-table-cell ant-table-column-has-sorters react-resizable"
+                                style="text-align: center;"
                                 tabindex="0"
                               >
                                 <div
@@ -519,6 +521,7 @@ exports[`Integrators should render table 1`] = `
                               </th>
                               <th
                                 class="ant-table-cell ant-table-column-has-sorters react-resizable"
+                                style="text-align: center;"
                                 tabindex="0"
                               >
                                 <div
@@ -585,6 +588,7 @@ exports[`Integrators should render table 1`] = `
                               </th>
                               <th
                                 class="ant-table-cell ant-table-column-has-sorters react-resizable"
+                                style="text-align: center;"
                                 tabindex="0"
                               >
                                 <div
@@ -846,7 +850,7 @@ exports[`Integrators should render table 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <a
-                                  href="/t/701fe9df5f6b4c17928a29851c07cc04"
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac"
                                 >
                                   integrator 168
                                 </a>
@@ -858,11 +862,13 @@ exports[`Integrators should render table 1`] = `
                               </td>
                               <td
                                 class="ant-table-cell"
+                                style="text-align: center;"
                               >
                                 0
                               </td>
                               <td
                                 class="ant-table-cell"
+                                style="text-align: center;"
                               >
                                 <a
                                   href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac"
@@ -872,11 +878,13 @@ exports[`Integrators should render table 1`] = `
                               </td>
                               <td
                                 class="ant-table-cell"
+                                style="text-align: center;"
                               >
                                 1
                               </td>
                               <td
                                 class="ant-table-cell"
+                                style="text-align: center;"
                               >
                                 0
                               </td>
