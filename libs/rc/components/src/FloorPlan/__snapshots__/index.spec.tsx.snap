@@ -97,7 +97,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
                     style="position: absolute; width: 100%; height: 100%;"
                   />
                   <div>
-
+                     
                     <div>
                       <div
                         class="sc-jSMfEi dSrpFV device-container gallery"
@@ -111,7 +111,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
                           <svg
                             data-testid="SignalUp"
                           />
-
+                           
                         </div>
                       </div>
                     </div>
@@ -128,7 +128,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
                           <svg
                             data-testid="DeviceOutlined"
                           />
-
+                           
                         </div>
                       </div>
                     </div>
@@ -198,7 +198,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
                     style="position: absolute; width: 100%; height: 100%;"
                   />
                   <div>
-
+                     
                   </div>
                   <img
                     alt="img"
@@ -543,7 +543,7 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
                     style="width: 100%; height: 53px; position: relative;"
                   >
                     <div>
-
+                       
                       <div>
                         <div
                           class="sc-jSMfEi dSrpFV device-container context-Album"
@@ -554,7 +554,7 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
                             class="marker ap-status-severity-attention"
                             style="align-items: center; display: flex; justify-content: center; cursor: pointer;"
                           >
-
+                             
                           </div>
                         </div>
                       </div>
@@ -568,7 +568,7 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
                             class="marker switch-status-never-contacted-cloud"
                             style="align-items: center; display: flex; justify-content: center; cursor: pointer;"
                           >
-
+                             
                           </div>
                         </div>
                       </div>
@@ -602,7 +602,7 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
                     style="width: 100%; height: 53px; position: relative;"
                   >
                     <div>
-
+                       
                     </div>
                     <img
                       alt="Thumbnail for dscx"
