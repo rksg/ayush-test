@@ -12,6 +12,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   DownloadOutlined
 } from '@acx-ui/icons'
@@ -35,7 +36,7 @@ import { TenantLink, MspTenantLink, useNavigate, useTenantLink } from '@acx-ui/r
 
 const getStatus = (row: MspEc) => {
   const isTrial = row.accountType === 'Trial'
-  const value = row.status === 'Active' ? (isTrial ? row.accountType : row.status) : row.status
+  const value = row.status === 'Active' ? (isTrial ? row.accountType : row.status) : 'Inactive'
   return value
 }
 
@@ -126,6 +127,7 @@ const defaultPayload = {
 
 export function MspCustomers () {
   const { $t } = useIntl()
+  const isEdaEcCreateEnabled = useIsSplitOn(Features.MSP_EC_CREATE_EDA)
 
   const [modalVisible, setModalVisible] = useState(false)
   const [tenantId, setTenantId] = useState('')
@@ -269,6 +271,7 @@ export function MspCustomers () {
     const rowActions: TableProps<MspEc>['rowActions'] = [
       {
         label: $t({ defaultMessage: 'Edit' }),
+        disabled: !isEdaEcCreateEnabled,
         onClick: (selectedRows) => {
           setTenantId(selectedRows[0].id)
           const status = selectedRows[0].status === 'Active' ? 'active' : 'notActive'
@@ -384,7 +387,8 @@ export function MspCustomers () {
             <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
           </TenantLink>,
           <MspTenantLink to='/dashboard/mspcustomers/create' key='addMspEc'>
-            <Button type='primary'>{$t({ defaultMessage: 'Add Customer' })}</Button>
+            <Button disabled={!isEdaEcCreateEnabled}
+              type='primary'>{$t({ defaultMessage: 'Add Customer' })}</Button>
           </MspTenantLink>,
           <DisabledButton key='download' icon={<DownloadOutlined />} />
         ]}

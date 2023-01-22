@@ -187,11 +187,14 @@ export function ManageCustomer () {
   const [mspInstaller, setInstaller] = useState([] as MspEc[])
   const [mspEcAdmins, setMspEcAdmins] = useState([] as MspAdministrator[])
   const [availableLicense, setAvailableLicense] = useState([] as MspAssignmentSummary[])
+  const [assignedWifiLicense, setWifiLicense] = useState(0)
+  const [assignedSwitchLicense, setSwitchLicense] = useState(0)
   const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
   const [drawerIntegratorVisible, setDrawerIntegratorVisible] = useState(false)
   const [drawerInstallerVisible, setDrawerInstallerVisible] = useState(false)
   const [startSubscriptionVisible, setStartSubscriptionVisible] = useState(false)
-  const [subscriptionStartDate, setStartSubscriptionDate] = useState('')
+  const [subscriptionStartDate, setSubscriptionStartDate] = useState('')
+  const [subscriptionEndDate, setSubscriptionEndDate] = useState('')
   const [address, updateAddress] = useState<Address>(isMapEnabled? {} : defaultAddress)
 
   const [addCustomer] = useAddCustomerMutation()
@@ -223,6 +226,7 @@ export function ManageCustomer () {
       //   service_effective_date: data?.service_effective_date,
       //   service_expiration_date: data?.service_expiration_date
       // })
+      setSubscriptionEndDate('')
       formRef.current?.setFieldsValue({
         name: data?.name,
         service_effective_date: data?.service_effective_date
@@ -231,6 +235,7 @@ export function ManageCustomer () {
       formRef.current?.setFieldValue(['address', 'addressLine'], data?.street_address)
       data?.is_active === 'true' ? setTrialActive(true) : setTrialActive(false)
       status === 'active' ? setTrialMode(false) : setTrialMode(true)
+      setSubscriptionStartDate(moment(data?.service_effective_date).format('MM/DD/YYYY'))
       // updateAddress(data?.street_address as Address)
     }
     if (!isEditMode) { // Add mode
@@ -279,13 +284,13 @@ export function ManageCustomer () {
       const expirationDate = EntitlementUtil.getServiceEndDate(ecFormData.service_expiration_date)
       const assignLicense = trialSelected
         ? {
-          trialAction: 'ACTIVATE',
-          assignmentStartDate: today,
-          assignmentEndDate: expirationDate
+          trialAction: 'ACTIVATE'
+          // assignmentStartDate: today,
+          // assignmentEndDate: expirationDate
         } :
         {
-          assignmentStartDate: today,
-          assignmentEndDate: expirationDate,
+          // assignmentStartDate: today,
+          // assignmentEndDate: expirationDate,
           assignments: [{
             quantity: ecFormData.wifiLicense,
             action: 'ADD',
@@ -433,7 +438,7 @@ export function ManageCustomer () {
   const startSubscription = (startDate: Date) => {
     if (startDate) {
       const dateString = moment(startDate).format('MM/DD/YYYY')
-      setStartSubscriptionDate(dateString)
+      setSubscriptionStartDate(dateString)
       setTrialMode(false)
     }
   }
@@ -598,25 +603,25 @@ export function ManageCustomer () {
     </>
   }
 
-  const getTrialSubscriptionSubtitle = () => {
-    if (isTrialActive)
-      return intl.$t({ defaultMessage: 'Subscriptions (Trial Mode)' })
-    else
-      return intl.$t({ defaultMessage: 'Inactive Subscriptions' })
-  }
-
-  const getTrailSubscriptionDevice = () => {
-    if (isTrialActive)
-      return intl.$t({ defaultMessage: '25 devices' })
-    else
-      return intl.$t({ defaultMessage: '0 devices' })
-  }
+  // function expirationDateOnChange (props: DatePickerProps) {
+  //   const disabledDate: RangePickerProps['disabledDate'] = (current) => {
+  //     // Can not select days before today
+  //     return current && current < moment().endOf('day')
+  //   }
 
   const EditCustomerSubscriptionForm = () => {
+    const trialSubscriptionSubtitle = isTrialActive
+      ? intl.$t({ defaultMessage: 'Subscriptions (Trial Mode)' })
+      : intl.$t({ defaultMessage: 'Inactive Subscriptions' })
+    if (isTrialMode) {
+      const count = isTrialActive ? 25 : 0
+      setWifiLicense(count)
+      setSwitchLicense(count)
+    }
     return <>
       {isTrialMode && <div>
         <Subtitle level={3} style={{ display: 'inline-block' }}>
-          { getTrialSubscriptionSubtitle() }</Subtitle>
+          {trialSubscriptionSubtitle}</Subtitle>
         <Button
           type='primary'
           style={{ display: 'inline-block', marginLeft: '80px' }}
@@ -625,16 +630,16 @@ export function ManageCustomer () {
         </Button>
         <UI.FieldLabel2 width='275px' style={{ marginTop: '20px' }}>
           <label>{intl.$t({ defaultMessage: 'WiFi Subscription' })}</label>
-          <label>{getTrailSubscriptionDevice()}</label>
+          <label>{assignedWifiLicense}</label>
         </UI.FieldLabel2>
         <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
           <label>{intl.$t({ defaultMessage: 'Switch Subscription' })}</label>
-          <label>{getTrailSubscriptionDevice()}</label>
+          <label>{assignedSwitchLicense}</label>
         </UI.FieldLabel2>
 
         <UI.FieldLabel2 width='275px' style={{ marginTop: '20px' }}>
           <label>{intl.$t({ defaultMessage: 'Trial Start Date' })}</label>
-          <label>{EntitlementUtil.getServiceStartDate()}</label>
+          <label>{subscriptionStartDate}</label>
         </UI.FieldLabel2>
         <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
           <label>{intl.$t({ defaultMessage: '30 Day Trial Ends on' })}</label>
@@ -676,6 +681,10 @@ export function ManageCustomer () {
             children={
               <DatePicker
                 format='MM/DD/YYYY'
+                // onChange={expirationDateOnChange}
+                disabledDate={(current) => {
+                  return moment().subtract(1, 'days') >= current
+                }}
                 style={{ marginLeft: '4px' }}
               />
             }
@@ -686,8 +695,12 @@ export function ManageCustomer () {
   }
 
   const CustomerSubscription = () => {
-    const today = EntitlementUtil.getServiceStartDate()
-
+    setSubscriptionStartDate(moment().format('MM/DD/YYYY'))
+    const trialEndDate = moment().add(30,'days').format('MM/DD/YYYY')
+    if (trialSelected) {
+      setWifiLicense(25)
+      setSwitchLicense(25)
+    }
     return <>
       <h4>{intl.$t({ defaultMessage: 'Start service in' })}</h4>
       <Form.Item
@@ -725,11 +738,11 @@ export function ManageCustomer () {
 
         <UI.FieldLabel2 width='275px' style={{ marginTop: '20px' }}>
           <label>{intl.$t({ defaultMessage: 'Trial Start Date' })}</label>
-          <label>{today}</label>
+          <label>{subscriptionStartDate}</label>
         </UI.FieldLabel2>
         <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
           <label>{intl.$t({ defaultMessage: '30 Day Trial Ends on' })}</label>
-          <label>{intl.$t({ defaultMessage: '11/22/2022' })}</label>
+          <label>{trialEndDate}</label>
         </UI.FieldLabel2></div>
       }
 
@@ -740,7 +753,7 @@ export function ManageCustomer () {
         <SwitchSubscription />
         <UI.FieldLabel2 width='275px' style={{ marginTop: '18px' }}>
           <label>{intl.$t({ defaultMessage: 'Service Start Date' })}</label>
-          <label>{today}</label>
+          <label>{subscriptionStartDate}</label>
         </UI.FieldLabel2>
 
         <UI.FieldLabeServiceDate width='275px' style={{ marginTop: '10px' }}>
@@ -766,8 +779,9 @@ export function ManageCustomer () {
             children={
               <DatePicker
                 format='MM/DD/YYYY'
+                // onChange={}
                 disabledDate={(current) => {
-                  return moment().add(-1, 'days') >= current
+                  return moment().subtract(1, 'days') >= current
                 }}
                 style={{ marginLeft: '4px' }}
               />
@@ -810,6 +824,8 @@ export function ManageCustomer () {
           <Paragraph>{displayInstaller()}</Paragraph>
         </Form.Item>
 
+        {/* <Form.Item children={displayCustomerAdmins()} /> */}
+
         <Form.Item
           label={intl.$t({ defaultMessage: 'Customer Administrator Name' })}
         >
@@ -829,17 +845,17 @@ export function ManageCustomer () {
         <Form.Item
           label={intl.$t({ defaultMessage: 'Wi-Fi Subscriptions' })}
         >
-          <Paragraph>{'wifiLicense'}</Paragraph>
+          <Paragraph>{assignedWifiLicense}</Paragraph>
         </Form.Item>
         <Form.Item style={{ marginTop: '-22px' }}
           label={intl.$t({ defaultMessage: 'Switch Subscriptions' })}
         >
-          <Paragraph>{'25'}</Paragraph>
+          <Paragraph>{assignedSwitchLicense}</Paragraph>
         </Form.Item>
         <Form.Item style={{ marginTop: '-22px' }}
           label={intl.$t({ defaultMessage: 'Service Expiration Date' })}
         >
-          <Paragraph>{'12/22/2023'}</Paragraph>
+          <Paragraph>{subscriptionEndDate}</Paragraph>
         </Form.Item></>
     )
   }
