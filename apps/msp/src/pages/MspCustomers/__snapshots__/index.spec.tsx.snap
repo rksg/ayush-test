@@ -237,6 +237,7 @@ exports[`MspCustomers should render table 1`] = `
                             <col />
                             <col />
                             <col />
+                            <col />
                             <col
                               style="width: 32px;"
                             />
@@ -665,7 +666,7 @@ exports[`MspCustomers should render table 1`] = `
                                   <span
                                     class="ant-table-column-title"
                                   >
-                                    Wi-Fi License Utilization
+                                    Wi-Fi Subscriptions Utilization
                                   </span>
                                   <span
                                     class="ant-table-column-sorter ant-table-column-sorter-full"
@@ -731,7 +732,7 @@ exports[`MspCustomers should render table 1`] = `
                                   <span
                                     class="ant-table-column-title"
                                   >
-                                    Switch Licenses
+                                    Switch Subscriptions
                                   </span>
                                   <span
                                     class="ant-table-column-sorter ant-table-column-sorter-full"
@@ -937,6 +938,15 @@ exports[`MspCustomers should render table 1`] = `
                               class="ant-table-measure-row"
                               style="height: 0px; font-size: 0px;"
                             >
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
                               <td
                                 style="padding: 0px; border: 0px; height: 0px;"
                               >

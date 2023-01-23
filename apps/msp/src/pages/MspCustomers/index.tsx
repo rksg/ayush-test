@@ -32,14 +32,13 @@ import {
   MspEc,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink, MspTenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { getBasePath, Link, MspTenantLink, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
 const getStatus = (row: MspEc) => {
   const isTrial = row.accountType === 'Trial'
   const value = row.status === 'Active' ? (isTrial ? row.accountType : row.status) : 'Inactive'
   return value
 }
-import { getBasePath, Link, } from '@acx-ui/react-router-dom'
 
 const transformApEntitlement = (row: MspEc) => {
   return row.wifiLicenses ? row.wifiLicenses : 0
