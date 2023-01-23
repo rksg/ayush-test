@@ -127,3 +127,10 @@ export const poolData: SwitchDhcp = {
     value: '1.2.3.4'
   }]
 }
+
+export const jwtToken = {
+  access_token: 'access_token',
+  expires_in: '604800',
+  id_token: 'id_token',
+  type: 'JWT'
+}
