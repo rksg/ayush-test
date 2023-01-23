@@ -11,8 +11,7 @@ import {
   MspEntitlement,
   MspEntitlementSummary,
   MspEc, EcDeviceInventory,
-  VarCustomer,
-  EcProfile
+  VarCustomer
 } from '@acx-ui/rc/utils'
 
 export const baseMspApi = createApi({
@@ -28,17 +27,6 @@ export const mspApi = baseMspApi.injectEndpoints({
     mspCustomerList: build.query<TableResult<MspEc>, RequestPayload>({
       query: ({ params, payload }) => {
         const mspCustomerListReq = createHttpRequest(MspUrlsInfo.getMspCustomersList, params)
-        return {
-          ...mspCustomerListReq,
-          body: payload
-        }
-      },
-      providesTags: [{ type: 'Msp', id: 'LIST' }]
-    }),
-    mspCustomerListDropdown: build.query<TableResult<MspEc>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const mspCustomerListReq =
-        createHttpRequest(MspUrlsInfo.getMspCustomersListDropdown, params, {}, true)
         return {
           ...mspCustomerListReq,
           body: payload
@@ -135,23 +123,11 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
-    }),
-    getEcProfile: build.query<EcProfile, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(
-          MspUrlsInfo.getMspEcProfile,
-          params
-        )
-        return {
-          ...req
-        }
-      }
     })
   })
 })
 export const {
   useMspCustomerListQuery,
-  useMspCustomerListDropdownQuery,
   useDeleteMspEcMutation,
   useVarCustomerListQuery,
   useInviteCustomerListQuery,
@@ -160,6 +136,5 @@ export const {
   useMspEntitlementListQuery,
   useMspEntitlementSummaryQuery,
   useMspAssignmentSummaryQuery,
-  useResendEcInvitationMutation,
-  useGetEcProfileQuery
+  useResendEcInvitationMutation
 } = mspApi

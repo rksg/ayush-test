@@ -1,17 +1,9 @@
 import { createApi }               from '@reduxjs/toolkit/query/react'
 import { graphqlRequestBaseQuery } from '@rtk-query/graphql-request-base-query'
 
-export const dataApiURL = `${window.location.origin}/api/a4rc/api/rsa-data-api/graphql/analytics`
+import { getJwtToken } from '@acx-ui/utils'
 
-const getJwtTokenPayload = () => {
-  if (sessionStorage.getItem('jwt')) {
-    return sessionStorage.getItem('jwt')
-  } else {
-    // eslint-disable-next-line no-console
-    console.warn('JWT TOKEN NOT FOUND!!!!!')
-    return null
-  }
-}
+export const dataApiURL = `${window.location.origin}/api/a4rc/api/rsa-data-api/graphql/analytics`
 
 // GraphQL queries are place in the context of their respective route/widget,
 // please refer to them in source folder under /apps/analytics/src
@@ -19,7 +11,7 @@ export const dataApi = createApi({
   baseQuery: graphqlRequestBaseQuery({
     url: dataApiURL,
     requestHeaders: {
-      Authorization: `Bearer ${getJwtTokenPayload()}`
+      Authorization: `Bearer ${getJwtToken()}`
     }
   }),
   reducerPath: 'analytics-data-api',

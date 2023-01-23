@@ -21,6 +21,9 @@ import RogueAPDetectionContext from '../RogueAPDetectionContext'
 
 import RogueAPDetectionForm from './RogueAPDetectionForm'
 
+const policyResponse = {
+  requestId: '360cf6c7-b2c6-4973-b4c0-a6be63adaac0'
+}
 
 const policyListContent = [
   {
@@ -195,10 +198,7 @@ const addRule = async (ruleName: string, type: RogueRuleType, classification: Ro
   if (type === RogueRuleType.CUSTOM_SNR_RULE
     || type === RogueRuleType.CUSTOM_SSID_RULE
     || type === RogueRuleType.CUSTOM_MAC_OUI_RULE) {
-    await screen.findByRole('textbox', {
-      name: new RegExp(rogueRuleActionMap[type].name)
-    })
-    await userEvent.type(screen.getByRole('textbox', {
+    await userEvent.type(await screen.findByRole('textbox', {
       name: new RegExp(rogueRuleActionMap[type].name)
     }), rogueRuleActionMap[type].value)
   }
@@ -209,9 +209,9 @@ const addRule = async (ruleName: string, type: RogueRuleType, classification: Ro
 
   await userEvent.click(screen.getByText('Add'))
 
-  await screen.findByText(ruleName)
-
-  await userEvent.click(screen.getByText(ruleName))
+  await userEvent.click(await screen.findByRole('cell', {
+    name: `${ruleName}`
+  }))
 
   await userEvent.click(screen.getByRole('button', {
     name: /edit/i
@@ -219,28 +219,19 @@ const addRule = async (ruleName: string, type: RogueRuleType, classification: Ro
 
   // edit the rule and modify the specific field value in CUSTOM_SNR_RULE, CUSTOM_SSID_RULE and CUSTOM_MAC_OUI_RULE
   if (type === RogueRuleType.CUSTOM_SNR_RULE) {
-    await screen.findByRole('textbox', {
-      name: new RegExp(rogueRuleActionMap[type].name)
-    })
-    await userEvent.type(screen.getByRole('textbox', {
+    await userEvent.type(await screen.findByRole('textbox', {
       name: new RegExp(rogueRuleActionMap[type].name)
     }), '8')
 
     await userEvent.click(screen.getByText('Save'))
   } else if (type === RogueRuleType.CUSTOM_SSID_RULE) {
-    await screen.findByRole('textbox', {
-      name: new RegExp(rogueRuleActionMap[type].name)
-    })
-    await userEvent.type(screen.getByRole('textbox', {
+    await userEvent.type(await screen.findByRole('textbox', {
       name: new RegExp(rogueRuleActionMap[type].name)
     }), 'modify')
 
     await userEvent.click(screen.getByText('Save'))
   } else if (type === RogueRuleType.CUSTOM_MAC_OUI_RULE) {
-    await screen.findByRole('textbox', {
-      name: new RegExp(rogueRuleActionMap[type].name)
-    })
-    await userEvent.clear(screen.getByRole('textbox', {
+    await userEvent.clear(await screen.findByRole('textbox', {
       name: new RegExp(rogueRuleActionMap[type].name)
     }))
 
@@ -271,6 +262,11 @@ describe('RogueAPDetectionForm', () => {
       RogueApUrls.getRoguePolicyList.url,
       (_, res, ctx) => res(
         ctx.json(policyListContent)
+      )
+    ), rest.post(
+      RogueApUrls.addRoguePolicy.url,
+      (_, res, ctx) => res(
+        ctx.json(policyResponse)
       )
     ))
 
@@ -504,6 +500,11 @@ describe('RogueAPDetectionForm', () => {
       RogueApUrls.getRoguePolicyList.url,
       (_, res, ctx) => res(
         ctx.json(policyListContent)
+      )
+    ), rest.put(
+      RogueApUrls.updateRoguePolicy.url,
+      (_, res, ctx) => res(
+        ctx.json(policyResponse)
       )
     ))
 
