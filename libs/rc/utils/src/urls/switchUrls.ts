@@ -57,6 +57,18 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/import'
   },
+  getPortSetting: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/port/switch/:switchId/portId/:portIdentifier'
+  },
+  getPortsSetting: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/port/switches/ports'
+  },
+  getPorts: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/port/switch/:serialNumber/ports'
+  },
   getVlansByVenue: {
     method: 'get',
     url: '/api/switch/tenant/:tenantId/profile/vlans/venue/:venueId'
@@ -100,6 +112,38 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   getVenueRoutedList: {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/vePort/venue/:venueId/query'
+  },
+  getDefaultVlan: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/defaultVlan/switches'
+  },
+  getSwitchVlanUnion: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/vlanUnion/switch/:switchId'
+  },
+  getSwitchVlans: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/vlans/switch/:serialNumber'
+  },
+  getSwitchesVlan: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/vlanIntersection/switches'
+  },
+  getTaggedVlansByVenue: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/profile/vlans/venue/:venueId/model/:model/tagged/:port'
+  },
+  getUntaggedVlansByVenue: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/profile/vlans/venue/:venueId/model/:model/untagged/:port'
+  },
+  getSwitchConfigurationProfileByVenue: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/profiles/venue/:venueId'
+  },
+  savePortsSetting: {
+    method: 'put',
+    url: '/api/switch/tenant/:tenantId/port/switches'
   },
   getFreeVePortVlans: {
     method: 'get',
@@ -145,6 +189,14 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/switch/tenant/:tenantId/switch/:serialNumber/jwt-token'
   },
+  getSwitchClientList: {
+    method: 'post',
+    url: '/api/viewmodel/:tenantId/switch/client/clientlist'
+  },
+  getSwitchClientDetail: {
+    method: 'get',
+    url: '/api/viewmodel/:tenantId/switch/client/:clientId'
+  },
   getTroubleshooting: {
     method: 'get',
     url: '/api/switch/tenant/:tenantId/switch/:switchId/troubleshootingResult/:troubleshootingType'
@@ -168,5 +220,38 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   macAddressTable: {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/switch/:switchId/mac-address-table'
+  },
+  getDhcpPools: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/switch/:switchId/dhcpServer/query'
+  },
+  addDhcpServer: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/switch/:switchId/dhcpServer'
+  },
+  getDhcpServer: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/dhcpServer/:dhcpServerId'
+  },
+  updateDhcpServer: {
+    method: 'put',
+    url: '/api/switch/tenant/:tenantId/switch/:switchId/dhcpServer'
+  },
+  deleteDhcpServers: {
+    method: 'delete',
+    url: '/api/switch/tenant/:tenantId/switch/:switchId/dhcpServers'
+  },
+  getDhcpLeases: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/switch/:switchId/'+
+      'troubleshootingResult/dhcp-server-lease-table'
+  },
+  dhcpLeaseTable: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/switch/:switchId/dhcpServer/leaseTable'
+  },
+  updateDhcpServerState: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/switch/:switchId/dhcpServer/state'
   }
 }

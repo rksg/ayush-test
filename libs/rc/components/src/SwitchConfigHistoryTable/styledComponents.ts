@@ -58,3 +58,11 @@ export const ArrowExpand = styled(ArrowChevronLeft)`
   height: 16px;
   padding-right: 7px;
 `
+
+export const SwitchConfigHeader = styled('div')`
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--acx-body-4-font-size);
+  align-items: center;
+  padding: 8px 0;
+`
