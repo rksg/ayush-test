@@ -39,6 +39,7 @@ const getStatus = (row: MspEc) => {
   const value = row.status === 'Active' ? (isTrial ? row.accountType : row.status) : 'Inactive'
   return value
 }
+import { getBasePath, Link, } from '@acx-ui/react-router-dom'
 
 const transformApEntitlement = (row: MspEc) => {
   return row.wifiLicenses ? row.wifiLicenses : 0
@@ -140,9 +141,10 @@ export function MspCustomers () {
       searchable: true,
       sorter: true,
       defaultSortOrder: 'ascend',
-      render: function (data) {
+      render: function (data, row) {
+        const to = `${getBasePath()}/t/${row.id}`
         return (
-          <TenantLink to={''}>{data}</TenantLink>
+          <Link to={to}>{data}</Link>
         )
       }
     },
@@ -167,7 +169,6 @@ export function MspCustomers () {
       dataIndex: 'alarmCount',
       key: 'alarmCount',
       sorter: true,
-      // align: 'center',
       render: function () {
         return '0'
       }
@@ -177,7 +178,6 @@ export function MspCustomers () {
       dataIndex: 'activeIncindents',
       key: 'activeIncindents',
       sorter: true,
-      // align: 'center',
       render: function () {
         return 0
       }
@@ -187,7 +187,6 @@ export function MspCustomers () {
       dataIndex: 'mspAdminCount',
       key: 'mspAdminCount',
       sorter: true
-      // align: 'center'
     },
     {
       title: $t({ defaultMessage: 'Customer Admins Count' }),
@@ -195,14 +194,12 @@ export function MspCustomers () {
       key: 'mspEcAdminCount',
       sorter: true,
       show: false
-      // align: 'center'
     },
     {
       title: $t({ defaultMessage: 'Wi-Fi Subscriptions' }),
       dataIndex: 'wifiLicenses',
       key: 'wifiLicenses',
       sorter: true,
-      // align: 'center',
       render: function (data, row) {
         return transformApEntitlement(row)
       }
@@ -212,8 +209,6 @@ export function MspCustomers () {
       dataIndex: 'wifiLicensesUtilization',
       key: 'wifiLicensesUtilization',
       sorter: true,
-      // align: 'center',
-      show: false,
       render: function (data, row) {
         return transformApUtilization(row)
       }
@@ -223,7 +218,6 @@ export function MspCustomers () {
       dataIndex: 'switchLicens',
       key: 'switchLicens',
       sorter: true,
-      // align: 'center',
       render: function (data, row) {
         return transformSwitchEntitlement(row)
       }
@@ -245,6 +239,13 @@ export function MspCustomers () {
       render: function (data, row) {
         return transformExpirationDate(row)
       }
+    },
+    {
+      title: $t({ defaultMessage: 'Tenant Id' }),
+      dataIndex: 'id',
+      key: 'id',
+      show: false,
+      sorter: true
     }
   ]
 
