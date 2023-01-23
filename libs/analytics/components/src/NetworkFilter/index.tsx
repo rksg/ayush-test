@@ -29,7 +29,7 @@ export const getSupersetRlsClause = (paths?:NetworkPath[],radioBands?:RadioBand[
   let networkClause = ''
 
   if(radioBands?.length){
-    radioBandClause = `AND "band" in (${radioBands.map(radioBand=>`'${radioBand}'`).join(', ')})`
+    radioBandClause = ` "band" in (${radioBands.map(radioBand=>`'${radioBand}'`).join(', ')})`
   }
 
   if(paths?.length){
