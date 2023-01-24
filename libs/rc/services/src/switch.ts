@@ -36,6 +36,7 @@ import {
   ConfigurationBackup,
   ConfigurationBackupStatus,
   transformConfigBackupType,
+  JwtToken,
   TroubleshootingResult,
   SwitchDhcp,
   SwitchDhcpLease,
@@ -116,6 +117,24 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Switch', id: 'LIST' }]
+    }),
+    rebootSwitch: build.mutation<SwitchRow, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.reboot, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    syncData: build.mutation<SwitchRow, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.syncData, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
     }),
     switchDetailHeader: build.query<SwitchViewModel, RequestPayload>({
       query: ({ params }) => {
@@ -400,6 +419,14 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     getSwitchAcls: build.query<Acl[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(SwitchUrlsInfo.getSwitchAcls, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    getJwtToken: build.query<JwtToken, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getJwtToken, params)
         return {
           ...req
         }
@@ -752,6 +779,10 @@ export const {
   useDeleteVePortsMutation,
   useGetSwitchAclsQuery,
   useGetVlanListBySwitchLevelQuery,
+  useRebootSwitchMutation,
+  useSyncDataMutation,
+  useLazyGetJwtTokenQuery,
+  useGetJwtTokenQuery,
   useGetSwitchClientListQuery,
   useGetSwitchClientDetailsQuery,
   useGetTroubleshootingQuery,
