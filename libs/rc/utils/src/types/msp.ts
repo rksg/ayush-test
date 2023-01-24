@@ -61,6 +61,7 @@ export interface DelegationEntitlementRecord {
 export interface MspEc {
   id: string;
   name: string;
+  mspName?: string;
   tenantType: string;
   streetAddress: string;
   status: string;
@@ -214,4 +215,20 @@ export interface EcProfile {
   tenant_id?: string;
   parent_tenant_id?: string;
   tenant_type?: string;
+}
+
+export interface TenantDetail {
+  createdDate?: string;
+  entitlementId?: string;
+  externalId: string;
+  id: string;
+  isActivated: boolean
+  maintenanceState?: boolean
+  name: string;
+  oemName?: string;
+  ruckusUser?: boolean
+  status: string;
+  tenantType: string;
+  updatedDate?: string;
+  upgradeGroup?: string;
 }

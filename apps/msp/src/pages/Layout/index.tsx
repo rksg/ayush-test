@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 
 import { Menu }    from 'antd'
 import { useIntl } from 'react-intl'
@@ -17,12 +18,32 @@ import {
 import {
   CloudMessageBanner
 } from '@acx-ui/rc/components'
-import { Outlet, TenantLink } from '@acx-ui/react-router-dom'
+import {
+  useGetTenantDetailQuery,
+  useGetUserProfileQuery
+} from '@acx-ui/rc/services'
+import { Outlet, TenantLink, useParams } from '@acx-ui/react-router-dom'
 
 import { useMenuConfig } from './menuConfig'
 
 function Layout () {
   const { $t } = useIntl()
+  const { tenantId } = useParams()
+  const [tenantType, setTenantType] = useState('')
+
+  const { data } = useGetTenantDetailQuery({ params: { tenantId } })
+  const { data: userProfile } = useGetUserProfileQuery({ params: { tenantId } })
+  useEffect(() => {
+    if (data && userProfile) {
+      if (userProfile.support) {
+        setTenantType('SUPPORT')
+      } else {
+        setTenantType(data.tenantType)
+      }
+    }
+  }, [data, userProfile])
+
+
   const regionMenu = <Menu
     selectable
     defaultSelectedKeys={['US']}
@@ -34,7 +55,7 @@ function Layout () {
   />
   return (
     <LayoutComponent
-      menuConfig={useMenuConfig()}
+      menuConfig={useMenuConfig(tenantType)}
       content={
         <>
           <CloudMessageBanner />

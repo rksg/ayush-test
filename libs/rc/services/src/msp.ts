@@ -12,7 +12,8 @@ import {
   MspEntitlementSummary,
   MspEc, EcDeviceInventory,
   VarCustomer,
-  EcProfile
+  EcProfile,
+  TenantDetail
 } from '@acx-ui/rc/utils'
 
 export const baseMspApi = createApi({
@@ -136,6 +137,17 @@ export const mspApi = baseMspApi.injectEndpoints({
       },
       providesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
+    varCustomerListDropdown: build.query<TableResult<VarCustomer>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const varCustomerListReq =
+        createHttpRequest(MspUrlsInfo.getVarDelegations, params, {}, true)
+        return {
+          ...varCustomerListReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
     getEcProfile: build.query<EcProfile, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(
@@ -146,6 +158,28 @@ export const mspApi = baseMspApi.injectEndpoints({
           ...req
         }
       }
+    }),
+    getTenantDetail: build.query<TenantDetail, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          MspUrlsInfo.getTenantDetail,
+          params
+        )
+        return {
+          ...req
+        }
+      }
+    }),
+    supportMspCustomerList: build.query<TableResult<MspEc>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const supportMspCustomerListReq =
+        createHttpRequest(MspUrlsInfo.getSupportMspCustomersList, params)
+        return {
+          ...supportMspCustomerListReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'LIST' }]
     })
   })
 })
@@ -161,5 +195,8 @@ export const {
   useMspAssignmentSummaryQuery,
   useResendEcInvitationMutation,
   useMspCustomerListDropdownQuery,
-  useGetEcProfileQuery
+  useVarCustomerListDropdownQuery,
+  useGetEcProfileQuery,
+  useGetTenantDetailQuery,
+  useSupportMspCustomerListQuery
 } = mspApi
