@@ -17,7 +17,6 @@ describe('jwtToken', () => {
       acx_account_type: 'REC',
       tenantId: undefined
     }
-    const spy = jest.spyOn(console, 'warn').mockImplementation(() => {})
     expect(getJwtTokenPayload()).toEqual(token)
   })
 
@@ -37,7 +36,6 @@ describe('jwtToken', () => {
       acx_account_type: 'REC',
       tenantId: getTenantId()
     }
-    const spy = jest.spyOn(console, 'warn').mockImplementation(() => {})
     expect(getJwtTokenPayload()).toEqual(token)
     expect(getTenantId()).toEqual('e3d0c24e808d42b1832d47db4c2a7914')
   })
