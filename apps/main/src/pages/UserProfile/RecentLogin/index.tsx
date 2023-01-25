@@ -1,5 +1,3 @@
-import { useState, useEffect } from 'react'
-
 import { useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps  }              from '@acx-ui/components'
@@ -21,8 +19,6 @@ export interface EventList {
 export function RecentLogin (props: { userEmail: string }) {
   const { $t } = useIntl()
   const { userEmail } = props
-
-  const [userLoginData, setUserLoginData] = useState([] as AdminLog[])
 
   const tableQuery = useTableQuery({
     useQuery: useAdminLogsQuery,
@@ -51,16 +47,10 @@ export function RecentLogin (props: { userEmail: string }) {
     }
   })
 
-  useEffect(() => {
-    if (tableQuery.data) {
-      const tableData = getProfilesByType(tableQuery.data?.data as AdminLog[])
-      setUserLoginData(tableData)
-    }
-
-  }, [tableQuery.data])
+  const tableData = getProfilesByType(tableQuery.data?.data as AdminLog[])
 
   function getProfilesByType (queryData: AdminLog[]) {
-    return queryData.filter(p =>
+    return queryData?.filter(p =>
       p.message.includes('logged into') && p.message.includes(userEmail)).slice(0, 5)
   }
 
@@ -80,7 +70,7 @@ export function RecentLogin (props: { userEmail: string }) {
       <Loader states={[tableQuery]}>
         <Table
           columns={columnsRecentLogin}
-          dataSource={userLoginData}
+          dataSource={tableData}
           style={{ width: '600px' }}
           rowKey='id'
           type={'form'}
