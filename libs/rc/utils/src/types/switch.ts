@@ -204,7 +204,7 @@ export class SwitchViewModel extends Switch {
   cliApplied?: boolean
   formStacking?: boolean
   suspendingDeployTime?: string
-  syncDataEndTime?: number
+  syncDataEndTime?: string
   firmwareVersion?: string
   portsStatus?: {
     Down?: number,
@@ -215,6 +215,7 @@ export class SwitchViewModel extends Switch {
   dns?: string
   unitDetails?: StackMember[]
   firmware?: string
+  syncDataId?: string
 }
 
 export interface SwitchRow {

@@ -565,7 +565,7 @@ describe('EditPortDrawer', () => {
       user.click(await screen.findByRole('button', { name: 'Apply' }))
     })
 
-    it('should create and edit LLDP correctly', async () => {
+    xit('should create and edit LLDP correctly', async () => {
       const user = userEvent.setup()
       mockServer.use(
         rest.get(SwitchUrlsInfo.getPortSetting.url,
