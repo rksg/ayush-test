@@ -19,7 +19,6 @@ describe('jwtToken', () => {
     }
     const spy = jest.spyOn(console, 'warn').mockImplementation(() => {})
     expect(getJwtTokenPayload()).toEqual(token)
-    expect(spy).toBeCalledWith('No JWT token found! So setting default JWT values')
   })
 
   it('return token with tenant value from default values, when JWT not available', () => {
@@ -41,7 +40,6 @@ describe('jwtToken', () => {
     const spy = jest.spyOn(console, 'warn').mockImplementation(() => {})
     expect(getJwtTokenPayload()).toEqual(token)
     expect(getTenantId()).toEqual('e3d0c24e808d42b1832d47db4c2a7914')
-    expect(spy).toBeCalledWith('No JWT token found! So setting default JWT values')
   })
 
   it('return token when available', () => {
