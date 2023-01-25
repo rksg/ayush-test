@@ -2,12 +2,12 @@ import React, { useMemo, useState } from 'react'
 
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { aggregateDataBy }                   from '@acx-ui/analytics/utils'
-import type { Incident }                     from '@acx-ui/analytics/utils'
-import { Drawer, Loader, Table, SearchBar  } from '@acx-ui/components'
-import type { TableColumn, ColumnType }      from '@acx-ui/components'
-import { TenantLink }                        from '@acx-ui/react-router-dom'
-import { fixedEncodeURIComponent }           from '@acx-ui/utils'
+import { aggregateDataBy }                        from '@acx-ui/analytics/utils'
+import type { Incident }                          from '@acx-ui/analytics/utils'
+import { Drawer, Loader, Table, SearchBar  }      from '@acx-ui/components'
+import type { TableColumn, ColumnType }           from '@acx-ui/components'
+import { TenantLink }                             from '@acx-ui/react-router-dom'
+import { encodeParameter, DateFilter, DateRange } from '@acx-ui/utils'
 
 import {
   ImpactedAP,
@@ -85,12 +85,11 @@ export const ImpactedClientsDrawer: React.FC<ImpactedClientsDrawerProps> = (prop
     data: states.data && aggregateDataBy<ImpactedClient>('mac')(states.data)
   }) })
   const { startTime, endTime } = props
-  const dateObj = {
+  const period = encodeParameter<DateFilter>({
     startDate: startTime,
     endDate: endTime,
-    range: 'Custom'
-  }
-  const period = fixedEncodeURIComponent(JSON.stringify(dateObj))
+    range: DateRange.custom
+  })
   const columns = useMemo(() => [
     column('hostname', {
       title: $t({ defaultMessage: 'Hostname' }),

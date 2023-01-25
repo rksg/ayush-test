@@ -11,8 +11,8 @@ import {
   Client,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }              from '@acx-ui/react-router-dom'
-import { fixedEncodeURIComponent, formatter } from '@acx-ui/utils'
+import { TenantLink, useParams }                             from '@acx-ui/react-router-dom'
+import { encodeParameter, DateFilter, DateRange, formatter } from '@acx-ui/utils'
 
 function getCols (intl: ReturnType<typeof useIntl>) {
   const dateTimeFormatter = formatter('dateTimeFormat')
@@ -23,12 +23,11 @@ function getCols (intl: ReturnType<typeof useIntl>) {
     sorter: true,
     defaultSortOrder: 'ascend',
     render: (data, { disconnectTime, clientMac }) => {
-      const dateObj = {
+      const period = encodeParameter<DateFilter>({
         startDate: moment((disconnectTime as number) * 1000).subtract(24, 'hours').format(),
         endDate: moment((disconnectTime as number) * 1000).format(),
-        range: 'Custom'
-      }
-      const period = fixedEncodeURIComponent(JSON.stringify(dateObj))
+        range: DateRange.custom
+      })
       /* eslint-disable max-len */
       return <TenantLink
         to={`/users/wifi/clients/${clientMac}/details/overview?clientStatus=historical&period=${period}`}
