@@ -1,5 +1,5 @@
 ARG CI_SERVICE_BASE
-FROM ${CI_SERVICE_BASE}node:16.15.0-alpine as build-base
+FROM ${CI_SERVICE_BASE}node:master--latest as build-base
 
 WORKDIR /app
 
