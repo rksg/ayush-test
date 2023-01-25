@@ -1,5 +1,6 @@
 export * from './macRegistrarionList'
 export * from './rogueApDetectionPolicy'
+export * from './accessControl'
 
 export enum PolicyType {
   ACCESS_CONTROL = 'Access Control',

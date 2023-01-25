@@ -44,3 +44,8 @@ export interface DistributionSwitch {
   loopbackInterfaceIpAddress: string
   loopbackInterfaceSubnetMask: string
 }
+
+export interface NetworkSegmentationGroup {
+  id: string,
+  name: string
+}
