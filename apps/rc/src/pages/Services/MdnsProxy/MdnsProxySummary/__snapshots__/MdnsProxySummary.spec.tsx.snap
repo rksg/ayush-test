@@ -94,7 +94,7 @@ exports[`MdnsProxySummary should render the summary 1`] = `
                     class="ant-form-item-control-input-content"
                   >
                     <div
-                      class="styledComponents__Wrapper-sc-1abm7iv-13 bRIKQR"
+                      class="styledComponents__Wrapper-sc-1abm7iv-12 jjcNqJ"
                     >
                       <div
                         class="ant-pro-table"
@@ -179,7 +179,7 @@ exports[`MdnsProxySummary should render the summary 1`] = `
                                                 tabindex="0"
                                               >
                                                 <div
-                                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                                 />
                                                 <div
                                                   class="ant-table-column-sorters"
@@ -237,7 +237,7 @@ exports[`MdnsProxySummary should render the summary 1`] = `
                                                   </span>
                                                 </div>
                                                 <div
-                                                  class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                                 />
                                               </th>
                                               <th
@@ -245,7 +245,7 @@ exports[`MdnsProxySummary should render the summary 1`] = `
                                                 tabindex="0"
                                               >
                                                 <div
-                                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                                 />
                                                 <div
                                                   class="ant-table-column-sorters"
@@ -303,7 +303,7 @@ exports[`MdnsProxySummary should render the summary 1`] = `
                                                   </span>
                                                 </div>
                                                 <div
-                                                  class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                                 />
                                               </th>
                                               <th
@@ -311,7 +311,7 @@ exports[`MdnsProxySummary should render the summary 1`] = `
                                                 tabindex="0"
                                               >
                                                 <div
-                                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                                 />
                                                 <div
                                                   class="ant-table-column-sorters"
@@ -369,7 +369,7 @@ exports[`MdnsProxySummary should render the summary 1`] = `
                                                   </span>
                                                 </div>
                                                 <div
-                                                  class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                                 />
                                               </th>
                                               <th
@@ -377,10 +377,10 @@ exports[`MdnsProxySummary should render the summary 1`] = `
                                                 style="position: sticky; right: 0px;"
                                               >
                                                 <div
-                                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                                 />
                                                 <div
-                                                  class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                                 />
                                               </th>
                                             </tr>

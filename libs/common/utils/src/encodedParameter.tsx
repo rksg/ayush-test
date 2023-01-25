@@ -30,3 +30,7 @@ export function useEncodedParameter<ValueType> (name: string) {
     }
   }), [name, search, setSearch])
 }
+
+export function encodeParameter<ValueType> (value: ValueType): string {
+  return fixedEncodeURIComponent(JSON.stringify(value))
+}
