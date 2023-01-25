@@ -213,7 +213,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render corr
                                 >
                                   <div
                                     class="echarts-for-react "
-                                    size-sensor-id="9"
+                                    size-sensor-id="12"
                                     style="height: 90px; width: 90px; padding-top: 20px; position: relative;"
                                   >
                                     <div
@@ -365,6 +365,13 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render corr
                                     </div>
                                     <div
                                       class=""
+                                    />
+                                    <object
+                                      class="size-sensor-object"
+                                      data="about:blank"
+                                      style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+                                      tabindex="-1"
+                                      type="text/html"
                                     />
                                   </div>
                                 </div>
@@ -1231,7 +1238,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                 >
                                   <div
                                     class="echarts-for-react "
-                                    size-sensor-id="8"
+                                    size-sensor-id="11"
                                     style="height: 90px; width: 90px; padding-top: 20px; position: relative;"
                                   >
                                     <div
@@ -1383,6 +1390,13 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                     </div>
                                     <div
                                       class=""
+                                    />
+                                    <object
+                                      class="size-sensor-object"
+                                      data="about:blank"
+                                      style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+                                      tabindex="-1"
+                                      type="text/html"
                                     />
                                   </div>
                                 </div>
@@ -2422,7 +2436,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                 >
                                   <div
                                     class="echarts-for-react "
-                                    size-sensor-id="7"
+                                    size-sensor-id="10"
                                     style="height: 90px; width: 90px; padding-top: 20px; position: relative;"
                                   >
                                     <div
@@ -2574,6 +2588,13 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                     </div>
                                     <div
                                       class=""
+                                    />
+                                    <object
+                                      class="size-sensor-object"
+                                      data="about:blank"
+                                      style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+                                      tabindex="-1"
+                                      type="text/html"
                                     />
                                   </div>
                                 </div>
@@ -3659,7 +3680,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                 >
                                   <div
                                     class="echarts-for-react "
-                                    size-sensor-id="5"
+                                    size-sensor-id="8"
                                     style="height: 90px; width: 90px; padding-top: 20px; position: relative;"
                                   >
                                     <div
@@ -3811,6 +3832,13 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                     </div>
                                     <div
                                       class=""
+                                    />
+                                    <object
+                                      class="size-sensor-object"
+                                      data="about:blank"
+                                      style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+                                      tabindex="-1"
+                                      type="text/html"
                                     />
                                   </div>
                                 </div>
@@ -4677,7 +4705,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                 >
                                   <div
                                     class="echarts-for-react "
-                                    size-sensor-id="6"
+                                    size-sensor-id="9"
                                     style="height: 90px; width: 90px; padding-top: 20px; position: relative;"
                                   >
                                     <div
@@ -4829,6 +4857,13 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                     </div>
                                     <div
                                       class=""
+                                    />
+                                    <object
+                                      class="size-sensor-object"
+                                      data="about:blank"
+                                      style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+                                      tabindex="-1"
+                                      type="text/html"
                                     />
                                   </div>
                                 </div>
@@ -5683,7 +5718,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client c
                                 >
                                   <div
                                     class="echarts-for-react "
-                                    size-sensor-id="1"
+                                    size-sensor-id="4"
                                     style="height: 90px; width: 90px; padding-top: 20px; position: relative;"
                                   >
                                     <div
@@ -5835,6 +5870,13 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client c
                                     </div>
                                     <div
                                       class=""
+                                    />
+                                    <object
+                                      class="size-sensor-object"
+                                      data="about:blank"
+                                      style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+                                      tabindex="-1"
+                                      type="text/html"
                                     />
                                   </div>
                                 </div>
@@ -6991,7 +7033,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client w
                                 >
                                   <div
                                     class="echarts-for-react "
-                                    size-sensor-id="2"
+                                    size-sensor-id="5"
                                     style="height: 90px; width: 90px; padding-top: 20px; position: relative;"
                                   >
                                     <div
@@ -7143,6 +7185,13 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client w
                                     </div>
                                     <div
                                       class=""
+                                    />
+                                    <object
+                                      class="size-sensor-object"
+                                      data="about:blank"
+                                      style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+                                      tabindex="-1"
+                                      type="text/html"
                                     />
                                   </div>
                                 </div>
@@ -8281,7 +8330,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render dpsk cli
                                 >
                                   <div
                                     class="echarts-for-react "
-                                    size-sensor-id="4"
+                                    size-sensor-id="7"
                                     style="height: 90px; width: 90px; padding-top: 20px; position: relative;"
                                   >
                                     <div
@@ -8433,6 +8482,13 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render dpsk cli
                                     </div>
                                     <div
                                       class=""
+                                    />
+                                    <object
+                                      class="size-sensor-object"
+                                      data="about:blank"
+                                      style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+                                      tabindex="-1"
+                                      type="text/html"
                                     />
                                   </div>
                                 </div>
@@ -9761,7 +9817,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                                 >
                                   <div
                                     class="echarts-for-react "
-                                    size-sensor-id="3"
+                                    size-sensor-id="6"
                                     style="height: 90px; width: 90px; padding-top: 20px; position: relative;"
                                   >
                                     <div
@@ -9913,6 +9969,13 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                                     </div>
                                     <div
                                       class=""
+                                    />
+                                    <object
+                                      class="size-sensor-object"
+                                      data="about:blank"
+                                      style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+                                      tabindex="-1"
+                                      type="text/html"
                                     />
                                   </div>
                                 </div>
@@ -11441,6 +11504,13 @@ exports[`ClientOverviewTab OverviewWidget should render client info correctly 1`
                                     <div
                                       class=""
                                     />
+                                    <object
+                                      class="size-sensor-object"
+                                      data="about:blank"
+                                      style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+                                      tabindex="-1"
+                                      type="text/html"
+                                    />
                                   </div>
                                 </div>
                               </div>
@@ -12749,6 +12819,13 @@ exports[`ClientOverviewTab OverviewWidget should render correctly when search pa
                                     <div
                                       class=""
                                     />
+                                    <object
+                                      class="size-sensor-object"
+                                      data="about:blank"
+                                      style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+                                      tabindex="-1"
+                                      type="text/html"
+                                    />
                                   </div>
                                 </div>
                               </div>
@@ -13766,6 +13843,13 @@ exports[`ClientOverviewTab OverviewWidget should render historical client info c
                                     </div>
                                     <div
                                       class=""
+                                    />
+                                    <object
+                                      class="size-sensor-object"
+                                      data="about:blank"
+                                      style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+                                      tabindex="-1"
+                                      type="text/html"
                                     />
                                   </div>
                                 </div>
