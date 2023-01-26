@@ -876,7 +876,8 @@ export function ManageCustomer () {
         <Form.Item style={{ marginTop: '-22px' }}
           label={intl.$t({ defaultMessage: 'Role' })}
         >
-          {mspEcAdmins[0]?.role && <Paragraph>{intl.$t(roleDisplayText[mspEcAdmins[0]?.role])}</Paragraph>}
+          {mspEcAdmins[0]?.role &&
+          <Paragraph>{intl.$t(roleDisplayText[mspEcAdmins[0]?.role])}</Paragraph>}
         </Form.Item>
 
         <Form.Item
