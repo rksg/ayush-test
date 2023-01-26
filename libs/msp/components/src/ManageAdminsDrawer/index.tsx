@@ -41,6 +41,10 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
     return mspAdmins.filter(rec => admins.includes(rec.id)).map(rec => rec.email)
   }
 
+  function getSelectedRows (mspAdmins: MspAdministrator[], admins: string[]) {
+    return mspAdmins.filter(rec => admins.includes(rec.id))
+  }
+
   const onClose = () => {
     setVisible(false)
     form.resetFields()
@@ -64,14 +68,14 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
         }
         )})
     }
-
     if (tenantId) {
       saveMspAdmins({ payload, params: { mspEcTenantId: tenantId } })
         .then(() => {
           setTimeout(() => {
+            setSelected(selectedRows.mspAdmins)
             setVisible(false)
             resetFields()
-          }, 5000)
+          }, 1000)
         })
     } else {
       setSelected(selectedRows.mspAdmins)
@@ -125,8 +129,6 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
         ))
       }
     </Select>
-
-
   }
 
   const MspAdminTable = () => {
@@ -144,6 +146,8 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
     if (queryResults?.data && delegatedAdmins?.data) {
       const admins = delegatedAdmins?.data.map((admin: MspEcDelegatedAdmins)=> admin.msp_admin_id)
       selectedKeys = getSelectedKeys(queryResults?.data as MspAdministrator[], admins)
+      const selRows = getSelectedRows(queryResults?.data as MspAdministrator[], admins)
+      form.setFieldValue('mspAdmins', selRows)
     }
 
     return (
@@ -155,7 +159,7 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
           rowKey='email'
           rowSelection={{
             type: 'checkbox',
-            defaultSelectedRowKeys: selectedKeys,
+            selectedRowKeys: selectedKeys,
             onChange (selectedRowKeys, selectedRows) {
               form.setFieldValue('mspAdmins', selectedRows)
             }

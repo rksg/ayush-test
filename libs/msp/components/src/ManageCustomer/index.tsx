@@ -1,6 +1,5 @@
 import { useState, useRef, ChangeEventHandler, useEffect } from 'react'
 
-
 import {
   DatePicker,
   Form,
@@ -25,7 +24,8 @@ import {
   StepsFormInstance,
   Subtitle
 } from '@acx-ui/components'
-import { SearchOutlined }        from '@acx-ui/icons'
+import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
+import { SearchOutlined }         from '@acx-ui/icons'
 import {
   useAddCustomerMutation,
   useMspEcAdminListQuery,
@@ -42,7 +42,7 @@ import {
   emailRegExp,
   MspAdministrator,
   MspEc,
-  MspEcData,
+  // MspEcData,
   roleDisplayText,
   RolesEnum,
   EntitlementUtil,
@@ -105,17 +105,14 @@ interface EcExtended {
   }
 
 export const retrieveCityState = (addressComponents: Array<AddressComponent>, country: string) => {
-
   // array reverse applied since search should be done from general to specific, google provides from vice-versa
   const reversedAddrComponents = addressComponents.reverse()
-
   /** Step 1. Looking for locality / sublocality_level_X / postal_town */
   let cityComponent = reversedAddrComponents.find(el => {
     return el.types?.includes('locality')
       || el.types?.some((t: string) => /sublocality_level_[1-5]/.test(t))
       || el.types?.includes('postal_town')
   })
-
   /** Step 2. If nothing found, proceed with administrative_area_level_2-5 / neighborhood
    * administrative_area_level_1 excluded from search since considered as `political state`
    */
@@ -125,16 +122,12 @@ export const retrieveCityState = (addressComponents: Array<AddressComponent>, co
         || el.types?.some((t: string) => /administrative_area_level_[2-5]/.test(t))
     })
   }
-
   const stateComponent = addressComponents
     .find(el => el.types?.includes('administrative_area_level_1'))
-
-
   // Address in some country doesn't have city and state component, we will use the country as the default value of the city.
   if (!cityComponent && !stateComponent) {
     cityComponent = { long_name: country }
   }
-
   return {
     city: cityComponent? cityComponent.long_name: '',
     state: stateComponent ? stateComponent.long_name : null
@@ -144,13 +137,11 @@ export const retrieveCityState = (addressComponents: Array<AddressComponent>, co
 export const addressParser = async (place: google.maps.places.PlaceResult) => {
   const address: Address = {}
   address.addressLine = place.formatted_address
-
   const countryObj = place?.address_components?.find(
     el => el.types.includes('country')
   )
   const country = countryObj?.long_name ?? ''
   address.country = country
-
   if (place && place.address_components) {
     const cityObj = retrieveCityState(
       place.address_components,
@@ -175,7 +166,7 @@ const defaultAddress: Address = {
 
 export function ManageCustomer () {
   const intl = useIntl()
-  const isMapEnabled = true//useIsSplitOn(Features.G_MAP)
+  const isMapEnabled = useIsSplitOn(Features.G_MAP)
 
   const navigate = useNavigate()
   const linkToCustomers = useTenantLink('/dashboard/mspcustomers', 'v')
@@ -194,6 +185,7 @@ export function ManageCustomer () {
   const [assignedLicense, setAssignedLicense] = useState([] as MspAssignmentHistory[])
   const [assignedWifiLicense, setWifiLicense] = useState(0)
   const [assignedSwitchLicense, setSwitchLicense] = useState(0)
+  const [customDate, setCustomeDate] = useState(true)
   const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
   const [drawerIntegratorVisible, setDrawerIntegratorVisible] = useState(false)
   const [drawerInstallerVisible, setDrawerInstallerVisible] = useState(false)
@@ -208,7 +200,7 @@ export function ManageCustomer () {
   const { Option } = Select
   const { Paragraph } = Typography
   const isEditMode = action === 'edit'
-  const isEditTrial = action === 'edit' && status === 'Trial'
+  const isTrialEditMode = action === 'edit' && status === 'Trial'
 
   const { data } = useGetMspEcQuery({ params: { mspEcTenantId } })
   // const { data: delegatedAdmins } = useGetMspEcDelegatedAdminsQuery({ params: { mspEcTenantId } })
@@ -231,20 +223,17 @@ export function ManageCustomer () {
       setMspEcAdmins(ecAdministrators)
     }
     if (data) {
-      // form.setFieldsValue({
-      //   name: data?.name,
-      //   street_address: data?.street_address,
-      //   service_effective_date: data?.service_effective_date,
-      //   service_expiration_date: data?.service_expiration_date
-      // })
       formRef.current?.setFieldsValue({
         name: data?.name,
         service_effective_date: data?.service_effective_date,
+        wifiLicense: assignedWifiLicense,
+        switchLicense: assignedSwitchLicense
         // service_expiration_date: data?.service_expiration_date
       })
       formRef.current?.setFieldValue(['address', 'addressLine'], data?.street_address)
       data?.is_active === 'true' ? setTrialActive(true) : setTrialActive(false)
       status === 'Trial' ? setTrialMode(true) : setTrialMode(false)
+
       setSubscriptionStartDate(moment(data?.service_effective_date).format('MM/DD/YYYY'))
       setSubscriptionEndDate(moment(data?.service_expiration_date).format('MM/DD/YYYY'))
       // updateAddress(data?.street_address as Address)
@@ -364,7 +353,7 @@ export function ManageCustomer () {
       const today = EntitlementUtil.getServiceStartDate()
       const expirationDate = EntitlementUtil.getServiceEndDate(subscriptionEndDate)
       let assignLicense =
-      isEditTrial ? {
+      isTrialEditMode ? {
         subscription_start_date: today,
         subscription_end_date: expirationDate,
         trialAction: 'DEACTIVATE',
@@ -505,6 +494,10 @@ export function ManageCustomer () {
   const checkAssignedLicense = (entitlements: MspAssignmentHistory[]) => {
     const assignedLicense = entitlements.filter(en => en.mspEcTenantId === mspEcTenantId)
     setAssignedLicense(assignedLicense)
+    const wifi = assignedLicense.filter(en => en.deviceType === 'MSP_WIFI')
+    setWifiLicense(wifi.length > 0 ? wifi[0].quantity : 0)
+    const sw = assignedLicense.filter(en => en.deviceType === 'MSP_SWITCH')
+    setSwitchLicense(sw.length > 0 ? sw[0].quantity : 0)
   }
 
   const MspAdminsForm = () => {
@@ -666,6 +659,28 @@ export function ManageCustomer () {
     setSubscriptionEndDate(expirationDate)
   }
 
+  const onSelectChange = (value: string) => {
+    if (value === DateSelectionEnum.CUSTOME_DATE) {
+      // setSubscriptionEndDate('')
+      setCustomeDate(true)
+    } else {
+      if (value === DateSelectionEnum.THIRTY_DAYS) {
+        setSubscriptionEndDate(moment().add(30,'days').format('MM/DD/YYYY'))
+      } else if (value === DateSelectionEnum.SIXTY_DAYS) {
+        setSubscriptionEndDate(moment().add(60,'days').format('MM/DD/YYYY'))
+      } else if (value === DateSelectionEnum.NINETY_DAYS) {
+        setSubscriptionEndDate(moment().add(90,'days').format('MM/DD/YYYY'))
+      } else if (value === DateSelectionEnum.ONE_YEAR) {
+        setSubscriptionEndDate(moment().add(1,'years').format('MM/DD/YYYY'))
+      } else if (value === DateSelectionEnum.THREE_YEARS) {
+        setSubscriptionEndDate(moment().add(3,'years').format('MM/DD/YYYY'))
+      } else if (value === DateSelectionEnum.FIVE_YEARS) {
+        setSubscriptionEndDate(moment().add(5,'years').format('MM/DD/YYYY'))
+      }
+      setCustomeDate(false)
+    }
+  }
+
   const EditCustomerSubscriptionForm = () => {
     const trialSubscriptionSubtitle = isTrialActive
       ? intl.$t({ defaultMessage: 'Subscriptions (Trial Mode)' })
@@ -718,12 +733,12 @@ export function ManageCustomer () {
         <UI.FieldLabeServiceDate width='275px' style={{ marginTop: '10px' }}>
           <label>{intl.$t({ defaultMessage: 'Service Expiration Date' })}</label>
           <Form.Item
-            name='expirationDate1'
+            name='expirationDateSelection'
             label=''
             rules={[{ required: true } ]}
             initialValue={DateSelectionEnum.CUSTOME_DATE}
             children={
-              <Select>
+              <Select onChange={onSelectChange}>
                 {
                   Object.entries(DateSelectionEnum).map(([label, value]) => (
                     <Option key={label} value={value}>{intl.$t(dateDisplayText[value])}</Option>
@@ -738,6 +753,8 @@ export function ManageCustomer () {
             children={
               <DatePicker
                 format='MM/DD/YYYY'
+                disabled={!customDate}
+                defaultValue={moment(subscriptionEndDate, 'MM/DD/YYYY')}
                 onChange={expirationDateOnChange}
                 disabledDate={(current) => {
                   return moment().subtract(1, 'days') >= current
@@ -821,7 +838,7 @@ export function ManageCustomer () {
             rules={[{ required: true } ]}
             initialValue={DateSelectionEnum.CUSTOME_DATE}
             children={
-              <Select>
+              <Select onChange={onSelectChange}>
                 {
                   Object.entries(DateSelectionEnum).map(([label, value]) => (
                     <Option key={label} value={value}>{intl.$t(dateDisplayText[value])}</Option>
@@ -836,7 +853,9 @@ export function ManageCustomer () {
             children={
               <DatePicker
                 format='MM/DD/YYYY'
-                // onChange={}
+                disabled={!customDate}
+                defaultValue={moment(subscriptionEndDate, 'MM/DD/YYYY')}
+                onChange={expirationDateOnChange}
                 disabledDate={(current) => {
                   return moment().subtract(1, 'days') >= current
                 }}
@@ -960,7 +979,7 @@ export function ManageCustomer () {
   //     }
   //   }
   // }
- 
+
   return (
     <>
       <PageHeader
@@ -1088,6 +1107,7 @@ export function ManageCustomer () {
         visible={drawerAdminVisible}
         setVisible={setDrawerAdminVisible}
         setSelected={selectedMspAdmins}
+        tenantId={mspEcTenantId}
       />}
       {drawerIntegratorVisible && <SelectIntegratorDrawer
         visible={drawerIntegratorVisible}
