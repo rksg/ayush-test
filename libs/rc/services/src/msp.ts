@@ -87,16 +87,6 @@ export const mspApi = baseMspApi.injectEndpoints({
       },
       providesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
-    mspEcAdminList: build.query<MspAdministrator[], RequestPayload>({
-      query: ({ params }) => {
-        const mspEcAdminListReq =
-          createHttpRequest(MspUrlsInfo.getMspEcAdminList, params)
-        return {
-          ...mspEcAdminListReq
-        }
-      },
-      providesTags: [{ type: 'Msp', id: 'LIST' }]
-    }),
     mspEntitlementList: build.query<MspEntitlement[], RequestPayload>({
       query: ({ params }) => {
         const mspEntitlementListReq =
@@ -127,16 +117,6 @@ export const mspApi = baseMspApi.injectEndpoints({
       },
       providesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
-    mspAssignmentHistory: build.query<MspAssignmentHistory[], RequestPayload>({
-      query: ({ params }) => {
-        const mspAssignmentHistoryReq =
-          createHttpRequest(MspUrlsInfo.getMspAssignmentHistory, params)
-        return {
-          ...mspAssignmentHistoryReq
-        }
-      },
-      providesTags: [{ type: 'Msp', id: 'LIST' }]
-    }),
     resendEcInvitation: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(MspUrlsInfo.resendEcInvitation, params)
@@ -146,6 +126,26 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    mspEcAdminList: build.query<MspAdministrator[], RequestPayload>({
+      query: ({ params }) => {
+        const mspEcAdminListReq =
+          createHttpRequest(MspUrlsInfo.getMspEcAdminList, params)
+        return {
+          ...mspEcAdminListReq
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    mspAssignmentHistory: build.query<MspAssignmentHistory[], RequestPayload>({
+      query: ({ params }) => {
+        const mspAssignmentHistoryReq =
+          createHttpRequest(MspUrlsInfo.getMspAssignmentHistory, params)
+        return {
+          ...mspAssignmentHistoryReq
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
     addCustomer: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -233,12 +233,12 @@ export const {
   useInviteCustomerListQuery,
   useDeviceInventoryListQuery,
   useMspAdminListQuery,
-  useMspEcAdminListQuery,
   useMspEntitlementListQuery,
   useMspEntitlementSummaryQuery,
   useMspAssignmentSummaryQuery,
-  useMspAssignmentHistoryQuery,
   useResendEcInvitationMutation,
+  useMspEcAdminListQuery,
+  useMspAssignmentHistoryQuery,
   useAddCustomerMutation,
   useUpdateCustomerMutation,
   useUpdateMspEcDelegatedAdminsMutation,

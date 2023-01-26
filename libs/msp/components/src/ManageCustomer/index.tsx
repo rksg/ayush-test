@@ -42,7 +42,7 @@ import {
   emailRegExp,
   MspAdministrator,
   MspEc,
-  // MspEcData,
+  MspEcData,
   roleDisplayText,
   RolesEnum,
   EntitlementUtil,
@@ -81,28 +81,7 @@ interface EcFormData {
     admin_role: string,
     wifiLicense: number,
     switchLicense: number
-  }
-
-interface EcExtended {
-    id?: string;
-    name: string,
-    tenant_type: string,
-    address?: Address,
-    street_address: string;
-    state?: string,
-    country?: string,
-    postal_code?: string,
-    city?: string,
-    service_effective_date: string,
-    service_expiration_date: string,
-    admin_email?: string,
-    admin_firstname?: string,
-    admin_lastname?: string,
-    admin_role?: string,
-    licenses: {},
-    delegations?: MspIntegratorDelegated[],
-    admin_delegations?: MspEcDelegatedAdmins[]
-  }
+}
 
 export const retrieveCityState = (addressComponents: Array<AddressComponent>, country: string) => {
   // array reverse applied since search should be done from general to specific, google provides from vice-versa
@@ -171,7 +150,7 @@ export function ManageCustomer () {
   const navigate = useNavigate()
   const linkToCustomers = useTenantLink('/dashboard/mspcustomers', 'v')
   const formRef = useRef<StepsFormInstance>()
-
+  const dateFormat = 'MM/DD/YYYY'
   const { action, status, tenantId, mspEcTenantId } = useParams()
 
   const [isTrialMode, setTrialMode] = useState(false)
@@ -234,8 +213,8 @@ export function ManageCustomer () {
       data?.is_active === 'true' ? setTrialActive(true) : setTrialActive(false)
       status === 'Trial' ? setTrialMode(true) : setTrialMode(false)
 
-      setSubscriptionStartDate(moment(data?.service_effective_date).format('MM/DD/YYYY'))
-      setSubscriptionEndDate(moment(data?.service_expiration_date).format('MM/DD/YYYY'))
+      setSubscriptionStartDate(moment(data?.service_effective_date).format(dateFormat))
+      setSubscriptionEndDate(moment(data?.service_expiration_date).format(dateFormat))
       // updateAddress(data?.street_address as Address)
     }
     if (!isEditMode) { // Add mode
@@ -303,7 +282,7 @@ export function ManageCustomer () {
           msp_admin_role: admin.role
         })
       })
-      const customer: EcExtended = {
+      const customer: MspEcData = {
         tenant_type: 'MSP_EC',
         name: ecFormData.name,
         street_address: ecFormData.address.addressLine as string,
@@ -365,17 +344,19 @@ export function ManageCustomer () {
       }
       assignLicense.assignments = [{
         quantity: ecFormData.wifiLicense,
-        action: 'ADD',
+        assignmentId: getAssignmentId('MSP_WIFI'),
+        action: 'MODIFY',
         isTrial: false,
         deviceType: 'MSP_WIFI'
       },
       {
         quantity: ecFormData.switchLicense,
-        action: 'ADD',
+        assignmentId: getAssignmentId('MSP_SWITCH'),
+        action: 'MODIFY',
         isTrial: false,
         deviceType: 'MSP_SWITCH'
       }]
-      const customer: EcExtended = {
+      const customer: MspEcData = {
         tenant_type: 'MSP_EC',
         name: ecFormData.name,
         street_address: ecFormData.address.addressLine as string,
@@ -383,31 +364,6 @@ export function ManageCustomer () {
         service_expiration_date: expirationDate,
         licenses: assignLicense
       }
-
-      // const delegations= [] as MspEcDelegatedAdmins[]
-      // mspAdmins.forEach((admin: MspAdministrator) => {
-      //   delegations.push({
-      //     msp_admin_id: admin.id,
-      //     msp_admin_role: admin.role
-      //   })
-      // })
-      // admin_delegations: delegations,
-      // const ecDelegations=[] as MspIntegratorDelegated[]
-      // if (mspIntegrator.length > 0) {
-      //   ecDelegations.push({
-      //     delegation_type: 'MSP_INTEGRATOR',
-      //     delegation_id: mspIntegrator[0].id
-      //   })
-      // }
-      // if (mspInstaller.length > 0) {
-      //   ecDelegations.push({
-      //     delegation_type: 'MSP_INSTALLER',
-      //     delegation_id: mspInstaller[0].id
-      //   })
-      // }
-      // if (ecDelegations.length > 0) {
-      //   customer.ec_delegations = ecDelegations
-      // }
 
       await updateCustomer({ params: { mspEcTenantId: mspEcTenantId }, payload: customer }).unwrap()
       navigate(linkToCustomers, { replace: true })
@@ -480,24 +436,29 @@ export function ManageCustomer () {
 
   const startSubscription = (startDate: Date) => {
     if (startDate) {
-      const dateString = moment(startDate).format('MM/DD/YYYY')
+      const dateString = moment(startDate).format(dateFormat)
       setSubscriptionStartDate(dateString)
       setTrialMode(false)
     }
   }
 
   const checkAvailableLicense = (entitlements: MspAssignmentSummary[]) => {
-    const availableLicense = entitlements.filter(p => p.remainingDevices > 0)
-    setAvailableLicense(availableLicense)
+    const available = entitlements.filter(p => p.remainingDevices > 0)
+    setAvailableLicense(available)
   }
 
   const checkAssignedLicense = (entitlements: MspAssignmentHistory[]) => {
-    const assignedLicense = entitlements.filter(en => en.mspEcTenantId === mspEcTenantId)
-    setAssignedLicense(assignedLicense)
-    const wifi = assignedLicense.filter(en => en.deviceType === 'MSP_WIFI')
+    const assigned = entitlements.filter(en => en.mspEcTenantId === mspEcTenantId)
+    setAssignedLicense(assigned)
+    const wifi = assigned.filter(en => en.deviceType === 'MSP_WIFI' && en.status === 'VALID')
     setWifiLicense(wifi.length > 0 ? wifi[0].quantity : 0)
-    const sw = assignedLicense.filter(en => en.deviceType === 'MSP_SWITCH')
+    const sw = assigned.filter(en => en.deviceType === 'MSP_SWITCH' && en.status === 'VALID')
     setSwitchLicense(sw.length > 0 ? sw[0].quantity : 0)
+  }
+
+  const getAssignmentId = (deviceType: string) => {
+    const license = assignedLicense.filter(en => en.deviceType === deviceType)
+    return license.length > 0 ? license[0].id : 0
   }
 
   const MspAdminsForm = () => {
@@ -665,17 +626,17 @@ export function ManageCustomer () {
       setCustomeDate(true)
     } else {
       if (value === DateSelectionEnum.THIRTY_DAYS) {
-        setSubscriptionEndDate(moment().add(30,'days').format('MM/DD/YYYY'))
+        setSubscriptionEndDate(moment().add(30,'days').format(dateFormat))
       } else if (value === DateSelectionEnum.SIXTY_DAYS) {
-        setSubscriptionEndDate(moment().add(60,'days').format('MM/DD/YYYY'))
+        setSubscriptionEndDate(moment().add(60,'days').format(dateFormat))
       } else if (value === DateSelectionEnum.NINETY_DAYS) {
-        setSubscriptionEndDate(moment().add(90,'days').format('MM/DD/YYYY'))
+        setSubscriptionEndDate(moment().add(90,'days').format(dateFormat))
       } else if (value === DateSelectionEnum.ONE_YEAR) {
-        setSubscriptionEndDate(moment().add(1,'years').format('MM/DD/YYYY'))
+        setSubscriptionEndDate(moment().add(1,'years').format(dateFormat))
       } else if (value === DateSelectionEnum.THREE_YEARS) {
-        setSubscriptionEndDate(moment().add(3,'years').format('MM/DD/YYYY'))
+        setSubscriptionEndDate(moment().add(3,'years').format(dateFormat))
       } else if (value === DateSelectionEnum.FIVE_YEARS) {
-        setSubscriptionEndDate(moment().add(5,'years').format('MM/DD/YYYY'))
+        setSubscriptionEndDate(moment().add(5,'years').format(dateFormat))
       }
       setCustomeDate(false)
     }
@@ -685,11 +646,6 @@ export function ManageCustomer () {
     const trialSubscriptionSubtitle = isTrialActive
       ? intl.$t({ defaultMessage: 'Subscriptions (Trial Mode)' })
       : intl.$t({ defaultMessage: 'Inactive Subscriptions' })
-    if (isTrialMode) {
-      const count = isTrialActive ? 25 : 0
-      setWifiLicense(count)
-      setSwitchLicense(count)
-    }
     return <>
       {isTrialMode && <div>
         <Subtitle level={3} style={{ display: 'inline-block' }}>
@@ -752,12 +708,12 @@ export function ManageCustomer () {
             label=''
             children={
               <DatePicker
-                format='MM/DD/YYYY'
+                format={dateFormat}
                 disabled={!customDate}
-                defaultValue={moment(subscriptionEndDate, 'MM/DD/YYYY')}
+                defaultValue={moment(subscriptionEndDate, dateFormat)}
                 onChange={expirationDateOnChange}
                 disabledDate={(current) => {
-                  return moment().subtract(1, 'days') >= current
+                  return current && current < moment().endOf('day')
                 }}
                 style={{ marginLeft: '4px' }}
               />
@@ -769,11 +725,11 @@ export function ManageCustomer () {
   }
 
   const CustomerSubscription = () => {
-    setSubscriptionStartDate(moment().format('MM/DD/YYYY'))
+    setSubscriptionStartDate(moment().format(dateFormat))
     if (trialSelected) {
       setWifiLicense(25)
       setSwitchLicense(25)
-      setSubscriptionEndDate(moment().add(30,'days').format('MM/DD/YYYY'))
+      setSubscriptionEndDate(moment().add(30,'days').format(dateFormat))
     }
     return <>
       <h4>{intl.$t({ defaultMessage: 'Start service in' })}</h4>
@@ -852,12 +808,12 @@ export function ManageCustomer () {
             label=''
             children={
               <DatePicker
-                format='MM/DD/YYYY'
+                format={dateFormat}
                 disabled={!customDate}
-                defaultValue={moment(subscriptionEndDate, 'MM/DD/YYYY')}
+                defaultValue={moment(subscriptionEndDate, dateFormat)}
                 onChange={expirationDateOnChange}
                 disabledDate={(current) => {
-                  return moment().subtract(1, 'days') >= current
+                  return current && current < moment().endOf('day')
                 }}
                 style={{ marginLeft: '4px' }}
               />
@@ -870,6 +826,11 @@ export function ManageCustomer () {
   const CustomerSummary = () => {
     const intl = useIntl()
     const { Paragraph } = Typography
+    // if (formRef.current?.getFieldValue) {
+    //   const { admin_email, admin_firstname, admin_lastname, admin_role }
+    //   = formRef.current?.getFieldsValue()
+    // }
+
     return (
       <>
         <Subtitle level={3}>{intl.$t({ defaultMessage: 'Summary' })}</Subtitle>
@@ -905,17 +866,17 @@ export function ManageCustomer () {
         <Form.Item
           label={intl.$t({ defaultMessage: 'Customer Administrator Name' })}
         >
-          <Paragraph>{'adminFirstname'} {'adminLastname'}</Paragraph>
+          <Paragraph>{mspEcAdmins[0]?.name} {mspEcAdmins[0]?.lastName}</Paragraph>
         </Form.Item>
         <Form.Item style={{ marginTop: '-22px' }}
           label={intl.$t({ defaultMessage: 'Email' })}
         >
-          <Paragraph>{'adminEmail'}</Paragraph>
+          <Paragraph>{mspEcAdmins[0]?.email}</Paragraph>
         </Form.Item>
         <Form.Item style={{ marginTop: '-22px' }}
           label={intl.$t({ defaultMessage: 'Role' })}
         >
-          <Paragraph>{'adminRole'}</Paragraph>
+          {mspEcAdmins[0]?.role && <Paragraph>{intl.$t(roleDisplayText[mspEcAdmins[0]?.role])}</Paragraph>}
         </Form.Item>
 
         <Form.Item
@@ -960,25 +921,30 @@ export function ManageCustomer () {
   }
 
   const handleFormChange = (name: string) => {
+    if( name === 'accountDetail') {
+      const { admin_email, admin_firstname, admin_lastname, admin_role }
+        = formRef.current?.getFieldsValue()
+      if (admin_email && admin_firstname && admin_lastname && admin_role) {
+        const admin = [] as MspAdministrator[]
+        admin.push ({
+          id: '1',
+          lastName: admin_lastname,
+          name: admin_firstname,
+          email: admin_email,
+          role: admin_role,
+          detailLevel: ''
+        })
+        setMspEcAdmins(admin)
+      }
+    }
     if( name === 'subscriptions') {
       const { wifiLicense, switchLicense } = formRef.current?.getFieldsValue()
-      setSwitchLicense(switchLicense)
-      setWifiLicense(wifiLicense)
+      if (wifiLicense && switchLicense) {
+        setSwitchLicense(switchLicense)
+        setWifiLicense(wifiLicense)
+      }
     }
   }
-
-  // const handleFormChange = (name: string, formInfo: FormChangeInfo) => {
-  //   const changedField = formInfo.changedFields[0]
-  //   if(changedField) {
-  //     const changedNamePath = changedField.name as InternalNamePath
-  //     const changedValue = changedField.value
-  //     if(changedNamePath.includes('portType') &&
-  //         changedValue === EdgePortTypeEnum.LAN) {
-  //       formRef.current?.setFieldValue([changedNamePath[0], 'ipMode'], EdgeIpModeEnum.STATIC)
-  //       formRef.current?.setFieldValue([changedNamePath[0], 'natEnabled'], false)
-  //     }
-  //   }
-  // }
 
   return (
     <>

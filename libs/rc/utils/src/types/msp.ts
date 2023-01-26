@@ -1,5 +1,7 @@
 import { defineMessage } from 'react-intl'
 
+import { Address } from './venue'
+
 export enum DelegationStatus {
   DELEGATION_STATUS_INVITED = 'DELEGATION_STATUS_INVITED',
   DELEGATION_STATUS_ACCEPTED = 'DELEGATION_STATUS_ACCEPTED'
@@ -81,22 +83,30 @@ export interface MspEc {
 }
 
 export interface MspEcData {
-  id: string;
+  id?: string;
   name: string;
-  street_address: string;
-  state: string;
-  country: string;
-  postal_code: string;
-  phone_number: string;
-  fax_number: string;
-  city: string;
-  mapping_url: string;
-  service_effective_date: string;
-  service_expiration_date: string;
-  is_active: string;
-  tenant_id: string;
-  tenant_type: string,
-  parent_tenant_id: string;
+  tenant_type?: string,
+  address?: Address,
+  street_address?: string;
+  state?: string;
+  country?: string;
+  postal_code?: string;
+  phone_number?: string;
+  fax_number?: string;
+  city?: string;
+  mapping_url?: string;
+  service_effective_date?: string;
+  service_expiration_date?: string;
+  is_active?: string;
+  tenant_id?: string;
+  parent_tenant_id?: string;
+  admin_email?: string,
+  admin_firstname?: string,
+  admin_lastname?: string,
+  admin_role?: string,
+  licenses?: {},
+  delegations?: MspIntegratorDelegated[],
+  admin_delegations?: MspEcDelegatedAdmins[]
 }
 
 export interface VarCustomer {
@@ -224,6 +234,7 @@ export interface MspAssignmentHistory {
   revokedBy: string;
   mspTenantId: string;
   trialAssignment: boolean;
+  status: string;
 }
 
 export interface MspAssignmentSummary {
