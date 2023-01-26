@@ -4,12 +4,10 @@ import { createRoot } from 'react-dom/client'
 
 import { ConfigProvider, ConfigProviderProps } from '@acx-ui/components'
 import { get }                                 from '@acx-ui/config'
-import {
-  CommonUrlsInfo,
-  createHttpRequest
-} from '@acx-ui/rc/utils'
-import { BrowserRouter } from '@acx-ui/react-router-dom'
-import { Provider }      from '@acx-ui/store'
+import { UserProfileProvider }                 from '@acx-ui/rc/components'
+import { CommonUrlsInfo, createHttpRequest }   from '@acx-ui/rc/utils'
+import { BrowserRouter }                       from '@acx-ui/react-router-dom'
+import { Provider }                            from '@acx-ui/store'
 
 import AllRoutes from './AllRoutes'
 
@@ -122,9 +120,11 @@ export async function init () {
       <ConfigProvider lang={lang}>
         <Provider>
           <BrowserRouter>
-            <React.Suspense fallback={null}>
-              <AllRoutes />
-            </React.Suspense>
+            <UserProfileProvider>
+              <React.Suspense fallback={null}>
+                <AllRoutes />
+              </React.Suspense>
+            </UserProfileProvider>
           </BrowserRouter>
         </Provider>
       </ConfigProvider>

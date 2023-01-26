@@ -1,18 +1,16 @@
-
 import { Menu, Dropdown } from 'antd'
 import { useIntl }        from 'react-intl'
 
-import { get }                                 from '@acx-ui/config'
-import { useGetUserProfileQuery }              from '@acx-ui/rc/services'
-import { useParams, TenantLink, useLocation  } from '@acx-ui/react-router-dom'
+import { get }                     from '@acx-ui/config'
+import { useUserProfileContext }   from '@acx-ui/rc/components'
+import { TenantLink, useLocation } from '@acx-ui/react-router-dom'
 
 import { UserNameButton, LogOut } from './styledComponents'
 
 const UserButton = () => {
   const { $t } = useIntl()
 
-  const params = useParams()
-  const { data } = useGetUserProfileQuery({ params })
+  const data = useUserProfileContext()
   const location = useLocation()
 
   const menuHeaderDropdown = (
@@ -57,7 +55,8 @@ const UserButton = () => {
   return (
     <Dropdown overlay={menuHeaderDropdown} trigger={['click']} placement='bottomLeft'>
       <UserNameButton>
-        {data?.initials}</UserNameButton>
+        {data?.initials || ' '}
+      </UserNameButton>
     </Dropdown>
   )
 }
