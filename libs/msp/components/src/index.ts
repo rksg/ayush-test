@@ -1,6 +1,4 @@
 export { ResendInviteModal } from './ResendInviteModal'
-// export { EditMspCustomer } from './EditMspCustomer'
 export { ManageAdminsDrawer } from './ManageAdminsDrawer'
 export { SelectIntegratorDrawer } from './SelectIntegratorDrawer'
-// export { AddMspCustomer } from './AddMspCustomer'
 export { ManageCustomer } from './ManageCustomer'

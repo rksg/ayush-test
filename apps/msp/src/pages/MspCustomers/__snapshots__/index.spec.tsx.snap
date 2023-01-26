@@ -533,7 +533,7 @@ exports[`MspCustomers should render table 1`] = `
                                   <span
                                     class="ant-table-column-title"
                                   >
-                                    MSP Admins Count
+                                    MSP Admins
                                   </span>
                                   <span
                                     class="ant-table-column-sorter ant-table-column-sorter-full"
@@ -599,7 +599,7 @@ exports[`MspCustomers should render table 1`] = `
                                   <span
                                     class="ant-table-column-title"
                                   >
-                                    Wi-Fi Subscriptions
+                                    Wi-Fi Licenses
                                   </span>
                                   <span
                                     class="ant-table-column-sorter ant-table-column-sorter-full"
@@ -665,7 +665,7 @@ exports[`MspCustomers should render table 1`] = `
                                   <span
                                     class="ant-table-column-title"
                                   >
-                                    Wi-Fi Subscriptions Utilization
+                                    Wi-Fi License Utilization
                                   </span>
                                   <span
                                     class="ant-table-column-sorter ant-table-column-sorter-full"
@@ -731,7 +731,7 @@ exports[`MspCustomers should render table 1`] = `
                                   <span
                                     class="ant-table-column-title"
                                   >
-                                    Switch Subscriptions
+                                    Switch Licenses
                                   </span>
                                   <span
                                     class="ant-table-column-sorter ant-table-column-sorter-full"
