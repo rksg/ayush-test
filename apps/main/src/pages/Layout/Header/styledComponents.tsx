@@ -165,14 +165,6 @@ export const AcknowledgeCircle = styled(CheckMarkCircleSolid)`
   }
 `
 
-// export const VersionContainer = styled.div`
-//   font-weight: 400;
-//   font-family: Source Sans Pro;
-//   font-style: normal;
-//   font-size: 10px;
-//   color: var(--acx-neutrals-40)
-// `
-
 export const ClearButton = styled(Button)`
   border: none;
   .anticon{
