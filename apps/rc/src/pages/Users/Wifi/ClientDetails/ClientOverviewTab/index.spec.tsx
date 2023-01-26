@@ -1,9 +1,9 @@
 import { rest } from 'msw'
 
-import { AnalyticsFilter }                                                       from '@acx-ui/analytics/utils'
-import { apApi, venueApi, networkApi, clientApi }                                from '@acx-ui/rc/services'
-import { CommonUrlsInfo, ClientUrlsInfo, WifiUrlsInfo, Client, ClientStatistic } from '@acx-ui/rc/utils'
-import { Provider, store }                                                       from '@acx-ui/store'
+import { AnalyticsFilter }                                                                      from '@acx-ui/analytics/utils'
+import { apApi, venueApi, networkApi, clientApi }                                               from '@acx-ui/rc/services'
+import { CommonUrlsInfo, ClientUrlsInfo, WifiUrlsInfo, Client, ClientStatistic, noDataDisplay } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                      from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -24,7 +24,7 @@ import {
   histClientList
 } from '../../__tests__/fixtures'
 
-import { ClientOverviewWidget } from './ClientOverviewWidget'
+import { ClientOverviewWidget, UserTraffic } from './ClientOverviewWidget'
 
 import { ClientOverviewTab } from '.'
 
@@ -138,7 +138,7 @@ describe('ClientOverviewTab', () => {
       checkFragment(asFragment)
     })
 
-    it('should render ClientOverviewWidget on undefined ClientStatistic', async () => {
+    it('should render ClientOverviewWidget on undefined fields for ClientStatistic', async () => {
       const emptyStats = {
         applications: undefined,
         apsConnected: undefined,
@@ -150,7 +150,6 @@ describe('ClientOverviewTab', () => {
         userTraffic24GBytes: undefined,
         userTrafficBytes: undefined
       } as unknown as ClientStatistic
-
       render(<Provider>
         <ClientOverviewWidget
           clientStatistic={emptyStats}
@@ -159,11 +158,30 @@ describe('ClientOverviewTab', () => {
           filters={{ startDate: '', endDate: '', range: DateRange.last24Hours } as AnalyticsFilter}
         />
       </Provider>)
-
       expect(await screen.findByText('Current Status')).toBeVisible()
       expect(await screen.findByText('2.4 GHz')).toBeVisible()
       expect(await screen.findByText('5 GHz')).toBeVisible()
       expect(await screen.findByText('6 GHz')).toBeVisible()
+    })
+
+    it('should render ClientOverviewWidget on undefined ClientStatistic', async () => {
+      render(<Provider>
+        <ClientOverviewWidget
+          clientStatistic={undefined as unknown as ClientStatistic}
+          clientStatus='Connected'
+          clientDetails={clientList[0] as unknown as Client}
+          filters={{ startDate: '', endDate: '', range: DateRange.last24Hours } as AnalyticsFilter}
+        />
+      </Provider>)
+      expect(await screen.findByText('An error occurred')).toBeVisible()
+    })
+
+    it('should render UserTraffic Barchart', async () => {
+      render(<Provider><UserTraffic data={undefined as unknown as ClientStatistic}/></Provider>)
+      expect(await screen.findByText('2.4 GHz')).toBeVisible()
+      expect(await screen.findByText('5 GHz')).toBeVisible()
+      expect(await screen.findByText('6 GHz')).toBeVisible()
+      expect(await screen.findAllByText(noDataDisplay)).toHaveLength(3)
     })
   })
 

@@ -10,7 +10,7 @@ import { convertEpochToRelativeTime, formatter }     from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
-const UserTraffic = ({ data }: { data: ClientStatistic | undefined }) => {
+export const UserTraffic = ({ data }: { data: ClientStatistic | undefined }) => {
   const totalTraffic = formatter('bytesFormat')(data?.userTrafficBytes)
   const totalValue = Number(totalTraffic?.split(' ')[0])
   const totalValueUnit = totalTraffic?.split(' ')?.[1]
@@ -46,7 +46,7 @@ const UserTraffic = ({ data }: { data: ClientStatistic | undefined }) => {
   ]
 
 
-  return <Loader states={[{ isLoading: !data }]}>
+  return <Loader>
     <BarChart
       style={{ height: 90, width: 90, paddingTop: 20 }}
       data={{
