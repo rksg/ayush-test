@@ -1,14 +1,17 @@
 import { rest } from 'msw'
 
-import { apApi, venueApi, networkApi, clientApi }       from '@acx-ui/rc/services'
-import { CommonUrlsInfo, ClientUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                              from '@acx-ui/store'
+import { AnalyticsFilter }                                                       from '@acx-ui/analytics/utils'
+import { apApi, venueApi, networkApi, clientApi }                                from '@acx-ui/rc/services'
+import { CommonUrlsInfo, ClientUrlsInfo, WifiUrlsInfo, Client, ClientStatistic } from '@acx-ui/rc/utils'
+import { Provider, store }                                                       from '@acx-ui/store'
 import {
   mockServer,
   render,
   screen,
-  waitForElementToBeRemoved
+  waitForElementToBeRemoved,
+  cleanup
 } from '@acx-ui/test-utils'
+import { DateRange } from '@acx-ui/utils'
 
 import {
   apCaps,
@@ -20,6 +23,8 @@ import {
   eventMetaList,
   histClientList
 } from '../../__tests__/fixtures'
+
+import { ClientOverviewWidget } from './ClientOverviewWidget'
 
 import { ClientOverviewTab } from '.'
 
@@ -39,6 +44,7 @@ async function checkFragment (asFragment: () => DocumentFragment) {
   const fragment = asFragment()
   // eslint-disable-next-line testing-library/no-node-access
   fragment.querySelector('div[_echarts_instance_^="ec_"]')?.removeAttribute('_echarts_instance_')
+  fragment.querySelector('div[size-sensor-id]')?.removeAttribute('size-sensor-id')
   expect(fragment).toMatchSnapshot()
 }
 
@@ -70,7 +76,10 @@ describe('ClientOverviewTab', () => {
         (_, res, ctx) => res(ctx.json(apCaps)))
     )
   })
+
+
   afterEach(() => {
+    cleanup()
     jest.clearAllMocks()
     jest.useRealTimers()
   })
@@ -127,6 +136,34 @@ describe('ClientOverviewTab', () => {
       expect(await screen.findByText('Current Status')).toBeVisible()
       expect(await screen.findByText('Disconnected')).toBeVisible()
       checkFragment(asFragment)
+    })
+
+    it('should render ClientOverviewWidget on undefined ClientStatistic', async () => {
+      const emptyStats = {
+        applications: undefined,
+        apsConnected: undefined,
+        avgRateBPS: undefined,
+        avgSessionLengthSeconds: undefined,
+        sessions: undefined,
+        userTraffic5GBytes: undefined,
+        userTraffic6GBytes: undefined,
+        userTraffic24GBytes: undefined,
+        userTrafficBytes: undefined
+      } as unknown as ClientStatistic
+
+      render(<Provider>
+        <ClientOverviewWidget
+          clientStatistic={emptyStats}
+          clientStatus='Connected'
+          clientDetails={clientList[0] as unknown as Client}
+          filters={{ startDate: '', endDate: '', range: DateRange.last24Hours } as AnalyticsFilter}
+        />
+      </Provider>)
+
+      expect(await screen.findByText('Current Status')).toBeVisible()
+      expect(await screen.findByText('2.4 GHz')).toBeVisible()
+      expect(await screen.findByText('5 GHz')).toBeVisible()
+      expect(await screen.findByText('6 GHz')).toBeVisible()
     })
   })
 

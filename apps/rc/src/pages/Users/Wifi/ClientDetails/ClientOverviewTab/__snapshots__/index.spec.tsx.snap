@@ -213,7 +213,6 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render corr
                                 >
                                   <div
                                     class="echarts-for-react "
-                                    size-sensor-id="12"
                                     style="height: 90px; width: 90px; padding-top: 20px; position: relative;"
                                   >
                                     <div
@@ -1238,7 +1237,6 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                 >
                                   <div
                                     class="echarts-for-react "
-                                    size-sensor-id="11"
                                     style="height: 90px; width: 90px; padding-top: 20px; position: relative;"
                                   >
                                     <div
@@ -2436,7 +2434,6 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                 >
                                   <div
                                     class="echarts-for-react "
-                                    size-sensor-id="10"
                                     style="height: 90px; width: 90px; padding-top: 20px; position: relative;"
                                   >
                                     <div
@@ -3680,7 +3677,6 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                 >
                                   <div
                                     class="echarts-for-react "
-                                    size-sensor-id="8"
                                     style="height: 90px; width: 90px; padding-top: 20px; position: relative;"
                                   >
                                     <div
@@ -4705,7 +4701,6 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                 >
                                   <div
                                     class="echarts-for-react "
-                                    size-sensor-id="9"
                                     style="height: 90px; width: 90px; padding-top: 20px; position: relative;"
                                   >
                                     <div
@@ -5718,7 +5713,6 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client c
                                 >
                                   <div
                                     class="echarts-for-react "
-                                    size-sensor-id="4"
                                     style="height: 90px; width: 90px; padding-top: 20px; position: relative;"
                                   >
                                     <div
@@ -7033,7 +7027,6 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client w
                                 >
                                   <div
                                     class="echarts-for-react "
-                                    size-sensor-id="5"
                                     style="height: 90px; width: 90px; padding-top: 20px; position: relative;"
                                   >
                                     <div
@@ -8330,7 +8323,6 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render dpsk cli
                                 >
                                   <div
                                     class="echarts-for-react "
-                                    size-sensor-id="7"
                                     style="height: 90px; width: 90px; padding-top: 20px; position: relative;"
                                   >
                                     <div
@@ -9817,7 +9809,6 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                                 >
                                   <div
                                     class="echarts-for-react "
-                                    size-sensor-id="6"
                                     style="height: 90px; width: 90px; padding-top: 20px; position: relative;"
                                   >
                                     <div
@@ -11351,7 +11342,6 @@ exports[`ClientOverviewTab OverviewWidget should render client info correctly 1`
                                 >
                                   <div
                                     class="echarts-for-react "
-                                    size-sensor-id="1"
                                     style="height: 90px; width: 90px; padding-top: 20px; position: relative;"
                                   >
                                     <div
@@ -12666,7 +12656,6 @@ exports[`ClientOverviewTab OverviewWidget should render correctly when search pa
                                 >
                                   <div
                                     class="echarts-for-react "
-                                    size-sensor-id="3"
                                     style="height: 90px; width: 90px; padding-top: 20px; position: relative;"
                                   >
                                     <div
@@ -13691,7 +13680,6 @@ exports[`ClientOverviewTab OverviewWidget should render historical client info c
                                 >
                                   <div
                                     class="echarts-for-react "
-                                    size-sensor-id="2"
                                     style="height: 90px; width: 90px; padding-top: 20px; position: relative;"
                                   >
                                     <div

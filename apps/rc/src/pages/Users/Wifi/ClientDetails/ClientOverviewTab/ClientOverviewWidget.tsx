@@ -12,7 +12,7 @@ import * as UI from './styledComponents'
 
 const UserTraffic = ({ data }: { data: ClientStatistic | undefined }) => {
   const totalTraffic = formatter('bytesFormat')(data?.userTrafficBytes)
-  const totalValue = Number(totalTraffic?.split(' ')?.[0] ?? 0)
+  const totalValue = Number(totalTraffic?.split(' ')[0])
   const totalValueUnit = totalTraffic?.split(' ')?.[1]
 
   const getLabelFormatter = (params: CallbackDataParams) => {
@@ -46,7 +46,7 @@ const UserTraffic = ({ data }: { data: ClientStatistic | undefined }) => {
   ]
 
 
-  return <Loader states={[{ isLoading: typeof data === 'undefined' }]}>
+  return <Loader states={[{ isLoading: !data }]}>
     <BarChart
       style={{ height: 90, width: 90, paddingTop: 20 }}
       data={{
