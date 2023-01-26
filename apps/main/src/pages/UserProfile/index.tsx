@@ -192,15 +192,6 @@ export function UserProfile () {
                   </Select>
                 }
               />
-              <Form.Item
-                name='preferred_language'
-                label={$t({ defaultMessage: 'Preferred Language' })}
-                children={
-                  <Select defaultValue={'ENGLISH'} >
-                    <Option value={'ENGLISH'}>{$t({ defaultMessage: 'English' })}</Option>
-                  </Select>
-                }
-              />
             </Col>
           </Row>
         </StepsForm.StepForm>
