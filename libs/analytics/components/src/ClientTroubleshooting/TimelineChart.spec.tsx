@@ -4,6 +4,7 @@ import { renderHook, act } from '@testing-library/react'
 import { ECharts }         from 'echarts'
 import ReactECharts        from 'echarts-for-react'
 
+import { qualityDataObj, incidentDataObj, roamingDataObj }                from './__tests__/fixtures'
 import { Event, LabelledQuality, IncidentDetails, RoamingTimeSeriesData } from './config'
 import {
   useDotClick,
@@ -13,7 +14,6 @@ import {
   getBarColor,
   renderCustomItem
 } from './TimelineChart'
-import { qualityDataObj, incidentDataObj, roamingDataObj } from './util.spec'
 
 import type { CustomSeriesRenderItemAPI, CustomSeriesRenderItemParams } from 'echarts'
 const testEvent = {
@@ -204,7 +204,7 @@ describe('TimelineChartComponent', () => {
     it('show return valid bar color for connection Quality', () => {
       expect(
         getBarColor({ data: qualityDataObj as unknown as LabelledQuality[], seriesName: 'quality' })
-      ).toEqual('#ACAEB0')
+      ).toEqual('#23AB36')
       expect(
         getBarColor({ data: {} as unknown as LabelledQuality[], seriesName: 'quality' })
       ).toEqual('#ACAEB0')
