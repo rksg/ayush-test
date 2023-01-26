@@ -32,7 +32,8 @@ import {
   useUpdateCustomerMutation,
   useGetMspEcQuery,
   // useGetMspEcDelegatedAdminsQuery,
-  useMspAssignmentSummaryQuery
+  useMspAssignmentSummaryQuery,
+  useMspAssignmentHistoryQuery
 } from '@acx-ui/rc/services'
 import {
   Address,
@@ -46,7 +47,10 @@ import {
   RolesEnum,
   EntitlementUtil,
   excludeExclamationRegExp,
-  MspAssignmentSummary
+  MspAssignmentHistory,
+  MspAssignmentSummary,
+  MspEcDelegatedAdmins,
+  MspIntegratorDelegated
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -86,18 +90,18 @@ interface EcExtended {
     address?: Address,
     street_address: string;
     state?: string,
-    country: string,
-    postal_code: string,
-    city: string,
+    country?: string,
+    postal_code?: string,
+    city?: string,
     service_effective_date: string,
     service_expiration_date: string,
-    admin_email: string,
-    admin_firstname: string,
-    admin_lastname: string,
-    admin_role: string,
-    license: {},
-    ec_delegations?: [],
-    admin_delegations?: []
+    admin_email?: string,
+    admin_firstname?: string,
+    admin_lastname?: string,
+    admin_role?: string,
+    licenses: {},
+    delegations?: MspIntegratorDelegated[],
+    admin_delegations?: MspEcDelegatedAdmins[]
   }
 
 export const retrieveCityState = (addressComponents: Array<AddressComponent>, country: string) => {
@@ -175,7 +179,7 @@ export function ManageCustomer () {
 
   const navigate = useNavigate()
   const linkToCustomers = useTenantLink('/dashboard/mspcustomers', 'v')
-  const formRef = useRef<StepsFormInstance<MspEcData>>()
+  const formRef = useRef<StepsFormInstance>()
 
   const { action, status, tenantId, mspEcTenantId } = useParams()
 
@@ -187,6 +191,7 @@ export function ManageCustomer () {
   const [mspInstaller, setInstaller] = useState([] as MspEc[])
   const [mspEcAdmins, setMspEcAdmins] = useState([] as MspAdministrator[])
   const [availableLicense, setAvailableLicense] = useState([] as MspAssignmentSummary[])
+  const [assignedLicense, setAssignedLicense] = useState([] as MspAssignmentHistory[])
   const [assignedWifiLicense, setWifiLicense] = useState(0)
   const [assignedSwitchLicense, setSwitchLicense] = useState(0)
   const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
@@ -203,16 +208,22 @@ export function ManageCustomer () {
   const { Option } = Select
   const { Paragraph } = Typography
   const isEditMode = action === 'edit'
+  const isEditTrial = action === 'edit' && status === 'Trial'
 
   const { data } = useGetMspEcQuery({ params: { mspEcTenantId } })
   // const { data: delegatedAdmins } = useGetMspEcDelegatedAdminsQuery({ params: { mspEcTenantId } })
   const { data: ecAdministrators } = useMspEcAdminListQuery({ params: { mspEcTenantId } })
   const { data: licenseSummary } = useMspAssignmentSummaryQuery({ params: useParams() })
+  const { data: licenseAssignment } = useMspAssignmentHistoryQuery({ params: useParams() })
 
   useEffect(() => {
     if (licenseSummary) {
       checkAvailableLicense(licenseSummary)
     }
+    if (licenseAssignment) {
+      checkAssignedLicense(licenseAssignment)
+    }
+
     // if (delegatedAdmins) {
     //   setDelegateAdmins(delegatedAdmins)
     // }
@@ -226,23 +237,23 @@ export function ManageCustomer () {
       //   service_effective_date: data?.service_effective_date,
       //   service_expiration_date: data?.service_expiration_date
       // })
-      setSubscriptionEndDate('')
       formRef.current?.setFieldsValue({
         name: data?.name,
-        service_effective_date: data?.service_effective_date
+        service_effective_date: data?.service_effective_date,
         // service_expiration_date: data?.service_expiration_date
       })
       formRef.current?.setFieldValue(['address', 'addressLine'], data?.street_address)
       data?.is_active === 'true' ? setTrialActive(true) : setTrialActive(false)
-      status === 'active' ? setTrialMode(false) : setTrialMode(true)
+      status === 'Trial' ? setTrialMode(true) : setTrialMode(false)
       setSubscriptionStartDate(moment(data?.service_effective_date).format('MM/DD/YYYY'))
+      setSubscriptionEndDate(moment(data?.service_expiration_date).format('MM/DD/YYYY'))
       // updateAddress(data?.street_address as Address)
     }
     if (!isEditMode) { // Add mode
       const initialAddress = isMapEnabled ? '' : defaultAddress.addressLine
       formRef.current?.setFieldValue(['address', 'addressLine'], initialAddress)
     }
-  }, [data, licenseSummary, ecAdministrators, isMapEnabled])
+  }, [data, licenseSummary, licenseAssignment, ecAdministrators, isMapEnabled])
   const [sameCountry, setSameCountry] = useState(true)
   const addressValidator = async (value: string) => {
     const isSameValue = value ===
@@ -281,62 +292,58 @@ export function ManageCustomer () {
     try {
       const ecFormData = { ...values }
       const today = EntitlementUtil.getServiceStartDate()
-      const expirationDate = EntitlementUtil.getServiceEndDate(ecFormData.service_expiration_date)
+      const expirationDate = EntitlementUtil.getServiceEndDate(subscriptionEndDate)
       const assignLicense = trialSelected
-        ? {
-          trialAction: 'ACTIVATE'
-          // assignmentStartDate: today,
-          // assignmentEndDate: expirationDate
-        } :
+        ? { trialAction: 'ACTIVATE' }
+        : { assignments: [{
+          quantity: ecFormData.wifiLicense,
+          action: 'ADD',
+          isTrial: false,
+          deviceType: 'MSP_WIFI'
+        },
         {
-          // assignmentStartDate: today,
-          // assignmentEndDate: expirationDate,
-          assignments: [{
-            quantity: ecFormData.wifiLicense,
-            action: 'ADD',
-            deviceType: 'MSP_WIFI'
-          },
-          {
-            quantity: ecFormData.switchLicense,
-            action: 'ADD',
-            deviceType: 'MSP_SWITCH'
-          }
-          ]
-        }
-
+          quantity: ecFormData.switchLicense,
+          action: 'ADD',
+          isTrial: false,
+          deviceType: 'MSP_SWITCH'
+        }] }
+      const delegations= [] as MspEcDelegatedAdmins[]
+      mspAdmins.forEach((admin: MspAdministrator) => {
+        delegations.push({
+          msp_admin_id: admin.id,
+          msp_admin_role: admin.role
+        })
+      })
       const customer: EcExtended = {
         tenant_type: 'MSP_EC',
         name: ecFormData.name,
         street_address: ecFormData.address.addressLine as string,
-        city: ecFormData.address.city as string,
-        postal_code: '',
-        country: ecFormData.address.country as string,
         service_effective_date: today,
         service_expiration_date: expirationDate,
         admin_email: ecFormData.admin_email,
         admin_firstname: ecFormData.admin_firstname,
         admin_lastname: ecFormData.admin_lastname,
         admin_role: ecFormData.admin_role,
-        license: assignLicense
+        admin_delegations: delegations,
+        licenses: assignLicense
       }
-      // if (mspAdmins.length > 0) {
-      //   customer.admin_delegations = [
-      //     {
-      //       msp_admin_id: mspAdmins[0].id,
-      //       msp_admin_role: 'PRIME_ADMIN'
-      //     }
-      //   ]
-      // }
-      // if (mspIntegrator.length > 0) {
-      //   customer.ec_delegations?.push(
-      //     {
-      //       delegation_type: 'MSP_INTEGRATOR',
-      //       delegation_id: '78b7fb27069c498d8e7bb4f526f4356'
-      //     })
-      // }
-      // if (mspInstaller.length > 0) {
+      const ecDelegations=[] as MspIntegratorDelegated[]
+      if (mspIntegrator.length > 0) {
+        ecDelegations.push({
+          delegation_type: 'MSP_INTEGRATOR',
+          delegation_id: mspIntegrator[0].id
+        })
+      }
+      if (mspInstaller.length > 0) {
+        ecDelegations.push({
+          delegation_type: 'MSP_INSTALLER',
+          delegation_id: mspInstaller[0].id
+        })
+      }
+      if (ecDelegations.length > 0) {
+        customer.delegations = ecDelegations
+      }
 
-      // }
       const result =
       await addCustomer({ params: { tenantId: tenantId }, payload: customer }).unwrap()
       if (result) {
@@ -353,18 +360,65 @@ export function ManageCustomer () {
 
   const handleEditCustomer = async (values: EcFormData) => {
     try {
-      let formData = { ...values }
-      // formData.address = address
-      const customer = {
-        name: formData.name,
-        tenant_type: 'MSP_EC',
-        street_address: formData.address.addressLine,
-        city: formData.address.city,
-        postal_code: '',
-        country: formData.address.country,
-        service_effective_date: formData.service_effective_date,
-        service_expiration_date: formData.service_expiration_date
+      const ecFormData = { ...values }
+      const today = EntitlementUtil.getServiceStartDate()
+      const expirationDate = EntitlementUtil.getServiceEndDate(subscriptionEndDate)
+      let assignLicense =
+      isEditTrial ? {
+        subscription_start_date: today,
+        subscription_end_date: expirationDate,
+        trialAction: 'DEACTIVATE',
+        assignments: []
+      } : {
+        subscription_start_date: today,
+        subscription_end_date: expirationDate,
+        assignments: [] as unknown
       }
+      assignLicense.assignments = [{
+        quantity: ecFormData.wifiLicense,
+        action: 'ADD',
+        isTrial: false,
+        deviceType: 'MSP_WIFI'
+      },
+      {
+        quantity: ecFormData.switchLicense,
+        action: 'ADD',
+        isTrial: false,
+        deviceType: 'MSP_SWITCH'
+      }]
+      const customer: EcExtended = {
+        tenant_type: 'MSP_EC',
+        name: ecFormData.name,
+        street_address: ecFormData.address.addressLine as string,
+        service_effective_date: today,
+        service_expiration_date: expirationDate,
+        licenses: assignLicense
+      }
+
+      // const delegations= [] as MspEcDelegatedAdmins[]
+      // mspAdmins.forEach((admin: MspAdministrator) => {
+      //   delegations.push({
+      //     msp_admin_id: admin.id,
+      //     msp_admin_role: admin.role
+      //   })
+      // })
+      // admin_delegations: delegations,
+      // const ecDelegations=[] as MspIntegratorDelegated[]
+      // if (mspIntegrator.length > 0) {
+      //   ecDelegations.push({
+      //     delegation_type: 'MSP_INTEGRATOR',
+      //     delegation_id: mspIntegrator[0].id
+      //   })
+      // }
+      // if (mspInstaller.length > 0) {
+      //   ecDelegations.push({
+      //     delegation_type: 'MSP_INSTALLER',
+      //     delegation_id: mspInstaller[0].id
+      //   })
+      // }
+      // if (ecDelegations.length > 0) {
+      //   customer.ec_delegations = ecDelegations
+      // }
 
       await updateCustomer({ params: { mspEcTenantId: mspEcTenantId }, payload: customer }).unwrap()
       navigate(linkToCustomers, { replace: true })
@@ -446,6 +500,11 @@ export function ManageCustomer () {
   const checkAvailableLicense = (entitlements: MspAssignmentSummary[]) => {
     const availableLicense = entitlements.filter(p => p.remainingDevices > 0)
     setAvailableLicense(availableLicense)
+  }
+
+  const checkAssignedLicense = (entitlements: MspAssignmentHistory[]) => {
+    const assignedLicense = entitlements.filter(en => en.mspEcTenantId === mspEcTenantId)
+    setAssignedLicense(assignedLicense)
   }
 
   const MspAdminsForm = () => {
@@ -603,11 +662,9 @@ export function ManageCustomer () {
     </>
   }
 
-  // function expirationDateOnChange (props: DatePickerProps) {
-  //   const disabledDate: RangePickerProps['disabledDate'] = (current) => {
-  //     // Can not select days before today
-  //     return current && current < moment().endOf('day')
-  //   }
+  function expirationDateOnChange (props: unknown, expirationDate: string) {
+    setSubscriptionEndDate(expirationDate)
+  }
 
   const EditCustomerSubscriptionForm = () => {
     const trialSubscriptionSubtitle = isTrialActive
@@ -643,7 +700,7 @@ export function ManageCustomer () {
         </UI.FieldLabel2>
         <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
           <label>{intl.$t({ defaultMessage: '30 Day Trial Ends on' })}</label>
-          <label>{intl.$t({ defaultMessage: '11/22/2022' })}</label>
+          <label>{subscriptionEndDate}</label>
         </UI.FieldLabel2></div>
       }
 
@@ -681,7 +738,7 @@ export function ManageCustomer () {
             children={
               <DatePicker
                 format='MM/DD/YYYY'
-                // onChange={expirationDateOnChange}
+                onChange={expirationDateOnChange}
                 disabledDate={(current) => {
                   return moment().subtract(1, 'days') >= current
                 }}
@@ -696,10 +753,10 @@ export function ManageCustomer () {
 
   const CustomerSubscription = () => {
     setSubscriptionStartDate(moment().format('MM/DD/YYYY'))
-    const trialEndDate = moment().add(30,'days').format('MM/DD/YYYY')
     if (trialSelected) {
       setWifiLicense(25)
       setSwitchLicense(25)
+      setSubscriptionEndDate(moment().add(30,'days').format('MM/DD/YYYY'))
     }
     return <>
       <h4>{intl.$t({ defaultMessage: 'Start service in' })}</h4>
@@ -742,7 +799,7 @@ export function ManageCustomer () {
         </UI.FieldLabel2>
         <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
           <label>{intl.$t({ defaultMessage: '30 Day Trial Ends on' })}</label>
-          <label>{trialEndDate}</label>
+          <label>{subscriptionEndDate}</label>
         </UI.FieldLabel2></div>
       }
 
@@ -883,6 +940,27 @@ export function ManageCustomer () {
       </h4>)
   }
 
+  const handleFormChange = (name: string) => {
+    if( name === 'subscriptions') {
+      const { wifiLicense, switchLicense } = formRef.current?.getFieldsValue()
+      setSwitchLicense(switchLicense)
+      setWifiLicense(wifiLicense)
+    }
+  }
+
+  // const handleFormChange = (name: string, formInfo: FormChangeInfo) => {
+  //   const changedField = formInfo.changedFields[0]
+  //   if(changedField) {
+  //     const changedNamePath = changedField.name as InternalNamePath
+  //     const changedValue = changedField.value
+  //     if(changedNamePath.includes('portType') &&
+  //         changedValue === EdgePortTypeEnum.LAN) {
+  //       formRef.current?.setFieldValue([changedNamePath[0], 'ipMode'], EdgeIpModeEnum.STATIC)
+  //       formRef.current?.setFieldValue([changedNamePath[0], 'natEnabled'], false)
+  //     }
+  //   }
+  // }
+ 
   return (
     <>
       <PageHeader
@@ -900,9 +978,10 @@ export function ManageCustomer () {
         formRef={formRef}
         onFinish={isEditMode ? handleEditCustomer : handleAddCustomer}
         onCancel={() => navigate(linkToCustomers)}
+        onFormChange={handleFormChange}
         buttonLabel={{ submit: isEditMode ?
           intl.$t({ defaultMessage: 'Save' }):
-          intl.$t({ defaultMessage: 'Add' }) }}
+          intl.$t({ defaultMessage: 'Add Customer' }) }}
       >
         {isEditMode && <StepsForm.StepForm>
           <Subtitle level={3}>

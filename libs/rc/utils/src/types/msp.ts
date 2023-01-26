@@ -247,6 +247,11 @@ export interface MspEcDelegatedAdmins {
   msp_admin_role: string;
 }
 
+export interface MspIntegratorDelegated {
+  delegation_type: string;
+  delegation_id: string;
+}
+
 export interface EcInvitation {
   admin_email: string;
   resend: boolean;

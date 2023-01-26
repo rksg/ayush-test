@@ -7,6 +7,7 @@ import {
   TableResult,
   CommonResult,
   MspAdministrator,
+  MspAssignmentHistory,
   MspAssignmentSummary,
   MspEntitlement,
   MspEntitlementSummary,
@@ -126,6 +127,16 @@ export const mspApi = baseMspApi.injectEndpoints({
       },
       providesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
+    mspAssignmentHistory: build.query<MspAssignmentHistory[], RequestPayload>({
+      query: ({ params }) => {
+        const mspAssignmentHistoryReq =
+          createHttpRequest(MspUrlsInfo.getMspAssignmentHistory, params)
+        return {
+          ...mspAssignmentHistoryReq
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
     resendEcInvitation: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(MspUrlsInfo.resendEcInvitation, params)
@@ -226,6 +237,7 @@ export const {
   useMspEntitlementListQuery,
   useMspEntitlementSummaryQuery,
   useMspAssignmentSummaryQuery,
+  useMspAssignmentHistoryQuery,
   useResendEcInvitationMutation,
   useAddCustomerMutation,
   useUpdateCustomerMutation,

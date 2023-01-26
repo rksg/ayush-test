@@ -12,7 +12,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+// import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   DownloadOutlined
 } from '@acx-ui/icons'
@@ -35,8 +35,8 @@ import {
 import { getBasePath, Link, MspTenantLink, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
 const getStatus = (row: MspEc) => {
-  const isTrial = row.accountType === 'Trial'
-  const value = row.status === 'Active' ? (isTrial ? row.accountType : row.status) : 'Inactive'
+  const isTrial = row.accountType === 'TRIAL'
+  const value = row.status === 'Active' ? (isTrial ? 'Trial' : row.status) : 'Inactive'
   return value
 }
 
@@ -127,7 +127,7 @@ const defaultPayload = {
 
 export function MspCustomers () {
   const { $t } = useIntl()
-  const isEdaEcCreateEnabled = useIsSplitOn(Features.MSP_EC_CREATE_EDA)
+  const isEdaEcCreateEnabled = true//useIsSplitOn(Features.MSP_EC_CREATE_EDA)
 
   const [modalVisible, setModalVisible] = useState(false)
   const [tenantId, setTenantId] = useState('')
@@ -182,20 +182,20 @@ export function MspCustomers () {
       }
     },
     {
-      title: $t({ defaultMessage: 'MSP Admins Count' }),
+      title: $t({ defaultMessage: 'MSP Admins' }),
       dataIndex: 'mspAdminCount',
       key: 'mspAdminCount',
       sorter: true
     },
     {
-      title: $t({ defaultMessage: 'Customer Admins Count' }),
+      title: $t({ defaultMessage: 'Customer Admins' }),
       dataIndex: 'mspEcAdminCount',
       key: 'mspEcAdminCount',
       sorter: true,
       show: false
     },
     {
-      title: $t({ defaultMessage: 'Wi-Fi Subscriptions' }),
+      title: $t({ defaultMessage: 'Wi-Fi Licenses' }),
       dataIndex: 'wifiLicenses',
       key: 'wifiLicenses',
       sorter: true,
@@ -204,7 +204,7 @@ export function MspCustomers () {
       }
     },
     {
-      title: $t({ defaultMessage: 'Wi-Fi Subscriptions Utilization' }),
+      title: $t({ defaultMessage: 'Wi-Fi License Utilization' }),
       dataIndex: 'wifiLicensesUtilization',
       key: 'wifiLicensesUtilization',
       sorter: true,
@@ -213,7 +213,7 @@ export function MspCustomers () {
       }
     },
     {
-      title: $t({ defaultMessage: 'Switch Subscriptions' }),
+      title: $t({ defaultMessage: 'Switch Licenses' }),
       dataIndex: 'switchLicens',
       key: 'switchLicens',
       sorter: true,
@@ -274,7 +274,7 @@ export function MspCustomers () {
         disabled: !isEdaEcCreateEnabled,
         onClick: (selectedRows) => {
           setTenantId(selectedRows[0].id)
-          const status = selectedRows[0].status === 'Active' ? 'active' : 'notActive'
+          const status = selectedRows[0].accountType === 'TRIAL' ? 'Trial' : 'Paid'
           navigate({
             ...basePath,
             pathname: `${basePath.pathname}/${status}/${selectedRows[0].id}`
@@ -292,7 +292,7 @@ export function MspCustomers () {
         label: $t({ defaultMessage: 'Deactivate' }),
         visible: (selectedRows) => {
           if(selectedRows[0] &&
-            (selectedRows[0].status === 'Active' && selectedRows[0].accountType !== 'Trial' )) {
+            (selectedRows[0].status === 'Active' && selectedRows[0].accountType !== 'TRIAL' )) {
             return true
           }
           return false
@@ -320,7 +320,7 @@ export function MspCustomers () {
         label: $t({ defaultMessage: 'Reactivate' }),
         visible: (selectedRows) => {
           if(selectedRows[0] &&
-            (selectedRows[0].status === 'Active' || selectedRows[0].accountType === 'Trial')) {
+            (selectedRows[0].status === 'Active' || selectedRows[0].accountType === 'TRIAL')) {
             return false
           }
           return true

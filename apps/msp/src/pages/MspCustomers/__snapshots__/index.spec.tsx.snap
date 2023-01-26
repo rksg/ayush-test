@@ -56,7 +56,6 @@ exports[`MspCustomers should render table 1`] = `
               >
                 <button
                   class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 ibsWZY"
-                  disabled=""
                   type="button"
                 >
                   <span>
