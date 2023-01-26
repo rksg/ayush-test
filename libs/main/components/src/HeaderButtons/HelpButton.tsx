@@ -7,7 +7,7 @@ import { notAvailableMsg }         from '@acx-ui/utils'
 
 import { DisabledButton } from './styledComponents'
 
-const UserButton = () => {
+const HelpButton = () => {
   const { $t } = useIntl()
 
   const menuHeaderDropdown = (
@@ -52,4 +52,4 @@ const UserButton = () => {
   )
 }
 
-export default UserButton
+export default HelpButton

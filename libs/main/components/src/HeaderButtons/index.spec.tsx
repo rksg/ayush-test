@@ -11,7 +11,7 @@ import {
 } from '@acx-ui/test-utils'
 
 import ActivityButton from './ActivityButton'
-import AlarmButton    from './AlarmButton'
+import AlarmsButton   from './AlarmsButton'
 
 const aboutJSON = {
   currentVersion: {
@@ -173,7 +173,7 @@ describe('Header Component', () => {
 
   it('should render Alarm component correctly', async () => {
     render(<Provider>
-      <AlarmButton/>
+      <AlarmsButton/>
     </Provider>, {
       route: { params, path: '/:tenantId/' }
     })
