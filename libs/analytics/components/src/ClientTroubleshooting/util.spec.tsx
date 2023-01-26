@@ -1,6 +1,13 @@
-import { TooltipFormatterParams } from '@acx-ui/components'
-import { getIntl }                from '@acx-ui/utils'
+import { getIntl } from '@acx-ui/utils'
 
+import {
+  eventDataObj,
+  connectionDetailsByAp,
+  connectionEvents,
+  qualityDataObj,
+  incidentDataObj,
+  roamingDataObj
+} from './__tests__/fixtures'
 import {
   SUCCESS,
   SLOW,
@@ -16,7 +23,6 @@ import {
   Event,
   Quality
 } from './config'
-import { ConnectionEvent } from './services'
 import {
   getConnectionQualityFor,
   takeWorseQuality,
@@ -38,388 +44,13 @@ import {
   useLabelFormatter
 } from './util'
 
-export const connectionDetailsByAp = [
-  {
-    apMac: 'EC:8C:A2:0C:3A:20',
-    start: '2018-12-20T08:22:55.899Z',
-    channel: '116',
-    spatialStream: '2',
-    apFirmware: '6.0.0.0.1591',
-    bandwidth: '80',
-    rss: -57.5,
-    apModel: 'R610',
-    apName: 'SinghAP-R610-MAP',
-    end: '2018-12-20T08:25:55.899Z',
-    ssid: 'singhfi-5g',
-    radio: '5',
-    bssid: 'EC:8C:A2:0C:3A:2C',
-    radioMode: '11ac'
-  },
-  {
-    apMac: '44:1E:98:14:00:80',
-    start: '2018-12-20T08:25:55.899Z',
-    channel: '116',
-    spatialStream: '2',
-    apFirmware: '6.0.0.0.1591',
-    bandwidth: '80',
-    rss: -68.5,
-    apModel: 'R710',
-    apName: 'SinghAP-R710-RAP',
-    end: '2018-12-20T08:28:55.899Z',
-    ssid: 'singhfi-5g',
-    radio: '5',
-    bssid: '44:1E:98:14:00:8C',
-    radioMode: '11ac'
-  }
-]
-export const connectionEvents: ConnectionEvent[] = [
-  {
-    timestamp: '2022-11-14T06:33:31.524Z',
-    event: 'EVENT_CLIENT_JOIN',
-    ttc: null,
-    mac: '94:B3:4F:3D:15:B0',
-    apName: 'R750-11-112',
-    path: [
-      {
-        type: 'zone',
-        name: 'cliexp4'
-      },
-      {
-        type: 'apGroup',
-        name: 'No group (inherit from Venue)'
-      },
-      {
-        type: 'ap',
-        name: '94:B3:4F:3D:15:B0'
-      }
-    ],
-    code: null,
-    state: 'join',
-    failedMsgId: null,
-    radio: '5'
-  },
-  {
-    timestamp: '2022-11-14T06:33:31.646Z',
-    event: 'EVENT_CLIENT_ROAMING',
-    ttc: null,
-    mac: '94:B3:4F:3D:15:B0',
-    apName: 'R750-11-112',
-    path: [
-      {
-        type: 'zone',
-        name: 'cliexp4'
-      },
-      {
-        type: 'apGroup',
-        name: 'No group (inherit from Venue)'
-      },
-      {
-        type: 'ap',
-        name: '94:B3:4F:3D:15:B0'
-      }
-    ],
-    code: null,
-    state: 'normal',
-    failedMsgId: null,
-    radio: '5'
-  },
-  {
-    timestamp: '2022-11-14T06:33:31.976Z',
-    event: 'EVENT_CLIENT_INFO_UPDATED',
-    ttc: null,
-    mac: '94:B3:4F:3D:15:B0',
-    apName: 'R750-11-112',
-    path: [
-      {
-        type: 'zone',
-        name: 'cliexp4'
-      },
-      {
-        type: 'apGroup',
-        name: 'No group (inherit from Venue)'
-      },
-      {
-        type: 'ap',
-        name: '94:B3:4F:3D:15:B0'
-      }
-    ],
-    code: null,
-    state: 'spurious-info-updated',
-    failedMsgId: null,
-    radio: '5'
-  },
-  {
-    timestamp: '2022-11-14T06:33:33.049Z',
-    event: 'EVENT_CLIENT_INFO_UPDATED',
-    ttc: null,
-    mac: '94:B3:4F:3D:15:B0',
-    apName: 'R750-11-112',
-    path: [
-      {
-        type: 'zone',
-        name: 'cliexp4'
-      },
-      {
-        type: 'apGroup',
-        name: 'No group (inherit from Venue)'
-      },
-      {
-        type: 'ap',
-        name: '94:B3:4F:3D:15:B0'
-      }
-    ],
-    code: null,
-    state: 'spurious-info-updated',
-    failedMsgId: null,
-    radio: '5'
-  },
-  {
-    timestamp: '2022-11-14T06:33:33.130Z',
-    event: 'EVENT_CLIENT_INFO_UPDATED',
-    ttc: null,
-    mac: '94:B3:4F:3D:15:B0',
-    apName: 'R750-11-112',
-    path: [
-      {
-        type: 'zone',
-        name: 'cliexp4'
-      },
-      {
-        type: 'apGroup',
-        name: 'No group (inherit from Venue)'
-      },
-      {
-        type: 'ap',
-        name: '94:B3:4F:3D:15:B0'
-      }
-    ],
-    code: null,
-    state: 'spurious-info-updated',
-    failedMsgId: null,
-    radio: '5'
-  },
-  {
-    timestamp: '2022-11-14T06:33:34.036Z',
-    event: 'EVENT_CLIENT_INFO_UPDATED',
-    ttc: null,
-    mac: '94:B3:4F:3D:15:B0',
-    apName: 'R750-11-112',
-    path: [
-      {
-        type: 'zone',
-        name: 'cliexp4'
-      },
-      {
-        type: 'apGroup',
-        name: 'No group (inherit from Venue)'
-      },
-      {
-        type: 'ap',
-        name: '94:B3:4F:3D:15:B0'
-      }
-    ],
-    code: null,
-    state: 'spurious-info-updated',
-    failedMsgId: null,
-    radio: '5'
-  },
-  {
-    timestamp: '2022-11-14T06:35:04.571Z',
-    event: 'CCD_REASON_MIC_FAILURE',
-    ttc: null,
-    mac: '94:B3:4F:3D:15:B0',
-    apName: 'R750-11-112',
-    path: [
-      {
-        type: 'zone',
-        name: 'cliexp4'
-      },
-      {
-        type: 'apGroup',
-        name: 'No group (inherit from Venue)'
-      },
-      {
-        type: 'ap',
-        name: '94:B3:4F:3D:15:B0'
-      }
-    ],
-    code: 'eap',
-    state: 'normal',
-    failedMsgId: '22',
-    radio: '5'
-  },
-  {
-    timestamp: '2022-11-14T06:35:07.441Z',
-    event: 'EVENT_CLIENT_DISCONNECT',
-    ttc: null,
-    mac: '94:B3:4F:3D:15:B0',
-    apName: 'R750-11-112',
-    path: [
-      {
-        type: 'zone',
-        name: 'cliexp4'
-      },
-      {
-        type: 'apGroup',
-        name: 'No group (inherit from Venue)'
-      },
-      {
-        type: 'ap',
-        name: '94:B3:4F:3D:15:B0'
-      }
-    ],
-    code: null,
-    state: 'normal',
-    failedMsgId: '3',
-    radio: '5'
-  }
-]
-export const connectionQualities = [
-  {
-    start: '2022-12-26T07:09:58.340Z',
-    end: '2022-12-26T07:12:00.000Z',
-    rss: null,
-    snr: 'good',
-    throughput: 'good',
-    avgTxMCS: 'bad',
-    all: 'bad'
-  },
-  {
-    start: '2022-12-26T07:12:00.000Z',
-    end: '2022-12-26T07:15:00.000Z',
-    rss: 'good',
-    snr: null,
-    throughput: 'good',
-    avgTxMCS: 'good',
-    all: 'good'
-  },
-  {
-    start: '2022-12-26T07:15:00.000Z',
-    end: '2022-12-26T07:18:00.000Z',
-    rss: 'good',
-    snr: 'good',
-    throughput: null,
-    avgTxMCS: 'good',
-    all: 'good'
-  },
-  {
-    start: '2022-12-26T10:15:00.000Z',
-    end: '2022-12-26T10:18:00.000Z',
-    rss: 'good',
-    snr: 'good',
-    throughput: 'good',
-    avgTxMCS: null,
-    all: 'good'
-  }
-]
-const event = {
-  timestamp: '2022-11-14T05:19:21.155Z',
-  event: 'EVENT_CLIENT_INFO_UPDATED',
-  ttc: null,
-  mac: '94:B3:4F:3D:15:B0',
-  apName: 'R750-11-112',
-  path: [
-    {
-      type: 'zone',
-      name: 'cliexp4'
-    },
-    {
-      type: 'apGroup',
-      name: 'No group (inherit from Venue)'
-    },
-    {
-      type: 'ap',
-      name: '94:B3:4F:3D:15:B0'
-    }
-  ],
-  code: null,
-  state: 'normal',
-  failedMsgId: null,
-  messageIds: null,
-  radio: '5',
-  ssid: 'cliexp4',
-  type: 'connectionEvents',
-  key: '166840316115594:B3:4F:3D:15:B0EVENT_CLIENT_INFO_UPDATED384',
-  start: 1668403161155,
-  end: 1668403161155,
-  category: 'success',
-  seriesKey: 'all'
-}
-export const qualityDataObj = [
-  '2022-11-11T07:58:09.311Z',
-  'all',
-  1668153505931,
-  {
-    start: '2022-11-11T07:58:09.311Z',
-    end: '2022-11-11T07:58:25.931Z',
-    rss: {
-      quality: null,
-      value: null
-    },
-    snr: {
-      quality: null,
-      value: null
-    },
-    throughput: {
-      quality: null,
-      value: null
-    },
-    avgTxMCS: {
-      quality: null,
-      value: null
-    },
-    all: {
-      quality: null
-    },
-    seriesKey: 'all',
-    icon: ''
-  }
-]
-export const incidentDataObj = [
-  1671726600000,
-  'all',
-  1671729300000,
-  {
-    id: '84ae70f3-92d9-4a10-b575-71809cf55e4e',
-    start: 1671726600000,
-    end: 1671729300000,
-    date: 'Dec 23 2022 00:30:00',
-    description: 'Infrastructure (Service Availability)',
-    title: 'AP service is affected due to high number of AP reboots',
-    icon: '',
-    code: 'i-apserv-continuous-reboots',
-    color: '--acx-semantics-yellow-50'
-  }
-]
-export const roamingDataObj = [
-  1669110882891,
-  '18:4B:0D:1C:A2:40-5',
-  1669111020000,
-  {
-    start: '2022-11-22T09:54:42.891Z',
-    end: '2022-11-22T09:57:00.000Z',
-    label: '18:4B:0D:1C:A2:40-5',
-    value: '-73 dBm',
-    color: 'rgba(194, 178, 36, 1)',
-    details: {
-      start: '2022-11-22T09:54:42.891Z',
-      end: '2022-11-22T09:57:00.000Z',
-      apMac: '18:4B:0D:1C:A2:40',
-      apName: 'RSSI-AC_AP',
-      apModel: 'R710',
-      apFirmware: '6.2.0.103.513',
-      channel: '144',
-      radio: '5',
-      radioMode: '11ac',
-      ssid: 'CIOT_WPA2',
-      spatialStream: '2',
-      bandwidth: '80',
-      rss: -73,
-      bssid: '18:4B:0D:5C:A2:4C'
-    }
-  }
-]
-export const eventDataObj = [1668403161155, 'all', { ...event }]
+
+type TooltipHelper = {
+  value: number;
+  seriesData: {
+      data: object;
+      seriesName: string;
+  }[] }
 
 describe('util', () => {
   describe('Connection quality utils', () => {
@@ -1016,41 +647,41 @@ describe('util', () => {
     })
 
     it('tooltipFormatter should return correct Html string for events', async () => {
-      expect(useLabelFormatter(useTooltipParameters('events', eventDataObj))).toContain(
-        'Client associated (802.11)'
-      )
-      expect(
-        useLabelFormatter([{ seriesName: 'events' }] as TooltipFormatterParams[])
-      ).toContain(' ')
+      expect(useLabelFormatter(useTooltipParameters('events', eventDataObj)))
+        .toMatch(
+          'Nov 14 05:19:21 Client associated (802.11) @ R750-11-112 (94:B3:4F:3D:15:B0) 5 GHz'
+        )
+
+      expect(useLabelFormatter([{ seriesName: 'events' }] as unknown as TooltipHelper)).toMatch('')
     })
 
     it('tooltipFormatter should return correct Html string for connectionQuality', async () => {
-      expect(
-        useLabelFormatter(useTooltipParameters('quality', qualityDataObj))
-      ).toContain('Avg MCS (Downlink)')
-      expect(
-        useLabelFormatter([{ seriesName: 'quality' }] as TooltipFormatterParams[])
-      ).toContain('')
+      expect(useLabelFormatter(useTooltipParameters('quality', qualityDataObj)))
+        .toContain('-74 dBm/ 15 dB/ 3.07 Mbps/ 37.9 Mbps')
+
+      expect(useLabelFormatter([{ seriesName: 'quality' }] as unknown as TooltipHelper)).toMatch('')
     })
+
     it('tooltipFormatter should return correct Html string for incidents', async () => {
-      expect(
-        useLabelFormatter(useTooltipParameters('incidents', incidentDataObj))
-      ).toContain('AP service is affected due to high number of AP reboots')
-      expect(
-        useLabelFormatter([{ seriesName: 'incidents' }] as TooltipFormatterParams[])
-      ).toContain(' ')
+      expect(useLabelFormatter(useTooltipParameters('incidents', incidentDataObj)))
+        .toContain('AP service is affected due to high number of AP reboots')
+
+      expect(useLabelFormatter([{ seriesName: 'incidents' }] as unknown as TooltipHelper))
+        .toMatch('')
     })
+
     it('tooltipFormatter should return correct Html string for roaming', async () => {
       expect(
         useLabelFormatter(useTooltipParameters('roaming', roamingDataObj))
       ).toContain('-73 dBm / 18:4B:0D:5C:A2:4C / 144 / 11ac / 2 SS / 80 MHz')
-      expect(
-        useLabelFormatter([{ seriesName: 'roaming' }] as TooltipFormatterParams[])
-      ).toContain(':')
+
+      expect(useLabelFormatter([{ seriesName: 'roaming' }] as unknown as TooltipHelper)).toMatch('')
     })
+
     it('tooltipFormatter should empty Html string for invalid value', async () => {
-      expect(useLabelFormatter([{}] as TooltipFormatterParams[])).toEqual('')
-      expect(useLabelFormatter({} as TooltipFormatterParams[])).toEqual('')
+      expect(useLabelFormatter([{}] as unknown as TooltipHelper)).toEqual('')
+
+      expect(useLabelFormatter({} as unknown as TooltipHelper)).toEqual('')
     })
   })
 })

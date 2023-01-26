@@ -580,7 +580,7 @@ export const getChartData = (
   return []
 }
 
-export const useLabelFormatter = (params: { value:number,seriesData: Object }) => {
+export const useLabelFormatter = (params: { value:number, seriesData: Object }) => {
   const intl = getIntl()
   const trackerDate = (params)?.value
   const seriesData = (params)?.seriesData
@@ -590,9 +590,7 @@ export const useLabelFormatter = (params: { value:number,seriesData: Object }) =
       ? seriesData[0].data[3]
       : undefined) as unknown as DisplayEvent
     const trackerHasData =
-      trackerDate >= moment(obj?.start).valueOf() && trackerDate <= moment(obj?.end).valueOf()
-        ? true
-        : false
+      (trackerDate >= moment(obj?.start).valueOf()) && (trackerDate <= moment(obj?.end).valueOf())
     const date = moment(obj?.start).format(dateFormat)
     const tooltipPrefixText = Object.keys(connectionQualityLabels).map(
       (key, index) =>
@@ -623,9 +621,7 @@ export const useLabelFormatter = (params: { value:number,seriesData: Object }) =
       : undefined) as unknown as DisplayEvent
 
     const trackerHasData =
-      (trackerDate >= (obj?.start - 300000) && trackerDate <= (obj?.end + 300000))
-        ? true
-        : false
+      ((trackerDate >= (obj?.start - 300000)) && (trackerDate <= (obj?.end + 300000)))
     const tooltipText = trackerHasData ? formatEventDesc(obj, intl) : null
     const date = moment(obj?.start).format(dateFormat)
     return tooltipText ? `${date} ${tooltipText}` : ''
@@ -634,10 +630,7 @@ export const useLabelFormatter = (params: { value:number,seriesData: Object }) =
     const obj = (Array.isArray(seriesData) && Array.isArray(seriesData[0].data)
       ? seriesData[0].data[3]
       : undefined) as unknown as IncidentDetails
-    const trackerHasData =
-      (trackerDate >= obj?.start && trackerDate <= (obj?.end as number))
-        ? true
-        : false
+    const trackerHasData = (trackerDate >= obj?.start) && (trackerDate <= (obj?.end as number))
     const tooltipText = trackerHasData ? obj.title : null
     const date = moment(obj?.start).format(dateFormat)
     return tooltipText ? `${date} ${tooltipText}` : ''
@@ -648,8 +641,6 @@ export const useLabelFormatter = (params: { value:number,seriesData: Object }) =
       : undefined) as unknown as RoamingTimeSeriesData
     const trackerHasData =
       trackerDate >= moment(obj?.start).valueOf() && trackerDate <= moment(obj?.end).valueOf()
-        ? true
-        : false
     const tooltipText = trackerHasData ? roamingEventFormatter(obj.details) : null
     const date = moment(obj?.start).format(dateFormat)
 
