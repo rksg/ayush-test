@@ -13,10 +13,10 @@ import { Button }   from '../Button'
 import { Dropdown } from '../Dropdown'
 import { Tooltip }  from '../Tooltip'
 
-import { FilterValue, getFilteredData, renderFilter, renderSearch } from './filters'
-import { ResizableColumn }                                          from './ResizableColumn'
-import * as UI                                                      from './styledComponents'
-import { settingsKey, useColumnsState }                             from './useColumnsState'
+import { Filter, getFilteredData, renderFilter, renderSearch } from './filters'
+import { ResizableColumn }                                     from './ResizableColumn'
+import * as UI                                                 from './styledComponents'
+import { settingsKey, useColumnsState }                        from './useColumnsState'
 
 import type { TableColumn, ColumnStateOption, ColumnGroupType, ColumnType, TableColumnState } from './types'
 import type { ParamsType }                                                                    from '@ant-design/pro-provider'
@@ -68,6 +68,11 @@ export interface TableProps <RecordType>
     })
     extraSettings?: React.ReactNode[]
     onResetState?: CallableFunction
+    enableApiFilter?: boolean
+    onFilterChange?: (
+      filters: Filter,
+      search: { searchString?: string, searchTargetFields?: string[] }
+    ) => void
   }
 
 const defaultPagination = {
@@ -95,16 +100,21 @@ function useSelectedRowKeys <RecordType> (
 
 // following the same typing from antd
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function Table <RecordType extends Record<string, any>> (
-  { type = 'tall', columnState, ...props }: TableProps<RecordType>
-) {
+function Table <RecordType extends Record<string, any>> ({
+  type = 'tall', columnState, enableApiFilter, onFilterChange, ...props
+}: TableProps<RecordType>) {
   const intl = useIntl()
   const { $t } = intl
-  const [filterValues, setFilterValues] = useState<FilterValue>({} as FilterValue)
+  const [filterValues, setFilterValues] = useState<Filter>({})
   const [searchValue, setSearchValue] = useState<string>('')
   const { dataSource } = props
 
   const [colWidth, setColWidth] = useState<Record<string, number>>({})
+
+  const debounced = useCallback(_.debounce((filter: Filter, searchString: string) =>
+    onFilterChange && onFilterChange(filter, { searchString }), 1000), [onFilterChange])
+
+  useEffect(() => debounced(filterValues, searchValue), [searchValue, filterValues, debounced])
 
   let columns = useMemo(() => {
     const settingsColumn = {
@@ -202,7 +212,7 @@ function Table <RecordType extends Record<string, any>> (
   const searchables = columns.filter(column => column.searchable)
   const activeFilters = filterables.filter(column => {
     const key = column.dataIndex as keyof RecordType
-    const filteredValue = filterValues[key as keyof FilterValue]
+    const filteredValue = filterValues[key as keyof Filter]
     return filteredValue
   })
   const hasRowSelected = Boolean(selectedRowKeys.length)
@@ -251,14 +261,22 @@ function Table <RecordType extends Record<string, any>> (
   const columnRender = (col: ColumnType<RecordType> | ColumnGroupType<RecordType, 'text'>) => ({
     ...col,
     render: ((dom, entity, index, action, schema) => {
-      const highlightFn = (textToHighlight: string) => (col.searchable && searchValue)
-        ? <Highlighter
-          highlightStyle={{ fontWeight: 'bold', background: 'none', padding: 0 }}
-          searchWords={[searchValue]}
-          textToHighlight={textToHighlight}
-          autoEscape
-        />
-        : textToHighlight
+      const highlightFn = (
+        textToHighlight: string,
+        formatFn?: (keyword: string) => React.ReactNode
+      ) =>
+        (col.searchable && searchValue && textToHighlight)
+          ? formatFn
+            ? textToHighlight.replace(
+              new RegExp( searchValue, 'ig' ), formatFn('$&') as string)
+            : <Highlighter
+              highlightStyle={{
+                fontWeight: 'bold', background: 'none', padding: 0, color: 'inherit' }}
+              searchWords={[searchValue]}
+              textToHighlight={textToHighlight}
+              autoEscape
+            />
+          : textToHighlight
       return col.render
         ? col.render(dom, entity, index, highlightFn, action, schema)
         : highlightFn(entity[col.dataIndex as keyof RecordType] as unknown as string)
@@ -310,14 +328,15 @@ function Table <RecordType extends Record<string, any>> (
               renderSearch<RecordType>(intl, searchables, searchValue, setSearchValue)
             }
             {filterables.map((column, i) =>
-              renderFilter<RecordType>(column, i, dataSource, filterValues, setFilterValues)
+              renderFilter<RecordType>(
+                column, i, dataSource, filterValues, setFilterValues, !!enableApiFilter)
             )}
           </Space>
         </div>
         <UI.HeaderRight>
           {(Boolean(activeFilters.length) || Boolean(searchValue)) && <Button
             onClick={() => {
-              setFilterValues({} as FilterValue)
+              setFilterValues({} as Filter)
               setSearchValue('')
             }}
           >
@@ -328,9 +347,11 @@ function Table <RecordType extends Record<string, any>> (
     )}
     <ProTable<RecordType>
       {...props}
-      dataSource={getFilteredData<RecordType>(
-        dataSource, filterValues, activeFilters, searchables, searchValue
-      )}
+      dataSource={enableApiFilter
+        ? dataSource
+        : getFilteredData<RecordType>(
+          dataSource, filterValues, activeFilters, searchables, searchValue)
+      }
       sortDirections={['ascend', 'descend', 'ascend']}
       bordered={false}
       search={false}

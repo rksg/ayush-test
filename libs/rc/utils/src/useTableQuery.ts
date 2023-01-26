@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 
-import { TableProps } from 'antd'
+import { TableProps }          from 'antd'
+import { FilterValue }         from 'antd/lib/table/interface'
+import { isEmpty, omit, pick } from 'lodash'
 
 import { useParams, Params }                         from '@acx-ui/react-router-dom'
 import { UseQuery, UseQueryResult, UseQueryOptions } from '@acx-ui/types'
@@ -39,18 +41,18 @@ export interface TABLE_QUERY <
   apiParams?: Record<string, string>
   pagination?: Partial<PAGINATION>
   sorter?: SORTER
+  search?: SEARCH
   rowKey?: string
   option?: UseQueryOptions
 }
 export type PAGINATION = {
-  current: number,
+  page: number,
   pageSize: number,
   total: number
 }
 
 export const DEFAULT_PAGINATION = {
   page: 1,
-  current: 1,
   pageSize: 10,
   total: 0
 }
@@ -70,6 +72,13 @@ const DEFAULT_SORTER = {
   sortOrder: SORTER_ABBR.ascend
 }
 
+export interface SEARCH {
+  searchString?: string
+  searchTargetFields?: string[]
+}
+
+export interface FILTER extends Record<string, FilterValue | null> {}
+
 const transferSorter = (order:string) => {
   return order === 'ascend' ? SORTER_ABBR.ascend : SORTER_ABBR.descend
 }
@@ -78,8 +87,9 @@ export interface TableQuery<ResultType, Payload, ResultExtra>
   extends UseQueryResult<TableResult<ResultType, ResultExtra>> {
   pagination: PAGINATION,
   sorter: SORTER,
-  setSorter: React.Dispatch<React.SetStateAction<SORTER>>,
+  search: SEARCH,
   handleTableChange: TableProps<ResultType>['onChange'],
+  handleFilterChange: (filters: FILTER, search: SEARCH) => void
   payload: Payload,
   setPayload: React.Dispatch<React.SetStateAction<Payload>>,
 }
@@ -117,15 +127,20 @@ export function useTableQuery <
     ...(option?.sorter || {})
   }
 
+  const initialSearch = option?.search || {}
+
   const initialPayload = {
     ...option.defaultPayload,
     ...(initialPagination as unknown as Partial<Payload>),
-    ...(initialSorter as unknown as Partial<Payload>)
+    ...(initialSorter as unknown as Partial<Payload>),
+    ...(initialSearch.searchString && initialSearch)
   } as Payload
 
   const [pagination, setPagination] = useState<PAGINATION>(initialPagination)
   const [sorter, setSorter] = useState<SORTER>(initialSorter)
+  const [search] = useState<SEARCH>(initialSearch)
   const [payload, setPayload] = useState<Payload>(initialPayload)
+  const [filterKeys, setFilterKeys] = useState<string[]>([])
 
   const params = useParams()
   const api = option.useQuery({
@@ -136,41 +151,65 @@ export function useTableQuery <
   useEffect(() => {
     const handlePagination = (data?: TableResult<ResultType>) => {
       if (data) {
-        setPagination((prev) => ({
-          ...prev,
-          current: data.page,
-          total: data.totalCount
-        }))
+        const totalPage = Math.ceil(data.totalCount/pagination.pageSize)
+        const page = totalPage >= pagination.page ? pagination.page : 1
+        const pageChanged = pagination.page !== page
+        setPagination((prev) => ({ ...prev, page, total: data.totalCount } as PAGINATION))
+        if(pageChanged) { setPayload({ ...payload, page }) }
       }
     }
     handlePagination(api.data)
   }, [api.data])
 
+  const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
+    const { searchString, searchTargetFields, filters, ...rest } = payload
+    const toBeRemovedFilter = isEmpty(customFilters)
+      ? filterKeys
+      : Object.keys(customFilters).filter(key => !customFilters[key])
+    setPayload({
+      ...rest,
+      ...(customSearch.searchString && { ...search, ...customSearch }),
+      filters: {
+        ...omit({ ...filters as Object, ...customFilters }, toBeRemovedFilter),
+        ...pick(initialPayload.filters, toBeRemovedFilter)
+      }
+    } as unknown as Payload)
+    setFilterKeys([...new Set([ ...filterKeys, ...Object.keys(customFilters) ])]
+      .filter(key=>!toBeRemovedFilter.includes(key)))
+  }
+
   const handleTableChange: TableProps<ResultType>['onChange'] = (
-    pagination,
-    filters,
-    sorters
+    customPagination, _, customSorters
   ) => {
     // Implementation expect there will only be 1 sortable column
-    const sorter = Array.isArray(sorters)
-      ? sorters[0]
-      : sorters
+    const customSorter = Array.isArray(customSorters)
+      ? customSorters[0] : customSorters
 
-    const sorterKey = Array.isArray(sorter.field) ? sorter.columnKey : sorter.field
+    const sorterKey = Array.isArray(customSorter.field)
+      ? customSorter.columnKey : customSorter.field
 
-    const tableProps = {
+    const sorterDetail = {
       sortField: sorterKey || DEFAULT_SORTER.sortField,
-      sortOrder: sorter.order ? transferSorter(sorter.order) : DEFAULT_SORTER.sortOrder,
-      page: pagination.current,
-      pageSize: pagination.pageSize
-    }
+      sortOrder: customSorter.order ? transferSorter(customSorter.order) : DEFAULT_SORTER.sortOrder
+    } as SORTER
+
+    const paginationDetail = {
+      page: customPagination.current,
+      pageSize: customPagination.pageSize
+    } as PAGINATION
+
+    const tableProps = { ...sorterDetail, ...paginationDetail }
+
+    setSorter({ ...sorter, ...sorterDetail })
+    setPagination({ ...pagination, ...paginationDetail })
     setPayload({ ...payload, ...tableProps })
   }
 
   return {
-    pagination,
+    pagination: { ...pagination, current: pagination.page },
     sorter,
-    setSorter,
+    search,
+    handleFilterChange,
     handleTableChange,
     payload,
     setPayload,
