@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 
-import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
-import { Provider }           from '@acx-ui/store'
+import { CommonUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }       from '@acx-ui/store'
 import {
   mockRestApiQuery,
   render,
