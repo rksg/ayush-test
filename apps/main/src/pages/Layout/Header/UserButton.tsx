@@ -19,6 +19,7 @@ const UserButton = () => {
     <Menu selectedKeys={[]}
       onClick={(menuInfo)=>{
         if(menuInfo.key==='logout'){
+          sessionStorage.removeItem('jwt')
           window.location.href = '/logout'
         } else if(menuInfo.key==='settings') {
           const passwordUrl = get('CHANGE_PASSWORD')

@@ -210,6 +210,11 @@ export function useMenuConfig () {
           path: '/users/switch',
           name: $t({ defaultMessage: 'Switch' }),
           disabled: !useIsSplitOn(Features.USERS)
+        },
+        {
+          path: '/users/persona-management',
+          name: $t({ defaultMessage: 'Persona Management' }),
+          disabled: !useIsSplitOn(Features.SERVICES)
         }
       ]
     },
