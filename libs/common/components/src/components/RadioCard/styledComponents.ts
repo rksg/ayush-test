@@ -9,6 +9,7 @@ export const Card = styled(AntCard)<{ $cardType: RadioCardType }>`
   position: relative;
   border: solid 1px var(--acx-neutrals-30);
   box-shadow: 0px 2px 4px rgba(51, 51, 51, 0.08);
+  height: 100%;
 
   ${props => props.$cardType !== 'button'
     ?`:hover {
@@ -82,6 +83,9 @@ export const Radio = styled(AntRadio)`
 `
 
 export const CategoryWrapper = styled.div`
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
   display: flex;
   gap: 4px;
 `
@@ -100,10 +104,11 @@ export const Description = styled.div`
   color: var(--acx-neutrals-60);
   font-size: var(--acx-body-5-font-size);
   line-height: var(--acx-body-5-line-height);
-  padding-bottom: 12px;
+  padding-bottom: 28px;
 `
 
 export const Title = styled.div`
+  padding-right: 20px;
   padding-bottom: 3px;
   font-size: var(--acx-subtitle-4-font-size);
   line-height: var(--acx-subtitle-4-line-height);
