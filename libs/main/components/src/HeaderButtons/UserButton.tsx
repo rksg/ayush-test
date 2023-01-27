@@ -9,53 +9,57 @@ import { UserNameButton, LogOut } from './styledComponents'
 
 const UserButton = () => {
   const { $t } = useIntl()
-
-  const data = useUserProfileContext()
+  const userProfile = useUserProfileContext()
   const location = useLocation()
 
   const menuHeaderDropdown = (
-    <Menu selectedKeys={[]}
-      onClick={(menuInfo)=>{
-        if(menuInfo.key==='logout'){
-          sessionStorage.removeItem('jwt')
-          window.location.href = '/logout'
-        } else if(menuInfo.key==='settings') {
-          const passwordUrl = get('CHANGE_PASSWORD')
-          const isRwbigdog = data?.email.indexOf('@rwbigdog.com') !== -1 ||
-                             data?.username.indexOf('@rwbigdog.com') !== -1
-          const changePasswordUrl = isRwbigdog
-            ? 'https://partners.ruckuswireless.com/forgot-password'
-            : passwordUrl
-          window.open(changePasswordUrl, '_blank')
+    <Menu
+      selectedKeys={[]}
+      onClick={(menuInfo) => {
+        switch (menuInfo.key) {
+          case 'change-password':
+            const passwordUrl = get('CHANGE_PASSWORD')
+            const isRwbigdog = userProfile?.email.indexOf('@rwbigdog.com') !== -1 ||
+                               userProfile?.username.indexOf('@rwbigdog.com') !== -1
+            const changePasswordUrl = isRwbigdog
+              ? 'https://partners.ruckuswireless.com/forgot-password'
+              : passwordUrl
+            window.open(changePasswordUrl, '_blank')
+            break
+          case 'logout':
+            sessionStorage.removeItem('jwt')
+            window.location.href = '/logout'
+            break
         }
-      }}>
-      <Menu.Item
-        key='center'>
-        <TenantLink
-          state={{ from: location.pathname }}
-          to='/userprofile/'>{useIntl().$t({ defaultMessage: 'User Profile' })}
-        </TenantLink>
-      </Menu.Item>
-
-      <Menu.Item key='settings'>
-        {$t({ defaultMessage: 'Change Password' })}
-      </Menu.Item>
-
-      <Menu.Divider />
-
-      <Menu.Item key='logout'>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <LogOut/>
-          <span>{$t({ defaultMessage: 'Log out' })}  </span>
-        </div>
-      </Menu.Item>
-    </Menu>
+      }}
+      items={[
+        {
+          key: 'user-profile',
+          label: <TenantLink
+            state={{ from: location.pathname }}
+            to='/userprofile/'>{useIntl().$t({ defaultMessage: 'User Profile' })}
+          </TenantLink>
+        },
+        {
+          key: 'change-password',
+          label: $t({ defaultMessage: 'Change Password' })
+        },
+        { type: 'divider' },
+        {
+          key: 'logout',
+          label: <div style={{ display: 'flex', alignItems: 'center' }}>
+            <LogOut/>
+            <span>{$t({ defaultMessage: 'Log out' })}  </span>
+          </div>
+        }
+      ]}
+    />
   )
 
   return (
     <Dropdown overlay={menuHeaderDropdown} trigger={['click']} placement='bottomLeft'>
       <UserNameButton>
-        {data?.initials || ' '}
+        {userProfile?.initials || ' '}
       </UserNameButton>
     </Dropdown>
   )

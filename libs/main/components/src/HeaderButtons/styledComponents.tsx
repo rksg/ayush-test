@@ -17,9 +17,9 @@ import {
 } from '@acx-ui/icons'
 
 
-type CopyableTextProps = {
-  color?: string
-}
+// type CopyableTextProps = {
+//   color?: string
+// }
 
 export const UserNameButton = styled(LayoutUI.ButtonSolid)`
   width: 32px;
@@ -83,11 +83,11 @@ export const AboutModal = styled(Modal)`
   }
 `
 
-export const CopyableText = styled(Typography.Paragraph)
-  .attrs({ copyable: true })<CopyableTextProps>`
-  margin-bottom: 3px !important;
-  color: ${(props) => (props.color ? props.color : 'var(--acx-accents-blue-50)')};
-`
+// export const CopyableText = styled(Typography.Paragraph)
+//   .attrs({ copyable: true })<CopyableTextProps>`
+//   margin-bottom: 3px !important;
+//   color: ${(props) => (props.color ? props.color : 'var(--acx-accents-blue-50)')};
+// `
 
 export const SpaceBetween = styled(Space)`
   justify-content: space-between;
