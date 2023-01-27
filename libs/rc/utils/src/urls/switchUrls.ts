@@ -177,6 +177,18 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/switch/tenant/:tenantId/vlan/:vlanUuid'
   },
+  reboot: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/switch/:switchId/reboot'
+  },
+  syncData: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/switch/:switchId/sync'
+  },
+  getJwtToken: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/switch/:serialNumber/jwt-token'
+  },
   getSwitchClientList: {
     method: 'post',
     url: '/api/viewmodel/:tenantId/switch/client/clientlist'
