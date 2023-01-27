@@ -73,6 +73,7 @@ export interface TimelineChartProps extends Omit<EChartsReactProps, 'option' | '
   tooltipFormatter: CallableFunction;
   mapping: { key: string; label: string; chartType: string; series: string }[];
   showResetZoom?: boolean;
+  index?: React.Attributes['key'];
 }
 export const getSeriesData = (
   data: (Event | LabelledQuality | IncidentDetails | RoamingTimeSeriesData)[],
@@ -264,6 +265,7 @@ export function TimelineChart ({
   mapping,
   hasXaxisLabel,
   showResetZoom,
+  index,
   ...props
 }: TimelineChartProps) {
   const { $t } = useIntl()
@@ -293,6 +295,7 @@ export function TimelineChart ({
     },
     tooltip: {
       trigger: 'axis',
+      zlevel: 10,
       triggerOn: 'mousemove',
       axisPointer: {
         axis: 'x',
@@ -447,6 +450,7 @@ export function TimelineChart ({
         }}
         ref={eChartsRef}
         option={option}
+        key={index}
       />
       {canResetZoom && showResetZoom && (
         <ResetButton

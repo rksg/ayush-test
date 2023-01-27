@@ -178,9 +178,11 @@ export function TimeLine (props: TimeLineProps) {
       </Col>
       <Col flex='auto'>
         <Row gutter={[16, 16]} style={{ rowGap: 0 }}>
-          {ClientTroubleShootingConfig.timeLine.map((config) => (
+          {ClientTroubleShootingConfig.timeLine.map((config, index) => (
             <Col span={24} key={config.value}>
               <TimelineChart
+                key={index}
+                index={index}
                 style={{ width: 'auto', marginBottom: 8 }}
                 data={getChartData(
                   config?.value as keyof TimelineData,
