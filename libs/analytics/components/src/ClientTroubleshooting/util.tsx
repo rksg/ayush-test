@@ -293,6 +293,9 @@ export const getRoamingSubtitleConfig = (data: RoamingConfigParam) => {
   return Object.keys(data).map((key, index) => {
     return {
       title: `${data[key].apName} on ${data[key].radio}GHz`,
+      apMac: data[key].apMac,
+      apModel: data[key].apModel,
+      apFirmware: data[key].apFirmware,
       value: data[key].apName,
       isLast: Object.keys(data).length === index + 1 ? true : false
     }

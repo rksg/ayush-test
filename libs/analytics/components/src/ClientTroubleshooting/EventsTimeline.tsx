@@ -8,6 +8,7 @@ import moment                         from 'moment-timezone'
 import { useIntl, MessageDescriptor } from 'react-intl'
 
 import { Incident }      from '@acx-ui/analytics/utils'
+import { Tooltip }       from '@acx-ui/components'
 import { useDateFilter } from '@acx-ui/utils'
 
 import {
@@ -104,10 +105,14 @@ export function TimeLine (props: TimeLineProps) {
   }, [])
   const { startDate, endDate } = useDateFilter()
   const chartBoundary = [moment(startDate).valueOf(), moment(endDate).valueOf()]
+  const roamingTooltipCallback = (apMac: string, apModel: string, apFirmware: string) =>
+    $t({ defaultMessage: 'MAC Address: {apMac} {br}Model: {apModel} {br}Firmware: {apFirmware}' },
+      { br: '\n', apMac, apModel, apFirmware }
+    )
   return (
     <Row gutter={[16, 16]} wrap={false}>
       <Col flex='200px'>
-        <Row gutter={[16, 16]} style={{ rowGap: '4px' }}>
+        <Row gutter={[16, 16]} style={{ rowGap: '3px' }}>
           {ClientTroubleShootingConfig.timeLine.map((config, index) => (
             <React.Fragment key={index}>
               <Col span={3}>
@@ -137,7 +142,15 @@ export function TimeLine (props: TimeLineProps) {
                     <Col span={17} offset={3} style={subtitle.isLast ? { marginBottom: 40 } : {}}>
                       {config.value === TYPES.ROAMING
                         ? <UI.RoamingTimelineSubContent>
-                          {subtitle.title as string}
+                          <Tooltip
+                            placement='top'
+                            title={roamingTooltipCallback(
+                              (subtitle as { apMac: string }).apMac,
+                              (subtitle as { apModel: string }).apModel,
+                              (subtitle as { apFirmware: string }).apFirmware)}
+                          >
+                            {subtitle.title as string}
+                          </Tooltip>
                         </UI.RoamingTimelineSubContent>
                         : <UI.TimelineSubContent>
                           {($t(subtitle.title as MessageDescriptor))}

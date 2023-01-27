@@ -102,6 +102,7 @@ export const RoamingTimelineSubContent = styled.span`
   white-space: nowrap;
   font-size: 10px;
   color: var(--acx-neutrals-70);
+  text-decoration: underline dotted;
 `
 
 export const TooltipWrapper = styled.div`

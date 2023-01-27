@@ -559,8 +559,22 @@ describe('util', () => {
       }
       it('should return correct chart config', () => {
         expect(getRoamingSubtitleConfig(roamingData)).toEqual([
-          { isLast: false, title: 'apName1 on radio1GHz', value: 'apName1' },
-          { isLast: true, title: 'apName2 on radio2GHz', value: 'apName2' }
+          {
+            isLast: false,
+            title: 'apName1 on radio1GHz',
+            value: 'apName1',
+            apMac: 'apmac1',
+            apModel: 'apModel1',
+            apFirmware: 'apFirmware1'
+          },
+          {
+            isLast: true,
+            title: 'apName2 on radio2GHz',
+            value: 'apName2',
+            apMac: 'apmac2',
+            apModel: 'apModel2',
+            apFirmware: 'apFirmware2'
+          }
         ])
       })
     })
