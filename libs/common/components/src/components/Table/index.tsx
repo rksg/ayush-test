@@ -114,7 +114,10 @@ function Table <RecordType extends Record<string, any>> ({
   const debounced = useCallback(_.debounce((filter: Filter, searchString: string) =>
     onFilterChange && onFilterChange(filter, { searchString }), 1000), [onFilterChange])
 
-  useEffect(() => debounced(filterValues, searchValue), [searchValue, filterValues, debounced])
+  useEffect(() => {
+    debounced(filterValues, searchValue)
+    return ()=>{ debounced.cancel() }
+  }, [searchValue, filterValues, debounced])
 
   let columns = useMemo(() => {
     const settingsColumn = {
@@ -206,10 +209,21 @@ function Table <RecordType extends Record<string, any>> ({
     props.rowSelection?.onChange?.(newKeys, getSelectedRows(newKeys), { type })
   }
 
-  const filterables = columns.filter(column => {
-    return column.filterable
-  })
-  const searchables = columns.filter(column => column.searchable)
+  const aggregator = (
+    columns: TableColumn<RecordType, 'text'>[],
+    field: keyof TableColumn<RecordType, 'text'>
+  ) => Object.values(columns.reduce((all, column) => {
+    if(column[field]) { all[column.key] = column }
+    if(isGroupColumn(column) && column.children?.length > 0)
+      column.children.forEach((child) => {
+        if(child[field]) { all[child.key] = child }
+      })
+    return all
+  }, {} as Record<string, TableColumn<RecordType, 'text'>>))
+
+  const filterables = aggregator(columns, 'filterable')
+  const searchables = aggregator(columns, 'searchable')
+
   const activeFilters = filterables.filter(column => {
     const key = column.dataIndex as keyof RecordType
     const filteredValue = filterValues[key as keyof Filter]

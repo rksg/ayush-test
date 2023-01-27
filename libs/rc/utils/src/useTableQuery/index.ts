@@ -7,7 +7,7 @@ import { isEmpty, omit, pick } from 'lodash'
 import { useParams, Params }                         from '@acx-ui/react-router-dom'
 import { UseQuery, UseQueryResult, UseQueryOptions } from '@acx-ui/types'
 
-import { ApiInfo, createHttpRequest } from './apiService'
+import { ApiInfo, createHttpRequest } from '../apiService'
 
 export const TABLE_QUERY_POLLING_INTERVAL = 30_000
 export const TABLE_QUERY_LONG_POLLING_INTERVAL = 300_000
@@ -138,7 +138,7 @@ export function useTableQuery <
 
   const [pagination, setPagination] = useState<PAGINATION>(initialPagination)
   const [sorter, setSorter] = useState<SORTER>(initialSorter)
-  const [search] = useState<SEARCH>(initialSearch)
+  const [search, setSearch] = useState<SEARCH>(initialSearch)
   const [payload, setPayload] = useState<Payload>(initialPayload)
   const [filterKeys, setFilterKeys] = useState<string[]>([])
 
@@ -168,12 +168,13 @@ export function useTableQuery <
       : Object.keys(customFilters).filter(key => !customFilters[key])
     setPayload({
       ...rest,
-      ...(customSearch.searchString && { ...search, ...customSearch }),
+      ...(customSearch.searchString && { ...initialSearch, ...customSearch }),
       filters: {
         ...omit({ ...filters as Object, ...customFilters }, toBeRemovedFilter),
         ...pick(initialPayload.filters, toBeRemovedFilter)
       }
     } as unknown as Payload)
+    setSearch({ ...(customSearch.searchString && { ...initialSearch, ...customSearch }) })
     setFilterKeys([...new Set([ ...filterKeys, ...Object.keys(customFilters) ])]
       .filter(key=>!toBeRemovedFilter.includes(key)))
   }
