@@ -557,10 +557,11 @@ describe('util', () => {
           apFirmware: 'apFirmware2'
         }
       }
-      it('should return correct chart config', () => {
+      it('should return correct chart config for normal list', () => {
         expect(getRoamingSubtitleConfig(roamingData)).toEqual([
           {
             isLast: false,
+            noData: false,
             title: 'apName1 on radio1GHz',
             value: 'apName1',
             apMac: 'apmac1',
@@ -569,6 +570,7 @@ describe('util', () => {
           },
           {
             isLast: true,
+            noData: false,
             title: 'apName2 on radio2GHz',
             value: 'apName2',
             apMac: 'apmac2',
@@ -576,6 +578,18 @@ describe('util', () => {
             apFirmware: 'apFirmware2'
           }
         ])
+      })
+
+      it('should return correct chart config for empty list', () => {
+        expect(getRoamingSubtitleConfig({})).toEqual([{
+          title: 'No Data',
+          apMac: 'No Data',
+          apModel: '',
+          apFirmware: '',
+          value: '',
+          noData: true,
+          isLast: true
+        }])
       })
     })
   })

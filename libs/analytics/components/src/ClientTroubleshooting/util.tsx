@@ -290,6 +290,18 @@ export const getRoamingChartConfig = (data: RoamingConfigParam) => {
   })
 }
 export const getRoamingSubtitleConfig = (data: RoamingConfigParam) => {
+  if (Object.keys(data).length === 0) {
+    return [{
+      title: 'No Data',
+      apMac: 'No Data',
+      apModel: '',
+      apFirmware: '',
+      value: '',
+      isLast: true,
+      noData: true
+    }]
+  }
+
   return Object.keys(data).map((key, index) => {
     return {
       title: `${data[key].apName} on ${data[key].radio}GHz`,
@@ -297,6 +309,7 @@ export const getRoamingSubtitleConfig = (data: RoamingConfigParam) => {
       apModel: data[key].apModel,
       apFirmware: data[key].apFirmware,
       value: data[key].apName,
+      noData: false,
       isLast: Object.keys(data).length === index + 1 ? true : false
     }
   })
