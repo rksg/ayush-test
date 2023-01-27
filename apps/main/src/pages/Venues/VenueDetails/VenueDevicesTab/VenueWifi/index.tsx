@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 import { List, Radio } from 'antd'
 import { useIntl }     from 'react-intl'
+import { useParams }   from 'react-router-dom'
 
 import { Table, TableProps, Loader, Tooltip }     from '@acx-ui/components'
 import { LineChartOutline, ListSolid, MeshSolid } from '@acx-ui/icons'
@@ -12,7 +13,12 @@ import {
   APMesh,
   APMeshRole
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink }           from '@acx-ui/react-router-dom'
+import { EmbeddedReport }       from '@acx-ui/reports/components'
+import {
+  ReportType,
+  reportTypeDataStudioMapping
+} from '@acx-ui/reports/components'
 
 import {
   ArrowCornerIcon,
@@ -225,6 +231,8 @@ function transformData (data: APMesh[]) {
 }
 
 export function VenueWifi () {
+  const params = useParams()
+
   const [ showIdx, setShowInx ] = useState(1)
 
   const VenueMeshApsTable = () => {
@@ -258,7 +266,14 @@ export function VenueWifi () {
         <Radio.Button value={1}><ListSolid /></Radio.Button>
         <Radio.Button value={2}><MeshSolid /></Radio.Button>
       </IconRadioGroup>
-      { showIdx === 0 && <div></div> } {/* TODO: Venue Device WiFi Report */}
+      { showIdx === 0 && (
+        <div style={{ paddingTop: 20 }}>
+          <EmbeddedReport
+            embedDashboardName={reportTypeDataStudioMapping[ReportType.ACCESS_POINT]}
+            rlsClause={`"zoneName" in ('${params?.venueId}')`}
+          />
+        </div>)
+      }
       { showIdx === 1 && <ApTable rowSelection={{ type: 'checkbox' }} /> }
       { showIdx === 2 && <VenueMeshApsTable /> }
     </>
