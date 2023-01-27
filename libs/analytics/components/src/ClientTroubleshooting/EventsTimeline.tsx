@@ -135,11 +135,13 @@ export function TimeLine (props: TimeLineProps) {
                 )?.map((subtitle) => (
                   <React.Fragment key={subtitle.value}>
                     <Col span={17} offset={3} style={subtitle.isLast ? { marginBottom: 40 } : {}}>
-                      <UI.TimelineSubContent>
-                        {config.value === TYPES.ROAMING
-                          ? (subtitle.title as string)
-                          : ($t(subtitle.title as MessageDescriptor) as string)}
-                      </UI.TimelineSubContent>
+                      {config.value === TYPES.ROAMING
+                        ? <UI.RoamingTimelineSubContent>
+                          {subtitle.title as string}
+                        </UI.RoamingTimelineSubContent>
+                        : <UI.TimelineSubContent>
+                          {($t(subtitle.title as MessageDescriptor))}
+                        </UI.TimelineSubContent>}
                     </Col>
                     <Col span={4}>
                       {config.showCount ? (

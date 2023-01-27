@@ -96,6 +96,14 @@ export const TimelineSubContent = styled.span`
    font-size: 12px;
    color: var(--acx-neutrals-70);`
 
+export const RoamingTimelineSubContent = styled.span`
+  line-height: 16px;
+  font-weight: var(--acx-body-font-weight);
+  white-space: nowrap;
+  font-size: 10px;
+  color: var(--acx-neutrals-70);
+`
+
 export const TooltipWrapper = styled.div`
     color: var(--acx-neutrals-70);
     font-weight: 400;
