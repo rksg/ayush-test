@@ -1,16 +1,14 @@
 /* eslint-disable max-len */
 import React from 'react'
 
-import { Badge, Space } from 'antd'
-import { useIntl }      from 'react-intl'
+import { Badge }   from 'antd'
+import { useIntl } from 'react-intl'
 
 import {
   Loader,
   Table,
   TableProps,
-  deviceStatusColors,
-  StackedBarChart,
-  cssStr
+  deviceStatusColors
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
@@ -157,39 +155,42 @@ export function ApTable (props: ApTableProps) {
       title: $t({ defaultMessage: 'MAC Address' }),
       dataIndex: 'apMac',
       sorter: true
-    }, {
-      key: 'incidents',
-      title: () => (
-        <>
-          { $t({ defaultMessage: 'Incidents' }) }
-          <Table.SubTitle children={$t({ defaultMessage: 'Last 24 hours' })} />
-        </>
-      ),
-      dataIndex: 'incidents',
-      sorter: false,
-      render: (data, row) => {
-        //TODO: Shows breakdown by severity - with a counter for each severity
-        return (<Space direction='horizontal'>
-          <StackedBarChart
-            style={{ height: 10, width: 40 }}
-            data={[{
-              category: 'emptyStatus',
-              series: [{
-                name: '',
-                value: 1
-              }]
-            }]}
-            showTooltip={false}
-            showLabels={false}
-            showTotal={false}
-            barColors={[cssStr(deviceStatusColors.empty)]}
-          />
-          <TenantLink to={`/devices/wifi/${row.serialNumber}/details/analytics/incidents/overview`}>
-            {data ? data: 0}
-          </TenantLink>
-        </Space>)
-      }
-    }, {
+    },
+    // TODO:  Waiting for backend support
+    // {
+    //   key: 'incidents',
+    //   title: () => (
+    //     <>
+    //       { $t({ defaultMessage: 'Incidents' }) }
+    //       <Table.SubTitle children={$t({ defaultMessage: 'Last 24 hours' })} />
+    //     </>
+    //   ),
+    //   dataIndex: 'incidents',
+    //   sorter: false,
+    //   render: (data, row) => {
+    //     //TODO: Shows breakdown by severity - with a counter for each severity
+    //     return (<Space direction='horizontal'>
+    //       <StackedBarChart
+    //         style={{ height: 10, width: 40 }}
+    //         data={[{
+    //           category: 'emptyStatus',
+    //           series: [{
+    //             name: '',
+    //             value: 1
+    //           }]
+    //         }]}
+    //         showTooltip={false}
+    //         showLabels={false}
+    //         showTotal={false}
+    //         barColors={[cssStr(deviceStatusColors.empty)]}
+    //       />
+    //       <TenantLink to={`/devices/wifi/${row.serialNumber}/details/analytics/incidents/overview`}>
+    //         {data ? data: 0}
+    //       </TenantLink>
+    //     </Space>)
+    //   }
+    // },
+    {
       key: 'venueName',
       title: $t({ defaultMessage: 'Venue' }),
       dataIndex: 'venueName',
