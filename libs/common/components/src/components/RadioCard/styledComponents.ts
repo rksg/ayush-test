@@ -27,7 +27,7 @@ export const Card = styled(AntCard)<{ $cardType: RadioCardType }>`
   }
 
   .ant-card-body {
-    padding: 16px 12px 14px 12px;
+    padding: 16px 12px 12px 12px;
   }
 `
 
@@ -104,7 +104,7 @@ export const Description = styled.div`
   color: var(--acx-neutrals-60);
   font-size: var(--acx-body-5-font-size);
   line-height: var(--acx-body-5-line-height);
-  padding-bottom: 28px;
+  padding-bottom: 30px;
 `
 
 export const Title = styled.div`
