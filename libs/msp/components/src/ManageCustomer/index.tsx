@@ -32,8 +32,12 @@ import {
   useUpdateCustomerMutation,
   useGetMspEcQuery,
   // useGetMspEcDelegatedAdminsQuery,
+  useGetMspEcSupportQuery,
+  useEnableMspEcSupportMutation,
+  useDisableMspEcSupportMutation,
   useMspAssignmentSummaryQuery,
-  useMspAssignmentHistoryQuery
+  useMspAssignmentHistoryQuery,
+  useGetUserProfileQuery
 } from '@acx-ui/rc/services'
 import {
   Address,
@@ -46,7 +50,6 @@ import {
   roleDisplayText,
   RolesEnum,
   EntitlementUtil,
-  excludeExclamationRegExp,
   MspAssignmentHistory,
   MspAssignmentSummary,
   MspEcDelegatedAdmins,
@@ -78,7 +81,7 @@ interface EcFormData {
     admin_email: string,
     admin_firstname: string,
     admin_lastname: string,
-    admin_role: string,
+    admin_role: RolesEnum,
     wifiLicense: number,
     switchLicense: number
 }
@@ -149,13 +152,15 @@ export function ManageCustomer () {
 
   const navigate = useNavigate()
   const linkToCustomers = useTenantLink('/dashboard/mspcustomers', 'v')
-  const formRef = useRef<StepsFormInstance>()
+  const formRef = useRef<StepsFormInstance<EcFormData>>()
   const dateFormat = 'MM/DD/YYYY'
+  const trialFreeLicense = 25
   const { action, status, tenantId, mspEcTenantId } = useParams()
 
   const [isTrialMode, setTrialMode] = useState(false)
   const [isTrialActive, setTrialActive] = useState(false)
   const [trialSelected, setTrialSelected] = useState(true)
+  const [ecSupportEnabled, setEcSupport] = useState(false)
   const [mspAdmins, setAdministrator] = useState([] as MspAdministrator[])
   const [mspIntegrator, setIntegrator] = useState([] as MspEc[])
   const [mspInstaller, setInstaller] = useState([] as MspEc[])
@@ -181,11 +186,20 @@ export function ManageCustomer () {
   const isEditMode = action === 'edit'
   const isTrialEditMode = action === 'edit' && status === 'Trial'
 
+  const { data: userProfile } = useGetUserProfileQuery({ params: useParams() })
+  const { data: licenseSummary } = useMspAssignmentSummaryQuery({ params: useParams() })
+  const { data: licenseAssignment } = useMspAssignmentHistoryQuery({ params: useParams() })
   const { data } = useGetMspEcQuery({ params: { mspEcTenantId } })
   // const { data: delegatedAdmins } = useGetMspEcDelegatedAdminsQuery({ params: { mspEcTenantId } })
   const { data: ecAdministrators } = useMspEcAdminListQuery({ params: { mspEcTenantId } })
-  const { data: licenseSummary } = useMspAssignmentSummaryQuery({ params: useParams() })
-  const { data: licenseAssignment } = useMspAssignmentHistoryQuery({ params: useParams() })
+  const { data: ecSupport } = useGetMspEcSupportQuery({ params: { mspEcTenantId } })
+  const [
+    enableMspEcSupport
+  ] = useEnableMspEcSupportMutation()
+
+  const [
+    disableMspEcSupport
+  ] = useDisableMspEcSupportMutation()
 
   useEffect(() => {
     if (licenseSummary) {
@@ -195,12 +209,18 @@ export function ManageCustomer () {
       checkAssignedLicense(licenseAssignment)
     }
 
+    if (isEditMode) {
+      if (ecAdministrators) {
+        setMspEcAdmins(ecAdministrators)
+      }
+      if (ecSupport && ecSupport.length > 0 ) {
+        setEcSupport(true)
+      }
     // if (delegatedAdmins) {
     //   setDelegateAdmins(delegatedAdmins)
     // }
-    if (ecAdministrators) {
-      setMspEcAdmins(ecAdministrators)
     }
+
     if (data) {
       formRef.current?.setFieldsValue({
         name: data?.name,
@@ -220,8 +240,20 @@ export function ManageCustomer () {
     if (!isEditMode) { // Add mode
       const initialAddress = isMapEnabled ? '' : defaultAddress.addressLine
       formRef.current?.setFieldValue(['address', 'addressLine'], initialAddress)
+      if (userProfile) {
+        const administrator = [] as MspAdministrator[]
+        administrator.push ({
+          id: userProfile.adminId,
+          lastName: userProfile.lastName,
+          name: userProfile.firstName,
+          email: userProfile.email,
+          role: userProfile.role as RolesEnum,
+          detailLevel: userProfile.detailLevel
+        })
+        setAdministrator(administrator)
+      }
     }
-  }, [data, licenseSummary, licenseAssignment, ecAdministrators, isMapEnabled])
+  }, [data, licenseSummary, licenseAssignment, ecSupport, userProfile, ecAdministrators])
   const [sameCountry, setSameCountry] = useState(true)
   const addressValidator = async (value: string) => {
     const isSameValue = value ===
@@ -231,6 +263,33 @@ export function ManageCustomer () {
         `${intl.$t({ defaultMessage: 'Address must be in ' })} `
       )
     }
+    return Promise.resolve()
+  }
+
+  const fieldValidator = async (value: string, remainingDevices: number) => {
+    const ecData = formRef.current?.getFieldsValue() as EcFormData
+    setSwitchLicense(ecData?.switchLicense)
+    setWifiLicense(ecData?.wifiLicense)
+    if(parseInt(value, 10) > remainingDevices || parseInt(value, 10) < 0) {
+      return Promise.reject(
+        `${intl.$t({ defaultMessage: 'Invalid number' })} `
+      )
+    }
+    return Promise.resolve()
+  }
+
+  const accountValidator = async () => {
+    const ecData = formRef.current?.getFieldsValue() as EcFormData
+    const admin = [] as MspAdministrator[]
+    admin.push ({
+      id: '1',
+      lastName: ecData.admin_lastname,
+      name: ecData.admin_firstname,
+      email: ecData.admin_email,
+      role: ecData.admin_role,
+      detailLevel: ''
+    })
+    setMspEcAdmins(admin)
     return Promise.resolve()
   }
 
@@ -254,6 +313,28 @@ export function ManageCustomer () {
       }])
       updateAddress(address)
     })
+  }
+
+  const ecSupportOnChange = (checked: boolean) => {
+    if (checked) {
+      enableMspEcSupport({ params: { mspEcTenantId: mspEcTenantId } })
+        .then(() => {
+          showToast({
+            type: 'success',
+            content: intl.$t({ defaultMessage: 'EC support enabled' })
+          })
+          setEcSupport(true)
+        })
+    } else {
+      disableMspEcSupport({ params: { mspEcTenantId: mspEcTenantId } })
+        .then(() => {
+          showToast({
+            type: 'success',
+            content: intl.$t({ defaultMessage: 'EC support disabled' })
+          })
+          setEcSupport(false)
+        })
+    }
   }
 
   const handleAddCustomer = async (values: EcFormData) => {
@@ -532,7 +613,7 @@ export function ManageCustomer () {
         name='admin_role'
         label={intl.$t({ defaultMessage: 'Role' })}
         style={{ width: '300px' }}
-        rules={[{ required: true }]}
+        rules={[{ required: true }, { validator: () => accountValidator() }]}
         initialValue={RolesEnum.PRIME_ADMIN}
         children={
           <Select>
@@ -566,9 +647,9 @@ export function ManageCustomer () {
           initialValue={0}
           rules={[
             { required: true },
-            { validator: (_, value) => excludeExclamationRegExp(value) }
+            { validator: (_, value) => fieldValidator(value, remainingDevices) }
           ]}
-          children={<Input/>}
+          children={<Input type='number'/>}
           style={{ paddingRight: '20px' }}
         />
         <label>devices out of {remainingDevices} available</label>
@@ -591,9 +672,9 @@ export function ManageCustomer () {
           initialValue={0}
           rules={[
             { required: true },
-            { validator: (_, value) => excludeExclamationRegExp(value) }
+            { validator: (_, value) => fieldValidator(value, remainingDevices) }
           ]}
-          children={<Input/>}
+          children={<Input type='number'/>}
           style={{ paddingRight: '20px' }}
         />
         <label>devices out of {remainingDevices} available</label>
@@ -606,7 +687,7 @@ export function ManageCustomer () {
       <div>
         <h4 style={{ display: 'inline-block', marginTop: '38px', marginRight: '25px' }}>
           {intl.$t({ defaultMessage: 'Enable access to RUCKUS One support' })}</h4>
-        <Switch /></div>
+        <Switch defaultChecked={ecSupportEnabled} onChange={ecSupportOnChange}/></div>
       <div><label>
         {intl.$t({ defaultMessage: 'If checked, Ruckus support team is granted a temporary' +
   ' administrator-level access for 21 days.' })}</label>
@@ -727,8 +808,8 @@ export function ManageCustomer () {
   const CustomerSubscription = () => {
     setSubscriptionStartDate(moment().format(dateFormat))
     if (trialSelected) {
-      setWifiLicense(25)
-      setSwitchLicense(25)
+      setWifiLicense(trialFreeLicense)
+      setSwitchLicense(trialFreeLicense)
       setSubscriptionEndDate(moment().add(30,'days').format(dateFormat))
     }
     return <>
@@ -826,10 +907,6 @@ export function ManageCustomer () {
   const CustomerSummary = () => {
     const intl = useIntl()
     const { Paragraph } = Typography
-    // if (formRef.current?.getFieldValue) {
-    //   const { admin_email, admin_firstname, admin_lastname, admin_role }
-    //   = formRef.current?.getFieldsValue()
-    // }
 
     return (
       <>
@@ -860,8 +937,6 @@ export function ManageCustomer () {
         >
           <Paragraph>{displayInstaller()}</Paragraph>
         </Form.Item>
-
-        {/* <Form.Item children={displayCustomerAdmins()} /> */}
 
         <Form.Item
           label={intl.$t({ defaultMessage: 'Customer Administrator Name' })}
@@ -921,32 +996,6 @@ export function ManageCustomer () {
       </h4>)
   }
 
-  const handleFormChange = (name: string) => {
-    if( name === 'accountDetail') {
-      const { admin_email, admin_firstname, admin_lastname, admin_role }
-        = formRef.current?.getFieldsValue()
-      if (admin_email && admin_firstname && admin_lastname && admin_role) {
-        const admin = [] as MspAdministrator[]
-        admin.push ({
-          id: '1',
-          lastName: admin_lastname,
-          name: admin_firstname,
-          email: admin_email,
-          role: admin_role,
-          detailLevel: ''
-        })
-        setMspEcAdmins(admin)
-      }
-    }
-    if( name === 'subscriptions') {
-      const { wifiLicense, switchLicense } = formRef.current?.getFieldsValue()
-      if (wifiLicense && switchLicense) {
-        setSwitchLicense(switchLicense)
-        setWifiLicense(wifiLicense)
-      }
-    }
-  }
-
   return (
     <>
       <PageHeader
@@ -964,7 +1013,6 @@ export function ManageCustomer () {
         formRef={formRef}
         onFinish={isEditMode ? handleEditCustomer : handleAddCustomer}
         onCancel={() => navigate(linkToCustomers)}
-        onFormChange={handleFormChange}
         buttonLabel={{ submit: isEditMode ?
           intl.$t({ defaultMessage: 'Save' }):
           intl.$t({ defaultMessage: 'Add Customer' }) }}

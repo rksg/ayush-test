@@ -93,6 +93,10 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/api/mspservice/tenant/:mspEcTenantId/delegatedmspadmins'
   },
+  getMspEcSupport: {
+    method: 'get',
+    url: '/api/mspservice/tenant/:mspEcTenantId/delegation/support'
+  },
   enableMspEcSupport: {
     method: 'post',
     url: '/api/mspservice/tenant/:mspEcTenantId/delegation/support'

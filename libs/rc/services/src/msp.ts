@@ -14,6 +14,7 @@ import {
   MspEc, EcDeviceInventory,
   MspEcData,
   MspEcDelegatedAdmins,
+  SupportDelegation,
   VarCustomer
 } from '@acx-ui/rc/utils'
 
@@ -223,6 +224,33 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    getMspEcSupport: build.query<SupportDelegation[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(MspUrlsInfo.getMspEcSupport, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    enableMspEcSupport: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(MspUrlsInfo.enableMspEcSupport, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    disableMspEcSupport: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(MspUrlsInfo.disableMspEcSupport, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
     })
   })
 })
@@ -246,5 +274,8 @@ export const {
   useGetMspEcQuery,
   useAssignMspEcToIntegratorMutation,
   useDeactivateMspEcMutation,
-  useReactivateMspEcMutation
+  useReactivateMspEcMutation,
+  useGetMspEcSupportQuery,
+  useEnableMspEcSupportMutation,
+  useDisableMspEcSupportMutation
 } = mspApi

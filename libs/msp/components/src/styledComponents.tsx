@@ -54,7 +54,7 @@ export const FieldLabelAdmins = styled.div<{ width: string }>`
 export const FieldLabelSubs = styled.div<{ width: string }>`
   font-size: var(--acx-body-4-font-size);
   display: grid;
-  grid-template-columns: 130px 80px 200px;
+  grid-template-columns: 130px 90px 200px;
   align-items: baseline;
 `
 export const FieldLabeServiceDate = styled.div<{ width: string }>`

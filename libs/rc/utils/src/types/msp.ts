@@ -268,3 +268,15 @@ export interface EcInvitation {
   admin_email: string;
   resend: boolean;
 }
+
+export interface SupportDelegation {
+  id: string;
+  type: string;
+  status: string;
+  createdDate: string;
+  delegatedBy: string;
+  delegatedTo: string;
+  delegatedToName: string;
+  expiryDate: string;
+  updatedDate: string;
+}
