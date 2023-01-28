@@ -468,7 +468,7 @@ export const {
   useUpdateAAAPolicyMutation,
   useAaaPolicyQuery,
   useAaaNetworkInstancesQuery,
-  useGetAAAProfileDetailQuery
+  useGetAAAProfileDetailQuery,
   useLazyGetMacRegListQuery,
   useUploadMacRegistrationMutation
 } = policyApi
