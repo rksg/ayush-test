@@ -1,8 +1,8 @@
 import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
+import { ReportType }                        from '@acx-ui/reports/components'
 import { Provider }                          from '@acx-ui/store'
 
-import { ReportType } from './mapping/reportsMapping'
-import { Report }     from './pages/Report'
+import { Report } from './pages/Report'
 
 const reports = {
   overview: <Report type={ReportType.OVERVIEW} showFilter={false} />,

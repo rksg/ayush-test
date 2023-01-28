@@ -1,14 +1,16 @@
 
 import { useEffect, useRef, useState } from 'react'
 
-import { DndProvider }     from 'react-dnd'
-import { HTML5Backend }    from 'react-dnd-html5-backend'
-import { Link, useParams } from 'react-router-dom'
+import { DndProvider }  from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
+import { Link }         from 'react-router-dom'
 
 import { NetworkDeviceMarker }                                                                   from '@acx-ui/rc/components'
 import { useApListQuery, useGetFloorPlanQuery }                                                  from '@acx-ui/rc/services'
 import { ApPosition, FloorplanContext, getImageFitPercentage, NetworkDevice, NetworkDeviceType } from '@acx-ui/rc/utils'
 import { useTenantLink }                                                                         from '@acx-ui/react-router-dom'
+
+import { useApContext } from '../../ApContext'
 
 export default function ApFloorplan (props: { activeDevice: NetworkDevice,
     venueId: string,
@@ -16,7 +18,7 @@ export default function ApFloorplan (props: { activeDevice: NetworkDevice,
 
   const { activeDevice, venueId, apPosition } = props
 
-  const params = useParams()
+  const params = useApContext()
   const imageRef = useRef<HTMLImageElement>(null)
   const imageContainerRef = useRef<HTMLDivElement>(null)
   const [imageLoaded, setImageLoaded] = useState<boolean>(false)

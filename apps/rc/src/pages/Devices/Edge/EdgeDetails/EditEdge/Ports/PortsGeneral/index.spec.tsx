@@ -232,6 +232,19 @@ describe('EditEdge ports - ports general', () => {
     await user.click(await screen.findByRole('radio', { name: 'Port 5' }))
     expect(screen.getByRole('textbox', { name: 'Port Name' })).toHaveValue('port2')
   })
+
+  it('should show no data string when ports data is empty', async () => {
+    render(
+      <Provider>
+        <PortsGeneral data={[]} />
+      </Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+        }
+      })
+    expect(screen.getByText('No data to display')).toBeVisible()
+  })
 })
 
 describe('EditEdge ports - ports general  api fail', () => {

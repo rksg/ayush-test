@@ -1,4 +1,6 @@
 /* eslint-disable max-len */
+import { useState } from 'react'
+
 import { Space, Badge } from 'antd'
 import { useIntl }      from 'react-intl'
 
@@ -8,7 +10,7 @@ import {
   Loader,
   deviceStatusColors
 } from '@acx-ui/components'
-import { useSwitchListQuery } from '@acx-ui/rc/services'
+import { useLazyGetJwtTokenQuery, useSwitchListQuery } from '@acx-ui/rc/services'
 import {
   getSwitchStatusString,
   SwitchRow,
@@ -16,10 +18,15 @@ import {
   getSwitchName,
   DeviceConnectionStatus,
   getStackMemberStatus,
-  usePollingTableQuery
+  usePollingTableQuery,
+  getFilters,
+  TableQuery,
+  RequestPayload,
+  SwitchStatusEnum
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
+import { SwitchCliSession } from '../SwitchCliSession'
 import { useSwitchActions } from '../useSwitchActions'
 
 export const SwitchStatus = (
@@ -42,24 +49,41 @@ const handleStatusColor = (status: DeviceConnectionStatus) => {
   return `var(${deviceStatusColors[status]})`
 }
 
-export function SwitchTable ({ showAllColumns } : {
-  showAllColumns?: boolean
+export const defaultSwitchPayload = {
+  fields: [
+    'check-all','name','deviceStatus','model','activeSerial','switchMac','ipAddress','venueName','uptime',
+    'clientCount','cog','id','serialNumber','isStack','formStacking','venueId','switchName','configReady',
+    'syncedSwitchConfig','syncDataId','operationalWarning','cliApplied','suspendingDeployTime'
+  ]
+}
+
+export function SwitchTable (props : {
+  showAllColumns?: boolean,
+  tableQuery?: TableQuery<SwitchRow, RequestPayload<unknown>, unknown>
 }) {
   const { $t } = useIntl()
   const params = useParams()
-  const tableQuery = usePollingTableQuery({
+  const inlineTableQuery = usePollingTableQuery({
     useQuery: useSwitchListQuery,
     defaultPayload: {
-      fields: [
-        'check-all','name','deviceStatus','model','activeSerial','switchMac','ipAddress','venueName','uptime',
-        'clientCount','cog','id','serialNumber','isStack','formStacking','venueId','switchName','configReady',
-        'syncedSwitchConfig','syncDataId','operationalWarning','cliApplied','suspendingDeployTime'
-      ]
-    }
+      filters: getFilters(params),
+      ...defaultSwitchPayload
+    },
+    option: { skip: Boolean(props.tableQuery) }
   })
+  const tableQuery = props.tableQuery || inlineTableQuery
+  const { showAllColumns } = props
 
   const switchAction = useSwitchActions()
   const tableData = tableQuery.data?.data ?? []
+
+  const [getJwtToken] = useLazyGetJwtTokenQuery()
+  const [cliModalState, setCliModalOpen] = useState(false)
+  const [cliData, setCliData] = useState({
+    token: '',
+    serialNumber: '',
+    switchName: ''
+  })
 
   const columns: TableProps<SwitchRow>['columns'] = [{
     key: 'name',
@@ -69,18 +93,14 @@ export function SwitchTable ({ showAllColumns } : {
     defaultSortOrder: 'ascend',
     disable: true,
     render: (data, row) => {
-      return <>
-        {
-          row.isFirstLevel ?
-            <TenantLink to={`/devices/switch/${row.id}/${row.serialNumber}/details/overview`}>
-              {getSwitchName(row)}
-            </TenantLink> :
-            <Space>
-              <>{getSwitchName(row)}</>
-              <span>({getStackMemberStatus(row.unitStatus || '', true)})</span>
-            </Space>
-        }
-      </>
+      return row.isFirstLevel ?
+        <TenantLink to={`/devices/switch/${row.id}/${row.serialNumber}/details/overview`}>
+          {getSwitchName(row)}
+        </TenantLink> :
+        <Space>
+          <>{getSwitchName(row)}</>
+          <span>({getStackMemberStatus(row.unitStatus || '', true)})</span>
+        </Space>
     }
   }, {
     key: 'deviceStatus',
@@ -161,9 +181,16 @@ export function SwitchTable ({ showAllColumns } : {
   }, {
     label: $t({ defaultMessage: 'CLI Session' }),
     visible: (rows) => isActionVisible(rows, { selectOne: true }),
-    disabled: true,
-    onClick: () => {
-      // TODO:
+    disabled: (rows) => {
+      const row = rows[0]
+      return row.deviceStatus !== SwitchStatusEnum.OPERATIONAL
+    },
+    onClick: async (rows) => {
+      const row = rows[0]
+      const token = (await getJwtToken({ params: { tenantId: params.tenantId, serialNumber: row.serialNumber } }, true)
+        .unwrap()).access_token || ''
+      setCliData({ token, switchName: row.switchName || row.name || row.serialNumber, serialNumber: row.serialNumber })
+      setCliModalOpen(true)
     }
   }, {
     label: $t({ defaultMessage: 'Stack Switches' }),
@@ -197,6 +224,13 @@ export function SwitchTable ({ showAllColumns } : {
             : null
         }
       }}
+    />
+    <SwitchCliSession
+      modalState={cliModalState}
+      setIsModalOpen={setCliModalOpen}
+      serialNumber={cliData.serialNumber}
+      jwtToken={cliData.token}
+      switchName={cliData.switchName}
     />
   </Loader>
 }
