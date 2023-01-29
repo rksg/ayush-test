@@ -12,10 +12,7 @@ const list = {
     {
       id: 'efce7414-1c78-4312-ad5b-ae03f28dbc68',
       name: 'Registration pool-1',
-      description: '',
       autoCleanup: true,
-      priority: 1,
-      ssidRegex: 'mac-auth-1',
       enabled: true,
       expirationEnabled: false,
       registrationCount: 5
@@ -23,10 +20,7 @@ const list = {
     {
       id: 'efce7414-1c78-4312-ad5b-ae03f28dbc67',
       name: 'Registration pool-2',
-      description: '',
       autoCleanup: true,
-      priority: 1,
-      ssidRegex: 'mac-auth-2',
       enabled: true,
       expirationEnabled: true,
       expirationDate: '2022-11-02T06:59:59Z',
@@ -38,8 +32,6 @@ const list = {
       name: 'Registration pool-3',
       description: '',
       autoCleanup: true,
-      priority: 1,
-      ssidRegex: 'mac-auth-3',
       enabled: true,
       expirationEnabled: true,
       expirationType: ExpirationType.DAYS_AFTER_TIME,
@@ -112,7 +104,7 @@ describe('MacRegistrationListsTable', () => {
     fireEvent.change(screen.getByRole('textbox', { name: /type the word "delete" to confirm:/i }),
       { target: { value: 'Delete' } })
 
-    const deleteListsButton = await screen.findByText('Delete Lists')
+    const deleteListsButton = await screen.findByText('Delete List')
     expect(deleteListsButton).toBeInTheDocument()
     fireEvent.click(deleteListsButton)
   })
