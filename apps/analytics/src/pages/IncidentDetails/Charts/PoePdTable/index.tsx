@@ -22,7 +22,7 @@ export function PoePdTable (props: ChartProps) {
       dataIndex: 'name',
       key: 'name',
       render: (_, { mac, serial, name }, __, highlightFn) => isSwitchEnabled
-        ? <TenantLink to={`devices/switch/${mac}/${serial}/details/overview`}>
+        ? <TenantLink to={`devices/switch/${mac.toLowerCase()}/${serial}/details/overview`}>
           {highlightFn(name)}
         </TenantLink>
         : <Tooltip title={$t(notAvailableMsg)}>{highlightFn(name)}</Tooltip>,

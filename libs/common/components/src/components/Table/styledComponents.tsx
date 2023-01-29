@@ -56,22 +56,6 @@ export const CloseButton = styled(Button).attrs({ icon: <CancelCircle /> })`
   }
 `
 
-export const ActionButton = styled.button.attrs({ type: 'button' })`
-  border: none;
-  box-shadow: none;
-  padding: 0 6px;
-  font-size: var(--acx-subtitle-5-font-size);
-  line-height: var(--acx-subtitle-5-line-height);
-  font-weight: var(--acx-subtitle-5-font-weight-semi-bold);
-  background-color: transparent;
-  color: var(--acx-accents-blue-50);
-  cursor: pointer;
-  &[disabled] {
-    color: var(--acx-neutrals-50);
-    cursor: not-allowed;
-  }
-`
-
 export const TableSettingTitle = styled(Subtitle).attrs({ level: 5 })`
   position: absolute;
   left: 24px;

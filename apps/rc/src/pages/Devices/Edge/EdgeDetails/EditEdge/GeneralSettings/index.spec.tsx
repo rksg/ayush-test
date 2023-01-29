@@ -55,7 +55,7 @@ describe('EditEdge general settings', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 
-  it('should be blcoked when required field is empty', async () => {
+  it('should be blocked when required field is empty', async () => {
     const user = userEvent.setup()
     render(
       <Provider>

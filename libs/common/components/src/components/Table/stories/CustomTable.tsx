@@ -66,18 +66,29 @@ const customData = [
   }
 ]
 
+const rowActions: TableProps<(typeof customData)[0]>['rowActions'] = [{
+  label: 'Delete',
+  disabled: (rows) => rows.length > 1,
+  onClick: () => {}
+}]
+
 export function CustomTable () {
   return (<>
     Customizations
     <Table
       columns={customColumns}
       dataSource={customData}
+      rowActions={rowActions}
+      rowSelection={{
+        type: 'checkbox'
+      }}
       actions={[{
         label: 'Add Item',
         onClick: () => showToast({ type: 'info', content: 'Add Item Clicked' })
       }, {
         label: 'Add Other Item',
         disabled: true,
+        tooltip: 'test tooltip',
         onClick: () => showToast({ type: 'info', content: 'Add Other Item Clicked' })
       }, {
         label: 'Open Dropdown',

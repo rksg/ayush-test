@@ -3,7 +3,7 @@ import { useState } from 'react'
 
 import userEvent from '@testing-library/user-event'
 
-import { render, fireEvent, screen, within, mockDOMSize, findTBody } from '@acx-ui/test-utils'
+import { render, fireEvent, screen, within, mockDOMSize, findTBody, waitFor } from '@acx-ui/test-utils'
 
 import { columns as filteredColumns, data as filteredData } from './stories/FilteredTable'
 
@@ -62,6 +62,40 @@ describe('Table component', () => {
       dataSource={testData}
     />)
     expect(asFragment()).toMatchSnapshot()
+  })
+
+  it('should only render pagination when total items exceeds default page size', async () => {
+    const props: TableProps<TestRow> = {
+      columns: testColumns,
+      dataSource: testData,
+      pagination: { total: 11 }
+    }
+    const { rerender } = render(<Table {...props} />)
+    const pagination = await screen.findByRole('listitem', { name: /1/i })
+    expect(pagination).toBeVisible()
+
+    rerender(<Table {...props} pagination={{ total: 9 }} />)
+    expect(screen.queryByRole('listitem', { name: /1/i })).toBeNull()
+  })
+
+  it('should only render pagination when dataSource length exceeds default page size', async () => {
+    const props: TableProps<TestRow> = {
+      columns: testColumns,
+      dataSource: testData,
+      pagination: { defaultPageSize: 2 }
+    }
+    const { rerender } = render(<Table {...props} />)
+    const pagination = await screen.findByRole('listitem', { name: /1/i })
+    expect(pagination).toBeVisible()
+
+    rerender(<Table {...props} pagination={{ defaultPageSize: 10 }} />)
+    expect(screen.queryByRole('listitem', { name: /1/i })).toBeNull()
+  })
+
+  it('should not render pagination when dataSource is undefined', async () => {
+    const props: TableProps<TestRow> = { columns: testColumns }
+    render(<Table {...props} />)
+    expect(screen.queryByRole('listitem', { name: /1/i })).toBeNull()
   })
 
   it('renders compact table', () => {
@@ -443,7 +477,7 @@ describe('Table component', () => {
   it('renders disabled action items', async () => {
     const actions = [
       { label: 'Action 1', disabled: true, onClick: jest.fn() },
-      { label: 'Action 2', disabled: true, onClick: jest.fn() }
+      { label: 'Action 2', disabled: true, tooltip: 'can not action', onClick: jest.fn() }
     ]
 
     render(<Table
@@ -455,6 +489,11 @@ describe('Table component', () => {
     const action1 = await screen.findByRole('button', { name: actions[0].label })
     expect(action1).toBeVisible()
     expect(actions[0].onClick).not.toBeCalled()
+    const action2 = await screen.findByRole('button', { name: actions[1].label })
+    fireEvent.mouseOver(action2)
+    await waitFor(() => {
+      expect(screen.getByRole('tooltip').textContent).toBe('can not action')
+    })
   })
 
   it('hides rowAction when visible == false', async () => {
@@ -510,10 +549,12 @@ describe('Table component', () => {
   })
 
   it('disabled row action button and add tooltip', async () => {
-    const [onEdit, onDelete] = [jest.fn(), jest.fn()]
+    const [onEdit, onDelete, onBackup] = [jest.fn(), jest.fn(), jest.fn()]
     const rowActions: TableProps<TestRow>['rowActions'] = [
       { label: 'Edit', onClick: onEdit },
-      { label: 'Delete', onClick: onDelete, disabled: true, tooltip: 'can not delete' }
+      { label: 'Delete', onClick: onDelete, disabled: true, tooltip: 'can not delete' },
+      { label: 'Backup', onClick: onBackup,
+        disabled: (rows) => rows.length !== 1, tooltip: 'can not backup' }
     ]
 
     render(<Table
@@ -527,6 +568,11 @@ describe('Table component', () => {
     fireEvent.click(within(row1).getByRole('checkbox'))
     const deleteButton = screen.getByRole('button', { name: /delete/i })
     expect(deleteButton).toBeDisabled()
+    const backupButton = screen.getByRole('button', { name: /backup/i })
+    expect(backupButton).not.toBeDisabled()
+    const row2 = await screen.findByRole('row', { name: /jane/i })
+    fireEvent.click(within(row2).getByRole('checkbox'))
+    expect(backupButton).toBeDisabled()
   })
 
   it('add row action button tooltip', async () => {
@@ -570,7 +616,7 @@ describe('Table component', () => {
       expect(await screen.findAllByText('Jordan')).toHaveLength(1)
 
       const buttons = await screen.findAllByRole('button')
-      expect(buttons).toHaveLength(6)
+      expect(buttons).toHaveLength(4)
       fireEvent.click(buttons[2])
       fireEvent.click(buttons[3])
       expect(await screen.findAllByText('Edna')).toHaveLength(3)

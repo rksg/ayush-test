@@ -20,7 +20,7 @@ import {
   VarCustomer,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { getBasePath, Link, TenantLink } from '@acx-ui/react-router-dom'
 
 
 const transformApUtilization = (row: VarCustomer) => {
@@ -74,9 +74,10 @@ export function VarCustomers () {
       searchable: true,
       sorter: true,
       defaultSortOrder: 'ascend' as SortOrder,
-      render: function (data, _, __, highlightFn) {
+      render: function (data, row, _, highlightFn) {
+        const to = `${getBasePath()}/t/${row.id}`
         return (
-          <TenantLink to={''}>{highlightFn(data as string)}</TenantLink>
+          <Link to={to}>{highlightFn(data as string)}</Link>
         )
       }
     },
@@ -91,7 +92,6 @@ export function VarCustomers () {
       dataIndex: 'alarmCount',
       key: 'alarmCount',
       sorter: true,
-      align: 'center',
       render: function (data) {
         return (
           <TenantLink to={''}>{data}</TenantLink>
@@ -103,7 +103,6 @@ export function VarCustomers () {
       dataIndex: 'activeIncindents',
       key: 'activeIncindents',
       sorter: true,
-      align: 'center',
       render: function () {
         return 0
       }
@@ -112,15 +111,13 @@ export function VarCustomers () {
       title: $t({ defaultMessage: 'Wi-Fi Licenses' }),
       dataIndex: 'wifiLicenses',
       key: 'wifiLicenses',
-      sorter: true,
-      align: 'center'
+      sorter: true
     },
     {
       title: $t({ defaultMessage: 'Wi-Fi Licenses Utilization' }),
       dataIndex: 'wifiLicensesUtilization',
       key: 'wifiLicensesUtilization',
       sorter: true,
-      align: 'center',
       render: function (data, row) {
         return transformApUtilization(row)
       }
@@ -129,15 +126,13 @@ export function VarCustomers () {
       title: $t({ defaultMessage: 'Switch Licenses' }),
       dataIndex: 'switchLicenses',
       key: 'switchLicenses',
-      sorter: true,
-      align: 'center'
+      sorter: true
     },
     {
       title: $t({ defaultMessage: 'Next License Expiration' }),
       dataIndex: 'expirationDate',
       key: 'expirationDate',
       sorter: true,
-      align: 'center',
       render: function (data, row) {
         return transformNextExpirationDate(row)
       }

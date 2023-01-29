@@ -10,9 +10,14 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Tooltip }                                                                              from '@acx-ui/components'
-import { DnsProxyRule, DnsProxyContextType, WifiCallingSettingContextType, WifiCallingSetting } from '@acx-ui/rc/utils'
-import { notAvailableMsg }                                                                      from '@acx-ui/utils'
+import { Tooltip }     from '@acx-ui/components'
+import {
+  DnsProxyRule,
+  DnsProxyContextType,
+  WifiCallingSettingContextType,
+  WifiCallingSetting
+} from '@acx-ui/rc/utils'
+import { notAvailableMsg } from '@acx-ui/utils'
 
 import NetworkFormContext from '../NetworkFormContext'
 
@@ -137,6 +142,15 @@ export function ServicesForm () {
 
   const [wifiCallingSettingList, setWifiCallingSettingList] = useState([] as WifiCallingSetting[])
 
+  const validateWifiCallingSetting = () => {
+    if (enableWifiCalling && wifiCallingSettingList.length === 0) {
+      return Promise.reject($t({
+        defaultMessage: 'Could not enable wifi-calling with no profiles selected'
+      }))
+    }
+    return Promise.resolve()
+  }
+
   return (
     <>
       <UI.FieldLabel width='125px'>
@@ -179,6 +193,9 @@ export function ServicesForm () {
             <Form.Item
               name={['wlan', 'advancedCustomization', 'wifiCallingIds']}
               initialValue={wifiCallingSettingList}
+              rules={[
+                { validator: () => validateWifiCallingSetting() }
+              ]}
             >
               {enableWifiCalling && <WifiCallingSettingModal />}
               {enableWifiCalling && <WifiCallingSettingTable />}
