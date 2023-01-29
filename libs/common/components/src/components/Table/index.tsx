@@ -285,27 +285,29 @@ function Table <RecordType extends Record<string, any>> ({
 
   const columnRender = (col: ColumnType<RecordType> | ColumnGroupType<RecordType, 'text'>) => ({
     ...col,
-    render: ((dom, entity, index, action, schema) => {
-      const highlightFn = (
-        textToHighlight: string,
-        formatFn?: (keyword: string) => React.ReactNode
-      ) =>
-        (col.searchable && searchValue && textToHighlight)
-          ? formatFn
-            ? textToHighlight.replace(
-              new RegExp( searchValue, 'ig' ), formatFn('$&') as string)
-            : <Highlighter
-              highlightStyle={{
-                fontWeight: 'bold', background: 'none', padding: 0, color: 'inherit' }}
-              searchWords={[searchValue]}
-              textToHighlight={textToHighlight}
-              autoEscape
-            />
-          : textToHighlight
-      return col.render
-        ? col.render(dom, entity, index, highlightFn, action, schema)
-        : highlightFn(entity[col.dataIndex as keyof RecordType] as unknown as string)
-    }) as ProColumnType<RecordType, 'text'>['render']
+    ...( col.searchable && {
+      render: ((dom, entity, index, action, schema) => {
+        const highlightFn = (
+          textToHighlight: string,
+          formatFn?: (keyword: string) => React.ReactNode
+        ) =>
+          (searchValue && textToHighlight)
+            ? formatFn
+              ? textToHighlight.replace(
+                new RegExp( searchValue, 'ig' ), formatFn('$&') as string)
+              : <Highlighter
+                highlightStyle={{
+                  fontWeight: 'bold', background: 'none', padding: 0, color: 'inherit' }}
+                searchWords={[searchValue]}
+                textToHighlight={textToHighlight}
+                autoEscape
+              />
+            : textToHighlight
+        return col.render
+          ? col.render(dom, entity, index, highlightFn, action, schema)
+          : highlightFn(_.get(entity, col.dataIndex))
+      }) as ProColumnType<RecordType, 'text'>['render']
+    })
   })
 
   const finalColumns = columns.map(column => ({
