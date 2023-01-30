@@ -42,14 +42,14 @@ import {
   multipleConflictMessage,
   radiusErrorMessage
 } from './contentsMap'
-import { NetworkDetailForm }         from './NetworkDetail/NetworkDetailForm'
-import NetworkFormContext            from './NetworkFormContext'
-import { NetworkMoreSettingsForm }   from './NetworkMoreSettings/NetworkMoreSettingsForm'
-import { AaaSettingsForm }           from './NetworkSettings/AaaSettingsForm'
-import { DpskSettingsForm }          from './NetworkSettings/DpskSettingsForm'
-import { OpenSettingsForm }          from './NetworkSettings/OpenSettingsForm'
-import { PskSettingsForm }           from './NetworkSettings/PskSettingsForm'
-import { SummaryForm }               from './NetworkSummary/SummaryForm'
+import { NetworkDetailForm }       from './NetworkDetail/NetworkDetailForm'
+import NetworkFormContext          from './NetworkFormContext'
+import { NetworkMoreSettingsForm } from './NetworkMoreSettings/NetworkMoreSettingsForm'
+import { AaaSettingsForm }         from './NetworkSettings/AaaSettingsForm'
+import { DpskSettingsForm }        from './NetworkSettings/DpskSettingsForm'
+import { OpenSettingsForm }        from './NetworkSettings/OpenSettingsForm'
+import { PskSettingsForm }         from './NetworkSettings/PskSettingsForm'
+import { SummaryForm }             from './NetworkSummary/SummaryForm'
 import {
   transferDetailToSave,
   tranferSettingsToSave,
