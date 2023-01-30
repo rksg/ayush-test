@@ -4,11 +4,6 @@ import {
 } from '@reduxjs/toolkit/query/react'
 
 
-import { FacilityEnum }       from '../../utils/src/models/FacilityEnum'
-import { FlowLevelEnum }      from '../../utils/src/models/FlowLevelEnum'
-import { PriorityEnum }       from '../../utils/src/models/PriorityEnum'
-import { ProtocolEnum }       from '../../utils/src/models/ProtocolEnum'
-
 import {
   createHttpRequest,
   MacRegistration,
