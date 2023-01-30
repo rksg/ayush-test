@@ -13,8 +13,7 @@ const macRegList = {
   enabled: true,
   expirationEnabled: false,
   name: 'Registration pool',
-  priority: 1,
-  ssidRegex: 'mac-auth'
+  defaultAccess: 'ACCEPT'
 }
 
 const networkList = {
@@ -88,7 +87,7 @@ describe('MacRegistrationListDetails', () => {
 
     expect(await screen.findByText('Never expires')).toBeVisible()
     expect(await screen.findByText('Yes')).toBeVisible()
-    expect(await screen.findByText('Access')).toBeVisible()
+    expect(await screen.findByText('ACCEPT')).toBeVisible()
   })
 
   it('should not have active tab if it does not exist', async () => {
