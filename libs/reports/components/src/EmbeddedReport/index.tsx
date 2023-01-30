@@ -14,10 +14,11 @@ import { useDateFilter, convertDateTimeToSqlFormat }                       from 
 interface ReportProps {
   embedDashboardName: string
   rlsClause?: string
+  hideTitle?: boolean
 }
 
 export function EmbeddedReport (props: ReportProps) {
-  const { embedDashboardName, rlsClause } = props
+  const { embedDashboardName, rlsClause, hideTitle } = props
   const [ guestToken ] = useGuestTokenMutation()
   const [ embeddedId ] = useEmbeddedIdMutation()
   const { startDate, endDate } = useDateFilter()
@@ -83,7 +84,8 @@ export function EmbeddedReport (props: ReportProps) {
         supersetDomain: `${HOST_NAME}${BASE_RELATIVE_URL}`,
         mountPoint: document.getElementById('acx-report')!,
         fetchGuestToken: () => fetchGuestTokenFromBackend(),
-        dashboardUiConfig: { hideChartControls: true, hideTitle: false }
+        dashboardUiConfig: { hideChartControls: true,
+          hideTitle: hideTitle === false ? hideTitle : true }
         // debug: true
       })
       embeddedObj.then( async embObj =>{
