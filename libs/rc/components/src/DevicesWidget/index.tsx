@@ -15,7 +15,11 @@ export function DevicesWidget (props: {
   const onArrowClick = useNavigateToPath('/devices/')
 
   const edgeSupported = useIsSplitOn(Features.EDGES)
-  const numDonut = edgeSupported ? 3 : 2
+
+  let numDonut = 2
+  if (edgeSupported) {
+    numDonut++
+  }
 
   return (
     <Card title={$t({ defaultMessage: 'Devices' })}
