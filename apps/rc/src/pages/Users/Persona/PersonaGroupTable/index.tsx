@@ -166,6 +166,10 @@ export function PersonaGroupTable () {
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
+      disabled: (([selectedItem]) =>
+        (selectedItem && selectedItem.personaCount)
+          ? selectedItem.personaCount > 0 : false
+      ),
       onClick: ([{ name, id }], clearSelection) => {
         showActionModal({
           type: 'confirm',

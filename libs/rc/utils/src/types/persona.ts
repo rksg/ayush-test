@@ -10,7 +10,8 @@ export interface PersonaGroup {
   nsgId?: string,
   createdAt?: string,
   updatedAt?: string,
-  personas?: Persona[]
+  personas?: Persona[],
+  personaCount?: number
 }
 
 export interface Persona {
