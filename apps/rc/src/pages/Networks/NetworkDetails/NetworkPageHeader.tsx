@@ -22,7 +22,7 @@ function NetworkPageHeader () {
           {$t({ defaultMessage: 'All Active Venues' })}<ArrowExpand /></DisabledButton>,
         <DisabledButton key='date-filter' icon={<ClockOutlined />}>
           {$t({ defaultMessage: 'Last 24 Hours' })}</DisabledButton>,
-        <TenantLink to={`/networks/${networkId}/edit`} key='edit'>
+        <TenantLink to={`/networks/wireless/${networkId}/edit`} key='edit'>
           <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
         </TenantLink>
       ]}
