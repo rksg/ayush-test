@@ -4,10 +4,10 @@ import { Progress, Switch } from 'antd'
 import { useIntl }          from 'react-intl'
 
 import { Loader, Table, TableProps } from '@acx-ui/components'
-import { EdgeDhcpPool }              from '@acx-ui/rc/utils'
+import { EdgeDhcpPoolInformation }   from '@acx-ui/rc/utils'
 
 export const useMockData = () => {
-  const [data, setData] = useState<EdgeDhcpPool[]>()
+  const [data, setData] = useState<EdgeDhcpPoolInformation[]>()
   const [isLoading, setIsloading] = useState(true)
 
   useEffect(() => {
@@ -40,7 +40,7 @@ const Pools = () => {
   const { $t } = useIntl()
   const { data, isLoading } = useMockData()
 
-  const columns: TableProps<EdgeDhcpPool>['columns'] = [
+  const columns: TableProps<EdgeDhcpPoolInformation>['columns'] = [
     {
       title: $t({ defaultMessage: 'Pool' }),
       key: 'name',

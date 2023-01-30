@@ -105,7 +105,7 @@ export interface EdgePortStatus {
   sortIdx: number
 }
 
-export interface EdgeDhcpPool {
+export interface EdgeDhcpPoolInformation {
   name: string
   subnetMask: string
   range: string
