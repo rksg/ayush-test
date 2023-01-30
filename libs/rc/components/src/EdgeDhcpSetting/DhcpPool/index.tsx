@@ -14,8 +14,11 @@ import { getIntl, validationMessages } from '@acx-ui/utils'
 
 import { PoolTable } from './PoolTable'
 
+const initPoolData: Partial<EdgeDhcpPool> = {
+  id: '0'
+}
 
-type DHCPPoolTableProps = {
+type DhcpPoolTableProps = {
   value?: EdgeDhcpPool[]
   onChange?: (data: EdgeDhcpPool[]) => void
 }
@@ -38,10 +41,10 @@ async function nameValidator (
 }
 
 
-export default function DHCPPoolTable ({
+export default function DhcpPoolTable ({
   value,
   onChange
-}: DHCPPoolTableProps) {
+}: DhcpPoolTableProps) {
   const { $t } = useIntl()
   const [form] = Form.useForm<EdgeDhcpPool>()
   const valueMap = useRef<Record<string, EdgeDhcpPool>>(value ? _.keyBy(value, 'id') : {})
@@ -66,6 +69,7 @@ export default function DHCPPoolTable ({
 
   const onSubmit = (data: EdgeDhcpPool) => {
     let id = data.id
+    if (id === initPoolData.id) { id = data.id = '_NEW_'+String(Date.now()) }
     valueMap.current[id] = data
     handleChanged()
     form.resetFields()
@@ -81,6 +85,7 @@ export default function DHCPPoolTable ({
     form={form}
     layout='vertical'
     onFinish={onSubmit}
+    initialValues={initPoolData}
   >
     <Form.Item name='id' hidden />
 
@@ -94,7 +99,7 @@ export default function DHCPPoolTable ({
             { min: 2 },
             { max: 32 },
             { validator: (_, value) => nameValidator(value, values(), form.getFieldValue('id')) }
-          ]}
+          ]} 
           validateFirst
           hasFeedback
           children={<Input />}
@@ -115,7 +120,6 @@ export default function DHCPPoolTable ({
             { required: true },
             { validator: (_, value) => networkWifiIpRegExp(value) }
           ]}
-          // children={<Space><Input /> -  <Input /></Space>}
           children={<Input />}
         />
         <Form.Item

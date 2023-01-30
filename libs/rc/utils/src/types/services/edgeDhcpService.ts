@@ -20,7 +20,6 @@ export enum LeaseTimeUnit {
 
 export interface EdgeDhcpPool {
     id: string;
-    poolIndex: number;
     poolName: string;
     subnetMask: string;
     poolStartIp: string;
@@ -31,7 +30,6 @@ export interface EdgeDhcpPool {
 
 export interface EdgeDhcpHost {
     id: string;
-    hostIndex: number;
     hostName: string;
     mac: string;
     fixedAddress: string;

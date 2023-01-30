@@ -1,19 +1,19 @@
 import { Form, Input, Switch, Row, Col, InputNumber, Space, Select } from 'antd'
-import { useIntl }                       from 'react-intl'
+import { useIntl }                                                   from 'react-intl'
 
 import { Subtitle, Alert, StepsForm } from '@acx-ui/components'
-import { ToggleButton }                          from '@acx-ui/rc/components'
-
-import DHCPHostTable from './DHCPHost'
-import DHCPPoolTable from './DHCPPool'
+import { ToggleButton }               from '@acx-ui/rc/components'
 import {
   EdgeDhcpSetting,
   LeaseTimeUnit } from '@acx-ui/rc/utils'
 
+import DHCPHostTable from './DhcpHost'
+import DHCPPoolTable from './DhcpPool'
+
 const { useWatch } = Form
 const { Option } = Select
 
-export const EdgeDHCPSettingForm = () => {
+export const EdgeDhcpSettingForm = () => {
 
   const { $t } = useIntl()
   const [
@@ -25,7 +25,7 @@ export const EdgeDHCPSettingForm = () => {
   ]
   const initDhcpData: Partial<EdgeDhcpSetting> = {
     leaseTime: 24,
-    leaseTimeUnit: LeaseTimeUnit.HOURS,
+    leaseTimeUnit: LeaseTimeUnit.HOURS
   }
 
   return (
@@ -88,35 +88,36 @@ export const EdgeDHCPSettingForm = () => {
           </Form.Item>
           {enableSecondaryDNSServer &&
               <Form.Item
-                  name='secondaryDnsServer'
-                  label={$t({ defaultMessage: 'Secondary DNS Server' })}
-                  children={<Input />}
-                />
-            }
-            <Form.Item label={$t({ defaultMessage: 'Lease Time' })}>
-              <Space align='start'>
-                <Form.Item
-                  noStyle
-                  name='leaseTime'
-                  label={$t({ defaultMessage: 'Lease Time' })}
-                  rules={[
-                    { required: true }
-                  ]}
-                  initialValue= {initDhcpData.leaseTime}
-                >
-                <InputNumber data-testid='leaseTime' min={1} max={1440} style={{ width: '100%' }} />
-                </Form.Item>
-                <Form.Item noStyle name='leaseTimeUnit'>
-                  <Select 
-                    defaultValue = {initDhcpData.leaseTimeUnit}
-                    >
-                    <Option value={'DAYS'}>{$t({ defaultMessage: 'Days' })}</Option>
-                    <Option value={'HOURS'}>{$t({ defaultMessage: 'Hours' })}</Option>
-                    <Option value={'MINUTES'}>{$t({ defaultMessage: 'Minutes' })}</Option>
-                  </Select>
-                </Form.Item>
-              </Space>
-            </Form.Item>
+                name='secondaryDnsServer'
+                label={$t({ defaultMessage: 'Secondary DNS Server' })}
+                children={<Input />}
+              />
+          }
+          <Form.Item label={$t({ defaultMessage: 'Lease Time' })}>
+            <Space align='start'>
+              <Form.Item
+                noStyle
+                name='leaseTime'
+                label={$t({ defaultMessage: 'Lease Time' })}
+                rules={[
+                  { required: true }
+                ]}
+                initialValue={initDhcpData.leaseTime}
+              >
+                <InputNumber min={1} max={1440} style={{ width: '100%' }} />
+              </Form.Item>
+              <Form.Item
+                noStyle
+                name='leaseTimeUnit'
+                initialValue={initDhcpData.leaseTimeUnit}>
+                <Select >
+                  <Option value={'DAYS'}>{$t({ defaultMessage: 'Days' })}</Option>
+                  <Option value={'HOURS'}>{$t({ defaultMessage: 'Hours' })}</Option>
+                  <Option value={'MINUTES'}>{$t({ defaultMessage: 'Minutes' })}</Option>
+                </Select>
+              </Form.Item>
+            </Space>
+          </Form.Item>
         </Col>
       </Row>
 

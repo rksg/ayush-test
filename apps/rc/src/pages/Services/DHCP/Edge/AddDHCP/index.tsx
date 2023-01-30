@@ -7,12 +7,12 @@ import {
   StepsFormInstance
 } from '@acx-ui/components'
 import {
-  EdgeDHCPSettingForm
+  EdgeDhcpSettingForm
 } from '@acx-ui/rc/components'
 import { useAddEdgeDhcpServiceMutation } from '@acx-ui/rc/services'
 import { EdgeDhcpSetting }               from '@acx-ui/rc/utils'
 
-const AddDHCP = () => {
+const AddDhcp = () => {
 
   const { $t } = useIntl()
   const formRef = useRef<StepsFormInstance<EdgeDhcpSetting>>()
@@ -44,11 +44,11 @@ const AddDHCP = () => {
         buttonLabel={{ submit: $t({ defaultMessage: 'Add' }) }}
       >
         <StepsForm.StepForm>
-          <EdgeDHCPSettingForm />
+          <EdgeDhcpSettingForm />
         </StepsForm.StepForm>
       </StepsForm>
     </>
   )
 }
 
-export default AddDHCP
+export default AddDhcp

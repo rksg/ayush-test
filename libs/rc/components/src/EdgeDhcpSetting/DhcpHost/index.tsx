@@ -13,6 +13,9 @@ import { getIntl, validationMessages } from '@acx-ui/utils'
 
 import { HostTable } from './HostTable'
 
+const initPoolData: Partial<EdgeDhcpHost> = {
+  id: '0'
+}
 
 type DhcpHostTableProps = {
   value?: EdgeDhcpHost[]
@@ -65,6 +68,7 @@ export default function DHCPHostTable ({
 
   const onSubmit = (data: EdgeDhcpHost) => {
     let id = data.id
+    if (id === initPoolData.id) { id = data.id = '_NEW_'+String(Date.now()) }
     valueMap.current[id] = data
     handleChanged()
     form.resetFields()
@@ -80,6 +84,7 @@ export default function DHCPHostTable ({
     form={form}
     layout='vertical'
     onFinish={onSubmit}
+    initialValues={initPoolData}
   >
     <Form.Item name='id' hidden />
 

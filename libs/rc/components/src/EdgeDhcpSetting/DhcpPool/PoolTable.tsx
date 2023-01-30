@@ -1,6 +1,5 @@
 import { useState } from 'react'
 
-import _                          from 'lodash'
 import { useIntl, defineMessage } from 'react-intl'
 
 import {
@@ -43,9 +42,9 @@ export function PoolTable (props:{
 
   const columns: TableProps<EdgeDhcpPool>['columns'] = [
     {
-      key: 'name',
+      key: 'poolName',
       title: $t({ defaultMessage: 'Pool Name' }),
-      dataIndex: 'name',
+      dataIndex: 'poolName',
       sorter: true
     },
     {
@@ -55,9 +54,15 @@ export function PoolTable (props:{
       sorter: true
     },
     {
-      key: 'poolRange',
-      title: $t({ defaultMessage: 'Pool Range' }),
-      dataIndex: 'poolRange',
+      key: 'poolStartIp',
+      title: $t({ defaultMessage: 'Pool Start IP' }),
+      dataIndex: 'poolStartIp',
+      sorter: true
+    },
+    {
+      key: 'poolEndIp',
+      title: $t({ defaultMessage: 'Pool End IP' }),
+      dataIndex: 'poolEndIp',
       sorter: true
     },
     {
