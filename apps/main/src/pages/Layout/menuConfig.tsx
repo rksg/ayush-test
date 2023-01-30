@@ -173,7 +173,7 @@ export function useMenuConfig () {
       activeIcon: NetworksSolid
     },
     {
-      path: getServiceListRoutePath(true),
+      path: '/services',
       name: $t({ defaultMessage: 'Services' }),
       inactiveIcon: ServicesOutlined,
       activeIcon: ServicesSolid,

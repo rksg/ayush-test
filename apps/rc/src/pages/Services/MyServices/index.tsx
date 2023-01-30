@@ -1,6 +1,6 @@
 import { useIntl } from 'react-intl'
 
-import { Button, GridCol, PageHeader, RadioCardCategory } from '@acx-ui/components'
+import { Button, GridCol, GridRow, PageHeader, RadioCardCategory } from '@acx-ui/components'
 import {
   useGetDpskListQuery,
   useGetPortalProfileListQuery,
@@ -13,8 +13,6 @@ import {
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
 import { ServiceCard } from '../ServiceCard'
-
-import * as UI from './styledComponents'
 
 const defaultPayload = {
   searchString: '',
@@ -76,7 +74,7 @@ export default function MyServices () {
           </TenantLink>
         ]}
       />
-      <UI.CardsRow>
+      <GridRow>
         {services.map(service => {
           return (
             <GridCol col={{ span: 6 }}>
@@ -90,7 +88,7 @@ export default function MyServices () {
             </GridCol>
           )
         })}
-      </UI.CardsRow>
+      </GridRow>
     </>
   )
 }

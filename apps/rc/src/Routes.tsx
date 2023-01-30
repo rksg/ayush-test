@@ -168,6 +168,9 @@ function NetworkRoutes () {
 function ServiceRoutes () {
   return rootRoutes(
     <Route path='t/:tenantId'>
+      <Route path='services'
+        element={<TenantNavigate replace to={getServiceListRoutePath(true)} />}
+      />
       <Route path={getServiceListRoutePath()} element={<MyServices />} />
       <Route path={getSelectServiceRoutePath()} element={<SelectServiceForm />} />
       <Route path={getServiceCatalogRoutePath()} element={<ServiceCatalog />} />
