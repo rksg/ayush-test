@@ -806,12 +806,15 @@ export function ManageCustomer () {
   }
 
   const CustomerSubscription = () => {
-    setSubscriptionStartDate(moment().format(dateFormat))
-    if (trialSelected) {
-      setWifiLicense(trialFreeLicense)
-      setSwitchLicense(trialFreeLicense)
-      setSubscriptionEndDate(moment().add(30,'days').format(dateFormat))
-    }
+    useEffect(() => {
+      setSubscriptionStartDate(moment().format(dateFormat))
+      if (trialSelected) {
+        setWifiLicense(trialFreeLicense)
+        setSwitchLicense(trialFreeLicense)
+        setSubscriptionEndDate(moment().add(30,'days').format(dateFormat))
+      }
+    }, [])
+
     return <>
       <h4>{intl.$t({ defaultMessage: 'Start service in' })}</h4>
       <Form.Item

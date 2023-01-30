@@ -115,7 +115,7 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
         <Table
           columns={columns}
           dataSource={tableQuery.data?.data}
-          rowKey='id'
+          rowKey='name'
           rowSelection={{
             type: 'radio',
             onChange (selectedRowKeys, selectedRows) {
@@ -126,11 +126,12 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
       </Loader>
     )
   }
-
+  const selectedCustomer = tenantType === 'MSP_INTEGRATOR'
+    ? $t({ defaultMessage: 'Select customer\'s Integrator' })
+    : $t({ defaultMessage: 'Select customer\'s Installer' })
   const content =
   <Form layout='vertical' form={form} onFinish={onClose}>
-    <Subtitle level={3}>
-      { $t({ defaultMessage: 'Select customer\'s Integrator' }) }</Subtitle>
+    <Subtitle level={3}>{selectedCustomer}</Subtitle>
     <IntegratorTable />
   </Form>
 
@@ -143,7 +144,7 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
 
   return (
     <Drawer
-      title={tenantType === 'MSP_INTEGRATOR' ? 'Manage Integrator' : 'Manage Integrator'}
+      title={tenantType === 'MSP_INTEGRATOR' ? 'Manage Integrator' : 'Manage Installer'}
       onBackClick={onClose}
       visible={visible}
       onClose={onClose}
