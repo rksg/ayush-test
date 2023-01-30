@@ -102,7 +102,7 @@ const RogueAPDetectionDrawer = (props: RogueAPDetectionDrawerProps) => {
       const editRuleObj = getRuleObj(queryRuleName)
       updateFieldsValue(editRuleObj)
     }
-  }, [queryRuleName, ruleName])
+  }, [queryRuleName])
 
   const selectRule = (
     <Select
