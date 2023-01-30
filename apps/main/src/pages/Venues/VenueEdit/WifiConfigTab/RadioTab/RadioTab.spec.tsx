@@ -76,7 +76,7 @@ describe('RadioTab', () => {
         (_, res, ctx) => res(ctx.json({})))
     )
   })
-  xit('should render External Antenna: E510 correctly', async () => {
+  it('should render External Antenna: E510 correctly', async () => {
     render(<Provider>
       <VenueEditContext.Provider value={{
         editContextData: {},
@@ -165,7 +165,7 @@ describe('RadioTab', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
   })
 
-  xit('should render Wi-Fi Radio Settings correctly when turn on/off tri-band button', async () => {
+  it('should render Wi-Fi Radio Settings correctly when turn on/off tri-band button', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
 
     render(<Provider>
@@ -213,7 +213,7 @@ describe('RadioTab', () => {
     await section.findByRole('radio', { name: /Custom Settings/i })
   })
 
-  xit('should render Wi-Fi Radio 2.4G Settings correctly', async () => {
+  it('should render Wi-Fi Radio 2.4G Settings correctly', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<Provider>
       <VenueEditContext.Provider value={{
@@ -259,9 +259,10 @@ describe('RadioTab', () => {
     await userEvent.click((await tab.findAllByTitle('Full'))[0])
 
     await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
+
   })
 
-  xit('should render Wi-Fi Radio 5G Settings correctly', async () => {
+  it('should render Wi-Fi Radio 5G Settings correctly', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<Provider>
       <VenueEditContext.Provider value={{
