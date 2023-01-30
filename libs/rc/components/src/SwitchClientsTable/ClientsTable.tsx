@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+
 import { useIntl } from 'react-intl'
 
 import { Table, TableProps, Loader }   from '@acx-ui/components'
@@ -21,23 +23,29 @@ export const defaultSwitchClientPayload = {
 }
 
 export function ClientsTable (props: {
-  searchString: string,
+  searchString?: string,
   tableQuery?: TableQuery<SwitchClient, RequestPayload<unknown>, unknown>
 }) {
   const params = useParams()
   const { searchString } = props
 
-  defaultSwitchClientPayload.searchString = searchString
   defaultSwitchClientPayload.filters =
     params.switchId ? { switchId: [params.switchId] } : {}
 
 
   const inlineTableQuery = useTableQuery({
     useQuery: useGetSwitchClientListQuery,
-    defaultPayload: defaultSwitchClientPayload,
+    defaultPayload: { ...defaultSwitchClientPayload, searchString },
     option: { skip: !!props.tableQuery }
   })
   const tableQuery = props.tableQuery || inlineTableQuery
+
+  useEffect(() => {
+    if (searchString !== undefined && tableQuery.payload.searchString !== searchString) {
+      tableQuery.setPayload({
+        ...(tableQuery.payload as typeof defaultSwitchClientPayload), searchString })
+    }
+  }, [searchString])
 
   function getCols (intl: ReturnType<typeof useIntl>) {
     const columns: TableProps<SwitchClient>['columns'] = [{
