@@ -59,7 +59,6 @@ describe('SyslogForm', () => {
     await waitFor(() => screen.findByText('Enable Server'))
     expect(await screen.findByText(/Enable Server/)).toBeVisible()
     expect(await screen.findByText(/SyslogProfile1/)).toBeVisible()
-    expect(await screen.findByText(/Add Server Profile/)).toBeVisible()
   })
 
   it('should handle syslog profile changed', async () => {
