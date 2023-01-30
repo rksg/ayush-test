@@ -283,19 +283,6 @@ export function TimelineChart ({
   const [selected, setSelected] = useState<number | undefined>(selectedData)
   useDotClick(eChartsRef, onDotClick, setSelected)
 
-  useEffect(() => {
-    const refCopy = eChartsRef.current
-
-    return () => {
-      if (refCopy) {
-        const instance = refCopy.getEchartsInstance()
-        if (instance && instance.isDisposed && !instance.isDisposed()) {
-          instance.dispose()
-        }
-      }
-    }
-  }, [])
-
   const seriesData = mapping
     .reverse()
     .slice()
