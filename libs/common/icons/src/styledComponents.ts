@@ -1,7 +1,7 @@
 import styled from 'styled-components/macro'
 
 import {
-  DeleteOutlined, Edit
+  DeleteOutlined, EditOutlined
 } from './index'
 
 export const DeleteOutlinedIcon = styled(DeleteOutlined)`
@@ -9,7 +9,7 @@ export const DeleteOutlinedIcon = styled(DeleteOutlined)`
     stroke: var(--acx-accents-blue-50) !important;
   }
 `
-export const EditIcon = styled(Edit)`
+export const EditOutlinedIcon = styled(EditOutlined)`
   path {
     stroke: var(--acx-accents-blue-50) !important;
   }

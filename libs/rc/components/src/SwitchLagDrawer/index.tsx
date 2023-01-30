@@ -5,7 +5,7 @@ import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Button, Drawer, Loader, Table, TableProps, Tooltip } from '@acx-ui/components'
-import { DeleteOutlinedIcon, EditIcon }                       from '@acx-ui/icons'
+import { DeleteOutlinedIcon, EditOutlinedIcon }               from '@acx-ui/icons'
 import { useGetLagListQuery }                                 from '@acx-ui/rc/services'
 import { Lag }                                                from '@acx-ui/rc/utils'
 import { useParams }                                          from '@acx-ui/react-router-dom'
@@ -64,7 +64,7 @@ export const SwitchLagDrawer = (props: SwitchLagProps) => {
             key='edit'
             role='editBtn'
             ghost={true}
-            icon={<EditIcon />}
+            icon={<EditOutlinedIcon />}
             style={{ height: '16px' }}
             onClick={() => handleDelete()}
           />
