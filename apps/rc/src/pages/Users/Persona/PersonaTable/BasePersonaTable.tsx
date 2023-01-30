@@ -156,30 +156,38 @@ export function BasePersonaTable (props: PersonaTableProps) {
       onClick: ([data], clearSelection) => {
         setDrawerState({ data, isEdit: true, visible: true })
         clearSelection()
-      }
+      },
+      disabled: (selectedItems => selectedItems.length > 1)
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: ([{ name, groupId, id }], clearSelection) => {
+      onClick: (selectedItems, clearSelection) => {
         showActionModal({
           type: 'confirm',
           customContent: {
             action: 'DELETE',
             entityName: $t({ defaultMessage: 'Persona' }),
-            entityValue: name
+            entityValue: selectedItems[0].name,
+            numOfEntities: selectedItems.length
           },
           onOk: () => {
-            deletePersona({ params: { groupId, id } })
-              .unwrap()
-              .then(() => clearSelection())
-              .catch(error => {
-                showToast({
-                  type: 'error',
-                  content: $t({ defaultMessage: 'An error occurred' }),
-                  // FIXME: Correct the error message
-                  link: { onClick: () => alert(JSON.stringify(error)) }
+            selectedItems.forEach(({ groupId, id, name }) => {
+              deletePersona({ params: { groupId, id } })
+                .unwrap()
+                .then(() => {
+                  showToast({
+                    type: 'success',
+                    content: $t({ defaultMessage: 'Persona {name} was deleted' }, { name })
+                  })
+                  clearSelection()
                 })
-              })
+                .catch((e) => {
+                  showToast({
+                    type: 'error',
+                    content: e.data.message
+                  })
+                })
+            })
           }
         })
       }
@@ -201,7 +209,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
         rowKey='id'
         actions={actions}
         rowActions={rowActions}
-        rowSelection={{ type: 'radio' }}
+        rowSelection={{ type: personaGroupId ? 'checkbox' : 'radio' }}
       />
 
       <PersonaDrawer

@@ -177,13 +177,17 @@ export function PersonaGroupTable () {
           onOk: () => {
             deletePersonaGroup({ params: { groupId: id } })
               .unwrap()
-              .then(() => clearSelection())
+              .then(() => {
+                showToast({
+                  type: 'success',
+                  content: $t({ defaultMessage: 'Persona Group {name} was deleted' }, { name })
+                })
+                clearSelection()
+              })
               .catch((error) => {
                 showToast({
                   type: 'error',
-                  content: $t({ defaultMessage: 'An error occurred' }),
-                  // FIXME: Correct the error message
-                  link: { onClick: () => alert(JSON.stringify(error)) }
+                  content: error.data.message
                 })
               })
           }
