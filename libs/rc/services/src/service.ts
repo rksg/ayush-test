@@ -22,7 +22,6 @@ import {
   LeaseUnit,
   DHCPDetailInstances,
   WifiCallingUrls,
-  WifiUrlsInfo,
   WifiCallingFormContextType,
   WifiCallingSetting,
   DpskSaveData,
@@ -54,7 +53,6 @@ import {
   CloudpathServer,
   DevicePolicy,
   ApplicationPolicy,
-  VlanPool,
   AccessControlProfile
 } from '@acx-ui/rc/utils'
 
@@ -157,19 +155,6 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           ...accessControlProfileListReq
         }
       }
-    }),
-    vlanPoolList: build.query<VlanPool[], RequestPayload>({
-      query: ({ params }) => {
-        const vlanPoolListReq = createHttpRequest(
-          WifiUrlsInfo.getVlanPools,
-          params
-        )
-        return {
-          ...vlanPoolListReq
-        }
-      },
-      providesTags: [{ type: 'Service', id: 'VLANPool' }]
-
     }),
     deleteWifiCallingService: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
@@ -736,7 +721,6 @@ export const {
   useSaveOrUpdateDHCPMutation,
   useDeleteDHCPServiceMutation,
   useDhcpVenueInstancesQuery,
-  useVlanPoolListQuery,
   useAccessControlProfileListQuery,
   useGetDHCPProfileListQuery,
   useLazyGetDHCPProfileListQuery,

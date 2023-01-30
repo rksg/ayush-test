@@ -28,6 +28,8 @@ import {
   l2AclPolicyInfoType,
   L2AclPolicy,
   AvcApp,
+  VlanPool,
+  WifiUrlsInfo,
   AccessControlUrls, L3AclPolicy, AvcCat,
   createNewTableHttpRequest, TableChangePayload, RequestFormData
 } from '@acx-ui/rc/utils'
@@ -359,6 +361,18 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
     }),
+    vlanPoolList: build.query<VlanPool[], RequestPayload>({
+      query: ({ params }) => {
+        const vlanPoolListReq = createHttpRequest(
+          WifiUrlsInfo.getVlanPools,
+          params
+        )
+        return {
+          ...vlanPoolListReq
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
     getVLANPoolPolicyList: build.query<VLANPoolPolicyType[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(VlanPoolUrls.getVLANPoolPolicyList, params, RKS_NEW_UI)
@@ -366,7 +380,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+      providesTags: [{ type: 'Policy', id: 'LIST' }]
     }),
     getVLANPoolPolicyDetail: build.query<VLANPoolPolicyType, RequestPayload>({
       query: ({ params }) => {
@@ -469,6 +483,7 @@ export const {
   useDelVLANPoolPolicyMutation,
   useUpdateVLANPoolPolicyMutation,
   useGetVLANPoolPolicyListQuery,
+  useVlanPoolListQuery,
   useGetVLANPoolPolicyDetailQuery,
   useVLANPoolNetworkInstancesQuery,
   useLazyGetMacRegListQuery,
