@@ -1,11 +1,12 @@
-import { Network } from '..'
-import { Radius }  from '../../models/Radius'
+import { Network }      from '..'
+import { RadiusServer } from '../../models/RadiusServer'
 export interface AAAPolicyType{
   id?: string,
-  profileName: string,
+  name: string,
   tags?: string[],
-  radius?: Radius,
-  profileType?: string,
+  primary?: RadiusServer,
+  secondary?: RadiusServer,
+  isAuth?: boolean,
   networkIds?: string[]
 }
 

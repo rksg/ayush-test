@@ -18,7 +18,7 @@ const AAAInstance = (props:{
   const [aaaList, setAaaList]= useState(aaaServices)
   useEffect(()=>{
     if(data){
-      setAaaList(data?.map(m => ({ label: m.name, value: m.id })) ?? [])
+      setAaaList(data?.map(m => ({ label: m.name, value: m.id })))
     }
   },[data])
   return (
@@ -30,17 +30,25 @@ const AAAInstance = (props:{
           { required: true }
         ]}
         children={<Select
+          onChange={(value)=>{
+            form.setFieldValue(props.type,
+              data?.filter(d => d.id === value)[0])
+          }}
           options={[
             ...aaaList
           ]}
         />}
       />
+      <Form.Item
+        name={props.type}
+        hidden
+      />
       <AAAPolicyModal updateInstance={(data)=>{
-        const tempID = Date.now() + ''
         aaaList.push({
-          label: data.profileName, value: tempID })
+          label: data.name, value: data.id })
         setAaaList([...aaaList])
-        form.setFieldValue(props.type+'PolicyProfileId', tempID)
+        form.setFieldValue(props.type+'PolicyProfileId', data.id)
+        form.setFieldValue(props.type, data)
       }}/>
     </div>
   )

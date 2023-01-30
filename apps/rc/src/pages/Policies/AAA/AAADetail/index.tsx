@@ -16,7 +16,7 @@ export default function AAAPolicyDetail () {
   return (
     <>
       <PageHeader
-        title={queryResults.data?.profileName||''}
+        title={queryResults.data?.name||''}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Policies' }), link: getPolicyListRoutePath() }
         ]}

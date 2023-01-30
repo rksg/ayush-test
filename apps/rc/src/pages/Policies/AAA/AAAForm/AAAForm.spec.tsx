@@ -9,25 +9,23 @@ import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
 
 import AAAForm from './AAAForm'
 
-
-const successResponse = { requestId: 'request-id' }
 const aaaData={
-  profileName: 'test',
-  profileType: 'authentication',
-  radius: {
-    primary: {
-      ip: '2.3.3.4',
-      port: 101,
-      sharedSecret: 'xxxxxxxx'
-    },
-    secondary: {
-      ip: '2.3.3.4',
-      port: 101,
-      sharedSecret: 'xxxxxxxx'
-    }
+  id: 'policy-id',
+  name: 'test2',
+  isAuth: true,
+  primary: {
+    ip: '2.3.3.4',
+    port: 101,
+    sharedSecret: 'xxxxxxxx'
+  },
+  secondary: {
+    ip: '2.3.3.4',
+    port: 101,
+    sharedSecret: 'xxxxxxxx'
   },
   tags: ['xxdd']
 }
+const successResponse = { requestId: 'request-id', id: '2', name: 'test2' }
 const aaaList=[{
   id: '1',
   name: 'test1'
@@ -37,14 +35,14 @@ const aaaList=[{
 }]
 
 describe('AAAForm', () => {
-  it('should create AAA successfully', async () => {
+  beforeEach(()=>{
     mockServer.use(
       rest.get(CommonUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
         res(ctx.json({ COMMON: '{}' }))
       ),
       rest.get(
         AaaUrls.getAAAPolicy.url,
-        (_, res, ctx) => {return res(ctx.json(successResponse))}
+        (_, res, ctx) => {return res(ctx.json(aaaData))}
       ),
       rest.post(
         AaaUrls.addAAAPolicy.url,
@@ -59,11 +57,12 @@ describe('AAAForm', () => {
         (_, res, ctx) => {return res(ctx.json(aaaList))}
       )
     )
-
+  })
+  it('should create AAA successfully', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', type: 'wifi',
       policyId: 'policy-id' }
 
-    render(<Provider><AAAForm edit={false}/></Provider>, {
+    render(<Provider><AAAForm edit={false} networkView={true}/></Provider>, {
       route: { params }
     })
 
@@ -88,49 +87,34 @@ describe('AAAForm', () => {
     await userEvent.click(await screen.findByText('Finish'))
   })
   it('should edit AAA successfully', async () => {
-    mockServer.use(
-      rest.get(CommonUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
-        res(ctx.json({ COMMON: '{}' }))
-      ),
-      rest.get(
-        AaaUrls.getAAAPolicy.url,
-        (_, res, ctx) => {return res(ctx.json(aaaData))}
-      ),
-      rest.post(
-        AaaUrls.addAAAPolicy.url,
-        (_, res, ctx) => {return res(ctx.json(successResponse))}
-      ),
-      rest.put(
-        AaaUrls.updateAAAPolicy.url,
-        (_, res, ctx) => {return res(ctx.json(successResponse))}
-      ),
-      rest.get(
-        AaaUrls.getAAAPolicyList.url,
-        (_, res, ctx) => {return res(ctx.json(aaaList))}
-      )
-    )
-
-    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', type: 'wifi',
-      policyId: 'policy-id' }
-
-    render(<Provider><AAAForm edit={true}/></Provider>, {
-      route: { params }
-    })
-    const inputProfile = await screen.findByLabelText('Profile Name')
-    fireEvent.change(inputProfile, { target: { value: 'test1' } })
-    fireEvent.blur(inputProfile)
-    fireEvent.change((await screen.findAllByLabelText('Server Address'))[0],
-      { target: { value: '2.3.3.4' } })
-    await userEvent.type((await screen.findAllByLabelText('Shared Secret'))[0],
-      'test1234')
-    fireEvent.change(inputProfile, { target: { value: 'edit aaa test1' } })
-    const port2 = (await screen.findAllByRole('spinbutton', { name: 'Port' }))[1]
-    fireEvent.change((await screen.findAllByLabelText('Server Address'))[1],
-      { target: { value: '2.3.3.4' } })
-    await userEvent.type((await screen.findAllByLabelText('Shared Secret'))[1],
-      'test1234')
-    await userEvent.click(await screen.findByText('Finish'))
-    await userEvent.type(port2, '1812')
-    await userEvent.click(await screen.findByText('Finish'))
+    await editAAA()
   })
 })
+async function editAAA (){
+  const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', type: 'wifi',
+    policyId: 'policy-id' }
+
+  render(<Provider><AAAForm edit={true} networkView={false}/></Provider>, {
+    route: { params }
+  })
+  fireEvent.change((await screen.findAllByLabelText('Server Address'))[0],
+    { target: { value: '2.3.3.4' } })
+  await userEvent.type((await screen.findAllByLabelText('Shared Secret'))[0],
+    'test1234')
+  const port2 = (await screen.findAllByRole('spinbutton', { name: 'Port' }))[1]
+  fireEvent.change((await screen.findAllByLabelText('Server Address'))[1],
+    { target: { value: '2.3.3.4' } })
+  await userEvent.type((await screen.findAllByLabelText('Shared Secret'))[1],
+    'test1234')
+  await fillInProfileName('test1')
+  await userEvent.click(await screen.findByText('Finish'))
+  await userEvent.type(port2, '1812')
+  await fillInProfileName('test2 update')
+  await userEvent.click(await screen.findByText('Finish'))
+  await new Promise((r)=>{setTimeout(r, 300)})
+}
+async function fillInProfileName (name: string) {
+  const insertInput = await screen.findByLabelText(/Profile Name/)
+  fireEvent.change(insertInput, { target: { value: name } })
+  fireEvent.blur(insertInput)
+}

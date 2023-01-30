@@ -4,13 +4,14 @@ import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
 
 import {
+  AaaServerTypeEnum,
   NetworkSaveData,
   WlanSecurityEnum,
   PskWlanSecurityEnum,
   macAuthMacFormatOptions
 } from '@acx-ui/rc/utils'
 
-
+import { AaaServer } from './AaaServer'
 export function PskSummaryForm (props: {
   summaryData: NetworkSaveData;
 }) {
@@ -83,6 +84,12 @@ export function PskSummaryForm (props: {
             }/>
 
           {$t({ defaultMessage: 'Authentication Service' })}
+          <AaaServer serverType={AaaServerTypeEnum.AUTHENTICATION} summaryData={summaryData} />
+          {summaryData.enableAccountingService &&
+            <>{$t({ defaultMessage: 'Accounting Service' })}
+              <AaaServer serverType={AaaServerTypeEnum.ACCOUNTING} summaryData={summaryData} />
+            </>
+          }
         </React.Fragment>
       }
     </>

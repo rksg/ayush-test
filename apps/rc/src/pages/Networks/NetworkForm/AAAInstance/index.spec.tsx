@@ -32,11 +32,11 @@ describe('AAA Instance Page', () => {
       ),
       rest.post(
         AaaUrls.addAAAPolicy.url,
-        (req, res, ctx) => res(ctx.json({ requestId: 'request-id', id: '2', name: 'test2' }))
+        (req, res, ctx) => res(ctx.json({ requestId: 'request-id',
+          response: { id: '2', name: 'test2' } }))
       )
     )
   })
-
   it('should render instance page', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', policyId: 'test-id' }
     render(<Provider><NetworkFormContext.Provider value={{
@@ -61,7 +61,10 @@ describe('AAA Instance Page', () => {
     await userEvent.type((await screen.findAllByLabelText('Shared Secret'))[1],
       'test1234')
     await userEvent.click(await screen.findByText('Finish'))
-    await userEvent.click(await screen.findByRole('combobox'))
-    await userEvent.click(await screen.findByTitle('test1'))
+    await changeAAA()
   })
 })
+async function changeAAA (){
+  await userEvent.click(await screen.findByRole('combobox'))
+  await userEvent.click(await screen.findByTitle('test1'))
+}

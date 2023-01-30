@@ -1,8 +1,8 @@
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Button, Loader, PageHeader, showActionModal, Table, TableProps } from '@acx-ui/components'
-import { useDelRoguePolicyMutation, usePolicyListQuery }                  from '@acx-ui/rc/services'
+import { Button, Loader, PageHeader, showActionModal, Table, TableProps }            from '@acx-ui/components'
+import { useDelRoguePolicyMutation, usePolicyListQuery, useDeleteAAAPolicyMutation } from '@acx-ui/rc/services'
 import {
   getPolicyDetailsLink,
   getSelectPolicyRoutePath,
@@ -92,7 +92,7 @@ export default function PoliciesTable () {
   const tenantBasePath: Path = useTenantLink('')
 
   const [ delRoguePolicy ] = useDelRoguePolicyMutation()
-
+  const [ deleteAAAPolicy ] = useDeleteAAAPolicyMutation()
   const tableQuery = useTableQuery({
     useQuery: usePolicyListQuery,
     defaultPayload
@@ -118,7 +118,13 @@ export default function PoliciesTable () {
                 }
               }).unwrap()
             }
-
+            if (type === PolicyType.AAA) {
+              await deleteAAAPolicy({
+                params: {
+                  ...params, policyId: id
+                }
+              }).unwrap()
+            }
             clearSelection()
           }
         })

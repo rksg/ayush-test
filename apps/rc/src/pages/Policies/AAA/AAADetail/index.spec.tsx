@@ -56,29 +56,28 @@ const list = {
 }
 const detailResult = {
   id: 1,
-  profileName: 'test',
-  profileType: 'authentication',
-  radius: {
-    primary: {
-      ip: '2.2.2.2',
-      port: 101,
-      sharedSecret: 'xxxxxxxx'
-    },
-    secondary: {
-      ip: '2.2.2.2',
-      port: 102,
-      sharedSecret: 'xxxxxxxx'
-    }
+  networkIds: [] as string[],
+  name: 'test',
+  isAuth: true,
+  primary: {
+    ip: '2.2.2.2',
+    port: 101,
+    sharedSecret: 'xxxxxxxx'
+  },
+  secondary: {
+    ip: '2.2.2.2',
+    port: 102,
+    sharedSecret: 'xxxxxxxx'
   },
   tags: ['123','345']
 }
+let params: { tenantId: string, policyId: string }
+params = {
+  tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1',
+  policyId: '373377b0cb6e46ea8982b1c80aabe1fa'
+}
 describe('AAA Detail Page', () => {
-  let params: { tenantId: string, policyId: string }
-  beforeEach(async () => {
-    params = {
-      tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1',
-      policyId: '373377b0cb6e46ea8982b1c80aabe1fa'
-    }
+  it('should render aaa detail page', async () => {
     mockServer.use(
       rest.get(
         AaaUrls.getAAANetworkInstances.url,
@@ -86,12 +85,9 @@ describe('AAA Detail Page', () => {
       ),
       rest.get(
         AaaUrls.getAAAProfileDetail.url,
-        (req, res, ctx) => res(ctx.json(detailResult))
+        (req, res, ctx) => res(ctx.json({ ...detailResult, isAuth: false, networkIds: ['1','2'] }))
       )
     )
-  })
-
-  it('should render aaa detail page', async () => {
     render(<Provider><AAAPolicyDetail /></Provider>, {
       route: { params, path: '/:tenantId/policies/aaa/:policyId/detail' }
     })
@@ -102,4 +98,28 @@ describe('AAA Detail Page', () => {
     })
     await waitFor(() => expect(within(body).getAllByRole('row')).toHaveLength(4))
   })
+  it('should render aaa authentication page', async () => {
+    await aaaAuth()
+  })
 })
+async function aaaAuth () {
+  mockServer.use(
+    rest.get(
+      AaaUrls.getAAANetworkInstances.url,
+      (req, res, ctx) => res(ctx.json(list))
+    ),
+    rest.get(
+      AaaUrls.getAAAProfileDetail.url,
+      (req, res, ctx) => res(ctx.json(detailResult))
+    )
+  )
+  render(<Provider><AAAPolicyDetail /></Provider>, {
+    route: { params, path: '/:tenantId/policies/aaa/:policyId/detail' }
+  })
+  expect(await screen.findByText('test')).toBeVisible()
+  expect(await screen.findByText((`Instances (${list.data.length})`))).toBeVisible()
+  const body = await screen.findByRole('rowgroup', {
+    name: (_, element) => element.classList.contains('ant-table-tbody')
+  })
+  await waitFor(() => expect(within(body).getAllByRole('row')).toHaveLength(4))
+}

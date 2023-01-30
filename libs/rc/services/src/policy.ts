@@ -183,12 +183,21 @@ export const policyApi = basePolicyApi.injectEndpoints({
         })
       }
     }),
-    addAAAPolicy: build.mutation<AAAPolicyType, RequestPayload>({
+    addAAAPolicy: build.mutation<{ response: { [key:string]:string } }, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(AaaUrls.addAAAPolicy, params, RKS_NEW_UI)
         return {
           ...req,
           body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    deleteAAAPolicy: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(AaaUrls.deleteAAAPolicy, params, RKS_NEW_UI)
+        return {
+          ...req
         }
       },
       invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
@@ -464,6 +473,7 @@ export const {
   useLazyMacRegListsQuery,
   useLazyMacRegistrationsQuery,
   useAddAAAPolicyMutation,
+  useDeleteAAAPolicyMutation,
   useGetAAAPolicyListQuery,
   useUpdateAAAPolicyMutation,
   useAaaPolicyQuery,

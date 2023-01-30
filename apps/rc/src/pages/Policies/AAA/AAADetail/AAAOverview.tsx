@@ -1,13 +1,12 @@
 
 import { Typography }                                from 'antd'
-import { defineMessage, useIntl, MessageDescriptor } from 'react-intl'
+import { useIntl, MessageDescriptor, defineMessage } from 'react-intl'
 
 import { Card, GridCol, GridRow } from '@acx-ui/components'
 import { AAAPolicyType }          from '@acx-ui/rc/utils'
-
 const typeDescription: Record<string, MessageDescriptor> = {
-  accounting: defineMessage({ defaultMessage: 'Accounting' }),
-  authentication: defineMessage({ defaultMessage: 'Authentication' })
+  true: defineMessage({ defaultMessage: 'Accounting' }),
+  false: defineMessage({ defaultMessage: 'Authentication' })
 }
 export default function AAAOverview (props: { aaaProfile: AAAPolicyType }) {
   const { $t } = useIntl()
@@ -25,31 +24,31 @@ export default function AAAOverview (props: { aaaProfile: AAAPolicyType }) {
           <Card.Title>
             {$t({ defaultMessage: 'Profile Type' })}
           </Card.Title>
-          <Typography.Text>{$t(typeDescription[aaaProfile.profileType as string])}</Typography.Text>
+          <Typography.Text>{$t(typeDescription[aaaProfile.isAuth+''])}</Typography.Text>
         </GridCol>
         <GridCol col={{ span: 4 }}>
           <Card.Title>
             {$t({ defaultMessage: 'Primary Server Address' })}
           </Card.Title>
-          <Typography.Text>{aaaProfile.radius?.primary?.ip}</Typography.Text>
+          <Typography.Text>{aaaProfile.primary?.ip}</Typography.Text>
         </GridCol>
         <GridCol col={{ span: 4 }}>
           <Card.Title>
             {$t({ defaultMessage: 'Primary Port' })}
           </Card.Title>
-          <Typography.Text>{aaaProfile.radius?.primary?.port}</Typography.Text>
+          <Typography.Text>{aaaProfile.primary?.port}</Typography.Text>
         </GridCol>
         <GridCol col={{ span: 4 }}>
           <Card.Title>
             {$t({ defaultMessage: 'Secondary Server Address' })}
           </Card.Title>
-          <Typography.Text>{aaaProfile.radius?.secondary?.ip}</Typography.Text>
+          <Typography.Text>{aaaProfile.secondary?.ip}</Typography.Text>
         </GridCol>
         <GridCol col={{ span: 4 }}>
           <Card.Title>
             {$t({ defaultMessage: 'Secondary Port' })}
           </Card.Title>
-          <Typography.Text>{aaaProfile.radius?.secondary?.port}</Typography.Text>
+          <Typography.Text>{aaaProfile.secondary?.port}</Typography.Text>
         </GridCol>
       </GridRow>
     </Card>

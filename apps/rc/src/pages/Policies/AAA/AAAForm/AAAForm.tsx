@@ -34,7 +34,7 @@ const AAAForm = (props: AAAFormProps) => {
 
   const [ updateAAAPolicy ] = useUpdateAAAPolicyMutation()
   const [saveState, updateSaveState] = useState<AAAPolicyType>({
-    profileName: ''
+    name: ''
   })
   const updateSaveData = (saveData: Partial<AAAPolicyType>) => {
     updateSaveState({ ...saveState, ...saveData })
@@ -52,17 +52,18 @@ const AAAForm = (props: AAAFormProps) => {
       if (!edit) {
         await createAAAPolicy({
           params,
-          payload: saveState
-        }).unwrap()
+          payload: data
+        }).unwrap().then((res)=>{
+          data.id = res?.response.id
+        })
       } else {
         await updateAAAPolicy({
           params,
-          payload: saveState
+          payload: data
         }).unwrap()
       }
       props.networkView? props.backToNetwork?.(data) : navigate(linkToPolicies, { replace: true })
     } catch(error) {
-      props.backToNetwork?.(data)
       showToast({
         type: 'error',
         duration: 10,

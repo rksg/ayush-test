@@ -39,7 +39,7 @@ const AAASettingForm = (props: AAASettingFormProps) => {
       <GridCol col={{ span: 8 }}>
         <StepsForm.Title>{$t({ defaultMessage: 'Settings' })}</StepsForm.Title>
         <Form.Item
-          name='profileName'
+          name='name'
           label={$t({ defaultMessage: 'Profile Name' })}
           rules={[
             { required: true },
@@ -74,15 +74,15 @@ const AAASettingForm = (props: AAASettingFormProps) => {
           children={<Input/>}
         />
         <Form.Item
-          name='profileType'
+          name='isAuth'
           label={$t({ defaultMessage: 'Profile Type' })}
-          initialValue={'authentication'}
+          initialValue={true}
           children={<Radio.Group>
             <Space direction='vertical'>
-              <Radio key='authentication' value='authentication'>
+              <Radio key='authentication' value={true}>
                 {$t({ defaultMessage: 'Authentication' })}
               </Radio>
-              <Radio key='accounting' value='accounting'>
+              <Radio key='accounting' value={false}>
                 {$t({ defaultMessage: 'Accounting' })}
               </Radio>
             </Space>
@@ -91,7 +91,7 @@ const AAASettingForm = (props: AAASettingFormProps) => {
         <Subtitle level={4}>{ $t({ defaultMessage: 'Primary' }) }</Subtitle>
         <div>
           <Form.Item
-            name={[ 'radius' ,'primary', 'ip']}
+            name={['primary', 'ip']}
             style={{ display: 'inline-block', width: 'calc(80%)' , paddingRight: '20px' }}
             rules={[
               { required: true },
@@ -102,7 +102,7 @@ const AAASettingForm = (props: AAASettingFormProps) => {
             children={<Input/>}
           />
           <Form.Item
-            name={['radius' ,'primary', 'port']}
+            name={['primary', 'port']}
             style={{ display: 'inline-block', width: 'calc(20%)' }}
             label={$t({ defaultMessage: 'Port' })}
             rules={[
@@ -115,7 +115,7 @@ const AAASettingForm = (props: AAASettingFormProps) => {
           />
         </div>
         <Form.Item
-          name={[ 'radius' ,'primary', 'sharedSecret']}
+          name={['primary', 'sharedSecret']}
           label={$t({ defaultMessage: 'Shared Secret' })}
           initialValue={''}
           rules={[
@@ -127,15 +127,15 @@ const AAASettingForm = (props: AAASettingFormProps) => {
         <Subtitle level={4}>{ $t({ defaultMessage: 'Secondary' }) }</Subtitle>
         <div>
           <Form.Item
-            name={[ 'radius' ,'secondary', 'ip']}
+            name={['secondary', 'ip']}
             style={{ display: 'inline-block', width: 'calc(80%)' , paddingRight: '20px' }}
             rules={[
               { required: true },
               { validator: (_, value) => networkWifiIpRegExp(value) },
               { validator: (_, value) => {
-                const primaryIP = form.getFieldValue([ 'radius' ,'primary', 'ip'])
-                const primaryPort = form.getFieldValue([ 'radius' ,'primary', 'port'])
-                const secPort = form.getFieldValue([ 'radius' ,'secondary', 'port'])
+                const primaryIP = form.getFieldValue(['primary', 'ip'])
+                const primaryPort = form.getFieldValue(['primary', 'port'])
+                const secPort = form.getFieldValue(['secondary', 'port'])
                 if(value === primaryIP && primaryPort === secPort){
                   return Promise.reject(
                     $t({ defaultMessage: 'IP address and Port combinations must be unique' }))
@@ -148,7 +148,7 @@ const AAASettingForm = (props: AAASettingFormProps) => {
             children={<Input/>}
           />
           <Form.Item
-            name={['radius' ,'secondary', 'port']}
+            name={['secondary', 'port']}
             style={{ display: 'inline-block', width: 'calc(20%)' }}
             label={$t({ defaultMessage: 'Port' })}
             rules={[
@@ -161,7 +161,7 @@ const AAASettingForm = (props: AAASettingFormProps) => {
           />
         </div>
         <Form.Item
-          name={[ 'radius' ,'secondary', 'sharedSecret']}
+          name={['secondary', 'sharedSecret']}
           label={$t({ defaultMessage: 'Shared Secret' })}
           initialValue={''}
           rules={[
