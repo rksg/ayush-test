@@ -29,8 +29,8 @@ export function EmbeddedReport (props: ReportProps) {
   /**
   * Hostname - Backend service where superset is running.
   * For developement,
-  * Use https://devalto.ruckuswireless.com', for devalto.
-  * Use https://local.alto.mlisa.io', for minikube.
+  * Use https://devalto.ruckuswireless.com, for devalto.
+  * Use https://local.alto.mlisa.io, for minikube.
   **/
   const HOST_NAME = process.env['NODE_ENV'] === 'development'
     ? 'https://devalto.ruckuswireless.com' // Dev
@@ -85,8 +85,10 @@ export function EmbeddedReport (props: ReportProps) {
         supersetDomain: `${HOST_NAME}${BASE_RELATIVE_URL}`,
         mountPoint: document.getElementById('acx-report')!,
         fetchGuestToken: () => fetchGuestTokenFromBackend(),
-        dashboardUiConfig: { hideChartControls: true,
-          hideTitle: hideTitle === false ? hideTitle : true }
+        dashboardUiConfig: {
+          hideChartControls: true,
+          hideTitle: hideTitle ?? true
+        }
         // debug: true
       })
       embeddedObj.then( async embObj =>{
