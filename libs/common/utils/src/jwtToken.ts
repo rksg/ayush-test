@@ -1,3 +1,5 @@
+import { getTenantId } from './getTenantId'
+
 export enum AccountTier {
   GOLD = 'Gold',
   PLATINUM = 'Platinum'
@@ -65,14 +67,18 @@ interface JwtToken {
 
 const cache = new Map()
 
+const isDev = process.env['NODE_ENV'] === 'development'
+
 // Fetch JWT token payload data
 export function getJwtTokenPayload () {
-  const jwt = getCookie('JWT')
+  const jwt = getJwtToken()
 
   if (jwt === null) {
     const tenantId = getTenantId()
-    // eslint-disable-next-line no-console
-    console.error('No JWT token found! So setting default JWT values')
+    if (isDev) {
+      // eslint-disable-next-line no-console
+      console.warn('No JWT token found! So setting default JWT values')
+    }
     const jwtToken: {
       acx_account_tier: AccountTier;
       acx_account_vertical: AccountVertical;
@@ -98,19 +104,14 @@ export function getJwtTokenPayload () {
   }
 }
 
-function getCookie (key: string) {
-  if (!document.cookie.includes(`${key}=`)) return null
-  const start = document.cookie.indexOf(key)
-  const end = document.cookie.indexOf(';', start)
-
-  const valueStart = start + key.length + 1
-  return document.cookie.slice(valueStart, end)
-}
-
-export function getTenantId () {
-  const chunks = window.location.pathname.split('/')
-  for (const c in chunks) {
-    if (['v', 't'].includes(chunks[c])) { return chunks[Number(c) + 1] }
+export function getJwtToken () {
+  if (sessionStorage.getItem('jwt')) {
+    return sessionStorage.getItem('jwt')
+  } else {
+    if (isDev) {
+      // eslint-disable-next-line no-console
+      console.warn('JWT TOKEN NOT FOUND!!!!!')
+    }
+    return null
   }
-  return
 }

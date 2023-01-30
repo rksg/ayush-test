@@ -12,6 +12,7 @@ import { VenueSyslog }                                                          
 
 import { ApStatusDetails, LanPort } from './ap'
 import { RogueCategory }            from './policies'
+import { ConfigurationHistory }     from './switch'
 
 import { ApVenueStatusEnum, SwitchStatusEnum } from './index'
 
@@ -323,6 +324,13 @@ export interface Acl {
 	id: string,
 	name: string,
 	aclRules: AclRule[]
+}
+
+export interface JwtToken {
+	access_token: string,
+	expires_in: string,
+	id_token: string,
+	type: string
 }
 
 export interface SwitchModelSlot {
@@ -638,6 +646,12 @@ export interface VenueDirectedMulticast {
   wiredEnabled: boolean,
   wirelessEnabled: boolean,
   networkEnabled: boolean
+}
+
+export interface VenueConfigHistoryDetailResp {
+	response: {
+		list: ConfigurationHistory[]
+	}
 }
 
 export enum LoadBalancingMethodEnum {
