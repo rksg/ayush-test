@@ -42,7 +42,7 @@ exports[`WifiCallingScopeForm should render wifiCallingScopeForm successfully 1`
                 class="ant-form-item-control-input-content"
               >
                 <div
-                  class="styledComponents__Wrapper-sc-1abm7iv-13 gzZsiC"
+                  class="styledComponents__Wrapper-sc-1abm7iv-12 iqWyRG"
                 >
                   <div
                     class="ant-pro-table"
@@ -130,7 +130,7 @@ exports[`WifiCallingScopeForm should render wifiCallingScopeForm successfully 1`
                                             class="ant-table-cell ant-table-selection-column react-resizable"
                                           >
                                             <div
-                                              class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                              class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                             />
                                             <div
                                               class="ant-table-selection"
@@ -154,51 +154,51 @@ exports[`WifiCallingScopeForm should render wifiCallingScopeForm successfully 1`
                                               </label>
                                             </div>
                                             <div
-                                              class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                              class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                             />
                                           </th>
                                           <th
                                             class="ant-table-cell react-resizable"
                                           >
                                             <div
-                                              class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                              class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                             />
                                             Network Name
                                             <div
-                                              class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                              class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                             />
                                           </th>
                                           <th
                                             class="ant-table-cell react-resizable"
                                           >
                                             <div
-                                              class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                              class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                             />
                                             Type
                                             <div
-                                              class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                              class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                             />
                                           </th>
                                           <th
                                             class="ant-table-cell react-resizable"
                                           >
                                             <div
-                                              class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                              class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                             />
                                             Venues
                                             <div
-                                              class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                              class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                             />
                                           </th>
                                           <th
                                             class="ant-table-cell react-resizable"
                                           >
                                             <div
-                                              class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                              class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                             />
                                             Activate
                                             <div
-                                              class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                              class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                             />
                                           </th>
                                           <th
@@ -206,10 +206,10 @@ exports[`WifiCallingScopeForm should render wifiCallingScopeForm successfully 1`
                                             style="position: sticky; right: 0px;"
                                           >
                                             <div
-                                              class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                              class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                             />
                                             <div
-                                              class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                              class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                             />
                                           </th>
                                         </tr>

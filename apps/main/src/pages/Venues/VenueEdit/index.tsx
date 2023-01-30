@@ -48,6 +48,9 @@ export interface RadioContext {
 
   radioData?: VenueRadioCustomization,
   updateWifiRadio?: ((data: VenueRadioCustomization) => void)
+
+  isLoadBalancingDataChanged?: boolean,
+  updateLoadBalancing?: (() => void)
 }
 
 export const VenueEditContext = createContext({} as {
@@ -145,8 +148,14 @@ function processWifiTab (
         const extPayload = getExternalAntennaPayload(editRadioContextData.apModels)
         editRadioContextData?.updateExternalAntenna?.(extPayload)
       }
+
       editRadioContextData?.updateWifiRadio?.
       (editRadioContextData.radioData as VenueRadioCustomization)
+
+      if (editRadioContextData.isLoadBalancingDataChanged) {
+        editRadioContextData?.updateLoadBalancing?.()
+      }
+
       break
     case 'security':
       editSecurityContextData?.updateSecurity?.(editSecurityContextData.SecurityData)

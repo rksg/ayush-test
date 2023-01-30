@@ -2,11 +2,12 @@ import React, { useMemo, useState } from 'react'
 
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { aggregateDataBy }                   from '@acx-ui/analytics/utils'
-import type { Incident }                     from '@acx-ui/analytics/utils'
-import { Drawer, Loader, Table, SearchBar  } from '@acx-ui/components'
-import type { TableColumn, ColumnType }      from '@acx-ui/components'
-import { TenantLink }                        from '@acx-ui/react-router-dom'
+import { aggregateDataBy }                        from '@acx-ui/analytics/utils'
+import type { Incident }                          from '@acx-ui/analytics/utils'
+import { Drawer, Loader, Table, SearchBar  }      from '@acx-ui/components'
+import type { TableColumn, ColumnType }           from '@acx-ui/components'
+import { TenantLink }                             from '@acx-ui/react-router-dom'
+import { encodeParameter, DateFilter, DateRange } from '@acx-ui/utils'
 
 import {
   ImpactedAP,
@@ -20,7 +21,10 @@ export interface ImpactedDrawerProps extends Pick<Incident, 'id'> {
   visible: boolean
   onClose: () => void
 }
-
+export interface ImpactedClientsDrawerProps extends ImpactedDrawerProps {
+  startTime: string
+  endTime: string
+}
 export interface AggregatedImpactedAP {
   name: string[]
   mac: string[]
@@ -69,7 +73,7 @@ const tooltips = {
   hostname: <FormattedMessage defaultMessage='The hostname may only be known if the user has successfully obtained an IP address from DHCP'/>
 }
 
-export const ImpactedClientsDrawer: React.FC<ImpactedDrawerProps> = (props) => {
+export const ImpactedClientsDrawer: React.FC<ImpactedClientsDrawerProps> = (props) => {
   const { $t } = useIntl()
   const [ search, setSearch ] = useState('')
   const queryResults = useImpactedClientsQuery({
@@ -80,12 +84,20 @@ export const ImpactedClientsDrawer: React.FC<ImpactedDrawerProps> = (props) => {
     ...states,
     data: states.data && aggregateDataBy<ImpactedClient>('mac')(states.data)
   }) })
-
+  const { startTime, endTime } = props
+  const period = encodeParameter<DateFilter>({
+    startDate: startTime,
+    endDate: endTime,
+    range: DateRange.custom
+  })
   const columns = useMemo(() => [
     column('hostname', {
       title: $t({ defaultMessage: 'Hostname' }),
       tooltip: tooltips.hostname,
-      render: (_, row) => <TenantLink to={'TODO'}>{row.hostname}</TenantLink>
+      render: (_, { mac, hostname }) =>
+        <TenantLink
+          to={`/users/wifi/clients/${mac}/details/troubleshooting?period=${period}`}
+        >{hostname}</TenantLink>
     }),
     column('mac', { title: $t({ defaultMessage: 'MAC Address' }) }),
     column('username', {
@@ -131,7 +143,8 @@ export const ImpactedAPsDrawer: React.FC<ImpactedDrawerProps> = (props) => {
   const columns = useMemo(() => [
     column('name', {
       title: $t({ defaultMessage: 'AP Name' }),
-      render: (_, row) => <TenantLink to={'TODO'}>{row.name}</TenantLink>
+      render: (_, { name, mac }) =>
+        <TenantLink to={`devices/wifi/${mac}/details/overview`}>{name}</TenantLink>
     }),
     column('model', { title: $t({ defaultMessage: 'Model' }) }),
     column('mac', { title: $t({ defaultMessage: 'MAC Address' }) }),

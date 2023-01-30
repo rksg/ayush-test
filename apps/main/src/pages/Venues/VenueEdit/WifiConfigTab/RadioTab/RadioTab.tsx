@@ -3,11 +3,13 @@ import { useContext } from 'react'
 import { useIntl } from 'react-intl'
 
 import { AnchorLayout, showToast, StepsForm }    from '@acx-ui/components'
+import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { getExternalAntennaPayload, VenueEditContext } from '../..'
 
 import { ExternalAntennaSection } from './ExternalAntennaSection'
+import { LoadBalancing }          from './LoadBalancing'
 import { RadioSettings }          from './RadioSettings'
 
 export function RadioTab () {
@@ -17,12 +19,16 @@ export function RadioTab () {
   const navigate = useNavigate()
   const { editContextData,
     setEditContextData,
-    editRadioContextData
+    editRadioContextData,
+    setEditRadioContextData
   } = useContext(VenueEditContext)
   const basePath = useTenantLink('/venues/')
 
+  const supportLoadBalancing = useIsSplitOn(Features.LOAD_BALANCING)
+
   const wifiSettingTitle = $t({ defaultMessage: 'Wi-Fi Radio Settings' })
   const externalTitle = $t({ defaultMessage: 'External Antenna' })
+  const loadBalancingTitle = $t({ defaultMessage: 'Load Balancing' })
   const anchorItems = [{
     title: wifiSettingTitle,
     content: (
@@ -46,21 +52,45 @@ export function RadioTab () {
     )
   }]
 
+  if (supportLoadBalancing) {
+    anchorItems.push({
+      title: loadBalancingTitle,
+      content: (
+        <>
+          <StepsForm.SectionTitle id='load-balancing'>
+            { loadBalancingTitle }
+          </StepsForm.SectionTitle>
+          <LoadBalancing />
+        </>
+      )
+    })
+  }
+
   const handleUpdateSetting = async (redirect?: boolean) => {
     try {
-      if (editRadioContextData.apModels) {
-        const extPayload = getExternalAntennaPayload(editRadioContextData.apModels)
-        await editRadioContextData?.updateExternalAntenna?.(extPayload)
+      const { apModels, radioData, isLoadBalancingDataChanged } = editRadioContextData || {}
+
+      if (apModels) {
+        const extPayload = getExternalAntennaPayload(apModels)
+        await editRadioContextData.updateExternalAntenna?.(extPayload)
       }
-      if (editRadioContextData.radioData) {
-        await editRadioContextData?.updateWifiRadio?.(editRadioContextData.radioData)
+      if (radioData) {
+        await editRadioContextData.updateWifiRadio?.(radioData)
+      }
+      if (isLoadBalancingDataChanged) {
+        await editRadioContextData.updateLoadBalancing?.()
       }
 
-      if (editRadioContextData.apModels || editRadioContextData.radioData) {
+      if (apModels || radioData || isLoadBalancingDataChanged) {
         setEditContextData({
           ...editContextData,
           unsavedTabKey: 'radio',
           isDirty: false
+        })
+
+        setEditRadioContextData({
+          ...editRadioContextData,
+          isLoadBalancingDataChanged: false
         })
       }
 

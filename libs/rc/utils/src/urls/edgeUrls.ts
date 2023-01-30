@@ -68,5 +68,9 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
   updateStaticRoutes: {
     method: 'PATCH',
     url: '/api/edges/:serialNumber/staticRouteConfig'
+  },
+  getEdgePortStatusList: {
+    method: 'post',
+    url: '/api/viewmodel/tenant/:tenantId/edges/:serialNumber/ports'
   }
 }

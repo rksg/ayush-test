@@ -1,4 +1,4 @@
-import { SwitchViewModel, SwitchStatusEnum } from '@acx-ui/rc/utils'
+import { SwitchViewModel, SwitchStatusEnum, SWITCH_TYPE, DHCP_OPTION_TYPE, SwitchDhcp } from '@acx-ui/rc/utils'
 
 export const switchDetailData: SwitchViewModel = {
   type: 'device',
@@ -8,7 +8,7 @@ export const switchDetailData: SwitchViewModel = {
   switchName: 'ICX7150-C12 Router',
   model: 'ICX7150-C12P',
   id: 'c0:c5:20:98:b9:67',
-  syncDataEndTime: 1670314840296,
+  syncDataEndTime: '2023-01-16T06:07:09Z',
   firmwareVersion: 'SPR09010e',
   clientCount: 1,
   serialNumber: 'FEK3216Q05B',
@@ -18,7 +18,7 @@ export const switchDetailData: SwitchViewModel = {
   venueName: 'My-Venue',
   name: 'ICX7150-C12 Router',
   suspendingDeployTime: '',
-  switchType: 'router',
+  switchType: SWITCH_TYPE.ROUTER,
   configReady: true,
   deviceStatus: SwitchStatusEnum.OPERATIONAL,
   venueId: 'c675aa2d39b74c22b93b96d5dc297d5c',
@@ -108,4 +108,29 @@ export const vlanList = {
   page: 1,
   totalCount: 6,
   totalPages: 1
+}
+
+export const poolData: SwitchDhcp = {
+  id: '123321',
+  poolName: 'poolA',
+  leaseDays: 1,
+  leaseHrs: 0,
+  leaseMins: 2,
+  excludedEnd: '',
+  excludedStart: '',
+  defaultRouterIp: '10.1.3.2',
+  subnetAddress: '10.1.2.0',
+  subnetMask: '255.255.255.0',
+  dhcpOptions: [{
+    seq: 4,
+    type: DHCP_OPTION_TYPE.IP,
+    value: '1.2.3.4'
+  }]
+}
+
+export const jwtToken = {
+  access_token: 'access_token',
+  expires_in: '604800',
+  id_token: 'id_token',
+  type: 'JWT'
 }

@@ -267,6 +267,14 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/api/switch/tenant/:tenantId/venue'
   },
+  getVenueConfigHistory: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/venues/:venueId/configurationHistory/query'
+  },
+  getVenueConfigHistoryDetail: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/venues/:venueId/configurationHistory/detail/:transactionId'
+  },
   getSwitchConfigProfile: {
     method: 'get',
     url: '/api/switch/tenant/:tenantId/profile/:profileId'

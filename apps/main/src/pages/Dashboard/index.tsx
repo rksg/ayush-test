@@ -38,7 +38,10 @@ import {
   MapWidget,
   VenuesDashboardWidget
 } from '@acx-ui/rc/components'
+import { TenantLink }                                          from '@acx-ui/react-router-dom'
 import { useDateFilter, dateRangeForLast, useDashboardFilter } from '@acx-ui/utils'
+
+import * as UI from './styledComponents'
 
 export default function Dashboard () {
   const { $t } = useIntl()
@@ -58,7 +61,17 @@ export default function Dashboard () {
     <>
       <DashboardPageHeader />
       <CommonDashboardWidgets />
-      <ContentSwitcher tabDetails={tabDetails} size='large' />
+      <ContentSwitcher
+        tabDetails={tabDetails}
+        size='large'
+        extra={
+          <UI.Wrapper>
+            <TenantLink to={'/reports'}>
+              {$t({ defaultMessage: 'See more reports' })} <UI.ArrowChevronRightIcons />
+            </TenantLink>
+          </UI.Wrapper>
+        }
+      />
     </>
   )
 }
