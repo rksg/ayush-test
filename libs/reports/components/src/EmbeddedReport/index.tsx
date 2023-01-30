@@ -62,7 +62,8 @@ export function EmbeddedReport (props: ReportProps) {
         clause: `
         ${networkClause}
         ${networkClause && radioBandClause ? ' AND ' + radioBandClause : radioBandClause}
-        ${rlsClause? ' AND ' + rlsClause: ''}
+        ${(networkClause || radioBandClause) && rlsClause ?
+          ' AND ' + rlsClause: rlsClause ? rlsClause : ''}
       `
       }] : [])
     ]
