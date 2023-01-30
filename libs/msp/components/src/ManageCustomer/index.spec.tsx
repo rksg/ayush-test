@@ -80,6 +80,47 @@ const userProfile =
       varTenantId: '3061bd56e37445a8993ac834c01e2710'
     }
 
+const mspEc =
+    {
+      city: 'Henderson',
+      country: 'United States',
+      is_active: 'true',
+      msp_label: 'msp-eleu1658',
+      name: 'Arizona Biltmore Hotel',
+      parent_tenant_id: '3061bd56e37445a8993ac834c01e2710',
+      service_effective_date: '2022-12-19 20:51:48Z',
+      service_expiration_date: '2023-03-30 06:59:59Z',
+      state: 'Nevada',
+      street_address: '12300 Bermuda Rd, Henderson, NV 89044, USA',
+      tenant_id: '351a68433ec5472fba0ec78d686bbdac',
+      tenant_type: 'MSP_EC'
+    }
+
+const ecAdmins =
+    [
+      {
+        email: 'abc@abc.com',
+        id: '7d6a6d6e6409476fae5fba13abaebdf4',
+        lastName: 'abc',
+        name: 'abc',
+        role: 'PRIME_ADMIN'
+      }
+    ]
+
+const ecSupport =
+    [
+      {
+        createdDate: '2023-01-30T18:44:45.191+00:00',
+        delegatedBy: 'msp.eleu1658@mail.com',
+        delegatedTo: 'support',
+        delegatedToName: 'Ruckus Support',
+        expiryDate: '2023-02-20T18:44:45.191+00:00',
+        id: '4c45ca55a790467cb7b8249732ae9eae',
+        status: 'ACCEPTED',
+        type: 'SUPPORT_EC',
+        updatedDate: '2023-01-30T18:44:45.191+00:00'
+      }
+    ]
 
 describe('ManageCustomer', () => {
   let params: { tenantId: string, mspEcTenantId: string }
@@ -102,7 +143,24 @@ describe('ManageCustomer', () => {
         (req, res, ctx) => res(ctx.json(userProfile))
       )
     )
-
+    mockServer.use(
+      rest.get(
+        MspUrlsInfo.getMspEcAccount.url,
+        (req, res, ctx) => res(ctx.json(mspEc))
+      )
+    )
+    mockServer.use(
+      rest.get(
+        MspUrlsInfo.getMspEcAdminList.url,
+        (req, res, ctx) => res(ctx.json(ecAdmins))
+      )
+    )
+    mockServer.use(
+      rest.get(
+        MspUrlsInfo.getMspEcSupport.url,
+        (req, res, ctx) => res(ctx.json(ecSupport))
+      )
+    )
     params = {
       tenantId: '3061bd56e37445a8993ac834c01e2710',
       mspEcTenantId: '1576b79db6b549f3b1f3a7177d7d4ca5'

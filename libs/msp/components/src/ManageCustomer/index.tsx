@@ -416,27 +416,37 @@ export function ManageCustomer () {
       isTrialEditMode ? {
         subscription_start_date: today,
         subscription_end_date: expirationDate,
-        trialAction: 'DEACTIVATE',
-        assignments: []
+        assignments: [{
+          quantity: ecFormData.wifiLicense,
+          action: 'ADD',
+          isTrial: false,
+          deviceType: 'MSP_WIFI'
+        },
+        {
+          quantity: ecFormData.switchLicense,
+          action: 'ADD',
+          isTrial: false,
+          deviceType: 'MSP_SWITCH'
+        }]
       } : {
         subscription_start_date: today,
         subscription_end_date: expirationDate,
-        assignments: [] as unknown
+        assignments: [{
+          quantity: ecFormData.wifiLicense,
+          assignmentId: getAssignmentId('MSP_WIFI'),
+          action: 'MODIFY',
+          isTrial: false,
+          deviceType: 'MSP_WIFI'
+        },
+        {
+          quantity: ecFormData.switchLicense,
+          assignmentId: getAssignmentId('MSP_SWITCH'),
+          action: 'MODIFY',
+          isTrial: false,
+          deviceSubtype: 'ICX',
+          deviceType: 'MSP_SWITCH'
+        }]
       }
-      assignLicense.assignments = [{
-        quantity: ecFormData.wifiLicense,
-        assignmentId: getAssignmentId('MSP_WIFI'),
-        action: 'MODIFY',
-        isTrial: false,
-        deviceType: 'MSP_WIFI'
-      },
-      {
-        quantity: ecFormData.switchLicense,
-        assignmentId: getAssignmentId('MSP_SWITCH'),
-        action: 'MODIFY',
-        isTrial: false,
-        deviceType: 'MSP_SWITCH'
-      }]
       const customer: MspEcData = {
         tenant_type: 'MSP_EC',
         name: ecFormData.name,
