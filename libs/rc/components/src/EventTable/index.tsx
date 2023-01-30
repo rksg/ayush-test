@@ -78,7 +78,9 @@ export const defaultSearch = {
 }
 
 interface EventTableProps {
-  tableQuery: TableQuery<Event, RequestPayload<unknown>, unknown>
+  tableQuery: TableQuery<Event, RequestPayload<unknown>, unknown>,
+  searchables?: boolean | string[]
+  filterables?: boolean | string[]
 }
 
 type EntityType = typeof entityTypes[number]
@@ -189,7 +191,9 @@ const getDescription = (
   }
 }
 
-export const EventTable = ({ tableQuery }: EventTableProps) => {
+export const EventTable = ({
+  tableQuery, searchables = true, filterables = true
+}: EventTableProps) => {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
   const [current, setCurrent] = useState<Event>()
@@ -221,7 +225,8 @@ export const EventTable = ({ tableQuery }: EventTableProps) => {
         const msg = severityMapping[row.severity as keyof typeof severityMapping]
         return $t(msg)
       },
-      filterable: Object.entries(severityMapping).map(([key, value])=>({ key, value: $t(value) }))
+      filterable: (Array.isArray(filterables) ? filterables.includes('severity') : filterables)
+        && Object.entries(severityMapping).map(([key, value])=>({ key, value: $t(value) }))
     },
     {
       key: 'entity_type',
@@ -233,7 +238,8 @@ export const EventTable = ({ tableQuery }: EventTableProps) => {
           row.entity_type as keyof typeof eventTypeMapping] ?? row.entity_type
         return $t(msg)
       },
-      filterable: Object.entries(eventTypeMapping).map(([key, value])=>({ key, value: $t(value) }))
+      filterable: (Array.isArray(filterables) ? filterables.includes('entity_type') : filterables)
+        && Object.entries(eventTypeMapping).map(([key, value])=>({ key, value: $t(value) }))
     },
     {
       key: 'product',
@@ -244,7 +250,8 @@ export const EventTable = ({ tableQuery }: EventTableProps) => {
         const msg = productMapping[row.product as keyof typeof productMapping]
         return (row.product && msg) ? $t(msg) : row.product ?? noDataDisplay
       },
-      filterable: Object.entries(productMapping).map(([key, value])=>({ key, value: $t(value) }))
+      filterable: (Array.isArray(filterables) ? filterables.includes('product') : filterables)
+        && Object.entries(productMapping).map(([key, value])=>({ key, value: $t(value) }))
     },
     {
       key: 'source',
@@ -252,9 +259,11 @@ export const EventTable = ({ tableQuery }: EventTableProps) => {
       dataIndex: 'entity_type',
       sorter: true,
       render: function (_, row, __, highlightFn) {
-        return getSource(row, highlightFn)
+        const searchable = Array.isArray(searchables)
+          ? searchables.includes('entity_type') : searchables
+        return getSource(row, searchable ? highlightFn : v => v)
       },
-      searchable: true
+      searchable: Array.isArray(searchables) ? searchables.includes('entity_type') : searchables
     },
     {
       key: 'message',
@@ -262,9 +271,11 @@ export const EventTable = ({ tableQuery }: EventTableProps) => {
       dataIndex: 'message',
       sorter: true,
       render: function (_, row, __, highlightFn) {
-        return getDescription(row, highlightFn)
+        const searchable = Array.isArray(searchables)
+          ? searchables.includes('message') : searchables
+        return getDescription(row, searchable ? highlightFn : v => v)
       },
-      searchable: true
+      searchable: Array.isArray(searchables) ? searchables.includes('message') : searchables
     }
   ]
   const getDrawerData = (data: Event) => [

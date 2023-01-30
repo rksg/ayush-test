@@ -2,9 +2,8 @@ import { configureStore }                           from '@reduxjs/toolkit'
 import { createApi, fetchBaseQuery }                from '@reduxjs/toolkit/query/react'
 import { Provider as ReduxProvider, ProviderProps } from 'react-redux'
 
-import { createHttpRequest } from '../apiService'
-
-import { RequestPayload, TableResult } from '.'
+import { RequestPayload, TableResult } from '..'
+import { createHttpRequest }           from '../../apiService'
 
 interface TestData { name: string }
 

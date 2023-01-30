@@ -166,15 +166,18 @@ export function useTableQuery <
     const toBeRemovedFilter = isEmpty(customFilters)
       ? filterKeys
       : Object.keys(customFilters).filter(key => !customFilters[key])
+    const toBeSearch = (customSearch.searchString
+      ? { ...initialSearch, ...customSearch }
+      : initialSearch.searchString && initialSearch) as SEARCH
     setPayload({
       ...rest,
-      ...(customSearch.searchString && { ...initialSearch, ...customSearch }),
+      ...toBeSearch,
       filters: {
         ...omit({ ...filters as Object, ...customFilters }, toBeRemovedFilter),
         ...pick(initialPayload.filters, toBeRemovedFilter)
       }
     } as unknown as Payload)
-    setSearch({ ...(customSearch.searchString && { ...initialSearch, ...customSearch }) })
+    setSearch(toBeSearch)
     setFilterKeys([...new Set([ ...filterKeys, ...Object.keys(customFilters) ])]
       .filter(key=>!toBeRemovedFilter.includes(key)))
   }

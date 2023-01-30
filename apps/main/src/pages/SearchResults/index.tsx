@@ -102,11 +102,13 @@ const searches = [
       useQuery: useEventsQuery,
       defaultPayload: {
         ...eventDefaultPayload,
-        filters: {},
-        searchString,
-        searchTargetFields: eventDefaultSearch
+        filters: {}
       },
       pagination,
+      search: {
+        searchString,
+        searchTargetFields: eventDefaultSearch.searchTargetFields
+      },
       sorter: {
         sortField: 'event_datetime',
         sortOrder: 'DESC'
@@ -115,7 +117,7 @@ const searches = [
     return {
       result,
       title: $t({ defaultMessage: 'Events' }),
-      component: <EventTable tableQuery={result} />
+      component: <EventTable tableQuery={result} searchables={false} filterables={false} />
     }
   },
   (searchString: string, $t: IntlShape['$t']) => {

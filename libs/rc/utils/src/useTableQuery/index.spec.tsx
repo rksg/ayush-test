@@ -2,7 +2,7 @@ import { rest } from 'msw'
 
 import { act, mockServer, renderHook } from '@acx-ui/test-utils'
 
-import { useTestQuery, testUrl, Provider } from './mockServer'
+import { useTestQuery, testUrl, Provider } from './__tests__/mockServer'
 
 import {
   usePollingTableQuery,
@@ -31,7 +31,7 @@ describe('useTableQuery', ()=>{
   })
 
   describe('useTableQuery', () => {
-    it('should handle initial search', () => {
+    it('should handle initial search', async () => {
       const { result } = renderHook(
         () => useTableQuery({
           useQuery: useTestQuery,
@@ -42,6 +42,25 @@ describe('useTableQuery', ()=>{
           }
         }),
         { wrapper: ({ children }) => <Provider children={children} /> })
+      expect(result.current.payload).toEqual(expect.objectContaining({
+        searchTargetFields: ['searchTarget1', 'searchTarget2'], searchString: 'search'
+      }))
+      await act(async () => {
+        result.current.handleFilterChange(
+          {}, { searchTargetFields: ['newSearchTarget'], searchString: 'new-search' })
+      })
+      expect(result.current.payload).toEqual(expect.objectContaining({
+        searchTargetFields: ['newSearchTarget'], searchString: 'new-search'
+      }))
+      await act(async () => {
+        result.current.handleFilterChange({}, { searchString: 'new-search' })
+      })
+      expect(result.current.payload).toEqual(expect.objectContaining({
+        searchTargetFields: ['searchTarget1', 'searchTarget2'], searchString: 'new-search'
+      }))
+      await act(async () => {
+        result.current.handleFilterChange({}, { searchString: '' })
+      })
       expect(result.current.payload).toEqual(expect.objectContaining({
         searchTargetFields: ['searchTarget1', 'searchTarget2'], searchString: 'search'
       }))

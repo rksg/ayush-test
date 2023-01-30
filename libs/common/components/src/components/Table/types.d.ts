@@ -52,23 +52,23 @@ type AdditionalColumnType <RecordType, ValueType> = {
    * @default undefined
    */
   render?: (
-     dom: ReactNode,
-      entity: RecordType,
-      index: number,
-      highlightFn: (
-        value: string,
-        formatFn?: (keyword: string) => React.ReactNode
-      ) => ReactNode,
-      action: ProCoreActionType | undefined,
-      schema: ProSchema<RecordType, unknown, ProSchemaComponentTypes, ValueType> & {
-        isEditable?: boolean;
-        type: ProSchemaComponentTypes;
-      }
-    ) => ReactNode | {
-      children: ReactNode
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      props: any
+    dom: ReactNode,
+    entity: RecordType,
+    index: number,
+    highlightFn: (
+      value: string,
+      formatFn?: (keyword: string) => React.ReactNode
+    ) => ReactNode,
+    action: ProCoreActionType | undefined,
+    schema: ProSchema<RecordType, unknown, ProSchemaComponentTypes, ValueType> & {
+      isEditable?: boolean;
+      type: ProSchemaComponentTypes;
     }
+  ) => ReactNode | {
+    children: ReactNode
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    props: any
+  }
 }
 
 type ProColumnTypeSubset <RecordType, ValueType> = Omit<
