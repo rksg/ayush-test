@@ -81,7 +81,8 @@ export const editStackDetail = {
   stackMemberOrder: 'FEK4124R28X',
   isStack: true,
   rearModule: 'none',
-  deviceStatus: 'PREPROVISIONED',
+  deviceStatus: 'OPERATIONAL',
+  syncedSwitchConfig: true,
   sendedHostname: true,
   switchMac: '',
   venueId: '5c05180d54d84e609a4d653a3a8332d1',
@@ -95,10 +96,14 @@ export const editStackDetail = {
   portsStatus: {},
   stackMember: false,
   cliApplied: false,
-  stackMembers: [{ model: 'ICX7150-C12P', id: 'FEK4124R28X' }],
+  stackMembers: [
+    { model: 'ICX7150-C12P', id: 'FEK4124R28X' },
+    { model: 'ICX7150-C12P', id: 'FEK4224R17X' }
+  ],
   poeUsage: {},
   venueName: 'My-Venue',
   isIpFullContentParsed: false,
+  ipFullContentParsed: true,
   formStacking: true,
   name: '',
   tenantId: 'fe892a451d7a486bbb3aee929d2dfcd1',
@@ -117,7 +122,27 @@ export const editStackMembers = {
       id: 'FEK4124R28X',
       uptime: '',
       order: '1'
+    },
+    {
+      venueName: 'My-Venue',
+      serialNumber: 'FEK4224R17X',
+      operStatusFound: false,
+      switchMac: '',
+      model: 'ICX7150-C12P',
+      activeSerial: 'FEK4224R17X',
+      id: 'FEK4224R17X',
+      uptime: '',
+      order: '2'
     }
   ],
   totalCount: 1
 }
+
+export const staticRoutes = [
+  {
+    id: '6975f36e590b43f5a47beb12af87e5f6',
+    destinationIp: '0.0.0.0/1',
+    nextHop: '192.168.1.254',
+    adminDistance: 254
+  }
+]

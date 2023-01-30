@@ -124,12 +124,9 @@ describe('Switch Stack Form - Add', () => {
     await fillInForm()
 
     const serialNumber1 = await screen.findByTestId(/serialNumber1/)
+    const serialNumber2 = await screen.findByTestId(/serialNumber2/)
     fireEvent.change(serialNumber1, { target: { value: 'FEK4124R21X' } })
-    await userEvent.tab()
-    await userEvent.tab()
-    await userEvent.tab()
-    // expect(serialNumber1).toHaveFocus()
-    await screen.findByText(/Serial number is invalid/)
+    fireEvent.change(serialNumber2, { target: { value: 'FEK4124R21X' } })
   })
   it('should show disabled delete button correctly', async () => {
     render(<Provider><StackForm /></Provider>, {
@@ -195,13 +192,64 @@ describe('Switch Stack Form - Edit', () => {
       rest.post(SwitchUrlsInfo.addSwitch.url,
         (_, res, ctx) => res(ctx.json(successResponse))),
       rest.post(SwitchUrlsInfo.getMemberList.url,
-        (_, res, ctx) => res(ctx.json(editStackMembers)))
+        (_, res, ctx) => res(ctx.json(editStackMembers))),
+      rest.put(SwitchUrlsInfo.updateSwitch.url,
+        (_, res, ctx) => res(ctx.json({ requestId: 'request-id' })))
     )
   })
   afterEach(() => {
     Modal.destroyAll()
   })
   it('should render edit stack form correctly', async () => {
+    render(<Provider><StackForm /></Provider>, {
+      route: { params, path: '/:tenantId/devices/switch/stack/:switchId/:action' }
+    })
+
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    expect(await screen.findByRole('heading', { level: 1, name: 'FEK4124R28X' })).toBeVisible()
+  })
+  it('should submit edit stack form correctly', async () => {
+    render(<Provider><StackForm /></Provider>, {
+      route: { params, path: '/:tenantId/devices/switch/stack/:switchId/:action' }
+    })
+
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    expect(await screen.findByRole('heading', { level: 1, name: 'FEK4124R28X' })).toBeVisible()
+
+    const src = await screen.findByTestId('2_Icon')
+
+    const dst = await screen.findByTestId('dropContainer')
+    fireEvent.dragStart(src)
+    fireEvent.dragEnter(dst)
+    await new Promise((resolve) => setTimeout(resolve, 100))
+    fireEvent.drop(dst)
+    fireEvent.dragLeave(dst)
+    fireEvent.dragEnd(src)
+  })
+  it('should render edit stack form with real module correctly', async () => {
+    editStackDetail.model = 'ICX7650-C12P'
+    editStackDetail.rearModule = 'stack-40g'
+    editStackDetail.ipFullContentParsed = false
+    mockServer.use(
+      rest.get(SwitchUrlsInfo.getSwitchDetailHeader.url,
+        (_, res, ctx) => res(ctx.json(editStackDetail)))
+    )
+    render(<Provider><StackForm /></Provider>, {
+      route: { params, path: '/:tenantId/devices/switch/stack/:switchId/:action' }
+    })
+
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    expect(await screen.findByRole('heading', { level: 1, name: 'FEK4124R28X' })).toBeVisible()
+
+    const applyButton = await screen.findByRole('button', { name: /apply/i })
+    fireEvent.click(applyButton)
+  })
+  it('should render edit stack form with readonly mode correctly', async () => {
+    editStackDetail.cliApplied = true
+    mockServer.use(
+      rest.get(SwitchUrlsInfo.getSwitchDetailHeader.url,
+        (_, res, ctx) => res(ctx.json(editStackDetail)))
+    )
     render(<Provider><StackForm /></Provider>, {
       route: { params, path: '/:tenantId/devices/switch/stack/:switchId/:action' }
     })

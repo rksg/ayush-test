@@ -27,7 +27,7 @@ import {
   useTableQuery,
   MspEc
 } from '@acx-ui/rc/utils'
-import { TenantLink, MspTenantLink } from '@acx-ui/react-router-dom'
+import { getBasePath, Link, TenantLink, MspTenantLink } from '@acx-ui/react-router-dom'
 
 const transformAssignedCustomerCount = (row: MspEc) => {
   return row.assignedMspEcList.length
@@ -62,9 +62,10 @@ export function Integrators () {
       sorter: true,
       searchable: true,
       defaultSortOrder: 'ascend' as SortOrder,
-      render: function (data) {
+      render: function (data, row) {
+        const to = `${getBasePath()}/t/${row.id}`
         return (
-          <TenantLink to={''}>{data}</TenantLink>
+          <Link to={to}>{data}</Link>
         )
       }
     },
@@ -79,7 +80,6 @@ export function Integrators () {
       dataIndex: 'assignedMspEcList',
       key: 'assignedMspEcList',
       sorter: true,
-      align: 'center',
       render: function (data, row) {
         return transformAssignedCustomerCount(row)
       }
@@ -89,7 +89,6 @@ export function Integrators () {
       dataIndex: 'mspAdminCount',
       key: 'mspAdminCount',
       sorter: true,
-      align: 'center',
       render: function (data) {
         return (
           <TenantLink to={''}>{data}</TenantLink>
@@ -100,15 +99,13 @@ export function Integrators () {
       title: $t({ defaultMessage: 'Account Admins' }),
       dataIndex: 'mspEcAdminCount',
       key: 'mspEcAdminCount',
-      sorter: true,
-      align: 'center'
+      sorter: true
     },
     {
       title: $t({ defaultMessage: 'Active Incidents' }),
       dataIndex: 'activeIncidents',
       key: 'activeIncidents',
       sorter: true,
-      align: 'center',
       render: function () {
         return '0'
       }

@@ -401,7 +401,6 @@ export function StackForm () {
         return (
           <Form.Item
             name={`serialNumber${row.key}`}
-            validateTrigger={['onKeyUp', 'onFocus', 'onBlur']}
             rules={[
               {
                 required: activeRow === row.key ? true : false,
@@ -413,7 +412,7 @@ export function StackForm () {
           >
             <Input
               data-testid={`serialNumber${row.key}`}
-              onBlur={() => handleChange(row, index)}
+              onChange={() => handleChange(row, index)}
               style={{ textTransform: 'uppercase' }}
               disabled={row.disabled}
             />
@@ -667,7 +666,7 @@ export function StackForm () {
                     }
                   </TypographyText>
                   }
-                  <TableContainer>
+                  <TableContainer data-testid='dropContainer'>
                     <Table
                       columns={columns}
                       dataSource={tableData}

@@ -39,10 +39,9 @@ const macRegList = {
   enabled: true,
   expirationEnabled: true,
   name: 'Registration pool',
-  priority: 1,
-  ssidRegex: 'mac-auth',
   expirationType: ExpirationType.SPECIFIED_DATE,
-  expirationDate: '2050-11-02T06:59:59Z'
+  expirationDate: '2050-11-02T06:59:59Z',
+  defaultAccess: 'REJECT'
 }
 
 const list = {

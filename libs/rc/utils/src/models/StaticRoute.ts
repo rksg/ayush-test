@@ -2,12 +2,12 @@ export class StaticRoute {
   id: string
   destinationIp: string
   nextHop: string
-  adminDistance: string
+  adminDistance: number
 
   constructor () {
     this.id = ''
     this.destinationIp = ''
     this.nextHop = ''
-    this.adminDistance = ''
+    this.adminDistance = 0
   }
 }

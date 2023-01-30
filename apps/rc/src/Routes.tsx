@@ -1,3 +1,4 @@
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   PolicyType,
   ServiceType,
@@ -58,6 +59,9 @@ import WifiCallingDetailView    from './pages/Services/WifiCalling/WifiCallingDe
 import WifiCallingConfigureForm from './pages/Services/WifiCalling/WifiCallingForm/WifiCallingConfigureForm'
 import WifiCallingForm          from './pages/Services/WifiCalling/WifiCallingForm/WifiCallingForm'
 import Timeline                 from './pages/Timeline'
+import PersonaPortal            from './pages/Users/Persona'
+import PersonaDetails           from './pages/Users/Persona/PersonaDetails'
+import PersonaGroupDetails      from './pages/Users/Persona/PersonaGroupDetails'
 import SwitchClientList         from './pages/Users/Switch/ClientList'
 import WifiClientDetails        from './pages/Users/Wifi/ClientDetails'
 import WifiClientList           from './pages/Users/Wifi/ClientList'
@@ -123,6 +127,8 @@ function DeviceRoutes () {
         path='devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         element={<EditEdge />} />
       <Route path='devices/edge/:serialNumber/edge-details/:activeTab'
+        element={<EdgeDetails />} />
+      <Route path='devices/edge/:serialNumber/edge-details/:activeTab/:activeSubTab'
         element={<EdgeDetails />} />
       <Route path='devices/switch' element={<SwitchesTable />} />
       <Route path='devices/switch/:action' element={<SwitchForm />} />
@@ -314,6 +320,17 @@ function UserRoutes () {
       </Route>
       <Route path='users/switch' element={<TenantNavigate replace to='/users/switch/clients' />} />
       <Route path='users/switch/clients' element={<SwitchClientList />} />
+      {useIsSplitOn(Features.SERVICES)
+        ? <><Route
+          path='users/persona-management'
+          element={<TenantNavigate replace to='/users/persona-management/persona-group'/>}/><Route
+          path='users/persona-management/:activeTab'
+          element={<PersonaPortal/>}/><Route
+          path='users/persona-management/persona-group/:personaGroupId'
+          element={<PersonaGroupDetails/>}/><Route
+          path='users/persona-management/persona-group/:personaGroupId/persona/:personaId'
+          element={<PersonaDetails/>}/></>
+        : <></>}
     </Route>
   )
 }

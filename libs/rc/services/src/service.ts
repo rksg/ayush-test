@@ -45,6 +45,7 @@ import {
   RequestFormData,
   createNewTableHttpRequest,
   NetworkSegmentationUrls,
+  NetworkSegmentationGroup,
   WebAuthTemplate,
   AccessSwitch,
   DistributionSwitch
@@ -710,6 +711,15 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    getNetworkSegmentationGroupById: build.query<NetworkSegmentationGroup, RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(NetworkSegmentationUrls.getNetworkSegmentationGroupById, params)
+        return {
+          ...req
+        }
+      }
     })
   })
 })
@@ -746,6 +756,7 @@ export const {
   useCreateDpskMutation,
   useUpdateDpskMutation,
   useGetDpskQuery,
+  useLazyGetDpskQuery,
   useGetDpskListQuery,
   useLazyGetDpskListQuery,
   useDeleteDpskMutation,
@@ -763,6 +774,7 @@ export const {
   useDeletePortalMutation,
   useUpdatePortalMutation,
   useUploadURLMutation,
+  useLazyGetNetworkSegmentationGroupByIdQuery,
   useGetWebAuthTemplateQuery,
   useWebAuthTemplateListQuery,
   useCreateWebAuthTemplateMutation,

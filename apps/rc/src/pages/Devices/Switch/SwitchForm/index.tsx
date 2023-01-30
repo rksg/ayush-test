@@ -28,7 +28,6 @@ import {
   useLazyGetVlansByVenueQuery
 } from '@acx-ui/rc/services'
 import {
-  ApDeep,
   SwitchMessages,
   SWITCH_SERIAL_PATTERN,
   Switch,
