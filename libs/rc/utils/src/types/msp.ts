@@ -138,6 +138,7 @@ export interface MspEntitlement {
   expirationDate: string;
   tenantId: string;
   isTrial: boolean;
+  status?: string;
 }
 
 export interface MspEntitlementSummary {

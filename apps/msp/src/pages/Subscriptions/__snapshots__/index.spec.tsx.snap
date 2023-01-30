@@ -63,7 +63,7 @@ exports[`Subscriptions should render correctly 1`] = `
       Wi-Fi
     </label>
     <div
-      _echarts_instance_="ec_1675111660289"
+      _echarts_instance_="ec_1675115815913"
       class="echarts-for-react "
       size-sensor-id="1"
       style="height: 16px; margin-left: 8px; width: 135px; position: relative;"
@@ -114,7 +114,7 @@ exports[`Subscriptions should render correctly 1`] = `
       Switch
     </label>
     <div
-      _echarts_instance_="ec_1675111660290"
+      _echarts_instance_="ec_1675115815914"
       class="echarts-for-react "
       size-sensor-id="2"
       style="height: 16px; margin-left: 8px; width: 135px; position: relative;"

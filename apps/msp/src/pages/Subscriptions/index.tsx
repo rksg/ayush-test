@@ -1,10 +1,9 @@
 
 import { useState } from 'react'
 
-import { Row }       from 'antd'
-import { SortOrder } from 'antd/lib/table/interface'
-import moment        from 'moment-timezone'
-import { useIntl }   from 'react-intl'
+import { Row }     from 'antd'
+import moment      from 'moment-timezone'
+import { useIntl } from 'react-intl'
 
 import {
   Button,
@@ -38,20 +37,17 @@ export function Subscriptions () {
     {
       title: $t({ defaultMessage: 'Subscription' }),
       dataIndex: 'name',
-      sorter: true,
       key: 'name',
       filterable: true,
-      defaultSortOrder: 'ascend' as SortOrder,
-      render: function (data, row) {
+      render: function (_, row) {
         return EntitlementUtil.getMspDeviceTypeText(row.deviceType)
       }
     },
     {
       title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'deviceType',
-      sorter: true,
       key: 'deviceType',
-      render: function (data, row) {
+      render: function (_, row) {
         if (row.deviceType === 'MSP_WIFI')
           return EntitlementUtil.tempLicenseToString(row.isTrial)
         return EntitlementUtil.deviceSubTypeToText(row.deviceSubType)
@@ -60,27 +56,24 @@ export function Subscriptions () {
     {
       title: $t({ defaultMessage: 'Device Count' }),
       dataIndex: 'quantity',
-      sorter: true,
       key: 'quantity',
-      render: function (data, row) {
+      render: function (_, row) {
         return row.quantity
       }
     },
     {
       title: $t({ defaultMessage: 'Starting Date' }),
       dataIndex: 'effectiveDate',
-      sorter: true,
       key: 'effectiveDate',
-      render: function (data, row) {
+      render: function (_, row) {
         return moment(row.effectiveDate).format(DateFormatEnum.UserDateFormat)
       }
     },
     {
       title: $t({ defaultMessage: 'Expiration Date' }),
       dataIndex: 'expirationDate',
-      sorter: true,
       key: 'expirationDate',
-      render: function (data, row) {
+      render: function (_, row) {
         return moment(row.expirationDate).format(DateFormatEnum.UserDateFormat)
       }
     },
@@ -88,8 +81,7 @@ export function Subscriptions () {
       title: $t({ defaultMessage: 'Time left' }),
       dataIndex: 'timeLeft',
       key: 'timeLeft',
-      sorter: true,
-      render: function (data, row) {
+      render: function (_, row) {
         const remaingDays = EntitlementUtil.timeLeftInDays(row.expirationDate)
         return EntitlementUtil.timeLeftValues(remaingDays)
       }
@@ -99,11 +91,9 @@ export function Subscriptions () {
       dataIndex: 'status',
       key: 'status',
       filterable: true,
-      sorter: true
-      // render: function (data, row) {
-      //   const remaingDays = EntitlementUtil.timeLeftInDays(row.expirationDate)
-      //   return EntitlementUtil.timeLeftValues(remaingDays)
-      // }
+      render: function (_, row) {
+        return row.status === 'VALID' ? 'Active' : 'Expired'
+      }
     }
   ]
 
@@ -162,30 +152,6 @@ export function Subscriptions () {
       cssStr('--acx-accents-blue-50'),
       cssStr('--acx-neutrals-30')
     ]
-    // const barEmptyColors = [
-    //   cssStr('--acx-neutrals-20')
-    // ]
-
-    // function GetUtilizationChart (wifi: string) {
-    //   return <>
-    //     <StackedBarChart
-    //       style={{ marginLeft: 8, height: 16, width: 135 }}
-    //       barWidth={12}
-    //       data={[{
-    //         category: 'emptyStatus',
-    //         series: [{
-    //           name: '',
-    //           value: 1
-    //         }]
-    //       }]}
-    //       showTooltip={false}
-    //       showLabels={false}
-    //       showTotal={false}
-    //       barColors={barEmptyColors}
-    //     />
-    //     <label style={{ marginLeft: 8 }}>0</label>
-    //   </>
-    // }
 
     return (
       <>
