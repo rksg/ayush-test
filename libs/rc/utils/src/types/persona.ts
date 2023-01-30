@@ -45,6 +45,6 @@ export interface PersonaEthernetPort {
   macAddress: string,
   personaId: string,
   portIndex: number,
-  name: string,
+  name?: string,
   createdAt?: string
 }
