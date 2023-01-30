@@ -58,6 +58,7 @@ describe('SyslogForm', () => {
     await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
     await waitFor(() => screen.findByText('Enable Server'))
     expect(await screen.findByText(/Enable Server/)).toBeVisible()
+
     expect(await screen.findByText(/SyslogProfile1/)).toBeVisible()
   })
 
