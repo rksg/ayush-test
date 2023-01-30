@@ -126,7 +126,7 @@ export function DirectedMulticast () {
     </Row>
     {
       directedMulticastSettings.map(({ key, value, label }) => (
-        <FieldLabel width='180px'>
+        <FieldLabel width='180px' key={key} >
           {$t(label)}
           <Form.Item
             valuePropName='checked'

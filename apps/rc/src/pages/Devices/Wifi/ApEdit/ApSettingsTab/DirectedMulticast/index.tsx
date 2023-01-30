@@ -221,7 +221,7 @@ export function DirectedMulticast () {
           </Col>
         </Row>
         { directedMulticastSettings.map(({ key, fieldName, label }) => (
-          <FieldLabel width='180px'>
+          <FieldLabel width='180px' key={key} >
             {$t(label)}
             <Form.Item
               name={fieldName}
