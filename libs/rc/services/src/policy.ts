@@ -27,7 +27,8 @@ import {
   L2AclPolicy,
   AvcApp,
   AccessControlUrls, L3AclPolicy, AvcCat,
-  ClientIsolationSaveData, ClientIsolationUrls
+  ClientIsolationSaveData, ClientIsolationUrls,
+  createNewTableHttpRequest, TableChangePayload, RequestFormData
 } from '@acx-ui/rc/utils'
 
 export const basePolicyApi = createApi({
@@ -233,11 +234,14 @@ export const policyApi = basePolicyApi.injectEndpoints({
       }
     }),
     macRegLists: build.query<TableResult<MacRegistrationPool>, RequestPayload>({
-      query: ({ params }) => {
-        const poolsReq = createHttpRequest(MacRegListUrlsInfo.getMacRegistrationPools, params)
+      query: ({ params, payload }) => {
+        const poolsReq = createNewTableHttpRequest({
+          apiInfo: MacRegListUrlsInfo.getMacRegistrationPools,
+          params,
+          payload: payload as TableChangePayload
+        })
         return {
-          ...poolsReq,
-          params
+          ...poolsReq
         }
       },
       transformResponse (result: NewTableResult<MacRegistrationPool>) {
@@ -246,11 +250,14 @@ export const policyApi = basePolicyApi.injectEndpoints({
       providesTags: [{ type: 'MacRegistrationPool', id: 'LIST' }]
     }),
     macRegistrations: build.query<TableResult<MacRegistration>, RequestPayload>({
-      query: ({ params }) => {
-        const poolsReq = createHttpRequest(MacRegListUrlsInfo.getMacRegistrations, params)
+      query: ({ params, payload }) => {
+        const poolsReq = createNewTableHttpRequest({
+          apiInfo: MacRegListUrlsInfo.getMacRegistrations,
+          params,
+          payload: payload as TableChangePayload
+        })
         return {
-          ...poolsReq,
-          params
+          ...poolsReq
         }
       },
       transformResponse (result: NewTableResult<MacRegistration>) {
@@ -386,6 +393,19 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'ClientIsolation', id: 'LIST' }]
     }),
+    uploadMacRegistration: build.mutation<{}, RequestFormData>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MacRegListUrlsInfo.uploadMacRegistration, params, {
+          'Content-Type': undefined,
+          'Accept': '*/*'
+        })
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'MacRegistration', id: 'LIST' }]
+    }),
     avcCatList: build.query<AvcCat[], RequestPayload>({
       query: ({ params, payload }) => {
         const avcCatListReq = createHttpRequest(AccessControlUrls.getAvcCat, params)
@@ -444,5 +464,6 @@ export const {
   useLazyGetClientIsolationListQuery,
   useGetClientIsolationQuery,
   useUpdateClientIsolationMutation,
-  useLazyGetMacRegListQuery
+  useLazyGetMacRegListQuery,
+  useUploadMacRegistrationMutation
 } = policyApi
