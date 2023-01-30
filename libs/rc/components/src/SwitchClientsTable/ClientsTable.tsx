@@ -55,7 +55,7 @@ export function ClientsTable (props: {
       sorter: true,
       render: (data, row) => {
         // eslint-disable-next-line max-len
-        return <TenantLink to={`devices/switch/${params.switchId}/${params.serialNumber}/clientDetails/${row.id}`}>{data?.toString().toUpperCase() || '--'}</TenantLink>
+        return <TenantLink to={`users/switch/clients/${row.id}`}>{data?.toString().toUpperCase() || '--'}</TenantLink>
       }
     }, {
       key: 'clientName',

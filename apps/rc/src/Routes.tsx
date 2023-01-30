@@ -113,10 +113,6 @@ function DeviceRoutes () {
         element={<SwitchDetails />}
       />
       <Route
-        path='devices/switch/:switchId/:serialNumber/clientDetails/:clientId'
-        element={<SwitchClientDetailsPage />}
-      />
-      <Route
         path='devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab/:categoryTab'
         element={<SwitchDetails />}
       />
@@ -318,6 +314,7 @@ function UserRoutes () {
       </Route>
       <Route path='users/switch' element={<TenantNavigate replace to='/users/switch/clients' />} />
       <Route path='users/switch/clients' element={<SwitchClientList />} />
+      <Route path='users/switch/clients/:clientId' element={<SwitchClientDetailsPage />} />
       {useIsSplitOn(Features.SERVICES)
         ? <><Route
           path='users/persona-management'
