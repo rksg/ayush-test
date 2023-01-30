@@ -17,6 +17,7 @@ import { getIntl }   from '@acx-ui/utils'
 
 import { EditPortDrawer } from './editPortDrawer'
 import * as UI            from './styledComponents'
+import { SwitchLagDrawer } from '../SwitchLagDrawer'
 
 const STACK_PORT_FIELD = 'SwitchPortStackingPortField'
 
@@ -27,6 +28,8 @@ export function SwitchPortTable ({ isVenueLevel }: {
   const { serialNumber, venueId } = useParams()
   const [selectedPorts, setSelectedPorts] = useState([] as SwitchPortViewModel[])
   const [drawerVisible, setDrawerVisible] = useState(false)
+  const [lagDrawerVisible, setLagDrawerVisible] = useState(false)
+
 
   const tableQuery = useTableQuery({
     useQuery: useSwitchPortlistQuery,
@@ -255,11 +258,16 @@ export function SwitchPortTable ({ isVenueLevel }: {
       actions={!isVenueLevel
         ? [{
           label: $t({ defaultMessage: 'Manage LAG' }),
-          onClick: () => { } // TODO
+          onClick: () => {setLagDrawerVisible(true)}
         }]
         : []
       }
     />
+
+    {<SwitchLagDrawer
+      visible={lagDrawerVisible}
+      setVisible={setLagDrawerVisible}
+    />}
 
     { drawerVisible && <EditPortDrawer
       key='edit-port'

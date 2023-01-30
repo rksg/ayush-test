@@ -40,7 +40,8 @@ import {
   TroubleshootingResult,
   SwitchDhcp,
   SwitchDhcpLease,
-  CommonResult
+  CommonResult,
+  Lag
 } from '@acx-ui/rc/utils'
 import { formatter } from '@acx-ui/utils'
 
@@ -577,6 +578,15 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Switch', id: 'DETAIL' }]
     }),
+    getLagList: build.query<Lag[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getLagList, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Switch', id: 'LAG' }]
+    }),
     getDhcpPools: build.query<TableResult<SwitchDhcp>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(SwitchUrlsInfo.getDhcpPools, params)
@@ -793,6 +803,7 @@ export const {
   useGetTroubleshootingCleanQuery,
   useLazyGetTroubleshootingCleanQuery,
   useUpdateDhcpServerStateMutation,
+  useGetLagListQuery,
   useGetDhcpPoolsQuery,
   useGetDhcpServerQuery,
   useLazyGetDhcpServerQuery,

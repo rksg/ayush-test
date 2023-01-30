@@ -8,7 +8,8 @@ import {
   TableProps,
   Loader,
   Tooltip,
-  showActionModal
+  showActionModal,
+  Drawer
 } from '@acx-ui/components'
 import { useDeleteVePortsMutation, useGetSwitchRoutedListQuery, useGetVenueRoutedListQuery } from '@acx-ui/rc/services'
 import {
@@ -204,14 +205,14 @@ export function SwitchVeTable ( { isVenueLevel } : {
       }]
       }
     />
-
-    { visible && <SwitchVeDrawer
+    {visible && <SwitchVeDrawer
       visible={visible}
       setVisible={setVisible}
       isEditMode={isEditMode}
       isVenueLevel={isVenueLevel}
       editData={editData}
-    /> }
+    />}
+
   </Loader>
 
 }
