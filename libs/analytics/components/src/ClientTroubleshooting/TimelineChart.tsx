@@ -317,6 +317,7 @@ export function TimelineChart ({
     xAxis: {
       ...xAxisOptions(),
       type: 'time',
+      boundaryGap: false,
       ...(hasXaxisLabel
         ? {
           axisLabel: {
@@ -405,7 +406,9 @@ export function TimelineChart ({
         id: 'zoom',
         type: 'inside',
         zoomLock: true,
-        minValueSpan: 60
+        minValueSpan: 60,
+        start: 0,
+        end: 100
       }
     ],
     series: mapping
@@ -422,7 +425,8 @@ export function TimelineChart ({
             data: getSeriesData(data, key, series),
             itemStyle: {
               color: getSeriesItemColor
-            }
+            },
+            connectNulls: true
           } as SeriesOption)
           : {
             type: 'custom',
@@ -431,7 +435,8 @@ export function TimelineChart ({
             itemStyle: {
               color: getBarColor as unknown as string
             },
-            data: getSeriesData(data, key, series)
+            data: getSeriesData(data, key, series),
+            connectNulls: true
           }
       ) as SeriesOption[]
   }
