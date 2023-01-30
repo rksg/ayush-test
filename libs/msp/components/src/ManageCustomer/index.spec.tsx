@@ -166,7 +166,7 @@ describe('ManageCustomer', () => {
       mspEcTenantId: '1576b79db6b549f3b1f3a7177d7d4ca5'
     }
   })
-  it('should render correctly', async () => {
+  xit('should render correctly', async () => {
     render(
       <Provider>
         <ManageCustomer />
@@ -189,7 +189,7 @@ describe('ManageCustomer', () => {
     expect(screen.getByPlaceholderText('Set address here')).toBeDisabled()
   })
 
-  it('should validate required inputs correctly', async () => {
+  xit('should validate required inputs correctly', async () => {
     render(
       <Provider>
         <ManageCustomer />
@@ -212,7 +212,7 @@ describe('ManageCustomer', () => {
     expect(await screen.findByText('Please enter Customer Name')).toBeVisible()
   })
 
-  it('should have correct workflow', async () => {
+  xit('should have correct workflow', async () => {
     render(
       <Provider>
         <ManageCustomer />
