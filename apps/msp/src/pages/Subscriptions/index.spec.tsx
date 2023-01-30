@@ -1,17 +1,18 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { MspUrlsInfo }                                                      from '@acx-ui/rc/utils'
-import { Provider }                                                         from '@acx-ui/store'
-import { mockServer, render, screen, fireEvent, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { MspUrlsInfo }                                            from '@acx-ui/rc/utils'
+import { Provider }                                               from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved  } from '@acx-ui/test-utils'
 
-import { WifiLicense } from '.'
+import { Subscriptions } from '.'
 
 const list = {
   totalCount: 1,
   page: 1,
   data: [
     {
+      name: 'Switch',
       deviceSubType: 'ICX76',
       deviceType: 'MSP_SWITCH',
       effectiveDate: 'Mon Dec 06 00:00:00 UTC 2021',
@@ -26,31 +27,38 @@ const list = {
   ]
 }
 
-describe('WifiLicense', () => {
-  it('should render correctly', async () => {
+describe('Subscriptions', () => {
+  let params: { tenantId: string }
+  beforeEach(async () => {
     mockServer.use(
       rest.get(
         MspUrlsInfo.getMspEntitlement.url,
         (req, res, ctx) => res(ctx.json(list))
       )
     )
-    const params = {
+    params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
+  })
+
+  it('should render correctly', async () => {
 
     const { asFragment } = render(
       <Provider>
-        <WifiLicense />
+        <Subscriptions />
       </Provider>, {
         route: { params, path: '/:tenantId/msplicenses' }
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    const showEXpiredButton = await screen.findByText('Show Expired Licenses')
-    fireEvent.click(showEXpiredButton)
-    const licenseManagementButton = await screen.findByText('License Management')
-    fireEvent.click(licenseManagementButton)
+    // const GenerateUsageButton = await screen.findByRole('button', { name: 'Generate Usage Report' })
+    // fireEvent.click(GenerateUsageButton)
+    // const licenseManagementButton = await screen.findByText('Manage Subsciptions')
+    // fireEvent.click(licenseManagementButton)
+    // const refreshButton = await screen.findByText('Refresh')
+    // fireEvent.click(refreshButton)
 
     expect(asFragment()).toMatchSnapshot()
+
   })
 })

@@ -5,8 +5,8 @@ import { Provider }                          from '@acx-ui/store'
 import { DeviceInventory } from './pages/DeviceInventory'
 import { Integrators }     from './pages/Integrators'
 import Layout              from './pages/Layout'
-import { LicensesTab }     from './pages/LicensesTab'
 import { MspCustomers }    from './pages/MspCustomers'
+import { Subscriptions }   from './pages/Subscriptions'
 import { VarCustomers }    from './pages/VarCustomers'
 
 export default function MspRoutes () {
@@ -23,7 +23,7 @@ export default function MspRoutes () {
       <Route path='integrators' element={<Integrators />} />
       <Route path='integrators/create' element={<div>Add Integrator</div>} />
       <Route path='deviceinventory' element={<DeviceInventory />} />
-      <Route path='msplicenses' element={<LicensesTab />} />
+      <Route path='msplicenses' element={<Subscriptions />} />
       <Route path='portalSetting' element={<div>Portal Setting</div>} />
     </Route>
   )
