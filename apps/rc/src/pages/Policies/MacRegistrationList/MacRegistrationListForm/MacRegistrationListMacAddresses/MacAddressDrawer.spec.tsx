@@ -1,9 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { MacRegListUrlsInfo }         from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { MacRegListUrlsInfo }                                    from '@acx-ui/rc/utils'
+import { Provider }                                              from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { MacAddressDrawer } from './MacAddressDrawer'
 
@@ -14,8 +14,7 @@ const macAddress = {
   macAddress: '3A-B8-A9-29-35-D5',
   username: 'ex proident',
   email: 'test@commscope.com',
-  location: 'ipsum eiusmod sunt veniam',
-  deviceName: 'test'
+  createdDate: '2065-12-08T18:40:01Z'
 }
 
 const list = {
@@ -27,7 +26,7 @@ const list = {
       macAddress: '11-22-33-44-55-66',
       username: 'testUser',
       email: 'testUser@commscope.com',
-      location: 'ipsum eiusmod sunt veniam'
+      createdDate: '2065-12-08T18:40:01Z'
     },
     {
       id: '7d3a416c-6e73-4dde-8242-299649a16a9c',
@@ -35,7 +34,7 @@ const list = {
       macAddress: '3A-B8-A9-29-35-D5',
       username: 'ex proident',
       email: 'dolore pariatur adipisicing esse Excepteur',
-      location: 'ipsum eiusmod sunt veniam'
+      createdDate: '2065-12-08T18:40:01Z'
     }
   ],
   pageable: {
@@ -66,6 +65,10 @@ describe('MacAddressDrawer', () => {
       ),
       rest.post(
         MacRegListUrlsInfo.addMacRegistration.url,
+        (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.patch(
+        MacRegListUrlsInfo.updateMacRegistration.url,
         (req, res, ctx) => res(ctx.json({}))
       )
     )
@@ -153,5 +156,10 @@ describe('MacAddressDrawer', () => {
 
     const emailInput = await screen.findByRole('textbox', { name: 'E-mail' })
     expect(emailInput).toHaveValue(macAddress.email)
+
+    await userEvent.click(saveButton)
+
+    const validating = await screen.findByRole('img', { name: 'loading' })
+    await waitForElementToBeRemoved(validating)
   })
 })

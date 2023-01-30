@@ -8,7 +8,10 @@ import {
   checkVlanMember,
   checkValues,
   apNameRegExp,
+  dscpRegExp,
   gpsRegExp,
+  poeBudgetRegExp,
+  priorityRegExp,
   serialNumberRegExp,
   targetHostRegExp
 } from './validator'
@@ -165,6 +168,39 @@ describe('validator', () => {
     it('Should display error message if Serial Number values incorrectly', async () => {
       const result1 = targetHostRegExp('1.1.1.1.1')
       await expect(result1).rejects.toEqual('Please enter valid target host or IP address')
+    })
+  })
+
+  describe('poeBudgetRegExp', () => {
+    it('Should take care of Poe Budget values correctly', async () => {
+      const result = poeBudgetRegExp('2000')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should display error message if Poe Budget values incorrectly', async () => {
+      const result1 = poeBudgetRegExp('10')
+      await expect(result1).rejects.toEqual('Poe Budget can only be from 1000 - 30000')
+    })
+  })
+
+  describe('dscpRegExp', () => {
+    it('Should take care of DSCP values correctly', async () => {
+      const result = dscpRegExp('6')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should display error message if DSCP values incorrectly', async () => {
+      const result1 = dscpRegExp('66')
+      await expect(result1).rejects.toEqual('Enter a valid number between 0 and 63')
+    })
+  })
+
+  describe('priorityRegExp', () => {
+    it('Should take care of Priority values correctly', async () => {
+      const result = priorityRegExp('6')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should display error message if Priority values incorrectly', async () => {
+      const result1 = priorityRegExp('66')
+      await expect(result1).rejects.toEqual('Enter a valid number between 0 and 7')
     })
   })
 })
