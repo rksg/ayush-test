@@ -205,15 +205,9 @@ export function TimeLine (props: TimeLineProps) {
                 mapping={
                   expandObj[config?.value as keyof TimelineData]
                     ? config.value === TYPES.ROAMING
-                      ? [
-                        ...config.chartMapping,
-                        ...(getRoamingChartConfig(roamingEventsAps as RoamingConfigParam) as {
-                            key: string;
-                            label: string;
-                            chartType: string;
-                            series: string;
-                          }[])
-                      ]
+                      ? config.chartMapping.concat(
+                        getRoamingChartConfig(roamingEventsAps as RoamingConfigParam)
+                      ).reverse()
                       : config.chartMapping
                     : [config.chartMapping[0]]
                 }
