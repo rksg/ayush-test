@@ -1,7 +1,7 @@
 import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
-import { PageHeader, Tabs }                      from '@acx-ui/components'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { PageHeader, Tabs }                                    from '@acx-ui/components'
+import { generatePath, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { Details }  from './Details'
 import { Overview } from './Overview'
@@ -25,16 +25,18 @@ const tabs : {
   }
 ]
 
+const rootPath = '/serviceValidation/networkHealth'
+
 function NetworkHealthDetails () {
   const { $t } = useIntl()
-  const { activeTab = tabs[0].key } = useParams()
+  const { activeTab = tabs[0].key, ...ids } = useParams()
   const navigate = useNavigate()
-  const basePath = useTenantLink('/serviceValidation/networkHealth/:id/tab') // replace :id with test id
-  const onTabChange = (tab: string) =>
-    navigate({
-      ...basePath,
-      pathname: `${basePath.pathname}/${tab}`
-    })
+  const basePath = useTenantLink(generatePath(`${rootPath}/:specId/tests/:testId/tab`, ids))
+
+  const onTabChange = (tab: string) => navigate({
+    ...basePath,
+    pathname: `${basePath.pathname}/${tab}`
+  })
   const Tab = tabs.find(tab => tab.key === activeTab)?.component
   return (
     <>

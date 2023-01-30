@@ -29,9 +29,12 @@ export default function AnalyticsRoutes () {
       <Route path='serviceValidation'
         element={<TenantNavigate replace to='/serviceValidation/networkHealth' />} />
       <Route path='serviceValidation/networkHealth' element={<NetworkHealthList />} />
-      <Route path='serviceValidation/networkHealth/:id' element={<NetworkHealthDetails />} />
-      <Route path='serviceValidation/networkHealth/:id/tab/:activeTab'
-        element={<NetworkHealthDetails />} />
+      <Route path='serviceValidation/networkHealth/:specId'>
+        <Route path='tests/:testId'>
+          <Route path='' element={<NetworkHealthDetails />} />
+          <Route path='tab/:activeTab' element={<NetworkHealthDetails />} />
+        </Route>
+      </Route>
       <Route path='serviceValidation/videoCallQoe' element={<VideoCallQoePage />} />
     </Route>
   )

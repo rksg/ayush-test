@@ -58,6 +58,7 @@ test('should navigate to serviceValidation/networkHealth', async () => {
   })
   expect(screen.getByTestId('NetworkHealthPage')).toBeVisible()
 })
+
 test('should navigate to analytics/recommendations', () => {
   render(<Provider><AnalyticsRoutes /></Provider>, {
     route: {
@@ -115,7 +116,16 @@ test('should navigate to analytics/incidents/tab/overview', async () => {
 test('should navigate to serviceValidation/networkHealth/tab/overview', async () => {
   render(< Provider><AnalyticsRoutes /></Provider>, {
     route: {
-      path: '/t/tenantId/serviceValidation/networkHealth/1/tab/overview',
+      path: '/t/tenantId/serviceValidation/networkHealth/1/tests/1/tab/overview',
+      wrapRoutes: false
+    }
+  })
+  expect(screen.getByTestId('NetworkHealthDetails')).toBeVisible()
+})
+test('should navigate to serviceValidation/networkHealth/tab/details', async () => {
+  render(< Provider><AnalyticsRoutes /></Provider>, {
+    route: {
+      path: '/t/tenantId/serviceValidation/networkHealth/1/tests/1/tab/details',
       wrapRoutes: false
     }
   })
