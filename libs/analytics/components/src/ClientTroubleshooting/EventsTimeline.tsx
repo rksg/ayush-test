@@ -141,8 +141,8 @@ export function TimeLine (props: TimeLineProps) {
                 (config.value === TYPES.ROAMING
                   ? getRoamingSubtitleConfig(roamingEventsAps as RoamingConfigParam)
                   : config?.subtitle
-                )?.map((subtitle) => (
-                  <React.Fragment key={subtitle.value}>
+                )?.map((subtitle, index) => (
+                  <React.Fragment key={subtitle.value + index}>
                     <Col span={17} offset={3} style={subtitle.isLast ? { marginBottom: 40 } : {}}>
                       {config.value === TYPES.ROAMING
                         ? <UI.RoamingTimelineSubContent>
@@ -195,8 +195,10 @@ export function TimeLine (props: TimeLineProps) {
                   expandObj[config?.value as keyof TimelineData],
                   !Array.isArray(qualties) ? qualties.all : [],
                   Array.isArray(incidents) ? incidents : [],
-                  { ...roamingEventsTimeSeries, [ALL]: TimelineData.roaming
-                    .all } as RoamingTimeSeriesData[]
+                  {
+                    ...roamingEventsTimeSeries,
+                    [ALL]: TimelineData.roaming.all
+                  } as RoamingTimeSeriesData[]
                 )}
                 showResetZoom={config?.showResetZoom}
                 chartBoundary={chartBoundary}

@@ -512,14 +512,14 @@ export const getTimelineData = (events: Event[], incidents: IncidentDetails[]) =
       return acc
     },
     {
-      connectionEvents: {
+      [TYPES.CONNECTION_EVENTS]: {
         [SUCCESS]: [],
         [FAILURE]: [],
         [DISCONNECT]: [],
         [SLOW]: [],
         [ALL]: []
       },
-      roaming: {
+      [TYPES.ROAMING]: {
         [ALL]: []
       }
     } as unknown as TimelineData

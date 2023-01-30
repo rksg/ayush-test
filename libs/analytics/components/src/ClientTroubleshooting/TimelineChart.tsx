@@ -75,6 +75,7 @@ export interface TimelineChartProps extends Omit<EChartsReactProps, 'option' | '
   showResetZoom?: boolean;
   index?: React.Attributes['key'];
 }
+
 export const getSeriesData = (
   data: (Event | LabelledQuality | IncidentDetails | RoamingTimeSeriesData)[],
   key: string,
@@ -108,10 +109,9 @@ export const getSeriesData = (
       .map((record) => [record.start, key, moment(record.end).valueOf(), { ...record, icon: '' }])
   }
   if (series === ROAMING) {
-    if(key === ALL){
+    if (key === ALL) {
       return (data as unknown as { [key: string]: RoamingTimeSeriesData[] })[key]
-        .filter((record) => record.seriesKey === key)
-        .map((record) => [record.start, record.seriesKey, record])
+        .map((record) => [record.start, key, record])
     }
     return (data as unknown as { [key: string]: { events: RoamingTimeSeriesData[] } })[
       key
@@ -281,8 +281,50 @@ export function TimelineChart ({
   // use selected event on dot click to show popover
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selected, setSelected] = useState<number | undefined>(selectedData)
-
   useDotClick(eChartsRef, onDotClick, setSelected)
+
+  useEffect(() => {
+    const refCopy = eChartsRef.current
+
+    return () => {
+      if (refCopy) {
+        const instance = refCopy.getEchartsInstance()
+        if (instance && instance.isDisposed && !instance.isDisposed()) {
+          instance.dispose()
+        }
+      }
+    }
+  }, [])
+
+  const seriesData = mapping
+    .reverse()
+    .slice()
+    .map(({ key, series, chartType }) =>
+      chartType === 'scatter'
+        ? ({
+          type: chartType,
+          name: series,
+          symbol: 'circle',
+          symbolSize: 8,
+          animation: false,
+          data: getSeriesData(data, key, series),
+          itemStyle: {
+            color: getSeriesItemColor
+          },
+          connectNulls: true
+        } as SeriesOption)
+        : {
+          type: 'custom',
+          name: series,
+          renderItem: renderCustomItem as unknown as CustomSeriesRenderItem,
+          itemStyle: {
+            color: getBarColor as unknown as string
+          },
+          data: getSeriesData(data, key, series),
+          connectNulls: true
+        }
+    ) as SeriesOption[]
+
   const option: EChartsOption = {
     animation: false,
     grid: {
@@ -297,9 +339,10 @@ export function TimelineChart ({
       trigger: 'axis',
       zlevel: 10,
       triggerOn: 'mousemove',
+      show: seriesData.length > 0,
       axisPointer: {
         axis: 'x',
-        status: 'show',
+        status: seriesData.length > 0 ? 'show' : 'hide',
         snap: false,
         animation: false,
         lineStyle: {
@@ -411,34 +454,7 @@ export function TimelineChart ({
         end: 100
       }
     ],
-    series: mapping
-      .reverse()
-      .slice()
-      .map(({ key, series, chartType }) =>
-        chartType === 'scatter'
-          ? ({
-            type: chartType,
-            name: series,
-            symbol: 'circle',
-            symbolSize: 8,
-            animation: false,
-            data: getSeriesData(data, key, series),
-            itemStyle: {
-              color: getSeriesItemColor
-            },
-            connectNulls: true
-          } as SeriesOption)
-          : {
-            type: 'custom',
-            name: series,
-            renderItem: renderCustomItem as unknown as CustomSeriesRenderItem,
-            itemStyle: {
-              color: getBarColor as unknown as string
-            },
-            data: getSeriesData(data, key, series),
-            connectNulls: true
-          }
-      ) as SeriesOption[]
+    series: seriesData
   }
   return (
     <>
