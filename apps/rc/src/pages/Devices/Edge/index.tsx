@@ -8,7 +8,7 @@ import {
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
 import { useDeleteEdgeMutation, useGetEdgeListQuery, useSendOtpMutation } from '@acx-ui/rc/services'
-import { EdgeStatusEnum, EdgeViewModel, useTableQuery }                   from '@acx-ui/rc/utils'
+import { EdgeStatusEnum, EdgeStatus, useTableQuery }                      from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useTenantLink }                         from '@acx-ui/react-router-dom'
 
 import { EdgeStatusLight } from './EdgeStatusLight'
@@ -44,7 +44,7 @@ const EdgesTable = () => {
   const [deleteEdge, { isLoading: isDeleteEdgeUpdating }] = useDeleteEdgeMutation()
   const [sendOtp] = useSendOtpMutation()
 
-  const columns: TableProps<EdgeViewModel>['columns'] = [
+  const columns: TableProps<EdgeStatus>['columns'] = [
     {
       title: $t({ defaultMessage: 'SmartEdge' }),
       tooltip: 'test',
@@ -125,7 +125,7 @@ const EdgesTable = () => {
     }
   ]
 
-  const rowActions: TableProps<EdgeViewModel>['rowActions'] = [
+  const rowActions: TableProps<EdgeStatus>['rowActions'] = [
     {
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),

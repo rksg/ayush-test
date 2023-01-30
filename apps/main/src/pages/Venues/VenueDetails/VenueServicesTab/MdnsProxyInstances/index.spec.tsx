@@ -1,18 +1,19 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo }          from '@acx-ui/rc/utils'
-import { Path, To, useTenantLink } from '@acx-ui/react-router-dom'
-import { Provider }                from '@acx-ui/store'
+import { CommonUrlsInfo, MdnsProxyUrls } from '@acx-ui/rc/utils'
+import { Path, To }                      from '@acx-ui/react-router-dom'
+import { Provider }                      from '@acx-ui/store'
 import {
   mockServer,
   render,
   waitForElementToBeRemoved,
   screen,
-  renderHook
+  within,
+  waitFor
 } from '@acx-ui/test-utils'
 
-import { mockedApList, mockedTenantId, mockedVenueId } from './__tests__/fixtures'
+import { mockedVenueApList, mockedTenantId, mockedVenueId, mockedMdnsProxyList, mockedApList } from './__tests__/fixtures'
 
 import MdnsProxyInstances from '.'
 
@@ -41,35 +42,14 @@ describe('MdnsProxyInstances', () => {
 
   beforeEach(async () => {
     mockServer.use(
-      rest.post(
-        CommonUrlsInfo.getApsList.url,
-        (req, res, ctx) => res(ctx.json(mockedApList))
+      rest.get(
+        MdnsProxyUrls.getMdnsProxyApsByVenue.url,
+        (req, res, ctx) => res(ctx.json(mockedVenueApList))
       )
     )
   })
 
   it('should render table with the giving data', async () => {
-    const { asFragment } = render(
-      <Provider>
-        <MdnsProxyInstances />
-      </Provider>, {
-        route: { params, path }
-      }
-    )
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
-    expect(asFragment()).toMatchSnapshot()
-
-    const targetAp = mockedApList.data[0]
-    const targetRow = screen.getByRole('row', { name: new RegExp(targetAp.name) })
-
-    expect(targetRow).toBeInTheDocument()
-  })
-
-  it('should navigate to the Add AP form', async () => {
-    const { result } = renderHook(() => useTenantLink('devices/wifi/add'))
-
     render(
       <Provider>
         <MdnsProxyInstances />
@@ -80,10 +60,148 @@ describe('MdnsProxyInstances', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    const addApButton = screen.getByRole('button', { name: 'Add AP' })
+    const targetAp = mockedVenueApList[0]
+    const targetRow = screen.getByRole('row', { name: new RegExp(targetAp.apName) })
 
-    await userEvent.click(addApButton)
+    expect(targetRow).toBeInTheDocument()
+  })
 
-    expect(mockedUseNavigate).toHaveBeenCalledWith(result.current)
+  it('should remove the AP instance from mDNS Proxy service', async () => {
+    render(
+      <Provider>
+        <MdnsProxyInstances />
+      </Provider>, {
+        route: { params, path }
+      }
+    )
+
+    const targetAp = mockedVenueApList[0]
+    const targetRow = await screen.findByRole('row', { name: new RegExp(targetAp.apName) })
+
+    await userEvent.click(within(targetRow).getByRole('radio'))
+
+    await userEvent.click(screen.getByRole('button', { name: /remove/i }))
+
+    expect(await screen.findByText('Delete "' + targetAp.apName + '"?')).toBeVisible()
+
+    await userEvent.click(await screen.findByRole('button', { name: /Delete Instance/i }))
+  })
+
+  it('should deactivate the AP instance from mDNS Proxy service', async () => {
+    render(
+      <Provider>
+        <MdnsProxyInstances />
+      </Provider>, {
+        route: { params, path }
+      }
+    )
+
+    const targetAp = mockedVenueApList[0]
+    const targetRow = await screen.findByRole('row', { name: new RegExp(targetAp.apName) })
+
+    await userEvent.click(within(targetRow).getByRole('switch'))
+
+    expect(await screen.findByText('Delete "' + targetAp.apName + '"?')).toBeVisible()
+
+    await userEvent.click(await screen.findByRole('button', { name: /Delete Instance/i }))
+  })
+
+  it('should change the mDNS Proxy service', async () => {
+    const saveFn = jest.fn()
+
+    mockServer.use(
+      rest.post(
+        MdnsProxyUrls.addMdnsProxyAps.url,
+        (req, res, ctx) => {
+          saveFn(req.body)
+          return res(ctx.json({ requestId: '123456789' }))
+        }
+      ),
+      rest.get(
+        MdnsProxyUrls.getMdnsProxyList.url,
+        (req, res, ctx) => res(ctx.json([...mockedMdnsProxyList]))
+      )
+    )
+
+    render(
+      <Provider>
+        <MdnsProxyInstances />
+      </Provider>, {
+        route: { params, path }
+      }
+    )
+
+    const targetVenueAp = mockedVenueApList[0]
+    const targetMdnsProxyService = mockedMdnsProxyList[0]
+    const targetRow = await screen.findByRole('row', { name: new RegExp(targetVenueAp.apName) })
+
+    await userEvent.click(within(targetRow).getByRole('radio'))
+    await userEvent.click(await screen.findByRole('button', { name: 'Change' }))
+
+    await userEvent.click(await screen.findByRole('combobox', { name: /mDNS Proxy Service/i }))
+    await userEvent.click(await screen.findByText(targetMdnsProxyService.serviceName))
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+
+    await waitFor(() => {
+      expect(saveFn).toHaveBeenCalledWith([targetVenueAp.serialNumber])
+    })
+
+    // Assert the drawer closed
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog')).toBeNull()
+    })
+  })
+
+  it('should add instance', async () => {
+    const saveFn = jest.fn()
+
+    mockServer.use(
+      rest.post(
+        MdnsProxyUrls.addMdnsProxyAps.url,
+        (req, res, ctx) => {
+          saveFn(req.body)
+          return res(ctx.json({ requestId: '123456789' }))
+        }
+      ),
+      rest.get(
+        MdnsProxyUrls.getMdnsProxyList.url,
+        (req, res, ctx) => res(ctx.json([...mockedMdnsProxyList]))
+      ),
+      rest.post(
+        CommonUrlsInfo.getApsList.url,
+        (req, res, ctx) => res(ctx.json({ ...mockedApList }))
+      )
+    )
+
+    render(
+      <Provider>
+        <MdnsProxyInstances />
+      </Provider>, {
+        route: { params, path }
+      }
+    )
+
+    const targetMdnsProxyService = mockedMdnsProxyList[0]
+    const targetAp = mockedApList.data[0]
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Add Instance' }))
+
+    await userEvent.click(await screen.findByRole('combobox', { name: /AP/i }))
+    await userEvent.click(await screen.findByText(targetAp.name))
+
+    await userEvent.click(await screen.findByRole('combobox', { name: /mDNS Proxy Service/i }))
+    await userEvent.click(screen.getByText(targetMdnsProxyService.serviceName))
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
+
+    await waitFor(() => {
+      expect(saveFn).toHaveBeenCalledWith([targetAp.serialNumber])
+    })
+
+    // Assert the drawer closed
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog')).toBeNull()
+    })
   })
 })

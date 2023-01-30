@@ -1,18 +1,17 @@
 import { useState } from 'react'
 
 import {
-  QuestionCircleOutlined
-} from '@ant-design/icons'
-import {
   Checkbox,
   Form,
   Input,
   Tooltip
 } from 'antd'
 import { CheckboxChangeEvent } from 'antd/lib/checkbox'
-import { useWatch }            from 'antd/lib/form/Form'
 import { useIntl }             from 'react-intl'
 
+import {
+  QuestionMarkCircleOutlined
+} from '@acx-ui/icons'
 import { URLRegExp } from '@acx-ui/rc/utils'
 
 export function RedirectUrlInput () {
@@ -22,26 +21,27 @@ export function RedirectUrlInput () {
     intl.$t({ defaultMessage: 'If unchecked, users will reach the page they originally requested' })
 
   const form = Form.useFormInstance()
+  const { useWatch } = Form
   const [
     redirectCheckbox,
     redirectUrl
   ] = [
     useWatch('redirectCheckbox'),
-    useWatch('redirectUrl')
+    useWatch(['guestPortal','redirectUrl'])
   ]
   const [redirectUrlValue, setRedirectUrlValue] = useState('')
 
   const redirectCheckboxChange = (e: CheckboxChangeEvent) => {
     if (e.target.checked) {
-      form.setFieldsValue({ redirectUrl: redirectUrlValue })
+      form.setFieldValue(['guestPortal','redirectUrl'], redirectUrlValue)
     } else {
       setRedirectUrlValue(redirectUrl)
-      form.setFieldsValue({ redirectUrl: '' })
+      form.setFieldValue(['guestPortal','redirectUrl'], '')
     }
   }
 
   return (
-    <Form.Item>
+    <Form.Item><>
       <Form.Item
         noStyle
         name='redirectCheckbox'
@@ -54,10 +54,10 @@ export function RedirectUrlInput () {
         }
       />
       <Tooltip title={REDIRECT_TOOLTIP} placement='bottom'>
-        <QuestionCircleOutlined />
+        <QuestionMarkCircleOutlined style={{ marginLeft: -5, marginBottom: -3 }} />
       </Tooltip>
       <Form.Item
-        name='redirectUrl'
+        name={['guestPortal','redirectUrl']}
         initialValue=''
         rules={[
           { required: redirectCheckbox },
@@ -70,7 +70,7 @@ export function RedirectUrlInput () {
             disabled={!redirectCheckbox}
           />
         }
-      />
+      /></>
     </Form.Item>
   )
 }

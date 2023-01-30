@@ -1,0 +1,54 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Switch Requriements Modal should render correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__UpgradeNotification-sc-1yoazt9-0 kfoDVJ"
+  >
+    <div
+      class="styledComponents__Wrapper-sc-1yoazt9-1 kFLMla"
+    >
+      <div
+        class="styledComponents__Header-sc-1yoazt9-2 QdkW"
+      >
+        Switch Model: 
+        <svg
+          class="styledComponents__WarningTriangle-sc-1yoazt9-8 caQhCr"
+          data-testid="WarningTriangleOutlined"
+        />
+        <span
+          class="styledComponents__ValidateModel-sc-1yoazt9-3 iNbArI"
+        >
+          ICX7150-C08P
+        </span>
+      </div>
+      <div
+        class="styledComponents__Content-sc-1yoazt9-4 jqbVQu"
+      >
+        Minimum firmware version:
+        <span
+          class="styledComponents__MinFwVersion-sc-1yoazt9-5 diMmYr"
+        >
+          08.0.92d
+        </span>
+        <br />
+        If the switch is not running FI 08.0.92d (UFI), then the switch must be upgraded to 09.0.10e (UFI image). This applies even if there is ‘Cloud Ready’ listed on the switch label.
+        <br />
+        <div
+          class="styledComponents__Warning-sc-1yoazt9-6 euQKpb"
+        >
+           Do not proceed unless the switch has minimum FW version running or is manually upgraded.
+        </div>
+        <button
+          class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 ibsWZY styledComponents__LinkButton-sc-1yoazt9-7 ilzxrp"
+          type="button"
+        >
+          <span>
+            Click here for information about the upgrade procedure
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;

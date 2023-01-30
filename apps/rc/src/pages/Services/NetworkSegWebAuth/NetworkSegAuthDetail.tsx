@@ -18,7 +18,7 @@ export function NetworkSegAuthSummary ({ data }: { data?: WebAuthTemplate }) {
   const { $t } = useIntl()
   return <Row gutter={[24, 16]}>
     <Col span={6}>
-      <Subtitle level={5}>{$t({ defaultMessage: 'Name' })}</Subtitle>
+      <Subtitle level={5}>{$t({ defaultMessage: 'Service Name' })}</Subtitle>
       <Typography.Paragraph ellipsis={true} children={data?.name} />
     </Col>
     <Col span={6}>
@@ -33,10 +33,10 @@ export function NetworkSegAuthSummary ({ data }: { data?: WebAuthTemplate }) {
       <Subtitle level={5}>{$t({ defaultMessage: 'Password Label' })}</Subtitle>
       <Typography.Paragraph ellipsis={true} children={data?.webAuthPasswordLabel} />
     </Col>
-    <Col span={6}>
+    {/* <Col span={6}> // TODO: Waiting for TAG feature support
       <Subtitle level={5}>{$t({ defaultMessage: 'Tags' })}</Subtitle>
       <Typography.Paragraph ellipsis={true} children={data?.tag} />
-    </Col>
+    </Col> */}
     <Col span={6}>
       <Subtitle level={5}>{$t({ defaultMessage: 'Button' })}</Subtitle>
       <Typography.Paragraph ellipsis={true} children={data?.webAuthCustomLoginButton} />
@@ -56,14 +56,19 @@ export default function NetworkSegAuthDetail () {
 
   const columns = React.useMemo(() => {
     return [{
-      key: 'name',
-      title: $t({ defaultMessage: 'Venue Name' }),
-      dataIndex: 'name',
-      sorter: true
-    }, {
       key: 'as',
       title: $t({ defaultMessage: 'Access Switches' }),
       dataIndex: 'as',
+      sorter: true
+    }, {
+      key: 'model',
+      title: $t({ defaultMessage: 'Model' }),
+      dataIndex: 'model',
+      sorter: true
+    }, {
+      key: 'venue',
+      title: $t({ defaultMessage: 'Venue' }),
+      dataIndex: 'venue',
       sorter: true
     }]
   }, [$t])
@@ -99,7 +104,7 @@ export default function NetworkSegAuthDetail () {
       <Card title={$t({ defaultMessage: 'Instances ({count})' }, { count: 0 })}>
         <Table
           columns={columns}
-          dataSource={[]}
+          dataSource={[]} // TODO
           type='form'
           rowKey='id' />
       </Card>

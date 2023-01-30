@@ -3,7 +3,7 @@ import { useState } from 'react'
 
 import userEvent from '@testing-library/user-event'
 
-import { render, fireEvent, screen, within, mockDOMSize } from '@acx-ui/test-utils'
+import { render, fireEvent, screen, within, mockDOMSize, findTBody, waitFor } from '@acx-ui/test-utils'
 
 import { Table, TableProps } from '.'
 
@@ -24,7 +24,8 @@ type TestRow = {
   key: string,
   name: string,
   age: number,
-  address: string
+  address: string,
+  isFirstLevel?: boolean
 }
 
 describe('Table component', () => {
@@ -61,6 +62,40 @@ describe('Table component', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 
+  it('should only render pagination when total items exceeds default page size', async () => {
+    const props: TableProps<TestRow> = {
+      columns: testColumns,
+      dataSource: testData,
+      pagination: { total: 11 }
+    }
+    const { rerender } = render(<Table {...props} />)
+    const pagination = await screen.findByRole('listitem', { name: /1/i })
+    expect(pagination).toBeVisible()
+
+    rerender(<Table {...props} pagination={{ total: 9 }} />)
+    expect(screen.queryByRole('listitem', { name: /1/i })).toBeNull()
+  })
+
+  it('should only render pagination when dataSource length exceeds default page size', async () => {
+    const props: TableProps<TestRow> = {
+      columns: testColumns,
+      dataSource: testData,
+      pagination: { defaultPageSize: 2 }
+    }
+    const { rerender } = render(<Table {...props} />)
+    const pagination = await screen.findByRole('listitem', { name: /1/i })
+    expect(pagination).toBeVisible()
+
+    rerender(<Table {...props} pagination={{ defaultPageSize: 10 }} />)
+    expect(screen.queryByRole('listitem', { name: /1/i })).toBeNull()
+  })
+
+  it('should not render pagination when dataSource is undefined', async () => {
+    const props: TableProps<TestRow> = { columns: testColumns }
+    render(<Table {...props} />)
+    expect(screen.queryByRole('listitem', { name: /1/i })).toBeNull()
+  })
+
   it('renders compact table', () => {
     const { asFragment } = render(<Table
       type='compact'
@@ -77,6 +112,23 @@ describe('Table component', () => {
       dataSource={testData}
     />)
     expect(asFragment()).toMatchSnapshot()
+  })
+
+  it('renders no selected bar table', async () => {
+    const props: TableProps<TestRow> = {
+      columns: testColumns,
+      dataSource: testData,
+      rowSelection: {
+        type: 'radio',
+        defaultSelectedRowKeys: ['1']
+      }
+    }
+    const { rerender } = render(<Table {...props} />)
+    const alert = await screen.findByRole('alert')
+
+    expect(alert).toBeVisible()
+    rerender(<Table {...props} tableAlertRender={false} />)
+    expect(alert).not.toBeVisible()
   })
 
   it('renders table with ellipsis column', async () => {
@@ -157,8 +209,7 @@ describe('Table component', () => {
       rowSelection={{ defaultSelectedRowKeys: ['1', '2'] }}
     />)
 
-    const tbody = (await screen.findAllByRole('rowgroup'))
-      .find(element => element.classList.contains('ant-table-tbody'))!
+    const tbody = await findTBody()
 
     expect(tbody).toBeVisible()
 
@@ -193,8 +244,7 @@ describe('Table component', () => {
       rowSelection={{ selectedRowKeys: ['1', '2'] }}
     />)
 
-    const tbody = (await screen.findAllByRole('rowgroup'))
-      .find(element => element.classList.contains('ant-table-tbody'))!
+    const tbody = await findTBody()
 
     expect(tbody).toBeVisible()
 
@@ -239,8 +289,7 @@ describe('Table component', () => {
       rowSelection={{ type: 'radio', onChange }}
     />)
 
-    const tbody = (await screen.findAllByRole('rowgroup'))
-      .find(element => element.classList.contains('ant-table-tbody'))!
+    const tbody = await findTBody()
 
     expect(tbody).toBeVisible()
 
@@ -265,8 +314,7 @@ describe('Table component', () => {
       }}
     />)
 
-    const tbody = (await screen.findAllByRole('rowgroup'))
-      .find(element => element.classList.contains('ant-table-tbody'))!
+    const tbody = await findTBody()
 
     expect(tbody).toBeVisible()
 
@@ -286,8 +334,7 @@ describe('Table component', () => {
       rowSelection={{ defaultSelectedRowKeys: ['1', '3'], onChange }}
     />)
 
-    const tbody = (await screen.findAllByRole('rowgroup'))
-      .find(element => element.classList.contains('ant-table-tbody'))!
+    const tbody = await findTBody()
 
     expect(tbody).toBeVisible()
 
@@ -298,6 +345,51 @@ describe('Table component', () => {
     fireEvent.click(await body.findByText('Will Smith'))
     expect(selectedRows.filter(el => el.checked)).toHaveLength(2)
     expect(onChange).toBeCalledTimes(2)
+  })
+
+  it('Repeated key data: rowKey funciton single select row click', async () => {
+    const treeData = [
+      { key: '1',
+        name: 'John Doe',
+        age: 32,
+        address: 'sample address',
+        isFirstLevel: true,
+        children: [
+          {
+            key: '1',
+            name: 'Will Smith',
+            age: 32,
+            address: 'sample address',
+            isFirstLevel: false
+          }
+        ]
+      },
+      { key: '2',
+        name: 'Jane Doe',
+        age: 32,
+        address: 'sample address',
+        isFirstLevel: true
+      }
+    ]
+    const onChange = jest.fn()
+    render(<Table
+      columns={testColumns}
+      dataSource={treeData}
+      rowKey={(record)=> record.key + (!record.isFirstLevel ? 'child' : '')}
+      rowSelection={{ type: 'radio', onChange }}
+    />)
+
+    const tbody = await findTBody()
+
+    expect(tbody).toBeVisible()
+
+    const body = within(tbody)
+    fireEvent.click(await body.findByText(testData[1].name))
+    // to ensure it doesn't get unselected
+    fireEvent.click(await body.findByText(testData[1].name))
+    const selectedRow = (await body.findAllByRole('radio')) as HTMLInputElement[]
+    expect(selectedRow.filter(el => el.checked)).toHaveLength(1)
+    expect(onChange).toBeCalledTimes(1)
   })
 
   it('calls onResetState', async () => {
@@ -346,10 +438,44 @@ describe('Table component', () => {
     expect(actions[0].onClick).toBeCalled()
   })
 
+  it('renders action dropdown', async () => {
+    const actions = [
+      { label: 'Action 1', onClick: jest.fn() },
+      { label: 'Action 2', onClick: jest.fn() },
+      {
+        label: 'Action 3',
+        onClick: jest.fn(),
+        dropdownMenu: {
+          onClick: jest.fn(),
+          items: [{ key: 'item1', label: 'Item 1', onClick: jest.fn() }]
+        }
+      }
+    ]
+
+    render(<Table
+      actions={actions}
+      columns={testColumns}
+      dataSource={testData}
+    />)
+
+    const dropdown = await screen.findByRole('button', { name: actions[2].label })
+    expect(dropdown).toBeVisible()
+    expect(actions[2].onClick).not.toBeCalled()
+    fireEvent.click(dropdown)
+    expect(actions[2].onClick).not.toBeCalled()
+
+    const dropdownItem = await screen.findByText('Item 1')
+    expect(actions[2].dropdownMenu?.onClick).not.toBeCalled()
+    expect(actions[2].dropdownMenu?.items[0].onClick).not.toBeCalled()
+    fireEvent.click(dropdownItem)
+    expect(actions[2].dropdownMenu?.onClick).toBeCalled()
+    expect(actions[2].dropdownMenu?.items[0].onClick).toBeCalled()
+  })
+
   it('renders disabled action items', async () => {
     const actions = [
       { label: 'Action 1', disabled: true, onClick: jest.fn() },
-      { label: 'Action 2', disabled: true, onClick: jest.fn() }
+      { label: 'Action 2', disabled: true, tooltip: 'can not action', onClick: jest.fn() }
     ]
 
     render(<Table
@@ -361,6 +487,11 @@ describe('Table component', () => {
     const action1 = await screen.findByRole('button', { name: actions[0].label })
     expect(action1).toBeVisible()
     expect(actions[0].onClick).not.toBeCalled()
+    const action2 = await screen.findByRole('button', { name: actions[1].label })
+    fireEvent.mouseOver(action2)
+    await waitFor(() => {
+      expect(screen.getByRole('tooltip').textContent).toBe('can not action')
+    })
   })
 
   it('hides rowAction when visible == false', async () => {
@@ -416,10 +547,12 @@ describe('Table component', () => {
   })
 
   it('disabled row action button and add tooltip', async () => {
-    const [onEdit, onDelete] = [jest.fn(), jest.fn()]
+    const [onEdit, onDelete, onBackup] = [jest.fn(), jest.fn(), jest.fn()]
     const rowActions: TableProps<TestRow>['rowActions'] = [
       { label: 'Edit', onClick: onEdit },
-      { label: 'Delete', onClick: onDelete, disabled: true, tooltip: 'can not delete' }
+      { label: 'Delete', onClick: onDelete, disabled: true, tooltip: 'can not delete' },
+      { label: 'Backup', onClick: onBackup,
+        disabled: (rows) => rows.length !== 1, tooltip: 'can not backup' }
     ]
 
     render(<Table
@@ -433,6 +566,11 @@ describe('Table component', () => {
     fireEvent.click(within(row1).getByRole('checkbox'))
     const deleteButton = screen.getByRole('button', { name: /delete/i })
     expect(deleteButton).toBeDisabled()
+    const backupButton = screen.getByRole('button', { name: /backup/i })
+    expect(backupButton).not.toBeDisabled()
+    const row2 = await screen.findByRole('row', { name: /jane/i })
+    fireEvent.click(within(row2).getByRole('checkbox'))
+    expect(backupButton).toBeDisabled()
   })
 
   it('add row action button tooltip', async () => {
@@ -553,7 +691,7 @@ describe('Table component', () => {
       expect(await screen.findAllByText('Jordan Doe')).toHaveLength(1)
 
       const buttons = await screen.findAllByRole('button')
-      expect(buttons).toHaveLength(5)
+      expect(buttons).toHaveLength(3)
       fireEvent.click(buttons[1])
 
       expect(await screen.findAllByRole('checkbox')).toHaveLength(4)
@@ -566,8 +704,7 @@ describe('Table component', () => {
         rowSelection={{ selectedRowKeys: [] }}
       />)
 
-      const tbody = (await screen.findAllByRole('rowgroup'))
-        .find(element => element.classList.contains('ant-table-tbody'))!
+      const tbody = await findTBody()
 
       expect(tbody).toBeVisible()
       const body = within(tbody)
@@ -592,6 +729,153 @@ describe('Table component', () => {
       expect(after).toHaveLength(1)
       expect(await screen.findByRole('img', { name: 'check', hidden: true }))
         .toBeInTheDocument()
+    })
+  })
+
+  describe('show/hide columnSort', () => {
+    const basicColumns = [
+      {
+        title: 'Name',
+        dataIndex: 'name',
+        key: 'name'
+      },
+      {
+        title: 'Age',
+        dataIndex: 'age',
+        key: 'age'
+      },
+      {
+        title: 'Distance',
+        dataIndex: 'distance',
+        key: 'distance'
+      },
+      {
+        title: 'Address 1',
+        dataIndex: 'address1',
+        key: 'address1'
+      },
+      {
+        title: 'Address 2',
+        dataIndex: 'address2',
+        key: 'address2'
+      },
+      {
+        title: 'Address 3',
+        dataIndex: 'address3',
+        key: 'address3'
+      },
+      {
+        title: 'Address 4',
+        dataIndex: 'address4',
+        key: 'address4'
+      },
+      {
+        title: 'Address 5',
+        dataIndex: 'address5',
+        key: 'address5'
+      },
+      {
+        title: 'Address 6',
+        dataIndex: 'address6',
+        key: 'address6'
+      }
+    ]
+
+    const basicData = [
+      {
+        key: '1',
+        name: 'John Doe',
+        age: 32,
+        distance: 32,
+        address1: 'sample address',
+        address2: 'sample address',
+        address3: 'sample address',
+        address4: 'sample address',
+        address5: 'sample address',
+        address6: 'sample address'
+      },
+      {
+        key: '2',
+        name: 'Jane Doe',
+        age: 33,
+        distance: 33,
+        address1: 'new address',
+        address2: 'sample address',
+        address3: 'sample address',
+        address4: 'sample address',
+        address5: 'sample address',
+        address6: 'sample address'
+      },
+      {
+        key: '3',
+        name: 'Will Smith',
+        age: 45,
+        distance: 45,
+        address1: 'address',
+        address2: 'sample address',
+        address3: 'sample address',
+        address4: 'sample address',
+        address5: 'sample address',
+        address6: 'sample address'
+      }
+    ]
+
+    const columnState = {
+      // eslint-disable-next-line no-console
+      onChange: jest.fn(),
+      defaultValue: {
+        name: true,
+        age: true,
+        address1: true,
+        address2: true,
+        address3: true,
+        address4: true,
+        distance: true,
+        address5: false,
+        address6: true
+      }
+    }
+    const props = {
+      columns: basicColumns,
+      dataSource: basicData,
+      columnState: columnState
+    }
+
+
+    it('hide the columnSort', async () => {
+      render(<Table {...props} columnState={{ ...columnState, hidden: true }} />)
+
+      const listToolbar = await screen.findByRole('generic', {
+        name: (name, element) => {
+          return element.classList.contains('ant-pro-table-list-toolbar')
+        }
+      })
+
+      const listToolBarItem = within(listToolbar).queryByRole('generic', {
+        name: (name, element) => {
+          return element.classList.contains('ant-pro-table-list-toolbar-setting-item')
+        }
+      })
+
+      expect(listToolBarItem).toBeNull()
+    })
+
+    it('show the columnSort by default', async () => {
+      render(<Table {...props} columnState={{ ...columnState }} />)
+
+      const listToolbar = await screen.findByRole('generic', {
+        name: (name, element) => {
+          return element.classList.contains('ant-pro-table-list-toolbar')
+        }
+      })
+
+      const listToolBarItem = await within(listToolbar).findByRole('generic', {
+        name: (name, element) => {
+          return element.classList.contains('ant-pro-table-list-toolbar-setting-item')
+        }
+      })
+
+      expect(listToolBarItem).toBeTruthy()
     })
   })
 })

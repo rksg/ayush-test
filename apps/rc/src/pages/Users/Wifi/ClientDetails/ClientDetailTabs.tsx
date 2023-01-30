@@ -41,7 +41,11 @@ function ClientDetailTabs () {
         key='reports'
       />
       <Tabs.TabPane
-        tab={$t({ defaultMessage: 'Timeline' })}
+        disabled={!useIsSplitOn(Features.UNRELEASED)}
+        tab={<Tooltip title={useIsSplitOn(Features.UNRELEASED) ? '' :
+          $t(notAvailableMsg)}>
+          {$t({ defaultMessage: 'Timeline' })}
+        </Tooltip>}
         key='timeline'
       />
     </Tabs>

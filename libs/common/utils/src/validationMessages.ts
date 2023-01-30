@@ -10,7 +10,23 @@ export const validationMessages = {
     defaultMessage: 'No leading or trailing spaces allowed',
     description: 'Validation - no leading/trailing whitespace checks'
   }),
+  name: defineMessage({
+    defaultMessage: 'Please enter a valid Name',
+    description: 'Validation - Name checks'
+  }),
+  ospf: defineMessage({
+    defaultMessage: 'Please enter a valid OSPF area',
+    description: 'Validation - OSPF area checks'
+  }),
+  dhcpRelayAgent: defineMessage({
+    defaultMessage: 'Please enter a valid DHCP relay agent',
+    description: 'Validation - DHCP relay agent checks'
+  }),
   ipAddress: defineMessage({
+    defaultMessage: 'Please enter a valid IP address',
+    description: 'Validation - IP address checks'
+  }),
+  ipSubnetMask: defineMessage({
     defaultMessage: 'Please enter a valid IP address',
     description: 'Validation - IP address checks'
   }),
@@ -23,8 +39,8 @@ export const validationMessages = {
     description: 'Validation - invalid checks'
   }),
   invalidHex: defineMessage({
-    defaultMessage: 'Please enter a valid IP address',
-    description: 'Validation - IP address checks'
+    defaultMessage: 'Please enter a valid Hex Key',
+    description: 'Validation - Hex Key checks'
   }),
   duplication: defineMessage({
     defaultMessage: `
@@ -72,8 +88,8 @@ export const validationMessages = {
     description: 'Validation - Cannot contain Exclamation mark(!), double quotes and space'
   }),
   excludeQuoteRegExp: defineMessage({
-    defaultMessage: 'Cannot contain double quote and space',
-    description: 'Validation - Cannot contain double quote and space'
+    defaultMessage: 'Cannot contain double quote',
+    description: 'Validation - Cannot contain double quote'
   }),
   excludeSpaceRegExp: defineMessage({
     defaultMessage: 'Cannot contain space',
@@ -132,9 +148,38 @@ export const validationMessages = {
     defaultMessage: 'Please enter a valid email address',
     description: 'Validation - email address checks'
   }),
+  walledGarden: defineMessage({
+    defaultMessage: `Please make sure that all destinations comply to
+      allowed formats. For more information see the help information`,
+    description: 'Validation - walled garden checks'
+  }),
+  ipRangeInvalid: defineMessage({
+    defaultMessage: 'The End IP address should swap Start IP address',
+    description: 'Validation - IP address range'
+  }),
+  ipRangeExceed: defineMessage({
+    defaultMessage: 'The DHCP pool size should not exceed {range}',
+    description: 'Validation - Cellular IP pool size'
+  }),
+  ipNotInSubnetPool: defineMessage({
+    defaultMessage: 'IP address is not in the subnet pool',
+    description: 'Validation - Cellular IP pool size'
+  }),
   phoneNumber: defineMessage({
     defaultMessage: 'Please enter a valid phone number',
     description: 'Validation - phone number checks'
+  }),
+  poeBudget: defineMessage({
+    defaultMessage: 'Poe Budget can only be from 1000 - 30000',
+    description: 'Validation - PoE Budget checks'
+  }),
+  dscp: defineMessage({
+    defaultMessage: 'Enter a valid number between 0 and 63',
+    description: 'Validation - dscp checks'
+  }),
+  priority: defineMessage({
+    defaultMessage: 'Enter a valid number between 0 and 7',
+    description: 'Validation - priority checks'
   }),
   oneRadioChannel: defineMessage({
     defaultMessage: 'Please select one channel',
@@ -143,6 +188,38 @@ export const validationMessages = {
   twoRadioChannels: defineMessage({
     defaultMessage: 'Please select at least two channels',
     description: 'Validation - radio channel checks'
+  }),
+  switchIpInvalid: defineMessage({
+    defaultMessage: 'Enter a valid IPv4 address and not broadcast address',
+    description: 'Validation - switch ip checks'
+  }),
+  switchSubnetInvalid: defineMessage({
+    defaultMessage: 'Subnet mask is invalid',
+    description: 'Validation - switch subnet'
+  }),
+  switchDefaultGatewayInvalid: defineMessage({
+    defaultMessage: 'Gateway is invalid',
+    description: 'Validation - switch gateway'
+  }),
+  switchBroadcastAddressInvalid: defineMessage({
+    defaultMessage: 'Can not be a broadcast address',
+    description: 'Validation - switch broadcast address'
+  }),
+  switchSameSubnetInvalid: defineMessage({
+    defaultMessage: 'IP and gateway are not in the same subnet',
+    description: 'Validation - switch same subnet'
+  }),
+  switchStaticRouteIpInvalid: defineMessage({
+    defaultMessage: 'Enter a valid subnet (e.g. 1.1.1.1/24)',
+    description: 'Validation - switch static route ip'
+  }),
+  switchStaticRouteNextHopInvalid: defineMessage({
+    defaultMessage: 'NextHop IP address is invalid.',
+    description: 'Validation - switch static route ip'
+  }),
+  switchStaticRouteAdminDistanceInvalid: defineMessage({
+    defaultMessage: 'Enter a valid number between 0 and 255',
+    description: 'Validation - switch static route admin distance'
   })
 }
 

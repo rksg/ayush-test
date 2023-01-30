@@ -116,13 +116,14 @@ describe('Alarm widget', () => {
     fireEvent.click(await screen.findByText('Some_AP'))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       hash: '',
-      pathname: '/t/ecc2d7cf9d2342fdb31ae0e24958fcac/aps/FEK3224R08J/TODO',
+      pathname: '/t/ecc2d7cf9d2342fdb31ae0e24958fcac/devices/wifi/FEK3224R08J/details/overview',
       search: ''
     })
     fireEvent.click(await screen.findByText('Some_Switch'))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       hash: '',
-      pathname: '/t/ecc2d7cf9d2342fdb31ae0e24958fcac/switches/FEK3230S0A2/TODO',
+      // eslint-disable-next-line max-len
+      pathname: '/t/ecc2d7cf9d2342fdb31ae0e24958fcac/devices/switch/58:fb:96:0e:81:b2/FEK3230S0A2/details/overview',
       search: ''
     })
   })

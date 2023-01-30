@@ -14,7 +14,6 @@ import {
   CommonUrlsInfo,
   createHttpRequest,
   DhcpAp,
-  ApRadioChannelsForm,
   onSocketActivityChanged,
   RequestPayload,
   RequestFormData,
@@ -24,7 +23,6 @@ import {
   WifiUrlsInfo,
   WifiApSetting,
   ApLanPort,
-  ApRadio,
   APPhoto,
   ApViewModel,
   VenueDefaultApGroup,
@@ -36,7 +34,8 @@ import {
   ApRadioCustomization,
   VenueDefaultRegulatoryChannels,
   APExtended,
-  LanPortStatusProperties
+  LanPortStatusProperties,
+  ApDirectedMulticast
 } from '@acx-ui/rc/utils'
 import { formatter } from '@acx-ui/utils'
 
@@ -250,14 +249,6 @@ export const apApi = baseApApi.injectEndpoints({
         }
       }
     }),
-    apRadioCustomization: build.query<ApRadio, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getApRadioCustomization, params)
-        return {
-          ...req
-        }
-      }
-    }),
     rebootAp: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.rebootAp, params)
@@ -301,46 +292,48 @@ export const apApi = baseApApi.injectEndpoints({
         }
       }
     }),
-    getApRadio: build.query<ApRadioChannelsForm, RequestPayload>({
+    getApRadioCustomization: build.query<ApRadioCustomization, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getApRadio, params)
+        const req = createHttpRequest(WifiUrlsInfo.getApRadioCustomization, params)
         return {
           ...req
         }
       },
-      providesTags: [{ type: 'Ap', id: 'LIST' }]
+      providesTags: [{ type: 'Ap', id: 'RADIO' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UpdateApRadioCustomization',
+            'ResetApRadioCustomization'
+          ]
+          showActivityMessage(msg, activities, () => {
+            api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'RADIO' }]))
+          })
+        })
+      }
     }),
-    updateApRadio: build.mutation<ApRadioChannelsForm, RequestPayload>({
+    updateApRadioCustomization: build.mutation<ApRadioCustomization, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.updateApRadio, params)
+        const req = createHttpRequest(WifiUrlsInfo.updateApRadioCustomization, params)
         return {
           ...req,
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
+      invalidatesTags: [{ type: 'Ap', id: 'RADIO' }]
     }),
-    deleteApRadio: build.mutation<ApRadioChannelsForm, RequestPayload>({
+    deleteApRadioCustomization: build.mutation<ApRadioCustomization, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.deleteApRadio, params)
+        const req = createHttpRequest(WifiUrlsInfo.deleteApRadioCustomization, params)
         return {
           ...req
         }
       },
-      invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
+      invalidatesTags: [{ type: 'Ap', id: 'RADIO' }]
     }),
     getApCapabilities: build.query<Capabilities, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.getApCapabilities, params)
-        return {
-          ...req
-        }
-      }
-    }),
-
-    getApRadioCustomization: build.query<ApRadioCustomization, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getApRadioCustomization, params)
         return {
           ...req
         }
@@ -451,7 +444,48 @@ export const apApi = baseApApi.injectEndpoints({
           ...req
         }
       }
+    }),
+    getApDirectedMulticast: build.query<ApDirectedMulticast, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getApDirectedMulticast, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'DIRECTED_MULTICAST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UpdateApDirectedMulticast',
+            'ResetApDirectedMulticast'
+          ]
+          showActivityMessage(msg, activities, () => {
+            api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'DIRECTED_MULTICAST' }]))
+          })
+        })
+      }
+    }),
+    updateApDirectedMulticast: build.mutation<ApDirectedMulticast, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.updateApDirectedMulticast, params)
+        return{
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'DIRECTED_MULTICAST' }]
+    }),
+    resetApDirectedMulticast: build.mutation<ApDirectedMulticast, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.resetApDirectedMulticast, params)
+        return{
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'DIRECTED_MULTICAST' }]
     })
+
+
   })
 })
 
@@ -462,7 +496,6 @@ export const {
   useApViewModelQuery,
   useApDetailsQuery,
   useApLanPortsQuery,
-  useApRadioCustomizationQuery,
   useAddApMutation,
   usePingApMutation,
   useTraceRouteApMutation,
@@ -488,11 +521,10 @@ export const {
   useGetApPhotoQuery,
   useAddApPhotoMutation,
   useDeleteApPhotoMutation,
-  useGetApRadioQuery,
-  useUpdateApRadioMutation,
-  useDeleteApRadioMutation,
-  useGetPacketCaptureStateQuery,
   useGetApRadioCustomizationQuery,
+  useUpdateApRadioCustomizationMutation,
+  useDeleteApRadioCustomizationMutation,
+  useGetPacketCaptureStateQuery,
   useStopPacketCaptureMutation,
   useStartPacketCaptureMutation,
   useGetApLanPortsQuery,
@@ -501,7 +533,10 @@ export const {
   useLazyGetApCapabilitiesQuery,
   useUpdateApCustomizationMutation,
   useResetApCustomizationMutation,
-  useGetApValidChannelQuery
+  useGetApValidChannelQuery,
+  useGetApDirectedMulticastQuery,
+  useUpdateApDirectedMulticastMutation,
+  useResetApDirectedMulticastMutation
 } = apApi
 
 

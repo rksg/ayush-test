@@ -63,3 +63,7 @@ export interface NetworkSegmentationSwitchSaveData {
   forceOverwriteReboot?: boolean
 }
 
+export interface NetworkSegmentationGroup {
+  id: string,
+  name: string
+}

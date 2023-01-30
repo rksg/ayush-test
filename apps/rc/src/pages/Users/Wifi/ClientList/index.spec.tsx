@@ -1,7 +1,9 @@
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
-import { ClientUrlsInfo }     from '@acx-ui/rc/utils'
-import { Provider }           from '@acx-ui/store'
+import { useIsSplitOn }                   from '@acx-ui/feature-toggle'
+import { ClientUrlsInfo, CommonUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                       from '@acx-ui/store'
 import {
   fireEvent,
   mockServer,
@@ -11,7 +13,7 @@ import {
 } from '@acx-ui/test-utils'
 
 
-import { clientList, clientMeta } from '../__tests__/fixtures'
+import { clientList, clientMeta, historicalClientList, eventMeta } from '../__tests__/fixtures'
 
 import ClientList from '.'
 
@@ -31,6 +33,12 @@ describe('ClientList', () => {
       ),
       rest.post(ClientUrlsInfo.getClientMeta.url,
         (_, res, ctx) => res(ctx.json(clientMeta))
+      ),
+      rest.post(CommonUrlsInfo.getHistoricalClientList.url,
+        (_, res, ctx) => res(ctx.json(historicalClientList))
+      ),
+      rest.post(CommonUrlsInfo.getEventListMeta.url,
+        (_, res, ctx) => res(ctx.json(eventMeta))
       )
     )
   })
@@ -43,12 +51,29 @@ describe('ClientList', () => {
         route: { params, path: '/:tenantId/users/wifi/:activeTab' }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    // await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     fireEvent.click(await screen.findByRole('tab', { name: 'Guest Pass Credentials' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: `/t/${params.tenantId}/users/wifi/guests`,
       hash: '',
       search: ''
     })
+  })
+
+  it('should render search response correctly', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <ClientList />
+      </Provider>, {
+        route: { params, path: '/:tenantId/users/wifi/:activeTab' }
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    const searchInput = await screen.findByRole('textbox')
+    fireEvent.change(searchInput, { target: { value: '11' } })
+    const historicalLink = await screen.findByRole('link', { name: /Historical clients/ })
+    await userEvent.click(historicalLink)
   })
 })

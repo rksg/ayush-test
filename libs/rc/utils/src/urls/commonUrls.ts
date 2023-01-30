@@ -139,13 +139,9 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/service/:serviceId'
   },
-  getDHCPService: {
+  getFloorplan: {
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/dhcpconfigserviceprofiles/:serviceId'
-  },
-  saveDHCPService: {
-    method: 'post',
-    url: '/api/tenant/:tenantId/wifi/network/deep?quickAck=true'
+    url: '/api/tenant/:tenantId/venue/:venueId/floor-plan/:floorPlanId'
   },
   getVenueFloorplans: {
     method: 'get',
@@ -227,10 +223,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/dhcp-service-profile/instances/:serviceId'
   },
-  getDHCProfileDetail: {
-    method: 'get',
-    url: '/api/tenant/:tenantId/dhcp-service-profile/:serviceId'
-  },
   getDenialOfServiceProtection: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/dos-protection'
@@ -267,6 +259,14 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/api/switch/tenant/:tenantId/venue'
   },
+  getVenueConfigHistory: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/venues/:venueId/configurationHistory/query'
+  },
+  getVenueConfigHistoryDetail: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/venues/:venueId/configurationHistory/detail/:transactionId'
+  },
   getSwitchConfigProfile: {
     method: 'get',
     url: '/api/switch/tenant/:tenantId/profile/:profileId'
@@ -282,31 +282,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   updateUserProfile: {
     method: 'put',
     url: '/api/tenant/:tenantId/user-profile'
-  },
-  getVenueDHCPServiceProfile: {
-    //Retrieve Venue DHCP Service Profile Settings
-    method: 'get',
-    url: '/api/venues/:venueId/dhcpconfigserviceprofilesettings'
-  },
-  getVenueActivePools: {
-    //Get Venue Active DHCP Pool
-    method: 'get',
-    url: '/api/venues/:venueId/activedhcppools'
-  },
-  getVenueLeases: {
-    //Get Venue Active DHCP Pool
-    method: 'get',
-    url: '/api/venues/:venueId/dhcpConfigServiceProfileLeases'
-  },
-  getDHCPProfiles: {
-    //Get Venue Active DHCP Pool
-    method: 'get',
-    url: '/api/tenant/:tenantId/wifi/dhcpconfigserviceprofiles'
-  },
-  activeVenueDHCPPool: {
-    //Get Venue Active DHCP Pool
-    method: 'post',
-    url: '/api/tenant/:tenantId/wifi/venues/:venueId/dhcppools/:dhcppoolId'
   },
   getApDetailHeader: {
     method: 'get',
@@ -339,5 +314,17 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getApNetworkList: {
     method: 'post',
     url: '/api/viewmodel/tenant/:tenantId/ap/:serialNumber/networks'
+  },
+  getExternalProviders: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/network/external-providers'
+  },
+  getGlobalValues: {
+    method: 'get',
+    url: '/api/ui/globalValues'
+  },
+  getCloudMessageBanner: {
+    method: 'get',
+    url: '/api/upgrade/tenant/:tenantId/banner'
   }
 }

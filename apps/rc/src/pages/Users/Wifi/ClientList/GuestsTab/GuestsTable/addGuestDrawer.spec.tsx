@@ -101,6 +101,7 @@ describe('Add Guest Drawer', () => {
     await userEvent.click(await screen.findByRole('checkbox', { name: /Print Guest pass/ }))
 
     fireEvent.click(await screen.findByTestId('saveBtn'))
+    fireEvent.click(await screen.findByText('Yes, create guest pass'))
     expect(asFragment()).toMatchSnapshot()
   })
   it('should created guest without expiration period correctly', async () => {
@@ -383,6 +384,27 @@ describe('Add Guest Drawer', () => {
         <AddGuestDrawer visible={true} setVisible={jest.fn()} />
       </Provider>, { route: { params } }
     )
+
+    fireEvent.click(await screen.findByTestId('cancelBtn'))
+    expect(asFragment()).toMatchSnapshot()
+  })
+  it('should validate duration correctly', async () => {
+    const { asFragment } = render(
+      <Provider>
+        <AddGuestDrawer visible={true} setVisible={jest.fn()} />
+      </Provider>, { route: { params } }
+    )
+
+    const duration = await screen.findByText('Pass is Valid for' )
+    await userEvent.type(duration, '366')
+    expect(await screen.findByText('Value must be between 1 and 365')).toBeVisible()
+
+    const unitCombo = await screen.findByTitle('Days')
+    fireEvent.mouseDown(unitCombo)
+    await userEvent.click(await screen.findByText('Hours'))
+
+    await userEvent.type(duration, '8761')
+    expect(await screen.findByText('Value must be between 1 and 8760')).toBeVisible()
 
     fireEvent.click(await screen.findByTestId('cancelBtn'))
     expect(asFragment()).toMatchSnapshot()

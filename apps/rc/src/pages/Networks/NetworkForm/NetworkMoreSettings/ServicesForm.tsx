@@ -10,9 +10,14 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Tooltip }                                                                              from '@acx-ui/components'
-import { DnsProxyRule, DnsProxyContextType, WifiCallingSettingContextType, WifiCallingSetting } from '@acx-ui/rc/utils'
-import { notAvailableMsg }                                                                      from '@acx-ui/utils'
+import { Tooltip }     from '@acx-ui/components'
+import {
+  DnsProxyRule,
+  DnsProxyContextType,
+  WifiCallingSettingContextType,
+  WifiCallingSetting
+} from '@acx-ui/rc/utils'
+import { notAvailableMsg } from '@acx-ui/utils'
 
 import NetworkFormContext from '../NetworkFormContext'
 
@@ -137,6 +142,15 @@ export function ServicesForm () {
 
   const [wifiCallingSettingList, setWifiCallingSettingList] = useState([] as WifiCallingSetting[])
 
+  const validateWifiCallingSetting = () => {
+    if (enableWifiCalling && wifiCallingSettingList.length === 0) {
+      return Promise.reject($t({
+        defaultMessage: 'Could not enable wifi-calling with no profiles selected'
+      }))
+    }
+    return Promise.resolve()
+  }
+
   return (
     <>
       <UI.FieldLabel width='125px'>
@@ -179,6 +193,9 @@ export function ServicesForm () {
             <Form.Item
               name={['wlan', 'advancedCustomization', 'wifiCallingIds']}
               initialValue={wifiCallingSettingList}
+              rules={[
+                { validator: () => validateWifiCallingSetting() }
+              ]}
             >
               {enableWifiCalling && <WifiCallingSettingModal />}
               {enableWifiCalling && <WifiCallingSettingTable />}
@@ -214,6 +231,12 @@ export function ServicesForm () {
               <Form.Item
                 name={['wlan','advancedCustomization','arpRequestRateLimit']}
                 initialValue={15}
+                rules={[{
+                  type: 'number', max: 100, min: 15,
+                  message: $t({
+                    defaultMessage: 'ARP request rate limit must be between 15 and 100'
+                  })
+                }]}
                 children={<InputNumber style={{ width: '100%' }} />} />
               <UI.Label>
                 { $t({ defaultMessage: 'ppm' }) }
@@ -234,6 +257,12 @@ export function ServicesForm () {
               <Form.Item
                 name={['wlan','advancedCustomization','dhcpRequestRateLimit']}
                 initialValue={15}
+                rules={[{
+                  type: 'number', max: 100, min: 15,
+                  message: $t({
+                    defaultMessage: 'DHCP request rate limit must be between 15 and 100'
+                  })
+                }]}
                 children={<InputNumber style={{ width: '100%' }} />} />
               <UI.Label>
                 { $t({ defaultMessage: 'ppm' }) }

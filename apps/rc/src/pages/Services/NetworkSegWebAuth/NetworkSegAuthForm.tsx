@@ -3,10 +3,10 @@ import React, { useEffect, useRef } from 'react'
 import {
   Form,
   Input,
-  Select
+  Space
 } from 'antd'
-import _           from 'lodash'
-import { useIntl } from 'react-intl'
+import _                          from 'lodash'
+import { defineMessage, useIntl } from 'react-intl'
 
 import {
   Button,
@@ -30,45 +30,44 @@ import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import * as UI from './styledComponents'
 
 export const defaultTemplateData = {
-  webAuthPasswordLabel: 'DPSK Password',
-  webAuthCustomTitle: 'Enter your Password below and press the button',
-  webAuthCustomTop: 'Welcome to Ruckus Networks Web Authentication Homepage',
-  webAuthCustomLoginButton: 'Login',
-  webAuthCustomBottom: `This network is restricted to authorized users only.
+  webAuthPasswordLabel: defineMessage({ defaultMessage: 'DPSK Password' }),
+  webAuthCustomTitle: defineMessage({
+    defaultMessage: 'Enter your Password below and press the button' }),
+  webAuthCustomTop: defineMessage({
+    defaultMessage: 'Welcome to Ruckus Networks Web Authentication Homepage' }),
+  webAuthCustomLoginButton: defineMessage({ defaultMessage: 'Login' }),
+  webAuthCustomBottom: defineMessage({
+    defaultMessage: `This network is restricted to authorized users only.
     Violators may be subjected to legal prosecution.
     Acitvity on this network is monitored and may be used as evidence in a court of law.
-    Copyright 2022 Ruckus Networks`
+    Copyright 2022 Ruckus Networks` })
 }
 
-export default function NetworkSegAuthForm (props: { editMode?: boolean }) {
+export default function NetworkSegAuthForm ({ editMode = false }: { editMode?: boolean } ) {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
   const linkToServices = useTenantLink(getServiceListRoutePath(true))
 
-  const editMode = props.editMode === true
-
   const [createWebAuthTemplate] = useCreateWebAuthTemplateMutation()
   const [updateWebAuthTemplate] = useUpdateWebAuthTemplateMutation()
-  const { data: editData } = useGetWebAuthTemplateQuery({ params }, { skip: !editMode })
-
+  const { data } = useGetWebAuthTemplateQuery({ params }, { skip: !editMode })
 
   const formRef = useRef<StepsFormInstance<WebAuthTemplate>>()
 
   useEffect(() => {
-    if (editData && editMode) {
-      formRef.current?.setFieldsValue(editData)
+    formRef.current?.resetFields()
+    if (data && editMode) {
+      formRef.current?.setFieldsValue(data)
     }
-  }, [editData, editMode])
+  }, [data, editMode])
 
-  const saveData = async (saveData: WebAuthTemplate) => {
-    // const saveData = transferFormFieldsToSaveData(data)
-
+  const saveData = async (value: WebAuthTemplate) => {
     try {
       if (editMode) {
-        await updateWebAuthTemplate({ params, payload: saveData }).unwrap()
+        await updateWebAuthTemplate({ params, payload: value }).unwrap()
       } else {
-        await createWebAuthTemplate({ params, payload: _.omit(saveData, 'id') }).unwrap()
+        await createWebAuthTemplate({ params, payload: _.omit(value, 'id') }).unwrap()
       }
 
       navigate(linkToServices, { replace: true })
@@ -84,18 +83,16 @@ export default function NetworkSegAuthForm (props: { editMode?: boolean }) {
     { name: keyof typeof defaultTemplateData, label: string }
   ) => {
     return (
-      <UI.TextAreaWithReset>
-        <Form.Item label={' '} style={{ float: 'right' }} >
+      <UI.TextAreaWithReset label={label}>
+        <Space size='middle'>
+          <Form.Item name={name} children={<Input.TextArea autoSize />} />
           <Button type='link'
             onClick={()=>{
-              formRef?.current?.setFieldValue(name, defaultTemplateData[name])
+              formRef?.current?.setFieldValue(name, $t(defaultTemplateData[name]))
             }}>
             {$t({ defaultMessage: 'Reset to default' })}
           </Button>
-        </Form.Item>
-        <Form.Item name={name} label={label} >
-          <Input.TextArea autoSize />
-        </Form.Item>
+        </Space>
       </UI.TextAreaWithReset>)
   }
 
@@ -118,23 +115,19 @@ export default function NetworkSegAuthForm (props: { editMode?: boolean }) {
         <StepsForm.StepForm
           name='settings'
           title={$t({ defaultMessage: 'Settings' })}
-          layout='vertical'
-          initialValues={editData}
-          wrapperCol={{ span: 14 }} >
+          layout='vertical' >
           <StepsForm.Title>
             {$t({ defaultMessage: 'Settings' })}</StepsForm.Title>
           <Form.Item name='name'
             label={$t({ defaultMessage: 'Name' })}
-            wrapperCol={{ span: 8 }}
             rules={[{ required: true }]} >
-            <Input />
+            <Input style={{ width: '360px' }}/>
           </Form.Item>
-          <Form.Item name='id' hidden />
-          <Form.Item name='tag'
-            label={$t({ defaultMessage: 'Tags' })}
-            wrapperCol={{ span: 8 }} >
-            <Select mode='tags' size='middle' allowClear />
-          </Form.Item>
+          <Form.Item name='id' hidden><Input type='hidden' /></Form.Item>
+          {/* <Form.Item name='tag' // TODO: Waiting for TAG feature support
+            label={$t({ defaultMessage: 'Tags' })} >
+            <Select mode='tags' size='middle' allowClear style={{ width: '360px' }}/>
+          </Form.Item> */}
           <Subtitle level={4}>
             {$t({ defaultMessage: 'Auth Page Details' })}</Subtitle>
           <WebAuthFormItem name='webAuthCustomTop'

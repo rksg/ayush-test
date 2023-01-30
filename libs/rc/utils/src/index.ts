@@ -8,6 +8,7 @@ export * from './onSocketActivityChanged'
 export * from './useTableQuery'
 export * from './validator'
 export * from './models'
+
 export * from './types'
 export * from './pipes'
 
@@ -16,3 +17,5 @@ export * from './common'
 export * from './ipUtilsService'
 export * from './msp.utils'
 export * from './pdfGeneratorService'
+export * from './ipCalculatorUtilsService'
+

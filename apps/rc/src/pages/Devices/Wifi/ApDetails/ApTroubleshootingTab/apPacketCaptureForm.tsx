@@ -1,12 +1,9 @@
 import { useEffect, useState } from 'react'
-import React                   from 'react'
-
 
 import { Row, Col, Form, Input, Select, Checkbox } from 'antd'
 import saveAs                                      from 'file-saver'
 import _                                           from 'lodash'
 import { useIntl }                                 from 'react-intl'
-import { useParams }                               from 'react-router-dom'
 
 import { Button, Loader, showToast } from '@acx-ui/components'
 import {
@@ -19,6 +16,8 @@ import {
   useStopPacketCaptureMutation
 } from '@acx-ui/rc/services'
 import { ApPacketCaptureStateEnum, CaptureInterfaceEnum, MacAddressFilterRegExp } from '@acx-ui/rc/utils'
+
+import { useApContext } from '../ApContext'
 
 import * as UI from './styledComponents'
 
@@ -33,7 +32,7 @@ export enum CaptureInterfaceEnumExtended {
 
 export function ApPacketCaptureForm () {
   const { $t } = useIntl()
-  const { tenantId, serialNumber } = useParams()
+  const { tenantId, serialNumber } = useApContext()
   const [packetCaptureForm] = Form.useForm()
 
   const [startPacketCapture] = useStartPacketCaptureMutation()
@@ -111,7 +110,7 @@ export function ApPacketCaptureForm () {
         })
       }
 
-      if (supportTriRadio && supportDual5gMode && apRadioParamsDual5G.enabled) {
+      if (supportTriRadio && supportDual5gMode && apRadioParamsDual5G?.enabled) {
         if (apRadioParamsDual5G.lower5gEnabled) {
           captureInterfaceOptions.push(
             {
@@ -263,6 +262,11 @@ export function ApPacketCaptureForm () {
               <Form.Item
                 name='frameTypeFilter'
                 label={$t({ defaultMessage: 'Frame Type Filter:' })}
+                rules={[{
+                  required: true,
+                  message: $t({ defaultMessage: 'You must select at least one frame type' +
+                      ' to filter by' })
+                }]}
                 initialValue={['MANAGEMENT', 'CONTROL', 'DATA']}
                 children={
                   <Checkbox.Group style={{ display: 'grid', rowGap: '5px' }}>

@@ -1,12 +1,17 @@
 /* eslint-disable max-len */
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   ServiceType,
   getSelectServiceRoutePath,
   getServiceDetailsLink,
   getServiceListRoutePath,
   getServiceRoutePath,
-  ServiceOperation
-}    from '@acx-ui/rc/utils'
+  ServiceOperation,
+  getPolicyListRoutePath,
+  PolicyType,
+  getPolicyRoutePath,
+  PolicyOperation
+} from '@acx-ui/rc/utils'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
@@ -36,6 +41,10 @@ jest.mock('./pages/Networks/NetworkDetails/NetworkDetails', () => () => {
   return <div data-testid='NetworkDetails' />
 })
 
+jest.mock('./pages/Policies/PoliciesTable', () => () => {
+  return <div data-testid='PoliciesTable' />
+})
+
 jest.mock('./pages/Services/ServicesTable', () => () => {
   return <div data-testid='ServicesTable' />
 })
@@ -52,7 +61,7 @@ jest.mock('./pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail', () => ()
   return <div data-testid='MdnsProxyDetail' />
 })
 
-jest.mock('./pages/Services/DHCPForm/DHCPForm', () => () => {
+jest.mock('./pages/Services/DHCP/DHCPForm/DHCPForm', () => () => {
   return <div data-testid='DHCPForm' />
 })
 
@@ -60,12 +69,16 @@ jest.mock('./pages/Services/Portal/PortalForm/PortalForm', () => () => {
   return <div data-testid='PortalForm' />
 })
 
-jest.mock('./pages/Services/DHCPDetail', () => () => {
+jest.mock('./pages/Services/DHCP/DHCPDetail', () => () => {
   return <div data-testid='DHCPDetail' />
 })
 
 jest.mock('./pages/Services/Dpsk/DpskForm/DpskForm', () => () => {
   return <div data-testid='DpskForm' />
+})
+
+jest.mock('./pages/Services/Dpsk/DpskTable/DpskTable', () => () => {
+  return <div data-testid='DpskTable' />
 })
 
 jest.mock('./pages/Services/Portal/PortalDetail', () => () => {
@@ -86,6 +99,22 @@ jest.mock('./pages/Devices/Edge/AddEdge', () => () => {
 
 jest.mock('./pages/Devices/Edge/EdgeDetails/EditEdge', () => () => {
   return <div data-testid='EditEdge' />
+})
+
+jest.mock('./pages/Timeline', () => () => {
+  return <div data-testid='Timeline' />
+})
+
+jest.mock('./pages/Users/Persona', () => () => {
+  return <div data-testid='PersonaPortal' />
+})
+
+jest.mock('./pages/Users/Persona/PersonaDetails', () => () => {
+  return <div data-testid='PersonaDetails' />
+})
+
+jest.mock('./pages/Users/Persona/PersonaGroupDetails', () => () => {
+  return <div data-testid='PersonaGroupDetails' />
 })
 
 describe('RcRoutes: Devices', () => {
@@ -278,6 +307,16 @@ describe('RcRoutes: Services', () => {
     expect(screen.getByTestId('DpskForm')).toBeVisible()
   })
 
+  test('should navigate to DPSK table page', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST }),
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('DpskTable')).toBeVisible()
+  })
+
   test('should navigate to create WIFI_CALLING page', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
@@ -382,6 +421,73 @@ describe('RcRoutes: Services', () => {
 
 })
 
+describe('RcRoutes: Policies', () => {
+  test('should navigate to policy list', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + getPolicyListRoutePath(),
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('PoliciesTable')).toBeVisible()
+  })
+
+  test('should navigate to create ROGUE_AP_DETECTION page', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.CREATE }),
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByText(/add rogue ap detection policy/i)).toBeVisible()
+  })
+
+  test('should navigate to edit ROGUE_AP_DETECTION page', async () => {
+    let path = getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.EDIT })
+    path = path.replace(':policyId', 'policyId')
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + path,
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByText(/edit rogue ap detection policy/i)).toBeVisible()
+  })
+
+  test('should navigate to create MAC_REGISTRATION_LIST page', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.CREATE }),
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByText(/add mac registration list/i)).toBeVisible()
+  })
+
+  test('should navigate to edit MAC_REGISTRATION_LIST page', async () => {
+    let path = getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.EDIT })
+    path = path.replace(':policyId', 'policyId')
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + path,
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByText(/configure/i)).toBeVisible()
+  })
+
+  test('should navigate to create ACCESS_CONTROL page', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE }),
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByText(/add access control policy/i)).toBeVisible()
+  })
+
+})
+
 describe('RcRoutes: User', () => {
   test('should redirect user to user/wifi/clients', async () => {
     render(<Provider><RcRoutes /></Provider>, {
@@ -427,5 +533,78 @@ describe('RcRoutes: User', () => {
       }
     })
     expect(screen.getByTestId('UserClientDetails')).toBeVisible()
+  })
+  test('should redirect details/timeline to details/timeline/events', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/users/wifi/clients/clientId/details/timeline',
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('UserClientDetails')).toBeVisible()
+  })
+  test('should redirect to details/timeline/events correctly', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/users/wifi/clients/clientId/details/timeline/events',
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('UserClientDetails')).toBeVisible()
+  })
+  test('should redirect to Persona Portal', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/users/persona-management',
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('PersonaPortal')).toBeVisible()
+  })
+  test('should redirect to Persona detail', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/users/persona-management/persona-group/personGroupId/persona/personaId',
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('PersonaDetails')).toBeVisible()
+  })
+  test('should redirect to Persona Group detail', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/users/persona-management/persona-group/personGroupId',
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('PersonaGroupDetails')).toBeVisible()
+  })
+})
+
+describe('RcRoutes: Timeline', () => {
+  test('should redirect timeline to timeline/activities', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/timeline',
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('Timeline')).toBeVisible()
+  })
+
+  test('should navigate to timeline/activities', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/timeline/activities',
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('Timeline')).toBeVisible()
   })
 })

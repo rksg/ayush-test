@@ -25,7 +25,7 @@ import {
 } from '@acx-ui/components'
 import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 import {
-  useGetPortsQuery,
+  useSwitchPortlistQuery,
   useGetSwitchLagsQuery,
   useGetSwitchVlansQuery,
   useLazyGetWebAuthTemplateQuery,
@@ -75,11 +75,11 @@ function AccessSwitchDrawer (props: {
   } }, {
     skip: !switchId,
     selectFromResult: ({ data }) => ({
-      vlanList: data?.data?.filter(vlan => vlan.vlanName !== 'DEFAULT-VLAN' )
+      vlanList: data?.filter(vlan => vlan.vlanName !== 'DEFAULT-VLAN' )
         .map(vlan => ({ label: vlan.vlanId, value: vlan.vlanId }))
     })
   })
-  const { portList } = useGetPortsQuery({ params: { tenantId }, payload: {
+  const { portList } = useSwitchPortlistQuery({ params: { tenantId }, payload: {
     filters: { switchId: editRecords?.map(rec => rec.id) }, page: 1, pageSize: 1000,
     sortField: 'portIdentifierFormatted', sortOrder: 'ASC'
   } }, {
@@ -226,23 +226,23 @@ function AccessSwitchDrawer (props: {
         { webAuthPageType === 'USER_DEFINED' ? (<>
           <Form.Item name='webAuthCustomTop'
             label={$t({ defaultMessage: 'Header' })} >
-            <Input.TextArea autoSize placeholder={defaultTemplateData['webAuthCustomTop']}/>
+            <Input.TextArea autoSize placeholder={$t(defaultTemplateData['webAuthCustomTop'])}/>
           </Form.Item>
           <Form.Item name='webAuthCustomTitle'
             label={$t({ defaultMessage: 'Title' })} >
-            <Input.TextArea autoSize placeholder={defaultTemplateData['webAuthCustomTitle']}/>
+            <Input.TextArea autoSize placeholder={$t(defaultTemplateData['webAuthCustomTitle'])}/>
           </Form.Item>
           <Form.Item name='webAuthPasswordLabel'
             label={$t({ defaultMessage: 'Password Label' })} >
-            <Input.TextArea autoSize placeholder={defaultTemplateData['webAuthPasswordLabel']}/>
+            <Input.TextArea autoSize placeholder={$t(defaultTemplateData['webAuthPasswordLabel'])}/>
           </Form.Item>
           <Form.Item name='webAuthCustomLoginButton'
             label={$t({ defaultMessage: 'Button Text' })} >
-            <Input.TextArea autoSize placeholder={defaultTemplateData['webAuthCustomLoginButton']}/>
+            <Input.TextArea autoSize placeholder={$t(defaultTemplateData['webAuthCustomLoginButton'])}/>
           </Form.Item>
           <Form.Item name='webAuthCustomBottom'
             label={$t({ defaultMessage: 'Footer' })} >
-            <Input.TextArea autoSize placeholder={defaultTemplateData['webAuthCustomBottom']}/>
+            <Input.TextArea autoSize placeholder={$t(defaultTemplateData['webAuthCustomBottom'])}/>
           </Form.Item>
         </>) : (<>
           <Form.Item name='templateId' wrapperCol={{ span: 10 }}>

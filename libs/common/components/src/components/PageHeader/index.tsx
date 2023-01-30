@@ -17,7 +17,12 @@ export interface PageHeaderProps
 {
   title: React.ReactNode,
   titleExtra?: React.ReactNode,
+  footerSpacer?: boolean,
   breadcrumb?: { text: string, link: string, tenantType?: TenantType }[]
+}
+
+PageHeader.defaultProps = {
+  footerSpacer: true
 }
 
 function PageHeader (props: PageHeaderProps) {
@@ -44,7 +49,7 @@ function PageHeader (props: PageHeaderProps) {
     <UI.Wrapper><AntPageHeader {...pageHeaderProps}>
       {props.subTitle && <Typography.Text ellipsis>{props.subTitle}</Typography.Text>}
     </AntPageHeader></UI.Wrapper>
-    {props.footer && <UI.Spacer />}
+    {props.footer && props.footerSpacer && <UI.Spacer />}
   </>
 }
 
