@@ -1,5 +1,4 @@
 import { initialize } from '@googlemaps/jest-mocks'
-import userEvent      from '@testing-library/user-event'
 import { rest }       from 'msw'
 
 import { venueApi }        from '@acx-ui/rc/services'
@@ -57,7 +56,7 @@ describe('edit switch/stack form', () => {
       route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/edit' }
     })
 
-    const addButton = screen.getByRole('button', { name: /add rule/i })
+    const addButton = await screen.findByRole('button', { name: /add rule/i })
     fireEvent.click(addButton)
     expect(await screen.findByText(/add route/i)).toBeVisible()
   })
@@ -68,8 +67,8 @@ describe('edit switch/stack form', () => {
     })
 
     const row1 = await screen.findByRole('row', { name: /0.0.0.0/ })
-    fireEvent.click(within(row1).getByRole('checkbox'))
-    const editButton = screen.getByRole('button', { name: /edit/i })
+    fireEvent.click(await within(row1).findByRole('checkbox'))
+    const editButton = await screen.findByRole('button', { name: /edit/i })
     fireEvent.click(editButton)
     expect(await screen.findByText(/edit route/i)).toBeVisible()
   })
@@ -80,8 +79,8 @@ describe('edit switch/stack form', () => {
     })
 
     const row1 = await screen.findByRole('row', { name: /0.0.0.0/ })
-    fireEvent.click(within(row1).getByRole('checkbox'))
-    const deleteButton = screen.getByRole('button', { name: /delete/i })
+    fireEvent.click(await within(row1).findByRole('checkbox'))
+    const deleteButton = await screen.findByRole('button', { name: /delete/i })
     fireEvent.click(deleteButton)
   })
 })
