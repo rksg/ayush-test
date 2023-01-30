@@ -43,13 +43,16 @@ import {
   UploadUrlResponse,
   TableChangePayload,
   RequestFormData,
-  createNewTableHttpRequest
+  createNewTableHttpRequest,
+  NetworkSegmentationUrls,
+  NetworkSegmentationGroup,
+  WebAuthTemplate,
+  AccessSwitch,
+  DistributionSwitch
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
-  L2AclPolicy,
   DevicePolicy,
-  L3AclPolicy,
   ApplicationPolicy,
   VlanPool,
   AccessControlProfile
@@ -117,30 +120,6 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         )
         return {
           ...cloudpathListReq
-        }
-      }
-    }),
-    l2AclPolicyList: build.query<TableResult<L2AclPolicy>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const l2AclPolicyListReq = createHttpRequest(
-          CommonUrlsInfo.getL2AclPolicyList,
-          params
-        )
-        return {
-          ...l2AclPolicyListReq,
-          body: payload
-        }
-      }
-    }),
-    l3AclPolicyList: build.query<TableResult<L3AclPolicy>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const l3AclPolicyListReq = createHttpRequest(
-          CommonUrlsInfo.getL3AclPolicyList,
-          params
-        )
-        return {
-          ...l3AclPolicyListReq,
-          body: payload
         }
       }
     }),
@@ -666,6 +645,81 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    getWebAuthTemplate: build.query<WebAuthTemplate, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest( NetworkSegmentationUrls.getWebAuthTemplate, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    webAuthTemplateList: build.query<TableResult<WebAuthTemplate>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest( NetworkSegmentationUrls.getWebAuthTemplateList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    createWebAuthTemplate: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest( NetworkSegmentationUrls.addWebAuthTemplate, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    updateWebAuthTemplate: build.mutation<WebAuthTemplate, RequestPayload<WebAuthTemplate>>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest( NetworkSegmentationUrls.updateWebAuthTemplate, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    deleteWebAuthTemplate: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest( NetworkSegmentationUrls.deleteWebAuthTemplate, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+
+    getAccessSwitches: build.query<TableResult<AccessSwitch>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest( NetworkSegmentationUrls.getAccessSwitches, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    getDistributionSwitches: build.query<TableResult<DistributionSwitch>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest( NetworkSegmentationUrls.getAccessSwitches, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    getNetworkSegmentationGroupById: build.query<NetworkSegmentationGroup, RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(NetworkSegmentationUrls.getNetworkSegmentationGroupById, params)
+        return {
+          ...req
+        }
+      }
     })
   })
 })
@@ -673,8 +727,6 @@ export const serviceApi = baseServiceApi.injectEndpoints({
 
 export const {
   useCloudpathListQuery,
-  useL2AclPolicyListQuery,
-  useL3AclPolicyListQuery,
   useApplicationPolicyListQuery,
   useDevicePolicyListQuery,
   useServiceListQuery,
@@ -704,6 +756,7 @@ export const {
   useCreateDpskMutation,
   useUpdateDpskMutation,
   useGetDpskQuery,
+  useLazyGetDpskQuery,
   useGetDpskListQuery,
   useLazyGetDpskListQuery,
   useDeleteDpskMutation,
@@ -720,5 +773,13 @@ export const {
   useGetPortalLangMutation,
   useDeletePortalMutation,
   useUpdatePortalMutation,
-  useUploadURLMutation
+  useUploadURLMutation,
+  useLazyGetNetworkSegmentationGroupByIdQuery,
+  useGetWebAuthTemplateQuery,
+  useWebAuthTemplateListQuery,
+  useCreateWebAuthTemplateMutation,
+  useUpdateWebAuthTemplateMutation,
+  useDeleteWebAuthTemplateMutation,
+  useGetAccessSwitchesQuery,
+  useGetDistributionSwitchesQuery
 } = serviceApi

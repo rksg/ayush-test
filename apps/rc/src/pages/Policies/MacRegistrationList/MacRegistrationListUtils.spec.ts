@@ -32,6 +32,14 @@ describe('MacRegistrationListUtils parser', () => {
   })
 
   it('should transfer data to expirationForm fields', () => {
+    const mockedBasicSaveData: MacRegistrationPool = {
+      autoCleanup: true,
+      enabled: true,
+      name: 'test',
+      registrationCount: 0,
+      defaultAccess: 'REJECT'
+    }
+
     const mockedExpirationNever: Partial<MacRegistrationPool> = {
       expirationEnabled: false
     }
@@ -48,14 +56,17 @@ describe('MacRegistrationListUtils parser', () => {
       expirationOffset: 1
     }
 
-    let expiration = transferDataToExpirationFormFields(mockedExpirationNever)
+    // eslint-disable-next-line max-len
+    let expiration = transferDataToExpirationFormFields({ ...mockedBasicSaveData, ...mockedExpirationNever })
     expect(expiration.expiration.mode).toBe(ExpirationMode.NEVER)
 
-    expiration = transferDataToExpirationFormFields(mockedExpirationByDate)
+    // eslint-disable-next-line max-len
+    expiration = transferDataToExpirationFormFields({ ...mockedBasicSaveData, ...mockedExpirationByDate })
     expect(expiration.expiration.mode).toBe(ExpirationMode.BY_DATE)
     expect(expiration.expiration.date).toBe(mockedExpirationByDate.expirationDate)
 
-    expiration = transferDataToExpirationFormFields(mockedExpirationAfterTime)
+    // eslint-disable-next-line max-len
+    expiration = transferDataToExpirationFormFields({ ...mockedBasicSaveData, ...mockedExpirationAfterTime })
     expect(expiration.expiration.mode).toBe(ExpirationMode.AFTER_TIME)
     expect(expiration.expiration.type).toBe(mockedExpirationAfterTime.expirationType)
     expect(expiration.expiration.offset).toBe(mockedExpirationAfterTime.expirationOffset)

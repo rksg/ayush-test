@@ -21,7 +21,8 @@ const venueOptionsDefaultPayload = {
     'id'
   ],
   sortField: 'name',
-  sortOrder: 'ASC'
+  sortOrder: 'ASC',
+  pageSize: 10000
 }
 
 export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
@@ -60,9 +61,10 @@ export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
       <Form.Item
         name='name'
         label={$t({ defaultMessage: 'SmartEdge Name' })}
-        rules={[{
-          required: true
-        }]}
+        rules={[
+          { required: true },
+          { max: 64 }
+        ]}
         children={<Input />}
       />
       <Form.Item
@@ -70,16 +72,22 @@ export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
         label={<>
           { $t({ defaultMessage: 'Serial Number' }) }
           <Tooltip
-            title={$t({ defaultMessage: 'test' })}
+            title={$t({ defaultMessage: 'Serial Number' })}
             placement='bottom'
           >
             <QuestionMarkCircleOutlined />
           </Tooltip>
         </>}
-        rules={[{
-          required: true,
-          message: $t({ defaultMessage: 'Please enter Serial Number' })
-        }]}
+        rules={[
+          {
+            required: true,
+            message: $t({ defaultMessage: 'Please enter Serial Number' })
+          },
+          {
+            max: 34,
+            message: $t({ defaultMessage: 'Serial Number must be up to 34 characters' })
+          }
+        ]}
         children={
           <Input
             disabled={props.isEdit}
@@ -89,7 +97,7 @@ export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
       <Form.Item
         name='description'
         label={$t({ defaultMessage: 'Description' })}
-        children={<TextArea rows={4} maxLength={64} />}
+        children={<TextArea rows={4} maxLength={255} />}
       />
       <Form.Item
         name='tags'

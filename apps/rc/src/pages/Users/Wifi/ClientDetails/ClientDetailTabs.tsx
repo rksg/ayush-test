@@ -37,11 +37,7 @@ function ClientDetailTabs () {
         />
       }
       <Tabs.TabPane
-        disabled={!useIsSplitOn(Features.UNRELEASED)}
-        tab={<Tooltip title={useIsSplitOn(Features.UNRELEASED) ? '' :
-          $t(notAvailableMsg)}>
-          {$t({ defaultMessage: 'Reports' })}
-        </Tooltip>}
+        tab={$t({ defaultMessage: 'Reports' })}
         key='reports'
       />
       <Tabs.TabPane

@@ -75,13 +75,17 @@ describe('Drawer', () => {
     it('should render loader', () => {
       mockGraphqlQuery(dataApiURL, 'ImpactedClients', {
         data: { incident: { impactedClients: sample } } })
-      render(<Provider><ImpactedClientsDrawer {...props}/></Provider>, { route: true })
+      render(<Provider>
+        <ImpactedClientsDrawer {...props} startTime='start' endTime='end'/>
+      </Provider>, { route: true })
       expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
     })
     it('should render drawer', async () => {
       mockGraphqlQuery( dataApiURL, 'ImpactedClients', {
         data: { incident: { impactedClients: sample } } })
-      render(<Provider><ImpactedClientsDrawer {...props}/></Provider>, { route: true })
+      render(<Provider>
+        <ImpactedClientsDrawer {...props} startTime='start' endTime='end' />
+      </Provider>, { route: true })
       await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
       screen.getByPlaceholderText('Search for...')
       screen.getByText(sample[0].mac)
@@ -98,7 +102,9 @@ describe('Drawer', () => {
     it('should render error', async () => {
       mockGraphqlQuery( dataApiURL, 'ImpactedClients', {
         error: new Error('something went wrong!') })
-      render(<Provider><ImpactedClientsDrawer {...props}/></Provider>, { route: true })
+      render(<Provider>
+        <ImpactedClientsDrawer {...props} startTime='start' endTime='end'/>
+      </Provider>, { route: true })
       await screen.findByText('Something went wrong.')
     })
   })
