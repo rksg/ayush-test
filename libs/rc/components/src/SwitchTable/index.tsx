@@ -1,4 +1,6 @@
 /* eslint-disable max-len */
+import { useState } from 'react'
+
 import { Space, Badge } from 'antd'
 import { useIntl }      from 'react-intl'
 
@@ -8,7 +10,7 @@ import {
   Loader,
   deviceStatusColors
 } from '@acx-ui/components'
-import { useSwitchListQuery } from '@acx-ui/rc/services'
+import { useLazyGetJwtTokenQuery, useSwitchListQuery } from '@acx-ui/rc/services'
 import {
   getSwitchStatusString,
   SwitchRow,
@@ -19,10 +21,12 @@ import {
   usePollingTableQuery,
   getFilters,
   TableQuery,
-  RequestPayload
+  RequestPayload,
+  SwitchStatusEnum
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
+import { SwitchCliSession } from '../SwitchCliSession'
 import { useSwitchActions } from '../useSwitchActions'
 
 export const SwitchStatus = (
@@ -72,6 +76,14 @@ export function SwitchTable (props : {
 
   const switchAction = useSwitchActions()
   const tableData = tableQuery.data?.data ?? []
+
+  const [getJwtToken] = useLazyGetJwtTokenQuery()
+  const [cliModalState, setCliModalOpen] = useState(false)
+  const [cliData, setCliData] = useState({
+    token: '',
+    serialNumber: '',
+    switchName: ''
+  })
 
   const columns: TableProps<SwitchRow>['columns'] = [{
     key: 'name',
@@ -169,9 +181,16 @@ export function SwitchTable (props : {
   }, {
     label: $t({ defaultMessage: 'CLI Session' }),
     visible: (rows) => isActionVisible(rows, { selectOne: true }),
-    disabled: true,
-    onClick: () => {
-      // TODO:
+    disabled: (rows) => {
+      const row = rows[0]
+      return row.deviceStatus !== SwitchStatusEnum.OPERATIONAL
+    },
+    onClick: async (rows) => {
+      const row = rows[0]
+      const token = (await getJwtToken({ params: { tenantId: params.tenantId, serialNumber: row.serialNumber } }, true)
+        .unwrap()).access_token || ''
+      setCliData({ token, switchName: row.switchName || row.name || row.serialNumber, serialNumber: row.serialNumber })
+      setCliModalOpen(true)
     }
   }, {
     label: $t({ defaultMessage: 'Stack Switches' }),
@@ -205,6 +224,13 @@ export function SwitchTable (props : {
             : null
         }
       }}
+    />
+    <SwitchCliSession
+      modalState={cliModalState}
+      setIsModalOpen={setCliModalOpen}
+      serialNumber={cliData.serialNumber}
+      jwtToken={cliData.token}
+      switchName={cliData.switchName}
     />
   </Loader>
 }
