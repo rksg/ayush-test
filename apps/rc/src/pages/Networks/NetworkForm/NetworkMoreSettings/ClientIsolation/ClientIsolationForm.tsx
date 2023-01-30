@@ -54,8 +54,9 @@ export default function ClientIsolationForm () {
       <Form.Item
         label={$t({ defaultMessage: 'Isolate Packets:' })}
         name={['wlan','advancedCustomization','clientIsolationOptions', 'packetsType']}
+        initialValue={IsolatePacketsTypeEnum.UNICAST}
       >
-        <Select defaultValue={IsolatePacketsTypeEnum.UNICAST}
+        <Select
           style={{ width: '240px' }}>
           <Option value={IsolatePacketsTypeEnum.UNICAST}>
             {$t({ defaultMessage: 'Unicast' })}
@@ -66,7 +67,6 @@ export default function ClientIsolationForm () {
           <Option value={IsolatePacketsTypeEnum.UNICAST_MULTICAST}>
             {$t({ defaultMessage: 'Unicast and multicast/broadcast' })}
           </Option>
-
         </Select>
       </Form.Item>
       <UI.FieldLabel width='230px'>

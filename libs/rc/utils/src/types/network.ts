@@ -70,11 +70,6 @@ export interface NetworkDetail {
 
 export type ClientIsolationVenue = Pick<NetworkVenue, 'venueId' | 'clientIsolationAllowlistId'>
 
-export interface WlanExtraAdvancedCustomization {
-  clientIsolationAllowlistEnabled?: boolean
-  clientIsolationVenues?: ClientIsolationVenue[]
-}
-
 export interface NetworkSaveData {
   id?: string;
   name?: string;
