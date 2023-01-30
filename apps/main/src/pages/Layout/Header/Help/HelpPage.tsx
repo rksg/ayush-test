@@ -10,8 +10,12 @@ import { useLocation } from '@acx-ui/react-router-dom'
 import mapping                                                 from './mapping'
 import { EmptyDescription, DocLink, Paragraph, TextContainer } from './styledComponents'
 
-const MAPPING_URL = '/docs/r1/mapfile/doc-mapper.json'
-const DOCS_URL = '/docs/alto/latest/'
+//for Local test, use '/docs/r1/mapfile/doc-mapper.json'
+const MAPPING_URL = 'https://docs.cloud.ruckuswireless.com/r1/mapfile/doc-mapper.json'
+
+//for Local test, use '/docs/alto/latest/'
+const DOCS_URL = 'https://docs.cloud.ruckuswireless.com/alto/latest/'
+
 const DOCS_HOME_URL = 'https://docs.cloud.ruckuswireless.com'
 
 
