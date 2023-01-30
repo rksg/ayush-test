@@ -11,9 +11,11 @@ import mapping                                                 from './mapping'
 import { EmptyDescription, DocLink, Paragraph, TextContainer } from './styledComponents'
 
 //for Local test, use '/docs/r1/mapfile/doc-mapper.json'
+// TODO: change to use '/docs/r1/mapfile/doc-mapper.json' for local and prod after gateway adds route
 const MAPPING_URL = 'https://docs.cloud.ruckuswireless.com/r1/mapfile/doc-mapper.json'
 
-//for Local test, use '/docs/alto/latest/'
+// for local test, use '/docs/alto/latest/'
+// TODO: change to use '/docs/alto/latest/' for local and prod after gateway adds route
 const DOCS_URL = 'https://docs.cloud.ruckuswireless.com/alto/latest/'
 
 const DOCS_HOME_URL = 'https://docs.cloud.ruckuswireless.com'
