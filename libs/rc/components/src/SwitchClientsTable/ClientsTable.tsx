@@ -55,8 +55,8 @@ export function ClientsTable (props: {
       dataIndex: 'clientMac',
       sorter: true,
       render: (data, row) => {
-        // eslint-disable-next-line max-len
-        return <TenantLink to={`users/switch/clients/${row.id}`}>{data?.toString().toUpperCase() || '--'}</TenantLink>
+        const name = data ? data.toString().toUpperCase() : '--'
+        return <TenantLink to={`users/switch/clients/${row.id}`}>{name}</TenantLink>
       }
     }, {
       key: 'clientName',
@@ -96,8 +96,9 @@ export function ClientsTable (props: {
       sorter: true,
       show: !params.switchId,
       render: (data, row) => {
+        const name = data ? data.toString().toUpperCase() : '--'
         // eslint-disable-next-line max-len
-        return <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>{data}</TenantLink>
+        return <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>{name}</TenantLink>
       }
     }, {
       key: 'switchName',
@@ -106,9 +107,11 @@ export function ClientsTable (props: {
       sorter: false,
       show: !params.switchId,
       render: (data, row) => {
-        const name = data?.toString().toUpperCase() || '--'
+        const name = data ? data.toString().toUpperCase() : '--'
         const link = `/devices/switch/${row.switchId}/${row.switchSerialNumber}/details/overview`
-        return row.switchId ? <TenantLink to={link}>{name}</TenantLink> : <span>{name}</span>
+        return (row.switchId && data) ?
+          <TenantLink to={link}>{name}</TenantLink> :
+          <span>{name}</span>
       }
     }, {
       key: 'switchPort',
