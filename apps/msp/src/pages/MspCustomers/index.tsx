@@ -22,7 +22,8 @@ import {
 import {
   useDeleteMspEcMutation,
   useMspCustomerListQuery,
-  useGetUserProfileQuery
+  useGetUserProfileQuery,
+  useSupportMspCustomerListQuery
 } from '@acx-ui/rc/services'
 import {
   DateFormatEnum,
@@ -32,7 +33,6 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { getBasePath, Link, TenantLink, MspTenantLink, useParams } from '@acx-ui/react-router-dom'
-// import { defaultPayload } from 'libs/rc/components/src/EventTable'
 
 const transformApEntitlement = (row: MspEc) => {
   return row.wifiLicenses ? row.wifiLicenses : 0
@@ -99,40 +99,6 @@ const transformExpirationDate = (row: MspEc) => {
   return expirationDate
 }
 
-// const defaultPayload = {
-//   searchString: '',
-//   filters: { tenantType: ['MSP_EC'] },
-//   fields: [
-//     'check-all',
-//     'id',
-//     'name',
-//     'tenantType',
-//     'status',
-//     'alarmCount',
-//     'mspAdminCount',
-//     'mspEcAdminCount',
-//     'creationDate',
-//     'expirationDate',
-//     'wifiLicense',
-//     'switchLicens',
-//     'streetAddress'
-//   ]
-// }
-
-// const supportPayload = {
-//   searchString: '',
-//   fields: [
-//     'tenantName',
-//     'tenantEmail',
-//     'id'],
-//   searchTargetFields: ['tenantName', 'tenantEmail'],
-//   filters: {
-//     status: ['DELEGATION_STATUS_ACCEPTED'],
-//     delegationType: ['DELEGATION_TYPE_SUPPORT'],
-//     isValid: [true]
-//   }
-// }
-
 export function MspCustomers () {
   const { $t } = useIntl()
   const { tenantId } = useParams()
@@ -170,22 +136,31 @@ export function MspCustomers () {
       'streetAddress'
     ]
   }
-  
+
   const supportPayload = {
     searchString: '',
     fields: [
-      'tenantName',
-      'tenantEmail',
-      'id'],
-    searchTargetFields: ['tenantName', 'tenantEmail'],
+      'check-all',
+      'id',
+      'mspName',
+      'name',
+      'tenantType',
+      'status',
+      'alarmCount',
+      'mspAdminCount',
+      'mspEcAdminCount',
+      'creationDate',
+      'expirationDate',
+      'wifiLicense',
+      'switchLicens',
+      'streetAddress'
+    ],
+    searchTargetFields: ['name'],
     filters: {
-      status: ['DELEGATION_STATUS_ACCEPTED'],
-      delegationType: ['DELEGATION_TYPE_SUPPORT'],
-      isValid: [true]
+      includeExpired: [false]
     }
   }
 
-  const defaultPayload = isSupport ? supportPayload : mspPayload
   const columns: TableProps<MspEc>['columns'] = [
     {
       title: $t({ defaultMessage: 'Customers' }),
@@ -302,7 +277,7 @@ export function MspCustomers () {
   const MspEcTable = () => {
     const tableQuery = useTableQuery({
       useQuery: useMspCustomerListQuery,
-      defaultPayload: {mspPayload}
+      defaultPayload: mspPayload
     })
     const [
       deleteMspEc,
@@ -359,6 +334,27 @@ export function MspCustomers () {
     )
   }
 
+  const SupportEcTable = () => {
+    const tableQuery = useTableQuery({
+      useQuery: useSupportMspCustomerListQuery,
+      defaultPayload: supportPayload
+    })
+
+    return (
+      <Loader states={[
+        tableQuery,
+        { isLoading: false }]}>
+        <Table
+          columns={columns}
+          dataSource={tableQuery.data?.data}
+          pagination={tableQuery.pagination}
+          onChange={tableQuery.handleTableChange}
+          rowKey='id'
+        />
+      </Loader>
+    )
+  }
+
   return (
     <>
       <PageHeader
@@ -368,7 +364,9 @@ export function MspCustomers () {
             <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
           </TenantLink>,
           <MspTenantLink to='/dashboard/mspcustomers/create' key='addMspEc'>
-            <Button type='primary'>{$t({ defaultMessage: 'Add Customer' })}</Button>
+            <Button
+              hidden={isSupport}
+              type='primary'>{$t({ defaultMessage: 'Add Customer' })}</Button>
           </MspTenantLink>,
           <DisabledButton key='download' icon={<DownloadOutlined />} />
         ]}
