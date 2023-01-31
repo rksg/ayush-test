@@ -93,7 +93,7 @@ export default function DpskPassphraseManagement () {
       key: 'mac',
       title: $t({ defaultMessage: 'MAC Address' }),
       dataIndex: 'mac',
-      sorter: false
+      sorter: true
     },
     {
       key: 'passphrase',
@@ -119,7 +119,7 @@ export default function DpskPassphraseManagement () {
       key: 'vlanId',
       title: $t({ defaultMessage: 'VLAN' }),
       dataIndex: 'vlanId',
-      sorter: false
+      sorter: true
     },
     {
       key: 'expirationDate',
