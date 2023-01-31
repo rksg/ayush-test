@@ -529,6 +529,11 @@ export enum PortalComponentsEnum{
   Wifi4eu = 'wifi4eu'
 }
 
+export enum CurrentAclEdition {
+  INGRESS = 'INGRESS',
+  EGRESS = 'EGRESS'
+}
+
 export type LangCode = 'zh_TW' | 'cs' | 'sk' | 'hu' | 'en' | 'da' | 'fi' |'fr' | 'nl' |
 'no' | 'sv' | 'it' | 'es' | 'de' | 'pt_PT' | 'pt_BR' | 'tr' | 'el' | 'ro' | 'pl' | 'ja'
 
