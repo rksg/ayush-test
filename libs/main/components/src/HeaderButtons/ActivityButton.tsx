@@ -33,7 +33,7 @@ const defaultPayload: {
   ]
 }
 
-export default function ActivityHeaderButton () {
+export default function ActivityButton () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/timeline')

@@ -9,17 +9,15 @@ import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleSolid } from '@acx-ui/icons'
 import { notAvailableMsg }         from '@acx-ui/utils'
 
-// import About    from './About'
 import { DisabledButton } from '../styledComponents'
 
 import Firewall from './Firewall'
 import HelpPage from './HelpPage'
 
 
-
-const UserButton = () => {
+const HelpButton = () => {
   const { $t } = useIntl()
-  // const [aboutModalState, setAboutModalOpen] = useState(false)
+
   const [firewallModalState, setFirewallModalOpen] = useState(false)
   const [helpPageModalState, setHelpPageModalOpen] = useState(false)
 
@@ -71,9 +69,6 @@ const UserButton = () => {
         {$t({ defaultMessage: 'Privacy' })}
       </Menu.Item>
 
-      {/* <Menu.Item key='about'>
-        {$t({ defaultMessage: 'About RUCKUS One' })}
-      </Menu.Item> */}
     </Menu>
   )
 
@@ -88,11 +83,10 @@ const UserButton = () => {
           <DisabledButton disabled icon={<QuestionMarkCircleSolid />} />}
       </Tooltip>
     </Dropdown>
-    {/* <About modalState={aboutModalState} setIsModalOpen={setAboutModalOpen}/> */}
     <Firewall modalState={firewallModalState} setIsModalOpen={setFirewallModalOpen}/>
     <HelpPage modalState={helpPageModalState} setIsModalOpen={setHelpPageModalOpen}/>
   </>
   )
 }
 
-export default UserButton
+export default HelpButton
