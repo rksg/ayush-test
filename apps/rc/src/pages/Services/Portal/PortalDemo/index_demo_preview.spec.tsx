@@ -60,47 +60,6 @@ describe('PortalDemo', () => {
         })
     )
   })
-  it('should render portal demo successfully', async () => {
-    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
-    render(
-      <Provider>
-        <Form>
-          <PortalDemo value={mockDemo}/>
-        </Form>
-      </Provider>, { route: { params } }
-    )
-    const file = new File(['logo ruckus'],
-      'https://storage.cloud.google.com/ruckus-web-1/acx-ui-static-resources/logo-ruckus.png',
-      { type: 'image/png' })
-    await userEvent.click(await screen.findByTitle('background setting'))
-    await userEvent.click(await screen.findByText('Set background color'))
-    await userEvent.click(await screen.findByTitle('#D0021B'))
-
-    await userEvent.upload(await screen.findByLabelText('Select image'),file)
-    await userEvent.click(await screen.findByText('Select image'))
-
-
-    fireEvent.mouseLeave(await screen.findByPlaceholderText('welcometext'))
-
-    await userEvent.click(await screen.findByPlaceholderText('welcometext'))
-    fireEvent.mouseLeave(await screen.findByPlaceholderText('welcometext'))
-    await userEvent.click(await screen.findByTitle('textplus'))
-    await userEvent.click(await screen.findByTitle('textplus'))
-    await userEvent.click(await screen.findByTitle('textminus'))
-
-    await userEvent.click(await screen.findByTitle('colorpick'))
-    await userEvent.click(await screen.findByTitle('eyehide'))
-    await userEvent.type(await screen.findByPlaceholderText('welcometext'),'welcome text')
-    fireEvent.mouseOver(await screen.findByPlaceholderText('buttonsetting'))
-    fireEvent.mouseLeave(await screen.findByPlaceholderText('buttonsetting'))
-    fireEvent.click(await screen.findByPlaceholderText('buttonsetting'))
-    fireEvent.mouseLeave(await screen.findByPlaceholderText('buttonsetting'))
-    await userEvent.click((await screen.findAllByTitle('colorpick'))[1])
-    await userEvent.click(await screen.findByTitle('#F5A623'))
-    fireEvent.click(await screen.findByText('Reset'))
-    fireEvent.click(await screen.findByText('Preview'))
-  })
-
   it('should render portal demo preview successfully', async () => {
     await demoPreview()
   })

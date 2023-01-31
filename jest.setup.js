@@ -67,6 +67,8 @@ window.crypto = {
   }
 }
 
+window.open = jest.fn()
+
 jest.mock('libs/common/components/src/theme/helper', () => ({
   __esModule: true,
   cssStr: jest.fn(property => mockLightTheme[property]),
