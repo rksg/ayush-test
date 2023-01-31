@@ -61,11 +61,7 @@ function useColumns () {
       title: $t({ defaultMessage: 'Default Access' }),
       key: 'defaultAccess',
       dataIndex: 'defaultAccess',
-      align: 'center',
-      render: function (data, row) {
-        return row.defaultAccess ? $t({ defaultMessage: 'Accept' }) :
-          $t({ defaultMessage: 'Reject' })
-      }
+      align: 'center'
     },
     {
       title: $t({ defaultMessage: 'Access Policy Set' }),
@@ -123,7 +119,7 @@ export default function MacRegistrationListsTable () {
           type: 'confirm',
           customContent: {
             action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Lists' }),
+            entityName: $t({ defaultMessage: 'List' }),
             entityValue: rows.length === 1 ? rows[0].name : undefined,
             numOfEntities: rows.length,
             confirmationText: 'Delete'

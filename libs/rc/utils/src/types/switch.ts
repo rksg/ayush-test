@@ -86,6 +86,7 @@ export class Switch {
   initialVlanId?: string
   specifiedType?: string
   rearModule?: string
+  serialNumber?: string
 
   constructor () {
     this.name = ''
@@ -188,7 +189,6 @@ export class SwitchViewModel extends Switch {
   type?: string
   configReady = false
   syncedSwitchConfig = false
-  serialNumber?: string
   isStack?: boolean
   deviceStatus?: SwitchStatusEnum
   model?: string
@@ -204,7 +204,7 @@ export class SwitchViewModel extends Switch {
   cliApplied?: boolean
   formStacking?: boolean
   suspendingDeployTime?: string
-  syncDataEndTime?: number
+  syncDataEndTime?: string
   firmwareVersion?: string
   portsStatus?: {
     Down?: number,
@@ -215,6 +215,8 @@ export class SwitchViewModel extends Switch {
   dns?: string
   unitDetails?: StackMember[]
   firmware?: string
+  activeSerial?: string
+  syncDataId?: string
 }
 
 export interface SwitchRow {
@@ -254,6 +256,24 @@ export interface StackMember {
   order: number
   unitStatus?: STACK_MEMBERSHIP
   unitId?: string
+}
+
+export interface StackMemberList {
+  activeSerial: string
+  deviceStatus: string
+  id: string
+  model: string
+  order: string
+  poeFree: number
+  poeTotal: number
+  poeUtilization: number
+  serialNumber: string
+  switchMac: string
+  unitId: number
+  unitName: string
+  unitStatus: string
+  uptime: string
+  venueName: string
 }
 
 export interface ConfigurationHistory {
@@ -303,6 +323,7 @@ export interface SwitchTable {
   order?: number
   active?: boolean
   model: string
+  disabled: boolean
 }
 
 export interface SwitchPortViewModel extends GridDataRow {

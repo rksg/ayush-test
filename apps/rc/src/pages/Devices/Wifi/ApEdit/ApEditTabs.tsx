@@ -22,8 +22,7 @@ function ApEditTabs () {
   const basePath = useTenantLink(`/devices/wifi/${params.serialNumber}/edit/`)
   const {
     editContextData,
-    setEditContextData,
-    editRadioContextData
+    setEditContextData
   } = useContext(ApEditContext)
 
   const apViewModelPayload = {
@@ -37,6 +36,8 @@ function ApEditTabs () {
   const { data: currentAP } = useApViewModelQuery({ params, payload: apViewModelPayload })
 
   const onTabChange = (tab: string) => {
+    if (tab === 'settings') tab = `${tab}/radio`
+
     navigate({
       ...basePath,
       pathname: `${basePath.pathname}/${tab}`
@@ -59,7 +60,6 @@ function ApEditTabs () {
         showUnsavedModal(
           editContextData,
           setEditContextData,
-          editRadioContextData,
           tx.retry
         )
       })

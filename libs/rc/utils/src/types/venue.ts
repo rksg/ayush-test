@@ -326,6 +326,13 @@ export interface Acl {
 	aclRules: AclRule[]
 }
 
+export interface JwtToken {
+	access_token: string,
+	expires_in: string,
+	id_token: string,
+	type: string
+}
+
 export interface SwitchModelSlot {
 	slotNumber: number,
 	enable: boolean,
