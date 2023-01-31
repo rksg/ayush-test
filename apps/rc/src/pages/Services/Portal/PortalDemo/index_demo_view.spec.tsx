@@ -65,7 +65,7 @@ describe('PortalDemo', () => {
     render(
       <Provider>
         <Form>
-          <PortalDemo value={mockDemo} />
+          <PortalDemo value={mockDemo}/>
         </Form>
       </Provider>, { route: { params } }
     )
@@ -115,5 +115,6 @@ describe('PortalDemo', () => {
     await userEvent.click(await screen.findByPlaceholderText('buttonsetting'))
     await userEvent.click((await screen.findAllByTitle('colorpick'))[0])
     await userEvent.click(await screen.findByTitle('#F5A623'))
+    await new Promise((r)=>{setTimeout(r, 300)})
   })
 })

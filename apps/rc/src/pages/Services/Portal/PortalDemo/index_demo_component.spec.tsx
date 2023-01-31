@@ -49,7 +49,9 @@ const mockDemo = {
     it: false
   }
 }
-
+const file = new File(['logo ruckus'],
+  'https://storage.cloud.google.com/ruckus-web-1/acx-ui-static-resources/logo-ruckus.png',
+  { type: 'image/png' })
 describe('PortalDemo', () => {
   beforeEach(async () => {
     mockServer.use(
@@ -69,9 +71,6 @@ describe('PortalDemo', () => {
         </Form>
       </Provider>, { route: { params } }
     )
-    const file = new File(['logo ruckus'],
-      'https://storage.cloud.google.com/ruckus-web-1/acx-ui-static-resources/logo-ruckus.png',
-      { type: 'image/png' })
     await userEvent.click((await screen.findAllByTitle('English'))[0])
     await userEvent.click((await screen.findAllByTitle('Czech (čeština)'))[0])
     await userEvent.click(await screen.findByText('Components'))
@@ -105,35 +104,45 @@ describe('PortalDemo', () => {
 
     await userEvent.upload((await screen.findAllByPlaceholderText('contentimageupload'))[0], file)
     await userEvent.click((await screen.findAllByTitle('pictureout'))[0])
+    fireEvent.mouseLeave(await screen.findByRole('img',{ name: 'Logo' }))
     await userEvent.click(await screen.findByRole('img',{ name: 'Logo' }))
     fireEvent.mouseLeave(await screen.findByRole('img',{ name: 'Logo' }))
     await userEvent.click(await screen.findByRole('img',{ name: 'Photo png' }))
     await userEvent.click((await screen.findAllByTitle('plusen'))[1])
     await userEvent.upload((await screen.findAllByPlaceholderText('contentimageupload'))[1], file)
     await userEvent.click((await screen.findAllByTitle('pictureout'))[1])
+    fireEvent.mouseLeave(await screen.findByRole('img',{ name: 'Photo png' }))
     await userEvent.click(await screen.findByRole('img',{ name: 'Photo png' }))
     fireEvent.mouseLeave(await screen.findByRole('img',{ name: 'Photo png' }))
 
-    await userEvent.click(await screen.findByPlaceholderText('sectexthere'))
-    await userEvent.click((await screen.findAllByTitle('textplus'))[1])
-    await userEvent.type(await screen.findByPlaceholderText('sectexthere'),'sec text')
-    fireEvent.mouseLeave(await screen.findByPlaceholderText('sectexthere'))
+    await updateContent()
 
-    await userEvent.click(await screen.findByPlaceholderText('poweredtext'))
-    await userEvent.click((await screen.findAllByTitle('textplus'))[2])
-    await userEvent.click(await screen.findByPlaceholderText('poweredtext'))
-    fireEvent.mouseLeave(await screen.findByPlaceholderText('poweredtext'))
-
-    await userEvent.click(await screen.findByRole('img',{ name: 'poweredimage' }))
-    await userEvent.click((await screen.findAllByTitle('plusen'))[2])
-    await userEvent.upload((await screen.findAllByPlaceholderText('contentimageupload'))[2], file)
-    await userEvent.click((await screen.findAllByTitle('pictureout'))[2])
-    await userEvent.click(await screen.findByRole('img',{ name: 'poweredimage' }))
-    fireEvent.mouseLeave(await screen.findByRole('img',{ name: 'poweredimage' }))
-
-    await userEvent.click(await screen.findByPlaceholderText('poweredbackground'))
-    await userEvent.click((await screen.findAllByTitle('eyehide'))[4])
-    await userEvent.click(await screen.findByPlaceholderText('poweredbackground'))
-    fireEvent.mouseLeave(await screen.findByPlaceholderText('poweredbackground'))
   })
 })
+async function updateContent () {
+  await userEvent.click(await screen.findByPlaceholderText('sectexthere'))
+  await userEvent.click((await screen.findAllByTitle('textplus'))[0])
+  fireEvent.mouseLeave(await screen.findByPlaceholderText('sectexthere'))
+  await userEvent.type(await screen.findByPlaceholderText('sectexthere'),'sec text')
+  fireEvent.mouseLeave(await screen.findByPlaceholderText('sectexthere'))
+
+  await userEvent.click(await screen.findByPlaceholderText('poweredtext'))
+  await userEvent.click((await screen.findAllByTitle('textplus'))[1])
+  fireEvent.mouseLeave(await screen.findByPlaceholderText('poweredtext'))
+  await userEvent.click(await screen.findByPlaceholderText('poweredtext'))
+  fireEvent.mouseLeave(await screen.findByPlaceholderText('poweredtext'))
+
+  await userEvent.click(await screen.findByRole('img',{ name: 'poweredimage' }))
+  await userEvent.click((await screen.findAllByTitle('plusen'))[2])
+  await userEvent.upload((await screen.findAllByPlaceholderText('contentimageupload'))[2], file)
+  await userEvent.click((await screen.findAllByTitle('pictureout'))[2])
+  fireEvent.mouseLeave(await screen.findByRole('img',{ name: 'poweredimage' }))
+  await userEvent.click(await screen.findByRole('img',{ name: 'poweredimage' }))
+  fireEvent.mouseLeave(await screen.findByRole('img',{ name: 'poweredimage' }))
+
+  await userEvent.click(await screen.findByPlaceholderText('poweredbackground'))
+  await userEvent.click((await screen.findAllByTitle('eyehide'))[3])
+  fireEvent.mouseLeave(await screen.findByPlaceholderText('poweredbackground'))
+  await userEvent.click(await screen.findByPlaceholderText('poweredbackground'))
+  fireEvent.mouseLeave(await screen.findByPlaceholderText('poweredbackground'))
+}
