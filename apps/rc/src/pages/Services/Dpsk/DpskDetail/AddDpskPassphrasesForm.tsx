@@ -185,7 +185,7 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
         inputName={'expiration'}
         label={$t({ defaultMessage: 'Passphrase Expiration' })}
         modeLabel={{
-          [ExpirationMode.NEVER]: $t({ defaultMessage: 'Never expires (Same as pool)' })
+          [ExpirationMode.NEVER]: $t({ defaultMessage: 'Same as pool' })
         }}
         modeAvailability={{
           [ExpirationMode.AFTER_TIME]: false
