@@ -4,25 +4,22 @@ import { Tooltip } from '@acx-ui/components'
 import {
   Layout as LayoutComponent,
   LayoutUI
-}                        from '@acx-ui/components'
+} from '@acx-ui/components'
 import { SplitProvider } from '@acx-ui/feature-toggle'
 import {
-  CloudMessageBanner
-} from '@acx-ui/rc/components'
-import { Outlet }          from '@acx-ui/react-router-dom'
-import { notAvailableMsg } from '@acx-ui/utils'
+  ActivityButton,
+  AlarmsButton,
+  HelpButton,
+  UserButton
+} from '@acx-ui/main/components'
+import { CloudMessageBanner } from '@acx-ui/rc/components'
+import { Outlet }             from '@acx-ui/react-router-dom'
+import { notAvailableMsg }    from '@acx-ui/utils'
 
-import ActivityButton from './Header/ActivityButton'
-import AlarmButton    from './Header/AlarmButton'
-import HelpButton     from './Header/HelpButton'
-// import LicenseBar        from './Header/LicenseBar'
-// import RegionButton      from './Header/RegionButton'
-import UserButton        from './Header/UserButton'
 import { useMenuConfig } from './menuConfig'
 import SearchBar         from './SearchBar'
 
 function Layout () {
-
   return (
     <LayoutComponent
       menuConfig={useMenuConfig()}
@@ -32,16 +29,10 @@ function Layout () {
           <Outlet />
         </>
       }
-      // leftHeaderContent={
-      //   <div style={{ width: '40%', display: 'flex', alignItems: 'center' }}>
-      //     {/* <RegionButton/>
-      //     <LicenseBar/> */}
-      //   </div>
-      // }
       rightHeaderContent={<>
         <SearchBar />
         <LayoutUI.Divider />
-        <AlarmButton/>
+        <AlarmsButton/>
         <ActivityButton/>
         <Tooltip placement='bottomRight' title={useIntl().$t(notAvailableMsg)}>
           <HelpButton/>
