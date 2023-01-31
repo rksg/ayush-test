@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
@@ -21,7 +21,8 @@ import {
 } from '@acx-ui/msp/components'
 import {
   useDeleteMspEcMutation,
-  useMspCustomerListQuery
+  useMspCustomerListQuery,
+  useGetUserProfileQuery
 } from '@acx-ui/rc/services'
 import {
   DateFormatEnum,
@@ -30,7 +31,8 @@ import {
   MspEc,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { getBasePath, Link, TenantLink, MspTenantLink } from '@acx-ui/react-router-dom'
+import { getBasePath, Link, TenantLink, MspTenantLink, useParams } from '@acx-ui/react-router-dom'
+// import { defaultPayload } from 'libs/rc/components/src/EventTable'
 
 const transformApEntitlement = (row: MspEc) => {
   return row.wifiLicenses ? row.wifiLicenses : 0
@@ -97,32 +99,93 @@ const transformExpirationDate = (row: MspEc) => {
   return expirationDate
 }
 
-const defaultPayload = {
-  searchString: '',
-  filters: { tenantType: ['MSP_EC'] },
-  fields: [
-    'check-all',
-    'id',
-    'name',
-    'tenantType',
-    'status',
-    'alarmCount',
-    'mspAdminCount',
-    'mspEcAdminCount',
-    'creationDate',
-    'expirationDate',
-    'wifiLicense',
-    'switchLicens',
-    'streetAddress'
-  ]
-}
+// const defaultPayload = {
+//   searchString: '',
+//   filters: { tenantType: ['MSP_EC'] },
+//   fields: [
+//     'check-all',
+//     'id',
+//     'name',
+//     'tenantType',
+//     'status',
+//     'alarmCount',
+//     'mspAdminCount',
+//     'mspEcAdminCount',
+//     'creationDate',
+//     'expirationDate',
+//     'wifiLicense',
+//     'switchLicens',
+//     'streetAddress'
+//   ]
+// }
+
+// const supportPayload = {
+//   searchString: '',
+//   fields: [
+//     'tenantName',
+//     'tenantEmail',
+//     'id'],
+//   searchTargetFields: ['tenantName', 'tenantEmail'],
+//   filters: {
+//     status: ['DELEGATION_STATUS_ACCEPTED'],
+//     delegationType: ['DELEGATION_TYPE_SUPPORT'],
+//     isValid: [true]
+//   }
+// }
 
 export function MspCustomers () {
   const { $t } = useIntl()
+  const { tenantId } = useParams()
+  const [isSupport, setSupport] = useState(false)
 
   const [modalVisible, setModalVisible] = useState(false)
-  const [tenantId, setTenantId] = useState('')
+  const [ecTenantId, setTenantId] = useState('')
 
+  const { data: userProfile } = useGetUserProfileQuery({ params: { tenantId } })
+
+  useEffect(() => {
+    if (userProfile) {
+      if (userProfile.support) {
+        setSupport(true)
+      }
+    }
+  }, [userProfile])
+
+  const mspPayload = {
+    searchString: '',
+    filters: { tenantType: ['MSP_EC'] },
+    fields: [
+      'check-all',
+      'id',
+      'name',
+      'tenantType',
+      'status',
+      'alarmCount',
+      'mspAdminCount',
+      'mspEcAdminCount',
+      'creationDate',
+      'expirationDate',
+      'wifiLicense',
+      'switchLicens',
+      'streetAddress'
+    ]
+  }
+  
+  const supportPayload = {
+    searchString: '',
+    fields: [
+      'tenantName',
+      'tenantEmail',
+      'id'],
+    searchTargetFields: ['tenantName', 'tenantEmail'],
+    filters: {
+      status: ['DELEGATION_STATUS_ACCEPTED'],
+      delegationType: ['DELEGATION_TYPE_SUPPORT'],
+      isValid: [true]
+    }
+  }
+
+  const defaultPayload = isSupport ? supportPayload : mspPayload
   const columns: TableProps<MspEc>['columns'] = [
     {
       title: $t({ defaultMessage: 'Customers' }),
@@ -239,7 +302,7 @@ export function MspCustomers () {
   const MspEcTable = () => {
     const tableQuery = useTableQuery({
       useQuery: useMspCustomerListQuery,
-      defaultPayload
+      defaultPayload: {mspPayload}
     })
     const [
       deleteMspEc,
@@ -310,11 +373,12 @@ export function MspCustomers () {
           <DisabledButton key='download' icon={<DownloadOutlined />} />
         ]}
       />
-      <MspEcTable />
+      {isSupport && <SupportEcTable />}
+      {!isSupport && <MspEcTable />}
       <ResendInviteModal
         visible={modalVisible}
         setVisible={setModalVisible}
-        tenantId={tenantId}
+        tenantId={ecTenantId}
       />
     </>
   )

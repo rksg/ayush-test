@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+
 import { SortOrder } from 'antd/lib/table/interface'
 import moment        from 'moment-timezone'
 import { useIntl }   from 'react-intl'
@@ -10,6 +12,7 @@ import {
   TableProps
 } from '@acx-ui/components'
 import {
+  useGetUserProfileQuery,
   useVarCustomerListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -20,7 +23,7 @@ import {
   VarCustomer,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { getBasePath, Link, TenantLink } from '@acx-ui/react-router-dom'
+import { getBasePath, Link, TenantLink, useParams } from '@acx-ui/react-router-dom'
 
 
 const transformApUtilization = (row: VarCustomer) => {
@@ -69,7 +72,18 @@ const transformNextExpirationDate = (row: VarCustomer) => {
 
 export function VarCustomers () {
   const { $t } = useIntl()
-  const isSupport = false
+  const { tenantId } = useParams()
+  const [isSupport, setSupport] = useState(false)
+
+  const { data: userProfile } = useGetUserProfileQuery({ params: { tenantId } })
+
+  useEffect(() => {
+    if (userProfile) {
+      if (userProfile.support) {
+        setSupport(true)
+      }
+    }
+  }, [userProfile])
 
   const customerColumns: TableProps<VarCustomer>['columns'] = [
     {

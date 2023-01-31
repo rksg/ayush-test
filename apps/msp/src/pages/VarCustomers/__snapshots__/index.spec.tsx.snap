@@ -20,7 +20,7 @@ exports[`VarCustomers should render correctly 1`] = `
             <h1
               class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
             >
-              VAR Customers
+              RUCKUS Customers
             </h1>
           </span>
         </div>

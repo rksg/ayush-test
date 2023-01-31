@@ -111,7 +111,7 @@ export function MspEcDropdownList () {
     }
   ]
 
-  const isMsp = true
+  const isMsp = false
   // const combinedPayload = isMsp ? mspPayload : supportPayload
   // const newQuery = isMsp ? useMspCustomerListDropdownQuery : useVarCustomerListDropdownQuery
   // const newColumns = isMsp ? customerColumns : supportColumns
