@@ -48,32 +48,32 @@ function useColumns () {
         return `${row.country}, ${row.city}`
       }
     },
-    { // TODO: Waiting for backend support
-      key: 'incidents',
-      dataIndex: 'incidents',
-      title: () => {
-        return (
-          <>
-            { $t({ defaultMessage: 'Incidents' }) }
-            <Table.SubTitle children={$t({ defaultMessage: 'Last 24 hours' })} />
-          </>
-        )
-      },
-      align: 'center'
-    },
-    { // TODO: Waiting for backend support
-      key: 'health',
-      dataIndex: 'health',
-      title: () => {
-        return (
-          <>
-            { $t({ defaultMessage: 'Health Score' }) }
-            <Table.SubTitle children={$t({ defaultMessage: 'Last 24 hours' })} />
-          </>
-        )
-      },
-      align: 'center'
-    },
+    // { // TODO: Waiting for backend support
+    //   key: 'incidents',
+    //   dataIndex: 'incidents',
+    //   title: () => {
+    //     return (
+    //       <>
+    //         { $t({ defaultMessage: 'Incidents' }) }
+    //         <Table.SubTitle children={$t({ defaultMessage: 'Last 24 hours' })} />
+    //       </>
+    //     )
+    //   },
+    //   align: 'center'
+    // },
+    // { // TODO: Waiting for backend support
+    //   key: 'health',
+    //   dataIndex: 'health',
+    //   title: () => {
+    //     return (
+    //       <>
+    //         { $t({ defaultMessage: 'Health Score' }) }
+    //         <Table.SubTitle children={$t({ defaultMessage: 'Last 24 hours' })} />
+    //       </>
+    //     )
+    //   },
+    //   align: 'center'
+    // },
     // { // TODO: Waiting for HEALTH feature support
     //   title: $t({ defaultMessage: 'Services' }),
     //   key: 'services',
