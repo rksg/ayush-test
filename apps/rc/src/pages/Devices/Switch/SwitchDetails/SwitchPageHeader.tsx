@@ -183,7 +183,7 @@ function SwitchPageHeader () {
             onClick={() =>
               navigate({
                 ...basePath,
-                pathname: `${basePath.pathname}/edit`
+                pathname: `${basePath.pathname}${switchDetailHeader.isStack ? '/stack' : ''}/edit`
               })
             }
           >{$t({ defaultMessage: 'Configure' })}</Button>

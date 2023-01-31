@@ -32,9 +32,9 @@ export const SwitchDetailsDrawer = (props: DrawerProps) => {
     const unitDetails = switchDetail?.unitDetails && switchDetail?.unitDetails[count]
     const targetDevice = isStack ? unitDetails : switchDetail
     const model = _.isEmpty(_.get(targetDevice, 'model')) ?
-      getSwitchModel(_.get(targetDevice, 'activeSerial')) : _.get(targetDevice, 'model')
+      getSwitchModel(targetDevice?.activeSerial || '') : _.get(targetDevice, 'model')
     setUnitDetial({
-      serialNumber: _.get(targetDevice, 'activeSerial'),
+      serialNumber: targetDevice?.activeSerial || '',
       model,
       stackMembership: _.get(targetDevice, 'unitStatus'),
       stackId: _.get(targetDevice, 'unitId'),
