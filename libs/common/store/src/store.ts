@@ -4,6 +4,7 @@ import { generatePath }                                   from 'react-router-dom
 
 import { dataApi }               from '@acx-ui/analytics/services'
 import {
+  baseCommonApi as commonApi,
   baseNetworkApi as networkApi,
   baseVenueApi as venueApi,
   baseEventAlarmApi as eventAlarmApi,
@@ -58,6 +59,7 @@ const isProd = process.env['NODE_ENV'] === 'production'
 
 export const store = configureStore({
   reducer: {
+    [commonApi.reducerPath]: commonApi.reducer,
     [networkApi.reducerPath]: networkApi.reducer,
     [venueApi.reducerPath]: venueApi.reducer,
     [eventAlarmApi.reducerPath]: eventAlarmApi.reducer,
@@ -82,6 +84,7 @@ export const store = configureStore({
       immutableCheck: isDev ? undefined : false
     }).concat([
       ...(isProd ? [errorMiddleware] : []),
+      commonApi.middleware,
       networkApi.middleware,
       venueApi.middleware,
       eventAlarmApi.middleware,
