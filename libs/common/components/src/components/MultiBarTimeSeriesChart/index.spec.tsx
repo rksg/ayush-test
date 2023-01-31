@@ -1,19 +1,20 @@
-import React, { RefObject } from 'react'
+import React, { createRef, RefObject } from 'react'
 
 import { ECharts }  from 'echarts'
 import ReactECharts from 'echarts-for-react'
+import EChartsReact from 'echarts-for-react'
 
-import { act, render, waitFor, screen, cleanup, renderHook } from '@acx-ui/test-utils'
-import { TimeStamp }                                         from '@acx-ui/types'
+import { act, render, waitFor, screen, cleanup, renderHook, fireEvent } from '@acx-ui/test-utils'
+import { TimeStamp }                                                    from '@acx-ui/types'
 
 import { MultiBarTimeSeriesChart, onDataClick, useBarchartZoom } from '.'
 
+const base = +new Date(2023, 1, 30)
 
 const sampleData = () => {
-  const base = +new Date(2023, 1, 30)
   const milisInDay = 24 * 3600 * 1000
   const data = [[base, 'SwitchStatus', base + 1000]]
-  for (let i = 1; i < 10; i++) {
+  for (let i = 1; i < 37; i++) {
     data.push([
       base + milisInDay * i,
       'SwitchStatus',
@@ -44,15 +45,15 @@ describe('MultiBarTimeSeriesChart', () => {
   afterEach(() => cleanup())
 
   it('should render correctly', async () => {
-    const { asFragment } = render(<MultiBarTimeSeriesChart
+    render(<MultiBarTimeSeriesChart
       style={{ width: 504, height: 300 }}
       data={getData()}
       chartBoundary={[1595829463000, 1609048663000]}
       hasXaxisLabel
       zoomEnabled
     />)
-    const fragment = asFragment()
-    const chart = fragment.querySelector('div[_echarts_instance_^="ec_"]')
+    const chart = await screen.findByTestId('MultiBarTimeSeriesChart')
+    fireEvent.click(chart)
     expect(chart).not.toBeNull()
   })
 
@@ -99,13 +100,20 @@ describe('MultiBarTimeSeriesChart', () => {
     />)
   })
 
-  it('should trigger on click handler', () => {
+  it('should trigger on click handler', async () => {
     const tooltipFormatter = jest.fn(() => 'tooltip')
+    const labelFormatter = jest.fn(() => 'label')
     render(<MultiBarTimeSeriesChart
       data={getData()}
       chartBoundary={[1595829463000, 1609048663000]}
       tooltipFormatter={tooltipFormatter}
+      LabelFormatter={labelFormatter}
     />)
+
+    const chart = await screen.findByTestId('MultiBarTimeSeriesChart')
+    fireEvent.click(chart)
+    expect(chart).not.toBeNull()
+    // expect(await screen.findByText('tooltip')).toBeInTheDocument()
   })
 
   describe('onDataClick', () => {

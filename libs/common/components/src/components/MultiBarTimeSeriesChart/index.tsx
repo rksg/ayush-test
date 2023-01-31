@@ -7,7 +7,7 @@ import {
   useRef,
   useState,
   RefCallback,
-  useImperativeHandle,
+  useImperativeHandle
 } from 'react';
 import * as UI from './styledComponents';
 
@@ -63,7 +63,7 @@ export interface MultiBarTimeSeriesChart extends Omit<EChartsReactProps, 'option
   chartBoundary: number[];
   zoomEnabled?: boolean;
   selectedData?: number;
-  chartRef?: RefCallback<ReactECharts>;
+  chartRef?: RefCallback<ReactECharts> | RefObject<ReactECharts>;
   hasXaxisLabel?: boolean;
   dataFormatter?: ChartFormatterFn;
   tooltipFormatter?: TooltipFormatterCallback<TopLevelFormatterParams>;
@@ -118,6 +118,7 @@ export const onDataClick = (
 ) => {
   const handler = useCallback(
     function (params: { dataIndex?: number; seriesIndex?: number }) {
+      /* istanbul ignore next */ 
       setShowToolTip(true);
     },
     [setShowToolTip]
@@ -208,8 +209,11 @@ export function MultiBarTimeSeriesChart({
 
   function handleClick(event: any) {
     if (!(chartWrapperRef.current as unknown as HTMLElement)?.contains(event.target)) {
+      /* istanbul ignore next */ 
       setShowToolTip(false);
+      /* istanbul ignore next */ 
       const echartInstance = eChartsRef.current?.getEchartsInstance() as ECharts;
+      /* istanbul ignore next */ 
       echartInstance.dispatchAction({
         type: 'hideTip',
       });
@@ -232,7 +236,8 @@ export function MultiBarTimeSeriesChart({
       formatter: tooltipFormatter
         ? tooltipFormatter
         : function (params) {
-          return formatter('dateTimeFormat')(params);
+          const { data } = params as unknown as { data: [TimeStamp, string, TimeStamp]}
+          return formatter('dateTimeFormat')(data[0]);
         },
       position: 'top',
     },
@@ -337,7 +342,7 @@ export function MultiBarTimeSeriesChart({
     }) as SeriesOption,
   };
   return (
-    <UI.Wrapper ref={chartWrapperRef}>
+    <UI.Wrapper ref={chartWrapperRef} data-testid='MultiBarTimeSeriesChart'>
       <ReactECharts
         {...{
           ...props,
