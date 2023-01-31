@@ -30,10 +30,10 @@ export function EmbeddedReport (props: ReportProps) {
   * Hostname - Backend service where superset is running.
   * For developement,
   * Use https://devalto.ruckuswireless.com, for devalto.
-  * Use https://local.alto.mlisa.io, for minikube.
+  * Use https://alto.local.mlisa.io, for minikube.
   **/
   const HOST_NAME = process.env['NODE_ENV'] === 'development'
-    ? 'https://devalto.ruckuswireless.com' // Dev
+    ? 'https://alto.local.mlisa.io' // Dev
     : window.location.origin // Production
 
   useEffect(() => {
@@ -53,18 +53,19 @@ export function EmbeddedReport (props: ReportProps) {
     }],
     rls: [
       {
-        clause: `
-        "__time" >= '${convertDateTimeToSqlFormat(startDate)}' AND
-        "__time" < '${convertDateTimeToSqlFormat(endDate)}'
-      `
+        clause: ['"__time"', '>=', `'${convertDateTimeToSqlFormat(startDate)}'`, 'AND',
+          '"__time"', '<', `'${convertDateTimeToSqlFormat(endDate)}'`].join(' ')
       },
-      ...((networkClause || radioBandClause || rlsClause) ? [{
-        clause: `
-        ${networkClause}
-        ${networkClause && radioBandClause ? ' AND ' + radioBandClause : radioBandClause}
-        ${rlsClause? ' AND ' + rlsClause: ''}
-      `
-      }] : [])
+      ...((networkClause || radioBandClause || rlsClause)
+        ? [{
+          clause: rlsClause
+            ? rlsClause
+            : [networkClause.trim(),
+              networkClause && radioBandClause
+                ? ' AND ' + radioBandClause.trim()
+                : radioBandClause].join('')
+        }]
+        : [])
     ]
   }
 
