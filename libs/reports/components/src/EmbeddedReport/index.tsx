@@ -14,11 +14,11 @@ import { useDateFilter, convertDateTimeToSqlFormat }                       from 
 interface ReportProps {
   embedDashboardName: string
   rlsClause?: string
-  hideTitle?: boolean
+  hideHeader?: boolean
 }
 
 export function EmbeddedReport (props: ReportProps) {
-  const { embedDashboardName, rlsClause, hideTitle } = props
+  const { embedDashboardName, rlsClause, hideHeader } = props
   const [ guestToken ] = useGuestTokenMutation()
   const [ embeddedId ] = useEmbeddedIdMutation()
   const { startDate, endDate } = useDateFilter()
@@ -33,7 +33,7 @@ export function EmbeddedReport (props: ReportProps) {
   * Use https://alto.local.mlisa.io, for minikube.
   **/
   const HOST_NAME = process.env['NODE_ENV'] === 'development'
-    ? 'https://alto.local.mlisa.io' // Dev
+    ? 'https://devalto.ruckuswireless.com' // Dev
     : window.location.origin // Production
 
   useEffect(() => {
@@ -87,7 +87,7 @@ export function EmbeddedReport (props: ReportProps) {
         fetchGuestToken: () => fetchGuestTokenFromBackend(),
         dashboardUiConfig: {
           hideChartControls: true,
-          hideTitle: hideTitle ?? true
+          hideTitle: hideHeader ?? true
         }
         // debug: true
       })

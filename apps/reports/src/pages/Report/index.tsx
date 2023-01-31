@@ -32,7 +32,7 @@ export function Report (props: {
         radioBandDisabledReason={radioBandDisabledReason}
         showFilter={showFilter}
       /> }
-      <EmbeddedReport embedDashboardName={reportTypeDataStudioMapping[type]} hideTitle={false} />
+      <EmbeddedReport embedDashboardName={reportTypeDataStudioMapping[type]} hideHeader={false} />
     </>
   )
 }
