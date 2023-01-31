@@ -99,7 +99,7 @@ export default function DhcpPoolTable ({
             { min: 2 },
             { max: 32 },
             { validator: (_, value) => nameValidator(value, values(), form.getFieldValue('id')) }
-          ]} 
+          ]}
           validateFirst
           hasFeedback
           children={<Input />}
