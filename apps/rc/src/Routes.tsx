@@ -33,6 +33,7 @@ import NetworkDetails              from './pages/Networks/NetworkDetails/Network
 import NetworkForm                 from './pages/Networks/NetworkForm/NetworkForm'
 import NetworksTable               from './pages/Networks/NetworksTable'
 import AccessControlForm           from './pages/Policies/AccessControl/AccessControlForm/AccessControlForm'
+import ClientIsolationForm         from './pages/Policies/ClientIsolation/ClientIsolationForm/ClientIsolationForm'
 import MacRegistrationListDetails
   from './pages/Policies/MacRegistrationList/MacRegistrarionListDetails/MacRegistrarionListDetails'
 import MacRegistrationListsTable  from './pages/Policies/MacRegistrationList/MacRegistrarionListTable'
@@ -330,9 +331,18 @@ function PolicyRoutes () {
         element={<MacRegistrationListForm editMode={true} />}
       />
       <Route
-        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE })}
         element={<AccessControlForm edit={false}/>}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.CREATE })}
+        element={<ClientIsolationForm editMode={false}/>}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.EDIT })}
+        element={<ClientIsolationForm editMode={true}/>}
       />
     </Route>
   )
