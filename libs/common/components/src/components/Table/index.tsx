@@ -117,9 +117,16 @@ function Table <RecordType extends Record<string, any>> ({
     onFilterChange && onFilterChange(filter, { searchString }), 1000), [onFilterChange])
 
   useEffect(() => {
+    if(searchValue === '' || searchValue.length >= 2)  {
+      debounced(filterValues, searchValue)
+    }
+    return () => debounced.cancel()
+  }, [searchValue, debounced])
+
+  useEffect(() => {
     debounced(filterValues, searchValue)
-    return ()=>{ debounced.cancel() }
-  }, [searchValue, filterValues, debounced])
+    return () => debounced.cancel()
+  }, [filterValues, debounced])
 
   let columns = useMemo(() => {
     const settingsColumn = {

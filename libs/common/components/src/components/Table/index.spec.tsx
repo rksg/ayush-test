@@ -710,8 +710,13 @@ describe('Table component', () => {
         dataSource={filteredData}
         onFilterChange={onFilterChange}
       />)
+
       const input = await screen
         .findByPlaceholderText('Search Name, Given Name, Surname, Description, Address')
+      fireEvent.change(input, { target: { value: 'J' } })
+      await new Promise((r)=>{setTimeout(r, 1000)})
+      expect(onFilterChange).not.toBeCalled()
+
       fireEvent.change(input, { target: { value: 'John Doe' } })
       await new Promise((r)=>{setTimeout(r, 1000)})
       expect(onFilterChange).toBeCalledTimes(1)
