@@ -78,6 +78,19 @@ export default function DHCPHostTable ({
     setVisible(false)
   }
 
+  const onSave = async (addAnotherPoolChecked: boolean) => {
+    try {
+      await form.validateFields()
+      form.submit()
+
+      if (!addAnotherPoolChecked) {
+        onClose()
+      }
+    } catch (error) {
+      // if (error instanceof Error) throw error
+    }
+  }
+
   const isEdit = () => form.getFieldValue('id')!=='0' && !_.isUndefined(form.getFieldValue('id'))
 
   const getContent = <Form
@@ -147,18 +160,7 @@ export default function DHCPHostTable ({
             save: isEdit() ? $t({ defaultMessage: 'Update' }) : $t({ defaultMessage: 'Add' })
           })}
           onCancel={onClose}
-          onSave={async (addAnotherPoolChecked: boolean) => {
-            try {
-              await form.validateFields()
-              form.submit()
-
-              if (!addAnotherPoolChecked) {
-                onClose()
-              }
-            } catch (error) {
-              // if (error instanceof Error) throw error
-            }
-          }}
+          onSave={onSave}
         />
         }
       />

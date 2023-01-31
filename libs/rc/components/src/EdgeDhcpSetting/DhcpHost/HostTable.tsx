@@ -1,9 +1,6 @@
-import { useState } from 'react'
-
-import { useIntl, defineMessage } from 'react-intl'
+import { useIntl } from 'react-intl'
 
 import {
-  Alert,
   Table,
   TableProps
 } from '@acx-ui/components'
@@ -18,17 +15,13 @@ export function HostTable (props:{
 }) {
   const { $t } = useIntl()
   const { data } = props
-  const [ errorVisible, showError ] = useState<Boolean>(false)
-  const errorMessage = defineMessage({
-    defaultMessage: 'Only one record can be selected for editing!'
-  })
 
   const rowActions: TableProps<EdgeDhcpHost>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Edit' }),
+      visible: (selectedRows) => selectedRows.length === 1,
       onClick: (rows: EdgeDhcpHost[]) => {
-        if (rows.length === 1) props.onEdit?.(rows[0])
-        else showError(true)
+        props.onEdit?.(rows[0])
       }
     },
     {
@@ -65,16 +58,13 @@ export function HostTable (props:{
     onClick: () => props.onAdd?.()
   }]
   return (
-    <>
-      {errorVisible && <Alert message={$t(errorMessage)} type='error' showIcon closable />}
-      <Table
-        rowKey='id'
-        columns={columns}
-        dataSource={data}
-        rowActions={rowActions}
-        actions={actions}
-        rowSelection={{}}
-      />
-    </>
+    <Table
+      rowKey='id'
+      columns={columns}
+      dataSource={data}
+      rowActions={rowActions}
+      actions={actions}
+      rowSelection={{}}
+    />
   )
 }

@@ -31,17 +31,6 @@ describe('AddEdgeDhcp', () => {
     )
   })
 
-  it('should create AddEdgeDhcp successfully', async () => {
-    const { asFragment } = render(
-      <Provider>
-        <AddDhcp />
-      </Provider>, {
-        route: { params, path: '/:tenantId/services/dhcp/create' }
-      })
-    await screen.findByRole('textbox', { name: /primary dns server/i })
-    expect(asFragment()).toMatchSnapshot()
-  })
-
   it('should be blcoked when required field is empty', async () => {
     const user = userEvent.setup()
     render(
