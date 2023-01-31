@@ -2,7 +2,11 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Button, Loader, PageHeader, showActionModal, Table, TableProps } from '@acx-ui/components'
-import { useDelRoguePolicyMutation, usePolicyListQuery }                  from '@acx-ui/rc/services'
+import {
+  useDeleteClientIsolationMutation,
+  useDelRoguePolicyMutation,
+  usePolicyListQuery
+} from '@acx-ui/rc/services'
 import {
   getPolicyDetailsLink,
   getSelectPolicyRoutePath,
@@ -91,7 +95,17 @@ export default function PoliciesTable () {
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
 
-  const [ delRoguePolicy ] = useDelRoguePolicyMutation()
+  // const [ delRoguePolicy ] = useDelRoguePolicyMutation()
+
+  const deletePolicyFnMapping = {
+    [PolicyType.ROGUE_AP_DETECTION]: useDelRoguePolicyMutation(),
+    [PolicyType.CLIENT_ISOLATION]: useDeleteClientIsolationMutation(),
+    [PolicyType.AAA]: [],
+    [PolicyType.ACCESS_CONTROL]: [],
+    [PolicyType.MAC_REGISTRATION_LIST]: [],
+    [PolicyType.SYSLOG]: [],
+    [PolicyType.VLAN_POOL]: []
+  }
 
   const tableQuery = useTableQuery({
     useQuery: usePolicyListQuery,
@@ -111,15 +125,10 @@ export default function PoliciesTable () {
             entityValue: name
           },
           onOk: async () => {
-            if (type === PolicyType.ROGUE_AP_DETECTION) {
-              await delRoguePolicy({
-                params: {
-                  ...params, policyId: id
-                }
-              }).unwrap()
+            const [ deleteFn ] = deletePolicyFnMapping[type]
+            if (deleteFn) {
+              deleteFn({ params: { ...params, policyId: id } }).then(clearSelection)
             }
-
-            clearSelection()
           }
         })
       }
