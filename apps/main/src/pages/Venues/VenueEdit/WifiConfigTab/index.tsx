@@ -12,6 +12,7 @@ import { AdvancedSettingForm } from './AdvancedTab/AdvancedSettingForm'
 import { NetworkingTab }       from './NetworkingTab'
 import { RadioTab }            from './RadioTab/RadioTab'
 import { SecurityTab }         from './SecurityTab'
+import { ServerTab }           from './ServerTab'
 
 export function WifiConfigTab () {
   const { $t } = useIntl()
@@ -73,7 +74,7 @@ export function WifiConfigTab () {
         tab={tabTitleMap('servers')}
         key='servers'
       >
-        {$t({ defaultMessage: 'External Servers' })}
+        <ServerTab />
       </Tabs.TabPane>
       <Tabs.TabPane tab={tabTitleMap('settings')} key='settings'>
         <AdvancedSettingForm />
