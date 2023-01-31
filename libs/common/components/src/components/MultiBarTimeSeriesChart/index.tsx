@@ -131,7 +131,7 @@ export const onDataClick = (
     };
   }, [eChartsRef, handler]);
 };
-export const useDataZoom = (
+export const useBarchartZoom = (
   eChartsRef: RefObject<ReactECharts>,
   zoomEnabled: boolean,
   onDataZoom?: (range: TimeStampRange, isReset: boolean) => void
@@ -151,6 +151,7 @@ export const useDataZoom = (
     },
     [onDataZoom]
   );
+
   useEffect(() => {
     if (!eChartsRef?.current || !zoomEnabled) return;
     const echartInstance = eChartsRef.current!.getEchartsInstance() as ECharts;
@@ -194,7 +195,7 @@ export function MultiBarTimeSeriesChart({
   const eChartsRef = useRef<ReactECharts>(null);
   const chartWrapperRef = useRef(null);
 
-  const [canResetZoom, resetZoomCallback] = useDataZoom(eChartsRef, zoomEnabled);
+  const [canResetZoom, resetZoomCallback] = useBarchartZoom(eChartsRef, zoomEnabled);
   onDataClick(eChartsRef, setShowToolTip);
 
   useEffect(() => {
