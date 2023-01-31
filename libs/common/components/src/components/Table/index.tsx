@@ -155,7 +155,7 @@ function Table <RecordType extends Record<string, any>> ({
 
   const columnsState = useColumnsState({ columns, columnState })
 
-  const setting: SettingOptionType | false = type === 'tall' ? {
+  const setting: SettingOptionType | false = type === 'tall' && !columnState?.hidden ? {
     draggable: true,
     checkable: true,
     checkedReset: false,

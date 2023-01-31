@@ -741,4 +741,151 @@ describe('Table component', () => {
       expect(await screen.findAllByText('Jordan')).toHaveLength(1)
     })
   })
+
+  describe('show/hide columnSort', () => {
+    const basicColumns = [
+      {
+        title: 'Name',
+        dataIndex: 'name',
+        key: 'name'
+      },
+      {
+        title: 'Age',
+        dataIndex: 'age',
+        key: 'age'
+      },
+      {
+        title: 'Distance',
+        dataIndex: 'distance',
+        key: 'distance'
+      },
+      {
+        title: 'Address 1',
+        dataIndex: 'address1',
+        key: 'address1'
+      },
+      {
+        title: 'Address 2',
+        dataIndex: 'address2',
+        key: 'address2'
+      },
+      {
+        title: 'Address 3',
+        dataIndex: 'address3',
+        key: 'address3'
+      },
+      {
+        title: 'Address 4',
+        dataIndex: 'address4',
+        key: 'address4'
+      },
+      {
+        title: 'Address 5',
+        dataIndex: 'address5',
+        key: 'address5'
+      },
+      {
+        title: 'Address 6',
+        dataIndex: 'address6',
+        key: 'address6'
+      }
+    ]
+
+    const basicData = [
+      {
+        key: '1',
+        name: 'John Doe',
+        age: 32,
+        distance: 32,
+        address1: 'sample address',
+        address2: 'sample address',
+        address3: 'sample address',
+        address4: 'sample address',
+        address5: 'sample address',
+        address6: 'sample address'
+      },
+      {
+        key: '2',
+        name: 'Jane Doe',
+        age: 33,
+        distance: 33,
+        address1: 'new address',
+        address2: 'sample address',
+        address3: 'sample address',
+        address4: 'sample address',
+        address5: 'sample address',
+        address6: 'sample address'
+      },
+      {
+        key: '3',
+        name: 'Will Smith',
+        age: 45,
+        distance: 45,
+        address1: 'address',
+        address2: 'sample address',
+        address3: 'sample address',
+        address4: 'sample address',
+        address5: 'sample address',
+        address6: 'sample address'
+      }
+    ]
+
+    const columnState = {
+      // eslint-disable-next-line no-console
+      onChange: jest.fn(),
+      defaultValue: {
+        name: true,
+        age: true,
+        address1: true,
+        address2: true,
+        address3: true,
+        address4: true,
+        distance: true,
+        address5: false,
+        address6: true
+      }
+    }
+    const props = {
+      columns: basicColumns,
+      dataSource: basicData,
+      columnState: columnState
+    }
+
+
+    it('hide the columnSort', async () => {
+      render(<Table {...props} columnState={{ ...columnState, hidden: true }} />)
+
+      const listToolbar = await screen.findByRole('generic', {
+        name: (name, element) => {
+          return element.classList.contains('ant-pro-table-list-toolbar')
+        }
+      })
+
+      const listToolBarItem = within(listToolbar).queryByRole('generic', {
+        name: (name, element) => {
+          return element.classList.contains('ant-pro-table-list-toolbar-setting-item')
+        }
+      })
+
+      expect(listToolBarItem).toBeNull()
+    })
+
+    it('show the columnSort by default', async () => {
+      render(<Table {...props} columnState={{ ...columnState }} />)
+
+      const listToolbar = await screen.findByRole('generic', {
+        name: (name, element) => {
+          return element.classList.contains('ant-pro-table-list-toolbar')
+        }
+      })
+
+      const listToolBarItem = await within(listToolbar).findByRole('generic', {
+        name: (name, element) => {
+          return element.classList.contains('ant-pro-table-list-toolbar-setting-item')
+        }
+      })
+
+      expect(listToolBarItem).toBeTruthy()
+    })
+  })
 })
