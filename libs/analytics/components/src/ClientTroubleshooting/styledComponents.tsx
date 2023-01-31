@@ -74,16 +74,54 @@ export const StyledPlusSquareOutlined = styled(PlusSquareOutlined)`
    path{
       stroke:var(--acx-accents-blue-50);
     }`
+
 export const StyledMinusSquareOutlined = styled(MinusSquareOutlined)`
    width: 16px;
    path{
       stroke:var(--acx-accents-blue-50);
     }`
+
 export const TimelineTitle = styled.span`
    line-height: 24px;
    font-weight: var(--acx-body-font-weight-bold);
    font-size: 12px;`
+export const TimelineCount = styled.span`
+   font-weight: var(--acx-body-font-weight-bold);
+   font-size: 12px;`
 
+export const TimelineSubContent = styled.span`
+   line-height: 16px;
+   font-weight: var(--acx-body-font-weight);
+   white-space: nowrap;
+   font-size: 12px;
+   color: var(--acx-neutrals-70);`
+
+export const RoamingTimelineSubContent = styled.span`
+  line-height: 16px;
+  font-weight: var(--acx-body-font-weight);
+  white-space: nowrap;
+  font-size: 10px;
+  color: var(--acx-neutrals-70);
+  text-decoration: underline dotted;
+`
+
+export const TooltipWrapper = styled.div`
+    color: var(--acx-neutrals-70);
+    font-weight: 400;
+    font-size: var(--acx-subtitle-6-font-size);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    background-color: transparent;
+    `
+export const TooltipDate = styled.span`
+    color: var(--acx-neutrals-70);
+    font-weight: 700;
+    `
+export const TimelineLoaderWrapper = styled.div`
+  height: 100%;
+  padding-top: 5px;
+  `
 export const PopoverWrapper = styled.div`
   cursor: pointer;
   .ant-popover-inner-content {
