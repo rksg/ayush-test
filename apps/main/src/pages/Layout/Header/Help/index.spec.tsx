@@ -36,7 +36,6 @@ describe('HelpPage Component', () => {
 
   it('should render <HelpPage/> component correctly', async () => {
 
-
     mockServer.use(
       rest.get(MAPPING_URL, (_, res, ctx) =>
         res(ctx.json({
@@ -59,8 +58,7 @@ describe('HelpPage Component', () => {
         }
       })
 
-    await userEvent.click((await screen.findByText('Dashboard test')))
-    await userEvent.click((await screen.findByText('Continue Reading')))
+    expect(await screen.findByText(('Dashboard test'))).toBeInTheDocument()
     await userEvent.click(await screen.findByRole('button',{ name: 'Close' }))
   })
 
@@ -69,12 +67,10 @@ describe('HelpPage Component', () => {
     mockServer.use(
       rest.get(MAPPING_URL, (_, res, ctx) =>
         res(ctx.json({
-          'dashboard': 'GUID-A338E06B-7FD9-4492-B1B2-D43841D704F1.html',
-          'administration': 'GUID-95DB93A0-D295-4D31-8F53-47659D019295.html',
-          'venues-list': 'GUID-800174C7-D49A-4C02-BCEB-CE0D9581BABA.html'
+          empty: ''
         }))
       ),
-      rest.get(DOCS_URL+':docID', (_, res, ctx) =>
+      rest.get('/emptyURL', (_, res, ctx) =>
         res(ctx.text('<p class="">Dashboard test</p>'))
       ))
 
@@ -87,8 +83,8 @@ describe('HelpPage Component', () => {
           wrapRoutes: false
         }
       })
-
-    await userEvent.click((await screen.findByText('Ruckus ONE User Guide')))
+    await new Promise((r)=>{setTimeout(r, 300)})
+    expect(await screen.findByText(('The content is not available.'))).toBeInTheDocument()
   })
 
 })

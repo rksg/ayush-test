@@ -70,8 +70,8 @@ export default function HelpPage (props: {
 
   useEffect(() => {
     (async ()=> {
-      const mapping = await getMapping()
-      mapping && updateDesc(mapping as string)
+      const mappingRs = await getMapping()
+      mappingRs ? updateDesc(mappingRs as string) : showError()
     })()
   }, [location])
 
