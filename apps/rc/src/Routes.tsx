@@ -22,7 +22,7 @@ import { StackForm }               from './pages/Devices/Switch/StackForm'
 import SwitchDetails               from './pages/Devices/Switch/SwitchDetails'
 import { SwitchClientDetailsPage } from './pages/Devices/Switch/SwitchDetails/SwitchClientsTab/SwitchClientDetailsPage'
 import SwitchesTable               from './pages/Devices/Switch/SwitchesTable'
-import { AddSwitchForm }           from './pages/Devices/Switch/SwitchForm/AddSwitchForm'
+import { SwitchForm }              from './pages/Devices/Switch/SwitchForm'
 import ApDetails                   from './pages/Devices/Wifi/ApDetails'
 import { ApEdit }                  from './pages/Devices/Wifi/ApEdit'
 import { ApForm }                  from './pages/Devices/Wifi/ApForm'
@@ -94,7 +94,6 @@ function DeviceRoutes () {
         element={<ApEdit />}
       />
       <Route path='devices/apgroups/:action' element={<ApGroupForm />} />
-      <Route path='devices/switch/:action' element={<AddSwitchForm />} />
       <Route
         path='devices/wifi/:apId/details/:activeTab'
         element={<ApDetails />} />
@@ -132,7 +131,10 @@ function DeviceRoutes () {
       <Route path='devices/edge/:serialNumber/edge-details/:activeTab/:activeSubTab'
         element={<EdgeDetails />} />
       <Route path='devices/switch' element={<SwitchesTable />} />
-      <Route path='devices/switch/stack/add' element={<StackForm />} />
+      <Route path='devices/switch/:action' element={<SwitchForm />} />
+      <Route path='devices/switch/:switchId/:serialNumber/:action' element={<SwitchForm />} />
+      <Route path='devices/switch/stack/:action' element={<StackForm />} />
+      <Route path='devices/switch/:switchId/:serialNumber/stack/:action' element={<StackForm />} />
       <Route path='devices/edge/list' element={<Edges />} />
     </Route>
   )
@@ -279,6 +281,11 @@ function PolicyRoutes () {
         // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.DETAIL })}
         element={<RogueAPDetectionDetailView />}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.CREATE })}
+        element={<div />}
       />
       <Route
         // eslint-disable-next-line max-len
