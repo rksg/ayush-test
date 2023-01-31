@@ -356,7 +356,7 @@ export const ConnectedClientsTable = (props: {
   const tableQuery = props.tableQuery || inlineTableQuery
 
   useEffect(() => {
-    if (tableQuery.data?.data) {
+    if (tableQuery.data?.data && setConnectedClientCount) {
       setConnectedClientCount(tableQuery.data?.totalCount)
     }
   }, [tableQuery.data?.data, tableQuery.data?.totalCount])
