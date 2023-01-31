@@ -20,7 +20,7 @@ import {
   VenueRoguePolicyType,
   TableResult,
   onSocketActivityChanged,
-  showActivityMessage,
+  onActivityMessageReceived,
   CommonResult,
   NewTableResult,
   transferToTableResult,
@@ -113,7 +113,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       providesTags: [{ type: 'Policy', id: 'DETAIL' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg, [
+          onActivityMessageReceived(msg, [
             'UpdateRogueApPolicyProfile'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
@@ -171,7 +171,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       providesTags: [{ type: 'Policy', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg, [
+          onActivityMessageReceived(msg, [
             'AddRogueApPolicyProfile',
             'UpdateRogueApPolicyProfile',
             'DeleteRogueApPolicyProfile'
@@ -197,7 +197,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const params = requestArgs.params as { requestId: string }
           if (params.requestId) {
-            showActivityMessage(msg, [
+            onActivityMessageReceived(msg, [
               'Add Layer 2 Policy Profile'
             ],() => {
               api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
@@ -222,7 +222,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const params = requestArgs.params as { requestId: string }
           if (params.requestId) {
-            showActivityMessage(msg, [
+            onActivityMessageReceived(msg, [
               'Add Layer 3 Policy Profile'
             ],() => {
               api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
@@ -340,7 +340,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       providesTags: [{ type: 'Policy', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg, [
+          onActivityMessageReceived(msg, [
             'Add Syslog Policy Profile',
             'Update Syslog Policy Profile'
           ], () => {

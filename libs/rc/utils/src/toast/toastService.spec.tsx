@@ -2,7 +2,7 @@ import { message } from 'antd'
 
 import { act, fireEvent, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-import { CountdownNode, showActivityMessage, showTxToast, TxStatus } from './toastService'
+import { CountdownNode, onActivityMessageReceived, showTxToast, TxStatus } from './toastService'
 
 const tx = {
   requestId: '6470931c-c9ce-42f4-b9a3-48324f109bd5',
@@ -69,9 +69,9 @@ describe('Toast Service: showTxToast', () => {
     }
   })
 
-  it('renders showActivityMessage successful content', async () => {
+  it('renders onActivityMessageReceived successful content', async () => {
     act(() => {
-      showActivityMessage(tx, ['AddNetworkDeep'])
+      onActivityMessageReceived(tx, ['AddNetworkDeep'], ()=>{ showTxToast(tx) })
     })
     /* eslint-disable max-len */
     await screen.findByText('Network "open-network" was added by FisrtName 1094 LastName 1094 (dog1094@email.com)')
@@ -79,7 +79,7 @@ describe('Toast Service: showTxToast', () => {
     fireEvent.click(link)
   })
 
-  it('renders showActivityMessage failed content', async () => {
+  it('renders onActivityMessageReceived failed content', async () => {
     const failedTx = {
       ...tx,
       status: TxStatus.FAIL,
@@ -87,7 +87,7 @@ describe('Toast Service: showTxToast', () => {
       error: '{"errors":[{"code":"xxx-xxxxx","message":"Operation: ADD, Type: Network, Id: xxx, Err: xxxxxx"}],"requestId":"xxxxxxx"}'
     }
     act(() => {
-      showActivityMessage(failedTx, ['AddNetworkDeep'])
+      onActivityMessageReceived(failedTx, ['AddNetworkDeep'], ()=>{ showTxToast(failedTx) })
     })
     await screen.findByText('Network "open-network" was not added')
     fireEvent.click(await screen.findByRole('button', { name: 'Technical Details' }))

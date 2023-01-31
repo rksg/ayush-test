@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import {
   RequestPayload,
   onSocketActivityChanged,
-  showTxToast
+  showActivityToast
 } from '@acx-ui/rc/utils'
 
 
@@ -21,7 +21,7 @@ export const commonApi = baseCommonApi.injectEndpoints({
       queryFn: () => ({ data: [] }),
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showTxToast(msg)
+          showActivityToast(msg)
         })
       }
     })

@@ -38,7 +38,7 @@ import {
   MdnsProxyGetApiResponse,
   convertApiPayloadToMdnsProxyFormData,
   onSocketActivityChanged,
-  showActivityMessage,
+  onActivityMessageReceived,
   MdnsProxyAp,
   UploadUrlResponse,
   TableChangePayload,
@@ -90,7 +90,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       providesTags: [{ type: 'Service', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg, [
+          onActivityMessageReceived(msg, [
             'Add Multicast DNS Proxy Service Profile',
             'Update Multicast DNS Proxy Service Profile',
             'Delete Multicast DNS Proxy Service Profile',
@@ -188,7 +188,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       providesTags: [{ type: 'Service', id: 'DHCP' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg, [
+          onActivityMessageReceived(msg, [
             'AddDhcpConfigServiceProfile',
             'UpdateDhcpConfigServiceProfile',
             'DeleteDhcpConfigServiceProfile',
@@ -275,7 +275,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       providesTags: [{ type: 'MdnsProxy', id: 'LIST' }, { type: 'Service', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg, [
+          onActivityMessageReceived(msg, [
             'Add Multicast DNS Proxy Service Profile',
             'Update Multicast DNS Proxy Service Profile',
             'Delete Multicast DNS Proxy Service Profile',
@@ -447,7 +447,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       providesTags: [{ type: 'Service', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg, [
+          onActivityMessageReceived(msg, [
             'Add WiFi Calling Service Profile',
             'Update WiFi Calling Service Profile',
             'Delete WiFi Calling Service Profile',
@@ -618,7 +618,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       providesTags: [{ type: 'Service', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg, [
+          onActivityMessageReceived(msg, [
             'Add Portal Service Profile',
             'Update Portal Service Profile',
             'Delete Portal Service Profile',
