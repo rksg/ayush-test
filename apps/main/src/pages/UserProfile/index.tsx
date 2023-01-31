@@ -195,9 +195,7 @@ export function UserProfile () {
         <Tabs.TabPane
           tab={$t({ defaultMessage: 'Recent Logins' })}
           key='RecentLogins'>
-          <RecentLogin
-            userEmail={userProfile?.email}
-          />
+          {userProfile && <RecentLogin userEmail={userProfile!.email} />}
         </Tabs.TabPane>
       </Tabs>
     </>
