@@ -15,6 +15,8 @@ import { validateRecoveryPassphrasePart } from '@acx-ui/rc/utils'
 
 import { MessageMapping } from '../MessageMapping'
 
+import * as UI from './styledComponents'
+
 interface ChangePassphraseDrawerProps {
   className?: string,
   data: string,
@@ -154,38 +156,4 @@ export const ChangePassphraseDrawer = styled((props: ChangePassphraseDrawerProps
       </Form>
     </Drawer>
   )
-})`
-  .ant-drawer-footer {
-    justfy-content: flex-start;
-    & > div {
-      display: flex;
-      flex-direction: revert;
-    }
-    & > div > .ant-btn + .ant-btn {
-      margin: 0;
-      margin-right: 12px;
-    }
-  }
-
-  .ant-drawer-body .ant-form-item-control .ant-form-item-explain-error:not(:first-child) {
-    display: none;
-  }
-
-  .inputsWrapper {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-
-    & input {
-      width: 55px;
-    }
-  }
-
-  .greyText {
-    color: var(--acx-neutrals-50);
-  }
-
-  & span[role="img"].anticon {
-    color: var(--acx-accents-blue-50);
-  }
-`
+})`${UI.drawerStyles}`

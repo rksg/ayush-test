@@ -11,6 +11,8 @@ import { useParams }                        from '@acx-ui/react-router-dom'
 
 import { MessageMapping } from '../MessageMapping'
 
+import * as UI from './styledComponents'
+
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 
 interface MFAFormItemProps {
@@ -105,11 +107,10 @@ const MFAFormItem = styled((props: MFAFormItemProps) => {
               title={$t({ defaultMessage: 'Recovery Codes' })}
               type='no-border'
             >
-
-              <Typography.Text className='description recoveryCodeDescription'>
+              <Typography.Text className='description darkGreyText'>
                 {$t(MessageMapping.enable_mfa_copy_codes_help_1)}
               </Typography.Text>
-              <Typography.Text className='description recoveryCodeDescription'>
+              <Typography.Text className='description darkGreyText'>
                 {$t(MessageMapping.enable_mfa_copy_codes_help_2)}
               </Typography.Text>
               <TextArea
@@ -128,19 +129,6 @@ const MFAFormItem = styled((props: MFAFormItemProps) => {
       </Col>
     </Row>
   )
-})`
-  & input[type=checkbox] {
-    padding-right: 5px;
-  }
-
-  & .recoveryCodeDescription {
-    color: var(--acx-neutrals-70);
-  }
-
-  & textarea {
-    background-color: var(--acx-neutrals-20);
-    margin-top: 15px;
-  }
-`
+})`${UI.styles}`
 
 export { MFAFormItem }

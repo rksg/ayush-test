@@ -15,6 +15,7 @@ import { DefaultSystemLanguageFormItem } from './DefaultSystemLanguageFormItem'
 import { MapRegionFormItem }             from './MapRegionFormItem'
 import { MFAFormItem }                   from './MFAFormItem'
 import { RecoveryPassphraseFormItem }    from './RecoveryPassphraseFormItem'
+import * as UI                           from './styledComponents'
 
 
 const AccountSettings = (props: { className?: string }) => {
@@ -81,35 +82,4 @@ const AccountSettings = (props: { className?: string }) => {
   )
 }
 
-export default styled(AccountSettings)`
-  & .ant-list-item {
-    padding: 0;
-  }
-
-  & .ant-select.ant-select-in-form-item {
-    width: 200px;
-  }
-
-  & .ant-checkbox-wrapper-in-form-item {
-    color: var(--acx-neutrals-60)
-  }
-
-  & .greyText {
-    color: var(--acx-neutrals-50)
-  }
-
-  & .description {
-    font-size: var(--acx-body-4-font-size);
-  }
-
-  & .descriptionsWrapper {
-    margin-left: 24px;
-    flex-wrap: wrap;
-    align-content: flex-start;
-  }
-
-  .ant-divider {
-    margin: 4px 0px 20px;
-    background: var(--acx-neutrals-30);
-  }
-`
+export default styled(AccountSettings)`${UI.styles}`

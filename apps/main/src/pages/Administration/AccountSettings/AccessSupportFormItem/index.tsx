@@ -18,6 +18,8 @@ import { formatter }   from '@acx-ui/utils'
 
 import { MessageMapping } from '../MessageMapping'
 
+import * as UI from './styledComponents'
+
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 
 
@@ -119,7 +121,7 @@ const AccessSupportFormItem = styled((props: AccessSupportFormItemProps) => {
             </Tooltip>
 
             { isSupportAccessEnabled && (
-              <Typography.Paragraph className='grantedOnText'>
+              <Typography.Paragraph className='darkGreyText grantedOnText'>
                 {
                 // eslint-disable-next-line max-len
                   $t({ defaultMessage: '- Administrator-level access is granted on {createdDate}' }, { createdDate })
@@ -137,17 +139,6 @@ const AccessSupportFormItem = styled((props: AccessSupportFormItemProps) => {
       </Col>
     </Row>
   )
-})`
-  input[type=checkbox] {
-    padding-right: 5px;
-  }
-
-  .grantedOnText {
-    color: var(--acx-neutrals-70);
-    font-weight: bold;
-    font-size: var(--acx-body-4-font-size);
-    margin: 0;
-  }
-`
+})`${UI.styles}`
 
 export { AccessSupportFormItem }
