@@ -51,6 +51,18 @@ const mockTableResult = {
     scope: '15',
     health: '',
     tags: ['tag5', 'tag6']
+  },
+  {
+    id: 'dd080e33-26a7-4d34-870f-b7f312fcfccb',
+    name: 'DHCP-Guest',
+    type: 'DHCP (Wi-Fi)',
+    category: 'CONNECTIVITY',
+    status: 'DOWN',
+    adminState: 'DISABLED',
+    technology: 'WI-FI',
+    scope: '0',
+    health: '',
+    tags: ['tag5', 'tag6']
   }]
 }
 
@@ -109,5 +121,35 @@ describe('Services Table', () => {
     await screen.findByText('Delete "' + selectedServiceName + '"?')
     const deleteServiceButton = await screen.findByRole('button', { name: /Delete Service/i })
     fireEvent.click(deleteServiceButton)
+  })
+
+  it('should delete selected row failed', async () => {
+    render(
+      <Provider>
+        <ServicesTable />
+      </Provider>, {
+        route: { params, path: '/:tenantId/services' }
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    const selectedServiceName = mockTableResult.data[2].name
+    const nameReg = new RegExp(selectedServiceName)
+    const row = await screen.findByRole('row', { name: nameReg })
+    fireEvent.click(within(row).getByRole('radio'))
+
+    // DHCP without scope
+    const deleteButton = screen.queryByRole('button', { name: /delete/i })
+    expect(deleteButton).toBeNull()
+
+    fireEvent.click(within(row).getByRole('radio'))
+
+    // DHCP with scope (DEFAULT_GUEST_DHCP_NAME)
+    const selectedDefaultServiceName = mockTableResult.data[3].name
+    const defaultNameReg = new RegExp(selectedDefaultServiceName)
+    const defaultRow = await screen.findByRole('row', { name: defaultNameReg })
+    fireEvent.click(within(defaultRow).getByRole('radio'))
+
+    expect(screen.queryByRole('button', { name: /delete/i })).toBeNull()
   })
 })

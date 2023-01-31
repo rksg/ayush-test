@@ -151,7 +151,7 @@ export default function ServicesTable () {
         const hasBlockObj = _.find(selectedRows,
           (o)=> {
             if(o.type === ServiceType.DHCP){
-              if(o.scope!==0){
+              if(Number(o.scope) !== 0){
                 return true
               }
               else if(o.name===DEFAULT_GUEST_DHCP_NAME){
