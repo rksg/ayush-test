@@ -1,9 +1,9 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { MspUrlsInfo }                                                   from '@acx-ui/rc/utils'
-import { Provider }                                                      from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
+import { MspUrlsInfo }                                                              from '@acx-ui/rc/utils'
+import { Provider }                                                                 from '@acx-ui/store'
+import { mockServer, render, screen, fireEvent, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
 import { ManageAdminsDrawer } from '.'
 
@@ -58,6 +58,28 @@ describe('ManageAdminsDrawer', () => {
     const rows = await within(tbody).findAllByRole('row')
     expect(rows).toHaveLength(list.length)
 
+  })
+  it('should search correctly', async () => {
+    render(
+      <Provider>
+        <ManageAdminsDrawer visible={true}
+          setVisible={jest.fn()}
+          setSelected={jest.fn()}/>
+      </Provider>, {
+        route: { params, path: '/:tenantId/dashboard/mspCustomers/create' }
+      })
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await screen.findByText('myreadonly@my.com')
+
+    const input =
+      await screen.findByPlaceholderText('Search Email')
+
+    fireEvent.change(input, { target: { value: 'm' } })
+    expect(await screen.findByText('yreadonly@')).toBeVisible()
+    expect(await screen.findByText('sp.eleu1658@rwbigdog.co')).toBeVisible()
+
+    fireEvent.change(input, { target: { value: 'mm' } })
+    expect(screen.queryByText('mm')).toBeNull()
   })
 
 })
