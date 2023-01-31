@@ -210,6 +210,13 @@ export const getStackMemberStatus = (unitStatus: string, isDefaultMember?: boole
   return
 }
 
+export const isL3FunctionSupported = (switchType: string | undefined) => {
+  if (!switchType) {
+    return false
+  }
+  return isRouter(switchType as SWITCH_TYPE)
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const showGeneralError = (error: any) => { // TODO: check res format
   const { $t } = getIntl()
