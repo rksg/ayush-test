@@ -154,7 +154,6 @@ export function ManageCustomer () {
   const linkToCustomers = useTenantLink('/dashboard/mspcustomers', 'v')
   const formRef = useRef<StepsFormInstance<EcFormData>>()
   const dateFormat = 'MM/DD/YYYY'
-  const trialFreeLicense = 25
   const { action, status, tenantId, mspEcTenantId } = useParams()
 
   const [isTrialMode, setTrialMode] = useState(false)
@@ -189,10 +188,13 @@ export function ManageCustomer () {
   const { data: userProfile } = useGetUserProfileQuery({ params: useParams() })
   const { data: licenseSummary } = useMspAssignmentSummaryQuery({ params: useParams() })
   const { data: licenseAssignment } = useMspAssignmentHistoryQuery({ params: useParams() })
-  const { data } = useGetMspEcQuery({ params: { mspEcTenantId } })
+  const { data } =
+      useGetMspEcQuery({ params: { mspEcTenantId } }, { skip: action !== 'edit' })
   // const { data: delegatedAdmins } = useGetMspEcDelegatedAdminsQuery({ params: { mspEcTenantId } })
-  const { data: ecAdministrators } = useMspEcAdminListQuery({ params: { mspEcTenantId } })
-  const { data: ecSupport } = useGetMspEcSupportQuery({ params: { mspEcTenantId } })
+  const { data: ecAdministrators } =
+      useMspEcAdminListQuery({ params: { mspEcTenantId } }, { skip: action !== 'edit' })
+  const { data: ecSupport } =
+      useGetMspEcSupportQuery({ params: { mspEcTenantId } }, { skip: action !== 'edit' })
   const [
     enableMspEcSupport
   ] = useEnableMspEcSupportMutation()
@@ -252,6 +254,8 @@ export function ManageCustomer () {
         })
         setAdministrator(administrator)
       }
+      setSubscriptionStartDate(moment().format(dateFormat))
+      setSubscriptionEndDate(moment().add(30,'days').format(dateFormat))
     }
   }, [data, licenseSummary, licenseAssignment, ecSupport, userProfile, ecAdministrators])
   const [sameCountry, setSameCountry] = useState(true)
@@ -816,15 +820,6 @@ export function ManageCustomer () {
   }
 
   const CustomerSubscription = () => {
-    useEffect(() => {
-      setSubscriptionStartDate(moment().format(dateFormat))
-      if (trialSelected) {
-        setWifiLicense(trialFreeLicense)
-        setSwitchLicense(trialFreeLicense)
-        setSubscriptionEndDate(moment().add(30,'days').format(dateFormat))
-      }
-    }, [])
-
     return <>
       <h4>{intl.$t({ defaultMessage: 'Start service in' })}</h4>
       <Form.Item
