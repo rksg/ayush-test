@@ -12,13 +12,13 @@ import { EmptyDescription, DocLink, Paragraph, TextContainer } from './styledCom
 
 //for Local test, use '/docs/r1/mapfile/doc-mapper.json'
 // TODO: change to use '/docs/r1/mapfile/doc-mapper.json' for local and prod after gateway adds route
-const MAPPING_URL = 'https://docs.cloud.ruckuswireless.com/r1/mapfile/doc-mapper.json'
+export const MAPPING_URL = 'https://docs.cloud.ruckuswireless.com/r1/mapfile/doc-mapper.json'
 
 // for local test, use '/docs/alto/latest/'
 // TODO: change to use '/docs/alto/latest/' for local and prod after gateway adds route
-const DOCS_URL = 'https://docs.cloud.ruckuswireless.com/alto/latest/'
+export const DOCS_URL = 'https://docs.cloud.ruckuswireless.com/alto/latest/'
 
-const DOCS_HOME_URL = 'https://docs.cloud.ruckuswireless.com'
+export const DOCS_HOME_URL = 'https://docs.cloud.ruckuswireless.com'
 
 
 export default function HelpPage (props: {
@@ -79,7 +79,6 @@ export default function HelpPage (props: {
     title={$t({ defaultMessage: 'Help for this page' })}
     visible={props.modalState}
     onClose={() => props.setIsModalOpen(false)}
-    mask={true}
     children={<div>
       <Paragraph>
         {helpUrl ? helpDesc :
