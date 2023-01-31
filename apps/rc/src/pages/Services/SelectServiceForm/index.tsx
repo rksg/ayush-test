@@ -49,6 +49,7 @@ export default function SelectServiceForm () {
       title: defineMessage({ defaultMessage: 'Connectivity' }),
       items: [
         { type: ServiceType.DHCP, categories: [RadioCardCategory.WIFI] },
+        { type: ServiceType.EDGE_DHCP, categories: [RadioCardCategory.EDGE] },
         { type: ServiceType.DPSK, categories: [RadioCardCategory.WIFI] },
         {
           type: ServiceType.NETWORK_SEGMENTATION,

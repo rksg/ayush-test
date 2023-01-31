@@ -136,6 +136,7 @@ export default function ServicesTable () {
   })
   const deleteServiceFnMapping = {
     [ServiceType.DHCP]: useDeleteDHCPServiceMutation(),
+    [ServiceType.EDGE_DHCP]: useDeleteDHCPServiceMutation(),
     [ServiceType.DPSK]: [], // TODO: API not ready
     [ServiceType.MDNS_PROXY]: useDeleteMdnsProxyMutation(),
     [ServiceType.PORTAL]: useDeletePortalMutation(),

@@ -193,12 +193,12 @@ function ServiceRoutes () {
         path={getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.DETAIL })}
         element={<WifiCallingDetailView />}
       />
-      {/* <Route
-        path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE })}
-        element={<DHCPForm/>}
-      /> */}
       <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE })}
+        element={<DHCPForm/>}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.EDGE_DHCP, oper: ServiceOperation.CREATE })}
         element={<AddDHCP/>}
       />
       <Route

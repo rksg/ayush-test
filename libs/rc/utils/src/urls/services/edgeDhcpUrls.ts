@@ -13,7 +13,7 @@ export const EdgeDhcpUrls: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/api/edgeDhcpServices/:id'
   },
-  bulkdeleteDhcpServices: {
+  bulkDeleteDhcpServices: {
     method: 'delete',
     url: '/api/edgeDhcpServices'
   },

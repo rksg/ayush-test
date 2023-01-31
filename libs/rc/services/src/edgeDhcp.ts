@@ -29,7 +29,7 @@ export const edgeDhcpApi = baseEdgeDhcpApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'EdgeDhcp', id: 'LIST' }]
     }),
-    updateEdgeDhcp: build.mutation<CommonResult, RequestPayload>({
+    updateEdgeDhcpService: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(EdgeDhcpUrls.updateDhcpService, params)
         return {
@@ -39,10 +39,10 @@ export const edgeDhcpApi = baseEdgeDhcpApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'EdgeDhcp', id: 'LIST' }, { type: 'EdgeDhcp', id: 'DETAIL' }]
     }),
-    deleteEdgeDhcp: build.mutation<CommonResult, RequestPayload>({
+    deleteEdgeDhcpServices: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         if(payload){ //delete multiple rows
-          const req = createHttpRequest(EdgeDhcpUrls.bulkdeleteDhcpServices)
+          const req = createHttpRequest(EdgeDhcpUrls.bulkDeleteDhcpServices)
           return {
             ...req,
             body: payload
@@ -56,7 +56,7 @@ export const edgeDhcpApi = baseEdgeDhcpApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'EdgeDhcp', id: 'LIST' }]
     }),
-    getEdgeDhcp: build.query<EdgeDhcpSetting, RequestPayload>({
+    getEdgeDhcpService: build.query<EdgeDhcpSetting, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(EdgeDhcpUrls.getDhcp, params)
         return {
@@ -80,8 +80,8 @@ export const edgeDhcpApi = baseEdgeDhcpApi.injectEndpoints({
 
 export const {
   useAddEdgeDhcpServiceMutation,
-  useUpdateEdgeDhcpMutation,
-  useDeleteEdgeDhcpMutation,
-  useGetEdgeDhcpQuery,
+  useUpdateEdgeDhcpServiceMutation,
+  useDeleteEdgeDhcpServicesMutation,
+  useGetEdgeDhcpServiceQuery,
   useGetEdgeDhcpListQuery
 } = edgeDhcpApi

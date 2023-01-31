@@ -110,6 +110,7 @@ export enum QosPriorityEnum {
 export enum ServiceType {
   PORTAL = 'Portal',
   DHCP = 'DHCP (Wi-Fi)',
+  EDGE_DHCP = 'DHCP (Edge)',
   WIFI_CALLING = 'Wi-Fi Calling',
   MDNS_PROXY = 'mDNS Proxy',
   DPSK = 'DPSK',
