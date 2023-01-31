@@ -173,6 +173,6 @@ async function populateValues (values: Partial<CreateDpskPassphrasesFormFields>)
     // eslint-disable-next-line max-len
     await userEvent.click(await screen.findByRole('cell', { name: new RegExp(targetDate.date().toString()) }))
   } else {
-    await userEvent.click(await screen.findByLabelText('Never expires (Same as pool)'))
+    await userEvent.click(await screen.findByLabelText('Same as pool'))
   }
 }
