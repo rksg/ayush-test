@@ -6,7 +6,7 @@ import ReactECharts from 'echarts-for-react'
 import { act, render, waitFor, screen, cleanup, renderHook, fireEvent } from '@acx-ui/test-utils'
 import { TimeStamp }                                                    from '@acx-ui/types'
 
-import { MultiBarTimeSeriesChart, onDataClick, useBarchartZoom } from '.'
+import { MultiBarTimeSeriesChart, useDataClick, useBarchartZoom } from '.'
 
 const base = +new Date(2023, 1, 30)
 
@@ -137,7 +137,7 @@ describe('MultiBarTimeSeriesChart', () => {
 
     it('handles null echart ref', () => {
       eChartsRef = { current: null } as RefObject<ReactECharts>
-      renderHook(() => onDataClick(eChartsRef, mockDispatchAction))
+      renderHook(() => useDataClick(eChartsRef, mockDispatchAction))
       // intentionally no assertion to cover the line where echart ref is null
     })
   })
