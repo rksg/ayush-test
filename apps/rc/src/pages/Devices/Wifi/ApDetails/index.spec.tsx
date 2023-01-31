@@ -26,11 +26,59 @@ jest.mock('@acx-ui/rc/components', () => {
     .map(key => [key, () => <div data-testid={`rc-${key}`} title={key} />])
   return Object.fromEntries(sets)
 })
+jest.mock('@acx-ui/reports/components', () => ({
+  ...jest.requireActual('@acx-ui/reports/components'),
+  EmbeddedReport: () => <div data-testid={'some-report-id'} id='acx-report' />
+}))
+
+const list = {
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      serialNumber: '000000000001',
+      name: 'mock-ap-1',
+      model: 'R510',
+      fwVersion: '6.2.0.103.261',
+      venueId: '01d74a2c947346a1a963a310ee8c9f6f',
+      venueName: 'Mock-Venue',
+      deviceStatus: '2_00_Operational',
+      IP: '10.00.000.101',
+      apMac: '00:00:00:00:00:01',
+      apStatusData: {
+        APRadio: [
+          {
+            txPower: null,
+            channel: 10,
+            band: '2.4G',
+            Rssi: null,
+            radioId: 0
+          },
+          {
+            txPower: null,
+            channel: 120,
+            band: '5G',
+            Rssi: null,
+            radioId: 1
+          }
+        ]
+      },
+      meshRole: 'DISABLED',
+      deviceGroupId: '4fe4e02d7ef440c4affd28c620f93073',
+      tags: '',
+      deviceGroupName: ''
+    }
+  ]
+}
 
 describe('ApDetails', () => {
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())
     mockServer.use(
+      rest.post(
+        CommonUrlsInfo.getApsList.url,
+        (_, res, ctx) => res(ctx.json(list))
+      ),
       rest.get(CommonUrlsInfo.getApDetailHeader.url,
         (_, res, ctx) => res(ctx.json(apDetailData))),
       rest.post(CommonUrlsInfo.getEventList.url,
@@ -51,7 +99,7 @@ describe('ApDetails', () => {
     })
 
     expect(await screen.findByText('Overview')).toBeVisible()
-    expect(screen.getAllByRole('tab')).toHaveLength(7)
+    expect(await screen.findAllByRole('tab')).toHaveLength(7)
   })
 
   it('should navigate to analytic tab correctly', async () => {
@@ -63,7 +111,7 @@ describe('ApDetails', () => {
     render(<Provider><ApDetails /></Provider>, {
       route: { params, path: '/:tenantId/devices/wifi/:serialNumber/details/:activeTab' }
     })
-    expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
+    expect((await screen.findAllByRole('tab', { selected: true })).at(0)?.textContent)
       .toEqual('AI Analytics')
   })
 
@@ -89,7 +137,7 @@ describe('ApDetails', () => {
     render(<Provider><ApDetails /></Provider>, {
       route: { params, path: '/:tenantId/devices/wifi/:serialNumber/details/:activeTab' }
     })
-    expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
+    expect((await screen.findAllByRole('tab', { selected: true })).at(0)?.textContent)
       .toEqual('Reports')
   })
 
@@ -102,7 +150,7 @@ describe('ApDetails', () => {
     render(<Provider><ApDetails /></Provider>, {
       route: { params, path: '/:tenantId/devices/wifi/:serialNumber/details/:activeTab' }
     })
-    expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
+    expect((await screen.findAllByRole('tab', { selected: true })).at(0)?.textContent)
       .toEqual('Networks ()')
   })
 
@@ -115,7 +163,7 @@ describe('ApDetails', () => {
     render(<Provider><ApDetails /></Provider>, {
       route: { params, path: '/:tenantId/devices/wifi/:serialNumber/details/:activeTab' }
     })
-    expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
+    expect((await screen.findAllByRole('tab', { selected: true })).at(0)?.textContent)
       .toEqual('Clients ()')
   })
 
@@ -128,7 +176,7 @@ describe('ApDetails', () => {
     render(<Provider><ApDetails /></Provider>, {
       route: { params, path: '/:tenantId/devices/wifi/:serialNumber/details/:activeTab' }
     })
-    expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
+    expect((await screen.findAllByRole('tab', { selected: true })).at(0)?.textContent)
       .toEqual('Services (0)')
   })
 
@@ -141,7 +189,7 @@ describe('ApDetails', () => {
     render(<Provider><ApDetails /></Provider>, {
       route: { params, path: '/:tenantId/devices/wifi/:serialNumber/details/:activeTab' }
     })
-    expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
+    expect((await screen.findAllByRole('tab', { selected: true })).at(0)?.textContent)
       .toEqual('Timeline')
     await screen.findByTestId('rc-EventTable')
   })
@@ -156,7 +204,8 @@ describe('ApDetails', () => {
       route: { params, path: '/:tenantId/devices/wifi/:serialNumber/details/:activeTab' }
     })
 
-    expect(screen.getAllByRole('tab').filter(x => x.getAttribute('aria-selected') === 'true'))
+    const tabs = await screen.findAllByRole('tab')
+    expect(tabs.filter(x => x.getAttribute('aria-selected') === 'true'))
       .toHaveLength(0)
   })
   it('should go to edit page', async () => {
