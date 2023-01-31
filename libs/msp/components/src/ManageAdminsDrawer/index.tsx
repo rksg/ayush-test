@@ -37,6 +37,8 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
   const [resetField, setResetField] = useState(false)
   const [form] = Form.useForm()
 
+  const isSkip = tenantId === undefined
+
   function getSelectedKeys (mspAdmins: MspAdministrator[], admins: string[]) {
     return mspAdmins.filter(rec => admins.includes(rec.id)).map(rec => rec.email)
   }
@@ -132,7 +134,9 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
   }
 
   const MspAdminTable = () => {
-    const delegatedAdmins = useGetMspEcDelegatedAdminsQuery({ params: { mspEcTenantId: tenantId } })
+    const delegatedAdmins =
+      useGetMspEcDelegatedAdminsQuery({ params: { mspEcTenantId: tenantId } },
+        { skip: isSkip })
     const queryResults = useMspAdminListQuery({
       params: useParams()
     },{

@@ -18,6 +18,9 @@ import {
   MspEc,
   useTableQuery
 } from '@acx-ui/rc/utils'
+import {
+  AccountType
+} from '@acx-ui/utils'
 
 interface IntegratorDrawerProps {
   visible: boolean
@@ -50,7 +53,7 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
     const selectedRows = form.getFieldsValue(['integrator'])
     if (tenantId) {
       let payload = {
-        delegation_type: tenantType ? tenantType : 'MSP_INTEGRATOR',
+        delegation_type: tenantType ? tenantType : AccountType.MSP_INTEGRATOR,
         number_of_days: '',
         mspec_list: [] as string[]
       }
@@ -93,7 +96,8 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
   const defaultPayload = {
     searchString: '',
     filters: {
-      tenantType: tenantType === 'MSP_INTEGRATOR' ? ['MSP_INTEGRATOR'] : ['MSP_INSTALLER']
+      tenantType: tenantType === AccountType.MSP_INTEGRATOR
+        ? [AccountType.MSP_INTEGRATOR] : [AccountType.MSP_INSTALLER]
     },
     fields: [
       'id',
@@ -126,7 +130,7 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
       </Loader>
     )
   }
-  const selectedCustomer = tenantType === 'MSP_INTEGRATOR'
+  const selectedCustomer = tenantType === AccountType.MSP_INTEGRATOR
     ? $t({ defaultMessage: 'Select customer\'s Integrator' })
     : $t({ defaultMessage: 'Select customer\'s Installer' })
   const content =
@@ -142,9 +146,13 @@ export const SelectIntegratorDrawer = (props: IntegratorDrawerProps) => {
     />
   ]
 
+  const title = tenantType === AccountType.MSP_INTEGRATOR
+    ? $t({ defaultMessage: 'Manage Integrator' })
+    : $t({ defaultMessage: 'Manage Installer' })
+
   return (
     <Drawer
-      title={tenantType === 'MSP_INTEGRATOR' ? 'Manage Integrator' : 'Manage Installer'}
+      title={title}
       onBackClick={onClose}
       visible={visible}
       onClose={onClose}

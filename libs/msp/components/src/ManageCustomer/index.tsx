@@ -42,6 +42,7 @@ import {
 import {
   Address,
   dateDisplayText,
+  DateFormatEnum,
   DateSelectionEnum,
   emailRegExp,
   MspAdministrator,
@@ -60,6 +61,9 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
+import {
+  AccountType
+} from '@acx-ui/utils'
 
 import { ManageAdminsDrawer } from '../ManageAdminsDrawer'
 // eslint-disable-next-line import/order
@@ -153,7 +157,7 @@ export function ManageCustomer () {
   const navigate = useNavigate()
   const linkToCustomers = useTenantLink('/dashboard/mspcustomers', 'v')
   const formRef = useRef<StepsFormInstance<EcFormData>>()
-  const dateFormat = 'MM/DD/YYYY'
+  const dateFormat = DateFormatEnum.UserDateFormat
   const { action, status, tenantId, mspEcTenantId } = useParams()
 
   const [isTrialMode, setTrialMode] = useState(false)
@@ -207,28 +211,26 @@ export function ManageCustomer () {
     if (licenseSummary) {
       checkAvailableLicense(licenseSummary)
     }
-    if (licenseAssignment) {
-      checkAssignedLicense(licenseAssignment)
-    }
 
-    if (isEditMode) {
+    if (isEditMode && data && licenseAssignment) {
       if (ecAdministrators) {
         setMspEcAdmins(ecAdministrators)
       }
       if (ecSupport && ecSupport.length > 0 ) {
         setEcSupport(true)
       }
-    // if (delegatedAdmins) {
-    //   setDelegateAdmins(delegatedAdmins)
-    // }
-    }
+      const assigned = licenseAssignment.filter(en => en.mspEcTenantId === mspEcTenantId)
+      setAssignedLicense(assigned)
+      const wifi = assigned.filter(en => en.deviceType === 'MSP_WIFI' && en.status === 'VALID')
+      const wLic = wifi.length > 0 ? wifi[0].quantity : 0
+      const sw = assigned.filter(en => en.deviceType === 'MSP_SWITCH' && en.status === 'VALID')
+      const sLic = sw.length > 0 ? sw[0].quantity : 0
 
-    if (data) {
       formRef.current?.setFieldsValue({
         name: data?.name,
         service_effective_date: data?.service_effective_date,
-        wifiLicense: assignedWifiLicense,
-        switchLicense: assignedSwitchLicense
+        wifiLicense: wLic,
+        switchLicense: sLic
         // service_expiration_date: data?.service_expiration_date
       })
       formRef.current?.setFieldValue(['address', 'addressLine'], data?.street_address)
@@ -238,7 +240,9 @@ export function ManageCustomer () {
       setSubscriptionStartDate(moment(data?.service_effective_date).format(dateFormat))
       setSubscriptionEndDate(moment(data?.service_expiration_date).format(dateFormat))
       // updateAddress(data?.street_address as Address)
+      // }
     }
+
     if (!isEditMode) { // Add mode
       const initialAddress = isMapEnabled ? '' : defaultAddress.addressLine
       formRef.current?.setFieldValue(['address', 'addressLine'], initialAddress)
@@ -383,13 +387,13 @@ export function ManageCustomer () {
       const ecDelegations=[] as MspIntegratorDelegated[]
       if (mspIntegrator.length > 0) {
         ecDelegations.push({
-          delegation_type: 'MSP_INTEGRATOR',
+          delegation_type: AccountType.MSP_INTEGRATOR,
           delegation_id: mspIntegrator[0].id
         })
       }
       if (mspInstaller.length > 0) {
         ecDelegations.push({
-          delegation_type: 'MSP_INSTALLER',
+          delegation_type: AccountType.MSP_INSTALLER,
           delegation_id: mspInstaller[0].id
         })
       }
@@ -475,7 +479,7 @@ export function ManageCustomer () {
   }
 
   const selectedIntegrators = (tenantType: string, selected: MspEc[] ) => {
-    (tenantType === 'MSP_INTEGRATOR') ? setIntegrator(selected) : setInstaller(selected)
+    (tenantType === AccountType.MSP_INTEGRATOR) ? setIntegrator(selected) : setInstaller(selected)
   }
 
   const displayMspAdmins = () => {
@@ -540,15 +544,6 @@ export function ManageCustomer () {
   const checkAvailableLicense = (entitlements: MspAssignmentSummary[]) => {
     const available = entitlements.filter(p => p.remainingDevices > 0)
     setAvailableLicense(available)
-  }
-
-  const checkAssignedLicense = (entitlements: MspAssignmentHistory[]) => {
-    const assigned = entitlements.filter(en => en.mspEcTenantId === mspEcTenantId)
-    setAssignedLicense(assigned)
-    const wifi = assigned.filter(en => en.deviceType === 'MSP_WIFI' && en.status === 'VALID')
-    setWifiLicense(wifi.length > 0 ? wifi[0].quantity : 0)
-    const sw = assigned.filter(en => en.deviceType === 'MSP_SWITCH' && en.status === 'VALID')
-    setSwitchLicense(sw.length > 0 ? sw[0].quantity : 0)
   }
 
   const getAssignmentId = (deviceType: string) => {
@@ -1134,13 +1129,13 @@ export function ManageCustomer () {
       />}
       {drawerIntegratorVisible && <SelectIntegratorDrawer
         visible={drawerIntegratorVisible}
-        tenantType='MSP_INTEGRATOR'
+        tenantType={AccountType.MSP_INTEGRATOR}
         setVisible={setDrawerIntegratorVisible}
         setSelected={selectedIntegrators}
       />}
       {drawerInstallerVisible && <SelectIntegratorDrawer
         visible={drawerInstallerVisible}
-        tenantType='MSP_INSTALLER'
+        tenantType={AccountType.MSP_INSTALLER}
         setVisible={setDrawerInstallerVisible}
         setSelected={selectedIntegrators}
       />}

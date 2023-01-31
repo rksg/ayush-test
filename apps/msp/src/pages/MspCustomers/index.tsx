@@ -63,18 +63,19 @@ const transformApUtilization = (row: MspEc) => {
 }
 
 const transformSwitchEntitlement = (row: MspEc) => {
-  const entitlements = row.entitlements
-  let totalCount = 0
-  const switchEntitlements: DelegationEntitlementRecord[] = []
-  entitlements.forEach((entitlement:DelegationEntitlementRecord) => {
-    if (entitlement.entitlementDeviceType !== EntitlementNetworkDeviceType.SWITCH) {
-      return
-    }
-    switchEntitlements.push(entitlement)
-  })
-  totalCount = switchEntitlements.reduce((total, current) =>
-    total + parseInt(current.quantity, 10), 0)
-  return totalCount
+  return row.switchLicenses ? row.switchLicenses : 0
+  // const entitlements = row.entitlements
+  // let totalCount = 0
+  // const switchEntitlements: DelegationEntitlementRecord[] = []
+  // entitlements.forEach((entitlement:DelegationEntitlementRecord) => {
+  //   if (entitlement.entitlementDeviceType !== EntitlementNetworkDeviceType.SWITCH) {
+  //     return
+  //   }
+  //   switchEntitlements.push(entitlement)
+  // })
+  // totalCount = switchEntitlements.reduce((total, current) =>
+  //   total + parseInt(current.quantity, 10), 0)
+  // return totalCount
 }
 
 const transformCreationDate = (row: MspEc) => {

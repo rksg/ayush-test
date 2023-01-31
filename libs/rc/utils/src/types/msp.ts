@@ -76,7 +76,7 @@ export interface MspEc {
   installer?: string,
   expirationDate: string;
   wifiLicenses: string;
-  switchLicens: string;
+  switchLicenses: string;
   assignedMspEcList: string;
   creationDate: number;
   entitlements: DelegationEntitlementRecord[];
