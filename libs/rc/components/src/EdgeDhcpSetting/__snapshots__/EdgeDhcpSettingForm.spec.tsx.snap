@@ -167,7 +167,7 @@ exports[`EdgeDhcpSettingForm should create EdgeDhcpSettingForm successfully 1`] 
         </div>
       </div>
       <button
-        class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 eAazoW"
+        class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 ibsWZY"
         type="button"
       >
         <span>
@@ -382,7 +382,7 @@ exports[`EdgeDhcpSettingForm should create EdgeDhcpSettingForm successfully 1`] 
                 class="ant-form-item-control-input-content"
               >
                 <div
-                  class="styledComponents__Wrapper-sc-1abm7iv-13 gGUvnO"
+                  class="styledComponents__Wrapper-sc-1abm7iv-12 iqWyRG"
                 >
                   <div
                     class="ant-space ant-space-horizontal ant-space-align-center"
@@ -392,7 +392,7 @@ exports[`EdgeDhcpSettingForm should create EdgeDhcpSettingForm successfully 1`] 
                       class="ant-space-item"
                     >
                       <button
-                        class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
+                        class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
                         type="button"
                       >
                         <span>
@@ -488,7 +488,7 @@ exports[`EdgeDhcpSettingForm should create EdgeDhcpSettingForm successfully 1`] 
                                             class="ant-table-cell ant-table-selection-column react-resizable"
                                           >
                                             <div
-                                              class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                              class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                             />
                                             <div
                                               class="ant-table-selection"
@@ -512,7 +512,7 @@ exports[`EdgeDhcpSettingForm should create EdgeDhcpSettingForm successfully 1`] 
                                               </label>
                                             </div>
                                             <div
-                                              class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                              class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                             />
                                           </th>
                                           <th
@@ -520,7 +520,7 @@ exports[`EdgeDhcpSettingForm should create EdgeDhcpSettingForm successfully 1`] 
                                             tabindex="0"
                                           >
                                             <div
-                                              class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                              class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                             />
                                             <div
                                               class="ant-table-column-sorters"
@@ -578,7 +578,7 @@ exports[`EdgeDhcpSettingForm should create EdgeDhcpSettingForm successfully 1`] 
                                               </span>
                                             </div>
                                             <div
-                                              class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                              class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                             />
                                           </th>
                                           <th
@@ -586,7 +586,7 @@ exports[`EdgeDhcpSettingForm should create EdgeDhcpSettingForm successfully 1`] 
                                             tabindex="0"
                                           >
                                             <div
-                                              class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                              class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                             />
                                             <div
                                               class="ant-table-column-sorters"
@@ -644,7 +644,7 @@ exports[`EdgeDhcpSettingForm should create EdgeDhcpSettingForm successfully 1`] 
                                               </span>
                                             </div>
                                             <div
-                                              class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                              class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                             />
                                           </th>
                                           <th
@@ -652,7 +652,7 @@ exports[`EdgeDhcpSettingForm should create EdgeDhcpSettingForm successfully 1`] 
                                             tabindex="0"
                                           >
                                             <div
-                                              class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                              class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                             />
                                             <div
                                               class="ant-table-column-sorters"
@@ -710,7 +710,7 @@ exports[`EdgeDhcpSettingForm should create EdgeDhcpSettingForm successfully 1`] 
                                               </span>
                                             </div>
                                             <div
-                                              class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                              class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                             />
                                           </th>
                                           <th
@@ -718,7 +718,7 @@ exports[`EdgeDhcpSettingForm should create EdgeDhcpSettingForm successfully 1`] 
                                             tabindex="0"
                                           >
                                             <div
-                                              class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                              class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                             />
                                             <div
                                               class="ant-table-column-sorters"
@@ -776,7 +776,7 @@ exports[`EdgeDhcpSettingForm should create EdgeDhcpSettingForm successfully 1`] 
                                               </span>
                                             </div>
                                             <div
-                                              class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                              class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                             />
                                           </th>
                                           <th
@@ -784,7 +784,7 @@ exports[`EdgeDhcpSettingForm should create EdgeDhcpSettingForm successfully 1`] 
                                             tabindex="0"
                                           >
                                             <div
-                                              class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                              class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                             />
                                             <div
                                               class="ant-table-column-sorters"
@@ -842,7 +842,7 @@ exports[`EdgeDhcpSettingForm should create EdgeDhcpSettingForm successfully 1`] 
                                               </span>
                                             </div>
                                             <div
-                                              class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                              class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                             />
                                           </th>
                                           <th
@@ -850,10 +850,10 @@ exports[`EdgeDhcpSettingForm should create EdgeDhcpSettingForm successfully 1`] 
                                             style="position: sticky; right: 0px;"
                                           >
                                             <div
-                                              class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                              class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                             />
                                             <div
-                                              class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                              class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                             />
                                           </th>
                                         </tr>
@@ -991,7 +991,7 @@ exports[`EdgeDhcpSettingForm should create EdgeDhcpSettingForm successfully 1`] 
                 class="ant-form-item-control-input-content"
               >
                 <div
-                  class="styledComponents__Wrapper-sc-1abm7iv-13 gGUvnO"
+                  class="styledComponents__Wrapper-sc-1abm7iv-12 iqWyRG"
                 >
                   <div
                     class="ant-space ant-space-horizontal ant-space-align-center"
@@ -1001,7 +1001,7 @@ exports[`EdgeDhcpSettingForm should create EdgeDhcpSettingForm successfully 1`] 
                       class="ant-space-item"
                     >
                       <button
-                        class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
+                        class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
                         type="button"
                       >
                         <span>
@@ -1095,7 +1095,7 @@ exports[`EdgeDhcpSettingForm should create EdgeDhcpSettingForm successfully 1`] 
                                             class="ant-table-cell ant-table-selection-column react-resizable"
                                           >
                                             <div
-                                              class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                              class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                             />
                                             <div
                                               class="ant-table-selection"
@@ -1119,7 +1119,7 @@ exports[`EdgeDhcpSettingForm should create EdgeDhcpSettingForm successfully 1`] 
                                               </label>
                                             </div>
                                             <div
-                                              class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                              class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                             />
                                           </th>
                                           <th
@@ -1127,7 +1127,7 @@ exports[`EdgeDhcpSettingForm should create EdgeDhcpSettingForm successfully 1`] 
                                             tabindex="0"
                                           >
                                             <div
-                                              class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                              class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                             />
                                             <div
                                               class="ant-table-column-sorters"
@@ -1185,7 +1185,7 @@ exports[`EdgeDhcpSettingForm should create EdgeDhcpSettingForm successfully 1`] 
                                               </span>
                                             </div>
                                             <div
-                                              class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                              class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                             />
                                           </th>
                                           <th
@@ -1193,7 +1193,7 @@ exports[`EdgeDhcpSettingForm should create EdgeDhcpSettingForm successfully 1`] 
                                             tabindex="0"
                                           >
                                             <div
-                                              class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                              class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                             />
                                             <div
                                               class="ant-table-column-sorters"
@@ -1251,7 +1251,7 @@ exports[`EdgeDhcpSettingForm should create EdgeDhcpSettingForm successfully 1`] 
                                               </span>
                                             </div>
                                             <div
-                                              class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                              class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                             />
                                           </th>
                                           <th
@@ -1259,7 +1259,7 @@ exports[`EdgeDhcpSettingForm should create EdgeDhcpSettingForm successfully 1`] 
                                             tabindex="0"
                                           >
                                             <div
-                                              class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                              class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                             />
                                             <div
                                               class="ant-table-column-sorters"
@@ -1317,7 +1317,7 @@ exports[`EdgeDhcpSettingForm should create EdgeDhcpSettingForm successfully 1`] 
                                               </span>
                                             </div>
                                             <div
-                                              class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                              class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                             />
                                           </th>
                                           <th
@@ -1325,10 +1325,10 @@ exports[`EdgeDhcpSettingForm should create EdgeDhcpSettingForm successfully 1`] 
                                             style="position: sticky; right: 0px;"
                                           >
                                             <div
-                                              class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                              class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                             />
                                             <div
-                                              class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                              class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                             />
                                           </th>
                                         </tr>
