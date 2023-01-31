@@ -24,7 +24,7 @@ import {
   RequestPayload,
   SwitchStatusEnum
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { SwitchCliSession } from '../SwitchCliSession'
 import { useSwitchActions } from '../useSwitchActions'
@@ -63,6 +63,9 @@ export function SwitchTable (props : {
 }) {
   const { $t } = useIntl()
   const params = useParams()
+  const navigate = useNavigate()
+  const linkToEditSwitch = useTenantLink('/devices/switch/')
+
   const inlineTableQuery = usePollingTableQuery({
     useQuery: useSwitchListQuery,
     defaultPayload: {
@@ -174,10 +177,17 @@ export function SwitchTable (props : {
   const rowActions: TableProps<SwitchRow>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
     visible: (rows) => isActionVisible(rows, { selectOne: true }),
-    disabled: true,
-    onClick: () => {
-      // TODO:
-    }
+    onClick: (selectedRows) => {
+      const switchId = selectedRows[0].id ? selectedRows[0].id : selectedRows[0].serialNumber
+      const serialNumber = selectedRows[0].serialNumber
+      const isStack = selectedRows[0].isStack || selectedRows[0].formStacking
+      if(isStack){
+        navigate(`${linkToEditSwitch.pathname}/${switchId}/${serialNumber}/stack/edit`, { replace: false })
+      }else{
+        navigate(`${linkToEditSwitch.pathname}/${switchId}/${serialNumber}/edit`, { replace: false })
+      }
+    },
+    disabled: (rows) => rows[0].deviceStatus === SwitchStatusEnum.DISCONNECTED
   }, {
     label: $t({ defaultMessage: 'CLI Session' }),
     visible: (rows) => isActionVisible(rows, { selectOne: true }),
