@@ -1,8 +1,7 @@
-import React, { createRef, RefObject } from 'react'
+import React, { RefObject } from 'react'
 
 import { ECharts }  from 'echarts'
 import ReactECharts from 'echarts-for-react'
-import EChartsReact from 'echarts-for-react'
 
 import { act, render, waitFor, screen, cleanup, renderHook, fireEvent } from '@acx-ui/test-utils'
 import { TimeStamp }                                                    from '@acx-ui/types'
