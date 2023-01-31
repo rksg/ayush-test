@@ -229,7 +229,7 @@ describe('Aps', () => {
     // expect(asFragment()).toMatchSnapshot() //TODO: <StackedBarChart
   })
 
-  xit('Table action bar Download Log and Reboot', async () => {
+  it('Table action bar Download Log and Reboot', async () => {
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getApsList.url,
