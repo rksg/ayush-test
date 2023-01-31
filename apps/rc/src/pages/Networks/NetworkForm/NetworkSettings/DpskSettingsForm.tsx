@@ -10,14 +10,15 @@ import {
 import { DefaultOptionType } from 'antd/lib/select'
 import { useIntl }           from 'react-intl'
 
-import { Button, StepsForm }   from '@acx-ui/components'
-import { useGetDpskListQuery } from '@acx-ui/rc/services'
+import { Button, StepsForm }            from '@acx-ui/components'
+import { useGetDpskListQuery }          from '@acx-ui/rc/services'
 import {
   WlanSecurityEnum,
   NetworkSaveData,
   DpskSaveData,
   transformDpskNetwork,
-  DpskNetworkType
+  DpskNetworkType,
+  transformAdvancedDpskExpirationText
 } from '@acx-ui/rc/utils'
 
 import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
@@ -175,13 +176,11 @@ function DpskServiceSelector () {
           <Form.Item label={$t({ defaultMessage: 'Passphrase Expiration' })}>
             <Typography.Paragraph>
               {
-                // TODO
-                // transformAdvancedDpskExpirationText(intl, {
-                //   expirationType: selectedDpsk.expirationType,
-                //   expirationDate: selectedDpsk.expirationDate,
-                //   expirationOffset: selectedDpsk.expirationOffset
-                // })
-                selectedDpsk.expirationType
+                transformAdvancedDpskExpirationText(intl, {
+                  expirationType: selectedDpsk.expirationType,
+                  expirationDate: selectedDpsk.expirationDate,
+                  expirationOffset: selectedDpsk.expirationOffset
+                })
               }
             </Typography.Paragraph>
           </Form.Item>
