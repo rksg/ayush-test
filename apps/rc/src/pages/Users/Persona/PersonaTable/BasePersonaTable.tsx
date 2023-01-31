@@ -35,6 +35,7 @@ function useColumns (props: PersonaTableColProps) {
           personaGroupId={row.groupId}
         />
       ,
+      sorter: true,
       ...props.name
     },
     {
@@ -55,7 +56,6 @@ function useColumns (props: PersonaTableColProps) {
       key: 'deviceCount',
       dataIndex: 'deviceCount',
       title: $t({ defaultMessage: 'Devices' }),
-      sorter: true,
       align: 'center',
       ...props.deviceCount
     },
@@ -68,7 +68,7 @@ function useColumns (props: PersonaTableColProps) {
     },
     {
       key: 'groupId',
-      dataIndex: 'groupId',
+      dataIndex: 'group',
       title: $t({ defaultMessage: 'Persona Group' }),
       sorter: true,
       render: (_, row) => {
@@ -136,7 +136,6 @@ export function BasePersonaTable (props: PersonaTableProps) {
 
   const personaListQuery = useTableQuery({
     useQuery: useSearchPersonaListQuery,
-    apiParams: { sort: 'name,ASC' },
     defaultPayload: personaGroupId ? { groupId: personaGroupId } : { }
   })
 

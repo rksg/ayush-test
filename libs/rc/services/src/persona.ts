@@ -151,10 +151,13 @@ export const personaApi = basePersonaApi.injectEndpoints({
     }),
     searchPersonaList: build.query<TableResult<Persona>, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(PersonaUrls.searchPersonaList, params)
+        const req = createNewTableHttpRequest({
+          apiInfo: PersonaUrls.searchPersonaList,
+          params,
+          payload: payload as TableChangePayload
+        })
         return {
           ...req,
-          params,
           body: payload
         }
       },

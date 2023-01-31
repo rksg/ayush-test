@@ -19,7 +19,7 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
   },
   searchPersonaGroupList: {
     method: 'post',
-    url: `${PersonaBaseUrl}/search`
+    url: `${PersonaBaseUrl}/search${paginationParams}`
   },
   getPersonaGroupById: {
     method: 'get',
@@ -52,7 +52,7 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
   },
   searchPersonaList: {
     method: 'post',
-    url: `${PersonaBaseUrl}/all/personas/search`
+    url: `${PersonaBaseUrl}/all/personas/search${paginationParams}`
   },
   updatePersona: {
     method: 'PATCH',
