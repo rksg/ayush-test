@@ -1,0 +1,292 @@
+import { useContext, useEffect, useRef, useState } from 'react'
+
+import { Checkbox, Col, Form, Row, Select, Space, Switch } from 'antd'
+import { FormFinishInfo }                                  from 'rc-field-form/lib/FormContext'
+import { useIntl }                                         from 'react-intl'
+
+import { Button, Loader, showToast, StepsForm, StepsFormInstance, Table, TableProps } from '@acx-ui/components'
+import { PersonaGroupSelect }                                                         from '@acx-ui/rc/components'
+import {
+  useGetPropertyConfigsQuery,
+  usePatchPropertyConfigsMutation,
+  useUpdatePropertyConfigsMutation
+} from '@acx-ui/rc/services'
+import { PropertyConfigs, PropertyConfigStatus, PropertyManager } from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }                  from '@acx-ui/react-router-dom'
+
+// FIXME: move this component to common folder.
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+import { PersonaGroupDrawer } from '../../../../../../rc/src/pages/Users/Persona/PersonaGroupDrawer'
+import { VenueEditContext }   from '../index'
+
+import { PropertyManagerSelectDrawer } from './PropertyManagerSelectDrawer'
+
+
+const defaultPropertyConfigs: PropertyConfigs = {
+  status: PropertyConfigStatus.DISABLED,
+  enableGuestDpsk: false,
+  unitConfiguration: {
+    maxUnitCount: 0,
+    useMaxUnitCount: false,
+    residentPortalAllowed: false
+  },
+  communicationConfiguration: {
+    sendEmail: false,
+    sendSms: false
+  }
+}
+
+export function PropertyManagementTab () {
+  const { $t } = useIntl()
+  const basePath = useTenantLink('/venues/')
+  const { venueId } = useParams()
+  const navigate = useNavigate()
+  const formRef = useRef<StepsFormInstance<PropertyConfigs>>()
+  const { editContextData, setEditContextData } = useContext(VenueEditContext)
+  const [isPropertyEnable, setIsPropertyEnable] = useState(false)
+  const [propertySelectorVisible, setPropertySelectorVisible] = useState(false)
+  const [personaGroupVisible, setPersonaGroupVisible] = useState(false)
+  const propertyConfigsQuery = useGetPropertyConfigsQuery({ params: { venueId } })
+  const [updatePropertyConfigs] = useUpdatePropertyConfigsMutation()
+  const [patchPropertyConfigs] = usePatchPropertyConfigsMutation()
+
+  useEffect(() => {
+    if (propertyConfigsQuery.isLoading) return
+    setIsPropertyEnable(propertyConfigsQuery.data?.status === PropertyConfigStatus.ENABLED)
+  }, [propertyConfigsQuery.data])
+
+  const onFormFinish = async (_: string, info: FormFinishInfo) => {
+    const enableProperty = info.values.isPropertyEnable
+
+    try {
+      if (enableProperty) {
+        await updatePropertyConfigs({
+          params: { venueId },
+          payload: {
+            ...info.values,
+            status: isPropertyEnable
+              ? PropertyConfigStatus.ENABLED
+              : PropertyConfigStatus.DISABLED
+          }
+        }).unwrap()
+      } else {
+        await patchPropertyConfigs({
+          params: { venueId },
+          payload: [{ op: 'replace', path: '/status', value: PropertyConfigStatus.DISABLED }]
+        }).unwrap()
+      }
+
+      setEditContextData({
+        ...editContextData,
+        isDirty: false
+      })
+    } catch (e) {
+      showToast({
+        duration: 3,
+        type: 'error',
+        content: $t({ defaultMessage: 'An error occurred' }),
+        // FIXME: Correct the error message
+        link: { onClick: () => alert(JSON.stringify(e)) }
+      })
+    }
+  }
+
+  const handleFormChange = async () => {
+    setEditContextData({
+      ...editContextData,
+      isDirty: true,
+      tabTitle: $t({ defaultMessage: 'Property' }),
+      updateChanges: () => formRef?.current?.submit()
+    })
+  }
+
+  const openDrawer = (type: 'PersonaGroup' | 'PropertyManager') => {
+    setPropertySelectorVisible(type === 'PropertyManager')
+    setPersonaGroupVisible(type === 'PersonaGroup')
+  }
+
+  const actions: TableProps<PropertyManager>['actions'] = [
+    {
+      label: $t({ defaultMessage: 'Add Property Manager' }),
+      onClick: () => openDrawer('PropertyManager')
+    }
+  ]
+
+  const columns: TableProps<PropertyManager>['columns'] = [
+    {
+      key: 'name',
+      dataIndex: 'name',
+      title: $t({ defaultMessage: 'Name' })
+    },
+    {
+      key: 'role',
+      dataIndex: 'role',
+      title: $t({ defaultMessage: 'Role' })
+    },
+    {
+      key: 'email',
+      dataIndex: 'email',
+      title: $t({ defaultMessage: 'Email Address' })
+    },
+    {
+      key: 'phone',
+      dataIndex: 'phone',
+      title: $t({ defaultMessage: 'Phone Number' })
+    }
+  ]
+
+  return (
+    <Loader
+      states={[{ ...propertyConfigsQuery, error: undefined }]}
+    >
+      <StepsForm
+        formRef={formRef}
+        onFormFinish={onFormFinish}
+        onFormChange={handleFormChange}
+        onCancel={() => navigate({
+          ...basePath,
+          pathname: `${basePath.pathname}/${venueId}/venue-details/overview`
+        })}
+        buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
+      >
+        <StepsForm.StepForm
+          initialValues={{
+            ...defaultPropertyConfigs,
+            ...propertyConfigsQuery.data,
+            isPropertyEnable:
+              propertyConfigsQuery?.data?.status === PropertyConfigStatus.ENABLED ?? false
+          }}
+        >
+          <StepsForm.FieldLabel width={'190px'}>
+            {$t({ defaultMessage: 'Enable Property Management' })}
+            <Form.Item
+              name='isPropertyEnable'
+              valuePropName={'checked'}
+              children={<Switch checked={isPropertyEnable} onChange={setIsPropertyEnable}/>}
+            />
+          </StepsForm.FieldLabel>
+          {isPropertyEnable &&
+            <>
+              <Row gutter={20}>
+                <Col span={12}>
+                  <Form.Item
+                  // name='property'
+                    label={$t({ defaultMessage: 'Property Managers' })}
+                    valuePropName={'dataSource'}
+                    // rules={[{ required: true }]}
+                    shouldUpdate={() => true}
+                  >
+                    {(form) =>
+                      form.getFieldValue('property')
+                        ? <Table
+                          rowKey='name'
+                          pagination={false}
+                          columns={columns}
+                          actions={actions}
+                          rowSelection={{ type: 'checkbox' }}
+                        />
+                        : <Button
+                          type={'link'}
+                          size={'small'}
+                          onClick={() => openDrawer('PropertyManager')}
+                        >
+                          {$t({ defaultMessage: 'Add Property Manager' })}
+                        </Button>
+                    }
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Row gutter={20}>
+                <Col span={8}>
+                  <Form.Item
+                    name='personaGroupId'
+                    label={$t({ defaultMessage: 'Persona Group' })}
+                    rules={[{ required: true }]}
+                  >
+                    <PersonaGroupSelect />
+                  </Form.Item>
+                  <Form.Item noStyle>
+                    <Button type={'link'} size={'small'} onClick={() => openDrawer('PersonaGroup')}>
+                      {$t({ defaultMessage: 'Add Persona Group' })}
+                    </Button>
+                  </Form.Item>
+                  <StepsForm.FieldLabel width={'190px'}>
+                    {$t({ defaultMessage: 'Enable Resident Portal' })}
+                    <Form.Item
+                      name={['unitConfiguration', 'residentPortalAllowed']}
+                      rules={[{ required: true }]}
+                      valuePropName={'checked'}
+                      children={<Switch/>}
+                    />
+                  </StepsForm.FieldLabel>
+                  <StepsForm.FieldLabel width={'190px'}>
+                    {$t({ defaultMessage: 'Enable Guest DPSK for Units' })}
+                    <Form.Item
+                      name='enableGuestDpsk'
+                      rules={[{ required: true }]}
+                      valuePropName={'checked'}
+                      children={<Switch />}
+                    />
+                  </StepsForm.FieldLabel>
+                  <Form.Item
+                    name='residentPortalId'
+                    label={$t({ defaultMessage: 'Resident Portal profile' })}
+                    // rules={[{ required: true }]}
+                    children={<Select />}
+                  />
+                </Col>
+              </Row>
+              <Row gutter={20}>
+                <Col span={8}>
+            Communications:
+                  <Form.Item
+                    label={$t({ defaultMessage: 'Send communications via...' })}
+                  >
+                    <Space direction={'vertical'}>
+                      <Form.Item
+                        noStyle
+                        name={['communicationConfiguration', 'sendEmail']}
+                        valuePropName={'checked'}
+                      >
+                        <Checkbox>Email</Checkbox>
+                      </Form.Item>
+                      <Form.Item
+                        noStyle
+                        name={['communicationConfiguration', 'sendSms']}
+                        valuePropName={'checked'}
+                      >
+                        <Checkbox>SMS</Checkbox>
+                      </Form.Item>
+                    </Space>
+                  </Form.Item>
+                  <Form.Item
+                    name={['communicationConfiguration', 'unitAssignmentTemplateId']}
+                    label={$t({ defaultMessage: 'Onboarding Template' })}
+                    // rules={[{ required: true }]}
+                    children={<Select />}
+                  />
+                  <Form.Item
+                    name={['communicationConfiguration', 'passphraseChangeTemplateId']}
+                    label={$t({ defaultMessage: 'Passphrase Reset Template' })}
+                    // rules={[{ required: true }]}
+                    children={<Select />}
+                  />
+                </Col>
+              </Row>
+            </>
+          }
+        </StepsForm.StepForm>
+      </StepsForm>
+
+      <PropertyManagerSelectDrawer
+        visible={propertySelectorVisible}
+        onClose={() => setPropertySelectorVisible(false)}
+      />
+      <PersonaGroupDrawer
+        isEdit={false}
+        visible={personaGroupVisible}
+        onClose={() => setPersonaGroupVisible(false)}
+      />
+    </Loader>
+  )
+}

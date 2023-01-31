@@ -84,6 +84,7 @@ function VenueEditTabs () {
             {intl.$t({ defaultMessage: 'Switch Configuration' })}
           </Tooltip>}
       />
+      <Tabs.TabPane tab={intl.$t({ defaultMessage: 'Property Management' })} key='property' />
     </Tabs>
   )
 }

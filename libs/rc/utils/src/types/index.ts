@@ -34,6 +34,7 @@ export * from './components'
 export * from './switch'
 export * from './timeline'
 export * from './persona'
+export * from './property'
 
 export interface CommonResult {
   requestId: string

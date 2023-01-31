@@ -51,7 +51,11 @@ import {
   RogueOldApResponseType,
   VenueRadioCustomization,
   VenueDirectedMulticast,
-  VenueLoadBalancing
+  VenueLoadBalancing,
+  PropertyConfigs,
+  PropertyUrlsInfo,
+  PropertyUnit,
+  NewTableResult, transferToTableResult
 } from '@acx-ui/rc/utils'
 import { formatter } from '@acx-ui/utils'
 
@@ -62,7 +66,8 @@ const RKS_NEW_UI = {
 export const baseVenueApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'venueApi',
-  tagTypes: ['Venue', 'Device', 'VenueFloorPlan', 'AAA', 'ExternalAntenna', 'VenueRadio'],
+  tagTypes: ['Venue', 'Device', 'VenueFloorPlan', 'AAA', 'ExternalAntenna',
+    'VenueRadio', 'PropertyConfigs', 'PropertyUnit'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({})
 })
@@ -869,6 +874,81 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Venue', id: 'LOAD_BALANCING' }]
+    }),
+    getPropertyConfigs: build.query<PropertyConfigs, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(PropertyUrlsInfo.getPropertyConfigs, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'PropertyConfigs', id: 'ID' }]
+    }),
+    updatePropertyConfigs: build.mutation<PropertyConfigs, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PropertyUrlsInfo.updatePropertyConfigs, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'PropertyConfigs', id: 'ID' }]
+    }),
+    patchPropertyConfigs: build.mutation<PropertyConfigs, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PropertyUrlsInfo.patchPropertyConfigs, params)
+        return {
+          ...req,
+          body: payload,
+          headers: { 'Content-Type': 'application/json-patch+json' }
+        }
+      },
+      invalidatesTags: [{ type: 'PropertyConfigs', id: 'ID' }]
+    }),
+    addPropertyUnit: build.mutation<PropertyUnit, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PropertyUrlsInfo.addPropertyUnit, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
+    }),
+
+    // TODO: Not integration test
+    getPropertyUnitList: build.query<TableResult<PropertyUnit>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PropertyUrlsInfo.getPropertyUnitList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      transformResponse: (result: NewTableResult<PropertyUnit>) => {
+        return transferToTableResult<PropertyUnit>(result)
+      },
+      providesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
+    }),
+    updatePropertyUnit: build.mutation<PropertyUnit, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PropertyUrlsInfo.updatePropertyUnit, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
+    }),
+    deletePropertyUnits: build.mutation<PropertyUnit, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PropertyUrlsInfo.deletePropertyUnits, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
     })
   })
 })
@@ -950,5 +1030,13 @@ export const {
   useGetVenueConfigHistoryDetailQuery,
   useLazyGetVenueConfigHistoryDetailQuery,
   useGetVenueLoadBalancingQuery,
-  useUpdateVenueLoadBalancingMutation
+  useUpdateVenueLoadBalancingMutation,
+  useGetPropertyConfigsQuery,
+  useUpdatePropertyConfigsMutation,
+  usePatchPropertyConfigsMutation,
+  useAddPropertyUnitMutation,
+
+  useGetPropertyUnitListQuery,
+  useUpdatePropertyUnitMutation,
+  useDeletePropertyUnitsMutation
 } = venueApi
