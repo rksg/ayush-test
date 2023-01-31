@@ -15,6 +15,8 @@ import {
   RogueApUrls,
   RogueAPDetectionContextType,
   RogueAPDetectionTempType,
+  SyslogUrls,
+  SyslogPolicyType,
   VenueRoguePolicyType,
   TableResult,
   onSocketActivityChanged,
@@ -328,6 +330,25 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'MacRegistration', id: 'LIST' }]
     }),
+    getSyslogPolicyList: build.query<SyslogPolicyType[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SyslogUrls.getSyslogPolicyList, params, RKS_NEW_UI)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          showActivityMessage(msg, [
+            'Add Syslog Policy Profile',
+            'Update Syslog Policy Profile'
+          ], () => {
+            api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
+          })
+        })
+      }
+    }),
     uploadMacRegistration: build.mutation<{}, RequestFormData>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(MacRegListUrlsInfo.uploadMacRegistration, params, {
@@ -393,6 +414,7 @@ export const {
   useVenueRoguePolicyQuery,
   useLazyMacRegListsQuery,
   useLazyMacRegistrationsQuery,
+  useGetSyslogPolicyListQuery,
   useLazyGetMacRegListQuery,
   useUploadMacRegistrationMutation
 } = policyApi
