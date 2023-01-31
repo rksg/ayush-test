@@ -65,6 +65,9 @@ describe('RadioTab', () => {
       rest.put(
         WifiUrlsInfo.updateVenueRadioCustomization.url,
         (_, res, ctx) => res(ctx.json({}))),
+      rest.post(
+        CommonUrlsInfo.getApsList.url,
+        (_, res, ctx) => res(ctx.json({ data: [] }))),
       rest.get(
         WifiUrlsInfo.getVenueLoadBalancing.url,
         (_, res, ctx) => res(ctx.json(mockLoadBalabcing))),
@@ -164,6 +167,7 @@ describe('RadioTab', () => {
 
   it('should render Wi-Fi Radio Settings correctly when turn on/off tri-band button', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+
     render(<Provider>
       <VenueEditContext.Provider value={{
         editContextData: {},
@@ -255,6 +259,7 @@ describe('RadioTab', () => {
     await userEvent.click((await tab.findAllByTitle('Full'))[0])
 
     await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
+
   })
 
   it('should render Wi-Fi Radio 5G Settings correctly', async () => {
