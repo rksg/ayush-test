@@ -17,7 +17,7 @@ import {
 export const baseAdministrationApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'administrationApi',
-  tagTypes: ['administration'],
+  tagTypes: ['Administration'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })
@@ -39,7 +39,7 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'administration', id: 'RECOVER_PASS' }]
+      providesTags: [{ type: 'Administration', id: 'RECOVER_PASS' }]
     }),
     updateRecoveryPassphrase: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -49,7 +49,7 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'administration', id: 'RECOVER_PASS' }]
+      invalidatesTags: [{ type: 'Administration', id: 'RECOVER_PASS' }]
     }),
     getEcTenantDelegation: build.query<TenantDelegationResponse, RequestPayload>({
       query: ({ params }) => {
@@ -65,7 +65,7 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           createdDate: response[0] && response[0].createdDate
         }
       },
-      providesTags: [{ type: 'administration', id: 'ACCESS_SUPPORT' }],
+      providesTags: [{ type: 'Administration', id: 'ACCESS_SUPPORT' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           showActivityMessage(msg, [
@@ -73,7 +73,7 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
             'InviteSupport'
           ], () => {
             api.dispatch(administrationApi.util.invalidateTags([
-              { type: 'administration', id: 'ACCESS_SUPPORT' }
+              { type: 'Administration', id: 'ACCESS_SUPPORT' }
             ]))
           })
         })
@@ -93,7 +93,7 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           createdDate: response[0] && response[0].createdDate
         }
       },
-      providesTags: [{ type: 'administration', id: 'ACCESS_SUPPORT' }],
+      providesTags: [{ type: 'Administration', id: 'ACCESS_SUPPORT' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           showActivityMessage(msg, [
@@ -101,7 +101,7 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
             'InviteSupport'
           ], () => {
             api.dispatch(administrationApi.util.invalidateTags([
-              { type: 'administration', id: 'ACCESS_SUPPORT' }
+              { type: 'Administration', id: 'ACCESS_SUPPORT' }
             ]))
           })
         })
@@ -122,7 +122,7 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           createdDate: (response.response as TenantDelegation).createdDate
         }
       },
-      invalidatesTags: [{ type: 'administration', id: 'ACCESS_SUPPORT' }]
+      invalidatesTags: [{ type: 'Administration', id: 'ACCESS_SUPPORT' }]
     }),
     disableAccessSupport: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -132,7 +132,7 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'administration', id: 'ACCESS_SUPPORT' }]
+      invalidatesTags: [{ type: 'Administration', id: 'ACCESS_SUPPORT' }]
     }),
     getPreferences: build.query<TenantPreferenceSettings, RequestPayload>({
       query: ({ params }) => {
@@ -141,7 +141,7 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'administration', id: 'PREFERENCES' }]
+      providesTags: [{ type: 'Administration', id: 'PREFERENCES' }]
     }),
     updatePreference: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -151,7 +151,7 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'administration', id: 'PREFERENCES' }]
+      invalidatesTags: [{ type: 'Administration', id: 'PREFERENCES' }]
     })
   })
 })

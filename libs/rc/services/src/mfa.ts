@@ -11,7 +11,7 @@ import {
 export const baseMfaApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'mfaApi',
-  tagTypes: ['mfa'],
+  tagTypes: ['Mfa'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })
@@ -25,7 +25,7 @@ export const mfaApi = baseMfaApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'mfa', id: 'DETAIL' }]
+      providesTags: [{ type: 'Mfa', id: 'DETAIL' }]
     }),
     updateMFAAccount: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
@@ -34,7 +34,7 @@ export const mfaApi = baseMfaApi.injectEndpoints({
           ...req
         }
       },
-      invalidatesTags: [{ type: 'mfa', id: 'DETAIL' }]
+      invalidatesTags: [{ type: 'Mfa', id: 'DETAIL' }]
     })
   })
 })
