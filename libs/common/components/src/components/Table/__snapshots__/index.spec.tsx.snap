@@ -3,7 +3,7 @@
 exports[`Table component renders compact table 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-13 fEFRdc"
+    class="styledComponents__Wrapper-sc-1abm7iv-12 gdmpBd"
   >
     <div
       class="ant-pro-table"
@@ -184,7 +184,7 @@ exports[`Table component renders compact table 1`] = `
 exports[`Table component renders form table 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-13 dCbkWt"
+    class="styledComponents__Wrapper-sc-1abm7iv-12 iyKqRw"
   >
     <div
       class="ant-pro-table"
@@ -365,7 +365,7 @@ exports[`Table component renders form table 1`] = `
 exports[`Table component should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-13 bRIKQR"
+    class="styledComponents__Wrapper-sc-1abm7iv-12 jjcNqJ"
   >
     <div
       class="ant-pro-table"
@@ -450,7 +450,7 @@ exports[`Table component should render correctly 1`] = `
                               data-testid="react-resizable"
                             >
                               <div
-                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                class="styledComponents__ResizableHover-sc-1abm7iv-8"
                               />
                               Name
                             </th>
@@ -459,7 +459,7 @@ exports[`Table component should render correctly 1`] = `
                               data-testid="react-resizable"
                             >
                               <div
-                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                class="styledComponents__ResizableHover-sc-1abm7iv-8"
                               />
                               <span
                                 class="styledComponents__TitleWithTooltip-sc-1abm7iv-1 gemmlX"
@@ -476,7 +476,7 @@ exports[`Table component should render correctly 1`] = `
                               data-testid="react-resizable"
                             >
                               <div
-                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                class="styledComponents__ResizableHover-sc-1abm7iv-8"
                               />
                               Address
                             </th>
@@ -486,7 +486,7 @@ exports[`Table component should render correctly 1`] = `
                               style="position: sticky; right: 0px;"
                             >
                               <div
-                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                class="styledComponents__ResizableHover-sc-1abm7iv-8"
                               />
                             </th>
                           </tr>
@@ -626,7 +626,7 @@ exports[`Table component should render correctly 1`] = `
 exports[`Table component should render multi select table and render action buttons correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-13 gGUvnO"
+    class="styledComponents__Wrapper-sc-1abm7iv-12 iqWyRG"
   >
     <div
       class="ant-pro-table"
@@ -714,7 +714,7 @@ exports[`Table component should render multi select table and render action butt
                               data-testid="react-resizable"
                             >
                               <div
-                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                class="styledComponents__ResizableHover-sc-1abm7iv-8"
                               />
                               <div
                                 class="ant-table-selection"
@@ -742,7 +742,7 @@ exports[`Table component should render multi select table and render action butt
                               data-testid="react-resizable"
                             >
                               <div
-                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                class="styledComponents__ResizableHover-sc-1abm7iv-8"
                               />
                               Name
                             </th>
@@ -751,7 +751,7 @@ exports[`Table component should render multi select table and render action butt
                               data-testid="react-resizable"
                             >
                               <div
-                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                class="styledComponents__ResizableHover-sc-1abm7iv-8"
                               />
                               <span
                                 class="styledComponents__TitleWithTooltip-sc-1abm7iv-1 gemmlX"
@@ -768,7 +768,7 @@ exports[`Table component should render multi select table and render action butt
                               data-testid="react-resizable"
                             >
                               <div
-                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                class="styledComponents__ResizableHover-sc-1abm7iv-8"
                               />
                               Address
                             </th>
@@ -778,7 +778,7 @@ exports[`Table component should render multi select table and render action butt
                               style="position: sticky; right: 0px;"
                             >
                               <div
-                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                class="styledComponents__ResizableHover-sc-1abm7iv-8"
                               />
                             </th>
                           </tr>
@@ -987,7 +987,7 @@ exports[`Table component should render multi select table and render action butt
 exports[`Table component should render multi select table and render action buttons correctly 2`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-13 gGUvnO"
+    class="styledComponents__Wrapper-sc-1abm7iv-12 iqWyRG"
   >
     <div
       class="ant-pro-table"
@@ -1098,10 +1098,12 @@ exports[`Table component should render multi select table and render action butt
                               style="margin-right: 0px;"
                             >
                               <button
-                                class="styledComponents__ActionButton-sc-1abm7iv-6 fNiKLL"
+                                class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
                                 type="button"
                               >
-                                Edit
+                                <span>
+                                  Edit
+                                </span>
                               </button>
                             </div>
                             <span
@@ -1109,7 +1111,7 @@ exports[`Table component should render multi select table and render action butt
                               style="margin-right: 0px;"
                             >
                               <div
-                                class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1abm7iv-14 jcXayc"
+                                class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1abm7iv-13 fsVtFP"
                                 role="separator"
                               />
                             </span>
@@ -1117,10 +1119,12 @@ exports[`Table component should render multi select table and render action butt
                               class="ant-space-item"
                             >
                               <button
-                                class="styledComponents__ActionButton-sc-1abm7iv-6 fNiKLL"
+                                class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
                                 type="button"
                               >
-                                Delete
+                                <span>
+                                  Delete
+                                </span>
                               </button>
                             </div>
                           </div>
@@ -1174,7 +1178,7 @@ exports[`Table component should render multi select table and render action butt
                               data-testid="react-resizable"
                             >
                               <div
-                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                class="styledComponents__ResizableHover-sc-1abm7iv-8"
                               />
                               <div
                                 class="ant-table-selection"
@@ -1203,7 +1207,7 @@ exports[`Table component should render multi select table and render action butt
                               data-testid="react-resizable"
                             >
                               <div
-                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                class="styledComponents__ResizableHover-sc-1abm7iv-8"
                               />
                               Name
                             </th>
@@ -1212,7 +1216,7 @@ exports[`Table component should render multi select table and render action butt
                               data-testid="react-resizable"
                             >
                               <div
-                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                class="styledComponents__ResizableHover-sc-1abm7iv-8"
                               />
                               <span
                                 class="styledComponents__TitleWithTooltip-sc-1abm7iv-1 gemmlX"
@@ -1229,7 +1233,7 @@ exports[`Table component should render multi select table and render action butt
                               data-testid="react-resizable"
                             >
                               <div
-                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                class="styledComponents__ResizableHover-sc-1abm7iv-8"
                               />
                               Address
                             </th>
@@ -1239,7 +1243,7 @@ exports[`Table component should render multi select table and render action butt
                               style="position: sticky; right: 0px;"
                             >
                               <div
-                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                class="styledComponents__ResizableHover-sc-1abm7iv-8"
                               />
                             </th>
                           </tr>
@@ -1448,7 +1452,7 @@ exports[`Table component should render multi select table and render action butt
 exports[`Table component should render multi select table and render action buttons correctly 3`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-1abm7iv-13 gGUvnO"
+    class="styledComponents__Wrapper-sc-1abm7iv-12 iqWyRG"
   >
     <div
       class="ant-pro-table"
@@ -1536,7 +1540,7 @@ exports[`Table component should render multi select table and render action butt
                               data-testid="react-resizable"
                             >
                               <div
-                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                class="styledComponents__ResizableHover-sc-1abm7iv-8"
                               />
                               <div
                                 class="ant-table-selection"
@@ -1564,7 +1568,7 @@ exports[`Table component should render multi select table and render action butt
                               data-testid="react-resizable"
                             >
                               <div
-                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                class="styledComponents__ResizableHover-sc-1abm7iv-8"
                               />
                               Name
                             </th>
@@ -1573,7 +1577,7 @@ exports[`Table component should render multi select table and render action butt
                               data-testid="react-resizable"
                             >
                               <div
-                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                class="styledComponents__ResizableHover-sc-1abm7iv-8"
                               />
                               <span
                                 class="styledComponents__TitleWithTooltip-sc-1abm7iv-1 gemmlX"
@@ -1590,7 +1594,7 @@ exports[`Table component should render multi select table and render action butt
                               data-testid="react-resizable"
                             >
                               <div
-                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                class="styledComponents__ResizableHover-sc-1abm7iv-8"
                               />
                               Address
                             </th>
@@ -1600,7 +1604,7 @@ exports[`Table component should render multi select table and render action butt
                               style="position: sticky; right: 0px;"
                             >
                               <div
-                                class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                class="styledComponents__ResizableHover-sc-1abm7iv-8"
                               />
                             </th>
                           </tr>
