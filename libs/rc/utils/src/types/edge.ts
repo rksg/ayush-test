@@ -45,8 +45,6 @@ export interface EdgeStatus extends EdgeResourceUtilization {
   ip: string
   ports: string
   fwVersion?: string
-  dns1?: string
-  dns2?: string
 }
 export interface EdgeDetails {
   serialNumber: string
@@ -107,4 +105,20 @@ export interface EdgePortStatus {
   sortIdx: number
 }
 
-export type EdgeDNS = string
+export interface EdgeDhcpPool {
+  name: string
+  subnetMask: string
+  range: string
+  gateway: string
+  utilization: number
+  activate: boolean
+}
+
+export interface EdgeDhcpLease {
+  name: string
+  ip: string
+  dhcpPool: string
+  mac: string
+  status: string
+  expires: string
+}

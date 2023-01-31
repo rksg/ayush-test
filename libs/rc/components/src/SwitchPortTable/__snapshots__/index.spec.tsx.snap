@@ -6,7 +6,7 @@ exports[`SwitchPortTable should render ports of switch ICX7150 correctly 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-13 gGUvnO"
+      class="styledComponents__Wrapper-sc-1abm7iv-12 iqWyRG"
     >
       <div
         class="ant-pro-table"
@@ -1109,7 +1109,7 @@ exports[`SwitchPortTable should render ports of switch ICX7650 correctly 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-13 gGUvnO"
+      class="styledComponents__Wrapper-sc-1abm7iv-12 iqWyRG"
     >
       <div
         class="ant-space ant-space-horizontal ant-space-align-center"
@@ -1119,7 +1119,7 @@ exports[`SwitchPortTable should render ports of switch ICX7650 correctly 1`] = `
           class="ant-space-item"
         >
           <button
-            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
+            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
             type="button"
           >
             <span>
@@ -1173,6 +1173,87 @@ exports[`SwitchPortTable should render ports of switch ICX7650 correctly 1`] = `
               </div>
             </div>
             <div
+              class="ant-pro-table-alert"
+            >
+              <div
+                class="ant-alert ant-alert-info ant-alert-no-icon"
+                data-show="true"
+                role="alert"
+              >
+                <div
+                  class="ant-alert-content"
+                >
+                  <div
+                    class="ant-alert-message"
+                  >
+                    <div
+                      class="ant-pro-table-alert-info"
+                    >
+                      <div
+                        class="ant-pro-table-alert-info-content"
+                      >
+                        <div
+                          class="ant-space ant-space-horizontal ant-space-align-center"
+                        >
+                          <div
+                            class="ant-space-item"
+                            style="margin-right: 32px;"
+                          >
+                            <div
+                              class="ant-space ant-space-horizontal ant-space-align-center"
+                            >
+                              <div
+                                class="ant-space-item"
+                                style="margin-right: 6px;"
+                              >
+                                <span>
+                                  1 selected
+                                </span>
+                              </div>
+                              <div
+                                class="ant-space-item"
+                              >
+                                <button
+                                  class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__CloseButton-sc-1abm7iv-5 dRUGlG"
+                                  data-id="table-clear-btn"
+                                  title="Clear selection"
+                                  type="button"
+                                >
+                                  <svg
+                                    data-testid="CancelCircle"
+                                  />
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            class="ant-space-item"
+                          >
+                            <div
+                              class="ant-space ant-space-horizontal ant-space-align-center"
+                            >
+                              <div
+                                class="ant-space-item"
+                              >
+                                <button
+                                  class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
+                                  type="button"
+                                >
+                                  <span>
+                                    Edit
+                                  </span>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
               class="ant-table-wrapper"
             >
               <div
@@ -1216,18 +1297,22 @@ exports[`SwitchPortTable should render ports of switch ICX7650 correctly 1`] = `
                           >
                             <tr>
                               <th
-                                class="ant-table-cell ant-table-selection-column"
+                                class="ant-table-cell ant-table-selection-column react-resizable"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 <div
                                   class="ant-table-selection"
                                 >
                                   <label
-                                    class="ant-checkbox-wrapper"
+                                    class="ant-checkbox-wrapper ant-checkbox-wrapper-checked"
                                   >
                                     <span
-                                      class="ant-checkbox"
+                                      class="ant-checkbox ant-checkbox-checked"
                                     >
                                       <input
+                                        checked=""
                                         class="ant-checkbox-input"
                                         type="checkbox"
                                         value=""
@@ -1238,12 +1323,18 @@ exports[`SwitchPortTable should render ports of switch ICX7650 correctly 1`] = `
                                     </span>
                                   </label>
                                 </div>
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
                               </th>
                               <th
                                 aria-sort="ascending"
-                                class="ant-table-cell ant-table-column-sort ant-table-column-has-sorters"
+                                class="ant-table-cell ant-table-column-sort ant-table-column-has-sorters react-resizable"
                                 tabindex="0"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 <div
                                   class="ant-table-column-sorters"
                                 >
@@ -1299,11 +1390,17 @@ exports[`SwitchPortTable should render ports of switch ICX7650 correctly 1`] = `
                                     </span>
                                   </span>
                                 </div>
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters"
+                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                 tabindex="0"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 <div
                                   class="ant-table-column-sorters"
                                 >
@@ -1359,11 +1456,17 @@ exports[`SwitchPortTable should render ports of switch ICX7650 correctly 1`] = `
                                     </span>
                                   </span>
                                 </div>
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters"
+                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                 tabindex="0"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 <div
                                   class="ant-table-column-sorters"
                                 >
@@ -1419,11 +1522,17 @@ exports[`SwitchPortTable should render ports of switch ICX7650 correctly 1`] = `
                                     </span>
                                   </span>
                                 </div>
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters"
+                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                 tabindex="0"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 <div
                                   class="ant-table-column-sorters"
                                 >
@@ -1479,11 +1588,17 @@ exports[`SwitchPortTable should render ports of switch ICX7650 correctly 1`] = `
                                     </span>
                                   </span>
                                 </div>
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters"
+                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                 tabindex="0"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 <div
                                   class="ant-table-column-sorters"
                                 >
@@ -1539,11 +1654,17 @@ exports[`SwitchPortTable should render ports of switch ICX7650 correctly 1`] = `
                                     </span>
                                   </span>
                                 </div>
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters"
+                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                 tabindex="0"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 <div
                                   class="ant-table-column-sorters"
                                 >
@@ -1599,11 +1720,17 @@ exports[`SwitchPortTable should render ports of switch ICX7650 correctly 1`] = `
                                     </span>
                                   </span>
                                 </div>
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters"
+                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                 tabindex="0"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 <div
                                   class="ant-table-column-sorters"
                                 >
@@ -1659,11 +1786,17 @@ exports[`SwitchPortTable should render ports of switch ICX7650 correctly 1`] = `
                                     </span>
                                   </span>
                                 </div>
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters"
+                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                 tabindex="0"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 <div
                                   class="ant-table-column-sorters"
                                 >
@@ -1719,11 +1852,17 @@ exports[`SwitchPortTable should render ports of switch ICX7650 correctly 1`] = `
                                     </span>
                                   </span>
                                 </div>
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters"
+                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                 tabindex="0"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 <div
                                   class="ant-table-column-sorters"
                                 >
@@ -1779,11 +1918,21 @@ exports[`SwitchPortTable should render ports of switch ICX7650 correctly 1`] = `
                                     </span>
                                   </span>
                                 </div>
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first react-resizable"
                                 style="position: sticky; right: 0px;"
-                              />
+                              >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
+                              </th>
                             </tr>
                           </thead>
                           <tbody
@@ -1895,17 +2044,17 @@ exports[`SwitchPortTable should render ports of switch ICX7650 correctly 1`] = `
                               </td>
                             </tr>
                             <tr
-                              class="ant-table-row ant-table-row-level-0"
+                              class="ant-table-row ant-table-row-level-0 ant-table-row-selected"
                               data-row-key="38-45-3b-3b-b8-10_1-1-1"
                             >
                               <td
                                 class="ant-table-cell ant-table-selection-column"
                               >
                                 <label
-                                  class="ant-checkbox-wrapper"
+                                  class="ant-checkbox-wrapper ant-checkbox-wrapper-checked"
                                 >
                                   <span
-                                    class="ant-checkbox"
+                                    class="ant-checkbox ant-checkbox-checked"
                                   >
                                     <input
                                       class="ant-checkbox-input"
@@ -2367,6 +2516,9 @@ exports[`SwitchPortTable should render ports of switch ICX7650 correctly 1`] = `
         </div>
       </div>
     </div>
+    <div
+      data-testid="editPortDrawer"
+    />
   </div>
 </DocumentFragment>
 `;

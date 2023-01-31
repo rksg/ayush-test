@@ -135,7 +135,7 @@ function Table <RecordType extends Record<string, any>> (
 
   const columnsState = useColumnsState({ columns, columnState })
 
-  const setting: SettingOptionType | false = type === 'tall' ? {
+  const setting: SettingOptionType | false = type === 'tall' && !columnState?.hidden ? {
     draggable: true,
     checkable: true,
     checkedReset: false,
@@ -381,7 +381,9 @@ function Table <RecordType extends Record<string, any>> (
                 : option.visible ?? true
 
               if (!visible) return null
-              return <UI.ActionButton
+              return <Button
+                type='link'
+                size='small'
                 key={option.label}
                 disabled={typeof option.disabled === 'function'
                   ? option.disabled(rows)
@@ -391,7 +393,7 @@ function Table <RecordType extends Record<string, any>> (
                   option.onClick(getSelectedRows(selectedRowKeys), () => { onCleanSelected() })}
               >
                 {label}
-              </UI.ActionButton>
+              </Button>
             })}
           </Space>
         </Space>
