@@ -177,7 +177,8 @@ export function useMenuConfig () {
         },
         {
           path: '/networks/wired',
-          name: $t({ defaultMessage: 'Wired Networks' })
+          name: $t({ defaultMessage: 'Wired Networks' }),
+          disabled: !useIsSplitOn(Features.UNRELEASED)
         }
       ]
     },
