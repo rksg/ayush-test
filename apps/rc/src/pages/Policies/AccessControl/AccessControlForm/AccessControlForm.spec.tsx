@@ -1,3 +1,5 @@
+import React from 'react'
+
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
@@ -16,6 +18,25 @@ import {
 } from '../__tests__/fixtures'
 
 import AccessControlForm from './AccessControlForm'
+
+jest.mock('antd', () => {
+  const antd = jest.requireActual('antd')
+
+  // @ts-ignore
+  const Select = ({ children, onChange, ...otherProps }) =>
+    <select
+      role='combobox'
+      onChange={e => onChange(e.target.value)}
+      {...otherProps}>
+      {children}
+    </select>
+
+  // @ts-ignore
+  Select.Option = ({ children, ...otherProps }) =>
+    <option role='option' {...otherProps}>{children}</option>
+
+  return { ...antd, Select }
+})
 
 describe('AccessControlForm Component', () => {
   beforeEach(async () => {
@@ -80,7 +101,7 @@ describe('AccessControlForm Component', () => {
 
     expect(header).toBeInTheDocument()
 
-    await userEvent.click((await screen.findAllByRole('switch'))[0])
+    await userEvent.click((await screen.findAllByRole('switch'))[1])
 
     await userEvent.click(screen.getByRole('button', {
       name: 'Finish'
@@ -93,6 +114,18 @@ describe('AccessControlForm Component', () => {
     await userEvent.click(screen.getByRole('button', {
       name: 'Finish'
     }))
+
+    await screen.findByRole('option', { name: 'layer2policy1' })
+
+    await userEvent.selectOptions(
+      screen.getByRole('combobox'),
+      screen.getByRole('option', { name: 'layer2policy1' })
+    )
+
+    await userEvent.click(screen.getByRole('button', {
+      name: 'Finish'
+    }))
+
   })
 
   it('Render AccessControlForm component with editMode successfully', async () => {
