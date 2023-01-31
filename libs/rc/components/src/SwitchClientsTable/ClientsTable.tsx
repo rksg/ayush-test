@@ -16,7 +16,8 @@ import { useParams, TenantLink } from '@acx-ui/react-router-dom'
 export const defaultSwitchClientPayload = {
   searchString: '',
   fields: ['switchId','clientVlan','venueId','switchSerialNumber','clientMac',
-    'clientName','clientDesc','clientType','switchPort','vlanName','cog','id'],
+    'clientName','clientDesc','clientType','switchPort','vlanName',
+    'switchName', 'venueName' ,'cog','id'],
   sortField: 'clientMac',
   sortOrder: 'DESC',
   filters: {}
@@ -105,8 +106,9 @@ export function ClientsTable (props: {
       sorter: false,
       show: !params.switchId,
       render: (data, row) => {
-        // eslint-disable-next-line max-len
-        return <TenantLink to={`/devices/switch/${row.switchId}/${row.switchSerialNumber}/details/overview`}>{data?.toString().toUpperCase() || '--'}</TenantLink>
+        const name = data?.toString().toUpperCase() || '--'
+        const link = `/devices/switch/${row.switchId}/${row.switchSerialNumber}/details/overview`
+        return row.switchId ? <TenantLink to={link}>{name}</TenantLink> : <span>{name}</span>
       }
     }, {
       key: 'switchPort',

@@ -499,13 +499,32 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       invalidatesTags: [{ type: 'Switch', id: 'VE' }]
     }),
     getSwitchClientList: build.query<TableResult<SwitchClient>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const clientListReq = createHttpRequest(SwitchUrlsInfo.getSwitchClientList, params)
-        return {
-          ...clientListReq,
-          body: payload
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const listInfo = {
+          ...createHttpRequest(SwitchUrlsInfo.getSwitchClientList, arg.params),
+          body: arg.payload
         }
+        const listQuery = await fetchWithBQ(listInfo)
+        const list = listQuery.data as TableResult<SwitchClient>
+
+        const switchesInfo = {
+          ...createHttpRequest(SwitchUrlsInfo.getSwitchList, arg.params),
+          body: {
+            fields: ['name', 'venueName', 'id', 'switchMac', 'switchName'],
+            filters: { id: _.uniq(list.data.map(c=>c.switchId)) },
+            pageSize: 10000
+          }
+        }
+        const switchesQuery = await fetchWithBQ(switchesInfo)
+        const switches = switchesQuery.data as TableResult<SwitchRow>
+
+        const aggregatedList = aggregatedSwitchClientData(list, switches)
+
+        return listQuery.data
+          ? { data: aggregatedList }
+          : { error: listQuery.error as FetchBaseQueryError }
       },
+      keepUnusedDataFor: 0,
       providesTags: [{ type: 'SwitchClient', id: 'LIST' }]
     }),
     getSwitchClientDetails: build.query<SwitchClient, RequestPayload>({
@@ -699,7 +718,7 @@ const genStackMemberPayload = (arg:RequestPayload<unknown>, serialNumber:string)
   }
 }
 
-export const aggregatedSwitchListData = (switches: TableResult<SwitchRow>,
+const aggregatedSwitchListData = (switches: TableResult<SwitchRow>,
   stackMembers:{ [index:string]: StackMember[] }) => {
   const data:SwitchRow[] = []
   switches.data.forEach(item => {
@@ -721,6 +740,20 @@ export const aggregatedSwitchListData = (switches: TableResult<SwitchRow>,
 
   return {
     ...switches,
+    data
+  }
+}
+
+const aggregatedSwitchClientData = (
+  clients: TableResult<SwitchClient>,
+  switches: TableResult<SwitchRow>
+) => {
+  const data:SwitchClient[] = clients.data.map(item => {
+    const target = switches.data.find(s => s.id === item.switchId)
+    return { ...item, switchId: target ? item.switchId : '' } // use switchId to mark non-exist switch
+  })
+  return {
+    ...clients,
     data
   }
 }
