@@ -2,10 +2,11 @@ import { Form, Input, Switch, Row, Col, InputNumber, Space, Select } from 'antd'
 import { useIntl }                                                   from 'react-intl'
 
 import { Subtitle, Alert, StepsForm } from '@acx-ui/components'
-import { ToggleButton }               from '@acx-ui/rc/components'
 import {
   EdgeDhcpSetting,
   LeaseTimeUnit } from '@acx-ui/rc/utils'
+
+import { ToggleButton } from '../ToggleButton'
 
 import DHCPHostTable from './DhcpHost'
 import DHCPPoolTable from './DhcpPool'

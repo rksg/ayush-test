@@ -1,5 +1,3 @@
-import userEvent from '@testing-library/user-event'
-
 import { Provider } from '@acx-ui/store'
 import {
   render, screen

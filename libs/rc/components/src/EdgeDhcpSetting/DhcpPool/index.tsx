@@ -85,7 +85,7 @@ export default function DhcpPoolTable ({
     form={form}
     layout='vertical'
     onFinish={onSubmit}
-    initialValues={initPoolData}
+    
   >
     <Form.Item name='id' hidden />
 

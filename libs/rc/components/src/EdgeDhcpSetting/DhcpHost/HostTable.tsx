@@ -1,6 +1,5 @@
 import { useState } from 'react'
 
-import _                          from 'lodash'
 import { useIntl, defineMessage } from 'react-intl'
 
 import {
