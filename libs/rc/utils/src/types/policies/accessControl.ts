@@ -36,7 +36,8 @@ export interface AccessControlInfoType {
     uplinkLimit: number,
     downlinkLimit: number,
     enabled: boolean
-  }
+  },
+  networkIds?: string[]
 }
 
 export interface L3Rule {

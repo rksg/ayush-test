@@ -6,9 +6,9 @@ import { WlanRadioCustomization } from './WlanRadioCustomization'
 export class AAAWlanAdvancedCustomization {
   devicePolicyId?: string | null
 
-  l2AclPolicyId?: string
+  l2AclPolicyId?: string | null
 
-  l3AclPolicyId?: string
+  l3AclPolicyId?: string | null
 
   applicationPolicyId?: string
 

@@ -19,7 +19,7 @@ import NetworkFormContext from '../NetworkFormContext'
 
 import { AccessControlForm } from './AccessControlForm'
 
-xdescribe('AccessControlForm', () => {
+describe('AccessControlForm', () => {
 
   beforeEach(() => {
 
@@ -231,7 +231,7 @@ xdescribe('AccessControlForm', () => {
         route: { params }
       })
 
-    await screen.findByText(/access control policy/i)
+    await userEvent.click(await screen.findByText(/access control policy/i))
 
     await screen.findByText(/layer2policy1/i)
 

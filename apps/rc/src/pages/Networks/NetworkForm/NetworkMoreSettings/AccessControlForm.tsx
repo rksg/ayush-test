@@ -256,6 +256,18 @@ function SelectAccessProfileProfile (props: { accessControlProfileId: string }) 
   const [enableAccessControlProfile] = [
     useWatch('accessControlProfileEnable')]
 
+  useEffect(() => {
+    if (!enableAccessControlProfile) {
+      updateState({
+        selectedAccessControlProfile: undefined
+      })
+    } else {
+      if (accessControlProfileId) {
+        onAccessPolicyChange(accessControlProfileId)
+      }
+    }
+  }, [enableAccessControlProfile, accessControlProfileId])
+
   return (<>
     <UI.FieldLabel width='175px'>
       {$t({ defaultMessage: 'Access Control' })}

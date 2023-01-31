@@ -1,7 +1,7 @@
 import { rest } from 'msw'
 
-import { AccessControlUrls } from '@acx-ui/rc/utils'
-import { Provider }          from '@acx-ui/store'
+import { AccessControlUrls, CommonUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                          from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -16,7 +16,30 @@ const aclDetail = {
     enabled: true
   },
   name: 'acl-test',
-  id: 'c9c0667abfe74ab7803999a793fd2bbe'
+  id: 'c9c0667abfe74ab7803999a793fd2bbe',
+  networkIds: ['d1a4ab014ca84d55a0e07c6565f3d06b']
+}
+
+const networksResponse = {
+  fields: [
+    'name',
+    'venues',
+    'id',
+    'nwSubType'
+  ],
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      name: 'test-psk',
+      id: 'd1a4ab014ca84d55a0e07c6565f3d06b',
+      nwSubType: 'psk',
+      venues: {
+        count: 0,
+        names: []
+      }
+    }
+  ]
 }
 
 
@@ -24,7 +47,13 @@ describe('Access Control Detail Page', () => {
   beforeEach(async () => {
     mockServer.use(
       rest.get(AccessControlUrls.getAccessControlProfile.url,
-        (_, res, ctx) => res(ctx.json(aclDetail)))
+        (_, res, ctx) => res(ctx.json(aclDetail))),
+      rest.post(
+        CommonUrlsInfo.getVMNetworksList.url,
+        (_, res, ctx) => res(
+          ctx.json(networksResponse)
+        )
+      )
     )
   })
 
@@ -45,5 +74,7 @@ describe('Access Control Detail Page', () => {
     expect(screen.getByText('Device & OS')).toBeInTheDocument()
     expect(screen.getByText('Applications')).toBeInTheDocument()
     expect(screen.getByText('Client Rate Limit')).toBeInTheDocument()
+
+    await screen.findByText('test-psk')
   })
 })

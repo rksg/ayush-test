@@ -363,13 +363,24 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
     advancedCustomization.devicePolicyId = null
   }
 
-  if (get(data, 'wlan.advancedCustomization.accessControlProfileId')) {
-    advancedCustomization.l2AclEnable = false
-    advancedCustomization.l3AclEnable = false
-  }
-
   if (!get(data, 'wlan.advancedCustomization.applicationPolicyEnable')) {
     advancedCustomization.applicationPolicyId = null
+  }
+
+  if (!get(data, 'accessControlProfileEnable')) {
+    advancedCustomization.accessControlProfileId = null
+  }
+
+  if (get(data, 'accessControlProfileEnable')
+    && get(data, 'wlan.advancedCustomization.accessControlProfileId')) {
+    advancedCustomization.l2AclEnable = false
+    advancedCustomization.l2AclPolicyId = null
+    advancedCustomization.l3AclEnable = false
+    advancedCustomization.l3AclPolicyId = null
+
+    advancedCustomization.accessControlEnable = true
+    // eslint-disable-next-line max-len
+    advancedCustomization.accessControlProfileId = get(data, 'wlan.advancedCustomization.accessControlProfileId')
   }
 
   advancedCustomization.urlFilteringPolicyId = null

@@ -13,7 +13,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
-import AccessControlOverview from './AccessControlOverview'
+import AccessControlNetworksDetail from './AccessControlNetworksDetail'
+import AccessControlOverview       from './AccessControlOverview'
 
 
 export default function AccessControlDetail () {
@@ -44,10 +45,10 @@ export default function AccessControlDetail () {
       />
       <GridRow>
         <GridCol col={{ span: 24 }}>
-          <AccessControlOverview data={data}/>
+          <AccessControlOverview data={data} />
         </GridCol>
         <GridCol col={{ span: 24 }}>
-
+          <AccessControlNetworksDetail data={data} />
         </GridCol>
       </GridRow>
     </>
