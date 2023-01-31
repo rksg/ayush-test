@@ -4,25 +4,20 @@ import {
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Button, Drawer, Loader, Table, TableProps, Tooltip } from '@acx-ui/components'
-import { DeleteOutlinedIcon, EditOutlinedIcon }               from '@acx-ui/icons'
-import { useGetLagListQuery }                                 from '@acx-ui/rc/services'
-import { Lag }                                                from '@acx-ui/rc/utils'
-import { useParams }                                          from '@acx-ui/react-router-dom'
-import { useState } from 'react'
-import { SwitchLagModal } from './switchLagModal'
+import { Button, Drawer, Loader, Modal, Table, TableProps, Tooltip } from '@acx-ui/components'
+import { DeleteOutlinedIcon, EditOutlinedIcon }                      from '@acx-ui/icons'
+import { useGetLagListQuery }                                        from '@acx-ui/rc/services'
+import { Lag }                                                       from '@acx-ui/rc/utils'
+import { useParams }                                                 from '@acx-ui/react-router-dom'
 
 interface SwitchLagProps {
   visible: boolean
   setVisible: (visible: boolean) => void
 }
 
-export const SwitchLagDrawer = (props: SwitchLagProps) => {
+export const SwitchLagModal = (props: SwitchLagProps) => {
   const { $t } = useIntl()
   const { visible, setVisible } = props
-  const [modalVisible, setModalVisible] = useState(false)
-
-
 
   const onClose = () => {
     setVisible(false)
@@ -114,11 +109,11 @@ export const SwitchLagDrawer = (props: SwitchLagProps) => {
   ]
 
   return (
-    <>
-    <Drawer
+
+    <Modal
       title={$t({ defaultMessage: 'Manage LAG' })}
       visible={visible}
-      onClose={onClose}
+      // onClose={onClose}
       width={644}
       footer={footer}
       children={
@@ -132,22 +127,10 @@ export const SwitchLagDrawer = (props: SwitchLagProps) => {
             type='compact'
             dataSource={data}
             rowKey='name'
-            actions={
-              [{
-                label: $t({ defaultMessage: 'Manage LAG' }),
-                onClick: () => { setModalVisible(true) }
-              }]
-
-            }
           />
-          </Loader>
-        }
-      />
-      {<SwitchLagModal
-        visible={modalVisible}
-        setVisible={setModalVisible}
-      />}
-    </>
+        </Loader>
+      }
+    />
 
   )
 }
