@@ -267,7 +267,7 @@ export function createNewTableHttpRequest (props: CreateNewTableHttpRequestProps
 export function transferToTableResult<T> (newResult: NewTableResult<T>): TableResult<T> {
   return {
     data: newResult.content,
-    page: newResult.pageable.pageNumber + 1,
+    page: newResult.pageable ? newResult.pageable.pageNumber + 1 : 1,
     totalCount: newResult.totalElements
   }
 }
