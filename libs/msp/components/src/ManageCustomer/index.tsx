@@ -239,6 +239,8 @@ export function ManageCustomer () {
 
       setSubscriptionStartDate(moment(data?.service_effective_date).format(dateFormat))
       setSubscriptionEndDate(moment(data?.service_expiration_date).format(dateFormat))
+      setWifiLicense(wLic)
+      setSwitchLicense(sLic)
       // updateAddress(data?.street_address as Address)
       // }
     }
