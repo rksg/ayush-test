@@ -43,17 +43,25 @@ export const StepsContainerGlobalOverride = createGlobalStyle`
   }
 `
 
-export const ActionsContainer = styled.div`
+export const ActionsContainer = styled.div<{ $modalMode: boolean }>`
   position: fixed;
   bottom: 0;
   padding: var(--acx-steps-form-actions-vertical-space) 0;
   background-color: var(--acx-neutrals-10);
+  ${props => props.$modalMode
+    ? `position: sticky;
+       width: 100%;`
+    : ''}
   z-index: 3;
   &::before {
     content: '';
     position: absolute;
     inset: 0 -100% 0 -100%;
     background-color: var(--acx-neutrals-10);
+    ${props => props.$modalMode
+    ? `border-radius: 12px;
+       inset: 0 -24px 0 -24px;`
+    : ''}
   }
   .ant-space-item .ant-space {
     position: absolute;

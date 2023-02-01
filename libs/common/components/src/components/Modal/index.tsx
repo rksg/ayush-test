@@ -7,7 +7,7 @@ import { Button, ButtonProps } from '../Button'
 
 import * as UI from './styledComponents'
 
-interface ModalProps extends AntModalProps {
+export interface ModalProps extends AntModalProps {
   title: string
   subTitle?: string
 }
