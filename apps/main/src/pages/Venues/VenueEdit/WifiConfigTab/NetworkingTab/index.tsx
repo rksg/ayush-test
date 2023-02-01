@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 
-import { Button }  from 'antd'
-import { useIntl } from 'react-intl'
+import { Button, Space } from 'antd'
+import { useIntl }       from 'react-intl'
 
 import { AnchorLayout, showToast, StepsForm, Tooltip } from '@acx-ui/components'
 import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
@@ -77,16 +77,18 @@ export function NetworkingTab () {
       title: $t({ defaultMessage: 'Directed Multicast' }),
       content: <>
         <StepsForm.SectionTitle id='directed-multicast'>
-          {<>
+          {<Space align='baseline'>
             { $t({ defaultMessage: 'Directed Multicast' }) }
             <Tooltip
               title={$t( directedMulticastInfo )}
               placement='right'>
               <Button type='text'
-                icon={<QuestionMarkCircleOutlined/>}
-                style={{ marginLeft: '10px' }}/>
+                style={{ height: '18px', width: '18px' }}
+                icon={
+                  <QuestionMarkCircleOutlined style={{ height: 'inherit', width: 'inherit' }}/>}
+              />
             </Tooltip>
-          </>
+          </Space>
           }
         </StepsForm.SectionTitle>
         <DirectedMulticast />
