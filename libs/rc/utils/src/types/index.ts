@@ -1,7 +1,6 @@
 import {
   ServiceAdminState,
   ServiceStatus,
-  ServiceTechnology,
   ServiceType,
   ApDeviceStatusEnum,
   GuestNetworkTypeEnum,
@@ -32,6 +31,8 @@ export * from './edge'
 export * from './client'
 export * from './components'
 export * from './switch'
+export * from './timeline'
+export * from './persona'
 
 export interface CommonResult {
   requestId: string
@@ -130,90 +131,6 @@ export interface AlarmMeta {
 }
 
 export type Alarm = AlarmBase & AlarmMeta
-
-export interface Activity {
-  admin: {
-    name: string
-    email: string
-    ip: string
-    id: string
-    interface: string
-  }
-  descriptionData: { name: string, value:string }[]
-  descriptionTemplate: string
-  endDatetime: string
-  notification: { enabled: boolean, type: string }
-  product: string
-  requestId: string
-  severity: string
-  startDatetime: string
-  status: string
-  steps: {
-    id: string,
-    description: string,
-    status: string,
-    progressType: string
-    startDatetime: string
-    endDatetime: string
-  }[]
-tenantId: string
-useCase: string
-}
-
-export interface EventBase {
-  apMac: string
-  entity_id: string
-  entity_type: string
-  event_datetime: string
-  id: string
-  macAddress: string
-  message: string
-  name: string
-  product: string
-  radio: string
-  raw_event: string
-  serialNumber: string
-  severity: string
-  venueId: string
-  clientMac?: string
-  clientName?: string
-}
-
-export interface EventMeta {
-  id: EventBase['id']
-  apGroupId: string
-  apName: string
-  isApExists: boolean
-  isClientExists: boolean
-  isNetworkExists: boolean
-  isSwitchExists: boolean
-  isVenueExists: boolean
-  networkName?: string
-  switchMac?: string
-  switchName: string
-  venueName: string
-}
-
-export type Event = EventBase & EventMeta
-
-export interface AdminLogBase {
-  adminName: string
-  entity_id: string
-  entity_type: string
-  event_datetime: string
-  id: string
-  message: string
-  raw_event: string
-  severity: string
-}
-
-export interface AdminLogMeta {
-  id: AdminLogBase['id']
-  isApExists: boolean
-  isSwitchExists: boolean
-}
-
-export type AdminLog = AdminLogBase & AdminLogMeta
 
 export enum EventSeverityEnum {
   CRITICAL = 'Critical',
@@ -397,7 +314,6 @@ export interface Service {
   type: ServiceType
   status: ServiceStatus
   adminState: ServiceAdminState
-  technology: ServiceTechnology
   scope: number
   health: string
   tags: string[]
@@ -497,16 +413,6 @@ export interface Capabilities {
 	version: string
 }
 
-export interface EventMeta {
-  apName: string,
-  id: string,
-  isApExists: boolean,
-  isClientExists: boolean,
-  isVenueExists: boolean,
-  networkId: string,
-  venueName: string,
-}
-
 export interface ClientStatistic {
   applications: number;
   apsConnected: number;
@@ -523,4 +429,46 @@ export const GridInactiveRowDataFlag = 'inactiveRow'
 export interface GridDataRow {
   inactiveTooltip?: string;
   [GridInactiveRowDataFlag]?: boolean;
+}
+
+export interface PaginationQueryResult<T> {
+  page: number
+  pageSize: number
+  totalCount: number
+  content: T[]
+}
+
+export interface PlmMessageBanner {
+  createdBy: string,
+  createdDate: string,
+  description: string,
+  endTime: string,
+  id: string,
+  startTime: string,
+  tenantType: string,
+  updatedDate: string
+}
+
+export enum SWITCH_CLIENT_TYPE {
+  AP = 'WLAN_AP',
+  ROUTER = 'ROUTER'
+}
+
+export interface SwitchClient {
+  id: string
+  clientMac: string
+  clientIpv4Addr: string
+  clientIpv6Addr: string
+  clientName: string
+  clientDesc: string
+  clientType: SWITCH_CLIENT_TYPE
+  switchId: string
+  switchName: string
+  switchPort: string
+  switchSerialNumber: string
+  clientVlan: string
+  vlanName: string
+  venueId: string
+  venueName: string
+  isRuckusAP: boolean
 }

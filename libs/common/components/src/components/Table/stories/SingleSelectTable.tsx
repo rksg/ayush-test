@@ -1,7 +1,7 @@
 import { Table, TableProps } from '..'
 import { showToast }         from '../../Toast'
 
-const basicColumns = [
+const basicColumns: TableProps<typeof basicData[0]>['columns'] = [
   {
     title: 'Name',
     dataIndex: 'name',
@@ -10,7 +10,8 @@ const basicColumns = [
   {
     title: 'Age',
     dataIndex: 'age',
-    key: 'age'
+    key: 'age',
+    align: 'center'
   },
   {
     title: 'Address',

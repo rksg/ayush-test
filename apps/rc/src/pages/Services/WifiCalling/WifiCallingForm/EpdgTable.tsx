@@ -66,7 +66,7 @@ const EpdgTable = (props: { edit?: boolean }) => {
     onClick: handleAddAction
   }]
 
-  const rowActions: TableProps<EPDG>['actions'] = [{
+  const rowActions: TableProps<EPDG>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
     onClick: ([{ domain }]: EPDG[]) => {
       setVisibleEdit(true)
@@ -85,7 +85,7 @@ const EpdgTable = (props: { edit?: boolean }) => {
         type: 'confirm',
         customContent: {
           action: 'DELETE',
-          entityName: $t({ defaultMessage: 'Service' }),
+          entityName: $t({ defaultMessage: 'Rule' }),
           entityValue: domain
         },
         onOk: () => {

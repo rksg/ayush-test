@@ -16,6 +16,7 @@ const tags: string[] = []
 const ePDG: EPDG[] = []
 const networkIds: string[] = []
 const networksName: string[] = []
+const epdgs: EPDG[] = []
 
 const initState = {
   serviceName,
@@ -25,7 +26,8 @@ const initState = {
   tags,
   description,
   networkIds,
-  networksName
+  networksName,
+  epdgs
 }
 
 const renderInitState = (children: JSX.Element) => {

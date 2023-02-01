@@ -119,8 +119,8 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
       case ClientStatusEnum.CONNECTED:
         obj = [
           <ClientDetails client={client} />,
-          <Connection client={client} />,
           <OperationalData client={client} />,
+          <Connection client={client} />,
           (networkType === 'guest' && <GuestDetails />),
           (networkType === 'dpsk' && <DpskPassphraseDetails />),
           <WiFiCallingDetails client={client} />
@@ -211,7 +211,7 @@ function Connection ({ client }: { client: ClientExtended }) {
         }
         children={
           client?.enableLinkToAp
-            ? <TenantLink to={`devices/aps/${client.apSerialNumber}/details/overview`}>
+            ? <TenantLink to={`devices/wifi/${client.apSerialNumber}/details/overview`}>
               {client?.apName || '--'}
             </TenantLink>
             : client?.apName || '--'

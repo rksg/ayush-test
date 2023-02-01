@@ -32,7 +32,7 @@ import {
   PortalUrlsInfo,
   NewTableResult,
   NewDpskPassphrase,
-  transferTableResult,
+  transferToTableResult,
   DpskPassphrasesSaveData,
   convertMdnsProxyFormDataToApiPayload,
   MdnsProxyGetApiResponse,
@@ -40,7 +40,15 @@ import {
   onSocketActivityChanged,
   showActivityMessage,
   MdnsProxyAp,
-  UploadUrlResponse
+  UploadUrlResponse,
+  TableChangePayload,
+  RequestFormData,
+  createNewTableHttpRequest,
+  NetworkSegmentationUrls,
+  NetworkSegmentationGroup,
+  WebAuthTemplate,
+  AccessSwitch,
+  DistributionSwitch
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
@@ -50,7 +58,12 @@ import {
   AccessControlProfile
 } from '@acx-ui/rc/utils'
 
-
+const defaultNewTablePaginationParams: TableChangePayload = {
+  sortField: 'name',
+  sortOrder: 'ASC',
+  page: 1,
+  pageSize: 10000
+}
 
 const RKS_NEW_UI = {
   'x-rks-new-ui': true
@@ -59,7 +72,8 @@ const RKS_NEW_UI = {
 export const baseServiceApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'serviceApi',
-  tagTypes: ['Service', 'Dpsk', 'DpskPassphrase', 'MdnsProxy', 'MdnsProxyAp'],
+  // eslint-disable-next-line max-len
+  tagTypes: ['Service', 'Dpsk', 'DpskPassphrase', 'MdnsProxy', 'MdnsProxyAp', 'WifiCalling', 'DHCP', 'Portal'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })
@@ -88,7 +102,9 @@ export const serviceApi = baseServiceApi.injectEndpoints({
             'Delete WiFi Calling Service Profiles',
             'Update Portal Service Profile',
             'Delete Portal Service Profile',
-            'Delete Portal Service Profiles'
+            'Delete Portal Service Profiles',
+            'Delete DHCP Config Service Profile',
+            'Delete DHCP Config Service Profiles'
           ], () => {
             api.dispatch(serviceApi.util.invalidateTags([
               { type: 'Service', id: 'LIST' }
@@ -161,27 +177,27 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           ...req
         }
       },
-      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }, { type: 'WifiCalling', id: 'LIST' }]
     }),
-    getDHCPProfileList: build.query<DHCPSaveData[] | null, RequestPayload>({
+    getDHCPProfileList: build.query<DHCPSaveData[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(DHCPUrls.getDHCPProfiles, params)
         return{
           ...req
         }
       },
-      providesTags: [{ type: 'Service', id: 'DHCP' }],
+      providesTags: [{ type: 'Service', id: 'LIST' }, { type: 'DHCP', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           showActivityMessage(msg, [
-            'Add DHCP Config Service Profile',
-            'Update DHCP Config Service Profile',
-            'Delete DHCP Config Service Profile',
-            'Delete DHCP Config Service Profiles'
+            'AddDhcpConfigServiceProfile',
+            'UpdateDhcpConfigServiceProfile',
+            'DeleteDhcpConfigServiceProfile',
+            'DeleteDhcpConfigServiceProfiles'
           ], () => {
             api.dispatch(serviceApi.util.invalidateTags([
               { type: 'Service', id: 'LIST' },
-              { type: 'Service', id: 'DHCP' }
+              { type: 'DHCP', id: 'LIST' }
             ]))
           })
         })
@@ -208,7 +224,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         })
         return dhcpProfile
       },
-      providesTags: [{ type: 'Service', id: 'DETAIL' }]
+      providesTags: [{ type: 'Service', id: 'DETAIL' }, { type: 'DHCP', id: 'DETAIL' }]
     }),
     saveOrUpdateDHCP: build.mutation<DHCPSaveData, RequestPayload>({
       query: ({ params, payload }:{ params:Params, payload:DHCPSaveData }) => {
@@ -221,6 +237,15 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         return {
           ...dhcpReq,
           body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }, { type: 'DHCP', id: 'LIST' }]
+    }),
+    deleteDHCPService: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(DHCPUrls.deleteDHCPProfile, params)
+        return {
+          ...req
         }
       },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }]
@@ -294,7 +319,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           ...req
         }
       },
-      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+      invalidatesTags: [{ type: 'MdnsProxy', id: 'LIST' }, { type: 'Service', id: 'LIST' }]
     }),
     addMdnsProxy: build.mutation<MdnsProxyFormData, RequestPayload<MdnsProxyFormData>>({
       query: ({ params, payload }) => {
@@ -409,7 +434,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Service', id: 'LIST' }]
+      providesTags: [{ type: 'Service', id: 'DETAIL' }, { type: 'WifiCalling', id: 'DETAIL' }]
     }),
     getWifiCallingServiceList: build.query<WifiCallingSetting[], RequestPayload>({
       query: ({ params }) => {
@@ -420,7 +445,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           ...wifiCallingServiceListReq
         }
       },
-      providesTags: [{ type: 'Service', id: 'LIST' }],
+      providesTags: [{ type: 'Service', id: 'LIST' }, { type: 'WifiCalling', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           showActivityMessage(msg, [
@@ -444,7 +469,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }, { type: 'WifiCalling', id: 'LIST' }]
     }),
     updateWifiCallingService: build.mutation<WifiCallingFormContextType, RequestPayload>({
       query: ({ params, payload }) => {
@@ -456,7 +481,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }, { type: 'WifiCalling', id: 'LIST' }]
     }),
     createDpsk: build.mutation<DpskSaveData, RequestPayload<DpskSaveData>>({
       query: ({ payload }) => {
@@ -478,14 +503,22 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }, { type: 'Dpsk', id: 'LIST' }]
     }),
-    dpskList: build.query<NewTableResult<DpskSaveData>, RequestPayload>({
-      query: () => {
-        const getDpskListReq = createHttpRequest(DpskUrls.getDpskList)
+    getDpskList: build.query<TableResult<DpskSaveData>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const getDpskListReq = createNewTableHttpRequest({
+          apiInfo: DpskUrls.getDpskList,
+          params,
+          payload: (payload as TableChangePayload) ?? defaultNewTablePaginationParams
+        })
+
         return {
           ...getDpskListReq
         }
       },
-      providesTags: [{ type: 'Service', id: 'LIST' }, { type: 'Dpsk', id: 'LIST' }]
+      providesTags: [{ type: 'Service', id: 'LIST' }, { type: 'Dpsk', id: 'LIST' }],
+      transformResponse (result: NewTableResult<DpskSaveData>) {
+        return transferToTableResult<DpskSaveData>(result)
+      }
     }),
     getDpsk: build.query<DpskSaveData, RequestPayload>({
       query: ({ params, payload }) => {
@@ -495,7 +528,17 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Service', id: 'DETAIL' }]
+      providesTags: [{ type: 'Dpsk', id: 'DETAIL' }]
+    }),
+    deleteDpsk: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(DpskUrls.deleteDpsk, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Dpsk', id: 'LIST' }]
     }),
     createDpskPassphrases: build.mutation<CommonResult, RequestPayload<DpskPassphrasesSaveData>>({
       query: ({ params, payload }) => {
@@ -507,21 +550,40 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'DpskPassphrase', id: 'LIST' }]
     }),
+    // eslint-disable-next-line max-len
     dpskPassphraseList: build.query<TableResult<NewDpskPassphrase>, RequestPayload>({
-      query: ({ params }) => {
-        const getDpskPassphraseListReq = createHttpRequest(DpskUrls.getPassphraseList, params)
+      query: ({ params, payload }) => {
+        const getDpskPassphraseListReq = createNewTableHttpRequest({
+          apiInfo: DpskUrls.getPassphraseList,
+          params,
+          payload: payload as TableChangePayload
+        })
+
         return {
           ...getDpskPassphraseListReq
         }
       },
       transformResponse (result: NewTableResult<NewDpskPassphrase>) {
-        return transferTableResult<NewDpskPassphrase>(result)
+        return transferToTableResult<NewDpskPassphrase>(result)
       },
       providesTags: [{ type: 'DpskPassphrase', id: 'LIST' }]
     }),
     deleteDpskPassphraseList: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(DpskUrls.deletePassphrase, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'DpskPassphrase', id: 'LIST' }]
+    }),
+    uploadPassphrases: build.mutation<{}, RequestFormData>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(DpskUrls.uploadPassphrases, params, {
+          'Content-Type': undefined,
+          'Accept': '*/*'
+        })
         return {
           ...req,
           body: payload
@@ -547,14 +609,17 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       providesTags: [{ type: 'Service', id: 'LIST' }]
     }),
-    getPortalProfileList: build.query<{ content: Portal[] }, RequestPayload>({
+    getPortalProfileList: build.query<TableResult<Portal>, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(PortalUrlsInfo.getPortalProfileList, params)
         return{
           ...req
         }
       },
-      providesTags: [{ type: 'Service', id: 'LIST' }],
+      providesTags: [{ type: 'Portal', id: 'LIST' }],
+      transformResponse (result: NewTableResult<Portal>) {
+        return transferToTableResult<Portal>(result)
+      },
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           showActivityMessage(msg, [
@@ -563,7 +628,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
             'Delete Portal Service Profile',
             'Delete Portal Service Profiles'
           ], () => {
-            api.dispatch(serviceApi.util.invalidateTags([{ type: 'Service', id: 'LIST' }]))
+            api.dispatch(serviceApi.util.invalidateTags([{ type: 'Portal', id: 'LIST' }]))
           })
         })
       }
@@ -584,6 +649,81 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    getWebAuthTemplate: build.query<WebAuthTemplate, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest( NetworkSegmentationUrls.getWebAuthTemplate, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    webAuthTemplateList: build.query<TableResult<WebAuthTemplate>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest( NetworkSegmentationUrls.getWebAuthTemplateList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    createWebAuthTemplate: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest( NetworkSegmentationUrls.addWebAuthTemplate, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    updateWebAuthTemplate: build.mutation<WebAuthTemplate, RequestPayload<WebAuthTemplate>>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest( NetworkSegmentationUrls.updateWebAuthTemplate, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    deleteWebAuthTemplate: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest( NetworkSegmentationUrls.deleteWebAuthTemplate, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+
+    getAccessSwitches: build.query<TableResult<AccessSwitch>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest( NetworkSegmentationUrls.getAccessSwitches, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    getDistributionSwitches: build.query<TableResult<DistributionSwitch>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest( NetworkSegmentationUrls.getAccessSwitches, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    getNetworkSegmentationGroupById: build.query<NetworkSegmentationGroup, RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(NetworkSegmentationUrls.getNetworkSegmentationGroupById, params)
+        return {
+          ...req
+        }
+      }
     })
   })
 })
@@ -596,10 +736,12 @@ export const {
   useServiceListQuery,
   useGetDHCPProfileQuery,
   useSaveOrUpdateDHCPMutation,
+  useDeleteDHCPServiceMutation,
   useDhcpVenueInstancesQuery,
   useVlanPoolListQuery,
   useAccessControlProfileListQuery,
   useGetDHCPProfileListQuery,
+  useLazyGetDHCPProfileListQuery,
   useGetMdnsProxyQuery,
   useLazyGetMdnsProxyListQuery,
   useGetMdnsProxyListQuery,
@@ -618,11 +760,14 @@ export const {
   useCreateDpskMutation,
   useUpdateDpskMutation,
   useGetDpskQuery,
-  useDpskListQuery,
-  useLazyDpskListQuery,
+  useLazyGetDpskQuery,
+  useGetDpskListQuery,
+  useLazyGetDpskListQuery,
+  useDeleteDpskMutation,
   useDpskPassphraseListQuery,
   useCreateDpskPassphrasesMutation,
   useDeleteDpskPassphraseListMutation,
+  useUploadPassphrasesMutation,
   useGetPortalQuery,
   useSavePortalMutation,
   usePortalNetworkInstancesQuery,
@@ -632,5 +777,13 @@ export const {
   useGetPortalLangMutation,
   useDeletePortalMutation,
   useUpdatePortalMutation,
-  useUploadURLMutation
+  useUploadURLMutation,
+  useLazyGetNetworkSegmentationGroupByIdQuery,
+  useGetWebAuthTemplateQuery,
+  useWebAuthTemplateListQuery,
+  useCreateWebAuthTemplateMutation,
+  useUpdateWebAuthTemplateMutation,
+  useDeleteWebAuthTemplateMutation,
+  useGetAccessSwitchesQuery,
+  useGetDistributionSwitchesQuery
 } = serviceApi

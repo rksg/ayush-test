@@ -1,5 +1,7 @@
 import { FC, ReactNode, useState } from 'react'
 
+import { RadioChangeEvent } from 'antd'
+
 import { SelectionControl, SelectionControlOptionProps } from '../SelectionControl'
 interface TabDetail {
   label: ReactNode
@@ -14,6 +16,9 @@ export interface ContentSwitcherProps {
   tabDetails: Array<TabDetail>
   size?: 'small' | 'large'
   align?: 'left' | 'right' | 'center'
+  extra?: React.ReactNode;
+  value?: string
+  onChange?: (value: string) => void
 }
 
 const sizeSpaceMap = {
@@ -22,7 +27,7 @@ const sizeSpaceMap = {
 }
 
 export const ContentSwitcher: FC<ContentSwitcherProps> = (props) => {
-  const { tabDetails, defaultValue, size, align } = props
+  const { tabDetails, defaultValue, size, align, value, onChange, extra } = props
 
   const options: SelectionControlOptionProps[] = tabDetails.map(tabDetail=>{
     return {
@@ -36,18 +41,27 @@ export const ContentSwitcher: FC<ContentSwitcherProps> = (props) => {
   const padding = size === 'small'
     ? `${sizeSpaceMap[size!]} 0 calc(${sizeSpaceMap[size!]} * 2)`
     : `${sizeSpaceMap[size!]} 0`
+
+  const handleChange = (e: RadioChangeEvent) => {
+    if(onChange) {
+      onChange(e.target.value)
+    }
+    setActiveContent(e.target.value)
+  }
+
   return (
     <>
       <div style={{ textAlign: align, padding }}>
         <SelectionControl options={options}
           defaultValue={defaultValue || options[0].value}
           size={size}
-          onChange={(e) => {
-            setActiveContent(e.target.value)
-          }} />
+          value={value || activeContent}
+          onChange={handleChange}
+          extra={extra}
+        />
       </div>
       {
-        tabDetails.find((tabDetail) => tabDetail.value === activeContent)?.children
+        tabDetails.find((tabDetail) => tabDetail.value === (value || activeContent))?.children
       }
     </>
   )

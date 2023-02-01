@@ -2,12 +2,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useContext, useEffect, useRef, useState } from 'react'
 
-import { Col, Form, Radio, RadioChangeEvent, Row, Switch, Tooltip } from 'antd'
-import { cloneDeep, includes }                                      from 'lodash'
-import { FormattedMessage, useIntl }                                from 'react-intl'
+import { Col, Form, Radio, RadioChangeEvent, Row, Space, Switch, Tooltip } from 'antd'
+import { cloneDeep, includes }                                             from 'lodash'
+import { FormattedMessage, useIntl }                                       from 'react-intl'
 
-import { Button, Loader, StepsForm, StepsFormInstance, Tabs } from '@acx-ui/components'
-import { QuestionMarkCircleOutlined }                         from '@acx-ui/icons'
+import { Button, Loader, showToast, StepsForm, StepsFormInstance, Tabs } from '@acx-ui/components'
+import { QuestionMarkCircleOutlined }                                    from '@acx-ui/icons'
 import {
   ApRadioTypeEnum,
   channelBandwidth24GOptions,
@@ -44,9 +44,7 @@ export function RadioSettings () {
 
   const {
     editContextData,
-    setEditContextData,
-    editRadioContextData,
-    setEditRadioContextData
+    setEditContextData
   } = useContext(ApEditContext)
 
   const { tenantId, serialNumber } = useParams()
@@ -87,7 +85,11 @@ export function RadioSettings () {
   const [bandwidthLower5GOptions, setBandwidthLower5GOptions] = useState<SelectItemOption[]>([])
   const [bandwidthUpper5GOptions, setBandwidthUpper5GOptions] = useState<SelectItemOption[]>([])
 
-  const { data: apRadioSavedData, isLoading: isLoadingApRadioData } =
+  const [initData, setInitData] = useState({} as ApRadioCustomization)
+  const [formInitializing, setFormInitializing] = useState(true)
+
+
+  const { data: apRadioSavedData } =
     useGetApRadioCustomizationQuery({ params: { tenantId, serialNumber } })
 
   const [ updateApRadio, { isLoading: isUpdatingApRadio } ] =
@@ -98,9 +100,6 @@ export function RadioSettings () {
 
   const [getVenue] = useLazyGetVenueQuery()
   const [getVenueCustomization] = useLazyGetVenueRadioCustomizationQuery()
-
-
-  //const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
 
   const getSupportBandwidth = (bandwidthOptions: SelectItemOption[],
     availableChannels: any, isSupport160Mhz = false) => {
@@ -196,13 +195,7 @@ export function RadioSettings () {
   }, [getAp, getApCapabilities, getApAvailableChannels])
 
   const updateFormData = (data: ApRadioCustomization) => {
-    setEditRadioContextData({ radioData: data })
     formRef?.current?.setFieldsValue(data)
-    setEditRadioContextData({
-      ...editRadioContextData,
-      radioData: formRef.current?.getFieldsValue(),
-      updateWifiRadio: handleUpdateRadioSettings
-    })
   }
 
   useEffect(() => {
@@ -249,10 +242,12 @@ export function RadioSettings () {
       setIsEnableLower5g(supportDual5G && lower5gEnabled)
       setIsEnableUpper5g(supportDual5G && upper5gEnabled)
 
-      updateFormData(apRadioData)
       setIsUseVenueSettings(apRadioData.useVenueSettings || false)
       setIsDual5gMode((supportDual5G && apRadioData.apRadioParamsDual5G?.enabled) || false)
       setCurrentRadioData(apRadioData)
+
+      setInitData(apRadioData)
+      setFormInitializing(false)
     }
   }, [apRadioSavedData])
 
@@ -284,80 +279,86 @@ export function RadioSettings () {
     }
   }
 
-  const handleUpdateRadioSettings =
-  async (formData: ApRadioCustomization) => {
+  const handleUpdateRadioSettings = async (formData: ApRadioCustomization) => {
+    try {
+      setEditContextData({
+        ...editContextData,
+        isDirty: false
+      })
 
-    const updateRadioParams = (radioParams: any, supportCh: any) => {
-      if (!radioParams) {
-        return
-      }
-
-      const { method, allowedChannels, channelBandwidth } = radioParams
-      if (method === 'MANUAL') {
-        const bandwidth = (channelBandwidth === 'AUTO') ? 'auto' : channelBandwidth
-        radioParams.manualChannel = (allowedChannels && parseInt(allowedChannels[0], 10)) || 0
-        radioParams.allowedChannels = supportCh[bandwidth]
-      } else {
-        radioParams.manualChannel = 0
-      }
-    }
-
-    if (isUseVenueSettings) {
-      deleteApRadio({ params: { tenantId, serialNumber } })
-    } else {
-      formData.useVenueSettings = false
-      const {
-        apRadioParams24G,
-        apRadioParams50G,
-        apRadioParams6G,
-        apRadioParamsDual5G
-      } = formData
-
-      const hasRadio5G = (!isSupportTriBandRadioAp || !isDual5gMode) && bandwidth5GOptions.length > 0
-      const hasRadioDual5G = (isSupportDual5GAp && isDual5gMode)
-      const hasRadio6G = (isSupportTriBandRadioAp && !isDual5gMode) && bandwidth6GOptions.length > 0
-
-      updateRadioParams(apRadioParams24G, support24GChannels)
-
-      if (hasRadio5G) {
-        updateRadioParams(apRadioParams50G, support5GChannels)
-      } else {
-        delete formData.apRadioParams50G
-      }
-
-      if (hasRadio6G) {
-        updateRadioParams(apRadioParams6G, support6GChannels)
-      } else {
-        delete formData.apRadioParams6G
-      }
-
-      if (hasRadioDual5G) {
-        const { radioParamsLower5G, radioParamsUpper5G } = apRadioParamsDual5G || {}
-        updateRadioParams(radioParamsLower5G, supportLower5GChannels)
-        updateRadioParams(radioParamsUpper5G, supportUpper5GChannels)
-      } else if (isSupportDual5GAp) {
-        if (!apRadioParamsDual5G) {
-          const radioDual5G = new ApRadioParamsDual5G()
-          radioDual5G.enabled = false
-          radioDual5G.radioParamsLower5G = undefined
-          radioDual5G.radioParamsUpper5G = undefined
-          formData.apRadioParamsDual5G = radioDual5G
+      const updateRadioParams = (radioParams: any, supportCh: any) => {
+        if (!radioParams) {
+          return
         }
-      } else {
-        delete formData.apRadioParamsDual5G
+
+        const { method, allowedChannels, channelBandwidth } = radioParams
+        if (method === 'MANUAL') {
+          const bandwidth = (channelBandwidth === 'AUTO') ? 'auto' : channelBandwidth
+          radioParams.manualChannel = (allowedChannels && parseInt(allowedChannels[0], 10)) || 0
+          radioParams.allowedChannels = supportCh[bandwidth]
+        } else {
+          radioParams.manualChannel = 0
+        }
       }
 
-      updateApRadio({
-        params: { tenantId, serialNumber },
-        payload: formData
+      if (isUseVenueSettings) {
+        await deleteApRadio({ params: { tenantId, serialNumber } }).unwrap()
+      } else {
+        formData.useVenueSettings = false
+        const {
+          apRadioParams24G,
+          apRadioParams50G,
+          apRadioParams6G,
+          apRadioParamsDual5G
+        } = formData
+
+        const hasRadio5G = (!isSupportTriBandRadioAp || !isDual5gMode) && bandwidth5GOptions.length > 0
+        const hasRadioDual5G = (isSupportDual5GAp && isDual5gMode)
+        const hasRadio6G = (isSupportTriBandRadioAp && !isDual5gMode) && bandwidth6GOptions.length > 0
+
+        updateRadioParams(apRadioParams24G, support24GChannels)
+
+        if (hasRadio5G) {
+          updateRadioParams(apRadioParams50G, support5GChannels)
+        } else {
+          delete formData.apRadioParams50G
+        }
+
+        if (hasRadio6G) {
+          updateRadioParams(apRadioParams6G, support6GChannels)
+        } else {
+          delete formData.apRadioParams6G
+        }
+
+        if (hasRadioDual5G) {
+          const { radioParamsLower5G, radioParamsUpper5G } = apRadioParamsDual5G || {}
+          updateRadioParams(radioParamsLower5G, supportLower5GChannels)
+          updateRadioParams(radioParamsUpper5G, supportUpper5GChannels)
+        } else if (isSupportDual5GAp) {
+          if (!apRadioParamsDual5G) {
+            const radioDual5G = new ApRadioParamsDual5G()
+            radioDual5G.enabled = false
+            radioDual5G.radioParamsLower5G = undefined
+            radioDual5G.radioParamsUpper5G = undefined
+            formData.apRadioParamsDual5G = radioDual5G
+          }
+        } else {
+          delete formData.apRadioParamsDual5G
+        }
+
+        await updateApRadio({
+          params: { tenantId, serialNumber },
+          payload: formData
+        }).unwrap()
+      }
+    } catch(error) {
+      // eslint-disable-next-line no-console
+      console.log(error)
+      showToast({
+        type: 'error',
+        content: $t({ defaultMessage: 'An error occurred' })
       })
     }
-
-    setEditContextData({
-      ...editContextData,
-      tabTitle: $t({ defaultMessage: 'Radio' }),
-      isDirty: false
-    })
   }
 
   const handleTriBandTypeRadioChange = (e: RadioChangeEvent) => {
@@ -438,60 +439,69 @@ export function RadioSettings () {
       }
     }
 
-    setEditContextData({
+    updateEditContext(formRef?.current as StepsFormInstance, true)
+  }
+
+  const updateEditContext = (form: StepsFormInstance, isDirty: boolean) => {
+    setEditContextData && setEditContextData({
       ...editContextData,
       tabTitle: $t({ defaultMessage: 'Radio' }),
-      isDirty: true
+      isDirty: isDirty,
+      updateChanges: () => handleUpdateRadioSettings(form?.getFieldsValue() as ApRadioCustomization),
+      discardChanges: () => handleDiscard()
     })
   }
 
-  const handleChange = () => {
-    setEditContextData({
-      ...editContextData,
-      tabTitle: $t({ defaultMessage: 'Radio' }),
-      isDirty: true
-    })
-    setEditRadioContextData({
-      ...editRadioContextData,
-      radioData: formRef.current?.getFieldsValue(),
-      updateWifiRadio: handleUpdateRadioSettings
-    })
+  const handleDiscard = () => {
+    setIsUseVenueSettings(initData.useVenueSettings || false)
+    formRef?.current?.setFieldsValue(initData)
+  }
+
+  const handleChange = async () => {
+    updateEditContext(formRef?.current as StepsFormInstance, true)
   }
 
   return (
-    <Loader states={[
-      { isLoading: isLoadingApRadioData, isFetching: isUpdatingApRadio || isDeletingApRadio }]}>
+    <Loader states={[{
+      isLoading: formInitializing,
+      isFetching: isUpdatingApRadio || isDeletingApRadio
+    }]}>
       <StepsForm
         formRef={formRef}
         onFormChange={handleChange}
         onFinish={handleUpdateRadioSettings}
         onCancel={() => navigate({
           ...basePath,
-          pathname: `${basePath.pathname}/wifi`
+          pathname: `${basePath.pathname}/wifi/${serialNumber}/details/overview`
         })}
         buttonLabel={{
           submit: $t({ defaultMessage: 'Apply Radio' })
         }}
       >
-        <StepsForm.StepForm data-testid='radio-settings'>
+        <StepsForm.StepForm data-testid='radio-settings' initialValues={initData}>
           <Row gutter={20}>
             <Col span={12}>
-              { isUseVenueSettings ?
-                <FormattedMessage
-                  defaultMessage={`<p>
-                  Currently using radio settings of the venue (<venuelink></venuelink>)
-                </p>`}
-                  values={{
-                    venuelink: () =>
-                      <TenantLink
-                        to={`venues/${venue.id}/venue-details/overview`}>{venue?.name}
-                      </TenantLink>,
-                    p: (contents) => <p>{contents}</p>
-                  }}
-                />
-                :
-                <span>{$t({ defaultMessage: 'Custom radio settings' })}</span>
-              }
+              <Space style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                fontSize: '14px',
+                paddingBottom: '20px' }}
+              >
+                { isUseVenueSettings ?
+                  <FormattedMessage
+                    defaultMessage={`
+                    Currently using radio settings of the venue (<venuelink></venuelink>)
+                   `}
+                    values={{
+                      venuelink: () =>
+                        <TenantLink
+                          to={`venues/${venue.id}/venue-details/overview`}>{venue?.name}
+                        </TenantLink>
+                    }}
+                  />
+                  :$t({ defaultMessage: 'Custom radio settings' })
+                }
+              </Space>
             </Col>
             <Col span={8}>
               <Button type='link' onClick={handleVenueSetting}>
@@ -558,7 +568,6 @@ export function RadioSettings () {
               label={$t({ defaultMessage: 'Enable 2.4 GHz band:' })}
               valuePropName='checked'
               style={{ marginTop: '16px' }}
-              initialValue={true}
               children={isUseVenueSettings ?
                 <span>{$t({ defaultMessage: 'On' })}</span>
                 :<Switch onChange={(checked)=>onEnableChanged(checked, 'enable24G')} />
@@ -584,7 +593,6 @@ export function RadioSettings () {
               label={$t({ defaultMessage: 'Enable 5 GHz band:' })}
               valuePropName='checked'
               style={{ marginTop: '16px' }}
-              initialValue={true}
               children={isUseVenueSettings ?
                 <span>{$t({ defaultMessage: 'On' })}</span>
                 :<Switch onChange={(checked)=>onEnableChanged(checked, 'enable5G')} />
@@ -611,7 +619,6 @@ export function RadioSettings () {
               label={$t({ defaultMessage: 'Enable 6 GHz band:' })}
               valuePropName='checked'
               style={{ marginTop: '16px' }}
-              initialValue={true}
               children={isUseVenueSettings ?
                 <span>{$t({ defaultMessage: 'On' })}</span>
                 :<Switch onChange={(checked)=>onEnableChanged(checked, 'enable6G')} />
@@ -639,7 +646,6 @@ export function RadioSettings () {
                   label={$t({ defaultMessage: 'Enable Lower 5 GHz band:' })}
                   valuePropName='checked'
                   style={{ marginTop: '16px' }}
-                  initialValue={true}
                   children={isUseVenueSettings ?
                     <span>{$t({ defaultMessage: 'On' })}</span>
                     :<Switch onChange={(checked)=>onEnableChanged(checked, 'enableLower5G')} />
@@ -666,7 +672,6 @@ export function RadioSettings () {
                   label={$t({ defaultMessage: 'Enable Upper 5 GHz band:' })}
                   valuePropName='checked'
                   style={{ marginTop: '16px' }}
-                  initialValue={true}
                   children={isUseVenueSettings ?
                     <span>{$t({ defaultMessage: 'On' })}</span>
                     :<Switch onChange={(checked)=>onEnableChanged(checked, 'enableUpper5G')} />

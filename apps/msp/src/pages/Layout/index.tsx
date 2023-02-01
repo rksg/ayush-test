@@ -1,4 +1,3 @@
-import React from 'react'
 
 import { Menu }    from 'antd'
 import { useIntl } from 'react-intl'
@@ -15,6 +14,7 @@ import {
   NotificationSolid,
   QuestionMarkCircleSolid
 } from '@acx-ui/icons'
+import { CloudMessageBanner } from '@acx-ui/rc/components'
 import { Outlet, TenantLink } from '@acx-ui/react-router-dom'
 
 import { useMenuConfig } from './menuConfig'
@@ -33,7 +33,12 @@ function Layout () {
   return (
     <LayoutComponent
       menuConfig={useMenuConfig()}
-      content={<Outlet />}
+      content={
+        <>
+          <CloudMessageBanner />
+          <Outlet />
+        </>
+      }
       leftHeaderContent={
         <Dropdown overlay={regionMenu}>{(selectedKeys) =>
           <LayoutUI.DropdownText>

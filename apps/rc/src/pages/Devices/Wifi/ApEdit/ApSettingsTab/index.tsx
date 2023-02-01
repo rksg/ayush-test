@@ -2,15 +2,17 @@ import { useContext } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Tabs, Tooltip }                         from '@acx-ui/components'
-import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { notAvailableMsg }                       from '@acx-ui/utils'
+import { Tabs, Tooltip }                          from '@acx-ui/components'
+import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }             from '@acx-ui/icons'
+import { useNavigate, useParams, useTenantLink }  from '@acx-ui/react-router-dom'
+import { directedMulticastInfo, notAvailableMsg } from '@acx-ui/utils'
 
 import { ApEditContext } from '../index'
 
-import { LanPorts }      from './LanPorts'
-import { RadioSettings } from './RadioTab/RadioSettings'
+import { DirectedMulticast } from './DirectedMulticast'
+import { LanPorts }          from './LanPorts'
+import { RadioSettings }     from './RadioTab/RadioSettings'
 
 const { TabPane } = Tabs
 
@@ -21,6 +23,7 @@ export function ApSettingsTab () {
   const basePath = useTenantLink(`/devices/wifi/${params.serialNumber}/edit/settings/`)
   const { editContextData, setEditContextData } = useContext(ApEditContext)
   const releaseTag = useIsSplitOn(Features.DEVICES)
+  const supportDirectedMulticast = useIsSplitOn(Features.DIRECTED_MULTICAST)
 
   const onTabChange = (tab: string) => {
     setEditContextData && setEditContextData({
@@ -69,12 +72,18 @@ export function ApSettingsTab () {
         key='proxy'>
         {$t({ defaultMessage: 'mDNS Proxy' })}
       </TabPane>
-      <TabPane disabled={!releaseTag}
-        tab={<Tooltip title={$t(notAvailableMsg)}>
-          {tabTitleMap('multicast')}</Tooltip>}
+      {supportDirectedMulticast &&
+        <TabPane tab={<>
+          {tabTitleMap('multicast')}
+          <Tooltip title={$t(directedMulticastInfo)} placement='right'>
+            <QuestionMarkCircleOutlined
+              style={{ marginLeft: '8px', marginBottom: '-3px', height: '16px', width: '16px' }}/>
+          </Tooltip>
+        </>}
         key='multicast'>
-        {$t({ defaultMessage: 'Directed Multicast' })}
-      </TabPane>
+          <DirectedMulticast />
+        </TabPane>
+      }
     </Tabs>
   )
 }

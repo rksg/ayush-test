@@ -1,15 +1,11 @@
 /* eslint-disable max-len */
 import {
-  EdgeStatusEnum,
-  ApVenueStatusEnum,
-  EdgeStatus,
-  EdgePort,
-  EdgePortTypeEnum
+  ApVenueStatusEnum, EdgePortStatus, EdgePortTypeEnum, EdgeStatus, EdgeStatusEnum
 } from '@acx-ui/rc/utils'
-import { Provider  } from '@acx-ui/store'
-import { render }    from '@acx-ui/test-utils'
+import { Provider } from '@acx-ui/store'
+import { render }   from '@acx-ui/test-utils'
 
-import { EdgePortsByTrafficWidget, EdgeTrafficByVolumeWidget, EdgeResourceUtilizationWidget } from '.'
+import { EdgePortsByTrafficWidget, EdgeResourceUtilizationWidget, EdgeTrafficByVolumeWidget } from '.'
 
 const tenantID = 'ecc2d7cf9d2342fdb31ae0e24958fcac'
 const currentEdge:EdgeStatus = {
@@ -31,27 +27,29 @@ const currentEdge:EdgeStatus = {
   diskTotal: 250 * Math.pow(1024, 3),
   diskUsed: 162 * Math.pow(1024, 3)
 }
-const edgePortsSetting:EdgePort[] = [{
+const edgePortsSetting:EdgePortStatus[] = [{
   portId: '1',
-  portName: 'Port 1',
+  name: 'Port 1',
   status: 'Up',
   adminStatus: 'Enabled',
-  portType: EdgePortTypeEnum.WAN,
+  type: EdgePortTypeEnum.WAN,
   mac: 'AA:BB:CC:DD:EE:FF',
-  speed: 12* Math.pow(12, 6),
-  duplexSpeed: 100* Math.pow(12, 6),
-  ip: '1.1.1.1'
+  speedKbps: 12* Math.pow(12, 6),
+  duplex: 'Full',
+  ip: '1.1.1.1',
+  sortIdx: 1
 },
 {
   portId: '2',
-  portName: 'Port 2',
+  name: 'Port 2',
   status: 'Down',
   adminStatus: 'Disabled',
-  portType: EdgePortTypeEnum.LAN,
+  type: EdgePortTypeEnum.LAN,
   mac: 'AA:BB:CC:DD:EE:FF',
-  speed: 10* Math.pow(12, 6),
-  duplexSpeed: 100* Math.pow(12, 6),
-  ip: '1.1.1.2'
+  speedKbps: 10* Math.pow(12, 6),
+  duplex: 'Helf',
+  ip: '1.1.1.2',
+  sortIdx: 2
 }]
 
 const mockedUsedNavigate = jest.fn()

@@ -425,17 +425,6 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render corr
           >
             <div
               class="Grid__Container-sc-5irhjd-1 zzbxI"
-              style="height: 292px; background: rgb(247, 247, 247);"
-            >
-              TODO: Top 10 Applications by traffic volume
-            </div>
-          </div>
-          <div
-            class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
-            style="padding: 10px 10px 10px 10px;"
-          >
-            <div
-              class="Grid__Container-sc-5irhjd-1 zzbxI"
               style="height: 292px;"
             >
               <div
@@ -525,7 +514,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render corr
                       Client Details
                     </h4>
                     <div
-                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 hdKHLX"
+                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
                     >
                       <div
                         class="ant-descriptions-view"
@@ -714,7 +703,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render corr
                       Last Session
                     </h4>
                     <div
-                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 hdKHLX"
+                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
                     >
                       <div
                         class="ant-descriptions-view"
@@ -900,7 +889,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render corr
                       WiFi Calling Details
                     </h4>
                     <div
-                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 hdKHLX"
+                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
                     >
                       <div
                         class="ant-descriptions-view"
@@ -1463,17 +1452,6 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
           >
             <div
               class="Grid__Container-sc-5irhjd-1 zzbxI"
-              style="height: 292px; background: rgb(247, 247, 247);"
-            >
-              TODO: Top 10 Applications by traffic volume
-            </div>
-          </div>
-          <div
-            class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
-            style="padding: 10px 10px 10px 10px;"
-          >
-            <div
-              class="Grid__Container-sc-5irhjd-1 zzbxI"
               style="height: 292px;"
             >
               <div
@@ -1563,7 +1541,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                       Client Details
                     </h4>
                     <div
-                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 hdKHLX"
+                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
                     >
                       <div
                         class="ant-descriptions-view"
@@ -1752,7 +1730,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                       Last Session
                     </h4>
                     <div
-                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 hdKHLX"
+                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
                     >
                       <div
                         class="ant-descriptions-view"
@@ -1939,7 +1917,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                       DPSK Passphrase Details
                     </h4>
                     <div
-                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 hdKHLX"
+                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
                     >
                       <div
                         class="ant-descriptions-view"
@@ -2111,7 +2089,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                       WiFi Calling Details
                     </h4>
                     <div
-                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 hdKHLX"
+                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
                     >
                       <div
                         class="ant-descriptions-view"
@@ -2674,17 +2652,6 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
           >
             <div
               class="Grid__Container-sc-5irhjd-1 zzbxI"
-              style="height: 292px; background: rgb(247, 247, 247);"
-            >
-              TODO: Top 10 Applications by traffic volume
-            </div>
-          </div>
-          <div
-            class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
-            style="padding: 10px 10px 10px 10px;"
-          >
-            <div
-              class="Grid__Container-sc-5irhjd-1 zzbxI"
               style="height: 292px;"
             >
               <div
@@ -2774,7 +2741,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                       Client Details
                     </h4>
                     <div
-                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 hdKHLX"
+                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
                     >
                       <div
                         class="ant-descriptions-view"
@@ -2963,7 +2930,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                       Last Session
                     </h4>
                     <div
-                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 hdKHLX"
+                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
                     >
                       <div
                         class="ant-descriptions-view"
@@ -3150,7 +3117,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                       Guest Details
                     </h4>
                     <div
-                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 hdKHLX"
+                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
                     >
                       <div
                         class="ant-descriptions-view"
@@ -3368,7 +3335,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                       WiFi Calling Details
                     </h4>
                     <div
-                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 hdKHLX"
+                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
                     >
                       <div
                         class="ant-descriptions-view"
@@ -3931,17 +3898,6 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
           >
             <div
               class="Grid__Container-sc-5irhjd-1 zzbxI"
-              style="height: 292px; background: rgb(247, 247, 247);"
-            >
-              TODO: Top 10 Applications by traffic volume
-            </div>
-          </div>
-          <div
-            class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
-            style="padding: 10px 10px 10px 10px;"
-          >
-            <div
-              class="Grid__Container-sc-5irhjd-1 zzbxI"
               style="height: 292px;"
             >
               <div
@@ -4031,7 +3987,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                       Client Details
                     </h4>
                     <div
-                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 hdKHLX"
+                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
                     >
                       <div
                         class="ant-descriptions-view"
@@ -4220,7 +4176,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                       Last Session
                     </h4>
                     <div
-                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 hdKHLX"
+                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
                     >
                       <div
                         class="ant-descriptions-view"
@@ -4406,7 +4362,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                       WiFi Calling Details
                     </h4>
                     <div
-                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 hdKHLX"
+                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
                     >
                       <div
                         class="ant-descriptions-view"
@@ -4969,17 +4925,6 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
           >
             <div
               class="Grid__Container-sc-5irhjd-1 zzbxI"
-              style="height: 292px; background: rgb(247, 247, 247);"
-            >
-              TODO: Top 10 Applications by traffic volume
-            </div>
-          </div>
-          <div
-            class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
-            style="padding: 10px 10px 10px 10px;"
-          >
-            <div
-              class="Grid__Container-sc-5irhjd-1 zzbxI"
               style="height: 292px;"
             >
               <div
@@ -5069,7 +5014,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                       Client Details
                     </h4>
                     <div
-                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 hdKHLX"
+                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
                     >
                       <div
                         class="ant-descriptions-view"
@@ -5258,7 +5203,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                       Last Session
                     </h4>
                     <div
-                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 hdKHLX"
+                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
                     >
                       <div
                         class="ant-descriptions-view"
@@ -5432,7 +5377,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                       WiFi Calling Details
                     </h4>
                     <div
-                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 hdKHLX"
+                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
                     >
                       <div
                         class="ant-descriptions-view"
@@ -5995,17 +5940,6 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client c
           >
             <div
               class="Grid__Container-sc-5irhjd-1 zzbxI"
-              style="height: 292px; background: rgb(247, 247, 247);"
-            >
-              TODO: Top 10 Applications by traffic volume
-            </div>
-          </div>
-          <div
-            class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
-            style="padding: 10px 10px 10px 10px;"
-          >
-            <div
-              class="Grid__Container-sc-5irhjd-1 zzbxI"
               style="height: 292px;"
             >
               <div
@@ -6095,7 +6029,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client c
                       Client Details
                     </h4>
                     <div
-                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 hdKHLX"
+                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
                     >
                       <div
                         class="ant-descriptions-view"
@@ -6281,203 +6215,10 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client c
                     <h4
                       class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
                     >
-                      Connection
-                    </h4>
-                    <div
-                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 hdKHLX"
-                    >
-                      <div
-                        class="ant-descriptions-view"
-                      >
-                        <table>
-                          <tbody>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    <span>
-                                      AP
-                                    </span>
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    <a
-                                      href="/t/tenant-id/devices/aps/422039000230/details/overview"
-                                    >
-                                      UI team ONLY
-                                    </a>
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    Venue
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    <a
-                                      href="/t/tenant-id/venues/87c982325ef148a2b7cefe652384d3ca/venue-details/overview"
-                                    >
-                                      UI-TEST-VENUE
-                                    </a>
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    Wireless Network
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    <a
-                                      href="/t/tenant-id/networks/423c3673e74f44e69c0f3b35cd579ecc/network-details/overview"
-                                    >
-                                      NMS-app6-WLAN-QA
-                                    </a>
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    <span>
-                                      SSID
-                                    </span>
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    NMS-app6-WLAN-QA
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    <span>
-                                      VLAN ID
-                                    </span>
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    1
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    <span>
-                                      BSSID
-                                    </span>
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    28:b3:71:a8:78:51
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    class="ant-space-item"
-                  >
-                    <div
-                      class="ant-divider ant-divider-horizontal"
-                      role="separator"
-                    />
-                  </div>
-                </div>
-                <div
-                  class="ant-space ant-space-horizontal ant-space-align-center"
-                  style="display: block;"
-                >
-                  <div
-                    class="ant-space-item"
-                    style="margin-right: 8px;"
-                  >
-                    <h4
-                      class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
-                    >
                       Operational Data (Current)
                     </h4>
                     <div
-                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 hdKHLX"
+                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
                     >
                       <div
                         class="ant-descriptions-view"
@@ -6753,6 +6494,199 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client c
                 >
                   <div
                     class="ant-space-item"
+                    style="margin-right: 8px;"
+                  >
+                    <h4
+                      class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+                    >
+                      Connection
+                    </h4>
+                    <div
+                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
+                    >
+                      <div
+                        class="ant-descriptions-view"
+                      >
+                        <table>
+                          <tbody>
+                            <tr
+                              class="ant-descriptions-row"
+                            >
+                              <td
+                                class="ant-descriptions-item"
+                                colspan="1"
+                              >
+                                <div
+                                  class="ant-descriptions-item-container"
+                                >
+                                  <span
+                                    class="ant-descriptions-item-label"
+                                  >
+                                    <span>
+                                      AP
+                                    </span>
+                                  </span>
+                                  <span
+                                    class="ant-descriptions-item-content"
+                                  >
+                                    <a
+                                      href="/t/tenant-id/devices/wifi/422039000230/details/overview"
+                                    >
+                                      UI team ONLY
+                                    </a>
+                                  </span>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr
+                              class="ant-descriptions-row"
+                            >
+                              <td
+                                class="ant-descriptions-item"
+                                colspan="1"
+                              >
+                                <div
+                                  class="ant-descriptions-item-container"
+                                >
+                                  <span
+                                    class="ant-descriptions-item-label"
+                                  >
+                                    Venue
+                                  </span>
+                                  <span
+                                    class="ant-descriptions-item-content"
+                                  >
+                                    <a
+                                      href="/t/tenant-id/venues/87c982325ef148a2b7cefe652384d3ca/venue-details/overview"
+                                    >
+                                      UI-TEST-VENUE
+                                    </a>
+                                  </span>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr
+                              class="ant-descriptions-row"
+                            >
+                              <td
+                                class="ant-descriptions-item"
+                                colspan="1"
+                              >
+                                <div
+                                  class="ant-descriptions-item-container"
+                                >
+                                  <span
+                                    class="ant-descriptions-item-label"
+                                  >
+                                    Wireless Network
+                                  </span>
+                                  <span
+                                    class="ant-descriptions-item-content"
+                                  >
+                                    <a
+                                      href="/t/tenant-id/networks/423c3673e74f44e69c0f3b35cd579ecc/network-details/overview"
+                                    >
+                                      NMS-app6-WLAN-QA
+                                    </a>
+                                  </span>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr
+                              class="ant-descriptions-row"
+                            >
+                              <td
+                                class="ant-descriptions-item"
+                                colspan="1"
+                              >
+                                <div
+                                  class="ant-descriptions-item-container"
+                                >
+                                  <span
+                                    class="ant-descriptions-item-label"
+                                  >
+                                    <span>
+                                      SSID
+                                    </span>
+                                  </span>
+                                  <span
+                                    class="ant-descriptions-item-content"
+                                  >
+                                    NMS-app6-WLAN-QA
+                                  </span>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr
+                              class="ant-descriptions-row"
+                            >
+                              <td
+                                class="ant-descriptions-item"
+                                colspan="1"
+                              >
+                                <div
+                                  class="ant-descriptions-item-container"
+                                >
+                                  <span
+                                    class="ant-descriptions-item-label"
+                                  >
+                                    <span>
+                                      VLAN ID
+                                    </span>
+                                  </span>
+                                  <span
+                                    class="ant-descriptions-item-content"
+                                  >
+                                    1
+                                  </span>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr
+                              class="ant-descriptions-row"
+                            >
+                              <td
+                                class="ant-descriptions-item"
+                                colspan="1"
+                              >
+                                <div
+                                  class="ant-descriptions-item-container"
+                                >
+                                  <span
+                                    class="ant-descriptions-item-label"
+                                  >
+                                    <span>
+                                      BSSID
+                                    </span>
+                                  </span>
+                                  <span
+                                    class="ant-descriptions-item-content"
+                                  >
+                                    28:b3:71:a8:78:51
+                                  </span>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-space-item"
+                  >
+                    <div
+                      class="ant-divider ant-divider-horizontal"
+                      role="separator"
+                    />
+                  </div>
+                </div>
+                <div
+                  class="ant-space ant-space-horizontal ant-space-align-center"
+                  style="display: block;"
+                >
+                  <div
+                    class="ant-space-item"
                   >
                     <h4
                       class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
@@ -6760,7 +6694,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client c
                       WiFi Calling Details
                     </h4>
                     <div
-                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 hdKHLX"
+                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
                     >
                       <div
                         class="ant-descriptions-view"
@@ -7323,17 +7257,6 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client w
           >
             <div
               class="Grid__Container-sc-5irhjd-1 zzbxI"
-              style="height: 292px; background: rgb(247, 247, 247);"
-            >
-              TODO: Top 10 Applications by traffic volume
-            </div>
-          </div>
-          <div
-            class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
-            style="padding: 10px 10px 10px 10px;"
-          >
-            <div
-              class="Grid__Container-sc-5irhjd-1 zzbxI"
               style="height: 292px;"
             >
               <div
@@ -7423,7 +7346,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client w
                       Client Details
                     </h4>
                     <div
-                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 hdKHLX"
+                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
                     >
                       <div
                         class="ant-descriptions-view"
@@ -7603,191 +7526,10 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client w
                     <h4
                       class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
                     >
-                      Connection
-                    </h4>
-                    <div
-                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 hdKHLX"
-                    >
-                      <div
-                        class="ant-descriptions-view"
-                      >
-                        <table>
-                          <tbody>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    <span>
-                                      AP
-                                    </span>
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    UI team ONLY
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    Venue
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    UI-TEST-VENUE
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    Wireless Network
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    --
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    <span>
-                                      SSID
-                                    </span>
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    NMS-app6-WLAN-QA
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    <span>
-                                      VLAN ID
-                                    </span>
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    1
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    <span>
-                                      BSSID
-                                    </span>
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    28:b3:71:a8:78:51
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    class="ant-space-item"
-                  >
-                    <div
-                      class="ant-divider ant-divider-horizontal"
-                      role="separator"
-                    />
-                  </div>
-                </div>
-                <div
-                  class="ant-space ant-space-horizontal ant-space-align-center"
-                  style="display: block;"
-                >
-                  <div
-                    class="ant-space-item"
-                    style="margin-right: 8px;"
-                  >
-                    <h4
-                      class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
-                    >
                       Operational Data (Current)
                     </h4>
                     <div
-                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 hdKHLX"
+                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
                     >
                       <div
                         class="ant-descriptions-view"
@@ -8063,6 +7805,187 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client w
                 >
                   <div
                     class="ant-space-item"
+                    style="margin-right: 8px;"
+                  >
+                    <h4
+                      class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+                    >
+                      Connection
+                    </h4>
+                    <div
+                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
+                    >
+                      <div
+                        class="ant-descriptions-view"
+                      >
+                        <table>
+                          <tbody>
+                            <tr
+                              class="ant-descriptions-row"
+                            >
+                              <td
+                                class="ant-descriptions-item"
+                                colspan="1"
+                              >
+                                <div
+                                  class="ant-descriptions-item-container"
+                                >
+                                  <span
+                                    class="ant-descriptions-item-label"
+                                  >
+                                    <span>
+                                      AP
+                                    </span>
+                                  </span>
+                                  <span
+                                    class="ant-descriptions-item-content"
+                                  >
+                                    UI team ONLY
+                                  </span>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr
+                              class="ant-descriptions-row"
+                            >
+                              <td
+                                class="ant-descriptions-item"
+                                colspan="1"
+                              >
+                                <div
+                                  class="ant-descriptions-item-container"
+                                >
+                                  <span
+                                    class="ant-descriptions-item-label"
+                                  >
+                                    Venue
+                                  </span>
+                                  <span
+                                    class="ant-descriptions-item-content"
+                                  >
+                                    UI-TEST-VENUE
+                                  </span>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr
+                              class="ant-descriptions-row"
+                            >
+                              <td
+                                class="ant-descriptions-item"
+                                colspan="1"
+                              >
+                                <div
+                                  class="ant-descriptions-item-container"
+                                >
+                                  <span
+                                    class="ant-descriptions-item-label"
+                                  >
+                                    Wireless Network
+                                  </span>
+                                  <span
+                                    class="ant-descriptions-item-content"
+                                  >
+                                    --
+                                  </span>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr
+                              class="ant-descriptions-row"
+                            >
+                              <td
+                                class="ant-descriptions-item"
+                                colspan="1"
+                              >
+                                <div
+                                  class="ant-descriptions-item-container"
+                                >
+                                  <span
+                                    class="ant-descriptions-item-label"
+                                  >
+                                    <span>
+                                      SSID
+                                    </span>
+                                  </span>
+                                  <span
+                                    class="ant-descriptions-item-content"
+                                  >
+                                    NMS-app6-WLAN-QA
+                                  </span>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr
+                              class="ant-descriptions-row"
+                            >
+                              <td
+                                class="ant-descriptions-item"
+                                colspan="1"
+                              >
+                                <div
+                                  class="ant-descriptions-item-container"
+                                >
+                                  <span
+                                    class="ant-descriptions-item-label"
+                                  >
+                                    <span>
+                                      VLAN ID
+                                    </span>
+                                  </span>
+                                  <span
+                                    class="ant-descriptions-item-content"
+                                  >
+                                    1
+                                  </span>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr
+                              class="ant-descriptions-row"
+                            >
+                              <td
+                                class="ant-descriptions-item"
+                                colspan="1"
+                              >
+                                <div
+                                  class="ant-descriptions-item-container"
+                                >
+                                  <span
+                                    class="ant-descriptions-item-label"
+                                  >
+                                    <span>
+                                      BSSID
+                                    </span>
+                                  </span>
+                                  <span
+                                    class="ant-descriptions-item-content"
+                                  >
+                                    28:b3:71:a8:78:51
+                                  </span>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-space-item"
+                  >
+                    <div
+                      class="ant-divider ant-divider-horizontal"
+                      role="separator"
+                    />
+                  </div>
+                </div>
+                <div
+                  class="ant-space ant-space-horizontal ant-space-align-center"
+                  style="display: block;"
+                >
+                  <div
+                    class="ant-space-item"
                   >
                     <h4
                       class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
@@ -8070,7 +7993,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client w
                       WiFi Calling Details
                     </h4>
                     <div
-                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 hdKHLX"
+                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
                     >
                       <div
                         class="ant-descriptions-view"
@@ -8633,17 +8556,6 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render dpsk cli
           >
             <div
               class="Grid__Container-sc-5irhjd-1 zzbxI"
-              style="height: 292px; background: rgb(247, 247, 247);"
-            >
-              TODO: Top 10 Applications by traffic volume
-            </div>
-          </div>
-          <div
-            class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
-            style="padding: 10px 10px 10px 10px;"
-          >
-            <div
-              class="Grid__Container-sc-5irhjd-1 zzbxI"
               style="height: 292px;"
             >
               <div
@@ -8733,7 +8645,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render dpsk cli
                       Client Details
                     </h4>
                     <div
-                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 hdKHLX"
+                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
                     >
                       <div
                         class="ant-descriptions-view"
@@ -8919,203 +8831,10 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render dpsk cli
                     <h4
                       class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
                     >
-                      Connection
-                    </h4>
-                    <div
-                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 hdKHLX"
-                    >
-                      <div
-                        class="ant-descriptions-view"
-                      >
-                        <table>
-                          <tbody>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    <span>
-                                      AP
-                                    </span>
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    <a
-                                      href="/t/tenant-id/devices/aps/422039000230/details/overview"
-                                    >
-                                      UI team ONLY
-                                    </a>
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    Venue
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    <a
-                                      href="/t/tenant-id/venues/87c982325ef148a2b7cefe652384d3ca/venue-details/overview"
-                                    >
-                                      UI-TEST-VENUE
-                                    </a>
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    Wireless Network
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    <a
-                                      href="/t/tenant-id/networks/423c3673e74f44e69c0f3b35cd579ecc/network-details/overview"
-                                    >
-                                      NMS-app6-WLAN-QA
-                                    </a>
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    <span>
-                                      SSID
-                                    </span>
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    NMS-app6-WLAN-QA
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    <span>
-                                      VLAN ID
-                                    </span>
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    1
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    <span>
-                                      BSSID
-                                    </span>
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    28:b3:71:a8:78:51
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    class="ant-space-item"
-                  >
-                    <div
-                      class="ant-divider ant-divider-horizontal"
-                      role="separator"
-                    />
-                  </div>
-                </div>
-                <div
-                  class="ant-space ant-space-horizontal ant-space-align-center"
-                  style="display: block;"
-                >
-                  <div
-                    class="ant-space-item"
-                    style="margin-right: 8px;"
-                  >
-                    <h4
-                      class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
-                    >
                       Operational Data (Current)
                     </h4>
                     <div
-                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 hdKHLX"
+                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
                     >
                       <div
                         class="ant-descriptions-view"
@@ -9395,10 +9114,203 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render dpsk cli
                     <h4
                       class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
                     >
+                      Connection
+                    </h4>
+                    <div
+                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
+                    >
+                      <div
+                        class="ant-descriptions-view"
+                      >
+                        <table>
+                          <tbody>
+                            <tr
+                              class="ant-descriptions-row"
+                            >
+                              <td
+                                class="ant-descriptions-item"
+                                colspan="1"
+                              >
+                                <div
+                                  class="ant-descriptions-item-container"
+                                >
+                                  <span
+                                    class="ant-descriptions-item-label"
+                                  >
+                                    <span>
+                                      AP
+                                    </span>
+                                  </span>
+                                  <span
+                                    class="ant-descriptions-item-content"
+                                  >
+                                    <a
+                                      href="/t/tenant-id/devices/wifi/422039000230/details/overview"
+                                    >
+                                      UI team ONLY
+                                    </a>
+                                  </span>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr
+                              class="ant-descriptions-row"
+                            >
+                              <td
+                                class="ant-descriptions-item"
+                                colspan="1"
+                              >
+                                <div
+                                  class="ant-descriptions-item-container"
+                                >
+                                  <span
+                                    class="ant-descriptions-item-label"
+                                  >
+                                    Venue
+                                  </span>
+                                  <span
+                                    class="ant-descriptions-item-content"
+                                  >
+                                    <a
+                                      href="/t/tenant-id/venues/87c982325ef148a2b7cefe652384d3ca/venue-details/overview"
+                                    >
+                                      UI-TEST-VENUE
+                                    </a>
+                                  </span>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr
+                              class="ant-descriptions-row"
+                            >
+                              <td
+                                class="ant-descriptions-item"
+                                colspan="1"
+                              >
+                                <div
+                                  class="ant-descriptions-item-container"
+                                >
+                                  <span
+                                    class="ant-descriptions-item-label"
+                                  >
+                                    Wireless Network
+                                  </span>
+                                  <span
+                                    class="ant-descriptions-item-content"
+                                  >
+                                    <a
+                                      href="/t/tenant-id/networks/423c3673e74f44e69c0f3b35cd579ecc/network-details/overview"
+                                    >
+                                      NMS-app6-WLAN-QA
+                                    </a>
+                                  </span>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr
+                              class="ant-descriptions-row"
+                            >
+                              <td
+                                class="ant-descriptions-item"
+                                colspan="1"
+                              >
+                                <div
+                                  class="ant-descriptions-item-container"
+                                >
+                                  <span
+                                    class="ant-descriptions-item-label"
+                                  >
+                                    <span>
+                                      SSID
+                                    </span>
+                                  </span>
+                                  <span
+                                    class="ant-descriptions-item-content"
+                                  >
+                                    NMS-app6-WLAN-QA
+                                  </span>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr
+                              class="ant-descriptions-row"
+                            >
+                              <td
+                                class="ant-descriptions-item"
+                                colspan="1"
+                              >
+                                <div
+                                  class="ant-descriptions-item-container"
+                                >
+                                  <span
+                                    class="ant-descriptions-item-label"
+                                  >
+                                    <span>
+                                      VLAN ID
+                                    </span>
+                                  </span>
+                                  <span
+                                    class="ant-descriptions-item-content"
+                                  >
+                                    1
+                                  </span>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr
+                              class="ant-descriptions-row"
+                            >
+                              <td
+                                class="ant-descriptions-item"
+                                colspan="1"
+                              >
+                                <div
+                                  class="ant-descriptions-item-container"
+                                >
+                                  <span
+                                    class="ant-descriptions-item-label"
+                                  >
+                                    <span>
+                                      BSSID
+                                    </span>
+                                  </span>
+                                  <span
+                                    class="ant-descriptions-item-content"
+                                  >
+                                    28:b3:71:a8:78:51
+                                  </span>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-space-item"
+                  >
+                    <div
+                      class="ant-divider ant-divider-horizontal"
+                      role="separator"
+                    />
+                  </div>
+                </div>
+                <div
+                  class="ant-space ant-space-horizontal ant-space-align-center"
+                  style="display: block;"
+                >
+                  <div
+                    class="ant-space-item"
+                    style="margin-right: 8px;"
+                  >
+                    <h4
+                      class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+                    >
                       DPSK Passphrase Details
                     </h4>
                     <div
-                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 hdKHLX"
+                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
                     >
                       <div
                         class="ant-descriptions-view"
@@ -9570,7 +9482,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render dpsk cli
                       WiFi Calling Details
                     </h4>
                     <div
-                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 hdKHLX"
+                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
                     >
                       <div
                         class="ant-descriptions-view"
@@ -10133,17 +10045,6 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
           >
             <div
               class="Grid__Container-sc-5irhjd-1 zzbxI"
-              style="height: 292px; background: rgb(247, 247, 247);"
-            >
-              TODO: Top 10 Applications by traffic volume
-            </div>
-          </div>
-          <div
-            class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
-            style="padding: 10px 10px 10px 10px;"
-          >
-            <div
-              class="Grid__Container-sc-5irhjd-1 zzbxI"
               style="height: 292px;"
             >
               <div
@@ -10233,7 +10134,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                       Client Details
                     </h4>
                     <div
-                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 hdKHLX"
+                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
                     >
                       <div
                         class="ant-descriptions-view"
@@ -10419,203 +10320,10 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                     <h4
                       class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
                     >
-                      Connection
-                    </h4>
-                    <div
-                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 hdKHLX"
-                    >
-                      <div
-                        class="ant-descriptions-view"
-                      >
-                        <table>
-                          <tbody>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    <span>
-                                      AP
-                                    </span>
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    <a
-                                      href="/t/tenant-id/devices/aps/422039000230/details/overview"
-                                    >
-                                      --
-                                    </a>
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    Venue
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    <a
-                                      href="/t/tenant-id/venues/87c982325ef148a2b7cefe652384d3ca/venue-details/overview"
-                                    >
-                                      --
-                                    </a>
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    Wireless Network
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    <a
-                                      href="/t/tenant-id/networks/423c3673e74f44e69c0f3b35cd579ecc/network-details/overview"
-                                    >
-                                      --
-                                    </a>
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    <span>
-                                      SSID
-                                    </span>
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    NMS-app6-WLAN-QA
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    <span>
-                                      VLAN ID
-                                    </span>
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    1
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    <span>
-                                      BSSID
-                                    </span>
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    28:b3:71:a8:78:51
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    class="ant-space-item"
-                  >
-                    <div
-                      class="ant-divider ant-divider-horizontal"
-                      role="separator"
-                    />
-                  </div>
-                </div>
-                <div
-                  class="ant-space ant-space-horizontal ant-space-align-center"
-                  style="display: block;"
-                >
-                  <div
-                    class="ant-space-item"
-                    style="margin-right: 8px;"
-                  >
-                    <h4
-                      class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
-                    >
                       Operational Data (Current)
                     </h4>
                     <div
-                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 hdKHLX"
+                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
                     >
                       <div
                         class="ant-descriptions-view"
@@ -10896,10 +10604,203 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                     <h4
                       class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
                     >
+                      Connection
+                    </h4>
+                    <div
+                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
+                    >
+                      <div
+                        class="ant-descriptions-view"
+                      >
+                        <table>
+                          <tbody>
+                            <tr
+                              class="ant-descriptions-row"
+                            >
+                              <td
+                                class="ant-descriptions-item"
+                                colspan="1"
+                              >
+                                <div
+                                  class="ant-descriptions-item-container"
+                                >
+                                  <span
+                                    class="ant-descriptions-item-label"
+                                  >
+                                    <span>
+                                      AP
+                                    </span>
+                                  </span>
+                                  <span
+                                    class="ant-descriptions-item-content"
+                                  >
+                                    <a
+                                      href="/t/tenant-id/devices/wifi/422039000230/details/overview"
+                                    >
+                                      --
+                                    </a>
+                                  </span>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr
+                              class="ant-descriptions-row"
+                            >
+                              <td
+                                class="ant-descriptions-item"
+                                colspan="1"
+                              >
+                                <div
+                                  class="ant-descriptions-item-container"
+                                >
+                                  <span
+                                    class="ant-descriptions-item-label"
+                                  >
+                                    Venue
+                                  </span>
+                                  <span
+                                    class="ant-descriptions-item-content"
+                                  >
+                                    <a
+                                      href="/t/tenant-id/venues/87c982325ef148a2b7cefe652384d3ca/venue-details/overview"
+                                    >
+                                      --
+                                    </a>
+                                  </span>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr
+                              class="ant-descriptions-row"
+                            >
+                              <td
+                                class="ant-descriptions-item"
+                                colspan="1"
+                              >
+                                <div
+                                  class="ant-descriptions-item-container"
+                                >
+                                  <span
+                                    class="ant-descriptions-item-label"
+                                  >
+                                    Wireless Network
+                                  </span>
+                                  <span
+                                    class="ant-descriptions-item-content"
+                                  >
+                                    <a
+                                      href="/t/tenant-id/networks/423c3673e74f44e69c0f3b35cd579ecc/network-details/overview"
+                                    >
+                                      --
+                                    </a>
+                                  </span>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr
+                              class="ant-descriptions-row"
+                            >
+                              <td
+                                class="ant-descriptions-item"
+                                colspan="1"
+                              >
+                                <div
+                                  class="ant-descriptions-item-container"
+                                >
+                                  <span
+                                    class="ant-descriptions-item-label"
+                                  >
+                                    <span>
+                                      SSID
+                                    </span>
+                                  </span>
+                                  <span
+                                    class="ant-descriptions-item-content"
+                                  >
+                                    NMS-app6-WLAN-QA
+                                  </span>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr
+                              class="ant-descriptions-row"
+                            >
+                              <td
+                                class="ant-descriptions-item"
+                                colspan="1"
+                              >
+                                <div
+                                  class="ant-descriptions-item-container"
+                                >
+                                  <span
+                                    class="ant-descriptions-item-label"
+                                  >
+                                    <span>
+                                      VLAN ID
+                                    </span>
+                                  </span>
+                                  <span
+                                    class="ant-descriptions-item-content"
+                                  >
+                                    1
+                                  </span>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr
+                              class="ant-descriptions-row"
+                            >
+                              <td
+                                class="ant-descriptions-item"
+                                colspan="1"
+                              >
+                                <div
+                                  class="ant-descriptions-item-container"
+                                >
+                                  <span
+                                    class="ant-descriptions-item-label"
+                                  >
+                                    <span>
+                                      BSSID
+                                    </span>
+                                  </span>
+                                  <span
+                                    class="ant-descriptions-item-content"
+                                  >
+                                    28:b3:71:a8:78:51
+                                  </span>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-space-item"
+                  >
+                    <div
+                      class="ant-divider ant-divider-horizontal"
+                      role="separator"
+                    />
+                  </div>
+                </div>
+                <div
+                  class="ant-space ant-space-horizontal ant-space-align-center"
+                  style="display: block;"
+                >
+                  <div
+                    class="ant-space-item"
+                    style="margin-right: 8px;"
+                  >
+                    <h4
+                      class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+                    >
                       Guest Details
                     </h4>
                     <div
-                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 hdKHLX"
+                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
                     >
                       <div
                         class="ant-descriptions-view"
@@ -11117,7 +11018,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                       WiFi Calling Details
                     </h4>
                     <div
-                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 hdKHLX"
+                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
                     >
                       <div
                         class="ant-descriptions-view"
@@ -11680,17 +11581,6 @@ exports[`ClientOverviewTab OverviewWidget should render client info correctly 1`
           >
             <div
               class="Grid__Container-sc-5irhjd-1 zzbxI"
-              style="height: 292px; background: rgb(247, 247, 247);"
-            >
-              TODO: Top 10 Applications by traffic volume
-            </div>
-          </div>
-          <div
-            class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
-            style="padding: 10px 10px 10px 10px;"
-          >
-            <div
-              class="Grid__Container-sc-5irhjd-1 zzbxI"
               style="height: 292px;"
             >
               <div
@@ -11780,7 +11670,7 @@ exports[`ClientOverviewTab OverviewWidget should render client info correctly 1`
                       Client Details
                     </h4>
                     <div
-                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 hdKHLX"
+                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
                     >
                       <div
                         class="ant-descriptions-view"
@@ -11966,203 +11856,10 @@ exports[`ClientOverviewTab OverviewWidget should render client info correctly 1`
                     <h4
                       class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
                     >
-                      Connection
-                    </h4>
-                    <div
-                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 hdKHLX"
-                    >
-                      <div
-                        class="ant-descriptions-view"
-                      >
-                        <table>
-                          <tbody>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    <span>
-                                      AP
-                                    </span>
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    <a
-                                      href="/t/tenant-id/devices/aps/422039000230/details/overview"
-                                    >
-                                      UI team ONLY
-                                    </a>
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    Venue
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    <a
-                                      href="/t/tenant-id/venues/87c982325ef148a2b7cefe652384d3ca/venue-details/overview"
-                                    >
-                                      UI-TEST-VENUE
-                                    </a>
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    Wireless Network
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    <a
-                                      href="/t/tenant-id/networks/423c3673e74f44e69c0f3b35cd579ecc/network-details/overview"
-                                    >
-                                      NMS-app6-WLAN-QA
-                                    </a>
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    <span>
-                                      SSID
-                                    </span>
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    NMS-app6-WLAN-QA
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    <span>
-                                      VLAN ID
-                                    </span>
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    1
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr
-                              class="ant-descriptions-row"
-                            >
-                              <td
-                                class="ant-descriptions-item"
-                                colspan="1"
-                              >
-                                <div
-                                  class="ant-descriptions-item-container"
-                                >
-                                  <span
-                                    class="ant-descriptions-item-label"
-                                  >
-                                    <span>
-                                      BSSID
-                                    </span>
-                                  </span>
-                                  <span
-                                    class="ant-descriptions-item-content"
-                                  >
-                                    28:b3:71:a8:78:51
-                                  </span>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    class="ant-space-item"
-                  >
-                    <div
-                      class="ant-divider ant-divider-horizontal"
-                      role="separator"
-                    />
-                  </div>
-                </div>
-                <div
-                  class="ant-space ant-space-horizontal ant-space-align-center"
-                  style="display: block;"
-                >
-                  <div
-                    class="ant-space-item"
-                    style="margin-right: 8px;"
-                  >
-                    <h4
-                      class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
-                    >
                       Operational Data (Current)
                     </h4>
                     <div
-                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 hdKHLX"
+                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
                     >
                       <div
                         class="ant-descriptions-view"
@@ -12438,6 +12135,199 @@ exports[`ClientOverviewTab OverviewWidget should render client info correctly 1`
                 >
                   <div
                     class="ant-space-item"
+                    style="margin-right: 8px;"
+                  >
+                    <h4
+                      class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+                    >
+                      Connection
+                    </h4>
+                    <div
+                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
+                    >
+                      <div
+                        class="ant-descriptions-view"
+                      >
+                        <table>
+                          <tbody>
+                            <tr
+                              class="ant-descriptions-row"
+                            >
+                              <td
+                                class="ant-descriptions-item"
+                                colspan="1"
+                              >
+                                <div
+                                  class="ant-descriptions-item-container"
+                                >
+                                  <span
+                                    class="ant-descriptions-item-label"
+                                  >
+                                    <span>
+                                      AP
+                                    </span>
+                                  </span>
+                                  <span
+                                    class="ant-descriptions-item-content"
+                                  >
+                                    <a
+                                      href="/t/tenant-id/devices/wifi/422039000230/details/overview"
+                                    >
+                                      UI team ONLY
+                                    </a>
+                                  </span>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr
+                              class="ant-descriptions-row"
+                            >
+                              <td
+                                class="ant-descriptions-item"
+                                colspan="1"
+                              >
+                                <div
+                                  class="ant-descriptions-item-container"
+                                >
+                                  <span
+                                    class="ant-descriptions-item-label"
+                                  >
+                                    Venue
+                                  </span>
+                                  <span
+                                    class="ant-descriptions-item-content"
+                                  >
+                                    <a
+                                      href="/t/tenant-id/venues/87c982325ef148a2b7cefe652384d3ca/venue-details/overview"
+                                    >
+                                      UI-TEST-VENUE
+                                    </a>
+                                  </span>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr
+                              class="ant-descriptions-row"
+                            >
+                              <td
+                                class="ant-descriptions-item"
+                                colspan="1"
+                              >
+                                <div
+                                  class="ant-descriptions-item-container"
+                                >
+                                  <span
+                                    class="ant-descriptions-item-label"
+                                  >
+                                    Wireless Network
+                                  </span>
+                                  <span
+                                    class="ant-descriptions-item-content"
+                                  >
+                                    <a
+                                      href="/t/tenant-id/networks/423c3673e74f44e69c0f3b35cd579ecc/network-details/overview"
+                                    >
+                                      NMS-app6-WLAN-QA
+                                    </a>
+                                  </span>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr
+                              class="ant-descriptions-row"
+                            >
+                              <td
+                                class="ant-descriptions-item"
+                                colspan="1"
+                              >
+                                <div
+                                  class="ant-descriptions-item-container"
+                                >
+                                  <span
+                                    class="ant-descriptions-item-label"
+                                  >
+                                    <span>
+                                      SSID
+                                    </span>
+                                  </span>
+                                  <span
+                                    class="ant-descriptions-item-content"
+                                  >
+                                    NMS-app6-WLAN-QA
+                                  </span>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr
+                              class="ant-descriptions-row"
+                            >
+                              <td
+                                class="ant-descriptions-item"
+                                colspan="1"
+                              >
+                                <div
+                                  class="ant-descriptions-item-container"
+                                >
+                                  <span
+                                    class="ant-descriptions-item-label"
+                                  >
+                                    <span>
+                                      VLAN ID
+                                    </span>
+                                  </span>
+                                  <span
+                                    class="ant-descriptions-item-content"
+                                  >
+                                    1
+                                  </span>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr
+                              class="ant-descriptions-row"
+                            >
+                              <td
+                                class="ant-descriptions-item"
+                                colspan="1"
+                              >
+                                <div
+                                  class="ant-descriptions-item-container"
+                                >
+                                  <span
+                                    class="ant-descriptions-item-label"
+                                  >
+                                    <span>
+                                      BSSID
+                                    </span>
+                                  </span>
+                                  <span
+                                    class="ant-descriptions-item-content"
+                                  >
+                                    28:b3:71:a8:78:51
+                                  </span>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-space-item"
+                  >
+                    <div
+                      class="ant-divider ant-divider-horizontal"
+                      role="separator"
+                    />
+                  </div>
+                </div>
+                <div
+                  class="ant-space ant-space-horizontal ant-space-align-center"
+                  style="display: block;"
+                >
+                  <div
+                    class="ant-space-item"
                   >
                     <h4
                       class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
@@ -12445,7 +12335,7 @@ exports[`ClientOverviewTab OverviewWidget should render client info correctly 1`
                       WiFi Calling Details
                     </h4>
                     <div
-                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 hdKHLX"
+                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
                     >
                       <div
                         class="ant-descriptions-view"
@@ -13008,17 +12898,6 @@ exports[`ClientOverviewTab OverviewWidget should render correctly when search pa
           >
             <div
               class="Grid__Container-sc-5irhjd-1 zzbxI"
-              style="height: 292px; background: rgb(247, 247, 247);"
-            >
-              TODO: Top 10 Applications by traffic volume
-            </div>
-          </div>
-          <div
-            class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
-            style="padding: 10px 10px 10px 10px;"
-          >
-            <div
-              class="Grid__Container-sc-5irhjd-1 zzbxI"
               style="height: 292px;"
             >
               <div
@@ -13108,7 +12987,7 @@ exports[`ClientOverviewTab OverviewWidget should render correctly when search pa
                       Client Details
                     </h4>
                     <div
-                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 hdKHLX"
+                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
                     >
                       <div
                         class="ant-descriptions-view"
@@ -13297,7 +13176,7 @@ exports[`ClientOverviewTab OverviewWidget should render correctly when search pa
                       Last Session
                     </h4>
                     <div
-                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 hdKHLX"
+                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
                     >
                       <div
                         class="ant-descriptions-view"
@@ -13483,7 +13362,7 @@ exports[`ClientOverviewTab OverviewWidget should render correctly when search pa
                       WiFi Calling Details
                     </h4>
                     <div
-                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 hdKHLX"
+                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
                     >
                       <div
                         class="ant-descriptions-view"
@@ -14046,17 +13925,6 @@ exports[`ClientOverviewTab OverviewWidget should render historical client info c
           >
             <div
               class="Grid__Container-sc-5irhjd-1 zzbxI"
-              style="height: 292px; background: rgb(247, 247, 247);"
-            >
-              TODO: Top 10 Applications by traffic volume
-            </div>
-          </div>
-          <div
-            class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
-            style="padding: 10px 10px 10px 10px;"
-          >
-            <div
-              class="Grid__Container-sc-5irhjd-1 zzbxI"
               style="height: 292px;"
             >
               <div
@@ -14146,7 +14014,7 @@ exports[`ClientOverviewTab OverviewWidget should render historical client info c
                       Client Details
                     </h4>
                     <div
-                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 hdKHLX"
+                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
                     >
                       <div
                         class="ant-descriptions-view"
@@ -14335,7 +14203,7 @@ exports[`ClientOverviewTab OverviewWidget should render historical client info c
                       Last Session
                     </h4>
                     <div
-                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 hdKHLX"
+                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
                     >
                       <div
                         class="ant-descriptions-view"
@@ -14521,7 +14389,7 @@ exports[`ClientOverviewTab OverviewWidget should render historical client info c
                       WiFi Calling Details
                     </h4>
                     <div
-                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 hdKHLX"
+                      class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
                     >
                       <div
                         class="ant-descriptions-view"

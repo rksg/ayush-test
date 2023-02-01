@@ -66,7 +66,7 @@ exports[`VenueEdit should render correctly 1`] = `
               class="ant-space-item"
             >
               <button
-                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 eAazoW"
+                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 ibsWZY"
                 type="button"
               >
                 <span>
@@ -81,7 +81,7 @@ exports[`VenueEdit should render correctly 1`] = `
         class="ant-page-header-footer"
       >
         <div
-          class="ant-tabs ant-tabs-top styledComponents__Tabs-sc-1afcsfc-0 bceCuj"
+          class="ant-tabs ant-tabs-top styledComponents__Tabs-sc-1afcsfc-0 fKRTpX"
         >
           <div
             class="ant-tabs-nav"
@@ -123,17 +123,19 @@ exports[`VenueEdit should render correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="ant-tabs-tab"
+                  class="ant-tabs-tab ant-tabs-tab-disabled"
                 >
                   <div
                     aria-controls="rc-tabs-test-panel-switch"
+                    aria-disabled="true"
                     aria-selected="false"
                     class="ant-tabs-tab-btn"
                     id="rc-tabs-test-tab-switch"
                     role="tab"
-                    tabindex="0"
                   >
-                    Switch Configuration
+                    <span>
+                      Switch Configuration
+                    </span>
                   </div>
                 </div>
                 <div

@@ -46,7 +46,7 @@ const queryLayer3 = {
     },
     {
       id: '1ae26f6f061d4f8aa86234d100b4d6d1',
-      name: 'l3-showActivityMsg',
+      name: 'layer3',
       rulesCount: 1,
       networksCount: 0
     }
@@ -213,7 +213,7 @@ const subnetSetting = async () => {
 }
 
 describe('Layer3Drawer Component', () => {
-  it('Render Layer3Drawer component successfully', async () => {
+  it('Render Layer3Drawer component with anyIp option successfully', async () => {
     mockServer.use(rest.post(
       AccessControlUrls.getL3AclPolicyList.url,
       (_, res, ctx) => res(
@@ -248,14 +248,102 @@ describe('Layer3Drawer Component', () => {
 
     await userEvent.type(screen.getByRole('textbox', {
       name: /policy name:/i
-    }), 'l3-010')
+    }), 'layer3-test')
+
+    await anyIpSetting()
+
+    await userEvent.click(screen.getAllByText('Save')[0])
+
+    mockServer.use(rest.post(
+      AccessControlUrls.getL3AclPolicyList.url,
+      (_, res, ctx) => res(
+        ctx.json(queryLayer3Update)
+      )
+    ))
+
+    await screen.findByRole('option', { name: 'layer3-test' })
+
+  })
+
+  it('Render Layer3Drawer component with ip option successfully', async () => {
+    mockServer.use(rest.post(
+      AccessControlUrls.getL3AclPolicyList.url,
+      (_, res, ctx) => res(
+        ctx.json(queryLayer3)
+      )
+    ), rest.post(
+      AccessControlUrls.addL3AclPolicy.url,
+      (_, res, ctx) => res(
+        ctx.json(layer3Response)
+      )
+    ))
+
+    render(
+      <Provider>
+        <Form>
+          <Layer3Drawer />
+        </Form>
+      </Provider>, {
+        route: {
+          params: { tenantId: 'tenantId1' }
+        }
+      }
+    )
+
+    await screen.findByRole('option', { name: 'l3-010' })
+
+    await userEvent.click(screen.getByText('Add New'))
+
+    await screen.findByText(/layer 3 settings/i)
+
+    await userEvent.click(screen.getByText(/block traffic/i))
+
+    await userEvent.type(screen.getByRole('textbox', {
+      name: /policy name:/i
+    }), 'layer3-test')
+
+    await ipSetting()
+
+  })
+
+  it('Render Layer3Drawer component with subnet option successfully', async () => {
+    mockServer.use(rest.post(
+      AccessControlUrls.getL3AclPolicyList.url,
+      (_, res, ctx) => res(
+        ctx.json(queryLayer3)
+      )
+    ), rest.post(
+      AccessControlUrls.addL3AclPolicy.url,
+      (_, res, ctx) => res(
+        ctx.json(layer3Response)
+      )
+    ))
+
+    render(
+      <Provider>
+        <Form>
+          <Layer3Drawer />
+        </Form>
+      </Provider>, {
+        route: {
+          params: { tenantId: 'tenantId1' }
+        }
+      }
+    )
+
+    await screen.findByRole('option', { name: 'l3-010' })
+
+    await userEvent.click(screen.getByText('Add New'))
+
+    await screen.findByText(/layer 3 settings/i)
+
+    await userEvent.click(screen.getByText(/block traffic/i))
 
     await userEvent.type(screen.getByRole('textbox', {
       name: /policy name:/i
     }), 'layer3-test')
 
     await anyIpSetting()
-    await ipSetting()
     await subnetSetting()
 
     await userEvent.click(screen.getByText('IP: 11:11:11:11:11:11/255.255.0.0'))
@@ -269,19 +357,27 @@ describe('Layer3Drawer Component', () => {
     await userEvent.click(screen.getByText('IP: 11:11:11:11:11:11/255.255.0.0'))
 
     await userEvent.click(screen.getByRole('button', {
-      name: /move up/i
+      name: /edit/i
     }))
 
-    await userEvent.click(screen.getByText('IP: 11:11:11:11:11:11/255.255.0.0'))
+    await screen.findByText(/edit layer 3 rule/i)
 
-    await userEvent.click(screen.getByRole('button', {
-      name: /move down/i
-    }))
+    await userEvent.type(screen.getByRole('textbox', {
+      name: /description/i
+    }), '-ruleDescription')
 
-    await userEvent.click(screen.getByText('IP: 11:11:11:11:11:11/255.255.0.0'))
+    await userEvent.click(screen.getAllByText('Save')[1])
+
+    await userEvent.click(await screen.findByText('layer3-test-desc-subnet-ruleDescription'))
 
     await userEvent.click(screen.getByRole('button', {
       name: /delete/i
+    }))
+
+    await screen.findByText(/delete rule/i)
+
+    await userEvent.click(screen.getByRole('button', {
+      name: /delete rule/i
     }))
 
     await userEvent.click(screen.getAllByText('Save')[0])

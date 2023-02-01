@@ -139,6 +139,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/service/:serviceId'
   },
+  getFloorplan: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/venue/:venueId/floor-plan/:floorPlanId'
+  },
   getVenueFloorplans: {
     method: 'get',
     url: '/api/tenant/:tenantId/venue/:venueId/floor-plan'
@@ -243,6 +247,14 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/rogue-policy'
   },
+  getVenueSyslogAp: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/syslogServerProfileSettings'
+  },
+  updateVenueSyslogAp: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/syslogServerProfileSettings'
+  },
   getConfigProfiles: {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/profiles/query'
@@ -254,6 +266,14 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   updateVenueSwitchSetting: {
     method: 'put',
     url: '/api/switch/tenant/:tenantId/venue'
+  },
+  getVenueConfigHistory: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/venues/:venueId/configurationHistory/query'
+  },
+  getVenueConfigHistoryDetail: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/venues/:venueId/configurationHistory/detail/:transactionId'
   },
   getSwitchConfigProfile: {
     method: 'get',
@@ -310,5 +330,9 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getGlobalValues: {
     method: 'get',
     url: '/api/ui/globalValues'
+  },
+  getCloudMessageBanner: {
+    method: 'get',
+    url: '/api/upgrade/tenant/:tenantId/banner'
   }
 }

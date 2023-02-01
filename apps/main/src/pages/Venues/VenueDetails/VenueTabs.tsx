@@ -40,10 +40,7 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
         key='analytics'
       />
       <Tabs.TabPane
-        disabled
-        tab={<Tooltip title={$t(notAvailableMsg)}>
-          {$t({ defaultMessage: 'Clients ({clientsCount})' }, { clientsCount })}
-        </Tooltip>}
+        tab={$t({ defaultMessage: 'Clients ({clientsCount})' }, { clientsCount })}
         key='clients'
       />
       <Tabs.TabPane
@@ -61,13 +58,7 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
           : <Tooltip title={$t(notAvailableMsg)}>{$t({ defaultMessage: 'Services' })}</Tooltip>}
         key='services'
       />
-      <Tabs.TabPane
-        disabled
-        tab={<Tooltip title={$t(notAvailableMsg)}>
-          {$t({ defaultMessage: 'Timeline' })}
-        </Tooltip>}
-        key='timeline'
-      />
+      <Tabs.TabPane tab={$t({ defaultMessage: 'Timeline' })} key='timeline' />
     </Tabs>
   )
 }

@@ -1,4 +1,5 @@
 import { BarChartOutlined, TableOutlined } from '@ant-design/icons'
+import userEvent                           from '@testing-library/user-event'
 
 import { fireEvent, render, screen } from '@acx-ui/test-utils'
 
@@ -20,6 +21,8 @@ const tabDetails: ContentSwitcherProps['tabDetails'] = [
   }
 ]
 
+const mockOnChangeFn = jest.fn()
+
 describe('ContentSwitcher',()=>{
   it('should render component',() => {
     const { asFragment } =render(<ContentSwitcher tabDetails={tabDetails}/>)
@@ -36,6 +39,22 @@ describe('ContentSwitcher',()=>{
   })
   it('should render component with default selection',() => {
     const { asFragment } =render(<ContentSwitcher tabDetails={tabDetails} defaultValue={'table'}/>)
+    expect(asFragment()).toMatchSnapshot()
+  })
+
+  it('should trigger onChange function',async () => {
+    const user = userEvent.setup()
+    render(
+      <ContentSwitcher tabDetails={tabDetails} defaultValue={'chart'} onChange={mockOnChangeFn}/>
+    )
+    await user.click(await screen.findByText('Table'))
+    expect(mockOnChangeFn).toBeCalledTimes(1)
+  })
+
+  it('should render component with extra components', () => {
+    const { asFragment } = render(<ContentSwitcher tabDetails={tabDetails}
+      defaultValue={'table'}
+      extra={'Some text'} />)
     expect(asFragment()).toMatchSnapshot()
   })
 })

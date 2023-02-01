@@ -8,7 +8,7 @@ import styled                                      from 'styled-components/macro
 import { Button, Drawer, GridCol, GridRow, showToast, Table, TableProps }             from '@acx-ui/components'
 import { DeleteSolid, DownloadOutlined }                                              from '@acx-ui/icons'
 import { useAddL2AclPolicyMutation, useGetL2AclPolicyQuery, useL2AclPolicyListQuery } from '@acx-ui/rc/services'
-import { AccessStatus, CommonResult }                                                 from '@acx-ui/rc/utils'
+import { AccessStatus, CommonResult, MacAddressFilterRegExp }                         from '@acx-ui/rc/utils'
 import { useParams }                                                                  from '@acx-ui/react-router-dom'
 
 const { useWatch } = Form
@@ -118,7 +118,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
     if (requestId && queryPolicyName) {
       layer2SelectOptions.map(option => {
         if (option.props.children === queryPolicyName) {
-          form.setFieldValue('l2AclPolicyId', option.key)
+          form.setFieldValue([...inputName, 'l2AclPolicyId'], option.key)
           setQueryPolicyId(option.key as string)
           setQueryPolicyName('')
           setRequestId('')
@@ -179,11 +179,6 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
     }
   }
 
-  const macAddressRegExp = (value: string) => {
-    const re = new RegExp(/^[a-fA-F0-9]{2}(:[a-fA-F0-9]{2}){5}$/)
-    return !(value !== '' && !re.test(value))
-  }
-
   const handleClearAction = () => {
     setMacAddressList([])
   }
@@ -218,25 +213,36 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
     return Promise.resolve()
   }
 
-  const handleInputChange = (event: { target: { value: SetStateAction<string> } }) => {
+  const handleInputChange = async (event: { target: { value: SetStateAction<string> } }) => {
     const split = [',', ';']
     let inputValue = event.target.value
-    split.forEach(char => {
+    for (const char of split) {
       if (event.target.value.toString().includes(char)) {
         inputValue = event.target.value.toString().split(char)[0]
-        handleInputConfirm(inputValue)
+        await handleInputConfirm(inputValue)
         inputValue = ''
       }
-    })
+    }
 
     setInputValue(inputValue)
   }
 
-  const handleInputConfirm = (inputValue: string) => {
+  const handleInputConfirm = async (inputValue: string) => {
     if (!inputValue || !ruleDrawerVisible) return
-    if (inputValue && addressTags.indexOf(inputValue) === -1 && macAddressRegExp(inputValue)) {
-      setAddressTags([...addressTags, inputValue])
-    } else {
+
+    try {
+      const macAddressValidation = await MacAddressFilterRegExp(inputValue)
+      // eslint-disable-next-line max-len
+      if (inputValue && addressTags.indexOf(inputValue) === -1 && macAddressValidation === undefined) {
+        setAddressTags([...addressTags, inputValue])
+      } else {
+        showToast({
+          type: 'error',
+          duration: 10,
+          content: $t({ defaultMessage: 'invalided or existing MAC Address' })
+        })
+      }
+    } catch (e) {
       showToast({
         type: 'error',
         duration: 10,
