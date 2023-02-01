@@ -28,8 +28,8 @@ import {
   RequestPayload,
   usePollingTableQuery
 } from '@acx-ui/rc/utils'
-import { getFilters }                         from '@acx-ui/rc/utils'
-import {TenantLink, useNavigate, useParams, useTenantLink} from '@acx-ui/react-router-dom'
+import { getFilters }                                        from '@acx-ui/rc/utils'
+import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { useApActions } from '../useApActions'
 
