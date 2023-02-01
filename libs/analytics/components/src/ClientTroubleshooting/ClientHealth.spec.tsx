@@ -5,7 +5,7 @@ import { Provider }                                                    from '@ac
 import { mockGraphqlQuery, render, waitForElementToBeRemoved, screen } from '@acx-ui/test-utils'
 import { DateRange }                                                   from '@acx-ui/utils'
 
-import { ClientHealth } from './ClientHealth'
+import { ClientHealth, durations } from './ClientHealth'
 
 
 const filters = {
@@ -68,10 +68,7 @@ describe('ClientHealth', () => {
 
   it('should render correctly for undefined data', async () => {
     mockGraphqlQuery(dataApiURL, 'ClientInfo', { data: {
-      client: {
-        ...testData.client,
-        connectionQualities: undefined
-      }
+      client: { }
     } })
 
     render(<Provider>
@@ -80,5 +77,12 @@ describe('ClientHealth', () => {
 
     await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
     expect(await screen.findAllByText(noDataDisplay)).toHaveLength(3)
+  })
+
+  describe('durations', () => {
+    it('should handle undefined', () => {
+      const undef = durations(undefined)
+      expect(undef).toBe(0)
+    })
   })
 })

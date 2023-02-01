@@ -13,7 +13,7 @@ import { LabelledQuality }                                       from './config'
 import { ClientInfoData, ConnectionQuality, useClientInfoQuery } from './services'
 import { transformConnectionQualities }                          from './util'
 
-const durations = (items: ConnectionQuality[] | LabelledQuality[] | undefined) => {
+export const durations = (items: ConnectionQuality[] | LabelledQuality[] | undefined) => {
   if (!items) return 0
 
   return items
