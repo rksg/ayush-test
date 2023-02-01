@@ -499,7 +499,7 @@ export const apApi = baseApApi.injectEndpoints({
             'UpdateApNetworkSettings',
             'ResetApNetworkSettings'
           ]
-          showActivityMessage(msg, activities, () => {
+          onActivityMessageReceived(msg, activities, () => {
             api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'NETWORK_SETTINGS' }]))
           })
         })
