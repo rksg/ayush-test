@@ -2,9 +2,11 @@ import '@testing-library/jest-dom'
 
 import React from 'react'
 
-import userEvent from '@testing-library/user-event'
-import { Form }  from 'antd'
-import { rest }  from 'msw'
+import { fireEvent }         from '@testing-library/react'
+import userEvent             from '@testing-library/user-event'
+import { Form }              from 'antd'
+import { SliderSingleProps } from 'antd/lib/slider'
+import { rest }              from 'msw'
 
 import { AccessControlUrls }          from '@acx-ui/rc/utils'
 import { Provider }                   from '@acx-ui/store'
@@ -161,22 +163,83 @@ jest.mock('antd', () => {
   const antd = jest.requireActual('antd')
 
   // @ts-ignore
-  const Select = ({ children, onChange, ...otherProps }) =>
-    <select
+  const Select = ({ children, onChange, options, ...otherProps }) => {
+    if (options) {
+      return <select
+        role='combobox'
+        onChange={e => onChange(e.target.value)}
+        {...otherProps}>
+        {options.map((option: { value: string }) =>
+          <option value={option.value}>{option.value}</option>)}
+      </select>
+    }
+
+    return <select
       role='combobox'
       onChange={e => onChange(e.target.value)}
       {...otherProps}>
       {children}
     </select>
+  }
 
   // @ts-ignore
-  Select.Option = ({ children, ...otherProps }) =>
-    <option role='option' {...otherProps}>{children}</option>
+  Select.Option = ({ children, options, ...otherProps }) => {
+    return <option role='option' {...otherProps}>{children}</option>
+  }
 
-  return { ...antd, Select }
+  const Slider = (props: (SliderSingleProps) & React.RefAttributes<unknown>) => {
+    const { min, max, onChange: sliderOnChange } = props
+    return <input
+      data-testid='mock-slider'
+      type='range'
+      value={0}
+      min={min}
+      max={max}
+      onChange={(event) => sliderOnChange ? sliderOnChange(Number(event.target.value)) : null}
+    />
+  }
+
+  return { ...antd, Select, Slider }
 })
 
+const systemDefinedSection = async () => {
+  await screen.findByRole('option', { name: 'Web' })
+
+  await userEvent.selectOptions(
+    screen.getAllByRole('combobox')[1],
+    screen.getByRole('option', { name: 'All' })
+  )
+
+  await screen.findByRole('option', { name: 'BBC' })
+
+  await userEvent.selectOptions(
+    screen.getAllByRole('combobox')[1],
+    screen.getByRole('option', { name: 'Web' })
+  )
+
+  await screen.findByRole('option', { name: 'BBC' })
+
+  await userEvent.selectOptions(
+    screen.getAllByRole('combobox')[2],
+    screen.getByRole('option', { name: 'BBC' })
+  )
+}
+
 describe('ApplicationDrawer Component', () => {
+  beforeAll(() => {
+    mockServer.use(rest.get(
+      AccessControlUrls.getAvcCat.url,
+      (_, res, ctx) => res(
+        ctx.json(avcCat)
+      )
+    ), rest.get(
+      AccessControlUrls.getAvcApp.url,
+      (_, res, ctx) => res(
+        ctx.json(avcApp)
+      )
+    ))
+  })
+
   it('Render ApplicationDrawer component successfully with SystemDefined rule', async () => {
     mockServer.use(rest.post(
       AccessControlUrls.getAppPolicyList.url,
@@ -187,16 +250,6 @@ describe('ApplicationDrawer Component', () => {
       AccessControlUrls.addAppPolicy.url,
       (_, res, ctx) => res(
         ctx.json(applicationResponse)
-      )
-    ), rest.get(
-      AccessControlUrls.getAvcCat.url,
-      (_, res, ctx) => res(
-        ctx.json(avcCat)
-      )
-    ), rest.get(
-      AccessControlUrls.getAvcApp.url,
-      (_, res, ctx) => res(
-        ctx.json(avcApp)
       )
     ))
 
@@ -230,26 +283,7 @@ describe('ApplicationDrawer Component', () => {
       name: /rule name/i
     }), 'app1rule1')
 
-    await screen.findByRole('option', { name: 'Web' })
-
-    await userEvent.selectOptions(
-      screen.getAllByRole('combobox')[1],
-      screen.getByRole('option', { name: 'All' })
-    )
-
-    await screen.findByRole('option', { name: 'BBC' })
-
-    await userEvent.selectOptions(
-      screen.getAllByRole('combobox')[1],
-      screen.getByRole('option', { name: 'Web' })
-    )
-
-    await screen.findByRole('option', { name: 'BBC' })
-
-    await userEvent.selectOptions(
-      screen.getAllByRole('combobox')[2],
-      screen.getByRole('option', { name: 'BBC' })
-    )
+    await systemDefinedSection()
 
     await userEvent.click(screen.getByText(/block applications/i))
 
@@ -280,16 +314,6 @@ describe('ApplicationDrawer Component', () => {
       AccessControlUrls.addAppPolicy.url,
       (_, res, ctx) => res(
         ctx.json(applicationResponse)
-      )
-    ), rest.get(
-      AccessControlUrls.getAvcCat.url,
-      (_, res, ctx) => res(
-        ctx.json(avcCat)
-      )
-    ), rest.get(
-      AccessControlUrls.getAvcApp.url,
-      (_, res, ctx) => res(
-        ctx.json(avcApp)
       )
     ))
 
@@ -374,16 +398,6 @@ describe('ApplicationDrawer Component', () => {
       AccessControlUrls.addAppPolicy.url,
       (_, res, ctx) => res(
         ctx.json(applicationResponse)
-      )
-    ), rest.get(
-      AccessControlUrls.getAvcCat.url,
-      (_, res, ctx) => res(
-        ctx.json(avcCat)
-      )
-    ), rest.get(
-      AccessControlUrls.getAvcApp.url,
-      (_, res, ctx) => res(
-        ctx.json(avcApp)
       )
     ))
 
@@ -475,6 +489,110 @@ describe('ApplicationDrawer Component', () => {
 
   })
 
+  it('Render ApplicationDrawer component successfully for access control part', async () => {
+    mockServer.use(rest.post(
+      AccessControlUrls.getAppPolicyList.url,
+      (_, res, ctx) => res(
+        ctx.json(queryApplication)
+      )
+    ), rest.post(
+      AccessControlUrls.addAppPolicy.url,
+      (_, res, ctx) => res(
+        ctx.json(applicationResponse)
+      )
+    ), rest.get(
+      AccessControlUrls.getAvcCat.url,
+      (_, res, ctx) => res(
+        ctx.json(avcCat)
+      )
+    ), rest.get(
+      AccessControlUrls.getAvcApp.url,
+      (_, res, ctx) => res(
+        ctx.json(avcApp)
+      )
+    ))
+
+    render(
+      <Provider>
+        <Form>
+          <ApplicationDrawer />
+        </Form>
+      </Provider>, {
+        route: {
+          params: { tenantId: 'tenantId1', requestId: 'requestId1' }
+        }
+      }
+    )
+
+    await userEvent.click(screen.getByText('Add New'))
+
+    await screen.findByText(/application access settings/i)
+
+    await userEvent.type(screen.getByRole('textbox', {
+      name: /policy name:/i
+    }), 'app1')
+
+    await userEvent.click(screen.getByText('Add'))
+
+    await screen.findByText(/add application rule/i)
+
+    await userEvent.click(screen.getAllByText('Save')[1])
+
+    await userEvent.type(screen.getByRole('textbox', {
+      name: /rule name/i
+    }), 'app1rule1')
+
+    await screen.findByRole('option', { name: 'Web' })
+
+    await userEvent.selectOptions(
+      screen.getAllByRole('combobox')[1],
+      screen.getByRole('option', { name: 'Web' })
+    )
+
+    await screen.findByRole('option', { name: 'BBC' })
+
+    await userEvent.selectOptions(
+      screen.getAllByRole('combobox')[2],
+      screen.getByRole('option', { name: 'BBC' })
+    )
+
+    await userEvent.click(screen.getByText(/qos/i))
+
+    await screen.findByRole('option', { name: 'DSCP' })
+
+    await userEvent.selectOptions(
+      screen.getAllByRole('combobox')[3],
+      screen.getByRole('option', { name: 'DSCP' })
+    )
+
+    await screen.findAllByRole('option', { name: 'Video' })
+
+    await userEvent.selectOptions(
+      screen.getAllByRole('combobox')[4],
+      screen.getAllByRole('option', { name: 'Video' })[0]
+    )
+
+    await userEvent.selectOptions(
+      screen.getAllByRole('combobox')[5],
+      screen.getAllByRole('option', { name: 'Video' })[1]
+    )
+
+    await userEvent.click(screen.getByText(/rate limit/i))
+
+    await userEvent.click(screen.getByText(/max uplink rate:/i))
+
+    await userEvent.click(screen.getByText(/max downlink rate:/i))
+
+    fireEvent.change(screen.getAllByTestId('mock-slider')[0], { target: { value: '10' } })
+
+    fireEvent.change(screen.getAllByTestId('mock-slider')[1], { target: { value: '20' } })
+
+    await userEvent.click(screen.getAllByText('Save')[1])
+
+    await screen.findByText('app1rule1')
+
+  })
+
 
   it('Render ApplicationDrawer component in viewMode successfully', async () => {
     mockServer.use(rest.post(
@@ -486,16 +604,6 @@ describe('ApplicationDrawer Component', () => {
       AccessControlUrls.getAppPolicy.url,
       (_, res, ctx) => res(
         ctx.json(applicationDetail)
-      )
-    ), rest.get(
-      AccessControlUrls.getAvcCat.url,
-      (_, res, ctx) => res(
-        ctx.json(avcCat)
-      )
-    ), rest.get(
-      AccessControlUrls.getAvcApp.url,
-      (_, res, ctx) => res(
-        ctx.json(avcApp)
       )
     ))
 
