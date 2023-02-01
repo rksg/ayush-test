@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react'
 
-import { Divider } from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import {  Drawer }     from '@acx-ui/components'
+import { Button }      from '@acx-ui/components'
 import { useLocation } from '@acx-ui/react-router-dom'
 
-import mapping                                                 from './mapping'
-import { EmptyDescription, DocLink, Paragraph, TextContainer } from './styledComponents'
+
+import { EmptyDescription } from './styledComponents'
 
 //for Local test, use '/docs/r1/mapfile/doc-mapper.json'
 // TODO: change to use '/docs/r1/mapfile/doc-mapper.json' for local and prod after gateway adds route
@@ -28,10 +28,15 @@ export default function HelpPage (props: {
   const { $t } = useIntl()
   const [helpDesc, setHelpDesc] = useState<string>()
   const [helpUrl, setHelpUrl] = useState<string|null>()
-
   const location = useLocation()
-
-
+  const useBasePath = () => {
+    const reg = /([a-f-\d]{32,36}|[A-F-\d]{32,36})|\d+\/?/g
+    return _.replace(location.pathname, reg, (matchStr)=>{
+      const paramReg = /([a-f-\d]{32,36}|[A-F-\d]{32,36})|\d+/g
+      return matchStr.replaceAll(paramReg,'*')
+    })
+  }
+  const basePath = useBasePath()
   const getMapping = async () => {
 
     let result = await fetch(MAPPING_URL, {
@@ -40,16 +45,15 @@ export default function HelpPage (props: {
         Accept: 'application/json'
       }
     })
-    const mapKey = Object.keys(mapping).find(item => location.pathname.indexOf(item) !== -1)
 
-    if(!result.ok || _.isEmpty(mapKey)){
+    if(!result.ok){
       showError()
       return
     }
 
     result = await result.json()
-    const key = mapping[mapKey as keyof typeof mapping]
-    return result[key as keyof typeof result]
+    const mapKey = Object.keys(result).find(item => basePath === item)
+    return result[mapKey as keyof typeof result]
   }
   const updateDesc = async (destFile: string) => {
     const result = await fetch(DOCS_URL + destFile)
@@ -58,9 +62,16 @@ export default function HelpPage (props: {
       return
     }
     const htmlResult = await result.text()
-    setHelpDesc(new DOMParser().parseFromString(htmlResult, 'text/html')
-      .querySelector('.shortdesc')?.innerHTML.trim().replace(/\<.*?\>|\n/g, '') || '')
-    setHelpUrl(DOCS_URL + destFile)
+    const targetDesc = new DOMParser()
+      .parseFromString(htmlResult, 'text/html')
+      .querySelector('.shortdesc')
+
+    if(targetDesc){
+      setHelpDesc(targetDesc?.innerHTML.trim().replace(/\<.*?\>|\n/g, '') || '')
+      setHelpUrl(DOCS_URL + destFile)
+    }else{
+      showError()
+    }
   }
 
   const showError = ()=>{
@@ -80,37 +91,35 @@ export default function HelpPage (props: {
     visible={props.modalState}
     onClose={() => props.setIsModalOpen(false)}
     children={<div>
-      <Paragraph>
+      <p>
         {helpUrl ? helpDesc :
           <EmptyDescription>
             {helpDesc}
           </EmptyDescription>}
-      </Paragraph>
-      {!helpUrl && <Paragraph>
-        <TextContainer>
-        More details:
-        </TextContainer>
-        <DocLink
+      </p>
+      {!helpUrl && <p>
+        {$t({ defaultMessage: 'More details:' })}
+        {' '}
+        <Button
           onClick={()=>{
             window.open(DOCS_HOME_URL+'/alto/latest/index.html', '_blank')
           }}
           type='link'
-          block>
+          size='small'>
           {$t({ defaultMessage: 'Ruckus ONE User Guide' })}
-        </DocLink>
-      </Paragraph>}
+        </Button>
+      </p>}
 
       {helpUrl && <p>
-        <DocLink
+        <Button
           onClick={()=>{
             window.open(helpUrl, '_blank')
           }}
           type='link'
-          block>
+          size='small'>
           {$t({ defaultMessage: 'Continue Reading' })}
-        </DocLink>
+        </Button>
       </p>}
-      <Divider />
     </div>
     }
     destroyOnClose={true}

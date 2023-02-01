@@ -1,16 +1,15 @@
 import { Typography } from 'antd'
 import styled         from 'styled-components/macro'
 
-import { Subtitle, Button } from '@acx-ui/components'
+import { Subtitle } from '@acx-ui/components'
 
 
-export const EmptyDescription = styled.div`
+export const EmptyDescription = styled.span`
   color: var(--acx-neutrals-40);
 `
 
 export const HelpSubtitle = styled(Subtitle).attrs({ level: 5 })`
   font-weight: var(--acx-subtitle-5-font-weight-semi-bold)!important;
-  margin-top: 15px;
 `
 
 type CopyableTextProps = {
@@ -20,22 +19,4 @@ export const CopyableText = styled(Typography.Paragraph)
   .attrs({ copyable: true })<CopyableTextProps>`
   margin-bottom: 3px !important;
   color: ${(props) => (props.color ? props.color : 'var(--acx-accents-blue-50)')};
-`
-export const DocLink = styled(Button)`
-  width: auto !important;
-  font-size: var(--acx-subtitle-5-font-size);
-  align-items: baseline;
-`
-
-export const Paragraph = styled.p`
-  margin-bottom: 3px;
-  display: flex;
-`
-export const TextContainer = styled(Typography.Paragraph)`
-  margin-right: 5px;
-`
-export const FirewallWrapper = styled.div`
-  p {
-    margin-bottom: 0px;
-  }
 `

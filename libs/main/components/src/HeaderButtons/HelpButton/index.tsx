@@ -49,6 +49,10 @@ const HelpButton = () => {
         {$t({ defaultMessage: 'Help for this page' })}
       </Menu.Item>
 
+      <Menu.Item disabled key='support'>
+        {$t({ defaultMessage: 'Contact Support' })}
+      </Menu.Item>
+
       <Menu.Item disabled key='models'>
         {$t({ defaultMessage: 'Supported Device Models' })}
       </Menu.Item>

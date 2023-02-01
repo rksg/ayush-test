@@ -1,6 +1,6 @@
 import ActivityButton from './ActivityButton'
 import AlarmsButton   from './AlarmsButton'
-import HelpButton     from './Help'
+import HelpButton     from './HelpButton'
 import UserButton     from './UserButton'
 
 export {

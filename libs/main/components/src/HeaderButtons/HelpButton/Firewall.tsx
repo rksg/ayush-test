@@ -2,7 +2,7 @@ import { useIntl } from 'react-intl'
 
 import { Drawer } from '@acx-ui/components'
 
-import { CopyableText, HelpSubtitle, FirewallWrapper } from './styledComponents'
+import { CopyableText, HelpSubtitle } from './styledComponents'
 
 export default function Firewall (props: {
   modalState: boolean,
@@ -14,18 +14,16 @@ export default function Firewall (props: {
     title={$t({ defaultMessage: 'Firewall ACL Inputs' })}
     visible={props.modalState}
     onClose={() => props.setIsModalOpen(false)}
-    children={<FirewallWrapper>
+    children={<>
       <p>
         {
           // eslint-disable-next-line max-len
           $t({ defaultMessage: 'To allow RUCKUS One to function properly, please configure your firewall to allow for outbound connectivity according to the following guidelines:' })
         }
       </p>
-      <p>
-        <HelpSubtitle>
-          {$t({ defaultMessage: 'Outbound HTTPS (TCP 443) from APs and Switches to:' })}
-        </HelpSubtitle>
-      </p>
+      <HelpSubtitle>
+        {$t({ defaultMessage: 'Outbound HTTPS (TCP 443) from APs and Switches to:' })}
+      </HelpSubtitle>
       <p>
         <CopyableText>https://ap-registrar.ruckuswireless.com</CopyableText>
         <CopyableText>https://sw-registrar.ruckuswireless.com</CopyableText>
@@ -39,17 +37,15 @@ export default function Firewall (props: {
         <CopyableText>https://device.asia.ruckus.cloud</CopyableText>
         <CopyableText>https://storage.googleapis.com</CopyableText>
       </p>
-      <p>
-        <HelpSubtitle>
-          {$t({ defaultMessage: 'Outbound SSH (TCP 22) from APs and Switches to:' })}
-        </HelpSubtitle>
-      </p>
+      <HelpSubtitle>
+        {$t({ defaultMessage: 'Outbound SSH (TCP 22) from APs and Switches to:' })}
+      </HelpSubtitle>
       <p>
         <CopyableText color={'var(--acx-primary-black)'}>device.ruckus.cloud</CopyableText>
         <CopyableText color={'var(--acx-primary-black)'}>device.eu.ruckus.cloud</CopyableText>
         <CopyableText color={'var(--acx-primary-black)'}>device.asia.ruckus.cloud</CopyableText>
       </p>
-    </FirewallWrapper>
+    </>
     }
     destroyOnClose={true}
     width={420}
