@@ -1,0 +1,61 @@
+import { Row, Col, Form, Input } from 'antd'
+import TextArea                  from 'antd/lib/input/TextArea'
+import { useIntl }               from 'react-intl'
+
+import { StepsForm }                                from '@acx-ui/components'
+import { useLazyValidateUniqueProfileNameQuery }    from '@acx-ui/rc/services'
+import { checkObjectNotExists, excludeSpaceRegExp } from '@acx-ui/rc/utils'
+import { useParams }                                from '@acx-ui/react-router-dom'
+
+const profileListPayload = {
+  url: '/api/viewmodel/{tenantId}/switch/profilelist',
+  searchString: '',
+  searchTargetFields: ['name'],
+  fields: ['name', 'id'],
+  pageSize: 10000,
+  filters: {}
+}
+
+export function GeneralSetting () {
+  const { $t } = useIntl()
+  const params = useParams()
+  const [validateUniqueProfileName] = useLazyValidateUniqueProfileNameQuery()
+  const nameValidator = async (value: string) => {
+    const payload = { ...profileListPayload, searchString: value }
+    const list = (await validateUniqueProfileName({ params, payload }, true).unwrap()).data
+      .filter(n => n.id !== params.networkId)
+      .map(n => n.name)
+
+    return checkObjectNotExists(list, value, $t({ defaultMessage: 'Configuration Profile' }))
+  }
+
+  return (
+    <Row gutter={20}>
+      <Col span={10}>
+        <StepsForm.Title
+          children={$t({ defaultMessage: 'General Properties' })}
+        />
+        <Form.Item
+          name='name'
+          label='Profile Name'
+          rules={[
+            { required: true },
+            { max: 64 },
+            { validator: (_, value) => excludeSpaceRegExp(value) },
+            { validator: (_, value) => nameValidator(value) }
+          ]}
+          hasFeedback
+          validateFirst
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          name='description'
+          label='Profile Description'
+        >
+          <TextArea rows={4} maxLength={64} />
+        </Form.Item>
+      </Col>
+    </Row>
+  )
+}

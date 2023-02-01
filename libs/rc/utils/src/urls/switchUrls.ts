@@ -273,5 +273,9 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   updateDhcpServerState: {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/switch/:switchId/dhcpServer/state'
+  },
+  getSwitchProfileList: {
+    method: 'post',
+    url: '/api/viewmodel/:tenantId/switch/profilelist'
   }
 }

@@ -14,24 +14,25 @@ import {
 import { rootRoutes, Route, TenantNavigate, Navigate } from '@acx-ui/react-router-dom'
 import { Provider }                                    from '@acx-ui/store'
 
-import Edges                       from './pages/Devices/Edge'
-import AddEdge                     from './pages/Devices/Edge/AddEdge'
-import EdgeDetails                 from './pages/Devices/Edge/EdgeDetails'
-import EditEdge                    from './pages/Devices/Edge/EdgeDetails/EditEdge'
-import { StackForm }               from './pages/Devices/Switch/StackForm'
-import SwitchDetails               from './pages/Devices/Switch/SwitchDetails'
-import { SwitchClientDetailsPage } from './pages/Devices/Switch/SwitchDetails/SwitchClientsTab/SwitchClientDetailsPage'
-import SwitchesTable               from './pages/Devices/Switch/SwitchesTable'
-import { SwitchForm }              from './pages/Devices/Switch/SwitchForm'
-import ApDetails                   from './pages/Devices/Wifi/ApDetails'
-import { ApEdit }                  from './pages/Devices/Wifi/ApEdit'
-import { ApForm }                  from './pages/Devices/Wifi/ApForm'
-import { ApGroupForm }             from './pages/Devices/Wifi/ApGroupForm'
-import ApsTable                    from './pages/Devices/Wifi/ApsTable'
-import NetworkDetails              from './pages/Networks/NetworkDetails/NetworkDetails'
-import NetworkForm                 from './pages/Networks/NetworkForm/NetworkForm'
-import NetworksTable               from './pages/Networks/NetworksTable'
-import AccessControlForm           from './pages/Policies/AccessControl/AccessControlForm/AccessControlForm'
+import Edges                        from './pages/Devices/Edge'
+import AddEdge                      from './pages/Devices/Edge/AddEdge'
+import EdgeDetails                  from './pages/Devices/Edge/EdgeDetails'
+import EditEdge                     from './pages/Devices/Edge/EdgeDetails/EditEdge'
+import { StackForm }                from './pages/Devices/Switch/StackForm'
+import SwitchDetails                from './pages/Devices/Switch/SwitchDetails'
+import { SwitchClientDetailsPage }  from './pages/Devices/Switch/SwitchDetails/SwitchClientsTab/SwitchClientDetailsPage'
+import SwitchesTable                from './pages/Devices/Switch/SwitchesTable'
+import { SwitchForm }               from './pages/Devices/Switch/SwitchForm'
+import ApDetails                    from './pages/Devices/Wifi/ApDetails'
+import { ApEdit }                   from './pages/Devices/Wifi/ApEdit'
+import { ApForm }                   from './pages/Devices/Wifi/ApForm'
+import { ApGroupForm }              from './pages/Devices/Wifi/ApGroupForm'
+import ApsTable                     from './pages/Devices/Wifi/ApsTable'
+import NetworkDetails               from './pages/Networks/NetworkDetails/NetworkDetails'
+import NetworkForm                  from './pages/Networks/NetworkForm/NetworkForm'
+import NetworksTable                from './pages/Networks/NetworksTable'
+import { ConfigurationProfileForm } from './pages/Networks/Wired/SwitchConfiguration/Profiles/ConfigurationProfileForm'
+import AccessControlForm            from './pages/Policies/AccessControl/AccessControlForm/AccessControlForm'
 import MacRegistrationListDetails
   from './pages/Policies/MacRegistrationList/MacRegistrarionListDetails/MacRegistrarionListDetails'
 import MacRegistrationListsTable  from './pages/Policies/MacRegistrationList/MacRegistrarionListTable'
@@ -157,6 +158,14 @@ function NetworkRoutes () {
       <Route
         path='networks/wireless/:networkId/:action'
         element={<NetworkForm />}
+      />
+      <Route
+        path='networks/wireless/:networkId/:action'
+        element={<NetworkForm />}
+      />
+      <Route
+        path='networks/wired/switch/configuration/profiles/:action'
+        element={<ConfigurationProfileForm />}
       />
     </Route>
   )

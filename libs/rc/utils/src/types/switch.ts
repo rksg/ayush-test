@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
-import { ConfigurationBackupStatus } from '../constants'
-import { PortSettingModel }          from '../models/PortSetting'
+import { ConfigurationBackupStatus, TrustedPortTypeEnum } from '../constants'
+import { PortSettingModel }                               from '../models/PortSetting'
 
 import { Acl, Vlan, SwitchModel } from './venue'
 
@@ -521,4 +521,30 @@ export interface SwitchDhcpLease {
   clientIp: string
   leaseExpiration: string
   leaseType: string
+}
+
+export interface SwitchSlot {
+  slotNumber: number
+  enable: boolean
+  option: string
+}
+
+export interface TrustedPort {
+  id?: string
+  vlanDemand?: boolean
+  model: string
+  slots?: SwitchSlot[]
+  trustPorts: string[]
+  trustedPortType: TrustedPortTypeEnum
+}
+
+export interface SwitchConfigurationProfile {
+  acls: Acl[]
+  id: string
+  name: string
+  profileType: string
+  venues: string[]
+  vlans: Vlan[]
+  description: string
+  trustedPorts: TrustedPort[]
 }

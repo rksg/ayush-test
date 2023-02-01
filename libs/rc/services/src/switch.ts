@@ -715,8 +715,16 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ? { data: leaseResult.response.dhcpServerLeaseList }
           : { error: getDhcpLeasesQuery.error as FetchBaseQueryError }
       }
+    }),
+    validateUniqueProfileName: build.query<TableResult<SwitchProfile>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getSwitchProfileList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
     })
-
   })
 })
 
@@ -866,5 +874,6 @@ export const {
   useCreateDhcpServerMutation,
   useUpdateDhcpServerMutation,
   useDeleteDhcpServersMutation,
-  useGetDhcpLeasesQuery
+  useGetDhcpLeasesQuery,
+  useLazyValidateUniqueProfileNameQuery
 } = switchApi
