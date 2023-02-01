@@ -10,7 +10,7 @@ import {
   TenantDelegationResponse,
   RecoveryPassphrase,
   TenantPreferenceSettings,
-  showActivityMessage,
+  onActivityMessageReceived,
   onSocketActivityChanged
 } from '@acx-ui/rc/utils'
 
@@ -68,7 +68,7 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
       providesTags: [{ type: 'Administration', id: 'ACCESS_SUPPORT' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg, [
+          onActivityMessageReceived(msg, [
             'DeleteSupportDelegation',
             'InviteSupport'
           ], () => {
@@ -96,7 +96,7 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
       providesTags: [{ type: 'Administration', id: 'ACCESS_SUPPORT' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg, [
+          onActivityMessageReceived(msg, [
             'DeleteSupportDelegation',
             'InviteSupport'
           ], () => {
