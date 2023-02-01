@@ -272,7 +272,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
           style="padding: 16px 8px 16px 8px;"
         >
           <div
-            class="styledComponents__TimelineLoaderWrapper-sc-hmshlr-14 edZIKz"
+            class="styledComponents__TimelineLoaderWrapper-sc-hmshlr-15 kKnIRS"
           >
             <div
               class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
@@ -287,7 +287,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                 >
                   <div
                     class="ant-row"
-                    style="margin: -8px -8px -8px -8px; row-gap: 4px;"
+                    style="margin: -8px -8px -8px -8px; row-gap: 3px;"
                   >
                     <div
                       class="ant-col ant-col-3"

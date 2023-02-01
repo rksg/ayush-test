@@ -4,6 +4,7 @@ import { renderHook, act } from '@testing-library/react'
 import { ECharts }         from 'echarts'
 import ReactECharts        from 'echarts-for-react'
 
+import { qualityDataObj, incidentDataObj, roamingDataObj }                from './__tests__/fixtures'
 import { Event, LabelledQuality, IncidentDetails, RoamingTimeSeriesData } from './config'
 import {
   useDotClick,
@@ -13,7 +14,6 @@ import {
   getBarColor,
   renderCustomItem
 } from './TimelineChart'
-import { qualityDataObj, incidentDataObj, roamingDataObj } from './util.spec'
 
 import type { CustomSeriesRenderItemAPI, CustomSeriesRenderItemParams } from 'echarts'
 const testEvent = {
@@ -133,6 +133,16 @@ describe('TimelineChartComponent', () => {
           icon: ''
         }
       ]
+      const roamingEvent = {
+        code: 'ttc',
+        color: '--acx-semantics-yellow-30',
+        details: 'Connection (Time To Connect)',
+        end: 1668166380000,
+        start: 1668165660000,
+        seriesKey: 'all',
+        label: 'test',
+        value: 'test'
+      }
       expect(getSeriesData(incidentsData, 'connection', 'incidents')).toEqual([
         [
           1668165660000,
@@ -152,6 +162,28 @@ describe('TimelineChartComponent', () => {
         ]
       ])
       expect(getSeriesData(incidentsData, 'connection', 'unknown')).toEqual([])
+      expect(
+        getSeriesData(
+          { all: [roamingEvent] } as unknown as RoamingTimeSeriesData[],
+          'all',
+          'roaming'
+        )
+      ).toEqual([
+        [
+          1668165660000,
+          'all',
+          {
+            code: 'ttc',
+            color: '--acx-semantics-yellow-30',
+            details: 'Connection (Time To Connect)',
+            end: 1668166380000,
+            label: 'test',
+            seriesKey: 'all',
+            start: 1668165660000,
+            value: 'test'
+          }
+        ]
+      ])
     })
   })
   describe('renderCustomItem', () => {
@@ -172,7 +204,7 @@ describe('TimelineChartComponent', () => {
     it('show return valid bar color for connection Quality', () => {
       expect(
         getBarColor({ data: qualityDataObj as unknown as LabelledQuality[], seriesName: 'quality' })
-      ).toEqual('#ACAEB0')
+      ).toEqual('#23AB36')
       expect(
         getBarColor({ data: {} as unknown as LabelledQuality[], seriesName: 'quality' })
       ).toEqual('#ACAEB0')

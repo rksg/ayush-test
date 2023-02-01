@@ -11,6 +11,19 @@ import {
 import { ClientTroubleshootingTab } from './index'
 
 describe('ClientTroubleshootingTab', () => {
+  beforeEach(() => {
+    mockGraphqlQuery(dataApiURL, 'ClientInfo', {
+      data: {
+        client: {
+          connectionDetailsByAp: [],
+          connectionEvents: [],
+          connectionQualities: [],
+          incidents: []
+        }
+      }
+    })
+  })
+
   it('should render correctly', async () => {
     const params = {
       tenantId: 'tenant-id',
@@ -30,7 +43,7 @@ describe('ClientTroubleshootingTab', () => {
     const { asFragment } = render(<Provider><ClientTroubleshootingTab /></Provider>, {
       route: { params, path: '/:tenantId/users/wifi/:clientId/details/:activeTab' }
     })
-    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByText('All Categories')).toBeVisible()
     const fragment = asFragment()
     fragment.querySelectorAll('div[_echarts_instance_^="ec_"]')
