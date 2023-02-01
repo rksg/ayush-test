@@ -627,11 +627,11 @@ export const useLabelFormatter = (params: { value:number, seriesData: Object }) 
       )
       : null
     if ((obj as unknown as LabelledQuality)?.all) {
-      const filteredSuffix = tooltipSuffixText && tooltipSuffixText
-        .filter(val => !val.match('-/'))
+      const allEmpty = tooltipSuffixText && tooltipSuffixText
+        .filter(val => val.match('^-/|-$'))
 
-      return filteredSuffix && filteredSuffix.length === 4
-        ? `${date} ${tooltipPrefixText.join('')} : ${filteredSuffix.join('')}`
+      return tooltipSuffixText && !(allEmpty?.length === 4)
+        ? `${date} ${tooltipPrefixText.join('')} : ${tooltipSuffixText.join('')}`
         : ''
     }
   }
