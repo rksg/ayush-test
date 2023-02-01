@@ -1,7 +1,6 @@
 import { createContext, useState } from 'react'
 
 import { showActionModal, CustomButtonProps } from '@acx-ui/components'
-import { ApRadioCustomization }               from '@acx-ui/rc/utils'
 import { useParams }                          from '@acx-ui/react-router-dom'
 import { getIntl }                            from '@acx-ui/utils'
 
@@ -21,17 +20,10 @@ export interface ApEditContextType {
   updateChanges: (data?: unknown) => void | Promise<void>,
   discardChanges: (data?: unknown) => void | Promise<void>
 }
-export interface RadioContext {
-  radioData?: ApRadioCustomization,
-  updateWifiRadio?: ((data: ApRadioCustomization) => void)
-}
 
 export const ApEditContext = createContext({} as {
   editContextData: ApEditContextType,
   setEditContextData: (data: ApEditContextType) => void,
-
-  editRadioContextData: RadioContext,
-  setEditRadioContextData: (data: RadioContext) => void
 })
 
 export function ApEdit () {
@@ -39,15 +31,9 @@ export function ApEdit () {
   const Tab = tabs[activeTab as keyof typeof tabs]
   const [editContextData, setEditContextData] = useState({} as ApEditContextType)
 
-  const [
-    editRadioContextData, setEditRadioContextData
-  ] = useState({} as RadioContext)
-
   return <ApEditContext.Provider value={{
     editContextData,
-    setEditContextData,
-    editRadioContextData,
-    setEditRadioContextData
+    setEditContextData
   }}>
     <ApEditPageHeader />
     { Tab && <Tab /> }
@@ -57,7 +43,6 @@ export function ApEdit () {
 export function showUnsavedModal (
   editContextData: ApEditContextType,
   setEditContextData: (data: ApEditContextType) => void,
-  editRadioContextData: RadioContext,
   callback?: () => void
 ) {
   const { $t } = getIntl()
@@ -88,8 +73,6 @@ export function showUnsavedModal (
     closeAfterAction: true,
     handler: async () => {
       editContextData?.updateChanges?.()
-      editRadioContextData?.updateWifiRadio?.
-      (editRadioContextData.radioData as ApRadioCustomization)
       callback?.()
     }
   }]
