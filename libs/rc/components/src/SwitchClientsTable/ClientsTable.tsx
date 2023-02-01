@@ -111,7 +111,7 @@ export function ClientsTable (props: {
       dataIndex: 'vlanName',
       sorter: true,
       render: (data, row) => {
-        return row.clientVlan ? `${data} (${row.clientVlan})`: '--'
+        return row.clientVlan ? `${data ? data : ''} (${row.clientVlan})`: '--'
       }
     }]
     return columns
