@@ -6,12 +6,15 @@ import { render, screen, cleanup } from '@acx-ui/test-utils'
 
 import AllRoutes from './AllRoutes'
 
-jest.mock('./pages/Layout/Header/AlarmButton', () => () => {
-  return <div data-testid='alarm-button' />
-})
-jest.mock('./pages/Layout/Header/UserButton', () => () => {
-  return <div data-testid='user-button' />
-})
+jest.mock('@acx-ui/main/components', () => ({
+  ActivityButton: () => <div data-testid='activity-button' />,
+  AlarmsButton: () => <div data-testid='alarms-button' />,
+  HelpButton: () => <div data-testid='help-button' />,
+  UserButton: () => <div data-testid='user-button' />
+}))
+jest.mock('@acx-ui/rc/components', () => ({
+  CloudMessageBanner: () => <div data-testid='cloud-message-banner' />
+}))
 jest.mock('./pages/Dashboard', () => () => {
   return <div data-testid='dashboard' />
 })

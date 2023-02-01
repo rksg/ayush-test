@@ -2,8 +2,7 @@ import {
   Space,
   Modal,
   List,
-  Button,
-  Typography
+  Button
 } from 'antd'
 import styled from 'styled-components/macro'
 
@@ -16,10 +15,6 @@ import {
   CancelCircleSolid
 } from '@acx-ui/icons'
 
-
-type CopyableTextProps = {
-  color?: string
-}
 
 export const UserNameButton = styled(LayoutUI.ButtonSolid)`
   width: 32px;
@@ -81,12 +76,6 @@ export const AboutModal = styled(Modal)`
     height: 200px;
     border-radius: 8px;
   }
-`
-
-export const CopyableText = styled(Typography.Paragraph)
-  .attrs({ copyable: true })<CopyableTextProps>`
-  margin-bottom: 3px !important;
-  color: ${(props) => (props.color ? props.color : 'var(--acx-accents-blue-50)')};
 `
 
 export const SpaceBetween = styled(Space)`
@@ -164,14 +153,6 @@ export const AcknowledgeCircle = styled(CheckMarkCircleSolid)`
     }
   }
 `
-
-// export const VersionContainer = styled.div`
-//   font-weight: 400;
-//   font-family: Source Sans Pro;
-//   font-style: normal;
-//   font-size: 10px;
-//   color: var(--acx-neutrals-40)
-// `
 
 export const ClearButton = styled(Button)`
   border: none;
