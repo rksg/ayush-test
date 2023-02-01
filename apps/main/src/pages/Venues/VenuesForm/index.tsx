@@ -136,7 +136,7 @@ export function VenuesForm () {
   const [address, updateAddress] = useState<Address>(isMapEnabled? {} : defaultAddress)
 
   const { tenantId, venueId, action } = useParams()
-  const { data } = useGetVenueQuery({ params: { tenantId, venueId } })
+  const { data } = useGetVenueQuery({ params: { tenantId, venueId } }, { skip: !venueId })
 
   useEffect(() => {
     if (data) {

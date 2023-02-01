@@ -265,6 +265,11 @@ export function GuestFields ({ withBasicFields = true }: { withBasicFields?: boo
   const getAllowedNetworkList = async () => {
     const list = await (getNetworkList({ params, payload }, true).unwrap())
     setAllowedNetworkList(list.data)
+    if(list.data.length === 1) {
+      form.setFieldsValue({
+        networkId: list.data[0].id
+      })
+    }
   }
 
   useEffect(() => {
@@ -384,8 +389,6 @@ export function GuestFields ({ withBasicFields = true }: { withBasicFields?: boo
       rules={[
         { required: true }
       ]}
-      initialValue={allowedNetworkList?.length === 1 ?
-        allowedNetworkList[0].id : ''}
       children={<Select
         options={allowedNetworkList?.map(p => ({ label: p.name, value: p.id }))}
         disabled={allowedNetworkList?.length === 1}

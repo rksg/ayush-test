@@ -5,7 +5,6 @@ import {
   GridCol,
   GridRow,
   PageHeader,
-  RadioCard,
   RadioCardCategory,
   StepsForm
 } from '@acx-ui/components'
@@ -18,17 +17,14 @@ import {
 } from '@acx-ui/rc/utils'
 import { Path, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
-import {
-  serviceTypeDescMapping,
-  serviceTypeLabelMapping
-} from '../contentsMap'
+import { ServiceCard } from '../ServiceCard'
 
 import * as UI from './styledComponents'
 
 export default function SelectServiceForm () {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const servicesTablePath: Path = useTenantLink(getServiceListRoutePath(true))
+  const myServicesPath: Path = useTenantLink(getServiceListRoutePath(true))
   const tenantBasePath: Path = useTenantLink('')
   const networkSegmentationEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION)
   const isEdgesEnable = useIsSplitOn(Features.EDGES)
@@ -71,7 +67,7 @@ export default function SelectServiceForm () {
       ]
     },
     {
-      title: defineMessage({ defaultMessage: 'More Services' }),
+      title: defineMessage({ defaultMessage: 'Guests & Residents' }),
       items: [
         { type: ServiceType.PORTAL, categories: [RadioCardCategory.WIFI] },
         {
@@ -92,7 +88,7 @@ export default function SelectServiceForm () {
         ]}
       />
       <StepsForm
-        onCancel={() => navigate(servicesTablePath)}
+        onCancel={() => navigate(myServicesPath)}
         buttonLabel={{ submit: $t({ defaultMessage: 'Next' }) }}
       >
         <StepsForm.StepForm
@@ -113,13 +109,11 @@ export default function SelectServiceForm () {
                     {set.items.map(item => item.disabled
                       ? null
                       : <GridCol col={{ span: 6 }}>
-                        <RadioCard
-                          type={'radio'}
+                        <ServiceCard
                           key={item.type}
-                          value={item.type}
-                          title={$t(serviceTypeLabelMapping[item.type])}
-                          description={$t(serviceTypeDescMapping[item.type])}
+                          serviceType={item.type}
                           categories={item.categories}
+                          type={'radio'}
                         />
                       </GridCol>)}
                   </GridRow>

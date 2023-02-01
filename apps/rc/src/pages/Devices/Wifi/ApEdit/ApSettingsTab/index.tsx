@@ -77,7 +77,7 @@ export function ApSettingsTab () {
           {tabTitleMap('multicast')}
           <Tooltip title={$t(directedMulticastInfo)} placement='right'>
             <QuestionMarkCircleOutlined
-              style={{ marginLeft: '8px', height: '16px' }}/>
+              style={{ marginLeft: '8px', marginBottom: '-3px', height: '16px', width: '16px' }}/>
           </Tooltip>
         </>}
         key='multicast'>
