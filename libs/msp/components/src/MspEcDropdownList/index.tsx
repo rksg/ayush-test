@@ -35,17 +35,17 @@ export function MspEcDropdownList () {
   let isSupportEc = false
   let isSupport = false
   let isVar = false
-  if (tenantDetail?.tenantType === AccountType.MSP_EC) {
-    if (userProfile?.support === true) {
-      isSupportEc = true
+  if (tenantDetail && userProfile) {
+    if (userProfile.support === true) {
+      if (tenantDetail.tenantType === AccountType.MSP_EC)
+        isSupportEc = true
+      else
+        isSupport = true
     } else {
-      isMspEc = true
-    }
-  } else if (tenantDetail?.tenantType === AccountType.MSP_EC) {
-    if (userProfile?.support === true) {
-      isSupport = true
-    } else {
-      isVar = true
+      if (tenantDetail.tenantType === AccountType.MSP_EC)
+        isMspEc = true
+      else
+        isVar = true
     }
   }
 
