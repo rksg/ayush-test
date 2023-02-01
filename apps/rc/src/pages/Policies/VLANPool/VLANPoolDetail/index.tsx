@@ -3,8 +3,14 @@ import { useParams } from 'react-router-dom'
 
 import { PageHeader, Button, GridRow, Loader, GridCol } from '@acx-ui/components'
 import { useGetVLANPoolPolicyDetailQuery }              from '@acx-ui/rc/services'
-import { VLANPoolPolicyType, getPolicyListRoutePath }   from '@acx-ui/rc/utils'
-import { TenantLink }                                   from '@acx-ui/react-router-dom'
+import {
+  VLANPoolPolicyType,
+  getPolicyListRoutePath,
+  getPolicyDetailsLink,
+  PolicyType,
+  PolicyOperation
+}   from '@acx-ui/rc/utils'
+import { TenantLink } from '@acx-ui/react-router-dom'
 
 import VLANPoolInstancesTable from './VLANPoolInstancesTable'
 import VLANPoolOverview       from './VLANPoolOverview'
@@ -21,7 +27,12 @@ export default function VLANPoolDetail () {
           { text: $t({ defaultMessage: 'Policies' }), link: getPolicyListRoutePath() }
         ]}
         extra={[
-          <TenantLink to={`/policies/vlanPool/${queryResults.data?.id}/edit`} key='edit'>
+          <TenantLink to={getPolicyDetailsLink({
+            type: PolicyType.VLAN_POOL,
+            oper: PolicyOperation.EDIT,
+            policyId: queryResults.data?.id||''
+          })}>
+
             <Button key={'configure'} type={'primary'}>
               {$t({ defaultMessage: 'Configure' })}
             </Button></TenantLink>
