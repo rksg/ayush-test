@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
-import { Divider, Input } from 'antd'
-import { capitalize }     from 'lodash'
-import { useIntl }        from 'react-intl'
+import { Divider, Input }       from 'antd'
+import { capitalize, includes } from 'lodash'
+import { useIntl }              from 'react-intl'
 
 import { ContentSwitcher, ContentSwitcherProps, Drawer, Descriptions }                          from '@acx-ui/components'
 import { useApLanPortsQuery, useGetApRadioCustomizationQuery, useGetVenueQuery }                from '@acx-ui/rc/services'
@@ -118,7 +118,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
             (currentAP?.IP)? `${currentAP.IP}${ipTypeDisplay}` : '--'
           }
         />
-        { ipTypeDisplay === 'Static' && (
+        { includes(ipTypeDisplay, 'Static') && (
           <>
             <Descriptions.Item
               label={$t({ defaultMessage: 'Network Mask' })}
