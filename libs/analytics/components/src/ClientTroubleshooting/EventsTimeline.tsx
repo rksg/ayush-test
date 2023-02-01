@@ -208,7 +208,7 @@ export function TimeLine (props: TimeLineProps) {
                       ? config.chartMapping.concat(
                         getRoamingChartConfig(roamingEventsAps as RoamingConfigParam)
                       ).reverse()
-                      : config.chartMapping
+                      : config.chartMapping.slice().reverse()
                     : [config.chartMapping[0]]
                 }
                 hasXaxisLabel={config?.hasXaxisLabel}
@@ -216,7 +216,7 @@ export function TimeLine (props: TimeLineProps) {
                 tooltipFormatter={useLabelFormatter}
                 // caputuring scatterplot dot click to open popover
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                // onDotClick={(params) => {}}
+                // onDotClick={(params) => {}}`
               />
             </Col>
           ))}

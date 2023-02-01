@@ -7,7 +7,8 @@ import {
   useRef,
   useState,
   RefCallback,
-  useImperativeHandle
+  useImperativeHandle,
+  useMemo
 } from 'react'
 
 
@@ -278,14 +279,15 @@ export function TimelineChart ({
 
   const eChartsRef = useRef<ReactECharts>(null)
   const [canResetZoom, resetZoomCallback] = useDataZoom(eChartsRef, true)
+
   // use selected event on dot click to show popover
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selected, setSelected] = useState<number | undefined>(selectedData)
   useDotClick(eChartsRef, onDotClick, setSelected)
 
-  const seriesData = mapping
-    .reverse()
+  const seriesData = useMemo(() => mapping
     .slice()
+    .reverse()
     .map(({ key, series, chartType }) =>
       chartType === 'scatter'
         ? ({
@@ -310,9 +312,9 @@ export function TimelineChart ({
           data: getSeriesData(data, key, series),
           connectNulls: true
         }
-    ) as SeriesOption[]
+    ) as SeriesOption[], [data, mapping])
 
-  const option: EChartsOption = {
+  const option: EChartsOption = useMemo(() => ({
     animation: false,
     grid: {
       top: 0,
@@ -336,7 +338,8 @@ export function TimelineChart ({
           color: cssStr('--acx-neutrals-70'),
           type: 'solid',
           width: 1
-        }
+        },
+        zlevel: 10
       },
       // use this formatter to add popover content
       formatter: /* istanbul ignore next */ () => '',
@@ -442,7 +445,16 @@ export function TimelineChart ({
       }
     ],
     series: seriesData
-  }
+  }), [chartBoundary, hasXaxisLabel, mapping, props.style?.width, seriesData])
+
+
+  useEffect(() => {
+    if (eChartsRef && eChartsRef.current) {
+      const instance = eChartsRef.current.getEchartsInstance()
+      instance.setOption(option)
+    }
+  }, [option])
+
   return (
     <>
       <ReactECharts
