@@ -158,7 +158,7 @@ const RuleTable = (props: RuleTableProps) => {
     clearSelection()
   }
 
-  const rowActions: TableProps<RogueAPRule>['actions'] = [{
+  const rowActions: TableProps<RogueAPRule>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
     visible: (row: RogueAPRule[]) => row.length <= 1,
     onClick: editAction
@@ -196,6 +196,7 @@ const RuleTable = (props: RuleTableProps) => {
             row: DraggableBodyRow
           }
         }}
+        columnState={{ hidden: true }}
       />
     </>
   )

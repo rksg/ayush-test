@@ -1,7 +1,6 @@
 import {
   ServiceAdminState,
   ServiceStatus,
-  ServiceTechnology,
   ServiceType,
   ApDeviceStatusEnum,
   GuestNetworkTypeEnum,
@@ -33,6 +32,7 @@ export * from './client'
 export * from './components'
 export * from './switch'
 export * from './timeline'
+export * from './persona'
 export * from './radiusClientConfig'
 
 export interface CommonResult {
@@ -315,7 +315,6 @@ export interface Service {
   type: ServiceType
   status: ServiceStatus
   adminState: ServiceAdminState
-  technology: ServiceTechnology
   scope: number
   health: string
   tags: string[]
@@ -449,4 +448,28 @@ export interface PlmMessageBanner {
   startTime: string,
   tenantType: string,
   updatedDate: string
+}
+
+export enum SWITCH_CLIENT_TYPE {
+  AP = 'WLAN_AP',
+  ROUTER = 'ROUTER'
+}
+
+export interface SwitchClient {
+  id: string
+  clientMac: string
+  clientIpv4Addr: string
+  clientIpv6Addr: string
+  clientName: string
+  clientDesc: string
+  clientType: SWITCH_CLIENT_TYPE
+  switchId: string
+  switchName: string
+  switchPort: string
+  switchSerialNumber: string
+  clientVlan: string
+  vlanName: string
+  venueId: string
+  venueName: string
+  isRuckusAP: boolean
 }

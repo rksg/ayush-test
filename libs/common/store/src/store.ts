@@ -1,6 +1,5 @@
 import { configureStore, isRejectedWithValue }            from '@reduxjs/toolkit'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
-import { generatePath }                                   from 'react-router-dom'
 
 import { dataApi }                                     from '@acx-ui/analytics/services'
 import {
@@ -17,6 +16,7 @@ import {
   basePolicyApi as policyApi,
   baseClientApi as clientApi,
   baseSwitchApi as switchApi,
+  basePersonaApi as personaApi,
   baseRadiusClientConfigApi as radiusClientConfigApi
 } from '@acx-ui/rc/services'
 
@@ -46,7 +46,8 @@ const errorMiddleware: Middleware = () => (next) => (action: ErrorAction) => {
       (status === 400 && error === 'API-KEY not present') ||
       status === 401 || status === 403
     ) {
-      window.location.href = generatePath('/logout')
+      sessionStorage.removeItem('jwt')
+      window.location.href = '/logout'
     }
   }
   return next(action)
@@ -72,6 +73,7 @@ export const store = configureStore({
     [policyApi.reducerPath]: policyApi.reducer,
     [clientApi.reducerPath]: clientApi.reducer,
     [switchApi.reducerPath]: switchApi.reducer,
+    [personaApi.reducerPath]: personaApi.reducer,
     [radiusClientConfigApi.reducerPath]: radiusClientConfigApi.reducer
   },
 
@@ -96,6 +98,7 @@ export const store = configureStore({
       policyApi.middleware,
       clientApi.middleware,
       switchApi.middleware,
+      personaApi.middleware,
       radiusClientConfigApi.middleware
     ])
   },

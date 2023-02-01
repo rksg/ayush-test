@@ -7,7 +7,6 @@ import {
   Slider
 } from 'antd'
 import { CheckboxChangeEvent } from 'antd/lib/checkbox/Checkbox'
-import { useWatch }            from 'antd/lib/form/Form'
 import { get }                 from 'lodash'
 import { useIntl }             from 'react-intl'
 
@@ -21,6 +20,8 @@ enum MaxRateEnum {
   PER_AP = 'perAp',
   UNLIMITED = 'unlimited'
 }
+
+const { useWatch } = Form
 
 export function LoadControlForm () {
   const maxRate = useWatch<MaxRateEnum>('maxRate')

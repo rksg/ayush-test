@@ -2,10 +2,11 @@ import { useContext } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Tabs, Tooltip }                         from '@acx-ui/components'
-import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { notAvailableMsg }                       from '@acx-ui/utils'
+import { Tabs, Tooltip }                          from '@acx-ui/components'
+import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }             from '@acx-ui/icons'
+import { useNavigate, useParams, useTenantLink }  from '@acx-ui/react-router-dom'
+import { directedMulticastInfo, notAvailableMsg } from '@acx-ui/utils'
 
 import { ApEditContext } from '../index'
 
@@ -72,7 +73,14 @@ export function ApSettingsTab () {
         {$t({ defaultMessage: 'mDNS Proxy' })}
       </TabPane>
       {supportDirectedMulticast &&
-        <TabPane tab={tabTitleMap('multicast')} key='multicast'>
+        <TabPane tab={<>
+          {tabTitleMap('multicast')}
+          <Tooltip title={$t(directedMulticastInfo)} placement='right'>
+            <QuestionMarkCircleOutlined
+              style={{ marginLeft: '8px', marginBottom: '-3px', height: '16px', width: '16px' }}/>
+          </Tooltip>
+        </>}
+        key='multicast'>
           <DirectedMulticast />
         </TabPane>
       }

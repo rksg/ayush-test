@@ -2,7 +2,8 @@ import {
   DateRange,
   dateRangeForLast,
   getDateRangeFilter,
-  resetRanges
+  resetRanges,
+  getCurrentDate
 } from './dateUtil'
 
 
@@ -40,6 +41,13 @@ describe('dateUtil', () => {
         endDate: '2022-01-01T00:00:00+00:00',
         startDate: '2021-12-31T00:00:00+00:00'
       })
+    })
+  })
+  describe('getCurrentDate', () => {
+    it('Should return date range for the given input', () => {
+      expect(getCurrentDate('YYYYMMDDHHMMSS').toString()).toEqual(
+        '20220101000100'
+      )
     })
   })
 })
