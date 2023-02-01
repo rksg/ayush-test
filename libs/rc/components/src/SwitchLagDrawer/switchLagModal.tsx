@@ -1,88 +1,45 @@
 
-import {
-  Space } from 'antd'
-import _           from 'lodash'
-import { useIntl } from 'react-intl'
+import { useState } from 'react'
 
-import { Button, Drawer, Loader, Modal, Table, TableProps, Tooltip } from '@acx-ui/components'
-import { DeleteOutlinedIcon, EditOutlinedIcon }                      from '@acx-ui/icons'
-import { useGetLagListQuery }                                        from '@acx-ui/rc/services'
-import { Lag }                                                       from '@acx-ui/rc/utils'
-import { useParams }                                                 from '@acx-ui/react-router-dom'
+import {
+  Col,
+  Form,
+  Input,
+  Radio,
+  Row,
+  Select,
+  Space } from 'antd'
+import Transfer, { TransferItem } from 'antd/lib/transfer'
+import _                          from 'lodash'
+import { useIntl }                from 'react-intl'
+
+import { Button, Drawer, Loader, Modal, StepsForm, Table, TableProps, Tooltip } from '@acx-ui/components'
+import { DeleteOutlinedIcon, EditOutlinedIcon }                                 from '@acx-ui/icons'
+import { EdgeIpModeEnum, Lag, SwitchVlanUnion,
+  PortSettingModel,
+  EditPortMessages }                                                  from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
+
+import { SelectVlanModal } from '../SwitchPortTable/selectVlanModal'
 
 interface SwitchLagProps {
   visible: boolean
+  isEditMode: boolean
   setVisible: (visible: boolean) => void
 }
 
 export const SwitchLagModal = (props: SwitchLagProps) => {
   const { $t } = useIntl()
-  const { visible, setVisible } = props
+  const { visible, setVisible, isEditMode } = props
 
   const onClose = () => {
     setVisible(false)
   }
 
-  const columns: TableProps<Lag>['columns'] = [
-    {
-      key: 'name',
-      title: $t({ defaultMessage: 'LAG Name' }),
-      sorter: false,
-      dataIndex: 'name'
-    }, {
-      key: 'type',
-      title: $t({ defaultMessage: 'LAG Type' }),
-      sorter: false,
-      dataIndex: 'type',
-      render: function (data) {
-        return _.isString(data) ? _.capitalize(data) : ''
-      }
-    }, {
-      key: 'ports',
-      title: $t({ defaultMessage: 'Ports' }),
-      sorter: false,
-      dataIndex: 'ports',
-      render: function (data, row) {
-        if (Array.isArray(data)) {
-          return <Tooltip
-            placement='bottom'
-            title={row.ports.map(p => {
-              return (<span>{p}<br /></span>)
-            })} >
-            {data.length}
-          </Tooltip>
-        } else {
-          return
-        }
-      }
-    }, {
-      key: 'action',
-      dataIndex: 'action',
-      render: function (data, row) {
-        return <>
-          <Button
-            key='edit'
-            role='editBtn'
-            ghost={true}
-            icon={<EditOutlinedIcon />}
-            style={{ height: '16px' }}
-            onClick={() => handleDelete()}
-          />
-          <Button
-            key='delete'
-            role='deleteBtn'
-            ghost={true}
-            icon={<DeleteOutlinedIcon />}
-            style={{ height: '16px' }}
-            onClick={() => handleDelete()}
-          />
-        </>
-      }
-    }]
-
-
   const { tenantId, switchId } = useParams()
-  const { data, isLoading } = useGetLagListQuery({ params: { tenantId, switchId } })
+  // const { data, isLoading } = useGetLagListQuery({ params: { tenantId, switchId } })
+  const [form] = Form.useForm()
+  const [portsOption, setPortsOption] = useState([] as TransferItem[])
 
 
   const handleDelete = () => {
@@ -92,6 +49,15 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
     // setModelOptions(supportModelOptions.filter(item =>
     //   models.indexOf(item.value) === -1)
     // )
+  }
+
+  const getTitle = () => {
+    const title = isEditMode
+      ? $t({ defaultMessage: 'Edit LAG' })
+      : $t({ defaultMessage: 'Add LAG' }
+      )
+
+    return title
   }
 
   const footer = [
@@ -108,29 +74,147 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
     </Space>
   ]
 
+  const [selectModalvisible, setSelectModalvisible] = useState(true)
+  const [useVenueSettings, setUseVenueSettings] = useState(true)
+  const onValuesChange = async () => {}
+  const [switchVlans, setSwitchVlans] = useState({} as SwitchVlanUnion)
+
   return (
+    <>
+      <Modal
+        title={getTitle()}
+        visible={visible}
+        onCancel={onClose}
+        width={644}
+        footer={footer}
+        children={
+        // <Loader
+        //   states={[
+        //     { isLoading }
+        //   ]}
+        // >
+          <Form
+            form={form}
+            layout='vertical'
+          >
+            <Row gutter={20}>
+              <Col span={10}>
+                <Form.Item
+                  name='name'
+                  label={$t({ defaultMessage: 'LAG Name' })}
+                  rules={[
+                    { required: true },
+                    { min: 1 },
+                    { max: 64 }
+                  ]}
+                  children={<Input />}
+                />
+                <Form.Item
+                  name='lagType'
+                  label={$t({ defaultMessage: 'Type' })}
+                  rules={[{
+                    required: true
+                  }]}
+                  children={
+                    <Radio.Group>
+                      <Space direction='vertical'>
+                        <Radio value={EdgeIpModeEnum.DHCP}>
+                          {$t({ defaultMessage: 'DHCP' })}
+                        </Radio>
+                        <Radio value={EdgeIpModeEnum.STATIC}>
+                          {$t({ defaultMessage: 'Static/Manual' })}
+                        </Radio>
+                      </Space>
+                    </Radio.Group>
+                  }
+                />
+                <StepsForm.Title
+                  style={{ padding: '10px 0px' }}>
+                  {$t({ defaultMessage: 'Select Ports' })}
+                </StepsForm.Title>
+                <Form.Item
+                  name='portsType'
+                  label={<>
+                    {$t({ defaultMessage: 'Ports Type' })}
+                  </>}
+                  initialValue={null}
+                  rules={[{
+                    required: true,
+                    message: $t({ defaultMessage: 'Please select ports type' })
+                  }]}
+                  children={<Select
+                    options={[
+                      { label: $t({ defaultMessage: 'Select ports type...' }), value: null }
+                    // ...venueOption
+                    ]}
+                  // onChange={async (value) => await handleVenueChange(value)}
+                  />}
+                />
+                <Form.Item
+                  name='stackMember'
+                  label={<>
+                    {$t({ defaultMessage: 'Stack Member' })}
+                  </>}
+                  initialValue={null}
+                  children={<Select
+                    options={[
+                      { label: $t({ defaultMessage: 'All Stack Member' }), value: null }
+                    // ...venueOption
+                    ]}
+                  // onChange={async (value) => await handleVenueChange(value)}
+                  />}
+                />
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <Form.Item
+                  name='apSerialNumbers'
+                  valuePropName='targetKeys'
+                >
+                  <Transfer
+                    listStyle={{ width: 200, height: 316 }}
+                    showSearch
+                    showSelectAll={false}
+                    dataSource={[{ key: 'test', title: 'test', name: 'test' }]}
+                    // portsOption}
+                    render={item => item.name}
+                    operations={['Add', 'Remove']}
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
 
-    <Modal
-      title={$t({ defaultMessage: 'Manage LAG' })}
-      visible={visible}
-      // onClose={onClose}
-      width={644}
-      footer={footer}
-      children={
-        <Loader
-          states={[
-            { isLoading }
-          ]}
-        >
-          <Table
-            columns={columns}
-            type='compact'
-            dataSource={data}
-            rowKey='name'
-          />
-        </Loader>
-      }
-    />
+            <Form.Item
+              name='untaggedVLAN'
+              label={$t({ defaultMessage: 'Untagged VLAN' })}
+              children={'--'}
+            />
+            <Form.Item
+              name='taggedVLANs'
+              label={$t({ defaultMessage: 'Tagged VLANs' })}
+              children={'--'}
+            />
+          </Form>
 
+
+        // </Loader>
+        }
+      />
+      <SelectVlanModal
+        form={form}
+        selectModalvisible={selectModalvisible}
+        setSelectModalvisible={setSelectModalvisible}
+        setUseVenueSettings={setUseVenueSettings}
+        onValuesChange={onValuesChange}
+        defaultVlan={''}
+        switchVlans={[]}
+        venueVlans={[]}
+        taggedVlans={''}
+        untaggedVlan={0}
+        vlanDisabledTooltip={$t(EditPortMessages.ADD_VLAN_DISABLE)}
+      />
+    </>
   )
+
 }

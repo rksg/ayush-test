@@ -21,7 +21,7 @@ export const SwitchLagDrawer = (props: SwitchLagProps) => {
   const { $t } = useIntl()
   const { visible, setVisible } = props
   const [modalVisible, setModalVisible] = useState(false)
-
+  const [isEditMode, setIsEditMode] = useState(false)
 
 
   const onClose = () => {
@@ -115,35 +115,39 @@ export const SwitchLagDrawer = (props: SwitchLagProps) => {
 
   return (
     <>
-    <Drawer
-      title={$t({ defaultMessage: 'Manage LAG' })}
-      visible={visible}
-      onClose={onClose}
-      width={644}
-      footer={footer}
-      children={
-        <Loader
-          states={[
-            { isLoading }
-          ]}
-        >
-          <Table
-            columns={columns}
-            type='compact'
-            dataSource={data}
-            rowKey='name'
-            actions={
-              [{
-                label: $t({ defaultMessage: 'Manage LAG' }),
-                onClick: () => { setModalVisible(true) }
-              }]
+      <Drawer
+        title={$t({ defaultMessage: 'Manage LAG' })}
+        visible={visible}
+        onClose={onClose}
+        width={644}
+        footer={footer}
+        children={
+          <Loader
+            states={[
+              { isLoading }
+            ]}
+          >
+            <Table
+              columns={columns}
+              type='compact'
+              dataSource={data}
+              rowKey='name'
+              actions={
+                [{
+                  label: $t({ defaultMessage: 'Manage LAG' }),
+                  onClick: () => {
+                    setModalVisible(true)
+                    setIsEditMode(false)
+                  }
+                }]
 
-            }
-          />
+              }
+            />
           </Loader>
         }
       />
       {<SwitchLagModal
+        isEditMode={isEditMode}
         visible={modalVisible}
         setVisible={setModalVisible}
       />}
