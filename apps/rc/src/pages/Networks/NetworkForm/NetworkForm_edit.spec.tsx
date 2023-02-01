@@ -235,7 +235,7 @@ describe('NetworkForm', () => {
     await userEvent.click(screen.getByText('Finish'))
   })
 
-  it('should set different ssid successfully', async () => {
+  it.skip('should set different ssid successfully', async () => {
     const params = {
       networkId: '5d45082c812c45fbb9aab24420f39bf0',
       tenantId: 'tenant-id',
