@@ -8,6 +8,7 @@ import moment                         from 'moment-timezone'
 import { useIntl, MessageDescriptor } from 'react-intl'
 
 import { Incident }      from '@acx-ui/analytics/utils'
+import { Tooltip }       from '@acx-ui/components'
 import { useDateFilter } from '@acx-ui/utils'
 
 import {
@@ -20,7 +21,8 @@ import {
   RoamingByAP,
   RoamingConfigParam,
   RoamingTimeSeriesData,
-  DisplayEvent
+  DisplayEvent,
+  ALL
 } from './config'
 import { ConnectionEventPopover }          from './ConnectionEvent'
 import { ClientInfoData, ConnectionEvent } from './services'
@@ -35,7 +37,7 @@ import {
   getRoamingSubtitleConfig,
   getTimelineData,
   getChartData,
-  useTooltipFormatter,
+  useLabelFormatter,
   transformIncidents
 } from './util'
 
@@ -58,10 +60,6 @@ export function TimeLine (props: TimeLineProps) {
   const types: string[] = flatten(filters ? filters.type ?? [[]] : [[]])
   const radios: string[] = flatten(filters ? filters.radio ?? [[]] : [[]])
   const selectedCategories: string[] = flatten(filters ? filters.category ?? [[]] : [[]])
-  const roamingEventsAps = connectionDetailsByAP(data?.connectionDetailsByAp as RoamingByAP[])
-  const roamingEventsTimeSeries = connectionDetailsByApChartData(
-    data?.connectionDetailsByAp as RoamingByAP[]
-  ) as unknown as RoamingTimeSeriesData[]
   const qualties = transformConnectionQualities(data?.connectionQualities)
   const events = transformEvents(
     data?.connectionEvents as ConnectionEvent[],
@@ -98,6 +96,10 @@ export function TimeLine (props: TimeLineProps) {
       />
     )
   const TimelineData = getTimelineData(events, incidents)
+  const roamingEventsAps = connectionDetailsByAP(data?.connectionDetailsByAp as RoamingByAP[])
+  const roamingEventsTimeSeries = connectionDetailsByApChartData(
+    data?.connectionDetailsByAp as RoamingByAP[]
+  ) as unknown as RoamingTimeSeriesData[]
   const connectChart = (chart: ReactECharts | null) => {
     if (chart) {
       const instance = chart.getEchartsInstance()
@@ -115,10 +117,18 @@ export function TimeLine (props: TimeLineProps) {
   const [ eventState, setEventState ] = useState({} as CoordDisplayEvent)
   const [ visible, setVisible ] = useState(false)
 
+  const roamingTooltipCallback =
+  (apMac: string, apModel: string, apFirmware: string, noData: boolean) =>
+    noData
+      ? $t({ defaultMessage: 'No Data' })
+      : $t(
+        { defaultMessage: 'MAC Address: {apMac} {br}Model: {apModel} {br}Firmware: {apFirmware}' },
+        { br: '\n', apMac, apModel, apFirmware }
+      )
   return (
     <Row gutter={[16, 16]} wrap={false}>
       <Col flex='200px'>
-        <Row gutter={[16, 16]} style={{ rowGap: '4px' }}>
+        <Row gutter={[16, 16]} style={{ rowGap: '3px' }}>
           {ClientTroubleShootingConfig.timeLine.map((config, index) => (
             <React.Fragment key={index}>
               <Col span={3}>
@@ -143,14 +153,25 @@ export function TimeLine (props: TimeLineProps) {
                 (config.value === TYPES.ROAMING
                   ? getRoamingSubtitleConfig(roamingEventsAps as RoamingConfigParam)
                   : config?.subtitle
-                )?.map((subtitle) => (
-                  <React.Fragment key={subtitle.value}>
+                )?.map((subtitle, index) => (
+                  <React.Fragment key={subtitle.value + index}>
                     <Col span={17} offset={3} style={subtitle.isLast ? { marginBottom: 40 } : {}}>
-                      <UI.TimelineSubContent>
-                        {config.value === TYPES.ROAMING
-                          ? (subtitle.title as string)
-                          : ($t(subtitle.title as MessageDescriptor) as string)}
-                      </UI.TimelineSubContent>
+                      {config.value === TYPES.ROAMING
+                        ? <UI.RoamingTimelineSubContent>
+                          <Tooltip
+                            placement='top'
+                            title={roamingTooltipCallback(
+                              (subtitle as { apMac: string }).apMac,
+                              (subtitle as { apModel: string }).apModel,
+                              (subtitle as { apFirmware: string }).apFirmware,
+                              (subtitle as { noData: boolean }).noData)}
+                          >
+                            {subtitle.title as string}
+                          </Tooltip>
+                        </UI.RoamingTimelineSubContent>
+                        : <UI.TimelineSubContent>
+                          {($t(subtitle.title as MessageDescriptor))}
+                        </UI.TimelineSubContent>}
                     </Col>
                     <Col span={4}>
                       {config.showCount ? (
@@ -174,7 +195,7 @@ export function TimeLine (props: TimeLineProps) {
       </Col>
       <Col flex='auto'>
         <Row gutter={[16, 16]} style={{ rowGap: 0 }}>
-          {ClientTroubleShootingConfig.timeLine.map((config) => (
+          {ClientTroubleShootingConfig.timeLine.map((config, index) => (
             <Col span={24} key={config.value}>
               <ConnectionEventPopover
                 arrowPointAtCenter
@@ -188,6 +209,8 @@ export function TimeLine (props: TimeLineProps) {
                 }}
               >
                 <TimelineChart
+                  key={index}
+                  index={index}
                   style={{ width: 'auto', marginBottom: 8 }}
                   data={getChartData(
                   config?.value as keyof TimelineData,
@@ -195,28 +218,25 @@ export function TimeLine (props: TimeLineProps) {
                   expandObj[config?.value as keyof TimelineData],
                   !Array.isArray(qualties) ? qualties.all : [],
                   Array.isArray(incidents) ? incidents : [],
-                  roamingEventsTimeSeries
+                  {
+                    ...roamingEventsTimeSeries,
+                    [ALL]: TimelineData.roaming.all
+                  } as RoamingTimeSeriesData[]
                   )}
                   showResetZoom={config?.showResetZoom}
                   chartBoundary={chartBoundary}
                   mapping={
                     expandObj[config?.value as keyof TimelineData]
                       ? config.value === TYPES.ROAMING
-                        ? [
-                          ...config.chartMapping,
-                          ...(getRoamingChartConfig(roamingEventsAps as RoamingConfigParam) as {
-                            key: string;
-                            label: string;
-                            chartType: string;
-                            series: string;
-                          }[])
-                        ]
+                        ? config.chartMapping.concat(
+                          getRoamingChartConfig(roamingEventsAps as RoamingConfigParam)
+                        ).reverse()
                         : config.chartMapping
                       : [config.chartMapping[0]]
                   }
                   hasXaxisLabel={config?.hasXaxisLabel}
                   chartRef={connectChart}
-                  tooltipFormatter={useTooltipFormatter}
+                  tooltipFormatter={useLabelFormatter}
                   onDotClick={(params) => {
                     setEventState(params as CoordDisplayEvent)
                     setVisible(true)

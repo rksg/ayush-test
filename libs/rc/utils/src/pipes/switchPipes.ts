@@ -61,6 +61,9 @@ export function transformConfigType (type: ConfigTypeEnum | string) {
     case ConfigTypeEnum.STATIC_ROUTE:
       transform = $t({ defaultMessage: 'Static Route' })
       break
+    case ConfigTypeEnum.TRIGGER_SYNC:
+      transform = $t({ defaultMessage: 'Trigger Sync' })
+      break
     case 'VLAN':
       transform = $t({ defaultMessage: 'VLAN' })
       break

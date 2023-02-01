@@ -312,7 +312,7 @@ exports[`ClientTroubleshootingTab should render correctly with search params 1`]
           style="padding: 16px 8px 16px 8px;"
         >
           <div
-            class="styledComponents__TimelineLoaderWrapper-sc-hmshlr-14 edZIKz"
+            class="styledComponents__TimelineLoaderWrapper-sc-hmshlr-15 kKnIRS"
           >
             <div
               class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
@@ -327,7 +327,7 @@ exports[`ClientTroubleshootingTab should render correctly with search params 1`]
                 >
                   <div
                     class="ant-row"
-                    style="margin: -8px -8px -8px -8px; row-gap: 4px;"
+                    style="margin: -8px -8px -8px -8px; row-gap: 3px;"
                   >
                     <div
                       class="ant-col ant-col-3"
@@ -979,7 +979,7 @@ exports[`ClientTroubleshootingTab should render correctly without search params 
           style="padding: 16px 8px 16px 8px;"
         >
           <div
-            class="styledComponents__TimelineLoaderWrapper-sc-hmshlr-14 edZIKz"
+            class="styledComponents__TimelineLoaderWrapper-sc-hmshlr-15 kKnIRS"
           >
             <div
               class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
@@ -994,7 +994,7 @@ exports[`ClientTroubleshootingTab should render correctly without search params 
                 >
                   <div
                     class="ant-row"
-                    style="margin: -8px -8px -8px -8px; row-gap: 4px;"
+                    style="margin: -8px -8px -8px -8px; row-gap: 3px;"
                   >
                     <div
                       class="ant-col ant-col-3"
@@ -1789,7 +1789,7 @@ exports[`ClientTroubleshootingTab should set search param on option selection 1`
           style="padding: 16px 8px 16px 8px;"
         >
           <div
-            class="styledComponents__TimelineLoaderWrapper-sc-hmshlr-14 edZIKz"
+            class="styledComponents__TimelineLoaderWrapper-sc-hmshlr-15 kKnIRS"
           >
             <div
               class="styledComponents__Wrapper-sc-1352uh8-0 ilNUvb"

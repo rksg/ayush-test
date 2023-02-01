@@ -1,8 +1,6 @@
-import { TooltipComponentFormatterCallbackParams } from 'echarts'
-import { maxBy, groupBy, flatMap }                 from 'lodash'
-import moment                                      from 'moment-timezone'
-import { renderToString }                          from 'react-dom/server'
-import { IntlShape }                               from 'react-intl'
+import { maxBy, groupBy, flatMap } from 'lodash'
+import moment                      from 'moment-timezone'
+import { IntlShape }               from 'react-intl'
 
 import {
   mapCodeToFailureText,
@@ -53,6 +51,7 @@ import * as UI                                from './styledComponents'
 
 type ConnectionEventsKey = 'connectionEvents'
 type NetworkIncidentsKey = 'networkIncidents'
+type RoamingEventsKey = 'roaming'
 type RBGA = { r: number; b: number; g: number; a: number }
 const connection = 'connection'
 const performance = 'performance'
@@ -291,10 +290,26 @@ export const getRoamingChartConfig = (data: RoamingConfigParam) => {
   })
 }
 export const getRoamingSubtitleConfig = (data: RoamingConfigParam) => {
+  if (Object.keys(data).length === 0) {
+    return [{
+      title: 'No Data',
+      apMac: 'No Data',
+      apModel: '',
+      apFirmware: '',
+      value: '',
+      isLast: true,
+      noData: true
+    }]
+  }
+
   return Object.keys(data).map((key, index) => {
     return {
       title: `${data[key].apName} on ${data[key].radio}GHz`,
+      apMac: data[key].apMac,
+      apModel: data[key].apModel,
+      apFirmware: data[key].apFirmware,
       value: data[key].apName,
+      noData: false,
       isLast: Object.keys(data).length === index + 1 ? true : false
     }
   })
@@ -488,17 +503,26 @@ export const getTimelineData = (events: Event[], incidents: IncidentDetails[]) =
             event
           ]
       }
+      if (event?.type === TYPES.ROAMING) {
+        acc[TYPES.ROAMING as RoamingEventsKey][ALL] = [
+          ...acc[TYPES.ROAMING as RoamingEventsKey][ALL],
+          event
+        ]
+      }
       return acc
     },
     {
-      connectionEvents: {
+      [TYPES.CONNECTION_EVENTS]: {
         [SUCCESS]: [],
         [FAILURE]: [],
         [DISCONNECT]: [],
         [SLOW]: [],
-        all: []
+        [ALL]: []
+      },
+      [TYPES.ROAMING]: {
+        [ALL]: []
       }
-    } as TimelineData
+    } as unknown as TimelineData
   )
   const categorisedIncidents = incidents.reduce(
     (acc, incident) => {
@@ -528,7 +552,7 @@ export const getTimelineData = (events: Event[], incidents: IncidentDetails[]) =
         connection: [],
         performance: [],
         infrastructure: [],
-        all: []
+        [ALL]: []
       }
     } as TimelineData
   )
@@ -572,14 +596,25 @@ export const getChartData = (
   return []
 }
 
-export const useTooltipFormatter = (params: TooltipComponentFormatterCallbackParams) => {
+export const useLabelFormatter = (params: { value:number, seriesData: Object }) => {
   const intl = getIntl()
-  const seriesName = Array.isArray(params) ? params[0].seriesName : ''
+  const trackerDate = (params)?.value
+  const seriesData = (params)?.seriesData
+  const seriesName = Array.isArray(seriesData) ? seriesData[0]?.seriesName : ''
   if (seriesName === QUALITY) {
-    const obj = (Array.isArray(params) && Array.isArray(params[0].data)
-      ? params[0].data[3]
+    const obj = (Array.isArray(seriesData) && Array.isArray(seriesData[0].data)
+      ? seriesData[0].data[3]
       : undefined) as unknown as DisplayEvent
-    const tooltipText = obj
+    const trackerHasData =
+      (trackerDate >= moment(obj?.start).valueOf()) && (trackerDate <= moment(obj?.end).valueOf())
+    const date = moment(obj?.start).format(dateFormat)
+    const tooltipPrefixText = Object.keys(connectionQualityLabels).map(
+      (key, index) =>
+        `${connectionQualityLabels[key as keyof typeof connectionQualityLabels].label}${
+          index + 1 !== Object.keys(connectionQualityLabels).length ? '/ ' : ''
+        }`
+    )
+    const tooltipSuffixText = trackerHasData
       ? Object.keys(connectionQualityLabels).map(
         (key, index) =>
           `${formatter(
@@ -590,65 +625,44 @@ export const useTooltipFormatter = (params: TooltipComponentFormatterCallbackPar
           )}${index + 1 !== Object.keys(connectionQualityLabels).length ? '/ ' : ''}`
       )
       : null
-
-    if (typeof obj !== 'undefined' && (obj as unknown as LabelledQuality).all) {
-      return renderToString(
-        <UI.TooltipWrapper>
-          <UI.TooltipDate>
-            {obj && moment(obj?.start).format(dateFormat)}{' '}
-            {Object.keys(connectionQualityLabels).map(
-              (key, index) =>
-                `${connectionQualityLabels[key as keyof typeof connectionQualityLabels].label}${
-                  index + 1 !== Object.keys(connectionQualityLabels).length ? '/ ' : ''
-                }`
-            )}
-            {':'}
-          </UI.TooltipDate>
-          {tooltipText}
-        </UI.TooltipWrapper>
-      )
+    if ((obj as unknown as LabelledQuality)?.all) {
+      return tooltipSuffixText
+        ? `${date} ${tooltipPrefixText.join('')} : ${tooltipSuffixText?.join('')}`
+        : ''
     }
   }
   if (seriesName === EVENTS) {
-    const obj = (Array.isArray(params) && Array.isArray(params[0].data)
-      ? params[0].data[2]
+    const obj = (Array.isArray(seriesData) && Array.isArray(seriesData[0].data)
+      ? seriesData[0].data[2]
       : undefined) as unknown as DisplayEvent
 
-    const tooltipText = obj ? formatEventDesc(obj, intl) : null
-    return renderToString(
-      <UI.TooltipWrapper>
-        <UI.TooltipDate>{obj && moment(obj?.start).format(dateFormat)} </UI.TooltipDate>
-        {tooltipText}
-      </UI.TooltipWrapper>
-    )
+    const trackerHasData =
+      ((trackerDate >= (obj?.start - 300000)) && (trackerDate <= (obj?.end + 300000)))
+    const tooltipText = trackerHasData ? formatEventDesc(obj, intl) : null
+    const date = moment(obj?.start).format(dateFormat)
+    return tooltipText ? `${date} ${tooltipText}` : ''
   }
   if (seriesName === INCIDENTS) {
-    const obj = (Array.isArray(params) && Array.isArray(params[0].data)
-      ? params[0].data[3]
+    const obj = (Array.isArray(seriesData) && Array.isArray(seriesData[0].data)
+      ? seriesData[0].data[3]
       : undefined) as unknown as IncidentDetails
-    const tooltipText = obj ? obj.title : null
-    return renderToString(
-      <UI.TooltipWrapper>
-        <UI.TooltipDate>{obj && moment(obj?.start).format(dateFormat)} </UI.TooltipDate>
-        {tooltipText}
-      </UI.TooltipWrapper>
-    )
+    const trackerHasData = (trackerDate >= obj?.start) && (trackerDate <= (obj?.end as number))
+    const tooltipText = trackerHasData ? obj.title : null
+    const date = moment(obj?.start).format(dateFormat)
+    return tooltipText ? `${date} ${tooltipText}` : ''
   }
   if (seriesName === ROAMING) {
-    const obj = (Array.isArray(params) && Array.isArray(params[0].data)
-      ? params[0].data[3]
+    const obj = (Array.isArray(seriesData) && Array.isArray(seriesData[0].data)
+      ? seriesData[0].data[3]
       : undefined) as unknown as RoamingTimeSeriesData
+    const trackerHasData =
+      trackerDate >= moment(obj?.start).valueOf() && trackerDate <= moment(obj?.end).valueOf()
+    const tooltipText = trackerHasData ? roamingEventFormatter(obj.details) : null
+    const date = moment(obj?.start).format(dateFormat)
 
-    const tooltipText = obj ? roamingEventFormatter(obj.details) : null
-    return renderToString(
-      <UI.TooltipWrapper>
-        <UI.TooltipDate>
-          {obj && moment(obj?.start).format(dateFormat)} {tooltipText?.[0].label}
-          {':'}
-        </UI.TooltipDate>
-        {tooltipText?.[0].value}
-      </UI.TooltipWrapper>
-    )
+    return tooltipText
+      ? `${date} ${tooltipText?.[0].label} : ${tooltipText?.[0].value}`
+      : ''
   }
   return ''
 }

@@ -5,14 +5,12 @@ import {
   useRef,
   useState,
   RefCallback,
-  useImperativeHandle,
-  useMemo
+  useImperativeHandle
 } from 'react'
+
 
 import ReactECharts        from 'echarts-for-react'
 import {
-  TooltipFormatterCallback,
-  TopLevelFormatterParams,
   CustomSeriesRenderItem
 } from 'echarts/types/dist/shared'
 import moment      from 'moment-timezone'
@@ -42,7 +40,7 @@ import {
   INCIDENTS,
   ALL
 } from './config'
-import { getQualityColor } from './util'
+import { getQualityColor, useLabelFormatter } from './util'
 
 import type {
   ECharts,
@@ -70,11 +68,13 @@ export interface TimelineChartProps extends Omit<EChartsReactProps, 'option' | '
   onDotClick?: (params: unknown) => void;
   chartRef?: RefCallback<ReactECharts>;
   hasXaxisLabel?: boolean;
-  tooltipFormatter: TooltipFormatterCallback<TopLevelFormatterParams>;
+  tooltipFormatter: CallableFunction;
   mapping: { key: string; label: string; chartType: string; series: string }[];
   showResetZoom?: boolean;
   onClick: Function
+  index?: React.Attributes['key'];
 }
+
 export const getSeriesData = (
   data: (Event | LabelledQuality | IncidentDetails | RoamingTimeSeriesData)[],
   key: string,
@@ -108,6 +108,10 @@ export const getSeriesData = (
       .map((record) => [record.start, key, moment(record.end).valueOf(), { ...record, icon: '' }])
   }
   if (series === ROAMING) {
+    if (key === ALL) {
+      return (data as unknown as { [key: string]: RoamingTimeSeriesData[] })[key]
+        .map((record) => [record.start, key, record])
+    }
     return (data as unknown as { [key: string]: { events: RoamingTimeSeriesData[] } })[
       key
     ]?.events.map((record: RoamingTimeSeriesData) => [
@@ -271,6 +275,7 @@ export function TimelineChart ({
   hasXaxisLabel,
   showResetZoom,
   onClick,
+  index,
   ...props
 }: TimelineChartProps) {
   const { $t } = useIntl()
@@ -287,9 +292,38 @@ export function TimelineChart ({
   // use selected event on dot click to show popover
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selected, setSelected] = useState<number | undefined>(selectedData)
-
   useDotClick(eChartsRef, onDotClick, setSelected)
-  const option: EChartsOption = useMemo(() => ({
+
+  const seriesData = mapping
+    .reverse()
+    .slice()
+    .map(({ key, series, chartType }) =>
+      chartType === 'scatter'
+        ? ({
+          type: chartType,
+          name: series,
+          symbol: 'circle',
+          symbolSize: 8,
+          animation: false,
+          data: getSeriesData(data, key, series),
+          itemStyle: {
+            color: getSeriesItemColor
+          },
+          connectNulls: true
+        } as SeriesOption)
+        : {
+          type: 'custom',
+          name: series,
+          renderItem: renderCustomItem as unknown as CustomSeriesRenderItem,
+          itemStyle: {
+            color: getBarColor as unknown as string
+          },
+          data: getSeriesData(data, key, series),
+          connectNulls: true
+        }
+    ) as SeriesOption[]
+
+  const option: EChartsOption = {
     animation: false,
     grid: {
       top: 0,
@@ -301,9 +335,13 @@ export function TimelineChart ({
     },
     tooltip: {
       trigger: 'axis',
+      zlevel: 10,
+      triggerOn: 'mousemove',
+      show: seriesData.length > 0,
       axisPointer: {
         axis: 'x',
-        status: 'show',
+        status: seriesData.length > 0 ? 'show' : 'hide',
+        snap: false,
         animation: false,
         lineStyle: {
           color: cssStr('--acx-neutrals-70'),
@@ -311,7 +349,8 @@ export function TimelineChart ({
           width: 1
         }
       },
-      formatter: tooltipFormatter,
+      // use this formatter to add popover content
+      formatter: /* istanbul ignore next */ () => '',
       ...tooltipOptions(),
       // Need to address test coverage for the postion
       position: /* istanbul ignore next */ (point: [number, number]) =>
@@ -320,6 +359,7 @@ export function TimelineChart ({
     xAxis: {
       ...xAxisOptions(),
       type: 'time',
+      boundaryGap: false,
       ...(hasXaxisLabel
         ? {
           axisLabel: {
@@ -344,6 +384,23 @@ export function TimelineChart ({
       splitLine: {
         show: false,
         lineStyle: { color: cssStr('--acx-neutrals-20') }
+      },
+      axisPointer: {
+        show: true,
+        snap: false,
+        triggerTooltip: false,
+        label: {
+          ...tooltipOptions() as Object,
+          show: true,
+          formatter: useLabelFormatter as unknown as string,
+          margin: -35
+        },
+        type: 'line',
+        lineStyle: {
+          type: 'solid',
+          width: 1,
+          color: cssStr('--acx-primary-black')
+        }
       }
     },
     yAxis: {
@@ -391,38 +448,13 @@ export function TimelineChart ({
         id: 'zoom',
         type: 'inside',
         zoomLock: true,
-        minValueSpan: 60
+        minValueSpan: 60,
+        start: 0,
+        end: 100
       }
     ],
-    series: mapping
-      .reverse()
-      .slice()
-      .map(({ key, series, chartType }) =>
-        chartType === 'scatter'
-          ? ({
-            type: chartType,
-            name: series,
-            symbol: 'circle',
-            symbolSize: 8,
-            symbolOffset: [0, 1],
-            animation: false,
-            data: getSeriesData(data, key, series),
-            itemStyle: {
-              color: getSeriesItemColor
-            }
-          } as SeriesOption)
-          : {
-            type: 'custom',
-            name: series,
-            renderItem: renderCustomItem as unknown as CustomSeriesRenderItem,
-            itemStyle: {
-              color: getBarColor as unknown as string
-            },
-            data: getSeriesData(data, key, series)
-          }
-      ) as SeriesOption[]
-  }), [chartBoundary, data, hasXaxisLabel, mapping, props.style?.width, tooltipFormatter])
-
+    series: seriesData
+  }
   return (
     <>
       <ReactECharts
@@ -441,6 +473,7 @@ export function TimelineChart ({
         onEvents={{
           click: onClick
         }}
+        key={index}
       />
       {canResetZoom && showResetZoom && (
         <ResetButton
