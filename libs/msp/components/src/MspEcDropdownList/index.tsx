@@ -4,13 +4,17 @@ import { useIntl } from 'react-intl'
 
 import { Drawer, LayoutUI, Loader, SearchBar, Table, TableProps } from '@acx-ui/components'
 import { ArrowExpand }                                            from '@acx-ui/icons'
+import { useUserProfileContext }                                  from '@acx-ui/rc/components'
 import {
   useMspCustomerListDropdownQuery,
   useVarCustomerListDropdownQuery,
-  useGetEcProfileQuery
+  useSupportCustomerListDropdownQuery,
+  // useGetEcProfileQuery,
+  useGetTenantDetailQuery
 }  from '@acx-ui/rc/services'
 import { MspEc, TenantIdFromJwt, useTableQuery, VarCustomer } from '@acx-ui/rc/utils'
 import { getBasePath, Link, useParams  }                      from '@acx-ui/react-router-dom'
+import { AccountType }                                        from '@acx-ui/utils'
 
 export function MspEcDropdownList () {
   const { $t } = useIntl()
@@ -20,10 +24,32 @@ export function MspEcDropdownList () {
   const [visible, setVisible] = useState(false)
 
   const params = useParams()
-  const { data } = useGetEcProfileQuery({ params })
-  // const { data } = useGetUserProfileQuery({ params: { tenantId: TenantIdFromJwt() } })
+  // const { data: ecProfile } = useGetEcProfileQuery({ params })
+  const { data: tenantDetail } = useGetTenantDetailQuery({ params })
 
-  const mspPayload = {
+  // const { data } = useGetUserProfileQuery({ params: { tenantId: TenantIdFromJwt() } })
+  // user profile for tenant from jwt token
+  const userProfile = useUserProfileContext()
+
+  let isMspEc = false
+  let isSupportEc = false
+  let isSupport = false
+  let isVar = false
+  if (tenantDetail?.tenantType === AccountType.MSP_EC) {
+    if (userProfile?.support === true) {
+      isSupportEc = true
+    } else {
+      isMspEc = true
+    }
+  } else if (tenantDetail?.tenantType === AccountType.MSP_EC) {
+    if (userProfile?.support === true) {
+      isSupport = true
+    } else {
+      isVar = true
+    }
+  }
+
+  const mspEcPayload = {
     searchString: '',
     filters: { tenantType: ['MSP_EC'] },
     fields: [
@@ -34,6 +60,21 @@ export function MspEcDropdownList () {
       'streetAddress'
     ]
   }
+
+  const varPayload = {
+    searchString: '',
+    fields: [
+      'tenantName',
+      'tenantEmail',
+      'id'],
+    searchTargetFields: ['tenantName', 'tenantEmail'],
+    filters: {
+      status: ['DELEGATION_STATUS_ACCEPTED'],
+      delegationType: ['DELEGATION_TYPE_VAR'],
+      isValid: [true]
+    }
+  }
+
   const supportPayload = {
     searchString: '',
     fields: [
@@ -45,6 +86,20 @@ export function MspEcDropdownList () {
       status: ['DELEGATION_STATUS_ACCEPTED'],
       delegationType: ['DELEGATION_TYPE_SUPPORT'],
       isValid: [true]
+    }
+  }
+
+  const supportEcPayload = {
+    searchString: '',
+    fields: [
+      'id',
+      'name',
+      'tenantType',
+      'status',
+      'streetAddress'
+    ],
+    filters: {
+      includeExpired: [false]
     }
   }
 
@@ -72,6 +127,7 @@ export function MspEcDropdownList () {
     {
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'status',
+      show: isMspEc,
       key: 'status'
     },
     {
@@ -111,63 +167,110 @@ export function MspEcDropdownList () {
     }
   ]
 
-  const isMsp = false
-  // const combinedPayload = isMsp ? mspPayload : supportPayload
-  // const newQuery = isMsp ? useMspCustomerListDropdownQuery : useVarCustomerListDropdownQuery
-  // const newColumns = isMsp ? customerColumns : supportColumns
-
-  const tableQuery = useTableQuery({
+  const tableQueryMspEc = useTableQuery({
     useQuery: useMspCustomerListDropdownQuery,
     apiParams: { mspTenantId: TenantIdFromJwt() },
-    defaultPayload: mspPayload
+    defaultPayload: mspEcPayload
   })
 
-  const tableQuery2 = useTableQuery({
+  const tableQueryVarRec = useTableQuery({
     useQuery: useVarCustomerListDropdownQuery,
-    apiParams: { mspTenantId: TenantIdFromJwt() },
+    apiParams: { tenantId: TenantIdFromJwt() },
+    defaultPayload: varPayload
+  })
+
+  const tableQuerySupportEc = useTableQuery({
+    useQuery: useSupportCustomerListDropdownQuery,
+    apiParams: { tenantId: TenantIdFromJwt() },
+    defaultPayload: supportEcPayload
+  })
+
+  const tableQuerySupport = useTableQuery({
+    useQuery: useVarCustomerListDropdownQuery,
+    apiParams: { tenantId: TenantIdFromJwt() },
     defaultPayload: supportPayload
   })
 
   useEffect(()=>{
-    if (data?.name) {
-      setCustomerName(data?.name)
+    if (tenantDetail?.name) {
+      setCustomerName(tenantDetail?.name)
     }
 
-    tableQuery.setPayload({ ...tableQuery.payload, searchString: searchString })
-    tableQuery2.setPayload({ ...tableQuery2.payload, searchString: searchString })
-  }, [data, tableQuery.data, tableQuery2.data, searchString])
+    if(tableQueryMspEc) {
+      tableQueryMspEc.setPayload({ ...tableQueryMspEc.payload, searchString: searchString })
+    }
+    if(tableQueryVarRec) {
+      tableQueryVarRec.setPayload({ ...tableQueryVarRec.payload, searchString: searchString })
+    }
+    if(tableQuerySupportEc) {
+      tableQuerySupportEc.setPayload({ ...tableQuerySupportEc.payload, searchString: searchString })
+    }
+    if(tableQuerySupport) {
+      tableQuerySupport.setPayload({ ...tableQuerySupport.payload, searchString: searchString })
+    }
+  }, [tenantDetail, tableQueryMspEc.data, tableQueryVarRec.data, tableQuerySupportEc.data,
+    tableQuerySupport.data, searchString])
 
   const onClose = () => {
     setSearchString('')
     setVisible(false)
   }
 
+  const ContentMspEc = () => {
+    return <Loader states={[tableQueryMspEc]}>
+      <SearchBar onChange={setSearchString}/>
 
-  const content =
-  <Loader states={[tableQuery]}>
-    <SearchBar onChange={setSearchString}/>
+      <Table
+        columns={customerColumns}
+        dataSource={tableQueryMspEc.data?.data}
+        pagination={tableQueryMspEc.pagination}
+        onChange={tableQueryMspEc.handleTableChange}
+        rowKey='id'
+      />
+    </Loader>
+  }
 
-    <Table
-      columns={customerColumns}
-      dataSource={tableQuery.data?.data}
-      pagination={tableQuery.pagination}
-      onChange={tableQuery.handleTableChange}
-      rowKey='id'
-    />
-  </Loader>
+  const ContentVar = () => {
+    return <Loader states={[tableQueryVarRec]}>
+      <SearchBar onChange={setSearchString}/>
 
-  const content2 =
-  <Loader states={[tableQuery2]}>
-    <SearchBar onChange={setSearchString}/>
+      <Table
+        columns={supportColumns}
+        dataSource={tableQueryVarRec.data?.data}
+        pagination={tableQueryVarRec.pagination}
+        onChange={tableQueryVarRec.handleTableChange}
+        rowKey='id'
+      />
+    </Loader>
+  }
 
-    <Table
-      columns={supportColumns}
-      dataSource={tableQuery2.data?.data}
-      pagination={tableQuery2.pagination}
-      onChange={tableQuery2.handleTableChange}
-      rowKey='id'
-    />
-  </Loader>
+  const ContentSupport = () => {
+    return <Loader states={[tableQuerySupport]}>
+      <SearchBar onChange={setSearchString}/>
+
+      <Table
+        columns={supportColumns}
+        dataSource={tableQuerySupport.data?.data}
+        pagination={tableQuerySupport.pagination}
+        onChange={tableQuerySupport.handleTableChange}
+        rowKey='id'
+      />
+    </Loader>
+  }
+
+  const ContentSupportEc = () => {
+    return <Loader states={[tableQuerySupportEc]}>
+      <SearchBar onChange={setSearchString}/>
+
+      <Table
+        columns={customerColumns}
+        dataSource={tableQuerySupportEc.data?.data}
+        pagination={tableQuerySupportEc.pagination}
+        onChange={tableQuerySupportEc.handleTableChange}
+        rowKey='id'
+      />
+    </Loader>
+  }
 
   return (
     <>
@@ -177,19 +280,33 @@ export function MspEcDropdownList () {
           children={<ArrowExpand/>}
         />
       </div>
-      {visible && isMsp && <Drawer
+      {visible && isMspEc && <Drawer
         width={360}
         title={$t({ defaultMessage: 'Change Customer' })}
         visible={visible}
         onClose={onClose}
-        children={content}
+        children={ContentMspEc()}
       />}
-      {visible && !isMsp && <Drawer
+      {visible && isVar && <Drawer
         width={360}
         title={$t({ defaultMessage: 'Change Customer' })}
         visible={visible}
         onClose={onClose}
-        children={content2}
+        children={ContentVar()}
+      />}
+      {visible && isSupport && <Drawer
+        width={360}
+        title={$t({ defaultMessage: 'Change Customer' })}
+        visible={visible}
+        onClose={onClose}
+        children={ContentSupport()}
+      />}
+      {visible && isSupportEc && <Drawer
+        width={360}
+        title={$t({ defaultMessage: 'Change Customer' })}
+        visible={visible}
+        onClose={onClose}
+        children={ContentSupportEc()}
       />}
     </>
   )

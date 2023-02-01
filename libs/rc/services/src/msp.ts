@@ -148,6 +148,17 @@ export const mspApi = baseMspApi.injectEndpoints({
       },
       providesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
+    supportCustomerListDropdown: build.query<TableResult<MspEc>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const supportMspCustomerListReq =
+        createHttpRequest(MspUrlsInfo.getSupportMspCustomersList, params, {}, true)
+        return {
+          ...supportMspCustomerListReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
     getEcProfile: build.query<EcProfile, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(
@@ -196,6 +207,7 @@ export const {
   useResendEcInvitationMutation,
   useMspCustomerListDropdownQuery,
   useVarCustomerListDropdownQuery,
+  useSupportCustomerListDropdownQuery,
   useGetEcProfileQuery,
   useGetTenantDetailQuery,
   useSupportMspCustomerListQuery

@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { Menu }    from 'antd'
 import { useIntl } from 'react-intl'
 
+import { Tooltip } from '@acx-ui/components'
 import {
   Layout as LayoutComponent,
   LayoutUI,
@@ -10,19 +11,23 @@ import {
 } from '@acx-ui/components'
 import {
   WorldSolid,
-  ArrowExpand,
-  AccountCircleSolid,
-  NotificationSolid,
-  QuestionMarkCircleSolid
+  ArrowExpand
 } from '@acx-ui/icons'
 import {
-  CloudMessageBanner
+  ActivityButton,
+  AlarmsButton,
+  HelpButton,
+  UserButton
+} from '@acx-ui/main/components'
+import {
+  CloudMessageBanner,
+  useUserProfileContext
 } from '@acx-ui/rc/components'
 import {
-  useGetTenantDetailQuery,
-  useGetUserProfileQuery
+  useGetTenantDetailQuery
 } from '@acx-ui/rc/services'
 import { Outlet, TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { notAvailableMsg }               from '@acx-ui/utils'
 
 import { useMenuConfig } from './menuConfig'
 
@@ -32,7 +37,8 @@ function Layout () {
   const [tenantType, setTenantType] = useState('')
 
   const { data } = useGetTenantDetailQuery({ params: { tenantId } })
-  const { data: userProfile } = useGetUserProfileQuery({ params: { tenantId } })
+  const userProfile = useUserProfileContext()
+
   useEffect(() => {
     if (data && userProfile) {
       if (userProfile.support) {
@@ -73,9 +79,14 @@ function Layout () {
       }
       rightHeaderContent={<>
         <LayoutUI.Divider />
-        <LayoutUI.ButtonSolid icon={<NotificationSolid />} />
-        <LayoutUI.ButtonSolid icon={<QuestionMarkCircleSolid />} />
-        <LayoutUI.ButtonSolid icon={<AccountCircleSolid />} />
+        <AlarmsButton/>
+        <ActivityButton/>
+        <Tooltip placement='bottomRight' title={useIntl().$t(notAvailableMsg)}>
+          <HelpButton/>
+        </Tooltip>
+        <Tooltip placement='bottomRight' title={useIntl().$t(notAvailableMsg)}>
+          <UserButton/>
+        </Tooltip>
       </>}
     />
   )
