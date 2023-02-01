@@ -283,6 +283,11 @@ describe('SignaleRadioSettings component', () => {
     }
   }
 
+  const mockEditContext = React.createContext({
+    editContextData: {},
+    setEditContextData: jest.fn()
+  })
+
   afterEach(() => cleanup())
 
   it('should render Venue Radio 2.4G singleRadioSettings', async () => {
@@ -297,7 +302,7 @@ describe('SignaleRadioSettings component', () => {
           radioType={radioType}
           bandwidthOptions={bandwidthOptions}
           supportChannels={supportCh}
-          editContext={React.createContext({})}
+          editContext={mockEditContext}
           onResetDefaultValue={resetToDefaultSpy}
         />
       </IntlProvider>
@@ -343,7 +348,7 @@ describe('SignaleRadioSettings component', () => {
           radioType={radioType}
           bandwidthOptions={bandwidthOptions}
           supportChannels={supportCh}
-          editContext={React.createContext({})}
+          editContext={mockEditContext}
           onResetDefaultValue={resetToDefaultSpy}
         />
       </IntlProvider>
@@ -394,7 +399,7 @@ describe('SignaleRadioSettings component', () => {
           radioType={radioType}
           bandwidthOptions={bandwidthOptions}
           supportChannels={supportCh}
-          editContext={React.createContext({})}
+          editContext={mockEditContext}
           onResetDefaultValue={resetToDefaultSpy}
         />
       </IntlProvider>
@@ -438,7 +443,10 @@ describe('SignaleRadioSettings component', () => {
           radioType={radioType}
           bandwidthOptions={bandwidthOptions}
           supportChannels={supportCh}
-          editContext={React.createContext({})}
+          editContext={React.createContext({
+            editContextData: {},
+            setEditContextData: jest.fn()
+          })}
           isUseVenueSettings={false}
         />
       </IntlProvider>
@@ -477,7 +485,7 @@ describe('SignaleRadioSettings component', () => {
           radioType={radioType}
           bandwidthOptions={bandwidthOptions}
           supportChannels={supportCh}
-          editContext={React.createContext({})}
+          editContext={mockEditContext}
           isUseVenueSettings={false}
         />
       </IntlProvider>
@@ -523,7 +531,7 @@ describe('SignaleRadioSettings component', () => {
           radioType={radioType}
           bandwidthOptions={bandwidthOptions}
           supportChannels={supportCh}
-          editContext={React.createContext({})}
+          editContext={mockEditContext}
         />
       </IntlProvider>
     )
