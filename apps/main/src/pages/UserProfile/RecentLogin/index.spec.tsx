@@ -123,6 +123,6 @@ describe('Recent login table', () => {
     expect(tbody).toBeVisible()
 
     const rows = await screen.findAllByRole('row')
-    expect(rows).toHaveLength(2)
+    expect(rows).toHaveLength(3)
   })
 })
