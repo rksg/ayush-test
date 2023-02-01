@@ -38,15 +38,12 @@ export function Subscriptions () {
       title: $t({ defaultMessage: 'Subscription' }),
       dataIndex: 'name',
       key: 'name',
-      filterable: true,
-      render: function (_, row) {
-        return EntitlementUtil.getMspDeviceTypeText(row.deviceType)
-      }
+      filterable: true
     },
     {
       title: $t({ defaultMessage: 'Type' }),
-      dataIndex: 'deviceType',
-      key: 'deviceType',
+      dataIndex: 'deviceSubType',
+      key: 'deviceSubType',
       render: function (_, row) {
         if (row.deviceType === 'MSP_WIFI')
           return EntitlementUtil.tempLicenseToString(row.isTrial)
@@ -90,10 +87,7 @@ export function Subscriptions () {
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'status',
       key: 'status',
-      filterable: true,
-      render: function (_, row) {
-        return row.status === 'VALID' ? 'Active' : 'Expired'
-      }
+      filterable: true
     }
   ]
 
@@ -202,6 +196,14 @@ export function Subscriptions () {
     )
   }
 
+  const GetStatus = (status: String) => {
+    if( status === 'VALID') {
+      return $t({ defaultMessage: 'Active' })
+    } else {
+      return $t({ defaultMessage: 'Expired' })
+    }
+  }
+
   const SubscriptionTable = () => {
     const queryResults = useMspEntitlementListQuery({
       params: useParams()
@@ -211,12 +213,20 @@ export function Subscriptions () {
         ...rest
       })
     })
+    const subscriptionData = queryResults.data?.map(response => {
+      return {
+        ...response,
+        name: EntitlementUtil.getMspDeviceTypeText(response?.deviceType),
+        status: GetStatus(response?.status as String)
+      }
+    })
+
     return (
       <Loader states={[queryResults]}>
         <Table
           columns={columns}
           actions={actions}
-          dataSource={queryResults?.data}
+          dataSource={subscriptionData}
           rowKey='id'
         />
       </Loader>

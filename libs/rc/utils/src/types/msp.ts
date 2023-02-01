@@ -35,6 +35,7 @@ export enum EntitlementDeviceSubType {
   ICX76 = 'ICX76',
   ICX78 = 'ICX78',
   ICXTEMP = 'ICXTEMP',
+  ICX = 'ICX',
   // for MSP
   ICX_ANY = 'ICX_ANY',
   MSP_WIFI = 'MSP_WIFI',

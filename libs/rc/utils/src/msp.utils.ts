@@ -45,6 +45,8 @@ export class EntitlementUtil {
         return getIntl().$t({ defaultMessage: 'Trial' })
       case EntitlementDeviceSubType.MSP_WIFI:
         return 'Wi-Fi'
+      case EntitlementDeviceSubType.ICX:
+        return 'Basic'
     }
     return ''
   }
