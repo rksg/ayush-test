@@ -1,7 +1,8 @@
-import { Provider } from '@acx-ui/store'
-import {
-  render, screen
-} from '@acx-ui/test-utils'
+import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
+
+import { Provider }       from '@acx-ui/store'
+import { render, screen } from '@acx-ui/test-utils'
 
 import { EdgeDhcpSettingForm } from './EdgeDhcpSettingForm'
 
@@ -23,6 +24,32 @@ describe('EdgeDhcpSettingForm', () => {
     expect(screen.getByRole('switch')).not.toBeChecked()
     await screen.findByRole('textbox', { name: /primary dns server/i })
     expect(asFragment()).toMatchSnapshot()
+  })
+
+  it('should show external dhcp server setting', async () => {
+    render(
+      <Provider>
+        <Form>
+          <EdgeDhcpSettingForm />
+        </Form>
+      </Provider>, { route: { params } }
+    )
+
+    userEvent.click(await screen.findByRole('switch', { name: 'DHCP Relay:' }))
+    expect(await screen.findByRole('textbox', { name: 'FQDN Name or IP Address' })).toBeVisible()
+  })
+
+  it('should show secondary dns server', async () => {
+    render(
+      <Provider>
+        <Form>
+          <EdgeDhcpSettingForm />
+        </Form>
+      </Provider>, { route: { params } }
+    )
+
+    userEvent.click(await screen.findByRole('button', { name: 'Add Secondary DNS Server' }))
+    expect(await screen.findByRole('textbox', { name: 'Secondary DNS Server' })).toBeVisible()
   })
 
 })
