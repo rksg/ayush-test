@@ -6,7 +6,7 @@ import { useIntl }  from 'react-intl'
 import { showToast, StepsForm, StepsFormInstance } from '@acx-ui/components'
 import { EdgeSettingForm }                         from '@acx-ui/rc/components'
 import { useGetEdgeQuery, useUpdateEdgeMutation }  from '@acx-ui/rc/services'
-import { EdgeSaveData }                            from '@acx-ui/rc/utils'
+import { EdgeGeneralSetting }                      from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useParams,
@@ -19,7 +19,7 @@ const GeneralSettings = () => {
   const navigate = useNavigate()
   const params = useParams()
   const linkToEdgeList = useTenantLink('/devices/edge/list')
-  const formRef = useRef<StepsFormInstance<EdgeSaveData>>()
+  const formRef = useRef<StepsFormInstance<EdgeGeneralSetting>>()
   const { data: edgeGeneralSettings } = useGetEdgeQuery({
     params: { serialNumber: params.serialNumber }
   })
@@ -38,7 +38,7 @@ const GeneralSettings = () => {
     }
   }, [edgeGeneralSettings])
 
-  const handleUpdateEdge = async (data: EdgeSaveData) => {
+  const handleUpdateEdge = async (data: EdgeGeneralSetting) => {
     try {
       // TODO when Tags component ready remove this
       const payload = { ...data, tags: [] as string[] }
@@ -55,6 +55,8 @@ const GeneralSettings = () => {
       delete payload.serialNumber
 
       await upadteEdge({ params: params, payload: payload }).unwrap()
+      navigate(linkToEdgeList)
+
     } catch {
       // TODO error message not be defined
       showToast({

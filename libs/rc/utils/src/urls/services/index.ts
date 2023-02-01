@@ -1,4 +1,6 @@
 export * from './mdnsProxyUrls'
+export * from './networkSegmentationUrls'
 export * from './wifiCallingUrls'
 export * from './dpskUrls'
 export * from './dhcpUrls'
+export * from './portalUrls'

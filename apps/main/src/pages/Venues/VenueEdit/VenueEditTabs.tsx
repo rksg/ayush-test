@@ -2,13 +2,15 @@ import { useContext, useEffect, useRef } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Tabs }                                   from '@acx-ui/components'
+import { Tabs, Tooltip }                          from '@acx-ui/components'
+import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import {
   useNavigate,
   useParams,
   useTenantLink,
   UNSAFE_NavigationContext as NavigationContext
 } from '@acx-ui/react-router-dom'
+import { notAvailableMsg } from '@acx-ui/utils'
 
 import { VenueEditContext, EditContext, showUnsavedModal } from './index'
 
@@ -24,7 +26,8 @@ function VenueEditTabs () {
     setEditContextData,
     editNetworkingContextData,
     editRadioContextData,
-    editSecurityContextData
+    editSecurityContextData,
+    editServerContextData
   } = useContext(VenueEditContext)
   const onTabChange = (tab: string) => {
     if (tab === 'wifi') tab = `${tab}/radio`
@@ -58,6 +61,7 @@ function VenueEditTabs () {
           editNetworkingContextData,
           editRadioContextData,
           editSecurityContextData,
+          editServerContextData,
           intl,
           tx.retry
         )
@@ -71,7 +75,15 @@ function VenueEditTabs () {
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>
       <Tabs.TabPane tab={intl.$t({ defaultMessage: 'Venue Details' })} key='details' />
       <Tabs.TabPane tab={intl.$t({ defaultMessage: 'Wi-Fi Configuration' })} key='wifi' />
-      <Tabs.TabPane tab={intl.$t({ defaultMessage: 'Switch Configuration' })} key='switch' />
+      <Tabs.TabPane
+        key='switch'
+        disabled={!useIsSplitOn(Features.UNRELEASED)}
+        tab={
+          <Tooltip title={useIsSplitOn(Features.UNRELEASED) ? '' :
+            intl.$t(notAvailableMsg)}>
+            {intl.$t({ defaultMessage: 'Switch Configuration' })}
+          </Tooltip>}
+      />
     </Tabs>
   )
 }

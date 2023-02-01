@@ -1,15 +1,17 @@
 /* eslint-disable max-len */
 import { useIntl } from 'react-intl'
 
-import { Tabs, Tooltip }                         from '@acx-ui/components'
-import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
-import { ApDetailHeader, ApDeviceStatusEnum }    from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { notAvailableMsg }                       from '@acx-ui/utils'
+import { Tabs, Tooltip }                      from '@acx-ui/components'
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
+import { ApDetailHeader, ApDeviceStatusEnum } from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink }         from '@acx-ui/react-router-dom'
+import { notAvailableMsg }                    from '@acx-ui/utils'
+
+import { useApContext } from './ApContext'
 
 function ApTabs (props:{ apDetail: ApDetailHeader }) {
   const { $t } = useIntl()
-  const params = useParams()
+  const params = useApContext()
   const basePath = useTenantLink(`/devices/wifi/${params.serialNumber}/details/`)
   const navigate = useNavigate()
   const releaseTag = useIsSplitOn(Features.DEVICES)
@@ -30,9 +32,7 @@ function ApTabs (props:{ apDetail: ApDetailHeader }) {
       {currentApOperational &&
         <Tabs.TabPane tab={$t({ defaultMessage: 'Troubleshooting' })}
           key='troubleshooting' />}
-      <Tabs.TabPane
-        disabled={!releaseTag}
-        tab={<Tooltip title={$t(notAvailableMsg)}>{$t({ defaultMessage: 'Reports' })}</Tooltip>}
+      <Tabs.TabPane tab={$t({ defaultMessage: 'Reports' })}
         key='reports'
       />
       <Tabs.TabPane
@@ -40,10 +40,7 @@ function ApTabs (props:{ apDetail: ApDetailHeader }) {
         key='networks'
       />
       <Tabs.TabPane
-        disabled={!releaseTag}
-        tab={<Tooltip title={$t(notAvailableMsg)}>
-          {$t({ defaultMessage: 'Clients ({clientsCount})' }, { clientsCount: apDetail?.headers?.clients })}
-        </Tooltip>}
+        tab={$t({ defaultMessage: 'Clients ({clientsCount})' }, { clientsCount: apDetail?.headers?.clients })}
         key='clients'
       />
       <Tabs.TabPane
@@ -55,8 +52,7 @@ function ApTabs (props:{ apDetail: ApDetailHeader }) {
         key='services'
       />
       <Tabs.TabPane
-        disabled={!releaseTag}
-        tab={<Tooltip title={$t(notAvailableMsg)}>{$t({ defaultMessage: 'Timeline' })} </Tooltip>}
+        tab={$t({ defaultMessage: 'Timeline' })}
         key='timeline'
       />
     </Tabs>

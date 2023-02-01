@@ -3,7 +3,7 @@ import React from 'react'
 import { Card, Divider, Space } from 'antd'
 import styled                   from 'styled-components'
 
-import { Button } from '@acx-ui/components'
+import { Button, deviceCategoryColors } from '@acx-ui/components'
 
 import { ImageMode } from './PlainView'
 
@@ -64,7 +64,7 @@ export const ImageContainerWrapper = styled('div')`
   margin: 30px auto 20px;
   position: relative;
   display: block;
-  overflow: overlay;
+  overflow: auto;
   width: 100%;
   height: 280px;
   max-width: 100%;
@@ -76,7 +76,6 @@ export const ImageContainer = styled('div')< { currentZoom: number, imageMode: I
   width: calc(${props => 100 * props.currentZoom}%);
   position: relative;
   margin: 0 auto;
-  padding: 30px auto;
 `
 export const ImageLoaderContainer = styled('div')`
   position: absolute;
@@ -97,10 +96,73 @@ export const ImageButtonsContainer = styled(Space).attrs({
       borderTop: '1px solid var(--acx-neutrals-30)'
     }
   })
-})`
+})<{ alignbottom: number }>`
   position: absolute;
-  bottom: 88px;
-  right: 0;
+  bottom: ${ props => props.alignbottom ? '88px' : '135px' };
+  z-index: 1;
+  right: 15px;
   border: 1px solid var(--acx-neutrals-30);
   border-radius: 4px;
+`
+export const RogueAPHelpIcon = styled('div')`
+&.rogue-help-info {
+  position: absolute;
+  bottom: 30px;
+  left: 20px;
+  z-index: 2;
+
+  svg path {
+    stroke: var(--acx-primary-white)
+  }
+}
+`
+
+export const TooltipContent = styled('div')`
+
+  .rogue-help {
+  line-height: 20px;
+  margin-bottom: 8px;
+
+  .rogue-mark {
+    border: 1px solid var(--acx-primary-white);
+    z-index: 1;
+    width: 16px;
+    height: 16px;
+    border-radius: 50% 50% 50% 0;
+    position: absolute;
+    -webkit-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+
+    svg {
+      width: 12px;
+      height: 12px;
+      transform: rotate(45deg);
+
+      path {
+        stroke: var(--acx-primary-white)
+      }
+    }
+
+    &.malicious {
+      background-color: var(${deviceCategoryColors.Malicious});
+    }
+
+    &.ignored {
+      background-color: var(${deviceCategoryColors.Ignored});
+    }
+
+    &.unclassified {
+      background-color: var(${deviceCategoryColors.Unclassified});
+    }
+
+    &.known {
+      background-color: var(${deviceCategoryColors.Known});
+    }
+  }
+
+  .info {
+    padding-left: 25px;
+  }
+  
+}
 `

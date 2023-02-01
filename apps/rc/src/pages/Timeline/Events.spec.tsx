@@ -22,8 +22,8 @@ describe('Events', () => {
       </Provider>,
       { route: { params } }
     )
-    await screen.findByText(
-      'AP 730-11-60 RF operating channel was changed from channel 7 to channel 9.'
-    )
+    await screen.findByRole('row', {
+      name: /AP 730-11-60 RF operating channel was changed from channel 7 to channel 9./
+    })
   })
 })

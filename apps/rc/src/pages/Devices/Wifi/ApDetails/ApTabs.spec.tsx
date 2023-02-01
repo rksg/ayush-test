@@ -8,7 +8,14 @@ import {
 } from './__tests__/fixtures'
 import ApTabs from './ApTabs'
 
-const params = { serialNumber: 'ap-id', tenantId: 'tenant-id' }
+const params = {
+  tenantId: 'tenant-id',
+  serialNumber: 'ap-id'
+}
+jest.mock('./ApContext', () => ({
+  useApContext: () => params
+}))
+
 const mockedUsedNavigate = jest.fn()
 
 jest.mock('react-router-dom', () => ({
@@ -18,10 +25,10 @@ jest.mock('react-router-dom', () => ({
 
 describe('ApTabs', () => {
   it('should render correctly', async () => {
-    const { asFragment } = render(<Provider>
+    render(<Provider>
       <ApTabs apDetail={apDetailData} />
     </Provider>, { route: { params } })
-    expect(asFragment()).toMatchSnapshot()
+    expect(screen.getAllByRole('tab')).toHaveLength(8)
   })
 
   it('should handle tab changes', async () => {

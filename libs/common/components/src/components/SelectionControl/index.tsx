@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Radio, RadioChangeEvent } from 'antd'
 
-import { Wrapper } from './styledComponents'
+import { Wrapper, Container } from './styledComponents'
 
 export interface SelectionControlOptionProps {
   label: React.ReactNode
@@ -17,6 +17,8 @@ export interface SelectionControlProps {
   onChange?: (e: RadioChangeEvent) => void
   /** @default 'small' */
   size?: 'small' | 'large'
+  value?: string
+  extra?: React.ReactNode;
 }
 
 export function SelectionControl (
@@ -31,6 +33,7 @@ export function SelectionControl (
           props.onChange && props.onChange(e)
         }}
         size={props.size || 'small'}
+        value={props.value}
       >
         {props.options.map(({ value, label, icon, disabled }) => (
           <Radio.Button {...{ value, disabled, key: value }}>
@@ -39,6 +42,8 @@ export function SelectionControl (
           </Radio.Button>
         ))}
       </Radio.Group>
+      {props.extra ?
+        <Container>{props.extra}</Container> : null}
     </Wrapper>
   )
 }

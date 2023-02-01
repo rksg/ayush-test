@@ -11,7 +11,6 @@ import { NetworkDeviceContext } from '..'
 import GalleryView from './GalleryView'
 
 
-
 const list: FloorPlanDto[] = [
   {
     id: '94bed28abef24175ab58a3800d01e24a',
@@ -119,7 +118,7 @@ const _networkDevicesVisibility: NetworkDeviceType[] = []
 
 for (let deviceType in NetworkDeviceType) {
   if (deviceType === NetworkDeviceType.rogue_ap) {
-    continue // rouge ap is not controlled(placed) by user
+    continue // rogue ap is not controlled(placed) by user
   }
   const _deviceType = deviceType as keyof typeof NetworkDeviceType
   const networkDevicetype = NetworkDeviceType[_deviceType] as NetworkDeviceType
@@ -145,10 +144,12 @@ describe('Floor Plan Gallery View', () => {
     expect(await screen.findByTestId('SignalUp')).toBeVisible()
 
     const src = await screen.findByTestId('SignalUp')
-    const dst = await screen.findAllByTestId('fpImage')
+
+    const dst = await screen.findAllByTestId('dropContainer')
 
     fireEvent.dragStart(src)
     fireEvent.dragEnter(dst[0])
+    await new Promise((resolve) => setTimeout(resolve, 100))
     fireEvent.drop(dst[0])
     fireEvent.dragLeave(dst[0])
     fireEvent.dragEnd(src)

@@ -74,7 +74,7 @@ export const Header = ({ shouldQuerySwitch, withIncidents, ...props }: HeaderPro
     </Loader>}
     title={<Loader states={[state]} fallback={<Spinner size='default' />}>
       {filter || path.length > 1 ?
-        (results.data?.name || name as string) // ap/switch name from data || venue name from filter
+        results.data?.name || name as string // ap/switch name from data || venue name from filter
         : props.title}
     </Loader>}
     extra={[

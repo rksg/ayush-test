@@ -1,14 +1,11 @@
+import { useState } from 'react'
+
 import { Space }   from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import {
-  Table,
-  TableProps,
-  Tooltip,
-  Loader
-} from '@acx-ui/components'
-import { useSwitchPortlistQuery } from '@acx-ui/rc/services'
+import { Table, TableProps, Tooltip, Loader } from '@acx-ui/components'
+import { useSwitchPortlistQuery }             from '@acx-ui/rc/services'
 import {
   getSwitchModel,
   isOperationalSwitch,
@@ -18,20 +15,24 @@ import {
 import { useParams } from '@acx-ui/react-router-dom'
 import { getIntl }   from '@acx-ui/utils'
 
-import * as UI from './styledComponents'
+import { EditPortDrawer } from './editPortDrawer'
+import * as UI            from './styledComponents'
 
 const STACK_PORT_FIELD = 'SwitchPortStackingPortField'
 
-export function SwitchPortTable ({ isVenueLevel } : {
+export function SwitchPortTable ({ isVenueLevel }: {
   isVenueLevel: boolean
 }) {
   const { $t } = useIntl()
-  const { serialNumber } = useParams()
+  const { serialNumber, venueId } = useParams()
+  const [selectedPorts, setSelectedPorts] = useState([] as SwitchPortViewModel[])
+  const [drawerVisible, setDrawerVisible] = useState(false)
 
   const tableQuery = useTableQuery({
     useQuery: useSwitchPortlistQuery,
     defaultPayload: {
-      filters: { switchId: [serialNumber] },
+      filters: venueId ? { venueId: [venueId] } :
+        serialNumber ? { switchId: [serialNumber] } : {},
       fields: ['portIdentifier', 'name', 'status', 'adminStatus', 'portSpeed',
         'poeUsed', 'vlanIds', 'neighborName', 'tag', 'cog', 'cloudPort', 'portId', 'switchId',
         'switchSerial', 'switchMac', 'switchName', 'switchUnitId', 'switchModel',
@@ -49,11 +50,12 @@ export function SwitchPortTable ({ isVenueLevel } : {
   })
 
   const columns: TableProps<SwitchPortViewModel>['columns'] = [{
-    key: 'portIdentifier',
+    key: 'portIdentifierFormatted',
     title: $t({ defaultMessage: 'Port Number' }),
-    dataIndex: 'portIdentifier',
+    dataIndex: 'portIdentifierFormatted',
     sorter: true,
-    defaultSortOrder: 'ascend'
+    defaultSortOrder: 'ascend',
+    render: (data, row) => row['portIdentifier']
   }, {
     key: 'name',
     title: $t({ defaultMessage: 'Port Name' }),
@@ -80,11 +82,11 @@ export function SwitchPortTable ({ isVenueLevel } : {
     dataIndex: 'portSpeed',
     sorter: true
   }, {
-  //   key: '', // TODO
-  //   title: $t({ defaultMessage: 'Speed of Duplex' }),
-  //   dataIndex: '',
-  //   sorter: true
-  // }, {
+    //   key: '', // TODO
+    //   title: $t({ defaultMessage: 'Speed of Duplex' }),
+    //   dataIndex: '',
+    //   sorter: true
+    // }, {
     key: 'poeType',
     title: $t({ defaultMessage: 'PoE Device Type' }),
     dataIndex: 'poeType',
@@ -111,7 +113,7 @@ export function SwitchPortTable ({ isVenueLevel } : {
     sorter: true,
     render: (data, row) => <Space size={2}>
       <UI.TagsOutlineIcon /> {row.unTaggedVlan || '--'}
-      <UI.TagsSolidIcon /> { filterUntaggedVlan(row.vlanIds, row.unTaggedVlan) }
+      <UI.TagsSolidIcon /> {filterUntaggedVlan(row.vlanIds, row.unTaggedVlan)}
     </Space>
   }, {
     key: 'signalIn',
@@ -202,12 +204,14 @@ export function SwitchPortTable ({ isVenueLevel } : {
     dataIndex: 'egressAclName',
     sorter: true,
     show: false
-  }, {
-    key: 'tags', // TODO
+  },
+  {
+    key: 'tags',
     title: $t({ defaultMessage: 'Tags' }),
     dataIndex: 'tags',
     sorter: true
-  }]
+  }
+  ]
 
   const getColumns = () => columns.filter(
     item => !isVenueLevel
@@ -216,11 +220,13 @@ export function SwitchPortTable ({ isVenueLevel } : {
   )
 
   // TODO
-  // const rowActions: TableProps<SwitchPortViewModel>['rowActions'] = [{
-  //   label: $t({ defaultMessage: 'Edit' }),
-  //   onClick: (selectedRows) => {
-  //   }
-  // }]
+  const rowActions: TableProps<SwitchPortViewModel>['rowActions'] = [{
+    label: $t({ defaultMessage: 'Edit' }),
+    onClick: (selectedRows) => {
+      setSelectedPorts(selectedRows)
+      setDrawerVisible(true)
+    }
+  }]
 
   // TODO: add search string and filter to retrieve data
   // const retrieveData () => {}
@@ -232,8 +238,7 @@ export function SwitchPortTable ({ isVenueLevel } : {
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
       rowKey='portId'
-      // TODO
-      // rowActions={rowActions}
+      rowActions={rowActions}
       rowSelection={{
         type: 'checkbox',
         renderCell: (checked, record, index, originNode) => {
@@ -250,11 +255,22 @@ export function SwitchPortTable ({ isVenueLevel } : {
       actions={!isVenueLevel
         ? [{
           label: $t({ defaultMessage: 'Manage LAG' }),
-          onClick: () => {}
+          onClick: () => { } // TODO
         }]
         : []
       }
     />
+
+    { drawerVisible && <EditPortDrawer
+      key='edit-port'
+      visible={drawerVisible}
+      setDrawerVisible={setDrawerVisible}
+      isCloudPort={selectedPorts.map(item => item.cloudPort).includes(true)}
+      isMultipleEdit={selectedPorts?.length > 1}
+      isVenueLevel={false}
+      selectedPorts={selectedPorts}
+    />}
+
   </Loader>
 }
 

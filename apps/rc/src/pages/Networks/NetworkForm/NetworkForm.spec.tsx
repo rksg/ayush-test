@@ -3,9 +3,9 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                 from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                     from '@acx-ui/store'
+import { useIsSplitOn }                                 from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo, PortalUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                     from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -21,7 +21,8 @@ import {
   networksResponse,
   successResponse,
   cloudpathResponse,
-  networkDeepResponse
+  networkDeepResponse,
+  portalList
 } from './__tests__/fixtures'
 import NetworkForm from './NetworkForm'
 
@@ -61,7 +62,19 @@ describe('NetworkForm', () => {
       rest.get(WifiUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(networkDeepResponse))),
       rest.post(CommonUrlsInfo.getNetworkDeepList.url,
-        (_, res, ctx) => res(ctx.json({ response: [networkDeepResponse] })))
+        (_, res, ctx) => res(ctx.json({ response: [networkDeepResponse] }))),
+      rest.get(PortalUrlsInfo.getPortalProfileList.url,
+        (_, res, ctx) => res(ctx.json({ content: portalList }))
+      ),
+      rest.post(PortalUrlsInfo.savePortal.url,
+        (_, res, ctx) => res(ctx.json({ response: {
+          requestId: 'request-id', id: 'test', serviceName: 'test' } }))
+      ),
+      rest.get(PortalUrlsInfo.getPortalLang.url,
+        (_, res, ctx) => {
+          return res(ctx.json({ acceptTermsLink: 'terms & conditions',
+            acceptTermsMsg: 'I accept the' }))
+        })
     )
   })
 
@@ -183,6 +196,12 @@ describe('NetworkForm', () => {
     await userEvent.click(screen.getByText('Next'))
 
     await screen.findByRole('heading', { level: 3, name: 'Portal Web Page' })
+    await userEvent.click(await screen.findByText('Add Guest Portal Service'))
+    await userEvent.type(await screen.findByRole(
+      'textbox', { name: 'Service Name' }),'create Portal test')
+    await userEvent.click(await screen.findByText('Reset'))
+    await userEvent.click(await screen.findByText('Finish'))
+    await userEvent.click(await screen.findByTitle('create Portal test'))
     await userEvent.click(screen.getByText('Next'))
 
     await screen.findByRole('heading', { level: 3, name: 'Venues' })
@@ -205,19 +224,25 @@ describe('NetworkForm', () => {
     const validating = await screen.findByRole('img', { name: 'loading' })
     await waitForElementToBeRemoved(validating)
 
-    await userEvent.click(screen.getByRole('radio', { name: /Captive Portal/ }))
+    await userEvent.click(await screen.findByRole('radio', { name: /Captive Portal/ }))
     await userEvent.click(screen.getByText('Next'))
 
     await screen.findByRole('heading', { level: 3, name: 'Portal Type' })
-    await userEvent.click(screen.getByRole('radio', { name: /Click-Through/ }))
+    await userEvent.click(await screen.findByRole('radio', { name: /Click-Through/ }))
     await userEvent.click(screen.getByText('Next'))
 
     await screen.findByRole('heading', { level: 3, name: 'Onboarding' })
-    await userEvent.click(screen.getByRole('checkbox', { name: /Redirect users to/ }))
-    await userEvent.click(screen.getByRole('checkbox', { name: /Redirect users to/ }))
+    await userEvent.click(await screen.findByRole('checkbox', { name: /Redirect users to/ }))
+    await userEvent.click(await screen.findByRole('checkbox', { name: /Redirect users to/ }))
     await userEvent.click(screen.getByText('Next'))
 
     await screen.findByRole('heading', { level: 3, name: 'Portal Web Page' })
+    await userEvent.click(await screen.findByText('Add Guest Portal Service'))
+    await userEvent.type(await screen.findByRole(
+      'textbox', { name: 'Service Name' }),'create Portal test2')
+    await userEvent.click(await screen.findByText('Reset'))
+    await userEvent.click(await screen.findByText('Finish'))
+    await userEvent.click(await screen.findByTitle('create Portal test2'))
     await userEvent.click(screen.getByText('Next'))
 
     await screen.findByRole('heading', { level: 3, name: 'Venues' })

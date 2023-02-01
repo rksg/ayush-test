@@ -1,34 +1,21 @@
-
-import { ReactNode } from 'react'
-
 import { List }               from 'antd'
 import { flatten }            from 'lodash'
 import { IntlShape, useIntl } from 'react-intl'
 import AutoSizer              from 'react-virtualized-auto-sizer'
 
-
-import {
-  incidentInformation,
-  Incident,
-  calculateSeverity,
-  incidentSeverities,
-  shortDescription,
-  categoryOptions
-} from '@acx-ui/analytics/utils'
 import { ArrowCollapse } from '@acx-ui/icons'
 import { TenantLink }    from '@acx-ui/react-router-dom'
 import { formatter }     from '@acx-ui/utils'
 
-
 import {
-  transformEvents,
   DisplayEvent,
-  formatEventDesc,
   eventColorByCategory,
-  INCIDENT
+  IncidentDetails
 } from './config'
-import { ClientInfoData } from './services'
-import * as UI            from './styledComponents'
+import { ConnectionEventPopover }                              from './ConnectionEvent'
+import { ClientInfoData }                                      from './services'
+import * as UI                                                 from './styledComponents'
+import { transformEvents,formatEventDesc, transformIncidents } from './util'
 
 import { Filters } from '.'
 
@@ -39,51 +26,6 @@ type HistoryContentProps = {
   data?: ClientInfoData,
   filters: Filters | null
 }
-type Item = {
-  id?: string,
-  start: number,
-  date: string,
-  description: string,
-  title: string,
-  icon: ReactNode
-}
-// If needed (for incident timeline chart) move this menthod to config
-export const transformIncidents = (
-  incidents: Incident[],
-  selectedCategories: string [],
-  selectedTypes: string [],
-  intl: IntlShape
-) =>
-  incidents.reduce((acc, incident: Incident) => {
-    const {
-      category,
-      subCategory,
-      shortDescription: desc
-    } = incidentInformation[incident.code]
-    const severity = calculateSeverity(incident.severity)
-    const color = incidentSeverities[severity].color
-    const title = shortDescription({ ...incident, shortDescription: desc })
-    const cat = categoryOptions.find(
-      ({ label }) => intl.$t(label) === intl.$t(category)
-    )
-    if ((selectedCategories.length &&
-      cat &&
-      !selectedCategories.includes(cat.value)) ||
-      (selectedTypes.length && !selectedTypes.includes(INCIDENT))
-    ) {
-      return acc
-    }
-    acc.push({
-      id: incident.id,
-      start: +new Date(incident.startTime),
-      date: formatter('dateTimeFormatWithSeconds')(incident.startTime),
-      description: `${intl.$t(category)} (${intl.$t(subCategory)})`,
-      title,
-      icon: <UI.IncidentEvent color={color}>{severity}</UI.IncidentEvent>
-    })
-    return acc
-  }, [] as Item[])
-
 const transformData = (clientInfo: ClientInfoData, filters: Filters, intl: IntlShape) => {
   const types: string[] = flatten(filters ? filters.type ?? [[]] : [[]])
   const radios: string[] = flatten(filters ? filters.radio ?? [[]] : [[]])
@@ -106,7 +48,9 @@ const transformData = (clientInfo: ClientInfoData, filters: Filters, intl: IntlS
       date: formatter('dateTimeFormatWithSeconds')(event.start),
       description: formatEventDesc(event, intl),
       title: formatEventDesc(event, intl),
-      icon: <UI.EventTypeIcon color={color} />
+      icon: <ConnectionEventPopover event={event}>
+        <UI.EventTypeIcon color={color} />
+      </ConnectionEventPopover>
     }
   }),
   ...incidents
@@ -114,7 +58,7 @@ const transformData = (clientInfo: ClientInfoData, filters: Filters, intl: IntlS
 }
 
 
-const renderItem = (item: Item) => {
+const renderItem = (item: IncidentDetails) => {
   const Item = <List.Item title={item.title}>
     <List.Item.Meta
       avatar={item.icon}

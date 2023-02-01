@@ -4,7 +4,11 @@ import {
   GuestNetworkTypeEnum,
   RadioEnum,
   RadioTypeEnum,
-  WlanSecurityEnum
+  WlanSecurityEnum,
+  FacilityEnum,
+  FlowLevelEnum,
+  PriorityEnum,
+  ProtocolEnum
 } from '@acx-ui/rc/utils'
 
 export const successResponse = {
@@ -37,6 +41,7 @@ export const venuelist = {
       status: '1_InSetupPhase',
       switchClients: 2,
       switches: 1,
+      edges: 3,
       clients: 1
     }
   ]
@@ -1377,6 +1382,20 @@ export const mockAaaSettingWithOrder = {
   acctExecFirstServer: 'RADIUS'
 }
 
+export const mockDirectedMulticast = {
+  wiredEnabled: true,
+  wirelessEnabled: true,
+  networkEnabled: true
+}
+
+export const mockLoadBalabcing = {
+  enabled: true,
+  loadBalancingMethod: 'BASED_ON_CLIENT_COUNT',
+  bandBalancingEnabled: true,
+  bandBalancingClientPercent24G: 25,
+  steeringMode: 'BASIC'
+}
+
 export const radiusList = {
   data: [
     {
@@ -1713,8 +1732,8 @@ export const radioCustomizationData = {
   },
   radioParams24G: {
     allowedChannels: ['4', '5', '6', '7', '8', '9', '10', '11'],
-    channelBandwidth: 'AUTO',
-    method: 'BACKGROUND_SCANNING',
+    channelBandwidth: '40MHz',
+    method: 'CHANNELFLY',
     changeInterval: 33,
     scanInterval: 20,
     txPower: 'MAX'
@@ -1765,11 +1784,11 @@ export const radioCustomizationData = {
       '140',
       '144'
     ],
-    channelBandwidth: '40MHz',
+    channelBandwidth: '160MHz',
     method: 'BACKGROUND_SCANNING',
     changeInterval: 33,
     scanInterval: 20,
-    txPower: 'MAX'
+    txPower: 'Auto'
   }
 }
 
@@ -2608,3 +2627,41 @@ export const validChannelsData = {
     ]
   }
 }
+
+export const venueSyslog = {
+  serviceProfileId: '31846cfe930b49b4802b302f35029589',
+  enabled: true
+}
+
+export const syslogServerProfiles = [{
+  name: 'SyslogProfile1',
+  id: '31846cfe930b49b4802b302f35029589',
+  server: '1.1.1.1',
+  port: 514,
+  facility: 'KEEP_ORIGINAL' as FacilityEnum,
+  priority: 'INFO' as PriorityEnum,
+  protocol: 'UDP' as ProtocolEnum,
+  flowLevel: 'CLIENT_FLOW' as FlowLevelEnum,
+  secondaryServer: '2.2.2.2',
+  secondaryPort: 514,
+  secondaryProtocol: 'TCP' as ProtocolEnum,
+  venueIds: [
+    'bc20590f588948f1822dd20aa8a1914c'
+  ]
+},
+{
+  name: 'SyslogProfile2',
+  id: '78f92fbf80334e8b83cddd3210db4920',
+  server: '1.1.1.1',
+  port: 514,
+  facility: 'KEEP_ORIGINAL' as FacilityEnum,
+  priority: 'INFO' as PriorityEnum,
+  protocol: 'UDP' as ProtocolEnum,
+  flowLevel: 'CLIENT_FLOW' as FlowLevelEnum,
+  secondaryServer: '2.2.2.2',
+  secondaryPort: 514,
+  secondaryProtocol: 'TCP' as ProtocolEnum,
+  venueIds: [
+    'bc20590f588948f1822dd20aa8a1914c'
+  ]
+}]

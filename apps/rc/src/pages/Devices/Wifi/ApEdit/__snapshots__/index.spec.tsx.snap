@@ -68,7 +68,7 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
               class="ant-space-item"
             >
               <button
-                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 eAazoW"
+                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 ibsWZY"
                 type="button"
               >
                 <span>
@@ -83,7 +83,7 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
         class="ant-page-header-footer"
       >
         <div
-          class="ant-tabs ant-tabs-top styledComponents__Tabs-sc-1afcsfc-0 bceCuj"
+          class="ant-tabs ant-tabs-top styledComponents__Tabs-sc-1afcsfc-0 fKRTpX"
         >
           <div
             class="ant-tabs-nav"
@@ -262,16 +262,17 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
           >
             <div
               aria-controls="rc-tabs-test-panel-multicast"
-              aria-disabled="false"
               aria-selected="false"
               class="ant-tabs-tab-btn"
               id="rc-tabs-test-tab-multicast"
               role="tab"
               tabindex="0"
             >
-              <span>
-                Directed Multicast
-              </span>
+              Directed Multicast
+              <svg
+                data-testid="QuestionMarkCircleOutlined"
+                style="margin-left: 8px; margin-bottom: -3px; height: 16px; width: 16px;"
+              />
             </div>
           </div>
           <div
@@ -436,7 +437,7 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
                                 >
                                   Currently using LAN port settings of the venue (
                                   <button
-                                    class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
+                                    class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
                                     style="vertical-align: middle;"
                                     type="button"
                                   >
@@ -450,7 +451,7 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
                                   class="ant-space-item"
                                 >
                                   <button
-                                    class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
+                                    class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
                                     type="button"
                                   >
                                     <span>
@@ -1301,7 +1302,7 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
                       style="margin-right: 12px;"
                     >
                       <button
-                        class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 bxQmA-d"
+                        class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 glXBEv"
                         type="button"
                       >
                         <span>
@@ -1313,7 +1314,7 @@ exports[`ApEdit Ap Settings - Lan Ports should render correctly 1`] = `
                       class="ant-space-item"
                     >
                       <button
-                        class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
+                        class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ibsWZY"
                         type="button"
                       >
                         <span>

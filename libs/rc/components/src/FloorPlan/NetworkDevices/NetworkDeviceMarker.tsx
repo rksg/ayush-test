@@ -1,34 +1,42 @@
 import { useContext, useRef } from 'react'
 
-import { Tooltip } from 'antd'
-import { isEmpty } from 'lodash'
-import { useDrag } from 'react-dnd'
+import { Badge, Tooltip } from 'antd'
+import { isEmpty }        from 'lodash'
+import { useDrag }        from 'react-dnd'
 
-import { DeviceOutlined, SignalUp }         from '@acx-ui/icons'
-import { NetworkDevice, NetworkDeviceType } from '@acx-ui/rc/utils'
+import { deviceCategoryColors }                                            from '@acx-ui/components'
+import { DeviceOutlined, SignalUp }                                        from '@acx-ui/icons'
+import { FloorplanContext, NetworkDevice, NetworkDeviceType, RogueApInfo } from '@acx-ui/rc/utils'
+import { getIntl }                                                         from '@acx-ui/utils'
 
 import { NetworkDeviceContext } from '..'
 
-import * as UI                  from './styledComponent'
-import { calculateDeviceColor } from './utils'
+import * as UI                                                       from './styledComponent'
+import { calculateApColor, calculateDeviceColor, getSnrDisplayInfo } from './utils'
 
 
 
-export default function NetworkDeviceMarker ({
+
+export function NetworkDeviceMarker ({
   galleryMode,
   contextAlbum,
   context,
-  device
+  device,
+  forbidDrag = false,
+  showRogueAp = false
 }:{ galleryMode: boolean,
     contextAlbum: boolean,
-    context: string,
-    device: NetworkDevice
+    context: FloorplanContext,
+    device: NetworkDevice,
+    forbidDrag?: boolean,
+    showRogueAp?: boolean
 }) {
 
   const markerContainerRef = useRef<HTMLDivElement>(null)
   const deviceContext = useContext(NetworkDeviceContext) as Function
 
   const [{ isDragging }, drag] = useDrag(() => ({
+    canDrag: !forbidDrag && !showRogueAp,
     type: 'device',
     item: { device, markerRef: markerContainerRef },
     collect: monitor => ({
@@ -41,7 +49,7 @@ export default function NetworkDeviceMarker ({
         deviceContext(item.device)
       }
     }
-  }), [device])
+  }), [device, forbidDrag])
 
   let className = 'device-container'
 
@@ -54,33 +62,135 @@ export default function NetworkDeviceMarker ({
   if (contextAlbum)
     className += ' context-Album'
 
+  const allVenueRogueApAttr: RogueApInfo=
+   calculateApColor(device?.deviceStatus, showRogueAp, context, device)
 
-  return <div ref={markerContainerRef}><Tooltip
-    title={device?.name || device?.switchName || device?.serialNumber}>
-    <UI.DeviceContainer
-      ref={drag}
-      className={className}
-      style={
-        {
-          top: 'calc(' + device?.position?.yPercent + '%)',
-          left: 'calc(' + device?.position?.xPercent + '%)',
-          opacity: isDragging ? 0.5 : 1
-        }
+  return <div ref={markerContainerRef}>
+    { (showRogueAp && device?.rogueCategory) && <UI.RogueApContainer className={`rogue-snr
+      ${device.rogueCategoryType?.toLowerCase() || ' malicious'}
+       ${getSnrDisplayInfo(device?.snr as number).cssClass}`}
+    style={
+      {
+        top: 'calc(' + device?.position?.yPercent + '%)',
+        left: 'calc(' + device?.position?.xPercent + '%)'
+      }
+    }>
+    </UI.RogueApContainer> }
+    <Tooltip
+      title={(showRogueAp && device?.rogueCategory) ?
+        <RogueApTooltip rogueApInfo={
+          allVenueRogueApAttr
+        }/>
+        : device?.name || device?.switchName || device?.serialNumber
       }>
-      <div className={`marker ${calculateDeviceColor(device)}`}
-        style={{
-          alignItems: 'center',
-          display: 'flex',
-          justifyContent: 'center',
-          cursor: 'pointer'
-        }}>
+      <UI.DeviceContainer
+        ref={drag}
+        className={className}
+        style={
+          {
+            top: 'calc(' + device?.position?.yPercent + '%)',
+            left: 'calc(' + device?.position?.xPercent + '%)',
+            opacity: device?.isActive ? (isDragging ? 0.5 : 1) : 0.3
+          }
+        }>
+        <div className={`marker ${calculateDeviceColor(device, context, showRogueAp)}`}
+          style={{
+            alignItems: 'center',
+            display: 'flex',
+            justifyContent: 'center',
+            cursor: 'pointer'
+          }}>
+          {
+            !contextAlbum && (
+              device?.networkDeviceType === NetworkDeviceType.switch
+                ? <DeviceOutlined/>
+                : <SignalUp />)
+          } </div>
         {
-          !contextAlbum && (
-            device?.networkDeviceType === NetworkDeviceType.switch
-              ? <DeviceOutlined/>
-              : <SignalUp />)
-        } </div>
-    </UI.DeviceContainer>
-  </Tooltip>
+          allVenueRogueApAttr?.allVenueRogueApTooltipAttr?.totalRogueNumber &&
+          <UI.RogueApCountBadge
+            data-testid='rogueApBadge'
+            className={`mark-number-rogue
+            ${device?.rogueCategoryType?.toLowerCase() || ' malicious'}`}>
+            {allVenueRogueApAttr?.allVenueRogueApTooltipAttr?.totalRogueNumber}
+          </UI.RogueApCountBadge>
+        }
+      </UI.DeviceContainer>
+    </Tooltip>
+  </div>
+}
+
+export function RogueApTooltip ({ rogueApInfo }:{
+  rogueApInfo: RogueApInfo
+}){
+
+  const { $t } = getIntl()
+
+  const { allVenueRogueApTooltipAttr, specificRogueApTooltipAttr } = rogueApInfo
+
+  const rogueTypeColors = {
+    malicious: deviceCategoryColors.Malicious,
+    ignored: deviceCategoryColors.Ignored,
+    unclassified: deviceCategoryColors.Unclassified,
+    known: deviceCategoryColors.Known
+  }
+
+  function getRogueApColor (rogueType: string) {
+    return `var(${rogueTypeColors[rogueType as keyof typeof rogueTypeColors]})`
+  }
+
+  return <div>
+    {
+      rogueApInfo?.allrogueApTooltipRequired
+        ? <div>
+          <p>
+            {$t({ defaultMessage: '{number} rogues detected by ({deviceName}):' },
+              { number: <b>{allVenueRogueApTooltipAttr?.totalRogueNumber}</b>,
+                deviceName: <b>{allVenueRogueApTooltipAttr?.deviceName}</b> })}
+          </p>
+          {
+            allVenueRogueApTooltipAttr?.categoryNames.map((category, idx) => {
+              const badgeText = <span style={{ color: 'var(--acx-primary-white)' }}>
+                { $t({ defaultMessage: '{number} {category} rogue APs' },
+                  { number: <b>{
+                    (allVenueRogueApTooltipAttr?.categoryNums as number[])[idx]
+                  }
+                  </b>,category }) }</span>
+
+              return <p className='context'><Badge color={getRogueApColor(category)}
+                text={badgeText}></Badge>
+              </p>
+            })
+          }
+        </div>
+        : <div>
+          {
+            <p><div>{$t({ defaultMessage: 'Detecting AP:' })}
+              {specificRogueApTooltipAttr?.deviceName}</div>
+            <div>{$t({ defaultMessage: 'MAC Address: $ ' })}
+              {specificRogueApTooltipAttr?.macAddress}</div>
+            <div>{$t({ defaultMessage: 'SNR: ' })} {specificRogueApTooltipAttr?.snr}
+              {$t({ defaultMessage: ' dB' })}
+              <UI.SpecificRogueAp className='wifi-signal-snr'>
+                <div className={`bar bar0 ${(
+                  (specificRogueApTooltipAttr?.activatedBarIndex as number) <= 0)
+                  ? 'activated' : ''}`}></div>
+                <div className={`bar bar1 ${(
+                  (specificRogueApTooltipAttr?.activatedBarIndex as number) <= 0)
+                  ? 'activated' : ''}`}></div>
+                <div className={`bar bar2 ${(
+                  (specificRogueApTooltipAttr?.activatedBarIndex as number) <= 0)
+                  ? 'activated' : ''}`}></div>
+                <div className={`bar bar3 ${(
+                  (specificRogueApTooltipAttr?.activatedBarIndex as number) <= 0)
+                  ? 'activated' : ''}`}></div>
+                <div className={`bar bar4 ${(
+                  (specificRogueApTooltipAttr?.activatedBarIndex as number) <= 0)
+                  ? 'activated' : ''}`}></div>
+              </UI.SpecificRogueAp>
+            </div></p>
+          }
+        </div>
+    }
   </div>
 }
