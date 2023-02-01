@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useIsSplitOn }        from '@acx-ui/feature-toggle'
 import {
   ServiceType,
   getSelectServiceRoutePath,
@@ -11,6 +11,7 @@ import {
   PolicyType,
   getPolicyRoutePath,
   PolicyOperation,
+  getServiceCatalogRoutePath,
   getPolicyDetailsLink
 } from '@acx-ui/rc/utils'
 import { Provider }       from '@acx-ui/store'
@@ -42,12 +43,16 @@ jest.mock('./pages/Networks/NetworkDetails/NetworkDetails', () => () => {
   return <div data-testid='NetworkDetails' />
 })
 
-jest.mock('./pages/Policies/PoliciesTable', () => () => {
-  return <div data-testid='PoliciesTable' />
+jest.mock('./pages/Services/MyServices', () => () => {
+  return <div data-testid='MyServices' />
 })
 
-jest.mock('./pages/Services/ServicesTable', () => () => {
-  return <div data-testid='ServicesTable' />
+jest.mock('./pages/Services/ServiceCatalog', () => () => {
+  return <div data-testid='ServiceCatalog' />
+})
+
+jest.mock('./pages/Policies/PoliciesTable', () => () => {
+  return <div data-testid='PoliciesTable' />
 })
 
 jest.mock('./pages/Services/SelectServiceForm', () => () => {
@@ -246,7 +251,17 @@ describe('RcRoutes: Services', () => {
         wrapRoutes: false
       }
     })
-    expect(screen.getByTestId('ServicesTable')).toBeVisible()
+    expect(screen.getByTestId('MyServices')).toBeVisible()
+  })
+
+  test('should navigate to service catalog', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + getServiceCatalogRoutePath(),
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('ServiceCatalog')).toBeVisible()
   })
 
   test('should navigate to select service page', async () => {

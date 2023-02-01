@@ -1,3 +1,4 @@
+const Netmask = require('netmask').Netmask
 export class IpUtilsService {
 
   constructor () { }
@@ -65,5 +66,40 @@ export class IpUtilsService {
     const endLong = IpUtilsService.convertIpToLong(endIpAddress)
 
     return endLong - startLong + 1
+  }
+
+  // eslint-disable-next-line max-len
+  static isInSameSubnet (ipAddress: string, subnetMask: string, additionalIpAddress: string): boolean {
+    const network = new Netmask(ipAddress + '/' + subnetMask)
+    return network.contains(additionalIpAddress)
+  }
+
+  static isBroadcastAddress (ipAddress: string, subnetMask: string): boolean {
+    const network = new Netmask(ipAddress + '/' + subnetMask)
+    return (network.broadcast === ipAddress)
+  }
+
+  static validateInTheSameSubnet (ip: string, subnet: string, gateway: string) {
+    if (!ip || !subnet || !subnet) {
+      return false
+    }
+
+    try {
+      return IpUtilsService.isInSameSubnet(ip, subnet, gateway)
+    } catch (error) {
+      return false
+    }
+  }
+
+  static validateBroadcastAddress (ip: string, subnet: string) {
+    if (!ip || !subnet) {
+      return false
+    }
+
+    try {
+      return IpUtilsService.isBroadcastAddress(ip, subnet)
+    } catch (error) {
+      return false
+    }
   }
 }

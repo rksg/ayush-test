@@ -1,3 +1,6 @@
+
+import { useContext } from 'react'
+
 import { Form, Select } from 'antd'
 import { useIntl }      from 'react-intl'
 import { useParams }    from 'react-router-dom'
@@ -5,6 +8,8 @@ import { useParams }    from 'react-router-dom'
 import { Table, TableProps }                                        from '@acx-ui/components'
 import { useGetClientIsolationListQuery, useNetworkVenueListQuery } from '@acx-ui/rc/services'
 import { ClientIsolationVenue, NetworkVenue }                       from '@acx-ui/rc/utils'
+
+import NetworkFormContext from '../../NetworkFormContext'
 
 const { useWatch } = Form
 
@@ -27,6 +32,7 @@ export default function ClientIsolationAllowListEditor (props: ClientIsolationAl
   const params = useParams()
   const { networkVenues } = props
   const form = Form.useFormInstance()
+  const { editMode } = useContext(NetworkFormContext)
 
   // eslint-disable-next-line max-len
   const clientIsolationVenues = useWatch<ClientIsolationVenue[]>(['wlan','advancedCustomization', 'clientIsolationVenues'])
@@ -62,7 +68,7 @@ export default function ClientIsolationAllowListEditor (props: ClientIsolationAl
   const venueListForNameMap = useNetworkVenueListQuery({
     params: { networkId: 'UNKNOWN-NETWORK-ID', ...params },
     payload: defaultNetworkVenueListPayload
-  })
+  }, { skip: !editMode })
 
   const { policyOptions } = useGetClientIsolationListQuery({ params },{
     selectFromResult ({ data }) {
@@ -79,6 +85,10 @@ export default function ClientIsolationAllowListEditor (props: ClientIsolationAl
       dataIndex: 'name',
       defaultSortOrder: 'ascend',
       render: function (data, row) {
+        if (!editMode) {
+          return data
+        }
+
         if (!venueListForNameMap.data) {
           return '--'
         }

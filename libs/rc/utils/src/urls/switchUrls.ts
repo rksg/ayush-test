@@ -77,6 +77,10 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/switch'
   },
+  updateSwitch: {
+    method: 'put',
+    url: '/api/switch/tenant/:tenantId/switch'
+  },
   addStackMember: {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/switch/:stackSerialNumber/member/:newStackMemberSerialNumber'
@@ -176,6 +180,34 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   getVlanByUuid: {
     method: 'get',
     url: '/api/switch/tenant/:tenantId/vlan/:vlanUuid'
+  },
+  getStaticRoutes: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/staticRoute/switch/:switchId'
+  },
+  addStaticRoute: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/staticRoute/switch/:switchId'
+  },
+  updateStaticRoute: {
+    method: 'put',
+    url: '/api/switch/tenant/:tenantId/staticRoute'
+  },
+  deleteStaticRoutes: {
+    method: 'delete',
+    url: '/api/switch/tenant/:tenantId/staticRoutes'
+  },
+  reboot: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/switch/:switchId/reboot'
+  },
+  syncData: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/switch/:switchId/sync'
+  },
+  getJwtToken: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/switch/:serialNumber/jwt-token'
   },
   getSwitchClientList: {
     method: 'post',
