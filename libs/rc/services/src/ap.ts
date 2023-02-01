@@ -17,7 +17,7 @@ import {
   onSocketActivityChanged,
   RequestPayload,
   RequestFormData,
-  showActivityMessage,
+  onActivityMessageReceived,
   TableResult,
   RadioProperties,
   WifiUrlsInfo,
@@ -72,7 +72,7 @@ export const apApi = baseApApi.injectEndpoints({
             'DeleteAps',
             'AddApGroupLegacy'
           ]
-          showActivityMessage(msg, activities, () => {
+          onActivityMessageReceived(msg, activities, () => {
             api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'LIST' }]))
           })
         })
@@ -133,7 +133,7 @@ export const apApi = baseApApi.injectEndpoints({
             'UpdateApCustomization',
             'ResetApCustomization'
           ]
-          showActivityMessage(msg, activities, () => {
+          onActivityMessageReceived(msg, activities, () => {
             api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'Details' }]))
           })
         })
@@ -307,7 +307,7 @@ export const apApi = baseApApi.injectEndpoints({
             'UpdateApRadioCustomization',
             'ResetApRadioCustomization'
           ]
-          showActivityMessage(msg, activities, () => {
+          onActivityMessageReceived(msg, activities, () => {
             api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'RADIO' }]))
           })
         })
@@ -460,7 +460,7 @@ export const apApi = baseApApi.injectEndpoints({
             'UpdateApDirectedMulticast',
             'ResetApDirectedMulticast'
           ]
-          showActivityMessage(msg, activities, () => {
+          onActivityMessageReceived(msg, activities, () => {
             api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'DIRECTED_MULTICAST' }]))
           })
         })
