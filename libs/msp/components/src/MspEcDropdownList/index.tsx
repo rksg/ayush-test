@@ -9,7 +9,6 @@ import {
   useMspCustomerListDropdownQuery,
   useVarCustomerListDropdownQuery,
   useSupportCustomerListDropdownQuery,
-  // useGetEcProfileQuery,
   useGetTenantDetailQuery
 }  from '@acx-ui/rc/services'
 import { MspEc, TenantIdFromJwt, useTableQuery, VarCustomer } from '@acx-ui/rc/utils'
@@ -24,10 +23,8 @@ export function MspEcDropdownList () {
   const [visible, setVisible] = useState(false)
 
   const params = useParams()
-  // const { data: ecProfile } = useGetEcProfileQuery({ params })
   const { data: tenantDetail } = useGetTenantDetailQuery({ params })
 
-  // const { data } = useGetUserProfileQuery({ params: { tenantId: TenantIdFromJwt() } })
   // user profile for tenant from jwt token
   const userProfile = useUserProfileContext()
 
@@ -272,6 +269,15 @@ export function MspEcDropdownList () {
     </Loader>
   }
 
+  let contentx = ContentMspEc()
+  if (isSupport) {
+    contentx = ContentSupport()
+  } else if (isSupportEc) {
+    contentx = ContentSupportEc()
+  } else if (isVar) {
+    contentx = ContentVar()
+  }
+
   return (
     <>
       <div onClick={()=>setVisible(true)}>
@@ -280,34 +286,13 @@ export function MspEcDropdownList () {
           children={<ArrowExpand/>}
         />
       </div>
-      {visible && isMspEc && <Drawer
+      <Drawer
         width={360}
         title={$t({ defaultMessage: 'Change Customer' })}
         visible={visible}
         onClose={onClose}
-        children={ContentMspEc()}
-      />}
-      {visible && isVar && <Drawer
-        width={360}
-        title={$t({ defaultMessage: 'Change Customer' })}
-        visible={visible}
-        onClose={onClose}
-        children={ContentVar()}
-      />}
-      {visible && isSupport && <Drawer
-        width={360}
-        title={$t({ defaultMessage: 'Change Customer' })}
-        visible={visible}
-        onClose={onClose}
-        children={ContentSupport()}
-      />}
-      {visible && isSupportEc && <Drawer
-        width={360}
-        title={$t({ defaultMessage: 'Change Customer' })}
-        visible={visible}
-        onClose={onClose}
-        children={ContentSupportEc()}
-      />}
+        children={contentx}
+      />
     </>
   )
 }

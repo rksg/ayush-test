@@ -18,6 +18,7 @@ import {
   RegionDropdown
 } from '@acx-ui/msp/components'
 import { CloudMessageBanner }                from '@acx-ui/rc/components'
+import { useUserProfileContext }             from '@acx-ui/rc/components'
 import { isDelegationMode, TenantIdFromJwt } from '@acx-ui/rc/utils'
 import { getBasePath, Link, Outlet }         from '@acx-ui/react-router-dom'
 import { notAvailableMsg }                   from '@acx-ui/utils'
@@ -26,6 +27,8 @@ import { useMenuConfig } from './menuConfig'
 import SearchBar         from './SearchBar'
 
 function Layout () {
+  const userProfile = useUserProfileContext()
+
   return (
     <LayoutComponent
       menuConfig={useMenuConfig()}
@@ -38,9 +41,10 @@ function Layout () {
       leftHeaderContent={
         <>
           <RegionDropdown/>
-          {isDelegationMode() && <Link to={`${getBasePath()}/v/${TenantIdFromJwt()}`}>
-            <LayoutUI.Icon children={<HomeSolid />} />
-          </Link>}
+          {(isDelegationMode() || userProfile?.var)
+             && <Link to={`${getBasePath()}/v/${TenantIdFromJwt()}`}>
+               <LayoutUI.Icon children={<HomeSolid />} />
+             </Link>}
         </>
       }
 
