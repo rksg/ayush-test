@@ -1,4 +1,4 @@
-import React, { CSSProperties } from 'react'
+import React from 'react'
 
 import { SerializedError }     from '@reduxjs/toolkit'
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
@@ -20,7 +20,6 @@ export type LoaderProps = React.PropsWithChildren<{
   states?: QueryState[];
   fallback?: React.ReactNode;
   errorFallback?: React.ReactNode;
-  style?: CSSProperties;
 }>
 
 export function Loader (props: LoaderProps) {
@@ -36,7 +35,7 @@ export function Loader (props: LoaderProps) {
     : undefined
 
   return (
-    <UI.Wrapper $isLoading={isLoading} style={props.style}>
+    <UI.Wrapper $isLoading={isLoading}>
       <ErrorBoundary fallback={errorFallback}>
         <ErrorContainer states={props.states} />
         <SuspenseBoundary fallback={fallback}>
