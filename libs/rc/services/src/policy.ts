@@ -20,7 +20,7 @@ import {
   VenueRoguePolicyType,
   TableResult,
   onSocketActivityChanged,
-  showActivityMessage,
+  onActivityMessageReceived,
   CommonResult,
   NewTableResult,
   transferToTableResult,
@@ -29,13 +29,14 @@ import {
   L2AclPolicy,
   AvcApp,
   AccessControlUrls, L3AclPolicy, AvcCat,
+  ClientIsolationSaveData, ClientIsolationUrls,
   createNewTableHttpRequest, TableChangePayload, RequestFormData
 } from '@acx-ui/rc/utils'
 
 export const basePolicyApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'policyApi',
-  tagTypes: ['Policy', 'MacRegistrationPool', 'MacRegistration'],
+  tagTypes: ['Policy', 'MacRegistrationPool', 'MacRegistration', 'ClientIsolation'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })
@@ -162,10 +163,13 @@ export const policyApi = basePolicyApi.injectEndpoints({
       providesTags: [{ type: 'Policy', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg, [
+          onActivityMessageReceived(msg, [
             'AddRogueApPolicyProfile',
             'UpdateRogueApPolicyProfile',
-            'DeleteRogueApPolicyProfile'
+            'DeleteRogueApPolicyProfile',
+            'AddClientIsolationAllowlist',
+            'UpdateClientIsolationAllowlist',
+            'DeleteClientIsolationAllowlist'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
           })
@@ -188,7 +192,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const params = requestArgs.params as { requestId: string }
           if (params.requestId) {
-            showActivityMessage(msg, [
+            onActivityMessageReceived(msg, [
               'Add Layer 2 Policy Profile'
             ],() => {
               api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
@@ -213,7 +217,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const params = requestArgs.params as { requestId: string }
           if (params.requestId) {
-            showActivityMessage(msg, [
+            onActivityMessageReceived(msg, [
               'Add Layer 3 Policy Profile'
             ],() => {
               api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
@@ -321,24 +325,66 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'MacRegistration', id: 'LIST' }]
     }),
-    getSyslogPolicyList: build.query<SyslogPolicyType[], RequestPayload>({
+    addClientIsolation: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(ClientIsolationUrls.addClientIsolation, params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'ClientIsolation', id: 'LIST' }]
+    }),
+    deleteClientIsolation: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(SyslogUrls.getSyslogPolicyList, params, RKS_NEW_UI)
+        const req = createHttpRequest(ClientIsolationUrls.deleteClientIsolation, params, RKS_NEW_UI)
         return {
           ...req
         }
       },
-      providesTags: [{ type: 'Policy', id: 'LIST' }],
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'ClientIsolation', id: 'LIST' }]
+    }),
+    getClientIsolationList: build.query<ClientIsolationSaveData[], RequestPayload>({
+      query: ({ params }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(ClientIsolationUrls.getClientIsolationList, params, RKS_NEW_UI)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'DETAIL' }, { type: 'ClientIsolation', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg, [
-            'Add Syslog Policy Profile',
-            'Update Syslog Policy Profile'
+          onActivityMessageReceived(msg, [
+            'Add Client Isolation Policy Profile',
+            'Update Client Isolation Policy Profile'
           ], () => {
-            api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
+            api.dispatch(policyApi.util.invalidateTags([
+              { type: 'Policy', id: 'LIST' },
+              { type: 'ClientIsolation', id: 'LIST' }
+            ]))
           })
         })
       }
+    }),
+    getClientIsolation: build.query<ClientIsolationSaveData, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(ClientIsolationUrls.getClientIsolation, params, RKS_NEW_UI)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'DETAIL' }, { type: 'ClientIsolation', id: 'LIST' }]
+    }),
+    updateClientIsolation: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(ClientIsolationUrls.updateClientIsolation, params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'ClientIsolation', id: 'LIST' }]
     }),
     uploadMacRegistration: build.mutation<{}, RequestFormData>({
       query: ({ params, payload }) => {
@@ -372,6 +418,25 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    getSyslogPolicyList: build.query<SyslogPolicyType[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SyslogUrls.getSyslogPolicyList, params, RKS_NEW_UI)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'Add Syslog Policy Profile',
+            'Update Syslog Policy Profile'
+          ], () => {
+            api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
+          })
+        })
+      }
     })
   })
 })
@@ -405,7 +470,13 @@ export const {
   useVenueRoguePolicyQuery,
   useLazyMacRegListsQuery,
   useLazyMacRegistrationsQuery,
-  useGetSyslogPolicyListQuery,
+  useAddClientIsolationMutation,
+  useDeleteClientIsolationMutation,
+  useGetClientIsolationListQuery,
+  useLazyGetClientIsolationListQuery,
+  useGetClientIsolationQuery,
+  useUpdateClientIsolationMutation,
   useLazyGetMacRegListQuery,
-  useUploadMacRegistrationMutation
+  useUploadMacRegistrationMutation,
+  useGetSyslogPolicyListQuery
 } = policyApi
