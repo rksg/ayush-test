@@ -6,6 +6,10 @@ const attributeBaseUrl = '/radiusAttributes'
 const paginationParams = '?size=:pageSize&page=:page&sort=:sort'
 
 export const RadiusAttributeGroupUrlsInfo: { [key: string]: ApiInfo } = {
+  getAttribute: {
+    method: 'get',
+    url: attributeBaseUrl + '/:attributeId'
+  },
   getAttributes: {
     method: 'get',
     url: attributeBaseUrl + '?size=:pageSize&page=:page'

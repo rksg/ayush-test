@@ -44,6 +44,16 @@ export default function AdaptivePolicyTabs () {
     <Tabs onChange={onTabChange} activeKey={activeTab}>
       <Tabs.TabPane
         // eslint-disable-next-line max-len
+        tab={$t({ defaultMessage: 'Adaptive Policy' })}
+        key={AdaptivePolicyTabKey.ADAPTIVE_POLICY}
+      />
+      <Tabs.TabPane
+        // eslint-disable-next-line max-len
+        tab={$t({ defaultMessage: 'Adaptive Policy Sets' })}
+        key={AdaptivePolicyTabKey.ADAPTIVE_POLICY_SET}
+      />
+      <Tabs.TabPane
+        // eslint-disable-next-line max-len
         tab={$t({ defaultMessage: 'RADIUS Attribute Groups ({count})' }, { count: attributeGroupTableQuery.data?.totalCount })}
         key={AdaptivePolicyTabKey.RADIUS_ATTRIBUTE_GROUP}
       />

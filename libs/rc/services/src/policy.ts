@@ -289,6 +289,16 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       providesTags: [{ type: 'RadiusAttribute', id: 'LIST' }]
     }),
+    radiusAttribute: build.query<RadiusAttribute, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          RadiusAttributeGroupUrlsInfo.getAttribute, params
+        )
+        return {
+          ...req
+        }
+      }
+    }),
     deleteRadiusAttributeGroup: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(RadiusAttributeGroupUrlsInfo.deleteAttributeGroup, params)
@@ -355,8 +365,8 @@ export const {
   useGetRadiusAttributeGroupQuery,
   useRadiusAttributeListQuery,
   useRadiusAttributeVendorListQuery,
-  useRadiusAttributeListWithQueryQuery,
-  // useLazyRadiusAttributeListQuery,
+  useLazyRadiusAttributeListWithQueryQuery,
+  useRadiusAttributeQuery,
   useDeleteRadiusAttributeGroupMutation,
   useLazyRadiusAttributeGroupListQuery,
   useUpdateRadiusAttributeGroupMutation,

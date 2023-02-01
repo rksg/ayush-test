@@ -4,6 +4,7 @@ import { Form, Input, Select, Space, TreeSelect } from 'antd'
 import { defineMessage, useIntl }                 from 'react-intl'
 
 import { Drawer }                                                       from '@acx-ui/components'
+import { useLazyRadiusAttributeListWithQueryQuery }                     from '@acx-ui/rc/services'
 import { AttributeAssignment, OperatorType, RadiusAttribute, treeNode } from '@acx-ui/rc/utils'
 
 interface RadiusAttributeDrawerProps {
@@ -12,8 +13,6 @@ interface RadiusAttributeDrawerProps {
   isEdit?: boolean
   editAttribute?: AttributeAssignment,
   setAttributeAssignments: (attribute: AttributeAssignment) => void
-  // radiusAttributeTreeData?: treeNode []
-  radiusAttributes: RadiusAttribute [],
   vendorList: string []
 }
 
@@ -28,56 +27,36 @@ const OperationTypeOption = [
 export function RadiusAttributeDrawer (props: RadiusAttributeDrawerProps) {
   const { $t } = useIntl()
   // eslint-disable-next-line max-len
-  const { visible, setVisible, isEdit, editAttribute, setAttributeAssignments, radiusAttributes } = props
+  const { visible, setVisible, isEdit, editAttribute, setAttributeAssignments, vendorList } = props
   const [form] = Form.useForm()
   const [resetField, setResetField] = useState(false)
   const [attributeName] = useState<string | undefined>(undefined)
   const [attributeTreeData, setAttributeTreeData] = useState([] as treeNode [])
+  const [radiusAttributeListQuery] = useLazyRadiusAttributeListWithQueryQuery()
+  const commonAttributeKey = 'Common Attributes'
 
   useEffect(() => {
-    form.setFieldsValue(editAttribute)
-  }, [editAttribute, form])
+    if (editAttribute && visible) {
+      form.setFieldsValue(editAttribute)
+    }
+  }, [editAttribute, visible])
 
   useEffect(() => {
-    setAttributeTreeData(transferToTreeData(radiusAttributes))
-  }, [radiusAttributes])
+    setAttributeTreeData(Array.of(toTreeNode(commonAttributeKey, false, [])).concat(
+      vendorList.map(vendor => toTreeNode(vendor, false,[]))))
+  }, [vendorList])
 
-  // eslint-disable-next-line max-len
-  const toTreeNode = (value: string, children?: treeNode []) : treeNode => {
+  const toTreeNode = (value: string,
+    isLeaf: boolean,
+    children?: treeNode []) : treeNode => {
     return {
       value: value,
       title: value,
-      selectable: !children,
-      children: children ?? undefined
+      isLeaf: isLeaf,
+      selectable: isLeaf,
+      children: children ?? undefined,
+      dataType: 'STRING'
     }
-  }
-
-  const transferToTreeData = (attributes: RadiusAttribute []) => {
-    const commonAttributeKey = 'Common Attributes'
-
-    const groupedAttributes = attributes.reduce(function (r, a) {
-      if(a.showOnDefault) {
-        r[commonAttributeKey] = r[commonAttributeKey] || []
-        r[commonAttributeKey].push(a)
-      }
-      r[a.vendorName] = r[a.vendorName] || []
-      r[a.vendorName].push(a)
-      return r
-    }, Object.create(null))
-
-    const treeData = Object.keys(groupedAttributes).sort().map(key => {
-      const children = groupedAttributes[key].map((v: RadiusAttribute) => toTreeNode(v.name))
-      return toTreeNode(key, children)
-    })
-
-    const index = treeData.findIndex(a => a.value === commonAttributeKey)
-    const common = []
-    if(index !== -1) {
-      common.push(toTreeNode(commonAttributeKey, treeData[index].children))
-      delete treeData[index]
-    }
-
-    return common.concat(treeData)
   }
 
   const onClose = () => {
@@ -96,18 +75,53 @@ export function RadiusAttributeDrawer (props: RadiusAttributeDrawerProps) {
   }
 
   const getAttributeDataType = (attributeName: string) => {
-    return radiusAttributes.find(a => a.name === attributeName)?.dataType
+    let dataType
+    attributeTreeData.forEach(node => {
+      if(node.children) {
+        // console.log(node.children)
+        const attribute = node.children.find(node => node.value === attributeName)
+        if(attribute) {
+          dataType = attribute.dataType
+        }
+      }
+    })
+    return dataType
   }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const onLoadData = async (treeNode: any) => {
+    const defaultPayload = {
+      page: '1',
+      pageSize: '10000'
+    }
+    const payload = treeNode.value === commonAttributeKey ?
+      { ...defaultPayload, filters: { showOnDefault: true } } :
+      { ...defaultPayload, filters: { vendorName: treeNode.value } }
+    const attributeList = (await radiusAttributeListQuery({ payload }).unwrap()).data
+    if(attributeList.length > 0) {
+      setAttributeTreeData(attributeTreeData.map(node => {
+        if(node.value === treeNode.value) {
+          node.children = attributeList.map((v: RadiusAttribute) =>
+            toTreeNode(v.name, true))
+        }
+        return node
+      }))
+    }
+  }
+
 
   const content = (
     <Form layout='vertical' form={form} onFinish={onSubmit}>
       <Form.Item name='id' hidden children={<Input />}/>
-      <Form.Item name='attributeName' label={$t({ defaultMessage: 'Attribute Type' })}>
+      <Form.Item name='attributeName'
+        label={$t({ defaultMessage: 'Attribute Type' })}
+        rules={[{ required: true }]}>
         <TreeSelect
           showSearch
           value={attributeName}
           placeholder={$t({ defaultMessage: 'Select attribute type' })}
           treeData={attributeTreeData}
+          loadData={onLoadData}
           onChange={(value) => {
             form.setFieldValue('dataType', getAttributeDataType(value))
           }}
@@ -120,7 +134,9 @@ export function RadiusAttributeDrawer (props: RadiusAttributeDrawerProps) {
               options={OperationTypeOption?.map(p => ({ label: $t(p.label), value: p.value }))}>
             </Select>
           </Form.Item>
-          <Form.Item name='attributeValue' children={<Input />}/>
+          <Form.Item name='attributeValue'
+            rules={[{ required: true }]}
+            children={<Input />}/>
         </Space>
       </Form.Item>
       <Form.Item name='dataType' hidden children={<Input/>}/>

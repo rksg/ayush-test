@@ -4,13 +4,10 @@ import { Col, Form, Input, Row } from 'antd'
 import { useIntl }               from 'react-intl'
 import { v4 as uuidv4 }          from 'uuid'
 
-import { showActionModal, Table, TableProps }                      from '@acx-ui/components'
-import {
-  useLazyRadiusAttributeGroupListQuery,
-  useRadiusAttributeListQuery, useRadiusAttributeVendorListQuery
-} from '@acx-ui/rc/services'
-import { AttributeAssignment, checkObjectNotExists, RadiusAttribute } from '@acx-ui/rc/utils'
-import { useParams }                                                  from '@acx-ui/react-router-dom'
+import { showActionModal, Table, TableProps }                                      from '@acx-ui/components'
+import { useLazyRadiusAttributeGroupListQuery, useRadiusAttributeVendorListQuery } from '@acx-ui/rc/services'
+import { AttributeAssignment, checkObjectNotExists, OperatorType }                 from '@acx-ui/rc/utils'
+import { useParams }                                                               from '@acx-ui/react-router-dom'
 
 import { RadiusAttributeDrawer } from '../RadiusAttributeDrawer/RadiusAttributeDrawer'
 
@@ -43,23 +40,9 @@ export function RadiusAttributeGroupSettingForm () {
   const [visible, setVisible] = useState(false)
   const [editMode, setEditMode] = useState(false)
   const [editAttribute, setEditAttribute] = useState<AttributeAssignment>()
-  const [radiusAttributes, setRadiusAttributes] = useState([] as RadiusAttribute[])
   const [radiusVendors, setRadiusVendors] = useState([] as string [])
 
-  const radiusAttributesQuery = useRadiusAttributeListQuery({
-    params: {
-      page: '1',
-      pageSize: '500'
-    }
-  })
-
   const radiusAttributeVendorListQuery = useRadiusAttributeVendorListQuery({ params: {} })
-
-  useEffect(()=>{
-    if(radiusAttributesQuery.data) {
-      setRadiusAttributes(radiusAttributesQuery.data.data ?? [])
-    }
-  }, [radiusAttributesQuery.data])
 
   useEffect(()=>{
     if(radiusAttributeVendorListQuery.data) {
@@ -165,8 +148,12 @@ export function RadiusAttributeGroupSettingForm () {
               actions={[{
                 label: $t({ defaultMessage: 'Add' }),
                 onClick: () => {
-                  setEditAttribute({} as AttributeAssignment)
                   setEditMode(false)
+                  setEditAttribute({
+                    attributeName: '' ,
+                    operator: OperatorType.ADD,
+                    attributeValue: ''
+                  } as AttributeAssignment)
                   setVisible(true)
                 }
               }]}
@@ -176,8 +163,6 @@ export function RadiusAttributeGroupSettingForm () {
               setVisible={setVisible}
               isEdit={editMode}
               editAttribute={editAttribute}
-              // radiusAttributeTreeData={attributeTreeData}
-              radiusAttributes={radiusAttributes}
               vendorList={radiusVendors}
               setAttributeAssignments={setAttributeAssignments}/>
           </>

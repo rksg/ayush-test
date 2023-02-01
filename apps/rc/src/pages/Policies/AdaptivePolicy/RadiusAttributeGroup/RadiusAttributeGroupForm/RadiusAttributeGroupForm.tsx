@@ -12,7 +12,6 @@ import {
 } from '@acx-ui/rc/services'
 import {
   AttributeAssignment,
-  getPolicyListRoutePath,
   getPolicyRoutePath,
   PolicyOperation,
   PolicyType
@@ -99,8 +98,9 @@ export default function RadiusAttributeGroupForm (props: RadiusAttributeGroupFor
           : intl.$t({ defaultMessage: 'Add RADIUS Attributes Group' })}
         breadcrumb={[
           {
-            text: intl.$t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath()
+            text: intl.$t({ defaultMessage: 'Policies & Profiles > RADIUS Attribute Groups' }),
+            // eslint-disable-next-line max-len
+            link: getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.LIST })
           }
         ]}
       />

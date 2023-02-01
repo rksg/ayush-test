@@ -44,7 +44,7 @@ export default function RadiusAttributeGroupDetail () {
       <PageHeader
         title={data?.name || ''}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Policies & Profiles > Access Polices' }),
+          { text: $t({ defaultMessage: 'Policies & Profiles > RADIUS Attribute Groups' }),
             // eslint-disable-next-line max-len
             link: getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.LIST }) }
         ]}
