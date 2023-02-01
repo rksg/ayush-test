@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react'
 
 import { Col, Form, Row, Switch } from 'antd'
-import { useIntl }                from 'react-intl'
+import { defineMessage, useIntl } from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
 import { Loader, showToast }                from '@acx-ui/components'
@@ -12,6 +12,7 @@ import {
 
 
 import { VenueEditContext } from '../../../index'
+import { FieldLabel }       from '../../styledComponents'
 
 export function DirectedMulticast () {
   const { $t } = useIntl()
@@ -33,6 +34,24 @@ export function DirectedMulticast () {
   const [isWiredEnabled, setIsWiredEnabled] = useState(true)
   const [isWirelessEnabled, setIsWirelessEnabled] = useState(true)
   const [isNetworkEnabled, setIsNetworkEnabled] = useState(true)
+
+  const directedMulticastSettings = [
+    {
+      key: 'wired',
+      label: defineMessage({ defaultMessage: 'Wired Client' }),
+      value: isWiredEnabled
+    },
+    {
+      key: 'wireless',
+      label: defineMessage({ defaultMessage: 'Wireless Client' }),
+      value: isWirelessEnabled
+    },
+    {
+      key: 'network',
+      label: defineMessage({ defaultMessage: 'Network' }),
+      value: isNetworkEnabled
+    }
+  ]
 
   useEffect(() => {
     const directedMulticastData = directedMulticast?.data
@@ -105,63 +124,25 @@ export function DirectedMulticast () {
         {$t({ defaultMessage: 'Multicast Traffic from:' })}
       </Col>
     </Row>
-    <Row gutter={0}>
-      <Col span={4}>
-        {$t({ defaultMessage: 'Wired Client' })}
-      </Col>
-      <Col span={4}>
-        <Form.Item
-          valuePropName='checked'
-          initialValue={isWiredEnabled}
-          style={{ marginTop: '-5px' }}
-          children={
-            <Switch
-              data-testid='wired-switch'
-              checked={isWiredEnabled}
-              onClick={(checked) => onToggleDirectedMulticast(checked, 'wired')}
-            />
-          }
-        />
-      </Col>
-    </Row>
-    <Row gutter={0}>
-      <Col span={4}>
-        {$t({ defaultMessage: 'Wireless Client' })}
-      </Col>
-      <Col span={4}>
-        <Form.Item
-          valuePropName='checked'
-          initialValue={isWirelessEnabled}
-          style={{ marginTop: '-5px' }}
-          children={
-            <Switch
-              data-testid='wireless-switch'
-              checked={isWirelessEnabled}
-              onClick={(checked) => onToggleDirectedMulticast(checked, 'wireless')}
-            />
-          }
-        />
-      </Col>
-    </Row>
-    <Row gutter={0}>
-      <Col span={4}>
-        {$t({ defaultMessage: 'Network' })}
-      </Col>
-      <Col span={4}>
-        <Form.Item
-          valuePropName='checked'
-          initialValue={isNetworkEnabled}
-          style={{ marginTop: '-5px' }}
-          children={
-            <Switch
-              data-testid='network-switch'
-              checked={isNetworkEnabled}
-              onClick={(checked) => onToggleDirectedMulticast(checked, 'network')}
-            />
-          }
-        />
-      </Col>
-    </Row>
+    {
+      directedMulticastSettings.map(({ key, value, label }) => (
+        <FieldLabel width='180px' key={key} >
+          {$t(label)}
+          <Form.Item
+            valuePropName='checked'
+            initialValue={value}
+            style={{ marginTop: '-5px' }}
+            children={
+              <Switch
+                data-testid={key+'-switch'}
+                checked={value}
+                onClick={(checked) => onToggleDirectedMulticast(checked, key)}
+              />
+            }
+          />
+        </FieldLabel>
+      ))
+    }
   </Loader>
   )
 }
