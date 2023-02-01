@@ -15,23 +15,24 @@ import { IconRadioGroup } from '../VenueWifi/styledComponents'
 
 export function VenueSwitch () {
   const params = useParams()
-  const [ showIdx, setShowInx ] = useState(1)
+  const [ showIdx, setShowIdx ] = useState(1)
   return (<>
     <IconRadioGroup value={showIdx}
       size='small'
       buttonStyle='solid'
-      onChange={e => setShowInx(e.target.value)}>
+      onChange={e => setShowIdx(e.target.value)}>
       <Radio.Button value={0}><LineChartOutline /></Radio.Button>
       <Radio.Button value={1}><ListSolid /></Radio.Button>
       <Radio.Button value={2}><PortSolid /></Radio.Button>
     </IconRadioGroup>
-    { showIdx === 0 && (
+    { showIdx === 0 &&
       <div style={{ paddingTop: 20 }}>
         <EmbeddedReport
           embedDashboardName={reportTypeDataStudioMapping[ReportType.SWITCH]}
           rlsClause={`"switchGroupLevelOneName" in ('${params?.venueId}')`}
         />
-      </div>)} {/* TODO: Venue Device Switch Report */}
+      </div>
+    }
     { showIdx === 1 && <SwitchTable />}
     { showIdx === 2 && <SwitchPortTable isVenueLevel={true} />}
   </>)

@@ -1,20 +1,27 @@
+import { useState } from 'react'
+
+import { Radio }   from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Tabs }                                  from '@acx-ui/components'
 import { useIsSplitOn, Features }                from '@acx-ui/feature-toggle'
+import { LineChartOutline, ListSolid }           from '@acx-ui/icons'
 import { ClientDualTable }                       from '@acx-ui/rc/components'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { EmbeddedReport }                        from '@acx-ui/reports/components'
+import {
+  ReportType,
+  reportTypeDataStudioMapping
+} from '@acx-ui/reports/components'
+
 import { IconRadioGroup } from '../VenueDevicesTab/VenueWifi/styledComponents'
-import { Radio } from 'antd'
-import { LineChartOutline, ListSolid } from '@acx-ui/icons'
-import { useState } from 'react'
 
 export function VenueClientsTab () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const { activeSubTab, venueId } = useParams()
   const basePath = useTenantLink(`/venues/${venueId}/venue-details/clients`)
-  const [ showIdx, setShowInx ] = useState(0)
+  const [ showIdx, setShowIdx ] = useState(1)
 
   const onTabChange = (tab: string) => {
     navigate({
@@ -32,12 +39,18 @@ export function VenueClientsTab () {
         <IconRadioGroup value={showIdx}
           buttonStyle='solid'
           size='small'
-          onChange={e => setShowInx(e.target.value)}>
+          onChange={e => setShowIdx(e.target.value)}>
           <Radio.Button value={0}><LineChartOutline /></Radio.Button>
           <Radio.Button value={1}><ListSolid /></Radio.Button>
         </IconRadioGroup>
-        { showIdx === 0 && <div>{$t({ defaultMessage: 'Reports' })}</div> }
-        { showIdx === 1 && <ClientDualTable /> }
+        { showIdx === 0 && (
+          <div style={{ paddingTop: 15 }}>
+            <EmbeddedReport
+              embedDashboardName={reportTypeDataStudioMapping[ReportType.CLIENT]}
+              rlsClause={`"zoneName" in ('${venueId}')`}
+            />
+          </div>) }
+        { showIdx === 1 && <div style={{ paddingTop: 15 }}><ClientDualTable /></div> }
       </Tabs.TabPane>
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'Switch' })}

@@ -233,7 +233,7 @@ function transformData (data: APMesh[]) {
 export function VenueWifi () {
   const params = useParams()
 
-  const [ showIdx, setShowInx ] = useState(1)
+  const [ showIdx, setShowIdx ] = useState(1)
 
   const VenueMeshApsTable = () => {
     const tableQuery = useTableQuery({
@@ -261,18 +261,18 @@ export function VenueWifi () {
       <IconRadioGroup value={showIdx}
         buttonStyle='solid'
         size='small'
-        onChange={e => setShowInx(e.target.value)}>
+        onChange={e => setShowIdx(e.target.value)}>
         <Radio.Button value={0}><LineChartOutline /></Radio.Button>
         <Radio.Button value={1}><ListSolid /></Radio.Button>
         <Radio.Button value={2}><MeshSolid /></Radio.Button>
       </IconRadioGroup>
-      { showIdx === 0 && (
+      { showIdx === 0 &&
         <div style={{ paddingTop: 20 }}>
           <EmbeddedReport
             embedDashboardName={reportTypeDataStudioMapping[ReportType.ACCESS_POINT]}
             rlsClause={`"zoneName" in ('${params?.venueId}')`}
           />
-        </div>)
+        </div>
       }
       { showIdx === 1 && <ApTable rowSelection={{ type: 'checkbox' }} /> }
       { showIdx === 2 && <VenueMeshApsTable /> }
