@@ -7,7 +7,8 @@ import { RadiusServerForm } from './RadiusServerForm'
 const LocalRadiusServer = () => {
   const { $t } = useIntl()
   return(
-    <Fieldset checked={true} label={$t({ defaultMessage: 'Local RADIUS (AAA) Server' })}>
+    // eslint-disable-next-line max-len
+    <Fieldset style={{ border: 'none' }} checked={true} label={$t({ defaultMessage: 'Local RADIUS (AAA) Server' })}>
       <RadiusServerForm/>
     </Fieldset>
   )
