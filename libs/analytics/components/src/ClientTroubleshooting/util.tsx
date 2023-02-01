@@ -601,6 +601,7 @@ export const useLabelFormatter = (params: { value:number, seriesData: Object }) 
   const trackerDate = (params)?.value
   const seriesData = (params)?.seriesData
   const seriesName = Array.isArray(seriesData) ? seriesData[0]?.seriesName : ''
+
   if (seriesName === QUALITY) {
     const obj = (Array.isArray(seriesData) && Array.isArray(seriesData[0].data)
       ? seriesData[0].data[3]
@@ -626,11 +627,15 @@ export const useLabelFormatter = (params: { value:number, seriesData: Object }) 
       )
       : null
     if ((obj as unknown as LabelledQuality)?.all) {
-      return tooltipSuffixText
-        ? `${date} ${tooltipPrefixText.join('')} : ${tooltipSuffixText?.join('')}`
+      const filteredSuffix = tooltipSuffixText && tooltipSuffixText
+        .filter(val => !val.match('-/'))
+
+      return filteredSuffix && filteredSuffix.length === 4
+        ? `${date} ${tooltipPrefixText.join('')} : ${filteredSuffix.join('')}`
         : ''
     }
   }
+
   if (seriesName === EVENTS) {
     const obj = (Array.isArray(seriesData) && Array.isArray(seriesData[0].data)
       ? seriesData[0].data[2]
@@ -642,6 +647,7 @@ export const useLabelFormatter = (params: { value:number, seriesData: Object }) 
     const date = moment(obj?.start).format(dateFormat)
     return tooltipText ? `${date} ${tooltipText}` : ''
   }
+
   if (seriesName === INCIDENTS) {
     const obj = (Array.isArray(seriesData) && Array.isArray(seriesData[0].data)
       ? seriesData[0].data[3]
@@ -651,6 +657,7 @@ export const useLabelFormatter = (params: { value:number, seriesData: Object }) 
     const date = moment(obj?.start).format(dateFormat)
     return tooltipText ? `${date} ${tooltipText}` : ''
   }
+
   if (seriesName === ROAMING) {
     const obj = (Array.isArray(seriesData) && Array.isArray(seriesData[0].data)
       ? seriesData[0].data[3]
@@ -664,5 +671,6 @@ export const useLabelFormatter = (params: { value:number, seriesData: Object }) 
       ? `${date} ${tooltipText?.[0].label} : ${tooltipText?.[0].value}`
       : ''
   }
+
   return ''
 }
