@@ -2,9 +2,9 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 
-import { networkApi }                from '@acx-ui/rc/services'
-import { Provider, store }           from '@acx-ui/store'
-import { findTBody, render, screen } from '@acx-ui/test-utils'
+import { networkApi }                                  from '@acx-ui/rc/services'
+import { Provider, store }                             from '@acx-ui/store'
+import { findTBody, logRoles, render, screen, within } from '@acx-ui/test-utils'
 
 import { HostTable } from './HostTable'
 
@@ -19,7 +19,7 @@ const list = {
       fixedAddress: '1.2.3.4'
     },
     {
-      id: '1',
+      id: '2',
       hostName: 'test2',
       mac: 'aa:bb:cc:dd:ee:ff',
       fixedAddress: '2.3.4.5'
@@ -40,20 +40,29 @@ describe('Create DHCP: Host table', () => {
     store.dispatch(networkApi.util.resetApiState())
   })
 
-  it('Table action bar edit pool', async () => {
+  it('should show edit button', async () => {
     render(<HostTable data={list.data} />, { wrapper })
 
     const tbody = await findTBody()
 
     expect(tbody).toBeVisible()
-    const addButton = screen.getByRole('button', { name: 'Add Host' })
-    await userEvent.click(addButton)
-    userEvent.click(screen.getByText('test2'))
-    userEvent.click(screen.getByText('test1'))
-    await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
-    userEvent.click(screen.getByText('test1'))
-    await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
-    userEvent.click(screen.getByText('test1'))
+
+    const row = await screen.findByRole('row', { name: /test1/i })
+    await userEvent.click(within(row).getByRole('checkbox'))
+    await userEvent.click(screen.getByRole('button', { name: 'Edit' }))
     await userEvent.click(await screen.findByRole('button', { name: 'Delete' }))
+  })
+
+  it('should hidden edit button', async () => {
+    render(<HostTable data={list.data} />, { wrapper })
+
+    const tbody = await findTBody()
+
+    expect(tbody).toBeVisible()
+
+    const rows = await screen.findAllByRole('row', { name: /test/i })
+    await userEvent.click(within(rows[0]).getByRole('checkbox'))
+    await userEvent.click(within(rows[1]).getByRole('checkbox'))
+    expect(screen.queryByRole('button', { name: 'Edit' })).toBeNull()
   })
 })
