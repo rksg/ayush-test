@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { Form, Select, Input } from 'antd'
+import { DefaultOptionType }   from 'antd/lib/select'
 import _                       from 'lodash'
 import { useIntl }             from 'react-intl'
 import { useParams }           from 'react-router-dom'
@@ -25,12 +26,7 @@ const VLANPoolInstance = () => {
     payload: listPayload
   })
 
-  type DataType = {
-    label: string
-    value?: string
-  }
-
-  const [vlanPoolList, setVlanPoolList]= useState<DataType[]>()
+  const [vlanPoolList, setVlanPoolList]= useState<DefaultOptionType[]>()
   useEffect(()=>{
     if(data){
       setVlanPoolList(data.map(m => ({ label: m.name, value: m.id })))
