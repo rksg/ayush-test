@@ -1,22 +1,17 @@
-import { useEffect, useState } from 'react'
-
 import { Row, Col, Form, Select, Switch, Typography } from 'antd'
-import { useIntl }                                    from 'react-intl'
+import { defineMessage, MessageDescriptor, useIntl }  from 'react-intl'
 
 import {
   PageHeader,
   StepsForm,
-  Subtitle,
   Tabs,
   Tooltip
 } from '@acx-ui/components'
-import {
-  useGetUserProfileQuery,
-  useUpdateUserProfileMutation
-} from '@acx-ui/rc/services'
+import { useUserProfileContext }        from '@acx-ui/rc/components'
+import { useUpdateUserProfileMutation } from '@acx-ui/rc/services'
 import {
   DetailLevel,
-  ProfileDataToUpdate,
+  UserProfile as UserProfileInterface,
   RolesEnum
 } from '@acx-ui/rc/utils'
 import {
@@ -29,26 +24,17 @@ import { notAvailableMsg } from '@acx-ui/utils'
 import {
   RecentLogin
 } from './RecentLogin'
-import { EnvelopClosedSolidIcon, UserCircle, UserEmailLabel } from './styledComponents'
+import * as UI from './styledComponents'
 
 interface fromLoc {
   from: string
 }
 
-const GetRoleString = ( role: RolesEnum ) => {
-  const { $t } = useIntl()
-  switch (role) {
-    case RolesEnum.PRIME_ADMIN:
-      return $t({ defaultMessage: 'Prime Admin' })
-    case RolesEnum.ADMINISTRATOR:
-      return $t({ defaultMessage: 'Administrator' })
-    case RolesEnum.GUEST_MANAGER:
-      return $t({ defaultMessage: 'Guest Manager' })
-    case RolesEnum.READ_ONLY:
-      return $t({ defaultMessage: 'Read Only' })
-    default:
-      return $t({ defaultMessage: 'Known' })
-  }
+const roleStringMap: Record<RolesEnum, MessageDescriptor> = {
+  [RolesEnum.PRIME_ADMIN]: defineMessage({ defaultMessage: 'Prime Admin' }),
+  [RolesEnum.ADMINISTRATOR]: defineMessage({ defaultMessage: 'Administrator' }),
+  [RolesEnum.GUEST_MANAGER]: defineMessage({ defaultMessage: 'Guest Manager' }),
+  [RolesEnum.READ_ONLY]: defineMessage({ defaultMessage: 'Read Only' })
 }
 
 export function UserProfile () {
@@ -57,41 +43,16 @@ export function UserProfile () {
   const { Paragraph } = Typography
   const { tenantId } = useParams()
   const navigate = useNavigate()
-  const [userInitial, setInitial] = useState('')
-  const [userName, setUserName] = useState('')
-  const [userRole, setRole] = useState('')
-  const [userEmail, setEmail] = useState('')
-  const [dateFormat, setDateFormat] = useState('')
-  const [detailLevel, setDetailLevel] = useState('')
-
-  const { data } = useGetUserProfileQuery({ params: { tenantId } })
+  const userProfile = useUserProfileContext()
   const location = useLocation().state as fromLoc
 
-  useEffect(() => {
-    if (data) {
-      setInitial(data.initials)
-      setUserName(data.fullName)
-      setRole(data.role)
-      setEmail(data.email)
-      setDateFormat(data.dateFormat)
-      setDetailLevel(data.detailLevel)
-    }
-  }, [data])
+  const [updateUserProfile] = useUpdateUserProfileMutation()
 
-  const [ updateUserProfile ] = useUpdateUserProfileMutation()
-
-  const handleUpdate = () => {
-    const payload: ProfileDataToUpdate = {
-      detailLevel: detailLevel as DetailLevel,
-      dateFormat: dateFormat
-    }
-
-    updateUserProfile({ payload, params: { tenantId } })
-      .then(() => {
-        navigate({
-          pathname: location.from
-        }, { replace: true })
-      })
+  const handleUpdateSettings = async (data: Partial<UserProfileInterface>) => {
+    await updateUserProfile({ payload: data, params: { tenantId } })
+    navigate({
+      pathname: location.from
+    }, { replace: true })
   }
 
   const handleCancel = () => {
@@ -102,24 +63,27 @@ export function UserProfile () {
 
   const UserData = () => {
     return (
-      <Row>
-        <Col>
-          <UserCircle>{userInitial}</UserCircle>
-        </Col>
-        <Col style={{ margin: '15px' }}>
-          <Subtitle style={{ marginBottom: '0px' }} level={2}>{ userName }</Subtitle>
-          <label
-            style={{ color: 'var(--acx-neutrals-50)' }}>{GetRoleString(userRole as RolesEnum)}
-          </label>
-          <Row style={{ marginTop: '10px' }}>
-            <Col><EnvelopClosedSolidIcon /></Col>
-            <Col>{ userEmail }</Col>
-            {/* <Col style={{ marginLeft: '25px' }}><h4>+1 408-234-9811</h4></Col> */}
-            <Col style={{ marginLeft: '25px' }}><b>Tenant ID</b></Col>
-            <Col style={{ marginLeft: '5px' }}><Paragraph copyable>{tenantId}</Paragraph></Col>
-          </Row>
-        </Col>
-      </Row>
+      <UI.UserDataWrapper>
+        <UI.UserData>
+          <UI.UserCircle>{userProfile?.initials}</UI.UserCircle>
+          {userProfile && <div>
+            <UI.UserName>{userProfile?.fullName}</UI.UserName>
+            <UI.UserRole>
+              {$t(roleStringMap[userProfile?.role])}
+            </UI.UserRole>
+            <UI.UserAttributes>
+              <div>
+                <b><UI.EnvelopClosedSolidIcon /></b>
+                <Paragraph>{userProfile?.email}</Paragraph>
+              </div>
+              <div>
+                <b>Tenant ID</b>
+                <Paragraph copyable>{tenantId}</Paragraph>
+              </div>
+            </UI.UserAttributes>
+          </div>}
+        </UI.UserData>
+      </UI.UserDataWrapper>
     )
   }
 
@@ -139,10 +103,10 @@ export function UserProfile () {
           <Row gutter={20}>
             <Col span={8}>
               <StepsForm.FieldLabel width='190px'>
-                <UserEmailLabel>
+                <UI.UserEmailLabel>
                   {$t({ defaultMessage: 'Email' })}
-                  {userEmail}
-                </UserEmailLabel>
+                  {userProfile?.email}
+                </UI.UserEmailLabel>
                 <Form.Item
                   name='email_format'
                   rules={[{
@@ -186,33 +150,22 @@ export function UserProfile () {
     )
   }
 
-  const onEventDetailChange = function (value: string) {
-    setDetailLevel(value)
-  }
-
-  const onDateFormatChange = function (value: string) {
-    setDateFormat(value)
-  }
-
   const SettingsTab = () => {
     return (
       <StepsForm
         buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
-        onFinish={async () => handleUpdate()}
+        onFinish={handleUpdateSettings}
         onCancel={async () => handleCancel()}
       >
         <StepsForm.StepForm>
           <Row gutter={20}>
             <Col span={8}>
               <Form.Item
-                name='date_format'
+                name='dateFormat'
                 label={$t({ defaultMessage: 'Date Format' })}
-                rules={[{
-                  required: false
-                }]}
+                initialValue={userProfile?.dateFormat}
                 children={
-                  <Select defaultValue={dateFormat}
-                    onChange={onDateFormatChange}>
+                  <Select>
                     <Option value={'mm/dd/yyyy'}>
                       {$t({ defaultMessage: 'MM/DD/YYYY' })}</Option>
                     <Option value={'dd/mm/yyyy'}>
@@ -223,14 +176,11 @@ export function UserProfile () {
                 }
               />
               <Form.Item
-                name='event_level'
+                name='detailLevel'
                 label={$t({ defaultMessage: 'Event Details Level' })}
-                rules={[{
-                  required: false
-                }]}
+                initialValue={userProfile?.detailLevel}
                 children={
-                  <Select defaultValue={detailLevel}
-                    onChange={onEventDetailChange}>
+                  <Select>
                     <Option value={DetailLevel.BASIC_USER}>
                       {$t({ defaultMessage: 'Basic User' })}</Option>
                     <Option value={DetailLevel.IT_PROFESSIONAL}>
@@ -239,26 +189,6 @@ export function UserProfile () {
                       {$t({ defaultMessage: 'Super User' })}</Option>
                     <Option value={DetailLevel.DEBUGGING}>
                       {$t({ defaultMessage: 'Debugging' })}</Option>
-                  </Select>
-                }
-              />
-              {/* <Form.Item
-                name='event_tooltip'
-                label={$t({ defaultMessage:
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit.' +
-                'Aenean euismod bibendum laoreet. Proin gravida dolor sit amet ' +
-                'lacus accumsan et viverra justo' })}
-              /> */}
-
-              <Form.Item
-                name='preferred_language'
-                label={$t({ defaultMessage: 'Preferred Language' })}
-                rules={[{
-                  required: false
-                }]}
-                children={
-                  <Select defaultValue={'ENGLISH'} >
-                    <Option value={'ENGLISH'}>{$t({ defaultMessage: 'English' })}</Option>
                   </Select>
                 }
               />
