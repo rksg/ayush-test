@@ -13,9 +13,13 @@ import { LabelledQuality }                                       from './config'
 import { ClientInfoData, ConnectionQuality, useClientInfoQuery } from './services'
 import { transformConnectionQualities }                          from './util'
 
-const durations = (items: ConnectionQuality[] | LabelledQuality[]) => items
-  .map(item => moment(item.end).diff(item.start, 'milliseconds', true))
-  .reduce((a, b) => a + b, 0)
+const durations = (items: ConnectionQuality[] | LabelledQuality[] | undefined) => {
+  if (!items) return 0
+
+  return items
+    .map(item => moment(item.end).diff(item.start, 'milliseconds', true))
+    .reduce((a, b) => a + b, 0)
+}
 
 const calculateHealthSummary = (data: ClientInfoData | undefined) => {
   const emptyData = {
