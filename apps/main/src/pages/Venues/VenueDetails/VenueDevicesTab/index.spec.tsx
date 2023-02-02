@@ -7,6 +7,11 @@ import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
 
 import { VenueDetails } from '../'
 
+jest.mock('@acx-ui/reports/components', () => ({
+  ...jest.requireActual('@acx-ui/reports/components'),
+  EmbeddedReport: () => <div data-testid={'some-report-id'} id='acx-report' />
+}))
+
 const data: Dashboard = {
   summary: {
     clients: {
