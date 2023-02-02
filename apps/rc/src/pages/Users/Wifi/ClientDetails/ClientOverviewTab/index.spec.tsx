@@ -1,9 +1,9 @@
 import { rest } from 'msw'
 
-import { AnalyticsFilter }                                                                      from '@acx-ui/analytics/utils'
-import { apApi, venueApi, networkApi, clientApi }                                               from '@acx-ui/rc/services'
-import { CommonUrlsInfo, ClientUrlsInfo, WifiUrlsInfo, Client, ClientStatistic, noDataDisplay } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                      from '@acx-ui/store'
+import { AnalyticsFilter }                                                       from '@acx-ui/analytics/utils'
+import { apApi, venueApi, networkApi, clientApi }                                from '@acx-ui/rc/services'
+import { CommonUrlsInfo, ClientUrlsInfo, WifiUrlsInfo, Client, ClientStatistic } from '@acx-ui/rc/utils'
+import { Provider, store }                                                       from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -24,7 +24,7 @@ import {
   histClientList
 } from '../../__tests__/fixtures'
 
-import { ClientOverviewWidget, UserTraffic } from './ClientOverviewWidget'
+import { ClientOverviewWidget } from './ClientOverviewWidget'
 
 import { ClientOverviewTab } from '.'
 
