@@ -48,6 +48,7 @@ import VLANPoolForm             from './pages/Policies/VLANPool/VLANPoolForm/VLA
 import DHCPDetail               from './pages/Services/DHCP/DHCPDetail'
 import DHCPForm                 from './pages/Services/DHCP/DHCPForm/DHCPForm'
 import DHCPTable                from './pages/Services/DHCP/DHCPTable/DHCPTable'
+import AddDHCP                  from './pages/Services/DHCP/Edge/AddDHCP'
 import EdgeDhcpTable            from './pages/Services/DHCP/Edge/DHCPTable'
 import DpskDetails              from './pages/Services/Dpsk/DpskDetail/DpskDetails'
 import DpskForm                 from './pages/Services/Dpsk/DpskForm/DpskForm'
@@ -214,6 +215,10 @@ function ServiceRoutes () {
       <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE })}
         element={<DHCPForm/>}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.EDGE_DHCP, oper: ServiceOperation.CREATE })}
+        element={<AddDHCP/>}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.EDIT })}
