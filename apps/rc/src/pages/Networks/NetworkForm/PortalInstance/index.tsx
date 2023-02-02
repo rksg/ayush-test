@@ -43,7 +43,7 @@ const PortalInstance = (props:{
   const portalServiceID = useWatch('portalServiceProfileId')
   const { data } = useGetPortalProfileListQuery({ params })
   const [demoValue, setDemoValue]= useState({} as Demo)
-  const portalServices = data?.content?.map(m => ({ label: m.serviceName, value: m.id })) ?? []
+  const portalServices = data?.data?.map(m => ({ label: m.serviceName, value: m.id })) ?? []
   const [portalList, setPortalList]= useState(portalServices)
   const [portalData, setPortalData]= useState([] as Portal[])
   const setPortal = (value:string)=>{
@@ -61,11 +61,11 @@ const PortalInstance = (props:{
   }
   useEffect(()=>{
     if(data){
-      setPortalData([...data.content as Portal[]])
-      setPortalList(data?.content?.map(m => ({ label: m.serviceName, value: m.id })))
+      setPortalData([...data.data as Portal[]])
+      setPortalList(data?.data?.map(m => ({ label: m.serviceName, value: m.id })))
       if(networkData?.portalServiceProfileId){
         form.setFieldValue('portalServiceProfileId',networkData.portalServiceProfileId)
-        const currentPortal = _.find(data.content,{ id: networkData.portalServiceProfileId })
+        const currentPortal = _.find(data.data,{ id: networkData.portalServiceProfileId })
         const content = currentPortal?.content as Demo
         const tempValue={ ...content,
           poweredImg: content.poweredImg?

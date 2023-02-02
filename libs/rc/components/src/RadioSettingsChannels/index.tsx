@@ -4,8 +4,7 @@ import { Space, Form }                        from 'antd'
 import { intersection, findIndex, map, uniq } from 'lodash'
 import { useIntl }                            from 'react-intl'
 
-import { Tooltip }              from '@acx-ui/components'
-import { validateRadioChannel } from '@acx-ui/rc/utils'
+import { Tooltip } from '@acx-ui/components'
 
 import { BarButton5G, BarButtonDFS, CheckboxGroup } from './styledComponents'
 
@@ -137,10 +136,6 @@ export function RadioSettingsChannels (props: {
     <Space style={{ display: 'flex' }}>
       <Form.Item
         name={props.formName}
-        validateFirst
-        rules={[
-          { validator: (_, value) => validateRadioChannel(props.channelMethod, value) }
-        ]}
         children={
           <CheckboxGroup
             className={props.groupSize ? `group-${props.groupSize}` : ''}
@@ -165,7 +160,6 @@ export function RadioSettingsChannels (props: {
           />
         }
       />
-
     </Space>
   </>)
 

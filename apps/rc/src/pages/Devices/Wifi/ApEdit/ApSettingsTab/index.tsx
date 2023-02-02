@@ -11,6 +11,7 @@ import { directedMulticastInfo, notAvailableMsg } from '@acx-ui/utils'
 import { ApEditContext } from '../index'
 
 import { DirectedMulticast } from './DirectedMulticast'
+import { IpSettings }        from './General/IpSettings'
 import { LanPorts }          from './LanPorts'
 import { RadioSettings }     from './RadioTab/RadioSettings'
 
@@ -24,6 +25,7 @@ export function ApSettingsTab () {
   const { editContextData, setEditContextData } = useContext(ApEditContext)
   const releaseTag = useIsSplitOn(Features.DEVICES)
   const supportDirectedMulticast = useIsSplitOn(Features.DIRECTED_MULTICAST)
+  const supportStaticIpSettings = useIsSplitOn(Features.AP_STATIC_IP)
 
   const onTabChange = (tab: string) => {
     setEditContextData && setEditContextData({
@@ -42,6 +44,7 @@ export function ApSettingsTab () {
 
   const tabTitleMap = (tabkey: string) => {
     const tabTitle = {
+      general: $t({ defaultMessage: 'General' }),
       radio: $t({ defaultMessage: 'Radio' }),
       lanPort: $t({ defaultMessage: 'LAN Port' }),
       proxy: $t({ defaultMessage: 'mDNS Proxy' }),
@@ -56,10 +59,15 @@ export function ApSettingsTab () {
   return (
     <Tabs
       onChange={onTabChange}
-      defaultActiveKey='radio'
+      defaultActiveKey={supportStaticIpSettings? 'general' : 'radio'}
       activeKey={params.activeSubTab}
       type='card'
     >
+      {supportStaticIpSettings &&
+        <TabPane tab={tabTitleMap('general')} key='general'>
+          <IpSettings />
+        </TabPane>
+      }
       <TabPane tab={tabTitleMap('radio')} key='radio'>
         <RadioSettings />
       </TabPane>
@@ -77,7 +85,7 @@ export function ApSettingsTab () {
           {tabTitleMap('multicast')}
           <Tooltip title={$t(directedMulticastInfo)} placement='right'>
             <QuestionMarkCircleOutlined
-              style={{ marginLeft: '8px', height: '16px' }}/>
+              style={{ marginLeft: '8px', marginBottom: '-3px', height: '16px', width: '16px' }}/>
           </Tooltip>
         </>}
         key='multicast'>
