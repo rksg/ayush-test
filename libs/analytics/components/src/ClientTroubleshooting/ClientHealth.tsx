@@ -57,10 +57,7 @@ export function ClientHealth (
 {
   const { $t } = useIntl()
   const { startDate, endDate, range } = filter
-  const data = useClientInfoQuery(
-    { startDate, endDate, range, clientMac: clientMac.toUpperCase() },
-    { skip: !clientMac }
-  )
+  const data = useClientInfoQuery({ startDate, endDate, range, clientMac: clientMac.toUpperCase() })
 
   const parsedData = calculateHealthSummary(data.data)
 
