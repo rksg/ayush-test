@@ -16,13 +16,14 @@ import * as UI from './styledComponents'
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 
 interface MFAFormItemProps {
-  className?: string,
-  mfaTenantDetailsData?: MFASession
+  className?: string;
+  mfaTenantDetailsData?: MFASession;
+  isPrimeAdminUser: boolean;
 }
 
 const MFAFormItem = styled((props: MFAFormItemProps) => {
   const { $t } = useIntl()
-  const { className, mfaTenantDetailsData } = props
+  const { className, mfaTenantDetailsData, isPrimeAdminUser } = props
   const params = useParams()
   const [updateMFAAccount, { isLoading: isUpdating }] = useUpdateMFAAccountMutation()
 
@@ -68,6 +69,7 @@ const MFAFormItem = styled((props: MFAFormItemProps) => {
 
   const isMfaEnabled = mfaTenantDetailsData?.tenantStatus === MFAStatus.ENABLED
   const recoveryCodes = mfaTenantDetailsData?.recoveryCodes
+  const isDisabled = !isPrimeAdminUser || isUpdating
 
   return (
     <Row gutter={24} className={className}>
@@ -77,7 +79,7 @@ const MFAFormItem = styled((props: MFAFormItemProps) => {
             onChange={handleEnableMFAChange}
             checked={isMfaEnabled}
             value={isMfaEnabled}
-            disabled={isUpdating}
+            disabled={isDisabled}
           >
             {$t({ defaultMessage: 'Enable Multi-Factor Authentication (MFA)' })}
           </Checkbox>

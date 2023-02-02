@@ -2,29 +2,40 @@
 import _        from 'lodash'
 import { rest } from 'msw'
 
-import { UserProfile, AdministrationUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider  }                           from '@acx-ui/store'
+import { UserProfileProvider }                    from '@acx-ui/rc/components'
+import { AdministrationUrlsInfo, CommonUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider  }                              from '@acx-ui/store'
 import {
   render,
   mockServer,
   screen,
   fireEvent,
-  waitFor
+  waitFor,
+  cleanup
 } from '@acx-ui/test-utils'
 
 import { fakeUserProfile, fakeTenantDelegation } from '../__tests__/fixtures'
 
 import  { AccessSupportFormItem } from './'
 
+const params: { tenantId: string } = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
+
 jest.spyOn(Date, 'now').mockImplementation(() => {
   return new Date('2023-01-11T12:33:37.101+00:00').getTime()
 })
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  getJwtTokenPayload: () => ( params )
+}))
 
 describe('Access Support Form Item', () => {
-  const params: { tenantId: string } = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
 
   it('should be able to enable access support', async () => {
     mockServer.use(
+      rest.get(
+        CommonUrlsInfo.getUserProfile.url,
+        (req, res, ctx) => res(ctx.json(fakeUserProfile))
+      ),
       rest.get(
         AdministrationUrlsInfo.getTenantDelegation.url.split('?')[0],
         (_req, res, ctx) => res(ctx.json([]))
@@ -40,10 +51,12 @@ describe('Access Support Form Item', () => {
 
     render(
       <Provider>
-        <AccessSupportFormItem
-          userProfileData={fakeUserProfile as UserProfile}
-          isMspEc={false}
-        />
+        <UserProfileProvider>
+          <AccessSupportFormItem
+            isMspEc={false}
+            canMSPDelegation={true}
+          />
+        </UserProfileProvider>
       </Provider>, {
         route: { params }
       })
@@ -68,10 +81,12 @@ describe('Access Support Form Item', () => {
 
     render(
       <Provider>
-        <AccessSupportFormItem
-          userProfileData={fakeUserProfile as UserProfile}
-          isMspEc={false}
-        />
+        <UserProfileProvider>
+          <AccessSupportFormItem
+            isMspEc={false}
+            canMSPDelegation={true}
+          />
+        </UserProfileProvider>
       </Provider>, {
         route: { params }
       })
@@ -90,10 +105,12 @@ describe('Access Support Form Item', () => {
 
     render(
       <Provider>
-        <AccessSupportFormItem
-          userProfileData={fakeUserProfile as UserProfile}
-          isMspEc={false}
-        />
+        <UserProfileProvider>
+          <AccessSupportFormItem
+            isMspEc={false}
+            canMSPDelegation={true}
+          />
+        </UserProfileProvider>
       </Provider>, {
         route: { params }
       })
@@ -106,25 +123,33 @@ describe('Access Support Form Item', () => {
   })
 
   it('should display not allowed message if it is support user.', async () => {
+    const fakeSupportUser = { ...fakeUserProfile, support: true }
+
     mockServer.use(
+      rest.get(
+        CommonUrlsInfo.getUserProfile.url,
+        (req, res, ctx) => res(ctx.json(fakeSupportUser))
+      ),
       rest.get(
         AdministrationUrlsInfo.getTenantDelegation.url.split('?')[0],
         (_req, res, ctx) => res(ctx.json(fakeTenantDelegation))
       )
     )
-    const fakeSupportUser = { ...fakeUserProfile, support: true }
 
     render(
       <Provider>
-        <AccessSupportFormItem
-          userProfileData={fakeSupportUser as UserProfile}
-          isMspEc={false}
-        />
+        <UserProfileProvider>
+          <AccessSupportFormItem
+            isMspEc={false}
+            canMSPDelegation={true}
+          />
+        </UserProfileProvider>
       </Provider>, {
         route: { params }
       })
 
     const formItem = screen.getByRole('checkbox', { name: 'Enable access to Ruckus support' })
+    expect(formItem).toBeDisabled()
     fireEvent.mouseOver(formItem)
 
     expect(
@@ -133,27 +158,40 @@ describe('Access Support Form Item', () => {
   })
 
   it('should render correctly when it is Msp Delegate EC', async () => {
+    cleanup()
+    const fakeMspECUser = { ...fakeUserProfile, varTenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
+
     mockServer.use(
+      rest.get(
+        CommonUrlsInfo.getUserProfile.url,
+        (req, res, ctx) => res(ctx.json(fakeMspECUser))
+      ),
       rest.get(
         AdministrationUrlsInfo.getTenantDelegation.url.split('?')[0],
         (_req, res, ctx) => res(ctx.json([]))
+      ),
+      rest.post(
+        AdministrationUrlsInfo.enableAccessSupport.url,
+        (req, res, ctx) => res(ctx.status(500), ctx.json(null))
       )
     )
 
-    const fakeUser = { ...fakeUserProfile, varTenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
-
     render(
       <Provider>
-        <AccessSupportFormItem
-          userProfileData={fakeUser as UserProfile}
-          isMspEc={true}
-        />
+        <UserProfileProvider>
+          <AccessSupportFormItem
+            isMspEc={true}
+            canMSPDelegation={false}
+          />
+        </UserProfileProvider>
       </Provider>, {
         route: { params }
       })
 
     const formItem = screen.getByRole('checkbox', { name: 'Enable access to Ruckus support' })
-    expect(formItem.getAttribute('value')).toBe('false')
+    await waitFor(() => expect(formItem).not.toBeDisabled())
+    expect(formItem).not.toBeChecked()
     fireEvent.click(formItem)
+    expect(await screen.findByText('An error occurred')).toBeVisible()
   })
 })

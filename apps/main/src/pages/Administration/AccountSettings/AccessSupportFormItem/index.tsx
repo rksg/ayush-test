@@ -5,16 +5,15 @@ import { useIntl }                                       from 'react-intl'
 import { useParams }                                     from 'react-router-dom'
 import styled                                            from 'styled-components/macro'
 
-import { showToast }            from '@acx-ui/components'
-import { SpaceWrapper }         from '@acx-ui/rc/components'
+import { showToast }                           from '@acx-ui/components'
+import { SpaceWrapper, useUserProfileContext } from '@acx-ui/rc/components'
 import {
   useEnableAccessSupportMutation,
   useDisableAccessSupportMutation,
   useGetEcTenantDelegationQuery,
   useGetTenantDelegationQuery
 } from '@acx-ui/rc/services'
-import { UserProfile } from '@acx-ui/rc/utils'
-import { formatter }   from '@acx-ui/utils'
+import { formatter } from '@acx-ui/utils'
 
 import { MessageMapping } from '../MessageMapping'
 
@@ -25,14 +24,19 @@ import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 
  interface AccessSupportFormItemProps {
   className?: string;
-  userProfileData: UserProfile | undefined;
   isMspEc: boolean;
+  canMSPDelegation: boolean;
 }
 
 const AccessSupportFormItem = styled((props: AccessSupportFormItemProps) => {
   const { $t } = useIntl()
   const params = useParams()
-  const { className, userProfileData, isMspEc } = props
+  const { data: userProfileData } = useUserProfileContext()
+  const {
+    className,
+    isMspEc,
+    canMSPDelegation
+  } = props
   const [isSupportAccessEnabled, setIsSupportAccessEnabled] = useState(false)
   const [createdDate, setCreatedDate] = useState('')
 
@@ -43,23 +47,21 @@ const AccessSupportFormItem = styled((props: AccessSupportFormItemProps) => {
     { isLoading: isDisableAccessSupportUpdating }]
     = useDisableAccessSupportMutation()
 
-  const showMfa = userProfileData?.tenantId === userProfileData?.varTenantId
-
-  let isMspDelegateEC = false
-  if (userProfileData?.varTenantId && !showMfa) {
-    isMspDelegateEC = isMspEc
+  let isMspDelegatedEC = false
+  if (userProfileData?.varTenantId && canMSPDelegation === false) {
+    isMspDelegatedEC = isMspEc
   }
 
   const {
     data: ecTenantDelegationData,
     isLoading: isLoadingEcTenantDelegation,
     isFetching: isFetchingEcTenantDelegation
-  } = useGetEcTenantDelegationQuery({ params }, { skip: !isMspDelegateEC })
+  } = useGetEcTenantDelegationQuery({ params }, { skip: !isMspDelegatedEC })
   const {
     data: tenantDelegationData,
     isLoading: isLoadingTenantDelegation,
     isFetching: isFetchingTenantDelegation
-  }= useGetTenantDelegationQuery({ params }, { skip: isMspDelegateEC })
+  }= useGetTenantDelegationQuery({ params }, { skip: isMspDelegatedEC })
 
   const updateCreatedDate = useCallback((responseCreatedDate: string | undefined) => {
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone

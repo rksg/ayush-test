@@ -3,7 +3,7 @@ import { useParams }     from 'react-router-dom'
 import styled            from 'styled-components/macro'
 
 import { Loader }                from '@acx-ui/components'
-import { useUserProfileActions } from '@acx-ui/rc/components'
+import { useUserProfileContext } from '@acx-ui/rc/components'
 import {
   useGetRecoveryPassphraseQuery,
   useGetMfaTenantDetailsQuery,
@@ -17,31 +17,31 @@ import { MFAFormItem }                   from './MFAFormItem'
 import { RecoveryPassphraseFormItem }    from './RecoveryPassphraseFormItem'
 import * as UI                           from './styledComponents'
 
-
-const AccountSettings = (props: { className?: string }) => {
+interface AccountSettingsProps {
+  className?: string,
+}
+const AccountSettings = (props : AccountSettingsProps) => {
   const { className } = props
   const params = useParams()
+  const {
+    data: userProfileData,
+    verifyIsPrimeAdminUser
+  } = useUserProfileContext()
 
   const recoveryPassphraseData = useGetRecoveryPassphraseQuery({ params })
   const mfaTenantDetailsData = useGetMfaTenantDetailsQuery({ params })
   const mspEcProfileData = useGetMspEcProfileQuery({ params })
-  const {
-    data: userProfileData,
-    verifyIsPrimeAdminUser,
-    isLoading: isGetUserProfileLoading
-  } = useUserProfileActions()
 
-  const showMfa = userProfileData?.tenantId === userProfileData?.varTenantId
+  const canMSPDelegation = userProfileData?.tenantId === userProfileData?.varTenantId
   let isMspEc = Boolean(mspEcProfileData.data?.msp_label)
-  if (userProfileData?.varTenantId && !showMfa) {
+  if (userProfileData?.varTenantId && canMSPDelegation === false) {
     isMspEc = false
   }
 
   const isPrimeAdminUser = verifyIsPrimeAdminUser()
   const showRksSupport = isMspEc === false
-  const isFirstLoading
-    = recoveryPassphraseData.isLoading || mfaTenantDetailsData.isLoading
-      || mspEcProfileData.isLoading || isGetUserProfileLoading
+  const isFirstLoading = recoveryPassphraseData.isLoading
+    || mfaTenantDetailsData.isLoading || mspEcProfileData.isLoading
 
   const isFetching = recoveryPassphraseData.isFetching
 
@@ -67,14 +67,20 @@ const AccountSettings = (props: { className?: string }) => {
         { showRksSupport && (
           <>
             <Divider />
-            <AccessSupportFormItem userProfileData={userProfileData} isMspEc={isMspEc} />
+            <AccessSupportFormItem
+              isMspEc={isMspEc}
+              canMSPDelegation={canMSPDelegation}
+            />
           </>
         )}
 
-        {showMfa && (
+        {canMSPDelegation && (
           <>
             <Divider />
-            <MFAFormItem mfaTenantDetailsData={mfaTenantDetailsData.data} />
+            <MFAFormItem
+              mfaTenantDetailsData={mfaTenantDetailsData.data}
+              isPrimeAdminUser={isPrimeAdminUser}
+            />
           </>
         )}
       </Form>

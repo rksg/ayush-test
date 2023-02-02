@@ -39,13 +39,14 @@ describe('Enable MFA Checkbox', () => {
       <Provider>
         <MFAFormItem
           mfaTenantDetailsData={fakeMFATenantDetail}
+          isPrimeAdminUser={true}
         />
       </Provider>, {
         route: { params }
       })
 
     const formItem = screen.getByRole('checkbox', { name: /Enable Multi-Factor Authentication/i })
-    expect(formItem.getAttribute('value')).toBe('false')
+    expect(formItem).not.toBeChecked()
     fireEvent.click(formItem)
 
     const okBtn = await screen.findByRole('button', { name: 'Enable MFA' })
@@ -62,13 +63,14 @@ describe('Enable MFA Checkbox', () => {
       <Provider>
         <MFAFormItem
           mfaTenantDetailsData={enabledData}
+          isPrimeAdminUser={true}
         />
       </Provider>, {
         route: { params }
       })
 
     const formItem = screen.getByRole('checkbox', { name: /Enable Multi-Factor Authentication/i })
-    expect(formItem.getAttribute('value')).toBe('true')
+    expect(formItem).toBeChecked()
 
     const copyBtn = await screen.findByText( 'Copy Codes' )
     fireEvent.click(copyBtn)
@@ -83,13 +85,14 @@ describe('Enable MFA Checkbox', () => {
       <Provider>
         <MFAFormItem
           mfaTenantDetailsData={enabledData}
+          isPrimeAdminUser={true}
         />
       </Provider>, {
         route: { params }
       })
 
     const formItem = screen.getByRole('checkbox', { name: /Enable Multi-Factor Authentication/i })
-    expect(formItem.getAttribute('value')).toBe('true')
+    expect(formItem).toBeChecked()
     fireEvent.click(formItem)
 
     const okBtn = await screen.findByRole('button', { name: 'Disable MFA' })
@@ -112,18 +115,34 @@ describe('Enable MFA Checkbox', () => {
       <Provider>
         <MFAFormItem
           mfaTenantDetailsData={enabledData}
+          isPrimeAdminUser={true}
         />
       </Provider>, {
         route: { params }
       })
 
     const formItem = screen.getByRole('checkbox', { name: /Enable Multi-Factor Authentication/i })
-    expect(formItem.getAttribute('value')).toBe('true')
+    expect(formItem).toBeChecked()
     fireEvent.click(formItem)
 
     const okBtn = await screen.findByRole('button', { name: 'Disable MFA' })
     expect(okBtn).toBeVisible()
     fireEvent.click(okBtn)
     expect(await screen.findByText('An error occurred')).toBeVisible()
+  })
+
+  it('should be disabled to click toggle MFA', async () => {
+    render(
+      <Provider>
+        <MFAFormItem
+          mfaTenantDetailsData={fakeMFATenantDetail}
+          isPrimeAdminUser={false}
+        />
+      </Provider>, {
+        route: { params }
+      })
+
+    const formItem = screen.getByRole('checkbox', { name: /Enable Multi-Factor Authentication/i })
+    expect(formItem).toBeDisabled()
   })
 })
