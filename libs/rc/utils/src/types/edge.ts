@@ -132,12 +132,21 @@ export interface EdgeDhcpLease {
 
 export interface DhcpStats {
   id: string
-  name: string
-  pools: number
-  edges: number
-  venues: number
-  health: string
-  updateAvailable: boolean
-  serviceVersion: string
-  tags: string[]
+  name?: string
+  pools?: number
+  edges?: number
+  venues?: number
+  health?: string
+  updateAvailable?: boolean
+  serviceVersion?: string
+  tags?: string[]
+  edgeName?: string
+  edgeId?: string
+  venueName?: string
+  venueId?: string
+  successfulAllocations?: number
+  remainingIps?: number
+  droppedPackets?: number
+  relay?: boolean
+  leaseTime?: number
 }
