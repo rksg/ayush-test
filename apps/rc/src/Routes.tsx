@@ -121,10 +121,6 @@ function DeviceRoutes () {
         element={<SwitchDetails />}
       />
       <Route
-        path='devices/switch/:switchId/:serialNumber/clientDetails/:clientId'
-        element={<SwitchClientDetailsPage />}
-      />
-      <Route
         path='devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab/:categoryTab'
         element={<SwitchDetails />}
       />
@@ -152,18 +148,19 @@ function DeviceRoutes () {
 function NetworkRoutes () {
   return rootRoutes(
     <Route path='t/:tenantId'>
-      <Route path='networks' element={<NetworksTable />} />
-      <Route path='networks/add' element={<NetworkForm />} />
+      <Route path='networks' element={<TenantNavigate replace to='/networks/wireless' />} />
+      <Route path='networks/wireless' element={<NetworksTable />} />
+      <Route path='networks/wireless/add' element={<NetworkForm />} />
       <Route
-        path='networks/:networkId/network-details/:activeTab'
+        path='networks/wireless/:networkId/network-details/:activeTab'
         element={<NetworkDetails />}
       />
       <Route
-        path='networks/:networkId/network-details/:activeTab/:activeSubTab'
+        path='networks/wireless/:networkId/network-details/:activeTab/:activeSubTab'
         element={<NetworkDetails />}
       />
       <Route
-        path='networks/:networkId/:action'
+        path='networks/wireless/:networkId/:action'
         element={<NetworkForm />}
       />
     </Route>
@@ -378,6 +375,7 @@ function UserRoutes () {
       </Route>
       <Route path='users/switch' element={<TenantNavigate replace to='/users/switch/clients' />} />
       <Route path='users/switch/clients' element={<SwitchClientList />} />
+      <Route path='users/switch/clients/:clientId' element={<SwitchClientDetailsPage />} />
       {useIsSplitOn(Features.SERVICES)
         ? <><Route
           path='users/persona-management'
