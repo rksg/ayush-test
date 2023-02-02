@@ -9,7 +9,7 @@ import {
   FloorPlanDto,
   onSocketActivityChanged,
   RequestPayload,
-  showActivityMessage,
+  onActivityMessageReceived,
   TableResult,
   Venue,
   VenueExtended,
@@ -96,7 +96,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
             'UpdateRoguePolicy',
             'UpdateDenialOfServiceProtection'
           ]
-          showActivityMessage(msg, activities, () => {
+          onActivityMessageReceived(msg, activities, () => {
             api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'LIST' }]))
           })
         })
@@ -142,7 +142,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       providesTags: [{ type: 'Venue', id: 'DETAIL' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg,
+          onActivityMessageReceived(msg,
             ['AddNetworkVenue', 'DeleteNetworkVenue'], () => {
               api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'DETAIL' }]))
             })
@@ -235,9 +235,10 @@ export const venueApi = baseVenueApi.injectEndpoints({
       providesTags: [{ type: 'VenueFloorPlan', id: 'DETAIL' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg, ['AddFloorPlan', 'UpdateFloorPlan', 'DeleteFloorPlan'], () => {
-            api.dispatch(venueApi.util.invalidateTags([{ type: 'VenueFloorPlan', id: 'DETAIL' }]))
-          })
+          onActivityMessageReceived(msg,
+            ['AddFloorPlan', 'UpdateFloorPlan', 'DeleteFloorPlan'], () => {
+              api.dispatch(venueApi.util.invalidateTags([{ type: 'VenueFloorPlan', id: 'DETAIL' }]))
+            })
         })
       }
     }),
@@ -296,7 +297,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       providesTags: [{ type: 'VenueFloorPlan', id: 'DEVICE' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg, [
+          onActivityMessageReceived(msg, [
             'Update Switch Position',
             'UpdateApPosition',
             'UpdateCloudpathServerPosition'], () => {
@@ -459,7 +460,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       providesTags: [{ type: 'AAA', id: 'DETAIL' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg,
+          onActivityMessageReceived(msg,
             ['AddAaaServer', 'UpdateAaaServer', 'DeleteAaaServer'], () => {
               api.dispatch(venueApi.util.invalidateTags([{ type: 'AAA', id: 'LIST' }]))
             })
@@ -525,7 +526,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       providesTags: [{ type: 'ExternalAntenna', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg,
+          onActivityMessageReceived(msg,
             ['UpdateVenueExternalAntenna'], () => {
               api.dispatch(venueApi.util.invalidateTags([{ type: 'ExternalAntenna', id: 'LIST' }]))
             })
@@ -558,7 +559,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       providesTags: [{ type: 'VenueRadio', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg,
+          onActivityMessageReceived(msg,
             ['UpdateVenueRadioCustomization'], () => {
               api.dispatch(venueApi.util.invalidateTags([{ type: 'VenueRadio', id: 'LIST' }]))
             })
@@ -647,7 +648,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
             'UpdateVenueRogueAp',
             'UpdateDenialOfServiceProtection'
           ]
-          showActivityMessage(msg, activities, () => {
+          onActivityMessageReceived(msg, activities, () => {
             api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'LIST' }]))
           })
         })
@@ -693,7 +694,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
           const activities = [
             'UpdateVenueSyslog'
           ]
-          showActivityMessage(msg, activities, () => {
+          onActivityMessageReceived(msg, activities, () => {
             api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'Syslog' }]))
           })
         })
@@ -722,7 +723,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
           const activities = [
             'UpdateVenueDhcpConfigServiceProfileSetting'
           ]
-          showActivityMessage(msg, activities, () => {
+          onActivityMessageReceived(msg, activities, () => {
             api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'DHCPProfile' }]))
           })
         })
@@ -743,7 +744,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
             'DeactivateVenueDhcpPool',
             'ActivateVenueDhcpPool'
           ]
-          showActivityMessage(msg, activities, () => {
+          onActivityMessageReceived(msg, activities, () => {
             api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'poolList' }]))
           })
         })
@@ -797,7 +798,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
           const activities = [
             'UpdateVenueDirectedMulticast'
           ]
-          showActivityMessage(msg, activities, () => {
+          onActivityMessageReceived(msg, activities, () => {
             const invalidateTagsFunc = venueApi.util.invalidateTags
             api.dispatch(invalidateTagsFunc([{ type: 'Venue', id: 'DIRECTED_MULTICAST' }]))
           })
@@ -859,7 +860,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
           const activities = [
             'UpdateVenueLoadBalancing'
           ]
-          showActivityMessage(msg, activities, () => {
+          onActivityMessageReceived(msg, activities, () => {
             api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'LOAD_BALANCING' }]))
           })
         })

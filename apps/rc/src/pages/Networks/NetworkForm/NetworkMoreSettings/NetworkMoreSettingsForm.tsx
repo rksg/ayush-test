@@ -13,20 +13,19 @@ import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 import { get }                 from 'lodash'
 import { useIntl }             from 'react-intl'
 
-import { Button }        from '@acx-ui/components'
-import {
-  useVlanPoolListQuery
-} from '@acx-ui/rc/services'
+import { Button }                                             from '@acx-ui/components'
+import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
 import { NetworkSaveData, NetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
-import { useParams }                                          from '@acx-ui/react-router-dom'
 import { validationMessages }                                 from '@acx-ui/utils'
 
 import NetworkFormContext from '../NetworkFormContext'
+import VLANPoolInstance   from '../VLANPoolInstance'
 
 import { AccessControlForm } from './AccessControlForm'
 import { LoadControlForm }   from './LoadControlForm'
 import { ServicesForm }      from './ServicesForm'
 import * as UI               from './styledComponents'
+
 
 const { Panel } = Collapse
 
@@ -54,16 +53,12 @@ enum MgmtTxRateEnum {
   VALUE_24 = '24'
 }
 
-const listPayload = {
-  fields: ['name', 'id'], sortField: 'name',
-  sortOrder: 'ASC', page: 1, pageSize: 10000
-}
-
 export function NetworkMoreSettingsForm (props: {
   wlanData: NetworkSaveData
 }) {
   const { editMode, cloneMode, data } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
+
   useEffect(() => {
     if ((editMode || cloneMode) && data) {
       form.setFieldsValue({
@@ -71,7 +66,7 @@ export function NetworkMoreSettingsForm (props: {
           ...data.wlan,
           advancedCustomization: {
             ...data?.wlan?.advancedCustomization,
-            vlanPool: JSON.stringify(get(data, 'wlan.advancedCustomization.vlanPool'))
+            vlanPool: get(data, 'wlan.advancedCustomization.vlanPool')
           }
         },
         enableUploadLimit: data.wlan?.advancedCustomization?.userUplinkRateLimiting &&
@@ -159,18 +154,6 @@ export function MoreSettingsForm (props: {
   // (guestPortal.guestNetworkType === GuestNetworkTypeEnum.SelfSignIn ||
   //   guestPortal.guestNetworkType === GuestNetworkTypeEnum.HostApproval);
 
-  const { vlanPoolSelectOptions } = useVlanPoolListQuery({
-    params: useParams(),
-    payload: listPayload
-  }, {
-    selectFromResult ({ data }) {
-      return {
-        vlanPoolSelectOptions: data?.map(
-          item => <Option key={item.id} value={JSON.stringify(item)}>{item.name}</Option>) ?? []
-      }
-    }
-  })
-
   const onBbsMinRateChange = function (value: BssMinRateEnum) {
     if (value === BssMinRateEnum.VALUE_NONE) {
       form.setFieldsValue({
@@ -213,7 +196,7 @@ export function MoreSettingsForm (props: {
               style={{ marginBottom: '10px' }}
               valuePropName='checked'
               initialValue={false}
-              children={<Switch />}
+              children={<Switch disabled={!useIsSplitOn(Features.POLICIES)}/>}
             />
           </UI.FieldLabel>
 
@@ -248,22 +231,7 @@ export function MoreSettingsForm (props: {
           </div>}
           {enableVlanPooling &&
         <div style={{ display: 'grid', gridTemplateColumns: '190px auto' }}>
-          <Form.Item
-            label={$t({ defaultMessage: 'VLAN Pool:' })}
-            name={['wlan', 'advancedCustomization', 'vlanPool']}
-            style={{ marginBottom: '15px' }}
-            rules={[{
-              required: true,
-              message: $t({ defaultMessage: 'Please select VLAN Pool profile' })
-            }]}
-            children={
-              <Select placeholder={$t({ defaultMessage: 'Select profile...' })}
-                style={{ width: '180px' }}
-                children={vlanPoolSelectOptions} />
-            }
-          />
-          <span style={{ marginTop: '30px' }}>{ $t({ defaultMessage: 'Add' }) }</span>
-
+          <VLANPoolInstance/>
         </div>
           }
 

@@ -1,7 +1,6 @@
 import {
   ServiceAdminState,
   ServiceStatus,
-  ServiceTechnology,
   ServiceType,
   ApDeviceStatusEnum,
   GuestNetworkTypeEnum,
@@ -316,7 +315,6 @@ export interface Service {
   type: ServiceType
   status: ServiceStatus
   adminState: ServiceAdminState
-  technology: ServiceTechnology
   scope: number
   health: string
   tags: string[]
