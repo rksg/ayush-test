@@ -13,6 +13,7 @@ import {
   waitFor,
   waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
+import { ApEditContext }     from '../..'
 import { venueData, r760Ap } from '../../../../__tests__/fixtures'
 
 import { DirectedMulticast } from '.'
@@ -77,7 +78,18 @@ describe('AP Directed Multicast', () => {
   it('should handle click Customize/Use Venue settings link', async () => {
     render(
       <Provider>
-        <DirectedMulticast />
+        <ApEditContext.Provider value={{
+          editContextData: {
+            tabTitle: '',
+            isDirty: false,
+            hasError: false,
+            updateChanges: jest.fn(),
+            discardChanges: jest.fn()
+          },
+          setEditContextData: jest.fn()
+        }}>
+          <DirectedMulticast />
+        </ApEditContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/devices/wifi/:serialNumber/edit/settings/multicast' }
       })
@@ -110,7 +122,18 @@ describe('AP Directed Multicast', () => {
   it('should handle turn On/Off switch buttons changed', async () => {
     render(
       <Provider>
-        <DirectedMulticast />
+        <ApEditContext.Provider value={{
+          editContextData: {
+            tabTitle: '',
+            isDirty: false,
+            hasError: false,
+            updateChanges: jest.fn(),
+            discardChanges: jest.fn()
+          },
+          setEditContextData: jest.fn()
+        }}>
+          <DirectedMulticast />
+        </ApEditContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/devices/wifi/:serialNumber/edit/settings/multicast' }
       })
