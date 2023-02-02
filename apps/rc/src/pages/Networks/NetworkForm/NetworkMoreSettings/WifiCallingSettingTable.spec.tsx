@@ -59,7 +59,7 @@ describe('WifiCallingSettingTable', () => {
       <WifiCallingSettingTable />, {
         wrapper: wrapper,
         route: {
-          path: '/networks/create',
+          path: '/networks/wireless/create',
           params: { serviceId: 'wifiCallingServiceId1', tenantId: 'tenantId1' }
         }
       }
