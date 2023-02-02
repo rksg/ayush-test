@@ -170,7 +170,18 @@ export function useMenuConfig () {
       path: '/networks',
       name: $t({ defaultMessage: 'Networks' }),
       inactiveIcon: NetworksOutlined,
-      activeIcon: NetworksSolid
+      activeIcon: NetworksSolid,
+      routes: [
+        {
+          path: '/networks/wireless',
+          name: $t({ defaultMessage: 'Wireless Networks' })
+        },
+        {
+          path: '/networks/wired',
+          name: $t({ defaultMessage: 'Wired Networks' }),
+          disabled: !useIsSplitOn(Features.UNRELEASED)
+        }
+      ]
     },
     {
       path: '/services',

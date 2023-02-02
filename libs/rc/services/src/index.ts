@@ -1,3 +1,4 @@
+export * from './common'
 export * from './eventAlarm'
 export * from './network'
 export * from './service'

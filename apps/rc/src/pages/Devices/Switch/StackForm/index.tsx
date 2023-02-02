@@ -401,6 +401,7 @@ export function StackForm () {
         return (
           <Form.Item
             name={`serialNumber${row.key}`}
+            validateTrigger={['onKeyUp', 'onFocus', 'onBlur']}
             rules={[
               {
                 required: activeRow === row.key ? true : false,
@@ -409,10 +410,11 @@ export function StackForm () {
               { validator: (_, value) => validatorSwitchModel(value) },
               { validator: (_, value) => validatorUniqueMember(value) }
             ]}
+            validateFirst
           >
             <Input
               data-testid={`serialNumber${row.key}`}
-              onChange={() => handleChange(row, index)}
+              onBlur={() => handleChange(row, index)}
               style={{ textTransform: 'uppercase' }}
               disabled={row.disabled}
             />
