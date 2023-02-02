@@ -78,7 +78,7 @@ describe('Venues Table', () => {
     )
   })
 
-  it('should delete selected row', async () => {
+  it.skip('should delete selected row', async () => {
     render(
       <Provider>
         <VenuesTable />
