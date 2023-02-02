@@ -3,8 +3,6 @@ import { useParams } from 'react-router-dom'
 
 import { Button, Loader, PageHeader, showActionModal, Table, TableProps } from '@acx-ui/components'
 import {
-  useDelRoguePolicyMutation,
-  usePolicyListQuery,
   useDelVLANPoolPolicyMutation,
   useDeleteClientIsolationMutation,
   useDelRoguePolicyMutation,
