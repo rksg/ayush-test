@@ -8,7 +8,7 @@ import { DhcpStats, getServiceDetailsLink, getServiceListRoutePath, getServiceRo
 import { TenantLink, useParams }                                                                                         from '@acx-ui/react-router-dom'
 
 import { useMockData as useDHCPMoclData } from '../DHCPTable'
-import { EdgeDHCPServiceStatusLight }     from '../EdgeDHCPStatusLight'
+import { EdgeDhcpServiceStatusLight }     from '../EdgeDhcpStatusLight'
 
 import * as UI from './styledComponents'
 
@@ -92,7 +92,7 @@ const EdgeDHCPDetail = () => {
       key: 'health',
       dataIndex: 'health',
       render (data, row) {
-        return <EdgeDHCPServiceStatusLight data={row.health} />
+        return <EdgeDhcpServiceStatusLight data={row.health} />
       }
     },
     {
@@ -167,7 +167,7 @@ const EdgeDHCPDetail = () => {
                       {$t({ defaultMessage: 'Service Health' })}
                     </Typography.Text>
                     <Typography.Text>
-                      <EdgeDHCPServiceStatusLight data={data && data[0]?.health} />
+                      <EdgeDhcpServiceStatusLight data={data && data[0]?.health} />
                     </Typography.Text>
                   </Space>
                 </GridCol>
