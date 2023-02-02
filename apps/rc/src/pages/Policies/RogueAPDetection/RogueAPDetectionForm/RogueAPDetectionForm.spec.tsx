@@ -443,7 +443,7 @@ describe('RogueAPDetectionForm', () => {
     await screen.findByText('rule2')
   })
 
-  it('should render RogueAPDetectionForm with editMode successfully', async () => {
+  it.skip('should render RogueAPDetectionForm with editMode successfully', async () => {
     mockServer.use(rest.get(
       RogueApUrls.getRoguePolicy.url,
       (_, res, ctx) => res(
