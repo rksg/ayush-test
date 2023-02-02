@@ -1,7 +1,7 @@
 import { Space } from 'antd'
 import styled    from 'styled-components/macro'
 
-import { Subtitle as SubtitleComponent } from '@acx-ui/components'
+import { GridCol as GridColComponent  } from '@acx-ui/components'
 
 export const CardWrapper = styled.div`
   height: 210px;
@@ -29,12 +29,15 @@ export const CardWrapper = styled.div`
   }
 `
 
+export const GridCol = styled(GridColComponent)`
+  justify-content: center;
+`
+
 export const Title = styled.div`
   font-size: var(--acx-body-4-font-size);
   line-height: var(--acx-body-4-line-height)
   color: var(--acx-neutrals-70);
   margin-bottom: 6px;
-  white-space: nowrap;
 `
 
 export const OsType = styled(Space)`
@@ -46,8 +49,4 @@ export const OsType = styled(Space)`
       fill: var(--acx-neutrals-70)
     }
   }
-`
-
-export const Subtitle = styled(SubtitleComponent)`
-  white-space: nowrap;
 `

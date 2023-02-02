@@ -175,14 +175,6 @@ describe('ClientOverviewTab', () => {
       </Provider>)
       expect(await screen.findByText('An error occurred')).toBeVisible()
     })
-
-    it('should render UserTraffic Barchart', async () => {
-      render(<Provider><UserTraffic data={undefined as unknown as ClientStatistic}/></Provider>)
-      expect(await screen.findByText('2.4 GHz')).toBeVisible()
-      expect(await screen.findByText('5 GHz')).toBeVisible()
-      expect(await screen.findByText('6 GHz')).toBeVisible()
-      expect(await screen.findAllByText(noDataDisplay)).toHaveLength(3)
-    })
   })
 
   describe('ClientProperties', () => {
