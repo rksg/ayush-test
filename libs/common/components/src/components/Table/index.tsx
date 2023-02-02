@@ -300,8 +300,7 @@ function Table <RecordType extends Record<string, any>> ({
         ) =>
           (searchValue && textToHighlight)
             ? formatFn
-              ? textToHighlight.replace(
-                new RegExp( searchValue, 'ig' ), formatFn('$&') as string)
+              ? textToHighlight.replaceAll(searchValue, formatFn('$&') as string)
               : <Highlighter
                 highlightStyle={{
                   fontWeight: 'bold', background: 'none', padding: 0, color: 'inherit' }}
