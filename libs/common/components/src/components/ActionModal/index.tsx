@@ -36,7 +36,7 @@ type CustomButtonsContent = {
   buttons: CustomButtonProps[]
 }
 
-interface ModalProps extends ModalFuncProps {
+export interface ModalProps extends ModalFuncProps {
   type: ModalType,
   customContent?: DeleteContent | ErrorContent | CustomButtonsContent
 }

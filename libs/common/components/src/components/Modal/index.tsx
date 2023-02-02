@@ -12,7 +12,7 @@ export enum ModalType {
   ModalStepsForm = 'ModalStepsForm'
 }
 
-export interface ModalProps extends AntModalProps {
+interface ModalProps extends AntModalProps {
   type?: ModalType,
   title: string
   subTitle?: string
