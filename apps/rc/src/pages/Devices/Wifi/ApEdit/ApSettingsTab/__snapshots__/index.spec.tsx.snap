@@ -20,8 +20,22 @@ exports[`ApSettingsTab should render correctly 1`] = `
             class="ant-tabs-tab ant-tabs-tab-active"
           >
             <div
-              aria-controls="rc-tabs-test-panel-radio"
+              aria-controls="rc-tabs-test-panel-general"
               aria-selected="true"
+              class="ant-tabs-tab-btn"
+              id="rc-tabs-test-tab-general"
+              role="tab"
+              tabindex="0"
+            >
+              General
+            </div>
+          </div>
+          <div
+            class="ant-tabs-tab"
+          >
+            <div
+              aria-controls="rc-tabs-test-panel-radio"
+              aria-selected="false"
               class="ant-tabs-tab-btn"
               id="rc-tabs-test-tab-radio"
               role="tab"
@@ -128,9 +142,9 @@ exports[`ApSettingsTab should render correctly 1`] = `
       >
         <div
           aria-hidden="false"
-          aria-labelledby="rc-tabs-test-tab-radio"
+          aria-labelledby="rc-tabs-test-tab-general"
           class="ant-tabs-tabpane ant-tabs-tabpane-active"
-          id="rc-tabs-test-panel-radio"
+          id="rc-tabs-test-panel-general"
           role="tabpanel"
           tabindex="0"
         >
@@ -138,7 +152,7 @@ exports[`ApSettingsTab should render correctly 1`] = `
             class="styledComponents__Wrapper-sc-1352uh8-0 ilNUvb"
           >
             <div
-              class="styledComponents__FallbackWrapper-sc-1352uh8-1 doEIjj"
+              class="styledComponents__FallbackWrapper-sc-1352uh8-1 cUVMCE"
             >
               <span
                 aria-label="loader"
@@ -170,6 +184,15 @@ exports[`ApSettingsTab should render correctly 1`] = `
             </div>
           </div>
         </div>
+        <div
+          aria-hidden="true"
+          aria-labelledby="rc-tabs-test-tab-radio"
+          class="ant-tabs-tabpane"
+          id="rc-tabs-test-panel-radio"
+          role="tabpanel"
+          style="display: none;"
+          tabindex="-1"
+        />
         <div
           aria-hidden="true"
           aria-labelledby="rc-tabs-test-tab-lanPort"

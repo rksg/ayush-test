@@ -2,6 +2,7 @@ import {
   createApi,
   fetchBaseQuery
 } from '@reduxjs/toolkit/query/react'
+import { Params } from 'react-router-dom'
 
 
 import {
@@ -18,6 +19,7 @@ import {
   SyslogUrls,
   SyslogPolicyType,
   VenueRoguePolicyType,
+  VLANPoolPolicyType, VlanPoolUrls, VLANPoolDetailInstances,
   TableResult,
   onSocketActivityChanged,
   onActivityMessageReceived,
@@ -28,10 +30,13 @@ import {
   l2AclPolicyInfoType,
   L2AclPolicy,
   AvcApp,
+  VlanPool,
+  WifiUrlsInfo,
   AccessControlUrls, L3AclPolicy, AvcCat,
   ClientIsolationSaveData, ClientIsolationUrls,
   createNewTableHttpRequest, TableChangePayload, RequestFormData
 } from '@acx-ui/rc/utils'
+
 
 export const basePolicyApi = createApi({
   baseQuery: fetchBaseQuery(),
@@ -111,16 +116,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Policy', id: 'DETAIL' }],
-      async onCacheEntryAdded (requestArgs, api) {
-        await onSocketActivityChanged(requestArgs, api, (msg) => {
-          onActivityMessageReceived(msg, [
-            'UpdateRogueApPolicyProfile'
-          ], () => {
-            api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
-          })
-        })
-      }
+      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
     }),
     delRoguePolicies: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -176,6 +172,11 @@ export const policyApi = basePolicyApi.injectEndpoints({
             'AddRogueApPolicyProfile',
             'UpdateRogueApPolicyProfile',
             'DeleteRogueApPolicyProfile',
+            'AddVlanPool',
+            'UpdateVlanPool',
+            'DeleteVlanPool',
+            'PatchVlanPool',
+            'DeleteVlanPools',
             'AddClientIsolationAllowlist',
             'UpdateClientIsolationAllowlist',
             'DeleteClientIsolationAllowlist'
@@ -334,6 +335,29 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'MacRegistration', id: 'LIST' }]
     }),
+    addVLANPoolPolicy: build.mutation<{ response: { [key:string]:string } }, RequestPayload>({
+      query: ({ params, payload }:{ params:Params<string>, payload:VLANPoolPolicyType }) => {
+        const req = createHttpRequest(VlanPoolUrls.addVLANPoolPolicy, params, RKS_NEW_UI)
+
+        return {
+          ...req,
+          body: {
+            ...payload,
+            vlanMembers: payload.vlanMembers.split(',')
+          }
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    delVLANPoolPolicy: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(VlanPoolUrls.deleteVLANPoolPolicy, params, RKS_NEW_UI)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
     addClientIsolation: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(ClientIsolationUrls.addClientIsolation, params, RKS_NEW_UI)
@@ -351,7 +375,28 @@ export const policyApi = basePolicyApi.injectEndpoints({
           ...req
         }
       },
-      invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'ClientIsolation', id: 'LIST' }]
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    vlanPoolList: build.query<VlanPool[], RequestPayload>({
+      query: ({ params }) => {
+        const vlanPoolListReq = createHttpRequest(
+          WifiUrlsInfo.getVlanPools,
+          params
+        )
+        return {
+          ...vlanPoolListReq
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    getVLANPoolPolicyList: build.query<VLANPoolPolicyType[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(VlanPoolUrls.getVLANPoolPolicyList, params, RKS_NEW_UI)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'LIST' }]
     }),
     getClientIsolationList: build.query<ClientIsolationSaveData[], RequestPayload>({
       query: ({ params }) => {
@@ -376,6 +421,15 @@ export const policyApi = basePolicyApi.injectEndpoints({
         })
       }
     }),
+    getVLANPoolPolicyDetail: build.query<VLANPoolPolicyType, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(VlanPoolUrls.getVLANPoolPolicy, params, RKS_NEW_UI)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+    }),
     getClientIsolation: build.query<ClientIsolationSaveData, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(ClientIsolationUrls.getClientIsolation, params, RKS_NEW_UI)
@@ -384,6 +438,29 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Policy', id: 'DETAIL' }, { type: 'ClientIsolation', id: 'LIST' }]
+    }),
+    updateVLANPoolPolicy: build.mutation<VLANPoolPolicyType, RequestPayload>({
+      query: ({ params, payload }:{ params:Params<string>, payload:VLANPoolPolicyType }) => {
+        const req = createHttpRequest(VlanPoolUrls.updateVLANPoolPolicy, params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: {
+            ...payload,
+            vlanMembers: payload.vlanMembers.split(',')
+          }
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    vLANPoolNetworkInstances: build.query<TableResult<VLANPoolDetailInstances>, RequestPayload>({
+      query: ({ params }) => {
+        const instancesRes =
+        createHttpRequest(VlanPoolUrls.getVLANPoolNetworkInstances, params, RKS_NEW_UI)
+        return {
+          ...instancesRes
+	    }
+      },
+      providesTags: [{ type: 'Policy', id: 'LIST' }]
     }),
     updateClientIsolation: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -479,6 +556,13 @@ export const {
   useVenueRoguePolicyQuery,
   useLazyMacRegListsQuery,
   useLazyMacRegistrationsQuery,
+  useAddVLANPoolPolicyMutation,
+  useDelVLANPoolPolicyMutation,
+  useUpdateVLANPoolPolicyMutation,
+  useGetVLANPoolPolicyListQuery,
+  useVlanPoolListQuery,
+  useGetVLANPoolPolicyDetailQuery,
+  useVLANPoolNetworkInstancesQuery,
   useAddClientIsolationMutation,
   useDeleteClientIsolationMutation,
   useGetClientIsolationListQuery,

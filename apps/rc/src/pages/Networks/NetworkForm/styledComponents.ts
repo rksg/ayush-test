@@ -80,3 +80,8 @@ ${socialIconStyle}
 export const LinkedIn = styled(UILinkedIn)`
 ${socialIconStyle}
 `
+export const ButtonContainer = styled.div`
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+`

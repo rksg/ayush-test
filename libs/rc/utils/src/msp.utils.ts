@@ -112,6 +112,21 @@ export class EntitlementUtil {
     }
     return ''
   }
+
+  public static getServiceStartDate (startDate?: string) {
+    const today = startDate ? new Date(startDate) : new Date()
+    const dateFormat = 'YYYY-MM-DD HH:mm:ss[Z]'
+    return moment(today.toString()).utc().format(dateFormat)
+  }
+
+  public static getServiceEndDate (endDate?: string) {
+    // const expiredDate = DateTimeUtilsService.getDateFromMomentByFormat(this.mspEcEndDate.value, this.userDateFormat);
+    // expiredDate.setHours(23);
+    // expiredDate.setMinutes(59);
+    // expiredDate.setSeconds(59);
+    const dateFormat = 'YYYY-MM-DD HH:mm:ss[Z]'
+    return moment(endDate).utc().format(dateFormat)
+  }
 }
 
 function isExpired () {

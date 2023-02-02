@@ -35,7 +35,8 @@ describe('DpskInstancesTable', () => {
 
   it('should render the table', async () => {
     const targetNetwork = mockedNetworks.data[0]
-    const networkLink = `/t/${params.tenantId}/networks/${targetNetwork.id}/network-details/aps`
+    const networkLink =
+      `/t/${params.tenantId}/networks/wireless/${targetNetwork.id}/network-details/aps`
 
     render(
       <Provider>
