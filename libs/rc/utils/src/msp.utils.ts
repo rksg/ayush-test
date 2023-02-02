@@ -17,6 +17,16 @@ const devicesCountMap = {
 }
 
 export class EntitlementUtil {
+  public static getMspDeviceTypeText (deviceType: EntitlementDeviceType): string {
+    switch (deviceType) {
+      case 'MSP_SWITCH':
+        return 'Switch'
+      case 'MSP_WIFI':
+        return 'Wi-Fi'
+    }
+    return 'Wi-Fi'
+  }
+
   public static deviceSubTypeToText (deviceSubType: EntitlementDeviceSubType): string {
     switch (deviceSubType) {
       case EntitlementDeviceSubType.ICX71L:
@@ -35,6 +45,8 @@ export class EntitlementUtil {
         return getIntl().$t({ defaultMessage: 'Trial' })
       case EntitlementDeviceSubType.MSP_WIFI:
         return 'Wi-Fi'
+      case EntitlementDeviceSubType.ICX:
+        return 'Basic'
     }
     return ''
   }

@@ -39,6 +39,7 @@ export enum EntitlementDeviceSubType {
   ICX76 = 'ICX76',
   ICX78 = 'ICX78',
   ICXTEMP = 'ICXTEMP',
+  ICX = 'ICX',
   // for MSP
   ICX_ANY = 'ICX_ANY',
   MSP_WIFI = 'MSP_WIFI',
@@ -200,6 +201,7 @@ export interface MspEntitlement {
   expirationDate: string;
   tenantId: string;
   isTrial: boolean;
+  status?: string;
 }
 
 export interface MspEntitlementSummary {
