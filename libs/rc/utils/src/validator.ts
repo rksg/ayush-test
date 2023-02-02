@@ -9,6 +9,8 @@ import {
 
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
+import { IpUtilsService } from './ipUtilsService'
+
 
 const Netmask = require('netmask').Netmask
 
@@ -518,31 +520,6 @@ export function ValidatePhoneNumber (phoneNumber: string) {
   return true
 }
 
-export function validateRadioChannel (channelMethod: string | undefined, channels: string[]){
-  if(typeof channelMethod === 'undefined'){
-    return
-  }
-
-  const { $t } = getIntl()
-  if(channels.length === 0){
-    if(channelMethod === 'MANUAL'){
-      return Promise.reject($t({ defaultMessage: 'Please select one channel' }))
-    }else{
-      return Promise.reject($t({ defaultMessage: 'Please select at least two channels' }))
-    }
-  }
-  if(channelMethod === 'MANUAL'){
-    if (channels.length !== 1) {
-      return Promise.reject($t(validationMessages.oneRadioChannel))
-    }
-  }else{
-    if (channels.length < 2) {
-      return Promise.reject($t(validationMessages.twoRadioChannels))
-    }
-  }
-  return Promise.resolve()
-}
-
 export const convertIpToLong = (ipAddress: string): number => {
   const ipArray = ipAddress.split('.').map(ip => parseInt(ip, 10))
   return ipArray[0] * 16777216 + ipArray[1] * 65536 + ipArray[2] * 256 + ipArray[3]
@@ -587,3 +564,72 @@ export function IpInSubnetPool (ipAddress: string, subnetAddress:string, subnetM
   }
   return Promise.resolve()
 }
+
+export function validateSwitchIpAddress (ipAddress: string) {
+  const { $t } = getIntl()
+  // eslint-disable-next-line max-len
+  const IP_VALIDATION_PATTERN='(^((22[0-3]|2[0-1][0-9]|1[0-9][0-9]|[1-9][0-9]|[1-9]?)\\.)((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){2}((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))$)|(^(([a-zA-Z]{1})|([a-zA-Z]{1}[a-zA-Z]{1})|([a-zA-Z]{1}[0-9]{1})|([0-9]{1}[a-zA-Z]{1})|([a-zA-Z0-9][a-zA-Z0-9-_]{1,61}[a-zA-Z0-9]))\\.([a-zA-Z]{2,6}|[a-zA-Z0-9-]{2,30}\\.[a-zA-Z]{2,3})$)'
+  const ipRegexp = new RegExp(IP_VALIDATION_PATTERN)
+  if (!ipRegexp.test(ipAddress)) {
+    return Promise.reject($t(validationMessages.switchIpInvalid))
+  }
+  return Promise.resolve()
+}
+
+export function validateSwitchSubnetIpAddress (ipAddress: string, subnetAddress: string) {
+  const { $t } = getIntl()
+  // eslint-disable-next-line max-len
+  const ICX_SUBNET_MASK_PATTERN='^(((255\\.){3}(252|248|240|224|192|128|0+))|((255\\.){2}(255|254|252|248|240|224|192|128|0+)\\.0)|((255\\.)(255|254|252|248|240|224|192|128|0+)(\\.0+){2})|((255|254|252|248|240|224|192|128+)(\\.0+){3}))$'
+  const subnetRegexp = new RegExp(ICX_SUBNET_MASK_PATTERN)
+  if (!subnetRegexp.test(subnetAddress)) {
+    return Promise.reject($t(validationMessages.switchIpInvalid))
+  }else if(IpUtilsService.isBroadcastAddress(ipAddress, subnetAddress)){
+    return Promise.reject($t(validationMessages.switchBroadcastAddressInvalid))
+  }
+  return Promise.resolve()
+}
+
+export function validateSwitchGatewayIpAddress (ipAddress: string, subnetAddress: string, gatewayAddress: string) {
+  const { $t } = getIntl()
+  // eslint-disable-next-line max-len
+  const IP_VALIDATION_PATTERN='(^((22[0-3]|2[0-1][0-9]|1[0-9][0-9]|[1-9][0-9]|[1-9]?)\\.)((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){2}((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))$)|(^(([a-zA-Z]{1})|([a-zA-Z]{1}[a-zA-Z]{1})|([a-zA-Z]{1}[0-9]{1})|([0-9]{1}[a-zA-Z]{1})|([a-zA-Z0-9][a-zA-Z0-9-_]{1,61}[a-zA-Z0-9]))\\.([a-zA-Z]{2,6}|[a-zA-Z0-9-]{2,30}\\.[a-zA-Z]{2,3})$)'
+  const ipRegexp = new RegExp(IP_VALIDATION_PATTERN)
+  if (!ipRegexp.test(gatewayAddress)) {
+    return Promise.reject($t(validationMessages.switchDefaultGatewayInvalid))
+  }else if(!IpUtilsService.isInSameSubnet(ipAddress, subnetAddress, gatewayAddress)){
+    return Promise.reject($t(validationMessages.switchSameSubnetInvalid))
+  }
+  return Promise.resolve()
+}
+
+// eslint-disable-next-line max-len
+export const IP_SUBNET_VALIDATION_PATTERN='^(\\b([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\b)\\.(\\b([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\b)\\.(\\b([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\b)\\.(\\b([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\b)\\/([1-9]|[12]\\d|3[0-2])$'
+
+export function validateSwitchStaticRouteIp (ipAddress: string) {
+  const { $t } = getIntl()
+  const ipRegexp = new RegExp(IP_SUBNET_VALIDATION_PATTERN)
+  if (!ipRegexp.test(ipAddress)) {
+    return Promise.reject($t(validationMessages.switchStaticRouteIpInvalid))
+  }
+  return Promise.resolve()
+}
+
+export function validateSwitchStaticRouteNextHop (ipAddress: string) {
+  const { $t } = getIntl()
+  // eslint-disable-next-line max-len
+  const nextHopRegexp = new RegExp(/^((1\.){3}([1-9]|[1-9]\d|[12]\d\d)|(1\.){2}([2-9]|[1-9]\d|[12]\d\d)\.([1-9]?\d|[12]\d\d)|1\.([2-9]|[1-9]\d|[12]\d\d)(\.([1-9]?\d|[12]\d\d)){2}|([2-9]|[1-9]\d|1\d\d|2[01]\d|22[0-3])(\.([1-9]?\d|[12]\d\d)){3})$/)
+  if (!nextHopRegexp.test(ipAddress)) {
+    return Promise.reject($t(validationMessages.switchStaticRouteNextHopInvalid))
+  }
+  return Promise.resolve()
+}
+
+export function validateSwitchStaticRouteAdminDistance (ipAddress: string) {
+  const { $t } = getIntl()
+  const adRegexp = new RegExp('^([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])$')
+  if (!adRegexp.test(ipAddress)) {
+    return Promise.reject($t(validationMessages.switchStaticRouteAdminDistanceInvalid))
+  }
+  return Promise.resolve()
+}
+

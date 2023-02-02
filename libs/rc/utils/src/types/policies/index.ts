@@ -1,6 +1,8 @@
 export * from './macRegistrarionList'
 export * from './rogueApDetectionPolicy'
 export * from './vlanPoolPolicy'
+export * from './clientIsolationPolicy'
+export * from './syslogPolicy'
 export * from './accessControl'
 
 export enum PolicyType {
