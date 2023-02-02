@@ -1,4 +1,5 @@
-import { useIntl } from 'react-intl'
+import { Typography } from 'antd'
+import { useIntl }    from 'react-intl'
 
 import { Drawer } from '@acx-ui/components'
 
@@ -15,16 +16,16 @@ export default function Firewall (props: {
     visible={props.modalState}
     onClose={() => props.setIsModalOpen(false)}
     children={<>
-      <p>
+      <Typography.Paragraph>
         {
           // eslint-disable-next-line max-len
           $t({ defaultMessage: 'To allow RUCKUS One to function properly, please configure your firewall to allow for outbound connectivity according to the following guidelines:' })
         }
-      </p>
+      </Typography.Paragraph>
       <HelpSubtitle>
         {$t({ defaultMessage: 'Outbound HTTPS (TCP 443) from APs and Switches to:' })}
       </HelpSubtitle>
-      <p>
+      <Typography.Paragraph>
         <CopyableText>https://ap-registrar.ruckuswireless.com</CopyableText>
         <CopyableText>https://sw-registrar.ruckuswireless.com</CopyableText>
         <CopyableText>https://ocsp.comodoca.com</CopyableText>
@@ -36,15 +37,15 @@ export default function Firewall (props: {
         <CopyableText>https://device.eu.ruckus.cloud</CopyableText>
         <CopyableText>https://device.asia.ruckus.cloud</CopyableText>
         <CopyableText>https://storage.googleapis.com</CopyableText>
-      </p>
+      </Typography.Paragraph>
       <HelpSubtitle>
         {$t({ defaultMessage: 'Outbound SSH (TCP 22) from APs and Switches to:' })}
       </HelpSubtitle>
-      <p>
+      <Typography.Paragraph>
         <CopyableText color={'var(--acx-primary-black)'}>device.ruckus.cloud</CopyableText>
         <CopyableText color={'var(--acx-primary-black)'}>device.eu.ruckus.cloud</CopyableText>
         <CopyableText color={'var(--acx-primary-black)'}>device.asia.ruckus.cloud</CopyableText>
-      </p>
+      </Typography.Paragraph>
     </>
     }
     destroyOnClose={true}
