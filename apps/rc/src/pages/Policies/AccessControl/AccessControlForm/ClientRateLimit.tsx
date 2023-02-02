@@ -16,7 +16,7 @@ export const Label = styled.span`
   line-height: 34px;
 `
 
-export interface ClientRateLimitDrawerProps {
+export interface ClientRateLimitProps {
   inputName?: string[]
 }
 
@@ -30,7 +30,7 @@ const Unlimited = () => {
   )
 }
 
-const ClientRateLimitDrawer = (props: ClientRateLimitDrawerProps) => {
+const ClientRateLimit = (props: ClientRateLimitProps) => {
   const { $t } = useIntl()
   const { inputName = [] } = props
   const form = Form.useFormInstance()
@@ -118,4 +118,4 @@ const ClientRateLimitDrawer = (props: ClientRateLimitDrawerProps) => {
   )
 }
 
-export default ClientRateLimitDrawer
+export default ClientRateLimit

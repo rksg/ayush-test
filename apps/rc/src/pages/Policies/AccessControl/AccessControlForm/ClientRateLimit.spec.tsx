@@ -10,7 +10,7 @@ import { SliderRangeProps, SliderSingleProps } from 'antd/lib/slider'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
-import ClientRateLimitDrawer from './ClientRateLimitDrawer'
+import ClientRateLimit from './ClientRateLimit'
 
 jest.mock('antd', () => {
   const antd = jest.requireActual('antd')
@@ -37,7 +37,7 @@ describe('ClientRateLimitDrawer Component', () => {
     render(
       <Provider>
         <Form>
-          <ClientRateLimitDrawer />
+          <ClientRateLimit />
         </Form>
       </Provider>, {
         route: {

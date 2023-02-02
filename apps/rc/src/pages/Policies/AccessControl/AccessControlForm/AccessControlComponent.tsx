@@ -8,7 +8,7 @@ import styled                          from 'styled-components/macro'
 import { AccessControlProfile } from '@acx-ui/rc/utils'
 
 import ApplicationDrawer     from './ApplicationDrawer'
-import ClientRateLimitDrawer from './ClientRateLimitDrawer'
+import ClientRateLimit from './ClientRateLimit'
 import Layer2Drawer          from './Layer2Drawer'
 import Layer3Drawer          from './Layer3Drawer'
 const { useWatch } = Form
@@ -92,7 +92,7 @@ const AccessControlComponent = () => {
         <AccessComponentWrapper>
           <AccessFormItem name={'enableClientRateLimit'} />
         </AccessComponentWrapper>
-        {enableClientRateLimit && <ClientRateLimitDrawer inputName={['rateLimiting']} />}
+        {enableClientRateLimit && <ClientRateLimit inputName={['rateLimiting']} />}
       </FieldLabel>
     </>
   )
