@@ -9,45 +9,59 @@ import { VenueLanPort }                                 from '../models/VenueLan
 
 import { ApVenueStatusEnum } from '.'
 
+export interface IpSettings {
+  ipType?: string,
+  netmask?: string,
+  gateway?: string,
+  primaryDnsServer?: string,
+  secondaryDnsServer?: string
+}
+
+export interface APSystem extends IpSettings {
+  uptime?: number
+}
+
+export interface APNetworkSettings extends IpSettings {
+  ip?: string
+}
+
 export interface AP {
-  IP?: string
-  apMac?: string
+  IP?: string,
+  apMac?: string,
   apStatusData?: {
-    APRadio?: Array<RadioProperties>
-    cellularInfo: CelluarInfo
-    APSystem?: {
-      uptime?: number
-    }
+    APRadio?: Array<RadioProperties>,
+    cellularInfo: CelluarInfo,
+    APSystem?: APSystem,
     lanPortStatus?: Array<LanPortStatusProperties>
   },
-  clients?: number
-  deviceGroupId: string
-  deviceGroupName?: string
-  deviceStatus: string
-  meshRole: string
-  model: string
-  name?: string
-  serialNumber: string
-  tags: string
-  venueId: string
-  venueName: string
-  description?: string
-  deviceGps?: DeviceGps
+  clients?: number,
+  deviceGroupId: string,
+  deviceGroupName?: string,
+  deviceStatus: string,
+  meshRole: string,
+  model: string,
+  name?: string,
+  serialNumber: string,
+  tags: string,
+  venueId: string,
+  venueName: string,
+  description?: string,
+  deviceGps?: DeviceGps,
   deviceStatusSeverity?: ApVenueStatusEnum,
-  lastSeenTime?: string
-  uptime?: string
-  password?: string
-  extIp?: string
-  deviceModelType?: string
-  fwVersion?: string
-  isMeshEnable?: boolean
+  lastSeenTime?: string,
+  uptime?: string,
+  password?: string,
+  extIp?: string,
+  deviceModelType?: string,
+  fwVersion?: string,
+  isMeshEnable?: boolean,
   rootAP?: {
-    name: string
+    name: string,
     serialNumber?: string
   }
-  hops?: number
-  apDownRssi?: number
-  apUpRssi: number
+  hops?: number,
+  apDownRssi?: number,
+  apUpRssi: number,
   poePort?: string
 }
 
