@@ -213,7 +213,7 @@ const subnetSetting = async () => {
 }
 
 describe('Layer3Drawer Component', () => {
-  it('Render Layer3Drawer component successfully', async () => {
+  it('Render Layer3Drawer component with anyIp option successfully', async () => {
     mockServer.use(rest.post(
       AccessControlUrls.getL3AclPolicyList.url,
       (_, res, ctx) => res(
@@ -248,14 +248,102 @@ describe('Layer3Drawer Component', () => {
 
     await userEvent.type(screen.getByRole('textbox', {
       name: /policy name:/i
-    }), 'layer3')
+    }), 'layer3-test')
+
+    await anyIpSetting()
+
+    await userEvent.click(screen.getAllByText('Save')[0])
+
+    mockServer.use(rest.post(
+      AccessControlUrls.getL3AclPolicyList.url,
+      (_, res, ctx) => res(
+        ctx.json(queryLayer3Update)
+      )
+    ))
+
+    await screen.findByRole('option', { name: 'layer3-test' })
+
+  })
+
+  it('Render Layer3Drawer component with ip option successfully', async () => {
+    mockServer.use(rest.post(
+      AccessControlUrls.getL3AclPolicyList.url,
+      (_, res, ctx) => res(
+        ctx.json(queryLayer3)
+      )
+    ), rest.post(
+      AccessControlUrls.addL3AclPolicy.url,
+      (_, res, ctx) => res(
+        ctx.json(layer3Response)
+      )
+    ))
+
+    render(
+      <Provider>
+        <Form>
+          <Layer3Drawer />
+        </Form>
+      </Provider>, {
+        route: {
+          params: { tenantId: 'tenantId1' }
+        }
+      }
+    )
+
+    await screen.findByRole('option', { name: 'l3-010' })
+
+    await userEvent.click(screen.getByText('Add New'))
+
+    await screen.findByText(/layer 3 settings/i)
+
+    await userEvent.click(screen.getByText(/block traffic/i))
 
     await userEvent.type(screen.getByRole('textbox', {
       name: /policy name:/i
-    }), '-test')
+    }), 'layer3-test')
+
+    await ipSetting()
+
+  })
+
+  it('Render Layer3Drawer component with subnet option successfully', async () => {
+    mockServer.use(rest.post(
+      AccessControlUrls.getL3AclPolicyList.url,
+      (_, res, ctx) => res(
+        ctx.json(queryLayer3)
+      )
+    ), rest.post(
+      AccessControlUrls.addL3AclPolicy.url,
+      (_, res, ctx) => res(
+        ctx.json(layer3Response)
+      )
+    ))
+
+    render(
+      <Provider>
+        <Form>
+          <Layer3Drawer />
+        </Form>
+      </Provider>, {
+        route: {
+          params: { tenantId: 'tenantId1' }
+        }
+      }
+    )
+
+    await screen.findByRole('option', { name: 'l3-010' })
+
+    await userEvent.click(screen.getByText('Add New'))
+
+    await screen.findByText(/layer 3 settings/i)
+
+    await userEvent.click(screen.getByText(/block traffic/i))
+
+    await userEvent.type(screen.getByRole('textbox', {
+      name: /policy name:/i
+    }), 'layer3-test')
 
     await anyIpSetting()
-    await ipSetting()
     await subnetSetting()
 
     await userEvent.click(screen.getByText('IP: 11:11:11:11:11:11/255.255.0.0'))
@@ -280,7 +368,7 @@ describe('Layer3Drawer Component', () => {
 
     await userEvent.click(screen.getAllByText('Save')[1])
 
-    await userEvent.click(screen.getByText('layer3-test-desc-subnet-ruleDescription'))
+    await userEvent.click(await screen.findByText('layer3-test-desc-subnet-ruleDescription'))
 
     await userEvent.click(screen.getByRole('button', {
       name: /delete/i

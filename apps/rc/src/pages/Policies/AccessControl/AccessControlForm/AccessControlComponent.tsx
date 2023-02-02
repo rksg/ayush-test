@@ -4,11 +4,11 @@ import { Form, FormItemProps, Switch } from 'antd'
 import { useIntl }                     from 'react-intl'
 import styled                          from 'styled-components/macro'
 
+// import DeviceOSDrawer from './DeviceOSDrawer'
 import { AccessControlProfile } from '@acx-ui/rc/utils'
 
-import DeviceOSDrawer from './DeviceOSDrawer'
-import Layer2Drawer   from './Layer2Drawer'
-import Layer3Drawer   from './Layer3Drawer'
+import Layer2Drawer from './Layer2Drawer'
+import Layer3Drawer from './Layer3Drawer'
 // import ApplicationsDrawer from './ApplicationsDrawer'
 const { useWatch } = Form
 
@@ -74,7 +74,7 @@ const AccessControlComponent = () => {
         {$t({ defaultMessage: 'Device & OS' })}
         <AccessComponentWrapper>
           <AccessFormItem name={'enableDeviceOs'} />
-          {enableDeviceOs && <DeviceOSDrawer />}
+          {enableDeviceOs && '<DeviceOSDrawer />'}
         </AccessComponentWrapper>
       </FieldLabel>
 

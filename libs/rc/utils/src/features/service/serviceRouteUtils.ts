@@ -39,7 +39,8 @@ const typePathMapping: Record<ServiceType, string> = {
   [ServiceType.WIFI_CALLING]: 'wifiCalling',
   [ServiceType.MDNS_PROXY]: 'mdnsProxy',
   [ServiceType.DPSK]: 'dpsk',
-  [ServiceType.NETWORK_SEGMENTATION]: 'networkSegmentation'
+  [ServiceType.NETWORK_SEGMENTATION]: 'networkSegmentation',
+  [ServiceType.WEBAUTH_SWITCH]: 'webAuth'
 }
 
 function hasTab ({ type, oper }: ServiceRoutePathProps): boolean {
@@ -74,9 +75,13 @@ export function getServiceDetailsLink (props: ServiceDetailsLinkProps): string {
 }
 
 export function getServiceListRoutePath (prefixSlash = false): string {
-  return (prefixSlash ? '/' : '') + 'services'
+  return (prefixSlash ? '/' : '') + 'services/list'
 }
 
 export function getSelectServiceRoutePath (prefixSlash = false): string {
   return (prefixSlash ? '/' : '') + 'services/select'
+}
+
+export function getServiceCatalogRoutePath (prefixSlash = false): string {
+  return (prefixSlash ? '/' : '') + 'services/catalog'
 }

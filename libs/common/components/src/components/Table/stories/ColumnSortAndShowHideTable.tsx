@@ -1,6 +1,8 @@
 import { Table, TableProps } from '..'
 
-const basicColumns: TableProps<(typeof basicData)[0]>['columns'] = [
+type ColumnType = (typeof basicData)[0]
+
+const basicColumns: TableProps<ColumnType>['columns'] = [
   {
     title: 'Name',
     dataIndex: 'name',
@@ -11,12 +13,14 @@ const basicColumns: TableProps<(typeof basicData)[0]>['columns'] = [
     title: 'Age',
     dataIndex: 'age',
     key: 'age',
+    align: 'center',
     fixed: 'left'
   },
   {
     title: 'Distance',
     dataIndex: 'distance',
     key: 'distance',
+    align: 'center',
     show: false
   },
   {
@@ -93,26 +97,32 @@ const basicData = [
 ]
 
 export function ColumnSortAndShowHideTable () {
+  const columnState: TableProps<ColumnType>['columnState'] = {
+    // eslint-disable-next-line no-console
+    onChange: (state) => console.log(JSON.stringify(state, null, 2)),
+    defaultValue: {
+      name: true,
+      age: true,
+      address1: true,
+      address2: true,
+      address3: true,
+      address4: true,
+      distance: true,
+      address5: false,
+      address6: true
+    }
+  }
+  const props: TableProps<ColumnType> = {
+    columns: basicColumns,
+    dataSource: basicData,
+    columnState: columnState
+  }
   return (<>
     <p>Open Browser Debug Console to see updated state</p>
-    <Table
-      columns={basicColumns}
-      dataSource={basicData}
-      columnState={{
-        // eslint-disable-next-line no-console
-        onChange: (state) => console.log(JSON.stringify(state, null, 2)),
-        defaultValue: {
-          name: true,
-          age: true,
-          address1: true,
-          address2: true,
-          address3: true,
-          address4: true,
-          distance: true,
-          address5: false,
-          address6: true
-        }
-      }}
-    />
+    <Table {...props} />
+
+    <br />
+    <h3>Hide the column state</h3>
+    <Table {...props} columnState={{ ...columnState, hidden: true }} />
   </>)
 }

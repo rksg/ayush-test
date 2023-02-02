@@ -6,17 +6,23 @@ import { render, screen, cleanup } from '@acx-ui/test-utils'
 
 import AllRoutes from './AllRoutes'
 
-jest.mock('./pages/Layout/Header/AlarmButton', () => () => {
-  return <div data-testid='alarm-button' />
-})
-jest.mock('./pages/Layout/Header/UserButton', () => () => {
-  return <div data-testid='user-button' />
-})
+jest.mock('@acx-ui/main/components', () => ({
+  ActivityButton: () => <div data-testid='activity-button' />,
+  AlarmsButton: () => <div data-testid='alarms-button' />,
+  HelpButton: () => <div data-testid='help-button' />,
+  UserButton: () => <div data-testid='user-button' />
+}))
+jest.mock('@acx-ui/rc/components', () => ({
+  CloudMessageBanner: () => <div data-testid='cloud-message-banner' />
+}))
 jest.mock('./pages/Dashboard', () => () => {
   return <div data-testid='dashboard' />
 })
 jest.mock('analytics/Routes', () => () => {
   return <div data-testid='analytics' />
+}, { virtual: true })
+jest.mock('reports/Routes', () => () => {
+  return <div data-testid='reports' />
 }, { virtual: true })
 jest.mock('rc/Routes', () => () => {
   return (
@@ -56,6 +62,15 @@ describe('AllRoutes', () => {
       }
     })
     await screen.findByTestId('analytics')
+  })
+  test('should navigate to reports/*', async () => {
+    render(<Provider><AllRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/reports/network/wireless',
+        wrapRoutes: false
+      }
+    })
+    await screen.findByTestId('reports')
   })
 
   test('should navigate to devices/*', async () => {

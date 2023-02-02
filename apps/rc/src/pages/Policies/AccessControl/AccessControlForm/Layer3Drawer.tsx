@@ -1,9 +1,9 @@
 import React, { ReactNode, useEffect, useState } from 'react'
 
-import { Form, FormItemProps, Input, Radio, RadioChangeEvent, Select, Space } from 'antd'
-import _                                                                      from 'lodash'
-import { useIntl }                                                            from 'react-intl'
-import { useParams }                                                          from 'react-router-dom'
+import { Form, FormItemProps, Input, Radio, RadioChangeEvent, Select } from 'antd'
+import _                                                               from 'lodash'
+import { useIntl }                                                     from 'react-intl'
+import { useParams }                                                   from 'react-router-dom'
 import {
   SortableContainer,
   SortableContainerProps,
@@ -11,6 +11,7 @@ import {
   SortableElementProps,
   SortableHandle
 } from 'react-sortable-hoc'
+import styled from 'styled-components/macro'
 
 import {
   Button,
@@ -72,6 +73,14 @@ enum RuleSourceType {
   IP = 'Ip'
 }
 
+const FormItemsWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  > * {
+    width: 48%
+  }
+`
+
 const DrawerFormItem = (props: FormItemProps) => {
   return (
     <Form.Item
@@ -105,6 +114,8 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
   const [requestId, setRequestId] = useState('')
   const [contentForm] = Form.useForm()
   const [drawerForm] = Form.useForm()
+
+  const AnyText = $t({ defaultMessage: 'Any' })
 
   const [
     accessStatus,
@@ -171,7 +182,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     if (requestId && queryPolicyName) {
       layer3SelectOptions.map(option => {
         if (option.props.children === queryPolicyName) {
-          form.setFieldValue('l3AclPolicyId', option.key)
+          form.setFieldValue([...inputName, 'l3AclPolicyId'], option.key)
           setQueryPolicyId(option.key as string)
           setQueryPolicyName('')
           setRequestId('')
@@ -205,7 +216,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       dataIndex: 'source',
       key: 'source',
       render: (data, row) => {
-        return renderNetworkColumn(row.source)
+        return <NetworkColumnComponent network={row.source} />
       }
     },
     {
@@ -213,7 +224,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       dataIndex: 'destination',
       key: 'destination',
       render: (data, row) => {
-        return renderNetworkColumn(row.destination)
+        return <NetworkColumnComponent network={row.destination} />
       }
     },
     {
@@ -238,23 +249,20 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
 
   const RuleSource =[RuleSourceType.ANY, RuleSourceType.SUBNET, RuleSourceType.IP]
 
-  const renderNetworkColumn = (network: Layer3NetworkCol) => {
-    if (network && network.type === 'Subnet') {
-      return <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <span>{$t({ defaultMessage: 'IP:' })} {`${network.subnet}/${network.mask}`}</span>
-        <span>{$t({ defaultMessage: 'Port:' })} {network.port === '' ? 'Any' : network.port }</span>
-      </div>
+  const NetworkColumnComponent = (props: { network: Layer3NetworkCol }) => {
+    const { network } = props
+
+    let ipString = network.type ?? RuleSourceType.ANY
+    if (network && network.type === RuleSourceType.SUBNET) {
+      ipString = `${network.subnet}/${network.mask}`
     }
-    if (network && network.type === 'Ip') {
-      return <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <span>{$t({ defaultMessage: 'IP:' })} {`${network.ip}`}</span>
-        <span>{$t({ defaultMessage: 'Port:' })} {network.port === '' ? 'Any' : network.port }</span>
-      </div>
+    if (network && network.type === RuleSourceType.IP) {
+      ipString = `${network.ip}`
     }
 
     return <div style={{ display: 'flex', flexDirection: 'column' }}>
-      <span>{$t({ defaultMessage: 'IP:' })} {network.type ?? 'Any'}</span>
-      <span>{$t({ defaultMessage: 'Port:' })} {network.port === '' ? 'Any' : network.port }</span>
+      <span>{$t({ defaultMessage: 'IP:' })} {ipString}</span>
+      <span>{$t({ defaultMessage: 'Port:' })} {network.port === '' ? AnyText : network.port }</span>
     </div>
   }
 
@@ -299,14 +307,14 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       access: drawerForm.getFieldValue('access'),
       protocol: drawerForm.getFieldValue('protocol'),
       source: {
-        type: drawerForm.getFieldValue('sourceType') ?? 'Any',
+        type: drawerForm.getFieldValue('sourceType') ?? AnyText,
         subnet: drawerForm.getFieldValue('sourceNetworkAddress') ?? '',
         mask: drawerForm.getFieldValue('sourceMask') ?? '',
         ip: drawerForm.getFieldValue('sourceIp') ?? '',
         port: drawerForm.getFieldValue('sourcePort') ?? ''
       },
       destination: {
-        type: drawerForm.getFieldValue('destType') ?? 'Any',
+        type: drawerForm.getFieldValue('destType') ?? AnyText,
         subnet: drawerForm.getFieldValue('destNetworkAddress') ?? '',
         mask: drawerForm.getFieldValue('destMask') ?? '',
         ip: drawerForm.getFieldValue('destIp') ?? '',
@@ -389,7 +397,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     drawerForm.setFieldValue(['destinationPort'], ruleObj.destination.port)
   }
 
-  const rowActions: TableProps<Layer3Rule>['actions'] = isViewMode() ? [] : [{
+  const rowActions: TableProps<Layer3Rule>['rowActions'] = isViewMode() ? [] : [{
     label: $t({ defaultMessage: 'Edit' }),
     onClick: ([editRow]: Layer3Rule[], clearSelection: () => void) => {
       setRuleDrawerVisible(true)
@@ -436,12 +444,12 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     {
       label: $t({ defaultMessage: 'Allow Traffic' }),
       children: <EmptyElement access={AccessStatus.ALLOW} />,
-      value: 'ALLOW'
+      value: AccessStatus.ALLOW
     },
     {
       label: $t({ defaultMessage: 'Block Traffic' }),
       children: <EmptyElement access={AccessStatus.BLOCK} />,
-      value: 'BLOCK'
+      value: AccessStatus.BLOCK
     }
   ]
 
@@ -449,12 +457,12 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     {
       label: $t({ defaultMessage: 'Allow Traffic' }),
       children: <DefaultEmptyElement access={AccessStatus.ALLOW} />,
-      value: 'ALLOW'
+      value: AccessStatus.ALLOW
     },
     {
       label: $t({ defaultMessage: 'Block Traffic' }),
       children: <DefaultEmptyElement access={AccessStatus.BLOCK} />,
-      value: 'BLOCK'
+      value: AccessStatus.BLOCK
     }
   ]
 
@@ -603,7 +611,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
           </GridCol>
           <GridCol col={{ span: 19 }}>
             {sourceValue === 2
-              ? <Space size={6}>
+              ? <FormItemsWrapper>
                 <Form.Item
                   name='sourceNetworkAddress'
                   rules={[
@@ -622,7 +630,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
                 >
                   <Input placeholder={$t({ defaultMessage: 'Source Mask' })}/>
                 </Form.Item>
-              </Space> : null}
+              </FormItemsWrapper> : null}
           </GridCol>
 
           <GridCol col={{ span: 5 }}>
@@ -631,7 +639,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
             </Radio>
           </GridCol>
           <GridCol col={{ span: 19 }}>
-            {sourceValue === 3 ? <Space size={6}><Form.Item
+            {sourceValue === 3 ? <Form.Item
               name='sourceIp'
               rules={[
                 { required: true },
@@ -639,7 +647,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
               ]}
             >
               <Input placeholder={$t({ defaultMessage: 'Source Ip' })}/>
-            </Form.Item></Space> : null}
+            </Form.Item> : null}
           </GridCol>
         </GridRow>
 
@@ -680,11 +688,14 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
           </GridCol>
           <GridCol col={{ span: 19 }}>
             {destValue === 2
-              ? <Space size={6}>
+              ? <FormItemsWrapper>
                 <Form.Item
                   name='destNetworkAddress'
                   rules={[
-                    { required: true, message: 'You must specify subnet network' }
+                    {
+                      required: true,
+                      message: $t({ defaultMessage: 'You must specify subnet network' })
+                    }
                   ]}
                 >
                   <Input placeholder={$t({ defaultMessage: 'Destination Network Address' })}/>
@@ -692,14 +703,15 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
                 <Form.Item
                   name='destMask'
                   rules={[
-                    { required: true, message: $t({
-                      defaultMessage: 'You must specify mask'
-                    }) }
+                    {
+                      required: true,
+                      message: $t({ defaultMessage: 'You must specify mask' })
+                    }
                   ]}
                 >
                   <Input placeholder={$t({ defaultMessage: 'Destination Mask' })}/>
                 </Form.Item>
-              </Space> : null}
+              </FormItemsWrapper> : null}
           </GridCol>
 
           <GridCol col={{ span: 5 }}>
@@ -708,7 +720,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
             </Radio>
           </GridCol>
           <GridCol col={{ span: 19 }}>
-            {destValue === 3 ? <Space size={6}><Form.Item
+            {destValue === 3 ? <Form.Item
               name='destIp'
               rules={[
                 { required: true, message: $t({
@@ -717,7 +729,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
               ]}
             >
               <Input placeholder={$t({ defaultMessage: 'Destination Ip' })}/>
-            </Form.Item></Space> : null}
+            </Form.Item> : null}
           </GridCol>
         </GridRow>
 
