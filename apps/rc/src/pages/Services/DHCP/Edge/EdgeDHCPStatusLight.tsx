@@ -5,7 +5,7 @@ import { EdgeDhcpServiceStatusEnum } from '@acx-ui/rc/utils'
 
 
 type EdgeDHCPServiceStatusLightProps = {
-  data: string
+  data: string | undefined
 }
 
 export const EdgeDHCPServiceStatusLight = (props: EdgeDHCPServiceStatusLightProps) => {
@@ -32,6 +32,6 @@ export const EdgeDHCPServiceStatusLight = (props: EdgeDHCPServiceStatusLightProp
   }
 
   return (
-    <StatusLight config={EdgeDHCPServiceStatusLightConfig} data={props.data} />
+    <StatusLight config={EdgeDHCPServiceStatusLightConfig} data={props.data || ''} />
   )
 }

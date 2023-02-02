@@ -116,7 +116,7 @@ const EdgeDHCPTable = () => {
       key: 'tags',
       dataIndex: 'tags',
       render (data, row) {
-        return row.tags.join(',')
+        return row.tags?.join(',')
       }
     }
   ]
