@@ -63,7 +63,7 @@ export const api = networkHealthApi.injectEndpoints({
           }
         `,
         providesTags: [
-          { type: 'Monitoring', id: 'SERVICE_VALIDATION' }
+          { type: 'NetworkHealth', id: 'LIST' }
         ]
       }),
       transformResponse: (response: Response) => response.allServiceGuardSpecs
