@@ -32,7 +32,7 @@ const tx = {
   startDatetime: '2022-07-04 07:10:46 +0000',
   endDatetime: '2022-07-04 07:10:47 +0000',
   useCase: 'AddNetworkDeep',
-  linkTemplate: '/t/@@tenantId/networks/@@entityId/network-details/overview',
+  linkTemplate: '/t/@@tenantId/networks/wireless/@@entityId/network-details/overview',
   linkData: [
     { name: 'tenantId',value: 'ecc2d7cf9d2342fdb31ae0e24958fcac' },
     { name: 'entityId',value: '65f6a2f6ec5843be9d9b5b3255a26b04' },
