@@ -23,5 +23,5 @@ export enum Features {
   SERVICE_VALIDATION = 'acx-ui-service-validation-toggle',
   DIRECTED_MULTICAST='wifi-consumer-directed-multicast-toggle',
   LOAD_BALANCING='wifi-consumer-load-balancing-toggle',
-  MSP_EC_CREATE_EDA = 'mspservice-mspec-create-eda'
+  AP_STATIC_IP='wifi-consumer-ap-static-ip-toggle'
 }
