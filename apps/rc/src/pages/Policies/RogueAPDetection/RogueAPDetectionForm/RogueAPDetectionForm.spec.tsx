@@ -506,7 +506,7 @@ describe('RogueAPDetectionForm', () => {
     fireEvent.change(screen.getByRole('textbox', { name: /policy name/i }),
       { target: { value: 'anotherPolicyName' } })
 
-    await addRule('rule3', RogueRuleType.CUSTOM_SSID_RULE, RogueCategory.KNOWN)
+    await addRule('rule3', RogueRuleType.EXCESSIVE_POWER_RULE, RogueCategory.KNOWN)
 
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
