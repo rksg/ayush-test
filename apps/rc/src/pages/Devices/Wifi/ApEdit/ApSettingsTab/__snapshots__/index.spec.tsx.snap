@@ -49,13 +49,16 @@ exports[`ApSettingsTab should render correctly 1`] = `
           >
             <div
               aria-controls="rc-tabs-test-panel-proxy"
+              aria-disabled="false"
               aria-selected="false"
               class="ant-tabs-tab-btn"
               id="rc-tabs-test-tab-proxy"
               role="tab"
               tabindex="0"
             >
-              mDNS Proxy
+              <span>
+                mDNS Proxy
+              </span>
             </div>
           </div>
           <div
@@ -70,6 +73,10 @@ exports[`ApSettingsTab should render correctly 1`] = `
               tabindex="0"
             >
               Directed Multicast
+              <svg
+                data-testid="QuestionMarkCircleOutlined"
+                style="margin-left: 8px; margin-bottom: -3px; height: 16px; width: 16px;"
+              />
             </div>
           </div>
           <div
@@ -128,7 +135,7 @@ exports[`ApSettingsTab should render correctly 1`] = `
           tabindex="0"
         >
           <div
-            class="styledComponents__Wrapper-sc-1352uh8-0 bstzEh"
+            class="styledComponents__Wrapper-sc-1352uh8-0 ilNUvb"
           >
             <div
               class="styledComponents__FallbackWrapper-sc-1352uh8-1 doEIjj"

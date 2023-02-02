@@ -2,6 +2,7 @@ import '@testing-library/jest-dom'
 
 import { dataApiURL }                       from '@acx-ui/analytics/services'
 import { fakeIncidentPoePd }                from '@acx-ui/analytics/utils'
+import { useIsSplitOn }                     from '@acx-ui/feature-toggle'
 import { Provider, store }                  from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
@@ -15,6 +16,7 @@ export const response = {
       {
         name: 'ICX7550-48ZP Router',
         mac: '28:B3:71:29:8C:B6',
+        serial: 'one',
         ports: [
           {
             portNumber: '1/1/1',
@@ -52,6 +54,7 @@ describe('PoeLowTable', () => {
   })
 
   it('should render correctly', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockGraphqlQuery(dataApiURL, 'ImpactedEntities', { data: response })
     render(
       <Provider>
@@ -66,5 +69,27 @@ describe('PoeLowTable', () => {
     )
     const row1 = (await screen.findAllByRole('row'))[1]
     expect(row1.textContent).toMatch(/ICX7550-48ZP Router/)
+    const links: HTMLAnchorElement[] = screen.getAllByRole('link')
+    expect(links[0].href).toBe(
+      'http://localhost/t/undefined/devices/switch/28:b3:71:29:8c:b6/one/details/overview'
+    )
+  })
+  it('should not render links if devices flag not active', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    mockGraphqlQuery(dataApiURL, 'ImpactedEntities', { data: response })
+    render(
+      <Provider>
+        <PoePdTable incident={fakeIncidentPoePd}/>
+      </Provider>,
+      {
+        route: {
+          path: '/t/tenantId/analytics/incidents',
+          wrapRoutes: false
+        }
+      }
+    )
+    const row1 = (await screen.findAllByRole('row'))[1]
+    expect(row1.textContent).toMatch(/ICX7550-48ZP Router/)
+    expect(screen.queryByRole('link')).toBeNull()
   })
 })

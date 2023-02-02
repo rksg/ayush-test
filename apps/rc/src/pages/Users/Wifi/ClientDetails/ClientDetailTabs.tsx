@@ -5,7 +5,7 @@ import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { notAvailableMsg }                       from '@acx-ui/utils'
 
-function ApDetailTabs () {
+function ClientDetailTabs () {
   const { $t } = useIntl()
   const params = useParams()
   const basePath = useTenantLink(`/users/wifi/clients/${params.clientId}/details/`)
@@ -41,11 +41,15 @@ function ApDetailTabs () {
         key='reports'
       />
       <Tabs.TabPane
-        tab={$t({ defaultMessage: 'Timeline' })}
+        disabled={!useIsSplitOn(Features.UNRELEASED)}
+        tab={<Tooltip title={useIsSplitOn(Features.UNRELEASED) ? '' :
+          $t(notAvailableMsg)}>
+          {$t({ defaultMessage: 'Timeline' })}
+        </Tooltip>}
         key='timeline'
       />
     </Tabs>
   )
 }
 
-export default ApDetailTabs
+export default ClientDetailTabs

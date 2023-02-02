@@ -1,7 +1,5 @@
 import '@testing-library/jest-dom'
 
-import React from 'react'
-
 import { dataApiURL }                                from '@acx-ui/analytics/services'
 import { Provider, store }                           from '@acx-ui/store'
 import { render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
@@ -43,6 +41,10 @@ describe('Drawer', () => {
       screen.getByText(`${sample[0].model} (2)`)
       screen.getByText(`${sample[0].version} (2)`)
       screen.getByText('1 Impacted AP')
+      const links: HTMLAnchorElement[] = screen.getAllByRole('link')
+      expect(links[0].href).toBe(
+        'http://localhost/t/undefined/devices/wifi/mac/details/overview'
+      )
     })
     it('should render error', async () => {
       mockGraphqlQuery(dataApiURL, 'ImpactedAPs', {
@@ -73,13 +75,17 @@ describe('Drawer', () => {
     it('should render loader', () => {
       mockGraphqlQuery(dataApiURL, 'ImpactedClients', {
         data: { incident: { impactedClients: sample } } })
-      render(<Provider><ImpactedClientsDrawer {...props}/></Provider>, { route: true })
+      render(<Provider>
+        <ImpactedClientsDrawer {...props} startTime='start' endTime='end'/>
+      </Provider>, { route: true })
       expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
     })
     it('should render drawer', async () => {
       mockGraphqlQuery( dataApiURL, 'ImpactedClients', {
         data: { incident: { impactedClients: sample } } })
-      render(<Provider><ImpactedClientsDrawer {...props}/></Provider>, { route: true })
+      render(<Provider>
+        <ImpactedClientsDrawer {...props} startTime='start' endTime='end' />
+      </Provider>, { route: true })
       await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
       screen.getByPlaceholderText('Search for...')
       screen.getByText(sample[0].mac)
@@ -96,7 +102,9 @@ describe('Drawer', () => {
     it('should render error', async () => {
       mockGraphqlQuery( dataApiURL, 'ImpactedClients', {
         error: new Error('something went wrong!') })
-      render(<Provider><ImpactedClientsDrawer {...props}/></Provider>, { route: true })
+      render(<Provider>
+        <ImpactedClientsDrawer {...props} startTime='start' endTime='end'/>
+      </Provider>, { route: true })
       await screen.findByText('Something went wrong.')
     })
   })

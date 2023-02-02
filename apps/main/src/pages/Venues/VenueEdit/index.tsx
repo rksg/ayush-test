@@ -2,10 +2,13 @@ import { createContext, useState } from 'react'
 
 import { IntlShape } from 'react-intl'
 
-import { showActionModal, CustomButtonProps }                                                      from '@acx-ui/components'
-import { VenueLed, VenueSwitchConfiguration, ExternalAntenna, VenueDefaultRegulatoryChannelsForm } from '@acx-ui/rc/utils'
-import { useParams }                                                                               from '@acx-ui/react-router-dom'
-import { getIntl }                                                                                 from '@acx-ui/utils'
+import { showActionModal, CustomButtonProps } from '@acx-ui/components'
+import { VenueLed,
+  VenueSwitchConfiguration,
+  ExternalAntenna,
+  VenueRadioCustomization } from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
+import { getIntl }   from '@acx-ui/utils'
 
 import { SwitchConfigTab }          from './SwitchConfigTab'
 import { VenueDetailsTab }          from './VenueDetailsTab'
@@ -13,6 +16,7 @@ import VenueEditPageHeader          from './VenueEditPageHeader'
 import { WifiConfigTab }            from './WifiConfigTab'
 import { NetworkingSettingContext } from './WifiConfigTab/NetworkingTab'
 import { SecuritySettingContext }   from './WifiConfigTab/SecurityTab'
+import { ServerSettingContext }     from './WifiConfigTab/ServerTab'
 
 const tabs = {
   details: VenueDetailsTab,
@@ -42,8 +46,11 @@ export interface RadioContext {
   apModels?: { [index: string]: ExternalAntenna }
   updateExternalAntenna?: ((data: ExternalAntenna[]) => void)
 
-  radioData?: VenueDefaultRegulatoryChannelsForm,
-  updateWifiRadio?: ((data: VenueDefaultRegulatoryChannelsForm) => void)
+  radioData?: VenueRadioCustomization,
+  updateWifiRadio?: ((data: VenueRadioCustomization) => void)
+
+  isLoadBalancingDataChanged?: boolean,
+  updateLoadBalancing?: (() => void)
 }
 
 export const VenueEditContext = createContext({} as {
@@ -58,6 +65,9 @@ export const VenueEditContext = createContext({} as {
 
   editSecurityContextData: SecuritySettingContext,
   setEditSecurityContextData: (data: SecuritySettingContext) => void
+
+  editServerContextData: ServerSettingContext,
+  setEditServerContextData: (data: ServerSettingContext) => void
 })
 
 export function VenueEdit () {
@@ -70,6 +80,9 @@ export function VenueEdit () {
   const [
     editSecurityContextData, setEditSecurityContextData
   ] = useState({} as SecuritySettingContext)
+  const [
+    editServerContextData, setEditServerContextData
+  ] = useState({} as ServerSettingContext)
 
   const [
     editRadioContextData, setEditRadioContextData
@@ -84,7 +97,9 @@ export function VenueEdit () {
       editRadioContextData,
       setEditRadioContextData,
       editSecurityContextData,
-      setEditSecurityContextData
+      setEditSecurityContextData,
+      editServerContextData,
+      setEditServerContextData
     }}>
       <VenueEditPageHeader />
       { Tab && <Tab /> }
@@ -116,6 +131,7 @@ function processWifiTab (
   editContextData: EditContext,
   editNetworkingContextData: NetworkingSettingContext,
   editSecurityContextData: SecuritySettingContext,
+  editServerContextData: ServerSettingContext,
   editRadioContextData: RadioContext
 ){
   switch(editContextData?.unsavedTabKey){
@@ -132,11 +148,20 @@ function processWifiTab (
         const extPayload = getExternalAntennaPayload(editRadioContextData.apModels)
         editRadioContextData?.updateExternalAntenna?.(extPayload)
       }
+
       editRadioContextData?.updateWifiRadio?.
-      (editRadioContextData.radioData as VenueDefaultRegulatoryChannelsForm)
+      (editRadioContextData.radioData as VenueRadioCustomization)
+
+      if (editRadioContextData.isLoadBalancingDataChanged) {
+        editRadioContextData?.updateLoadBalancing?.()
+      }
+
       break
     case 'security':
       editSecurityContextData?.updateSecurity?.(editSecurityContextData.SecurityData)
+      break
+    case 'servers':
+      editServerContextData?.updateSyslog?.()
       break
   }
 }
@@ -147,6 +172,7 @@ export function showUnsavedModal (
   editNetworkingContextData: NetworkingSettingContext,
   editRadioContextData: RadioContext,
   editSecurityContextData: SecuritySettingContext,
+  editServerContextData: ServerSettingContext,
   intl: IntlShape,
   callback?: () => void
 ) {
@@ -171,6 +197,13 @@ export function showUnsavedModal (
       const { setData, oldData, tabKey } = editContextData
       if(editContextData?.unsavedTabKey === 'networking'){
         editNetworkingContextData?.discardLanPorts?.()
+        setEditContextData({
+          ...editContextData,
+          isDirty: false,
+          hasError: false
+        })
+      } else if(editContextData?.unsavedTabKey === 'servers'){
+        editServerContextData?.discardSyslog?.()
         setEditContextData({
           ...editContextData,
           isDirty: false,
@@ -204,6 +237,7 @@ export function showUnsavedModal (
           editContextData,
           editNetworkingContextData,
           editSecurityContextData,
+          editServerContextData,
           editRadioContextData
         )
       }else{

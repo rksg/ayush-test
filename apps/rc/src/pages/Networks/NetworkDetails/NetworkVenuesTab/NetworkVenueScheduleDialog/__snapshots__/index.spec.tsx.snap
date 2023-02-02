@@ -150,11 +150,11 @@ exports[`NetworkVenueTabScheduleDialog should render schedule dialog with schedu
                     Mark/ unmark areas to change network availability
                   </span>
                   <button
-                    class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+                    class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
                     type="button"
                   >
                     <span
-                      class="styledComponents__TipSpan-sc-b7odqf-9 WVvyY"
+                      class="styledComponents__TipSpan-sc-b7odqf-9 fzKNMa"
                     >
                       See tips
                     </span>
@@ -18364,7 +18364,7 @@ exports[`NetworkVenueTabScheduleDialog should render schedule dialog with schedu
       class="ant-modal-footer"
     >
       <button
-        class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 iHTOeV"
+        class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ibsWZY"
         type="button"
       >
         <span>
@@ -18372,7 +18372,7 @@ exports[`NetworkVenueTabScheduleDialog should render schedule dialog with schedu
         </span>
       </button>
       <button
-        class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 kkpPZG"
+        class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 glXBEv"
         type="button"
       >
         <span>

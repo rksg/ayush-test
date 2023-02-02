@@ -13,17 +13,14 @@ export default function VenueLeaseTable (){
   const params = useParams()
   const { $t } = useIntl()
 
-  const { data: leasesList } = useVenuesLeasesListQuery({
-    params: { venueId: params.venueId }
-  })
-
+  const { data: leasesList } = useVenuesLeasesListQuery({ params })
 
   const columns: TableProps<DHCPLeases>['columns'] = [
     {
       key: 'hostName',
       searchable: true,
       title: $t({ defaultMessage: 'Hostname' }),
-      dataIndex: 'hostName',
+      dataIndex: 'hostname',
       sorter: true
     },
     {

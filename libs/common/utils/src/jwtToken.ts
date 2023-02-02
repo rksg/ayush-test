@@ -1,3 +1,9 @@
+import { getTenantId } from './getTenantId'
+
+export enum AccountTier {
+  GOLD = 'Gold',
+  PLATINUM = 'Platinum'
+}
 
 export enum AccountVertical {
   DEFAULT = 'Default',
@@ -25,7 +31,7 @@ interface JwtToken {
   acx_account_activation_date: string
   acx_account_activation_flag: boolean
   acx_account_regions: AccountRegion[]
-  acx_account_tier: string
+  acx_account_tier: AccountTier
   acx_account_type: AccountType
   acx_account_vertical: AccountVertical
   acx_trial_in_progress: boolean
@@ -61,14 +67,29 @@ interface JwtToken {
 
 const cache = new Map()
 
+const isDev = process.env['NODE_ENV'] === 'development'
+
 // Fetch JWT token payload data
 export function getJwtTokenPayload () {
-  const jwt = getCookie('JWT')
+  const jwt = getJwtToken()
 
   if (jwt === null) {
-    // eslint-disable-next-line no-console
-    console.error('No JWT token found!')
-    return null
+    const tenantId = getTenantId()
+    if (isDev) {
+      // eslint-disable-next-line no-console
+      console.warn('No JWT token found! So setting default JWT values')
+    }
+    const jwtToken: {
+      acx_account_tier: AccountTier;
+      acx_account_vertical: AccountVertical;
+      acx_account_type: AccountType;
+      tenantId: string | undefined } = {
+        acx_account_tier: AccountTier.GOLD,
+        acx_account_vertical: AccountVertical.DEFAULT,
+        acx_account_type: AccountType.REC,
+        tenantId: tenantId
+      }
+    return jwtToken
   }
 
   if (cache.has(jwt)) return cache.get(jwt)
@@ -83,11 +104,14 @@ export function getJwtTokenPayload () {
   }
 }
 
-function getCookie (key: string) {
-  if (!document.cookie.includes(`${key}=`)) return null
-  const start = document.cookie.indexOf(key)
-  const end = document.cookie.indexOf(';', start)
-
-  const valueStart = start + key.length + 1
-  return document.cookie.slice(valueStart, end)
+export function getJwtToken () {
+  if (sessionStorage.getItem('jwt')) {
+    return sessionStorage.getItem('jwt')
+  } else {
+    if (isDev) {
+      // eslint-disable-next-line no-console
+      console.warn('JWT TOKEN NOT FOUND!!!!!')
+    }
+    return null
+  }
 }

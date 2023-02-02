@@ -1,9 +1,10 @@
 import { defineMessage, IntlShape, MessageDescriptor } from 'react-intl'
 
-import { ccd80211ReasonCodes } from './mapping/ccd80211ReasonCodeMap'
-import { ccdFailureTypes }     from './mapping/ccdFailureTypeMap'
-import { ccdReasonCodes }      from './mapping/ccdReasonCodeMap'
-import { clientEvents }        from './mapping/clientEventsMap'
+import { disconnectReasonCodeMap } from './mapping/80211MgmtDeauthAndDisassociationFramesMap'
+import { ccd80211ReasonCodes }     from './mapping/ccd80211ReasonCodeMap'
+import { ccdFailureTypes }         from './mapping/ccdFailureTypeMap'
+import { ccdReasonCodes }          from './mapping/ccdReasonCodeMap'
+import { clientEvents }            from './mapping/clientEventsMap'
 
 export type MapElement = {
   id: number
@@ -22,6 +23,11 @@ export const readCodesIntoMap = (
 
 const failureTitles = {
   ...readCodesIntoMap('failuresText')(ccdFailureTypes as MapElement[]),
+  ttc: defineMessage({ defaultMessage: 'Time To Connect' })
+}
+
+const failureCodeTextMap = {
+  ...readCodesIntoMap('text')(ccdFailureTypes as MapElement[]),
   ttc: defineMessage({ defaultMessage: 'Time To Connect' })
 }
 
@@ -54,7 +60,14 @@ export function mapCodeToReason (code: string, intl: IntlShape) {
   return (typeof reason === 'string') ? reason : intl.$t(reason)
 }
 
+export function mapDisconnectCodeToReason (code: string | null): MessageDescriptor {
+  return (code && disconnectReasonCodeMap[code]) || defineMessage({ defaultMessage: 'Unknown' })
+}
+
 export function mapCodeToAttempt (code: string, intl: IntlShape) {
   const reason = attemptTitles[code as keyof typeof attemptTitles] || clientEventDescription(code)
   return (typeof reason === 'string') ? reason : intl.$t(reason)
 }
+
+export const mapCodeToFailureText = (code: string, intl: IntlShape) =>
+  intl.$t(failureCodeTextMap[code as keyof typeof failureCodeTextMap])

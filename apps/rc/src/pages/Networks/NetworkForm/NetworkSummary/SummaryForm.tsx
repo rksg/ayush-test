@@ -2,16 +2,17 @@ import { EnvironmentOutlined }            from '@ant-design/icons'
 import { Col, Divider, Form, Input, Row } from 'antd'
 import { useIntl }                        from 'react-intl'
 
-import { StepsForm, Subtitle }                                           from '@acx-ui/components'
-import { useCloudpathListQuery, useVenuesListQuery }                     from '@acx-ui/rc/services'
-import { NetworkSaveData, NetworkTypeEnum, transformDisplayText, Venue } from '@acx-ui/rc/utils'
-import { useParams }                                                     from '@acx-ui/react-router-dom'
+import { StepsForm, Subtitle }                                                 from '@acx-ui/components'
+import { useCloudpathListQuery, useVenuesListQuery }                           from '@acx-ui/rc/services'
+import { Demo, NetworkSaveData, NetworkTypeEnum, transformDisplayText, Venue } from '@acx-ui/rc/utils'
+import { useParams }                                                           from '@acx-ui/react-router-dom'
 
-import { networkTypes } from '../contentsMap'
+import { captiveTypes, networkTypes } from '../contentsMap'
 
-import { AaaSummaryForm }  from './AaaSummaryForm'
-import { DpskSummaryForm } from './DpskSummaryForm'
-import { PskSummaryForm }  from './PskSummaryForm'
+import { AaaSummaryForm }    from './AaaSummaryForm'
+import { DpskSummaryForm }   from './DpskSummaryForm'
+import { PortalSummaryForm } from './PortalSummaryForm'
+import { PskSummaryForm }    from './PskSummaryForm'
 
 const defaultPayload = {
   searchString: '',
@@ -22,10 +23,11 @@ const defaultPayload = {
 }
 
 export function SummaryForm (props: {
-  summaryData: NetworkSaveData
+  summaryData: NetworkSaveData,
+  portalData?: Demo
 }) {
   const { $t } = useIntl()
-  const { summaryData } = props
+  const { summaryData, portalData } = props
   const selectedId = summaryData.cloudpathServerId
   const params = useParams()
   const { selected } = useCloudpathListQuery({ params }, {
@@ -72,14 +74,23 @@ export function SummaryForm (props: {
             { $t({ defaultMessage: 'Network Info' }) }
           </Subtitle>
           <Form.Item label={$t({ defaultMessage: 'Network Name:' })} children={summaryData.name} />
+          {summaryData.name !== summaryData?.wlan?.ssid &&
+            <Form.Item label={$t({ defaultMessage: 'SSID:' })} children={summaryData?.wlan?.ssid} />
+          }
           <Form.Item
             label={$t({ defaultMessage: 'Description:' })}
             children={transformDisplayText(summaryData.description)}
           />
-          <Form.Item
+          {summaryData.type !== NetworkTypeEnum.CAPTIVEPORTAL && <Form.Item
             label={$t({ defaultMessage: 'Type:' })}
             children={summaryData.type && $t(networkTypes[summaryData.type])}
-          />
+          />}
+          {summaryData.type === NetworkTypeEnum.CAPTIVEPORTAL && <Form.Item
+            label={$t({ defaultMessage: 'Type:' })}
+            children={(summaryData.type && $t(networkTypes[summaryData.type]))+' - '+
+              (summaryData.guestPortal?.guestNetworkType &&
+                 $t(captiveTypes[summaryData.guestPortal?.guestNetworkType]))}
+          />}
           {summaryData.type !== NetworkTypeEnum.PSK &&
           <Form.Item
             label={$t({ defaultMessage: 'Use Cloudpath Server:' })}
@@ -125,6 +136,9 @@ export function SummaryForm (props: {
           }
           {summaryData.type === NetworkTypeEnum.PSK &&
             <PskSummaryForm summaryData={summaryData} />
+          }
+          {summaryData.type === NetworkTypeEnum.CAPTIVEPORTAL &&
+            <PortalSummaryForm summaryData={summaryData} portalData={portalData}/>
           }
         </Col>
         <Divider type='vertical' style={{ height: '300px' }}/>

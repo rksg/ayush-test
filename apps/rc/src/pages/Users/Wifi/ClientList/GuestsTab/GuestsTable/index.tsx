@@ -1,5 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
+import {
+  FetchBaseQueryError
+} from '@reduxjs/toolkit/query/react'
 import { Drawer }  from 'antd'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
@@ -11,51 +14,86 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
-import { useGetGuestsListQuery } from '@acx-ui/rc/services'
+import { CsvSize, ImportCsvDrawer } from '@acx-ui/rc/components'
+import {
+  useGetGuestsListQuery,
+  useNetworkListQuery,
+  useLazyGetGuestNetworkListQuery,
+  useImportGuestPassMutation
+} from '@acx-ui/rc/services'
 import {
   useTableQuery,
   Guest,
   GuestTypesEnum,
   transformDisplayText,
-  GuestStatusEnum
+  GuestStatusEnum,
+  Network,
+  NetworkTypeEnum,
+  GuestNetworkTypeEnum,
+  RequestPayload,
+  GuestErrorRes
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
-import { getIntl }    from '@acx-ui/utils'
+import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { getIntl }               from '@acx-ui/utils'
 
-import { GuestsDetail } from '../GuestsDetail'
+import { defaultGuestPayload, GuestsDetail } from '../GuestsDetail'
 
-const defaultPayload = {
-  searchString: '',
-  searchTargetFields: [
-    'name',
-    'mobilePhoneNumber',
-    'emailAddress'],
-  fields: [
-    'creationDate',
-    'name',
-    'passDurationHours',
-    'id',
-    'networkId',
-    'maxNumberOfClients',
-    'notes',
-    'clients',
-    'guestStatus',
-    'emailAddress',
-    'mobilePhoneNumber',
-    'guestType',
-    'ssid',
-    'socialLogin',
-    'expiryDate',
-    'cog'
-  ]
+import {
+  AddGuestDrawer,
+  GuestFields,
+  GuestResponse,
+  showGuestErrorModal,
+  showNoSendConfirm,
+  useHandleGuestPassResponse
+} from './addGuestDrawer'
+
+const payload = {
+  fields: ['name', 'defaultGuestCountry', 'id'],
+  sortField: 'name',
+  sortOrder: 'ASC',
+  pageSize: 10000,
+  filters: {
+    nwSubType: [NetworkTypeEnum.CAPTIVEPORTAL],
+    captiveType: [GuestNetworkTypeEnum.GuestPass]
+  },
+  url: '/api/viewmodel/tenant/{tenantId}/network'
 }
 
 export default function GuestsTable () {
+  const defaultGuestNetworkPayload = {
+    searchString: '',
+    fields: [
+      'check-all',
+      'name',
+      'description',
+      'nwSubType',
+      'venues',
+      'aps',
+      'clients',
+      'vlan',
+      'cog',
+      'ssid',
+      'vlanPool',
+      'captiveType',
+      'id'
+    ],
+    filters: {
+      nwSubType: ['guest'],
+      captiveType: ['GuestPass']
+    }
+  }
+
   const { $t } = useIntl()
+  const params = useParams()
   const GuestsTable = () => {
     const tableQuery = useTableQuery({
       useQuery: useGetGuestsListQuery,
-      defaultPayload
+      defaultPayload: defaultGuestPayload
+    })
+
+    const networkListQuery = useTableQuery<Network, RequestPayload<unknown>, unknown>({
+      useQuery: useNetworkListQuery,
+      defaultPayload: defaultGuestNetworkPayload
     })
 
     const notificationMessage =
@@ -69,33 +107,75 @@ export default function GuestsTable () {
         </span>
         <Button type='link'
           disabled={true} //TODO: Need guest service support
-          style={{
-            fontSize: cssStr('--acx-body-4-font-size'),
-            height: '16px'
-          }}>
+          size='small'>
           {$t({ defaultMessage: 'Add Guest Pass Network' })}
         </Button>
       </span>
 
     const [visible, setVisible] = useState(false)
+    const [drawerVisible, setDrawerVisible] = useState(false)
     const [currentGuest, setCurrentGuest] = useState({} as Guest)
+    const [allowedNetworkList, setAllowedNetworkList] = useState<Network[]>([])
+
+    const [importVisible, setImportVisible] = useState(false)
+    const [importCsv, importResult] = useImportGuestPassMutation()
+
+    const { handleGuestPassResponse } = useHandleGuestPassResponse({ tenantId: params.tenantId! })
+
+    const [getNetworkList] = useLazyGetGuestNetworkListQuery()
+
+    const getAllowedNetworkList = async () => {
+      const list = await (getNetworkList({ params, payload }, true).unwrap())
+      setAllowedNetworkList(list.data)
+    }
+
+    useEffect(() => {
+      getAllowedNetworkList()
+    }, [])
+
+    useEffect(()=>{
+      if (importResult.isSuccess) {
+        setImportVisible(false)
+        handleGuestPassResponse(importResult.data as GuestResponse)
+      }
+      if (importResult.isError && importResult?.error && 'data' in importResult.error) {
+        showGuestErrorModal(importResult?.error.data as GuestErrorRes)
+      }
+    },[importResult])
+
+    const importRequestHandler = (formData: FormData, values: Guest) => {
+      // flat object (2 level)
+      Object.entries(values).forEach(([key, value])=>{
+        if (Array.isArray(value)) {
+          formData.append(key, value.join(','))
+        } else if (typeof value === 'object'){
+          Object.entries(value).forEach(([subKey, subValue])=>{
+            formData.append(`${key}.${subKey}`, subValue as string)
+          })
+        } else {
+          formData.append(key, value as string)
+        }
+      })
+      importCsv({ params, payload: formData })
+    }
 
     const columns: TableProps<Guest>['columns'] = [
       {
         key: 'creationDate',
         title: $t({ defaultMessage: 'Created' }),
         dataIndex: 'creationDate',
-        sorter: false,
+        sorter: true,
         defaultSortOrder: 'ascend',
         render: (data, row) =>
           <Button
             type='link'
-            style={{ fontSize: cssStr('--acx-body-4-font-size') }}
+            size='small'
             onClick={() => {
               setCurrentGuest(row)
               setVisible(true)
             }}
           >
+            {/* TODO: Wait for framework support userprofile-format dateTimeFormats */}
             {moment(row.creationDate).format('DD/MM/YYYY HH:mm')}
           </Button>
       },
@@ -108,7 +188,7 @@ export default function GuestsTable () {
         render: (data, row) =>
           <Button
             type='link'
-            style={{ fontSize: cssStr('--acx-body-4-font-size') }}
+            size='small'
             onClick={() => {
               setCurrentGuest(row)
               setVisible(true)
@@ -171,7 +251,7 @@ export default function GuestsTable () {
         tableQuery
       ]}>
         {
-          !tableQuery.data?.data?.length &&
+          !networkListQuery.data?.data?.length &&
           <Alert message={notificationMessage} type='info' showIcon ></Alert>
         }
         <Table
@@ -179,7 +259,22 @@ export default function GuestsTable () {
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
-          rowKey='name'
+          rowKey='id'
+          actions={[{
+            label: $t({ defaultMessage: 'Add Guest' }),
+            onClick: () => setDrawerVisible(true),
+            disabled: allowedNetworkList.length === 0 ? true : false
+          }, {
+            label: $t({ defaultMessage: 'Add Guest Pass Network' }),
+            onClick: () => { },
+            disabled: true //TODO: Need guest service support
+          },
+          {
+            label: $t({ defaultMessage: 'Import from file' }),
+            onClick: () => setImportVisible(true),
+            disabled: allowedNetworkList.length === 0 ? true : false
+          }
+          ]}
         />
 
         <Drawer
@@ -189,11 +284,38 @@ export default function GuestsTable () {
           mask={false}
           children={
             <GuestsDetail
+              triggerClose={onClose}
               currentGuest={currentGuest}
             />
           }
           width={'550px'}
         />
+
+        <AddGuestDrawer
+          visible={drawerVisible}
+          setVisible={setDrawerVisible}
+        />
+        <ImportCsvDrawer type='GuestPass'
+          title={$t({ defaultMessage: 'Import from file' })}
+          maxSize={CsvSize['5MB']}
+          maxEntries={250}
+          temlateLink='assets/templates/guests_import_template.csv'
+          visible={importVisible}
+          isLoading={importResult.isLoading}
+          importError={importResult.error as FetchBaseQueryError}
+          importRequest={(formData, values)=>{
+            const formValues = values as Guest
+            if(formValues.deliveryMethods.length === 0){
+              showNoSendConfirm(()=>{
+                importRequestHandler(formData, formValues)
+              })
+            } else {
+              importRequestHandler(formData, formValues)
+            }
+          }}
+          onClose={()=>setImportVisible(false)} >
+          <GuestFields withBasicFields={false} />
+        </ImportCsvDrawer>
       </Loader>
     )
   }
@@ -219,7 +341,7 @@ export const renderAllowedNetwork = function (currentGuest: Guest) {
         {currentGuest.ssid}</TenantLink>
     )
   } else {
-    return $t({ defaultMessage: 'None' })
+    return $t({ defaultMessage: 'None [Network modified or deleted]' })
   }
 }
 
@@ -227,6 +349,7 @@ export const renderExpires = function (row: Guest) {
   const { $t } = getIntl()
   let expiresTime = ''
   if (row.expiryDate && row.expiryDate !== '0') {
+    // TODO: Wait for framework support userprofile-format dateTimeFormats
     expiresTime = moment(row.expiryDate).format('DD/MM/YYYY HH:mm')
   } else if (!row.expiryDate || row.expiryDate === '0') {
     let result = ''

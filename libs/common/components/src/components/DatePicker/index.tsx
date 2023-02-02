@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useCallback } from 'react'
+import { useMemo, useEffect, useState, useRef, useCallback, Component } from 'react'
 
 import {
   DatePicker as AntDatePicker,
@@ -12,18 +12,19 @@ import { dateTimeFormats, defaultRanges, DateRange, dateRangeMap, resetRanges } 
 import { DatePickerFooter } from './DatePickerFooter'
 import * as UI              from './styledComponents'
 
-import type { Moment } from 'moment-timezone'
+import type { RangePickerProps }    from 'antd/lib/date-picker/generatePicker'
+import type { CommonPickerMethods } from 'antd/lib/date-picker/generatePicker/interface'
+import type { Moment }              from 'moment-timezone'
 
 export type DateRangeType = {
   startDate: Moment | null,
   endDate: Moment | null
 }
 type RangeValueType = [Moment | null, Moment | null] | null
-type RangeBoundType = [Moment, Moment] | null
-type RangesType = Record<
-  string,
-  Exclude<RangeBoundType, null> | (() => Exclude<RangeBoundType, null>)
->
+type RangeBoundType = [Moment, Moment]
+type RangesType = Record<string, RangeBoundType | (() => RangeBoundType)>
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type RangeRef = Component<RangePickerProps<Moment>, unknown, any> & CommonPickerMethods | null
 interface DatePickerProps {
   showTimePicker?: boolean;
   enableDates?: [Moment, Moment];
@@ -47,12 +48,21 @@ export const RangePicker = ({
 }: DatePickerProps) => {
   const didMountRef = useRef(false)
   const { $t } = useIntl()
-
+  const { translatedRanges, translatedOptions } = useMemo(() => {
+    const ranges = defaultRanges(rangeOptions)
+    const translatedRanges: RangesType = {}
+    const translatedOptions: Record<string, DateRange> = {}
+    for (const rangeOption in ranges) {
+      const translated = $t(dateRangeMap[rangeOption as DateRange])
+      translatedOptions[translated] = rangeOption as DateRange
+      translatedRanges[translated] = ranges[rangeOption as DateRange] as RangeBoundType
+    }
+    return { translatedRanges, translatedOptions }
+  }, [$t, rangeOptions])
   const componentRef = useRef<HTMLDivElement | null>(null)
-
+  const rangeRef = useRef<RangeRef>(null)
   const [range, setRange] = useState<DateRangeType>(selectedRange)
-
-  const [isCalenderOpen, setIscalenderOpen] = useState<boolean>(false)
+  const [isCalendarOpen, setIsCalendarOpen] = useState<boolean>(false)
   const disabledDate = useCallback(
     (current: Moment) => {
       if (!enableDates) {
@@ -64,16 +74,16 @@ export const RangePicker = ({
   )
   useEffect(() => {
     const handleClickForDatePicker = (event: MouseEvent) => {
-      const target = event.target as HTMLInputElement
+      const target = event.target as HTMLElement
       if (componentRef.current && !componentRef.current.contains(event.target as Node)) {
-        setIscalenderOpen(false)
+        setIsCalendarOpen(false)
       }
-      if (Object.values(DateRange).includes(target.innerText as DateRange)) {
+      const selectedRange = translatedOptions[target.innerText]
+      if (selectedRange) {
         resetRanges()
-        onDateApply({
-          range: target.innerText as DateRange
-        })
-        setIscalenderOpen(false)
+        rangeRef?.current?.blur()
+        setIsCalendarOpen(false)
+        onDateApply({ range: selectedRange })
       }
     }
     document.addEventListener('click', handleClickForDatePicker)
@@ -84,27 +94,23 @@ export const RangePicker = ({
     return () => {
       document.removeEventListener('click', handleClickForDatePicker)
     }
-  }, [range, onDateChange, onDateApply])
-
-  const rangesWithi18n = Object.keys(defaultRanges(rangeOptions)).reduce((acc, rangeOption) => {
-    return {
-      ...acc,
-      [$t(dateRangeMap[rangeOption as DateRange])]:
-        defaultRanges(rangeOptions)[rangeOption as DateRange]
-    }
-  }, {})
+  }, [range, onDateChange, onDateApply, translatedOptions])
+  const rangeText = `[${$t(dateRangeMap[selectionType])}]`
   return (
     <UI.RangePickerWrapper
       ref={componentRef}
       rangeOptions={rangeOptions}
       selectionType={selectionType}
+      isCalendarOpen={isCalendarOpen}
+      rangeText={rangeText}
     >
       <AntRangePicker
-        ranges={rangesWithi18n as RangesType}
+        ref={rangeRef}
+        ranges={translatedRanges}
         placement='bottomRight'
         disabledDate={disabledDate}
-        open={isCalenderOpen}
-        onClick={() => setIscalenderOpen(true)}
+        open={isCalendarOpen}
+        onClick={() => setIsCalendarOpen(true)}
         getPopupContainer={(triggerNode: HTMLElement) => triggerNode}
         suffixIcon={<ClockOutlined />}
         onCalendarChange={(values: RangeValueType) =>
@@ -117,12 +123,15 @@ export const RangePicker = ({
             range={range}
             setRange={setRange}
             defaultValue={selectedRange}
-            setIsCalenderOpen={setIscalenderOpen}
+            setIsCalendarOpen={setIsCalendarOpen}
             onDateApply={onDateApply}
           />
         )}
         value={[range?.startDate, range?.endDate]}
-        format={showTimePicker ? dateTimeFormat : dateFormat}
+        format={isCalendarOpen || selectionType === DateRange.custom
+          ? (showTimePicker ? dateTimeFormat : dateFormat)
+          : rangeText
+        }
         allowClear={false}
       />
     </UI.RangePickerWrapper>

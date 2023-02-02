@@ -1,19 +1,22 @@
-import { useContext } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { Form, Input, Col, Radio, Row, Space } from 'antd'
 import TextArea                                from 'antd/lib/input/TextArea'
+import _                                       from 'lodash'
 import { useIntl }                             from 'react-intl'
 
-import { StepsForm, Tooltip }         from '@acx-ui/components'
-import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
-import { useLazyNetworkListQuery }    from '@acx-ui/rc/services'
+import { Button, StepsForm, Tooltip, cssStr }                          from '@acx-ui/components'
+import { Features, useIsSplitOn }                                      from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }                                  from '@acx-ui/icons'
+import { useLazyGetVenueNetworkApGroupQuery, useLazyNetworkListQuery } from '@acx-ui/rc/services'
 import {
   NetworkTypeEnum,
   WifiNetworkMessages,
   checkObjectNotExists,
-  hasGraveAccentAndDollarSign } from '@acx-ui/rc/utils'
-import { useParams }       from '@acx-ui/react-router-dom'
-import { notAvailableMsg } from '@acx-ui/utils'
+  hasGraveAccentAndDollarSign,
+  NetworkVenue } from '@acx-ui/rc/utils'
+import { useParams }                           from '@acx-ui/react-router-dom'
+import { notAvailableMsg, validationMessages } from '@acx-ui/utils'
 
 import { networkTypesDescription, networkTypes } from '../contentsMap'
 import { NetworkDiagram }                        from '../NetworkDiagram/NetworkDiagram'
@@ -24,13 +27,6 @@ import type { RadioChangeEvent } from 'antd'
 
 const { useWatch } = Form
 
-export const types = [
-  { type: NetworkTypeEnum.PSK, disabled: false },
-  { type: NetworkTypeEnum.DPSK, disabled: true },
-  { type: NetworkTypeEnum.AAA, disabled: false },
-  { type: NetworkTypeEnum.CAPTIVEPORTAL, disabled: false },
-  { type: NetworkTypeEnum.OPEN, disabled: false }
-]
 
 export function NetworkDetailForm () {
   const intl = useIntl()
@@ -41,9 +37,21 @@ export function NetworkDetailForm () {
     data,
     setData
   } = useContext(NetworkFormContext)
+
+  const [differentSSID, setDifferentSSID] = useState(false)
+  const form = Form.useFormInstance()
   const onChange = (e: RadioChangeEvent) => {
     setData && setData({ ...data, type: e.target.value as NetworkTypeEnum })
   }
+
+  useEffect(() => {
+    if ((editMode) && data?.wlan?.ssid) {
+      if (!differentSSID) {
+        setDifferentSSID(data?.wlan?.ssid !== data?.name)
+      }
+    }
+  }, [data, editMode])
+
   const networkListPayload = {
     searchString: '',
     fields: ['name', 'id'],
@@ -52,6 +60,7 @@ export function NetworkDetailForm () {
     pageSize: 10000
   }
   const [getNetworkList] = useLazyNetworkListQuery()
+  const [getVenueNetrworkApGroupList] = useLazyGetVenueNetworkApGroupQuery()
   const params = useParams()
 
   const nameValidator = async (value: string) => {
@@ -63,12 +72,72 @@ export function NetworkDetailForm () {
     return checkObjectNotExists(list, value, intl.$t({ defaultMessage: 'Network' }))
   }
 
+  const isNetworkTypeDisabled = (type: NetworkTypeEnum) => {
+    const targetType = types.find(t => t.type === type)
+
+    return targetType ? targetType.disabled : true
+  }
+
+  const ssidValidator = async (value: string) => {
+    if (!editMode) { return Promise.resolve() }
+    const venues = _.get(data, 'venues') || []
+    let payload: {
+      venueId: string,
+      networkId: string,
+      ssids: string[]
+    }[] = []
+
+    if (venues.length > 0) {
+      venues.forEach((activatedVenue: NetworkVenue) => {
+        const venueId = activatedVenue.venueId || ''
+        const networkId = _.get(data, 'id') || ''
+        payload.push({ venueId, networkId, ssids: [value] })
+      })
+    }
+
+    let errorsCounter = 0
+    const list = (await getVenueNetrworkApGroupList({ params, payload }, true).unwrap())
+    const networkApGroup = _.get(list, 'response')
+    networkApGroup?.forEach((item: NetworkVenue) => {
+      if (item.isAllApGroups && _.get(item, 'validationErrorSsidAlreadyActivated')) {
+        errorsCounter++
+      } else if (!item.isAllApGroups &&
+        item.apGroups
+        && item.apGroups.length > 0) {
+        item.apGroups.forEach(apGroup => {
+          if (apGroup.validationErrorSsidAlreadyActivated) {
+            errorsCounter++
+          } else {
+            errorsCounter = 0
+          }
+        })
+      }
+    })
+
+    return errorsCounter === 0 ?
+      Promise.resolve() :
+      Promise.reject(intl.$t(validationMessages.duplication, {
+        entityName: intl.$t({ defaultMessage: 'SSID' }),
+        key: intl.$t({ defaultMessage: 'name' }),
+        extra: ''
+      }))
+  }
+
+  const types = [
+    { type: NetworkTypeEnum.PSK, disabled: false },
+    { type: NetworkTypeEnum.DPSK, disabled: !useIsSplitOn(Features.SERVICES) },
+    { type: NetworkTypeEnum.AAA, disabled: false },
+    { type: NetworkTypeEnum.CAPTIVEPORTAL, disabled: !useIsSplitOn(Features.SERVICES) },
+    { type: NetworkTypeEnum.OPEN, disabled: false }
+  ]
+
   return (
     <Row gutter={20}>
       <Col span={10}>
         <StepsForm.Title>{intl.$t({ defaultMessage: 'Network Details' })}</StepsForm.Title>
         <Form.Item
           name='name'
+          style={{ marginBottom: '5px' }}
           label={<>
             { intl.$t({ defaultMessage: 'Network Name' }) }
             <Tooltip
@@ -89,6 +158,53 @@ export function NetworkDetailForm () {
           hasFeedback
           children={<Input />}
         />
+        <Form.Item noStyle name='differentSSID'>
+          <Button
+            type='link'
+            style={{ fontSize: cssStr('--acx-body-4-font-size') }}
+            onClick={() => {
+              if (!differentSSID) {
+                const name = form.getFieldValue('name')
+                form.setFieldValue(['wlan', 'ssid'], name)
+              }
+              setDifferentSSID(!differentSSID)
+            }}
+          >
+            {differentSSID ?
+              intl.$t({ defaultMessage: 'Same as network name' }) :
+              intl.$t({ defaultMessage: 'Set different SSID' })}
+          </Button>
+
+        </Form.Item>
+        {differentSSID &&
+          <Form.Item
+            name={['wlan', 'ssid']}
+            label={<>
+              {intl.$t({ defaultMessage: 'SSID' })}
+              <Tooltip
+                placement='bottom'
+                title={intl.$t({
+                  // eslint-disable-next-line max-len
+                  defaultMessage: 'SSID may contain between 2 and 32 characters (32 Bytes when using UTF-8 non-Latin characters)'
+                })}
+              >
+                <QuestionMarkCircleOutlined />
+              </Tooltip>
+            </>}
+            rules={[
+              { required: true,
+                message: intl.$t({ defaultMessage: 'The SSID must be configured.' }) },
+              { min: 2,
+                message: intl.$t({ defaultMessage: 'The SSID must be at least 2 characters' }) },
+              { max: 32,
+                message: intl.$t({ defaultMessage: 'The SSID must be up to 32 characters' }) },
+              { validator: (_, value) => ssidValidator(value) }
+            ]}
+            validateFirst
+            hasFeedback
+            children={<Input />}
+          />
+        }
         <Form.Item
           name='description'
           label={intl.$t({ defaultMessage: 'Description' })}
@@ -106,8 +222,7 @@ export function NetworkDetailForm () {
                   {types.map(({ type, disabled }) => (
                     <Radio key={type} value={type} disabled={disabled}>
                       <Tooltip
-                        title={[NetworkTypeEnum.DPSK, NetworkTypeEnum.CAPTIVEPORTAL]
-                          .indexOf(type) > -1 ? intl.$t(notAvailableMsg) : ''}>
+                        title={isNetworkTypeDisabled(type) ? intl.$t(notAvailableMsg) : ''}>
                         {intl.$t(networkTypes[type])}
                         <RadioDescription>
                           {intl.$t(networkTypesDescription[type])}

@@ -1,7 +1,6 @@
 import {
   ServiceAdminState,
   ServiceStatus,
-  ServiceTechnology,
   ServiceType,
   ApDeviceStatusEnum,
   GuestNetworkTypeEnum,
@@ -16,21 +15,24 @@ import { OpenWlanAdvancedCustomization } from '../models/OpenWlanAdvancedCustomi
 import { PskWlanAdvancedCustomization }  from '../models/PskWlanAdvancedCustomization'
 import { TrustedCAChain }                from '../models/TrustedCAChain'
 
-import { ApModel } from './ap'
-import { EPDG }    from './services'
+import { ApModel }          from './ap'
+import { EPDG }             from './services'
+import { SwitchStatusEnum } from './switch'
 
 export * from './ap'
 export * from './venue'
 export * from './network'
+export * from './any-network'
 export * from './user'
 export * from './services'
+export * from './policies'
 export * from './msp'
 export * from './edge'
-export * from './policies'
-export * from './portalService'
 export * from './client'
 export * from './components'
 export * from './switch'
+export * from './timeline'
+export * from './persona'
 
 export interface CommonResult {
   requestId: string
@@ -100,7 +102,8 @@ export interface Venue {
   // radios ??
   // scheduling ??
   activated: { isActivated: boolean, isDisabled?: boolean }
-  deepVenue?: NetworkVenue
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  deepVenue?: any
   disabledActivation: boolean
   networkId? : string
   vlanPoolId?: string
@@ -162,15 +165,6 @@ export enum ApVenueStatusEnum {
   OPERATIONAL = '2_Operational',
   REQUIRES_ATTENTION = '3_RequiresAttention',
   TRANSIENT_ISSUE = '4_TransientIssue'
-}
-
-export enum SwitchStatusEnum {
-  NEVER_CONTACTED_CLOUD = 'PREPROVISIONED',
-  INITIALIZING = 'INITIALIZING',
-  APPLYING_FIRMWARE = 'APPLYINGFIRMWARE',
-  OPERATIONAL = 'ONLINE',
-  DISCONNECTED = 'OFFLINE',
-  STACK_MEMBER_NEVER_CONTACTED = 'STACK_MEMBER_PREPROVISIONED'
 }
 
 export type ChartData = {
@@ -320,7 +314,6 @@ export interface Service {
   type: ServiceType
   status: ServiceStatus
   adminState: ServiceAdminState
-  technology: ServiceTechnology
   scope: number
   health: string
   tags: string[]
@@ -420,12 +413,62 @@ export interface Capabilities {
 	version: string
 }
 
-export interface EventMeta {
-  apName: string,
+export interface ClientStatistic {
+  applications: number;
+  apsConnected: number;
+  avgRateBPS: string;
+  avgSessionLengthSeconds: unknown | number;
+  sessions: number;
+  userTrafficBytes: number;
+  userTraffic5GBytes: number;
+  userTraffic6GBytes: number;
+  userTraffic24GBytes: number;
+}
+
+export const GridInactiveRowDataFlag = 'inactiveRow'
+export interface GridDataRow {
+  inactiveTooltip?: string;
+  [GridInactiveRowDataFlag]?: boolean;
+}
+
+export interface PaginationQueryResult<T> {
+  page: number
+  pageSize: number
+  totalCount: number
+  content: T[]
+}
+
+export interface PlmMessageBanner {
+  createdBy: string,
+  createdDate: string,
+  description: string,
+  endTime: string,
   id: string,
-  isApExists: boolean,
-  isClientExists: boolean,
-  isVenueExists: boolean,
-  networkId: string,
-  venueName: string,
+  startTime: string,
+  tenantType: string,
+  updatedDate: string
+}
+
+export enum SWITCH_CLIENT_TYPE {
+  AP = 'WLAN_AP',
+  ROUTER = 'ROUTER'
+}
+
+export interface SwitchClient {
+  id: string
+  clientMac: string
+  clientIpv4Addr: string
+  clientIpv6Addr: string
+  clientName: string
+  clientDesc: string
+  clientType: SWITCH_CLIENT_TYPE
+  switchId: string
+  switchName: string
+  switchPort: string
+  switchSerialNumber: string
+  clientVlan: string
+  vlanName: string
+  venueId: string
+  venueName: string
+  isRuckusAP: boolean
 }

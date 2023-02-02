@@ -39,12 +39,13 @@ exports[`ExpirationDateSelector should render the selector 1`] = `
                   class="sc-jSMfEi fjMuuy"
                 >
                   <label
-                    class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
+                    class="ant-radio-wrapper ant-radio-wrapper-checked ant-radio-wrapper-in-form-item"
                   >
                     <span
-                      class="ant-radio"
+                      class="ant-radio ant-radio-checked"
                     >
                       <input
+                        checked=""
                         class="ant-radio-input"
                         type="radio"
                         value="NEVER"

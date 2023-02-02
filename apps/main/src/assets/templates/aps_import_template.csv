@@ -1,0 +1,13 @@
+"# AP name is mandatory. The name can only contain between 2 and 32 characters. Only the following characters are allowed: 'a-z', 'A-Z', '0-9', space and other special characters (!""#$%'()*+,-./:;<=>?@[]^_{|}~) except &,` or $(",,,,,,,
+# Description - maximal length is 180 characters,,,,,,,
+# Venue is mandatory,,,,,,,
+"# Serial number is mandatory	",,,,,,,
+# AP Group - must match an existing AP group,,,,,,,
+# Tags - separated by semicolon ';',,,,,,,
+"# Latitude - between -90 and 90, and contains a maximum of 6-digit decimal",,,,,,,
+"# Longitude - between -180 and 180, and contains a maximum of 6-digit decimal",,,,,,,
+,,,,,,,
+AP Name,Description,Venue,Serial Number,AP Group,Tags
+A,,Venue-1,123456700000,group-1,tag1
+AP-2,,Venue-1,123456700000,group-1,tag1
+AP-3,,Venue-1,123456700000,,tag1

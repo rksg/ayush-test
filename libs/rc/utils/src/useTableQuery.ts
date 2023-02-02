@@ -2,8 +2,13 @@ import React, { useEffect, useState } from 'react'
 
 import { TableProps } from 'antd'
 
-import { useParams, Params }        from '@acx-ui/react-router-dom'
-import { UseQuery, UseQueryResult } from '@acx-ui/types'
+import { useParams, Params }                         from '@acx-ui/react-router-dom'
+import { UseQuery, UseQueryResult, UseQueryOptions } from '@acx-ui/types'
+
+import { ApiInfo, createHttpRequest } from './apiService'
+
+export const TABLE_QUERY_POLLING_INTERVAL = 30_000
+export const TABLE_QUERY_LONG_POLLING_INTERVAL = 300_000
 
 export interface RequestPayload <Payload = unknown> extends Record<string,unknown> {
   params?: Params<string>
@@ -35,6 +40,7 @@ export interface TABLE_QUERY <
   pagination?: Partial<PAGINATION>
   sorter?: SORTER
   rowKey?: string
+  option?: UseQueryOptions
 }
 export type PAGINATION = {
   current: number,
@@ -42,7 +48,8 @@ export type PAGINATION = {
   total: number
 }
 
-const DEFAULT_PAGINATION = {
+export const DEFAULT_PAGINATION = {
+  page: 1,
   current: 1,
   pageSize: 10,
   total: 0
@@ -77,10 +84,27 @@ export interface TableQuery<ResultType, Payload, ResultExtra>
   setPayload: React.Dispatch<React.SetStateAction<Payload>>,
 }
 
+export function usePollingTableQuery <
+  ResultType,
+  Payload extends RequestPayload<unknown> = RequestPayload<unknown>,
+  ResultExtra = unknown
+> (params:
+  TABLE_QUERY<ResultType, Payload, ResultExtra> &
+  { option?: UseQueryOptions }
+) {
+  return useTableQuery({
+    ...params,
+    option: {
+      pollingInterval: TABLE_QUERY_POLLING_INTERVAL,
+      ...(params.option || {})
+    }
+  })
+}
+
 export function useTableQuery <
   ResultType,
-  Payload extends RequestPayload<unknown>,
-  ResultExtra
+  Payload extends RequestPayload<unknown> = RequestPayload<unknown>,
+  ResultExtra = unknown
 > (option: TABLE_QUERY<ResultType, Payload, ResultExtra>) {
 
   const initialPagination = {
@@ -104,12 +128,10 @@ export function useTableQuery <
   const [payload, setPayload] = useState<Payload>(initialPayload)
 
   const params = useParams()
-  // RTKQuery
-
   const api = option.useQuery({
     params: { ...params, ...option.apiParams },
     payload: payload
-  })
+  }, option.option)
 
   useEffect(() => {
     const handlePagination = (data?: TableResult<ResultType>) => {
@@ -154,4 +176,69 @@ export function useTableQuery <
     setPayload,
     ...api
   } as TableQuery<ResultType, Payload, ResultExtra>
+}
+
+export interface NewTablePageable {
+  offset: number
+  pageNumber: number
+  pageSize: number
+  paged: boolean
+  sort: {
+    unsorted: boolean,
+    sorted: boolean,
+    empty: boolean
+  }
+  unpaged: boolean
+}
+
+export interface TableChangePayload {
+  sortField: string
+  sortOrder: 'ASC' | 'DESC'
+  page: number
+  pageSize: number
+}
+
+export interface NewTableResult<T> {
+  totalElements: number
+  totalPages: number
+  sort: {
+    unsorted: boolean,
+    sorted: boolean,
+    empty: boolean
+  }
+  content: T[]
+  pageable: NewTablePageable
+}
+
+interface CreateNewTableHttpRequestProps {
+  apiInfo: ApiInfo
+  params?: Params<string>
+  payload?: TableChangePayload
+}
+
+export function createNewTableHttpRequest (props: CreateNewTableHttpRequestProps) {
+  const { apiInfo, params = {}, payload } = props
+  return createHttpRequest(apiInfo, { ...params, ...transferToNewTablePaginationParams(payload) })
+}
+
+export function transferToTableResult<T> (newResult: NewTableResult<T>): TableResult<T> {
+  return {
+    data: newResult.content,
+    page: newResult.pageable ? newResult.pageable.pageNumber + 1 : 1,
+    totalCount: newResult.totalElements
+  }
+}
+
+export function transferToNewTablePaginationParams (payload: TableChangePayload | undefined) {
+  const pagination = {
+    ...DEFAULT_PAGINATION,
+    ...DEFAULT_SORTER,
+    ...(payload ?? {})
+  }
+
+  return {
+    pageSize: pagination.pageSize.toString(),
+    page: (pagination.page - 1).toString(),
+    sort: pagination.sortField + ',' + pagination.sortOrder.toLowerCase()
+  }
 }

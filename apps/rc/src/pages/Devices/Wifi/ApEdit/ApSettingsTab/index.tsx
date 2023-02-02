@@ -2,13 +2,17 @@ import { useContext } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Tabs }                                  from '@acx-ui/components'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { Tabs, Tooltip }                          from '@acx-ui/components'
+import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }             from '@acx-ui/icons'
+import { useNavigate, useParams, useTenantLink }  from '@acx-ui/react-router-dom'
+import { directedMulticastInfo, notAvailableMsg } from '@acx-ui/utils'
 
 import { ApEditContext } from '../index'
 
-import { LanPorts }      from './LanPorts'
-import { RadioSettings } from './RadioTab/RadioSettings'
+import { DirectedMulticast } from './DirectedMulticast'
+import { LanPorts }          from './LanPorts'
+import { RadioSettings }     from './RadioTab/RadioSettings'
 
 const { TabPane } = Tabs
 
@@ -18,6 +22,8 @@ export function ApSettingsTab () {
   const navigate = useNavigate()
   const basePath = useTenantLink(`/devices/wifi/${params.serialNumber}/edit/settings/`)
   const { editContextData, setEditContextData } = useContext(ApEditContext)
+  const releaseTag = useIsSplitOn(Features.DEVICES)
+  const supportDirectedMulticast = useIsSplitOn(Features.DIRECTED_MULTICAST)
 
   const onTabChange = (tab: string) => {
     setEditContextData && setEditContextData({
@@ -60,12 +66,24 @@ export function ApSettingsTab () {
       <TabPane tab={tabTitleMap('lanPort')} key='lanPort'>
         <LanPorts />
       </TabPane>
-      <TabPane tab={tabTitleMap('proxy')} key='proxy'>
+      <TabPane disabled={!releaseTag}
+        tab={<Tooltip title={$t(notAvailableMsg)}>
+          {tabTitleMap('proxy')}</Tooltip>}
+        key='proxy'>
         {$t({ defaultMessage: 'mDNS Proxy' })}
       </TabPane>
-      <TabPane tab={tabTitleMap('multicast')} key='multicast'>
-        {$t({ defaultMessage: 'Directed Multicast' })}
-      </TabPane>
+      {supportDirectedMulticast &&
+        <TabPane tab={<>
+          {tabTitleMap('multicast')}
+          <Tooltip title={$t(directedMulticastInfo)} placement='right'>
+            <QuestionMarkCircleOutlined
+              style={{ marginLeft: '8px', marginBottom: '-3px', height: '16px', width: '16px' }}/>
+          </Tooltip>
+        </>}
+        key='multicast'>
+          <DirectedMulticast />
+        </TabPane>
+      }
     </Tabs>
   )
 }

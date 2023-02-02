@@ -4,58 +4,63 @@ import * as UI from '../styledComponents'
 
 import PortalButtonContent from './PortalContent/PortalButtonContent'
 export default function PortalViewSelfSignRegister (props:{
+  portalLang: { [key:string]:string },
   demoValue: Demo,
   isPreview?:boolean,
   updateBtn?: (value: { url?: string, size?: number, show?: boolean,
     color?:string, text?:string }) => void
 }) {
-  const { demoValue, updateBtn, isPreview } = props
+  const { demoValue, updateBtn, isPreview, portalLang } = props
   return (
     <UI.ViewSectionNoBorder>
-      <UI.ViewSectionTabsBig
+      <UI.ViewSectionTabs
         defaultActiveKey='register'
         type='card'
         size={'middle'}
       >
-        <UI.ViewSectionTabsBig.TabPane tab={'Register'} key='register'>
-          <UI.FieldText style={{ marginLeft: 5 }}>
-            {'Enter your details to receive your password'}
-          </UI.FieldText>
-          <UI.ViewSectionSpan>*</UI.ViewSectionSpan><UI.ViewSectionUserOutlined/><UI.FieldInputSmall
-            placeholder={'Your Name'}></UI.FieldInputSmall><br/>
-          <UI.ViewSectionSpan>*</UI.ViewSectionSpan>
-          <UI.ViewSectionMobileOutlined/><UI.FieldInputSmall
-            placeholder={'Mobile Phone Number'}></UI.FieldInputSmall>
-          <UI.ViewSectionText style={{ marginLeft: -56 }}>
-            {'Your password will be sent to this number'}
+        <UI.ViewSectionTabs.TabPane tab={portalLang.register} key='register'>
+          <UI.FieldTextMiddle style={{ marginLeft: 5 }}>
+            {portalLang.registerPageNote}
+          </UI.FieldTextMiddle>
+          <UI.ViewSectionText>{portalLang.name}
+            <UI.ViewSectionSpan>*</UI.ViewSectionSpan></UI.ViewSectionText>
+          <UI.ViewDivInput><UI.ViewSectionUserOutlined/><UI.FieldInputSmall>
+          </UI.FieldInputSmall></UI.ViewDivInput>
+          <UI.ViewSectionText>{portalLang.mobilePhone}
+            <UI.ViewSectionSpan>*</UI.ViewSectionSpan></UI.ViewSectionText>
+          <UI.ViewDivInput><UI.ViewSectionMobileOutlined/><UI.FieldInputSmall
+            placeholder={'(123) 456-7890'}></UI.FieldInputSmall></UI.ViewDivInput>
+          <UI.ViewSectionText style={{ marginBottom: 10, marginTop: -10 }}>
+            {portalLang.selfSignMobilePhoneNote}
           </UI.ViewSectionText>
-          <UI.ViewSectionMailOutlined/><UI.FieldInputSmall
-            placeholder={'Your Email'}></UI.FieldInputSmall>
+          <UI.ViewSectionText>{portalLang.email}</UI.ViewSectionText>
+          <UI.ViewDivInput><UI.ViewSectionMailOutlined/><UI.FieldInputSmall>
+          </UI.FieldInputSmall></UI.ViewDivInput>
           <PortalButtonContent
             isPreview={isPreview}
             demoValue={demoValue}
             updateButton={(data)=>updateBtn?.(data)}
-          >{'Register'}</PortalButtonContent>
-          <UI.ViewSectionText style={{ marginLeft: 68, display: 'flex' }}>{
-            'By registering, you are accepting the'
-          }&nbsp;&nbsp;
-          <UI.FieldTextLink>
-            {'terms & conditions'}
-          </UI.FieldTextLink></UI.ViewSectionText>
-        </UI.ViewSectionTabsBig.TabPane>
-        <UI.ViewSectionTabsBig.TabPane tab={'Login'} key='login'>
-          <UI.FieldText>{'Enter your password to connect'}</UI.FieldText>
+          >{portalLang.register}</PortalButtonContent>
+          <UI.ViewSectionText style={{ marginLeft: 0, textAlign: 'center' }}>{
+            portalLang.acceptTermsMsgHostSelfSign?.replace('{0}','')
+          }&nbsp;
+          <UI.FieldLabelLink>
+            {portalLang.acceptTermsLink}
+          </UI.FieldLabelLink></UI.ViewSectionText>
+        </UI.ViewSectionTabs.TabPane>
+        <UI.ViewSectionTabs.TabPane tab={portalLang.login} key='login'>
+          <UI.FieldTextMiddle>{portalLang.loginNote}</UI.FieldTextMiddle>
           <UI.FieldInput></UI.FieldInput>
           <UI.ViewSectionLink>
-            {'Forgot your password?'}</UI.ViewSectionLink>
+            {portalLang.forgotPswdLink}</UI.ViewSectionLink>
           <PortalButtonContent
             demoValue={demoValue}
             isPreview={isPreview}
             updateButton={(data)=>updateBtn?.(data)}
-          >{'Connect To Wi-Fi'}</PortalButtonContent>
-        </UI.ViewSectionTabsBig.TabPane>
-      </UI.ViewSectionTabsBig>
-      <UI.FieldTextLink>{'Back'}</UI.FieldTextLink>
+          >{portalLang.connectToWifi}</PortalButtonContent>
+        </UI.ViewSectionTabs.TabPane>
+      </UI.ViewSectionTabs>
+      <UI.FieldTextLink>{portalLang.back}</UI.FieldTextLink>
     </UI.ViewSectionNoBorder>
 
   )

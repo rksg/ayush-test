@@ -21,7 +21,7 @@ export const NonSelectableItem = styled.div.attrs(
   width: 100%;
 `
 export const Container = styled.div`
-  min-width: 150px;
+  min-width: 165px;
   max-width: 180px;
 `
 export const SeverityContainer = styled.div`
@@ -39,7 +39,7 @@ export const LabelContainer = styled.div`
   justify-content: space-between;
 `
 export const Label = styled.div`
-  max-width: 200px;
+  max-width: 100px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

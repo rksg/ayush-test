@@ -1,3 +1,5 @@
+import { RolesEnum } from './msp'
+
 export interface UserSettings {
   [key: string]: string
 }
@@ -17,8 +19,8 @@ export interface UserProfile {
   firstName: string;
   lastName: string;
   username: string;
-  role: string;
-  roles: string[];
+  role: RolesEnum;
+  roles: RolesEnum[];
   detailLevel: DetailLevel;
   dateFormat: string;
   var: boolean;
@@ -39,14 +41,24 @@ export interface UserProfile {
   fullName: string;
 }
 
-export interface ProfileDataToUpdate {
-  detailLevel: DetailLevel;
-  dateFormat: string;
-}
-
 export enum DetailLevel {
   BASIC_USER = 'ba',
   IT_PROFESSIONAL = 'it',
   SUPER_USER = 'su',
   DEBUGGING = 'debug'
+}
+
+export type GuestErrorRes = {
+  error: {
+    status: number
+    rootCauseErrors: {
+      code: string
+      message: string
+    }[]
+  },
+  requestId: string,
+  request: {
+    url: string,
+    method: string
+  }
 }

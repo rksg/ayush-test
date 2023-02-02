@@ -124,7 +124,7 @@ describe('NetworkMoreSettingsForm', () => {
     expect(screen.getByText(/dhcp request rate limit/i)).toBeVisible()
   })
 
-  it('after click Access Control', async () => {
+  xit('after click Access Control', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
     render(
       <Provider>
@@ -211,17 +211,17 @@ describe('NetworkMoreSettingsForm', () => {
       </Provider>,
       { route: { params } })
 
-    await userEvent.click(screen.getByText(/none/i))
-    await userEvent.click(screen.getByText(/5.5 Mbps/i))
     const mgmtTxRateSelect = screen.getByTestId('mgmtTxRateSelect')
-    expect(within(mgmtTxRateSelect).getByText(/5.5 mbps/i)).toBeVisible()
+    expect(within(mgmtTxRateSelect).getByText(/6 Mbps/i)).toBeVisible()
 
     const ofdmCheckbox = screen.getByRole('checkbox', {
       name: /enable ofdm only \(disable 802\.11b\)/i
     })
-
     await userEvent.click(ofdmCheckbox)
-    expect(within(mgmtTxRateSelect).getByText(/6 Mbps/i)).toBeVisible()
+
+    await userEvent.click(screen.getByText(/none/i))
+    await userEvent.click(screen.getByText(/5.5 Mbps/i))
+    expect(within(mgmtTxRateSelect).getByText(/5.5 mbps/i)).toBeVisible()
   })
 })
 

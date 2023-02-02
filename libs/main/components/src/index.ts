@@ -1,3 +1,2 @@
-export { AlarmsHeaderButton } from './AlarmsHeaderButton'
-export { AlarmsTable } from './AlarmsTable'
-export { VenueFilter } from './VenueFilter'
+export * from './HeaderButtons'
+export * from './VenueFilter'

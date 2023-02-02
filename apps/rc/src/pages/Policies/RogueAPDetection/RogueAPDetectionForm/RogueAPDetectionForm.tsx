@@ -1,6 +1,6 @@
 import { useRef, useReducer } from 'react'
 
-import { useIntl } from 'react-intl'
+import { FormattedList, useIntl } from 'react-intl'
 
 import {
   PageHeader, showToast,
@@ -9,6 +9,7 @@ import {
 } from '@acx-ui/components'
 import { useAddRoguePolicyMutation, useUpdateRoguePolicyMutation } from '@acx-ui/rc/services'
 import {
+  catchErrorResponse,
   getPolicyListRoutePath,
   RogueAPDetectionContextType,
   RogueAPRule,
@@ -56,7 +57,7 @@ const RogueAPDetectionForm = (props: RogueAPDetectionFormProps) => {
     return {
       id: edit ? params.policyId : '',
       name: state.policyName,
-      description: '',
+      description: state.description,
       rules: state.rules,
       venues: state.venues
     }
@@ -77,10 +78,13 @@ const RogueAPDetectionForm = (props: RogueAPDetectionFormProps) => {
       }
       navigate(linkToPolicies, { replace: true })
     } catch(error) {
+      const errorResponse = error as catchErrorResponse
       showToast({
         type: 'error',
-        duration: 10,
-        content: $t({ defaultMessage: 'An error occurred' })
+        content: (<div>
+          <p style={{ textAlign: 'left' }}>{$t({ defaultMessage: 'An error occurred' })}</p>
+          <FormattedList value={errorResponse.data.errors.map(error => error.message)} />
+        </div>)
       })
     }
   }
@@ -97,7 +101,8 @@ const RogueAPDetectionForm = (props: RogueAPDetectionFormProps) => {
       />
       <StepsForm<RogueAPDetectionContextType>
         formRef={formRef}
-        onCancel={() => navigate(linkToPolicies)}
+        editMode={edit}
+        onCancel={() => navigate(linkToPolicies, { replace: true })}
         onFinish={() => handleRogueAPDetectionPolicy(edit)}
       >
         <StepsForm.StepForm<RogueAPDetectionContextType>

@@ -1,76 +1,44 @@
-import { Tooltip } from 'antd'
-import { isEmpty } from 'lodash'
+import { FloorplanContext, FloorPlanDto, NetworkDeviceType, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
 
-import { DeviceOutlined, SignalUp }                                from '@acx-ui/icons'
-import { FloorPlanDto, NetworkDeviceType, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
-
-import * as UI                  from './styledComponent'
-import { calculateDeviceColor } from './utils'
-
+import { NetworkDeviceMarker } from './NetworkDeviceMarker'
 
 export default function NetworkDevices ({
-  imageLoaded,
   networkDevicesVisibility,
   selectedFloorPlan,
   networkDevices,
   galleryMode,
   contextAlbum,
-  context
+  context,
+  showRogueAp
 } : {
-    imageLoaded: boolean,
     networkDevicesVisibility: NetworkDeviceType[],
     selectedFloorPlan: FloorPlanDto,
     networkDevices: { [key: string]: TypeWiseNetworkDevices },
     galleryMode: boolean,
     contextAlbum: boolean,
-    context: string
+    context?: FloorplanContext,
+    showRogueAp?: boolean
     }) {
 
   const networkDeviceTypeArray = Object.values(NetworkDeviceType)
 
-
-  return <div>{
-    imageLoaded && networkDeviceTypeArray.map(device => {
+  return <div> {
+    networkDeviceTypeArray.map(device => {
       return (
         (networkDevicesVisibility.indexOf(device) !== -1)
             && networkDevices[selectedFloorPlan.id]
         && networkDevices[selectedFloorPlan.id][device].map(obj => {
-          let className = 'device-container'
-
-          if (!isEmpty(context))
-            className += ' context-' + context
-
-          if (galleryMode)
-            className += ' gallery'
-
-          if (contextAlbum)
-            className += ' context-Album'
-
-          return <Tooltip title={obj?.name}>
-            <UI.DeviceContainer
-              className={className}
-              style={
-                {
-                  top: obj?.position?.yPercent + '%',
-                  left: obj?.position?.xPercent + '%'
-                }
-              }>
-              <div className={`marker ${calculateDeviceColor(obj)}`}
-                style={
-                  {
-                    alignItems: 'center',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    cursor: 'pointer'
-                  }
-                }>{
-                  !contextAlbum && (
-                    obj?.networkDeviceType === NetworkDeviceType.switch
-                      ? <DeviceOutlined/>
-                      : <SignalUp />)
-                } </div>
-            </UI.DeviceContainer>
-          </Tooltip>
+          // isActive will highlight devices, while in case of false
+          // it will blur device. this field is required for floorplan
+          // to highlight certain device only on AP device overview page.
+          obj = { ...obj, isActive: true }
+          return <NetworkDeviceMarker
+            key={obj?.id}
+            galleryMode={galleryMode}
+            contextAlbum={contextAlbum}
+            context={context as FloorplanContext}
+            device={obj}
+            showRogueAp={showRogueAp}/>
         }))
     })
   }</div>

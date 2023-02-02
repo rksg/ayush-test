@@ -1,12 +1,15 @@
 import '@testing-library/jest-dom'
-import { rest } from 'msw'
-import { act }  from 'react-dom/test-utils'
+import { rest }         from 'msw'
+import { DndProvider }  from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
+import { act }          from 'react-dom/test-utils'
 
 import { ApDeviceStatusEnum, CommonUrlsInfo, FloorPlanDto, NetworkDeviceType, SwitchStatusEnum } from '@acx-ui/rc/utils'
 import { Provider }                                                                              from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved }                      from '@acx-ui/test-utils'
 
 import { FloorPlan, sortByFloorNumber } from '.'
+
 
 const list: FloorPlanDto[] = [
   {
@@ -53,6 +56,16 @@ const deviceData = {
         xPercent: 65.20548,
         yPercent: 9.839357,
         networkDeviceType: NetworkDeviceType.ap
+      },
+      {
+        deviceStatus: ApDeviceStatusEnum.NEVER_CONTACTED_CLOUD,
+        floorplanId: '',
+        id: '302002015732',
+        name: '3 02002015736',
+        serialNumber: '302002015732',
+        xPercent: 65.20548,
+        yPercent: 9.839357,
+        networkDeviceType: NetworkDeviceType.rogue_ap
       }],
       switches: [{
         deviceStatus: SwitchStatusEnum.NEVER_CONTACTED_CLOUD,
@@ -71,6 +84,13 @@ const deviceData = {
     }
   ]
 }
+
+const venueRogueAp = {
+  enabled: true,
+  reportThreshold: 0,
+  roguePolicyId: '9700ca95e4be4a22857f0e4b621a685f'
+}
+
 describe('Floor Plans', () => {
   let params: { tenantId: string, venueId: string }
   beforeEach(() => {
@@ -90,6 +110,10 @@ describe('Floor Plans', () => {
       rest.post(
         CommonUrlsInfo.getAllDevices.url,
         (req, res, ctx) => res(ctx.json(deviceData))
+      ),
+      rest.get(
+        CommonUrlsInfo.getVenueRogueAp.url,
+        (req, res, ctx) => res(ctx.json(venueRogueAp))
       )
     )
     params = {
@@ -99,7 +123,8 @@ describe('Floor Plans', () => {
   })
   it('Floor Plans should render correctly', async () => {
 
-    const { asFragment } = await render(<Provider><FloorPlan /></Provider>, {
+    const { asFragment } = await render(<Provider><DndProvider backend={HTML5Backend}><FloorPlan />
+    </DndProvider></Provider>, {
       route: { params, path: '/:tenantId/venue/:venueId/floor-plan' }
     })
 
@@ -130,12 +155,16 @@ describe('Floor Plans', () => {
     expect(plainViewImage[0]).not.toBeInTheDocument()
     expect(thumbnailImages[0]).not.toBeInTheDocument()
 
+    expect(await screen.findByTestId('EyeOpenOutlined')).toBeInTheDocument()
+    fireEvent.click(await screen.findByTestId('EyeOpenOutlined'))
+
     expect(asFragment()).toMatchSnapshot()
   })
 
   it('Floor Plans should render gallery correctly', async () => {
 
-    const { asFragment } = await render(<Provider><FloorPlan /></Provider>, {
+    const { asFragment } = await render(<Provider><DndProvider backend={HTML5Backend}><FloorPlan />
+    </DndProvider></Provider>, {
       route: { params, path: '/:tenantId/venue/:venueId/floor-plan' }
     })
 
@@ -155,6 +184,7 @@ describe('Floor Plans', () => {
 
     fireEvent.click(await fpImage[0])
     expect(fpImage[0]).not.toBeVisible()
+    fireEvent.click(await fpImage[1])
 
     expect(asFragment()).toMatchSnapshot()
   })

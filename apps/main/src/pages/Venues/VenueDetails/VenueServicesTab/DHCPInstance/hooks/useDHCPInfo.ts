@@ -3,6 +3,12 @@ import { useParams } from 'react-router-dom'
 
 import { useGetDHCPProfileQuery, useVenueDHCPProfileQuery, useApListQuery } from '@acx-ui/rc/services'
 import { DHCPConfigTypeMessages }                                           from '@acx-ui/rc/utils'
+import {  DHCPProfileAps }                                                  from '@acx-ui/rc/utils'
+
+const defaultApPayload = {
+  fields: ['serialNumber', 'name', 'venueId'],
+  pageSize: 10000
+}
 
 export default function useDHCPInfo () {
 
@@ -11,17 +17,27 @@ export default function useDHCPInfo () {
   const { data: venueDHCPProfile } = useVenueDHCPProfileQuery({
     params
   })
-  const { data: apList } = useApListQuery({ params })
+
+  const { data: apList } = useApListQuery({ params, payload: defaultApPayload })
+
   const apListGroupSN = _.keyBy(apList?.data, 'serialNumber')
   const { data: dhcpProfile } = useGetDHCPProfileQuery({
-    params: { ...params, serviceId: venueDHCPProfile?.serviceProfileId }
-  })
+    params: { ...params, serviceId: venueDHCPProfile?.serviceProfileId||'' }
+  }, { skip: !venueDHCPProfile?.serviceProfileId })
 
-  const primaryServerSN = venueDHCPProfile?.dhcpServiceAps[
-    _.findIndex(venueDHCPProfile?.dhcpServiceAps, { role: 'PrimaryServer' })].serialNumber
-  const backupServerSN = venueDHCPProfile?.dhcpServiceAps[
-    _.findIndex(venueDHCPProfile?.dhcpServiceAps, { role: 'BackupServer' })].serialNumber
-  const gatewayList = _.groupBy(venueDHCPProfile?.dhcpServiceAps, 'role').NatGateway || []
+  let primaryServerSN='', backupServerSN='', gatewayList:DHCPProfileAps[]=[]
+  if(venueDHCPProfile?.dhcpServiceAps){
+    primaryServerSN = venueDHCPProfile?.dhcpServiceAps[
+      _.findIndex(venueDHCPProfile?.dhcpServiceAps, { role: 'PrimaryServer' })].serialNumber
+
+    const backupServerIndex =
+    _.findIndex(venueDHCPProfile?.dhcpServiceAps, { role: 'BackupServer' })
+    if(backupServerIndex!==-1)
+      backupServerSN = venueDHCPProfile?.dhcpServiceAps[backupServerIndex].serialNumber
+
+    gatewayList = _.groupBy(venueDHCPProfile?.dhcpServiceAps, 'role').NatGateway || []
+  }
+
 
   const displayData = {
     id: dhcpProfile?.id,

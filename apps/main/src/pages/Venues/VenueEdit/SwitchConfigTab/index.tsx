@@ -2,8 +2,10 @@ import { useContext } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Tabs }                                  from '@acx-ui/components'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { Tabs }                                    from '@acx-ui/components'
+import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
+import { SwitchConfigHistoryTable, SwitchVeTable } from '@acx-ui/rc/components'
+import { useNavigate, useParams, useTenantLink }   from '@acx-ui/react-router-dom'
 
 import { VenueEditContext, EditContext } from '../index'
 
@@ -16,6 +18,7 @@ export function SwitchConfigTab () {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
+  const releaseTag = useIsSplitOn(Features.DEVICES)
   const basePath = useTenantLink(`/venues/${params.venueId}/edit/switch/`)
   const { editContextData, setEditContextData } = useContext(VenueEditContext)
 
@@ -64,11 +67,19 @@ export function SwitchConfigTab () {
       <TabPane tab={tabTitleMap('aaa')} key='aaa'>
         <SwitchAAATab />
       </TabPane>
-      <TabPane tab={tabTitleMap('history')} key='history'>
-        {$t({ defaultMessage: 'Configuration History' })}
+      <TabPane
+        disabled={!releaseTag}
+        tab={tabTitleMap('history')}
+        key='history'
+      >
+        <SwitchConfigHistoryTable isVenueLevel={true} />
       </TabPane>
-      <TabPane tab={tabTitleMap('interfaces')} key='interfaces'>
-        {$t({ defaultMessage: 'Routed Interfaces' })}
+      <TabPane
+        disabled={!releaseTag}
+        tab={tabTitleMap('interfaces')}
+        key='interfaces'
+      >
+        <SwitchVeTable isVenueLevel={true} />
       </TabPane>
     </Tabs>
   )

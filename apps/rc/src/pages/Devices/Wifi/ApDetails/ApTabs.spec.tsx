@@ -8,7 +8,14 @@ import {
 } from './__tests__/fixtures'
 import ApTabs from './ApTabs'
 
-const params = { serialNumber: 'ap-id', tenantId: 'tenant-id' }
+const params = {
+  tenantId: 'tenant-id',
+  serialNumber: 'ap-id'
+}
+jest.mock('./ApContext', () => ({
+  useApContext: () => params
+}))
+
 const mockedUsedNavigate = jest.fn()
 
 jest.mock('react-router-dom', () => ({
@@ -18,20 +25,20 @@ jest.mock('react-router-dom', () => ({
 
 describe('ApTabs', () => {
   it('should render correctly', async () => {
-    const { asFragment } = render(<Provider>
+    render(<Provider>
       <ApTabs apDetail={apDetailData} />
     </Provider>, { route: { params } })
-    expect(asFragment()).toMatchSnapshot()
+    expect(screen.getAllByRole('tab')).toHaveLength(8)
   })
 
   it('should handle tab changes', async () => {
     render(<Provider>
       <ApTabs apDetail={apDetailData} />
     </Provider>, { route: { params } })
-    await waitFor(() => screen.findByText('Clients (1)'))
-    fireEvent.click(await screen.findByText('Clients (1)'))
+    await waitFor(() => screen.findByText('Networks (2)'))
+    fireEvent.click(await screen.findByText('Networks (2)'))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/devices/wifi/${params.serialNumber}/details/clients`,
+      pathname: `/t/${params.tenantId}/devices/wifi/${params.serialNumber}/details/networks`,
       hash: '',
       search: ''
     })

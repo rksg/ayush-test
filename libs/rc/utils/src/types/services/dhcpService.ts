@@ -1,6 +1,5 @@
 import {
-  DHCPConfigTypeEnum,
-  ServiceTechnology
+  DHCPConfigTypeEnum
 } from '../../constants'
 import { Venue } from '../index'
 export interface DHCPDetailInstances {
@@ -15,6 +14,34 @@ export interface DHCPDetailInstances {
   capacity: number
 }
 
+export enum LeaseUnit {
+  HOURS = 'leaseTimeHours',
+  MINUTES = 'leaseTimeMinutes'
+}
+
+export interface DHCPPool {
+  id: string;
+  name: string;
+  description?: string;
+  // allowWired: boolean;
+  subnetAddress: string;
+  subnetMask: string;
+  startIpAddress: string;
+  endIpAddress: string;
+  primaryDnsIp: string;
+  secondaryDnsIp: string;
+
+  leaseTime?: number;
+  leaseUnit?: LeaseUnit;
+
+  leaseTimeHours?: number;
+  leaseTimeMinutes?: number;
+
+  vlanId: number;
+  dhcpOptions: DHCPOption[];
+  activated?: boolean;
+}
+
 export interface DHCPOption{
   optId: string;
   id: number;
@@ -22,42 +49,56 @@ export interface DHCPOption{
   format: string;
   value: string;
 }
-
-export interface DHCPVenue {
-  id?: string
-  name?: string
-  scheduler: {
-    type: string
-  }
-  venueId: string
-  dhcpId: string
-}
-
-export interface DHCPPool {
-  id: number;
-  name: string;
-  description?: string;
-  allowWired: boolean;
-  ip: string;
-  mask: string;
-  excludedRangeStart?: string;
-  excludedRangeEnd?: string;
-  primaryDNS: string;
-  secondaryDNS: string;
-  leaseTime: number;
-  leaseUnit: string;
-  vlan: number;
-  dhcpOptions: DHCPOption[];
-}
 export interface CreateDHCPFormFields {
-  name: string;
-  tags: string[];
-  createType: ServiceTechnology;
-  dhcpConfig: DHCPConfigTypeEnum;
+  serviceName: string;
+  dhcpMode: DHCPConfigTypeEnum;
   dhcpPools: DHCPPool[];
-  venues: DHCPVenue[];
 }
-
 export interface DHCPSaveData extends CreateDHCPFormFields {
   id?: string;
+  usage: DHCPUsage[];
+}
+export interface DHCPUsage {
+  venueId: string;
+  totalIpCount: number;
+  usedIpCount: number;
+}
+
+export interface VenueDHCPProfile {
+  serviceProfileId: string,
+  enabled: boolean,
+  dhcpServiceAps: DHCPProfileAps[],
+  wanPortSelectionMode: string,
+}
+
+export interface DHCPProfileAps {
+  serialNumber: string,
+  role: string
+}
+
+export interface DHCPLeases {
+  hostname: string,
+  ipAddress: string,
+  dhcpPoolId: string,
+  dhcpPoolName: string,
+  macAddress: string,
+  status: string,
+  leaseExpiration: string
+}
+export interface VenueDHCPPoolInst {
+  name: string,
+  vlanId: number,
+  subnetAddress: string,
+  subnetMask: string,
+  startIpAddress: string,
+  endIpAddress: string,
+  primaryDnsIp: string,
+  secondaryDnsIp: string,
+  leaseTimeHours: number,
+  leaseTimeMinutes: number,
+  totalIpCount: number,
+  usedIpCount: number
+  active: boolean,
+  id: string,
+
 }

@@ -4,7 +4,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
 <DocumentFragment>
   <div
     class="ant-row"
-    style="margin: -8px -8px -8px -8px;"
+    style="margin: -8px -8px -8px -8px; flex: 1;"
   >
     <div
       class="ant-col ant-col-18"
@@ -12,27 +12,23 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
     >
       <div
         class="ant-row"
-        style="margin: -8px -8px -8px -8px;"
+        style="margin: -16px -8px -16px -8px; justify-content: end;"
       >
         <div
-          class="ant-col ant-col-12"
-          style="padding: 8px 8px 8px 8px;"
-        />
-        <div
-          class="ant-col ant-col-12"
-          style="padding: 8px 8px 8px 8px; justify-content: end;"
+          class="ant-col ant-col-15"
+          style="padding: 16px 8px 16px 8px;"
         >
           <div
-            class="ant-row"
-            style="margin: -2px -2px -2px -2px; justify-content: end;"
+            class="ant-row ant-row-no-wrap"
+            style="margin: -3px -3px -3px -3px; justify-content: end;"
           >
             <div
-              class="ant-col ant-col-8"
-              style="padding: 2px 2px 2px 2px;"
+              class="ant-col"
+              style="padding: 3px 3px 3px 3px; flex: 0 0 185px; min-width: 0;"
             >
               <div
-                class="ant-select ant-cascader styledComponents__Cascader-sc-jlwno5-0 cLnUfA ant-select-multiple ant-select-allow-clear ant-select-show-search"
-                style="max-width: 132px;"
+                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
+                style="max-width: 180px;"
               >
                 <div
                   class="ant-select-selector"
@@ -79,15 +75,41 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                     All Categories
                   </span>
                 </div>
+                <span
+                  aria-hidden="true"
+                  class="ant-select-arrow"
+                  style="user-select: none;"
+                  unselectable="on"
+                >
+                  <span
+                    aria-label="down"
+                    class="anticon anticon-down ant-select-suffix"
+                    role="img"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      data-icon="down"
+                      fill="currentColor"
+                      focusable="false"
+                      height="1em"
+                      viewBox="64 64 896 896"
+                      width="1em"
+                    >
+                      <path
+                        d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                      />
+                    </svg>
+                  </span>
+                </span>
               </div>
             </div>
             <div
-              class="ant-col ant-col-8"
-              style="padding: 2px 2px 2px 2px;"
+              class="ant-col"
+              style="padding: 3px 3px 3px 3px; flex: 0 0 185px; min-width: 0;"
             >
               <div
-                class="ant-select ant-cascader styledComponents__Cascader-sc-jlwno5-0 cLnUfA ant-select-multiple ant-select-allow-clear ant-select-show-search"
-                style="max-width: 132px;"
+                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
+                style="max-width: 180px;"
               >
                 <div
                   class="ant-select-selector"
@@ -134,15 +156,41 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                     All Types
                   </span>
                 </div>
+                <span
+                  aria-hidden="true"
+                  class="ant-select-arrow"
+                  style="user-select: none;"
+                  unselectable="on"
+                >
+                  <span
+                    aria-label="down"
+                    class="anticon anticon-down ant-select-suffix"
+                    role="img"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      data-icon="down"
+                      fill="currentColor"
+                      focusable="false"
+                      height="1em"
+                      viewBox="64 64 896 896"
+                      width="1em"
+                    >
+                      <path
+                        d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                      />
+                    </svg>
+                  </span>
+                </span>
               </div>
             </div>
             <div
-              class="ant-col ant-col-8"
-              style="padding: 2px 2px 2px 2px;"
+              class="ant-col"
+              style="padding: 3px 3px 3px 3px; flex: 0 0 185px; min-width: 0;"
             >
               <div
-                class="ant-select ant-cascader styledComponents__Cascader-sc-jlwno5-0 cLnUfA ant-select-multiple ant-select-allow-clear ant-select-show-search"
-                style="max-width: 132px;"
+                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
+                style="max-width: 180px;"
               >
                 <div
                   class="ant-select-selector"
@@ -189,127 +237,312 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                     All Radios
                   </span>
                 </div>
+                <span
+                  aria-hidden="true"
+                  class="ant-select-arrow"
+                  style="user-select: none;"
+                  unselectable="on"
+                >
+                  <span
+                    aria-label="down"
+                    class="anticon anticon-down ant-select-suffix"
+                    role="img"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      data-icon="down"
+                      fill="currentColor"
+                      focusable="false"
+                      height="1em"
+                      viewBox="64 64 896 896"
+                      width="1em"
+                    >
+                      <path
+                        d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                      />
+                    </svg>
+                  </span>
+                </span>
               </div>
             </div>
           </div>
         </div>
         <div
           class="ant-col ant-col-24"
-          style="padding: 8px 8px 8px 8px;"
+          style="padding: 16px 8px 16px 8px;"
         >
           <div
-            class="ant-collapse ant-collapse-icon-position-start ant-collapse-borderless ant-collapse-ghost"
+            class="styledComponents__TimelineLoaderWrapper-sc-hmshlr-15 kKnIRS"
           >
             <div
-              class="ant-collapse-item"
+              class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
             >
               <div
-                aria-expanded="false"
-                class="ant-collapse-header"
-                role="button"
-                tabindex="0"
+                class="ant-row ant-row-no-wrap"
+                style="margin: -8px -8px -8px -8px;"
               >
                 <div
-                  class="ant-collapse-expand-icon"
+                  class="ant-col"
+                  style="padding: 8px 8px 8px 8px; flex: 0 0 200px; min-width: 0;"
                 >
-                  <svg
-                    class="styledComponents__StyledPlusSquareOutlined-sc-hmshlr-7 iWQXdq ant-collapse-arrow"
-                    data-testid="PlusSquareOutlined"
-                  />
-                </div>
-                <span
-                  class="ant-collapse-header-text"
-                >
-                  <span
-                    class="styledComponents__TimelineTitle-sc-hmshlr-9 dVavPp"
+                  <div
+                    class="ant-row"
+                    style="margin: -8px -8px -8px -8px; row-gap: 3px;"
                   >
-                    Connection Events
-                  </span>
-                </span>
-              </div>
-            </div>
-            <div
-              class="ant-collapse-item"
-            >
-              <div
-                aria-expanded="false"
-                class="ant-collapse-header"
-                role="button"
-                tabindex="0"
-              >
+                    <div
+                      class="ant-col ant-col-3"
+                      style="padding: 8px 8px 8px 8px;"
+                    >
+                      <svg
+                        class="styledComponents__StyledPlusSquareOutlined-sc-hmshlr-7 iWQXdq"
+                        data-testid="PlusSquareOutlined"
+                        style="cursor: pointer;"
+                      />
+                    </div>
+                    <div
+                      class="ant-col ant-col-17"
+                      style="padding: 8px 8px 8px 8px; margin-bottom: 38px;"
+                    >
+                      <span
+                        class="styledComponents__TimelineTitle-sc-hmshlr-9 dVavPp"
+                      >
+                        Connection Events
+                      </span>
+                    </div>
+                    <div
+                      class="ant-col ant-col-4"
+                      style="padding: 8px 8px 8px 8px; line-height: 25px;"
+                    >
+                      <span
+                        class="styledComponents__TimelineCount-sc-hmshlr-10 epCNGl"
+                      >
+                        0
+                      </span>
+                    </div>
+                    <div
+                      class="ant-col ant-col-3"
+                      style="padding: 8px 8px 8px 8px;"
+                    >
+                      <svg
+                        class="styledComponents__StyledPlusSquareOutlined-sc-hmshlr-7 iWQXdq"
+                        data-testid="PlusSquareOutlined"
+                        style="cursor: pointer;"
+                      />
+                    </div>
+                    <div
+                      class="ant-col ant-col-17"
+                      style="padding: 8px 8px 8px 8px; margin-bottom: 38px;"
+                    >
+                      <span
+                        class="styledComponents__TimelineTitle-sc-hmshlr-9 dVavPp"
+                      >
+                        Roaming
+                      </span>
+                    </div>
+                    <div
+                      class="ant-col ant-col-4"
+                      style="padding: 8px 8px 8px 8px; line-height: 25px;"
+                    >
+                      <span
+                        class="styledComponents__TimelineCount-sc-hmshlr-10 epCNGl"
+                      >
+                        0
+                      </span>
+                    </div>
+                    <div
+                      class="ant-col ant-col-3"
+                      style="padding: 8px 8px 8px 8px;"
+                    >
+                      <svg
+                        class="styledComponents__StyledPlusSquareOutlined-sc-hmshlr-7 iWQXdq"
+                        data-testid="PlusSquareOutlined"
+                        style="cursor: pointer;"
+                      />
+                    </div>
+                    <div
+                      class="ant-col ant-col-17"
+                      style="padding: 8px 8px 8px 8px; margin-bottom: 38px;"
+                    >
+                      <span
+                        class="styledComponents__TimelineTitle-sc-hmshlr-9 dVavPp"
+                      >
+                        Connection Quality
+                      </span>
+                    </div>
+                    <div
+                      class="ant-col ant-col-4"
+                      style="padding: 8px 8px 8px 8px; line-height: 25px;"
+                    />
+                    <div
+                      class="ant-col ant-col-3"
+                      style="padding: 8px 8px 8px 8px;"
+                    >
+                      <svg
+                        class="styledComponents__StyledPlusSquareOutlined-sc-hmshlr-7 iWQXdq"
+                        data-testid="PlusSquareOutlined"
+                        style="cursor: pointer;"
+                      />
+                    </div>
+                    <div
+                      class="ant-col ant-col-17"
+                      style="padding: 8px 8px 8px 8px; margin-bottom: 38px;"
+                    >
+                      <span
+                        class="styledComponents__TimelineTitle-sc-hmshlr-9 dVavPp"
+                      >
+                        Network Incidents
+                      </span>
+                    </div>
+                    <div
+                      class="ant-col ant-col-4"
+                      style="padding: 8px 8px 8px 8px; line-height: 25px;"
+                    >
+                      <span
+                        class="styledComponents__TimelineCount-sc-hmshlr-10 epCNGl"
+                      >
+                        0
+                      </span>
+                    </div>
+                  </div>
+                </div>
                 <div
-                  class="ant-collapse-expand-icon"
+                  class="ant-col"
+                  style="padding: 8px 8px 8px 8px; flex-basis: auto; min-width: 0;"
                 >
-                  <svg
-                    class="styledComponents__StyledPlusSquareOutlined-sc-hmshlr-7 iWQXdq ant-collapse-arrow"
-                    data-testid="PlusSquareOutlined"
-                  />
-                </div>
-                <span
-                  class="ant-collapse-header-text"
-                >
-                  <span
-                    class="styledComponents__TimelineTitle-sc-hmshlr-9 dVavPp"
+                  <div
+                    class="ant-row"
+                    style="margin: -8px -8px -8px -8px; row-gap: 0;"
                   >
-                    Roaming
-                  </span>
-                </span>
-              </div>
-            </div>
-            <div
-              class="ant-collapse-item"
-            >
-              <div
-                aria-expanded="false"
-                class="ant-collapse-header"
-                role="button"
-                tabindex="0"
-              >
-                <div
-                  class="ant-collapse-expand-icon"
-                >
-                  <svg
-                    class="styledComponents__StyledPlusSquareOutlined-sc-hmshlr-7 iWQXdq ant-collapse-arrow"
-                    data-testid="PlusSquareOutlined"
-                  />
+                    <div
+                      class="ant-col ant-col-24"
+                      style="padding: 8px 8px 8px 8px;"
+                    >
+                      <div
+                        _echarts_instance_="ec_mock"
+                        class="echarts-for-react "
+                        size-sensor-id="1"
+                        style="height: 66px; margin-bottom: 0px; webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); position: relative;"
+                      >
+                        <div
+                          style="position: relative; width: 1280px; height: 800px; padding: 0px; margin: 0px; border-width: 0px;"
+                        >
+                          <canvas
+                            data-zr-dom-id="zr_0"
+                            height="800"
+                            style="position: absolute; left: 0px; top: 0px; width: 1280px; height: 800px; webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); padding: 0px; margin: 0px; border-width: 0px;"
+                            width="1280"
+                          />
+                        </div>
+                        <div
+                          class=""
+                        />
+                        <object
+                          class="size-sensor-object"
+                          data="about:blank"
+                          style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+                          tabindex="-1"
+                          type="text/html"
+                        />
+                      </div>
+                    </div>
+                    <div
+                      class="ant-col ant-col-24"
+                      style="padding: 8px 8px 8px 8px;"
+                    >
+                      <div
+                        _echarts_instance_="ec_mock"
+                        class="echarts-for-react "
+                        size-sensor-id="2"
+                        style="height: 66px; margin-bottom: 0px; webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); position: relative;"
+                      >
+                        <div
+                          style="position: relative; width: 1280px; height: 800px; padding: 0px; margin: 0px; border-width: 0px;"
+                        >
+                          <canvas
+                            data-zr-dom-id="zr_0"
+                            height="800"
+                            style="position: absolute; left: 0px; top: 0px; width: 1280px; height: 800px; webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); padding: 0px; margin: 0px; border-width: 0px;"
+                            width="1280"
+                          />
+                        </div>
+                        <div
+                          class=""
+                        />
+                        <object
+                          class="size-sensor-object"
+                          data="about:blank"
+                          style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+                          tabindex="-1"
+                          type="text/html"
+                        />
+                      </div>
+                    </div>
+                    <div
+                      class="ant-col ant-col-24"
+                      style="padding: 8px 8px 8px 8px;"
+                    >
+                      <div
+                        _echarts_instance_="ec_mock"
+                        class="echarts-for-react "
+                        size-sensor-id="3"
+                        style="height: 66px; margin-bottom: 0px; webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); position: relative;"
+                      >
+                        <div
+                          style="position: relative; width: 1280px; height: 800px; padding: 0px; margin: 0px; border-width: 0px;"
+                        >
+                          <canvas
+                            data-zr-dom-id="zr_0"
+                            height="800"
+                            style="position: absolute; left: 0px; top: 0px; width: 1280px; height: 800px; webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); padding: 0px; margin: 0px; border-width: 0px;"
+                            width="1280"
+                          />
+                        </div>
+                        <div
+                          class=""
+                        />
+                        <object
+                          class="size-sensor-object"
+                          data="about:blank"
+                          style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+                          tabindex="-1"
+                          type="text/html"
+                        />
+                      </div>
+                    </div>
+                    <div
+                      class="ant-col ant-col-24"
+                      style="padding: 8px 8px 8px 8px;"
+                    >
+                      <div
+                        _echarts_instance_="ec_mock"
+                        class="echarts-for-react "
+                        size-sensor-id="4"
+                        style="height: 96px; margin-bottom: 0px; webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); position: relative;"
+                      >
+                        <div
+                          style="position: relative; width: 1280px; height: 800px; padding: 0px; margin: 0px; border-width: 0px;"
+                        >
+                          <canvas
+                            data-zr-dom-id="zr_0"
+                            height="800"
+                            style="position: absolute; left: 0px; top: 0px; width: 1280px; height: 800px; webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); padding: 0px; margin: 0px; border-width: 0px;"
+                            width="1280"
+                          />
+                        </div>
+                        <div
+                          class=""
+                        />
+                        <object
+                          class="size-sensor-object"
+                          data="about:blank"
+                          style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+                          tabindex="-1"
+                          type="text/html"
+                        />
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <span
-                  class="ant-collapse-header-text"
-                >
-                  <span
-                    class="styledComponents__TimelineTitle-sc-hmshlr-9 dVavPp"
-                  >
-                    Connection Quality
-                  </span>
-                </span>
-              </div>
-            </div>
-            <div
-              class="ant-collapse-item"
-            >
-              <div
-                aria-expanded="false"
-                class="ant-collapse-header"
-                role="button"
-                tabindex="0"
-              >
-                <div
-                  class="ant-collapse-expand-icon"
-                >
-                  <svg
-                    class="styledComponents__StyledPlusSquareOutlined-sc-hmshlr-7 iWQXdq ant-collapse-arrow"
-                    data-testid="PlusSquareOutlined"
-                  />
-                </div>
-                <span
-                  class="ant-collapse-header-text"
-                >
-                  <span
-                    class="styledComponents__TimelineTitle-sc-hmshlr-9 dVavPp"
-                  >
-                    Network Incidents
-                  </span>
-                </span>
               </div>
             </div>
           </div>
@@ -321,135 +554,111 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
       style="padding: 8px 8px 8px 8px;"
     >
       <div
-        class="styledComponents__History-sc-hmshlr-0 fbrcHL"
+        class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
       >
         <div
-          class="styledComponents__HistoryHeader-sc-hmshlr-1 gxxomy"
-        >
-          <span
-            class="styledComponents__HistoryContentTitle-sc-hmshlr-3 kdrcWS"
-          >
-            History
-          </span>
-          <span
-            class="styledComponents__HistoryIcon-sc-hmshlr-4 bpPEdb"
-          >
-            <svg
-              data-testid="ArrowExpand"
-              style="transform: rotate(180deg); cursor: pointer; line-height: 20px;"
-            />
-          </span>
-        </div>
-        <div
-          class="styledComponents__HistoryContent-sc-hmshlr-2 cUGlmL"
+          class="styledComponents__History-sc-hmshlr-0 jYwBlN"
         >
           <div
-            class="ant-list ant-list-split"
+            class="styledComponents__HistoryHeader-sc-hmshlr-1 gsNMaa"
+          >
+            <span
+              class="styledComponents__HistoryContentTitle-sc-hmshlr-3 fiXbsw"
+            >
+              History
+            </span>
+            <span
+              class="styledComponents__HistoryIcon-sc-hmshlr-4 jqwToA"
+            >
+              <svg
+                data-testid="history-collapse"
+              />
+            </span>
+          </div>
+          <div
+            style="overflow: visible; height: 0px; width: 0px;"
           >
             <div
-              class="ant-spin-nested-loading"
+              class="styledComponents__HistoryContent-sc-hmshlr-2 wYYJy"
+              style="height: 756px; width: 1280px;"
             >
               <div
-                class="ant-spin-container"
+                class="ant-list ant-list-split"
               >
-                <ul
-                  class="ant-list-items"
+                <div
+                  class="ant-spin-nested-loading"
                 >
-                  <li
-                    class="ant-list-item"
+                  <div
+                    class="ant-spin-container"
                   >
                     <div
-                      class="ant-list-item-meta"
+                      class="ant-list-empty-text"
                     >
                       <div
-                        class="ant-list-item-meta-avatar"
+                        class="ant-empty ant-empty-normal"
                       >
-                        <span
-                          class="styledComponents__EventTypeIcon-sc-hmshlr-5 haoSVP"
-                          color="--acx-semantics-green-50"
-                        />
-                      </div>
-                      <div
-                        class="ant-list-item-meta-content"
-                      >
-                        <h4
-                          class="ant-list-item-meta-title"
-                        >
-                          06/07/2022 11:21:48
-                        </h4>
                         <div
-                          class="ant-list-item-meta-description"
+                          class="ant-empty-image"
                         >
-                          Infrastructure (Service availabilty)
+                          <svg
+                            class="ant-empty-img-simple"
+                            height="41"
+                            viewBox="0 0 64 41"
+                            width="64"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <g
+                              fill="none"
+                              fill-rule="evenodd"
+                              transform="translate(0 1)"
+                            >
+                              <ellipse
+                                class="ant-empty-img-simple-ellipse"
+                                cx="32"
+                                cy="33"
+                                rx="32"
+                                ry="7"
+                              />
+                              <g
+                                class="ant-empty-img-simple-g"
+                                fill-rule="nonzero"
+                              >
+                                <path
+                                  d="M55 12.76L44.854 1.258C44.367.474 43.656 0 42.907 0H21.093c-.749 0-1.46.474-1.947 1.257L9 12.761V22h46v-9.24z"
+                                />
+                                <path
+                                  class="ant-empty-img-simple-path"
+                                  d="M41.613 15.931c0-1.605.994-2.93 2.227-2.931H55v18.137C55 33.26 53.68 35 52.05 35h-40.1C10.32 35 9 33.259 9 31.137V13h11.16c1.233 0 2.227 1.323 2.227 2.928v.022c0 1.605 1.005 2.901 2.237 2.901h14.752c1.232 0 2.237-1.308 2.237-2.913v-.007z"
+                                />
+                              </g>
+                            </g>
+                          </svg>
+                        </div>
+                        <div
+                          class="ant-empty-description"
+                        >
+                          No Data
                         </div>
                       </div>
                     </div>
-                  </li>
-                  <li
-                    class="ant-list-item"
-                  >
-                    <div
-                      class="ant-list-item-meta"
-                    >
-                      <div
-                        class="ant-list-item-meta-avatar"
-                      >
-                        <span
-                          class="styledComponents__EventTypeIcon-sc-hmshlr-5 wBlry"
-                          color="--acx-neutrals-50"
-                        />
-                      </div>
-                      <div
-                        class="ant-list-item-meta-content"
-                      >
-                        <h4
-                          class="ant-list-item-meta-title"
-                        >
-                          06/07/2022 11:21:48
-                        </h4>
-                        <div
-                          class="ant-list-item-meta-description"
-                        >
-                          Client assiocated (802.11) @ Home_R860 (AA:BB:CC:DD:FF:GG)
-                        </div>
-                      </div>
-                    </div>
-                  </li>
-                  <li
-                    class="ant-list-item"
-                  >
-                    <div
-                      class="ant-list-item-meta"
-                    >
-                      <div
-                        class="ant-list-item-meta-avatar"
-                      >
-                        <span
-                          class="styledComponents__IncidentEvent-sc-hmshlr-6 hEsQOF"
-                          color="--acx-semantics-red-50"
-                        >
-                          P1
-                        </span>
-                      </div>
-                      <div
-                        class="ant-list-item-meta-content"
-                      >
-                        <h4
-                          class="ant-list-item-meta-title"
-                        >
-                          06/07/2022 11:21:48
-                        </h4>
-                        <div
-                          class="ant-list-item-meta-description"
-                        >
-                          Client assiocated (802.11) @ Home_R860 (AA:BB:CC:DD:FF:GG)
-                        </div>
-                      </div>
-                    </div>
-                  </li>
-                </ul>
+                  </div>
+                </div>
               </div>
             </div>
+          </div>
+          <div
+            class="resize-triggers"
+          >
+            <div
+              class="expand-trigger"
+            >
+              <div
+                style="width: 1281px; height: 801px;"
+              />
+            </div>
+            <div
+              class="contract-trigger"
+            />
           </div>
         </div>
       </div>

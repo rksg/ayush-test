@@ -3,14 +3,16 @@ import { useState } from 'react'
 import { Row, Col }               from 'antd'
 import { useIntl, defineMessage } from 'react-intl'
 
-import { NetworkFilter, Button } from '@acx-ui/components'
-import { useEncodedParameter }   from '@acx-ui/utils'
+import { Select, Button, Loader }             from '@acx-ui/components'
+import { useEncodedParameter, useDateFilter } from '@acx-ui/utils'
 
 import { ClientTroubleShootingConfig } from './config'
 import { History }                     from './EventsHistory'
 import { TimeLine }                    from './EventsTimeline'
+import { useClientInfoQuery }          from './services'
+import * as UI                         from './styledComponents'
 
-type Filters = {
+export type Filters = {
   category?: [];
   type?: [];
   radio?: [];
@@ -18,29 +20,29 @@ type Filters = {
 type SingleValueType = (string | number)[]
 type selectionType = SingleValueType | SingleValueType[] | undefined
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
   const [historyContentToggle, setHistoryContentToggle] = useState(true)
   const { $t } = useIntl()
   const { read, write } = useEncodedParameter<Filters>('clientTroubleShootingSelections')
+  const { startDate, endDate, range } = useDateFilter()
+  const results = useClientInfoQuery({ startDate, endDate, range, clientMac })
+  const filters = read()
   return (
-    <Row gutter={[16, 16]}>
+    <Row gutter={[16, 16]} style={{ flex: 1 }}>
       <Col span={historyContentToggle ? 18 : 24}>
-        <Row gutter={[16, 16]}>
-          <Col span={historyContentToggle ? 12 : 10} />
-          <Col
-            span={historyContentToggle ? 12 : 10}
-            style={{ justifyContent: 'end' }}>
-            <Row style={{ justifyContent: 'end' }} gutter={[4, 4]}>
+        <Row style={{ justifyContent: 'end' }} gutter={[16, 32]}>
+          <Col span={historyContentToggle ? 15 : 11}>
+            <Row style={{ justifyContent: 'end' }} gutter={[6, 6]} wrap={false}>
               {ClientTroubleShootingConfig.selection.map((config) => (
-                <Col span={historyContentToggle ? 8 : 7} key={config.selectionType}>
-                  <NetworkFilter
+                <Col flex='185px' key={config.selectionType}>
+                  <Select
+                    entityName={config.entityName}
                     multiple
                     defaultValue={
-                      read()?.[
+                      filters?.[
                         config.selectionType as keyof Filters
                       ]
-                        ? read()?.[
+                        ? filters?.[
                             config.selectionType as keyof Filters
                         ]
                         : config.defaultValue
@@ -49,17 +51,18 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
                     options={config.options.map((option) => {
                       return { ...option, label: $t(option.label) }
                     })}
-                    style={{ maxWidth: 132 }}
+                    style={{ minWidth: 150 }}
                     onApply={(value: selectionType) =>
-                      write({ ...read(), [config.selectionType]: value })
+                      write({ ...filters, [config.selectionType]: value })
                     }
+                    allowClear
                   />
                 </Col>
               ))}
             </Row>
           </Col>
           {!historyContentToggle && (
-            <Col span={4}>
+            <Col span={3}>
               <Row style={{ justifyContent: 'end' }}>
                 <Button
                   type='primary'
@@ -73,16 +76,26 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
             </Col>
           )}
           <Col span={24}>
-            <TimeLine />
+            <UI.TimelineLoaderWrapper>
+              <Loader states={[results]}>
+                <TimeLine
+                  data={results.data}
+                  filters={filters}/>
+              </Loader>
+            </UI.TimelineLoaderWrapper>
           </Col>
         </Row>
       </Col>
       {historyContentToggle && (
         <Col span={6}>
-          <History
-            setHistoryContentToggle={setHistoryContentToggle}
-            historyContentToggle
-          />
+          <Loader states={[results]} >
+            <History
+              setHistoryContentToggle={setHistoryContentToggle}
+              historyContentToggle
+              data={results.data}
+              filters={filters}
+            />
+          </Loader>
         </Col>
       )}
     </Row>

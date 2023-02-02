@@ -45,11 +45,31 @@ export const Button = styled(AntButton)<{ $customType: string | null }>`
       background-color: var(--acx-primary-white);
       svg { path { stroke: var(--acx-neutrals-40); } }
     }
+
+    &.ant-btn-link:not(.ant-btn-icon-only) {
+      &, &:hover, &:focus {
+        color: var(--acx-neutrals-40);
+      }
+    }
   }
 
-  &.ant-btn-link {
+  &.ant-btn-link:not(.ant-btn-icon-only) {
     padding: 0;
+    height: var(--acx-body-3-line-height);
+
+    &:hover, &:focus {
+      color: var(--acx-accents-orange-50);
+    }
+
+    &.ant-btn-sm {
+      height: var(--acx-body-4-line-height);
+    }
+
+    &.ant-btn-lg {
+      height: var(--acx-body-2-line-height);
+    }
   }
+
   &.ant-btn-background-ghost {
     border: 0;
   }

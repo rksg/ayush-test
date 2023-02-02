@@ -67,10 +67,16 @@ window.crypto = {
   }
 }
 
+window.open = jest.fn()
+
 jest.mock('libs/common/components/src/theme/helper', () => ({
   __esModule: true,
   cssStr: jest.fn(property => mockLightTheme[property]),
   cssNumber: jest.fn(property => parseInt(mockLightTheme[property], 10))
+}))
+
+jest.mock('merge-view-codemirror', () => ({
+  init: () => jest.fn()
 }))
 
 jest.mock('@acx-ui/feature-toggle', () => ({

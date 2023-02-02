@@ -9,7 +9,9 @@ import {
   clientEventDescription,
   mapCodeToReason,
   mapCodeToAttempt,
-  MapElement
+  MapElement,
+  mapDisconnectCodeToReason,
+  mapCodeToFailureText
 } from './reasonCodeMap'
 
 describe('readCodesIntoMap', () => {
@@ -63,6 +65,21 @@ describe('mapCodeToReason', () => {
   })
 })
 
+describe('mapDisconnectCodeToReason', () => {
+  it('renders text for given code', () => {
+    renderHook(() => {
+      const { $t } = useIntl()
+      expect($t(mapDisconnectCodeToReason('2'))).toEqual('Previous authentication no longer valid')
+    })
+  })
+  it('renders Unknown if nothing matches', () => {
+    renderHook(() => {
+      const { $t } = useIntl()
+      expect($t(mapDisconnectCodeToReason('222'))).toEqual('Unknown')
+    })
+  })
+})
+
 describe('mapCodeToAttempt', () => {
   it('renders text for given code', () => {
     expect(renderHook(() => mapCodeToAttempt('eap', useIntl())).result.current)
@@ -76,5 +93,12 @@ describe('mapCodeToAttempt', () => {
   })
   it('renders code if nothing matches', () => {
     expect(renderHook(() => mapCodeToAttempt('test', useIntl())).result.current).toEqual('test')
+  })
+})
+
+describe('mapCodeToFailureText', () => {
+  it('renders text for given code', () => {
+    expect(renderHook(() => mapCodeToFailureText('eap', useIntl())).result.current)
+      .toEqual('EAP Failure')
   })
 })

@@ -1,12 +1,14 @@
 /* eslint-disable max-len */
+import { useEffect } from 'react'
+
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { Subtitle, Tooltip }                                           from '@acx-ui/components'
-import { Table, TableProps, Loader }                                   from '@acx-ui/components'
-import { useGetClientListQuery }                                       from '@acx-ui/rc/services'
-import { ClientList, getDeviceTypeIcon, getOsTypeIcon, useTableQuery } from '@acx-ui/rc/utils'
-import { TenantLink }                                                  from '@acx-ui/react-router-dom'
-import { formatter }                                                   from '@acx-ui/utils'
+import { Subtitle, Tooltip }                                                                              from '@acx-ui/components'
+import { Table, TableProps, Loader }                                                                      from '@acx-ui/components'
+import { useGetClientListQuery }                                                                          from '@acx-ui/rc/services'
+import { ClientList, getDeviceTypeIcon, getOsTypeIcon, RequestPayload, TableQuery, usePollingTableQuery } from '@acx-ui/rc/utils'
+import { TenantLink, useParams }                                                                          from '@acx-ui/react-router-dom'
+import { formatter }                                                                                      from '@acx-ui/utils'
 
 import { ClientHealthIcon } from '../ClientHealthIcon'
 
@@ -22,9 +24,11 @@ function getCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       title: intl.$t({ defaultMessage: 'Hostname' }),
       dataIndex: 'hostname',
       sorter: true,
+      disable: true,
       defaultSortOrder: 'ascend',
-      render: (data, row) =>
-        <TenantLink to={`users/wifi/clients/${row.clientMac}/details/overview`}>{data || '--'}</TenantLink>
+      render: (data, row) => {
+        return <TenantLink to={`users/wifi/clients/${row.clientMac}/details/overview?hostname=${data}`}>{data || '--'}</TenantLink>
+      }
     },
     {
       key: 'osType',
@@ -67,6 +71,7 @@ function getCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       title: intl.$t({ defaultMessage: 'MAC Address' }),
       dataIndex: 'clientMac',
       sorter: true,
+      disable: true,
       render: (data) => {
         return <Tooltip title={data}>
           {data || '--'}
@@ -254,12 +259,9 @@ function getCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       dataIndex: 'status',
       sorter: true,
       show: !!showAllColumns,
-      render: (data) => <>
-        { data ? intl.$t({ defaultMessage: 'Authorized' }) :
-          intl.$t({ defaultMessage: 'Unauthorized' })
-        }
-      </>
-
+      render: (data) => data ?
+        intl.$t({ defaultMessage: 'Authorized' }) :
+        intl.$t({ defaultMessage: 'Unauthorized' })
     },
     {
       key: 'encryptMethod',
@@ -308,20 +310,21 @@ function getCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       sorter: true,
       show: !!showAllColumns,
       render: (data) => data || '--'
-    },
-    {
-      key: 'tags',
-      title: intl.$t({ defaultMessage: 'Tags' }),
-      dataIndex: 'tags'
     }
+    // { // TODO: Waiting for TAG feature support
+    //   key: 'tags',
+    //   title: intl.$t({ defaultMessage: 'Tags' }),
+    //   dataIndex: 'tags'
+    // }
   ]
   return columns
 }
 
 
-const defaultPayload = {
+export const defaultClientPayload = {
   searchString: '',
   searchTargetFields: ['clientMac','ipAddress','Username','hostname','ssid','clientVlan','osType'],
+  filters: {},
   fields: [
     'hostname','osType','healthCheckStatus','clientMac','ipAddress','Username','serialNumber','venueId','switchSerialNumber',
     'ssid','wifiCallingClient','sessStartTime','clientAnalytics','clientVlan','deviceTypeStr','modelName','totalTraffic',
@@ -330,15 +333,36 @@ const defaultPayload = {
     'apName','clientVlan','networkId','switchName','healthStatusReason','lastUpdateTime']
 }
 
-export const ConnectedClientsTable = (props:{ showAllColumns?: boolean }) => {
+export const ConnectedClientsTable = (props: {
+  showAllColumns?: boolean,
+  searchString: string,
+  setConnectedClientCount?: (connectClientCount: number) => void,
+  tableQuery?: TableQuery<ClientList, RequestPayload<unknown>, unknown>
+}) => {
   const { $t } = useIntl()
-  const { showAllColumns } = props
-  const ConnectedClientsTable = () => {
-    const tableQuery = useTableQuery({
-      useQuery: useGetClientListQuery,
-      defaultPayload
-    })
-    return (
+  const params = useParams()
+  const { showAllColumns, searchString, setConnectedClientCount } = props
+
+  defaultClientPayload.searchString = searchString
+  defaultClientPayload.filters = params.venueId ? { venueId: [params.venueId] } :
+    params.serialNumber ? { serialNumber: [params.serialNumber] } : {}
+
+
+  const inlineTableQuery = usePollingTableQuery({
+    useQuery: useGetClientListQuery,
+    defaultPayload: defaultClientPayload,
+    option: { skip: !!props.tableQuery }
+  })
+  const tableQuery = props.tableQuery || inlineTableQuery
+
+  useEffect(() => {
+    if (tableQuery.data?.data && setConnectedClientCount) {
+      setConnectedClientCount(tableQuery.data?.totalCount)
+    }
+  }, [])
+
+  return (
+    <UI.ClientTableDiv>
       <Loader states={[
         tableQuery
       ]}>
@@ -353,10 +377,6 @@ export const ConnectedClientsTable = (props:{ showAllColumns?: boolean }) => {
           rowKey='clientMac'
         />
       </Loader>
-    )
-  }
-
-  return (
-    <ConnectedClientsTable />
+    </UI.ClientTableDiv>
   )
 }

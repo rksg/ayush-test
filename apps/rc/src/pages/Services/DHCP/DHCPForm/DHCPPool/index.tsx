@@ -1,0 +1,347 @@
+import { useState, useRef } from 'react'
+
+import { Col, Form, Input, InputNumber, Row, Select, Space, Switch } from 'antd'
+import TextArea                                                      from 'antd/lib/input/TextArea'
+import _                                                             from 'lodash'
+import { useIntl }                                                   from 'react-intl'
+
+import { Drawer }  from '@acx-ui/components'
+import {
+  DHCPPool,
+  LeaseUnit,
+  networkWifiIpRegExp,
+  subnetMaskIpRegExp,
+  countIpMaxRange,
+  countIpSize,
+  IpInSubnetPool } from '@acx-ui/rc/utils'
+import { DHCPConfigTypeEnum }          from '@acx-ui/rc/utils'
+import { getIntl, validationMessages } from '@acx-ui/utils'
+
+import { DEFAULT_GUEST_DHCP_NAME } from '../DHCPForm'
+
+import { PoolTable } from './PoolTable'
+
+
+const initPoolData: Partial<DHCPPool> = {
+  id: '0',
+  dhcpOptions: [],
+  leaseTime: 24,
+  leaseUnit: LeaseUnit.HOURS,
+  vlanId: 300
+}
+
+type DHCPPoolTableProps = {
+  value?: DHCPPool[]
+  onChange?: (data: DHCPPool[]) => void,
+  dhcpMode: DHCPConfigTypeEnum,
+  isDefaultService: boolean | undefined
+}
+
+const { Option } = Select
+
+async function nameValidator (
+  value: string,
+  dhcpPools: DHCPPool[],
+  currentId: DHCPPool['id']
+) {
+  const { $t } = getIntl()
+  const matched = dhcpPools.find((item) => item.name === value && currentId !== item.id)
+  if (!matched) return
+
+  const entityName = $t({ defaultMessage: 'Pool Name' })
+  return Promise.reject($t(validationMessages.duplication, {
+    entityName: entityName,
+    key: $t({ defaultMessage: 'name' }),
+    extra: ''
+  }))
+}
+
+async function vlanValidator (
+  vlanID: number,
+  dhcpPools: DHCPPool[],
+  currentId: DHCPPool['id'],
+  wiredClients: boolean,
+  dhcpMode: DHCPConfigTypeEnum
+) {
+  const { $t } = getIntl()
+  const sameVlan = dhcpPools.find((item) => item.vlanId === vlanID && currentId !== item.id)
+  if (sameVlan) return Promise.reject($t({ defaultMessage: 'Same VLAN IDs already exists' }))
+
+  if(!wiredClients && vlanID===1){
+    return Promise.reject($t({
+      defaultMessage: 'VLAN ID can\'t be 1 when NOT allow wired clients' }))
+  }
+
+  if(dhcpMode === DHCPConfigTypeEnum.MULTIPLE && vlanID === 1){
+    return Promise.reject($t({
+      defaultMessage: 'The pool has VLAN ID 1 which is not allowed in \'Multiple AP DHCP\' mode.'
+    }))
+  }
+  return
+}
+
+
+async function subnetValidator (
+  subnetAddress: string,
+  dhcpPools: DHCPPool[],
+  currentId: DHCPPool['id']
+) {
+  const { $t } = getIntl()
+  const sameSubnet = dhcpPools.find(
+    (item) =>
+      item.subnetAddress === subnetAddress && currentId !== item.id)
+  if (sameSubnet)
+    return Promise.reject($t({ defaultMessage: 'Same Subnet Address already exists' }))
+
+  return
+}
+
+
+export default function DHCPPoolTable ({
+  value,
+  onChange,
+  dhcpMode,
+  isDefaultService
+}: DHCPPoolTableProps) {
+  const { $t } = useIntl()
+  const [form] = Form.useForm<DHCPPool>()
+  const valueMap = useRef<Record<string, DHCPPool>>(value ? _.keyBy(value, 'id') : {})
+  const [visible, setVisible] = useState(false)
+  const [vlanEnable, setVlanEnable] = useState(true)
+
+  const values = () => Object.values(valueMap.current)
+
+  const handleChanged = () => onChange?.(values())
+
+  const onAddOrEdit = (item?: DHCPPool) => {
+    setVisible(true)
+    if (item) form.setFieldsValue(item)
+    else form.resetFields()
+  }
+
+  const onDelete = (items: DHCPPool[]) => {
+    items.forEach(item => {
+      delete valueMap.current[item.id]
+    })
+    handleChanged()
+  }
+
+  const onSubmit = (data: DHCPPool) => {
+    let id = data.id
+    if (id === initPoolData.id) { id = data.id = '_NEW_'+String(Date.now()) }
+    valueMap.current[id] = data
+    handleChanged()
+    form.resetFields()
+  }
+
+  const onClose = () => {
+    setVisible(false)
+  }
+
+  const isEdit = () => form.getFieldValue('id')!=='0' && !_.isUndefined(form.getFieldValue('id'))
+
+  const getContent = <Form
+    form={form}
+    layout='vertical'
+    onFinish={onSubmit}
+    initialValues={initPoolData}
+  >
+    <Form.Item name='id' hidden />
+
+    <Row>
+      <Col span={12}>
+        <Form.Item
+          name='name'
+          label={$t({ defaultMessage: 'Pool Name' })}
+          rules={[
+            { required: true },
+            { min: 2 },
+            { max: 32 },
+            { validator: (_, value) => nameValidator(value, values(), form.getFieldValue('id')) }
+          ]}
+          validateFirst
+          hasFeedback
+          children={<Input disabled={
+            isEdit() &&
+            isDefaultService &&
+            form.getFieldValue('name') === DEFAULT_GUEST_DHCP_NAME}/>}
+        />
+        <Form.Item
+          name='description'
+          label={$t({ defaultMessage: 'Description' })}
+          children={<TextArea />}
+        />
+        <Form.Item
+          name='allowWired'
+          label={$t({ defaultMessage: 'Allow AP wired clients' })}
+          valuePropName='checked'
+          children={<Switch
+            onChange={(checked: boolean)=>{
+              if(checked){
+                form.setFieldsValue({ vlanId: 1 })
+                setVlanEnable(false)
+              } else {
+                setVlanEnable(true)
+              }
+            }}/>}
+        />
+        <Form.Item
+          name='subnetAddress'
+          label={$t({ defaultMessage: 'IP Address' })}
+          rules={[
+            { required: true },
+            { validator: (_, value) => networkWifiIpRegExp(value) },
+            { validator: (_, value) => subnetValidator(value, values(), form.getFieldValue('id')) }
+          ]}
+          children={<Input />}
+        />
+        <Form.Item
+          name='subnetMask'
+          label={$t({ defaultMessage: 'Subnet Mask' })}
+          rules={[
+            { required: true },
+            { validator: (_, value) => subnetMaskIpRegExp(value) }
+          ]}
+          children={<Input />}
+        />
+        <Form.Item
+          name='startIpAddress'
+          label={$t({ defaultMessage: 'Start Host Address' })}
+          rules={[
+            { required: true },
+            { validator: (_, value) => networkWifiIpRegExp(value) },
+            { validator: (_, value) => IpInSubnetPool(
+              value,
+              form.getFieldValue('subnetAddress'),
+              form.getFieldValue('subnetMask')) }
+          ]}
+          children={<Input />}
+        />
+        <Form.Item
+          name='endIpAddress'
+          label={$t({ defaultMessage: 'End Host Address' })}
+          rules={[
+            { required: true },
+            { validator: (_, value) => networkWifiIpRegExp(value) },
+            { validator: (_, value) => countIpMaxRange(
+              form.getFieldValue('startIpAddress'), value)
+            },
+            { validator: (_, value) => {
+              if(dhcpMode===DHCPConfigTypeEnum.MULTIPLE){
+                if(countIpSize(form.getFieldValue('startIpAddress'), value) <= 10){
+                  // eslint-disable-next-line max-len
+                  return Promise.reject($t({ defaultMessage: 'Needs to reserve 10 IP addresses per pool for DHCP Servers and gateways in the Multiple mode' }))
+                }
+              }
+              else if(dhcpMode===DHCPConfigTypeEnum.HIERARCHICAL){
+                if(countIpSize(form.getFieldValue('startIpAddress'), value) <= 2){
+                  // eslint-disable-next-line max-len
+                  return Promise.reject($t({ defaultMessage: 'Needs to reserve 2 IP addresses per pool for DHCP Servers and gateways in the Hierarchical mode' }))
+                }
+              }
+              return Promise.resolve()
+            }
+            }
+          ]}
+          children={<Input />}
+        />
+        <Form.Item
+          name='primaryDnsIp'
+          label={$t({ defaultMessage: 'Primary DNS IP' })}
+          rules={[
+            { validator: (_, value) => networkWifiIpRegExp(value) }
+          ]}
+          children={<Input />}
+        />
+        <Form.Item
+          name='secondaryDnsIp'
+          label={$t({ defaultMessage: 'Secondary DNS IP' })}
+          rules={[
+            { validator: (_, value) => networkWifiIpRegExp(value) }
+          ]}
+          children={<Input />}
+        />
+        <Form.Item label={$t({ defaultMessage: 'Lease Time' })}>
+          <Space align='start'>
+            <Form.Item
+              noStyle
+              name='leaseTime'
+              label={$t({ defaultMessage: 'Lease Time' })}
+              rules={[
+                { required: true }
+              ]}
+            >
+              <InputNumber data-testid='leaseTime' min={1} max={1440} style={{ width: '100%' }} />
+            </Form.Item>
+            <Form.Item noStyle name='leaseUnit'>
+              <Select data-testid='leaseType'>
+                <Option value={'leaseTimeHours'}>{$t({ defaultMessage: 'Hours' })}</Option>
+                <Option value={'leaseTimeMinutes'}>{$t({ defaultMessage: 'Minutes' })}</Option>
+              </Select>
+            </Form.Item>
+          </Space>
+        </Form.Item>
+        <Form.Item
+          name='vlanId'
+          rules={[
+            { required: true },
+            { validator: (_, value) => vlanValidator(
+              value,
+              values(),
+              form.getFieldValue('id'),
+              form.getFieldValue('allowWired'), dhcpMode) }
+          ]}
+
+          label={$t({ defaultMessage: 'VLAN' })}
+          children={<InputNumber
+            disabled={!vlanEnable}
+            min={1}
+            max={4094} />}
+        />
+        <Form.Item name='dhcpOptions' style={{ height: 0 }}></Form.Item>
+      </Col>
+    </Row>
+  </Form>
+
+  return (
+    <>
+      <PoolTable
+        data={values()}
+        onAdd={onAddOrEdit}
+        onEdit={onAddOrEdit}
+        onDelete={onDelete}
+        isDefaultService={isDefaultService}
+      />
+      <Drawer
+        title={$t({ defaultMessage: 'Add DHCP Pool' })}
+        visible={visible}
+        onClose={onClose}
+        mask={true}
+        children={getContent}
+        destroyOnClose={true}
+        width={900}
+        footer={<Drawer.FormFooter
+          showAddAnother={!isEdit()}
+          buttonLabel={({
+            addAnother: $t({ defaultMessage: 'Add another pool' }),
+            save: isEdit() ? $t({ defaultMessage: 'Update' }) : $t({ defaultMessage: 'Add' })
+          })}
+          onCancel={onClose}
+          onSave={async (addAnotherPoolChecked: boolean) => {
+            try {
+              await form.validateFields()
+              form.submit()
+
+              if (!addAnotherPoolChecked) {
+                onClose()
+              }
+            } catch (error) {
+              // if (error instanceof Error) throw error
+            }
+          }}
+        />
+        }
+      />
+    </>
+  )
+}

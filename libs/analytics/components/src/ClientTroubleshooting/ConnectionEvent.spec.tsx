@@ -1,0 +1,200 @@
+import { cleanup, render, fireEvent, screen } from '@acx-ui/test-utils'
+
+import { DisplayEvent }           from './config'
+import { ConnectionEventPopover } from './ConnectionEvent'
+
+const successEvent: DisplayEvent = {
+  timestamp: '2022-11-14T06:33:31.646Z',
+  event: 'EVENT_CLIENT_ROAMING',
+  ttc: null,
+  mac: '94:B3:4F:3D:15:B0',
+  apName: 'R750-11-112',
+  path: [
+    {
+      type: 'zone',
+      name: 'cliexp4'
+    },
+    {
+      type: 'apGroup',
+      name: 'No group (inherit from Venue)'
+    },
+    {
+      type: 'ap',
+      name: '94:B3:4F:3D:15:B0'
+    }
+  ],
+  code: null,
+  state: 'normal',
+  failedMsgId: null,
+  radio: '5',
+  start: 1668407611646,
+  end: 1668407611646,
+  category: 'success',
+  ssid: 'cliexp4'
+}
+
+const slowEvent = {
+  ...successEvent,
+  category: 'slow',
+  ttc: 1000
+}
+
+const disconnectEvent: DisplayEvent = {
+  event: 'EVENT_CLIENT_DISCONNECT',
+  mac: '94:B3:4F:3D:15:B0',
+  apName: 'R750-11-112',
+  code: null,
+  state: 'normal',
+  failedMsgId: '3',
+  radio: '5',
+  start: 1668407707441,
+  end: 1668407707441,
+  category: 'disconnect',
+  path: [
+    {
+      type: 'zone',
+      name: 'cliexp4'
+    },
+    {
+      type: 'apGroup',
+      name: 'No group (inherit from Venue)'
+    },
+    {
+      type: 'ap',
+      name: '94:B3:4F:3D:15:B0'
+    }
+  ],
+  ttc: null,
+  timestamp: '2022-11-14T06:33:31.646Z'
+}
+
+const failureEvent: DisplayEvent = {
+  apName: 'R750-11-112',
+  category: 'failure',
+  code: 'eapol',
+  end: 1668407704571,
+  event: 'CCD_REASON_MIC_FAILURE',
+  failedMsgId: '22',
+  mac: 'AA:AA:AA:AA:AA:AA',
+  radio: '5',
+  start: 1668407704571,
+  state: 'normal',
+  path: [
+    {
+      type: 'zone',
+      name: 'cliexp4'
+    },
+    {
+      type: 'apGroup',
+      name: 'No group (inherit from Venue)'
+    },
+    {
+      type: 'ap',
+      name: '94:B3:4F:3D:15:B0'
+    }
+  ],
+  ttc: null,
+  timestamp: '2022-11-14T06:33:31.646Z',
+  messageIds: ['21', '22']
+}
+
+const unknownRadio = {
+  ...successEvent,
+  radio: ''
+}
+
+const unknownFailure = {
+  ...failureEvent,
+  code: null
+}
+
+const nullFailedIdFailure = {
+  ...failureEvent,
+  failedMsgId: null
+}
+
+const emptyMessageIds = {
+  ...failureEvent,
+  messageIds: []
+}
+
+describe('ConnectionEvent', () => {
+
+  afterEach(() => cleanup())
+
+  it('renders correctly for success event', () => {
+    render(<ConnectionEventPopover event={successEvent}>test</ConnectionEventPopover>)
+    fireEvent.click(screen.getByText(/test/i))
+    expect(screen.getByText(successEvent.mac)).toHaveTextContent(successEvent.mac)
+    expect(screen.getByText(successEvent.apName)).toHaveTextContent(successEvent.apName)
+    const stringSsid = successEvent.ssid as string
+    expect(screen.getByText(stringSsid)).toHaveTextContent(stringSsid)
+    expect(screen.getByText(/5 GHz/i)).toHaveTextContent(/5 GHz/i)
+  })
+
+  it('renders correctly for failureEvent event', () => {
+    render(<ConnectionEventPopover event={failureEvent}>test</ConnectionEventPopover>)
+    fireEvent.click(screen.getByText(/test/i))
+    expect(screen.getByText('AP (AA:AA:AA:AA:AA:AA)'))
+      .toHaveTextContent('AP (AA:AA:AA:AA:AA:AA)')
+    expect(screen.getByText(/4-Way Handshake - Frame 1/i))
+      .toHaveTextContent(/4-Way Handshake - Frame 1/i)
+    expect(screen.getByText(/4-Way Handshake - Frame 2/i))
+      .toHaveTextContent(/4-Way Handshake - Frame 2/i)
+  })
+
+  it('renders correctly for disconnect event', async () => {
+    render(<ConnectionEventPopover event={disconnectEvent}>test</ConnectionEventPopover>)
+    fireEvent.click(await screen.findByText(/test/i))
+    expect(screen.getByText(
+      'Deauthenticated because sending STA is leaving (or has left) IBSS or ESS (reason code 3)'
+    )).not.toBeNull()
+    expect(screen.getByText('Reason')).not.toBeNull()
+  })
+
+  it('renders correctly for slow event', () => {
+    render(<ConnectionEventPopover event={slowEvent}>test</ConnectionEventPopover>)
+    fireEvent.click(screen.getByText(/test/i))
+    expect(screen.getByText(/Time to Connect/i)).toHaveTextContent(/Time to Connect/i)
+    expect(screen.getByText(/1 s/i)).toHaveTextContent(/1 s/i)
+  })
+
+  it('renders correctly for unknown radio', () => {
+    render(<ConnectionEventPopover event={unknownRadio}>test</ConnectionEventPopover>)
+    fireEvent.click(screen.getByText(/test/i))
+    expect(screen.getByText(/Unknown/i)).toHaveTextContent(/Unknown/i)
+  })
+
+  it('renders correctly for unknown failure', () => {
+    render(<ConnectionEventPopover event={unknownFailure}>test</ConnectionEventPopover>)
+    fireEvent.click(screen.getByText(/test/i))
+    expect(screen.getByText(/Unknown/i)).toHaveTextContent(/Unknown/i)
+  })
+
+  it('renders correctly for null failedMsgId', () => {
+    const { asFragment } =
+      render(<ConnectionEventPopover event={nullFailedIdFailure}>test</ConnectionEventPopover>)
+    fireEvent.click(screen.getByText(/test/i))
+    const test = asFragment().querySelectorAll('section')
+    expect(test).toHaveLength(0)
+  })
+
+
+  it('renders correctly for null empty messageId', () => {
+    const { asFragment } =
+      render(<ConnectionEventPopover event={emptyMessageIds}>test</ConnectionEventPopover>)
+    fireEvent.click(screen.getByText(/test/i))
+    const test = asFragment().querySelectorAll('section')
+    expect(test).toHaveLength(0)
+  })
+
+  it('renders correctly on popover close', () => {
+    const { asFragment } =
+      render(<ConnectionEventPopover event={successEvent}>test</ConnectionEventPopover>)
+    const original = asFragment()
+    fireEvent.click(screen.getByText(/test/i))
+    fireEvent.click(screen.getByTestId(/CloseSymbol/i))
+    const closed = asFragment()
+    expect(original).toMatchObject(closed)
+  })
+})

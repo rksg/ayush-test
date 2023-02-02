@@ -1,12 +1,19 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 import {
-  EdgeUrlsInfo,
-  TableResult,
-  EdgeViewModel,
+  CommonResult,
   createHttpRequest,
-  EdgeSaveData,
-  RequestPayload
+  EdgeDnsServers,
+  EdgeGeneralSetting,
+  EdgePortConfig,
+  EdgeStaticRouteConfig,
+  EdgeStatus,
+  EdgeSubInterface,
+  EdgePortStatus,
+  EdgeUrlsInfo,
+  PaginationQueryResult,
+  RequestPayload,
+  TableResult
 } from '@acx-ui/rc/utils'
 
 export const baseEdgeApi = createApi({
@@ -19,7 +26,7 @@ export const baseEdgeApi = createApi({
 
 export const edgeApi = baseEdgeApi.injectEndpoints({
   endpoints: (build) => ({
-    addEdge: build.mutation<EdgeSaveData, RequestPayload>({
+    addEdge: build.mutation<EdgeGeneralSetting, RequestPayload>({
       query: ({ payload }) => {
         const req = createHttpRequest(EdgeUrlsInfo.addEdge)
         return {
@@ -29,7 +36,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Edge', id: 'LIST' }]
     }),
-    getEdge: build.query<EdgeSaveData, RequestPayload>({
+    getEdge: build.query<EdgeGeneralSetting, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(EdgeUrlsInfo.getEdge, params)
         return {
@@ -38,7 +45,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
       },
       providesTags: [{ type: 'Edge', id: 'DETAIL' }]
     }),
-    updateEdge: build.mutation<EdgeSaveData, RequestPayload>({
+    updateEdge: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(EdgeUrlsInfo.updateEdge, params)
         return {
@@ -46,9 +53,9 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Edge', id: 'LIST' }]
+      invalidatesTags: [{ type: 'Edge', id: 'LIST' }, { type: 'Edge', id: 'DETAIL' }]
     }),
-    getEdgeList: build.query<TableResult<EdgeViewModel>, RequestPayload>({
+    getEdgeList: build.query<TableResult<EdgeStatus>, RequestPayload>({
       query: ({ payload, params }) => {
         const req = createHttpRequest(EdgeUrlsInfo.getEdgeList, params)
         return {
@@ -58,7 +65,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
       },
       providesTags: [{ type: 'Edge', id: 'LIST' }]
     }),
-    deleteEdge: build.mutation<string, RequestPayload>({
+    deleteEdge: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         if(payload){ //delete multiple rows
           const req = createHttpRequest(EdgeUrlsInfo.deleteEdges)
@@ -75,7 +82,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Edge', id: 'LIST' }]
     }),
-    sendOtp: build.mutation<string, RequestPayload>({
+    sendOtp: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(EdgeUrlsInfo.sendOtp, params)
         return {
@@ -84,6 +91,133 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Edge', id: 'LIST' }]
+    }),
+    edgeBySerialNumber: build.query<EdgeStatus, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getEdgeList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      transformResponse (result: TableResult<EdgeStatus>) {
+        return result.data[0]
+      }
+    }),
+    getDnsServers: build.query<EdgeDnsServers, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getDnsServers, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Edge', id: 'DETAIL' }]
+    }),
+    updateDnsServers: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.updateDnsServers, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    getPortConfig: build.query<EdgePortConfig, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getPortConfig, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Edge', id: 'DETAIL_PORTS' }]
+    }),
+    updatePortConfig: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.updatePortConfig, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    // eslint-disable-next-line max-len
+    getSubInterfaces: build.query<TableResult<EdgeSubInterface>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const { page, pageSize } = payload as { page: number, pageSize: number }
+        const req = createHttpRequest(EdgeUrlsInfo.getSubInterfaces, params)
+        return {
+          ...req,
+          params: { page, pageSize }
+        }
+      },
+      transformResponse (response: PaginationQueryResult<EdgeSubInterface>) {
+        return {
+          data: response.content,
+          page: response.page,
+          totalCount: response.totalCount
+        }
+      },
+      providesTags: [{ type: 'Edge', id: 'DETAIL_SUB_INTERFACE' }]
+    }),
+    addSubInterfaces: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.addSubInterfaces, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Edge', id: 'DETAIL_SUB_INTERFACE' }]
+    }),
+    updateSubInterfaces: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.updateSubInterfaces, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Edge', id: 'DETAIL_SUB_INTERFACE' }]
+    }),
+    deleteSubInterfaces: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.deleteSubInterfaces, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Edge', id: 'DETAIL_SUB_INTERFACE' }]
+    }),
+    getStaticRoutes: build.query<EdgeStaticRouteConfig, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getStaticRoutes, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Edge', id: 'DETAIL_ROUTES' }]
+    }),
+    updateStaticRoutes: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.updateStaticRoutes, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Edge', id: 'DETAIL_ROUTES' }]
+    }),
+    getEdgePortsStatusList: build.query<EdgePortStatus[], RequestPayload>({
+      query: ({ payload, params }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getEdgePortStatusList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      transformResponse (result: TableResult<EdgePortStatus>) {
+        return result?.data
+      }
     })
   })
 })
@@ -95,5 +229,17 @@ export const {
   useGetEdgeListQuery,
   useLazyGetEdgeListQuery,
   useDeleteEdgeMutation,
-  useSendOtpMutation
+  useSendOtpMutation,
+  useGetDnsServersQuery,
+  useUpdateDnsServersMutation,
+  useGetPortConfigQuery,
+  useUpdatePortConfigMutation,
+  useGetSubInterfacesQuery,
+  useAddSubInterfacesMutation,
+  useUpdateSubInterfacesMutation,
+  useDeleteSubInterfacesMutation,
+  useGetStaticRoutesQuery,
+  useUpdateStaticRoutesMutation,
+  useEdgeBySerialNumberQuery,
+  useGetEdgePortsStatusListQuery
 } = edgeApi
