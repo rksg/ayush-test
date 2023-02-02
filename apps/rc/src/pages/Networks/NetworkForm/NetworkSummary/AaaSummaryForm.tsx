@@ -48,11 +48,11 @@ function AaaServerFields ({ serverType, data }: {
       serverType={serverType}
       order={AaaServerOrderEnum.PRIMARY}
     />
-    <AaaServerData
+    {data[serverType]?.secondary && <AaaServerData
       data={data}
       serverType={serverType}
       order={AaaServerOrderEnum.SECONDARY}
-    />
+    />}
     <Form.Item
       label={$t({ defaultMessage: 'Proxy Service:' })}
       children={$t(enableProxy ? contents.states.enabled : contents.states.disabled)} />

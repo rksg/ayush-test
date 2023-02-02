@@ -2,10 +2,10 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+
 import { CommonUrlsInfo, AaaUrls }               from '@acx-ui/rc/utils'
 import { Provider }                              from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
-
 
 import AAAForm from './AAAForm'
 
@@ -33,12 +33,16 @@ const aaaList=[{
   id: 'policy-id',
   name: 'test2'
 }]
-
+const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', type: 'wifi',
+  policyId: 'policy-id' }
 describe('AAAForm', () => {
   beforeEach(()=>{
     mockServer.use(
       rest.get(CommonUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
         res(ctx.json({ COMMON: '{}' }))
+      ),
+      rest.post(CommonUrlsInfo.validateRadius.url, (_, res, ctx) =>
+        res(ctx.json(successResponse))
       ),
       rest.get(
         AaaUrls.getAAAPolicy.url,
@@ -59,15 +63,12 @@ describe('AAAForm', () => {
     )
   })
   it('should create AAA successfully', async () => {
-    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', type: 'wifi',
-      policyId: 'policy-id' }
-
     render(<Provider><AAAForm edit={false} networkView={true}/></Provider>, {
       route: { params }
     })
 
     //step 1 setting form
-
+    await userEvent.click(await screen.findByText('Add Secondary Server'))
     await userEvent.type((await screen.findAllByLabelText('Server Address'))[0],
       '2.3.3.4')
     fireEvent.change((await screen.findAllByLabelText('Server Address'))[0],
@@ -91,9 +92,6 @@ describe('AAAForm', () => {
   })
 })
 async function editAAA (){
-  const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', type: 'wifi',
-    policyId: 'policy-id' }
-
   render(<Provider><AAAForm edit={true} networkView={false}/></Provider>, {
     route: { params }
   })

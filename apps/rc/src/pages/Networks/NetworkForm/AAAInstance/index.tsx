@@ -1,9 +1,14 @@
 import { useEffect, useState } from 'react'
 
-import { Form, Select } from 'antd'
-import { useParams }    from 'react-router-dom'
+import { Form, Select, Input } from 'antd'
+import { get }                 from 'lodash'
+import { useIntl }             from 'react-intl'
+import { useParams }           from 'react-router-dom'
 
 import { useGetAAAPolicyListQuery } from '@acx-ui/rc/services'
+import { AaaServerOrderEnum }       from '@acx-ui/rc/utils'
+
+import * as contents from '../contentsMap'
 
 import AAAPolicyModal from './AAAPolicyModal'
 
@@ -11,6 +16,7 @@ const AAAInstance = (props:{
   serverLabel: string,
   type: string
 }) => {
+  const { $t } = useIntl()
   const params = useParams()
   const form = Form.useFormInstance()
   const { data } = useGetAAAPolicyListQuery({ params })
@@ -39,6 +45,42 @@ const AAAInstance = (props:{
           ]}
         />}
       />
+      <Form.Item
+        label={$t(contents.aaaServerTypes[AaaServerOrderEnum.PRIMARY])}
+        children={$t({ defaultMessage: '{ipAddress}:{port}' }, {
+          ipAddress: get(form.getFieldValue(props.type),
+            `${AaaServerOrderEnum.PRIMARY}.ip`),
+          port: get(form.getFieldValue(props.type),
+            `${AaaServerOrderEnum.PRIMARY}.port`)
+        })} />
+      <Form.Item
+        label={$t({ defaultMessage: 'Shared Secret:' })}
+        children={<Input.Password
+          readOnly
+          bordered={false}
+          value={get(form.getFieldValue(props.type),
+            `${AaaServerOrderEnum.PRIMARY}.sharedSecret`)}
+        />}
+      />
+      {form.getFieldValue(props.type)?.[AaaServerOrderEnum.SECONDARY]&&<>
+        <Form.Item
+          label={$t(contents.aaaServerTypes[AaaServerOrderEnum.SECONDARY])}
+          children={$t({ defaultMessage: '{ipAddress}:{port}' }, {
+            ipAddress: get(form.getFieldValue(props.type),
+              `${AaaServerOrderEnum.SECONDARY}.ip`),
+            port: get(form.getFieldValue(props.type),
+              `${AaaServerOrderEnum.SECONDARY}.port`)
+          })} />
+        <Form.Item
+          label={$t({ defaultMessage: 'Shared Secret:' })}
+          children={<Input.Password
+            readOnly
+            bordered={false}
+            value={get(form.getFieldValue(props.type),
+              `${AaaServerOrderEnum.SECONDARY}.sharedSecret`)}
+          />}
+        />
+      </>}
       <Form.Item
         name={props.type}
         hidden

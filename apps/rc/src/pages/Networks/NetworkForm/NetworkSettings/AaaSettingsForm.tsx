@@ -173,7 +173,7 @@ function SettingsForm () {
         <div>
           <Subtitle level={3}>{ $t({ defaultMessage: 'Authentication Service' }) }</Subtitle>
           <AAAInstance serverLabel={$t({ defaultMessage: 'Authentication Server' })}
-            type='authentication'/>
+            type='authRadius'/>
           <Form.Item>
             <Form.Item
               noStyle
@@ -202,7 +202,7 @@ function SettingsForm () {
           {enableAccountingService && (
             <>
               <AAAInstance serverLabel={$t({ defaultMessage: 'Accounting Server' })}
-                type='accounting'/>
+                type='accountingRadius'/>
               <Form.Item>
                 <Form.Item
                   noStyle

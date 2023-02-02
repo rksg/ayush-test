@@ -22,7 +22,7 @@ export function AuthAccServerSetting () {
       <div>
         <Subtitle level={3}>{intl.$t({ defaultMessage: 'Authentication Service' })}</Subtitle>
         <AAAInstance serverLabel={intl.$t({ defaultMessage: 'Authentication Server' })}
-          type='authentication'/>
+          type='authRadius'/>
       </div>
       <div>
         <Subtitle level={3}>{intl.$t({ defaultMessage: 'Accounting Service' })}</Subtitle>
@@ -31,7 +31,7 @@ export function AuthAccServerSetting () {
         </Form.Item>
         {enableAccountingService &&
           <AAAInstance serverLabel={intl.$t({ defaultMessage: 'Accounting Server' })}
-            type='accounting'/>}
+            type='accountingRadius'/>}
       </div>
     </Space>
   )

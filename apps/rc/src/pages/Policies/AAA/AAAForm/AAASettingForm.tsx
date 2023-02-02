@@ -1,12 +1,13 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 
 import { Form, Input, InputNumber, Radio, Space } from 'antd'
 import { useIntl }                                from 'react-intl'
 
 import { GridCol, GridRow, StepsForm, Subtitle }                from '@acx-ui/components'
-import { useGetAAAPolicyListQuery }                             from '@acx-ui/rc/services'
+import { ToggleButton }                                         from '@acx-ui/rc/components'
+import { useLazyGetAAAPolicyListQuery }                         from '@acx-ui/rc/services'
 import {
-  AAAPolicyType, networkWifiIpRegExp, networkWifiSecretRegExp
+  AAAPolicyType, checkObjectNotExists, networkWifiIpRegExp, networkWifiSecretRegExp
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -20,18 +21,22 @@ const AAASettingForm = (props: AAASettingFormProps) => {
   const { $t } = useIntl()
   const { edit, saveState } = props
   const params = useParams()
-  const [originalName, setOriginalName] = useState('')
-  const { data } = useGetAAAPolicyListQuery({ params: params })
+  const [ getAAAPolicyList ] = useLazyGetAAAPolicyListQuery()
   const form = Form.useFormInstance()
-  useEffect(() => {
-    if (edit && data) {
-      let policyData = data.filter(d => d.id === params.policyId)[0]
-      setOriginalName(policyData?.name)
-    }
-  }, [data])
-
+  const { useWatch } = Form
+  const enableSecondaryServer = useWatch('enableSecondaryServer')
+  const nameValidator = async (value: string) => {
+    const list = (await getAAAPolicyList({ params }).unwrap())
+      .filter(policy => policy.id !== params.policyId)
+      .map(policy => ({ name: policy.name }))
+    return checkObjectNotExists(list, { name: value } ,
+      $t({ defaultMessage: 'AAA Policy' }))
+  }
   useEffect(() => {
     if (edit && saveState) {
+      if(saveState.secondary?.ip){
+        form.setFieldValue('enableSecondaryServer', true)
+      }
     }
   }, [saveState])
   return (
@@ -45,31 +50,10 @@ const AAASettingForm = (props: AAASettingFormProps) => {
             { required: true },
             { min: 2 },
             { max: 32 },
-            { validator: (rule, value) => {
-              if (!edit && value
-                  && data && data?.findIndex((policy) => policy.name === value) !== -1) {
-                return Promise.reject(
-                  $t({ defaultMessage: 'The aaa policy with that name already exists' })
-                )
-              }
-              if (edit && value && value !== originalName && data
-                  && data?.filter((policy) => policy.name !== originalName)
-                    .findIndex((policy) => policy.name === value) !== -1) {
-                return Promise.reject(
-                  $t({ defaultMessage: 'The aaa policy with that name already exists' })
-                )
-              }
-              return Promise.resolve()
-            } }
+            { validator: (rule, value) => nameValidator(value) }
           ]}
           validateFirst
           hasFeedback
-          initialValue={''}
-          children={<Input/>}
-        />
-        <Form.Item
-          name='tags'
-          label={$t({ defaultMessage: 'Tags' })}
           initialValue={''}
           children={<Input/>}
         />
@@ -88,88 +72,97 @@ const AAASettingForm = (props: AAASettingFormProps) => {
             </Space>
           </Radio.Group>}
         />
-        <Subtitle level={4}>{ $t({ defaultMessage: 'Primary' }) }</Subtitle>
-        <div>
+        <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
+          <Subtitle level={4}>{ $t({ defaultMessage: 'Primary' }) }</Subtitle>
+          <div>
+            <Form.Item
+              name={['primary', 'ip']}
+              style={{ display: 'inline-block', width: 'calc(80%)' , paddingRight: '20px' }}
+              rules={[
+                { required: true },
+                { validator: (_, value) => networkWifiIpRegExp(value) }
+              ]}
+              label={$t({ defaultMessage: 'Server Address' })}
+              initialValue={''}
+              children={<Input/>}
+            />
+            <Form.Item
+              name={['primary', 'port']}
+              style={{ display: 'inline-block', width: 'calc(20%)' }}
+              label={$t({ defaultMessage: 'Port' })}
+              rules={[
+                { required: true },
+                { type: 'number', min: 1 },
+                { type: 'number', max: 65535 }
+              ]}
+              initialValue={1812}
+              children={<InputNumber min={1} max={65535} />}
+            />
+          </div>
           <Form.Item
-            name={['primary', 'ip']}
-            style={{ display: 'inline-block', width: 'calc(80%)' , paddingRight: '20px' }}
-            rules={[
-              { required: true },
-              { validator: (_, value) => networkWifiIpRegExp(value) }
-            ]}
-            label={$t({ defaultMessage: 'Server Address' })}
+            name={['primary', 'sharedSecret']}
+            label={$t({ defaultMessage: 'Shared Secret' })}
             initialValue={''}
-            children={<Input/>}
-          />
-          <Form.Item
-            name={['primary', 'port']}
-            style={{ display: 'inline-block', width: 'calc(20%)' }}
-            label={$t({ defaultMessage: 'Port' })}
             rules={[
               { required: true },
-              { type: 'number', min: 1 },
-              { type: 'number', max: 65535 }
+              { validator: (_, value) => networkWifiSecretRegExp(value) }
             ]}
-            initialValue={1812}
-            children={<InputNumber min={1} max={65535} />}
+            children={<Input.Password />}
           />
-        </div>
-        <Form.Item
-          name={['primary', 'sharedSecret']}
-          label={$t({ defaultMessage: 'Shared Secret' })}
-          initialValue={''}
-          rules={[
-            { required: true },
-            { validator: (_, value) => networkWifiSecretRegExp(value) }
-          ]}
-          children={<Input.Password />}
-        />
-        <Subtitle level={4}>{ $t({ defaultMessage: 'Secondary' }) }</Subtitle>
-        <div>
-          <Form.Item
-            name={['secondary', 'ip']}
-            style={{ display: 'inline-block', width: 'calc(80%)' , paddingRight: '20px' }}
-            rules={[
-              { required: true },
-              { validator: (_, value) => networkWifiIpRegExp(value) },
-              { validator: (_, value) => {
-                const primaryIP = form.getFieldValue(['primary', 'ip'])
-                const primaryPort = form.getFieldValue(['primary', 'port'])
-                const secPort = form.getFieldValue(['secondary', 'port'])
-                if(value === primaryIP && primaryPort === secPort){
-                  return Promise.reject(
-                    $t({ defaultMessage: 'IP address and Port combinations must be unique' }))
-                }
-                return Promise.resolve()
-              } }
-            ]}
-            label={$t({ defaultMessage: 'Server Address' })}
-            initialValue={''}
-            children={<Input/>}
-          />
-          <Form.Item
-            name={['secondary', 'port']}
-            style={{ display: 'inline-block', width: 'calc(20%)' }}
-            label={$t({ defaultMessage: 'Port' })}
-            rules={[
-              { required: true },
-              { type: 'number', min: 1 },
-              { type: 'number', max: 65535 }
-            ]}
-            initialValue={1813}
-            children={<InputNumber min={1} max={65535} />}
-          />
-        </div>
-        <Form.Item
-          name={['secondary', 'sharedSecret']}
-          label={$t({ defaultMessage: 'Shared Secret' })}
-          initialValue={''}
-          rules={[
-            { required: true },
-            { validator: (_, value) => networkWifiSecretRegExp(value) }
-          ]}
-          children={<Input.Password />}
-        />
+          <Form.Item noStyle name='enableSecondaryServer'>
+            <ToggleButton
+              enableText={$t({ defaultMessage: 'Remove Secondary Server' })}
+              disableText={$t({ defaultMessage: 'Add Secondary Server' })}
+            />
+          </Form.Item>
+          {enableSecondaryServer && <>
+            <Subtitle level={4}>{ $t({ defaultMessage: 'Secondary' }) }</Subtitle>
+            <div>
+              <Form.Item
+                name={['secondary', 'ip']}
+                style={{ display: 'inline-block', width: 'calc(80%)' , paddingRight: '20px' }}
+                rules={[
+                  { required: true },
+                  { validator: (_, value) => networkWifiIpRegExp(value) },
+                  { validator: (_, value) => {
+                    const primaryIP = form.getFieldValue(['primary', 'ip'])
+                    const primaryPort = form.getFieldValue(['primary', 'port'])
+                    const secPort = form.getFieldValue(['secondary', 'port'])
+                    if(value === primaryIP && primaryPort === secPort){
+                      return Promise.reject(
+                        $t({ defaultMessage: 'IP address and Port combinations must be unique' }))
+                    }
+                    return Promise.resolve()
+                  } }
+                ]}
+                label={$t({ defaultMessage: 'Server Address' })}
+                initialValue={''}
+                children={<Input/>}
+              />
+              <Form.Item
+                name={['secondary', 'port']}
+                style={{ display: 'inline-block', width: 'calc(20%)' }}
+                label={$t({ defaultMessage: 'Port' })}
+                rules={[
+                  { required: true },
+                  { type: 'number', min: 1 },
+                  { type: 'number', max: 65535 }
+                ]}
+                initialValue={1813}
+                children={<InputNumber min={1} max={65535} />}
+              />
+            </div>
+            <Form.Item
+              name={['secondary', 'sharedSecret']}
+              label={$t({ defaultMessage: 'Shared Secret' })}
+              initialValue={''}
+              rules={[
+                { required: true },
+                { validator: (_, value) => networkWifiSecretRegExp(value) }
+              ]}
+              children={<Input.Password />}
+            /></>}
+        </Space>
       </GridCol>
       <GridCol col={{ span: 14 }}>
       </GridCol>

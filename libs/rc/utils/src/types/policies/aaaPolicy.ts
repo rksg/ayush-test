@@ -18,7 +18,10 @@ export interface AAATacacsServer{
 }
 export interface AAATempType {
   id?: string,
-  name: string
+  name: string,
+  primary?: RadiusServer,
+  secondary?: RadiusServer,
+  isAuth?: boolean
 }
 export enum AAAPurposeEnum{
   ALL = 'All (Default)',

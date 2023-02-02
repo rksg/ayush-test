@@ -16,17 +16,11 @@ export default function AAAOverview (props: { aaaProfile: AAAPolicyType }) {
       <GridRow>
         <GridCol col={{ span: 4 }}>
           <Card.Title>
-            {$t({ defaultMessage: 'Tags' })}
-          </Card.Title>
-          <Typography.Text>{aaaProfile.tags?.toString()}</Typography.Text>
-        </GridCol>
-        <GridCol col={{ span: 4 }}>
-          <Card.Title>
             {$t({ defaultMessage: 'Profile Type' })}
           </Card.Title>
           <Typography.Text>{$t(typeDescription[aaaProfile.isAuth+''])}</Typography.Text>
         </GridCol>
-        <GridCol col={{ span: 4 }}>
+        <GridCol col={{ span: 6 }}>
           <Card.Title>
             {$t({ defaultMessage: 'Primary Server Address' })}
           </Card.Title>
@@ -38,7 +32,7 @@ export default function AAAOverview (props: { aaaProfile: AAAPolicyType }) {
           </Card.Title>
           <Typography.Text>{aaaProfile.primary?.port}</Typography.Text>
         </GridCol>
-        <GridCol col={{ span: 4 }}>
+        <GridCol col={{ span: 6 }}>
           <Card.Title>
             {$t({ defaultMessage: 'Secondary Server Address' })}
           </Card.Title>

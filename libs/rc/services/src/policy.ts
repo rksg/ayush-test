@@ -475,6 +475,7 @@ export const {
   useAddAAAPolicyMutation,
   useDeleteAAAPolicyMutation,
   useGetAAAPolicyListQuery,
+  useLazyGetAAAPolicyListQuery,
   useUpdateAAAPolicyMutation,
   useAaaPolicyQuery,
   useAaaNetworkInstancesQuery,

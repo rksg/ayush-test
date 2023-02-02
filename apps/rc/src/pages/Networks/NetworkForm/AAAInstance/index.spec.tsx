@@ -3,8 +3,8 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { AaaUrls }  from '@acx-ui/rc/utils'
-import { Provider } from '@acx-ui/store'
+import { AaaUrls, CommonUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -21,6 +21,9 @@ describe('AAA Instance Page', () => {
       rest.get(
         AaaUrls.getAAAPolicyList.url,
         (req, res, ctx) => res(ctx.json([{ id: '1', name: 'test1' }]))
+      ),
+      rest.post(CommonUrlsInfo.validateRadius.url, (_, res, ctx) =>
+        res(ctx.json({}))
       ),
       rest.get(
         AaaUrls.getAAAPolicy.url,
@@ -50,6 +53,7 @@ describe('AAA Instance Page', () => {
     await userEvent.click(await screen.findByText('Add Server'))
     await userEvent.click(await screen.findByText('Cancel'))
     await userEvent.click(await screen.findByText('Add Server'))
+    await userEvent.click(await screen.findByText('Add Secondary Server'))
     await userEvent.type(await screen.findByRole(
       'textbox', { name: 'Profile Name' }),'create test')
     await userEvent.type((await screen.findAllByRole('textbox', { name: 'Server Address' }))[0],
@@ -61,6 +65,7 @@ describe('AAA Instance Page', () => {
     await userEvent.type((await screen.findAllByLabelText('Shared Secret'))[1],
       'test1234')
     await userEvent.click(await screen.findByText('Finish'))
+    await new Promise((r)=>{setTimeout(r, 500)})
     await changeAAA()
   })
 })
