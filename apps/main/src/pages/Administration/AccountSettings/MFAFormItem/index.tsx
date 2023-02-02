@@ -101,30 +101,27 @@ const MFAFormItem = styled((props: MFAFormItemProps) => {
               </List.Item>
             )}
           />
-
-          {isMfaEnabled && (
-            <Card
-              title={$t({ defaultMessage: 'Recovery Codes' })}
-              type='no-border'
-            >
-              <Typography.Text className='description darkGreyText'>
-                {$t(MessageMapping.enable_mfa_copy_codes_help_1)}
-              </Typography.Text>
-              <Typography.Text className='description darkGreyText'>
-                {$t(MessageMapping.enable_mfa_copy_codes_help_2)}
-              </Typography.Text>
-              <TextArea
-                rows={5}
-                maxLength={64}
-                value={recoveryCodes?.join('\n')}
-              />
-              <SpaceWrapper justifycontent='flex-end'>
-                <Typography.Link onClick={handleClickCopyCodes}>
-                  {$t({ defaultMessage: 'Copy Codes' })}
-                </Typography.Link>
-              </SpaceWrapper>
-            </Card>)
-          }
+          <Card
+            title={$t({ defaultMessage: 'Recovery Codes' })}
+            type='no-border'
+          >
+            <Typography.Text className='description darkGreyText'>
+              {$t(MessageMapping.enable_mfa_copy_codes_help_1)}
+            </Typography.Text>
+            <Typography.Text className='description darkGreyText'>
+              {$t(MessageMapping.enable_mfa_copy_codes_help_2)}
+            </Typography.Text>
+            <TextArea
+              rows={5}
+              maxLength={64}
+              value={recoveryCodes?.join('\n')}
+            />
+            <SpaceWrapper justifycontent='flex-end'>
+              <Typography.Link onClick={handleClickCopyCodes}>
+                {$t({ defaultMessage: 'Copy Codes' })}
+              </Typography.Link>
+            </SpaceWrapper>
+          </Card>
         </SpaceWrapper>
       </Col>
     </Row>

@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 import _        from 'lodash'
 import { rest } from 'msw'
+import { act }  from 'react-dom/test-utils'
 
 import { AdministrationUrlsInfo, MFAStatus } from '@acx-ui/rc/utils'
 import { Provider  }                         from '@acx-ui/store'
@@ -94,6 +95,36 @@ describe('Enable MFA Checkbox', () => {
 
     const okBtn = await screen.findByRole('button', { name: 'Disable MFA' })
     expect(okBtn).toBeVisible()
-    expect(await screen.findByText('Recovery Codes')).toBeVisible()
+  })
+
+
+  it('should display error when click to disable MFA', async () => {
+    mockServer.use(
+      rest.put(
+        AdministrationUrlsInfo.updateMFAAccount.url,
+        (_req, res, ctx) => res(ctx.status(500), ctx.json(null))
+      )
+    )
+
+    const enabledData = _.cloneDeep(fakeMFATenantDetail)
+    enabledData.tenantStatus = MFAStatus.ENABLED
+
+    render(
+      <Provider>
+        <MFAFormItem
+          mfaTenantDetailsData={enabledData}
+        />
+      </Provider>, {
+        route: { params }
+      })
+
+    const formItem = screen.getByRole('checkbox', { name: /Enable Multi-Factor Authentication/i })
+    expect(formItem.getAttribute('value')).toBe('true')
+    fireEvent.click(formItem)
+
+    const okBtn = await screen.findByRole('button', { name: 'Disable MFA' })
+    expect(okBtn).toBeVisible()
+    fireEvent.click(okBtn)
+    expect(await screen.findByText('An error occurred')).toBeVisible()
   })
 })
