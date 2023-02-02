@@ -39,7 +39,7 @@ export enum PropertyDpskType {
   GUEST = 'GUEST'
 }
 
-interface PropertyDpskConfig {
+interface PropertyDpskSetting {
   type: PropertyDpskType,
   // TODO: Check this field meaning
   status: 'CREATED' | 'ASSIGNED' | 'UNASSIGNED' | 'FAILED'
@@ -54,16 +54,16 @@ export enum PropertyUnitStatus {
 export interface PropertyUnit {
   id: string,
   name: string,
-  dpsks: PropertyDpskConfig[],
   status: PropertyUnitStatus,
   resident?: {
     name?: string,
     email?: string,
     phoneNumber?: string
   },
-  // FIXME: turn to required and move dpsks to here
+  // FIXME: dpsks should be in personaSettings
+  dpsks: PropertyDpskSetting[],
   personaSettings?: {
-    dpsks: PropertyDpskConfig[],
+    dpsks: PropertyDpskSetting[],
     accessPoint: {
       name: string,
       selectedPorts: {
@@ -78,6 +78,6 @@ export interface PropertyUnit {
 }
 
 export interface PropertyUnitFormFields extends PropertyUnit {
-  dpskConfig: Omit<PropertyDpskConfig, 'type'>,
-  guestDpskConfig: Omit<PropertyDpskConfig, 'type'>
+  dpskConfig: Omit<PropertyDpskSetting, 'type'>,
+  guestDpskConfig: Omit<PropertyDpskSetting, 'type'>
 }
