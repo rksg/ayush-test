@@ -88,7 +88,8 @@ export function ClientHealth (
 
   return <Loader states={[data]}>
     <BarChart
-      style={{ height: 90, width: 90, paddingTop: 20 }}
+      style={{ height: 90, width: 90, alignSelf: 'center' }}
+      grid={{ height: 70 }}
       data={{
         dimensions: ['HealthQuality', 'Value'],
         source: [

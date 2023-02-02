@@ -100,7 +100,9 @@ export function ClientOverviewWidget ({ clientStatistic, clientStatus, clientDet
           }</Subtitle>
         </UI.GridCol>
         <UI.GridCol col={{ span: 5 }}>
-          {getUserTrafficChart(clientStatistic as ClientStatistic)}
+          <UI.BarChartContainer>
+            {getUserTrafficChart(clientStatistic as ClientStatistic)}
+          </UI.BarChartContainer>
         </UI.GridCol>
         <UI.GridCol col={{ span: 5 }}>
           <ClientHealth filter={filters} clientMac={clientDetails.clientMac} />
@@ -144,7 +146,8 @@ function getUserTrafficChart (data: ClientStatistic) {
   ]
 
   return <BarChart
-    style={{ height: 160 }}
+    style={{ height: 90 }}
+    grid={{ height: 70 }}
     data={{
       dimensions: ['ChannelType', 'UserTraffic', 'Unit'],
       source: [
