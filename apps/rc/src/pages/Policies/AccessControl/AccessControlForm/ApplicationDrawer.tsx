@@ -1,14 +1,12 @@
 import React, { ReactNode, useEffect, useState } from 'react'
 
-import { Checkbox, Form, FormItemProps, Input, Radio, RadioChangeEvent, Select, Slider } from 'antd'
-import _                                                                                 from 'lodash'
-import { useIntl }                                                                       from 'react-intl'
-import { useParams }                                                                     from 'react-router-dom'
+import { Form, FormItemProps, Input, Select } from 'antd'
+import _                                      from 'lodash'
+import { useIntl }                            from 'react-intl'
+import { useParams }                          from 'react-router-dom'
 
 import {
   Button,
-  ContentSwitcher,
-  ContentSwitcherProps,
   Drawer,
   GridCol,
   GridRow,
@@ -19,22 +17,17 @@ import {
 } from '@acx-ui/components'
 import {
   useAddAppPolicyMutation,
-  useAppPolicyListQuery,
-  useAvcAppListQuery,
-  useAvcCatListQuery,
+  useAppPolicyListQuery, useAvcAppListQuery, useAvcCatListQuery,
   useGetAppPolicyQuery
 } from '@acx-ui/rc/services'
 import {
   ApplicationAclType,
   ApplicationPortMappingType,
-  ApplicationRuleType,
-  AvcCat,
-  CommonResult,
-  serverIpAddressRegExp,
-  subnetMaskIpRegExp
+  ApplicationRuleType, AvcCat,
+  CommonResult
 } from '@acx-ui/rc/utils'
 
-import { AppAclLabelMapping, AppRuleLabelMapping } from '../../contentsMap'
+import ApplicationRuleDrawer from './ApplicationRuleDrawer'
 
 const { Option } = Select
 
@@ -61,7 +54,12 @@ interface ApplicationsRule {
     netmask?: string
     portMappingOnly?: boolean
     ruleType: string
-    protocol?: string
+    protocol?: string,
+    uplink?: number,
+    downlink?: number,
+    markingPriority?: string,
+    upLinkMarkingType?: string,
+    downLinkMarkingType?: string
   }
 }
 
@@ -95,40 +93,18 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
   const [queryPolicyId, setQueryPolicyId] = useState('')
   const [queryPolicyName, setQueryPolicyName] = useState('')
   const [requestId, setRequestId] = useState('')
-  const [applicationsRule, setApplicationsRule] = useState({} as ApplicationsRule)
   const [avcSelectOptions, setAvcSelectOptions] = useState([] as AvcCat[])
-  const [category, setCategory] = useState('')
-  const [sourceValue, setSourceValue] = useState('')
-  const [maxUplinkRate, setMaxUplinkRate] = useState({ status: false, value: 0 })
-  const [maxDownlinkRate, setMaxDownlinkRate] = useState({ status: false, value: 0 })
+  const [applicationsRule, setApplicationsRule] = useState({} as ApplicationsRule)
   const [drawerForm] = Form.useForm()
   const [contentForm] = Form.useForm()
 
-  const [catAppMappingObject, setCatAppMappingObject] = useState({} as {
-    [key: string]: { catId: number, appId: number }
-  })
-
   const [
-    ruleType,
-    portMappingOnly,
     policyName,
     applicationPolicyId
   ] = [
-    useWatch<string>(['ruleType'], drawerForm),
-    useWatch<string>(['portMappingOnly'], drawerForm),
     useWatch<string>('policyName', contentForm),
     useWatch<string>([...inputName, 'applicationPolicyId'])
   ]
-
-  const { data: avcCatList } = useAvcCatListQuery({
-    params: params
-  })
-
-  const { data: avcAppList } = useAvcAppListQuery({
-    params: params
-  }, {
-    skip: !avcCatList
-  })
 
   const [ createAppPolicy ] = useAddAppPolicyMutation()
 
@@ -157,13 +133,19 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     { skip: applicationPolicyId === '' || applicationPolicyId === undefined }
   )
 
-  const isViewMode = () => {
-    if (queryPolicyId === '') {
-      return false
-    }
+  const [catAppMappingObject, setCatAppMappingObject] = useState({} as {
+    [key: string]: { catId: number, appId: number }
+  })
 
-    return !_.isNil(appPolicyInfo)
-  }
+  const { data: avcCatList } = useAvcCatListQuery({
+    params: params
+  })
+
+  const { data: avcAppList } = useAvcAppListQuery({
+    params: params
+  }, {
+    skip: !avcCatList
+  })
 
   useEffect(() => {
     if (avcCatList) {
@@ -203,6 +185,15 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
       setCatAppMappingObject({ ...catAppMappingObject })
     }
   }, [avcCatList, avcAppList])
+
+
+  const isViewMode = () => {
+    if (queryPolicyId === '') {
+      return false
+    }
+
+    return !_.isNil(appPolicyInfo)
+  }
 
   useEffect(() => {
     if (isViewMode() && appPolicyInfo) {
@@ -324,23 +315,19 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     clearFieldsValue()
   }
 
-  const onSourceChange = (e: RadioChangeEvent) => {
-    setSourceValue(e.target.value)
-  }
-
   const genDetailsContent = (sourceValue: string) => {
     switch (sourceValue) {
       case ApplicationAclType.DENY:
         return $t({ defaultMessage: 'Block all traffic' })
       case ApplicationAclType.RATE_LIMIT:
-        let rateLimitStr = []
-        if (maxUplinkRate.status) {
+        let rateLimitStr: string[] = []
+        if (drawerForm.getFieldValue(['uplink'])) {
           rateLimitStr.push($t({ defaultMessage: 'Uplink - {value} Mbps' },
-            { value: maxUplinkRate.value }))
+            { value: drawerForm.getFieldValue(['uplink']) }))
         }
-        if (maxDownlinkRate.status) {
+        if (drawerForm.getFieldValue(['downlink'])) {
           rateLimitStr.push($t({ defaultMessage: 'Downlink - {value} Mbps' },
-            { value: maxDownlinkRate.value }))
+            { value: drawerForm.getFieldValue(['downlink']) }))
         }
         return rateLimitStr.join('|')
       case ApplicationAclType.QOS:
@@ -374,7 +361,9 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
         destinationIp: drawerForm.getFieldValue('destinationIp'),
         netmask: drawerForm.getFieldValue('netmask'),
         destinationPort: drawerForm.getFieldValue('destinationPort'),
-        protocol: drawerForm.getFieldValue('protocol')
+        protocol: drawerForm.getFieldValue('protocol'),
+        uplink: drawerForm.getFieldValue('uplink'),
+        downlink: drawerForm.getFieldValue('downlink')
       }
     }
 
@@ -474,7 +463,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     }
   }
 
-  const rowActions: TableProps<ApplicationsRule>['actions'] = isViewMode() ? [] : [{
+  const rowActions: TableProps<ApplicationsRule>['rowActions'] = isViewMode() ? [] : [{
     label: $t({ defaultMessage: 'Edit' }),
     onClick: ([editRow]: ApplicationsRule[], clearSelection: () => void) => {
       setRuleDrawerVisible(true)
@@ -520,261 +509,6 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     }
   }] as { label: string, onClick: () => void }[]
 
-  const selectCategory = (
-    <Select
-      style={{ width: '100%' }}
-      onChange={(evt) => {
-        setCategory(evt)
-        drawerForm.setFieldValue('applicationNameSystemDefined', 'Select Application...')
-      }}
-    >
-      {avcSelectOptions.map(avcCat => {
-        return <Option key={`${avcCat.catName}_${avcCat.catId}`} value={avcCat.catName}>
-          {avcCat.catName}
-        </Option>
-      })}
-    </Select>
-  )
-
-  const selectApplication = (category: string) => {
-    if (category === 'All') {
-      let optionsList = [] as string[]
-      Object.entries(avcSelectOptions).map(entry => {
-        const [category, appList] = entry
-        if (Number(category) !== 0) {
-          optionsList.push(...appList.appNames.map((appName) => {
-            return `${avcSelectOptions[Number(category)].catName}_${appName}`
-          }))
-        }
-      })
-      return <Select
-        style={{ width: '100%' }}
-      >
-        {optionsList.map(option => {
-          return <Option key={option} value={option}>
-            {option.split('_')[1]}
-          </Option>
-        })}
-      </Select>
-    }
-    const categoryId = avcSelectOptions
-      .findIndex(cat => cat.catName === category)
-
-    return <Select
-      style={{ width: '100%' }}
-    >
-      {avcSelectOptions[categoryId]?.appNames.map((avcApp: string) => {
-        return <Option key={`${category}_${avcApp}`} value={`${category}_${avcApp}`}>
-          {avcApp}
-        </Option>
-      })}
-    </Select>
-  }
-
-  const EmptyElement = (props: { ruleType: string }) => {
-    drawerForm.setFieldValue('ruleType', props.ruleType)
-    return <></>
-  }
-
-  const tabDetails:ContentSwitcherProps['tabDetails']=[
-    {
-      label: $t(AppRuleLabelMapping[ApplicationRuleType.SIGNATURE]),
-      children: <EmptyElement ruleType={ApplicationRuleType.SIGNATURE} />,
-      value: ApplicationRuleType.SIGNATURE
-    },
-    {
-      label: $t(AppRuleLabelMapping[ApplicationRuleType.USER_DEFINED]),
-      children: <EmptyElement ruleType={ApplicationRuleType.USER_DEFINED} />,
-      value: ApplicationRuleType.USER_DEFINED
-    }
-  ]
-
-  const rateLimitContent = <div>
-    <div style={{ display: 'flex' }}>
-      <span style={{ width: '200px' }}>
-        <Checkbox
-          checked={maxUplinkRate.status}
-          onChange={() => setMaxUplinkRate({
-            ...maxUplinkRate,
-            status: !maxUplinkRate.status
-          })}
-        >
-          {$t({ defaultMessage: 'Max uplink rate:' })}
-        </Checkbox>
-      </span>
-      { maxUplinkRate.status && <Slider
-        style={{
-          // display: fromClient ? '' : 'none',
-          width: '100%', marginLeft: '10px', marginRight: '10px' }}
-        marks={{ 0.25: '0.25 Mbps', 20: '20 Mbps' }}
-        max={20}
-        defaultValue={0.25}
-        onChange={(value) => setMaxUplinkRate({
-          ...maxUplinkRate,
-          value: value
-        })}
-      /> }
-    </div>
-    <div style={{ display: 'flex' }}>
-      <span style={{ width: '200px' }}>
-        <Checkbox
-          checked={maxDownlinkRate.status}
-          onChange={() => setMaxDownlinkRate({
-            ...maxDownlinkRate,
-            status: !maxDownlinkRate.status
-          })}
-        >
-          {$t({ defaultMessage: 'Max downlink rate:' })}
-        </Checkbox>
-      </span>
-      { maxDownlinkRate.status && <Slider
-        style={{
-          // display: toClient ? '' : 'none',
-          width: '100%', marginLeft: '10px', marginRight: '10px' }}
-        marks={{ 0.25: '0.25 Mbps', 20: '20 Mbps' }}
-        max={20}
-        defaultValue={0.25}
-        onChange={(value) => setMaxDownlinkRate({
-          ...maxDownlinkRate,
-          value: value
-        })}
-      /> }
-    </div>
-  </div>
-
-  const RATE_TYPE = [
-    $t({ defaultMessage: '802.1p' }),
-    $t({ defaultMessage: 'DSCP' }),
-    $t({ defaultMessage: 'Both' })
-  ]
-
-  const RATE_STRATEGY = [
-    $t({ defaultMessage: 'Voice' }),
-    $t({ defaultMessage: 'Video' }),
-    $t({ defaultMessage: 'Best effort' }),
-    $t({ defaultMessage: 'Background' })
-  ]
-
-  const PROTOCOL_TYPE = [
-    $t({ defaultMessage: 'TCP' }),
-    $t({ defaultMessage: 'UDP' })
-  ]
-
-  const maxUplinkRateContent = <GridRow>
-    <GridCol col={{ span: 12 }}>
-      <Form.Item
-        name={['uplinkMarking', 'value']}
-        style={{ width: '100%' }}
-        wrapperCol={{ span: 24 }}
-        initialValue={RATE_TYPE[0]}
-        children={<Select
-          defaultValue={RATE_TYPE[0]}
-          onChange={(value) => drawerForm.setFieldValue(['uplinkMarking', 'value'], value)}
-          options={RATE_TYPE.map(rateType =>
-            ({ label: rateType, value: rateType }))} />}
-      />
-    </GridCol>
-    <GridCol col={{ span: 12 }}>
-      <Form.Item
-        name={['uplinkMarking', 'strategy']}
-        style={{ width: '100%' }}
-        wrapperCol={{ span: 24 }}
-        initialValue={RATE_STRATEGY[3]}
-        children={<Select
-          defaultValue={RATE_STRATEGY[3]}
-          onChange={(value) => drawerForm.setFieldValue(['uplinkMarking', 'strategy'], value)}
-          options={RATE_STRATEGY.map(rateStrategy =>
-            ({ label: rateStrategy, value: rateStrategy }))} />}
-      />
-    </GridCol>
-  </GridRow>
-
-  const maxDownlinkRateContent = <GridRow>
-    <GridCol col={{ span: 24 }}>
-      <Form.Item
-        name={['downlinkPriority', 'value']}
-        style={{ width: '100%' }}
-        wrapperCol={{ span: 24 }}
-        initialValue={RATE_STRATEGY[0]}
-        children={<Select
-          defaultValue={RATE_STRATEGY[0]}
-          onChange={(value) => drawerForm.setFieldValue(['downlinkPriority', 'value'], value)}
-          options={RATE_STRATEGY.map(rateStrategy =>
-            ({ label: rateStrategy, value: rateStrategy }))} />}
-      />
-    </GridCol>
-  </GridRow>
-
-  const qosContent = <>
-    <DrawerFormItem
-      name='uplinkMarking'
-      style={{ width: '100%' }}
-      wrapperCol={{ span: 24 }}
-      label={$t({ defaultMessage: 'Uplink Marking' })}
-    >
-      {maxUplinkRateContent}
-    </DrawerFormItem>
-    <DrawerFormItem
-      name='downlinkPriority'
-      style={{ width: '100%' }}
-      wrapperCol={{ span: 24 }}
-      label={$t({ defaultMessage: 'Downlink Priority' })}
-    >
-      {maxDownlinkRateContent}
-    </DrawerFormItem>
-  </>
-
-  const accessControlField = <Radio.Group
-    onChange={onSourceChange}
-    value={sourceValue}
-    style={{ width: '100%', marginBottom: '10px' }}
-  >
-    <GridRow >
-      <GridCol col={{ span: 24 }}>
-        <Radio value={ApplicationAclType.DENY}>
-          {$t(AppAclLabelMapping[ApplicationAclType.DENY])}
-        </Radio>
-      </GridCol>
-
-      <GridCol col={{ span: 24 }}>
-        <Radio value={ApplicationAclType.RATE_LIMIT}>
-          {$t(AppAclLabelMapping[ApplicationAclType.RATE_LIMIT])}
-        </Radio>
-      </GridCol>
-      <GridCol col={{ span: 24 }}>
-        {sourceValue === ApplicationAclType.RATE_LIMIT
-          ? <div style={{ display: 'flex' }}>
-            <Form.Item
-              style={{ width: '100%' }}
-              name='rateLimitFields'
-              rules={[
-                { validator: () => {
-                  if (!maxUplinkRate.status && !maxDownlinkRate.status) {
-                    return Promise.reject($t({
-                      defaultMessage: 'Must have a least one enabled rate limiting'
-                    }))
-                  }
-                  return Promise.resolve()
-                } }
-              ]}
-            >
-              {rateLimitContent}
-            </Form.Item>
-          </div> : null}
-      </GridCol>
-
-      <GridCol col={{ span: 24 }}>
-        <Radio value={ApplicationAclType.QOS}>
-          {$t(AppAclLabelMapping[ApplicationAclType.QOS])}
-        </Radio>
-      </GridCol>
-      <GridCol col={{ span: 24 }}>
-        {sourceValue === ApplicationAclType.QOS ? qosContent : null}
-      </GridCol>
-    </GridRow>
-
-  </Radio.Group>
-
   const content = <Form layout='horizontal' form={contentForm}>
     <DrawerFormItem
       name={'policyName'}
@@ -803,146 +537,6 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
       actions={actions}
       rowActions={rowActions}
       rowSelection={{ type: 'radio' }}
-    />
-  </Form>
-
-  const ruleContent = <Form layout='horizontal' form={drawerForm}>
-    <DrawerFormItem
-      name='ruleName'
-      label={$t({ defaultMessage: 'Rule Name' })}
-      initialValue={''}
-      validateFirst
-      rules={[
-        { required: true },
-        { max: 64 }
-      ]}
-      children={<Input
-        placeholder={$t({ defaultMessage: 'Enter a short description, up to 64 characters' })}
-      />}
-    />
-    <DrawerFormItem
-      name='ruleType'
-      label={$t({ defaultMessage: 'Rule Type' })}
-      initialValue={drawerForm.getFieldValue('ruleType')}
-      rules={[
-        { required: true }
-      ]}
-      children={
-        <ContentSwitcher
-          tabDetails={tabDetails}
-          defaultValue={drawerForm.getFieldValue('ruleType')}
-          size='small'
-        />
-      }
-    />
-    {/* systemDefined option */}
-    { ruleType === ApplicationRuleType.SIGNATURE && <DrawerFormItem
-      name='applicationCategory'
-      label={$t({ defaultMessage: 'Application Category' })}
-      rules={[
-        { required: true },
-        { validator: (_, value) => {
-          if (value === 'Select Category...') {
-            return Promise.reject($t({ defaultMessage: 'Please select the category' }))
-          }
-          return Promise.resolve()
-        } }
-      ]}
-      initialValue={$t({ defaultMessage: 'Select Category...' })}
-      children={selectCategory}
-    /> }
-    { ruleType === ApplicationRuleType.SIGNATURE && <DrawerFormItem
-      name='applicationNameSystemDefined'
-      label={$t({ defaultMessage: 'Application Name' })}
-      rules={[
-        { required: true },
-        { validator: (_, value) => {
-          if (value === 'Select Application...') {
-            return Promise.reject($t({ defaultMessage: 'Please select the application' }))
-          }
-          return Promise.resolve()
-        } }
-      ]}
-      initialValue={$t({ defaultMessage: 'Select Application...' })}
-      children={selectApplication(category)}
-    /> }
-    {/* userDefined option */}
-    { ruleType === ApplicationRuleType.USER_DEFINED && <DrawerFormItem
-      name='applicationNameUserDefined'
-      label={$t({ defaultMessage: 'Application Name' })}
-      initialValue={''}
-      rules={[
-        { required: true }
-      ]}
-      children={<Input
-        placeholder={$t({ defaultMessage: 'Enter the application name' })}
-      />}
-    /> }
-    { ruleType === ApplicationRuleType.USER_DEFINED && <DrawerFormItem
-      name='portMappingOnly'
-      label={' '}
-      colon={false}
-      initialValue={false}
-      valuePropName='checked'
-      children={<Checkbox>{$t({ defaultMessage: 'Port Mapping Only' })}</Checkbox>}
-    /> }
-    { ruleType === ApplicationRuleType.USER_DEFINED && !portMappingOnly && <DrawerFormItem
-      name='destinationIp'
-      label={$t({ defaultMessage: 'Destination Ip' })}
-      initialValue={''}
-      rules={[
-        { required: true },
-        { validator: (_, value) => serverIpAddressRegExp(value) }
-      ]}
-      children={<Input
-        placeholder={$t({ defaultMessage: 'Enter a destination Ip' })}
-      />}
-    /> }
-    { ruleType === ApplicationRuleType.USER_DEFINED && !portMappingOnly && <DrawerFormItem
-      name='netmask'
-      label={$t({ defaultMessage: 'Netmask' })}
-      initialValue={''}
-      rules={[
-        { required: true },
-        { validator: (_, value) => subnetMaskIpRegExp(value) }
-      ]}
-      children={<Input
-        placeholder={$t({ defaultMessage: 'Enter a mask' })}
-      />}
-    /> }
-    { ruleType === ApplicationRuleType.USER_DEFINED && <DrawerFormItem
-      name='destinationPort'
-      label={$t({ defaultMessage: 'Destination Port' })}
-      initialValue={''}
-      rules={[
-        { required: true },
-        { max: 64 }
-      ]}
-      children={<Input
-        placeholder={$t({ defaultMessage: 'Enter a port number' })}
-      />}
-    /> }
-    { ruleType === ApplicationRuleType.USER_DEFINED && <DrawerFormItem
-      name='protocol'
-      label={$t({ defaultMessage: 'Protocol' })}
-      initialValue={PROTOCOL_TYPE[0]}
-      rules={[
-        { required: true }
-      ]}
-      children={<Select
-        defaultValue={PROTOCOL_TYPE[0]}
-        onChange={(value) => drawerForm.setFieldValue('protocol', value)}
-        options={PROTOCOL_TYPE.map(protocol =>
-          ({ label: protocol, value: protocol }))} />}
-    /> }
-    <DrawerFormItem
-      name='accessControl'
-      label={$t({ defaultMessage: 'Access Control' })}
-      initialValue={sourceValue}
-      rules={[
-        { required: true }
-      ]}
-      children={accessControlField}
     />
   </Form>
 
@@ -1024,7 +618,10 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
         zIndex={100}
         destroyOnClose={true}
         onClose={handleRuleDrawerClose}
-        children={ruleContent}
+        children={<ApplicationRuleDrawer
+          avcSelectOptions={avcSelectOptions}
+          drawerForm={drawerForm}
+        />}
         footer={
           <Drawer.FormFooter
             showAddAnother={false}
