@@ -129,3 +129,15 @@ export interface EdgeDhcpLease {
   status: string
   expires: string
 }
+
+export interface DhcpStats {
+  id: string
+  name: string
+  pools: number
+  edges: number
+  venues: number
+  health: string
+  updateAvailable: boolean
+  serviceVersion: string
+  tags: string[]
+}
