@@ -96,7 +96,6 @@ export default function PoliciesTable () {
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
 
-  const [ delRoguePolicy ] = useDelRoguePolicyMutation()
   const [ delVLANPoolPolicy ] = useDelVLANPoolPolicyMutation()
   // const [ delRoguePolicy ] = useDelRoguePolicyMutation()
 
