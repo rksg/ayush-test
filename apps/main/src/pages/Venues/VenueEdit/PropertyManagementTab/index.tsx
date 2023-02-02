@@ -4,22 +4,21 @@ import { Checkbox, Col, Form, Row, Select, Space, Switch } from 'antd'
 import { FormFinishInfo }                                  from 'rc-field-form/lib/FormContext'
 import { useIntl }                                         from 'react-intl'
 
-import { Button, Loader, showToast, StepsForm, StepsFormInstance, Table, TableProps } from '@acx-ui/components'
-import { PersonaGroupSelect }                                                         from '@acx-ui/rc/components'
+import { Button, Loader, showToast, StepsForm, StepsFormInstance } from '@acx-ui/components'
+import { PersonaGroupSelect }                                      from '@acx-ui/rc/components'
 import {
   useGetPropertyConfigsQuery,
   usePatchPropertyConfigsMutation,
   useUpdatePropertyConfigsMutation
 } from '@acx-ui/rc/services'
-import { PropertyConfigs, PropertyConfigStatus, PropertyManager } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }                  from '@acx-ui/react-router-dom'
+import { PropertyConfigs, PropertyConfigStatus } from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 // FIXME: move this component to common folder.
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { PersonaGroupDrawer } from '../../../../../../rc/src/pages/Users/Persona/PersonaGroupDrawer'
 import { VenueEditContext }   from '../index'
 
-import { PropertyManagerSelectDrawer } from './PropertyManagerSelectDrawer'
 
 
 const defaultPropertyConfigs: PropertyConfigs = {
@@ -44,7 +43,6 @@ export function PropertyManagementTab () {
   const formRef = useRef<StepsFormInstance<PropertyConfigs>>()
   const { editContextData, setEditContextData } = useContext(VenueEditContext)
   const [isPropertyEnable, setIsPropertyEnable] = useState(false)
-  const [propertySelectorVisible, setPropertySelectorVisible] = useState(false)
   const [personaGroupVisible, setPersonaGroupVisible] = useState(false)
   const propertyConfigsQuery = useGetPropertyConfigsQuery({ params: { venueId } })
   const [updatePropertyConfigs] = useUpdatePropertyConfigsMutation()
@@ -100,41 +98,6 @@ export function PropertyManagementTab () {
     })
   }
 
-  const openDrawer = (type: 'PersonaGroup' | 'PropertyManager') => {
-    setPropertySelectorVisible(type === 'PropertyManager')
-    setPersonaGroupVisible(type === 'PersonaGroup')
-  }
-
-  const actions: TableProps<PropertyManager>['actions'] = [
-    {
-      label: $t({ defaultMessage: 'Add Property Manager' }),
-      onClick: () => openDrawer('PropertyManager')
-    }
-  ]
-
-  const columns: TableProps<PropertyManager>['columns'] = [
-    {
-      key: 'name',
-      dataIndex: 'name',
-      title: $t({ defaultMessage: 'Name' })
-    },
-    {
-      key: 'role',
-      dataIndex: 'role',
-      title: $t({ defaultMessage: 'Role' })
-    },
-    {
-      key: 'email',
-      dataIndex: 'email',
-      title: $t({ defaultMessage: 'Email Address' })
-    },
-    {
-      key: 'phone',
-      dataIndex: 'phone',
-      title: $t({ defaultMessage: 'Phone Number' })
-    }
-  ]
-
   return (
     <Loader
       states={[{ ...propertyConfigsQuery, error: undefined }]}
@@ -168,35 +131,6 @@ export function PropertyManagementTab () {
           {isPropertyEnable &&
             <>
               <Row gutter={20}>
-                <Col span={12}>
-                  <Form.Item
-                  // name='property'
-                    label={$t({ defaultMessage: 'Property Managers' })}
-                    valuePropName={'dataSource'}
-                    // rules={[{ required: true }]}
-                    shouldUpdate={() => true}
-                  >
-                    {(form) =>
-                      form.getFieldValue('property')
-                        ? <Table
-                          rowKey='name'
-                          pagination={false}
-                          columns={columns}
-                          actions={actions}
-                          rowSelection={{ type: 'checkbox' }}
-                        />
-                        : <Button
-                          type={'link'}
-                          size={'small'}
-                          onClick={() => openDrawer('PropertyManager')}
-                        >
-                          {$t({ defaultMessage: 'Add Property Manager' })}
-                        </Button>
-                    }
-                  </Form.Item>
-                </Col>
-              </Row>
-              <Row gutter={20}>
                 <Col span={8}>
                   <Form.Item
                     name='personaGroupId'
@@ -206,7 +140,11 @@ export function PropertyManagementTab () {
                     <PersonaGroupSelect />
                   </Form.Item>
                   <Form.Item noStyle>
-                    <Button type={'link'} size={'small'} onClick={() => openDrawer('PersonaGroup')}>
+                    <Button
+                      type={'link'}
+                      size={'small'}
+                      onClick={() => setPersonaGroupVisible(true)}
+                    >
                       {$t({ defaultMessage: 'Add Persona Group' })}
                     </Button>
                   </Form.Item>
@@ -278,10 +216,6 @@ export function PropertyManagementTab () {
         </StepsForm.StepForm>
       </StepsForm>
 
-      <PropertyManagerSelectDrawer
-        visible={propertySelectorVisible}
-        onClose={() => setPropertySelectorVisible(false)}
-      />
       <PersonaGroupDrawer
         isEdit={false}
         visible={personaGroupVisible}
