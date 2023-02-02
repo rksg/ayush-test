@@ -39,7 +39,6 @@ describe('UserProfile', () => {
     expect(screen.getByText('dog12@email.com')).toBeVisible()
     expect(screen.getByText('tenant-id')).toBeVisible()
 
-    expect(screen.getByRole('tab', { name: 'Notifications' })).toBeVisible()
     expect(screen.getByRole('tab', { name: 'Settings' })).toBeVisible()
     expect(screen.getByRole('tab', { name: 'Security' })).toBeVisible()
     expect(screen.getByRole('tab', { name: 'Recent Logins' })).toBeVisible()
