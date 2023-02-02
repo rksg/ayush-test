@@ -443,7 +443,7 @@ describe('RogueAPDetectionForm', () => {
     await screen.findByText('rule2')
   })
 
-  it.skip('should render RogueAPDetectionForm with editMode successfully', async () => {
+  it('should render RogueAPDetectionForm with editMode successfully', async () => {
     mockServer.use(rest.get(
       RogueApUrls.getRoguePolicy.url,
       (_, res, ctx) => res(
@@ -506,7 +506,13 @@ describe('RogueAPDetectionForm', () => {
     fireEvent.change(screen.getByRole('textbox', { name: /policy name/i }),
       { target: { value: 'anotherPolicyName' } })
 
-    await addRule('rule3', RogueRuleType.EXCESSIVE_POWER_RULE, RogueCategory.KNOWN)
+    await userEvent.click(screen.getByRole('button', {
+      name: /add rule/i
+    }))
+
+    await screen.findByText(/add classification rule/i)
+
+    await userEvent.click(screen.getAllByRole('button', { name: 'Cancel' })[1])
 
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
