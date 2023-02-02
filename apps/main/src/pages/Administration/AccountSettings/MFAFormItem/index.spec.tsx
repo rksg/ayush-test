@@ -1,7 +1,6 @@
 /* eslint-disable max-len */
 import _        from 'lodash'
 import { rest } from 'msw'
-import { act }  from 'react-dom/test-utils'
 
 import { AdministrationUrlsInfo, MFAStatus } from '@acx-ui/rc/utils'
 import { Provider  }                         from '@acx-ui/store'
