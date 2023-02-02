@@ -53,6 +53,7 @@ describe('PortalForm', () => {
 
     await userEvent.upload(await screen.findByLabelText('Select image'),file)
     await userEvent.click(await screen.findByText('Select image'))
+    await new Promise((r)=>{setTimeout(r, 300)})
     await userEvent.click(await screen.findByText('Finish'))
     expect(await screen.findByText('English')).toBeVisible()
 
@@ -86,6 +87,6 @@ describe('PortalForm', () => {
     await userEvent.type(await screen.findByRole(
       'textbox', { name: 'Service Name' }),'create Portal test')
     await userEvent.click(await screen.findByText('Finish'))
-
+    await new Promise((r)=>{setTimeout(r, 300)})
   })
 })

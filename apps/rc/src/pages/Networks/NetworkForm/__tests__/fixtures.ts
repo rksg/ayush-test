@@ -775,7 +775,7 @@ export const guestpassData = {
 }
 export const portalList = [
   {
-    id: 2,
+    id: '2',
     serviceName: 'test2',
     content: {
       welcomeText: 'Welcome to the Guest Access login page',
@@ -798,6 +798,49 @@ export const portalList = [
       poweredSize: 14,
       poweredImgRatio: 50,
       poweredImg: '',
+      wifi4EUNetworkId: '',
+      termsCondition: '',
+      componentDisplay: {
+        logo: true,
+        welcome: true,
+        photo: true,
+        secondaryText: true,
+        termsConditions: false,
+        poweredBy: true,
+        wifi4eu: false
+      },
+      displayLangCode: 'en',
+
+      alternativeLang: { cs: false, zh_TW: false, fr: false }
+    }
+  }
+]
+export const portalListWithPhoto = [
+  {
+    id: '2',
+    serviceName: 'test2',
+    content: {
+      welcomeText: 'Welcome to the Guest Access login page',
+      welcomeColor: '#333333',
+      bgColor: '#FFFFFF',
+      welcomeSize: 14,
+      poweredImg: 'test',
+      logo: 'test',
+      photo: 'test',
+      bgImage: 'test',
+      photoRatio: 170,
+
+      logoRatio: 105,
+      secondaryText:
+        'Lorem ipsum dolor sit amet, consectetur adipiscing' +
+        ' elit. Aenean euismod bibendum laoreet.',
+      secondaryColor: '#333333',
+      secondarySize: 14,
+      buttonColor: '#EC7100',
+      poweredBgColor: '#FFFFFF',
+      poweredColor: '#333333',
+      poweredSize: 14,
+      poweredImgRatio: 50,
       wifi4EUNetworkId: '',
       termsCondition: '',
       componentDisplay: {
@@ -885,6 +928,28 @@ export const externalProviders = {
         }
       ],
       name: 'SkyWifiRadSec',
+      customExternalProvider: false
+    },
+    {
+      regions: [
+        {
+          name: 'Global',
+          authRadius: {
+            primary: {
+              ip: '81.150.39.238',
+              port: 2083
+            }
+          },
+          accountingRadius: {
+            primary: {
+              ip: '81.150.39.238',
+              port: 2083
+            }
+          },
+          showAnalyticsData: false
+        }
+      ],
+      name: 'SkyWifiRadSecTest',
       customExternalProvider: false
     },
     {

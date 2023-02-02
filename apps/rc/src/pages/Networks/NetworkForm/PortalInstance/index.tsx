@@ -62,7 +62,7 @@ const PortalInstance = (props:{
   useEffect(()=>{
     if(data){
       setPortalData([...data.content as Portal[]])
-      setPortalList(data?.content?.map(m => ({ label: m.serviceName, value: m.id })) ?? [])
+      setPortalList(data?.content?.map(m => ({ label: m.serviceName, value: m.id })))
       if(networkData?.portalServiceProfileId){
         form.setFieldValue('portalServiceProfileId',networkData.portalServiceProfileId)
         const currentPortal = _.find(data.content,{ id: networkData.portalServiceProfileId })
