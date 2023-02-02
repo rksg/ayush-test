@@ -17,12 +17,18 @@ import * as UI from './styledComponents'
 export default function ServiceCatalog () {
   const { $t } = useIntl()
   const networkSegmentationEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION)
+  const edgeEnabled = useIsSplitOn(Features.EDGES)
 
   const sets = [
     {
       title: defineMessage({ defaultMessage: 'Connectivity' }),
       items: [
         { type: ServiceType.DHCP, categories: [RadioCardCategory.WIFI] },
+        {
+          type: ServiceType.EDGE_DHCP,
+          categories: [RadioCardCategory.EDGE],
+          disabled: !edgeEnabled
+        },
         { type: ServiceType.DPSK, categories: [RadioCardCategory.WIFI] },
         {
           type: ServiceType.NETWORK_SEGMENTATION,
