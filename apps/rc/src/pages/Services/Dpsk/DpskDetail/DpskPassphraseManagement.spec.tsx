@@ -137,9 +137,19 @@ describe('DpskPassphraseManagement', () => {
 
     mockServer.use(
       rest.get(
-        DpskPassphraseBaseUrl + '/export',
+        DpskPassphraseBaseUrl,
         (req, res, ctx) => {
+
+          const headers = req.headers['headers']
+
+          // Get List API: 'Content-Type': 'application/json'
+          if (headers['content-type'] === 'application/json') {
+            return res(ctx.json(mockedDpskPassphraseList))
+          }
+
+          // Export to file API: 'Content-Type': 'text/csv'
           exportFn()
+
           return res(ctx.set({
             'content-disposition': 'attachment; filename=DPSK_export_20230118100829.csv',
             'content-type': 'text/csv;charset=ISO-8859-1'

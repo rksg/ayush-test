@@ -581,8 +581,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     uploadPassphrases: build.mutation<{}, RequestFormData>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(DpskUrls.uploadPassphrases, params, {
-          'Content-Type': undefined,
-          'Accept': '*/*'
+          'Content-Type': undefined
         })
         return {
           ...req,
@@ -611,7 +610,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           },
           headers: {
             'Content-Type': 'text/csv',
-            'accept': 'application/json,text/plain,*/*'
+            'Accept': 'text/csv'
           }
         }
       }

@@ -58,8 +58,6 @@ describe('DpskPassphraseDrawer', () => {
       }
     )
 
-    // await userEvent.click(await screen.findByLabelText('Add manually'))
-
     await populateValues(mockedDpskPassphrase)
 
     await userEvent.click(await screen.findByRole('button', { name: /Add/ }))
@@ -93,8 +91,6 @@ describe('DpskPassphraseDrawer', () => {
       }
     )
 
-    // await userEvent.click(await screen.findByLabelText('Add manually'))
-
     await populateValues(mockedDpskPassphrase)
 
     await userEvent.click(await screen.findByRole('button', { name: /Add/ }))
@@ -126,8 +122,6 @@ describe('DpskPassphraseDrawer', () => {
         route: { params: paramsForPassphraseTab, path: detailPath }
       }
     )
-
-    // await userEvent.click(await screen.findByLabelText('Add manually'))
 
     const byDateEntity = new ExpirationDateEntity()
     byDateEntity.setToByDate('2022-11-25')
