@@ -44,7 +44,7 @@ export function NetworkTimelineTab () {
   const { $t } = useIntl()
   const { activeSubTab = tabs[0].key, networkId } = useParams()
   const navigate = useNavigate()
-  const basePath = useTenantLink(`/networks/${networkId}/network-details/timeline/`)
+  const basePath = useTenantLink(`/networks/wireless/${networkId}/network-details/timeline/`)
   // TODO: remove istanbul and add unit test once there are more than 1 tab
   /* istanbul ignore next */
   const onTabChange = (tab: string) => {
