@@ -9,7 +9,7 @@ import { notAvailableMsg }                       from '@acx-ui/utils'
 function NetworkTabs () {
   const { $t } = useIntl()
   const params = useParams()
-  const basePath = useTenantLink(`/networks/${params.networkId}/network-details/`)
+  const basePath = useTenantLink(`/networks/wireless/${params.networkId}/network-details/`)
   const navigate = useNavigate()
   const onTabChange = (tab: string) =>
     navigate({
