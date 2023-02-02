@@ -4,15 +4,15 @@ import { StatusLight }               from '@acx-ui/rc/components'
 import { EdgeDhcpServiceStatusEnum } from '@acx-ui/rc/utils'
 
 
-type EdgeDHCPServiceStatusLightProps = {
+type EdgeDhcpServiceStatusLightProps = {
   data: string
 }
 
-export const EdgeDHCPServiceStatusLight = (props: EdgeDHCPServiceStatusLightProps) => {
+export const EdgeDhcpServiceStatusLight = (props: EdgeDhcpServiceStatusLightProps) => {
 
   const { $t } = useIntl()
 
-  const EdgeDHCPServiceStatusLightConfig = {
+  const EdgeDhcpServiceStatusLightConfig = {
     [EdgeDhcpServiceStatusEnum.UNKNOWN]: {
       color: 'var(--acx-neutrals-50)',
       text: $t({ defaultMessage: 'Unknown' })
@@ -32,6 +32,6 @@ export const EdgeDHCPServiceStatusLight = (props: EdgeDHCPServiceStatusLightProp
   }
 
   return (
-    <StatusLight config={EdgeDHCPServiceStatusLightConfig} data={props.data} />
+    <StatusLight config={EdgeDhcpServiceStatusLightConfig} data={props.data} />
   )
 }

@@ -6,7 +6,7 @@ import { Button, Loader, PageHeader, showActionModal, Table, TableProps }       
 import { DhcpStats, getServiceDetailsLink, getServiceListRoutePath, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useTenantLink }                                                                        from '@acx-ui/react-router-dom'
 
-import { EdgeDHCPServiceStatusLight } from '../EdgeDHCPStatusLight'
+import { EdgeDhcpServiceStatusLight } from '../EdgeDhcpStatusLight'
 
 export const useMockData = () => {
   const [data, setData] = useState<DhcpStats[]>()
@@ -43,7 +43,7 @@ export const useMockData = () => {
   return { isLoading, data, total: data?.length }
 }
 
-const EdgeDHCPTable = () => {
+const EdgeDhcpTable = () => {
 
   const { $t } = useIntl()
   const navigate = useNavigate()
@@ -93,7 +93,7 @@ const EdgeDHCPTable = () => {
       key: 'health',
       dataIndex: 'health',
       render (data, row) {
-        return <EdgeDHCPServiceStatusLight data={row.health} />
+        return <EdgeDhcpServiceStatusLight data={row.health} />
       }
     },
     {
@@ -207,4 +207,4 @@ const EdgeDHCPTable = () => {
   )
 }
 
-export default EdgeDHCPTable
+export default EdgeDhcpTable
