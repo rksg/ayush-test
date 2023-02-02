@@ -1,11 +1,14 @@
 import { useContext } from 'react'
 
-import { useIntl } from 'react-intl'
+import { Button, Space } from 'antd'
+import { useIntl }       from 'react-intl'
 
-import { AnchorLayout, showToast, StepsForm }    from '@acx-ui/components'
-import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
-import { VenueApModelCellular }                  from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { AnchorLayout, showToast, StepsForm, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }                  from '@acx-ui/icons'
+import { VenueApModelCellular }                        from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }       from '@acx-ui/react-router-dom'
+import { directedMulticastInfo }                       from '@acx-ui/utils'
 
 import { VenueEditContext } from '../../index'
 
@@ -74,7 +77,19 @@ export function NetworkingTab () {
       title: $t({ defaultMessage: 'Directed Multicast' }),
       content: <>
         <StepsForm.SectionTitle id='directed-multicast'>
-          { $t({ defaultMessage: 'Directed Multicast' }) }
+          {<Space align='baseline'>
+            { $t({ defaultMessage: 'Directed Multicast' }) }
+            <Tooltip
+              title={$t( directedMulticastInfo )}
+              placement='right'>
+              <Button type='text'
+                style={{ height: '18px', width: '18px' }}
+                icon={
+                  <QuestionMarkCircleOutlined style={{ height: 'inherit', width: 'inherit' }}/>}
+              />
+            </Tooltip>
+          </Space>
+          }
         </StepsForm.SectionTitle>
         <DirectedMulticast />
       </> })

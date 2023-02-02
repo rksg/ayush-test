@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "license": "MIT",
   "engines": {
-    "node": "=16.15.0",
-    "npm": "=8.5.5"
+    "node": "=16.10.0",
+    "npm": "=7.24.0"
   },
   "scripts": {
     "start": "nx serve",
@@ -28,8 +28,10 @@
     "@reduxjs/toolkit": "1.8.4",
     "@rtk-query/graphql-request-base-query": "2.0.1",
     "@splitsoftware/splitio-react": "1.4.1",
+    "@superset-ui/embedded-sdk": "0.1.0-alpha.8",
     "@types/react-highlight-words": "0.16.4",
     "antd": "4.22.7",
+    "buffer": "6.0.3",
     "codemirror": "5.65.11",
     "core-js": "3.6.5",
     "diff-match-patch": "1.0.5",

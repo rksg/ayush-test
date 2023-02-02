@@ -138,749 +138,834 @@ exports[`Switch Stack Form - Add should render correctly 1`] = `
                   type="text"
                 />
                 <div
-                  class="ant-row"
-                  style="margin-left: -10px; margin-right: -10px;"
+                  class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
                 >
                   <div
-                    class="ant-col ant-col-8"
-                    style="padding-left: 10px; padding-right: 10px;"
+                    class="ant-row"
+                    style="margin-left: -10px; margin-right: -10px;"
                   >
                     <div
-                      class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+                      class="ant-col ant-col-8"
+                      style="padding-left: 10px; padding-right: 10px;"
                     >
                       <div
-                        class="ant-form-item"
+                        class="ant-tabs ant-tabs-top styledComponents__Tabs-sc-1afcsfc-0 fKRTpX"
+                        hidden=""
                       >
                         <div
-                          class="ant-row ant-form-item-row"
+                          class="ant-tabs-nav"
+                          role="tablist"
                         >
                           <div
-                            class="ant-col ant-form-item-label"
-                          >
-                            <label
-                              class="ant-form-item-required"
-                              for="0_venueId"
-                              title="Venue"
-                            >
-                              Venue
-                            </label>
-                          </div>
-                          <div
-                            class="ant-col ant-form-item-control"
+                            class="ant-tabs-nav-wrap"
                           >
                             <div
-                              class="ant-form-item-control-input"
+                              class="ant-tabs-nav-list"
+                              style="transform: translate(0px, 0px);"
                             >
                               <div
-                                class="ant-form-item-control-input-content"
+                                class="ant-tabs-tab ant-tabs-tab-active"
                               >
                                 <div
-                                  class="ant-select ant-select-in-form-item ant-select-single ant-select-show-arrow"
+                                  aria-selected="true"
+                                  class="ant-tabs-tab-btn"
+                                  role="tab"
+                                  tabindex="0"
                                 >
-                                  <div
-                                    class="ant-select-selector"
-                                  >
-                                    <span
-                                      class="ant-select-selection-search"
-                                    >
-                                      <input
-                                        aria-activedescendant="0_venueId_list_0"
-                                        aria-autocomplete="list"
-                                        aria-controls="0_venueId_list"
-                                        aria-haspopup="listbox"
-                                        aria-owns="0_venueId_list"
-                                        autocomplete="off"
-                                        class="ant-select-selection-search-input"
-                                        id="0_venueId"
-                                        readonly=""
-                                        role="combobox"
-                                        style="opacity: 0;"
-                                        type="search"
-                                        unselectable="on"
-                                        value=""
-                                      />
-                                    </span>
-                                    <span
-                                      class="ant-select-selection-item"
-                                      title="Select venue..."
-                                    >
-                                      Select venue...
-                                    </span>
-                                  </div>
-                                  <span
-                                    aria-hidden="true"
-                                    class="ant-select-arrow"
-                                    style="user-select: none;"
-                                    unselectable="on"
-                                  >
-                                    <span
-                                      aria-label="down"
-                                      class="anticon anticon-down ant-select-suffix"
-                                      role="img"
-                                    >
-                                      <svg
-                                        aria-hidden="true"
-                                        data-icon="down"
-                                        fill="currentColor"
-                                        focusable="false"
-                                        height="1em"
-                                        viewBox="64 64 896 896"
-                                        width="1em"
-                                      >
-                                        <path
-                                          d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
-                                        />
-                                      </svg>
-                                    </span>
-                                  </span>
+                                  Stack Details
                                 </div>
                               </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div
-                        class="ant-form-item"
-                      >
-                        <div
-                          class="ant-row ant-form-item-row"
-                        >
-                          <div
-                            class="ant-col ant-form-item-label"
-                          >
-                            <label
-                              class=""
-                              for="0_name"
-                              title=""
-                            >
-                              Stack Name
-                            </label>
-                          </div>
-                          <div
-                            class="ant-col ant-form-item-control"
-                          >
-                            <div
-                              class="ant-form-item-control-input"
-                            >
                               <div
-                                class="ant-form-item-control-input-content"
-                              >
-                                <input
-                                  class="ant-input"
-                                  id="0_name"
-                                  type="text"
-                                  value=""
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div
-                        class="ant-form-item"
-                      >
-                        <div
-                          class="ant-row ant-form-item-row"
-                        >
-                          <div
-                            class="ant-col ant-form-item-label"
-                          >
-                            <label
-                              class=""
-                              for="0_description"
-                              title="Description"
-                            >
-                              Description
-                            </label>
-                          </div>
-                          <div
-                            class="ant-col ant-form-item-control"
-                          >
-                            <div
-                              class="ant-form-item-control-input"
-                            >
-                              <div
-                                class="ant-form-item-control-input-content"
-                              >
-                                <textarea
-                                  class="ant-input"
-                                  id="0_description"
-                                  rows="4"
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div
-                        class="ant-form-item"
-                      >
-                        <div
-                          class="ant-row ant-form-item-row"
-                        >
-                          <div
-                            class="ant-col ant-form-item-label"
-                          >
-                            <label
-                              class=""
-                              for="0_initialVlanId"
-                              title=""
-                            >
-                              DHCP Client
-                              <svg
-                                data-testid="QuestionMarkCircleOutlined"
+                                class="ant-tabs-ink-bar ant-tabs-ink-bar-animated"
                               />
-                            </label>
+                            </div>
                           </div>
                           <div
-                            class="ant-col ant-form-item-control"
+                            class="ant-tabs-nav-operations ant-tabs-nav-operations-hidden"
+                          >
+                            <button
+                              aria-controls="null-more-popup"
+                              aria-expanded="false"
+                              aria-haspopup="listbox"
+                              aria-hidden="true"
+                              class="ant-tabs-nav-more"
+                              id="null-more"
+                              style="visibility: hidden; order: 1;"
+                              tabindex="-1"
+                              type="button"
+                            >
+                              <span
+                                aria-label="ellipsis"
+                                class="anticon anticon-ellipsis"
+                                role="img"
+                              >
+                                <svg
+                                  aria-hidden="true"
+                                  data-icon="ellipsis"
+                                  fill="currentColor"
+                                  focusable="false"
+                                  height="1em"
+                                  viewBox="64 64 896 896"
+                                  width="1em"
+                                >
+                                  <path
+                                    d="M176 511a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0z"
+                                  />
+                                </svg>
+                              </span>
+                            </button>
+                          </div>
+                        </div>
+                        <div
+                          class="ant-tabs-content-holder"
+                        >
+                          <div
+                            class="ant-tabs-content ant-tabs-content-top"
                           >
                             <div
-                              class="ant-form-item-control-input"
-                            >
-                              <div
-                                class="ant-form-item-control-input-content"
-                              >
-                                <div
-                                  class="ant-select ant-select-in-form-item ant-select-single ant-select-show-arrow ant-select-disabled"
-                                >
-                                  <div
-                                    class="ant-select-selector"
-                                  >
-                                    <span
-                                      class="ant-select-selection-search"
-                                    >
-                                      <input
-                                        aria-activedescendant="0_initialVlanId_list_0"
-                                        aria-autocomplete="list"
-                                        aria-controls="0_initialVlanId_list"
-                                        aria-expanded="false"
-                                        aria-haspopup="listbox"
-                                        aria-owns="0_initialVlanId_list"
-                                        autocomplete="off"
-                                        class="ant-select-selection-search-input"
-                                        disabled=""
-                                        id="0_initialVlanId"
-                                        readonly=""
-                                        role="combobox"
-                                        style="opacity: 0;"
-                                        type="search"
-                                        unselectable="on"
-                                        value=""
-                                      />
-                                    </span>
-                                    <span
-                                      class="ant-select-selection-item"
-                                      title="Select VLAN..."
-                                    >
-                                      Select VLAN...
-                                    </span>
-                                  </div>
-                                  <span
-                                    aria-hidden="true"
-                                    class="ant-select-arrow"
-                                    style="user-select: none;"
-                                    unselectable="on"
-                                  >
-                                    <span
-                                      aria-label="down"
-                                      class="anticon anticon-down ant-select-suffix"
-                                      role="img"
-                                    >
-                                      <svg
-                                        aria-hidden="true"
-                                        data-icon="down"
-                                        fill="currentColor"
-                                        focusable="false"
-                                        height="1em"
-                                        viewBox="64 64 896 896"
-                                        width="1em"
-                                      >
-                                        <path
-                                          d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
-                                        />
-                                      </svg>
-                                    </span>
-                                  </span>
-                                </div>
-                              </div>
-                            </div>
+                              aria-hidden="false"
+                              class="ant-tabs-tabpane ant-tabs-tabpane-active"
+                              role="tabpanel"
+                              tabindex="0"
+                            />
                           </div>
                         </div>
                       </div>
-                      <h3
-                        class="ant-typography styledComponents__Title-sc-1ibvcih-3 styledComponents__StepFormTitle-sc-wgbcob-3 dConwg ezBzXN"
-                      >
-                        Stack Member
-                        <span
-                          class="styledComponents__RequiredDotSpan-sc-wgbcob-2 gkSFPO"
-                        >
-                           *
-                        </span>
-                      </h3>
-                      <span
-                        class="ant-typography ant-typography-secondary styledComponents__TypographyText-sc-wgbcob-4 emagBf"
-                      >
-                        Stack members will be ordered according to the order in which they were entered here. You can always modify this later.
-                      </span>
                       <div
-                        class="styledComponents__TableContainer-sc-wgbcob-0 dcEoDV"
+                        style="display: block;"
                       >
                         <div
-                          class="styledComponents__Wrapper-sc-1abm7iv-13 gwcANN"
+                          class="ant-form-item"
                         >
                           <div
-                            class="ant-pro-table"
+                            class="ant-row ant-form-item-row"
                           >
                             <div
-                              class="ant-pro-card"
+                              class="ant-col ant-form-item-label"
+                            >
+                              <label
+                                class="ant-form-item-required"
+                                for="0_venueId"
+                                title="Venue"
+                              >
+                                Venue
+                              </label>
+                            </div>
+                            <div
+                              class="ant-col ant-form-item-control"
                             >
                               <div
-                                class="ant-pro-card-body"
-                                style="padding-top: 0px;"
+                                class="ant-form-item-control-input"
                               >
                                 <div
-                                  class="ant-pro-table-list-toolbar"
-                                />
-                                <div
-                                  class="ant-table-wrapper"
+                                  class="ant-form-item-control-input-content"
                                 >
                                   <div
-                                    class="ant-spin-nested-loading"
+                                    class="ant-select ant-select-in-form-item ant-select-single ant-select-show-arrow"
                                   >
                                     <div
-                                      class="ant-spin-container"
+                                      class="ant-select-selector"
+                                    >
+                                      <span
+                                        class="ant-select-selection-search"
+                                      >
+                                        <input
+                                          aria-activedescendant="0_venueId_list_0"
+                                          aria-autocomplete="list"
+                                          aria-controls="0_venueId_list"
+                                          aria-haspopup="listbox"
+                                          aria-owns="0_venueId_list"
+                                          autocomplete="off"
+                                          class="ant-select-selection-search-input"
+                                          id="0_venueId"
+                                          readonly=""
+                                          role="combobox"
+                                          style="opacity: 0;"
+                                          type="search"
+                                          unselectable="on"
+                                          value=""
+                                        />
+                                      </span>
+                                      <span
+                                        class="ant-select-selection-item"
+                                        title="Select venue..."
+                                      >
+                                        Select venue...
+                                      </span>
+                                    </div>
+                                    <span
+                                      aria-hidden="true"
+                                      class="ant-select-arrow"
+                                      style="user-select: none;"
+                                      unselectable="on"
+                                    >
+                                      <span
+                                        aria-label="down"
+                                        class="anticon anticon-down ant-select-suffix"
+                                        role="img"
+                                      >
+                                        <svg
+                                          aria-hidden="true"
+                                          data-icon="down"
+                                          fill="currentColor"
+                                          focusable="false"
+                                          height="1em"
+                                          viewBox="64 64 896 896"
+                                          width="1em"
+                                        >
+                                          <path
+                                            d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                                          />
+                                        </svg>
+                                      </span>
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="ant-form-item"
+                        >
+                          <div
+                            class="ant-row ant-form-item-row"
+                          >
+                            <div
+                              class="ant-col ant-form-item-label"
+                            >
+                              <label
+                                class=""
+                                for="0_name"
+                                title=""
+                              >
+                                Stack Name
+                              </label>
+                            </div>
+                            <div
+                              class="ant-col ant-form-item-control"
+                            >
+                              <div
+                                class="ant-form-item-control-input"
+                              >
+                                <div
+                                  class="ant-form-item-control-input-content"
+                                >
+                                  <input
+                                    class="ant-input"
+                                    id="0_name"
+                                    type="text"
+                                    value=""
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="ant-form-item"
+                        >
+                          <div
+                            class="ant-row ant-form-item-row"
+                          >
+                            <div
+                              class="ant-col ant-form-item-label"
+                            >
+                              <label
+                                class=""
+                                for="0_description"
+                                title="Description"
+                              >
+                                Description
+                              </label>
+                            </div>
+                            <div
+                              class="ant-col ant-form-item-control"
+                            >
+                              <div
+                                class="ant-form-item-control-input"
+                              >
+                                <div
+                                  class="ant-form-item-control-input-content"
+                                >
+                                  <textarea
+                                    class="ant-input"
+                                    id="0_description"
+                                    rows="4"
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="ant-form-item"
+                        >
+                          <div
+                            class="ant-row ant-form-item-row"
+                          >
+                            <div
+                              class="ant-col ant-form-item-label"
+                            >
+                              <label
+                                class=""
+                                for="0_initialVlanId"
+                                title=""
+                              >
+                                DHCP Client
+                                <svg
+                                  data-testid="QuestionMarkCircleOutlined"
+                                />
+                              </label>
+                            </div>
+                            <div
+                              class="ant-col ant-form-item-control"
+                            >
+                              <div
+                                class="ant-form-item-control-input"
+                              >
+                                <div
+                                  class="ant-form-item-control-input-content"
+                                >
+                                  <div
+                                    class="ant-select ant-select-in-form-item ant-select-single ant-select-show-arrow ant-select-disabled"
+                                  >
+                                    <div
+                                      class="ant-select-selector"
+                                    >
+                                      <span
+                                        class="ant-select-selection-search"
+                                      >
+                                        <input
+                                          aria-activedescendant="0_initialVlanId_list_0"
+                                          aria-autocomplete="list"
+                                          aria-controls="0_initialVlanId_list"
+                                          aria-expanded="false"
+                                          aria-haspopup="listbox"
+                                          aria-owns="0_initialVlanId_list"
+                                          autocomplete="off"
+                                          class="ant-select-selection-search-input"
+                                          disabled=""
+                                          id="0_initialVlanId"
+                                          readonly=""
+                                          role="combobox"
+                                          style="opacity: 0;"
+                                          type="search"
+                                          unselectable="on"
+                                          value=""
+                                        />
+                                      </span>
+                                      <span
+                                        class="ant-select-selection-item"
+                                        title="Select VLAN..."
+                                      >
+                                        Select VLAN...
+                                      </span>
+                                    </div>
+                                    <span
+                                      aria-hidden="true"
+                                      class="ant-select-arrow"
+                                      style="user-select: none;"
+                                      unselectable="on"
+                                    >
+                                      <span
+                                        aria-label="down"
+                                        class="anticon anticon-down ant-select-suffix"
+                                        role="img"
+                                      >
+                                        <svg
+                                          aria-hidden="true"
+                                          data-icon="down"
+                                          fill="currentColor"
+                                          focusable="false"
+                                          height="1em"
+                                          viewBox="64 64 896 896"
+                                          width="1em"
+                                        >
+                                          <path
+                                            d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                                          />
+                                        </svg>
+                                      </span>
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <h3
+                          class="ant-typography styledComponents__Title-sc-1ibvcih-3 styledComponents__StepFormTitle-sc-wgbcob-3 dConwg ezBzXN"
+                        >
+                          Stack Member
+                          <span
+                            class="styledComponents__RequiredDotSpan-sc-wgbcob-2 gkSFPO"
+                          >
+                             *
+                          </span>
+                        </h3>
+                        <span
+                          class="ant-typography ant-typography-secondary styledComponents__TypographyText-sc-wgbcob-4 emagBf"
+                        >
+                          Stack members will be ordered according to the order in which they were entered here. You can always modify this later.
+                        </span>
+                        <div
+                          class="styledComponents__TableContainer-sc-wgbcob-0 dcEoDV"
+                          data-testid="dropContainer"
+                        >
+                          <div
+                            class="styledComponents__Wrapper-sc-1abm7iv-12 iyKqRw"
+                          >
+                            <div
+                              class="ant-pro-table"
+                            >
+                              <div
+                                class="ant-pro-card"
+                              >
+                                <div
+                                  class="ant-pro-card-body"
+                                  style="padding-top: 0px;"
+                                >
+                                  <div
+                                    class="ant-pro-table-list-toolbar"
+                                  />
+                                  <div
+                                    class="ant-table-wrapper"
+                                  >
+                                    <div
+                                      class="ant-spin-nested-loading"
                                     >
                                       <div
-                                        class="ant-table ant-table-middle ant-table-scroll-horizontal"
+                                        class="ant-spin-container"
                                       >
                                         <div
-                                          class="ant-table-container"
+                                          class="ant-table ant-table-middle ant-table-scroll-horizontal"
                                         >
                                           <div
-                                            class="ant-table-content"
-                                            style="overflow-x: auto; overflow-y: hidden;"
+                                            class="ant-table-container"
                                           >
-                                            <table
-                                              style="width: 100%; min-width: 100%; table-layout: auto;"
+                                            <div
+                                              class="ant-table-content"
+                                              style="overflow-x: auto; overflow-y: hidden;"
                                             >
-                                              <colgroup>
-                                                <col />
-                                                <col
-                                                  style="width: 200px;"
-                                                />
-                                              </colgroup>
-                                              <thead
-                                                class="ant-table-thead"
+                                              <table
+                                                style="width: 100%; min-width: 100%; table-layout: auto;"
                                               >
-                                                <tr>
-                                                  <th
-                                                    class="ant-table-cell"
+                                                <colgroup>
+                                                  <col />
+                                                  <col
+                                                    style="width: 200px;"
                                                   />
-                                                  <th
-                                                    class="ant-table-cell"
-                                                  >
-                                                    Serial Number
-                                                  </th>
-                                                  <th
-                                                    class="ant-table-cell"
-                                                  >
-                                                    Switch Model
-                                                  </th>
-                                                  <th
-                                                    class="ant-table-cell"
-                                                  >
-                                                    Active
-                                                  </th>
-                                                  <th
-                                                    class="ant-table-cell"
-                                                  />
-                                                </tr>
-                                              </thead>
-                                              <tbody
-                                                class="ant-table-tbody"
-                                              >
-                                                <tr
-                                                  aria-hidden="true"
-                                                  class="ant-table-measure-row"
-                                                  style="height: 0px; font-size: 0px;"
+                                                </colgroup>
+                                                <thead
+                                                  class="ant-table-thead"
                                                 >
-                                                  <td
-                                                    style="padding: 0px; border: 0px; height: 0px;"
-                                                  >
-                                                    <div
-                                                      style="height: 0px; overflow: hidden;"
+                                                  <tr>
+                                                    <th
+                                                      class="ant-table-cell"
+                                                    />
+                                                    <th
+                                                      class="ant-table-cell"
                                                     >
-                                                       
-                                                    </div>
-                                                  </td>
-                                                  <td
-                                                    style="padding: 0px; border: 0px; height: 0px;"
-                                                  >
-                                                    <div
-                                                      style="height: 0px; overflow: hidden;"
+                                                      Serial Number
+                                                    </th>
+                                                    <th
+                                                      class="ant-table-cell"
                                                     >
-                                                       
-                                                    </div>
-                                                  </td>
-                                                  <td
-                                                    style="padding: 0px; border: 0px; height: 0px;"
-                                                  >
-                                                    <div
-                                                      style="height: 0px; overflow: hidden;"
+                                                      Switch Model
+                                                    </th>
+                                                    <th
+                                                      class="ant-table-cell"
                                                     >
-                                                       
-                                                    </div>
-                                                  </td>
-                                                  <td
-                                                    style="padding: 0px; border: 0px; height: 0px;"
-                                                  >
-                                                    <div
-                                                      style="height: 0px; overflow: hidden;"
-                                                    >
-                                                       
-                                                    </div>
-                                                  </td>
-                                                  <td
-                                                    style="padding: 0px; border: 0px; height: 0px;"
-                                                  >
-                                                    <div
-                                                      style="height: 0px; overflow: hidden;"
-                                                    >
-                                                       
-                                                    </div>
-                                                  </td>
-                                                </tr>
-                                                <tr
-                                                  class="ant-table-row ant-table-row-level-0"
-                                                  data-row-key="1"
+                                                      Active
+                                                    </th>
+                                                    <th
+                                                      class="ant-table-cell"
+                                                    />
+                                                  </tr>
+                                                </thead>
+                                                <tbody
+                                                  class="ant-table-tbody"
                                                 >
-                                                  <td
-                                                    class="ant-table-cell"
+                                                  <tr
+                                                    aria-hidden="true"
+                                                    class="ant-table-measure-row"
+                                                    style="height: 0px; font-size: 0px;"
                                                   >
-                                                    1
-                                                  </td>
-                                                  <td
-                                                    class="ant-table-cell"
-                                                  >
-                                                    <div
-                                                      class="ant-form-item"
+                                                    <td
+                                                      style="padding: 0px; border: 0px; height: 0px;"
                                                     >
                                                       <div
-                                                        class="ant-row ant-form-item-row"
+                                                        style="height: 0px; overflow: hidden;"
                                                       >
-                                                        <div
-                                                          class="ant-col ant-form-item-control"
-                                                        >
-                                                          <div
-                                                            class="ant-form-item-control-input"
-                                                          >
-                                                            <div
-                                                              class="ant-form-item-control-input-content"
-                                                            >
-                                                              <input
-                                                                class="ant-input"
-                                                                data-testid="serialNumber1"
-                                                                id="0_serialNumber1"
-                                                                style="text-transform: uppercase;"
-                                                                type="text"
-                                                                value=""
-                                                              />
-                                                            </div>
-                                                          </div>
-                                                        </div>
+                                                         
                                                       </div>
-                                                    </div>
-                                                  </td>
-                                                  <td
-                                                    class="ant-table-cell"
-                                                  >
-                                                    <div>
-                                                      --
-                                                    </div>
-                                                  </td>
-                                                  <td
-                                                    class="ant-table-cell"
-                                                  >
-                                                    <div
-                                                      class="ant-form-item"
+                                                    </td>
+                                                    <td
+                                                      style="padding: 0px; border: 0px; height: 0px;"
                                                     >
                                                       <div
-                                                        class="ant-row ant-form-item-row"
+                                                        style="height: 0px; overflow: hidden;"
+                                                      >
+                                                         
+                                                      </div>
+                                                    </td>
+                                                    <td
+                                                      style="padding: 0px; border: 0px; height: 0px;"
+                                                    >
+                                                      <div
+                                                        style="height: 0px; overflow: hidden;"
+                                                      >
+                                                         
+                                                      </div>
+                                                    </td>
+                                                    <td
+                                                      style="padding: 0px; border: 0px; height: 0px;"
+                                                    >
+                                                      <div
+                                                        style="height: 0px; overflow: hidden;"
+                                                      >
+                                                         
+                                                      </div>
+                                                    </td>
+                                                    <td
+                                                      style="padding: 0px; border: 0px; height: 0px;"
+                                                    >
+                                                      <div
+                                                        style="height: 0px; overflow: hidden;"
+                                                      >
+                                                         
+                                                      </div>
+                                                    </td>
+                                                  </tr>
+                                                  <tr
+                                                    data-row-key="1"
+                                                  >
+                                                    <td
+                                                      class="ant-table-cell"
+                                                    >
+                                                      1
+                                                    </td>
+                                                    <td
+                                                      class="ant-table-cell"
+                                                    >
+                                                      <div
+                                                        class="ant-form-item"
                                                       >
                                                         <div
-                                                          class="ant-col ant-form-item-control"
+                                                          class="ant-row ant-form-item-row"
                                                         >
                                                           <div
-                                                            class="ant-form-item-control-input"
+                                                            class="ant-col ant-form-item-control"
                                                           >
                                                             <div
-                                                              class="ant-form-item-control-input-content"
+                                                              class="ant-form-item-control-input"
                                                             >
                                                               <div
-                                                                class="ant-radio-group ant-radio-group-outline"
-                                                                id="0_active"
+                                                                class="ant-form-item-control-input-content"
                                                               >
-                                                                <label
-                                                                  class="ant-radio-wrapper ant-radio-wrapper-checked ant-radio-wrapper-in-form-item"
-                                                                >
-                                                                  <span
-                                                                    class="ant-radio ant-radio-checked"
-                                                                  >
-                                                                    <input
-                                                                      checked=""
-                                                                      class="ant-radio-input"
-                                                                      data-testid="active1"
-                                                                      type="radio"
-                                                                      value="1"
-                                                                    />
-                                                                    <span
-                                                                      class="ant-radio-inner"
-                                                                    />
-                                                                  </span>
-                                                                </label>
+                                                                <input
+                                                                  class="ant-input"
+                                                                  data-testid="serialNumber1"
+                                                                  id="0_serialNumber1"
+                                                                  style="text-transform: uppercase;"
+                                                                  type="text"
+                                                                  value=""
+                                                                />
                                                               </div>
                                                             </div>
                                                           </div>
                                                         </div>
                                                       </div>
-                                                    </div>
-                                                  </td>
-                                                  <td
-                                                    class="ant-table-cell"
-                                                  >
-                                                    <button
-                                                      class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 eAazoW"
-                                                      data-testid="deleteBtn1"
-                                                      role="deleteBtn"
-                                                      type="button"
+                                                    </td>
+                                                    <td
+                                                      class="ant-table-cell"
                                                     >
-                                                      <svg
-                                                        data-testid="DeleteOutlinedIcon"
-                                                      />
-                                                    </button>
-                                                  </td>
-                                                </tr>
-                                                <tr
-                                                  class="ant-table-row ant-table-row-level-0"
-                                                  data-row-key="2"
-                                                >
-                                                  <td
-                                                    class="ant-table-cell"
-                                                  >
-                                                    2
-                                                  </td>
-                                                  <td
-                                                    class="ant-table-cell"
-                                                  >
-                                                    <div
-                                                      class="ant-form-item"
-                                                    >
-                                                      <div
-                                                        class="ant-row ant-form-item-row"
-                                                      >
-                                                        <div
-                                                          class="ant-col ant-form-item-control"
-                                                        >
-                                                          <div
-                                                            class="ant-form-item-control-input"
-                                                          >
-                                                            <div
-                                                              class="ant-form-item-control-input-content"
-                                                            >
-                                                              <input
-                                                                class="ant-input"
-                                                                data-testid="serialNumber2"
-                                                                id="0_serialNumber2"
-                                                                style="text-transform: uppercase;"
-                                                                type="text"
-                                                                value=""
-                                                              />
-                                                            </div>
-                                                          </div>
-                                                        </div>
+                                                      <div>
+                                                        --
                                                       </div>
-                                                    </div>
-                                                  </td>
-                                                  <td
-                                                    class="ant-table-cell"
-                                                  >
-                                                    <div>
-                                                      --
-                                                    </div>
-                                                  </td>
-                                                  <td
-                                                    class="ant-table-cell"
-                                                  >
-                                                    <div
-                                                      class="ant-form-item"
+                                                    </td>
+                                                    <td
+                                                      class="ant-table-cell"
                                                     >
                                                       <div
-                                                        class="ant-row ant-form-item-row"
+                                                        class="ant-form-item"
                                                       >
                                                         <div
-                                                          class="ant-col ant-form-item-control"
+                                                          class="ant-row ant-form-item-row"
                                                         >
                                                           <div
-                                                            class="ant-form-item-control-input"
+                                                            class="ant-col ant-form-item-control"
                                                           >
                                                             <div
-                                                              class="ant-form-item-control-input-content"
+                                                              class="ant-form-item-control-input"
                                                             >
                                                               <div
-                                                                class="ant-radio-group ant-radio-group-outline"
-                                                                id="0_active"
+                                                                class="ant-form-item-control-input-content"
                                                               >
-                                                                <label
-                                                                  class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
+                                                                <div
+                                                                  class="ant-radio-group ant-radio-group-outline"
+                                                                  id="0_active"
                                                                 >
-                                                                  <span
-                                                                    class="ant-radio"
+                                                                  <label
+                                                                    class="ant-radio-wrapper ant-radio-wrapper-checked ant-radio-wrapper-in-form-item"
                                                                   >
-                                                                    <input
-                                                                      class="ant-radio-input"
-                                                                      data-testid="active2"
-                                                                      type="radio"
-                                                                      value="2"
-                                                                    />
                                                                     <span
-                                                                      class="ant-radio-inner"
-                                                                    />
-                                                                  </span>
-                                                                </label>
+                                                                      class="ant-radio ant-radio-checked"
+                                                                    >
+                                                                      <input
+                                                                        checked=""
+                                                                        class="ant-radio-input"
+                                                                        data-testid="active1"
+                                                                        type="radio"
+                                                                        value="1"
+                                                                      />
+                                                                      <span
+                                                                        class="ant-radio-inner"
+                                                                      />
+                                                                    </span>
+                                                                  </label>
+                                                                </div>
                                                               </div>
                                                             </div>
                                                           </div>
                                                         </div>
                                                       </div>
-                                                    </div>
-                                                  </td>
-                                                  <td
-                                                    class="ant-table-cell"
-                                                  >
-                                                    <button
-                                                      class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 eAazoW"
-                                                      data-testid="deleteBtn2"
-                                                      role="deleteBtn"
-                                                      type="button"
+                                                    </td>
+                                                    <td
+                                                      class="ant-table-cell"
                                                     >
-                                                      <svg
-                                                        data-testid="DeleteOutlinedIcon"
-                                                      />
-                                                    </button>
-                                                  </td>
-                                                </tr>
-                                                <tr
-                                                  class="ant-table-row ant-table-row-level-0"
-                                                  data-row-key="3"
-                                                >
-                                                  <td
-                                                    class="ant-table-cell"
+                                                      <button
+                                                        class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 ibsWZY"
+                                                        data-testid="deleteBtn1"
+                                                        role="deleteBtn"
+                                                        type="button"
+                                                      >
+                                                        <svg
+                                                          data-testid="DeleteOutlinedIcon"
+                                                        />
+                                                      </button>
+                                                    </td>
+                                                  </tr>
+                                                  <tr
+                                                    data-row-key="2"
                                                   >
-                                                    3
-                                                  </td>
-                                                  <td
-                                                    class="ant-table-cell"
-                                                  >
-                                                    <div
-                                                      class="ant-form-item"
+                                                    <td
+                                                      class="ant-table-cell"
+                                                    >
+                                                      2
+                                                    </td>
+                                                    <td
+                                                      class="ant-table-cell"
                                                     >
                                                       <div
-                                                        class="ant-row ant-form-item-row"
+                                                        class="ant-form-item"
                                                       >
                                                         <div
-                                                          class="ant-col ant-form-item-control"
+                                                          class="ant-row ant-form-item-row"
                                                         >
                                                           <div
-                                                            class="ant-form-item-control-input"
+                                                            class="ant-col ant-form-item-control"
                                                           >
                                                             <div
-                                                              class="ant-form-item-control-input-content"
-                                                            >
-                                                              <input
-                                                                class="ant-input"
-                                                                data-testid="serialNumber3"
-                                                                id="0_serialNumber3"
-                                                                style="text-transform: uppercase;"
-                                                                type="text"
-                                                                value=""
-                                                              />
-                                                            </div>
-                                                          </div>
-                                                        </div>
-                                                      </div>
-                                                    </div>
-                                                  </td>
-                                                  <td
-                                                    class="ant-table-cell"
-                                                  >
-                                                    <div>
-                                                      --
-                                                    </div>
-                                                  </td>
-                                                  <td
-                                                    class="ant-table-cell"
-                                                  >
-                                                    <div
-                                                      class="ant-form-item"
-                                                    >
-                                                      <div
-                                                        class="ant-row ant-form-item-row"
-                                                      >
-                                                        <div
-                                                          class="ant-col ant-form-item-control"
-                                                        >
-                                                          <div
-                                                            class="ant-form-item-control-input"
-                                                          >
-                                                            <div
-                                                              class="ant-form-item-control-input-content"
+                                                              class="ant-form-item-control-input"
                                                             >
                                                               <div
-                                                                class="ant-radio-group ant-radio-group-outline"
-                                                                id="0_active"
+                                                                class="ant-form-item-control-input-content"
                                                               >
-                                                                <label
-                                                                  class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
-                                                                >
-                                                                  <span
-                                                                    class="ant-radio"
-                                                                  >
-                                                                    <input
-                                                                      class="ant-radio-input"
-                                                                      data-testid="active3"
-                                                                      type="radio"
-                                                                      value="3"
-                                                                    />
-                                                                    <span
-                                                                      class="ant-radio-inner"
-                                                                    />
-                                                                  </span>
-                                                                </label>
+                                                                <input
+                                                                  class="ant-input"
+                                                                  data-testid="serialNumber2"
+                                                                  id="0_serialNumber2"
+                                                                  style="text-transform: uppercase;"
+                                                                  type="text"
+                                                                  value=""
+                                                                />
                                                               </div>
                                                             </div>
                                                           </div>
                                                         </div>
                                                       </div>
-                                                    </div>
-                                                  </td>
-                                                  <td
-                                                    class="ant-table-cell"
-                                                  >
-                                                    <button
-                                                      class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 eAazoW"
-                                                      data-testid="deleteBtn3"
-                                                      role="deleteBtn"
-                                                      type="button"
+                                                    </td>
+                                                    <td
+                                                      class="ant-table-cell"
                                                     >
-                                                      <svg
-                                                        data-testid="DeleteOutlinedIcon"
-                                                      />
-                                                    </button>
-                                                  </td>
-                                                </tr>
-                                              </tbody>
-                                            </table>
+                                                      <div>
+                                                        --
+                                                      </div>
+                                                    </td>
+                                                    <td
+                                                      class="ant-table-cell"
+                                                    >
+                                                      <div
+                                                        class="ant-form-item"
+                                                      >
+                                                        <div
+                                                          class="ant-row ant-form-item-row"
+                                                        >
+                                                          <div
+                                                            class="ant-col ant-form-item-control"
+                                                          >
+                                                            <div
+                                                              class="ant-form-item-control-input"
+                                                            >
+                                                              <div
+                                                                class="ant-form-item-control-input-content"
+                                                              >
+                                                                <div
+                                                                  class="ant-radio-group ant-radio-group-outline"
+                                                                  id="0_active"
+                                                                >
+                                                                  <label
+                                                                    class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
+                                                                  >
+                                                                    <span
+                                                                      class="ant-radio"
+                                                                    >
+                                                                      <input
+                                                                        class="ant-radio-input"
+                                                                        data-testid="active2"
+                                                                        type="radio"
+                                                                        value="2"
+                                                                      />
+                                                                      <span
+                                                                        class="ant-radio-inner"
+                                                                      />
+                                                                    </span>
+                                                                  </label>
+                                                                </div>
+                                                              </div>
+                                                            </div>
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                    </td>
+                                                    <td
+                                                      class="ant-table-cell"
+                                                    >
+                                                      <button
+                                                        class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 ibsWZY"
+                                                        data-testid="deleteBtn2"
+                                                        role="deleteBtn"
+                                                        type="button"
+                                                      >
+                                                        <svg
+                                                          data-testid="DeleteOutlinedIcon"
+                                                        />
+                                                      </button>
+                                                    </td>
+                                                  </tr>
+                                                  <tr
+                                                    data-row-key="3"
+                                                  >
+                                                    <td
+                                                      class="ant-table-cell"
+                                                    >
+                                                      3
+                                                    </td>
+                                                    <td
+                                                      class="ant-table-cell"
+                                                    >
+                                                      <div
+                                                        class="ant-form-item"
+                                                      >
+                                                        <div
+                                                          class="ant-row ant-form-item-row"
+                                                        >
+                                                          <div
+                                                            class="ant-col ant-form-item-control"
+                                                          >
+                                                            <div
+                                                              class="ant-form-item-control-input"
+                                                            >
+                                                              <div
+                                                                class="ant-form-item-control-input-content"
+                                                              >
+                                                                <input
+                                                                  class="ant-input"
+                                                                  data-testid="serialNumber3"
+                                                                  id="0_serialNumber3"
+                                                                  style="text-transform: uppercase;"
+                                                                  type="text"
+                                                                  value=""
+                                                                />
+                                                              </div>
+                                                            </div>
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                    </td>
+                                                    <td
+                                                      class="ant-table-cell"
+                                                    >
+                                                      <div>
+                                                        --
+                                                      </div>
+                                                    </td>
+                                                    <td
+                                                      class="ant-table-cell"
+                                                    >
+                                                      <div
+                                                        class="ant-form-item"
+                                                      >
+                                                        <div
+                                                          class="ant-row ant-form-item-row"
+                                                        >
+                                                          <div
+                                                            class="ant-col ant-form-item-control"
+                                                          >
+                                                            <div
+                                                              class="ant-form-item-control-input"
+                                                            >
+                                                              <div
+                                                                class="ant-form-item-control-input-content"
+                                                              >
+                                                                <div
+                                                                  class="ant-radio-group ant-radio-group-outline"
+                                                                  id="0_active"
+                                                                >
+                                                                  <label
+                                                                    class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
+                                                                  >
+                                                                    <span
+                                                                      class="ant-radio"
+                                                                    >
+                                                                      <input
+                                                                        class="ant-radio-input"
+                                                                        data-testid="active3"
+                                                                        type="radio"
+                                                                        value="3"
+                                                                      />
+                                                                      <span
+                                                                        class="ant-radio-inner"
+                                                                      />
+                                                                    </span>
+                                                                  </label>
+                                                                </div>
+                                                              </div>
+                                                            </div>
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                    </td>
+                                                    <td
+                                                      class="ant-table-cell"
+                                                    >
+                                                      <button
+                                                        class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 ibsWZY"
+                                                        data-testid="deleteBtn3"
+                                                        role="deleteBtn"
+                                                        type="button"
+                                                      >
+                                                        <svg
+                                                          data-testid="DeleteOutlinedIcon"
+                                                        />
+                                                      </button>
+                                                    </td>
+                                                  </tr>
+                                                </tbody>
+                                              </table>
+                                            </div>
                                           </div>
                                         </div>
                                       </div>
@@ -890,15 +975,34 @@ exports[`Switch Stack Form - Add should render correctly 1`] = `
                               </div>
                             </div>
                           </div>
+                          <button
+                            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
+                            type="button"
+                          >
+                            <span>
+                              Add another member
+                            </span>
+                          </button>
                         </div>
-                        <button
-                          class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
-                          type="button"
+                      </div>
+                      <div
+                        class="ant-form-item ant-form-item-hidden"
+                      >
+                        <div
+                          class="ant-row ant-form-item-row"
                         >
-                          <span>
-                            Add another member
-                          </span>
-                        </button>
+                          <div
+                            class="ant-col ant-form-item-control"
+                          >
+                            <div
+                              class="ant-form-item-control-input"
+                            >
+                              <div
+                                class="ant-form-item-control-input-content"
+                              />
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -919,7 +1023,7 @@ exports[`Switch Stack Form - Add should render correctly 1`] = `
             style="margin-right: 12px;"
           >
             <button
-              class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 bxQmA-d"
+              class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 glXBEv"
               type="button"
             >
               <span>
@@ -931,7 +1035,7 @@ exports[`Switch Stack Form - Add should render correctly 1`] = `
             class="ant-space-item"
           >
             <button
-              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
+              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ibsWZY"
               type="button"
             >
               <span>

@@ -4,25 +4,27 @@ import { PriorityEnum }  from './PriorityEnum'
 import { ProtocolEnum }  from './ProtocolEnum'
 
 export class VenueSyslog {
+  serviceProfileId?: string
+
   enabled?: boolean
 
   server?: string
 
-  port: number
+  port?: number
 
-  facility: FacilityEnum
+  facility?: FacilityEnum
 
-  priority: PriorityEnum
+  priority?: PriorityEnum
 
-  protocol: ProtocolEnum
+  protocol?: ProtocolEnum
 
-  flowLevel: FlowLevelEnum
+  flowLevel?: FlowLevelEnum
 
   secondaryServer?: string
 
-  secondaryPort: number
+  secondaryPort?: number
 
-  secondaryProtocol: ProtocolEnum
+  secondaryProtocol?: ProtocolEnum
 
   constructor () {
     this.enabled = false

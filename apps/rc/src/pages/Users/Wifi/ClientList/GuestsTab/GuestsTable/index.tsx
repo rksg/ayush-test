@@ -14,7 +14,6 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
 import { CsvSize, ImportCsvDrawer } from '@acx-ui/rc/components'
 import {
   useGetGuestsListQuery,
@@ -261,7 +260,7 @@ export default function GuestsTable () {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          actions={useIsSplitOn(Features.USERS) ? [{
+          actions={[{
             label: $t({ defaultMessage: 'Add Guest' }),
             onClick: () => setDrawerVisible(true),
             disabled: allowedNetworkList.length === 0 ? true : false
@@ -275,7 +274,7 @@ export default function GuestsTable () {
             onClick: () => setImportVisible(true),
             disabled: allowedNetworkList.length === 0 ? true : false
           }
-          ] : []}
+          ]}
         />
 
         <Drawer
@@ -338,7 +337,7 @@ export const renderAllowedNetwork = function (currentGuest: Guest) {
   // return currentGuest.ssid
   if (currentGuest.networkId) {
     return (
-      <TenantLink to={`/networks/${currentGuest.networkId}/network-details/aps`}>
+      <TenantLink to={`/networks/wireless/${currentGuest.networkId}/network-details/aps`}>
         {currentGuest.ssid}</TenantLink>
     )
   } else {

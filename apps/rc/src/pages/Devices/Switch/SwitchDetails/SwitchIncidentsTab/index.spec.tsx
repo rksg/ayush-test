@@ -1,0 +1,56 @@
+import '@testing-library/jest-dom'
+
+import { dataApiURL }                                         from '@acx-ui/analytics/services'
+import { AnalyticsFilter }                                    from '@acx-ui/analytics/utils'
+import { SwitchUrlsInfo }                                     from '@acx-ui/rc/utils'
+import { Provider }                                           from '@acx-ui/store'
+import { render, screen, mockRestApiQuery, mockGraphqlQuery } from '@acx-ui/test-utils'
+
+import {
+  switchDetailData
+} from '../__tests__/fixtures'
+
+import { SwitchIncidentsTab } from '.'
+
+jest.mock('@acx-ui/analytics/components', () => ({
+  IncidentTabContent: (props: { filters: AnalyticsFilter }) => JSON.stringify(props.filters)
+}))
+
+const params = {
+  tenantId: 'tenantId',
+  switchId: 'switchId',
+  serialNumber: 'serialNumber'
+}
+
+jest.mock('@acx-ui/analytics/utils', () => ({
+  ...jest.requireActual('@acx-ui/analytics/utils'),
+  useAnalyticsFilter: () => ({
+    filters: { path: [{ type: 'network', name: 'Network' }] },
+    getNetworkFilter: jest
+      .fn()
+      .mockReturnValueOnce({
+        networkFilter: { path: [{ type: 'network', name: 'Network' }] }
+      })
+  })
+}))
+
+const mockedUsedNavigate = jest.fn()
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockedUsedNavigate
+}))
+
+describe('SwitchIncidentsTab', () => {
+  beforeEach(() => {
+    mockRestApiQuery(SwitchUrlsInfo.getSwitchDetailHeader.url, 'get', switchDetailData)
+    mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
+      data: { network: { hierarchyNode: { incidents: [] } } }
+    })
+  })
+
+  it('should render mocked Incident tab in devices', async () => {
+    render(<Provider><SwitchIncidentsTab /></Provider>, { route: { params } })
+    expect(await screen.findByText(/C0:C5:20:98:B9:67/)).toBeInTheDocument()
+  })
+})
