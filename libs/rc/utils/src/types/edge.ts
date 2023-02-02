@@ -112,7 +112,7 @@ export interface EdgeStatusSeverityStatistic {
   totalCount: number
 }
 
-export interface EdgeDhcpPool {
+export interface DhcpPoolStats {
   name: string
   subnetMask: string
   range: string
