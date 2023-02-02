@@ -63,7 +63,7 @@ export function ClientHealth (
 
   const barColors = [
     cssStr('--acx-semantics-red-50'),
-    cssStr('--acx-semantics-yellow-50'),
+    cssStr('--acx-accents-orange-30'),
     cssStr('--acx-semantics-green-50')
   ]
 
