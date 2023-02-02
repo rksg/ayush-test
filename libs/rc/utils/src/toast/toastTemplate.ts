@@ -196,7 +196,7 @@ export const rcToastTemplates:any = {
       SUCCESS: 'Network "${attributes.name}" was added',
       FAIL: 'Network "${attributes.name}" was not added'
     },
-    link: '/t/${tenantId}/networks/${entityId}/network-details/overview'
+    link: '/t/${tenantId}/networks/wireless/${entityId}/network-details/overview'
   },
   UpdateNetworkDeep: {
     messages: {
@@ -204,7 +204,7 @@ export const rcToastTemplates:any = {
       SUCCESS: 'Network "${attributes.name}" was updated',
       FAIL: 'Network "${attributes.name}" was not updated'
     },
-    link: '/t/${tenantId}/networks/${entityId}/network-details/overview'
+    link: '/t/${tenantId}/networks/wireless/${entityId}/network-details/overview'
   },
   UpdateNetwork: {
     messages: {
@@ -212,7 +212,7 @@ export const rcToastTemplates:any = {
       SUCCESS: 'Network "${attributes.name}" was updated',
       FAIL: 'Network "${attributes.name}" was not updated'
     },
-    link: '/t/${tenantId}/networks/${entityId}/network-details/overview'
+    link: '/t/${tenantId}/networks/wireless/${entityId}/network-details/overview'
   },
   DeleteNetwork: {
     messages: {

@@ -98,7 +98,7 @@ function EntityLink ({ entityKey, data }: { entityKey: keyof Event, data: Event 
   network: {
     // TODO:
     // change to overview when overview page ready
-    path: 'networks/:networkId/network-details/aps',
+    path: 'networks/wireless/:networkId/network-details/aps',
     params: ['networkId']
   },
   switch: {
