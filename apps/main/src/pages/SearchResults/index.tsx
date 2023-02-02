@@ -137,28 +137,30 @@ const searches = [
     const result = useTableQuery<ClientList, RequestPayload<unknown>, unknown>({
       useQuery: useGetClientListQuery,
       defaultPayload: {
-        ...defaultClientPayload
+        ...defaultClientPayload,
+        searchString
       },
       pagination
     })
     return {
       result,
       title: $t({ defaultMessage: 'Wi-Fi Clients' }),
-      component: <ConnectedClientsTable tableQuery={result} searchString={searchString} />
+      component: <ConnectedClientsTable tableQuery={result} />
     }
   },
   (searchString: string, $t: IntlShape['$t']) => {
     const result = useTableQuery<SwitchClient, RequestPayload<unknown>, unknown>({
       useQuery: useGetSwitchClientListQuery,
       defaultPayload: {
-        ...defaultSwitchClientPayload
+        ...defaultSwitchClientPayload,
+        searchString
       },
       pagination
     })
     return {
       result,
       title: $t({ defaultMessage: 'Switch Clients' }),
-      component: <SwitchClientTable tableQuery={result} searchString={searchString} />
+      component: <SwitchClientTable tableQuery={result} />
     }
   }
 ]
