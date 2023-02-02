@@ -13,6 +13,7 @@ export { DevicesWidget } from './DevicesWidget'
 export { EdgeSettingForm } from './EdgeSettingForm'
 export { SpaceWrapper } from './SpaceWrapper/index'
 export { EdgeInfoWidget }  from './EdgeInfoWidget'
+export { EdgeDhcpSettingForm } from './EdgeDhcpSetting/EdgeDhcpSettingForm'
 export {
   EventTable,
   useEventTableFilter,

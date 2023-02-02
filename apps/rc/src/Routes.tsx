@@ -43,9 +43,13 @@ import RogueAPDetectionDetailView
   from './pages/Policies/RogueAPDetection/RogueAPDetectionDetail/RogueAPDetectionDetailView'
 import RogueAPDetectionForm     from './pages/Policies/RogueAPDetection/RogueAPDetectionForm/RogueAPDetectionForm'
 import SelectPolicyForm         from './pages/Policies/SelectPolicyForm'
+import VLANPoolDetail           from './pages/Policies/VLANPool/VLANPoolDetail'
+import VLANPoolForm             from './pages/Policies/VLANPool/VLANPoolForm/VLANPoolForm'
 import DHCPDetail               from './pages/Services/DHCP/DHCPDetail'
 import DHCPForm                 from './pages/Services/DHCP/DHCPForm/DHCPForm'
 import DHCPTable                from './pages/Services/DHCP/DHCPTable/DHCPTable'
+import AddDHCP                  from './pages/Services/DHCP/Edge/AddDHCP'
+import EdgeDhcpTable            from './pages/Services/DHCP/Edge/DHCPTable'
 import DpskDetails              from './pages/Services/Dpsk/DpskDetail/DpskDetails'
 import DpskForm                 from './pages/Services/Dpsk/DpskForm/DpskForm'
 import DpskTable                from './pages/Services/Dpsk/DpskTable/DpskTable'
@@ -213,6 +217,10 @@ function ServiceRoutes () {
         element={<DHCPForm/>}
       />
       <Route
+        path={getServiceRoutePath({ type: ServiceType.EDGE_DHCP, oper: ServiceOperation.CREATE })}
+        element={<AddDHCP/>}
+      />
+      <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.EDIT })}
         element={<DHCPForm editMode={true}/>}
       />
@@ -281,6 +289,10 @@ function ServiceRoutes () {
         path={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.LIST })}
         element={<PortalTable/>}
       />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.EDGE_DHCP, oper: ServiceOperation.LIST })}
+        element={<EdgeDhcpTable/>}
+      />
     </Route>
   )
 }
@@ -326,6 +338,21 @@ function PolicyRoutes () {
         // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.EDIT })}
         element={<MacRegistrationListForm editMode={true} />}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.CREATE })}
+        element={<VLANPoolForm edit={false}/>}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.EDIT })}
+        element={<VLANPoolForm edit={true}/>}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.DETAIL })}
+        element={<VLANPoolDetail/>}
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE })}
