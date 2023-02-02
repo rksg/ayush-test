@@ -245,7 +245,7 @@ function Connection ({ client }: { client: ClientExtended }) {
         label={$t({ defaultMessage: 'Wireless Network' })}
         children={
           client?.enableLinkToNetwork
-            ? <TenantLink to={`networks/${client.networkId}/network-details/overview`}>
+            ? <TenantLink to={`networks/wireless/${client.networkId}/network-details/overview`}>
               {client?.networkName || '--'}
             </TenantLink>
             : client?.networkName || '--'
@@ -478,7 +478,7 @@ function LastSession ({ client }: { client: ClientExtended }) {
         label={$t({ defaultMessage: 'Last SSID' })}
         children={
           client?.enableLinkToNetwork
-            ? <TenantLink to={`networks/${client.networkId}/network-details/overview`}>
+            ? <TenantLink to={`networks/wireless/${client.networkId}/network-details/overview`}>
               {client?.ssid || '--'}
             </TenantLink>
             : client?.ssid || '--'
