@@ -20,6 +20,52 @@ export const DOCS_URL = 'https://docs.cloud.ruckuswireless.com/alto/latest/'
 
 export const DOCS_HOME_URL = 'https://docs.cloud.ruckuswireless.com'
 
+const reg = /([a-f-\d]{32,36}|[A-F-\d]{32,36})|\d+\/?/g
+const useBasePath = () => {
+  const location = useLocation()
+  return _.replace(location.pathname, reg, (matchStr)=>{
+    const paramReg = /([a-f-\d]{32,36}|[A-F-\d]{32,36})|\d+/g
+    return matchStr.replaceAll(paramReg,'*')
+  })
+}
+
+const getMapping = async (basePath: string, showError: () => void) => {
+  let result = await fetch(MAPPING_URL, {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json'
+    }
+  })
+
+  if(!result.ok){
+    showError()
+    return
+  }
+
+  result = await result.json()
+  const mapKey = Object.keys(result).find(item => basePath === item)
+  return result[mapKey as keyof typeof result]
+}
+
+const updateDesc = async (
+  destFile: string,
+  onComplete: (content: string) => void,
+  onError: () => void
+) => {
+  const result = await fetch(DOCS_URL + destFile)
+  if(!result.ok){
+    onError()
+    return
+  }
+  const htmlResult = await result.text()
+  const targetDesc = new DOMParser()
+    .parseFromString(htmlResult, 'text/html')
+    .querySelector('.shortdesc')
+
+  if (targetDesc) {
+    onComplete(targetDesc?.innerHTML.trim().replace(/\<.*?\>|\n/g, '') || '')
+  } else { onError() }
+}
 
 export default function HelpPage (props: {
   modalState: boolean,
@@ -29,50 +75,7 @@ export default function HelpPage (props: {
   const [helpDesc, setHelpDesc] = useState<string>()
   const [helpUrl, setHelpUrl] = useState<string|null>()
   const location = useLocation()
-  const useBasePath = () => {
-    const reg = /([a-f-\d]{32,36}|[A-F-\d]{32,36})|\d+\/?/g
-    return _.replace(location.pathname, reg, (matchStr)=>{
-      const paramReg = /([a-f-\d]{32,36}|[A-F-\d]{32,36})|\d+/g
-      return matchStr.replaceAll(paramReg,'*')
-    })
-  }
   const basePath = useBasePath()
-  const getMapping = async () => {
-
-    let result = await fetch(MAPPING_URL, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json'
-      }
-    })
-
-    if(!result.ok){
-      showError()
-      return
-    }
-
-    result = await result.json()
-    const mapKey = Object.keys(result).find(item => basePath === item)
-    return result[mapKey as keyof typeof result]
-  }
-  const updateDesc = async (destFile: string) => {
-    const result = await fetch(DOCS_URL + destFile)
-    if(!result.ok){
-      showError()
-      return
-    }
-    const htmlResult = await result.text()
-    const targetDesc = new DOMParser()
-      .parseFromString(htmlResult, 'text/html')
-      .querySelector('.shortdesc')
-
-    if(targetDesc){
-      setHelpDesc(targetDesc?.innerHTML.trim().replace(/\<.*?\>|\n/g, '') || '')
-      setHelpUrl(DOCS_URL + destFile)
-    }else{
-      showError()
-    }
-  }
 
   const showError = ()=>{
     setHelpDesc($t({ defaultMessage: 'The content is not available.' }))
@@ -81,8 +84,18 @@ export default function HelpPage (props: {
 
   useEffect(() => {
     (async ()=> {
-      const mappingRs = await getMapping()
-      mappingRs ? updateDesc(mappingRs as string) : showError()
+      const mappingRs = await getMapping(basePath, showError)
+      if (!mappingRs) {
+        return showError()
+      }
+      await updateDesc(
+        mappingRs as string,
+        (content) => {
+          setHelpDesc(content)
+          setHelpUrl(DOCS_URL + mappingRs)
+        },
+        showError
+      )
     })()
   }, [location])
 

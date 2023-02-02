@@ -35,7 +35,6 @@ describe('Firewall Component', () => {
 describe('HelpPage Component', () => {
 
   it('should render <HelpPage/> component correctly', async () => {
-
     mockServer.use(
       rest.get(MAPPING_URL, (_, res, ctx) =>
         res(ctx.json({
@@ -48,22 +47,19 @@ describe('HelpPage Component', () => {
         res(ctx.text('<p class="shortdesc">Dashboard test</p>'))
       ))
 
-    render(
-      <Provider>
-        <HelpPage modalState={true} setIsModalOpen={() => {}}/>
-      </Provider>, {
-        route: {
-          path: '/t/a5804cffcefd408c8d36aca5bd112838/dashboard',
-          wrapRoutes: false
-        }
-      })
+    render(<HelpPage modalState={true} setIsModalOpen={() => {}}/>, {
+      wrapper: Provider,
+      route: {
+        path: '/t/a5804cffcefd408c8d36aca5bd112838/dashboard',
+        wrapRoutes: false
+      }
+    })
 
     expect(await screen.findByText(('Dashboard test'))).toBeInTheDocument()
     await userEvent.click(await screen.findByRole('button',{ name: 'Close' }))
   })
 
   it('Render <HelpPage/> component failing case', async () => {
-
     mockServer.use(
       rest.get(MAPPING_URL, (_, res, ctx) =>
         res(ctx.json({
@@ -74,15 +70,13 @@ describe('HelpPage Component', () => {
         res(ctx.text('<p class="">Dashboard test</p>'))
       ))
 
-    render(
-      <Provider>
-        <HelpPage modalState={true} setIsModalOpen={() => {}}/>
-      </Provider>, {
-        route: {
-          path: '/dashboard',
-          wrapRoutes: false
-        }
-      })
+    render(<HelpPage modalState={true} setIsModalOpen={() => {}}/>, {
+      wrapper: Provider,
+      route: {
+        path: '/dashboard',
+        wrapRoutes: false
+      }
+    })
     await new Promise((r)=>{setTimeout(r, 300)})
     expect(await screen.findByText(('The content is not available.'))).toBeInTheDocument()
   })
