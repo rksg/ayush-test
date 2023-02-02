@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom'
 
 import { Button, Loader, PageHeader, showActionModal, Table, TableProps } from '@acx-ui/components'
 import {
+  useDelVLANPoolPolicyMutation,
   useDeleteClientIsolationMutation,
   useDelRoguePolicyMutation,
   usePolicyListQuery
@@ -95,6 +96,7 @@ export default function PoliciesTable () {
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
 
+  const [ delVLANPoolPolicy ] = useDelVLANPoolPolicyMutation()
   // const [ delRoguePolicy ] = useDelRoguePolicyMutation()
 
   const deletePolicyFnMapping = {
@@ -129,6 +131,16 @@ export default function PoliciesTable () {
             if (deleteFn) {
               deleteFn({ params: { ...params, policyId: id } }).then(clearSelection)
             }
+
+            if (type === PolicyType.VLAN_POOL) {
+              await delVLANPoolPolicy({
+                params: {
+                  ...params, policyId: id
+                }
+              }).unwrap()
+            }
+
+            clearSelection()
           }
         })
       }
