@@ -74,4 +74,3 @@ export const categoryCodeMap = {
     ] as IncidentCode[]
   }
 }
-

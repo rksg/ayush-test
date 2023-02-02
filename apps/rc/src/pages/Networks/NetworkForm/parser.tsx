@@ -1,4 +1,4 @@
-import { get } from 'lodash'
+import { get, omit } from 'lodash'
 
 import {
   NetworkTypeEnum,
@@ -10,7 +10,9 @@ import {
   GuestWlanAdvancedCustomization,
   WlanSecurityEnum,
   RfBandUsageEnum,
-  PhyTypeConstraintEnum
+  PhyTypeConstraintEnum,
+  NetworkVenue,
+  ClientIsolationVenue
 } from '@acx-ui/rc/utils'
 
 const parseAaaSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => {
@@ -363,9 +365,7 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
     advancedCustomization.devicePolicyId = null
   }
 
-  if (get(data, 'wlan.advancedCustomization.vlanPool')) {
-    advancedCustomization.vlanPool = JSON.parse(get(data, 'wlan.advancedCustomization.vlanPool'))
-  }
+
   // accessControlForm
   if (!Number.isInteger(get(data, 'wlan.advancedCustomization.userUplinkRateLimiting'))) {
     advancedCustomization.userUplinkRateLimiting = 0
@@ -384,4 +384,73 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
   }
 
   return saveData
+}
+
+export function transferVenuesToSave (data: NetworkSaveData, originalData: NetworkSaveData) {
+  const venues = data.venues?.map(item=>
+    ({
+      ...item,
+      vlanPoolId: originalData.wlan?.advancedCustomization?.vlanPool?.id
+    }))
+
+  return {
+    ...originalData,
+    venues
+  }
+}
+
+function cleanClientIsolationAllowlistId (venues: NetworkVenue[]): NetworkVenue[] {
+  const incomingVenues = [...venues!]
+  incomingVenues.forEach((v: NetworkVenue) => {
+    v.clientIsolationAllowlistId = undefined
+  })
+
+  return incomingVenues
+}
+
+function updateVenueClientIsolationAllowlist (
+  venues: NetworkVenue[],
+  clientIsolationVenues: ClientIsolationVenue[] | undefined
+): NetworkVenue[] | undefined {
+  if (!clientIsolationVenues || clientIsolationVenues.length === 0) {
+    return venues
+  }
+
+  const incomingVenues = [...venues!]
+  let target
+
+  incomingVenues.forEach((v: NetworkVenue) => {
+    target = clientIsolationVenues!.find(cv => cv.venueId === v.venueId)
+    if (target) {
+      v.clientIsolationAllowlistId = target.clientIsolationAllowlistId
+    }
+  })
+
+  return incomingVenues
+}
+
+export function updateClientIsolationAllowlist (data: NetworkSaveData): NetworkSaveData {
+  if (!data.venues || data.venues.length === 0) {
+    return data
+  }
+
+  // eslint-disable-next-line max-len
+  const clientIsolationAllowlistEnabled = get(data, 'wlan.advancedCustomization.clientIsolationAllowlistEnabled')
+  const clientIsolationVenues = get(data, 'wlan.advancedCustomization.clientIsolationVenues')
+
+  let updatedVenues
+
+  if (clientIsolationAllowlistEnabled) {
+    updatedVenues = updateVenueClientIsolationAllowlist(data.venues, clientIsolationVenues)
+  } else {
+    updatedVenues = cleanClientIsolationAllowlistId(data.venues)
+  }
+
+  return {
+    ...(omit(data,
+      ['wlan.advancedCustomization.clientIsolationAllowlistEnabled',
+        'wlan.advancedCustomization.clientIsolationVenues'
+      ])),
+    venues: updatedVenues
+  }
 }
