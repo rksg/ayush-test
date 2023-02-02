@@ -45,6 +45,13 @@ export default function MyServices () {
       })
     },
     {
+      type: ServiceType.EDGE_DHCP,
+      category: RadioCardCategory.EDGE,
+      tableQuery: useServiceListQuery({ // TODO should invoke self List API here when API is ready
+        params, payload: { ...defaultPayload, filters: { type: [ServiceType.DHCP] } }
+      })
+    },
+    {
       type: ServiceType.DPSK,
       category: RadioCardCategory.WIFI,
       tableQuery: useGetDpskListQuery({})

@@ -28,3 +28,10 @@ export enum EdgeStatusEnum {
   APPLYING_CONFIGURATION = '2_02_ApplyingConfiguration',
   DISCONNECTED_FROM_CLOUD = '3_04_DisconnectedFromCloud'
 }
+
+export enum EdgeDhcpServiceStatusEnum {
+  GOOD = 'Good',
+  REQUIRES_ATTENTION = 'Requires Attention',
+  POOR = 'Poor',
+  UNKNOWN = 'Unknown'
+}
