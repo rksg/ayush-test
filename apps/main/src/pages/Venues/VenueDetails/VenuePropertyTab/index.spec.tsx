@@ -33,6 +33,10 @@ describe('Property Unit Page', () => {
       rest.delete(
         PropertyUrlsInfo.deletePropertyUnits.url,
         (_, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
+        PropertyUrlsInfo.updatePropertyUnit.url,
+        (_, res, ctx) => res(ctx.json({}))
       )
     )
   })
@@ -70,14 +74,20 @@ describe('Property Unit Page', () => {
     const firstRow = await screen.findByRole('cell', { name: firstRowName })
 
     // TODO: test while API ready and confirm with real behavior, and waitFor
+    // 'Suspend' Unit action
     await userEvent.click(firstRow)
     await userEvent.click(await screen.findByRole('button', { name: /suspend/i }))
+    // Wait api processing
+    await waitFor(async () => await screen.findByRole('textbox'))
 
+    // 'View Portal' Unit action
     await userEvent.click(firstRow)
     await userEvent.click(await screen.findByRole('button', { name: /view portal/i }))
 
+    // 'Delete' Unit action
     await userEvent.click(firstRow)
     await userEvent.click(await screen.findByRole('button', { name: /delete/i }))
+    await userEvent.click(await screen.findByRole('button', { name: /delete unit/i }))
 
     // Make sure clearSelection() be called
     await waitFor(async () => await screen.findByRole('textbox'))

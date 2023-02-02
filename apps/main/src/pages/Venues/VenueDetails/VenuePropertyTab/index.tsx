@@ -3,12 +3,13 @@ import { useEffect, useState } from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, Table, TableProps } from '@acx-ui/components'
+import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
 import {
   useDeletePropertyUnitsMutation,
   useGetPropertyConfigsQuery,
   useGetPropertyUnitListQuery,
-  useLazyGetPersonaGroupByIdQuery
+  useLazyGetPersonaGroupByIdQuery,
+  useUpdatePropertyUnitMutation
 } from '@acx-ui/rc/services'
 import { PropertyDpskType, PropertyUnit, PropertyUnitStatus, useTableQuery } from '@acx-ui/rc/utils'
 
@@ -18,6 +19,7 @@ import { PropertyUnitDrawer } from './PropertyUnitDrawer'
 export function VenuePropertyTab () {
   const { $t } = useIntl()
   const { venueId } = useParams()
+  // FIXME: default = false
   const [withNsg, setWithNsg] = useState(true)
   const [drawerState, setDrawerState] = useState<{
     isEdit: boolean,
@@ -28,7 +30,8 @@ export function VenuePropertyTab () {
     visible: false
   })
 
-  const [deleteUnitById] = useDeletePropertyUnitsMutation()
+  const [deleteUnitByIds] = useDeletePropertyUnitsMutation()
+  const [updateUnitById] = useUpdatePropertyUnitMutation()
   const propertyConfigsQuery = useGetPropertyConfigsQuery({ params: { venueId } })
   const [getPersonaGroupById, state] = useLazyGetPersonaGroupByIdQuery()
 
@@ -36,7 +39,6 @@ export function VenuePropertyTab () {
     if (propertyConfigsQuery.isLoading) return
     if (!propertyConfigsQuery.data?.personaGroupId) return
 
-    // TODO: handle exception case
     getPersonaGroupById({ params: { groupId: propertyConfigsQuery.data.personaGroupId } })
       .then(result => setWithNsg(!!result.data?.nsgId))
   }, [propertyConfigsQuery.data])
@@ -66,9 +68,13 @@ export function VenuePropertyTab () {
       label: $t({ defaultMessage: 'Suspend' }),
       onClick: (items, clearSelection) => {
         // TODO: Suspend Unit Action implementation (Update Unit with status = DISABLE)
-        const ids = items.map(i => i.name)
-        console.log('[Suspend] :: ', ids)
-        clearSelection()
+        items.forEach(unit => {
+          updateUnitById({
+            params: { venueId, unitId: unit.id },
+            payload: { status: PropertyUnitStatus.DISABLED }
+          })
+            .then(clearSelection)
+        })
       }
     },
     {
@@ -82,14 +88,37 @@ export function VenuePropertyTab () {
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: (items, clearSelection) => {
+      onClick: (selectedItems, clearSelection) => {
         // TODO: Integrate API with Units deletion
-        const unitIds = items.map(i => i.name)
-        console.log('[Delete] :: ', unitIds)
-        deleteUnitById({ params: { venueId }, payload: { unitIds } })
-          .then()
-          .catch()
-          .finally(() => clearSelection())
+        const unitIds = selectedItems.map(i => i.id)
+        const unitNames = selectedItems.map(i => i.name)
+
+        showActionModal({
+          type: 'confirm',
+          customContent: {
+            action: 'DELETE',
+            entityName: $t({ defaultMessage: 'Unit' }),
+            entityValue: selectedItems[0].name,
+            numOfEntities: selectedItems.length
+          },
+          onOk: () => {
+            deleteUnitByIds({ params: { venueId }, payload: { unitIds } })
+              .unwrap()
+              .then(() => {
+                showToast({
+                  type: 'success',
+                  content: $t({ defaultMessage: 'Unit {name} was deleted' }, { unitNames })
+                })
+                clearSelection()
+              })
+              .catch(() => {
+                showToast({
+                  type: 'error',
+                  content: $t({ defaultMessage: 'An error occurred' })
+                })
+              })
+          }
+        })
       }
     }
   ]
@@ -116,7 +145,9 @@ export function VenuePropertyTab () {
       show: withNsg,
       key: 'accessPoint',
       title: $t({ defaultMessage: 'Access Point' }),
-      dataIndex: ['personaSettings', 'accessPoint']
+      dataIndex: ['personaSettings', 'accessPoint'],
+      // FIXME: fetch AP by macAddress?
+      render: (_, row) => row.personaSettings?.accessPoint.name
     },
     {
       show: withNsg,
