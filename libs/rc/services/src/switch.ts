@@ -21,7 +21,7 @@ import {
   Switch,
   STACK_MEMBERSHIP,
   onSocketActivityChanged,
-  showActivityMessage,
+  onActivityMessageReceived,
   SwitchRow,
   StackMember,
   ConfigurationHistory,
@@ -94,7 +94,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
             'UpdateSwitch',
             'Delete Switch'
           ]
-          showActivityMessage(msg, activities, () => {
+          onActivityMessageReceived(msg, activities, () => {
             api.dispatch(switchApi.util.invalidateTags([{ type: 'Switch', id: 'LIST' }]))
           })
         })
