@@ -42,8 +42,6 @@ export type StepsFormProps <FormValue = any> =
       pre?: string
       cancel?: string
     }
-
-    modalMode?:boolean
   }
 
 export type StepFormProps <FormValue> = Omit<
@@ -116,7 +114,7 @@ export function StepsForm <FormValue = any> (
     <>
       {form}
       <UI.ActionsContainerGlobalOverride />
-      <UI.ActionsContainer $modalMode={!!props.modalMode}>
+      <UI.ActionsContainer>
         <Space align='center' size={12}>{submitter}</Space>
       </UI.ActionsContainer>
     </>
