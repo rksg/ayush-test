@@ -95,6 +95,7 @@ export function Subscriptions () {
     {
       label: $t({ defaultMessage: 'Generate Usage Report' }),
       onClick: () => {
+        // TODO
       }
     },
     {
@@ -106,6 +107,7 @@ export function Subscriptions () {
     {
       label: $t({ defaultMessage: 'Refresh' }),
       onClick: () => {
+        // TODO
       }
     }
   ]
