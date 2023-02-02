@@ -9,7 +9,7 @@ import { useLazyRadiusAttributeGroupListQuery, useRadiusAttributeVendorListQuery
 import { AttributeAssignment, checkObjectNotExists, OperatorType }                 from '@acx-ui/rc/utils'
 import { useParams }                                                               from '@acx-ui/react-router-dom'
 
-import { RadiusAttributeDrawer } from '../RadiusAttributeDrawer/RadiusAttributeDrawer'
+import { RadiusAttributeDrawer } from './RadiusAttributeDrawer'
 
 function useColumns () {
   const { $t } = useIntl()
@@ -38,7 +38,7 @@ export function RadiusAttributeGroupSettingForm () {
   const form = Form.useFormInstance()
   const attributeAssignments = Form.useWatch('attributeAssignments')
   const [visible, setVisible] = useState(false)
-  const [editMode, setEditMode] = useState(false)
+  const [editAttributeMode, setEditAttributeMode] = useState(false)
   const [editAttribute, setEditAttribute] = useState<AttributeAssignment>()
   const [radiusVendors, setRadiusVendors] = useState([] as string [])
 
@@ -69,7 +69,7 @@ export function RadiusAttributeGroupSettingForm () {
   const setAttributeAssignments = (attribute: AttributeAssignment) => {
     // eslint-disable-next-line max-len
     const newAttribute: AttributeAssignment[] = attributeAssignments ? attributeAssignments.slice() : []
-    if (editMode) {
+    if (editAttributeMode) {
       const targetIdx = newAttribute.findIndex((r: AttributeAssignment) => r.id === attribute.id)
       newAttribute.splice(targetIdx, 1, attribute)
     } else {
@@ -84,7 +84,7 @@ export function RadiusAttributeGroupSettingForm () {
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows, clearSelection) => {
-        setEditMode(true)
+        setEditAttributeMode(true)
         setVisible(true)
         setEditAttribute(selectedRows[0])
         clearSelection()
@@ -148,7 +148,7 @@ export function RadiusAttributeGroupSettingForm () {
               actions={[{
                 label: $t({ defaultMessage: 'Add' }),
                 onClick: () => {
-                  setEditMode(false)
+                  setEditAttributeMode(false)
                   setEditAttribute({
                     attributeName: '' ,
                     operator: OperatorType.ADD,
@@ -161,7 +161,7 @@ export function RadiusAttributeGroupSettingForm () {
             <RadiusAttributeDrawer
               visible={visible}
               setVisible={setVisible}
-              isEdit={editMode}
+              isEdit={editAttributeMode}
               editAttribute={editAttribute}
               vendorList={radiusVendors}
               setAttributeAssignments={setAttributeAssignments}/>

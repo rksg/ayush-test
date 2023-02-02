@@ -55,7 +55,7 @@ export function RadiusAttributeDrawer (props: RadiusAttributeDrawerProps) {
       isLeaf: isLeaf,
       selectable: isLeaf,
       children: children ?? undefined,
-      dataType: 'STRING'
+      dataType: undefined
     }
   }
 
@@ -115,7 +115,8 @@ export function RadiusAttributeDrawer (props: RadiusAttributeDrawerProps) {
       <Form.Item name='id' hidden children={<Input />}/>
       <Form.Item name='attributeName'
         label={$t({ defaultMessage: 'Attribute Type' })}
-        rules={[{ required: true }]}>
+        rules={[{ required: true }]}
+      >
         <TreeSelect
           showSearch
           value={attributeName}

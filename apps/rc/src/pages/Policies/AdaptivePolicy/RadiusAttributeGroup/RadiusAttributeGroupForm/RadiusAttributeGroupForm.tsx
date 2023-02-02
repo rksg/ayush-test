@@ -18,7 +18,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { RadiusAttributeGroupSettingForm } from './RadiusAttributeGroupSetting/RadiusAttributeGroupSettingForm'
+import { RadiusAttributeGroupSettingForm } from './RadiusAttributeGroupSettingForm'
 
 interface RadiusAttributeGroupFormProps {
   editMode?: boolean
