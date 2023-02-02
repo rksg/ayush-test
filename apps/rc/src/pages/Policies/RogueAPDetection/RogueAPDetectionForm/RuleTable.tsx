@@ -180,6 +180,7 @@ const RuleTable = (props: RuleTableProps) => {
         key='rogueEditDrawer'
         visible={visibleEdit}
         setVisible={setVisibleEdit}
+        setRuleName={setRuleName}
         isEditMode={true}
         queryRuleName={ruleName}
       />
