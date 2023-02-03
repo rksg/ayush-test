@@ -133,7 +133,7 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
       <Form.Item
         label={
           <>
-            { numberOfPassphrases === 1
+            { isPassphraseEnabled()
               ? $t({ defaultMessage: 'User Name' })
               : $t({ defaultMessage: 'User Name Prefix' })
             }
