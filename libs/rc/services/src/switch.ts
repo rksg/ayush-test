@@ -148,6 +148,28 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
+    switchFrontView: build.query<TableResult<SwitchPortViewModel>, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.getSwitchFrontView,
+          params
+        )
+        return {
+          ...req
+        }
+      }
+    }),
+    switchRearView: build.query<TableResult<SwitchPortViewModel>, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.getSwitchRearView,
+          params
+        )
+        return {
+          ...req
+        }
+      }
+    }),
     switchPortlist: build.query<TableResult<SwitchPortViewModel>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(
@@ -792,6 +814,9 @@ export const {
   useDeleteSwitchesMutation,
   useSwitchDetailHeaderQuery,
   useLazySwitchDetailHeaderQuery,
+  useSwitchFrontViewQuery,
+  useLazySwitchFrontViewQuery,
+  useSwitchRearViewQuery,
   useImportSwitchesMutation,
   useGetVlansByVenueQuery,
   useLazyGetVlansByVenueQuery,

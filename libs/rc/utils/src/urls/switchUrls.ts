@@ -273,5 +273,13 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   updateDhcpServerState: {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/switch/:switchId/dhcpServer/state'
+  },
+  getSwitchFrontView: {
+    method: 'get',
+    url: '/api/viewmodel/:tenantId/switch/:switchId/ports?unitid=:unitId'
+  },
+  getSwitchRearView: {
+    method: 'get',
+    url: '/api/viewmodel/:tenantId/switch/:switchId:/rear?unitid=:unitId'
   }
 }

@@ -1,6 +1,9 @@
-import { Button, Card } from '@acx-ui/components'
+import { Button } from '@acx-ui/components'
+import { useLazySwitchFrontViewQuery, useSwitchFrontViewQuery } from '@acx-ui/rc/services'
 import { getPoeUsage, getSwitchModel, isEmpty, isOperationalSwitch, StackMember, SwitchStatusEnum, SwitchViewModel, transformSwitchStatus } from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
 import Tooltip from 'antd/es/tooltip'
+import _ from 'lodash'
 import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 import { FrontView } from './FrontView'
@@ -76,14 +79,29 @@ export function PanelSlotview (props:{
   const [ unit, setUnit] = useState(defaultUnit)
   const { switchDetail, member, isStack } = props
   const { serialNumber, switchMac } = switchDetail
+  const [ switchFrontView ] = useLazySwitchFrontViewQuery()
+  const { tenantId } = useParams()
 
   useEffect(() => {
     if (member) {
       const unitData = genUnit(member)
       setUnit(unitData as unitType)
       caculateIcxModules(unitData)
+      if ((member.deviceStatus === SwitchStatusEnum.OPERATIONAL || member.deviceStatus === SwitchStatusEnum.DISCONNECTED) 
+           && _.isInteger(member.unitId)) {
+        getSwitchPortDetail(switchMac || serialNumber as string, member.unitId?.toString() as string)
+      } else {
+        getOfflineSwitchPort()
+      }
     }
   }, [member])
+
+  const getSwitchPortDetail = async (switchId: string, unitId: string) => {
+    const { data } = await switchFrontView({ params: { tenantId, switchId, unitId } })
+  }
+
+  const getOfflineSwitchPort = () => {
+  }
 
   const genUnit = (switchMember: StackMember) => {
     const defaultStatusEnum = serialNumber === switchMember.serialNumber ?
