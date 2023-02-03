@@ -30,6 +30,16 @@ module.exports = async function setupProxy (app) {
       }
     ))
   }
+
+  app.use(createProxyMiddleware(
+    '/docs',
+    {
+      target: 'https://docs.cloud.ruckuswireless.com',
+      changeOrigin: true,
+      pathRewrite: { '^/docs': '/' }
+    }
+  ))
+
   // Enable this proxy for superset local dev (docker-compose) setup
   // app.use(createProxyMiddleware(
   //   ['/api/v1/security', '/api/v1/dashboard/embedded'],

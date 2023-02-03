@@ -18,7 +18,7 @@ describe('Devices widget', () => {
     }
     const { asFragment } = render(
       <Provider>
-        <DevicesWidget apData={[]} switchData={[]} />
+        <DevicesWidget apData={[]} switchData={[]} edgeData={[]} />
       </Provider>,
       { route: { params } })
     await screen.findByText('Devices')
@@ -31,7 +31,7 @@ describe('Devices widget', () => {
     }
     const { asFragment } = render(
       <Provider>
-        <DevicesWidget apData={[]} switchData={[]} enableArrowClick/>
+        <DevicesWidget apData={[]} switchData={[]} edgeData={[]} enableArrowClick/>
       </Provider>,
       { route: { params } })
     await screen.findByText('Devices')
