@@ -1,5 +1,5 @@
 import { Button } from '@acx-ui/components'
-import { useLazySwitchFrontViewQuery, useSwitchFrontViewQuery } from '@acx-ui/rc/services'
+import { useLazySwitchFrontViewQuery, useLazySwitchRearViewQuery } from '@acx-ui/rc/services'
 import { getPoeUsage, getSwitchModel, isEmpty, isOperationalSwitch, StackMember, SwitchStatusEnum, SwitchViewModel, transformSwitchStatus } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 import Tooltip from 'antd/es/tooltip'
@@ -80,6 +80,7 @@ export function PanelSlotview (props:{
   const { switchDetail, member, isStack } = props
   const { serialNumber, switchMac } = switchDetail
   const [ switchFrontView ] = useLazySwitchFrontViewQuery()
+  const [ switchRearView ] = useLazySwitchRearViewQuery()
   const { tenantId } = useParams()
 
   useEffect(() => {
@@ -89,15 +90,16 @@ export function PanelSlotview (props:{
       caculateIcxModules(unitData)
       if ((member.deviceStatus === SwitchStatusEnum.OPERATIONAL || member.deviceStatus === SwitchStatusEnum.DISCONNECTED) 
            && _.isInteger(member.unitId)) {
-        getSwitchPortDetail(switchMac || serialNumber as string, member.unitId?.toString() as string)
+        getSwitchPortDetail(switchMac as string, serialNumber as string, member.unitId?.toString() as string)
       } else {
         getOfflineSwitchPort()
       }
     }
   }, [member])
 
-  const getSwitchPortDetail = async (switchId: string, unitId: string) => {
-    const { data } = await switchFrontView({ params: { tenantId, switchId, unitId } })
+  const getSwitchPortDetail = async (switchMac: string, serialNumber: string, unitId: string) => {
+    const { data: portStatus } = await switchFrontView({ params: { tenantId, switchId: switchMac || serialNumber, unitId } })
+    const { data: rearStatus } = await switchRearView({ params: { tenantId, switchId: serialNumber, unitId } })
   }
 
   const getOfflineSwitchPort = () => {
@@ -183,9 +185,12 @@ export function PanelSlotview (props:{
         }
       </UI.TitleBar>
     }
-    <FrontView switchUnit={unit.switchUnit} serialNumber={serialNumber as string} switchMac={switchMac as string} 
-      isRearView={isRearView} isOnline={unit.unitStatus.isOnline} maxSlotsCount={maxSlotsCount}
-      rearSlots={rearSlots} model={unit.model} isStack={isStack} deviceStatus={switchDetail.deviceStatus as SwitchStatusEnum}
-    />
+    { !isRearView 
+      ? <FrontView switchUnit={unit.switchUnit} serialNumber={serialNumber as string} switchMac={switchMac as string} 
+        isRearView={isRearView} isOnline={unit.unitStatus.isOnline} maxSlotsCount={maxSlotsCount}
+        rearSlots={rearSlots} model={unit.model} isStack={isStack} deviceStatus={switchDetail.deviceStatus as SwitchStatusEnum}
+      />
+      : $t({ defaultMessage: 'Rear' }) 
+    }
   </div>
 }
