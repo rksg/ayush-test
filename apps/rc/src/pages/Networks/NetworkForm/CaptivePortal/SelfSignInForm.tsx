@@ -259,7 +259,7 @@ export function SelfSignInForm () {
                     form.setFieldValue(['guestPortal', 'socialDomains'], allowedDomainsValue)
                   } else {
                     setAllowedDomainsValue(socialDomains)
-                    form.setFieldValue(['guestPortal', 'socialDomains'], '')
+                    form.setFieldValue(['guestPortal', 'socialDomains'], [])
                   }
                 }}>
                 {$t({ defaultMessage: 'Allowed Domains' })}
