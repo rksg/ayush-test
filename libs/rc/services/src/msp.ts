@@ -13,7 +13,7 @@ import {
   MspEntitlementSummary,
   MspEc, EcDeviceInventory,
   VarCustomer,
-  TenantDetail
+  TenantDetail,
   MspEcData,
   MspEcDelegatedAdmins,
   SupportDelegation
