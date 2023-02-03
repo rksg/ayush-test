@@ -14,7 +14,8 @@ import {
   FacilityEnum,
   FlowLevelEnum,
   PriorityEnum,
-  ProtocolEnum
+  ProtocolEnum,
+  TableResult
 } from '@acx-ui/rc/utils'
 
 export const successResponse = {
@@ -2653,12 +2654,25 @@ export const mockEnabledPropertyConfig: PropertyConfigs = {
   personaGroupId: 'persona-group-id-1'
 }
 
-export const mockPropertyUnitList: NewTableResult<PropertyUnit> = {
-  pageable: propertyPageable,
-  sort: propertyPageable.sort,
-  totalElements: 1,
-  totalPages: 1,
-  content: [
+// export const mockPropertyUnitList: NewTableResult<PropertyUnit> = {
+//   pageable: propertyPageable,
+//   sort: propertyPageable.sort,
+//   totalElements: 1,
+//   totalPages: 1,
+//   content: [
+//     {
+//       id: 'unit-id-1',
+//       name: 'unit-1',
+//       status: PropertyUnitStatus.ENABLED,
+//       dpsks: []
+//     }
+//   ]
+// }
+
+export const mockPropertyUnitList: TableResult<PropertyUnit> = {
+  totalCount: 1,
+  page: 1,
+  data: [
     {
       id: 'unit-id-1',
       name: 'unit-1',
@@ -2668,7 +2682,7 @@ export const mockPropertyUnitList: NewTableResult<PropertyUnit> = {
   ]
 }
 
-export const mockPropertyUnit: PropertyUnit = mockPropertyUnitList.content[0]
+export const mockPropertyUnit: PropertyUnit = mockPropertyUnitList.data[0]
 
 export const venueSyslog = {
   serviceProfileId: '31846cfe930b49b4802b302f35029589',

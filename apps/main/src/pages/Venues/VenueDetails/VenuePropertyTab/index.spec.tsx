@@ -55,7 +55,7 @@ describe('Property Unit Page', () => {
     await userEvent.click(await within(unitDialog).findByRole('button', { name: /cancel/i }))
 
     // select one of row and open edit drawer
-    const firstRowName = mockPropertyUnitList.content[0].name
+    const firstRowName = mockPropertyUnitList.data[0].name
     const firstRow = await screen.findByRole('cell', { name: firstRowName })
 
     await userEvent.click(firstRow)
@@ -70,7 +70,7 @@ describe('Property Unit Page', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     // Find first row
-    const firstRowName = mockPropertyUnitList.content[0].name
+    const firstRowName = mockPropertyUnitList.data[0].name
     const firstRow = await screen.findByRole('cell', { name: firstRowName })
 
     // TODO: test while API ready and confirm with real behavior, and waitFor

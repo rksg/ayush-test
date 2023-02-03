@@ -67,7 +67,6 @@ export function VenuePropertyTab () {
     {
       label: $t({ defaultMessage: 'Suspend' }),
       onClick: (items, clearSelection) => {
-        // TODO: Suspend Unit Action implementation (Update Unit with status = DISABLE)
         items.forEach(unit => {
           updateUnitById({
             params: { venueId, unitId: unit.id },
@@ -89,9 +88,8 @@ export function VenuePropertyTab () {
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedItems, clearSelection) => {
-        // TODO: Integrate API with Units deletion
-        const unitIds = selectedItems.map(i => i.id)
-        const unitNames = selectedItems.map(i => i.name)
+        const ids = selectedItems.map(i => i.id)
+        const names = selectedItems.map(i => i.name).join(', ')
 
         showActionModal({
           type: 'confirm',
@@ -102,12 +100,12 @@ export function VenuePropertyTab () {
             numOfEntities: selectedItems.length
           },
           onOk: () => {
-            deleteUnitByIds({ params: { venueId }, payload: { unitIds } })
+            deleteUnitByIds({ params: { venueId }, payload: ids })
               .unwrap()
               .then(() => {
                 showToast({
                   type: 'success',
-                  content: $t({ defaultMessage: 'Unit {name} was deleted' }, { unitNames })
+                  content: $t({ defaultMessage: 'Unit {names} was deleted' }, { names })
                 })
                 clearSelection()
               })

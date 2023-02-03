@@ -920,14 +920,11 @@ export const venueApi = baseVenueApi.injectEndpoints({
     // TODO: Not integration test
     getPropertyUnitList: build.query<TableResult<PropertyUnit>, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(PropertyUrlsInfo.getPropertyUnitList, params)
+        const req = createHttpRequest(PropertyUrlsInfo.getPropertyUnitList, params, { Accept: '*' })
         return {
           ...req,
           body: payload
         }
-      },
-      transformResponse: (result: NewTableResult<PropertyUnit>) => {
-        return transferToTableResult<PropertyUnit>(result)
       },
       providesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
     }),
