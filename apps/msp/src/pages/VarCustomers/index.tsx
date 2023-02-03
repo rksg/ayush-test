@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react'
-
 import { SortOrder } from 'antd/lib/table/interface'
 import moment        from 'moment-timezone'
 import { useIntl }   from 'react-intl'
@@ -73,17 +71,8 @@ const transformNextExpirationDate = (row: VarCustomer) => {
 export function VarCustomers () {
   const { $t } = useIntl()
   const { tenantId } = useParams()
-  const [isSupport, setSupport] = useState(false)
 
   const { data: userProfile } = useGetUserProfileQuery({ params: { tenantId } })
-
-  useEffect(() => {
-    if (userProfile) {
-      if (userProfile.support) {
-        setSupport(true)
-      }
-    }
-  }, [userProfile])
 
   const customerColumns: TableProps<VarCustomer>['columns'] = [
     {
@@ -158,8 +147,8 @@ export function VarCustomers () {
     }
   ]
 
-  const delegationType = isSupport ? ['DELEGATION_TYPE_SUPPORT'] : ['DELEGATION_TYPE_VAR']
-  // const delegationType =['DELEGATION_TYPE_VAR']
+  const delegationType =
+    userProfile?.support ? ['DELEGATION_TYPE_SUPPORT'] : ['DELEGATION_TYPE_VAR']
   const varCustomerPayload = {
     searchString: '',
     fields: [
@@ -199,7 +188,7 @@ export function VarCustomers () {
     )
   }
 
-  const title = isSupport
+  const title = userProfile?.support
     ? $t({ defaultMessage: 'RUCKUS Customers' }) : $t({ defaultMessage: 'VAR Customers' })
   return (
     <>

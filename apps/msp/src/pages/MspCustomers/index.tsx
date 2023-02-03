@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
@@ -12,7 +12,6 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-// import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   DownloadOutlined
 } from '@acx-ui/icons'
@@ -66,18 +65,6 @@ const transformApUtilization = (row: MspEc) => {
 
 const transformSwitchEntitlement = (row: MspEc) => {
   return row.switchLicenses ? row.switchLicenses : 0
-  // const entitlements = row.entitlements
-  // let totalCount = 0
-  // const switchEntitlements: DelegationEntitlementRecord[] = []
-  // entitlements.forEach((entitlement:DelegationEntitlementRecord) => {
-  //   if (entitlement.entitlementDeviceType !== EntitlementNetworkDeviceType.SWITCH) {
-  //     return
-  //   }
-  //   switchEntitlements.push(entitlement)
-  // })
-  // totalCount = switchEntitlements.reduce((total, current) =>
-  //   total + parseInt(current.quantity, 10), 0)
-  // return totalCount
 }
 
 const transformCreationDate = (row: MspEc) => {
@@ -111,21 +98,11 @@ const transformExpirationDate = (row: MspEc) => {
 export function MspCustomers () {
   const { $t } = useIntl()
   const { tenantId } = useParams()
-  const [isSupport, setSupport] = useState(false)
-  const isEdaEcCreateEnabled = true//useIsSplitOn(Features.MSP_EC_CREATE_EDA)
 
   const [modalVisible, setModalVisible] = useState(false)
   const [ecTenantId, setTenantId] = useState('')
 
   const { data: userProfile } = useGetUserProfileQuery({ params: { tenantId } })
-
-  useEffect(() => {
-    if (userProfile) {
-      if (userProfile.support) {
-        setSupport(true)
-      }
-    }
-  }, [userProfile])
 
   const mspPayload = {
     searchString: '',
@@ -310,7 +287,6 @@ export function MspCustomers () {
     const rowActions: TableProps<MspEc>['rowActions'] = [
       {
         label: $t({ defaultMessage: 'Edit' }),
-        disabled: !isEdaEcCreateEnabled,
         onClick: (selectedRows) => {
           setTenantId(selectedRows[0].id)
           const status = selectedRows[0].accountType === 'TRIAL' ? 'Trial' : 'Paid'
@@ -448,15 +424,14 @@ export function MspCustomers () {
           </TenantLink>,
           <MspTenantLink to='/dashboard/mspcustomers/create' key='addMspEc'>
             <Button
-              hidden={isSupport}
-              disabled={!isEdaEcCreateEnabled}
+              hidden={userProfile?.support}
               type='primary'>{$t({ defaultMessage: 'Add Customer' })}</Button>
           </MspTenantLink>,
           <DisabledButton key='download' icon={<DownloadOutlined />} />
         ]}
       />
-      {isSupport && <SupportEcTable />}
-      {!isSupport && <MspEcTable />}
+      {userProfile?.support && <SupportEcTable />}
+      {!userProfile?.support && <MspEcTable />}
       <ResendInviteModal
         visible={modalVisible}
         setVisible={setModalVisible}

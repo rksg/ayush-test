@@ -205,8 +205,8 @@ export function MspEcDropdownList () {
     if(tableQuerySupport) {
       tableQuerySupport.setPayload({ ...tableQuerySupport.payload, searchString: searchString })
     }
-  }, [tenantDetail, tableQueryMspEc.data, tableQueryVarRec.data, tableQuerySupportEc.data,
-    tableQuerySupport.data, searchString])
+  }, [tenantDetail, tableQueryMspEc, tableQueryVarRec, tableQuerySupportEc,
+    tableQuerySupport, searchString])
 
   const onClose = () => {
     setSearchString('')
