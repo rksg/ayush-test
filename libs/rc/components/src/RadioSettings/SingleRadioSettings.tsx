@@ -160,7 +160,14 @@ export function SingleRadioSettings (props:{
     const showChannelBarRadios = [
       ApRadioTypeEnum.Radio5G,
       ApRadioTypeEnum.RadioLower5G,
-      ApRadioTypeEnum.RadioUpper5G]
+      ApRadioTypeEnum.RadioUpper5G
+    ]
+
+    // Reset to AUTO if AP doesn't not supported venue radio settings's bandwidth
+    if (channelBandwidth !== 'AUTO' &&
+        !bandwidthOptions.find(option => option.value === channelBandwidth)) {
+      form.setFieldValue(channelBandwidthFieldName, 'AUTO')
+    }
 
     if (!isEmpty(supportChannels)) {
       const bandwidth = (channelBandwidth === 'AUTO')? 'auto' : channelBandwidth
@@ -240,7 +247,7 @@ export function SingleRadioSettings (props:{
       }
     }
 
-  }, [supportChannels, channelBandwidth, radioType,
+  }, [supportChannels, channelBandwidth, radioType, bandwidthOptions,
     allowIndoorForOutdoor, combinChannels, channelMethod])
 
 
