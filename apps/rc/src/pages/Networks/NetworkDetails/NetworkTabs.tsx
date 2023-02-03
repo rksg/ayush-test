@@ -44,8 +44,7 @@ function NetworkTabs () {
         key='services' />
       <Tabs.TabPane tab={$t({ defaultMessage: 'Timeline' })} key='timeline' />
       <Tabs.TabPane
-        disabled
-        tab={<Tooltip title={$t(notAvailableMsg)}>{$t({ defaultMessage: 'Incidents' })}</Tooltip>}
+        tab={$t({ defaultMessage: 'Incidents' })}
         key='incidents'
       />
     </Tabs>

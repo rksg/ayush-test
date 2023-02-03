@@ -8,7 +8,7 @@ import { Features, useIsSplitOn }                                            fro
 import { useDeleteNetworkMutation }                                          from '@acx-ui/rc/services'
 import { NetworkTypeEnum, Network, NetworkType, TableQuery, RequestPayload } from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink }                                         from '@acx-ui/react-router-dom'
-import { getIntl, notAvailableMsg, fixedEncodeURIComponent }                         from '@acx-ui/utils'
+import { getIntl, notAvailableMsg }                                          from '@acx-ui/utils'
 
 
 const disabledType: NetworkTypeEnum[] = []
@@ -26,9 +26,8 @@ function getCols (intl: ReturnType<typeof useIntl>) {
         if(disabledType.indexOf(row.nwSubType as NetworkTypeEnum) > -1){
           return data
         }else{
-          const ssidArg = fixedEncodeURIComponent(row.ssid)
           return (
-            <TenantLink to={`/networks/${row.id}/network-details/aps?ssid=${ssidArg}`}>
+            <TenantLink to={`/networks/wireless/${row.id}/network-details/aps`}>
               {data}
               {data !== row.ssid &&
                 <> {intl.$t({ defaultMessage: '(SSID: {ssid})' }, { ssid: row.ssid })}</>
