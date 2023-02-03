@@ -176,7 +176,10 @@ export const useDotClick = (
     const echartInstance = eChartsRef.current?.getEchartsInstance() as ECharts
     echartInstance.on('click', handler)
     return () => {
-      echartInstance.off('click', handler)
+      if (echartInstance && echartInstance.isDisposed && echartInstance.isDisposed()) {
+        echartInstance.off('click', handler)
+        echartInstance.dispose()
+      }
     }
   }, [eChartsRef, handler])
 }
