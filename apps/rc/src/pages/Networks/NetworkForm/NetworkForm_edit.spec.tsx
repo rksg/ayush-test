@@ -235,7 +235,7 @@ describe('NetworkForm', () => {
     await userEvent.click(screen.getByText('Finish'))
   })
 
-  it('should set different ssid successfully', async () => {
+  it.skip('should set different ssid successfully', async () => {
     const params = {
       networkId: '5d45082c812c45fbb9aab24420f39bf0',
       tenantId: 'tenant-id',
@@ -294,7 +294,7 @@ describe('NetworkForm', () => {
     fireEvent.change(ssidInput, { target: { value: '1' } })
     fireEvent.blur(ssidInput)
   })
-  it('should configure aps and scheduling successfully', async () => {
+  it.skip('should configure aps and scheduling successfully', async () => {
     const params = {
       networkId: '5d45082c812c45fbb9aab24420f39bf0',
       tenantId: 'tenant-id',

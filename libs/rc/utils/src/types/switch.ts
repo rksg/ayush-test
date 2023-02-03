@@ -1,5 +1,8 @@
 /* eslint-disable max-len */
 import { ConfigurationBackupStatus } from '../constants'
+import { PortSettingModel }          from '../models/PortSetting'
+
+import { Acl, Vlan, SwitchModel } from './venue'
 
 import { GridDataRow } from './'
 
@@ -83,6 +86,7 @@ export class Switch {
   initialVlanId?: string
   specifiedType?: string
   rearModule?: string
+  serialNumber?: string
 
   constructor () {
     this.name = ''
@@ -118,7 +122,8 @@ export interface TroubleshootingResult {
       macAddressTablePortIdentify: string
       macAddressTableVlanId: string
       macAddressTableAddress: string,
-      macAddressTableType: TroubleshootingMacAddressOptionsEnum
+      macAddressTableType: TroubleshootingMacAddressOptionsEnum,
+      dhcpServerLeaseList?: SwitchDhcpLease[]
   }
 }
 
@@ -130,10 +135,6 @@ export interface TraceRouteSwitch {
   maxTtl: string
   targetHost: string
 }
-
-// export interface TroubleshootingResult {
-//   responseId: string
-// }
 
 export interface VeViewModel {
   name?: string
@@ -151,7 +152,10 @@ export interface VeViewModel {
   syncedSwitchConfig: boolean
   veId: number
   vlanId: number
-  portTyp : string //ignore
+  portNumber: string
+  portTyp: string //ignore
+  inactiveRow?: boolean //ignore
+  inactiveTooltip?: string //ignore
 }
 
 export interface VeForm {
@@ -185,7 +189,6 @@ export class SwitchViewModel extends Switch {
   type?: string
   configReady = false
   syncedSwitchConfig = false
-  serialNumber?: string
   isStack?: boolean
   deviceStatus?: SwitchStatusEnum
   model?: string
@@ -201,7 +204,7 @@ export class SwitchViewModel extends Switch {
   cliApplied?: boolean
   formStacking?: boolean
   suspendingDeployTime?: string
-  syncDataEndTime?: number
+  syncDataEndTime?: string
   firmwareVersion?: string
   portsStatus?: {
     Down?: number,
@@ -212,6 +215,8 @@ export class SwitchViewModel extends Switch {
   dns?: string
   unitDetails?: StackMember[]
   firmware?: string
+  activeSerial?: string
+  syncDataId?: string
 }
 
 export interface SwitchRow {
@@ -253,6 +258,24 @@ export interface StackMember {
   unitId?: string
 }
 
+export interface StackMemberList {
+  activeSerial: string
+  deviceStatus: string
+  id: string
+  model: string
+  order: string
+  poeFree: number
+  poeTotal: number
+  poeUtilization: number
+  serialNumber: string
+  switchMac: string
+  unitId: number
+  unitName: string
+  unitStatus: string
+  uptime: string
+  venueName: string
+}
+
 export interface ConfigurationHistory {
   switchName: string
   startTime: string
@@ -264,19 +287,22 @@ export interface ConfigurationHistory {
   numberOfErrors: number
   transactionId: string
   dispatchFailedReason?: DispatchFailedReason[]
+  numberOfFailed?: number
+  numberOfNotifySuccess?: number
+  numberOfSuccess?: number
 }
 
 export interface ConfigurationBackup {
-  'id': string
-'createdDate': string
-'name': string
-'backupType': string
-'backupName': string
-'status': ConfigurationBackupStatus
-'config': string
-'switchId': string
-restoreStatus: ConfigurationBackupStatus
-failureReason: string
+  id: string
+  createdDate: string
+  name: string
+  backupType: string
+  backupName: string
+  status: ConfigurationBackupStatus
+  config: string
+  switchId: string
+  restoreStatus: ConfigurationBackupStatus
+  failureReason: string
 }
 
 export interface DispatchFailedReason {
@@ -297,6 +323,7 @@ export interface SwitchTable {
   order?: number
   active?: boolean
   model: string
+  disabled: boolean
 }
 
 export interface SwitchPortViewModel extends GridDataRow {
@@ -344,4 +371,154 @@ export interface SwitchPortViewModel extends GridDataRow {
   unitStatus: string; // stack unit role (Standalone/Member...etc)
   unitState: SwitchStatusEnum; // stack unit status (Online/Offline)
   SwitchPortStackingPortField: boolean;
+}
+
+export enum PORT_SPEED {
+  NONE = 'None',
+  AUTO = 'Auto',
+  TEN_M_FULL = '10-FULL',
+  TEN_M_HALF = '10-HALF',
+  ONE_HUNDRED_M_FULL = '100-FULL',
+  ONE_HUNDRED_M_HALF = '100-HALF',
+  ONE_G_FULL = '1000-FULL',
+  ONE_G_FULL_MASTER = '1000-FULL-MASTER',
+  ONE_G_FULL_SLAVE = '1000-FULL-SLAVE',
+  TWO_POINT_FIVE_G_FULL = '2500-FULL',
+  TWO_POINT_FIVE_G_FULL_MASTER = '2500-FULL-MASTER',
+  TWO_POINT_FIVE_G_FULL_SLAVE = '2500-FULL-SLAVE',
+  FIVE_G_FULL = '5G-FULL',
+  FIVE_G_FULL_MASTER = '5G-FULL-MASTER',
+  FIVE_G_FULL_SLAVE = '5G-FULL-SLAVE',
+  TEN_G_FULL = '10G-FULL',
+  TEN_G_FULL_MASTER = '10G-FULL-MASTER',
+  TEN_G_FULL_SLAVE = '10G-FULL-SLAVE',
+  TWENTY_FIVE_G_FULL = '25G-FULL',
+  FORTY_G_FULL = '40G-FULL',
+  ONE_HUNDRED_G_FULL = '100G-FULL',
+  OPTIC = '10G SFP+'
+}
+
+export class SwitchEntityEnum {
+  static switchList = 'switchList'
+  static switchClientList = 'swichClientList'
+  static switchModelList = 'switchModelList'
+  static switchVlanList = 'switchVlanList'
+  static switchPortList = 'switchPortList'
+  static switchRoutedList = 'switchRoutedList'
+  static switchProfileList = 'switchProfileList'
+  static stackMemberlList = 'stackMemberlList'
+}
+
+export interface PortsSetting {
+  requestId: string,
+  response: PortSettingModel[]
+}
+export interface VePortRouted {
+  defaultVlan: boolean
+  deviceStatus: string
+  dhcpRelayAgent: string
+  id: string
+  ipAddress: string
+  ipAddressType: string
+  ipSubnetMask: string
+  name: string
+  ospfArea: string
+  portType: string
+  stack: boolean
+  switchId:string
+  switchName: string
+  syncedSwitchConfig: boolean
+  veId: number
+  vlanId: number
+  portNumber: string
+}
+
+// export interface ProfileVlan {
+//   defaultVlan: boolean
+//   profileLevel: boolean
+//   vlanConfigName?: string
+//   vlanId: number
+//   switchId: string
+// }
+
+export interface SwitchDefaultVlan {
+  defaultVlanId: number
+  switchId: string
+}
+
+
+export interface SwitchVlan {
+  defaultVlan: boolean
+  profileLevel: boolean
+  vlanConfigName?: string
+  switchId: string
+  vlanId: number
+}
+
+export interface SwitchVlanUnion {
+  profileVlan: SwitchVlan[]
+  switchDefaultVlan: SwitchVlan[]
+  switchVlan: SwitchVlan[]
+}
+
+export interface SwitchVlans {
+  arpInspection: boolean
+  id: string
+  igmpSnooping: string
+  ipv4DhcpSnooping: boolean
+  multicastVersion: number
+  spanningTreePriority?: number
+  spanningTreeProtocol: string
+  switchFamilyModels: SwitchModel[]
+  vlanId: number
+  vlanName: string
+}
+
+export interface SwitchProfile {
+  acls: Acl[]
+  id: string
+  name: string
+  profileType: string
+  venues: string[]
+  vlans: Vlan[]
+}
+
+export interface SaveSwitchProfile {
+  switchId: string,
+  port: PortSettingModel[]
+}
+
+export enum DHCP_OPTION_TYPE {
+  ASCII = 'ASCII',
+  HEX = 'HEX',
+  IP = 'IP',
+  BOOLEAN = 'BOOLEAN',
+  INTEGER = 'INTEGER'
+}
+
+export interface SwitchDhcpOption {
+  seq: number
+  type: DHCP_OPTION_TYPE
+  value: string
+}
+
+export interface SwitchDhcp {
+  id: string
+  poolName: string
+  leaseDays: number
+  leaseHrs: number
+  leaseMins: number
+  excludedEnd?: string
+  excludedStart?: string
+  defaultRouterIp?: string
+  subnetMask: string
+  subnetAddress: string
+  dhcpOptions?: SwitchDhcpOption[]
+}
+
+export interface SwitchDhcpLease {
+  clientId: string
+  clientIp: string
+  leaseExpiration: string
+  leaseType: string
 }

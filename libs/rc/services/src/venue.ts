@@ -9,7 +9,7 @@ import {
   FloorPlanDto,
   onSocketActivityChanged,
   RequestPayload,
-  showActivityMessage,
+  onActivityMessageReceived,
   TableResult,
   Venue,
   VenueExtended,
@@ -24,6 +24,7 @@ import {
   VenueDosProtection,
   VenueRogueAp,
   RogueClassificationPolicy,
+  VenueSyslog,
   RadiusServer,
   TacacsServer,
   LocalUser,
@@ -33,6 +34,10 @@ import {
   VenueSettings,
   VenueSwitchConfiguration,
   ConfigurationProfile,
+  ConfigurationHistory,
+  transformConfigType,
+  transformConfigStatus,
+  VenueConfigHistoryDetailResp,
   VenueDHCPProfile,
   VenueDHCPPoolInst,
   DHCPLeases,
@@ -48,6 +53,7 @@ import {
   VenueDirectedMulticast,
   VenueLoadBalancing
 } from '@acx-ui/rc/utils'
+import { formatter } from '@acx-ui/utils'
 
 const RKS_NEW_UI = {
   'x-rks-new-ui': true
@@ -85,7 +91,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
             'UpdateRoguePolicy',
             'UpdateDenialOfServiceProtection'
           ]
-          showActivityMessage(msg, activities, () => {
+          onActivityMessageReceived(msg, activities, () => {
             api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'LIST' }]))
           })
         })
@@ -131,7 +137,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       providesTags: [{ type: 'Venue', id: 'DETAIL' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg,
+          onActivityMessageReceived(msg,
             ['AddNetworkVenue', 'DeleteNetworkVenue'], () => {
               api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'DETAIL' }]))
             })
@@ -225,9 +231,10 @@ export const venueApi = baseVenueApi.injectEndpoints({
       providesTags: [{ type: 'VenueFloorPlan', id: 'DETAIL' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg, ['AddFloorPlan', 'UpdateFloorPlan', 'DeleteFloorPlan'], () => {
-            api.dispatch(venueApi.util.invalidateTags([{ type: 'VenueFloorPlan', id: 'DETAIL' }]))
-          })
+          onActivityMessageReceived(msg,
+            ['AddFloorPlan', 'UpdateFloorPlan', 'DeleteFloorPlan'], () => {
+              api.dispatch(venueApi.util.invalidateTags([{ type: 'VenueFloorPlan', id: 'DETAIL' }]))
+            })
         })
       }
     }),
@@ -286,7 +293,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       providesTags: [{ type: 'VenueFloorPlan', id: 'DEVICE' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg, [
+          onActivityMessageReceived(msg, [
             'Update Switch Position',
             'UpdateApPosition',
             'UpdateCloudpathServerPosition'], () => {
@@ -449,7 +456,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       providesTags: [{ type: 'AAA', id: 'DETAIL' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg,
+          onActivityMessageReceived(msg,
             ['AddAaaServer', 'UpdateAaaServer', 'DeleteAaaServer'], () => {
               api.dispatch(venueApi.util.invalidateTags([{ type: 'AAA', id: 'LIST' }]))
             })
@@ -515,7 +522,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       providesTags: [{ type: 'ExternalAntenna', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg,
+          onActivityMessageReceived(msg,
             ['UpdateVenueExternalAntenna'], () => {
               api.dispatch(venueApi.util.invalidateTags([{ type: 'ExternalAntenna', id: 'LIST' }]))
             })
@@ -548,7 +555,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       providesTags: [{ type: 'VenueRadio', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg,
+          onActivityMessageReceived(msg,
             ['UpdateVenueRadioCustomization'], () => {
               api.dispatch(venueApi.util.invalidateTags([{ type: 'VenueRadio', id: 'LIST' }]))
             })
@@ -637,7 +644,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
             'UpdateVenueRogueAp',
             'UpdateDenialOfServiceProtection'
           ]
-          showActivityMessage(msg, activities, () => {
+          onActivityMessageReceived(msg, activities, () => {
             api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'LIST' }]))
           })
         })
@@ -670,6 +677,35 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       }
     }),
+    getVenueSyslogAp: build.query<VenueSyslog, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getVenueSyslogAp, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Venue', id: 'Syslog' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UpdateVenueSyslog'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'Syslog' }]))
+          })
+        })
+      }
+    }),
+    updateVenueSyslogAp: build.mutation<VenueSyslog, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.updateVenueSyslogAp, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Venue', id: 'Syslog' }]
+    }),
     venueDHCPProfile: build.query<VenueDHCPProfile, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(DHCPUrls.getVenueDHCPServiceProfile, params)
@@ -683,7 +719,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
           const activities = [
             'UpdateVenueDhcpConfigServiceProfileSetting'
           ]
-          showActivityMessage(msg, activities, () => {
+          onActivityMessageReceived(msg, activities, () => {
             api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'DHCPProfile' }]))
           })
         })
@@ -704,7 +740,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
             'DeactivateVenueDhcpPool',
             'ActivateVenueDhcpPool'
           ]
-          showActivityMessage(msg, activities, () => {
+          onActivityMessageReceived(msg, activities, () => {
             api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'poolList' }]))
           })
         })
@@ -758,7 +794,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
           const activities = [
             'UpdateVenueDirectedMulticast'
           ]
-          showActivityMessage(msg, activities, () => {
+          onActivityMessageReceived(msg, activities, () => {
             const invalidateTagsFunc = venueApi.util.invalidateTags
             api.dispatch(invalidateTagsFunc([{ type: 'Venue', id: 'DIRECTED_MULTICAST' }]))
           })
@@ -773,7 +809,39 @@ export const venueApi = baseVenueApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Venue', id: 'DIRECTED_MULTICAST' }]
+      invalidatesTags: [{ type: 'Venue', id: 'DIRECTEDMULTICAST' }]
+    }),
+    getVenueConfigHistory: build.query<TableResult<ConfigurationHistory>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getVenueConfigHistory, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      transformResponse: (res: { response:{ list:ConfigurationHistory[], totalCount:number } }, meta
+        , arg: { payload:{ page:number } }) => {
+        return {
+          data: res.response.list ? res.response.list.map(item => ({
+            ...item,
+            startTime: formatter('dateTimeFormatWithSeconds')(item.startTime),
+            configType: (item.configType as unknown as string[])
+              .map(type => transformConfigType(type)).join(', '),
+            dispatchStatus: transformConfigStatus(item.dispatchStatus)
+          })) : [],
+          totalCount: res.response.totalCount,
+          page: arg.payload.page
+        }
+      }
+    }),
+    getVenueConfigHistoryDetail: build.query<VenueConfigHistoryDetailResp, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getVenueConfigHistoryDetail, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
     }),
     getVenueLoadBalancing: build.query<VenueLoadBalancing, RequestPayload>({
       query: ({ params }) => {
@@ -788,7 +856,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
           const activities = [
             'UpdateVenueLoadBalancing'
           ]
-          showActivityMessage(msg, activities, () => {
+          onActivityMessageReceived(msg, activities, () => {
             api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'LOAD_BALANCING' }]))
           })
         })
@@ -804,8 +872,6 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Venue', id: 'LOAD_BALANCING' }]
     })
-
-
   })
 })
 
@@ -854,6 +920,8 @@ export const {
   useGetOldVenueRogueApQuery,
   useUpdateVenueRogueApMutation,
   useGetRoguePoliciesQuery,
+  useGetVenueSyslogApQuery,
+  useUpdateVenueSyslogApMutation,
   useConfigProfilesQuery,
   useVenueSwitchSettingQuery,
   useUpdateVenueSwitchSettingMutation,
@@ -879,6 +947,10 @@ export const {
   useGetVenueDirectedMulticastQuery,
   useLazyGetVenueDirectedMulticastQuery,
   useUpdateVenueDirectedMulticastMutation,
+  useGetVenueConfigHistoryQuery,
+  useLazyGetVenueConfigHistoryQuery,
+  useGetVenueConfigHistoryDetailQuery,
+  useLazyGetVenueConfigHistoryDetailQuery,
   useGetVenueLoadBalancingQuery,
   useUpdateVenueLoadBalancingMutation
 } = venueApi

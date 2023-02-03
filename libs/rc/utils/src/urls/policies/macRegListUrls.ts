@@ -2,10 +2,12 @@ import { ApiInfo } from '../../apiService'
 
 const macRegApiBaseUrl = '/api/macRegistrationPools'
 
+const paginationParams = '?size=:pageSize&page=:page&sort=:sort'
+
 export const MacRegListUrlsInfo: { [key: string]: ApiInfo } = {
   getMacRegistrationPools: {
     method: 'get',
-    url: macRegApiBaseUrl
+    url: macRegApiBaseUrl + paginationParams
   },
   createMacRegistrationPool: {
     method: 'post',
@@ -25,7 +27,7 @@ export const MacRegListUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getMacRegistrations: {
     method: 'get',
-    url: macRegApiBaseUrl + '/:policyId/registrations'
+    url: macRegApiBaseUrl + '/:policyId/registrations' + paginationParams
   },
   createMacRegistration: {
     method: 'post',
@@ -46,5 +48,9 @@ export const MacRegListUrlsInfo: { [key: string]: ApiInfo } = {
   addMacRegistration: {
     method: 'post',
     url: macRegApiBaseUrl + '/:policyId/registrations'
+  },
+  uploadMacRegistration: {
+    method: 'post',
+    url: macRegApiBaseUrl + '/:policyId/registrations/upload'
   }
 }

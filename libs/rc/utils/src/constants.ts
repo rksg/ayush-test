@@ -110,16 +110,14 @@ export enum QosPriorityEnum {
 export enum ServiceType {
   PORTAL = 'Portal',
   DHCP = 'DHCP (Wi-Fi)',
+  EDGE_DHCP = 'DHCP (Edge)',
   WIFI_CALLING = 'Wi-Fi Calling',
   MDNS_PROXY = 'mDNS Proxy',
   DPSK = 'DPSK',
   NETWORK_SEGMENTATION = 'Network Segmentation',
   WEBAUTH_SWITCH = 'Web Auth'
 }
-export enum ServiceTechnology {
-  WIFI = 'WI-FI',
-  SWITCH = 'SWITCH'
-}
+
 export enum ServiceStatus {
   UP = 'UP',
   DOWN = 'DOWN'
@@ -223,7 +221,8 @@ export enum ConfigTypeEnum {
   CLI_UPDATE = 'CLI_UPDATE',
   IP_CONFIG = 'IP_CONFIG',
   SPECIFIC_SETTING = 'SPECIFIC_SETTING',
-  STATIC_ROUTE = 'STATIC_ROUTE'
+  STATIC_ROUTE = 'STATIC_ROUTE',
+  TRIGGER_SYNC = 'TRIGGER_SYNC'
 }
 
 export enum ConfigStatusEnum {
@@ -526,6 +525,11 @@ export enum PortalComponentsEnum{
   TermsConditions = 'termsConditions',
   PoweredBy = 'poweredBy',
   Wifi4eu = 'wifi4eu'
+}
+
+export enum CurrentAclEdition {
+  INGRESS = 'INGRESS',
+  EGRESS = 'EGRESS'
 }
 
 export type LangCode = 'zh_TW' | 'cs' | 'sk' | 'hu' | 'en' | 'da' | 'fi' |'fr' | 'nl' |

@@ -1,7 +1,6 @@
 import {
   ServiceAdminState,
   ServiceStatus,
-  ServiceTechnology,
   ServiceType,
   ApDeviceStatusEnum,
   GuestNetworkTypeEnum,
@@ -9,6 +8,7 @@ import {
   NetworkTypeEnum,
   QosPriorityEnum
 } from '../constants'
+import { EdgeStatusSeverityEnum }        from '../models'
 import { AAAWlanAdvancedCustomization }  from '../models/AAAWlanAdvancedCustomization'
 import { DpskWlanAdvancedCustomization } from '../models/DpskWlanAdvancedCustomization'
 import { NetworkVenue }                  from '../models/NetworkVenue'
@@ -16,9 +16,10 @@ import { OpenWlanAdvancedCustomization } from '../models/OpenWlanAdvancedCustomi
 import { PskWlanAdvancedCustomization }  from '../models/PskWlanAdvancedCustomization'
 import { TrustedCAChain }                from '../models/TrustedCAChain'
 
-import { ApModel }          from './ap'
-import { EPDG }             from './services'
-import { SwitchStatusEnum } from './switch'
+import { ApModel }                     from './ap'
+import { EdgeStatusSeverityStatistic } from './edge'
+import { EPDG }                        from './services'
+import { SwitchStatusEnum }            from './switch'
 
 export * from './ap'
 export * from './venue'
@@ -33,6 +34,7 @@ export * from './client'
 export * from './components'
 export * from './switch'
 export * from './timeline'
+export * from './persona'
 
 export interface CommonResult {
   requestId: string
@@ -221,6 +223,7 @@ export interface Dashboard {
       },
       totalCount: number;
     },
+    edges?: EdgeStatusSeverityStatistic,
     venues?: {
       summary: {
         [prop: string]: number;
@@ -260,6 +263,17 @@ export interface Dashboard {
         totalCount: number
       }
     }> | undefined,
+    totalCount: number
+  };
+  edges?: {
+    edgesStatus: Array<{
+      [prop: string]: {
+        edgeStatus: {
+          [ key in EdgeStatusSeverityEnum]?: number
+        },
+        totalCount: number
+      }
+    }>,
     totalCount: number
   };
   venues?: Array<{
@@ -314,7 +328,6 @@ export interface Service {
   type: ServiceType
   status: ServiceStatus
   adminState: ServiceAdminState
-  technology: ServiceTechnology
   scope: number
   health: string
   tags: string[]
@@ -448,4 +461,28 @@ export interface PlmMessageBanner {
   startTime: string,
   tenantType: string,
   updatedDate: string
+}
+
+export enum SWITCH_CLIENT_TYPE {
+  AP = 'WLAN_AP',
+  ROUTER = 'ROUTER'
+}
+
+export interface SwitchClient {
+  id: string
+  clientMac: string
+  clientIpv4Addr: string
+  clientIpv6Addr: string
+  clientName: string
+  clientDesc: string
+  clientType: SWITCH_CLIENT_TYPE
+  switchId: string
+  switchName: string
+  switchPort: string
+  switchSerialNumber: string
+  clientVlan: string
+  vlanName: string
+  venueId: string
+  venueName: string
+  isRuckusAP: boolean
 }

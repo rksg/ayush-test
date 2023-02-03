@@ -5,6 +5,7 @@ import type { TabsType } from '.'
 
 const lineStyle = css`
   > .ant-tabs-nav {
+    &:before { border: 0; }
     border-bottom: 1px solid var(--acx-neutrals-30);
     > .ant-tabs-nav-wrap > .ant-tabs-nav-list {
       > .ant-tabs-ink-bar { height: 3px; }

@@ -14,9 +14,7 @@ import {
   NotificationSolid,
   QuestionMarkCircleSolid
 } from '@acx-ui/icons'
-import {
-  CloudMessageBanner
-} from '@acx-ui/rc/components'
+import { CloudMessageBanner } from '@acx-ui/rc/components'
 import { Outlet, TenantLink } from '@acx-ui/react-router-dom'
 
 import { useMenuConfig } from './menuConfig'

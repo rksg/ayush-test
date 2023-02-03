@@ -7,12 +7,15 @@ import {
   TableResult,
   CommonResult,
   MspAdministrator,
+  MspAssignmentHistory,
   MspAssignmentSummary,
   MspEntitlement,
   MspEntitlementSummary,
   MspEc, EcDeviceInventory,
-  VarCustomer,
-  EcProfile
+  MspEcData,
+  MspEcDelegatedAdmins,
+  SupportDelegation,
+  VarCustomer
 } from '@acx-ui/rc/utils'
 
 export const baseMspApi = createApi({
@@ -28,17 +31,6 @@ export const mspApi = baseMspApi.injectEndpoints({
     mspCustomerList: build.query<TableResult<MspEc>, RequestPayload>({
       query: ({ params, payload }) => {
         const mspCustomerListReq = createHttpRequest(MspUrlsInfo.getMspCustomersList, params)
-        return {
-          ...mspCustomerListReq,
-          body: payload
-        }
-      },
-      providesTags: [{ type: 'Msp', id: 'LIST' }]
-    }),
-    mspCustomerListDropdown: build.query<TableResult<MspEc>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const mspCustomerListReq =
-        createHttpRequest(MspUrlsInfo.getMspCustomersListDropdown, params, {}, true)
         return {
           ...mspCustomerListReq,
           body: payload
@@ -136,22 +128,134 @@ export const mspApi = baseMspApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
-    getEcProfile: build.query<EcProfile, RequestPayload>({
+    mspEcAdminList: build.query<MspAdministrator[], RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(
-          MspUrlsInfo.getMspEcProfile,
-          params
-        )
+        const mspEcAdminListReq =
+          createHttpRequest(MspUrlsInfo.getMspEcAdminList, params)
+        return {
+          ...mspEcAdminListReq
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    mspAssignmentHistory: build.query<MspAssignmentHistory[], RequestPayload>({
+      query: ({ params }) => {
+        const mspAssignmentHistoryReq =
+          createHttpRequest(MspUrlsInfo.getMspAssignmentHistory, params)
+        return {
+          ...mspAssignmentHistoryReq
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    addCustomer: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.addMspEcAccount, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    updateCustomer: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.updateMspEcAccount, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    updateMspEcDelegatedAdmins: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.updateMspEcDelegatedAdmins, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    getMspEcDelegatedAdmins: build.query<MspEcDelegatedAdmins[], RequestPayload>({
+      query: ({ params }) => {
+        const mspAdminListReq =
+          createHttpRequest(MspUrlsInfo.getMspEcDelegatedAdmins, params)
+        return {
+          ...mspAdminListReq
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    getMspEc: build.query<MspEcData, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(MspUrlsInfo.getMspEcAccount, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    assignMspEcToIntegrator: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.assignMspEcToIntegrator, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    deactivateMspEc: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(MspUrlsInfo.deactivateMspEcAccount, params)
         return {
           ...req
         }
-      }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    reactivateMspEc: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(MspUrlsInfo.reactivateMspEcAccount, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    getMspEcSupport: build.query<SupportDelegation[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(MspUrlsInfo.getMspEcSupport, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    enableMspEcSupport: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(MspUrlsInfo.enableMspEcSupport, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    disableMspEcSupport: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(MspUrlsInfo.disableMspEcSupport, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
     })
   })
 })
 export const {
   useMspCustomerListQuery,
-  useMspCustomerListDropdownQuery,
   useDeleteMspEcMutation,
   useVarCustomerListQuery,
   useInviteCustomerListQuery,
@@ -161,5 +265,17 @@ export const {
   useMspEntitlementSummaryQuery,
   useMspAssignmentSummaryQuery,
   useResendEcInvitationMutation,
-  useGetEcProfileQuery
+  useMspEcAdminListQuery,
+  useMspAssignmentHistoryQuery,
+  useAddCustomerMutation,
+  useUpdateCustomerMutation,
+  useUpdateMspEcDelegatedAdminsMutation,
+  useGetMspEcDelegatedAdminsQuery,
+  useGetMspEcQuery,
+  useAssignMspEcToIntegratorMutation,
+  useDeactivateMspEcMutation,
+  useReactivateMspEcMutation,
+  useGetMspEcSupportQuery,
+  useEnableMspEcSupportMutation,
+  useDisableMspEcSupportMutation
 } = mspApi

@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 
 import { Typography } from 'antd'
+import moment         from 'moment'
 import { useIntl }    from 'react-intl'
 
 import { cssStr, Subtitle }                from '@acx-ui/components'
@@ -10,8 +11,8 @@ import {
   Client,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { formatter }             from '@acx-ui/utils'
+import { TenantLink, useParams }                             from '@acx-ui/react-router-dom'
+import { encodeParameter, DateFilter, DateRange, formatter } from '@acx-ui/utils'
 
 function getCols (intl: ReturnType<typeof useIntl>) {
   const dateTimeFormatter = formatter('dateTimeFormat')
@@ -21,12 +22,20 @@ function getCols (intl: ReturnType<typeof useIntl>) {
     dataIndex: 'hostname',
     sorter: true,
     defaultSortOrder: 'ascend',
-    render: (data, row) =>
-      <TenantLink
-        to={`/users/wifi/clients/${row.clientMac}/details/overview?clientStatus=historical`}
+    render: (data, { disconnectTime, clientMac }) => {
+      const period = encodeParameter<DateFilter>({
+        startDate: moment((disconnectTime as number) * 1000).subtract(24, 'hours').format(),
+        endDate: moment((disconnectTime as number) * 1000).format(),
+        range: DateRange.custom
+      })
+      /* eslint-disable max-len */
+      return <TenantLink
+        to={`/users/wifi/clients/${clientMac}/details/overview?clientStatus=historical&period=${period}`}
       >
         {data ? data : '--'}
       </TenantLink>
+      /* eslint-enable max-len */
+    }
   }, {
     key: 'clientMac',
     title: intl.$t({ defaultMessage: 'MAC Address' }),
@@ -66,7 +75,8 @@ function getCols (intl: ReturnType<typeof useIntl>) {
     dataIndex: 'ssid',
     sorter: true,
     render: (data, row) => row?.networkId
-      ? <TenantLink to={`/networks/${row?.networkId}/network-details/aps`}>{data}</TenantLink>
+      ? <TenantLink
+        to={`/networks/wireless/${row?.networkId}/network-details/aps`}>{data}</TenantLink>
       : data
   }, {
     key: 'disconnectTime',
