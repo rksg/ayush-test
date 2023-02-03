@@ -15,8 +15,8 @@ export const HelpSubtitle = styled(Subtitle).attrs({ level: 5 })`
 type CopyableTextProps = {
   color?: string
 }
-export const CopyableText = styled(Typography.Paragraph)
+export const CopyableText = styled(Typography.Link)
   .attrs({ copyable: true })<CopyableTextProps>`
   margin-bottom: 3px !important;
-  color: ${(props) => (props.color ? props.color : 'var(--acx-accents-blue-50)')};
+  display: block;
 `

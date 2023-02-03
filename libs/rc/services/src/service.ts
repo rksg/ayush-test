@@ -22,7 +22,6 @@ import {
   LeaseUnit,
   DHCPDetailInstances,
   WifiCallingUrls,
-  WifiUrlsInfo,
   WifiCallingFormContextType,
   WifiCallingSetting,
   DpskSaveData,
@@ -38,7 +37,7 @@ import {
   MdnsProxyGetApiResponse,
   convertApiPayloadToMdnsProxyFormData,
   onSocketActivityChanged,
-  showActivityMessage,
+  onActivityMessageReceived,
   MdnsProxyAp,
   UploadUrlResponse,
   TableChangePayload,
@@ -54,7 +53,6 @@ import {
   CloudpathServer,
   DevicePolicy,
   ApplicationPolicy,
-  VlanPool,
   AccessControlProfile
 } from '@acx-ui/rc/utils'
 
@@ -91,7 +89,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       providesTags: [{ type: 'Service', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg, [
+          onActivityMessageReceived(msg, [
             'Add Multicast DNS Proxy Service Profile',
             'Update Multicast DNS Proxy Service Profile',
             'Delete Multicast DNS Proxy Service Profile',
@@ -159,17 +157,6 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       }
     }),
-    vlanPoolList: build.query<VlanPool[], RequestPayload>({
-      query: ({ params }) => {
-        const vlanPoolListReq = createHttpRequest(
-          WifiUrlsInfo.getVlanPools,
-          params
-        )
-        return {
-          ...vlanPoolListReq
-        }
-      }
-    }),
     deleteWifiCallingService: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiCallingUrls.deleteWifiCalling, params)
@@ -189,7 +176,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       providesTags: [{ type: 'Service', id: 'LIST' }, { type: 'DHCP', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg, [
+          onActivityMessageReceived(msg, [
             'AddDhcpConfigServiceProfile',
             'UpdateDhcpConfigServiceProfile',
             'DeleteDhcpConfigServiceProfile',
@@ -276,7 +263,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       providesTags: [{ type: 'MdnsProxy', id: 'LIST' }, { type: 'Service', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg, [
+          onActivityMessageReceived(msg, [
             'Add Multicast DNS Proxy Service Profile',
             'Update Multicast DNS Proxy Service Profile',
             'Delete Multicast DNS Proxy Service Profile',
@@ -448,7 +435,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       providesTags: [{ type: 'Service', id: 'LIST' }, { type: 'WifiCalling', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg, [
+          onActivityMessageReceived(msg, [
             'Add WiFi Calling Service Profile',
             'Update WiFi Calling Service Profile',
             'Delete WiFi Calling Service Profile',
@@ -622,7 +609,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg, [
+          onActivityMessageReceived(msg, [
             'Add Portal Service Profile',
             'Update Portal Service Profile',
             'Delete Portal Service Profile',
@@ -738,7 +725,6 @@ export const {
   useSaveOrUpdateDHCPMutation,
   useDeleteDHCPServiceMutation,
   useDhcpVenueInstancesQuery,
-  useVlanPoolListQuery,
   useAccessControlProfileListQuery,
   useGetDHCPProfileListQuery,
   useLazyGetDHCPProfileListQuery,

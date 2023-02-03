@@ -215,11 +215,6 @@ const subnetSetting = async () => {
 describe('Layer3Drawer Component', () => {
   it('Render Layer3Drawer component with anyIp option successfully', async () => {
     mockServer.use(rest.post(
-      AccessControlUrls.getL3AclPolicyList.url,
-      (_, res, ctx) => res(
-        ctx.json(queryLayer3)
-      )
-    ), rest.post(
       AccessControlUrls.addL3AclPolicy.url,
       (_, res, ctx) => res(
         ctx.json(layer3Response)
@@ -237,8 +232,6 @@ describe('Layer3Drawer Component', () => {
         }
       }
     )
-
-    await screen.findByRole('option', { name: 'l3-010' })
 
     await userEvent.click(screen.getByText('Add New'))
 
@@ -267,11 +260,6 @@ describe('Layer3Drawer Component', () => {
 
   it('Render Layer3Drawer component with ip option successfully', async () => {
     mockServer.use(rest.post(
-      AccessControlUrls.getL3AclPolicyList.url,
-      (_, res, ctx) => res(
-        ctx.json(queryLayer3)
-      )
-    ), rest.post(
       AccessControlUrls.addL3AclPolicy.url,
       (_, res, ctx) => res(
         ctx.json(layer3Response)
@@ -289,8 +277,6 @@ describe('Layer3Drawer Component', () => {
         }
       }
     )
-
-    await screen.findByRole('option', { name: 'l3-010' })
 
     await userEvent.click(screen.getByText('Add New'))
 
@@ -308,11 +294,6 @@ describe('Layer3Drawer Component', () => {
 
   it('Render Layer3Drawer component with subnet option successfully', async () => {
     mockServer.use(rest.post(
-      AccessControlUrls.getL3AclPolicyList.url,
-      (_, res, ctx) => res(
-        ctx.json(queryLayer3)
-      )
-    ), rest.post(
       AccessControlUrls.addL3AclPolicy.url,
       (_, res, ctx) => res(
         ctx.json(layer3Response)
@@ -330,8 +311,6 @@ describe('Layer3Drawer Component', () => {
         }
       }
     )
-
-    await screen.findByRole('option', { name: 'l3-010' })
 
     await userEvent.click(screen.getByText('Add New'))
 

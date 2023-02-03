@@ -45,7 +45,7 @@ export default function PortalInstancesTable (){
       render: function (_data, row) {
         return (
           <TenantLink
-            to={`/networks/${row.id}/network-details/aps`}>
+            to={`/networks/wireless/${row.id}/network-details/aps`}>
             {row.name}</TenantLink>
         )
       }
@@ -65,7 +65,7 @@ export default function PortalInstancesTable (){
       dataIndex: ['venues', 'count'],
       render: function (_data, row) {
         return <TenantLink
-          to={`/networks/${row.id}/network-details/venues`}
+          to={`/networks/wireless/${row.id}/network-details/venues`}
           children={_data ? _data : 0}
         />
       }
