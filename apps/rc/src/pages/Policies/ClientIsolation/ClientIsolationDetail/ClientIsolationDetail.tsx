@@ -46,7 +46,7 @@ export default function ClientIsolationDetail () {
           {data && <ClientIsolationOverview data={data} />}
         </GridCol>
         <GridCol col={{ span: 24 }}>
-          {data && <ClientIsolationInstancesTable clientIsolationId={data.id!} />}
+          <ClientIsolationInstancesTable />
         </GridCol>
       </GridRow>
     </>

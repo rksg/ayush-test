@@ -1,7 +1,7 @@
 import { rest } from 'msw'
 
 import {
-  CommonUrlsInfo,
+  ClientIsolationUrls,
   getPolicyRoutePath,
   PolicyOperation,
   PolicyType
@@ -9,7 +9,7 @@ import {
 import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
-import { mockedVenuesList }              from './__tests__/fixtures'
+import { mockedVenueUsage }              from './__tests__/fixtures'
 import { ClientIsolationInstancesTable } from './ClientIsolationInstancesTable'
 
 
@@ -24,21 +24,21 @@ describe('ClientIsolationInstancesTable', () => {
   it('should render the table view', async () => {
     mockServer.use(
       rest.post(
-        CommonUrlsInfo.getVenuesList.url,
-        (req, res, ctx) => res(ctx.json({ ...mockedVenuesList }))
+        ClientIsolationUrls.getVenueUsageByClientIsolation.url,
+        (req, res, ctx) => res(ctx.json({ ...mockedVenueUsage }))
       )
     )
 
     render(
       <Provider>
-        <ClientIsolationInstancesTable clientIsolationId={'123456789'} />
+        <ClientIsolationInstancesTable/>
       </Provider>, {
         route: { params, path: detailPath }
       }
     )
 
     // eslint-disable-next-line max-len
-    const targetRow = await screen.findByRole('row', { name: new RegExp(mockedVenuesList.data[0].name) })
+    const targetRow = await screen.findByRole('row', { name: new RegExp(mockedVenueUsage.data[0].venueName) })
     expect(targetRow).toBeVisible()
   })
 })

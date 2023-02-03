@@ -2,7 +2,6 @@ import { rest } from 'msw'
 
 import {
   ClientIsolationUrls,
-  CommonUrlsInfo,
   getPolicyDetailsLink,
   getPolicyRoutePath,
   PolicyOperation,
@@ -12,7 +11,7 @@ import {
 import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
-import { mockedClientIsolation, mockedVenuesList } from './__tests__/fixtures'
+import { mockedClientIsolation, mockedVenueUsage } from './__tests__/fixtures'
 import ClientIsolationDetail                       from './ClientIsolationDetail'
 
 describe('ClientIsolationDetail', () => {
@@ -32,8 +31,8 @@ describe('ClientIsolationDetail', () => {
         }
       ),
       rest.post(
-        CommonUrlsInfo.getVenuesList.url,
-        (req, res, ctx) => res(ctx.json({ ...mockedVenuesList }))
+        ClientIsolationUrls.getVenueUsageByClientIsolation.url,
+        (req, res, ctx) => res(ctx.json({ ...mockedVenueUsage }))
       )
     )
   })
@@ -53,8 +52,9 @@ describe('ClientIsolationDetail', () => {
     expect(await screen.findByText(mockedClientIsolation.description!)).toBeVisible()
 
     // Verify the instances
-    const targetVenue = mockedVenuesList.data[0]
-    expect(await screen.findByRole('row', { name: new RegExp(targetVenue.name) })).toBeVisible()
+    const targetVenue = mockedVenueUsage.data[0]
+    // eslint-disable-next-line max-len
+    expect(await screen.findByRole('row', { name: new RegExp(targetVenue.venueName) })).toBeVisible()
   })
 
   it('should navigate to the edit page', async () => {

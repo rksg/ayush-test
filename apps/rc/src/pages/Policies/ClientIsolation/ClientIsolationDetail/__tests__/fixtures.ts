@@ -7,45 +7,42 @@ export const mockedClientIsolation: ClientIsolationSaveData = {
   allowlist: [
     {
       mac: 'AA:BB:CC:DD:EE:11',
-      ipAddress: '1.1.1.1',
       description: 'Client A'
     },
     {
       mac: 'AA:BB:CC:DD:EE:22',
-      ipAddress: '1.1.1.2',
       description: 'Client B'
     },
     {
       mac: 'AA:BB:CC:DD:EE:33',
-      ipAddress: '1.1.1.3',
       description: 'Client C'
     }
   ]
 }
 
-export const mockedVenuesList = {
-  fields: [
-    'city',
-    'name',
-    'id'
-  ],
-  totalCount: 3,
-  page: 1,
+export const mockedVenueUsage = {
   data: [
     {
-      id: '421d82b69e504c578d88f805736cd209',
-      name: 'JackyVenue',
-      city: 'Sunnyvale, California'
+      venueId: '59fed8289000458587feeb7005695a7f',
+      venueName: 'v1',
+      address: 'a1',
+      networkCount: 2,
+      networkNames: [
+        'v1_open',
+        'v1_psk'
+      ]
     },
     {
-      id: '4ca20c8311024ac5956d366f15d96e0c',
-      name: 'leonard-venue',
-      city: 'Toronto, Ontario'
-    },
-    {
-      id: 'd6062edbdf57451facb33967c2160c72',
-      name: 'Raymond-Venue',
-      city: 'New York, New York'
+      venueId: '446f332da48641c1879e1a46ed45039e',
+      venueName: 'v2',
+      address: 'a2',
+      networkCount: 1,
+      networkNames: [
+        'v2_open'
+      ]
     }
-  ]
+  ],
+  totalCount: 2,
+  totalPages: 1,
+  page: 1
 }

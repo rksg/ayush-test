@@ -30,7 +30,8 @@ import {
   AvcApp,
   AccessControlUrls, L3AclPolicy, AvcCat,
   ClientIsolationSaveData, ClientIsolationUrls,
-  createNewTableHttpRequest, TableChangePayload, RequestFormData
+  createNewTableHttpRequest, TableChangePayload, RequestFormData,
+  ClientIsolationListUsageByVenue, VenueUsageByClientIsolation
 } from '@acx-ui/rc/utils'
 
 export const basePolicyApi = createApi({
@@ -41,15 +42,11 @@ export const basePolicyApi = createApi({
   endpoints: () => ({ })
 })
 
-const RKS_NEW_UI = {
-  'x-rks-new-ui': true
-}
-
 export const policyApi = basePolicyApi.injectEndpoints({
   endpoints: (build) => ({
     addRoguePolicy: build.mutation<RogueAPDetectionContextType, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(RogueApUrls.addRoguePolicy, params, RKS_NEW_UI)
+        const req = createHttpRequest(RogueApUrls.addRoguePolicy, params)
         return {
           ...req,
           body: payload
@@ -59,7 +56,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     delRoguePolicy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(RogueApUrls.deleteRogueApPolicy, params, RKS_NEW_UI)
+        const req = createHttpRequest(RogueApUrls.deleteRogueApPolicy, params)
         return {
           ...req
         }
@@ -68,7 +65,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     addL2AclPolicy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(AccessControlUrls.addL2AclPolicy, params, RKS_NEW_UI)
+        const req = createHttpRequest(AccessControlUrls.addL2AclPolicy, params)
         return {
           ...req,
           body: payload
@@ -78,7 +75,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     getL2AclPolicy: build.query<l2AclPolicyInfoType, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(AccessControlUrls.getL2AclPolicy, params, RKS_NEW_UI)
+        const req = createHttpRequest(AccessControlUrls.getL2AclPolicy, params)
         return {
           ...req
         }
@@ -87,7 +84,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     addL3AclPolicy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(AccessControlUrls.addL3AclPolicy, params, RKS_NEW_UI)
+        const req = createHttpRequest(AccessControlUrls.addL3AclPolicy, params)
         return {
           ...req,
           body: payload
@@ -97,7 +94,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     getL3AclPolicy: build.query<l3AclPolicyInfoType, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(AccessControlUrls.getL3AclPolicy, params, RKS_NEW_UI)
+        const req = createHttpRequest(AccessControlUrls.getL3AclPolicy, params)
         return {
           ...req
         }
@@ -106,7 +103,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     getRoguePolicyList: build.query<RogueAPDetectionTempType[], RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(RogueApUrls.getRoguePolicyList, params, RKS_NEW_UI)
+        const req = createHttpRequest(RogueApUrls.getRoguePolicyList, params)
         return {
           ...req
         }
@@ -124,7 +121,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     delRoguePolicies: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(RogueApUrls.deleteRogueApPolicies, params, RKS_NEW_UI)
+        const req = createHttpRequest(RogueApUrls.deleteRogueApPolicies, params)
         return {
           ...req,
           body: payload
@@ -134,7 +131,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     roguePolicy: build.query<RogueAPDetectionContextType, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(RogueApUrls.getRoguePolicy, params, RKS_NEW_UI)
+        const req = createHttpRequest(RogueApUrls.getRoguePolicy, params)
         return {
           ...req
         }
@@ -143,7 +140,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     updateRoguePolicy: build.mutation<RogueAPDetectionTempType, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(RogueApUrls.updateRoguePolicy, params, RKS_NEW_UI)
+        const req = createHttpRequest(RogueApUrls.updateRoguePolicy, params)
         return {
           ...req,
           body: payload
@@ -153,7 +150,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     venueRoguePolicy: build.query<TableResult<VenueRoguePolicyType>, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(RogueApUrls.getVenueRoguePolicy, params, RKS_NEW_UI)
+        const req = createHttpRequest(RogueApUrls.getVenueRoguePolicy, params)
         return {
           ...req,
           body: payload
@@ -163,7 +160,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     policyList: build.query<TableResult<Policy>, RequestPayload>({
       query: ({ params, payload }) => {
-        const policyListReq = createHttpRequest(CommonUrlsInfo.getPoliciesList, params, RKS_NEW_UI)
+        const policyListReq = createHttpRequest(CommonUrlsInfo.getPoliciesList, params)
         return {
           ...policyListReq,
           body: payload
@@ -336,7 +333,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     addClientIsolation: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(ClientIsolationUrls.addClientIsolation, params, RKS_NEW_UI)
+        const req = createHttpRequest(ClientIsolationUrls.addClientIsolation, params)
         return {
           ...req,
           body: payload
@@ -346,7 +343,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     deleteClientIsolation: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(ClientIsolationUrls.deleteClientIsolation, params, RKS_NEW_UI)
+        const req = createHttpRequest(ClientIsolationUrls.deleteClientIsolation, params)
         return {
           ...req
         }
@@ -356,7 +353,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     getClientIsolationList: build.query<ClientIsolationSaveData[], RequestPayload>({
       query: ({ params }) => {
         // eslint-disable-next-line max-len
-        const req = createHttpRequest(ClientIsolationUrls.getClientIsolationList, params, RKS_NEW_UI)
+        const req = createHttpRequest(ClientIsolationUrls.getClientIsolationList, params)
         return {
           ...req
         }
@@ -378,7 +375,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     getClientIsolation: build.query<ClientIsolationSaveData, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(ClientIsolationUrls.getClientIsolation, params, RKS_NEW_UI)
+        const req = createHttpRequest(ClientIsolationUrls.getClientIsolation, params)
         return {
           ...req
         }
@@ -387,13 +384,33 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     updateClientIsolation: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(ClientIsolationUrls.updateClientIsolation, params, RKS_NEW_UI)
+        const req = createHttpRequest(ClientIsolationUrls.updateClientIsolation, params)
         return {
           ...req,
           body: payload
         }
       },
       invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'ClientIsolation', id: 'LIST' }]
+    }),
+    // eslint-disable-next-line max-len
+    getClientIsolationUsageByVenue: build.query<TableResult<ClientIsolationListUsageByVenue>, RequestPayload>({
+      query: ({ params }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(ClientIsolationUrls.getClientIsolationListUsageByVenue, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    // eslint-disable-next-line max-len
+    getVenueUsageByClientIsolation: build.query<TableResult<VenueUsageByClientIsolation>, RequestPayload>({
+      query: ({ params }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(ClientIsolationUrls.getVenueUsageByClientIsolation, params)
+        return {
+          ...req
+        }
+      }
     }),
     uploadMacRegistration: build.mutation<{}, RequestFormData>({
       query: ({ params, payload }) => {
@@ -430,7 +447,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     getSyslogPolicyList: build.query<SyslogPolicyType[], RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(SyslogUrls.getSyslogPolicyList, params, RKS_NEW_UI)
+        const req = createHttpRequest(SyslogUrls.getSyslogPolicyList, params)
         return {
           ...req
         }
@@ -485,6 +502,8 @@ export const {
   useLazyGetClientIsolationListQuery,
   useGetClientIsolationQuery,
   useUpdateClientIsolationMutation,
+  useGetClientIsolationUsageByVenueQuery,
+  useGetVenueUsageByClientIsolationQuery,
   useLazyGetMacRegListQuery,
   useUploadMacRegistrationMutation,
   useGetSyslogPolicyListQuery
