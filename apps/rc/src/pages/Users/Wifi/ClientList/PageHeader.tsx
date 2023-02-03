@@ -13,7 +13,12 @@ function Header () {
     filters: venueId ? { venueId: [venueId] } :
       serialNumber ? { serialNumber: [serialNumber] } : {}
   }
-  const { data } = useGetClientListQuery({ params: { tenantId }, payload: defaultPayload })
+
+  // For display the total count, use query for a quick solution.
+  // Might hitting timing issue and the count could be inconsistent with the size of client table
+  const { data } = useGetClientListQuery({ params: { tenantId }, payload: defaultPayload }, {
+    pollingInterval: 30_000
+  })
 
   return (
     <PageHeader
