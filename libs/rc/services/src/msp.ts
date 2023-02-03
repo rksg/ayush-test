@@ -12,11 +12,11 @@ import {
   MspEntitlement,
   MspEntitlementSummary,
   MspEc, EcDeviceInventory,
-  VarCustomer,
   TenantDetail,
   MspEcData,
   MspEcDelegatedAdmins,
   SupportDelegation,
+  VarCustomer,
   MspProfile,
   MspEcProfile
 } from '@acx-ui/rc/utils'

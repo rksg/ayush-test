@@ -37,11 +37,11 @@ function Layout () {
   const [tenantType, setTenantType] = useState('')
 
   const { data } = useGetTenantDetailQuery({ params: { tenantId } })
-  const userProfile = useUserProfileContext()
+  const { data: userProfile } = useUserProfileContext()
 
   useEffect(() => {
     if (data && userProfile) {
-      if (userProfile.data?.support) {
+      if (userProfile?.support) {
         setTenantType('SUPPORT')
       } else {
         setTenantType(data.tenantType)

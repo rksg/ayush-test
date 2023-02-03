@@ -73,6 +73,10 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/viewmodel/tenant/:mspTenantId/mspeclist'
   },
+  getMspProfile: {
+    method: 'get',
+    url: '/api/mspservice/tenant/:tenantId/msplabel'
+  },
   getMspEcProfile: {
     method: 'get',
     url: '/api/mspservice/tenant/:tenantId'

@@ -26,14 +26,14 @@ export function MspEcDropdownList () {
   const { data: tenantDetail } = useGetTenantDetailQuery({ params })
 
   // user profile for tenant from jwt token
-  const userProfile = useUserProfileContext()
+  const { data: userProfile } = useUserProfileContext()
 
   let isMspEc = false
   let isSupportEc = false
   let isSupport = false
   let isVar = false
   if (tenantDetail && userProfile) {
-    if (userProfile.support === true) {
+    if (userProfile?.support === true) {
       if (tenantDetail.tenantType === AccountType.MSP_EC)
         isSupportEc = true
       else
