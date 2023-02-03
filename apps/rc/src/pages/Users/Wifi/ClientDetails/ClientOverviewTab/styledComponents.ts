@@ -33,6 +33,10 @@ export const GridCol = styled(GridColComponent)`
   justify-content: center;
 `
 
+export const BarChartContainer = styled.div`
+  height: 100%;
+`
+
 export const Title = styled.div`
   font-size: var(--acx-body-4-font-size);
   line-height: var(--acx-body-4-line-height)
