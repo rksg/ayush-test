@@ -175,7 +175,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
 
             deletePersonas({ payload: { ids } })
               .unwrap()
-              .finally(() => {
+              .then(() => {
                 showToast({
                   type: 'success',
                   content: $t({ defaultMessage: 'Persona {names} was deleted' }, { names })
