@@ -17,6 +17,7 @@ import {
   basePolicyApi as policyApi,
   baseClientApi as clientApi,
   baseSwitchApi as switchApi,
+  baseEdgeDhcpApi as edgeDhcpApi,
   basePersonaApi as personaApi
 } from '@acx-ui/rc/services'
 
@@ -74,6 +75,7 @@ export const store = configureStore({
     [policyApi.reducerPath]: policyApi.reducer,
     [clientApi.reducerPath]: clientApi.reducer,
     [switchApi.reducerPath]: switchApi.reducer,
+    [edgeDhcpApi.reducerPath]: edgeDhcpApi.reducer,
     [personaApi.reducerPath]: personaApi.reducer
   },
 
@@ -99,6 +101,7 @@ export const store = configureStore({
       policyApi.middleware,
       clientApi.middleware,
       switchApi.middleware,
+      edgeDhcpApi.middleware,
       personaApi.middleware
     ])
   },
