@@ -10,20 +10,23 @@ import { useLocation } from '@acx-ui/react-router-dom'
 
 import { EmptyDescription } from './styledComponents'
 
-//for Local test, use '/docs/r1/mapfile/doc-mapper.json'
-// TODO: change to use '/docs/r1/mapfile/doc-mapper.json' for local and prod after gateway adds route
-export const MAPPING_URL = 'https://docs.cloud.ruckuswireless.com/r1/mapfile/doc-mapper.json'
+//for Local test, use '/docs/ruckusone/userguide/mapfile/doc-mapper.json'
+// TODO: change to use '/docs/ruckusone/userguide/mapfile/doc-mapper.json' for local and prod after gateway adds route
+// eslint-disable-next-line max-len
+export const MAPPING_URL = 'https://docs.cloud.ruckuswireless.com/ruckusone/userguide/mapfile/doc-mapper.json'
 
 // for local test, use '/docs/alto/latest/'
 // TODO: change to use '/docs/alto/latest/' for local and prod after gateway adds route
-export const DOCS_URL = 'https://docs.cloud.ruckuswireless.com/alto/latest/'
+export const DOCS_URL = 'https://docs.cloud.ruckuswireless.com/ruckusone/'
+
 
 export const DOCS_HOME_URL = 'https://docs.cloud.ruckuswireless.com'
 
 const reg = /([a-f-\d]{32,36}|[A-F-\d]{32,36})|\d+\/?/g
 const useBasePath = () => {
   const location = useLocation()
-  return _.replace(location.pathname, reg, (matchStr)=>{
+  const basePath = location.pathname.replace(new URL(document.baseURI).pathname,'')
+  return _.replace(basePath, reg, (matchStr)=>{
     const paramReg = /([a-f-\d]{32,36}|[A-F-\d]{32,36})|\d+/g
     return matchStr.replaceAll(paramReg,'*')
   })
@@ -115,11 +118,11 @@ export default function HelpPage (props: {
         {' '}
         <Button
           onClick={()=>{
-            window.open(DOCS_HOME_URL+'/alto/latest/index.html', '_blank')
+            window.open(DOCS_HOME_URL+'/ruckusone/userguide/index.html', '_blank')
           }}
           type='link'
           size='small'>
-          {$t({ defaultMessage: 'Ruckus ONE User Guide' })}
+          {$t({ defaultMessage: 'RUCKUS One User Guide' })}
         </Button>
       </p>}
 
