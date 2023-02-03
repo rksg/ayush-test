@@ -45,3 +45,18 @@ export interface TenantPreferenceSettingValue {
 export interface TenantPreferenceSettings {
   global: TenantPreferenceSettingValue;
 }
+
+export enum NotificationEndpointType {
+  email = 'EMAIL',
+  sms = 'SMS',
+  mobile_push = 'MOBILE_PUSH'
+}
+
+export interface NotificationRecipient {
+  id: string;
+  name: string;
+  email: string;
+  emailEnabled: boolean;
+  mobile: string;
+  mobileEnabled: boolean;
+}

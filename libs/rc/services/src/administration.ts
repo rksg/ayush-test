@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 import {
+  TableResult,
   CommonResult,
   createHttpRequest,
   RequestPayload,
@@ -11,7 +12,8 @@ import {
   RecoveryPassphrase,
   TenantPreferenceSettings,
   onActivityMessageReceived,
-  onSocketActivityChanged
+  onSocketActivityChanged,
+  NotificationRecipient
 } from '@acx-ui/rc/utils'
 
 export const baseAdministrationApi = createApi({
@@ -152,6 +154,67 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Administration', id: 'PREFERENCES' }]
+    }),
+    getNotificationRecipients: build.query<TableResult<NotificationRecipient>, RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(AdministrationUrlsInfo.getNotificationRecipients, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Administration', id: 'NOTIFICATION_LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'addNotificationRecipient',
+            'updateNotificationRecipient'
+          ], () => {
+            api.dispatch(administrationApi.util.invalidateTags([
+              { type: 'Administration', id: 'NOTIFICATION_LIST' }
+            ]))
+          })
+        })
+      }
+    }),
+    addRecipient: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.addRecipient, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Administration', id: 'NOTIFICATION_LIST' }]
+    }),
+    updateRecipient: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.updateRecipient, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    deleteNotificationRecipients: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.deleteNotificationRecipients, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Administration', id: 'NOTIFICATION_LIST' }]
+    }),
+    deleteNotificationRecipient: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.deleteNotificationRecipient, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Administration', id: 'NOTIFICATION_LIST' }]
     })
   })
 })
@@ -165,5 +228,10 @@ export const {
   useEnableAccessSupportMutation,
   useDisableAccessSupportMutation,
   useGetPreferencesQuery,
-  useUpdatePreferenceMutation
+  useUpdatePreferenceMutation,
+  useGetNotificationRecipientsQuery,
+  useAddRecipientMutation,
+  useUpdateRecipientMutation,
+  useDeleteNotificationRecipientsMutation,
+  useDeleteNotificationRecipientMutation
 } = administrationApi
