@@ -1,8 +1,11 @@
 import React from 'react'
 
+import { Select } from 'antd'
+
+import { DeviceTypeEnum, OsVendorEnum } from '@acx-ui/rc/utils'
+
 import { DeviceOSRule } from './index'
-import { DeviceTypeEnum, OsVendorEnum } from '@acx-ui/rc/utils';
-import { Select } from 'antd';
+
 
 export const renderDetailsColumn = (row: DeviceOSRule) => {
   const linkArray = []

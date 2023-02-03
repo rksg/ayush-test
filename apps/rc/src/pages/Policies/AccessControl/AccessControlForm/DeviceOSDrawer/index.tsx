@@ -18,7 +18,7 @@ import {
   useDevicePolicyListQuery, useGetDevicePolicyQuery
 } from '@acx-ui/rc/services'
 import { AccessStatus, CommonResult, DeviceRule } from '@acx-ui/rc/utils'
-import { useParams }                                              from '@acx-ui/react-router-dom'
+import { useParams }                              from '@acx-ui/react-router-dom'
 
 import { renderDetailsColumn }                 from './DeviceOSDrawerUtils'
 import DeviceOSRuleContent, { DrawerFormItem } from './DeviceOSRuleContent'
