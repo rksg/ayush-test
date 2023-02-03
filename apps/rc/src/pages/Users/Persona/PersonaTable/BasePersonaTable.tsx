@@ -7,7 +7,7 @@ import { Loader, showActionModal, showToast, Table, TableColumn, TableProps } fr
 import {
   useSearchPersonaListQuery,
   useGetPersonaGroupListQuery,
-  useDeletePersonaMutation
+  useDeletePersonasMutation
 } from '@acx-ui/rc/services'
 import {  Persona, PersonaGroup, useTableQuery } from '@acx-ui/rc/utils'
 
@@ -132,7 +132,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
     visible: false,
     data: {} as Partial<Persona> | undefined
   })
-  const [deletePersona, { isLoading: isDeletePersonaUpdating }] = useDeletePersonaMutation()
+  const [deletePersonas, { isLoading: isDeletePersonasUpdating }] = useDeletePersonasMutation()
 
   const personaListQuery = useTableQuery({
     useQuery: useSearchPersonaListQuery,
@@ -170,23 +170,27 @@ export function BasePersonaTable (props: PersonaTableProps) {
             numOfEntities: selectedItems.length
           },
           onOk: () => {
-            selectedItems.forEach(({ groupId, id, name }) => {
-              deletePersona({ params: { groupId, id } })
-                .unwrap()
-                .then(() => {
-                  showToast({
-                    type: 'success',
-                    content: $t({ defaultMessage: 'Persona {name} was deleted' }, { name })
-                  })
-                  clearSelection()
+            const ids = selectedItems.map(({ id }) => id)
+            const names = selectedItems.map(({ name }) => name).join(', ')
+
+            deletePersonas({ payload: { ids } })
+              .unwrap()
+              .finally(() => {
+                showToast({
+                  type: 'success',
+                  content: $t({ defaultMessage: 'Persona {names} was deleted' }, { names })
                 })
-                .catch((e) => {
-                  showToast({
-                    type: 'error',
-                    content: e.data.message
-                  })
+                clearSelection()
+              })
+              .catch((e) => {
+                showToast({
+                  type: 'error',
+                  content: $t(
+                    { defaultMessage: 'An error occurred {detail}' },
+                    { detail: e?.data?.message ?? undefined }
+                  )
                 })
-            })
+              })
           }
         })
       }
@@ -197,7 +201,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
     <Loader
       states={[
         personaListQuery,
-        { isLoading: false, isFetching: isDeletePersonaUpdating }
+        { isLoading: false, isFetching: isDeletePersonasUpdating }
       ]}
     >
       <Table

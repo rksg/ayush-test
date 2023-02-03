@@ -40,7 +40,7 @@ describe('Persona Group Details', () => {
         (req, res, ctx) => res(ctx.json(mockMacRegistration))
       ),
       rest.delete(
-        PersonaUrls.deletePersona.url,
+        PersonaUrls.deletePersonas.url,
         (req, res, ctx) => res(ctx.json({}))
       ),
       rest.post(

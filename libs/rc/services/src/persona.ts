@@ -187,6 +187,16 @@ export const personaApi = basePersonaApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Persona' }]
     }),
+    deletePersonas: build.mutation({
+      query: ({ payload }) => {
+        const req = createHttpRequest(PersonaUrls.deletePersonas)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Persona' }]
+    }),
     addPersonaDevices: build.mutation<PersonaDevice, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(PersonaUrls.addPersonaDevices, params)
@@ -226,7 +236,7 @@ export const {
   useSearchPersonaListQuery,
   useLazySearchPersonaListQuery,
   useUpdatePersonaMutation,
-  useDeletePersonaMutation,
+  useDeletePersonasMutation,
   useAddPersonaDevicesMutation,
   useDeletePersonaDevicesMutation
 } = personaApi
