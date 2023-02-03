@@ -41,7 +41,7 @@ function Layout () {
 
   useEffect(() => {
     if (data && userProfile) {
-      if (userProfile.support) {
+      if (userProfile.data?.support) {
         setTenantType('SUPPORT')
       } else {
         setTenantType(data.tenantType)

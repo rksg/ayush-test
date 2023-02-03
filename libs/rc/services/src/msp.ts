@@ -16,7 +16,9 @@ import {
   TenantDetail,
   MspEcData,
   MspEcDelegatedAdmins,
-  SupportDelegation
+  SupportDelegation,
+  MspProfile,
+  MspEcProfile
 } from '@acx-ui/rc/utils'
 
 export const baseMspApi = createApi({
@@ -173,6 +175,15 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       }
     }),
+    getMspProfile: build.query<MspProfile, RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(MspUrlsInfo.getMspProfile, params)
+        return {
+          ...req
+        }
+      }
+    }),
     supportMspCustomerList: build.query<TableResult<MspEc>, RequestPayload>({
       query: ({ params, payload }) => {
         const supportMspCustomerListReq =
@@ -183,6 +194,15 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    getMspEcProfile: build.query<MspEcProfile, RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(MspUrlsInfo.getMspEcProfile, params)
+        return {
+          ...req
+        }
+      }
     }),
     mspEcAdminList: build.query<MspAdministrator[], RequestPayload>({
       query: ({ params }) => {
@@ -326,6 +346,8 @@ export const {
   useSupportCustomerListDropdownQuery,
   useGetTenantDetailQuery,
   useSupportMspCustomerListQuery,
+  useGetMspProfileQuery,
+  useGetMspEcProfileQuery,
   useMspEcAdminListQuery,
   useMspAssignmentHistoryQuery,
   useAddCustomerMutation,

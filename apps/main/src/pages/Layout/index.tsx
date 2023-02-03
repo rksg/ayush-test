@@ -22,6 +22,7 @@ import { isDelegationMode, TenantIdFromJwt } from '@acx-ui/rc/utils'
 import { getBasePath, Link, Outlet }         from '@acx-ui/react-router-dom'
 import { notAvailableMsg }                   from '@acx-ui/utils'
 
+
 import { useMenuConfig } from './menuConfig'
 import SearchBar         from './SearchBar'
 
