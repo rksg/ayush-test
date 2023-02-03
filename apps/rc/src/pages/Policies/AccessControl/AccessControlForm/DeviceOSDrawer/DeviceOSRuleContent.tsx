@@ -44,10 +44,18 @@ const DeviceOSRuleContent = (props: DeviceOSRuleContentProps) => {
     $t({ defaultMessage: 'Please select...' }) as OsVendorEnum
   )
   const [osVendorOptionList, setOsVendorOptionList] = useState([] as JSX.Element[])
-  const [fromClient, setFromClient] = useState(false)
-  const [fromClientValue, setFromClientValue] = useState(0)
-  const [toClient, setToClient] = useState(false)
-  const [toClientValue, setToClientValue] = useState(0)
+  const [fromClient, setFromClient] = useState(
+    ruleDrawerEditMode ? drawerForm.getFieldValue('fromClient') : false
+  )
+  const [fromClientValue, setFromClientValue] = useState(
+    ruleDrawerEditMode ? drawerForm.getFieldValue('fromClientValue') : 0
+  )
+  const [toClient, setToClient] = useState(
+    ruleDrawerEditMode ? drawerForm.getFieldValue('toClient') : false
+  )
+  const [toClientValue, setToClientValue] = useState(
+    ruleDrawerEditMode ? drawerForm.getFieldValue('toClientValue') : 0
+  )
 
 
   useEffect(() => {
@@ -87,7 +95,12 @@ const DeviceOSRuleContent = (props: DeviceOSRuleContentProps) => {
   const rateLimitContent = <div>
     <div style={{ display: 'flex' }}>
       <span style={{ width: '150px' }}>
-        <Checkbox checked={fromClient} onChange={() => setFromClient(!fromClient)}>
+        <Checkbox
+          checked={fromClient}
+          onChange={() => {
+            drawerForm.setFieldValue('fromClient', !fromClient)
+            setFromClient(!fromClient)
+          }}>
           {$t({ defaultMessage: 'From Client:' })}
         </Checkbox>
       </span>
@@ -98,12 +111,20 @@ const DeviceOSRuleContent = (props: DeviceOSRuleContentProps) => {
         marks={{ 0: '0.1 Mbps', 200: '200 Mbps' }}
         max={200}
         defaultValue={fromClientValue}
-        onChange={(value) => setFromClientValue(value)}
+        onChange={(value) => {
+          drawerForm.setFieldValue('fromClientValue', value)
+          setFromClientValue(value)
+        }}
       />
     </div>
     <div style={{ display: 'flex' }}>
       <span style={{ width: '150px' }}>
-        <Checkbox checked={toClient} onChange={() => setToClient(!toClient)}>
+        <Checkbox
+          checked={toClient}
+          onChange={() => {
+            drawerForm.setFieldValue('toClient', !toClient)
+            setToClient(!toClient)
+          }}>
           {$t({ defaultMessage: 'To Client:' })}
         </Checkbox>
       </span>
@@ -114,7 +135,10 @@ const DeviceOSRuleContent = (props: DeviceOSRuleContentProps) => {
         marks={{ 0: '0.1 Mbps', 200: '200 Mbps' }}
         max={200}
         defaultValue={toClientValue}
-        onChange={(value) => setToClientValue(value)}
+        onChange={(value) => {
+          drawerForm.setFieldValue('toClientValue', value)
+          setToClientValue(value)
+        }}
       />
     </div>
   </div>
