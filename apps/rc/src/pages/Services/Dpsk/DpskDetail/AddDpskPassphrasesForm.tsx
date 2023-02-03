@@ -72,18 +72,19 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
             <Space size={'middle'} direction='vertical'>
               <UI.FieldSpace>
                 <Radio value={DeviceNumberType.LIMITED}>
-                  {$t({ defaultMessage: 'Set number' })}
+                  {$t({ defaultMessage: 'Set number (1-50)' })}
                 </Radio>
                 {deviceNumberType === DeviceNumberType.LIMITED &&
                   <Form.Item
                     name='numberOfDevices'
+                    initialValue={1}
                     rules={[
                       {
                         required: true,
                         message: $t({ defaultMessage: 'Please enter Number of Passphrases' })
                       }
                     ]}
-                    children={<InputNumber min={1} />}
+                    children={<InputNumber min={1} max={50} />}
                   />
                 }
               </UI.FieldSpace>
@@ -176,8 +177,10 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
         }
         name='vlanId'
         children={
-          <Input
+          <InputNumber
             placeholder={$t({ defaultMessage: 'If empty, the network\'s default will be used' })}
+            max={4094}
+            style={{ width: '100%' }}
           />
         }
       />
