@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react'
 
-import { TableProps }          from 'antd'
-import { FilterValue }         from 'antd/lib/table/interface'
-import { isEmpty, omit, pick } from 'lodash'
+import { TableProps }  from 'antd'
+import { FilterValue } from 'antd/lib/table/interface'
+import _               from 'lodash'
 
 import { useParams, Params }                         from '@acx-ui/react-router-dom'
 import { UseQuery, UseQueryResult, UseQueryOptions } from '@acx-ui/types'
 
 import { ApiInfo, createHttpRequest } from '../apiService'
+
 
 export const TABLE_QUERY_POLLING_INTERVAL = 30_000
 export const TABLE_QUERY_LONG_POLLING_INTERVAL = 300_000
@@ -163,7 +164,7 @@ export function useTableQuery <
 
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
     const { searchString, searchTargetFields, filters, ...rest } = payload
-    const toBeRemovedFilter = isEmpty(customFilters)
+    const toBeRemovedFilter = _.isEmpty(customFilters)
       ? filterKeys
       : Object.keys(customFilters).filter(key => !customFilters[key])
     const toBeSearch = (customSearch.searchString
@@ -173,8 +174,8 @@ export function useTableQuery <
       ...rest,
       ...toBeSearch,
       filters: {
-        ...omit({ ...filters as Object, ...customFilters }, toBeRemovedFilter),
-        ...pick(initialPayload.filters, toBeRemovedFilter)
+        ..._.omit({ ...filters as Object, ...customFilters }, toBeRemovedFilter),
+        ..._.pick(initialPayload.filters, toBeRemovedFilter)
       }
     } as unknown as Payload)
     setSearch(toBeSearch)
@@ -276,7 +277,7 @@ export function transferToNewTablePaginationParams (payload: TableChangePayload 
   const pagination = {
     ...DEFAULT_PAGINATION,
     ...DEFAULT_SORTER,
-    ...(payload ?? {})
+    ...(_.omitBy(payload ?? {}, _.isNil))
   }
 
   return {

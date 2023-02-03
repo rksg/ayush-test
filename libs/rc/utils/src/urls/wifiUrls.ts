@@ -256,5 +256,17 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   updateVenueLoadBalancing: {
     method: 'put',
     url: '/api/venues/:venueId/loadBalancingSettings'
+  },
+  getApNetworkSettings: {
+    method: 'get',
+    url: '/api/venues/aps/:serialNumber/networkSettings'
+  },
+  updateApNetworkSettings: {
+    method: 'put',
+    url: '/api/venues/aps/:serialNumber/networkSettings'
+  },
+  resetApNetworkSettings: {
+    method: 'delete',
+    url: '/api/venues/aps/:serialNumber/networkSettings'
   }
 }
