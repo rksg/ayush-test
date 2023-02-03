@@ -13,6 +13,14 @@ describe('ApSettingsTab', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     const { asFragment } = render(<Provider><ApSettingsTab /></Provider>, { route: { params } })
     expect(asFragment()).toMatchSnapshot()
+
+    fireEvent.click(await screen.findByRole('tab', { name: 'Radio' }))
+  })
+
+  it('should render correctly when feature flag is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(<Provider><ApSettingsTab /></Provider>, { route: { params } })
+
     fireEvent.click(await screen.findByRole('tab', { name: 'LAN Port' }))
   })
 })

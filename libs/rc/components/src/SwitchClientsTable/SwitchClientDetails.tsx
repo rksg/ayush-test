@@ -140,7 +140,7 @@ export function SwitchClientDetails () {
       <PageHeader
         title={data?.clientMac}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Switches' }), link: '/devices/switch' }
+          { text: $t({ defaultMessage: 'Switch Users' }), link: '/users/switch' }
         ]}
         extra={[
           <Button key='export' type='link' onClick={exportClientToCSV}>

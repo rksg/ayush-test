@@ -30,10 +30,10 @@ const clientList = {
   fields: [
     'clientDesc',
     'clientType',
-    'switchId',
+    'switchId', 'switchName',
     'clientMac',
     'clientName',
-    'venueId',
+    'venueId', 'venueName',
     'clientVlan',
     'switchSerialNumber',
     'vlanName',
@@ -50,8 +50,10 @@ const clientList = {
       clientDesc:
         'Ruckus R510 Multimedia Hotzone Wireless AP/SW Version: 114.0.0.0.1360',
       clientType: 'WLAN_AP',
+      switchName: 'ICX7150-C12 Router',
       switchId: '58:fb:96:0e:c0:c4',
       switchPort: '1/1/7',
+      venueName: 'My-Venue',
       venueId: 'a98653366d2240b9ae370e48fab3a9a1',
       clientVlan: '1',
       vlanName: 'DEFAULT-VLAN',
@@ -63,7 +65,7 @@ const clientList = {
 
 const clientDetail = {
   clientAuthType: 'CLIENT_AUTH_TYPE_NONE',
-  switchId: 'FEK3230S0DA',
+  switchId: '58:fb:96:0e:c0:c4',
   clientMac: '34:20:E3:2C:B5:B0',
   clientName: 'RuckusAP',
   clientUserName: '',
@@ -106,6 +108,11 @@ describe('SwitchClientsTable', () => {
     mockServer.use(
       rest.post(SwitchUrlsInfo.getSwitchClientList.url, (_, res, ctx) =>
         res(ctx.json(clientList))
+      ),
+      rest.post(SwitchUrlsInfo.getSwitchList.url, (_, res, ctx) =>
+        res(ctx.json({
+          data: [{ id: '58:fb:96:0e:c0:c4', name: 'ICX7150-C12 Router' }]
+        }))
       ),
       rest.post(CommonUrlsInfo.getApsList.url, (_, res, ctx) =>
         res(ctx.json(apList))
@@ -214,7 +221,7 @@ describe('SwitchClientsTable', () => {
       {
         route: {
           params,
-          path: '/:tenantId/devices/switch/:switchId/:serialNumber/clientDetails/:clientId'
+          path: '/:tenantId/users/switch/clients/:clientId'
         }
       }
     )
@@ -229,30 +236,14 @@ describe('SwitchClientsTable', () => {
   })
 
   it('should render blank fields correctly', async () => {
-    const clientList = {
-      fields: [
-        'clientDesc',
-        'clientType',
-        'switchId',
-        'clientMac',
-        'clientName',
-        'venueId',
-        'clientVlan',
-        'switchSerialNumber',
-        'vlanName',
-        'cog',
-        'id',
-        'switchPort'
-      ],
-      totalCount: 1,
-      page: 1,
+    const clientListWithEmpty = { ...clientList,
       data: [
         {
           // eslint-disable-next-line max-len
           id: 'NTg6ZmI6OTY6MGU6YzA6YzRfNTggZmIgOTYgMGUgYzAgY2FfMS0xLTdfMzQ6MjA6RTM6MkM6QjU6QjBfMQ==',
           clientDesc: '',
           clientType: '',
-          switchId: '58:fb:96:0e:c0:c4',
+          switchId: '58:96:0e:c0:c4:fb', // non-exist switch
           switchPort: '1/1/7',
           venueId: 'a98653366d2240b9ae370e48fab3a9a1',
           clientName: '',
@@ -263,7 +254,7 @@ describe('SwitchClientsTable', () => {
 
     mockServer.use(
       rest.post(SwitchUrlsInfo.getSwitchClientList.url, (_, res, ctx) =>
-        res(ctx.json(clientList))
+        res(ctx.json(clientListWithEmpty))
       )
     )
 
@@ -276,7 +267,7 @@ describe('SwitchClientsTable', () => {
         <SwitchClientsTable />
       </Provider>,
       {
-        route: { params, path: '/:tenantId' }
+        route: { params, path: '/:tenantId/users/switch/clients' }
       }
     )
 
@@ -286,31 +277,17 @@ describe('SwitchClientsTable', () => {
   })
 
   it('should render router type correctly', async () => {
-    const clientList = {
-      fields: [
-        'clientDesc',
-        'clientType',
-        'switchId',
-        'clientMac',
-        'clientName',
-        'venueId',
-        'clientVlan',
-        'switchSerialNumber',
-        'vlanName',
-        'cog',
-        'id',
-        'switchPort'
-      ],
-      totalCount: 1,
-      page: 1,
+    const clientListWithRouter = { ...clientList,
       data: [
         {
           // eslint-disable-next-line max-len
           id: 'NTg6ZmI6OTY6MGU6YzA6YzRfNTggZmIgOTYgMGUgYzAgY2FfMS0xLTdfMzQ6MjA6RTM6MkM6QjU6QjBfMQ==',
           clientDesc: '',
           clientType: 'ROUTER',
+          switchName: 'ICX7150-C12 Router',
           switchId: '58:fb:96:0e:c0:c4',
           switchPort: '1/1/7',
+          venueName: 'My-Venue',
           venueId: 'a98653366d2240b9ae370e48fab3a9a1',
           clientName: '',
           switchSerialNumber: 'FEK3230S0DA'
@@ -320,7 +297,7 @@ describe('SwitchClientsTable', () => {
 
     mockServer.use(
       rest.post(SwitchUrlsInfo.getSwitchClientList.url, (_, res, ctx) =>
-        res(ctx.json(clientList))
+        res(ctx.json(clientListWithRouter))
       )
     )
 
@@ -333,7 +310,7 @@ describe('SwitchClientsTable', () => {
         <SwitchClientsTable />
       </Provider>,
       {
-        route: { params, path: '/:tenantId' }
+        route: { params, path: '/:tenantId/users/switch/clients' }
       }
     )
 

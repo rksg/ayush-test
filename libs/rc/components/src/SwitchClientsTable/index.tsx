@@ -16,8 +16,7 @@ export function SwitchClientsTable () {
   const getSearchToolTipText = () => {
     return defineMessage({ defaultMessage: `
         <div>You can search for clients by the following properties *:
-          <ul><li>- IP Address</li>
-          <li>- MAC Address</li>
+          <ul><li>- MAC Address</li>
           <li>- Description</li>
           <li>- Device Type</li>
           <li>- Venue</li>
