@@ -27,32 +27,6 @@ describe('Recovery Network Passphrase Drawer', () => {
     store.dispatch(administrationApi.util.resetApiState())
   })
 
-  it('should password literal changable', async () => {
-    render(
-      <Provider>
-        <ChangePassphraseDrawer
-          data={fakeData}
-          visible={true}
-          setVisible={mockedSetVisible}
-        />
-      </Provider>, {
-        route: { params }
-      })
-
-    await screen.findByRole('dialog')
-    const changeBtn = await screen.findByRole('button', { name: 'Change' })
-    expect(changeBtn).toBeDisabled()
-    expect(await screen.findAllByTestId(/recovery_pass_[0-3]/)).toHaveLength(4)
-
-    const inputElem = await screen.findByTestId('recovery_pass_0')
-    await userEvent.type(inputElem, '123')
-    expect(inputElem).toHaveAttribute('value', '3577123')
-
-    await userEvent.clear(inputElem)
-    await userEvent.type(inputElem, '456')
-    expect(inputElem).toHaveAttribute('value', '456')
-  })
-
   it('should change password button to be unclickable when input data invalid', async () => {
     render(
       <Provider>
@@ -68,9 +42,9 @@ describe('Recovery Network Passphrase Drawer', () => {
     await screen.findByRole('dialog')
     const changeBtn = await screen.findByRole('button', { name: 'Change' })
     expect(changeBtn).toBeDisabled()
-    expect(await screen.findAllByTestId(/recovery_pass_[0-3]/)).toHaveLength(4)
+    expect(await screen.findAllByTestId(/pwdg_[0-3]/)).toHaveLength(4)
 
-    const inputElem = await screen.findByTestId('recovery_pass_0')
+    const inputElem = await screen.findByTestId('pwdg_0')
     await userEvent.type(inputElem, '123')
     const errorMessage = await screen.findByRole('alert')
     expect(errorMessage.textContent).toBe('Passphrase part must be exactly 4 digits long')
@@ -89,26 +63,6 @@ describe('Recovery Network Passphrase Drawer', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('alert'))
     expect(changeBtn).not.toBeDisabled()
-  })
-
-  it('should toggle to display literal password', async () => {
-    render(
-      <Provider>
-        <ChangePassphraseDrawer
-          data={fakeData}
-          visible={true}
-          setVisible={mockedSetVisible}
-        />
-      </Provider>, {
-        route: { params }
-      })
-
-    await screen.findByRole('dialog')
-    expect(await screen.findAllByTestId(/recovery_pass_[0-3]/)).toHaveLength(4)
-
-    const toggleVisible = await screen.findByRole('img', { name: 'eye' })
-    fireEvent.click(toggleVisible)
-    expect(await screen.findByTestId('recovery_pass_1')).toHaveDisplayValue('5764')
   })
 
   it('should close dialog after submit succeed', async () => {
@@ -131,12 +85,27 @@ describe('Recovery Network Passphrase Drawer', () => {
       })
 
     await screen.findByRole('dialog')
-    expect(await screen.findAllByTestId(/recovery_pass_[0-3]/)).toHaveLength(4)
-
-    const inputElem = await screen.findByTestId('recovery_pass_0')
+    const inputElem = await screen.findByTestId('pwdg_0')
     await userEvent.clear(inputElem)
     await userEvent.type(inputElem, '1236')
     fireEvent.click(await screen.findByRole('button', { name: 'Change' }))
+    await waitFor(() => expect(mockedSetVisible).toHaveBeenCalledWith(false))
+  })
+
+  it('should close dialog after click drawer close button', async () => {
+    render(
+      <Provider>
+        <ChangePassphraseDrawer
+          data={fakeData}
+          visible={true}
+          setVisible={mockedSetVisible}
+        />
+      </Provider>, {
+        route: { params }
+      })
+
+    await screen.findByRole('dialog')
+    fireEvent.click(await screen.findByRole('button', { name: 'Close' }))
     await waitFor(() => expect(mockedSetVisible).toHaveBeenCalledWith(false))
   })
 
@@ -160,10 +129,26 @@ describe('Recovery Network Passphrase Drawer', () => {
       })
 
     await screen.findByRole('dialog')
-    const inputElem = await screen.findByTestId('recovery_pass_0')
+    const inputElem = await screen.findByTestId('pwdg_0')
     await userEvent.clear(inputElem)
     await userEvent.type(inputElem, '1236')
     fireEvent.click(await screen.findByRole('button', { name: 'Change' }))
     expect(await screen.findByText('An error occurred')).toBeVisible()
+  })
+
+  it('should correctly render when data is empty string', async () => {
+    render(
+      <Provider>
+        <ChangePassphraseDrawer
+          data=''
+          visible={true}
+          setVisible={mockedSetVisible}
+        />
+      </Provider>, {
+        route: { params }
+      })
+
+    await screen.findByRole('dialog')
+    expect(screen.queryByTestId(/pwdg_\d/)).not.toBeInTheDocument()
   })
 })

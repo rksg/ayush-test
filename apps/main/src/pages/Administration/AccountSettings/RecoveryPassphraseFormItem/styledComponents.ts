@@ -26,21 +26,20 @@ export const drawerStyles = css`
       margin-right: 12px;
     }
   }
+  
+  ${greyTextStyles}
+`
 
-  .ant-drawer-body .ant-form-item-control .ant-form-item-explain-error:not(:first-child) {
+export const passwordsGroupStyles = css`
+  .ant-form-item-control .ant-form-item-explain-error:not(:first-child) {
     display: none;
   }
 
-  .inputsWrapper {
+  .passwordGroupEndIcons {
     display: flex;
     justify-content: space-around;
     align-items: center;
-
-    & input {
-      width: 55px;
-    }
   }
 
   ${blueIconStyles}
-  ${greyTextStyles}
 `

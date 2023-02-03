@@ -25,7 +25,7 @@ const AccountSettings = (props : AccountSettingsProps) => {
   const params = useParams()
   const {
     data: userProfileData,
-    verifyIsPrimeAdminUser
+    isPrimeAdmin
   } = useUserProfileContext()
 
   const recoveryPassphraseData = useGetRecoveryPassphraseQuery({ params })
@@ -38,7 +38,7 @@ const AccountSettings = (props : AccountSettingsProps) => {
     isMspEc = false
   }
 
-  const isPrimeAdminUser = verifyIsPrimeAdminUser()
+  const isPrimeAdminUser = isPrimeAdmin()
   const showRksSupport = isMspEc === false
   const isFirstLoading = recoveryPassphraseData.isLoading
     || mfaTenantDetailsData.isLoading || mspEcProfileData.isLoading

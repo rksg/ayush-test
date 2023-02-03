@@ -1,10 +1,9 @@
 import React, { useState } from 'react'
 
-import {  EyeOutlined, EyeInvisibleOutlined, QuestionCircleOutlined } from '@ant-design/icons'
-import { Input, Form, Typography, Tooltip }                           from 'antd'
-import { useIntl }                                                    from 'react-intl'
-import { useParams }                                                  from 'react-router-dom'
-import styled                                                         from 'styled-components/macro'
+import { Typography } from 'antd'
+import { useIntl }    from 'react-intl'
+import { useParams }  from 'react-router-dom'
+import styled         from 'styled-components/macro'
 
 
 import { Drawer, Button, showToast }    from '@acx-ui/components'
@@ -15,7 +14,8 @@ import { validateRecoveryPassphrasePart } from '@acx-ui/rc/utils'
 
 import { MessageMapping } from '../MessageMapping'
 
-import * as UI from './styledComponents'
+import { MultiPartyPassword } from './MultiPartyPassword'
+import * as UI                from './styledComponents'
 
 interface ChangePassphraseDrawerProps {
   className?: string,
@@ -28,11 +28,9 @@ export const ChangePassphraseDrawer = styled((props: ChangePassphraseDrawerProps
   const { $t } = useIntl()
   const { className, data, visible, setVisible } = props
   const { tenantId } = useParams()
-  const [ passphraseVisible, setPassphraseVisible ] = useState(false)
   const [ isChanged, setIsChanged ] = useState(false)
   const [ isValid, setIsValid ] = useState(false)
   const [ passphrase, setPassphrase ] = useState<string[]>([])
-  const [ form ] = Form.useForm()
 
   const [updateRecoveryPassphrase, { isLoading: isUpdatingRecoveryPassphrase }]
     = useUpdateRecoveryPassphraseMutation()
@@ -41,13 +39,7 @@ export const ChangePassphraseDrawer = styled((props: ChangePassphraseDrawerProps
     setVisible(false)
   }
 
-  const handlePassphraseVisible = () => {
-    setPassphraseVisible(!passphraseVisible)
-  }
-
   const onSubmitChange = async () => {
-    if (!passphrase) return
-
     try {
       await updateRecoveryPassphrase({
         params: { tenantId },
@@ -63,26 +55,22 @@ export const ChangePassphraseDrawer = styled((props: ChangePassphraseDrawerProps
     }
   }
 
-  const handleChange = (idx: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newVal = e.target?.value.trim()
-    const newData:string[] = [...passphrase]
-    newData[idx] = newVal
-    setPassphrase(newData)
-
-    form.validateFields().then(() => {
+  const handleValidated = (isValid: boolean) => {
+    if (isValid) {
       setIsValid(true)
       setIsChanged(true)
-    }).catch(() => {
+    } else {
       setIsValid(false)
-    })
+    }
+  }
+
+  const handleChange = (idx: number, newData: string[]) => {
+    setPassphrase(newData)
   }
 
   React.useEffect(() => {
-    if (visible)
-      setPassphrase(data.split(' '))
-  }, [data, visible])
-
-  const PassphraseIcon = passphraseVisible ? EyeInvisibleOutlined: EyeOutlined
+    setPassphrase(data.trim() === '' ? [] : data.split(' '))
+  }, [data])
 
   return (
     <Drawer
@@ -108,52 +96,22 @@ export const ChangePassphraseDrawer = styled((props: ChangePassphraseDrawerProps
         </div>
       }
     >
-      <Form
-        form={form}
-        labelAlign='left'
-        fields={
-          passphrase.map(
-            (item, idx) => ({ name: `recovery_pass_${idx}`, value: item })
-          )}
+      <MultiPartyPassword
+        data={passphrase}
+        label={$t({ defaultMessage: 'Recovery Network Passphrase' })}
+        tooltip={$t({ defaultMessage: 'Must be 16 digits long' })}
+        rules={[
+          {
+            validator: (_, value) => validateRecoveryPassphrasePart(value)
+          }
+        ]}
+        onValidated={handleValidated}
+        onChange={handleChange}
       >
-        <Form.Item
-          label={$t({ defaultMessage: 'Recovery Network Passphrase' })}
-        >
-          <div className='inputsWrapper'>
-            {passphrase.map(
-              (item:string, idx: number) => {
-                return (
-                  <Form.Item
-                    key={`recovery_pass_${idx}`}
-                    name={`recovery_pass_${idx}`}
-                    noStyle
-                    hasFeedback
-                    validateFirst
-                    rules={[
-                      {
-                        validator: (_, value) => validateRecoveryPassphrasePart(value)
-                      }
-                    ]}
-                  >
-                    <Input
-                      data-testid={`recovery_pass_${idx}`}
-                      type={passphraseVisible ? 'text' : 'password'}
-                      onChange={handleChange(idx)}
-                    />
-                  </Form.Item>)
-              }
-            )}
-            <PassphraseIcon className='ant-input-password-icon' onClick={handlePassphraseVisible} />
-            <Tooltip placement='topRight' title={$t({ defaultMessage: 'Must be 16 digits long' })}>
-              <QuestionCircleOutlined />
-            </Tooltip>
-          </div>
-        </Form.Item>
-
         <Typography.Paragraph className='greyText'>
           {$t(MessageMapping.change_recovery_passphrase_description)}
         </Typography.Paragraph>
-      </Form>
+      </MultiPartyPassword>
     </Drawer>
   )
 })`${UI.drawerStyles}`

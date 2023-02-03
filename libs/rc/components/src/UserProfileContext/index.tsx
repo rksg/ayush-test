@@ -7,7 +7,7 @@ import { getJwtTokenPayload }     from '@acx-ui/utils'
 export interface UserProfileContextProps {
   data: UserProfile | undefined;
   hasRole: (role: string) => boolean;
-  verifyIsPrimeAdminUser: () => boolean;
+  isPrimeAdmin: () => boolean;
 }
 
 // eslint-disable-next-line max-len
@@ -25,7 +25,7 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
     return data?.roles.find(role => role === userRole) !== undefined
   }
 
-  const verifyIsPrimeAdminUser = () => {
+  const isPrimeAdmin = () => {
     return hasRole(RolesEnum.PRIME_ADMIN)
   }
 
@@ -33,7 +33,7 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
     value={{
       data,
       hasRole,
-      verifyIsPrimeAdminUser
+      isPrimeAdmin
     }}
   >
     {props.children}

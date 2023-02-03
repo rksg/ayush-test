@@ -17,12 +17,12 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
-const verifyIsPrimeAdminUser: () => boolean = jest.fn().mockReturnValue(true)
+const isPrimeAdmin: () => boolean = jest.fn().mockReturnValue(true)
 
 const fakeSupportUser = { ...fakeUserProfile, dogfood: true }
 const userProfileContextValues = {
   data: fakeUserProfile,
-  verifyIsPrimeAdminUser: verifyIsPrimeAdminUser
+  isPrimeAdmin
 } as UserProfileContextProps
 
 describe('Administration page', () => {
@@ -138,7 +138,7 @@ describe('Administration page', () => {
     render(
       <Provider>
         <UserProfileContext.Provider
-          value={{ data: fakeSupportUser, verifyIsPrimeAdminUser: verifyIsPrimeAdminUser } as UserProfileContextProps}
+          value={{ data: fakeSupportUser, isPrimeAdmin } as UserProfileContextProps}
         >
           <Administration />
         </UserProfileContext.Provider>

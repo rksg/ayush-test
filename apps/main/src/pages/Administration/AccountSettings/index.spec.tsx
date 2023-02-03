@@ -41,7 +41,12 @@ jest.mock('./MFAFormItem', () => ({
 jest.mock('./RecoveryPassphraseFormItem', () => ({
   RecoveryPassphraseFormItem: () => <div data-testid={'rc-RecoveryPassphraseFormItem'} title='RecoveryPassphraseFormItem' />
 }))
-const verifyIsPrimeAdminUser: () => boolean = jest.fn().mockReturnValue(true)
+
+const isPrimeAdmin: () => boolean = jest.fn().mockReturnValue(true)
+const userProfileContextValues = {
+  data: fakeUserProfile,
+  isPrimeAdmin
+} as UserProfileContextProps
 
 describe('Account Settings', () => {
   beforeEach(() => {
@@ -70,7 +75,7 @@ describe('Account Settings', () => {
     render(
       <Provider>
         <UserProfileContext.Provider
-          value={{ data: fakeUserProfile, verifyIsPrimeAdminUser: verifyIsPrimeAdminUser } as UserProfileContextProps}
+          value={userProfileContextValues}
         >
           <AccountSettings />
         </UserProfileContext.Provider>
@@ -90,7 +95,7 @@ describe('Account Settings', () => {
     render(
       <Provider>
         <UserProfileContext.Provider
-          value={{ data: fakeNotAdminUser, verifyIsPrimeAdminUser: notPrimeAdminUser } as UserProfileContextProps}
+          value={{ data: fakeNotAdminUser, isPrimeAdmin: notPrimeAdminUser } as UserProfileContextProps}
         >
           <AccountSettings />
         </UserProfileContext.Provider>
@@ -116,7 +121,7 @@ describe('Account Settings', () => {
     render(
       <Provider>
         <UserProfileContext.Provider
-          value={{ data: fakeUserProfile, verifyIsPrimeAdminUser: verifyIsPrimeAdminUser } as UserProfileContextProps}
+          value={userProfileContextValues}
         >
           <AccountSettings />
         </UserProfileContext.Provider>
@@ -135,7 +140,7 @@ describe('Account Settings', () => {
     render(
       <Provider>
         <UserProfileContext.Provider
-          value={{ data: fakeUser, verifyIsPrimeAdminUser: verifyIsPrimeAdminUser } as UserProfileContextProps}
+          value={{ data: fakeUser, isPrimeAdmin } as UserProfileContextProps}
         >
           <AccountSettings />
         </UserProfileContext.Provider>
