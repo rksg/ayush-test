@@ -28,7 +28,8 @@ import {
 import { useParams } from '@acx-ui/react-router-dom'
 import { formatter } from '@acx-ui/utils'
 
-import DpskPassphraseDrawer from './DpskPassphraseDrawer'
+import { unlimitedNumberOfDeviceLabel } from './contentsMap'
+import DpskPassphraseDrawer             from './DpskPassphraseDrawer'
 
 
 interface UploadPassphrasesFormFields {
@@ -87,7 +88,10 @@ export default function DpskPassphraseManagement () {
       key: 'numberOfDevices',
       title: $t({ defaultMessage: 'No. of Devices' }),
       dataIndex: 'numberOfDevices',
-      sorter: false
+      sorter: false,
+      render: function (data) {
+        return data ? data : $t(unlimitedNumberOfDeviceLabel)
+      }
     },
     {
       key: 'mac',
