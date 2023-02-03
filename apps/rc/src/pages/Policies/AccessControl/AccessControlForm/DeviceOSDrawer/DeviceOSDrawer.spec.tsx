@@ -10,7 +10,7 @@ import { AccessControlUrls }          from '@acx-ui/rc/utils'
 import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
-import DeviceOSDrawer from './DeviceOSDrawer'
+import DeviceOSDrawer from './index'
 
 const queryDevice = {
   data: [

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 
-import { Checkbox, Col, Form, FormItemProps, Input, Row, Select, Slider } from 'antd'
-import _                                                                  from 'lodash'
-import { useIntl }                                                        from 'react-intl'
-import styled, { css }                                                    from 'styled-components/macro'
+import { Col, Form, Input, Row, Select } from 'antd'
+import _                                 from 'lodash'
+import { useIntl }                       from 'react-intl'
+import styled, { css }                   from 'styled-components/macro'
 
 import {
   ContentSwitcher,
@@ -18,13 +18,16 @@ import {
   useDevicePolicyListQuery, useGetDevicePolicyQuery
 } from '@acx-ui/rc/services'
 import { AccessStatus, CommonResult, DeviceRule } from '@acx-ui/rc/utils'
-import { useParams }                              from '@acx-ui/react-router-dom'
+import { useParams }                                              from '@acx-ui/react-router-dom'
+
+import { renderDetailsColumn }                 from './DeviceOSDrawerUtils'
+import DeviceOSRuleContent, { DrawerFormItem } from './DeviceOSRuleContent'
 
 const { Option } = Select
 
 const { useWatch } = Form
 
-interface DeviceOSRule {
+export interface DeviceOSRule {
   ruleName: string,
   deviceType: string,
   osVendor: string,
@@ -36,126 +39,11 @@ interface DeviceOSRule {
   }
 }
 
-enum DeviceTypeEnum {
-  Laptop = 'Laptop',
-  Smartphone = 'Smartphone',
-  Tablet = 'Tablet',
-  Voip = 'Voip',
-  Gaming = 'Gaming',
-  Printer = 'Printer',
-  IotDevice = 'IotDevice',
-  HomeAvEquipment = 'HomeAvEquipment',
-  WdsDevice = 'WdsDevice',
-}
-
-enum OsVendorEnum {
-  All = 'All',
-  Windows = 'Windows',
-  MacOs = 'MacOs',
-  ChromeOs = 'ChromeOs',
-  Linux = 'Linux',
-  Ubuntu = 'Ubuntu',
-  Ios = 'Ios',
-  Android = 'Android',
-  BlackBerry = 'BlackBerry',
-  AmazonKindle = 'AmazonKindle',
-  CiscoIpPhone = 'CiscoIpPhone',
-  AvayaIpPhone = 'AvayaIpPhone',
-  LinksysPapVoip = 'LinksysPapVoip',
-  NortelIpPhone = 'NortelIpPhone',
-  Xbox360 = 'Xbox360',
-  PlayStation2 = 'PlayStation2',
-  GameCube = 'GameCube',
-  Wii = 'Wii',
-  PlayStation3 = 'PlayStation3',
-  Xbox = 'Xbox',
-  Nintendo = 'Nintendo',
-  HpPrinter = 'HpPrinter',
-  CanonPrinter = 'CanonPrinter',
-  XeroxPrinter = 'XeroxPrinter',
-  DellPrinter = 'DellPrinter',
-  BrotherPrinter = 'BrotherPrinter',
-  EpsonPrinter = 'EpsonPrinter',
-  NestCamera = 'NestCamera',
-  NestThermostat = 'NestThermostat',
-  WemoSmartSwitch = 'WemoSmartSwitch',
-  WifiSmartPlug = 'WifiSmartPlug',
-  SonyPlayer = 'SonyPlayer',
-  PanasonicG20Tv = 'PanasonicG20Tv',
-  SamsungSmartTv = 'SamsungSmartTv',
-  AppleTv = 'AppleTv',
-  LibratoneSpeakers = 'LibratoneSpeakers',
-  BoseSpeakers = 'BoseSpeakers',
-  SonosSpeakers = 'SonosSpeakers',
-  RokuStreamingStick = 'RokuStreamingStick',
-  TelnetCpe = 'TelnetCpe',
-}
-
-const getDeviceTypeOptions = () => {
-  return ['Select...', ...Object.keys(DeviceTypeEnum)]
-}
-
-const deviceTypeOptionList = getDeviceTypeOptions().map((option) =>
-  <Option key={option}>{option}</Option>
-)
-
 const ViewDetailsWrapper = styled.span<{ $policyId: string }>`
   ${props => props.$policyId
     ? css`cursor: pointer;`
     : css`cursor: not-allowed; color: darkgray;`}
 `
-
-const getOsVendorOptions = (deviceType: DeviceTypeEnum) => {
-  let OsVendorArray = ['Please select...']
-  switch (deviceType) {
-    case DeviceTypeEnum.Laptop:
-      // eslint-disable-next-line max-len
-      OsVendorArray = [OsVendorEnum.All, OsVendorEnum.Windows, OsVendorEnum.MacOs, OsVendorEnum.ChromeOs, OsVendorEnum.Linux, OsVendorEnum.Ubuntu]
-      break
-    case DeviceTypeEnum.Smartphone:
-      // eslint-disable-next-line max-len
-      OsVendorArray = [OsVendorEnum.All, OsVendorEnum.Ios, OsVendorEnum.Android, OsVendorEnum.BlackBerry, OsVendorEnum.Windows]
-      break
-    case DeviceTypeEnum.Tablet:
-      // eslint-disable-next-line max-len
-      OsVendorArray = [OsVendorEnum.All, OsVendorEnum.Ios, OsVendorEnum.AmazonKindle, OsVendorEnum.Android, OsVendorEnum.Windows]
-      break
-    case DeviceTypeEnum.Voip:
-      // eslint-disable-next-line max-len
-      OsVendorArray = [OsVendorEnum.All, OsVendorEnum.CiscoIpPhone, OsVendorEnum.AvayaIpPhone, OsVendorEnum.LinksysPapVoip, OsVendorEnum.NortelIpPhone]
-      break
-    case DeviceTypeEnum.Gaming:
-      // eslint-disable-next-line max-len
-      OsVendorArray = [OsVendorEnum.All, OsVendorEnum.Xbox360, OsVendorEnum.PlayStation2, OsVendorEnum.GameCube, OsVendorEnum.Wii, OsVendorEnum.PlayStation3, OsVendorEnum.Xbox, OsVendorEnum.Nintendo]
-      break
-    case DeviceTypeEnum.Printer:
-      // eslint-disable-next-line max-len
-      OsVendorArray = [OsVendorEnum.All, OsVendorEnum.HpPrinter, OsVendorEnum.CanonPrinter, OsVendorEnum.XeroxPrinter, OsVendorEnum.DellPrinter, OsVendorEnum.BrotherPrinter, OsVendorEnum.EpsonPrinter]
-      break
-    case DeviceTypeEnum.IotDevice:
-      // eslint-disable-next-line max-len
-      OsVendorArray = [OsVendorEnum.All, OsVendorEnum.NestCamera, OsVendorEnum.NestThermostat, OsVendorEnum.WemoSmartSwitch, OsVendorEnum.WifiSmartPlug]
-      break
-    case DeviceTypeEnum.HomeAvEquipment:
-      // eslint-disable-next-line max-len
-      OsVendorArray = [OsVendorEnum.All, OsVendorEnum.SonyPlayer, OsVendorEnum.PanasonicG20Tv, OsVendorEnum.SamsungSmartTv, OsVendorEnum.AppleTv, OsVendorEnum.LibratoneSpeakers, OsVendorEnum.BoseSpeakers, OsVendorEnum.SonosSpeakers, OsVendorEnum.RokuStreamingStick]
-      break
-    case DeviceTypeEnum.WdsDevice:
-      OsVendorArray = [OsVendorEnum.All, OsVendorEnum.TelnetCpe]
-      break
-  }
-  return OsVendorArray
-}
-
-const DrawerFormItem = (props: FormItemProps) => {
-  return (
-    <Form.Item
-      labelAlign={'left'}
-      labelCol={{ span: 5 }}
-      style={{ marginBottom: '5px' }}
-      {...props} />
-  )
-}
 
 export interface DeviceOSDrawerProps {
   inputName?: string[]
@@ -169,18 +57,8 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
   const form = Form.useFormInstance()
   const [deviceOSDrawerVisible, setDeviceOSDrawerVisible] = useState(false)
   const [ruleDrawerEditMode, setRuleDrawerEditMode] = useState(false)
-  const [deviceOSRuleList, setDeviceOSRuleList] = useState([] as DeviceOSRule[]
-  )
-  const [deviceType, setDeviceType] = useState('' as DeviceTypeEnum)
-  const [osVendor, setOsVendor] = useState(
-    $t({ defaultMessage: 'Please select...' }) as OsVendorEnum
-  )
-  const [osVendorOptionList, setOsVendorOptionList] = useState([] as JSX.Element[])
+  const [deviceOSRuleList, setDeviceOSRuleList] = useState([] as DeviceOSRule[])
   const [deviceOSRule, setDeviceOSRule] = useState({} as DeviceOSRule)
-  const [fromClient, setFromClient] = useState(false)
-  const [fromClientValue, setFromClientValue] = useState(0)
-  const [toClient, setToClient] = useState(false)
-  const [toClientValue, setToClientValue] = useState(0)
   const [queryPolicyId, setQueryPolicyId] = useState('')
   const [requestId, setRequestId] = useState('')
   const [contentForm] = Form.useForm()
@@ -249,31 +127,6 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
     }
   }, [devicePolicyInfo, queryPolicyId])
 
-  useEffect(() => {
-    setOsVendorOptionList(
-      getOsVendorOptions(deviceType).map(option =>
-        <Option key={option}>{option}</Option>
-      )
-    )
-  }, [deviceType])
-
-  const renderDetailsColumn = (row: DeviceOSRule) => {
-    const linkArray = []
-    if (row.details.upLink >= 0) {
-      linkArray.push(`UpLink - ${row.details.upLink} Mbps`)
-    }
-    if (row.details.downLink >= 0) {
-      linkArray.push(`DownLink - ${row.details.downLink} Mbps`)
-    }
-    return <div style={{ display: 'flex', flexDirection: 'column' }}>
-      {row.details.vlan && <span>VLAN: {row.details.vlan}</span>}
-      <span style={{ whiteSpace: 'nowrap' }}>
-        {linkArray.length ? 'Rate Limit: ' : ''}
-        {linkArray.join(' | ')}
-      </span>
-    </div>
-  }
-
   const basicColumns: TableProps<DeviceOSRule>['columns'] = [
     {
       title: $t({ defaultMessage: 'Rule Name' }),
@@ -308,28 +161,11 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
     }
   ]
 
-  const EmptyElement = (props: { access: AccessStatus }) => {
-    drawerForm.setFieldValue('layer3DefaultAccess', props.access)
-    return <></>
-  }
 
   const DefaultEmptyElement = (props: { access: AccessStatus }) => {
-    contentForm.setFieldValue('layer3DefaultAccess', props.access)
+    contentForm.setFieldValue('deviceOSDefaultAccess', props.access)
     return <></>
   }
-
-  const tabDetails:ContentSwitcherProps['tabDetails']=[
-    {
-      label: $t({ defaultMessage: 'Allow Traffic' }),
-      children: <EmptyElement access={AccessStatus.ALLOW} />,
-      value: AccessStatus.ALLOW
-    },
-    {
-      label: $t({ defaultMessage: 'Block Traffic' }),
-      children: <EmptyElement access={AccessStatus.BLOCK} />,
-      value: AccessStatus.BLOCK
-    }
-  ]
 
   const defaultTabDetails:ContentSwitcherProps['tabDetails']=[
     {
@@ -354,11 +190,11 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
   const handleRuleDrawerClose = () => {
     setDeviceOSDrawerVisible(false)
     setRuleDrawerEditMode(false)
-    setDeviceType('' as DeviceTypeEnum)
-    setToClient(false)
-    setToClientValue(0)
-    setFromClient(false)
-    setFromClientValue(0)
+    // setDeviceType('' as DeviceTypeEnum)
+    // setToClient(false)
+    // setToClientValue(0)
+    // setFromClient(false)
+    // setFromClientValue(0)
     setDeviceOSRule({} as DeviceOSRule)
   }
 
@@ -374,24 +210,17 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
     clearFieldsValue()
   }
 
-  const handleOsVendorChange = (value: OsVendorEnum) => {
-    setOsVendor(value)
-  }
-
-  const handleDeviceTypeChange = (value: DeviceTypeEnum) => {
-    setDeviceType(value)
-  }
 
   const handleEditDetailsInfo = (rule: DeviceOSRule) => {
     drawerForm.setFieldValue('details', rule.details)
     drawerForm.setFieldValue('vlan', rule.details.vlan)
     if (rule.details.upLink !== -1) {
-      setFromClient(true)
-      setFromClientValue(rule.details.upLink)
+      drawerForm.setFieldValue('fromClient', true)
+      drawerForm.setFieldValue('fromClientValue', rule.details.upLink)
     }
     if (rule.details.downLink !== -1) {
-      setToClient(true)
-      setToClientValue(rule.details.downLink)
+      drawerForm.setFieldValue('toClient', true)
+      drawerForm.setFieldValue('toClientValue', rule.details.downLink)
     }
   }
 
@@ -405,8 +234,12 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
       osVendor: drawerForm.getFieldValue('osVendor'),
       details: {
         vlan: drawerForm.getFieldValue('vlan') ?? '',
-        upLink: fromClient ? fromClientValue : -1,
-        downLink: toClient ? toClientValue : -1
+        upLink: drawerForm.getFieldValue('fromClient')
+          ? drawerForm.getFieldValue('fromClientValue')
+          : -1,
+        downLink: drawerForm.getFieldValue('toClient')
+          ? drawerForm.getFieldValue('toClientValue')
+          : -1
       }
     }
 
@@ -468,7 +301,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
     }
   }
 
-  const rowActions: TableProps<DeviceOSRule>['actions'] = isViewMode() ? [] : [{
+  const rowActions: TableProps<DeviceOSRule>['rowActions'] = isViewMode() ? [] : [{
     label: $t({ defaultMessage: 'Edit' }),
     onClick: ([editRow]: DeviceOSRule[], clearSelection: () => void) => {
       setDeviceOSDrawerVisible(true)
@@ -501,41 +334,6 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
       })
     }
   }] as { label: string, onClick: () => void }[]
-
-  const rateLimitContent = <div>
-    <div style={{ display: 'flex' }}>
-      <span style={{ width: '150px' }}>
-        <Checkbox checked={fromClient} onChange={() => setFromClient(!fromClient)}>
-          {$t({ defaultMessage: 'From Client:' })}
-        </Checkbox>
-      </span>
-      <Slider
-        style={{
-          display: fromClient ? '' : 'none',
-          width: '100%', marginLeft: '10px', marginRight: '10px' }}
-        marks={{ 0: '0.1 Mbps', 200: '200 Mbps' }}
-        max={200}
-        defaultValue={fromClientValue}
-        onChange={(value) => setFromClientValue(value)}
-      />
-    </div>
-    <div style={{ display: 'flex' }}>
-      <span style={{ width: '150px' }}>
-        <Checkbox checked={toClient} onChange={() => setToClient(!toClient)}>
-          {$t({ defaultMessage: 'To Client:' })}
-        </Checkbox>
-      </span>
-      <Slider
-        style={{
-          display: toClient ? '' : 'none',
-          width: '100%', marginLeft: '10px', marginRight: '10px' }}
-        marks={{ 0: '0.1 Mbps', 200: '200 Mbps' }}
-        max={200}
-        defaultValue={toClientValue}
-        onChange={(value) => setToClientValue(value)}
-      />
-    </div>
-  </div>
 
   const content = <Form layout='horizontal' form={contentForm}>
     <DrawerFormItem
@@ -575,86 +373,6 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
       actions={actions}
       rowActions={rowActions}
       rowSelection={{ type: 'radio' }}
-    />
-  </Form>
-
-  const ruleContent = <Form layout='horizontal' form={drawerForm}>
-    <DrawerFormItem
-      name='ruleName'
-      label={$t({ defaultMessage: 'Rule Name' })}
-      initialValue={''}
-      validateFirst
-      rules={[
-        { required: true },
-        { validator: (_, value) => {
-          if (deviceOSRuleList
-            .filter((rule: DeviceOSRule) => ruleDrawerEditMode ? (rule.ruleName !== value) : true)
-            .findIndex((rule: DeviceOSRule) => rule.ruleName === value) !== -1) {
-            return Promise.reject('The rule name has already used')
-          }
-          return Promise.resolve()
-        }
-        }
-      ]}
-      children={<Input />}
-    />
-    <DrawerFormItem
-      name='access'
-      label={$t({ defaultMessage: 'Access' })}
-      initialValue={AccessStatus.ALLOW}
-      children={<ContentSwitcher tabDetails={tabDetails} size='large' />}
-    />
-    <DrawerFormItem
-      name='deviceType'
-      label={$t({ defaultMessage: 'Device Type' })}
-      initialValue={$t({ defaultMessage: 'Select...' })}
-      rules={[
-        { required: true },
-        { validator: (_, value) => {
-          if (value === 'Select...') {
-            return Promise.reject('Please select the deviceType option')
-          }
-          return Promise.resolve()
-        }
-        }
-      ]}
-      children={<Select
-        style={{ width: '100%' }}
-        onChange={handleDeviceTypeChange}
-        children={deviceTypeOptionList}
-      />}
-    />
-    <DrawerFormItem
-      name='osVendor'
-      label={$t({ defaultMessage: 'OS Vender' })}
-      initialValue={osVendor}
-      rules={[
-        { required: true },
-        { validator: (_, value) => {
-          if (value === 'Please select...') {
-            return Promise.reject('Please select the osVendor option')
-          }
-          return Promise.resolve()
-        }
-        }
-      ]}
-      children={<Select
-        style={{ width: '100%' }}
-        onChange={handleOsVendorChange}
-        children={osVendorOptionList}
-      />}
-    />
-    <DrawerFormItem
-      name='rateLimit'
-      label={$t({ defaultMessage: 'Rate Limit' })}
-      initialValue={''}
-      children={rateLimitContent}
-    />
-    <DrawerFormItem
-      name='vlan'
-      label={$t({ defaultMessage: 'VLAN' })}
-      initialValue={''}
-      children={<Input />}
     />
   </Form>
 
@@ -713,8 +431,8 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
             onCancel={handleDeviceOSDrawerClose}
             onSave={async () => {
               try {
-                await contentForm.validateFields()
                 if (!isViewMode()) {
+                  await contentForm.validateFields()
                   await handleDevicePolicy(false)
                 }
                 handleDeviceOSDrawerClose()
@@ -735,7 +453,11 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
         zIndex={100}
         destroyOnClose={true}
         onClose={handleRuleDrawerClose}
-        children={ruleContent}
+        children={<DeviceOSRuleContent
+          drawerForm={drawerForm}
+          deviceOSRuleList={deviceOSRuleList}
+          ruleDrawerEditMode={ruleDrawerEditMode}
+        />}
         footer={
           <Drawer.FormFooter
             showAddAnother={false}
