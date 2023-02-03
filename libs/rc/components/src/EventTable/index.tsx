@@ -4,7 +4,7 @@ import _                                            from 'lodash'
 import moment                                       from 'moment'
 import { defineMessage, useIntl, FormattedMessage } from 'react-intl'
 
-import { Loader, Table, TableProps, Button, Tooltip, Highlighter }                          from '@acx-ui/components'
+import { Loader, Table, TableProps, Button, Tooltip }                                       from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo, Event, RequestPayload, TableQuery, replaceStrings, noDataDisplay } from '@acx-ui/rc/utils'
 import { TenantLink, generatePath }                                                         from '@acx-ui/react-router-dom'
@@ -183,7 +183,7 @@ const getDescription = (
           data={data}
           highlightFn={highlightFn}
         />,
-        b: (chunks) => <Highlighter>{chunks}</Highlighter>
+        b: (chunks) => <Table.Highlighter>{chunks}</Table.Highlighter>
       }}
     />
   } catch {
