@@ -6,7 +6,7 @@ import { useIntl } from 'react-intl'
 import { Tabs }                                  from '@acx-ui/components'
 import { useIsSplitOn, Features }                from '@acx-ui/feature-toggle'
 import { LineChartOutline, ListSolid }           from '@acx-ui/icons'
-import { ClientDualTable }                       from '@acx-ui/rc/components'
+import { ClientDualTable, SwitchClientsTable }   from '@acx-ui/rc/components'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { EmbeddedReport }                        from '@acx-ui/reports/components'
 import {
@@ -56,7 +56,7 @@ export function VenueClientsTab () {
         tab={$t({ defaultMessage: 'Switch' })}
         key='switch'
         disabled={!useIsSplitOn(Features.DEVICES)}>
-        {$t({ defaultMessage: 'Switch' })}
+        <SwitchClientsTable />
       </Tabs.TabPane>
     </Tabs>
   )

@@ -66,7 +66,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
         }else{
           return (
             <TenantLink
-              to={`/networks/${row.id}/network-details/venues`}
+              to={`/networks/wireless/${row.id}/network-details/venues`}
               children={count ? count : 0}
             />
           )
@@ -84,7 +84,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
           return data
         }else{
           return (
-            <TenantLink to={`/networks/${row.id}/network-details/aps`}>{data}</TenantLink>
+            <TenantLink to={`/networks/wireless/${row.id}/network-details/aps`}>{data}</TenantLink>
           )
         }
       }
@@ -185,7 +185,7 @@ export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
   const intl = useIntl()
   const { $t } = intl
   const navigate = useNavigate()
-  const linkToEditNetwork = useTenantLink('/networks/')
+  const linkToEditNetwork = useTenantLink('/networks/wireless/')
 
   const { tenantId } = useParams()
   const [
