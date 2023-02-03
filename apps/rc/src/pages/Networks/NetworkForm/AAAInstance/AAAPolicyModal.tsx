@@ -26,7 +26,7 @@ export default function AAAPolicyModal (props:{
     }}/>
 
   return (
-    <div style={{ marginTop: 28, marginLeft: 10 }}>
+    <div style={{ marginTop: -40, marginLeft: 220 }}>
       <Button type='link' onClick={()=>setVisible(true)}>
         {$t({ defaultMessage: 'Add Server' })}
       </Button>

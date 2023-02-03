@@ -94,6 +94,9 @@ export default function NetworkForm () {
     }else{
       delete saveState.cloudpathServerId
     }
+    if(!saveState.enableAccountingService){
+      delete saveState.accountingRadius
+    }
     const newSavedata = { ...saveState, ...saveData }
     newSavedata.wlan = { ...saveState?.wlan, ...saveData.wlan }
     updateSaveState({ ...saveState, ...newSavedata })

@@ -37,21 +37,10 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => 
   } else {
     delete data?.cloudpathServerId
     let authRadius = {}
-    if (get(data, 'authentication.primary.ip')) {
+    if (get(data, 'authRadius.primary.ip')) {
       authRadius = {
         ...authRadius,
-        ...{
-          primary: {
-            ip: get(data, 'authentication.primary.ip'),
-            port: get(data, 'authentication.primary.port'),
-            sharedSecret: get(data, 'authentication.primary.sharedSecret')
-          },
-          secondary: {
-            ip: get(data, 'authentication.secondary.ip'),
-            port: get(data, 'authentication.secondary.port'),
-            sharedSecret: get(data, 'authentication.secondary.sharedSecret')
-          }
-        }
+        ...data.authRadius
       }
     }
     saveData = {
@@ -67,21 +56,7 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => 
       let accountingRadius = {}
       accountingRadius = {
         ...accountingRadius,
-        ...{
-          primary: {
-            ip: get(data, 'accounting.primary.ip'),
-            port: get(data, 'accounting.primary.port'),
-            sharedSecret: get(data, 'accounting.primary.sharedSecret')
-          },
-          secondary: {
-            ip: get(data, 'accounting.secondary.ip'),
-            port: get(data, 'accounting.secondary.port'),
-            sharedSecret: get(
-              data,
-              'accounting.secondary.sharedSecret'
-            )
-          }
-        }
+        ...data.accountingRadius
       }
       saveData = {
         ...saveData,
@@ -203,19 +178,7 @@ const parsePskSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => 
   }
   if (data.wlan?.macAddressAuthentication) {
     let authRadius = {
-      primary: {
-        ip: get(data, 'authentication.primary.ip'),
-        port: get(data, 'authentication.primary.port'),
-        sharedSecret: get(data, 'authentication.primary.sharedSecret')
-      },
-      secondary: {
-        ip: get(data, 'authentication.secondary.ip'),
-        port: get(data, 'authentication.secondary.port'),
-        sharedSecret: get(
-          data,
-          'authentication.secondary.sharedSecret'
-        )
-      }
+      ...data.authRadius
     }
 
     saveData = {
@@ -228,19 +191,7 @@ const parsePskSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => 
 
     if (data.enableAccountingService) {
       let accountingRadius = {
-        primary: {
-          ip: get(data, 'accounting.primary.ip'),
-          port: get(data, 'accounting.primary.port'),
-          sharedSecret: get(data, 'accounting.primary.sharedSecret')
-        },
-        secondary: {
-          ip: get(data, 'accounting.secondary.ip'),
-          port: get(data, 'accounting.secondary.port'),
-          sharedSecret: get(
-            data,
-            'accounting.secondary.sharedSecret'
-          )
-        }
+        ...data.accountingRadius
 
       }
 
