@@ -20,6 +20,7 @@ interface RogueAPDetectionDrawerProps {
   setVisible: (visible: boolean) => void
   isEditMode: boolean
   queryRuleName: string
+  setRuleName?: (name: string) => void
 }
 
 export function SsidRogueRegExp (value: string){
@@ -45,7 +46,7 @@ export function MacOuiRogueRegExp (value: string){
 const RogueAPDetectionDrawer = (props: RogueAPDetectionDrawerProps) => {
   const { $t } = useIntl()
 
-  const { visible, setVisible, isEditMode, queryRuleName } = props
+  const { visible, setVisible, isEditMode, queryRuleName, setRuleName } = props
   const [resetField, setResetField] = useState(false)
   const { state, dispatch } = useContext(RogueAPDetectionContext)
   const [drawerForm] = Form.useForm()
@@ -67,6 +68,9 @@ const RogueAPDetectionDrawer = (props: RogueAPDetectionDrawerProps) => {
   const onClose = () => {
     setVisible(false)
     drawerForm.resetFields()
+    if (setRuleName) {
+      setRuleName('')
+    }
   }
 
   const resetFields = () => {
@@ -155,6 +159,7 @@ const RogueAPDetectionDrawer = (props: RogueAPDetectionDrawerProps) => {
     <Select
       data-testid='selectRogueCategory'
       defaultValue={classification}
+      onChange={() => drawerForm.validateFields()}
       style={{ width: '100%', marginRight: '5px' }}>
       <Option value={RogueCategory.IGNORED}>
         {$t({ defaultMessage: 'Ignored' })}
@@ -178,6 +183,7 @@ const RogueAPDetectionDrawer = (props: RogueAPDetectionDrawerProps) => {
       style={{ width: '90%' }}
       rules={[
         { required: true },
+        { min: 2 },
         { max: 32 },
         { validator: (rule, value) => {
           if (!isEditMode && value && state.rules.findIndex(e => e.name === value) !== -1) {
@@ -202,6 +208,10 @@ const RogueAPDetectionDrawer = (props: RogueAPDetectionDrawerProps) => {
           { validator: (rule, value) => {
             if (value && state.rules
               .filter(e => isEditMode ? (e.type !== type) : true)
+              .filter(e => ![
+                RogueRuleType.CUSTOM_MAC_OUI_RULE
+                // RogueRuleType.LOW_SNR_RULE
+              ].includes(e.type))
               .findIndex(e => e.type === value) !== -1) {
               return Promise.reject(
                 $t({ defaultMessage: 'A Rule with that type already exists in this Policy' })
@@ -267,7 +277,18 @@ const RogueAPDetectionDrawer = (props: RogueAPDetectionDrawerProps) => {
       style={{ width: '90%' }}
       rules={[
         { required: true },
-        { validator: (_, value) => MacOuiRogueRegExp(value) }
+        { validator: (_, value) => {
+          if (state.rules.length && state.rules.findIndex(rule => {
+            return rule.moreInfo === value
+              && rule.classification === drawerForm.getFieldValue('classification')
+          }) !== -1) {
+            return Promise.reject($t({
+              // eslint-disable-next-line max-len
+              defaultMessage: 'There is the same value in another macOUI rule setting with same category.'
+            }))
+          }
+          return MacOuiRogueRegExp(value)
+        } }
       ]}
       validateFirst
       children={<Input
@@ -279,7 +300,9 @@ const RogueAPDetectionDrawer = (props: RogueAPDetectionDrawerProps) => {
         name='classification'
         label={$t({ defaultMessage: 'Category' })}
         style={{ width: '90%' }}
-        rules={[{ required: true }]}
+        rules={[
+          { required: true }
+        ]}
         initialValue={isEditMode ? classification : RogueCategory.MALICIOUS}
         children={selectCategory}
       />

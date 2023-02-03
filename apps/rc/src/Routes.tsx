@@ -49,6 +49,7 @@ import DHCPDetail               from './pages/Services/DHCP/DHCPDetail'
 import DHCPForm                 from './pages/Services/DHCP/DHCPForm/DHCPForm'
 import DHCPTable                from './pages/Services/DHCP/DHCPTable/DHCPTable'
 import AddDHCP                  from './pages/Services/DHCP/Edge/AddDHCP'
+import EdgeDHCPDetail           from './pages/Services/DHCP/Edge/DHCPDetail'
 import EdgeDhcpTable            from './pages/Services/DHCP/Edge/DHCPTable'
 import DpskDetails              from './pages/Services/Dpsk/DpskDetail/DpskDetails'
 import DpskForm                 from './pages/Services/Dpsk/DpskForm/DpskForm'
@@ -292,6 +293,10 @@ function ServiceRoutes () {
       <Route
         path={getServiceRoutePath({ type: ServiceType.EDGE_DHCP, oper: ServiceOperation.LIST })}
         element={<EdgeDhcpTable/>}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.EDGE_DHCP, oper: ServiceOperation.DETAIL })}
+        element={<EdgeDHCPDetail/>}
       />
     </Route>
   )

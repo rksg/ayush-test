@@ -1,4 +1,4 @@
-import { EdgeIpModeEnum, EdgePortTypeEnum } from '../models/EdgeEnum'
+import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeStatusSeverityEnum } from '../models/EdgeEnum'
 
 export interface EdgeGeneralSetting {
   description: string
@@ -105,6 +105,13 @@ export interface EdgePortStatus {
   sortIdx: number
 }
 
+export interface EdgeStatusSeverityStatistic {
+  summary: {
+    [key in EdgeStatusSeverityEnum]?: number
+  },
+  totalCount: number
+}
+
 export interface DhcpPoolStats {
   name: string
   subnetMask: string
@@ -125,12 +132,21 @@ export interface EdgeDhcpLease {
 
 export interface DhcpStats {
   id: string
-  name: string
-  pools: number
-  edges: number
-  venues: number
-  health: string
-  updateAvailable: boolean
-  serviceVersion: string
-  tags: string[]
+  name?: string
+  pools?: number
+  edges?: number
+  venues?: number
+  health?: string
+  updateAvailable?: boolean
+  serviceVersion?: string
+  tags?: string[]
+  edgeName?: string
+  edgeId?: string
+  venueName?: string
+  venueId?: string
+  successfulAllocations?: number
+  remainingIps?: number
+  droppedPackets?: number
+  relay?: boolean
+  leaseTime?: number
 }
