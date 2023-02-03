@@ -25,6 +25,7 @@ import {
   SwitchRow,
   StackMember,
   ConfigurationHistory,
+  CliTemplateExample,
   transformConfigType,
   transformConfigStatus,
   VeViewModel,
@@ -49,7 +50,7 @@ import { formatter } from '@acx-ui/utils'
 export const baseSwitchApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'switchApi',
-  tagTypes: ['Switch', 'SwitchBackup', 'SwitchClient', 'SwitchPort'],
+  tagTypes: ['Switch', 'SwitchBackup', 'SwitchClient', 'SwitchPort', 'SwitchConfiguration'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({})
 })
@@ -734,8 +735,26 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ? { data: leaseResult.response.dhcpServerLeaseList }
           : { error: getDhcpLeasesQuery.error as FetchBaseQueryError }
       }
+    }),
+    addCliTemplate: build.mutation<any, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.addCliTemplate, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchConfiguration', id: 'TEMPLATE' }]
+    }),
+    getCliConfigExamples: build.query<CliTemplateExample[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getCliConfigExamples, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
     })
-
   })
 })
 
@@ -899,5 +918,7 @@ export const {
   useCreateDhcpServerMutation,
   useUpdateDhcpServerMutation,
   useDeleteDhcpServersMutation,
-  useGetDhcpLeasesQuery
+  useGetDhcpLeasesQuery,
+  useAddCliTemplateMutation,
+  useGetCliConfigExamplesQuery
 } = switchApi

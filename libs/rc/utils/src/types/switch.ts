@@ -522,3 +522,10 @@ export interface SwitchDhcpLease {
   leaseExpiration: string
   leaseType: string
 }
+
+export interface CliTemplateExample {
+  id: string
+  name: string
+  cli: string
+  version: string
+}

@@ -116,6 +116,15 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       providesTags: [{ type: 'Venue', id: 'DETAIL' }]
     }),
+    getVenues: build.query<any, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getVenues, params)
+        return{
+          ...req,
+          body: payload
+        }
+      }
+    }),
     updateVenue: build.mutation<VenueExtended, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(CommonUrlsInfo.updateVenue, params)
@@ -880,6 +889,7 @@ export const {
   useAddVenueMutation,
   useGetVenueQuery,
   useLazyGetVenueQuery,
+  useGetVenuesQuery,
   useUpdateVenueMutation,
   useVenueDetailsHeaderQuery,
   useGetVenueSettingsQuery,

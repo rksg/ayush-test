@@ -25,17 +25,35 @@ interface MergeData {
 }
 
 interface CodeMirrorWidgetProps {
-  data:CodeMirrorData | MergeData
-  type:string
+  data: CodeMirrorData | MergeData
+  type: 'single' | 'merge' | 'cli'
   size?: {
-    height?:string
-    width?:string
+    height?: string
+    width?: string
   }
+  containerId?: string
+  onChange?: any
 }
 
-export const CodeMirrorWidget = forwardRef((props:CodeMirrorWidgetProps, ref) => {
-  const { type, data, size } = props
+CodeMirror.defineMode('cliMode', function () {
+  return {
+    token: function (stream, state) {
+      if (stream.match(/^\${[^{}]*}/)) {
+        return 'variable'
+      } else if (stream.match(/<([^>]*)>/)) {
+        return 'attribute'
+      } else {
+        stream.next()
+        return null
+      }
+    }
+  }
+})
+
+export const CodeMirrorWidget = forwardRef((props: CodeMirrorWidgetProps, ref) => {
+  const { type, data, size, containerId, onChange } = props
   const [readOnlyCodeMirror, setReadOnlyCodeMirror] = useState(null as unknown as CodeMirror.EditorFromTextArea)
+  const codeViewContainerId = containerId ?? 'codeViewContainer'
   const height = size?.height || '450px'
   const width = size?.width || '100%'
 
@@ -46,25 +64,26 @@ export const CodeMirrorWidget = forwardRef((props:CodeMirrorWidgetProps, ref) =>
   }
 
   const initSingleView = (data: CodeMirrorData) => {
-    const target = document.getElementById('codeView') as HTMLTextAreaElement
+    const target = document.querySelector(`#${codeViewContainerId} > #codeView`) as HTMLTextAreaElement
     const code = htmlDecode(data.clis)
     const configOptions = data.configOptions
     if (target) {
       target['value'] = code as string
       const tmpReadOnlyCodeMirror = CodeMirror.fromTextArea(
         target
-        , configOptions ? configOptions :{
+        , configOptions ? configOptions : {
           readOnly: true,
           lineNumbers: true,
           lineWrapping: true
         }
       )
+      onChange && tmpReadOnlyCodeMirror.on('change', onChange)
       setReadOnlyCodeMirror(tmpReadOnlyCodeMirror)
     }
   }
 
   useImperativeHandle(ref, () => ({
-    highlightLine (line:number) {
+    highlightLine (line: number) {
       if (readOnlyCodeMirror) {
         readOnlyCodeMirror.setOption('styleActiveLine', true)
         readOnlyCodeMirror.setCursor(line)
@@ -74,11 +93,47 @@ export const CodeMirrorWidget = forwardRef((props:CodeMirrorWidgetProps, ref) =>
       if (readOnlyCodeMirror) {
         readOnlyCodeMirror.setOption('styleActiveLine', false)
       }
+    },
+    setValue (value: string) {
+      if (readOnlyCodeMirror) {
+        readOnlyCodeMirror.setValue(value)
+        setTimeout(function () {
+          readOnlyCodeMirror.refresh()
+          // readOnlyCodeMirror.focus();
+        }, 100)
+      }
+    },
+    changeFontSize (size: string) {
+      if (readOnlyCodeMirror) {
+        readOnlyCodeMirror.getWrapperElement().style.fontSize = size + 'px'
+        // readOnlyCodeMirror.refresh()
+      }
+    },
+    appendContent (type: string, content: string) {
+      let replacement = ''
+      const cursor = readOnlyCodeMirror.getCursor()
+      const lastWord = readOnlyCodeMirror.getRange({
+        line: cursor.line, ch: 0
+      }, cursor)
+
+      const hasDollarSign = lastWord.slice(-2) === '${'
+      const fromPosition = type === 'variableMenu'
+        ? { line: cursor.line, ch: cursor.ch - (hasDollarSign ? 2 : 1) }
+        : cursor
+
+      if (type === 'example' || type === 'file') {
+        replacement = content
+      } else { //var
+        const needSpace = false //this.needSpaceBeforeVariable(type, lastWord);
+        replacement = (needSpace ? htmlDecode('&nbsp;') : '') + '${' + content + '}'
+      }
+
+      readOnlyCodeMirror.replaceRange(replacement, fromPosition, cursor)
     }
   }))
 
   const initNode = () => {
-    const container = document.getElementById('codeViewContainer')
+    const container = document.getElementById(codeViewContainerId)
     while (container?.firstChild) {
       container.removeChild(container?.firstChild)
     }
@@ -86,6 +141,13 @@ export const CodeMirrorWidget = forwardRef((props:CodeMirrorWidgetProps, ref) =>
     codeNode.id = 'codeView'
     container?.appendChild(codeNode)
   }
+
+  useEffect(() => {
+    if (type === 'cli') {
+      initNode()
+      initSingleView(data as CodeMirrorData)
+    }
+  }, [])
 
   useEffect(() => {
     if (type === 'single' && _.get(data, 'clis')) {
@@ -102,7 +164,6 @@ export const CodeMirrorWidget = forwardRef((props:CodeMirrorWidgetProps, ref) =>
       readOnlyCodeMirror.setSize(width, height)
     }
   }, [readOnlyCodeMirror])
-
 
   const initMergeView = (data: MergeData) => {
     MergeViewCodeMirror.init(CodeMirror, DiffMatchPatch)
@@ -124,7 +185,7 @@ export const CodeMirrorWidget = forwardRef((props:CodeMirrorWidgetProps, ref) =>
 
   return (
     <UI.Container>
-      <div id='codeViewContainer'></div>
+      <div id={codeViewContainerId}></div>
     </UI.Container>
   )
 })

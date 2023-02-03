@@ -409,7 +409,7 @@ export interface catchErrorDetails {
   message: string
 }
 
-export interface catchErrorResponse {
+export interface catchErrorResponse { ////
   data: {
     errors: catchErrorDetails[],
     requestId: string
