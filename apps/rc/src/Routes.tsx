@@ -9,7 +9,8 @@ import {
   getServiceListRoutePath,
   getSelectServiceRoutePath,
   ServiceOperation,
-  getServiceRoutePath
+  getServiceRoutePath,
+  getServiceCatalogRoutePath
 } from '@acx-ui/rc/utils'
 import { rootRoutes, Route, TenantNavigate, Navigate } from '@acx-ui/react-router-dom'
 import { Provider }                                    from '@acx-ui/store'
@@ -33,6 +34,7 @@ import NetworkForm                  from './pages/Networks/NetworkForm/NetworkFo
 import NetworksTable                from './pages/Networks/NetworksTable'
 import { ConfigurationProfileForm } from './pages/Networks/Wired/SwitchConfiguration/Profiles/ConfigurationProfileForm'
 import AccessControlForm            from './pages/Policies/AccessControl/AccessControlForm/AccessControlForm'
+import ClientIsolationForm          from './pages/Policies/ClientIsolation/ClientIsolationForm/ClientIsolationForm'
 import MacRegistrationListDetails
   from './pages/Policies/MacRegistrationList/MacRegistrarionListDetails/MacRegistrarionListDetails'
 import MacRegistrationListsTable  from './pages/Policies/MacRegistrationList/MacRegistrarionListTable'
@@ -42,23 +44,33 @@ import RogueAPDetectionDetailView
   from './pages/Policies/RogueAPDetection/RogueAPDetectionDetail/RogueAPDetectionDetailView'
 import RogueAPDetectionForm     from './pages/Policies/RogueAPDetection/RogueAPDetectionForm/RogueAPDetectionForm'
 import SelectPolicyForm         from './pages/Policies/SelectPolicyForm'
+import VLANPoolDetail           from './pages/Policies/VLANPool/VLANPoolDetail'
+import VLANPoolForm             from './pages/Policies/VLANPool/VLANPoolForm/VLANPoolForm'
 import DHCPDetail               from './pages/Services/DHCP/DHCPDetail'
 import DHCPForm                 from './pages/Services/DHCP/DHCPForm/DHCPForm'
+import DHCPTable                from './pages/Services/DHCP/DHCPTable/DHCPTable'
+import AddDHCP                  from './pages/Services/DHCP/Edge/AddDHCP'
+import EdgeDHCPDetail           from './pages/Services/DHCP/Edge/DHCPDetail'
+import EdgeDhcpTable            from './pages/Services/DHCP/Edge/DHCPTable'
 import DpskDetails              from './pages/Services/Dpsk/DpskDetail/DpskDetails'
 import DpskForm                 from './pages/Services/Dpsk/DpskForm/DpskForm'
 import DpskTable                from './pages/Services/Dpsk/DpskTable/DpskTable'
 import MdnsProxyDetail          from './pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail'
 import MdnsProxyForm            from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
+import MdnsProxyTable           from './pages/Services/MdnsProxy/MdnsProxyTable/MdnsProxyTable'
+import MyServices               from './pages/Services/MyServices'
 import NetworkSegmentationForm  from './pages/Services/NetworkSegmentationForm/NetworkSegmentationForm'
 import NetworkSegAuthDetail     from './pages/Services/NetworkSegWebAuth/NetworkSegAuthDetail'
 import NetworkSegAuthForm       from './pages/Services/NetworkSegWebAuth/NetworkSegAuthForm'
 import PortalServiceDetail      from './pages/Services/Portal/PortalDetail'
 import PortalForm               from './pages/Services/Portal/PortalForm/PortalForm'
+import PortalTable              from './pages/Services/Portal/PortalTable'
 import SelectServiceForm        from './pages/Services/SelectServiceForm'
-import ServicesTable            from './pages/Services/ServicesTable'
+import ServiceCatalog           from './pages/Services/ServiceCatalog'
 import WifiCallingDetailView    from './pages/Services/WifiCalling/WifiCallingDetail/WifiCallingDetailView'
 import WifiCallingConfigureForm from './pages/Services/WifiCalling/WifiCallingForm/WifiCallingConfigureForm'
 import WifiCallingForm          from './pages/Services/WifiCalling/WifiCallingForm/WifiCallingForm'
+import WifiCallingTable         from './pages/Services/WifiCalling/WifiCallingTable/WifiCallingTable'
 import Timeline                 from './pages/Timeline'
 import PersonaPortal            from './pages/Users/Persona'
 import PersonaDetails           from './pages/Users/Persona/PersonaDetails'
@@ -111,10 +123,6 @@ function DeviceRoutes () {
       <Route
         path='devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab'
         element={<SwitchDetails />}
-      />
-      <Route
-        path='devices/switch/:switchId/:serialNumber/clientDetails/:clientId'
-        element={<SwitchClientDetailsPage />}
       />
       <Route
         path='devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab/:categoryTab'
@@ -174,8 +182,12 @@ function NetworkRoutes () {
 function ServiceRoutes () {
   return rootRoutes(
     <Route path='t/:tenantId'>
-      <Route path={getServiceListRoutePath()} element={<ServicesTable />} />
+      <Route path='services'
+        element={<TenantNavigate replace to={getServiceListRoutePath(true)} />}
+      />
+      <Route path={getServiceListRoutePath()} element={<MyServices />} />
       <Route path={getSelectServiceRoutePath()} element={<SelectServiceForm />} />
+      <Route path={getServiceCatalogRoutePath()} element={<ServiceCatalog />} />
       <Route
         path={getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.CREATE })}
         element={<MdnsProxyForm />}
@@ -187,6 +199,10 @@ function ServiceRoutes () {
       <Route
         path={getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.DETAIL })}
         element={<MdnsProxyDetail />}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.LIST })}
+        element={<MdnsProxyTable />}
       />
       <Route
         // eslint-disable-next-line max-len
@@ -203,8 +219,16 @@ function ServiceRoutes () {
         element={<WifiCallingDetailView />}
       />
       <Route
+        path={getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.LIST })}
+        element={<WifiCallingTable/>}
+      />
+      <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE })}
         element={<DHCPForm/>}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.EDGE_DHCP, oper: ServiceOperation.CREATE })}
+        element={<AddDHCP/>}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.EDIT })}
@@ -213,6 +237,10 @@ function ServiceRoutes () {
       <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.DETAIL })}
         element={<DHCPDetail/>}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.LIST })}
+        element={<DHCPTable/>}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST })}
@@ -267,6 +295,18 @@ function ServiceRoutes () {
         path={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.DETAIL })}
         element={<PortalServiceDetail/>}
       />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.LIST })}
+        element={<PortalTable/>}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.EDGE_DHCP, oper: ServiceOperation.LIST })}
+        element={<EdgeDhcpTable/>}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.EDGE_DHCP, oper: ServiceOperation.DETAIL })}
+        element={<EdgeDHCPDetail/>}
+      />
     </Route>
   )
 }
@@ -315,8 +355,32 @@ function PolicyRoutes () {
       />
       <Route
         // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.CREATE })}
+        element={<VLANPoolForm edit={false}/>}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.EDIT })}
+        element={<VLANPoolForm edit={true}/>}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.DETAIL })}
+        element={<VLANPoolDetail/>}
+      />
+      <Route
         path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE })}
         element={<AccessControlForm edit={false}/>}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.CREATE })}
+        element={<ClientIsolationForm editMode={false}/>}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.EDIT })}
+        element={<ClientIsolationForm editMode={true}/>}
       />
     </Route>
   )
@@ -335,6 +399,7 @@ function UserRoutes () {
       </Route>
       <Route path='users/switch' element={<TenantNavigate replace to='/users/switch/clients' />} />
       <Route path='users/switch/clients' element={<SwitchClientList />} />
+      <Route path='users/switch/clients/:clientId' element={<SwitchClientDetailsPage />} />
       {useIsSplitOn(Features.SERVICES)
         ? <><Route
           path='users/persona-management'

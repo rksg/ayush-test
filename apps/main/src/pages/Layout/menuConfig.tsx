@@ -29,6 +29,7 @@ import {
   ServiceValidationSolid,
   ServiceValidationOutlined
 } from '@acx-ui/icons'
+import { getServiceCatalogRoutePath, getServiceListRoutePath } from '@acx-ui/rc/utils'
 
 const AIOutlined = styled(AIOutlinedBase)`${LayoutUI.iconOutlinedOverride}`
 const AISolid = styled(AISolidBase)`${LayoutUI.iconOutlinedOverride}`
@@ -177,7 +178,8 @@ export function useMenuConfig () {
         },
         {
           path: '/networks/wired',
-          name: $t({ defaultMessage: 'Wired Networks' })
+          name: $t({ defaultMessage: 'Wired Networks' }),
+          disabled: !useIsSplitOn(Features.UNRELEASED)
         }
       ]
     },
@@ -186,7 +188,17 @@ export function useMenuConfig () {
       name: $t({ defaultMessage: 'Services' }),
       inactiveIcon: ServicesOutlined,
       activeIcon: ServicesSolid,
-      disabled: !useIsSplitOn(Features.SERVICES)
+      disabled: !useIsSplitOn(Features.SERVICES),
+      routes: [
+        {
+          path: getServiceListRoutePath(true),
+          name: $t({ defaultMessage: 'My Services' })
+        },
+        {
+          path: getServiceCatalogRoutePath(true),
+          name: $t({ defaultMessage: 'Service Catalog' })
+        }
+      ]
     },
     {
       path: '/policies',

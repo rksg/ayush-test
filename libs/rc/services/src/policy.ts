@@ -2,6 +2,7 @@ import {
   createApi,
   fetchBaseQuery
 } from '@reduxjs/toolkit/query/react'
+import { Params } from 'react-router-dom'
 
 
 import {
@@ -18,9 +19,10 @@ import {
   SyslogUrls,
   SyslogPolicyType,
   VenueRoguePolicyType,
+  VLANPoolPolicyType, VlanPoolUrls, VLANPoolDetailInstances,
   TableResult,
   onSocketActivityChanged,
-  showActivityMessage,
+  onActivityMessageReceived,
   CommonResult,
   NewTableResult,
   transferToTableResult,
@@ -28,14 +30,18 @@ import {
   l2AclPolicyInfoType,
   L2AclPolicy,
   AvcApp,
+  VlanPool,
+  WifiUrlsInfo,
   AccessControlUrls, L3AclPolicy, AvcCat,
+  ClientIsolationSaveData, ClientIsolationUrls,
   createNewTableHttpRequest, TableChangePayload, RequestFormData
 } from '@acx-ui/rc/utils'
+
 
 export const basePolicyApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'policyApi',
-  tagTypes: ['Policy', 'MacRegistrationPool', 'MacRegistration'],
+  tagTypes: ['Policy', 'MacRegistrationPool', 'MacRegistration', 'ClientIsolation'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })
@@ -110,16 +116,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Policy', id: 'DETAIL' }],
-      async onCacheEntryAdded (requestArgs, api) {
-        await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg, [
-            'UpdateRogueApPolicyProfile'
-          ], () => {
-            api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
-          })
-        })
-      }
+      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
     }),
     delRoguePolicies: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -171,10 +168,18 @@ export const policyApi = basePolicyApi.injectEndpoints({
       providesTags: [{ type: 'Policy', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg, [
+          onActivityMessageReceived(msg, [
             'AddRogueApPolicyProfile',
             'UpdateRogueApPolicyProfile',
-            'DeleteRogueApPolicyProfile'
+            'DeleteRogueApPolicyProfile',
+            'AddVlanPool',
+            'UpdateVlanPool',
+            'DeleteVlanPool',
+            'PatchVlanPool',
+            'DeleteVlanPools',
+            'AddClientIsolationAllowlist',
+            'UpdateClientIsolationAllowlist',
+            'DeleteClientIsolationAllowlist'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
           })
@@ -197,7 +202,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const params = requestArgs.params as { requestId: string }
           if (params.requestId) {
-            showActivityMessage(msg, [
+            onActivityMessageReceived(msg, [
               'Add Layer 2 Policy Profile'
             ],() => {
               api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
@@ -222,7 +227,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const params = requestArgs.params as { requestId: string }
           if (params.requestId) {
-            showActivityMessage(msg, [
+            onActivityMessageReceived(msg, [
               'Add Layer 3 Policy Profile'
             ],() => {
               api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
@@ -330,24 +335,142 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'MacRegistration', id: 'LIST' }]
     }),
-    getSyslogPolicyList: build.query<SyslogPolicyType[], RequestPayload>({
+    addVLANPoolPolicy: build.mutation<{ response: { [key:string]:string } }, RequestPayload>({
+      query: ({ params, payload }:{ params:Params<string>, payload:VLANPoolPolicyType }) => {
+        const req = createHttpRequest(VlanPoolUrls.addVLANPoolPolicy, params, RKS_NEW_UI)
+
+        return {
+          ...req,
+          body: {
+            ...payload,
+            vlanMembers: payload.vlanMembers.split(',')
+          }
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    delVLANPoolPolicy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(SyslogUrls.getSyslogPolicyList, params, RKS_NEW_UI)
+        const req = createHttpRequest(VlanPoolUrls.deleteVLANPoolPolicy, params, RKS_NEW_UI)
         return {
           ...req
         }
       },
-      providesTags: [{ type: 'Policy', id: 'LIST' }],
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    addClientIsolation: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(ClientIsolationUrls.addClientIsolation, params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'ClientIsolation', id: 'LIST' }]
+    }),
+    deleteClientIsolation: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(ClientIsolationUrls.deleteClientIsolation, params, RKS_NEW_UI)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    vlanPoolList: build.query<VlanPool[], RequestPayload>({
+      query: ({ params }) => {
+        const vlanPoolListReq = createHttpRequest(
+          WifiUrlsInfo.getVlanPools,
+          params
+        )
+        return {
+          ...vlanPoolListReq
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    getVLANPoolPolicyList: build.query<VLANPoolPolicyType[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(VlanPoolUrls.getVLANPoolPolicyList, params, RKS_NEW_UI)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    getClientIsolationList: build.query<ClientIsolationSaveData[], RequestPayload>({
+      query: ({ params }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(ClientIsolationUrls.getClientIsolationList, params, RKS_NEW_UI)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'DETAIL' }, { type: 'ClientIsolation', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg, [
-            'Add Syslog Policy Profile',
-            'Update Syslog Policy Profile'
+          onActivityMessageReceived(msg, [
+            'Add Client Isolation Policy Profile',
+            'Update Client Isolation Policy Profile'
           ], () => {
-            api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
+            api.dispatch(policyApi.util.invalidateTags([
+              { type: 'Policy', id: 'LIST' },
+              { type: 'ClientIsolation', id: 'LIST' }
+            ]))
           })
         })
       }
+    }),
+    getVLANPoolPolicyDetail: build.query<VLANPoolPolicyType, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(VlanPoolUrls.getVLANPoolPolicy, params, RKS_NEW_UI)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+    }),
+    getClientIsolation: build.query<ClientIsolationSaveData, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(ClientIsolationUrls.getClientIsolation, params, RKS_NEW_UI)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'DETAIL' }, { type: 'ClientIsolation', id: 'LIST' }]
+    }),
+    updateVLANPoolPolicy: build.mutation<VLANPoolPolicyType, RequestPayload>({
+      query: ({ params, payload }:{ params:Params<string>, payload:VLANPoolPolicyType }) => {
+        const req = createHttpRequest(VlanPoolUrls.updateVLANPoolPolicy, params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: {
+            ...payload,
+            vlanMembers: payload.vlanMembers.split(',')
+          }
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    vLANPoolNetworkInstances: build.query<TableResult<VLANPoolDetailInstances>, RequestPayload>({
+      query: ({ params }) => {
+        const instancesRes =
+        createHttpRequest(VlanPoolUrls.getVLANPoolNetworkInstances, params, RKS_NEW_UI)
+        return {
+          ...instancesRes
+	    }
+      },
+      providesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    updateClientIsolation: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(ClientIsolationUrls.updateClientIsolation, params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'ClientIsolation', id: 'LIST' }]
     }),
     uploadMacRegistration: build.mutation<{}, RequestFormData>({
       query: ({ params, payload }) => {
@@ -381,6 +504,25 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    getSyslogPolicyList: build.query<SyslogPolicyType[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SyslogUrls.getSyslogPolicyList, params, RKS_NEW_UI)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'Add Syslog Policy Profile',
+            'Update Syslog Policy Profile'
+          ], () => {
+            api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
+          })
+        })
+      }
     })
   })
 })
@@ -414,7 +556,20 @@ export const {
   useVenueRoguePolicyQuery,
   useLazyMacRegListsQuery,
   useLazyMacRegistrationsQuery,
-  useGetSyslogPolicyListQuery,
+  useAddVLANPoolPolicyMutation,
+  useDelVLANPoolPolicyMutation,
+  useUpdateVLANPoolPolicyMutation,
+  useGetVLANPoolPolicyListQuery,
+  useVlanPoolListQuery,
+  useGetVLANPoolPolicyDetailQuery,
+  useVLANPoolNetworkInstancesQuery,
+  useAddClientIsolationMutation,
+  useDeleteClientIsolationMutation,
+  useGetClientIsolationListQuery,
+  useLazyGetClientIsolationListQuery,
+  useGetClientIsolationQuery,
+  useUpdateClientIsolationMutation,
   useLazyGetMacRegListQuery,
-  useUploadMacRegistrationMutation
+  useUploadMacRegistrationMutation,
+  useGetSyslogPolicyListQuery
 } = policyApi

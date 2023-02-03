@@ -36,6 +36,7 @@ const operationPathMapping: Record<ServiceOperation, string> = {
 const typePathMapping: Record<ServiceType, string> = {
   [ServiceType.PORTAL]: 'portal',
   [ServiceType.DHCP]: 'dhcp',
+  [ServiceType.EDGE_DHCP]: 'edgeDhcp',
   [ServiceType.WIFI_CALLING]: 'wifiCalling',
   [ServiceType.MDNS_PROXY]: 'mdnsProxy',
   [ServiceType.DPSK]: 'dpsk',
@@ -75,9 +76,13 @@ export function getServiceDetailsLink (props: ServiceDetailsLinkProps): string {
 }
 
 export function getServiceListRoutePath (prefixSlash = false): string {
-  return (prefixSlash ? '/' : '') + 'services'
+  return (prefixSlash ? '/' : '') + 'services/list'
 }
 
 export function getSelectServiceRoutePath (prefixSlash = false): string {
   return (prefixSlash ? '/' : '') + 'services/select'
+}
+
+export function getServiceCatalogRoutePath (prefixSlash = false): string {
+  return (prefixSlash ? '/' : '') + 'services/catalog'
 }

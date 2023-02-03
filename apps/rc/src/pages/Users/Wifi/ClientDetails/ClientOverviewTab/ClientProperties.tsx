@@ -119,8 +119,8 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
       case ClientStatusEnum.CONNECTED:
         obj = [
           <ClientDetails client={client} />,
-          <Connection client={client} />,
           <OperationalData client={client} />,
+          <Connection client={client} />,
           (networkType === 'guest' && <GuestDetails />),
           (networkType === 'dpsk' && <DpskPassphraseDetails />),
           <WiFiCallingDetails client={client} />
