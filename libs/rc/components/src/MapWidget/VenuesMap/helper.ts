@@ -2,12 +2,13 @@
 import _                 from 'lodash'
 import { defineMessage } from 'react-intl'
 
-import { cssStr }    from '@acx-ui/components'
+import { cssStr }          from '@acx-ui/components'
 import {
   ChartData,
   Dashboard,
   ApVenueStatusEnum,
-  SwitchStatusEnum } from '@acx-ui/rc/utils'
+  SwitchStatusEnum,
+  EdgeStatusSeverityEnum } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
 import * as UI                from './styledComponents'
@@ -48,6 +49,29 @@ export const getSwitchStatusDisplayName = (switchStatus: SwitchStatusEnum) => {
   const { $t } = getIntl()
   return $t(_.get(switchStatusMap, switchStatus, switchStatusMap.default))
 }
+
+const edgeStatusMap = {
+  [EdgeStatusSeverityEnum.REQUIRES_ATTENTION]: defineMessage({
+    defaultMessage: '{showSeverity, selectordinal, one {1 } other {}}Requires Attention'
+  }),
+  [EdgeStatusSeverityEnum.TRANSIENT_ISSUE]: defineMessage({
+    defaultMessage: '{showSeverity, selectordinal, one {2 } other {}}Transient Issue'
+  }),
+  [EdgeStatusSeverityEnum.IN_SETUP_PHASE]: defineMessage({
+    defaultMessage: '{showSeverity, selectordinal, one {3 } other {}}In Setup Phase'
+  }),
+  [EdgeStatusSeverityEnum.OPERATIONAL]: defineMessage({
+    defaultMessage: '{showSeverity, selectordinal, one {4 } other {}}Operational'
+  }),
+  [EdgeStatusSeverityEnum.OFFLINE]: defineMessage({
+    defaultMessage: '{showSeverity, selectordinal, one {3 } other {}}Offline'
+  })
+}
+export const getEdgeStatusDisplayName = (label: EdgeStatusSeverityEnum, showSeverity: boolean = true) => {
+  const { $t } = getIntl()
+  return $t(edgeStatusMap[label], { showSeverity })
+}
+
 
 export const getVenueInfoMarkerIcon = (status: string) => {
   switch (status) {
