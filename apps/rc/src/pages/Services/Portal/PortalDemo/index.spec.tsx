@@ -60,7 +60,7 @@ describe('PortalDemo', () => {
         })
     )
   })
-  it.skip('should render portal demo successfully', async () => {
+  it('should render portal demo successfully', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
     render(
       <Provider>
