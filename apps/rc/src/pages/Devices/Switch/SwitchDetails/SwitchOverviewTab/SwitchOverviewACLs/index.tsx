@@ -22,7 +22,6 @@ export function SwitchOverviewACLs () {
   const [currentRow, setCurrentRow] = useState({} as Acl)
   const [drawerVisible, setDrawerVisible] = useState(false)
 
-
   const onClose = () => {
     setDrawerVisible(false)
   }
