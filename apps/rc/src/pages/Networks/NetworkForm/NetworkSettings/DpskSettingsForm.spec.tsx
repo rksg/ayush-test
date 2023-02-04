@@ -101,5 +101,6 @@ describe('DpskSettingsForm', () => {
 
     expect(await screen.findByText('Keyboard Friendly')).toBeVisible()
     expect(await screen.findByText('24 Characters')).toBeVisible()
+    expect(await screen.findByText('2 hours')).toBeVisible()
   })
 })

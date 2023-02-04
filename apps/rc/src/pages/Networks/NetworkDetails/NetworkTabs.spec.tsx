@@ -48,7 +48,7 @@ describe('NetworkTabs', () => {
     await waitFor(() => screen.findByText('APs (1)'))
     fireEvent.click(await screen.findByText('APs (1)'))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/networks/${params.networkId}/network-details/aps`,
+      pathname: `/t/${params.tenantId}/networks/wireless/${params.networkId}/network-details/aps`,
       hash: '',
       search: ''
     })
