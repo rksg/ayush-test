@@ -52,7 +52,7 @@ export default function DpskTable () {
             } catch (error: any) {
               showToast({
                 type: 'error',
-                content: error.data
+                content: error.data.message
               })
             }
           }
@@ -118,7 +118,6 @@ export default function DpskTable () {
       key: 'expirationType',
       title: intl.$t({ defaultMessage: 'Passphrase Expiration' }),
       dataIndex: 'expirationType',
-      sorter: true,
       render: function (data, row) {
         return transformAdvancedDpskExpirationText(
           intl,

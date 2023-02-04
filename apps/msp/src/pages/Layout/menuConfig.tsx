@@ -55,7 +55,7 @@ export function useMenuConfig () {
     },
     {
       path: '/mspLicenses',
-      name: $t({ defaultMessage: 'MSP Licenses' }),
+      name: $t({ defaultMessage: 'Subscriptions' }),
       tenantType: 'v',
       inactiveIcon: MspSubscriptionOutlined,
       activeIcon: MspSubscriptionSolid
