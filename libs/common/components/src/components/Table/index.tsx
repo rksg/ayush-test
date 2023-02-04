@@ -2,6 +2,7 @@ import React, { useMemo, useState, Key, useCallback, useEffect } from 'react'
 
 import ProTable, { ProTableProps as ProAntTableProps, ProColumnType } from '@ant-design/pro-table'
 import { Menu, MenuProps, Space }                                     from 'antd'
+import escapeStringRegexp                                             from 'escape-string-regexp'
 import _                                                              from 'lodash'
 import Highlighter                                                    from 'react-highlight-words'
 import { useIntl }                                                    from 'react-intl'
@@ -300,7 +301,8 @@ function Table <RecordType extends Record<string, any>> ({
         ) =>
           (searchValue && textToHighlight)
             ? formatFn
-              ? textToHighlight.replaceAll(searchValue, formatFn('$&') as string)
+              ? textToHighlight.replace(
+                new RegExp(escapeStringRegexp(searchValue), 'ig' ), formatFn('$&') as string)
               : <Highlighter
                 highlightStyle={{
                   fontWeight: 'bold', background: 'none', padding: 0, color: 'inherit' }}
