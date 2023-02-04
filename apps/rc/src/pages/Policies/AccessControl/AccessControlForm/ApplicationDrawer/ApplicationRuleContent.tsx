@@ -6,12 +6,12 @@ import { defineMessage, MessageDescriptor, useIntl }                            
 import { ContentSwitcher, ContentSwitcherProps, GridCol, GridRow } from '@acx-ui/components'
 import {
   ApplicationAclType,
-  ApplicationRuleType, AvcCat,
+  ApplicationRuleType, AvcCategory,
   serverIpAddressRegExp,
   subnetMaskIpRegExp
 } from '@acx-ui/rc/utils'
 
-import { AppAclLabelMapping, AppRuleLabelMapping } from '../../contentsMap'
+import { AppAclLabelMapping, AppRuleLabelMapping } from '../../../contentsMap'
 
 const { useWatch } = Form
 
@@ -26,7 +26,7 @@ const DrawerFormItem = (props: FormItemProps) => {
 }
 
 export interface ApplicationRuleDrawerProps {
-  avcSelectOptions: AvcCat[]
+  avcSelectOptions: AvcCategory[]
   drawerForm: FormInstance
 }
 
@@ -56,7 +56,7 @@ export const appRateStrategyLabelMapping: Record<RateStrategyEnum, MessageDescri
   [RateStrategyEnum.BACKGROUND]: defineMessage({ defaultMessage: 'Background' })
 }
 
-const ApplicationRuleDrawer = (props: ApplicationRuleDrawerProps) => {
+const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
   const { $t } = useIntl()
   const { avcSelectOptions, drawerForm } = props
   const [category, setCategory] = useState('')
@@ -491,4 +491,4 @@ const QosContent = (props: QosContentProps) => {
   </>
 }
 
-export default ApplicationRuleDrawer
+export default ApplicationRuleContent

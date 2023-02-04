@@ -12,7 +12,7 @@ import { AccessControlUrls }          from '@acx-ui/rc/utils'
 import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
-import ApplicationDrawer from './ApplicationDrawer'
+import ApplicationDrawer from './index'
 
 const queryApplication = {
   data: [
@@ -228,7 +228,7 @@ const systemDefinedSection = async () => {
 describe('ApplicationDrawer Component', () => {
   beforeAll(() => {
     mockServer.use(rest.get(
-      AccessControlUrls.getAvcCat.url,
+      AccessControlUrls.getAvcCategory.url,
       (_, res, ctx) => res(
         ctx.json(avcCat)
       )
@@ -538,7 +538,7 @@ describe('ApplicationDrawer Component', () => {
         ctx.json(applicationResponse)
       )
     ), rest.get(
-      AccessControlUrls.getAvcCat.url,
+      AccessControlUrls.getAvcCategory.url,
       (_, res, ctx) => res(
         ctx.json(avcCat)
       )

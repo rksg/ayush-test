@@ -34,6 +34,7 @@ const ClientRateLimit = (props: ClientRateLimitProps) => {
   const { $t } = useIntl()
   const { inputName = [] } = props
   const form = Form.useFormInstance()
+  const DEFAULT_VALUE = 20
 
   const [
     enableDownloadLimit,
@@ -44,7 +45,7 @@ const ClientRateLimit = (props: ClientRateLimitProps) => {
   ]
 
   return (
-    <GridRow style={{ width: '350px', rowGap: '0px' }}>
+    <div>
       <div style={{ display: 'grid', gridTemplateColumns: '175px 1fr' }}>
         <Form.Item
           name={[...inputName, 'enableUploadLimit']}
@@ -54,7 +55,7 @@ const ClientRateLimit = (props: ClientRateLimitProps) => {
           children={
             <Checkbox data-testid='enableUploadLimit'
               onChange={(e: CheckboxChangeEvent) => {
-                const value = e.target.checked ? 20 : 0
+                const value = e.target.checked ? DEFAULT_VALUE : 0
                 form.setFieldValue(
                   [...inputName, 'uplinkLimit'], value)
               }}
@@ -89,7 +90,7 @@ const ClientRateLimit = (props: ClientRateLimitProps) => {
           children={
             <Checkbox data-testid='enableDownloadLimit'
               onChange={(e: CheckboxChangeEvent) => {
-                const value = e.target.checked ? 20 : 0
+                const value = e.target.checked ? DEFAULT_VALUE : 0
                 form.setFieldValue(
                   [...inputName, 'downlinkLimit'], value)
               }}
@@ -114,7 +115,7 @@ const ClientRateLimit = (props: ClientRateLimitProps) => {
           />
           : <Unlimited /> }
       </div>
-    </GridRow>
+    </div>
   )
 }
 

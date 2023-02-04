@@ -37,7 +37,7 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/application-policy/query'
   },
-  getAvcCat: {
+  getAvcCategory: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/capabilities/avc-cat'
   },

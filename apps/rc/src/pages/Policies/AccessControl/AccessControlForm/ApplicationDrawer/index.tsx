@@ -17,17 +17,20 @@ import {
 } from '@acx-ui/components'
 import {
   useAddAppPolicyMutation,
-  useAppPolicyListQuery, useAvcAppListQuery, useAvcCatListQuery,
+  useAppPolicyListQuery, useAvcAppListQuery, useAvcCategoryListQuery,
   useGetAppPolicyQuery
 } from '@acx-ui/rc/services'
 import {
-  ApplicationAclType,
-  ApplicationPortMappingType,
-  ApplicationRuleType, AvcCat,
+  ApplicationRuleType, AvcCategory,
   CommonResult
 } from '@acx-ui/rc/utils'
 
-import ApplicationRuleDrawer from './ApplicationRuleDrawer'
+import {
+  genRuleObject,
+  transformToApplicationRule, transformToRulesForPayload,
+  updateFormWithEditRow
+} from './ApplicationDrawerUtils'
+import ApplicationRuleContent from './ApplicationRuleContent'
 
 const { Option } = Select
 
@@ -37,7 +40,7 @@ export interface ApplicationDrawerProps {
   inputName?: string[]
 }
 
-interface ApplicationsRule {
+export interface ApplicationsRule {
   id?: string,
   priority: number,
   ruleName: string,
@@ -93,7 +96,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
   const [queryPolicyId, setQueryPolicyId] = useState('')
   const [queryPolicyName, setQueryPolicyName] = useState('')
   const [requestId, setRequestId] = useState('')
-  const [avcSelectOptions, setAvcSelectOptions] = useState([] as AvcCat[])
+  const [avcSelectOptions, setAvcSelectOptions] = useState([] as AvcCategory[])
   const [applicationsRule, setApplicationsRule] = useState({} as ApplicationsRule)
   const [drawerForm] = Form.useForm()
   const [contentForm] = Form.useForm()
@@ -133,29 +136,29 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     { skip: applicationPolicyId === '' || applicationPolicyId === undefined }
   )
 
-  const [catAppMappingObject, setCatAppMappingObject] = useState({} as {
+  const [categoryAppMappingObject, setCategoryAppMappingObject] = useState({} as {
     [key: string]: { catId: number, appId: number }
   })
 
-  const { data: avcCatList } = useAvcCatListQuery({
+  const { data: avcCategoryList } = useAvcCategoryListQuery({
     params: params
   })
 
   const { data: avcAppList } = useAvcAppListQuery({
     params: params
   }, {
-    skip: !avcCatList
+    skip: !avcCategoryList
   })
 
   useEffect(() => {
-    if (avcCatList) {
+    if (avcCategoryList) {
       setAvcSelectOptions(
         [{
           catId: 0,
           catName: 'All',
           appNames: []
-        }, ...avcCatList.slice()
-          .sort((a: AvcCat, b: AvcCat) => a.catId - b.catId)
+        }, ...avcCategoryList.slice()
+          .sort((a: AvcCategory, b: AvcCategory) => a.catId - b.catId)
           .map(avcCat => {
             return {
               ...avcCat,
@@ -175,16 +178,16 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
           avcSelectOptions[catId].appNames.push(avcApp.appName)
         }
 
-        if (!catAppMappingObject.hasOwnProperty(avcApp.appName)) {
-          catAppMappingObject[avcApp.appName] = avcApp.avcAppAndCatId
+        if (!categoryAppMappingObject.hasOwnProperty(avcApp.appName)) {
+          categoryAppMappingObject[avcApp.appName] = avcApp.avcAppAndCatId
         }
       })
       setAvcSelectOptions(
         [...avcSelectOptions]
       )
-      setCatAppMappingObject({ ...catAppMappingObject })
+      setCategoryAppMappingObject({ ...categoryAppMappingObject })
     }
-  }, [avcCatList, avcAppList])
+  }, [avcCategoryList, avcAppList])
 
 
   const isViewMode = () => {
@@ -198,42 +201,9 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
   useEffect(() => {
     if (isViewMode() && appPolicyInfo) {
       contentForm.setFieldValue('policyName', appPolicyInfo.name)
-      setApplicationsRuleList([...appPolicyInfo.rules.map(rule => {
-        let systemDefined = {} as { [key: string]: string | number }
-        let userDefined = {} as { [key: string]: string | number }
-        if (rule.ruleType === ApplicationRuleType.SIGNATURE) {
-          systemDefined.appNameSystemDefined = `${rule.category}_${rule.applicationName}`
-          systemDefined.category = rule.category
-        }
-        if (rule.ruleType === ApplicationRuleType.USER_DEFINED) {
-          userDefined.appNameUserDefined = rule.applicationName
-
-          if (rule.portMapping === ApplicationPortMappingType.IP_WITH_PORT
-            && rule.destinationPort
-            && rule.destinationIp
-            && rule.protocol
-            && rule.netmask) {
-            userDefined.destinationPort = rule.destinationPort
-            userDefined.destinationIp = rule.destinationIp
-            userDefined.netmask = rule.netmask
-            userDefined.protocol = rule.protocol
-          }
-        }
-        return {
-          priority: rule.priority,
-          id: rule.id,
-          ruleName: rule.name,
-          ruleType: rule.ruleType,
-          applications: rule.applicationName,
-          accessControl: rule.accessControl,
-          details: genDetailsContent(rule.accessControl),
-          ruleSettings: {
-            ...systemDefined,
-            ...userDefined,
-            ruleType: rule.ruleType
-          }
-        }
-      })] as ApplicationsRule[])
+      setApplicationsRuleList([...transformToApplicationRule(
+        drawerForm, appPolicyInfo
+      )] as ApplicationsRule[])
     }
   }, [appPolicyInfo, queryPolicyId])
 
@@ -315,57 +285,10 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     clearFieldsValue()
   }
 
-  const genDetailsContent = (sourceValue: string) => {
-    switch (sourceValue) {
-      case ApplicationAclType.DENY:
-        return $t({ defaultMessage: 'Block all traffic' })
-      case ApplicationAclType.RATE_LIMIT:
-        let rateLimitStr: string[] = []
-        if (drawerForm.getFieldValue(['uplink'])) {
-          rateLimitStr.push($t({ defaultMessage: 'Uplink - {value} Mbps' },
-            { value: drawerForm.getFieldValue(['uplink']) }))
-        }
-        if (drawerForm.getFieldValue(['downlink'])) {
-          rateLimitStr.push($t({ defaultMessage: 'Downlink - {value} Mbps' },
-            { value: drawerForm.getFieldValue(['downlink']) }))
-        }
-        return rateLimitStr.join('|')
-      case ApplicationAclType.QOS:
-        return $t({
-          // eslint-disable-next-line max-len
-          defaultMessage: 'Uplink marking: {uplinkStrategy} ({uplinkValue}) | Downlink priority: {downlinkValue}' }, {
-          uplinkStrategy: drawerForm.getFieldValue(['uplinkMarking', 'strategy']),
-          uplinkValue: drawerForm.getFieldValue(['uplinkMarking', 'value']),
-          downlinkValue: drawerForm.getFieldValue(['downlinkPriority', 'value'])
-        })
-      default:
-        return $t({ defaultMessage: 'Block all traffic' })
-    }
-  }
-
-  const handleApplicationsRule = () => {
+  const handleAddApplicationsRule = () => {
     setRuleDrawerEditMode(false)
 
-    const ruleObject = {
-      ruleName: drawerForm.getFieldValue('ruleName') ?? '',
-      ruleType: drawerForm.getFieldValue('ruleType'),
-      applications: '-',
-      accessControl: drawerForm.getFieldValue('accessControl'),
-      details: genDetailsContent(drawerForm.getFieldValue('accessControl')),
-      ruleSettings: {
-        ruleType: drawerForm.getFieldValue('ruleType'),
-        appCategory: drawerForm.getFieldValue('applicationCategory'),
-        appNameSystemDefined: drawerForm.getFieldValue('applicationNameSystemDefined'),
-        appNameUserDefined: drawerForm.getFieldValue('applicationNameUserDefined'),
-        portMappingOnly: drawerForm.getFieldValue('portMappingOnly'),
-        destinationIp: drawerForm.getFieldValue('destinationIp'),
-        netmask: drawerForm.getFieldValue('netmask'),
-        destinationPort: drawerForm.getFieldValue('destinationPort'),
-        protocol: drawerForm.getFieldValue('protocol'),
-        uplink: drawerForm.getFieldValue('uplink'),
-        downlink: drawerForm.getFieldValue('downlink')
-      }
-    }
+    const ruleObject = genRuleObject(drawerForm)
 
     if (ruleDrawerEditMode && applicationsRule.hasOwnProperty('priority')) {
       const updateId = applicationsRuleList.findIndex(
@@ -399,49 +322,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
           params: params,
           payload: {
             name: policyName,
-            rules: [...applicationsRuleList.map(rule => {
-              let catAppConfig = {} as {
-                applicationId: number, applicationName: string, category: string, categoryId: number
-              }
-              if (rule.ruleType === ApplicationRuleType.SIGNATURE
-                && rule.ruleSettings.appNameSystemDefined
-                && rule.ruleSettings.appCategory
-              ) {
-                const [catName, appName] = rule.ruleSettings.appNameSystemDefined.split('_')
-                const catAppMapping = catAppMappingObject[appName]
-                catAppConfig.applicationId = catAppMapping.appId
-                catAppConfig.applicationName = appName
-                catAppConfig.categoryId = catAppMapping.catId
-                catAppConfig.category = catName
-              }
-
-              let userAppConfig = {} as {
-                portMapping?: string, destinationIp?: string, netmask?: string,
-                destinationPort: number, protocol: string, applicationName: string
-              }
-              if (rule.ruleSettings.appNameUserDefined
-                && rule.ruleSettings.destinationPort
-                && rule.ruleSettings.protocol) {
-                userAppConfig.applicationName = rule.ruleSettings.appNameUserDefined
-                userAppConfig.portMapping = rule.ruleSettings.portMappingOnly
-                  ? ApplicationPortMappingType.PORT_ONLY
-                  : ApplicationPortMappingType.IP_WITH_PORT
-                if (!rule.ruleSettings.portMappingOnly) {
-                  userAppConfig.destinationIp = rule.ruleSettings.destinationIp
-                  userAppConfig.netmask = rule.ruleSettings.netmask
-                }
-                userAppConfig.destinationPort = rule.ruleSettings.destinationPort
-              }
-
-              return {
-                ...catAppConfig,
-                ...userAppConfig,
-                accessControl: rule.accessControl.toUpperCase(),
-                name: rule.ruleName,
-                priority: rule.priority,
-                ruleType: rule.ruleType
-              }
-            })],
+            rules: [...transformToRulesForPayload(applicationsRuleList, categoryAppMappingObject)],
             description: null,
             tenantId: params.tenantId
           }
@@ -469,19 +350,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
       setRuleDrawerVisible(true)
       setRuleDrawerEditMode(true)
       setApplicationsRule(editRow)
-      drawerForm.setFieldValue('ruleName', editRow.ruleName)
-      drawerForm.setFieldValue('ruleType', editRow.ruleType)
-      drawerForm.setFieldValue('accessControl', editRow.accessControl)
-      drawerForm.setFieldValue('applicationCategory', editRow.ruleSettings.appCategory)
-      // eslint-disable-next-line max-len
-      drawerForm.setFieldValue('applicationNameSystemDefined', editRow.ruleSettings.appNameSystemDefined)
-      // eslint-disable-next-line max-len
-      drawerForm.setFieldValue('applicationNameUserDefined', editRow.ruleSettings.appNameUserDefined)
-      drawerForm.setFieldValue('portMappingOnly', editRow.ruleSettings.portMappingOnly)
-      drawerForm.setFieldValue('destinationIp', editRow.ruleSettings.destinationIp)
-      drawerForm.setFieldValue('netmask', editRow.ruleSettings.netmask)
-      drawerForm.setFieldValue('destinationPort', editRow.ruleSettings.destinationPort)
-      drawerForm.setFieldValue('protocol', editRow.ruleSettings.protocol)
+      updateFormWithEditRow(drawerForm, editRow)
       clearSelection()
     }
   },{
@@ -596,8 +465,8 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
             onCancel={handleApplicationsDrawerClose}
             onSave={async () => {
               try {
-                await contentForm.validateFields()
                 if (!isViewMode()) {
+                  await contentForm.validateFields()
                   await handleAppPolicy(false)
                 }
                 handleApplicationsDrawerClose()
@@ -618,7 +487,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
         zIndex={100}
         destroyOnClose={true}
         onClose={handleRuleDrawerClose}
-        children={<ApplicationRuleDrawer
+        children={<ApplicationRuleContent
           avcSelectOptions={avcSelectOptions}
           drawerForm={drawerForm}
         />}
@@ -630,7 +499,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
               try {
                 await drawerForm.validateFields()
 
-                handleApplicationsRule()
+                handleAddApplicationsRule()
                 drawerForm.resetFields()
                 handleRuleDrawerClose()
               } catch (error) {

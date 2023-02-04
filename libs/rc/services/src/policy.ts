@@ -32,7 +32,7 @@ import {
   AvcApp,
   VlanPool,
   WifiUrlsInfo,
-  AccessControlUrls, L3AclPolicy, AvcCat,
+  AccessControlUrls, L3AclPolicy, AvcCategory,
   ClientIsolationSaveData, ClientIsolationUrls,
   createNewTableHttpRequest, TableChangePayload, RequestFormData,
   appPolicyInfoType, ApplicationPolicy
@@ -281,7 +281,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const params = requestArgs.params as { requestId: string }
           if (params.requestId) {
-            showActivityMessage(msg, [
+            onActivityMessageReceived(msg, [
               'Add Application Policy Profile'
             ],() => {
               api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
@@ -539,9 +539,9 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'MacRegistration', id: 'LIST' }]
     }),
-    avcCatList: build.query<AvcCat[], RequestPayload>({
+    avcCategoryList: build.query<AvcCategory[], RequestPayload>({
       query: ({ params, payload }) => {
-        const avcCatListReq = createHttpRequest(AccessControlUrls.getAvcCat, params)
+        const avcCatListReq = createHttpRequest(AccessControlUrls.getAvcCategory, params)
         return {
           ...avcCatListReq,
           body: payload
@@ -593,7 +593,7 @@ export const {
   useUpdateMacRegistrationMutation,
   useAddMacRegListMutation,
   useUpdateMacRegListMutation,
-  useAvcCatListQuery,
+  useAvcCategoryListQuery,
   useAvcAppListQuery,
   useAddRoguePolicyMutation,
   useDelRoguePolicyMutation,

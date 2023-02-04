@@ -50,7 +50,7 @@ export interface AppRule {
   ruleType: string
 }
 
-export interface AvcCat {
+export interface AvcCategory {
   catId: number,
   catName: string,
   appNames: string[]
