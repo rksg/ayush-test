@@ -40,7 +40,7 @@ const list = {
   empty: false
 }
 
-describe('RadiusAttributeGroupSettingForm', () => {
+describe('MacRegistrationListSettingForm', () => {
 
   it('should render form successfully', async () => {
     mockServer.use(
