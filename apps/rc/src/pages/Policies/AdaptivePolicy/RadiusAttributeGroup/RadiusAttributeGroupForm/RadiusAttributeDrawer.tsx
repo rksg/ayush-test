@@ -46,16 +46,18 @@ export function RadiusAttributeDrawer (props: RadiusAttributeDrawerProps) {
       vendorList.map(vendor => toTreeNode(vendor, false,[]))))
   }, [vendorList])
 
-  const toTreeNode = (value: string,
+  const toTreeNode = (
+    value: string,
     isLeaf: boolean,
-    children?: treeNode []) : treeNode => {
+    children?: treeNode [],
+    dataType?: string) : treeNode => {
     return {
       value: value,
       title: value,
       isLeaf: isLeaf,
       selectable: isLeaf,
       children: children ?? undefined,
-      dataType: undefined
+      dataType: dataType ?? undefined
     }
   }
 
@@ -78,7 +80,6 @@ export function RadiusAttributeDrawer (props: RadiusAttributeDrawerProps) {
     let dataType
     attributeTreeData.forEach(node => {
       if(node.children) {
-        // console.log(node.children)
         const attribute = node.children.find(node => node.value === attributeName)
         if(attribute) {
           dataType = attribute.dataType
@@ -102,7 +103,7 @@ export function RadiusAttributeDrawer (props: RadiusAttributeDrawerProps) {
       setAttributeTreeData(attributeTreeData.map(node => {
         if(node.value === treeNode.value) {
           node.children = attributeList.map((v: RadiusAttribute) =>
-            toTreeNode(v.name, true))
+            toTreeNode(v.name, true, undefined, v.dataType))
         }
         return node
       }))

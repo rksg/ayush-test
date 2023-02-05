@@ -15,10 +15,7 @@ describe('RadiusAttributeGroupSettingForm', () => {
       rest.get(
         RadiusAttributeGroupUrlsInfo.getAttributeGroups.url,
         (req, res, ctx) => res(ctx.json(groupList))
-      )
-    )
-
-    mockServer.use(
+      ),
       rest.get(
         RadiusAttributeGroupUrlsInfo.getAttributeVendors.url,
         (req, res, ctx) => res(ctx.json(vendorList))

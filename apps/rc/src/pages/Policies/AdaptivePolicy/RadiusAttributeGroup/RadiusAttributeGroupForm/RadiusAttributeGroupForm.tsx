@@ -25,7 +25,7 @@ interface RadiusAttributeGroupFormProps {
 }
 
 export default function RadiusAttributeGroupForm (props: RadiusAttributeGroupFormProps) {
-  const intl = useIntl()
+  const { $t } = useIntl()
   const { editMode = false } = props
   const { policyId } = useParams()
   // eslint-disable-next-line max-len
@@ -62,9 +62,7 @@ export default function RadiusAttributeGroupForm (props: RadiusAttributeGroupFor
     } catch (error) {
       showToast({
         type: 'error',
-        content: intl.$t({ defaultMessage: 'An error occurred' }),
-        // FIXME: Correct the error message
-        link: { onClick: () => alert(JSON.stringify(error)) }
+        content: $t({ defaultMessage: 'An error occurred' })
       })
     }
   }
@@ -83,9 +81,7 @@ export default function RadiusAttributeGroupForm (props: RadiusAttributeGroupFor
     } catch (error) {
       showToast({
         type: 'error',
-        content: intl.$t({ defaultMessage: 'An error occurred' }),
-        // FIXME: Correct the error message
-        link: { onClick: () => alert(JSON.stringify(error)) }
+        content: $t({ defaultMessage: 'An error occurred' })
       })
     }
   }
@@ -94,11 +90,11 @@ export default function RadiusAttributeGroupForm (props: RadiusAttributeGroupFor
     <>
       <PageHeader
         title={editMode
-          ? intl.$t({ defaultMessage: 'Configure {name}' }, { name: data?.name })
-          : intl.$t({ defaultMessage: 'Add RADIUS Attributes Group' })}
+          ? $t({ defaultMessage: 'Configure {name}' }, { name: data?.name })
+          : $t({ defaultMessage: 'Add RADIUS Attributes Group' })}
         breadcrumb={[
           {
-            text: intl.$t({ defaultMessage: 'Policies & Profiles > RADIUS Attribute Groups' }),
+            text: $t({ defaultMessage: 'Policies & Profiles > RADIUS Attribute Groups' }),
             // eslint-disable-next-line max-len
             link: getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.LIST })
           }
@@ -107,7 +103,7 @@ export default function RadiusAttributeGroupForm (props: RadiusAttributeGroupFor
       <StepsForm
         editMode={editMode}
         formRef={formRef}
-        buttonLabel={{ submit: intl.$t({ defaultMessage: 'Apply' }) }}
+        buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
         onCancel={() => navigate(linkToList)}
         onFinish={editMode? handleEdit: handleAdd}>
         <StepsForm.StepForm>

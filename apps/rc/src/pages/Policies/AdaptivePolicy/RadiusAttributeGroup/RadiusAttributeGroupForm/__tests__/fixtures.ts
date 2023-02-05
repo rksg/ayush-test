@@ -39,20 +39,33 @@ export const groupList = {
   empty: false
 }
 
+export const attributeGroup = {
+  id: '1751383c-f13a-4f55-9694-ca9d16d4c410',
+  name: 'test11223',
+  description: 'test1',
+  attributeAssignments: [
+    {
+      attributeName: 'Annex-CLI-Filter',
+      operator: 'ADD',
+      attributeValue: '111111',
+      dataType: 'STRING'
+    },
+    {
+      attributeName: 'Annex-CLI-Command',
+      operator: 'ADD',
+      attributeValue: 'wdqdwqdw',
+      dataType: 'STRING'
+    }
+  ]
+}
+
+
 export const vendorList = {
   supportedVendors: [
     'Bay-Networks',
     'UKERNA',
     'Packeteer',
-    '3GPP',
-    'Alteon',
-    'Juniper',
-    'Adtran',
-    'Cnergee',
-    'H3C',
-    'SofaWare',
-    'DragonWave',
-    'NetworkPhysics'
+    '3GPP'
   ]
 }
 

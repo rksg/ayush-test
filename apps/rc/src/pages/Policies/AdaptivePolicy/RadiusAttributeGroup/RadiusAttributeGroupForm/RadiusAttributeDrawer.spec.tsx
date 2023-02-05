@@ -1,23 +1,15 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { DataType, OperatorType, RadiusAttributeGroupUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                             from '@acx-ui/store'
-import { render, screen }                                       from '@acx-ui/test-utils'
+import { DataType, OperatorType, RadiusAttributeGroupUrlsInfo }  from '@acx-ui/rc/utils'
+import { Provider }                                              from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { attributeList, vendorList } from './__tests__/fixtures'
 import { RadiusAttributeDrawer }     from './RadiusAttributeDrawer'
 
 
 describe('RadiusAttributeDrawer', () => {
-
-  beforeEach(async () => {
-    rest.post(
-      RadiusAttributeGroupUrlsInfo.getAttributesWithQuery.url,
-      (req, res, ctx) => res(ctx.json(attributeList))
-    )
-  })
-
   it('should render form successfully', async () => {
     render(
       <Provider>
@@ -44,6 +36,13 @@ describe('RadiusAttributeDrawer', () => {
   })
 
   it('should edit form successfully', async () => {
+    mockServer.use(
+      rest.post(
+        RadiusAttributeGroupUrlsInfo.getAttributesWithQuery.url,
+        (req, res, ctx) => res(ctx.json(attributeList))
+      )
+    )
+
     const editAttribute = {
       attributeName: 'attributeName1',
       attributeValue: 'test',
@@ -76,6 +75,17 @@ describe('RadiusAttributeDrawer', () => {
 
     const attributeDataType = inputs[2]
     expect(attributeDataType).toHaveValue(editAttribute.dataType)
+
+    const comboBoxes = await screen.findAllByRole('combobox')
+    const attributeType = comboBoxes[0]
+    await userEvent.click(attributeType)
+
+    const treeNodes = await screen.findAllByRole('img')
+    await userEvent.click(treeNodes[0])
+
+    await waitForElementToBeRemoved(await screen.findByRole('img', { name: 'loading' }))
+
+    await userEvent.click(await screen.findByText('Foundry-Privilege-Level'))
 
     const addButton = screen.getByText('Done')
     expect(addButton).toBeInTheDocument()

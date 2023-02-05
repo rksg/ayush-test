@@ -105,11 +105,10 @@ export default function RadiusAttributeGroupTable () {
             try {
               await deleteGroup({ params: { policyId: rows[0].id } }).unwrap()
               clearSelection()
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            } catch (error: any) {
+            } catch (error) {
               showToast({
                 type: 'error',
-                content: error.data
+                content: $t({ defaultMessage: 'An error occurred' })
               })
             }
           }

@@ -30,7 +30,7 @@ export interface treeNode {
   title: string
   selectable: boolean
   children?: treeNode [] | undefined
-  isLeaf?: boolean,
+  isLeaf: boolean,
   dataType?: string
 }
 

@@ -32,19 +32,12 @@ describe('AdaptivePolicyTabs', () =>{
     expect(tabs.length).toBe(3)
 
     await screen.findByText('Adaptive Policy (0)')
-    await screen.findByText('Adaptive Policy Sets (0)')
-    await screen.findByText('RADIUS Attribute Groups (' + groupList.content.length + ')')
-  })
-
-  it('should change tab correctly', async () => {
-    render(<Provider><AdaptivePolicyTabs /></Provider>, { route: { params } })
-
-    const tabs = screen.getAllByRole('tab')
-    expect(tabs.length).toBe(3)
-
-    await userEvent.click(await screen.findByText('Adaptive Policy Sets (0)'))
+    const setTab = await screen.findByText('Adaptive Policy Sets (0)')
     // eslint-disable-next-line max-len
-    await userEvent.click(await screen.findByText('RADIUS Attribute Groups (' + groupList.content.length + ')'))
+    const attributeTab = await screen.findByText('RADIUS Attribute Groups (' + groupList.content.length + ')')
+
+    await userEvent.click(setTab)
+    await userEvent.click(attributeTab)
   })
 
 })
