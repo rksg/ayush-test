@@ -80,8 +80,7 @@ export interface TableProps <RecordType>
 export interface TableHighlightFnArgs {
   (
     textToHighlight: string,
-    formatFn?: (keyword: string) => React.ReactNode,
-    excludeTag?: string
+    formatFn?: (keyword: string) => React.ReactNode
   ): string | React.ReactNode
 }
 
