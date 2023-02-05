@@ -693,6 +693,7 @@ export const {
   useGetRadiusAttributeGroupQuery,
   useRadiusAttributeListQuery,
   useRadiusAttributeVendorListQuery,
+  useRadiusAttributeListWithQueryQuery,
   useLazyRadiusAttributeListWithQueryQuery,
   useRadiusAttributeQuery,
   useDeleteRadiusAttributeGroupMutation,
