@@ -308,7 +308,7 @@ function Table <RecordType extends Record<string, any>> ({
           (searchValue && searchValue.length >= MIN_SEARCH_LENGTH && textToHighlight)
             ? formatFn
               ? textToHighlight.replace(
-                new RegExp(escapeStringRegexp(searchValue), 'ig' ), formatFn('$&') as string)
+                new RegExp(escapeStringRegexp(searchValue), 'ig'), formatFn('$&') as string)
               : <Highlighter
                 highlightStyle={{
                   fontWeight: 'bold', background: 'none', padding: 0, color: 'inherit' }}
