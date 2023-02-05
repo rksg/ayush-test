@@ -2,7 +2,7 @@ import { Form, Select, Space } from 'antd'
 import { useIntl }             from 'react-intl'
 
 import { Button, Drawer, Loader, Table, TableProps } from '@acx-ui/components'
-import { EdgeDhcpPool }                              from '@acx-ui/rc/utils'
+import { DhcpPoolStats }                             from '@acx-ui/rc/utils'
 
 import { useMockData } from './Pools'
 
@@ -17,7 +17,7 @@ const ManageDhcpDrawer = (props: ManageDhcpDrawerProps) => {
   const { $t } = useIntl()
   const { data, isLoading } = useMockData()
 
-  const columns: TableProps<EdgeDhcpPool>['columns'] = [
+  const columns: TableProps<DhcpPoolStats>['columns'] = [
     {
       title: $t({ defaultMessage: 'Pool' }),
       key: 'name',
