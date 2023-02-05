@@ -77,6 +77,14 @@ export interface TableProps <RecordType>
     ) => void
   }
 
+export interface TableHighlightFnArgs {
+  (
+    textToHighlight: string,
+    formatFn?: (keyword: string) => React.ReactNode,
+    excludeTag?: string
+  ): string | React.ReactNode
+}
+
 const defaultPagination = {
   mini: true,
   defaultPageSize: 10,
@@ -101,6 +109,8 @@ function useSelectedRowKeys <RecordType> (
   return [selectedRowKeys, setSelectedRowKeys]
 }
 
+const MIN_SEARCH_LENGTH = 2
+
 // following the same typing from antd
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function Table <RecordType extends Record<string, any>> ({
@@ -118,7 +128,7 @@ function Table <RecordType extends Record<string, any>> ({
     onFilterChange && onFilterChange(filter, { searchString }), 1000), [onFilterChange])
 
   useEffect(() => {
-    if(searchValue === '' || searchValue.length >= 2)  {
+    if(searchValue === '' || searchValue.length >= MIN_SEARCH_LENGTH)  {
       debounced(filterValues, searchValue)
     }
     return () => debounced.cancel()
@@ -295,11 +305,8 @@ function Table <RecordType extends Record<string, any>> ({
     ...col,
     ...( col.searchable && {
       render: ((dom, entity, index, action, schema) => {
-        const highlightFn = (
-          textToHighlight: string,
-          formatFn?: (keyword: string) => React.ReactNode
-        ) =>
-          (searchValue && textToHighlight)
+        const highlightFn: TableHighlightFnArgs = (textToHighlight, formatFn) =>
+          (searchValue && searchValue.length >= MIN_SEARCH_LENGTH && textToHighlight)
             ? formatFn
               ? textToHighlight.replace(
                 new RegExp(escapeStringRegexp(searchValue), 'ig' ), formatFn('$&') as string)
@@ -377,12 +384,13 @@ function Table <RecordType extends Record<string, any>> ({
           </Space>
         </div>
         <UI.HeaderRight>
-          {(Boolean(activeFilters.length) || Boolean(searchValue)) && <Button
-            onClick={() => {
-              setFilterValues({} as Filter)
-              setSearchValue('')
-            }}
-          >
+          {(
+            Boolean(activeFilters.length) ||
+            (Boolean(searchValue) && searchValue.length >= MIN_SEARCH_LENGTH)
+          ) && <Button onClick={() => {
+            setFilterValues({} as Filter)
+            setSearchValue('')
+          }}>
             {$t({ defaultMessage: 'Clear Filters' })}
           </Button>}
         </UI.HeaderRight>
