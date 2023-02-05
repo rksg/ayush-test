@@ -1,7 +1,7 @@
 import { configureStore, isRejectedWithValue }            from '@reduxjs/toolkit'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 
-import { dataApi }                                     from '@acx-ui/analytics/services'
+import { dataApi }               from '@acx-ui/analytics/services'
 import {
   baseCommonApi as commonApi,
   baseNetworkApi as networkApi,
@@ -80,8 +80,7 @@ export const store = configureStore({
     [mfaApi.reducerPath]: mfaApi.reducer,
     [administrationApi.reducerPath]: administrationApi.reducer,
     [edgeDhcpApi.reducerPath]: edgeDhcpApi.reducer,
-    [personaApi.reducerPath]: personaApi.reducer,
-    [radiusClientConfigApi.reducerPath]: radiusClientConfigApi.reducer
+    [personaApi.reducerPath]: personaApi.reducer
   },
 
   middleware: (getDefaultMiddleware) => {
@@ -109,8 +108,7 @@ export const store = configureStore({
       mfaApi.middleware,
       administrationApi.middleware,
       edgeDhcpApi.middleware,
-      personaApi.middleware,
-      radiusClientConfigApi.middleware
+      personaApi.middleware
     ])
   },
 
