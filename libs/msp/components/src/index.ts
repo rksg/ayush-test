@@ -1,6 +1,5 @@
 export { ResendInviteModal } from './ResendInviteModal'
 export { MspEcDropdownList } from './MspEcDropdownList'
-export { RegionDropdown } from './RegionDropdown'
 export { ManageAdminsDrawer } from './ManageAdminsDrawer'
 export { SelectIntegratorDrawer } from './SelectIntegratorDrawer'
 export { ManageCustomer } from './ManageCustomer'

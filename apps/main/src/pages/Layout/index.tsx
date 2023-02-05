@@ -14,8 +14,7 @@ import {
   UserButton
 } from '@acx-ui/main/components'
 import {
-  MspEcDropdownList,
-  RegionDropdown
+  MspEcDropdownList
 } from '@acx-ui/msp/components'
 import { CloudMessageBanner }                from '@acx-ui/rc/components'
 import { isDelegationMode, TenantIdFromJwt } from '@acx-ui/rc/utils'
@@ -37,12 +36,9 @@ function Layout () {
         </>
       }
       leftHeaderContent={
-        <>
-          <RegionDropdown/>
-          {isDelegationMode() && <Link to={`${getBasePath()}/v/${TenantIdFromJwt()}`}>
-            <LayoutUI.Icon children={<HomeSolid />} />
-          </Link>}
-        </>
+        isDelegationMode() && <Link to={`${getBasePath()}/v/${TenantIdFromJwt()}`}>
+          <LayoutUI.Icon children={<HomeSolid />} />
+        </Link>
       }
 
       rightHeaderContent={<>
