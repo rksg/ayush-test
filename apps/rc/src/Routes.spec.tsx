@@ -209,7 +209,7 @@ describe('RcRoutes: Networks', () => {
   test('should navigate to networks/add', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/networks/add',
+        path: '/t/tenantId/networks/wireless/add',
         wrapRoutes: false
       }
     })
@@ -219,7 +219,7 @@ describe('RcRoutes: Networks', () => {
   test('should navigate to network-details', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/networks/networkId/network-details/some-tab',
+        path: '/t/tenantId/networks/wireless/networkId/network-details/some-tab',
         wrapRoutes: false
       }
     })
@@ -229,7 +229,7 @@ describe('RcRoutes: Networks', () => {
   test('should navigate to network-action', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/networks/networkId/edit',
+        path: '/t/tenantId/networks/wireless/networkId/edit',
         wrapRoutes: false
       }
     })

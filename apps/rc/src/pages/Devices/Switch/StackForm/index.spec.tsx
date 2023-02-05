@@ -127,6 +127,8 @@ describe('Switch Stack Form - Add', () => {
     const serialNumber2 = await screen.findByTestId(/serialNumber2/)
     fireEvent.change(serialNumber1, { target: { value: 'FEK4124R21X' } })
     fireEvent.change(serialNumber2, { target: { value: 'FEK4124R21X' } })
+    serialNumber2.focus()
+    serialNumber2.blur()
   })
   it('should show disabled delete button correctly', async () => {
     render(<Provider><StackForm /></Provider>, {

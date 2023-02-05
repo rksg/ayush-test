@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom'
-import { UserProfileContext } from '@acx-ui/rc/components'
+import { UserProfileContext, UserProfileContextProps } from '@acx-ui/rc/components'
 import {
   UserProfile as UserProfileInterface,
   RolesEnum
@@ -28,7 +28,9 @@ jest.mock('react-router-dom', () => ({
 describe('UserProfile', () => {
   it('should render correctly', async () => {
     render(<Provider>
-      <UserProfileContext.Provider value={userProfile}>
+      <UserProfileContext.Provider
+        value={{ data: userProfile } as UserProfileContextProps}
+      >
         <UserProfile />
       </UserProfileContext.Provider>
     </Provider>, { route: { params } })
@@ -39,7 +41,6 @@ describe('UserProfile', () => {
     expect(screen.getByText('dog12@email.com')).toBeVisible()
     expect(screen.getByText('tenant-id')).toBeVisible()
 
-    expect(screen.getByRole('tab', { name: 'Notifications' })).toBeVisible()
     expect(screen.getByRole('tab', { name: 'Settings' })).toBeVisible()
     expect(screen.getByRole('tab', { name: 'Security' })).toBeVisible()
     expect(screen.getByRole('tab', { name: 'Recent Logins' })).toBeVisible()
