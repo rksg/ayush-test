@@ -83,7 +83,8 @@ export const store = configureStore({
     [edgeDhcpApi.reducerPath]: edgeDhcpApi.reducer,
     [personaApi.reducerPath]: personaApi.reducer,
     [policyApi.reducerPath]: policyApi.reducer,
-    [radiusClientConfigApi.reducerPath]: radiusClientConfigApi.reducer
+    [radiusClientConfigApi.reducerPath]: radiusClientConfigApi.reducer,
+    [personaApi.reducerPath]: personaApi.reducer
   },
 
   middleware: (getDefaultMiddleware) => {
@@ -113,7 +114,8 @@ export const store = configureStore({
       edgeDhcpApi.middleware,
       personaApi.middleware,
       policyApi.middleware,
-      radiusClientConfigApi.middleware
+      radiusClientConfigApi.middleware,
+      personaApi.middleware
     ])
   },
 
