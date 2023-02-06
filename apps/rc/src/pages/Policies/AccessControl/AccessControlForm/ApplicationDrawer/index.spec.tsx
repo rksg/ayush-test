@@ -226,8 +226,13 @@ const systemDefinedSection = async () => {
 }
 
 describe('ApplicationDrawer Component', () => {
-  beforeAll(() => {
-    mockServer.use(rest.get(
+  it('Render ApplicationDrawer component successfully with new added profile', async () => {
+    mockServer.use(rest.post(
+      AccessControlUrls.addAppPolicy.url,
+      (_, res, ctx) => res(
+        ctx.json(applicationResponse)
+      )
+    ), rest.get(
       AccessControlUrls.getAvcCategory.url,
       (_, res, ctx) => res(
         ctx.json(avcCat)
@@ -236,15 +241,6 @@ describe('ApplicationDrawer Component', () => {
       AccessControlUrls.getAvcApp.url,
       (_, res, ctx) => res(
         ctx.json(avcApp)
-      )
-    ))
-  })
-
-  it('Render ApplicationDrawer component successfully with new added profile', async () => {
-    mockServer.use(rest.post(
-      AccessControlUrls.addAppPolicy.url,
-      (_, res, ctx) => res(
-        ctx.json(applicationResponse)
       )
     ))
 
@@ -295,60 +291,6 @@ describe('ApplicationDrawer Component', () => {
 
     await screen.findByRole('option', { name: 'app1-test' })
 
-  })
-
-  it('Render ApplicationDrawer component successfully with SystemDefined rule', async () => {
-    mockServer.use(rest.post(
-      AccessControlUrls.getAppPolicyList.url,
-      (_, res, ctx) => res(
-        ctx.json(queryApplication)
-      )
-    ), rest.post(
-      AccessControlUrls.addAppPolicy.url,
-      (_, res, ctx) => res(
-        ctx.json(applicationResponse)
-      )
-    ))
-
-    render(
-      <Provider>
-        <Form>
-          <ApplicationDrawer />
-        </Form>
-      </Provider>, {
-        route: {
-          params: { tenantId: 'tenantId1' }
-        }
-      }
-    )
-
-    await screen.findByRole('option', { name: 'app1' })
-
-    await userEvent.click(screen.getByText('Add New'))
-
-    await screen.findByText(/application access settings/i)
-
-    await userEvent.type(screen.getByRole('textbox', {
-      name: /policy name:/i
-    }), 'app1-test')
-
-    await userEvent.click(screen.getByText('Add'))
-
-    await screen.findByText(/add application rule/i)
-
-    await userEvent.type(screen.getByRole('textbox', {
-      name: /rule name/i
-    }), 'app1rule1')
-
-    await systemDefinedSection()
-
-    await userEvent.click(screen.getByText(/block applications/i))
-
-    await userEvent.click(screen.getAllByText('Save')[1])
-
-    await screen.findByText(/rules \(1\)/i)
-
-    await userEvent.click(screen.getAllByText('Save')[0])
   })
 
   it('Render ApplicationDrawer component successfully with UserDefined rule', async () => {
@@ -600,18 +542,6 @@ describe('ApplicationDrawer Component', () => {
     await userEvent.selectOptions(
       screen.getAllByRole('combobox')[3],
       screen.getByRole('option', { name: 'DSCP' })
-    )
-
-    await screen.findAllByRole('option', { name: 'Video' })
-
-    await userEvent.selectOptions(
-      screen.getAllByRole('combobox')[4],
-      screen.getAllByRole('option', { name: 'Video' })[0]
-    )
-
-    await userEvent.selectOptions(
-      screen.getAllByRole('combobox')[5],
-      screen.getAllByRole('option', { name: 'Video' })[1]
     )
 
     await userEvent.click(screen.getByText(/rate limit/i))

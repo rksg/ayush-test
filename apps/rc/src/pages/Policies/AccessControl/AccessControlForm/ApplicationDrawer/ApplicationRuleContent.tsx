@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
-import { Checkbox, Form, FormInstance, FormItemProps, Input, Radio, RadioChangeEvent, Select, Slider } from 'antd'
-import { defineMessage, MessageDescriptor, useIntl }                                                   from 'react-intl'
+import { Checkbox, Form, FormInstance, Input, Radio, RadioChangeEvent, Select, Slider } from 'antd'
+import { defineMessage, MessageDescriptor, useIntl }                                    from 'react-intl'
 
 import { ContentSwitcher, ContentSwitcherProps, GridCol, GridRow } from '@acx-ui/components'
 import {
@@ -13,20 +13,16 @@ import {
 
 import { AppAclLabelMapping, AppRuleLabelMapping } from '../../../contentsMap'
 
+import QosContent from './QosContent'
+
+import { ApplicationsRule, DrawerFormItem } from './index'
+
 const { useWatch } = Form
 
-const DrawerFormItem = (props: FormItemProps) => {
-  return (
-    <Form.Item
-      labelAlign={'left'}
-      labelCol={{ span: 5 }}
-      style={{ marginBottom: '5px' }}
-      {...props} />
-  )
-}
-
 export interface ApplicationRuleDrawerProps {
-  avcSelectOptions: AvcCategory[]
+  avcSelectOptions: AvcCategory[],
+  applicationsRuleList: ApplicationsRule[],
+  editMode: boolean,
   drawerForm: FormInstance
 }
 
@@ -58,11 +54,18 @@ export const appRateStrategyLabelMapping: Record<RateStrategyEnum, MessageDescri
 
 const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
   const { $t } = useIntl()
-  const { avcSelectOptions, drawerForm } = props
+  const { avcSelectOptions, applicationsRuleList, editMode, drawerForm } = props
   const [category, setCategory] = useState('')
-  const [sourceValue, setSourceValue] = useState('')
-  const [maxUplinkRate, setMaxUplinkRate] = useState({ status: false, value: 0 })
-  const [maxDownlinkRate, setMaxDownlinkRate] = useState({ status: false, value: 0 })
+  const [sourceValue, setSourceValue] = useState(drawerForm.getFieldValue('accessControl'))
+  console.log(drawerForm.getFieldValue('uplink'))
+  const [maxUplinkRate, setMaxUplinkRate] = useState({
+    status: drawerForm.getFieldValue('uplink') > 0,
+    value: drawerForm.getFieldValue('uplink')
+  })
+  const [maxDownlinkRate, setMaxDownlinkRate] = useState({
+    status: drawerForm.getFieldValue('downlink') > 0,
+    value: drawerForm.getFieldValue('downlink')
+  })
 
   const [
     ruleType,
@@ -96,13 +99,13 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
           width: '100%', marginLeft: '10px', marginRight: '10px' }}
         marks={{ 0.25: '0.25 Mbps', 20: '20 Mbps' }}
         max={20}
-        defaultValue={0.25}
+        defaultValue={maxUplinkRate.value ?? 0.25}
         onChange={(value) => {
           setMaxUplinkRate({
             ...maxUplinkRate,
             value: value
           })
-          drawerForm.setFieldValue(['uplink'], value * 1000)
+          drawerForm.setFieldValue(['uplink'], value)
         }}
       /> }
     </div>
@@ -124,13 +127,13 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
           width: '100%', marginLeft: '10px', marginRight: '10px' }}
         marks={{ 0.25: '0.25 Mbps', 20: '20 Mbps' }}
         max={20}
-        defaultValue={0.25}
+        defaultValue={maxDownlinkRate.value ?? 0.25}
         onChange={(value) => {
           setMaxDownlinkRate({
             ...maxDownlinkRate,
             value: value
           })
-          drawerForm.setFieldValue(['downlink'], value * 1000)
+          drawerForm.setFieldValue(['downlink'], value)
         }}
       /> }
     </div>
@@ -268,7 +271,13 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
       validateFirst
       rules={[
         { required: true },
-        { max: 64 }
+        { max: 64 },
+        { validator: (_, value) => {
+          if (!editMode && applicationsRuleList.findIndex(rule => rule.ruleName === value) !== -1) {
+            return Promise.reject($t({ defaultMessage: 'This rule name has been existed.' }))
+          }
+          return Promise.resolve()
+        } }
       ]}
       children={<Input
         placeholder={$t({ defaultMessage: 'Enter a short description, up to 64 characters' })}
@@ -401,94 +410,6 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
   </Form>
 
   return ruleContent
-}
-
-export interface QosContentProps {
-  drawerForm: FormInstance
-}
-
-const QosContent = (props: QosContentProps) => {
-  const { $t } = useIntl()
-  const { drawerForm } = props
-
-  const maxUplinkRateContent = <GridRow>
-    <GridCol col={{ span: 12 }}>
-      <Form.Item
-        name={['uplinkMarking', 'value']}
-        style={{ width: '100%' }}
-        wrapperCol={{ span: 24 }}
-        initialValue={RateTypeEnum.IEEE802_1P}
-        children={<Select
-          defaultValue={RateTypeEnum.IEEE802_1P}
-          onChange={(value) => drawerForm.setFieldValue(['uplinkMarking', 'value'], value)}
-          options={Object.keys(appRateTypeLabelMapping).map((key) => {
-            return (
-              <Select.Option key={key} value={key}>
-                {$t(appRateTypeLabelMapping[key as RateTypeEnum])}
-              </Select.Option>
-            )
-          })} />}
-      />
-    </GridCol>
-    <GridCol col={{ span: 12 }}>
-      <Form.Item
-        name={['uplinkMarking', 'strategy']}
-        style={{ width: '100%' }}
-        wrapperCol={{ span: 24 }}
-        initialValue={RateStrategyEnum.BACKGROUND}
-        children={<Select
-          defaultValue={RateStrategyEnum.BACKGROUND}
-          onChange={(value) => drawerForm.setFieldValue(['uplinkMarking', 'strategy'], value)}
-          options={Object.keys(appRateStrategyLabelMapping).map((key) => {
-            return (
-              <Select.Option key={key} value={key}>
-                {$t(appRateStrategyLabelMapping[key as RateStrategyEnum])}
-              </Select.Option>
-            )
-          })} />}
-      />
-    </GridCol>
-  </GridRow>
-
-  const maxDownlinkRateContent = <GridRow>
-    <GridCol col={{ span: 24 }}>
-      <Form.Item
-        name={['downlinkPriority', 'value']}
-        style={{ width: '100%' }}
-        wrapperCol={{ span: 24 }}
-        initialValue={RateStrategyEnum.VOICE}
-        children={<Select
-          defaultValue={RateStrategyEnum.VOICE}
-          onChange={(value) => drawerForm.setFieldValue(['downlinkPriority', 'value'], value)}
-          options={Object.keys(appRateStrategyLabelMapping).map((key) => {
-            return (
-              <Select.Option key={key} value={key}>
-                {$t(appRateStrategyLabelMapping[key as RateStrategyEnum])}
-              </Select.Option>
-            )
-          })} />}
-      />
-    </GridCol>
-  </GridRow>
-
-  return <>
-    <DrawerFormItem
-      name='uplinkMarking'
-      style={{ width: '100%' }}
-      wrapperCol={{ span: 24 }}
-      label={$t({ defaultMessage: 'Uplink Marking' })}
-    >
-      {maxUplinkRateContent}
-    </DrawerFormItem>
-    <DrawerFormItem
-      name='downlinkPriority'
-      style={{ width: '100%' }}
-      wrapperCol={{ span: 24 }}
-      label={$t({ defaultMessage: 'Downlink Priority' })}
-    >
-      {maxDownlinkRateContent}
-    </DrawerFormItem>
-  </>
 }
 
 export default ApplicationRuleContent

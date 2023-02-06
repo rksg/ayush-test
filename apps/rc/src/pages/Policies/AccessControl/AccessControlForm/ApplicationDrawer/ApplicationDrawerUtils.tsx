@@ -1,8 +1,6 @@
 import { FormInstance } from 'antd'
-import { useIntl }      from 'react-intl'
 
 import {
-  ApplicationAclType,
   ApplicationPortMappingType,
   ApplicationRuleType,
   appPolicyInfoType
@@ -24,37 +22,13 @@ export const updateFormWithEditRow = (drawerForm: FormInstance, editRow: Applica
   drawerForm.setFieldValue('netmask', editRow.ruleSettings.netmask)
   drawerForm.setFieldValue('destinationPort', editRow.ruleSettings.destinationPort)
   drawerForm.setFieldValue('protocol', editRow.ruleSettings.protocol)
-}
-
-export const GenDetailsContent = (drawerForm: FormInstance, sourceValue?: string) => {
-  const { $t } = useIntl()
-
-  const detailContentType = sourceValue ? sourceValue : drawerForm.getFieldValue('accessControl')
-  switch (detailContentType) {
-    case ApplicationAclType.DENY:
-      return $t({ defaultMessage: 'Block all traffic' })
-    case ApplicationAclType.RATE_LIMIT:
-      let rateLimitStr: string[] = []
-      if (drawerForm.getFieldValue(['uplink'])) {
-        rateLimitStr.push($t({ defaultMessage: 'Uplink - {value} Mbps' },
-          { value: drawerForm.getFieldValue(['uplink']) }))
-      }
-      if (drawerForm.getFieldValue(['downlink'])) {
-        rateLimitStr.push($t({ defaultMessage: 'Downlink - {value} Mbps' },
-          { value: drawerForm.getFieldValue(['downlink']) }))
-      }
-      return rateLimitStr.join('|')
-    case ApplicationAclType.QOS:
-      return $t({
-        // eslint-disable-next-line max-len
-        defaultMessage: 'Uplink marking: {uplinkStrategy} ({uplinkValue}) | Downlink priority: {downlinkValue}' }, {
-        uplinkStrategy: drawerForm.getFieldValue(['uplinkMarking', 'strategy']),
-        uplinkValue: drawerForm.getFieldValue(['uplinkMarking', 'value']),
-        downlinkValue: drawerForm.getFieldValue(['downlinkPriority', 'value'])
-      })
-    default:
-      return $t({ defaultMessage: 'Block all traffic' })
-  }
+  // eslint-disable-next-line max-len
+  drawerForm.setFieldValue('uplink', editRow.ruleSettings.uplink ? editRow.ruleSettings.uplink / 1000 : undefined)
+  // eslint-disable-next-line max-len
+  drawerForm.setFieldValue('downlink', editRow.ruleSettings.downlink ? editRow.ruleSettings.downlink / 1000 : undefined)
+  drawerForm.setFieldValue(['uplinkMarking', 'value'], editRow.ruleSettings.upLinkMarkingType)
+  drawerForm.setFieldValue(['downlinkMarking', 'value'], editRow.ruleSettings.downLinkMarkingType)
+  drawerForm.setFieldValue(['uplinkMarking', 'strategy'], editRow.ruleSettings.markingPriority)
 }
 
 export const transformToApplicationRule = (
@@ -89,7 +63,7 @@ export const transformToApplicationRule = (
       ruleType: rule.ruleType,
       applications: rule.applicationName,
       accessControl: rule.accessControl,
-      details: GenDetailsContent(drawerForm, rule.accessControl),
+      details: rule.accessControl,
       ruleSettings: {
         ...systemDefined,
         ...userDefined,
@@ -105,7 +79,7 @@ export const genRuleObject = (drawerForm: FormInstance) => {
     ruleType: drawerForm.getFieldValue('ruleType'),
     applications: '-',
     accessControl: drawerForm.getFieldValue('accessControl'),
-    details: GenDetailsContent(drawerForm),
+    details: drawerForm.getFieldValue('accessControl'),
     ruleSettings: {
       ruleType: drawerForm.getFieldValue('ruleType'),
       appCategory: drawerForm.getFieldValue('applicationCategory'),
@@ -116,8 +90,11 @@ export const genRuleObject = (drawerForm: FormInstance) => {
       netmask: drawerForm.getFieldValue('netmask'),
       destinationPort: drawerForm.getFieldValue('destinationPort'),
       protocol: drawerForm.getFieldValue('protocol'),
-      uplink: drawerForm.getFieldValue('uplink'),
-      downlink: drawerForm.getFieldValue('downlink')
+      uplink: drawerForm.getFieldValue('uplink') * 1000,
+      downlink: drawerForm.getFieldValue('downlink') * 1000,
+      upLinkMarkingType: drawerForm.getFieldValue(['uplinkMarking', 'value']),
+      markingPriority: drawerForm.getFieldValue(['uplinkMarking', 'strategy']),
+      downLinkMarkingType: drawerForm.getFieldValue(['downlinkMarking', 'value'])
     }
   }
 }

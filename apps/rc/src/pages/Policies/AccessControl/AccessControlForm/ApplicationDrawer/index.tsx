@@ -21,6 +21,7 @@ import {
   useGetAppPolicyQuery
 } from '@acx-ui/rc/services'
 import {
+  ApplicationAclType,
   ApplicationRuleType, AvcCategory,
   CommonResult
 } from '@acx-ui/rc/utils'
@@ -30,7 +31,11 @@ import {
   transformToApplicationRule, transformToRulesForPayload,
   updateFormWithEditRow
 } from './ApplicationDrawerUtils'
-import ApplicationRuleContent from './ApplicationRuleContent'
+import ApplicationRuleContent, {
+  appRateStrategyLabelMapping,
+  appRateTypeLabelMapping, RateStrategyEnum,
+  RateTypeEnum
+} from './ApplicationRuleContent'
 
 const { Option } = Select
 
@@ -66,7 +71,7 @@ export interface ApplicationsRule {
   }
 }
 
-const DrawerFormItem = (props: FormItemProps) => {
+export const DrawerFormItem = (props: FormItemProps) => {
   return (
     <Form.Item
       labelAlign={'left'}
@@ -82,6 +87,45 @@ const AclGridCol = ({ children }: { children: ReactNode }) => {
       {children}
     </GridCol>
   )
+}
+
+export const GenDetailsContent = (props: { editRow: ApplicationsRule }) => {
+  const { $t } = useIntl()
+  const { editRow } = props
+
+  const detailContentType = editRow.accessControl
+
+  switch (detailContentType) {
+    case ApplicationAclType.DENY:
+      return <span>{ $t({ defaultMessage: 'Block all traffic' }) }</span>
+    case ApplicationAclType.RATE_LIMIT:
+      let rateLimitStr: string[] = []
+      if (editRow.ruleSettings.uplink) {
+        rateLimitStr.push($t({ defaultMessage: 'Uplink - {value} Mbps' },
+          { value: editRow.ruleSettings.uplink / 1000 }))
+      }
+      if (editRow.ruleSettings.downlink) {
+        rateLimitStr.push($t({ defaultMessage: 'Downlink - {value} Mbps' },
+          { value: editRow.ruleSettings.downlink / 1000 }))
+      }
+      return <span>{ rateLimitStr.join('|') }</span>
+    case ApplicationAclType.QOS:
+      return <span>{ $t({
+        // eslint-disable-next-line max-len
+        defaultMessage: 'Uplink marking: {uplinkStrategy} ({uplinkValue}) | Downlink priority: {downlinkValue}' }, {
+        uplinkStrategy: editRow.ruleSettings.markingPriority ? $t(appRateStrategyLabelMapping[
+          editRow.ruleSettings.markingPriority as RateStrategyEnum
+        ]) : '',
+        uplinkValue: editRow.ruleSettings.upLinkMarkingType ? $t(appRateTypeLabelMapping[
+          editRow.ruleSettings.upLinkMarkingType as RateTypeEnum
+        ]) : '',
+        downlinkValue: editRow.ruleSettings.downLinkMarkingType ? $t(appRateStrategyLabelMapping[
+          editRow.ruleSettings.downLinkMarkingType as RateStrategyEnum
+        ]) : ''
+      }) }</span>
+    default:
+      return <span>{ $t({ defaultMessage: 'Block all traffic' }) }</span>
+  }
 }
 
 const ApplicationDrawer = (props: ApplicationDrawerProps) => {
@@ -189,7 +233,6 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     }
   }, [avcCategoryList, avcAppList])
 
-
   const isViewMode = () => {
     if (queryPolicyId === '') {
       return false
@@ -258,7 +301,10 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     {
       title: $t({ defaultMessage: 'Details' }),
       dataIndex: 'details',
-      key: 'details'
+      key: 'details',
+      render: (data, row) => {
+        return <GenDetailsContent editRow={row} />
+      }
     }
   ]
 
@@ -489,6 +535,8 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
         onClose={handleRuleDrawerClose}
         children={<ApplicationRuleContent
           avcSelectOptions={avcSelectOptions}
+          applicationsRuleList={applicationsRuleList}
+          editMode={ruleDrawerEditMode}
           drawerForm={drawerForm}
         />}
         footer={
