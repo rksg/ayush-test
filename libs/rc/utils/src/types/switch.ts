@@ -558,9 +558,9 @@ export interface AclStandardRule {
 }
 
 export interface AclExtendedRule extends AclStandardRule {
-  protocol: string
-  sourcePort: string
-  destination: string
-  destinationPort: string
-  specificDestNetwork: string
+  protocol?: string
+  sourcePort?: string
+  destination?: string
+  destinationPort?: string
+  specificDestNetwork?: string
 }

@@ -3,12 +3,10 @@ import { useEffect, useState } from 'react'
 import { Form, Input, InputNumber, Radio, RadioChangeEvent, Select } from 'antd'
 import { useIntl }                                                   from 'react-intl'
 
-import { Modal }    from '@acx-ui/components'
+import { Modal }                from '@acx-ui/components'
 import {
   AclExtendedRule,
   AclStandardRule,
-  notAllDigitsRegExp,
-  serverIpAddressRegExp,
   validateSwitchStaticRouteIp
 } from '@acx-ui/rc/utils'
 
@@ -23,22 +21,18 @@ export function ACLRuleModal (props: {
   const { Option } = Select
   const { $t } = useIntl()
   const [form] = Form.useForm()
-  const [isDirty, setDirty] = useState(false)
   const [sourceSpecific, setSourceSpecific] = useState(false)
   const [destinationSpecific, setDestinationSpecific] = useState(false)
   const [disabledField, setDisabledField] = useState(true)
 
   useEffect(()=>{
     form.resetFields()
-    setDirty(false)
+    setSourceSpecific(false)
+    setDestinationSpecific(false)
     if (props.open && props.editRecord) {
       form.setFieldsValue(props.editRecord)
     }
   }, [form, props.open, props.editRecord])
-
-  const onSequenceChange = function (value: number) {
-    new RegExp('^[0-9]*$')
-  }
 
   const onSrcSourceChange = (e: RadioChangeEvent) => {
     setSourceSpecific(e.target.value === 'specific')
@@ -58,6 +52,7 @@ export function ACLRuleModal (props: {
       maskClosable={false}
       onOk={()=>form.submit()}
       onCancel={props.onCancel}
+      destroyOnClose={true}
       title={props.editRecord ?
         $t({ defaultMessage: 'Edit Rule' }) :
         $t({ defaultMessage: 'Add Rule' })}
@@ -78,7 +73,6 @@ export function ACLRuleModal (props: {
               min={1}
               max={65000}
               style={{ width: '100%' }}
-              onChange={onSequenceChange}
               placeholder={$t({ defaultMessage: 'Between 1-65000' })}
             />
           }
@@ -95,23 +89,22 @@ export function ACLRuleModal (props: {
               {$t({ defaultMessage: 'Deny' })}
             </Radio>
           </Radio.Group>} />
-        {props.aclType === 'extended' &&
-          <Form.Item
-            name='protocol'
-            label={$t({ defaultMessage: 'protocol' })}
-            initialValue={'ip'}
-            children={
-              <Select onChange={onProtocolChange}>
-                <Option value={'ip'}>
-                  {$t({ defaultMessage: 'IP' })}</Option>
-                <Option value={'tcp'}>
-                  {$t({ defaultMessage: 'TCP' })}</Option>
-                <Option value={'udp'}>
-                  {$t({ defaultMessage: 'UDP' })}</Option>
-              </Select>
-            }
-          />
-        }
+        <Form.Item
+          name='protocol'
+          hidden={props.aclType === 'standard'}
+          label={$t({ defaultMessage: 'protocol' })}
+          initialValue={'ip'}
+          children={
+            <Select onChange={onProtocolChange}>
+              <Option value={'ip'}>
+                {$t({ defaultMessage: 'IP' })}</Option>
+              <Option value={'tcp'}>
+                {$t({ defaultMessage: 'TCP' })}</Option>
+              <Option value={'udp'}>
+                {$t({ defaultMessage: 'UDP' })}</Option>
+            </Select>
+          }
+        />
         <Form.Item
           name='source'
           label={$t({ defaultMessage: 'Source Network' })}
@@ -124,15 +117,16 @@ export function ACLRuleModal (props: {
               {$t({ defaultMessage: 'Specific Subnet' })}
             </Radio>
           </Radio.Group>} />
-        <Form.Item
+        {sourceSpecific && <Form.Item
           name='specificSrcNetwork'
-          hidden={!sourceSpecific}
+          initialValue=''
           rules={[
             { required: sourceSpecific },
-            { validator: (_, value) => validateSwitchStaticRouteIp(value) }
+            { validator: (_, value) => sourceSpecific ?
+              validateSwitchStaticRouteIp(value) : Promise.resolve() }
           ]}
           children={<Input placeholder={$t({ defaultMessage: 'e.g 1.1.1.1/24' })}/>}
-        />
+        />}
         {props.aclType === 'extended' &&
          <>
            <Form.Item
@@ -148,17 +142,19 @@ export function ACLRuleModal (props: {
                </Radio>
              </Radio.Group>}
            />
-           <Form.Item
+           {destinationSpecific && <Form.Item
              name='specificDestNetwork'
-             hidden={!destinationSpecific}
+             initialValue=''
              rules={[
                { required: destinationSpecific },
-               { validator: (_, value) => validateSwitchStaticRouteIp(value) }
+               { validator: (_, value) => destinationSpecific ?
+                 validateSwitchStaticRouteIp(value) : Promise.resolve() }
              ]}
              children={<Input placeholder={$t({ defaultMessage: 'e.g 1.1.1.1/24' })}/>}
-           />
+           />}
            <Form.Item
              name='sourcePort'
+             initialValue=''
              label={$t({ defaultMessage: 'Source Port' })}
              children={
                <InputNumber
@@ -172,6 +168,7 @@ export function ACLRuleModal (props: {
            />
            <Form.Item
              name='destinationPort'
+             initialValue=''
              label={$t({ defaultMessage: 'Destination Port' })}
              children={
                <InputNumber

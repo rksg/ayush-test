@@ -8,13 +8,14 @@ import {
   Button,
   Col,
   Row,
-  RadioChangeEvent,
-  Typography
+  RadioChangeEvent
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Drawer, Subtitle, Table, TableProps }   from '@acx-ui/components'
-import { Acl, AclExtendedRule, AclStandardRule } from '@acx-ui/rc/utils'
+import { Drawer, Table, TableProps }                           from '@acx-ui/components'
+import { Acl, AclExtendedRule, AclStandardRule, checkAclName } from '@acx-ui/rc/utils'
+
+import { defaultExtendedRuleList, defaultStandardRuleList } from '..'
 
 import { ACLRuleModal } from './ACLRuleModal'
 
@@ -34,6 +35,7 @@ export function ACLSettingDrawer (props: ACLSettingDrawerProps) {
   const [form] = Form.useForm<Acl>()
 
   const onClose = () => {
+    setAclType('standard')
     setVisible(false)
   }
 
@@ -81,30 +83,11 @@ export function ACLSettingDrawer (props: ACLSettingDrawerProps) {
 }
 
 interface ForwardingRuleFormProps {
-  form: FormInstance<Acl>;
-  rule?: Acl;
-  setRule: (r: Acl) => void;
-  aclType: string;
-  setAclType: (r: string) => void;
-}
-
-const defaultStandardRuleList = {
-  sequence: 65000,
-  action: 'permit',
-  source: 'any',
-  specificSrcNetwork: ''
-}
-
-const defaultExtendedRuleList = {
-  sequence: 65000,
-  action: 'permit',
-  source: 'any',
-  specificSrcNetwork: '',
-  protocol: 'ip',
-  sourcePort: '',
-  destination: 'any',
-  destinationPort: '',
-  specificDestNetwork: ''
+  form: FormInstance<Acl>
+  rule?: Acl
+  setRule: (r: Acl) => void
+  aclType: string
+  setAclType: (r: string) => void
 }
 
 function ForwardingRuleForm (props: ForwardingRuleFormProps) {
@@ -114,10 +97,13 @@ function ForwardingRuleForm (props: ForwardingRuleFormProps) {
   const [ruleList, setRuleList] = useState<
     AclStandardRule[] | AclExtendedRule[]
   >([defaultStandardRuleList])
-  const { form, rule = {}, setRule, aclType, setAclType } = props
+  const { form, rule, setRule, aclType, setAclType } = props
 
   useEffect(() => {
-    form.setFieldsValue(rule)
+    if(rule){
+      form.setFieldsValue(rule)
+      setRuleList(rule.aclRules as AclStandardRule[] | AclExtendedRule[])
+    }
   }, [form, rule])
 
   const columns: TableProps<AclStandardRule | AclExtendedRule>['columns'] = [
@@ -201,37 +187,43 @@ function ForwardingRuleForm (props: ForwardingRuleFormProps) {
     }
   ]
 
-  const onSaveRule = (values: AclStandardRule | AclExtendedRule) => {
+  const onSaveRule = (values: AclExtendedRule) => {
     const newList = ruleList || []
     if (values.source === 'specific') {
       values.source = values.specificSrcNetwork
+      values.specificSrcNetwork = ''
+    }
+    if (values.destination === 'specific') {
+      values.destination = values.specificDestNetwork
+      values.specificDestNetwork = ''
     }
     if (!selected) {
       // Add
       setRuleList([...ruleList, values])
+      form.setFieldValue('aclRules', [...ruleList, values])
     } else {
       // edit
-      setRuleList(
-        newList.map((option) => {
-          if (selected.sequence === option.sequence) {
-            return { ...selected, ...values }
-          }
-          return option
-        })
-      )
+      const editedRecord = newList.map((option) => {
+        if (selected.sequence === option.sequence) {
+          return { ...selected, ...values }
+        }
+        return option
+      })
+      setRuleList(editedRecord)
+      form.setFieldValue('aclRules', editedRecord)
     }
     setSelected(undefined)
     setOpenModal(false)
   }
 
   const onAclTypeChange = (e: RadioChangeEvent) => {
-    console.log(e.target.value)
     if (e.target.value === 'standard') {
       setRuleList([defaultStandardRuleList])
     } else {
       setRuleList([defaultExtendedRuleList])
     }
     setAclType(e.target.value)
+    form.validateFields()
   }
 
   return (
@@ -244,11 +236,15 @@ function ForwardingRuleForm (props: ForwardingRuleFormProps) {
           form.resetFields()
         }}
       >
-        <Form.Item name='id' noStyle children={<Input type='hidden' />} />
+        <Form.Item name='id' initialValue='' noStyle children={<Input type='hidden' />} />
+        <Form.Item name='aclRules' initialValue={[defaultStandardRuleList]} noStyle/>
         <Form.Item
           label={$t({ defaultMessage: 'ACL Name' })}
           name='name'
-          rules={[{ required: true }]}
+          rules={[
+            { required: true },
+            { validator: (_, value) => checkAclName(value, form.getFieldValue('aclType')) }
+          ]}
           children={<Input style={{ width: '400px' }} />}
         />
         <Form.Item
@@ -275,6 +271,7 @@ function ForwardingRuleForm (props: ForwardingRuleFormProps) {
           <Button
             type='link'
             onClick={() => {
+              setAclType('standard')
               setSelected(undefined)
               setOpenModal(true)
             }}

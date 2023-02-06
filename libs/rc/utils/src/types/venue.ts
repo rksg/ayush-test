@@ -319,6 +319,10 @@ export interface AclRule {
 	sequence: number
 	action: 'permit' | 'deny',
 	protocol: 'ip' | 'tcp' | 'udp'
+	specificSrcNetwork?: string
+	specificDestNetwork?: string
+	sourcePort?: string | null
+	destinationPort?: string | null
 }
 
 export interface Acl {
