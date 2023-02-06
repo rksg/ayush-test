@@ -202,7 +202,7 @@ export function RadioSettings () {
 
     if (apList) {
       apList({ params: { tenantId }, payload }, true).unwrap().then((res)=>{
-        const { data } = res
+        const { data } = res || {}
         if (data) {
           const findAp = data.some((ap: APExtended) => ap.venueId === venueId)
           setHasTriBandAps(findAp)

@@ -1,16 +1,19 @@
 import { CallbackDataParams } from 'echarts/types/dist/shared'
 import { useIntl }            from 'react-intl'
 
+import { ClientHealth }                                                 from '@acx-ui/analytics/components'
+import { AnalyticsFilter }                                              from '@acx-ui/analytics/utils'
 import { BarChart, cssStr, cssNumber, Loader, Card, GridRow, Subtitle } from '@acx-ui/components'
 import { Client, ClientStatistic }                                      from '@acx-ui/rc/utils'
 import { convertEpochToRelativeTime, formatter }                        from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
-export function ClientOverviewWidget ({ clientStatistic, clientStatus, clientDetails }: {
+export function ClientOverviewWidget ({ clientStatistic, clientStatus, clientDetails, filters }: {
   clientStatistic: ClientStatistic | undefined,
   clientStatus: string,
-  clientDetails: Client
+  clientDetails: Client,
+  filters: AnalyticsFilter
 }) {
   const { $t } = useIntl()
 
@@ -97,10 +100,12 @@ export function ClientOverviewWidget ({ clientStatistic, clientStatus, clientDet
           }</Subtitle>
         </UI.GridCol>
         <UI.GridCol col={{ span: 5 }}>
-          {getUserTrafficChart(clientStatistic as ClientStatistic)}
+          <UI.BarChartContainer>
+            {getUserTrafficChart(clientStatistic as ClientStatistic)}
+          </UI.BarChartContainer>
         </UI.GridCol>
         <UI.GridCol col={{ span: 5 }}>
-          {/* TODO: health chart of connected time */}
+          <ClientHealth filter={filters} clientMac={clientDetails.clientMac} />
         </UI.GridCol>
       </GridRow>
     </Loader>
@@ -141,7 +146,8 @@ function getUserTrafficChart (data: ClientStatistic) {
   ]
 
   return <BarChart
-    style={{ height: 160 }}
+    style={{ height: 90 }}
+    grid={{ height: 70 }}
     data={{
       dimensions: ['ChannelType', 'UserTraffic', 'Unit'],
       source: [
