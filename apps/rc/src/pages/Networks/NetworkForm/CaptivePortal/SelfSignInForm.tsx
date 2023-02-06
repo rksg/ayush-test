@@ -18,13 +18,14 @@ import {
   QuestionMarkCircleOutlined
 } from '@acx-ui/icons'
 import {
-  domainsNameRegExp,
+  domainsNameRegExp, NetworkSaveData,
   GuestNetworkTypeEnum, NetworkTypeEnum
 } from '@acx-ui/rc/utils'
 
-import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
-import NetworkFormContext from '../NetworkFormContext'
-import * as UI            from '../styledComponents'
+import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
+import NetworkFormContext          from '../NetworkFormContext'
+import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
+import * as UI                     from '../styledComponents'
 
 import { DhcpCheckbox }     from './DhcpCheckbox'
 import FacebookSetting      from './FacebookSetting'
@@ -258,7 +259,7 @@ export function SelfSignInForm () {
                     form.setFieldValue(['guestPortal', 'socialDomains'], allowedDomainsValue)
                   } else {
                     setAllowedDomainsValue(socialDomains)
-                    form.setFieldValue(['guestPortal', 'socialDomains'], '')
+                    form.setFieldValue(['guestPortal', 'socialDomains'], [])
                   }
                 }}>
                 {$t({ defaultMessage: 'Allowed Domains' })}
@@ -336,6 +337,7 @@ export function SelfSignInForm () {
           </Space>
         </Form.Item>}
         <DhcpCheckbox />
+        {!(editMode) && <NetworkMoreSettingsForm wlanData={data as NetworkSaveData} />}
       </GridCol>
       <GridCol col={{ span: 12 }}>
         <NetworkDiagram type={NetworkTypeEnum.CAPTIVEPORTAL}
