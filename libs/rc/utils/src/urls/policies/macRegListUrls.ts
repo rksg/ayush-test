@@ -48,9 +48,5 @@ export const MacRegListUrlsInfo: { [key: string]: ApiInfo } = {
   addMacRegistration: {
     method: 'post',
     url: macRegApiBaseUrl + '/:policyId/registrations'
-  },
-  uploadMacRegistration: {
-    method: 'post',
-    url: macRegApiBaseUrl + '/:policyId/registrations/upload'
   }
 }
