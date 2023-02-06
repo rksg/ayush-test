@@ -4,11 +4,11 @@ import _                          from 'lodash'
 import { useIntl, defineMessage } from 'react-intl'
 import { useNavigate }            from 'react-router-dom'
 
-import { useGetUserProfileQuery }              from '@acx-ui/rc/services'
 import { noDataSymbol, sortProp, defaultSort }        from '@acx-ui/analytics/utils'
 import { Loader, TableProps, Table, showActionModal } from '@acx-ui/components'
-import { TenantLink, useTenantLink, useParams }                  from '@acx-ui/react-router-dom'
-import { convertDateTimeToSqlFormat, formatter }                                  from '@acx-ui/utils'
+import { useGetUserProfileQuery }                     from '@acx-ui/rc/services'
+import { TenantLink, useTenantLink, useParams }       from '@acx-ui/react-router-dom'
+import { convertDateTimeToSqlFormat, formatter }      from '@acx-ui/utils'
 
 import { ServiceGuardSpec, useNetworkHealthDeleteMutation, useNetworkHealthQuery } from './services'
 
@@ -58,7 +58,7 @@ export function NetworkHealthTable () {
             entityValue: name
           },
           onOk: async () => {
-            await deleteMutation({params: {id}})
+            await deleteMutation({ params: { id } })
           }
         })
       }
@@ -72,7 +72,7 @@ export function NetworkHealthTable () {
       dataIndex: 'name',
       sorter: { compare: sortProp('name', defaultSort) },
       searchable: true,
-      render: (value, row) => 
+      render: (value, row) =>
         <TenantLink
           to={`/serviceValidation/networkHealth/${row.id}/tests/${row?.tests.items[0].id}`}
         >
