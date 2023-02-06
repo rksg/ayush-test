@@ -38,6 +38,9 @@ import {
   ClientIsolationListUsageByVenue, VenueUsageByClientIsolation
 } from '@acx-ui/rc/utils'
 
+const RKS_NEW_UI = {
+  'x-rks-new-ui': true
+}
 
 export const basePolicyApi = createApi({
   baseQuery: fetchBaseQuery(),
@@ -471,21 +474,23 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     // eslint-disable-next-line max-len
     getClientIsolationUsageByVenue: build.query<TableResult<ClientIsolationListUsageByVenue>, RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, payload }) => {
         // eslint-disable-next-line max-len
         const req = createHttpRequest(ClientIsolationUrls.getClientIsolationListUsageByVenue, params)
         return {
-          ...req
+          ...req,
+          body: payload
         }
       }
     }),
     // eslint-disable-next-line max-len
     getVenueUsageByClientIsolation: build.query<TableResult<VenueUsageByClientIsolation>, RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, payload }) => {
         // eslint-disable-next-line max-len
         const req = createHttpRequest(ClientIsolationUrls.getVenueUsageByClientIsolation, params)
         return {
-          ...req
+          ...req,
+          body: payload
         }
       }
     }),
