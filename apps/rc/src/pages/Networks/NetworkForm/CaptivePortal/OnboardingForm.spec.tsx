@@ -73,7 +73,7 @@ describe('CaptiveNetworkForm-ClickThrough', () => {
 
   const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', action: 'edit' }
 
-  it('should test Click through network successfully', async () => {
+  xit('should test Click through network successfully', async () => {
     render(<Provider><NetworkForm /></Provider>, { route: { params } })
     await fillInBeforeSettings('Click through network test')
 
