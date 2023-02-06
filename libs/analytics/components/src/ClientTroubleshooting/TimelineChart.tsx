@@ -18,7 +18,8 @@ import {
   SeriesOption,
   CustomSeriesRenderItemAPI,
   CustomSeriesRenderItemParams,
-  TooltipComponentOption
+  TooltipComponentOption,
+  connect
 } from 'echarts'
 import ReactECharts        from 'echarts-for-react'
 import {
@@ -69,6 +70,7 @@ export interface TimelineChartProps extends Omit<EChartsReactProps, 'option' | '
   chartBoundary: number[];
   selectedData?: number;
   onDotClick?: (params: unknown) => void;
+  sharedChartName: string;
   chartRef?: RefCallback<ReactECharts>;
   hasXaxisLabel?: boolean;
   tooltipFormatter: CallableFunction;
@@ -205,7 +207,6 @@ export const renderCustomItem = (
 export const useDataZoom = (
   eChartsRef: RefObject<ReactECharts>,
   zoomEnabled: boolean,
-  setZoomLevel: ({ start, end }: { start: number, end: number }) => void,
   onDataZoom?: (range: TimeStampRange, isReset: boolean) => void
 ): [boolean, () => void] => {
   const [canResetZoom, setCanResetZoom] = useState<boolean>(false)
@@ -219,11 +220,9 @@ export const useDataZoom = (
         setCanResetZoom(false)
       } else {
         setCanResetZoom(true)
-        const { start, end } = event
-        setZoomLevel({ start: start ?? 0, end: end ?? 100 })
       }
     },
-    [onDataZoom, setZoomLevel]
+    [onDataZoom]
   )
   useEffect(() => {
     if (!eChartsRef?.current || !zoomEnabled) return
@@ -273,6 +272,7 @@ export function TimelineChart ({
   hasXaxisLabel,
   showResetZoom,
   index,
+  sharedChartName,
   ...props
 }: TimelineChartProps) {
   const { $t } = useIntl()
@@ -284,13 +284,7 @@ export function TimelineChart ({
   const xAxisHeight = hasXaxisLabel ? 30 : 0
 
   const eChartsRef = useRef<ReactECharts>(null)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [zoomLevel, setZoomLevel] = useState<{ start: number, end: number }>(() => ({
-    start: 0,
-    end: 100
-  }))
-
-  const [canResetZoom, resetZoomCallback] = useDataZoom(eChartsRef, true, setZoomLevel)
+  const [canResetZoom, resetZoomCallback] = useDataZoom(eChartsRef, true)
 
   // use selected event on dot click to show popover
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -344,6 +338,7 @@ export function TimelineChart ({
       axisPointer: {
         axis: 'x',
         status: seriesData.length > 0 ? 'show' : 'hide',
+        show: seriesData.length > 0,
         snap: false,
         animation: false,
         lineStyle: {
@@ -389,7 +384,7 @@ export function TimelineChart ({
         lineStyle: { color: cssStr('--acx-neutrals-20') }
       },
       axisPointer: {
-        show: true,
+        show: seriesData.length > 0,
         snap: false,
         triggerTooltip: false,
         label: {
@@ -461,8 +456,9 @@ export function TimelineChart ({
     if (eChartsRef && eChartsRef.current) {
       const instance = eChartsRef.current.getEchartsInstance()
       instance.setOption(option)
+      connect(sharedChartName)
     }
-  }, [option])
+  }, [option, sharedChartName])
 
   return (
     <>
@@ -480,6 +476,7 @@ export function TimelineChart ({
         ref={eChartsRef}
         option={option}
         key={index}
+        onChartReady={eChartsRef as unknown as (instance: unknown) => void}
       />
       {canResetZoom && showResetZoom && (
         <ResetButton

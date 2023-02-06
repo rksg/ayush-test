@@ -105,16 +105,17 @@ export function TimeLine (props: TimeLineProps) {
   const roamingEventsTimeSeries = connectionDetailsByApChartData(
     data?.connectionDetailsByAp as RoamingByAP[]
   ) as unknown as RoamingTimeSeriesData[]
+  const sharedChartName = 'eventTimeSeriesGroup'
   const connectChart = (chart: ReactECharts | null) => {
     if (chart) {
       const instance = chart.getEchartsInstance()
-      instance.group = 'eventTimeSeriesGroup'
+      instance.group = sharedChartName
     }
   }
-
   useEffect(() => {
-    connect('eventTimeSeriesGroup')
+    connect(sharedChartName)
   }, [])
+
   const { startDate, endDate } = useDateFilter()
   const chartBoundary = [moment(startDate).valueOf(), moment(endDate).valueOf()]
   const roamingTooltipCallback =
@@ -228,6 +229,7 @@ export function TimeLine (props: TimeLineProps) {
                 hasXaxisLabel={config?.hasXaxisLabel}
                 chartRef={connectChart}
                 tooltipFormatter={useLabelFormatter}
+                sharedChartName={sharedChartName}
                 // caputuring scatterplot dot click to open popover
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 // onDotClick={(params) => {}}`
