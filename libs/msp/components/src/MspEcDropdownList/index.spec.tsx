@@ -73,6 +73,13 @@ const list = {
   ]
 }
 
+const tenantId = '3061bd56e37445a8993ac834c01e2710'
+
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  TenantIdFromJwt: () => ({ tenantId })
+}))
+
 describe('MspEcDropdownList', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
@@ -91,7 +98,7 @@ describe('MspEcDropdownList', () => {
       )
     )
     params = {
-      tenantId: '2242a683a7594d7896385cfef1fe4442'
+      tenantId: '3061bd56e37445a8993ac834c01e2710'
     }
   })
   it('should render table', async () => {
