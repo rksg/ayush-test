@@ -505,7 +505,7 @@ describe('RcRoutes: Policies', () => {
 
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path,
+        path: '/t/tenantId/' + path,
         wrapRoutes: false
       }
     })
