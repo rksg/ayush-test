@@ -5,3 +5,9 @@ export function useGetNetwork () {
   const { tenantId, networkId } = useParams()
   return useGetNetworkQuery({ params: { tenantId, networkId } })
 }
+
+export function getSSIDFilter () {
+  const network = useGetNetwork()
+  const ssid  = network.data?.wlan?.ssid
+  return ssid ? [ssid] : []
+}

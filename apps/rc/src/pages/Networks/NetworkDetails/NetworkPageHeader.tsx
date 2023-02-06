@@ -5,22 +5,15 @@ import moment      from 'moment'
 import { Button, DisabledButton, PageHeader, RangePicker } from '@acx-ui/components'
 import { ArrowExpand, ClockOutlined }         from '@acx-ui/icons'
 import { TenantLink, useParams }              from '@acx-ui/react-router-dom'
-import {
-  dateRangeForLast,
-  useDateFilter,
-  useEncodedParameter
-} from '@acx-ui/utils'
+import { dateRangeForLast, useDateFilter } from '@acx-ui/utils'
 import NetworkTabs       from './NetworkTabs'
 import { useGetNetwork } from './services'
 
 function NetworkPageHeader () {
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
-  const { write, read } = useEncodedParameter('ssid', true)
   const network = useGetNetwork()
   const { networkId } = useParams()
   const { $t } = useIntl()
-  const ssid  = network.data?.wlan?.ssid
-  if (ssid && ssid !== read()) write(ssid)
   return (
     <PageHeader
       title={network.data?.name || ''}
