@@ -373,6 +373,12 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
   if (!Number.isInteger(get(data, 'wlan.advancedCustomization.userDownlinkRateLimiting'))) {
     advancedCustomization.userDownlinkRateLimiting = 0
   }
+  if (get(data, 'wlan.advancedCustomization.vlanPool.vlanMembers')) {
+    // eslint-disable-next-line max-len
+    advancedCustomization.vlanPool!.vlanMembers =
+    (advancedCustomization.vlanPool?.vlanMembers as unknown as string).split(',')
+  }
+
 
   let saveData:NetworkSaveData = {
     ...originalData,
