@@ -54,6 +54,7 @@ import {
   transferDetailToSave,
   tranferSettingsToSave,
   transferMoreSettingsToSave,
+  transferVenuesToSave,
   updateClientIsolationAllowlist
 } from './parser'
 import PortalInstance from './PortalInstance'
@@ -404,7 +405,8 @@ export default function NetworkForm () {
             name='venues'
             title={intl.$t({ defaultMessage: 'Venues' })}
             onFinish={async (data) => {
-              updateSaveData(data)
+              const settingSaveData = transferVenuesToSave(data, saveState)
+              updateSaveData(settingSaveData)
               return true
             }}
           >

@@ -1,8 +1,8 @@
 import { useIntl } from 'react-intl'
 
-import { PageHeader }                            from '@acx-ui/components'
-import { Tabs }                                  from '@acx-ui/components'
+import { Tabs, PageHeader }                      from '@acx-ui/components'
 import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
+import { useUserProfileContext }                 from '@acx-ui/rc/components'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import AccountSettings from './AccountSettings'
@@ -12,11 +12,12 @@ import Notifications   from './Notifications'
 import Subscriptions   from './Subscriptions'
 
 
-const AdministrationTabs = () => {
+const AdministrationTabs = ({ hasAdministratorTab }: { hasAdministratorTab: boolean }) => {
   const { $t } = useIntl()
   const { activeTab } = useParams()
   const basePath = useTenantLink('/administration')
   const navigate = useNavigate()
+
 
   const onTabChange = (tab: string) => {
     navigate({
@@ -32,7 +33,9 @@ const AdministrationTabs = () => {
       onChange={onTabChange}
     >
       <Tabs.TabPane tab={$t({ defaultMessage: 'Account Settings' })} key='accountSettings' />
-      <Tabs.TabPane tab={$t({ defaultMessage: 'Administrators' })} key='administrators' />
+      { hasAdministratorTab &&
+      ( <Tabs.TabPane tab={$t({ defaultMessage: 'Administrators' })} key='administrators' /> )
+      }
       <Tabs.TabPane tab={$t({ defaultMessage: 'Notifications' })} key='notifications' />
       <Tabs.TabPane tab={$t({ defaultMessage: 'Subscriptions' })} key='subscriptions' />
       <Tabs.TabPane
@@ -53,11 +56,24 @@ const tabPanes = {
 
 export default function Administration () {
   const { $t } = useIntl()
-  const { activeTab } = useParams()
+  const { tenantId, activeTab } = useParams()
   const isEnable = useIsSplitOn(Features.UNRELEASED)
+  const { data: userProfileData } = useUserProfileContext()
 
   if (!isEnable) {
     return <span>{ $t({ defaultMessage: 'Administration is not enabled' }) }</span>
+  }
+
+  // support dashboard - his own account
+  let isSupport: boolean = false
+  if (userProfileData?.dogfood) {
+    // eslint-disable-next-line max-len
+    isSupport = userProfileData?.varTenantId !== undefined && userProfileData?.varTenantId === tenantId
+  }
+
+  const hasAdministratorTab = !userProfileData?.delegatedDogfood && !isSupport
+  if (hasAdministratorTab === false && activeTab === 'administrators') {
+    return <span>{ $t({ defaultMessage: 'Administrators is not allowed to access.' }) }</span>
   }
 
   const ActiveTabPane = tabPanes[activeTab as keyof typeof tabPanes]
@@ -68,7 +84,7 @@ export default function Administration () {
       breadcrumb={[
         { text: $t({ defaultMessage: 'Administration' }), link: '/administration' }
       ]}
-      footer={<AdministrationTabs />}
+      footer={<AdministrationTabs hasAdministratorTab={hasAdministratorTab} />}
     />
     { ActiveTabPane && <ActiveTabPane /> }
   </>
