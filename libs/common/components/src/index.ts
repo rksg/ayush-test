@@ -41,6 +41,7 @@ export * from './components/StepsForm'
 export {
   StepsForm as StepsFormNew,
   useStepFormContext,
+  createStepsFormContext,
   useWatch
 } from './components/StepsFormNew'
 export type {

@@ -210,12 +210,12 @@ function useStepsFormNew <T> ({
 
   const formLayout = steps.length > 1
     ? <>
-      <Col span={4}>{stepsEls}</Col>
-      <Col span={20}>{currentStepEl}</Col>
+      <Col span={4} data-testid='steps-form-steps'>{stepsEls}</Col>
+      <Col span={20} data-testid='steps-form-body'>{currentStepEl}</Col>
     </>
-    : <Col span={24}>{currentStepEl}</Col>
+    : <Col span={24} data-testid='steps-form-body'>{currentStepEl}</Col>
 
-  const stepsFormEl = <UI.Wrapper>
+  const stepsFormEl = <UI.Wrapper data-testid='steps-form'>
     <Form {...newConfig.formProps}>
       <Row>{formLayout}</Row>
       {buttonEls}
