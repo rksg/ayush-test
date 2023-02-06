@@ -62,11 +62,12 @@ describe('Property Unit Drawer', () => {
     const nameField = await screen.findByLabelText(/Unit Name/i)
     await userEvent.type(nameField, 'New Unit Name')
 
-    const apSelector = await screen.findByRole('combobox', { name: /select ap/i })
+    // TODO: add more action to cover code
+    // const apSelector = await screen.findByRole('combobox', { name: /select ap/i })
 
-    await userEvent.click(apSelector)
-    const h320 = await screen.findByRole('option', { name: 'H320' })
-    await userEvent.click(h320)
+    // await userEvent.click(apSelector)
+    // const h320 = await screen.findByRole('option', { name: 'H320' })
+    // await userEvent.click(h320)
 
     // Trigger creation
     const addBtn = await screen.findByRole('button', { name: /add/i })

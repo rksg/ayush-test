@@ -5,11 +5,11 @@ import { useWatch }                                                  from 'antd/
 import _                                                             from 'lodash'
 import { useIntl }                                                   from 'react-intl'
 
-import { Button, Drawer, showToast, StepsForm }                                  from '@acx-ui/components'
-import { useAddPropertyUnitMutation, useGetVenueLanPortsQuery }                  from '@acx-ui/rc/services'
-import { PropertyDpskType, PropertyUnit, PropertyUnitFormFields, VenueLanPorts } from '@acx-ui/rc/utils'
-import { useParams }                                                             from '@acx-ui/react-router-dom'
-import { validationMessages }                                                    from '@acx-ui/utils'
+import { Button, Drawer, showToast, StepsForm }                                              from '@acx-ui/components'
+import { useAddPropertyUnitMutation, useApListQuery, useGetVenueLanPortsQuery }              from '@acx-ui/rc/services'
+import { APExtended, PropertyDpskType, PropertyUnit, PropertyUnitFormFields, VenueLanPorts } from '@acx-ui/rc/utils'
+import { useParams }                                                                         from '@acx-ui/react-router-dom'
+import { validationMessages }                                                                from '@acx-ui/utils'
 
 interface PropertyUnitDrawerProps {
   isEdit: boolean,
@@ -27,10 +27,8 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
   const enableGuestVlan = useWatch('enableGuestVlan', form)
 
   const venueLanPorts = useGetVenueLanPortsQuery({ params: { tenantId, venueId } })
-  const apModelsOptions = venueLanPorts?.data?.map(m => ({ label: m.model, value: m.model })) ?? []
   const [selectedModel, setSelectedModel] = useState({} as VenueLanPorts)
-
-  console.log('apModelsOptions :: ', apModelsOptions)
+  const accessAp = Form.useWatch<string>('accessAp', form)
 
   const [changeVlanField, setChangeVlanField] = useState(false)
   const [changeGuestVlanField, setChangeGuestVlanField] = useState(false)
@@ -97,10 +95,12 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
 
   const handleEditUnit = async (data: PropertyUnit) => {
     console.log('Handle edit unit action with data :: ', data)
+    // TODO: two steps to update Unit
   }
 
   const handleAddUnit = async (data: PropertyUnit) => {
     console.log('Handle add unit action with data :: ', data)
+    // TODO: if withNsg is true, I need to format the Access ap data.
     return await addUnitMutation({ params: { venueId }, payload: data }).unwrap()
   }
 
@@ -122,12 +122,38 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
     }
   }
 
-  const onSelectApChange = (selectAp: string) => {
-    console.log('Select AP = ', selectAp)
-    const selected = venueLanPorts?.data?.find(lan => lan.model === selectAp) ?? {} as VenueLanPorts
-
-    setSelectedModel(selected)
+  const onSelectApChange = (serialNumber: string) => {
+    const selectedAp = apOptions?.find(ap => ap.value === serialNumber)
+    const lanPort = venueLanPorts?.data
+      ?.find(lan => lan.model === selectedAp?.model) ?? {} as VenueLanPorts
+    setSelectedModel(lanPort)
   }
+
+  const apListQueryDefaultPayload = {
+    fields: ['name', 'serialNumber', 'model', 'apMac'],
+    pageSize: 10000,
+    page: 1,
+    sortField: 'name',
+    sortOrder: 'ASC'
+  }
+
+  const { apOptions } = useApListQuery({
+    params: useParams(),
+    payload: {
+      ...apListQueryDefaultPayload,
+      filters: { venueId: venueId ? [venueId] : [] }
+    }
+  }, {
+    selectFromResult ({ data }) {
+      return {
+        apOptions: data?.data.map((ap: APExtended) => ({
+          value: ap.serialNumber,
+          label: ap.name,
+          model: ap.model
+        }))
+      }
+    }
+  })
 
   const withNsgForm = <>
     <Form.Item
@@ -136,33 +162,40 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
       children={<Input readOnly bordered={false}/>}
     />
     <Form.Item
-      name={['personaSettings', 'accessPoint', 'name']}
       label={$t({ defaultMessage: 'Select AP' })}
-      children={<Select
-        options={apModelsOptions}
-        onChange={onSelectApChange}
-      />}
+      name={'accessAp'}
+      children={
+        <Select
+          allowClear={false}
+          placeholder={$t({ defaultMessage: 'Select...' })}
+          options={apOptions}
+          onChange={onSelectApChange}
+        />}
     />
-    {selectedModel.lanPorts &&
+    {accessAp &&
       <Form.Item
-        name={['personaSettings', 'accessPoint', 'lanPorts']}
-        label={$t({ defaultMessage: 'Select LAN Ports for ' })}
+        label={$t(
+          { defaultMessage: 'Select LAN Ports for ({model})' },
+          { model: selectedModel?.model ?? 'null' }
+        )}
       >
-        <Checkbox.Group>
-          <Space direction={'vertical'}>
-            {
-              selectedModel?.lanPorts.map((port, index) =>
-                <Checkbox
-                  key={index}
-                  value={port.portId ?? index}
-                  disabled={port.type === 'TRUNK'}
-                >
-                  {`LAN${port.portId}`}
-                </Checkbox>
-              )
-            }
-          </Space>
-        </Checkbox.Group>
+        {selectedModel.lanPorts &&
+          <Checkbox.Group>
+            <Space direction={'vertical'}>
+              {
+                selectedModel?.lanPorts.map((port, index) =>
+                  <Checkbox
+                    key={index}
+                    value={port.portId ?? index}
+                    disabled={port.type === 'TRUNK'}
+                  >
+                    {`LAN${port.portId}`}
+                  </Checkbox>
+                )
+              }
+            </Space>
+          </Checkbox.Group>
+        }
       </Form.Item>
     }
   </>
@@ -180,8 +213,9 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
               min: 1,
               max: 4094,
               message: $t(validationMessages.vlanRange)
-            },
-            { validator: () => changeVlanField ? Promise.reject('not ready') : Promise.resolve() }
+            }
+            // TODO: Add validator to make sure user have saving their change.
+            // { validator: () => changeVlanField }
           ]}>
           {changeVlanField
             ? <InputNumber min={1} max={4094} />
@@ -244,11 +278,9 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
           min: 1,
           max: 4094,
           message: $t(validationMessages.vlanRange)
-        },
-        // FIXME: check this validator work or not
-        { validator: () => changeGuestVlanField
-          ? Promise.reject('not ok')
-          : Promise.resolve() }
+        }
+        // TODO: Add validator to make sure user have saving their change.
+        // { validator: () => changeGuestVlanField }
       ]}>
       {changeGuestVlanField
         ? <InputNumber min={1} max={4094} />
