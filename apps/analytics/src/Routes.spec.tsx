@@ -3,6 +3,18 @@ import { render, screen } from '@acx-ui/test-utils'
 
 import AnalyticsRoutes from './Routes'
 
+jest.mock('./pages/NetworkHealth/NetworkHealthForm/NetworkHealthSpecGuard', () => ({
+  NetworkHealthSpecGuard: (props: React.PropsWithChildren) => <div
+    data-testid='NetworkHealthSpecGuard'
+    children={props.children}
+  />
+}))
+
+jest.mock('./pages/NetworkHealth/NetworkHealthForm', () => ({
+  default: () => <div data-testid='NetworkHealthForm' />,
+  __esModule: true
+}))
+
 jest.mock('./pages/NetworkHealth/NetworkHealthDetails',() => ({
   default: () => <div data-testid='NetworkHealthDetails'/>,
   __esModule: true
@@ -57,6 +69,26 @@ test('should navigate to serviceValidation/networkHealth', async () => {
     }
   })
   expect(screen.getByTestId('NetworkHealthPage')).toBeVisible()
+})
+
+test('should navigate to Netework Health add page', async () => {
+  render(<Provider><AnalyticsRoutes /></Provider>, {
+    route: {
+      path: '/t/tenantId/serviceValidation/networkHealth/add',
+      wrapRoutes: false
+    }
+  })
+  expect(screen.getByTestId('NetworkHealthForm')).toBeVisible()
+})
+
+test('should navigate to Netework Health edit page', async () => {
+  render(<Provider><AnalyticsRoutes /></Provider>, {
+    route: {
+      path: '/t/tenantId/serviceValidation/networkHealth/specId/edit',
+      wrapRoutes: false
+    }
+  })
+  expect(screen.getByTestId('NetworkHealthForm')).toBeVisible()
 })
 
 test('should navigate to analytics/recommendations', () => {
