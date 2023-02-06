@@ -57,7 +57,6 @@ const ApplicationRuleContent = (props: ApplicationRuleDrawerProps) => {
   const { avcSelectOptions, applicationsRuleList, editMode, drawerForm } = props
   const [category, setCategory] = useState('')
   const [sourceValue, setSourceValue] = useState(drawerForm.getFieldValue('accessControl'))
-  console.log(drawerForm.getFieldValue('uplink'))
   const [maxUplinkRate, setMaxUplinkRate] = useState({
     status: drawerForm.getFieldValue('uplink') > 0,
     value: drawerForm.getFieldValue('uplink')

@@ -5,10 +5,6 @@ import { CheckboxChangeEvent }    from 'antd/lib/checkbox'
 import { useIntl }                from 'react-intl'
 import styled                     from 'styled-components/macro'
 
-import {
-  GridRow
-} from '@acx-ui/components'
-
 const { useWatch } = Form
 
 export const Label = styled.span`
