@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
 
-import { Form, Select, Input } from 'antd'
-import { get }                 from 'lodash'
-import { useIntl }             from 'react-intl'
-import { useParams }           from 'react-router-dom'
+import { Form, Select, Input, Space } from 'antd'
+import { get }                        from 'lodash'
+import { useIntl }                    from 'react-intl'
+import { useParams }                  from 'react-router-dom'
 
+import { Tooltip }                         from '@acx-ui/components'
 import { useGetAAAPolicyListQuery }        from '@acx-ui/rc/services'
 import { AaaServerOrderEnum, AAATempType } from '@acx-ui/rc/utils'
 
@@ -32,32 +33,36 @@ const AAAInstance = (props:{
   },[data])
   return (
     <>
-      <Form.Item
-        name={props.type+'PolicyProfileId'}
-        label={props.serverLabel}
-        rules={[
-          { required: true }
-        ]}
-        children={<Select
-          style={{ width: 210 }}
-          onChange={(value)=>{
-            form.setFieldValue(props.type,
-              aaaData?.filter(d => d.id === value)[0])
-          }}
-          options={[
-            ...aaaList
+      <Form.Item label={props.serverLabel}><Space>
+        <Form.Item
+          name={props.type+'PolicyProfileId'}
+          noStyle
+          rules={[
+            { required: true }
           ]}
-        />}
-      />
-      <AAAPolicyModal updateInstance={(data)=>{
-        aaaList.push({
-          label: data.name, value: data.id })
-        setAaaList([...aaaList])
-        aaaData.push({ ...data })
-        setAaaData([...aaaData])
-        form.setFieldValue(props.type+'PolicyProfileId', data.id)
-        form.setFieldValue(props.type, data)
-      }}/>
+          children={<Select
+            style={{ width: 210 }}
+            onChange={(value)=>{
+              form.setFieldValue(props.type,
+                aaaData?.filter(d => d.id === value)[0])
+            }}
+            options={[
+              ...aaaList
+            ]}
+          />}
+        />
+        <Tooltip>
+          <AAAPolicyModal updateInstance={(data)=>{
+            aaaList.push({
+              label: data.name, value: data.id })
+            setAaaList([...aaaList])
+            aaaData.push({ ...data })
+            setAaaData([...aaaData])
+            form.setFieldValue(props.type+'PolicyProfileId', data.id)
+            form.setFieldValue(props.type, data)
+          }}/>
+        </Tooltip></Space>
+      </Form.Item>
       <div style={{ marginTop: 6, backgroundColor: 'var(--acx-neutrals-20)',
         width: 210, paddingLeft: 5 }}>
         {radiusValue?.[AaaServerOrderEnum.PRIMARY]&&<>
