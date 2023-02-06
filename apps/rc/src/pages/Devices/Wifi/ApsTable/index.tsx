@@ -56,7 +56,7 @@ export default function ApsTable () {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'WiFi' })}
+        title={$t({ defaultMessage: 'Wi-Fi' })}
         extra={[
           <Dropdown overlay={addMenu} key='addMenu'>{() =>
             <Button type='primary'>{ $t({ defaultMessage: 'Add' }) }</Button>

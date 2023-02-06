@@ -97,8 +97,8 @@ export const serviceApi = baseServiceApi.injectEndpoints({
             'Delete Multicast DNS Proxy Service Profiles',
             'Activate Multicast DNS Proxy Service Profiles',
             'Deactivate Multicast DNS Proxy Service Profiles',
-            'Delete WiFi Calling Service Profile',
-            'Delete WiFi Calling Service Profiles',
+            'Delete Wi-Fi Calling Service Profile',
+            'Delete Wi-Fi Calling Service Profiles',
             'Update Portal Service Profile',
             'Delete Portal Service Profile',
             'Delete Portal Service Profiles',
@@ -437,10 +437,10 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
-            'Add WiFi Calling Service Profile',
-            'Update WiFi Calling Service Profile',
-            'Delete WiFi Calling Service Profile',
-            'Delete WiFi Calling Service Profiles'
+            'Add Wi-Fi Calling Service Profile',
+            'Update Wi-Fi Calling Service Profile',
+            'Delete Wi-Fi Calling Service Profile',
+            'Delete Wi-Fi Calling Service Profiles'
           ], () => {
             api.dispatch(serviceApi.util.invalidateTags([{ type: 'Service', id: 'LIST' }]))
           })
