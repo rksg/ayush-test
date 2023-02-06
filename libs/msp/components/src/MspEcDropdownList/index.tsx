@@ -15,6 +15,7 @@ import { MspEc, TenantIdFromJwt, useTableQuery, VarCustomer } from '@acx-ui/rc/u
 import { getBasePath, Link, useParams  }                      from '@acx-ui/react-router-dom'
 import { AccountType }                                        from '@acx-ui/utils'
 
+
 export function MspEcDropdownList () {
   const { $t } = useIntl()
 
@@ -165,46 +166,49 @@ export function MspEcDropdownList () {
   const tableQueryMspEc = useTableQuery({
     useQuery: useMspCustomerListDropdownQuery,
     apiParams: { mspTenantId: TenantIdFromJwt() },
-    defaultPayload: mspEcPayload
+    defaultPayload: mspEcPayload,
+    option: { skip: !isMspEc }
   })
 
   const tableQueryVarRec = useTableQuery({
     useQuery: useVarCustomerListDropdownQuery,
     apiParams: { tenantId: TenantIdFromJwt() },
-    defaultPayload: varPayload
+    defaultPayload: varPayload,
+    option: { skip: !isVar }
   })
 
   const tableQuerySupportEc = useTableQuery({
     useQuery: useSupportCustomerListDropdownQuery,
     apiParams: { tenantId: TenantIdFromJwt() },
-    defaultPayload: supportEcPayload
+    defaultPayload: supportEcPayload,
+    option: { skip: !isSupportEc }
   })
 
   const tableQuerySupport = useTableQuery({
     useQuery: useVarCustomerListDropdownQuery,
     apiParams: { tenantId: TenantIdFromJwt() },
-    defaultPayload: supportPayload
+    defaultPayload: supportPayload,
+    option: { skip: !isSupport }
   })
 
   useEffect(()=>{
     if (tenantDetail?.name) {
-      setCustomerName(tenantDetail?.name)
+      setCustomerName(() => tenantDetail?.name)
     }
 
-    if(tableQueryMspEc) {
+    if(tableQueryMspEc?.data && isMspEc) {
       tableQueryMspEc.setPayload({ ...tableQueryMspEc.payload, searchString: searchString })
     }
-    if(tableQueryVarRec) {
+    if(tableQueryVarRec?.data && isVar) {
       tableQueryVarRec.setPayload({ ...tableQueryVarRec.payload, searchString: searchString })
     }
-    if(tableQuerySupportEc) {
+    if(tableQuerySupportEc?.data && isSupportEc) {
       tableQuerySupportEc.setPayload({ ...tableQuerySupportEc.payload, searchString: searchString })
     }
-    if(tableQuerySupport) {
+    if(tableQuerySupport?.data && isSupport) {
       tableQuerySupport.setPayload({ ...tableQuerySupport.payload, searchString: searchString })
     }
-  }, [tenantDetail, tableQueryMspEc, tableQueryVarRec, tableQuerySupportEc,
-    tableQuerySupport, searchString])
+  }, [tenantDetail?.name, searchString])
 
   const onClose = () => {
     setSearchString('')
