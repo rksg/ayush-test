@@ -256,6 +256,10 @@ export const validationMessages = {
   aclNameStartWithoutAlphabetInvalid: defineMessage({
     defaultMessage: 'Name should start with an alphabet',
     description: 'Validation - Name should start with an alphabet'
+  }),
+  aclNameDuplicateInvalid: defineMessage({
+    defaultMessage: 'The ACL name already exists',
+    description: 'Validation - The ACL name already exists'
   })
 }
 

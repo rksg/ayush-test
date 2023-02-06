@@ -12,26 +12,27 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Drawer, Table, TableProps }                           from '@acx-ui/components'
-import { Acl, AclExtendedRule, AclStandardRule, checkAclName } from '@acx-ui/rc/utils'
+import { Drawer, Table, TableProps }                                                     from '@acx-ui/components'
+import { Acl, AclExtendedRule, AclStandardRule, checkAclName, validateDuplicateAclName } from '@acx-ui/rc/utils'
 
 import { defaultExtendedRuleList, defaultStandardRuleList } from '..'
 
 import { ACLRuleModal } from './ACLRuleModal'
 
 export interface ACLSettingDrawerProps {
-  rule?: Acl;
-  setRule: (r: Acl) => void;
-  editMode: boolean;
-  visible: boolean;
-  setVisible: (v: boolean) => void;
-  isRuleUnique?: (r: Acl) => boolean;
+  rule?: Acl
+  setRule: (r: Acl) => void
+  editMode: boolean
+  visible: boolean
+  setVisible: (v: boolean) => void
+  isRuleUnique?: (r: Acl) => boolean
+  aclsTable: Acl[]
 }
 
 export function ACLSettingDrawer (props: ACLSettingDrawerProps) {
   const { $t } = useIntl()
   const [aclType, setAclType] = useState('standard')
-  const { rule, setRule, visible, setVisible, editMode } = props
+  const { rule, setRule, visible, setVisible, editMode, aclsTable } = props
   const [form] = Form.useForm<Acl>()
 
   const onClose = () => {
@@ -56,6 +57,7 @@ export function ACLSettingDrawer (props: ACLSettingDrawerProps) {
           setRule={setRule}
           aclType={aclType}
           setAclType={setAclType}
+          aclsTable={aclsTable}
         />
       }
       footer={
@@ -88,6 +90,7 @@ interface ForwardingRuleFormProps {
   setRule: (r: Acl) => void
   aclType: string
   setAclType: (r: string) => void
+  aclsTable: Acl[]
 }
 
 function ForwardingRuleForm (props: ForwardingRuleFormProps) {
@@ -97,7 +100,7 @@ function ForwardingRuleForm (props: ForwardingRuleFormProps) {
   const [ruleList, setRuleList] = useState<
     AclStandardRule[] | AclExtendedRule[]
   >([defaultStandardRuleList])
-  const { form, rule, setRule, aclType, setAclType } = props
+  const { form, rule, setRule, aclType, setAclType, aclsTable } = props
 
   useEffect(() => {
     if(rule){
@@ -243,7 +246,9 @@ function ForwardingRuleForm (props: ForwardingRuleFormProps) {
           name='name'
           rules={[
             { required: true },
-            { validator: (_, value) => checkAclName(value, form.getFieldValue('aclType')) }
+            { validator: (_, value) => checkAclName(value, form.getFieldValue('aclType')) },
+            { validator: (_, value) =>
+              validateDuplicateAclName(value, aclsTable) }
           ]}
           children={<Input style={{ width: '400px' }} />}
         />

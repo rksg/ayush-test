@@ -107,7 +107,7 @@ export function AclSetting () {
         }
         return item
       })
-      setAclsTable([...acl] as Acl[])
+      setAclsTable(acl as Acl[])
     }else{
       setAclsTable([...aclsTable, data])
     }
@@ -151,7 +151,8 @@ export function AclSetting () {
         rule={(drawerFormRule)}
         visible={drawerVisible}
         setVisible={setDrawerVisible}
-        setRule={handleSetRule} />
+        setRule={handleSetRule}
+        aclsTable={aclsTable} />
       <Form.Item name='acls' initialValue={aclsTable} />
     </>
   )

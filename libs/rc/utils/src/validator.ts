@@ -11,6 +11,7 @@ import { getIntl, validationMessages } from '@acx-ui/utils'
 
 import { IpUtilsService } from './ipUtilsService'
 import { AclTypeEnum } from './constants'
+import { Acl } from './types'
 
 
 const Netmask = require('netmask').Netmask
@@ -659,6 +660,16 @@ export function checkAclName (aclName: string, aclType: string) {
     if (aclName === 'test') {
       return Promise.reject($t(validationMessages.aclNameContainsTestInvalid))
     }
+    return Promise.resolve()
+  }
+}
+
+export function validateDuplicateAclName (aclName: string, aclList: Acl[]) {
+  const { $t } = getIntl()
+  const index = aclList.filter(item => item.name === aclName)
+  if (index.length > 0) {
+    return Promise.reject($t(validationMessages.aclNameDuplicateInvalid))
+  } else {
     return Promise.resolve()
   }
 }
