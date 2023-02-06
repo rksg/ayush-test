@@ -12,6 +12,14 @@ import {
 } from 'react'
 
 
+import {
+  ECharts,
+  EChartsOption,
+  SeriesOption,
+  CustomSeriesRenderItemAPI,
+  CustomSeriesRenderItemParams,
+  TooltipComponentOption
+} from 'echarts'
 import ReactECharts        from 'echarts-for-react'
 import {
   CustomSeriesRenderItem
@@ -45,14 +53,6 @@ import {
 } from './config'
 import { getQualityColor, useLabelFormatter } from './util'
 
-import type {
-  ECharts,
-  EChartsOption,
-  SeriesOption,
-  CustomSeriesRenderItemAPI,
-  CustomSeriesRenderItemParams,
-  TooltipComponentOption
-} from 'echarts'
 import type { EChartsReactProps } from 'echarts-for-react'
 
 type OnDatazoomEvent = {
@@ -205,6 +205,7 @@ export const renderCustomItem = (
 export const useDataZoom = (
   eChartsRef: RefObject<ReactECharts>,
   zoomEnabled: boolean,
+  setZoomLevel: ({ start, end }: { start: number, end: number }) => void,
   onDataZoom?: (range: TimeStampRange, isReset: boolean) => void
 ): [boolean, () => void] => {
   const [canResetZoom, setCanResetZoom] = useState<boolean>(false)
@@ -218,9 +219,11 @@ export const useDataZoom = (
         setCanResetZoom(false)
       } else {
         setCanResetZoom(true)
+        const { start, end } = event
+        setZoomLevel({ start: start ?? 0, end: end ?? 100 })
       }
     },
-    [onDataZoom]
+    [onDataZoom, setZoomLevel]
   )
   useEffect(() => {
     if (!eChartsRef?.current || !zoomEnabled) return
@@ -281,7 +284,13 @@ export function TimelineChart ({
   const xAxisHeight = hasXaxisLabel ? 30 : 0
 
   const eChartsRef = useRef<ReactECharts>(null)
-  const [canResetZoom, resetZoomCallback] = useDataZoom(eChartsRef, true)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [zoomLevel, setZoomLevel] = useState<{ start: number, end: number }>(() => ({
+    start: 0,
+    end: 100
+  }))
+
+  const [canResetZoom, resetZoomCallback] = useDataZoom(eChartsRef, true, setZoomLevel)
 
   // use selected event on dot click to show popover
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -442,14 +451,11 @@ export function TimelineChart ({
         id: 'zoom',
         type: 'inside',
         zoomLock: true,
-        minValueSpan: 60,
-        start: 0,
-        end: 100
+        minValueSpan: 60
       }
     ],
     series: seriesData
   }), [chartBoundary, hasXaxisLabel, mapping, props.style?.width, seriesData])
-
 
   useEffect(() => {
     if (eChartsRef && eChartsRef.current) {
