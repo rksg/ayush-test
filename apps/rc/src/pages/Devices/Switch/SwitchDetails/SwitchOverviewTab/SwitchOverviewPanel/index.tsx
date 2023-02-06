@@ -1,6 +1,7 @@
-import { StackMember, SwitchViewModel } from '@acx-ui/rc/utils'
+import { StackMember, SwitchStatusEnum, SwitchViewModel } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
+import { SwitchDetailsContext } from '../..'
 import { PanelSlotview } from './PanelSlotview'
 
 interface SlotMember {
@@ -9,18 +10,23 @@ interface SlotMember {
 }
 
 export function SwitchOverviewPanel (props:{
-  switchDetail: SwitchViewModel, stackMember: StackMember[]}) {
+  stackMember: StackMember[]}) {
   const { serialNumber } = useParams()
   const [ slotMember, setSlotMember ] = useState(null as unknown as SlotMember)
-  const { switchDetail, stackMember } = props
+  const { stackMember } = props
+  const {
+    switchDetailsContextData
+  } = useContext(SwitchDetailsContext)
+
+  const { switchDetailHeader: switchDetail } = switchDetailsContextData
 
   useEffect(() => {
-    if (switchDetail && stackMember) {
-      genSlotViewData(switchDetail)
+    if (stackMember) {
+      genSlotViewData()
     }
-  }, [switchDetail, stackMember])
+  }, [stackMember])
 
-  const genSlotViewData = (switchDetail: SwitchViewModel) => {
+  const genSlotViewData = () => {
     if (switchDetail.isStack || switchDetail.formStacking) {
       setSlotMember({
         isStack: true,
@@ -47,7 +53,8 @@ export function SwitchOverviewPanel (props:{
   return <>{
     slotMember && slotMember.data.map((member, index) => (
       <span key={index}>
-        <PanelSlotview member={member} index={index} isStack={slotMember.isStack} switchDetail={switchDetail} />
+        <PanelSlotview member={member} index={index}
+          isStack={slotMember.isStack} isOnline={member.deviceStatus === SwitchStatusEnum.OPERATIONAL}/>
       </span>  
     ))
   }</>

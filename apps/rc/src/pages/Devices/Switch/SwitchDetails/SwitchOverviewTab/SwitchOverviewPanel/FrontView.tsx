@@ -1,23 +1,24 @@
-import { SwitchStatusEnum } from '@acx-ui/rc/utils'
+import { PortLabelType, SwitchStatusEnum } from '@acx-ui/rc/utils'
 import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 import * as UI             from './styledComponents'
 
 export function FrontView (props:{
-  switchUnit: number, 
-  serialNumber: string,
-  switchMac: string,
-  isRearView: boolean,
-  isOnline: boolean,
-  maxSlotsCount: number,
-  rearSlots: any[],
-  model: string,
+  slot: any, 
+  portLabel: string,
+  tooltipEnable: boolean,
   isStack: boolean,
   deviceStatus: SwitchStatusEnum
 }) {
   const { $t } = useIntl()
   const [ isRearView, setIsRearView ] = useState(false)
-  const { isStack } = props
+  const { slot } = props
+
+  // useEffect(() => {
+  //   if (slot.portStatus !== undefined) {
+      
+  //   }
+  // }, [slot])
 
   return <div>
    Front

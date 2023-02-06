@@ -1,11 +1,12 @@
 import { Button } from '@acx-ui/components'
 import { useLazySwitchFrontViewQuery, useLazySwitchRearViewQuery } from '@acx-ui/rc/services'
-import { getPoeUsage, getSwitchModel, isEmpty, isOperationalSwitch, StackMember, SwitchStatusEnum, SwitchViewModel, transformSwitchStatus } from '@acx-ui/rc/utils'
+import { getPoeUsage, getSwitchModel, getSwitchPortLabel, isEmpty, isOperationalSwitch, StackMember, SwitchStatusEnum, SwitchViewModel, transformSwitchStatus } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 import Tooltip from 'antd/es/tooltip'
 import _ from 'lodash'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
+import { SwitchDetailsContext } from '../..'
 import { FrontView } from './FrontView'
 import * as UI             from './styledComponents'
 
@@ -66,19 +67,46 @@ const icxModulesConst : {
 }
 
 export function PanelSlotview (props:{
-  switchDetail: SwitchViewModel, 
   member: StackMember,
   index: number,
-  isStack: boolean
+  isStack: boolean,
+  isOnline: boolean
 }) {
+  const { member, isStack, isOnline } = props
+  const {
+    switchDetailsContextData
+  } = useContext(SwitchDetailsContext)
+
+  const { switchDetailHeader: switchDetail } = switchDetailsContextData
+  const { serialNumber, switchMac } = switchDetail
+
   const { $t } = useIntl()
   const [ slotMember, setSlotMember ] = useState(null as unknown as SlotMember)
   const [ isRearView, setIsRearView ] = useState(false)
   const [ maxSlotsCount, setMaxSlotsCount ] = useState(null as unknown as number)
-  const [ rearSlots, setRearSlots] = useState(null as unknown as number[])
-  const [ unit, setUnit] = useState(defaultUnit)
-  const { switchDetail, member, isStack } = props
-  const { serialNumber, switchMac } = switchDetail
+  const [ rearSlots, setRearSlots ] = useState(null as unknown as number[])
+  const [ unit, setUnit ] = useState(defaultUnit)
+  const [ portView, setPortView ] = useState({
+    slots: [{
+      slotNumber: 1,
+      isDataPort: false,
+      fanStatus: {
+        type: 'test',
+        status: 'OK'
+      },
+      powerStatus: {
+        type: 'AC',
+        status: 'OK'
+      },
+      portStatus: [
+        { portIdentifier: '' }
+      ]
+    }]
+  })
+  const [ rearView, setRearView ] = useState({
+    slots: []
+  })
+  
   const [ switchFrontView ] = useLazySwitchFrontViewQuery()
   const [ switchRearView ] = useLazySwitchRearViewQuery()
   const { tenantId } = useParams()
@@ -88,11 +116,11 @@ export function PanelSlotview (props:{
       const unitData = genUnit(member)
       setUnit(unitData as unitType)
       caculateIcxModules(unitData)
-      if ((member.deviceStatus === SwitchStatusEnum.OPERATIONAL || member.deviceStatus === SwitchStatusEnum.DISCONNECTED) 
+      if ((isOnline || member.deviceStatus === SwitchStatusEnum.DISCONNECTED) 
            && _.isInteger(member.unitId)) {
         getSwitchPortDetail(switchMac as string, serialNumber as string, member.unitId?.toString() as string)
       } else {
-        getOfflineSwitchPort()
+        getOfflineSwitchPort(member)
       }
     }
   }, [member])
@@ -102,7 +130,44 @@ export function PanelSlotview (props:{
     const { data: rearStatus } = await switchRearView({ params: { tenantId, switchId: serialNumber, unitId } })
   }
 
-  const getOfflineSwitchPort = () => {
+  const getOfflineSwitchPort = (member: StackMember) => {
+    const portStatus = [];
+    const portCount = Number(member.model?.split('-')[1].replace(/\D/g, ''));
+
+    for (let i = 1; i < portCount + 1; i++) {
+      portStatus.push({
+        portIdentifier: '1/1/' + i,
+        portnumber : i,
+        status : 'Offline'
+      });
+    }
+
+    const tmpRear = {
+      ...rearView,
+      slots: [{
+        slotNumber: 1,
+        fanStatus: '',
+        powerStatus: ''
+      }]
+    }
+    setRearView(tmpRear as any)
+
+    const tmpPort = {
+      slots: [{
+        slotNumber: 1,
+        isDataPort: false,
+        fanStatus: {
+          type: 'test',
+          status: 'OK'
+        },
+        powerStatus: {
+          type: 'AC',
+          status: 'OK'
+        },
+        portStatus
+      }]
+    }
+    setPortView(tmpPort)
   }
 
   const genUnit = (switchMember: StackMember) => {
@@ -117,7 +182,7 @@ export function PanelSlotview (props:{
       poeUsage: getPoeUsage(switchMember as unknown as SwitchViewModel),
       unitStatus: {
         status: switchMember.deviceStatus,
-        isOnline: switchMember.deviceStatus === SwitchStatusEnum.OPERATIONAL,
+        isOnline,
         needAck: isEmpty(switchMember.needAck) ? false : switchMember.needAck,
         ackMsg: getAckMsg(!!switchMember.needAck, switchMember.serialNumber, switchMember.newSerialNumber),
         activeStatus: isEmpty(switchMember.unitStatus) ? transformSwitchStatus(defaultStatusEnum) :
@@ -154,6 +219,11 @@ export function PanelSlotview (props:{
   const isSwitchOperational = isOperationalSwitch(switchDetail.deviceStatus as SwitchStatusEnum, 
     switchDetail.syncedSwitchConfig)
 
+  const getPortLabel = (slot: any) => {
+    const slotNumber = Number(slot.portStatus[0].portIdentifier.split('/')[1]);
+    return getSwitchPortLabel(member.model as string, slotNumber)
+  }
+
   const onClickViewMode = () => {
     setIsRearView(!isRearView)
   }
@@ -186,10 +256,16 @@ export function PanelSlotview (props:{
       </UI.TitleBar>
     }
     { !isRearView 
-      ? <FrontView switchUnit={unit.switchUnit} serialNumber={serialNumber as string} switchMac={switchMac as string} 
-        isRearView={isRearView} isOnline={unit.unitStatus.isOnline} maxSlotsCount={maxSlotsCount}
-        rearSlots={rearSlots} model={unit.model} isStack={isStack} deviceStatus={switchDetail.deviceStatus as SwitchStatusEnum}
-      />
+      ? <>{
+        portView && portView.slots.map((slot, index) => (
+          <span key={index}>
+            <FrontView slot={slot} portLabel={getPortLabel(slot) as string}
+              tooltipEnable={isOnline} isStack={isStack} 
+              deviceStatus={switchDetail.deviceStatus as SwitchStatusEnum}
+            />
+          </span>  
+        ))
+      }</>
       : $t({ defaultMessage: 'Rear' }) 
     }
   </div>
