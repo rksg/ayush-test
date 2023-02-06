@@ -23,7 +23,7 @@ import { useAddLagMutation, useGetDefaultVlanQuery,
   useLazyGetVlansByVenueQuery,
   useSwitchDetailHeaderQuery,
   useSwitchPortlistQuery,
-  useUpdateLagMutation} from '@acx-ui/rc/services'
+  useUpdateLagMutation } from '@acx-ui/rc/services'
 import { SwitchVlanUnion,
   EditPortMessages,
   SwitchPortViewModel,
@@ -32,6 +32,7 @@ import { SwitchVlanUnion,
   Lag,
   LAG_TYPE }                                                  from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
+import { getIntl }   from '@acx-ui/utils'
 
 import { getAllSwitchVlans, sortOptions } from '../SwitchPortTable/editPortDrawer.utils'
 import { SelectVlanModal }                from '../SwitchPortTable/selectVlanModal'
@@ -75,6 +76,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
   const portList = useSwitchPortlistQuery({ params: { tenantId }, payload: portPayload })
   const lagList = useGetLagListQuery({ params: { tenantId, switchId } })
   const [currentPortType, setCurrentPortType] = useState(null as null | string)
+  const [cliApplied, setCliApplied] = useState(false)
   const [availablePorts, setAvailablePorts] = useState([] as TransferItem[])
   const [finalAvailablePorts, setFinalAvailablePorts] = useState([] as TransferItem[])
   const [venueVlans, setVenueVlans] = useState([] as Vlan[])
@@ -100,6 +102,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
 
     if (portList.data && lagList.data && switchDetailHeader) {
       let allPorts: SwitchPortViewModel[] = portList.data.data
+      setCliApplied(switchDetailHeader.cliApplied ?? false)
       if (switchDetailHeader.isStack) {
         // setIsStackMode(switchDetailHeader.isStack ?? false)
         // setStackMemberItem(switchDetailHeader.stackMembers?.map((s, id) =>
@@ -175,7 +178,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
     form.setFieldsValue(
       {
         name: '',
-        untaggedVlan: '',
+        untaggedVlan: defaultVlanId,
         taggedVlans: [],
         type: LAG_TYPE.STATIC,
         portsType: null,
@@ -187,7 +190,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
   const [addLag] = useAddLagMutation()
   const [updateLag] = useUpdateLagMutation()
 
-  const onSave = async () => {
+  const onSubmit = async () => {
     const value = form.getFieldsValue()
     if(isEditMode) {
       const taggedVlans = Array.isArray(value.taggedVlans) ? value.taggedVlans :
@@ -330,22 +333,28 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
       <Button
         key='okBtn'
         type='secondary'
-        onClick={onSave}>
+        onClick={() => form.submit()}>
         {$t({ defaultMessage: 'Ok' })}
       </Button>
     </Space>
   ]
 
   const [selectModalVisible, setSelectModalVisible] = useState(false)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [useVenueSettings, setUseVenueSettings] = useState(true)
-  // const onValuesChange = async (changeValues: unknown) => {
-  //   const taggedVlans = form?.getFieldValue('taggedVlans')
-  //   const untaggedVlan = form?.getFieldValue('untaggedVlan')
-
-  // }
   const [switchVlans, setSwitchVlans] = useState({} as SwitchVlanUnion)
   const onClickEditVlan = () =>{
     setSelectModalVisible(true)
+  }
+
+  const vlanValidator = () => {
+    const { $t } = getIntl()
+    if (_.isEmpty(form.getFieldValue('untaggedVlan')) &&
+      _.isEmpty(form.getFieldValue('taggedVlans'))) {
+      return Promise.reject(
+        $t({ defaultMessage: 'Each port must be a member of at least one VLAN' }))
+    }
+    return Promise.resolve()
   }
 
   const {
@@ -363,14 +372,10 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
         footer={footer}
         destroyOnClose={true}
         children={
-        // <Loader
-        //   states={[
-        //     { isLoading }
-        //   ]}
-        // >
           <Form
             form={form}
             layout='vertical'
+            onFinish={onSubmit}
           >
             <Row gutter={20}>
               <Col span={10}>
@@ -382,6 +387,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
                     { min: 1 },
                     { max: 64 }
                   ]}
+                  validateFirst
                   children={<Input />}
                 />
                 <Form.Item
@@ -460,6 +466,11 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
                 <Form.Item
                   name='ports'
                   valuePropName='targetKeys'
+                  rules={[{
+                    required: true,
+                    // eslint-disable-next-line max-len
+                    message: $t({ defaultMessage: 'All member ports should have the same configured port speed' })
+                  }]}
                 >
                   <Transfer
                     operationStyle={{ margin: '0 20px' }}
@@ -478,45 +489,66 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
               name='untaggedVlan'
               label={$t({ defaultMessage: 'Untagged VLAN' })}
               children={
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: '150px 50px'
-                }}>
-                  <div>{untaggedVlan
-                    ? $t({ defaultMessage: 'VLAN-ID: {vlan}' }, {
-                      vlan: untaggedVlan
-                    }) : '--'}</div>
-                  <Button type='link' onClick={onClickEditVlan}>
-                    {$t({ defaultMessage: 'Edit' })}
-                  </Button>
-                </div>}
+                <Tooltip
+                  placement='bottom'
+                  title={
+                    cliApplied ?
+                      // eslint-disable-next-line max-len
+                      $t({ defaultMessage: 'These settings cannot be changed, since a CLI profile is applied on the venue.' }) : ''
+                  }
+                >
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: '150px 50px'
+                  }}>
+                    <div>{untaggedVlan
+                      ? $t({ defaultMessage: 'VLAN-ID: {vlan}' }, {
+                        vlan: untaggedVlan
+                      }) : '--'}</div>
+
+                    <Button type='link' onClick={onClickEditVlan} disabled={cliApplied}>
+                      {$t({ defaultMessage: 'Edit' })}
+                    </Button>
+                  </div>
+                </Tooltip>}
             />
             <Form.Item
               name='taggedVlans'
               label={$t({ defaultMessage: 'Tagged VLANs' })}
+              rules={[
+                { validator: () => vlanValidator() }
+              ]}
               children={
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: '150px 50px'
-                }}>
-                  <div>{
-                    taggedVlans?.length > 0
-                      ? $t(
-                        { defaultMessage: 'VLAN-ID: {vlan}' },
-                        // eslint-disable-next-line max-len
-                        { vlan: sortOptions(taggedVlans?.toString().split(','), 'number').join(', ') }
-                      )
-                      : '--'
-                  }</div>
-                  <Button type='link' onClick={onClickEditVlan}>
-                    {$t({ defaultMessage: 'Edit' })}
-                  </Button>
-                </div>}
+                <Tooltip
+                  placement='bottom'
+                  title={
+                    cliApplied ?
+                      // eslint-disable-next-line max-len
+                      $t({ defaultMessage: 'These settings cannot be changed, since a CLI profile is applied on the venue.' }) : ''
+                  }
+                >
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: '150px 50px'
+                  }}>
+                    <div>{
+                      taggedVlans?.length > 0
+                        ? $t(
+                          { defaultMessage: 'VLAN-ID: {vlan}' },
+                          // eslint-disable-next-line max-len
+                          { vlan: sortOptions(taggedVlans?.toString().split(','), 'number').join(', ') }
+                        )
+                        : '--'
+                    }</div>
+
+                    <Button type='link' onClick={onClickEditVlan} disabled={cliApplied}>
+                      {$t({ defaultMessage: 'Edit' })}
+                    </Button>
+
+                  </div>
+                </Tooltip>}
             />
           </Form>
-
-
-        // </Loader>
         }
       />
       <SelectVlanModal
@@ -524,7 +556,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
         selectModalvisible={selectModalVisible}
         setSelectModalvisible={setSelectModalVisible}
         setUseVenueSettings={setUseVenueSettings}
-        onValuesChange={()=>{}}
+        onValuesChange={()=>{form.validateFields(['taggedVlans'])}}
         defaultVlan={String(defaultVlanId)}
         switchVlans={getAllSwitchVlans(switchVlans)}
         venueVlans={venueVlans}
