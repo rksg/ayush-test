@@ -325,6 +325,37 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
     return title
   }
 
+  const validateVlan = () => {
+    const { $t } = getIntl()
+    if (_.isEmpty(form.getFieldValue('untaggedVlan')) &&
+      _.isEmpty(form.getFieldValue('taggedVlans'))) {
+      return Promise.reject(
+        $t({ defaultMessage: 'Each port must be a member of at least one VLAN' }))
+    }
+    return Promise.resolve()
+  }
+
+  const validatePorts = () => {
+    const { $t } = getIntl()
+    const selectedPorts = form.getFieldValue('ports')
+    if (
+      !_.isEmpty(selectedPorts) &&
+      switchDetailHeader?.model) {
+      let count = 16
+      const model = switchDetailHeader.model.slice(3, 7)
+      if (['7250', '7450', '7650', '7750', '7850', '7550', '8200'].includes(model)) {
+        count = 16
+      } else if (['7150'].includes(model)) {
+        count = 8
+      }
+      if (selectedPorts.length > count) {
+        return Promise.reject(
+          $t({ defaultMessage: 'The maximum number of ports is {count}.' }, { count }))
+      }
+    }
+    form.getFieldValue('ports')
+    return Promise.resolve()
+  }
   const footer = [
     <Space style={{ display: 'flex', marginLeft: 'auto' }} key='edit-port-footer'>
       <Button key='cancelBtn' onClick={onClose}>
@@ -347,15 +378,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
     setSelectModalVisible(true)
   }
 
-  const vlanValidator = () => {
-    const { $t } = getIntl()
-    if (_.isEmpty(form.getFieldValue('untaggedVlan')) &&
-      _.isEmpty(form.getFieldValue('taggedVlans'))) {
-      return Promise.reject(
-        $t({ defaultMessage: 'Each port must be a member of at least one VLAN' }))
-    }
-    return Promise.resolve()
-  }
+
 
   const {
     untaggedVlan,
@@ -470,8 +493,9 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
                     required: true,
                     // eslint-disable-next-line max-len
                     message: $t({ defaultMessage: 'All member ports should have the same configured port speed' })
-                  }]}
-                >
+                  }, { 
+                    validator: () => validatePorts()
+                   }]}>
                   <Transfer
                     operationStyle={{ margin: '0 20px' }}
                     listStyle={{ width: 190, height: 316 }}
@@ -516,7 +540,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
               name='taggedVlans'
               label={$t({ defaultMessage: 'Tagged VLANs' })}
               rules={[
-                { validator: () => vlanValidator() }
+                { validator: () => validateVlan() }
               ]}
               children={
                 <Tooltip
