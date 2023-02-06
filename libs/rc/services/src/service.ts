@@ -437,10 +437,10 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
-            'Add Wi-Fi Calling Service Profile',
-            'Update Wi-Fi Calling Service Profile',
-            'Delete Wi-Fi Calling Service Profile',
-            'Delete Wi-Fi Calling Service Profiles'
+            'Add WiFi Calling Service Profile',
+            'Update WiFi Calling Service Profile',
+            'Delete WiFi Calling Service Profile',
+            'Delete WiFi Calling Service Profiles'
           ], () => {
             api.dispatch(serviceApi.util.invalidateTags([{ type: 'Service', id: 'LIST' }]))
           })
