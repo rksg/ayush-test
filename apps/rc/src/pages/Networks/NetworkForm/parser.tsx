@@ -374,7 +374,6 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
     advancedCustomization.userDownlinkRateLimiting = 0
   }
 
-
   let saveData:NetworkSaveData = {
     ...originalData,
     wlan: {
