@@ -109,8 +109,9 @@ export function getJwtToken () {
     return sessionStorage.getItem('jwt')
   } else {
     if (isDev) {
+      // TODO sessionStorage is not copied in dev setup
       // eslint-disable-next-line no-console
-      console.warn('JWT TOKEN NOT FOUND!!!!!')
+      console.warn('JWT TOKEN NOT FOUND!')
     }
     return null
   }

@@ -9,7 +9,7 @@ import {
 } from '@acx-ui/components'
 import { useGuestTokenMutation, useEmbeddedIdMutation, BASE_RELATIVE_URL } from '@acx-ui/reports/services'
 import { useReportsFilter }                                                from '@acx-ui/reports/utils'
-import { useDateFilter, convertDateTimeToSqlFormat }                       from '@acx-ui/utils'
+import { useDateFilter, convertDateTimeToSqlFormat, getJwtToken }          from '@acx-ui/utils'
 
 interface ReportProps {
   embedDashboardName: string
@@ -77,10 +77,11 @@ export function EmbeddedReport (props: ReportProps) {
         supersetDomain: `${HOST_NAME}${BASE_RELATIVE_URL}`,
         mountPoint: document.getElementById(`acx-report-${embedDashboardName}`)!,
         fetchGuestToken: () => fetchGuestTokenFromBackend(),
-        dashboardUiConfig: { hideChartControls: true, hideTitle: true }
-        // debug: true
+        dashboardUiConfig: { hideChartControls: true, hideTitle: true },
+        // debug: true,
+        authToken: getJwtToken() ?? undefined
       })
-      embeddedObj.then( async embObj =>{
+      embeddedObj.then(async embObj =>{
         timer = setInterval(async () => {
           const { height } = await embObj.getScrollSize()
           if (height > 0) {
