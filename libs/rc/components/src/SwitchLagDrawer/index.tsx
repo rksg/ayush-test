@@ -134,7 +134,7 @@ export const SwitchLagDrawer = (props: SwitchLagProps) => {
               rowKey='name'
               actions={
                 [{
-                  label: $t({ defaultMessage: 'Manage LAG' }),
+                  label: $t({ defaultMessage: 'Add LAG' }),
                   onClick: () => {
                     setModalVisible(true)
                     setIsEditMode(false)

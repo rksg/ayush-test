@@ -270,6 +270,16 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'SwitchPort', id: 'LIST' }]
     }),
+    updateLag: build.mutation<Lag, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.updateLag, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchPort', id: 'LIST' }]
+    }),
     importSwitches: build.mutation<{}, RequestFormData>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(SwitchUrlsInfo.importSwitches, params, {

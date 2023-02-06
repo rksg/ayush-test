@@ -277,5 +277,9 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   getLagList: {
     method: 'get',
     url: '/api/switch/tenant/:tenantId/lag/switch/:switchId'
+  },
+  updateLag: {
+    method: 'put',
+    url: '/api/switch/tenant/{tenantId}/lag'
   }
 }

@@ -529,11 +529,11 @@ export enum LAG_TYPE {
 }
 
 export interface Lag {
-  id: string
-  lagId: number
+  id?: string
+  lagId?: number
   name: string
   ports: string[]
-  realRemove: number
+  realRemove?: number
   switchId: string
   taggedVlans: string[]
   type: LAG_TYPE
