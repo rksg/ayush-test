@@ -33,6 +33,8 @@ export * from './edge'
 export * from './client'
 export * from './components'
 export * from './switch'
+export * from './mfa'
+export * from './administration'
 export * from './timeline'
 export * from './persona'
 

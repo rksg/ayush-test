@@ -13,7 +13,8 @@ import {
   poeBudgetRegExp,
   priorityRegExp,
   serialNumberRegExp,
-  targetHostRegExp
+  targetHostRegExp,
+  validateRecoveryPassphrasePart
 } from './validator'
 
 describe('validator', () => {
@@ -157,6 +158,32 @@ describe('validator', () => {
     it('Should display error message if Serial Number values incorrectly', async () => {
       const result1 = serialNumberRegExp('1234567890000')
       await expect(result1).rejects.toEqual('This field is invalid')
+    })
+  })
+
+  describe('validate recovery passphrase part', () => {
+    it('Should take care of recovery passphrase part correctly', async () => {
+      const result = validateRecoveryPassphrasePart('1234')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should display error message if recovery passphrase part is empty', async () => {
+      const result1 = validateRecoveryPassphrasePart('')
+      await expect(result1).rejects.toEqual('This field is invalid')
+    })
+
+    it('Should display error message if recovery passphrase part is only space', async () => {
+      const result1 = validateRecoveryPassphrasePart(' ')
+      await expect(result1).rejects.toEqual('Passphrase cannot have space')
+    })
+
+    it('Should display error message if recovery passphrase part contains space', async () => {
+      const result1 = validateRecoveryPassphrasePart('12 55')
+      await expect(result1).rejects.toEqual('Passphrase cannot have space')
+    })
+
+    it('Should display error message if recovery passphrase part incorrectly', async () => {
+      const result1 = validateRecoveryPassphrasePart('125')
+      await expect(result1).rejects.toEqual('Passphrase part must be exactly 4 digits long')
     })
   })
 
