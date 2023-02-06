@@ -153,6 +153,7 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Administration', id: 'PREFERENCES' }]
     }),
+    // TODO: backend is not support activity message now, and will add if function be completed.
     UpdateRadiusClientConfig: build.mutation<ClientConfig, RequestPayload>({
       query: ({ payload }) => {
         const req = createHttpRequest(RadiusClientConfigUrlsInfo.updateRadiusClient)
