@@ -9,7 +9,7 @@ import { useIntl } from 'react-intl'
 import { Button, Drawer, Loader, showActionModal, Table, TableProps, Tooltip } from '@acx-ui/components'
 import { DeleteOutlinedIcon, EditOutlinedIcon }                                from '@acx-ui/icons'
 import { useDeleteLagMutation, useGetLagListQuery }                            from '@acx-ui/rc/services'
-import { Lag, LAG_TYPE }                                                                 from '@acx-ui/rc/utils'
+import { Lag }                                                                 from '@acx-ui/rc/utils'
 import { useParams }                                                           from '@acx-ui/react-router-dom'
 
 import { SwitchLagModal } from './switchLagModal'
@@ -21,11 +21,15 @@ interface SwitchLagProps {
 
 export const SwitchLagDrawer = (props: SwitchLagProps) => {
   const { $t } = useIntl()
+  const { tenantId, switchId } = useParams()
   const { visible, setVisible } = props
+
+  const { data, isLoading } = useGetLagListQuery({ params: { tenantId, switchId } })
+  const [deleteLag] = useDeleteLagMutation()
+
   const [modalVisible, setModalVisible] = useState(false)
   const [isEditMode, setIsEditMode] = useState(false)
   const [row, setRow] = useState([] as Lag[])
-
 
   const onClose = () => {
     setVisible(false)
@@ -88,11 +92,6 @@ export const SwitchLagDrawer = (props: SwitchLagProps) => {
       }
     }]
 
-
-  const { tenantId, switchId } = useParams()
-  const { data, isLoading } = useGetLagListQuery({ params: { tenantId, switchId } })
-  const [deleteLag] = useDeleteLagMutation()
-
   const handleDelete = (row: Lag) => {
     showActionModal({
       type: 'confirm',
@@ -107,12 +106,6 @@ export const SwitchLagDrawer = (props: SwitchLagProps) => {
       },
       onCancel: async () => {}
     })
-    // const models = selectedModels.filter((item) => item !== model)
-    // setSelectedModels(models)
-    // setTableData(tableData.filter(item => item.model !== model))
-    // setModelOptions(supportModelOptions.filter(item =>
-    //   models.indexOf(item.value) === -1)
-    // )
   }
 
   const handleEdit = (row: Lag) => {
@@ -175,6 +168,5 @@ export const SwitchLagDrawer = (props: SwitchLagProps) => {
         setVisible={setModalVisible}
       />}
     </>
-
   )
 }
