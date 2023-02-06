@@ -3,25 +3,25 @@
 exports[`EventDetails renders Details correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__DetailsWrapper-sc-hmshlr-17 eChskx"
+    class="styledComponents__DetailsWrapper-sc-hmshlr-18 iSVCpe"
   >
     <span
-      class="styledComponents__CloseIconContainer-sc-hmshlr-20 kleeKO"
+      class="styledComponents__CloseIconContainer-sc-hmshlr-21 aVPBT"
     >
       <svg
         data-testid="CloseSymbol"
       />
     </span>
     <h3
-      class="styledComponents__Header-sc-hmshlr-18 blffxP"
+      class="styledComponents__Header-sc-hmshlr-19 ekMGOe"
     >
       Connection Event Details
     </h3>
     <div
-      class="styledComponents__Body-sc-hmshlr-21 QIcjV"
+      class="styledComponents__Body-sc-hmshlr-22 hxQxoy"
     >
       <div
-        class="styledComponents__ListDetails-sc-hmshlr-23 fIbIDP"
+        class="styledComponents__ListDetails-sc-hmshlr-24 hNUQrw"
       >
         <div
           class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 AfEyr"

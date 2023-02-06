@@ -83,8 +83,16 @@ export function TimeLine (props: TimeLineProps) {
       ...expandObj,
       [type]: !toggle
     })
-  const toggleIcon = (isExpand: boolean, type: keyof TimelineData) =>
-    isExpand ? (
+  const toggleIcon = (
+    isExpand: boolean, type: keyof TimelineData, noData?: boolean | undefined
+  ) => {
+    if (noData) {
+      return <UI.StyledDisabledPlusSquareOutline
+        style={{ cursor: 'not-allowed' }}
+      />
+    }
+
+    return isExpand ? (
       <UI.StyledMinusSquareOutlined
         style={{ cursor: 'pointer' }}
         onClick={() => onExpandToggle(type, expandObj[type])}
@@ -95,21 +103,26 @@ export function TimeLine (props: TimeLineProps) {
         onClick={() => onExpandToggle(type, expandObj[type])}
       />
     )
+  }
+
+
+
   const TimelineData = getTimelineData(events, incidents)
   const roamingEventsAps = connectionDetailsByAP(data?.connectionDetailsByAp as RoamingByAP[])
   const roamingEventsTimeSeries = connectionDetailsByApChartData(
     data?.connectionDetailsByAp as RoamingByAP[]
   ) as unknown as RoamingTimeSeriesData[]
+  const sharedChartName = 'eventTimeSeriesGroup'
   const connectChart = (chart: ReactECharts | null) => {
     if (chart) {
       const instance = chart.getEchartsInstance()
-      instance.group = 'eventTimeSeriesGroup'
+      instance.group = sharedChartName
     }
   }
-
   useEffect(() => {
-    connect('eventTimeSeriesGroup')
+    connect(sharedChartName)
   }, [])
+
   const { startDate, endDate } = useDateFilter()
   const chartBoundary = [moment(startDate).valueOf(), moment(endDate).valueOf()]
 
@@ -134,8 +147,10 @@ export function TimeLine (props: TimeLineProps) {
               <Col span={3}>
                 {toggleIcon(
                   expandObj[config?.value as keyof TimelineData],
-                  config?.value as keyof TimelineData
-                )}
+                  config?.value as keyof TimelineData,
+                  (config?.value === TYPES.ROAMING)
+                    && getRoamingSubtitleConfig(roamingEventsAps as RoamingConfigParam)[0].noData)
+                }
               </Col>
               <Col
                 span={17}
@@ -225,18 +240,19 @@ export function TimeLine (props: TimeLineProps) {
                   )}
                   showResetZoom={config?.showResetZoom}
                   chartBoundary={chartBoundary}
+                  hasXaxisLabel={config?.hasXaxisLabel}
+                  chartRef={connectChart}
+                  tooltipFormatter={useLabelFormatter}
                   mapping={
                     expandObj[config?.value as keyof TimelineData]
                       ? config.value === TYPES.ROAMING
                         ? config.chartMapping.concat(
                           getRoamingChartConfig(roamingEventsAps as RoamingConfigParam)
                         ).reverse()
-                        : config.chartMapping
+                        : config.chartMapping.slice().reverse()
                       : [config.chartMapping[0]]
                   }
-                  hasXaxisLabel={config?.hasXaxisLabel}
-                  chartRef={connectChart}
-                  tooltipFormatter={useLabelFormatter}
+                  sharedChartName={sharedChartName}
                   onDotClick={(params) => {
                     setEventState(params as CoordDisplayEvent)
                     setVisible(true)
