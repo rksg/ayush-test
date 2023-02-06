@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+
 import { useIntl } from 'react-intl'
 
 import { Table, TableProps, Loader }   from '@acx-ui/components'
@@ -14,30 +16,37 @@ import { useParams, TenantLink } from '@acx-ui/react-router-dom'
 export const defaultSwitchClientPayload = {
   searchString: '',
   fields: ['switchId','clientVlan','venueId','switchSerialNumber','clientMac',
-    'clientName','clientDesc','clientType','switchPort','vlanName','cog','id'],
+    'clientName','clientDesc','clientType','switchPort','vlanName',
+    'switchName', 'venueName' ,'cog','id'],
   sortField: 'clientMac',
   sortOrder: 'DESC',
   filters: {}
 }
 
 export function ClientsTable (props: {
-  searchString: string,
+  searchString?: string,
   tableQuery?: TableQuery<SwitchClient, RequestPayload<unknown>, unknown>
 }) {
   const params = useParams()
   const { searchString } = props
 
-  defaultSwitchClientPayload.searchString = searchString
   defaultSwitchClientPayload.filters =
     params.switchId ? { switchId: [params.switchId] } : {}
 
 
   const inlineTableQuery = useTableQuery({
     useQuery: useGetSwitchClientListQuery,
-    defaultPayload: defaultSwitchClientPayload,
+    defaultPayload: { ...defaultSwitchClientPayload, searchString },
     option: { skip: !!props.tableQuery }
   })
   const tableQuery = props.tableQuery || inlineTableQuery
+
+  useEffect(() => {
+    if (searchString !== undefined && tableQuery.payload.searchString !== searchString) {
+      tableQuery.setPayload({
+        ...(tableQuery.payload as typeof defaultSwitchClientPayload), searchString })
+    }
+  }, [searchString])
 
   function getCols (intl: ReturnType<typeof useIntl>) {
     const columns: TableProps<SwitchClient>['columns'] = [{
@@ -46,8 +55,8 @@ export function ClientsTable (props: {
       dataIndex: 'clientMac',
       sorter: true,
       render: (data, row) => {
-        // eslint-disable-next-line max-len
-        return <TenantLink to={`devices/switch/${params.switchId}/${params.serialNumber}/clientDetails/${row.id}`}>{data?.toString().toUpperCase() || '--'}</TenantLink>
+        const name = data ? data.toString().toUpperCase() : '--'
+        return <TenantLink to={`users/switch/clients/${row.id}`}>{name}</TenantLink>
       }
     }, {
       key: 'clientName',
@@ -87,8 +96,9 @@ export function ClientsTable (props: {
       sorter: true,
       show: !params.switchId,
       render: (data, row) => {
+        const name = data ? data.toString().toUpperCase() : '--'
         // eslint-disable-next-line max-len
-        return <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>{data}</TenantLink>
+        return <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>{name}</TenantLink>
       }
     }, {
       key: 'switchName',
@@ -97,8 +107,11 @@ export function ClientsTable (props: {
       sorter: false,
       show: !params.switchId,
       render: (data, row) => {
-        // eslint-disable-next-line max-len
-        return <TenantLink to={`/devices/switch/${row.switchId}/${row.switchSerialNumber}/details/overview`}>{data?.toString().toUpperCase() || '--'}</TenantLink>
+        const name = data ? data.toString().toUpperCase() : '--'
+        const link = `/devices/switch/${row.switchId}/${row.switchSerialNumber}/details/overview`
+        return (row.switchId && data) ?
+          <TenantLink to={link}>{name}</TenantLink> :
+          <span>{name}</span>
       }
     }, {
       key: 'switchPort',
@@ -111,7 +124,7 @@ export function ClientsTable (props: {
       dataIndex: 'vlanName',
       sorter: true,
       render: (data, row) => {
-        return row.clientVlan ? `${data} (${row.clientVlan})`: '--'
+        return row.clientVlan ? `${data ? data : ''} (${row.clientVlan})`: '--'
       }
     }]
     return columns

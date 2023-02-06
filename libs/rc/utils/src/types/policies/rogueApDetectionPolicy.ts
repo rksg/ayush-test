@@ -94,7 +94,7 @@ export enum RogueRuleType {
   EXCESSIVE_POWER_RULE = 'ExcessivePowerRule',
   LOW_SNR_RULE = 'LowsnrRule',
   MAC_OUI_RULE = 'MacouiRule',
-  MAC_SPOOFING_RULE = 'MacspoofingRule',
+  MAC_SPOOFING_RULE = 'MacSpoofingRule',
   NULL_SSID_RULE = 'NullSSIDRule',
   RTS_ABUSE_RULE = 'RTSAbuseRule',
   SAME_NETWORK_RULE = 'SameNetworkRule',
