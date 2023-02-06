@@ -165,7 +165,7 @@ export function MspEcDropdownList () {
 
   const tableQueryMspEc = useTableQuery({
     useQuery: useMspCustomerListDropdownQuery,
-    apiParams: { mspTenantId: TenantIdFromJwt() },
+    apiParams: { tenantId: TenantIdFromJwt() },
     defaultPayload: mspEcPayload,
     option: { skip: !isMspEc }
   })
