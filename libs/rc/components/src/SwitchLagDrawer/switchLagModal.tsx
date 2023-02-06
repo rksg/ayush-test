@@ -60,6 +60,7 @@ export const calculatePortOrderValue = (unitId: string, moduleId: string, portNu
 
 export const SwitchLagModal = (props: SwitchLagProps) => {
   const { $t } = useIntl()
+  const [form] = Form.useForm()
   const { visible, setVisible, isEditMode, editData } = props
   const { tenantId, switchId, serialNumber } = useParams()
 
@@ -72,30 +73,40 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
     sortOrder: 'ASC'
   }
 
-
   const portList = useSwitchPortlistQuery({ params: { tenantId }, payload: portPayload })
   const lagList = useGetLagListQuery({ params: { tenantId, switchId } })
+  const [getVlansByVenue] = useLazyGetVlansByVenueQuery()
+  const [getSwitchVlan] = useLazyGetSwitchVlanQuery()
+  const { data: switchDetailHeader } =
+  useSwitchDetailHeaderQuery({ params: { tenantId, switchId, serialNumber } })
+  const { data: switchesDefaultVlan }
+  = useGetDefaultVlanQuery({ params: { tenantId }, payload: [switchId] })
+
+  const [addLag] = useAddLagMutation()
+  const [updateLag] = useUpdateLagMutation()
+
   const [currentPortType, setCurrentPortType] = useState(null as null | string)
   const [cliApplied, setCliApplied] = useState(false)
   const [availablePorts, setAvailablePorts] = useState([] as TransferItem[])
   const [finalAvailablePorts, setFinalAvailablePorts] = useState([] as TransferItem[])
   const [venueVlans, setVenueVlans] = useState([] as Vlan[])
-  const { data: switchDetailHeader } =
-  useSwitchDetailHeaderQuery({ params: { tenantId, switchId, serialNumber } })
-  const [getVlansByVenue] = useLazyGetVlansByVenueQuery()
-  const { data: switchesDefaultVlan }
-  = useGetDefaultVlanQuery({ params: { tenantId }, payload: [switchId] })
-  const [getSwitchVlan] = useLazyGetSwitchVlanQuery()
+  const [defaultVlanId, setDefaultVlanId] = useState(1 as number)
+  const [portsTypeItem, setPortsTypeItem] = useState([] as DefaultOptionType[])
+  // const [isStackMode, setIsStackMode] = useState(false) //TODO
+  // const [stackMemberItem, setStackMemberItem] = useState([] as DefaultOptionType[])
+
+  const {
+    untaggedVlan,
+    taggedVlans
+  } = (useWatch([], form) ?? {})
 
   useEffect(() => {
-
     const setVlanData = async () => {
       const venueId = switchDetailHeader?.venueId
       const switchVlans = await getSwitchVlan({ params: { tenantId, switchId } }, true).unwrap()
       const vlansByVenue = await getVlansByVenue({
         params: { tenantId, venueId: venueId }
       }, true).unwrap()
-
       setVenueVlans(vlansByVenue)
       setSwitchVlans(switchVlans)
     }
@@ -113,7 +124,6 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
         //   })) ?? [])
         allPorts = portList.data.data.filter(a => a.usedInFormingStack !== true)
       }
-      // this.portData = allPorts // CHECK needed it?
       const usedPortsId = _.flatMap(lagList.data.map(a => a.ports))
       const editDataPorts = isEditMode ? (editData[0].ports|| []) : []
       let availablePortIds = _.difference(
@@ -165,14 +175,8 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
     }
   }, [switchesDefaultVlan])
 
-  const [defaultVlanId, setDefaultVlanId] = useState(1 as number)
-  // const [isStackMode, setIsStackMode] = useState(false)
-  // const [stackMemberItem, setStackMemberItem] = useState([] as DefaultOptionType[])
-  const [portsTypeItem, setPortsTypeItem] = useState([] as DefaultOptionType[])
-
   const onClose = () => {
     setVisible(false)
-
     setCurrentPortType(null)
     setFinalAvailablePorts([])
     form.setFieldsValue(
@@ -185,10 +189,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
         ports: []
       }
     )
-    // form.resetFields()
   }
-  const [addLag] = useAddLagMutation()
-  const [updateLag] = useUpdateLagMutation()
 
   const onSubmit = async () => {
     const value = form.getFieldsValue()
@@ -212,8 +213,6 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
         console.log(err) // eslint-disable-line no-console
         showGeneralError(err)
       }
-
-
     } else {
       try {
         let payload = {
@@ -230,8 +229,6 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
       }
     }
   }
-
-  const [form] = Form.useForm()
 
   const onPortTypeChange = (value: string) => {
     if(currentPortType === value){
@@ -282,8 +279,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
     setFinalAvailablePorts(finalAvailablePorts)
   }
 
-
-  // TODO: need to check the transfer components
+  // TODO:
   // const onStackUnitChange = (value: string) => {
   //   const selectedPorts = form.getFieldValue('ports')
   //   if (value && currentPortType) {
@@ -302,19 +298,6 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
   //       .filter(p => !selectedPorts.some(((sp: { key: string | undefined }) => sp.key === p.key)))
   //     )
   //   }
-  // }
-
-
-  // loadVlans() {
-  //   const getVlansByVenue$ = this.getVlansByVenue$();
-  //   const getVEs$ = this.getVEsList$();
-  //   forkJoin(getVlansByVenue$, getVEs$).subscribe(([venueVlans, veRouted]) => {
-  //     this.venueVlans = venueVlans;
-  //     const defaultVlans = _.uniq(Object.values(this.defaultVlanMap));
-  //     this.venueVlansPrint = this.venueVlans.filter(item => defaultVlans.indexOf(item) !== -1);
-  //     this.handleVlan();
-  //     this.getVlanUsedByVe(veRouted['data']);
-  //   });
   // }
 
   const getTitle = () => {
@@ -356,6 +339,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
     form.getFieldValue('ports')
     return Promise.resolve()
   }
+
   const footer = [
     <Space style={{ display: 'flex', marginLeft: 'auto' }} key='edit-port-footer'>
       <Button key='cancelBtn' onClick={onClose}>
@@ -377,13 +361,6 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
   const onClickEditVlan = () =>{
     setSelectModalVisible(true)
   }
-
-
-
-  const {
-    untaggedVlan,
-    taggedVlans
-  } = (useWatch([], form) ?? {})
 
   return (
     <>
@@ -493,9 +470,9 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
                     required: true,
                     // eslint-disable-next-line max-len
                     message: $t({ defaultMessage: 'All member ports should have the same configured port speed' })
-                  }, { 
+                  }, {
                     validator: () => validatePorts()
-                   }]}>
+                  }]}>
                   <Transfer
                     operationStyle={{ margin: '0 20px' }}
                     listStyle={{ width: 190, height: 316 }}
@@ -519,8 +496,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
                     cliApplied ?
                       // eslint-disable-next-line max-len
                       $t({ defaultMessage: 'These settings cannot be changed, since a CLI profile is applied on the venue.' }) : ''
-                  }
-                >
+                  }>
                   <div style={{
                     display: 'grid',
                     gridTemplateColumns: '150px 50px'
@@ -549,26 +525,21 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
                     cliApplied ?
                       // eslint-disable-next-line max-len
                       $t({ defaultMessage: 'These settings cannot be changed, since a CLI profile is applied on the venue.' }) : ''
-                  }
-                >
+                  }>
                   <div style={{
                     display: 'grid',
                     gridTemplateColumns: '150px 50px'
                   }}>
-                    <div>{
-                      taggedVlans?.length > 0
-                        ? $t(
-                          { defaultMessage: 'VLAN-ID: {vlan}' },
-                          // eslint-disable-next-line max-len
-                          { vlan: sortOptions(taggedVlans?.toString().split(','), 'number').join(', ') }
-                        )
-                        : '--'
-                    }</div>
+                    <div>{taggedVlans?.length > 0
+                      ? $t({ defaultMessage: 'VLAN-ID: {vlan}' },
+                        {
+                          vlan: sortOptions(
+                            taggedVlans?.toString().split(','), 'number').join(', ')
+                        }) : '--'}</div>
 
                     <Button type='link' onClick={onClickEditVlan} disabled={cliApplied}>
                       {$t({ defaultMessage: 'Edit' })}
                     </Button>
-
                   </div>
                 </Tooltip>}
             />
