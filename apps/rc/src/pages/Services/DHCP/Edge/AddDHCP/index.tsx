@@ -33,7 +33,7 @@ const AddDhcp = () => {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'DHCP for SmartEdge' })}
+        title={$t({ defaultMessage: 'Add DHCP for SmartEdge Service' })}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Services' }), link: '/services' }
         ]}

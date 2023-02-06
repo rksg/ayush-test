@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 
 import { Col, Form, Input, Row } from 'antd'
 import _                         from 'lodash'
@@ -49,10 +49,14 @@ export default function DhcpPoolTable ({
   const [form] = Form.useForm<EdgeDhcpPool>()
   const valueMap = useRef<Record<string, EdgeDhcpPool>>(value ? _.keyBy(value, 'id') : {})
   const [visible, setVisible] = useState(false)
-
   const values = () => Object.values(valueMap.current)
-
   const handleChanged = () => onChange?.(values())
+
+  useEffect(() => {
+    if(value) {
+      valueMap.current = _.keyBy(value, 'id')
+    }
+  }, [value])
 
   const onAddOrEdit = (item?: EdgeDhcpPool) => {
     setVisible(true)
