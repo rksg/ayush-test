@@ -15,7 +15,9 @@ import {
   MspEcData,
   MspEcDelegatedAdmins,
   SupportDelegation,
-  VarCustomer
+  VarCustomer,
+  MspProfile,
+  MspEcProfile
 } from '@acx-ui/rc/utils'
 
 export const baseMspApi = createApi({
@@ -127,6 +129,24 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    getMspProfile: build.query<MspProfile, RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(MspUrlsInfo.getMspProfile, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    getMspEcProfile: build.query<MspEcProfile, RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(MspUrlsInfo.getMspEcProfile, params)
+        return {
+          ...req
+        }
+      }
     }),
     mspEcAdminList: build.query<MspAdministrator[], RequestPayload>({
       query: ({ params }) => {
@@ -265,6 +285,8 @@ export const {
   useMspEntitlementSummaryQuery,
   useMspAssignmentSummaryQuery,
   useResendEcInvitationMutation,
+  useGetMspProfileQuery,
+  useGetMspEcProfileQuery,
   useMspEcAdminListQuery,
   useMspAssignmentHistoryQuery,
   useAddCustomerMutation,
