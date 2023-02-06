@@ -30,6 +30,16 @@ describe('ClientTroubleshootingTab', () => {
       clientId: 'client-mac',
       activeTab: 'troubleshooting'
     }
+
+    mockGraphqlQuery(dataApiURL, 'ClientInfo', { data: {
+      client: {
+        connectionDetailsByAp: [],
+        connectionEvents: [],
+        connectionQualities: [],
+        incidents: []
+      }
+    } })
+
     const { asFragment } = render(<Provider><ClientTroubleshootingTab /></Provider>, {
       route: { params, path: '/:tenantId/users/wifi/:clientId/details/:activeTab' }
     })

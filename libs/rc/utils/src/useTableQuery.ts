@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react'
 
 import { TableProps } from 'antd'
+import _              from 'lodash'
 
 import { useParams, Params }                         from '@acx-ui/react-router-dom'
 import { UseQuery, UseQueryResult, UseQueryOptions } from '@acx-ui/types'
 
 import { ApiInfo, createHttpRequest } from './apiService'
+
 
 export const TABLE_QUERY_POLLING_INTERVAL = 30_000
 export const TABLE_QUERY_LONG_POLLING_INTERVAL = 300_000
@@ -233,7 +235,7 @@ export function transferToNewTablePaginationParams (payload: TableChangePayload 
   const pagination = {
     ...DEFAULT_PAGINATION,
     ...DEFAULT_SORTER,
-    ...(payload ?? {})
+    ...(_.omitBy(payload ?? {}, _.isNil))
   }
 
   return {
