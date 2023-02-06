@@ -27,6 +27,7 @@ export default function SelectServiceForm () {
   const myServicesPath: Path = useTenantLink(getServiceListRoutePath(true))
   const tenantBasePath: Path = useTenantLink('')
   const networkSegmentationEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION)
+  const isEdgesEnable = useIsSplitOn(Features.EDGES)
 
   const navigateToCreateService = async function (data: { serviceType: ServiceType }) {
     const serviceCreatePath = getServiceRoutePath({
@@ -45,6 +46,11 @@ export default function SelectServiceForm () {
       title: defineMessage({ defaultMessage: 'Connectivity' }),
       items: [
         { type: ServiceType.DHCP, categories: [RadioCardCategory.WIFI] },
+        {
+          type: ServiceType.EDGE_DHCP,
+          categories: [RadioCardCategory.EDGE],
+          disabled: !isEdgesEnable
+        },
         { type: ServiceType.DPSK, categories: [RadioCardCategory.WIFI] },
         {
           type: ServiceType.NETWORK_SEGMENTATION,
