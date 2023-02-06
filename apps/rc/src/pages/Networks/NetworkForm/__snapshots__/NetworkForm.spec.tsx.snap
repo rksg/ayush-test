@@ -1420,6 +1420,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                                                       </th>
                                                       <th
                                                         class="ant-table-cell react-resizable"
+                                                        style="text-align: center;"
                                                       >
                                                         <div
                                                           class="styledComponents__ResizableHover-sc-1abm7iv-8"
@@ -1431,6 +1432,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                                                       </th>
                                                       <th
                                                         class="ant-table-cell react-resizable"
+                                                        style="text-align: center;"
                                                       >
                                                         <div
                                                           class="styledComponents__ResizableHover-sc-1abm7iv-8"
@@ -1646,11 +1648,13 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                                                       </td>
                                                       <td
                                                         class="ant-table-cell"
+                                                        style="text-align: center;"
                                                       >
                                                         4
                                                       </td>
                                                       <td
                                                         class="ant-table-cell"
+                                                        style="text-align: center;"
                                                       >
                                                         0
                                                       </td>
@@ -1726,11 +1730,13 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                                                       </td>
                                                       <td
                                                         class="ant-table-cell"
+                                                        style="text-align: center;"
                                                       >
                                                         1
                                                       </td>
                                                       <td
                                                         class="ant-table-cell"
+                                                        style="text-align: center;"
                                                       >
                                                         1
                                                       </td>
