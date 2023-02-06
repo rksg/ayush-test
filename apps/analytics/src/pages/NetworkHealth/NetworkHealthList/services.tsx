@@ -61,14 +61,36 @@ export const api = networkHealthApi.injectEndpoints({
               }
             }
           }
-        `,
-        providesTags: [
-          { type: 'NetworkHealth', id: 'LIST' }
-        ]
+        `
       }),
+      providesTags: [
+        { type: 'NetworkHealth', id: 'LIST' }
+      ],
       transformResponse: (response: Response) => response.allServiceGuardSpecs
+    }),
+    networkHealthDelete: build.mutation<
+      ServiceGuardSpec, RequestPayload
+    >({
+      query: (payload) => ({
+        document: gql`
+          mutation ($id: String!) {
+            deleteServiceGuardSpec (id: $id) {
+              deletedSpecId
+              userErrors {
+                field message
+              }
+            }
+          }
+        `,
+        variables: {
+          id: payload.params?.id
+        }
+      }),
+      invalidatesTags: [
+        { type: 'NetworkHealth', id: 'LIST' }
+      ]
     })
   })
 })
 
-export const { useNetworkHealthQuery } = api
+export const { useNetworkHealthQuery, useNetworkHealthDeleteMutation } = api

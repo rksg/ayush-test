@@ -4,19 +4,19 @@ import _                          from 'lodash'
 import { useIntl, defineMessage } from 'react-intl'
 import { useNavigate }            from 'react-router-dom'
 
+import { useGetUserProfileQuery }              from '@acx-ui/rc/services'
 import { noDataSymbol, sortProp, defaultSort }        from '@acx-ui/analytics/utils'
 import { Loader, TableProps, Table, showActionModal } from '@acx-ui/components'
-import { TenantLink, useTenantLink }                  from '@acx-ui/react-router-dom'
-import { formatter }                                  from '@acx-ui/utils'
+import { TenantLink, useTenantLink, useParams }                  from '@acx-ui/react-router-dom'
+import { convertDateTimeToSqlFormat, formatter }                                  from '@acx-ui/utils'
 
-import { ServiceGuardSpec, useNetworkHealthQuery } from './services'
+import { ServiceGuardSpec, useNetworkHealthDeleteMutation, useNetworkHealthQuery } from './services'
 
-const checkData = (data: string | number) => {
-  if (data) {
-    return data
-  } else {
-    return noDataSymbol
-  }
+const networkHealthMapping = {
+  'virtual-client': 'Virtual Client',
+  'virtual-wireless-client': 'Virtual Wireless Client',
+  'on-demand': 'On Demand',
+  'scheduled': 'Scheduled'
 }
 
 export function NetworkHealthTable () {
@@ -25,6 +25,9 @@ export function NetworkHealthTable () {
   const queryResults = useNetworkHealthQuery({})
   const navigate = useNavigate()
   const linkToEditTest = useTenantLink('/serviceValidation/networkHealth/')
+  const params = useParams()
+  const { data } = useGetUserProfileQuery({ params })
+  const [deleteMutation] = useNetworkHealthDeleteMutation()
 
   const rowActions: TableProps<ServiceGuardSpec>['rowActions'] = [
     {
@@ -36,15 +39,17 @@ export function NetworkHealthTable () {
       label: $t(defineMessage({ defaultMessage: 'Edit' })),
       onClick: (selectedRows) => {
         navigate(`${linkToEditTest.pathname}/${selectedRows[0].id}/edit`, { replace: false })
-      }
+      },
+      disabled: (selectedRow) => selectedRow[0]?.id === data?.externalId ? false : true
     },
     {
       label: $t(defineMessage({ defaultMessage: 'Clone' })),
-      onClick: () => console.log('clone')
+      onClick: () => {},
+      disabled: true
     },
     {
       label: $t(defineMessage({ defaultMessage: 'Delete' })),
-      onClick: ([{ name }]) => {
+      onClick: ([{ name, id }]) => {
         showActionModal({
           type: 'confirm',
           customContent: {
@@ -52,7 +57,9 @@ export function NetworkHealthTable () {
             entityName: $t(defineMessage({ defaultMessage: 'test' })),
             entityValue: name
           },
-          onOk: () => console.log('delete') // TODO: handle delete
+          onOk: async () => {
+            await deleteMutation({params: {id}})
+          }
         })
       }
     }
@@ -65,9 +72,9 @@ export function NetworkHealthTable () {
       dataIndex: 'name',
       sorter: { compare: sortProp('name', defaultSort) },
       searchable: true,
-      render: (value, row) =>
+      render: (value, row) => 
         <TenantLink
-          to={`/serviceValidation/networkHealth/${row.id}/tests/${row.tests.items[0].id}`}
+          to={`/serviceValidation/networkHealth/${row.id}/tests/${row?.tests.items[0].id}`}
         >
           {value}
         </TenantLink>
@@ -77,20 +84,22 @@ export function NetworkHealthTable () {
       title: $t(defineMessage({ defaultMessage: 'Client Type' })),
       dataIndex: 'clientType',
       sorter: { compare: sortProp('clientType', defaultSort) },
-      filterable: true
+      filterable: true,
+      render: (value) => networkHealthMapping[value as keyof typeof networkHealthMapping]
     },
     {
       key: 'type',
       title: $t(defineMessage({ defaultMessage: 'Test Type' })),
       dataIndex: 'type',
       sorter: { compare: sortProp('type', defaultSort) },
-      filterable: true
+      filterable: true,
+      render: (value) => networkHealthMapping[value as keyof typeof networkHealthMapping]
     },
     {
       key: 'apsCount',
       title: $t(defineMessage({ defaultMessage: 'APs' })),
       dataIndex: 'apsCount',
-      render: (value) => <TenantLink to={'/serviceValidation/networkHealth'}>{value}</TenantLink>,
+      render: (value) => <TenantLink to={'/serviceValidation/networkHealth'}>{value}</TenantLink>, // TODO: handle link
       sorter: { compare: sortProp('apsCount', defaultSort) }
     },
     {
@@ -99,7 +108,11 @@ export function NetworkHealthTable () {
       dataIndex: ['tests', 'items'],
       render: (value) => {
         const result = _.get(value, '[0].createdAt')
-        return checkData(result)
+        if (result) {
+          return convertDateTimeToSqlFormat(result)
+        } else {
+          return noDataSymbol
+        }
       }
     },
     {
@@ -108,7 +121,11 @@ export function NetworkHealthTable () {
       dataIndex: ['tests', 'items'],
       render: (value) => {
         const result = _.get(value, '[0].summary.apsPendingCount')
-        return checkData(result)
+        if (result) {
+          return <TenantLink to={'/serviceValidation/networkHealth'}>{result}</TenantLink> // TODO: handle link
+        } else {
+          return noDataSymbol
+        }
       }
     },
     {
