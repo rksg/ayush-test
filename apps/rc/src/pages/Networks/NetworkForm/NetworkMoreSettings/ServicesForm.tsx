@@ -5,102 +5,21 @@ import {
   Checkbox,
   Form,
   InputNumber,
-  Select,
   Switch
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Tooltip }     from '@acx-ui/components'
-import {
-  DnsProxyRule,
-  DnsProxyContextType,
-  WifiCallingSettingContextType,
-  WifiCallingSetting
-} from '@acx-ui/rc/utils'
-import { notAvailableMsg } from '@acx-ui/utils'
+import { DnsProxyRule, DnsProxyContextType, WifiCallingSettingContextType, WifiCallingSetting } from '@acx-ui/rc/utils'
 
 import NetworkFormContext from '../NetworkFormContext'
 
+import ClientIsolationForm         from './ClientIsolation/ClientIsolationForm'
 import { DnsProxyModal }           from './DnsProxyModal'
 import * as UI                     from './styledComponents'
 import { WifiCallingSettingModal } from './WifiCallingSettingModal'
 import WifiCallingSettingTable     from './WifiCallingSettingTable'
 
 const { useWatch } = Form
-const { Option } = Select
-
-enum IsolatePacketsTypeEnum {
-  UNICAST = 'UNICAST',
-  MULTICAST = 'MULTICAST',
-  UNICAST_MULTICAST = 'UNICAST_MULTICAST',
-}
-
-function ClientIsolationForm () {
-  const { $t } = useIntl()
-  const [
-    enableClientIsolation
-  ] = [
-    useWatch<boolean>(['wlan','advancedCustomization','clientIsolation'])
-  ]
-
-  return (<>
-    <UI.FieldLabel width='125px'>
-      {$t({ defaultMessage: 'Client Isolation:' })}
-
-      <Form.Item
-        name={['wlan','advancedCustomization','clientIsolation']}
-        style={{ marginBottom: '10px' }}
-        valuePropName='checked'
-        initialValue={false}
-        children={<Switch />}
-      />
-    </UI.FieldLabel>
-
-    {enableClientIsolation &&
-    <>
-      <Form.Item
-        label={$t({ defaultMessage: 'Isolate Packets:' })}
-        name={['wlan','advancedCustomization','clientIsolationOptions', 'packetsType']}
-      >
-        <Select defaultValue={IsolatePacketsTypeEnum.UNICAST}
-          style={{ width: '240px' }}>
-          <Option value={IsolatePacketsTypeEnum.UNICAST}>
-            {$t({ defaultMessage: 'Unicast' })}
-          </Option>
-          <Option value={IsolatePacketsTypeEnum.MULTICAST}>
-            {$t({ defaultMessage: 'Multicast/broadcast' })}
-          </Option>
-          <Option value={IsolatePacketsTypeEnum.UNICAST_MULTICAST}>
-            {$t({ defaultMessage: 'Unicast and multicast/broadcast' })}
-          </Option>
-
-        </Select>
-      </Form.Item>
-      <UI.FieldLabel width='230px'>
-        {$t({ defaultMessage: 'Automatic support for VRRP/HSRP:' })}
-        <Form.Item
-          name={['wlan','advancedCustomization','clientIsolationOptions', 'autoVrrp']}
-          style={{ marginBottom: '10px' }}
-          valuePropName='checked'
-          initialValue={false}
-          children={<Switch />} />
-      </UI.FieldLabel>
-      <Tooltip title={$t(notAvailableMsg)}>
-        <UI.FieldLabel width='230px'>
-          {$t({ defaultMessage: 'Client Isolation Allowlist by Venue:' })}
-          <Form.Item
-            name='enableVenueClientIsolationAllowlist'
-            style={{ marginBottom: '10px' }}
-            valuePropName='checked'
-            initialValue={false}
-            children={<Switch disabled={true} />} />
-        </UI.FieldLabel>
-      </Tooltip>
-    </>
-    }
-  </>
-  )
-}
 
 export const DnsProxyContext = createContext({} as DnsProxyContextType)
 

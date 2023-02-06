@@ -10,9 +10,8 @@ import { InformationSolid, QuestionMarkCircleOutlined }                       fr
 import { useGetVenueLoadBalancingQuery, useUpdateVenueLoadBalancingMutation } from '@acx-ui/rc/services'
 import { LoadBalancingMethodEnum, SteeringModeEnum }                          from '@acx-ui/rc/utils'
 
-import { VenueEditContext } from '../..'
-
-import { FieldLabel, RadioDescription } from './styledComponents'
+import { VenueEditContext }             from '../..'
+import { FieldLabel, RadioDescription } from '../styledComponents'
 
 const { useWatch } = Form
 

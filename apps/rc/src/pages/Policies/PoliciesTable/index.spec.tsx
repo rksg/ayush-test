@@ -31,7 +31,7 @@ const mockTableResult = {
     {
       id: 'aa080e33-26a7-4d34-870f-b7f312fcfccb',
       name: 'Policy 2',
-      type: 'VLAN Pool',
+      type: 'VLAN Pools',
       technology: 'WI-FI',
       scope: '7',
       tags: [
