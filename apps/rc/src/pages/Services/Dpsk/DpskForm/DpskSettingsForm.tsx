@@ -47,7 +47,7 @@ export default function DpskSettingsForm () {
 
   return (
     <Row>
-      <Col span={6}>
+      <Col span={8}>
         <StepsForm.Title>{intl.$t({ defaultMessage: 'Settings' })}</StepsForm.Title>
         <Form.Item name='id' noStyle>
           <Input type='hidden' />
