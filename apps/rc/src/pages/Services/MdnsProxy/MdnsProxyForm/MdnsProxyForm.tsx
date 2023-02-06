@@ -12,7 +12,6 @@ import {
 } from '@acx-ui/rc/services'
 import {
   MdnsProxyFormData,
-  getServiceListRoutePath,
   getServiceRoutePath,
   ServiceType,
   ServiceOperation
@@ -34,7 +33,9 @@ export default function MdnsProxyForm ({ editMode = false }: MdnsProxyFormProps)
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
-  const myServicesPath = useTenantLink(getServiceListRoutePath(true))
+  const serviceTablePath = useTenantLink(getServiceRoutePath({
+    type: ServiceType.MDNS_PROXY, oper: ServiceOperation.LIST
+  }))
   const [ currentData, setCurrentData ] = useState<MdnsProxyFormData>({} as MdnsProxyFormData)
   const { data: dataFromServer } = useGetMdnsProxyQuery({ params }, { skip: !editMode })
   const [ addMdnsProxy ] = useAddMdnsProxyMutation()
@@ -63,7 +64,7 @@ export default function MdnsProxyForm ({ editMode = false }: MdnsProxyFormProps)
         await addMdnsProxy({ params, payload: data }).unwrap()
       }
 
-      navigate(myServicesPath, { replace: true })
+      navigate(serviceTablePath, { replace: true })
     } catch {
       showToast({
         type: 'error',
@@ -89,7 +90,7 @@ export default function MdnsProxyForm ({ editMode = false }: MdnsProxyFormProps)
       <MdnsProxyFormContext.Provider value={{ editMode, currentData }}>
         <StepsForm<MdnsProxyFormData>
           editMode={editMode}
-          onCancel={() => navigate(myServicesPath)}
+          onCancel={() => navigate(serviceTablePath)}
           onFinish={(data) => saveData(editMode, data)}
         >
           <StepsForm.StepForm
