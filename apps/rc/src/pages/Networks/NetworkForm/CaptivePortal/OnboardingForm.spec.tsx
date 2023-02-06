@@ -85,6 +85,7 @@ describe('CaptiveNetworkForm-ClickThrough', () => {
       { name: /Enable Ruckus DHCP service/ }))
     // await userEvent.click(await screen.findByText('More details'))
     await userEvent.click(await screen.findByText('Next'))
+    await userEvent.click(await screen.findByText('Next'))
     await screen.findByRole('heading', { level: 3, name: 'Portal Web Page' })
     await userEvent.click(await screen.findByText('Add Guest Portal Service'))
     await userEvent.type(await screen.findByRole(
