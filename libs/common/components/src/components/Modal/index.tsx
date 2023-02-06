@@ -8,8 +8,8 @@ import { Button, ButtonProps } from '../Button'
 import * as UI from './styledComponents'
 
 export enum ModalType {
-  default = 'default',
-  ModalStepsForm = 'ModalStepsForm'
+  Default = 'default',
+  ModalStepsForm = 'modalStepsForm'
 }
 
 interface ModalProps extends AntModalProps {
@@ -19,7 +19,7 @@ interface ModalProps extends AntModalProps {
 }
 
 export function Modal ({
-  type = ModalType.default,
+  type = ModalType.Default,
   footer,
   onCancel,
   cancelText,
