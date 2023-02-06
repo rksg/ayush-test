@@ -1,15 +1,17 @@
 
+import { useState } from 'react'
+
 import {
   Space } from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Button, Drawer, Loader, Table, TableProps, Tooltip } from '@acx-ui/components'
-import { DeleteOutlinedIcon, EditOutlinedIcon }               from '@acx-ui/icons'
-import { useGetLagListQuery }                                 from '@acx-ui/rc/services'
-import { Lag }                                                from '@acx-ui/rc/utils'
-import { useParams }                                          from '@acx-ui/react-router-dom'
-import { useState } from 'react'
+import { Button, Drawer, Loader, showActionModal, Table, TableProps, Tooltip } from '@acx-ui/components'
+import { DeleteOutlinedIcon, EditOutlinedIcon }                                from '@acx-ui/icons'
+import { useDeleteLagMutation, useGetLagListQuery }                            from '@acx-ui/rc/services'
+import { Lag, LAG_TYPE }                                                                 from '@acx-ui/rc/utils'
+import { useParams }                                                           from '@acx-ui/react-router-dom'
+
 import { SwitchLagModal } from './switchLagModal'
 
 interface SwitchLagProps {
@@ -80,7 +82,7 @@ export const SwitchLagDrawer = (props: SwitchLagProps) => {
             ghost={true}
             icon={<DeleteOutlinedIcon />}
             style={{ height: '16px' }}
-            onClick={() => handleDelete()}
+            onClick={() => handleDelete(row)}
           />
         </>
       }
@@ -89,9 +91,22 @@ export const SwitchLagDrawer = (props: SwitchLagProps) => {
 
   const { tenantId, switchId } = useParams()
   const { data, isLoading } = useGetLagListQuery({ params: { tenantId, switchId } })
+  const [deleteLag] = useDeleteLagMutation()
 
-
-  const handleDelete = () => {
+  const handleDelete = (row: Lag) => {
+    showActionModal({
+      type: 'confirm',
+      width: 450,
+      title: $t({ defaultMessage: 'Delete {lagName}' }, { lagName: row.name }),
+      content: $t({
+        defaultMessage: 'Are you sure you want to delete this LAG?' }),
+      okText: $t({ defaultMessage: 'OK' }),
+      cancelText: $t({ defaultMessage: 'Cancel' }),
+      onOk: async () => {
+        await deleteLag({ params: { lagId: row.id, tenantId } }).unwrap()
+      },
+      onCancel: async () => {}
+    })
     // const models = selectedModels.filter((item) => item !== model)
     // setSelectedModels(models)
     // setTableData(tableData.filter(item => item.model !== model))

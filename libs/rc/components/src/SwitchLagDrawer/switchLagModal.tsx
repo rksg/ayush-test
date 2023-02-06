@@ -112,7 +112,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
       }
       // this.portData = allPorts // CHECK needed it?
       const usedPortsId = _.flatMap(lagList.data.map(a => a.ports))
-      const editDataPorts = isEditMode ? editData[0].ports : []
+      const editDataPorts = isEditMode ? (editData[0].ports|| []) : []
       let availablePortIds = _.difference(
         allPorts.map(port => port.portIdentifier), usedPortsId)
       let availablePorts = availablePortIds
@@ -131,8 +131,12 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
       setVlanData()
 
       if (isEditMode) {
-        const getFirstPort = portList?.data?.data.find(data =>
-          data.portIdentifier === editData[0].ports[0])
+        const getFirstPort = portList?.data?.data.find(data => {
+          if (!Array.isArray(editData[0].ports)) {
+            return false
+          }
+          return data.portIdentifier === editData[0].ports[0]
+        })
         const portsType = getFirstPort?.opticsType
         if (portsType) {
           setCurrentPortType(portsType)
@@ -140,11 +144,11 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
             .filter(p => {
               return p.key ? getSameTypePortList(portsType).includes(p.key) : false
             }))
-          form.setFieldsValue({
-            ...editData[0],
-            portsType
-          })
         }
+        form.setFieldsValue({
+          ...editData[0],
+          portsType
+        })
       }
     }
   }, [portList.data, lagList, switchDetailHeader, editData])
@@ -165,6 +169,19 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
 
   const onClose = () => {
     setVisible(false)
+
+    setCurrentPortType(null)
+    setFinalAvailablePorts([])
+    form.setFieldsValue(
+      {
+        name: '',
+        untaggedVlan: '',
+        taggedVlans: [],
+        type: LAG_TYPE.STATIC,
+        portsType: null,
+        ports: []
+      }
+    )
     // form.resetFields()
   }
   const [addLag] = useAddLagMutation()
