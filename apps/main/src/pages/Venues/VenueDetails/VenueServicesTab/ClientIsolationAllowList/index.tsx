@@ -1,6 +1,6 @@
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps }        from '@acx-ui/components'
+import { Loader, Table, TableProps }       from '@acx-ui/components'
 import {
   useGetClientIsolationUsageByVenueQuery
 } from '@acx-ui/rc/services'
