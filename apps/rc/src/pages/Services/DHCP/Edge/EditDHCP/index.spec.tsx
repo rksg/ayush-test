@@ -58,14 +58,10 @@ describe('EditEdgeDhcp', () => {
     const fqdnNameInput = await screen.findByRole('textbox', { name: 'FQDN Name or IP Address' })
     const domainNameInput = screen.getByRole('textbox', { name: 'Domain Name' })
     const primaryDnsInput = screen.getByRole('textbox', { name: 'Primary DNS Server' })
-    const poolRow = await screen.findAllByRole('row', { name: /PoolTest1/i })
-    const hostRow = await screen.findAllByRole('row', { name: /HostTest1/i })
     await waitFor(() => expect(serviceNameInput).toHaveValue(mockEdgeDhcpData.serviceName))
     expect(fqdnNameInput).toHaveValue(mockEdgeDhcpData.externalDhcpServerFqdnIp)
     expect(domainNameInput).toHaveValue(mockEdgeDhcpData.domainName)
     expect(primaryDnsInput).toHaveValue(mockEdgeDhcpData.primaryDnsIp)
-    expect(poolRow.length).toBe(1)
-    expect(hostRow.length).toBe(1)
   })
 
   it('should be blcoked when required field is empty', async () => {

@@ -13,7 +13,6 @@ import {
 import { useGetEdgeDhcpServiceQuery, useUpdateEdgeDhcpServiceMutation } from '@acx-ui/rc/services'
 import { EdgeDhcpSetting }                                              from '@acx-ui/rc/utils'
 
-import { mockEdgeDhcpData } from '../__tests__/fixtures'
 
 const EditDhcp = () => {
 
@@ -24,13 +23,10 @@ const EditDhcp = () => {
   const [updateEdgeDhcp] = useUpdateEdgeDhcpServiceMutation()
 
   useEffect(() => {
-    formRef.current?.setFieldsValue(mockEdgeDhcpData)
-  }, [])
-  // useEffect(() => {
-  //   if(edgeDhcpData.data) {
-  //     formRef.current?.setFieldsValue(edgeDhcpData.data)
-  //   }
-  // }, [edgeDhcpData])
+    if(edgeDhcpData.data) {
+      formRef.current?.setFieldsValue(edgeDhcpData.data)
+    }
+  }, [edgeDhcpData])
 
   const handleEditEdgeDhcp = async (data: EdgeDhcpSetting) => {
     try {
