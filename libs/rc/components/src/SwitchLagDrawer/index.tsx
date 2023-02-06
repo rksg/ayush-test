@@ -22,6 +22,7 @@ export const SwitchLagDrawer = (props: SwitchLagProps) => {
   const { visible, setVisible } = props
   const [modalVisible, setModalVisible] = useState(false)
   const [isEditMode, setIsEditMode] = useState(false)
+  const [row, setRow] = useState([] as Lag[])
 
 
   const onClose = () => {
@@ -71,7 +72,7 @@ export const SwitchLagDrawer = (props: SwitchLagProps) => {
             ghost={true}
             icon={<EditOutlinedIcon />}
             style={{ height: '16px' }}
-            onClick={() => handleDelete()}
+            onClick={() => handleEdit(row)}
           />
           <Button
             key='delete'
@@ -97,6 +98,12 @@ export const SwitchLagDrawer = (props: SwitchLagProps) => {
     // setModelOptions(supportModelOptions.filter(item =>
     //   models.indexOf(item.value) === -1)
     // )
+  }
+
+  const handleEdit = (row: Lag) => {
+    setModalVisible(true)
+    setIsEditMode(true)
+    setRow([row])
   }
 
   const footer = [
@@ -148,6 +155,7 @@ export const SwitchLagDrawer = (props: SwitchLagProps) => {
       />
       {<SwitchLagModal
         isEditMode={isEditMode}
+        editData={row}
         visible={modalVisible}
         setVisible={setModalVisible}
       />}

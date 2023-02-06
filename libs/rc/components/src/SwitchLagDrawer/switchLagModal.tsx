@@ -15,17 +15,22 @@ import Transfer, { TransferItem } from 'antd/lib/transfer'
 import _                          from 'lodash'
 import { useIntl }                from 'react-intl'
 
-import { Button, Modal, showActionModal, StepsForm } from '@acx-ui/components'
-import { useGetDefaultVlanQuery,
+import { Button, Modal, showActionModal, StepsForm, Tooltip } from '@acx-ui/components'
+import { QuestionMarkCircleOutlined }                         from '@acx-ui/icons'
+import { useAddLagMutation, useGetDefaultVlanQuery,
   useGetLagListQuery,
   useLazyGetSwitchVlanQuery,
   useLazyGetVlansByVenueQuery,
   useSwitchDetailHeaderQuery,
-  useSwitchPortlistQuery } from '@acx-ui/rc/services'
-import { EdgeIpModeEnum, SwitchVlanUnion,
+  useSwitchPortlistQuery,
+  useUpdateLagMutation} from '@acx-ui/rc/services'
+import { SwitchVlanUnion,
   EditPortMessages,
   SwitchPortViewModel,
-  Vlan }                                                  from '@acx-ui/rc/utils'
+  Vlan,
+  showGeneralError,
+  Lag,
+  LAG_TYPE }                                                  from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
 import { getAllSwitchVlans, sortOptions } from '../SwitchPortTable/editPortDrawer.utils'
@@ -34,14 +39,16 @@ import { SelectVlanModal }                from '../SwitchPortTable/selectVlanMod
 interface SwitchLagProps {
   visible: boolean
   isEditMode: boolean
+  editData: Lag[]
   setVisible: (visible: boolean) => void
 }
 
-export const sortPortFunction = (portIdA: string, portIdB: string) => {
-  const splitA = portIdA.split('/')
+export const sortPortFunction = (portIdA: { name: string, key: string },
+  portIdB: { name: string, key: string }) => {
+  const splitA = portIdA.key.split('/')
   const valueA = calculatePortOrderValue(splitA[0], splitA[1], splitA[2])
 
-  const splitB = portIdB.split('/')
+  const splitB = portIdB.key.split('/')
   const valueB = calculatePortOrderValue(splitB[0], splitB[1], splitB[2])
   return valueA - valueB
 }
@@ -52,7 +59,7 @@ export const calculatePortOrderValue = (unitId: string, moduleId: string, portNu
 
 export const SwitchLagModal = (props: SwitchLagProps) => {
   const { $t } = useIntl()
-  const { visible, setVisible, isEditMode } = props
+  const { visible, setVisible, isEditMode, editData } = props
   const { tenantId, switchId, serialNumber } = useParams()
 
   const portPayload = {
@@ -105,11 +112,13 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
       }
       // this.portData = allPorts // CHECK needed it?
       const usedPortsId = _.flatMap(lagList.data.map(a => a.ports))
+      const editDataPorts = isEditMode ? editData[0].ports : []
       let availablePortIds = _.difference(
         allPorts.map(port => port.portIdentifier), usedPortsId)
       let availablePorts = availablePortIds
-        .sort(sortPortFunction)
+        .concat(editDataPorts)
         .map(portId => ({ name: portId, key: portId }))
+        .sort(sortPortFunction)
       setAvailablePorts(availablePorts)
 
       const portTypeItem = _.uniqBy(allPorts.map(p => ({
@@ -119,10 +128,27 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
       })), 'value')
 
       setPortsTypeItem(portTypeItem)
-
       setVlanData()
+
+      if (isEditMode) {
+        const getFirstPort = portList?.data?.data.find(data =>
+          data.portIdentifier === editData[0].ports[0])
+        const portsType = getFirstPort?.opticsType
+        if (portsType) {
+          setCurrentPortType(portsType)
+          setFinalAvailablePorts(availablePorts
+            .filter(p => {
+              return p.key ? getSameTypePortList(portsType).includes(p.key) : false
+            }))
+          form.setFieldsValue({
+            ...editData[0],
+            portsType
+          })
+        }
+      }
     }
-  }, [portList.data, lagList, switchDetailHeader])
+  }, [portList.data, lagList, switchDetailHeader, editData])
+
 
   useEffect(()=>{
     if(!isEditMode && switchesDefaultVlan) {
@@ -141,6 +167,49 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
     setVisible(false)
     // form.resetFields()
   }
+  const [addLag] = useAddLagMutation()
+  const [updateLag] = useUpdateLagMutation()
+
+  const onSave = async () => {
+    const value = form.getFieldsValue()
+    if(isEditMode) {
+      const taggedVlans = Array.isArray(value.taggedVlans) ? value.taggedVlans :
+        _.isString(value.taggedVlans) ? value.taggedVlans.split(',') : []
+
+      try {
+        let payload = {
+          ...value,
+          lagId: editData[0].lagId,
+          id: editData[0].id,
+          realRemove: editData[0].realRemove,
+          switchId: editData[0].switchId,
+          taggedVlans
+        }
+        delete payload.portsType
+        await updateLag({ params: { tenantId, switchId }, payload }).unwrap()
+        onClose()
+      } catch (err) {
+        console.log(err) // eslint-disable-line no-console
+        showGeneralError(err)
+      }
+
+
+    } else {
+      try {
+        let payload = {
+          ...value,
+          id: '',
+          taggedVlans: _.isString(value.taggedVlans) ? value.taggedVlans.split(',') : []
+        }
+        delete payload.portsType
+        await addLag({ params: { tenantId, switchId }, payload }).unwrap()
+        onClose()
+      } catch (err) {
+        console.log(err) // eslint-disable-line no-console
+        showGeneralError(err)
+      }
+    }
+  }
 
   const [form] = Form.useForm()
 
@@ -150,6 +219,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
     }
 
     if (currentPortType === null) {
+      form.setFieldValue('ports', undefined)
       changePortType(value)
     } else {
       showActionModal({
@@ -161,7 +231,9 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
           defaultMessage: 'Since a LAG can contain only ports of one type, changing the port type will clear the list of selected ports' }),
         okText: $t({ defaultMessage: 'OK' }),
         cancelText: $t({ defaultMessage: 'Cancel' }),
-        onOk: async () => {changePortType(value)},
+        onOk: async () => {
+          form.setFieldValue('ports', undefined)
+          changePortType(value)},
         onCancel: async () => {form.setFieldValue('portsType', currentPortType)}
       })
     }
@@ -178,7 +250,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
 
   const changePortType = (type: string) => {
     setCurrentPortType(type)
-    form.setFieldValue('ports', [''])
+
     form.setFieldValue('stackMember', null)
     let finalAvailablePorts: SetStateAction<TransferItem[]> = []
     if (type) {
@@ -241,7 +313,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
       <Button
         key='okBtn'
         type='secondary'
-        onClick={onClose}>
+        onClick={onSave}>
         {$t({ defaultMessage: 'Ok' })}
       </Button>
     </Space>
@@ -296,8 +368,8 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
                   children={<Input />}
                 />
                 <Form.Item
-                  name='lagType'
-                  initialValue={EdgeIpModeEnum.DHCP}
+                  name='type'
+                  initialValue={LAG_TYPE.STATIC}
                   label={$t({ defaultMessage: 'Type' })}
                   rules={[{
                     required: true
@@ -305,11 +377,15 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
                   children={
                     <Radio.Group>
                       <Space direction='vertical'>
-                        <Radio value={EdgeIpModeEnum.DHCP}>
-                          {$t({ defaultMessage: 'DHCP' })}
+                        <Radio
+                          value={LAG_TYPE.STATIC}
+                          disabled={isEditMode}>
+                          {$t({ defaultMessage: 'Static' })}
                         </Radio>
-                        <Radio value={EdgeIpModeEnum.STATIC}>
-                          {$t({ defaultMessage: 'Static/Manual' })}
+                        <Radio
+                          value={LAG_TYPE.DYNAMIC}
+                          disabled={isEditMode}>
+                          {$t({ defaultMessage: 'Dynamic' })}
                         </Radio>
                       </Space>
                     </Radio.Group>
@@ -323,6 +399,14 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
                   name='portsType'
                   label={<>
                     {$t({ defaultMessage: 'Ports Type' })}
+                    <Tooltip
+                      placement='bottom'
+                      title={
+                        $t({ defaultMessage: 'Select ports of the same type' })
+                      }
+                    >
+                      <QuestionMarkCircleOutlined />
+                    </Tooltip>
                   </>}
                   initialValue={null}
                   rules={[{
@@ -361,7 +445,8 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
                   valuePropName='targetKeys'
                 >
                   <Transfer
-                    listStyle={{ width: 200, height: 316 }}
+                    operationStyle={{ margin: '0 20px' }}
+                    listStyle={{ width: 190, height: 316 }}
                     showSearch
                     showSelectAll={false}
                     dataSource={[...finalAvailablePorts]}
@@ -376,7 +461,10 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
               name='untaggedVlan'
               label={$t({ defaultMessage: 'Untagged VLAN' })}
               children={
-                <div>
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: '150px 50px'
+                }}>
                   <div>{untaggedVlan
                     ? $t({ defaultMessage: 'VLAN-ID: {vlan}' }, {
                       vlan: untaggedVlan
@@ -390,7 +478,10 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
               name='taggedVlans'
               label={$t({ defaultMessage: 'Tagged VLANs' })}
               children={
-                <div>
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: '150px 50px'
+                }}>
                   <div>{
                     taggedVlans?.length > 0
                       ? $t(

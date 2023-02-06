@@ -270,16 +270,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'SwitchPort', id: 'LIST' }]
     }),
-    updateLag: build.mutation<Lag, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.updateLag, params)
-        return {
-          ...req,
-          body: payload
-        }
-      },
-      invalidatesTags: [{ type: 'SwitchPort', id: 'LIST' }]
-    }),
+
     importSwitches: build.mutation<{}, RequestFormData>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(SwitchUrlsInfo.importSwitches, params, {
@@ -677,6 +668,36 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       },
       providesTags: [{ type: 'Switch', id: 'LAG' }]
     }),
+    updateLag: build.mutation<Lag, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.updateLag, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Switch', id: 'LAG' }]
+    }),
+    addLag: build.mutation<Lag, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.addLag, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Switch', id: 'LAG' }]
+    }),
+    deleteLag: build.mutation<Lag, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.deleteLag, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Switch', id: 'LAG' }]
+    }),
     getDhcpPools: build.query<TableResult<SwitchDhcp>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(SwitchUrlsInfo.getDhcpPools, params)
@@ -914,6 +935,9 @@ export const {
   useLazyGetTroubleshootingCleanQuery,
   useUpdateDhcpServerStateMutation,
   useGetLagListQuery,
+  useAddLagMutation,
+  useUpdateLagMutation,
+  useDeleteLagMutation,
   useGetDhcpPoolsQuery,
   useGetDhcpServerQuery,
   useLazyGetDhcpServerQuery,
