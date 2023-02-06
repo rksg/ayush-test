@@ -1,16 +1,15 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import {
   Switch,
-  // ModalProps as AntdModalProps,
   Form,
   Row,
   Col,
-  // Space,
-  Input,
-  Typography
+  Input
 } from 'antd'
 import { PhoneNumberUtil } from 'google-libphonenumber'
+import _                   from 'lodash'
+import { FieldData }       from 'rc-field-form/lib/interface'
 import { useIntl }         from 'react-intl'
 
 import { Modal, showToast }    from '@acx-ui/components'
@@ -18,56 +17,108 @@ import {
   useAddRecipientMutation,
   useUpdateRecipientMutation
 } from '@acx-ui/rc/services'
-import { NotificationRecipient, NotificationEndpointType, emailRegExp, phoneRegExp } from '@acx-ui/rc/utils'
-import { useParams }                                                                 from '@acx-ui/react-router-dom'
+import {
+  NotificationRecipientUIModel,
+  NotificationEndpointType,
+  emailRegExp,
+  phoneRegExp,
+  CommonErrorsResult,
+  catchErrorDetails
+} from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
 
-  interface RecipientDialogProps {
-    visible: boolean;
-    editMode: boolean;
-    editData: NotificationRecipient;
-  }
+interface RecipientDialogProps {
+  visible: boolean;
+  setVisible: (visible: boolean) => void;
+  editMode: boolean;
+  editData: NotificationRecipientUIModel;
+  isDuplicated: (type: NotificationEndpointType, value: string) => boolean;
+}
 
-  interface RecipientSaveModel {
-    description: string;
-    endpoints: {
-      active: boolean;
-      destination: string;
-      type: string;
-
-    }[];
-  }
+interface RecipientSaveModel {
+  id?: string;  // // editMode used
+  description: string;
+  endpoints: {
+    id?: string;  // editMode used
+    active: boolean;
+    destination: string;
+    type: string;
+  }[];
+}
 
 const RecipientDialog = (props: RecipientDialogProps) => {
   const { $t } = useIntl()
   const params = useParams()
   const [form] = Form.useForm()
-  const { visible, editMode, editData } = props
+  const { visible, setVisible, editMode, editData, isDuplicated } = props
+  const [isChanged, setIsChanged] = useState(false)
+  const [isValid, setIsValid] = useState(false)
   const examplePhoneNumber = PhoneNumberUtil.getInstance().getExampleNumber('US')
   const [addRecipient, addState] = useAddRecipientMutation()
   const [updateRecipient, updateState] = useUpdateRecipientMutation()
 
-  const getSavePayload = (data: NotificationRecipient) => {
-    let dataToSave = {} as RecipientSaveModel
+  const emailInputVal = Form.useWatch('email', form)
+  const mobileInputVal = Form.useWatch('mobile', form)
 
+  const getSavePayload = (data: NotificationRecipientUIModel) => {
+    let dataToSave = {
+      description: data.description,
+      endpoints: []
+    } as RecipientSaveModel
+
+    const emailVal = data.email?.trim()
+    const mobileVal = data.mobile?.trim()
     if (editMode) {
-      // TODO
-    } else {
-      dataToSave = {
-        description: data.name,
-        endpoints: []
-      }
+      dataToSave.id = data.id
 
-      if (data.email.trim()) {
+      // need endpoint "id", it will tell API do endpint update
+      // without it API will try to create new endpoint
+      dataToSave.endpoints = data.endpoints ? data.endpoints.map((point) =>
+        _.pick(point, ['id', 'active', 'destination', 'type'])
+      ) : []
+
+      let endpoint = dataToSave.endpoints.find(e => e.type === NotificationEndpointType.email)
+      if (endpoint) {
+        endpoint.destination = emailVal
+        endpoint.active = data.emailEnabled
+      } else if (emailVal) {
         dataToSave.endpoints.push({
           active: data.emailEnabled,
-          destination: data.email.trim(),
+          destination: emailVal,
           type: NotificationEndpointType.email
         })
       }
-      if (data.mobile.trim()) {
+
+      endpoint = dataToSave.endpoints.find(e => e.type === NotificationEndpointType.sms)
+      if (endpoint) {
+        endpoint.destination = mobileVal
+        endpoint.active = data.mobileEnabled
+      } else if (mobileVal) {
         dataToSave.endpoints.push({
           active: data.mobileEnabled,
-          destination: data.mobile.trim(),
+          destination: mobileVal,
+          type: NotificationEndpointType.sms
+        })
+      }
+
+      // clear empty endpoints
+      for (let i = 0; i < dataToSave.endpoints.length; i++) {
+        if (dataToSave.endpoints[i].destination === '') {
+          dataToSave.endpoints.splice(i, 1)
+        }
+      }
+    } else {
+      if (emailVal) {
+        dataToSave.endpoints.push({
+          active: data.emailEnabled,
+          destination: emailVal,
+          type: NotificationEndpointType.email
+        })
+      }
+      if (mobileVal) {
+        dataToSave.endpoints.push({
+          active: data.mobileEnabled,
+          destination: mobileVal,
           type: NotificationEndpointType.sms
         })
       }
@@ -76,49 +127,91 @@ const RecipientDialog = (props: RecipientDialogProps) => {
     return dataToSave
   }
 
-  const handleSubmit = async (data: NotificationRecipient) => {
-    const payload = getSavePayload(data)
+  const findDuplicateEndpoints = (data: NotificationRecipientUIModel) => {
+    return {
+      duplicatePhone: isDuplicated(NotificationEndpointType.sms, data.mobile),
+      duplicateEmail: isDuplicated(NotificationEndpointType.email, data.email)
+    }
+  }
+
+  const checkOptionFieldsEntered = ():boolean => {
+    return mobileInputVal !== '' || emailInputVal !== ''
+  }
+
+  const handleInputChange = (changedFields: FieldData[]) => {
+    const changedField = changedFields[0]
+    const changedFieldName = changedField.name.toString()
+    const value = changedField.value
+
+    const errors = form.getFieldsError()
+    setIsValid(errors.some((field) => field.errors.length > 0) === false)
+    setIsChanged(true)
+
+    if (changedFieldName === 'email') {
+      if (changedField.errors?.length === 0)
+        form.setFieldValue('emailEnabled', Boolean(value.trim()))
+    }
+
+    if (changedFieldName === 'mobile') {
+      if (changedField.errors?.length === 0)
+        form.setFieldValue('mobileEnabled', Boolean(value.trim()))
+    }
+  }
+
+  const handleSubmit = async () => {
+    const allData = form.getFieldsValue(true)
+    const payload = getSavePayload(allData)
+
     try {
       if (editMode) {
-        await updateRecipient({ params, payload }).unwrap()
+        await updateRecipient({
+          params: {
+            tenantId: params.tenantId,
+            recipientId: allData.id
+          },
+          payload
+        }).unwrap()
       } else {
         await addRecipient({ params, payload }).unwrap()
       }
-    } catch(error) {
-      const responseData = error as { status: number, data: { [key: string]: string } }
 
-      // if (responseData.data.error.find(e => e.code === 'TNT-10100')) {
-      //   let errMsg = error.errors[0].message
-      //   const duplicateEndpoints = this.findDuplicateEndpoints(beModel)
-      //   if (duplicateEndpoints.duplicatePhone && duplicateEndpoints.duplicateEmail) {
-      //     errMsg = 'The email address and mobile phone number you entered are already defined for another recipient. Please use unique address and number.'
-      //   } else if (duplicateEndpoints.duplicatePhone) {
-      //     errMsg = 'The mobile phone number you entered is already defined for another recipient. Please use a unique number.'
-      //   } else if (duplicateEndpoints.duplicateEmail) {
-      //     errMsg = 'The email address you entered is already defined for another recipient. Please use an unique address.'
-      //   }
-      // }
+      handleClose()
+    } catch(err) {
+      const respData = err as CommonErrorsResult<catchErrorDetails>
+      const errors = respData.data.errors
+
+      let errMsg: string
+      if (errors.find(e => e.code === 'TNT-10100')) {
+        errMsg = errors[0].message
+
+        const duplicateEndpoints = findDuplicateEndpoints(allData)
+        if (duplicateEndpoints.duplicatePhone && duplicateEndpoints.duplicateEmail) {
+          // eslint-disable-next-line max-len
+          errMsg = $t({ defaultMessage: 'The email address and mobile phone number you entered are already defined for another recipient. Please use unique address and number.' })
+        } else if (duplicateEndpoints.duplicatePhone) {
+          // eslint-disable-next-line max-len
+          errMsg = $t({ defaultMessage: 'The mobile phone number you entered is already defined for another recipient. Please use a unique number.' })
+        } else if (duplicateEndpoints.duplicateEmail) {
+          // eslint-disable-next-line max-len
+          errMsg = $t({ defaultMessage: 'The email address you entered is already defined for another recipient. Please use an unique address.' })
+        }
+      } else {
+        errMsg = errors[0].message
+      }
 
       showToast({
         type: 'error',
         duration: 10,
         content: $t({ defaultMessage: 'An error occurred: {error}' }, {
-          error: responseData.data.error
+          error: errMsg
         })
       })
     }
   }
 
-  const handleEmailChange = () => {}
-  const handleEmailEnabledStateChanged = () => {
-    // TODO: control save button disabled
-    //       Added condition to check email switch on/off
-  }
-
-  const handleMobileChange = () => {}
-  const handleMobileEnabledStateChanged = () => {
-    // TODO: control save button disabled
-    //       Added condition to check mobile switch on/off
+  const handleClose = () => {
+    setVisible(false)
+    form.resetFields()
   }
 
   useEffect(()=>{
@@ -127,11 +220,8 @@ const RecipientDialog = (props: RecipientDialogProps) => {
     }
   }, [form, editData, visible])
 
-  // TODO: on change  & validate
-  // this.disableSave = !this.checkAllRequiredFieldsEntered() || !this.recipientForm.valid;
-
   const isLoading = addState.isLoading || updateState.isLoading
-  const disableSave = editMode
+  const disableSave = !isChanged || !checkOptionFieldsEntered() || !isValid
 
   return (
     <Modal
@@ -147,51 +237,58 @@ const RecipientDialog = (props: RecipientDialogProps) => {
           : $t({ defaultMessage: 'Save' })
       }
       keyboard={false}
-      closable={true}
-      width={840}
       onOk={() => form.submit()}
+      onCancel={handleClose}
       okButtonProps={{ disabled: disableSave || isLoading }}
     >
       <Form
         form={form}
-        layout='horizontal'
+        layout='vertical'
+        validateTrigger='onBlur'
         onFinish={handleSubmit}
+        onFieldsChange={handleInputChange}
       >
         <Form.Item
-          name='name'
+          name='description'
           label={$t({ defaultMessage: 'Name' })}
+          rules={[
+            { required: true },
+            { max: 255 }
+          ]}
         >
           <Input/>
         </Form.Item>
 
-        <Typography.Text>
-          {$t({ defaultMessage: 'You must define at least one of the following:' })}
-        </Typography.Text>
+        <Form.Item
+          label={$t({ defaultMessage: 'You must define at least one of the following:' })}
+          rules={[{ required: true }]}
+          children={<span></span>}
+        />
 
         <Form.Item
           label={$t({ defaultMessage: 'Email Address' })}
         >
-          <Row>
-            <Col span={20}>
+          <Row align='middle' justify='space-between'>
+            <Col span={18}>
               <Form.Item
                 name='email'
                 rules={[
                   { validator: (_, value) => emailRegExp(value) }
                 ]}
-                initialValue={''}
                 noStyle
               >
-                <Input onChange={handleEmailChange} />
+                <Input
+                  placeholder={$t({ defaultMessage: 'Email' })}
+                />
               </Form.Item>
             </Col>
             <Col span={4}>
               <Form.Item
                 noStyle
                 name='emailEnabled'
+                valuePropName='checked'
               >
-                <Switch
-                  onChange={handleEmailEnabledStateChanged}
-                />
+                <Switch />
               </Form.Item>
             </Col>
           </Row>
@@ -200,20 +297,19 @@ const RecipientDialog = (props: RecipientDialogProps) => {
         <Form.Item
           label={$t({ defaultMessage: 'Mobile Number' })}
         >
-          <Row>
-            <Col span={20}>
+          <Row align='middle' justify='space-between'>
+            <Col span={18}>
               <Form.Item
-                name='mobilePhoneNumber'
+                name='mobile'
                 rules={[
                   { validator: (_, value) => phoneRegExp(value) }
                 ]}
-                initialValue={null}
                 noStyle
+                validateFirst
               >
                 <Input
                   // eslint-disable-next-line max-len
                   placeholder={`+${examplePhoneNumber.getCountryCode()} ${examplePhoneNumber.getNationalNumberOrDefault()}`}
-                  onChange={handleMobileChange}
                 />
               </Form.Item>
             </Col>
@@ -221,10 +317,9 @@ const RecipientDialog = (props: RecipientDialogProps) => {
               <Form.Item
                 noStyle
                 name='mobileEnabled'
+                valuePropName='checked'
               >
-                <Switch
-                  onChange={handleMobileEnabledStateChanged}
-                />
+                <Switch />
               </Form.Item>
             </Col>
           </Row>
@@ -235,4 +330,3 @@ const RecipientDialog = (props: RecipientDialogProps) => {
 }
 
 export default RecipientDialog
-

@@ -43,6 +43,14 @@ export interface CommonResult {
   response?:{}
 }
 
+export interface CommonErrorsResult<T> {
+  data: {
+    errors: T[];
+    requestId: string;
+  };
+  status: number;
+}
+
 export interface Network {
   id: string
   name: string

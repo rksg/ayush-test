@@ -1,7 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 import {
-  TableResult,
   CommonResult,
   createHttpRequest,
   RequestPayload,
@@ -13,7 +12,10 @@ import {
   TenantPreferenceSettings,
   onActivityMessageReceived,
   onSocketActivityChanged,
-  NotificationRecipient
+  NotificationRecipientUIModel,
+  NotificationRecipientResponse,
+  NotificationEndpointType,
+  NotificationEndpoint
 } from '@acx-ui/rc/utils'
 
 export const baseAdministrationApi = createApi({
@@ -155,7 +157,7 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Administration', id: 'PREFERENCES' }]
     }),
-    getNotificationRecipients: build.query<TableResult<NotificationRecipient>, RequestPayload>({
+    getNotificationRecipients: build.query<NotificationRecipientUIModel[], RequestPayload>({
       query: ({ params }) => {
         const req =
           createHttpRequest(AdministrationUrlsInfo.getNotificationRecipients, params)
@@ -163,12 +165,38 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           ...req
         }
       },
+      transformResponse: (response: NotificationRecipientResponse[]) => {
+        // flat endpoint into individual fields
+        return response.map((data: NotificationRecipientResponse) => {
+          const result = {
+            id: data.id,
+            description: data.description,
+            endpoints: data.endpoints
+          } as NotificationRecipientUIModel
+
+          data.endpoints.forEach((endpoint: NotificationEndpoint) => {
+            switch (endpoint.type) {
+              case (NotificationEndpointType.email):
+                result.email = endpoint.destination
+                result.emailEnabled = endpoint.active
+                break
+              case (NotificationEndpointType.sms):
+              case (NotificationEndpointType.mobile_push):
+                result.mobile = endpoint.destination
+                result.mobileEnabled = endpoint.active
+                break
+            }
+          })
+
+          return result
+        })
+      },
       providesTags: [{ type: 'Administration', id: 'NOTIFICATION_LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
             'addNotificationRecipient',
-            'updateNotificationRecipient'
+            'UpdateNotificationRecipient'
           ], () => {
             api.dispatch(administrationApi.util.invalidateTags([
               { type: 'Administration', id: 'NOTIFICATION_LIST' }

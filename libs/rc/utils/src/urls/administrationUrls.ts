@@ -95,22 +95,22 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getNotificationRecipients: {
     method: 'get',
-    url: '/api/tenant/{tenantId}/notification-recipient'
+    url: '/api/tenant/:tenantId/notification-recipient'
   },
   addRecipient: {
     method: 'post',
-    url: '/api/tenant/{tenantId}/notification-recipient'
+    url: '/api/tenant/:tenantId/notification-recipient'
   },
   updateRecipient: {
     method: 'put',
-    url: '/api/tenant/{tenantId}/notification-recipient/{recipientId}'
+    url: '/api/tenant/:tenantId/notification-recipient/:recipientId'
   },
   deleteNotificationRecipients: {
     method: 'delete',
-    url: '/api/tenant/{tenantId}/notification-recipient'
+    url: '/api/tenant/:tenantId/notification-recipient'
   },
   deleteNotificationRecipient: {
     method: 'delete',
-    url: '/api/tenant/{tenantId}/notification-recipient/{recipientId}'
+    url: '/api/tenant/:tenantId/notification-recipient/:recipientId'
   }
 }
