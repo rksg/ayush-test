@@ -1,7 +1,7 @@
 import { IntlShape, useIntl } from 'react-intl'
 import { useParams }          from 'react-router-dom'
 
-import { PageHeader, Loader }         from '@acx-ui/components'
+import { PageHeader, Loader } from '@acx-ui/components'
 import {
   ApTable,
   defaultApPayload,
@@ -14,7 +14,8 @@ import {
   defaultClientPayload,
   ConnectedClientsTable,
   defaultSwitchClientPayload,
-  ClientsTable as SwitchClientTable
+  ClientsTable as SwitchClientTable,
+  eventDefaultSearch
 } from '@acx-ui/rc/components'
 import {
   useApListQuery,
@@ -101,11 +102,13 @@ const searches = [
       useQuery: useEventsQuery,
       defaultPayload: {
         ...eventDefaultPayload,
-        filters: {},
-        searchString,
-        searchTargetFields: ['entity_id', 'message', 'apMac', 'clientMac']
+        filters: {}
       },
       pagination,
+      search: {
+        searchString,
+        searchTargetFields: eventDefaultSearch.searchTargetFields
+      },
       sorter: {
         sortField: 'event_datetime',
         sortOrder: 'DESC'
@@ -114,7 +117,7 @@ const searches = [
     return {
       result,
       title: $t({ defaultMessage: 'Events' }),
-      component: <EventTable tableQuery={result} />
+      component: <EventTable tableQuery={result} searchables={false} filterables={false} />
     }
   },
   (searchString: string, $t: IntlShape['$t']) => {

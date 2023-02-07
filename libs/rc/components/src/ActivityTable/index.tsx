@@ -51,7 +51,8 @@ const ActivityTable = ({ tableQuery }: ActivityTableProps) => {
       render: function (_, row) {
         const msg = statusMapping[row.status as keyof typeof statusMapping]
         return $t(msg)
-      }
+      },
+      filterable: Object.entries(statusMapping).map(([key, value])=>({ key, value: $t(value) }))
     },
     {
       key: 'product',
@@ -61,7 +62,8 @@ const ActivityTable = ({ tableQuery }: ActivityTableProps) => {
       render: function (_, row) {
         const msg = productMapping[row.product as keyof typeof productMapping]
         return $t(msg)
-      }
+      },
+      filterable: Object.entries(productMapping).map(([key, value])=>({ key, value: $t(value) }))
     },
     {
       key: 'source',
@@ -124,6 +126,8 @@ const ActivityTable = ({ tableQuery }: ActivityTableProps) => {
       dataSource={tableQuery.data?.data}
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
+      onFilterChange={tableQuery.handleFilterChange}
+      enableApiFilter={true}
     />
     {current && visible && <TimelineDrawer
       title={defineMessage({ defaultMessage: 'Activity Details' })}
