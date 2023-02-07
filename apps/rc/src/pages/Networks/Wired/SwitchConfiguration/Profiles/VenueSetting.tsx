@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 
-import { Switch, Row, Col } from 'antd'
-import _                    from 'lodash'
-import { useIntl }          from 'react-intl'
+import { Switch, Row, Col, Form } from 'antd'
+import _                          from 'lodash'
+import { useIntl }                from 'react-intl'
 
 import {
   Loader,
@@ -56,12 +56,14 @@ const getNetworkId = () => {
 
 export function VenueSetting () {
   const { $t } = useIntl()
+  const form = Form.useFormInstance()
   const tableQuery = useTableQuery({
     useQuery: useNetworkVenueListQuery,
     apiParams: { networkId: getNetworkId() },
     defaultPayload
   })
   const [tableData, setTableData] = useState(defaultArray)
+  const [venueList, setVenueList] = useState<string[]>([])
 
 
   useEffect(()=>{
@@ -79,15 +81,6 @@ export function VenueSetting () {
       setTableData(data)
     }
   }, [tableQuery.data])
-
-  const activateNetwork = async () => {
-    // TODO: Service
-    // if (checked) {
-    //   if (row.allApDisabled) {
-    //     manageAPGroups(row);
-    //   }
-    // }
-  }
 
   const rowActions: TableProps<Venue>['rowActions'] = [
     {
@@ -135,8 +128,18 @@ export function VenueSetting () {
       align: 'center',
       render: function (data, row) {
         return <Switch
-          checked={Boolean(data)}
           onClick={(checked, event) => {
+            if(checked){
+              row.activated = { isActivated: true }
+              const mergedList = [...venueList, row.id]
+              setVenueList(mergedList)
+              form.setFieldValue('venues', mergedList)
+            }else{
+              row.activated = { isActivated: false }
+              const filterList = venueList.filter((item: string) => item !== row.id)
+              setVenueList(filterList)
+              form.setFieldValue('venues', filterList)
+            }
             event.stopPropagation()
           }}
         />
@@ -162,6 +165,7 @@ export function VenueSetting () {
             pagination={tableQuery.pagination}
             onChange={tableQuery.handleTableChange}
           />
+          <Form.Item name='venues' initialValue={[]} />
         </Col>
       </Row>
     </Loader>

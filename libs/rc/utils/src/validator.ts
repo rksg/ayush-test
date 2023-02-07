@@ -11,7 +11,7 @@ import { getIntl, validationMessages } from '@acx-ui/utils'
 
 import { IpUtilsService } from './ipUtilsService'
 import { AclTypeEnum } from './constants'
-import { Acl } from './types'
+import { Acl, Vlan } from './types'
 
 
 const Netmask = require('netmask').Netmask
@@ -667,6 +667,25 @@ export function checkAclName (aclName: string, aclType: string) {
 export function validateDuplicateAclName (aclName: string, aclList: Acl[]) {
   const { $t } = getIntl()
   const index = aclList.filter(item => item.name === aclName)
+  if (index.length > 0) {
+    return Promise.reject($t(validationMessages.aclNameDuplicateInvalid))
+  } else {
+    return Promise.resolve()
+  }
+}
+
+export function validateVlanName (vlanName: string){
+  const { $t } = getIntl()
+  const vlanRegexp = new RegExp('^([1-9]|[1-8][0-9]|9[0-9]|[1-8][0-9]{2}|9[0-8][0-9]|99[0-9]|[1-3][0-9]{3}|40[0-7][0-9]|408[0-6]|4088|4089|4095)$')
+  if (!vlanRegexp.test(vlanName)) {
+    return Promise.reject($t(validationMessages.vlanNameInvalid))
+  }
+  return Promise.resolve()
+}
+
+export function validateDuplicateVlanName (vlanName: string, vlanList: Vlan[]) {
+  const { $t } = getIntl()
+  const index = vlanList.filter(item => item.vlanName === vlanName)
   if (index.length > 0) {
     return Promise.reject($t(validationMessages.aclNameDuplicateInvalid))
   } else {

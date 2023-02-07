@@ -125,7 +125,7 @@ export function AclSetting () {
             columns={aclsColumns}
             dataSource={aclsTable}
             actions={[{
-              label: 'Add ACL',
+              label: $t({ defaultMessage: 'Add ACL' }),
               onClick: () => {
                 setDrawerFormRule({
                   id: '',

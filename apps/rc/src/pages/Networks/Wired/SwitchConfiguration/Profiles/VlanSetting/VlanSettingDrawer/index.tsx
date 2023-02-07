@@ -13,27 +13,27 @@ import {
 import { useIntl } from 'react-intl'
 
 import { Drawer, Table, TableProps }                                                     from '@acx-ui/components'
-import { Acl, AclExtendedRule, AclStandardRule, checkAclName, validateDuplicateAclName } from '@acx-ui/rc/utils'
+import { Acl, AclExtendedRule, AclStandardRule, checkAclName, validateDuplicateAclName, Vlan } from '@acx-ui/rc/utils'
 
-import { defaultExtendedRuleList, defaultStandardRuleList } from '..'
+import { defaultExtendedRuleList, defaultStandardRuleList } from '../../AclSetting'
 
 import { ACLRuleModal } from './ACLRuleModal'
 
-export interface ACLSettingDrawerProps {
-  rule?: Acl
-  setRule: (r: Acl) => void
+export interface VlanSettingDrawerProps {
+  rule?: Vlan
+  setVlan: (r: Vlan) => void
   editMode: boolean
   visible: boolean
   setVisible: (v: boolean) => void
-  isRuleUnique?: (r: Acl) => boolean
-  aclsTable: Acl[]
+  isRuleUnique?: (r: Vlan) => boolean
+  vlansList: Vlan[]
 }
 
-export function ACLSettingDrawer (props: ACLSettingDrawerProps) {
+export function VlanSettingDrawer (props: VlanSettingDrawerProps) {
   const { $t } = useIntl()
   const [aclType, setAclType] = useState('standard')
-  const { rule, setRule, visible, setVisible, editMode, aclsTable } = props
-  const [form] = Form.useForm<Acl>()
+  const { rule, setVlan, visible, setVisible, editMode, vlansList } = props
+  const [form] = Form.useForm<Vlan>()
 
   const onClose = () => {
     setAclType('standard')
@@ -51,13 +51,13 @@ export function ACLSettingDrawer (props: ACLSettingDrawerProps) {
       onClose={onClose}
       destroyOnClose={true}
       children={
-        <ACLSettingForm
+        <VlanSettingForm
           form={form}
           rule={rule}
-          setRule={setRule}
+          setVlan={setVlan}
           aclType={aclType}
           setAclType={setAclType}
-          aclsTable={aclsTable}
+          vlansList={vlansList}
         />
       }
       footer={
@@ -84,28 +84,28 @@ export function ACLSettingDrawer (props: ACLSettingDrawerProps) {
   )
 }
 
-interface ACLSettingFormProps {
-  form: FormInstance<Acl>
-  rule?: Acl
-  setRule: (r: Acl) => void
+interface VlanSettingFormProps {
+  form: FormInstance<Vlan>
+  rule?: Vlan
+  setVlan: (r: Vlan) => void
   aclType: string
   setAclType: (r: string) => void
-  aclsTable: Acl[]
+  vlansList: Vlan[]
 }
 
-function ACLSettingForm (props: ACLSettingFormProps) {
+function VlanSettingForm (props: VlanSettingFormProps) {
   const { $t } = useIntl()
   const [openModal, setOpenModal] = useState(false)
   const [selected, setSelected] = useState<AclStandardRule | AclExtendedRule>()
   const [ruleList, setRuleList] = useState<
     AclStandardRule[] | AclExtendedRule[]
   >([defaultStandardRuleList])
-  const { form, rule, setRule, aclType, setAclType, aclsTable } = props
+  const { form, rule, setVlan, aclType, setAclType, vlansList } = props
 
   useEffect(() => {
     if(rule){
       form.setFieldsValue(rule)
-      setRuleList(rule.aclRules as AclStandardRule[] | AclExtendedRule[])
+    //   setRuleList(rule.aclRules as AclStandardRule[] | AclExtendedRule[])
     }
   }, [form, rule])
 
@@ -234,8 +234,8 @@ function ACLSettingForm (props: ACLSettingFormProps) {
       <Form
         layout='vertical'
         form={form}
-        onFinish={(data: Acl) => {
-          setRule(data)
+        onFinish={(data: Vlan) => {
+          setVlan(data)
           form.resetFields()
         }}
       >
@@ -245,10 +245,7 @@ function ACLSettingForm (props: ACLSettingFormProps) {
           label={$t({ defaultMessage: 'ACL Name' })}
           name='name'
           rules={[
-            { required: true },
-            { validator: (_, value) => checkAclName(value, form.getFieldValue('aclType')) },
-            { validator: (_, value) =>
-              validateDuplicateAclName(value, aclsTable) }
+            { required: true }
           ]}
           children={<Input style={{ width: '400px' }} />}
         />
