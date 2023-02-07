@@ -4,6 +4,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import {
+  Loader,
   PageHeader, showToast, StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
@@ -14,17 +15,22 @@ import { useGetEdgeDhcpServiceQuery, useUpdateEdgeDhcpServiceMutation } from '@a
 import { EdgeDhcpSetting }                                              from '@acx-ui/rc/utils'
 
 
+
 const EditDhcp = () => {
 
   const { $t } = useIntl()
   const params = useParams()
   const formRef = useRef<StepsFormInstance<EdgeDhcpSetting>>()
-  const edgeDhcpData = useGetEdgeDhcpServiceQuery({ params: { id: params.serviceId } })
+  const {
+    data: edgeDhcpData,
+    isLoading: isEdgeDhcpDataLoading
+  } = useGetEdgeDhcpServiceQuery({ params: { id: params.serviceId } })
   const [updateEdgeDhcp] = useUpdateEdgeDhcpServiceMutation()
 
   useEffect(() => {
-    if(edgeDhcpData.data) {
-      formRef.current?.setFieldsValue(edgeDhcpData.data)
+    if(edgeDhcpData) {
+      formRef.current?.resetFields()
+      formRef.current?.setFieldsValue(edgeDhcpData)
     }
   }, [edgeDhcpData])
 
@@ -49,15 +55,18 @@ const EditDhcp = () => {
           { text: $t({ defaultMessage: 'Services' }), link: '/services' }
         ]}
       />
-      <StepsForm
-        formRef={formRef}
-        onFinish={handleEditEdgeDhcp}
-        buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
-      >
-        <StepsForm.StepForm>
-          <EdgeDhcpSettingForm />
-        </StepsForm.StepForm>
-      </StepsForm>
+      <Loader states={[{ isLoading: isEdgeDhcpDataLoading }]}>
+        <StepsForm
+          formRef={formRef}
+          editMode={true}
+          onFinish={handleEditEdgeDhcp}
+          buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
+        >
+          <StepsForm.StepForm>
+            <EdgeDhcpSettingForm />
+          </StepsForm.StepForm>
+        </StepsForm>
+      </Loader>
     </>
   )
 }

@@ -1,15 +1,15 @@
-import { useState, useRef, useEffect } from 'react'
+import { useRef, useState } from 'react'
 
 import { Col, Form, Input, Row } from 'antd'
 import _                         from 'lodash'
 import { useIntl }               from 'react-intl'
 
-import { Drawer }   from '@acx-ui/components'
+import { Drawer }      from '@acx-ui/components'
 import {
-  EdgeDhcpPool,
+  countIpMaxRange, EdgeDhcpPool,
   networkWifiIpRegExp,
-  subnetMaskIpRegExp,
-  countIpMaxRange } from '@acx-ui/rc/utils'
+  subnetMaskIpRegExp
+} from '@acx-ui/rc/utils'
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
 import { PoolTable } from './PoolTable'
@@ -49,14 +49,10 @@ export default function DhcpPoolTable ({
   const [form] = Form.useForm<EdgeDhcpPool>()
   const valueMap = useRef<Record<string, EdgeDhcpPool>>(value ? _.keyBy(value, 'id') : {})
   const [visible, setVisible] = useState(false)
-  const values = () => Object.values(valueMap.current)
-  const handleChanged = () => onChange?.(values())
 
-  useEffect(() => {
-    if(value) {
-      valueMap.current = _.keyBy(value, 'id')
-    }
-  }, [value])
+  const values = () => Object.values(valueMap.current)
+
+  const handleChanged = () => onChange?.(values())
 
   const onAddOrEdit = (item?: EdgeDhcpPool) => {
     setVisible(true)

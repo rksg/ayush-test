@@ -54,14 +54,19 @@ describe('EditEdgeDhcp', () => {
       </Provider>, {
         route: { params, path: editPagePath }
       })
-    const serviceNameInput = screen.getByRole('textbox', { name: /service name/i })
+    let serviceNameInput = await screen.findByRole('textbox', { name: 'Service Name' })
     const fqdnNameInput = await screen.findByRole('textbox', { name: 'FQDN Name or IP Address' })
     const domainNameInput = screen.getByRole('textbox', { name: 'Domain Name' })
     const primaryDnsInput = screen.getByRole('textbox', { name: 'Primary DNS Server' })
-    await waitFor(() => expect(serviceNameInput).toHaveValue(mockEdgeDhcpData.serviceName))
+    serviceNameInput = await screen.findByRole('textbox', { name: 'Service Name' })
+    expect(serviceNameInput).toHaveValue(mockEdgeDhcpData.serviceName)
     expect(fqdnNameInput).toHaveValue(mockEdgeDhcpData.externalDhcpServerFqdnIp)
     expect(domainNameInput).toHaveValue(mockEdgeDhcpData.domainName)
     expect(primaryDnsInput).toHaveValue(mockEdgeDhcpData.primaryDnsIp)
+    const poolsRow = await screen.findAllByRole('row', { name: /PoolTest/i })
+    const hostsRow = await screen.findAllByRole('row', { name: /HostTest/i })
+    expect(poolsRow.length).toBe(1)
+    expect(hostsRow.length).toBe(1)
   })
 
   it('should be blcoked when required field is empty', async () => {
@@ -72,7 +77,7 @@ describe('EditEdgeDhcp', () => {
       </Provider>, {
         route: { params, path: editPagePath }
       })
-    const serviceNameInput = screen.getByRole('textbox', { name: /service name/i })
+    const serviceNameInput = screen.getByRole('textbox', { name: 'Service Name' })
     await waitFor(() => expect(serviceNameInput).toHaveValue(mockEdgeDhcpData.serviceName))
     fireEvent.change(serviceNameInput, { target: { value: '' } })
     await user.click(screen.getByRole('button', { name: 'Apply' }))
@@ -87,7 +92,7 @@ describe('EditEdgeDhcp', () => {
       </Provider>, {
         route: { params, path: editPagePath }
       })
-    const serviceNameInput = screen.getByRole('textbox', { name: /service name/i })
+    const serviceNameInput = screen.getByRole('textbox', { name: 'Service Name' })
     await waitFor(() => expect(serviceNameInput).toHaveValue(mockEdgeDhcpData.serviceName))
     await user.click(screen.getByRole('button', { name: 'Apply' }))
     expect(mockedUpdateEdgeDhcp).toBeCalledTimes(1)
@@ -122,7 +127,7 @@ describe('EditEdgeDhcp api fail', () => {
       </Provider>, {
         route: { params, path: editPagePath }
       })
-    const serviceNameInput = screen.getByRole('textbox', { name: /service name/i })
+    const serviceNameInput = screen.getByRole('textbox', { name: 'Service Name' })
     await waitFor(() => expect(serviceNameInput).toHaveValue(mockEdgeDhcpData.serviceName))
     await user.click(screen.getByRole('button', { name: 'Apply' }))
     await screen.findByText('An error occurred')
