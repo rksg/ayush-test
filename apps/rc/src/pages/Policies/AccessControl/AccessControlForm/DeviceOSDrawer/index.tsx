@@ -64,7 +64,9 @@ export const GenDetailsColumn = (props: { row: DeviceOSRule }) => {
     }))
   }
   return <div style={{ display: 'flex', flexDirection: 'column' }}>
-    {row.details.vlan && <span>VLAN: {row.details.vlan}</span>}
+    {row.details.vlan && <span>{$t({ defaultMessage: 'VLAN: {vlan}' }, {
+      vlan: row.details.vlan
+    })}</span>}
     <span style={{ whiteSpace: 'nowrap' }}>
       {linkArray.length ? $t({ defaultMessage: 'Rate Limit: ' }) : ''} {linkArray.join(' | ')}
     </span>
