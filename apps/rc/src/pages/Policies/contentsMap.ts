@@ -1,6 +1,13 @@
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
-import { PolicyTechnology, PolicyType, RogueRuleType, Layer3ProtocolType } from '@acx-ui/rc/utils'
+import {
+  ApplicationAclType,
+  ApplicationRuleType,
+  Layer3ProtocolType,
+  PolicyTechnology,
+  RogueRuleType,
+  PolicyType
+} from '@acx-ui/rc/utils'
 
 export const policyTypeLabelMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.AAA]: defineMessage({ defaultMessage: 'AAA Server' }),
@@ -61,3 +68,18 @@ export const layer3ProtocolLabelMapping: Record<Layer3ProtocolType, MessageDescr
   [Layer3ProtocolType.AH]: defineMessage({ defaultMessage: 'AH' }),
   [Layer3ProtocolType.SCTP]: defineMessage({ defaultMessage: 'SCTP' })
 }
+
+export const AppAclLabelMapping: Record<ApplicationAclType, MessageDescriptor> = {
+  [ApplicationAclType.DENY]: defineMessage({ defaultMessage: 'Block Applications' }),
+  [ApplicationAclType.RATE_LIMIT]: defineMessage({ defaultMessage: 'Rate Limit' }),
+  [ApplicationAclType.QOS]: defineMessage({ defaultMessage: 'QoS' })
+}
+
+export const AppRuleLabelMapping: Record<ApplicationRuleType, MessageDescriptor> = {
+  [ApplicationRuleType.SIGNATURE]: defineMessage({ defaultMessage: 'System defined' }),
+  [ApplicationRuleType.USER_DEFINED]: defineMessage({ defaultMessage: 'User defined' })
+}
+
+
+
+
