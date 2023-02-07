@@ -110,7 +110,8 @@ export default function PoliciesTable () {
     [PolicyType.VLAN_POOL]: [],
     [PolicyType.LAYER_2_POLICY]: [],
     [PolicyType.LAYER_3_POLICY]: [],
-    [PolicyType.APPLICATION_POLICY]: []
+    [PolicyType.APPLICATION_POLICY]: [],
+    [PolicyType.DEVICE_POLICY]: []
   }
 
   const tableQuery = useTableQuery({

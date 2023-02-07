@@ -42,7 +42,8 @@ const typePathMapping: Record<PolicyType, string> = {
   [PolicyType.MAC_REGISTRATION_LIST]: 'macRegistrationList',
   [PolicyType.LAYER_2_POLICY]: 'layer2Policy',
   [PolicyType.LAYER_3_POLICY]: 'layer3Policy',
-  [PolicyType.APPLICATION_POLICY]: 'applicationPolicy'
+  [PolicyType.APPLICATION_POLICY]: 'applicationPolicy',
+  [PolicyType.DEVICE_POLICY]: 'devicePolicy'
 }
 
 export function getPolicyRoutePath (props: PolicyRoutePathProps): string {

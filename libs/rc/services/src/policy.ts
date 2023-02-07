@@ -24,6 +24,8 @@ import {
   onSocketActivityChanged,
   onActivityMessageReceived,
   CommonResult,
+  devicePolicyInfoType,
+  DevicePolicy,
   NewTableResult,
   transferToTableResult,
   l3AclPolicyInfoType,
@@ -55,7 +57,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
   endpoints: (build) => ({
     addRoguePolicy: build.mutation<RogueAPDetectionContextType, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(RogueApUrls.addRoguePolicy, params, RKS_NEW_UI)
+        const req = createHttpRequest(RogueApUrls.addRoguePolicy, params)
         return {
           ...req,
           body: payload
@@ -65,7 +67,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     delRoguePolicy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(RogueApUrls.deleteRogueApPolicy, params, RKS_NEW_UI)
+        const req = createHttpRequest(RogueApUrls.deleteRogueApPolicy, params)
         return {
           ...req
         }
@@ -74,7 +76,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     addL2AclPolicy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(AccessControlUrls.addL2AclPolicy, params, RKS_NEW_UI)
+        const req = createHttpRequest(AccessControlUrls.addL2AclPolicy, params)
         return {
           ...req,
           body: payload
@@ -84,7 +86,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     getL2AclPolicy: build.query<l2AclPolicyInfoType, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(AccessControlUrls.getL2AclPolicy, params, RKS_NEW_UI)
+        const req = createHttpRequest(AccessControlUrls.getL2AclPolicy, params)
         return {
           ...req
         }
@@ -93,7 +95,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     addL3AclPolicy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(AccessControlUrls.addL3AclPolicy, params, RKS_NEW_UI)
+        const req = createHttpRequest(AccessControlUrls.addL3AclPolicy, params)
         return {
           ...req,
           body: payload
@@ -144,7 +146,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     getL3AclPolicy: build.query<l3AclPolicyInfoType, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(AccessControlUrls.getL3AclPolicy, params, RKS_NEW_UI)
+        const req = createHttpRequest(AccessControlUrls.getL3AclPolicy, params)
         return {
           ...req
         }
@@ -170,9 +172,56 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       providesTags: [{ type: 'Policy', id: 'DETAIL' }]
     }),
+    addDevicePolicy: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AccessControlUrls.addDevicePolicy, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    getDevicePolicy: build.query<devicePolicyInfoType, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(AccessControlUrls.getDevicePolicy, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+    }),
+    devicePolicyList: build.query<TableResult<DevicePolicy>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const devicePolicyListReq = createHttpRequest(
+          AccessControlUrls.getDevicePolicyList,
+          params
+        )
+        return {
+          ...devicePolicyListReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const params = requestArgs.params as { requestId: string }
+          onActivityMessageReceived(msg, [
+            'Add Device Policy Profile',
+            'Update Device Policy Profile',
+            'Delete Device Policy Profile',
+            'Delete Device Policy Profiles'
+          ], () => {
+            api.dispatch(policyApi.util.invalidateTags([
+              { type: 'Policy', id: 'LIST' }
+            ]))
+          }, params.requestId as string)
+        })
+      }
+    }),
     getRoguePolicyList: build.query<RogueAPDetectionTempType[], RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(RogueApUrls.getRoguePolicyList, params, RKS_NEW_UI)
+        const req = createHttpRequest(RogueApUrls.getRoguePolicyList, params)
         return {
           ...req
         }
@@ -191,7 +240,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     delRoguePolicies: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(RogueApUrls.deleteRogueApPolicies, params, RKS_NEW_UI)
+        const req = createHttpRequest(RogueApUrls.deleteRogueApPolicies, params)
         return {
           ...req,
           body: payload
@@ -201,7 +250,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     roguePolicy: build.query<RogueAPDetectionContextType, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(RogueApUrls.getRoguePolicy, params, RKS_NEW_UI)
+        const req = createHttpRequest(RogueApUrls.getRoguePolicy, params)
         return {
           ...req
         }
@@ -210,7 +259,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     updateRoguePolicy: build.mutation<RogueAPDetectionTempType, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(RogueApUrls.updateRoguePolicy, params, RKS_NEW_UI)
+        const req = createHttpRequest(RogueApUrls.updateRoguePolicy, params)
         return {
           ...req,
           body: payload
@@ -220,7 +269,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     venueRoguePolicy: build.query<TableResult<VenueRoguePolicyType>, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(RogueApUrls.getVenueRoguePolicy, params, RKS_NEW_UI)
+        const req = createHttpRequest(RogueApUrls.getVenueRoguePolicy, params)
         return {
           ...req,
           body: payload
@@ -230,7 +279,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     policyList: build.query<TableResult<Policy>, RequestPayload>({
       query: ({ params, payload }) => {
-        const policyListReq = createHttpRequest(CommonUrlsInfo.getPoliciesList, params, RKS_NEW_UI)
+        const policyListReq = createHttpRequest(CommonUrlsInfo.getPoliciesList, params)
         return {
           ...policyListReq,
           body: payload
@@ -652,6 +701,9 @@ export const {
   useGetAccessControlProfileQuery,
   useL2AclPolicyListQuery,
   useL3AclPolicyListQuery,
+  useAddDevicePolicyMutation,
+  useGetDevicePolicyQuery,
+  useDevicePolicyListQuery,
   useAppPolicyListQuery,
   useGetRoguePolicyListQuery,
   useGetAccessControlProfileListQuery,

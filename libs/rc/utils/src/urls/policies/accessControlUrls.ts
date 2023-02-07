@@ -64,5 +64,17 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
   deleteAccessControlProfile: {
     method: 'delete',
     url: '/api/tenant/:tenantId/wifi/access-control-profile/:policyId'
+  },
+  addDevicePolicy: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/device-policy'
+  },
+  getDevicePolicy: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/device-policy/:devicePolicyId'
+  },
+  getDevicePolicyList: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/device-policy/query'
   }
 }

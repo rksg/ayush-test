@@ -26,12 +26,13 @@ import {
 import { transformDisplayText } from '@acx-ui/rc/utils'
 import { useParams }            from '@acx-ui/react-router-dom'
 
+import ApplicationDrawer  from '../../../Policies/AccessControl/AccessControlForm/ApplicationDrawer'
+import DeviceOSDrawer     from '../../../Policies/AccessControl/AccessControlForm/DeviceOSDrawer'
 import Layer2Drawer       from '../../../Policies/AccessControl/AccessControlForm/Layer2Drawer'
 import Layer3Drawer       from '../../../Policies/AccessControl/AccessControlForm/Layer3Drawer'
 import NetworkFormContext from '../NetworkFormContext'
 
 import * as UI from './styledComponents'
-import ApplicationDrawer from '../../../Policies/AccessControl/AccessControlForm/ApplicationDrawer';
 
 const { useWatch } = Form
 const { Option } = Select
@@ -368,30 +369,6 @@ function AccessControlConfigForm () {
     useWatch<boolean>('enableClientRateLimit')
   ]
 
-  const { devicePolicySelectOptions } = useDevicePolicyListQuery({
-    params: useParams(),
-    payload: listPayload
-  }, {
-    selectFromResult ({ data }) {
-      return {
-        devicePolicySelectOptions: data?.data?.map(
-          item => <Option key={item.id}>{item.name}</Option>) ?? []
-      }
-    }
-  })
-
-  const { applicationPolicySelectOptions } = useApplicationPolicyListQuery({
-    params: useParams(),
-    payload: listPayload
-  }, {
-    selectFromResult ({ data }) {
-      return {
-        applicationPolicySelectOptions: data?.data?.map(
-          item => <Option key={item.id}>{item.name}</Option>) ?? []
-      }
-    }
-  })
-
   return (<>
     <UI.FieldLabel width='175px'>
       {$t({ defaultMessage: 'Layer 2' })}
@@ -443,22 +420,9 @@ function AccessControlConfigForm () {
             }} />}
         />
 
-        {enableDeviceOs && <>
-          <Form.Item
-            name={['wlan','advancedCustomization','devicePolicyId']}
-            style={{ marginBottom: '10px', lineHeight: '32px' }}
-            rules={[{
-              required: true,
-              message: $t({ defaultMessage: 'Please select Device & OS profile' })
-            }]}
-            children={
-              <Select placeholder={$t({ defaultMessage: 'Select profile...' })}
-                style={{ width: '180px' }}
-                children={devicePolicySelectOptions} />
-            }
-          />
-          {$t({ defaultMessage: 'Add' })}
-        </>}
+        {enableDeviceOs && <DeviceOSDrawer
+          inputName={['wlan', 'advancedCustomization']}
+        />}
       </div>
     </UI.FieldLabel>
 
