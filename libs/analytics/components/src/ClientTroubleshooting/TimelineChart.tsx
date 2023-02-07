@@ -6,8 +6,6 @@ import {
   useEffect,
   useRef,
   useState,
-  RefCallback,
-  useImperativeHandle,
   useMemo
 } from 'react'
 
@@ -18,8 +16,7 @@ import {
   SeriesOption,
   CustomSeriesRenderItemAPI,
   CustomSeriesRenderItemParams,
-  TooltipComponentOption,
-  connect
+  TooltipComponentOption
 } from 'echarts'
 import ReactECharts        from 'echarts-for-react'
 import {
@@ -70,8 +67,6 @@ export interface TimelineChartProps extends Omit<EChartsReactProps, 'option' | '
   chartBoundary: number[];
   selectedData?: number;
   onDotClick?: (params: unknown) => void;
-  sharedChartName: string;
-  chartRef?: RefCallback<ReactECharts>;
   hasXaxisLabel?: boolean;
   tooltipFormatter: CallableFunction;
   mapping: { key: string; label: string; chartType: string; series: string }[];
@@ -266,17 +261,15 @@ export function TimelineChart ({
   chartBoundary,
   selectedData,
   onDotClick,
-  chartRef,
   tooltipFormatter,
   mapping,
   hasXaxisLabel,
   showResetZoom,
   index,
-  sharedChartName,
   ...props
 }: TimelineChartProps) {
   const { $t } = useIntl()
-  useImperativeHandle(chartRef, () => eChartsRef.current!)
+
   const chartPadding = 10
   const rowHeight = 22
   const placeholderRows = 2
@@ -456,9 +449,8 @@ export function TimelineChart ({
     if (eChartsRef && eChartsRef.current) {
       const instance = eChartsRef.current.getEchartsInstance()
       instance.setOption(option)
-      connect(sharedChartName)
     }
-  }, [option, sharedChartName])
+  }, [option])
 
   return (
     <>
