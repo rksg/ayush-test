@@ -29,6 +29,7 @@ import { ApEdit }                  from './pages/Devices/Wifi/ApEdit'
 import { ApForm }                  from './pages/Devices/Wifi/ApForm'
 import { ApGroupForm }             from './pages/Devices/Wifi/ApGroupForm'
 import ApsTable                    from './pages/Devices/Wifi/ApsTable'
+import Wired                       from './pages/Networks/wired'
 import NetworkDetails              from './pages/Networks/wireless/NetworkDetails/NetworkDetails'
 import NetworkForm                 from './pages/Networks/wireless/NetworkForm/NetworkForm'
 import NetworksTable               from './pages/Networks/wireless/NetworksTable'
@@ -166,7 +167,8 @@ function NetworkRoutes () {
         path='networks/wireless/:networkId/:action'
         element={<NetworkForm />}
       />
-      {/* <Route path='networks/wired' element={<NetworksTable />} /> */}
+      <Route path='networks/wired' element={<Wired />} />
+      <Route path='networks/wired/:activeTab' element={<Wired />} />
     </Route>
   )
 }
