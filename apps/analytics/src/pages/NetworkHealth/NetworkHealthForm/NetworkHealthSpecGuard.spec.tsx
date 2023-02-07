@@ -36,6 +36,7 @@ describe('NetworkHealthSpecGuard', () => {
       route: { params: { tenantId: 't-id' } }
     })
 
+    // eslint-disable-next-line testing-library/no-node-access
     expect(container.firstChild).toBeEmptyDOMElement()
   })
 
