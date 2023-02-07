@@ -530,13 +530,12 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
                     display: 'grid',
                     gridTemplateColumns: '150px 50px'
                   }}>
-                    <div>{taggedVlans?.length > 0
+                    <div>{((taggedVlans?.length > 0) && !_.isEmpty(taggedVlans?.toString()))
                       ? $t({ defaultMessage: 'VLAN-ID: {vlan}' },
                         {
                           vlan: sortOptions(
                             taggedVlans?.toString().split(','), 'number').join(', ')
                         }) : '--'}</div>
-
                     <Button type='link' onClick={onClickEditVlan} disabled={cliApplied}>
                       {$t({ defaultMessage: 'Edit' })}
                     </Button>
