@@ -57,6 +57,30 @@ const AccessControlForm = (props: AccessControlFormProps) => {
         id: formRef.current?.getFieldValue('l3AclPolicyId')
       }
     }
+
+    if (formRef.current?.getFieldValue('enableDeviceOs')) {
+      payload.devicePolicy = {
+        enabled: true,
+        id: formRef.current?.getFieldValue('devicePolicyId')
+      }
+    }
+
+    if (formRef.current?.getFieldValue('enableApplications')) {
+      payload.applicationPolicy = {
+        enabled: true,
+        id: formRef.current?.getFieldValue('applicationPolicyId')
+      }
+    }
+
+    if (formRef.current?.getFieldValue(['rateLimiting', 'enableDownloadLimit'])
+      || formRef.current?.getFieldValue(['rateLimiting', 'enableUploadLimit'])) {
+      payload.rateLimiting = {
+        enabled: true,
+        uplinkLimit: formRef.current?.getFieldValue(['rateLimiting', 'uplinkLimit']) ?? 0,
+        downlinkLimit: formRef.current?.getFieldValue(['rateLimiting', 'downlinkLimit']) ?? 0
+      }
+    }
+
     return payload
   }
 

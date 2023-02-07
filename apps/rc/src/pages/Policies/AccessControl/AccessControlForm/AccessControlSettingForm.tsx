@@ -38,6 +38,26 @@ const AccessControlSettingForm = (props: AccessControlSettingFormProps) => {
         form.setFieldValue('enableLayer3', true)
         form.setFieldValue('l3AclPolicyId', data.l3AclPolicy?.id)
       }
+      if (get(data, 'devicePolicy')) {
+        form.setFieldValue('enableDeviceOs', true)
+        form.setFieldValue('devicePolicyId', data.devicePolicy?.id)
+      }
+      if (get(data, 'applicationPolicy')) {
+        form.setFieldValue('enableApplications', true)
+        form.setFieldValue('applicationPolicyId', data.applicationPolicy?.id)
+      }
+      if (get(data, 'rateLimiting')) {
+        const rateLimiting = get(data, 'rateLimiting')
+        form.setFieldValue('enableClientRateLimit', true)
+        form.setFieldValue(['rateLimiting', 'uplinkLimit'], rateLimiting?.uplinkLimit ?? 0)
+        form.setFieldValue(['rateLimiting', 'enableUploadLimit'],
+          rateLimiting?.uplinkLimit && rateLimiting?.uplinkLimit > 0
+        )
+        form.setFieldValue(['rateLimiting', 'downlinkLimit'], rateLimiting?.downlinkLimit ?? 0)
+        form.setFieldValue(['rateLimiting', 'enableDownloadLimit'],
+          rateLimiting?.downlinkLimit && rateLimiting?.downlinkLimit > 0
+        )
+      }
 
     }
   }, [data, editMode])
@@ -88,6 +108,22 @@ const AccessControlSettingForm = (props: AccessControlSettingFormProps) => {
               }
               if (form.getFieldValue('enableLayer3') && !form.getFieldValue('l3AclPolicyId')) {
                 return Promise.reject($t({ defaultMessage: 'l3AclPolicy could not be empty' }))
+              }
+              if (form.getFieldValue('enableDeviceOs') && !form.getFieldValue('devicePolicyId')) {
+                return Promise.reject($t({ defaultMessage: 'devicePolicyId could not be empty' }))
+              }
+              // eslint-disable-next-line max-len
+              if (form.getFieldValue('enableApplications') && !form.getFieldValue('applicationPolicyId')) {
+                return Promise.reject($t({
+                  defaultMessage: 'applicationPolicyId could not be empty'
+                }))
+              }
+              if (form.getFieldValue('enableClientRateLimit')
+                  && !form.getFieldValue(['rateLimiting', 'enableUploadLimit'])
+                  && !form.getFieldValue(['rateLimiting', 'enableDownloadLimit'])) {
+                return Promise.reject($t({
+                  defaultMessage: 'one of the client rate limit setting could not be empty'
+                }))
               }
 
               return Promise.resolve()
