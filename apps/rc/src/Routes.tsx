@@ -38,6 +38,7 @@ import MacRegistrationListDetails
   from './pages/Policies/MacRegistrationList/MacRegistrarionListDetails/MacRegistrarionListDetails'
 import MacRegistrationListsTable  from './pages/Policies/MacRegistrationList/MacRegistrarionListTable'
 import MacRegistrationListForm    from './pages/Policies/MacRegistrationList/MacRegistrationListForm/MacRegistrationListForm'
+import MyPolicies                 from './pages/Policies/MyPolicies'
 import PoliciesTable              from './pages/Policies/PoliciesTable'
 import RogueAPDetectionDetailView
   from './pages/Policies/RogueAPDetection/RogueAPDetectionDetail/RogueAPDetectionDetailView'
@@ -305,7 +306,7 @@ function ServiceRoutes () {
 function PolicyRoutes () {
   return rootRoutes(
     <Route path='t/:tenantId'>
-      <Route path={getPolicyListRoutePath()} element={<PoliciesTable />} />
+      <Route path={getPolicyListRoutePath()} element={<MyPolicies />} />
       <Route path={getSelectPolicyRoutePath()} element={<SelectPolicyForm />} />
       <Route
         // eslint-disable-next-line max-len

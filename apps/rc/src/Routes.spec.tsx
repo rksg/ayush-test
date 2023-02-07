@@ -50,8 +50,8 @@ jest.mock('./pages/Services/ServiceCatalog', () => () => {
   return <div data-testid='ServiceCatalog' />
 })
 
-jest.mock('./pages/Policies/PoliciesTable', () => () => {
-  return <div data-testid='PoliciesTable' />
+jest.mock('./pages/Policies/MyPolicies', () => () => {
+  return <div data-testid='MyPolicies' />
 })
 
 jest.mock('./pages/Services/SelectServiceForm', () => () => {
@@ -437,14 +437,14 @@ describe('RcRoutes: Services', () => {
 })
 
 describe('RcRoutes: Policies', () => {
-  test('should navigate to policy list', async () => {
+  test('should navigate to My Policies', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
         path: '/t/tenantId/' + getPolicyListRoutePath(),
         wrapRoutes: false
       }
     })
-    expect(screen.getByTestId('PoliciesTable')).toBeVisible()
+    expect(screen.getByTestId('MyPolicies')).toBeVisible()
   })
 
   test('should navigate to create ROGUE_AP_DETECTION page', async () => {
@@ -500,7 +500,6 @@ describe('RcRoutes: Policies', () => {
     })
     expect(screen.getByText(/add access control policy/i)).toBeVisible()
   })
-
 })
 
 describe('RcRoutes: User', () => {
