@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query/react'
-import { useIntl }             from 'react-intl'
+import { useIntl } from 'react-intl'
 
 import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
 import { CsvSize, ImportCsvDrawer }                              from '@acx-ui/rc/components'
@@ -183,7 +182,6 @@ export function MacRegistrationsTab () {
         temlateLink='assets/templates/mac_registration_import_template.csv'
         visible={uploadCsvDrawerVisible}
         isLoading={uploadCsvResult.isLoading}
-        importError={uploadCsvResult.error as FetchBaseQueryError}
         importRequest={async (formData) => {
           try {
             await uploadCsv({ params: { policyId }, payload: formData }).unwrap()

@@ -52,7 +52,6 @@ function useColumns () {
       title: $t({ defaultMessage: 'List Expiration' }),
       key: 'listExpiration',
       dataIndex: 'listExpiration',
-      align: 'center',
       render: function (data, row) {
         return returnExpirationString(row)
       }
@@ -60,8 +59,7 @@ function useColumns () {
     {
       title: $t({ defaultMessage: 'Default Access' }),
       key: 'defaultAccess',
-      dataIndex: 'defaultAccess',
-      align: 'center'
+      dataIndex: 'defaultAccess'
     },
     {
       title: $t({ defaultMessage: 'Access Policy Set' }),
