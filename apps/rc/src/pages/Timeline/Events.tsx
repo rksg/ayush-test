@@ -2,8 +2,12 @@ import { useEffect } from 'react'
 
 import moment from 'moment-timezone'
 
-import { EventTable, eventDefaultPayload, eventDefaultSorter } from '@acx-ui/rc/components'
-import { useEventsQuery }                                      from '@acx-ui/rc/services'
+import {
+  EventTable,
+  eventDefaultPayload,
+  eventDefaultSearch,
+  eventDefaultSorter } from '@acx-ui/rc/components'
+import { useEventsQuery } from '@acx-ui/rc/services'
 import {
   TABLE_QUERY_LONG_POLLING_INTERVAL,
   Event,
@@ -18,6 +22,7 @@ const Events = () => {
     useQuery: useEventsQuery,
     defaultPayload: eventDefaultPayload,
     sorter: eventDefaultSorter,
+    search: eventDefaultSearch,
     option: { pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL }
   })
 

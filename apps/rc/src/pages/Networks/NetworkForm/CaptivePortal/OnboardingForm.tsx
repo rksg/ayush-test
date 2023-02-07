@@ -5,11 +5,12 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { GridCol, GridRow, StepsForm }           from '@acx-ui/components'
-import { GuestNetworkTypeEnum, NetworkTypeEnum } from '@acx-ui/rc/utils'
+import { GridCol, GridRow, StepsForm }                            from '@acx-ui/components'
+import { GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum } from '@acx-ui/rc/utils'
 
-import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
-import NetworkFormContext from '../NetworkFormContext'
+import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
+import NetworkFormContext          from '../NetworkFormContext'
+import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 
 import { DhcpCheckbox }     from './DhcpCheckbox'
 import { RedirectUrlInput } from './RedirectUrlInput'
@@ -36,6 +37,7 @@ export function OnboardingForm () {
         <StepsForm.Title>{intl.$t({ defaultMessage: 'Onboarding' })}</StepsForm.Title>
         <RedirectUrlInput />
         <DhcpCheckbox />
+        {!(editMode) && <NetworkMoreSettingsForm wlanData={data as NetworkSaveData} />}
       </GridCol>
       <GridCol col={{ span: 14 }}>
         <NetworkDiagram type={NetworkTypeEnum.CAPTIVEPORTAL}
