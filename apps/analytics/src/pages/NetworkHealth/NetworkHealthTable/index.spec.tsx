@@ -17,11 +17,18 @@ import { api } from './services'
 
 import { getAPsUnderTest, getLastResult, getLastRun, NetworkHealthTable } from './index'
 import { CommonUrlsInfo } from '@acx-ui/rc/utils'
+import { UserProfileProvider } from '@acx-ui/rc/components'
 
 const mockedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedNavigate
+}))
+const tenantId = 'a27e3eb0bd164e01ae731da8d976d3b1'
+
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  getJwtTokenPayload: () => ({ tenantId })
 }))
 
 const networkHealthTests = [
@@ -148,9 +155,6 @@ describe('Network Health Table', () => {
   })
 
   it.only('should click edit', async () => {
-    // const userProfile = {
-    //   externalId: '0032h00000LUqUKAA1'
-    // }
     const userProfile = {
       region: '[NA]',
       allowedRegions: [
@@ -173,8 +177,8 @@ describe('Network Health Table', () => {
       dateFormat: 'yyyy/mm/dd',
       email: 'dog1093@email.com',
       var: false,
-      tenantId: 'd1ec841a4ff74436b23bca6477f6a631',
-      varTenantId: 'd1ec841a4ff74436b23bca6477f6a631',
+      tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1',
+      varTenantId: 'a27e3eb0bd164e01ae731da8d976d3b1',
       adminId: '2cfff8a9345843f88be768dbf833592f',
       support: false,
       dogfood: false
@@ -188,11 +192,15 @@ describe('Network Health Table', () => {
       data: { allServiceGuardSpecs: networkHealthTests }
     })
 
-    render(<Provider><NetworkHealthTable/></Provider>, {
+    render(<Provider>
+      <UserProfileProvider>
+        <NetworkHealthTable/>
+      </UserProfileProvider>
+    </Provider>, {
       route: {
         path: '/t/:tenantId/serviceValidation/networkHealth',
         params: {
-          tenantId: 'd1ec841a4ff74436b23bca6477f6a631'
+          tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1'
         }
       }
     })

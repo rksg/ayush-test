@@ -11,6 +11,7 @@ import { TenantLink, useTenantLink, useParams }       from '@acx-ui/react-router
 import { convertDateTimeToSqlFormat, formatter }      from '@acx-ui/utils'
 
 import { ServiceGuardSpec, useNetworkHealthDeleteMutation, useNetworkHealthQuery } from './services'
+import { useUserProfileContext }                 from '@acx-ui/rc/components'
 
 const networkHealthMapping = {
   'virtual-client': 'Virtual Client',
@@ -50,9 +51,8 @@ export function NetworkHealthTable () {
   const navigate = useNavigate()
   const linkToEditTest = useTenantLink('/serviceValidation/networkHealth/')
   const params = useParams()
-  console.log('params', params)
-  const { data } = useGetUserProfileQuery({ params })
-  console.log('data', data)
+  const { data: userProfile } = useUserProfileContext()
+
   const [deleteMutation] = useNetworkHealthDeleteMutation()
 
   const rowActions: TableProps<ServiceGuardSpec>['rowActions'] = [
@@ -68,7 +68,8 @@ export function NetworkHealthTable () {
       onClick: (selectedRows) => {
         navigate(`${linkToEditTest.pathname}/${selectedRows[0].id}/edit`, { replace: false })
       },
-      disabled: (selectedRow) => selectedRow[0]?.userId === data?.externalId ? false : true
+      // disabled: (selectedRow) => selectedRow[0]?.userId === data?.externalId ? false : true
+      disabled: true
     },
     {
       label: $t(defineMessage({ defaultMessage: 'Clone' })),
