@@ -13,17 +13,19 @@ export type ServiceGuardSpec = {
   schedule: {
     nextExecutionTime: number
   }
-  tests: {
-    items: [{
-      id: number,
-      createdAt: string,
-      summary: {
-        apsTestedCount: number,
-        apsSuccessCount: number,
-        apsPendingCount: number
-      }
-    }]
-  }
+  tests: ServiceGuardTest
+}
+
+export type ServiceGuardTest = {
+  items: [{
+    id: number,
+    createdAt: string,
+    summary: {
+      apsTestedCount: number,
+      apsSuccessCount: number,
+      apsPendingCount: number
+    }
+  }]
 }
 
 interface Response {

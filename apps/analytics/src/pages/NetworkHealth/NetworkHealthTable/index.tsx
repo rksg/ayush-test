@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import React, { useMemo } from 'react'
 
 import _                          from 'lodash'
 import { useIntl, defineMessage } from 'react-intl'
@@ -19,6 +19,30 @@ const networkHealthMapping = {
   'scheduled': 'Scheduled'
 }
 
+export const getLastRun = (result: string) => {
+  if (result) {
+    return convertDateTimeToSqlFormat(result)
+  } else {
+    return noDataSymbol
+  }
+}
+
+export const getAPsUnderTest = (result: number) => {
+  if (result) {
+    return <TenantLink to={'/serviceValidation/networkHealth'}>{result}</TenantLink> // TODO: handle link
+  } else {
+    return noDataSymbol
+  }
+}
+
+export const getLastResult = (total: number, success: number) => {
+  if (total) {
+    return `${formatter('percentFormatRound')(success/total)} pass`
+  } else {
+    return noDataSymbol
+  }
+}
+
 export function NetworkHealthTable () {
   const intl = useIntl()
   const { $t } = intl
@@ -26,13 +50,17 @@ export function NetworkHealthTable () {
   const navigate = useNavigate()
   const linkToEditTest = useTenantLink('/serviceValidation/networkHealth/')
   const params = useParams()
+  console.log('params', params)
   const { data } = useGetUserProfileQuery({ params })
+  console.log('data', data)
   const [deleteMutation] = useNetworkHealthDeleteMutation()
 
   const rowActions: TableProps<ServiceGuardSpec>['rowActions'] = [
     {
       label: $t(defineMessage({ defaultMessage: 'Run now' })),
-      onClick: () => console.log('run'),
+      onClick: () => {
+        navigate(useTenantLink('/serviceValidation/networkHealth/'), { replace: false })
+      },
       disabled: (selectedRow) => (selectedRow[0]?.apsCount > 0) ? false : true // TODO: handle for apsPendingCount
     },
     {
@@ -40,7 +68,7 @@ export function NetworkHealthTable () {
       onClick: (selectedRows) => {
         navigate(`${linkToEditTest.pathname}/${selectedRows[0].id}/edit`, { replace: false })
       },
-      disabled: (selectedRow) => selectedRow[0]?.id === data?.externalId ? false : true
+      disabled: (selectedRow) => selectedRow[0]?.userId === data?.externalId ? false : true
     },
     {
       label: $t(defineMessage({ defaultMessage: 'Clone' })),
@@ -106,40 +134,28 @@ export function NetworkHealthTable () {
       key: 'lastRun',
       title: $t(defineMessage({ defaultMessage: 'Last Run' })),
       dataIndex: ['tests', 'items'],
-      render: (value) => {
+      render: (value: React.ReactNode) => {
         const result = _.get(value, '[0].createdAt')
-        if (result) {
-          return convertDateTimeToSqlFormat(result)
-        } else {
-          return noDataSymbol
-        }
+        return getLastRun(result)
       }
     },
     {
       key: 'apsUnderTest',
       title: $t(defineMessage({ defaultMessage: 'APs Under Test' })),
       dataIndex: ['tests', 'items'],
-      render: (value) => {
-        const result = _.get(value, '[0].summary.apsPendingCount')
-        if (result) {
-          return <TenantLink to={'/serviceValidation/networkHealth'}>{result}</TenantLink> // TODO: handle link
-        } else {
-          return noDataSymbol
-        }
+      render: (value: React.ReactNode) => {
+        const result = _.get(value, '[0].summary.apsTestedCount')
+        return getAPsUnderTest(result)
       }
     },
     {
       key: 'lastResult',
       title: $t(defineMessage({ defaultMessage: 'Last Result' })),
       dataIndex: ['tests', 'items'],
-      render: (value) => {
+      render: (value: React.ReactNode) => {
         const total = _.get(value, '[0].summary.apsTestedCount')
         const success = _.get(value, '[0].summary.apsSuccessCount')
-        if (total) {
-          return `${formatter('percentFormatRound')(success/total)} pass`
-        } else {
-          return noDataSymbol
-        }
+        return getLastResult(total, success)
       }
     }
   ], [])
