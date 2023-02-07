@@ -1,34 +1,42 @@
 import '@testing-library/jest-dom'
 
-import { networkhealthURL }              from '@acx-ui/analytics/services'
-import { noDataSymbol }          from '@acx-ui/analytics/utils'
+import { rest } from 'msw'
+
+import { networkhealthURL }                    from '@acx-ui/analytics/services'
+import { noDataSymbol }                        from '@acx-ui/analytics/utils'
+import { UserProfileProvider }                 from '@acx-ui/rc/components'
+import { CommonUrlsInfo }                      from '@acx-ui/rc/utils'
 import { BrowserRouter as Router, TenantLink } from '@acx-ui/react-router-dom'
-import { Provider, store }         from '@acx-ui/store'
+import { Provider, store }                     from '@acx-ui/store'
 import {
   mockGraphqlQuery,
   render, screen,
   fireEvent,
   waitForElementToBeRemoved,
   mockServer,
-} from '@acx-ui/test-utils'
-import { rest }  from 'msw'
+  act
+}                                              from '@acx-ui/test-utils'
 
 import { api } from './services'
 
 import { getAPsUnderTest, getLastResult, getLastRun, NetworkHealthTable } from './index'
-import { CommonUrlsInfo } from '@acx-ui/rc/utils'
-import { UserProfileProvider } from '@acx-ui/rc/components'
 
 const mockedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedNavigate
 }))
-const tenantId = 'a27e3eb0bd164e01ae731da8d976d3b1'
+
+const fakeUserProfile = {
+  tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1',
+  externalId: '0032h00000LUqUKAA1',
+  firstName: 'FisrtName 1093',
+  lastName: 'LastName 1093'
+}
 
 jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils'),
-  getJwtTokenPayload: () => ({ tenantId })
+  getJwtTokenPayload: () => ({ tenantId: fakeUserProfile.tenantId })
 }))
 
 const networkHealthTests = [
@@ -155,43 +163,12 @@ describe('Network Health Table', () => {
   })
 
   it.only('should click edit', async () => {
-    const userProfile = {
-      region: '[NA]',
-      allowedRegions: [
-        {
-          name: 'US',
-          description: 'United States of America',
-          link: 'https://devalto.ruckuswireless.com',
-          current: true
-        }
-      ],
-      externalId: '0032h00000LUqUKAA1',
-      pver: 'acx-hybrid',
-      companyName: 'Dog Company 1093',
-      firstName: 'FisrtName 1093',
-      lastName: 'LastName 1093',
-      username: 'dog1093@email.com',
-      role: 'PRIME_ADMIN',
-      roles: ['PRIME_ADMIN'],
-      detailLevel: 'debug',
-      dateFormat: 'yyyy/mm/dd',
-      email: 'dog1093@email.com',
-      var: false,
-      tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1',
-      varTenantId: 'a27e3eb0bd164e01ae731da8d976d3b1',
-      adminId: '2cfff8a9345843f88be768dbf833592f',
-      support: false,
-      dogfood: false
-    }
     mockServer.use(
-      rest.get(CommonUrlsInfo.getUserProfile.url, (req, res, ctx) =>
-        res(ctx.json(userProfile))
-      )
+      rest.get(CommonUrlsInfo.getUserProfile.url, (req, res, ctx) => res(ctx.json(fakeUserProfile)))
     )
     mockGraphqlQuery(networkhealthURL, 'ServiceGuardSpecs', {
       data: { allServiceGuardSpecs: networkHealthTests }
     })
-
     render(<Provider>
       <UserProfileProvider>
         <NetworkHealthTable/>
@@ -199,19 +176,19 @@ describe('Network Health Table', () => {
     </Provider>, {
       route: {
         path: '/t/:tenantId/serviceValidation/networkHealth',
-        params: {
-          tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1'
-        }
+        params: { tenantId: fakeUserProfile.tenantId }
       }
     })
-    
-    // await new Promise(r => setTimeout(r, 500))
-
-    // const radio = await screen.findAllByRole('radio')
-    // fireEvent.click(radio[0])
-    // screen.logTestingPlaygroundURL()
-    // fireEvent.click(await screen.findByRole('button', { name: 'Edit' }))
-    // screen.logTestingPlaygroundURL()
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+    })
+    const radio = await screen.findAllByRole('radio')
+    fireEvent.click(radio[0])
+    fireEvent.click(await screen.findByRole('button', { name: 'Edit' }))
+    expect(mockedNavigate.mock.calls[0][0]).toEqual(
+      `/t/${fakeUserProfile.tenantId}/serviceValidation/networkHealth/` +
+      `${networkHealthTests[0].id}/edit`
+    )
   })
 
   it('should delete test properly', async () => {
@@ -242,7 +219,7 @@ describe('Network Health Table', () => {
     const result = getLastRun(time)
     expect(result).toEqual(noDataSymbol)
   })
-  
+
   it('should return getAPsUnderTest results correctly', () => {
     const aps = 10
     const result = getAPsUnderTest(aps)

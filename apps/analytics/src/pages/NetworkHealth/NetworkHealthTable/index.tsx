@@ -6,12 +6,11 @@ import { useNavigate }            from 'react-router-dom'
 
 import { noDataSymbol, sortProp, defaultSort }        from '@acx-ui/analytics/utils'
 import { Loader, TableProps, Table, showActionModal } from '@acx-ui/components'
-import { useGetUserProfileQuery }                     from '@acx-ui/rc/services'
-import { TenantLink, useTenantLink, useParams }       from '@acx-ui/react-router-dom'
+import { useUserProfileContext }                      from '@acx-ui/rc/components'
+import { TenantLink, useTenantLink }                  from '@acx-ui/react-router-dom'
 import { convertDateTimeToSqlFormat, formatter }      from '@acx-ui/utils'
 
 import { ServiceGuardSpec, useNetworkHealthDeleteMutation, useNetworkHealthQuery } from './services'
-import { useUserProfileContext }                 from '@acx-ui/rc/components'
 
 const networkHealthMapping = {
   'virtual-client': 'Virtual Client',
@@ -50,11 +49,9 @@ export function NetworkHealthTable () {
   const queryResults = useNetworkHealthQuery({})
   const navigate = useNavigate()
   const linkToEditTest = useTenantLink('/serviceValidation/networkHealth/')
-  const params = useParams()
   const { data: userProfile } = useUserProfileContext()
 
   const [deleteMutation] = useNetworkHealthDeleteMutation()
-
   const rowActions: TableProps<ServiceGuardSpec>['rowActions'] = [
     {
       label: $t(defineMessage({ defaultMessage: 'Run now' })),
@@ -68,8 +65,7 @@ export function NetworkHealthTable () {
       onClick: (selectedRows) => {
         navigate(`${linkToEditTest.pathname}/${selectedRows[0].id}/edit`, { replace: false })
       },
-      // disabled: (selectedRow) => selectedRow[0]?.userId === data?.externalId ? false : true
-      disabled: true
+      disabled: (selectedRow) => selectedRow[0]?.userId === userProfile?.externalId ? false : true
     },
     {
       label: $t(defineMessage({ defaultMessage: 'Clone' })),
