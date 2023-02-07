@@ -7,17 +7,19 @@ export { ClientDualTable } from './ClientDualTable'
 export { ClientHealthIcon } from './ClientHealthIcon'
 export { ClientsWidget } from './ClientsWidget'
 export { CodeMirrorWidget } from './CodeMirrorWidget'
-export { ConnectedClientsTable } from './ConnectedClientsTable'
+export { ConnectedClientsTable, defaultClientPayload } from './ConnectedClientsTable'
 export { DevicesDashboardWidget } from './DevicesDashboardWidget'
 export { DevicesWidget } from './DevicesWidget'
 export { EdgeSettingForm } from './EdgeSettingForm'
 export { SpaceWrapper } from './SpaceWrapper/index'
 export { EdgeInfoWidget }  from './EdgeInfoWidget'
+export { EdgeDhcpSettingForm } from './EdgeDhcpSetting/EdgeDhcpSettingForm'
 export {
   EventTable,
   useEventTableFilter,
   defaultPayload as eventDefaultPayload,
-  defaultSorter as eventDefaultSorter
+  defaultSorter as eventDefaultSorter,
+  defaultSearch as eventDefaultSearch
 } from './EventTable'
 export { FloorPlan } from './FloorPlan'
 export { HistoricalClientsTable } from './HistoricalClientsTable'
@@ -47,9 +49,15 @@ export { WifiSignal } from './WifiSignal'
 export { NetworkDeviceMarker } from './FloorPlan/NetworkDevices/NetworkDeviceMarker'
 export { ApSelector } from './ApSelector'
 export { CloudMessageBanner } from './CloudMessageBanner'
+export { SwitchCliSession } from './SwitchCliSession'
+export { SwitchClientsTable } from './SwitchClientsTable'
+export { ClientsTable, defaultSwitchClientPayload } from './SwitchClientsTable/ClientsTable'
+export { SwitchClientDetails } from './SwitchClientsTable/SwitchClientDetails'
+export { PersonaGroupSelect } from './PersonaGroupSelect'
 
 export * from './services'
 export * from './EdgeStatisticWidget'
 export * from './pipes/apGroupPipes'
 export * from './ExpirationDateSelector'
 export * from './RadioSettings/RadioSettingsContents'
+export * from './UserProfileContext'

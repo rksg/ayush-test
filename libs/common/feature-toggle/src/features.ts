@@ -21,5 +21,8 @@ export enum Features {
   NETWORK_SEGMENTATION='acx-ui-network-segmentation-toggle',
   UNRELEASED='acx-ui-unreleased',
   SERVICE_VALIDATION = 'acx-ui-service-validation-toggle',
-  DIRECTED_MULTICAST='wifi-consumer-directed-multicast-toggle'
+  DIRECTED_MULTICAST='wifi-consumer-directed-multicast-toggle',
+  HELP_SUPPORT='acx-ui-help-support',
+  LOAD_BALANCING='wifi-consumer-load-balancing-toggle',
+  AP_STATIC_IP='wifi-consumer-ap-static-ip-toggle'
 }

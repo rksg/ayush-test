@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { Col, Row, Form, Switch } from 'antd'
 import { isEmpty }                from 'lodash'
@@ -60,12 +60,19 @@ export function SingleRadioSettings (props:{
     context = 'venue',
     isUseVenueSettings = false,
     testId } = props
+
   const {
     radioType,
     supportChannels,
     bandwidthOptions,
     editContext,
     supportDfsChannels } = props
+
+  const {
+    editContextData,
+    setEditContextData
+  } = useContext(editContext)
+
   const isSupportRadio = bandwidthOptions?.length > 0
   const displayRadioBarSettings = ['5G', 'DFS']
   const radioDataKey = (context === 'venue') ?
@@ -153,7 +160,14 @@ export function SingleRadioSettings (props:{
     const showChannelBarRadios = [
       ApRadioTypeEnum.Radio5G,
       ApRadioTypeEnum.RadioLower5G,
-      ApRadioTypeEnum.RadioUpper5G]
+      ApRadioTypeEnum.RadioUpper5G
+    ]
+
+    // Reset to AUTO if AP doesn't not supported venue radio settings's bandwidth
+    if (channelBandwidth !== 'AUTO' &&
+        !bandwidthOptions.find(option => option.value === channelBandwidth)) {
+      form.setFieldValue(channelBandwidthFieldName, 'AUTO')
+    }
 
     if (!isEmpty(supportChannels)) {
       const bandwidth = (channelBandwidth === 'AUTO')? 'auto' : channelBandwidth
@@ -194,7 +208,7 @@ export function SingleRadioSettings (props:{
 
       } else {
         const { indoor, outdoor, dfs } = supportChannels
-        const availableDfsChannels = dfs[bandwidth] || []
+        const availableDfsChannels = (dfs && dfs[bandwidth]) || []
 
         const availableIndoorChannels = indoor[bandwidth]
         const selectedIndoorChannels = setSelectedChannels(availableIndoorChannels)
@@ -233,7 +247,7 @@ export function SingleRadioSettings (props:{
       }
     }
 
-  }, [supportChannels, channelBandwidth, radioType,
+  }, [supportChannels, channelBandwidth, radioType, bandwidthOptions,
     allowIndoorForOutdoor, combinChannels, channelMethod])
 
 
@@ -265,6 +279,12 @@ export function SingleRadioSettings (props:{
     setIndoorChannelErrMsg(indoorErrMsg)
     setOutdoorChannelErrMsg(outdoorErrMsg)
 
+    // have error messages
+    const hasErrors = !isEmpty(errMsg + indoorErrMsg + outdoorErrMsg)
+    setEditContextData({
+      ...editContextData,
+      hasError: hasErrors
+    })
   }, [allowedChannels, allowedIndoorChannels, allowedOutdoorChannels])
 
   const resetToDefaule = () => {

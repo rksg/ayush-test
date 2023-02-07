@@ -153,6 +153,7 @@ export function ClientOverviewTab () {
               clientStatistic={clientStatistics}
               clientStatus={clientStatus}
               clientDetails={clientDetails}
+              filters={filters}
             />
           </UI.CardWrapper>
         </GridCol>

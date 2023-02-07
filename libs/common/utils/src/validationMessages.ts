@@ -165,6 +165,18 @@ export const validationMessages = {
     defaultMessage: 'Please enter a valid phone number',
     description: 'Validation - phone number checks'
   }),
+  poeBudget: defineMessage({
+    defaultMessage: 'Poe Budget can only be from 1000 - 30000',
+    description: 'Validation - PoE Budget checks'
+  }),
+  dscp: defineMessage({
+    defaultMessage: 'Enter a valid number between 0 and 63',
+    description: 'Validation - dscp checks'
+  }),
+  priority: defineMessage({
+    defaultMessage: 'Enter a valid number between 0 and 7',
+    description: 'Validation - priority checks'
+  }),
   oneRadioChannel: defineMessage({
     defaultMessage: 'Please select one channel',
     description: 'Validation - radio channel checks'
@@ -172,7 +184,71 @@ export const validationMessages = {
   twoRadioChannels: defineMessage({
     defaultMessage: 'Please select at least two channels',
     description: 'Validation - radio channel checks'
+  }),
+  recoveryPassphrasePart: defineMessage({
+    defaultMessage: 'Passphrase part must be exactly 4 digits long',
+    description: 'Validation - recovery passphrase part'
+  }),
+  recoveryPassphrasePartSpace: defineMessage({
+    defaultMessage: 'Passphrase cannot have space',
+    description: 'Validation - recovery passphrase part cannot have space'
+  }),
+  vlanMembersMaxLength: defineMessage({
+    defaultMessage: 'You can define up to 64 VLAN members',
+    description: 'Validation - VLAN members max length checks'
+  }),
+  vlanMembersMaxSize: defineMessage({
+    defaultMessage: 'Number of single VLANs and ranges can\'t exceed 16',
+    description: 'Validation - VLAN members max size checks'
+  }),
+  invalidVlanMember: defineMessage({
+    defaultMessage: 'Valid VLAN member ID is between 2 and 4094',
+    description: 'Validation - VLAN ID invalid checks'
+  }),
+  vlanMembersOverlapping: defineMessage({
+    defaultMessage: 'Overlapping VLAN found',
+    description: 'Validation - VLAN Overlapping checks'
+  }),
+  invalidVlanMemberRange: defineMessage({
+    defaultMessage: 'Start value must be less than end value',
+    description: 'Validation - VLAN MemberRange checks'
+  }),
+  switchIpInvalid: defineMessage({
+    defaultMessage: 'Enter a valid IPv4 address and not broadcast address',
+    description: 'Validation - switch ip checks'
+  }),
+  switchSubnetInvalid: defineMessage({
+    defaultMessage: 'Subnet mask is invalid',
+    description: 'Validation - switch subnet'
+  }),
+  switchDefaultGatewayInvalid: defineMessage({
+    defaultMessage: 'Gateway is invalid',
+    description: 'Validation - switch gateway'
+  }),
+  switchBroadcastAddressInvalid: defineMessage({
+    defaultMessage: 'Can not be a broadcast address',
+    description: 'Validation - switch broadcast address'
+  }),
+  switchSameSubnetInvalid: defineMessage({
+    defaultMessage: 'IP and gateway are not in the same subnet',
+    description: 'Validation - switch same subnet'
+  }),
+  switchStaticRouteIpInvalid: defineMessage({
+    defaultMessage: 'Enter a valid subnet (e.g. 1.1.1.1/24)',
+    description: 'Validation - switch static route ip'
+  }),
+  switchStaticRouteNextHopInvalid: defineMessage({
+    defaultMessage: 'NextHop IP address is invalid.',
+    description: 'Validation - switch static route ip'
+  }),
+  switchStaticRouteAdminDistanceInvalid: defineMessage({
+    defaultMessage: 'Enter a valid number between 0 and 255',
+    description: 'Validation - switch static route admin distance'
   })
+
+
+
+
 }
 
 export function prepareAntdValidateMessages ({ $t }: IntlShape): ValidateMessages {

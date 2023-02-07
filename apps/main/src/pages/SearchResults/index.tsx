@@ -10,14 +10,21 @@ import {
   EventTable,
   eventDefaultPayload,
   SwitchTable,
-  defaultSwitchPayload
+  defaultSwitchPayload,
+  defaultClientPayload,
+  ConnectedClientsTable,
+  defaultSwitchClientPayload,
+  ClientsTable as SwitchClientTable,
+  eventDefaultSearch
 } from '@acx-ui/rc/components'
 import {
   useApListQuery,
   useEventsQuery,
   useNetworkListQuery,
   useVenuesListQuery,
-  useSwitchListQuery
+  useSwitchListQuery,
+  useGetClientListQuery,
+  useGetSwitchClientListQuery
 } from '@acx-ui/rc/services'
 import {
   RequestPayload,
@@ -27,7 +34,9 @@ import {
   AP,
   ApExtraParams,
   Event,
-  SwitchRow
+  SwitchRow,
+  ClientList,
+  SwitchClient
 } from '@acx-ui/rc/utils'
 
 import { useDefaultVenuePayload, VenueTable } from '../Venues/VenuesTable'
@@ -93,11 +102,13 @@ const searches = [
       useQuery: useEventsQuery,
       defaultPayload: {
         ...eventDefaultPayload,
-        filters: {},
-        searchString,
-        searchTargetFields: ['entity_id', 'message', 'apMac', 'clientMac']
+        filters: {}
       },
       pagination,
+      search: {
+        searchString,
+        searchTargetFields: eventDefaultSearch.searchTargetFields
+      },
       sorter: {
         sortField: 'event_datetime',
         sortOrder: 'DESC'
@@ -106,7 +117,7 @@ const searches = [
     return {
       result,
       title: $t({ defaultMessage: 'Events' }),
-      component: <EventTable tableQuery={result} />
+      component: <EventTable tableQuery={result} searchables={false} filterables={false} />
     }
   },
   (searchString: string, $t: IntlShape['$t']) => {
@@ -123,6 +134,36 @@ const searches = [
       result,
       title: $t({ defaultMessage: 'Switches' }),
       component: <SwitchTable tableQuery={result} />
+    }
+  },
+  (searchString: string, $t: IntlShape['$t']) => {
+    const result = useTableQuery<ClientList, RequestPayload<unknown>, unknown>({
+      useQuery: useGetClientListQuery,
+      defaultPayload: {
+        ...defaultClientPayload,
+        searchString
+      },
+      pagination
+    })
+    return {
+      result,
+      title: $t({ defaultMessage: 'Wi-Fi Clients' }),
+      component: <ConnectedClientsTable tableQuery={result} />
+    }
+  },
+  (searchString: string, $t: IntlShape['$t']) => {
+    const result = useTableQuery<SwitchClient, RequestPayload<unknown>, unknown>({
+      useQuery: useGetSwitchClientListQuery,
+      defaultPayload: {
+        ...defaultSwitchClientPayload,
+        searchString
+      },
+      pagination
+    })
+    return {
+      result,
+      title: $t({ defaultMessage: 'Switch Clients' }),
+      component: <SwitchClientTable tableQuery={result} />
     }
   }
 ]

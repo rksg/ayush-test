@@ -17,7 +17,7 @@ import {
   onSocketActivityChanged,
   RequestPayload,
   RequestFormData,
-  showActivityMessage,
+  onActivityMessageReceived,
   TableResult,
   RadioProperties,
   WifiUrlsInfo,
@@ -35,7 +35,8 @@ import {
   VenueDefaultRegulatoryChannels,
   APExtended,
   LanPortStatusProperties,
-  ApDirectedMulticast
+  ApDirectedMulticast,
+  APNetworkSettings
 } from '@acx-ui/rc/utils'
 import { formatter } from '@acx-ui/utils'
 
@@ -71,7 +72,7 @@ export const apApi = baseApApi.injectEndpoints({
             'DeleteAps',
             'AddApGroupLegacy'
           ]
-          showActivityMessage(msg, activities, () => {
+          onActivityMessageReceived(msg, activities, () => {
             api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'LIST' }]))
           })
         })
@@ -132,7 +133,7 @@ export const apApi = baseApApi.injectEndpoints({
             'UpdateApCustomization',
             'ResetApCustomization'
           ]
-          showActivityMessage(msg, activities, () => {
+          onActivityMessageReceived(msg, activities, () => {
             api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'Details' }]))
           })
         })
@@ -306,7 +307,7 @@ export const apApi = baseApApi.injectEndpoints({
             'UpdateApRadioCustomization',
             'ResetApRadioCustomization'
           ]
-          showActivityMessage(msg, activities, () => {
+          onActivityMessageReceived(msg, activities, () => {
             api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'RADIO' }]))
           })
         })
@@ -452,15 +453,15 @@ export const apApi = baseApApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Ap', id: 'DIRECTEDMULTICAST' }],
+      providesTags: [{ type: 'Ap', id: 'DIRECTED_MULTICAST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
             'UpdateApDirectedMulticast',
             'ResetApDirectedMulticast'
           ]
-          showActivityMessage(msg, activities, () => {
-            api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'DIRECTEDMULTICAST' }]))
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'DIRECTED_MULTICAST' }]))
           })
         })
       }
@@ -473,7 +474,7 @@ export const apApi = baseApApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Ap', id: 'DIRECTEDMULTICAST' }]
+      invalidatesTags: [{ type: 'Ap', id: 'DIRECTED_MULTICAST' }]
     }),
     resetApDirectedMulticast: build.mutation<ApDirectedMulticast, RequestPayload>({
       query: ({ params }) => {
@@ -482,7 +483,46 @@ export const apApi = baseApApi.injectEndpoints({
           ...req
         }
       },
-      invalidatesTags: [{ type: 'Ap', id: 'DIRECTEDMULTICAST' }]
+      invalidatesTags: [{ type: 'Ap', id: 'DIRECTED_MULTICAST' }]
+    }),
+    getApNetworkSettings: build.query<APNetworkSettings, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getApNetworkSettings, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'NETWORK_SETTINGS' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UpdateApNetworkSettings',
+            'ResetApNetworkSettings'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'NETWORK_SETTINGS' }]))
+          })
+        })
+      }
+    }),
+    updateApNetworkSettings: build.mutation<APNetworkSettings, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.updateApNetworkSettings, params)
+        return{
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'NETWORK_SETTINGS' }]
+    }),
+    resetApNetworkSettings: build.mutation<APNetworkSettings, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.resetApNetworkSettings, params)
+        return{
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'NETWORK_SETTINGS' }]
     })
 
 
@@ -536,7 +576,10 @@ export const {
   useGetApValidChannelQuery,
   useGetApDirectedMulticastQuery,
   useUpdateApDirectedMulticastMutation,
-  useResetApDirectedMulticastMutation
+  useResetApDirectedMulticastMutation,
+  useGetApNetworkSettingsQuery,
+  useUpdateApNetworkSettingsMutation,
+  useResetApNetworkSettingsMutation
 } = apApi
 
 
