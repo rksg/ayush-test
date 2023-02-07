@@ -382,6 +382,7 @@ export function WISPrForm () {
         />
         <Form.Item
           hidden
+          initialValue={[]}
           name={['guestPortal','walledGardens']}
         />
         {!regionOption && isOtherProvider &&<AuthAccServerSetting/>}

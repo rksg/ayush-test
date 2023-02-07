@@ -685,6 +685,20 @@ export const hostapprovalData = {
   }
 }
 
+export const cloudPathDataNone = {
+  authRadiusPolicyProfileId: '55843a3c84ae47d5bb077236917a448a',
+  accountingRadiusPolicyProfileId: '55843a3c84ae47d5bb077236917a448cd',
+  guestPortal: {
+    walledGardens: ['aa.com'],
+    guestNetworkType: GuestNetworkTypeEnum.Cloudpath,
+    externalPortalUrl: 'http://aa.bb'
+  },
+  wlan: {
+    bypassCPUsingMacAddressAuthentication: true,
+    wlanSecurity: WlanSecurityEnum.None,
+    bypassCNA: false
+  }
+}
 export const wisprDataNone = {
   guestPortal: {
     walledGardens: ['aa.com'],

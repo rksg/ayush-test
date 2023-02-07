@@ -26,6 +26,7 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
+import { CloudpathForm }           from './CaptivePortal/CloudpathForm'
 import { GuestPassForm }           from './CaptivePortal/GuestPassForm'
 import { HostApprovalForm }        from './CaptivePortal/HostApprovalForm'
 import { OnboardingForm }          from './CaptivePortal/OnboardingForm'
@@ -155,6 +156,17 @@ export default function NetworkForm () {
     if(!tmpGuestPageState.guestPortal.redirectUrl){
       delete tmpGuestPageState.guestPortal.redirectUrl
     }
+    if(tmpGuestPageState.guestPortal.wisprPage){
+      if(data.authRadius){
+        tmpGuestPageState.guestPortal.wisprPage.authRadius = { ...data.authRadius }
+      }
+      if(data.accountingRadius){
+        tmpGuestPageState.guestPortal.wisprPage.accountingRadius = { ...data.accountingRadius }
+      }
+    }
+    delete data.authRadius
+    delete data.accountingRadius
+    delete data.enableAccountingService
     updateSaveData({ ...saveState, ...tmpGuestPageState } as NetworkSaveData)
     return true
   }
@@ -257,7 +269,7 @@ export default function NetworkForm () {
                 {saveState?.guestPortal?.guestNetworkType===
                  GuestNetworkTypeEnum.SelfSignIn&&<SelfSignInForm />}
                 {saveState?.guestPortal?.guestNetworkType===
-                 GuestNetworkTypeEnum.Cloudpath&&<div>cloud path</div>}
+                 GuestNetworkTypeEnum.Cloudpath&&<CloudpathForm/>}
                 {saveState?.guestPortal?.guestNetworkType===
                  GuestNetworkTypeEnum.HostApproval&&<HostApprovalForm />}
                 {saveState?.guestPortal?.guestNetworkType===

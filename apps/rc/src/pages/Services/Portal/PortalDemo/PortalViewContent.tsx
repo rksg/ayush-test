@@ -98,6 +98,7 @@ export default function PortalViewContent (props:{
         />}
       {componentDisplay.secondaryText &&
         <PortalSecondaryTextContent
+          portalLang={portalLang}
           demoValue={demoValue}
           updateSecText={(data)=>{
             updateViewContent({ ...demoValue, secondarySize: data.size||demoValue.secondarySize,

@@ -35,8 +35,7 @@ const initialPortalData : Portal ={
     photoRatio: PortalDemoDefaultSize.photoRatio,
     logo: Logo,
     logoRatio: PortalDemoDefaultSize.logoRatio,
-    secondaryText: 'Lorem ipsum dolor sit amet, '+
-    'consectetur adipiscing elit. Aenean euismod bibendum laoreet.',
+    secondaryText: '',
     secondaryColor: '#333333',
     secondarySize: PortalDemoDefaultSize.secondarySize,
     buttonColor: '#EC7100',
