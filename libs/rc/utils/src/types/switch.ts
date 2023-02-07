@@ -340,7 +340,8 @@ export interface SwitchCliTemplateModel{
   cli: string,
   id: string,
   name: string,
-  reload: boolean
+  reload: boolean,
+  switches?: string[]
 }
 
 export interface SwitchPortViewModel extends GridDataRow {
