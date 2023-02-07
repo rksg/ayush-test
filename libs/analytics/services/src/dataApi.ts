@@ -10,9 +10,7 @@ export const dataApiURL = `${window.location.origin}/api/a4rc/api/rsa-data-api/g
 export const dataApi = createApi({
   baseQuery: graphqlRequestBaseQuery({
     url: dataApiURL,
-    requestHeaders: {
-      Authorization: `Bearer ${getJwtToken()}`
-    }
+    ...(getJwtToken() ? { requestHeaders: { Authorization: `Bearer ${getJwtToken()}` } } : {})
   }),
   reducerPath: 'analytics-data-api',
   refetchOnMountOrArgChange: true,

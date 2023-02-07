@@ -106,7 +106,7 @@ export default function PortalViewContentPreview (props:{
         demoValue.poweredImgRatio)/PortalDemoDefaultSize.poweredImgRatio) }}>
         <div style={{ backgroundColor: demoValue.poweredBgColor }}>
           {componentDisplay.poweredBy &&<UI.FieldText style={{
-            marginBottom: -29, marginLeft: -25,
+            marginBottom: -15, marginLeft: -25,
             fontSize: (demoValue.poweredSize),
             lineHeight: 24 * ((demoValue.poweredSize)
             /PortalDemoDefaultSize.poweredSize)+'px' ,

@@ -28,6 +28,9 @@ import {
   MspEc
 } from '@acx-ui/rc/utils'
 import { getBasePath, Link, TenantLink, MspTenantLink } from '@acx-ui/react-router-dom'
+import {
+  AccountType
+} from '@acx-ui/utils'
 
 const transformAssignedCustomerCount = (row: MspEc) => {
   return row.assignedMspEcList.length
@@ -35,7 +38,7 @@ const transformAssignedCustomerCount = (row: MspEc) => {
 
 const defaultPayload = {
   searchString: '',
-  filters: { tenantType: ['MSP_INTEGRATOR', 'MSP_INSTALLER'] },
+  filters: { tenantType: [AccountType.MSP_INTEGRATOR, AccountType.MSP_INSTALLER] },
   fields: [
     'check-all',
     'id',
@@ -62,10 +65,10 @@ export function Integrators () {
       sorter: true,
       searchable: true,
       defaultSortOrder: 'ascend' as SortOrder,
-      render: function (data, row) {
+      render: function (data, row, _, highlightFn) {
         const to = `${getBasePath()}/t/${row.id}`
         return (
-          <Link to={to}>{data}</Link>
+          <Link to={to}>{highlightFn(data as string)}</Link>
         )
       }
     },

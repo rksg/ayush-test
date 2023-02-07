@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { useIsTierAllowed }                  from '@acx-ui/feature-toggle'
+import { useStreamActivityMessagesQuery }    from '@acx-ui/rc/services'
 import { Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
 
 import Administration    from './pages/Administration'
@@ -28,6 +29,7 @@ const ReportsRoutes = React.lazy(() => import('reports/Routes'))
 const MspRoutes = React.lazy(() => import('msp/Routes'))
 
 function AllRoutes () {
+  useStreamActivityMessagesQuery({})
   return rootRoutes(
     <>
       <Route path='t/:tenantId' element={<Layout />}>

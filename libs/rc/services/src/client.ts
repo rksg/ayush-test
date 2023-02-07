@@ -16,7 +16,7 @@ import {
   Network,
   onSocketActivityChanged,
   RequestPayload,
-  showActivityMessage,
+  onActivityMessageReceived,
   TableResult,
   downloadFile,
   transformByte,
@@ -79,7 +79,7 @@ export const clientApi = baseClientApi.injectEndpoints({
       keepUnusedDataFor: 0,
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg,
+          onActivityMessageReceived(msg,
             [
               'RegeneratePass',
               'DisableGuest',

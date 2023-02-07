@@ -27,7 +27,7 @@ describe('NetworkTimelineTab', ()=>{
     render(<Provider><NetworkTimelineTab /></Provider>, {
       route: {
         params: { tenantId: 't1', networkId: 'networkId' },
-        path: '/t/:tenantId/networks/:networkId/network-details/timeline/'
+        path: '/t/:tenantId/networks/wireless/:networkId/network-details/timeline/'
       }
     })
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))

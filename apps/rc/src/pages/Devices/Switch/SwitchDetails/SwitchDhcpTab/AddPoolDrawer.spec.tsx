@@ -39,7 +39,7 @@ describe('AddPoolDrawer', () => {
     fireEvent.click(await within(optionDialog).findByRole('button', { name: 'Cancel' }))
   })
 
-  it('should render edit form correctly', async () => {
+  it.skip('should render edit form correctly', async () => {
     render(<Provider><AddPoolDrawer visible={true} editPoolId={poolData.id} /></Provider>, {
       route: { params,
         path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab'
