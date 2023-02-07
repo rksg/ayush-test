@@ -163,8 +163,9 @@ function NetworkRoutes () {
         path='networks/wireless/:networkId/network-details/:activeTab/:activeSubTab'
         element={<NetworkDetails />}
       />
+      <Route path='networks/wired/cli-templates/add' element={<CliTemplateForm />} />
       <Route
-        path='networks/wired/cli-templates/add'
+        path='networks/wired/cli-templates/:templateId/:action'
         element={<CliTemplateForm />}
       />
       <Route

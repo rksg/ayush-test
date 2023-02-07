@@ -278,12 +278,20 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/cli-template'
   },
-  updateCliTemplate: {
-    method: 'put',
-    url: '/api/switch/tenant/:tenantId/cli-template'
-  },
   getCliConfigExamples: {
     method: 'get',
     url: '/api/switch/tenant/:tenantId/cli-template/example'
+  },
+  getCliTemplates: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/cli-template/query'
+  },
+  getCliTemplate: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/cli-template/:templateId'
+  },
+  updateCliTemplate: {
+    method: 'put',
+    url: '/api/switch/tenant/:tenantId/cli-template'
   }
 }

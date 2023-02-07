@@ -116,7 +116,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       providesTags: [{ type: 'Venue', id: 'DETAIL' }]
     }),
-    getVenues: build.query<any, RequestPayload>({
+    getVenues: build.query<{ data: Venue[] }, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(CommonUrlsInfo.getVenues, params)
         return{

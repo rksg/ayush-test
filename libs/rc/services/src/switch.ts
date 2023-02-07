@@ -26,6 +26,7 @@ import {
   StackMember,
   ConfigurationHistory,
   CliTemplateExample,
+  CliConfiguration,
   transformConfigType,
   transformConfigStatus,
   VeViewModel,
@@ -736,7 +737,25 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           : { error: getDhcpLeasesQuery.error as FetchBaseQueryError }
       }
     }),
-    addCliTemplate: build.mutation<any, RequestPayload>({
+    getCliTemplates: build.query<{ data: CliConfiguration[] }, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getCliTemplates, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    getCliTemplate: build.query<CliConfiguration, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getCliTemplate, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    addCliTemplate: build.mutation<CliConfiguration, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(SwitchUrlsInfo.addCliTemplate, params)
         return {
@@ -754,6 +773,16 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    updateCliTemplate: build.mutation<CliConfiguration, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.updateCliTemplate, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchConfiguration', id: 'TEMPLATE' }]
     })
   })
 })
@@ -920,5 +949,8 @@ export const {
   useDeleteDhcpServersMutation,
   useGetDhcpLeasesQuery,
   useAddCliTemplateMutation,
+  useGetCliTemplatesQuery,
+  useGetCliTemplateQuery,
+  useUpdateCliTemplateMutation,
   useGetCliConfigExamplesQuery
 } = switchApi

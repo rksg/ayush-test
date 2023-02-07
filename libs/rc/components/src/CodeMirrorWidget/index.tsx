@@ -1,7 +1,6 @@
 /* eslint-disable max-len */
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 
-
 import './type.d'
 import * as CodeMirror            from 'codemirror'
 import { MergeViewConfiguration } from 'codemirror/addon/merge/merge.js'
@@ -32,12 +31,15 @@ interface CodeMirrorWidgetProps {
     width?: string
   }
   containerId?: string
-  onChange?: any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onChange?: any ///
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onKeyup?: any
 }
 
 CodeMirror.defineMode('cliMode', function () {
   return {
-    token: function (stream, state) {
+    token: function (stream) {
       if (stream.match(/^\${[^{}]*}/)) {
         return 'variable'
       } else if (stream.match(/<([^>]*)>/)) {
@@ -51,7 +53,7 @@ CodeMirror.defineMode('cliMode', function () {
 })
 
 export const CodeMirrorWidget = forwardRef((props: CodeMirrorWidgetProps, ref) => {
-  const { type, data, size, containerId, onChange } = props
+  const { type, data, size, containerId, onChange, onKeyup } = props
   const [readOnlyCodeMirror, setReadOnlyCodeMirror] = useState(null as unknown as CodeMirror.EditorFromTextArea)
   const codeViewContainerId = containerId ?? 'codeViewContainer'
   const height = size?.height || '450px'
@@ -61,6 +63,7 @@ export const CodeMirrorWidget = forwardRef((props: CodeMirrorWidgetProps, ref) =
     let div = document.createElement('div')
     div.innerHTML = code
     return div.innerText || div.textContent
+    // return div.innerText.replace(/↵/g, '\n') || div.textContent.replace(/↵/g, '');
   }
 
   const initSingleView = (data: CodeMirrorData) => {
@@ -78,6 +81,7 @@ export const CodeMirrorWidget = forwardRef((props: CodeMirrorWidgetProps, ref) =
         }
       )
       onChange && tmpReadOnlyCodeMirror.on('change', onChange)
+      onKeyup && tmpReadOnlyCodeMirror.on('keyup', onKeyup)
       setReadOnlyCodeMirror(tmpReadOnlyCodeMirror)
     }
   }
@@ -93,6 +97,13 @@ export const CodeMirrorWidget = forwardRef((props: CodeMirrorWidgetProps, ref) =
       if (readOnlyCodeMirror) {
         readOnlyCodeMirror.setOption('styleActiveLine', false)
       }
+    },
+    initCursor () {
+      readOnlyCodeMirror.focus()
+      readOnlyCodeMirror.setCursor(readOnlyCodeMirror.lineCount(), 0)
+    },
+    getInstance () {
+      return readOnlyCodeMirror
     },
     setValue (value: string) {
       if (readOnlyCodeMirror) {
@@ -124,11 +135,14 @@ export const CodeMirrorWidget = forwardRef((props: CodeMirrorWidgetProps, ref) =
       if (type === 'example' || type === 'file') {
         replacement = content
       } else { //var
-        const needSpace = false //this.needSpaceBeforeVariable(type, lastWord);
+        const needSpace = needSpaceBeforeVariable(type, lastWord)
         replacement = (needSpace ? htmlDecode('&nbsp;') : '') + '${' + content + '}'
       }
 
       readOnlyCodeMirror.replaceRange(replacement, fromPosition, cursor)
+      setTimeout(() => {
+        readOnlyCodeMirror.focus()
+      }, 100)
     }
   }))
 
@@ -189,3 +203,14 @@ export const CodeMirrorWidget = forwardRef((props: CodeMirrorWidgetProps, ref) =
     </UI.Container>
   )
 })
+
+function needSpaceBeforeVariable (type: string, lastWord: string) {
+  const hasDollarSign = lastWord.slice(-2) === '${'
+
+  if(type === 'variableMenu') {
+    const subStringCount = hasDollarSign ? 2 : 1
+    lastWord = lastWord.substr(0, (lastWord.length - subStringCount))
+  }
+
+  return !!lastWord.match(/.*\${[^{}]*}$/)
+}

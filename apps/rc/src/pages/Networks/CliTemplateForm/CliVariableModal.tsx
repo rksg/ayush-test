@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react'
 
 import { Form, FormInstance, Input, Select } from 'antd'
-import _                                     from 'lodash'
 
 import {
   Modal,
   Tooltip
 } from '@acx-ui/components'
 import {
+  CliTemplateVariable,
   checkObjectNotExists,
   cliVariableNameRegExp,
   cliIpAddressRegExp,
@@ -17,8 +17,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
-import { VariableType, Variable } from './CliStepConfiguration'
-import * as UI                    from './styledComponents'
+import { VariableType } from './CliStepConfiguration'
+import * as UI          from './styledComponents'
 
 interface variableFormData {
   name: string
@@ -32,12 +32,12 @@ interface variableFormData {
 }
 
 export function CliVariableModal (props: {
-  data?: Variable,
+  data?: CliTemplateVariable,
   editMode: boolean,
   modalvisible: boolean,
-  variableList: Variable[],
+  variableList: CliTemplateVariable[],
   setModalvisible: (visible: boolean) => void
-  setVariableList: (data: Variable[]) => void
+  setVariableList: (data: CliTemplateVariable[]) => void
 }) {
   const { $t } = getIntl()
   const { data, editMode, modalvisible, setModalvisible, variableList, setVariableList } = props
@@ -49,7 +49,7 @@ export function CliVariableModal (props: {
     form={form}
     layout='vertical'
     validateTrigger='onBlur'
-    onFieldsChange={(changedFields: any, allFields: any) => {
+    onFieldsChange={(changedFields: any) => {
       const changedField = changedFields?.[0]?.name?.[0]
       if (changedField === 'startIp' || changedField === 'mask') {
         const startIp = form.getFieldValue('startIp')
@@ -136,7 +136,7 @@ export function CliVariableModal (props: {
             { required: true },
             { validator: (_, value) => cliIpAddressRegExp(value) },
             {
-              validator: (_, value) => {
+              validator: () => {
                 const invalid = validateSubnetmaskOverlap(form)
                 if (invalid) {
                   return Promise.reject($t(validationMessages.ipAddress))
@@ -260,7 +260,6 @@ export function CliVariableModal (props: {
   </Form>
 
   const transformToRawData = (data: variableFormData) => {
-    console.log(data)
     const separator = getSeparator(data.type)
     const fieldsMap = { //////////////
       [VariableType.ADDRESS]: ['startIp', 'endIp', 'mask'],
@@ -279,7 +278,7 @@ export function CliVariableModal (props: {
     }
   }
 
-  const transformToFormData = (data: Variable) => {
+  const transformToFormData = (data: CliTemplateVariable) => {
     const separator = getSeparator(data.type)
     const values = data.value.split(separator)
     let fieldsValue: variableFormData = {

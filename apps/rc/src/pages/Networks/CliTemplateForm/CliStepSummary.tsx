@@ -6,24 +6,12 @@ import { useIntl }                       from 'react-intl'
 
 import { Descriptions, StepsForm } from '@acx-ui/components'
 import { CodeMirrorWidget }        from '@acx-ui/rc/components'
+import { CliConfiguration }        from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
 
-export enum VariableType {
-  ADDRESS = 'ADDRESS',
-  RANGE = 'RANGE',
-  STRING = 'STRING'
-}
-
-export interface Variable {
-  name: string
-  type: string
-  value: string
-}
-
 export function CliStepSummary (props: {
-  formRef?: any,
-  data: any
+  data: CliConfiguration
 }) {
   const { $t } = useIntl()
   const { data } = props
@@ -34,7 +22,7 @@ export function CliStepSummary (props: {
   })
 
   useEffect(() => {
-    const cli = data?.cli || data?.data?.cli
+    const cli = data?.cli // || data?.data?.cli
     const switches = Object.values(data?.venueSwitches ?? {}).flat()?.length ?? 0
     cli && codeMirrorEl?.current?.setValue(cli)
     setSwitchCount(switches)
@@ -58,6 +46,9 @@ export function CliStepSummary (props: {
           <Descriptions.Item
             label={$t({ defaultMessage: 'Reboot switches after applying the config' })}
             children={data?.reload ? $t({ defaultMessage: 'ON' }) : $t({ defaultMessage: 'OFF' })} />
+          <Descriptions.Item
+            label={$t({ defaultMessage: 'Apply the CLI template after adding it' })}
+            children={data?.applyLater ? $t({ defaultMessage: 'ON' }) : $t({ defaultMessage: 'OFF' })} />
         </Descriptions>
       </Col>
       <Col span={1} style={{ maxWidth: '24px' }}>
@@ -77,7 +68,7 @@ export function CliStepSummary (props: {
               width: '100%'
             }}
             data={{
-              clis: ' ',
+              clis: '',
               configOptions: {
                 readOnly: true
               }

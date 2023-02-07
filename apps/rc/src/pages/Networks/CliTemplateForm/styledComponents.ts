@@ -6,9 +6,13 @@ import {
 } from 'antd'
 import styled from 'styled-components/macro'
 
-
-import { Tabs }                                           from '@acx-ui/components'
-import { MoreVertical, Plus, QuestionMarkCircleOutlined } from '@acx-ui/icons'
+import { Tabs }          from '@acx-ui/components'
+import {
+  MoreVertical,
+  Plus,
+  QuestionMarkCircleOutlined,
+  WarningTriangleSolid
+} from '@acx-ui/icons'
 
 export const SelectionControlLayout = styled(Space)`
   display: flex;
@@ -63,6 +67,19 @@ export const QuestionMarkIcon = styled(QuestionMarkCircleOutlined)`
   display: block;
   width: 16px;
 `
+
+export const WarningTriangleSolidIcon = styled(WarningTriangleSolid)`
+  width: 18px;
+  path{
+    &:first-child {
+      fill: var(--acx-semantics-red-50);
+    }
+    &:nth-child(odd) {      
+      stroke: var(--acx-semantics-red-50);
+    }
+  }
+`
+
 export const tooltip = styled('div')`
   font-weight: normal;
   p {

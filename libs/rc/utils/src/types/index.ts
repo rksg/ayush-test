@@ -99,7 +99,7 @@ export interface Venue {
   }
   allApDisabled: boolean
   // aps ??
-  // switches ??
+  switches?: number
   // switchClients ??
   // radios ??
   // scheduling ??
