@@ -12,10 +12,15 @@ import {
   cssStr,
   showActionModal,
   deviceStatusColors,
-  getDeviceConnectionStatusColors
+  getDeviceConnectionStatusColors,
+  ColumnType
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
-import { useVenuesListQuery, useDeleteVenueMutation } from '@acx-ui/rc/services'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import {
+  useVenuesListQuery,
+  useDeleteVenueMutation,
+  useGetVenueCityListQuery
+} from '@acx-ui/rc/services'
 import {
   ApDeviceStatusEnum,
   Venue,
@@ -26,7 +31,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
 
-function useColumns () {
+function useColumns (filterables: { [key: string]: ColumnType['filterable'] }) {
   const { $t } = useIntl()
   const isEdgeEnabled = useIsSplitOn(Features.EDGES)
 
@@ -37,10 +42,12 @@ function useColumns () {
       dataIndex: 'name',
       sorter: true,
       disable: true,
+      searchable: true,
       defaultSortOrder: 'ascend',
-      render: function (data, row) {
+      render: function (data, row, _, highlightFn) {
         return (
-          <TenantLink to={`/venues/${row.id}/venue-details/overview`}>{data}</TenantLink>
+          <TenantLink to={`/venues/${row.id}/venue-details/overview`}>
+            {highlightFn(row.name)}</TenantLink>
         )
       }
     },
@@ -49,6 +56,7 @@ function useColumns () {
       key: 'city',
       dataIndex: 'city',
       sorter: true,
+      filterable: filterables['city'],
       width: 120,
       render: function (data, row) {
         return `${row.country}, ${row.city}`
@@ -215,9 +223,16 @@ type VenueTableProps = {
 export const VenueTable = ({ tableQuery, rowSelection }: VenueTableProps) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const columns = useColumns()
-
   const { tenantId } = useParams()
+
+  const { cityFilterOptions } = useGetVenueCityListQuery({ params: { tenantId } }, {
+    selectFromResult: ({ data }) => ({
+      cityFilterOptions: data?.map(v=>({ key: v.name, value: v.name }))
+    })
+  })
+
+
+  const columns = useColumns({ city: cityFilterOptions })
   const [
     deleteVenue,
     { isLoading: isDeleteVenueUpdating }
@@ -262,6 +277,8 @@ export const VenueTable = ({ tableQuery, rowSelection }: VenueTableProps) => {
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
+        onFilterChange={tableQuery.handleFilterChange}
+        enableApiFilter={true}
         rowKey='id'
         rowActions={rowActions}
         rowSelection={rowSelection}
