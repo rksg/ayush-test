@@ -18,7 +18,8 @@ export const policyTypeLabelMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.VLAN_POOL]: defineMessage({ defaultMessage: 'VLAN Pools' }),
   [PolicyType.MAC_REGISTRATION_LIST]: defineMessage({ defaultMessage: 'MAC Registration' }),
   [PolicyType.LAYER_2_POLICY]: defineMessage({ defaultMessage: 'Layer 2 Policy' }),
-  [PolicyType.LAYER_3_POLICY]: defineMessage({ defaultMessage: 'Layer 3 Policy' })
+  [PolicyType.LAYER_3_POLICY]: defineMessage({ defaultMessage: 'Layer 3 Policy' }),
+  [PolicyType.APPLICATION_POLICY]: defineMessage({ defaultMessage: 'Application Policy' })
 }
 export const policyTypeDescMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.AAA]: defineMessage({ defaultMessage: 'AAA description (TBD)' }),
@@ -32,7 +33,8 @@ export const policyTypeDescMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.VLAN_POOL]: defineMessage({ defaultMessage: 'VLAN Pool description (TBD)' }),
   [PolicyType.MAC_REGISTRATION_LIST]: defineMessage({ defaultMessage: 'MAC Registration (TBD)' }),
   [PolicyType.LAYER_2_POLICY]: defineMessage({ defaultMessage: 'Layer 2 Policy (TBD)' }),
-  [PolicyType.LAYER_3_POLICY]: defineMessage({ defaultMessage: 'Layer 3 Policy (TBD)' })
+  [PolicyType.LAYER_3_POLICY]: defineMessage({ defaultMessage: 'Layer 3 Policy (TBD)' }),
+  [PolicyType.APPLICATION_POLICY]: defineMessage({ defaultMessage: 'Application Policy (TBD)' })
 }
 export const policyTechnologyLabelMapping: Record<PolicyTechnology, MessageDescriptor> = {
   [PolicyTechnology.WIFI]: defineMessage({ defaultMessage: 'Wi-Fi' }),

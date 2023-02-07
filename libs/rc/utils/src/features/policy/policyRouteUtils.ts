@@ -41,7 +41,8 @@ const typePathMapping: Record<PolicyType, string> = {
   [PolicyType.VLAN_POOL]: 'vlanPool',
   [PolicyType.MAC_REGISTRATION_LIST]: 'macRegistrationList',
   [PolicyType.LAYER_2_POLICY]: 'layer2Policy',
-  [PolicyType.LAYER_3_POLICY]: 'layer3Policy'
+  [PolicyType.LAYER_3_POLICY]: 'layer3Policy',
+  [PolicyType.APPLICATION_POLICY]: 'applicationPolicy'
 }
 
 export function getPolicyRoutePath (props: PolicyRoutePathProps): string {

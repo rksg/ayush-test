@@ -31,6 +31,7 @@ import Layer3Drawer       from '../../../Policies/AccessControl/AccessControlFor
 import NetworkFormContext from '../NetworkFormContext'
 
 import * as UI from './styledComponents'
+import ApplicationDrawer from '../../../Policies/AccessControl/AccessControlForm/ApplicationDrawer';
 
 const { useWatch } = Form
 const { Option } = Select
@@ -473,22 +474,9 @@ function AccessControlConfigForm () {
           children={<Switch />}
         />
 
-        {enableApplications && <>
-          <Form.Item
-            name={['wlan','advancedCustomization','applicationPolicyId']}
-            style={{ marginBottom: '10px', lineHeight: '32px' }}
-            rules={[{
-              required: true,
-              message: $t({ defaultMessage: 'Please select Applications profile' })
-            }]}
-            children={
-              <Select placeholder={$t({ defaultMessage: 'Select profile...' })}
-                style={{ width: '180px' }}
-                children={applicationPolicySelectOptions} />
-            }
-          />
-          {$t({ defaultMessage: 'Add' })}
-        </>}
+        {enableApplications && <ApplicationDrawer
+          inputName={['wlan', 'advancedCustomization']}
+        />}
       </div>
     </UI.FieldLabel>
 
