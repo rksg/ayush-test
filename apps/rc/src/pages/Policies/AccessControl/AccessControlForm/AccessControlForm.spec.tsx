@@ -95,7 +95,7 @@ describe('AccessControlForm Component', () => {
       }
     )
 
-    const header = screen.getByRole('heading', {
+    const header = await screen.findByRole('heading', {
       name: /add access control policy/i
     })
 

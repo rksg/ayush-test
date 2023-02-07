@@ -65,16 +65,16 @@ const AccessControlNetworksDetail = (props: { data: AccessControlInfoType | unde
   })
 
   return (
-    <Card title={`${$t({ defaultMessage: 'Instance' })} (${tableQuery.data?.totalCount})`}>
-      <div style={{ width: '100%' }}>
-        <Table
-          columns={basicColumns}
-          dataSource={tableQuery.data?.data}
-          pagination={tableQuery.pagination}
-          onChange={tableQuery.handleTableChange}
-          rowKey='id'
-        />
-      </div>
+    <Card title={$t({ defaultMessage: 'Instance ({count})' }, {
+      count: tableQuery.data?.totalCount
+    })}>
+      <Table
+        columns={basicColumns}
+        dataSource={tableQuery.data?.data}
+        pagination={tableQuery.pagination}
+        onChange={tableQuery.handleTableChange}
+        rowKey='id'
+      />
     </Card>
   )
 }

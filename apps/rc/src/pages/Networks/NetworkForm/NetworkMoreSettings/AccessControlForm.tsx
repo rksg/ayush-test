@@ -48,24 +48,22 @@ export function AccessControlForm () {
   const form = Form.useFormInstance()
 
   useEffect(() => {
-    if (data) {
-      if (data.wlan?.advancedCustomization) {
-        form.setFieldsValue({
-          enableDeviceOs: !_.isEmpty(data.wlan.advancedCustomization.devicePolicyId),
-          enableDownloadLimit: (get(data,
-            'wlan.advancedCustomization.userDownlinkRateLimiting')) > 0,
-          enableUploadLimit: (get(data,
+    if (data?.wlan?.advancedCustomization) {
+      form.setFieldsValue({
+        enableDeviceOs: !_.isEmpty(data.wlan.advancedCustomization.devicePolicyId),
+        enableDownloadLimit: (get(data,
+          'wlan.advancedCustomization.userDownlinkRateLimiting')) > 0,
+        enableUploadLimit: (get(data,
+          'wlan.advancedCustomization.userUplinkRateLimiting')) > 0,
+        enableClientRateLimit: (get(data,
+          'wlan.advancedCustomization.userDownlinkRateLimiting')) > 0 ||
+          (get(data,
             'wlan.advancedCustomization.userUplinkRateLimiting')) > 0,
-          enableClientRateLimit: (get(data,
-            'wlan.advancedCustomization.userDownlinkRateLimiting')) > 0 ||
-            (get(data,
-              'wlan.advancedCustomization.userUplinkRateLimiting')) > 0,
-          accessControlProfileEnable: !_.isEmpty(get(data,
-            'wlan.advancedCustomization.accessControlProfileId'))
-        })
-        setEnabledProfile(!_.isEmpty(
-          get(data, 'wlan.advancedCustomization.accessControlProfileId')))
-      }
+        accessControlProfileEnable: !_.isEmpty(get(data,
+          'wlan.advancedCustomization.accessControlProfileId'))
+      })
+      setEnabledProfile(!_.isEmpty(
+        get(data, 'wlan.advancedCustomization.accessControlProfileId')))
     }
   }, [data])
 
@@ -130,6 +128,23 @@ function getAccessControlProfile <
     name = policies.find(item => item.id === policy.id)?.name
   }
   return transformDisplayText(name)
+}
+
+function GetLinkLimitByAccessControlPorfile (props: {
+  accessControlProfile: AccessControlProfile | undefined,
+  type: string
+}) {
+  const { $t } = useIntl()
+  const { accessControlProfile, type } = props
+
+  let limit = $t({ defaultMessage: 'Unlimited' })
+  if (accessControlProfile && accessControlProfile.rateLimiting
+    && accessControlProfile.rateLimiting[type] !== 0) {
+    limit = $t({ defaultMessage: '{rateLimiting} Mbps' }, {
+      rateLimiting: accessControlProfile.rateLimiting[type]
+    })
+  }
+  return <div>{limit}</div>
 }
 
 function SelectAccessProfileProfile (props: { accessControlProfileId: string }) {
@@ -243,16 +258,6 @@ function SelectAccessProfileProfile (props: { accessControlProfileId: string }) 
     resetProfiles()
   }
 
-  const getLinkLimitByAccessControlPorfile =
-    function (accessControlProfile: AccessControlProfile | undefined, type: string) {
-      let limit = 'Unlimited'
-      if (accessControlProfile && accessControlProfile.rateLimiting
-        && accessControlProfile.rateLimiting[type] !== 0) {
-        limit = accessControlProfile.rateLimiting[type] + ' Mbps'
-      }
-      return limit
-    }
-
   const [enableAccessControlProfile] = [
     useWatch('accessControlProfileEnable')]
 
@@ -325,13 +330,15 @@ function SelectAccessProfileProfile (props: { accessControlProfileId: string }) 
           <div>
             <UI.RateLimitBlock>
               <label>{$t({ defaultMessage: 'Up:' })}</label>
-              <div>{getLinkLimitByAccessControlPorfile(state.selectedAccessControlProfile,
-                'uplinkLimit')}</div>
+              <GetLinkLimitByAccessControlPorfile
+                accessControlProfile={state.selectedAccessControlProfile}
+                type={'uplinkLimit'} />
             </UI.RateLimitBlock>
             <UI.RateLimitBlock>
               <label>{$t({ defaultMessage: 'Down:' })}</label>
-              <div>{getLinkLimitByAccessControlPorfile(state.selectedAccessControlProfile,
-                'downlinkLimit')}</div>
+              <GetLinkLimitByAccessControlPorfile
+                accessControlProfile={state.selectedAccessControlProfile}
+                type={'downlinkLimit'} />
             </UI.RateLimitBlock>
           </div>
       }

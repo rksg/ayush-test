@@ -48,5 +48,9 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
   updateAccessControlProfile: {
     method: 'put',
     url: '/api/tenant/:tenantId/wifi/access-control-profile/:policyId'
+  },
+  deleteAccessControlProfile: {
+    method: 'delete',
+    url: '/api/tenant/:tenantId/wifi/access-control-profile/:policyId'
   }
 }
