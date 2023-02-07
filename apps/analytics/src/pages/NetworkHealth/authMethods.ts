@@ -10,7 +10,6 @@ import {
 
 type AuthMethodField = {
   key: 'wlanUsername' | 'wlanPassword'
-  title: MessageDescriptor
   preConfigured?: boolean
 }
 
@@ -23,16 +22,13 @@ type AuthMethodSpec = {
 }
 
 const usernameField: AuthMethodField = {
-  key: 'wlanUsername',
-  title: defineMessage({ defaultMessage: 'Username' })
+  key: 'wlanUsername'
 }
 const passwordField: AuthMethodField = {
-  key: 'wlanPassword',
-  title: defineMessage({ defaultMessage: 'Password' })
+  key: 'wlanPassword'
 }
 const presharedKeyField: AuthMethodField = {
-  ...passwordField,
-  title: defineMessage({ defaultMessage: 'Pre-Shared Key' }),
+  key: 'wlanPassword',
   preConfigured: true
 }
 

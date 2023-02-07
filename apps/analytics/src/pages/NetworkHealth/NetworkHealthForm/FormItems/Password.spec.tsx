@@ -121,3 +121,28 @@ describe('Password', () => {
     expect(screen.getByTestId('field')).toBeEmptyDOMElement()
   })
 })
+
+describe('Password.FieldSummary', () => {
+  const value = '12345'
+  it('renders if selected auth method requires this field', async () => {
+    renderForm(<Password.FieldSummary />, {
+      initialValues: {
+        authenticationMethod: AuthenticationMethod.WPA2_ENTERPRISE,
+        wlanPassword: value
+      }
+    })
+
+    expect(screen.getByTestId('field')).toHaveTextContent('*'.repeat(value.length))
+  })
+
+  it('hidden if selected auth method not require this field', async () => {
+    renderForm(<Password.FieldSummary />, {
+      initialValues: {
+        authenticationMethod: AuthenticationMethod.OPEN_AUTH,
+        wlanUsername: value
+      }
+    })
+
+    expect(screen.getByTestId('field')).toBeEmptyDOMElement()
+  })
+})

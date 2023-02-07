@@ -1,9 +1,10 @@
 import { useEffect } from 'react'
 
 import { Form, Input, Radio, Space } from 'antd'
-import { useIntl }                   from 'react-intl'
+import { defineMessage, useIntl }    from 'react-intl'
 
 import {
+  StepsFormNew,
   useStepFormContext,
   useWatch
 } from '@acx-ui/components'
@@ -12,20 +13,29 @@ import { NetworkHealthFormDto } from '../../types'
 
 import { ipValidator } from './validator'
 
-export function DnsServer () {
-  const { $t } = useIntl()
+const name = 'dnsServer' as const
+const label = defineMessage({ defaultMessage: 'DNS Server' })
+
+const useField = () => {
   const { form } = useStepFormContext<NetworkHealthFormDto>()
   const [isCustom, value] = [
     useWatch('isDnsServerCustom', form),
-    useWatch('dnsServer', form)
+    useWatch(name, form)
   ]
 
+  return { form, isCustom, value }
+}
+
+export function DnsServer () {
+  const { $t } = useIntl()
+  const { form, isCustom, value } = useField()
+
   useEffect(() => {
-    if (!isCustom && value) form.setFieldValue('dnsServer', undefined)
+    if (!isCustom && value) form.setFieldValue(name, undefined)
   }, [form, isCustom, value])
 
   return (
-    <Form.Item required={isCustom} label={$t({ defaultMessage: 'DNS Server' })}>
+    <Form.Item required={isCustom} label={$t(label)}>
       <Space>
         <Form.Item
           noStyle
@@ -38,8 +48,8 @@ export function DnsServer () {
         </Form.Item>
         {isCustom ? <Form.Item
           noStyle
-          name='dnsServer'
-          label={$t({ defaultMessage: 'DNS Server' })}
+          name={name}
+          label={$t(label)}
           rules={[
             { required: true },
             { validator: ipValidator }
@@ -51,4 +61,20 @@ export function DnsServer () {
       </Space>
     </Form.Item>
   )
+}
+
+DnsServer.fieldName = name
+DnsServer.label = label
+
+DnsServer.FieldSummary = function DnsServerFieldSummary () {
+  const { $t } = useIntl()
+  const { isCustom } = useField()
+
+  return <Form.Item
+    name={name}
+    label={$t(label)}
+    children={<StepsFormNew.FieldSummary<string>
+      convert={(value) => isCustom ? String(value) : $t({ defaultMessage: 'Default' })}
+    />}
+  />
 }

@@ -70,3 +70,27 @@ describe('DnsServer', () => {
     expect(values).toHaveTextContent('false')
   })
 })
+
+describe('DnsServer.FieldSummary', () => {
+  it('renders for Default', async () => {
+    renderForm(<DnsServer.FieldSummary />, {
+      initialValues: {
+        isDnsServerCustom: false
+      }
+    })
+
+    expect(screen.getByTestId('field')).toHaveTextContent('Default')
+  })
+
+  it('hidden if selected auth method not require this field', async () => {
+    const value = '10.10.10.10'
+    renderForm(<DnsServer.FieldSummary />, {
+      initialValues: {
+        isDnsServerCustom: true,
+        dnsServer: value
+      }
+    })
+
+    expect(screen.getByTestId('field')).toHaveTextContent(value)
+  })
+})

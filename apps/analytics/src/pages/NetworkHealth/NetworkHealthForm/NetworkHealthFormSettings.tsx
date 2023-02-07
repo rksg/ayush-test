@@ -23,14 +23,8 @@ export function NetworkHealthFormSettings () {
         <FormItems.Password />
         <FormItems.RadioBand />
         <FormItems.DnsServer />
-        <FormItems.IPDomainField
-          name='pingAddress'
-          label={$t({ defaultMessage: 'Ping Destination Address' })}
-        />
-        <FormItems.IPDomainField
-          name='tracerouteAddress'
-          label={$t({ defaultMessage: 'Traceroute Destination Address' })}
-        />
+        <FormItems.PingAddress />
+        <FormItems.TracerouteAddress />
         <FormItems.SpeedTest />
       </Col>
     </Row>

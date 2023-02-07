@@ -1,8 +1,13 @@
-import { Form, Select } from 'antd'
-import { useIntl }      from 'react-intl'
+import { Form, Select }           from 'antd'
+import { defineMessage, useIntl } from 'react-intl'
+
+import { StepsFormNew } from '@acx-ui/components'
 
 import * as contents             from '../../contents'
 import { TestType as ETestType } from '../../types'
+
+const name = 'type' as const
+const label = defineMessage({ defaultMessage: 'Test Type' })
 
 export function TestType () {
   const { $t } = useIntl()
@@ -16,8 +21,22 @@ export function TestType () {
   />)
 
   return <Form.Item
-    name='type'
-    label={$t({ defaultMessage: 'Test Type' })}
+    name={name}
+    label={$t(label)}
     children={<Select disabled>{options}</Select>}
+  />
+}
+
+TestType.fieldName = name
+TestType.label = label
+
+TestType.FieldSummary = function TestTypeFieldSummary () {
+  const { $t } = useIntl()
+  return <Form.Item
+    name={name}
+    label={$t(label)}
+    children={<StepsFormNew.FieldSummary<ETestType>
+      convert={(value) => $t(contents.testTypes[value!])}
+    />}
   />
 }

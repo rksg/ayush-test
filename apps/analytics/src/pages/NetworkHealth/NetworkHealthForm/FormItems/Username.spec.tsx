@@ -64,3 +64,28 @@ describe('Username', () => {
     expect(await screen.findByTestId('form-values')).not.toHaveTextContent(value)
   })
 })
+
+describe('Username.FieldSummary', () => {
+  const value = 'wifi user'
+  it('renders if selected auth method requires this field', async () => {
+    renderForm(<Username.FieldSummary />, {
+      initialValues: {
+        authenticationMethod: AuthenticationMethod.WPA2_ENTERPRISE,
+        wlanUsername: value
+      }
+    })
+
+    expect(screen.getByTestId('field')).toHaveTextContent(value)
+  })
+
+  it('hidden if selected auth method not require this field', async () => {
+    renderForm(<Username.FieldSummary />, {
+      initialValues: {
+        authenticationMethod: AuthenticationMethod.OPEN_AUTH,
+        wlanUsername: value
+      }
+    })
+
+    expect(screen.getByTestId('field')).toBeEmptyDOMElement()
+  })
+})

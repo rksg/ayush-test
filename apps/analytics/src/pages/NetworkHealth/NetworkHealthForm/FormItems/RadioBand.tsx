@@ -1,13 +1,15 @@
 import { useEffect } from 'react'
 
-import { Form, Radio } from 'antd'
-import { useIntl }     from 'react-intl'
+import { Form, Radio }            from 'antd'
+import { defineMessage, useIntl } from 'react-intl'
 
 import {
+  StepsFormNew,
   Tooltip,
   useStepFormContext,
   useWatch
 } from '@acx-ui/components'
+import { formatter } from '@acx-ui/utils'
 
 import {
   Band,
@@ -15,41 +17,58 @@ import {
   NetworkHealthFormDto
 } from '../../types'
 
+const name = 'radio' as const
+const label = defineMessage({ defaultMessage: 'Radio Band' })
+const format = formatter('radioFormat')
+
 export function RadioBand () {
   const { $t } = useIntl()
   const { form } = useStepFormContext<NetworkHealthFormDto>()
 
   const [clientType, radio] = [
     useWatch('clientType', form),
-    useWatch('radio', form)
+    useWatch(name, form)
   ]
 
-  const label = $t({ defaultMessage: 'Radio Band' })
   const tooltipTitle = $t({ defaultMessage: '6 GHz is not supported for Virtual Client test' })
   const mainLabel = clientType === ClientType.VirtualClient
     ? <>
-      {label}
+      {$t(label)}
       <Tooltip.Info title={tooltipTitle} />
     </>
-    : label
+    : $t(label)
 
   useEffect(() => {
     if (clientType === ClientType.VirtualWirelessClient) return
     if (radio !== Band.Band6) return
-    form.setFieldValue('radio', Band.Band2_4)
+    form.setFieldValue(name, Band.Band2_4)
   }, [form, clientType, radio])
 
   return <Form.Item label={mainLabel}>
-    <Form.Item noStyle name='radio' label={label}>
+    <Form.Item noStyle name={name} label={$t(label)}>
       <Radio.Group>
-        <Radio value={Band.Band2_4}>{$t({ defaultMessage: '2.4 GHz' })}</Radio>
-        <Radio value={Band.Band5}>{$t({ defaultMessage: '5 GHz' })}</Radio>
+        <Radio value={Band.Band2_4}>{format('2.4')}</Radio>
+        <Radio value={Band.Band5}>{format('5')}</Radio>
         <Radio
           value={Band.Band6}
           disabled={clientType === ClientType.VirtualClient}
-          children={$t({ defaultMessage: '6 GHz' })}
+          children={format('6')}
         />
       </Radio.Group>
     </Form.Item>
   </Form.Item>
+}
+
+RadioBand.fieldName = name
+RadioBand.label = label
+
+RadioBand.FieldSummary = function RadioBandFieldSummary () {
+  const { $t } = useIntl()
+  return <Form.Item
+    name={name}
+    label={$t(label)}
+    children={<StepsFormNew.FieldSummary<Band>
+      convert={(value) => format(value)}
+    />}
+  />
 }

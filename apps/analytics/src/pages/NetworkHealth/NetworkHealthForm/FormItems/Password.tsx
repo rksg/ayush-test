@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 
-import { Form, Input } from 'antd'
-import { useIntl }     from 'react-intl'
+import { Form, Input }            from 'antd'
+import { defineMessage, useIntl } from 'react-intl'
 
 import {
   StepsFormNew,
@@ -12,14 +12,16 @@ import {
 import { authMethodsByCode }    from '../../authMethods'
 import { NetworkHealthFormDto } from '../../types'
 
-const key = 'wlanPassword'
+const name = 'wlanPassword' as const
+const label = defineMessage({ defaultMessage: 'Password' })
+const labelAlt = defineMessage({ defaultMessage: 'Pre-Shared Key' })
 
 function fieldOfCode (code?: NetworkHealthFormDto['authenticationMethod']) {
   const spec = code ? authMethodsByCode[code] : undefined
-  return spec?.fields.find(field => field.key === key)
+  return spec?.fields.find(field => field.key === name)
 }
 
-export function Password () {
+const useField = () => {
   const { $t } = useIntl()
   const { editMode, form, initialValues } = useStepFormContext<NetworkHealthFormDto>()
   const code = useWatch('authenticationMethod', form)
@@ -27,13 +29,7 @@ export function Password () {
   const field = fieldOfCode(code)
   const previousField = fieldOfCode(initialValues?.authenticationMethod)
 
-  useEffect(() => {
-    if (field && !field.preConfigured) return
-
-    form.setFieldValue(key, undefined)
-  }, [form, field])
-
-  if (!field) return null
+  if (!field) return { form, field }
 
   let required = !Boolean(field.preConfigured)
   if (editMode && !field.preConfigured) required = false
@@ -52,14 +48,50 @@ export function Password () {
   let disabled = false
   if (field.preConfigured) disabled = true
 
+  return { form, field, placeholder, disabled, required }
+}
+
+export function Password () {
+  const { $t } = useIntl()
+  const { form, field, disabled, placeholder, required } = useField()
+
+  useEffect(() => {
+    if (field && !field.preConfigured) return
+
+    form.setFieldValue(name, undefined)
+  }, [form, field])
+
+  if (!field) return null
+
   const children = field.preConfigured
     ? <StepsFormNew.FieldSummary convert={() => String(placeholder)} />
     : <Input.Password {...{ placeholder, disabled }} />
 
   return <Form.Item
-    name={key}
-    label={$t(field.title)}
+    name={name}
+    label={$t(field.preConfigured ? labelAlt : label)}
     rules={[{ required }]}
     children={children}
+  />
+}
+
+Password.fieldName = name
+Password.label = label
+Password.labelAlt = labelAlt
+
+Password.FieldSummary = function PasswordFieldSummary () {
+  const { $t } = useIntl()
+  const { field } = useField()
+
+  if (!field) return null
+
+  return <Form.Item
+    name={name}
+    label={$t(field.preConfigured ? labelAlt : label)}
+    children={<StepsFormNew.FieldSummary<string>
+      convert={(value) => field.preConfigured
+        ? $t({ defaultMessage: 'Using configured password' })
+        : Array(String(value).length).fill('*').join('')}
+    />}
   />
 }

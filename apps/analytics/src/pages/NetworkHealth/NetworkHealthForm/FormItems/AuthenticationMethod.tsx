@@ -1,23 +1,33 @@
 import { useEffect } from 'react'
 
-import { Form, Select }              from 'antd'
-import { FormattedMessage, useIntl } from 'react-intl'
+import { Form, Select }                             from 'antd'
+import { FormattedMessage, defineMessage, useIntl } from 'react-intl'
 
 import {
+  StepsFormNew,
   Tooltip,
   useStepFormContext,
   useWatch
 } from '@acx-ui/components'
 
-import { authMethodsByClientType } from '../../authMethods'
-import * as contents               from '../../contents'
-import { NetworkHealthFormDto }    from '../../types'
+import {
+  authMethodsByClientType,
+  authMethodsByCode
+} from '../../authMethods'
+import * as contents     from '../../contents'
+import {
+  AuthenticationMethod as EeAuthenticationMethod,
+  NetworkHealthFormDto
+} from '../../types'
+
+const name = 'authenticationMethod' as const
+const label = defineMessage({ defaultMessage: 'Authentication Method' })
 
 export function AuthenticationMethod () {
   const { $t } = useIntl()
   const { form } = useStepFormContext<NetworkHealthFormDto>()
   const [code, clientType] = [
-    useWatch('authenticationMethod', form),
+    useWatch(name, form),
     useWatch('clientType', form)
   ]
   const methods = authMethodsByClientType[clientType]
@@ -33,11 +43,11 @@ export function AuthenticationMethod () {
   useEffect(() => {
     if (!code) return
     if (methods?.some(method => method.code === code)) return
-    form.setFieldValue('authenticationMethod', undefined)
+    form.setFieldValue(name, undefined)
   }, [form, methods, code, clientType])
 
-  const label = <>
-    {$t({ defaultMessage: 'Authentication Method' })}
+  const mainLabel = <>
+    {$t(label)}
     <Tooltip.Info
       title={<FormattedMessage
         {...contents.unsupportedAuthMethods[clientType]}
@@ -46,11 +56,11 @@ export function AuthenticationMethod () {
     />
   </>
 
-  return <Form.Item required label={label}>
+  return <Form.Item required label={mainLabel}>
     <Form.Item
       noStyle
-      name='authenticationMethod'
-      label={$t({ defaultMessage: 'Authentication Method' })}
+      name={name}
+      label={$t(label)}
       rules={[{ required: true }]}
       children={<Select
         placeholder={$t({ defaultMessage: 'Select an authentication method' })}
@@ -58,4 +68,19 @@ export function AuthenticationMethod () {
       />}
     />
   </Form.Item>
+}
+
+AuthenticationMethod.fieldName = name
+AuthenticationMethod.label = label
+
+AuthenticationMethod.FieldSummary = function AuthenticationMethodFieldSummary () {
+  const { $t } = useIntl()
+
+  return <Form.Item
+    name={name}
+    label={$t(label)}
+    children={<StepsFormNew.FieldSummary<EeAuthenticationMethod>
+      convert={(code) => $t(authMethodsByCode[code!].title)}
+    />}
+  />
 }

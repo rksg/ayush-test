@@ -1,9 +1,12 @@
-import { Form, Select } from 'antd'
-import { useIntl }      from 'react-intl'
-import { useParams }    from 'react-router-dom'
+import { Form, Select }           from 'antd'
+import { defineMessage, useIntl } from 'react-intl'
+import { useParams }              from 'react-router-dom'
 
-import { Loader }              from '@acx-ui/components'
-import { useNetworkListQuery } from '@acx-ui/rc/services'
+import { Loader, StepsFormNew } from '@acx-ui/components'
+import { useNetworkListQuery }  from '@acx-ui/rc/services'
+
+const name = 'wlanName' as const
+const label = defineMessage({ defaultMessage: 'Network' })
 
 const payload = {
   fields: ['id', 'name'],
@@ -38,8 +41,8 @@ export function WlanName () {
 
   return <Loader style={{ height: 'auto' }} states={[networks]}>
     <Form.Item
-      name='wlanName'
-      label={$t({ defaultMessage: 'Network' })}
+      name={name}
+      label={$t(label)}
       rules={[
         { required: true },
         { validator: (_, value) => validateNameExists(value) }
@@ -53,4 +56,16 @@ export function WlanName () {
       />}
     />
   </Loader>
+}
+
+WlanName.fieldName = name
+WlanName.label = label
+
+WlanName.FieldSummary = function WlanNameFieldSummary () {
+  const { $t } = useIntl()
+  return <Form.Item
+    name={name}
+    label={$t(label)}
+    children={<StepsFormNew.FieldSummary />}
+  />
 }

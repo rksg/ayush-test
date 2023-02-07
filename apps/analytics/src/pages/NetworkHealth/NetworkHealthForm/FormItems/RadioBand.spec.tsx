@@ -9,11 +9,9 @@ import { RadioBand } from './RadioBand'
 
 const { click } = userEvent
 
-const field = <RadioBand />
-
 describe('RadioBand', () => {
   it('render field for virtual-client', async () => {
-    renderForm(field, {
+    renderForm(<RadioBand />, {
       initialValues: {
         clientType: ClientType.VirtualClient,
         radio: Band.Band2_4
@@ -26,7 +24,7 @@ describe('RadioBand', () => {
   })
 
   it('render field for virtual-wireless-client', async () => {
-    renderForm(field, {
+    renderForm(<RadioBand />, {
       initialValues: {
         clientType: ClientType.VirtualWirelessClient,
         radio: Band.Band2_4
@@ -40,7 +38,7 @@ describe('RadioBand', () => {
 
   // eslint-disable-next-line max-len
   it('sets value to 2.4 when switch to virtual-client from virtual-wireless-client + 6 GHz', async () => {
-    renderForm(field, {
+    renderForm(<RadioBand />, {
       initialValues: {
         clientType: ClientType.VirtualWirelessClient,
         radio: Band.Band6

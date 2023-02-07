@@ -1,10 +1,13 @@
-import { Form, Radio }               from 'antd'
-import { FormattedMessage, useIntl } from 'react-intl'
+import { Form, Radio }                              from 'antd'
+import { FormattedMessage, defineMessage, useIntl } from 'react-intl'
 
 import { StepsFormNew, Tooltip, useStepFormContext } from '@acx-ui/components'
 
 import * as contents                 from '../../contents'
 import { ClientType as EClientType } from '../../types'
+
+const name = 'clientType' as const
+const label = defineMessage({ defaultMessage: 'Client Type' })
 
 const tooltip = <FormattedMessage
   {...contents.clientTypeTooltip}
@@ -31,16 +34,31 @@ export function ClientType () {
 
   return <Form.Item
     label={<>
-      {$t({ defaultMessage: 'Client Type' })}
+      {$t(label)}
       <Tooltip.Info title={tooltip} />
     </>}
     children={
       <Form.Item
         noStyle
-        name='clientType'
-        label={$t({ defaultMessage: 'Client Type' })}
+        name={name}
+        label={$t(label)}
         children={children}
       />
     }
+  />
+}
+
+ClientType.fieldName = name
+ClientType.label = label
+
+ClientType.FieldSummary = function DnsServerFieldSummary () {
+  const { $t } = useIntl()
+
+  return <Form.Item
+    name={name}
+    label={$t(label)}
+    children={<StepsFormNew.FieldSummary<EClientType>
+      convert={(type) => $t(contents.clientTypes[type!])}
+    />}
   />
 }

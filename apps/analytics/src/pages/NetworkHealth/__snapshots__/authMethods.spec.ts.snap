@@ -9,15 +9,6 @@ Array [
       Object {
         "key": "wlanPassword",
         "preConfigured": true,
-        "title": Object {
-          "defaultMessage": Array [
-            Object {
-              "type": 0,
-              "value": "Pre-Shared Key",
-            },
-          ],
-          "id": "Sz29et",
-        },
       },
     ],
     "stages": Array [
@@ -86,27 +77,9 @@ Array [
     "fields": Array [
       Object {
         "key": "wlanUsername",
-        "title": Object {
-          "defaultMessage": Array [
-            Object {
-              "type": 0,
-              "value": "Username",
-            },
-          ],
-          "id": "JCIgkj",
-        },
       },
       Object {
         "key": "wlanPassword",
-        "title": Object {
-          "defaultMessage": Array [
-            Object {
-              "type": 0,
-              "value": "Password",
-            },
-          ],
-          "id": "5sg7KC",
-        },
       },
     ],
     "stages": Array [
@@ -233,15 +206,6 @@ Array [
       Object {
         "key": "wlanPassword",
         "preConfigured": true,
-        "title": Object {
-          "defaultMessage": Array [
-            Object {
-              "type": 0,
-              "value": "Pre-Shared Key",
-            },
-          ],
-          "id": "Sz29et",
-        },
       },
     ],
     "stages": Array [
@@ -311,15 +275,6 @@ Array [
       Object {
         "key": "wlanPassword",
         "preConfigured": true,
-        "title": Object {
-          "defaultMessage": Array [
-            Object {
-              "type": 0,
-              "value": "Pre-Shared Key",
-            },
-          ],
-          "id": "Sz29et",
-        },
       },
     ],
     "stages": Array [
@@ -389,15 +344,6 @@ Array [
       Object {
         "key": "wlanPassword",
         "preConfigured": true,
-        "title": Object {
-          "defaultMessage": Array [
-            Object {
-              "type": 0,
-              "value": "Pre-Shared Key",
-            },
-          ],
-          "id": "Sz29et",
-        },
       },
     ],
     "stages": Array [
@@ -466,27 +412,9 @@ Array [
     "fields": Array [
       Object {
         "key": "wlanUsername",
-        "title": Object {
-          "defaultMessage": Array [
-            Object {
-              "type": 0,
-              "value": "Username",
-            },
-          ],
-          "id": "JCIgkj",
-        },
       },
       Object {
         "key": "wlanPassword",
-        "title": Object {
-          "defaultMessage": Array [
-            Object {
-              "type": 0,
-              "value": "Password",
-            },
-          ],
-          "id": "5sg7KC",
-        },
       },
     ],
     "stages": Array [
@@ -615,15 +543,6 @@ Object {
     Object {
       "key": "wlanPassword",
       "preConfigured": true,
-      "title": Object {
-        "defaultMessage": Array [
-          Object {
-            "type": 0,
-            "value": "Pre-Shared Key",
-          },
-        ],
-        "id": "Sz29et",
-      },
     },
   ],
   "stages": Array [
@@ -698,15 +617,6 @@ Object {
     Object {
       "key": "wlanPassword",
       "preConfigured": true,
-      "title": Object {
-        "defaultMessage": Array [
-          Object {
-            "type": 0,
-            "value": "Pre-Shared Key",
-          },
-        ],
-        "id": "Sz29et",
-      },
     },
   ],
   "stages": Array [
@@ -781,15 +691,6 @@ Object {
     Object {
       "key": "wlanPassword",
       "preConfigured": true,
-      "title": Object {
-        "defaultMessage": Array [
-          Object {
-            "type": 0,
-            "value": "Pre-Shared Key",
-          },
-        ],
-        "id": "Sz29et",
-      },
     },
   ],
   "stages": Array [
@@ -864,27 +765,9 @@ Object {
   "fields": Array [
     Object {
       "key": "wlanUsername",
-      "title": Object {
-        "defaultMessage": Array [
-          Object {
-            "type": 0,
-            "value": "Username",
-          },
-        ],
-        "id": "JCIgkj",
-      },
     },
     Object {
       "key": "wlanPassword",
-      "title": Object {
-        "defaultMessage": Array [
-          Object {
-            "type": 0,
-            "value": "Password",
-          },
-        ],
-        "id": "5sg7KC",
-      },
     },
   ],
   "stages": Array [

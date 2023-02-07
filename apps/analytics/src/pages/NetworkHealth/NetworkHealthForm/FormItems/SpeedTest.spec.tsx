@@ -11,3 +11,21 @@ describe('SpeedTest', () => {
     expect(screen.getByRole('checkbox')).toBeVisible()
   })
 })
+
+describe('SpeedTest.FieldSummary', () => {
+  it('renders Enabled', async () => {
+    renderForm(<SpeedTest.FieldSummary />, {
+      initialValues: { speedTestEnabled: true }
+    })
+
+    expect(screen.getByTestId('field')).toHaveTextContent('Enabled')
+  })
+
+  it('renders Disabled', async () => {
+    renderForm(<SpeedTest.FieldSummary />, {
+      initialValues: { speedTestEnabled: false }
+    })
+
+    expect(screen.getByTestId('field')).toHaveTextContent('Disabled')
+  })
+})
