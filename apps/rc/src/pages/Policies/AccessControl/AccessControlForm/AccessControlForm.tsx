@@ -7,8 +7,13 @@ import {
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
-import { AccessControlProfile, getPolicyListRoutePath } from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink }                   from '@acx-ui/react-router-dom'
+import {
+  AccessControlProfile,
+  getPolicyRoutePath,
+  PolicyType,
+  PolicyOperation
+} from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
 import AccessControlSettingForm from './AccessControlSettingForm'
 
@@ -19,7 +24,9 @@ type AccessControlFormProps = {
 const AccessControlForm = (props: AccessControlFormProps) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const linkToPolicies = useTenantLink(getPolicyListRoutePath(true))
+  // eslint-disable-next-line max-len
+  const tablePath = getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.LIST })
+  const linkToPolicies = useTenantLink(tablePath)
   const { edit } = props
 
   const formRef = useRef<StepsFormInstance<AccessControlProfile>>()
@@ -42,7 +49,7 @@ const AccessControlForm = (props: AccessControlFormProps) => {
           ? $t({ defaultMessage: 'Edit Access Control Policy' })
           : $t({ defaultMessage: 'Add Access Control Policy' })}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Policies' }), link: getPolicyListRoutePath(true) }
+          { text: $t({ defaultMessage: 'Access Control' }), link: tablePath }
         ]}
       />
       <StepsForm<AccessControlProfile>
