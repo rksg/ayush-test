@@ -24,9 +24,6 @@ const initialValues: Partial<NetworkHealthFormDto> = {
   radio: Band.Band2_4,
   speedTestEnabled: false,
   isDnsServerCustom: false
-  // TODO:
-  // Remove when raise PR
-  // networkPaths: { networkNodes: 'BDCSZ|C8:03:F5:2C:83:A0' }
 }
 
 export function NetworkHealthForm () {
