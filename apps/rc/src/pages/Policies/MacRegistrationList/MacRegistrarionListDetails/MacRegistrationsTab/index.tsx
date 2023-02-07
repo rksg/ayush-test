@@ -61,19 +61,24 @@ export function MacRegistrationsTab () {
   {
     label: $t({ defaultMessage: 'Delete' }),
     visible: (selectedRows) => selectedRows.length === 1,
-    onClick: (rows, clearSelection) => {
+    onClick: ([{ macAddress, id }], clearSelection) => {
       showActionModal({
         type: 'confirm',
         customContent: {
           action: 'DELETE',
           entityName: $t({ defaultMessage: 'MAC Address' }),
-          entityValue: rows.length === 1 ? rows[0].macAddress : undefined,
-          numOfEntities: rows.length
+          entityValue: macAddress
         },
         onOk: () => {
-          // eslint-disable-next-line max-len
-          deleteMacRegistration({ params: { policyId, registrationId: rows[0].id } })
-            .then(clearSelection)
+          deleteMacRegistration({ params: { policyId, registrationId: id } })
+            .then(() => {
+              showToast({
+                type: 'success',
+                // eslint-disable-next-line max-len
+                content: $t({ defaultMessage: 'MAC Address {macAddress} was deleted' }, { macAddress })
+              })
+              clearSelection()
+            })
         }
       })
     }

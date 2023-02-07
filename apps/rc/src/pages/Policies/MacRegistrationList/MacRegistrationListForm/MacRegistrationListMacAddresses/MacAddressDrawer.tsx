@@ -104,6 +104,13 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
           payload
         }).unwrap()
       }
+      showToast({
+        type: 'success',
+        content: intl.$t(
+          { defaultMessage: 'MAC Address {name} was {operation}' },
+          { name: data.macAddress, operation: isEdit ? 'updated' : 'added' }
+        )
+      })
       onClose()
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {

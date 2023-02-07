@@ -6,7 +6,7 @@ import {
   Table,
   TableProps,
   Loader,
-  showActionModal
+  showActionModal, showToast
 } from '@acx-ui/components'
 import { useDeleteMacRegListMutation, useMacRegListsQuery } from '@acx-ui/rc/services'
 import {
@@ -114,19 +114,24 @@ export default function MacRegistrationListsTable () {
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: (rows, clearSelection) => {
+      onClick: ([{ name, id }], clearSelection) => {
         showActionModal({
           type: 'confirm',
           customContent: {
             action: 'DELETE',
             entityName: $t({ defaultMessage: 'List' }),
-            entityValue: rows.length === 1 ? rows[0].name : undefined,
-            numOfEntities: rows.length,
+            entityValue: name,
             confirmationText: 'Delete'
           },
           onOk: () => {
-            deleteMacRegList({ params: { policyId: rows[0].id } })
-              .then(clearSelection)
+            deleteMacRegList({ params: { policyId: id } })
+              .then(clearSelection).then(() => {
+                showToast({
+                  type: 'success',
+                  content: $t({ defaultMessage: 'List {name} was deleted' }, { name })
+                })
+                clearSelection()
+              })
           }
         })
       }
