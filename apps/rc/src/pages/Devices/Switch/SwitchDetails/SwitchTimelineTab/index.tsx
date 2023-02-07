@@ -1,13 +1,12 @@
 import { defineMessage, useIntl, MessageDescriptor } from 'react-intl'
 import { useNavigate, useParams }                    from 'react-router-dom'
 
-import { Tabs }                                                from '@acx-ui/components'
-import { EventTable, eventDefaultPayload, eventDefaultSorter } from '@acx-ui/rc/components'
-import { useEventsQuery }                                      from '@acx-ui/rc/services'
+import { Tabs }                                                                    from '@acx-ui/components'
+import { EventTable, eventDefaultPayload, eventDefaultSorter, eventDefaultSearch } from '@acx-ui/rc/components'
+import { useEventsQuery }                                                          from '@acx-ui/rc/services'
 import {
   Event,
   usePollingTableQuery,
-  RequestPayload,
   TimelineTypes,
   TABLE_QUERY_LONG_POLLING_INTERVAL
 } from '@acx-ui/rc/utils'
@@ -16,7 +15,7 @@ import { useTenantLink } from '@acx-ui/react-router-dom'
 const Events = () => {
   // TODO: add fromTime/toTime to filter when DatePicker is ready
   const params = useParams()
-  const tableQuery = usePollingTableQuery<Event, RequestPayload<unknown>, unknown>({
+  const tableQuery = usePollingTableQuery<Event>({
     useQuery: useEventsQuery,
     defaultPayload: {
       ...eventDefaultPayload,
@@ -26,9 +25,10 @@ const Events = () => {
       }
     },
     sorter: eventDefaultSorter,
+    search: eventDefaultSearch,
     option: { pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL }
   })
-  return <EventTable tableQuery={tableQuery}/>
+  return <EventTable tableQuery={tableQuery} filterables={['severity', 'entity_type']}/>
 }
 
 const tabs : {

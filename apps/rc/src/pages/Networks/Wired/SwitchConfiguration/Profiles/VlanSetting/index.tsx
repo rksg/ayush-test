@@ -8,7 +8,7 @@ import { useSwitchConfigProfileQuery } from '@acx-ui/rc/services'
 import {
   Vlan,
   SwitchModel,
-  SpanningTreeProtocolName} from '@acx-ui/rc/utils'
+  SpanningTreeProtocolName } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 import { getIntl }   from '@acx-ui/utils'
 

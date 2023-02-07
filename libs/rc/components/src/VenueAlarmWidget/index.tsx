@@ -82,7 +82,7 @@ export function VenueAlarmWidget () {
     },
     pagination: {
       pageSize: 25,
-      current: 1,
+      page: 1,
       total: 0
     }
   })

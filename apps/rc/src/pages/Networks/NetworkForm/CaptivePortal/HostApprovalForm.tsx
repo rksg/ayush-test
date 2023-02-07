@@ -8,12 +8,13 @@ import {
 import { useIntl } from 'react-intl'
 
 import { GridCol, GridRow, StepsForm }    from '@acx-ui/components'
-import { CaptivePassphraseExpirationEnum,
+import { CaptivePassphraseExpirationEnum, NetworkSaveData,
   GuestNetworkTypeEnum, NetworkTypeEnum } from '@acx-ui/rc/utils'
 
 import { captivePasswordExpiration } from '../contentsMap'
 import { NetworkDiagram }            from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext            from '../NetworkFormContext'
+import { NetworkMoreSettingsForm }   from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 
 import { DhcpCheckbox }     from './DhcpCheckbox'
 import { DomainsInput }     from './DomainsInput'
@@ -88,6 +89,7 @@ export function HostApprovalForm () {
         />
         <RedirectUrlInput/>
         <DhcpCheckbox />
+        {!(editMode) && <NetworkMoreSettingsForm wlanData={data as NetworkSaveData} />}
       </GridCol>
       <GridCol col={{ span: 14 }}>
         <NetworkDiagram type={NetworkTypeEnum.CAPTIVEPORTAL}
