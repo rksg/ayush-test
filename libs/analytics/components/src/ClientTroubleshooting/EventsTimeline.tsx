@@ -1,8 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 
 import { Row, Col }                   from 'antd'
-import { connect }                    from 'echarts'
-import ReactECharts                   from 'echarts-for-react'
 import { flatten }                    from 'lodash'
 import moment                         from 'moment-timezone'
 import { useIntl, MessageDescriptor } from 'react-intl'
@@ -105,23 +103,11 @@ export function TimeLine (props: TimeLineProps) {
     )
   }
 
-
-
   const TimelineData = getTimelineData(events, incidents)
   const roamingEventsAps = connectionDetailsByAP(data?.connectionDetailsByAp as RoamingByAP[])
   const roamingEventsTimeSeries = connectionDetailsByApChartData(
     data?.connectionDetailsByAp as RoamingByAP[]
   ) as unknown as RoamingTimeSeriesData[]
-  const sharedChartName = 'eventTimeSeriesGroup'
-  const connectChart = (chart: ReactECharts | null) => {
-    if (chart) {
-      const instance = chart.getEchartsInstance()
-      instance.group = sharedChartName
-    }
-  }
-  useEffect(() => {
-    connect(sharedChartName)
-  }, [])
 
   const { startDate, endDate } = useDateFilter()
   const chartBoundary = [moment(startDate).valueOf(), moment(endDate).valueOf()]
@@ -241,7 +227,6 @@ export function TimeLine (props: TimeLineProps) {
                   showResetZoom={config?.showResetZoom}
                   chartBoundary={chartBoundary}
                   hasXaxisLabel={config?.hasXaxisLabel}
-                  chartRef={connectChart}
                   tooltipFormatter={useLabelFormatter}
                   mapping={
                     expandObj[config?.value as keyof TimelineData]
@@ -252,7 +237,6 @@ export function TimeLine (props: TimeLineProps) {
                         : config.chartMapping.slice().reverse()
                       : [config.chartMapping[0]]
                   }
-                  sharedChartName={sharedChartName}
                   onDotClick={(params) => {
                     setEventState(params as CoordDisplayEvent)
                     setVisible(true)

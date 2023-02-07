@@ -4,8 +4,6 @@ import {
   useEffect,
   useRef,
   useState,
-  RefCallback,
-  useImperativeHandle,
   useMemo
 } from 'react'
 
@@ -16,8 +14,7 @@ import {
   SeriesOption,
   CustomSeriesRenderItemAPI,
   CustomSeriesRenderItemParams,
-  TooltipComponentOption,
-  connect
+  TooltipComponentOption
 } from 'echarts'
 import ReactECharts        from 'echarts-for-react'
 import {
@@ -68,8 +65,6 @@ export interface TimelineChartProps extends Omit<EChartsReactProps, 'option' | '
   chartBoundary: number[];
   selectedData?: number;
   onDotClick?: (params: unknown) => void;
-  sharedChartName: string;
-  chartRef?: RefCallback<ReactECharts>;
   hasXaxisLabel?: boolean;
   tooltipFormatter: CallableFunction;
   mapping: { key: string; label: string; chartType: string; series: string }[];
@@ -275,19 +270,16 @@ export function TimelineChart ({
   chartBoundary,
   selectedData,
   onDotClick,
-  chartRef,
   tooltipFormatter,
   mapping,
   hasXaxisLabel,
   showResetZoom,
   onClick,
   index,
-  sharedChartName,
   ...props
 }: TimelineChartProps) {
   const { $t } = useIntl()
   const eChartsRef = useRef<ReactECharts>(null)
-  useImperativeHandle(chartRef, () => eChartsRef.current!)
 
   const chartPadding = 10
   const rowHeight = 22
@@ -302,7 +294,7 @@ export function TimelineChart ({
   const [selected, setSelected] = useState<number | undefined>(selectedData)
   useDotClick(eChartsRef, onDotClick, setSelected)
 
-  const seriesData = useMemo(() => mapping
+  const mappedData = useMemo(() => mapping
     .slice()
     .reverse()
     .map(({ key, series, chartType }) =>
@@ -331,6 +323,13 @@ export function TimelineChart ({
         }
     ) as SeriesOption[], [data, mapping])
 
+  const hasData = useMemo(() => {
+    const seriesDatas = mappedData
+      .map(({ data }) => data as [number, string, number | Object, Object])
+      .flat()
+    return seriesDatas.length > 0
+  }, [mappedData])
+
   const option: EChartsOption = useMemo(() => ({
     animation: false,
     grid: {
@@ -345,11 +344,11 @@ export function TimelineChart ({
       trigger: 'axis',
       zlevel: 10,
       triggerOn: 'mousemove',
-      show: seriesData.length > 0,
+      show: hasData,
       axisPointer: {
         axis: 'x',
-        status: seriesData.length > 0 ? 'show' : 'hide',
-        show: seriesData.length > 0,
+        status: hasData ? 'show' : 'hide',
+        show: hasData,
         snap: false,
         animation: false,
         lineStyle: {
@@ -396,7 +395,7 @@ export function TimelineChart ({
         lineStyle: { color: cssStr('--acx-neutrals-20') }
       },
       axisPointer: {
-        show: seriesData.length > 0,
+        show: hasData,
         snap: false,
         triggerTooltip: false,
         label: {
@@ -461,16 +460,15 @@ export function TimelineChart ({
         minValueSpan: 60
       }
     ],
-    series: seriesData
-  }), [chartBoundary, hasXaxisLabel, mapping, props.style?.width, seriesData])
+    series: mappedData
+  }), [chartBoundary, hasXaxisLabel, mapping, props.style?.width, mappedData, hasData])
 
   useEffect(() => {
     if (eChartsRef && eChartsRef.current) {
       const instance = eChartsRef.current.getEchartsInstance()
       instance.setOption(option)
-      connect(sharedChartName)
     }
-  }, [option, sharedChartName])
+  }, [option])
 
   return (
     <>
