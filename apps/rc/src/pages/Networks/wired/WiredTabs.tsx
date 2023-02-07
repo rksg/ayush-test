@@ -16,7 +16,10 @@ function WiredTabs () {
 
 
   return (
-    <Tabs onChange={onTabChange} activeKey={params.activeTab}>
+    <Tabs onChange={onTabChange}
+      defaultActiveKey='profiles'
+      activeKey={params.activeTab}
+    >
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'Configuration Profiles' })}
         key='profiles'
