@@ -6,7 +6,7 @@ import { useIntl }              from 'react-intl'
 import { Button, Modal } from '@acx-ui/components'
 import { GuestPortal }   from '@acx-ui/rc/utils'
 
-import appPhoto           from '../../../../assets/images/network-wizard-diagrams/facebook-sample-customised.png'
+import appPhoto           from '../../../../../assets/images/network-wizard-diagrams/facebook-sample-customised.png'
 import NetworkFormContext from '../NetworkFormContext'
 import * as UI            from '../styledComponents'
 

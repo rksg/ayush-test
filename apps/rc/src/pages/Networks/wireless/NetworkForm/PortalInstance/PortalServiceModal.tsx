@@ -5,7 +5,7 @@ import { useIntl } from 'react-intl'
 import { Button } from '@acx-ui/components'
 import { Portal } from '@acx-ui/rc/utils'
 
-import PortalForm from '../../../Services/Portal/PortalForm/PortalForm'
+import PortalForm from '../../../../Services/Portal/PortalForm/PortalForm'
 import * as UI    from '../styledComponents'
 
 export default function PortalServiceModal (props:{

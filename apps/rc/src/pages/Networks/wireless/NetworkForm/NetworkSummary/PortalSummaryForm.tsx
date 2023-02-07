@@ -3,7 +3,7 @@ import { useIntl }     from 'react-intl'
 
 import { NetworkSaveData, Demo, PortalLanguageEnum, GuestNetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
 
-import { getLanguage } from '../../../Services/commonUtils'
+import { getLanguage } from '../../../../Services/commonUtils'
 import * as UI         from '../styledComponents'
 export function PortalSummaryForm (props: {
   summaryData: NetworkSaveData;

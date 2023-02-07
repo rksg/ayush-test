@@ -9,10 +9,10 @@ import { GridCol, GridRow, StepsForm }                            from '@acx-ui/
 import { useGetPortalLangMutation, useGetPortalProfileListQuery } from '@acx-ui/rc/services'
 import { Demo, Portal }                                           from '@acx-ui/rc/utils'
 
-import Photo              from '../../../../assets/images/portal-demo/PortalPhoto.svg'
-import Powered            from '../../../../assets/images/portal-demo/PoweredLogo.svg'
-import Logo               from '../../../../assets/images/portal-demo/RuckusCloud.svg'
-import PortalDemo         from '../../../Services/Portal/PortalDemo'
+import Photo              from '../../../../../assets/images/portal-demo/PortalPhoto.svg'
+import Powered            from '../../../../../assets/images/portal-demo/PoweredLogo.svg'
+import Logo               from '../../../../../assets/images/portal-demo/RuckusCloud.svg'
+import PortalDemo         from '../../../../Services/Portal/PortalDemo'
 import NetworkFormContext from '../NetworkFormContext'
 
 import PortalServiceModal from './PortalServiceModal'
