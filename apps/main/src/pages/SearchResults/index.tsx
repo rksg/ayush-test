@@ -89,16 +89,18 @@ const searches = [
     const result = useTableQuery<AP, RequestPayload<unknown>, ApExtraParams>({
       useQuery: useApListQuery,
       defaultPayload: {
-        ...defaultApPayload,
+        ...defaultApPayload
+      },
+      search: {
         searchString,
-        searchTargetFields: ['name', 'model', 'IP', 'apMac', 'tags', 'serialNumber']
+        searchTargetFields: defaultApPayload.searchTargetFields
       },
       pagination
     })
     return {
       result,
       title: $t({ defaultMessage: 'APs' }),
-      component: <ApTable tableQuery={result} />
+      component: <ApTable tableQuery={result} searchable={false} />
     }
   },
   (searchString: string, $t: IntlShape['$t']) => {
