@@ -70,7 +70,7 @@ export function MacRegistrationsTab () {
           entityValue: macAddress
         },
         onOk: () => {
-          deleteMacRegistration({ params: { policyId, registrationId: id } })
+          deleteMacRegistration({ params: { policyId, registrationId: id } }).unwrap()
             .then(() => {
               showToast({
                 type: 'success',
@@ -78,6 +78,11 @@ export function MacRegistrationsTab () {
                 content: $t({ defaultMessage: 'MAC Address {macAddress} was deleted' }, { macAddress })
               })
               clearSelection()
+            }).catch((error) => {
+              showToast({
+                type: 'error',
+                content: error.data.message
+              })
             })
         }
       })

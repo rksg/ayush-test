@@ -125,12 +125,18 @@ export default function MacRegistrationListsTable () {
           },
           onOk: () => {
             deleteMacRegList({ params: { policyId: id } })
-              .then(clearSelection).then(() => {
+              .unwrap()
+              .then(() => {
                 showToast({
                   type: 'success',
                   content: $t({ defaultMessage: 'List {name} was deleted' }, { name })
                 })
                 clearSelection()
+              }).catch((error) => {
+                showToast({
+                  type: 'error',
+                  content: error.data.message
+                })
               })
           }
         })
