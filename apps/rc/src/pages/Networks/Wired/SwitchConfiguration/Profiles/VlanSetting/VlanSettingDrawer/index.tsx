@@ -4,20 +4,22 @@ import {
   Form,
   FormInstance,
   Input,
-  Radio,
   Button,
   Col,
   Row,
-  RadioChangeEvent
+  RadioChangeEvent,
+  Select,
+  Switch
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Drawer, Table, TableProps }                                                     from '@acx-ui/components'
-import { Acl, AclExtendedRule, AclStandardRule, checkAclName, validateDuplicateAclName, Vlan } from '@acx-ui/rc/utils'
+import { Drawer, Table, TableProps }              from '@acx-ui/components'
+import { AclExtendedRule, AclStandardRule, Vlan } from '@acx-ui/rc/utils'
 
 import { defaultExtendedRuleList, defaultStandardRuleList } from '../../AclSetting'
 
 import { ACLRuleModal } from './ACLRuleModal'
+import * as UI          from './styledComponents'
 
 export interface VlanSettingDrawerProps {
   rule?: Vlan
@@ -36,7 +38,6 @@ export function VlanSettingDrawer (props: VlanSettingDrawerProps) {
   const [form] = Form.useForm<Vlan>()
 
   const onClose = () => {
-    setAclType('standard')
     setVisible(false)
   }
 
@@ -44,8 +45,8 @@ export function VlanSettingDrawer (props: VlanSettingDrawerProps) {
     <Drawer
       title={
         editMode
-          ? $t({ defaultMessage: 'Edit ACL' })
-          : $t({ defaultMessage: 'Add ACL' })
+          ? $t({ defaultMessage: 'Edit VLAN' })
+          : $t({ defaultMessage: 'Add VLAN' })
       }
       visible={visible}
       onClose={onClose}
@@ -79,7 +80,7 @@ export function VlanSettingDrawer (props: VlanSettingDrawerProps) {
           }}
         />
       }
-      width={aclType === 'standard' ? '500px' : '950px'}
+      width={'600px'}
     />
   )
 }
@@ -95,6 +96,7 @@ interface VlanSettingFormProps {
 
 function VlanSettingForm (props: VlanSettingFormProps) {
   const { $t } = useIntl()
+  const { Option } = Select
   const [openModal, setOpenModal] = useState(false)
   const [selected, setSelected] = useState<AclStandardRule | AclExtendedRule>()
   const [ruleList, setRuleList] = useState<
@@ -111,55 +113,23 @@ function VlanSettingForm (props: VlanSettingFormProps) {
 
   const columns: TableProps<AclStandardRule | AclExtendedRule>['columns'] = [
     {
-      title: $t({ defaultMessage: 'Sequence #' }),
+      title: $t({ defaultMessage: 'Model' }),
       dataIndex: 'sequence',
       key: 'sequence',
       width: 100
     },
     {
-      title: $t({ defaultMessage: 'Action' }),
+      title: $t({ defaultMessage: 'Untagged Port' }),
       dataIndex: 'action',
       key: 'action',
-      width: 10
+      width: 180
     },
-    ...(aclType === 'extended'
-      ? [
-        {
-          title: $t({ defaultMessage: 'Protocol' }),
-          dataIndex: 'protocol',
-          key: 'protocol',
-          width: 100
-        }
-      ]
-      : []),
     {
-      title: $t({ defaultMessage: 'Source Network' }),
+      title: $t({ defaultMessage: 'Tagged Ports' }),
       dataIndex: 'source',
       key: 'source',
-      width: 150
-    },
-    ...(aclType === 'extended'
-      ? [
-        {
-          title: $t({ defaultMessage: 'Destination Network' }),
-          dataIndex: 'destination',
-          key: 'destination',
-          width: 180
-        },
-        {
-          title: $t({ defaultMessage: 'Source Port' }),
-          dataIndex: 'sourcePort',
-          key: 'sourcePort',
-          width: 110
-        },
-        {
-          title: $t({ defaultMessage: 'Destination Port' }),
-          dataIndex: 'destinationPort',
-          key: 'destinationPort',
-          width: 100
-        }
-      ]
-      : [])
+      width: 180
+    }
   ]
 
   const rowActions: TableProps<
@@ -240,34 +210,89 @@ function VlanSettingForm (props: VlanSettingFormProps) {
         }}
       >
         <Form.Item name='id' initialValue='' noStyle children={<Input type='hidden' />} />
-        <Form.Item name='aclRules' initialValue={[defaultStandardRuleList]} noStyle/>
         <Form.Item
-          label={$t({ defaultMessage: 'ACL Name' })}
-          name='name'
+          label={$t({ defaultMessage: 'VLAN ID' })}
+          name='vlanId'
           rules={[
             { required: true }
           ]}
           children={<Input style={{ width: '400px' }} />}
         />
         <Form.Item
-          name='aclType'
-          label={$t({ defaultMessage: 'Type' })}
-          initialValue={'standard'}
+          name='vlanName'
+          label={$t({ defaultMessage: 'VLAN Name' })}
+          rules={[
+            { required: true }
+          ]}
+          children={<Input style={{ width: '400px' }} />}
+        />
+        <UI.FieldLabel width='130px'>
+          { $t({ defaultMessage: 'IPv4 DHCP Snooping' }) }
+          <Form.Item
+            name={'ipv4DhcpSnooping'}
+            style={{ marginBottom: '10px' }}
+            valuePropName='checked'
+            initialValue={false}
+            children={<Switch />}
+          />
+        </UI.FieldLabel>
+        <UI.FieldLabel width='130px'>
+          { $t({ defaultMessage: 'ARP Inspection' }) }
+          <Form.Item
+            name={'arpInspection'}
+            style={{ marginBottom: '10px' }}
+            valuePropName='checked'
+            initialValue={false}
+            children={<Switch />}
+          />
+        </UI.FieldLabel>
+        <Form.Item
+          name='igmpSnooping'
+          label={$t({ defaultMessage: 'IGMP Snooping' })}
+          initialValue={'none'}
           children={
-            <Radio.Group onChange={onAclTypeChange}>
-              <Radio value={'standard'}>
-                {$t({ defaultMessage: 'Standard' })}
-              </Radio>
-              <Radio value={'extended'}>
-                {$t({ defaultMessage: 'Extended' })}
-              </Radio>
-            </Radio.Group>
+            <Select>
+              <Option value={'active'}>
+                {$t({ defaultMessage: 'Active' })}</Option>
+              <Option value={'Passive'}>
+                {$t({ defaultMessage: 'Passive' })}</Option>
+              <Option value={'none'}>
+                {$t({ defaultMessage: 'NONE' })}</Option>
+            </Select>
+          }
+        />
+        <Form.Item
+          name='multicastVersion'
+          label={$t({ defaultMessage: 'Multicast Version' })}
+          initialValue={2}
+          children={
+            <Select>
+              <Option value={2}>
+                {$t({ defaultMessage: 'Version 2' })}</Option>
+              <Option value={3}>
+                {$t({ defaultMessage: 'Version 3' })}</Option>
+            </Select>
+          }
+        />
+        <Form.Item
+          name='spanningTreeProtocol'
+          label={$t({ defaultMessage: 'Spanning tree protocol' })}
+          initialValue={'stp'}
+          children={
+            <Select>
+              <Option value={'rstp'}>
+                {$t({ defaultMessage: 'RSTP' })}</Option>
+              <Option value={'stp'}>
+                {$t({ defaultMessage: 'STP' })}</Option>
+              <Option value={'none'}>
+                {$t({ defaultMessage: 'NONE' })}</Option>
+            </Select>
           }
         />
       </Form>
       <Row justify='space-between' style={{ margin: '25px 0 10px' }}>
         <Col>
-          <label style={{ color: 'var(--acx-neutrals-60)' }}>Rules</label>
+          <label style={{ color: 'var(--acx-neutrals-60)' }}>Ports</label>
         </Col>
         <Col>
           <Button
@@ -277,7 +302,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
               setOpenModal(true)
             }}
           >
-            {$t({ defaultMessage: 'Add Rule' })}
+            {$t({ defaultMessage: 'Add Model' })}
           </Button>
         </Col>
       </Row>
