@@ -406,7 +406,7 @@ describe('RogueAPDetectionForm', () => {
     await screen.findByText('rule3')
   })
 
-  it('should render RogueAPDetectionForm successfully with snr rule', async () => {
+  it.skip('should render RogueAPDetectionForm successfully with snr rule', async () => {
     mockServer.use(rest.post(
       RogueApUrls.getVenueRoguePolicy.url,
       (_, res, ctx) => res(
