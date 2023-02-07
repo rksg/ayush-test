@@ -11,6 +11,15 @@ import {
 import { TenantLink } from '@acx-ui/react-router-dom'
 
 
+export function VenueLink (props: { venueId?: string, name?: string }) {
+  const { venueId, name } = props
+  return (
+    <TenantLink to={`venues/${venueId}/venue-details/overview`}>
+      {name}
+    </TenantLink>
+  )
+}
+
 export function PersonaGroupLink (props: { personaGroupId?: string, name?: string }) {
   const { personaGroupId, name } = props
   return (
