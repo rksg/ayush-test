@@ -53,23 +53,27 @@ const searches = [
     const result = useTableQuery<Venue, RequestPayload<unknown>, unknown>({
       useQuery: useVenuesListQuery,
       defaultPayload: {
-        ...venuePayload,
+        ...venuePayload
+      },
+      search: {
         searchString,
-        searchTargetFields: ['name', 'description']
+        searchTargetFields: venuePayload.searchTargetFields as string[]
       },
       pagination
     })
     return {
       result,
       title: $t({ defaultMessage: 'Venues' }),
-      component: <VenueTable tableQuery={result} />
+      component: <VenueTable tableQuery={result} searchable={false} />
     }
   },
   (searchString: string, $t: IntlShape['$t']) => {
     const result = useTableQuery<Network, RequestPayload<unknown>, unknown>({
       useQuery: useNetworkListQuery,
       defaultPayload: {
-        ...defaultNetworkPayload,
+        ...defaultNetworkPayload
+      },
+      search: {
         searchString,
         searchTargetFields: ['name', 'description']
       },

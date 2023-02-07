@@ -31,7 +31,10 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
 
-function useColumns (filterables: { [key: string]: ColumnType['filterable'] }) {
+function useColumns (
+  searchable?: boolean,
+  filterables?: { [key: string]: ColumnType['filterable'] }
+) {
   const { $t } = useIntl()
   const isEdgeEnabled = useIsSplitOn(Features.EDGES)
 
@@ -42,12 +45,12 @@ function useColumns (filterables: { [key: string]: ColumnType['filterable'] }) {
       dataIndex: 'name',
       sorter: true,
       disable: true,
-      searchable: true,
+      searchable: searchable,
       defaultSortOrder: 'ascend',
       render: function (data, row, _, highlightFn) {
         return (
           <TenantLink to={`/venues/${row.id}/venue-details/overview`}>
-            {highlightFn(row.name)}</TenantLink>
+            {searchable ? highlightFn(row.name) : data}</TenantLink>
         )
       }
     },
@@ -56,7 +59,8 @@ function useColumns (filterables: { [key: string]: ColumnType['filterable'] }) {
       key: 'city',
       dataIndex: 'city',
       sorter: true,
-      filterable: filterables['city'],
+      filterable: filterables ? filterables['city'] : false,
+      // filterMultiple: true,
       width: 120,
       render: function (data, row) {
         return `${row.country}, ${row.city}`
@@ -209,6 +213,7 @@ export const useDefaultVenuePayload = (): RequestPayload => {
       'status',
       'id'
     ],
+    searchTargetFields: ['name', 'description'],
     filters: {},
     sortField: 'name',
     sortOrder: 'ASC'
@@ -217,22 +222,19 @@ export const useDefaultVenuePayload = (): RequestPayload => {
 
 type VenueTableProps = {
   tableQuery: TableQuery<Venue, RequestPayload<unknown>, unknown>,
-  rowSelection?: TableProps<Venue>['rowSelection']
+  rowSelection?: TableProps<Venue>['rowSelection'],
+  searchable?: boolean
+  filterables?: { [key: string]: ColumnType['filterable'] }
 }
 
-export const VenueTable = ({ tableQuery, rowSelection }: VenueTableProps) => {
+export const VenueTable = (
+  { tableQuery, rowSelection, searchable, filterables }: VenueTableProps) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const { tenantId } = useParams()
 
-  const { cityFilterOptions } = useGetVenueCityListQuery({ params: { tenantId } }, {
-    selectFromResult: ({ data }) => ({
-      cityFilterOptions: data?.map(v=>({ key: v.name, value: v.name }))
-    })
-  })
 
-
-  const columns = useColumns({ city: cityFilterOptions })
+  const columns = useColumns(searchable, filterables)
   const [
     deleteVenue,
     { isLoading: isDeleteVenueUpdating }
@@ -293,7 +295,16 @@ export function VenuesTable () {
 
   const tableQuery = usePollingTableQuery<Venue>({
     useQuery: useVenuesListQuery,
-    defaultPayload: venuePayload
+    defaultPayload: venuePayload,
+    search: {
+      searchTargetFields: venuePayload.searchTargetFields as string[]
+    }
+  })
+
+  const { cityFilterOptions } = useGetVenueCityListQuery({ params: useParams() }, {
+    selectFromResult: ({ data }) => ({
+      cityFilterOptions: data?.map(v=>({ key: v.name, value: v.name }))
+    })
   })
 
   return (
@@ -306,7 +317,10 @@ export function VenuesTable () {
           </TenantLink>
         ]}
       />
-      <VenueTable tableQuery={tableQuery} rowSelection={{ type: 'checkbox' }} />
+      <VenueTable tableQuery={tableQuery}
+        rowSelection={{ type: 'checkbox' }}
+        searchable={true}
+        filterables={{ city: cityFilterOptions }} />
     </>
   )
 }
