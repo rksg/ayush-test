@@ -1,9 +1,9 @@
 import userEvent from '@testing-library/user-event'
 
-import { UserProfileContext } from '@acx-ui/rc/components'
-import { UserProfile }        from '@acx-ui/rc/utils'
-import { Provider }           from '@acx-ui/store'
-import { render, screen }     from '@acx-ui/test-utils'
+import { UserProfileContext, UserProfileContextProps } from '@acx-ui/rc/components'
+import { UserProfile }                                 from '@acx-ui/rc/utils'
+import { Provider }                                    from '@acx-ui/store'
+import { render, screen }                              from '@acx-ui/test-utils'
 
 import UserButton from './UserButton'
 
@@ -17,7 +17,7 @@ const userProfile = {
 describe('UserButton', () => {
   it('should render button with no text', async () => {
     render(<Provider>
-      <UserProfileContext.Provider value={undefined}>
+      <UserProfileContext.Provider value={{ data: undefined } as UserProfileContextProps}>
         <UserButton />
       </UserProfileContext.Provider>
     </Provider>, { route: { params } })
@@ -26,7 +26,7 @@ describe('UserButton', () => {
 
   it('should render button with initials', async () => {
     render(<Provider>
-      <UserProfileContext.Provider value={userProfile}>
+      <UserProfileContext.Provider value={{ data: userProfile } as UserProfileContextProps}>
         <UserButton />
       </UserProfileContext.Provider>
     </Provider>, { route: { params } })
@@ -35,7 +35,7 @@ describe('UserButton', () => {
 
   it('should handle change password', async () => {
     render(<Provider>
-      <UserProfileContext.Provider value={userProfile}>
+      <UserProfileContext.Provider value={{ data: userProfile } as UserProfileContextProps}>
         <UserButton />
       </UserProfileContext.Provider>
     </Provider>, { route: { params } })
@@ -48,7 +48,9 @@ describe('UserButton', () => {
   it('should handle change password for big dog', async () => {
     const isRwbigdogUserProfile = { ...userProfile, email: 'test@rwbigdog.com' }
     render(<Provider>
-      <UserProfileContext.Provider value={isRwbigdogUserProfile}>
+      <UserProfileContext.Provider
+        value={{ data: isRwbigdogUserProfile } as UserProfileContextProps}
+      >
         <UserButton />
       </UserProfileContext.Provider>
     </Provider>, { route: { params } })
@@ -68,7 +70,9 @@ describe('UserButton', () => {
 
     const isRwbigdogUserProfile = { ...userProfile, email: 'test@rwbigdog.com' }
     render(<Provider>
-      <UserProfileContext.Provider value={isRwbigdogUserProfile}>
+      <UserProfileContext.Provider
+        value={{ data: isRwbigdogUserProfile } as UserProfileContextProps}
+      >
         <UserButton />
       </UserProfileContext.Provider>
     </Provider>, { route: { params } })
