@@ -23,7 +23,7 @@ function WiredTabs () {
       />
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'On-Demand CLI Configuration' })}
-        key='cli'
+        key='onDemandCli'
       />
     </Tabs>
   )

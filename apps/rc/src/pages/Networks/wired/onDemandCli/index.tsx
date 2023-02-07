@@ -1,6 +1,6 @@
 import { useIntl } from 'react-intl'
 
-export function CliTab () {
+export function OnDemandCliTab () {
   const { $t } = useIntl()
 
   return (

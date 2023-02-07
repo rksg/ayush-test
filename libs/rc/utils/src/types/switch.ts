@@ -2,6 +2,7 @@
 import { ConfigurationBackupStatus } from '../constants'
 import { PortSettingModel }          from '../models/PortSetting'
 
+import { ProfileTypeEnum }        from './../constants'
 import { Acl, Vlan, SwitchModel } from './venue'
 
 import { GridDataRow } from './'
@@ -324,6 +325,22 @@ export interface SwitchTable {
   active?: boolean
   model: string
   disabled: boolean
+}
+
+export interface SwitchProfileModel {
+  id: string,
+  name: string,
+  profileType: ProfileTypeEnum,
+  venues: string[],
+  vlans: SwitchVlans[]
+}
+
+export interface SwitchCliTemplateModel{
+  applyLater: boolean,
+  cli: string,
+  id: string,
+  name: string,
+  reload: boolean
 }
 
 export interface SwitchPortViewModel extends GridDataRow {
