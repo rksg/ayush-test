@@ -20,8 +20,7 @@ import {
   baseMfaApi as mfaApi,
   baseAdministrationApi as administrationApi,
   baseEdgeDhcpApi as edgeDhcpApi,
-  basePersonaApi as personaApi,
-  baseRadiusClientConfigApi as radiusClientConfigApi
+  basePersonaApi as personaApi
 } from '@acx-ui/rc/services'
 
 import type { Middleware } from '@reduxjs/toolkit'
@@ -81,9 +80,6 @@ export const store = configureStore({
     [mfaApi.reducerPath]: mfaApi.reducer,
     [administrationApi.reducerPath]: administrationApi.reducer,
     [edgeDhcpApi.reducerPath]: edgeDhcpApi.reducer,
-    [personaApi.reducerPath]: personaApi.reducer,
-    [policyApi.reducerPath]: policyApi.reducer,
-    [radiusClientConfigApi.reducerPath]: radiusClientConfigApi.reducer,
     [personaApi.reducerPath]: personaApi.reducer
   },
 
@@ -112,9 +108,6 @@ export const store = configureStore({
       mfaApi.middleware,
       administrationApi.middleware,
       edgeDhcpApi.middleware,
-      personaApi.middleware,
-      policyApi.middleware,
-      radiusClientConfigApi.middleware,
       personaApi.middleware
     ])
   },

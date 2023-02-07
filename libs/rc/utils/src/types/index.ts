@@ -37,8 +37,6 @@ export * from './mfa'
 export * from './administration'
 export * from './timeline'
 export * from './persona'
-export * from './policy'
-export * from './portalService'
 export * from './radiusClientConfig'
 
 export interface CommonResult {
@@ -428,8 +426,8 @@ export enum ClientStatusEnum {
 }
 
 export interface Capabilities {
-	apModels: ApModel[]
-	version: string
+  apModels: ApModel[]
+  version: string
 }
 
 export interface ClientStatistic {
