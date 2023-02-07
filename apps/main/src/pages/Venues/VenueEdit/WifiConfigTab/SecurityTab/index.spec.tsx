@@ -10,8 +10,10 @@ import {
   venueData,
   venueRogueAp,
   venueDosProtection,
-  venueRoguePolicy, venueRoguePolicyList, rogueApPolicyNotDefaultProfile
-} from '../../../__tests__/fixtures';
+  venueRoguePolicy,
+  venueRoguePolicyList,
+  rogueApPolicyNotDefaultProfile
+} from '../../../__tests__/fixtures'
 import { VenueEditContext } from '../../index'
 
 

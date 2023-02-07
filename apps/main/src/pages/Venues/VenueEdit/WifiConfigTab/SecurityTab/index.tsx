@@ -69,7 +69,6 @@ export function SecurityTab () {
 
   useEffect(() => {
     if (selectOptions.length > 0) {
-      console.log(formRef.current?.getFieldValue('roguePolicyId'))
       if (_.isEmpty(formRef.current?.getFieldValue('roguePolicyId'))){
         // eslint-disable-next-line max-len
         const defaultProfile = selectOptions.find(option => option.props.children === 'Default profile')
