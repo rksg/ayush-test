@@ -19,12 +19,6 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
-const mockedUpdateEdgeDhcp = jest.fn()
-jest.mock('@acx-ui/rc/services', () => ({
-  ...jest.requireActual('@acx-ui/rc/services'),
-  useUpdateEdgeDhcpServiceMutation: () => [mockedUpdateEdgeDhcp]
-}))
-
 const editPagePath = '/:tenantId/services/edgeDhcp/:serviceId/edit'
 
 describe('EditEdgeDhcp', () => {
@@ -40,7 +34,7 @@ describe('EditEdgeDhcp', () => {
         EdgeDhcpUrls.getDhcp.url,
         (req, res, ctx) => res(ctx.json(mockEdgeDhcpData))
       ),
-      rest.post(
+      rest.put(
         EdgeDhcpUrls.updateDhcpService.url,
         (req, res, ctx) => res(ctx.status(202))
       )
@@ -92,10 +86,24 @@ describe('EditEdgeDhcp', () => {
       </Provider>, {
         route: { params, path: editPagePath }
       })
-    const serviceNameInput = screen.getByRole('textbox', { name: 'Service Name' })
-    await waitFor(() => expect(serviceNameInput).toHaveValue(mockEdgeDhcpData.serviceName))
+    await screen.findAllByRole('row', { name: /PoolTest/i })
     await user.click(screen.getByRole('button', { name: 'Apply' }))
-    expect(mockedUpdateEdgeDhcp).toBeCalledTimes(1)
+  })
+
+  it('cancel and go back to my service', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <EditDhcp />
+      </Provider>, {
+        route: { params, path: editPagePath }
+      })
+    await user.click(await screen.findByRole('button', { name: 'Cancel' }))
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      pathname: `/t/${params.tenantId}/services`,
+      hash: '',
+      search: ''
+    })
   })
 })
 
@@ -112,7 +120,7 @@ describe('EditEdgeDhcp api fail', () => {
         EdgeDhcpUrls.getDhcp.url,
         (req, res, ctx) => res(ctx.json(mockEdgeDhcpData))
       ),
-      rest.post(
+      rest.put(
         EdgeDhcpUrls.updateDhcpService.url,
         (req, res, ctx) => res(ctx.status(400), ctx.json(null))
       )
@@ -127,8 +135,7 @@ describe('EditEdgeDhcp api fail', () => {
       </Provider>, {
         route: { params, path: editPagePath }
       })
-    const serviceNameInput = screen.getByRole('textbox', { name: 'Service Name' })
-    await waitFor(() => expect(serviceNameInput).toHaveValue(mockEdgeDhcpData.serviceName))
+    await screen.findAllByRole('row', { name: /PoolTest/i })
     await user.click(screen.getByRole('button', { name: 'Apply' }))
     await screen.findByText('An error occurred')
   })

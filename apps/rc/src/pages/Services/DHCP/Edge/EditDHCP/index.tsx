@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { useIntl }                from 'react-intl'
+import { useNavigate, useParams } from 'react-router-dom'
 
 import {
   Loader,
@@ -13,6 +13,7 @@ import {
 } from '@acx-ui/rc/components'
 import { useGetEdgeDhcpServiceQuery, useUpdateEdgeDhcpServiceMutation } from '@acx-ui/rc/services'
 import { EdgeDhcpSetting }                                              from '@acx-ui/rc/utils'
+import { useTenantLink }                                                from '@acx-ui/react-router-dom'
 
 
 
@@ -20,12 +21,14 @@ const EditDhcp = () => {
 
   const { $t } = useIntl()
   const params = useParams()
+  const navigate = useNavigate()
+  const linkToServices = useTenantLink('/services')
   const formRef = useRef<StepsFormInstance<EdgeDhcpSetting>>()
   const {
     data: edgeDhcpData,
     isLoading: isEdgeDhcpDataLoading
   } = useGetEdgeDhcpServiceQuery({ params: { id: params.serviceId } })
-  const [updateEdgeDhcp] = useUpdateEdgeDhcpServiceMutation()
+  const [updateEdgeDhcp, { isLoading: isFormSubmitting }] = useUpdateEdgeDhcpServiceMutation()
 
   useEffect(() => {
     if(edgeDhcpData) {
@@ -39,6 +42,7 @@ const EditDhcp = () => {
       const payload = { ...data, id: params.serviceId }
       const pathVar = { id: params.serviceId }
       await updateEdgeDhcp({ payload, params: pathVar }).unwrap()
+      navigate(linkToServices, { replace: true })
     } catch {
       showToast({
         type: 'error',
@@ -55,11 +59,11 @@ const EditDhcp = () => {
           { text: $t({ defaultMessage: 'Services' }), link: '/services' }
         ]}
       />
-      <Loader states={[{ isLoading: isEdgeDhcpDataLoading }]}>
+      <Loader states={[{ isLoading: isEdgeDhcpDataLoading, isFetching: isFormSubmitting }]}>
         <StepsForm
           formRef={formRef}
-          editMode={true}
           onFinish={handleEditEdgeDhcp}
+          onCancel={() => navigate(linkToServices)}
           buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
         >
           <StepsForm.StepForm>

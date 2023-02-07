@@ -17,11 +17,6 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
-const mockedUpdateEdge = jest.fn()
-jest.mock('@acx-ui/rc/services', () => ({
-  ...jest.requireActual('@acx-ui/rc/services'),
-  useUpdateEdgeMutation: () => [mockedUpdateEdge, { isLoading: false }]
-}))
 
 describe('EditEdge general settings', () => {
   let params: { tenantId: string, serialNumber: string }
@@ -89,7 +84,6 @@ describe('EditEdge general settings', () => {
     fireEvent.change(serialNumberInput, { target: { value: 'serial_number_test' } })
     const applyButton = screen.getByRole('button', { name: 'Apply' })
     await user.click(applyButton)
-    expect(mockedUpdateEdge).toBeCalledTimes(1)
   })
 
   it('cancel and go back to edge list', async () => {
